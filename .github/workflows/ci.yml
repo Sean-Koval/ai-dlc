@@ -1,0 +1,19 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4        # cache ~/.cache/uv for turbo builds
+        with:
+          path: ~/.cache/uv
+          key: uv-${{ hashFiles('uv.lock') }}
+      - name: Install uv
+        run: curl -Ls https://astral.sh/uv/install.sh | bash
+      - name: Sync deps
+        run: uv sync
+      - name: Lint
+        run: uv pip run ruff check .
+      - name: Tests
+        run: uv pip run pytest -q

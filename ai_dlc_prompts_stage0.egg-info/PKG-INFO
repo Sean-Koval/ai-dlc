@@ -1,0 +1,11 @@
+Metadata-Version: 2.4
+Name: ai-dlc-prompts-stage0
+Version: 0.1.0
+Requires-Python: >=3.12
+Requires-Dist: jinja2>=3.1
+Requires-Dist: typer>=0.12
+Requires-Dist: jsonschema>=4.21
+Requires-Dist: rich>=14.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=8.2; extra == "dev"
+Requires-Dist: ruff>=0.4; extra == "dev"
