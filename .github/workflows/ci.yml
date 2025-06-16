@@ -14,6 +14,6 @@ jobs:
       - name: Sync deps
         run: uv sync
       - name: Lint
-        run: uv pip run ruff check .
+        run: uv run ruff check .
       - name: Tests
-        run: uv pip run pytest -q
+        run: uv run pytest -q
