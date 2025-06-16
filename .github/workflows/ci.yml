@@ -12,7 +12,7 @@ jobs:
       - name: Install uv
         run: curl -Ls https://astral.sh/uv/install.sh | bash
       - name: Sync deps
-        run: uv sync
+        run: uv sync --extra dev
       - name: Lint
         run: uv run ruff check .
       - name: Tests
