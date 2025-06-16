@@ -19,6 +19,13 @@ from jinja2 import Environment, Template
 from cli.schema_utils import load_and_validate_schema, InvalidSchemaError
 from cli.check_utils import load_check_rules, InvalidCheckRuleError, CustomCheckRule
 from cli.redact_utils import redact_sensitive_data
+from cli.template_generation_utils import (
+    parse_user_input,
+    identify_schema_variables,
+    generate_jinja2_template_content,
+    InvalidUserInputError,
+    SchemaMismatchError
+)
 
 # Create a Typer application instance
 app = typer.Typer(
@@ -415,11 +422,150 @@ def redact(
                 typer.echo(f"Redacted content written to {prompt_file_path}. Backup saved to {backup_path}.")
     
     # Overall result
-    if not dry_run:
-        typer.echo("Redaction process complete.")
-    else:
-        typer.echo("Dry run complete. No files were modified.")
-
-
-if __name__ == "__main__":
-    app()
+        if not dry_run:
+            typer.echo("Redaction process complete.")
+        else:
+            typer.echo("Dry run complete. No files were modified.")
+    
+    
+    def mutually_exclusive_callback(ctx: typer.Context, param: typer.CallbackParam, value):
+        """
+        Callback to ensure mutually exclusive options.
+        
+        This callback tracks which mutually exclusive options have been provided
+        and raises an error if more than one is set. It addresses :Problem:Usability
+        by providing clear feedback when contradictory options are specified.
+        
+        Args:
+            ctx: Typer context object
+            param: The parameter being processed
+            value: The value of the parameter
+            
+        Returns:
+            The parameter value if validation passes
+            
+        Raises:
+            typer.BadParameter: If multiple mutually exclusive options are provided
+        """
+        # Store state in the context object
+        if not hasattr(ctx, "mutually_exclusive_selected"):
+            ctx.mutually_exclusive_selected = []
+        if value is not None:
+            ctx.mutually_exclusive_selected.append(param.name)
+        if len(ctx.mutually_exclusive_selected) > 1:
+            raise typer.BadParameter(
+                f"Options --{ctx.mutually_exclusive_selected[0].replace('_', '-')} and "
+                f"--{ctx.mutually_exclusive_selected[1].replace('_', '-')} are mutually exclusive."
+            )
+        return value
+    
+    
+    @app.command()
+    def generate_template(
+        input_description: Optional[str] = typer.Option(
+            None,
+            "--input-description",
+            help="High-level user description for template generation.",
+            callback=mutually_exclusive_callback,
+        ),
+        input_yaml: Optional[Path] = typer.Option(
+            None,
+            "--input-yaml",
+            help="Path to a YAML file containing structured input.",
+            callback=mutually_exclusive_callback,
+        ),
+        schema: Path = typer.Option(
+            ...,
+            "--schema",
+            help="Path to the JSON schema file (e.g., schemas/example_schema.json).",
+        ),
+        output_file: Optional[Path] = typer.Option(
+            None,
+            "--output-file",
+            help="Path to where the generated Jinja2 template should be saved. If not provided, print to standard output.",
+        ),
+    ) -> None:
+        """
+        Generate a Jinja2 template based on user input and a JSON schema.
+        
+        This command takes either a high-level user description or a YAML file with structured input,
+        along with a JSON schema, and generates a Jinja2 template. The template can be saved to a file
+        or printed to standard output.
+        
+        This implements the :ArchitecturalPattern:GeneratorPattern to transform high-level
+        user descriptions into structured Jinja2 templates, addressing :Problem:Usability
+        by providing a user-facing command for template generation.
+        """
+        # Validate that at least one input option is provided
+        if input_description is None and input_yaml is None:
+            typer.echo("Error: You must provide either --input-description or --input-yaml.", err=True)
+            raise typer.Exit(code=1)
+        
+        # Determine the input data based on provided options
+        input_data = None
+        try:
+            if input_description is not None:
+                input_data = input_description
+            elif input_yaml is not None:
+                # Check if the input YAML file exists
+                if not input_yaml.exists():
+                    typer.echo(f"Error: Input YAML file '{input_yaml}' does not exist.", err=True)
+                    raise typer.Exit(code=1)
+                
+                # Read and parse the YAML file
+                yaml_content = input_yaml.read_text()
+                input_data = yaml.safe_load(yaml_content)
+        except FileNotFoundError:
+            typer.echo(f"Error: Input YAML file '{input_yaml}' not found.", err=True)
+            raise typer.Exit(code=1)
+        except yaml.YAMLError as e:
+            typer.echo(f"Error: Invalid YAML in input file '{input_yaml}': {e}", err=True)
+            raise typer.Exit(code=1)
+        except Exception as e:
+            typer.echo(f"Error: Failed to read input file '{input_yaml}': {e}", err=True)
+            raise typer.Exit(code=1)
+        
+        # Process the input data and generate the template
+        try:
+            # Parse the user input
+            parsed_input = parse_user_input(input_data)
+            
+            # Identify schema variables
+            schema_variables = identify_schema_variables(schema)
+            
+            # Generate the Jinja2 template content
+            template_content = generate_jinja2_template_content(parsed_input, schema_variables)
+            
+            # Output the generated template
+            if output_file:
+                # Create parent directories if they don't exist
+                output_file.parent.mkdir(parents=True, exist_ok=True)
+                
+                # Write the template to the output file
+                output_file.write_text(template_content)
+                typer.echo(f"Template successfully generated and saved to '{output_file}'.")
+            else:
+                # Print the template to standard output
+                typer.echo(template_content)
+        except InvalidUserInputError as e:
+            typer.echo(f"Error: Invalid user input: {e}", err=True)
+            raise typer.Exit(code=1)
+        except SchemaMismatchError as e:
+            typer.echo(f"Error: Schema mismatch: {e}", err=True)
+            raise typer.Exit(code=1)
+        except ValueError as e:
+            typer.echo(f"Error: Template syntax error: {e}", err=True)
+            raise typer.Exit(code=1)
+        except FileNotFoundError as e:
+            typer.echo(f"Error: {e}", err=True)
+            raise typer.Exit(code=1)
+        except json.JSONDecodeError as e:
+            typer.echo(f"Error: Invalid JSON in schema file: {e}", err=True)
+            raise typer.Exit(code=1)
+        except Exception as e:
+            typer.echo(f"Error: An unexpected error occurred: {e}", err=True)
+            raise typer.Exit(code=1)
+    
+    
+    if __name__ == "__main__":
+        app()
