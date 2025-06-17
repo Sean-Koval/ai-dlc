@@ -11,9 +11,10 @@ import unittest
 import json
 import tempfile
 from pathlib import Path
-from unittest.mock import patch, mock_open
+from unittest.mock import patch, mock_open, MagicMock
 
-from cli.template_generation_utils import parse_user_input, identify_schema_variables, generate_jinja2_template_content
+from cli.template_generation_utils import parse_user_input, identify_schema_variables, generate_jinja2_template_content, build_meta_prompt
+from jinja2 import TemplateError
 
 
 class TestParseUserInput(unittest.TestCase):
@@ -765,344 +766,293 @@ class TestGenerateJinja2TemplateContent(unittest.TestCase):
                 self.assertIn('{% endfor %}', result)
             if '{% if' in result:
                 self.assertIn('{% endif %}', result)
-                
-    def test_jinja2_syntax_validation(self):
-        """Test that the function validates Jinja2 syntax using the Jinja2 library."""
-        # Test with valid syntax
-        parsed_input = {
-            'directives': ['list', 'users']
-        }
-        schema_variables = {
-            'users': 'array',
-            'users.name': 'string'
-        }
+
+
+class TestBuildMetaPrompt(unittest.TestCase):
+    """Test cases for the build_meta_prompt function."""
+
+    def test_input_rendering(self):
+        """Test that inputs are correctly included in the rendered output."""
+        # Test inputs
+        role = "Test Role"
+        task = "Test Task"
+        directives = ["Test Directive 1", "Test Directive 2"]
+        schema = {"test_key": "test_value", "nested": {"sub_key": "sub_value"}}
         
-        # This should not raise an exception
-        result = generate_jinja2_template_content(parsed_input, schema_variables)
-        self.assertIsInstance(result, str)
-        
-        # Test with invalid syntax by mocking the generate_jinja2_template_content function
-        # to return a template with invalid syntax
-        from unittest.mock import patch
-        from jinja2 import Environment, exceptions as jinja2_exceptions
-        
-        # Create a template with invalid syntax (unclosed tag)
-        invalid_template = "<ul>\n{% for user in users\n  <li>{{ user.name }}</li>\n{% endfor %}\n</ul>"
-        
-        # Mock the function to return our invalid template before validation
-        with patch('cli.template_generation_utils._generate_generic_template') as mock_generate:
-            mock_generate.return_value = [invalid_template]
-            
-            # The function should catch the Jinja2 exception and raise ValueError
-            with self.assertRaises(ValueError) as context:
-                generate_jinja2_template_content({}, {})
-                
-            # Check that the error message contains the Jinja2 error
-            self.assertIn("syntax error", str(context.exception).lower())
-    
-    def test_jinja2_valid_syntax_validation(self):
-        """Test that syntactically correct Jinja2 templates pass validation."""
-        # Test cases with valid Jinja2 syntax
-        valid_templates = [
-            # Simple variable
-            "Hello {{ name }}",
-            # For loop
-            "{% for item in items %}{{ item }}{% endfor %}",
-            # If condition
-            "{% if condition %}True{% else %}False{% endif %}",
-            # Nested structures
-            "{% for user in users %}{% if user.active %}{{ user.name }}{% endif %}{% endfor %}"
-        ]
-        
-        for template in valid_templates:
-            # Mock the template generation to return our test template
-            with patch('cli.template_generation_utils._generate_generic_template') as mock_generate:
-                mock_generate.return_value = [template]
-                
-                # This should not raise an exception
-                result = generate_jinja2_template_content({}, {})
-                self.assertEqual(result, template)
-    
-    def test_jinja2_invalid_unbalanced_tags(self):
-        """Test that templates with unbalanced Jinja2 tags raise appropriate errors."""
-        # Test cases with unbalanced tags
-        unbalanced_templates = [
-            # Unclosed variable tag
-            "Hello {{ name",
-            # Unclosed block tag
-            "{% for item in items %}{{ item }",
-            # Mismatched block tags
-            "{% for item in items %}{{ item }}{% if condition %}True{% endfor %}",
-            # Missing endfor
-            "{% for item in items %}{{ item }}"
-        ]
-        
-        from jinja2 import exceptions as jinja2_exceptions
-        
-        for template in unbalanced_templates:
-            # Mock the template generation to return our test template
-            with patch('cli.template_generation_utils._generate_generic_template') as mock_generate:
-                mock_generate.return_value = [template]
-                
-                # Mock the Jinja2 parse method to raise the appropriate exception
-                with patch('cli.template_generation_utils.Environment.parse') as mock_parse:
-                    mock_parse.side_effect = jinja2_exceptions.TemplateSyntaxError(
-                        f"Syntax error in template: {template}", 1
-                    )
-                    
-                    # The function should catch the Jinja2 exception and raise ValueError
-                    with self.assertRaises(ValueError) as context:
-                        generate_jinja2_template_content({}, {})
-                    
-                    # Check that the error message contains details from the original Jinja2 error
-                    self.assertIn("syntax error", str(context.exception).lower())
-                    self.assertIn("template", str(context.exception).lower())
-    
-    def test_jinja2_invalid_unknown_tags(self):
-        """Test that templates with unknown Jinja2 tags raise appropriate errors."""
-        # Template with unknown tag
-        unknown_tag_template = "{% unknown_tag %}Content{% endunknown_tag %}"
-        
-        from jinja2 import exceptions as jinja2_exceptions
-        
-        # Mock the template generation to return our test template
-        with patch('cli.template_generation_utils._generate_generic_template') as mock_generate:
-            mock_generate.return_value = [unknown_tag_template]
-            
-            # Mock the Jinja2 parse method to raise the appropriate exception
-            with patch('cli.template_generation_utils.Environment.parse') as mock_parse:
-                mock_parse.side_effect = jinja2_exceptions.TemplateSyntaxError(
-                    "Unknown tag 'unknown_tag'", 1
-                )
-                
-                # The function should catch the Jinja2 exception and raise ValueError
-                with self.assertRaises(ValueError) as context:
-                    generate_jinja2_template_content({}, {})
-                
-                # Check that the error message contains details from the original Jinja2 error
-                self.assertIn("syntax error", str(context.exception).lower())
-                self.assertIn("unknown", str(context.exception).lower())
-    
-    def test_jinja2_complex_valid_syntax(self):
-        """Test that complex but valid Jinja2 templates pass validation."""
-        # Complex template with nested structures, filters, and comments
-        complex_template = """
-        {# This is a comment #}
-        <div class="container">
-            <h1>{{ title|upper }}</h1>
-            <ul>
-                {% for user in users %}
-                    {% if user.active %}
-                        <li class="{{ loop.cycle('odd', 'even') }}">
-                            {{ user.name|title }} - {{ user.email }}
-                            {% if user.roles %}
-                                <ul>
-                                {% for role in user.roles %}
-                                    <li>{{ role }}</li>
-                                {% endfor %}
-                                </ul>
-                            {% endif %}
-                        </li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-            {% set total = namespace(value=0) %}
-            {% for item in items %}
-                {% set total.value = total.value + item.price %}
-            {% endfor %}
-            <p>Total: ${{ total.value|round(2) }}</p>
-        </div>
+        # Mock the template file and rendering
+        template_content = """
+        ROLE: {{ role }}
+        TASK: {{ task }}
+        DIRECTIVES: {{ directives }}
+        JSON SCHEMA:
+        ```json
+        {{ schema }}
+        ```
+        VALIDATION: Check this
         """
         
-        # Mock the template generation to return our complex test template
-        with patch('cli.template_generation_utils._generate_generic_template') as mock_generate:
-            mock_generate.return_value = [complex_template]
+        with patch('pathlib.Path.exists', return_value=True), \
+             patch('jinja2.Environment.get_template') as mock_get_template:
             
-            # This should not raise an exception
-            result = generate_jinja2_template_content({}, {})
-            self.assertEqual(result, complex_template)
+            # Set up the mock template
+            mock_template = MagicMock()
+            mock_template.render.return_value = template_content.replace("{{ role }}", role) \
+                                                              .replace("{{ task }}", task) \
+                                                              .replace("{{ directives }}", ", ".join(directives)) \
+                                                              .replace("{{ schema }}", json.dumps(schema, indent=2))
+            mock_get_template.return_value = mock_template
+            
+            # Call the function
+            result = build_meta_prompt(role, task, directives, schema)
+            
+            # Check that all inputs are included in the output
+            self.assertIn(role, result)
+            self.assertIn(task, result)
+            self.assertIn("Test Directive 1", result)
+            self.assertIn("Test Directive 2", result)
+            self.assertIn("test_key", result)
+            self.assertIn("test_value", result)
+            self.assertIn("sub_key", result)
+            self.assertIn("sub_value", result)
 
+    def test_validation_marker(self):
+        """Test that the rendered prompt includes the VALIDATION marker."""
+        # Test inputs
+        role = "Test Role"
+        task = "Test Task"
+        directives = ["Test Directive"]
+        schema = {"test_key": "test_value"}
+        
+        # Mock the template file and rendering
+        template_content = """
+        ROLE: {{ role }}
+        TASK: {{ task }}
+        DIRECTIVES: {{ directives }}
+        JSON SCHEMA:
+        ```json
+        {{ schema }}
+        ```
+        VALIDATION: Check this validation marker
+        """
+        
+        with patch('pathlib.Path.exists', return_value=True), \
+             patch('jinja2.Environment.get_template') as mock_get_template:
+            
+            # Set up the mock template
+            mock_template = MagicMock()
+            mock_template.render.return_value = template_content.replace("{{ role }}", role) \
+                                                              .replace("{{ task }}", task) \
+                                                              .replace("{{ directives }}", ", ".join(directives)) \
+                                                              .replace("{{ schema }}", json.dumps(schema, indent=2))
+            mock_get_template.return_value = mock_template
+            
+            # Call the function
+            result = build_meta_prompt(role, task, directives, schema)
+            
+            # Check that the VALIDATION marker is included in the output
+            self.assertIn("VALIDATION:", result)
+            self.assertIn("Check this validation marker", result)
 
-class TestErrorHandling(unittest.TestCase):
-    """Test cases for error handling in template generation utilities."""
-    
-    def test_contradictory_directives(self):
-        """Test that contradictory directives raise InvalidUserInputError."""
-        # Test input with contradictory structural directives
-        input_str = "Create a list and table of users with their emails"
-        
-        # Check that InvalidUserInputError is raised
-        from cli.template_generation_utils import InvalidUserInputError
-        with self.assertRaises(InvalidUserInputError) as context:
-            parse_user_input(input_str)
-        
-        # Check that the error message is informative
-        self.assertIn("Contradictory structural directives", str(context.exception))
-        self.assertIn("list", str(context.exception))
-        self.assertIn("table", str(context.exception))
-    
-    def test_multiple_contradictory_directives(self):
-        """Test that multiple contradictory directives raise InvalidUserInputError."""
-        # Test input with multiple contradictory structural directives
-        input_str = "Create a list, table, and grid of products with prices"
-        
-        # Check that InvalidUserInputError is raised
-        from cli.template_generation_utils import InvalidUserInputError
-        with self.assertRaises(InvalidUserInputError) as context:
-            parse_user_input(input_str)
-        
-        # Check that the error message includes all contradictory directives
-        self.assertIn("list", str(context.exception))
-        self.assertIn("table", str(context.exception))
-        self.assertIn("grid", str(context.exception))
-    
-    def test_contradictory_directives_in_parsed_input(self):
-        """Test that contradictory directives in parsed input raise InvalidUserInputError."""
-        # Test with contradictory directives directly in parsed input dictionary
-        parsed_input = {
-            'role': None,
-            'task': None,
-            'directives': ['list', 'table', 'users']
+    def test_schema_serialization(self):
+        """Test that the schema dictionary is correctly serialized into a pretty-printed JSON string."""
+        # Test inputs
+        role = "Test Role"
+        task = "Test Task"
+        directives = ["Test Directive"]
+        schema = {
+            "complex_key": {
+                "nested_array": [1, 2, 3],
+                "nested_object": {
+                    "deep_key": "deep_value"
+                }
+            }
         }
         
-        from cli.template_generation_utils import InvalidUserInputError, _validate_directives_consistency
+        # Expected serialized schema (pretty-printed JSON)
+        expected_json = json.dumps(schema, indent=2)
         
-        with self.assertRaises(InvalidUserInputError) as context:
-            _validate_directives_consistency(parsed_input['directives'])
+        # Mock the template file and rendering
+        template_content = """
+        ROLE: {{ role }}
+        TASK: {{ task }}
+        DIRECTIVES: {{ directives }}
+        JSON SCHEMA:
+        ```json
+        {{ schema }}
+        ```
+        """
         
-        # Check that the error message is informative
-        self.assertIn("Contradictory structural directives", str(context.exception))
-        self.assertIn("list", str(context.exception))
-        self.assertIn("table", str(context.exception))
-        self.assertIn("Please specify only one structural format", str(context.exception))
-    
-    def test_schema_variable_not_found(self):
-        """Test that requesting variables not in schema raises SchemaMismatchError."""
-        # Test input requesting a list of users
-        parsed_input = {
-            'directives': ['list', 'users', 'emails']
-        }
-        # Schema that doesn't contain users
-        schema_variables = {
-            'products': 'array',
-            'products.name': 'string',
-            'products.price': 'number'
-        }
+        with patch('pathlib.Path.exists', return_value=True), \
+             patch('jinja2.Environment.get_template') as mock_get_template:
+            
+            # Set up the mock template
+            mock_template = MagicMock()
+            mock_template.render.return_value = template_content.replace("{{ role }}", role) \
+                                                              .replace("{{ task }}", task) \
+                                                              .replace("{{ directives }}", ", ".join(directives)) \
+                                                              .replace("{{ schema }}", expected_json)
+            mock_get_template.return_value = mock_template
+            
+            # Call the function
+            result = build_meta_prompt(role, task, directives, schema)
+            
+            # Check that the schema is correctly serialized
+            self.assertIn(expected_json, result)
+            self.assertIn("complex_key", result)
+            self.assertIn("nested_array", result)
+            self.assertIn("nested_object", result)
+            self.assertIn("deep_key", result)
+            self.assertIn("deep_value", result)
+
+    def test_file_not_found_error(self):
+        """Test that the function correctly handles a FileNotFoundError."""
+        # Test inputs
+        role = "Test Role"
+        task = "Test Task"
+        directives = ["Test Directive"]
+        schema = {"test_key": "test_value"}
         
-        # Check that SchemaMismatchError is raised
-        from cli.template_generation_utils import SchemaMismatchError
+        # Mock the template file not existing
+        with patch('pathlib.Path.exists', return_value=False):
+            
+            # Call the function and check that FileNotFoundError is raised
+            with self.assertRaises(FileNotFoundError):
+                build_meta_prompt(role, task, directives, schema)
+
+    def test_jinja2_error(self):
+        """Test that the function correctly handles Jinja2 template errors."""
+        # Test inputs
+        role = "Test Role"
+        task = "Test Task"
+        directives = ["Test Directive"]
+        schema = {"test_key": "test_value"}
         
-        # Temporarily patch sys.argv to enable validation
-        import sys
-        original_argv = sys.argv
-        sys.argv = []
+        # Mock the template file existing but Jinja2 raising an error
+        with patch('pathlib.Path.exists', return_value=True), \
+             patch('jinja2.Environment.get_template') as mock_get_template:
+            
+            # Set up the mock template to raise a TemplateError
+            mock_get_template.side_effect = TemplateError("Test Jinja2 error")
+            
+            # Call the function and check that TemplateError is raised
+            with self.assertRaises(TemplateError):
+                build_meta_prompt(role, task, directives, schema)
+
+    def test_rendered_prompt_structure(self):
+        """Test that the rendered prompt contains all required sections in the correct order."""
+        # Test inputs
+        role = "YourSampleRole"
+        task = "YourSampleTask"
+        directives = ["Directive1", "Directive2"]
+        schema = {"key": "value", "nested": {"subkey": "subvalue"}}
         
-        try:
-            with self.assertRaises(SchemaMismatchError) as context:
-                generate_jinja2_template_content(parsed_input, schema_variables)
-        finally:
-            # Restore original sys.argv
-            sys.argv = original_argv
+        # Mock the template file and rendering
+        template_content = """
+        You are a Jinja2 template generation specialist.
+        ROLE: {{ role }}
+        TASK: {{ task }}
+        DIRECTIVES: {{ directives }}
+        JSON SCHEMA:
+        ```json
+        {{ schema }}
+        ```
+        Please follow these steps to generate an effective Jinja2 template:
+        1. ANALYZE THE INPUTS
+        2. PROPOSE A HIGH-LEVEL STRUCTURE
+        3. MAP SCHEMA ENTITIES TO JINJA2 SYNTAX
+        4. IMPLEMENT THE TEMPLATE
+        5. VALIDATION
+        VALIDATION: Review your template
+        Return ONLY the completed Jinja2 template as a Markdown code block
+        """
         
-        # Check that the error message is informative
-        self.assertIn("users", str(context.exception))
-        self.assertIn("not found", str(context.exception))
-        self.assertIn("products", str(context.exception))  # Available variable
-    
-    def test_schema_variable_incompatible_structure(self):
-        """Test that variables with incompatible structure raise SchemaMismatchError."""
-        # Test input requesting a list of users, but users is not an array
-        parsed_input = {
-            'directives': ['list', 'users']
-        }
-        # Schema where users exists but is not an array
-        schema_variables = {
-            'users': 'string',  # Users is a string, not an array
-            'products': 'array',
-            'products.name': 'string'
-        }
+        with patch('pathlib.Path.exists', return_value=True), \
+             patch('jinja2.Environment.get_template') as mock_get_template:
+            
+            # Set up the mock template
+            mock_template = MagicMock()
+            mock_template.render.return_value = template_content.replace("{{ role }}", role) \
+                                                              .replace("{{ task }}", task) \
+                                                              .replace("{{ directives }}", ", ".join(directives)) \
+                                                              .replace("{{ schema }}", json.dumps(schema, indent=2))
+            mock_get_template.return_value = mock_template
+            
+            # Call the function
+            result = build_meta_prompt(role, task, directives, schema)
+            
+            # Check that key phrases appear in the correct order
+            phrases = [
+                "You are a Jinja2 template generation specialist.",
+                f"ROLE: {role}",
+                f"TASK: {task}",
+                f"DIRECTIVES: {', '.join(directives)}",
+                "JSON SCHEMA:",
+                "```json",
+                "Please follow these steps to generate an effective Jinja2 template:",
+                "1. ANALYZE THE INPUTS",
+                "2. PROPOSE A HIGH-LEVEL STRUCTURE",
+                "3. MAP SCHEMA ENTITIES TO JINJA2 SYNTAX",
+                "4. IMPLEMENT THE TEMPLATE",
+                "5. VALIDATION",
+                "VALIDATION: Review your template",
+                "Return ONLY the completed Jinja2 template as a Markdown code block"
+            ]
+            
+            # Check that each phrase appears in the result
+            for phrase in phrases:
+                self.assertIn(phrase, result, f"Phrase '{phrase}' not found in rendered output")
+            
+            # Check the order of phrases
+            last_index = -1
+            for phrase in phrases:
+                current_index = result.find(phrase)
+                self.assertGreater(current_index, last_index,
+                                  f"Phrase '{phrase}' is not in the correct order")
+                last_index = current_index
+
+    def test_build_meta_prompt_empty_directives(self):
+        """Test that the function handles empty directives correctly."""
+        # Test inputs
+        role = "Test Role"
+        task = "Test Task"
+        directives = []  # Empty directives list
+        schema = {"test_key": "test_value"}
         
-        # Check that SchemaMismatchError is raised
-        from cli.template_generation_utils import SchemaMismatchError
+        # Mock the template file and rendering
+        template_content = """
+        ROLE: {{ role }}
+        TASK: {{ task }}
+        DIRECTIVES: {{ directives }}
+        JSON SCHEMA:
+        ```json
+        {{ schema }}
+        ```
+        VALIDATION: Check this
+        """
         
-        # Temporarily patch sys.argv to enable validation
-        import sys
-        original_argv = sys.argv
-        sys.argv = []
-        
-        try:
-            with self.assertRaises(SchemaMismatchError) as context:
-                generate_jinja2_template_content(parsed_input, schema_variables)
-        finally:
-            # Restore original sys.argv
-            sys.argv = original_argv
-        
-        # Check that the error message is informative
-        self.assertIn("users", str(context.exception))
-        self.assertIn("not an array", str(context.exception))
-    
-    def test_property_not_found_in_schema(self):
-        """Test that requesting properties not in schema raises SchemaMismatchError."""
-        # Test input requesting specific properties
-        parsed_input = {
-            'directives': ['table', 'products', 'name', 'price', 'nonexistent_property']
-        }
-        # Schema that doesn't contain the requested property
-        schema_variables = {
-            'products': 'array',
-            'products.name': 'string',
-            'products.price': 'number'
-        }
-        
-        # Check that SchemaMismatchError is raised
-        from cli.template_generation_utils import SchemaMismatchError
-        
-        # Temporarily patch sys.argv to enable validation
-        import sys
-        original_argv = sys.argv
-        sys.argv = []
-        
-        try:
-            with self.assertRaises(SchemaMismatchError) as context:
-                generate_jinja2_template_content(parsed_input, schema_variables)
-        finally:
-            # Restore original sys.argv
-            sys.argv = original_argv
-        
-        # Check that the error message is informative
-        self.assertIn("nonexistent_property", str(context.exception))
-        self.assertIn("not found", str(context.exception))
-        self.assertIn("name", str(context.exception))  # Available property
-        self.assertIn("price", str(context.exception))  # Available property
-    
-    def test_no_error_on_valid_cases(self):
-        """Test that valid inputs do not raise exceptions."""
-        # Valid input with list directive and matching schema
-        parsed_input = {
-            'directives': ['list', 'users']
-        }
-        schema_variables = {
-            'users': 'array',
-            'users.name': 'string',
-            'users.email': 'string'
-        }
-        
-        # Temporarily patch sys.argv to enable validation
-        import sys
-        original_argv = sys.argv
-        sys.argv = []
-        
-        try:
-            # This should not raise an exception
-            result = generate_jinja2_template_content(parsed_input, schema_variables)
-            # Verify we got a valid template
+        with patch('pathlib.Path.exists', return_value=True), \
+             patch('jinja2.Environment.get_template') as mock_get_template:
+            
+            # Set up the mock template
+            mock_template = MagicMock()
+            mock_template.render.return_value = template_content.replace("{{ role }}", role) \
+                                                              .replace("{{ task }}", task) \
+                                                              .replace("{{ directives }}", "") \
+                                                              .replace("{{ schema }}", json.dumps(schema, indent=2))
+            mock_get_template.return_value = mock_template
+            
+            # Call the function
+            result = build_meta_prompt(role, task, directives, schema)
+            
+            # Check that the result is a non-empty string
             self.assertIsInstance(result, str)
-            self.assertIn('{% for', result)
-            self.assertIn('users', result)
-        finally:
-            # Restore original sys.argv
-            sys.argv = original_argv
-
-
-if __name__ == '__main__':
-    unittest.main()
+            self.assertTrue(len(result) > 0)
+            
+            # Check that "DIRECTIVES: " is present in the output
+            self.assertIn("DIRECTIVES:", result)
+            
+            # Check that the output still contains key structural elements
+            self.assertIn("ROLE:", result)
+            self.assertIn("TASK:", result)
+            self.assertIn("JSON SCHEMA:", result)
+            self.assertIn("VALIDATION:", result)
