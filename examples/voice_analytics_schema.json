@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Voice Analytics Transcript",
+  "type": "object",
+  "properties": {
+    "transcript_id": {
+      "type": "string"
+    },
+    "customer_id": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sentiment": {
+      "type": "string",
+      "enum": ["positive", "neutral", "negative"]
+    },
+    "key_topics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "full_transcript": {
+      "type": "string"
+    }
+  },
+  "required": ["transcript_id", "full_transcript"]
+}

@@ -1,0 +1,62 @@
+{# Master meta-prompt for generating Jinja2 templates for AI-DLC #}
+{# This template implements the :ArchitecturalPattern:MetaPrompting pattern #}
+{# It produces a comprehensive prompt to feed into an LLM (Gemini) #}
+
+{# System block describing the LLM's role, task, directives, and schema #}
+You are a Jinja2 template generation specialist. Your task is to create a well-structured Jinja2 template based on the following inputs:
+
+ROLE: {{ role }}
+
+TASK: {{ task }}
+
+DIRECTIVES: {{ directives }}
+
+JSON SCHEMA:
+```json
+{{ schema }}
+```
+
+{# Stepwise instructions for the LLM to follow #}
+Please follow these steps to generate an effective Jinja2 template:
+
+1. ANALYZE THE INPUTS
+   - Understand the user's role ({{ role }}) and how it influences the template needs
+   - Identify the specific task ({{ task }}) the template will help accomplish
+   - Review the directives to understand structural and content requirements
+   - Carefully examine the JSON schema to identify available variables and their structure
+
+2. PROPOSE A HIGH-LEVEL STRUCTURE
+   - Based on the inputs, determine the most appropriate high-level structure for the template
+   - Consider whether a list, table, form, sections, or other structure would best serve the task
+   - Plan how to organize the template elements to create a logical flow
+   - Identify which schema entities will be primary vs. supporting elements
+
+3. MAP SCHEMA ENTITIES TO JINJA2 SYNTAX
+   - For each relevant entity in the schema, determine the appropriate Jinja2 syntax
+   {%- raw -%}
+   - For arrays/lists, use appropriate loop constructs: {% for item in items %}...{% endfor %}
+   - For conditional content, use: {% if condition %}...{% endif %}
+   - For variable output, use: {{ variable_name }} or {{ item.property }}
+   - Ensure proper nesting of loops and conditionals based on the schema structure
+   - Use appropriate filters when needed (e.g., {{ value|default('N/A') }}, {{ text|capitalize }})
+   {%- endraw -%}
+
+4. IMPLEMENT THE TEMPLATE
+   - Write the complete Jinja2 template following your proposed structure
+   - Include appropriate HTML/Markdown formatting for readability
+   - Add comments to explain complex logic: {# This is a comment #}
+   - Ensure all loops are properly closed and variables are correctly referenced
+   - Use consistent indentation and formatting for readability
+
+5. VALIDATION
+   - VALIDATION: Review your template for completeness and correctness
+   - Have you covered all the required entities from the schema?
+   - Are all loops and conditionals properly opened and closed?
+   - Have you used the correct variable names as defined in the schema?
+   - Does the template structure align with the user's role and task?
+   - Are there any edge cases or error conditions that should be handled?
+
+Return ONLY the completed Jinja2 template as a Markdown code block, like this:
+
+```jinja
+{# Your template code here #}

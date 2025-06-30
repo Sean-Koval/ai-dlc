@@ -20,11 +20,15 @@ from cli.schema_utils import load_and_validate_schema, InvalidSchemaError
 from cli.check_utils import load_check_rules, InvalidCheckRuleError, CustomCheckRule
 from cli.redact_utils import redact_sensitive_data
 from cli.template_generation_utils import (
-    parse_user_input,
-    identify_schema_variables,
-    generate_jinja2_template_content,
+    build_meta_prompt,
     InvalidUserInputError,
     SchemaMismatchError
+)
+from cli.llm_client import (
+    GeminiClient,
+    render_template_via_llm,
+    ValidationMarkerMissingError,
+    ensure_validation_section
 )
 
 # Create a Typer application instance
@@ -462,106 +466,90 @@ def redact(
     
 @app.command()
 def generate_template(
-    input_description: Optional[str] = typer.Option(
-        None,
-        "--input-description",
-        help="High-level user description for template generation.",
-        #callback=mutually_exclusive_callback,
+    role: str = typer.Option(
+        ...,
+        help="The role of the user for whom the template is being generated."
     ),
-    input_yaml: Optional[Path] = typer.Option(
-        None,
-        "--input-yaml",
-        help="Path to a YAML file containing structured input.",
-        #callback=mutually_exclusive_callback,
+    task: str = typer.Option(
+        ...,
+        help="The specific task the template should facilitate."
     ),
-    schema: Path = typer.Option(
+    directives: List[str] = typer.Option(
+        None,
+        help="Keywords or structured information for template structure/content. Can be provided multiple times.",
+        show_default=False
+    ),
+    schema_path: Path = typer.Option(
         ...,
         "--schema",
-        help="Path to the JSON schema file (e.g., schemas/example_schema.json).",
+        help="Path to the JSON schema file (e.g., schemas/example_schema.json)."
     ),
     output_file: Optional[Path] = typer.Option(
         None,
-        "--output-file",
-        help="Path to where the generated Jinja2 template should be saved. If not provided, print to standard output.",
+        help="Path to save the generated Jinja2 template. Prints to stdout if not provided."
     ),
 ) -> None:
     """
-    Generate a Jinja2 template based on user input and a JSON schema.
+    Generate a Jinja2 template using LLM-driven template generation.
     
-    This command takes either a high-level user description or a YAML file with structured input,
-    along with a JSON schema, and generates a Jinja2 template. The template can be saved to a file
+    This command takes the user's role, task description, optional directives, and a JSON schema,
+    then uses an LLM to generate a Jinja2 template. The template can be saved to a file
     or printed to standard output.
     
-    This implements the :ArchitecturalPattern:GeneratorPattern to transform high-level
+    This implements the :ArchitecturalPattern:LLMCentricDesign to transform high-level
     user descriptions into structured Jinja2 templates, addressing :Problem:Usability
     by providing a user-facing command for template generation.
     """
-    # Validate that at least one input option is provided
-    if input_description is None and input_yaml is None:
-        typer.echo("Error: You must provide either --input-description or --input-yaml.", err=True)
-        raise typer.Exit(code=1)
-    
-    # Determine the input data based on provided options
-    input_data = None
     try:
-        if input_description is not None:
-            input_data = input_description
-        elif input_yaml is not None:
-            # Check if the input YAML file exists
-            if not input_yaml.exists():
-                typer.echo(f"Error: Input YAML file '{input_yaml}' does not exist.", err=True)
-                raise typer.Exit(code=1)
-            
-            # Read and parse the YAML file
-            yaml_content = input_yaml.read_text()
-            input_data = yaml.safe_load(yaml_content)
-    except FileNotFoundError:
-        typer.echo(f"Error: Input YAML file '{input_yaml}' not found.", err=True)
-        raise typer.Exit(code=1)
-    except yaml.YAMLError as e:
-        typer.echo(f"Error: Invalid YAML in input file '{input_yaml}': {e}", err=True)
-        raise typer.Exit(code=1)
-    except Exception as e:
-        typer.echo(f"Error: Failed to read input file '{input_yaml}': {e}", err=True)
-        raise typer.Exit(code=1)
-    
-    # Process the input data and generate the template
-    try:
-        # Parse the user input
-        parsed_input = parse_user_input(input_data)
+        # Load and validate the schema
+        try:
+            schema_dict = load_and_validate_schema(schema_path)
+        except InvalidSchemaError as e:
+            typer.echo(f"Error: Invalid schema: {e}", err=True)
+            raise typer.Exit(code=1)
+        except FileNotFoundError:
+            typer.echo(f"Error: Schema file not found: {schema_path}", err=True)
+            raise typer.Exit(code=1)
         
-        # Identify schema variables
-        schema_variables = identify_schema_variables(schema)
+        # Build the meta-prompt
+        try:
+            meta_prompt_text = build_meta_prompt(role, task, directives, schema_dict)
+        except FileNotFoundError as e:
+            typer.echo(f"Error: {e}", err=True)
+            raise typer.Exit(code=1)
+        except Exception as e:
+            typer.echo(f"Error: Failed to build meta-prompt: {e}", err=True)
+            raise typer.Exit(code=1)
         
-        # Generate the Jinja2 template content
-        template_content = generate_jinja2_template_content(parsed_input, schema_variables)
+        # Initialize the LLM client
+        client = GeminiClient()
+
+        # Generate the template using the LLM
+        llm_response = client.generate(prompt=meta_prompt_text)
+
+        # Ensure the response has the validation section
+        validated_response = ensure_validation_section(
+            response_text=llm_response,
+            client=client,
+            original_prompt_text=meta_prompt_text
+        )
+
+        # The final text is the full, validated response from the LLM, including the validation section.
+        final_template_text = validated_response
         
         # Output the generated template
         if output_file:
             # Create parent directories if they don't exist
-            output_file.parent.mkdir(parents=True, exist_ok=True)
+            parent_dir = output_file.parent
+            parent_dir.mkdir(parents=True, exist_ok=True)
             
             # Write the template to the output file
-            output_file.write_text(template_content)
+            output_file.write_text(final_template_text)
             typer.echo(f"Template successfully generated and saved to '{output_file}'.")
         else:
             # Print the template to standard output
-            typer.echo(template_content)
-    except InvalidUserInputError as e:
-        typer.echo(f"Error: Invalid user input: {e}", err=True)
-        raise typer.Exit(code=1)
-    except SchemaMismatchError as e:
-        typer.echo(f"Error: Schema mismatch: {e}", err=True)
-        raise typer.Exit(code=1)
-    except ValueError as e:
-        typer.echo(f"Error: Template syntax error: {e}", err=True)
-        raise typer.Exit(code=1)
-    except FileNotFoundError as e:
-        typer.echo(f"Error: {e}", err=True)
-        raise typer.Exit(code=1)
-    except json.JSONDecodeError as e:
-        typer.echo(f"Error: Invalid JSON in schema file: {e}", err=True)
-        raise typer.Exit(code=1)
+            typer.echo(final_template_text)
+            
     except Exception as e:
         typer.echo(f"Error: An unexpected error occurred: {e}", err=True)
         raise typer.Exit(code=1)

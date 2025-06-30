@@ -199,6 +199,7 @@ def parse_user_input(input_data: Union[str, Dict[str, Any]]) -> Dict[str, Any]:
     return result
 
 
+
 def _validate_directives_consistency(directives: List[str]) -> None:
     """
     Validate that directives don't contain contradictory structural instructions.
@@ -1029,3 +1030,72 @@ def _generate_generic_template(directives: List[str], variable_groups: Dict[str,
         ])
     
     return template_parts
+
+
+def build_meta_prompt(role: str, task: str, directives: list, schema: dict) -> str:
+    """
+    Assemble a meta-prompt string to be sent to an LLM using the skeleton.j2 template.
+    
+    This function implements the :ArchitecturalPattern:MetaPrompting pattern by loading
+    the skeleton.j2 template, rendering it with the provided context variables, and
+    returning the fully assembled prompt string. It is a core part of the :LLMCentricDesign
+    that facilitates the generation of Jinja2 templates.
+    
+    Args:
+        role (str): The role of the LLM (e.g., "Data Analyst")
+        task (str): The specific task the template should facilitate (e.g., "Generate a monthly sales report")
+        directives (list): List of directives or keywords guiding template generation
+        schema (dict): Dictionary containing the JSON schema for available data
+        
+    Returns:
+        str: The fully rendered meta-prompt string
+        
+    Raises:
+        FileNotFoundError: If the skeleton.j2 template file is not found
+        jinja2.TemplateError: If there's an error during template rendering
+        
+    Example:
+        >>> role = "Data Analyst"
+        >>> task = "Generate a monthly sales report"
+        >>> directives = ["list items", "include totals"]
+        >>> schema = {"sales_data": {"type": "array", "items": {"type": "object"}}}
+        >>> prompt = build_meta_prompt(role, task, directives, schema)
+    """
+    from pathlib import Path
+    import json
+    from jinja2 import Environment, FileSystemLoader, TemplateError
+    
+    # Define the path to the skeleton.j2 template
+    template_dir = Path(__file__).parent / "prompt_skeletons"
+    template_path = template_dir / "skeleton.j2"
+    
+    # Check if the template file exists
+    if not template_path.exists():
+        raise FileNotFoundError(f"Template file not found: {template_path}")
+    
+    try:
+        # Set up the Jinja2 environment to load templates from the template directory
+        env = Environment(loader=FileSystemLoader(template_dir))
+        
+        # Load the template
+        template = env.get_template("skeleton.j2")
+        
+        # Convert directives list to a string if necessary
+        directives_str = ", ".join(directives) if isinstance(directives, list) else directives
+        
+        # Serialize the schema to a pretty-printed JSON string
+        schema_json = json.dumps(schema, indent=2)
+        
+        # Render the template with the provided context variables
+        rendered_prompt = template.render(
+            role=role,
+            task=task,
+            directives=directives_str,
+            schema=schema_json
+        )
+        
+        return rendered_prompt
+        
+    except TemplateError as e:
+        # Re-raise Jinja2 template errors with a more descriptive message
+        raise TemplateError(f"Error rendering skeleton.j2 template: {e}")
