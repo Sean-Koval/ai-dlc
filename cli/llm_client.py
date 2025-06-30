@@ -45,7 +45,7 @@ class GeminiClient:
         # No arguments needed if ADC is set up correctly
         generativeai.configure()
     
-    def generate(self, prompt: str, temperature: float = 0.2, max_tokens: int = 1024) -> str:
+    def generate(self, prompt: str, temperature: float = 0.2, max_tokens: int = 1024, timeout: float = 30.0) -> str:
         """
         Generate text using the Gemini API.
         
@@ -54,27 +54,44 @@ class GeminiClient:
             temperature: Controls randomness in generation. Lower values make output
                          more deterministic. Defaults to 0.2.
             max_tokens: Maximum number of tokens to generate. Defaults to 1024.
+            timeout: Timeout in seconds for the API call. Defaults to 30 seconds.
         
         Returns:
             The generated text as a string.
             
         Raises:
             Various exceptions from the generativeai SDK if API errors occur.
+            TimeoutError: If the API call exceeds the timeout period.
         """
-        # Initialize the model
-        model = generativeai.GenerativeModel(self.model_name)
+        import time
+        import threading
+        from concurrent.futures import ThreadPoolExecutor, TimeoutError
         
-        # Generate content with the specified parameters
-        response = model.generate_content(
-            prompt,
-            generation_config={
-                "temperature": temperature,
-                "max_output_tokens": max_tokens
-            }
-        )
+        # Function to call the API in a separate thread
+        def call_api():
+            # Initialize the model
+            model = generativeai.GenerativeModel(self.model_name)
+            
+            # Generate content with the specified parameters
+            response = model.generate_content(
+                prompt,
+                generation_config={
+                    "temperature": temperature,
+                    "max_output_tokens": max_tokens
+                }
+            )
+            
+            return response.text
         
-        # Return the generated text
-        return response.text
+        # Use ThreadPoolExecutor to run the API call with a timeout
+        with ThreadPoolExecutor(max_workers=1) as executor:
+            future = executor.submit(call_api)
+            try:
+                # Wait for result with timeout
+                result = future.result(timeout=timeout)
+                return result
+            except TimeoutError:
+                raise TimeoutError(f"API call timed out after {timeout} seconds")
 
 
 def render_template_via_llm(prompt_text: str) -> str:
@@ -149,8 +166,12 @@ def ensure_validation_section(response_text: str, client: GeminiClient, original
     # Combine the original prompt with the follow-up instructions to provide context
     new_prompt = original_prompt_text + follow_up_prompt
     
-    # Re-ask using the client
-    new_response = client.generate(new_prompt)
+    # Re-ask using the client with timeout
+    try:
+        new_response = client.generate(new_prompt, timeout=30.0)
+    except TimeoutError:
+        # If the retry times out, return the original response rather than failing completely
+        return response_text
     
     # Decrement max_retries and recursively call this function with the new response
     return ensure_validation_section(

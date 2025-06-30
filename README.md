@@ -211,3 +211,10 @@ During the development of the AI-DLC Prompt Template Tool, a **Targeted Testing 
 2.  **CONTEXTUAL INTEGRATION TESTING:** Tests were designed to verify the key interactions between different components of the tool and their expected behavior within the `:ProjectContext`. For example, tests confirmed that the `generate` command correctly integrated schema validation with template rendering, and that the `validate` command correctly applied the rules defined in a `.CHECKS.yaml` file to a generated prompt. This approach provided early feedback on critical integration points without requiring exhaustive end-to-end tests for every possible scenario.
 
 This targeted approach allowed for efficient testing and rapid iteration during development, ensuring a stable foundation for the tool.
+
+## EXAMPLE COMMAND:
+
+```bash
+uv run ai-dlc generate-template --role "As a Product Manager" --task "I need to convert product requirements into well-structured user stories and a simple PRD" --directives "Create a prompt template that helps combine multiple requirement statements, organize them into user stories with acceptance criteria, and structure a simple PRD with sections for overview, user stories, technical requirements, and success metrics" --schema examples/requirements_to_prd_schema.json --output-file examples/improved_requirements_to_prd_template.md
+
+Template successfully generated and saved to 'examples/improved_requirements_to_prd_template.md'.

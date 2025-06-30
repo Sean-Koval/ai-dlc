@@ -1,9 +1,9 @@
-{# Master meta-prompt for generating Jinja2 templates for AI-DLC #}
-{# This template implements the :ArchitecturalPattern:MetaPrompting pattern #}
-{# It produces a comprehensive prompt to feed into an LLM (Gemini) #}
+{# Enhanced Master meta-prompt for generating sophisticated Jinja2 templates for AI-DLC #}
+{# This template implements the :ArchitecturalPattern:MetaPrompting pattern with advanced prompt engineering #}
+{# It produces a comprehensive prompt to feed into an LLM (Gemini) to generate highly effective templates #}
 
-{# System block describing the LLM's role, task, directives, and schema #}
-You are a Jinja2 template generation specialist. Your task is to create a well-structured Jinja2 template based on the following inputs:
+{# Initial context and role assignment #}
+You are an expert Jinja2 template engineer specializing in creating prompts that effectively guide large language models. Your task is to create a sophisticated, prompt-engineered Jinja2 template based on the following inputs:
 
 ROLE: {{ role }}
 
@@ -16,47 +16,57 @@ JSON SCHEMA:
 {{ schema }}
 ```
 
-{# Stepwise instructions for the LLM to follow #}
-Please follow these steps to generate an effective Jinja2 template:
+{# Enhanced stepwise instructions with prompt engineering principles #}
+Please follow these enhanced steps to generate a prompt-engineered Jinja2 template:
 
-1. ANALYZE THE INPUTS
-   - Understand the user's role ({{ role }}) and how it influences the template needs
-   - Identify the specific task ({{ task }}) the template will help accomplish
-   - Review the directives to understand structural and content requirements
-   - Carefully examine the JSON schema to identify available variables and their structure
+1. ANALYZE THE PROBLEM SPACE
+   - Understand the user's role ({{ role }}) and the specific expertise/perspective it requires
+   - Break down the task ({{ task }}) into its core components and objectives
+   - Identify which prompt engineering techniques will be most effective (system context, chain-of-thought, examples, etc.)
+   - Map the JSON schema to potential prompt sections and determine critical variables
 
-2. PROPOSE A HIGH-LEVEL STRUCTURE
-   - Based on the inputs, determine the most appropriate high-level structure for the template
-   - Consider whether a list, table, form, sections, or other structure would best serve the task
-   - Plan how to organize the template elements to create a logical flow
-   - Identify which schema entities will be primary vs. supporting elements
+2. DESIGN A MULTI-PART TEMPLATE STRUCTURE
+   - Begin with a clear SYSTEM CONTEXT section that establishes the LLM's role and expertise
+   - Include an INPUT ANALYSIS section that examines the provided variables
+   - Create a STEP-BY-STEP ANALYSIS PROCESS that guides methodical thinking
+   - Develop main content sections that use the schema variables effectively
+   - End with VALIDATION CRITERIA for self-assessment
+   - Consider including EXAMPLES where appropriate
 
-3. MAP SCHEMA ENTITIES TO JINJA2 SYNTAX
-   - For each relevant entity in the schema, determine the appropriate Jinja2 syntax
+3. IMPLEMENT ADVANCED PROMPT ENGINEERING TECHNIQUES
+   - Chain-of-Thought: Break complex reasoning into explicit steps
+   - Few-Shot Learning: Include examples where helpful
+   - Structured Formatting: Use clear headers, lists, and formatting for readability
+   - Explicit Instructions: Be specific about exactly what's needed in each section
+   - User-Centric Language: Adapt language to the user's role and domain
+
+4. BUILD SCHEMA-AWARE TEMPLATE COMPONENTS
    {%- raw -%}
-   - For arrays/lists, use appropriate loop constructs: {% for item in items %}...{% endfor %}
-   - For conditional content, use: {% if condition %}...{% endif %}
-   - For variable output, use: {{ variable_name }} or {{ item.property }}
-   - Ensure proper nesting of loops and conditionals based on the schema structure
-   - Use appropriate filters when needed (e.g., {{ value|default('N/A') }}, {{ text|capitalize }})
+   - For collections, use structured loops: {% for item in items %} with nested analysis
+   - For conditional elements: {% if condition %} with explicit alternatives {% else %} {% endif %}
+   - For variable output with fallbacks: {{ variable|default('Alternative text') }}
+   - For complex transformations: {{ variable|filter1|filter2 }}
+   - For calculations and logic: {% set derived_variable = calculation_from_inputs %}
    {%- endraw -%}
 
-4. IMPLEMENT THE TEMPLATE
-   - Write the complete Jinja2 template following your proposed structure
-   - Include appropriate HTML/Markdown formatting for readability
-   - Add comments to explain complex logic: {# This is a comment #}
-   - Ensure all loops are properly closed and variables are correctly referenced
-   - Use consistent indentation and formatting for readability
+5. CREATE A COMPREHENSIVE VALIDATION SECTION
+   - VALIDATION: Include an explicit validation section marked with "VALIDATION:"
+   - Include checks for all schema elements and their appropriate usage
+   - Verify structural integrity (loops, conditionals, variable references)
+   - Ensure alignment with the user's role and task needs
+   - Address edge cases and error conditions
+   - Validate that prompt engineering best practices are followed
 
-5. VALIDATION
-   - VALIDATION: Review your template for completeness and correctness
-   - Have you covered all the required entities from the schema?
-   - Are all loops and conditionals properly opened and closed?
-   - Have you used the correct variable names as defined in the schema?
-   - Does the template structure align with the user's role and task?
-   - Are there any edge cases or error conditions that should be handled?
+Your template should generally include these key sections in this order:
+1. System Context (role assignment for the LLM)
+2. Input Analysis (examination of provided variables)
+3. Step-by-Step Methodology (explicit thinking process)
+4. Main Content Sections (task-specific content utilizing schema variables)
+5. Examples (when helpful for clarity)
+6. Validation Criteria (comprehensive quality checks)
 
-Return ONLY the completed Jinja2 template as a Markdown code block, like this:
+Return your completed template as a Markdown code block starting with ```jinja and ending with ```. 
+Immediately after, include a VALIDATION: section with bullet points covering all quality criteria.
 
 ```jinja
 {# Your template code here #}

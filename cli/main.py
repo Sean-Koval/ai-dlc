@@ -525,7 +525,11 @@ def generate_template(
         client = GeminiClient()
 
         # Generate the template using the LLM
-        llm_response = client.generate(prompt=meta_prompt_text)
+        try:
+            llm_response = client.generate(prompt=meta_prompt_text, timeout=30.0)
+        except TimeoutError:
+            typer.echo("Error: The LLM API call timed out. Please try again later.", err=True)
+            raise typer.Exit(code=1)
 
         # Ensure the response has the validation section
         validated_response = ensure_validation_section(
