@@ -1,0 +1,174 @@
+{
+  "model": "claude-3-5-sonnet-20241022",
+  "maxTokens": 4096,
+  "temperature": 0.1,
+  "timeout": 60000,
+
+  "hooks": {
+    "preToolUse": ["quality-gate.sh", "security-check.sh"],
+    "postToolUse": ["format-code.sh", "update-docs.sh", "notify.sh"]
+  },
+
+  "agents": {
+    "autoLoad": true,
+    "defaultModel": "sonnet",
+    "proactiveMode": true,
+    "maxConcurrent": 3,
+    "activationPatterns": {
+      "rust-architect": [
+        "*.rs",
+        "Cargo.toml",
+        "performance",
+        "memory"
+      ],
+      "cli-expert": [
+        "main.rs",
+        "cli.rs",
+        "commands/",
+        "argument",
+        "help"
+      ],
+      "quality-engineer": [
+        "test",
+        "coverage",
+        "lint",
+        "quality"
+      ],
+      "memory-sync": [
+        "*.md",
+        "docs/",
+        "README",
+        "documentation"
+      ]
+    }
+  },
+
+  "commands": {
+    "prefix": "/dlc:",
+    "autoCompletion": true,
+    "contextAware": true,
+    "parallelExecution": true,
+    "defaultFlags": {
+      "scaffold": ["--validate"],
+      "test": ["--coverage", "80%"],
+      "validate": ["--mode", "comprehensive"]
+    }
+  },
+
+  "workflow": {
+    "tddMode": true,
+    "securityChecks": true,
+    "performanceMonitoring": true,
+    "documentationSync": true,
+    "qualityGates": {
+      "preCommit": true,
+      "preMerge": true,
+      "preRelease": true
+    }
+  },
+
+  "qualityStandards": {
+    "coverage": {
+      "minimum": 80,
+      "target": 90,
+      "critical_paths": 95
+    },
+    "complexity": {
+      "max_cyclomatic": 10,
+      "max_cognitive": 15,
+      "max_function_length": 50
+    },
+    "security": {
+      "block_high_vulnerabilities": true,
+      "block_exposed_secrets": true,
+      "require_security_review": true
+    },
+    "performance": {
+      "max_build_time": "60s",
+      "max_test_time": "5m",
+      "track_regressions": true
+    }
+  },
+
+  "permissions": {
+    "allowedTools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash",
+      "Grep",
+      "Glob",
+      "TodoWrite"
+    ],
+    "restrictedPaths": [
+      ".env*",
+      "*.key",
+      "*.pem",
+      "secrets/",
+      "credentials/",
+      "node_modules/",
+      ".git/objects/",
+      "target/debug/",
+      "target/release/"
+    ],
+    "allowedCommands": [
+      "cargo",
+      "git",
+      "npm",
+      "yarn",
+      "docker",
+      "make"
+    ]
+  },
+
+  "environment": {
+    "RUST_LOG": "debug",
+    "RUST_BACKTRACE": "1",
+    "CARGO_TERM_COLOR": "always"
+  },
+
+  "notifications": {
+    "desktop": true,
+    "slack": {
+      "enabled": false,
+      "webhook_url": "",
+      "channels": {
+        "deployments": "#deployments",
+        "quality": "#code-quality",
+        "security": "#security-alerts"
+      }
+    },
+    "email": {
+      "enabled": false,
+      "recipients": []
+    }
+  },
+
+  "templates": {
+    "default_provider": "claude",
+    "validation": {
+      "enabled": true,
+      "strict_mode": true
+    },
+    "customization": {
+      "allow_overrides": true,
+      "preserve_local_changes": true
+    }
+  },
+
+  "logging": {
+    "level": "info",
+    "format": "structured",
+    "retention": "30d",
+    "include_context": true
+  },
+
+  "performance": {
+    "cache_enabled": true,
+    "parallel_operations": true,
+    "resource_limits": {
+      "max_memory": "1GB",
+      "max_cpu_percent": 80
+    }
+  }
+}

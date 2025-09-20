@@ -1,0 +1,86 @@
+{
+  "_comment": "Local settings override (not committed to version control)",
+  "_comment2": "Copy this to settings.local.json and customize for your environment",
+
+  "personalSettings": {
+    "notificationEnabled": true,
+    "preferredEditor": "vscode",
+    "debugMode": true,
+    "verboseLogging": false
+  },
+
+  "localPaths": {
+    "tempDir": "/tmp/claude-workspace",
+    "logDir": "./logs",
+    "cacheDir": "~/.cache/ai-dlc"
+  },
+
+  "developer": {
+    "name": "Your Name",
+    "email": "your.email@company.com",
+    "timezone": "UTC",
+    "workingHours": {
+      "start": "09:00",
+      "end": "17:00"
+    }
+  },
+
+  "customization": {
+    "hooks": {
+      "preToolUse": ["custom-check.sh"],
+      "postToolUse": ["custom-notify.sh"]
+    },
+    "agents": {
+      "additionalAgents": [
+        "company-specific-agent"
+      ],
+      "disabledAgents": []
+    },
+    "commands": {
+      "aliases": {
+        "/s": "/dlc:scaffold",
+        "/t": "/dlc:test",
+        "/v": "/dlc:validate"
+      }
+    }
+  },
+
+  "integrations": {
+    "slack": {
+      "enabled": true,
+      "webhook_url": "https://hooks.slack.com/services/YOUR/WEBHOOK/URL",
+      "default_channel": "#your-team"
+    },
+    "jira": {
+      "enabled": false,
+      "url": "https://your-company.atlassian.net",
+      "project_key": "PROJ"
+    },
+    "github": {
+      "enabled": true,
+      "org": "your-org",
+      "default_reviewers": ["teammate1", "teammate2"]
+    }
+  },
+
+  "overrides": {
+    "qualityStandards": {
+      "coverage": {
+        "minimum": 85
+      }
+    },
+    "workflow": {
+      "autoFormat": true,
+      "autoCommit": false
+    }
+  },
+
+  "experimental": {
+    "enabledFeatures": [
+      "ai-code-generation",
+      "smart-refactoring",
+      "performance-optimization"
+    ],
+    "betaAgents": false
+  }
+}
