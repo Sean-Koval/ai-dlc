@@ -1,0 +1,2 @@
+cargo:warning=Attempting to locate templates directory at: "/home/sean/repos/ai-dlc/crates/ai-dlc-cli/../../templates"
+cargo:rustc-env=TEMPLATES_DIR_PATH=/home/sean/repos/ai-dlc/crates/ai-dlc-cli/../../templates

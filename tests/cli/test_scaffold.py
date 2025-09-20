@@ -10,7 +10,7 @@ import os
 import shutil
 import pytest
 from typer.testing import CliRunner
-from cli.main import app
+from ai_dlc.cli.main import app
 
 
 def test_scaffold_command_success():

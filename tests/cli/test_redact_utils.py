@@ -6,7 +6,7 @@ redacts sensitive information from text content.
 """
 
 import unittest
-from cli.redact_utils import redact_sensitive_data
+from ai_dlc.cli.redact_utils import redact_sensitive_data
 
 
 class TestRedactSensitiveData(unittest.TestCase):

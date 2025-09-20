@@ -1,213 +1,72 @@
-# AI-DLC Prompt Template Tool
+# AI-DLC (AI Development Lifecycle) Toolkit
 
-This document provides an overview and guide for the AI-DLC Prompt Template Tool, a command-line interface (`ai-dlc`) designed to standardize and accelerate `:PromptTemplate` creation within the `:AIDevelopmentLifecycle`.
+This repository contains the source code for the `ai-dlc` toolkit, a command-line application designed to manage and streamline the lifecycle of AI-driven development. It provides a curated collection of templates, agent definitions, and a companion CLI to orchestrate agentic workflows.
 
-## Overview
+This project is currently under active development and is being built using the **Rust** programming language for performance, reliability, and security.
 
-The AI-DLC Prompt Template Tool addresses the `:Problem` of managing and standardizing prompt creation for AI development. It provides a structured `:Solution` by enabling teams to define input data schemas, author Jinja2 templates, generate prompts, validate them against custom rules, and redact sensitive information. This approach promotes consistency, reusability, and maintainability of prompts across different AI projects and teams.
+## Current Status: Phase 1 - Standalone Scaffolding CLI
 
-The tool is implemented as a CLI application, making it easy to integrate into development workflows and CI/CD pipelines.
+The current development focus is on **Phase 1**, which delivers a self-contained `ai-dlc` command-line tool. The primary feature of this phase is the `scaffold` command.
 
-## Features
+This command generates best-practice directory structures and template files for various AI providers (e.g., Claude, Gemini, Roo), allowing developers to quickly start new projects without needing to create boilerplate from scratch.
 
-The AI-DLC Prompt Template Tool offers the following key features:
+## Project Structure
 
-*   **Scaffolding New Prompt Libraries:** Quickly set up a standardized directory structure for a new team's prompt library.
-    *   Command: `ai-dlc scaffold <team_name>`
-*   **Generating Prompts:** Generate final prompts by rendering Jinja2 templates with input data validated against a JSON schema.
-    *   Command: `ai-dlc generate --template <path> --input <path> --schema <path>`
-*   **Validating Input Data:** Ensure input YAML data conforms to a specified JSON schema before generation.
-*   **Validating Generated Prompts:** Validate the content of generated prompts against custom rules defined in a `.CHECKS.yaml` file.
-    *   Command: `ai-dlc validate --prompt <path> --checks <path>`
-*   **Redacting Sensitive Data:** Automatically identify and redact sensitive information (like PII) from generated prompts.
-    *   Command: `ai-dlc redact <path> [--output-dir <path>] [--dry-run]`
+*   `docs/`: Contains project planning and engineering documentation, such as the `phase_1_rust.md` implementation plan.
+*   `templates/`: The source-of-truth for the standard templates that are bundled into the `ai-dlc` binary.
+*   `crates/ai-dlc-cli/`: The source code for the main Rust CLI application.
 
-## Installation/Setup
+## Getting Started
 
-The tool requires `:Technology:Python 3.12` and `:Technology:uv` for dependency management and environment setup.
+### Build
 
-1.  **Clone the repository:**
+To build the `ai-dlc` CLI from source, ensure you have the Rust toolchain installed and run:
+
+```bash
+# This will build the binary at ./target/debug/ai-dlc-cli
+cargo build
+```
+
+### Usage
+
+Once built, you can use the `scaffold` command to generate template structures in your current directory.
+
+```bash
+# Scaffold templates for a specific provider
+./target/debug/ai-dlc-cli scaffold --provider gemini
+
+# Scaffold templates for all supported providers
+./target/debug/ai-dlc-cli scaffold --all
+```
+
+## Development & Testing
+
+The `ai-dlc` tool embeds the standard templates directly into the final binary to make it self-contained. This requires a specific workflow to test the scaffolding functionality correctly.
+
+To test that the binary can recreate the templates from its embedded assets, follow these steps:
+
+1.  **Ensure Source Templates Exist:** Make sure the `templates/` directory at the root of this repository is populated with the desired file structure.
+
+2.  **Build the Application:** Run `cargo build`. This process reads the `templates/` directory and embeds its contents into the `ai-dlc-cli` binary.
+
+3.  **Delete the Source Directory:** Before testing, you must delete the source `templates/` directory. This ensures your test is running against the embedded assets, not the local files.
     ```bash
-    git clone https://github.com/your-org/ai-dlc-prompts-stage0.git
-    cd ai-dlc-prompts-stage0
+    rm -rf templates
     ```
-2.  **Set up a virtual environment and install dependencies:**
-    Using `uv`:
+
+4.  **Run the Executable:** Execute the compiled binary to run the scaffold command.
     ```bash
-    uv venv
-    source .venv/bin/activate # or use uv pip run ... without activation
-    uv sync --all-extras
+    ./target/debug/ai-dlc-cli scaffold --all
     ```
-    Alternatively, using standard `venv` and `pip`:
+
+5.  **Verify the Output:** Check that the `templates/` directory has been successfully recreated with the correct structure and content.
     ```bash
-    python -m venv .venv
-    source .venv/bin/activate
-    pip install -e .[dev]
+    ls -R templates
     ```
 
-## Basic Workflow / Getting Started
+## Future Phases
 
-This section walks through a typical workflow for creating and managing prompts using the AI-DLC Prompt Template Tool.
+This project is planned to evolve beyond the standalone CLI:
 
-### Step 1: Scaffold a New Team Library
-
-Start by scaffolding a new directory structure for your team's prompt library. Replace `professional_services` with your team's name.
-
-```bash
-ai-dlc scaffold professional_services
-```
-
-This command creates the following directory structure:
-
-```
-professional_services/
-├── templates/  # Jinja2 templates (.md.j2)
-├── schemas/    # JSON schemas for input data (.schema.json)
-├── examples/   # Example input data (.yaml)
-└── checks/     # Custom validation checks (.CHECKS.yaml)
-```
-
-### Step 2: Define Input Data Schema
-
-Inside your team's `schemas/` directory, create a JSON schema file (e.g., `professional_services/schemas/team_input.schema.json`) to define the expected structure and types of your input data. This schema is used to validate your YAML input files.
-
-Example `professional_services/schemas/team_input.schema.json`:
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "project_name": {
-      "type": "string",
-      "description": "The name of the project."
-    },
-    "client_name": {
-      "type": "string",
-      "description": "The name of the client."
-    }
-  },
-  "required": ["project_name", "client_name"],
-  "additionalProperties": false
-}
-```
-
-### Step 3: Create Input YAML Data
-
-In your team's `examples/` directory, create a YAML file (e.g., `professional_services/examples/project_alpha_data.yaml`) containing the data you want to use to populate your templates. This data must conform to the schema defined in Step 2.
-
-Example `professional_services/examples/project_alpha_data.yaml`:
-
-```yaml
-project_name: Project Alpha
-client_name: Acme Corporation
-```
-
-### Step 4: Author Jinja2 Templates
-
-In your team's `templates/` directory, create Jinja2 template files (e.g., `professional_services/templates/idea_gen.md.j2`). These templates use Jinja2 syntax to reference variables from your input YAML data.
-
-Example `professional_services/templates/idea_gen.md.j2`:
-
-```jinja
-## Project Idea Generation for {{ project_name }}
-
-Client: {{ client_name }}
-
-Please generate innovative ideas for the "{{ project_name }}" project for our client "{{ client_name }}".
-```
-
-### Step 5: Generate Prompts
-
-Use the `generate` command to combine your input data, schema, and template to produce a final prompt. The output is written to standard output, which you can redirect to a file.
-
-```bash
-ai-dlc generate \
-  --input professional_services/examples/project_alpha_data.yaml \
-  --schema professional_services/schemas/team_input.schema.json \
-  --template professional_services/templates/idea_gen.md.j2 \
-  > generated_prompt.md
-```
-
-The generated `generated_prompt.md` file will contain:
-
-```markdown
-## Project Idea Generation for Project Alpha
-
-Client: Acme Corporation
-
-Please generate innovative ideas for the "Project Alpha" project for our client "Acme Corporation".
-```
-
-### Step 6: Define Custom Validation Checks (Optional)
-
-You can define custom validation rules for your generated prompts in a `.CHECKS.yaml` file (e.g., `professional_services/checks/custom.CHECKS.yaml`). This allows you to enforce specific content requirements or constraints on your prompts. Each check has an `id`, `description`, `type`, and `config`. Supported types include `regex_match` and `keyword_presence`.
-
-Example `professional_services/checks/custom.CHECKS.yaml`:
-
-```yaml
-checks:
-  - id: require_client_name
-    description: Ensures the client name is present in the prompt.
-    type: keyword_presence
-    config:
-      keyword: "Client: "
-```
-
-### Step 7: Validate Prompts (Optional)
-
-Use the `validate` command to check a generated prompt against your custom validation rules.
-
-```bash
-ai-dlc validate \
-  --prompt generated_prompt.md \
-  --checks professional_services/checks/custom.CHECKS.yaml
-```
-
-The command will report whether the prompt passes or fails the defined checks.
-
-### Step 8: Redact Sensitive Data (Recommended)
-
-Before using generated prompts with AI models, it is highly recommended to redact any sensitive information. Use the `redact` command for this purpose. By default, it redacts in-place. You can use `--output-dir` to save redacted prompts to a different location or `--dry-run` to see what would be redacted without making changes.
-
-```bash
-ai-dlc redact generated_prompt.md
-# Or to output to a directory:
-# ai-dlc redact generated_prompt.md --output-dir redacted_prompts
-```
-
-## Command Reference
-
-*   `ai-dlc scaffold <team_name>`: Scaffolds a new team prompt library directory structure.
-*   `ai-dlc generate --template <path> --input <path> --schema <path>`: Generates a prompt from a Jinja2 template, input YAML, and JSON schema.
-    *   `--template`: Path to the Jinja2 template file (`.md.j2`).
-    *   `--input`: Path to the input YAML data file.
-    *   `--schema`: Path to the JSON schema file for input data validation.
-*   `ai-dlc validate --prompt <path> --checks <path>`: Validates a generated prompt against custom checks.
-    *   `--prompt`: Path to the generated prompt file.
-    *   `--checks`: Path to the `.CHECKS.yaml` file containing validation rules.
-*   `ai-dlc redact <path> [--output-dir <path>] [--dry-run]`: Redacts sensitive data from a prompt.
-    *   `<path>`: Path to the prompt file to redact.
-    *   `--output-dir`: Optional directory to save the redacted file (preserves original).
-    *   `--dry-run`: Optional flag to show redaction without modifying the file.
-
-## Configuration
-
-Custom validation rules are defined in `.CHECKS.yaml` files, as described in the Basic Workflow section.
-
-Currently, the redaction patterns are hardcoded within the [`cli/redact_utils.py`](cli/redact_utils.py) module. Future versions may introduce external configuration options for redaction patterns.
-
-## Targeted Testing Strategy
-
-
-python -m unittest tests/cli/test_redact_utils.py -v
-
-python -m pytest tests/cli/test_validate.py -v
-
-uv run python -m cli.main validate --prompt prompts_dir --checks test_custom_checks.yaml
-
-During the development of the AI-DLC Prompt Template Tool, a **Targeted Testing Strategy** was employed to ensure the reliability and correctness of each feature. This strategy focused on two key areas:
-
-1.  **CORE LOGIC TESTING:** Rigorous unit tests were written to verify the internal correctness of each function and module, such as schema validation, template rendering, and redaction logic. This ensured that the core functionality performed as expected under various conditions and edge cases.
-2.  **CONTEXTUAL INTEGRATION TESTING:** Tests were designed to verify the key interactions between different components of the tool and their expected behavior within the `:ProjectContext`. For example, tests confirmed that the `generate` command correctly integrated schema validation with template rendering, and that the `validate` command correctly applied the rules defined in a `.CHECKS.yaml` file to a generated prompt. This approach provided early feedback on critical integration points without requiring exhaustive end-to-end tests for every possible scenario.
-
-This targeted approach allowed for efficient testing and rapid iteration during development, ensuring a stable foundation for the tool.
+*   **Phase 2: The Local-First Integrated System:** Will introduce a local server, worker, and queue (using Docker and Redis) to enable full workflow orchestration on a developer's machine.
+*   **Phase 3: Cloud & Multi-User Deployment:** Will involve deploying the server components to the cloud to support team-wide collaboration, central logging, and a single source of truth.

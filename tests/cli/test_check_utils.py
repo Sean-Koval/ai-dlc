@@ -9,7 +9,7 @@ associated dataclasses for parsing :CustomValidationRule files into Python objec
 import os
 import pytest
 from pathlib import Path
-from cli.check_utils import (
+from ai_dlc.cli.check_utils import (
     load_check_rules,
     CustomCheckRule,
     RegexCheckConfig,

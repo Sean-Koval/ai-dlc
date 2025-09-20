@@ -9,7 +9,7 @@ as defined in pyproject.toml and implemented in cli/main.py.
 import subprocess
 import pytest
 from typer.testing import CliRunner
-from cli.main import app
+from ai_dlc.cli.main import app
 
 
 def test_cli_help_output():
@@ -21,12 +21,15 @@ def test_cli_help_output():
     assert "--help" in result.stdout
 
 
-def test_cli_default_command():
-    """Test that the default command runs correctly."""
+def test_cli_help_command():
+    """Test that the main help command runs and shows subcommands."""
     runner = CliRunner()
-    result = runner.invoke(app)
+    result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
-    assert "Welcome to AI-DLC: AI-driven Development Lifecycle Companion" in result.stdout
+    assert "Usage:" in result.stdout
+    assert "generate" in result.stdout
+    assert "validate" in result.stdout
+    assert "scaffold" in result.stdout
 
 
 def test_cli_entry_point_installed():

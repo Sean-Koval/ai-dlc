@@ -9,7 +9,7 @@ to ensure it correctly handles match_all and case_sensitive configurations.
 import pytest
 from pathlib import Path
 from typer.testing import CliRunner
-from cli.main import app
+from ai_dlc.cli.main import app
 
 
 @pytest.fixture

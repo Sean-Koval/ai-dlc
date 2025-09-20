@@ -20,5 +20,5 @@ dev = [
 [tool.uv]          # optional – tweak resolver settings here
 
 [project.scripts]
-ai-dlc = "cli.main:app"
+ai-dlc = "ai_dlc.cli.main:app"
 
