@@ -1,2 +1,0 @@
-[console_scripts]
-ai-dlc = ai_dlc.cli.main:app
