@@ -1,0 +1,34 @@
+{
+  "name": "ai-dlc-cli",
+  "version": "0.1.0",
+  "description": "AI DLC developer workflow CLI wrapper for npm environments.",
+  "bin": {
+    "ai-dlc": "bin/run.js",
+    "ai-dlc-cli": "bin/run.js"
+  },
+  "scripts": {
+    "postinstall": "node ./scripts/install.js"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "scripts"
+  ],
+  "keywords": [
+    "ai",
+    "cli",
+    "developer-tools"
+  ],
+  "author": "AI DLC contributors",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antlor/ai-dlc"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "aiDlc": {
+    "cargoVersion": "0.1.0"
+  }
+}
