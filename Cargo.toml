@@ -1,2 +1,3 @@
 [workspace]
 members = ["crates/ai-dlc-cli"]
+resolver = "3"

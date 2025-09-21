@@ -2,6 +2,23 @@
 name = "ai-dlc-cli"
 version = "0.1.0"
 edition = "2024"
+description = "CLI tooling for scaffolding AI provider project templates in the AI-DLC toolkit."
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/antlor/ai-dlc"
+homepage = "https://github.com/antlor/ai-dlc"
+documentation = "https://github.com/antlor/ai-dlc#readme"
+authors = ["AI DLC contributors"]
+keywords = ["ai", "cli", "developer-tools"]
+categories = ["command-line-utilities", "development-tools::build-utilities"]
+rust-version = "1.88"
+include = [
+    "Cargo.toml",
+    "README.md",
+    "src/**",
+    "embedded-templates/**",
+    "LICENSE",
+]
 
 [dependencies]
 anyhow = "1.0.100"

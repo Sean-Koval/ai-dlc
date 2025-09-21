@@ -23,6 +23,9 @@ This command generates best-practice directory structures and template files for
 #### Cargo (Rust tooling required)
 
 ```bash
+# Install directly from GitHub without waiting for a crates.io release
+cargo install --git https://github.com/Sean-Koval/ai-dlc --branch feature/major-refactor-rust-cli ai-dlc-cli --locked
+
 # Install from the workspace while developing locally
 cargo install --path crates/ai-dlc-cli --locked
 
@@ -35,6 +38,12 @@ Cargo places binaries in `~/.cargo/bin`; ensure that directory is on your `PATH`
 #### npm (Node.js 18+ and Rust tooling required)
 
 ```bash
+# Install directly from GitHub; requires access to this repository
+npm install -g github:Sean-Koval/ai-dlc#feature/major-refactor-rust-cli
+
+# On-demand execution against the repo
+npx github:Sean-Koval/ai-dlc#feature/major-refactor-rust-cli ai-dlc scaffold --all
+
 # Global install
 npm install -g ai-dlc-cli
 
@@ -42,7 +51,7 @@ npm install -g ai-dlc-cli
 npx ai-dlc scaffold --all
 ```
 
-The npm package wraps the Rust binary and runs `cargo install ai-dlc-cli` during `postinstall`. Make sure a Rust toolchain is available on the machine where you execute the npm commands.
+The npm package wraps the Rust binary and runs `cargo install ai-dlc-cli` during `postinstall`. Make sure a Rust toolchain is available on the machine where you execute the npm commands. Adjust the branch selector when promoting a new release (for example, swap to `#main` once `feature/major-refactor-rust-cli` is merged, or pin to a git tag).
 
 ### Usage
 
