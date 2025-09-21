@@ -3,8 +3,9 @@ use clap::{Parser, Subcommand};
 use include_dir::{include_dir, Dir, DirEntry};
 use std::path::Path;
 
-// Use the correct relative path directly.
-static TEMPLATES_DIR: Dir = include_dir!("$CARGO_MANIFEST_DIR/../../templates");
+// Embed provider templates directly from the crate so published packages
+// include the full asset set.
+static TEMPLATES_DIR: Dir = include_dir!("$CARGO_MANIFEST_DIR/embedded-templates");
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]

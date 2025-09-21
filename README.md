@@ -18,26 +18,48 @@ This command generates best-practice directory structures and template files for
 
 ## Getting Started
 
-### Build
+### Installation Options
 
-To build the `ai-dlc` CLI from source, ensure you have the Rust toolchain installed and run:
+#### Cargo (Rust tooling required)
 
 ```bash
-# This will build the binary at ./target/debug/ai-dlc-cli
-cargo build
+# Install from the workspace while developing locally
+cargo install --path crates/ai-dlc-cli --locked
+
+# Once published, install directly from crates.io
+cargo install ai-dlc-cli --locked
 ```
+
+Cargo places binaries in `~/.cargo/bin`; ensure that directory is on your `PATH` so the `ai-dlc-cli` command is available globally.
+
+#### npm (Node.js 18+ and Rust tooling required)
+
+```bash
+# Global install
+npm install -g ai-dlc-cli
+
+# On-demand execution
+npx ai-dlc scaffold --all
+```
+
+The npm package wraps the Rust binary and runs `cargo install ai-dlc-cli` during `postinstall`. Make sure a Rust toolchain is available on the machine where you execute the npm commands.
 
 ### Usage
 
-Once built, you can use the `scaffold` command to generate template structures in your current directory.
+After installing via either method, you can invoke the CLI directly:
 
 ```bash
 # Scaffold templates for a specific provider
-./target/debug/ai-dlc-cli scaffold --provider gemini
+ai-dlc-cli scaffold --provider gemini
 
 # Scaffold templates for all supported providers
-./target/debug/ai-dlc-cli scaffold --all
+ai-dlc-cli scaffold --all
+
+# The npm wrapper also exposes `ai-dlc` as an alias
+ai-dlc scaffold --provider claude
 ```
+
+If you prefer to build from source without installing, run `cargo build` and use `./target/debug/ai-dlc-cli` as before.
 
 ## Development & Testing
 
@@ -47,19 +69,24 @@ To test that the binary can recreate the templates from its embedded assets, fol
 
 1.  **Ensure Source Templates Exist:** Make sure the `templates/` directory at the root of this repository is populated with the desired file structure.
 
-2.  **Build the Application:** Run `cargo build`. This process reads the `templates/` directory and embeds its contents into the `ai-dlc-cli` binary.
+2.  **Sync Embedded Assets:** Run `scripts/sync-cli-templates.sh` to mirror the root `templates/` directory into the embedded copy that ships with the CLI.
+    ```bash
+    scripts/sync-cli-templates.sh
+    ```
 
-3.  **Delete the Source Directory:** Before testing, you must delete the source `templates/` directory. This ensures your test is running against the embedded assets, not the local files.
+3.  **Build the Application:** Run `cargo build`. This process reads the embedded templates under `crates/ai-dlc-cli/embedded-templates/` and bundles them into the `ai-dlc-cli` binary.
+
+4.  **Delete the Source Directory:** Before testing, you must delete the source `templates/` directory. This ensures your test is running against the embedded assets, not the local files.
     ```bash
     rm -rf templates
     ```
 
-4.  **Run the Executable:** Execute the compiled binary to run the scaffold command.
+5.  **Run the Executable:** Execute the compiled binary to run the scaffold command.
     ```bash
     ./target/debug/ai-dlc-cli scaffold --all
     ```
 
-5.  **Verify the Output:** Check that the `templates/` directory has been successfully recreated with the correct structure and content.
+6.  **Verify the Output:** Check that the `templates/` directory has been successfully recreated with the correct structure and content.
     ```bash
     ls -R templates
     ```

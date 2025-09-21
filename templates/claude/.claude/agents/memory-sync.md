@@ -39,7 +39,7 @@ You are a documentation synchronization specialist responsible for maintaining a
 
 <!-- This section is automatically updated when API changes -->
 ### Commands
-- `/dlc:scaffold` - Project scaffolding
+- `/dlc:generate` - Project feature generation
 - `/dlc:implement` - Feature implementation
 - `/dlc:test` - Testing workflows
 

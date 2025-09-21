@@ -2,24 +2,26 @@
 
 ## Overview
 
-This template provides a comprehensive AI-enhanced development environment optimized for Claude Code. It integrates intelligent slash commands, specialized AI agents, automated quality gates, and proven development workflows to accelerate software development while maintaining high standards.
+This template provides a comprehensive AI-enhanced development environment for **Claude Code sessions**. It includes intelligent slash commands, specialized AI agents, automated quality gates, and proven development workflows to accelerate software development while maintaining high standards.
+
+> **Note**: This template is designed for use within Claude Code (claude.ai/code) terminal sessions. It is **not** the AI-DLC CLI tool itself, but rather a configuration template that enhances your Claude Code environment.
 
 ## Features
 
-### 🚀 **Intelligent Slash Commands**
-- `/dlc:scaffold` - Project scaffolding with AI-enhanced templates
+### 🚀 **Claude Code Slash Commands**
+- `/dlc:generate` - Generate components and modules within existing projects
 - `/dlc:implement` - Guided feature implementation with validation
 - `/dlc:test` - Comprehensive testing workflows with AI-powered generation
 - `/dlc:validate` - Multi-dimensional quality validation
 - `/dlc:analyze` - Deep codebase analysis with insights
 
 ### 🤖 **Specialized AI Agents**
-- **Rust Architect** - Memory safety, performance, and idiomatic Rust
-- **CLI Expert** - Command-line interface design and user experience
-- **Quality Engineer** - Testing strategies and quality gates
-- **DevOps Architect** - CI/CD, deployment, and infrastructure
-- **Security Engineer** - Security analysis and threat mitigation
-- **Memory Sync** - Documentation synchronization and knowledge management
+- **@rust-architect** - Memory safety, performance, and idiomatic Rust
+- **@cli-expert** - Command-line interface design and user experience
+- **@quality-engineer** - Testing strategies and quality gates
+- **@devops-architect** - CI/CD, deployment, and infrastructure
+- **@security-engineer** - Security analysis and threat mitigation
+- **@memory-sync** - Documentation synchronization and knowledge management
 
 ### 🔧 **Quality Automation**
 - Pre-tool quality gates with comprehensive checks
@@ -36,44 +38,57 @@ This template provides a comprehensive AI-enhanced development environment optim
 
 ## Quick Start
 
-### 1. Template Installation
+### 1. Install Template in Your Project
 
-Extract this template to your project directory:
+This template was installed in your project by the AI-DLC CLI tool:
 
 ```bash
-# Using the AI-DLC CLI
-./target/debug/ai-dlc-cli scaffold --provider claude --template comprehensive my-project
-
-# Or manually copy the template structure
-cp -r templates/claude/* my-project/
-cd my-project
+# Template was extracted using:
+ai-dlc-cli scaffold --provider claude
 ```
 
-### 2. Initial Setup
+### 2. Verify Template Structure
 
-Configure your local settings:
+Your project should now have:
+
+```
+.claude/
+├── settings.json              # Project settings for Claude Code
+├── settings.example.local.json # Local settings template
+├── agents/                    # AI agent definitions
+├── commands/                  # Slash command definitions
+├── hooks/                     # Automation hooks
+└── workflows/                 # Development workflows
+```
+
+### 3. Configure Your Claude Code Environment
+
+Setup your personal settings:
 
 ```bash
-# Copy and customize local settings
+# Copy and customize local settings (not committed to git)
 cp .claude/settings.example.local.json .claude/settings.local.json
 
-# Make hooks executable
+# Make hooks executable for quality automation
 chmod +x .claude/hooks/*.sh
 
-# Install required tools (optional but recommended)
+# Install recommended tools for quality gates
 cargo install cargo-audit cargo-tarpaulin cargo-license
 ```
 
-### 3. Verify Installation
+### 4. Start Using Claude Code Features
 
-Test the setup with a basic command:
+Open a Claude Code session in your project directory and try:
 
 ```bash
-# Run comprehensive analysis
+# Run comprehensive analysis in Claude Code
 /dlc:analyze --architecture --recommendations
 
-# Validate project structure
+# Validate project structure in Claude Code
 /dlc:validate --mode targeted --quality
+
+# Get help with Rust development
+@rust-architect help optimize this code for performance
 ```
 
 ## Architecture
@@ -92,7 +107,7 @@ Test the setup with a basic command:
 │   ├── security-engineer.md   # Security and compliance
 │   └── memory-sync.md         # Documentation synchronization
 ├── commands/                  # Slash command definitions
-│   ├── scaffold.md            # Project scaffolding
+│   ├── generate.md            # Component generation
 │   ├── implement.md           # Feature implementation
 │   ├── test.md                # Testing workflows
 │   ├── validate.md            # Quality validation
@@ -115,121 +130,142 @@ Settings are loaded in the following priority order:
 3. **Project settings** (`.claude/settings.json`)
 4. **Global defaults** (built-in)
 
-## Core Commands
+## Claude Code Slash Commands
 
-### Project Scaffolding
+These commands are used within Claude Code terminal sessions to enhance your development workflow:
+
+### Component Generation
 
 ```bash
-# Basic project setup
-/dlc:scaffold --template rust-cli my-awesome-tool
+# In Claude Code: Generate new Rust module
+/dlc:generate --type module --language rust user_service
 
-# Enterprise setup with full tooling
-/dlc:scaffold --template rust-api --enterprise --with-agents my-service
+# In Claude Code: Create API endpoint with tests
+/dlc:generate --type api-endpoint --with-tests user_registration
 
-# Validate after scaffolding
-/dlc:scaffold --template python-api --validate my-api
+# In Claude Code: Generate middleware with validation
+/dlc:generate --type middleware --pattern decorator auth_middleware --validate
 ```
 
 ### Feature Implementation
 
 ```bash
-# Implement with TDD approach
+# In Claude Code: Implement with TDD approach
 /dlc:implement --feature "user authentication" --tdd --validate
 
-# Fix specific issues
+# In Claude Code: Fix specific issues
 /dlc:implement --fix "issue-123: memory leak" --test
 
-# Apply design patterns
+# In Claude Code: Apply design patterns
 /dlc:implement --feature "notification system" --pattern observer
 ```
 
 ### Testing & Quality
 
 ```bash
-# Generate comprehensive tests
+# In Claude Code: Generate comprehensive tests
 /dlc:test --generate --coverage 90% --ai-powered
 
-# Run TDD cycle
+# In Claude Code: Run TDD cycle
 /dlc:test --tdd-cycle "new sorting algorithm"
 
-# Comprehensive validation
+# In Claude Code: Comprehensive validation
 /dlc:validate --mode comprehensive --security --performance
 ```
 
 ### Analysis & Insights
 
 ```bash
-# Architecture analysis
+# In Claude Code: Architecture analysis
 /dlc:analyze --architecture --tech-debt --visualize
 
-# Performance analysis
+# In Claude Code: Performance analysis
 /dlc:analyze --performance --bottlenecks --recommendations
 
-# Security analysis
+# In Claude Code: Security analysis
 /dlc:analyze --security --dependencies --report
 ```
 
-## Specialized Agents
+## Claude Code AI Agents
 
-### Rust Architect
+These agents are automatically activated in Claude Code based on triggers or can be manually invoked:
 
-**Triggers**: `.rs` files, `Cargo.toml`, performance issues
+### @rust-architect
+
+**Auto-triggers**: `.rs` files, `Cargo.toml`, performance issues
 **Expertise**: Memory safety, performance optimization, idiomatic Rust
 
 ```bash
-# Automatic activation on Rust file changes
-# Manual activation for specific guidance
+# In Claude Code: Manual activation for specific guidance
 @rust-architect optimize this function for performance
+
+# In Claude Code: Review architectural decisions
+@rust-architect review the error handling approach in this module
 ```
 
-### CLI Expert
+### @cli-expert
 
-**Triggers**: CLI-related files, argument parsing, user interface
+**Auto-triggers**: CLI-related files, argument parsing, user interface
 **Expertise**: Command design, user experience, help systems
 
 ```bash
-# Improve CLI user experience
+# In Claude Code: Improve CLI user experience
 @cli-expert review the help text and error messages
+
+# In Claude Code: Design better CLI interface
+@cli-expert suggest improvements for this command structure
 ```
 
-### Quality Engineer
+### @quality-engineer
 
-**Triggers**: Tests, coverage, quality metrics
+**Auto-triggers**: Tests, coverage, quality metrics
 **Expertise**: Testing strategies, quality gates, standards
 
 ```bash
-# Comprehensive quality review
+# In Claude Code: Comprehensive quality review
 @quality-engineer assess test coverage and suggest improvements
+
+# In Claude Code: Testing strategy guidance
+@quality-engineer help design integration tests for this API
 ```
 
-### DevOps Architect
+### @devops-architect
 
-**Triggers**: CI/CD files, deployment configurations
+**Auto-triggers**: CI/CD files, deployment configurations
 **Expertise**: Pipelines, deployment strategies, infrastructure
 
 ```bash
-# Optimize deployment process
+# In Claude Code: Optimize deployment process
 @devops-architect review and improve the CI/CD pipeline
+
+# In Claude Code: Infrastructure guidance
+@devops-architect help design a staging environment
 ```
 
-### Security Engineer
+### @security-engineer
 
-**Triggers**: Security-related code, authentication, data handling
+**Auto-triggers**: Security-related code, authentication, data handling
 **Expertise**: Vulnerability assessment, secure coding, compliance
 
 ```bash
-# Security review
+# In Claude Code: Security review
 @security-engineer audit this authentication implementation
+
+# In Claude Code: Security guidance
+@security-engineer check this API for security vulnerabilities
 ```
 
-### Memory Sync
+### @memory-sync
 
-**Triggers**: Documentation changes, code-doc misalignment
+**Auto-triggers**: Documentation changes, code-doc misalignment
 **Expertise**: Documentation synchronization, knowledge management
 
 ```bash
-# Automatically updates documentation when code changes
+# In Claude Code: Documentation updates (automatic)
 # Ensures CLAUDE.md stays current with implementation
+
+# In Claude Code: Manual documentation sync
+@memory-sync update project documentation based on recent changes
 ```
 
 ## Quality Gates

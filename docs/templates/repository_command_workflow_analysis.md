@@ -16,7 +16,7 @@ This document provides detailed workflow analysis for commands and agents from l
 
 ### Commands & Workflows
 
-#### **`/user:init` - Smart Project Initialization**
+#### **`/user:init` → `/dlc:init` - Smart Project Initialization**
 
 **Problem Solved**: Manual project setup takes 2-4 hours, inconsistent structure across projects
 
@@ -43,20 +43,26 @@ graph TD
 
 **Command Interaction Chain**:
 ```bash
+# Source pattern (hikarubw)
 /user:init my-project
-↓
-# Automatically triggers quality setup
 ↓
 /user:check  # Validates initial setup
 ↓
 /user:plan   # Creates development roadmap
+
+# AI-DLC Implementation
+/dlc:init my-project --template basic
+↓
+/dlc:validate --mode comprehensive
+↓
+/dlc:plan --detailed
 ```
 
-**AI-DLC Integration**: Maps to `/dlc:scaffold --template basic --full-setup`
+**AI-DLC Integration**: Maps to `/dlc:init --template basic --full-setup`
 
 ---
 
-#### **`/user:check` - Parallel Quality Assurance**
+#### **`/user:check` → `/dlc:validate` - Parallel Quality Assurance**
 
 **Problem Solved**: Quality checks take 30-45 minutes, often skipped due to time pressure
 
@@ -88,29 +94,33 @@ graph TD
 
 **Command Variants**:
 ```bash
+# Source pattern (hikarubw)
 /user:check              # Full parallel check
 /user:check --fast       # Skip slow checks
 /user:check --fix        # Auto-fix issues
 /user:check src/         # Target specific directory
+
+# AI-DLC Implementation
+/dlc:validate --mode comprehensive    # Full parallel check
+/dlc:validate --mode fast             # Skip slow checks
+/dlc:validate --fix                   # Auto-fix issues
+/dlc:validate src/                    # Target specific directory
 ```
 
 **Daily Workflow Integration**:
 ```bash
-# Morning routine
-/user:check --fast       # Quick health check
-↓
-# Development cycle
-Code changes → /user:check → Fix issues → Commit
-↓
-# Pre-push
-/user:check --full → /user:push
+# Source pattern (hikarubw)
+/user:check --fast → Code changes → /user:check → /user:push
+
+# AI-DLC Implementation
+/dlc:validate --mode fast → Code changes → /dlc:validate → /dlc:deploy --smart-commit
 ```
 
 **AI-DLC Integration**: Maps to `/dlc:validate --mode comprehensive`
 
 ---
 
-#### **`/user:push` - Intelligent Git Workflow**
+#### **`/user:push` → `/dlc:deploy` - Intelligent Git Workflow**
 
 **Problem Solved**: Git workflows are error-prone, inconsistent commit messages, missed CI failures
 
@@ -140,36 +150,35 @@ graph TD
 
 **Smart Features**:
 ```bash
-# Commit message generation
+# Source pattern (hikarubw)
 git add .
 /user:push
 # → "feat: add user authentication with JWT tokens and session management"
 
-# Branch-aware workflow
-/user:push feature/auth
-# → Pushes to feature branch, creates PR to main
+# AI-DLC Implementation
+git add .
+/dlc:deploy --smart-commit
+# → AI-generated commit with CI monitoring
 
-# Hotfix workflow
-/user:push --hotfix
-# → Fast-track push with minimal checks
+# Branch-aware workflow
+/dlc:deploy --branch feature/auth    # Pushes to feature branch, creates PR
+/dlc:deploy --hotfix                # Fast-track push with minimal checks
 ```
 
 **Integration with Other Commands**:
 ```bash
-/user:plan "new feature"     # Plan the work
-↓ (implement changes)
-/user:check                  # Validate quality
-↓
-/user:push                   # Smart deployment
-↓
-# Automatically triggers team notifications
+# Source pattern (hikarubw)
+/user:plan → implement → /user:check → /user:push
+
+# AI-DLC Implementation
+/dlc:plan --detailed → implement → /dlc:validate → /dlc:deploy --smart-commit
 ```
 
 **AI-DLC Integration**: Maps to `/dlc:deploy --smart-commit`
 
 ---
 
-#### **`/user:plan` - Strategic Development Planning**
+#### **`/user:plan` → `/dlc:plan` - Strategic Development Planning**
 
 **Problem Solved**: Poor planning leads to scope creep, missed dependencies, inefficient implementation
 
@@ -196,17 +205,17 @@ graph TD
 
 **Planning Modes**:
 ```bash
-/user:plan "feature: user dashboard"
-# → Comprehensive feature planning
+# Source pattern (hikarubw)
+/user:plan "feature: user dashboard"         # Comprehensive feature planning
+/user:plan --epic "mobile app redesign"     # Large initiative breakdown
+/user:plan --debug "performance issues"     # Problem analysis
+/user:plan --quick "bug fix for login"      # Rapid tactical planning
 
-/user:plan --epic "mobile app redesign"
-# → Large initiative breakdown
-
-/user:plan --debug "performance issues"
-# → Problem analysis and solution planning
-
-/user:plan --quick "bug fix for login"
-# → Rapid tactical planning
+# AI-DLC Implementation
+/dlc:plan "feature: user dashboard" --detailed
+/dlc:plan --epic "mobile app redesign" --breakdown --assign-agents
+/dlc:plan --debug "performance issues" --root-cause
+/dlc:plan --quick "bug fix for login" --tactical
 ```
 
 **Output Structure**:
@@ -238,14 +247,18 @@ graph TD
 
 **Workflow Integration**:
 ```bash
+# Source pattern (hikarubw)
 /user:plan → Implementation → /user:check → /user:push
+
+# AI-DLC Implementation
+/dlc:plan → Implementation → /dlc:validate → /dlc:deploy
 ```
 
 **AI-DLC Integration**: Maps to `/dlc:plan --detailed --critical-thinking`
 
 ---
 
-#### **`/user:handover` - Knowledge Transfer Automation**
+#### **`/user:handover` → `/dlc:collaborate` - Knowledge Transfer Automation**
 
 **Problem Solved**: Context loss during handoffs, incomplete documentation, knowledge silos
 
@@ -270,10 +283,17 @@ graph TD
 
 **Handover Types**:
 ```bash
+# Source pattern (hikarubw)
 /user:handover                    # End of day handover
 /user:handover --project-end      # Project completion handover
 /user:handover --emergency        # Urgent context transfer
 /user:handover --onboarding       # New team member onboarding
+
+# AI-DLC Implementation
+/dlc:collaborate --handover                    # End of day handover
+/dlc:collaborate --handover --project-end      # Project completion
+/dlc:collaborate --handover --emergency        # Urgent transfer
+/dlc:collaborate --onboarding                  # New team member
 ```
 
 **AI-DLC Integration**: Maps to `/dlc:collaborate --handover --session-docs`
@@ -289,8 +309,9 @@ graph TD
 
 **Workflow Chains to Replicate**:
 ```bash
-# Daily development cycle (hikarubw pattern)
-/dlc:plan → implement → /dlc:validate → /dlc:deploy
+# Daily development cycle (hikarubw → AI-DLC)
+Source: /user:plan → implement → /user:check → /user:push
+AI-DLC: /dlc:plan → implement → /dlc:validate → /dlc:deploy
 ```
 
 ---
@@ -305,7 +326,7 @@ graph TD
 
 ### Commands & Workflows
 
-#### **`/project:init` - Enterprise Project Foundation**
+#### **`/project:init` → `/dlc:scaffold` - Enterprise Project Foundation**
 
 **Problem Solved**: Enterprise projects need complex setup (security, compliance, scalability) that takes days to configure properly
 
@@ -333,26 +354,27 @@ graph TD
 
 **Enterprise Features**:
 ```bash
+# Source pattern (qdhenry)
 /project:init --enterprise --industry healthcare
-# → HIPAA-compliant setup with audit trails
-
 /project:init --microservices --team-size 20
-# → Multi-service architecture with team coordination
-
 /project:init --compliance GDPR,SOX
-# → Regulatory compliance templates
+
+# AI-DLC Implementation
+/dlc:scaffold --template enterprise --industry healthcare --compliance HIPAA
+/dlc:scaffold --template microservices --team-size 20 --coordination
+/dlc:scaffold --template enterprise --compliance GDPR,SOX
 ```
 
 **vs hikarubw `/user:init`**:
 - **hikarubw**: Fast, simple, individual developer focus
 - **qdhenry**: Comprehensive, enterprise, team focus
-- **Integration**: Offer both as `--basic` and `--enterprise` modes
+- **AI-DLC Integration**: Offer both as `--template [basic|enterprise]` modes
 
 **AI-DLC Integration**: Maps to `/dlc:scaffold --template enterprise --compliance`
 
 ---
 
-#### **`/project:create-feature` - Structured Feature Development**
+#### **`/project:create-feature` → `/dlc:implement` - Structured Feature Development**
 
 **Problem Solved**: Feature development lacks consistency, missing integration points, incomplete testing
 
@@ -381,45 +403,42 @@ graph TD
 
 **Feature Types**:
 ```bash
+# Source pattern (qdhenry)
 /project:create-feature auth-system
-# → Complete authentication feature with JWT, middleware, tests
-
 /project:create-feature --api payment-processing
-# → API-first feature with OpenAPI spec, client SDKs
-
 /project:create-feature --ui user-dashboard --framework react
-# → Frontend feature with components, routing, state management
-
 /project:create-feature --microservice notification-service
-# → New microservice with Docker, monitoring, API gateway integration
+
+# AI-DLC Implementation
+/dlc:implement --feature auth-system --comprehensive
+/dlc:implement --feature payment-processing --api --openapi
+/dlc:implement --feature user-dashboard --ui --framework react
+/dlc:implement --feature notification-service --microservice --docker
 ```
 
 **Integration Workflow**:
 ```bash
-/project:create-feature user-profiles
+# Source pattern (qdhenry)
+/project:create-feature user-profiles → /dev:code-review → /test:generate-test-cases
+
+# AI-DLC Implementation
+/dlc:implement --feature user-profiles
 ↓
 # Automatically generated:
-- src/features/user-profiles/
-  ├── controllers/
-  ├── services/
-  ├── models/
-  ├── tests/
-  └── docs/
-- Updated routing configuration
-- New database migrations
-- API documentation updates
-- Feature flag configuration
+- Complete feature structure with tests and docs
+- Updated routing and configuration
+- Database migrations and API docs
 ↓
-/dev:code-review user-profiles  # Quality check
+/dlc:validate --review user-profiles    # Quality check
 ↓
-/test:generate-test-cases       # Additional test coverage
+/dlc:test --generate user-profiles      # Additional test coverage
 ```
 
 **AI-DLC Integration**: Maps to `/dlc:implement --feature --comprehensive`
 
 ---
 
-#### **`/dev:code-review` - Systematic Code Quality**
+#### **`/dev:code-review` → `/dlc:validate --review` - Systematic Code Quality**
 
 **Problem Solved**: Inconsistent code reviews, missed security issues, lack of structured feedback
 
@@ -450,12 +469,21 @@ graph TD
 
 **Review Modes**:
 ```bash
+# Source pattern (qdhenry)
 /dev:code-review                     # Current changes review
 /dev:code-review --pr 123            # Pull request review
 /dev:code-review --security-focus    # Security-specific review
 /dev:code-review --performance       # Performance analysis
 /dev:code-review --architecture      # Architecture compliance
 /dev:code-review src/auth/           # Specific component review
+
+# AI-DLC Implementation
+/dlc:validate --review                     # Current changes review
+/dlc:validate --review --pr 123            # Pull request review
+/dlc:validate --review --security-focus    # Security-specific review
+/dlc:validate --review --performance       # Performance analysis
+/dlc:validate --review --architecture      # Architecture compliance
+/dlc:validate --review src/auth/           # Specific component review
 ```
 
 **Review Output Structure**:
@@ -486,21 +514,22 @@ graph TD
 
 **Integration with Development Workflow**:
 ```bash
-# Pre-commit workflow
+# Source pattern (qdhenry)
 Code changes → /dev:code-review → Fix issues → Commit
-
-# Pull request workflow
 PR created → /dev:code-review --pr 123 → Review feedback → Updates
-
-# Continuous improvement
 Weekly: /dev:code-review --architecture src/ → Technical debt planning
+
+# AI-DLC Implementation
+Code changes → /dlc:validate --review → Fix issues → Commit
+PR created → /dlc:validate --review --pr 123 → Review feedback → Updates
+Weekly: /dlc:validate --review --architecture src/ → Technical debt planning
 ```
 
 **AI-DLC Integration**: Maps to `/dlc:validate --review --comprehensive`
 
 ---
 
-#### **`/test:generate-test-cases` - Intelligent Test Automation**
+#### **`/test:generate-test-cases` → `/dlc:test --generate` - Intelligent Test Automation**
 
 **Problem Solved**: Test coverage gaps, manual test writing takes too long, missing edge cases
 
@@ -529,20 +558,19 @@ graph TD
 
 **Generation Modes**:
 ```bash
+# Source pattern (qdhenry)
 /test:generate-test-cases calculatePrice
-# → Unit tests for specific function
-
 /test:generate-test-cases --module auth
-# → Complete module test suite
-
 /test:generate-test-cases --api /users
-# → API endpoint testing (positive, negative, edge cases)
-
 /test:generate-test-cases --integration payment-flow
-# → End-to-end integration tests
-
 /test:generate-test-cases --performance --load 1000
-# → Performance tests with load simulation
+
+# AI-DLC Implementation
+/dlc:test --generate calculatePrice
+/dlc:test --generate --module auth
+/dlc:test --generate --api /users
+/dlc:test --generate --integration payment-flow
+/dlc:test --generate --performance --load 1000
 ```
 
 **Generated Test Example**:
@@ -582,23 +610,20 @@ describe('calculateTax', () => {
 
 **TDD Integration Workflow**:
 ```bash
-# TDD cycle with AI assistance
+# Source pattern (qdhenry)
 /test:generate-test-cases --tdd "user authentication"
-↓
-# Generates failing tests first
-↓
-Implement minimal code to pass tests
-↓
-/test:generate-test-cases --additional "edge cases for auth"
-↓
-Refactor with tests passing
+→ Implement minimal code → /test:generate-test-cases --additional "edge cases"
+
+# AI-DLC Implementation
+/dlc:test --generate --tdd "user authentication"
+→ Implement minimal code → /dlc:test --generate --additional "edge cases"
 ```
 
 **AI-DLC Integration**: Maps to `/dlc:test --generate --comprehensive`
 
 ---
 
-#### **`/security:audit` - Comprehensive Security Assessment**
+#### **`/security:audit` → `/dlc:audit` - Comprehensive Security Assessment**
 
 **Problem Solved**: Security vulnerabilities go undetected, compliance gaps, reactive security approach
 
@@ -631,6 +656,7 @@ graph TD
 
 **Audit Scopes**:
 ```bash
+# Source pattern (qdhenry)
 /security:audit                          # Full application audit
 /security:audit --dependencies           # Dependency vulnerability scan
 /security:audit --secrets               # Secret detection only
@@ -638,6 +664,15 @@ graph TD
 /security:audit --compliance GDPR       # Compliance-focused audit
 /security:audit --infrastructure        # Infrastructure security
 /security:audit --fix                   # Audit + automated fixes
+
+# AI-DLC Implementation
+/dlc:audit --security                    # Full application audit
+/dlc:audit --security --dependencies     # Dependency vulnerability scan
+/dlc:audit --security --secrets         # Secret detection only
+/dlc:audit --security --api             # API security assessment
+/dlc:audit --compliance GDPR            # Compliance-focused audit
+/dlc:audit --security --infrastructure  # Infrastructure security
+/dlc:audit --security --fix             # Audit + automated fixes
 ```
 
 **Security Report Structure**:
@@ -686,12 +721,15 @@ graph TD
 
 **Security Workflow Integration**:
 ```bash
-# Pre-deployment security gate
+# Source pattern (qdhenry)
 /dev:code-review → /security:audit → Fix critical issues → Deploy
-
-# Regular security maintenance
 Weekly: /security:audit --dependencies → Update vulnerable packages
 Monthly: /security:audit --full → Comprehensive security review
+
+# AI-DLC Implementation
+/dlc:validate --review → /dlc:audit --security → Fix critical issues → Deploy
+Weekly: /dlc:audit --security --dependencies → Update vulnerable packages
+Monthly: /dlc:audit --security --full → Comprehensive security review
 ```
 
 **AI-DLC Integration**: Maps to `/dlc:audit --security --comprehensive`
@@ -708,17 +746,20 @@ Monthly: /security:audit --full → Comprehensive security review
 
 **Enterprise Patterns to Replicate**:
 ```bash
-# Enterprise development cycle (qdhenry pattern)
+# Source pattern (qdhenry)
+/project:init --enterprise → /project:create-feature → /dev:code-review → /security:audit → Deploy
+
+# AI-DLC Implementation
 /dlc:scaffold --enterprise → /dlc:implement --feature → /dlc:validate --review → /dlc:audit --security → /dlc:deploy
 ```
 
 **Combined hikarubw + qdhenry Workflow**:
 ```bash
-# Best of both worlds
-/dlc:scaffold --template [basic|enterprise]  # Choice of complexity
-/dlc:implement --feature [name]              # qdhenry comprehensive approach
-/dlc:validate --mode [fast|comprehensive]    # hikarubw speed + qdhenry depth
-/dlc:deploy --smart-commit                   # hikarubw intelligent automation
+# Best of both worlds - Source patterns mapped to AI-DLC
+Source: /user:init + /project:init → AI-DLC: /dlc:scaffold --template [basic|enterprise]
+Source: /project:create-feature → AI-DLC: /dlc:implement --feature [name]
+Source: /user:check + /dev:code-review → AI-DLC: /dlc:validate --mode [fast|comprehensive]
+Source: /user:push → AI-DLC: /dlc:deploy --smart-commit
 ```
 
 ---
@@ -1757,20 +1798,21 @@ You are a Python expert focusing on:
 
 #### **Daily Development Cycle**
 ```bash
-# Morning startup
+# AI-DLC Implementation (combining best patterns from all repos)
+# Morning startup (Davidcreador branch memory pattern)
 /dlc:context --restore → Load previous session context
 
-# Feature development
+# Feature development (qdhenry comprehensive approach)
 /dlc:implement --feature user-dashboard
 → rust-expert.md + template-designer.md collaboration
 → Complete scaffolding with tests and documentation
 
-# Quality assurance
+# Quality assurance (hikarubw fast + qdhenry comprehensive)
 /dlc:validate --mode comprehensive
 → code-reviewer.md + security-engineer.md analysis
 → memory-sync.md updates documentation
 
-# Smart deployment
+# Smart deployment (hikarubw intelligent automation)
 /dlc:deploy --smart-commit
 → AI-generated commit message
 → CI monitoring and team notifications
@@ -1778,17 +1820,18 @@ You are a Python expert focusing on:
 
 #### **Team Collaboration Cycle**
 ```bash
-# Sprint planning
+# AI-DLC Implementation (combining team patterns from all repos)
+# Sprint planning (hikarubw critical thinking)
 /dlc:plan --epic "payment processing" → Strategic breakdown
 
-# Feature handover
+# Feature handover (Davidcreador branch memory + hikarubw handover)
 git checkout feature/payment → Branch context loads automatically
-/dlc:handover --from john --to jane → Knowledge transfer automation
+/dlc:collaborate --handover --from john --to jane → Knowledge transfer automation
 
-# Code review
+# Code review (qdhenry systematic approach)
 /dlc:validate --review --pr 123 → Systematic quality assessment
 
-# Release coordination
+# Release coordination (qdhenry security + hikarubw smart deployment)
 /dlc:audit --security → Pre-deployment security check
 /dlc:deploy --production → Monitored production deployment
 ```
