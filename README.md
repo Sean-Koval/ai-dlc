@@ -68,6 +68,8 @@ ai-dlc-cli scaffold --all
 ai-dlc scaffold --provider claude
 ```
 
+The scaffold command writes provider assets into hidden directories rooted in your current working directory (for example, `.claude/agents`, `.claude/commands`, `…`). Add `--all` to materialize each provider's dot-prefixed workspace in one run.
+
 If you prefer to build from source without installing, run `cargo build` and use `./target/debug/ai-dlc-cli` as before.
 
 ## Development & Testing
@@ -92,12 +94,12 @@ To test that the binary can recreate the templates from its embedded assets, fol
 
 5.  **Run the Executable:** Execute the compiled binary to run the scaffold command.
     ```bash
-    ./target/debug/ai-dlc-cli scaffold --all
+    ./target/debug/ai-dlc-cli scaffold --provider claude
     ```
 
-6.  **Verify the Output:** Check that the `templates/` directory has been successfully recreated with the correct structure and content.
+6.  **Verify the Output:** Check that the dot-prefixed provider workspace has been created.
     ```bash
-    ls -R templates
+    ls -R .claude
     ```
 
 ## Future Phases
