@@ -86,6 +86,32 @@ def test_presets(tmp_path, preset):
     assert not list((root / ".ai-dlc/work").glob("*.toml"))
 
 
+def test_initialized_python_check_does_not_dirty_repository(tmp_path):
+    from ai_dlc.project import check_project, setup_project
+
+    root = tmp_path / "python"
+    assert adopt(root, "python", apply=True, initialize=True)["status"] == "applied"
+    setup_project(root, state_path=tmp_path / "setup.db", use_mise=False)
+    git(root, "init")
+    git(root, "add", ".")
+    git(
+        root,
+        "-c",
+        "user.name=Test",
+        "-c",
+        "user.email=test@example.com",
+        "commit",
+        "-m",
+        "fixture",
+    )
+
+    receipt = check_project(root, use_mise=False)
+
+    assert [item["status"] for item in receipt["outcomes"]] == ["passed", "passed"]
+    assert receipt["dirty"] is False
+    assert git(root, "status", "--porcelain") == ""
+
+
 def test_application_symlink_preserved(tmp_path, template):
     root = tmp_path / "app"
     root.mkdir()

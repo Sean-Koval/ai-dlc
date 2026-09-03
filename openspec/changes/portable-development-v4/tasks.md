@@ -13,6 +13,7 @@
 - [x] Run final integrated required checks and independent review.
 - [x] Verify wheel installation with exported hashed constraints.
 - [ ] Complete supported clean-machine/container/cloud walkthroughs.
-- [ ] Run live provider conformance with enforced egress in available Docker infrastructure.
+- [x] Run read-only live provider health with enforced egress in available Docker infrastructure.
+- [ ] Run full live provider mutation conformance with enforced egress.
 - [ ] Run configured behavioral skill evaluations with the declared model and budget.
 - [ ] Publish verified release assets and populate the release bootstrap manifest.
