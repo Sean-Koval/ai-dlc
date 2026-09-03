@@ -1,0 +1,88 @@
+# AI-DLC development workflow
+
+This is the project entry point for the AI-DLC lifecycle. It describes stable
+stages; the [tool map](workflows/tool-map.md) shows which configured provider or
+service currently performs each role.
+
+- [Greenfield development](workflows/greenfield.md)
+- [Brownfield development](workflows/brownfield.md)
+- [Design to implementation](workflows/design-to-implementation.md)
+- [Tools, skills, services, and artifact ownership](workflows/tool-map.md)
+
+```mermaid
+flowchart TD
+    I[Intake] --> D[Discovery]
+    D --> P[Requirements]
+    P --> G[Design]
+    G --> S[Specification decision]
+    S --> W[Reviewed work record]
+    W --> B[Branch and implementation]
+    B --> T[Tests and checks]
+    T --> R[Review and merge]
+    R --> F[Evidence-gated finish]
+    F --> H[Tracker completion and handoff]
+```
+
+## Stage contract
+
+| Stage | Durable output | Exit condition |
+| --- | --- | --- |
+| Intake and discovery | Bounded problem, evidence, assumptions, and next investigation | The problem is clear enough to define or stop |
+| Requirements | Reviewed outcomes, scope, constraints, risks, and acceptance | Material product questions are resolved or named |
+| Design | Journey, states, system boundaries, decisions, and verification strategy | Implementation does not need to invent product behavior |
+| Specification decision | Recorded decision and provider-owned specification when required | Required scenarios are current |
+| Publish and start | `.ai-dlc/work/<id>.toml`, tracker item, and bound branch | Reviewed scope is linked before implementation |
+| Implement and verify | Code, tests, migrations, and current durable docs | Required local checks pass |
+| Review, merge, and finish | Reviewed PR, merged SHA, CI receipts, and deployment evidence when configured | `ai-dlc work finish <work-id>` accepts every finish gate |
+| Continuity | Handoff, runbook updates, and linked personal notes | Remote state and next action are unambiguous |
+
+## Sources of truth
+
+- This repository owns architecture, rationale, design, decisions, runbooks,
+  code, and tests.
+- The specification provider owns formal behavior and scenarios.
+- The tracker owns priority and lifecycle status.
+- SCM and CI own review, merge identity, and merged-revision evidence.
+- Personal knowledge owns private continuity and links; it is not a repository
+  mirror.
+- Portable configuration may name required environment variables but never
+  contains their secret values. Machine scope and the process environment own
+  actual credentials, account choices, paths, caches, and local journals.
+
+## Capability boundaries
+
+This handbook ships for every capability selection. This project was generated
+with:
+
+- `specs`: {{ "configured" if "specs" in capabilities else "not configured" }}
+- `tracker`: {{ "configured" if "tracker" in capabilities else "not configured" }}
+- `knowledge`: {{ "configured" if "knowledge" in capabilities else "not configured" }}
+- `scm`: {{ "configured" if "scm" in capabilities else "not configured" }}
+- `deploy`: {{ "configured" if "deploy" in capabilities else "not configured" }}
+- `agent-client`: {{ "configured" if "agent-client" in capabilities else "not configured" }}
+
+Capability selection controls declared roles and generated provider assets. The
+runtime retains compatibility fallbacks for local OpenSpec and GitHub, but a
+fallback does not choose an account, repository, or authorization and must not
+be mistaken for a configured role. GitHub uses conventional `verify.yml` and
+`main` defaults unless overridden. The tracker has no fallback.
+
+Apply these boundaries:
+
+- Project setup, checks, architecture, design, decisions, and runbooks work
+  without external providers.
+- The complete publish/start/status/finish lifecycle requires configured
+  tracker and SCM roles. Without both, use local checks and manual tracking, or
+  configure the missing role before publishing work.
+- Without a declared specification role, work may deliberately use the local
+  OpenSpec compatibility fallback when its artifacts exist. Otherwise, work
+  must record `requires_spec = false` with a reviewed reason or configure the
+  role.
+- Knowledge, deployment evidence, and agent clients are optional; omit their
+  stages when the corresponding role is not selected.
+- Omitting SCM also omits the generated GitHub workflow and makes
+  merged-revision CI completion unavailable.
+
+Keep stages provider-neutral. When a tool changes, update `ai-dlc.toml` and the
+tool map rather than redefining the lifecycle. Keep Mermaid beside the text it
+explains so diagrams and decisions evolve in the same pull request.

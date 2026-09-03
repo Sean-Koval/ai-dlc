@@ -2,6 +2,8 @@
 
 AI-DLC is a local CLI/library plus project templates and agent skills. It does not host orchestration. The human and agent decide what work is useful; deterministic services validate, store, and link that work.
 
+Use the [development workflow handbook](../docs/development-workflow.md) for the compact lifecycle, greenfield and brownfield paths, design handoff, diagrams, and current tool map.
+
 Start with one deployable application and explicit module boundaries. Split deployment only when requirements justify it. Repository maintainers own architecture, product rationale, design context, decisions, and runbooks. Update these documents alongside relevant code.
 
 The specification role is the sole formal behavior specification system. The tracker owns priority and lifecycle status. Personal knowledge holds continuity, reflection, and private notes; it links durable repository material. Do not mirror all four stores or resolve contradictory state by overwriting it.
