@@ -4,7 +4,7 @@ AI-DLC v4 runs as a local Python CLI and library. The MCP facade calls the same 
 
 ## Boundaries
 
-Configuration resolves base, personal, project, and machine scopes with provenance. Portable project data selects role providers and checks; machine data supplies local paths and environment credential references. Workflow services manage reviewed work, immutable provider bindings, operation reconciliation and evidence-gated completion. Check services produce receipts. Provider adapters implement versioned contracts. Renderers generate deterministic client configuration. Copier owns template answers, original revisions and three-way updates.
+Configuration resolves base, personal, project, and machine scopes with provenance. Portable project data selects role providers and checks and may name required credential environment variables; it never contains their values. Machine data supplies account choices and local paths, while the process environment or native sign-in supplies secrets. Workflow services manage reviewed work, immutable provider bindings, operation reconciliation and evidence-gated completion. Check services produce receipts. Provider adapters implement versioned contracts. Renderers generate deterministic client configuration. Copier owns template answers, original revisions and three-way updates.
 
 ## Persistence
 

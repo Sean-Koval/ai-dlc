@@ -86,6 +86,57 @@ def test_presets(tmp_path, preset):
     assert not list((root / ".ai-dlc/work").glob("*.toml"))
 
 
+@pytest.mark.parametrize("capabilities", [None, ["specs", "scm"], []])
+def test_project_template_includes_workflow_handbook(tmp_path, capabilities):
+    root = tmp_path / "project"
+
+    assert adopt(root, apply=True, capabilities=capabilities)["status"] == "applied"
+
+    expected = {
+        "docs/development-workflow.md",
+        "docs/workflows/brownfield.md",
+        "docs/workflows/design-to-implementation.md",
+        "docs/workflows/greenfield.md",
+        "docs/workflows/tool-map.md",
+    }
+    generated = {path.relative_to(root).as_posix() for path in root.rglob("*.md")}
+    assert expected <= generated
+    handbook = (root / "docs/development-workflow.md").read_text()
+    assert (
+        "[Development workflow](docs/development-workflow.md)" in (root / "AI-DLC.md").read_text()
+    )
+    selected = (
+        {
+            "specs",
+            "tracker",
+            "knowledge",
+            "scm",
+            "deploy",
+            "agent-client",
+        }
+        if capabilities is None
+        else set(capabilities)
+    )
+    for role in ["specs", "tracker", "knowledge", "scm", "deploy", "agent-client"]:
+        state = "configured" if role in selected else "not configured"
+        assert f"- `{role}`: {state}" in handbook
+    design_headings = {
+        line
+        for line in (root / "docs/templates/design.md").read_text().splitlines()
+        if line.startswith("## ")
+    }
+    assert {
+        "## Identity and links",
+        "## Outcome and scope",
+        "## User journey and states",
+        "## System boundaries and interfaces",
+        "## Decisions and rationale",
+        "## Behavioral contract",
+        "## Verification strategy",
+        "## Delivery and recovery",
+    } <= design_headings
+
+
 def test_initialized_python_check_does_not_dirty_repository(tmp_path):
     from ai_dlc.project import check_project, setup_project
 
