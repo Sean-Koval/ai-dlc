@@ -18,6 +18,13 @@ agent-client = ["claude-code", "codex"]
 repository = "Sean-Koval/ai-dlc"
 workflow = "verify.yml"
 target_branch = "main"
+receipt_artifacts = [
+  "ai-dlc-receipt-ubuntu-24.04",
+  "ai-dlc-receipt-ubuntu-24.04-arm",
+  "ai-dlc-receipt-ubuntu-26.04",
+  "ai-dlc-receipt-ubuntu-26.04-arm",
+  "ai-dlc-receipt-macos-15-intel",
+]
 
 [providers.linear]
 token_env = "LINEAR_API_KEY"
