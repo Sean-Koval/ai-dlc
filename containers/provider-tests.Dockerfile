@@ -29,7 +29,7 @@ COPY playbook /kit/playbook
 COPY bootstrap /kit/bootstrap
 RUN uv sync --locked --no-editable --group dev
 RUN ai-dlc-conformance --list
-RUN mkdir /work && chmod 1777 /work && chmod -R a+rX /kit /opt/ai-dlc-venv
+RUN mkdir -p /work && chmod 1777 /work && chmod -R a+rX /kit /opt/ai-dlc-venv
 USER 65534:65534
 # No entrypoint: sandbox.py supplies ai-dlc-conformance <target> explicitly.
 CMD ["ai-dlc-conformance", "all"]

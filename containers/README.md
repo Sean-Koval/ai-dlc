@@ -96,8 +96,12 @@ variables is not sufficient egress enforcement.
 
 ## Verification limits
 
-The container build/run, direct-egress rejection, and live API health calls have not
-been executed in the current development environment because the Docker daemon is unavailable (the client is installed).
-Host unit tests verify command selection and health-check behavior with transport
-fixtures. Run the actual image through the sandbox runner on a Docker-capable host
-before treating isolation or live compatibility as verified.
+On Apple silicon, the provider-test image built from the attested official uv 0.9.11
+image pinned at `sha256:4ffead4f5157cc458bbd7722122f2424c17f45eb4491fe4b34529942166aa355`.
+The digest-addressed result passed the production runner's offline path and all 56
+packaged provider/workflow checks with networking disabled. A live-path probe also
+passed the namespace firewall's direct-egress and undeclared-host rejection before its
+intentionally invalid credential failed Linear health verification. A successful live
+health call still requires an explicit sandbox workspace, reference, and credential.
+Host unit tests continue to cover command selection and error behavior with transport
+fixtures; do not treat the probe as live provider compatibility or mutation conformance.
