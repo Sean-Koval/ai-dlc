@@ -1,0 +1,15 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "correlation": {
+      "minLength": 1,
+      "title": "Correlation",
+      "type": "string"
+    }
+  },
+  "required": [
+    "correlation"
+  ],
+  "title": "Find",
+  "type": "object"
+}

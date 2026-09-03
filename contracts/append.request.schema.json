@@ -1,0 +1,27 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "body": {
+      "minLength": 1,
+      "title": "Body",
+      "type": "string"
+    },
+    "operation_id": {
+      "minLength": 1,
+      "title": "Operation Id",
+      "type": "string"
+    },
+    "path": {
+      "minLength": 1,
+      "title": "Path",
+      "type": "string"
+    }
+  },
+  "required": [
+    "path",
+    "body",
+    "operation_id"
+  ],
+  "title": "Append",
+  "type": "object"
+}

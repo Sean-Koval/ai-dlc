@@ -1,0 +1,47 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ai-dlc"
+version = "0.4.0"
+description = "A portable development environment for people and agents"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = ["typer>=0.16,<1", "pydantic>=2.11,<3", "jinja2>=3.1.6,<4", "copier>=9.9,<10", "mcp>=1.20,<2", "httpx>=0.28,<1", "tomli-w>=1.2,<2"]
+
+[project.scripts]
+ai-dlc = "ai_dlc.cli:app"
+ai-dlc-cli = "ai_dlc.cli:app"
+ai-dlc-conformance = "ai_dlc.conformance:main"
+ai-dlc-github-issues = "ai_dlc.providers.github_issues:main"
+
+[dependency-groups]
+dev = ["pytest>=8.4,<9", "ruff>=0.12,<1", "pyright>=1.1.400,<2", "build>=1.2,<2"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ai_dlc"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"templates" = "ai_dlc/assets/legacy"
+"profiles" = "ai_dlc/assets/profiles"
+"modules" = "ai_dlc/assets/modules"
+"agents" = "ai_dlc/assets/agents"
+"project-templates" = "ai_dlc/assets/project-templates"
+"contracts" = "ai_dlc/assets/contracts"
+"targets" = "ai_dlc/assets/targets"
+"playbook" = "ai_dlc/assets/playbook"
+"bootstrap" = "ai_dlc/assets/bootstrap"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+extend-exclude = ["templates", "crates", "project-templates"]
+
+[tool.pyright]
+include = ["src/ai_dlc"]
+typeCheckingMode = "basic"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

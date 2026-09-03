@@ -1,0 +1,32 @@
+name: Verify
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    name: Verify (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+          - ubuntu-26.04
+          - ubuntu-26.04-arm
+          - macos-15-intel
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare checked-out implementation
+        run: sh scripts/bootstrap.sh --source --target github-actions
+      - name: Run project check definitions
+        run: ai-dlc project check --target github-actions --required --json --receipt "$RUNNER_TEMP/ai-dlc-receipt.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ai-dlc-receipt-${{ matrix.os }}
+          path: ${{ runner.temp }}/ai-dlc-receipt.json
+          if-no-files-found: error

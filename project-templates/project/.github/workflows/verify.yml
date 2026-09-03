@@ -1,0 +1,19 @@
+name: Verify
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bootstrap
+        run: bash scripts/bootstrap.sh --target github-actions
+      - name: Required checks
+        run: ai-dlc project check --target github-actions --required --json --receipt "$RUNNER_TEMP/ai-dlc-receipt.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ai-dlc-receipt
+          path: ${{ runner.temp }}/ai-dlc-receipt.json

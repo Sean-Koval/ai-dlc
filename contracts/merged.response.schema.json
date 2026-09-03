@@ -1,0 +1,20 @@
+{
+  "properties": {
+    "pr": {
+      "additionalProperties": true,
+      "title": "Pr",
+      "type": "object"
+    },
+    "sha": {
+      "minLength": 1,
+      "title": "Sha",
+      "type": "string"
+    }
+  },
+  "required": [
+    "sha",
+    "pr"
+  ],
+  "title": "MergedResult",
+  "type": "object"
+}

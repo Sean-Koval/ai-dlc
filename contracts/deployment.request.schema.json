@@ -1,0 +1,15 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "sha": {
+      "minLength": 1,
+      "title": "Sha",
+      "type": "string"
+    }
+  },
+  "required": [
+    "sha"
+  ],
+  "title": "Revision",
+  "type": "object"
+}

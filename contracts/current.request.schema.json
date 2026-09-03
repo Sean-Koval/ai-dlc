@@ -1,0 +1,27 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "revision": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Revision"
+    },
+    "work": {
+      "additionalProperties": true,
+      "title": "Work",
+      "type": "object"
+    }
+  },
+  "required": [
+    "work"
+  ],
+  "title": "Current",
+  "type": "object"
+}

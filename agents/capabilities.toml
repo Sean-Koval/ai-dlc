@@ -1,0 +1,14 @@
+schema = 1
+coverage = "Local fixture coverage only, not full client walkthrough. Bash/exec_command direct git push and gh pr create; external terminals and arbitrary wrappers excluded. Hooks require trusted repositories; native approval request unsupported."
+
+[[fixtures]]
+client = "codex"
+version = "0.151.0"
+target = "local"
+hooks = ["session-context", "bound-push", "stop-reminder"]
+
+[[fixtures]]
+client = "claude-code"
+version = "2.1.0"
+target = "local"
+hooks = ["session-context", "bound-push", "stop-reminder"]

@@ -6,9 +6,7 @@
     "ai-dlc": "bin/run.js",
     "ai-dlc-cli": "bin/run.js"
   },
-  "scripts": {
-    "postinstall": "node ./scripts/install.js"
-  },
+  "scripts": {},
   "files": [
     "bin",
     "dist",
@@ -36,5 +34,6 @@
   },
   "aiDlc": {
     "cargoVersion": "0.1.0"
-  }
+  },
+  "private": true
 }

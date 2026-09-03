@@ -2,3 +2,12 @@ __pycache__/
 venv/
 *.pyc
 tempo/
+.venv/
+target/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+.ai-dlc/local/
+.superpowers/
+*.egg-info/

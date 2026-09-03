@@ -1,0 +1,56 @@
+schema = 4
+
+[roles]
+{% if 'specs' in capabilities %}
+specs = "openspec"
+{% endif %}
+{% if 'tracker' in capabilities %}
+tracker = "linear"
+{% endif %}
+{% if 'knowledge' in capabilities %}
+knowledge = "obsidian"
+{% endif %}
+{% if 'scm' in capabilities %}
+scm = "github"
+{% endif %}
+{% if 'deploy' in capabilities %}
+deploy = "none"
+{% endif %}
+{% if 'agent-client' in capabilities %}
+agent-client = ["claude-code", "codex"]
+{% endif %}
+
+{% if 'tracker' in capabilities %}
+[providers.linear]
+token_env = "LINEAR_API_KEY"
+{% endif %}
+
+[gates]
+finish = ["specification-current", "pr-merged", "ci-green"]
+
+[checks]
+required = ["generated"{% if initialize and preset != 'generic' %}, "language-check"{% endif %}]
+
+[checks.commands]
+generated = "ai-dlc agents render --check"
+{% if initialize and preset == 'python' %}
+language-check = "uv run --locked --no-sync python -m compileall -f -q src"
+{% elif initialize and preset == 'node' %}
+language-check = "node --check src/index.js"
+{% elif initialize and preset == 'rust' %}
+language-check = "cargo check --locked"
+{% endif %}
+
+[setup]
+{% if preset == 'python' %}
+steps = [{id = "dependencies", command = "{% if initialize %}(test -f uv.lock || uv lock) && {% else %}test -f uv.lock && {% endif %}uv sync --locked", verify = "uv sync --locked --check"}]
+{% elif preset == 'node' %}
+steps = [{id = "dependencies", command = "{% if initialize %}(test -f package-lock.json || npm install --package-lock-only --ignore-scripts) && {% endif %}npm ci", verify = "npm ls --all --parseable"}]
+{% elif preset == 'rust' %}
+steps = [{id = "dependencies", command = "{% if initialize %}(test -f Cargo.lock || cargo generate-lockfile) && {% endif %}cargo fetch --locked", verify = "cargo fetch --locked --offline"}]
+{% else %}
+steps = []
+{% endif %}
+
+# Set scm.repository to your selected owner/repository before SCM operations.
+# Extend required checks with application-specific validation before completing real work.

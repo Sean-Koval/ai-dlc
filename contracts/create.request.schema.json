@@ -1,0 +1,32 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "body": {
+      "default": "",
+      "title": "Body",
+      "type": "string"
+    },
+    "correlation": {
+      "minLength": 1,
+      "title": "Correlation",
+      "type": "string"
+    },
+    "operation_id": {
+      "minLength": 1,
+      "title": "Operation Id",
+      "type": "string"
+    },
+    "title": {
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "correlation",
+    "operation_id"
+  ],
+  "title": "Create",
+  "type": "object"
+}

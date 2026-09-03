@@ -1,0 +1,15 @@
+schema = 4
+
+[roles]
+specs = "openspec"
+tracker = "linear"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+agent-client = ["claude-code", "codex"]
+
+[gates]
+finish = ["specification-current", "pr-merged", "ci-green"]
+
+[agents]
+servers = []
