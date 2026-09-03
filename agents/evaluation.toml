@@ -1,0 +1,12 @@
+schema = 1
+status = "pending"
+model = "gpt-5.6-sol"
+reasoning_effort = "high"
+repetitions = 5
+max_output_tokens = 2000
+max_total_tokens = 200000
+require_control = true
+require_human_review = true
+scenarios = "evaluation-scenarios.json"
+# Release gate: run no-skill controls, then skills, archive every transcript and score.
+# These are planned settings, not a claim that evaluations ran or passed.

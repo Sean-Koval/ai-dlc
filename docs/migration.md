@@ -1,0 +1,13 @@
+# Migration to v4
+
+Inventory existing aliases, shell functions, PATH entries and installed ai-dlc/ai-dlc-cli binaries before selecting the Python entry point. Confirm both aliases resolve to the intended executable after installation. Remove obsolete Rust binaries only after migration fixtures prove supported command, configuration and work-record behavior. Keep a rollback copy until then.
+
+Schema 4 separates portable project configuration from machine bindings. Review old provider selections and credentials; migrate secret values to environment variables. Select scm.repository explicitly. Machine-specific vault paths and account settings belong in machine configuration. Do not copy local journals as a substitute for remote state reconciliation.
+
+Initialize the specification provider (OpenSpec by default) using its supplied setup instructions, review existing formal specs, and link them to work. Configure the personal knowledge provider (Obsidian by default) with the intended vault and validate access. Preserve repository architecture, product rationale, decisions and runbooks as durable docs rather than copying them into the vault.
+
+Adopting an existing project previews changes and reports path conflicts. Resolve user-authored docs/config deliberately before adoption; do not overwrite them. For upgrades, preserve Copier answers and the original accessible Git release. Bundled local-source adoption is a development fallback and does not promise cross-machine sync. Use the versioned repository template source for released projects.
+
+Provider changes require `project rebind` planning. Existing work retains its old provider until explicitly mapped. An apply refuses affected work without replacement artifact mappings. TOML mappings use work IDs as tables and artifact kinds as keys, for example `[work-123]` with `tracker = "NEW-42"`. PR/branch references must both be mapped when both exist. Local completion claims alone do not prove completion, so the migration treats retained records conservatively. Review old and replacement artifacts before applying.
+
+No Jira, Figma, Windows or hosted orchestration migration is provided by this release.

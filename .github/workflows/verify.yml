@@ -1,0 +1,22 @@
+name: Verify
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare checked-out implementation
+        run: sh scripts/bootstrap.sh --source --target github-actions
+      - name: Run project check definitions
+        run: ai-dlc project check --target github-actions --required --json --receipt "$RUNNER_TEMP/ai-dlc-receipt.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ai-dlc-receipt
+          path: ${{ runner.temp }}/ai-dlc-receipt.json
+          if-no-files-found: error

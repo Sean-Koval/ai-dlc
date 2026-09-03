@@ -1,0 +1,27 @@
+name: Release verification
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: sh scripts/bootstrap.sh --source --target github-actions
+      - run: ai-dlc project check --required --target github-actions
+      - run: uv build
+      - run: uv export --locked --no-dev --no-emit-project --format requirements-txt --output-file dist/requirements.txt
+      - name: Verify wheel installation against published constraints
+        run: |
+          uv venv /tmp/ai-dlc-wheel
+          uv pip install --python /tmp/ai-dlc-wheel/bin/python --require-hashes -r dist/requirements.txt
+          uv pip install --python /tmp/ai-dlc-wheel/bin/python --no-deps dist/*.whl
+          /tmp/ai-dlc-wheel/bin/ai-dlc --help
+          mkdir /tmp/ai-dlc-scaffold
+          cd /tmp/ai-dlc-scaffold
+          /tmp/ai-dlc-wheel/bin/ai-dlc-cli scaffold --all
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-candidate
+          path: dist/

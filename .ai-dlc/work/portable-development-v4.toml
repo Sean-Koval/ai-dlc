@@ -1,0 +1,19 @@
+schema = 1
+id = "portable-development-v4"
+title = "Implement the portable AI-DLC v4 development environment"
+scope = "User-approved v4 bootstrap, configuration, workflow, agent configuration and development playbook."
+requires_spec = true
+spec_reason = "Changes the CLI implementation, provider contracts, configuration and completion guarantees."
+acceptance = ["Required project checks pass", "Existing scaffold outputs remain available", "Completion rejects mismatched evidence", "Existing application and vault content is preserved", "Live verification gaps remain explicit"]
+reviewed = true
+
+[providers]
+specs = "openspec"
+tracker = "linear"
+scm = "github"
+knowledge = "obsidian"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/portable-development-v4"
+branch = "feat/portable-development-v4"

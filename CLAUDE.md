@@ -160,3 +160,7 @@ The project is planned to evolve through multiple phases:
 - **Phase 1** (Current): Standalone scaffolding CLI for template distribution
 - **Phase 2**: Local-first integrated system with Docker and Redis for team coordination
 - **Phase 3**: Cloud deployment for enterprise team collaboration and template sharing
+
+<!-- ai-dlc:begin 336cc4fbf19beaada7ccf9986414fa91851a8d7a07dfb3ccbe800a69eed0ab49 -->
+@AGENTS.md
+<!-- ai-dlc:end -->

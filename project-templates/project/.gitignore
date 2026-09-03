@@ -1,0 +1,6 @@
+.env
+.env.*
+.venv/
+node_modules/
+target/
+.ai-dlc/receipts/

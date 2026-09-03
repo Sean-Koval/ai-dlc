@@ -1,0 +1,32 @@
+{
+  "properties": {
+    "deployment_id": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "title": "Deployment Id"
+    },
+    "environment": {
+      "minLength": 1,
+      "title": "Environment",
+      "type": "string"
+    },
+    "sha": {
+      "minLength": 1,
+      "title": "Sha",
+      "type": "string"
+    }
+  },
+  "required": [
+    "sha",
+    "environment",
+    "deployment_id"
+  ],
+  "title": "DeploymentResult",
+  "type": "object"
+}

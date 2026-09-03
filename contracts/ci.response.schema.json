@@ -1,0 +1,32 @@
+{
+  "properties": {
+    "receipt": {
+      "additionalProperties": true,
+      "title": "Receipt",
+      "type": "object"
+    },
+    "run_id": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "title": "Run Id"
+    },
+    "sha": {
+      "minLength": 1,
+      "title": "Sha",
+      "type": "string"
+    }
+  },
+  "required": [
+    "sha",
+    "run_id",
+    "receipt"
+  ],
+  "title": "CIResult",
+  "type": "object"
+}

@@ -1,0 +1,4 @@
+[homebrew]
+url = "https://raw.githubusercontent.com/Homebrew/install/c8188c1d48d77234a458b944d1d1b750f015a1c4/install.sh"
+sha256 = "12479a24be3f5307eecac7cde670fad7118640f031229e964f544b1367b52a41"
+source = "https://docs.brew.sh/Installation"

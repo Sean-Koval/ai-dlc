@@ -1,0 +1,15 @@
+schema = 4
+
+[modules]
+include = ["core", "python", "node", "rust", "docker", "vscode", "codex", "claude-code", "openspec", "linear", "obsidian", "context7", "serena"]
+
+[preferences]
+headless = false
+
+[roles]
+specs = "openspec"
+tracker = "linear"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+agent-client = ["claude-code", "codex"]

@@ -1,0 +1,50 @@
+schema = 4
+
+[engine]
+version = "0.4.0"
+
+[project]
+name = "AI-DLC"
+
+[roles]
+specs = "openspec"
+tracker = "linear"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+agent-client = ["claude-code", "codex"]
+
+[scm]
+repository = "Sean-Koval/ai-dlc"
+workflow = "verify.yml"
+target_branch = "main"
+
+[providers.linear]
+token_env = "LINEAR_API_KEY"
+# Set team_id and workspace-native status UUIDs before publishing work.
+
+[gates]
+finish = ["specification-current", "pr-merged", "ci-green"]
+
+[[setup.steps]]
+id = "python-dependencies"
+command = "uv sync --locked"
+verify = "uv sync --locked --check"
+
+[[setup.steps]]
+id = "type-checker-runtime"
+command = "uv run --locked --no-sync pyright --version"
+verify = "uv run --locked --no-sync pyright --version"
+
+[checks]
+required = ["generated", "format", "lint", "types", "test"]
+
+[checks.commands]
+generated = "ai-dlc agents render --check && uv run --locked --no-sync python scripts/check_generated.py"
+format = "uv run --locked --no-sync ruff format --check src tests scripts"
+lint = "uv run --locked --no-sync ruff check src tests scripts"
+types = "uv run --locked --no-sync pyright --pythonpath .venv/bin/python"
+test = "uv run --locked --no-sync pytest -q"
+
+[agents]
+servers = []

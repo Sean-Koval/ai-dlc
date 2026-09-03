@@ -1,0 +1,8 @@
+schema: spec-driven
+context: |
+  AI-DLC is a portable development environment and playbook, implemented in Python
+  with uv. Machine provisioning delegates to native package managers and mise.
+  CLI and MCP share workflow services. Tracker completion requires evidence for
+  the merged revision. Preserve existing project content, credentials and vault notes.
+  Durable documentation lives in the repository; personal knowledge lives in the
+  selected vault. Never claim a target is verified based on mocks alone.

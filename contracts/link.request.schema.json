@@ -1,0 +1,27 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "operation_id": {
+      "minLength": 1,
+      "title": "Operation Id",
+      "type": "string"
+    },
+    "reference": {
+      "minLength": 1,
+      "title": "Reference",
+      "type": "string"
+    },
+    "url": {
+      "minLength": 1,
+      "title": "Url",
+      "type": "string"
+    }
+  },
+  "required": [
+    "reference",
+    "url",
+    "operation_id"
+  ],
+  "title": "Link",
+  "type": "object"
+}

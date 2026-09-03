@@ -1,0 +1,44 @@
+[local]
+filesystem = true
+network = true
+authentication = "native-or-environment"
+persistence = "machine"
+hooks = "client-version-specific"
+knowledge = "explicit-existing-vault"
+verified = false
+
+[devcontainer]
+filesystem = true
+network = true
+authentication = "explicit-mounts-or-environment"
+persistence = "declared-volumes"
+hooks = "client-version-specific"
+knowledge = "explicit-mount-only"
+verified = false
+
+[github-actions]
+filesystem = true
+network = true
+authentication = "declared-workflow-permissions"
+persistence = "artifacts-and-cache"
+hooks = "unavailable"
+knowledge = "unavailable"
+verified = false
+
+[codex-cloud]
+filesystem = true
+network = "setup-only-unless-enabled"
+authentication = "platform-secrets-lifecycle"
+persistence = "platform-cache"
+hooks = "not-verified"
+knowledge = "unavailable"
+verified = false
+
+[claude-cloud]
+filesystem = true
+network = "platform-policy"
+authentication = "platform-secrets"
+persistence = "platform-policy"
+hooks = "not-verified"
+knowledge = "unavailable"
+verified = false

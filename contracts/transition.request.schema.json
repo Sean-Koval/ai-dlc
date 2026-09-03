@@ -1,0 +1,27 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "operation_id": {
+      "minLength": 1,
+      "title": "Operation Id",
+      "type": "string"
+    },
+    "reference": {
+      "minLength": 1,
+      "title": "Reference",
+      "type": "string"
+    },
+    "state": {
+      "minLength": 1,
+      "title": "State",
+      "type": "string"
+    }
+  },
+  "required": [
+    "reference",
+    "state",
+    "operation_id"
+  ],
+  "title": "Transition",
+  "type": "object"
+}

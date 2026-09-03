@@ -1,113 +1,61 @@
-# AI-DLC (AI Development Lifecycle) Toolkit
+# AI-DLC
 
-This repository contains the source code for the `ai-dlc` toolkit, a command-line application designed to manage and streamline the lifecycle of AI-driven development. It provides a curated collection of templates, agent definitions, and a companion CLI to orchestrate agentic workflows.
+AI-DLC keeps your development tools, project requirements, agent configuration, and working process in versioned, editable files. Python services power both the CLI and the local MCP server.
 
-This project is currently under active development and is being built using the **Rust** programming language for performance, reliability, and security.
+This checkout is a **v4 implementation candidate**. Native macOS Apple silicon bootstrap and deterministic tests have been exercised. Linux, Intel macOS, cloud hosts, live integrations, and provider-container enforcement still require release walkthroughs. See [verification status](docs/release-verification.md). There is no published v4 bootstrap release yet.
 
-## Current Status: Phase 1 - Standalone Scaffolding CLI
+## Prepare this checkout
 
-The current development focus is on **Phase 1**, which delivers a self-contained `ai-dlc` command-line tool. The primary feature of this phase is the `scaffold` command.
+From a checkout of this repository:
 
-This command generates best-practice directory structures and template files for various AI providers (e.g., Claude, Gemini, Roo), allowing developers to quickly start new projects without needing to create boilerplate from scratch.
-
-## Project Structure
-
-*   `docs/`: Contains project planning and engineering documentation, such as the `phase_1_rust.md` implementation plan.
-*   `templates/`: The source-of-truth for the standard templates that are bundled into the `ai-dlc` binary.
-*   `crates/ai-dlc-cli/`: The source code for the main Rust CLI application.
-
-## Getting Started
-
-### Installation Options
-
-#### Cargo (Rust tooling required)
-
-```bash
-# Install directly from GitHub without waiting for a crates.io release
-cargo install --git https://github.com/Sean-Koval/ai-dlc ai-dlc-cli --locked
-
-# Install from the workspace while developing locally
-cargo install --path crates/ai-dlc-cli --locked
-
-# Once published, install directly from crates.io
-cargo install ai-dlc-cli --locked
+```sh
+sh scripts/bootstrap.sh --source
 ```
 
-Cargo places binaries in `~/.cargo/bin`; ensure that directory is on your `PATH` so the `ai-dlc-cli` command is available globally.
+The standalone script verifies and installs its pinned uv and mise downloads, prepares a private engine interpreter, installs the checked-out implementation, and prepares the project. It needs a POSIX shell, curl, CA certificates, tar, and standard platform utilities. It prints the two directories to add to your shell's PATH. It does not require preinstalled Python, Node, Rust, mise, or AI-DLC.
 
-#### npm (Node.js 18+ and Rust tooling required)
+After adding those directories:
 
-```bash
-# Install directly from GitHub; requires access to this repository
-npm install -g github:Sean-Koval/ai-dlc#main
-
-# On-demand execution against the repo
-npx github:Sean-Koval/ai-dlc#main ai-dlc scaffold --all
-
-# Invoke the hidden-template scaffold using the npm-installed shim
-npx github:Sean-Koval/ai-dlc#main ai-dlc scaffold --provider claude
-
-# Global install
-npm install -g ai-dlc-cli
-
-# On-demand execution
-npx ai-dlc scaffold --all
+```sh
+ai-dlc project check --required
+ai-dlc doctor
+ai-dlc setup plan --profile profiles/sean.toml
+ai-dlc setup apply --profile profiles/sean.toml
 ```
 
-The npm package wraps the Rust binary and runs `cargo install ai-dlc-cli` during `postinstall`. Make sure a Rust toolchain is available on the machine where you execute the npm commands. Pin to a git tag (for example, `github:Sean-Koval/ai-dlc#v0.1.0`) when you want reproducible installs.
+Machine setup installs the selected workstation modules. Interactive sign-ins and provider workspace selections remain explicit. Configure Linear's team and native status IDs before publishing work. Keep vault paths and account choices in a machine TOML file, and supply it with `--machine` where supported. Credentials are environment references or native tool sign-ins.
 
-### Usage
+Personal MCP servers declared in the selected profile are previewed by `setup plan` and merged into the supported user-level Codex and Claude configuration during `setup apply`. AI-DLC records only the entries it owns, preserves unrelated settings, and stops on edited or colliding entries. To review or apply only this layer, use `ai-dlc agents render --personal <profile> --check` and then replace `--check` with `--apply`.
 
-After installing via either method, you can invoke the CLI directly:
+## Prepare a project
 
-```bash
-# Scaffold templates for a specific provider
-ai-dlc-cli scaffold --provider gemini
-
-# Scaffold templates for all supported providers
-ai-dlc-cli scaffold --all
-
-# The npm wrapper also exposes `ai-dlc` as an alias
-ai-dlc scaffold --provider claude
+```sh
+ai-dlc project init my-project --preset python --apply
+ai-dlc project adopt --root /path/to/existing-project --preset generic
 ```
 
-The scaffold command writes provider assets into hidden directories rooted in your current working directory (for example, `.claude/agents`, `.claude/commands`, `…`). Add `--all` to materialize each provider's dot-prefixed workspace in one run.
+Adoption previews changes; add `--apply` after reviewing the preview. It stages changes and refuses conflicting destination content. Generic, Python/uv, Node, and Rust presets include durable documentation and shared instructions. Versioned Git template sources support Copier updates; bundled development templates require an explicit versioned source before cross-machine updates.
 
-If you prefer to build from source without installing, run `cargo build` and use `./target/debug/ai-dlc-cli` as before.
+The project owns `ai-dlc.toml` (setup, checks, gates and providers), `.mise.toml` (runtimes), `.ai-dlc/work/` (reviewed work bindings), and repository documentation. Machine configuration owns local paths. Personal notes remain in your existing Obsidian vault.
 
-## Development & Testing
+## Work cycle
 
-The `ai-dlc` tool embeds the standard templates directly into the final binary to make it self-contained. This requires a specific workflow to test the scaffolding functionality correctly.
+1. Use discovery and specification skills to review scope and acceptance criteria. Record whether a formal specification is required.
+2. Prepare `.ai-dlc/work/<id>.toml`; `work publish` creates or reuses the tracker item.
+3. `work start` binds a branch. Implement, run `project check --required`, and update durable docs.
+4. Finalize required specifications before review and merge.
+5. `work finish` checks the merged revision's configured CI evidence and any deployment gate before completing the tracker item. Handoff failures remain separately retryable.
 
-To test that the binary can recreate the templates from its embedded assets, follow these steps:
+Linear, executable GitHub Issues, OpenSpec, GitHub SCM, Obsidian, and optional deployment evidence adapters are included. Configure the destination repository, workflow, target branch and provider settings explicitly. Provider changes affect new work; use reviewed rebind mappings for existing work.
 
-1.  **Ensure Source Templates Exist:** Make sure the `templates/` directory at the root of this repository is populated with the desired file structure.
+## Architecture and customization
 
-2.  **Sync Embedded Assets:** Run `scripts/sync-cli-templates.sh` to mirror the root `templates/` directory into the embedded copy that ships with the CLI.
-    ```bash
-    scripts/sync-cli-templates.sh
-    ```
+- `src/ai_dlc/`: configuration, provisioning, setup/check execution, workflow services, providers, CLI and MCP.
+- `profiles/`, `modules/`, `targets/`: preferences, delegated installation recipes, target capabilities.
+- `agents/`: shared skills, pinned sources, client capability declarations and owned configuration.
+- `project-templates/`, `playbook/`, `contracts/`: Copier presets, development process, generated provider schemas.
+- `docs/`: [architecture](docs/architecture.md), [workflow](docs/development-workflow.md), [migration](docs/migration.md), and [implementation record](docs/implementation-v4.md).
 
-3.  **Build the Application:** Run `cargo build`. This process reads the embedded templates under `crates/ai-dlc-cli/embedded-templates/` and bundles them into the `ai-dlc-cli` binary.
+Local execution and GitHub Actions use one checks manifest. CI runs this checkout's implementation and publishes a receipt; completion checks verify workflow identity, merged SHA and manifest digests. Client hooks cover documented tool paths only. Repository merge rules must be configured by the repository owner.
 
-4.  **Delete the Source Directory:** Before testing, you must delete the source `templates/` directory. This ensures your test is running against the embedded assets, not the local files.
-    ```bash
-    rm -rf templates
-    ```
-
-5.  **Run the Executable:** Execute the compiled binary to run the scaffold command.
-    ```bash
-    ./target/debug/ai-dlc-cli scaffold --provider claude
-    ```
-
-6.  **Verify the Output:** Check that the dot-prefixed provider workspace has been created.
-    ```bash
-    ls -R .claude
-    ```
-
-## Future Phases
-
-This project is planned to evolve beyond the standalone CLI:
-
-*   **Phase 2: The Local-First Integrated System:** Will introduce a local server, worker, and queue (using Docker and Redis) to enable full workflow orchestration on a developer's machine.
-*   **Phase 3: Cloud & Multi-User Deployment:** Will involve deploying the server components to the cloud to support team-wide collaboration, central logging, and a single source of truth.
+The legacy `ai-dlc-cli scaffold --provider gemini` and `--all` interface remains available through Python. Rust source is retained for reference; Rust publishing is retired. See the migration guide for PATH conflicts.

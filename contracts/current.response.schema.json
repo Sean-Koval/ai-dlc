@@ -1,0 +1,31 @@
+{
+  "properties": {
+    "archive": {
+      "minLength": 1,
+      "title": "Archive",
+      "type": "string"
+    },
+    "current": {
+      "title": "Current",
+      "type": "boolean"
+    },
+    "revision": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Revision"
+    }
+  },
+  "required": [
+    "current",
+    "archive"
+  ],
+  "title": "CurrentResult",
+  "type": "object"
+}

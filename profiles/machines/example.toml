@@ -1,0 +1,12 @@
+schema = 4
+
+[paths]
+# Supply your existing vault location. This file deliberately has no guessed personal path.
+# vault = "/absolute/path/to/existing/vault"
+
+[target]
+name = "local"
+headless = false
+
+[providers.linear]
+token_env = "LINEAR_API_KEY"

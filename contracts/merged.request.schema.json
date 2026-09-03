@@ -1,0 +1,15 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "reference": {
+      "minLength": 1,
+      "title": "Reference",
+      "type": "string"
+    }
+  },
+  "required": [
+    "reference"
+  ],
+  "title": "Read",
+  "type": "object"
+}

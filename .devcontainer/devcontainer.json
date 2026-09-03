@@ -1,0 +1,9 @@
+{
+  "name": "AI-DLC development",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "postCreateCommand": "sh scripts/bootstrap.sh --source --target devcontainer",
+  "remoteUser": "vscode",
+  "remoteEnv": {
+    "PATH": "/home/vscode/.local/share/ai-dlc/bootstrap/bin:${containerEnv:PATH}"
+  }
+}

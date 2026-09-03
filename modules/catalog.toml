@@ -1,0 +1,67 @@
+[core]
+brew = ["git", "gh", "chezmoi"]
+apt = ["git", "gh", "curl", "ca-certificates", "build-essential"]
+verify = ["git", "gh"]
+signins = ["gh auth login"]
+
+[python]
+mise = { python = "3.12.11", uv = "0.9.11" }
+verify = ["python", "uv"]
+
+[node]
+mise = { node = "22.23.1" }
+verify = ["node", "npm"]
+
+[rust]
+mise = { rust = "1.88.0" }
+verify = ["cargo", "rustc"]
+
+[docker]
+desktop = true
+cask = ["docker"]
+apt = ["docker.io"]
+verify = ["docker"]
+signins = ["Start Docker and check docker info; Linux daemon access may require a new login."]
+
+[vscode]
+desktop = true
+cask = ["visual-studio-code"]
+verify = ["code"]
+linux_guidance = "Install the signed VS Code package from https://code.visualstudio.com/docs/setup/linux"
+
+[codex]
+mise = { "npm:@openai/codex" = "0.151.0" }
+verify = ["codex"]
+signins = ["codex login"]
+
+[claude-code]
+mise = { "npm:@anthropic-ai/claude-code" = "2.1.0" }
+verify = ["claude"]
+signins = ["claude auth login"]
+
+[openspec]
+mise = { "npm:@fission-ai/openspec" = "1.5.0" }
+verify = ["openspec"]
+
+[linear]
+desktop = true
+cask = ["linear-linear"]
+signins = ["Sign in to Linear; set LINEAR_API_KEY for CLI operations and configure team/status mappings."]
+linux_guidance = "Use https://linear.app in your browser; tracker integration uses its API."
+
+[obsidian]
+desktop = true
+cask = ["obsidian"]
+signins = ["Reconnect your existing vault; set paths.vault in the machine layer."]
+linux_guidance = "Install the native Obsidian package from https://obsidian.md/download and reconnect your vault."
+
+[context7]
+signins = ["Configure the account-scoped documentation MCP connection in the agent client."]
+
+[serena]
+signins = ["Select a reviewed, pinned Serena artifact in the MCP registry; do not use a floating Git ref."]
+
+[cloudflare]
+mise = { "npm:wrangler" = "4.20.0" }
+verify = ["wrangler"]
+signins = ["wrangler login; select account and deployment environment explicitly."]

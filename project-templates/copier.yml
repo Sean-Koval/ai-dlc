@@ -1,0 +1,24 @@
+_subdirectory: project
+preset:
+  type: str
+  default: generic
+  choices: [generic, python, node, rust]
+capabilities:
+  type: str
+  multiselect: true
+  default: [specs, tracker, knowledge, scm, deploy, agent-client]
+  choices: [specs, tracker, knowledge, scm, deploy, agent-client]
+initialize:
+  type: bool
+  default: false
+project_name:
+  type: str
+  default: project-app
+_exclude:
+  - "{% if 'scm' not in capabilities %}.github{% endif %}"
+  - "{% if not initialize or preset != 'python' %}pyproject.toml{% endif %}"
+  - "{% if not initialize or preset != 'python' %}src/main.py{% endif %}"
+  - "{% if not initialize or preset != 'node' %}package.json{% endif %}"
+  - "{% if not initialize or preset != 'node' %}src/index.js{% endif %}"
+  - "{% if not initialize or preset != 'rust' %}Cargo.toml{% endif %}"
+  - "{% if not initialize or preset != 'rust' %}src/main.rs{% endif %}"

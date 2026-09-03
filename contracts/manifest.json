@@ -1,0 +1,1072 @@
+{
+  "contract": "ai-dlc.providers/v1",
+  "operations": {
+    "append": {
+      "payload": {
+        "additionalProperties": false,
+        "properties": {
+          "body": {
+            "minLength": 1,
+            "title": "Body",
+            "type": "string"
+          },
+          "operation_id": {
+            "minLength": 1,
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "path": {
+            "minLength": 1,
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "body",
+          "operation_id"
+        ],
+        "title": "Append",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "additionalProperties": true,
+        "properties": {
+          "path": {
+            "minLength": 1,
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "title": "AppendResult",
+        "type": "object"
+      }
+    },
+    "ci": {
+      "payload": {
+        "additionalProperties": false,
+        "properties": {
+          "sha": {
+            "minLength": 1,
+            "title": "Sha",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sha"
+        ],
+        "title": "Revision",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "properties": {
+          "receipt": {
+            "additionalProperties": true,
+            "title": "Receipt",
+            "type": "object"
+          },
+          "run_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Run Id"
+          },
+          "sha": {
+            "minLength": 1,
+            "title": "Sha",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sha",
+          "run_id",
+          "receipt"
+        ],
+        "title": "CIResult",
+        "type": "object"
+      }
+    },
+    "create": {
+      "payload": {
+        "additionalProperties": false,
+        "properties": {
+          "body": {
+            "default": "",
+            "title": "Body",
+            "type": "string"
+          },
+          "correlation": {
+            "minLength": 1,
+            "title": "Correlation",
+            "type": "string"
+          },
+          "operation_id": {
+            "minLength": 1,
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "title": {
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "correlation",
+          "operation_id"
+        ],
+        "title": "Create",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": true,
+      "response": {
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "state": {
+            "minLength": 1,
+            "title": "State",
+            "type": "string"
+          },
+          "url": {
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "state"
+        ],
+        "title": "Item",
+        "type": "object"
+      }
+    },
+    "current": {
+      "payload": {
+        "additionalProperties": false,
+        "properties": {
+          "revision": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Revision"
+          },
+          "work": {
+            "additionalProperties": true,
+            "title": "Work",
+            "type": "object"
+          }
+        },
+        "required": [
+          "work"
+        ],
+        "title": "Current",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "properties": {
+          "archive": {
+            "minLength": 1,
+            "title": "Archive",
+            "type": "string"
+          },
+          "current": {
+            "title": "Current",
+            "type": "boolean"
+          },
+          "revision": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Revision"
+          }
+        },
+        "required": [
+          "current",
+          "archive"
+        ],
+        "title": "CurrentResult",
+        "type": "object"
+      }
+    },
+    "deployment": {
+      "payload": {
+        "additionalProperties": false,
+        "properties": {
+          "sha": {
+            "minLength": 1,
+            "title": "Sha",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sha"
+        ],
+        "title": "Revision",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "properties": {
+          "deployment_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Deployment Id"
+          },
+          "environment": {
+            "minLength": 1,
+            "title": "Environment",
+            "type": "string"
+          },
+          "sha": {
+            "minLength": 1,
+            "title": "Sha",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sha",
+          "environment",
+          "deployment_id"
+        ],
+        "title": "DeploymentResult",
+        "type": "object"
+      }
+    },
+    "find": {
+      "payload": {
+        "additionalProperties": false,
+        "properties": {
+          "correlation": {
+            "minLength": 1,
+            "title": "Correlation",
+            "type": "string"
+          }
+        },
+        "required": [
+          "correlation"
+        ],
+        "title": "Find",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": true,
+      "response": {
+        "$defs": {
+          "Item": {
+            "additionalProperties": true,
+            "properties": {
+              "id": {
+                "minLength": 1,
+                "title": "Id",
+                "type": "string"
+              },
+              "state": {
+                "minLength": 1,
+                "title": "State",
+                "type": "string"
+              },
+              "url": {
+                "minLength": 1,
+                "title": "Url",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "url",
+              "state"
+            ],
+            "title": "Item",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/$defs/Item"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "Found",
+        "type": "object"
+      }
+    },
+    "link": {
+      "payload": {
+        "additionalProperties": false,
+        "properties": {
+          "operation_id": {
+            "minLength": 1,
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "reference": {
+            "minLength": 1,
+            "title": "Reference",
+            "type": "string"
+          },
+          "url": {
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reference",
+          "url",
+          "operation_id"
+        ],
+        "title": "Link",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "state": {
+            "minLength": 1,
+            "title": "State",
+            "type": "string"
+          },
+          "url": {
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "state"
+        ],
+        "title": "Item",
+        "type": "object"
+      }
+    },
+    "merged": {
+      "payload": {
+        "additionalProperties": false,
+        "properties": {
+          "reference": {
+            "minLength": 1,
+            "title": "Reference",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reference"
+        ],
+        "title": "Read",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "properties": {
+          "pr": {
+            "additionalProperties": true,
+            "title": "Pr",
+            "type": "object"
+          },
+          "sha": {
+            "minLength": 1,
+            "title": "Sha",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sha",
+          "pr"
+        ],
+        "title": "MergedResult",
+        "type": "object"
+      }
+    },
+    "read": {
+      "payload": {
+        "additionalProperties": false,
+        "properties": {
+          "reference": {
+            "minLength": 1,
+            "title": "Reference",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reference"
+        ],
+        "title": "Read",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": true,
+      "response": {
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "state": {
+            "minLength": 1,
+            "title": "State",
+            "type": "string"
+          },
+          "url": {
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "state"
+        ],
+        "title": "Item",
+        "type": "object"
+      }
+    },
+    "transition": {
+      "payload": {
+        "additionalProperties": false,
+        "properties": {
+          "operation_id": {
+            "minLength": 1,
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "reference": {
+            "minLength": 1,
+            "title": "Reference",
+            "type": "string"
+          },
+          "state": {
+            "minLength": 1,
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reference",
+          "state",
+          "operation_id"
+        ],
+        "title": "Transition",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": true,
+      "response": {
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "state": {
+            "minLength": 1,
+            "title": "State",
+            "type": "string"
+          },
+          "url": {
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "state"
+        ],
+        "title": "Item",
+        "type": "object"
+      }
+    }
+  },
+  "roles": {
+    "deploy": {
+      "mandatory": [
+        "deployment"
+      ],
+      "optional": []
+    },
+    "knowledge": {
+      "mandatory": [
+        "append"
+      ],
+      "optional": []
+    },
+    "scm": {
+      "mandatory": [
+        "merged",
+        "ci"
+      ],
+      "optional": []
+    },
+    "specs": {
+      "mandatory": [
+        "current"
+      ],
+      "optional": []
+    },
+    "tracker": {
+      "mandatory": [
+        "create",
+        "find",
+        "read",
+        "transition"
+      ],
+      "optional": [
+        "link"
+      ]
+    }
+  },
+  "schema": 1
+}
