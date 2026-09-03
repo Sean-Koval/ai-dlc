@@ -1,4 +1,5 @@
 import hashlib
+import json
 import os
 import subprocess
 from pathlib import Path
@@ -46,3 +47,13 @@ def test_digest_mismatch_never_installs_download(tmp_path):
     assert result.returncode != 0
     assert "digest mismatch" in result.stderr
     assert not destination.exists()
+
+
+def test_devcontainer_keeps_linux_environment_off_the_host_checkout():
+    config = json.loads((ROOT / ".devcontainer/devcontainer.json").read_text())
+
+    assert (
+        "source=${devcontainerId}-venv,target=${containerWorkspaceFolder}/.venv,type=volume"
+        in config["mounts"]
+    )
+    assert config["postCreateCommand"].startswith("sudo chown -R vscode:vscode .venv && ")

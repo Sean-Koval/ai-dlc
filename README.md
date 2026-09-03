@@ -2,7 +2,7 @@
 
 AI-DLC keeps your development tools, project requirements, agent configuration, and working process in versioned, editable files. Python services power both the CLI and the local MCP server.
 
-This checkout is a **v4 implementation candidate**. Native macOS Apple silicon bootstrap and deterministic tests have been exercised. Linux, Intel macOS, cloud hosts, live integrations, and provider-container enforcement still require release walkthroughs. See [verification status](docs/release-verification.md). There is no published v4 bootstrap release yet.
+This checkout is a **v4 implementation candidate**. Native macOS Apple silicon bootstrap, a clean ARM64 devcontainer lifecycle, required checks on Linux x64/ARM64 and macOS Intel, and Docker provider isolation have been exercised. Factory-clean macOS, hosted cloud sessions, live integrations, and release publication still require explicit walkthroughs. See [verification status](docs/release-verification.md). There is no published v4 bootstrap release yet.
 
 ## Prepare this checkout
 
