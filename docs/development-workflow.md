@@ -14,7 +14,7 @@ Sync copies the checkout into a temporary Git repository and lets Copier perform
 
 ## CI and release
 
-The generated `.github/workflows/verify.yml` runs reviewed bootstrap artifacts, required checks, and always uploads the `ai-dlc-receipt` artifact. Until a signed/pinned release location exists, supply bootstrap/release.sh and the artifact lock from the published distribution; do not insert a made-up release URL. The release gate must check clean-machine bootstrap and artifact integrity.
+The generated single-job `.github/workflows/verify.yml` runs reviewed bootstrap artifacts and required checks, then uploads its `ai-dlc-receipt` artifact. Repositories with a matrix, including AI-DLC itself, declare every exact expected artifact name in `scm.receipt_artifacts`. Completion reads that declaration from the authenticated merged revision and validates every expected receipt; one missing, malformed, dirty, mismatched, or expired receipt blocks completion. Until a signed/pinned release location exists, supply bootstrap/release.sh and the artifact lock from the published distribution; do not insert a made-up release URL. The release gate must check clean-machine bootstrap and artifact integrity.
 
 Skill release requires no-guidance control and skill-enabled model runs using agents/evaluation.toml and scenarios. Preserve outputs and human scoring. The fixture configuration alone is not a passing behavioral evaluation.
 

@@ -231,6 +231,102 @@ def test_github_scm_rejects_wrong_workflow_and_sha(tmp_path):
         scm.ci("correct")
 
 
+def matrix_receipt_scm(tmp_path, *, tamper_second=False, missing_second=False):
+    import base64
+    import json
+    from pathlib import Path
+
+    import tomli_w
+
+    from ai_dlc.providers.scm import GitHubSCM, digest
+
+    names = ["ai-dlc-receipt-linux", "ai-dlc-receipt-macos"]
+    config = {
+        "scm": {
+            "repository": "a/b",
+            "workflow": "verify.yml",
+            "target_branch": "main",
+            "receipt_artifacts": names,
+        },
+        "checks": {"required": ["test"], "commands": {"test": "pytest"}},
+    }
+    receipt = {
+        "schema": 1,
+        "commit": "merge-sha",
+        "checks_digest": digest(config["checks"]),
+        "environment_digest": digest({"mise": {}, "setup": {}}),
+        "engine_version": "0.4.0",
+        "target": "github-actions",
+        "required": ["test"],
+        "outcomes": [{"id": "test", "status": "passed", "exit_code": 0, "duration_seconds": 1.0}],
+        "dirty": False,
+    }
+    scm = GitHubSCM(tmp_path, config)
+
+    def api(path):
+        if "/actions/workflows/" in path:
+            return {
+                "workflow_runs": [
+                    {
+                        "id": 7,
+                        "head_sha": "merge-sha",
+                        "head_branch": "main",
+                        "event": "push",
+                        "status": "completed",
+                        "conclusion": "success",
+                        "repository": {"full_name": "a/b"},
+                        "path": ".github/workflows/verify.yml",
+                    }
+                ]
+            }
+        if path.endswith("/actions/runs/7/artifacts?per_page=100"):
+            available = names[:1] if missing_second else names
+            return {
+                "total_count": len(available),
+                "artifacts": [
+                    {"id": index, "name": name, "expired": False}
+                    for index, name in enumerate(available, 1)
+                ],
+            }
+        if "/contents/" in path:
+            value = config if "/ai-dlc.toml?" in path else {}
+            return {"content": base64.b64encode(tomli_w.dumps(value).encode()).decode()}
+        raise AssertionError(f"unexpected API path: {path}")
+
+    def run(*args):
+        assert args[:3] == ("run", "download", "7")
+        name = args[args.index("--name") + 1]
+        assert name in names
+        destination = Path(args[args.index("--dir") + 1])
+        destination.mkdir(parents=True)
+        value = copy.deepcopy(receipt)
+        if tamper_second and name == names[1]:
+            value["commit"] = "wrong"
+        (destination / "receipt.json").write_text(json.dumps(value))
+        return ""
+
+    scm.api = api
+    scm.run = run
+    return scm
+
+
+def test_github_scm_downloads_each_matrix_receipt(tmp_path):
+    result = matrix_receipt_scm(tmp_path).ci("merge-sha")
+
+    assert result["receipt_count"] == 2
+    assert len(result["receipts"]) == 2
+
+
+def test_github_scm_rejects_tampered_receipt_in_matrix(tmp_path):
+    with pytest.raises(ValueError, match="commit mismatch"):
+        matrix_receipt_scm(tmp_path, tamper_second=True).ci("merge-sha")
+
+
+def test_github_scm_rejects_missing_receipt_in_matrix(tmp_path):
+    with pytest.raises(ValueError, match="Missing expected"):
+        matrix_receipt_scm(tmp_path, missing_second=True).ci("merge-sha")
+
+
 def test_unreviewed_work_cannot_publish(tmp_path):
     from ai_dlc.workflow import WorkService
 
@@ -388,6 +484,11 @@ def test_finish_trusts_only_matching_authenticated_run(tmp_path, monkeypatch, fa
                         }
                     ]
                 }
+            elif endpoint.endswith("/actions/runs/7/artifacts?per_page=100"):
+                value = {
+                    "total_count": 1,
+                    "artifacts": [{"id": 1, "name": "ai-dlc-receipt", "expired": False}],
+                }
             else:
                 assert "?ref=merge-sha" in endpoint
                 value = {
@@ -400,6 +501,7 @@ def test_finish_trusts_only_matching_authenticated_run(tmp_path, monkeypatch, fa
         assert command[command.index("--repo") + 1] == "a/b"
         downloads.append(command)
         destination = Path(command[command.index("--dir") + 1])
+        destination.mkdir(parents=True)
         (destination / "receipt.json").write_text(json.dumps(receipt))
         return subprocess.CompletedProcess(command, 0, "", "")
 

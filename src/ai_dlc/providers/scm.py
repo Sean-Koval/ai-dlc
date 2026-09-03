@@ -150,24 +150,63 @@ class GitHubSCM:
         run = matching[0]
         config = self.file_at("ai-dlc.toml", sha)
         mise = self.file_at(".mise.toml", sha)
+        artifact_page = self.api(
+            f"repos/{self.repo}/actions/runs/{run['id']}/artifacts?per_page=100"
+        )
+        artifacts = artifact_page.get("artifacts", [])
+        if artifact_page.get("total_count") != len(artifacts):
+            raise ValueError("CI artifact listing is incomplete")
+        available_names = [artifact.get("name") for artifact in artifacts]
+        if len(available_names) != len(set(available_names)):
+            raise ValueError("Duplicate CI receipt artifact names")
+        merged_scm = config.get("scm", {})
+        expected_names = merged_scm.get("receipt_artifacts")
+        if expected_names is None:
+            expected_names = [merged_scm.get("receipt_artifact", "ai-dlc-receipt")]
+        if (
+            not isinstance(expected_names, list)
+            or not expected_names
+            or any(not isinstance(name, str) or not name.strip() for name in expected_names)
+            or len(expected_names) != len(set(expected_names))
+        ):
+            raise ValueError("Merged SCM receipt artifact names are invalid")
+        artifacts_by_name = {artifact["name"]: artifact for artifact in artifacts}
+        missing = [name for name in expected_names if name not in artifacts_by_name]
+        if missing:
+            raise ValueError("Missing expected CI receipt artifacts: " + ", ".join(missing))
+        receipts = [artifacts_by_name[name] for name in expected_names]
+        if any(artifact.get("expired") for artifact in receipts):
+            raise ValueError("CI receipt artifact is expired")
+        receipt_data = []
         with tempfile.TemporaryDirectory(prefix="ai-dlc-receipt-") as tmp:
-            self.run(
-                "run",
-                "download",
-                str(run["id"]),
-                "--repo",
-                self.repo,
-                "--name",
-                self.scm.get("receipt_artifact", "ai-dlc-receipt"),
-                "--dir",
-                tmp,
-            )
-            paths = list(Path(tmp).rglob("*.json"))
-            if len(paths) != 1:
-                raise ValueError("Expected exactly one CI receipt artifact")
-            receipt = json.loads(paths[0].read_text())
-        validate_receipt(receipt, sha, config, mise)
-        return {"run_id": run["id"], "sha": sha, "receipt": receipt}
+            for index, artifact in enumerate(receipts):
+                destination = Path(tmp) / str(index)
+                self.run(
+                    "run",
+                    "download",
+                    str(run["id"]),
+                    "--repo",
+                    self.repo,
+                    "--name",
+                    artifact["name"],
+                    "--dir",
+                    str(destination),
+                )
+                files = [
+                    path for path in destination.rglob("*") if path.is_file() or path.is_symlink()
+                ]
+                if len(files) != 1 or files[0].suffix != ".json" or files[0].is_symlink():
+                    raise ValueError("Expected exactly one JSON file per CI receipt artifact")
+                receipt_data.append(json.loads(files[0].read_text()))
+        for receipt in receipt_data:
+            validate_receipt(receipt, sha, config, mise)
+        return {
+            "run_id": run["id"],
+            "sha": sha,
+            "receipt": receipt_data[0],
+            "receipt_count": len(receipt_data),
+            "receipts": receipt_data,
+        }
 
     def deployment(self, sha):
         cfg = self.config.get("deploy", {})
