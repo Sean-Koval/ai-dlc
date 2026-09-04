@@ -1,0 +1,20 @@
+schema = 4
+profile_id = "example-development"
+
+[modules]
+include = ["core", "python"]
+
+[roles]
+specs = "openspec"
+tracker = "linear"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+agent-client = ["claude-code", "codex"]
+
+[agents]
+servers = []
+
+[credentials.linear-sandbox]
+description = "Credential for a sandbox tracker integration"
+required_by = ["provider.linear"]

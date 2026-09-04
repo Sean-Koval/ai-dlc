@@ -30,8 +30,9 @@ flowchart TD
 ```
 
 AI-DLC does not host an autonomous orchestrator. The human and agent decide
-what work is useful. Skills provide judgment; CLI and MCP services validate,
-store, link, reconcile, and gate the resulting work.
+what work is useful. Skills provide judgment; the CLI validates, stores, links,
+reconciles, and gates the resulting work. MCP exposes only its reviewed work,
+doctor, and knowledge services.
 
 ## Stage contracts
 
@@ -52,6 +53,53 @@ Each stage consumes reviewed output from the previous stage. Skipping an
 artifact is acceptable when the stage explicitly decides it is unnecessary;
 silently replacing it with assumptions is not.
 
+## Design to implementation ownership
+
+For both greenfield and brownfield work, skills own discovery, requirements,
+design judgment, and the specification decision. The CLI owns reviewed work
+records, local checks, machine lifecycle commands, and completion gates. Local
+MCP exposes reviewed work operations, read-only doctor inspection, and selected
+knowledge operations; machine enrollment mutations are CLI-only in this cycle.
+It does not create a second workflow. The design-to-implementation handoff is complete only when the
+approved design, any required specification, and the reviewed work record let
+implementation proceed without inventing behavior.
+
+## Portable profile and machine enrollment
+
+Keep a personal `ai-dlc-profile.toml` in a separate private Git repository and
+pin the revision enrolled on each machine. The profile owns portable modules,
+logical credential requirements, and agent preferences; the project repository
+owns shared policy and durable docs. Each machine independently owns its
+binding, including paths, account selection, and environment-variable names.
+Credential values belong only to a password manager, keychain, or process
+environment. Generated Codex and Claude client files remain owned by their
+client configuration, which AI-DLC updates through its ownership rules.
+
+Use `ai-dlc machine status`, `plan`, `apply`, `sync`, and `doctor` to inspect,
+preview, reconcile, update, and diagnose local enrollment. Local CLI and MCP
+execution are the current control plane; hosted or cloud execution is a later
+qualification target. Obsidian create/attach and provider discovery are
+next-cycle gaps, so knowledge remains provider-neutral and is attached only to
+an explicitly selected existing store.
+
+Preview a private profile enrollment can materialize an inactive cache, but it
+does not change active enrollment, client configuration, or package state.
+Repeat the same command with `--apply` to activate it:
+
+```sh
+ai-dlc machine enroll SOURCE --profile-id example-development --machine-id MACHINE_A --ref IMMUTABLE_REF_OR_TAG
+ai-dlc machine enroll SOURCE --profile-id example-development --machine-id MACHINE_A --ref IMMUTABLE_REF_OR_TAG --apply
+```
+
+The lock always records the exact resolved commit. An immutable advertised tag
+or ref gives cross-machine reproducibility, and `ai-dlc machine sync` is
+idempotent for it. An intentionally movable advertised branch instead enables
+`ai-dlc machine sync` to preview a candidate and `ai-dlc machine sync --apply`
+to activate it after validation and reconciliation. To move from one immutable
+tag to another, reenroll with the new ref. Enroll a second machine with the
+same advertised ref under the selected policy and a different machine ID; its
+local binding remains independent.
+
 ## Sources of truth
 
 - The repository owns architecture, product rationale, design context,
@@ -65,9 +113,10 @@ silently replacing it with assumptions is not.
   durable repository material and is not a repository mirror.
 - Portable configuration may name required environment variables, such as
   `token_env = "LINEAR_API_KEY"`, but never contains their secret values.
-  Machine configuration, the process environment, and `.ai-dlc/local/` own
-  actual credential values, account choices, local paths, caches, and operation
-  journals.
+  Machine configuration owns account choices and local paths. `.ai-dlc/local/`
+  may hold ignored non-secret control-plane IDs and local metadata. Actual
+  credential values stay in an OS keychain, password manager, or secret
+  injector and enter only the process environment.
 
 When sources disagree, reconcile their owned facts rather than overwriting one
 store with a copy from another.

@@ -8,12 +8,20 @@ import os
 import platform
 import shutil
 import subprocess
+from collections.abc import Mapping
 from pathlib import Path
 
 import tomli_w
 
-from ai_dlc.config import SCHEMA, read_toml, resolve_files, resolve_layers
+from ai_dlc.config import SCHEMA, read_toml, resolve_files
+from ai_dlc.credentials import credential_status
 from ai_dlc.files import assets, atomic_write
+
+
+def _which(command: str, environ: Mapping[str, str] | None) -> str | None:
+    if environ is None:
+        return shutil.which(command)
+    return shutil.which(command, path=environ.get("PATH", ""))
 
 
 def machine_plan(
@@ -22,6 +30,8 @@ def machine_plan(
     system: str | None = None,
     architecture: str | None = None,
     home: Path | None = None,
+    machine: Path | None = None,
+    environ: Mapping[str, str] | None = None,
 ) -> dict:
     system = system or platform.system()
     architecture = architecture or platform.machine()
@@ -32,7 +42,7 @@ def machine_plan(
         "amd64",
     }:
         raise ValueError(f"unsupported machine: {system}/{architecture}")
-    config = resolve_layers([("personal", read_toml(profile))]).values
+    config = resolve_files(personal=profile, machine=machine).values
     catalog = read_toml(assets("modules") / "catalog.toml")
     chosen = config.get("modules", {}).get("include", ["core"])
     headless = headless or config.get("preferences", {}).get("headless", False)
@@ -78,35 +88,43 @@ def machine_plan(
         "guidance": guidance,
         "signins": signins,
         "headless": headless,
+        "credentials": credential_status(config, environ),
         "agent_configuration": agent_configuration,
     }
 
 
-def machine_apply(profile: Path, headless: bool = False, home: Path | None = None) -> dict:
-    plan = machine_plan(profile, headless, home=home)
+def machine_apply(
+    profile: Path,
+    headless: bool = False,
+    home: Path | None = None,
+    machine: Path | None = None,
+    environ: Mapping[str, str] | None = None,
+) -> dict:
+    plan = machine_plan(profile, headless, home=home, machine=machine, environ=environ)
     if plan["system"] == "Linux":
         release = platform.freedesktop_os_release()
         if release.get("ID") != "ubuntu" or release.get("VERSION_ID") not in {"24.04", "26.04"}:
             raise ValueError("supported Linux workstation releases are Ubuntu 24.04 and 26.04")
     home = (home or Path.home()).resolve()
-    root = Path(os.environ.get("XDG_DATA_HOME", str(home / ".local/share"))) / "ai-dlc/workstation"
+    environment = os.environ if environ is None else environ
+    root = Path(environment.get("XDG_DATA_HOME", str(home / ".local/share"))) / "ai-dlc/workstation"
     root.mkdir(parents=True, exist_ok=True)
-    config = resolve_layers([("personal", read_toml(profile))]).values
+    config = resolve_files(personal=profile, machine=machine).values
     from ai_dlc.user_agents import render_user_agents
 
     # Detect user-authored configuration conflicts before invoking package managers.
     render_user_agents(config, home)
     bootstrap_home = Path(
-        os.environ.get(
+        environment.get(
             "AI_DLC_BOOTSTRAP_HOME",
             str(
-                Path(os.environ.get("XDG_DATA_HOME", str(home / ".local/share")))
+                Path(environment.get("XDG_DATA_HOME", str(home / ".local/share")))
                 / "ai-dlc/bootstrap"
             ),
         )
     )
     bootstrap_bin = bootstrap_home / "bin"
-    mise = shutil.which("mise")
+    mise = _which("mise", environ)
     if not mise and (bootstrap_bin / "mise").is_file():
         mise = str(bootstrap_bin / "mise")
     if not mise:
@@ -115,7 +133,7 @@ def machine_apply(profile: Path, headless: bool = False, home: Path | None = Non
     if any(step["argv"][0] == "brew" for step in plan["commands"]):
         from ai_dlc.workstation import ensure_brew
 
-        brew = ensure_brew(root, plan["architecture"])
+        brew = ensure_brew(root, plan["architecture"], environ=environ)
     results = []
     runtimes = {}
     for step in plan["commands"]:
@@ -124,7 +142,7 @@ def machine_apply(profile: Path, headless: bool = False, home: Path | None = Non
             argv[0] = brew
         elif argv[0] == "mise":
             argv[0] = mise
-        elif not shutil.which(argv[0]):
+        elif not _which(argv[0], environ):
             raise RuntimeError(
                 f"{argv[0]} is required; install the native package manager before applying this module"
             )
@@ -135,8 +153,13 @@ def machine_apply(profile: Path, headless: bool = False, home: Path | None = Non
         if "mise" in step:
             runtimes.update(step["mise"])
             atomic_write(root / ".mise.toml", tomli_w.dumps({"tools": step["mise"]}))
-            subprocess.run([mise, "trust", str(root / ".mise.toml")], cwd=root, check=True)
-        subprocess.run(argv, cwd=root, check=True)
+            subprocess.run(
+                [mise, "trust", str(root / ".mise.toml")],
+                cwd=root,
+                check=True,
+                env=environment,
+            )
+        subprocess.run(argv, cwd=root, check=True, env=environment)
         results.append(argv)
     source = config.get("preferences", {}).get("dotfiles_source")
     if source:
@@ -144,6 +167,7 @@ def machine_apply(profile: Path, headless: bool = False, home: Path | None = Non
         subprocess.run(
             ["chezmoi", "--source", str(Path(source).expanduser()), "apply", "--interactive"],
             check=True,
+            env=environment,
         )
     from ai_dlc.workstation import activate_workstation
 
@@ -153,7 +177,7 @@ def machine_apply(profile: Path, headless: bool = False, home: Path | None = Non
         mise,
         bootstrap_bin,
         brew=brew,
-        shell=Path(os.environ.get("SHELL", "/bin/zsh")).name,
+        shell=Path(environment.get("SHELL", "/bin/zsh")).name,
     )
     agent_configuration = render_user_agents(config, home, apply=True)
     return {
@@ -166,12 +190,22 @@ def machine_apply(profile: Path, headless: bool = False, home: Path | None = Non
     }
 
 
-def doctor(root: Path, target: str = "local", machine: Path | None = None) -> dict:
+def doctor(
+    root: Path,
+    target: str = "local",
+    machine: Path | None = None,
+    *,
+    personal: Path | None = None,
+    home: Path | None = None,
+    environ: Mapping[str, str] | None = None,
+) -> dict:
     capabilities = read_toml(assets("targets") / "capabilities.toml")
     if target not in capabilities:
         raise ValueError(f"unsupported execution target: {target}")
-    config = resolve_files(project=root / "ai-dlc.toml", machine=machine).values
-    missing = [tool for tool in ["git", "mise"] if not shutil.which(tool)]
+    environment = os.environ if environ is None else environ
+    config = resolve_files(personal=personal, project=root / "ai-dlc.toml", machine=machine).values
+    credentials = credential_status(config, environment)
+    missing = [tool for tool in ["git", "mise"] if not _which(tool, environ)]
     runtime_drift = []
     if "mise" not in missing:
         result = subprocess.run(
@@ -181,6 +215,7 @@ def doctor(root: Path, target: str = "local", machine: Path | None = None) -> di
             text=True,
             timeout=30,
             check=False,
+            env=environment,
         )
         if result.returncode:
             runtime_drift.append("mise could not resolve this project; run project setup")
@@ -201,9 +236,13 @@ def doctor(root: Path, target: str = "local", machine: Path | None = None) -> di
         return settings.get("kind", settings.get("type", name))
 
     if kind("scm") in {"github", "github-scm"} or kind("tracker") == "github-issues":
-        if shutil.which("gh"):
+        if _which("gh", environ):
             status = subprocess.run(
-                ["gh", "auth", "status"], capture_output=True, timeout=30, check=False
+                ["gh", "auth", "status"],
+                capture_output=True,
+                timeout=30,
+                check=False,
+                env=environment,
             )
             if status.returncode:
                 signins.append("gh auth login")
@@ -218,9 +257,6 @@ def doctor(root: Path, target: str = "local", machine: Path | None = None) -> di
         configuration.append("tracker repository is required")
     if kind("tracker") == "linear":
         settings = providers.get(roles["tracker"], {})
-        token_env = settings.get("token_env", "LINEAR_API_KEY")
-        if not os.environ.get(token_env):
-            signins.append(f"Set {token_env} using your credential store")
         if not settings.get("team_id"):
             configuration.append("tracker team_id is required for creation")
         for state in ["in_progress", "closed"]:
@@ -228,14 +264,20 @@ def doctor(root: Path, target: str = "local", machine: Path | None = None) -> di
                 configuration.append("tracker statuses." + state + " is required")
     from ai_dlc.providers import Registry
 
-    registry = Registry(config, root=root)
+    registry = Registry(config, root=root, environ=environment)
     for name, settings in providers.items():
         if settings.get("health_reference"):
             try:
                 registry.invoke(name, "read", {"reference": settings["health_reference"]})
                 health.append({"provider": name, "ready": True})
-            except Exception as exc:  # noqa: BLE001 -- doctor must report provider failures
-                health.append({"provider": name, "ready": False, "reason": str(exc)})
+            except Exception:  # noqa: BLE001 -- doctor must report provider failures
+                health.append(
+                    {
+                        "provider": name,
+                        "ready": False,
+                        "reason": "provider health check failed",
+                    }
+                )
     from ai_dlc.agents import render_agents, target_hooks
 
     hooks = target_hooks(config, target)
@@ -247,10 +289,37 @@ def doctor(root: Path, target: str = "local", machine: Path | None = None) -> di
         conflicts = [str(exc)]
     vault = config.get("paths", {}).get("vault")
     knowledge = "available" if vault and Path(vault).expanduser().is_dir() else "unavailable"
+    if personal is None:
+        user_agents: dict[str, object] = {"clean": True, "changed": [], "applied": False}
+    else:
+        from ai_dlc.user_agents import UserAgentOwnershipConflict, render_user_agents
+
+        try:
+            user_agents = render_user_agents(
+                config,
+                (Path.home() if home is None else Path(home)).resolve(),
+                apply=False,
+            )
+        except UserAgentOwnershipConflict as exc:
+            user_agents = {
+                "clean": False,
+                "changed": [],
+                "applied": False,
+                "conflicts": [str(exc)],
+            }
+    for credential in credentials:
+        if credential["present"]:
+            continue
+        variable = credential.get("variable")
+        if isinstance(variable, str):
+            signins.append(f"Set {variable} using your credential store")
+        else:
+            signins.append(f"Bind credential {credential['id']} in machine configuration")
     return {
         "ready": not (missing or runtime_drift or signins or conflicts or configuration)
         and hooks["ready"]
-        and all(item["ready"] for item in health),
+        and all(item["ready"] for item in health)
+        and bool(user_agents["clean"]),
         "target": target,
         "capabilities": capabilities[target],
         "missing": missing,
@@ -261,6 +330,8 @@ def doctor(root: Path, target: str = "local", machine: Path | None = None) -> di
         "managed_conflicts": conflicts,
         "knowledge": knowledge,
         "hooks": hooks,
+        "credentials": credentials,
+        "user_agents": user_agents,
     }
 
 

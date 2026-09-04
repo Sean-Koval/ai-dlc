@@ -1,4 +1,46 @@
+import hashlib
+import json
+from pathlib import Path
+
+from click import unstyle
 from typer.testing import CliRunner
+
+
+def _write_cli_enrollment(tmp_path: Path) -> dict[str, str]:
+    from ai_dlc.enrollment import EnrollmentLock, EnrollmentPaths, write_lock
+
+    environment = {
+        "XDG_CONFIG_HOME": str(tmp_path / "config"),
+        "XDG_CACHE_HOME": str(tmp_path / "cache"),
+        "XDG_STATE_HOME": str(tmp_path / "state"),
+    }
+    paths = EnrollmentPaths.from_environment(home=tmp_path / "unused-home", environ=environment)
+    content = (
+        b'schema = 4\nprofile_id = "personal-profile"\n[roles]\nknowledge = "enrolled-personal"\n'
+    )
+    profile_file = "ai-dlc-profile.toml"
+    resolved_commit = "a" * 40
+    content_sha256 = hashlib.sha256(
+        profile_file.encode() + b"\0" + str(len(content)).encode() + b"\0" + content
+    ).hexdigest()
+    cached_profile = paths.profile_root("personal-profile", resolved_commit) / profile_file
+    cached_profile.parent.mkdir(parents=True)
+    cached_profile.write_bytes(content)
+    machine = paths.machine_file("workstation-01")
+    machine.parent.mkdir(parents=True)
+    machine.write_text('schema = 4\n[paths]\nworkspace = "/enrolled-machine"\n')
+    write_lock(
+        paths,
+        EnrollmentLock(
+            profile_id="personal-profile",
+            source="https://example.test/profiles.git",
+            requested_ref="main",
+            resolved_commit=resolved_commit,
+            content_sha256=content_sha256,
+            machine_id="workstation-01",
+        ),
+    )
+    return environment
 
 
 def test_command_help_exposes_public_groups():
@@ -6,8 +48,144 @@ def test_command_help_exposes_public_groups():
 
     result = CliRunner().invoke(app, ["--help"])
     assert result.exit_code == 0
-    for name in ["project", "work", "setup", "profile", "knowledge", "mcp", "scaffold"]:
+    for name in [
+        "project",
+        "work",
+        "setup",
+        "profile",
+        "machine",
+        "knowledge",
+        "mcp",
+        "scaffold",
+    ]:
         assert name in result.stdout
+
+
+def test_machine_help_exposes_the_lifecycle_commands():
+    """Would fail if an enrolled-machine lifecycle route disappeared from the public CLI."""
+    from ai_dlc.cli import app
+
+    result = CliRunner().invoke(app, ["machine", "--help"])
+
+    assert result.exit_code == 0, result.output
+    for name in ["enroll", "migrate", "plan", "apply", "sync", "status", "doctor"]:
+        assert name in result.stdout
+
+
+def test_machine_commands_forward_their_documented_defaults(monkeypatch):
+    """Would fail if a lifecycle route changed its manager call or preview default."""
+    from ai_dlc import cli
+
+    calls = []
+
+    class Manager:
+        def enroll(self, source, profile_id, machine_id, **kwargs):
+            calls.append(("enroll", source, profile_id, machine_id, kwargs))
+            return {"route": "enroll"}
+
+        def migrate(self, source, profile_file, profile_id, machine_id, **kwargs):
+            calls.append(("migrate", source, profile_file, profile_id, machine_id, kwargs))
+            return {"route": "migrate"}
+
+        def plan(self, **kwargs):
+            calls.append(("plan", kwargs))
+            return {"route": "plan"}
+
+        def apply(self, **kwargs):
+            calls.append(("apply", kwargs))
+            return {"route": "apply"}
+
+        def sync(self, **kwargs):
+            calls.append(("sync", kwargs))
+            return {"route": "sync"}
+
+        def status(self):
+            calls.append(("status",))
+            return {"route": "status", "ready": True}
+
+        def doctor(self, root, *, target="local"):
+            calls.append(("doctor", root, target))
+            return {"route": "doctor", "ready": True}
+
+    monkeypatch.setattr(cli, "MachineManager", Manager, raising=False)
+    runner = CliRunner()
+    invocations = [
+        [
+            "machine",
+            "enroll",
+            "/tmp/profile-repo",
+            "--profile-id",
+            "test-development",
+            "--machine-id",
+            "test-mac",
+        ],
+        [
+            "machine",
+            "enroll",
+            "/tmp/profile-repo",
+            "--profile-id",
+            "test-development",
+            "--machine-id",
+            "test-mac",
+            "--ref",
+            "stable",
+            "--subdirectory",
+            "config",
+            "--apply",
+        ],
+        [
+            "machine",
+            "migrate",
+            "/tmp/profile-repo",
+            "--profile-file",
+            "profiles/sean.toml",
+            "--profile-id",
+            "sean-development",
+            "--machine-id",
+            "personal-macbook",
+        ],
+        ["machine", "plan"],
+        ["machine", "apply"],
+        ["machine", "sync"],
+        ["machine", "sync", "--apply"],
+        ["machine", "status"],
+        ["machine", "doctor", "--root", "/tmp/project"],
+    ]
+
+    for invocation in invocations:
+        result = runner.invoke(cli.app, invocation)
+        assert result.exit_code == 0, result.output
+
+    assert calls == [
+        (
+            "enroll",
+            "/tmp/profile-repo",
+            "test-development",
+            "test-mac",
+            {"requested_ref": "main", "subdirectory": "", "apply": False},
+        ),
+        (
+            "enroll",
+            "/tmp/profile-repo",
+            "test-development",
+            "test-mac",
+            {"requested_ref": "stable", "subdirectory": "config", "apply": True},
+        ),
+        (
+            "migrate",
+            "/tmp/profile-repo",
+            "profiles/sean.toml",
+            "sean-development",
+            "personal-macbook",
+            {"requested_ref": "main", "subdirectory": "", "apply": False},
+        ),
+        ("plan", {"headless": False}),
+        ("apply", {"headless": False}),
+        ("sync", {"apply": False, "headless": False}),
+        ("sync", {"apply": True, "headless": False}),
+        ("status",),
+        ("doctor", Path("/tmp/project"), "local"),
+    ]
 
 
 def test_scaffold_matches_legacy_assets_and_preserves_conflicts(tmp_path, monkeypatch):
@@ -76,14 +254,255 @@ def test_setup_commands_accept_documented_profile_option(tmp_path, monkeypatch):
     monkeypatch.setattr(
         ai_dlc.provision,
         "machine_plan",
-        lambda profile, headless=False, home=None: {"profile": str(profile)},
+        lambda profile, headless=False, home=None, **kwargs: {"profile": str(profile)},
     )
     monkeypatch.setattr(
         ai_dlc.provision,
         "machine_apply",
-        lambda profile, headless=False, home=None: {"profile": str(profile)},
+        lambda profile, headless=False, home=None, **kwargs: {"profile": str(profile)},
     )
     runner = CliRunner()
     for action in ["plan", "apply"]:
         result = runner.invoke(app, ["setup", action, "--profile", str(profile)])
         assert result.exit_code == 0, result.output
+
+
+def test_setup_commands_without_a_profile_use_the_enrolled_manager(monkeypatch):
+    """Would fail if no-profile setup bypassed the active enrolled profile."""
+    from ai_dlc import cli
+
+    calls = []
+
+    class Manager:
+        def __init__(self, *, home=None):
+            self.home = home
+
+        def plan(self, *, headless=False, profile=None):
+            calls.append(("plan", self.home, headless, profile))
+            return {"route": "enrolled-plan", "home": str(self.home)}
+
+        def apply(self, *, headless=False, profile=None):
+            calls.append(("apply", self.home, headless, profile))
+            return {"route": "enrolled-apply", "home": str(self.home)}
+
+    monkeypatch.setattr(cli, "MachineManager", Manager)
+    runner = CliRunner()
+
+    home = Path("/tmp/sandbox-home")
+    for action in ["plan", "apply"]:
+        result = runner.invoke(cli.app, ["setup", action, "--home", str(home)])
+        assert result.exit_code == 0, result.output
+        assert str(home) in result.stdout
+
+    assert calls == [("plan", home, False, None), ("apply", home, False, None)]
+
+
+def test_setup_profile_replacement_and_home_delegate_to_the_manager(monkeypatch, tmp_path):
+    """Would fail if setup bypassed the manager and lost the opposite enrolled scope."""
+    from ai_dlc import cli
+
+    profile = tmp_path / "replacement.toml"
+    home = tmp_path / "sandbox-home"
+    calls = []
+
+    class Manager:
+        def __init__(self, *, home=None):
+            self.home = home
+
+        def plan(self, *, headless=False, profile=None):
+            calls.append(("plan", self.home, headless, profile))
+            return {"home": str(self.home), "profile": str(profile)}
+
+        def apply(self, *, headless=False, profile=None):
+            calls.append(("apply", self.home, headless, profile))
+            return {"home": str(self.home), "profile": str(profile)}
+
+    monkeypatch.setattr(cli, "MachineManager", Manager)
+    runner = CliRunner()
+
+    for action in ["plan", "apply"]:
+        result = runner.invoke(
+            cli.app, ["setup", action, "--profile", str(profile), "--home", str(home)]
+        )
+        assert result.exit_code == 0, result.output
+        assert str(home) in result.stdout
+        assert str(profile) in result.stdout
+
+    assert calls == [("plan", home, False, profile), ("apply", home, False, profile)]
+
+
+def test_profile_show_without_paths_uses_enrolled_runtime_resolution(monkeypatch):
+    """Would fail if profile show skipped verified enrollment layers by default."""
+    from ai_dlc import cli
+
+    calls = []
+
+    class Resolved:
+        def __init__(self):
+            self.values = {"profile_id": "enrolled"}
+            self.sources = {"profile_id": "personal"}
+
+    def runtime(root=None, *, base=None, personal=None, project=None, machine=None):
+        calls.append((root, base, personal, project, machine))
+        return Resolved()
+
+    monkeypatch.setattr(cli, "resolve_runtime", runtime, raising=False)
+
+    result = CliRunner().invoke(cli.app, ["profile", "show"])
+
+    assert result.exit_code == 0, result.output
+    assert '"profile_id": "enrolled"' in result.stdout
+    assert calls == [(None, None, None, None, None)]
+
+
+def test_profile_show_explicit_personal_keeps_enrolled_machine_and_composes_project(tmp_path):
+    from ai_dlc.cli import app
+
+    environment = _write_cli_enrollment(tmp_path)
+    personal = tmp_path / "personal.toml"
+    personal.write_text('schema = 4\n[roles]\nknowledge = "explicit-personal"\n')
+    project = tmp_path / "project.toml"
+    project.write_text('schema = 4\n[roles]\ntracker = "explicit-project"\n')
+
+    result = CliRunner().invoke(
+        app,
+        [
+            "profile",
+            "show",
+            "--personal",
+            str(personal),
+            "--project",
+            str(project),
+        ],
+        env=environment,
+    )
+
+    assert result.exit_code == 0, result.output
+    payload = json.loads(result.stdout)
+    assert payload["values"]["roles"]["knowledge"] == "explicit-personal"
+    assert payload["values"]["roles"]["tracker"] == "explicit-project"
+    assert payload["values"]["paths"]["workspace"] == "/enrolled-machine"
+    assert payload["sources"]["roles.knowledge"] == "personal"
+    assert payload["sources"]["roles.tracker"] == "project"
+    assert payload["sources"]["paths.workspace"] == "machine"
+
+
+def test_profile_show_explicit_machine_keeps_enrolled_personal_and_composes_project(tmp_path):
+    from ai_dlc.cli import app
+
+    environment = _write_cli_enrollment(tmp_path)
+    machine = tmp_path / "machine.toml"
+    machine.write_text('schema = 4\n[paths]\nworkspace = "/explicit-machine"\n')
+    project = tmp_path / "project.toml"
+    project.write_text('schema = 4\n[roles]\ntracker = "explicit-project"\n')
+
+    result = CliRunner().invoke(
+        app,
+        ["profile", "show", "--project", str(project), "--machine", str(machine)],
+        env=environment,
+    )
+
+    assert result.exit_code == 0, result.output
+    payload = json.loads(result.stdout)
+    assert payload["values"]["profile_id"] == "personal-profile"
+    assert payload["values"]["roles"]["knowledge"] == "enrolled-personal"
+    assert payload["values"]["roles"]["tracker"] == "explicit-project"
+    assert payload["values"]["paths"]["workspace"] == "/explicit-machine"
+    assert payload["sources"]["profile_id"] == "personal"
+    assert payload["sources"]["roles.knowledge"] == "personal"
+    assert payload["sources"]["roles.tracker"] == "project"
+    assert payload["sources"]["paths.workspace"] == "machine"
+
+
+def test_explicit_machine_is_forwarded_to_runtime_resolution(monkeypatch, tmp_path):
+    """Would fail if workflow configuration ignored a caller's machine override."""
+    from ai_dlc import cli
+
+    root = tmp_path / "project"
+    machine = tmp_path / "machine.toml"
+    calls = []
+
+    class Resolved:
+        def __init__(self):
+            self.values = {"paths": {"workspace": "/explicit"}}
+
+    def runtime(selected_root, *, machine=None):
+        calls.append((selected_root, machine))
+        return Resolved()
+
+    monkeypatch.setattr(cli, "resolve_runtime", runtime, raising=False)
+
+    assert cli.config_for(root, machine) == {"paths": {"workspace": "/explicit"}}
+    assert calls == [(root, machine)]
+
+
+def test_root_and_machine_doctor_share_enrolled_readiness(monkeypatch, tmp_path):
+    """Would fail if the root doctor used a readiness path different from machine doctor."""
+    from ai_dlc import cli
+
+    calls = []
+
+    class Manager:
+        def doctor(self, root, *, target="local", machine=None):
+            calls.append((root, target, machine))
+            return {"ready": False, "machine_checks": {"available": False}}
+
+    monkeypatch.setattr(cli, "MachineManager", Manager)
+    runner = CliRunner()
+
+    root_result = runner.invoke(cli.app, ["doctor", "--root", str(tmp_path)])
+    machine_result = runner.invoke(cli.app, ["machine", "doctor", "--root", str(tmp_path)])
+
+    assert root_result.exit_code == machine_result.exit_code == 1
+    assert root_result.stdout == machine_result.stdout
+    assert calls == [(tmp_path, "local", None), (tmp_path, "local", None)]
+
+
+def test_root_doctor_help_exposes_root_once():
+    """Would fail if root doctor registered duplicate --root options."""
+    from ai_dlc.cli import app
+
+    result = CliRunner().invoke(app, ["doctor", "--help"])
+
+    assert result.exit_code == 0, result.output
+    assert unstyle(result.stdout).count("--root") == 1
+
+
+def test_explicit_machine_delegates_root_doctor_to_the_manager(monkeypatch, tmp_path):
+    """Would fail if root doctor bypassed enrolled personal resolution for --machine."""
+    from ai_dlc import cli
+
+    root = tmp_path / "project"
+    machine = tmp_path / "machine.toml"
+    calls = []
+
+    class Manager:
+        def doctor(self, selected_root, *, target="local", machine=None):
+            calls.append((selected_root, target, machine))
+            return {"ready": True, "personal": "enrolled"}
+
+    monkeypatch.setattr(cli, "MachineManager", Manager)
+
+    result = CliRunner().invoke(cli.app, ["doctor", "--root", str(root), "--machine", str(machine)])
+
+    assert result.exit_code == 0, result.output
+    assert calls == [(root, "local", machine)]
+
+
+def test_explicit_machine_doctor_keeps_the_nonzero_readiness_contract(monkeypatch, tmp_path):
+    """Would fail if an unready effective machine override exited successfully."""
+    from ai_dlc import cli
+
+    class Manager:
+        def doctor(self, root, *, target="local", machine=None):
+            return {"ready": False, "machine": str(machine)}
+
+    monkeypatch.setattr(cli, "MachineManager", Manager)
+
+    result = CliRunner().invoke(
+        cli.app,
+        ["doctor", "--root", str(tmp_path), "--machine", str(tmp_path / "machine.toml")],
+    )
+
+    assert result.exit_code == 1
+    assert '"ready": false' in result.stdout

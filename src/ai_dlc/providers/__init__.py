@@ -6,11 +6,13 @@ import importlib.metadata
 import importlib.util
 import json
 import math
+import os
 import queue
 import re
 import subprocess
 import sys
 import threading
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
@@ -46,9 +48,10 @@ def reject_unsafe_imports(files):
 
 
 class ExecutableProvider:
-    def __init__(self, config, *, bundled=False):
+    def __init__(self, config, *, bundled=False, environ: Mapping[str, str] | None = None):
         self.config = config
         self.bundled = bundled
+        self.environ = os.environ if environ is None else environ
         self.command = config["command"]
         if not bundled:
             verify_artifact(self.command, config.get("sha256"))
@@ -67,6 +70,7 @@ class ExecutableProvider:
             capture_output=True,
             timeout=self.config.get("timeout", 30),
             check=False,
+            env=self.environ,
         )
         if result.returncode:
             raise RuntimeError(f"Provider failed: {result.stderr.strip()}")
@@ -157,8 +161,9 @@ def module_manifest(distribution, files, hashes):
 
 
 class IsolatedPythonProvider(ExecutableProvider):
-    def __init__(self, config, modules, entry_point):
+    def __init__(self, config, modules, entry_point, *, environ=None):
         self.config, self.modules, self.entry_point = config, modules, entry_point
+        self.environ = os.environ if environ is None else environ
 
     def invoke(self, operation, payload):
         request = validate_request(operation, payload)
@@ -175,6 +180,7 @@ class IsolatedPythonProvider(ExecutableProvider):
             capture_output=True,
             timeout=self.config.get("timeout", 30),
             check=False,
+            env=self.environ,
         )
         if result.returncode:
             raise RuntimeError("Isolated Python provider failed: " + result.stderr.strip())
@@ -182,9 +188,10 @@ class IsolatedPythonProvider(ExecutableProvider):
 
 
 class Registry:
-    def __init__(self, config=None, *, root=None):
+    def __init__(self, config=None, *, root=None, environ: Mapping[str, str] | None = None):
         self.root = Path(root or Path.cwd())
         self.config = config or {}
+        self.environ = os.environ if environ is None else environ
         self.cache = {}
 
     def register(self, id, provider):
@@ -198,11 +205,11 @@ class Registry:
         if kind == "openspec":
             from .openspec import OpenSpecProvider
 
-            provider = OpenSpecProvider(self.root)
+            provider = OpenSpecProvider(self.root, environ=self.environ)
         elif kind in {"github", "github-scm", "github-deployment", "cloudflare"}:
             from .scm import GitHubSCM
 
-            provider = GitHubSCM(self.root, self.config)
+            provider = GitHubSCM(self.root, self.config, environ=self.environ)
         elif kind in {"obsidian", "knowledge"}:
             from ai_dlc.knowledge import Knowledge
 
@@ -213,7 +220,7 @@ class Registry:
         elif kind == "linear":
             from .linear import LinearProvider
 
-            provider = LinearProvider(cfg)
+            provider = LinearProvider(cfg, environ=self.environ)
         elif kind == "github-issues":
             provider = ExecutableProvider(
                 {
@@ -226,9 +233,10 @@ class Registry:
                     ],
                 },
                 bundled=True,
+                environ=self.environ,
             )
         elif kind == "executable":
-            provider = ExecutableProvider(cfg)
+            provider = ExecutableProvider(cfg, environ=self.environ)
         elif kind == "python":
             # A verified dependency lock plus the full installed distribution file set is mandatory.
             verify_artifact(cfg["dependency_lock"], cfg.get("dependency_lock_sha256"))
@@ -288,7 +296,7 @@ class Registry:
             entry_point = matches[0].value
             if entry_point.split(":", 1)[0] not in modules:
                 raise ValueError("Python provider import origin is outside verified distribution")
-            provider = IsolatedPythonProvider(cfg, modules, entry_point)
+            provider = IsolatedPythonProvider(cfg, modules, entry_point, environ=self.environ)
         else:
             raise ValueError(f"Unknown provider: {id}")
         self.cache[id] = provider

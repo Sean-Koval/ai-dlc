@@ -21,17 +21,24 @@ def test_preview_then_apply_is_home_scoped_and_idempotent(tmp_path, monkeypatch)
     config = personal(
         {"id": "notes", "command": "notes-mcp", "args": ["serve"], "env": ["ACCESS_TOKEN"]}
     )
-    result = render_user_agents(config, home)
-    assert result["changed"] and result["applied"] is False
+    preview = render_user_agents(config, home)
+    assert preview["changed"] and preview["applied"] is False
     assert not list(home.iterdir())
-    assert render_user_agents(config, home, apply=True)["applied"] is True
+    applied = render_user_agents(config, home, apply=True)
+    assert applied["applied"] is True
     assert not list(project.iterdir())
     claude = json.loads((home / ".claude.json").read_text())
     codex = tomllib.loads((home / ".codex/config.toml").read_text())
     assert claude["mcpServers"]["notes"]["env"] == {"ACCESS_TOKEN": "${ACCESS_TOKEN}"}
     assert codex["mcp_servers"]["notes"]["env_vars"] == ["ACCESS_TOKEN"]
-    assert all("must-never-be-written" not in p.read_text() for p in home.rglob("*") if p.is_file())
-    assert render_user_agents(config, home)["clean"] is True
+    assert all(
+        b"must-never-be-written" not in path.read_bytes()
+        for path in home.rglob("*")
+        if path.is_file()
+    )
+    clean = render_user_agents(config, home)
+    assert clean["clean"] is True
+    assert "must-never-be-written" not in repr((preview, applied, clean))
 
 
 def test_empty_personal_config_does_not_invent_servers_or_write(tmp_path):

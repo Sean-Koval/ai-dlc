@@ -1,0 +1,25 @@
+schema = 1
+id = "portable-profile-enrollment"
+title = "Implement portable profile and machine enrollment"
+scope = "Enroll a secret-free personal profile from an exact Git revision, bind it per machine, and safely resolve, reconcile, synchronize, inspect, and diagnose it."
+requires_spec = true
+spec_reason = "Changes configuration ownership, credential references, machine state, CLI behavior, and synchronization guarantees."
+acceptance = [
+  "Two isolated machines resolve one pinned profile with distinct local bindings",
+  "Preview, apply, sync, status, and doctor preserve active state on failure",
+  "Credentials remain external and no secret value is persisted or returned",
+  "Existing schema-4 and setup/profile/doctor interfaces remain compatible",
+  "Required project checks and independent review pass",
+]
+reviewed = true
+
+[providers]
+specs = "openspec"
+tracker = "linear"
+scm = "github"
+knowledge = "obsidian"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/archive/2026-09-03-portable-profile-enrollment"
+branch = "codex/portable-profile-enrollment"

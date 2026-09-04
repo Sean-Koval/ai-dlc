@@ -24,7 +24,9 @@ packages = ["src/ai_dlc"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "templates" = "ai_dlc/assets/legacy"
-"profiles" = "ai_dlc/assets/profiles"
+"profiles/base.toml" = "ai_dlc/assets/profiles/base.toml"
+"profiles/example/ai-dlc-profile.toml" = "ai_dlc/assets/profiles/example/ai-dlc-profile.toml"
+"profiles/machines/example.toml" = "ai_dlc/assets/profiles/machines/example.toml"
 "modules" = "ai_dlc/assets/modules"
 "agents" = "ai_dlc/assets/agents"
 "project-templates" = "ai_dlc/assets/project-templates"
@@ -32,6 +34,9 @@ packages = ["src/ai_dlc"]
 "targets" = "ai_dlc/assets/targets"
 "playbook" = "ai_dlc/assets/playbook"
 "bootstrap" = "ai_dlc/assets/bootstrap"
+
+[tool.hatch.build.targets.sdist]
+exclude = ["/profiles/sean.toml"]
 
 [tool.ruff]
 target-version = "py312"

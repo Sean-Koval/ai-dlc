@@ -19,11 +19,52 @@ After adding those directories:
 ```sh
 ai-dlc project check --required
 ai-dlc doctor
-ai-dlc setup plan --profile profiles/sean.toml
-ai-dlc setup apply --profile profiles/sean.toml
+ai-dlc setup plan --profile profiles/example/ai-dlc-profile.toml
+ai-dlc setup apply --profile profiles/example/ai-dlc-profile.toml
 ```
 
 Machine setup installs the selected workstation modules. Interactive sign-ins and provider workspace selections remain explicit. Configure Linear's team and native status IDs before publishing work. Keep vault paths and account choices in a machine TOML file, and supply it with `--machine` where supported. Credentials are environment references or native tool sign-ins.
+
+## Portable profile and machine enrollment
+
+Keep a personal `ai-dlc-profile.toml` in a separate private Git repository. It
+contains portable module choices, logical credential requirements, and optional
+agent configuration, but no account selection, path, repository, vault, or
+credential value. Enroll a reviewed, pinned Git revision on the first machine,
+then enroll that same pinned revision on a second machine with its own machine
+ID and binding. Each machine edits its local binding independently.
+
+Preview enrollment can materialize an inactive cache, but does not change the
+active enrollment, client configuration, or package state. Repeat the same
+command with `--apply` to activate it:
+
+```sh
+ai-dlc machine enroll SOURCE --profile-id example-development --machine-id MACHINE_A --ref IMMUTABLE_REF_OR_TAG
+ai-dlc machine enroll SOURCE --profile-id example-development --machine-id MACHINE_A --ref IMMUTABLE_REF_OR_TAG --apply
+```
+
+The local lock always records the exact resolved commit. Choose one of two
+policies: an immutable advertised tag or ref gives cross-machine reproducibility
+and makes `ai-dlc machine sync` idempotent; an intentionally movable advertised
+branch lets `ai-dlc machine sync` preview a newer candidate and `ai-dlc machine
+sync --apply` activate it after validation and reconciliation. To move from one
+immutable tag to another, reenroll with the new ref. Enroll a second machine
+with the same advertised ref under the selected policy and its own machine ID.
+
+Use `ai-dlc machine status`, `plan`, `apply`, `sync`, and `doctor` to inspect,
+preview, reconcile, update, and diagnose that enrollment. Put Linear and future
+provider credentials in a password manager or keychain that injects the
+configured environment variable (for example, `LINEAR_SANDBOX_TOKEN`); never
+put values in AI-DLC Git files or commit `.env` files.
+
+Local CLI and local MCP execution are the current control plane. Hosted or
+cloud execution is a later qualification target, not a feature claim. Obsidian
+create/attach and provider discovery are also next-cycle gaps; current knowledge
+commands act only on an explicitly selected existing vault.
+
+MCP exposes reviewed work operations, read-only doctor inspection, and selected
+knowledge operations. Machine enrollment mutations remain CLI-only in this
+cycle.
 
 Personal MCP servers declared in the selected profile are previewed by `setup plan` and merged into the supported user-level Codex and Claude configuration during `setup apply`. AI-DLC records only the entries it owns, preserves unrelated settings, and stops on edited or colliding entries. To review or apply only this layer, use `ai-dlc agents render --personal <profile> --check` and then replace `--check` with `--apply`.
 

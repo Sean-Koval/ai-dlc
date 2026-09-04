@@ -9,7 +9,8 @@ from typing import Annotated
 
 import typer
 
-from ai_dlc.config import load_project, read_toml, resolve_files
+from ai_dlc.config import load_project, read_toml, resolve_files, resolve_runtime
+from ai_dlc.machine import MachineManager
 
 app = typer.Typer(no_args_is_help=True, help="Portable development for people and agents.")
 project = typer.Typer(no_args_is_help=True)
@@ -17,6 +18,7 @@ work = typer.Typer(no_args_is_help=True)
 agents = typer.Typer(no_args_is_help=True)
 profile = typer.Typer(no_args_is_help=True)
 setup = typer.Typer(no_args_is_help=True)
+machine = typer.Typer(no_args_is_help=True)
 knowledge = typer.Typer(no_args_is_help=True)
 provider = typer.Typer(no_args_is_help=True)
 mcp = typer.Typer(no_args_is_help=True)
@@ -26,6 +28,7 @@ for name, group in [
     ("agents", agents),
     ("profile", profile),
     ("setup", setup),
+    ("machine", machine),
     ("knowledge", knowledge),
     ("provider", provider),
     ("mcp", mcp),
@@ -38,7 +41,7 @@ def emit(value):
 
 
 def config_for(root: Path, machine: Path | None = None) -> dict:
-    return resolve_files(project=root / "ai-dlc.toml", machine=machine).values
+    return resolve_runtime(root, machine=machine).values
 
 
 @app.command()
@@ -192,7 +195,7 @@ def profile_show(
     machine: Path | None = None,
     resolved: bool = True,
 ):
-    result = resolve_files(base, personal, project, machine)
+    result = resolve_runtime(base=base, personal=personal, project=project, machine=machine)
     emit({"values": result.values, "sources": result.sources})
 
 
@@ -212,31 +215,105 @@ def profile_capture(profile: Path):
 
 @setup.command("plan")
 def setup_plan(
-    profile: Annotated[Path, typer.Option("--profile")],
+    profile: Annotated[Path | None, typer.Option("--profile")] = None,
     headless: bool = False,
     home: Path | None = None,
 ):
-    from ai_dlc.provision import machine_plan
-
-    emit(machine_plan(profile, headless=headless, home=home))
+    emit(MachineManager(home=home).plan(headless=headless, profile=profile))
 
 
 @setup.command("apply")
 def setup_apply(
-    profile: Annotated[Path, typer.Option("--profile")],
+    profile: Annotated[Path | None, typer.Option("--profile")] = None,
     headless: bool = False,
     home: Path | None = None,
 ):
-    from ai_dlc.provision import machine_apply
+    emit(MachineManager(home=home).apply(headless=headless, profile=profile))
 
-    emit(machine_apply(profile, headless=headless, home=home))
+
+@machine.command("enroll")
+def machine_enroll(
+    source: str,
+    profile_id: Annotated[str, typer.Option("--profile-id")],
+    machine_id: Annotated[str, typer.Option("--machine-id")],
+    ref: Annotated[str, typer.Option("--ref")] = "main",
+    subdirectory: Annotated[str, typer.Option("--subdirectory")] = "",
+    apply: bool = False,
+):
+    emit(
+        MachineManager().enroll(
+            source,
+            profile_id,
+            machine_id,
+            requested_ref=ref,
+            subdirectory=subdirectory,
+            apply=apply,
+        )
+    )
+
+
+@machine.command("migrate")
+def machine_migrate(
+    source: str,
+    profile_file: Annotated[str, typer.Option("--profile-file")],
+    profile_id: Annotated[str, typer.Option("--profile-id")],
+    machine_id: Annotated[str, typer.Option("--machine-id")],
+    ref: Annotated[str, typer.Option("--ref")] = "main",
+    subdirectory: Annotated[str, typer.Option("--subdirectory")] = "",
+    apply: bool = False,
+):
+    emit(
+        MachineManager().migrate(
+            source,
+            profile_file,
+            profile_id,
+            machine_id,
+            requested_ref=ref,
+            subdirectory=subdirectory,
+            apply=apply,
+        )
+    )
+
+
+@machine.command("plan")
+def machine_plan_command(headless: bool = False):
+    emit(MachineManager().plan(headless=headless))
+
+
+@machine.command("apply")
+def machine_apply_command(headless: bool = False):
+    emit(MachineManager().apply(headless=headless))
+
+
+@machine.command("sync")
+def machine_sync(apply: bool = False, headless: bool = False):
+    emit(MachineManager().sync(apply=apply, headless=headless))
+
+
+@machine.command("status")
+def machine_status():
+    emit(MachineManager().status())
+
+
+@machine.command("doctor")
+def machine_doctor(
+    root: Annotated[Path, typer.Option("--root")] = Path("."), target: str = "local"
+):
+    result = MachineManager().doctor(root, target=target)
+    emit(result)
+    if not result["ready"]:
+        raise typer.Exit(1)
 
 
 @app.command()
-def doctor(root: Path = Path("."), target: str = "local", machine: Path | None = None):
-    from ai_dlc.provision import doctor as run
-
-    result = run(root, target, machine)
+def doctor(
+    root: Annotated[Path | None, typer.Argument()] = None,
+    root_option: Annotated[Path, typer.Option("--root")] = Path("."),
+    target: str = "local",
+    machine: Path | None = None,
+):
+    selected_root = root or root_option
+    result = MachineManager().doctor(selected_root, target=target, machine=machine)
     emit(result)
     if not result["ready"]:
         raise typer.Exit(1)

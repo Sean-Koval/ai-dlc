@@ -16,7 +16,7 @@ vendor part of the lifecycle definition.
 | Review, merge, and CI identity | `scm` | GitHub | Branches, pull requests, merged SHA, workflow runs, and artifacts |
 | Deployment evidence | `deploy` | None by default | Environment-specific release evidence when configured |
 | Interactive agent | `agent-client` | Claude Code and Codex | Analysis, judgment, authoring, and tool use under user authorization |
-| Deterministic workflow | AI-DLC CLI/MCP services | Local Python implementation | Validation, rendering, bindings, reconciliation, receipts, and gates |
+| Deterministic workflow | AI-DLC CLI and selected MCP services | Local Python implementation | CLI: validation, rendering, machine bindings, reconciliation, receipts, and gates; MCP: reviewed work, doctor, and knowledge only |
 | Project generation and updates | Template service | Copier | Template answers, source revision, preview, and three-way updates |
 
 Projects may omit roles they do not need. Confirm the actual mapping in the
@@ -52,6 +52,29 @@ Skills provide judgment patterns. Provider instructions define vendor
 operations. AI-DLC services own validation and mutation boundaries. A skill
 cannot bypass completion gates or expand the user's authorization.
 
+## Portable enrollment boundary
+
+A private profile repository owns the portable `ai-dlc-profile.toml` and is
+enrolled by pinned revision. A second machine enrolls that same revision but
+maintains its own machine binding for paths, account selection, and
+environment-variable names. The project repository owns shared policy; an
+external password manager, keychain, or secret injector owns credential values
+and supplies them transiently through the process environment. Codex and Claude
+own their generated client configuration. Never commit `.env` files or
+credential values.
+
+`ai-dlc machine status`, `plan`, `apply`, `sync`, and `doctor` own the local
+enrollment lifecycle. Local CLI and MCP execution are current; hosted or cloud
+execution is a later qualification target. Obsidian create/attach and provider
+discovery are next-cycle gaps rather than current provider capabilities.
+
+Machine enrollment mutations are CLI-only in this cycle. MCP exposes exactly
+`work_publish`, `work_start`, `work_status`, `work_link`, `work_finish`,
+`doctor`, `knowledge_find`, `knowledge_append`, and `knowledge_note`; it does
+not expose machine enrollment mutation. These MCP identifiers differ from the
+space-separated CLI commands, such as `ai-dlc work publish` and `ai-dlc
+knowledge append`.
+
 ## Command and service map
 
 | Area | Interfaces | Effect |
@@ -67,7 +90,7 @@ cannot bypass completion gates or expand the user's authorization.
 | Personal knowledge | `ai-dlc knowledge find`, `ai-dlc knowledge note`, `ai-dlc knowledge append` | Reads or writes explicitly selected vault material |
 | Configuration profiles | `ai-dlc profile show`, `ai-dlc profile migrate`, `ai-dlc profile capture` | Resolves provenance, previews schema migration, or captures supported preferences |
 | Machine provisioning | `ai-dlc setup plan`, `ai-dlc setup apply` | Previews or applies selected workstation modules and personal agent configuration |
-| Agent-native access | `ai-dlc mcp serve` | Exposes the same workflow services and validation through local MCP |
+| Agent-native access | `ai-dlc mcp serve` | Exposes reviewed work, read-only doctor, and selected knowledge services through local MCP; machine enrollment mutation remains CLI-only |
 | Legacy compatibility | `ai-dlc scaffold` | Preserves the retired Rust-era provider scaffolding interface |
 
 ## Artifact ownership
@@ -94,8 +117,10 @@ flowchart TD
 - Knowledge provider: private continuity and links to durable artifacts.
 - Portable project configuration: provider roles and names of required
   environment variables, never their values.
-- Local machine scope and process environment: actual credential values,
-  account choices, paths, caches, and operation journals.
+- Local machine scope: account choices, paths, caches, journals, and ignored
+  non-secret control-plane IDs and metadata.
+- External password manager, keychain, or secret injector: actual credential
+  values, supplied transiently through the process environment.
 
 ## CI and release evidence
 
