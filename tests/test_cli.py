@@ -2,6 +2,7 @@ import hashlib
 import json
 from pathlib import Path
 
+from click import unstyle
 from typer.testing import CliRunner
 
 
@@ -464,7 +465,7 @@ def test_root_doctor_help_exposes_root_once():
     result = CliRunner().invoke(app, ["doctor", "--help"])
 
     assert result.exit_code == 0, result.output
-    assert result.stdout.count("--root") == 1
+    assert unstyle(result.stdout).count("--root") == 1
 
 
 def test_explicit_machine_delegates_root_doctor_to_the_manager(monkeypatch, tmp_path):
