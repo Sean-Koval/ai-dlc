@@ -24,6 +24,10 @@ _CODEX_SECTION = re.compile(
 )
 
 
+class UserAgentOwnershipConflict(ValueError):
+    """A persisted client configuration prevents AI-DLC from safely changing it."""
+
+
 def render_user_agents(
     config: dict[str, Any],
     home: Path,
@@ -187,14 +191,16 @@ def _plan_claude(
     try:
         document = json.loads(path.read_text()) if existed else {}
     except (json.JSONDecodeError, OSError) as exc:
-        raise ValueError("Claude user configuration conflict: invalid JSON") from exc
+        raise UserAgentOwnershipConflict(
+            "Claude user configuration conflict: invalid JSON"
+        ) from exc
     if not isinstance(document, dict):
-        raise ValueError(  # noqa: TRY004 -- persisted configuration is semantically invalid
+        raise UserAgentOwnershipConflict(
             "Claude user configuration conflict: root must be an object"
         )
     current = document.get("mcpServers", {})
     if not isinstance(current, dict):
-        raise ValueError(  # noqa: TRY004 -- persisted configuration is semantically invalid
+        raise UserAgentOwnershipConflict(
             "Claude user configuration conflict: mcpServers must be an object"
         )
     _check_owned(current, old, "Claude")
@@ -232,20 +238,24 @@ def _plan_codex(
     section = _existing_codex_section(current_text)
     old = prior.get("servers", {})
     if section is not None and not old:
-        raise ValueError("Codex user configuration conflict: orphaned managed section")
+        raise UserAgentOwnershipConflict(
+            "Codex user configuration conflict: orphaned managed section"
+        )
     if not desired and not old:
         return
     try:
         document = tomllib.loads(current_text) if current_text else {}
     except tomllib.TOMLDecodeError as exc:
-        raise ValueError("Codex user configuration conflict: invalid TOML") from exc
+        raise UserAgentOwnershipConflict("Codex user configuration conflict: invalid TOML") from exc
     current = document.get("mcp_servers", {})
     if not isinstance(current, dict):
-        raise ValueError(  # noqa: TRY004 -- persisted configuration is semantically invalid
+        raise UserAgentOwnershipConflict(
             "Codex user configuration conflict: mcp_servers must be a table"
         )
     if old and section is None:
-        raise ValueError("Codex user configuration conflict: managed section is missing")
+        raise UserAgentOwnershipConflict(
+            "Codex user configuration conflict: managed section is missing"
+        )
     _check_owned(current, old, "Codex")
     unmanaged = {name: value for name, value in current.items() if name not in old}
     _check_unowned(unmanaged, desired, "Codex")
@@ -257,7 +267,9 @@ def _plan_codex(
         try:
             tomllib.loads(rendered)
         except tomllib.TOMLDecodeError as exc:
-            raise ValueError("Codex user configuration conflict: duplicate MCP tables") from exc
+            raise UserAgentOwnershipConflict(
+                "Codex user configuration conflict: duplicate MCP tables"
+            ) from exc
     clients["codex"] = {
         "created": prior.get("created", not existed),
         "separator_added": (
@@ -276,24 +288,32 @@ def _plan_codex(
 def _check_owned(current: dict, old: dict, label: str) -> None:
     for server_id, definition in old.items():
         if current.get(server_id) != definition:
-            raise ValueError(f"{label} user configuration conflict: managed server {server_id}")
+            raise UserAgentOwnershipConflict(
+                f"{label} user configuration conflict: managed server {server_id}"
+            )
 
 
 def _check_unowned(current: dict, desired: dict, label: str) -> None:
     collision = sorted(set(current) & set(desired))
     if collision:
-        raise ValueError(f"{label} user configuration conflict: unowned server {collision[0]}")
+        raise UserAgentOwnershipConflict(
+            f"{label} user configuration conflict: unowned server {collision[0]}"
+        )
 
 
 def _existing_codex_section(text: str) -> re.Match[str] | None:
     matches = list(_CODEX_SECTION.finditer(text))
     if len(matches) > 1 or (_CODEX_START in text and not matches):
-        raise ValueError("Codex user configuration conflict: malformed managed section")
+        raise UserAgentOwnershipConflict(
+            "Codex user configuration conflict: malformed managed section"
+        )
     if not matches:
         return None
     match = matches[0]
     if hashlib.sha256(match.group(2).encode()).hexdigest() != match.group(1):
-        raise ValueError("Codex user configuration conflict: managed section was edited")
+        raise UserAgentOwnershipConflict(
+            "Codex user configuration conflict: managed section was edited"
+        )
     return match
 
 
@@ -330,9 +350,9 @@ def _read_state(path: Path) -> dict[str, Any]:
     try:
         state = json.loads(path.read_text())
     except (json.JSONDecodeError, OSError) as exc:
-        raise ValueError("user agent ownership conflict: invalid state") from exc
+        raise UserAgentOwnershipConflict("user agent ownership conflict: invalid state") from exc
     if state.get("schema") != 1 or not isinstance(state.get("clients"), dict):
-        raise ValueError("user agent ownership conflict: unsupported state")
+        raise UserAgentOwnershipConflict("user agent ownership conflict: unsupported state")
     return state
 
 

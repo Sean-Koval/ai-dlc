@@ -2,9 +2,11 @@
 
 import hashlib
 import json
+import os
 import shlex
 import shutil
 import subprocess
+from collections.abc import Mapping
 from pathlib import Path
 
 import httpx
@@ -15,8 +17,13 @@ from ai_dlc.config import read_toml
 from ai_dlc.files import assets, atomic_write
 
 
-def ensure_brew(root: Path, architecture: str) -> str:
-    existing = shutil.which("brew")
+def ensure_brew(root: Path, architecture: str, *, environ: Mapping[str, str] | None = None) -> str:
+    environment = os.environ if environ is None else environ
+    existing = (
+        shutil.which("brew")
+        if environ is None
+        else shutil.which("brew", path=environ.get("PATH", ""))
+    )
     if existing:
         return existing
     prefix = Path("/opt/homebrew" if architecture in {"arm64", "aarch64"} else "/usr/local")
@@ -30,7 +37,7 @@ def ensure_brew(root: Path, architecture: str) -> str:
         installer = root / "homebrew-install.sh"
         atomic_write(installer, response.text)
         # The native installer owns administrator access and interactive confirmation.
-        subprocess.run(["/bin/bash", str(installer)], check=True)
+        subprocess.run(["/bin/bash", str(installer)], check=True, env=environment)
     if not binary.is_file():
         raise RuntimeError("Homebrew installation incomplete; retry after native setup")
     return str(binary)

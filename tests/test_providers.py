@@ -80,6 +80,20 @@ def test_linear_completed_native_state_is_normalized_for_reconciliation():
     )
 
 
+def test_registry_passes_its_injected_environment_to_linear_provider(monkeypatch):
+    """Would fail if provider health silently fell back to ambient credentials."""
+    from ai_dlc.providers import Registry
+
+    monkeypatch.setenv("LINEAR_API_KEY", "ambient-value")
+
+    provider = Registry(
+        {"providers": {"linear": {"kind": "linear"}}},
+        environ={"LINEAR_API_KEY": "injected-value"},
+    ).get("linear")
+
+    assert provider.token == "injected-value"
+
+
 def test_linear_graphql_error():
     from ai_dlc.providers.linear import LinearProvider
 

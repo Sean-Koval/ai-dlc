@@ -1,11 +1,14 @@
+import os
 import re
 import subprocess
+from collections.abc import Mapping
 from pathlib import Path
 
 
 class OpenSpecProvider:
-    def __init__(self, root):
+    def __init__(self, root, *, environ: Mapping[str, str] | None = None):
         self.root = Path(root).resolve()
+        self.environ = os.environ if environ is None else environ
 
     def current(self, work, revision=None):
         if revision is not None:
@@ -16,6 +19,7 @@ class OpenSpecProvider:
                 capture_output=True,
                 timeout=30,
                 check=False,
+                env=self.environ,
             )
             if not revision or head.returncode or head.stdout.strip() != revision:
                 raise ValueError("OpenSpec checkout revision must equal the merged revision")
@@ -26,6 +30,7 @@ class OpenSpecProvider:
                 capture_output=True,
                 timeout=30,
                 check=False,
+                env=self.environ,
             )
             if status.returncode or status.stdout.strip():
                 raise ValueError("OpenSpec files are dirty or untracked at the merged revision")
@@ -64,6 +69,7 @@ class OpenSpecProvider:
                 capture_output=True,
                 timeout=30,
                 check=False,
+                env=self.environ,
             )
             if tracked.returncode:
                 raise ValueError("OpenSpec archive must be tracked at the merged revision")
@@ -76,6 +82,7 @@ class OpenSpecProvider:
             capture_output=True,
             timeout=30,
             check=False,
+            env=self.environ,
         )
         if help_result.returncode:
             raise ValueError("Cannot discover installed OpenSpec capabilities")
@@ -90,6 +97,7 @@ class OpenSpecProvider:
                 capture_output=True,
                 timeout=60,
                 check=False,
+                env=self.environ,
             )
             if result.returncode:
                 raise ValueError("OpenSpec validation failed: " + result.stderr + result.stdout)

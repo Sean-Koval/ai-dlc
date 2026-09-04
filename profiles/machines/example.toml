@@ -1,12 +1,17 @@
 schema = 4
 
 [paths]
-# Supply your existing vault location. This file deliberately has no guessed personal path.
-# vault = "/absolute/path/to/existing/vault"
+# Add machine-specific settings only after selecting a local configuration.
 
 [target]
 name = "local"
 headless = false
 
 [providers.linear]
-token_env = "LINEAR_API_KEY"
+token_env = "LINEAR_SANDBOX_TOKEN"
+
+# Bind this logical profile requirement independently on each enrolled machine.
+# This is an environment-variable name, not a credential value.
+[credentials.linear-sandbox]
+source = "environment"
+variable = "LINEAR_SANDBOX_TOKEN"

@@ -20,17 +20,39 @@ def inside(root: Path, relative: str) -> Path:
     return candidate
 
 
-def atomic_write(path: Path, data: str) -> None:
+def atomic_write(path: Path, data: str, mode: int | None = None) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    mode = path.stat().st_mode & 0o777 if path.exists() else 0o644
+    final_mode = (
+        mode if mode is not None else path.stat().st_mode & 0o777 if path.exists() else 0o644
+    )
     fd, name = tempfile.mkstemp(dir=path.parent, prefix=".ai-dlc-")
     try:
         with os.fdopen(fd, "w") as stream:
             stream.write(data)
             stream.flush()
             os.fsync(stream.fileno())
-        os.chmod(name, mode)
+        os.chmod(name, final_mode)
         os.replace(name, path)
+    finally:
+        if os.path.exists(name):
+            os.unlink(name)
+
+
+def atomic_create(path: Path, data: str, mode: int) -> bool:
+    """Create a file from a private staging file without replacing an existing path."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, name = tempfile.mkstemp(dir=path.parent, prefix=".ai-dlc-")
+    try:
+        with os.fdopen(descriptor, "w") as stream:
+            stream.write(data)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.chmod(name, mode)
+        try:
+            os.link(name, path)
+        except FileExistsError:
+            return False
+        return True
     finally:
         if os.path.exists(name):
             os.unlink(name)

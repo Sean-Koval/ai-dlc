@@ -5,10 +5,16 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import re
 import tomllib
+from collections.abc import Mapping
 from dataclasses import dataclass
+from itertools import pairwise
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from ai_dlc.enrollment import EnrollmentPaths
 
 SCHEMA = 4
 SCOPES = {
@@ -29,6 +35,31 @@ SCOPES = {
     "target": {"machine"},
     "project": {"base", "project"},
     "contracts": {"base", "project"},
+    "profile_id": {"personal"},
+    "credentials": {"personal", "machine"},
+}
+
+_CREDENTIAL_ID = re.compile(r"^[a-z0-9][a-z0-9-]*$")
+_ENVIRONMENT_VARIABLE = re.compile(r"^[A-Z_][A-Z0-9_]*$")
+_SENSITIVE_FIELD_TOKENS = {"token", "password", "passwd", "secret"}
+_SENSITIVE_FIELD_PAIRS = {
+    ("api", "key"),
+    ("access", "key"),
+    ("client", "key"),
+    ("private", "key"),
+}
+_SENSITIVE_COMPACT_FIELDS = {
+    "apikey",
+    "apitoken",
+    "accesskey",
+    "accesstoken",
+    "clientkey",
+    "clientsecret",
+    "privatekey",
+}
+_BENIGN_INTEGER_TOKEN_FIELDS = {
+    ("max", "token"),
+    ("token", "count"),
 }
 
 
@@ -48,6 +79,82 @@ def read_toml(path: Path) -> dict[str, Any]:
     return tomllib.loads(path.read_text())
 
 
+def _field_tokens(field: str) -> tuple[str, ...]:
+    separated = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1_\2", field)
+    separated = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", separated)
+    tokens = [token.lower() for token in re.split(r"[^A-Za-z0-9]+", separated) if token]
+    singular = {
+        "tokens": "token",
+        "passwords": "password",
+        "secrets": "secret",
+        "keys": "key",
+    }
+    return tuple(singular.get(token, token) for token in tokens)
+
+
+def _is_sensitive_field(tokens: tuple[str, ...]) -> bool:
+    if _SENSITIVE_FIELD_TOKENS.intersection(tokens):
+        return True
+    if "".join(tokens) in _SENSITIVE_COMPACT_FIELDS:
+        return True
+    adjacent = set(pairwise(tokens))
+    return bool(_SENSITIVE_FIELD_PAIRS.intersection(adjacent))
+
+
+def _is_environment_reference(tokens: tuple[str, ...], value: Any) -> bool:
+    suffix_length = 2 if tokens[-2:] == ("env", "var") else 1 if tokens[-1:] == ("env",) else 0
+    return bool(
+        suffix_length
+        and _is_sensitive_field(tokens[:-suffix_length])
+        and isinstance(value, str)
+        and _ENVIRONMENT_VARIABLE.fullmatch(value)
+    )
+
+
+def _is_benign_integer_token_field(tokens: tuple[str, ...], value: Any) -> bool:
+    return tokens in _BENIGN_INTEGER_TOKEN_FIELDS and type(value) is int
+
+
+def _validate_credentials(layer: str, value: Any) -> None:
+    if not isinstance(value, dict):
+        raise TypeError(f"{layer}: credentials must be a table")
+    for credential_id, entry in value.items():
+        if not isinstance(credential_id, str) or not _CREDENTIAL_ID.fullmatch(credential_id):
+            raise ValueError(f"{layer}: credential ID must be a stable slug: {credential_id!r}")
+        if not isinstance(entry, dict):
+            raise TypeError(f"{layer}: credentials.{credential_id} must be a table")
+        if layer == "personal":
+            if "source" in entry or "variable" in entry:
+                invalid = "source" if "source" in entry else "variable"
+                raise ValueError(f"personal: cannot set credentials.{credential_id}.{invalid}")
+            if not isinstance(entry.get("description"), str):
+                raise ValueError(
+                    f"personal: credentials.{credential_id}.description must be a string"
+                )
+            required_by = entry.get("required_by")
+            if not isinstance(required_by, list) or not all(
+                isinstance(provider, str) for provider in required_by
+            ):
+                raise ValueError(
+                    f"personal: credentials.{credential_id}.required_by must be a string list"
+                )
+        elif layer == "machine":
+            if set(entry) != {"source", "variable"}:
+                invalid = next((key for key in entry if key not in {"source", "variable"}), None)
+                if invalid is not None:
+                    raise ValueError(f"machine: cannot set credentials.{credential_id}.{invalid}")
+                raise ValueError(
+                    f"machine: credentials.{credential_id} must contain source and variable"
+                )
+            if entry.get("source") != "environment":
+                raise ValueError(f"machine: credentials.{credential_id}.source must be environment")
+            variable = entry.get("variable")
+            if not isinstance(variable, str) or not _ENVIRONMENT_VARIABLE.fullmatch(variable):
+                raise ValueError(
+                    f"machine: credentials.{credential_id}.variable must be an environment variable"
+                )
+
+
 def _validate(layer: str, data: dict[str, Any]) -> None:
     if layer not in {"base", "personal", "project", "machine"}:
         raise ValueError(f"unknown layer: {layer}")
@@ -58,17 +165,16 @@ def _validate(layer: str, data: dict[str, Any]) -> None:
             raise ValueError(f"{layer}: unknown field {field}")
         if layer not in SCOPES[field]:
             raise ValueError(f"{layer}: cannot set {field}")
-    # Machine overrides may select credentials/accounts, never executable provider behavior.
-    if layer == "machine":
-        for name, settings in data.get("providers", {}).items():
-            for key in settings:
-                if key not in {"account", "token_env", "vault_path", "sandbox_workspace"}:
-                    raise ValueError(f"machine: cannot set providers.{name}.{key}")
 
     def secrets(value: Any, path: str = "") -> None:
         if isinstance(value, dict):
             for key, child in value.items():
-                if key.lower() in {"token", "password", "secret", "api_key", "access_token"}:
+                tokens = _field_tokens(key)
+                if (
+                    _is_sensitive_field(tokens)
+                    and not _is_environment_reference(tokens, child)
+                    and not _is_benign_integer_token_field(tokens, child)
+                ):
                     raise ValueError(
                         f"{layer}: credential value prohibited at {path}{key}; use environment reference"
                     )
@@ -78,6 +184,14 @@ def _validate(layer: str, data: dict[str, Any]) -> None:
                 secrets(child, path)
 
     secrets(data)
+    if "credentials" in data:
+        _validate_credentials(layer, data["credentials"])
+    # Machine overrides may select credentials/accounts, never executable provider behavior.
+    if layer == "machine":
+        for name, settings in data.get("providers", {}).items():
+            for key in settings:
+                if key not in {"account", "token_env", "vault_path", "sandbox_workspace"}:
+                    raise ValueError(f"machine: cannot set providers.{name}.{key}")
 
 
 def resolve_layers(layers: list[tuple[str, dict[str, Any]]]) -> Resolved:
@@ -169,4 +283,42 @@ def resolve_files(
             ]
             if path
         ]
+    )
+
+
+def resolve_runtime(
+    root: Path | None = None,
+    *,
+    base: Path | None = None,
+    personal: Path | None = None,
+    project: Path | None = None,
+    machine: Path | None = None,
+    home: Path | None = None,
+    environ: Mapping[str, str] | None = None,
+    enrollment_paths: EnrollmentPaths | None = None,
+) -> Resolved:
+    """Resolve the packaged base plus any active, verified enrollment layers."""
+    from ai_dlc.enrollment import EnrollmentPaths, read_lock
+    from ai_dlc.files import assets
+    from ai_dlc.profile_source import verify_cached_profile
+
+    paths = enrollment_paths or EnrollmentPaths.from_environment(home=home, environ=environ)
+    enrolled_personal: Path | None = None
+    enrolled_machine: Path | None = None
+    if personal is None or machine is None:
+        lock = read_lock(paths)
+        if lock is not None:
+            if personal is None:
+                enrolled_personal = verify_cached_profile(lock, paths)
+            if machine is None:
+                enrolled_machine = paths.machine_file(lock.machine_id)
+
+    project_file = project
+    if project_file is None and root is not None and (root / "ai-dlc.toml").exists():
+        project_file = root / "ai-dlc.toml"
+    return resolve_files(
+        base=base or assets("profiles") / "base.toml",
+        personal=personal or enrolled_personal,
+        project=project_file,
+        machine=machine or enrolled_machine,
     )

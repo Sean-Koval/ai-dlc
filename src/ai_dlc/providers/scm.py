@@ -4,10 +4,12 @@ import base64
 import hashlib
 import json
 import math
+import os
 import re
 import subprocess
 import tempfile
 import tomllib
+from collections.abc import Mapping
 from pathlib import Path
 
 
@@ -77,9 +79,10 @@ def validate_receipt(receipt, sha, config, mise):
 
 
 class GitHubSCM:
-    def __init__(self, root, config):
+    def __init__(self, root, config, *, environ: Mapping[str, str] | None = None):
         self.root = Path(root)
         self.config = config
+        self.environ = os.environ if environ is None else environ
         self.scm = config.get("scm", {})
         self.repo = self.scm.get("repository", "")
         if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", self.repo):
@@ -88,7 +91,13 @@ class GitHubSCM:
 
     def run(self, *args):
         result = subprocess.run(
-            ["gh", *args], cwd=self.root, text=True, capture_output=True, timeout=60, check=False
+            ["gh", *args],
+            cwd=self.root,
+            text=True,
+            capture_output=True,
+            timeout=60,
+            check=False,
+            env=self.environ,
         )
         if result.returncode:
             raise RuntimeError(result.stderr.strip())
