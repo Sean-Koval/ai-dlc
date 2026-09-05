@@ -8,6 +8,8 @@
     ".agents/skills/prd-draft/SKILL.md": "439f403c7cce84c4b8ffaaa9620e11a611d192fdfd303a74d03a538117e68921",
     ".agents/skills/review-inbox/SKILL.md": "b06716fb492024da2618d898c1b102778435f049495a70e68d7bbc6a0bc17ca6",
     ".agents/skills/spec-from-prd/SKILL.md": "d57c2ed64e65b2701bc20353b01b4e3e9e05636ed443e061d0d260c35720b758",
+    ".ai-dlc/providers/linear.md": "15f145b21c788f351866ec2380b0ee08d8fe636c3eae101ae6dcc90bddb0a99b",
+    ".ai-dlc/providers/openspec.md": "6426917c1b20beb0ddf7a36c6d54437c650df52a78353bc317c10bd35e96fd0a",
     ".claude/skills/day-end/SKILL.md": "c18e67e359be9a38f55b95a9659f05d20df2cc8eb854be4661a30805128a0532",
     ".claude/skills/day-start/SKILL.md": "4794aca5d1db1ed460f7ea859b22090ba0d1d0979f520a6526f06ff9bb56c9a4",
     ".claude/skills/discovery/SKILL.md": "7363fa7baac5b5acab8a18091b76e2f1b8c79d5f8eac5792daae49f6abefe413",

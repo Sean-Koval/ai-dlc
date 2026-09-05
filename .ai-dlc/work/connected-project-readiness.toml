@@ -23,10 +23,12 @@ knowledge = "obsidian"
 deploy = "none"
 
 [artifacts]
-spec = "openspec/changes/connected-project-readiness"
+spec = "openspec/changes/archive/2026-09-05-connected-project-readiness"
 plan = "docs/superpowers/plans/2026-09-05-connected-project-readiness.md"
 roadmap = "docs/roadmap.md"
 tracker = "ec81e77e-03fb-494e-aece-be0633f4b5ae"
+branch = "codex/connected-project-readiness"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/8"
 
 [bindings]
 specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"

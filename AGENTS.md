@@ -8,7 +8,7 @@ Store durable architecture, decisions and runbooks in `docs/`; formal change art
 
 Use conventional commit prefixes. Describe behavior and validation in review descriptions; do not publish packages or change remote service state implicitly.
 
-<!-- ai-dlc:begin e541af3871b392bd14df98af166a94c7b8d3e0eb8e06bfa0aadfba661b90ea45 -->
+<!-- ai-dlc:begin 71f536b863a278b3f66fb8adeef780e312fd942c79a8abca37b26d407459242b -->
 # Shared project guidance
 
 Read ai-dlc.toml and the active .ai-dlc/work record before work.
@@ -25,4 +25,17 @@ Store architecture, design, decisions and runbooks in docs/. Keep personal notes
 - test: `uv run --locked --no-sync pytest -q`
 
 Run `ai-dlc project check --required` in the prepared project environment.
+
+## Selected providers and tools
+
+Read the linked instructions for each configured provider before using its tools.
+Modules name installation requirements; their presence does not establish account
+access or platform qualification. Run `ai-dlc project readiness --root .` for
+offline requirements and use doctor for explicit provider health inspection.
+
+- tracker: linear (modules: linear); [providers/linear.md](<.ai-dlc/providers/linear.md>)
+- specs: openspec (modules: openspec); [providers/openspec.md](<.ai-dlc/providers/openspec.md>)
+- scm: github; unsupported: no component for provider: github
+- deploy: none; unsupported: no component for provider: none
+- knowledge: obsidian; unsupported: no component for provider: obsidian
 <!-- ai-dlc:end -->

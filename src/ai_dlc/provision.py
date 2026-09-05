@@ -13,6 +13,7 @@ from pathlib import Path
 
 import tomli_w
 
+from ai_dlc.components import load_component_catalog, resolve_components
 from ai_dlc.config import SCHEMA, read_toml, resolve_files
 from ai_dlc.credentials import credential_status
 from ai_dlc.files import assets, atomic_write
@@ -24,6 +25,36 @@ def _which(command: str, environ: Mapping[str, str] | None) -> str | None:
     return shutil.which(command, path=environ.get("PATH", ""))
 
 
+def project_readiness(root: Path, config: dict, environ: Mapping[str, str]) -> dict:
+    """Inspect recipe executables on PATH without executing them or contacting providers."""
+    from ai_dlc.readiness import inspect_readiness
+
+    try:
+        return inspect_readiness(
+            root,
+            config,
+            environ=environ,
+            probe=lambda commands: {
+                "available": all(_which(command, environ) for command in commands)
+            },
+        )
+    except (OSError, TypeError, ValueError):
+        return {
+            "schema": 1,
+            "ready": False,
+            "qualification": "not-assessed",
+            "checks": [
+                {
+                    "component": "project",
+                    "dimension": "configuration",
+                    "status": "blocked",
+                    "reason": "Project component requirements could not be resolved.",
+                    "next_action": "Validate the selected component manifests and their guidance files.",
+                }
+            ],
+        }
+
+
 def machine_plan(
     profile: Path,
     headless: bool = False,
@@ -32,6 +63,7 @@ def machine_plan(
     home: Path | None = None,
     machine: Path | None = None,
     environ: Mapping[str, str] | None = None,
+    root: Path | None = None,
 ) -> dict:
     system = system or platform.system()
     architecture = architecture or platform.machine()
@@ -42,9 +74,34 @@ def machine_plan(
         "amd64",
     }:
         raise ValueError(f"unsupported machine: {system}/{architecture}")
-    config = resolve_files(personal=profile, machine=machine).values
+    selected_root = Path(root).resolve() if root is not None else None
+    personal_config = resolve_files(personal=profile, machine=machine).values
+    resolved = resolve_files(
+        personal=profile,
+        project=selected_root / "ai-dlc.toml" if selected_root is not None else None,
+        machine=machine,
+    )
+    config = resolved.values
     catalog = read_toml(assets("modules") / "catalog.toml")
     chosen = config.get("modules", {}).get("include", ["core"])
+    component_modules: list[dict[str, str]] = []
+    if selected_root is not None:
+        components = resolve_components(resolved, load_component_catalog(selected_root, config))
+        if components["unresolved"]:
+            raise ValueError(components["unresolved"][0]["reason"])
+        for component in components["components"]:
+            for module_id in component["modules"]:
+                component_modules.append(
+                    {
+                        "id": module_id,
+                        "provider": component["provider"],
+                        "role": component["role"],
+                        "reason": (
+                            f"selected provider {component['provider']} for role {component['role']}"
+                        ),
+                    }
+                )
+        chosen = list(dict.fromkeys([*chosen, *(item["id"] for item in component_modules)]))
     headless = headless or config.get("preferences", {}).get("headless", False)
     commands, omitted, guidance, signins = [], [], [], []
     brew, casks, apt, runtimes = [], [], [], {}
@@ -79,8 +136,8 @@ def machine_plan(
         commands.append({"argv": ["mise", "install"], "mise": runtimes})
     from ai_dlc.user_agents import render_user_agents
 
-    agent_configuration = render_user_agents(config, (home or Path.home()).resolve())
-    return {
+    agent_configuration = render_user_agents(personal_config, (home or Path.home()).resolve())
+    result = {
         "system": system,
         "architecture": architecture,
         "commands": commands,
@@ -91,6 +148,9 @@ def machine_plan(
         "credentials": credential_status(config, environ),
         "agent_configuration": agent_configuration,
     }
+    if selected_root is not None:
+        result["component_modules"] = component_modules
+    return result
 
 
 def machine_apply(
@@ -99,16 +159,19 @@ def machine_apply(
     home: Path | None = None,
     machine: Path | None = None,
     environ: Mapping[str, str] | None = None,
+    root: Path | None = None,
 ) -> dict:
-    plan = machine_plan(profile, headless, home=home, machine=machine, environ=environ)
+    plan = machine_plan(profile, headless, home=home, machine=machine, root=root, environ=environ)
     if plan["system"] == "Linux":
         release = platform.freedesktop_os_release()
         if release.get("ID") != "ubuntu" or release.get("VERSION_ID") not in {"24.04", "26.04"}:
             raise ValueError("supported Linux workstation releases are Ubuntu 24.04 and 26.04")
     home = (home or Path.home()).resolve()
     environment = os.environ if environ is None else environ
-    root = Path(environment.get("XDG_DATA_HOME", str(home / ".local/share"))) / "ai-dlc/workstation"
-    root.mkdir(parents=True, exist_ok=True)
+    workstation_root = (
+        Path(environment.get("XDG_DATA_HOME", str(home / ".local/share"))) / "ai-dlc/workstation"
+    )
+    workstation_root.mkdir(parents=True, exist_ok=True)
     config = resolve_files(personal=profile, machine=machine).values
     from ai_dlc.user_agents import render_user_agents
 
@@ -133,7 +196,7 @@ def machine_apply(
     if any(step["argv"][0] == "brew" for step in plan["commands"]):
         from ai_dlc.workstation import ensure_brew
 
-        brew = ensure_brew(root, plan["architecture"], environ=environ)
+        brew = ensure_brew(workstation_root, plan["architecture"], environ=environ)
     results = []
     runtimes = {}
     for step in plan["commands"]:
@@ -147,19 +210,19 @@ def machine_apply(
                 f"{argv[0]} is required; install the native package manager before applying this module"
             )
         if "content" in step:
-            file = root / "Brewfile"
+            file = workstation_root / "Brewfile"
             atomic_write(file, step["content"])
             argv = [str(file) if x == "{Brewfile}" else x for x in argv]
         if "mise" in step:
             runtimes.update(step["mise"])
-            atomic_write(root / ".mise.toml", tomli_w.dumps({"tools": step["mise"]}))
+            atomic_write(workstation_root / ".mise.toml", tomli_w.dumps({"tools": step["mise"]}))
             subprocess.run(
-                [mise, "trust", str(root / ".mise.toml")],
-                cwd=root,
+                [mise, "trust", str(workstation_root / ".mise.toml")],
+                cwd=workstation_root,
                 check=True,
                 env=environment,
             )
-        subprocess.run(argv, cwd=root, check=True, env=environment)
+        subprocess.run(argv, cwd=workstation_root, check=True, env=environment)
         results.append(argv)
     source = config.get("preferences", {}).get("dotfiles_source")
     if source:
@@ -332,6 +395,7 @@ def doctor(
         "hooks": hooks,
         "credentials": credentials,
         "user_agents": user_agents,
+        "project_readiness": project_readiness(root, config, environment),
     }
 
 

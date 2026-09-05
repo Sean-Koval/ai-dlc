@@ -1,6 +1,102 @@
 import pytest
 
 
+@pytest.mark.parametrize("apply", [False, True])
+@pytest.mark.parametrize(
+    "guidance",
+    [
+        ".ai-dlc/providers/openspec.md",
+        ".agents/skills/day-start/SKILL.md",
+        ".claude/skills/day-start/SKILL.md",
+    ],
+)
+def test_provider_switch_refuses_to_delete_still_referenced_owned_guidance(
+    tmp_path, apply, guidance
+):
+    """A custom provider must not gain a link whose formerly owned target gets deleted."""
+    import hashlib
+    import json
+
+    from ai_dlc.agents import render_agents
+
+    project = tmp_path / "ai-dlc.toml"
+    project.write_text('schema=4\n[roles]\nspecs="openspec"\n')
+    render_agents(tmp_path, apply=True)
+    manifest = tmp_path / "component.json"
+    manifest.write_text(
+        json.dumps(
+            {
+                "schema": 1,
+                "components": [
+                    {
+                        "id": "custom-specs",
+                        "roles": ["specs"],
+                        "modules": [],
+                        "guidance": [guidance],
+                        "required_config": [],
+                    }
+                ],
+            }
+        )
+    )
+    digest = hashlib.sha256(manifest.read_bytes()).hexdigest()
+    project.write_text(
+        'schema=4\n[roles]\nspecs="custom-specs"\n[providers.custom-specs]\n'
+        'component_manifest="component.json"\n'
+        f'component_manifest_sha256="{digest}"\n'
+        "[agents]\nskills=[]\n"
+    )
+    before = {p.relative_to(tmp_path): p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()}
+    with pytest.raises(ValueError, match="still referenced"):
+        render_agents(tmp_path, apply=apply)
+    assert before == {
+        p.relative_to(tmp_path): p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()
+    }
+
+
+def test_provider_index_delivers_real_owned_instructions_and_removes_stale_copies(tmp_path):
+    """Provider selection changes must update links and owned instructions together."""
+    import json
+
+    from ai_dlc.agents import render_agents
+    from ai_dlc.files import assets
+
+    config = tmp_path / "ai-dlc.toml"
+    config.write_text('schema=4\n[roles]\nspecs="openspec"\ntracker="linear"\n')
+    render_agents(tmp_path, apply=True)
+    guide = (tmp_path / "AGENTS.md").read_text()
+    assert ".ai-dlc/providers/openspec.md" in guide
+    assert ".ai-dlc/providers/linear.md" in guide
+    assert "@AGENTS.md" in (tmp_path / "CLAUDE.md").read_text()
+    copy = tmp_path / ".ai-dlc/providers/openspec.md"
+    assert copy.read_bytes() == (assets("agents") / "providers/openspec.md").read_bytes()
+    ownership = json.loads((tmp_path / ".ai-dlc/agent-ownership.json").read_text())
+    assert ".ai-dlc/providers/openspec.md" in ownership["files"]
+    config.write_text('schema=4\n[roles]\ntracker="linear"\n')
+    render_agents(tmp_path, apply=True)
+    assert not copy.exists()
+    assert ".ai-dlc/providers/openspec.md" not in (tmp_path / "AGENTS.md").read_text()
+
+
+@pytest.mark.parametrize("owned", [False, True])
+def test_provider_copy_conflicts_preserve_authored_files_without_partial_writes(tmp_path, owned):
+    """Authored and edited owned provider instructions must never be overwritten."""
+    from ai_dlc.agents import render_agents
+
+    (tmp_path / "ai-dlc.toml").write_text('schema=4\n[roles]\nspecs="openspec"\n')
+    if owned:
+        render_agents(tmp_path, apply=True)
+    copy = tmp_path / ".ai-dlc/providers/openspec.md"
+    copy.parent.mkdir(parents=True, exist_ok=True)
+    copy.write_text("authored instructions")
+    before = {p.relative_to(tmp_path): p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()}
+    with pytest.raises(ValueError, match="conflict"):
+        render_agents(tmp_path, apply=True)
+    assert before == {
+        p.relative_to(tmp_path): p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()
+    }
+
+
 def test_render_preserves_authored_text_and_detects_stale_generated_section(tmp_path):
     from ai_dlc.agents import render_agents
 
@@ -130,7 +226,9 @@ def test_digest_mismatch_prevents_all_writes(tmp_path, monkeypatch):
     package = tmp_path / "package"
     shutil.copytree(assets("agents"), package)
     (package / "skills/day-start/SKILL.md").write_text("tampered")
-    monkeypatch.setattr(agents, "assets", lambda name: package)
+    monkeypatch.setattr(
+        agents, "assets", lambda name: package if name == "agents" else assets(name)
+    )
     project = tmp_path / "project"
     project.mkdir()
     (project / "ai-dlc.toml").write_text("schema=4\n")
@@ -149,7 +247,9 @@ def test_unchanged_owned_skill_updates_and_edited_removal_conflicts(tmp_path, mo
 
     package = tmp_path / "package"
     shutil.copytree(assets("agents"), package)
-    monkeypatch.setattr(agents, "assets", lambda name: package)
+    monkeypatch.setattr(
+        agents, "assets", lambda name: package if name == "agents" else assets(name)
+    )
     project = tmp_path / "project"
     project.mkdir()
     config = project / "ai-dlc.toml"
@@ -218,3 +318,54 @@ def test_unknown_client_version_has_no_claimed_hook_support():
     assert not result["ready"]
     assert result["supported"] == []
     assert "fixture" in result["coverage"]
+
+
+def test_custom_provider_index_links_to_project_instructions_without_copying_or_replacing_them(
+    tmp_path,
+):
+    """Custom instructions must remain project-owned even if their path matches a packaged file."""
+    import hashlib
+    import json
+
+    from ai_dlc.agents import render_agents
+    from ai_dlc.config import load_project
+    from ai_dlc.readiness import inspect_readiness
+
+    guidance = tmp_path / "providers/openspec.md"
+    guidance.parent.mkdir()
+    guidance.write_text("# Custom specification provider instructions\n")
+    manifest = tmp_path / "component.json"
+    manifest.write_text(
+        json.dumps(
+            {
+                "schema": 1,
+                "components": [
+                    {
+                        "id": "custom-specs",
+                        "roles": ["specs"],
+                        "modules": [],
+                        "guidance": ["providers/openspec.md"],
+                        "required_config": [],
+                    }
+                ],
+            }
+        )
+    )
+    digest = hashlib.sha256(manifest.read_bytes()).hexdigest()
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nspecs="custom-specs"\nagent-client=["codex"]\n'
+        '[providers.custom-specs]\ncomponent_manifest="component.json"\n'
+        f'component_manifest_sha256="{digest}"\n'
+    )
+    render_agents(tmp_path, apply=True)
+    assert (
+        "[providers/openspec.md](<providers/openspec.md>)" in (tmp_path / "AGENTS.md").read_text()
+    )
+    assert not (tmp_path / ".ai-dlc/providers/openspec.md").exists()
+    assert guidance.read_text() == "# Custom specification provider instructions\n"
+    config = load_project(tmp_path)
+    assert inspect_readiness(tmp_path, config, environ={}, probe=lambda _: {"available": True})[
+        "ready"
+    ]
+    guidance.write_text("# Reviewed new custom instructions\n")
+    assert render_agents(tmp_path)["clean"]

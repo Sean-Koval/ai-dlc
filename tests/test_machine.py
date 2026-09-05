@@ -30,6 +30,46 @@ env = ["LINEAR_SANDBOX_TOKEN"]
 LEGACY_PROFILE = PROFILE.replace('profile_id = "portable-development"\n', "")
 
 
+def test_doctor_adds_project_readiness_without_overriding_missing_enrollment(tmp_path, monkeypatch):
+    """A ready project must not turn an unenrolled machine doctor green."""
+    from ai_dlc import provision
+    from ai_dlc.agents import render_agents
+
+    service, _ = manager(tmp_path, environ={})
+    root = tmp_path / "project"
+    root.mkdir()
+    (root / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nspecs="openspec"\nagent-client=["codex"]\n'
+    )
+    render_agents(root, apply=True)
+    monkeypatch.setattr(
+        provision, "_which", lambda command, environ: None if command == "mise" else "/bin/tool"
+    )
+    result = service.doctor(root)
+    assert result["project_readiness"]["ready"] is True
+    assert result["ready"] is False
+    assert result["machine_status"]["enrolled"] is False
+
+
+def test_doctor_keeps_partial_diagnostics_for_invalid_component_manifest(tmp_path, monkeypatch):
+    """Invalid readiness metadata must not erase authoritative machine enrollment diagnostics."""
+    from ai_dlc import provision
+
+    service, _ = manager(tmp_path, environ={})
+    root = tmp_path / "project"
+    root.mkdir()
+    (root / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nspecs="custom"\n[providers.custom]\n'
+        'component_manifest="missing.json"\ncomponent_manifest_sha256="' + "a" * 64 + '"\n'
+    )
+    monkeypatch.setattr(provision, "_which", lambda command, environ: None)
+    result = service.doctor(root)
+    assert result["ready"] is False
+    assert result["machine_status"]["enrolled"] is False
+    assert result["project_readiness"]["checks"][0]["status"] == "blocked"
+    assert result["machine_checks"]["unavailable"]
+
+
 def git(repository: Path, *arguments: str) -> str:
     """Run one controlled Git command for a disposable profile source."""
     result = subprocess.run(
@@ -970,6 +1010,35 @@ def test_plan_uses_only_the_verified_active_profile_and_machine_without_writing(
     assert result["lock"]["resolved_commit"] == active.resolved_commit
     assert result["commands"] == []
     assert after == before
+
+
+@pytest.mark.parametrize(
+    ("operation", "provision_name"), [("plan", "machine_plan"), ("apply", "machine_apply")]
+)
+def test_root_aware_reconciliation_forwards_the_selected_project(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, operation: str, provision_name: str
+):
+    """Would fail if setup accepted a root but did not pass it to provisioning."""
+    from ai_dlc import provision
+
+    source, _ = disposable_profile(tmp_path)
+    service, paths = manager(tmp_path)
+    service.enroll(str(source), "portable-development", "laptop", apply=True)
+    machine_file = configure_active_machine(paths)
+    root = tmp_path / "project"
+    root.mkdir()
+    calls = []
+
+    def boundary(profile: Path, **kwargs) -> dict[str, object]:
+        calls.append((profile, kwargs))
+        return {"ready": True, "commands": []}
+
+    monkeypatch.setattr(provision, provision_name, boundary)
+
+    getattr(service, operation)(root=root)
+
+    assert calls[0][1]["root"] == root
+    assert calls[0][1]["machine"] == machine_file
 
 
 def test_apply_returns_active_lock_identity_with_the_reconciliation_result(

@@ -2,8 +2,172 @@ import hashlib
 import json
 from pathlib import Path
 
+import pytest
 from click import unstyle
 from typer.testing import CliRunner
+
+
+@pytest.mark.parametrize("invalid", [None, "digest", "path", "symlink", "schema"])
+def test_missing_custom_guidance_retains_attribution_and_independent_checks(
+    tmp_path, monkeypatch, invalid
+):
+    """Only authenticated, otherwise valid metadata may survive a missing guidance target."""
+    from ai_dlc.cli import app
+
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "config"))
+    monkeypatch.setenv("PATH", "")
+    root = tmp_path / "project"
+    root.mkdir()
+    guidance = root / "guidance.md"
+    guidance.write_text("# Custom instructions\n")
+    guidance.unlink()
+    paths = ["guidance.md"]
+    if invalid == "path":
+        paths.append("../outside.md")
+    if invalid == "symlink":
+        (root / "linked.md").symlink_to(root / "absent.md")
+        paths.append("linked.md")
+    manifest = root / "component.json"
+    manifest.write_text(
+        json.dumps(
+            {
+                "schema": 1,
+                "components": [
+                    {
+                        "id": "custom-specs",
+                        "roles": ["specs"],
+                        "modules": ["core"],
+                        "guidance": paths,
+                        "required_config": ["repository"] if invalid != "schema" else 5,
+                    }
+                ],
+            }
+        )
+    )
+    digest = hashlib.sha256(manifest.read_bytes()).hexdigest() if invalid != "digest" else "a" * 64
+    (root / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nspecs="custom-specs"\ntracker="github-issues"\n'
+        '[providers.custom-specs]\ncomponent_manifest="component.json"\n'
+        f'component_manifest_sha256="{digest}"\n'
+    )
+    before = {p: p.read_bytes() for p in root.rglob("*") if p.is_file()}
+
+    result = CliRunner().invoke(app, ["project", "readiness", "--root", str(root)])
+
+    assert result.exit_code == 1, result.output
+    report = json.loads(result.stdout)
+    assert report["qualification"] == "not-assessed"
+    assert not report["ready"]
+    if invalid:
+        assert len(report["checks"]) == 1
+        assert report["checks"][0]["dimension"] == "configuration"
+        assert report["checks"][0]["status"] == "blocked"
+    else:
+        gaps = [
+            c
+            for c in report["checks"]
+            if c["component"] == "custom-specs" and c["dimension"] == "guidance"
+        ]
+        assert len(gaps) == 1
+        assert gaps[0]["status"] == "missing"
+        assert "guidance.md" in gaps[0]["reason"]
+        assert "Restore" in gaps[0]["next_action"] and "guidance.md" in gaps[0]["next_action"]
+        for component in ["custom-specs", "github-issues"]:
+            assert any(
+                c["component"] == component
+                and c["dimension"] == "tool"
+                and c["status"] == "missing"
+                for c in report["checks"]
+            )
+        assert any(
+            c["component"] == "custom-specs"
+            and c["dimension"] == "configuration"
+            and "repository" in c["next_action"]
+            for c in report["checks"]
+        )
+    assert {p: p.read_bytes() for p in root.rglob("*") if p.is_file()} == before
+
+
+@pytest.mark.parametrize("command", [["project", "readiness"], ["doctor"], ["machine", "doctor"]])
+def test_malformed_component_metadata_returns_blocked_diagnostics(tmp_path, monkeypatch, command):
+    """Schema type failures must not abort offline reports or erase enrollment diagnostics."""
+    from ai_dlc.cli import app
+
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "config"))
+    monkeypatch.setenv("PATH", "")
+    root = tmp_path / "project"
+    root.mkdir()
+    manifest = root / "component.json"
+    manifest.write_text('{"schema": 1, "components": {}}')
+    digest = hashlib.sha256(manifest.read_bytes()).hexdigest()
+    (root / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nspecs="custom"\n[providers.custom]\n'
+        'component_manifest="component.json"\n'
+        f'component_manifest_sha256="{digest}"\n'
+    )
+    before = {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}
+    result = CliRunner().invoke(app, [*command, "--root", str(root)])
+    assert result.exit_code == 1
+    assert result.stdout.strip().startswith("{"), repr(result.exception)
+    report = json.loads(result.stdout)
+    readiness = report if command == ["project", "readiness"] else report["project_readiness"]
+    assert readiness["ready"] is False
+    assert readiness["checks"][0]["status"] == "blocked"
+    assert readiness["checks"][0]["next_action"]
+    if command != ["project", "readiness"]:
+        assert report["ready"] is False
+        assert report["machine_status"]["enrolled"] is False
+        assert report["machine_checks"]["unavailable"]
+    assert before == {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}
+
+
+def test_project_readiness_is_offline_read_only_and_exits_for_required_gaps(tmp_path, monkeypatch):
+    """Readiness must report gaps, never execute tools or load secret files, and return 0 after rendering."""
+    import subprocess
+
+    from ai_dlc.agents import render_agents
+    from ai_dlc.cli import app
+
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "config"))
+    root = tmp_path / "project"
+    root.mkdir()
+    (root / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nspecs="openspec"\nagent-client=["codex"]\n'
+    )
+    binary = tmp_path / "bin"
+    binary.mkdir()
+    for name in ["openspec", "codex"]:
+        path = binary / name
+        path.write_text("#!/bin/sh\nexit 99\n")
+        path.chmod(0o755)
+    monkeypatch.setenv("PATH", str(binary))
+    (root / ".env").write_text("SENTINEL=must-not-be-read\n")
+    read_text = Path.read_text
+
+    def refuse_secret_file(path, *args, **kwargs):
+        if path == root / ".env":
+            raise AssertionError("plain readiness read a secret file")
+        return read_text(path, *args, **kwargs)
+
+    def no_execution(*args, **kwargs):
+        raise AssertionError("plain readiness executed a process")
+
+    monkeypatch.setattr(subprocess, "run", no_execution)
+    monkeypatch.setattr(Path, "read_text", refuse_secret_file)
+    before = {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}
+    result = CliRunner().invoke(app, ["project", "readiness", "--root", str(root)])
+    assert result.exit_code == 1, result.output
+    report = json.loads(result.stdout)
+    assert not report["ready"]
+    assert report["qualification"] == "not-assessed"
+    assert all(
+        c["status"] == "unverified" for c in report["checks"] if c["dimension"] == "provider-health"
+    )
+    assert before == {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}
+    render_agents(root, apply=True)
+    result = CliRunner().invoke(app, ["project", "readiness", "--root", str(root)])
+    assert result.exit_code == 0, result.output
+    assert json.loads(result.stdout)["ready"]
 
 
 def _write_cli_enrollment(tmp_path: Path) -> dict[str, str]:
@@ -329,6 +493,45 @@ def test_setup_profile_replacement_and_home_delegate_to_the_manager(monkeypatch,
         assert str(profile) in result.stdout
 
     assert calls == [("plan", home, False, profile), ("apply", home, False, profile)]
+
+
+def test_setup_and_machine_commands_forward_an_explicit_root(monkeypatch, tmp_path):
+    """Would fail if a public setup route accepted --root but dropped the project selection."""
+    from ai_dlc import cli
+
+    root = tmp_path / "project"
+    calls = []
+
+    class Manager:
+        def __init__(self, *, home=None):
+            self.home = home
+
+        def plan(self, *, headless=False, profile=None, root=None):
+            calls.append(("plan", headless, profile, root))
+            return {"route": "plan"}
+
+        def apply(self, *, headless=False, profile=None, root=None):
+            calls.append(("apply", headless, profile, root))
+            return {"route": "apply"}
+
+    monkeypatch.setattr(cli, "MachineManager", Manager)
+    runner = CliRunner()
+
+    for command in [
+        ["setup", "plan"],
+        ["setup", "apply"],
+        ["machine", "plan"],
+        ["machine", "apply"],
+    ]:
+        result = runner.invoke(cli.app, [*command, "--root", str(root)])
+        assert result.exit_code == 0, result.output
+
+    assert calls == [
+        ("plan", False, None, root),
+        ("apply", False, None, root),
+        ("plan", False, None, root),
+        ("apply", False, None, root),
+    ]
 
 
 def test_profile_show_without_paths_uses_enrolled_runtime_resolution(monkeypatch):

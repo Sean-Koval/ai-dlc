@@ -10,6 +10,7 @@ from typing import Any
 
 import tomli_w
 
+from ai_dlc.components import load_component_catalog, resolve_components
 from ai_dlc.config import load_project
 from ai_dlc.files import assets, atomic_write, inside
 
@@ -34,6 +35,64 @@ def _section(current: str, body: str, toml: bool = False) -> str:
             )
         return current[: match.start()] + new + current[match.end() :]
     return current.rstrip() + ("\n\n" if current else "") + new + "\n"
+
+
+def provider_index(resolved: dict) -> tuple[str, dict[str, str]]:
+    """Build portable links and owned copies from validated component requirements."""
+    base = assets("agents")
+    builtins = {
+        item["id"]
+        for item in json.loads((assets("modules") / "components.json").read_text())["components"]
+    }
+    lines = [(base / "templates/provider-index.md").read_text().rstrip(), ""]
+    copies = {}
+    for component in resolved["components"]:
+        links = []
+        for guidance in component["guidance"]:
+            if component["id"] in builtins:
+                destination = ".ai-dlc/" + guidance
+                copies[destination] = inside(base, guidance).read_text()
+            else:
+                destination = guidance
+            links.append(f"[{guidance}](<{destination}>)")
+        modules = ", ".join(component["modules"]) or "none"
+        lines.append(
+            f"- {component['role']}: {component['provider']} (modules: {modules}); "
+            + (", ".join(links) or "no component instructions declared")
+        )
+    for item in resolved["unresolved"]:
+        lines.append(f"- {item['role']}: {item['provider']}; unsupported: {item['reason']}")
+    return "\n".join(lines) + "\n", copies
+
+
+def provider_guidance_ready(root: Path, index: str, copies: dict[str, str], client: str) -> bool:
+    """Check that the supported harness can reach intact configured instructions."""
+    try:
+        for filename, expected in [
+            ("AGENTS.md", index),
+            *([("CLAUDE.md", "@AGENTS.md\n")] if client == "claude-code" else []),
+        ]:
+            current = inside(root, filename).read_text()
+            if (
+                current.count("<!-- ai-dlc:begin ") != 1
+                or current.count("<!-- ai-dlc:end -->") != 1
+            ):
+                return False
+            match = re.search(
+                r"<!-- ai-dlc:begin ([0-9a-f]{64}) -->\n(.*?)<!-- ai-dlc:end -->",
+                current,
+                re.DOTALL,
+            )
+            if not match or expected not in match.group(2):
+                return False
+            if hashlib.sha256(match.group(2).encode()).hexdigest() != match.group(1):
+                return False
+        for name, body in copies.items():
+            if inside(root, name).read_text() != body:
+                return False
+    except (OSError, ValueError):
+        return False
+    return True
 
 
 def render_agents(
@@ -62,6 +121,14 @@ def render_agents(
                 f"unsupported required hooks for {selected_client}: {readiness['unavailable']}"
             )
     skill_sources = _skill_sources(config)
+    try:
+        components = resolve_components(config, load_component_catalog(root, config))
+    except TypeError as exc:
+        raise ValueError(f"invalid component metadata: {exc}") from exc
+    index, provider_copies = provider_index(components)
+    referenced_guidance = {
+        guidance for component in components["components"] for guidance in component["guidance"]
+    }
     checks = config.get("checks", {})
     lines = [
         "# Shared project guidance",
@@ -79,6 +146,7 @@ def render_agents(
     lines.extend(
         ["", "Run `ai-dlc project check --required` in the prepared project environment.", ""]
     )
+    lines.append(index)
     planned: dict[str, str] = {}
     for filename, body in [("AGENTS.md", "\n".join(lines)), ("CLAUDE.md", "@AGENTS.md\n")]:
         if filename == "CLAUDE.md" and "claude-code" not in clients:
@@ -117,6 +185,22 @@ def render_agents(
     ownership["schema"] = 2
     owned_files = dict(previous.get("files", {}))
     removed = []
+    for name, old_digest in list(owned_files.items()):
+        if not name.startswith(".ai-dlc/providers/"):
+            continue
+        path = inside(root, name)
+        if path.exists() and hashlib.sha256(path.read_bytes()).hexdigest() != old_digest:
+            raise ValueError(f"managed provider guidance conflict: {name}")
+        if name not in provider_copies:
+            if path.exists():
+                removed.append(name)
+            del owned_files[name]
+    for name, body in provider_copies.items():
+        path = inside(root, name)
+        if name not in owned_files and path.exists() and path.read_bytes() != body.encode():
+            raise ValueError(f"authored provider guidance conflict: {name}")
+        planned[name] = body
+        owned_files[name] = hashlib.sha256(body.encode()).hexdigest()
     for selected_client in clients:
         directory = ".agents" if selected_client == "codex" else ".claude"
         prefix = directory + "/skills/"
@@ -173,6 +257,12 @@ def render_agents(
         if not inside(root, name).exists() or inside(root, name).read_text() != text
     ]
     changed.extend(removed)
+    for name in removed:
+        if name in referenced_guidance:
+            raise ValueError(
+                f"managed provider guidance conflict: {name} is still referenced; "
+                "copy the instructions to a project-owned path and update the component manifest"
+            )
     if apply:
         for name in removed:
             inside(root, name).unlink()

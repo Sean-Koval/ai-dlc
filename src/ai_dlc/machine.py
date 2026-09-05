@@ -149,32 +149,64 @@ class MachineManager:
             "drift": drift,
         }
 
-    def plan(self, *, headless: bool = False, profile: Path | None = None) -> dict[str, object]:
+    def plan(
+        self,
+        *,
+        headless: bool = False,
+        profile: Path | None = None,
+        root: Path | None = None,
+    ) -> dict[str, object]:
         """Preview reconciliation from the active machine and selected personal profile."""
         from ai_dlc import provision
 
         lock, profile_file, machine_file = self._active_files(profile=profile)
-        result = provision.machine_plan(
-            profile_file,
-            headless=headless,
-            home=self.home,
-            machine=machine_file,
-            environ=self.environ,
-        )
+        if root is None:
+            result = provision.machine_plan(
+                profile_file,
+                headless=headless,
+                home=self.home,
+                machine=machine_file,
+                environ=self.environ,
+            )
+        else:
+            result = provision.machine_plan(
+                profile_file,
+                headless=headless,
+                home=self.home,
+                machine=machine_file,
+                root=root,
+                environ=self.environ,
+            )
         return self._with_lock(result, lock)
 
-    def apply(self, *, headless: bool = False, profile: Path | None = None) -> dict[str, object]:
+    def apply(
+        self,
+        *,
+        headless: bool = False,
+        profile: Path | None = None,
+        root: Path | None = None,
+    ) -> dict[str, object]:
         """Reconcile the active machine and selected personal profile without mutation."""
         from ai_dlc import provision
 
         lock, profile_file, machine_file = self._active_files(profile=profile)
-        result = provision.machine_apply(
-            profile_file,
-            headless=headless,
-            home=self.home,
-            machine=machine_file,
-            environ=self.environ,
-        )
+        if root is None:
+            result = provision.machine_apply(
+                profile_file,
+                headless=headless,
+                home=self.home,
+                machine=machine_file,
+                environ=self.environ,
+            )
+        else:
+            result = provision.machine_apply(
+                profile_file,
+                headless=headless,
+                home=self.home,
+                machine=machine_file,
+                root=root,
+                environ=self.environ,
+            )
         return self._with_lock(result, lock)
 
     def sync(self, *, apply: bool = False, headless: bool = False) -> dict[str, object]:
