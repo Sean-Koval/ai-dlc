@@ -1,0 +1,36 @@
+schema = 1
+id = "connected-project-readiness"
+title = "Make selected project tools and guidance ready across machines"
+scope = "Join selected provider requirements with machine provisioning and expose actionable project readiness without confusing it with release certification."
+requires_spec = true
+spec_reason = "Adds observable workflow, integration or guidance behavior; the linked OpenSpec change defines acceptance."
+acceptance = [
+    "Milestone M1. Join selected provider requirements with machine provisioning and expose actionable project readiness without confusing it with release certification.",
+    "Dependencies: component-capability-contract. Follow docs/superpowers/plans/2026-09-05-connected-project-readiness.md before implementation.",
+    "RD-01: Root-aware setup SHALL resolve explicit project and profile selections into required tool modules and guidance, preserving existing no-root command behavior and authored files.",
+    "RD-02: Project readiness SHALL separately identify tool, configuration, credential, and guidance failures with next actions; it SHALL inspect only credential presence and SHALL NOT read secret files automatically.",
+    "RD-03: Equivalent profile/project revisions SHALL resolve equivalent portable requirements with independent local bindings; unsupported capabilities SHALL be explicit.",
+    "Excluded scope: No credential auto-loading, automatic account choice, new client support claim, hosted control plane, or weakening of existing doctor/finish behavior.",
+    "Required checks, source review, and configured merged-revision completion evidence must pass; fixture tests do not establish live qualification.",
+]
+reviewed = true
+
+[providers]
+specs = "openspec"
+tracker = "linear"
+scm = "github"
+knowledge = "obsidian"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/connected-project-readiness"
+plan = "docs/superpowers/plans/2026-09-05-connected-project-readiness.md"
+roadmap = "docs/roadmap.md"
+tracker = "ec81e77e-03fb-494e-aece-be0633f4b5ae"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72"
+deploy = "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "08e58cff6eeb57842d485cdcc8cefeef0ef191438c796ee2db82bb848e4a1b4c"

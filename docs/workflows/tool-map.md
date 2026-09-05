@@ -4,6 +4,11 @@ The lifecycle uses stable roles; `ai-dlc.toml` selects their current providers.
 This page records how the default AI-DLC toolset participates without making a
 vendor part of the lifecycle definition.
 
+Installed tool use, harness guidance, and provider adapters are complementary.
+Agents can use native tools directly; the configured services provide specific
+validation and completion boundaries. The [roadmap](../roadmap.md) distinguishes
+planned component/workflow support from the current interfaces listed here.
+
 [Back to the workflow map](../development-workflow.md)
 
 ## Role to provider mapping

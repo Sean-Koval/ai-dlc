@@ -1,0 +1,36 @@
+schema = 1
+id = "product-shaping-workflow"
+title = "Guide product discovery and feature selection for new and existing products"
+scope = "Give agents concrete guidance and examples for choosing worthwhile product increments before writing specifications or code."
+requires_spec = true
+spec_reason = "Adds observable workflow, integration or guidance behavior; the linked OpenSpec change defines acceptance."
+acceptance = [
+    "Milestone M2. Give agents concrete guidance and examples for choosing worthwhile product increments before writing specifications or code.",
+    "Dependencies: none. Follow docs/superpowers/plans/2026-09-05-product-shaping-workflow.md before implementation.",
+    "PS-01: The workflow SHALL distinguish observed evidence, user decisions, and hypotheses; it SHALL compare feasible options and identify a bounded outcome before proposing implementation.",
+    "PS-02: Greenfield guidance SHALL shape the smallest useful outcome; brownfield guidance SHALL inspect existing behavior and preserve explicit compatibility boundaries.",
+    "PS-03: The workflow SHALL produce traceable outcome/requirement IDs and an explicit proceed, investigate, or stop decision; material unknowns SHALL remain visible and SHALL NOT become invented acceptance facts.",
+    "Excluded scope: No invented interviews or user approval, automatic ticket publication during discovery, mandatory UI work, replacement specification system, or broad autonomous feature expansion.",
+    "Required checks, source review, and configured merged-revision completion evidence must pass; fixture tests do not establish live qualification.",
+]
+reviewed = true
+
+[providers]
+specs = "openspec"
+tracker = "linear"
+scm = "github"
+knowledge = "obsidian"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/product-shaping-workflow"
+plan = "docs/superpowers/plans/2026-09-05-product-shaping-workflow.md"
+roadmap = "docs/roadmap.md"
+tracker = "e6b3cdc5-2b03-4bde-b53a-9be1a48f5d96"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72"
+deploy = "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "08e58cff6eeb57842d485cdcc8cefeef0ef191438c796ee2db82bb848e4a1b4c"

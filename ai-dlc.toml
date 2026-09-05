@@ -27,8 +27,13 @@ receipt_artifacts = [
 ]
 
 [providers.linear]
-token_env = "LINEAR_API_KEY"
-# Set team_id and workspace-native status UUIDs before publishing work.
+token_env = "LINEAR_SANDBOX_TOKEN"
+team_id = "47b701a4-d6a6-4d27-85fc-6dd42030ddd3"
+health_reference = "2a8b487f-3433-4ebe-a9e2-a16ac5b156da"
+
+[providers.linear.statuses]
+in_progress = "6076dc88-dd2f-4e2e-85aa-aed1a6d36bcf"
+closed = "3e34f09e-e258-4044-b034-8d5dd4e63fb4"
 
 [gates]
 finish = ["specification-current", "pr-merged", "ci-green"]

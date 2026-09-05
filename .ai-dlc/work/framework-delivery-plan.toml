@@ -1,0 +1,35 @@
+schema = 1
+id = "framework-delivery-plan"
+title = "Document and sequence the portable framework delivery roadmap"
+scope = "Revise current documentation around the approved framework direction, prepare independently finishable OpenSpec changes and executor plans, and synchronize sandbox backlog tickets and dependencies."
+requires_spec = false
+spec_reason = "Planning and documentation delivery only; runtime and skill behavior changes belong to separate linked capability tickets."
+acceptance = [
+    "Current documentation presents portable setup and replaceable tools/workflows as the core, with UI/UX optional.",
+    "Ten child work items have explicit scope, dependency order, interfaces, file ownership, acceptance, verification, exclusions, and handoff guidance.",
+    "Seven behavior changes are represented by independently finishable OpenSpec changes; three verification items retain honest evidence boundaries.",
+    "Existing SAN-6/SAN-7 tickets are revised in place, new tickets are deduplicated, and native dependency links match docs/planning/delivery-index.json.",
+    "OpenSpec validation, documentation/reference checks, work-record validation, and required project checks pass.",
+    "Planning PR and evidence are linked without marking planned implementation or missing live evidence complete.",
+]
+reviewed = true
+
+[providers]
+specs = "openspec"
+tracker = "linear"
+scm = "github"
+knowledge = "obsidian"
+deploy = "none"
+
+[artifacts]
+branch = "codex/design-pm-roadmap"
+plan = "docs/superpowers/plans/2026-09-05-framework-delivery.md"
+roadmap = "docs/roadmap.md"
+tracker = "402c879f-ddd3-4693-a37b-6a145489a506"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72"
+deploy = "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "08e58cff6eeb57842d485cdcc8cefeef0ef191438c796ee2db82bb848e4a1b4c"

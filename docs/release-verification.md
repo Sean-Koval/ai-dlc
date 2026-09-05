@@ -1,5 +1,12 @@
 # Release verification
 
+Current planning context (2026-09-05): the [framework roadmap](roadmap.md) is the
+forward delivery sequence. Historical evidence below remains scoped to its stated
+revision and environment. References to missing Linear mappings in the enrollment
+candidate describe that earlier run; the planning branch now has a configured
+sandbox connection and backlog tickets. New plans/specifications do not establish
+runtime capability, live qualification, or release readiness.
+
 This checkout is an implementation candidate, not a published or certified cross-platform release. Native Apple silicon source bootstrap from both the development worktree and a disposable clean clone, repeated setup, language fixtures, lint/type checks, strict OpenSpec validation, a hash-constrained isolated wheel installation, the final integrated required checks, and independent source review have passed. Pull request #1's expanded matrix passed on Ubuntu 24.04 and 26.04 for x64 and ARM64 plus macOS Intel. Each job published a distinct clean receipt for the same synthetic merge revision with all five required checks passing.
 
 Outstanding: factory-clean Apple silicon setup; actual Codex Cloud and Claude Cloud hosted lifecycles; live client hook sessions; full live provider mutation conformance; behavioral skill evaluations; publication of verified release artifacts.

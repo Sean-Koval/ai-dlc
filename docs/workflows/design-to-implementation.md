@@ -5,6 +5,13 @@ implementation. A design explains intent, journeys, constraints, boundaries,
 and decisions. It does not duplicate a PRD, formal specification, tracker, or
 implementation diff.
 
+Begin with a shaped outcome: evidence, assumptions, alternatives, and the next
+worthwhile increment. UI/UX exploration applies when the increment changes an
+interface; API, infrastructure, and migration work use suitable design methods.
+The planned [product-shaping workflow](../../openspec/changes/product-shaping-workflow/proposal.md)
+and [traceability change](../../openspec/changes/spec-delivery-traceability/proposal.md)
+extend this handoff without introducing a second specification system.
+
 [Back to the workflow map](../development-workflow.md)
 
 ## The handoff contract

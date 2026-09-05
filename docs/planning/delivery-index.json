@@ -1,0 +1,232 @@
+{
+  "schema": 1,
+  "direction": "docs/product-direction.md",
+  "master_plan": "docs/superpowers/plans/2026-09-05-framework-delivery.md",
+  "tickets": [
+    {
+      "id": "component-capability-contract",
+      "title": "Connect provider roles to tool installation and harness guidance",
+      "milestone": "M1",
+      "depends_on": [],
+      "requires_spec": true,
+      "spec": "openspec/changes/component-capability-contract",
+      "plan": "docs/superpowers/plans/2026-09-05-component-capability-contract.md",
+      "work": ".ai-dlc/work/component-capability-contract.toml",
+      "requirements": [
+        "CC-01",
+        "CC-02",
+        "CC-03"
+      ],
+      "tracker": {
+        "id": "6ff49327-df8e-4748-a687-64ca9ade8657",
+        "identifier": "SAN-9",
+        "url": "https://linear.app/sandbox-aidlc/issue/SAN-9/connect-provider-roles-to-tool-installation-and-harness-guidance"
+      }
+    },
+    {
+      "id": "connected-project-readiness",
+      "title": "Make selected project tools and guidance ready across machines",
+      "milestone": "M1",
+      "depends_on": [
+        "component-capability-contract"
+      ],
+      "requires_spec": true,
+      "spec": "openspec/changes/connected-project-readiness",
+      "plan": "docs/superpowers/plans/2026-09-05-connected-project-readiness.md",
+      "work": ".ai-dlc/work/connected-project-readiness.toml",
+      "requirements": [
+        "RD-01",
+        "RD-02",
+        "RD-03"
+      ],
+      "tracker": {
+        "id": "ec81e77e-03fb-494e-aece-be0633f4b5ae",
+        "identifier": "SAN-10",
+        "url": "https://linear.app/sandbox-aidlc/issue/SAN-10/make-selected-project-tools-and-guidance-ready-across-machines"
+      }
+    },
+    {
+      "id": "linear-provider-onboarding",
+      "title": "Discover and safely configure a project's Linear connection",
+      "milestone": "M1",
+      "depends_on": [
+        "component-capability-contract"
+      ],
+      "requires_spec": true,
+      "spec": "openspec/changes/linear-provider-onboarding",
+      "plan": "docs/superpowers/plans/2026-09-05-linear-provider-onboarding.md",
+      "work": ".ai-dlc/work/linear-provider-onboarding.toml",
+      "requirements": [
+        "LN-01",
+        "LN-02",
+        "LN-03"
+      ],
+      "tracker": {
+        "id": "6fd7671e-3351-47d0-9c43-6d9537160a1d",
+        "identifier": "SAN-11",
+        "url": "https://linear.app/sandbox-aidlc/issue/SAN-11/discover-and-safely-configure-a-projects-linear-connection"
+      }
+    },
+    {
+      "id": "portable-workflow-bundles",
+      "title": "Import pinned workflow guidance and expose it to supported harnesses",
+      "milestone": "M1",
+      "depends_on": [
+        "component-capability-contract",
+        "connected-project-readiness"
+      ],
+      "requires_spec": true,
+      "spec": "openspec/changes/portable-workflow-bundles",
+      "plan": "docs/superpowers/plans/2026-09-05-portable-workflow-bundles.md",
+      "work": ".ai-dlc/work/portable-workflow-bundles.toml",
+      "requirements": [
+        "WB-01",
+        "WB-02",
+        "WB-03"
+      ],
+      "tracker": {
+        "id": "a62d3b79-a8f1-46bb-9c09-7a2af5f0b36d",
+        "identifier": "SAN-12",
+        "url": "https://linear.app/sandbox-aidlc/issue/SAN-12/import-pinned-workflow-guidance-and-expose-it-to-supported-harnesses"
+      }
+    },
+    {
+      "id": "product-shaping-workflow",
+      "title": "Guide product discovery and feature selection for new and existing products",
+      "milestone": "M2",
+      "depends_on": [],
+      "requires_spec": true,
+      "spec": "openspec/changes/product-shaping-workflow",
+      "plan": "docs/superpowers/plans/2026-09-05-product-shaping-workflow.md",
+      "work": ".ai-dlc/work/product-shaping-workflow.toml",
+      "requirements": [
+        "PS-01",
+        "PS-02",
+        "PS-03"
+      ],
+      "tracker": {
+        "id": "e6b3cdc5-2b03-4bde-b53a-9be1a48f5d96",
+        "identifier": "SAN-13",
+        "url": "https://linear.app/sandbox-aidlc/issue/SAN-13/guide-product-discovery-and-feature-selection-for-new-and-existing"
+      }
+    },
+    {
+      "id": "spec-delivery-traceability",
+      "title": "Carry product requirements into independently deliverable specifications and tickets",
+      "milestone": "M2",
+      "depends_on": [
+        "product-shaping-workflow"
+      ],
+      "requires_spec": true,
+      "spec": "openspec/changes/spec-delivery-traceability",
+      "plan": "docs/superpowers/plans/2026-09-05-spec-delivery-traceability.md",
+      "work": ".ai-dlc/work/spec-delivery-traceability.toml",
+      "requirements": [
+        "TR-01",
+        "TR-02",
+        "TR-03"
+      ],
+      "tracker": {
+        "id": "686b5639-dadd-49c2-8a6d-21251e8ad9f7",
+        "identifier": "SAN-14",
+        "url": "https://linear.app/sandbox-aidlc/issue/SAN-14/carry-product-requirements-into-independently-deliverable"
+      }
+    },
+    {
+      "id": "design-pm-workflow",
+      "title": "Add optional UI/UX design generation and evaluation workflow",
+      "milestone": "M2",
+      "depends_on": [
+        "product-shaping-workflow",
+        "spec-delivery-traceability"
+      ],
+      "requires_spec": true,
+      "spec": "openspec/changes/design-pm-workflow",
+      "plan": "docs/superpowers/plans/2026-09-05-design-pm-workflow.md",
+      "work": ".ai-dlc/work/design-pm-workflow.toml",
+      "requirements": [
+        "DP-01",
+        "DP-02",
+        "DP-03",
+        "DP-04",
+        "DP-05",
+        "DP-06"
+      ],
+      "tracker": {
+        "id": "b4715a51-b64d-49de-bb25-38a97052b096",
+        "identifier": "SAN-6",
+        "url": "https://linear.app/sandbox-aidlc/issue/SAN-6/add-optional-uiux-design-generation-and-evaluation-workflow"
+      }
+    },
+    {
+      "id": "framework-qualification",
+      "title": "Qualify portable setup, provider replacement, and development handoffs",
+      "milestone": "M3",
+      "depends_on": [
+        "connected-project-readiness",
+        "linear-provider-onboarding",
+        "portable-workflow-bundles",
+        "spec-delivery-traceability"
+      ],
+      "requires_spec": false,
+      "spec": null,
+      "plan": "docs/superpowers/plans/2026-09-05-framework-qualification.md",
+      "work": ".ai-dlc/work/framework-qualification.toml",
+      "requirements": [
+        "Q-01",
+        "Q-02",
+        "Q-03"
+      ],
+      "tracker": {
+        "id": "18f46d0a-618c-4ebd-a7cc-92b56cff8681",
+        "identifier": "SAN-15",
+        "url": "https://linear.app/sandbox-aidlc/issue/SAN-15/qualify-portable-setup-provider-replacement-and-development-handoffs"
+      }
+    },
+    {
+      "id": "workflow-quality-calibration",
+      "title": "Evaluate product shaping and delivery guidance against baseline behavior",
+      "milestone": "M3",
+      "depends_on": [
+        "product-shaping-workflow",
+        "spec-delivery-traceability"
+      ],
+      "requires_spec": false,
+      "spec": null,
+      "plan": "docs/superpowers/plans/2026-09-05-workflow-quality-calibration.md",
+      "work": ".ai-dlc/work/workflow-quality-calibration.toml",
+      "requirements": [
+        "EV-01",
+        "EV-02",
+        "EV-03"
+      ],
+      "tracker": {
+        "id": "843b9d21-d321-444d-88dd-353f12a505c2",
+        "identifier": "SAN-16",
+        "url": "https://linear.app/sandbox-aidlc/issue/SAN-16/evaluate-product-shaping-and-delivery-guidance-against-baseline"
+      }
+    },
+    {
+      "id": "design-pm-calibration",
+      "title": "Calibrate UI/UX evaluation and measure its incremental value",
+      "milestone": "M3",
+      "depends_on": [
+        "design-pm-workflow"
+      ],
+      "requires_spec": false,
+      "spec": null,
+      "plan": "docs/superpowers/plans/2026-09-05-design-pm-calibration.md",
+      "work": ".ai-dlc/work/design-pm-calibration.toml",
+      "requirements": [
+        "DE-01",
+        "DE-02",
+        "DE-03"
+      ],
+      "tracker": {
+        "id": "7fd110ce-2d64-4442-a34a-7069cb0598d2",
+        "identifier": "SAN-7",
+        "url": "https://linear.app/sandbox-aidlc/issue/SAN-7/calibrate-uiux-evaluation-and-measure-its-incremental-value"
+      }
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+schema = 1
+id = "spec-delivery-traceability"
+title = "Carry product requirements into independently deliverable specifications and tickets"
+scope = "Give an executing agent an unambiguous connection from outcome to behavioral scenario, ticket, implementation step, and verification evidence."
+requires_spec = true
+spec_reason = "Adds observable workflow, integration or guidance behavior; the linked OpenSpec change defines acceptance."
+acceptance = [
+    "Milestone M2. Give an executing agent an unambiguous connection from outcome to behavioral scenario, ticket, implementation step, and verification evidence.",
+    "Dependencies: product-shaping-workflow. Follow docs/superpowers/plans/2026-09-05-spec-delivery-traceability.md before implementation.",
+    "TR-01: New delivery guidance SHALL map product requirement IDs to formal behavioral scenarios when needed, a deliverable work item, and verification. Scope, rationale, spec, and task list SHALL retain distinct ownership.",
+    "TR-02: Work validation SHALL reject missing or cyclic dependencies and absent referenced artifacts before publication; start SHALL refuse incomplete or unavailable required dependency status.",
+    "TR-03: New issue publication SHALL include scope, references, dependencies, and acceptance while preserving existing correlation/idempotency and authored descriptions on repeat publication.",
+    "Excluded scope: No automatic scope approval, duplicate spec store, spec-to-one-checkbox-ticket mapping, remote priority inference, or weakened finish gates.",
+    "Required checks, source review, and configured merged-revision completion evidence must pass; fixture tests do not establish live qualification.",
+]
+reviewed = true
+
+[providers]
+specs = "openspec"
+tracker = "linear"
+scm = "github"
+knowledge = "obsidian"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/spec-delivery-traceability"
+plan = "docs/superpowers/plans/2026-09-05-spec-delivery-traceability.md"
+roadmap = "docs/roadmap.md"
+tracker = "686b5639-dadd-49c2-8a6d-21251e8ad9f7"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72"
+deploy = "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "08e58cff6eeb57842d485cdcc8cefeef0ef191438c796ee2db82bb848e4a1b4c"

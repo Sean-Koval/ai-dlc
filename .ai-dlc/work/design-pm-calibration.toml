@@ -1,0 +1,36 @@
+schema = 1
+id = "design-pm-calibration"
+title = "Calibrate UI/UX evaluation and measure its incremental value"
+scope = "Evaluate the delivered Design PM workflow with original cases, human labels, held-out comparisons, and recorded costs. Depends on design-pm-workflow; live runs require a declared experiment budget and human participation."
+requires_spec = false
+spec_reason = "Verification of the preceding Design PM contract, not a behavior change. Any resulting workflow or acceptance-contract change needs its own specification decision."
+acceptance = [
+    "Dependency: design-pm-workflow is usable and its contract is fixed for the experiment; protocol rationale is docs/design/design-pm.md.",
+    "Create original cases covering polished-but-broken, plain-but-usable, brand-constrained, inaccessible, and screenshot-only outputs; preserve human labels and reserve held-out cases.",
+    "Record a dedicated model/harness, repetitions, and time/token budget before live runs without silently spending the existing agents/evaluation.toml budget.",
+    "Compare current guidance, rubric-only generation, and rubric plus independent evaluation on matched tasks; preserve transcripts, candidate/evidence identity, and condition order.",
+    "Report human preference, required defects missed, false positives, rater disagreement, elapsed time, and available usage; human ratings remain pending until supplied by a human.",
+    "Document limitations and recommend keeping, changing, or simplifying the workflow; unsupported clients and unrun cases stay unverified.",
+    "Publish the evidence report through normal repository review and required checks; do not equate fixture tests with live quality improvement.",
+]
+reviewed = true
+
+[providers]
+specs = "openspec"
+tracker = "linear"
+scm = "github"
+knowledge = "obsidian"
+deploy = "none"
+
+[artifacts]
+plan = "docs/superpowers/plans/2026-09-05-design-pm-calibration.md"
+design = "docs/design/design-pm.md"
+roadmap = "docs/roadmap.md"
+tracker = "7fd110ce-2d64-4442-a34a-7069cb0598d2"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72"
+deploy = "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "08e58cff6eeb57842d485cdcc8cefeef0ef191438c796ee2db82bb848e4a1b4c"
