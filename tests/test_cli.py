@@ -331,6 +331,45 @@ def test_setup_profile_replacement_and_home_delegate_to_the_manager(monkeypatch,
     assert calls == [("plan", home, False, profile), ("apply", home, False, profile)]
 
 
+def test_setup_and_machine_commands_forward_an_explicit_root(monkeypatch, tmp_path):
+    """Would fail if a public setup route accepted --root but dropped the project selection."""
+    from ai_dlc import cli
+
+    root = tmp_path / "project"
+    calls = []
+
+    class Manager:
+        def __init__(self, *, home=None):
+            self.home = home
+
+        def plan(self, *, headless=False, profile=None, root=None):
+            calls.append(("plan", headless, profile, root))
+            return {"route": "plan"}
+
+        def apply(self, *, headless=False, profile=None, root=None):
+            calls.append(("apply", headless, profile, root))
+            return {"route": "apply"}
+
+    monkeypatch.setattr(cli, "MachineManager", Manager)
+    runner = CliRunner()
+
+    for command in [
+        ["setup", "plan"],
+        ["setup", "apply"],
+        ["machine", "plan"],
+        ["machine", "apply"],
+    ]:
+        result = runner.invoke(cli.app, [*command, "--root", str(root)])
+        assert result.exit_code == 0, result.output
+
+    assert calls == [
+        ("plan", False, None, root),
+        ("apply", False, None, root),
+        ("plan", False, None, root),
+        ("apply", False, None, root),
+    ]
+
+
 def test_profile_show_without_paths_uses_enrolled_runtime_resolution(monkeypatch):
     """Would fail if profile show skipped verified enrollment layers by default."""
     from ai_dlc import cli

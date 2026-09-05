@@ -18,6 +18,90 @@ def test_headless_plan_omits_desktop_and_does_not_upgrade(tmp_path):
     assert "--no-upgrade" in result["commands"][0]["argv"]
 
 
+def test_root_aware_plan_unions_explicit_component_modules_without_editing_profile(tmp_path):
+    """Would fail if a selected project component did not add its declared module to setup."""
+    from ai_dlc.provision import machine_plan
+
+    profile = tmp_path / "profile.toml"
+    profile.write_text('schema = 4\n[modules]\ninclude = ["core"]\n')
+    root = tmp_path / "project"
+    root.mkdir()
+    (root / "ai-dlc.toml").write_text('schema = 4\n[roles]\nspecs = "openspec"\n')
+
+    result = machine_plan(profile, root=root, system="Darwin", architecture="arm64")
+
+    assert result["component_modules"] == [
+        {
+            "id": "openspec",
+            "provider": "openspec",
+            "role": "specs",
+            "reason": "selected provider openspec for role specs",
+        }
+    ]
+    assert result["commands"][1] == {
+        "argv": ["mise", "install"],
+        "mise": {"npm:@fission-ai/openspec": "1.5.0"},
+    }
+    assert profile.read_text() == 'schema = 4\n[modules]\ninclude = ["core"]\n'
+
+
+def test_root_aware_plan_keeps_machine_module_precedence_and_no_root_behavior(tmp_path):
+    """Would fail if project setup replaced local modules or changed an omitted-root plan."""
+    from ai_dlc.provision import machine_plan
+
+    profile = tmp_path / "profile.toml"
+    profile.write_text('schema = 4\n[modules]\ninclude = ["core"]\n')
+    machine = tmp_path / "machine.toml"
+    machine.write_text('schema = 4\n[modules]\ninclude = ["python"]\n')
+    root = tmp_path / "project"
+    root.mkdir()
+    (root / "ai-dlc.toml").write_text('schema = 4\n[roles]\nspecs = "openspec"\n')
+
+    root_aware = machine_plan(
+        profile, root=root, machine=machine, system="Darwin", architecture="arm64"
+    )
+    without_root = machine_plan(profile, machine=machine, system="Darwin", architecture="arm64")
+
+    assert root_aware["commands"] == [
+        {"argv": ["brew", "bundle", "--no-upgrade", "--file", "{Brewfile}"], "content": ""},
+        {
+            "argv": ["mise", "install"],
+            "mise": {
+                "python": "3.12.11",
+                "uv": "0.9.11",
+                "npm:@fission-ai/openspec": "1.5.0",
+            },
+        },
+    ]
+    assert root_aware["component_modules"] == [
+        {
+            "id": "openspec",
+            "provider": "openspec",
+            "role": "specs",
+            "reason": "selected provider openspec for role specs",
+        }
+    ]
+    assert "component_modules" not in without_root
+    assert without_root["commands"] == [
+        {"argv": ["brew", "bundle", "--no-upgrade", "--file", "{Brewfile}"], "content": ""},
+        {"argv": ["mise", "install"], "mise": {"python": "3.12.11", "uv": "0.9.11"}},
+    ]
+
+
+def test_root_aware_plan_refuses_an_unresolved_explicit_component(tmp_path):
+    """Would fail if setup silently substituted an unknown selected provider component."""
+    from ai_dlc.provision import machine_plan
+
+    profile = tmp_path / "profile.toml"
+    profile.write_text("schema = 4\n")
+    root = tmp_path / "project"
+    root.mkdir()
+    (root / "ai-dlc.toml").write_text('schema = 4\n[roles]\nspecs = "unavailable-specs"\n')
+
+    with pytest.raises(ValueError, match="no component for provider: unavailable-specs"):
+        machine_plan(profile, root=root, system="Darwin", architecture="arm64")
+
+
 def test_unsupported_os_fails_before_install(tmp_path):
     from ai_dlc.provision import machine_plan
 

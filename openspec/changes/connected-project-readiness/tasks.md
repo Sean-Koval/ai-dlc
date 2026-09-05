@@ -6,9 +6,9 @@
 
 ## 2. Root-aware setup
 
-- [ ] 2.1 Define and run the focused acceptance/refusal cases in the execution plan.
-- [ ] 2.2 Forward optional root through public commands, manager, and provisioning; union modules using CC-01 and preserve explicit profile/machine precedence and no-root behavior.
-- [ ] 2.3 Verify focused tests and inspect scope/compatibility before committing.
+- [x] 2.1 Define and run the focused acceptance/refusal cases in the execution plan.
+- [x] 2.2 Forward optional root through public commands, manager, and provisioning; union modules using CC-01 and preserve explicit profile/machine precedence and no-root behavior.
+- [x] 2.3 Verify focused tests and inspect scope/compatibility before committing.
 
 ## 3. Harness guidance and reporting
 

@@ -218,8 +218,13 @@ def setup_plan(
     profile: Annotated[Path | None, typer.Option("--profile")] = None,
     headless: bool = False,
     home: Path | None = None,
+    root: Annotated[Path | None, typer.Option("--root")] = None,
 ):
-    emit(MachineManager(home=home).plan(headless=headless, profile=profile))
+    manager = MachineManager(home=home)
+    if root is None:
+        emit(manager.plan(headless=headless, profile=profile))
+    else:
+        emit(manager.plan(headless=headless, profile=profile, root=root))
 
 
 @setup.command("apply")
@@ -227,8 +232,13 @@ def setup_apply(
     profile: Annotated[Path | None, typer.Option("--profile")] = None,
     headless: bool = False,
     home: Path | None = None,
+    root: Annotated[Path | None, typer.Option("--root")] = None,
 ):
-    emit(MachineManager(home=home).apply(headless=headless, profile=profile))
+    manager = MachineManager(home=home)
+    if root is None:
+        emit(manager.apply(headless=headless, profile=profile))
+    else:
+        emit(manager.apply(headless=headless, profile=profile, root=root))
 
 
 @machine.command("enroll")
@@ -276,13 +286,27 @@ def machine_migrate(
 
 
 @machine.command("plan")
-def machine_plan_command(headless: bool = False):
-    emit(MachineManager().plan(headless=headless))
+def machine_plan_command(
+    headless: bool = False,
+    root: Annotated[Path | None, typer.Option("--root")] = None,
+):
+    manager = MachineManager()
+    if root is None:
+        emit(manager.plan(headless=headless))
+    else:
+        emit(manager.plan(headless=headless, root=root))
 
 
 @machine.command("apply")
-def machine_apply_command(headless: bool = False):
-    emit(MachineManager().apply(headless=headless))
+def machine_apply_command(
+    headless: bool = False,
+    root: Annotated[Path | None, typer.Option("--root")] = None,
+):
+    manager = MachineManager()
+    if root is None:
+        emit(manager.apply(headless=headless))
+    else:
+        emit(manager.apply(headless=headless, root=root))
 
 
 @machine.command("sync")

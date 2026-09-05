@@ -972,6 +972,35 @@ def test_plan_uses_only_the_verified_active_profile_and_machine_without_writing(
     assert after == before
 
 
+@pytest.mark.parametrize(
+    ("operation", "provision_name"), [("plan", "machine_plan"), ("apply", "machine_apply")]
+)
+def test_root_aware_reconciliation_forwards_the_selected_project(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, operation: str, provision_name: str
+):
+    """Would fail if setup accepted a root but did not pass it to provisioning."""
+    from ai_dlc import provision
+
+    source, _ = disposable_profile(tmp_path)
+    service, paths = manager(tmp_path)
+    service.enroll(str(source), "portable-development", "laptop", apply=True)
+    machine_file = configure_active_machine(paths)
+    root = tmp_path / "project"
+    root.mkdir()
+    calls = []
+
+    def boundary(profile: Path, **kwargs) -> dict[str, object]:
+        calls.append((profile, kwargs))
+        return {"ready": True, "commands": []}
+
+    monkeypatch.setattr(provision, provision_name, boundary)
+
+    getattr(service, operation)(root=root)
+
+    assert calls[0][1]["root"] == root
+    assert calls[0][1]["machine"] == machine_file
+
+
 def test_apply_returns_active_lock_identity_with_the_reconciliation_result(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
