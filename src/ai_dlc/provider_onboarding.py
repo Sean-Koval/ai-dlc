@@ -1,8 +1,15 @@
+import json
+import os
+import re
+import tempfile
+import tomllib
 from collections.abc import Callable, Mapping
+from pathlib import Path
 from typing import Any, NoReturn
 
 import httpx
 
+from ai_dlc.config import digest
 from ai_dlc.providers.linear import LinearProvider
 
 _ORGANIZATION_QUERY = """
@@ -141,3 +148,214 @@ def discover_linear(
         teams.append(team)
 
     return {"organization": organization, "teams": teams}
+
+
+_SELECTION_FIELDS = {"organization_id", "team_id", "in_progress", "closed"}
+_DIGEST = re.compile(r"^[0-9a-f]{64}$")
+
+
+def _selection_value(selection: Mapping[str, Any], field: str) -> str:
+    value = selection.get(field)
+    if not isinstance(value, str) or not value:
+        raise ValueError(f"Linear {field} selection is required")
+    return value
+
+
+def plan_linear_connection(config: dict, discovery: dict, selection: dict) -> dict:
+    """Validate explicit Linear IDs and return a non-secret configuration patch."""
+    if not isinstance(config, dict):
+        raise TypeError("Linear connection config must be a dictionary")
+    if not isinstance(discovery, Mapping):
+        raise TypeError("Linear discovery result must be a mapping")
+    if not isinstance(selection, Mapping) or set(selection) != _SELECTION_FIELDS:
+        raise ValueError("Linear selection must contain organization, team, and status IDs")
+
+    selected = {field: _selection_value(selection, field) for field in _SELECTION_FIELDS}
+    organization = discovery.get("organization")
+    if (
+        not isinstance(organization, Mapping)
+        or organization.get("id") != selected["organization_id"]
+    ):
+        raise ValueError("Selected Linear organization is not in discovery")
+
+    teams = discovery.get("teams")
+    if not isinstance(teams, list):
+        raise TypeError("Linear discovery teams must be a list")
+    matching_teams = [
+        team
+        for team in teams
+        if isinstance(team, Mapping) and team.get("id") == selected["team_id"]
+    ]
+    if len(matching_teams) != 1:
+        raise ValueError("Selected Linear team is not in the selected organization")
+    states = matching_teams[0].get("states")
+    if not isinstance(states, list):
+        raise TypeError("Selected Linear team workflow states must be a list")
+
+    def require_state(field: str, expected_type: str) -> None:
+        matching_states = [
+            state
+            for state in states
+            if isinstance(state, Mapping) and state.get("id") == selected[field]
+        ]
+        if len(matching_states) != 1:
+            raise ValueError(f"Selected Linear {field} state is not in the selected team")
+        if matching_states[0].get("type") != expected_type:
+            raise ValueError(f"Selected Linear {field} state must have type {expected_type}")
+
+    require_state("in_progress", "started")
+    require_state("closed", "completed")
+
+    normalized = {
+        "organization_id": selected["organization_id"],
+        "team_id": selected["team_id"],
+        "in_progress": selected["in_progress"],
+        "closed": selected["closed"],
+    }
+    return {
+        "provider": "linear",
+        "before_digest": digest(config),
+        "selected": normalized,
+        "patch": {
+            "team_id": normalized["team_id"],
+            "statuses": {
+                "in_progress": normalized["in_progress"],
+                "closed": normalized["closed"],
+            },
+        },
+    }
+
+
+def _validated_plan(plan: dict) -> tuple[str, dict[str, Any]]:
+    if not isinstance(plan, dict) or set(plan) != {
+        "provider",
+        "before_digest",
+        "selected",
+        "patch",
+    }:
+        raise ValueError("Invalid Linear connection plan")
+    before_digest = plan.get("before_digest")
+    selected = plan.get("selected")
+    if (
+        plan.get("provider") != "linear"
+        or not isinstance(before_digest, str)
+        or not _DIGEST.fullmatch(before_digest)
+        or not isinstance(selected, Mapping)
+        or set(selected) != _SELECTION_FIELDS
+    ):
+        raise ValueError("Invalid Linear connection plan")
+    normalized = {field: _selection_value(selected, field) for field in _SELECTION_FIELDS}
+    expected_patch = {
+        "team_id": normalized["team_id"],
+        "statuses": {
+            "in_progress": normalized["in_progress"],
+            "closed": normalized["closed"],
+        },
+    }
+    if plan.get("patch") != expected_patch:
+        raise ValueError("Invalid Linear connection plan patch")
+    return before_digest, expected_patch
+
+
+def _comment_suffix(value: str) -> str:
+    quote: str | None = None
+    escaped = False
+    for index, character in enumerate(value):
+        if escaped:
+            escaped = False
+        elif quote == '"' and character == "\\":
+            escaped = True
+        elif quote is not None and character == quote:
+            quote = None
+        elif quote is None and character in {'"', "'"}:
+            quote = character
+        elif quote is None and character == "#":
+            start = index
+            while start and value[start - 1] in {" ", "\t"}:
+                start -= 1
+            return value[start:]
+    return ""
+
+
+def _set_table_value(text: str, table: str, key: str, value: str) -> str:
+    lines = text.splitlines(keepends=True)
+    header_pattern = re.compile(rf"^\s*\[{re.escape(table)}\]\s*(?:#.*)?(?:\r?\n)?$")
+    any_header = re.compile(r"^\s*\[\[?.*]\]?\s*(?:#.*)?(?:\r?\n)?$")
+    start = next((index for index, line in enumerate(lines) if header_pattern.match(line)), None)
+    encoded = json.dumps(value, ensure_ascii=False)
+
+    if start is None:
+        if text and not text.endswith(("\n", "\r")):
+            text += "\n"
+        separator = "" if not text or text.endswith("\n\n") else "\n"
+        return f"{text}{separator}[{table}]\n{key} = {encoded}\n"
+
+    end = next(
+        (index for index in range(start + 1, len(lines)) if any_header.match(lines[index])),
+        len(lines),
+    )
+    assignment = re.compile(rf"^(\s*{re.escape(key)}\s*=\s*)(.*?)(\r?\n)?$")
+    for index in range(start + 1, end):
+        match = assignment.match(lines[index])
+        if match:
+            newline = match.group(3) or ""
+            lines[index] = f"{match.group(1)}{encoded}{_comment_suffix(match.group(2))}{newline}"
+            return "".join(lines)
+    lines.insert(end, f"{key} = {encoded}\n")
+    return "".join(lines)
+
+
+def _render_patch(text: str, patch: dict[str, Any]) -> str:
+    rendered = _set_table_value(text, "providers.linear", "team_id", patch["team_id"])
+    rendered = _set_table_value(
+        rendered,
+        "providers.linear.statuses",
+        "in_progress",
+        patch["statuses"]["in_progress"],
+    )
+    return _set_table_value(
+        rendered,
+        "providers.linear.statuses",
+        "closed",
+        patch["statuses"]["closed"],
+    )
+
+
+def apply_linear_connection(path: Path, plan: dict) -> None:
+    """Atomically apply an unchanged, reviewed Linear mapping plan."""
+    path = Path(path)
+    before_digest, patch = _validated_plan(plan)
+    try:
+        current_text = path.read_bytes().decode()
+        current_config = tomllib.loads(current_text)
+    except (tomllib.TOMLDecodeError, UnicodeDecodeError):
+        raise ValueError("Current Linear configuration is invalid") from None
+    if digest(current_config) != before_digest:
+        raise ValueError("Linear connection plan source digest changed")
+    rendered = _render_patch(current_text, patch)
+    # Parse the result before staging so a preservation bug can never replace the source.
+    tomllib.loads(rendered)
+
+    mode = path.stat().st_mode & 0o777
+    descriptor, staged_name = tempfile.mkstemp(dir=path.parent, prefix=".ai-dlc-linear-")
+    try:
+        with os.fdopen(descriptor, "w") as stream:
+            stream.write(rendered)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.chmod(staged_name, mode)
+        # Re-read immediately before the atomic replace. This is deliberately the
+        # same canonical digest used at preview time, so comment-only edits survive.
+        try:
+            latest_text = path.read_bytes().decode()
+            latest_config = tomllib.loads(latest_text)
+        except (tomllib.TOMLDecodeError, UnicodeDecodeError):
+            raise ValueError("Current Linear configuration is invalid") from None
+        if digest(latest_config) != before_digest:
+            raise ValueError("Linear connection plan source digest changed")
+        if latest_text != current_text:
+            raise ValueError("Linear connection source changed during apply")
+        os.replace(staged_name, path)
+    finally:
+        if os.path.exists(staged_name):
+            os.unlink(staged_name)

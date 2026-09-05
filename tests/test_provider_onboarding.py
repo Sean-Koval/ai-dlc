@@ -1,7 +1,10 @@
 import json
+import tomllib
 
 import httpx
 import pytest
+
+from ai_dlc.config import digest
 
 
 def _client(handler):
@@ -320,3 +323,268 @@ def test_discovery_requires_configured_credential_without_contacting_linear():
 
     with pytest.raises(ValueError, match="MISSING_LINEAR_TOKEN"):
         discover_linear({"token_env": "MISSING_LINEAR_TOKEN"}, environ={}, client=_client(handle))
+
+
+def _selection_discovery():
+    return {
+        "organization": {"id": "org-1", "name": "Sandbox", "urlKey": "sandbox"},
+        "teams": [
+            {
+                "id": "team-a",
+                "name": "AI-DLC",
+                "key": "AID",
+                "states": [
+                    {"id": "doing-a", "name": "In Progress", "type": "started"},
+                    {"id": "review-a", "name": "In Review", "type": "started"},
+                    {"id": "done-a", "name": "Done", "type": "completed"},
+                ],
+            },
+            {
+                "id": "team-b",
+                "name": "AI-DLC",
+                "key": "LAB",
+                "states": [
+                    {"id": "doing-b", "name": "In Progress", "type": "started"},
+                    {"id": "done-b", "name": "Done", "type": "completed"},
+                ],
+            },
+        ],
+    }
+
+
+def _selection(**overrides):
+    selected = {
+        "organization_id": "org-1",
+        "team_id": "team-a",
+        "in_progress": "doing-a",
+        "closed": "done-a",
+    }
+    selected.update(overrides)
+    return selected
+
+
+def _linear_config(secret="credential-sentinel"):
+    return {
+        "schema": 4,
+        "project": {"name": "Example"},
+        "providers": {
+            "linear": {
+                "token_env": "LINEAR_SANDBOX_TOKEN",
+                "credential_fixture": secret,
+                "team_id": "old-team",
+                "statuses": {"in_progress": "old-started", "closed": "old-completed"},
+            }
+        },
+    }
+
+
+def test_plan_validates_ids_and_returns_only_the_reviewed_non_secret_mapping():
+    """Copying provider settings into a plan could persist a credential value."""
+    from ai_dlc.provider_onboarding import plan_linear_connection
+
+    config = _linear_config()
+    result = plan_linear_connection(config, _selection_discovery(), _selection())
+
+    assert result == {
+        "provider": "linear",
+        "before_digest": digest(config),
+        "selected": _selection(),
+        "patch": {
+            "team_id": "team-a",
+            "statuses": {"in_progress": "doing-a", "closed": "done-a"},
+        },
+    }
+    assert "credential-sentinel" not in json.dumps(result)
+    assert "token_env" not in json.dumps(result)
+
+
+@pytest.mark.parametrize(
+    ("overrides", "message"),
+    [
+        ({"organization_id": "org-other"}, "organization"),
+        ({"team_id": "team-other"}, "team"),
+        ({"in_progress": "doing-b"}, "in_progress"),
+        ({"closed": "done-b"}, "closed"),
+        ({"in_progress": "done-a"}, "started"),
+        ({"closed": "doing-a"}, "completed"),
+    ],
+)
+def test_plan_refuses_foreign_or_wrong_type_selections_without_writing(
+    tmp_path, overrides, message
+):
+    """Accepting an ID by existence alone could bind a team to another team's state."""
+    from ai_dlc.provider_onboarding import plan_linear_connection
+
+    path = tmp_path / "ai-dlc.toml"
+    path.write_text('schema = 4\n# retained\n[providers.linear]\ntoken_env = "TOKEN"\n')
+    before = path.read_bytes()
+
+    with pytest.raises(ValueError, match=message):
+        plan_linear_connection(
+            tomllib.loads(path.read_text()), _selection_discovery(), _selection(**overrides)
+        )
+
+    assert path.read_bytes() == before
+
+
+def test_apply_updates_only_selected_mappings_and_preserves_comments_and_token_env(tmp_path):
+    """Reserializing the config would erase comments and can disturb unrelated values."""
+    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+
+    path = tmp_path / "ai-dlc.toml"
+    path.write_text(
+        "schema = 4\n"
+        "# project comment\n"
+        "[project]\n"
+        'name = "Keep Me" # inline project comment\n\n'
+        "[providers.linear]\n"
+        'token_env = "LINEAR_SANDBOX_TOKEN" # credential reference stays\n'
+        'team_id = "old-team" # selected team\n'
+        'health_reference = "keep-health"\n\n'
+        "[providers.linear.statuses]\n"
+        'in_progress = "old-started" # selected started state\n'
+        'closed = "old-completed" # selected completed state\n\n'
+        "[checks]\n"
+        'required = ["test"] # unrelated section\n'
+    )
+    config = tomllib.loads(path.read_text())
+    plan = plan_linear_connection(config, _selection_discovery(), _selection())
+
+    apply_linear_connection(path, plan)
+
+    rendered = path.read_text()
+    parsed = tomllib.loads(rendered)
+    assert parsed["providers"]["linear"] == {
+        "token_env": "LINEAR_SANDBOX_TOKEN",
+        "team_id": "team-a",
+        "health_reference": "keep-health",
+        "statuses": {"in_progress": "doing-a", "closed": "done-a"},
+    }
+    assert parsed["project"] == {"name": "Keep Me"}
+    assert parsed["checks"] == {"required": ["test"]}
+    assert "# project comment" in rendered
+    assert "# inline project comment" in rendered
+    assert "# credential reference stays" in rendered
+    assert "# selected team" in rendered
+    assert "# selected started state" in rendered
+    assert "# selected completed state" in rendered
+    assert "# unrelated section" in rendered
+
+
+def test_apply_adds_missing_linear_mapping_tables_without_reserializing_existing_content(tmp_path):
+    """A project without mapping tables still needs a focused additive patch."""
+    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+
+    path = tmp_path / "ai-dlc.toml"
+    path.write_text('schema = 4\n# keep this\n[project]\nname = "Example"\n')
+    plan = plan_linear_connection(
+        tomllib.loads(path.read_text()), _selection_discovery(), _selection()
+    )
+
+    apply_linear_connection(path, plan)
+
+    rendered = path.read_text()
+    parsed = tomllib.loads(rendered)
+    assert parsed["providers"]["linear"] == {
+        "team_id": "team-a",
+        "statuses": {"in_progress": "doing-a", "closed": "done-a"},
+    }
+    assert "# keep this" in rendered
+
+
+def test_apply_refuses_a_stale_digest_without_modifying_the_changed_file(tmp_path):
+    """Applying after semantic config drift would overwrite a plan the user did not review."""
+    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+
+    path = tmp_path / "ai-dlc.toml"
+    path.write_text('schema = 4\n[project]\nname = "Before"\n')
+    plan = plan_linear_connection(
+        tomllib.loads(path.read_text()), _selection_discovery(), _selection()
+    )
+    path.write_text('schema = 4\n[project]\nname = "After"\n')
+    changed = path.read_bytes()
+
+    with pytest.raises(ValueError, match="digest"):
+        apply_linear_connection(path, plan)
+
+    assert path.read_bytes() == changed
+
+
+def test_apply_preserves_comment_only_changes_made_after_preview(tmp_path):
+    """Canonical digest approval must not discard newer comments from the current text."""
+    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+
+    path = tmp_path / "ai-dlc.toml"
+    path.write_text('schema = 4\n[project]\nname = "Example"\n')
+    plan = plan_linear_connection(
+        tomllib.loads(path.read_text()), _selection_discovery(), _selection()
+    )
+    path.write_text('# added after preview\nschema = 4\n[project]\nname = "Example"\n')
+
+    apply_linear_connection(path, plan)
+
+    assert path.read_text().startswith("# added after preview\n")
+
+
+def test_apply_rejects_a_tampered_patch_without_modifying_the_file(tmp_path):
+    """Allowing patch fields beyond the selection could overwrite credentials or other settings."""
+    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+
+    path = tmp_path / "ai-dlc.toml"
+    path.write_text('schema = 4\n[providers.linear]\ntoken_env = "TOKEN"\n')
+    plan = plan_linear_connection(
+        tomllib.loads(path.read_text()), _selection_discovery(), _selection()
+    )
+    plan["patch"]["token_env"] = "credential-sentinel"
+    before = path.read_bytes()
+
+    with pytest.raises(ValueError, match="plan"):
+        apply_linear_connection(path, plan)
+
+    assert path.read_bytes() == before
+    assert "credential-sentinel" not in path.read_text()
+
+
+def test_apply_atomic_replace_failure_preserves_original_bytes(tmp_path, monkeypatch):
+    """A failed final replacement must leave the approved source file recoverable."""
+    import ai_dlc.provider_onboarding as onboarding
+
+    path = tmp_path / "ai-dlc.toml"
+    path.write_text('schema = 4\n[project]\nname = "Example"\n')
+    plan = onboarding.plan_linear_connection(
+        tomllib.loads(path.read_text()), _selection_discovery(), _selection()
+    )
+    before = path.read_bytes()
+
+    def fail_replace(_source, _destination):
+        raise OSError("injected atomic replace failure")
+
+    monkeypatch.setattr(onboarding.os, "replace", fail_replace)
+    with pytest.raises(OSError, match="injected"):
+        onboarding.apply_linear_connection(path, plan)
+
+    assert path.read_bytes() == before
+    assert list(tmp_path.glob(".ai-dlc-linear-*")) == []
+
+
+def test_apply_refuses_a_concurrent_comment_change_before_atomic_replace(tmp_path, monkeypatch):
+    """A write racing apply must not erase newer authored comments with the same config digest."""
+    import ai_dlc.provider_onboarding as onboarding
+
+    path = tmp_path / "ai-dlc.toml"
+    path.write_text('schema = 4\n[project]\nname = "Example"\n')
+    plan = onboarding.plan_linear_connection(
+        tomllib.loads(path.read_text()), _selection_discovery(), _selection()
+    )
+    real_chmod = onboarding.os.chmod
+
+    def add_concurrent_comment(staged_name, mode):
+        real_chmod(staged_name, mode)
+        path.write_text(path.read_text() + "# concurrent authored comment\n")
+
+    monkeypatch.setattr(onboarding.os, "chmod", add_concurrent_comment)
+    with pytest.raises(ValueError, match="changed during apply"):
+        onboarding.apply_linear_connection(path, plan)
+
+    assert path.read_text().endswith("# concurrent authored comment\n")
+    assert list(tmp_path.glob(".ai-dlc-linear-*")) == []
