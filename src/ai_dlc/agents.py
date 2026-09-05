@@ -121,9 +121,14 @@ def render_agents(
                 f"unsupported required hooks for {selected_client}: {readiness['unavailable']}"
             )
     skill_sources = _skill_sources(config)
-    index, provider_copies = provider_index(
-        resolve_components(config, load_component_catalog(root, config))
-    )
+    try:
+        components = resolve_components(config, load_component_catalog(root, config))
+    except TypeError as exc:
+        raise ValueError(f"invalid component metadata: {exc}") from exc
+    index, provider_copies = provider_index(components)
+    referenced_guidance = {
+        guidance for component in components["components"] for guidance in component["guidance"]
+    }
     checks = config.get("checks", {})
     lines = [
         "# Shared project guidance",
@@ -187,6 +192,11 @@ def render_agents(
         if path.exists() and hashlib.sha256(path.read_bytes()).hexdigest() != old_digest:
             raise ValueError(f"managed provider guidance conflict: {name}")
         if name not in provider_copies:
+            if name in referenced_guidance:
+                raise ValueError(
+                    f"managed provider guidance conflict: {name} is still referenced; "
+                    "copy the instructions to a project-owned path and update the component manifest"
+                )
             if path.exists():
                 removed.append(name)
             del owned_files[name]

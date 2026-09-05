@@ -1,6 +1,48 @@
 import pytest
 
 
+@pytest.mark.parametrize("apply", [False, True])
+def test_provider_switch_refuses_to_delete_still_referenced_owned_guidance(tmp_path, apply):
+    """A custom provider must not gain a link whose formerly owned target gets deleted."""
+    import hashlib
+    import json
+
+    from ai_dlc.agents import render_agents
+
+    project = tmp_path / "ai-dlc.toml"
+    project.write_text('schema=4\n[roles]\nspecs="openspec"\n')
+    render_agents(tmp_path, apply=True)
+    manifest = tmp_path / "component.json"
+    manifest.write_text(
+        json.dumps(
+            {
+                "schema": 1,
+                "components": [
+                    {
+                        "id": "custom-specs",
+                        "roles": ["specs"],
+                        "modules": [],
+                        "guidance": [".ai-dlc/providers/openspec.md"],
+                        "required_config": [],
+                    }
+                ],
+            }
+        )
+    )
+    digest = hashlib.sha256(manifest.read_bytes()).hexdigest()
+    project.write_text(
+        'schema=4\n[roles]\nspecs="custom-specs"\n[providers.custom-specs]\n'
+        'component_manifest="component.json"\n'
+        f'component_manifest_sha256="{digest}"\n'
+    )
+    before = {p.relative_to(tmp_path): p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()}
+    with pytest.raises(ValueError, match="still referenced"):
+        render_agents(tmp_path, apply=apply)
+    assert before == {
+        p.relative_to(tmp_path): p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()
+    }
+
+
 def test_provider_index_delivers_real_owned_instructions_and_removes_stale_copies(tmp_path):
     """Provider selection changes must update links and owned instructions together."""
     import json

@@ -38,7 +38,7 @@ def project_readiness(root: Path, config: dict, environ: Mapping[str, str]) -> d
                 "available": all(_which(command, environ) for command in commands)
             },
         )
-    except (OSError, ValueError):
+    except (OSError, TypeError, ValueError):
         return {
             "schema": 1,
             "ready": False,

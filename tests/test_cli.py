@@ -2,8 +2,42 @@ import hashlib
 import json
 from pathlib import Path
 
+import pytest
 from click import unstyle
 from typer.testing import CliRunner
+
+
+@pytest.mark.parametrize("command", [["project", "readiness"], ["doctor"], ["machine", "doctor"]])
+def test_malformed_component_metadata_returns_blocked_diagnostics(tmp_path, monkeypatch, command):
+    """Schema type failures must not abort offline reports or erase enrollment diagnostics."""
+    from ai_dlc.cli import app
+
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "config"))
+    monkeypatch.setenv("PATH", "")
+    root = tmp_path / "project"
+    root.mkdir()
+    manifest = root / "component.json"
+    manifest.write_text('{"schema": 1, "components": {}}')
+    digest = hashlib.sha256(manifest.read_bytes()).hexdigest()
+    (root / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nspecs="custom"\n[providers.custom]\n'
+        'component_manifest="component.json"\n'
+        f'component_manifest_sha256="{digest}"\n'
+    )
+    before = {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}
+    result = CliRunner().invoke(app, [*command, "--root", str(root)])
+    assert result.exit_code == 1
+    assert result.stdout.strip().startswith("{"), repr(result.exception)
+    report = json.loads(result.stdout)
+    readiness = report if command == ["project", "readiness"] else report["project_readiness"]
+    assert readiness["ready"] is False
+    assert readiness["checks"][0]["status"] == "blocked"
+    assert readiness["checks"][0]["next_action"]
+    if command != ["project", "readiness"]:
+        assert report["ready"] is False
+        assert report["machine_status"]["enrolled"] is False
+        assert report["machine_checks"]["unavailable"]
+    assert before == {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}
 
 
 def test_project_readiness_is_offline_read_only_and_exits_for_required_gaps(tmp_path, monkeypatch):
