@@ -1,3 +1,4 @@
+import copy
 import json
 import os
 import re
@@ -277,11 +278,137 @@ def _comment_suffix(value: str) -> str:
     return ""
 
 
+def _is_escaped(value: str, index: int) -> bool:
+    backslashes = 0
+    index -= 1
+    while index >= 0 and value[index] == "\\":
+        backslashes += 1
+        index -= 1
+    return bool(backslashes % 2)
+
+
+def _structural_lines(lines: list[str]) -> list[bool]:
+    """Mark lines that begin outside a TOML multiline string."""
+    multiline: str | None = None
+    structural = []
+    for line in lines:
+        structural.append(multiline is None)
+        index = 0
+        single: str | None = None
+        while index < len(line):
+            if multiline == "basic":
+                if line.startswith('"""', index) and not _is_escaped(line, index):
+                    multiline = None
+                    index += 3
+                else:
+                    index += 1
+            elif multiline == "literal":
+                if line.startswith("'''", index):
+                    multiline = None
+                    index += 3
+                else:
+                    index += 1
+            elif single == "basic":
+                if line[index] == '"' and not _is_escaped(line, index):
+                    single = None
+                index += 1
+            elif single == "literal":
+                if line[index] == "'":
+                    single = None
+                index += 1
+            elif line[index] == "#":
+                break
+            elif line.startswith('"""', index):
+                multiline = "basic"
+                index += 3
+            elif line.startswith("'''", index):
+                multiline = "literal"
+                index += 3
+            elif line[index] == '"':
+                single = "basic"
+                index += 1
+            elif line[index] == "'":
+                single = "literal"
+                index += 1
+            else:
+                index += 1
+    return structural
+
+
+def _marker_path(value: Any, path: tuple[str, ...] = ()) -> tuple[str, ...] | None:
+    if not isinstance(value, dict):
+        return None
+    if value.get("__ai_dlc_table_marker__") is True:
+        return path
+    for key, child in value.items():
+        found = _marker_path(child, (*path, key))
+        if found is not None:
+            return found
+    return None
+
+
+def _table_path(line: str) -> tuple[str, ...] | None:
+    if not line.lstrip().startswith("["):
+        return None
+    try:
+        parsed = tomllib.loads(f"{line.rstrip()}\n__ai_dlc_table_marker__ = true\n")
+    except tomllib.TOMLDecodeError:
+        return None
+    return _marker_path(parsed)
+
+
+def _table_paths(text: str) -> list[tuple[str, ...] | None]:
+    lines = text.splitlines(keepends=True)
+    structural = _structural_lines(lines)
+    return [_table_path(line) if structural[index] else None for index, line in enumerate(lines)]
+
+
+def _unsupported_representation() -> NoReturn:
+    raise ValueError(
+        "Linear TOML representation cannot be updated safely; use "
+        "[providers.linear] and [providers.linear.statuses] tables"
+    )
+
+
+def _validate_editable_representation(
+    config: dict[str, Any], table_paths: list[tuple[str, ...] | None]
+) -> None:
+    providers = config.get("providers")
+    if providers is None:
+        return
+    if not isinstance(providers, dict):
+        _unsupported_representation()
+    linear = providers.get("linear")
+    if linear is None:
+        return
+    if not isinstance(linear, dict):
+        _unsupported_representation()
+
+    provider_path = ("providers", "linear")
+    status_path = (*provider_path, "statuses")
+    paths = {path for path in table_paths if path is not None}
+    if provider_path not in paths and not any(
+        path[: len(provider_path)] == provider_path and len(path) > len(provider_path)
+        for path in paths
+    ):
+        _unsupported_representation()
+
+    statuses = linear.get("statuses")
+    if statuses is None:
+        return
+    if not isinstance(statuses, dict):
+        _unsupported_representation()
+    if status_path not in paths and not any(
+        path[: len(status_path)] == status_path and len(path) > len(status_path) for path in paths
+    ):
+        _unsupported_representation()
+
+
 def _set_table_value(text: str, table: str, key: str, value: str) -> str:
     lines = text.splitlines(keepends=True)
-    header_pattern = re.compile(rf"^\s*\[{re.escape(table)}\]\s*(?:#.*)?(?:\r?\n)?$")
-    any_header = re.compile(r"^\s*\[\[?.*]\]?\s*(?:#.*)?(?:\r?\n)?$")
-    start = next((index for index, line in enumerate(lines) if header_pattern.match(line)), None)
+    paths = _table_paths(text)
+    target_path = tuple(table.split("."))
+    start = next((index for index, path in enumerate(paths) if path == target_path), None)
     encoded = json.dumps(value, ensure_ascii=False)
 
     if start is None:
@@ -290,11 +417,9 @@ def _set_table_value(text: str, table: str, key: str, value: str) -> str:
         separator = "" if not text or text.endswith("\n\n") else "\n"
         return f"{text}{separator}[{table}]\n{key} = {encoded}\n"
 
-    end = next(
-        (index for index in range(start + 1, len(lines)) if any_header.match(lines[index])),
-        len(lines),
-    )
-    assignment = re.compile(rf"^(\s*{re.escape(key)}\s*=\s*)(.*?)(\r?\n)?$")
+    end = next((index for index in range(start + 1, len(lines)) if paths[index]), len(lines))
+    key_pattern = rf'(?:{re.escape(key)}|"{re.escape(key)}"|\'{re.escape(key)}\')'
+    assignment = re.compile(rf"^(\s*{key_pattern}\s*=\s*)(.*?)(\r?\n)?$")
     for index in range(start + 1, end):
         match = assignment.match(lines[index])
         if match:
@@ -321,6 +446,23 @@ def _render_patch(text: str, patch: dict[str, Any]) -> str:
     )
 
 
+def _expected_config(config: dict[str, Any], patch: dict[str, Any]) -> dict[str, Any]:
+    expected = copy.deepcopy(config)
+    providers = expected.setdefault("providers", {})
+    if not isinstance(providers, dict):
+        _unsupported_representation()
+    linear = providers.setdefault("linear", {})
+    if not isinstance(linear, dict):
+        _unsupported_representation()
+    statuses = linear.setdefault("statuses", {})
+    if not isinstance(statuses, dict):
+        _unsupported_representation()
+    linear["team_id"] = patch["team_id"]
+    statuses["in_progress"] = patch["statuses"]["in_progress"]
+    statuses["closed"] = patch["statuses"]["closed"]
+    return expected
+
+
 def apply_linear_connection(path: Path, plan: dict) -> None:
     """Atomically apply an unchanged, reviewed Linear mapping plan."""
     path = Path(path)
@@ -332,9 +474,16 @@ def apply_linear_connection(path: Path, plan: dict) -> None:
         raise ValueError("Current Linear configuration is invalid") from None
     if digest(current_config) != before_digest:
         raise ValueError("Linear connection plan source digest changed")
+    _validate_editable_representation(current_config, _table_paths(current_text))
     rendered = _render_patch(current_text, patch)
-    # Parse the result before staging so a preservation bug can never replace the source.
-    tomllib.loads(rendered)
+    # Parse and compare semantics before staging so a preservation bug can never
+    # replace the source merely because the rewritten text remains valid TOML.
+    try:
+        rendered_config = tomllib.loads(rendered)
+    except tomllib.TOMLDecodeError:
+        _unsupported_representation()
+    if rendered_config != _expected_config(current_config, patch):
+        _unsupported_representation()
 
     mode = path.stat().st_mode & 0o777
     descriptor, staged_name = tempfile.mkstemp(dir=path.parent, prefix=".ai-dlc-linear-")

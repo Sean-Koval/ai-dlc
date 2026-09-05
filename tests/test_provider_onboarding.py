@@ -1,4 +1,5 @@
 import json
+import stat
 import tomllib
 
 import httpx
@@ -588,3 +589,162 @@ def test_apply_refuses_a_concurrent_comment_change_before_atomic_replace(tmp_pat
 
     assert path.read_text().endswith("# concurrent authored comment\n")
     assert list(tmp_path.glob(".ai-dlc-linear-*")) == []
+
+
+@pytest.mark.parametrize("delimiter", ['"""', "'''"])
+def test_apply_ignores_table_like_lines_inside_unrelated_multiline_strings(tmp_path, delimiter):
+    """Physical lines inside TOML strings must never be mistaken for provider syntax."""
+    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+
+    path = tmp_path / "ai-dlc.toml"
+    path.write_text(
+        "schema = 4\n"
+        "[project]\n"
+        f"description = {delimiter}\n"
+        "[providers.linear]\n"
+        'team_id = "decoy-team"\n'
+        "[providers.linear.statuses]\n"
+        'in_progress = "decoy-started"\n'
+        'closed = "decoy-completed"\n'
+        f"{delimiter}\n"
+    )
+    before = tomllib.loads(path.read_text())
+    plan = plan_linear_connection(before, _selection_discovery(), _selection())
+
+    apply_linear_connection(path, plan)
+
+    after = tomllib.loads(path.read_text())
+    assert after["project"]["description"] == before["project"]["description"]
+    assert after["providers"]["linear"] == {
+        "team_id": "team-a",
+        "statuses": {"in_progress": "doing-a", "closed": "done-a"},
+    }
+
+
+def test_apply_updates_real_tables_after_a_multiline_string_decoy(tmp_path):
+    """A decoy header must not hide or redirect edits away from the real provider tables."""
+    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+
+    path = tmp_path / "ai-dlc.toml"
+    path.write_text(
+        'schema = 4\n[project]\ndescription = """\n'
+        "[providers.linear]\n"
+        'team_id = "decoy-team"\n'
+        '"""\n\n[providers.linear]\nteam_id = "old-team" # real\n\n'
+        '[providers.linear.statuses]\nin_progress = "old-started"\nclosed = "old-closed"\n'
+    )
+    before = tomllib.loads(path.read_text())
+    plan = plan_linear_connection(before, _selection_discovery(), _selection())
+
+    apply_linear_connection(path, plan)
+
+    rendered = path.read_text()
+    after = tomllib.loads(rendered)
+    assert after["project"]["description"] == before["project"]["description"]
+    assert after["providers"]["linear"]["team_id"] == "team-a"
+    assert rendered.count('team_id = "decoy-team"') == 1
+    assert 'team_id = "team-a" # real' in rendered
+
+
+def test_apply_supports_quoted_provider_table_segments(tmp_path):
+    """Quoted table path segments are equivalent TOML and can be preserved safely."""
+    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+
+    path = tmp_path / "ai-dlc.toml"
+    path.write_text(
+        'schema = 4\n[providers."linear"] # quoted provider\n'
+        'token_env = "TOKEN"\nteam_id = "old-team"\n\n'
+        '["providers".linear.statuses] # quoted root\n'
+        'in_progress = "old-started"\nclosed = "old-closed"\n'
+    )
+    plan = plan_linear_connection(
+        tomllib.loads(path.read_text()), _selection_discovery(), _selection()
+    )
+
+    apply_linear_connection(path, plan)
+
+    rendered = path.read_text()
+    parsed = tomllib.loads(rendered)
+    assert parsed["providers"]["linear"] == {
+        "token_env": "TOKEN",
+        "team_id": "team-a",
+        "statuses": {"in_progress": "doing-a", "closed": "done-a"},
+    }
+    assert '[providers."linear"] # quoted provider' in rendered
+    assert '["providers".linear.statuses] # quoted root' in rendered
+
+
+@pytest.mark.parametrize(
+    "source",
+    [
+        (
+            'schema = 4\nproviders.linear.team_id = "old-team"\n'
+            'providers.linear.statuses.in_progress = "old-started"\n'
+            'providers.linear.statuses.closed = "old-closed"\n'
+        ),
+        (
+            'schema = 4\n[providers.linear]\nteam_id = "old-team"\n'
+            'statuses = { in_progress = "old-started", closed = "old-closed" }\n'
+        ),
+        (
+            "schema = 4\n[providers]\n"
+            'linear = { team_id = "old-team", statuses = { in_progress = "old-started", '
+            'closed = "old-closed" } }\n'
+        ),
+    ],
+)
+def test_apply_deliberately_refuses_valid_toml_representations_it_cannot_preserve(tmp_path, source):
+    """Unsupported equivalent layouts need an actionable domain refusal, not parser leakage."""
+    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+
+    path = tmp_path / "ai-dlc.toml"
+    path.write_text(source)
+    plan = plan_linear_connection(
+        tomllib.loads(path.read_text()), _selection_discovery(), _selection()
+    )
+    before = path.read_bytes()
+
+    with pytest.raises(ValueError, match="TOML representation"):
+        apply_linear_connection(path, plan)
+
+    assert path.read_bytes() == before
+    assert list(tmp_path.glob(".ai-dlc-linear-*")) == []
+
+
+def test_apply_semantic_verification_rejects_any_unrelated_rendered_change(tmp_path, monkeypatch):
+    """Parseable output is unsafe unless its complete semantic delta is exactly the patch."""
+    import ai_dlc.provider_onboarding as onboarding
+
+    path = tmp_path / "ai-dlc.toml"
+    path.write_text('schema = 4\n[project]\nname = "Keep"\n')
+    plan = onboarding.plan_linear_connection(
+        tomllib.loads(path.read_text()), _selection_discovery(), _selection()
+    )
+    before = path.read_bytes()
+    real_render = onboarding._render_patch
+
+    def corrupt_unrelated_value(text, patch):
+        return real_render(text, patch).replace('name = "Keep"', 'name = "Changed"')
+
+    monkeypatch.setattr(onboarding, "_render_patch", corrupt_unrelated_value)
+    with pytest.raises(ValueError, match="TOML representation"):
+        onboarding.apply_linear_connection(path, plan)
+
+    assert path.read_bytes() == before
+    assert list(tmp_path.glob(".ai-dlc-linear-*")) == []
+
+
+def test_apply_preserves_restrictive_source_mode(tmp_path):
+    """Atomic replacement must not broaden access to project configuration metadata."""
+    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+
+    path = tmp_path / "ai-dlc.toml"
+    path.write_text('schema = 4\n[providers.linear]\ntoken_env = "TOKEN"\n')
+    path.chmod(0o600)
+    plan = plan_linear_connection(
+        tomllib.loads(path.read_text()), _selection_discovery(), _selection()
+    )
+
+    apply_linear_connection(path, plan)
+
+    assert stat.S_IMODE(path.stat().st_mode) == 0o600
