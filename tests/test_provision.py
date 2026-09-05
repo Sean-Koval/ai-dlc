@@ -18,6 +18,27 @@ def test_headless_plan_omits_desktop_and_does_not_upgrade(tmp_path):
     assert "--no-upgrade" in result["commands"][0]["argv"]
 
 
+def test_machine_plan_accepts_legacy_positional_environ_argument(tmp_path):
+    """Would fail if adding root shifted an existing positional environment argument."""
+    from ai_dlc.provision import machine_plan
+
+    profile = tmp_path / "profile.toml"
+    profile.write_text("schema = 4\n")
+
+    result = machine_plan(
+        profile,
+        False,
+        "Darwin",
+        "arm64",
+        tmp_path / "home",
+        None,
+        {"PATH": ""},
+    )
+
+    assert result["system"] == "Darwin"
+    assert result["architecture"] == "arm64"
+
+
 def test_root_aware_plan_unions_explicit_component_modules_without_editing_profile(tmp_path):
     """Would fail if a selected project component did not add its declared module to setup."""
     from ai_dlc.provision import machine_plan
@@ -596,6 +617,27 @@ def test_machine_apply_scopes_default_workstation_state_to_explicit_home(tmp_pat
 
     machine_apply(profile, home=home)
 
+    assert (home / ".local/share/ai-dlc/workstation").is_dir()
+
+
+def test_machine_apply_accepts_legacy_positional_environ_argument(tmp_path, monkeypatch):
+    """Would fail if adding root shifted apply's existing positional environment argument."""
+    from ai_dlc.provision import machine_apply
+
+    binaries = tmp_path / "bin"
+    binaries.mkdir()
+    for name in ["brew", "mise"]:
+        executable(binaries / name, "exit 0")
+    profile = tmp_path / "profile.toml"
+    profile.write_text("schema = 4\n[modules]\ninclude = []\n")
+    home = tmp_path / "selected-home"
+    environment = {"PATH": str(binaries), "SHELL": "/bin/zsh"}
+    monkeypatch.setattr("ai_dlc.provision.platform.system", lambda: "Darwin")
+    monkeypatch.setattr("ai_dlc.provision.platform.machine", lambda: "arm64")
+
+    result = machine_apply(profile, False, home, None, environment)
+
+    assert result["ready"] is True
     assert (home / ".local/share/ai-dlc/workstation").is_dir()
 
 

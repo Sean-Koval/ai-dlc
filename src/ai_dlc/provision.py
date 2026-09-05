@@ -32,8 +32,8 @@ def machine_plan(
     architecture: str | None = None,
     home: Path | None = None,
     machine: Path | None = None,
-    root: Path | None = None,
     environ: Mapping[str, str] | None = None,
+    root: Path | None = None,
 ) -> dict:
     system = system or platform.system()
     architecture = architecture or platform.machine()
@@ -127,8 +127,8 @@ def machine_apply(
     headless: bool = False,
     home: Path | None = None,
     machine: Path | None = None,
-    root: Path | None = None,
     environ: Mapping[str, str] | None = None,
+    root: Path | None = None,
 ) -> dict:
     plan = machine_plan(profile, headless, home=home, machine=machine, root=root, environ=environ)
     if plan["system"] == "Linux":
