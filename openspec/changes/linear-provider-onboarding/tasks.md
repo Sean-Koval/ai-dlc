@@ -1,8 +1,8 @@
 ## 1. Paginated discovery
 
-- [ ] 1.1 Define and run the focused acceptance/refusal cases in the execution plan.
-- [ ] 1.2 Implement discover_linear with injected httpx responses covering multiple teams, duplicate names, two started states, pagination, authorization failure, and incomplete result refusal. Expose no mutations or CLI apply in this task.
-- [ ] 1.3 Verify focused tests and inspect scope/compatibility before committing.
+- [x] 1.1 Define and run the focused acceptance/refusal cases in the execution plan.
+- [x] 1.2 Implement discover_linear with injected httpx responses covering multiple teams, duplicate names, two started states, pagination, authorization failure, and incomplete result refusal. Expose no mutations or CLI apply in this task.
+- [x] 1.3 Verify focused tests and inspect scope/compatibility before committing.
 
 ## 2. Selection and guarded local write
 
