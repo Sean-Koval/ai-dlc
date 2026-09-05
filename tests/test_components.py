@@ -164,6 +164,59 @@ def test_rejects_a_manifest_when_its_configured_digest_does_not_match(tmp_path: 
         )
 
 
+def test_parses_the_verified_manifest_bytes_when_the_file_changes_after_read(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Would fail if parsing reread a manifest after its digest check."""
+    from ai_dlc.components import load_component_catalog
+
+    manifest, digest = _write_manifest(tmp_path, "race.json", _component())
+    manifest_path = tmp_path / manifest
+    (tmp_path / "guidance" / "synthetic-tracker.md").write_text("# replacement guidance\n")
+    replacement = json.dumps(
+        {
+            "schema": 1,
+            "components": [
+                _component(
+                    id="synthetic-tracker",
+                    roles=["tracker"],
+                    modules=["core"],
+                    guidance=["guidance/synthetic-tracker.md"],
+                    required_config=["repository"],
+                )
+            ],
+        }
+    )
+    read_bytes = Path.read_bytes
+
+    def read_then_replace(path: Path) -> bytes:
+        content = read_bytes(path)
+        if path == manifest_path:
+            path.write_text(replacement)
+        return content
+
+    monkeypatch.setattr(Path, "read_bytes", read_then_replace)
+
+    catalog = load_component_catalog(
+        tmp_path,
+        {
+            "providers": {
+                "synthetic-specs": {
+                    "component_manifest": manifest,
+                    "component_manifest_sha256": digest,
+                }
+            }
+        },
+    )
+
+    assert [component["id"] for component in catalog["components"]] == [
+        "github-issues",
+        "linear",
+        "openspec",
+        "synthetic-specs",
+    ]
+
+
 def test_rejects_an_unsafe_component_manifest_path(tmp_path: Path):
     """Would fail if custom metadata could escape the selected repository."""
     from ai_dlc.components import load_component_catalog

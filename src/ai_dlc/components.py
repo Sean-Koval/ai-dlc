@@ -115,11 +115,11 @@ def _validate_catalog(
     return components
 
 
-def _custom_manifests(root: Path, config: dict) -> list[tuple[str, Path]]:
+def _custom_manifests(root: Path, config: dict) -> list[tuple[str, bytes]]:
     providers = config.get("providers", {})
     if not isinstance(providers, dict):
         raise TypeError("providers must be a table")
-    manifests: list[tuple[str, Path]] = []
+    manifests: list[tuple[str, bytes]] = []
     for provider_id, settings in providers.items():
         if not isinstance(settings, dict):
             raise TypeError(f"providers.{provider_id} must be a table")
@@ -135,9 +135,10 @@ def _custom_manifests(root: Path, config: dict) -> list[tuple[str, Path]]:
         if not isinstance(digest, str) or not _SHA256.fullmatch(digest):
             raise ValueError(f"providers.{provider_id}.component_manifest_sha256 must be SHA-256")
         path = _regular_file(root, relative, field=f"providers.{provider_id}.component_manifest")
-        if hashlib.sha256(path.read_bytes()).hexdigest() != digest:
+        content = path.read_bytes()
+        if hashlib.sha256(content).hexdigest() != digest:
             raise ValueError(f"providers.{provider_id} component manifest digest mismatch")
-        manifests.append((str(provider_id), path))
+        manifests.append((str(provider_id), content))
     return manifests
 
 
@@ -154,9 +155,9 @@ def load_component_catalog(root: Path, config: dict) -> dict:
         source="packaged component catalog",
     )
     ids = {component["id"] for component in components}
-    for provider_id, manifest in _custom_manifests(root, config):
+    for provider_id, manifest_bytes in _custom_manifests(root, config):
         additions = _validate_catalog(
-            json.loads(manifest.read_text()),
+            json.loads(manifest_bytes),
             module_ids=module_ids,
             guidance_root=root,
             source=f"providers.{provider_id}.component_manifest",
