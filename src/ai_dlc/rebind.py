@@ -11,7 +11,7 @@ import tomli_w
 from ai_dlc.config import load_project, resolve_layers
 from ai_dlc.locking import project_write_lock
 from ai_dlc.templates import _apply, _files
-from ai_dlc.workflow import Work, WorkService
+from ai_dlc.workflow import Work, WorkService, _project_source_digest
 
 ARTIFACTS = {
     "tracker": {"tracker"},
@@ -139,7 +139,12 @@ def _rebind(
             path = stage / name
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(tomli_w.dumps(work))
-            service = WorkService(stage, resolved, state_path=stage / "state")
+            service = WorkService(
+                stage,
+                resolved,
+                state_path=stage / "state",
+                _source_digest=_project_source_digest(stage),
+            )
             updated = service.load(work["id"], mutation=False)
             after[name] = tomli_w.dumps(updated).encode()
         after["ai-dlc.toml"] = staged_config.read_bytes()

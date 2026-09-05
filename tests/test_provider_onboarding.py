@@ -1416,6 +1416,79 @@ def test_provider_connect_serializes_and_rejects_a_pending_stale_work_writer(tmp
     assert tomllib.loads(config_path.read_text())["providers"]["linear"]["team_id"] == "team-a"
 
 
+def test_work_service_constructor_cannot_pair_old_runtime_with_new_source_version(
+    tmp_path, monkeypatch
+):
+    """Apply during service construction must not bless stale resolved provider settings."""
+    from ai_dlc import workflow
+    from ai_dlc.config import load_project
+    from ai_dlc.provider_onboarding import connect_linear_provider
+
+    root = tmp_path / "project"
+    config_path = _write_connect_project(root)
+    work_path = _add_bound_work(
+        root,
+        "constructor-race",
+        "SAN-9",
+        branch="keep/constructor",
+        binding=None,
+    )
+    work_before = work_path.read_bytes()
+    _stub_cli_discovery(monkeypatch)
+    plan_path = root / ".ai-dlc/local/linear-plan.json"
+    connect_linear_provider(
+        root,
+        organization="org-1",
+        team="team-a",
+        in_progress="doing-a",
+        closed="done-a",
+        plan_file=plan_path,
+        environ={"LINEAR_TEST_TOKEN": "credential-sentinel"},
+        client=object(),
+    )
+    old_config = load_project(root)
+    real_journal = workflow.Journal
+    applied = []
+
+    def journal_after_apply(*args, **kwargs):
+        applied.append(
+            connect_linear_provider(
+                root,
+                plan_file=plan_path,
+                apply=True,
+                environ={"LINEAR_TEST_TOKEN": "credential-sentinel"},
+                client=object(),
+            )
+        )
+        return real_journal(*args, **kwargs)
+
+    monkeypatch.setattr(workflow, "Journal", journal_after_apply)
+    service = workflow.WorkService(root, old_config, state_path=tmp_path / "state")
+
+    with pytest.raises(ValueError, match="configuration changed"):
+        service.load("constructor-race", mutation=True)
+
+    assert applied == [{"provider": "linear", "status": "applied", "selected": _selection()}]
+    assert work_path.read_bytes() == work_before
+    assert tomllib.loads(config_path.read_text())["providers"]["linear"]["team_id"] == "team-a"
+
+
+def test_work_service_direct_constructor_refuses_already_stale_project_settings(tmp_path):
+    """A direct caller cannot present old provider settings as the current project snapshot."""
+    from ai_dlc.config import load_project
+    from ai_dlc.workflow import WorkService
+
+    root = tmp_path / "project"
+    config_path = _write_connect_project(root)
+    old_config = load_project(root)
+    config_path.write_text(
+        config_path.read_text().replace('team_id = "old-team"', 'team_id = "new"')
+    )
+
+    with pytest.raises(ValueError, match="does not match current project source"):
+        WorkService(root, old_config, state_path=tmp_path / "state")
+
+
 def test_provider_connect_apply_refuses_remote_membership_drift_without_recomputing_plan(
     tmp_path, monkeypatch
 ):

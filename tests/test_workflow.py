@@ -111,6 +111,192 @@ def work(tmp_path):
     )
 
 
+def test_project_write_lock_rejects_untrusted_namespace_entries(tmp_path, monkeypatch):
+    """A hostile anchor or leaf must not redirect writers onto attacker-controlled inodes."""
+    import hashlib
+
+    from ai_dlc.locking import project_write_lock
+
+    project = tmp_path / "project"
+    project.mkdir()
+    cache = tmp_path / "cache"
+    cache.mkdir(mode=0o700)
+    monkeypatch.delenv("XDG_RUNTIME_DIR", raising=False)
+    monkeypatch.setenv("XDG_CACHE_HOME", str(cache))
+    controlled = tmp_path / "controlled"
+    controlled.mkdir()
+    (cache / "ai-dlc").symlink_to(controlled, target_is_directory=True)
+
+    with pytest.raises(ValueError, match="lock namespace"), project_write_lock(project):
+        pass
+
+    (cache / "ai-dlc").unlink()
+    lock_root = cache / "ai-dlc/locks"
+    lock_root.mkdir(parents=True, mode=0o700)
+    target = tmp_path / "attacker.lock"
+    target.write_text("")
+    leaf = lock_root / f"{hashlib.sha256(str(project.resolve()).encode()).hexdigest()}.lock"
+    leaf.symlink_to(target)
+
+    with pytest.raises(ValueError, match="lock namespace"), project_write_lock(project):
+        pass
+
+
+def test_project_write_lock_rejects_unsafe_anchor_mode(tmp_path, monkeypatch):
+    """An anchor writable by other users cannot define a serialization namespace."""
+    from ai_dlc.locking import project_write_lock
+
+    cache = tmp_path / "cache"
+    cache.mkdir(mode=0o777)
+    cache.chmod(0o777)
+    monkeypatch.delenv("XDG_RUNTIME_DIR", raising=False)
+    monkeypatch.setenv("XDG_CACHE_HOME", str(cache))
+
+    with (
+        pytest.raises(ValueError, match="lock namespace"),
+        project_write_lock(tmp_path / "project"),
+    ):
+        pass
+
+
+def test_project_write_lock_uses_a_private_stable_namespace(tmp_path, monkeypatch):
+    """A valid existing private anchor supports nesting and a private regular lock leaf."""
+    import stat
+
+    from ai_dlc.locking import project_write_lock
+
+    cache = tmp_path / "cache"
+    lock_root = cache / "ai-dlc/locks"
+    lock_root.mkdir(parents=True, mode=0o700)
+    cache.chmod(0o700)
+    (cache / "ai-dlc").chmod(0o700)
+    lock_root.chmod(0o700)
+    monkeypatch.delenv("XDG_RUNTIME_DIR", raising=False)
+    monkeypatch.setenv("XDG_CACHE_HOME", str(cache))
+    project = tmp_path / "project"
+    project.mkdir()
+
+    with project_write_lock(project), project_write_lock(project):
+        leaves = list(lock_root.glob("*.lock"))
+        assert len(leaves) == 1
+        metadata = leaves[0].stat()
+        assert stat.S_ISREG(metadata.st_mode)
+        assert stat.S_IMODE(metadata.st_mode) == 0o600
+
+
+def test_project_write_lock_rejects_leaf_replacement_while_acquiring(tmp_path, monkeypatch):
+    """Replacing the directory entry cannot let acquisition bless a different lock inode."""
+    import hashlib
+
+    from ai_dlc import locking
+
+    cache = tmp_path / "cache"
+    lock_root = cache / "ai-dlc/locks"
+    lock_root.mkdir(parents=True, mode=0o700)
+    for directory in (cache, cache / "ai-dlc", lock_root):
+        directory.chmod(0o700)
+    monkeypatch.delenv("XDG_RUNTIME_DIR", raising=False)
+    monkeypatch.setenv("XDG_CACHE_HOME", str(cache))
+    project = tmp_path / "project"
+    project.mkdir()
+    leaf = lock_root / f"{hashlib.sha256(str(project.resolve()).encode()).hexdigest()}.lock"
+    leaf.touch(mode=0o600)
+    real_flock = locking.fcntl.flock
+    replaced = []
+
+    def replace_after_lock(descriptor, operation):
+        real_flock(descriptor, operation)
+        if operation == locking.fcntl.LOCK_EX and not replaced:
+            leaf.rename(leaf.with_suffix(".held"))
+            leaf.touch(mode=0o600)
+            replaced.append(True)
+
+    monkeypatch.setattr(locking.fcntl, "flock", replace_after_lock)
+
+    with pytest.raises(ValueError, match="lock namespace"), locking.project_write_lock(project):
+        pass
+
+
+def test_project_write_lock_serializes_an_independent_process(tmp_path, monkeypatch):
+    """A second process must retain the same project lock identity until release."""
+    import os
+    import subprocess
+    import sys
+
+    from ai_dlc.locking import project_write_lock
+
+    cache = tmp_path / "cache"
+    cache.mkdir(mode=0o700)
+    monkeypatch.delenv("XDG_RUNTIME_DIR", raising=False)
+    monkeypatch.setenv("XDG_CACHE_HOME", str(cache))
+    project = tmp_path / "project"
+    project.mkdir()
+    script = (
+        "import sys\n"
+        "from pathlib import Path\n"
+        "from ai_dlc.locking import project_write_lock\n"
+        "print('ready', flush=True)\n"
+        "with project_write_lock(Path(sys.argv[1])):\n"
+        "    print('acquired', flush=True)\n"
+    )
+
+    with project_write_lock(project):
+        child = subprocess.Popen(
+            [sys.executable, "-c", script, str(project)],
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            env=dict(os.environ),
+        )
+        assert child.stdout is not None
+        assert child.stdout.readline().strip() == "ready"
+        with pytest.raises(subprocess.TimeoutExpired):
+            child.wait(timeout=0.2)
+
+    stdout, stderr = child.communicate(timeout=5)
+    assert child.returncode == 0, stderr
+    assert stdout.strip() == "acquired"
+
+
+def test_work_service_from_project_preserves_machine_overlay(tmp_path):
+    """Coherent project resolution must retain explicitly selected machine settings."""
+    import tomllib
+
+    from ai_dlc.workflow import WorkService
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema = 4\n[roles]\ntracker = "linear"\n'
+        '[providers.linear]\nteam_id = "team-a"\n'
+        '[providers.linear.statuses]\nin_progress = "doing-a"\nclosed = "done-a"\n'
+    )
+    directory = tmp_path / ".ai-dlc/work"
+    directory.mkdir(parents=True)
+    (directory / "one.toml").write_text(
+        'schema=1\nid="one"\ntitle="One"\nscope="small"\nrequires_spec=false\n'
+        'spec_reason="Regression"\nacceptance=["Bound"]\nreviewed=true\n'
+        '[providers]\ntracker="linear"\n'
+    )
+    machine = tmp_path / "machine.toml"
+    machine.write_text('schema = 4\n[providers.linear]\ntoken_env = "LINEAR_MACHINE_TOKEN"\n')
+
+    service = WorkService.from_project(
+        tmp_path,
+        machine=machine,
+        state_path=tmp_path / "state",
+    )
+    service.load("one", mutation=True)
+
+    binding = tomllib.loads((directory / "one.toml").read_text())["bindings"]["tracker"]
+    assert (
+        binding
+        == WorkService.from_project(
+            tmp_path,
+            machine=machine,
+            state_path=tmp_path / "fresh-state",
+        ).load("one")["bindings"]["tracker"]
+    )
+
+
 def test_publish_reconciles_uncertain_creation(tmp_path):
     from ai_dlc.workflow import WorkService
 

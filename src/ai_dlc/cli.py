@@ -391,7 +391,7 @@ def context(root: Path = Path("."), brief: bool = False):
 def service(root: Path, machine: Path | None):
     from ai_dlc.workflow import WorkService
 
-    return WorkService(root, config_for(root, machine))
+    return WorkService.from_project(root, machine=machine)
 
 
 @work.command("publish")
