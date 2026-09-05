@@ -6,9 +6,9 @@
 
 ## 2. Pure resolution
 
-- [ ] 2.1 Define and run the focused acceptance/refusal cases in the execution plan.
-- [ ] 2.2 Implement catalog validation and resolve_components; keep installation, network, writes, and provider operations outside the resolver. Preserve unresolved-provider diagnostics.
-- [ ] 2.3 Verify focused tests and inspect scope/compatibility before committing.
+- [x] 2.1 Define and run the focused acceptance/refusal cases in the execution plan.
+- [x] 2.2 Implement catalog validation and resolve_components; keep installation, network, writes, and provider operations outside the resolver. Preserve unresolved-provider diagnostics.
+- [x] 2.3 Verify focused tests and inspect scope/compatibility before committing.
 
 ## 3. Configuration integration
 

@@ -168,3 +168,51 @@ def load_component_catalog(root: Path, config: dict) -> dict:
             ids.add(component["id"])
             components.append(component)
     return {"schema": 1, "components": sorted(components, key=lambda component: component["id"])}
+
+
+def resolve_components(config: dict, catalog: dict) -> dict:
+    """Resolve explicitly selected provider roles from a validated component catalog."""
+    by_id = {component["id"]: component for component in catalog["components"]}
+    components = []
+    unresolved = []
+    for role, provider in config.get("roles", {}).items():
+        settings = config.get("providers", {}).get(provider, {})
+        component_id = settings.get(
+            "component", settings.get("kind", settings.get("type", provider))
+        )
+        component = by_id.get(component_id)
+        if component is None:
+            unresolved.append(
+                {
+                    "provider": provider,
+                    "role": role,
+                    "reason": f"no component for provider: {provider}",
+                }
+            )
+            continue
+        if role not in component["roles"]:
+            unresolved.append(
+                {
+                    "provider": provider,
+                    "role": role,
+                    "reason": f"component {component_id} is incompatible with role: {role}",
+                }
+            )
+            continue
+        components.append(
+            {
+                "id": component["id"],
+                "provider": provider,
+                "role": role,
+                "modules": sorted(set(component["modules"])),
+                "guidance": sorted(component["guidance"]),
+                "required_config": sorted(component["required_config"]),
+            }
+        )
+    return {
+        "schema": 1,
+        "components": sorted(
+            components, key=lambda item: (item["id"], item["provider"], item["role"])
+        ),
+        "unresolved": sorted(unresolved, key=lambda item: (item["provider"], item["role"])),
+    }

@@ -335,3 +335,270 @@ def test_rejects_a_non_normalized_guidance_path(tmp_path: Path):
                 }
             },
         )
+
+
+def test_resolves_an_explicit_openspec_role_to_its_component_requirements():
+    """Would fail if an explicit OpenSpec selection did not require its component."""
+    from ai_dlc.components import resolve_components
+
+    result = resolve_components(
+        {"roles": {"specs": "openspec"}},
+        {
+            "schema": 1,
+            "components": [
+                {
+                    "id": "openspec",
+                    "roles": ["specs"],
+                    "modules": ["openspec"],
+                    "guidance": ["providers/openspec.md"],
+                    "required_config": [],
+                }
+            ],
+        },
+    )
+
+    assert result == {
+        "schema": 1,
+        "components": [
+            {
+                "id": "openspec",
+                "provider": "openspec",
+                "role": "specs",
+                "modules": ["openspec"],
+                "guidance": ["providers/openspec.md"],
+                "required_config": [],
+            }
+        ],
+        "unresolved": [],
+    }
+
+
+def test_resolves_a_provider_alias_through_its_declared_kind():
+    """Would fail if a provider alias could not use its registered component kind."""
+    from ai_dlc.components import resolve_components
+
+    result = resolve_components(
+        {
+            "roles": {"tracker": "project-issues"},
+            "providers": {"project-issues": {"kind": "github-issues"}},
+        },
+        {
+            "schema": 1,
+            "components": [
+                {
+                    "id": "github-issues",
+                    "roles": ["tracker"],
+                    "modules": ["core"],
+                    "guidance": ["providers/github-issues.md"],
+                    "required_config": ["repository"],
+                }
+            ],
+        },
+    )
+
+    assert result == {
+        "schema": 1,
+        "components": [
+            {
+                "id": "github-issues",
+                "provider": "project-issues",
+                "role": "tracker",
+                "modules": ["core"],
+                "guidance": ["providers/github-issues.md"],
+                "required_config": ["repository"],
+            }
+        ],
+        "unresolved": [],
+    }
+
+
+def test_resolves_a_provider_component_override_before_its_kind():
+    """Would fail if an explicit component override were ignored for a provider."""
+    from ai_dlc.components import resolve_components
+
+    result = resolve_components(
+        {
+            "roles": {"tracker": "project-issues"},
+            "providers": {
+                "project-issues": {"kind": "github-issues", "component": "project-tracker"}
+            },
+        },
+        {
+            "schema": 1,
+            "components": [
+                {
+                    "id": "github-issues",
+                    "roles": ["tracker"],
+                    "modules": ["core"],
+                    "guidance": ["providers/github-issues.md"],
+                    "required_config": ["repository"],
+                },
+                {
+                    "id": "project-tracker",
+                    "roles": ["tracker"],
+                    "modules": ["linear"],
+                    "guidance": ["guidance/project-tracker.md"],
+                    "required_config": ["team_id"],
+                },
+            ],
+        },
+    )
+
+    assert result == {
+        "schema": 1,
+        "components": [
+            {
+                "id": "project-tracker",
+                "provider": "project-issues",
+                "role": "tracker",
+                "modules": ["linear"],
+                "guidance": ["guidance/project-tracker.md"],
+                "required_config": ["team_id"],
+            }
+        ],
+        "unresolved": [],
+    }
+
+
+def test_reports_an_unknown_selected_provider_without_a_fallback():
+    """Would fail if an unknown provider selection were silently ignored or substituted."""
+    from ai_dlc.components import resolve_components
+
+    result = resolve_components(
+        {"roles": {"tracker": "unlisted-tracker"}},
+        {
+            "schema": 1,
+            "components": [
+                {
+                    "id": "github-issues",
+                    "roles": ["tracker"],
+                    "modules": ["core"],
+                    "guidance": ["providers/github-issues.md"],
+                    "required_config": ["repository"],
+                }
+            ],
+        },
+    )
+
+    assert result == {
+        "schema": 1,
+        "components": [],
+        "unresolved": [
+            {
+                "provider": "unlisted-tracker",
+                "role": "tracker",
+                "reason": "no component for provider: unlisted-tracker",
+            }
+        ],
+    }
+
+
+def test_reports_a_component_that_is_incompatible_with_the_selected_role():
+    """Would fail if an incompatible component were treated as a valid role selection."""
+    from ai_dlc.components import resolve_components
+
+    result = resolve_components(
+        {"roles": {"specs": "linear"}},
+        {
+            "schema": 1,
+            "components": [
+                {
+                    "id": "linear",
+                    "roles": ["tracker"],
+                    "modules": ["linear"],
+                    "guidance": ["providers/linear.md"],
+                    "required_config": ["team_id"],
+                }
+            ],
+        },
+    )
+
+    assert result == {
+        "schema": 1,
+        "components": [],
+        "unresolved": [
+            {
+                "provider": "linear",
+                "role": "specs",
+                "reason": "component linear is incompatible with role: specs",
+            }
+        ],
+    }
+
+
+def test_sorts_resolved_components_and_their_requirement_lists():
+    """Would fail if catalog declaration order changed the capability result."""
+    from ai_dlc.components import resolve_components
+
+    result = resolve_components(
+        {"roles": {"specs": "openspec", "tracker": "linear"}},
+        {
+            "schema": 1,
+            "components": [
+                {
+                    "id": "openspec",
+                    "roles": ["specs"],
+                    "modules": ["python", "openspec"],
+                    "guidance": ["providers/openspec.md", "providers/linear.md"],
+                    "required_config": ["zeta", "alpha"],
+                },
+                {
+                    "id": "linear",
+                    "roles": ["tracker"],
+                    "modules": ["python", "linear", "core"],
+                    "guidance": ["providers/linear.md", "providers/openspec.md"],
+                    "required_config": ["team_id", "statuses.closed"],
+                },
+            ],
+        },
+    )
+
+    assert result == {
+        "schema": 1,
+        "components": [
+            {
+                "id": "linear",
+                "provider": "linear",
+                "role": "tracker",
+                "modules": ["core", "linear", "python"],
+                "guidance": ["providers/linear.md", "providers/openspec.md"],
+                "required_config": ["statuses.closed", "team_id"],
+            },
+            {
+                "id": "openspec",
+                "provider": "openspec",
+                "role": "specs",
+                "modules": ["openspec", "python"],
+                "guidance": ["providers/linear.md", "providers/openspec.md"],
+                "required_config": ["alpha", "zeta"],
+            },
+        ],
+        "unresolved": [],
+    }
+
+
+def test_sorts_unresolved_selections_by_provider_and_role():
+    """Would fail if caller input order changed the unresolved diagnostics."""
+    from ai_dlc.components import resolve_components
+
+    result = resolve_components(
+        {"roles": {"tracker": "zeta", "specs": "alpha"}},
+        {"schema": 1, "components": []},
+    )
+
+    assert result == {
+        "schema": 1,
+        "components": [],
+        "unresolved": [
+            {
+                "provider": "alpha",
+                "role": "specs",
+                "reason": "no component for provider: alpha",
+            },
+            {
+                "provider": "zeta",
+                "role": "tracker",
+                "reason": "no component for provider: zeta",
+            },
+        ],
+    }
