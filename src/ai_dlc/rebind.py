@@ -9,6 +9,7 @@ from pathlib import Path
 import tomli_w
 
 from ai_dlc.config import load_project, resolve_layers
+from ai_dlc.locking import project_write_lock
 from ai_dlc.templates import _apply, _files
 from ai_dlc.workflow import Work, WorkService
 
@@ -21,7 +22,7 @@ ARTIFACTS = {
 }
 
 
-def rebind(
+def _rebind(
     root: Path,
     role: str,
     provider_id: str,
@@ -148,3 +149,42 @@ def rebind(
         "status": "applied",
         **({"connection": "applied"} if saved_connection_plan is not None else {}),
     }
+
+
+def rebind(
+    root: Path,
+    role: str,
+    provider_id: str,
+    apply: bool = False,
+    mappings: dict | None = None,
+    *,
+    machine_config: dict | None = None,
+    connection_plan: Path | None = None,
+    environ=None,
+    client=None,
+) -> dict:
+    """Plan or apply an explicit provider rebind under the project write lock."""
+    if not apply:
+        return _rebind(
+            root,
+            role,
+            provider_id,
+            apply,
+            mappings,
+            machine_config=machine_config,
+            connection_plan=connection_plan,
+            environ=environ,
+            client=client,
+        )
+    with project_write_lock(root):
+        return _rebind(
+            root,
+            role,
+            provider_id,
+            apply,
+            mappings,
+            machine_config=machine_config,
+            connection_plan=connection_plan,
+            environ=environ,
+            client=client,
+        )

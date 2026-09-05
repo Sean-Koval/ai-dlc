@@ -831,6 +831,45 @@ def test_apply_preserves_restrictive_source_mode(tmp_path):
     assert stat.S_IMODE(path.stat().st_mode) == 0o600
 
 
+@pytest.mark.parametrize(
+    "source",
+    [
+        'schema = 4\n[providers.linear]\ntoken_env = "TOKEN"',
+        (
+            'schema = 4\n[providers.linear]\ntoken_env = "TOKEN"\n'
+            '[providers.linear.statuses]\nin_progress = "old-started"\n'
+            '[[setup.steps]]\nid = "keep"\ncommand = "true"\n'
+        ),
+    ],
+)
+def test_apply_inserts_missing_mappings_at_real_toml_boundaries(tmp_path, source):
+    """EOF and array-table boundaries must not redirect an otherwise safe insertion."""
+    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+
+    path = tmp_path / "ai-dlc.toml"
+    path.write_text(source)
+    before = tomllib.loads(source)
+    plan = plan_linear_connection(before, _selection_discovery(), _selection())
+
+    apply_linear_connection(path, plan)
+
+    rendered = path.read_text()
+    after = tomllib.loads(rendered)
+    assert after == {
+        **before,
+        "providers": {
+            "linear": {
+                **before["providers"]["linear"],
+                "team_id": "team-a",
+                "statuses": {"in_progress": "doing-a", "closed": "done-a"},
+            }
+        },
+    }
+    if "setup" in before:
+        assert after["setup"] == before["setup"]
+        assert '[[setup.steps]]\nid = "keep"\ncommand = "true"' in rendered
+
+
 def _write_connect_project(root: Path, *, bound: bool = False) -> Path:
     root.mkdir()
     config_path = root / "ai-dlc.toml"
@@ -1055,6 +1094,88 @@ def test_provider_connect_refuses_plan_paths_outside_local_control_state(
     assert config_path.read_bytes() == before
 
 
+@pytest.mark.parametrize("redirect", ["root", "docs"])
+def test_provider_connect_refuses_a_symlinked_local_confinement_anchor(
+    tmp_path, monkeypatch, redirect
+):
+    """The local anchor itself must never redefine shared project content as local state."""
+    from ai_dlc.cli import app
+
+    root = tmp_path / "project"
+    config_path = _write_connect_project(root)
+    docs = root / "docs"
+    docs.mkdir()
+    authored = docs / "plan.json"
+    authored.write_text("authored documentation\n")
+    local = root / ".ai-dlc/local"
+    local.parent.mkdir()
+    local.symlink_to(root if redirect == "root" else docs, target_is_directory=True)
+    _stub_cli_discovery(monkeypatch)
+    before = {config_path: config_path.read_bytes(), authored: authored.read_bytes()}
+    plan_path = local / ("ai-dlc.toml" if redirect == "root" else "plan.json")
+
+    result = CliRunner().invoke(app, [*_connect_args(root), "--plan-file", str(plan_path)])
+
+    assert result.exit_code != 0
+    assert ".ai-dlc/local" in result.output
+    assert all(path.read_bytes() == contents for path, contents in before.items())
+
+
+def test_connection_plan_load_refuses_a_symlinked_local_anchor(tmp_path):
+    """Apply must not read a shared file through a redirected local-state anchor."""
+    from ai_dlc.provider_onboarding import _load_connection_plan
+
+    root = tmp_path / "project"
+    root.mkdir()
+    shared = root / "reviewed.json"
+    shared.write_text('{"shared": true}\n')
+    local = root / ".ai-dlc/local"
+    local.parent.mkdir()
+    local.symlink_to(root, target_is_directory=True)
+
+    with pytest.raises(ValueError, match=".ai-dlc/local"):
+        _load_connection_plan(root, local / shared.name)
+
+    assert shared.read_text() == '{"shared": true}\n'
+
+
+@pytest.mark.parametrize("component", ["ai-dlc", "intermediate", "leaf"])
+def test_provider_connect_refuses_every_symlinked_local_path_component(
+    tmp_path, monkeypatch, component
+):
+    """Neither an anchor parent, nested directory, nor existing leaf may redirect plan I/O."""
+    from ai_dlc.cli import app
+
+    root = tmp_path / "project"
+    config_path = _write_connect_project(root)
+    docs = root / "docs"
+    docs.mkdir()
+    authored = docs / "plan.json"
+    authored.write_text("authored documentation\n")
+    if component == "ai-dlc":
+        redirected = tmp_path / "redirected-control"
+        (redirected / "local").mkdir(parents=True)
+        (root / ".ai-dlc").symlink_to(redirected, target_is_directory=True)
+        plan_path = root / ".ai-dlc/local/plan.json"
+    else:
+        local = root / ".ai-dlc/local"
+        local.mkdir(parents=True)
+        if component == "intermediate":
+            (local / "review").symlink_to(docs, target_is_directory=True)
+            plan_path = local / "review/plan.json"
+        else:
+            plan_path = local / "plan.json"
+            plan_path.symlink_to(authored)
+    _stub_cli_discovery(monkeypatch)
+    before = {config_path: config_path.read_bytes(), authored: authored.read_bytes()}
+
+    result = CliRunner().invoke(app, [*_connect_args(root), "--plan-file", str(plan_path)])
+
+    assert result.exit_code != 0
+    assert ".ai-dlc/local" in result.output
+    assert all(path.read_bytes() == contents for path, contents in before.items())
+
+
 def test_provider_connect_apply_revalidates_saved_selection_then_applies_exact_plan(
     tmp_path, monkeypatch
 ):
@@ -1098,6 +1219,201 @@ def test_provider_connect_apply_revalidates_saved_selection_then_applies_exact_p
         "statuses": {"in_progress": "doing-a", "closed": "done-a"},
     }
     assert "credential-sentinel" not in result.output + plan_path.read_text()
+
+
+def test_provider_connect_preview_and_apply_hash_raw_collection_operations(tmp_path, monkeypatch):
+    """A supported collection operation must survive unchanged-source preview and apply."""
+    from ai_dlc.cli import app
+
+    root = tmp_path / "project"
+    config_path = _write_connect_project(root)
+    config_path.write_text(
+        config_path.read_text().replace(
+            'tracker = "linear"',
+            'tracker = "linear"\nagent-client = { add = ["codex"] }',
+        )
+    )
+    _stub_cli_discovery(monkeypatch)
+    plan_path = root / ".ai-dlc/local/linear-plan.json"
+    runner = CliRunner()
+
+    preview = runner.invoke(app, [*_connect_args(root), "--plan-file", str(plan_path)])
+    assert preview.exit_code == 0, preview.output
+    result = runner.invoke(
+        app,
+        [
+            "provider",
+            "connect",
+            "linear",
+            "--root",
+            str(root),
+            "--plan-file",
+            str(plan_path),
+            "--apply",
+        ],
+    )
+
+    assert result.exit_code == 0, result.output
+    assert tomllib.loads(config_path.read_text())["roles"]["agent-client"] == {"add": ["codex"]}
+
+
+def test_connection_rebind_hashes_raw_collection_operations(tmp_path, monkeypatch):
+    """Connection rebind must use the same raw source authority as provider preview."""
+    from ai_dlc.cli import app
+
+    root = tmp_path / "project"
+    config_path = _write_connect_project(root, bound=True)
+    config_path.write_text(
+        config_path.read_text().replace(
+            'tracker = "linear"',
+            'tracker = "linear"\nagent-client = { add = ["codex"] }',
+        )
+    )
+    _stub_cli_discovery(monkeypatch)
+    plan_path = root / ".ai-dlc/local/linear-plan.json"
+    mappings_path = root / ".ai-dlc/local/linear-rebind.toml"
+    runner = CliRunner()
+    preview = runner.invoke(app, [*_connect_args(root), "--plan-file", str(plan_path)])
+    assert preview.exit_code != 0 and plan_path.is_file()
+    mappings_path.write_text(tomli_w.dumps({"bound-work": {"tracker": "SAN-101"}}))
+
+    result = runner.invoke(app, _rebind_connection_args(root, plan_path, mappings_path))
+
+    assert result.exit_code == 0, result.output
+    assert tomllib.loads(config_path.read_text())["roles"]["agent-client"] == {"add": ["codex"]}
+
+
+@pytest.mark.parametrize("race", ["bind-existing", "create-bound"])
+def test_provider_connect_apply_refuses_work_that_becomes_bound_during_staging(
+    tmp_path, monkeypatch, race
+):
+    """The final coordinated boundary must see bindings created after initial validation."""
+    import ai_dlc.provider_onboarding as onboarding
+    from ai_dlc.cli import app
+    from ai_dlc.config import load_project
+    from ai_dlc.workflow import WorkService
+
+    root = tmp_path / "project"
+    config_path = _write_connect_project(root)
+    if race == "bind-existing":
+        work_path = _add_bound_work(
+            root,
+            "racing-work",
+            "SAN-9",
+            branch="keep/racing",
+            binding=None,
+        )
+    else:
+        work_path = root / ".ai-dlc/work/racing-work.toml"
+    _stub_cli_discovery(monkeypatch)
+    plan_path = root / ".ai-dlc/local/linear-plan.json"
+    runner = CliRunner()
+    assert runner.invoke(app, [*_connect_args(root), "--plan-file", str(plan_path)]).exit_code == 0
+    config_before = config_path.read_bytes()
+    real_chmod = onboarding.os.chmod
+    raced_bytes = None
+
+    def bind_during_staging(staged_name, mode):
+        nonlocal raced_bytes
+        real_chmod(staged_name, mode)
+        if race == "create-bound":
+            _add_bound_work(
+                root,
+                "racing-work",
+                "SAN-9",
+                branch="keep/racing",
+                binding=None,
+            )
+        service = WorkService(root, load_project(root), state_path=tmp_path / "state")
+        service.load("racing-work", mutation=True)
+        raced_bytes = work_path.read_bytes()
+
+    monkeypatch.setattr(onboarding.os, "chmod", bind_during_staging)
+    result = runner.invoke(
+        app,
+        [
+            "provider",
+            "connect",
+            "linear",
+            "--root",
+            str(root),
+            "--plan-file",
+            str(plan_path),
+            "--apply",
+        ],
+    )
+
+    assert result.exit_code != 0
+    assert "racing-work" in result.output
+    assert config_path.read_bytes() == config_before
+    assert raced_bytes is not None and work_path.read_bytes() == raced_bytes
+
+
+def test_provider_connect_serializes_and_rejects_a_pending_stale_work_writer(tmp_path, monkeypatch):
+    """A writer waiting on apply must not save a binding calculated from the old config."""
+    import threading
+
+    import ai_dlc.provider_onboarding as onboarding
+    from ai_dlc.cli import app
+    from ai_dlc.config import load_project
+    from ai_dlc.workflow import WorkService
+
+    root = tmp_path / "project"
+    config_path = _write_connect_project(root)
+    work_path = _add_bound_work(
+        root,
+        "pending-work",
+        "SAN-9",
+        branch="keep/pending",
+        binding=None,
+    )
+    work_before = work_path.read_bytes()
+    _stub_cli_discovery(monkeypatch)
+    plan_path = root / ".ai-dlc/local/linear-plan.json"
+    runner = CliRunner()
+    assert runner.invoke(app, [*_connect_args(root), "--plan-file", str(plan_path)]).exit_code == 0
+    service = WorkService(root, load_project(root), state_path=tmp_path / "state")
+    started = threading.Event()
+    threads = []
+    errors = []
+    real_chmod = onboarding.os.chmod
+
+    def start_pending_writer(staged_name, mode):
+        real_chmod(staged_name, mode)
+
+        def mutate():
+            started.set()
+            try:
+                service.load("pending-work", mutation=True)
+            except ValueError as exc:
+                errors.append(str(exc))
+
+        thread = threading.Thread(target=mutate)
+        threads.append(thread)
+        thread.start()
+        assert started.wait(timeout=2)
+
+    monkeypatch.setattr(onboarding.os, "chmod", start_pending_writer)
+    result = runner.invoke(
+        app,
+        [
+            "provider",
+            "connect",
+            "linear",
+            "--root",
+            str(root),
+            "--plan-file",
+            str(plan_path),
+            "--apply",
+        ],
+    )
+    for thread in threads:
+        thread.join(timeout=2)
+
+    assert result.exit_code == 0, result.output
+    assert errors == ["Project configuration changed; retry the work mutation"]
+    assert work_path.read_bytes() == work_before
+    assert tomllib.loads(config_path.read_text())["providers"]["linear"]["team_id"] == "team-a"
 
 
 def test_provider_connect_apply_refuses_remote_membership_drift_without_recomputing_plan(

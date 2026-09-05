@@ -11,7 +11,9 @@ from pathlib import Path
 import tomli_w
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from ai_dlc.config import digest as config_digest
 from ai_dlc.journal import Journal
+from ai_dlc.locking import project_write_lock
 from ai_dlc.providers import Registry
 from ai_dlc.providers.openspec import OpenSpecProvider
 from ai_dlc.providers.scm import GitHubSCM
@@ -53,6 +55,13 @@ class Work(BaseModel):
         return value
 
 
+def _project_source_digest(root: Path) -> str | None:
+    project_file = root / "ai-dlc.toml"
+    if not project_file.is_file():
+        return None
+    return config_digest(tomllib.loads(project_file.read_text()))
+
+
 class WorkService:
     def __init__(
         self,
@@ -70,8 +79,15 @@ class WorkService:
         )
         self.journal = Journal(state / "operations.sqlite3")
         self.registry = registry or Registry(config, root=self.root)
+        self.project_source_digest = _project_source_digest(self.root)
 
     def load(self, work_id, mutation=False):
+        if mutation:
+            with project_write_lock(self.root):
+                return self._load(work_id, mutation=True)
+        return self._load(work_id, mutation=False)
+
+    def _load(self, work_id, mutation=False):
         Work.safe_id(work_id)
         path = (self.root / ".ai-dlc/work" / f"{work_id}.toml").resolve()
         if not path.is_relative_to(self.root / ".ai-dlc/work"):
@@ -122,9 +138,16 @@ class WorkService:
 
     def save(self, work):
         path = self.root / ".ai-dlc/work" / f"{work['id']}.toml"
-        tmp = path.with_suffix(".toml.tmp")
-        tmp.write_text(tomli_w.dumps(work))
-        tmp.replace(path)
+        with project_write_lock(self.root):
+            try:
+                current_digest = _project_source_digest(self.root)
+            except (OSError, tomllib.TOMLDecodeError):
+                raise ValueError("Project configuration changed; retry the work mutation") from None
+            if current_digest != self.project_source_digest:
+                raise ValueError("Project configuration changed; retry the work mutation")
+            tmp = path.with_suffix(".toml.tmp")
+            tmp.write_text(tomli_w.dumps(work))
+            tmp.replace(path)
 
     def op_id(self, work, action):
         repo = self.config.get("scm", {}).get("repository", str(self.root))
