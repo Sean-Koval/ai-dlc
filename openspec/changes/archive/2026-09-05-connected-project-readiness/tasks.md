@@ -18,7 +18,7 @@
 
 ## 4. Review and finish
 
-- [ ] 4.1 Run required project checks and strict OpenSpec validation.
-- [ ] 4.2 Complete source review, archive the delivered change, link PR/CI evidence, and finish through the configured workflow.
+- [x] 4.1 Run required project checks and strict OpenSpec validation.
+- [ ] 4.2 Complete source review, archive the delivered change, link the implementation PR, and prepare the CI/finish handoff.
 
-[Detailed plan](../../../docs/superpowers/plans/2026-09-05-connected-project-readiness.md).
+[Detailed plan](../../../../docs/superpowers/plans/2026-09-05-connected-project-readiness.md).
