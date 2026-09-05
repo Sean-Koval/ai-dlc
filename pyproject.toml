@@ -36,7 +36,7 @@ packages = ["src/ai_dlc"]
 "bootstrap" = "ai_dlc/assets/bootstrap"
 
 [tool.hatch.build.targets.sdist]
-exclude = ["/profiles/sean.toml"]
+exclude = ["/profiles/sean.toml", "/.ai-dlc/local/**", "/.superpowers/**"]
 
 [tool.ruff]
 target-version = "py312"
