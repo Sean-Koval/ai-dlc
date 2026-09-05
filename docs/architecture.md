@@ -1,5 +1,10 @@
 # Architecture
 
+This page describes the current implementation. The [product direction](product-direction.md)
+and [planned delivery architecture](design/framework-delivery.md) describe the next
+increments. UI/UX is one optional workflow; portable setup, replaceable integrations,
+and effective greenfield/brownfield development remain the framework's core.
+
 AI-DLC v4 runs as a local Python CLI and library. The CLI owns machine
 enrollment mutation; the MCP facade exposes only reviewed work, doctor, and
 knowledge services. Project adoption uses Copier; provider adapters isolate

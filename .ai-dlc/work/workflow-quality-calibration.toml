@@ -1,0 +1,35 @@
+schema = 1
+id = "workflow-quality-calibration"
+title = "Evaluate product shaping and delivery guidance against baseline behavior"
+scope = "Measure whether the general product-to-delivery guidance improves decisions, scope control, and implementation handoff using human-labeled scenarios."
+requires_spec = false
+spec_reason = "Verification of predecessor contracts only; behavior changes discovered during qualification require a separate spec decision."
+acceptance = [
+    "Milestone M3. Measure whether the general product-to-delivery guidance improves decisions, scope control, and implementation handoff using human-labeled scenarios.",
+    "Dependencies: product-shaping-workflow, spec-delivery-traceability. Follow docs/superpowers/plans/2026-09-05-workflow-quality-calibration.md before implementation.",
+    "EV-01: Cases distinguish evidence from assumptions, cover both entry paths, and include correct investigate/stop/no-spec outcomes.",
+    "EV-02: Comparison uses fixed recorded versions/budgets and held-out cases; full transcripts and actual costs/time are preserved where available.",
+    "EV-03: Human labels are supplied by humans; absent ratings remain pending, and results state observed scope without asserting universal model improvement.",
+    "Excluded scope: No fabricated human ratings, automatic paid experiments, universal quality claims, or substitution for existing release evaluations.",
+    "Required checks, source review, and configured merged-revision completion evidence must pass; fixture tests do not establish live qualification.",
+]
+reviewed = true
+
+[providers]
+specs = "openspec"
+tracker = "linear"
+scm = "github"
+knowledge = "obsidian"
+deploy = "none"
+
+[artifacts]
+plan = "docs/superpowers/plans/2026-09-05-workflow-quality-calibration.md"
+roadmap = "docs/roadmap.md"
+tracker = "843b9d21-d321-444d-88dd-353f12a505c2"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72"
+deploy = "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "08e58cff6eeb57842d485cdcc8cefeef0ef191438c796ee2db82bb848e4a1b4c"

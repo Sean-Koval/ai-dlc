@@ -2,6 +2,11 @@
 
 Authority: the user-approved AI-DLC v4 plan, September 2, 2026.
 
+This is a historical implementation ledger. Its progress notes describe that
+implementation period; use the [current roadmap](roadmap.md) and
+[release evidence](release-verification.md) for present status. Preserve the
+original v4 verification obligations when planning new capabilities.
+
 ## Global constraints
 
 CLI and MCP share application services. Completion requires trusted CI evidence for

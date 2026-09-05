@@ -5,6 +5,11 @@ decisions. It links to requirements and formal specifications without copying
 them. Implementation is ready when the following evidence is present or
 explicitly judged unnecessary.
 
+Begin with evidence, assumptions, alternatives, and a shaped product outcome.
+New products need a smallest useful slice; existing products need observed behavior
+and compatibility boundaries. Apply UI/UX exploration only where relevant and
+scale documentation and evaluation to the change's scope and risk.
+
 [Back to the workflow map](../development-workflow.md)
 
 | Area | Evidence |

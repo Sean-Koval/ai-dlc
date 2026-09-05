@@ -1,0 +1,36 @@
+schema = 1
+id = "linear-provider-onboarding"
+title = "Discover and safely configure a project's Linear connection"
+scope = "Replace manual team/status UUID hunting with explicit, read-only discovery and a reviewed local configuration update."
+requires_spec = true
+spec_reason = "Adds observable workflow, integration or guidance behavior; the linked OpenSpec change defines acceptance."
+acceptance = [
+    "Milestone M1. Replace manual team/status UUID hunting with explicit, read-only discovery and a reviewed local configuration update.",
+    "Dependencies: component-capability-contract. Follow docs/superpowers/plans/2026-09-05-linear-provider-onboarding.md before implementation.",
+    "LN-01: Onboarding SHALL query only the configured credential's organization, teams, and workflow states, consume pagination, and report incomplete or failed discovery without mutations.",
+    "LN-02: Onboarding SHALL validate organization, team, and state membership and types before showing a non-secret patch; apply SHALL require unchanged source configuration and preserve unrelated content.",
+    "LN-03: Onboarding SHALL retain the project's credential variable and refuse silent mapping changes for already bound work; it SHALL NOT create or modify remote issues or accounts.",
+    "Excluded scope: No API-key creation, Linear Project creation, issue mutation, organization switching, or automatic rebind. Use existing sandbox only for authorized live reads.",
+    "Required checks, source review, and configured merged-revision completion evidence must pass; fixture tests do not establish live qualification.",
+]
+reviewed = true
+
+[providers]
+specs = "openspec"
+tracker = "linear"
+scm = "github"
+knowledge = "obsidian"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/linear-provider-onboarding"
+plan = "docs/superpowers/plans/2026-09-05-linear-provider-onboarding.md"
+roadmap = "docs/roadmap.md"
+tracker = "6fd7671e-3351-47d0-9c43-6d9537160a1d"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72"
+deploy = "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "08e58cff6eeb57842d485cdcc8cefeef0ef191438c796ee2db82bb848e4a1b4c"

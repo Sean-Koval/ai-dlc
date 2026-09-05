@@ -1,0 +1,36 @@
+schema = 1
+id = "component-capability-contract"
+title = "Connect provider roles to tool installation and harness guidance"
+scope = "Resolve explicitly selected provider roles into a deterministic, versioned description of required tools, guidance, configuration, and checks."
+requires_spec = true
+spec_reason = "Adds observable workflow, integration or guidance behavior; the linked OpenSpec change defines acceptance."
+acceptance = [
+    "Milestone M1. Resolve explicitly selected provider roles into a deterministic, versioned description of required tools, guidance, configuration, and checks.",
+    "Dependencies: none. Follow docs/superpowers/plans/2026-09-05-component-capability-contract.md before implementation.",
+    "CC-01: The resolver SHALL produce stable component requirements for each explicitly selected role, deduplicate installation modules, and report an unresolved provider without silently selecting another provider.",
+    "CC-02: Custom component metadata SHALL be repository-relative, digest-verified, schema-validated data. It SHALL refer to existing installation recipes and SHALL NOT authorize executable commands.",
+    "CC-03: Existing schema-4 configurations SHALL remain valid; component metadata SHALL NOT weaken project checks or silently rebind active work.",
+    "Excluded scope: No package registry, remote downloads, new provider operations, model selection, or changes to finish gates.",
+    "Required checks, source review, and configured merged-revision completion evidence must pass; fixture tests do not establish live qualification.",
+]
+reviewed = true
+
+[providers]
+specs = "openspec"
+tracker = "linear"
+scm = "github"
+knowledge = "obsidian"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/component-capability-contract"
+plan = "docs/superpowers/plans/2026-09-05-component-capability-contract.md"
+roadmap = "docs/roadmap.md"
+tracker = "6ff49327-df8e-4748-a687-64ca9ade8657"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72"
+deploy = "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "08e58cff6eeb57842d485cdcc8cefeef0ef191438c796ee2db82bb848e4a1b4c"

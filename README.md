@@ -1,6 +1,18 @@
 # AI-DLC
 
-AI-DLC keeps your development tools, project requirements, agent configuration, and working process in versioned, editable files. Python services power both the CLI and the local MCP server.
+AI-DLC prepares development environments and connects replaceable tools, project
+structure, and workflow guidance so people and agent harnesses can consistently
+improve new and existing products. Versioned profiles and project files carry the
+portable setup; local bindings carry machine-specific choices. Python services
+support the CLI and local MCP server.
+
+The harness can use installed tools directly. AI-DLC supplies setup, integration,
+guidance, and verification where useful; repository policy defines required gates.
+UI/UX design is one optional workflow within the broader product-development process.
+
+See the [product direction](docs/product-direction.md), [delivery roadmap](docs/roadmap.md),
+and [executor handoff](docs/handoffs/framework-delivery.md). Those pages distinguish
+planned capabilities from the implementation available today.
 
 This checkout is a **v4 implementation candidate**. Native macOS Apple silicon bootstrap, a clean ARM64 devcontainer lifecycle, required checks on Linux x64/ARM64 and macOS Intel, Docker provider isolation, and read-only Linear sandbox health have been exercised. Factory-clean macOS, hosted cloud sessions, remaining live integrations, and release publication still require explicit walkthroughs. See [verification status](docs/release-verification.md). There is no published v4 bootstrap release yet.
 

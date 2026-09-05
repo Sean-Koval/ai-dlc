@@ -5,6 +5,17 @@ development stages and their evidence contracts. Tool names are kept in the
 [tool map](workflows/tool-map.md) so providers can change without redefining the
 lifecycle.
 
+AI-DLC prepares tools, structure, and guidance for the chosen harness. Agents can
+invoke installed provider tools directly. The services below own specific
+validation and lifecycle boundaries; they do not mediate every development action.
+See [product direction](product-direction.md) and the [roadmap](roadmap.md) for
+planned capabilities.
+
+Product requirements explain outcomes, specifications define behavior, tickets
+organize deliverable slices, and tasks describe implementation steps. Link these
+artifacts through stable references. UI/UX evaluation is an optional branch;
+other work uses its own appropriate verification methods.
+
 Use the [greenfield guide](workflows/greenfield.md) for a new application and
 the [brownfield guide](workflows/brownfield.md) for an existing repository. The
 [design-to-implementation guide](workflows/design-to-implementation.md) defines
