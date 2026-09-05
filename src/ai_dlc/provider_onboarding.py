@@ -406,6 +406,7 @@ def _validate_editable_representation(
 
 def _set_table_value(text: str, table: str, key: str, value: str) -> str:
     lines = text.splitlines(keepends=True)
+    structural = _structural_lines(lines)
     paths = _table_paths(text)
     target_path = tuple(table.split("."))
     start = next((index for index, path in enumerate(paths) if path == target_path), None)
@@ -421,6 +422,8 @@ def _set_table_value(text: str, table: str, key: str, value: str) -> str:
     key_pattern = rf'(?:{re.escape(key)}|"{re.escape(key)}"|\'{re.escape(key)}\')'
     assignment = re.compile(rf"^(\s*{key_pattern}\s*=\s*)(.*?)(\r?\n)?$")
     for index in range(start + 1, end):
+        if not structural[index]:
+            continue
         match = assignment.match(lines[index])
         if match:
             newline = match.group(3) or ""
@@ -482,7 +485,7 @@ def apply_linear_connection(path: Path, plan: dict) -> None:
         rendered_config = tomllib.loads(rendered)
     except tomllib.TOMLDecodeError:
         _unsupported_representation()
-    if rendered_config != _expected_config(current_config, patch):
+    if digest(rendered_config) != digest(_expected_config(current_config, patch)):
         _unsupported_representation()
 
     mode = path.stat().st_mode & 0o777

@@ -734,6 +734,82 @@ def test_apply_semantic_verification_rejects_any_unrelated_rendered_change(tmp_p
     assert list(tmp_path.glob(".ai-dlc-linear-*")) == []
 
 
+@pytest.mark.parametrize("delimiter", ['"""', "'''"])
+@pytest.mark.parametrize("target_table", ["provider", "statuses"])
+@pytest.mark.parametrize("real_assignment", [True, False])
+def test_apply_ignores_assignment_decoys_inside_target_table_multiline_values(
+    tmp_path, delimiter, target_table, real_assignment
+):
+    """Assignments embedded in provider notes must not receive or prevent the mapping update."""
+    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+
+    if target_table == "provider":
+        provider_body = f'notes = {delimiter}\nteam_id = "decoy-team"\n{delimiter}\n' + (
+            'team_id = "old-team" # real team\n' if real_assignment else ""
+        )
+        statuses_body = 'in_progress = "old-started"\nclosed = "old-closed"\n'
+    else:
+        provider_body = 'team_id = "old-team"\n'
+        statuses_body = (
+            f"notes = {delimiter}\n"
+            'in_progress = "decoy-started"\nclosed = "decoy-closed"\n'
+            f"{delimiter}\n"
+            + (
+                'in_progress = "old-started" # real started\nclosed = "old-closed" # real closed\n'
+                if real_assignment
+                else ""
+            )
+        )
+    path = tmp_path / "ai-dlc.toml"
+    path.write_text(
+        f"schema = 4\n[providers.linear]\n{provider_body}\n"
+        f"[providers.linear.statuses]\n{statuses_body}"
+    )
+    before = tomllib.loads(path.read_text())
+    plan = plan_linear_connection(before, _selection_discovery(), _selection())
+
+    apply_linear_connection(path, plan)
+
+    rendered = path.read_text()
+    after = tomllib.loads(rendered)
+    assert after["providers"]["linear"]["team_id"] == "team-a"
+    assert after["providers"]["linear"]["statuses"]["in_progress"] == "doing-a"
+    assert after["providers"]["linear"]["statuses"]["closed"] == "done-a"
+    notes_owner = after["providers"]["linear"]
+    before_notes_owner = before["providers"]["linear"]
+    if target_table == "statuses":
+        notes_owner = notes_owner["statuses"]
+        before_notes_owner = before_notes_owner["statuses"]
+        assert 'in_progress = "decoy-started"' in rendered
+        assert 'closed = "decoy-closed"' in rendered
+    else:
+        assert 'team_id = "decoy-team"' in rendered
+    assert notes_owner["notes"] == before_notes_owner["notes"]
+
+
+def test_apply_semantic_verification_is_type_sensitive(tmp_path, monkeypatch):
+    """Python equality must not let an unrelated integer-to-boolean change pass as exact."""
+    import ai_dlc.provider_onboarding as onboarding
+
+    path = tmp_path / "ai-dlc.toml"
+    path.write_text("schema = 4\n[project]\nretries = 1\n")
+    plan = onboarding.plan_linear_connection(
+        tomllib.loads(path.read_text()), _selection_discovery(), _selection()
+    )
+    before = path.read_bytes()
+    real_render = onboarding._render_patch
+
+    def change_value_type(text, patch):
+        return real_render(text, patch).replace("retries = 1", "retries = true")
+
+    monkeypatch.setattr(onboarding, "_render_patch", change_value_type)
+    with pytest.raises(ValueError, match="TOML representation"):
+        onboarding.apply_linear_connection(path, plan)
+
+    assert path.read_bytes() == before
+    assert list(tmp_path.glob(".ai-dlc-linear-*")) == []
+
+
 def test_apply_preserves_restrictive_source_mode(tmp_path):
     """Atomic replacement must not broaden access to project configuration metadata."""
     from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
