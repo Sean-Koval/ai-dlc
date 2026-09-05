@@ -12,9 +12,9 @@
 
 ## 3. Configuration integration
 
-- [ ] 3.1 Define and run the focused acceptance/refusal cases in the execution plan.
-- [ ] 3.2 Validate the three optional provider metadata fields and machine-layer refusal; document a complete third-party manifest example and verify packaged component data.
-- [ ] 3.3 Verify focused tests and inspect scope/compatibility before committing.
+- [x] 3.1 Define and run the focused acceptance/refusal cases in the execution plan.
+- [x] 3.2 Validate the three optional provider metadata fields and machine-layer refusal; document a complete third-party manifest example and verify packaged component data.
+- [x] 3.3 Verify focused tests and inspect scope/compatibility before committing.
 
 ## 4. Review and finish
 

@@ -71,6 +71,56 @@ Implementation clarifications:
   in components.py, with packaged defaults through the existing assets helper.
   Explicit-role filtering uses `Resolved.sources`: personal/project selections
   count; compatibility-only base defaults do not trigger new installation.
+
+### Third-party component example
+
+A project can add a checked-in schema-1 component manifest without adding an
+installer or provider operation. This complete example has three project files:
+
+```text
+components/third-party-tracker.json
+guidance/third-party-tracker.md
+ai-dlc.toml
+```
+
+`components/third-party-tracker.json` contains only declarative metadata. Its
+`core` module is an existing recipe, and its guidance path is relative to the
+same project root:
+
+```json
+{
+  "schema": 1,
+  "components": [
+    {
+      "id": "third-party-tracker",
+      "roles": ["tracker"],
+      "modules": ["core"],
+      "guidance": ["guidance/third-party-tracker.md"],
+      "required_config": ["repository"]
+    }
+  ]
+}
+```
+
+For those exact bytes, configure the selected provider in the project-level
+`ai-dlc.toml` as follows. The digest must be recalculated when the manifest
+changes; machine configuration cannot set any of these component fields.
+
+```toml
+schema = 4
+
+[roles]
+tracker = "third-party-tracker"
+
+[providers.third-party-tracker]
+component = "third-party-tracker"
+component_manifest = "components/third-party-tracker.json"
+component_manifest_sha256 = "8f3e85c4f63fa73cf6b6a269544ed945d6d4f935fa7c4e2e1084c75da371a087"
+```
+
+`guidance/third-party-tracker.md` is ordinary checked-in Markdown. Component
+loading verifies the manifest's path and digest, parses its schema, confirms
+the `core` recipe and guidance file exist, and never executes manifest content.
 - Linear plan `config` is the parsed shared ai-dlc.toml, not merged machine state.
   `before_digest` uses the existing canonical `config.digest` on that dictionary.
   Apply re-reads/parses the current file and compares the same digest. Comment-only

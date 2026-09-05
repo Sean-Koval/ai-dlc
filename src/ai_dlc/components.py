@@ -8,7 +8,7 @@ import re
 from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any
 
-from ai_dlc.config import read_toml
+from ai_dlc.config import Resolved, read_toml
 from ai_dlc.files import assets, inside
 
 _CATALOG_FIELDS = {"schema", "components"}
@@ -170,13 +170,25 @@ def load_component_catalog(root: Path, config: dict) -> dict:
     return {"schema": 1, "components": sorted(components, key=lambda component: component["id"])}
 
 
-def resolve_components(config: dict, catalog: dict) -> dict:
+def resolve_components(
+    config: dict[str, Any] | Resolved, catalog: dict[str, Any]
+) -> dict[str, Any]:
     """Resolve explicitly selected provider roles from a validated component catalog."""
+    if isinstance(config, Resolved):
+        values = config.values
+        roles = {
+            role: provider
+            for role, provider in values.get("roles", {}).items()
+            if config.sources.get(f"roles.{role}") in {"personal", "project"}
+        }
+    else:
+        values = config
+        roles = values.get("roles", {})
     by_id = {component["id"]: component for component in catalog["components"]}
     components = []
     unresolved = []
-    for role, provider in config.get("roles", {}).items():
-        settings = config.get("providers", {}).get(provider, {})
+    for role, provider in roles.items():
+        settings = values.get("providers", {}).get(provider, {})
         component_id = settings.get(
             "component", settings.get("kind", settings.get("type", provider))
         )

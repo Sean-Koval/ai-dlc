@@ -61,6 +61,11 @@ _BENIGN_INTEGER_TOKEN_FIELDS = {
     ("max", "token"),
     ("token", "count"),
 }
+_COMPONENT_PROVIDER_FIELDS = {
+    "component",
+    "component_manifest",
+    "component_manifest_sha256",
+}
 
 
 @dataclass
@@ -155,6 +160,28 @@ def _validate_credentials(layer: str, value: Any) -> None:
                 )
 
 
+def _validate_providers(layer: str, value: Any) -> None:
+    if not isinstance(value, dict):
+        raise TypeError(f"{layer}: providers must be a table")
+    for provider_id, settings in value.items():
+        if not isinstance(settings, dict):
+            raise TypeError(f"{layer}: providers.{provider_id} must be a table")
+        for field in _COMPONENT_PROVIDER_FIELDS.intersection(settings):
+            if not isinstance(settings[field], str):
+                raise TypeError(f"{layer}: providers.{provider_id}.{field} must be a string")
+        if layer == "machine":
+            forbidden = sorted(_COMPONENT_PROVIDER_FIELDS.intersection(settings))
+            if forbidden:
+                raise ValueError(f"machine: cannot set providers.{provider_id}.{forbidden[0]}")
+        has_manifest = "component_manifest" in settings
+        has_digest = "component_manifest_sha256" in settings
+        if has_manifest != has_digest:
+            raise ValueError(
+                f"{layer}: providers.{provider_id} must set component manifest "
+                "and component_manifest_sha256 together"
+            )
+
+
 def _validate(layer: str, data: dict[str, Any]) -> None:
     if layer not in {"base", "personal", "project", "machine"}:
         raise ValueError(f"unknown layer: {layer}")
@@ -186,6 +213,8 @@ def _validate(layer: str, data: dict[str, Any]) -> None:
     secrets(data)
     if "credentials" in data:
         _validate_credentials(layer, data["credentials"])
+    if "providers" in data:
+        _validate_providers(layer, data["providers"])
     # Machine overrides may select credentials/accounts, never executable provider behavior.
     if layer == "machine":
         for name, settings in data.get("providers", {}).items():

@@ -373,6 +373,63 @@ def test_resolves_an_explicit_openspec_role_to_its_component_requirements():
     }
 
 
+def test_resolves_only_personal_or_project_roles_from_a_layered_configuration():
+    """Would fail if compatibility-only base roles authorized component installation."""
+    from ai_dlc.components import resolve_components
+    from ai_dlc.config import resolve_layers
+
+    resolved = resolve_layers(
+        [
+            ("base", {"schema": 4, "roles": {"knowledge": "obsidian"}}),
+            ("personal", {"schema": 4, "roles": {"specs": "openspec"}}),
+            ("project", {"schema": 4, "roles": {"tracker": "linear"}}),
+        ]
+    )
+
+    result = resolve_components(
+        resolved,
+        {
+            "schema": 1,
+            "components": [
+                {
+                    "id": "openspec",
+                    "roles": ["specs"],
+                    "modules": ["openspec"],
+                    "guidance": ["providers/openspec.md"],
+                    "required_config": [],
+                },
+                {
+                    "id": "linear",
+                    "roles": ["tracker"],
+                    "modules": ["linear"],
+                    "guidance": ["providers/linear.md"],
+                    "required_config": ["team_id"],
+                },
+            ],
+        },
+    )
+
+    assert result["components"] == [
+        {
+            "id": "linear",
+            "provider": "linear",
+            "role": "tracker",
+            "modules": ["linear"],
+            "guidance": ["providers/linear.md"],
+            "required_config": ["team_id"],
+        },
+        {
+            "id": "openspec",
+            "provider": "openspec",
+            "role": "specs",
+            "modules": ["openspec"],
+            "guidance": ["providers/openspec.md"],
+            "required_config": [],
+        },
+    ]
+    assert result["unresolved"] == []
+
+
 def test_resolves_a_provider_alias_through_its_declared_kind():
     """Would fail if a provider alias could not use its registered component kind."""
     from ai_dlc.components import resolve_components

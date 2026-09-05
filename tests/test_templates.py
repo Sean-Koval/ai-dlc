@@ -1,4 +1,5 @@
 import asyncio
+import json
 import os
 import re
 import subprocess
@@ -388,7 +389,6 @@ def test_portable_profile_examples_and_rendered_handbook_are_safe(tmp_path):
             "present": False,
         }
     ]
-
     _assert_public_example(profile)
     _assert_public_example(machine)
     for raw in [profile_path.read_text(), machine_path.read_text()]:
@@ -430,6 +430,30 @@ def test_portable_profile_examples_and_rendered_handbook_are_safe(tmp_path):
             ).returncode
             == 0
         )
+
+
+def test_component_catalog_and_guidance_ship_in_the_distribution(tmp_path):
+    """Catch a package build that omits the catalog or its provider guidance."""
+    project = Path(__file__).resolve().parents[1]
+    subprocess.run(
+        ["uv", "build", "--wheel", "--out-dir", str(tmp_path)],
+        cwd=project,
+        check=True,
+        capture_output=True,
+        text=True,
+        env={**os.environ, "UV_OFFLINE": "1"},
+    )
+
+    wheel = next(tmp_path.glob("ai_dlc-*.whl"))
+    with zipfile.ZipFile(wheel) as archive:
+        catalog = archive.read("ai_dlc/assets/modules/components.json")
+        members = set(archive.namelist())
+
+    components = json.loads(catalog)["components"]
+    guidance = {
+        f"ai_dlc/assets/agents/{path}" for component in components for path in component["guidance"]
+    }
+    assert guidance <= members
 
 
 @pytest.mark.parametrize(

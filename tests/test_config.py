@@ -291,6 +291,121 @@ def test_misplaced_secret_or_unknown_field_rejected():
         resolve_layers([("project", {"schema": 4, "providers": {"linear": {"token": "secret"}}})])
 
 
+def test_component_provider_metadata_is_additive_and_keeps_layer_provenance():
+    """Would fail if component selections displaced existing schema-4 provider settings."""
+    from ai_dlc.config import resolve_layers
+
+    result = resolve_layers(
+        [
+            (
+                "personal",
+                {
+                    "schema": 4,
+                    "providers": {
+                        "third-party-tracker": {
+                            "kind": "github-issues",
+                            "component": "third-party-tracker",
+                        }
+                    },
+                },
+            ),
+            (
+                "project",
+                {
+                    "schema": 4,
+                    "providers": {
+                        "third-party-tracker": {
+                            "component_manifest": "components/third-party-tracker.json",
+                            "component_manifest_sha256": "a" * 64,
+                        }
+                    },
+                },
+            ),
+        ]
+    )
+
+    assert result.values["providers"]["third-party-tracker"] == {
+        "kind": "github-issues",
+        "component": "third-party-tracker",
+        "component_manifest": "components/third-party-tracker.json",
+        "component_manifest_sha256": "a" * 64,
+    }
+    assert result.sources["providers.third-party-tracker.component"] == "personal"
+    assert result.sources["providers.third-party-tracker.component_manifest"] == "project"
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("component", ["third-party-tracker"]),
+        ("component_manifest", ["components/third-party-tracker.json"]),
+        ("component_manifest_sha256", ["a" * 64]),
+    ],
+)
+def test_component_provider_metadata_requires_string_fields(field: str, value: object):
+    """Would fail if component metadata reached its loader with a non-string field."""
+    from ai_dlc.config import resolve_layers
+
+    with pytest.raises(TypeError, match=rf"providers.third-party-tracker.{field} must be a string"):
+        resolve_layers(
+            [
+                (
+                    "project",
+                    {"schema": 4, "providers": {"third-party-tracker": {field: value}}},
+                )
+            ]
+        )
+
+
+@pytest.mark.parametrize("layer", ["base", "personal", "project", "machine"])
+def test_provider_component_configuration_requires_provider_tables(layer: str):
+    """Would fail if a non-table provider shape bypassed component metadata validation."""
+    from ai_dlc.config import resolve_layers
+
+    with pytest.raises(TypeError, match=rf"{layer}: providers must be a table"):
+        resolve_layers([(layer, {"schema": 4, "providers": ["third-party-tracker"]})])
+
+
+@pytest.mark.parametrize("field", ["component_manifest", "component_manifest_sha256"])
+def test_component_manifest_and_digest_must_be_declared_together(field: str):
+    """Would fail if unpaired manifest integrity metadata reached component loading."""
+    from ai_dlc.config import resolve_layers
+
+    value = "components/third-party-tracker.json" if field == "component_manifest" else "a" * 64
+    with pytest.raises(
+        ValueError, match="component manifest and component_manifest_sha256 together"
+    ):
+        resolve_layers(
+            [
+                (
+                    "project",
+                    {"schema": 4, "providers": {"third-party-tracker": {field: value}}},
+                )
+            ]
+        )
+
+
+@pytest.mark.parametrize(
+    "field",
+    ["component", "component_manifest", "component_manifest_sha256"],
+)
+def test_machine_layer_cannot_own_component_provider_metadata(field: str):
+    """Would fail if a machine binding could choose a project component or manifest."""
+    from ai_dlc.config import resolve_layers
+
+    with pytest.raises(
+        ValueError, match=rf"machine: cannot set providers.third-party-tracker.{field}"
+    ):
+        resolve_layers(
+            [
+                (
+                    "machine",
+                    {"schema": 4, "providers": {"third-party-tracker": {field: "value"}}},
+                )
+            ]
+        )
+
+
 @pytest.mark.parametrize(
     ("field", "value"),
     [
