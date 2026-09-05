@@ -432,6 +432,84 @@ def test_resolves_only_personal_or_project_roles_from_a_layered_configuration():
     assert result["unresolved"] == []
 
 
+def test_ignores_normal_schema_4_agent_clients_when_resolving_raw_roles():
+    """Would fail if a list-valued client role were treated as a component provider."""
+    from ai_dlc.components import resolve_components
+    from ai_dlc.config import read_toml
+
+    config = read_toml(Path(__file__).parents[1] / "ai-dlc.toml")
+    result = resolve_components(
+        config,
+        {
+            "schema": 1,
+            "components": [
+                {
+                    "id": "openspec",
+                    "roles": ["specs"],
+                    "modules": ["openspec"],
+                    "guidance": ["providers/openspec.md"],
+                    "required_config": [],
+                },
+                {
+                    "id": "linear",
+                    "roles": ["tracker"],
+                    "modules": ["linear"],
+                    "guidance": ["providers/linear.md"],
+                    "required_config": ["team_id"],
+                },
+            ],
+        },
+    )
+
+    assert [
+        (component["id"], component["provider"], component["role"])
+        for component in result["components"]
+    ] == [
+        ("linear", "linear", "tracker"),
+        ("openspec", "openspec", "specs"),
+    ]
+
+
+def test_ignores_empty_explicit_agent_clients_in_a_layered_configuration():
+    """Would fail if an empty client list reached provider lookup after provenance filtering."""
+    from ai_dlc.components import resolve_components
+    from ai_dlc.config import resolve_layers
+
+    resolved = resolve_layers(
+        [
+            ("base", {"schema": 4, "roles": {"agent-client": ["codex"]}}),
+            (
+                "personal",
+                {
+                    "schema": 4,
+                    "roles": {"tracker": "linear", "agent-client": []},
+                },
+            ),
+        ]
+    )
+    result = resolve_components(
+        resolved,
+        {
+            "schema": 1,
+            "components": [
+                {
+                    "id": "linear",
+                    "roles": ["tracker"],
+                    "modules": ["linear"],
+                    "guidance": ["providers/linear.md"],
+                    "required_config": ["team_id"],
+                }
+            ],
+        },
+    )
+
+    assert [
+        (component["id"], component["provider"], component["role"])
+        for component in result["components"]
+    ] == [("linear", "linear", "tracker")]
+    assert result["unresolved"] == []
+
+
 def test_resolves_a_provider_alias_through_its_declared_kind():
     """Would fail if a provider alias could not use its registered component kind."""
     from ai_dlc.components import resolve_components

@@ -178,6 +178,8 @@ def resolve_components(
     components = []
     unresolved = []
     for role, provider in roles.items():
+        if role not in _ROLES:
+            continue
         settings = values.get("providers", {}).get(provider, {})
         component_id = settings.get(
             "component", settings.get("kind", settings.get("type", provider))
