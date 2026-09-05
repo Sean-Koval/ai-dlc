@@ -26,6 +26,7 @@ branch = "codex/design-pm-roadmap"
 plan = "docs/superpowers/plans/2026-09-05-framework-delivery.md"
 roadmap = "docs/roadmap.md"
 tracker = "402c879f-ddd3-4693-a37b-6a145489a506"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/5"
 
 [bindings]
 specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"

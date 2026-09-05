@@ -6,6 +6,8 @@ dependency-ordered [roadmap](../roadmap.md). UI/UX is one optional part.
 ## Current state
 
 - Planning branch: `codex/design-pm-roadmap`.
+- Planning review: [PR #5](https://github.com/Sean-Koval/ai-dlc/pull/5), draft at
+  handoff; [validation evidence](../planning/framework-delivery-review.md).
 - Implementation baseline: `241e715`, portable profile enrollment merged into main.
 - This planning delivery adds documentation, specifications, work records, and
   sandbox ticket bindings. It does not implement the planned commands or skills.
