@@ -25,6 +25,36 @@ def _which(command: str, environ: Mapping[str, str] | None) -> str | None:
     return shutil.which(command, path=environ.get("PATH", ""))
 
 
+def project_readiness(root: Path, config: dict, environ: Mapping[str, str]) -> dict:
+    """Inspect recipe executables on PATH without executing them or contacting providers."""
+    from ai_dlc.readiness import inspect_readiness
+
+    try:
+        return inspect_readiness(
+            root,
+            config,
+            environ=environ,
+            probe=lambda commands: {
+                "available": all(_which(command, environ) for command in commands)
+            },
+        )
+    except (OSError, ValueError):
+        return {
+            "schema": 1,
+            "ready": False,
+            "qualification": "not-assessed",
+            "checks": [
+                {
+                    "component": "project",
+                    "dimension": "configuration",
+                    "status": "blocked",
+                    "reason": "Project component requirements could not be resolved.",
+                    "next_action": "Validate the selected component manifests and their guidance files.",
+                }
+            ],
+        }
+
+
 def machine_plan(
     profile: Path,
     headless: bool = False,
@@ -369,6 +399,7 @@ def doctor(
         "hooks": hooks,
         "credentials": credentials,
         "user_agents": user_agents,
+        "project_readiness": project_readiness(root, config, environment),
     }
 
 

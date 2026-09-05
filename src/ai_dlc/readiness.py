@@ -158,6 +158,38 @@ def inspect_readiness(
         )
 
     credentials = credential_status(config, environ)
+    clients = config.get("roles", {}).get("agent-client", [])
+    if isinstance(clients, str):
+        clients = [clients]
+    if clients:
+        from ai_dlc.agents import provider_guidance_ready, provider_index
+
+        index, copies = provider_index(resolved)
+        for client in clients:
+            supported = client in {"codex", "claude-code"}
+            delivered = supported and provider_guidance_ready(root, index, copies, client)
+            checks.append(
+                _check(
+                    client,
+                    "guidance",
+                    _READY if delivered else "missing" if supported else "blocked",
+                    "configured provider index is delivered"
+                    if delivered
+                    else (
+                        "configured provider index or instructions are missing or stale"
+                        if supported
+                        else "unsupported agent client"
+                    ),
+                    "No action required."
+                    if delivered
+                    else (
+                        "Declare the selected providers in shared ai-dlc.toml, then run "
+                        "ai-dlc agents render --apply after resolving authored-file conflicts."
+                        if supported
+                        else "Select an implemented agent client: codex or claude-code."
+                    ),
+                )
+            )
     for component in resolved["components"]:
         checks.extend(_tool_checks(component, modules, headless=headless, probe=probe))
 

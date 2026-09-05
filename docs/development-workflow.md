@@ -93,6 +93,29 @@ qualification target. Obsidian create/attach and provider discovery are
 next-cycle gaps, so knowledge remains provider-neutral and is attached only to
 an explicitly selected existing store.
 
+Use `ai-dlc project readiness --root PATH` to inspect the selected component
+requirements offline. Its JSON separates tool availability, provider configuration,
+credential presence, harness guidance, and provider health, with a next action for
+each gap. Exit 0 means all required offline checks are ready; missing, blocked, or
+unverified required checks return 1. Tools are located on the current environment's
+PATH without execution. Credentials are checked only in that environment; secret
+files are never loaded. Provider health stays informational and unverified, and
+`qualification` is always `not-assessed`.
+
+`ai-dlc agents render --apply --root PATH` delivers the project-owned provider/tool
+index in `AGENTS.md`, which Claude Code receives through its managed `CLAUDE.md`
+import. Packaged instructions are owned copies in `.ai-dlc/providers/`; custom
+component instructions remain linked project files. Edited or authored copies
+are preserved through the existing conflict rules. A provider selected only in a
+personal profile can have a missing-delivery gap: declare the intended shared
+provider in `ai-dlc.toml` before rendering. Rendering does not promote private
+configuration automatically. Missing component metadata is reported explicitly;
+the index does not establish new provider or client support.
+
+Root and machine doctor retain their enrollment and readiness decisions and add
+these offline diagnostics under `project_readiness`. Their existing explicit
+provider-health inspection remains separate, as do work finish and release gates.
+
 Preview a private profile enrollment can materialize an inactive cache, but it
 does not change active enrollment, client configuration, or package state.
 Repeat the same command with `--apply` to activate it:

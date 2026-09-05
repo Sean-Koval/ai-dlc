@@ -83,6 +83,28 @@ def project_setup(root: Path = Path("."), target: str = "local"):
     emit(setup_project(root, target))
 
 
+@project.command("readiness")
+def project_readiness(root: Path = Path(".")):
+    """Inspect selected project requirements offline without applying changes."""
+    import os
+
+    from ai_dlc.provision import project_readiness as inspect
+
+    # Resolve local bindings while retaining only explicit provider selections.
+    resolved = resolve_runtime(root)
+    config = dict(resolved.values)
+    config["roles"] = {
+        role: value
+        for role, value in config.get("roles", {}).items()
+        if role == "agent-client"
+        or resolved.sources.get(f"roles.{role}") in {"personal", "project"}
+    }
+    result = inspect(root, config, os.environ)
+    emit(result)
+    if not result["ready"]:
+        raise typer.Exit(1)
+
+
 @project.command("init")
 def project_init(
     path: Path,

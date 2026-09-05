@@ -6,6 +6,55 @@ from click import unstyle
 from typer.testing import CliRunner
 
 
+def test_project_readiness_is_offline_read_only_and_exits_for_required_gaps(tmp_path, monkeypatch):
+    """Readiness must report gaps, never execute tools or load secret files, and return 0 after rendering."""
+    import subprocess
+
+    from ai_dlc.agents import render_agents
+    from ai_dlc.cli import app
+
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "config"))
+    root = tmp_path / "project"
+    root.mkdir()
+    (root / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nspecs="openspec"\nagent-client=["codex"]\n'
+    )
+    binary = tmp_path / "bin"
+    binary.mkdir()
+    for name in ["openspec", "codex"]:
+        path = binary / name
+        path.write_text("#!/bin/sh\nexit 99\n")
+        path.chmod(0o755)
+    monkeypatch.setenv("PATH", str(binary))
+    (root / ".env").write_text("SENTINEL=must-not-be-read\n")
+    read_text = Path.read_text
+
+    def refuse_secret_file(path, *args, **kwargs):
+        if path == root / ".env":
+            raise AssertionError("plain readiness read a secret file")
+        return read_text(path, *args, **kwargs)
+
+    def no_execution(*args, **kwargs):
+        raise AssertionError("plain readiness executed a process")
+
+    monkeypatch.setattr(subprocess, "run", no_execution)
+    monkeypatch.setattr(Path, "read_text", refuse_secret_file)
+    before = {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}
+    result = CliRunner().invoke(app, ["project", "readiness", "--root", str(root)])
+    assert result.exit_code == 1, result.output
+    report = json.loads(result.stdout)
+    assert not report["ready"]
+    assert report["qualification"] == "not-assessed"
+    assert all(
+        c["status"] == "unverified" for c in report["checks"] if c["dimension"] == "provider-health"
+    )
+    assert before == {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}
+    render_agents(root, apply=True)
+    result = CliRunner().invoke(app, ["project", "readiness", "--root", str(root)])
+    assert result.exit_code == 0, result.output
+    assert json.loads(result.stdout)["ready"]
+
+
 def _write_cli_enrollment(tmp_path: Path) -> dict[str, str]:
     from ai_dlc.enrollment import EnrollmentLock, EnrollmentPaths, write_lock
 

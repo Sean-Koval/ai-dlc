@@ -12,9 +12,9 @@
 
 ## 3. Harness guidance and reporting
 
-- [ ] 3.1 Define and run the focused acceptance/refusal cases in the execution plan.
-- [ ] 3.2 Render an owned provider/tool index into supported client guidance; implement project readiness and add diagnostics to doctor without overriding machine enrollment failures.
-- [ ] 3.3 Verify focused tests and inspect scope/compatibility before committing.
+- [x] 3.1 Define and run the focused acceptance/refusal cases in the execution plan.
+- [x] 3.2 Render an owned provider/tool index into supported client guidance; implement project readiness and add diagnostics to doctor without overriding machine enrollment failures.
+- [x] 3.3 Verify focused tests and inspect scope/compatibility before committing.
 
 ## 4. Review and finish
 
