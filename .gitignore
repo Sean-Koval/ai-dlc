@@ -10,4 +10,5 @@ build/
 .ruff_cache/
 .ai-dlc/local/
 .superpowers/
+.worktrees/
 *.egg-info/
