@@ -157,8 +157,10 @@ membership, or work-binding drift.
 Existing tracker-bound work requires an explicit connection rebind. Run the
 selection preview with `--plan-file .ai-dlc/local/linear-plan.json`; the command
 saves that non-secret plan but refuses the shared mapping change and lists every
-affected work ID. Create `.ai-dlc/local/linear-rebind.toml` with one table for
-every listed ID and an explicit replacement tracker reference:
+affected work ID. This affected set contains only work whose effective tracker
+is Linear and which already has a tracker binding. Create
+`.ai-dlc/local/linear-rebind.toml` with one table for every listed ID and an
+explicit replacement tracker reference:
 
 ```toml
 [work-one]
@@ -179,9 +181,10 @@ ai-dlc project rebind tracker linear --root PATH --connection-plan .ai-dlc/local
 This command rejects incomplete mappings, a stale or tampered plan, changed
 remote membership, a non-Linear effective adapter, or concurrent project edits
 before changing shared files. It computes each replacement binding against the
-new configuration and preserves every unrelated work artifact. The process is
-explicit: provider onboarding never invents tracker references or rebinds work
-automatically.
+new configuration. Work pinned to another tracker and work without an existing
+Linear tracker binding are not migration inputs and their records remain
+byte-for-byte unchanged. The process is explicit: provider onboarding never
+invents tracker references or rebinds work automatically.
 
 Preview a private profile enrollment can materialize an inactive cache, but it
 does not change active enrollment, client configuration, or package state.

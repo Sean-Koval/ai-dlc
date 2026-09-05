@@ -1,4 +1,5 @@
 import json
+import shlex
 import stat
 import tomllib
 from copy import deepcopy
@@ -1212,7 +1213,15 @@ def test_provider_connect_refuses_changed_mapping_for_bound_linear_work(tmp_path
     assert config_path.read_bytes() == before
 
 
-def _add_bound_work(root: Path, work_id: str, tracker: str, *, branch: str) -> Path:
+def _add_bound_work(
+    root: Path,
+    work_id: str,
+    tracker: str,
+    *,
+    branch: str,
+    provider: str = "linear",
+    binding: str | None = "b" * 64,
+) -> Path:
     work = {
         "schema": 1,
         "id": work_id,
@@ -1222,9 +1231,9 @@ def _add_bound_work(root: Path, work_id: str, tracker: str, *, branch: str) -> P
         "spec_reason": "Migration regression fixture",
         "acceptance": ["Binding follows reviewed configuration"],
         "reviewed": True,
-        "providers": {"tracker": "linear"},
+        "providers": {"tracker": provider},
         "artifacts": {"tracker": tracker, "branch": branch},
-        "bindings": {"tracker": "b" * 64},
+        "bindings": {} if binding is None else {"tracker": binding},
     }
     path = root / ".ai-dlc/work" / f"{work_id}.toml"
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -1249,7 +1258,7 @@ def _rebind_connection_args(root: Path, plan_path: Path, mappings_path: Path) ->
 
 
 def test_bound_mapping_refusal_guides_atomic_explicit_connection_rebind(tmp_path, monkeypatch):
-    """The documented refusal recovery must install the plan and repin all affected work."""
+    """Recovery must migrate only listed bound Linear work in a mixed tracker history."""
     from ai_dlc.cli import app
     from ai_dlc.config import load_project
     from ai_dlc.workflow import WorkService
@@ -1257,6 +1266,25 @@ def test_bound_mapping_refusal_guides_atomic_explicit_connection_rebind(tmp_path
     root = tmp_path / "project"
     config_path = _write_connect_project(root, bound=True)
     second_path = _add_bound_work(root, "second-work", "SAN-2", branch="keep/second")
+    alternate_path = _add_bound_work(
+        root,
+        "github-work",
+        "GH-9",
+        branch="keep/github",
+        provider="github-issues",
+        binding="c" * 64,
+    )
+    unbound_path = _add_bound_work(
+        root,
+        "unbound-linear",
+        "SAN-3",
+        branch="keep/unbound",
+        binding=None,
+    )
+    preserved = {
+        alternate_path: alternate_path.read_bytes(),
+        unbound_path: unbound_path.read_bytes(),
+    }
     calls = _stub_cli_discovery(monkeypatch)
     monkeypatch.setenv("LINEAR_TEST_TOKEN", "credential-sentinel")
     plan_path = root / ".ai-dlc/local/linear-plan.json"
@@ -1266,6 +1294,9 @@ def test_bound_mapping_refusal_guides_atomic_explicit_connection_rebind(tmp_path
     refused = runner.invoke(app, [*_connect_args(root), "--plan-file", str(plan_path)])
     assert refused.exit_code != 0
     assert plan_path.is_file()
+    assert "already bound: bound-work, second-work." in refused.output
+    assert "github-work" not in refused.output
+    assert "unbound-linear" not in refused.output
     normalized = " ".join(refused.output.replace("│", " ").split())
     assert (
         f"ai-dlc project rebind tracker linear --root {root} --connection-plan "
@@ -1287,6 +1318,7 @@ def test_bound_mapping_refusal_guides_atomic_explicit_connection_rebind(tmp_path
     payload = json.loads(result.stdout)
     assert payload["status"] == "applied"
     assert payload["connection"] == "applied"
+    assert [work["id"] for work in payload["active_work"]] == ["bound-work", "second-work"]
     assert len(calls) == 2
     config = load_project(root)
     assert config["providers"]["linear"] == {
@@ -1306,6 +1338,39 @@ def test_bound_mapping_refusal_guides_atomic_explicit_connection_rebind(tmp_path
         WorkService(root, config, state_path=tmp_path / "state").load(work_id)
     assert "credential-sentinel" not in result.output + plan_path.read_text()
     assert second_path.exists() and config_path.exists()
+    assert all(path.read_bytes() == contents for path, contents in preserved.items())
+
+
+def test_bound_mapping_recovery_quotes_caller_selected_connection_plan_path(tmp_path, monkeypatch):
+    """A copied recovery command must retain a plan path containing shell syntax as one token."""
+    from ai_dlc.cli import app
+
+    root = tmp_path / "project"
+    _write_connect_project(root, bound=True)
+    _stub_cli_discovery(monkeypatch)
+    relative_plan = Path(".ai-dlc/local/reviewed plan;$(not-a-command).json")
+    plan_path = root / relative_plan
+
+    result = CliRunner().invoke(app, [*_connect_args(root), "--plan-file", str(plan_path)])
+
+    assert result.exit_code != 0
+    assert plan_path.is_file()
+    marker = "Complete the reviewed migration with `"
+    command = result.output.split(marker, 1)[1].split("`", 1)[0]
+    assert shlex.split(command) == [
+        "ai-dlc",
+        "project",
+        "rebind",
+        "tracker",
+        "linear",
+        "--root",
+        str(root),
+        "--connection-plan",
+        relative_plan.as_posix(),
+        "--mappings",
+        ".ai-dlc/local/linear-rebind.toml",
+        "--no-plan",
+    ]
 
 
 @pytest.mark.parametrize("failure", ["stale", "tampered", "remote", "incomplete-mappings"])
@@ -1319,6 +1384,14 @@ def test_explicit_connection_rebind_failures_leave_every_project_file_unchanged(
     root = tmp_path / "project"
     config_path = _write_connect_project(root, bound=True)
     _add_bound_work(root, "second-work", "SAN-2", branch="keep/second")
+    _add_bound_work(
+        root,
+        "github-work",
+        "GH-9",
+        branch="keep/github",
+        provider="github-issues",
+        binding="c" * 64,
+    )
     discovery = _selection_discovery()
     _stub_cli_discovery(monkeypatch, discovery)
     plan_path = root / ".ai-dlc/local/linear-plan.json"
@@ -1355,6 +1428,14 @@ def test_explicit_connection_rebind_failures_leave_every_project_file_unchanged(
     result = runner.invoke(app, _rebind_connection_args(root, plan_path, mappings_path))
 
     assert result.exit_code != 0
+    expected_error = {
+        "stale": "source digest changed",
+        "tampered": "Invalid Linear connection plan patch",
+        "remote": "not in the selected team",
+        "incomplete-mappings": "second-work",
+    }[failure]
+    assert expected_error in result.output
+    assert "github-work" not in result.output
     assert "credential-sentinel" not in result.output
     assert before == {
         path.relative_to(root): path.read_bytes() for path in root.rglob("*") if path.is_file()

@@ -47,7 +47,7 @@ def rebind(
     proposed = copy.deepcopy(config)
     proposed.setdefault("roles", {})[role] = provider_id
     before = _files(root)
-    work_items = []
+    all_work_items = []
     for path in sorted((root / ".ai-dlc/work").glob("*.toml")):
         work = Work.model_validate(tomllib.loads(path.read_text())).model_dump(by_alias=True)
         if work["id"] != path.stem:
@@ -55,7 +55,16 @@ def rebind(
         old = work["providers"].get(role, config.get("roles", {}).get(role))
         # A local status string is not evidence of completion: retain every work item.
         if old is not None:
-            work_items.append((path.relative_to(root).as_posix(), work, old))
+            all_work_items.append((path.relative_to(root).as_posix(), work, old))
+    saved_connection_plan = None
+    if connection_plan is not None:
+        from ai_dlc.provider_onboarding import _bound_linear_work, _load_connection_plan
+
+        connection_path, saved_connection_plan = _load_connection_plan(root, connection_plan)
+        affected_ids = set(_bound_linear_work(root, config))
+        work_items = [item for item in all_work_items if item[1]["id"] in affected_ids]
+    else:
+        work_items = all_work_items
     active = [
         {
             "id": work["id"],
@@ -72,11 +81,7 @@ def rebind(
         "active_work": active,
         "completion_policy": "Retained work requires mapping; local completion flags are not proof",
     }
-    saved_connection_plan = None
     if connection_plan is not None:
-        from ai_dlc.provider_onboarding import _load_connection_plan
-
-        connection_path, saved_connection_plan = _load_connection_plan(root, connection_plan)
         plan["connection_plan"] = connection_path.relative_to(root).as_posix()
     if not apply:
         return plan

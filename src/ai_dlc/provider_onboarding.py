@@ -621,11 +621,11 @@ def _guard_mapping_change(
                 f"--team {shlex.quote(selected['team_id'])} "
                 f"--in-progress {shlex.quote(selected['in_progress'])} "
                 f"--closed {shlex.quote(selected['closed'])} "
-                f"--plan-file {connection_plan}`."
+                f"--plan-file {shlex.quote(connection_plan)}`."
             )
         command = (
             "ai-dlc project rebind tracker linear "
-            f"--root {root_argument} --connection-plan {connection_plan} "
+            f"--root {root_argument} --connection-plan {shlex.quote(connection_plan)} "
             f"--mappings {mappings} --no-plan"
         )
         raise ValueError(
