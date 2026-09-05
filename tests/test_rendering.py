@@ -2,7 +2,17 @@ import pytest
 
 
 @pytest.mark.parametrize("apply", [False, True])
-def test_provider_switch_refuses_to_delete_still_referenced_owned_guidance(tmp_path, apply):
+@pytest.mark.parametrize(
+    "guidance",
+    [
+        ".ai-dlc/providers/openspec.md",
+        ".agents/skills/day-start/SKILL.md",
+        ".claude/skills/day-start/SKILL.md",
+    ],
+)
+def test_provider_switch_refuses_to_delete_still_referenced_owned_guidance(
+    tmp_path, apply, guidance
+):
     """A custom provider must not gain a link whose formerly owned target gets deleted."""
     import hashlib
     import json
@@ -22,7 +32,7 @@ def test_provider_switch_refuses_to_delete_still_referenced_owned_guidance(tmp_p
                         "id": "custom-specs",
                         "roles": ["specs"],
                         "modules": [],
-                        "guidance": [".ai-dlc/providers/openspec.md"],
+                        "guidance": [guidance],
                         "required_config": [],
                     }
                 ],
@@ -34,6 +44,7 @@ def test_provider_switch_refuses_to_delete_still_referenced_owned_guidance(tmp_p
         'schema=4\n[roles]\nspecs="custom-specs"\n[providers.custom-specs]\n'
         'component_manifest="component.json"\n'
         f'component_manifest_sha256="{digest}"\n'
+        "[agents]\nskills=[]\n"
     )
     before = {p.relative_to(tmp_path): p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()}
     with pytest.raises(ValueError, match="still referenced"):

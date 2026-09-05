@@ -6,7 +6,7 @@ from collections.abc import Callable, Mapping
 from pathlib import Path
 from typing import Any
 
-from ai_dlc.components import load_component_catalog, resolve_components
+from ai_dlc.components import MissingComponentGuidance, load_component_catalog, resolve_components
 from ai_dlc.config import read_toml
 from ai_dlc.credentials import credential_status
 from ai_dlc.files import assets, inside
@@ -140,7 +140,12 @@ def inspect_readiness(
 ) -> dict:
     """Inspect offline requirements without reading credentials or contacting providers."""
     root = Path(root).resolve()
-    catalog = load_component_catalog(root, config)
+    missing_guidance: set[tuple[str, str]] = set()
+    try:
+        catalog = load_component_catalog(root, config)
+    except MissingComponentGuidance as exc:
+        catalog = exc.catalog
+        missing_guidance = set(exc.missing)
     resolved = resolve_components(config, catalog)
     modules = read_toml(assets("modules") / "catalog.toml")
     checks: list[dict[str, str]] = []
@@ -246,7 +251,9 @@ def inspect_readiness(
             checks.append(_check(component["id"], "credential", status, reason, action))
 
         for guidance in component["guidance"]:
-            if _guidance_available(root, guidance):
+            if (component["id"], guidance) not in missing_guidance and _guidance_available(
+                root, guidance
+            ):
                 checks.append(
                     _check(
                         component["id"],

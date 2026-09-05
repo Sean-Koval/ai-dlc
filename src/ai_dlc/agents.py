@@ -192,11 +192,6 @@ def render_agents(
         if path.exists() and hashlib.sha256(path.read_bytes()).hexdigest() != old_digest:
             raise ValueError(f"managed provider guidance conflict: {name}")
         if name not in provider_copies:
-            if name in referenced_guidance:
-                raise ValueError(
-                    f"managed provider guidance conflict: {name} is still referenced; "
-                    "copy the instructions to a project-owned path and update the component manifest"
-                )
             if path.exists():
                 removed.append(name)
             del owned_files[name]
@@ -262,6 +257,12 @@ def render_agents(
         if not inside(root, name).exists() or inside(root, name).read_text() != text
     ]
     changed.extend(removed)
+    for name in removed:
+        if name in referenced_guidance:
+            raise ValueError(
+                f"managed provider guidance conflict: {name} is still referenced; "
+                "copy the instructions to a project-owned path and update the component manifest"
+            )
     if apply:
         for name in removed:
             inside(root, name).unlink()

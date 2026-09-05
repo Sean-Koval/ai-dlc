@@ -82,32 +82,46 @@ def test_reports_an_absent_environment_credential_without_its_value(tmp_path: Pa
     assert result["ready"] is False
 
 
-def test_reports_missing_guidance_without_declaring_the_component_ready(
-    tmp_path: Path, monkeypatch
-):
+def test_reports_missing_guidance_without_declaring_the_component_ready(tmp_path: Path):
     """Would fail if a selected component could pass while its guidance was absent."""
-    from ai_dlc import readiness
+    import hashlib
+    import json
 
-    monkeypatch.setattr(
-        readiness,
-        "load_component_catalog",
-        lambda root, config: {
-            "schema": 1,
-            "components": [
-                {
-                    "id": "synthetic-specs",
-                    "roles": ["specs"],
-                    "modules": [],
-                    "guidance": ["guidance/missing.md"],
-                    "required_config": [],
-                }
-            ],
-        },
+    from ai_dlc import readiness
+    from ai_dlc.components import load_component_catalog
+
+    manifest = tmp_path / "component.json"
+    manifest.write_text(
+        json.dumps(
+            {
+                "schema": 1,
+                "components": [
+                    {
+                        "id": "synthetic-specs",
+                        "roles": ["specs"],
+                        "modules": [],
+                        "guidance": ["guidance/missing.md"],
+                        "required_config": [],
+                    }
+                ],
+            }
+        )
     )
+    config = {
+        "roles": {"specs": "synthetic-specs"},
+        "providers": {
+            "synthetic-specs": {
+                "component_manifest": "component.json",
+                "component_manifest_sha256": hashlib.sha256(manifest.read_bytes()).hexdigest(),
+            }
+        },
+    }
+    with pytest.raises(ValueError, match="existing regular file"):
+        load_component_catalog(tmp_path, config)
 
     result = readiness.inspect_readiness(
         tmp_path,
-        {"roles": {"specs": "synthetic-specs"}},
+        config,
         environ={},
         probe=lambda argv: {"available": True},
     )
@@ -116,6 +130,13 @@ def test_reports_missing_guidance_without_declaring_the_component_ready(
     assert checks[0]["status"] == "missing"
     assert checks[0]["next_action"]
     assert result["ready"] is False
+
+    (tmp_path / "guidance").mkdir()
+    (tmp_path / "guidance/missing.md").write_text("# Restored instructions\n")
+    restored = readiness.inspect_readiness(
+        tmp_path, config, environ={}, probe=lambda argv: {"available": True}
+    )
+    assert restored["ready"] is True
 
 
 def test_reports_ready_offline_requirements_and_unverified_provider_health(tmp_path: Path):

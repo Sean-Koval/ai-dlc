@@ -75,6 +75,7 @@ def machine_plan(
     }:
         raise ValueError(f"unsupported machine: {system}/{architecture}")
     selected_root = Path(root).resolve() if root is not None else None
+    personal_config = resolve_files(personal=profile, machine=machine).values
     resolved = resolve_files(
         personal=profile,
         project=selected_root / "ai-dlc.toml" if selected_root is not None else None,
@@ -135,7 +136,7 @@ def machine_plan(
         commands.append({"argv": ["mise", "install"], "mise": runtimes})
     from ai_dlc.user_agents import render_user_agents
 
-    agent_configuration = render_user_agents(config, (home or Path.home()).resolve())
+    agent_configuration = render_user_agents(personal_config, (home or Path.home()).resolve())
     result = {
         "system": system,
         "architecture": architecture,
@@ -171,12 +172,7 @@ def machine_apply(
         Path(environment.get("XDG_DATA_HOME", str(home / ".local/share"))) / "ai-dlc/workstation"
     )
     workstation_root.mkdir(parents=True, exist_ok=True)
-    selected_root = Path(root).resolve() if root is not None else None
-    config = resolve_files(
-        personal=profile,
-        project=selected_root / "ai-dlc.toml" if selected_root is not None else None,
-        machine=machine,
-    ).values
+    config = resolve_files(personal=profile, machine=machine).values
     from ai_dlc.user_agents import render_user_agents
 
     # Detect user-authored configuration conflicts before invoking package managers.

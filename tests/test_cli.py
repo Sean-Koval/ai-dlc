@@ -7,6 +7,87 @@ from click import unstyle
 from typer.testing import CliRunner
 
 
+@pytest.mark.parametrize("invalid", [None, "digest", "path", "symlink", "schema"])
+def test_missing_custom_guidance_retains_attribution_and_independent_checks(
+    tmp_path, monkeypatch, invalid
+):
+    """Only authenticated, otherwise valid metadata may survive a missing guidance target."""
+    from ai_dlc.cli import app
+
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "config"))
+    monkeypatch.setenv("PATH", "")
+    root = tmp_path / "project"
+    root.mkdir()
+    guidance = root / "guidance.md"
+    guidance.write_text("# Custom instructions\n")
+    guidance.unlink()
+    paths = ["guidance.md"]
+    if invalid == "path":
+        paths.append("../outside.md")
+    if invalid == "symlink":
+        (root / "linked.md").symlink_to(root / "absent.md")
+        paths.append("linked.md")
+    manifest = root / "component.json"
+    manifest.write_text(
+        json.dumps(
+            {
+                "schema": 1,
+                "components": [
+                    {
+                        "id": "custom-specs",
+                        "roles": ["specs"],
+                        "modules": ["core"],
+                        "guidance": paths,
+                        "required_config": ["repository"] if invalid != "schema" else 5,
+                    }
+                ],
+            }
+        )
+    )
+    digest = hashlib.sha256(manifest.read_bytes()).hexdigest() if invalid != "digest" else "a" * 64
+    (root / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nspecs="custom-specs"\ntracker="github-issues"\n'
+        '[providers.custom-specs]\ncomponent_manifest="component.json"\n'
+        f'component_manifest_sha256="{digest}"\n'
+    )
+    before = {p: p.read_bytes() for p in root.rglob("*") if p.is_file()}
+
+    result = CliRunner().invoke(app, ["project", "readiness", "--root", str(root)])
+
+    assert result.exit_code == 1, result.output
+    report = json.loads(result.stdout)
+    assert report["qualification"] == "not-assessed"
+    assert not report["ready"]
+    if invalid:
+        assert len(report["checks"]) == 1
+        assert report["checks"][0]["dimension"] == "configuration"
+        assert report["checks"][0]["status"] == "blocked"
+    else:
+        gaps = [
+            c
+            for c in report["checks"]
+            if c["component"] == "custom-specs" and c["dimension"] == "guidance"
+        ]
+        assert len(gaps) == 1
+        assert gaps[0]["status"] == "missing"
+        assert "guidance.md" in gaps[0]["reason"]
+        assert "Restore" in gaps[0]["next_action"] and "guidance.md" in gaps[0]["next_action"]
+        for component in ["custom-specs", "github-issues"]:
+            assert any(
+                c["component"] == component
+                and c["dimension"] == "tool"
+                and c["status"] == "missing"
+                for c in report["checks"]
+            )
+        assert any(
+            c["component"] == "custom-specs"
+            and c["dimension"] == "configuration"
+            and "repository" in c["next_action"]
+            for c in report["checks"]
+        )
+    assert {p: p.read_bytes() for p in root.rglob("*") if p.is_file()} == before
+
+
 @pytest.mark.parametrize("command", [["project", "readiness"], ["doctor"], ["machine", "doctor"]])
 def test_malformed_component_metadata_returns_blocked_diagnostics(tmp_path, monkeypatch, command):
     """Schema type failures must not abort offline reports or erase enrollment diagnostics."""

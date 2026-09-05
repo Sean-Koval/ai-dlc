@@ -18,6 +18,19 @@ _CONFIG_PATH = re.compile(r"^[a-z][a-z0-9_-]*(?:\.[a-z][a-z0-9_-]*)*$")
 _ROLES = {"specs", "tracker", "knowledge", "scm", "deploy"}
 
 
+class MissingComponentGuidance(ValueError):
+    """Authenticated, structurally valid metadata has missing Markdown targets.
+
+    Loading still refuses this catalog. Offline inspection may use its validated
+    requirements to report independent checks alongside the missing files.
+    """
+
+    def __init__(self, catalog: dict, missing: list[tuple[str, str]]) -> None:
+        self.catalog = catalog
+        self.missing = missing
+        super().__init__(f"guidance must name an existing regular file: {missing[0][1]}")
+
+
 def _relative_path(value: Any, *, field: str) -> str:
     if not isinstance(value, str) or not value:
         raise ValueError(f"{field} must be a relative normalized path")
@@ -49,7 +62,12 @@ def _string_list(value: Any, *, field: str) -> list[str]:
 
 
 def _validate_catalog(
-    data: Any, *, module_ids: set[str], guidance_root: Path, source: str
+    data: Any,
+    *,
+    module_ids: set[str],
+    guidance_root: Path,
+    source: str,
+    missing_guidance: list[tuple[str, str]] | None = None,
 ) -> list[dict[str, Any]]:
     if (
         not isinstance(data, dict)
@@ -96,7 +114,11 @@ def _validate_catalog(
             relative = _relative_path(guidance_path, field=f"{prefix}.guidance")
             if not relative.endswith(".md"):
                 raise ValueError(f"{prefix}.guidance must name Markdown files")
-            _regular_file(guidance_root, relative, field=f"{prefix}.guidance")
+            path = inside(guidance_root, relative)
+            if missing_guidance is not None and not path.exists():
+                missing_guidance.append((component_id, relative))
+            else:
+                _regular_file(guidance_root, relative, field=f"{prefix}.guidance")
 
         required_config = _string_list(entry["required_config"], field=f"{prefix}.required_config")
         if any(not _CONFIG_PATH.fullmatch(path) for path in required_config):
@@ -145,19 +167,24 @@ def load_component_catalog(root: Path, config: dict) -> dict:
         source="packaged component catalog",
     )
     ids = {component["id"] for component in components}
+    missing_guidance: list[tuple[str, str]] = []
     for provider_id, manifest_bytes in _custom_manifests(root, config):
         additions = _validate_catalog(
             json.loads(manifest_bytes),
             module_ids=module_ids,
             guidance_root=root,
             source=f"providers.{provider_id}.component_manifest",
+            missing_guidance=missing_guidance,
         )
         for component in additions:
             if component["id"] in ids:
                 raise ValueError(f"duplicate component ID: {component['id']}")
             ids.add(component["id"])
             components.append(component)
-    return {"schema": 1, "components": sorted(components, key=lambda component: component["id"])}
+    catalog = {"schema": 1, "components": sorted(components, key=lambda component: component["id"])}
+    if missing_guidance:
+        raise MissingComponentGuidance(catalog, missing_guidance)
+    return catalog
 
 
 def resolve_components(

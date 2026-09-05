@@ -7,6 +7,69 @@ def executable(path, body):
     return path
 
 
+@pytest.mark.parametrize("apply", [False, True], ids=["plan", "apply"])
+@pytest.mark.parametrize(
+    "project_servers", [[], [{"id": "project-only", "command": "project-mcp"}]]
+)
+def test_root_aware_setup_preserves_personal_mcp_scope(
+    tmp_path, monkeypatch, apply, project_servers
+):
+    """Project server lists must neither remove personal servers nor install global ones."""
+    import json
+    import tomllib
+
+    import tomli_w
+
+    from ai_dlc.agents import render_agents
+    from ai_dlc.config import resolve_files
+    from ai_dlc.provision import machine_apply, machine_plan
+    from ai_dlc.user_agents import render_user_agents
+
+    profile = tmp_path / "profile.toml"
+    profile.write_text(
+        "schema=4\n[modules]\ninclude=[]\n"
+        '[[agents.servers]]\nid="personal-notes"\ncommand="notes-mcp"\n'
+    )
+    machine = tmp_path / "machine.toml"
+    machine.write_text("schema=4\n[preferences]\nheadless=true\n")
+    root = tmp_path / "project"
+    root.mkdir()
+    (root / "ai-dlc.toml").write_text(
+        tomli_w.dumps({"schema": 4, "agents": {"servers": project_servers}})
+    )
+    render_agents(root, apply=True)
+    project_before = {p: p.read_bytes() for p in root.rglob("*") if p.is_file()}
+    home = tmp_path / "home"
+    render_user_agents(resolve_files(personal=profile, machine=machine).values, home, apply=True)
+    personal_before = {p: p.read_bytes() for p in home.rglob("*") if p.is_file()}
+    binaries = tmp_path / "bin"
+    binaries.mkdir()
+    for name in ["brew", "mise"]:
+        executable(binaries / name, "exit 0\n")
+    monkeypatch.setattr("ai_dlc.provision.platform.system", lambda: "Darwin")
+    monkeypatch.setattr("ai_dlc.provision.platform.machine", lambda: "arm64")
+
+    operation = machine_apply if apply else machine_plan
+    result = operation(
+        profile,
+        root=root,
+        home=home,
+        machine=machine,
+        environ={"PATH": str(binaries), "SHELL": "/bin/zsh"},
+    )
+
+    assert result["agent_configuration"]["clean"] is True
+    assert all(p.read_bytes() == before for p, before in personal_before.items())
+    assert result["headless"] is True
+    expected = {"personal-notes": {"command": "notes-mcp"}}
+    assert json.loads((home / ".claude.json").read_text())["mcpServers"] == expected
+    assert tomllib.loads((home / ".codex/config.toml").read_text())["mcp_servers"] == expected
+    assert {p: p.read_bytes() for p in root.rglob("*") if p.is_file()} == project_before
+    assert json.loads((root / ".mcp.json").read_text())["mcpServers"] == (
+        {"project-only": {"command": "project-mcp"}} if project_servers else {}
+    )
+
+
 def test_headless_plan_omits_desktop_and_does_not_upgrade(tmp_path):
     from ai_dlc.provision import machine_plan
 
