@@ -168,19 +168,25 @@ def project_rebind(
     plan: bool = True,
     mappings: Path | None = None,
     machine: Path | None = None,
+    connection_plan: Annotated[Path | None, typer.Option("--connection-plan")] = None,
 ):
     from ai_dlc.rebind import rebind
 
-    emit(
-        rebind(
+    try:
+        result = rebind(
             root,
             role,
             provider_id,
             apply=not plan,
             mappings=read_toml(mappings) if mappings else {},
             machine_config=read_toml(machine) if machine else None,
+            connection_plan=connection_plan,
+            environ=os.environ,
         )
-    )
+    except (OSError, RuntimeError, TypeError, ValueError) as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(2) from None
+    emit(result)
 
 
 @agents.command("render")
@@ -461,7 +467,8 @@ def provider_connect(
 ):
     """Discover or explicitly configure a supported project provider."""
     if name != "linear":
-        raise typer.BadParameter(f"Provider connection is not supported: {name}")
+        typer.echo(f"Error: Provider connection is not supported: {name}", err=True)
+        raise typer.Exit(2)
     from ai_dlc.provider_onboarding import connect_linear_provider
 
     try:
@@ -476,7 +483,8 @@ def provider_connect(
             environ=os.environ,
         )
     except (OSError, RuntimeError, TypeError, ValueError) as exc:
-        raise typer.BadParameter(str(exc)) from None
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(2) from None
     emit(result)
 
 

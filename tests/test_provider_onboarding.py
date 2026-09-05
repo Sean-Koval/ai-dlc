@@ -963,6 +963,40 @@ def test_provider_connect_validates_provider_before_read_or_write(tmp_path, monk
     assert config_path.read_bytes() == before
 
 
+@pytest.mark.parametrize("field", ["kind", "type"])
+def test_provider_connect_refuses_non_linear_effective_kind_before_client_or_credential_use(
+    tmp_path, monkeypatch, field
+):
+    """A provider alias must never send another adapter's credential to Linear."""
+    import ai_dlc.provider_onboarding as onboarding
+    from ai_dlc.cli import app
+
+    root = tmp_path / "project"
+    config_path = _write_connect_project(root)
+    config_path.write_text(
+        config_path.read_text().replace(
+            "[providers.linear]\n", f'[providers.linear]\n{field} = "github-issues"\n'
+        )
+    )
+    monkeypatch.setenv("LINEAR_TEST_TOKEN", "credential-sentinel")
+    clients = []
+
+    def client_factory():
+        clients.append("constructed")
+        raise AssertionError("Linear client must not be constructed")
+
+    monkeypatch.setattr(onboarding.httpx, "Client", client_factory)
+    before = config_path.read_bytes()
+
+    result = CliRunner().invoke(app, ["provider", "connect", "linear", "--root", str(root)])
+
+    assert result.exit_code != 0
+    assert "does not use the Linear adapter" in result.output
+    assert "credential-sentinel" not in result.output
+    assert clients == []
+    assert config_path.read_bytes() == before
+
+
 def test_provider_connect_preview_can_save_only_the_non_secret_reviewed_plan(tmp_path, monkeypatch):
     """Saving the resolved provider settings could persist the environment credential."""
     from ai_dlc.cli import app
@@ -1163,9 +1197,168 @@ def test_provider_connect_refuses_changed_mapping_for_bound_linear_work(tmp_path
 
     assert result.exit_code != 0
     assert "bound-work" in result.output
-    assert "ai-dlc project rebind tracker linear" in result.output
+    normalized = " ".join(result.output.replace("│", " ").split())
+    assert (
+        f"ai-dlc provider connect linear --root {root} --organization org-1 --team team-a "
+        "--in-progress doing-a --closed done-a --plan-file .ai-dlc/local/linear-plan.json"
+        in normalized
+    )
+    assert (
+        f"ai-dlc project rebind tracker linear --root {root} --connection-plan "
+        ".ai-dlc/local/linear-plan.json --mappings .ai-dlc/local/linear-rebind.toml --no-plan"
+        in normalized
+    )
     assert "automatic" not in result.output.lower()
     assert config_path.read_bytes() == before
+
+
+def _add_bound_work(root: Path, work_id: str, tracker: str, *, branch: str) -> Path:
+    work = {
+        "schema": 1,
+        "id": work_id,
+        "title": f"Bound {work_id}",
+        "scope": "Keep every explicitly mapped tracker artifact",
+        "requires_spec": False,
+        "spec_reason": "Migration regression fixture",
+        "acceptance": ["Binding follows reviewed configuration"],
+        "reviewed": True,
+        "providers": {"tracker": "linear"},
+        "artifacts": {"tracker": tracker, "branch": branch},
+        "bindings": {"tracker": "b" * 64},
+    }
+    path = root / ".ai-dlc/work" / f"{work_id}.toml"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(tomli_w.dumps(work))
+    return path
+
+
+def _rebind_connection_args(root: Path, plan_path: Path, mappings_path: Path) -> list[str]:
+    return [
+        "project",
+        "rebind",
+        "tracker",
+        "linear",
+        "--root",
+        str(root),
+        "--connection-plan",
+        str(plan_path),
+        "--mappings",
+        str(mappings_path),
+        "--no-plan",
+    ]
+
+
+def test_bound_mapping_refusal_guides_atomic_explicit_connection_rebind(tmp_path, monkeypatch):
+    """The documented refusal recovery must install the plan and repin all affected work."""
+    from ai_dlc.cli import app
+    from ai_dlc.config import load_project
+    from ai_dlc.workflow import WorkService
+
+    root = tmp_path / "project"
+    config_path = _write_connect_project(root, bound=True)
+    second_path = _add_bound_work(root, "second-work", "SAN-2", branch="keep/second")
+    calls = _stub_cli_discovery(monkeypatch)
+    monkeypatch.setenv("LINEAR_TEST_TOKEN", "credential-sentinel")
+    plan_path = root / ".ai-dlc/local/linear-plan.json"
+    mappings_path = root / ".ai-dlc/local/linear-rebind.toml"
+    runner = CliRunner()
+
+    refused = runner.invoke(app, [*_connect_args(root), "--plan-file", str(plan_path)])
+    assert refused.exit_code != 0
+    assert plan_path.is_file()
+    normalized = " ".join(refused.output.replace("│", " ").split())
+    assert (
+        f"ai-dlc project rebind tracker linear --root {root} --connection-plan "
+        ".ai-dlc/local/linear-plan.json --mappings .ai-dlc/local/linear-rebind.toml --no-plan"
+        in normalized
+    )
+    mappings_path.write_text(
+        tomli_w.dumps(
+            {
+                "bound-work": {"tracker": "SAN-101"},
+                "second-work": {"tracker": "SAN-202"},
+            }
+        )
+    )
+
+    result = runner.invoke(app, _rebind_connection_args(root, plan_path, mappings_path))
+
+    assert result.exit_code == 0, result.output
+    payload = json.loads(result.stdout)
+    assert payload["status"] == "applied"
+    assert payload["connection"] == "applied"
+    assert len(calls) == 2
+    config = load_project(root)
+    assert config["providers"]["linear"] == {
+        "token_env": "LINEAR_TEST_TOKEN",
+        "team_id": "team-a",
+        "statuses": {"in_progress": "doing-a", "closed": "done-a"},
+    }
+    expected_trackers = {"bound-work": "SAN-101", "second-work": "SAN-202"}
+    for work_id, tracker in expected_trackers.items():
+        path = root / ".ai-dlc/work" / f"{work_id}.toml"
+        work = tomllib.loads(path.read_text())
+        assert work["artifacts"]["tracker"] == tracker
+        assert work["artifacts"].get("branch") == (
+            "keep/second" if work_id == "second-work" else None
+        )
+        assert work["bindings"]["tracker"] not in {"a" * 64, "b" * 64}
+        WorkService(root, config, state_path=tmp_path / "state").load(work_id)
+    assert "credential-sentinel" not in result.output + plan_path.read_text()
+    assert second_path.exists() and config_path.exists()
+
+
+@pytest.mark.parametrize("failure", ["stale", "tampered", "remote", "incomplete-mappings"])
+def test_explicit_connection_rebind_failures_leave_every_project_file_unchanged(
+    tmp_path, monkeypatch, failure
+):
+    """No validation or discovery failure may partially update config or work records."""
+    import ai_dlc.provider_onboarding as onboarding
+    from ai_dlc.cli import app
+
+    root = tmp_path / "project"
+    config_path = _write_connect_project(root, bound=True)
+    _add_bound_work(root, "second-work", "SAN-2", branch="keep/second")
+    discovery = _selection_discovery()
+    _stub_cli_discovery(monkeypatch, discovery)
+    plan_path = root / ".ai-dlc/local/linear-plan.json"
+    mappings_path = root / ".ai-dlc/local/linear-rebind.toml"
+    runner = CliRunner()
+    refused = runner.invoke(app, [*_connect_args(root), "--plan-file", str(plan_path)])
+    assert refused.exit_code != 0 and plan_path.is_file()
+    mappings = {
+        "bound-work": {"tracker": "SAN-101"},
+        "second-work": {"tracker": "SAN-202"},
+    }
+    if failure == "stale":
+        config_path.write_text(config_path.read_text() + '\n[project]\nname = "Changed"\n')
+    elif failure == "tampered":
+        saved = json.loads(plan_path.read_text())
+        saved["patch"]["token_env"] = "credential-sentinel"
+        plan_path.write_text(json.dumps(saved))
+    elif failure == "remote":
+        discovery["teams"][0]["states"] = [
+            state for state in discovery["teams"][0]["states"] if state["id"] != "doing-a"
+        ]
+        monkeypatch.setattr(
+            onboarding,
+            "discover_linear",
+            lambda settings, *, environ, client: deepcopy(discovery),
+        )
+    else:
+        mappings.pop("second-work")
+    mappings_path.write_text(tomli_w.dumps(mappings))
+    before = {
+        path.relative_to(root): path.read_bytes() for path in root.rglob("*") if path.is_file()
+    }
+
+    result = runner.invoke(app, _rebind_connection_args(root, plan_path, mappings_path))
+
+    assert result.exit_code != 0
+    assert "credential-sentinel" not in result.output
+    assert before == {
+        path.relative_to(root): path.read_bytes() for path in root.rglob("*") if path.is_file()
+    }
 
 
 def test_provider_connect_redacts_remote_credential_sentinel_from_stable_cli_error(

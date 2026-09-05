@@ -152,9 +152,36 @@ To prepare a change, pass all four explicit selection flags:
 .ai-dlc/local/linear-plan.json` to save the reviewed non-secret JSON plan. Apply
 only that saved plan with `--plan-file ... --apply`; apply repeats read-only
 discovery, revalidates every saved ID and type, and refuses source, plan, remote
-membership, or work-binding drift. Existing tracker-bound work requires the
-explicit `ai-dlc project rebind tracker linear --root PATH` workflow and reviewed
-artifact mappings; onboarding never rebinds it automatically.
+membership, or work-binding drift.
+
+Existing tracker-bound work requires an explicit connection rebind. Run the
+selection preview with `--plan-file .ai-dlc/local/linear-plan.json`; the command
+saves that non-secret plan but refuses the shared mapping change and lists every
+affected work ID. Create `.ai-dlc/local/linear-rebind.toml` with one table for
+every listed ID and an explicit replacement tracker reference:
+
+```toml
+[work-one]
+tracker = "SAN-101"
+
+[work-two]
+tracker = "SAN-102"
+```
+
+Review the saved connection plan, every old and replacement tracker artifact,
+and the fresh sandbox scope. Then apply both the mapping and work migration as
+one transaction:
+
+```sh
+ai-dlc project rebind tracker linear --root PATH --connection-plan .ai-dlc/local/linear-plan.json --mappings .ai-dlc/local/linear-rebind.toml --no-plan
+```
+
+This command rejects incomplete mappings, a stale or tampered plan, changed
+remote membership, a non-Linear effective adapter, or concurrent project edits
+before changing shared files. It computes each replacement binding against the
+new configuration and preserves every unrelated work artifact. The process is
+explicit: provider onboarding never invents tracker references or rebinds work
+automatically.
 
 Preview a private profile enrollment can materialize an inactive cache, but it
 does not change active enrollment, client configuration, or package state.

@@ -2,6 +2,7 @@ import copy
 import json
 import os
 import re
+import shlex
 import tempfile
 import tomllib
 from collections.abc import Callable, Mapping
@@ -109,6 +110,7 @@ def discover_linear(
     client,
 ) -> dict:
     """Discover the organization, teams, and workflow states visible to one credential."""
+    _validate_linear_settings(settings)
     token_env = settings.get("token_env", "LINEAR_API_KEY")
     if not isinstance(token_env, str) or not token_env:
         raise ValueError("Linear token_env must name an environment variable")
@@ -154,6 +156,15 @@ def discover_linear(
 
 _SELECTION_FIELDS = {"organization_id", "team_id", "in_progress", "closed"}
 _DIGEST = re.compile(r"^[0-9a-f]{64}$")
+
+
+def _validate_linear_settings(settings: Any) -> dict:
+    if not isinstance(settings, dict):
+        raise TypeError("Configure providers.linear before connecting Linear")
+    effective_kind = settings.get("kind", settings.get("type", "linear"))
+    if effective_kind != "linear":
+        raise ValueError("Configured provider linear does not use the Linear adapter")
+    return settings
 
 
 def _selection_value(selection: Mapping[str, Any], field: str) -> str:
@@ -575,7 +586,13 @@ def _bound_linear_work(root: Path, config: dict) -> list[str]:
     return bound
 
 
-def _guard_mapping_change(root: Path, config: dict, plan: dict) -> None:
+def _guard_mapping_change(
+    root: Path,
+    config: dict,
+    plan: dict,
+    *,
+    plan_file: Path | None = None,
+) -> None:
     linear = config.get("providers", {}).get("linear", {})
     statuses = linear.get("statuses", {}) if isinstance(linear, Mapping) else {}
     current = {
@@ -589,12 +606,65 @@ def _guard_mapping_change(root: Path, config: dict, plan: dict) -> None:
         return
     bound = _bound_linear_work(root, config)
     if bound:
+        root_argument = shlex.quote(str(root))
+        mappings = ".ai-dlc/local/linear-rebind.toml"
+        if plan_file is not None:
+            connection_plan = _connection_plan_path(root, plan_file).relative_to(root).as_posix()
+            prerequisite = ""
+        else:
+            connection_plan = ".ai-dlc/local/linear-plan.json"
+            selected = plan["selected"]
+            prerequisite = (
+                " First save this reviewed selection with `ai-dlc provider connect linear "
+                f"--root {root_argument} "
+                f"--organization {shlex.quote(selected['organization_id'])} "
+                f"--team {shlex.quote(selected['team_id'])} "
+                f"--in-progress {shlex.quote(selected['in_progress'])} "
+                f"--closed {shlex.quote(selected['closed'])} "
+                f"--plan-file {connection_plan}`."
+            )
+        command = (
+            "ai-dlc project rebind tracker linear "
+            f"--root {root_argument} --connection-plan {connection_plan} "
+            f"--mappings {mappings} --no-plan"
+        )
         raise ValueError(
             "Linear mapping change refused because tracker work is already bound: "
             + ", ".join(bound)
-            + ". Review `ai-dlc project rebind tracker linear --root PATH` with explicit "
-            "replacement artifact mappings before changing this connection"
+            + "."
+            + prerequisite
+            + f" Complete the reviewed migration with `{command}`; "
+            "the mappings file must replace every affected tracker artifact"
         )
+
+
+def revalidate_saved_linear_connection(
+    root: Path,
+    plan_file: Path,
+    *,
+    environ: Mapping[str, str],
+    client=None,
+) -> tuple[dict, dict]:
+    """Load one saved plan and revalidate its exact selection against fresh Linear reads."""
+    from ai_dlc.config import load_project
+
+    root = Path(root).resolve()
+    config = load_project(root)
+    settings = _validate_linear_settings(config.get("providers", {}).get("linear"))
+    _, saved_plan = _load_connection_plan(root, plan_file)
+    owned_client = client is None
+    active_client = httpx.Client() if owned_client else client
+    try:
+        discovery = discover_linear(settings, environ=environ, client=active_client)
+    finally:
+        if owned_client:
+            active_client.close()
+    fresh = plan_linear_connection(config, discovery, saved_plan["selected"])
+    if fresh["patch"] != saved_plan["patch"]:
+        raise ValueError("Linear connection plan no longer matches fresh discovery")
+    if fresh["before_digest"] != saved_plan["before_digest"]:
+        raise ValueError("Linear connection plan source digest changed")
+    return config, saved_plan
 
 
 def connect_linear_provider(
@@ -630,42 +700,39 @@ def connect_linear_provider(
     root = Path(root).resolve()
     from ai_dlc.config import load_project
 
+    if apply:
+        if plan_file is None:  # Retain type narrowing at the orchestration boundary.
+            raise ValueError("Linear connection apply requires --plan-file")
+        config, saved_plan = revalidate_saved_linear_connection(
+            root,
+            plan_file,
+            environ=environ,
+            client=client,
+        )
+        _guard_mapping_change(root, config, saved_plan, plan_file=plan_file)
+        apply_linear_connection(root / "ai-dlc.toml", saved_plan)
+        return {
+            "provider": "linear",
+            "status": "applied",
+            "selected": saved_plan["selected"],
+        }
+
     config = load_project(root)
-    settings = config.get("providers", {}).get("linear")
-    if not isinstance(settings, dict):
-        raise TypeError("Configure providers.linear before connecting Linear")
+    settings = _validate_linear_settings(config.get("providers", {}).get("linear"))
 
     owned_client = client is None
     active_client = httpx.Client() if owned_client else client
     try:
-        if apply:
-            if plan_file is None:  # Retain type narrowing at the orchestration boundary.
-                raise ValueError("Linear connection apply requires --plan-file")
-            _, saved_plan = _load_connection_plan(root, plan_file)
-            discovery = discover_linear(settings, environ=environ, client=active_client)
-            # Planning against fresh discovery validates the exact saved IDs and types.
-            # Its newly calculated digest is deliberately not substituted for the reviewed one.
-            fresh = plan_linear_connection(config, discovery, saved_plan["selected"])
-            if fresh["patch"] != saved_plan["patch"]:
-                raise ValueError("Linear connection plan no longer matches fresh discovery")
-            _guard_mapping_change(root, config, saved_plan)
-            apply_linear_connection(root / "ai-dlc.toml", saved_plan)
-            return {
-                "provider": "linear",
-                "status": "applied",
-                "selected": saved_plan["selected"],
-            }
-
         discovery = discover_linear(settings, environ=environ, client=active_client)
         if not any(supplied):
             return discovery
         selection = {key: value for key, value in selections.items() if value is not None}
         plan = plan_linear_connection(config, discovery, selection)
-        _guard_mapping_change(root, config, plan)
         result = {"provider": "linear", "status": "planned", "plan": plan}
         if plan_file is not None:
             saved_path = _save_connection_plan(root, plan_file, plan)
             result["plan_file"] = saved_path.relative_to(root).as_posix()
+        _guard_mapping_change(root, config, plan, plan_file=plan_file)
         return result
     finally:
         if owned_client:
