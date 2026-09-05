@@ -1,9 +1,13 @@
 import json
 import stat
 import tomllib
+from copy import deepcopy
+from pathlib import Path
 
 import httpx
 import pytest
+import tomli_w
+from typer.testing import CliRunner
 
 from ai_dlc.config import digest
 
@@ -824,3 +828,366 @@ def test_apply_preserves_restrictive_source_mode(tmp_path):
     apply_linear_connection(path, plan)
 
     assert stat.S_IMODE(path.stat().st_mode) == 0o600
+
+
+def _write_connect_project(root: Path, *, bound: bool = False) -> Path:
+    root.mkdir()
+    config_path = root / "ai-dlc.toml"
+    config_path.write_text(
+        'schema = 4\n[roles]\ntracker = "linear"\n\n'
+        '[providers.linear]\ntoken_env = "LINEAR_TEST_TOKEN"\nteam_id = "old-team"\n\n'
+        '[providers.linear.statuses]\nin_progress = "old-started"\nclosed = "old-closed"\n'
+    )
+    if bound:
+        work = {
+            "schema": 1,
+            "id": "bound-work",
+            "title": "Bound work",
+            "scope": "Keep the tracker binding stable",
+            "requires_spec": False,
+            "spec_reason": "Regression fixture",
+            "acceptance": ["No silent rebinding"],
+            "reviewed": True,
+            "providers": {"tracker": "linear"},
+            "artifacts": {"tracker": "SAN-1"},
+            "bindings": {"tracker": "a" * 64},
+        }
+        work_path = root / ".ai-dlc/work/bound-work.toml"
+        work_path.parent.mkdir(parents=True)
+        work_path.write_text(tomli_w.dumps(work))
+    return config_path
+
+
+def _stub_cli_discovery(monkeypatch, discovery=None):
+    import ai_dlc.provider_onboarding as onboarding
+
+    calls = []
+    result = _selection_discovery() if discovery is None else discovery
+
+    def discover(settings, *, environ, client):
+        calls.append((deepcopy(settings), environ, client))
+        return deepcopy(result)
+
+    monkeypatch.setattr(onboarding, "discover_linear", discover)
+    return calls
+
+
+def _connect_args(root: Path) -> list[str]:
+    return [
+        "provider",
+        "connect",
+        "linear",
+        "--root",
+        str(root),
+        "--organization",
+        "org-1",
+        "--team",
+        "team-a",
+        "--in-progress",
+        "doing-a",
+        "--closed",
+        "done-a",
+    ]
+
+
+def test_provider_connect_without_selections_prints_complete_discovery_and_writes_nothing(
+    tmp_path, monkeypatch
+):
+    """Inferring a state or entering preview mode would violate read-only discovery."""
+    from ai_dlc.cli import app
+
+    root = tmp_path / "project"
+    _write_connect_project(root)
+    calls = _stub_cli_discovery(monkeypatch)
+    monkeypatch.setenv("LINEAR_TEST_TOKEN", "credential-sentinel")
+    before = {
+        path.relative_to(root): path.read_bytes() for path in root.rglob("*") if path.is_file()
+    }
+
+    result = CliRunner().invoke(app, ["provider", "connect", "linear", "--root", str(root)])
+
+    assert result.exit_code == 0, result.output
+    assert json.loads(result.stdout) == _selection_discovery()
+    assert len(calls) == 1
+    assert "credential-sentinel" not in result.output
+    assert before == {
+        path.relative_to(root): path.read_bytes() for path in root.rglob("*") if path.is_file()
+    }
+
+
+@pytest.mark.parametrize(
+    "arguments",
+    [
+        ["--organization", "org-1"],
+        ["--team", "team-a", "--in-progress", "doing-a", "--closed", "done-a"],
+        ["--apply"],
+        ["--plan-file", ".ai-dlc/local/linear-plan.json"],
+        ["--apply", "--plan-file", ".ai-dlc/local/linear-plan.json", "--team", "team-a"],
+    ],
+)
+def test_provider_connect_refuses_incomplete_or_conflicting_modes_before_discovery(
+    tmp_path, monkeypatch, arguments
+):
+    """Mixing discovery, preview, and apply inputs could approve a different operation."""
+    from ai_dlc.cli import app
+
+    root = tmp_path / "project"
+    config_path = _write_connect_project(root)
+    calls = _stub_cli_discovery(monkeypatch)
+    before = config_path.read_bytes()
+
+    result = CliRunner().invoke(
+        app, ["provider", "connect", "linear", "--root", str(root), *arguments]
+    )
+
+    assert result.exit_code != 0
+    assert "selection" in result.output.lower() or "plan" in result.output.lower()
+    assert calls == []
+    assert config_path.read_bytes() == before
+
+
+def test_provider_connect_validates_provider_before_read_or_write(tmp_path, monkeypatch):
+    """An unknown provider must not fall through to Linear or mutate project state."""
+    from ai_dlc.cli import app
+
+    root = tmp_path / "project"
+    config_path = _write_connect_project(root)
+    calls = _stub_cli_discovery(monkeypatch)
+    before = config_path.read_bytes()
+
+    result = CliRunner().invoke(app, ["provider", "connect", "not-linear", "--root", str(root)])
+
+    assert result.exit_code != 0
+    assert "not supported" in result.output
+    assert calls == []
+    assert config_path.read_bytes() == before
+
+
+def test_provider_connect_preview_can_save_only_the_non_secret_reviewed_plan(tmp_path, monkeypatch):
+    """Saving the resolved provider settings could persist the environment credential."""
+    from ai_dlc.cli import app
+
+    root = tmp_path / "project"
+    config_path = _write_connect_project(root)
+    _stub_cli_discovery(monkeypatch)
+    monkeypatch.setenv("LINEAR_TEST_TOKEN", "credential-sentinel")
+    before = config_path.read_bytes()
+    plan_path = root / ".ai-dlc/local/linear-plan.json"
+
+    result = CliRunner().invoke(app, [*_connect_args(root), "--plan-file", str(plan_path)])
+
+    assert result.exit_code == 0, result.output
+    payload = json.loads(result.stdout)
+    saved = json.loads(plan_path.read_text())
+    assert payload["status"] == "planned"
+    assert payload["plan"] == saved
+    assert payload["plan_file"] == ".ai-dlc/local/linear-plan.json"
+    assert saved["selected"] == _selection()
+    assert saved["patch"] == {
+        "team_id": "team-a",
+        "statuses": {"in_progress": "doing-a", "closed": "done-a"},
+    }
+    assert "token_env" not in json.dumps(saved)
+    assert "credential-sentinel" not in plan_path.read_text() + result.output
+    assert config_path.read_bytes() == before
+
+
+@pytest.mark.parametrize("escape", ["outside", "symlink"])
+def test_provider_connect_refuses_plan_paths_outside_local_control_state(
+    tmp_path, monkeypatch, escape
+):
+    """Path traversal or a symlink could save reviewed metadata outside project-local state."""
+    from ai_dlc.cli import app
+
+    root = tmp_path / "project"
+    config_path = _write_connect_project(root)
+    _stub_cli_discovery(monkeypatch)
+    outside = tmp_path / "outside.json"
+    if escape == "outside":
+        plan_path = outside
+    else:
+        local = root / ".ai-dlc/local"
+        local.mkdir(parents=True)
+        plan_path = local / "plan.json"
+        plan_path.symlink_to(outside)
+    before = config_path.read_bytes()
+
+    result = CliRunner().invoke(app, [*_connect_args(root), "--plan-file", str(plan_path)])
+
+    assert result.exit_code != 0
+    assert ".ai-dlc/local" in result.output
+    assert not outside.exists()
+    assert config_path.read_bytes() == before
+
+
+def test_provider_connect_apply_revalidates_saved_selection_then_applies_exact_plan(
+    tmp_path, monkeypatch
+):
+    """Applying without a fresh read could accept membership that changed after review."""
+    from ai_dlc.cli import app
+
+    root = tmp_path / "project"
+    config_path = _write_connect_project(root)
+    calls = _stub_cli_discovery(monkeypatch)
+    monkeypatch.setenv("LINEAR_TEST_TOKEN", "credential-sentinel")
+    plan_path = root / ".ai-dlc/local/linear-plan.json"
+    runner = CliRunner()
+    preview = runner.invoke(app, [*_connect_args(root), "--plan-file", str(plan_path)])
+    assert preview.exit_code == 0, preview.output
+
+    result = runner.invoke(
+        app,
+        [
+            "provider",
+            "connect",
+            "linear",
+            "--root",
+            str(root),
+            "--plan-file",
+            str(plan_path),
+            "--apply",
+        ],
+    )
+
+    assert result.exit_code == 0, result.output
+    assert json.loads(result.stdout) == {
+        "provider": "linear",
+        "status": "applied",
+        "selected": _selection(),
+    }
+    assert len(calls) == 2
+    applied = tomllib.loads(config_path.read_text())
+    assert applied["providers"]["linear"] == {
+        "token_env": "LINEAR_TEST_TOKEN",
+        "team_id": "team-a",
+        "statuses": {"in_progress": "doing-a", "closed": "done-a"},
+    }
+    assert "credential-sentinel" not in result.output + plan_path.read_text()
+
+
+def test_provider_connect_apply_refuses_remote_membership_drift_without_recomputing_plan(
+    tmp_path, monkeypatch
+):
+    """A removed state must invalidate the saved choice instead of selecting a replacement."""
+    from ai_dlc.cli import app
+
+    root = tmp_path / "project"
+    config_path = _write_connect_project(root)
+    discovery = _selection_discovery()
+    calls = _stub_cli_discovery(monkeypatch, discovery)
+    plan_path = root / ".ai-dlc/local/linear-plan.json"
+    runner = CliRunner()
+    assert runner.invoke(app, [*_connect_args(root), "--plan-file", str(plan_path)]).exit_code == 0
+    saved = plan_path.read_bytes()
+    discovery["teams"][0]["states"] = [
+        state for state in discovery["teams"][0]["states"] if state["id"] != "doing-a"
+    ]
+    monkeypatch.setattr(
+        __import__("ai_dlc.provider_onboarding", fromlist=["discover_linear"]),
+        "discover_linear",
+        lambda settings, *, environ, client: deepcopy(discovery),
+    )
+    before = config_path.read_bytes()
+
+    result = runner.invoke(
+        app,
+        [
+            "provider",
+            "connect",
+            "linear",
+            "--root",
+            str(root),
+            "--plan-file",
+            str(plan_path),
+            "--apply",
+        ],
+    )
+
+    assert result.exit_code != 0
+    assert "in_progress" in result.output
+    assert config_path.read_bytes() == before
+    assert plan_path.read_bytes() == saved
+    assert len(calls) == 1
+
+
+@pytest.mark.parametrize("failure", ["stale", "tampered"])
+def test_provider_connect_apply_refuses_stale_or_tampered_plan_without_writing(
+    tmp_path, monkeypatch, failure
+):
+    """Only the exact reviewed plan for the unchanged source can reach atomic apply."""
+    from ai_dlc.cli import app
+
+    root = tmp_path / "project"
+    config_path = _write_connect_project(root)
+    _stub_cli_discovery(monkeypatch)
+    plan_path = root / ".ai-dlc/local/linear-plan.json"
+    runner = CliRunner()
+    assert runner.invoke(app, [*_connect_args(root), "--plan-file", str(plan_path)]).exit_code == 0
+    if failure == "stale":
+        config_path.write_text(config_path.read_text() + '\n[project]\nname = "Changed"\n')
+    else:
+        plan = json.loads(plan_path.read_text())
+        plan["patch"]["token_env"] = "credential-sentinel"
+        plan_path.write_text(json.dumps(plan))
+    before = config_path.read_bytes()
+
+    result = runner.invoke(
+        app,
+        [
+            "provider",
+            "connect",
+            "linear",
+            "--root",
+            str(root),
+            "--plan-file",
+            str(plan_path),
+            "--apply",
+        ],
+    )
+
+    assert result.exit_code != 0
+    assert "credential-sentinel" not in result.output
+    assert config_path.read_bytes() == before
+
+
+def test_provider_connect_refuses_changed_mapping_for_bound_linear_work(tmp_path, monkeypatch):
+    """A new team or status mapping must not silently invalidate pinned tracker identity."""
+    from ai_dlc.cli import app
+
+    root = tmp_path / "project"
+    config_path = _write_connect_project(root, bound=True)
+    _stub_cli_discovery(monkeypatch)
+    before = config_path.read_bytes()
+
+    result = CliRunner().invoke(app, _connect_args(root))
+
+    assert result.exit_code != 0
+    assert "bound-work" in result.output
+    assert "ai-dlc project rebind tracker linear" in result.output
+    assert "automatic" not in result.output.lower()
+    assert config_path.read_bytes() == before
+
+
+def test_provider_connect_redacts_remote_credential_sentinel_from_stable_cli_error(
+    tmp_path, monkeypatch
+):
+    """Provider failures must not echo an authorization value into terminal output."""
+    import ai_dlc.provider_onboarding as onboarding
+    from ai_dlc.cli import app
+
+    root = tmp_path / "project"
+    config_path = _write_connect_project(root)
+    monkeypatch.setenv("LINEAR_TEST_TOKEN", "credential-sentinel")
+
+    def fail(settings, *, environ, client):
+        raise RuntimeError("Linear discovery failed because GraphQL returned errors")
+
+    monkeypatch.setattr(onboarding, "discover_linear", fail)
+    before = config_path.read_bytes()
+
+    result = CliRunner().invoke(app, ["provider", "connect", "linear", "--root", str(root)])
+
+    assert result.exit_code != 0
+    assert "Linear discovery failed" in result.output
+    assert "credential-sentinel" not in result.output
+    assert config_path.read_bytes() == before

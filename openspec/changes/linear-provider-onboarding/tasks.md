@@ -12,9 +12,9 @@
 
 ## 3. CLI and guarded apply
 
-- [ ] 3.1 Define and run the focused acceptance/refusal cases in the execution plan.
-- [ ] 3.2 Implement provider connect preview/apply, credential-redacted errors, and binding-drift refusal. Add a sandbox read-only walkthrough procedure.
-- [ ] 3.3 Verify focused tests and inspect scope/compatibility before committing.
+- [x] 3.1 Define and run the focused acceptance/refusal cases in the execution plan.
+- [x] 3.2 Implement provider connect preview/apply, credential-redacted errors, and binding-drift refusal. Add a sandbox read-only walkthrough procedure.
+- [x] 3.3 Verify focused tests and inspect scope/compatibility before committing.
 
 ## 4. Review and finish
 

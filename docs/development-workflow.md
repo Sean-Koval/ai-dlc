@@ -126,6 +126,36 @@ Root and machine doctor retain their enrollment and readiness decisions and add
 these offline diagnostics under `project_readiness`. Their existing explicit
 provider-health inspection remains separate, as do work finish and release gates.
 
+### Linear connection discovery and sandbox walkthrough
+
+`ai-dlc provider connect linear --root PATH` reads the organization, every team,
+and every workflow state visible to the project's configured `token_env`. With no
+selection flags it prints that complete discovery and writes nothing. It never
+chooses between duplicate team names or multiple `started` states.
+
+For an authorized sandbox read-only walkthrough:
+
+1. Confirm `PATH/ai-dlc.toml` selects the intended Linear credential environment
+   variable and inject that variable into the current process. Do not put its value
+   in the project, `.ai-dlc/local/`, or the command line.
+2. Confirm the credential is restricted to the intended sandbox organization and
+   that no apply or selection flags are present.
+3. Run `ai-dlc provider connect linear --root PATH` and review the returned
+   organization, team IDs, and all workflow-state IDs/types. This procedure makes
+   GraphQL reads only; it does not create keys, change accounts, create projects or
+   issues, or update the repository.
+4. Record live evidence only when the actual authorized sandbox read completed.
+   Fixture output proves behavior, not live access or qualification.
+
+To prepare a change, pass all four explicit selection flags:
+`--organization`, `--team`, `--in-progress`, and `--closed`. Add `--plan-file
+.ai-dlc/local/linear-plan.json` to save the reviewed non-secret JSON plan. Apply
+only that saved plan with `--plan-file ... --apply`; apply repeats read-only
+discovery, revalidates every saved ID and type, and refuses source, plan, remote
+membership, or work-binding drift. Existing tracker-bound work requires the
+explicit `ai-dlc project rebind tracker linear --root PATH` workflow and reviewed
+artifact mappings; onboarding never rebinds it automatically.
+
 Preview a private profile enrollment can materialize an inactive cache, but it
 does not change active enrollment, client configuration, or package state.
 Repeat the same command with `--apply` to activate it:

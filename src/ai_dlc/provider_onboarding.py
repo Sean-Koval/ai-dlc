@@ -12,6 +12,7 @@ import httpx
 
 from ai_dlc.config import digest
 from ai_dlc.providers.linear import LinearProvider
+from ai_dlc.workflow import Work
 
 _ORGANIZATION_QUERY = """
 query LinearDiscoveryOrganization {
@@ -511,3 +512,161 @@ def apply_linear_connection(path: Path, plan: dict) -> None:
     finally:
         if os.path.exists(staged_name):
             os.unlink(staged_name)
+
+
+def _connection_plan_path(root: Path, requested: Path) -> Path:
+    root = Path(root).resolve()
+    local = root / ".ai-dlc/local"
+    resolved_local = local.resolve(strict=False)
+    if not resolved_local.is_relative_to(root):
+        raise ValueError("Linear connection plan must stay under .ai-dlc/local")
+    candidate = requested if requested.is_absolute() else root / requested
+    resolved = candidate.resolve(strict=False)
+    if not resolved.is_relative_to(resolved_local):
+        raise ValueError("Linear connection plan must stay under .ai-dlc/local")
+    return resolved
+
+
+def _save_connection_plan(root: Path, requested: Path, plan: dict) -> Path:
+    _validated_plan(plan)
+    path = _connection_plan_path(root, requested)
+    if path.exists() and not path.is_file():
+        raise ValueError("Linear connection plan path must be a file")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, staged_name = tempfile.mkstemp(dir=path.parent, prefix=".ai-dlc-linear-plan-")
+    try:
+        with os.fdopen(descriptor, "w") as stream:
+            json.dump(plan, stream, indent=2, sort_keys=True)
+            stream.write("\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.chmod(staged_name, 0o600)
+        os.replace(staged_name, path)
+    finally:
+        if os.path.exists(staged_name):
+            os.unlink(staged_name)
+    return path
+
+
+def _load_connection_plan(root: Path, requested: Path) -> tuple[Path, dict]:
+    path = _connection_plan_path(root, requested)
+    try:
+        plan = json.loads(path.read_text())
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        raise ValueError("Linear connection plan file is invalid or unavailable") from None
+    _validated_plan(plan)
+    return path, plan
+
+
+def _bound_linear_work(root: Path, config: dict) -> list[str]:
+    work_root = root / ".ai-dlc/work"
+    bound = []
+    for path in sorted(work_root.glob("*.toml")):
+        try:
+            raw = tomllib.loads(path.read_text())
+            work = Work.model_validate(raw)
+        except (OSError, tomllib.TOMLDecodeError, ValueError, TypeError):
+            raise ValueError(
+                f"Cannot verify Linear work bindings in {path.name}; repair the work record"
+            ) from None
+        provider = work.providers.get("tracker", config.get("roles", {}).get("tracker"))
+        if provider == "linear" and work.bindings.get("tracker"):
+            bound.append(work.id)
+    return bound
+
+
+def _guard_mapping_change(root: Path, config: dict, plan: dict) -> None:
+    linear = config.get("providers", {}).get("linear", {})
+    statuses = linear.get("statuses", {}) if isinstance(linear, Mapping) else {}
+    current = {
+        "team_id": linear.get("team_id") if isinstance(linear, Mapping) else None,
+        "statuses": {
+            "in_progress": statuses.get("in_progress") if isinstance(statuses, Mapping) else None,
+            "closed": statuses.get("closed") if isinstance(statuses, Mapping) else None,
+        },
+    }
+    if current == plan["patch"]:
+        return
+    bound = _bound_linear_work(root, config)
+    if bound:
+        raise ValueError(
+            "Linear mapping change refused because tracker work is already bound: "
+            + ", ".join(bound)
+            + ". Review `ai-dlc project rebind tracker linear --root PATH` with explicit "
+            "replacement artifact mappings before changing this connection"
+        )
+
+
+def connect_linear_provider(
+    root: Path,
+    *,
+    organization: str | None = None,
+    team: str | None = None,
+    in_progress: str | None = None,
+    closed: str | None = None,
+    plan_file: Path | None = None,
+    apply: bool = False,
+    environ: Mapping[str, str],
+    client=None,
+) -> dict:
+    """Discover, preview, or apply one explicitly reviewed Linear connection."""
+    selections = {
+        "organization_id": organization,
+        "team_id": team,
+        "in_progress": in_progress,
+        "closed": closed,
+    }
+    supplied = [value is not None for value in selections.values()]
+    if apply:
+        if plan_file is None:
+            raise ValueError("Linear connection apply requires --plan-file")
+        if any(supplied):
+            raise ValueError("Linear connection apply consumes a saved plan; omit selection flags")
+    elif any(supplied) and not all(supplied):
+        raise ValueError("Linear connection preview requires every selection flag")
+    elif plan_file is not None and not all(supplied):
+        raise ValueError("Saving a Linear connection plan requires every selection flag")
+
+    root = Path(root).resolve()
+    from ai_dlc.config import load_project
+
+    config = load_project(root)
+    settings = config.get("providers", {}).get("linear")
+    if not isinstance(settings, dict):
+        raise TypeError("Configure providers.linear before connecting Linear")
+
+    owned_client = client is None
+    active_client = httpx.Client() if owned_client else client
+    try:
+        if apply:
+            if plan_file is None:  # Retain type narrowing at the orchestration boundary.
+                raise ValueError("Linear connection apply requires --plan-file")
+            _, saved_plan = _load_connection_plan(root, plan_file)
+            discovery = discover_linear(settings, environ=environ, client=active_client)
+            # Planning against fresh discovery validates the exact saved IDs and types.
+            # Its newly calculated digest is deliberately not substituted for the reviewed one.
+            fresh = plan_linear_connection(config, discovery, saved_plan["selected"])
+            if fresh["patch"] != saved_plan["patch"]:
+                raise ValueError("Linear connection plan no longer matches fresh discovery")
+            _guard_mapping_change(root, config, saved_plan)
+            apply_linear_connection(root / "ai-dlc.toml", saved_plan)
+            return {
+                "provider": "linear",
+                "status": "applied",
+                "selected": saved_plan["selected"],
+            }
+
+        discovery = discover_linear(settings, environ=environ, client=active_client)
+        if not any(supplied):
+            return discovery
+        selection = {key: value for key, value in selections.items() if value is not None}
+        plan = plan_linear_connection(config, discovery, selection)
+        _guard_mapping_change(root, config, plan)
+        result = {"provider": "linear", "status": "planned", "plan": plan}
+        if plan_file is not None:
+            saved_path = _save_connection_plan(root, plan_file, plan)
+            result["plan_file"] = saved_path.relative_to(root).as_posix()
+        return result
+    finally:
+        if owned_client:
+            active_client.close()

@@ -2,6 +2,7 @@ import tomllib
 
 import pytest
 import tomli_w
+from typer.testing import CliRunner
 
 from ai_dlc.rebind import rebind
 
@@ -92,3 +93,22 @@ def test_machine_configuration_preserves_unrelated_bindings(project, tmp_path):
     work = tomllib.loads((project / ".ai-dlc/work/one.toml").read_text())
     assert work["bindings"]["knowledge"] == before
     assert "paths" not in tomllib.loads((project / "ai-dlc.toml").read_text())
+
+
+def test_rebind_preview_supports_the_provider_connect_refusal_guidance(project):
+    """The guided command must expose affected work without mutating its binding."""
+    from ai_dlc.cli import app
+
+    work_path = project / ".ai-dlc/work/one.toml"
+    before = work_path.read_bytes()
+
+    result = CliRunner().invoke(
+        app,
+        ["project", "rebind", "tracker", "linear", "--root", str(project)],
+    )
+
+    assert result.exit_code == 0, result.output
+    payload = __import__("json").loads(result.stdout)
+    assert payload["status"] == "planned"
+    assert payload["active_work"][0]["id"] == "one"
+    assert work_path.read_bytes() == before
