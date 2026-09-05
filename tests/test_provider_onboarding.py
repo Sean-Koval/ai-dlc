@@ -224,6 +224,77 @@ def test_discovery_refuses_partial_graphql_data_and_redacts_echoed_credential():
     assert secret not in str(caught.value)
 
 
+def test_discovery_refuses_non_object_json_without_exposing_credential():
+    """A valid JSON value with the wrong shape must become a safe discovery failure."""
+    from ai_dlc.provider_onboarding import discover_linear
+
+    secret = "linear-secret-sentinel"
+
+    def handle(_request):
+        return httpx.Response(200, json=[secret])
+
+    with pytest.raises(RuntimeError, match="incomplete") as caught:
+        discover_linear({"token_env": "TOKEN"}, environ={"TOKEN": secret}, client=_client(handle))
+    assert secret not in str(caught.value)
+
+
+def test_discovery_refuses_a_repeated_non_empty_pagination_cursor():
+    """A server repeating its cursor must fail instead of looping forever."""
+    from ai_dlc.provider_onboarding import discover_linear
+
+    calls = 0
+
+    def handle(request):
+        nonlocal calls
+        body = json.loads(request.content)
+        if "LinearDiscoveryOrganization" in body["query"]:
+            return _response(
+                {"organization": {"id": "org-1", "name": "Sandbox", "urlKey": "sandbox"}}
+            )
+        calls += 1
+        return _response(
+            {
+                "teams": {
+                    "nodes": [{"id": f"team-{calls}", "name": "One", "key": "ONE"}],
+                    "pageInfo": {"hasNextPage": True, "endCursor": "repeated-cursor"},
+                }
+            }
+        )
+
+    with pytest.raises(RuntimeError, match="incomplete"):
+        discover_linear({"token_env": "TOKEN"}, environ={"TOKEN": "secret"}, client=_client(handle))
+    assert calls == 2
+
+
+def test_discovery_refuses_workflow_states_returned_for_another_team():
+    """Associating states with the wrong team would permit an invalid later selection."""
+    from ai_dlc.provider_onboarding import discover_linear
+
+    def handle(request):
+        body = json.loads(request.content)
+        if "LinearDiscoveryOrganization" in body["query"]:
+            return _response(
+                {"organization": {"id": "org-1", "name": "Sandbox", "urlKey": "sandbox"}}
+            )
+        if "LinearDiscoveryTeams" in body["query"]:
+            return _response(
+                {"teams": _complete_page([{"id": "team-a", "name": "One", "key": "ONE"}])}
+            )
+        return _response(
+            {
+                "team": {
+                    "id": "team-b",
+                    "states": _complete_page(
+                        [{"id": "doing", "name": "In Progress", "type": "started"}]
+                    ),
+                }
+            }
+        )
+
+    with pytest.raises(RuntimeError, match="incomplete"):
+        discover_linear({"token_env": "TOKEN"}, environ={"TOKEN": "secret"}, client=_client(handle))
+
+
 @pytest.mark.parametrize("status_code", [401, 403])
 def test_discovery_reports_authorization_failure_without_exposing_credential(status_code):
     """Authorization responses must become actionable, credential-safe failures."""

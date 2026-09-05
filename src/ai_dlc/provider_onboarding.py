@@ -52,7 +52,7 @@ def _query(provider: LinearProvider, query: str, variables: dict[str, Any]) -> M
         # Provider errors can contain upstream GraphQL messages. Those messages are
         # intentionally not forwarded because an upstream response may echo a secret.
         raise RuntimeError("Linear discovery failed because GraphQL returned errors") from None
-    except (KeyError, TypeError, ValueError):
+    except (AttributeError, KeyError, TypeError, ValueError):
         raise RuntimeError("Linear discovery returned an incomplete response") from None
     if not isinstance(data, Mapping):
         _incomplete("response")
