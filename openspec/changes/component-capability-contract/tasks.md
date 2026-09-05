@@ -1,8 +1,8 @@
 ## 1. Validated component catalog
 
-- [ ] 1.1 Define and run the focused acceptance/refusal cases in the execution plan.
-- [ ] 1.2 Implement catalog loading/validation with schema-1 fixtures for openspec, linear, github-issues and two synthetic providers. Reject missing modules, duplicate IDs, digest mismatches and unsafe paths; ship referenced built-in guidance. Keep role resolution for Task 2 and provider configuration integration for Task 3.
-- [ ] 1.3 Verify focused tests and inspect scope/compatibility before committing.
+- [x] 1.1 Define and run the focused acceptance/refusal cases in the execution plan.
+- [x] 1.2 Implement catalog loading/validation with schema-1 fixtures for openspec, linear, github-issues and two synthetic providers. Reject missing modules, duplicate IDs, digest mismatches and unsafe paths; ship referenced built-in guidance. Keep role resolution for Task 2 and provider configuration integration for Task 3.
+- [x] 1.3 Verify focused tests and inspect scope/compatibility before committing.
 
 ## 2. Pure resolution
 
