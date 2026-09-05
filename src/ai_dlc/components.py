@@ -15,7 +15,6 @@ _CATALOG_FIELDS = {"schema", "components"}
 _COMPONENT_FIELDS = {"id", "roles", "modules", "guidance", "required_config"}
 _COMPONENT_ID = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 _CONFIG_PATH = re.compile(r"^[a-z][a-z0-9_-]*(?:\.[a-z][a-z0-9_-]*)*$")
-_SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _ROLES = {"specs", "tracker", "knowledge", "scm", "deploy"}
 
 
@@ -117,23 +116,13 @@ def _validate_catalog(
 
 def _custom_manifests(root: Path, config: dict) -> list[tuple[str, bytes]]:
     providers = config.get("providers", {})
-    if not isinstance(providers, dict):
-        raise TypeError("providers must be a table")
     manifests: list[tuple[str, bytes]] = []
     for provider_id, settings in providers.items():
-        if not isinstance(settings, dict):
-            raise TypeError(f"providers.{provider_id} must be a table")
-        manifest = settings.get("component_manifest")
-        digest = settings.get("component_manifest_sha256")
-        if manifest is None and digest is None:
+        if "component_manifest" not in settings:
             continue
-        if manifest is None or digest is None:
-            raise ValueError(
-                f"providers.{provider_id} component manifests require a SHA-256 digest"
-            )
+        manifest = settings["component_manifest"]
+        digest = settings["component_manifest_sha256"]
         relative = _relative_path(manifest, field=f"providers.{provider_id}.component_manifest")
-        if not isinstance(digest, str) or not _SHA256.fullmatch(digest):
-            raise ValueError(f"providers.{provider_id}.component_manifest_sha256 must be SHA-256")
         path = _regular_file(root, relative, field=f"providers.{provider_id}.component_manifest")
         content = path.read_bytes()
         if hashlib.sha256(content).hexdigest() != digest:

@@ -366,6 +366,14 @@ def test_provider_component_configuration_requires_provider_tables(layer: str):
         resolve_layers([(layer, {"schema": 4, "providers": ["third-party-tracker"]})])
 
 
+def test_component_provider_metadata_requires_each_provider_setting_to_be_a_table():
+    """Would fail if malformed provider settings bypassed the configuration boundary."""
+    from ai_dlc.config import resolve_layers
+
+    with pytest.raises(TypeError, match="project: providers.third-party-tracker must be a table"):
+        resolve_layers([("project", {"schema": 4, "providers": {"third-party-tracker": []}})])
+
+
 @pytest.mark.parametrize("field", ["component_manifest", "component_manifest_sha256"])
 def test_component_manifest_and_digest_must_be_declared_together(field: str):
     """Would fail if unpaired manifest integrity metadata reached component loading."""

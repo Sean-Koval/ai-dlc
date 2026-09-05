@@ -118,9 +118,23 @@ component_manifest = "components/third-party-tracker.json"
 component_manifest_sha256 = "8f3e85c4f63fa73cf6b6a269544ed945d6d4f935fa7c4e2e1084c75da371a087"
 ```
 
-`guidance/third-party-tracker.md` is ordinary checked-in Markdown. Component
-loading verifies the manifest's path and digest, parses its schema, confirms
-the `core` recipe and guidance file exist, and never executes manifest content.
+Finally, `guidance/third-party-tracker.md` is checked-in Markdown with the
+provider-specific instructions the selected harness can read:
+
+```md
+# Third-party tracker guidance
+
+Use this tracker only for the project's configured repository. Record the
+provider's issue reference in the normal work evidence, then run the required
+project checks before requesting review.
+
+This manifest declares requirements only; it does not authorize commands,
+installers, or provider mutations.
+```
+
+Component loading verifies the manifest's path and digest, parses its schema,
+confirms the `core` recipe and guidance file exist, and never executes manifest
+content.
 - Linear plan `config` is the parsed shared ai-dlc.toml, not merged machine state.
   `before_digest` uses the existing canonical `config.digest` on that dictionary.
   Apply re-reads/parses the current file and compares the same digest. Comment-only
