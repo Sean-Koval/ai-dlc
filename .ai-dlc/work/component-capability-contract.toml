@@ -28,6 +28,7 @@ plan = "docs/superpowers/plans/2026-09-05-component-capability-contract.md"
 roadmap = "docs/roadmap.md"
 tracker = "6ff49327-df8e-4748-a687-64ca9ade8657"
 branch = "codex/component-capability-contract"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/6"
 
 [bindings]
 specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
