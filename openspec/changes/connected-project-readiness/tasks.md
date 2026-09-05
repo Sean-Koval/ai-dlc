@@ -1,8 +1,8 @@
 ## 1. Readiness model
 
-- [ ] 1.1 Define and run the focused acceptance/refusal cases in the execution plan.
-- [ ] 1.2 Implement inspect_readiness with injected probes and tests for absent binary, absent guidance, absent environment key, valid offline requirements, and headless capability. Prove outputs never contain credential values. Keep provisioning and CLI exposure for Tasks 2 and 3.
-- [ ] 1.3 Verify focused tests and inspect scope/compatibility before committing.
+- [x] 1.1 Define and run the focused acceptance/refusal cases in the execution plan.
+- [x] 1.2 Implement inspect_readiness with injected probes and tests for absent binary, absent guidance, absent environment key, valid offline requirements, and headless capability. Prove outputs never contain credential values. Keep provisioning and CLI exposure for Tasks 2 and 3.
+- [x] 1.3 Verify focused tests and inspect scope/compatibility before committing.
 
 ## 2. Root-aware setup
 
