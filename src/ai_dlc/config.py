@@ -160,15 +160,16 @@ def _validate_credentials(layer: str, value: Any) -> None:
                 )
 
 
-def _validate_providers(layer: str, value: Any) -> None:
+def validate_provider_metadata(value: Any, *, layer: str | None = None) -> None:
+    prefix = f"{layer}: " if layer is not None else ""
     if not isinstance(value, dict):
-        raise TypeError(f"{layer}: providers must be a table")
+        raise TypeError(f"{prefix}providers must be a table")
     for provider_id, settings in value.items():
         if not isinstance(settings, dict):
-            raise TypeError(f"{layer}: providers.{provider_id} must be a table")
+            raise TypeError(f"{prefix}providers.{provider_id} must be a table")
         for field in _COMPONENT_PROVIDER_FIELDS.intersection(settings):
             if not isinstance(settings[field], str):
-                raise TypeError(f"{layer}: providers.{provider_id}.{field} must be a string")
+                raise TypeError(f"{prefix}providers.{provider_id}.{field} must be a string")
         if layer == "machine":
             forbidden = sorted(_COMPONENT_PROVIDER_FIELDS.intersection(settings))
             if forbidden:
@@ -177,7 +178,7 @@ def _validate_providers(layer: str, value: Any) -> None:
         has_digest = "component_manifest_sha256" in settings
         if has_manifest != has_digest:
             raise ValueError(
-                f"{layer}: providers.{provider_id} must set component manifest "
+                f"{prefix}providers.{provider_id} must set component manifest "
                 "and component_manifest_sha256 together"
             )
 
@@ -214,7 +215,7 @@ def _validate(layer: str, data: dict[str, Any]) -> None:
     if "credentials" in data:
         _validate_credentials(layer, data["credentials"])
     if "providers" in data:
-        _validate_providers(layer, data["providers"])
+        validate_provider_metadata(data["providers"], layer=layer)
     # Machine overrides may select credentials/accounts, never executable provider behavior.
     if layer == "machine":
         for name, settings in data.get("providers", {}).items():

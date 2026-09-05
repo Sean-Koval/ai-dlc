@@ -110,6 +110,31 @@ def test_loads_digest_verified_synthetic_component_fixtures(tmp_path: Path):
     ]
 
 
+def test_rejects_a_raw_custom_manifest_without_its_digest(tmp_path: Path):
+    """Would fail if the public loader accepted incomplete provider metadata."""
+    from ai_dlc.components import load_component_catalog
+
+    manifest, _ = _write_manifest(
+        tmp_path,
+        "unverified.json",
+        {
+            "id": "synthetic-specs",
+            "roles": ["specs"],
+            "modules": ["openspec"],
+            "guidance": ["guidance/synthetic-specs.md"],
+            "required_config": [],
+        },
+    )
+
+    with pytest.raises(
+        ValueError, match="must set component manifest and component_manifest_sha256 together"
+    ):
+        load_component_catalog(
+            tmp_path,
+            {"providers": {"synthetic-specs": {"component_manifest": manifest}}},
+        )
+
+
 def test_rejects_a_manifest_when_its_configured_digest_does_not_match(tmp_path: Path):
     """Would fail if altered metadata were parsed without integrity verification."""
     from ai_dlc.components import load_component_catalog

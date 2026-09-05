@@ -8,7 +8,7 @@ import re
 from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any
 
-from ai_dlc.config import Resolved, read_toml
+from ai_dlc.config import Resolved, read_toml, validate_provider_metadata
 from ai_dlc.files import assets, inside
 
 _CATALOG_FIELDS = {"schema", "components"}
@@ -116,6 +116,7 @@ def _validate_catalog(
 
 def _custom_manifests(root: Path, config: dict) -> list[tuple[str, bytes]]:
     providers = config.get("providers", {})
+    validate_provider_metadata(providers)
     manifests: list[tuple[str, bytes]] = []
     for provider_id, settings in providers.items():
         if "component_manifest" not in settings:
