@@ -460,6 +460,44 @@ def test_resolves_a_provider_component_override_before_its_kind():
     }
 
 
+def test_reports_an_unknown_component_override_without_using_the_provider_kind():
+    """Would fail if an unknown override silently fell back to the provider kind."""
+    from ai_dlc.components import resolve_components
+
+    result = resolve_components(
+        {
+            "roles": {"tracker": "project-issues"},
+            "providers": {
+                "project-issues": {"kind": "github-issues", "component": "not-installed"}
+            },
+        },
+        {
+            "schema": 1,
+            "components": [
+                {
+                    "id": "github-issues",
+                    "roles": ["tracker"],
+                    "modules": ["core"],
+                    "guidance": ["providers/github-issues.md"],
+                    "required_config": ["repository"],
+                }
+            ],
+        },
+    )
+
+    assert result == {
+        "schema": 1,
+        "components": [],
+        "unresolved": [
+            {
+                "provider": "project-issues",
+                "role": "tracker",
+                "reason": "no component for provider: project-issues",
+            }
+        ],
+    }
+
+
 def test_reports_an_unknown_selected_provider_without_a_fallback():
     """Would fail if an unknown provider selection were silently ignored or substituted."""
     from ai_dlc.components import resolve_components
@@ -575,6 +613,29 @@ def test_sorts_resolved_components_and_their_requirement_lists():
         ],
         "unresolved": [],
     }
+
+
+def test_deduplicates_module_requirements_for_a_resolved_component():
+    """Would fail if a component could emit the same installation module twice."""
+    from ai_dlc.components import resolve_components
+
+    result = resolve_components(
+        {"roles": {"tracker": "linear"}},
+        {
+            "schema": 1,
+            "components": [
+                {
+                    "id": "linear",
+                    "roles": ["tracker"],
+                    "modules": ["python", "linear", "python"],
+                    "guidance": ["providers/linear.md"],
+                    "required_config": ["team_id"],
+                }
+            ],
+        },
+    )
+
+    assert result["components"][0]["modules"] == ["linear", "python"]
 
 
 def test_sorts_unresolved_selections_by_provider_and_role():
