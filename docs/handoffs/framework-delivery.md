@@ -8,19 +8,25 @@ dependency-ordered [roadmap](../roadmap.md). UI/UX is one optional part.
 - Main is merged through SAN-11 at `9b6ca29`. SAN-9, SAN-10, and SAN-11 are Done;
   their capability, readiness, and Linear onboarding changes are the active
   implementation baseline.
-- SAN-12 is In Progress on `codex/portable-workflow-bundles`; implementation is
-  complete through `72aa6d6`. Manifest validation and pinned import preview/apply
-  (Tasks 1 and 2) are complete. Client/template distribution and closeout (Tasks
-  3 and 4) remain.
+- SAN-12 is In Progress on `codex/portable-workflow-bundles`; Tasks 1–3 are
+  accepted through `a6692c2`. Manifest validation, pinned import preview/apply,
+  and client/template distribution are complete. Task 4 final review and closeout
+  remain.
 - Completed SAN-12 interfaces are duplicate-safe `validate_bundle`, shared
   `resolve_git_source`, context-managed `BundleCandidate`,
   `resolve_bundle`, `import_bundle`, and
   `ai-dlc agents bundle import SOURCE --ref REF --id ID [--apply
   --expected-commit SHA]`. Import vendors a deterministic lock and exact reviewed
   bytes transactionally; it does not activate, select, or render the bundle.
-- At `72aa6d6`, the Task 2 suite passed 116 tests, the exact focused suite passed
-  695 tests, and the required project gate passed all five outcomes with 1,090
-  tests. Formatting, lint, types, generated-file checks, strict OpenSpec
+- Task 3 adds project-only `agents.bundles` selection, owned distribution to
+  supported client skill directories and `docs/templates/`, a managed bundle
+  guidance index, transaction-safe apply/rollback, byte-exact render checks, and
+  structured bundle readiness with blocked-over-missing precedence. A fresh
+  checkout can render and check vendored guidance with source, Git, and network
+  access unavailable; no bundle content is executed.
+- At `a6692c2`, the exact focused suite passed 725 tests. The required project gate
+  passed all five outcomes with 1,119 tests and one expected unavailable-Cargo
+  legacy skip. Formatting, lint, types, generated-file checks, strict OpenSpec
   validation, and patch hygiene were clean. These are local implementation
   checks, not merged-revision CI or live-service qualification.
 - The original v4 change remains 10/14 tasks complete; missing release evidence
@@ -36,22 +42,18 @@ dependency-ordered [roadmap](../roadmap.md). UI/UX is one optional part.
 ## Start here
 
 1. Read `AGENTS.md`, `ai-dlc.toml`, product direction, and the master plan.
-2. Continue SAN-12 from `codex/portable-workflow-bundles`, whose implementation
-   baseline is `72aa6d6`; do not restart from main or repeat completed Tasks 1
-   and 2.
+2. Continue SAN-12 from `codex/portable-workflow-bundles`, whose accepted Task 3
+   baseline is `a6692c2`; do not restart from main or repeat completed Tasks 1–3.
 3. Read `.ai-dlc/work/portable-workflow-bundles.toml`, the complete active
    OpenSpec change, and the exact execution plan. Confirm Linear remains the
    status authority before mutating tracker state.
 4. Prepare with `sh scripts/bootstrap.sh --source`; use its printed PATH directories.
    Credentials are independently injected in the selected local environment.
-5. Implement Task 3 only: add project-only `agents.bundles` validation; distribute
-   selected vendored skills, templates, and the managed guidance index through
-   existing ownership/rendering; add bundle-aware readiness; and prove a fresh
-   checkout works with the source unavailable and every Git/network seam blocked.
-6. Complete Task 4 only after Task 3 review: run focused and required checks,
-   validate and archive the OpenSpec change, link PR/CI and merged-revision
-   evidence, then run `ai-dlc work finish portable-workflow-bundles`.
-7. Continue with SAN-13 after SAN-12 closeout. SAN-13 remains independently ready
+5. Complete Task 4 next: perform final review, validate and archive the OpenSpec
+   change, create/link the PR, complete required CI and merged-revision evidence,
+   then run `ai-dlc work finish portable-workflow-bundles`. Do not archive or
+   finish before those gates are satisfied.
+6. Continue with SAN-13 after SAN-12 closeout. SAN-13 remains independently ready
    for a product-guidance owner; the other five unstarted tickets follow the
    dependency graph in the roadmap.
 
@@ -67,7 +69,7 @@ ai-dlc work status portable-workflow-bundles
 
 Expected Git state at this handoff is branch `codex/portable-workflow-bundles`
 containing implementation revision
-`72aa6d6fe5927a335cc657162cfd36099f66ecf1` plus this documentation-only
+`a6692c2f62c2012baf6a64790dfbc8a37de7f881` plus this documentation-only
 synchronization. Do not relink, restart, or republish the already active work
 merely to edit tracker metadata: publication is reconciliation, not a metadata
 editor.
@@ -83,17 +85,17 @@ editor.
   not silently redirect existing work.
 - Do not add future `depends_on`/`requirements` fields to current Work records
   until the traceability ticket supports them. Check plans and Linear relationships.
-- Unchecked Task 3 regressions and expected files in the plan are implementation
-  instructions, not evidence that those tests exist or have passed.
+- Checked Task 3 plan items reflect accepted local implementation evidence; they
+  do not substitute for final review, merged-revision CI, or live qualification.
 
 ## Blockers and continuation
 
-Report the exact blocker if Task 3 conflicts with a completed Task 1/2 interface,
-a dependency is unfinished, a live target is unavailable, machine enrollment is
-still absent where required, or human ratings/budget are absent. Continue
-independent preparation when possible. Do not invent evidence, reinterpret local
-fixtures as live qualification, waive v4 obligations, or expand scope to make a
-blocker disappear.
+Report the exact blocker if final review finds a regression, OpenSpec cannot be
+validated or archived, required PR/CI evidence is unavailable, a dependency is
+unfinished, or the work-finish gate cannot be satisfied. Continue independent
+preparation when possible. Do not invent evidence, reinterpret local fixtures as
+live qualification, waive v4 obligations, or expand scope to make a blocker
+disappear.
 
 Each handoff records work/ticket ID, branch/revision, delivered interfaces, spec and
 plan links, actual verification outcomes, evidence locations, unresolved findings,

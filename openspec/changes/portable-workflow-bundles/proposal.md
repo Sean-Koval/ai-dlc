@@ -43,5 +43,5 @@ None. Existing schema-4, content ownership, enrollment, and finish contracts rem
 
 Dependencies: component-capability-contract, connected-project-readiness, and
 linear-provider-onboarding for project write-lock coordination.
-Manifest validation and pinned import are complete. Client/template distribution
-and closeout remain. [Execution plan](../../../docs/superpowers/plans/2026-09-05-portable-workflow-bundles.md).
+Implementation Tasks 1–3 are complete. Final review, OpenSpec archive, PR/CI, and
+work-finish closeout remain. [Execution plan](../../../docs/superpowers/plans/2026-09-05-portable-workflow-bundles.md).

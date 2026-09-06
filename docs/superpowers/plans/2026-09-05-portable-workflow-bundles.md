@@ -131,12 +131,12 @@ profile-source security contract when sharing helpers.
 
 **Produces:** Extend owned skill/template/index rendering, project-only config validation, and bundle-aware readiness. Demonstrate one external Markdown bundle in a fresh checkout with the source unavailable and every Git/network seam guarded against use.
 
-- [ ] 3.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
-- [ ] 3.2 Add focused failing cases for this task's specified behavior and failure paths. Run the named focused suite and capture the expected failure before implementation.
-- [ ] 3.3 Extend owned skill/template/index rendering, project-only config validation, and bundle-aware readiness. Demonstrate one external Markdown bundle in a fresh checkout with the source unavailable and every Git/network seam guarded against use.
-- [ ] 3.4 Run `uv run --locked --no-sync pytest -q tests/test_workflow_bundles.py tests/test_profile_source.py tests/test_rendering.py tests/test_templates.py tests/test_config.py tests/test_readiness.py tests/test_cli.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
-- [ ] 3.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
-- [ ] 3.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
+- [x] 3.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
+- [x] 3.2 Add focused failing cases for this task's specified behavior and failure paths. Run the named focused suite and capture the expected failure before implementation.
+- [x] 3.3 Extend owned skill/template/index rendering, project-only config validation, and bundle-aware readiness. Demonstrate one external Markdown bundle in a fresh checkout with the source unavailable and every Git/network seam guarded against use.
+- [x] 3.4 Run `uv run --locked --no-sync pytest -q tests/test_workflow_bundles.py tests/test_profile_source.py tests/test_rendering.py tests/test_templates.py tests/test_config.py tests/test_readiness.py tests/test_cli.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
+- [x] 3.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
+- [x] 3.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
 
 ## Requirement coverage
 

@@ -15,7 +15,7 @@
 - Existing schema 4, profile ownership, credential isolation, authored-content preservation, and completion gates remain intact.
 - The original planning delivery contained no runtime implementation; the
   current repository now includes completed implementation through SAN-11 and
-  SAN-12 Tasks 1 and 2.
+  SAN-12 Tasks 1–3.
 - Native macOS arm64 and Ubuntu 24.04 arm64 devcontainer are the initial qualification targets; client/hosted claims require actual evidence.
 - UI/UX is optional within product development. Specification is observable behavior; ticket is a deliverable slice; task is a smaller implementation step.
 - Paid experiments require a separately declared budget, and human ratings require humans.
@@ -33,7 +33,7 @@
 | `component-capability-contract` | Done | M1 | None | [Execute](2026-09-05-component-capability-contract.md) |
 | `connected-project-readiness` | Done | M1 | component-capability-contract | [Execute](2026-09-05-connected-project-readiness.md) |
 | `linear-provider-onboarding` | Done | M1 | component-capability-contract | [Execute](2026-09-05-linear-provider-onboarding.md) |
-| `portable-workflow-bundles` | In Progress — Tasks 1–2 complete | M1 | component-capability-contract, connected-project-readiness, linear-provider-onboarding | [Execute](2026-09-05-portable-workflow-bundles.md) |
+| `portable-workflow-bundles` | In Progress — Tasks 1–3 complete; closeout next | M1 | component-capability-contract, connected-project-readiness, linear-provider-onboarding | [Execute](2026-09-05-portable-workflow-bundles.md) |
 | `product-shaping-workflow` | Backlog | M2 | None | [Execute](2026-09-05-product-shaping-workflow.md) |
 | `spec-delivery-traceability` | Backlog | M2 | product-shaping-workflow | [Execute](2026-09-05-spec-delivery-traceability.md) |
 | `design-pm-workflow` | Backlog | M2 | product-shaping-workflow, spec-delivery-traceability | [Execute](2026-09-05-design-pm-workflow.md) |
@@ -52,7 +52,7 @@ serialize otherwise independent work.
 - [x] Explicit role selection resolves tool modules, configuration requirements, and provider guidance.
 - [x] Root-aware setup can prepare the selected tools; offline readiness names concrete gaps without false qualification claims.
 - [x] Linear discovery and local configuration need no manual UUID hunting or secret persistence.
-- [ ] A pinned external Markdown workflow bundle is usable offline from a fresh checkout and respects owned-content updates.
+- [x] A pinned external Markdown workflow bundle is usable offline from a fresh checkout and respects owned-content updates.
 
 ### M2: Product-to-delivery workflow
 
