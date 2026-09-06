@@ -388,6 +388,14 @@ def inspect_bundle_guidance(root: Path, config: dict, clients: list[str]) -> lis
             states[bundle_id]["blocked"].append(f"rendered bundle output is a symlink: {path}")
             continue
         ownership = prior_bundle_files.get(path)
+        if ownership is not None and ownership["owner"] != bundle_id:
+            detail = (
+                f"bundle destination collision between {bundle_id} and {ownership['owner']}: {path}"
+            )
+            states[bundle_id]["blocked"].append(detail)
+            if ownership["owner"] in states:
+                states[ownership["owner"]]["blocked"].append(detail)
+            continue
         if not destination.exists():
             states[bundle_id]["missing"].append(f"rendered bundle output is missing: {path}")
             continue
@@ -400,14 +408,6 @@ def inspect_bundle_guidance(root: Path, config: dict, clients: list[str]) -> lis
             states[bundle_id]["blocked"].append(
                 f"bundle destination collision with unowned file: {path}"
             )
-            continue
-        if ownership["owner"] != bundle_id:
-            detail = (
-                f"bundle destination collision between {bundle_id} and {ownership['owner']}: {path}"
-            )
-            states[bundle_id]["blocked"].append(detail)
-            if ownership["owner"] in states:
-                states[ownership["owner"]]["blocked"].append(detail)
             continue
         try:
             current_digest = hashlib.sha256(destination.read_bytes()).hexdigest()

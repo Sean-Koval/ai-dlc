@@ -351,6 +351,69 @@ def test_missing_vendored_payload_is_missing_but_integrity_failure_takes_precede
     assert "invalid" in blocked["reason"]
 
 
+@pytest.mark.parametrize(
+    ("independent_failure", "expected_reason"),
+    [("tampered", "digest mismatch"), ("undeclared", "undeclared")],
+)
+def test_missing_payload_does_not_hide_independent_bundle_integrity_failure(
+    tmp_path, independent_failure, expected_reason
+):
+    """Would fail if exact-tree absence short-circuited a separately provable blocker."""
+    from ai_dlc.agents import inspect_bundle_guidance
+
+    _write_vendored_bundle(
+        tmp_path,
+        "review-flow",
+        templates={
+            "missing-note": ("templates/missing.md", "# Missing\n"),
+            "present-note": ("templates/present.md", "# Present\n"),
+        },
+    )
+    bundle = tmp_path / ".ai-dlc/bundles/review-flow"
+    (bundle / "templates/missing.md").unlink()
+    if independent_failure == "tampered":
+        (bundle / "templates/present.md").write_text("# Tampered\n")
+    else:
+        (bundle / "undeclared.md").write_text("# Undeclared\n")
+
+    result = inspect_bundle_guidance(
+        tmp_path,
+        {"agents": {"bundles": ["review-flow"]}},
+        ["codex"],
+    )[0]
+
+    assert result["status"] == "blocked"
+    assert expected_reason in result["reason"]
+
+
+def test_missing_manifest_does_not_hide_present_invalid_lock(tmp_path):
+    """Would fail if missing metadata short-circuited validation of present metadata."""
+    import json
+
+    from ai_dlc.agents import inspect_bundle_guidance
+
+    _write_vendored_bundle(
+        tmp_path,
+        "review-flow",
+        templates={"review-note": ("templates/note.md", "# Note\n")},
+    )
+    bundle = tmp_path / ".ai-dlc/bundles/review-flow"
+    (bundle / "bundle.json").unlink()
+    lock_path = bundle / "bundle.lock.json"
+    lock = json.loads(lock_path.read_text())
+    lock["schema"] = 2
+    lock_path.write_text(json.dumps(lock, indent=2, sort_keys=True) + "\n")
+
+    result = inspect_bundle_guidance(
+        tmp_path,
+        {"agents": {"bundles": ["review-flow"]}},
+        ["codex"],
+    )[0]
+
+    assert result["status"] == "blocked"
+    assert "invalid lock" in result["reason"]
+
+
 def test_bundle_collision_blocks_every_participating_readiness_result(tmp_path):
     """Would fail if a global export collision were attributed to only one claimant."""
     from ai_dlc.agents import inspect_bundle_guidance
@@ -479,6 +542,43 @@ def test_bundle_cross_owner_collision_blocks_old_and_new_selected_owners(tmp_pat
         templates={"review-note": ("templates/note.md", "# Two\n")},
     )
     config_path.write_text('schema=4\n[agents]\nbundles=["one","two"]\nskills=[]\n')
+
+    results = inspect_bundle_guidance(
+        tmp_path,
+        {"agents": {"bundles": ["one", "two"]}},
+        ["codex"],
+    )
+
+    assert [result["status"] for result in results] == ["blocked", "blocked"]
+    assert all("collision" in result["reason"] for result in results)
+
+
+def test_bundle_cross_owner_directory_collision_blocks_both_selected_owners(tmp_path):
+    """Would fail if an invalid destination type hid its prior selected owner."""
+    from ai_dlc.agents import inspect_bundle_guidance, render_agents
+
+    config_path = tmp_path / "ai-dlc.toml"
+    config_path.write_text('schema=4\n[agents]\nbundles=["one"]\nskills=[]\n')
+    _write_vendored_bundle(
+        tmp_path,
+        "one",
+        templates={"review-note": ("templates/note.md", "# One\n")},
+    )
+    render_agents(tmp_path, apply=True)
+    _write_vendored_bundle(
+        tmp_path,
+        "one",
+        templates={"other-note": ("templates/other.md", "# Other\n")},
+    )
+    _write_vendored_bundle(
+        tmp_path,
+        "two",
+        templates={"review-note": ("templates/note.md", "# Two\n")},
+    )
+    config_path.write_text('schema=4\n[agents]\nbundles=["one","two"]\nskills=[]\n')
+    destination = tmp_path / "docs/templates/review-note.md"
+    destination.unlink()
+    destination.mkdir()
 
     results = inspect_bundle_guidance(
         tmp_path,

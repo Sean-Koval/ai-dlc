@@ -362,6 +362,49 @@ def _validate_skill(content: str, export_name: str) -> None:
         raise ValueError(f"skill {export_name} body must be non-empty")
 
 
+def _validate_payload_tree(
+    root: _DirectoryRoot,
+    files: dict[str, str],
+    *,
+    metadata_paths: set[str],
+) -> tuple[dict[str, str], str | None]:
+    expected_tree = _expected_tree(set(files), metadata_paths)
+    try:
+        initial_snapshot = _checkout_tree(root)
+        actual_tree = set(initial_snapshot[1])
+        extra = sorted(actual_tree - expected_tree)
+        if extra:
+            raise ValueError(
+                f"bundle checkout tree does not match its manifest: undeclared {extra[0]}"
+            )
+        missing = expected_tree - actual_tree
+        missing_payloads = sorted(set(files) & missing)
+        missing_path = missing_payloads[0] if missing_payloads else min(missing, default=None)
+
+        total_size = 0
+        decoded: dict[str, str] = {}
+        for relative, expected_digest in files.items():
+            if relative not in actual_tree:
+                continue
+            content = _regular_file_bytes(root, PurePosixPath(relative), maximum=_MAX_PAYLOAD_BYTES)
+            total_size += len(content)
+            if total_size > _MAX_TOTAL_PAYLOAD_BYTES:
+                raise ValueError("bundle payload must be at most 10 MiB total")
+            if hashlib.sha256(content).hexdigest() != expected_digest:
+                raise ValueError(f"bundle payload digest mismatch: {relative}")
+            try:
+                decoded[relative] = content.decode("utf-8")
+            except UnicodeDecodeError as error:
+                raise ValueError(f"bundle payload must be UTF-8 Markdown: {relative}") from error
+
+        final_snapshot = _checkout_tree(root)
+        if final_snapshot != initial_snapshot:
+            raise ValueError("bundle checkout changed during validation")
+    except OSError:
+        raise ValueError(_FILESYSTEM_ERROR) from None
+    return decoded, missing_path
+
+
 def _validate_bundle(root: _DirectoryRoot, manifest: dict, *, metadata_paths: set[str]) -> dict:
     if type(manifest) is not dict:
         raise ValueError("bundle manifest must be a JSON object")
@@ -388,47 +431,23 @@ def _validate_bundle(root: _DirectoryRoot, manifest: dict, *, metadata_paths: se
     if set(files) != set(export_paths):
         raise ValueError("files keys must equal the export paths exactly")
 
-    expected_tree = _expected_tree(set(files), metadata_paths)
-    try:
-        initial_snapshot = _checkout_tree(root)
-        actual_tree = set(initial_snapshot[1])
-        if actual_tree != expected_tree:
-            missing = sorted(expected_tree - actual_tree)
-            extra = sorted(actual_tree - expected_tree)
-            if missing:
-                raise MissingBundlePath(
-                    missing[0],
-                    f"bundle checkout tree does not match its manifest: missing {missing[0]}",
-                )
-            raise ValueError(
-                f"bundle checkout tree does not match its manifest: undeclared {extra[0]}"
-            )
-
-        total_size = 0
-        decoded: dict[str, str] = {}
-        for relative, expected_digest in files.items():
-            content = _regular_file_bytes(root, PurePosixPath(relative), maximum=_MAX_PAYLOAD_BYTES)
-            total_size += len(content)
-            if total_size > _MAX_TOTAL_PAYLOAD_BYTES:
-                raise ValueError("bundle payload must be at most 10 MiB total")
-            if hashlib.sha256(content).hexdigest() != expected_digest:
-                raise ValueError(f"bundle payload digest mismatch: {relative}")
-            try:
-                decoded[relative] = content.decode("utf-8")
-            except UnicodeDecodeError as error:
-                raise ValueError(f"bundle payload must be UTF-8 Markdown: {relative}") from error
-
-        final_snapshot = _checkout_tree(root)
-        if final_snapshot != initial_snapshot:
-            raise ValueError("bundle checkout changed during validation")
-    except OSError:
-        raise ValueError(_FILESYSTEM_ERROR) from None
+    decoded, missing_path = _validate_payload_tree(
+        root,
+        files,
+        metadata_paths=metadata_paths,
+    )
 
     for name, relative in skills.items():
-        _validate_skill(decoded[relative], name)
+        if relative in decoded:
+            _validate_skill(decoded[relative], name)
     for name, relative in templates.items():
-        if not decoded[relative].strip():
+        if relative in decoded and not decoded[relative].strip():
             raise ValueError(f"template body must be non-empty: {name}")
+    if missing_path is not None:
+        raise MissingBundlePath(
+            missing_path,
+            f"bundle checkout tree does not match its manifest: missing {missing_path}",
+        )
 
     return {
         "schema": 1,
@@ -730,22 +749,49 @@ def load_vendored_bundle(root: Path, bundle_id: str) -> dict[str, Any]:
         metadata = destination.lstat()
         if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
             raise ValueError("vendored bundle path must be a directory")
+        metadata_present = {}
         for metadata_name in ("bundle.lock.json", "bundle.json"):
             try:
                 (destination / metadata_name).lstat()
+                metadata_present[metadata_name] = True
             except FileNotFoundError:
-                raise MissingBundlePath(metadata_name) from None
-        lock = _load_existing_lock(destination, bundle_id)
-        manifest_bytes, raw_manifest = _load_manifest_with_bytes(destination)
-        if hashlib.sha256(manifest_bytes).hexdigest() != lock["manifest_sha256"]:
-            raise ValueError("vendored bundle manifest does not match its lock")
-        manifest = _validate_bundle(
-            destination,
-            raw_manifest,
-            metadata_paths={"bundle.lock.json"},
+                metadata_present[metadata_name] = False
+
+        lock = (
+            _load_existing_lock(destination, bundle_id)
+            if metadata_present["bundle.lock.json"]
+            else None
         )
-        if manifest["id"] != bundle_id or manifest["files"] != lock["files"]:
-            raise ValueError("vendored bundle lock does not match its manifest")
+        if metadata_present["bundle.json"]:
+            manifest_bytes, raw_manifest = _load_manifest_with_bytes(destination)
+            if (
+                lock is not None
+                and hashlib.sha256(manifest_bytes).hexdigest() != lock["manifest_sha256"]
+            ):
+                raise ValueError("vendored bundle manifest does not match its lock")
+            manifest = _validate_bundle(
+                destination,
+                raw_manifest,
+                metadata_paths={"bundle.lock.json"},
+            )
+            if lock is not None and (
+                manifest["id"] != bundle_id or manifest["files"] != lock["files"]
+            ):
+                raise ValueError("vendored bundle lock does not match its manifest")
+        elif lock is not None:
+            _, missing_path = _validate_payload_tree(
+                destination,
+                lock["files"],
+                metadata_paths={"bundle.lock.json", "bundle.json"},
+            )
+            if missing_path is not None:
+                raise MissingBundlePath(missing_path)
+            raise MissingBundlePath("bundle.json")
+        else:
+            raise MissingBundlePath("bundle.json")
+
+        if lock is None:
+            raise MissingBundlePath("bundle.lock.json")
         payload: dict[str, str] = {}
         for relative, expected_digest in manifest["files"].items():
             content = _regular_file_bytes(
