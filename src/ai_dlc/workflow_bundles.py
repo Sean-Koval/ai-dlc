@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import ctypes
+import errno
 import hashlib
 import json
 import os
@@ -9,6 +11,7 @@ import re
 import secrets
 import shutil
 import stat
+import sys
 import tempfile
 import tomllib
 import unicodedata
@@ -953,30 +956,43 @@ def _prepare_recovery_tree(parent: int, bundle_id: str, files: dict[str, bytes])
         return _stage_recovery_tree_at(parent, bundle_id, files)
 
 
-def _create_destination_placeholder(parent: int, bundle_id: str) -> int:
-    os.mkdir(bundle_id, dir_fd=parent)
-    try:
-        return _open_named_directory(parent, bundle_id)
-    except BaseException:
-        os.rmdir(bundle_id, dir_fd=parent)
-        raise
-
-
-def _named_directory_object(parent: int, descriptor: int) -> str | None:
-    expected = os.fstat(descriptor)
-    with os.scandir(parent) as children:
-        names = [child.name for child in children]
-    for name in names:
-        named = os.stat(name, dir_fd=parent, follow_symlinks=False)
-        if _same_object(named, expected):
-            return name
-    return None
-
-
-def _remove_empty_directory_object(parent: int, descriptor: int) -> None:
-    name = _named_directory_object(parent, descriptor)
-    if name is not None:
-        os.rmdir(name, dir_fd=parent)
+def _rename_directory_noreplace(parent: int, source_name: str, destination_name: str) -> None:
+    library = ctypes.CDLL(None, use_errno=True)
+    source = os.fsencode(source_name)
+    destination = os.fsencode(destination_name)
+    if sys.platform == "darwin":
+        function = getattr(library, "renameatx_np", None)
+        arguments = (parent, source, parent, destination, 0x00000004)
+        argument_types = [
+            ctypes.c_int,
+            ctypes.c_char_p,
+            ctypes.c_int,
+            ctypes.c_char_p,
+            ctypes.c_uint,
+        ]
+    elif sys.platform.startswith("linux"):
+        function = getattr(library, "renameat2", None)
+        arguments = (parent, source, parent, destination, 0x00000001)
+        argument_types = [
+            ctypes.c_int,
+            ctypes.c_char_p,
+            ctypes.c_int,
+            ctypes.c_char_p,
+            ctypes.c_uint,
+        ]
+    else:
+        function = None
+        arguments = ()
+        argument_types = []
+    if function is None:
+        raise OSError(errno.ENOSYS, "atomic no-clobber rename is unavailable")
+    function.argtypes = argument_types
+    function.restype = ctypes.c_int
+    if function(*arguments) != 0:
+        error_number = ctypes.get_errno()
+        if error_number in {errno.EEXIST, errno.ENOTEMPTY}:
+            raise FileExistsError(error_number, "bundle destination already exists")
+        raise OSError(error_number, "atomic no-clobber rename failed")
 
 
 def _publish_bundle_tree(
@@ -996,33 +1012,18 @@ def _publish_bundle_tree(
         raise OSError("stale bundle transaction")
 
     if existing_descriptor is None:
-        placeholder = _create_destination_placeholder(parent, bundle_id)
+        _rename_directory_noreplace(parent, staged_name, bundle_id)
         try:
-            _verify_named_directory(parent, bundle_id, placeholder)
-            os.replace(staged_name, bundle_id, src_dir_fd=parent, dst_dir_fd=parent)
             _verify_named_directory(parent, bundle_id, staged_descriptor)
-            displaced_placeholder = _named_directory_object(parent, placeholder)
-            if displaced_placeholder is not None:
-                os.replace(bundle_id, staged_name, src_dir_fd=parent, dst_dir_fd=parent)
-                os.mkdir(bundle_id, dir_fd=parent)
-                os.rmdir(displaced_placeholder, dir_fd=parent)
-                raise OSError("bundle destination placeholder changed")
             verify_project()
         except BaseException:
             try:
                 _verify_named_directory(parent, bundle_id, staged_descriptor)
             except OSError:
-                try:
-                    _verify_named_directory(parent, bundle_id, placeholder)
-                except OSError:
-                    _remove_empty_directory_object(parent, placeholder)
-                else:
-                    os.rmdir(bundle_id, dir_fd=parent)
+                pass
             else:
                 os.replace(bundle_id, staged_name, src_dir_fd=parent, dst_dir_fd=parent)
             raise
-        finally:
-            os.close(placeholder)
         return []
 
     named = os.stat(bundle_id, dir_fd=parent, follow_symlinks=False)

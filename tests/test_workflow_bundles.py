@@ -1182,7 +1182,7 @@ def test_first_publication_failure_removes_new_transaction_directories(
     def fail_publish(*args: object, **kwargs: object) -> None:
         raise OSError("credential-sentinel")
 
-    monkeypatch.setattr(workflow_bundles.os, "replace", fail_publish)
+    monkeypatch.setattr(workflow_bundles, "_rename_directory_noreplace", fail_publish)
     with (
         workflow_bundles.resolve_bundle(
             source, "main", "example-bundle", environ=environment
@@ -1625,26 +1625,18 @@ def test_stage_open_failure_after_create_removes_transaction_directories(
 def test_first_import_placeholder_swap_preserves_empty_authored_destination(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
-    """Would fail if first publication replaced an empty directory not held as its placeholder."""
+    """Would fail if first publication clobbered a concurrent empty authored destination."""
     from ai_dlc import workflow_bundles
 
     _, source, environment = _bundle_repository(tmp_path)
     project = _bundle_project(tmp_path)
-    real_placeholder = workflow_bundles._create_destination_placeholder
-    displaced: Path | None = None
+    real_publish = workflow_bundles._rename_directory_noreplace
 
-    def create_then_swap(parent: int, bundle_id: str) -> int:
-        nonlocal displaced
-        descriptor = real_placeholder(parent, bundle_id)
-        bundles = project / ".ai-dlc/bundles"
-        displaced = bundles / "displaced-placeholder"
-        (bundles / bundle_id).rename(displaced)
-        (bundles / bundle_id).mkdir()
-        return descriptor
+    def create_then_publish(parent: int, source_name: str, bundle_id: str) -> None:
+        os.mkdir(bundle_id, dir_fd=parent)
+        real_publish(parent, source_name, bundle_id)
 
-    monkeypatch.setattr(
-        workflow_bundles, "_create_destination_placeholder", create_then_swap, raising=False
-    )
+    monkeypatch.setattr(workflow_bundles, "_rename_directory_noreplace", create_then_publish)
     with (
         workflow_bundles.resolve_bundle(
             source, "main", "example-bundle", environ=environment
@@ -1658,7 +1650,6 @@ def test_first_import_placeholder_swap_preserves_empty_authored_destination(
     destination = project / ".ai-dlc/bundles/example-bundle"
     assert destination.is_dir()
     assert list(destination.iterdir()) == []
-    assert displaced is not None and not displaced.exists()
 
 
 @pytest.mark.parametrize("failure", ["open", "write"])
@@ -1755,20 +1746,15 @@ def test_first_import_detects_placeholder_swap_inside_replace_boundary(
         real_replace(source_name, destination_name, **kwargs)
 
     monkeypatch.setattr(workflow_bundles.os, "replace", swap_inside_replace)
-    with (
-        workflow_bundles.resolve_bundle(
-            source, "main", "example-bundle", environ=environment
-        ) as candidate,
-        pytest.raises(ValueError, match="bundle filesystem operation failed"),
-    ):
-        workflow_bundles.import_bundle(
+    with workflow_bundles.resolve_bundle(
+        source, "main", "example-bundle", environ=environment
+    ) as candidate:
+        result = workflow_bundles.import_bundle(
             project, candidate, apply=True, expected_commit=candidate.resolved_commit
         )
 
-    bundles = project / ".ai-dlc/bundles"
-    assert (bundles / "example-bundle").is_dir()
-    assert list((bundles / "example-bundle").iterdir()) == []
-    assert sorted(path.name for path in bundles.iterdir()) == ["example-bundle"]
+    assert result["applied"] is True
+    assert swapped is False
 
 
 @pytest.mark.parametrize("created_name", [".ai-dlc", "bundles"])
@@ -1797,6 +1783,104 @@ def test_created_destination_parent_is_removed_when_immediate_open_fails(
         return real_open(parent, name)
 
     monkeypatch.setattr(workflow_bundles, "_open_named_directory", fail_created_open_once)
+    with (
+        workflow_bundles.resolve_bundle(
+            source, "main", "example-bundle", environ=environment
+        ) as candidate,
+        pytest.raises(ValueError, match="bundle filesystem operation failed"),
+    ):
+        workflow_bundles.import_bundle(
+            project, candidate, apply=True, expected_commit=candidate.resolved_commit
+        )
+
+    assert _snapshot(project) == before
+
+
+def test_first_import_never_uses_overwriting_replace_after_external_placeholder_displacement(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Would fail when replace lost a placeholder moved outside the searched parent."""
+    from ai_dlc import workflow_bundles
+
+    _, source, environment = _bundle_repository(tmp_path)
+    project = _bundle_project(tmp_path)
+    outside = tmp_path / "outside-placeholder"
+    real_replace = workflow_bundles.os.replace
+    swapped = False
+
+    def displace_outside_replace(
+        source_name: object, destination_name: object, **kwargs: object
+    ) -> None:
+        nonlocal swapped
+        if destination_name == "example-bundle" and not swapped:
+            swapped = True
+            bundles = project / ".ai-dlc/bundles"
+            (bundles / "example-bundle").rename(outside)
+            (bundles / "example-bundle").mkdir()
+        real_replace(source_name, destination_name, **kwargs)
+
+    monkeypatch.setattr(workflow_bundles.os, "replace", displace_outside_replace)
+    with workflow_bundles.resolve_bundle(
+        source, "main", "example-bundle", environ=environment
+    ) as candidate:
+        result = workflow_bundles.import_bundle(
+            project, candidate, apply=True, expected_commit=candidate.resolved_commit
+        )
+
+    assert result["applied"] is True
+    assert swapped is False
+    assert not outside.exists()
+
+
+def test_first_import_atomic_no_clobber_preserves_concurrent_empty_authored_destination(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Would fail if first publication overwrote a destination created at its atomic boundary."""
+    from ai_dlc import workflow_bundles
+
+    _, source, environment = _bundle_repository(tmp_path)
+    project = _bundle_project(tmp_path)
+    real_publish = getattr(workflow_bundles, "_rename_directory_noreplace", None)
+    called = False
+
+    def create_then_publish(parent: int, source_name: str, destination_name: str) -> None:
+        nonlocal called
+        called = True
+        os.mkdir(destination_name, dir_fd=parent)
+        assert real_publish is not None
+        real_publish(parent, source_name, destination_name)
+
+    monkeypatch.setattr(
+        workflow_bundles, "_rename_directory_noreplace", create_then_publish, raising=False
+    )
+    with (
+        workflow_bundles.resolve_bundle(
+            source, "main", "example-bundle", environ=environment
+        ) as candidate,
+        pytest.raises(ValueError, match="bundle filesystem operation failed"),
+    ):
+        workflow_bundles.import_bundle(
+            project, candidate, apply=True, expected_commit=candidate.resolved_commit
+        )
+
+    destination = project / ".ai-dlc/bundles/example-bundle"
+    assert called is True
+    assert destination.is_dir()
+    assert list(destination.iterdir()) == []
+    assert sorted(path.name for path in destination.parent.iterdir()) == ["example-bundle"]
+
+
+def test_first_import_fails_closed_when_atomic_no_clobber_is_unavailable(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Would fail if an unsupported host fell back to an overwriting directory rename."""
+    from ai_dlc import workflow_bundles
+
+    _, source, environment = _bundle_repository(tmp_path)
+    project = _bundle_project(tmp_path)
+    before = _snapshot(project)
+    monkeypatch.setattr(workflow_bundles.sys, "platform", "unsupported-test-platform")
+
     with (
         workflow_bundles.resolve_bundle(
             source, "main", "example-bundle", environ=environment
