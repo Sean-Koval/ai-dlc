@@ -1323,7 +1323,7 @@ def test_publication_binds_post_validation_local_edit_to_replacement(
         )
     _updated_bundle(repository)
     edited = project / ".ai-dlc/bundles/example-bundle/templates/product-brief.md"
-    real_changed = workflow_bundles._changed_paths
+    real_changed = workflow_bundles._changed_paths_at
     calls = 0
 
     def edit_after_final_scan(*args, **kwargs):
@@ -1334,7 +1334,7 @@ def test_publication_binds_post_validation_local_edit_to_replacement(
             edited.write_text("# Edit after final scan\n")
         return changed
 
-    monkeypatch.setattr(workflow_bundles, "_changed_paths", edit_after_final_scan)
+    monkeypatch.setattr(workflow_bundles, "_changed_paths_at", edit_after_final_scan)
     with workflow_bundles.resolve_bundle(
         source, "main", "example-bundle", environ=environment
     ) as candidate:
@@ -1370,7 +1370,7 @@ def test_publication_binds_validated_destination_identity_to_replacement(
     _updated_bundle(repository)
     destination = project / ".ai-dlc/bundles/example-bundle"
     displaced = project / ".ai-dlc/bundles/displaced"
-    real_changed = workflow_bundles._changed_paths
+    real_changed = workflow_bundles._changed_paths_at
     calls = 0
 
     def swap_after_final_scan(*args, **kwargs):
@@ -1383,7 +1383,7 @@ def test_publication_binds_validated_destination_identity_to_replacement(
             (destination / "authored.md").write_text("preserve me\n")
         return changed
 
-    monkeypatch.setattr(workflow_bundles, "_changed_paths", swap_after_final_scan)
+    monkeypatch.setattr(workflow_bundles, "_changed_paths_at", swap_after_final_scan)
     with workflow_bundles.resolve_bundle(
         source, "main", "example-bundle", environ=environment
     ) as candidate:
@@ -1415,7 +1415,7 @@ def test_publication_refuses_bundles_parent_symlink_swap_without_external_write(
     bundles = project / ".ai-dlc/bundles"
     outside = tmp_path / "outside-bundles"
     old_payload = (bundles / "example-bundle/templates/product-brief.md").read_bytes()
-    real_changed = workflow_bundles._changed_paths
+    real_changed = workflow_bundles._changed_paths_at
     calls = 0
 
     def swap_parent_after_final_scan(*args, **kwargs):
@@ -1427,7 +1427,7 @@ def test_publication_refuses_bundles_parent_symlink_swap_without_external_write(
             bundles.symlink_to(outside, target_is_directory=True)
         return changed
 
-    monkeypatch.setattr(workflow_bundles, "_changed_paths", swap_parent_after_final_scan)
+    monkeypatch.setattr(workflow_bundles, "_changed_paths_at", swap_parent_after_final_scan)
     with (
         workflow_bundles.resolve_bundle(
             source, "main", "example-bundle", environ=environment
@@ -1440,3 +1440,222 @@ def test_publication_refuses_bundles_parent_symlink_swap_without_external_write(
 
     assert (outside / "example-bundle/templates/product-brief.md").read_bytes() == old_payload
     assert not any(path.name.startswith(".example-bundle.") for path in outside.iterdir())
+
+
+def test_partial_backup_cleanup_failure_restores_from_independent_recovery_record(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Would fail if recursive cleanup corrupted the only copy able to restore the old tree."""
+    from ai_dlc import workflow_bundles
+
+    repository, source, environment = _bundle_repository(tmp_path)
+    project = _bundle_project(tmp_path)
+    with workflow_bundles.resolve_bundle(
+        source, "main", "example-bundle", environ=environment
+    ) as initial:
+        workflow_bundles.import_bundle(
+            project, initial, apply=True, expected_commit=initial.resolved_commit
+        )
+    before = _snapshot(project / ".ai-dlc/bundles/example-bundle")
+    _updated_bundle(repository)
+    real_remove = workflow_bundles._remove_tree_at
+    failed = False
+
+    def delete_then_fail(parent: int, name: str) -> None:
+        nonlocal failed
+        if name == ".example-bundle.backup" and not failed:
+            failed = True
+            descriptor = workflow_bundles._open_named_directory(parent, name)
+            try:
+                os.unlink("bundle.json", dir_fd=descriptor)
+            finally:
+                os.close(descriptor)
+            raise OSError("credential-sentinel")
+        real_remove(parent, name)
+
+    monkeypatch.setattr(workflow_bundles, "_remove_tree_at", delete_then_fail)
+    with (
+        workflow_bundles.resolve_bundle(
+            source, "main", "example-bundle", environ=environment
+        ) as candidate,
+        pytest.raises(ValueError, match="bundle filesystem operation failed"),
+    ):
+        workflow_bundles.import_bundle(
+            project, candidate, apply=True, expected_commit=candidate.resolved_commit
+        )
+
+    bundles = project / ".ai-dlc/bundles"
+    assert _snapshot(bundles / "example-bundle") == before
+    assert sorted(path.name for path in bundles.iterdir()) == ["example-bundle"]
+
+
+@pytest.mark.parametrize("swap_point", ["before-acquire", "after-acquire"])
+def test_apply_binds_requested_project_root_identity_through_return(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, swap_point: str
+):
+    """Would fail if publication continued in a project displaced from its requested pathname."""
+    from ai_dlc import workflow_bundles
+
+    _, source, environment = _bundle_repository(tmp_path)
+    project = _bundle_project(tmp_path)
+    displaced = tmp_path / "displaced-project"
+    replacement = tmp_path / "project-replacement"
+    replacement.mkdir()
+    (replacement / "ai-dlc.toml").write_text("schema = 4\n")
+    before_replacement = _snapshot(replacement)
+
+    def swap_root() -> None:
+        project.rename(displaced)
+        replacement.rename(project)
+
+    if swap_point == "before-acquire":
+        real_open = workflow_bundles._open_project_root
+
+        def open_after_swap(parent: int, name: str, expected: os.stat_result) -> int:
+            swap_root()
+            return real_open(parent, name, expected)
+
+        monkeypatch.setattr(workflow_bundles, "_open_project_root", open_after_swap)
+    else:
+        real_stage = workflow_bundles._stage_bundle_at
+
+        def stage_then_swap(*args, **kwargs):
+            staged = real_stage(*args, **kwargs)
+            swap_root()
+            return staged
+
+        monkeypatch.setattr(workflow_bundles, "_stage_bundle_at", stage_then_swap)
+
+    with (
+        workflow_bundles.resolve_bundle(
+            source, "main", "example-bundle", environ=environment
+        ) as candidate,
+        pytest.raises(ValueError, match="bundle filesystem operation failed"),
+    ):
+        workflow_bundles.import_bundle(
+            project, candidate, apply=True, expected_commit=candidate.resolved_commit
+        )
+
+    assert _snapshot(project) == before_replacement
+    assert _snapshot(displaced) == {"ai-dlc.toml": b"schema = 4\n"}
+
+
+def test_post_stage_conflict_cleanup_failure_is_recovered_and_not_returned_normally(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Would fail if a cleanup error were suppressed behind an ordinary conflict result."""
+    from ai_dlc import workflow_bundles
+
+    repository, source, environment = _bundle_repository(tmp_path)
+    project = _bundle_project(tmp_path)
+    with workflow_bundles.resolve_bundle(
+        source, "main", "example-bundle", environ=environment
+    ) as initial:
+        workflow_bundles.import_bundle(
+            project, initial, apply=True, expected_commit=initial.resolved_commit
+        )
+    _updated_bundle(repository)
+    edited = project / ".ai-dlc/bundles/example-bundle/templates/product-brief.md"
+    real_stage = workflow_bundles._stage_bundle_at
+    real_remove = workflow_bundles._remove_tree_at
+    failed = False
+
+    def stage_then_edit(*args, **kwargs):
+        staged = real_stage(*args, **kwargs)
+        edited.write_text("# Preserve local edit\n")
+        return staged
+
+    def fail_stage_once(parent: int, name: str) -> None:
+        nonlocal failed
+        if ".stage-" in name and not failed:
+            failed = True
+            raise OSError("credential-sentinel")
+        real_remove(parent, name)
+
+    monkeypatch.setattr(workflow_bundles, "_stage_bundle_at", stage_then_edit)
+    monkeypatch.setattr(workflow_bundles, "_remove_tree_at", fail_stage_once)
+    with (
+        workflow_bundles.resolve_bundle(
+            source, "main", "example-bundle", environ=environment
+        ) as candidate,
+        pytest.raises(ValueError, match="bundle filesystem operation failed"),
+    ):
+        workflow_bundles.import_bundle(
+            project, candidate, apply=True, expected_commit=candidate.resolved_commit
+        )
+
+    assert edited.read_text() == "# Preserve local edit\n"
+    bundles = project / ".ai-dlc/bundles"
+    assert sorted(path.name for path in bundles.iterdir()) == ["example-bundle"]
+
+
+def test_stage_open_failure_after_create_removes_transaction_directories(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Would fail if stage creation escaped the cleanup guard before its descriptor opened."""
+    from ai_dlc import workflow_bundles
+
+    _, source, environment = _bundle_repository(tmp_path)
+    project = _bundle_project(tmp_path)
+    before = _snapshot(project)
+    real_open = workflow_bundles._open_named_directory
+    failed = False
+
+    def fail_stage_open_once(parent: int, name: str) -> int:
+        nonlocal failed
+        if ".stage-" in name and not failed:
+            failed = True
+            raise OSError("credential-sentinel")
+        return real_open(parent, name)
+
+    monkeypatch.setattr(workflow_bundles, "_open_named_directory", fail_stage_open_once)
+    with (
+        workflow_bundles.resolve_bundle(
+            source, "main", "example-bundle", environ=environment
+        ) as candidate,
+        pytest.raises(ValueError, match="bundle filesystem operation failed"),
+    ):
+        workflow_bundles.import_bundle(
+            project, candidate, apply=True, expected_commit=candidate.resolved_commit
+        )
+
+    assert _snapshot(project) == before
+
+
+def test_first_import_placeholder_swap_preserves_empty_authored_destination(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Would fail if first publication replaced an empty directory not held as its placeholder."""
+    from ai_dlc import workflow_bundles
+
+    _, source, environment = _bundle_repository(tmp_path)
+    project = _bundle_project(tmp_path)
+    real_placeholder = workflow_bundles._create_destination_placeholder
+    displaced: Path | None = None
+
+    def create_then_swap(parent: int, bundle_id: str) -> int:
+        nonlocal displaced
+        descriptor = real_placeholder(parent, bundle_id)
+        bundles = project / ".ai-dlc/bundles"
+        displaced = bundles / "displaced-placeholder"
+        (bundles / bundle_id).rename(displaced)
+        (bundles / bundle_id).mkdir()
+        return descriptor
+
+    monkeypatch.setattr(
+        workflow_bundles, "_create_destination_placeholder", create_then_swap, raising=False
+    )
+    with (
+        workflow_bundles.resolve_bundle(
+            source, "main", "example-bundle", environ=environment
+        ) as candidate,
+        pytest.raises(ValueError, match="bundle filesystem operation failed"),
+    ):
+        workflow_bundles.import_bundle(
+            project, candidate, apply=True, expected_commit=candidate.resolved_commit
+        )
+
+    destination = project / ".ai-dlc/bundles/example-bundle"
+    assert destination.is_dir()
+    assert list(destination.iterdir()) == []
+    assert displaced is not None and not displaced.exists()
