@@ -13,40 +13,45 @@
 ## Global constraints
 
 - Existing schema 4, profile ownership, credential isolation, authored-content preservation, and completion gates remain intact.
-- No runtime implementation is delivered by this planning branch.
+- The original planning delivery contained no runtime implementation; the
+  current repository now includes completed implementation through SAN-11 and
+  SAN-12 Tasks 1 and 2.
 - Native macOS arm64 and Ubuntu 24.04 arm64 devcontainer are the initial qualification targets; client/hosted claims require actual evidence.
 - UI/UX is optional within product development. Specification is observable behavior; ticket is a deliverable slice; task is a smaller implementation step.
 - Paid experiments require a separately declared budget, and human ratings require humans.
-- Integrate the planning branch before feature work. Run source bootstrap and required project checks as described in AGENTS.md.
+- Before ticket work, confirm its predecessors are Done in Linear. Continue
+  active work on its bound `codex/<work-id>` branch; start later tickets from
+  current main only when their dependencies are complete. Run source bootstrap
+  and required project checks as described in AGENTS.md.
 - Use one reviewed branch per ticket, with independently finishable specifications. Do not implement dependency APIs by guessing.
 - Future Work.depends_on/requirements fields are introduced only by the traceability ticket; until then use this graph and native tracker relations.
 
 ## Ticket order and plans
 
-| Work ID | Milestone | Prerequisites | Plan |
-| --- | --- | --- | --- |
-| `component-capability-contract` | M1 | None | [Execute](2026-09-05-component-capability-contract.md) |
-| `connected-project-readiness` | M1 | component-capability-contract | [Execute](2026-09-05-connected-project-readiness.md) |
-| `linear-provider-onboarding` | M1 | component-capability-contract | [Execute](2026-09-05-linear-provider-onboarding.md) |
-| `portable-workflow-bundles` | M1 | component-capability-contract, connected-project-readiness, linear-provider-onboarding | [Execute](2026-09-05-portable-workflow-bundles.md) |
-| `product-shaping-workflow` | M2 | None | [Execute](2026-09-05-product-shaping-workflow.md) |
-| `spec-delivery-traceability` | M2 | product-shaping-workflow | [Execute](2026-09-05-spec-delivery-traceability.md) |
-| `design-pm-workflow` | M2 | product-shaping-workflow, spec-delivery-traceability | [Execute](2026-09-05-design-pm-workflow.md) |
-| `framework-qualification` | M3 | connected-project-readiness, linear-provider-onboarding, portable-workflow-bundles, spec-delivery-traceability | [Execute](2026-09-05-framework-qualification.md) |
-| `workflow-quality-calibration` | M3 | product-shaping-workflow, spec-delivery-traceability | [Execute](2026-09-05-workflow-quality-calibration.md) |
-| `design-pm-calibration` | M3 | design-pm-workflow | [Execute](2026-09-05-design-pm-calibration.md) |
+| Work ID | Status snapshot | Milestone | Prerequisites | Plan |
+| --- | --- | --- | --- | --- |
+| `component-capability-contract` | Done | M1 | None | [Execute](2026-09-05-component-capability-contract.md) |
+| `connected-project-readiness` | Done | M1 | component-capability-contract | [Execute](2026-09-05-connected-project-readiness.md) |
+| `linear-provider-onboarding` | Done | M1 | component-capability-contract | [Execute](2026-09-05-linear-provider-onboarding.md) |
+| `portable-workflow-bundles` | In Progress — Tasks 1–2 complete | M1 | component-capability-contract, connected-project-readiness, linear-provider-onboarding | [Execute](2026-09-05-portable-workflow-bundles.md) |
+| `product-shaping-workflow` | Backlog | M2 | None | [Execute](2026-09-05-product-shaping-workflow.md) |
+| `spec-delivery-traceability` | Backlog | M2 | product-shaping-workflow | [Execute](2026-09-05-spec-delivery-traceability.md) |
+| `design-pm-workflow` | Backlog | M2 | product-shaping-workflow, spec-delivery-traceability | [Execute](2026-09-05-design-pm-workflow.md) |
+| `framework-qualification` | Backlog | M3 | connected-project-readiness, linear-provider-onboarding, portable-workflow-bundles, spec-delivery-traceability | [Execute](2026-09-05-framework-qualification.md) |
+| `workflow-quality-calibration` | Backlog | M3 | product-shaping-workflow, spec-delivery-traceability | [Execute](2026-09-05-workflow-quality-calibration.md) |
+| `design-pm-calibration` | Backlog | M3 | design-pm-workflow | [Execute](2026-09-05-design-pm-calibration.md) |
 
-Default first implementation: component-capability-contract.
-Product-shaping-workflow is independently ready for a guidance-focused owner.
-M1 and M2 are outcomes, not a requirement to serialize independent work.
+Finish portable-workflow-bundles (SAN-12), then continue with
+product-shaping-workflow (SAN-13). M1 and M2 are outcomes, not a requirement to
+serialize otherwise independent work.
 
 ## Milestone exit criteria
 
 ### M1: Connected setup and replaceable guidance
 
-- [ ] Explicit role selection resolves tool modules, configuration requirements, and provider guidance.
-- [ ] Root-aware setup can prepare the selected tools; offline readiness names concrete gaps without false qualification claims.
-- [ ] Linear discovery and local configuration need no manual UUID hunting or secret persistence.
+- [x] Explicit role selection resolves tool modules, configuration requirements, and provider guidance.
+- [x] Root-aware setup can prepare the selected tools; offline readiness names concrete gaps without false qualification claims.
+- [x] Linear discovery and local configuration need no manual UUID hunting or secret persistence.
 - [ ] A pinned external Markdown workflow bundle is usable offline from a fresh checkout and respects owned-content updates.
 
 ### M2: Product-to-delivery workflow
