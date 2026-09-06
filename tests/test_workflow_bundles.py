@@ -745,3 +745,46 @@ def test_duplicate_key_error_does_not_echo_the_arbitrary_key(tmp_path: Path):
     assert str(captured.value) == "bundle.json contains duplicate JSON key"
     assert str(tmp_path) not in str(captured.value)
     assert "credential-sentinel" not in str(captured.value)
+
+
+def test_manifest_loader_rejects_same_inode_content_mutation_during_read(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Would fail if equal-length in-place changes escaped post-read identity validation."""
+    from ai_dlc import workflow_bundles
+
+    manifest_path = tmp_path / "bundle.json"
+    manifest_path.write_bytes(b'{"before":1}')
+    initial = manifest_path.stat()
+    real_read = os.read
+    mutated = False
+
+    def mutate_then_read(descriptor: int, count: int) -> bytes:
+        nonlocal mutated
+        if not mutated:
+            manifest_path.write_bytes(b'{"before":2}')
+            os.utime(
+                manifest_path,
+                ns=(initial.st_atime_ns, initial.st_mtime_ns + 1_000_000_000),
+            )
+            mutated = True
+        return real_read(descriptor, count)
+
+    monkeypatch.setattr(workflow_bundles.os, "read", mutate_then_read)
+
+    with pytest.raises(ValueError, match="changed during validation"):
+        workflow_bundles.load_bundle_manifest(tmp_path)
+
+
+def test_overdeep_undeclared_tree_is_rejected_without_recursion_error(tmp_path: Path):
+    """Would fail if undeclared traversal were not bounded by the 16-segment contract."""
+    from ai_dlc.workflow_bundles import validate_bundle
+
+    manifest = _write_bundle(tmp_path)
+    overdeep = tmp_path
+    for _ in range(17):
+        overdeep /= "d"
+    overdeep.mkdir(parents=True)
+
+    with pytest.raises(ValueError, match="at most 16 path segments"):
+        validate_bundle(tmp_path, manifest)

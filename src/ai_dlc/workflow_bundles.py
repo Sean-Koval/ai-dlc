@@ -136,7 +136,7 @@ def _regular_file_bytes(root: Path, relative: PurePosixPath, *, maximum: int) ->
         if len(content) > maximum or after.st_size > maximum:
             limit = "1 MiB" if maximum == _MAX_MANIFEST_BYTES else "2 MiB"
             raise ValueError(f"bundle path must be at most {limit}: {relative.as_posix()}")
-        if not _same_object(before, after):
+        if _identity(before) != _identity(after):
             raise ValueError("bundle checkout changed during validation")
         return content
 
@@ -239,6 +239,8 @@ def _checkout_tree(root: Path) -> _TreeSnapshot:
             relative = relative_directory / name
             if relative_directory == PurePosixPath() and name == ".git":
                 continue
+            if len(relative.parts) > _MAX_PATH_SEGMENTS:
+                raise ValueError("bundle checkout tree paths must contain at most 16 path segments")
             relative_string = relative.as_posix()
             child_before = os.stat(name, dir_fd=descriptor, follow_symlinks=False)
             if stat.S_ISLNK(child_before.st_mode):
