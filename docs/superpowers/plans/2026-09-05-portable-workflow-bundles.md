@@ -97,12 +97,12 @@ under the frozen limits. The requested-ID comparison belongs to Task 2's resolve
 because `validate_bundle` intentionally receives no requested ID. Validate all
 assets before planning a write; imports and rendering remain Tasks 2 and 3.
 
-- [ ] 1.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
-- [ ] 1.2 Add focused failing cases for this task's specified behavior and failure paths. Run the named focused suite and capture the expected failure before implementation.
-- [ ] 1.3 Implement duplicate-key-safe manifest loading and `validate_bundle` with malformed, oversized, traversal, symlink, non-regular, extra-file, digest, duplicate name/path, exact export coverage, and portable skill-frontmatter cases under the frozen limits. Requested-ID comparison remains Task 2 resolver behavior. Validate all assets before planning a write; imports and rendering remain Tasks 2 and 3.
-- [ ] 1.4 Run `uv run --locked --no-sync pytest -q tests/test_workflow_bundles.py tests/test_profile_source.py tests/test_rendering.py tests/test_templates.py tests/test_config.py tests/test_readiness.py tests/test_cli.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
-- [ ] 1.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
-- [ ] 1.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
+- [x] 1.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
+- [x] 1.2 Add focused failing cases for this task's specified behavior and failure paths. Run the named focused suite and capture the expected failure before implementation.
+- [x] 1.3 Implement duplicate-key-safe manifest loading and `validate_bundle` with malformed, oversized, traversal, symlink, non-regular, extra-file, digest, duplicate name/path, exact export coverage, and portable skill-frontmatter cases under the frozen limits. Requested-ID comparison remains Task 2 resolver behavior. Validate all assets before planning a write; imports and rendering remain Tasks 2 and 3.
+- [x] 1.4 Run `uv run --locked --no-sync pytest -q tests/test_workflow_bundles.py tests/test_profile_source.py tests/test_rendering.py tests/test_templates.py tests/test_config.py tests/test_readiness.py tests/test_cli.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
+- [x] 1.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
+- [x] 1.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
 
 ### Task 2: Pinned import preview/apply
 
@@ -116,12 +116,12 @@ vendored lock, intact same-owner updates, and rollback on partial file errors.
 Import must not select, render, or edit config. Preserve the existing
 profile-source security contract when sharing helpers.
 
-- [ ] 2.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
-- [ ] 2.2 Add focused failing cases for this task's specified behavior and failure paths. Run the named focused suite and capture the expected failure before implementation.
-- [ ] 2.3 Implement portable temporary source resolution, requested/manifest ID equality, reviewed revision matching at the service boundary, the specified complete vendored lock, intact same-owner update guards, and transactional rollback. Import must not select, render, or edit config. Preserve the existing profile-source security contract when sharing helpers.
-- [ ] 2.4 Run `uv run --locked --no-sync pytest -q tests/test_workflow_bundles.py tests/test_profile_source.py tests/test_rendering.py tests/test_templates.py tests/test_config.py tests/test_readiness.py tests/test_cli.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
-- [ ] 2.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
-- [ ] 2.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
+- [x] 2.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
+- [x] 2.2 Add focused failing cases for this task's specified behavior and failure paths. Run the named focused suite and capture the expected failure before implementation.
+- [x] 2.3 Implement portable temporary source resolution, requested/manifest ID equality, reviewed revision matching at the service boundary, the specified complete vendored lock, intact same-owner update guards, and transactional rollback. Import must not select, render, or edit config. Preserve the existing profile-source security contract when sharing helpers.
+- [x] 2.4 Run `uv run --locked --no-sync pytest -q tests/test_workflow_bundles.py tests/test_profile_source.py tests/test_rendering.py tests/test_templates.py tests/test_config.py tests/test_readiness.py tests/test_cli.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
+- [x] 2.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
+- [x] 2.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
 
 ### Task 3: Client and template distribution
 

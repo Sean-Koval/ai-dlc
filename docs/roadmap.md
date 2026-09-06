@@ -1,8 +1,8 @@
 # AI-DLC roadmap
 
-Updated: 2026-09-05. Linear owns priority and status. This document owns the
+Updated: 2026-09-06. Linear owns priority and status. This document owns the
 delivery sequence; [product direction](product-direction.md) owns the intended
-outcomes. The capabilities below are planned, not shipped.
+outcomes. Statuses below are a delivery snapshot, not a replacement for Linear.
 
 ## Direction and current baseline
 
@@ -12,29 +12,34 @@ tools or AI-DLC services as appropriate. UI/UX is an optional workflow, not the
 framework's organizing purpose.
 
 The current Python implementation supplies bootstrap/enrollment, scoped
-configuration, provider adapters, managed assets, work records, and finish gates.
-The next work connects those foundations and improves product-to-delivery
+configuration, provider capability and readiness contracts, guided Linear
+connection, managed assets, work records, and finish gates. SAN-12 has added
+validated pinned bundle import; its remaining distribution task connects those
+vendored assets to supported harnesses before work moves to product-to-delivery
 guidance. See [current architecture](architecture.md) and
 [planned contracts](design/framework-delivery.md) for the distinction.
 
 ## Dependency-ordered delivery
 
 Each row is an independently reviewed ticket with an execution plan. Plan tasks
-are steps inside that ticket, not additional disconnected issues. All ten items
-were published to the Sandbox-aidlc team; SAN-6 and SAN-7 were revised in place.
+are steps inside that ticket, not additional disconnected issues. SAN-9, SAN-10,
+and SAN-11 are Done. SAN-12 is In Progress: Tasks 1 and 2 are complete, while
+Task 3 and Task 4 closeout are next. The other six tickets remain in Backlog.
+All ten items were published to the Sandbox-aidlc team; SAN-6 and SAN-7 were
+revised in place.
 
-| Ticket | Outcome | Must follow | Execution plan |
-| --- | --- | --- | --- |
-| [SAN-9](https://linear.app/sandbox-aidlc/issue/SAN-9/connect-provider-roles-to-tool-installation-and-harness-guidance) | M1: Connect provider roles to tool installation and harness guidance | Planning integrated | [component-capability-contract](superpowers/plans/2026-09-05-component-capability-contract.md) |
-| [SAN-10](https://linear.app/sandbox-aidlc/issue/SAN-10/make-selected-project-tools-and-guidance-ready-across-machines) | M1: Make selected project tools and guidance ready across machines | SAN-9 | [connected-project-readiness](superpowers/plans/2026-09-05-connected-project-readiness.md) |
-| [SAN-11](https://linear.app/sandbox-aidlc/issue/SAN-11/discover-and-safely-configure-a-projects-linear-connection) | M1: Discover and safely configure a project's Linear connection | SAN-9 | [linear-provider-onboarding](superpowers/plans/2026-09-05-linear-provider-onboarding.md) |
-| [SAN-12](https://linear.app/sandbox-aidlc/issue/SAN-12/import-pinned-workflow-guidance-and-expose-it-to-supported-harnesses) | M1: Import pinned workflow guidance and expose it to supported harnesses | SAN-9, SAN-10, SAN-11 | [portable-workflow-bundles](superpowers/plans/2026-09-05-portable-workflow-bundles.md) |
-| [SAN-13](https://linear.app/sandbox-aidlc/issue/SAN-13/guide-product-discovery-and-feature-selection-for-new-and-existing) | M2: Guide product discovery and feature selection for new and existing products | Planning integrated | [product-shaping-workflow](superpowers/plans/2026-09-05-product-shaping-workflow.md) |
-| [SAN-14](https://linear.app/sandbox-aidlc/issue/SAN-14/carry-product-requirements-into-independently-deliverable) | M2: Carry product requirements into independently deliverable specifications and tickets | SAN-13 | [spec-delivery-traceability](superpowers/plans/2026-09-05-spec-delivery-traceability.md) |
-| [SAN-6](https://linear.app/sandbox-aidlc/issue/SAN-6/add-optional-uiux-design-generation-and-evaluation-workflow) | M2: Add optional UI/UX design generation and evaluation workflow | SAN-13, SAN-14 | [design-pm-workflow](superpowers/plans/2026-09-05-design-pm-workflow.md) |
-| [SAN-15](https://linear.app/sandbox-aidlc/issue/SAN-15/qualify-portable-setup-provider-replacement-and-development-handoffs) | M3: Qualify portable setup, provider replacement, and development handoffs | SAN-10, SAN-11, SAN-12, SAN-14 | [framework-qualification](superpowers/plans/2026-09-05-framework-qualification.md) |
-| [SAN-16](https://linear.app/sandbox-aidlc/issue/SAN-16/evaluate-product-shaping-and-delivery-guidance-against-baseline) | M3: Evaluate product shaping and delivery guidance against baseline behavior | SAN-13, SAN-14 | [workflow-quality-calibration](superpowers/plans/2026-09-05-workflow-quality-calibration.md) |
-| [SAN-7](https://linear.app/sandbox-aidlc/issue/SAN-7/calibrate-uiux-evaluation-and-measure-its-incremental-value) | M3: Calibrate UI/UX evaluation and measure its incremental value | SAN-6 | [design-pm-calibration](superpowers/plans/2026-09-05-design-pm-calibration.md) |
+| Ticket | Status snapshot | Outcome | Must follow | Execution plan |
+| --- | --- | --- | --- | --- |
+| [SAN-9](https://linear.app/sandbox-aidlc/issue/SAN-9/connect-provider-roles-to-tool-installation-and-harness-guidance) | Done | M1: Connect provider roles to tool installation and harness guidance | Planning integrated | [component-capability-contract](superpowers/plans/2026-09-05-component-capability-contract.md) |
+| [SAN-10](https://linear.app/sandbox-aidlc/issue/SAN-10/make-selected-project-tools-and-guidance-ready-across-machines) | Done | M1: Make selected project tools and guidance ready across machines | SAN-9 | [connected-project-readiness](superpowers/plans/2026-09-05-connected-project-readiness.md) |
+| [SAN-11](https://linear.app/sandbox-aidlc/issue/SAN-11/discover-and-safely-configure-a-projects-linear-connection) | Done | M1: Discover and safely configure a project's Linear connection | SAN-9 | [linear-provider-onboarding](superpowers/plans/2026-09-05-linear-provider-onboarding.md) |
+| [SAN-12](https://linear.app/sandbox-aidlc/issue/SAN-12/import-pinned-workflow-guidance-and-expose-it-to-supported-harnesses) | In Progress — Tasks 1–2 complete; Tasks 3–4 next | M1: Import pinned workflow guidance and expose it to supported harnesses | SAN-9, SAN-10, SAN-11 | [portable-workflow-bundles](superpowers/plans/2026-09-05-portable-workflow-bundles.md) |
+| [SAN-13](https://linear.app/sandbox-aidlc/issue/SAN-13/guide-product-discovery-and-feature-selection-for-new-and-existing) | Backlog | M2: Guide product discovery and feature selection for new and existing products | Planning integrated | [product-shaping-workflow](superpowers/plans/2026-09-05-product-shaping-workflow.md) |
+| [SAN-14](https://linear.app/sandbox-aidlc/issue/SAN-14/carry-product-requirements-into-independently-deliverable) | Backlog | M2: Carry product requirements into independently deliverable specifications and tickets | SAN-13 | [spec-delivery-traceability](superpowers/plans/2026-09-05-spec-delivery-traceability.md) |
+| [SAN-6](https://linear.app/sandbox-aidlc/issue/SAN-6/add-optional-uiux-design-generation-and-evaluation-workflow) | Backlog | M2: Add optional UI/UX design generation and evaluation workflow | SAN-13, SAN-14 | [design-pm-workflow](superpowers/plans/2026-09-05-design-pm-workflow.md) |
+| [SAN-15](https://linear.app/sandbox-aidlc/issue/SAN-15/qualify-portable-setup-provider-replacement-and-development-handoffs) | Backlog | M3: Qualify portable setup, provider replacement, and development handoffs | SAN-10, SAN-11, SAN-12, SAN-14 | [framework-qualification](superpowers/plans/2026-09-05-framework-qualification.md) |
+| [SAN-16](https://linear.app/sandbox-aidlc/issue/SAN-16/evaluate-product-shaping-and-delivery-guidance-against-baseline) | Backlog | M3: Evaluate product shaping and delivery guidance against baseline behavior | SAN-13, SAN-14 | [workflow-quality-calibration](superpowers/plans/2026-09-05-workflow-quality-calibration.md) |
+| [SAN-7](https://linear.app/sandbox-aidlc/issue/SAN-7/calibrate-uiux-evaluation-and-measure-its-incremental-value) | Backlog | M3: Calibrate UI/UX evaluation and measure its incremental value | SAN-6 | [design-pm-calibration](superpowers/plans/2026-09-05-design-pm-calibration.md) |
 
 ### M1: Connected setup and replaceable guidance
 
@@ -60,11 +65,13 @@ preparation or become invented results.
 
 ## Start and completion rules
 
-Default first implementation: [SAN-9](https://linear.app/sandbox-aidlc/issue/SAN-9/connect-provider-roles-to-tool-installation-and-harness-guidance).
+Current implementation focus: finish
+[SAN-12](https://linear.app/sandbox-aidlc/issue/SAN-12/import-pinned-workflow-guidance-and-expose-it-to-supported-harnesses)
+Task 3, then complete its Task 4 review, archive, PR/CI, and work-finish closeout.
 [SAN-13](https://linear.app/sandbox-aidlc/issue/SAN-13/guide-product-discovery-and-feature-selection-for-new-and-existing)
-is independently ready for a product-guidance owner. Integrate this planning
-branch before starting feature branches. Milestone labels do not serialize
-otherwise independent work.
+is the next backlog ticket and remains independently ready for a
+product-guidance owner. Milestone labels do not serialize otherwise independent
+work.
 
 Seven behavior tickets have separate OpenSpec changes; the three M3 tickets
 verify predecessor behavior and do not invent new specifications. Each plan
