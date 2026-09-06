@@ -145,13 +145,20 @@ class _RenderState:
                 os.close(descriptor)
 
 
+@dataclass(frozen=True)
+class _RenderStage:
+    name: str
+    expected: _Snapshot
+
+
 @dataclass
 class _RenderChange:
     path: str
     parent: int
     before: _Snapshot | None
     backup: str | None = None
-    stage: str | None = None
+    stage: _RenderStage | None = None
+    recovery: _RenderStage | None = None
     published: _Snapshot | None = None
     mutated: bool = False
 
@@ -160,7 +167,12 @@ class _RenderChange:
         return PurePosixPath(self.path).name
 
 
-def _stage_render_file(parent: int, content: bytes, mode: int) -> str:
+def _verify_render_stage(parent: int, stage: _RenderStage) -> None:
+    if not _matches_render_file(_read_render_file(parent, stage.name), stage.expected):
+        raise ValueError("render staging file changed")
+
+
+def _stage_render_file(parent: int, content: bytes, mode: int) -> _RenderStage:
     name = f".ai-dlc-{secrets.token_hex(12)}"
     descriptor = os.open(
         name,
@@ -179,6 +191,7 @@ def _stage_render_file(parent: int, content: bytes, mode: int) -> str:
         named = os.stat(name, dir_fd=parent, follow_symlinks=False)
         if not bundle_fs._same_object(named, created):
             raise OSError("render staging file changed")
+        staged = _RenderStage(name, (content, os.fstat(descriptor)))
     except BaseException:
         for _ in range(2):
             try:
@@ -191,7 +204,7 @@ def _stage_render_file(parent: int, content: bytes, mode: int) -> str:
         raise
     finally:
         os.close(descriptor)
-    return name
+    return staged
 
 
 def _publish_render_change(
@@ -201,6 +214,7 @@ def _publish_render_change(
     if content is not None:
         mode = stat.S_IMODE(change.before[1].st_mode) if change.before is not None else 0o644
         change.stage = _stage_render_file(change.parent, content, mode)
+        _verify_render_stage(change.parent, change.stage)
     state.verify_directories()
     if not _matches_render_file(_read_render_file(change.parent, change.name), change.before):
         raise ValueError(f"render destination changed after planning: {change.path}")
@@ -213,12 +227,13 @@ def _publish_render_change(
             raise ValueError(f"render destination changed during publication: {change.path}")
     state.verify_directories()
     if change.stage is not None:
-        staged = _read_render_file(change.parent, change.stage)
-        bundle_fs._rename_directory_noreplace(change.parent, change.stage, change.name)
+        staged = change.stage
+        _verify_render_stage(change.parent, staged)
+        bundle_fs._rename_directory_noreplace(change.parent, staged.name, change.name)
         change.stage = None
-        change.published = staged
+        change.published = staged.expected
         change.mutated = True
-        if not _matches_render_file(_read_render_file(change.parent, change.name), staged):
+        if not _matches_render_file(_read_render_file(change.parent, change.name), staged.expected):
             raise ValueError(f"render destination changed during publication: {change.path}")
     state.verify_directories()
 
@@ -234,7 +249,7 @@ def _restore_render_change(change: _RenderChange) -> None:
         if not _matches_render_file(captured, change.published):
             bundle_fs._rename_directory_noreplace(change.parent, displaced, change.name)
             raise OSError("render recovery preserved a late authored edit")
-        change.stage = displaced
+        change.stage = _RenderStage(displaced, change.published)
         change.published = None
     if change.backup is not None:
         bundle_fs._rename_directory_noreplace(change.parent, change.backup, change.name)
@@ -244,13 +259,18 @@ def _restore_render_change(change: _RenderChange) -> None:
         and change.before is not None
         and _read_render_file(change.parent, change.name) is None
     ):
-        content, metadata = change.before
-        recovery = _stage_render_file(change.parent, content, stat.S_IMODE(metadata.st_mode))
-        change.backup = recovery
-        bundle_fs._rename_directory_noreplace(change.parent, recovery, change.name)
-        change.backup = None
+        if change.recovery is None:
+            content, metadata = change.before
+            change.recovery = _stage_render_file(
+                change.parent, content, stat.S_IMODE(metadata.st_mode)
+            )
+    if change.recovery is not None:
+        _verify_render_stage(change.parent, change.recovery)
+        bundle_fs._rename_directory_noreplace(change.parent, change.recovery.name, change.name)
+        change.recovery = None
     if change.stage is not None:
-        os.unlink(change.stage, dir_fd=change.parent)
+        _verify_render_stage(change.parent, change.stage)
+        os.unlink(change.stage.name, dir_fd=change.parent)
         change.stage = None
 
 

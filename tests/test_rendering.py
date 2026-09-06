@@ -879,3 +879,88 @@ def test_bundle_render_recovery_preserves_late_deletion_of_untouched_file(tmp_pa
 
     assert not ownership.exists()
     assert (tmp_path / "docs/templates/review-note.md").read_bytes() == b"# One\n"
+
+
+def test_bundle_render_rejects_changed_completed_stage_bytes(tmp_path, monkeypatch):
+    """A completed stage must stay authenticated to the content planned for ownership."""
+    import os
+
+    from ai_dlc import agents
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
+    )
+    _write_vendored_bundle(
+        tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# One\n")}
+    )
+    agents.render_agents(tmp_path, apply=True)
+    ownership = tmp_path / ".ai-dlc/agent-ownership.json"
+    ownership_before = ownership.read_bytes()
+    _write_vendored_bundle(
+        tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# Two\n")}
+    )
+    original_stage = agents._stage_render_file
+
+    def change_completed_stage(parent, content, mode):
+        before = set(os.listdir(parent))
+        staged = original_stage(parent, content, mode)
+        if content == b"# Two\n":
+            (name,) = set(os.listdir(parent)) - before
+            descriptor = os.open(name, os.O_WRONLY | os.O_TRUNC, dir_fd=parent)
+            with os.fdopen(descriptor, "wb") as stream:
+                stream.write(b"unexpected completed stage bytes\r\n")
+        return staged
+
+    monkeypatch.setattr(agents, "_stage_render_file", change_completed_stage)
+
+    with pytest.raises((ValueError, OSError), match="staging file changed"):
+        agents.render_agents(tmp_path, apply=True)
+
+    assert (tmp_path / "docs/templates/review-note.md").read_bytes() == b"# One\n"
+    assert ownership.read_bytes() == ownership_before
+
+
+def test_bundle_render_recovery_preserves_authored_completed_stage_replacement(
+    tmp_path, monkeypatch
+):
+    """Target conflict recovery must not unlink a replacement of the completed stage."""
+    import os
+
+    from ai_dlc import agents
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
+    )
+    _write_vendored_bundle(
+        tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# One\n")}
+    )
+    agents.render_agents(tmp_path, apply=True)
+    destination = tmp_path / "docs/templates/review-note.md"
+    ownership = tmp_path / ".ai-dlc/agent-ownership.json"
+    ownership_before = ownership.read_bytes()
+    _write_vendored_bundle(
+        tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# Two\n")}
+    )
+    original_stage = agents._stage_render_file
+    replacements = []
+
+    def replace_completed_stage_then_edit_target(parent, content, mode):
+        before = set(os.listdir(parent))
+        staged = original_stage(parent, content, mode)
+        if content == b"# Two\n":
+            (name,) = set(os.listdir(parent)) - before
+            authored = destination.parent / name
+            authored.rename(tmp_path / "displaced-stage.md")
+            authored.write_bytes(b"authored replacement of completed stage\r\n")
+            replacements.append(authored)
+            destination.write_bytes(b"late authored target edit\r\n")
+        return staged
+
+    monkeypatch.setattr(agents, "_stage_render_file", replace_completed_stage_then_edit_target)
+
+    with pytest.raises((ValueError, OSError)):
+        agents.render_agents(tmp_path, apply=True)
+
+    assert replacements[0].read_bytes() == b"authored replacement of completed stage\r\n"
+    assert destination.read_bytes() == b"late authored target edit\r\n"
+    assert ownership.read_bytes() == ownership_before
