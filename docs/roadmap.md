@@ -15,16 +15,18 @@ The current Python implementation supplies bootstrap/enrollment, scoped
 configuration, provider capability and readiness contracts, guided Linear
 connection, managed assets, work records, and finish gates. SAN-12 has added
 validated pinned bundle import and client/template distribution to supported
-harnesses; final review and closeout remain before work moves to product-to-delivery
-guidance. See [current architecture](architecture.md) and
+harnesses. Tasks 1–3 implementation is committed, but final review is not
+accepted because staged-file identity is not preserved through publication and
+cleanup. See [current architecture](architecture.md) and
 [planned contracts](design/framework-delivery.md) for the distinction.
 
 ## Dependency-ordered delivery
 
 Each row is an independently reviewed ticket with an execution plan. Plan tasks
 are steps inside that ticket, not additional disconnected issues. SAN-9, SAN-10,
-and SAN-11 are Done. SAN-12 is In Progress: Tasks 1–3 are complete, while Task 4
-review and closeout are next. The other six tickets remain in Backlog.
+and SAN-11 are Done. SAN-12 is In Progress: Tasks 1–3 implementation is
+committed, while final review and Task 4 closeout are blocked pending an
+additional remediation decision. The other six tickets remain in Backlog.
 All ten items were published to the Sandbox-aidlc team; SAN-6 and SAN-7 were
 revised in place.
 
@@ -33,7 +35,7 @@ revised in place.
 | [SAN-9](https://linear.app/sandbox-aidlc/issue/SAN-9/connect-provider-roles-to-tool-installation-and-harness-guidance) | Done | M1: Connect provider roles to tool installation and harness guidance | Planning integrated | [component-capability-contract](superpowers/plans/2026-09-05-component-capability-contract.md) |
 | [SAN-10](https://linear.app/sandbox-aidlc/issue/SAN-10/make-selected-project-tools-and-guidance-ready-across-machines) | Done | M1: Make selected project tools and guidance ready across machines | SAN-9 | [connected-project-readiness](superpowers/plans/2026-09-05-connected-project-readiness.md) |
 | [SAN-11](https://linear.app/sandbox-aidlc/issue/SAN-11/discover-and-safely-configure-a-projects-linear-connection) | Done | M1: Discover and safely configure a project's Linear connection | SAN-9 | [linear-provider-onboarding](superpowers/plans/2026-09-05-linear-provider-onboarding.md) |
-| [SAN-12](https://linear.app/sandbox-aidlc/issue/SAN-12/import-pinned-workflow-guidance-and-expose-it-to-supported-harnesses) | In Progress — Tasks 1–3 complete; Task 4 closeout next | M1: Import pinned workflow guidance and expose it to supported harnesses | SAN-9, SAN-10, SAN-11 | [portable-workflow-bundles](superpowers/plans/2026-09-05-portable-workflow-bundles.md) |
+| [SAN-12](https://linear.app/sandbox-aidlc/issue/SAN-12/import-pinned-workflow-guidance-and-expose-it-to-supported-harnesses) | In Progress — Tasks 1–3 committed; final review blocked | M1: Import pinned workflow guidance and expose it to supported harnesses | SAN-9, SAN-10, SAN-11 | [portable-workflow-bundles](superpowers/plans/2026-09-05-portable-workflow-bundles.md) |
 | [SAN-13](https://linear.app/sandbox-aidlc/issue/SAN-13/guide-product-discovery-and-feature-selection-for-new-and-existing) | Backlog | M2: Guide product discovery and feature selection for new and existing products | Planning integrated | [product-shaping-workflow](superpowers/plans/2026-09-05-product-shaping-workflow.md) |
 | [SAN-14](https://linear.app/sandbox-aidlc/issue/SAN-14/carry-product-requirements-into-independently-deliverable) | Backlog | M2: Carry product requirements into independently deliverable specifications and tickets | SAN-13 | [spec-delivery-traceability](superpowers/plans/2026-09-05-spec-delivery-traceability.md) |
 | [SAN-6](https://linear.app/sandbox-aidlc/issue/SAN-6/add-optional-uiux-design-generation-and-evaluation-workflow) | Backlog | M2: Add optional UI/UX design generation and evaluation workflow | SAN-13, SAN-14 | [design-pm-workflow](superpowers/plans/2026-09-05-design-pm-workflow.md) |
@@ -65,9 +67,11 @@ preparation or become invented results.
 
 ## Start and completion rules
 
-Current implementation focus: complete
+Current implementation focus: decide and remediate the staged-file identity
+blocker in
 [SAN-12](https://linear.app/sandbox-aidlc/issue/SAN-12/import-pinned-workflow-guidance-and-expose-it-to-supported-harnesses)
-Task 4 final review, OpenSpec archive, PR/CI, and work-finish closeout.
+before repeating final review. OpenSpec archive, PR/CI/merge, and work finish
+remain blocked until that review is accepted.
 [SAN-13](https://linear.app/sandbox-aidlc/issue/SAN-13/guide-product-discovery-and-feature-selection-for-new-and-existing)
 is the next backlog ticket and remains independently ready for a
 product-guidance owner. Milestone labels do not serialize otherwise independent

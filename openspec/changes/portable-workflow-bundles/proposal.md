@@ -43,5 +43,9 @@ None. Existing schema-4, content ownership, enrollment, and finish contracts rem
 
 Dependencies: component-capability-contract, connected-project-readiness, and
 linear-provider-onboarding for project write-lock coordination.
-Implementation Tasks 1–3 are complete. Final review, OpenSpec archive, PR/CI, and
-work-finish closeout remain. [Execution plan](../../../docs/superpowers/plans/2026-09-05-portable-workflow-bundles.md).
+Implementation Tasks 1–3 are committed, including fix commit `ca5ab0a`, with 739
+focused and 1,134 full tests passing as pre-review local evidence. Final review is
+not accepted because staged-file identity is not preserved from creation through
+publication and cleanup: altered staged bytes can be published, and an authored
+stage-path replacement can be deleted. OpenSpec archive, PR/CI/merge, and work
+finish are blocked pending an additional remediation decision. [Execution plan](../../../docs/superpowers/plans/2026-09-05-portable-workflow-bundles.md).
