@@ -142,10 +142,11 @@ content.
   reserialization of the old dictionary. Invalid plans write nothing.
 - A bundle candidate is a context-managed `BundleCandidate` dataclass in
   workflow_bundles.py with `source: str`, `ref: str`, `bundle_id: str`,
-  `resolved_commit: str`, `root: Path`, `manifest: dict`, and
-  `file_hashes: dict[str, str]`. `root` is temporary reviewed content. Exiting its
-  context cleans temporary content; import copies validated bytes to owned
-  project storage before exit. Revalidate file hashes immediately before copying.
+  `resolved_commit: str`, `root: Path`, `manifest: dict`,
+  `manifest_sha256: str`, and `file_hashes: dict[str, str]`. `root` is temporary
+  reviewed content. Exiting its context cleans temporary content; import copies
+  validated bytes to owned project storage before exit. Revalidate manifest and
+  file hashes immediately before copying.
 
 ## Agent execution and proportional effort
 

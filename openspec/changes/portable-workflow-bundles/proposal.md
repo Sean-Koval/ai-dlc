@@ -5,9 +5,18 @@ This implements the approved framework direction in [product direction](../../..
 
 ## What Changes
 
-- Add malformed, oversized, traversal, symlink, extra-file, digest mismatch, and duplicate-name cases. Validate all assets before planning a write.
-- Implement temporary source resolution, reviewed revision matching, vendored lock, and rollback on partial file errors. Preserve the existing profile-source security contract when sharing helpers.
-- Extend owned skill/template rendering and project-only config validation; demonstrate one external Markdown bundle in a fresh checkout, offline.
+- Add duplicate-key-safe loading plus malformed, oversized, traversal, symlink,
+  non-regular, extra-file, digest, duplicate name/path, exact export coverage, and
+  portable skill-frontmatter cases. Validate all assets before planning a write.
+- Implement portable temporary source resolution, reviewed revision matching at
+  the service boundary, requested/manifest ID equality, the fully specified
+  vendored lock, guarded same-owner updates, and rollback on partial file errors.
+  Preserve the existing
+  profile-source security contract when sharing helpers.
+- Keep import separate from activation. Extend owned skill/template/index
+  rendering, project-only config validation, and bundle-aware readiness;
+  demonstrate one external Markdown bundle in a fresh checkout with its source
+  unavailable.
 
 ## Capabilities
 
@@ -22,11 +31,16 @@ None. Existing schema-4, content ownership, enrollment, and finish contracts rem
 ## Impact
 
 - Create src/ai_dlc/workflow_bundles.py
+- Modify src/ai_dlc/profile_source.py
 - Modify src/ai_dlc/agents.py
 - Modify src/ai_dlc/cli.py
 - Modify src/ai_dlc/config.py
+- Modify src/ai_dlc/readiness.py
 - Test tests/test_workflow_bundles.py
-- Modify tests/test_rendering.py, tests/test_templates.py
+- Modify tests/test_profile_source.py, tests/test_rendering.py,
+  tests/test_templates.py, tests/test_config.py, tests/test_readiness.py, and
+  tests/test_cli.py
 
-Dependencies: component-capability-contract, connected-project-readiness.
+Dependencies: component-capability-contract, connected-project-readiness, and
+linear-provider-onboarding for project write-lock coordination.
 No implementation is complete. [Execution plan](../../../docs/superpowers/plans/2026-09-05-portable-workflow-bundles.md).

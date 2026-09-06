@@ -8,13 +8,49 @@ Imported workflow bundles SHALL record source, exact resolved revision, and comp
 - **WHEN** apply resolves different content from the previewed revision
 - **THEN** the import requires a fresh preview and does not activate changed content
 
+#### Scenario: A reviewer previews an import
+- **WHEN** a portable Git source, exact advertised ref, requested bundle ID, manifest, and payload are valid
+- **THEN** preview reports the exact commit, manifest digest, export mappings, payload paths and hashes without changing project, client, profile, or remote state
+
+#### Scenario: Bundle metadata or content is unsafe
+- **WHEN** JSON has duplicate keys, the manifest ID differs from the requested ID, a path/type/size/count/digest rule fails, a payload is not exactly one declared export, or the checkout contains undeclared payload
+- **THEN** validation fails before any project or client write
+
+#### Scenario: A declared skill is not portable harness guidance
+- **WHEN** its exact four-line `name`/`description` frontmatter is missing or malformed, the name differs from its export, the description violates its bounds, or its Markdown body is empty
+- **THEN** validation rejects the bundle before import or rendering
+
+#### Scenario: Source provenance is machine-specific
+- **WHEN** an import source is a local path or `file:` URL
+- **THEN** import refuses it so committed provenance cannot contain a machine-specific source
+
+#### Scenario: Apply publishes a complete vendored bundle
+- **WHEN** the freshly resolved commit equals the required preview commit and all bytes still validate
+- **THEN** apply transactionally vendors the manifest, every declared payload, and a deterministic lock authenticating the manifest and complete payload map without selecting or rendering the bundle
+
 ### Requirement: WB-02 Owned rendering and integrity
 
 Bundle validation SHALL reject unsafe, undeclared, tampered, or colliding assets before rendering; owned updates SHALL preserve authored modifications.
 
 #### Scenario: An imported skill has a local edit
-- **WHEN** a later import would overwrite that edit
+- **WHEN** a later render after importing an updated revision would overwrite that edit
 - **THEN** the existing ownership workflow reports the conflict and preserves the edited file
+
+#### Scenario: A selected export collides
+- **WHEN** selected bundles reuse an export name, a bundle skill reuses a shipped skill name, or any bundle destination already exists without matching bundle ownership
+- **THEN** rendering reports the collisions before writes and preserves every existing file
+
+#### Scenario: The same owner has an intact update
+- **WHEN** a newly imported revision changes an output whose current bytes still match that bundle's recorded ownership
+- **THEN** rendering may update the owned output and its digest without changing authored files
+
+#### Scenario: A selected bundle removes an export
+- **WHEN** an updated selected bundle no longer exports a previously bundle-owned path
+- **THEN** rendering removes the obsolete output only when its current digest is intact and otherwise blocks without writes
+
+#### Scenario: Bundle publication fails
+- **WHEN** an operational failure occurs while replacing a vendored tree or during a render involving selected or previously owned bundle outputs
+- **THEN** the previous vendored tree and every file in the complete render transaction are restored byte for byte
 
 ### Requirement: WB-03 Direct use and offline continuation
 
@@ -23,3 +59,19 @@ Selected vendored guidance SHALL be discoverable in supported harnesses and usab
 #### Scenario: A fresh checkout has no network
 - **WHEN** the committed bundle and lock are valid
 - **THEN** the harness can discover the selected guidance from the checkout without contacting its source
+
+#### Scenario: A project selects a bundle
+- **WHEN** a unique bundle-ID slug is configured in project-level `agents.bundles` and its vendored content is valid
+- **THEN** rendering exposes its skills in each selected supported client's native skill directory, exposes templates at `docs/templates/NAME.md`, and links both from managed project guidance
+
+#### Scenario: One client is rendered
+- **WHEN** a project with bundle outputs owned for multiple clients renders one selected client
+- **THEN** outputs and ownership for every non-target client are preserved unchanged
+
+#### Scenario: A non-project layer selects a bundle
+- **WHEN** base, personal, or machine configuration defines `agents.bundles`
+- **THEN** configuration validation rejects that layer without changing the active project
+
+#### Scenario: Selected guidance is not usable
+- **WHEN** a selected bundle is missing, tampered, invalid, colliding, locally edited, or not rendered
+- **THEN** project readiness reports an actionable missing or blocked guidance check and does not report ready

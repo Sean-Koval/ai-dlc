@@ -28,7 +28,7 @@
 | `component-capability-contract` | M1 | None | [Execute](2026-09-05-component-capability-contract.md) |
 | `connected-project-readiness` | M1 | component-capability-contract | [Execute](2026-09-05-connected-project-readiness.md) |
 | `linear-provider-onboarding` | M1 | component-capability-contract | [Execute](2026-09-05-linear-provider-onboarding.md) |
-| `portable-workflow-bundles` | M1 | component-capability-contract, connected-project-readiness | [Execute](2026-09-05-portable-workflow-bundles.md) |
+| `portable-workflow-bundles` | M1 | component-capability-contract, connected-project-readiness, linear-provider-onboarding | [Execute](2026-09-05-portable-workflow-bundles.md) |
 | `product-shaping-workflow` | M2 | None | [Execute](2026-09-05-product-shaping-workflow.md) |
 | `spec-delivery-traceability` | M2 | product-shaping-workflow | [Execute](2026-09-05-spec-delivery-traceability.md) |
 | `design-pm-workflow` | M2 | product-shaping-workflow, spec-delivery-traceability | [Execute](2026-09-05-design-pm-workflow.md) |
