@@ -180,6 +180,23 @@ is mutated.
 
 ## Risks / Trade-offs
 
+Failed render stages are intentionally retained. Neither supported platform's
+pathname unlink API provides an identity-conditioned delete; checking identity
+before unlink, even after a rename to a private quarantine, leaves another race
+against same-user replacement. Recovery therefore performs no deletion or rewrite
+of complete or partial stage entries. It restores transaction destinations where
+safe and annotates the original exception with retained names/paths. A retained
+stage is not authenticated for future use and is never automatically adopted by
+the next render. This sacrifices automatic removal of failure residue to preserve
+authored content. The scoped remediation does not establish safety of the separate
+successful-transaction backup deletion path.
+
+Inspect retained files with concurrent writers stopped; preserve any authored
+content before deliberate removal. Never delete all `.ai-dlc-*` files by pattern.
+File creation failures report the stage filename; rollback reports its path
+relative to the original project destination. An ancestor moved by another writer
+may require finding that filename in the displaced directory.
+
 - Existing configuration or content is changed accidentally → validate all
   sources/destinations before writes and use rollback/refusal-path tests.
 - An agent implements a neighboring ticket's responsibilities → use the explicit file/interface boundaries and dependency gate.

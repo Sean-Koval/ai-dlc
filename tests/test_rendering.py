@@ -821,10 +821,16 @@ def test_bundle_render_rollback_continues_after_one_restore_failure(tmp_path, mo
 
     monkeypatch.setattr(agents, "_publish_render_change", fail_template_write)
     monkeypatch.setattr(agents, "_restore_render_change", fail_first_restore)
-    with pytest.raises(OSError, match="original publication failure"):
+    with pytest.raises(OSError, match="original publication failure") as failure:
         agents.render_agents(tmp_path, apply=True)
 
-    assert {path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()} == before
+    after = {path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()}
+    assert {path: content for path, content in after.items() if path in before} == before
+    notes = "\n".join(failure.value.__notes__)
+    assert all(path.name.startswith(".ai-dlc-") for path in after.keys() - before.keys())
+    assert all(
+        path.relative_to(tmp_path).as_posix() in notes for path in after.keys() - before.keys()
+    )
 
 
 def test_bundle_render_staging_collision_preserves_authored_file(tmp_path, monkeypatch):
@@ -918,6 +924,150 @@ def test_bundle_render_rejects_changed_completed_stage_bytes(tmp_path, monkeypat
 
     assert (tmp_path / "docs/templates/review-note.md").read_bytes() == b"# One\n"
     assert ownership.read_bytes() == ownership_before
+
+
+@pytest.mark.parametrize("during_creation", [False, True])
+def test_render_stage_cleanup_preserves_replacement_at_delete_boundary(
+    tmp_path, monkeypatch, during_creation
+):
+    """A pathname reused just before deletion must retain the authored inode."""
+    import os
+
+    from ai_dlc import agents
+
+    parent = os.open(tmp_path, os.O_RDONLY | os.O_DIRECTORY)
+    original_unlink = os.unlink
+    authored = b"authored replacement at cleanup boundary\r\n"
+    replacements = []
+
+    def replace_before_unlink(name, *, dir_fd=None):
+        if not replacements:
+            candidates = list(tmp_path.glob(".ai-dlc-*"))
+            stage_path = next(path for path in candidates if path.is_file())
+            stage_path.rename(tmp_path / "displaced-stage")
+            stage_path.write_bytes(authored)
+            replacements.append((stage_path, stage_path.stat().st_ino))
+        return original_unlink(name, dir_fd=dir_fd)
+
+    def fail_write(*args):
+        original_write(args[0], b"partial stage")
+        raise OSError("stage write failed")
+
+    original_write = os.write
+    try:
+        if during_creation:
+            monkeypatch.setattr(os, "write", fail_write)
+            monkeypatch.setattr(os, "unlink", replace_before_unlink)
+            with pytest.raises(OSError, match="stage write failed") as failure:
+                agents._stage_render_file(parent, b"planned bytes", 0o644)
+        else:
+            stage = agents._stage_render_file(parent, b"planned bytes", 0o644)
+            change = agents._RenderChange("target.md", parent, None, stage=stage)
+            monkeypatch.setattr(os, "unlink", replace_before_unlink)
+            agents._restore_render_change(change)
+        if replacements:
+            path, inode = replacements[0]
+            assert path.read_bytes() == authored
+            assert path.stat().st_ino == inode
+        else:
+            (path,) = tmp_path.glob(".ai-dlc-*")
+            assert path.read_bytes() == (b"partial stage" if during_creation else b"planned bytes")
+        if during_creation:
+            assert any(path.name in note for note in failure.value.__notes__)
+    finally:
+        os.close(parent)
+
+
+def test_bundle_render_failure_restores_outputs_and_reports_retained_stages(tmp_path, monkeypatch):
+    """Safe residue must be discoverable without changing the original render failure."""
+    from ai_dlc import agents
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
+    )
+    _write_vendored_bundle(
+        tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# One\n")}
+    )
+    agents.render_agents(tmp_path, apply=True)
+    _write_vendored_bundle(
+        tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# Two\n")}
+    )
+    before = {path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()}
+    original_publish = agents._publish_render_change
+    original_error = OSError("original publication failure")
+
+    def publish_then_fail(state, change, content):
+        original_publish(state, change, content)
+        if change.path == "docs/templates/review-note.md":
+            raise original_error
+
+    monkeypatch.setattr(agents, "_publish_render_change", publish_then_fail)
+    with pytest.raises(OSError, match="original publication failure") as failure:
+        agents.render_agents(tmp_path, apply=True)
+
+    assert failure.value is original_error
+    assert all(path.read_bytes() == content for path, content in before.items())
+    retained = [path for path in tmp_path.rglob(".ai-dlc-*") if path.is_file()]
+    assert retained
+    notes = "\n".join(failure.value.__notes__)
+    assert all(path.relative_to(tmp_path).as_posix() in notes for path in retained)
+
+
+@pytest.mark.parametrize("failed_attempts", [1, 2])
+def test_bundle_render_recovery_retry_reports_partial_recovery_stage(
+    tmp_path, monkeypatch, failed_attempts
+):
+    """A failed recovery stage remains reported after a later retry restores the output."""
+    import os
+
+    from ai_dlc import agents
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
+    )
+    _write_vendored_bundle(
+        tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# One\n")}
+    )
+    agents.render_agents(tmp_path, apply=True)
+    _write_vendored_bundle(
+        tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# Two\n")}
+    )
+    before = {path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()}
+    original_unlink, original_write = os.unlink, os.write
+    original_error = OSError("original backup cleanup failure")
+    deletions = 0
+    recovery_failures = 0
+
+    def fail_second_backup_delete(name, *, dir_fd=None):
+        nonlocal deletions
+        deletions += 1
+        if deletions == 2:
+            raise original_error
+        return original_unlink(name, dir_fd=dir_fd)
+
+    def fail_first_recovery_write(descriptor, content):
+        nonlocal recovery_failures
+        if deletions >= 2 and recovery_failures < failed_attempts:
+            recovery_failures += 1
+            original_write(descriptor, b"partial recovery bytes")
+            raise OSError("secondary recovery write failure")
+        return original_write(descriptor, content)
+
+    monkeypatch.setattr(os, "unlink", fail_second_backup_delete)
+    monkeypatch.setattr(os, "write", fail_first_recovery_write)
+    with pytest.raises(OSError, match="original backup cleanup failure") as failure:
+        agents.render_agents(tmp_path, apply=True)
+
+    assert failure.value is original_error
+    if failed_attempts == 1:
+        assert all(path.read_bytes() == content for path, content in before.items())
+    partials = [
+        path
+        for path in tmp_path.rglob(".ai-dlc-*")
+        if path.is_file() and path.read_bytes() == b"partial recovery bytes"
+    ]
+    assert len(partials) == failed_attempts
+    assert all(partial.name in "\n".join(failure.value.__notes__) for partial in partials)
 
 
 def test_bundle_render_recovery_preserves_authored_completed_stage_replacement(

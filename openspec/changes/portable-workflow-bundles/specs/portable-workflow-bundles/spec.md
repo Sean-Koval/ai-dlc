@@ -52,6 +52,10 @@ Bundle validation SHALL reject unsafe, undeclared, tampered, or colliding assets
 - **WHEN** an operational failure occurs while replacing a vendored tree or during a render involving selected or previously owned bundle outputs
 - **THEN** the previous vendored tree and every file in the complete render transaction are restored byte for byte
 
+#### Scenario: Render stage cleanup could delete authored content
+- **WHEN** a render fails after creating a complete or partial temporary stage, including a stage displaced during rollback
+- **THEN** recovery preserves the stage pathname without deleting or rewriting its occupant, restores transaction destinations where safe, and reports retained stage filenames or paths on the original failure for inspection
+
 ### Requirement: WB-03 Direct use and offline continuation
 
 Selected vendored guidance SHALL be discoverable in supported harnesses and usable offline; instructions SHALL NOT depend on an AI-DLC daemon or prior chat.

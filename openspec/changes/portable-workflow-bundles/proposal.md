@@ -48,8 +48,10 @@ focused and 1,134 full tests passing as pre-review local evidence. Final review 
 not accepted. The user-authorized fix at `19809bc` carries stage identity and
 expected bytes, fixes the two original reproductions, and passes 741 focused and
 1,136 full tests with all five required outcomes as pre-review local evidence.
-Scoped review still finds that cleanup verifies a stage and then separately
-unlinks its pathname, so an authored replacement arriving between verification
-and unlink can be deleted. The one authorized remediation/review cycle is
-exhausted; OpenSpec archive, PR/CI/merge, and work finish remain blocked pending
-renewed authority and accepted final review. [Execution plan](../../../docs/superpowers/plans/2026-09-05-portable-workflow-bundles.md).
+That review found a remaining verification/unlink race. The maintainer authorized
+another scoped remediation and independent review on September 6. The repair
+retains failed stages and reports their filenames/paths instead of deleting by
+name; portable filesystem APIs do not offer an identity-conditioned unlink.
+The separate successful-transaction backup deletion race remains outside this
+stage repair. OpenSpec archive, PR/CI/merge, and work finish remain blocked on
+whole-change acceptance. [Execution plan](../../../docs/superpowers/plans/2026-09-05-portable-workflow-bundles.md).

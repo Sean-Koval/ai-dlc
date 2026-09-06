@@ -148,7 +148,7 @@ profile-source security contract when sharing helpers.
 
 ## Completion and handoff
 
-- [ ] Run `ai-dlc project check --required`; inspect all five outcomes.
+- [x] Run `ai-dlc project check --required`; inspect all five outcomes.
 - [ ] Run `openspec validate portable-workflow-bundles --strict --no-interactive`, review against this plan, and archive only after all implementation tasks are complete. Update the work record to the exact archived path.
 - [ ] Create/link the PR, complete review and required CI, and use `ai-dlc work finish portable-workflow-bundles` only after merge evidence exists.
 - [ ] Leave a handoff with work/ticket ID, branch and revision, delivered interfaces, checks and evidence locations, unresolved findings, and the next dependency-unblocked ticket.

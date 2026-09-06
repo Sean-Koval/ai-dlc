@@ -192,15 +192,12 @@ def _stage_render_file(parent: int, content: bytes, mode: int) -> _RenderStage:
         if not bundle_fs._same_object(named, created):
             raise OSError("render staging file changed")
         staged = _RenderStage(name, (content, os.fstat(descriptor)))
-    except BaseException:
-        for _ in range(2):
-            try:
-                named = os.stat(name, dir_fd=parent, follow_symlinks=False)
-                if bundle_fs._same_object(named, created):
-                    os.unlink(name, dir_fd=parent)
-                break
-            except OSError:
-                continue
+    except BaseException as original:
+        # There is no portable identity-conditioned unlink. Even a partial
+        # stage may have been replaced or edited since this descriptor opened.
+        original.add_note(
+            f"Render recovery retained stage filename {name}; inspect before removal."
+        )
         raise
     finally:
         os.close(descriptor)
@@ -268,10 +265,8 @@ def _restore_render_change(change: _RenderChange) -> None:
         _verify_render_stage(change.parent, change.recovery)
         bundle_fs._rename_directory_noreplace(change.parent, change.recovery.name, change.name)
         change.recovery = None
-    if change.stage is not None:
-        _verify_render_stage(change.parent, change.stage)
-        os.unlink(change.stage.name, dir_fd=change.parent)
-        change.stage = None
+    # Keep unused stages, including files displaced during rollback. Checking
+    # their identity then unlinking the name can delete a late authored file.
 
 
 def _section(current: str, body: str, toml: bool = False) -> str:
@@ -580,15 +575,26 @@ def _apply_render_transaction(
         for change in reversed(changes):
             try:
                 _restore_render_change(change)
-            except BaseException:  # noqa: BLE001 - finish recovery before re-raising the original
+            except BaseException as recovery_error:  # noqa: BLE001 - finish all recovery
+                for note in getattr(recovery_error, "__notes__", ()):
+                    original.add_note(f"While restoring {change.path}: {note}")
                 retry.append(change)
         for change in retry:
             try:
                 _restore_render_change(change)
-            except BaseException:  # noqa: BLE001 - preserve the original operational failure
+            except BaseException as recovery_error:  # noqa: BLE001 - preserve original failure
+                for note in getattr(recovery_error, "__notes__", ()):
+                    original.add_note(f"While restoring {change.path}: {note}")
                 original.add_note(
                     "Render recovery preserved remaining .ai-dlc- backups for repair."
                 )
+        for change in changes:
+            for stage in (change.stage, change.recovery):
+                if stage is not None:
+                    path = PurePosixPath(change.path).with_name(stage.name)
+                    original.add_note(
+                        f"Render recovery retained stage {path}; inspect before removal."
+                    )
         for name in reversed(state.created):
             relative = PurePosixPath(name)
             parent = state.directories[
