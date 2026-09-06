@@ -16,9 +16,10 @@ configuration, provider capability and readiness contracts, guided Linear
 connection, managed assets, work records, and finish gates. SAN-12 has added
 validated pinned bundle import and client/template distribution to supported
 harnesses. Tasks 1–3 implementation is committed, but final review is not
-accepted. The authorized remediation carries stage identity and expected bytes
-through publication and cleanup, but cleanup still verifies a stage and then
-separately unlinks its pathname. See [current architecture](architecture.md) and
+accepted. The renewed scoped remediation retains failed stages instead of
+performing a racy identity-check/pathname-delete sequence. The separate
+successful-transaction backup deletion path still needs resolution before final
+acceptance. See [current architecture](architecture.md) and
 [planned contracts](design/framework-delivery.md) for the distinction.
 
 ## Dependency-ordered delivery
@@ -26,8 +27,8 @@ separately unlinks its pathname. See [current architecture](architecture.md) and
 Each row is an independently reviewed ticket with an execution plan. Plan tasks
 are steps inside that ticket, not additional disconnected issues. SAN-9, SAN-10,
 and SAN-11 are Done. SAN-12 is In Progress: Tasks 1–3 implementation is
-committed, while final review and Task 4 closeout remain blocked after the one
-authorized remediation/review cycle was exhausted. The other six tickets remain
+committed, while final review and Task 4 closeout remain blocked on the separate
+backup deletion boundary. The other six tickets remain
 in Backlog.
 All ten items were published to the Sandbox-aidlc team; SAN-6 and SAN-7 were
 revised in place.
@@ -69,15 +70,22 @@ preparation or become invented results.
 
 ## Start and completion rules
 
-Current implementation focus: obtain a decision on the remaining cleanup race in
+Current implementation focus: resolve the successful-transaction backup cleanup race in
 [SAN-12](https://linear.app/sandbox-aidlc/issue/SAN-12/import-pinned-workflow-guidance-and-expose-it-to-supported-harnesses)
-after the authorized remediation/review cycle was exhausted. OpenSpec archive,
-PR/CI/merge, and work finish remain blocked; an authored replacement arriving
-between stage verification and pathname unlink can still be deleted.
+after the renewed stage-remediation cycle. OpenSpec archive,
+PR/CI/merge, and work finish remain blocked. Failed stages are now retained and
+reported, preserving authored replacements at those names. The remaining backup
+deletion boundary requires an explicit scope/design decision.
 [SAN-13](https://linear.app/sandbox-aidlc/issue/SAN-13/guide-product-discovery-and-feature-selection-for-new-and-existing)
 is the next backlog ticket and remains independently ready for a
 product-guidance owner. Milestone labels do not serialize otherwise independent
 work.
+
+The maintainer also requested Plane for personal projects and Jira/Confluence
+for work, with Obsidian retained for local viewing and private notes. The
+[provider substitution assessment](planning/provider-substitution-2026-09-06.md)
+records missing adapters and publishing-contract work; this request has not
+changed tracker bindings or published additional backlog tickets.
 
 Seven behavior tickets have separate OpenSpec changes; the three M3 tickets
 verify predecessor behavior and do not invent new specifications. Each plan

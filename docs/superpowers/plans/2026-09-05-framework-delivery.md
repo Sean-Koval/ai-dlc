@@ -15,9 +15,9 @@
 - Existing schema 4, profile ownership, credential isolation, authored-content preservation, and completion gates remain intact.
 - The original planning delivery contained no runtime implementation; the
   current repository now includes completed implementation through SAN-11 and
-  committed SAN-12 Tasks 1–3. The authorized remediation fixes the original
-  stage-integrity reproductions, but SAN-12 final review remains blocked on a
-  cleanup verify/unlink race after the authorized review cycle was exhausted.
+  committed SAN-12 Tasks 1–3. The renewed scoped remediation retains failed
+  stages and reports recovery residue. SAN-12 final review still requires
+  resolution of the separate successful-transaction backup deletion race.
 - Native macOS arm64 and Ubuntu 24.04 arm64 devcontainer are the initial qualification targets; client/hosted claims require actual evidence.
 - UI/UX is optional within product development. Specification is observable behavior; ticket is a deliverable slice; task is a smaller implementation step.
 - Paid experiments require a separately declared budget, and human ratings require humans.
@@ -43,7 +43,7 @@
 | `workflow-quality-calibration` | Backlog | M3 | product-shaping-workflow, spec-delivery-traceability | [Execute](2026-09-05-workflow-quality-calibration.md) |
 | `design-pm-calibration` | Backlog | M3 | design-pm-workflow | [Execute](2026-09-05-design-pm-calibration.md) |
 
-Resolve the exhausted remediation/review cycle and finish
+Resolve the remaining backup deletion boundary and finish
 portable-workflow-bundles (SAN-12), then continue with
 product-shaping-workflow (SAN-13). M1 and M2 are outcomes, not a requirement to
 serialize otherwise independent work.

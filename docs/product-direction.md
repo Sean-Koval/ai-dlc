@@ -15,6 +15,13 @@ workflows. OpenSpec currently provides formal specification, Linear provides
 tracking, and Codex/Claude Code are the implemented client adapters. Those choices
 are replaceable. Stable responsibilities survive provider changes.
 
+The maintainer's September 6 substitution case is Plane for personal ticketing,
+Jira for work ticketing, and Confluence for team document publication, while
+retaining Obsidian for local viewing and private daily notes. Publishing and
+private knowledge are separate responsibilities. These requested adapters are
+not yet shipping; the [substitution assessment](planning/provider-substitution-2026-09-06.md)
+records current support, gaps, and proposed qualification cases.
+
 The harness performs development and can use installed tools directly. AI-DLC
 provides setup, guidance, integration, validation, and evidence services where
 useful. Existing project policies still determine required checks and completion.
