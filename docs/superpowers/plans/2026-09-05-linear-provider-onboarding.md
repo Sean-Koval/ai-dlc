@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python 3.12, existing AI-DLC CLI/services, Markdown workflow assets, OpenSpec, and configured tracker/SCM adapters. Reuse existing dependencies; any new dependency requires a documented necessity and explicit review.
 
-**Spec:** [linear-provider-onboarding](../../../openspec/changes/linear-provider-onboarding/specs/linear-provider-onboarding/spec.md)
+**Spec:** [linear-provider-onboarding](../../../openspec/specs/linear-provider-onboarding/spec.md)
 
 ## Global constraints
 
