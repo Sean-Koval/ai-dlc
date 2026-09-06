@@ -39,6 +39,19 @@ Adopting an existing project previews changes and reports path conflicts. Resolv
 
 Provider changes require `project rebind` planning. Existing work retains its old provider until explicitly mapped. An apply refuses affected work without replacement artifact mappings. TOML mappings use work IDs as tables and artifact kinds as keys, for example `[work-123]` with `tracker = "NEW-42"`. PR/branch references must both be mapped when both exist. Local completion claims alone do not prove completion, so the migration treats retained records conservatively. Review old and replacement artifacts before applying.
 
+A reviewed Linear team/status change uses the same boundary. Save the non-secret
+provider connection preview under `.ai-dlc/local`, prepare a mappings TOML entry
+for every affected work ID listed by the refusal, then pass both files to `ai-dlc
+project rebind tracker linear --connection-plan PLAN --mappings MAPPINGS
+--no-plan`. For this connection-plan form, affected work means exactly records
+whose effective tracker is Linear and whose tracker binding already exists. The
+transaction freshly revalidates Linear membership, applies the exact saved
+configuration digest, and computes replacement work bindings against that
+configuration. Explicitly pinned alternate-provider records and unbound records
+remain byte-for-byte unchanged. It does not create or mutate Linear issues and
+never supplies artifact mappings automatically. Rebind behavior without a
+connection plan remains the general provider migration described above.
+
 No Jira, Figma, Windows, hosted orchestration, Obsidian create/attach, or
 provider-discovery migration is provided by this release. Local CLI and MCP
 execution remain the current control plane; hosted or cloud execution is a

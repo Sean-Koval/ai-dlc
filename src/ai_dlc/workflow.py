@@ -11,7 +11,10 @@ from pathlib import Path
 import tomli_w
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from ai_dlc.config import digest as config_digest
+from ai_dlc.config import read_toml, resolve_layers, resolve_runtime
 from ai_dlc.journal import Journal
+from ai_dlc.locking import project_write_lock
 from ai_dlc.providers import Registry
 from ai_dlc.providers.openspec import OpenSpecProvider
 from ai_dlc.providers.scm import GitHubSCM
@@ -53,25 +56,114 @@ class Work(BaseModel):
         return value
 
 
+def _project_source_digest(root: Path) -> str | None:
+    project_file = root / "ai-dlc.toml"
+    if not project_file.is_file():
+        return None
+    return config_digest(tomllib.loads(project_file.read_text()))
+
+
+_BINDING_ROLES = {"specs", "tracker", "scm", "deploy", "knowledge"}
+_UNSET_SOURCE = object()
+
+
+def _matches_project_layer(actual, project_value) -> bool:
+    if isinstance(project_value, dict) and ("add" in project_value or "remove" in project_value):
+        if not isinstance(actual, list):
+            return False
+        key = lambda item: item["id"] if isinstance(item, dict) else item
+        present = {key(item) for item in actual}
+        added = {key(item) for item in project_value.get("add", [])}
+        removed = set(project_value.get("remove", []))
+        return added <= present and not removed & present
+    if isinstance(project_value, dict):
+        return isinstance(actual, dict) and all(
+            key in actual and _matches_project_layer(actual[key], value)
+            for key, value in project_value.items()
+        )
+    return type(actual) is type(project_value) and actual == project_value
+
+
+def _validate_binding_config(root: Path, config: dict) -> None:
+    project_file = root / "ai-dlc.toml"
+    if not project_file.is_file():
+        return
+    source = read_toml(project_file)
+    resolve_layers([("project", source)])
+    project_roles = source.get("roles", {})
+    actual_roles = config.get("roles", {})
+    if not isinstance(project_roles, dict) or not isinstance(actual_roles, dict):
+        raise TypeError("Work service configuration does not match current project source")
+    for role in _BINDING_ROLES & project_roles.keys():
+        if role not in actual_roles or not _matches_project_layer(
+            actual_roles[role], project_roles[role]
+        ):
+            raise ValueError("Work service configuration does not match current project source")
+    actual_providers = config.get("providers", {})
+    for provider_id, project_settings in source.get("providers", {}).items():
+        actual = actual_providers.get(provider_id)
+        if not isinstance(actual, dict) or not _matches_project_layer(actual, project_settings):
+            raise ValueError("Work service configuration does not match current project source")
+    for field in ("scm", "deploy"):
+        if field in source and not _matches_project_layer(config.get(field), source[field]):
+            raise ValueError("Work service configuration does not match current project source")
+
+
 class WorkService:
+    @classmethod
+    def from_project(
+        cls,
+        root: Path,
+        *,
+        machine: Path | None = None,
+        state_path: Path | None = None,
+        registry: Registry | None = None,
+    ):
+        root = Path(root).resolve()
+        with project_write_lock(root):
+            source_digest = _project_source_digest(root)
+            config = resolve_runtime(root, machine=machine).values
+            return cls(
+                root,
+                config,
+                state_path=state_path,
+                registry=registry,
+                _source_digest=source_digest,
+            )
+
     def __init__(
         self,
         root: Path,
         config: dict,
         state_path: Path | None = None,
         registry: Registry | None = None,
+        *,
+        _source_digest: str | None | object = _UNSET_SOURCE,
     ):
         self.root = Path(root).resolve()
-        self.config = config
-        state = (
-            Path(state_path)
-            if state_path
-            else Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "ai-dlc"
-        )
-        self.journal = Journal(state / "operations.sqlite3")
-        self.registry = registry or Registry(config, root=self.root)
+        with project_write_lock(self.root):
+            current_digest = _project_source_digest(self.root)
+            if _source_digest is _UNSET_SOURCE:
+                _validate_binding_config(self.root, config)
+            elif _source_digest != current_digest:
+                raise ValueError("Work service configuration does not match current project source")
+            self.project_source_digest = current_digest
+            self.config = config
+            state = (
+                Path(state_path)
+                if state_path
+                else Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "ai-dlc"
+            )
+            self.journal = Journal(state / "operations.sqlite3")
+            self.registry = registry or Registry(config, root=self.root)
 
     def load(self, work_id, mutation=False):
+        if mutation:
+            with project_write_lock(self.root):
+                return self._load(work_id, mutation=True)
+        return self._load(work_id, mutation=False)
+
+    def _load(self, work_id, mutation=False):
         Work.safe_id(work_id)
         path = (self.root / ".ai-dlc/work" / f"{work_id}.toml").resolve()
         if not path.is_relative_to(self.root / ".ai-dlc/work"):
@@ -122,9 +214,16 @@ class WorkService:
 
     def save(self, work):
         path = self.root / ".ai-dlc/work" / f"{work['id']}.toml"
-        tmp = path.with_suffix(".toml.tmp")
-        tmp.write_text(tomli_w.dumps(work))
-        tmp.replace(path)
+        with project_write_lock(self.root):
+            try:
+                current_digest = _project_source_digest(self.root)
+            except (OSError, tomllib.TOMLDecodeError):
+                raise ValueError("Project configuration changed; retry the work mutation") from None
+            if current_digest != self.project_source_digest:
+                raise ValueError("Project configuration changed; retry the work mutation")
+            tmp = path.with_suffix(".toml.tmp")
+            tmp.write_text(tomli_w.dumps(work))
+            tmp.replace(path)
 
     def op_id(self, work, action):
         repo = self.config.get("scm", {}).get("repository", str(self.root))

@@ -111,6 +111,301 @@ def work(tmp_path):
     )
 
 
+def account_lock_cache(tmp_path, monkeypatch):
+    """Point account-derived lock storage at an isolated private test home."""
+    from types import SimpleNamespace
+
+    from ai_dlc import locking
+
+    account_home = tmp_path / "account-home"
+    account_home.mkdir(mode=0o700)
+    monkeypatch.setattr(
+        locking,
+        "pwd",
+        SimpleNamespace(
+            getpwuid=lambda uid: SimpleNamespace(pw_dir=str(account_home)),
+        ),
+        raising=False,
+    )
+    return account_home / ".cache"
+
+
+def test_project_write_lock_rejects_untrusted_namespace_entries(tmp_path, monkeypatch):
+    """A hostile anchor or leaf must not redirect writers onto attacker-controlled inodes."""
+    import hashlib
+
+    from ai_dlc.locking import project_write_lock
+
+    project = tmp_path / "project"
+    project.mkdir()
+    cache = account_lock_cache(tmp_path, monkeypatch)
+    cache.mkdir(mode=0o700)
+    controlled = tmp_path / "controlled"
+    controlled.mkdir()
+    (cache / "ai-dlc").symlink_to(controlled, target_is_directory=True)
+
+    with pytest.raises(ValueError, match="lock namespace"), project_write_lock(project):
+        pass
+
+    (cache / "ai-dlc").unlink()
+    lock_root = cache / "ai-dlc/locks"
+    lock_root.mkdir(parents=True, mode=0o700)
+    target = tmp_path / "attacker.lock"
+    target.write_text("")
+    leaf = lock_root / f"{hashlib.sha256(str(project.resolve()).encode()).hexdigest()}.lock"
+    leaf.symlink_to(target)
+
+    with pytest.raises(ValueError, match="lock namespace"), project_write_lock(project):
+        pass
+
+
+def test_project_write_lock_rejects_unsafe_anchor_mode(tmp_path, monkeypatch):
+    """An anchor writable by other users cannot define a serialization namespace."""
+    from ai_dlc.locking import project_write_lock
+
+    cache = account_lock_cache(tmp_path, monkeypatch)
+    cache.mkdir(mode=0o777)
+    cache.chmod(0o777)
+
+    with (
+        pytest.raises(ValueError, match="lock namespace"),
+        project_write_lock(tmp_path / "project"),
+    ):
+        pass
+
+
+def test_project_write_lock_rejects_unsafe_account_home_with_existing_cache(tmp_path, monkeypatch):
+    """A private cache cannot make its writable account-home authority trustworthy."""
+    from ai_dlc.locking import project_write_lock
+
+    cache = account_lock_cache(tmp_path, monkeypatch)
+    cache.mkdir(mode=0o700)
+    account_home = cache.parent
+    project = tmp_path / "project"
+    project.mkdir()
+
+    with project_write_lock(project):
+        pass
+
+    try:
+        account_home.chmod(0o777)
+        with pytest.raises(ValueError, match="lock namespace"), project_write_lock(project):
+            pass
+    finally:
+        account_home.chmod(0o700)
+
+
+def test_project_write_lock_uses_a_private_stable_namespace(tmp_path, monkeypatch):
+    """A valid existing private anchor supports nesting and a private regular lock leaf."""
+    import stat
+
+    from ai_dlc.locking import project_write_lock
+
+    cache = account_lock_cache(tmp_path, monkeypatch)
+    lock_root = cache / "ai-dlc/locks"
+    lock_root.mkdir(parents=True, mode=0o700)
+    cache.chmod(0o700)
+    (cache / "ai-dlc").chmod(0o700)
+    lock_root.chmod(0o700)
+    project = tmp_path / "project"
+    project.mkdir()
+
+    with project_write_lock(project), project_write_lock(project):
+        leaves = list(lock_root.glob("*.lock"))
+        assert len(leaves) == 1
+        metadata = leaves[0].stat()
+        assert stat.S_ISREG(metadata.st_mode)
+        assert stat.S_IMODE(metadata.st_mode) == 0o600
+
+
+def test_project_write_lock_rejects_leaf_replacement_while_acquiring(tmp_path, monkeypatch):
+    """Replacing the directory entry cannot let acquisition bless a different lock inode."""
+    import hashlib
+
+    from ai_dlc import locking
+
+    cache = account_lock_cache(tmp_path, monkeypatch)
+    lock_root = cache / "ai-dlc/locks"
+    lock_root.mkdir(parents=True, mode=0o700)
+    for directory in (cache, cache / "ai-dlc", lock_root):
+        directory.chmod(0o700)
+    project = tmp_path / "project"
+    project.mkdir()
+    leaf = lock_root / f"{hashlib.sha256(str(project.resolve()).encode()).hexdigest()}.lock"
+    leaf.touch(mode=0o600)
+    real_flock = locking.fcntl.flock
+    replaced = []
+
+    def replace_after_lock(descriptor, operation):
+        real_flock(descriptor, operation)
+        if operation == locking.fcntl.LOCK_EX and not replaced:
+            leaf.rename(leaf.with_suffix(".held"))
+            leaf.touch(mode=0o600)
+            replaced.append(True)
+
+    monkeypatch.setattr(locking.fcntl, "flock", replace_after_lock)
+
+    with pytest.raises(ValueError, match="lock namespace"), locking.project_write_lock(project):
+        pass
+
+
+def test_project_write_lock_serializes_an_independent_process(tmp_path, monkeypatch):
+    """A second process must retain the same project lock identity until release."""
+    import os
+    import subprocess
+    import sys
+
+    from ai_dlc import locking
+
+    cache = account_lock_cache(tmp_path, monkeypatch)
+    cache.mkdir(mode=0o700)
+    project = tmp_path / "project"
+    project.mkdir()
+    script = (
+        "import sys, types\n"
+        "from pathlib import Path\n"
+        "from ai_dlc import locking\n"
+        "locking.pwd = types.SimpleNamespace(\n"
+        "    getpwuid=lambda uid: types.SimpleNamespace(pw_dir=sys.argv[2])\n"
+        ")\n"
+        "print('ready', flush=True)\n"
+        "with locking.project_write_lock(Path(sys.argv[1])):\n"
+        "    print('acquired', flush=True)\n"
+    )
+
+    with locking.project_write_lock(project):
+        child = subprocess.Popen(
+            [sys.executable, "-c", script, str(project), str(cache.parent)],
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            env=dict(os.environ),
+        )
+        assert child.stdout is not None
+        assert child.stdout.readline().strip() == "ready"
+        with pytest.raises(subprocess.TimeoutExpired):
+            child.wait(timeout=0.2)
+
+    stdout, stderr = child.communicate(timeout=5)
+    assert child.returncode == 0, stderr
+    assert stdout.strip() == "acquired"
+
+
+def test_project_write_lock_identity_ignores_process_environment(tmp_path, monkeypatch):
+    """One account and project must serialize even when launch environments differ."""
+    import os
+    import subprocess
+    import sys
+
+    from ai_dlc import locking
+
+    account_home = account_lock_cache(tmp_path, monkeypatch).parent
+    parent_cache = tmp_path / "parent-cache"
+    child_cache = tmp_path / "child-cache"
+    child_runtime = tmp_path / "child-runtime"
+    parent_home = tmp_path / "parent-home"
+    child_home = tmp_path / "child-home"
+    parent_tmp = tmp_path / "parent-tmp"
+    child_tmp = tmp_path / "child-tmp"
+    for directory in (
+        parent_cache,
+        child_cache,
+        child_runtime,
+        parent_home,
+        child_home,
+        parent_tmp,
+        child_tmp,
+    ):
+        directory.mkdir(mode=0o700)
+    monkeypatch.delenv("XDG_RUNTIME_DIR", raising=False)
+    monkeypatch.setenv("XDG_CACHE_HOME", str(parent_cache))
+    monkeypatch.setenv("HOME", str(parent_home))
+    monkeypatch.setenv("TMPDIR", str(parent_tmp))
+    project = tmp_path / "project"
+    project.mkdir()
+    script = (
+        "import sys, types\n"
+        "from pathlib import Path\n"
+        "from ai_dlc import locking\n"
+        "locking.pwd = types.SimpleNamespace(\n"
+        "    getpwuid=lambda uid: types.SimpleNamespace(pw_dir=sys.argv[2])\n"
+        ")\n"
+        "print('ready', flush=True)\n"
+        "with locking.project_write_lock(Path(sys.argv[1])):\n"
+        "    print('acquired', flush=True)\n"
+    )
+    child_environment = dict(os.environ)
+    child_environment.update(
+        {
+            "XDG_RUNTIME_DIR": str(child_runtime),
+            "XDG_CACHE_HOME": str(child_cache),
+            "HOME": str(child_home),
+            "TMPDIR": str(child_tmp),
+        }
+    )
+
+    with locking.project_write_lock(project):
+        child = subprocess.Popen(
+            [sys.executable, "-c", script, str(project), str(account_home)],
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            env=child_environment,
+        )
+        assert child.stdout is not None
+        assert child.stdout.readline().strip() == "ready"
+        with pytest.raises(subprocess.TimeoutExpired):
+            child.wait(timeout=0.2)
+
+    stdout, stderr = child.communicate(timeout=5)
+    assert child.returncode == 0, stderr
+    assert stdout.strip() == "acquired"
+    lock_root = account_home / ".cache/ai-dlc/locks"
+    assert len(list(lock_root.glob("*.lock"))) == 1
+    assert not list(parent_cache.rglob("*.lock"))
+    assert not list(child_cache.rglob("*.lock"))
+    assert not list(child_runtime.rglob("*.lock"))
+
+
+def test_work_service_from_project_preserves_machine_overlay(tmp_path):
+    """Coherent project resolution must retain explicitly selected machine settings."""
+    import tomllib
+
+    from ai_dlc.workflow import WorkService
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema = 4\n[roles]\ntracker = "linear"\n'
+        '[providers.linear]\nteam_id = "team-a"\n'
+        '[providers.linear.statuses]\nin_progress = "doing-a"\nclosed = "done-a"\n'
+    )
+    directory = tmp_path / ".ai-dlc/work"
+    directory.mkdir(parents=True)
+    (directory / "one.toml").write_text(
+        'schema=1\nid="one"\ntitle="One"\nscope="small"\nrequires_spec=false\n'
+        'spec_reason="Regression"\nacceptance=["Bound"]\nreviewed=true\n'
+        '[providers]\ntracker="linear"\n'
+    )
+    machine = tmp_path / "machine.toml"
+    machine.write_text('schema = 4\n[providers.linear]\ntoken_env = "LINEAR_MACHINE_TOKEN"\n')
+
+    service = WorkService.from_project(
+        tmp_path,
+        machine=machine,
+        state_path=tmp_path / "state",
+    )
+    service.load("one", mutation=True)
+
+    binding = tomllib.loads((directory / "one.toml").read_text())["bindings"]["tracker"]
+    assert (
+        binding
+        == WorkService.from_project(
+            tmp_path,
+            machine=machine,
+            state_path=tmp_path / "fresh-state",
+        ).load("one")["bindings"]["tracker"]
+    )
+
+
 def test_publish_reconciles_uncertain_creation(tmp_path):
     from ai_dlc.workflow import WorkService
 

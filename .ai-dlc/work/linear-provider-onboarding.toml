@@ -23,10 +23,12 @@ knowledge = "obsidian"
 deploy = "none"
 
 [artifacts]
-spec = "openspec/changes/linear-provider-onboarding"
+spec = "openspec/changes/archive/2026-09-06-linear-provider-onboarding"
 plan = "docs/superpowers/plans/2026-09-05-linear-provider-onboarding.md"
 roadmap = "docs/roadmap.md"
 tracker = "6fd7671e-3351-47d0-9c43-6d9537160a1d"
+branch = "codex/linear-provider-onboarding"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/9"
 
 [bindings]
 specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"

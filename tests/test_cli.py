@@ -383,6 +383,17 @@ def test_provider_conformance_failure_is_nonzero(tmp_path, monkeypatch):
     assert result.exit_code == 1
 
 
+def test_provider_help_exposes_connection_without_regressing_existing_commands():
+    """Adding onboarding must keep provider discovery and conformance routes available."""
+    from ai_dlc.cli import app
+
+    result = CliRunner().invoke(app, ["provider", "--help"])
+
+    assert result.exit_code == 0, result.output
+    for name in ["connect", "list", "test"]:
+        assert name in result.stdout
+
+
 def test_personal_agent_render_is_explicit_and_project_independent(tmp_path, monkeypatch):
     import json
 

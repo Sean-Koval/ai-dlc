@@ -12,7 +12,7 @@ def make_server(root: Path, machine: Path | None = None) -> FastMCP:
     config = config_for(root, machine)
 
     def work():
-        return WorkService(root, config)
+        return WorkService.from_project(root, machine=machine)
 
     server = FastMCP("AI-DLC")
 

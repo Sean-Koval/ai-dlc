@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Annotated
@@ -167,19 +168,25 @@ def project_rebind(
     plan: bool = True,
     mappings: Path | None = None,
     machine: Path | None = None,
+    connection_plan: Annotated[Path | None, typer.Option("--connection-plan")] = None,
 ):
     from ai_dlc.rebind import rebind
 
-    emit(
-        rebind(
+    try:
+        result = rebind(
             root,
             role,
             provider_id,
             apply=not plan,
             mappings=read_toml(mappings) if mappings else {},
             machine_config=read_toml(machine) if machine else None,
+            connection_plan=connection_plan,
+            environ=os.environ,
         )
-    )
+    except (OSError, RuntimeError, TypeError, ValueError) as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(2) from None
+    emit(result)
 
 
 @agents.command("render")
@@ -384,7 +391,7 @@ def context(root: Path = Path("."), brief: bool = False):
 def service(root: Path, machine: Path | None):
     from ai_dlc.workflow import WorkService
 
-    return WorkService(root, config_for(root, machine))
+    return WorkService.from_project(root, machine=machine)
 
 
 @work.command("publish")
@@ -445,6 +452,40 @@ def provider_list(root: Path = Path(".")):
     from ai_dlc.providers import Registry
 
     emit(Registry(load_project(root), root=root).discover())
+
+
+@provider.command("connect")
+def provider_connect(
+    name: str,
+    root: Annotated[Path, typer.Option("--root")] = Path("."),
+    organization: Annotated[str | None, typer.Option("--organization")] = None,
+    team: Annotated[str | None, typer.Option("--team")] = None,
+    in_progress: Annotated[str | None, typer.Option("--in-progress")] = None,
+    closed: Annotated[str | None, typer.Option("--closed")] = None,
+    plan_file: Annotated[Path | None, typer.Option("--plan-file")] = None,
+    apply: Annotated[bool, typer.Option("--apply")] = False,
+):
+    """Discover or explicitly configure a supported project provider."""
+    if name != "linear":
+        typer.echo(f"Error: Provider connection is not supported: {name}", err=True)
+        raise typer.Exit(2)
+    from ai_dlc.provider_onboarding import connect_linear_provider
+
+    try:
+        result = connect_linear_provider(
+            root,
+            organization=organization,
+            team=team,
+            in_progress=in_progress,
+            closed=closed,
+            plan_file=plan_file,
+            apply=apply,
+            environ=os.environ,
+        )
+    except (OSError, RuntimeError, TypeError, ValueError) as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(2) from None
+    emit(result)
 
 
 @provider.command("test")
