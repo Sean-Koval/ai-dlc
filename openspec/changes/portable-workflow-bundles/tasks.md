@@ -1,8 +1,8 @@
 ## 1. Manifest and digest validation
 
-- [ ] 1.1 Define and run the focused acceptance/refusal cases in the execution plan.
-- [ ] 1.2 Implement duplicate-key-safe manifest loading plus `validate_bundle` with malformed, oversized, traversal, symlink, non-regular, extra-file, digest, duplicate name/path, exact export coverage, and portable skill-frontmatter cases. Requested/manifest ID comparison remains Task 2 behavior. Validate all assets before planning a write; imports and rendering remain Tasks 2 and 3.
-- [ ] 1.3 Verify focused tests and inspect scope/compatibility before committing.
+- [x] 1.1 Define and run the focused acceptance/refusal cases in the execution plan.
+- [x] 1.2 Implement duplicate-key-safe manifest loading plus `validate_bundle` with malformed, oversized, traversal, symlink, non-regular, extra-file, digest, duplicate name/path, exact export coverage, and portable skill-frontmatter cases. Requested/manifest ID comparison remains Task 2 behavior. Validate all assets before planning a write; imports and rendering remain Tasks 2 and 3.
+- [x] 1.3 Verify focused tests and inspect scope/compatibility before committing.
 
 ## 2. Pinned import preview/apply
 
