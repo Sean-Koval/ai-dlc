@@ -80,7 +80,7 @@ def _run_git(
     else:
         command = shutil.which("git", path=environ.get("PATH", ""))
         if command is None:
-            raise RuntimeError("Git is required to resolve a profile source")
+            raise RuntimeError("Git is required to resolve a source")
     try:
         result = subprocess.run(
             [command, "-C", str(repository), *arguments],
@@ -91,11 +91,11 @@ def _run_git(
             env=environ,
         )
     except FileNotFoundError as error:
-        raise RuntimeError("Git is required to resolve a profile source") from error
+        raise RuntimeError("Git is required to resolve a source") from error
     except subprocess.TimeoutExpired as error:
-        raise RuntimeError("Git profile source operation timed out") from error
+        raise RuntimeError("Git source operation timed out") from error
     if result.returncode != 0:
-        raise RuntimeError("Git profile source operation failed")
+        raise RuntimeError("Git source operation failed")
     return result.stdout.strip()
 
 
@@ -452,6 +452,35 @@ def _valid_scp_host(host: str) -> bool:
     return _valid_host(host)
 
 
+def resolve_git_source(
+    repository: Path,
+    source: str,
+    requested_ref: str,
+    *,
+    portable_only: bool = False,
+    environ: Mapping[str, str] | None = None,
+) -> tuple[str, bool]:
+    """Resolve exactly one advertised Git ref into ``repository``.
+
+    The source grammar is shared with profile enrollment. Callers may require a
+    portable HTTPS, SSH, or SCP source while enrollment retains its supported
+    local-source behavior.
+    """
+    kind = _source_kind(source)
+    if kind == "unsafe":
+        raise ValueError(_INVALID_SOURCE) from None
+    portable = kind in {"https", "ssh", "scp"}
+    if portable_only and not portable:
+        raise ValueError("Git source must be portable")
+    commit = _resolve_commit(
+        Path(repository),
+        _git_source(source, kind),
+        requested_ref,
+        environ=None if environ is None else dict(environ),
+    )
+    return commit, portable
+
+
 def resolve_profile_source(
     source: str,
     profile_id: str,
@@ -464,12 +493,7 @@ def resolve_profile_source(
     environ: Mapping[str, str] | None = None,
 ) -> ProfileCandidate:
     """Resolve one requested Git ref and cache only its validated profile file."""
-    kind = _source_kind(source)
-    if kind == "unsafe":
-        raise ValueError(_INVALID_SOURCE) from None
     relative_path = _selected_path(subdirectory, profile_file)
-    fetch_source = _git_source(source, kind)
-    portable = kind in {"https", "ssh", "scp"}
     environment = None if environ is None else dict(environ)
     paths.profile_root(profile_id, "0" * 40)
     paths.cache_root.parent.mkdir(parents=True, exist_ok=True)
@@ -479,9 +503,9 @@ def resolve_profile_source(
     ) as temporary_directory:
         repository = Path(temporary_directory) / "repository"
         repository.mkdir()
-        resolved_commit = _resolve_commit(
+        resolved_commit, portable = resolve_git_source(
             repository,
-            fetch_source,
+            source,
             requested_ref,
             environ=environment,
         )

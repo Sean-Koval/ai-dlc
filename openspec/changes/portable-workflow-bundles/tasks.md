@@ -6,9 +6,9 @@
 
 ## 2. Pinned import preview/apply
 
-- [ ] 2.1 Define and run the focused acceptance/refusal cases in the execution plan.
-- [ ] 2.2 Implement portable temporary source resolution, requested/manifest ID equality, reviewed revision matching at the service boundary, the specified complete vendored lock, same-owner update guards, and rollback on partial file errors. Import must not select or render the bundle. Preserve the existing profile-source security contract when sharing helpers.
-- [ ] 2.3 Verify focused tests and inspect scope/compatibility before committing.
+- [x] 2.1 Define and run the focused acceptance/refusal cases in the execution plan.
+- [x] 2.2 Implement portable temporary source resolution, requested/manifest ID equality, reviewed revision matching at the service boundary, the specified complete vendored lock, same-owner update guards, and rollback on partial file errors. Import must not select or render the bundle. Preserve the existing profile-source security contract when sharing helpers.
+- [x] 2.3 Verify focused tests and inspect scope/compatibility before committing.
 
 ## 3. Client and template distribution
 

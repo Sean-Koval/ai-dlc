@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -788,3 +789,412 @@ def test_overdeep_undeclared_tree_is_rejected_without_recursion_error(tmp_path: 
 
     with pytest.raises(ValueError, match="at most 16 path segments"):
         validate_bundle(tmp_path, manifest)
+
+
+def _git(repository: Path, *arguments: str) -> str:
+    result = subprocess.run(
+        ["git", "-C", str(repository), *arguments],
+        check=True,
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
+    return result.stdout.strip()
+
+
+def _bundle_repository(tmp_path: Path) -> tuple[Path, str, dict[str, str]]:
+    repository = tmp_path / "bundle-source"
+    repository.mkdir()
+    _git(repository, "init", "-b", "main")
+    _git(repository, "config", "user.name", "AI-DLC Test")
+    _git(repository, "config", "user.email", "ai-dlc@example.test")
+    _write_bundle(repository)
+    _git(repository, "add", ".")
+    _git(repository, "commit", "-m", "add bundle")
+    source = "https://example.test/workflow.git"
+    environment = dict(os.environ)
+    environment.update(
+        {
+            "GIT_ALLOW_PROTOCOL": "file:https:ssh",
+            "GIT_CONFIG_COUNT": "1",
+            "GIT_CONFIG_KEY_0": f"url.{repository.as_uri()}.insteadOf",
+            "GIT_CONFIG_VALUE_0": source,
+        }
+    )
+    return repository, source, environment
+
+
+def _project_files(root: Path) -> dict[str, bytes]:
+    return {
+        path.relative_to(root).as_posix(): path.read_bytes()
+        for path in root.rglob("*")
+        if path.is_file()
+    }
+
+
+def test_resolve_bundle_uses_portable_git_and_cleans_up_candidate(tmp_path: Path):
+    """Would fail if resolution accepted no portable ref or leaked its temporary checkout."""
+    from ai_dlc.workflow_bundles import resolve_bundle
+
+    repository, source, environment = _bundle_repository(tmp_path)
+    commit = _git(repository, "rev-parse", "HEAD")
+
+    with resolve_bundle(source, "main", "example-bundle", environ=environment) as candidate:
+        checkout = candidate.root
+        assert candidate.source == source
+        assert candidate.ref == "main"
+        assert candidate.bundle_id == "example-bundle"
+        assert candidate.resolved_commit == commit
+        assert candidate.manifest_sha256 == _digest((repository / "bundle.json").read_bytes())
+        assert candidate.file_hashes == dict(sorted(candidate.manifest["files"].items()))
+        assert checkout.is_dir()
+
+    assert not checkout.exists()
+
+
+@pytest.mark.parametrize("source", ["/tmp/bundle", "file:///tmp/bundle"])
+def test_resolve_bundle_refuses_machine_specific_sources_before_git(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, source: str
+):
+    """Would fail if local provenance reached Git or the eventual import lock."""
+    from ai_dlc import profile_source
+    from ai_dlc.workflow_bundles import resolve_bundle
+
+    calls: list[object] = []
+    monkeypatch.setattr(profile_source, "_run_git", lambda *args, **kwargs: calls.append(args))
+
+    with pytest.raises(ValueError, match="portable Git source"):
+        resolve_bundle(source, "main", "example-bundle", environ=dict(os.environ))
+
+    assert calls == []
+    assert not list(tmp_path.glob(".ai-dlc-bundle-*"))
+
+
+def test_resolve_bundle_requires_requested_and_manifest_ids_to_match(tmp_path: Path):
+    """Would fail if a caller could vendor a bundle under a misleading requested identity."""
+    _, source, environment = _bundle_repository(tmp_path)
+    from ai_dlc.workflow_bundles import resolve_bundle
+
+    with pytest.raises(ValueError, match="manifest id does not match"):
+        resolve_bundle(source, "main", "other-bundle", environ=environment)
+
+
+def test_import_preview_is_exact_sorted_and_writes_nothing(tmp_path: Path):
+    """Would fail if preview omitted reviewed metadata, reordered maps, or touched the project."""
+    from ai_dlc.workflow_bundles import import_bundle, resolve_bundle
+
+    _, source, environment = _bundle_repository(tmp_path)
+    project = tmp_path / "project"
+    project.mkdir()
+    (project / "ai-dlc.toml").write_text("schema = 4\n")
+    before = _project_files(project)
+
+    with resolve_bundle(source, "main", "example-bundle", environ=environment) as candidate:
+        result = import_bundle(project, candidate)
+
+    assert list(result) == [
+        "applied",
+        "changed",
+        "conflicts",
+        "source",
+        "ref",
+        "bundle_id",
+        "resolved_commit",
+        "manifest_sha256",
+        "skills",
+        "templates",
+        "files",
+    ]
+    assert result["applied"] is False
+    assert result["conflicts"] == []
+    assert result["source"] == source
+    assert result["changed"] == [
+        ".ai-dlc/bundles/example-bundle/bundle.json",
+        ".ai-dlc/bundles/example-bundle/bundle.lock.json",
+        ".ai-dlc/bundles/example-bundle/skills/day/SKILL.md",
+        ".ai-dlc/bundles/example-bundle/templates/product-brief.md",
+    ]
+    assert _project_files(project) == before
+
+
+def test_apply_requires_reviewed_commit_and_vendors_complete_deterministic_lock(tmp_path: Path):
+    """Would fail if apply skipped the preview pin or omitted authenticated vendored bytes."""
+    from ai_dlc.workflow_bundles import import_bundle, resolve_bundle
+
+    repository, source, environment = _bundle_repository(tmp_path)
+    project = tmp_path / "project"
+    project.mkdir()
+    (project / "ai-dlc.toml").write_text("schema = 4\n")
+    profile_lock = project / ".ai-dlc/profile.lock.json"
+    profile_lock.parent.mkdir()
+    profile_lock.write_text('{"sentinel": true}\n')
+    before_config = (project / "ai-dlc.toml").read_bytes()
+    before_profile = profile_lock.read_bytes()
+
+    with resolve_bundle(source, "main", "example-bundle", environ=environment) as candidate:
+        with pytest.raises(ValueError, match="40-character expected commit"):
+            import_bundle(project, candidate, apply=True)
+        with pytest.raises(ValueError, match="reviewed commit"):
+            import_bundle(project, candidate, apply=True, expected_commit="0" * 40)
+        result = import_bundle(
+            project, candidate, apply=True, expected_commit=candidate.resolved_commit
+        )
+
+    destination = project / ".ai-dlc/bundles/example-bundle"
+    lock_bytes = (destination / "bundle.lock.json").read_bytes()
+    lock = json.loads(lock_bytes)
+    assert lock_bytes == (json.dumps(lock, indent=2, sort_keys=True) + "\n").encode()
+    assert lock == {
+        "schema": 1,
+        "id": "example-bundle",
+        "source": source,
+        "ref": "main",
+        "resolved_commit": _git(repository, "rev-parse", "HEAD"),
+        "manifest_sha256": _digest((repository / "bundle.json").read_bytes()),
+        "files": {
+            "skills/day/SKILL.md": _digest(SKILL),
+            "templates/product-brief.md": _digest(TEMPLATE),
+        },
+    }
+    assert (destination / "bundle.json").read_bytes() == (repository / "bundle.json").read_bytes()
+    assert (destination / "skills/day/SKILL.md").read_bytes() == SKILL
+    assert (destination / "templates/product-brief.md").read_bytes() == TEMPLATE
+    assert result["applied"] is True
+    assert (project / "ai-dlc.toml").read_bytes() == before_config
+    assert profile_lock.read_bytes() == before_profile
+
+
+def test_apply_revalidates_candidate_bytes_immediately_before_writing(tmp_path: Path):
+    """Would fail if a resolved candidate could be altered after preview and still publish."""
+    from ai_dlc.workflow_bundles import import_bundle, resolve_bundle
+
+    _, source, environment = _bundle_repository(tmp_path)
+    project = tmp_path / "project"
+    project.mkdir()
+    with resolve_bundle(source, "main", "example-bundle", environ=environment) as candidate:
+        (candidate.root / "templates/product-brief.md").write_text("# Tampered\n")
+        with pytest.raises(ValueError, match="digest mismatch"):
+            import_bundle(project, candidate, apply=True, expected_commit=candidate.resolved_commit)
+
+    assert not (project / ".ai-dlc/bundles").exists()
+
+
+def test_same_owner_update_and_idempotent_apply_are_supported(tmp_path: Path):
+    """Would fail if intact owned content could not update or a repeat apply reported drift."""
+    from ai_dlc.workflow_bundles import import_bundle, resolve_bundle
+
+    repository, source, environment = _bundle_repository(tmp_path)
+    project = tmp_path / "project"
+    project.mkdir()
+    with resolve_bundle(source, "main", "example-bundle", environ=environment) as first:
+        import_bundle(project, first, apply=True, expected_commit=first.resolved_commit)
+    (repository / "templates/product-brief.md").write_text("# Updated brief\n")
+    manifest = json.loads((repository / "bundle.json").read_text())
+    manifest["files"]["templates/product-brief.md"] = _digest(b"# Updated brief\n")
+    _write_manifest(repository, manifest)
+    _git(repository, "add", ".")
+    _git(repository, "commit", "-m", "update bundle")
+
+    with resolve_bundle(source, "main", "example-bundle", environ=environment) as second:
+        preview = import_bundle(project, second)
+        applied = import_bundle(project, second, apply=True, expected_commit=second.resolved_commit)
+        repeated = import_bundle(
+            project, second, apply=True, expected_commit=second.resolved_commit
+        )
+
+    expected_changes = [
+        ".ai-dlc/bundles/example-bundle/bundle.json",
+        ".ai-dlc/bundles/example-bundle/bundle.lock.json",
+        ".ai-dlc/bundles/example-bundle/templates/product-brief.md",
+    ]
+    assert preview["changed"] == applied["changed"] == expected_changes
+    assert repeated["applied"] is True
+    assert repeated["changed"] == []
+
+
+def test_apply_refuses_a_ref_that_moved_after_preview(tmp_path: Path):
+    """Would fail if apply accepted newly resolved bytes under an earlier review commit."""
+    from ai_dlc.workflow_bundles import import_bundle, resolve_bundle
+
+    repository, source, environment = _bundle_repository(tmp_path)
+    with resolve_bundle(source, "main", "example-bundle", environ=environment) as preview:
+        reviewed_commit = preview.resolved_commit
+    (repository / "templates/product-brief.md").write_text("# Moved ref\n")
+    manifest = json.loads((repository / "bundle.json").read_text())
+    manifest["files"]["templates/product-brief.md"] = _digest(b"# Moved ref\n")
+    _write_manifest(repository, manifest)
+    _git(repository, "add", ".")
+    _git(repository, "commit", "-m", "move reviewed ref")
+    project = tmp_path / "project"
+    project.mkdir()
+
+    with (
+        resolve_bundle(source, "main", "example-bundle", environ=environment) as candidate,
+        pytest.raises(ValueError, match="reviewed commit"),
+    ):
+        import_bundle(project, candidate, apply=True, expected_commit=reviewed_commit)
+
+    assert _snapshot(project) == {}
+
+
+def test_apply_rechecks_existing_owner_after_staging_before_replace(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Would fail if a local edit arriving during staging could be overwritten."""
+    from ai_dlc import workflow_bundles
+
+    repository, source, environment = _bundle_repository(tmp_path)
+    project = tmp_path / "project"
+    project.mkdir()
+    with workflow_bundles.resolve_bundle(
+        source, "main", "example-bundle", environ=environment
+    ) as initial:
+        workflow_bundles.import_bundle(
+            project, initial, apply=True, expected_commit=initial.resolved_commit
+        )
+    (repository / "templates/product-brief.md").write_text("# Updated brief\n")
+    manifest = json.loads((repository / "bundle.json").read_text())
+    manifest["files"]["templates/product-brief.md"] = _digest(b"# Updated brief\n")
+    _write_manifest(repository, manifest)
+    _git(repository, "add", ".")
+    _git(repository, "commit", "-m", "update bundle")
+    edited = project / ".ai-dlc/bundles/example-bundle/templates/product-brief.md"
+    real_stage = workflow_bundles._stage_bundle
+
+    def stage_then_edit(*args, **kwargs):
+        staged = real_stage(*args, **kwargs)
+        edited.write_text("# Local edit during staging\n")
+        return staged
+
+    monkeypatch.setattr(workflow_bundles, "_stage_bundle", stage_then_edit)
+    with workflow_bundles.resolve_bundle(
+        source, "main", "example-bundle", environ=environment
+    ) as candidate:
+        result = workflow_bundles.import_bundle(
+            project, candidate, apply=True, expected_commit=candidate.resolved_commit
+        )
+
+    assert result["applied"] is False
+    assert result["changed"] == []
+    expected_conflict = (
+        ".ai-dlc/bundles/example-bundle/templates/product-brief.md: "
+        "existing bundle file has local edits"
+    )
+    assert result["conflicts"] == [expected_conflict]
+    assert edited.read_text() == "# Local edit during staging\n"
+
+
+@pytest.mark.parametrize("damage", ["authored", "extra", "local-edit", "invalid-lock"])
+def test_existing_destination_conflicts_are_stable_and_preserve_bytes(tmp_path: Path, damage: str):
+    """Would fail if import adopted, repaired, or partially replaced untrusted existing state."""
+    from ai_dlc.workflow_bundles import import_bundle, resolve_bundle
+
+    _, source, environment = _bundle_repository(tmp_path)
+    project = tmp_path / "project"
+    project.mkdir()
+    destination = project / ".ai-dlc/bundles/example-bundle"
+    if damage == "authored":
+        destination.mkdir(parents=True)
+        (destination / "notes.md").write_text("authored\n")
+    else:
+        with resolve_bundle(source, "main", "example-bundle", environ=environment) as initial:
+            import_bundle(project, initial, apply=True, expected_commit=initial.resolved_commit)
+        if damage == "extra":
+            (destination / "extra.md").write_text("extra\n")
+        elif damage == "local-edit":
+            (destination / "templates/product-brief.md").write_text("local\n")
+        else:
+            (destination / "bundle.lock.json").write_text("{}\n")
+    before = _project_files(project)
+
+    with resolve_bundle(source, "main", "example-bundle", environ=environment) as candidate:
+        result = import_bundle(
+            project, candidate, apply=True, expected_commit=candidate.resolved_commit
+        )
+
+    assert result["applied"] is False
+    assert result["changed"] == []
+    assert result["conflicts"]
+    assert result["conflicts"] == sorted(result["conflicts"])
+    assert all(
+        item.startswith(".ai-dlc/bundles/example-bundle") and ": " in item
+        for item in result["conflicts"]
+    )
+    assert _project_files(project) == before
+
+
+def test_publication_failure_rolls_back_previous_bundle_byte_for_byte(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Would fail if a failed staged replacement lost an intact prior bundle."""
+    from ai_dlc import workflow_bundles
+
+    repository, source, environment = _bundle_repository(tmp_path)
+    project = tmp_path / "project"
+    project.mkdir()
+    with workflow_bundles.resolve_bundle(
+        source, "main", "example-bundle", environ=environment
+    ) as initial:
+        workflow_bundles.import_bundle(
+            project, initial, apply=True, expected_commit=initial.resolved_commit
+        )
+    before = _project_files(project)
+    (repository / "templates/product-brief.md").write_text("# Updated brief\n")
+    manifest = json.loads((repository / "bundle.json").read_text())
+    manifest["files"]["templates/product-brief.md"] = _digest(b"# Updated brief\n")
+    _write_manifest(repository, manifest)
+    _git(repository, "add", ".")
+    _git(repository, "commit", "-m", "update bundle")
+    real_replace = workflow_bundles.os.replace
+    calls = 0
+
+    def fail_new_tree(source_path: object, destination_path: object) -> None:
+        nonlocal calls
+        calls += 1
+        if calls == 2:
+            raise OSError("credential-sentinel")
+        real_replace(source_path, destination_path)
+
+    monkeypatch.setattr(workflow_bundles.os, "replace", fail_new_tree)
+    with (
+        workflow_bundles.resolve_bundle(
+            source, "main", "example-bundle", environ=environment
+        ) as candidate,
+        pytest.raises(ValueError) as captured,
+    ):
+        workflow_bundles.import_bundle(
+            project, candidate, apply=True, expected_commit=candidate.resolved_commit
+        )
+
+    assert str(captured.value) == "bundle filesystem operation failed"
+    assert "credential-sentinel" not in str(captured.value)
+    assert _project_files(project) == before
+
+
+def test_first_publication_failure_removes_new_transaction_directories(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Would fail if rollback left project state behind after a first import failed."""
+    from ai_dlc import workflow_bundles
+
+    _, source, environment = _bundle_repository(tmp_path)
+    project = tmp_path / "project"
+    project.mkdir()
+    (project / "ai-dlc.toml").write_text("schema = 4\n")
+    before = _snapshot(project)
+
+    def fail_publish(*args: object) -> None:
+        raise OSError("credential-sentinel")
+
+    monkeypatch.setattr(workflow_bundles.os, "replace", fail_publish)
+    with (
+        workflow_bundles.resolve_bundle(
+            source, "main", "example-bundle", environ=environment
+        ) as candidate,
+        pytest.raises(ValueError, match="bundle filesystem operation failed"),
+    ):
+        workflow_bundles.import_bundle(
+            project, candidate, apply=True, expected_commit=candidate.resolved_commit
+        )
+
+    assert _snapshot(project) == before

@@ -6,17 +6,24 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import stat
+import tempfile
 import unicodedata
-from collections.abc import Iterator
+from collections.abc import Iterator, Mapping
 from contextlib import contextmanager
+from dataclasses import dataclass
 from pathlib import Path, PurePosixPath, PureWindowsPath
-from typing import Any
+from typing import Any, Self
+
+from ai_dlc.locking import project_write_lock
+from ai_dlc.profile_source import resolve_git_source, source_portability
 
 _MANIFEST_FIELDS = {"schema", "id", "skills", "templates", "files"}
 _SLUG = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 _SAFE_PATH = re.compile(r"^[A-Za-z0-9._/-]+$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
+_COMMIT = re.compile(r"^[0-9a-f]{40}$")
 
 _MAX_MANIFEST_BYTES = 1024 * 1024
 _MAX_PAYLOAD_FILES = 1024
@@ -33,9 +40,38 @@ _DIRECTORY_FLAGS = (
 )
 _FILE_FLAGS = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
 _READ_CHUNK_BYTES = 64 * 1024
+_LOCK_FIELDS = {
+    "schema",
+    "id",
+    "source",
+    "ref",
+    "resolved_commit",
+    "manifest_sha256",
+    "files",
+}
 
 _Identity = tuple[int, int, int, int, int, int]
 _TreeSnapshot = tuple[_Identity, dict[str, _Identity]]
+
+
+@dataclass(frozen=True)
+class BundleCandidate:
+    """A validated, temporary bundle checkout pinned to one advertised ref."""
+
+    source: str
+    ref: str
+    bundle_id: str
+    resolved_commit: str
+    root: Path
+    manifest: dict[str, Any]
+    manifest_sha256: str
+    file_hashes: dict[str, str]
+
+    def __enter__(self) -> Self:
+        return self
+
+    def __exit__(self, *_: object) -> None:
+        shutil.rmtree(self.root, ignore_errors=True)
 
 
 def _identity(metadata: os.stat_result) -> _Identity:
@@ -150,21 +186,29 @@ def _reject_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     return result
 
 
-def load_bundle_manifest(root: Path) -> dict[str, Any]:
-    """Load a bounded UTF-8 ``bundle.json`` without accepting duplicate keys."""
+def _decode_json_object(content: bytes, *, label: str) -> dict[str, Any]:
+    try:
+        document = json.loads(content.decode("utf-8"), object_pairs_hook=_reject_duplicate_keys)
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError(f"{label} must be valid UTF-8 JSON") from error
+    if type(document) is not dict:
+        raise ValueError(f"{label} must contain a JSON object")
+    return document
+
+
+def _load_manifest_with_bytes(root: Path) -> tuple[bytes, dict[str, Any]]:
     try:
         content = _regular_file_bytes(
             Path(root), PurePosixPath("bundle.json"), maximum=_MAX_MANIFEST_BYTES
         )
     except OSError:
         raise ValueError(_FILESYSTEM_ERROR) from None
-    try:
-        document = json.loads(content.decode("utf-8"), object_pairs_hook=_reject_duplicate_keys)
-    except (UnicodeDecodeError, json.JSONDecodeError) as error:
-        raise ValueError("bundle.json must be valid UTF-8 JSON") from error
-    if type(document) is not dict:
-        raise ValueError("bundle.json must contain a JSON object")
-    return document
+    return content, _decode_json_object(content, label="bundle.json")
+
+
+def load_bundle_manifest(root: Path) -> dict[str, Any]:
+    """Load a bounded UTF-8 ``bundle.json`` without accepting duplicate keys."""
+    return _load_manifest_with_bytes(root)[1]
 
 
 def _slug(value: Any, *, field: str) -> str:
@@ -218,8 +262,8 @@ def _file_map(value: Any) -> dict[str, str]:
     return dict(sorted(files.items()))
 
 
-def _expected_tree(payload_paths: set[str]) -> set[str]:
-    expected = {"bundle.json", *payload_paths}
+def _expected_tree(payload_paths: set[str], metadata_paths: set[str] | None = None) -> set[str]:
+    expected = {"bundle.json", *(metadata_paths or set()), *payload_paths}
     for value in payload_paths:
         path = PurePosixPath(value)
         expected.update(
@@ -228,7 +272,7 @@ def _expected_tree(payload_paths: set[str]) -> set[str]:
     return expected
 
 
-def _checkout_tree(root: Path) -> _TreeSnapshot:
+def _checkout_tree(root: Path, *, ignore_root_git: bool = True) -> _TreeSnapshot:
     entries: dict[str, _Identity] = {}
 
     def scan(descriptor: int, relative_directory: PurePosixPath) -> None:
@@ -237,7 +281,7 @@ def _checkout_tree(root: Path) -> _TreeSnapshot:
             names = [child.name for child in children]
         for name in names:
             relative = relative_directory / name
-            if relative_directory == PurePosixPath() and name == ".git":
+            if ignore_root_git and relative_directory == PurePosixPath() and name == ".git":
                 continue
             if len(relative.parts) > _MAX_PATH_SEGMENTS:
                 raise ValueError("bundle checkout tree paths must contain at most 16 path segments")
@@ -302,8 +346,7 @@ def _validate_skill(content: str, export_name: str) -> None:
         raise ValueError(f"skill {export_name} body must be non-empty")
 
 
-def validate_bundle(root: Path, manifest: dict) -> dict:
-    """Validate and normalize an already parsed schema-1 bundle and its complete tree."""
+def _validate_bundle(root: Path, manifest: dict, *, metadata_paths: set[str]) -> dict:
     if type(manifest) is not dict:
         raise ValueError("bundle manifest must be a JSON object")
     if set(manifest) != _MANIFEST_FIELDS:
@@ -330,7 +373,7 @@ def validate_bundle(root: Path, manifest: dict) -> dict:
         raise ValueError("files keys must equal the export paths exactly")
 
     root = Path(root)
-    expected_tree = _expected_tree(set(files))
+    expected_tree = _expected_tree(set(files), metadata_paths)
     try:
         initial_snapshot = _checkout_tree(root)
         actual_tree = set(initial_snapshot[1])
@@ -373,3 +416,373 @@ def validate_bundle(root: Path, manifest: dict) -> dict:
         "templates": templates,
         "files": files,
     }
+
+
+def validate_bundle(root: Path, manifest: dict) -> dict:
+    """Validate and normalize an already parsed schema-1 bundle and its complete tree."""
+    return _validate_bundle(Path(root), manifest, metadata_paths=set())
+
+
+def _candidate_bytes(candidate: BundleCandidate) -> tuple[dict[str, Any], bytes, dict[str, bytes]]:
+    if (
+        type(candidate.source) is not str
+        or not source_portability(candidate.source)
+        or type(candidate.bundle_id) is not str
+        or _SLUG.fullmatch(candidate.bundle_id) is None
+        or type(candidate.resolved_commit) is not str
+        or _COMMIT.fullmatch(candidate.resolved_commit) is None
+        or type(candidate.manifest_sha256) is not str
+        or _SHA256.fullmatch(candidate.manifest_sha256) is None
+        or not isinstance(candidate.ref, str)
+        or not candidate.ref
+    ):
+        raise ValueError("bundle candidate metadata is invalid")
+    manifest_bytes, raw_manifest = _load_manifest_with_bytes(candidate.root)
+    manifest = validate_bundle(candidate.root, raw_manifest)
+    if manifest["id"] != candidate.bundle_id:
+        raise ValueError("bundle manifest id does not match the requested bundle id")
+    manifest_sha256 = hashlib.sha256(manifest_bytes).hexdigest()
+    if (
+        manifest != candidate.manifest
+        or manifest_sha256 != candidate.manifest_sha256
+        or manifest["files"] != candidate.file_hashes
+    ):
+        raise ValueError("bundle candidate changed after resolution")
+    payload = {
+        relative: _regular_file_bytes(
+            candidate.root, PurePosixPath(relative), maximum=_MAX_PAYLOAD_BYTES
+        )
+        for relative in manifest["files"]
+    }
+    latest_manifest_bytes, latest_raw_manifest = _load_manifest_with_bytes(candidate.root)
+    if latest_manifest_bytes != manifest_bytes or latest_raw_manifest != raw_manifest:
+        raise ValueError("bundle checkout changed during validation")
+    for relative, content in payload.items():
+        if hashlib.sha256(content).hexdigest() != manifest["files"][relative]:
+            raise ValueError(f"bundle payload digest mismatch: {relative}")
+    return manifest, manifest_bytes, payload
+
+
+def resolve_bundle(
+    source: str,
+    ref: str,
+    bundle_id: str,
+    *,
+    environ: Mapping[str, str] | None,
+) -> BundleCandidate:
+    """Resolve and validate one portable Git bundle in temporary storage."""
+    if not source_portability(source):
+        raise ValueError("bundle source must be a portable Git source")
+    if _SLUG.fullmatch(bundle_id) is None:
+        raise ValueError("requested bundle id must be a lowercase ASCII slug")
+    try:
+        temporary = Path(tempfile.mkdtemp(prefix=".ai-dlc-bundle-"))
+    except OSError:
+        raise ValueError(_FILESYSTEM_ERROR) from None
+    try:
+        resolved_commit, portable = resolve_git_source(
+            temporary,
+            source,
+            ref,
+            portable_only=True,
+            environ=environ,
+        )
+        if not portable:
+            raise ValueError("bundle source must be a portable Git source")
+        manifest_bytes, raw_manifest = _load_manifest_with_bytes(temporary)
+        manifest = validate_bundle(temporary, raw_manifest)
+        if manifest["id"] != bundle_id:
+            raise ValueError("bundle manifest id does not match the requested bundle id")
+        latest_manifest_bytes, latest_raw_manifest = _load_manifest_with_bytes(temporary)
+        if latest_manifest_bytes != manifest_bytes or latest_raw_manifest != raw_manifest:
+            raise ValueError("bundle checkout changed during validation")
+        return BundleCandidate(
+            source=source,
+            ref=ref,
+            bundle_id=bundle_id,
+            resolved_commit=resolved_commit,
+            root=temporary,
+            manifest=manifest,
+            manifest_sha256=hashlib.sha256(manifest_bytes).hexdigest(),
+            file_hashes=dict(manifest["files"]),
+        )
+    except BaseException:
+        shutil.rmtree(temporary, ignore_errors=True)
+        raise
+
+
+def _lock_document(candidate: BundleCandidate, manifest: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "schema": 1,
+        "id": candidate.bundle_id,
+        "source": candidate.source,
+        "ref": candidate.ref,
+        "resolved_commit": candidate.resolved_commit,
+        "manifest_sha256": candidate.manifest_sha256,
+        "files": dict(sorted(manifest["files"].items())),
+    }
+
+
+def _lock_bytes(document: dict[str, Any]) -> bytes:
+    return (json.dumps(document, indent=2, sort_keys=True) + "\n").encode("utf-8")
+
+
+def _relative_bundle_path(bundle_id: str, relative: str = "") -> str:
+    base = f".ai-dlc/bundles/{bundle_id}"
+    return f"{base}/{relative}" if relative else base
+
+
+def _load_existing_lock(destination: Path, bundle_id: str) -> dict[str, Any]:
+    content = _regular_file_bytes(
+        destination, PurePosixPath("bundle.lock.json"), maximum=_MAX_MANIFEST_BYTES
+    )
+    lock = _decode_json_object(content, label="bundle.lock.json")
+    if set(lock) != _LOCK_FIELDS or lock.get("schema") != 1 or lock.get("id") != bundle_id:
+        raise ValueError("invalid lock")
+    if (
+        type(lock.get("source")) is not str
+        or not source_portability(lock["source"])
+        or type(lock.get("ref")) is not str
+        or not lock["ref"]
+        or type(lock.get("resolved_commit")) is not str
+        or _COMMIT.fullmatch(lock["resolved_commit"]) is None
+        or type(lock.get("manifest_sha256")) is not str
+        or _SHA256.fullmatch(lock["manifest_sha256"]) is None
+    ):
+        raise ValueError("invalid lock")
+    lock["files"] = _file_map(lock.get("files"))
+    return lock
+
+
+def _existing_conflicts(destination: Path, bundle_id: str) -> list[str]:
+    base = _relative_bundle_path(bundle_id)
+    if not destination.exists() and not destination.is_symlink():
+        return []
+    try:
+        metadata = destination.lstat()
+    except OSError:
+        return [f"{base}: existing bundle destination is invalid"]
+    if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
+        return [f"{base}: existing bundle destination is not an owned directory"]
+    lock_path = f"{base}/bundle.lock.json"
+    try:
+        lock = _load_existing_lock(destination, bundle_id)
+    except (OSError, ValueError):
+        if not (destination / "bundle.lock.json").exists():
+            return [f"{base}: existing bundle is not owned"]
+        return [f"{lock_path}: existing bundle lock is invalid"]
+
+    expected = _expected_tree(set(lock["files"]), {"bundle.lock.json"})
+    try:
+        actual = set(_checkout_tree(destination, ignore_root_git=False)[1])
+    except (OSError, ValueError):
+        return [f"{base}: existing bundle tree is invalid"]
+    conflicts = [
+        f"{_relative_bundle_path(bundle_id, relative)}: owned bundle path is missing"
+        for relative in sorted(expected - actual)
+    ]
+    conflicts.extend(
+        f"{_relative_bundle_path(bundle_id, relative)}: existing bundle contains an unowned path"
+        for relative in sorted(actual - expected)
+    )
+    if conflicts:
+        return sorted(conflicts)
+
+    try:
+        manifest_bytes, raw_manifest = _load_manifest_with_bytes(destination)
+    except ValueError:
+        return [f"{base}/bundle.json: existing bundle manifest is invalid"]
+    if hashlib.sha256(manifest_bytes).hexdigest() != lock["manifest_sha256"]:
+        return [f"{base}/bundle.json: existing bundle file has local edits"]
+    try:
+        if type(raw_manifest) is not dict or set(raw_manifest) != _MANIFEST_FIELDS:
+            raise ValueError("invalid manifest")
+        manifest_files = _file_map(raw_manifest["files"])
+    except (KeyError, TypeError, ValueError):
+        return [f"{base}/bundle.json: existing bundle manifest is invalid"]
+    if raw_manifest.get("id") != bundle_id or manifest_files != lock["files"]:
+        return [f"{lock_path}: existing bundle lock does not match its manifest"]
+    edited = []
+    for relative, expected_digest in lock["files"].items():
+        try:
+            content = _regular_file_bytes(
+                destination, PurePosixPath(relative), maximum=_MAX_PAYLOAD_BYTES
+            )
+        except (OSError, ValueError):
+            edited.append(relative)
+            continue
+        if hashlib.sha256(content).hexdigest() != expected_digest:
+            edited.append(relative)
+    if edited:
+        return [
+            f"{_relative_bundle_path(bundle_id, relative)}: existing bundle file has local edits"
+            for relative in sorted(edited)
+        ]
+    try:
+        _validate_bundle(destination, raw_manifest, metadata_paths={"bundle.lock.json"})
+    except ValueError:
+        return [f"{base}: existing bundle content is invalid"]
+    return []
+
+
+def _destination_parent_conflicts(root: Path, bundle_id: str) -> list[str]:
+    current = root
+    for relative in (".ai-dlc", ".ai-dlc/bundles"):
+        current = root.joinpath(*PurePosixPath(relative).parts)
+        if not current.exists() and not current.is_symlink():
+            continue
+        try:
+            metadata = current.lstat()
+        except OSError:
+            return [f"{relative}: bundle destination parent is invalid"]
+        if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
+            return [f"{relative}: bundle destination parent must be a directory"]
+    return _existing_conflicts(root / ".ai-dlc/bundles" / bundle_id, bundle_id)
+
+
+def _desired_files(
+    candidate: BundleCandidate, manifest_bytes: bytes, payload: dict[str, bytes]
+) -> dict[str, bytes]:
+    lock = _lock_document(candidate, candidate.manifest)
+    return {
+        "bundle.json": manifest_bytes,
+        "bundle.lock.json": _lock_bytes(lock),
+        **dict(sorted(payload.items())),
+    }
+
+
+def _changed_paths(destination: Path, bundle_id: str, desired: dict[str, bytes]) -> list[str]:
+    existing: dict[str, bytes] = {}
+    if destination.is_dir() and not destination.is_symlink():
+        for path in destination.rglob("*"):
+            if path.is_file() and not path.is_symlink():
+                existing[path.relative_to(destination).as_posix()] = path.read_bytes()
+    return sorted(
+        _relative_bundle_path(bundle_id, relative)
+        for relative in existing.keys() | desired.keys()
+        if existing.get(relative) != desired.get(relative)
+    )
+
+
+def _stage_bundle(parent: Path, bundle_id: str, desired: dict[str, bytes]) -> Path:
+    staged = Path(tempfile.mkdtemp(prefix=f".{bundle_id}.stage-", dir=parent))
+    try:
+        for relative, content in desired.items():
+            path = staged.joinpath(*PurePosixPath(relative).parts)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(content)
+        conflicts = _existing_conflicts(staged, bundle_id)
+        if conflicts:
+            raise ValueError("staged bundle failed integrity validation")
+        return staged
+    except BaseException:
+        shutil.rmtree(staged, ignore_errors=True)
+        raise
+
+
+def _replace_bundle_tree(staged: Path, destination: Path) -> None:
+    backup = destination.parent / f".{destination.name}.backup"
+    if backup.exists() or backup.is_symlink():
+        raise OSError("stale bundle transaction")
+    had_destination = destination.exists() or destination.is_symlink()
+    if had_destination:
+        os.replace(destination, backup)
+    try:
+        os.replace(staged, destination)
+    except BaseException:
+        if had_destination:
+            os.replace(backup, destination)
+        raise
+    if had_destination:
+        shutil.rmtree(backup, ignore_errors=True)
+
+
+def _result(
+    candidate: BundleCandidate,
+    *,
+    applied: bool,
+    changed: list[str],
+    conflicts: list[str],
+) -> dict[str, Any]:
+    return {
+        "applied": applied,
+        "changed": sorted(changed),
+        "conflicts": sorted(conflicts),
+        "source": candidate.source,
+        "ref": candidate.ref,
+        "bundle_id": candidate.bundle_id,
+        "resolved_commit": candidate.resolved_commit,
+        "manifest_sha256": candidate.manifest_sha256,
+        "skills": dict(sorted(candidate.manifest["skills"].items())),
+        "templates": dict(sorted(candidate.manifest["templates"].items())),
+        "files": dict(sorted(candidate.file_hashes.items())),
+    }
+
+
+def import_bundle(
+    root: Path,
+    candidate: BundleCandidate,
+    *,
+    apply: bool = False,
+    expected_commit: str | None = None,
+) -> dict[str, Any]:
+    """Preview or transactionally vendor an unchanged, reviewed bundle candidate."""
+    if apply and (type(expected_commit) is not str or _COMMIT.fullmatch(expected_commit) is None):
+        raise ValueError("bundle apply requires a 40-character expected commit")
+    if apply and expected_commit != candidate.resolved_commit:
+        raise ValueError("bundle resolved commit does not match the reviewed commit")
+    try:
+        _, manifest_bytes, payload = _candidate_bytes(candidate)
+        desired = _desired_files(candidate, manifest_bytes, payload)
+        root = Path(root).resolve()
+        conflicts = _destination_parent_conflicts(root, candidate.bundle_id)
+        destination = root / ".ai-dlc/bundles" / candidate.bundle_id
+        if conflicts:
+            return _result(candidate, applied=False, changed=[], conflicts=conflicts)
+        changed = _changed_paths(destination, candidate.bundle_id, desired)
+        if not apply:
+            return _result(candidate, applied=False, changed=changed, conflicts=[])
+
+        with project_write_lock(root):
+            _, manifest_bytes, payload = _candidate_bytes(candidate)
+            desired = _desired_files(candidate, manifest_bytes, payload)
+            conflicts = _destination_parent_conflicts(root, candidate.bundle_id)
+            if conflicts:
+                return _result(candidate, applied=False, changed=[], conflicts=conflicts)
+            changed = _changed_paths(destination, candidate.bundle_id, desired)
+            if not changed:
+                return _result(candidate, applied=True, changed=[], conflicts=[])
+            metadata_root = root / ".ai-dlc"
+            bundles_root = metadata_root / "bundles"
+            metadata_root_existed = metadata_root.exists()
+            bundles_root_existed = bundles_root.exists()
+            try:
+                bundles_root.mkdir(parents=True, exist_ok=True)
+                staged = _stage_bundle(bundles_root, candidate.bundle_id, desired)
+                try:
+                    _candidate_bytes(candidate)
+                    conflicts = _destination_parent_conflicts(root, candidate.bundle_id)
+                    if conflicts:
+                        return _result(candidate, applied=False, changed=[], conflicts=conflicts)
+                    changed = _changed_paths(destination, candidate.bundle_id, desired)
+                    if not changed:
+                        return _result(candidate, applied=True, changed=[], conflicts=[])
+                    _replace_bundle_tree(staged, destination)
+                finally:
+                    if staged.exists() or staged.is_symlink():
+                        shutil.rmtree(staged, ignore_errors=True)
+            except BaseException:
+                if not bundles_root_existed:
+                    try:
+                        bundles_root.rmdir()
+                    except OSError:
+                        pass
+                if not metadata_root_existed:
+                    try:
+                        metadata_root.rmdir()
+                    except OSError:
+                        pass
+                raise
+        return _result(candidate, applied=True, changed=changed, conflicts=[])
+    except OSError:
+        raise ValueError(_FILESYSTEM_ERROR) from None

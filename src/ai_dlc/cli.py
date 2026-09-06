@@ -17,6 +17,7 @@ app = typer.Typer(no_args_is_help=True, help="Portable development for people an
 project = typer.Typer(no_args_is_help=True)
 work = typer.Typer(no_args_is_help=True)
 agents = typer.Typer(no_args_is_help=True)
+agent_bundle = typer.Typer(no_args_is_help=True)
 profile = typer.Typer(no_args_is_help=True)
 setup = typer.Typer(no_args_is_help=True)
 machine = typer.Typer(no_args_is_help=True)
@@ -35,6 +36,7 @@ for name, group in [
     ("mcp", mcp),
 ]:
     app.add_typer(group, name=name)
+agents.add_typer(agent_bundle, name="bundle")
 
 
 def emit(value):
@@ -214,6 +216,32 @@ def agents_render(
     emit(result)
     if check and not result["clean"]:
         raise typer.Exit(1)
+
+
+@agent_bundle.command("import")
+def agents_bundle_import(
+    source: str,
+    ref: Annotated[str, typer.Option("--ref")],
+    bundle_id: Annotated[str, typer.Option("--id")],
+    root: Annotated[Path, typer.Option("--root")] = Path("."),
+    apply: Annotated[bool, typer.Option("--apply")] = False,
+    expected_commit: Annotated[str | None, typer.Option("--expected-commit")] = None,
+):
+    """Preview or vendor one pinned portable workflow bundle."""
+    from ai_dlc.workflow_bundles import import_bundle, resolve_bundle
+
+    try:
+        with resolve_bundle(source, ref, bundle_id, environ=os.environ) as candidate:
+            result = import_bundle(
+                root,
+                candidate,
+                apply=apply,
+                expected_commit=expected_commit,
+            )
+    except (OSError, RuntimeError, TypeError, ValueError) as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(2) from None
+    emit(result)
 
 
 @profile.command("show")

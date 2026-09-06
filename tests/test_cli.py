@@ -720,3 +720,96 @@ def test_explicit_machine_doctor_keeps_the_nonzero_readiness_contract(monkeypatc
 
     assert result.exit_code == 1
     assert '"ready": false' in result.stdout
+
+
+def test_agents_bundle_import_forwards_exact_preview_and_apply_contract(monkeypatch, tmp_path):
+    """Would fail if the nested CLI lost review inputs or changed service JSON."""
+    from contextlib import contextmanager
+
+    from ai_dlc import cli, workflow_bundles
+
+    calls = []
+    candidate = object()
+    expected = {
+        "applied": False,
+        "changed": [".ai-dlc/bundles/example/bundle.json"],
+        "conflicts": [],
+        "source": "https://example.test/workflow.git",
+        "ref": "stable",
+        "bundle_id": "example",
+        "resolved_commit": "a" * 40,
+        "manifest_sha256": "b" * 64,
+        "skills": {"day-start": "skills/day/SKILL.md"},
+        "templates": {},
+        "files": {"skills/day/SKILL.md": "c" * 64},
+    }
+
+    @contextmanager
+    def resolve(source, ref, bundle_id, *, environ):
+        calls.append(("resolve", source, ref, bundle_id, environ is not None))
+        yield candidate
+
+    def import_candidate(root, received, *, apply=False, expected_commit=None):
+        calls.append(("import", root, received, apply, expected_commit))
+        return {**expected, "applied": apply}
+
+    monkeypatch.setattr(workflow_bundles, "resolve_bundle", resolve, raising=False)
+    monkeypatch.setattr(workflow_bundles, "import_bundle", import_candidate, raising=False)
+    runner = CliRunner()
+    arguments = [
+        "agents",
+        "bundle",
+        "import",
+        "https://example.test/workflow.git",
+        "--ref",
+        "stable",
+        "--id",
+        "example",
+        "--root",
+        str(tmp_path),
+    ]
+
+    preview = runner.invoke(cli.app, arguments)
+    applied = runner.invoke(cli.app, [*arguments, "--apply", "--expected-commit", "a" * 40])
+
+    assert preview.exit_code == applied.exit_code == 0
+    assert json.loads(preview.stdout) == expected
+    assert json.loads(applied.stdout) == {**expected, "applied": True}
+    assert calls == [
+        (
+            "resolve",
+            "https://example.test/workflow.git",
+            "stable",
+            "example",
+            True,
+        ),
+        ("import", tmp_path, candidate, False, None),
+        (
+            "resolve",
+            "https://example.test/workflow.git",
+            "stable",
+            "example",
+            True,
+        ),
+        ("import", tmp_path, candidate, True, "a" * 40),
+    ]
+
+
+def test_agents_bundle_import_reports_stable_redacted_errors(monkeypatch):
+    """Would fail if a rejected source leaked caller-controlled credentials or a traceback."""
+    from ai_dlc import cli, workflow_bundles
+
+    def reject(*args, **kwargs):
+        raise ValueError("bundle source is invalid")
+
+    monkeypatch.setattr(workflow_bundles, "resolve_bundle", reject, raising=False)
+    source = "https://user:synthetic-credential@example.test/workflow.git"
+    result = CliRunner().invoke(
+        cli.app,
+        ["agents", "bundle", "import", source, "--ref", "main", "--id", "example"],
+    )
+
+    assert result.exit_code == 2
+    assert result.stdout == ""
+    assert result.stderr == "Error: bundle source is invalid\n"
+    assert "synthetic-credential" not in result.output
