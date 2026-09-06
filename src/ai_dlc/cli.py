@@ -228,9 +228,14 @@ def agents_bundle_import(
     expected_commit: Annotated[str | None, typer.Option("--expected-commit")] = None,
 ):
     """Preview or vendor one pinned portable workflow bundle."""
-    from ai_dlc.workflow_bundles import import_bundle, resolve_bundle
+    from ai_dlc.workflow_bundles import import_bundle, resolve_bundle, validate_bundle_project
 
     try:
+        if apply and expected_commit is None:
+            raise ValueError("bundle apply requires --expected-commit")
+        if not apply and expected_commit is not None:
+            raise ValueError("bundle --expected-commit requires --apply")
+        root = validate_bundle_project(root)
         with resolve_bundle(source, ref, bundle_id, environ=os.environ) as candidate:
             result = import_bundle(
                 root,

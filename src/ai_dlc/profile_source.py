@@ -123,7 +123,14 @@ def _resolve_commit(
     matches = [line.split("\t", 1) for line in advertised.splitlines() if "\t" in line]
     if len(matches) != 1:
         raise RuntimeError("Git requested ref must identify exactly one advertised ref")
-    fetch_ref = matches[0][1]
+    advertised_object, fetch_ref = matches[0]
+    expected_refs = (
+        {requested_ref}
+        if requested_ref.startswith("refs/")
+        else {f"refs/heads/{requested_ref}", f"refs/tags/{requested_ref}"}
+    )
+    if not _COMMIT.fullmatch(advertised_object) or fetch_ref not in expected_refs:
+        raise RuntimeError("Git returned an invalid advertised object or ref")
     _run_git(
         repository,
         "fetch",
@@ -134,6 +141,15 @@ def _resolve_commit(
         fetch_ref,
         environ=environ,
     )
+    fetched_object = _run_git(
+        repository,
+        "rev-parse",
+        "--verify",
+        "FETCH_HEAD",
+        environ=environ,
+    )
+    if not _COMMIT.fullmatch(fetched_object) or fetched_object != advertised_object:
+        raise RuntimeError("Git fetched object does not match the advertised object")
     commit = _run_git(
         repository,
         "rev-parse",

@@ -6,9 +6,11 @@ import hashlib
 import json
 import os
 import re
+import secrets
 import shutil
 import stat
 import tempfile
+import tomllib
 import unicodedata
 from collections.abc import Iterator, Mapping
 from contextlib import contextmanager
@@ -16,6 +18,7 @@ from dataclasses import dataclass
 from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any, Self
 
+from ai_dlc.config import resolve_layers
 from ai_dlc.locking import project_write_lock
 from ai_dlc.profile_source import resolve_git_source, source_portability
 
@@ -52,6 +55,7 @@ _LOCK_FIELDS = {
 
 _Identity = tuple[int, int, int, int, int, int]
 _TreeSnapshot = tuple[_Identity, dict[str, _Identity]]
+_DirectoryRoot = Path | int
 
 
 @dataclass(frozen=True)
@@ -98,8 +102,8 @@ def _same_object(left: os.stat_result, right: os.stat_result) -> bool:
 
 
 @contextmanager
-def _directory_descriptor(root: Path) -> Iterator[int]:
-    descriptor = os.open(root, _DIRECTORY_FLAGS)
+def _directory_descriptor(root: _DirectoryRoot) -> Iterator[int]:
+    descriptor = os.dup(root) if isinstance(root, int) else os.open(root, _DIRECTORY_FLAGS)
     try:
         metadata = os.fstat(descriptor)
         if not stat.S_ISDIR(metadata.st_mode):
@@ -110,7 +114,7 @@ def _directory_descriptor(root: Path) -> Iterator[int]:
 
 
 @contextmanager
-def _file_descriptor(root: Path, relative: PurePosixPath) -> Iterator[int]:
+def _file_descriptor(root: _DirectoryRoot, relative: PurePosixPath) -> Iterator[int]:
     with _directory_descriptor(root) as root_descriptor:
         current = os.dup(root_descriptor)
         try:
@@ -152,7 +156,7 @@ def _file_descriptor(root: Path, relative: PurePosixPath) -> Iterator[int]:
             os.close(current)
 
 
-def _regular_file_bytes(root: Path, relative: PurePosixPath, *, maximum: int) -> bytes:
+def _regular_file_bytes(root: _DirectoryRoot, relative: PurePosixPath, *, maximum: int) -> bytes:
     with _file_descriptor(root, relative) as descriptor:
         before = os.fstat(descriptor)
         if before.st_size > maximum:
@@ -196,10 +200,10 @@ def _decode_json_object(content: bytes, *, label: str) -> dict[str, Any]:
     return document
 
 
-def _load_manifest_with_bytes(root: Path) -> tuple[bytes, dict[str, Any]]:
+def _load_manifest_with_bytes(root: _DirectoryRoot) -> tuple[bytes, dict[str, Any]]:
     try:
         content = _regular_file_bytes(
-            Path(root), PurePosixPath("bundle.json"), maximum=_MAX_MANIFEST_BYTES
+            root, PurePosixPath("bundle.json"), maximum=_MAX_MANIFEST_BYTES
         )
     except OSError:
         raise ValueError(_FILESYSTEM_ERROR) from None
@@ -272,7 +276,7 @@ def _expected_tree(payload_paths: set[str], metadata_paths: set[str] | None = No
     return expected
 
 
-def _checkout_tree(root: Path, *, ignore_root_git: bool = True) -> _TreeSnapshot:
+def _checkout_tree(root: _DirectoryRoot, *, ignore_root_git: bool = True) -> _TreeSnapshot:
     entries: dict[str, _Identity] = {}
 
     def scan(descriptor: int, relative_directory: PurePosixPath) -> None:
@@ -346,7 +350,7 @@ def _validate_skill(content: str, export_name: str) -> None:
         raise ValueError(f"skill {export_name} body must be non-empty")
 
 
-def _validate_bundle(root: Path, manifest: dict, *, metadata_paths: set[str]) -> dict:
+def _validate_bundle(root: _DirectoryRoot, manifest: dict, *, metadata_paths: set[str]) -> dict:
     if type(manifest) is not dict:
         raise ValueError("bundle manifest must be a JSON object")
     if set(manifest) != _MANIFEST_FIELDS:
@@ -372,7 +376,6 @@ def _validate_bundle(root: Path, manifest: dict, *, metadata_paths: set[str]) ->
     if set(files) != set(export_paths):
         raise ValueError("files keys must equal the export paths exactly")
 
-    root = Path(root)
     expected_tree = _expected_tree(set(files), metadata_paths)
     try:
         initial_snapshot = _checkout_tree(root)
@@ -511,6 +514,37 @@ def resolve_bundle(
         raise
 
 
+def validate_bundle_project(root: Path) -> Path:
+    """Return a lexical absolute project root after no-follow config validation."""
+    absolute = Path(os.path.abspath(root))
+    try:
+        metadata = absolute.lstat()
+        if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
+            raise ValueError
+        with _directory_descriptor(absolute) as descriptor:
+            opened = os.fstat(descriptor)
+            if not _same_object(metadata, opened):
+                raise ValueError
+            content = _regular_file_bytes(
+                descriptor, PurePosixPath("ai-dlc.toml"), maximum=_MAX_MANIFEST_BYTES
+            )
+            _validate_project_document(content)
+            named_after = absolute.lstat()
+            if not _same_object(named_after, opened):
+                raise ValueError
+    except (OSError, TypeError, UnicodeDecodeError, ValueError, tomllib.TOMLDecodeError):
+        raise ValueError("bundle import requires a valid project root") from None
+    return absolute
+
+
+def _validate_project_document(content: bytes) -> None:
+    try:
+        document = tomllib.loads(content.decode("utf-8"))
+        resolve_layers([("project", document)])
+    except (TypeError, UnicodeDecodeError, ValueError, tomllib.TOMLDecodeError):
+        raise ValueError("bundle import requires a valid project root") from None
+
+
 def _lock_document(candidate: BundleCandidate, manifest: dict[str, Any]) -> dict[str, Any]:
     return {
         "schema": 1,
@@ -532,12 +566,17 @@ def _relative_bundle_path(bundle_id: str, relative: str = "") -> str:
     return f"{base}/{relative}" if relative else base
 
 
-def _load_existing_lock(destination: Path, bundle_id: str) -> dict[str, Any]:
+def _load_existing_lock(destination: _DirectoryRoot, bundle_id: str) -> dict[str, Any]:
     content = _regular_file_bytes(
         destination, PurePosixPath("bundle.lock.json"), maximum=_MAX_MANIFEST_BYTES
     )
     lock = _decode_json_object(content, label="bundle.lock.json")
-    if set(lock) != _LOCK_FIELDS or lock.get("schema") != 1 or lock.get("id") != bundle_id:
+    if (
+        set(lock) != _LOCK_FIELDS
+        or type(lock.get("schema")) is not int
+        or lock.get("schema") != 1
+        or lock.get("id") != bundle_id
+    ):
         raise ValueError("invalid lock")
     if (
         type(lock.get("source")) is not str
@@ -551,24 +590,20 @@ def _load_existing_lock(destination: Path, bundle_id: str) -> dict[str, Any]:
     ):
         raise ValueError("invalid lock")
     lock["files"] = _file_map(lock.get("files"))
+    if content != _lock_bytes(lock):
+        raise ValueError("invalid lock")
     return lock
 
 
-def _existing_conflicts(destination: Path, bundle_id: str) -> list[str]:
+def _owned_bundle_conflicts(destination: int, bundle_id: str) -> list[str]:
     base = _relative_bundle_path(bundle_id)
-    if not destination.exists() and not destination.is_symlink():
-        return []
-    try:
-        metadata = destination.lstat()
-    except OSError:
-        return [f"{base}: existing bundle destination is invalid"]
-    if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
-        return [f"{base}: existing bundle destination is not an owned directory"]
     lock_path = f"{base}/bundle.lock.json"
     try:
         lock = _load_existing_lock(destination, bundle_id)
     except (OSError, ValueError):
-        if not (destination / "bundle.lock.json").exists():
+        try:
+            os.stat("bundle.lock.json", dir_fd=destination, follow_symlinks=False)
+        except OSError:
             return [f"{base}: existing bundle is not owned"]
         return [f"{lock_path}: existing bundle lock is invalid"]
 
@@ -625,6 +660,22 @@ def _existing_conflicts(destination: Path, bundle_id: str) -> list[str]:
     return []
 
 
+def _existing_conflicts(destination: Path, bundle_id: str) -> list[str]:
+    base = _relative_bundle_path(bundle_id)
+    if not destination.exists() and not destination.is_symlink():
+        return []
+    try:
+        metadata = destination.lstat()
+        if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
+            return [f"{base}: existing bundle destination is not an owned directory"]
+        with _directory_descriptor(destination) as descriptor:
+            if not _same_object(metadata, os.fstat(descriptor)):
+                return [f"{base}: existing bundle destination is invalid"]
+            return _owned_bundle_conflicts(descriptor, bundle_id)
+    except OSError:
+        return [f"{base}: existing bundle destination is invalid"]
+
+
 def _destination_parent_conflicts(root: Path, bundle_id: str) -> list[str]:
     current = root
     for relative in (".ai-dlc", ".ai-dlc/bundles"):
@@ -664,37 +715,182 @@ def _changed_paths(destination: Path, bundle_id: str, desired: dict[str, bytes])
     )
 
 
-def _stage_bundle(parent: Path, bundle_id: str, desired: dict[str, bytes]) -> Path:
-    staged = Path(tempfile.mkdtemp(prefix=f".{bundle_id}.stage-", dir=parent))
+def _open_named_directory(parent: int, name: str) -> int:
+    before = os.stat(name, dir_fd=parent, follow_symlinks=False)
+    if stat.S_ISLNK(before.st_mode) or not stat.S_ISDIR(before.st_mode):
+        raise OSError("directory link is invalid")
+    descriptor = os.open(name, _DIRECTORY_FLAGS, dir_fd=parent)
+    if not _same_object(before, os.fstat(descriptor)):
+        os.close(descriptor)
+        raise OSError("directory link changed")
+    return descriptor
+
+
+def _ensure_named_directory(parent: int, name: str) -> tuple[int, bool]:
+    created = False
+    try:
+        descriptor = _open_named_directory(parent, name)
+    except FileNotFoundError:
+        os.mkdir(name, dir_fd=parent)
+        created = True
+        descriptor = _open_named_directory(parent, name)
+    return descriptor, created
+
+
+def _verify_named_directory(parent: int, name: str, descriptor: int) -> None:
+    named = os.stat(name, dir_fd=parent, follow_symlinks=False)
+    if stat.S_ISLNK(named.st_mode) or not _same_object(named, os.fstat(descriptor)):
+        raise OSError("directory link changed")
+
+
+def _mkdirs_at(root: int, relative: PurePosixPath) -> None:
+    current = os.dup(root)
+    try:
+        for part in relative.parts:
+            try:
+                os.mkdir(part, dir_fd=current)
+            except FileExistsError:
+                pass
+            following = _open_named_directory(current, part)
+            os.close(current)
+            current = following
+    finally:
+        os.close(current)
+
+
+def _write_regular_file_at(root: int, relative: PurePosixPath, content: bytes) -> None:
+    parts = list(relative.parts)
+    if not parts:
+        raise ValueError("bundle payload path must be non-empty")
+    if len(parts) > 1:
+        _mkdirs_at(root, PurePosixPath(*parts[:-1]))
+    current = os.dup(root)
+    try:
+        for part in parts[:-1]:
+            following = _open_named_directory(current, part)
+            os.close(current)
+            current = following
+        descriptor = os.open(
+            parts[-1],
+            os.O_WRONLY
+            | os.O_CREAT
+            | os.O_EXCL
+            | getattr(os, "O_CLOEXEC", 0)
+            | getattr(os, "O_NOFOLLOW", 0),
+            0o644,
+            dir_fd=current,
+        )
+        try:
+            view = memoryview(content)
+            while view:
+                written = os.write(descriptor, view)
+                view = view[written:]
+            os.fsync(descriptor)
+        finally:
+            os.close(descriptor)
+    finally:
+        os.close(current)
+
+
+def _stage_bundle_at(parent: int, bundle_id: str, desired: dict[str, bytes]) -> tuple[str, int]:
+    suffix = secrets.token_hex(12)
+    name = f".{bundle_id}.stage-{suffix}"
+    os.mkdir(name, dir_fd=parent)
+    descriptor = _open_named_directory(parent, name)
     try:
         for relative, content in desired.items():
-            path = staged.joinpath(*PurePosixPath(relative).parts)
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_bytes(content)
-        conflicts = _existing_conflicts(staged, bundle_id)
-        if conflicts:
+            _write_regular_file_at(descriptor, PurePosixPath(relative), content)
+        if _owned_bundle_conflicts(descriptor, bundle_id):
             raise ValueError("staged bundle failed integrity validation")
-        return staged
+        return name, descriptor
     except BaseException:
-        shutil.rmtree(staged, ignore_errors=True)
+        os.close(descriptor)
+        _remove_tree_at(parent, name)
         raise
 
 
-def _replace_bundle_tree(staged: Path, destination: Path) -> None:
-    backup = destination.parent / f".{destination.name}.backup"
-    if backup.exists() or backup.is_symlink():
-        raise OSError("stale bundle transaction")
-    had_destination = destination.exists() or destination.is_symlink()
-    if had_destination:
-        os.replace(destination, backup)
+def _remove_tree_at(parent: int, name: str) -> None:
+    descriptor = _open_named_directory(parent, name)
     try:
-        os.replace(staged, destination)
+        with os.scandir(descriptor) as children:
+            names = [child.name for child in children]
+        for child in names:
+            metadata = os.stat(child, dir_fd=descriptor, follow_symlinks=False)
+            if stat.S_ISDIR(metadata.st_mode) and not stat.S_ISLNK(metadata.st_mode):
+                _remove_tree_at(descriptor, child)
+            else:
+                os.unlink(child, dir_fd=descriptor)
+    finally:
+        os.close(descriptor)
+    os.rmdir(name, dir_fd=parent)
+
+
+def _destination_descriptor(parent: int, bundle_id: str) -> int | None:
+    try:
+        return _open_named_directory(parent, bundle_id)
+    except FileNotFoundError:
+        return None
+
+
+def _publish_bundle_tree(
+    parent: int,
+    bundle_id: str,
+    staged_name: str,
+    staged_descriptor: int,
+    existing_descriptor: int | None,
+) -> list[str]:
+    backup_name = f".{bundle_id}.backup"
+    try:
+        os.stat(backup_name, dir_fd=parent, follow_symlinks=False)
+    except FileNotFoundError:
+        pass
+    else:
+        raise OSError("stale bundle transaction")
+
+    if existing_descriptor is None:
+        os.mkdir(bundle_id, dir_fd=parent)
+        try:
+            os.replace(staged_name, bundle_id, src_dir_fd=parent, dst_dir_fd=parent)
+        except BaseException:
+            os.rmdir(bundle_id, dir_fd=parent)
+            raise
+        _verify_named_directory(parent, bundle_id, staged_descriptor)
+        return []
+
+    named = os.stat(bundle_id, dir_fd=parent, follow_symlinks=False)
+    if not _same_object(named, os.fstat(existing_descriptor)):
+        return [f"{_relative_bundle_path(bundle_id)}: existing bundle destination changed"]
+    conflicts = _owned_bundle_conflicts(existing_descriptor, bundle_id)
+    if conflicts:
+        return conflicts
+
+    os.replace(bundle_id, backup_name, src_dir_fd=parent, dst_dir_fd=parent)
+    try:
+        _verify_named_directory(parent, backup_name, existing_descriptor)
+        conflicts = _owned_bundle_conflicts(existing_descriptor, bundle_id)
+        if conflicts:
+            os.replace(backup_name, bundle_id, src_dir_fd=parent, dst_dir_fd=parent)
+            return conflicts
+        os.replace(staged_name, bundle_id, src_dir_fd=parent, dst_dir_fd=parent)
+        _verify_named_directory(parent, bundle_id, staged_descriptor)
+        try:
+            _remove_tree_at(parent, backup_name)
+        except BaseException:
+            os.replace(bundle_id, staged_name, src_dir_fd=parent, dst_dir_fd=parent)
+            os.replace(backup_name, bundle_id, src_dir_fd=parent, dst_dir_fd=parent)
+            raise
     except BaseException:
-        if had_destination:
-            os.replace(backup, destination)
+        try:
+            os.stat(backup_name, dir_fd=parent, follow_symlinks=False)
+        except FileNotFoundError:
+            pass
+        else:
+            try:
+                os.stat(bundle_id, dir_fd=parent, follow_symlinks=False)
+            except FileNotFoundError:
+                os.replace(backup_name, bundle_id, src_dir_fd=parent, dst_dir_fd=parent)
         raise
-    if had_destination:
-        shutil.rmtree(backup, ignore_errors=True)
+    return []
 
 
 def _result(
@@ -727,14 +923,16 @@ def import_bundle(
     expected_commit: str | None = None,
 ) -> dict[str, Any]:
     """Preview or transactionally vendor an unchanged, reviewed bundle candidate."""
+    if not apply and expected_commit is not None:
+        raise ValueError("bundle expected commit requires apply")
     if apply and (type(expected_commit) is not str or _COMMIT.fullmatch(expected_commit) is None):
         raise ValueError("bundle apply requires a 40-character expected commit")
     if apply and expected_commit != candidate.resolved_commit:
         raise ValueError("bundle resolved commit does not match the reviewed commit")
     try:
+        root = validate_bundle_project(root)
         _, manifest_bytes, payload = _candidate_bytes(candidate)
         desired = _desired_files(candidate, manifest_bytes, payload)
-        root = Path(root).resolve()
         conflicts = _destination_parent_conflicts(root, candidate.bundle_id)
         destination = root / ".ai-dlc/bundles" / candidate.bundle_id
         if conflicts:
@@ -752,37 +950,88 @@ def import_bundle(
             changed = _changed_paths(destination, candidate.bundle_id, desired)
             if not changed:
                 return _result(candidate, applied=True, changed=[], conflicts=[])
-            metadata_root = root / ".ai-dlc"
-            bundles_root = metadata_root / "bundles"
-            metadata_root_existed = metadata_root.exists()
-            bundles_root_existed = bundles_root.exists()
+            root_descriptor = metadata_descriptor = bundles_descriptor = None
+            metadata_created = bundles_created = False
+            staged_name: str | None = None
+            staged_descriptor: int | None = None
+            existing_descriptor: int | None = None
             try:
-                bundles_root.mkdir(parents=True, exist_ok=True)
-                staged = _stage_bundle(bundles_root, candidate.bundle_id, desired)
+                root_descriptor = os.open(root, _DIRECTORY_FLAGS)
+                project_bytes = _regular_file_bytes(
+                    root_descriptor, PurePosixPath("ai-dlc.toml"), maximum=_MAX_MANIFEST_BYTES
+                )
+                _validate_project_document(project_bytes)
+                metadata_descriptor, metadata_created = _ensure_named_directory(
+                    root_descriptor, ".ai-dlc"
+                )
+                bundles_descriptor, bundles_created = _ensure_named_directory(
+                    metadata_descriptor, "bundles"
+                )
+                staged_name, staged_descriptor = _stage_bundle_at(
+                    bundles_descriptor, candidate.bundle_id, desired
+                )
+                _candidate_bytes(candidate)
+                changed = _changed_paths(destination, candidate.bundle_id, desired)
+                _verify_named_directory(root_descriptor, ".ai-dlc", metadata_descriptor)
+                _verify_named_directory(metadata_descriptor, "bundles", bundles_descriptor)
                 try:
-                    _candidate_bytes(candidate)
-                    conflicts = _destination_parent_conflicts(root, candidate.bundle_id)
+                    existing_descriptor = _destination_descriptor(
+                        bundles_descriptor, candidate.bundle_id
+                    )
+                except OSError:
+                    return _result(
+                        candidate,
+                        applied=False,
+                        changed=[],
+                        conflicts=[
+                            (
+                                f"{_relative_bundle_path(candidate.bundle_id)}: "
+                                "existing bundle destination is not an owned directory"
+                            )
+                        ],
+                    )
+                if existing_descriptor is not None:
+                    conflicts = _owned_bundle_conflicts(existing_descriptor, candidate.bundle_id)
                     if conflicts:
                         return _result(candidate, applied=False, changed=[], conflicts=conflicts)
-                    changed = _changed_paths(destination, candidate.bundle_id, desired)
-                    if not changed:
-                        return _result(candidate, applied=True, changed=[], conflicts=[])
-                    _replace_bundle_tree(staged, destination)
-                finally:
-                    if staged.exists() or staged.is_symlink():
-                        shutil.rmtree(staged, ignore_errors=True)
-            except BaseException:
-                if not bundles_root_existed:
+                if not changed:
+                    return _result(candidate, applied=True, changed=[], conflicts=[])
+                conflicts = _publish_bundle_tree(
+                    bundles_descriptor,
+                    candidate.bundle_id,
+                    staged_name,
+                    staged_descriptor,
+                    existing_descriptor,
+                )
+                if conflicts:
+                    return _result(candidate, applied=False, changed=[], conflicts=conflicts)
+                staged_name = None
+            finally:
+                if existing_descriptor is not None:
+                    os.close(existing_descriptor)
+                if staged_name is not None and bundles_descriptor is not None:
                     try:
-                        bundles_root.rmdir()
+                        _remove_tree_at(bundles_descriptor, staged_name)
                     except OSError:
                         pass
-                if not metadata_root_existed:
+                if staged_descriptor is not None:
+                    os.close(staged_descriptor)
+                if bundles_descriptor is not None:
+                    os.close(bundles_descriptor)
+                if bundles_created and metadata_descriptor is not None:
                     try:
-                        metadata_root.rmdir()
+                        os.rmdir("bundles", dir_fd=metadata_descriptor)
                     except OSError:
                         pass
-                raise
+                if metadata_descriptor is not None:
+                    os.close(metadata_descriptor)
+                if metadata_created and root_descriptor is not None:
+                    try:
+                        os.rmdir(".ai-dlc", dir_fd=root_descriptor)
+                    except OSError:
+                        pass
+                if root_descriptor is not None:
+                    os.close(root_descriptor)
         return _result(candidate, applied=True, changed=changed, conflicts=[])
     except OSError:
         raise ValueError(_FILESYSTEM_ERROR) from None
