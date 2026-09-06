@@ -751,14 +751,22 @@ def _open_named_directory(parent: int, name: str) -> int:
 
 
 def _ensure_named_directory(parent: int, name: str) -> tuple[int, bool]:
-    created = False
     try:
-        descriptor = _open_named_directory(parent, name)
+        return _open_named_directory(parent, name), False
     except FileNotFoundError:
         os.mkdir(name, dir_fd=parent)
-        created = True
-        descriptor = _open_named_directory(parent, name)
-    return descriptor, created
+        created = os.stat(name, dir_fd=parent, follow_symlinks=False)
+        try:
+            return _open_named_directory(parent, name), True
+        except BaseException:
+            try:
+                named = os.stat(name, dir_fd=parent, follow_symlinks=False)
+            except FileNotFoundError:
+                pass
+            else:
+                if _same_object(created, named):
+                    os.rmdir(name, dir_fd=parent)
+            raise
 
 
 def _verify_named_directory(parent: int, name: str, descriptor: int) -> None:
@@ -918,19 +926,31 @@ def _plan_bundle_at(
             os.close(descriptor)
 
 
-def _restore_tree_at(parent: int, name: str, files: dict[str, bytes]) -> None:
+def _stage_recovery_tree_at(
+    parent: int, bundle_id: str, files: dict[str, bytes]
+) -> tuple[str, int]:
+    name = f".{bundle_id}.recovery-{secrets.token_hex(12)}"
     os.mkdir(name, dir_fd=parent)
-    descriptor = _open_named_directory(parent, name)
+    descriptor: int | None = None
     try:
+        descriptor = _open_named_directory(parent, name)
         for relative, content in sorted(files.items()):
             _write_regular_file_at(descriptor, PurePosixPath(relative), content)
-        if _owned_bundle_conflicts(descriptor, name):
-            raise OSError("restored bundle failed validation")
+        if _owned_bundle_conflicts(descriptor, bundle_id):
+            raise OSError("recovery bundle failed validation")
+        return name, descriptor
     except BaseException:
-        os.close(descriptor)
+        if descriptor is not None:
+            os.close(descriptor)
         _cleanup_tree_at(parent, name)
         raise
-    os.close(descriptor)
+
+
+def _prepare_recovery_tree(parent: int, bundle_id: str, files: dict[str, bytes]) -> tuple[str, int]:
+    try:
+        return _stage_recovery_tree_at(parent, bundle_id, files)
+    except OSError:
+        return _stage_recovery_tree_at(parent, bundle_id, files)
 
 
 def _create_destination_placeholder(parent: int, bundle_id: str) -> int:
@@ -942,15 +962,21 @@ def _create_destination_placeholder(parent: int, bundle_id: str) -> int:
         raise
 
 
-def _remove_empty_directory_object(parent: int, descriptor: int) -> None:
+def _named_directory_object(parent: int, descriptor: int) -> str | None:
     expected = os.fstat(descriptor)
     with os.scandir(parent) as children:
         names = [child.name for child in children]
     for name in names:
         named = os.stat(name, dir_fd=parent, follow_symlinks=False)
         if _same_object(named, expected):
-            os.rmdir(name, dir_fd=parent)
-            return
+            return name
+    return None
+
+
+def _remove_empty_directory_object(parent: int, descriptor: int) -> None:
+    name = _named_directory_object(parent, descriptor)
+    if name is not None:
+        os.rmdir(name, dir_fd=parent)
 
 
 def _publish_bundle_tree(
@@ -975,6 +1001,12 @@ def _publish_bundle_tree(
             _verify_named_directory(parent, bundle_id, placeholder)
             os.replace(staged_name, bundle_id, src_dir_fd=parent, dst_dir_fd=parent)
             _verify_named_directory(parent, bundle_id, staged_descriptor)
+            displaced_placeholder = _named_directory_object(parent, placeholder)
+            if displaced_placeholder is not None:
+                os.replace(bundle_id, staged_name, src_dir_fd=parent, dst_dir_fd=parent)
+                os.mkdir(bundle_id, dir_fd=parent)
+                os.rmdir(displaced_placeholder, dir_fd=parent)
+                raise OSError("bundle destination placeholder changed")
             verify_project()
         except BaseException:
             try:
@@ -1022,12 +1054,24 @@ def _publish_bundle_tree(
     try:
         _remove_tree_at(parent, backup_name)
     except BaseException:
-        os.replace(bundle_id, staged_name, src_dir_fd=parent, dst_dir_fd=parent)
+        recovery_name, recovery_descriptor = _prepare_recovery_tree(parent, bundle_id, prior_files)
         try:
-            _remove_tree_at(parent, backup_name)
-        except FileNotFoundError:
-            pass
-        _restore_tree_at(parent, bundle_id, prior_files)
+            os.replace(bundle_id, staged_name, src_dir_fd=parent, dst_dir_fd=parent)
+            try:
+                os.replace(recovery_name, bundle_id, src_dir_fd=parent, dst_dir_fd=parent)
+            except BaseException:
+                os.replace(staged_name, bundle_id, src_dir_fd=parent, dst_dir_fd=parent)
+                raise
+            recovery_name = ""
+            _verify_named_directory(parent, bundle_id, recovery_descriptor)
+            try:
+                _remove_tree_at(parent, backup_name)
+            except FileNotFoundError:
+                pass
+        finally:
+            os.close(recovery_descriptor)
+            if recovery_name:
+                _cleanup_tree_at(parent, recovery_name)
         raise
     return []
 

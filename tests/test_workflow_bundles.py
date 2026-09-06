@@ -1659,3 +1659,152 @@ def test_first_import_placeholder_swap_preserves_empty_authored_destination(
     assert destination.is_dir()
     assert list(destination.iterdir()) == []
     assert displaced is not None and not displaced.exists()
+
+
+@pytest.mark.parametrize("failure", ["open", "write"])
+def test_partial_backup_cleanup_stages_recovery_before_removing_damaged_backup(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, failure: str
+):
+    """Would fail if recovery construction at the active destination could erase the old tree."""
+    from ai_dlc import workflow_bundles
+
+    repository, source, environment = _bundle_repository(tmp_path)
+    project = _bundle_project(tmp_path)
+    with workflow_bundles.resolve_bundle(
+        source, "main", "example-bundle", environ=environment
+    ) as initial:
+        workflow_bundles.import_bundle(
+            project, initial, apply=True, expected_commit=initial.resolved_commit
+        )
+    destination = project / ".ai-dlc/bundles/example-bundle"
+    before = _snapshot(destination)
+    _updated_bundle(repository)
+    real_remove = workflow_bundles._remove_tree_at
+    real_open = workflow_bundles._open_named_directory
+    real_write = workflow_bundles._write_regular_file_at
+    cleanup_failed = False
+    recovery_failed = False
+
+    def damage_backup(parent: int, name: str) -> None:
+        nonlocal cleanup_failed
+        if name == ".example-bundle.backup" and not cleanup_failed:
+            cleanup_failed = True
+            descriptor = real_open(parent, name)
+            try:
+                os.unlink("bundle.json", dir_fd=descriptor)
+            finally:
+                os.close(descriptor)
+            raise OSError("cleanup-sentinel")
+        real_remove(parent, name)
+
+    def fail_recovery_open(parent: int, name: str) -> int:
+        nonlocal recovery_failed
+        if ".recovery-" in name and not recovery_failed:
+            recovery_failed = True
+            raise OSError("restore-open-sentinel")
+        return real_open(parent, name)
+
+    def fail_recovery_write(root: int, relative: object, content: bytes) -> None:
+        nonlocal recovery_failed
+        if cleanup_failed and not recovery_failed:
+            recovery_failed = True
+            raise OSError("restore-write-sentinel")
+        real_write(root, relative, content)
+
+    monkeypatch.setattr(workflow_bundles, "_remove_tree_at", damage_backup)
+    if failure == "open":
+        monkeypatch.setattr(workflow_bundles, "_open_named_directory", fail_recovery_open)
+    else:
+        monkeypatch.setattr(workflow_bundles, "_write_regular_file_at", fail_recovery_write)
+
+    with (
+        workflow_bundles.resolve_bundle(
+            source, "main", "example-bundle", environ=environment
+        ) as candidate,
+        pytest.raises(ValueError, match="bundle filesystem operation failed"),
+    ):
+        workflow_bundles.import_bundle(
+            project, candidate, apply=True, expected_commit=candidate.resolved_commit
+        )
+
+    assert _snapshot(destination) == before
+    assert sorted(path.name for path in destination.parent.iterdir()) == ["example-bundle"]
+    assert recovery_failed is True
+
+
+def test_first_import_detects_placeholder_swap_inside_replace_boundary(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Would fail if a swap after the precheck let replace erase an empty authored directory."""
+    from ai_dlc import workflow_bundles
+
+    _, source, environment = _bundle_repository(tmp_path)
+    project = _bundle_project(tmp_path)
+    real_replace = workflow_bundles.os.replace
+    swapped = False
+
+    def swap_inside_replace(
+        source_name: object, destination_name: object, **kwargs: object
+    ) -> None:
+        nonlocal swapped
+        if destination_name == "example-bundle" and not swapped:
+            swapped = True
+            bundles = project / ".ai-dlc/bundles"
+            (bundles / "example-bundle").rename(bundles / "displaced-placeholder")
+            (bundles / "example-bundle").mkdir()
+        real_replace(source_name, destination_name, **kwargs)
+
+    monkeypatch.setattr(workflow_bundles.os, "replace", swap_inside_replace)
+    with (
+        workflow_bundles.resolve_bundle(
+            source, "main", "example-bundle", environ=environment
+        ) as candidate,
+        pytest.raises(ValueError, match="bundle filesystem operation failed"),
+    ):
+        workflow_bundles.import_bundle(
+            project, candidate, apply=True, expected_commit=candidate.resolved_commit
+        )
+
+    bundles = project / ".ai-dlc/bundles"
+    assert (bundles / "example-bundle").is_dir()
+    assert list((bundles / "example-bundle").iterdir()) == []
+    assert sorted(path.name for path in bundles.iterdir()) == ["example-bundle"]
+
+
+@pytest.mark.parametrize("created_name", [".ai-dlc", "bundles"])
+def test_created_destination_parent_is_removed_when_immediate_open_fails(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, created_name: str
+):
+    """Would fail if mkdir escaped cleanup coverage before its descriptor opened."""
+    from ai_dlc import workflow_bundles
+
+    _, source, environment = _bundle_repository(tmp_path)
+    project = _bundle_project(tmp_path)
+    if created_name == "bundles":
+        (project / ".ai-dlc").mkdir()
+    before = _snapshot(project)
+    real_open = workflow_bundles._open_named_directory
+    failed = False
+
+    def fail_created_open_once(parent: int, name: str) -> int:
+        nonlocal failed
+        created_path = (
+            project / ".ai-dlc" if created_name == ".ai-dlc" else project / ".ai-dlc/bundles"
+        )
+        if name == created_name and created_path.exists() and not failed:
+            failed = True
+            raise OSError("credential-sentinel")
+        return real_open(parent, name)
+
+    monkeypatch.setattr(workflow_bundles, "_open_named_directory", fail_created_open_once)
+    with (
+        workflow_bundles.resolve_bundle(
+            source, "main", "example-bundle", environ=environment
+        ) as candidate,
+        pytest.raises(ValueError, match="bundle filesystem operation failed"),
+    ):
+        workflow_bundles.import_bundle(
+            project, candidate, apply=True, expected_commit=candidate.resolved_commit
+        )
+
+    assert _snapshot(project) == before
