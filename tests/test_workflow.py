@@ -174,6 +174,27 @@ def test_project_write_lock_rejects_unsafe_anchor_mode(tmp_path, monkeypatch):
         pass
 
 
+def test_project_write_lock_rejects_unsafe_account_home_with_existing_cache(tmp_path, monkeypatch):
+    """A private cache cannot make its writable account-home authority trustworthy."""
+    from ai_dlc.locking import project_write_lock
+
+    cache = account_lock_cache(tmp_path, monkeypatch)
+    cache.mkdir(mode=0o700)
+    account_home = cache.parent
+    project = tmp_path / "project"
+    project.mkdir()
+
+    with project_write_lock(project):
+        pass
+
+    try:
+        account_home.chmod(0o777)
+        with pytest.raises(ValueError, match="lock namespace"), project_write_lock(project):
+            pass
+    finally:
+        account_home.chmod(0o700)
+
+
 def test_project_write_lock_uses_a_private_stable_namespace(tmp_path, monkeypatch):
     """A valid existing private anchor supports nesting and a private regular lock leaf."""
     import stat

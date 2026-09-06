@@ -47,20 +47,6 @@ def _open_anchor(path: Path) -> int:
     _reject_symlink_components(path)
     try:
         metadata = path.lstat()
-    except FileNotFoundError:
-        parent = path.parent
-        try:
-            parent_metadata = parent.lstat()
-        except OSError:
-            raise _invalid_namespace() from None
-        _validate_directory(parent_metadata)
-        if parent.is_symlink():
-            raise _invalid_namespace()
-        try:
-            path.mkdir(mode=0o700)
-        except FileExistsError:
-            pass
-        metadata = path.lstat()
     except OSError:
         raise _invalid_namespace() from None
     if path.is_symlink():
@@ -112,10 +98,9 @@ def _lock_namespace() -> Iterator[int]:
         raise _invalid_namespace() from None
     if not account_home.is_absolute():
         raise _invalid_namespace()
-    anchor = account_home / ".cache"
-    descriptor = _open_anchor(anchor)
+    descriptor = _open_anchor(account_home)
     try:
-        for name in ("ai-dlc", "locks"):
+        for name in (".cache", "ai-dlc", "locks"):
             child = _open_private_child(descriptor, name)
             os.close(descriptor)
             descriptor = child
