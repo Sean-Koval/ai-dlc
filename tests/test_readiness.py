@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+from test_rendering import _skill, _write_vendored_bundle
 
 
 def _checks(result: dict, component: str, dimension: str) -> list[dict]:
@@ -271,3 +272,152 @@ def test_personal_only_provider_has_actionable_delivery_gap_without_changing_pro
     assert gap["status"] == "missing"
     assert "ai-dlc.toml" in gap["next_action"]
     assert project.read_bytes() == before
+
+
+def test_bundle_guidance_inspection_reports_missing_blocked_stale_and_ready(tmp_path):
+    """Would fail if selected unusable guidance could satisfy offline readiness."""
+    from ai_dlc.agents import inspect_bundle_guidance, render_agents
+
+    clients = ["codex", "claude-code"]
+    config = {"agents": {"bundles": ["review-flow"]}}
+    assert inspect_bundle_guidance(tmp_path, config, clients)[0]["status"] == "missing"
+
+    _write_vendored_bundle(
+        tmp_path,
+        "review-flow",
+        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow", "Version one"))},
+    )
+    assert inspect_bundle_guidance(tmp_path, config, clients)[0]["status"] == "missing"
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
+    )
+    render_agents(tmp_path, apply=True)
+    assert inspect_bundle_guidance(tmp_path, config, clients) == [
+        {
+            "bundle_id": "review-flow",
+            "status": "ready",
+            "reason": "bundle guidance is intact and rendered for configured clients",
+            "next_action": "No action required.",
+        }
+    ]
+
+    _write_vendored_bundle(
+        tmp_path,
+        "review-flow",
+        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow", "Version two"))},
+    )
+    stale = inspect_bundle_guidance(tmp_path, config, clients)[0]
+    assert stale["status"] == "missing"
+    assert "full" in stale["next_action"].lower()
+
+    rendered = tmp_path / ".agents/skills/review-flow/SKILL.md"
+    rendered.write_text("local edit\n")
+    blocked = inspect_bundle_guidance(tmp_path, config, clients)[0]
+    assert blocked["status"] == "blocked"
+    assert blocked["reason"]
+    assert blocked["next_action"]
+
+
+def test_bundle_collision_blocks_every_participating_readiness_result(tmp_path):
+    """Would fail if a global export collision were attributed to only one claimant."""
+    from ai_dlc.agents import inspect_bundle_guidance
+
+    for bundle_id in ["z-bundle", "a-bundle"]:
+        _write_vendored_bundle(
+            tmp_path,
+            bundle_id,
+            templates={"review-note": ("templates/note.md", f"# {bundle_id}\n")},
+        )
+    results = inspect_bundle_guidance(
+        tmp_path,
+        {"agents": {"bundles": ["z-bundle", "a-bundle"]}},
+        ["codex"],
+    )
+
+    assert [result["bundle_id"] for result in results] == ["a-bundle", "z-bundle"]
+    assert [result["status"] for result in results] == ["blocked", "blocked"]
+    assert all("collision" in result["reason"] for result in results)
+
+
+def test_bundle_guidance_symlinked_output_is_blocked_even_when_bytes_match(tmp_path):
+    """Would fail if readiness followed a substituted owned output outside the project."""
+    from ai_dlc.agents import inspect_bundle_guidance, render_agents
+
+    config = {"agents": {"bundles": ["review-flow"]}}
+    _write_vendored_bundle(
+        tmp_path,
+        "review-flow",
+        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow"))},
+    )
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nagent-client=["codex"]\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
+    )
+    render_agents(tmp_path, apply=True)
+    rendered = tmp_path / ".agents/skills/review-flow/SKILL.md"
+    outside = tmp_path / "outside-skill.md"
+    outside.write_bytes(rendered.read_bytes())
+    rendered.unlink()
+    rendered.symlink_to(outside)
+
+    result = inspect_bundle_guidance(tmp_path, config, ["codex"])[0]
+
+    assert result["status"] == "blocked"
+    assert "symlink" in result["reason"]
+
+
+def test_bundle_cross_owner_collision_blocks_old_and_new_selected_owners(tmp_path):
+    """Would fail if readiness omitted the selected prior owner from a destination claim."""
+    from ai_dlc.agents import inspect_bundle_guidance, render_agents
+
+    config_path = tmp_path / "ai-dlc.toml"
+    config_path.write_text('schema=4\n[agents]\nbundles=["one"]\nskills=[]\n')
+    _write_vendored_bundle(
+        tmp_path,
+        "one",
+        templates={"review-note": ("templates/note.md", "# One\n")},
+    )
+    render_agents(tmp_path, apply=True)
+    _write_vendored_bundle(
+        tmp_path,
+        "one",
+        templates={"other-note": ("templates/other.md", "# Other\n")},
+    )
+    _write_vendored_bundle(
+        tmp_path,
+        "two",
+        templates={"review-note": ("templates/note.md", "# Two\n")},
+    )
+    config_path.write_text('schema=4\n[agents]\nbundles=["one","two"]\nskills=[]\n')
+
+    results = inspect_bundle_guidance(
+        tmp_path,
+        {"agents": {"bundles": ["one", "two"]}},
+        ["codex"],
+    )
+
+    assert [result["status"] for result in results] == ["blocked", "blocked"]
+    assert all("collision" in result["reason"] for result in results)
+
+
+def test_project_readiness_maps_bundle_guidance_and_keeps_missing_bundle_blocking(tmp_path):
+    """Would fail if bundle inspection did not participate in the guidance gate."""
+    from ai_dlc.readiness import inspect_readiness
+
+    config = {
+        "roles": {"agent-client": ["codex"]},
+        "agents": {"bundles": ["missing-bundle"]},
+    }
+    result = inspect_readiness(
+        tmp_path,
+        config,
+        environ={},
+        probe=lambda argv: {"available": True},
+    )
+
+    checks = _checks(result, "bundle:missing-bundle", "guidance")
+    assert len(checks) == 1
+    assert checks[0]["status"] == "missing"
+    assert checks[0]["reason"]
+    assert checks[0]["next_action"]
+    assert result["ready"] is False

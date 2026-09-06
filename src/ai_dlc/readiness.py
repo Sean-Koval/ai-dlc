@@ -195,6 +195,18 @@ def inspect_readiness(
                     ),
                 )
             )
+    from ai_dlc.agents import inspect_bundle_guidance
+
+    for bundle in inspect_bundle_guidance(root, config, clients):
+        checks.append(
+            _check(
+                f"bundle:{bundle['bundle_id']}",
+                "guidance",
+                bundle["status"],
+                bundle["reason"],
+                bundle["next_action"],
+            )
+        )
     for component in resolved["components"]:
         checks.extend(_tool_checks(component, modules, headless=headless, probe=probe))
 

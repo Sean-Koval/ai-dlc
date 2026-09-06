@@ -12,9 +12,9 @@
 
 ## 3. Client and template distribution
 
-- [ ] 3.1 Define and run the focused acceptance/refusal cases in the execution plan.
-- [ ] 3.2 Extend owned skill/template/index rendering, project-only config validation, and bundle-aware readiness; demonstrate one external Markdown bundle in a fresh checkout with source access disabled.
-- [ ] 3.3 Verify focused tests and inspect scope/compatibility before committing.
+- [x] 3.1 Define and run the focused acceptance/refusal cases in the execution plan.
+- [x] 3.2 Extend owned skill/template/index rendering, project-only config validation, and bundle-aware readiness; demonstrate one external Markdown bundle in a fresh checkout with source access disabled.
+- [x] 3.3 Verify focused tests and inspect scope/compatibility before committing.
 
 ## 4. Review and finish
 

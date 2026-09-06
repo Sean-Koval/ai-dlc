@@ -22,6 +22,7 @@ from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any, Self
 
 from ai_dlc.config import resolve_layers
+from ai_dlc.files import inside
 from ai_dlc.locking import project_write_lock
 from ai_dlc.profile_source import resolve_git_source, source_portability
 
@@ -705,6 +706,40 @@ def _owned_bundle_conflicts(destination: int, bundle_id: str) -> list[str]:
     except ValueError:
         return [f"{base}: existing bundle content is invalid"]
     return []
+
+
+def load_vendored_bundle(root: Path, bundle_id: str) -> dict[str, Any]:
+    """Load one exact committed bundle without resolving or contacting its source."""
+    _slug(bundle_id, field="bundle id")
+    destination = inside(Path(root), f".ai-dlc/bundles/{bundle_id}")
+    try:
+        metadata = destination.lstat()
+        if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
+            raise ValueError("vendored bundle path must be a directory")
+        lock = _load_existing_lock(destination, bundle_id)
+        manifest_bytes, raw_manifest = _load_manifest_with_bytes(destination)
+        if hashlib.sha256(manifest_bytes).hexdigest() != lock["manifest_sha256"]:
+            raise ValueError("vendored bundle manifest does not match its lock")
+        manifest = _validate_bundle(
+            destination,
+            raw_manifest,
+            metadata_paths={"bundle.lock.json"},
+        )
+        if manifest["id"] != bundle_id or manifest["files"] != lock["files"]:
+            raise ValueError("vendored bundle lock does not match its manifest")
+        payload: dict[str, str] = {}
+        for relative, expected_digest in manifest["files"].items():
+            content = _regular_file_bytes(
+                destination,
+                PurePosixPath(relative),
+                maximum=_MAX_PAYLOAD_BYTES,
+            )
+            if hashlib.sha256(content).hexdigest() != expected_digest:
+                raise ValueError(f"vendored bundle payload digest mismatch: {relative}")
+            payload[relative] = content.decode("utf-8")
+    except OSError:
+        raise ValueError("vendored bundle filesystem operation failed") from None
+    return {"lock": lock, "manifest": manifest, "payload": payload}
 
 
 def _desired_files(

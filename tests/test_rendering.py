@@ -1,4 +1,55 @@
+import hashlib
+import json
+import shutil
+from pathlib import Path
+
 import pytest
+
+
+def _write_vendored_bundle(
+    root: Path,
+    bundle_id: str,
+    *,
+    skills: dict[str, tuple[str, str]] | None = None,
+    templates: dict[str, tuple[str, str]] | None = None,
+) -> None:
+    skills = skills or {}
+    templates = templates or {}
+    destination = root / ".ai-dlc/bundles" / bundle_id
+    files = {
+        path: hashlib.sha256(body.encode()).hexdigest()
+        for path, body in [*skills.values(), *templates.values()]
+    }
+    manifest = {
+        "schema": 1,
+        "id": bundle_id,
+        "skills": {name: path for name, (path, _) in skills.items()},
+        "templates": {name: path for name, (path, _) in templates.items()},
+        "files": files,
+    }
+    manifest_bytes = (json.dumps(manifest, indent=2, sort_keys=True) + "\n").encode()
+    lock = {
+        "schema": 1,
+        "id": bundle_id,
+        "source": f"https://example.test/{bundle_id}.git",
+        "ref": "v1",
+        "resolved_commit": "a" * 40,
+        "manifest_sha256": hashlib.sha256(manifest_bytes).hexdigest(),
+        "files": files,
+    }
+    if destination.exists():
+        shutil.rmtree(destination)
+    destination.mkdir(parents=True, exist_ok=True)
+    (destination / "bundle.json").write_bytes(manifest_bytes)
+    (destination / "bundle.lock.json").write_text(json.dumps(lock, indent=2, sort_keys=True) + "\n")
+    for path, body in [*skills.values(), *templates.values()]:
+        output = destination / path
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(body)
+
+
+def _skill(name: str, body: str = "Use the reviewed workflow.") -> str:
+    return f"---\nname: {name}\ndescription: Portable reviewed workflow\n---\n{body}\n"
 
 
 @pytest.mark.parametrize("apply", [False, True])
@@ -369,3 +420,217 @@ def test_custom_provider_index_links_to_project_instructions_without_copying_or_
     ]
     guidance.write_text("# Reviewed new custom instructions\n")
     assert render_agents(tmp_path)["clean"]
+
+
+def test_selected_bundle_renders_offline_to_clients_template_and_index(tmp_path, monkeypatch):
+    """Would fail if rendering fetched a source or omitted a required discovery destination."""
+    import socket
+    import subprocess
+    import urllib.request
+
+    from ai_dlc import workflow_bundles
+    from ai_dlc.agents import render_agents
+
+    fresh_checkout = tmp_path / "fresh-checkout"
+    fresh_checkout.mkdir()
+    _write_vendored_bundle(
+        fresh_checkout,
+        "review-flow",
+        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow"))},
+        templates={"review-note": ("templates/review-note.md", "# Review note\n")},
+    )
+    (fresh_checkout / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nagent-client=["codex","claude-code"]\n'
+        '[agents]\nbundles=["review-flow"]\nskills=[]\n'
+    )
+
+    def source_access_forbidden(*args, **kwargs):
+        pytest.fail("fresh-checkout render attempted Git or network source access")
+
+    monkeypatch.setattr(workflow_bundles, "resolve_git_source", source_access_forbidden)
+    monkeypatch.setattr(subprocess, "run", source_access_forbidden)
+    monkeypatch.setattr(socket, "create_connection", source_access_forbidden)
+    monkeypatch.setattr(urllib.request, "urlopen", source_access_forbidden)
+
+    result = render_agents(fresh_checkout, apply=True)
+
+    assert result["applied"] is True
+    skill = _skill("review-flow")
+    assert (fresh_checkout / ".agents/skills/review-flow/SKILL.md").read_text() == skill
+    assert (fresh_checkout / ".claude/skills/review-flow/SKILL.md").read_text() == skill
+    assert (fresh_checkout / "docs/templates/review-note.md").read_text() == "# Review note\n"
+    index = (fresh_checkout / "AGENTS.md").read_text()
+    assert "[review-flow](<.ai-dlc/bundles/review-flow/skills/review/SKILL.md>)" in index
+    assert "[review-note](<docs/templates/review-note.md>)" in index
+    assert "@AGENTS.md\n" in (fresh_checkout / "CLAUDE.md").read_text()
+    ownership = json.loads((fresh_checkout / ".ai-dlc/agent-ownership.json").read_text())
+    expected_paths = {
+        ".agents/skills/review-flow/SKILL.md",
+        ".claude/skills/review-flow/SKILL.md",
+        "docs/templates/review-note.md",
+    }
+    assert ownership["schema"] == 3
+    assert set(ownership["bundle_files"]) == expected_paths
+    assert all(isinstance(digest, str) for digest in ownership["files"].values())
+    assert all(
+        entry["owner"] == "review-flow" and entry["sha256"] == ownership["files"][path]
+        for path, entry in ownership["bundle_files"].items()
+    )
+    assert render_agents(fresh_checkout)["clean"] is True
+
+
+@pytest.mark.parametrize("collision", ["authored", "shipped", "duplicate"])
+def test_bundle_collisions_block_the_whole_render_without_writes(tmp_path, collision):
+    """Would fail if authored, shipped, or cross-bundle claims were overwritten."""
+    from ai_dlc.agents import render_agents
+
+    if collision == "authored":
+        _write_vendored_bundle(
+            tmp_path,
+            "one",
+            templates={"review-note": ("templates/note.md", "# Review note\n")},
+        )
+        authored = tmp_path / "docs/templates/review-note.md"
+        authored.parent.mkdir(parents=True)
+        authored.write_text("# Review note\n")
+        bundles = ["one"]
+    elif collision == "shipped":
+        _write_vendored_bundle(
+            tmp_path,
+            "one",
+            skills={"day-start": ("skills/day/SKILL.md", _skill("day-start"))},
+        )
+        authored = None
+        bundles = ["one"]
+    else:
+        for bundle_id in ["one", "two"]:
+            _write_vendored_bundle(
+                tmp_path,
+                bundle_id,
+                templates={"review-note": ("templates/note.md", f"# {bundle_id}\n")},
+            )
+        authored = None
+        bundles = ["two", "one"]
+    (tmp_path / "ai-dlc.toml").write_text(
+        "schema=4\n[agents]\nbundles=" + json.dumps(bundles) + "\nskills=[]\n"
+    )
+    before = authored.read_bytes() if authored else None
+
+    with pytest.raises(ValueError, match="collision"):
+        render_agents(tmp_path, apply=True)
+
+    assert not (tmp_path / "AGENTS.md").exists()
+    if authored:
+        assert authored.read_bytes() == before
+
+
+def test_bundle_render_rejects_a_symlinked_vendored_parent_without_writes(tmp_path):
+    """Would fail if rendering followed a substituted parent outside the project."""
+    from ai_dlc.agents import render_agents
+
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    _write_vendored_bundle(
+        outside,
+        "review-flow",
+        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow"))},
+    )
+    (tmp_path / ".ai-dlc").mkdir()
+    (tmp_path / ".ai-dlc/bundles").symlink_to(outside / ".ai-dlc/bundles")
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
+    )
+
+    with pytest.raises(ValueError, match="symlink"):
+        render_agents(tmp_path, apply=True)
+
+    assert not (tmp_path / "AGENTS.md").exists()
+
+
+def test_bundle_same_owner_update_partial_client_and_edited_removal(tmp_path):
+    """Would fail if partial renders lost ownership or edited obsolete outputs were deleted."""
+    from ai_dlc.agents import render_agents
+
+    config = tmp_path / "ai-dlc.toml"
+    config.write_text('schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n')
+    _write_vendored_bundle(
+        tmp_path,
+        "review-flow",
+        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow", "Version one"))},
+    )
+    render_agents(tmp_path, apply=True)
+    claude = tmp_path / ".claude/skills/review-flow/SKILL.md"
+    claude_before = claude.read_bytes()
+    _write_vendored_bundle(
+        tmp_path,
+        "review-flow",
+        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow", "Version two"))},
+    )
+
+    render_agents(tmp_path, apply=True, client="codex")
+
+    assert "Version two" in (tmp_path / ".agents/skills/review-flow/SKILL.md").read_text()
+    assert claude.read_bytes() == claude_before
+    ownership = json.loads((tmp_path / ".ai-dlc/agent-ownership.json").read_text())
+    assert ownership["bundle_files"][".claude/skills/review-flow/SKILL.md"]["sha256"] == (
+        hashlib.sha256(claude_before).hexdigest()
+    )
+    edited = tmp_path / ".agents/skills/review-flow/SKILL.md"
+    edited.write_text("local edit\n")
+    config.write_text("schema=4\n[agents]\nbundles=[]\nskills=[]\n")
+    before = {path: path.read_bytes() for path in [edited, claude, tmp_path / "AGENTS.md"]}
+    with pytest.raises(ValueError, match="conflict"):
+        render_agents(tmp_path, apply=True)
+    assert {path: path.read_bytes() for path in before} == before
+
+    edited.write_text(_skill("review-flow", "Version two"))
+    render_agents(tmp_path, apply=True)
+    ownership = json.loads((tmp_path / ".ai-dlc/agent-ownership.json").read_text())
+    assert ownership["schema"] == 3
+    assert ownership["bundle_files"] == {}
+    assert not edited.exists()
+    assert not claude.exists()
+
+
+def test_bundle_render_operational_failure_restores_every_affected_byte(tmp_path, monkeypatch):
+    """Would fail if a multi-file bundle publication could leave a partial render."""
+    from ai_dlc import agents
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
+    )
+    _write_vendored_bundle(
+        tmp_path,
+        "review-flow",
+        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow", "Version one"))},
+        templates={"review-note": ("templates/review-note.md", "# One\n")},
+    )
+    agents.render_agents(tmp_path, apply=True)
+    affected = [
+        tmp_path / ".agents/skills/review-flow/SKILL.md",
+        tmp_path / ".claude/skills/review-flow/SKILL.md",
+        tmp_path / "docs/templates/review-note.md",
+        tmp_path / ".ai-dlc/agent-ownership.json",
+    ]
+    before = {path: path.read_bytes() for path in affected}
+    _write_vendored_bundle(
+        tmp_path,
+        "review-flow",
+        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow", "Version two"))},
+        templates={"review-note": ("templates/review-note.md", "# Two\n")},
+    )
+    original = agents.atomic_write
+    calls = 0
+
+    def fail_second_write(path, data, mode=None):
+        nonlocal calls
+        calls += 1
+        if calls == 2:
+            raise OSError("publication failed")
+        return original(path, data, mode)
+
+    monkeypatch.setattr(agents, "atomic_write", fail_second_write)
+    with pytest.raises(OSError, match="publication failed"):
+        agents.render_agents(tmp_path, apply=True)
+
+    assert {path: path.read_bytes() for path in affected} == before

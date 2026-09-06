@@ -66,6 +66,7 @@ _COMPONENT_PROVIDER_FIELDS = {
     "component_manifest",
     "component_manifest_sha256",
 }
+_BUNDLE_ID = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 
 
 @dataclass
@@ -212,6 +213,21 @@ def _validate(layer: str, data: dict[str, Any]) -> None:
                 secrets(child, path)
 
     secrets(data)
+    agents = data.get("agents")
+    if agents is not None and not isinstance(agents, dict):
+        raise TypeError(f"{layer}: agents must be a table")
+    if isinstance(agents, dict) and "bundles" in agents:
+        if layer != "project":
+            raise ValueError(f"{layer}: cannot set agents.bundles")
+        bundles = agents["bundles"]
+        if not isinstance(bundles, list):
+            raise TypeError("project: agents.bundles must be a list of bundle-ID slugs")
+        if not all(
+            isinstance(bundle_id, str) and _BUNDLE_ID.fullmatch(bundle_id) for bundle_id in bundles
+        ):
+            raise ValueError("project: agents.bundles must be a list of bundle-ID slugs")
+        if len(set(bundles)) != len(bundles):
+            raise ValueError("project: agents.bundles must not contain duplicate IDs")
     if "credentials" in data:
         _validate_credentials(layer, data["credentials"])
     if "providers" in data:

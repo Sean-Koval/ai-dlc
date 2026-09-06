@@ -235,6 +235,35 @@ def test_machine_cannot_weaken_project_checks():
         )
 
 
+@pytest.mark.parametrize("layer", ["base", "personal", "machine"])
+def test_bundle_selection_is_rejected_outside_project_configuration(layer):
+    """Would fail if a non-project layer could activate vendored guidance."""
+    from ai_dlc.config import resolve_layers
+
+    with pytest.raises(ValueError, match=rf"{layer}.*agents(?:\.bundles)?"):
+        resolve_layers([(layer, {"schema": 4, "agents": {"bundles": ["review-flow"]}})])
+
+
+@pytest.mark.parametrize(
+    "bundles",
+    ["review-flow", ["review-flow", "review-flow"], ["Bad_ID"], [1]],
+)
+def test_project_bundle_selection_requires_unique_slug_list(bundles):
+    """Would fail if ambiguous or unsafe bundle IDs reached filesystem planning."""
+    from ai_dlc.config import resolve_layers
+
+    with pytest.raises((TypeError, ValueError), match="agents.bundles"):
+        resolve_layers([("project", {"schema": 4, "agents": {"bundles": bundles}})])
+
+
+@pytest.mark.parametrize("agents", [{}, {"bundles": []}, {"bundles": ["review-flow"]}])
+def test_project_bundle_selection_accepts_missing_empty_or_unique_slugs(agents):
+    """Would fail if the separate project activation field rejected its valid defaults."""
+    from ai_dlc.config import resolve_layers
+
+    assert resolve_layers([("project", {"schema": 4, "agents": agents})]).values["agents"] == agents
+
+
 def test_named_collections_and_provenance():
     from ai_dlc.config import resolve_layers
 
