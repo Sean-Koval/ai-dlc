@@ -574,3 +574,174 @@ def test_rejects_an_empty_template(tmp_path: Path):
 
     with pytest.raises(ValueError, match="template body must be non-empty"):
         validate_bundle(tmp_path, manifest)
+
+
+def test_validation_rejects_leaf_symlink_swap_between_check_and_read(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Would fail if a checked leaf were reopened by mutable pathname for reading."""
+    from ai_dlc import workflow_bundles
+
+    manifest = _write_bundle(
+        tmp_path,
+        skills={},
+        templates={"brief": ("templates/brief.md", b"# Brief\n")},
+    )
+    leaf = tmp_path / "templates/brief.md"
+    replacement = tmp_path.parent / f"{tmp_path.name}-replacement.md"
+    replacement.write_bytes(b"# Brief\n")
+    original = tmp_path.parent / f"{tmp_path.name}-original.md"
+    real_read = os.read
+    swapped = False
+
+    def swap_then_read(descriptor: int, count: int) -> bytes:
+        nonlocal swapped
+        if not swapped:
+            leaf.replace(original)
+            leaf.symlink_to(replacement)
+            swapped = True
+        return real_read(descriptor, count)
+
+    monkeypatch.setattr(workflow_bundles.os, "read", swap_then_read)
+
+    with pytest.raises(ValueError, match="changed|symlink"):
+        workflow_bundles.validate_bundle(tmp_path, manifest)
+
+
+def test_validation_rejects_growth_past_per_file_limit_between_stat_and_read(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Would fail if a file could grow past its limit after its metadata check."""
+    from ai_dlc import workflow_bundles
+
+    manifest = _write_bundle(
+        tmp_path,
+        skills={},
+        templates={"brief": ("templates/brief.md", b"# Brief\n")},
+    )
+    leaf = tmp_path / "templates/brief.md"
+    real_read = os.read
+    grown = False
+
+    def grow_then_read(descriptor: int, count: int) -> bytes:
+        nonlocal grown
+        if not grown:
+            with leaf.open("ab") as stream:
+                stream.write(b"x" * (2 * 1024 * 1024))
+            grown = True
+        return real_read(descriptor, count)
+
+    monkeypatch.setattr(workflow_bundles.os, "read", grow_then_read)
+
+    with pytest.raises(ValueError, match="at most 2 MiB"):
+        workflow_bundles.validate_bundle(tmp_path, manifest)
+
+
+def test_validation_rejects_tree_mutation_after_scan(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Would fail if validation trusted a checkout snapshot after the tree changed."""
+    from ai_dlc import workflow_bundles
+
+    manifest = _write_bundle(tmp_path)
+    real_checkout_tree = workflow_bundles._checkout_tree
+    mutated = False
+
+    def mutate_after_scan(root: Path):
+        nonlocal mutated
+        snapshot = real_checkout_tree(root)
+        if not mutated:
+            (root / "added-after-scan.md").write_text("# Added\n")
+            mutated = True
+        return snapshot
+
+    monkeypatch.setattr(workflow_bundles, "_checkout_tree", mutate_after_scan)
+
+    with pytest.raises(ValueError, match="changed during validation"):
+        workflow_bundles.validate_bundle(tmp_path, manifest)
+
+
+@pytest.mark.parametrize("control", ["\u202e", "\u200b", "\u2066", "\ufeff"])
+def test_rejects_every_unicode_category_c_description_control(tmp_path: Path, control: str):
+    """Would fail if a format control could make skill metadata display deceptively."""
+    from ai_dlc.workflow_bundles import validate_bundle
+
+    content = (f"---\nname: day-start\ndescription: Start{control}here\n---\n\n# Start\n").encode()
+    manifest = _write_bundle(
+        tmp_path,
+        skills={"day-start": ("skills/day/SKILL.md", content)},
+        templates={},
+    )
+
+    with pytest.raises(ValueError, match="description"):
+        validate_bundle(tmp_path, manifest)
+
+
+@pytest.mark.parametrize("operation", ["manifest-read", "payload-read", "scandir", "stat"])
+def test_filesystem_errors_are_normalized_and_do_not_disclose_paths(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, operation: str
+):
+    """Would fail if an OS error or absolute source path escaped the validation boundary."""
+    from ai_dlc import workflow_bundles
+
+    manifest = _write_bundle(tmp_path)
+    original_path_read = Path.read_bytes
+    secret = f"filesystem failed at {tmp_path}/credential-sentinel"
+
+    def fail_path_read(path: Path) -> bytes:
+        if operation == "manifest-read" and path.name == "bundle.json":
+            raise OSError(secret)
+        if operation == "payload-read" and path.name != "bundle.json":
+            raise OSError(secret)
+        return original_path_read(path)
+
+    def fail_read(_descriptor: int, _count: int) -> bytes:
+        raise OSError(secret)
+
+    def fail_scandir(_directory: object):
+        raise OSError(secret)
+
+    def fail_lstat(_path: Path):
+        raise OSError(secret)
+
+    def fail_fstat(_descriptor: int):
+        raise OSError(secret)
+
+    if operation in {"manifest-read", "payload-read"}:
+        monkeypatch.setattr(Path, "read_bytes", fail_path_read)
+        monkeypatch.setattr(workflow_bundles.os, "read", fail_read)
+    elif operation == "scandir":
+        monkeypatch.setattr(workflow_bundles.os, "scandir", fail_scandir)
+    else:
+        monkeypatch.setattr(Path, "lstat", fail_lstat)
+        monkeypatch.setattr(workflow_bundles.os, "fstat", fail_fstat)
+
+    operation_under_test = (
+        workflow_bundles.load_bundle_manifest
+        if operation == "manifest-read"
+        else lambda root: workflow_bundles.validate_bundle(root, manifest)
+    )
+    with pytest.raises(ValueError) as captured:
+        operation_under_test(tmp_path)
+
+    assert str(captured.value) == "bundle filesystem operation failed"
+    assert str(tmp_path) not in str(captured.value)
+    assert "credential-sentinel" not in str(captured.value)
+
+
+def test_duplicate_key_error_does_not_echo_the_arbitrary_key(tmp_path: Path):
+    """Would fail if attacker-controlled JSON keys were included in refusal messages."""
+    from ai_dlc.workflow_bundles import load_bundle_manifest
+
+    secret_key = f"{tmp_path}/credential-sentinel"
+    (tmp_path / "bundle.json").write_text(
+        json.dumps({"before": 1})[:-1]
+        + f", {json.dumps(secret_key)}: 1, {json.dumps(secret_key)}: 2}}"
+    )
+
+    with pytest.raises(ValueError) as captured:
+        load_bundle_manifest(tmp_path)
+
+    assert str(captured.value) == "bundle.json contains duplicate JSON key"
+    assert str(tmp_path) not in str(captured.value)
+    assert "credential-sentinel" not in str(captured.value)

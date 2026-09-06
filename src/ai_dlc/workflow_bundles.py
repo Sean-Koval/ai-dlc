@@ -8,6 +8,8 @@ import os
 import re
 import stat
 import unicodedata
+from collections.abc import Iterator
+from contextlib import contextmanager
 from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any
 
@@ -22,51 +24,140 @@ _MAX_PATH_SEGMENTS = 16
 _MAX_PAYLOAD_BYTES = 2 * 1024 * 1024
 _MAX_TOTAL_PAYLOAD_BYTES = 10 * 1024 * 1024
 _MAX_DESCRIPTION_CHARACTERS = 1024
+_FILESYSTEM_ERROR = "bundle filesystem operation failed"
+_DIRECTORY_FLAGS = (
+    os.O_RDONLY
+    | getattr(os, "O_CLOEXEC", 0)
+    | getattr(os, "O_DIRECTORY", 0)
+    | getattr(os, "O_NOFOLLOW", 0)
+)
+_FILE_FLAGS = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
+_READ_CHUNK_BYTES = 64 * 1024
+
+_Identity = tuple[int, int, int, int, int, int]
+_TreeSnapshot = tuple[_Identity, dict[str, _Identity]]
+
+
+def _identity(metadata: os.stat_result) -> _Identity:
+    return (
+        metadata.st_dev,
+        metadata.st_ino,
+        metadata.st_mode,
+        metadata.st_size,
+        metadata.st_mtime_ns,
+        metadata.st_ctime_ns,
+    )
+
+
+def _same_object(left: os.stat_result, right: os.stat_result) -> bool:
+    return (
+        left.st_dev,
+        left.st_ino,
+        stat.S_IFMT(left.st_mode),
+    ) == (
+        right.st_dev,
+        right.st_ino,
+        stat.S_IFMT(right.st_mode),
+    )
+
+
+@contextmanager
+def _directory_descriptor(root: Path) -> Iterator[int]:
+    descriptor = os.open(root, _DIRECTORY_FLAGS)
+    try:
+        metadata = os.fstat(descriptor)
+        if not stat.S_ISDIR(metadata.st_mode):
+            raise ValueError("bundle root must be an existing directory, not a symlink")
+        yield descriptor
+    finally:
+        os.close(descriptor)
+
+
+@contextmanager
+def _file_descriptor(root: Path, relative: PurePosixPath) -> Iterator[int]:
+    with _directory_descriptor(root) as root_descriptor:
+        current = os.dup(root_descriptor)
+        try:
+            for part in relative.parts[:-1]:
+                before = os.stat(part, dir_fd=current, follow_symlinks=False)
+                if stat.S_ISLNK(before.st_mode):
+                    raise ValueError(f"bundle path cannot contain a symlink: {relative.as_posix()}")
+                if not stat.S_ISDIR(before.st_mode):
+                    raise ValueError(
+                        f"bundle path component must be a directory: {relative.as_posix()}"
+                    )
+                following = os.open(part, _DIRECTORY_FLAGS, dir_fd=current)
+                after = os.fstat(following)
+                if not _same_object(before, after):
+                    os.close(following)
+                    raise ValueError("bundle checkout changed during validation")
+                os.close(current)
+                current = following
+
+            leaf = relative.parts[-1]
+            before = os.stat(leaf, dir_fd=current, follow_symlinks=False)
+            if stat.S_ISLNK(before.st_mode):
+                raise ValueError(f"bundle path cannot contain a symlink: {relative.as_posix()}")
+            if not stat.S_ISREG(before.st_mode):
+                raise ValueError(f"bundle path must be a regular file: {relative.as_posix()}")
+            descriptor = os.open(leaf, _FILE_FLAGS, dir_fd=current)
+            try:
+                after = os.fstat(descriptor)
+                if not _same_object(before, after):
+                    raise ValueError("bundle checkout changed during validation")
+                yield descriptor
+                named_after = os.stat(leaf, dir_fd=current, follow_symlinks=False)
+                opened_after = os.fstat(descriptor)
+                if not _same_object(named_after, opened_after):
+                    raise ValueError("bundle checkout changed during validation")
+            finally:
+                os.close(descriptor)
+        finally:
+            os.close(current)
 
 
 def _regular_file_bytes(root: Path, relative: PurePosixPath, *, maximum: int) -> bytes:
-    try:
-        root_metadata = root.lstat()
-    except FileNotFoundError as error:
-        raise ValueError("bundle root must be an existing directory") from error
-    if stat.S_ISLNK(root_metadata.st_mode) or not stat.S_ISDIR(root_metadata.st_mode):
-        raise ValueError("bundle root must be an existing directory, not a symlink")
+    with _file_descriptor(root, relative) as descriptor:
+        before = os.fstat(descriptor)
+        if before.st_size > maximum:
+            limit = "1 MiB" if maximum == _MAX_MANIFEST_BYTES else "2 MiB"
+            raise ValueError(f"bundle path must be at most {limit}: {relative.as_posix()}")
 
-    current = root
-    for index, part in enumerate(relative.parts):
-        current = current / part
-        try:
-            metadata = current.lstat()
-        except FileNotFoundError as error:
-            raise ValueError(f"bundle path is missing: {relative.as_posix()}") from error
-        if stat.S_ISLNK(metadata.st_mode):
-            raise ValueError(f"bundle path cannot contain a symlink: {relative.as_posix()}")
-        if index < len(relative.parts) - 1 and not stat.S_ISDIR(metadata.st_mode):
-            raise ValueError(f"bundle path component must be a directory: {relative.as_posix()}")
-
-    metadata = current.lstat()
-    if not stat.S_ISREG(metadata.st_mode):
-        raise ValueError(f"bundle path must be a regular file: {relative.as_posix()}")
-    if metadata.st_size > maximum:
-        limit = "1 MiB" if maximum == _MAX_MANIFEST_BYTES else "2 MiB"
-        raise ValueError(f"bundle path must be at most {limit}: {relative.as_posix()}")
-    return current.read_bytes()
+        chunks: list[bytes] = []
+        remaining = maximum + 1
+        while remaining:
+            chunk = os.read(descriptor, min(_READ_CHUNK_BYTES, remaining))
+            if not chunk:
+                break
+            chunks.append(chunk)
+            remaining -= len(chunk)
+        content = b"".join(chunks)
+        after = os.fstat(descriptor)
+        if len(content) > maximum or after.st_size > maximum:
+            limit = "1 MiB" if maximum == _MAX_MANIFEST_BYTES else "2 MiB"
+            raise ValueError(f"bundle path must be at most {limit}: {relative.as_posix()}")
+        if not _same_object(before, after):
+            raise ValueError("bundle checkout changed during validation")
+        return content
 
 
 def _reject_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for key, value in pairs:
         if key in result:
-            raise ValueError(f"bundle.json contains duplicate JSON key: {key}")
+            raise ValueError("bundle.json contains duplicate JSON key")
         result[key] = value
     return result
 
 
 def load_bundle_manifest(root: Path) -> dict[str, Any]:
     """Load a bounded UTF-8 ``bundle.json`` without accepting duplicate keys."""
-    content = _regular_file_bytes(
-        Path(root), PurePosixPath("bundle.json"), maximum=_MAX_MANIFEST_BYTES
-    )
+    try:
+        content = _regular_file_bytes(
+            Path(root), PurePosixPath("bundle.json"), maximum=_MAX_MANIFEST_BYTES
+        )
+    except OSError:
+        raise ValueError(_FILESYSTEM_ERROR) from None
     try:
         document = json.loads(content.decode("utf-8"), object_pairs_hook=_reject_duplicate_keys)
     except (UnicodeDecodeError, json.JSONDecodeError) as error:
@@ -137,35 +228,46 @@ def _expected_tree(payload_paths: set[str]) -> set[str]:
     return expected
 
 
-def _checkout_tree(root: Path) -> set[str]:
-    try:
-        metadata = root.lstat()
-    except FileNotFoundError as error:
-        raise ValueError("bundle root must be an existing directory") from error
-    if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
-        raise ValueError("bundle root must be an existing directory, not a symlink")
+def _checkout_tree(root: Path) -> _TreeSnapshot:
+    entries: dict[str, _Identity] = {}
 
-    entries: set[str] = set()
-    pending = [(root, PurePosixPath())]
-    while pending:
-        directory, relative_directory = pending.pop()
-        with os.scandir(directory) as children:
-            for child in children:
-                relative = relative_directory / child.name
-                if relative_directory == PurePosixPath() and child.name == ".git":
-                    continue
-                relative_string = relative.as_posix()
-                child_metadata = child.stat(follow_symlinks=False)
-                if stat.S_ISLNK(child_metadata.st_mode):
-                    raise ValueError(f"bundle checkout tree contains a symlink: {relative_string}")
-                entries.add(relative_string)
-                if stat.S_ISDIR(child_metadata.st_mode):
-                    pending.append((Path(child.path), relative))
-                elif not stat.S_ISREG(child_metadata.st_mode):
-                    raise ValueError(
-                        f"bundle checkout tree entry must be a regular file: {relative_string}"
-                    )
-    return entries
+    def scan(descriptor: int, relative_directory: PurePosixPath) -> None:
+        directory_before = os.fstat(descriptor)
+        with os.scandir(descriptor) as children:
+            names = [child.name for child in children]
+        for name in names:
+            relative = relative_directory / name
+            if relative_directory == PurePosixPath() and name == ".git":
+                continue
+            relative_string = relative.as_posix()
+            child_before = os.stat(name, dir_fd=descriptor, follow_symlinks=False)
+            if stat.S_ISLNK(child_before.st_mode):
+                raise ValueError(f"bundle checkout tree contains a symlink: {relative_string}")
+            entries[relative_string] = _identity(child_before)
+            if stat.S_ISDIR(child_before.st_mode):
+                child_descriptor = os.open(name, _DIRECTORY_FLAGS, dir_fd=descriptor)
+                try:
+                    child_after = os.fstat(child_descriptor)
+                    if not _same_object(child_before, child_after):
+                        raise ValueError("bundle checkout changed during validation")
+                    scan(child_descriptor, relative)
+                finally:
+                    os.close(child_descriptor)
+            elif not stat.S_ISREG(child_before.st_mode):
+                raise ValueError(
+                    f"bundle checkout tree entry must be a regular file: {relative_string}"
+                )
+        directory_after = os.fstat(descriptor)
+        if _identity(directory_before) != _identity(directory_after):
+            raise ValueError("bundle checkout changed during validation")
+
+    with _directory_descriptor(root) as root_descriptor:
+        root_before = os.fstat(root_descriptor)
+        scan(root_descriptor, PurePosixPath())
+        root_after = os.fstat(root_descriptor)
+        if _identity(root_before) != _identity(root_after):
+            raise ValueError("bundle checkout changed during validation")
+    return _identity(root_after), entries
 
 
 def _validate_skill(content: str, export_name: str) -> None:
@@ -187,7 +289,11 @@ def _validate_skill(content: str, export_name: str) -> None:
         not description
         or description != description.strip()
         or len(description) > _MAX_DESCRIPTION_CHARACTERS
-        or any(unicodedata.category(character) in {"Cc", "Zl", "Zp"} for character in description)
+        or any(
+            unicodedata.category(character).startswith("C")
+            or unicodedata.category(character) in {"Zl", "Zp"}
+            for character in description
+        )
     ):
         raise ValueError(f"skill {export_name} frontmatter description is invalid")
     if not lines[4].strip():
@@ -222,26 +328,35 @@ def validate_bundle(root: Path, manifest: dict) -> dict:
         raise ValueError("files keys must equal the export paths exactly")
 
     root = Path(root)
-    actual_tree = _checkout_tree(root)
-    if actual_tree != _expected_tree(set(files)):
-        missing = sorted(_expected_tree(set(files)) - actual_tree)
-        extra = sorted(actual_tree - _expected_tree(set(files)))
-        detail = f"missing {missing[0]}" if missing else f"undeclared {extra[0]}"
-        raise ValueError(f"bundle checkout tree does not match its manifest: {detail}")
+    expected_tree = _expected_tree(set(files))
+    try:
+        initial_snapshot = _checkout_tree(root)
+        actual_tree = set(initial_snapshot[1])
+        if actual_tree != expected_tree:
+            missing = sorted(expected_tree - actual_tree)
+            extra = sorted(actual_tree - expected_tree)
+            detail = f"missing {missing[0]}" if missing else f"undeclared {extra[0]}"
+            raise ValueError(f"bundle checkout tree does not match its manifest: {detail}")
 
-    total_size = 0
-    decoded: dict[str, str] = {}
-    for relative, expected_digest in files.items():
-        content = _regular_file_bytes(root, PurePosixPath(relative), maximum=_MAX_PAYLOAD_BYTES)
-        total_size += len(content)
-        if total_size > _MAX_TOTAL_PAYLOAD_BYTES:
-            raise ValueError("bundle payload must be at most 10 MiB total")
-        if hashlib.sha256(content).hexdigest() != expected_digest:
-            raise ValueError(f"bundle payload digest mismatch: {relative}")
-        try:
-            decoded[relative] = content.decode("utf-8")
-        except UnicodeDecodeError as error:
-            raise ValueError(f"bundle payload must be UTF-8 Markdown: {relative}") from error
+        total_size = 0
+        decoded: dict[str, str] = {}
+        for relative, expected_digest in files.items():
+            content = _regular_file_bytes(root, PurePosixPath(relative), maximum=_MAX_PAYLOAD_BYTES)
+            total_size += len(content)
+            if total_size > _MAX_TOTAL_PAYLOAD_BYTES:
+                raise ValueError("bundle payload must be at most 10 MiB total")
+            if hashlib.sha256(content).hexdigest() != expected_digest:
+                raise ValueError(f"bundle payload digest mismatch: {relative}")
+            try:
+                decoded[relative] = content.decode("utf-8")
+            except UnicodeDecodeError as error:
+                raise ValueError(f"bundle payload must be UTF-8 Markdown: {relative}") from error
+
+        final_snapshot = _checkout_tree(root)
+        if final_snapshot != initial_snapshot:
+            raise ValueError("bundle checkout changed during validation")
+    except OSError:
+        raise ValueError(_FILESYSTEM_ERROR) from None
 
     for name, relative in skills.items():
         _validate_skill(decoded[relative], name)
