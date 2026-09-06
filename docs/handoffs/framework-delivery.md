@@ -9,7 +9,7 @@ dependency-ordered [roadmap](../roadmap.md). UI/UX is one optional part.
   their capability, readiness, and Linear onboarding changes are the active
   implementation baseline.
 - SAN-12 is In Progress on `codex/portable-workflow-bundles`; Tasks 1–3
-  implementation is committed through `ca5ab0a`. Manifest validation, pinned
+  implementation is committed through `19809bc`. Manifest validation, pinned
   import preview/apply, and client/template distribution are implemented, but
   final review is not accepted and Task 4 closeout is blocked.
 - Completed SAN-12 interfaces are duplicate-safe `validate_bundle`, shared
@@ -37,6 +37,15 @@ dependency-ordered [roadmap](../roadmap.md). UI/UX is one optional part.
   can be published, and an authored file that replaces a stage path can be
   deleted during cleanup. An additional remediation decision is required before
   final review can be repeated.
+- The user-authorized remediation at `19809bc` carries stage identity and expected
+  bytes from creation through publication and cleanup. It fixes both original
+  reproductions and has pre-review local evidence of 741 focused tests and 1,136
+  full tests passing, with all five required outcomes passing. This evidence does
+  not establish completion or final review acceptance.
+- The scoped review still rejects completion: cleanup verifies a stage and then
+  separately unlinks its pathname, so an authored replacement arriving between
+  verification and unlink can be deleted. The one authorized remediation/review
+  cycle is exhausted.
 - The original v4 change remains 10/14 tasks complete; missing release evidence
   is not waived. Its clean-machine, container, hosted-client, live provider,
   behavioral-evaluation, and release-artifact obligations remain governed by
@@ -50,19 +59,19 @@ dependency-ordered [roadmap](../roadmap.md). UI/UX is one optional part.
 ## Start here
 
 1. Read `AGENTS.md`, `ai-dlc.toml`, product direction, and the master plan.
-2. Continue SAN-12 from `codex/portable-workflow-bundles` at fix commit
-   `ca5ab0a`; do not restart from main or repeat the committed Tasks 1–3 scope.
+2. Continue SAN-12 from `codex/portable-workflow-bundles` at authorized fix
+   commit `19809bc`; do not restart from main or repeat the committed Tasks 1–3
+   scope.
 3. Read `.ai-dlc/work/portable-workflow-bundles.toml`, the complete active
    OpenSpec change, and the exact execution plan. Confirm Linear remains the
    status authority before mutating tracker state.
 4. Prepare with `sh scripts/bootstrap.sh --source`; use its printed PATH directories.
    Credentials are independently injected in the selected local environment.
-5. Decide and implement an additional remediation that preserves staged-file
-   identity from creation through publication and cleanup, preventing altered
-   staged bytes from being published and authored stage-path replacements from
-   being deleted.
-6. Repeat final review after remediation. Only after acceptance may the OpenSpec
-   change be archived, the PR/CI/merge evidence completed, and
+5. Obtain an explicit decision on the remaining cleanup verify/unlink race. The
+   one authorized remediation/review cycle is exhausted; do not implement another
+   remediation without renewed authority.
+6. Only after an authorized remediation and accepted final review may the
+   OpenSpec change be archived, the PR/CI/merge evidence completed, and
    `ai-dlc work finish portable-workflow-bundles` run.
 7. Continue with SAN-13 after SAN-12 closeout. SAN-13 remains independently ready
    for a product-guidance owner; the other five unstarted tickets follow the
@@ -80,7 +89,7 @@ ai-dlc work status portable-workflow-bundles
 
 Expected Git state at this handoff is branch `codex/portable-workflow-bundles`
 containing implementation revision
-`ca5ab0aac702cc24876f596d9bf4f9a1c8389263` plus this documentation-only
+`19809bc8c29bda1a386b7cd0292e5d568f49b162` plus this documentation-only
 synchronization. Do not relink, restart, or republish the already active work
 merely to edit tracker metadata: publication is reconciliation, not a metadata
 editor.
@@ -102,13 +111,13 @@ editor.
 
 ## Blockers and continuation
 
-Current blocker: staged-file identity is not preserved from creation through
-publication and cleanup, so altered staged bytes can be published and an authored
-stage-path replacement can be deleted. OpenSpec archive, PR/CI/merge, and work
-finish remain blocked pending an additional remediation decision and accepted
-final review. Continue independent preparation when possible. Do not invent
-evidence, reinterpret local fixtures as live qualification, waive v4 obligations,
-or expand scope to make a blocker disappear.
+Current blocker: cleanup verifies a stage and then separately unlinks its
+pathname, so an authored replacement arriving between verification and unlink
+can be deleted. The one authorized remediation/review cycle is exhausted.
+OpenSpec archive, PR/CI/merge, and work finish remain blocked pending renewed
+remediation authority and accepted final review. Continue independent preparation
+when possible. Do not invent evidence, reinterpret local fixtures as live
+qualification, waive v4 obligations, or expand scope to make a blocker disappear.
 
 Each handoff records work/ticket ID, branch/revision, delivered interfaces, spec and
 plan links, actual verification outcomes, evidence locations, unresolved findings,

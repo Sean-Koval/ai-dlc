@@ -15,8 +15,9 @@
 - Existing schema 4, profile ownership, credential isolation, authored-content preservation, and completion gates remain intact.
 - The original planning delivery contained no runtime implementation; the
   current repository now includes completed implementation through SAN-11 and
-  committed SAN-12 Tasks 1–3. SAN-12 final review remains blocked pending an
-  additional staged-file identity remediation decision.
+  committed SAN-12 Tasks 1–3. The authorized remediation fixes the original
+  stage-integrity reproductions, but SAN-12 final review remains blocked on a
+  cleanup verify/unlink race after the authorized review cycle was exhausted.
 - Native macOS arm64 and Ubuntu 24.04 arm64 devcontainer are the initial qualification targets; client/hosted claims require actual evidence.
 - UI/UX is optional within product development. Specification is observable behavior; ticket is a deliverable slice; task is a smaller implementation step.
 - Paid experiments require a separately declared budget, and human ratings require humans.
@@ -34,7 +35,7 @@
 | `component-capability-contract` | Done | M1 | None | [Execute](2026-09-05-component-capability-contract.md) |
 | `connected-project-readiness` | Done | M1 | component-capability-contract | [Execute](2026-09-05-connected-project-readiness.md) |
 | `linear-provider-onboarding` | Done | M1 | component-capability-contract | [Execute](2026-09-05-linear-provider-onboarding.md) |
-| `portable-workflow-bundles` | In Progress — Tasks 1–3 committed; final review blocked | M1 | component-capability-contract, connected-project-readiness, linear-provider-onboarding | [Execute](2026-09-05-portable-workflow-bundles.md) |
+| `portable-workflow-bundles` | In Progress — Tasks 1–3 committed; review blocked after authorized remediation | M1 | component-capability-contract, connected-project-readiness, linear-provider-onboarding | [Execute](2026-09-05-portable-workflow-bundles.md) |
 | `product-shaping-workflow` | Backlog | M2 | None | [Execute](2026-09-05-product-shaping-workflow.md) |
 | `spec-delivery-traceability` | Backlog | M2 | product-shaping-workflow | [Execute](2026-09-05-spec-delivery-traceability.md) |
 | `design-pm-workflow` | Backlog | M2 | product-shaping-workflow, spec-delivery-traceability | [Execute](2026-09-05-design-pm-workflow.md) |
@@ -42,7 +43,8 @@
 | `workflow-quality-calibration` | Backlog | M3 | product-shaping-workflow, spec-delivery-traceability | [Execute](2026-09-05-workflow-quality-calibration.md) |
 | `design-pm-calibration` | Backlog | M3 | design-pm-workflow | [Execute](2026-09-05-design-pm-calibration.md) |
 
-Remediate and finish portable-workflow-bundles (SAN-12), then continue with
+Resolve the exhausted remediation/review cycle and finish
+portable-workflow-bundles (SAN-12), then continue with
 product-shaping-workflow (SAN-13). M1 and M2 are outcomes, not a requirement to
 serialize otherwise independent work.
 

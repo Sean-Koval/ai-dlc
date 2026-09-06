@@ -16,8 +16,9 @@ configuration, provider capability and readiness contracts, guided Linear
 connection, managed assets, work records, and finish gates. SAN-12 has added
 validated pinned bundle import and client/template distribution to supported
 harnesses. Tasks 1–3 implementation is committed, but final review is not
-accepted because staged-file identity is not preserved through publication and
-cleanup. See [current architecture](architecture.md) and
+accepted. The authorized remediation carries stage identity and expected bytes
+through publication and cleanup, but cleanup still verifies a stage and then
+separately unlinks its pathname. See [current architecture](architecture.md) and
 [planned contracts](design/framework-delivery.md) for the distinction.
 
 ## Dependency-ordered delivery
@@ -25,8 +26,9 @@ cleanup. See [current architecture](architecture.md) and
 Each row is an independently reviewed ticket with an execution plan. Plan tasks
 are steps inside that ticket, not additional disconnected issues. SAN-9, SAN-10,
 and SAN-11 are Done. SAN-12 is In Progress: Tasks 1–3 implementation is
-committed, while final review and Task 4 closeout are blocked pending an
-additional remediation decision. The other six tickets remain in Backlog.
+committed, while final review and Task 4 closeout remain blocked after the one
+authorized remediation/review cycle was exhausted. The other six tickets remain
+in Backlog.
 All ten items were published to the Sandbox-aidlc team; SAN-6 and SAN-7 were
 revised in place.
 
@@ -67,11 +69,11 @@ preparation or become invented results.
 
 ## Start and completion rules
 
-Current implementation focus: decide and remediate the staged-file identity
-blocker in
+Current implementation focus: obtain a decision on the remaining cleanup race in
 [SAN-12](https://linear.app/sandbox-aidlc/issue/SAN-12/import-pinned-workflow-guidance-and-expose-it-to-supported-harnesses)
-before repeating final review. OpenSpec archive, PR/CI/merge, and work finish
-remain blocked until that review is accepted.
+after the authorized remediation/review cycle was exhausted. OpenSpec archive,
+PR/CI/merge, and work finish remain blocked; an authored replacement arriving
+between stage verification and pathname unlink can still be deleted.
 [SAN-13](https://linear.app/sandbox-aidlc/issue/SAN-13/guide-product-discovery-and-feature-selection-for-new-and-existing)
 is the next backlog ticket and remains independently ready for a
 product-guidance owner. Milestone labels do not serialize otherwise independent
