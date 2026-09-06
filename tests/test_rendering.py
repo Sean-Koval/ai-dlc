@@ -642,18 +642,240 @@ def test_bundle_render_operational_failure_restores_every_affected_byte(tmp_path
         skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow", "Version two"))},
         templates={"review-note": ("templates/review-note.md", "# Two\n")},
     )
-    original = agents.atomic_write
+    original = agents._publish_render_change
     calls = 0
 
-    def fail_second_write(path, data, mode=None):
+    def fail_second_write(state, change, content):
         nonlocal calls
         calls += 1
         if calls == 2:
             raise OSError("publication failed")
-        return original(path, data, mode)
+        return original(state, change, content)
 
-    monkeypatch.setattr(agents, "atomic_write", fail_second_write)
+    monkeypatch.setattr(agents, "_publish_render_change", fail_second_write)
     with pytest.raises(OSError, match="publication failed"):
         agents.render_agents(tmp_path, apply=True)
 
     assert {path: (path.read_bytes(), path.stat().st_mode & 0o777) for path in affected} == before
+
+
+def test_bundle_render_invalid_template_ancestor_preserves_obsolete_outputs(tmp_path):
+    """A late invalid ancestor must not strand earlier removed owned files."""
+    from ai_dlc.agents import render_agents
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
+    )
+    _write_vendored_bundle(
+        tmp_path,
+        "review-flow",
+        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow"))},
+    )
+    render_agents(tmp_path, apply=True)
+    _write_vendored_bundle(
+        tmp_path,
+        "review-flow",
+        templates={"review-note": ("templates/note.md", "# Note\n")},
+    )
+    (tmp_path / "docs").write_bytes(b"authored docs file\r\n")
+    before = {path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()}
+
+    with pytest.raises((ValueError, OSError)):
+        render_agents(tmp_path, apply=True)
+
+    assert {path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()} == before
+
+
+@pytest.mark.parametrize("existing", [False, True])
+def test_bundle_render_preserves_late_edit_after_planning(tmp_path, monkeypatch, existing):
+    """Publication must refuse changed bytes and newly authored destinations."""
+    from ai_dlc import agents
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
+    )
+    _write_vendored_bundle(
+        tmp_path,
+        "review-flow",
+        templates={"review-note": ("templates/note.md", "# One\n")},
+    )
+    if existing:
+        agents.render_agents(tmp_path, apply=True)
+        _write_vendored_bundle(
+            tmp_path,
+            "review-flow",
+            templates={"review-note": ("templates/note.md", "# Two\n")},
+        )
+    destination = tmp_path / "docs/templates/review-note.md"
+    original = agents._apply_render_transaction
+
+    def edit_then_apply(*args, **kwargs):
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(b"late authored edit\r\n")
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(agents, "_apply_render_transaction", edit_then_apply)
+    with pytest.raises((ValueError, OSError)):
+        agents.render_agents(tmp_path, apply=True)
+
+    assert destination.read_bytes() == b"late authored edit\r\n"
+
+
+def test_bundle_render_parent_swap_cannot_modify_external_file(tmp_path, monkeypatch):
+    """Publication must remain bound to validated project directories through replacement."""
+    from ai_dlc import agents
+
+    project = tmp_path / "project"
+    project.mkdir()
+    (project / "ai-dlc.toml").write_text('schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n')
+    _write_vendored_bundle(
+        project,
+        "review-flow",
+        templates={"review-note": ("templates/note.md", "# One\n")},
+    )
+    agents.render_agents(project, apply=True)
+    _write_vendored_bundle(
+        project,
+        "review-flow",
+        templates={"review-note": ("templates/note.md", "# Two\n")},
+    )
+    original = agents.bundle_fs._rename_directory_noreplace
+    outside = tmp_path / "outside-docs"
+    swapped = False
+
+    def swap_then_write(parent, source, destination):
+        nonlocal swapped
+        if destination == "review-note.md" and not swapped:
+            swapped = True
+            (project / "docs").rename(outside)
+            (project / "docs").symlink_to(outside, target_is_directory=True)
+        return original(parent, source, destination)
+
+    monkeypatch.setattr(agents.bundle_fs, "_rename_directory_noreplace", swap_then_write)
+    with pytest.raises((ValueError, OSError)):
+        agents.render_agents(project, apply=True)
+
+    assert (outside / "templates/review-note.md").read_bytes() == b"# One\n"
+
+
+def test_bundle_render_rejects_undeclared_vendored_root_git(tmp_path):
+    """Only source checkouts may exempt root Git metadata from exact-tree validation."""
+    from ai_dlc.agents import render_agents
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
+    )
+    _write_vendored_bundle(
+        tmp_path,
+        "review-flow",
+        templates={"review-note": ("templates/note.md", "# Note\n")},
+    )
+    metadata = tmp_path / ".ai-dlc/bundles/review-flow/.git"
+    metadata.mkdir()
+    (metadata / "undeclared.md").write_text("# Undeclared\n")
+    before = {path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()}
+
+    with pytest.raises(ValueError, match="undeclared"):
+        render_agents(tmp_path, apply=True)
+
+    assert {path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()} == before
+
+
+def test_bundle_render_rollback_continues_after_one_restore_failure(tmp_path, monkeypatch):
+    """Recovery must restore every path and preserve the publication error after cleanup fails."""
+    from ai_dlc import agents
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
+    )
+    _write_vendored_bundle(
+        tmp_path,
+        "review-flow",
+        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow"))},
+    )
+    agents.render_agents(tmp_path, apply=True)
+    _write_vendored_bundle(
+        tmp_path,
+        "review-flow",
+        templates={"review-note": ("templates/note.md", "# Note\n")},
+    )
+    before = {path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()}
+    original_write = agents._publish_render_change
+    original_restore = agents._restore_render_change
+    publishing_failed = False
+    restore_failed = False
+
+    def fail_template_write(state, change, content):
+        nonlocal publishing_failed
+        if change.path == "docs/templates/review-note.md":
+            publishing_failed = True
+            raise OSError("original publication failure")
+        return original_write(state, change, content)
+
+    def fail_first_restore(*args, **kwargs):
+        nonlocal restore_failed
+        if publishing_failed and not restore_failed:
+            restore_failed = True
+            raise OSError("secondary recovery failure")
+        return original_restore(*args, **kwargs)
+
+    monkeypatch.setattr(agents, "_publish_render_change", fail_template_write)
+    monkeypatch.setattr(agents, "_restore_render_change", fail_first_restore)
+    with pytest.raises(OSError, match="original publication failure"):
+        agents.render_agents(tmp_path, apply=True)
+
+    assert {path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()} == before
+
+
+def test_bundle_render_staging_collision_preserves_authored_file(tmp_path, monkeypatch):
+    """Failed exclusive staging must never clean up a file it did not create."""
+    from ai_dlc import agents
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
+    )
+    _write_vendored_bundle(
+        tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# One\n")}
+    )
+    agents.render_agents(tmp_path, apply=True)
+    _write_vendored_bundle(
+        tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# Two\n")}
+    )
+    authored = tmp_path / "docs/templates/.ai-dlc-collision"
+    authored.write_bytes(b"authored temporary-name file\r\n")
+    monkeypatch.setattr(agents.secrets, "token_hex", lambda _: "collision")
+
+    with pytest.raises(FileExistsError):
+        agents.render_agents(tmp_path, apply=True)
+
+    assert authored.read_bytes() == b"authored temporary-name file\r\n"
+    assert (tmp_path / "docs/templates/review-note.md").read_bytes() == b"# One\n"
+
+
+def test_bundle_render_recovery_preserves_late_deletion_of_untouched_file(tmp_path, monkeypatch):
+    """Rollback must only restore files that this transaction actually mutated."""
+    from ai_dlc import agents
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
+    )
+    _write_vendored_bundle(
+        tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# One\n")}
+    )
+    agents.render_agents(tmp_path, apply=True)
+    _write_vendored_bundle(
+        tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# Two\n")}
+    )
+    ownership = tmp_path / ".ai-dlc/agent-ownership.json"
+
+    def remove_then_fail(*args):
+        ownership.unlink()
+        raise OSError("original publication failure")
+
+    monkeypatch.setattr(agents, "_publish_render_change", remove_then_fail)
+
+    with pytest.raises(OSError, match="original publication failure"):
+        agents.render_agents(tmp_path, apply=True)
+
+    assert not ownership.exists()
+    assert (tmp_path / "docs/templates/review-note.md").read_bytes() == b"# One\n"

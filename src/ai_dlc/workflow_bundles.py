@@ -67,6 +67,7 @@ class MissingBundlePath(ValueError):
 
     def __init__(self, path: str, message: str | None = None) -> None:
         self.path = path
+        self.manifest: dict[str, Any] | None = None
         super().__init__(message or f"bundle path is missing: {path}")
 
 
@@ -367,10 +368,11 @@ def _validate_payload_tree(
     files: dict[str, str],
     *,
     metadata_paths: set[str],
+    ignore_root_git: bool = True,
 ) -> tuple[dict[str, str], str | None]:
     expected_tree = _expected_tree(set(files), metadata_paths)
     try:
-        initial_snapshot = _checkout_tree(root)
+        initial_snapshot = _checkout_tree(root, ignore_root_git=ignore_root_git)
         actual_tree = set(initial_snapshot[1])
         extra = sorted(actual_tree - expected_tree)
         if extra:
@@ -397,7 +399,7 @@ def _validate_payload_tree(
             except UnicodeDecodeError as error:
                 raise ValueError(f"bundle payload must be UTF-8 Markdown: {relative}") from error
 
-        final_snapshot = _checkout_tree(root)
+        final_snapshot = _checkout_tree(root, ignore_root_git=ignore_root_git)
         if final_snapshot != initial_snapshot:
             raise ValueError("bundle checkout changed during validation")
     except OSError:
@@ -405,7 +407,7 @@ def _validate_payload_tree(
     return decoded, missing_path
 
 
-def _validate_bundle(root: _DirectoryRoot, manifest: dict, *, metadata_paths: set[str]) -> dict:
+def _validate_manifest(manifest: dict) -> dict:
     if type(manifest) is not dict:
         raise ValueError("bundle manifest must be a JSON object")
     if set(manifest) != _MANIFEST_FIELDS:
@@ -431,16 +433,29 @@ def _validate_bundle(root: _DirectoryRoot, manifest: dict, *, metadata_paths: se
     if set(files) != set(export_paths):
         raise ValueError("files keys must equal the export paths exactly")
 
+    return {
+        "schema": 1,
+        "id": bundle_id,
+        "skills": skills,
+        "templates": templates,
+        "files": files,
+    }
+
+
+def _validate_bundle(root: _DirectoryRoot, manifest: dict, *, metadata_paths: set[str]) -> dict:
+    normalized = _validate_manifest(manifest)
+
     decoded, missing_path = _validate_payload_tree(
         root,
-        files,
+        normalized["files"],
         metadata_paths=metadata_paths,
+        ignore_root_git=not metadata_paths,
     )
 
-    for name, relative in skills.items():
+    for name, relative in normalized["skills"].items():
         if relative in decoded:
             _validate_skill(decoded[relative], name)
-    for name, relative in templates.items():
+    for name, relative in normalized["templates"].items():
         if relative in decoded and not decoded[relative].strip():
             raise ValueError(f"template body must be non-empty: {name}")
     if missing_path is not None:
@@ -449,13 +464,7 @@ def _validate_bundle(root: _DirectoryRoot, manifest: dict, *, metadata_paths: se
             f"bundle checkout tree does not match its manifest: missing {missing_path}",
         )
 
-    return {
-        "schema": 1,
-        "id": bundle_id,
-        "skills": skills,
-        "templates": templates,
-        "files": files,
-    }
+    return normalized
 
 
 def validate_bundle(root: Path, manifest: dict) -> dict:
@@ -764,25 +773,28 @@ def load_vendored_bundle(root: Path, bundle_id: str) -> dict[str, Any]:
         )
         if metadata_present["bundle.json"]:
             manifest_bytes, raw_manifest = _load_manifest_with_bytes(destination)
+            manifest = _validate_manifest(raw_manifest)
             if (
                 lock is not None
                 and hashlib.sha256(manifest_bytes).hexdigest() != lock["manifest_sha256"]
             ):
                 raise ValueError("vendored bundle manifest does not match its lock")
-            manifest = _validate_bundle(
-                destination,
-                raw_manifest,
-                metadata_paths={"bundle.lock.json"},
-            )
-            if lock is not None and (
-                manifest["id"] != bundle_id or manifest["files"] != lock["files"]
+            if manifest["id"] != bundle_id or (
+                lock is not None and manifest["files"] != lock["files"]
             ):
                 raise ValueError("vendored bundle lock does not match its manifest")
+            try:
+                _validate_bundle(destination, manifest, metadata_paths={"bundle.lock.json"})
+            except MissingBundlePath as exc:
+                if lock is not None:
+                    exc.manifest = manifest
+                raise
         elif lock is not None:
             _, missing_path = _validate_payload_tree(
                 destination,
                 lock["files"],
                 metadata_paths={"bundle.lock.json", "bundle.json"},
+                ignore_root_git=False,
             )
             if missing_path is not None:
                 raise MissingBundlePath(missing_path)

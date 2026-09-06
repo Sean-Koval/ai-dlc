@@ -611,3 +611,120 @@ def test_project_readiness_maps_bundle_guidance_and_keeps_missing_bundle_blockin
     assert checks[0]["reason"]
     assert checks[0]["next_action"]
     assert result["ready"] is False
+
+
+def test_vendored_root_git_is_blocked_bundle_readiness(tmp_path):
+    """Undeclared committed Git content must prevent bundle guidance readiness."""
+    from ai_dlc.agents import inspect_bundle_guidance
+
+    _write_vendored_bundle(
+        tmp_path,
+        "review-flow",
+        templates={"review-note": ("templates/note.md", "# Note\n")},
+    )
+    metadata = tmp_path / ".ai-dlc/bundles/review-flow/.git"
+    metadata.mkdir()
+    (metadata / "undeclared.md").write_text("# Undeclared\n")
+
+    result = inspect_bundle_guidance(tmp_path, {"agents": {"bundles": ["review-flow"]}}, ["codex"])[
+        0
+    ]
+
+    assert result["status"] == "blocked"
+    assert "undeclared" in result["reason"]
+
+
+def test_missing_payload_cannot_hide_canonical_lock_manifest_disagreement(tmp_path):
+    """A complete metadata contradiction takes precedence over missing payload bytes."""
+    import json
+
+    from ai_dlc.agents import inspect_bundle_guidance
+
+    _write_vendored_bundle(
+        tmp_path,
+        "review-flow",
+        templates={"review-note": ("templates/note.md", "# Note\n")},
+    )
+    bundle = tmp_path / ".ai-dlc/bundles/review-flow"
+    (bundle / "templates/note.md").unlink()
+    lock_path = bundle / "bundle.lock.json"
+    lock = json.loads(lock_path.read_text())
+    lock["files"]["templates/note.md"] = "b" * 64
+    lock_path.write_text(json.dumps(lock, indent=2, sort_keys=True) + "\n")
+
+    result = inspect_bundle_guidance(tmp_path, {"agents": {"bundles": ["review-flow"]}}, ["codex"])[
+        0
+    ]
+
+    assert result["status"] == "blocked"
+    assert "lock does not match its manifest" in result["reason"]
+
+
+def test_duplicate_selected_export_with_missing_payload_blocks_both_bundles(tmp_path):
+    """Authenticated export claims remain colliding when one payload disappears."""
+    from ai_dlc.agents import inspect_bundle_guidance
+
+    for bundle_id in ["one", "two"]:
+        _write_vendored_bundle(
+            tmp_path,
+            bundle_id,
+            templates={"review-note": ("templates/note.md", f"# {bundle_id}\n")},
+        )
+    (tmp_path / ".ai-dlc/bundles/one/templates/note.md").unlink()
+
+    results = inspect_bundle_guidance(tmp_path, {"agents": {"bundles": ["one", "two"]}}, ["codex"])
+
+    assert [result["status"] for result in results] == ["blocked", "blocked"]
+    assert all("collision" in result["reason"] for result in results)
+
+
+def test_contested_symlink_blocks_both_selected_bundle_owners(tmp_path):
+    """A symlink must not hide the prior selected owner of a contested destination."""
+    from ai_dlc.agents import inspect_bundle_guidance, render_agents
+
+    (tmp_path / "ai-dlc.toml").write_text('schema=4\n[agents]\nbundles=["one"]\nskills=[]\n')
+    _write_vendored_bundle(
+        tmp_path, "one", templates={"review-note": ("templates/note.md", "# One\n")}
+    )
+    render_agents(tmp_path, apply=True)
+    _write_vendored_bundle(
+        tmp_path, "one", templates={"other-note": ("templates/other.md", "# Other\n")}
+    )
+    _write_vendored_bundle(
+        tmp_path, "two", templates={"review-note": ("templates/note.md", "# Two\n")}
+    )
+    destination = tmp_path / "docs/templates/review-note.md"
+    outside = tmp_path / "outside-note.md"
+    destination.rename(outside)
+    destination.symlink_to(outside)
+
+    results = inspect_bundle_guidance(tmp_path, {"agents": {"bundles": ["one", "two"]}}, ["codex"])
+
+    assert [result["status"] for result in results] == ["blocked", "blocked"]
+    assert all("collision" in result["reason"] for result in results)
+    assert outside.read_bytes() == b"# One\n"
+
+
+@pytest.mark.parametrize("filename", ["AGENTS.md", "CLAUDE.md"])
+def test_non_utf8_managed_guidance_returns_blocked_bundle_readiness(tmp_path, filename):
+    """Malformed guidance must yield actionable per-bundle results without decode errors."""
+    from ai_dlc.agents import inspect_bundle_guidance, render_agents
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
+    )
+    _write_vendored_bundle(
+        tmp_path,
+        "review-flow",
+        templates={"review-note": ("templates/note.md", "# Note\n")},
+    )
+    render_agents(tmp_path, apply=True)
+    (tmp_path / filename).write_bytes(b"\xff\xfe private invalid bytes\n")
+    config = {"agents": {"bundles": ["review-flow"]}}
+
+    results = inspect_bundle_guidance(tmp_path, config, ["codex", "claude-code"])
+
+    assert results[0]["status"] == "blocked"
+    assert results[0]["next_action"]
+    assert "private" not in results[0]["reason"]
+    assert inspect_bundle_guidance(tmp_path, config, ["codex", "claude-code"]) == results

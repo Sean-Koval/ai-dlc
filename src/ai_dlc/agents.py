@@ -6,12 +6,16 @@ import hashlib
 import json
 import os
 import re
-import tempfile
-from pathlib import Path
+import secrets
+import stat
+from collections.abc import Callable
+from dataclasses import dataclass
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 import tomli_w
 
+from ai_dlc import workflow_bundles as bundle_fs
 from ai_dlc.components import load_component_catalog, resolve_components
 from ai_dlc.config import load_project
 from ai_dlc.files import assets, atomic_write, inside
@@ -21,6 +25,233 @@ from ai_dlc.workflow_bundles import MissingBundlePath, load_vendored_bundle
 _BUNDLE_ID = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _BUNDLE_PREFIXES = (".agents/skills/", ".claude/skills/", "docs/templates/")
+_Snapshot = tuple[bytes, os.stat_result]
+
+
+def _read_render_file(parent: int, name: str) -> _Snapshot | None:
+    try:
+        before = os.stat(name, dir_fd=parent, follow_symlinks=False)
+    except FileNotFoundError:
+        return None
+    if not stat.S_ISREG(before.st_mode):
+        raise ValueError("render destination must be a regular file")
+    descriptor = os.open(name, bundle_fs._FILE_FLAGS | os.O_NONBLOCK, dir_fd=parent)
+    with os.fdopen(descriptor, "rb") as stream:
+        opened = os.fstat(stream.fileno())
+        if not bundle_fs._same_object(before, opened):
+            raise ValueError("render destination changed during planning")
+        content = stream.read()
+        after = os.fstat(stream.fileno())
+    named = os.stat(name, dir_fd=parent, follow_symlinks=False)
+    if bundle_fs._identity(before) != bundle_fs._identity(after) or bundle_fs._identity(
+        after
+    ) != bundle_fs._identity(named):
+        raise ValueError("render destination changed during planning")
+    return content, after
+
+
+def _matches_render_file(current: _Snapshot | None, expected: _Snapshot | None) -> bool:
+    if current is None or expected is None:
+        return current is expected
+    content, metadata = current
+    old_content, old_metadata = expected
+    # Renaming an owned file changes ctime; inode, bytes, mode and mtime remain bound.
+    return (
+        content == old_content
+        and bundle_fs._same_object(metadata, old_metadata)
+        and metadata.st_mode == old_metadata.st_mode
+        and metadata.st_mtime_ns == old_metadata.st_mtime_ns
+    )
+
+
+class _RenderState:
+    """Keep the files and directory identities observed by the render planner."""
+
+    def __init__(self, absolute: Path, project_parent: int, root: int) -> None:
+        self.absolute = absolute
+        self.project_parent = project_parent
+        self.root = root
+        self.directories: dict[str, int | None] = {"": root}
+        self.snapshots: dict[str, _Snapshot | None] = {}
+        self.created: list[str] = []
+
+    def parent(self, name: str, *, create: bool = False) -> int | None:
+        relative = PurePosixPath(name)
+        if relative.is_absolute() or ".." in relative.parts or name != relative.as_posix():
+            raise ValueError("invalid render destination path")
+        parent = self.root
+        for index, part in enumerate(relative.parts[:-1]):
+            key = PurePosixPath(*relative.parts[: index + 1]).as_posix()
+            if key not in self.directories:
+                try:
+                    self.directories[key] = bundle_fs._open_named_directory(parent, part)
+                except FileNotFoundError:
+                    self.directories[key] = None
+            child = self.directories[key]
+            if child is None:
+                if not create:
+                    return None
+                child, created = bundle_fs._ensure_named_directory(parent, part)
+                if not created:
+                    os.close(child)
+                    raise ValueError("render destination ancestor changed after planning")
+                self.directories[key] = child
+                self.created.append(key)
+            bundle_fs._verify_named_directory(parent, part, child)
+            parent = child
+        return parent
+
+    def read(self, name: str) -> bytes | None:
+        if name not in self.snapshots:
+            parent = self.parent(name)
+            self.snapshots[name] = (
+                _read_render_file(parent, PurePosixPath(name).name) if parent is not None else None
+            )
+        snapshot = self.snapshots[name]
+        return snapshot[0] if snapshot is not None else None
+
+    def verify_directories(self) -> None:
+        bundle_fs._verify_project_path(self.absolute, self.project_parent, self.root)
+        for name, descriptor in self.directories.items():
+            if not name:
+                continue
+            relative = PurePosixPath(name)
+            parent_name = relative.parent.as_posix() if len(relative.parts) > 1 else ""
+            parent = self.directories[parent_name]
+            if parent is None:
+                continue
+            if descriptor is not None:
+                bundle_fs._verify_named_directory(parent, relative.name, descriptor)
+            else:
+                try:
+                    os.stat(relative.name, dir_fd=parent, follow_symlinks=False)
+                except FileNotFoundError:
+                    continue
+                raise ValueError("render destination ancestor changed after planning")
+
+    def verify_files(self) -> None:
+        self.verify_directories()
+        for name, expected in self.snapshots.items():
+            parent = self.parent(name)
+            current = (
+                _read_render_file(parent, PurePosixPath(name).name) if parent is not None else None
+            )
+            if not _matches_render_file(current, expected):
+                raise ValueError(f"render destination changed after planning: {name}")
+
+    def close(self) -> None:
+        for name, descriptor in reversed(list(self.directories.items())):
+            if name and descriptor is not None:
+                os.close(descriptor)
+
+
+@dataclass
+class _RenderChange:
+    path: str
+    parent: int
+    before: _Snapshot | None
+    backup: str | None = None
+    stage: str | None = None
+    published: _Snapshot | None = None
+    mutated: bool = False
+
+    @property
+    def name(self) -> str:
+        return PurePosixPath(self.path).name
+
+
+def _stage_render_file(parent: int, content: bytes, mode: int) -> str:
+    name = f".ai-dlc-{secrets.token_hex(12)}"
+    descriptor = os.open(
+        name,
+        os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0),
+        0o600,
+        dir_fd=parent,
+    )
+    created = os.fstat(descriptor)
+    try:
+        view = memoryview(content)
+        while view:
+            written = os.write(descriptor, view)
+            view = view[written:]
+        os.fchmod(descriptor, mode)
+        os.fsync(descriptor)
+        named = os.stat(name, dir_fd=parent, follow_symlinks=False)
+        if not bundle_fs._same_object(named, created):
+            raise OSError("render staging file changed")
+    except BaseException:
+        for _ in range(2):
+            try:
+                named = os.stat(name, dir_fd=parent, follow_symlinks=False)
+                if bundle_fs._same_object(named, created):
+                    os.unlink(name, dir_fd=parent)
+                break
+            except OSError:
+                continue
+        raise
+    finally:
+        os.close(descriptor)
+    return name
+
+
+def _publish_render_change(
+    state: _RenderState, change: _RenderChange, content: bytes | None
+) -> None:
+    state.verify_directories()
+    if content is not None:
+        mode = stat.S_IMODE(change.before[1].st_mode) if change.before is not None else 0o644
+        change.stage = _stage_render_file(change.parent, content, mode)
+    state.verify_directories()
+    if not _matches_render_file(_read_render_file(change.parent, change.name), change.before):
+        raise ValueError(f"render destination changed after planning: {change.path}")
+    if change.before is not None:
+        backup = f".ai-dlc-{secrets.token_hex(12)}"
+        bundle_fs._rename_directory_noreplace(change.parent, change.name, backup)
+        change.backup = backup
+        change.mutated = True
+        if not _matches_render_file(_read_render_file(change.parent, backup), change.before):
+            raise ValueError(f"render destination changed during publication: {change.path}")
+    state.verify_directories()
+    if change.stage is not None:
+        staged = _read_render_file(change.parent, change.stage)
+        bundle_fs._rename_directory_noreplace(change.parent, change.stage, change.name)
+        change.stage = None
+        change.published = staged
+        change.mutated = True
+        if not _matches_render_file(_read_render_file(change.parent, change.name), staged):
+            raise ValueError(f"render destination changed during publication: {change.path}")
+    state.verify_directories()
+
+
+def _restore_render_change(change: _RenderChange) -> None:
+    if change.published is not None:
+        current = _read_render_file(change.parent, change.name)
+        if not _matches_render_file(current, change.published):
+            raise OSError("render recovery preserved a late authored edit")
+        displaced = f".ai-dlc-{secrets.token_hex(12)}"
+        bundle_fs._rename_directory_noreplace(change.parent, change.name, displaced)
+        captured = _read_render_file(change.parent, displaced)
+        if not _matches_render_file(captured, change.published):
+            bundle_fs._rename_directory_noreplace(change.parent, displaced, change.name)
+            raise OSError("render recovery preserved a late authored edit")
+        change.stage = displaced
+        change.published = None
+    if change.backup is not None:
+        bundle_fs._rename_directory_noreplace(change.parent, change.backup, change.name)
+        change.backup = None
+    elif (
+        change.mutated
+        and change.before is not None
+        and _read_render_file(change.parent, change.name) is None
+    ):
+        content, metadata = change.before
+        recovery = _stage_render_file(change.parent, content, stat.S_IMODE(metadata.st_mode))
+        change.backup = recovery
+        bundle_fs._rename_directory_noreplace(change.parent, recovery, change.name)
+        change.backup = None
+    if change.stage is not None:
+        os.unlink(change.stage, dir_fd=change.parent)
+        change.stage = None
 
 
 def _section(current: str, body: str, toml: bool = False) -> str:
@@ -200,6 +431,20 @@ def _bundle_outputs(
     return outputs
 
 
+def _bundle_claims(
+    bundles: dict[str, dict[str, Any]], clients: list[str]
+) -> list[tuple[str, str, str]]:
+    claims = []
+    for bundle_id, bundle in sorted(bundles.items()):
+        for name, relative in sorted(bundle["manifest"]["skills"].items()):
+            for client in clients:
+                directory = ".agents" if client == "codex" else ".claude"
+                claims.append((f"{directory}/skills/{name}/SKILL.md", bundle_id, relative))
+        for name, relative in sorted(bundle["manifest"]["templates"].items()):
+            claims.append((f"docs/templates/{name}.md", bundle_id, relative))
+    return claims
+
+
 def _prior_bundle_files(previous: Any) -> dict[str, dict[str, str]]:
     if not isinstance(previous, dict):
         raise TypeError("bundle ownership document must be an object")
@@ -236,7 +481,7 @@ def _managed_bundle_path(path: str, clients: list[str], *, full_render: bool) ->
 
 
 def _plan_bundle_files(
-    root: Path,
+    read: Callable[[str], bytes | None],
     bundles: dict[str, dict[str, Any]],
     clients: list[str],
     *,
@@ -250,30 +495,24 @@ def _plan_bundle_files(
     for path, ownership in list(bundle_files.items()):
         if not _managed_bundle_path(path, clients, full_render=full_render):
             continue
-        destination = inside(root, path)
-        if (
-            destination.exists()
-            and hashlib.sha256(destination.read_bytes()).hexdigest() != ownership["sha256"]
-        ):
+        current = read(path)
+        if current is not None and hashlib.sha256(current).hexdigest() != ownership["sha256"]:
             raise ValueError(f"managed bundle output conflict: {path}")
         if path not in desired:
-            if destination.exists():
+            if current is not None:
                 removed.append(path)
             bundle_files.pop(path)
             owned_files.pop(path, None)
 
     for path, (bundle_id, body) in desired.items():
-        destination = inside(root, path)
+        current = read(path)
         prior = bundle_files.get(path)
         if prior is None:
-            if destination.exists() or path in owned_files:
+            if current is not None or path in owned_files:
                 raise ValueError(f"bundle destination collision: {path}")
         elif prior["owner"] != bundle_id:
             raise ValueError(f"bundle destination collision: {path} is owned by {prior['owner']}")
-        elif (
-            destination.exists()
-            and hashlib.sha256(destination.read_bytes()).hexdigest() != prior["sha256"]
-        ):
+        elif current is not None and hashlib.sha256(current).hexdigest() != prior["sha256"]:
             raise ValueError(f"managed bundle output conflict: {path}")
         digest = hashlib.sha256(body.encode()).hexdigest()
         planned[path] = body
@@ -282,52 +521,79 @@ def _plan_bundle_files(
 
 
 def _apply_render_transaction(
-    root: Path,
+    state: _RenderState,
     planned: dict[str, str],
     removed: list[str],
     changed: list[str],
 ) -> None:
-    paths = {name: inside(root, name) for name in changed}
-    before = {
-        name: (path.read_bytes(), path.stat().st_mode & 0o777) if path.exists() else None
-        for name, path in paths.items()
-    }
+    state.verify_files()
+    changes: list[_RenderChange] = []
     try:
-        for name in removed:
-            paths[name].unlink()
-        for name in changed:
-            if name not in removed:
-                atomic_write(paths[name], planned[name])
-    except BaseException:
-        for name, snapshot in before.items():
-            path = paths[name]
-            if snapshot is None:
-                path.unlink(missing_ok=True)
-                continue
-            content, mode = snapshot
-            path.parent.mkdir(parents=True, exist_ok=True)
-            descriptor, temporary = tempfile.mkstemp(dir=path.parent, prefix=".ai-dlc-")
+        # Planning already validated every existing ancestor. Open/create every
+        # remaining parent before the first owned file is moved.
+        for name in [*removed, *(name for name in changed if name not in removed)]:
+            parent = state.parent(name, create=True)
+            if parent is None:
+                raise OSError("render destination parent is unavailable")
+            changes.append(_RenderChange(name, parent, state.snapshots[name]))
+        for change in changes:
+            _publish_render_change(
+                state, change, None if change.path in removed else planned[change.path].encode()
+            )
+        state.verify_directories()
+        for change in changes:
+            if not _matches_render_file(
+                _read_render_file(change.parent, change.name), change.published
+            ):
+                raise ValueError(f"render destination changed during publication: {change.path}")
+            if change.backup is not None and not _matches_render_file(
+                _read_render_file(change.parent, change.backup), change.before
+            ):
+                raise ValueError(f"render destination changed during publication: {change.path}")
+        for change in changes:
+            if change.backup is not None:
+                os.unlink(change.backup, dir_fd=change.parent)
+                change.backup = None
+        state.verify_directories()
+    except BaseException as original:
+        retry = []
+        for change in reversed(changes):
             try:
-                with os.fdopen(descriptor, "wb") as stream:
-                    stream.write(content)
-                    stream.flush()
-                    os.fsync(stream.fileno())
-                os.chmod(temporary, mode)
-                os.replace(temporary, path)
-            finally:
-                if os.path.exists(temporary):
-                    os.unlink(temporary)
+                _restore_render_change(change)
+            except BaseException:  # noqa: BLE001 - finish recovery before re-raising the original
+                retry.append(change)
+        for change in retry:
+            try:
+                _restore_render_change(change)
+            except BaseException:  # noqa: BLE001 - preserve the original operational failure
+                original.add_note(
+                    "Render recovery preserved remaining .ai-dlc- backups for repair."
+                )
+        for name in reversed(state.created):
+            relative = PurePosixPath(name)
+            parent = state.directories[
+                relative.parent.as_posix() if len(relative.parts) > 1 else ""
+            ]
+            descriptor = state.directories[name]
+            if parent is not None and descriptor is not None:
+                try:
+                    bundle_fs._verify_named_directory(parent, relative.name, descriptor)
+                    os.rmdir(relative.name, dir_fd=parent)
+                except OSError:
+                    pass
         raise
 
 
 def _managed_section_state(path: Path, required: str) -> str:
-    if not path.exists():
-        return "missing"
-    if path.is_symlink() or not path.is_file():
-        return "blocked"
     try:
+        if path.is_symlink():
+            return "blocked"
+        if not path.exists():
+            return "missing"
+        if not path.is_file():
+            return "blocked"
         current = path.read_text()
-    except OSError:
+    except (OSError, UnicodeError):
         return "blocked"
     matches = list(
         re.finditer(
@@ -336,7 +602,11 @@ def _managed_section_state(path: Path, required: str) -> str:
             re.DOTALL,
         )
     )
-    if len(matches) != 1:
+    if (
+        len(matches) != 1
+        or current.count("<!-- ai-dlc:begin ") != 1
+        or current.count("<!-- ai-dlc:end -->") != 1
+    ):
         return "blocked"
     match = matches[0]
     if hashlib.sha256(match.group(2).encode()).hexdigest() != match.group(1):
@@ -362,6 +632,8 @@ def inspect_bundle_guidance(root: Path, config: dict, clients: list[str]) -> lis
             bundles[bundle_id] = load_vendored_bundle(root, bundle_id)
         except MissingBundlePath as exc:
             states[bundle_id]["missing"].append(f"vendored bundle path is missing: {exc.path}")
+            if exc.manifest is not None:
+                bundles[bundle_id] = {"manifest": exc.manifest, "payload": {}}
         except ValueError as exc:
             states[bundle_id]["blocked"].append(str(exc))
 
@@ -380,13 +652,8 @@ def inspect_bundle_guidance(root: Path, config: dict, clients: list[str]) -> lis
             for bundle_id in bundle_ids:
                 states[bundle_id]["blocked"].append(f"bundle ownership is invalid: {exc}")
 
-    desired = _bundle_outputs(bundles, clients)
-    for path, (bundle_id, body) in desired.items():
-        try:
-            destination = inside(root, path)
-        except ValueError:
-            states[bundle_id]["blocked"].append(f"rendered bundle output is a symlink: {path}")
-            continue
+    claims = _bundle_claims(bundles, clients)
+    for path, bundle_id, relative in claims:
         ownership = prior_bundle_files.get(path)
         if ownership is not None and ownership["owner"] != bundle_id:
             detail = (
@@ -395,6 +662,11 @@ def inspect_bundle_guidance(root: Path, config: dict, clients: list[str]) -> lis
             states[bundle_id]["blocked"].append(detail)
             if ownership["owner"] in states:
                 states[ownership["owner"]]["blocked"].append(detail)
+            continue
+        try:
+            destination = inside(root, path)
+        except ValueError:
+            states[bundle_id]["blocked"].append(f"rendered bundle output is a symlink: {path}")
             continue
         if not destination.exists():
             states[bundle_id]["missing"].append(f"rendered bundle output is missing: {path}")
@@ -416,10 +688,12 @@ def inspect_bundle_guidance(root: Path, config: dict, clients: list[str]) -> lis
             continue
         if current_digest != ownership["sha256"]:
             states[bundle_id]["blocked"].append(f"owned bundle output has local edits: {path}")
-        elif current_digest != hashlib.sha256(body.encode()).hexdigest():
+        elif (
+            body := bundles[bundle_id]["payload"].get(relative)
+        ) is not None and current_digest != hashlib.sha256(body.encode()).hexdigest():
             states[bundle_id]["missing"].append(f"rendered bundle output is stale: {path}")
 
-    desired_paths = set(desired)
+    desired_paths = {path for path, _, _ in claims}
     for path, ownership in prior_bundle_files.items():
         bundle_id = ownership["owner"]
         if bundle_id not in states or path in desired_paths:
@@ -450,12 +724,12 @@ def inspect_bundle_guidance(root: Path, config: dict, clients: list[str]) -> lis
 
     index_state = _managed_section_state(root / "AGENTS.md", _bundle_index(bundles))
     if index_state != "ready":
-        for bundle_id in bundles:
+        for bundle_id in bundle_ids:
             states[bundle_id][index_state].append("managed workflow-bundle index is unavailable")
     if "claude-code" in clients:
         claude_state = _managed_section_state(root / "CLAUDE.md", "@AGENTS.md\n")
         if claude_state != "ready":
-            for bundle_id in bundles:
+            for bundle_id in bundle_ids:
                 states[bundle_id][claude_state].append("CLAUDE.md does not reference AGENTS.md")
 
     results = []
@@ -471,7 +745,10 @@ def inspect_bundle_guidance(root: Path, config: dict, clients: list[str]) -> lis
             )
         elif missing:
             status = "missing"
-            reason = missing[0]
+            reason = next(
+                (detail for detail in missing if detail.startswith("vendored bundle path")),
+                missing[0],
+            )
             action = "Restore missing vendored content if needed, then run a full ai-dlc agents render --apply."
         else:
             status = "ready"
@@ -489,9 +766,23 @@ def inspect_bundle_guidance(root: Path, config: dict, clients: list[str]) -> lis
 
 
 def _render_agents(
-    root: Path, apply: bool = False, client: str | None = None, target: str = "local"
+    root: Path,
+    apply: bool = False,
+    client: str | None = None,
+    target: str = "local",
+    state: _RenderState | None = None,
 ) -> dict[str, Any]:
     root = Path(root).resolve()
+
+    def read(name: str) -> bytes | None:
+        if state is not None:
+            return state.read(name)
+        path = inside(root, name)
+        return path.read_bytes() if path.exists() else None
+
+    def text(name: str) -> str:
+        return (read(name) or b"").decode().replace("\r\n", "\n").replace("\r", "\n")
+
     config = load_project(root)
     bundle_ids = _selected_bundle_ids(config)
     bundles = _load_selected_bundles(root, bundle_ids)
@@ -551,8 +842,7 @@ def _render_agents(
     for filename, body in [("AGENTS.md", "\n".join(lines)), ("CLAUDE.md", "@AGENTS.md\n")]:
         if filename == "CLAUDE.md" and "claude-code" not in clients:
             continue
-        path = inside(root, filename)
-        planned[filename] = _section(path.read_text() if path.exists() else "", body)
+        planned[filename] = _section(text(filename), body)
     servers = {}
     codex = {}
     for server in config.get("agents", {}).get("servers", []):
@@ -579,8 +869,8 @@ def _render_agents(
             **({"env": {x: "${" + x + "}" for x in env_names}} if env_names else {}),
         }
         codex[sid] = {**definition, **({"env_vars": env_names} if env_names else {})}
-    manifest_path = inside(root, ".ai-dlc/agent-ownership.json")
-    previous = json.loads(manifest_path.read_text()) if manifest_path.exists() else {"mcp": {}}
+    manifest_bytes = read(".ai-dlc/agent-ownership.json")
+    previous = json.loads(manifest_bytes) if manifest_bytes is not None else {"mcp": {}}
     prior_bundle_files = _prior_bundle_files(previous)
     bundle_participates = bool(bundle_ids or prior_bundle_files or previous.get("schema") == 3)
     ownership: dict[str, Any] = dict(previous)
@@ -591,16 +881,16 @@ def _render_agents(
     for name, old_digest in list(owned_files.items()):
         if not name.startswith(".ai-dlc/providers/"):
             continue
-        path = inside(root, name)
-        if path.exists() and hashlib.sha256(path.read_bytes()).hexdigest() != old_digest:
+        current = read(name)
+        if current is not None and hashlib.sha256(current).hexdigest() != old_digest:
             raise ValueError(f"managed provider guidance conflict: {name}")
         if name not in provider_copies:
-            if path.exists():
+            if current is not None:
                 removed.append(name)
             del owned_files[name]
     for name, body in provider_copies.items():
-        path = inside(root, name)
-        if name not in owned_files and path.exists() and path.read_bytes() != body.encode():
+        current = read(name)
+        if name not in owned_files and current is not None and current != body.encode():
             raise ValueError(f"authored provider guidance conflict: {name}")
         planned[name] = body
         owned_files[name] = hashlib.sha256(body.encode()).hexdigest()
@@ -613,22 +903,22 @@ def _render_agents(
                 continue
             if name in prior_bundle_files:
                 continue
-            path = inside(root, name)
-            if path.exists() and hashlib.sha256(path.read_bytes()).hexdigest() != old_digest:
+            current = read(name)
+            if current is not None and hashlib.sha256(current).hexdigest() != old_digest:
                 raise ValueError(f"managed skill conflict: {name}")
             if name not in desired:
-                if path.exists():
+                if current is not None:
                     removed.append(name)
                 del owned_files[name]
         for name, body in desired.items():
-            path = inside(root, name)
-            if name not in owned_files and path.exists() and path.read_bytes() != body.encode():
+            current = read(name)
+            if name not in owned_files and current is not None and current != body.encode():
                 raise ValueError(f"authored skill conflict: {name}")
             planned[name] = body
             owned_files[name] = hashlib.sha256(body.encode()).hexdigest()
-        _plan_hooks(root, config, selected_client, previous, ownership, planned)
+        _plan_hooks(read, config, selected_client, previous, ownership, planned)
     _plan_bundle_files(
-        root,
+        read,
         bundles,
         clients,
         full_render=client is None,
@@ -642,8 +932,8 @@ def _render_agents(
         ownership["bundle_files"] = bundle_files
     if "claude-code" in clients:
         ownership["mcp"] = servers
-        path = inside(root, ".mcp.json")
-        document = json.loads(path.read_text()) if path.exists() else {}
+        current = read(".mcp.json")
+        document = json.loads(current) if current is not None else {}
         existing = document.setdefault("mcpServers", {})
         for sid, old in previous.get("mcp", {}).items():
             if sid in existing and existing[sid] != old:
@@ -655,8 +945,7 @@ def _render_agents(
             existing[sid] = definition
         planned[".mcp.json"] = json.dumps(document, indent=2, sort_keys=True) + "\n"
     if "codex" in clients:
-        path = inside(root, ".codex/config.toml")
-        current = path.read_text() if path.exists() else ""
+        current = text(".codex/config.toml")
         body = (
             tomli_w.dumps({"mcp_servers": codex})
             if codex
@@ -668,11 +957,7 @@ def _render_agents(
 
         tomllib.loads(planned[".codex/config.toml"])
     planned[".ai-dlc/agent-ownership.json"] = json.dumps(ownership, indent=2, sort_keys=True) + "\n"
-    changed = [
-        name
-        for name, text in planned.items()
-        if not inside(root, name).exists() or inside(root, name).read_bytes() != text.encode()
-    ]
+    changed = [name for name, text in planned.items() if read(name) != text.encode()]
     changed.extend(removed)
     for name in removed:
         if name in referenced_guidance:
@@ -682,7 +967,9 @@ def _render_agents(
             )
     if apply:
         if bundle_participates:
-            _apply_render_transaction(root, planned, removed, changed)
+            if state is None:
+                raise ValueError("bundle render requires a bound project transaction")
+            _apply_render_transaction(state, planned, removed, changed)
         else:
             for name in removed:
                 inside(root, name).unlink()
@@ -708,8 +995,15 @@ def render_agents(
         previous = json.loads(ownership_path.read_text())
     participates = selected or previous.get("schema") == 3
     if participates:
-        with project_write_lock(absolute):
-            return _render_agents(absolute, apply=True, client=client, target=target)
+        with (
+            project_write_lock(absolute),
+            bundle_fs._bound_project_root(absolute) as (bound, parent, descriptor),
+        ):
+            state = _RenderState(bound, parent, descriptor)
+            try:
+                return _render_agents(bound, apply=True, client=client, target=target, state=state)
+            finally:
+                state.close()
     return _render_agents(absolute, apply=True, client=client, target=target)
 
 
@@ -769,7 +1063,12 @@ def target_hooks(config: dict, target: str) -> dict:
 
 
 def _plan_hooks(
-    root: Path, config: dict, client: str, previous: dict, ownership: dict, planned: dict
+    read: Callable[[str], bytes | None],
+    config: dict,
+    client: str,
+    previous: dict,
+    ownership: dict,
+    planned: dict,
 ) -> None:
     settings = config.get("agents", {}).get("clients", {}).get(client, {})
     required = settings.get("required_hooks", [])
@@ -777,8 +1076,8 @@ def _plan_hooks(
     if not required and not old:
         return
     name = ".codex/hooks.json" if client == "codex" else ".claude/settings.json"
-    path = inside(root, name)
-    document = json.loads(path.read_text()) if path.exists() else {}
+    current = read(name)
+    document = json.loads(current) if current is not None else {}
     hooks = document.setdefault("hooks", {})
     for event, entries in old.items():
         current = hooks.get(event, [])

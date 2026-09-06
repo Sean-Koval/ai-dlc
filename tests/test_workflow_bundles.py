@@ -655,9 +655,9 @@ def test_validation_rejects_tree_mutation_after_scan(
     real_checkout_tree = workflow_bundles._checkout_tree
     mutated = False
 
-    def mutate_after_scan(root: Path):
+    def mutate_after_scan(root: Path, *, ignore_root_git: bool = True):
         nonlocal mutated
-        snapshot = real_checkout_tree(root)
+        snapshot = real_checkout_tree(root, ignore_root_git=ignore_root_git)
         if not mutated:
             (root / "added-after-scan.md").write_text("# Added\n")
             mutated = True
