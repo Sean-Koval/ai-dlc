@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -14,7 +16,7 @@ from ai_dlc.components import load_component_catalog, resolve_components
 from ai_dlc.config import load_project
 from ai_dlc.files import assets, atomic_write, inside
 from ai_dlc.locking import project_write_lock
-from ai_dlc.workflow_bundles import load_vendored_bundle
+from ai_dlc.workflow_bundles import MissingBundlePath, load_vendored_bundle
 
 _BUNDLE_ID = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
@@ -198,7 +200,9 @@ def _bundle_outputs(
     return outputs
 
 
-def _prior_bundle_files(previous: dict[str, Any]) -> dict[str, dict[str, str]]:
+def _prior_bundle_files(previous: Any) -> dict[str, dict[str, str]]:
+    if not isinstance(previous, dict):
+        raise TypeError("bundle ownership document must be an object")
     if previous.get("schema") != 3:
         return {}
     files = previous.get("files")
@@ -302,8 +306,17 @@ def _apply_render_transaction(
                 continue
             content, mode = snapshot
             path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_bytes(content)
-            path.chmod(mode)
+            descriptor, temporary = tempfile.mkstemp(dir=path.parent, prefix=".ai-dlc-")
+            try:
+                with os.fdopen(descriptor, "wb") as stream:
+                    stream.write(content)
+                    stream.flush()
+                    os.fsync(stream.fileno())
+                os.chmod(temporary, mode)
+                os.replace(temporary, path)
+            finally:
+                if os.path.exists(temporary):
+                    os.unlink(temporary)
         raise
 
 
@@ -347,6 +360,8 @@ def inspect_bundle_guidance(root: Path, config: dict, clients: list[str]) -> lis
             continue
         try:
             bundles[bundle_id] = load_vendored_bundle(root, bundle_id)
+        except MissingBundlePath as exc:
+            states[bundle_id]["missing"].append(f"vendored bundle path is missing: {exc.path}")
         except ValueError as exc:
             states[bundle_id]["blocked"].append(str(exc))
 
@@ -376,6 +391,11 @@ def inspect_bundle_guidance(root: Path, config: dict, clients: list[str]) -> lis
         if not destination.exists():
             states[bundle_id]["missing"].append(f"rendered bundle output is missing: {path}")
             continue
+        if not destination.is_file():
+            states[bundle_id]["blocked"].append(
+                f"owned bundle output is not a regular file: {path}"
+            )
+            continue
         if ownership is None:
             states[bundle_id]["blocked"].append(
                 f"bundle destination collision with unowned file: {path}"
@@ -389,7 +409,11 @@ def inspect_bundle_guidance(root: Path, config: dict, clients: list[str]) -> lis
             if ownership["owner"] in states:
                 states[ownership["owner"]]["blocked"].append(detail)
             continue
-        current_digest = hashlib.sha256(destination.read_bytes()).hexdigest()
+        try:
+            current_digest = hashlib.sha256(destination.read_bytes()).hexdigest()
+        except OSError:
+            states[bundle_id]["blocked"].append(f"owned bundle output cannot be read: {path}")
+            continue
         if current_digest != ownership["sha256"]:
             states[bundle_id]["blocked"].append(f"owned bundle output has local edits: {path}")
         elif current_digest != hashlib.sha256(body.encode()).hexdigest():
@@ -405,10 +429,21 @@ def inspect_bundle_guidance(root: Path, config: dict, clients: list[str]) -> lis
         except ValueError:
             states[bundle_id]["blocked"].append(f"obsolete bundle output is a symlink: {path}")
             continue
-        if (
-            destination.exists()
-            and hashlib.sha256(destination.read_bytes()).hexdigest() != ownership["sha256"]
-        ):
+        if destination.exists() and not destination.is_file():
+            states[bundle_id]["blocked"].append(
+                f"obsolete bundle output is not a regular file: {path}"
+            )
+            continue
+        try:
+            current_digest = (
+                hashlib.sha256(destination.read_bytes()).hexdigest()
+                if destination.exists()
+                else None
+            )
+        except OSError:
+            states[bundle_id]["blocked"].append(f"obsolete bundle output cannot be read: {path}")
+            continue
+        if current_digest is not None and current_digest != ownership["sha256"]:
             states[bundle_id]["blocked"].append(f"obsolete bundle output has local edits: {path}")
         else:
             states[bundle_id]["missing"].append(f"obsolete bundle output requires removal: {path}")
@@ -636,7 +671,7 @@ def _render_agents(
     changed = [
         name
         for name, text in planned.items()
-        if not inside(root, name).exists() or inside(root, name).read_text() != text
+        if not inside(root, name).exists() or inside(root, name).read_bytes() != text.encode()
     ]
     changed.extend(removed)
     for name in removed:

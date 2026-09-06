@@ -62,6 +62,14 @@ _TreeSnapshot = tuple[_Identity, dict[str, _Identity]]
 _DirectoryRoot = Path | int
 
 
+class MissingBundlePath(ValueError):
+    """A required path is absent from an otherwise inspectable bundle tree."""
+
+    def __init__(self, path: str, message: str | None = None) -> None:
+        self.path = path
+        super().__init__(message or f"bundle path is missing: {path}")
+
+
 @dataclass(frozen=True)
 class BundleCandidate:
     """A validated, temporary bundle checkout pinned to one advertised ref."""
@@ -387,8 +395,14 @@ def _validate_bundle(root: _DirectoryRoot, manifest: dict, *, metadata_paths: se
         if actual_tree != expected_tree:
             missing = sorted(expected_tree - actual_tree)
             extra = sorted(actual_tree - expected_tree)
-            detail = f"missing {missing[0]}" if missing else f"undeclared {extra[0]}"
-            raise ValueError(f"bundle checkout tree does not match its manifest: {detail}")
+            if missing:
+                raise MissingBundlePath(
+                    missing[0],
+                    f"bundle checkout tree does not match its manifest: missing {missing[0]}",
+                )
+            raise ValueError(
+                f"bundle checkout tree does not match its manifest: undeclared {extra[0]}"
+            )
 
         total_size = 0
         decoded: dict[str, str] = {}
@@ -716,6 +730,11 @@ def load_vendored_bundle(root: Path, bundle_id: str) -> dict[str, Any]:
         metadata = destination.lstat()
         if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
             raise ValueError("vendored bundle path must be a directory")
+        for metadata_name in ("bundle.lock.json", "bundle.json"):
+            try:
+                (destination / metadata_name).lstat()
+            except FileNotFoundError:
+                raise MissingBundlePath(metadata_name) from None
         lock = _load_existing_lock(destination, bundle_id)
         manifest_bytes, raw_manifest = _load_manifest_with_bytes(destination)
         if hashlib.sha256(manifest_bytes).hexdigest() != lock["manifest_sha256"]:
@@ -737,6 +756,8 @@ def load_vendored_bundle(root: Path, bundle_id: str) -> dict[str, Any]:
             if hashlib.sha256(content).hexdigest() != expected_digest:
                 raise ValueError(f"vendored bundle payload digest mismatch: {relative}")
             payload[relative] = content.decode("utf-8")
+    except FileNotFoundError:
+        raise MissingBundlePath(f".ai-dlc/bundles/{bundle_id}") from None
     except OSError:
         raise ValueError("vendored bundle filesystem operation failed") from None
     return {"lock": lock, "manifest": manifest, "payload": payload}

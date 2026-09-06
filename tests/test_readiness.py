@@ -319,6 +319,38 @@ def test_bundle_guidance_inspection_reports_missing_blocked_stale_and_ready(tmp_
     assert blocked["next_action"]
 
 
+def test_missing_vendored_payload_is_missing_but_integrity_failure_takes_precedence(tmp_path):
+    """Would fail if absent vendored bytes were collapsed into generic invalid content."""
+    import json
+
+    from ai_dlc.agents import inspect_bundle_guidance
+
+    _write_vendored_bundle(
+        tmp_path,
+        "review-flow",
+        templates={"review-note": ("templates/note.md", "# Note\n")},
+    )
+    payload = tmp_path / ".ai-dlc/bundles/review-flow/templates/note.md"
+    payload.unlink()
+    config = {"agents": {"bundles": ["review-flow"]}}
+
+    missing = inspect_bundle_guidance(tmp_path, config, ["codex"])[0]
+
+    assert missing["status"] == "missing"
+    assert missing["reason"] == "vendored bundle path is missing: templates/note.md"
+    assert missing["next_action"]
+
+    lock_path = tmp_path / ".ai-dlc/bundles/review-flow/bundle.lock.json"
+    lock = json.loads(lock_path.read_text())
+    lock["schema"] = 2
+    lock_path.write_text(json.dumps(lock, indent=2, sort_keys=True) + "\n")
+
+    blocked = inspect_bundle_guidance(tmp_path, config, ["codex"])[0]
+
+    assert blocked["status"] == "blocked"
+    assert "invalid" in blocked["reason"]
+
+
 def test_bundle_collision_blocks_every_participating_readiness_result(tmp_path):
     """Would fail if a global export collision were attributed to only one claimant."""
     from ai_dlc.agents import inspect_bundle_guidance
@@ -364,6 +396,64 @@ def test_bundle_guidance_symlinked_output_is_blocked_even_when_bytes_match(tmp_p
 
     assert result["status"] == "blocked"
     assert "symlink" in result["reason"]
+
+
+def test_bundle_guidance_list_ownership_document_returns_blocked_result(tmp_path):
+    """Would fail if a non-object ownership document escaped structured readiness."""
+    from ai_dlc.agents import inspect_bundle_guidance
+
+    _write_vendored_bundle(
+        tmp_path,
+        "review-flow",
+        templates={"review-note": ("templates/note.md", "# Note\n")},
+    )
+    ownership = tmp_path / ".ai-dlc/agent-ownership.json"
+    ownership.write_text("[]\n")
+
+    result = inspect_bundle_guidance(
+        tmp_path,
+        {"agents": {"bundles": ["review-flow"]}},
+        ["codex"],
+    )
+
+    assert result == [
+        {
+            "bundle_id": "review-flow",
+            "status": "blocked",
+            "reason": "bundle ownership is invalid: bundle ownership document must be an object",
+            "next_action": (
+                "Resolve bundle guidance conflicts or restore exact vendored and owned bytes, "
+                "then run a full ai-dlc agents render --apply."
+            ),
+        }
+    ]
+
+
+def test_bundle_guidance_directory_output_returns_blocked_result(tmp_path):
+    """Would fail if a non-file owned destination crashed readiness inspection."""
+    from ai_dlc.agents import inspect_bundle_guidance, render_agents
+
+    config = {"agents": {"bundles": ["review-flow"]}}
+    _write_vendored_bundle(
+        tmp_path,
+        "review-flow",
+        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow"))},
+    )
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nagent-client=["codex"]\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
+    )
+    render_agents(tmp_path, apply=True)
+    rendered = tmp_path / ".agents/skills/review-flow/SKILL.md"
+    rendered.unlink()
+    rendered.mkdir()
+
+    result = inspect_bundle_guidance(tmp_path, config, ["codex"])[0]
+
+    assert result["status"] == "blocked"
+    assert result["reason"] == (
+        "owned bundle output is not a regular file: .agents/skills/review-flow/SKILL.md"
+    )
+    assert result["next_action"]
 
 
 def test_bundle_cross_owner_collision_blocks_old_and_new_selected_owners(tmp_path):

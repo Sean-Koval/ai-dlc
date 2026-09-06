@@ -479,6 +479,27 @@ def test_selected_bundle_renders_offline_to_clients_template_and_index(tmp_path,
     assert render_agents(fresh_checkout)["clean"] is True
 
 
+def test_bundle_crlf_template_is_clean_after_apply(tmp_path):
+    """Would fail if render checks normalized valid bundle payload newlines."""
+    from ai_dlc.agents import render_agents
+
+    body = "# Review note\r\n\r\nPreserve these bytes.\r\n"
+    _write_vendored_bundle(
+        tmp_path,
+        "review-flow",
+        templates={"review-note": ("templates/review-note.md", body)},
+    )
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
+    )
+
+    render_agents(tmp_path, apply=True)
+    checked = render_agents(tmp_path)
+
+    assert (tmp_path / "docs/templates/review-note.md").read_bytes() == body.encode()
+    assert checked == {"clean": True, "changed": [], "applied": False}
+
+
 @pytest.mark.parametrize("collision", ["authored", "shipped", "duplicate"])
 def test_bundle_collisions_block_the_whole_render_without_writes(tmp_path, collision):
     """Would fail if authored, shipped, or cross-bundle claims were overwritten."""
@@ -612,7 +633,9 @@ def test_bundle_render_operational_failure_restores_every_affected_byte(tmp_path
         tmp_path / "docs/templates/review-note.md",
         tmp_path / ".ai-dlc/agent-ownership.json",
     ]
-    before = {path: path.read_bytes() for path in affected}
+    read_only = affected[0]
+    read_only.chmod(0o444)
+    before = {path: (path.read_bytes(), path.stat().st_mode & 0o777) for path in affected}
     _write_vendored_bundle(
         tmp_path,
         "review-flow",
@@ -633,4 +656,4 @@ def test_bundle_render_operational_failure_restores_every_affected_byte(tmp_path
     with pytest.raises(OSError, match="publication failed"):
         agents.render_agents(tmp_path, apply=True)
 
-    assert {path: path.read_bytes() for path in affected} == before
+    assert {path: (path.read_bytes(), path.stat().st_mode & 0o777) for path in affected} == before
