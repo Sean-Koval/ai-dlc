@@ -27,6 +27,7 @@ spec = "openspec/changes/portable-workflow-bundles"
 plan = "docs/superpowers/plans/2026-09-05-portable-workflow-bundles.md"
 roadmap = "docs/roadmap.md"
 tracker = "a62d3b79-a8f1-46bb-9c09-7a2af5f0b36d"
+branch = "codex/portable-workflow-bundles"
 
 [bindings]
 specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
