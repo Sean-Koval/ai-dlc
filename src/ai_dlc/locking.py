@@ -5,6 +5,7 @@ from __future__ import annotations
 import fcntl
 import hashlib
 import os
+import pwd
 import stat
 import threading
 from collections.abc import Iterator
@@ -105,10 +106,13 @@ def _open_private_child(parent: int, name: str) -> int:
 
 @contextmanager
 def _lock_namespace() -> Iterator[int]:
-    configured = os.environ.get("XDG_RUNTIME_DIR") or os.environ.get("XDG_CACHE_HOME")
-    if configured and not Path(configured).is_absolute():
+    try:
+        account_home = Path(pwd.getpwuid(os.getuid()).pw_dir)
+    except (KeyError, OSError):
+        raise _invalid_namespace() from None
+    if not account_home.is_absolute():
         raise _invalid_namespace()
-    anchor = Path(configured) if configured else Path.home() / ".cache"
+    anchor = account_home / ".cache"
     descriptor = _open_anchor(anchor)
     try:
         for name in ("ai-dlc", "locks"):

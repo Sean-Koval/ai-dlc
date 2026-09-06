@@ -111,6 +111,25 @@ def work(tmp_path):
     )
 
 
+def account_lock_cache(tmp_path, monkeypatch):
+    """Point account-derived lock storage at an isolated private test home."""
+    from types import SimpleNamespace
+
+    from ai_dlc import locking
+
+    account_home = tmp_path / "account-home"
+    account_home.mkdir(mode=0o700)
+    monkeypatch.setattr(
+        locking,
+        "pwd",
+        SimpleNamespace(
+            getpwuid=lambda uid: SimpleNamespace(pw_dir=str(account_home)),
+        ),
+        raising=False,
+    )
+    return account_home / ".cache"
+
+
 def test_project_write_lock_rejects_untrusted_namespace_entries(tmp_path, monkeypatch):
     """A hostile anchor or leaf must not redirect writers onto attacker-controlled inodes."""
     import hashlib
@@ -119,10 +138,8 @@ def test_project_write_lock_rejects_untrusted_namespace_entries(tmp_path, monkey
 
     project = tmp_path / "project"
     project.mkdir()
-    cache = tmp_path / "cache"
+    cache = account_lock_cache(tmp_path, monkeypatch)
     cache.mkdir(mode=0o700)
-    monkeypatch.delenv("XDG_RUNTIME_DIR", raising=False)
-    monkeypatch.setenv("XDG_CACHE_HOME", str(cache))
     controlled = tmp_path / "controlled"
     controlled.mkdir()
     (cache / "ai-dlc").symlink_to(controlled, target_is_directory=True)
@@ -146,11 +163,9 @@ def test_project_write_lock_rejects_unsafe_anchor_mode(tmp_path, monkeypatch):
     """An anchor writable by other users cannot define a serialization namespace."""
     from ai_dlc.locking import project_write_lock
 
-    cache = tmp_path / "cache"
+    cache = account_lock_cache(tmp_path, monkeypatch)
     cache.mkdir(mode=0o777)
     cache.chmod(0o777)
-    monkeypatch.delenv("XDG_RUNTIME_DIR", raising=False)
-    monkeypatch.setenv("XDG_CACHE_HOME", str(cache))
 
     with (
         pytest.raises(ValueError, match="lock namespace"),
@@ -165,14 +180,12 @@ def test_project_write_lock_uses_a_private_stable_namespace(tmp_path, monkeypatc
 
     from ai_dlc.locking import project_write_lock
 
-    cache = tmp_path / "cache"
+    cache = account_lock_cache(tmp_path, monkeypatch)
     lock_root = cache / "ai-dlc/locks"
     lock_root.mkdir(parents=True, mode=0o700)
     cache.chmod(0o700)
     (cache / "ai-dlc").chmod(0o700)
     lock_root.chmod(0o700)
-    monkeypatch.delenv("XDG_RUNTIME_DIR", raising=False)
-    monkeypatch.setenv("XDG_CACHE_HOME", str(cache))
     project = tmp_path / "project"
     project.mkdir()
 
@@ -190,13 +203,11 @@ def test_project_write_lock_rejects_leaf_replacement_while_acquiring(tmp_path, m
 
     from ai_dlc import locking
 
-    cache = tmp_path / "cache"
+    cache = account_lock_cache(tmp_path, monkeypatch)
     lock_root = cache / "ai-dlc/locks"
     lock_root.mkdir(parents=True, mode=0o700)
     for directory in (cache, cache / "ai-dlc", lock_root):
         directory.chmod(0o700)
-    monkeypatch.delenv("XDG_RUNTIME_DIR", raising=False)
-    monkeypatch.setenv("XDG_CACHE_HOME", str(cache))
     project = tmp_path / "project"
     project.mkdir()
     leaf = lock_root / f"{hashlib.sha256(str(project.resolve()).encode()).hexdigest()}.lock"
@@ -223,26 +234,27 @@ def test_project_write_lock_serializes_an_independent_process(tmp_path, monkeypa
     import subprocess
     import sys
 
-    from ai_dlc.locking import project_write_lock
+    from ai_dlc import locking
 
-    cache = tmp_path / "cache"
+    cache = account_lock_cache(tmp_path, monkeypatch)
     cache.mkdir(mode=0o700)
-    monkeypatch.delenv("XDG_RUNTIME_DIR", raising=False)
-    monkeypatch.setenv("XDG_CACHE_HOME", str(cache))
     project = tmp_path / "project"
     project.mkdir()
     script = (
-        "import sys\n"
+        "import sys, types\n"
         "from pathlib import Path\n"
-        "from ai_dlc.locking import project_write_lock\n"
+        "from ai_dlc import locking\n"
+        "locking.pwd = types.SimpleNamespace(\n"
+        "    getpwuid=lambda uid: types.SimpleNamespace(pw_dir=sys.argv[2])\n"
+        ")\n"
         "print('ready', flush=True)\n"
-        "with project_write_lock(Path(sys.argv[1])):\n"
+        "with locking.project_write_lock(Path(sys.argv[1])):\n"
         "    print('acquired', flush=True)\n"
     )
 
-    with project_write_lock(project):
+    with locking.project_write_lock(project):
         child = subprocess.Popen(
-            [sys.executable, "-c", script, str(project)],
+            [sys.executable, "-c", script, str(project), str(cache.parent)],
             text=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -256,6 +268,82 @@ def test_project_write_lock_serializes_an_independent_process(tmp_path, monkeypa
     stdout, stderr = child.communicate(timeout=5)
     assert child.returncode == 0, stderr
     assert stdout.strip() == "acquired"
+
+
+def test_project_write_lock_identity_ignores_process_environment(tmp_path, monkeypatch):
+    """One account and project must serialize even when launch environments differ."""
+    import os
+    import subprocess
+    import sys
+
+    from ai_dlc import locking
+
+    account_home = account_lock_cache(tmp_path, monkeypatch).parent
+    parent_cache = tmp_path / "parent-cache"
+    child_cache = tmp_path / "child-cache"
+    child_runtime = tmp_path / "child-runtime"
+    parent_home = tmp_path / "parent-home"
+    child_home = tmp_path / "child-home"
+    parent_tmp = tmp_path / "parent-tmp"
+    child_tmp = tmp_path / "child-tmp"
+    for directory in (
+        parent_cache,
+        child_cache,
+        child_runtime,
+        parent_home,
+        child_home,
+        parent_tmp,
+        child_tmp,
+    ):
+        directory.mkdir(mode=0o700)
+    monkeypatch.delenv("XDG_RUNTIME_DIR", raising=False)
+    monkeypatch.setenv("XDG_CACHE_HOME", str(parent_cache))
+    monkeypatch.setenv("HOME", str(parent_home))
+    monkeypatch.setenv("TMPDIR", str(parent_tmp))
+    project = tmp_path / "project"
+    project.mkdir()
+    script = (
+        "import sys, types\n"
+        "from pathlib import Path\n"
+        "from ai_dlc import locking\n"
+        "locking.pwd = types.SimpleNamespace(\n"
+        "    getpwuid=lambda uid: types.SimpleNamespace(pw_dir=sys.argv[2])\n"
+        ")\n"
+        "print('ready', flush=True)\n"
+        "with locking.project_write_lock(Path(sys.argv[1])):\n"
+        "    print('acquired', flush=True)\n"
+    )
+    child_environment = dict(os.environ)
+    child_environment.update(
+        {
+            "XDG_RUNTIME_DIR": str(child_runtime),
+            "XDG_CACHE_HOME": str(child_cache),
+            "HOME": str(child_home),
+            "TMPDIR": str(child_tmp),
+        }
+    )
+
+    with locking.project_write_lock(project):
+        child = subprocess.Popen(
+            [sys.executable, "-c", script, str(project), str(account_home)],
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            env=child_environment,
+        )
+        assert child.stdout is not None
+        assert child.stdout.readline().strip() == "ready"
+        with pytest.raises(subprocess.TimeoutExpired):
+            child.wait(timeout=0.2)
+
+    stdout, stderr = child.communicate(timeout=5)
+    assert child.returncode == 0, stderr
+    assert stdout.strip() == "acquired"
+    lock_root = account_home / ".cache/ai-dlc/locks"
+    assert len(list(lock_root.glob("*.lock"))) == 1
+    assert not list(parent_cache.rglob("*.lock"))
+    assert not list(child_cache.rglob("*.lock"))
+    assert not list(child_runtime.rglob("*.lock"))
 
 
 def test_work_service_from_project_preserves_machine_overlay(tmp_path):
