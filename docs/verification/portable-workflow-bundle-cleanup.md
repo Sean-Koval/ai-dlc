@@ -68,9 +68,8 @@ The focused rendering command was
 
 `ai-dlc project check --required` passed all five required outcomes: generated,
 format, lint, types, and test. The full suite passed 1,146 tests in 198.80 seconds.
-The command used this checkout's prepared source environment first in `PATH`:
-`/Users/seankoval/.local/share/ai-dlc/bootstrap/source-2836003460/bin`, followed by
-the bootstrap tools directory. The receipt records the dirty pre-commit repair
+The command used this checkout's prepared source environment first in `PATH`,
+followed by the bootstrap tools directory. The receipt records the dirty pre-commit repair
 at baseline `04c65cb`; it is not merged-revision CI evidence. `git diff --check`
 also passed.
 

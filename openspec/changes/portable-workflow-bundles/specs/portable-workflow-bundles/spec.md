@@ -28,6 +28,10 @@ Imported workflow bundles SHALL record source, exact resolved revision, and comp
 - **WHEN** the freshly resolved commit equals the required preview commit and all bytes still validate
 - **THEN** apply transactionally vendors the manifest, every declared payload, and a deterministic lock authenticating the manifest and complete payload map without selecting or rendering the bundle
 
+#### Scenario: Staged or installed content changes during publication
+- **WHEN** a first import or update encounters changed manifest, lock, payload, tree entries, or directory identity after staging or installation
+- **THEN** apply raises an error instead of reporting success, preserves the changed occupants without recursive deletion, restores the previous active bundle where safe, and reports retained paths for inspection
+
 ### Requirement: WB-02 Owned rendering and integrity
 
 Bundle validation SHALL reject unsafe, undeclared, tampered, or colliding assets before rendering; owned updates SHALL preserve authored modifications.
@@ -49,8 +53,20 @@ Bundle validation SHALL reject unsafe, undeclared, tampered, or colliding assets
 - **THEN** rendering removes the obsolete output only when its current digest is intact and otherwise blocks without writes
 
 #### Scenario: Bundle publication fails
-- **WHEN** an operational failure occurs while replacing a vendored tree or during a render involving selected or previously owned bundle outputs
+- **WHEN** an operational failure occurs while replacing a vendored tree or during a render involving selected or previously owned bundle outputs, and concurrent writes do not prevent safe restoration
 - **THEN** the previous vendored tree and every file in the complete render transaction are restored byte for byte
+
+#### Scenario: Import backup or stage cleanup could delete authored content
+- **WHEN** an import has retained an old bundle backup, an unused or partial stage, or content displaced during recovery
+- **THEN** it does not recursively delete or rewrite those occupants, reports sorted project-relative `retained_paths` on returned results or retained-path notes on errors, and leaves them outside active bundle ownership
+
+#### Scenario: An authored destination prevents import recovery
+- **WHEN** a concurrent destination or unavailable rename prevents restoring the previous active bundle
+- **THEN** recovery refuses to overwrite that destination, preserves available old and staged content, and reports the incomplete restoration and relevant paths on the error
+
+#### Scenario: A later import encounters retained residue
+- **WHEN** previous imports left backups or stages outside the active bundle directory
+- **THEN** preview and apply neither adopt nor modify that residue, later updates use distinct backup names, and results with no newly retained paths omit `retained_paths`
 
 #### Scenario: Render stage cleanup could delete authored content
 - **WHEN** a render fails after creating a complete or partial temporary stage, including a stage displaced during rollback

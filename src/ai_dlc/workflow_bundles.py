@@ -627,7 +627,15 @@ def _bound_project_root(root: Path) -> Iterator[tuple[Path, int, int]]:
         _validate_project_document(project_bytes)
         try:
             yield absolute, parent_descriptor, root_descriptor
-        finally:
+        except BaseException as original:
+            try:
+                _verify_project_path(absolute, parent_descriptor, root_descriptor)
+            except OSError:
+                original.add_note(
+                    "Bundle import project location changed; inspect the displaced directory for retained paths."
+                )
+            raise
+        else:
             _verify_project_path(absolute, parent_descriptor, root_descriptor)
     finally:
         if root_descriptor is not None:
@@ -953,42 +961,11 @@ def _stage_bundle_at(parent: int, bundle_id: str, desired: dict[str, bytes]) -> 
         if _owned_bundle_conflicts(descriptor, bundle_id):
             raise ValueError("staged bundle failed integrity validation")
         return name, descriptor
-    except BaseException:
+    except BaseException as error:
         if descriptor is not None:
             os.close(descriptor)
-        _cleanup_tree_at(parent, name)
+        error.add_note(f"Bundle import retained .ai-dlc/bundles/{name}; inspect before removal.")
         raise
-
-
-def _remove_tree_at(parent: int, name: str) -> None:
-    descriptor = _open_named_directory(parent, name)
-    try:
-        with os.scandir(descriptor) as children:
-            names = [child.name for child in children]
-        for child in names:
-            metadata = os.stat(child, dir_fd=descriptor, follow_symlinks=False)
-            if stat.S_ISDIR(metadata.st_mode) and not stat.S_ISLNK(metadata.st_mode):
-                _remove_tree_at(descriptor, child)
-            else:
-                os.unlink(child, dir_fd=descriptor)
-    finally:
-        os.close(descriptor)
-    os.rmdir(name, dir_fd=parent)
-
-
-def _cleanup_tree_at(parent: int, name: str) -> None:
-    try:
-        _remove_tree_at(parent, name)
-    except FileNotFoundError:
-        return
-    except OSError as error:
-        try:
-            _remove_tree_at(parent, name)
-        except FileNotFoundError:
-            pass
-        except OSError:
-            raise error from None
-        raise error from None
 
 
 def _destination_descriptor(parent: int, bundle_id: str) -> int | None:
@@ -1043,33 +1020,6 @@ def _plan_bundle_at(
             os.close(descriptor)
 
 
-def _stage_recovery_tree_at(
-    parent: int, bundle_id: str, files: dict[str, bytes]
-) -> tuple[str, int]:
-    name = f".{bundle_id}.recovery-{secrets.token_hex(12)}"
-    os.mkdir(name, dir_fd=parent)
-    descriptor: int | None = None
-    try:
-        descriptor = _open_named_directory(parent, name)
-        for relative, content in sorted(files.items()):
-            _write_regular_file_at(descriptor, PurePosixPath(relative), content)
-        if _owned_bundle_conflicts(descriptor, bundle_id):
-            raise OSError("recovery bundle failed validation")
-        return name, descriptor
-    except BaseException:
-        if descriptor is not None:
-            os.close(descriptor)
-        _cleanup_tree_at(parent, name)
-        raise
-
-
-def _prepare_recovery_tree(parent: int, bundle_id: str, files: dict[str, bytes]) -> tuple[str, int]:
-    try:
-        return _stage_recovery_tree_at(parent, bundle_id, files)
-    except OSError:
-        return _stage_recovery_tree_at(parent, bundle_id, files)
-
-
 def _rename_directory_noreplace(parent: int, source_name: str, destination_name: str) -> None:
     library = ctypes.CDLL(None, use_errno=True)
     source = os.fsencode(source_name)
@@ -1109,6 +1059,19 @@ def _rename_directory_noreplace(parent: int, source_name: str, destination_name:
         raise OSError(error_number, "atomic no-clobber rename failed")
 
 
+def _verify_bundle_tree(parent: int, name: str, descriptor: int, desired: dict[str, bytes]) -> None:
+    _verify_named_directory(parent, name, descriptor)
+    initial = _checkout_tree(descriptor, ignore_root_git=False)
+    if _tree_files_at(descriptor) != desired:
+        raise ValueError("bundle publication content changed")
+    expected = _expected_tree(
+        set(desired) - {"bundle.json", "bundle.lock.json"}, {"bundle.lock.json"}
+    )
+    if set(initial[1]) != expected or _checkout_tree(descriptor, ignore_root_git=False) != initial:
+        raise ValueError("bundle publication tree changed")
+    _verify_named_directory(parent, name, descriptor)
+
+
 def _publish_bundle_tree(
     parent: int,
     bundle_id: str,
@@ -1116,77 +1079,54 @@ def _publish_bundle_tree(
     staged_descriptor: int,
     existing_descriptor: int | None,
     verify_project: Callable[[], None],
+    desired: dict[str, bytes],
+    retained: set[str],
 ) -> list[str]:
-    backup_name = f".{bundle_id}.backup"
+    _verify_bundle_tree(parent, staged_name, staged_descriptor, desired)
+    backup_name = f".{bundle_id}.backup-{secrets.token_hex(12)}"
+    backed_up = published = False
     try:
-        os.stat(backup_name, dir_fd=parent, follow_symlinks=False)
-    except FileNotFoundError:
-        pass
-    else:
-        raise OSError("stale bundle transaction")
-
-    if existing_descriptor is None:
-        _rename_directory_noreplace(parent, staged_name, bundle_id)
-        try:
-            _verify_named_directory(parent, bundle_id, staged_descriptor)
-            verify_project()
-        except BaseException:
-            try:
-                _verify_named_directory(parent, bundle_id, staged_descriptor)
-            except OSError:
-                pass
-            else:
-                os.replace(bundle_id, staged_name, src_dir_fd=parent, dst_dir_fd=parent)
-            raise
-        return []
-
-    named = os.stat(bundle_id, dir_fd=parent, follow_symlinks=False)
-    if not _same_object(named, os.fstat(existing_descriptor)):
-        return [f"{_relative_bundle_path(bundle_id)}: existing bundle destination changed"]
-    conflicts = _owned_bundle_conflicts(existing_descriptor, bundle_id)
-    if conflicts:
-        return conflicts
-    prior_files = _tree_files_at(existing_descriptor)
-
-    published = False
-    os.replace(bundle_id, backup_name, src_dir_fd=parent, dst_dir_fd=parent)
-    try:
-        _verify_named_directory(parent, backup_name, existing_descriptor)
-        conflicts = _owned_bundle_conflicts(existing_descriptor, bundle_id)
-        if conflicts:
-            os.replace(backup_name, bundle_id, src_dir_fd=parent, dst_dir_fd=parent)
-            return conflicts
-        os.replace(staged_name, bundle_id, src_dir_fd=parent, dst_dir_fd=parent)
-        published = True
-        _verify_named_directory(parent, bundle_id, staged_descriptor)
+        if existing_descriptor is not None:
+            named = os.stat(bundle_id, dir_fd=parent, follow_symlinks=False)
+            if not _same_object(named, os.fstat(existing_descriptor)):
+                return [f"{_relative_bundle_path(bundle_id)}: existing bundle destination changed"]
+            conflicts = _owned_bundle_conflicts(existing_descriptor, bundle_id)
+            if conflicts:
+                return conflicts
+            _rename_directory_noreplace(parent, bundle_id, backup_name)
+            retained.add(backup_name)
+            backed_up = True
+            _verify_named_directory(parent, backup_name, existing_descriptor)
+            conflicts = _owned_bundle_conflicts(existing_descriptor, bundle_id)
+            if conflicts:
+                _rename_directory_noreplace(parent, backup_name, bundle_id)
+                retained.discard(backup_name)
+                backed_up = False
+                return conflicts
         verify_project()
-    except BaseException:
-        if published:
-            os.replace(bundle_id, staged_name, src_dir_fd=parent, dst_dir_fd=parent)
-        os.replace(backup_name, bundle_id, src_dir_fd=parent, dst_dir_fd=parent)
-        raise
-
-    try:
-        _remove_tree_at(parent, backup_name)
-    except BaseException:
-        recovery_name, recovery_descriptor = _prepare_recovery_tree(parent, bundle_id, prior_files)
+        _verify_bundle_tree(parent, staged_name, staged_descriptor, desired)
+        _rename_directory_noreplace(parent, staged_name, bundle_id)
+        retained.discard(staged_name)
+        published = True
+        verify_project()
+        _verify_bundle_tree(parent, bundle_id, staged_descriptor, desired)
+    except BaseException as original:
+        # Recovery moves occupants without replacing or deleting any pathname.
+        # A late authored destination is retained, including when its identity
+        # differs from the published stage. Never recursively clean residue.
         try:
-            os.replace(bundle_id, staged_name, src_dir_fd=parent, dst_dir_fd=parent)
-            try:
-                os.replace(recovery_name, bundle_id, src_dir_fd=parent, dst_dir_fd=parent)
-            except BaseException:
-                os.replace(staged_name, bundle_id, src_dir_fd=parent, dst_dir_fd=parent)
-                raise
-            recovery_name = ""
-            _verify_named_directory(parent, bundle_id, recovery_descriptor)
-            try:
-                _remove_tree_at(parent, backup_name)
-            except FileNotFoundError:
-                pass
-        finally:
-            os.close(recovery_descriptor)
-            if recovery_name:
-                _cleanup_tree_at(parent, recovery_name)
+            if published:
+                displaced = f".{bundle_id}.displaced-{secrets.token_hex(12)}"
+                _rename_directory_noreplace(parent, bundle_id, displaced)
+                retained.add(displaced)
+            if backed_up:
+                _rename_directory_noreplace(parent, backup_name, bundle_id)
+                retained.discard(backup_name)
+        except OSError:
+            retained.add(bundle_id)
+            original.add_note(
+                "Bundle import recovery could not restore the active path; inspect retained paths."
+            )
         raise
     return []
 
@@ -1197,8 +1137,9 @@ def _result(
     applied: bool,
     changed: list[str],
     conflicts: list[str],
+    retained: set[str] | None = None,
 ) -> dict[str, Any]:
-    return {
+    result = {
         "applied": applied,
         "changed": sorted(changed),
         "conflicts": sorted(conflicts),
@@ -1211,6 +1152,9 @@ def _result(
         "templates": dict(sorted(candidate.manifest["templates"].items())),
         "files": dict(sorted(candidate.file_hashes.items())),
     }
+    if retained:
+        result["retained_paths"] = [f".ai-dlc/bundles/{name}" for name in sorted(retained)]
+    return result
 
 
 def import_bundle(
@@ -1256,7 +1200,7 @@ def import_bundle(
                 staged_name: str | None = None
                 staged_descriptor: int | None = None
                 existing_descriptor: int | None = None
-                cleanup_error: OSError | None = None
+                retained: set[str] = set()
                 try:
                     metadata_descriptor, metadata_created = _ensure_named_directory(
                         root_descriptor, ".ai-dlc"
@@ -1267,6 +1211,7 @@ def import_bundle(
                     staged_name, staged_descriptor = _stage_bundle_at(
                         bundles_descriptor, candidate.bundle_id, desired
                     )
+                    retained.add(staged_name)
                     _candidate_bytes(candidate)
                     _verify_project_path(absolute_root, root_parent_descriptor, root_descriptor)
                     _verify_named_directory(root_descriptor, ".ai-dlc", metadata_descriptor)
@@ -1286,6 +1231,7 @@ def import_bundle(
                                     "existing bundle destination is not an owned directory"
                                 )
                             ],
+                            retained=retained,
                         )
                     if existing_descriptor is not None:
                         conflicts = _owned_bundle_conflicts(
@@ -1293,11 +1239,17 @@ def import_bundle(
                         )
                         if conflicts:
                             return _result(
-                                candidate, applied=False, changed=[], conflicts=conflicts
+                                candidate,
+                                applied=False,
+                                changed=[],
+                                conflicts=conflicts,
+                                retained=retained,
                             )
                     changed = _changed_paths_at(existing_descriptor, candidate.bundle_id, desired)
                     if not changed:
-                        return _result(candidate, applied=True, changed=[], conflicts=[])
+                        return _result(
+                            candidate, applied=True, changed=[], conflicts=[], retained=retained
+                        )
 
                     def verify_project() -> None:
                         _verify_project_path(absolute_root, root_parent_descriptor, root_descriptor)
@@ -1311,19 +1263,26 @@ def import_bundle(
                         staged_descriptor,
                         existing_descriptor,
                         verify_project,
+                        desired,
+                        retained,
                     )
                     if conflicts:
-                        return _result(candidate, applied=False, changed=[], conflicts=conflicts)
-                    staged_name = None
-                    verify_project()
+                        return _result(
+                            candidate,
+                            applied=False,
+                            changed=[],
+                            conflicts=conflicts,
+                            retained=retained,
+                        )
+                except BaseException as error:
+                    for name in sorted(retained):
+                        error.add_note(
+                            f"Bundle import retained .ai-dlc/bundles/{name}; inspect before removal."
+                        )
+                    raise
                 finally:
                     if existing_descriptor is not None:
                         os.close(existing_descriptor)
-                    if staged_name is not None and bundles_descriptor is not None:
-                        try:
-                            _cleanup_tree_at(bundles_descriptor, staged_name)
-                        except OSError as error:
-                            cleanup_error = error
                     if staged_descriptor is not None:
                         os.close(staged_descriptor)
                     if bundles_descriptor is not None:
@@ -1340,9 +1299,13 @@ def import_bundle(
                             os.rmdir(".ai-dlc", dir_fd=root_descriptor)
                         except OSError:
                             pass
-                    if cleanup_error is not None:
-                        raise cleanup_error
             _verify_project_path(absolute_root, root_parent_descriptor, root_descriptor)
-            return _result(candidate, applied=True, changed=changed, conflicts=[])
-    except OSError:
-        raise ValueError(_FILESYSTEM_ERROR) from None
+            return _result(
+                candidate, applied=True, changed=changed, conflicts=[], retained=retained
+            )
+    except OSError as original:
+        error = ValueError(_FILESYSTEM_ERROR)
+        for note in getattr(original, "__notes__", ()):
+            if note.startswith("Bundle import "):
+                error.add_note(note)
+        raise error from None

@@ -245,6 +245,9 @@ def agents_bundle_import(
             )
     except (OSError, RuntimeError, TypeError, ValueError) as exc:
         typer.echo(f"Error: {exc}", err=True)
+        for note in getattr(exc, "__notes__", ()):
+            if note.startswith("Bundle import "):
+                typer.echo(note, err=True)
         raise typer.Exit(2) from None
     emit(result)
 

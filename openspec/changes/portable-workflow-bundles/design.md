@@ -65,8 +65,9 @@ vendors only `bundle.json`, the declared payload, and deterministic
 `bundle.lock.json` under `.ai-dlc/bundles/ID`. The lock has exact fields
 `schema=1`, `id`, `source`, `ref`, `resolved_commit`, `manifest_sha256`, and the
 complete sorted `files` digest map. A staged tree and project write lock make the
-replacement transactional; any failure restores the previous bundle byte for
-byte and changes no active rendered file. An existing bundle may update only
+replacement transactional; an operational failure restores the previous bundle
+byte for byte where no concurrent occupant prevents restoration, and changes no
+active rendered file. An existing bundle may update only
 when its lock, manifest, and every previously owned byte still validate. An
 authored directory, extra file, invalid lock, or local edit is a conflict.
 
@@ -155,13 +156,15 @@ candidate and does not activate files. The context-managed `BundleCandidate`
 contains `source`, `ref`, `bundle_id`, `resolved_commit`, `root`, `manifest`,
 `manifest_sha256`, and `file_hashes`; context exit removes its temporary tree.
 `import_bundle(root: Path, candidate, *, apply: bool = False,
-expected_commit: str | None = None) -> dict` returns exactly `applied: bool`,
+expected_commit: str | None = None) -> dict` returns `applied: bool`,
 `changed: list[str]`, `conflicts: list[str]`, `source: str`, `ref: str`,
 `bundle_id: str`, `resolved_commit: str`, `manifest_sha256: str`, `skills:
-dict[str, str]`, `templates: dict[str, str]`, and `files: dict[str, str]`.
+dict[str, str]`, `templates: dict[str, str]`, and `files: dict[str, str]`, plus
+`retained_paths: list[str]` only when this invocation retained transaction paths.
 Lists and maps are deterministically sorted. Invalid or unsafe input, stale
-commit, or candidate tampering raises a credential-redacted `ValueError` and
-writes nothing. Existing-destination or ownership conflicts return the same
+commit, or candidate tampering detected before staging raises a credential-redacted
+`ValueError` and writes nothing. Refusal or error after staging preserves and
+reports unused/partial stages. Existing-destination or ownership conflicts return the same
 result with `applied=false`, `changed=[]`, and non-empty `conflicts`, even when
 apply was requested. Each conflict is a credential-redacted, deterministic
 `PROJECT_RELATIVE_PATH: reason` string sorted by path and reason. On a successful
@@ -170,6 +173,28 @@ desired bytes differ, including `bundle.json`, every changed payload, and
 `bundle.lock.json`; apply success returns that same planned list. A successful
 idempotent apply returns `applied=true` and `changed=[]`. No active profile lock
 is mutated.
+
+Importer publication compares the exact desired manifest, lock, payload bytes,
+complete tree entries and directory identity before moving a stage and again
+after installing it. It detects in-place changes as well as replacement; checking
+directory identity alone is insufficient. The source candidate is revalidated
+separately and cannot authenticate subsequent stage edits.
+
+Import backups use unique `.ID.backup-SUFFIX` names. Neither successful backups
+nor failed/unused stages are recursively removed. Recovery uses no-clobber moves
+to retain an installed occupant at a new `.ID.displaced-SUFFIX` path before
+restoring the old bundle. If another destination prevents recovery, preserve it
+and report the incomplete restoration with the relevant paths. This preserves
+authored changes even when exact prior-path restoration is no longer safe.
+
+Normal results report sorted project-relative retained paths; errors carry
+retained-path notes through credential-redacted filesystem failures. A moved
+project root must not mask those notes with another exception. Retained residue
+is never trusted, adopted, or automatically cleaned by later imports. Keep the
+reported result/error, stop concurrent writers, and inspect the exact files and
+directories before deliberate manual removal. Do not bulk-delete by pattern.
+This is non-deleting retention, not atomic cleanup or protection against changes
+made by another writer after final validation.
 
 ### Dependency contract
 
