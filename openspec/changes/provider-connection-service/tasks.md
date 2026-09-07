@@ -5,6 +5,6 @@
 - [x] 1.4 Run required checks, strict specification validation and record evidence.
 
 ## 2. Review boundary
-- [ ] 2.1 Obtain independent review and resolve findings before integration.
+- [x] 2.1 Obtain independent review and resolve findings before integration.
 
 Archive, PR, merge, merged-revision CI and work finish remain coordinator-owned delivery steps; this child does not close issue19.
