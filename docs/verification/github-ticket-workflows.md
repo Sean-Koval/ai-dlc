@@ -88,8 +88,8 @@ format, lint, types and test. The full suite passed **1,106 tests** in 280.39
 seconds. The local receipt at `.ai-dlc/local/github-ticket-required-1.json`
 records the exact revision and `dirty=false`; this is local candidate evidence,
 not merged-revision CI. `openspec validate --all --strict` passed all 14 items.
-Whole-branch review is pending; later documentation-only evidence updates do
-not change which code revision these results qualify.
+These pre-fix results are retained as historical evidence. Later documentation-only
+evidence updates do not change which code revision these results qualify.
 
 ## Final review fixes
 
@@ -100,9 +100,55 @@ legacy behavior when the identities are absent. Seventeen new real-adapter
 transport-fixture cases include wrong identity at preview, drift at apply, and
 already-closed GitHub finish. TDD reproduced 13 missing-guard failures first.
 The final affected suite passed 304 tests without skips; format/lint/types and
-generated checks passed. Final required checks and scoped re-review are pending.
+generated checks passed. Scoped re-review accepted both P2 fixes and the P3
+documentation response, with no new actionable findings.
 
 The review's minor historical receipt observation is now explicit in the
 migration runbook: subsequent-migration guards protect unresolved outcomes, not
 the integrity of every completed historical prepared receipt. Clone-safe
 historical integrity hardening remains deferred.
+
+## Final local qualification
+
+The corrected code and finalized behavior specification were verified on clean
+commit `0f43575a92f0bbad96908749a1f8019bf5a8e650`. All five required outcomes
+passed: generated, format, lint, types and test. The full suite passed **1,123
+tests** in 264.29 seconds, with no skips. Receipt
+`.ai-dlc/local/github-ticket-required-2.json` records that exact revision and
+`dirty=false`. All 14 OpenSpec items passed strict validation again.
+
+Whole-branch review covered `9b6ca29..685a0f8`; scoped re-review covered
+`685a0f8..0f43575`, including the identity fixes and clarified requirement.
+No Critical/Important findings remain. Historical completed-receipt integrity
+hardening is explicitly deferred, with its current boundary documented. The final
+commit after these checks only records qualification, task status and handoff;
+it does not add runtime changes or establish merged-revision CI.
+
+## Delivery and activation boundary
+
+Implemented: capability-based work start, GitHub Issues with optional Projects v2,
+named guided setup, and provider-neutral default-only/selected migration to
+verified existing target tickets. Existing all-work rebind remains available.
+
+Still needed before live adoption:
+
+- Select the destination repository and Project, and sign in locally with suitable
+  Projects access; the inspected CLI credential lacked `read:project`.
+- Obtain the correct Linear source access or an export of active/planned work.
+  The current connector could not retrieve a known retained issue and returned an
+  empty team-scoped list; that is not evidence of an empty backlog.
+- Review exact target mappings and any ticket-creation intent. The new migration
+  command maps existing targets; automatic remote creation/import remains a
+  separate parent task. Local records alone omit remote-only backlog/history.
+- Qualify the chosen GitHub repository/Project through designated disposable live
+  operations, including partial-write recovery. Fixtures and health reads do not
+  prove this behavior against the live service.
+
+Plane and Jira adapters and broader parent onboarding remain subsequent work.
+Plane installation is unnecessary for GitHub. Confluence integration is deferred
+until the existing custom server can be reviewed; Obsidian stays local. The
+separate SAN-12 cleanup branch/blocker is not resolved or integrated by this work.
+
+No real tracker selection, retained-work mapping, issue state, or authentication
+was changed. No archive, PR, merge, package publication, or work finish was
+attempted. The child remains active for its live and integration gates.

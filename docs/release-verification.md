@@ -69,3 +69,17 @@ provider onboarding or discovery, Obsidian create/attach, behavioral skill quali
 live client sessions, published package assets, or release readiness. The
 complete-branch independent review is complete; PR checks, merge, and merged-revision
 verification remain separate integration gates.
+
+## GitHub ticket workflows candidate — 2026-09-07
+
+The GitHub-first child implements capability-based work start, optional GitHub
+Projects planning, named setup, and selected/default tracker migration with bounded
+local recovery. Clean candidate `0f43575` passed all required checks with 1,123
+tests and all 14 strict OpenSpec items. Independent review and scoped re-review
+accepted the implementation after configured GitHub-account and Linear-team read
+verification fixes. See the [detailed qualification record](verification/github-ticket-workflows.md).
+
+Live Projects access, disposable mutation qualification, complete Linear inventory,
+reviewed target creation/mapping, and PR/merged-revision CI/work-finish remain
+unverified. This is local source evidence, not a published release or live backlog
+migration. Plane/Jira and the separate SAN-12 cleanup work are not included.

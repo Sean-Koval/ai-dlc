@@ -1,8 +1,15 @@
 # Provider toolset planning handoff
 
 Execution update: user authorized implementation and selected GitHub Issues plus
-Projects. Work continues on `codex/github-ticket-workflows` from planning commit
-`0775b90`, under `.ai-dlc/work/github-ticket-workflows.toml` and the corresponding
+Projects. The local implementation/review cycle on `codex/github-ticket-workflows`
+is complete: capabilities, optional Project statuses, named setup and verified
+selected/default migration. All five required checks passed with 1,123 tests;
+all 14 strict OpenSpec items passed. Independent review fixes for GitHub account
+and Linear team identity were accepted. See the
+[qualification and activation requirements](../verification/github-ticket-workflows.md)
+and [setup guide](../github-ticket-setup.md). Live activation, source backlog
+inventory and exact target/creation review remain pending. The branch starts
+from planning commit `0775b90`, under `.ai-dlc/work/github-ticket-workflows.toml` and the corresponding
 child OpenSpec change. GitHub Projects is now in scope; prior exclusion and
 undecided-destination notes are superseded. Plane is optional, Confluence deferred.
 
@@ -24,8 +31,8 @@ and Projects for personal coding projects; retain Linear as the source for
 active/planned migration. Jira Cloud remains the work target. Defer Confluence
 and publication; the custom server is on the work laptop and will be shared later.
 Do not request that server as a prerequisite or deploy Plane to settle the choice.
-Existing GitHub Issues support needs common onboarding and explicit shared
-qualification. GitHub Projects is included in the authorized `github-ticket-workflows` child.
+Guided GitHub setup is implemented; live shared qualification remains pending.
+GitHub Projects is included in the authorized `github-ticket-workflows` child.
 
 ## Review entry points
 
