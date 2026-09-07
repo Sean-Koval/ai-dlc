@@ -43,9 +43,10 @@ issues.
 
 A read-only connector lookup for the configured retained SAN-12 issue returned
 "Could not find referenced Issue." The connected workspace therefore did not
-provide source-status evidence for that reference. No broader workspace inventory
-or remote mutation was attempted from that result. Linear source completeness
-remains unverified.
+provide source-status evidence for that reference. A subsequent list scoped to the configured Linear team returned no issues.
+Because that connection could not retrieve the known retained issue either,
+these results do not establish that the source backlog is empty. No remote
+mutation was attempted. Linear source completeness remains unverified.
 
 Task 3 is implemented in `3991faa` with review fix `2d9b7df`; independent
 review accepted spec compliance and quality after the fix. Fresh onboarding,
@@ -67,3 +68,12 @@ for dispatch, planning, binding protection and every apply check. Nine real
 enrollment regressions were added; the final related suite passed 141 tests and
 format/lint/types/generated checks passed. Scoped re-review marked the finding
 addressed with no new actionable issues.
+
+Task 4 is implemented in `437a7d7`; independent review is pending. The focused
+migration/rebind/configuration/workflow/CLI suite passed 191 tests, including
+52 migration cases. Changed-code format/lint/types and generated checks passed.
+Recovery fixtures include partial writes, late pathname replacement during
+rollback, enrollment drift, malformed evidence and completed history copied to
+another checkout. The local transaction uses inode-bound in-place writes with
+durable before/after evidence; this is bounded recovery, not crash-atomic
+multi-file replacement. Readers may observe intermediate content.

@@ -37,6 +37,21 @@ state IDs. GitHub Issues without Projects reports unsupported in_progress while
 work start creates/reuses its branch and reads the issue. With a configured Project,
 its explicitly mapped in-progress option represents planning while the issue stays open.
 
+Capability discovery is opt-in. Executable/Python definitions declare
+`operations = ["capabilities"]`; registered providers use
+`Registry.register(id, provider, operations=["capabilities"])`. Built-in declarations
+are owned by the registry. The operation accepts an empty payload and requires
+this strict response shape (booleans are not coerced from strings or numbers):
+
+```json
+{"schema":1,"lifecycle":{"in_progress":false,"closed":true},"optional_operations":[]}
+```
+
+Only absence of a declaration selects the legacy unverified transition path.
+Declared transport or response errors never trigger fallback. Adding configuration
+metadata to a retained external binding is subject to the existing fingerprint
+and explicit-rebind rules.
+
 Optional `prepare` and `reconcile_closed` accept `{reference, operation_id}` and
 return an Item. Providers declare them in capability `optional_operations`;
 service dispatch is provider independent. Publish journals prepare after saving the

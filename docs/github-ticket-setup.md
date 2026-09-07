@@ -67,6 +67,8 @@ selected existing work to verified target tickets. Preserve the old Linear alias
 and source references. Local records do not necessarily contain the complete
 remote active/planned backlog; reconcile source inventory before migration.
 Remote target creation is a separate reviewed action, never an implicit rebind.
+Use the [tracker migration commands and recovery guidance](migration.md#tracker-default-and-selected-work-migration)
+for the exact preview/apply steps.
 
 `ai-dlc project readiness --root .` inspects offline requirements. Explicit doctor
 inspection contacts configured providers; successful health reads do not prove

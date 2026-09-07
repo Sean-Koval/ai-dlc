@@ -52,3 +52,12 @@ Linear backlog import from local records alone.
 
 Plane/Jira adapter delivery remains in the parent plan; this child must not mark
 that entire plan complete. No Plane install or Confluence access blocks GitHub.
+
+Connection freshness includes effective base/personal/project/machine runtime
+identity, with the authored project bytes separately bound for preservation.
+Migration shares work binding resolution so inherited defaults and partial
+explicit provider maps have identical meanings in migration and normal work.
+For multiple local writes, retain durable before/after recovery material and use
+project locking plus inode-bound writes/rollback. This is bounded recovery, not
+crash-atomic multi-file replacement; unresolved ownership or bytes must be
+reported for recovery before a subsequent migration.

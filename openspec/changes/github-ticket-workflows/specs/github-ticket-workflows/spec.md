@@ -40,12 +40,20 @@ Scaffold/adopt SHALL accept an explicit tracker selection while preserving omitt
 - **WHEN** they provide or choose the authorized repository and Project and review discovered status mappings
 - **THEN** AI-DLC prepares that configuration without manual ID lookup, source edits or installation of Plane
 
+#### Scenario: Enrollment changes after connection preview
+- **WHEN** the effective personal or machine provider/account configuration changes after preview
+- **THEN** connection apply refuses the stale plan and inherited work bindings remain protected
+
 ### Requirement: GT-05 Portable selected migration
 Default-only switches SHALL preserve retained effective work bindings. Selected migration SHALL verify selected targets, preserve unselected work and non-tracker references, and record source-to-target provenance. Remote issue creation SHALL require a separately reviewed exact plan and SHALL NOT be an implicit rebind side effect.
 
 #### Scenario: A project changes tracker
 - **WHEN** its default or selected work moves to another configured supported tracker
 - **THEN** the same provider-independent migration rules apply and SCM/PR/CI configuration and completion gates remain unchanged
+
+#### Scenario: A local batch apply is interrupted
+- **WHEN** selected work writes fail or an external replacement prevents safe rollback
+- **THEN** migration retains before/after recovery evidence, preserves external replacements and reports recovery-required rather than claiming success
 
 ### Requirement: GT-06 Evidence boundaries
 Qualification SHALL distinguish fixture tests, offline setup, live reads and live mutations, and report missing access or unsupported providers without claiming full portability.

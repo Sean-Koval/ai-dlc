@@ -50,5 +50,25 @@ The repository stores architecture, design rationale, decisions, runbooks and re
 Prefer one application with explicit module responsibilities over speculative service decomposition. CLI, MCP, and agent clients share validation where an MCP service is exposed; the CLI alone owns machine enrollment mutation. The local CLI and local MCP are today's primary control plane; hosted or cloud execution is a later qualification target. External provider failures and uncertain mutations remain visible. Credentials are environment references, never template values.
 
 Knowledge ownership stays provider-neutral: private knowledge links durable
-repository material but does not mirror it. Obsidian create/attach and provider
-discovery are next-cycle capabilities, not implemented behavior.
+repository material but does not mirror it. Obsidian create/attach remains
+unimplemented. Guided tracker discovery supports Linear and GitHub Issues with
+optional Projects; live qualification is recorded separately.
+
+## Tracker capabilities and connection
+
+Work start consumes declared lifecycle capabilities through the provider registry.
+A tracker without an in-progress representation leaves its native ticket unchanged
+while local branch/work setup advances. A legacy adapter without a capability
+declaration retains its unverified fallback; a declared operation that fails is
+a visible error. GitHub Project status and native issue completion are separate
+facts. Finish gates remain authoritative.
+
+Connection handlers discover service-specific names and identities behind the
+common setup entry point. Saved plans bind effective runtime settings and
+authored project/work snapshots, with secrets represented only by local
+authentication references. Configuration changes and retained-work migration
+are separate actions. Native MCP access supplies broader service context; it
+does not substitute for these lifecycle contracts. See the
+[provider contract](../contracts/README.md),
+[GitHub setup guide](github-ticket-setup.md), and
+[later adapter boundaries](planning/tracker-adapter-follow-through.md).
