@@ -155,3 +155,9 @@ Two new filesystem integration cases failed before fixing the old bundle-only
 client directory mapping; both exercise native-only/shared exports, readiness,
 repeat render and native-only removal. Full combined checks and integration
 review are recorded separately; this is not merged-revision evidence.
+
+Clean integration `275e0b3` passed all five required checks, including 1,408 tests
+in 280.22 seconds. The ignored receipt is `bundle-native-connections-required.json`.
+Strict native and bundle specifications passed. The coordinator also migrated
+only the local bundle work binding to existing GitHub #10 through saved-plan
+application; no Linear call or ticket creation occurred.

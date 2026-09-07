@@ -25,7 +25,10 @@ Independent re-review found no P1/P2 defects and requested a P3 legacy-upgrade
 regression. Two real filesystem cases now seed the exact prior whole-file rule:
 intact owned content upgrades cleanly, while authored edits refuse without writes.
 All 15 native tests pass. The coverage repair `b18f30a` was independently
-accepted with no actionable findings. Final combined required checks remain pending.
+accepted with no actionable findings. The combined bundle/native/connection integration `275e0b3` passed all five
+required checks on a clean tree, including 1,408 tests in 280.22 seconds. The
+ignored receipt is `bundle-native-connections-required.json`. This is local
+integration evidence; merged CI and actual client qualification remain separate.
 
 Official client schemas were inspected on September 7 and linked in the design
 and runbook. Emitted configuration and real filesystem tests establish offline
@@ -37,7 +40,7 @@ explicitly unsupported until its selected version contract is qualified.
 ## Delivery checklist
 
 - [x] Independent re-review accepts the corrected implementation.
-- [ ] Final combined required checks and strict specifications pass.
+- [x] Final combined required checks and strict specifications pass.
 - [ ] Archive the completed behavior and review archive references.
 - [ ] Integrate through a reviewed PR and exact merged-revision evidence.
 

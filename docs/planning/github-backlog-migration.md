@@ -1,5 +1,14 @@
 # AI-DLC GitHub backlog adoption
 
+Current delivery update (September 7): PR #23 is merged at `631d10a`; all five
+merged-revision receipts passed and gated work finish completed #18. The remaining
+activation/lifecycle narrative below is historical evidence from its stated probe.
+The coordinator subsequently mapped the reviewed bundle work record to existing
+GitHub #10 with saved-plan migration `7c543f902a9d4e5b998cbfb14ee8d8c5`; its
+receipt and result are tracked under `.ai-dlc/migrations/`. This changed only the
+selected local binding, verified GitHub read-back and made no Linear calls or
+remote ticket mutations. #10 remains open pending its own delivery gates.
+
 Latest steering: ignore Linear reconciliation for now. The existing GitHub issues
 are the work queue. Project-backed GitHub onboarding is the requested default;
 see [canonical GitHub Project defaults](../../openspec/specs/github-project-defaults/spec.md).

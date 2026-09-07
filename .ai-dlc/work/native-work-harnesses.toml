@@ -5,7 +5,7 @@ scope = "Implement the explicitly requested native project harness setup as a bo
 requires_spec = true
 spec_reason = "Adds observable native client rendering and readiness behavior."
 acceptance = [
-    "NH-01 through NH-03; preserve authored configuration and completion gates.",
+    "NH-01 through NH-04; preserve authored configuration and completion gates.",
 ]
 reviewed = true
 

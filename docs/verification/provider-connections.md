@@ -63,3 +63,7 @@ multi-file transactions or a hostile-code sandbox.
   are separate work. Confluence remains deferred.
 - PR, archive, merge, merged-revision CI and work finish are coordinator-owned
   and were not performed by this child. No remote service state was mutated.
+
+Clean coordinator integration `275e0b3` passed all five required checks, including
+1,408 tests in 280.22 seconds. This later combined run includes native harnesses,
+workflow bundles and product shaping; it is local evidence, not merged CI.

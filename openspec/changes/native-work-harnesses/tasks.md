@@ -4,7 +4,8 @@
 - [x] 1.2 Add red Antigravity rendering/ownership/shared-skill tests; implement project client support.
 - [x] 1.3 Add readiness and unsupported-hook/environment mapping tests, then implement explicit guidance versus live-client evidence.
 - [x] 1.4 Write clone-engine/adopt-work-repository setup and actual-client qualification instructions.
-- [ ] 1.5 Run required checks, strict validation and independent review; record live gaps explicitly.
+- [x] 1.4a Integrate vendored skills with the shared native client directory registry and real-filesystem regressions for native-only/shared export, readiness and removal.
+- [x] 1.5 Run required checks, strict validation and independent review; record live gaps explicitly.
 
 ## 2. Delivery boundary
 
