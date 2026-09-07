@@ -21,7 +21,10 @@ provider link, verifies complete native rendering during offline readiness, and
 uses a managed rule section so client/user metadata outside it survives updates.
 The runbook links the actual saved-plan connection workflow. The corrected scope
 passes 79 affected tests plus lint/format/types and strict native OpenSpec checks.
-Independent re-review and final combined required checks remain pending.
+Independent re-review found no P1/P2 defects and requested a P3 legacy-upgrade
+regression. Two real filesystem cases now seed the exact prior whole-file rule:
+intact owned content upgrades cleanly, while authored edits refuse without writes.
+All 15 native tests pass. Final combined required checks remain pending.
 
 Official client schemas were inspected on September 7 and linked in the design
 and runbook. Emitted configuration and real filesystem tests establish offline

@@ -228,3 +228,36 @@ def test_native_rule_preserves_client_authored_metadata_outside_owned_guidance(t
     render_agents(tmp_path, apply=True)
     assert rule.read_text().startswith(metadata)
     assert render_agents(tmp_path)["clean"]
+
+
+@pytest.mark.parametrize("edited", [False, True])
+def test_native_legacy_whole_file_upgrade_preserves_ownership_boundary(tmp_path, edited):
+    """Only the intact old owned format may upgrade to independently editable metadata."""
+    import hashlib
+    from pathlib import Path
+
+    _native_project(tmp_path)
+    render_agents(tmp_path, apply=True)
+    rule = tmp_path / ".agents/rules/ai-dlc.md"
+    legacy = (Path(__file__).parent / "fixtures/native/legacy-antigravity-rule.md").read_bytes()
+    rule.write_bytes(legacy)
+    manifest = tmp_path / ".ai-dlc/agent-ownership.json"
+    ownership = json.loads(manifest.read_text())
+    ownership["files"][".agents/rules/ai-dlc.md"] = hashlib.sha256(legacy).hexdigest()
+    manifest.write_text(json.dumps(ownership))
+    if edited:
+        rule.write_bytes(legacy + b"\nAuthored local changes.\n")
+        before = _snapshot(tmp_path)
+        with pytest.raises(ValueError, match="conflict"):
+            render_agents(tmp_path, apply=True)
+        assert before == _snapshot(tmp_path)
+    else:
+        render_agents(tmp_path, apply=True)
+        assert rule.read_text().count("<!-- ai-dlc:begin ") == 1
+        assert "Read ai-dlc.toml" in rule.read_text()
+        current = json.loads(manifest.read_text())
+        assert (
+            current["files"][".agents/rules/ai-dlc.md"]
+            == hashlib.sha256(rule.read_bytes()).hexdigest()
+        )
+        assert render_agents(tmp_path)["clean"]
