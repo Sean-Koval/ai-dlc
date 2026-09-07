@@ -984,16 +984,30 @@ def init_git(tmp_path):
 
 
 def test_start_creates_branch_for_github_without_intermediate_state(tmp_path):
+    from ai_dlc.providers import Registry as ProviderRegistry
     from ai_dlc.workflow import WorkService
 
     work(tmp_path)
     git = init_git(tmp_path)
-    tracker = Tracker()
+
+    class GitHubTracker(Tracker):
+        def invoke(self, op, data):
+            if op == "capabilities":
+                return {
+                    "schema": 1,
+                    "lifecycle": {"in_progress": False, "closed": True},
+                    "optional_operations": ["link"],
+                }
+            return super().invoke(op, data)
+
+    tracker = GitHubTracker()
+    registry = ProviderRegistry()
+    registry.register("fake", tracker, operations=["capabilities"])
     service = WorkService(
         tmp_path,
         {"providers": {"fake": {"kind": "github-issues"}}},
         state_path=tmp_path / "state",
-        registry=Registry(tracker),
+        registry=registry,
     )
     result = service.start("one")
     assert result["branch"] == "work/one"
@@ -1001,6 +1015,78 @@ def test_start_creates_branch_for_github_without_intermediate_state(tmp_path):
     assert result["tracker_transition"]["supported"] is False
     assert service.load("one")["artifacts"]["branch"] == "work/one"
     assert service.start("one")["branch"] == "work/one"
+
+
+def test_start_uses_declared_capability_without_provider_name_dispatch(tmp_path):
+    from ai_dlc.providers import Registry
+    from ai_dlc.workflow import WorkService
+
+    work(tmp_path)
+    init_git(tmp_path)
+
+    class CapableTracker(Tracker):
+        def invoke(self, op, data):
+            if op == "capabilities":
+                return {
+                    "schema": 1,
+                    "lifecycle": {"in_progress": False, "closed": True},
+                    "optional_operations": [],
+                }
+            return super().invoke(op, data)
+
+    tracker = CapableTracker()
+    registry = Registry()
+    registry.register("fake", tracker, operations=["capabilities"])
+    service = WorkService(tmp_path, {}, state_path=tmp_path / "state", registry=registry)
+
+    result = service.start("one")
+
+    assert result["tracker_transition"]["supported"] is False
+    assert result["tracker"]["state"] == "open"
+    assert tracker.closed == 0
+
+
+def test_start_refuses_failed_declared_capability_without_legacy_fallback(tmp_path):
+    from ai_dlc.providers import Registry
+    from ai_dlc.workflow import WorkService
+
+    work(tmp_path)
+    init_git(tmp_path)
+
+    class BrokenCapabilityTracker(Tracker):
+        def invoke(self, op, data):
+            if op == "capabilities":
+                raise RuntimeError("capability transport failed")
+            return super().invoke(op, data)
+
+    tracker = BrokenCapabilityTracker()
+    registry = Registry()
+    registry.register("fake", tracker, operations=["capabilities"])
+    service = WorkService(tmp_path, {}, state_path=tmp_path / "state", registry=registry)
+
+    with pytest.raises(RuntimeError, match="capability transport failed"):
+        service.start("one")
+    assert tracker.closed == 0
+
+
+def test_start_marks_absent_capability_declaration_as_unverified(tmp_path):
+    from ai_dlc.providers import Registry
+    from ai_dlc.workflow import WorkService
+
+    work(tmp_path)
+    init_git(tmp_path)
+    tracker = Tracker()
+    registry = Registry()
+    registry.register("fake", tracker)
+    service = WorkService(tmp_path, {}, state_path=tmp_path / "state", registry=registry)
+
+    result = service.start("one")
+
+    assert result["tracker_transition"] == {
+        "supported": True,
+        "state": "in_progress",
+        "verified": False,
+    }
 
 
 def test_start_preserves_dirty_work_and_linked_branch(tmp_path):

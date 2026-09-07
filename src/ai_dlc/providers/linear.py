@@ -28,7 +28,16 @@ class LinearProvider:
     def invoke(self, operation, payload):
         validate_request(operation, payload)
         fields = "id url description state { id name type }"
-        if operation == "find":
+        if operation == "capabilities":
+            result = {
+                "schema": 1,
+                "lifecycle": {
+                    "in_progress": bool(self.config.get("statuses", {}).get("in_progress")),
+                    "closed": bool(self.config.get("statuses", {}).get("closed")),
+                },
+                "optional_operations": ["link"],
+            }
+        elif operation == "find":
             data = self.query(
                 "query($filter: IssueFilter) { issues(filter:$filter, first:100) { nodes { "
                 + fields

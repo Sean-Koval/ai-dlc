@@ -193,9 +193,30 @@ class Registry:
         self.config = config or {}
         self.environ = os.environ if environ is None else environ
         self.cache = {}
+        self.registered_operations = {}
 
-    def register(self, id, provider):
+    def register(self, id, provider, *, operations=()):
+        declared = tuple(operations) if not isinstance(operations, (str, bytes)) else operations
+        if isinstance(declared, (str, bytes)) or not all(
+            isinstance(operation, str) for operation in declared
+        ):
+            raise TypeError("Registered provider operations must be a list of names")
         self.cache[id] = provider
+        self.registered_operations[id] = frozenset(declared)
+
+    def declares(self, id, operation):
+        if id in self.registered_operations:
+            return operation in self.registered_operations[id]
+        cfg = self.config.get("providers", {}).get(id, {})
+        kind = cfg.get("kind", cfg.get("type", id))
+        if kind in {"linear", "github-issues"}:
+            return operation == "capabilities"
+        operations = cfg.get("operations", [])
+        if not isinstance(operations, list) or not all(
+            isinstance(declared, str) for declared in operations
+        ):
+            raise TypeError("Provider operations declaration must be a list of names")
+        return operation in operations
 
     def get(self, id) -> Any:
         if id in self.cache:

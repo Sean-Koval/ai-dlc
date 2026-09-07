@@ -25,7 +25,13 @@ class GitHubIssuesProvider:
 
     def invoke(self, operation, payload):
         validate_request(operation, payload)
-        if operation == "find":
+        if operation == "capabilities":
+            result = {
+                "schema": 1,
+                "lifecycle": {"in_progress": False, "closed": True},
+                "optional_operations": ["link"],
+            }
+        elif operation == "find":
             rows = json.loads(
                 self.gh(
                     "issue",

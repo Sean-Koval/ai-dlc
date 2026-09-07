@@ -355,13 +355,16 @@ class WorkService:
         work = self.load(work_id)
         if not work["reviewed"]:
             raise ValueError("Work must be reviewed before mutation")
+        provider_id = work["providers"]["tracker"]
+        declared = getattr(self.registry, "declares", lambda _id, _operation: False)(
+            provider_id, "capabilities"
+        )
+        capabilities = self.registry.invoke(provider_id, "capabilities", {}) if declared else None
         branch = self.branch(work)
         if not work["artifacts"].get("tracker"):
             self.publish(work_id)
             work = self.load(work_id, True)
-        provider_id = work["providers"]["tracker"]
-        cfg = self.config.get("providers", {}).get(provider_id, {})
-        if cfg.get("kind", cfg.get("type", provider_id)) == "github-issues":
+        if capabilities is not None and not capabilities["lifecycle"]["in_progress"]:
             item = self.tracker(work).invoke("read", {"reference": work["artifacts"]["tracker"]})
             transition = {
                 "supported": False,
@@ -375,6 +378,8 @@ class WorkService:
                 {"reference": work["artifacts"]["tracker"], "state": "in_progress"},
             )
             transition = {"supported": True, "state": "in_progress"}
+            if capabilities is None:
+                transition["verified"] = False
         return {
             "status": "started",
             "tracker": item,

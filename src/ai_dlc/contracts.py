@@ -9,6 +9,7 @@ class Request(BaseModel):
     model_config = ConfigDict(extra="forbid")
     schema_version: Literal[1] = 1
     operation: Literal[
+        "capabilities",
         "create",
         "find",
         "read",
@@ -53,7 +54,31 @@ class Transition(Read):
     operation_id: str = Field(min_length=1)
 
 
-PAYLOADS = {"create": Create, "find": Find, "read": Read, "link": Link, "transition": Transition}
+class Capabilities(Payload):
+    pass
+
+
+class LifecycleCapabilities(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    in_progress: bool
+    closed: bool
+
+
+class CapabilityResult(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    schema_version: Literal[1] = Field(default=1, alias="schema")
+    lifecycle: LifecycleCapabilities
+    optional_operations: list[str]
+
+
+PAYLOADS = {
+    "capabilities": Capabilities,
+    "create": Create,
+    "find": Find,
+    "read": Read,
+    "link": Link,
+    "transition": Transition,
+}
 
 
 class Item(BaseModel):
@@ -114,6 +139,7 @@ PAYLOADS.update(
     {"current": Current, "merged": Read, "ci": Revision, "deployment": Revision, "append": Append}
 )
 RESPONSES = {
+    "capabilities": CapabilityResult,
     "create": Item,
     "find": Found,
     "read": Item,
@@ -138,7 +164,7 @@ def validate_request(operation, payload):
 
 
 def validate_response(operation, result):
-    return RESPONSES[operation].model_validate(result).model_dump()
+    return RESPONSES[operation].model_validate(result).model_dump(by_alias=True)
 
 
 def manifest():
@@ -148,7 +174,7 @@ def manifest():
         "roles": {
             "tracker": {
                 "mandatory": ["create", "find", "read", "transition"],
-                "optional": ["link"],
+                "optional": ["capabilities", "link"],
             },
             "specs": {"mandatory": ["current"], "optional": []},
             "scm": {"mandatory": ["merged", "ci"], "optional": []},

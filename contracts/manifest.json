@@ -34,6 +34,7 @@
         "properties": {
           "operation": {
             "enum": [
+              "capabilities",
               "create",
               "find",
               "read",
@@ -96,6 +97,114 @@
         "type": "object"
       }
     },
+    "capabilities": {
+      "payload": {
+        "additionalProperties": false,
+        "properties": {},
+        "title": "Capabilities",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "capabilities",
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "$defs": {
+          "LifecycleCapabilities": {
+            "additionalProperties": false,
+            "properties": {
+              "closed": {
+                "title": "Closed",
+                "type": "boolean"
+              },
+              "in_progress": {
+                "title": "In Progress",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "in_progress",
+              "closed"
+            ],
+            "title": "LifecycleCapabilities",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "lifecycle": {
+            "$ref": "#/$defs/LifecycleCapabilities"
+          },
+          "optional_operations": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Optional Operations",
+            "type": "array"
+          },
+          "schema": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "lifecycle",
+          "optional_operations"
+        ],
+        "title": "CapabilityResult",
+        "type": "object"
+      }
+    },
     "ci": {
       "payload": {
         "additionalProperties": false,
@@ -117,6 +226,7 @@
         "properties": {
           "operation": {
             "enum": [
+              "capabilities",
               "create",
               "find",
               "read",
@@ -234,6 +344,7 @@
         "properties": {
           "operation": {
             "enum": [
+              "capabilities",
               "create",
               "find",
               "read",
@@ -341,6 +452,7 @@
         "properties": {
           "operation": {
             "enum": [
+              "capabilities",
               "create",
               "find",
               "read",
@@ -440,6 +552,7 @@
         "properties": {
           "operation": {
             "enum": [
+              "capabilities",
               "create",
               "find",
               "read",
@@ -540,6 +653,7 @@
         "properties": {
           "operation": {
             "enum": [
+              "capabilities",
               "create",
               "find",
               "read",
@@ -665,6 +779,7 @@
         "properties": {
           "operation": {
             "enum": [
+              "capabilities",
               "create",
               "find",
               "read",
@@ -760,6 +875,7 @@
         "properties": {
           "operation": {
             "enum": [
+              "capabilities",
               "create",
               "find",
               "read",
@@ -848,6 +964,7 @@
         "properties": {
           "operation": {
             "enum": [
+              "capabilities",
               "create",
               "find",
               "read",
@@ -955,6 +1072,7 @@
         "properties": {
           "operation": {
             "enum": [
+              "capabilities",
               "create",
               "find",
               "read",
@@ -1064,6 +1182,7 @@
         "transition"
       ],
       "optional": [
+        "capabilities",
         "link"
       ]
     }
