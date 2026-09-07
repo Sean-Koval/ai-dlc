@@ -6,6 +6,13 @@
 workflow implementation and Project default (`19995aa`). Platform CI is pending.
 No merge, archive or work finish has occurred.
 
+Activation verification: clean candidate `29b67b3` passed all five required
+checks with 1,138 tests; strict OpenSpec validation passed all 15 items. Scoped
+independent review accepted the mappings, receipt integrity, fixture correction
+and evidence boundaries with no P1/P2 findings. Four Linux jobs passed;
+macOS Intel CI was still running at this checkpoint. The old Linear-dependent
+component test was corrected to use explicit Linear/GitHub fixtures.
+
 Authorization follow-through: CLI access is verified. AI-DLC reused Project #2,
 linked it into the repository, selected GitHub as the default tracker and applied
 eight reviewed local mappings to issues #11–#18. The live disposable workflow

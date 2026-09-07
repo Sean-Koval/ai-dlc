@@ -33,7 +33,18 @@ catalog and expected result. This was a fixture coupling exposed by the actual
 tracker swap, not a live adapter failure. The corrected test uses explicit
 schema-4 input and the packaged catalog, covers both Linear and GitHub, and
 asserts no unresolved client selections. All 55 component/CLI tests pass; no
-production Python behavior changed. A fresh complete required run follows.
+production Python behavior changed.
+
+The corrected activation candidate `29b67b397c32840839c6e603a0681cd9a20268eb`
+passed all five required checks on a clean tree (`dirty=false`), including
+**1,138 tests** in 172.23 seconds. Receipt:
+`.ai-dlc/local/github-activation-required-final.json`. Scoped independent review
+of `270e957..29b67b3` found no P1/P2 issues, verified receipt/file correspondence,
+and accepted the fixture correction and evidence boundaries. All 15 OpenSpec
+items passed strict validation. Four Linux platform jobs passed for this
+candidate in run `34161686184`; the macOS Intel job was still running at this
+checkpoint. Subsequent documentation-only commits record this evidence without
+claiming qualification for a different revision.
 
 ## September 7 Project-default follow-through
 
