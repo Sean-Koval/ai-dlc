@@ -10,11 +10,14 @@ access can be configured independently through the existing custom MCP server.
 ## Decisions
 
 Activate publication for the optional `roles.documents = "<provider-alias>"`
-selection introduced by provider-toolset-onboarding; keep
+selection introduced by this deferred document-integration change after the
+custom server is reviewed; keep
 `roles.knowledge = "obsidian"`. The new documents role has no default and does not
 enter WorkService finish, existing Work binding defaults, or the note append API.
 Publication has its own source/target binding records. Extend contract discovery
-deliberately; the preceding setup change owns scaffold/component role admission.
+deliberately; this change owns scaffold/component role admission and optional
+native document connections. Tracker onboarding #19 supplies reusable primitives
+only and is not blocked by this deferred role.
 
 Define typed operations `document_read` and `document_publish`. Read consumes an
 explicit target reference and returns provider/account/space/page identity,
@@ -63,8 +66,10 @@ vault; the viewer does not change their ownership. External vault files are not
 implicitly eligible. Viewing local Markdown does not enroll notes for publication.
 Private material may inform a separately reviewed shared draft, but publication
 does not traverse that draft's private source links or attach linked vault files.
-Confluence reads and requested local summaries use the selective guidance in
-provider-toolset-onboarding; this change adds no synchronization engine.
+Confluence reads and requested local summaries use this change's DP-07 selective
+guidance, transferred from former PT-05. Inventory the actual custom server before
+rendering that guidance or qualifying native tools. This change adds no
+synchronization engine.
 Readiness only
 checks this optional capability when selected/requested. Existing note CLI/MCP
 helpers continue to use the configured vault and are not rewritten for Confluence.
