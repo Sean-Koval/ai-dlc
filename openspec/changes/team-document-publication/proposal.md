@@ -1,5 +1,9 @@
 ## Why
 
+Deferred: maintainer requests ticket-management focus. The custom server will be
+shared later; this draft remains open for revision and is not an implementation
+dependency for GitHub Issues, Plane or Jira.
+
 Private notes and team publication are distinct responsibilities. The existing
 knowledge append contract cannot represent controlled updates to shared documents.
 Status: proposed; local drafting with selective publication is preferred. Review

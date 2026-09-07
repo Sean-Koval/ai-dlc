@@ -1,12 +1,13 @@
 ## Why
 
-Plane and Jira need the small AI-DLC tracker contract, not duplicate implementations
+GitHub Issues already implements the small tracker contract; extend common setup
+and qualification alongside new Plane and Jira adapters, not duplicate implementations
 of their general native tools. Existing workflow code contains a GitHub-specific
 capability branch. Status: proposed, pending target deployment and design review.
 
 ## What Changes
 
-- Implement Plane and Jira Cloud tracker adapters with normalized state and reconciliation.
+- Integrate and qualify the existing GitHub Issues adapter; implement Plane and Jira Cloud tracker adapters with normalized state and reconciliation.
 - Add optional typed capability discovery and remove provider-name branching from start.
 - Supply provider-specific discovery handlers, component metadata and instructions.
 - Preserve existing checks, bindings, journal behavior and terminal transition gate.

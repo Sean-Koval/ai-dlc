@@ -3,6 +3,10 @@
 Owner: AI-DLC maintainer.
 Status: draft updated with maintainer context, September 7, 2026. Planning requested;
 implementation, hosting, account changes, and ticket migration are not performed.
+Current priority: task/ticket management with GitHub Issues, Plane and Jira.
+Confluence/custom-MCP integration and optional publication are deferred; the server
+is on the work laptop and will be shared later. Its availability is not a tracker
+implementation prerequisite.
 
 ## Problem and audience
 
@@ -12,7 +16,7 @@ should select integrations and authenticate, not edit adapter code or look up
 opaque IDs to use a supported toolset. Adding a supported integration is an
 implementation task once; selecting it in another repository is configuration.
 
-The immediate user has reached Linear's free limit. Personal projects should use
+The immediate user has reached Linear's free limit. Personal projects are choosing between GitHub Issues and
 locally self-hosted Plane, which is not installed yet; work projects use Jira
 Cloud and Confluence Cloud. Obsidian holds the private journal, daily work log,
 scratch notes and accumulated knowledge used by personal assistant agents, as
@@ -41,7 +45,8 @@ adapters for its own deterministic lifecycle and publication contracts.
    account/provider aliases. Opening a work project does not redirect personal
    tickets or publish private notes. A second machine repeats authentication and
    chooses its local vault path without editing shared provider choices.
-3. Plane and Jira run the same publish/start/status/finish lifecycle and gates.
+3. GitHub Issues, Plane and Jira run the same publish/start/status/finish lifecycle
+   and gates, with explicit differences in supported remote states.
    Provider-specific state models, requests, and retries remain behind adapters.
 4. Switching defaults for new work and migrating selected retained work are
    separate reviewable actions. Neither silently redirects existing records.
@@ -53,8 +58,9 @@ adapters for its own deterministic lifecycle and publication contracts.
 
 ## Scope and exclusions
 
-Four independently reviewable changes: toolset setup/onboarding, tracker adapters,
-selective tracker migration, and optional document publication. Native MCP access
+Three active planning areas are toolset setup/onboarding, tracker adapters and
+selective tracker migration. The fourth draft, document publication, is deferred.
+Document-only setup tasks may also remain deferred; they do not gate ticket work. Native MCP access
 can be useful before the AI-DLC lifecycle adapter is available; that distinction
 must be explicit in guidance/readiness. A connector login never proves that the
 separate CLI/API credential works.
@@ -115,7 +121,7 @@ not a security boundary around independently connected tools.
 | --- | --- | --- |
 | Before local Plane deployment | Confirm local runtime availability and storage/backup location; local hosting is selected, not installed | Review upstream deployment, startup/recovery instructions and actual supported version |
 | Before live Plane connection | Workspace/project URL or friendly name | IDs, states, available projects, account identity |
-| Before migration apply | Review which active/planned Linear items to move to local Plane (direction confirmed September 7) | Candidate inventory, target mappings and conflicts; completed history remains outside initial scope |
+| Before migration apply | Review active/planned Linear items and select GitHub Issues or local Plane as destination; latest direction supersedes the earlier Plane-only selection | Candidate inventory, target mappings and conflicts; completed history remains outside initial scope |
 | Before work integration | Cloud site URLs, project/space names, whether approved AI/API access exists | IDs, create fields, transitions, permissions, live account match |
 | Before publication implementation | Custom MCP server repository path/URL or interface documentation; later one representative shared document and source page | Reuse assessment; local-draft preview and any remaining publication gap |
 | Before using private notes | Existing vault and intended daily-note convention, set locally | Attach/readiness instructions; no vault upload |

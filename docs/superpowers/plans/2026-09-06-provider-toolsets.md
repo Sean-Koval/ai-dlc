@@ -2,7 +2,9 @@
 
 > **For agentic workers:** Use superpowers:executing-plans for one reviewed child plan at a time. Delegate only when authorized. Checkboxes describe delivery, not planning approval.
 
-**Goal:** Make preferred-tool selection routine in AI-DLC and prove it with Plane, Jira, Confluence and retained Obsidian use.
+**Goal:** Make ticket-provider selection routine and prove it with GitHub Issues,
+Plane and Jira. Retain Obsidian; defer Confluence integration until its existing
+custom MCP server is available for review.
 
 **Architecture:** Reuse existing and upstream MCP tools for general service access and thin adapters for AI-DLC operations. Reuse current scaffolding, profiles, components, provider registry, owned harness rendering and evidence gates.
 
@@ -29,14 +31,18 @@ Approval of planning is not approval of account mutations, hosting, or live migr
 | Order | Deliverable | Plan | Dependency / release gate |
 | --- | --- | --- | --- |
 | 1 | Provider choices, reusable onboarding and native harness setup; prove with existing Linear behavior | [Toolset setup](2026-09-06-provider-toolset-onboarding.md) | Existing main foundations |
-| 2 | Plane native connection plus thin lifecycle adapter | [Tracker adapters, Tasks 1–2](2026-09-06-portable-tracker-adapters.md) | Setup interfaces; actual Plane deployment selected |
-| 3 | Rehearse default-only and selected-record migration; switch personal work only after reviewed mapping | [Migration](2026-09-06-selective-tracker-migration.md) | Plane adapter and disposable workflow evidence |
-| 4 | Jira adapter and work-project toolset; same lifecycle without another workflow branch | [Tracker adapters, Task 3](2026-09-06-portable-tracker-adapters.md) | Work deployment/authentication decision; can run alongside migration |
-| 5, only if selected | Optional deterministic Confluence publication with Obsidian retained | [Publication](2026-09-06-team-document-publication.md) | Explicit need beyond native page tools; authoring-direction decision; generic setup; Jira is not a runtime dependency |
+| 2 | Existing GitHub Issues onboarding and shared lifecycle qualification | [Tracker adapters, Tasks 1 and 1a](2026-09-06-portable-tracker-adapters.md) | Setup interfaces; no Plane deployment prerequisite |
+| 3 | Plane native connection plus thin lifecycle adapter | [Tracker adapters, Task 2](2026-09-06-portable-tracker-adapters.md) | Setup interfaces; local deployment for live qualification |
+| 4 | Rehearse default-only and selected migration for both destinations; switch personal work only after choosing a destination and reviewing mappings | [Migration](2026-09-06-selective-tracker-migration.md) | Qualified selected target; GitHub path does not wait for Plane |
+| 5 | Jira adapter and work-project toolset; same lifecycle without another workflow branch | [Tracker adapters, Task 3](2026-09-06-portable-tracker-adapters.md) | Work deployment/authentication decision; can run alongside migration |
+| Deferred | Optional deterministic Confluence publication with Obsidian retained | [Publication](2026-09-06-team-document-publication.md) | Review existing custom server when shared later; no dependency for ticket delivery |
 
 Do not wait for all four changes to configure useful native access. Report that
 access as such until the corresponding lifecycle adapter is delivered. Finish
 each child through its own reviewed specifications, PR/CI evidence and work finish.
+Split deferred document-specific setup requirements/tasks into a separate delivery
+change before tracker implementation review; do not mark an entire mixed-scope
+change complete with document requirements undelivered.
 Do not close planning or implementation work merely because this plan validates.
 
 The minimum Confluence integration is the existing custom MCP connection plus scoped
@@ -60,13 +66,16 @@ fixed click count across different organization authentication policies.
 ## Decisions needed from the maintainer
 
 Confirmed September 7: Plane is not installed and will be self-hosted on the local
-computer; work uses Jira Cloud and Confluence Cloud. Migrate active/planned Linear
-work to local Plane; completed history is outside the initial migration scope.
+computer; work uses Jira Cloud and Confluence Cloud. Migrate active/planned Linear work to the eventual selected personal tracker.
+The latest decision reopens the destination between GitHub Issues and local Plane;
+completed history is outside the initial migration scope.
 Local drafting with selected publication is preferred. Obsidian remains a private
 journal, scratch pad and personal knowledge base; Confluence remains the shared
 library. Use the [selective knowledge relationship](../../design/local-and-shared-knowledge.md)
 for guidance and qualification rather than site/vault synchronization.
 
+Confluence work is deferred. Its code is on the work laptop and will be shared
+later; that input is not needed for ticket planning or implementation.
 Existing Confluence tooling is a custom MCP server with document graphs, semantic
 descriptions and quality grading, used with Claude/Antigravity to write and push
 pages. Still needed: its repository path/URL or tool documentation, to assess reuse

@@ -9,6 +9,8 @@
 
 Status: draft. [Master constraints](2026-09-06-provider-toolsets.md) apply. The current
 read-only preview covers 13 baseline records; do not hard-code that count.
+The personal destination is undecided between GitHub Issues and local Plane;
+migrate active/planned Linear work only after target selection and mapping review.
 
 ## Task 1: Default-only selection preserves old work
 
@@ -51,11 +53,15 @@ add `tests/test_tracker_migration_recovery.py` and migration guidance in docs/.
 ## Task 3: Real migration rehearsal before production selection
 
 **Files:** add a versioned run report under `docs/verification/`, update user runbook.
-**Consumes:** accepted Plane adapter and explicit disposable work/project authorization.
+**Consumes:** a qualified selected target adapter and explicit disposable
+repository/project authorization. GitHub qualification does not depend on Plane.
 
+- [ ] Parameterize migration/recovery tests across Linear to GitHub Issues, Linear
+  to Plane, and GitHub Issues to Plane (and reverse); use the same service path.
+  Report unsupported target states without losing original state/provenance.
 - [ ] Rehearse default-only switching and a selected mapping with a simulated connection interruption, retaining source evidence.
 - [ ] Inspect old/new references, account boundaries, source/target state, rollback and resume outcomes.
 - [ ] Generate the real repository migration preview from current records and present the concrete mappings and omissions to the maintainer.
 - [ ] Apply real migration only after that reviewed mapping is selected. Record evidence and complete the child through the configured lifecycle; a rebind is never a work finish.
 
-Coverage: Task 1 TM-01/TM-05; Task 2 TM-02/TM-03/TM-04/TM-05; Task 3 observed qualification.
+Coverage: Task 1 TM-01/TM-05; Task 2 TM-02/TM-03/TM-04/TM-05; Task 3 TM-06 and observed qualification.

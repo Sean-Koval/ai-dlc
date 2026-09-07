@@ -1,5 +1,9 @@
 # Team Document Publication Implementation Plan
 
+Deferred by September 7 maintainer direction. The custom server is on the work
+laptop and will be shared later. Keep this draft for future interface review;
+none of its tasks or access requirements block ticket-management delivery.
+
 > **For agentic workers:** Use superpowers:executing-plans only after existing-tool reuse and the remaining publication gap are reviewed.
 
 **Goal:** Publish reviewed repository documents to Confluence while retaining private Obsidian notes.

@@ -45,6 +45,18 @@ and prevent credential-bearing redirects to another origin.
 
 ## Scope boundary
 
+Use existing `GitHubIssuesProvider` and gh invocation rather than a second GitHub
+adapter. Common onboarding discovers the authorized repository/account. Its
+current implementation normalizes only open/closed and work start reports no
+remote in-progress transition; board/status automation is a separate optional
+future capability, not a prerequisite. Inspect native close-reason metadata to
+meet cancellation fidelity rather than assuming the current state-only response
+already satisfies it. Preserve current fingerprints, including their SCM fields;
+removing the start provider-name branch does not authorize a binding migration.
+Run shared lifecycle/recovery tests for all three targets and retain Linear
+compatibility. The GitHub slice does not depend on deploying Plane or accessing
+the custom Confluence server.
+
 Deliver the existing lifecycle only. General issue editing, sprint management,
 comments, search, and exploration remain upstream tools. Endpoint discovery and
 status mapping use the shared onboarding service. Live mutation qualification uses

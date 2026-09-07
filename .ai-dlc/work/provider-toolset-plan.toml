@@ -1,6 +1,6 @@
 schema = 1
 id = "provider-toolset-plan"
-title = "Review provider portability and plan Plane, Jira and Confluence integration"
+title = "Plan portable ticket management with GitHub Issues, Plane and Jira"
 scope = "Audit current scaffolding and harness/provider boundaries; record maintainer decisions, proposed behavior specifications, and bounded implementation plans. No runtime or remote service changes."
 requires_spec = false
 spec_reason = "This work delivers planning documents only; the four proposed child OpenSpec changes specify future observable behavior."

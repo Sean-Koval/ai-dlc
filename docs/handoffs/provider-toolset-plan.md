@@ -11,6 +11,16 @@ no tracker issue was published and no remote priority/status was changed.
 The independent SAN-12 branch remains at `04c65cb` with its separate cleanup
 blocker; its implementation is not included or assumed merged here.
 
+## Current priority
+
+Latest maintainer steering: focus on task/ticket management. Personal destination
+is now undecided between GitHub Issues and local Plane; retain Linear as the source
+for active/planned migration. Jira Cloud remains the work target. Defer Confluence
+and publication; the custom server is on the work laptop and will be shared later.
+Do not request that server as a prerequisite or deploy Plane to settle the choice.
+Existing GitHub Issues support needs common onboarding and explicit shared
+qualification. GitHub Projects is outside the initial ticket contract.
+
 ## Review entry points
 
 1. [PRD and user-input table](../design/provider-toolsets-prd.md).
@@ -34,8 +44,8 @@ optional deterministic publication service.
 
 - Plane is not installed; host it on the local computer, with a separate machine
   deployment runbook. Work targets Jira Cloud and Confluence Cloud.
-- Migration direction is explicitly confirmed: active/planned Linear work to
-  local Plane. Review the item inventory and mappings before execution.
+- Earlier Linear-to-Plane confirmation is superseded by the latest destination
+  choice: GitHub Issues or local Plane. Review inventory and mappings before execution.
 - Obsidian holds private journals, daily logs, scratch notes and a personal
   knowledge base. Confluence holds shared product/team knowledge. Prefer local
   drafting and explicit publication of selected shared documents.
@@ -65,6 +75,12 @@ September 7 revisions update planning and specifications only. All four strict
 spec validations, local links in 14 changed documents and whitespace checks passed
 for this revision. The 963-test run above is prior baseline evidence, not a new
 runtime or live-service claim; the full suite was not repeated for prose edits.
+
+The subsequent ticket-priority revision passed 28 existing provider/rebind tests,
+strict validation of all four draft changes, local-link checks in 14 changed
+documents, TOML syntax and whitespace checks. These checks do not qualify the
+proposed GitHub/Plane migration paths or new onboarding; those remain specified
+future work. No full-suite rerun or live provider calls were made for this revision.
 
 No runtime code, active provider selection, account settings, tracker bindings,
 remote issues, or shared pages were changed. No archive, PR, merge, or work finish

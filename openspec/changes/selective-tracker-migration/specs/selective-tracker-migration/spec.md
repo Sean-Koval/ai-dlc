@@ -38,3 +38,10 @@ Migration SHALL preserve existing completion policy and refuse stale configurati
 #### Scenario: A target is already closed
 - **WHEN** work is rebound to that issue
 - **THEN** the rebind itself does not finish work or waive specification, merged-revision or CI gates
+
+### Requirement: TM-06 Interchangeable supported destinations
+Migration SHALL accept either GitHub Issues or Plane through the same target-verification and recovery service, without assuming Plane as the personal destination or coupling tracker choice to the SCM provider.
+
+#### Scenario: The personal tracker choice changes
+- **WHEN** a reviewed migration selects Linear to GitHub Issues, Linear to Plane, or a switch between GitHub Issues and Plane
+- **THEN** the same selection, provenance, uncertainty and gate-preservation rules apply, unsupported state mappings are reported, and original state evidence is retained

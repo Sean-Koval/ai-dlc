@@ -1,10 +1,10 @@
 ## ADDED Requirements
 
 ### Requirement: TA-01 Stable tracker lifecycle
-Plane and Jira SHALL implement the existing tracker operations and normalized states so the same WorkService lifecycle and completion policy operate through each adapter.
+GitHub Issues, Plane and Jira SHALL implement the existing tracker operations and normalized states so the same WorkService lifecycle and completion policy operate through each adapter.
 
 #### Scenario: Equivalent work uses different trackers
-- **WHEN** equivalent reviewed work is published, started, read and finished through Plane and Jira
+- **WHEN** equivalent reviewed work is published, started, read and finished through GitHub Issues, Plane and Jira
 - **THEN** provider-specific requests remain inside adapters while the same local checks, spec references, and merged-revision gates apply
 
 ### Requirement: TA-02 Capability-driven behavior
@@ -46,3 +46,14 @@ Adapters SHALL bind requests to explicit configured service identities, keep cre
 #### Scenario: The selected deployment is unsupported
 - **WHEN** discovery identifies an API edition or authentication mode without an implemented adapter
 - **THEN** readiness reports unsupported access instead of claiming Cloud compatibility or platform qualification
+
+### Requirement: TA-06 GitHub Issues without board coupling
+GitHub Issues SHALL be a supported tracker choice independently from GitHub Projects, and tracker selection SHALL preserve SCM configuration, PR references and existing binding identities unless an explicit reviewed change targets them.
+
+#### Scenario: Repository issues have no configured board
+- **WHEN** a user selects GitHub Issues for tracked work
+- **THEN** setup requires the issue repository and authorized account but does not require a Projects board or invent an in-progress mapping
+
+#### Scenario: A project changes its tracker
+- **WHEN** tracking switches between GitHub Issues and Plane
+- **THEN** its GitHub SCM, pull request and CI configuration remain unchanged and retained work is handled through explicit migration policy

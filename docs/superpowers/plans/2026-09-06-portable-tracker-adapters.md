@@ -2,13 +2,15 @@
 
 > **For agentic workers:** Use superpowers:executing-plans after design and target-deployment review.
 
-**Goal:** Run the existing AI-DLC lifecycle through Plane and Jira.
+**Goal:** Run the existing AI-DLC lifecycle through GitHub Issues, Plane and Jira,
+with provider differences expressed through capabilities.
 **Architecture:** Small httpx adapters implement normalized contracts; common workflow consumes capabilities and retains journals/gates.
 **Tech Stack:** Existing Python/httpx/Pydantic/provider conformance infrastructure.
 **Spec:** [portable-tracker-adapters](../../../openspec/changes/portable-tracker-adapters/specs/portable-tracker-adapters/spec.md).
 
 Status: draft. [Master constraints](2026-09-06-provider-toolsets.md) apply. Jira Cloud
-is proposed; Data Center requires revising the target before implementation.
+is confirmed; Data Center remains outside scope. GitHub Issues is an existing
+adapter to integrate and qualify, not a new implementation from scratch.
 
 ## Task 1: Declare tracker capabilities without provider-name dispatch
 
@@ -24,6 +26,26 @@ Unknown support remains explicitly unverified rather than coerced to true/false.
 - [ ] Declare discovery support in registry definitions before invocation; test that opted-in authentication/network/schema failures do not fall through to legacy behavior.
 - [ ] Implement capability dispatch, declare built-in behavior, and remove the GitHub-name branch from work start. Do not alter completion gate evaluation.
 - [ ] Regenerate contract schemas and test terminal-transition protection, unknown capability versions, and duplicate correlations; commit after focused checks.
+
+## Task 1a: GitHub Issues as the first existing-provider proof
+
+**Files:** existing `providers/github_issues.py`, shared connection definitions,
+component/provider guidance, and `tests/test_providers.py`; add focused adapter
+and shared lifecycle cases where coverage is absent.
+
+- [ ] Reuse the existing gh-backed implementation. Add repository/account discovery
+  through common onboarding and verify the selected host/repository identity.
+- [ ] Test publish/start/status/gated finish with GitHub Issues and provider aliases.
+  Starting local work must report the unsupported remote in-progress transition;
+  do not silently invent labels or require GitHub Projects.
+- [ ] Test complete/ambiguous correlations, uncertain create recovery, issue origin,
+  and remote completion reasons. Inspect native completion metadata before deciding
+  normalization; do not assume every closed issue represents successful completion.
+- [ ] Preserve existing binding fingerprints, including GitHub SCM configuration
+  currently included in their identity; no incidental fingerprint migration.
+  Verify changing tracker selection leaves SCM/PR/CI configuration unchanged.
+- [ ] Qualify one disposable repository lifecycle and named-resource setup. Record
+  fixture and live evidence separately; current gh wrapper tests are not live proof.
 
 ## Task 2: Plane vertical slice
 
@@ -59,4 +81,4 @@ extend provider definitions, component/guidance and conformance metadata.
 - [ ] Run the shared lifecycle suite and native connection smoke check; then a disposable live cycle using real transition policies.
 - [ ] Run required manifest checks, strict spec validation and independent review. Archive/finish this child only when its complete stated scope is delivered; report pending live gates honestly.
 
-Coverage: Task 1 TA-02; Tasks 2–3 TA-01/TA-03/TA-04/TA-05.
+Coverage: Task 1 TA-02; Tasks 1a–3 TA-01/TA-03/TA-04/TA-05; Task 1a TA-06.

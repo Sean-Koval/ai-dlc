@@ -44,6 +44,19 @@ branch; they must not be presented as this branch's qualification evidence.
 
 ## Product-level alternatives
 
+September 7 ticket-priority follow-up: the personal destination is undecided
+between GitHub Issues and local Plane, and Confluence is deferred. Re-read
+`providers/github_issues.py`: it already implements find/read/create/transition/link
+through gh, scopes commands with the configured repository and refuses a search
+result set at the 100-row limit. It normalizes state only; native completion-reason
+fidelity still needs review. `tests/test_providers.py` has an executable-wrapper
+read test and intermediate-state refusal, not a complete live GitHub workflow.
+`workflow.py` contains both the start capability branch and GitHub-specific SCM
+fingerprint inclusion. Remove the former through capabilities; preserve existing
+fingerprints during this change. Add generic onboarding and shared qualification
+for this existing adapter before a new deployment is needed. GitHub Projects is
+not implemented by this adapter and is not part of the proposed first delivery.
+
 1. **Reuse native tools plus thin lifecycle adapters (recommended).** MCP supplies
    service search/edit/context; adapters supply AI-DLC's small typed operations,
    reconciliation and evidence boundary. Moderate one-time integration work;
@@ -56,8 +69,8 @@ branch; they must not be presented as this branch's qualification evidence.
    these tools; reuse current profiles/components/registry and add only measured
    gaps. Revisit only after actual third-party distribution demands it.
 
-The recommended design starts with native access and Plane as a vertical slice,
-then uses Jira to prove that no new workflow-service special case is necessary.
+The revised design starts with existing GitHub Issues setup and qualification,
+then Plane and Jira prove that no new workflow-service special case is necessary.
 The reference adapters may initially ship with AI-DLC; existing verified extension
 providers remain supported. No new packaging ecosystem is required.
 
