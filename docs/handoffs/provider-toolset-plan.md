@@ -22,21 +22,31 @@ blocker; its implementation is not included or assumed merged here.
 
 ## Proposed direction
 
-Reuse official upstream MCP tools for general Plane/Jira/Confluence interactions.
+Reuse upstream MCP tools for Plane/Jira and the existing custom Confluence MCP
+server for shared knowledge and document operations, subject to interface review.
 Add only the narrow lifecycle adapters needed by AI-DLC's own work commands.
 Improve explicit scaffold choices, generic connection setup, capability reporting
 and native guidance. Separate default selection from selected-record migration.
 Keep Obsidian knowledge local. Confluence native access does not require the
 optional deterministic publication service.
 
-## Decisions still needed
+## September 7 clarification and remaining inputs
 
-- Plane hosting state and URL if available; if absent, choose hosting separately.
-- Jira/Confluence Cloud or Data Center and permitted authentication/client access.
-- Default-only switch versus migration of selected existing Linear work.
-- Document authoring direction and whether native page tools suffice or AI-DLC
-  should own repeatable publication. Repository-first publication is only the
-  proposed optional scope; two-way synchronization is not designed here.
+- Plane is not installed; host it on the local computer, with a separate machine
+  deployment runbook. Work targets Jira Cloud and Confluence Cloud.
+- Migration direction is explicitly confirmed: active/planned Linear work to
+  local Plane. Review the item inventory and mappings before execution.
+- Obsidian holds private journals, daily logs, scratch notes and a personal
+  knowledge base. Confluence holds shared product/team knowledge. Prefer local
+  drafting and explicit publication of selected shared documents.
+- Use [selective knowledge access](../design/local-and-shared-knowledge.md): links
+  and reads on request, deliberate local summaries with provenance, no site/vault
+  mirror. Existing team pages remain Confluence-owned.
+- Existing Confluence tooling is a custom MCP server with a document graph,
+  semantic descriptions and quality grading, used with Claude/Antigravity to
+  write and push documents. Its repository path/URL or interface docs are pending;
+  review it before selecting or building publishing machinery. Permitted
+  authentication/client access and local deployment details remain to be established.
 
 Project/space URLs or friendly names, local sign-ins and vault attachment are
 needed for connection later. Discovery should resolve IDs and available states;
@@ -50,6 +60,11 @@ OpenSpec validation passed for all four draft changes; local links and work
 record parsing were verified. These are local baseline/artifact checks, not
 new provider implementation, independent design acceptance, live qualification,
 or merged-revision CI evidence.
+
+September 7 revisions update planning and specifications only. All four strict
+spec validations, local links in 14 changed documents and whitespace checks passed
+for this revision. The 963-test run above is prior baseline evidence, not a new
+runtime or live-service claim; the full suite was not repeated for prose edits.
 
 No runtime code, active provider selection, account settings, tracker bindings,
 remote issues, or shared pages were changed. No archive, PR, merge, or work finish

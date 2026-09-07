@@ -1,15 +1,30 @@
 # Team Document Publication Implementation Plan
 
-> **For agentic workers:** Use superpowers:executing-plans only after the authoring-direction and target-deployment decisions are reviewed.
+> **For agentic workers:** Use superpowers:executing-plans only after existing-tool reuse and the remaining publication gap are reviewed.
 
 **Goal:** Publish reviewed repository documents to Confluence while retaining private Obsidian notes.
 **Architecture:** Optional documents role, separate publication service and records, version-aware Confluence adapter; native tools provide general reading/editing.
 **Tech Stack:** Existing Python/httpx/Pydantic/MCP; reviewed Markdown converter only if needed for the declared subset.
 **Spec:** [team-document-publication](../../../openspec/changes/team-document-publication/specs/team-document-publication/spec.md).
 
-Status: draft for repository-first publication to Confluence Cloud.
+Status: draft for selected local-document publication to Confluence Cloud.
+Local drafting is preferred; review the existing custom MCP server before choosing
+the backend or treating the proposed new provider files below as necessary.
 [Master constraints](2026-09-06-provider-toolsets.md) apply. If the maintainer selects
 Confluence-first or two-way authoring, revise scope before starting these tasks.
+
+## Task 0: Reuse assessment before implementation
+
+- [ ] Inspect the custom MCP server repository/tool schemas, connection and account
+  binding, scoped graph/read operations, page/version provenance, write payloads,
+  quality checks and behavior after conflicts or lost responses.
+- [ ] Rehearse one local shared draft through the existing Claude/Antigravity flow
+  in a designated test destination only after live access is authorized.
+- [ ] Map existing behavior to DP requirements. If the existing workflow suffices,
+  deliver setup/guidance and leave this optional service unstarted. Otherwise
+  choose an improvement in that server or the smallest bridge/adapter needed.
+- [ ] Revise the proposed files/interfaces below to reflect that evidence; do not
+  build another document graph, semantic index or quality-grading service.
 
 ## Task 1: Optional publication contract and source boundary
 

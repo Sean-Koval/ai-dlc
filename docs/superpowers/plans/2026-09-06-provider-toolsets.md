@@ -4,13 +4,13 @@
 
 **Goal:** Make preferred-tool selection routine in AI-DLC and prove it with Plane, Jira, Confluence and retained Obsidian use.
 
-**Architecture:** Keep native upstream tools for general service access and thin adapters for AI-DLC operations. Reuse current scaffolding, profiles, components, provider registry, owned harness rendering and evidence gates.
+**Architecture:** Reuse existing and upstream MCP tools for general service access and thin adapters for AI-DLC operations. Reuse current scaffolding, profiles, components, provider registry, owned harness rendering and evidence gates.
 
 **Tech Stack:** Python 3.12, existing httpx/MCP/Pydantic/Typer/Copier stack, OpenSpec, native MCP integrations and Markdown guidance.
 
 **Spec:** [Draft PRD](../../design/provider-toolsets-prd.md) and the four child OpenSpec changes below.
 
-Status: proposed plan, September 6, 2026. No runtime changes or migration performed.
+Status: proposed plan, updated September 7, 2026. No runtime changes or migration performed.
 Approval of planning is not approval of account mutations, hosting, or live migration.
 
 ## Global Constraints
@@ -39,7 +39,7 @@ access as such until the corresponding lifecycle adapter is delivered. Finish
 each child through its own reviewed specifications, PR/CI evidence and work finish.
 Do not close planning or implementation work merely because this plan validates.
 
-The minimum Confluence integration is the upstream connection plus scoped
+The minimum Confluence integration is the existing custom MCP connection plus scoped
 guidance. The publication service is a proposed optional extension, not required
 for general team page editing. Leave that child unstarted if native tools meet
 the maintainer's publishing needs.
@@ -59,15 +59,28 @@ fixed click count across different organization authentication policies.
 
 ## Decisions needed from the maintainer
 
-Only the following affect implementation scope now: whether Plane already exists,
-whether Jira/Confluence are Cloud or Data Center, migration policy, and document
-authoring direction. Project/space URLs and sign-ins are needed for connection and
-live verification later. Existing Obsidian vault paths stay local. No credentials
-are needed to review these specs or develop isolated adapter tests.
+Confirmed September 7: Plane is not installed and will be self-hosted on the local
+computer; work uses Jira Cloud and Confluence Cloud. Migrate active/planned Linear
+work to local Plane; completed history is outside the initial migration scope.
+Local drafting with selected publication is preferred. Obsidian remains a private
+journal, scratch pad and personal knowledge base; Confluence remains the shared
+library. Use the [selective knowledge relationship](../../design/local-and-shared-knowledge.md)
+for guidance and qualification rather than site/vault synchronization.
 
-If Plane needs hosting, prepare a separate deployment runbook after choosing the
-host, persistent storage, backup ownership and domain. Use upstream deployment
-artifacts; project bootstrap installs only the client prerequisites it needs.
+Existing Confluence tooling is a custom MCP server with document graphs, semantic
+descriptions and quality grading, used with Claude/Antigravity to write and push
+pages. Still needed: its repository path/URL or tool documentation, to assess reuse
+before implementing additional publication code. Attach this server first; do not
+replace it with another connector by default. Site/project/space URLs, local
+sign-ins and vault attachment are needed for connection and live verification
+later. No credentials are needed in chat or for isolated adapter tests.
+
+Prepare a separate local Plane deployment runbook using reviewed upstream
+artifacts. Inspect the machine runtime, choose persistent storage and backups,
+document start/stop/restore and keep initial exposure local. Report unavailable
+service when the machine is off. Project bootstrap installs only required client
+prerequisites; it does not recreate the server for each repository. Hosting
+execution remains separate from this planning change.
 
 ## Review and verification
 

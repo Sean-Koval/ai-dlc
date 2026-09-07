@@ -11,6 +11,10 @@ Team publication SHALL be an optional documents capability independent from priv
 - **WHEN** a selected path or symlink resolves into private notes or outside the approved repository roots
 - **THEN** publication refuses before remote mutation
 
+#### Scenario: Private notes inform a shared draft
+- **WHEN** a user selects and reviews a separate eligible shared document derived from private working notes
+- **THEN** publication includes only the reviewed document payload and does not traverse private source links or automatically include vault files
+
 ### Requirement: DP-02 Review exact content and destination
 Publication preview SHALL expose exact source, conversion result, destination identity and expected remote version, and apply SHALL require that reviewed plan to remain current.
 

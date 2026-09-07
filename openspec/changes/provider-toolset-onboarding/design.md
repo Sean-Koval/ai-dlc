@@ -52,6 +52,18 @@ in a container is reported as a viewing limitation, not a missing tracker depend
 
 ## Verification
 
+For Confluence with Obsidian, review the existing custom MCP server's interfaces
+before adding connections. Preserve its document graph, semantic descriptions and
+quality grading rather than duplicating these in AI-DLC. Verify scoped retrieval
+and provenance instead of assuming those user-reported capabilities are qualified.
+Generate guidance to link/read relevant pages on demand, save local derivatives
+only when requested with source URL/version when available/retrieval date, and
+preserve personal annotations on explicit refresh. Generate no automatic space
+export, vault upload or publication at finish. Relevant space/page choices scope
+the workflow, not upstream account permissions. These are harness instructions,
+not runtime enforcement by native tools; qualify the actual selected integration.
+See the [relationship design](../../../docs/design/local-and-shared-knowledge.md).
+
 Test two projects with different trackers/accounts on one machine, replay on a
 second machine with a different vault path, authored config conflicts, no-network
 render/check, missing OAuth, missing API credentials, invalid selections, stale

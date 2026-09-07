@@ -3,6 +3,7 @@
 - [ ] 1.1 Define supported toolsets and preserve legacy scaffolding behavior; demonstrate failing regressions before implementation and run the mapped focused checks.
 - [ ] 1.2 Extract reusable discovery, saved-plan validation and authored-safe apply; demonstrate failing regressions before implementation and run the mapped focused checks.
 - [ ] 1.3 Render qualified native connections and report capability-specific readiness; demonstrate failing regressions before implementation and run the mapped focused checks.
+- [ ] 1.4 Inventory existing Confluence tools, render selective knowledge guidance and test provenance/refresh/private-note instructions; qualify actual selected tools separately.
 
 ## 2. Review and finish
 
@@ -11,4 +12,3 @@
 - [ ] 2.3 Archive only delivered scope, link PR/CI evidence, and finish the reviewed implementation work through the configured workflow.
 
 [Execution plan](../../../docs/superpowers/plans/2026-09-06-provider-toolset-onboarding.md). All items are proposed work, not delivered behavior.
-

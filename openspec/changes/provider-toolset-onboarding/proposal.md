@@ -12,6 +12,7 @@ Status: proposed; no implementation or remote configuration is approved by this 
 - Separate common connection planning/apply from provider-specific discovery.
 - Cover local Obsidian notes and optional desktop viewing accurately in readiness.
 - Keep native connector readiness distinct from AI-DLC lifecycle adapter support.
+- Generate selective Confluence/Obsidian guidance, reusing existing tools without site or vault mirroring.
 
 ## Capabilities
 

@@ -1,10 +1,11 @@
 ## Product decision under review
 
-Propose repository Markdown as the editable source for selected team documents;
-Confluence holds published pages. Teammate page edits produce a conflict requiring
+The maintainer prefers local drafts with selective publication. Propose repository
+Markdown as the editable source for explicitly enrolled team documents; Confluence
+holds published pages and remains authoritative for existing team-owned sources. Teammate page edits produce a conflict requiring
 reconciliation. If the maintainer needs Confluence-first authoring or two-way
 synchronization, revise this spec before implementation. Native read/search/link
-access can be configured independently through upstream tools.
+access can be configured independently through the existing custom MCP server.
 
 ## Decisions
 
@@ -34,8 +35,12 @@ preserves the existing title unless a title change is separately present in the
 reviewed payload. Confluence updates submit the next expected version so the
 server rejects a concurrent change after preflight as well as before it.
 
-Confluence Cloud REST v2 is the first backend, with native MCP remaining available
-for general interaction. Implement a tested Markdown subset: headings, paragraphs,
+First review the existing custom Confluence MCP server (document graph, semantic
+descriptions, quality grading, writing/pushing via Claude and Antigravity). Prefer
+its existing operations or a narrow bridge if they satisfy the typed contract.
+Confluence Cloud REST v2 remains a candidate fallback only for an identified gap;
+do not duplicate the graph or grading system. Record whether safety resides in
+the existing server, an improvement there, or the AI-DLC adapter before coding. Implement a tested Markdown subset: headings, paragraphs,
 lists, emphasis, links, fenced code and simple tables. Reject unsupported raw HTML,
 Obsidian-only links/embeds, macros and attachments before apply; do not silently
 drop them. Relative document links require an explicit known target page mapping
@@ -56,6 +61,10 @@ Repository documents explicitly selected under eligible roots remain eligible
 when viewed or edited in Obsidian, including when a repository is opened as a
 vault; the viewer does not change their ownership. External vault files are not
 implicitly eligible. Viewing local Markdown does not enroll notes for publication.
+Private material may inform a separately reviewed shared draft, but publication
+does not traverse that draft's private source links or attach linked vault files.
+Confluence reads and requested local summaries use the selective guidance in
+provider-toolset-onboarding; this change adds no synchronization engine.
 Readiness only
 checks this optional capability when selected/requested. Existing note CLI/MCP
 helpers continue to use the configured vault and are not rewritten for Confluence.

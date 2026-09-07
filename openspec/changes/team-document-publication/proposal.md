@@ -2,7 +2,8 @@
 
 Private notes and team publication are distinct responsibilities. The existing
 knowledge append contract cannot represent controlled updates to shared documents.
-Status: proposed; first-delivery authoring choice requires maintainer review.
+Status: proposed; local drafting with selective publication is preferred. Review
+the existing custom Confluence MCP server before choosing implementation scope.
 [Requirements](../../../docs/design/provider-toolsets-prd.md).
 
 This is an optional stronger publication guarantee. Native Confluence tools and
@@ -27,6 +28,7 @@ None. Private note operations and work finish retain their existing behavior.
 ## Impact
 
 Contracts/registry, optional role metadata/scaffold choices, new publication service,
-Confluence Cloud adapter, CLI/shared MCP facade, publication records and tests.
+a qualified bridge to the existing custom Confluence MCP server or a Cloud adapter
+for demonstrated gaps, CLI/shared MCP facade, publication records and tests.
 No automatic publication at finish, vault mirroring, two-way sync, or Data Center
 claim. [Plan](../../../docs/superpowers/plans/2026-09-06-team-document-publication.md).

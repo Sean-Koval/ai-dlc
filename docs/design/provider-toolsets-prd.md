@@ -1,7 +1,7 @@
 # Selectable provider toolsets
 
 Owner: AI-DLC maintainer.
-Status: draft for maintainer review, September 6, 2026. Planning requested;
+Status: draft updated with maintainer context, September 7, 2026. Planning requested;
 implementation, hosting, account changes, and ticket migration are not performed.
 
 ## Problem and audience
@@ -13,8 +13,11 @@ opaque IDs to use a supported toolset. Adding a supported integration is an
 implementation task once; selecting it in another repository is configuration.
 
 The immediate user has reached Linear's free limit. Personal projects should use
-Plane; work projects use Jira and Confluence. Obsidian remains available for
-local document viewing and private daily notes in both contexts. OpenSpec and
+locally self-hosted Plane, which is not installed yet; work projects use Jira
+Cloud and Confluence Cloud. Obsidian holds the private journal, daily work log,
+scratch notes and accumulated knowledge used by personal assistant agents, as
+well as local document viewing. Confluence holds existing product knowledge,
+team documents and guides; only a relevant subset belongs in local context. OpenSpec and
 repository-owned architecture/runbooks remain as currently configured.
 
 Obsidian can view or edit those repository documents directly. Eligibility for
@@ -24,7 +27,8 @@ exclusions, not which editor opens the file.
 The [source audit](../planning/provider-toolset-code-audit.md) distinguishes
 shipped support from SAN-12's unmerged bundle work. It identifies real gaps in
 scaffolding, onboarding, capability handling, and migration UX. Existing upstream
-MCP tools should supply general-purpose service access; AI-DLC only needs narrow
+MCP tools, including the maintainer's existing custom Confluence server, should
+supply general-purpose service access; AI-DLC only needs narrow
 adapters for its own deterministic lifecycle and publication contracts.
 
 ## Outcomes and acceptance
@@ -81,28 +85,49 @@ Readiness must separate API integration from optional desktop viewing. Missing
 Obsidian GUI on a headless machine does not by itself invalidate tracker work;
 missing notes storage matters only to requested note operations.
 
-The Confluence spec proposes repository Markdown as the publication source and
-remote edits as conflicts. This is a draft choice, not inferred consent to
-overwrite pages. If Confluence is the main authoring location, prioritize native
-read/search/link access and revise the publishing scope before implementation.
+The maintainer prefers local drafting with the ability to publish selected shared
+documents. Existing Confluence pages remain team-owned sources; this does not
+make every page repository-authored. The publication spec proposes explicit
+repository Markdown sources and remote edits as conflicts, not consent to
+overwrite pages. The maintainer already uses a custom MCP server with a document graph, page
+descriptions, LLM-derived semantics and document/space/page quality grading, plus
+Claude and Antigravity for writing and pushing pages. Review and reuse that server
+before proposing a separate Confluence implementation; its API and update safety
+have not yet been inspected.
+
+## Selective relationship between local and shared knowledge
+
+See [the relationship design](local-and-shared-knowledge.md). Default to links and
+on-demand reads of relevant Confluence pages. Deliberate local extracts or
+summaries retain source URL, page version when available, and retrieval time;
+refresh is explicit and preserves personal annotations. Do not mirror spaces,
+automatically index the entire site into the vault, or publish daily notes.
+
+An agent can help turn private working material into a separately reviewed shared
+draft. Only that selected draft is eligible for publication. Existing page tools
+remain usable; no new retrieval database, background sync process or general
+personal-assistant platform is included in these changes. Generated guidance is
+not a security boundary around independently connected tools.
 
 ## Open questions and user inputs
 
 | Needed when | User supplies | AI-DLC/integration discovers or handles |
 | --- | --- | --- |
-| Before choosing Plane transport | Already hosted, Plane Cloud, or not installed; URL if known | Supported edition/version and available authentication paths |
+| Before local Plane deployment | Confirm local runtime availability and storage/backup location; local hosting is selected, not installed | Review upstream deployment, startup/recovery instructions and actual supported version |
 | Before live Plane connection | Workspace/project URL or friendly name | IDs, states, available projects, account identity |
-| Before migration apply | New-work-only or selected backlog migration; scope | Candidate records, target reference map, conflicts, uncertain operations |
-| Before work integration | Jira/Confluence URLs, Cloud or Data Center, project/space names, whether approved AI/API access exists | IDs, create fields, transitions, permissions, live account match |
-| Before publication implementation | Repository-first, Confluence-first, or two-way authoring intent | A bounded compatible workflow and content conversion preview |
+| Before migration apply | Review which active/planned Linear items to move to local Plane (direction confirmed September 7) | Candidate inventory, target mappings and conflicts; completed history remains outside initial scope |
+| Before work integration | Cloud site URLs, project/space names, whether approved AI/API access exists | IDs, create fields, transitions, permissions, live account match |
+| Before publication implementation | Custom MCP server repository path/URL or interface documentation; later one representative shared document and source page | Reuse assessment; local-draft preview and any remaining publication gap |
 | Before using private notes | Existing vault and intended daily-note convention, set locally | Attach/readiness instructions; no vault upload |
 | Before live qualification | Disposable destination or permission to create named test items/pages | Test steps, evidence, and explicit cleanup plan |
 
 No password, token, arbitrary project UUID, or status UUID is needed in chat.
 The user signs in through the chosen native client or configures a local
-environment reference at connection time. If Plane is not installed, hosting
-placement, persistence/backups, domain/TLS, and maintenance ownership need a
-separate operational decision; this is not provider-adapter complexity.
+environment reference at connection time. Plane hosting is the local computer;
+persistence/backups, startup behavior and maintenance still need an operational
+runbook. Propose local-only exposure initially; remote access is a separate choice.
+The computer must be running for other clients to reach this instance. Deployment
+is a machine-level setup step, not something repeated by project bootstrap.
 
 ## Links
 

@@ -60,7 +60,8 @@ capabilities through additional structured results without changing existing che
 - [ ] Add red fixtures for remote HTTP transport mapping, local stdio environment names, account-scoped server deduplication, and configured Obsidian with no GUI.
 - [ ] Implement only required client schema fields; preserve shared files free of secrets and machine paths. Pin local connector packages at reviewed versions.
 - [ ] Separate optional desktop viewing from local notes storage and tracker API requirements. Missing lifecycle adapter stays blocked even when native connector instructions render.
+- [ ] Inventory existing Confluence tools before adding a connection. Add failing generated-guidance fixtures for PT-05: relevant page reads without automatic copies, requested summary provenance, explicit refresh preserving personal annotations, and private/shared separation. Guidance is not a native-tool permission boundary.
 - [ ] Run offline render twice with network disabled and assert idempotence/authored preservation; run current client recognition and OAuth/stdio smoke checks only in a named live environment.
 - [ ] Update source guidance and packaged assets together; run required project checks, strict spec validation, review, and commit. Record unsupported clients/editions explicitly.
 
-Requirement coverage: Task 1 PT-01; Task 2 PT-02; Task 3 PT-03/PT-04.
+Requirement coverage: Task 1 PT-01; Task 2 PT-02; Task 3 PT-03/PT-04/PT-05.
