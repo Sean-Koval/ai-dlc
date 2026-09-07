@@ -65,3 +65,20 @@ Regression assertions for both the GitHub fixture and arbitrary `fake` provider
 failed against that wording, then passed after replacing it with the generic
 `Tracker does not support the in_progress lifecycle state` message. The response
 shape remains unchanged.
+
+## Follow-up: strict capability wire validation
+
+The independent review found that capability responses could omit `schema` and
+could coerce non-wire types. Contract regressions demonstrated that missing
+schema, boolean/float/string schema values, integer lifecycle flags, tuple
+operation collections, and non-string operation names must be rejected. A
+workflow regression also demonstrated that a malformed registered-provider
+response must fail before branch creation, ticket publication, or tracker
+mutation. The capability response models now use strict validation, require the
+aliased schema field, and explicitly require an exact integer `1` because Python
+booleans compare equal to that literal. Regenerated JSON Schema lists `schema` as
+required.
+
+Focused green evidence: 31 provider tests passed; 6 start tests passed with 45
+deselected. Generated schema validation, formatting, lint, and type checking for
+the changed files passed after removing one lint-reported unnecessary suppression.

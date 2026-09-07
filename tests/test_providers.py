@@ -28,15 +28,52 @@ def test_capabilities_contract_is_optional_and_validates_schema_one():
         "lifecycle": {"in_progress": True, "closed": True},
         "optional_operations": ["link", "prepare"],
     }
+
+
+@pytest.mark.parametrize(
+    "result",
+    [
+        {
+            "lifecycle": {"in_progress": True, "closed": True},
+            "optional_operations": [],
+        },
+        {
+            "schema": True,
+            "lifecycle": {"in_progress": True, "closed": True},
+            "optional_operations": [],
+        },
+        {
+            "schema": 1.0,
+            "lifecycle": {"in_progress": True, "closed": True},
+            "optional_operations": [],
+        },
+        {
+            "schema": "1",
+            "lifecycle": {"in_progress": True, "closed": True},
+            "optional_operations": [],
+        },
+        {
+            "schema": 1,
+            "lifecycle": {"in_progress": 1, "closed": 0},
+            "optional_operations": [],
+        },
+        {
+            "schema": 1,
+            "lifecycle": {"in_progress": True, "closed": True},
+            "optional_operations": ("link",),
+        },
+        {
+            "schema": 1,
+            "lifecycle": {"in_progress": True, "closed": True},
+            "optional_operations": [1],
+        },
+    ],
+)
+def test_capabilities_contract_rejects_coerced_or_missing_wire_types(result):
+    from ai_dlc.contracts import validate_response
+
     with pytest.raises(ValueError):
-        validate_response(
-            "capabilities",
-            {
-                "schema": 2,
-                "lifecycle": {"in_progress": True, "closed": True},
-                "optional_operations": [],
-            },
-        )
+        validate_response("capabilities", result)
 
 
 def test_journal_conflicts_and_recovers(tmp_path):

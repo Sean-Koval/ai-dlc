@@ -192,12 +192,12 @@
           },
           "schema": {
             "const": 1,
-            "default": 1,
             "title": "Schema",
             "type": "integer"
           }
         },
         "required": [
+          "schema",
           "lifecycle",
           "optional_operations"
         ],

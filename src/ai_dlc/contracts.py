@@ -2,7 +2,7 @@
 
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class Request(BaseModel):
@@ -59,16 +59,23 @@ class Capabilities(Payload):
 
 
 class LifecycleCapabilities(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="forbid", strict=True)
     in_progress: bool
     closed: bool
 
 
 class CapabilityResult(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-    schema_version: Literal[1] = Field(default=1, alias="schema")
+    model_config = ConfigDict(extra="forbid", strict=True)
+    schema_version: Literal[1] = Field(alias="schema")
     lifecycle: LifecycleCapabilities
     optional_operations: list[str]
+
+    @field_validator("schema_version", mode="before")
+    @classmethod
+    def exact_schema_one(cls, value):
+        if type(value) is not int or value != 1:
+            raise ValueError("Capability schema must be the integer 1")
+        return value
 
 
 PAYLOADS = {

@@ -1075,6 +1075,34 @@ def test_start_refuses_failed_declared_capability_without_legacy_fallback(tmp_pa
     assert tracker.closed == 0
 
 
+def test_start_rejects_malformed_declared_capability_before_mutation(tmp_path):
+    from ai_dlc.providers import Registry
+    from ai_dlc.workflow import WorkService
+
+    work(tmp_path)
+    git = init_git(tmp_path)
+
+    class MalformedCapabilityTracker(Tracker):
+        def invoke(self, op, data):
+            if op == "capabilities":
+                return {
+                    "lifecycle": {"in_progress": 1, "closed": 0},
+                    "optional_operations": [],
+                }
+            return super().invoke(op, data)
+
+    tracker = MalformedCapabilityTracker()
+    registry = Registry()
+    registry.register("fake", tracker, operations=["capabilities"])
+    service = WorkService(tmp_path, {}, state_path=tmp_path / "state", registry=registry)
+
+    with pytest.raises(ValueError):
+        service.start("one")
+    assert git("branch", "--show-current") == "main"
+    assert tracker.created == 0
+    assert "tracker" not in service.load("one")["artifacts"]
+
+
 def test_start_marks_absent_capability_declaration_as_unverified(tmp_path):
     from ai_dlc.providers import Registry
     from ai_dlc.workflow import WorkService
