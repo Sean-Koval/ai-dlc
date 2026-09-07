@@ -69,7 +69,9 @@ enrollment regressions were added; the final related suite passed 141 tests and
 format/lint/types/generated checks passed. Scoped re-review marked the finding
 addressed with no new actionable issues.
 
-Task 4 is implemented in `437a7d7`; independent review is pending. The focused
+Task 4 is implemented in `437a7d7`; independent review passed spec compliance
+and approved quality with one minor historical-provenance observation carried
+into whole-branch review. The focused
 migration/rebind/configuration/workflow/CLI suite passed 191 tests, including
 52 migration cases. Changed-code format/lint/types and generated checks passed.
 Recovery fixtures include partial writes, late pathname replacement during
@@ -77,3 +79,30 @@ rollback, enrollment drift, malformed evidence and completed history copied to
 another checkout. The local transaction uses inode-bound in-place writes with
 durable before/after evidence; this is bounded recovery, not crash-atomic
 multi-file replacement. Readers may observe intermediate content.
+
+## Required verification before final review fixes
+
+On clean commit `685a0f8e9cdc4ad9edf68f70264cd4a6cbd6077a`, the prepared
+`ai-dlc project check --required` passed all five required outcomes: generated,
+format, lint, types and test. The full suite passed **1,106 tests** in 280.39
+seconds. The local receipt at `.ai-dlc/local/github-ticket-required-1.json`
+records the exact revision and `dirty=false`; this is local candidate evidence,
+not merged-revision CI. `openspec validate --all --strict` passed all 14 items.
+Whole-branch review is pending; later documentation-only evidence updates do
+not change which code revision these results qualify.
+
+## Final review fixes
+
+The whole-branch review required two adapter identity corrections: GitHub reads
+did not verify a configured viewer, and Linear reads did not verify a configured
+team. Commit `d2c3807` adds those checks behind the adapter boundary, preserving
+legacy behavior when the identities are absent. Seventeen new real-adapter
+transport-fixture cases include wrong identity at preview, drift at apply, and
+already-closed GitHub finish. TDD reproduced 13 missing-guard failures first.
+The final affected suite passed 304 tests without skips; format/lint/types and
+generated checks passed. Final required checks and scoped re-review are pending.
+
+The review's minor historical receipt observation is now explicit in the
+migration runbook: subsequent-migration guards protect unresolved outcomes, not
+the integrity of every completed historical prepared receipt. Clone-safe
+historical integrity hardening remains deferred.

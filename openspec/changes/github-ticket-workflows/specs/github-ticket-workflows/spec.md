@@ -51,6 +51,10 @@ Default-only switches SHALL preserve retained effective work bindings. Selected 
 - **WHEN** its default or selected work moves to another configured supported tracker
 - **THEN** the same provider-independent migration rules apply and SCM/PR/CI configuration and completion gates remain unchanged
 
+#### Scenario: Target identity differs from the configured destination
+- **WHEN** a target read observes a different configured account or project/team identity at preview or apply
+- **THEN** the provider rejects that target before migration writes local bindings
+
 #### Scenario: A local batch apply is interrupted
 - **WHEN** selected work writes fail or an external replacement prevents safe rollback
 - **THEN** migration retains before/after recovery evidence, preserves external replacements and reports recovery-required rather than claiming success

@@ -3,7 +3,7 @@
 - [x] 1.1 Add typed capability discovery and vendor-neutral start with TDD and task review.
 - [x] 1.2 Implement optional GitHub Project planning transitions, identity checks and recovery with TDD and task review.
 - [x] 1.3 Implement explicit tracker scaffold selection and GitHub guided setup with TDD and task review.
-- [ ] 1.4 Implement provider-neutral default-only and verified selected migration with TDD and task review.
+- [x] 1.4 Implement provider-neutral default-only and verified selected migration with TDD and task review.
 
 ## 2. Qualification
 
