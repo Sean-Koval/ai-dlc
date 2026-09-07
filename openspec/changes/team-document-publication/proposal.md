@@ -1,0 +1,32 @@
+## Why
+
+Private notes and team publication are distinct responsibilities. The existing
+knowledge append contract cannot represent controlled updates to shared documents.
+Status: proposed; first-delivery authoring choice requires maintainer review.
+[Requirements](../../../docs/design/provider-toolsets-prd.md).
+
+This is an optional stronger publication guarantee. Native Confluence tools and
+guidance can satisfy ordinary team document access/editing without this service;
+do not implement this change merely to connect Confluence.
+
+## What Changes
+
+- Add an optional documents role and explicit publication service alongside Obsidian knowledge.
+- Preview selected repository Markdown against Confluence targets and remote versions.
+- Apply only reviewed content; preserve teammate edits through conflict refusal.
+- Store publication provenance and recover uncertain operations without duplicate pages.
+
+## Capabilities
+
+### New Capabilities
+- `team-document-publication`: explicit version-aware shared document publication.
+
+### Modified Capabilities
+None. Private note operations and work finish retain their existing behavior.
+
+## Impact
+
+Contracts/registry, optional role metadata/scaffold choices, new publication service,
+Confluence Cloud adapter, CLI/shared MCP facade, publication records and tests.
+No automatic publication at finish, vault mirroring, two-way sync, or Data Center
+claim. [Plan](../../../docs/superpowers/plans/2026-09-06-team-document-publication.md).

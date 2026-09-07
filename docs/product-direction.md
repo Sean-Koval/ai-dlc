@@ -87,6 +87,11 @@ open where evidence is missing; this roadmap does not relabel that work.
 
 ## Navigation
 
+- [Draft provider toolset requirements](design/provider-toolsets-prd.md) and
+  [implementation sequence](superpowers/plans/2026-09-06-provider-toolsets.md):
+  requested Plane/Jira/Confluence integration with Obsidian retained; proposed
+  scope, not shipping capability.
+
 - [Roadmap](roadmap.md)
 - [Delivery architecture](design/framework-delivery.md)
 - [Executor handoff](handoffs/framework-delivery.md)
