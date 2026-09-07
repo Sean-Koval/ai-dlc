@@ -18,7 +18,8 @@ custom MCP server is available for review.
 
 **Spec:** [Draft PRD](../../design/provider-toolsets-prd.md) and the four child OpenSpec changes below.
 
-Status: proposed plan, updated September 7, 2026. No runtime changes or migration performed.
+Status: parent plan, updated September 7, 2026. The authorized GitHub child is
+in implementation; no live migration has been performed.
 Approval of planning is not approval of account mutations, hosting, or live migration.
 
 ## Global Constraints
@@ -37,9 +38,9 @@ Approval of planning is not approval of account mutations, hosting, or live migr
 | Order | Deliverable | Plan | Dependency / release gate |
 | --- | --- | --- | --- |
 | 1 | Provider choices, reusable onboarding and native harness setup; prove with existing Linear behavior | [Toolset setup](2026-09-06-provider-toolset-onboarding.md) | Existing main foundations |
-| 2 | Existing GitHub Issues onboarding and shared lifecycle qualification | [Tracker adapters, Tasks 1 and 1a](2026-09-06-portable-tracker-adapters.md) | Setup interfaces; no Plane deployment prerequisite |
+| 2 | GitHub Issues plus optional Projects onboarding and shared lifecycle qualification | [Tracker adapters, Tasks 1 and 1a](2026-09-06-portable-tracker-adapters.md) | Setup interfaces; no Plane deployment prerequisite |
 | 3 | Plane native connection plus thin lifecycle adapter | [Tracker adapters, Task 2](2026-09-06-portable-tracker-adapters.md) | Setup interfaces; local deployment for live qualification |
-| 4 | Rehearse default-only and selected migration for both destinations; switch personal work only after choosing a destination and reviewing mappings | [Migration](2026-09-06-selective-tracker-migration.md) | Qualified selected target; GitHub path does not wait for Plane |
+| 4 | Rehearse default-only and selected migration; switch personal work to GitHub only after reviewing mappings | [Migration](2026-09-06-selective-tracker-migration.md) | Qualified selected target; GitHub path does not wait for Plane |
 | 5 | Jira adapter and work-project toolset; same lifecycle without another workflow branch | [Tracker adapters, Task 3](2026-09-06-portable-tracker-adapters.md) | Work deployment/authentication decision; can run alongside migration |
 | Deferred | Optional deterministic Confluence publication with Obsidian retained | [Publication](2026-09-06-team-document-publication.md) | Review existing custom server when shared later; no dependency for ticket delivery |
 
@@ -72,9 +73,10 @@ fixed click count across different organization authentication policies.
 ## Decisions needed from the maintainer
 
 Confirmed September 7: Plane is not installed and will be self-hosted on the local
-computer; work uses Jira Cloud and Confluence Cloud. Migrate active/planned Linear work to the eventual selected personal tracker.
-The latest decision reopens the destination between GitHub Issues and local Plane;
-completed history is outside the initial migration scope.
+computer if selected later; work uses Jira Cloud and Confluence Cloud. The
+latest decision selects GitHub Issues and Projects for personal coding work.
+Migrate active/planned Linear work after reviewing concrete mappings; completed
+history is outside the initial migration scope.
 Local drafting with selected publication is preferred. Obsidian remains a private
 journal, scratch pad and personal knowledge base; Confluence remains the shared
 library. Use the [selective knowledge relationship](../../design/local-and-shared-knowledge.md)
@@ -90,7 +92,7 @@ replace it with another connector by default. Site/project/space URLs, local
 sign-ins and vault attachment are needed for connection and live verification
 later. No credentials are needed in chat or for isolated adapter tests.
 
-Prepare a separate local Plane deployment runbook using reviewed upstream
+If Plane is selected later, prepare a separate local deployment runbook using reviewed upstream
 artifacts. Inspect the machine runtime, choose persistent storage and backups,
 document start/stop/restore and keep initial exposure local. Report unavailable
 service when the machine is off. Project bootstrap installs only required client

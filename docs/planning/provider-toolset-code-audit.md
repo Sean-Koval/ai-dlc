@@ -6,7 +6,7 @@ SAN-12's `codex/portable-workflow-bundles` at `04c65cb`; that branch's bundle wo
 and stage-retention repair are not assumed merged. Its successful-backup cleanup
 finding still blocks SAN-12 closeout. This planning work does not resolve it.
 
-## Findings
+## Historical baseline findings
 
 | Boundary | Evidence in current source | Implication and bounded correction |
 | --- | --- | --- |
@@ -44,8 +44,9 @@ branch; they must not be presented as this branch's qualification evidence.
 
 ## Product-level alternatives
 
-September 7 ticket-priority follow-up: the personal destination is undecided
-between GitHub Issues and local Plane, and Confluence is deferred. Re-read
+Historical September 7 ticket-priority follow-up, before final selection: the
+personal destination was undecided between GitHub Issues and local Plane, and
+Confluence was deferred. Re-read
 `providers/github_issues.py`: it already implements find/read/create/transition/link
 through gh, scopes commands with the configured repository and refuses a search
 result set at the 100-row limit. It normalizes state only; native completion-reason
@@ -55,7 +56,9 @@ read test and intermediate-state refusal, not a complete live GitHub workflow.
 fingerprint inclusion. Remove the former through capabilities; preserve existing
 fingerprints during this change. Add generic onboarding and shared qualification
 for this existing adapter before a new deployment is needed. GitHub Projects is
-not implemented by this adapter and is not part of the proposed first delivery.
+not implemented by that baseline adapter. The later authorized
+`github-ticket-workflows` child adds Projects; this paragraph records the
+pre-implementation audit, not current branch support.
 
 1. **Reuse native tools plus thin lifecycle adapters (recommended).** MCP supplies
    service search/edit/context; adapters supply AI-DLC's small typed operations,
@@ -106,3 +109,14 @@ issue migration and two-way document synchronization are separate data problems.
 The current framework is a usable foundation but does not yet deliver the promised
 low-effort switch end to end. The proposed improvements target those boundaries,
 without rebuilding the framework or implementing general remote tool catalogs.
+
+## Authorized GitHub implementation
+
+The user selected GitHub Issues **and Projects**. Follow the
+[child plan](../superpowers/plans/2026-09-07-github-ticket-workflows.md) and
+[current verification record](../verification/github-ticket-workflows.md) for
+implementation evidence rather than the historical baseline above. Plane and
+Jira remain subsequent adapter work; their
+[API follow-through](tracker-adapter-follow-through.md) identifies the narrow
+contracts and remaining qualification inputs. No Plane deployment or Confluence
+server is required for this GitHub slice.

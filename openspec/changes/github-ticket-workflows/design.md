@@ -24,6 +24,11 @@ Set and verify board Done before closing the issue, so a close response lost in
 transit cannot leave a missing subsequent board update. Failures remain partial
 and uncertain, with the issue state authoritative; cancelled tickets are not
 silently converted into successful closure.
+An optional reconcile_closed operation (reference/operation_id, Item result)
+repairs a completed issue's stale Project state after fresh finish gates/read.
+Registry generic invocation blocks it just like terminal transition. It performs
+fresh remote reconciliation even when earlier completion journals succeeded;
+no board repair is inferred from an old cached mutation result.
 
 GitHub Projects uses GraphQL: attach an issue with addProjectV2ItemById, then use
 updateProjectV2ItemFieldValue separately. Pagination and identity checks apply to

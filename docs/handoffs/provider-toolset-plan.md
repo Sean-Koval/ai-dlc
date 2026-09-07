@@ -19,13 +19,13 @@ blocker; its implementation is not included or assumed merged here.
 
 ## Current priority
 
-Latest maintainer steering: focus on task/ticket management. Personal destination
-is now undecided between GitHub Issues and local Plane; retain Linear as the source
-for active/planned migration. Jira Cloud remains the work target. Defer Confluence
+Latest maintainer steering: focus on task/ticket management using GitHub Issues
+and Projects for personal coding projects; retain Linear as the source for
+active/planned migration. Jira Cloud remains the work target. Defer Confluence
 and publication; the custom server is on the work laptop and will be shared later.
 Do not request that server as a prerequisite or deploy Plane to settle the choice.
 Existing GitHub Issues support needs common onboarding and explicit shared
-qualification. GitHub Projects is outside the initial ticket contract.
+qualification. GitHub Projects is included in the authorized `github-ticket-workflows` child.
 
 ## Review entry points
 
@@ -51,7 +51,8 @@ optional deterministic publication service.
 - Plane is not installed; host it on the local computer, with a separate machine
   deployment runbook. Work targets Jira Cloud and Confluence Cloud.
 - Earlier Linear-to-Plane confirmation is superseded by the latest destination
-  choice: GitHub Issues or local Plane. Review inventory and mappings before execution.
+  choice: GitHub Issues and Projects. Plane remains optional for later adoption.
+  Review inventory and mappings before execution.
 - Obsidian holds private journals, daily logs, scratch notes and a personal
   knowledge base. Confluence holds shared product/team knowledge. Prefer local
   drafting and explicit publication of selected shared documents.

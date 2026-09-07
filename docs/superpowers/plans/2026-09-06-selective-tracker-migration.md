@@ -9,8 +9,10 @@
 
 Status: draft. [Master constraints](2026-09-06-provider-toolsets.md) apply. The current
 read-only preview covers 13 baseline records; do not hard-code that count.
-The personal destination is undecided between GitHub Issues and local Plane;
-migrate active/planned Linear work only after target selection and mapping review.
+The personal destination is GitHub Issues and Projects. The authorized GitHub
+child implements default-only and verified selected mappings first. Resumable
+remote target creation remains a separate parent task; migrate active/planned
+Linear work only after exact mapping/creation review.
 
 ## Task 1: Default-only selection preserves old work
 
