@@ -105,3 +105,27 @@ merged-revision evidence remain authoritative. Archive, PR/CI integration and
 `ai-dlc work finish spec-delivery-traceability` belong to root integration. This
 work does not weaken gates, mutate the tracker, or claim a completed work computer
 or harness walkthrough.
+
+
+## Independent review correction
+
+Review of `11b7edd` found that unchanged native spec IDs were treated as absent
+local paths. After correcting a test-fixture constructor, four legacy reference
+cases failed on validation as expected. The provider-neutral locality contract now
+preserves bare/slash IDs and provider URIs while validating explicit filesystem
+notation, recognized document suffixes and existing local paths. Twelve pure
+locality cases and four explicit-local refusal cases accompany mapped repeat
+publication tests; authored bodies and identities remain unchanged.
+
+The focused workflow/CLI/pure/MCP suite passed 138 tests. The existing
+[work-record corpus](spec-delivery-traceability/work-corpus.json) contains 16 records;
+all validated, including `github-ticket-workflows` and `github-project-defaults`
+with their original native spec IDs. Finish/archive gates remain unchanged.
+
+The review correction subsequently passed all five required checks with **1,203
+tests** and strict OpenSpec validation. Its
+[receipt](spec-delivery-traceability/review-local-checks.json) records the dirty
+repair candidate based on `11b7edd`; this is local evidence, not merged-revision
+completion. One initial invocation lacked mise on PATH and stopped before checks;
+using the prepared task-local tools resolved that environment issue. Source,
+tests and generated assets remained unchanged throughout the passing run.

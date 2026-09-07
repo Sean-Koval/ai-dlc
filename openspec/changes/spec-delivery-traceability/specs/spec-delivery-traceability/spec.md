@@ -36,3 +36,8 @@ New issue publication SHALL include scope, references, dependencies, and accepta
 #### Scenario: A historical creation attempt is retried
 - **WHEN** the publication journal uses an older body and the issue is mapped or recoverable by correlation or the recorded result
 - **THEN** publication preserves the old operation identity and payload fingerprint, reuses the issue without replacing its authored body, and an uncertain missing result never authorizes a duplicate create
+
+
+#### Scenario: A legacy work item uses a provider-native specification ID
+- **WHEN** validation or repeat publication reads a specification identifier, including an opaque slash ID or provider URI
+- **THEN** the identifier remains provider-owned, the mapped issue is reconciled unchanged, and explicit local specification documents still require safe existing paths

@@ -20,7 +20,7 @@ from ai_dlc.locking import project_write_lock
 from ai_dlc.providers import Registry
 from ai_dlc.providers.openspec import OpenSpecProvider
 from ai_dlc.providers.scm import GitHubSCM
-from ai_dlc.traceability import render_ticket_body, validate_work_graph
+from ai_dlc.traceability import artifact_is_local, render_ticket_body, validate_work_graph
 
 
 class Work(BaseModel):
@@ -168,9 +168,6 @@ def resolve_work(raw: dict, config: dict, work_id: str, *, require_review: bool 
     return work
 
 
-_PROVIDER_ARTIFACTS = {"tracker", "pr", "branch", "deployment", "knowledge"}
-
-
 def read_work_graph(root: Path, config: dict, work_id: str) -> tuple[dict[str, dict], list[str]]:
     """Inspect only the selected dependency closure, without journals or provider calls."""
     records = {}
@@ -199,12 +196,14 @@ def read_work_graph(root: Path, config: dict, work_id: str) -> tuple[dict[str, d
             else:
                 pending.append(dependency)
         for kind, reference in record["artifacts"].items():
-            if kind in _PROVIDER_ARTIFACTS:
-                continue
             try:
+                if not artifact_is_local(kind, reference):
+                    if kind != "spec":
+                        continue
+                    parsed = urlsplit(reference)
+                    if parsed.scheme or not (root / parsed.path).exists():
+                        continue
                 parsed = urlsplit(reference)
-                if parsed.scheme in {"http", "https"} and parsed.netloc:
-                    continue
                 if parsed.scheme or parsed.netloc or parsed.query or not parsed.path.strip():
                     raise ValueError("Expected a local artifact path or HTTP(S) reference")
                 target = inside(root, parsed.path)

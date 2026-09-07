@@ -154,3 +154,11 @@ or operational decision that the design does not answer, pause and update the
 reviewed artifact before continuing. Small implementation details may remain
 in code and tests. Decisions that future maintainers must understand belong in
 the repository.
+
+
+Specification references may be provider-native IDs or explicit local documents.
+Native IDs (including slash IDs and provider URIs) are not interpreted as missing
+repository files. Use `./name` for an ambiguous local directory; filesystem
+notation, document suffixes such as `.md`, and existing repository paths receive
+local containment/existence checks. This does not replace the specification
+provider's archive or finish validation.

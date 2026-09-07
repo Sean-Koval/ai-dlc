@@ -1683,3 +1683,52 @@ def test_start_rejects_stale_project_configuration_before_branch_or_dependency_r
         == "main"
     )
     assert tracker.calls == []
+
+
+@pytest.mark.parametrize(
+    "reference",
+    [
+        "github-ticket-workflows",
+        "github-project-defaults",
+        "organization/spec-id",
+        "spec-provider://organization/change",
+    ],
+)
+def test_legacy_native_spec_reference_validates_and_preserves_mapped_issue(tmp_path, reference):
+    from ai_dlc.workflow import WorkService, validate_work
+
+    traceability_record(
+        tmp_path,
+        requires_spec=True,
+        spec_reason="Existing provider specification",
+        artifacts={"spec": reference, "tracker": "mapped"},
+    )
+    tracker = TraceabilityTracker()
+    tracker.items["mapped"] = {
+        "id": "mapped",
+        "state": "open",
+        "body": "Authored issue remains intact",
+    }
+    service = WorkService(tmp_path, {}, state_path=tmp_path / "state", registry=Registry(tracker))
+    assert validate_work(tmp_path, {}, "target")["valid"]
+    for _ in range(2):
+        result = service.publish("target")
+        assert result["tracker"]["body"] == "Authored issue remains intact"
+    assert not any(operation == "create" for operation, _ in tracker.calls)
+    assert service.load("target")["artifacts"]["spec"] == reference
+
+
+@pytest.mark.parametrize(
+    "reference", ["./missing-change", "docs/missing.md", "spec.md", "../outside"]
+)
+def test_explicit_local_spec_reference_still_refuses_before_publication(tmp_path, reference):
+    from ai_dlc.workflow import WorkService
+
+    path = traceability_record(tmp_path, artifacts={"spec": reference, "tracker": "mapped"})
+    before = path.read_bytes()
+    tracker = TraceabilityTracker()
+    service = WorkService(tmp_path, {}, state_path=tmp_path / "state", registry=Registry(tracker))
+    with pytest.raises(ValueError, match="Work validation failed"):
+        service.publish("target")
+    assert tracker.calls == []
+    assert path.read_bytes() == before

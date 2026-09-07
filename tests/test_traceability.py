@@ -92,3 +92,28 @@ def test_legacy_ticket_body_has_no_invented_dependencies_or_requirements():
     assert "Verification only" in body
     assert "RQ-001" not in body
     assert "## Scope" in body
+
+
+@pytest.mark.parametrize(
+    ("kind", "reference", "exists", "local"),
+    [
+        ("spec", "github-ticket-workflows", False, False),
+        ("spec", "organization/spec-id", False, False),
+        ("spec", "provider://organization/spec-id", False, False),
+        ("spec", "https://specs.example/id", False, False),
+        ("spec", "./missing-change", False, True),
+        ("spec", "../outside", False, True),
+        ("spec", "/absolute/spec", False, True),
+        ("spec", "docs/missing.md", False, True),
+        ("spec", "spec.md", False, True),
+        ("spec", "changes/existing", True, True),
+        ("brief", "missing", False, True),
+        ("tracker", "organization/issue", False, False),
+    ],
+)
+def test_artifact_ownership_distinguishes_native_spec_identity_from_local_documents(
+    kind, reference, exists, local
+):
+    from ai_dlc.traceability import artifact_is_local
+
+    assert artifact_is_local(kind, reference, existing_path=exists) is local

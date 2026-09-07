@@ -25,7 +25,12 @@ preserve old behavior. Validate local document artifact paths before any publish
 or start effects, allowing existing files/directories and fragments without
 interpreting arbitrary specification prose. Reject escapes and symlinks. HTTP(S)
 references remain unprobed; tracker, PR, branch, deployment and knowledge references
-belong to their providers, not the repository filesystem.
+belong to their providers, not the repository filesystem. Specification IDs are
+also provider-owned, including slash IDs and provider-specific URIs. Explicit
+filesystem notation (`./`, `../`, absolute paths), recognized document suffixes
+(such as `.md`), and existing repository paths identify local spec artifacts.
+Use `./name` for an otherwise ambiguous bare local directory. This validation
+does not resolve native spec IDs or replace the provider's finish/archive gate.
 
 A read-only `work validate` must not initialize mutation journals or call provider
 services. Start uses each dependency's pinned provider/binding and a fresh canonical

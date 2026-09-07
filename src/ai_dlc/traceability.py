@@ -1,8 +1,37 @@
 """Pure work dependency validation and first-publication presentation."""
 
 import re
+from pathlib import PurePosixPath, PureWindowsPath
+from urllib.parse import urlsplit
 
 WORK_ID = re.compile(r"[a-zA-Z0-9][a-zA-Z0-9_-]{0,99}")
+
+
+_PROVIDER_ARTIFACTS = {"tracker", "pr", "branch", "deployment", "knowledge"}
+_DOCUMENT_SUFFIXES = {".md", ".markdown", ".rst", ".txt", ".json", ".toml", ".yaml", ".yml", ".pdf"}
+
+
+def artifact_is_local(kind: str, reference: str, *, existing_path: bool = False) -> bool:
+    """Classify document ownership, without interpreting a specification provider's IDs.
+
+    Spec IDs (including slash IDs and provider URIs) belong to their provider.
+    Filesystem notation, document suffixes and already existing repository paths
+    explicitly identify local spec artifacts. Ambiguous bare directories use ./.
+    """
+    if kind in _PROVIDER_ARTIFACTS:
+        return False
+    if PureWindowsPath(reference).drive:
+        return True
+    parsed = urlsplit(reference)
+    if parsed.scheme in {"http", "https"} and parsed.netloc:
+        return False
+    if kind != "spec":
+        return True
+    if reference.startswith(("./", "../", "/", "\\")):
+        return True
+    if parsed.scheme:
+        return False
+    return existing_path or PurePosixPath(parsed.path).suffix.lower() in _DOCUMENT_SUFFIXES
 
 
 def validate_work_graph(records: dict[str, dict]) -> list[str]:

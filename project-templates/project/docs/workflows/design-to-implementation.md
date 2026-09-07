@@ -98,3 +98,11 @@ mapping/correlation without overwriting authored descriptions or changing prior
 journal identities. It does not publish updated scope into an existing issue.
 Keep unresolved product semantics and unperformed live checks visible. Review,
 merge, exact-revision evidence and `ai-dlc work finish` remain the completion path.
+
+
+Specification references may be provider-native IDs or explicit local documents.
+Native IDs (including slash IDs and provider URIs) are not interpreted as missing
+repository files. Use `./name` for an ambiguous local directory; filesystem
+notation, document suffixes such as `.md`, and existing repository paths receive
+local containment/existence checks. This does not replace the specification
+provider's archive or finish validation.
