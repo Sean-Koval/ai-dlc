@@ -1,0 +1,16 @@
+schema = 1
+id = "github-project-defaults"
+title = "Default GitHub setup to repository Project tracking"
+scope = "Implement the maintainer-requested Project default as a bounded onboarding slice of GitHub issue 19."
+requires_spec = true
+spec_reason = "Adds reviewed remote Project creation, default selection and uncertainty behavior."
+acceptance = ["GP-01 through GP-03; preserve existing connection and completion contracts."]
+reviewed = true
+[providers]
+specs = "openspec"
+scm = "github"
+knowledge = "obsidian"
+[artifacts]
+spec = "github-project-defaults"
+parent_issue = "https://github.com/Sean-Koval/ai-dlc/issues/19"
+branch = "codex/github-ticket-workflows"

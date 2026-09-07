@@ -1,0 +1,305 @@
+{
+  "schema": 1,
+  "repository": "Sean-Koval/ai-dlc",
+  "date": "2026-09-07",
+  "method": "Reconstruction from current local specs/plans; not a complete Linear export",
+  "linear_source": "Sandbox-aidlc / SAN",
+  "linear_connector_observed": "Lab / skolab; cannot read SAN source through that connection",
+  "issues_created_and_verified": 13,
+  "project_board": {
+    "owner": "Sean-Koval",
+    "number": 2,
+    "node_id": "PVT_kwHOAt2Evs4BiwXI",
+    "title": "AI-DLC",
+    "url": "https://github.com/users/Sean-Koval/projects/2",
+    "items_verified": 13,
+    "views": [
+      "All work",
+      "Delivery board"
+    ],
+    "repository_link": "Pending CLI Project authorization and explicit link verification",
+    "status_field_id": "PVTSSF_lAHOAt2Evs4BiwXIzhhnLb8",
+    "status_options": {
+      "Todo": "f75ad846",
+      "In Progress": "47fc9ee4",
+      "Done": "98236657"
+    }
+  },
+  "local_tracker_bindings": "Unchanged; exact target alias/Project setup and verified migration apply remain pending",
+  "excluded_integrated": [
+    "component-capability-contract",
+    "connected-project-readiness",
+    "framework-delivery-plan",
+    "linear-provider-onboarding",
+    "portable-profile-enrollment"
+  ],
+  "items": [
+    {
+      "work": "portable-workflow-bundles",
+      "title": "Import pinned workflow guidance and expose it to supported harnesses",
+      "source_tracker": {
+        "id": "a62d3b79-a8f1-46bb-9c09-7a2af5f0b36d",
+        "identifier": "SAN-12",
+        "url": "https://linear.app/sandbox-aidlc/issue/SAN-12/import-pinned-workflow-guidance-and-expose-it-to-supported-harnesses"
+      },
+      "source_revision": "04c65cbc736be220feb0ba18cc3db8f32ebed7c8",
+      "github": {
+        "number": 10,
+        "node_id": "I_kwDOO8OjNM8AAAABQJOS_g",
+        "url": "https://github.com/Sean-Koval/ai-dlc/issues/10",
+        "project_status": "In Progress"
+      },
+      "planning_status": "In progress \u2014 review blocked",
+      "spec": "openspec/changes/portable-workflow-bundles",
+      "plan": "docs/superpowers/plans/2026-09-05-portable-workflow-bundles.md",
+      "depends_on": [
+        "component-capability-contract",
+        "connected-project-readiness"
+      ],
+      "verified": "issue title/body/identity/open state read after creation"
+    },
+    {
+      "work": "product-shaping-workflow",
+      "title": "Guide product discovery and feature selection for new and existing products",
+      "source_tracker": {
+        "id": "e6b3cdc5-2b03-4bde-b53a-9be1a48f5d96",
+        "identifier": "SAN-13",
+        "url": "https://linear.app/sandbox-aidlc/issue/SAN-13/guide-product-discovery-and-feature-selection-for-new-and-existing"
+      },
+      "source_revision": "b6c89aafa20040fc1264be04bf862c30b1fb2ed0",
+      "github": {
+        "number": 11,
+        "node_id": "I_kwDOO8OjNM8AAAABQJOTpg",
+        "url": "https://github.com/Sean-Koval/ai-dlc/issues/11",
+        "project_status": "Todo"
+      },
+      "planning_status": "Backlog",
+      "spec": "openspec/changes/product-shaping-workflow",
+      "plan": "docs/superpowers/plans/2026-09-05-product-shaping-workflow.md",
+      "depends_on": [],
+      "verified": "issue title/body/identity/open state read after creation"
+    },
+    {
+      "work": "spec-delivery-traceability",
+      "title": "Carry product requirements into independently deliverable specifications and tickets",
+      "source_tracker": {
+        "id": "686b5639-dadd-49c2-8a6d-21251e8ad9f7",
+        "identifier": "SAN-14",
+        "url": "https://linear.app/sandbox-aidlc/issue/SAN-14/carry-product-requirements-into-independently-deliverable"
+      },
+      "source_revision": "b6c89aafa20040fc1264be04bf862c30b1fb2ed0",
+      "github": {
+        "number": 12,
+        "node_id": "I_kwDOO8OjNM8AAAABQJOUUw",
+        "url": "https://github.com/Sean-Koval/ai-dlc/issues/12",
+        "project_status": "Todo"
+      },
+      "planning_status": "Backlog",
+      "spec": "openspec/changes/spec-delivery-traceability",
+      "plan": "docs/superpowers/plans/2026-09-05-spec-delivery-traceability.md",
+      "depends_on": [
+        "product-shaping-workflow"
+      ],
+      "verified": "issue title/body/identity/open state read after creation"
+    },
+    {
+      "work": "design-pm-workflow",
+      "title": "Add optional UI/UX design generation and evaluation workflow",
+      "source_tracker": {
+        "id": "b4715a51-b64d-49de-bb25-38a97052b096",
+        "identifier": "SAN-6",
+        "url": "https://linear.app/sandbox-aidlc/issue/SAN-6/add-optional-uiux-design-generation-and-evaluation-workflow"
+      },
+      "source_revision": "b6c89aafa20040fc1264be04bf862c30b1fb2ed0",
+      "github": {
+        "number": 13,
+        "node_id": "I_kwDOO8OjNM8AAAABQJOVNw",
+        "url": "https://github.com/Sean-Koval/ai-dlc/issues/13",
+        "project_status": "Todo"
+      },
+      "planning_status": "Backlog",
+      "spec": "openspec/changes/design-pm-workflow",
+      "plan": "docs/superpowers/plans/2026-09-05-design-pm-workflow.md",
+      "depends_on": [
+        "product-shaping-workflow",
+        "spec-delivery-traceability"
+      ],
+      "verified": "issue title/body/identity/open state read after creation"
+    },
+    {
+      "work": "framework-qualification",
+      "title": "Qualify portable setup, provider replacement, and development handoffs",
+      "source_tracker": {
+        "id": "18f46d0a-618c-4ebd-a7cc-92b56cff8681",
+        "identifier": "SAN-15",
+        "url": "https://linear.app/sandbox-aidlc/issue/SAN-15/qualify-portable-setup-provider-replacement-and-development-handoffs"
+      },
+      "source_revision": "b6c89aafa20040fc1264be04bf862c30b1fb2ed0",
+      "github": {
+        "number": 14,
+        "node_id": "I_kwDOO8OjNM8AAAABQJOV5A",
+        "url": "https://github.com/Sean-Koval/ai-dlc/issues/14",
+        "project_status": "Todo"
+      },
+      "planning_status": "Backlog",
+      "spec": null,
+      "plan": "docs/superpowers/plans/2026-09-05-framework-qualification.md",
+      "depends_on": [
+        "connected-project-readiness",
+        "linear-provider-onboarding",
+        "portable-workflow-bundles",
+        "spec-delivery-traceability"
+      ],
+      "verified": "issue title/body/identity/open state read after creation"
+    },
+    {
+      "work": "workflow-quality-calibration",
+      "title": "Evaluate product shaping and delivery guidance against baseline behavior",
+      "source_tracker": {
+        "id": "843b9d21-d321-444d-88dd-353f12a505c2",
+        "identifier": "SAN-16",
+        "url": "https://linear.app/sandbox-aidlc/issue/SAN-16/evaluate-product-shaping-and-delivery-guidance-against-baseline"
+      },
+      "source_revision": "b6c89aafa20040fc1264be04bf862c30b1fb2ed0",
+      "github": {
+        "number": 15,
+        "node_id": "I_kwDOO8OjNM8AAAABQJOWpQ",
+        "url": "https://github.com/Sean-Koval/ai-dlc/issues/15",
+        "project_status": "Todo"
+      },
+      "planning_status": "Backlog",
+      "spec": null,
+      "plan": "docs/superpowers/plans/2026-09-05-workflow-quality-calibration.md",
+      "depends_on": [
+        "product-shaping-workflow",
+        "spec-delivery-traceability"
+      ],
+      "verified": "issue title/body/identity/open state read after creation"
+    },
+    {
+      "work": "design-pm-calibration",
+      "title": "Calibrate UI/UX evaluation and measure its incremental value",
+      "source_tracker": {
+        "id": "7fd110ce-2d64-4442-a34a-7069cb0598d2",
+        "identifier": "SAN-7",
+        "url": "https://linear.app/sandbox-aidlc/issue/SAN-7/calibrate-uiux-evaluation-and-measure-its-incremental-value"
+      },
+      "source_revision": "b6c89aafa20040fc1264be04bf862c30b1fb2ed0",
+      "github": {
+        "number": 16,
+        "node_id": "I_kwDOO8OjNM8AAAABQJOXXg",
+        "url": "https://github.com/Sean-Koval/ai-dlc/issues/16",
+        "project_status": "Todo"
+      },
+      "planning_status": "Backlog",
+      "spec": null,
+      "plan": "docs/superpowers/plans/2026-09-05-design-pm-calibration.md",
+      "depends_on": [
+        "design-pm-workflow"
+      ],
+      "verified": "issue title/body/identity/open state read after creation"
+    },
+    {
+      "work": "portable-development-v4",
+      "title": "Complete remaining portable AI-DLC v4 release verification",
+      "source_tracker": null,
+      "source_revision": "b6c89aafa20040fc1264be04bf862c30b1fb2ed0",
+      "github": {
+        "number": 17,
+        "node_id": "I_kwDOO8OjNM8AAAABQJOYHw",
+        "url": "https://github.com/Sean-Koval/ai-dlc/issues/17",
+        "project_status": "In Progress"
+      },
+      "planning_status": "In progress \u2014 qualification pending",
+      "spec": "openspec/changes/portable-development-v4",
+      "plan": null,
+      "depends_on": [],
+      "verified": "issue title/body/identity/open state read after creation"
+    },
+    {
+      "work": "github-ticket-workflows",
+      "title": "Capability-based GitHub Issues and Projects workflows",
+      "source_tracker": null,
+      "source_revision": "b6c89aafa20040fc1264be04bf862c30b1fb2ed0",
+      "github": {
+        "number": 18,
+        "node_id": "I_kwDOO8OjNM8AAAABQJOY0g",
+        "url": "https://github.com/Sean-Koval/ai-dlc/issues/18",
+        "project_status": "In Progress"
+      },
+      "planning_status": "In progress \u2014 qualification pending",
+      "spec": "openspec/changes/github-ticket-workflows",
+      "plan": "docs/superpowers/plans/2026-09-07-github-ticket-workflows.md",
+      "depends_on": [],
+      "verified": "issue title/body/identity/open state read after creation"
+    },
+    {
+      "work": "provider-toolset-onboarding",
+      "title": "Complete reusable provider onboarding and native MCP setup",
+      "source_tracker": null,
+      "source_revision": "b6c89aafa20040fc1264be04bf862c30b1fb2ed0",
+      "github": {
+        "number": 19,
+        "node_id": "I_kwDOO8OjNM8AAAABQJOZaQ",
+        "url": "https://github.com/Sean-Koval/ai-dlc/issues/19",
+        "project_status": "In Progress"
+      },
+      "planning_status": "In progress \u2014 Project-default child implemented and reviewed; parent scope remains",
+      "spec": "openspec/changes/provider-toolset-onboarding",
+      "plan": "docs/superpowers/plans/2026-09-06-provider-toolset-onboarding.md",
+      "depends_on": [],
+      "verified": "issue title/body/identity/open state read after creation"
+    },
+    {
+      "work": "portable-tracker-adapters",
+      "title": "Add optional Plane and Jira Cloud lifecycle adapters",
+      "source_tracker": null,
+      "source_revision": "b6c89aafa20040fc1264be04bf862c30b1fb2ed0",
+      "github": {
+        "number": 20,
+        "node_id": "I_kwDOO8OjNM8AAAABQJOaLw",
+        "url": "https://github.com/Sean-Koval/ai-dlc/issues/20",
+        "project_status": "Todo"
+      },
+      "planning_status": "Proposed \u2014 remaining parent scope",
+      "spec": "openspec/changes/portable-tracker-adapters",
+      "plan": "docs/superpowers/plans/2026-09-06-portable-tracker-adapters.md",
+      "depends_on": [],
+      "verified": "issue title/body/identity/open state read after creation"
+    },
+    {
+      "work": "selective-tracker-migration",
+      "title": "Qualify remaining tracker substitution and migration paths",
+      "source_tracker": null,
+      "source_revision": "b6c89aafa20040fc1264be04bf862c30b1fb2ed0",
+      "github": {
+        "number": 21,
+        "node_id": "I_kwDOO8OjNM8AAAABQJObDA",
+        "url": "https://github.com/Sean-Koval/ai-dlc/issues/21",
+        "project_status": "Todo"
+      },
+      "planning_status": "Proposed \u2014 remaining parent scope",
+      "spec": "openspec/changes/selective-tracker-migration",
+      "plan": "docs/superpowers/plans/2026-09-06-selective-tracker-migration.md",
+      "depends_on": [],
+      "verified": "issue title/body/identity/open state read after creation"
+    },
+    {
+      "work": "team-document-publication",
+      "title": "Evaluate selective Confluence publication through existing tools",
+      "source_tracker": null,
+      "source_revision": "b6c89aafa20040fc1264be04bf862c30b1fb2ed0",
+      "github": {
+        "number": 22,
+        "node_id": "I_kwDOO8OjNM8AAAABQJObqg",
+        "url": "https://github.com/Sean-Koval/ai-dlc/issues/22",
+        "project_status": "Todo"
+      },
+      "planning_status": "Deferred",
+      "spec": "openspec/changes/team-document-publication",
+      "plan": "docs/superpowers/plans/2026-09-06-team-document-publication.md",
+      "depends_on": [],
+      "verified": "issue title/body/identity/open state read after creation"
+    }
+  ]
+}

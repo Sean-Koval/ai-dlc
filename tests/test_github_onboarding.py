@@ -93,6 +93,9 @@ def connect(root, **kwargs):
             "XDG_STATE_HOME": str(root / "runtime/state"),
         },
     )
+    # These retained cases exercise the explicit issues-only/selected-Project paths.
+    if kwargs.get("repository") is not None and kwargs.get("project") is None:
+        kwargs.setdefault("issues_only", True)
     return connect_github_provider(root, alias="tickets", environ=environment, **kwargs)
 
 
@@ -205,7 +208,17 @@ def test_cli_alias_and_linear_alias_guard(checkout, remote):
             '\n[providers.tickets]\nkind="github-issues"\n[providers.other]\nkind="linear"\n'
         )
     result = CliRunner().invoke(
-        app, ["provider", "connect", "tickets", "--root", str(checkout), "--repository", "acme/app"]
+        app,
+        [
+            "provider",
+            "connect",
+            "tickets",
+            "--root",
+            str(checkout),
+            "--repository",
+            "acme/app",
+            "--issues-only",
+        ],
     )
     assert result.exit_code == 0, result.output
     assert json.loads(result.output)["provider"] == "tickets"
@@ -383,7 +396,9 @@ def test_inherited_github_alias_dispatch_uses_explicit_runtime(checkout, remote,
 
     environment, _, _ = enrolled
     before = (checkout / "ai-dlc.toml").read_bytes()
-    result = connect_provider(checkout, name="tickets", environ=environment, repository="acme/app")
+    result = connect_provider(
+        checkout, name="tickets", environ=environment, repository="acme/app", issues_only=True
+    )
     assert result["provider"] == "tickets"
     assert result["plan"]["patch"]["host"] == "github.example.test"
     assert (checkout / "ai-dlc.toml").read_bytes() == before

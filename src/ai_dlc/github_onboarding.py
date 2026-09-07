@@ -282,6 +282,10 @@ def _load_plan(root, path):
             if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
                 raise ValueError("GitHub plan must be a regular file")
             plan = json.load(stream)
+    if isinstance(plan, dict) and plan.get("kind") == "github-project-setup":
+        from ai_dlc.github_project_setup import validate_plan
+
+        return validate_plan(plan)
     if not isinstance(plan, dict) or plan.get("schema") != 1 or plan.get("kind") != "github-issues":
         raise ValueError("Invalid GitHub connection plan")
     selected = plan.get("selected")
@@ -310,7 +314,7 @@ def _load_plan(root, path):
     return plan
 
 
-def connect_github_provider(
+def _connect_existing_github(
     root: Path,
     *,
     alias="github-issues",
@@ -350,7 +354,7 @@ def connect_github_provider(
             or digest(resolve_runtime(root, environ=environ).values) != saved["runtime_digest"]
         ):
             raise ValueError("GitHub connection source or work bindings changed")
-        fresh = connect_github_provider(root, alias=alias, environ=environ, **saved["selected"])
+        fresh = _connect_existing_github(root, alias=alias, environ=environ, **saved["selected"])
         if fresh.get("plan") != saved:
             raise ValueError(
                 "GitHub connection plan drift: configuration, work or remote identity changed"
@@ -465,3 +469,55 @@ def connect_github_provider(
     if plan_file is not None:
         result["plan_file"] = _save_plan(root, plan_file, plan)
     return result
+
+
+def connect_github_provider(
+    root: Path, *, alias="github-issues", issues_only=False, environ, **options
+):
+    """Default new GitHub connections to a reviewed repository Project."""
+    from ai_dlc.github_project_setup import KIND, apply_plan, preview
+
+    root = Path(root).resolve()
+    if not re.fullmatch(r"[A-Za-z0-9_-]+", alias):
+        raise ValueError("GitHub provider alias must use letters, digits, underscore or hyphen")
+    if options.get("apply"):
+        if issues_only or any(
+            value is not None for key, value in options.items() if key not in {"apply", "plan_file"}
+        ):
+            raise ValueError("GitHub apply consumes only its saved selections")
+        if options.get("plan_file") is None:
+            raise ValueError("GitHub apply requires --plan-file")
+        saved = _load_plan(root, options["plan_file"])
+        if saved["provider"] != alias:
+            raise ValueError("GitHub plan provider identity mismatch")
+        if saved["kind"] == KIND:
+            return apply_plan(root, saved, environ=environ)
+        return _connect_existing_github(root, alias=alias, environ=environ, **options)
+    runtime = resolve_runtime(root, environ=environ).values
+    settings = runtime.get("providers", {}).get(alias, {})
+    options["repository"] = (
+        options.get("repository")
+        or settings.get("repository")
+        or runtime.get("scm", {}).get("repository")
+    )
+    if issues_only:
+        if any(
+            options.get(key) is not None
+            for key in ("project", "status_field", "open", "in_progress", "closed")
+        ):
+            raise ValueError("--issues-only cannot include Project selections")
+        return _connect_existing_github(root, alias=alias, environ=environ, **options)
+    if options.get("project") is not None or options["repository"] is None:
+        return _connect_existing_github(root, alias=alias, environ=environ, **options)
+    if any(
+        options.get(key) is not None for key in ("status_field", "open", "in_progress", "closed")
+    ):
+        raise ValueError("Custom status selections require --project")
+    return preview(
+        root,
+        alias=alias,
+        host=options.get("host") or settings.get("host", "github.com"),
+        repository=options["repository"],
+        environ=environ,
+        plan_file=options.get("plan_file"),
+    )

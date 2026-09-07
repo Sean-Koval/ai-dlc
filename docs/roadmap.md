@@ -1,5 +1,12 @@
 # AI-DLC roadmap
 
+Current adoption update (September 7): the active/planned backlog has been
+reconstructed as [GitHub issues](planning/github-backlog-migration.md), preserving
+Linear source references. That record identifies delivered predecessors and
+remaining work; the September 5 sequencing snapshot below is historical. Project
+board authorization and local tracker binding migration are still pending.
+
+
 Updated: 2026-09-05. Linear owns priority and status. This document owns the
 delivery sequence; [product direction](product-direction.md) owns the intended
 outcomes. The capabilities below are planned, not shipped.

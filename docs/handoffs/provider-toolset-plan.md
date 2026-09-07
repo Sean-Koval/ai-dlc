@@ -1,5 +1,29 @@
 # Provider toolset planning handoff
 
+## Latest adoption update — September 7
+
+Latest direction: ignore Linear reconciliation for now and work from the GitHub
+issues. Project-backed GitHub setup is now the requested default. The bounded
+`github-project-defaults` child of issue #19 has a formal specification, tests
+and implementation accepted by independent review. Review found retry identity
+and late repository drift gaps; regression tests now cover the fixes, including
+host capitalization. All five required checks passed with 1,137 tests and all
+15 strict OpenSpec items passed against the final implementation tree. This is
+pre-commit local candidate evidence; see the verification record. Do not close
+the parent for this slice alone.
+
+
+The maintainer authorized practical adoption using current specs if the connected
+Linear source is unavailable. Thirteen AI-DLC issues are now published and verified
+in `Sean-Koval/ai-dlc` and attached to the
+[AI-DLC Project #2](https://github.com/users/Sean-Koval/projects/2), with All work
+and Delivery board views. See the [migration record](../planning/github-backlog-migration.md).
+Repository selection is resolved. Jira is work onboarding only, with no Jira
+migration. Repository-to-Project linking and local binding/default migration
+remain pending the CLI Project permission upgrade; MCP Project access is verified. The older execution and
+planning notes below are historical wherever this update supersedes them.
+
+
 Execution update: user authorized implementation and selected GitHub Issues plus
 Projects. The local implementation/review cycle on `codex/github-ticket-workflows`
 is complete: capabilities, optional Project statuses, named setup and verified

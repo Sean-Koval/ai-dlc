@@ -40,6 +40,10 @@ Credentials stay outside tracked configuration.
 
 ## Jira Cloud for work
 
+Maintainer clarification: Jira is a work onboarding/new-work target. Personal
+AI-DLC work moves to GitHub; there is no request to migrate tickets into Jira.
+
+
 Use REST v3 with an explicitly selected Cloud origin and authentication mode.
 Discover project, issue type, required create fields and actual per-issue
 transitions. A destination status ID is not a transition ID. Tenant-specific

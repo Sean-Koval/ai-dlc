@@ -866,7 +866,16 @@ def connect_provider(root: Path, *, name: str, environ: Mapping[str, str], **opt
         "linear": (connect_linear_provider, {"organization", "team", "in_progress", "closed"}),
         "github-issues": (
             connect_github_provider,
-            {"host", "repository", "project", "status_field", "open", "in_progress", "closed"},
+            {
+                "host",
+                "repository",
+                "project",
+                "issues_only",
+                "status_field",
+                "open",
+                "in_progress",
+                "closed",
+            },
         ),
     }
     config = resolve_runtime(root, environ=environ).values

@@ -3,6 +3,32 @@
 Implementation branch: `codex/github-ticket-workflows`, based on planning commit
 `0775b90`. Live and fixture evidence are recorded separately.
 
+## September 7 Project-default follow-through
+
+The maintainer selected the GitHub backlog as the work queue and deferred Linear
+reconciliation. Thirteen issues are now in [AI-DLC Project #2](https://github.com/users/Sean-Koval/projects/2),
+with verified status mappings and All work / Delivery board views. The
+[adoption record](../planning/github-backlog-migration.md) separates actual MCP
+Project operations from pending CLI permission, repository linking, and local
+tracker activation. Earlier no-mutation/source-inventory notes below describe
+prior checkpoints and are superseded by that record.
+
+The `github-project-defaults` child implements default repository inference and
+Project reuse/create, explicit issues-only setup, immutable creation retry
+identity, late repository checks and authored-configuration protection. TDD
+reproduced the missing behavior and review regressions before fixes. Independent
+review accepted the final 47 onboarding/default tests with no remaining P1/P2
+findings. Its review was local and mocked.
+
+All five required project checks passed against the final implementation tree:
+generated, format, lint, types, and **1,137 tests** in 278.03 seconds. All **15**
+OpenSpec items passed strict validation. The ignored receipt
+`.ai-dlc/local/project-defaults-required-final.txt` records base `b6c89aa` and
+`dirty=true`, correctly identifying pre-commit candidate evidence; subsequent
+edits only record qualification and delivery status. This is not clean-commit
+or merged-revision CI evidence. The default-create adapter path and recovery
+remain fixture-qualified; actual MCP creation does not qualify the adapter.
+
 ## Initial read-only environment inspection
 
 On September 7, 2026, the installed CLI reported `gh version 2.95.0` (2026-06-17).
