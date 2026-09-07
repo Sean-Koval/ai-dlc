@@ -129,3 +129,22 @@ repair candidate based on `11b7edd`; this is local evidence, not merged-revision
 completion. One initial invocation lacked mise on PATH and stopped before checks;
 using the prepared task-local tools resolved that environment issue. Source,
 tests and generated assets remained unchanged throughout the passing run.
+
+## Follow-up locality review
+
+Re-review confirmed the native-ID repair and identified two local-reference
+bypasses. Seven regressions reproduced publication continuing for reserved
+`file:` URIs and suffixless dangling final/ancestor symlinks. After supplying a
+valid mapped issue in the fixture, all seven failed because publication did not
+refuse. Filesystem URIs are now explicitly reserved and rejected; lexical symlink
+entries reach containment validation even when their target does not exist.
+Genuine provider schemes and opaque slash IDs retain the accepted ownership rule.
+The focused workflow/CLI/pure/MCP suite passed 145 tests. No provider behavior,
+authored issue body, binding identity or finish gate changed.
+
+The locality follow-up passed all five required checks with **1,210 tests** and
+strict OpenSpec validation. Its
+[receipt](spec-delivery-traceability/locality-review-checks.json) records the dirty
+candidate based on `d713f2e`; source and tests remained frozen through the passing
+run. It is local verification, not merged-revision completion or native-provider
+qualification.

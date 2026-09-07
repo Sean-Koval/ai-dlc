@@ -41,3 +41,8 @@ New issue publication SHALL include scope, references, dependencies, and accepta
 #### Scenario: A legacy work item uses a provider-native specification ID
 - **WHEN** validation or repeat publication reads a specification identifier, including an opaque slash ID or provider URI
 - **THEN** the identifier remains provider-owned, the mapped issue is reconciled unchanged, and explicit local specification documents still require safe existing paths
+
+
+#### Scenario: A local specification reference uses a file URI or dangling symlink
+- **WHEN** a specification reference uses reserved file URI notation or identifies a dangling final or ancestor symlink
+- **THEN** publication refuses before tracker effects rather than treating it as a provider-native identifier

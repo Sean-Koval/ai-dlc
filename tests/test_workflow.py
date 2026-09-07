@@ -1732,3 +1732,49 @@ def test_explicit_local_spec_reference_still_refuses_before_publication(tmp_path
         service.publish("target")
     assert tracker.calls == []
     assert path.read_bytes() == before
+
+
+@pytest.mark.parametrize(
+    "reference",
+    [
+        "file:docs/missing.md",
+        "file:./missing-change",
+        "file:///outside/missing-change",
+        "file:../outside",
+        "FILE://localhost/missing-change",
+    ],
+)
+def test_filesystem_uri_is_reserved_and_refused_before_publication(tmp_path, reference):
+    from ai_dlc.workflow import WorkService
+
+    path = traceability_record(tmp_path, artifacts={"spec": reference, "tracker": "mapped"})
+    before = path.read_bytes()
+    tracker = TraceabilityTracker()
+    tracker.items["mapped"] = {"id": "mapped", "state": "open", "body": "Authored"}
+    service = WorkService(tmp_path, {}, state_path=tmp_path / "state", registry=Registry(tracker))
+    with pytest.raises(ValueError, match="Work validation failed"):
+        service.publish("target")
+    assert tracker.calls == []
+    assert path.read_bytes() == before
+
+
+@pytest.mark.parametrize("dangling_ancestor", [False, True])
+def test_suffixless_dangling_spec_symlink_cannot_masquerade_as_native_id(
+    tmp_path, dangling_ancestor
+):
+    from ai_dlc.workflow import WorkService
+
+    directory = tmp_path / "spec-links"
+    directory.mkdir()
+    link = directory / "dangling"
+    link.symlink_to(tmp_path.parent / "missing-outside-target", target_is_directory=True)
+    reference = "spec-links/dangling/child" if dangling_ancestor else "spec-links/dangling"
+    path = traceability_record(tmp_path, artifacts={"spec": reference, "tracker": "mapped"})
+    before = path.read_bytes()
+    tracker = TraceabilityTracker()
+    tracker.items["mapped"] = {"id": "mapped", "state": "open", "body": "Authored"}
+    service = WorkService(tmp_path, {}, state_path=tmp_path / "state", registry=Registry(tracker))
+    with pytest.raises(ValueError, match="Work validation failed"):
+        service.publish("target")
+    assert tracker.calls == []
+    assert path.read_bytes() == before

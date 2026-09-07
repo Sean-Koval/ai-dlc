@@ -29,7 +29,9 @@ belong to their providers, not the repository filesystem. Specification IDs are
 also provider-owned, including slash IDs and provider-specific URIs. Explicit
 filesystem notation (`./`, `../`, absolute paths), recognized document suffixes
 (such as `.md`), and existing repository paths identify local spec artifacts.
-Use `./name` for an otherwise ambiguous bare local directory. This validation
+Use `./name` for an otherwise ambiguous bare local directory. Reserve and reject
+`file:` filesystem URIs; detect dangling final and ancestor symlinks lexically
+before allowing an opaque identifier fallback. This validation
 does not resolve native spec IDs or replace the provider's finish/archive gate.
 
 A read-only `work validate` must not initialize mutation journals or call provider

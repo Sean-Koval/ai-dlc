@@ -23,6 +23,8 @@ def artifact_is_local(kind: str, reference: str, *, existing_path: bool = False)
     if PureWindowsPath(reference).drive:
         return True
     parsed = urlsplit(reference)
+    if parsed.scheme == "file":
+        return True  # Filesystem URIs are reserved; the caller rejects unsupported notation.
     if parsed.scheme in {"http", "https"} and parsed.netloc:
         return False
     if kind != "spec":

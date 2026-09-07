@@ -201,7 +201,17 @@ def read_work_graph(root: Path, config: dict, work_id: str) -> tuple[dict[str, d
                     if kind != "spec":
                         continue
                     parsed = urlsplit(reference)
-                    if parsed.scheme or not (root / parsed.path).exists():
+                    if parsed.scheme:
+                        continue
+                    candidate = root / parsed.path
+                    # A dangling final/ancestor symlink is still a local entry;
+                    # it must reach inside() rather than masquerade as an opaque ID.
+                    has_symlink = any(
+                        entry.is_symlink()
+                        for entry in [candidate, *candidate.parents]
+                        if entry != root and entry.is_relative_to(root)
+                    )
+                    if not candidate.exists() and not has_symlink:
                         continue
                 parsed = urlsplit(reference)
                 if parsed.scheme or parsed.netloc or parsed.query or not parsed.path.strip():
