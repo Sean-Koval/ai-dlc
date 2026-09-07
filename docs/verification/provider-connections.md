@@ -17,9 +17,8 @@ frozen candidate before its delivery commit, not a clean-revision or merged-CI
 receipt. Only this evidence document and task completion metadata were changed
 after those checks; the tested Python and test files were unchanged.
 
-The explicit source shim was
-`/Users/seankoval/.local/share/ai-dlc/bootstrap/source-781071990/bin`, followed by
-the bundled bootstrap tool directory in PATH. The imported package was confirmed
+The checkout-specific source shim preceded the bundled bootstrap tool directory
+in PATH. The imported package was confirmed
 to be this worktree's `src/ai_dlc`; a shared convenience symlink was not relied on.
 All **16** OpenSpec items passed `openspec validate --all --strict`.
 
@@ -51,7 +50,11 @@ multi-file transactions or a hostile-code sandbox.
 
 ## Remaining delivery and qualification
 
-- Independent review and any findings remain pending before integration.
+- Independent review accepted `ab7cecb` with no actionable findings; it independently
+  checked strict specification validation and diff cleanliness. Its read-only sandbox
+  could not create pytest temporary files, so full-suite results remain implementer
+  evidence. The coordinator integrated the candidate and passed 193 affected
+  connection/native/readiness tests.
 - Linear's canonical persistence/recovery and GitHub's remote Project journal
   remain explicit compatibility boundaries; full parent PT-02 extraction is
   not claimed.
