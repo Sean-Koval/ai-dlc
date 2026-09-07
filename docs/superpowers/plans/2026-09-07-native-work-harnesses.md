@@ -1,6 +1,6 @@
 # Native work harness implementation plan
 
-Spec: [native-work-harnesses](../../../openspec/changes/native-work-harnesses/specs/native-work-harnesses/spec.md).
+Spec: [native-work-harnesses](../../../openspec/changes/archive/2026-09-07-native-work-harnesses/specs/native-work-harnesses/spec.md).
 Current authority: [roadmap](../../roadmap.md), GitHub #19 and the maintainer's
 Claude/Antigravity work-computer request. This bounded child adds project support;
 common provider connections and Jira follow as separate implementation slices.

@@ -1,7 +1,7 @@
 ## Context
 
 Make a replaceable workflow bundle reproducible in the project repository and discoverable to the harness using existing managed rendering.
-Read [product direction](../../../docs/product-direction.md) and the [delivery architecture](../../../docs/design/framework-delivery.md).
+Read [product direction](../../../../docs/product-direction.md) and the [delivery architecture](../../../../docs/design/framework-delivery.md).
 
 ## Goals / Non-Goals
 
@@ -280,4 +280,4 @@ preserve authored project content and prior provider bindings.
   and authored collisions, config-layer rejection, rollback, generated index, and
   readiness blocking with real files wherever practical.
 
-[Task-level instructions and acceptance example](../../../docs/superpowers/plans/2026-09-05-portable-workflow-bundles.md).
+[Task-level instructions and acceptance example](../../../../docs/superpowers/plans/2026-09-05-portable-workflow-bundles.md).

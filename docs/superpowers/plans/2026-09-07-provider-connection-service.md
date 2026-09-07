@@ -3,7 +3,7 @@
 > Execute this authorized bounded child sequentially; no helper agents or remote mutations.
 
 Goal: supply reusable named onboarding with real shared exact-plan/apply safeguards while preserving both legacy codecs.
-Spec: openspec/changes/provider-connection-service. Parent: GitHub issue19.
+Spec: openspec/changes/archive/2026-09-07-provider-connection-service. Parent: GitHub issue19.
 
 1. Test generic selection parsing, actual third-handler save/apply, drift/account/incomplete discovery refusals, authored comments/collisions and unsupported setup. Run red before implementation.
 2. Extract GitHub snapshot/render/exclusive storage/exact apply helpers to connections.py. Add provider_definitions.py and common service, preserve provider_onboarding.connect_provider compatibility and GitHub Project journaling. Run existing GitHub and Linear suites.

@@ -9,7 +9,7 @@
 
 ## 2. Delivery boundary
 
-- [ ] 2.1 Finalize delivered spec scope and record PR, merged-CI and work-finish steps separately without a circular pre-archive finish requirement.
+- [x] 2.1 Finalize delivered spec scope and record PR, merged-CI and work-finish steps separately without a circular pre-archive finish requirement.
 
 Parent #19 remains open for common connection onboarding and other undelivered
 scope. Confluence is deferred under #22; this child does not qualify the work laptop.

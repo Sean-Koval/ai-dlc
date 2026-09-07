@@ -55,4 +55,4 @@ for GitHub. Linear's persistence/recovery and GitHub's remote Project journal
 remain compatibility boundaries; the parent PT-02 extraction is not wholly
 complete. This does not implement Jira lifecycle support, native client login,
 Confluence or tenant qualification. See the bounded
-[specification](../../openspec/changes/provider-connection-service/specs/provider-connection-service/spec.md).
+[specification](../../openspec/changes/archive/2026-09-07-provider-connection-service/specs/provider-connection-service/spec.md).

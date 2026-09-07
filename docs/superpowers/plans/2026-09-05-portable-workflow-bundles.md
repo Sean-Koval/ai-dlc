@@ -6,7 +6,7 @@
 
 **Architecture:** Use the exact format, import/activation separation, lock schema,
 limits, destinations, collision rules, transactional behavior, readiness states,
-and offline sequence frozen in the OpenSpec [design](../../../openspec/changes/portable-workflow-bundles/design.md).
+and offline sequence frozen in the OpenSpec [design](../../../openspec/changes/archive/2026-09-07-portable-workflow-bundles/design.md).
 Import accepts only portable Git transports, previews exact content metadata, and
 vendors reviewed bytes without selecting or rendering. Project-only
 `agents.bundles` is the separate activation decision. Rendering exposes skills in
@@ -17,7 +17,7 @@ content; the separately activated guidance remains untrusted input to a harness.
 
 **Tech Stack:** Python 3.12, existing AI-DLC CLI/services, Markdown workflow assets, OpenSpec, and configured tracker/SCM adapters. Reuse existing dependencies; any new dependency requires a documented necessity and explicit review.
 
-**Spec:** [portable-workflow-bundles](../../../openspec/changes/portable-workflow-bundles/specs/portable-workflow-bundles/spec.md)
+**Spec:** [portable-workflow-bundles](../../../openspec/changes/archive/2026-09-07-portable-workflow-bundles/specs/portable-workflow-bundles/spec.md)
 
 ## Global constraints
 

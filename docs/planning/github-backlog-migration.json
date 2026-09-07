@@ -50,7 +50,7 @@
         "project_status": "In Progress"
       },
       "planning_status": "In progress \u2014 review blocked",
-      "spec": "openspec/changes/portable-workflow-bundles",
+      "spec": "openspec/changes/archive/2026-09-07-portable-workflow-bundles",
       "plan": "docs/superpowers/plans/2026-09-05-portable-workflow-bundles.md",
       "depends_on": [
         "component-capability-contract",

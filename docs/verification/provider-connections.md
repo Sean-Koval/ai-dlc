@@ -1,7 +1,7 @@
 # Provider connection service verification
 
 This is the bounded common-service child of [issue 19](https://github.com/Sean-Koval/ai-dlc/issues/19).
-Its [PC-01–PC-04 specification](../../openspec/changes/provider-connection-service/specs/provider-connection-service/spec.md)
+Its [PC-01–PC-04 specification](../../openspec/changes/archive/2026-09-07-provider-connection-service/specs/provider-connection-service/spec.md)
 and [design](../design/provider-connections.md) cover trusted definitions,
 generic named selections, common declarative-handler persistence and compatibility.
 They do not close the mixed-scope provider-toolset-onboarding parent.

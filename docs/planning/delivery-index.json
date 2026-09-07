@@ -77,7 +77,7 @@
         "linear-provider-onboarding"
       ],
       "requires_spec": true,
-      "spec": "openspec/changes/portable-workflow-bundles",
+      "spec": "openspec/changes/archive/2026-09-07-portable-workflow-bundles",
       "plan": "docs/superpowers/plans/2026-09-05-portable-workflow-bundles.md",
       "work": ".ai-dlc/work/portable-workflow-bundles.toml",
       "requirements": [

@@ -41,7 +41,7 @@ explicitly unsupported until its selected version contract is qualified.
 
 - [x] Independent re-review accepts the corrected implementation.
 - [x] Final combined required checks and strict specifications pass.
-- [ ] Archive the completed behavior and review archive references.
+- [x] Archive the completed behavior and review archive references.
 - [ ] Integrate through a reviewed PR and exact merged-revision evidence.
 
 Parent #19 remains open for its undelivered common onboarding/toolset scope.
