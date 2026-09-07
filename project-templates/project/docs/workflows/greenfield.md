@@ -9,8 +9,11 @@ independent operational ownership.
 ```mermaid
 flowchart TD
     I[Initialize] --> B[Bootstrap]
-    B --> F[Product and architecture foundation]
-    F --> D[Design first vertical slice]
+    B --> F[Shape evidence, options and smallest outcome]
+    F --> J{Proceed, investigate or stop}
+    J -->|Investigate| F
+    J -->|Stop| X[Record reason]
+    J -->|Proceed| D[Design first vertical slice]
     D --> S[Specification decision]
     S --> W[Publish and start]
     W --> V[Implement vertical slice]
@@ -22,10 +25,18 @@ flowchart TD
 2. Run project setup and required checks. Initialized language presets create a
    minimal application and real syntax/compiler check; first setup creates the
    lockfile and later setup remains locked.
-3. Record audience, outcome, exclusions, ownership, deployment boundary,
-   modules, dependencies, interfaces, and operational assumptions.
-4. Design the first vertical slice, including error, empty, loading,
-   permission, and accessibility states where relevant.
+3. Use discovery and the [product brief](../templates/product-brief.md) to record
+   audience, observed evidence, actual user decisions, hypotheses and exclusions.
+   Compare feasible alternatives by impact, confidence, effort and dependencies.
+   Select the smallest useful outcome or a bounded investigation; retain unknowns.
+   Follow the [greenfield example](../examples/product-shaping/greenfield.md).
+   Keep stable OUT-001/RQ-001 IDs in one canonical brief and end with proceed,
+   investigate or stop plus reasons. A feature request is not validated value.
+4. Proceed within existing authorization once material constraints are resolved.
+   Small work can keep the brief alone; expand with prd-draft only when useful.
+   Record deployment boundary, modules, interfaces and operational assumptions.
+   Design methods fit the slice: UI states/accessibility when relevant, contracts
+   or operational checks otherwise. Discovery does not authorize publication.
 5. Record the formal specification decision. Make required scenarios current
    through the configured provider or a deliberately used local OpenSpec
    compatibility fallback; otherwise record `requires_spec = false` and its

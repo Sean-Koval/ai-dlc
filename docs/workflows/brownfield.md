@@ -13,8 +13,11 @@ flowchart TD
     I[Inventory repository] --> P[Preview adoption]
     P --> A[Apply reviewed files]
     A --> C[Characterize current behavior]
-    C --> D[Design incremental change]
-    D --> S[Specification decision]
+    C --> D[Shape compatible incremental outcome]
+    D --> J{Proceed, investigate or stop}
+    J -->|Investigate| C
+    J -->|Stop| X[Record reason]
+    J -->|Proceed| S[Specification decision]
     S --> W[Publish and start work]
     W --> M[Implement and migrate]
     M --> V[Regression checks, review, merge, finish]
@@ -69,14 +72,31 @@ the original checkout untouched.
 
 ## 4. Design the incremental change
 
-Begin from the current journey and interfaces, not the desired implementation.
-State what must remain compatible, what may migrate, and how users or dependent
-systems cross the transition. Include data migration, rollout, observability,
-recovery, and rollback when the change can affect stored or remote state.
+Use discovery and the [product brief](../../agents/templates/product-brief.md)
+to inspect the existing journey, implementation, tests, consumers and public
+interfaces. Separate observed behavior, actual user decisions and hypotheses.
+Record sources and their limits: characterization fixtures do not prove live
+integration or product value.
 
-Follow the [design-to-implementation contract](design-to-implementation.md).
-For a risky change, prefer multiple independently releasable slices over a
-single replacement. Record consequential compatibility decisions in an ADR.
+Follow the [brownfield example](../../agents/examples/product-shaping/brownfield.md).
+State affected users, integrations, compatibility boundaries, migration and
+recovery needs. Compare feasible options by impact, confidence, effort and
+dependencies, including keeping current behavior when meaningful. Preserve
+explicit constraints. Contradictory requirements remain unresolved until the
+responsible owner decides; an additive alternative is a proposal, not approval.
+
+Select a bounded outcome and next slice, with stable OUT-001 and RQ-001 IDs owned
+by one canonical brief. End with proceed, investigate or stop and reasons.
+Investigate material unknowns before an implementation commitment. When proceeding
+within existing authorization, keep old-contract regression evidence and plan
+rollout/rollback for affected state. Small work can retain the brief alone;
+prd-draft can expand rationale while referencing the same IDs. Publication
+requires separate authorization.
+
+Use design methods appropriate to the increment; UI exploration is optional.
+Follow the [design-to-implementation contract](design-to-implementation.md) when
+applicable. Record consequential compatibility decisions in an ADR. Prefer
+independently releasable slices where a transition has substantial risk.
 
 ## 5. Specify, publish, and implement
 

@@ -778,10 +778,31 @@ def test_portable_examples_are_the_only_profiles_in_built_distributions(tmp_path
         assert actual_wheel_profiles == wheel_profiles
         profile_bytes = archive.read("ai_dlc/assets/profiles/example/ai-dlc-profile.toml")
         machine_bytes = archive.read("ai_dlc/assets/profiles/machines/example.toml")
+        for relative in [
+            "templates/product-brief.md",
+            "templates/prd.md",
+            "examples/product-shaping/greenfield.md",
+            "examples/product-shaping/brownfield.md",
+        ]:
+            expected = (assets("agents") / relative).read_bytes()
+            assert archive.read(f"ai_dlc/assets/agents/{relative}") == expected
+            assert (
+                archive.read(f"ai_dlc/assets/project-templates/project/docs/{relative}") == expected
+            )
 
     with tarfile.open(source_distribution) as archive:
         raw_source_members = [member.name for member in archive.getmembers()]
         source_root = raw_source_members[0].split("/", 1)[0]
+        for relative in [
+            "templates/product-brief.md",
+            "templates/prd.md",
+            "examples/product-shaping/greenfield.md",
+            "examples/product-shaping/brownfield.md",
+        ]:
+            for prefix in ["agents", "project-templates/project/docs"]:
+                content = archive.extractfile(f"{source_root}/{prefix}/{relative}")
+                assert content is not None
+                assert content.read() == (assets("agents") / relative).read_bytes()
         members.extend(name.removeprefix(f"{source_root}/") for name in raw_source_members)
         actual_source_profiles = {
             name.removeprefix(f"{source_root}/")
@@ -1092,4 +1113,39 @@ def test_explicit_tracker_is_persisted_in_answers(tmp_path, tracker):
 def test_unsupported_scaffold_tracker_is_explicit(tmp_path):
     with pytest.raises(ValueError, match="Unsupported tracker"):
         adopt(tmp_path, providers={"tracker": "plane"})
+    assert not (tmp_path / "ai-dlc.toml").exists()
+
+
+@pytest.mark.parametrize("initialize", [False, True])
+def test_product_shaping_assets_reach_new_and_existing_projects(tmp_path, initialize):
+    """An enrolled harness can find the same brief and examples in either entry path."""
+    root = tmp_path / "product"
+    root.mkdir()
+    application = root / "application.txt"
+    application.write_text("existing application")
+    result = adopt(root, apply=True, initialize=initialize)
+    assert result["status"] == "applied"
+    assert application.read_text() == "existing application"
+    source = assets("agents")
+    for name in ["product-brief.md", "prd.md"]:
+        assert (root / "docs/templates" / name).read_bytes() == (
+            source / "templates" / name
+        ).read_bytes()
+    for name in ["greenfield.md", "brownfield.md"]:
+        assert (root / "docs/examples/product-shaping" / name).read_bytes() == (
+            source / "examples/product-shaping" / name
+        ).read_bytes()
+        workflow = (root / "docs/workflows" / name).read_text()
+        assert "../templates/product-brief.md" in workflow
+        assert f"../examples/product-shaping/{name}" in workflow
+
+
+def test_product_shaping_adoption_preserves_authored_brief(tmp_path):
+    brief = tmp_path / "docs/templates/product-brief.md"
+    brief.parent.mkdir(parents=True)
+    brief.write_text("owner's existing brief")
+    result = adopt(tmp_path, apply=True)
+    assert result["status"] == "conflict"
+    assert "docs/templates/product-brief.md" in result["conflicts"]
+    assert brief.read_text() == "owner's existing brief"
     assert not (tmp_path / "ai-dlc.toml").exists()

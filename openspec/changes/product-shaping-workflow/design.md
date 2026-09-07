@@ -15,7 +15,7 @@ Reuse existing discovery/PRD/inbox skills; do not create a competing PM lifecycl
 
 ### Interface contract
 
-The product brief is Markdown with stable sections: Audience and problem; Evidence and assumptions; Current behavior (brownfield); Options and trade-offs; Selected outcome; Scope and exclusions; Success evidence; Next slice; Unresolved decisions. Requirement IDs use RQ-001 style within the brief; one canonical brief owns those IDs. Output ends with proceed, investigate, or stop plus reasons, not an invented approval.
+The product brief is Markdown with stable sections: Audience and problem; Evidence and assumptions; Current behavior (brownfield); Options and trade-offs; Selected outcome; Scope and exclusions; Success evidence; Next slice; Unresolved decisions. Outcome IDs use OUT-001 and requirement IDs use RQ-001 style within the brief; one canonical brief owns those IDs. Output ends with proceed, investigate, or stop plus reasons, not an invented approval. Proceed recommends the next requirements/specification step within existing authorization; investigate names a bounded evidence goal for material uncertainty or contradictions; stop records declined, duplicate, out-of-scope or infeasible work. Briefs and examples ship in project docs and remain available as packaged agents assets. The guidance remains self-contained when an older project has not adopted the new templates.
 
 ### Dependency contract
 
