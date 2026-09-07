@@ -14,8 +14,9 @@ ISSUE_FIELDS = "id,number,url,state,stateReason,body"
 
 
 class GitHubIssuesProvider:
-    def __init__(self, config):
+    def __init__(self, config, *, environ=None):
         self.config = config
+        self.environ = os.environ if environ is None else environ
         self.host = config.get("host", "github.com")
         repository = config.get("repository", "")
         if not isinstance(self.host, str) or not re.fullmatch(r"[A-Za-z0-9.-]+", self.host):
@@ -34,7 +35,7 @@ class GitHubIssuesProvider:
             capture_output=True,
             text=True,
             input=input,
-            env={**os.environ, "GH_HOST": self.host},
+            env={**self.environ, "GH_HOST": self.host},
             timeout=self.config.get("timeout", 30),
             check=False,
         )

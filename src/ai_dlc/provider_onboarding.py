@@ -855,3 +855,35 @@ def connect_linear_provider(
     finally:
         if owned_client:
             active_client.close()
+
+
+def connect_provider(root: Path, *, name: str, environ: Mapping[str, str], **options) -> dict:
+    """Dispatch guided connection through explicit adapter handlers."""
+    from ai_dlc.config import load_project
+    from ai_dlc.github_onboarding import connect_github_provider
+
+    handlers = {
+        "linear": (connect_linear_provider, {"organization", "team", "in_progress", "closed"}),
+        "github-issues": (
+            connect_github_provider,
+            {"host", "repository", "project", "status_field", "open", "in_progress", "closed"},
+        ),
+    }
+    settings = load_project(root).get("providers", {}).get(name, {})
+    kind = settings.get("kind", settings.get("type", name))
+    if name == "linear":
+        _validate_linear_settings(settings)
+    if name in handlers and kind != name:
+        raise ValueError(f"Configured provider {name} does not use its named adapter")
+    if kind not in handlers:
+        raise ValueError(f"Provider connection is not supported: {name}")
+    handler, selections = handlers[kind]
+    if handler is connect_linear_provider and name != "linear":
+        raise ValueError("Linear alias guided setup is unsupported; configure the alias explicitly")
+    accepted = selections | {"plan_file", "apply"}
+    if any(value is not None and key not in accepted for key, value in options.items()):
+        raise ValueError(f"Selection flags do not apply to {kind}")
+    arguments = {key: value for key, value in options.items() if key in accepted}
+    if handler is connect_github_provider:
+        arguments["alias"] = name
+    return handler(root, environ=environ, **arguments)

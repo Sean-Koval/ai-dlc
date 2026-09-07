@@ -114,6 +114,7 @@ def project_init(
     template_source: str | None = None,
     vcs_ref: str | None = None,
     capability: Annotated[list[str] | None, typer.Option("--capability")] = None,
+    tracker: Annotated[str | None, typer.Option("--tracker")] = None,
 ):
     from ai_dlc.templates import adopt
 
@@ -125,6 +126,7 @@ def project_init(
             template_source=template_source,
             vcs_ref=vcs_ref,
             capabilities=capability,
+            providers={"tracker": tracker} if tracker is not None else None,
             initialize=True,
         )
     )
@@ -138,6 +140,7 @@ def project_adopt(
     template_source: str | None = None,
     vcs_ref: str | None = None,
     capability: Annotated[list[str] | None, typer.Option("--capability")] = None,
+    tracker: Annotated[str | None, typer.Option("--tracker")] = None,
 ):
     from ai_dlc.templates import adopt
 
@@ -149,6 +152,7 @@ def project_adopt(
             template_source=template_source,
             vcs_ref=vcs_ref,
             capabilities=capability,
+            providers={"tracker": tracker} if tracker is not None else None,
         )
     )
 
@@ -459,6 +463,11 @@ def provider_connect(
     name: str,
     root: Annotated[Path, typer.Option("--root")] = Path("."),
     organization: Annotated[str | None, typer.Option("--organization")] = None,
+    host: Annotated[str | None, typer.Option("--host")] = None,
+    repository: Annotated[str | None, typer.Option("--repository")] = None,
+    project: Annotated[str | None, typer.Option("--project")] = None,
+    status_field: Annotated[str | None, typer.Option("--status-field")] = None,
+    open: Annotated[str | None, typer.Option("--open")] = None,
     team: Annotated[str | None, typer.Option("--team")] = None,
     in_progress: Annotated[str | None, typer.Option("--in-progress")] = None,
     closed: Annotated[str | None, typer.Option("--closed")] = None,
@@ -466,14 +475,17 @@ def provider_connect(
     apply: Annotated[bool, typer.Option("--apply")] = False,
 ):
     """Discover or explicitly configure a supported project provider."""
-    if name != "linear":
-        typer.echo(f"Error: Provider connection is not supported: {name}", err=True)
-        raise typer.Exit(2)
-    from ai_dlc.provider_onboarding import connect_linear_provider
+    from ai_dlc.provider_onboarding import connect_provider
 
     try:
-        result = connect_linear_provider(
+        result = connect_provider(
             root,
+            name=name,
+            host=host,
+            repository=repository,
+            project=project,
+            status_field=status_field,
+            open=open,
             organization=organization,
             team=team,
             in_progress=in_progress,

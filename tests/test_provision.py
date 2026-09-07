@@ -760,3 +760,49 @@ def test_machine_apply_command_discovery_and_execution_respect_explicit_path(tmp
         + str(tmp_path / "ambient-home/.local/share/ai-dlc/workstation/.mise.toml"),
         "ambient:install",
     ]
+
+
+@pytest.mark.parametrize("scm", ['scm="none"\n', ""])
+def test_doctor_tracker_only_github_does_not_require_scm(tmp_path, monkeypatch, scm):
+    from ai_dlc import agents, provision
+    from ai_dlc.providers import Registry
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\ntracker="tickets"\n'
+        + scm
+        + '[providers.tickets]\nkind="github-issues"\nrepository="acme/app"\n'
+    )
+    monkeypatch.setattr(provision, "_which", lambda *args: None)
+    monkeypatch.setattr(agents, "render_agents", lambda root: {"changed": []})
+    monkeypatch.setattr(
+        Registry,
+        "invoke",
+        lambda *args: {
+            "schema": 1,
+            "lifecycle": {"in_progress": False, "closed": True},
+            "optional_operations": [],
+        },
+    )
+    result = provision.doctor(tmp_path, environ={})
+    assert not any("scm." in message for message in result["configuration"])
+
+
+def test_doctor_declared_capability_failure_is_distinct_from_signin(tmp_path, monkeypatch):
+    from ai_dlc import agents, provision
+    from ai_dlc.providers import Registry
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\ntracker="tickets"\nscm="none"\n[providers.tickets]\nkind="github-issues"\nrepository="acme/app"\n'
+    )
+    monkeypatch.setattr(provision, "_which", lambda *args: None)
+    monkeypatch.setattr(agents, "render_agents", lambda root: {"changed": []})
+
+    def invoke(self, name, operation, payload):
+        raise RuntimeError("missing read:project secret-token")
+
+    monkeypatch.setattr(Registry, "invoke", invoke)
+    result = provision.doctor(tmp_path, environ={})
+    assert result["provider_capabilities"][0]["ready"] is False
+    assert "read:project" in result["provider_capabilities"][0]["reason"]
+    assert "secret-token" not in str(result)
+    assert not result["ready"]
