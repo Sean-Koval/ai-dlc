@@ -180,19 +180,33 @@ is mutated.
 
 ## Risks / Trade-offs
 
-Failed render stages are intentionally retained. Neither supported platform's
+Failed render stages and successful render backups are intentionally retained. Neither supported platform's
 pathname unlink API provides an identity-conditioned delete; checking identity
 before unlink, even after a rename to a private quarantine, leaves another race
 against same-user replacement. Recovery therefore performs no deletion or rewrite
 of complete or partial stage entries. It restores transaction destinations where
 safe and annotates the original exception with retained names/paths. A retained
 stage is not authenticated for future use and is never automatically adopted by
-the next render. This sacrifices automatic removal of failure residue to preserve
-authored content. The scoped remediation does not establish safety of the separate
-successful-transaction backup deletion path.
+the next render. Successful transactions likewise perform no deletion or rewrite
+of backup entries after their final validation. This is non-deleting retention,
+not atomic cleanup: the current occupant of a backup pathname may already contain
+authored bytes. It sacrifices automatic residue removal to preserve that content.
+
+The existing render result (`clean`, `changed`, `applied`) gains
+`retained_backups` only when the current successful invocation retained backups.
+Its value is a sorted list of project-relative paths, including backups of
+removed obsolete outputs. The CLI emits this result through its existing JSON
+output. `clean` still describes planned active-output changes; residue neither
+becomes managed ownership nor prevents a later unchanged render from being clean.
+Preview, no-op apply, and renders without backups keep their existing result
+shape. Later renders neither discover nor adopt old backups, and do not repeat
+their reports. Record the successful invocation's result for manual follow-up.
 
 Inspect retained files with concurrent writers stopped; preserve any authored
 content before deliberate removal. Never delete all `.ai-dlc-*` files by pattern.
+Retained backups can accumulate after updates; this change adds no automatic
+collector or manual-removal command. Review the exact reported files, including
+their type and contents, and retain anything whose ownership is uncertain.
 File creation failures report the stage filename; rollback reports its path
 relative to the original project destination. An ancestor moved by another writer
 may require finding that filename in the displaced directory.

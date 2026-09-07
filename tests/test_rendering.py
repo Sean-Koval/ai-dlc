@@ -1033,29 +1033,34 @@ def test_bundle_render_recovery_retry_reports_partial_recovery_stage(
         tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# Two\n")}
     )
     before = {path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()}
-    original_unlink, original_write = os.unlink, os.write
-    original_error = OSError("original backup cleanup failure")
-    deletions = 0
+    original_publish, original_write = agents._publish_render_change, os.write
+    original_error = OSError("original publication failure")
+    recovering = False
     recovery_failures = 0
 
-    def fail_second_backup_delete(name, *, dir_fd=None):
-        nonlocal deletions
-        deletions += 1
-        if deletions == 2:
+    def publish_then_require_snapshot_recovery(state, change, content):
+        nonlocal recovering
+        original_publish(state, change, content)
+        if change.path == "docs/templates/review-note.md":
+            # Exercise the snapshot-recovery state directly. Successful renders
+            # no longer delete backups, so the old cleanup-failure trigger no
+            # longer reaches it. Keep the accepted retry/note-forwarding contract.
+            (tmp_path / "docs/templates" / change.backup).rename(tmp_path / "saved-backup.md")
+            change.backup = None
+            recovering = True
             raise original_error
-        return original_unlink(name, dir_fd=dir_fd)
 
     def fail_first_recovery_write(descriptor, content):
         nonlocal recovery_failures
-        if deletions >= 2 and recovery_failures < failed_attempts:
+        if recovering and recovery_failures < failed_attempts:
             recovery_failures += 1
             original_write(descriptor, b"partial recovery bytes")
             raise OSError("secondary recovery write failure")
         return original_write(descriptor, content)
 
-    monkeypatch.setattr(os, "unlink", fail_second_backup_delete)
+    monkeypatch.setattr(agents, "_publish_render_change", publish_then_require_snapshot_recovery)
     monkeypatch.setattr(os, "write", fail_first_recovery_write)
-    with pytest.raises(OSError, match="original backup cleanup failure") as failure:
+    with pytest.raises(OSError, match="original publication failure") as failure:
         agents.render_agents(tmp_path, apply=True)
 
     assert failure.value is original_error
@@ -1068,6 +1073,104 @@ def test_bundle_render_recovery_retry_reports_partial_recovery_stage(
     ]
     assert len(partials) == failed_attempts
     assert all(partial.name in "\n".join(failure.value.__notes__) for partial in partials)
+
+
+@pytest.mark.parametrize("mutation", ["replace", "edit", "symlink"])
+def test_successful_bundle_render_preserves_backup_mutated_after_validation(
+    tmp_path, monkeypatch, mutation
+):
+    """A final backup check must not authorize deletion of a later pathname occupant."""
+    from ai_dlc import agents
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
+    )
+    _write_vendored_bundle(
+        tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# One\n")}
+    )
+    agents.render_agents(tmp_path, apply=True)
+    _write_vendored_bundle(
+        tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# Two\n")}
+    )
+    original_publish, original_read = agents._publish_render_change, agents._read_render_file
+    backup = None
+    authored = b"authored backup content\r\n"
+    authored_inode = None
+    outside = tmp_path / "authored.md"
+    outside.write_bytes(authored)
+
+    def remember_backup(state, change, content):
+        nonlocal backup
+        original_publish(state, change, content)
+        if change.path == "docs/templates/review-note.md":
+            backup = tmp_path / "docs/templates" / change.backup
+
+    def mutate_after_read(parent, name):
+        nonlocal authored_inode
+        snapshot = original_read(parent, name)
+        if backup is not None and name == backup.name and authored_inode is None:
+            if mutation != "edit":
+                backup.rename(tmp_path / "displaced-backup.md")
+            if mutation == "symlink":
+                backup.symlink_to(outside)
+            else:
+                backup.write_bytes(authored)
+            authored_inode = backup.lstat().st_ino
+        return snapshot
+
+    monkeypatch.setattr(agents, "_publish_render_change", remember_backup)
+    monkeypatch.setattr(agents, "_read_render_file", mutate_after_read)
+    result = agents.render_agents(tmp_path, apply=True)
+
+    assert backup is not None and authored_inode is not None
+    assert backup.exists(), "successful render deleted authored backup content"
+    assert backup.lstat().st_ino == authored_inode
+    assert backup.read_bytes() == authored
+    assert outside.read_bytes() == authored
+    assert (tmp_path / "docs/templates/review-note.md").read_bytes() == b"# Two\n"
+    assert backup.relative_to(tmp_path).as_posix() in result["retained_backups"]
+
+
+@pytest.mark.parametrize("remove_export", [False, True])
+def test_successful_bundle_render_reports_backups_without_adopting_them(tmp_path, remove_export):
+    """Retained old output bytes must be discoverable and stay outside managed ownership."""
+    from ai_dlc.agents import render_agents
+
+    config = tmp_path / "ai-dlc.toml"
+    config.write_text('schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n')
+    _write_vendored_bundle(
+        tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# One\n")}
+    )
+    render_agents(tmp_path, apply=True)
+    if remove_export:
+        config.write_text("schema=4\n[agents]\nbundles=[]\nskills=[]\n")
+    else:
+        _write_vendored_bundle(
+            tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# Two\n")}
+        )
+    before = {path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()}
+    render_agents(tmp_path)
+    assert {path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()} == before
+
+    result = render_agents(tmp_path, apply=True)
+    retained = result.get("retained_backups", [])
+    assert retained, "successful render must report retained backups"
+    assert retained == sorted(retained)
+    assert {tmp_path / name for name in retained} == {
+        path for path in tmp_path.rglob(".ai-dlc-*") if path.is_file()
+    }
+    template_backup = next(name for name in retained if name.startswith("docs/templates/"))
+    assert (tmp_path / template_backup).read_bytes() == b"# One\n"
+    if remove_export:
+        assert not (tmp_path / "docs/templates/review-note.md").exists()
+    else:
+        assert (tmp_path / "docs/templates/review-note.md").read_bytes() == b"# Two\n"
+    ownership = json.loads((tmp_path / ".ai-dlc/agent-ownership.json").read_text())
+    assert set(retained).isdisjoint(ownership["files"])
+    (tmp_path / template_backup).write_bytes(b"authored retained backup\r\n")
+    residue = {name: (tmp_path / name).read_bytes() for name in retained}
+    assert render_agents(tmp_path, apply=True) == {"clean": True, "changed": [], "applied": True}
+    assert {name: (tmp_path / name).read_bytes() for name in retained} == residue
 
 
 def test_bundle_render_recovery_preserves_authored_completed_stage_replacement(

@@ -56,6 +56,14 @@ Bundle validation SHALL reject unsafe, undeclared, tampered, or colliding assets
 - **WHEN** a render fails after creating a complete or partial temporary stage, including a stage displaced during rollback
 - **THEN** recovery preserves the stage pathname without deleting or rewriting its occupant, restores transaction destinations where safe, and reports retained stage filenames or paths on the original failure for inspection
 
+#### Scenario: Successful render backup cleanup could delete authored content
+- **WHEN** a successful bundle render has moved an existing output to a backup pathname, including an obsolete output removed from active guidance
+- **THEN** it retains that pathname without deleting or rewriting its occupant and reports sorted project-relative `retained_backups` paths in the render result for inspection
+
+#### Scenario: A later render encounters retained backups
+- **WHEN** previous successful renders have left backup files, including files edited after retention
+- **THEN** preview and apply leave those files unchanged, do not adopt them into managed ownership, and do not treat them as active guidance; a result with no newly retained backups omits `retained_backups`
+
 ### Requirement: WB-03 Direct use and offline continuation
 
 Selected vendored guidance SHALL be discoverable in supported harnesses and usable offline; instructions SHALL NOT depend on an AI-DLC daemon or prior chat.

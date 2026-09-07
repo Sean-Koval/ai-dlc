@@ -540,7 +540,7 @@ def _apply_render_transaction(
     planned: dict[str, str],
     removed: list[str],
     changed: list[str],
-) -> None:
+) -> list[str]:
     state.verify_files()
     changes: list[_RenderChange] = []
     try:
@@ -565,10 +565,8 @@ def _apply_render_transaction(
                 _read_render_file(change.parent, change.backup), change.before
             ):
                 raise ValueError(f"render destination changed during publication: {change.path}")
-        for change in changes:
-            if change.backup is not None:
-                os.unlink(change.backup, dir_fd=change.parent)
-                change.backup = None
+        # A successful identity check cannot authorize a later pathname unlink.
+        # Keep backups even on success: another writer may now own their bytes.
         state.verify_directories()
     except BaseException as original:
         retry = []
@@ -608,6 +606,11 @@ def _apply_render_transaction(
                 except OSError:
                     pass
         raise
+    return sorted(
+        PurePosixPath(change.path).with_name(change.backup).as_posix()
+        for change in changes
+        if change.backup is not None
+    )
 
 
 def _managed_section_state(path: Path, required: str) -> str:
@@ -991,11 +994,12 @@ def _render_agents(
                 f"managed provider guidance conflict: {name} is still referenced; "
                 "copy the instructions to a project-owned path and update the component manifest"
             )
+    retained_backups = []
     if apply:
         if bundle_participates:
             if state is None:
                 raise ValueError("bundle render requires a bound project transaction")
-            _apply_render_transaction(state, planned, removed, changed)
+            retained_backups = _apply_render_transaction(state, planned, removed, changed)
         else:
             for name in removed:
                 inside(root, name).unlink()
@@ -1003,7 +1007,10 @@ def _render_agents(
                 if name in removed:
                     continue
                 atomic_write(inside(root, name), planned[name])
-    return {"clean": not changed, "changed": changed, "applied": apply}
+    result: dict[str, Any] = {"clean": not changed, "changed": changed, "applied": apply}
+    if retained_backups:
+        result["retained_backups"] = retained_backups
+    return result
 
 
 def render_agents(
