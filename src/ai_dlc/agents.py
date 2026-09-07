@@ -14,6 +14,12 @@ from ai_dlc.components import load_component_catalog, resolve_components
 from ai_dlc.config import load_project
 from ai_dlc.files import assets, atomic_write, inside
 
+CLIENT_SKILL_DIRECTORIES = {
+    "claude-code": ".claude",
+    "codex": ".agents",
+    "antigravity": ".agents",
+}
+
 
 def _section(current: str, body: str, toml: bool = False) -> str:
     start = "# ai-dlc:begin " if toml else "<!-- ai-dlc:begin "
@@ -90,6 +96,14 @@ def provider_guidance_ready(root: Path, index: str, copies: dict[str, str], clie
         for name, body in copies.items():
             if inside(root, name).read_text() != body:
                 return False
+        if client == "antigravity":
+            name = ".agents/rules/ai-dlc.md"
+            rule = inside(root, name).read_bytes()
+            ownership = json.loads(inside(root, ".ai-dlc/agent-ownership.json").read_text())
+            if ownership.get("files", {}).get(name) != hashlib.sha256(rule).hexdigest():
+                return False
+            if index.replace("](<.ai-dlc/", "](<../../.ai-dlc/") not in rule.decode():
+                return False
     except (OSError, ValueError):
         return False
     return True
@@ -106,7 +120,7 @@ def render_agents(
     )
     if isinstance(clients, str):
         clients = [clients]
-    if set(clients) - {"claude-code", "codex"}:
+    if set(clients) - set(CLIENT_SKILL_DIRECTORIES):
         raise ValueError("unsupported agent client; register a client adapter before rendering")
     for selected_client in clients:
         settings = config.get("agents", {}).get("clients", {}).get(selected_client, {})
@@ -155,6 +169,7 @@ def render_agents(
         planned[filename] = _section(path.read_text() if path.exists() else "", body)
     servers = {}
     codex = {}
+    antigravity = {}
     for server in config.get("agents", {}).get("servers", []):
         sid = server["id"]
         if sid in servers:
@@ -176,9 +191,21 @@ def render_agents(
             )
         servers[sid] = {
             **definition,
+            **({"type": "http"} if "url" in definition else {}),
             **({"env": {x: "${" + x + "}" for x in env_names}} if env_names else {}),
         }
         codex[sid] = {**definition, **({"env_vars": env_names} if env_names else {})}
+        if "antigravity" in clients:
+            if "command" in definition and "url" in definition:
+                raise ValueError("Antigravity MCP requires one unambiguous transport")
+            if env_names:
+                raise ValueError(
+                    "Antigravity environment-name interpolation is unqualified; use native "
+                    "OAuth or a locally configured stdio command without generated env overrides"
+                )
+            antigravity[sid] = (
+                {"serverUrl": definition["url"]} if "url" in definition else dict(definition)
+            )
     manifest_path = inside(root, ".ai-dlc/agent-ownership.json")
     previous = json.loads(manifest_path.read_text()) if manifest_path.exists() else {"mcp": {}}
     ownership: dict[str, Any] = dict(previous)
@@ -202,7 +229,7 @@ def render_agents(
         planned[name] = body
         owned_files[name] = hashlib.sha256(body.encode()).hexdigest()
     for selected_client in clients:
-        directory = ".agents" if selected_client == "codex" else ".claude"
+        directory = CLIENT_SKILL_DIRECTORIES[selected_client]
         prefix = directory + "/skills/"
         desired = {prefix + name + "/SKILL.md": body for name, body in skill_sources.items()}
         for name, old_digest in list(owned_files.items()):
@@ -223,20 +250,27 @@ def render_agents(
             owned_files[name] = hashlib.sha256(body.encode()).hexdigest()
         _plan_hooks(root, config, selected_client, previous, ownership, planned)
     ownership["files"] = owned_files
+    if "antigravity" in clients:
+        name = ".agents/rules/ai-dlc.md"
+        path = inside(root, name)
+        body = _antigravity_rule("\n".join(lines))
+        if path.exists():
+            expected = owned_files.get(name)
+            if expected is None or hashlib.sha256(path.read_bytes()).hexdigest() != expected:
+                raise ValueError(f"managed native rule conflict: {name}")
+        planned[name] = body
+        owned_files[name] = hashlib.sha256(body.encode()).hexdigest()
+        _plan_json_mcp(
+            root,
+            ".agents/mcp_config.json",
+            "antigravity_mcp",
+            antigravity,
+            previous,
+            ownership,
+            planned,
+        )
     if "claude-code" in clients:
-        ownership["mcp"] = servers
-        path = inside(root, ".mcp.json")
-        document = json.loads(path.read_text()) if path.exists() else {}
-        existing = document.setdefault("mcpServers", {})
-        for sid, old in previous.get("mcp", {}).items():
-            if sid in existing and existing[sid] != old:
-                raise ValueError(f"MCP server conflict: {sid}")
-            existing.pop(sid, None)
-        for sid, definition in servers.items():
-            if sid in existing and existing[sid] != definition:
-                raise ValueError(f"MCP server conflict: {sid}")
-            existing[sid] = definition
-        planned[".mcp.json"] = json.dumps(document, indent=2, sort_keys=True) + "\n"
+        _plan_json_mcp(root, ".mcp.json", "mcp", servers, previous, ownership, planned)
     if "codex" in clients:
         path = inside(root, ".codex/config.toml")
         current = path.read_text() if path.exists() else ""
@@ -271,6 +305,47 @@ def render_agents(
                 continue
             atomic_write(inside(root, name), planned[name])
     return {"clean": not changed, "changed": changed, "applied": apply}
+
+
+def _antigravity_rule(body: str) -> str:
+    return (
+        "# AI-DLC native project rule\n\n"
+        "Activate this rule as Always On in the native client. Read AGENTS.md at the "
+        "repository root before work. Commands and artifact paths below are repository-root "
+        "relative. Client recognition and login require a separate native walkthrough.\n\n"
+        + body.replace("](<.ai-dlc/", "](<../../.ai-dlc/")
+    )
+
+
+def _plan_json_mcp(
+    root: Path,
+    name: str,
+    key: str,
+    desired: dict,
+    previous: dict,
+    ownership: dict,
+    planned: dict,
+) -> None:
+    path = inside(root, name)
+    try:
+        document = json.loads(path.read_text()) if path.exists() else {}
+    except (OSError, ValueError) as exc:
+        raise ValueError(f"MCP configuration conflict: {name}") from exc
+    if not isinstance(document, dict) or not isinstance(document.get("mcpServers", {}), dict):
+        raise ValueError(  # noqa: TRY004 -- persisted JSON conflict, not caller argument type
+            f"MCP configuration conflict: {name} must contain an object"
+        )
+    existing = document.setdefault("mcpServers", {})
+    for sid, old in previous.get(key, {}).items():
+        if sid in existing and existing[sid] != old:
+            raise ValueError(f"MCP server conflict: {sid}")
+        existing.pop(sid, None)
+    for sid, definition in desired.items():
+        if sid in existing and existing[sid] != definition:
+            raise ValueError(f"MCP server conflict: {sid}")
+        existing[sid] = definition
+    ownership[key] = desired
+    planned[name] = json.dumps(document, indent=2, sort_keys=True) + "\n"
 
 
 def _skill_sources(config: dict) -> dict[str, str]:
