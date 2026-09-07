@@ -111,6 +111,63 @@ def _apply(root: Path, before: dict, after: dict) -> list[str]:
     return changed
 
 
+def plan_toolset(*, capabilities=None, providers=None, agent_clients=None) -> dict:
+    """Pure declared selection; no account identity, remote access or destination writes."""
+    from ai_dlc.agents import CLIENT_SKILL_DIRECTORIES
+    from ai_dlc.provider_definitions import DEFINITIONS
+
+    capabilities = list(CAPABILITIES if capabilities is None else dict.fromkeys(capabilities))
+    if set(capabilities) - set(CAPABILITIES):
+        raise ValueError("Unknown role capability")
+    providers = providers or {}
+    if set(providers) - {"tracker", "knowledge"}:
+        raise ValueError("Only tracker and knowledge scaffold selections are supported")
+    for role, provider in providers.items():
+        if role not in capabilities:
+            raise ValueError(f"{role.title()} selection requires the {role} capability")
+        definition = DEFINITIONS.get(provider)
+        if definition is None or role not in definition.roles:
+            raise ValueError(
+                f"Unsupported {role} scaffold: {provider}; custom providers remain configurable"
+            )
+    if agent_clients is not None and "agent-client" not in capabilities:
+        raise ValueError("Client selection requires the agent-client capability")
+    clients = list(
+        dict.fromkeys(["claude-code", "codex"] if agent_clients is None else agent_clients)
+    )
+    if set(clients) - set(CLIENT_SKILL_DIRECTORIES):
+        raise ValueError("Unsupported agent client")
+    defaults = {
+        "specs": "openspec",
+        "tracker": "linear",
+        "knowledge": "obsidian",
+        "scm": "github",
+        "deploy": "none",
+    }
+    roles: dict = {
+        role: providers.get(role, default)
+        for role, default in defaults.items()
+        if role in capabilities
+    }
+    if "agent-client" in capabilities:
+        roles["agent-client"] = clients
+    settings = {}
+    limitations = []
+    for role in ("tracker", "knowledge"):
+        if role not in roles:
+            continue
+        definition = DEFINITIONS[roles[role]]
+        if role == "tracker" or definition.scaffold_defaults:
+            settings[definition.kind] = dict(definition.scaffold_defaults) or {
+                "kind": definition.kind
+            }
+        if not definition.lifecycle_available:
+            limitations.append(
+                f"{definition.kind}: AI-DLC {role} lifecycle adapter is unavailable; native tools do not enable tracked-work operations."
+            )
+    return {"roles": roles, "providers": settings, "limitations": limitations}
+
+
 def adopt(
     root: Path,
     preset: str = "generic",
@@ -121,22 +178,17 @@ def adopt(
     capabilities: list[str] | None = None,
     initialize: bool = False,
     providers: dict[str, str] | None = None,
+    agent_clients: list[str] | None = None,
 ) -> dict:
     if preset not in {"generic", "python", "node", "rust"}:
         raise ValueError("Unknown preset")
     capabilities = list(CAPABILITIES if capabilities is None else dict.fromkeys(capabilities))
     if set(capabilities) - set(CAPABILITIES):
         raise ValueError("Unknown role capability")
-    providers = providers or {}
-    if set(providers) - {"tracker"}:
-        raise ValueError("Only tracker scaffold selection is supported")
-    tracker = providers.get("tracker", "linear")
-    if tracker not in {"linear", "github-issues"}:
-        raise ValueError(
-            f"Unsupported tracker scaffold: {tracker}; custom providers remain configurable"
-        )
-    if providers and "tracker" not in capabilities:
-        raise ValueError("Tracker selection requires the tracker capability")
+    toolset = plan_toolset(
+        capabilities=capabilities, providers=providers, agent_clients=agent_clients
+    )
+    tracker = toolset["roles"].get("tracker", "linear")
     root = Path(root).resolve()
     source = template_source or str(assets("project-templates"))
     before = _files(root)
@@ -148,6 +200,9 @@ def adopt(
             data={
                 "preset": preset,
                 "tracker": tracker,
+                "tracker_settings": toolset["providers"].get(tracker, {}),
+                "knowledge": toolset["roles"].get("knowledge", "obsidian"),
+                "agent_clients": toolset["roles"].get("agent-client", []),
                 "capabilities": capabilities,
                 "initialize": initialize,
                 "project_name": "project-"
@@ -181,6 +236,7 @@ def adopt(
         return {
             "status": "applied" if apply else "planned",
             "files": changes,
+            "toolset": toolset,
             "template_source": source,
             "local_source": "://" not in source,
         }

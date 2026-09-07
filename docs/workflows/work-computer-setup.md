@@ -15,8 +15,9 @@ in [release verification](../release-verification.md).
 
 ## Prepare a work repository
 
-From the target repository, preview `ai-dlc project adopt --root . --preset python`
-(or the applicable language preset). Inspect proposed files and resolve authored
+From the target repository, preview
+`ai-dlc project adopt --root . --preset python --tracker github-issues --knowledge obsidian --agent-client claude-code --agent-client antigravity`
+(or the applicable language preset and explicitly selected tracker). Inspect proposed files and resolve authored
 conflicts, then repeat with `--apply`. Existing configured repositories use their
 reviewed configuration and `project sync` workflow instead of adoption.
 
@@ -31,7 +32,9 @@ adapter is integrated and configured, native Jira access does not make AI-DLC
 publish/start/finish usable with Jira. Do not publish work to the scaffold default
 merely because it appears in an initial preview.
 
-Set the project's shared client selection in `ai-dlc.toml`:
+The repeated `--agent-client` options persist this shared selection during
+`project adopt` or `project init`. Existing configured repositories can review the
+equivalent `ai-dlc.toml` selection:
 
 ```toml
 [roles]
@@ -101,3 +104,25 @@ service still enforces completion gates independently of native hook support.
 Keep Obsidian as the selected private notes/knowledge location with the machine's
 own vault path. Confluence publication and its custom MCP integration remain
 separate and deferred; this setup does not copy the vault or team spaces.
+
+## Toolset choices and local notes
+
+Scaffold provider choices come from trusted definitions, independently of the
+language preset. Jira becomes selectable when its reviewed definition/adapter is
+included; scaffolding alone supplies no account identity or credentials. Use its
+explicit connection setup for the intended work site and project. Plane is an
+optional selection with an explicitly unavailable AI-DLC lifecycle adapter;
+native guidance does not enable tracked-work operations. It is not a prerequisite
+for GitHub or Jira projects. Selective Confluence work remains deferred.
+
+Copier answers retain selected clients and tracker configuration across updates.
+Omitted options preserve the historical Linear and Claude Code/Codex defaults;
+this compatibility behavior does not choose a work account. Preview output includes
+the selected toolset and known limitations. Review conflicts before applying.
+
+Configure `paths.vault` in the machine layer for Obsidian's existing filesystem
+notes. Readiness requires a real existing directory and reports its optional
+desktop viewer separately. It does not inspect note content, create directories,
+test write permissions or qualify a client session. A provider-local `vault_path`
+does not substitute for the runtime setting. Keep private paths and notes out of
+the shared work repository.

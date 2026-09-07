@@ -1112,7 +1112,7 @@ def test_explicit_tracker_is_persisted_in_answers(tmp_path, tracker):
 
 def test_unsupported_scaffold_tracker_is_explicit(tmp_path):
     with pytest.raises(ValueError, match="Unsupported tracker"):
-        adopt(tmp_path, providers={"tracker": "plane"})
+        adopt(tmp_path, providers={"tracker": "unregistered"})
     assert not (tmp_path / "ai-dlc.toml").exists()
 
 
