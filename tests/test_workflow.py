@@ -1632,3 +1632,54 @@ def test_start_requires_every_transitive_dependency_and_refreshes_each_read(tmp_
         "base-ref",
         "parent-ref",
     ]
+
+
+def test_start_rejects_stale_project_configuration_before_branch_or_dependency_reads(tmp_path):
+    import subprocess
+
+    from ai_dlc.workflow import WorkService
+
+    root = tmp_path / "project"
+    traceability_record(root)
+    manifest = root / "ai-dlc.toml"
+    manifest.write_text('schema=4\n[roles]\ntracker="fake"\n')
+    subprocess.run(["git", "init", "-b", "main", str(root)], check=True, capture_output=True)
+
+    def commit():
+        subprocess.run(["git", "-C", str(root), "add", "."], check=True)
+        subprocess.run(
+            [
+                "git",
+                "-C",
+                str(root),
+                "-c",
+                "user.name=Test",
+                "-c",
+                "user.email=test@example.com",
+                "commit",
+                "-m",
+                "fixture",
+            ],
+            check=True,
+            capture_output=True,
+        )
+
+    commit()
+    tracker = TraceabilityTracker()
+    service = WorkService(
+        root,
+        {"roles": {"tracker": "fake"}},
+        state_path=tmp_path / "state",
+        registry=Registry(tracker),
+    )
+    manifest.write_text('schema=4\n[roles]\ntracker="replacement"\n')
+    commit()
+    with pytest.raises(ValueError, match="Project configuration changed"):
+        service.start("target")
+    assert (
+        subprocess.check_output(
+            ["git", "-C", str(root), "branch", "--show-current"], text=True
+        ).strip()
+        == "main"
+    )
+    assert tracker.calls == []

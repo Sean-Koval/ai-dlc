@@ -291,15 +291,18 @@ class WorkService:
             self.save(work)
         return work
 
+    def _check_source(self):
+        try:
+            current_digest = _project_source_digest(self.root)
+        except (OSError, tomllib.TOMLDecodeError):
+            raise ValueError("Project configuration changed; retry the work mutation") from None
+        if current_digest != self.project_source_digest:
+            raise ValueError("Project configuration changed; retry the work mutation")
+
     def save(self, work):
         path = self.root / ".ai-dlc/work" / f"{work['id']}.toml"
         with project_write_lock(self.root):
-            try:
-                current_digest = _project_source_digest(self.root)
-            except (OSError, tomllib.TOMLDecodeError):
-                raise ValueError("Project configuration changed; retry the work mutation") from None
-            if current_digest != self.project_source_digest:
-                raise ValueError("Project configuration changed; retry the work mutation")
+            self._check_source()
             tmp = path.with_suffix(".toml.tmp")
             tmp.write_text(tomli_w.dumps(work))
             tmp.replace(path)
@@ -327,6 +330,7 @@ class WorkService:
         return validate_work(self.root, self.config, work_id)
 
     def validated_records(self, work_id):
+        self._check_source()
         records, errors = read_work_graph(self.root, self.config, work_id)
         if errors:
             raise ValueError("Work validation failed: " + "; ".join(errors))
