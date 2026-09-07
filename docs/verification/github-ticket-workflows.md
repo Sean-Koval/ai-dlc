@@ -27,6 +27,14 @@ This is PR candidate CI, not target-branch merged-revision evidence. Configurati
 work mappings and rendered guidance changed during activation; the earlier local
 1,137-test pass does not qualify those subsequent project-file changes.
 
+The first activation required run found one test failure: the agent-client role
+regression loaded this repository's selected tracker while hardcoding Linear's
+catalog and expected result. This was a fixture coupling exposed by the actual
+tracker swap, not a live adapter failure. The corrected test uses explicit
+schema-4 input and the packaged catalog, covers both Linear and GitHub, and
+asserts no unresolved client selections. All 55 component/CLI tests pass; no
+production Python behavior changed. A fresh complete required run follows.
+
 ## September 7 Project-default follow-through
 
 [Draft PR #23](https://github.com/Sean-Koval/ai-dlc/pull/23) publishes the candidate.

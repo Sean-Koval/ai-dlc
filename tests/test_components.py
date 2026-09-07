@@ -432,42 +432,29 @@ def test_resolves_only_personal_or_project_roles_from_a_layered_configuration():
     assert result["unresolved"] == []
 
 
-def test_ignores_normal_schema_4_agent_clients_when_resolving_raw_roles():
+@pytest.mark.parametrize("tracker", ["linear", "github-issues"])
+def test_ignores_normal_schema_4_agent_clients_when_resolving_raw_roles(tmp_path: Path, tracker):
     """Would fail if a list-valued client role were treated as a component provider."""
-    from ai_dlc.components import resolve_components
-    from ai_dlc.config import read_toml
+    from ai_dlc.components import load_component_catalog, resolve_components
 
-    config = read_toml(Path(__file__).parents[1] / "ai-dlc.toml")
-    result = resolve_components(
-        config,
-        {
-            "schema": 1,
-            "components": [
-                {
-                    "id": "openspec",
-                    "roles": ["specs"],
-                    "modules": ["openspec"],
-                    "guidance": ["providers/openspec.md"],
-                    "required_config": [],
-                },
-                {
-                    "id": "linear",
-                    "roles": ["tracker"],
-                    "modules": ["linear"],
-                    "guidance": ["providers/linear.md"],
-                    "required_config": ["team_id"],
-                },
-            ],
+    config = {
+        "schema": 4,
+        "roles": {
+            "specs": "openspec",
+            "tracker": tracker,
+            "agent-client": ["claude-code", "codex"],
         },
-    )
+    }
+    result = resolve_components(config, load_component_catalog(tmp_path, config))
 
     assert [
         (component["id"], component["provider"], component["role"])
         for component in result["components"]
     ] == [
-        ("linear", "linear", "tracker"),
+        (tracker, tracker, "tracker"),
         ("openspec", "openspec", "specs"),
     ]
+    assert result["unresolved"] == []
 
 
 def test_ignores_empty_explicit_agent_clients_in_a_layered_configuration():
