@@ -15,6 +15,10 @@ Project adoption and initialization SHALL validate selected provider roles and s
 - **WHEN** a selected scaffold would conflict with authored content
 - **THEN** conflict is reported and the destination bytes remain unchanged
 
+#### Scenario: A Copier update retains or introduces an unsupported choice
+- **WHEN** retained answers or staged update answers select an unregistered provider/client or a mismatched trusted provider default fragment
+- **THEN** update refuses before destination writes while valid legacy and selected answers remain compatible
+
 ### Requirement: TC-02 Honest local knowledge and unavailable lifecycle readiness
 Readiness SHALL inspect Obsidian's actual runtime vault directory without requiring its optional GUI, and SHALL distinguish an explicitly unavailable tracker lifecycle adapter from delivered guidance. Component catalog schema 1 SHALL remain unchanged.
 

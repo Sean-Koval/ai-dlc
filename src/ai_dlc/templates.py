@@ -8,6 +8,7 @@ import tempfile
 from pathlib import Path
 
 import copier
+import yaml
 
 from ai_dlc.files import assets, inside
 
@@ -242,11 +243,48 @@ def adopt(
         }
 
 
+def _validate_toolset_answers(content: bytes) -> None:
+    """Check retained and staged selections before Copier can publish destination changes."""
+    try:
+        answers = yaml.safe_load(content)
+    except yaml.YAMLError:
+        raise ValueError("Copier answers must contain valid selection data") from None
+    if not isinstance(answers, dict):
+        raise ValueError("Copier answers must contain a mapping")
+    capabilities = answers.get("capabilities", CAPABILITIES)
+    if not isinstance(capabilities, list) or not all(
+        isinstance(value, str) for value in capabilities
+    ):
+        raise ValueError("Copier capabilities must be a string list")
+    plan_toolset(capabilities=capabilities)
+    providers = {role: answers[role] for role in ("tracker", "knowledge") if role in answers}
+    if not all(isinstance(value, str) for value in providers.values()):
+        raise ValueError("Copier provider selections must be strings")
+    clients = answers.get("agent_clients")
+    if "agent_clients" in answers and (
+        not isinstance(clients, list) or not all(isinstance(value, str) for value in clients)
+    ):
+        raise ValueError("Copier client selections must be a string list")
+    # Answers retain defaults even for disabled capabilities; validate the declared
+    # choices without treating those retained defaults as new capability requests.
+    selected = plan_toolset(providers=providers, agent_clients=clients)
+    if "tracker_settings" in answers:
+        settings = answers["tracker_settings"]
+        tracker = selected["roles"]["tracker"]
+        if settings != selected["providers"][tracker] and not (
+            "tracker" not in capabilities and settings == {}
+        ):
+            raise ValueError(
+                "Copier tracker defaults differ from the trusted provider definition; review a fresh scaffold selection"
+            )
+
+
 def sync(root: Path, apply: bool = False, *, vcs_ref: str | None = None) -> dict:
     root = Path(root).resolve()
     before = _files(root)
     if ".copier-answers.yml" not in before:
         raise ValueError("Adopt a versioned Copier template before sync")
+    _validate_toolset_answers(before[".copier-answers.yml"])
     with tempfile.TemporaryDirectory(prefix="ai-dlc-sync-") as temporary:
         stage = Path(temporary).resolve() / "project"
         shutil.copytree(root, stage, ignore=_ignore(root), symlinks=True)
@@ -274,6 +312,9 @@ def sync(root: Path, apply: bool = False, *, vcs_ref: str | None = None) -> dict
             conflict="inline",
         )
         after = _files(stage)
+        if ".copier-answers.yml" not in after:
+            raise ValueError("Updated template must retain its Copier answers")
+        _validate_toolset_answers(after[".copier-answers.yml"])
         conflicts = sorted(
             name
             for name in after

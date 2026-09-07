@@ -61,3 +61,21 @@ qualification remains unverified. No upstream native URL, Jira account setup or
 Plane lifecycle support is invented. Parent #19 must not be marked complete from
 this child's local checks alone. Root owns review, dependency integration,
 archival, PR/CI and configured finish evidence.
+
+## Independent review correction: Copier update boundary
+
+Review found that update replay accepted retained or tampered selections without
+using the trusted definition/client checks. Five real versioned-Copier regressions
+failed before the fix: unknown tracker, knowledge and client selections, a changed
+tracker-settings kind, and an unsupported new default introduced during update.
+Both retained and staged answer files now pass the shared selection contract before
+destination writes. Valid legacy defaults and previously selected fragments stay
+compatible; invalid data is refused with the original destination bytes intact.
+The focused real update/compatibility suite passed 13 tests. YAML parsing reuses
+Copier's existing required PyYAML dependency; no package or lockfile changed.
+
+The update-boundary repair passed all five required checks with **1,214 tests**
+and strict OpenSpec validation. Its
+[receipt](toolset-composition/review-local-checks.json) records the dirty repair
+candidate based on `1904e9c`; source/tests/assets were frozen during the passing
+run. Independent re-review and merged-revision delivery remain pending.

@@ -251,3 +251,65 @@ def test_omitted_selection_preserves_legacy_provider_defaults(tmp_path):
     adopt(tmp_path, apply=True)
     config = tomllib.loads((tmp_path / "ai-dlc.toml").read_text())
     assert config["providers"] == {"linear": {"token_env": "LINEAR_API_KEY"}}
+
+
+@pytest.mark.parametrize(
+    "tamper",
+    [
+        {"tracker": "unregistered-tracker"},
+        {"knowledge": "unregistered-knowledge"},
+        {"agent_clients": ["unregistered-client"]},
+        {"tracker_settings": {"kind": "unregistered-tracker"}},
+    ],
+)
+def test_real_copier_update_refuses_tampered_selections_without_destination_writes(
+    tmp_path, tamper
+):
+    template = tmp_path / "template"
+    shutil.copytree(assets("project-templates"), template)
+    subprocess.run(["git", "init", str(template)], check=True, capture_output=True)
+    version_template(template, "v1.0.0")
+    root = tmp_path / "project"
+    adopt(
+        root,
+        apply=True,
+        template_source=str(template),
+        vcs_ref="v1.0.0",
+        providers={"tracker": "github-issues"},
+        agent_clients=["claude-code"],
+    )
+    answers_path = root / ".copier-answers.yml"
+    answers = yaml.safe_load(answers_path.read_text())
+    answers.update(tamper)
+    answers_path.write_text(yaml.safe_dump(answers))
+    (root / "authored.txt").write_text("Preserve user content")
+    (template / "project/docs/architecture.md").write_text("# New revision\n")
+    version_template(template, "v2.0.0")
+    before = snapshot(root)
+    with pytest.raises(ValueError):
+        sync(root, apply=True)
+    assert snapshot(root) == before
+
+
+def test_real_copier_update_validates_new_defaults_before_applying(tmp_path):
+    template = tmp_path / "template"
+    shutil.copytree(assets("project-templates"), template)
+    subprocess.run(["git", "init", str(template)], check=True, capture_output=True)
+    version_template(template, "v1.0.0")
+    root = tmp_path / "project"
+    adopt(root, apply=True, template_source=str(template), vcs_ref="v1.0.0")
+    answers_path = root / ".copier-answers.yml"
+    answers = yaml.safe_load(answers_path.read_text())
+    answers.pop("agent_clients")
+    answers_path.write_text(yaml.safe_dump(answers))
+    copier = template / "copier.yml"
+    copier.write_text(
+        copier.read_text().replace(
+            "default: [claude-code, codex]", "default: [unregistered-client]"
+        )
+    )
+    version_template(template, "v2.0.0")
+    before = snapshot(root)
+    with pytest.raises(ValueError):
+        sync(root, apply=True)
+    assert snapshot(root) == before
