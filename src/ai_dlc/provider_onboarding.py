@@ -859,7 +859,7 @@ def connect_linear_provider(
 
 def connect_provider(root: Path, *, name: str, environ: Mapping[str, str], **options) -> dict:
     """Dispatch guided connection through explicit adapter handlers."""
-    from ai_dlc.config import load_project
+    from ai_dlc.config import resolve_runtime
     from ai_dlc.github_onboarding import connect_github_provider
 
     handlers = {
@@ -869,7 +869,8 @@ def connect_provider(root: Path, *, name: str, environ: Mapping[str, str], **opt
             {"host", "repository", "project", "status_field", "open", "in_progress", "closed"},
         ),
     }
-    settings = load_project(root).get("providers", {}).get(name, {})
+    config = resolve_runtime(root, environ=environ).values
+    settings = config.get("providers", {}).get(name, {})
     kind = settings.get("kind", settings.get("type", name))
     if name == "linear":
         _validate_linear_settings(settings)

@@ -85,7 +85,15 @@ def remote(monkeypatch):
 def connect(root, **kwargs):
     from ai_dlc.github_onboarding import connect_github_provider
 
-    return connect_github_provider(root, alias="tickets", environ={}, **kwargs)
+    environment = kwargs.pop(
+        "environ",
+        {
+            "XDG_CONFIG_HOME": str(root / "runtime/config"),
+            "XDG_CACHE_HOME": str(root / "runtime/cache"),
+            "XDG_STATE_HOME": str(root / "runtime/state"),
+        },
+    )
+    return connect_github_provider(root, alias="tickets", environ=environment, **kwargs)
 
 
 def selections():
@@ -319,3 +327,170 @@ def test_cli_explicit_tracker_scaffold(tmp_path, command):
     result = CliRunner().invoke(app, [*args, "--tracker", "github-issues"])
     assert result.exit_code == 0, result.output
     assert tomllib.loads((root / "ai-dlc.toml").read_text())["roles"]["tracker"] == "github-issues"
+
+
+@pytest.fixture
+def enrolled(tmp_path, monkeypatch):
+    """A real verified enrollment, deliberately different from the ambient XDG paths."""
+    import hashlib
+
+    from ai_dlc.enrollment import EnrollmentLock, EnrollmentPaths, write_lock
+
+    environment = {
+        "XDG_CONFIG_HOME": str(tmp_path / "enrolled/config"),
+        "XDG_CACHE_HOME": str(tmp_path / "enrolled/cache"),
+        "XDG_STATE_HOME": str(tmp_path / "enrolled/state"),
+    }
+    for key in environment:
+        monkeypatch.setenv(key, str(tmp_path / "ambient" / key))
+    paths = EnrollmentPaths.from_environment(environ=environment)
+
+    def install(
+        *, profile_id="personal-profile", viewer_id="U1", account="primary", alias="tickets"
+    ):
+        content = (
+            f'schema=4\nprofile_id="{profile_id}"\n[roles]\ntracker="tickets"\n'
+            f'[providers.{alias}]\nkind="github-issues"\nhost="github.example.test"\n'
+            f'repository="old/repository"\nviewer_id="{viewer_id}"\n'
+        ).encode()
+        profile_file = "ai-dlc-profile.toml"
+        profile = paths.profile_root(profile_id, "a" * 40) / profile_file
+        profile.parent.mkdir(parents=True, exist_ok=True)
+        profile.write_bytes(content)
+        machine = paths.machine_file("workstation")
+        machine.parent.mkdir(parents=True, exist_ok=True)
+        machine.write_text(f'schema=4\n[providers.{alias}]\naccount="{account}"\n')
+        write_lock(
+            paths,
+            EnrollmentLock(
+                profile_id=profile_id,
+                source="https://example.test/profiles.git",
+                requested_ref="main",
+                resolved_commit="a" * 40,
+                content_sha256=hashlib.sha256(
+                    profile_file.encode() + b"\0" + str(len(content)).encode() + b"\0" + content
+                ).hexdigest(),
+                machine_id="workstation",
+            ),
+        )
+
+    install()
+    return environment, paths, install
+
+
+def test_inherited_github_alias_dispatch_uses_explicit_runtime(checkout, remote, enrolled):
+    from ai_dlc.provider_onboarding import connect_provider
+
+    environment, _, _ = enrolled
+    before = (checkout / "ai-dlc.toml").read_bytes()
+    result = connect_provider(checkout, name="tickets", environ=environment, repository="acme/app")
+    assert result["provider"] == "tickets"
+    assert result["plan"]["patch"]["host"] == "github.example.test"
+    assert (checkout / "ai-dlc.toml").read_bytes() == before
+
+
+@pytest.mark.parametrize("change", ["profile", "machine", "enrollment", "environment"])
+def test_saved_plan_rejects_effective_runtime_drift_before_transport(
+    checkout, remote, enrolled, monkeypatch, change
+):
+    environment, paths, install = enrolled
+    plan_file = Path(".ai-dlc/local/github.json")
+    connect(checkout, environ=environment, repository="acme/app", plan_file=plan_file)
+    if change == "profile":
+        install(viewer_id="U2")
+    elif change == "machine":
+        paths.machine_file("workstation").write_text(
+            'schema=4\n[providers.tickets]\naccount="changed"\n'
+        )
+    elif change == "enrollment":
+        install(profile_id="other-profile")
+    else:
+        environment = {key: str(checkout / "different-enrollment" / key) for key in environment}
+
+    def forbid_transport(*args, **kwargs):
+        pytest.fail("Runtime drift must be refused before GitHub transport")
+
+    monkeypatch.setattr(GitHubIssuesProvider, "graphql", forbid_transport)
+    before = (checkout / "ai-dlc.toml").read_bytes()
+    with pytest.raises(ValueError, match="changed"):
+        connect(checkout, environ=environment, apply=True, plan_file=plan_file)
+    assert (checkout / "ai-dlc.toml").read_bytes() == before
+
+
+def test_inherited_tracker_default_protects_existing_work(checkout, remote, enrolled):
+    environment, _, _ = enrolled
+    config = checkout / "ai-dlc.toml"
+    config.write_text("schema=4\n# No locally selected tracker\n")
+    work = checkout / ".ai-dlc/work/legacy.toml"
+    work.parent.mkdir(parents=True)
+    work.write_text(
+        'schema=1\nid="legacy"\ntitle="Legacy"\n[bindings]\ntracker="retained-fingerprint"\n[artifacts]\ntracker="7"\n'
+    )
+    before_config, before_work = config.read_bytes(), work.read_bytes()
+    with pytest.raises(ValueError, match="already bound"):
+        connect(
+            checkout,
+            environ=environment,
+            repository="acme/app",
+            plan_file=Path(".ai-dlc/local/github.json"),
+        )
+    assert config.read_bytes() == before_config
+    assert work.read_bytes() == before_work
+    assert not (checkout / ".ai-dlc/local/github.json").exists()
+
+
+@pytest.mark.parametrize("timing", ["lock", "stage"])
+def test_effective_runtime_rechecked_during_apply(checkout, remote, enrolled, monkeypatch, timing):
+    import os
+    from contextlib import contextmanager
+
+    from ai_dlc import github_onboarding
+
+    environment, paths, _ = enrolled
+    plan_file = Path(".ai-dlc/local/github.json")
+    connect(checkout, environ=environment, repository="acme/app", plan_file=plan_file)
+    before = (checkout / "ai-dlc.toml").read_bytes()
+
+    def change_account():
+        paths.machine_file("workstation").write_text(
+            'schema=4\n[providers.tickets]\naccount="changed"\n'
+        )
+
+    if timing == "lock":
+        original_lock = github_onboarding.project_write_lock
+
+        @contextmanager
+        def lock(root):
+            with original_lock(root):
+                change_account()
+                yield
+
+        monkeypatch.setattr(github_onboarding, "project_write_lock", lock)
+    else:
+        original_fsync = os.fsync
+
+        def fsync(descriptor):
+            original_fsync(descriptor)
+            if list(checkout.glob(".ai-dlc-github-*/config.toml")):
+                change_account()
+
+        monkeypatch.setattr(os, "fsync", fsync)
+    with pytest.raises(ValueError, match="changed"):
+        connect(checkout, environ=environment, apply=True, plan_file=plan_file)
+    assert (checkout / "ai-dlc.toml").read_bytes() == before
+
+
+def test_reserved_linear_name_refuses_inherited_github_kind_before_transport(
+    checkout, enrolled, monkeypatch
+):
+    from ai_dlc import provider_onboarding
+
+    environment, _, install = enrolled
+    install(alias="linear")
+
+    def forbid_client():
+        pytest.fail("Reserved name mismatch must be refused before constructing a Linear client")
+
+    monkeypatch.setattr(provider_onboarding.httpx, "Client", forbid_client)
+    with pytest.raises(ValueError, match="does not use the Linear adapter"):
+        provider_onboarding.connect_provider(checkout, name="linear", environ=environment)

@@ -12,7 +12,7 @@ from collections.abc import Mapping
 from pathlib import Path
 from urllib.parse import urlsplit
 
-from ai_dlc.config import digest, load_project
+from ai_dlc.config import digest, resolve_runtime
 from ai_dlc.locking import project_write_lock
 from ai_dlc.provider_onboarding import _connection_plan_parent, _set_table_value, _table_paths
 from ai_dlc.providers.github_issues import GitHubIssuesProvider
@@ -347,7 +347,7 @@ def connect_github_provider(
             hashlib.sha256((root / "ai-dlc.toml").read_bytes()).hexdigest()
             != saved["before_digest"]
             or _snapshot(root) != saved["work_digest"]
-            or digest(load_project(root)) != saved["runtime_digest"]
+            or digest(resolve_runtime(root, environ=environ).values) != saved["runtime_digest"]
         ):
             raise ValueError("GitHub connection source or work bindings changed")
         fresh = connect_github_provider(root, alias=alias, environ=environ, **saved["selected"])
@@ -365,7 +365,7 @@ def connect_github_provider(
                 or _snapshot(root) != saved["work_digest"]
             ):
                 raise ValueError("GitHub connection source or work bindings changed")
-            if digest(load_project(root)) != saved["runtime_digest"]:
+            if digest(resolve_runtime(root, environ=environ).values) != saved["runtime_digest"]:
                 raise ValueError("GitHub runtime configuration changed")
             rendered = _render(before.decode(), alias, saved["patch"])
             # A private stage is retained on failure; never delete a possibly replaced pathname.
@@ -385,6 +385,7 @@ def connect_github_provider(
                 path.is_symlink()
                 or path.read_bytes() != before
                 or _snapshot(root) != saved["work_digest"]
+                or digest(resolve_runtime(root, environ=environ).values) != saved["runtime_digest"]
             ):
                 raise ValueError(f"GitHub source changed during apply; stage retained at {stage}")
             current = staged.lstat()
@@ -398,7 +399,7 @@ def connect_github_provider(
         raise ValueError("GitHub configuration must not be a symlink")
     before = path.read_bytes()
     work_digest = _snapshot(root)
-    runtime = load_project(root)
+    runtime = resolve_runtime(root, environ=environ).values
     settings = runtime.get("providers", {}).get(alias, {})
     if settings.get("kind", settings.get("type", "github-issues")) != "github-issues":
         raise ValueError("Configured alias does not use GitHub Issues")
