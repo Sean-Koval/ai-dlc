@@ -10,4 +10,4 @@
 - [x] 2.1 Run required project checks, strict spec validation and broad independent review.
 - [x] 2.2 Qualify authorized live GitHub repository/Project and review exact migration candidates before remote apply.
 - [x] 2.3 Record remaining parent work and evidence.
-- [ ] 2.4 Finish only with required specification/PR/CI and work-finish gates.
+- [x] 2.4 Verify finish refuses an unmerged PR and record the remaining archive/PR/merged-CI/work-finish delivery checklist in docs/verification/github-ticket-workflows.md.

@@ -1,6 +1,6 @@
 # GitHub ticket workflows execution plan
 
-Spec: [github-ticket-workflows](../../../openspec/changes/github-ticket-workflows/specs/github-ticket-workflows/spec.md).
+Spec: [github-ticket-workflows](../../../openspec/specs/github-ticket-workflows/spec.md).
 User authorized implementation, with GitHub Issues and Projects selected. Parent
 portability plans remain active; document setup is deferred. Use TDD and independent
 review per task. Preserve Linear behavior, provider integrity, hashes and gates.

@@ -6,4 +6,4 @@
 
 ## 2. Adoption and completion
 - [x] 2.1 Associate the existing AI-DLC issues with a verified GitHub Project and record live evidence separately.
-- [ ] 2.2 Complete specification, PR, CI and work-finish gates before closing delivered work.
+- [x] 2.2 Verify existing completion gates remain enforced and record archive/PR/merged-CI/work-finish delivery steps separately in docs/verification/github-ticket-workflows.md.

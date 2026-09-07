@@ -236,7 +236,7 @@
         "project_status": "In Progress"
       },
       "planning_status": "In progress \u2014 qualification pending",
-      "spec": "openspec/changes/github-ticket-workflows",
+      "spec": "openspec/changes/archive/2026-09-07-github-ticket-workflows",
       "plan": "docs/superpowers/plans/2026-09-07-github-ticket-workflows.md",
       "depends_on": [],
       "verified": "issue title/body/identity/open state read after creation",

@@ -196,13 +196,13 @@ hardening is explicitly deferred, with its current boundary documented. The fina
 commit after these checks only records qualification, task status and handoff;
 it does not add runtime changes or establish merged-revision CI.
 
-## Delivery and activation boundary
+## Historical pre-activation boundary
 
 Implemented: capability-based work start, GitHub Issues with optional Projects v2,
 named guided setup, and provider-neutral default-only/selected migration to
 verified existing target tickets. Existing all-work rebind remains available.
 
-Still needed before live adoption:
+At the earlier pre-activation revision, the remaining steps were:
 
 - Select the destination repository and Project, and sign in locally with suitable
   Projects access; the inspected CLI credential lacked `read:project`.
@@ -221,6 +221,26 @@ Plane installation is unnecessary for GitHub. Confluence integration is deferred
 until the existing custom server can be reviewed; Obsidian stays local. The
 separate SAN-12 cleanup branch/blocker is not resolved or integrated by this work.
 
-No real tracker selection, retained-work mapping, issue state, or authentication
-was changed. No archive, PR, merge, package publication, or work finish was
-attempted. The child remains active for its live and integration gates.
+At that earlier revision, no real tracker selection, retained-work mapping, issue
+state or authentication had changed. The live activation at the top of this record
+and the current checklist below supersede those earlier pending claims.
+
+
+## Current integration checklist
+
+The final specification tasks now record gate verification and this separate
+delivery checklist. Requiring an already completed work finish inside the archive
+would be circular: finish requires a current archive at the merged revision.
+This separation changes no runtime gate and does not claim an early completion.
+
+- [x] Required local checks and independent implementation/activation review.
+- [x] Live setup, selected migration and bounded mutation/recovery qualification.
+- [x] Candidate 332f5b0 passed all five platform jobs in run 34162136610.
+- [x] Archive completed behavior specifications and promote canonical requirements.
+- [ ] Independently review final archive and current-direction evidence.
+- [ ] Merge PR #23 after required candidate checks.
+- [ ] Verify all required receipts for the exact merged revision.
+- [ ] Run `ai-dlc work finish github-ticket-workflows` and verify issue #18 completion.
+
+The `github-project-defaults` record is a specification child contributing to #18
+and the broader #19 onboarding parent. It does not separately close #19.

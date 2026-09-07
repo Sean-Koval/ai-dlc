@@ -17,7 +17,7 @@ tracker = "github-issues"
 
 [artifacts]
 plan = "docs/superpowers/plans/2026-09-07-github-ticket-workflows.md"
-spec = "github-ticket-workflows"
+spec = "openspec/changes/archive/2026-09-07-github-ticket-workflows"
 branch = "codex/github-ticket-workflows"
 pr = "https://github.com/Sean-Koval/ai-dlc/pull/23"
 tracker = "https://github.com/Sean-Koval/ai-dlc/issues/18"

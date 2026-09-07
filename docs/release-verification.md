@@ -1,11 +1,12 @@
 # Release verification
 
-Current planning context (2026-09-05): the [framework roadmap](roadmap.md) is the
-forward delivery sequence. Historical evidence below remains scoped to its stated
-revision and environment. References to missing Linear mappings in the enrollment
-candidate describe that earlier run; the planning branch now has a configured
-sandbox connection and backlog tickets. New plans/specifications do not establish
-runtime capability, live qualification, or release readiness.
+Current planning context (2026-09-07): the [framework roadmap](roadmap.md) and
+[AI-DLC Project](https://github.com/users/Sean-Koval/projects/2) define the current
+delivery sequence. Personal tracking uses GitHub Issues/Projects. Work-computer
+Jira and Claude/Antigravity onboarding are current implementation priorities;
+Confluence is deferred. Historical evidence below applies only to its stated
+revision and environment. Plans do not establish live qualification or release
+readiness.
 
 This checkout is an implementation candidate, not a published or certified cross-platform release. Native Apple silicon source bootstrap from both the development worktree and a disposable clean clone, repeated setup, language fixtures, lint/type checks, strict OpenSpec validation, a hash-constrained isolated wheel installation, the final integrated required checks, and independent source review have passed. Pull request #1's expanded matrix passed on Ubuntu 24.04 and 26.04 for x64 and ARM64 plus macOS Intel. Each job published a distinct clean receipt for the same synthetic merge revision with all five required checks passing.
 
@@ -72,14 +73,22 @@ verification remain separate integration gates.
 
 ## GitHub ticket workflows candidate — 2026-09-07
 
-The GitHub-first child implements capability-based work start, optional GitHub
-Projects planning, named setup, and selected/default tracker migration with bounded
-local recovery. Clean candidate `0f43575` passed all required checks with 1,123
-tests and all 14 strict OpenSpec items. Independent review and scoped re-review
-accepted the implementation after configured GitHub-account and Linear-team read
-verification fixes. See the [detailed qualification record](verification/github-ticket-workflows.md).
+The GitHub-first child implements capability-based work start, Issues/Projects,
+named setup that defaults to a repository-associated Project, and selected/default
+tracker migration with bounded local recovery. Clean candidate `29b67b3` passed
+all required checks with 1,138 tests. Independent implementation and activation
+reviews accepted the candidate. All five platform jobs passed at `332f5b0` in
+run `34162136610` for PR #23.
 
-Live Projects access, disposable mutation qualification, complete Linear inventory,
-reviewed target creation/mapping, and PR/merged-revision CI/work-finish remain
-unverified. This is local source evidence, not a published release or live backlog
-migration. Plane/Jira and the separate SAN-12 cleanup work are not included.
+Live setup reused and verified Project #2's repository link. The default tracker
+switch and eight selected existing-ticket mappings applied with durable receipts.
+A disposable live issue exercised attachment recovery, a lost start response,
+direct close/reopen/reconciliation and the real refusal to finish an unmerged PR.
+The disposable issue was closed and removed from the board. These operations do
+not establish a successful gated finish or crash-atomic recovery. The two behavior
+specifications are archived locally and promoted to canonical specs; final archive
+review, PR integration and exact merged-revision CI/work finish are still pending.
+
+See the [detailed qualification record](verification/github-ticket-workflows.md).
+Linear inventory reconciliation is deferred by the maintainer. Jira/Plane,
+Antigravity, bundle cleanup and package publication are separate deliverables.

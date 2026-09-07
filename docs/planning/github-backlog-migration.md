@@ -2,7 +2,7 @@
 
 Latest steering: ignore Linear reconciliation for now. The existing GitHub issues
 are the work queue. Project-backed GitHub onboarding is the requested default;
-see `openspec/changes/github-project-defaults`.
+see [canonical GitHub Project defaults](../../openspec/specs/github-project-defaults/spec.md).
 
 Updated September 7, 2026. The maintainer authorized moving personal AI-DLC work
 to **Sean-Koval/ai-dlc** using the available Linear tickets or latest specifications.
