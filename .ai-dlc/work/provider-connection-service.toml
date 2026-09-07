@@ -1,0 +1,23 @@
+schema = 1
+id = "provider-connection-service"
+title = "Common named provider connection service"
+scope = "Implement the bounded common connection service under issue19 while preserving Linear and GitHub saved formats. No remote delivery or client qualification."
+requires_spec = true
+spec_reason = "PC-01 through PC-04 specify observable onboarding, persistence and preservation behavior."
+acceptance = [
+  "A declarative third provider discovers, selects, saves and applies through common filesystem ownership without a CLI vendor branch.",
+  "Named Linear selections resolve to canonical IDs and all existing GitHub and Linear codec protections pass.",
+  "Required checks and strict validation are recorded with external qualification and parent scope still pending."
+]
+reviewed = true
+
+[providers]
+specs = "openspec"
+scm = "github"
+knowledge = "obsidian"
+
+[artifacts]
+plan = "docs/superpowers/plans/2026-09-07-provider-connection-service.md"
+spec = "openspec/changes/provider-connection-service"
+branch = "codex/provider-connections"
+parent_issue = "https://github.com/Sean-Koval/ai-dlc/issues/19"
