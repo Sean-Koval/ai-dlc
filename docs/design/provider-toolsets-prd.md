@@ -1,5 +1,11 @@
 # Selectable provider toolsets
 
+Implementation authorized: GitHub Issues **and Projects** are the selected first
+personal toolset. Plane remains an optional later provider; no Plane installation
+is needed to use GitHub. Earlier undecided-destination and Projects-exclusion
+notes below are historical and superseded by this selection.
+See [the executing child](../superpowers/plans/2026-09-07-github-ticket-workflows.md).
+
 Owner: AI-DLC maintainer.
 Status: draft updated with maintainer context, September 7, 2026. Planning requested;
 implementation, hosting, account changes, and ticket migration are not performed.

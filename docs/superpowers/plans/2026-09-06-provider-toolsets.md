@@ -1,5 +1,11 @@
 # Provider Toolsets Implementation Plan
 
+Execution update: the maintainer selected GitHub Issues and Projects. The
+[GitHub implementation child](2026-09-07-github-ticket-workflows.md) now owns the
+first capability/setup/migration increment, including optional board status
+mapping. Plane/Jira remain parent deliverables; Confluence remains deferred.
+The prior personal-destination debate is resolved for initial adoption.
+
 > **For agentic workers:** Use superpowers:executing-plans for one reviewed child plan at a time. Delegate only when authorized. Checkboxes describe delivery, not planning approval.
 
 **Goal:** Make ticket-provider selection routine and prove it with GitHub Issues,

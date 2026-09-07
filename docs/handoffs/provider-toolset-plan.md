@@ -1,5 +1,11 @@
 # Provider toolset planning handoff
 
+Execution update: user authorized implementation and selected GitHub Issues plus
+Projects. Work continues on `codex/github-ticket-workflows` from planning commit
+`0775b90`, under `.ai-dlc/work/github-ticket-workflows.toml` and the corresponding
+child OpenSpec change. GitHub Projects is now in scope; prior exclusion and
+undecided-destination notes are superseded. Plane is optional, Confluence deferred.
+
 Objective: preserve AI-DLC's role as scaffolding and harness setup while making
 supported tools easy to select and replace. The maintainer requested a code/state
 review, implementation planning, formal specs for needed improvements, and a

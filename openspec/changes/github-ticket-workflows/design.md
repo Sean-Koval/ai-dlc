@@ -17,6 +17,13 @@ resources. The issue's open/closed state and completion reason remain authoritat
 for terminal behavior; project status describes planning. A configured in-progress
 mapping enables the lifecycle capability. Invalid selected configuration fails.
 Projects board-only Done never finishes work; finish still runs existing gates.
+The optional generic prepare operation (reference and operation_id, Item result)
+reconciles project attachment after publish saves a recovered or created issue
+reference. It is journaled and capability-declared; reads/finds never mutate.
+Set and verify board Done before closing the issue, so a close response lost in
+transit cannot leave a missing subsequent board update. Failures remain partial
+and uncertain, with the issue state authoritative; cancelled tickets are not
+silently converted into successful closure.
 
 GitHub Projects uses GraphQL: attach an issue with addProjectV2ItemById, then use
 updateProjectV2ItemFieldValue separately. Pagination and identity checks apply to
