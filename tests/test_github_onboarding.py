@@ -132,6 +132,24 @@ def test_named_project_plan_and_apply_preserve_authored_config(checkout, remote)
     assert config["providers"]["tickets"]["repository"] == "acme/app"
 
 
+@pytest.mark.parametrize("issues_only", [True, False])
+def test_generic_github_selections_use_existing_plan_codec(checkout, remote, issues_only):
+    path = checkout / "ai-dlc.toml"
+    path.write_text(path.read_text() + '\n[providers.tickets]\nkind="github-issues"\n')
+    before = path.read_bytes()
+    selected = {"repository": "acme/app", "issues-only": "true"} if issues_only else selections()
+    args = ["provider", "connect", "tickets", "--root", str(checkout)]
+    for key, value in selected.items():
+        args += ["--select", f"{key}={value}"]
+    result = CliRunner().invoke(app, args)
+    assert result.exit_code == 0, result.output
+    payload = json.loads(result.output)
+    assert payload["plan"]["kind"] == "github-issues"
+    assert payload["plan"]["patch"]["repository"] == "acme/app"
+    assert ("project" in payload["plan"]["patch"]) is not issues_only
+    assert path.read_bytes() == before
+
+
 @pytest.mark.parametrize("changed", ["viewer", "repository", "project", "field", "config", "work"])
 def test_saved_plan_refuses_drift(checkout, remote, changed):
     path = Path(".ai-dlc/local/github.json")

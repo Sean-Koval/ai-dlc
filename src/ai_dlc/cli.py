@@ -535,6 +535,7 @@ def provider_connect(
     closed: Annotated[str | None, typer.Option("--closed")] = None,
     plan_file: Annotated[Path | None, typer.Option("--plan-file")] = None,
     apply: Annotated[bool, typer.Option("--apply")] = False,
+    select: Annotated[list[str] | None, typer.Option("--select")] = None,
 ):
     """Discover or explicitly configure a supported project provider."""
     from ai_dlc.provider_onboarding import connect_provider
@@ -543,6 +544,7 @@ def provider_connect(
         result = connect_provider(
             root,
             name=name,
+            select=select,
             host=host,
             repository=repository,
             project=project,
