@@ -64,6 +64,10 @@ Bundle validation SHALL reject unsafe, undeclared, tampered, or colliding assets
 - **WHEN** a concurrent destination or unavailable rename prevents restoring the previous active bundle
 - **THEN** recovery refuses to overwrite that destination, preserves available old and staged content, and reports the incomplete restoration and relevant paths on the error
 
+#### Scenario: An import backup changes before or during restoration
+- **WHEN** the backup's saved directory identity or previous bytes differ before restoration, or authentication detects a change after the restore move
+- **THEN** recovery does not move a known mismatched source, verifies any attempted restore against the saved identity and bytes, and reports incomplete recovery with all known affected names on mismatch without deleting occupants or claiming the old tree was restored
+
 #### Scenario: A later import encounters retained residue
 - **WHEN** previous imports left backups or stages outside the active bundle directory
 - **THEN** preview and apply neither adopt nor modify that residue, later updates use distinct backup names, and results with no newly retained paths omit `retained_paths`

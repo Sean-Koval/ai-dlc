@@ -164,8 +164,8 @@ dict[str, str]`, `templates: dict[str, str]`, and `files: dict[str, str]`, plus
 Lists and maps are deterministically sorted. Invalid or unsafe input, stale
 commit, or candidate tampering detected before staging raises a credential-redacted
 `ValueError` and writes nothing. Refusal or error after staging preserves and
-reports unused/partial stages. Existing-destination or ownership conflicts return the same
-result with `applied=false`, `changed=[]`, and non-empty `conflicts`, even when
+reports unused/partial stages. Existing-destination or ownership conflicts detected
+before backup return the same result with `applied=false`, `changed=[]`, and non-empty `conflicts`, even when
 apply was requested. Each conflict is a credential-redacted, deterministic
 `PROJECT_RELATIVE_PATH: reason` string sorted by path and reason. On a successful
 preview, `changed` is the sorted project-relative list of vendored files whose
@@ -183,9 +183,16 @@ separately and cannot authenticate subsequent stage edits.
 Import backups use unique `.ID.backup-SUFFIX` names. Neither successful backups
 nor failed/unused stages are recursively removed. Recovery uses no-clobber moves
 to retain an installed occupant at a new `.ID.displaced-SUFFIX` path before
-restoring the old bundle. If another destination prevents recovery, preserve it
-and report the incomplete restoration with the relevant paths. This preserves
-authored changes even when exact prior-path restoration is no longer safe.
+restoring the old bundle. Save its prior bytes and descriptor; authenticate the
+backup against both after the move and immediately before any restore. A known
+identity/content mismatch prevents restoration. After an attempted restore,
+authenticate the active path against that descriptor and prior bytes before
+considering recovery complete. No-clobber rename protects the destination, not
+source identity: a source changed at the restore boundary can be relocated into
+the active path, but failed post-restore authentication reports incomplete
+recovery and retains all affected transaction names for explicit inspection.
+Never attempt another move or cleanup to hide that mismatch. An occupied active
+destination also prevents recovery without being overwritten.
 
 Normal results report sorted project-relative retained paths; errors carry
 retained-path notes through credential-redacted filesystem failures. A moved
@@ -193,6 +200,8 @@ project root must not mask those notes with another exception. Retained residue
 is never trusted, adopted, or automatically cleaned by later imports. Keep the
 reported result/error, stop concurrent writers, and inspect the exact files and
 directories before deliberate manual removal. Do not bulk-delete by pattern.
+An externally relocated prior tree may no longer have a discoverable path; the
+diagnostics identify known affected names, not an asserted location for that tree.
 This is non-deleting retention, not atomic cleanup or protection against changes
 made by another writer after final validation.
 

@@ -2011,3 +2011,83 @@ def test_import_cli_reports_retained_stage_paths_without_leaking_error_details(
     assert retained.relative_to(project).as_posix() in result.output
     assert "inspect before removal" in result.output
     assert "credential-sentinel" not in result.output
+
+
+@pytest.mark.parametrize("timing", ["backup-check", "restore-check", "restore"])
+@pytest.mark.parametrize("mutation", ["replacement", "edit", "entry"])
+def test_import_recovery_authenticates_backup_source(tmp_path, monkeypatch, timing, mutation):
+    """Recovery must refuse a known changed source and report a late changed restore."""
+    from ai_dlc import workflow_bundles as bundles
+
+    project = _bundle_project(tmp_path)
+    first, second = _local_candidate(tmp_path, "1"), _local_candidate(tmp_path, "2")
+    bundles.import_bundle(project, first, apply=True, expected_commit=first.resolved_commit)
+    parent = project / ".ai-dlc/bundles"
+    destination = parent / "example-bundle"
+    previous = _snapshot(destination)
+    displaced = tmp_path / "externally-moved-backup"
+    original_verify = bundles._verify_named_directory
+    original_rename = bundles._rename_directory_noreplace
+    authored = None
+    authored_inode = None
+    backup_name = None
+    restore_attempted = False
+    publication_failed = False
+
+    def mutate(name):
+        nonlocal authored, authored_inode, backup_name
+        backup_name = name
+        backup = parent / name
+        if mutation == "replacement":
+            backup.rename(displaced)
+            backup.mkdir()
+        authored = backup / ("templates/product-brief.md" if mutation == "edit" else "authored.md")
+        authored.write_bytes(b"authored recovery source\r\n")
+        authored_inode = authored.stat().st_ino
+
+    def verify(parent_fd, name, descriptor):
+        if (
+            (timing == "backup-check" or (timing == "restore-check" and publication_failed))
+            and ".backup-" in name
+            and authored is None
+        ):
+            mutate(name)
+        original_verify(parent_fd, name, descriptor)
+
+    def rename(parent_fd, source, target):
+        nonlocal restore_attempted, publication_failed
+        if timing in {"restore-check", "restore"} and ".stage-" in source:
+            publication_failed = True
+            raise OSError("publication failed")
+        if ".backup-" in source and target == "example-bundle":
+            restore_attempted = True
+            if timing == "restore" and authored is None:
+                mutate(source)
+        original_rename(parent_fd, source, target)
+
+    monkeypatch.setattr(bundles, "_verify_named_directory", verify)
+    monkeypatch.setattr(bundles, "_rename_directory_noreplace", rename)
+    with pytest.raises(ValueError) as failure:
+        bundles.import_bundle(project, second, apply=True, expected_commit=second.resolved_commit)
+
+    assert authored is not None
+    preserved = [
+        path
+        for path in project.rglob("*")
+        if path.is_file() and path.read_bytes() == b"authored recovery source\r\n"
+    ]
+    assert len(preserved) == 1
+    assert preserved[0].stat().st_ino == authored_inode
+    notes = "\n".join(failure.value.__notes__)
+    assert "recovery could not restore" in notes
+    assert f".ai-dlc/bundles/{backup_name};" in notes
+    assert ".ai-dlc/bundles/example-bundle;" in notes
+    if timing != "restore":
+        assert not restore_attempted, "known changed backup was moved into active ownership"
+        assert not destination.exists()
+        assert preserved[0] == authored
+    else:
+        assert restore_attempted
+        assert preserved[0].is_relative_to(destination)
+    if mutation == "replacement":
+        assert _snapshot(displaced) == previous

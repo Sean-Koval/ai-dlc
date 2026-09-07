@@ -25,7 +25,8 @@ Publication and recovery use no-clobber directory moves. Recovery retains an
 installed occupant at a new displaced path before restoring the old bundle. If
 another destination blocks restoration, it is not overwritten; the failure
 identifies the retained backup/stage and active destination for inspection.
-Ordinary operational failures still restore prior active bytes. Authored changes
+Ordinary operational failures restore prior active bytes only when the saved
+backup identity/content and final restored tree authenticate. Authored changes
 take precedence when exact original-path restoration would overwrite them.
 
 Returned results add sorted project-relative `retained_paths` only when this
@@ -88,6 +89,52 @@ The final `ai-dlc project check --required` passed generated, format, lint, type
 and test outcomes, with 1,173 full tests passing in 231.03 seconds. It used this
 checkout's prepared source environment. Its receipt records the dirty pre-commit
 repair on baseline `21701c8`; it is local verification, not merged-revision CI.
+
+## Recovery-source identity follow-up
+
+Independent re-review of `d4b7158` closed the original importer deletion and
+false-success findings, but found a related recovery-source defect. A replaced
+backup failed identity verification, yet rollback moved that same unauthenticated
+pathname into the active bundle and omitted it from the recovery notes.
+
+Six real-filesystem regressions failed before the follow-up production change:
+replacement directories, in-place payload edits and new authored entries,
+injected before the first backup check and immediately at the restore rename.
+The repair saves previous bytes, authenticates the backup against the saved
+open descriptor and those bytes, refuses restoration after known authentication
+failure, and verifies again immediately before restoration. After any restore
+move, it authenticates the active path before removing the backup name from the
+reported set. Source/content mismatch or occupied destination reports incomplete
+recovery and the known affected backup, stage/displaced and active names.
+
+All six regressions then passed, along with all 200 importer/rendering cases.
+Three additional cases mutate the source at the later pre-restore check; the
+nine-case recovery-source matrix passes with authored bytes/inodes preserved.
+The original accepted render-retention code and tests are unchanged.
+
+This is destination-no-clobber recovery with before/after authentication, not an
+atomic source-identity guarantee. An external replacement at the rename boundary
+can be moved into the active path; post-restore authentication detects it and
+requires explicit recovery, without deleting or moving it again. A known changed
+source is left in place. Error notes include known affected names even when a
+move has vacated one; they cannot locate a prior tree moved externally to an
+unknown pathname. Stop other writers, inspect these names and any known external
+moves, and preserve authored content before deliberately restoring a verified
+old tree or removing residue. No automatic cleanup helper is supplied.
+
+The follow-up `ai-dlc project check --required` passed all five outcomes:
+generated, format, lint, types and test. All 1,182 tests passed in 230.50 seconds.
+Strict OpenSpec validation and patch hygiene also passed. The local receipt
+records dirty baseline `d4b7158`, not an exact merged-revision qualification.
+
+A fresh `sh scripts/bootstrap.sh --source` attempt stalled while starting the
+shared bootstrap uv binary on this host. The follow-up checks used the existing
+prepared source interpreter with the working user-local uv 0.9.11 selected ahead
+of the shared bootstrap binary, as agreed with the coordinator. Known-owned
+stalled invocations were terminated; no other task's process or shared runtime
+was changed to resolve the stall. This run does not claim a new successful source
+bootstrap or clean-machine qualification. The preceding source preparation and
+the required-check result are separate evidence.
 
 ## Delivery boundary
 

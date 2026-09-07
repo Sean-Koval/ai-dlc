@@ -1084,25 +1084,22 @@ def _publish_bundle_tree(
 ) -> list[str]:
     _verify_bundle_tree(parent, staged_name, staged_descriptor, desired)
     backup_name = f".{bundle_id}.backup-{secrets.token_hex(12)}"
-    backed_up = published = False
+    backed_up = backup_verified = published = False
+    previous: dict[str, bytes] = {}
     try:
         if existing_descriptor is not None:
             named = os.stat(bundle_id, dir_fd=parent, follow_symlinks=False)
             if not _same_object(named, os.fstat(existing_descriptor)):
                 return [f"{_relative_bundle_path(bundle_id)}: existing bundle destination changed"]
+            previous = _tree_files_at(existing_descriptor)
             conflicts = _owned_bundle_conflicts(existing_descriptor, bundle_id)
             if conflicts:
                 return conflicts
             _rename_directory_noreplace(parent, bundle_id, backup_name)
             retained.add(backup_name)
             backed_up = True
-            _verify_named_directory(parent, backup_name, existing_descriptor)
-            conflicts = _owned_bundle_conflicts(existing_descriptor, bundle_id)
-            if conflicts:
-                _rename_directory_noreplace(parent, backup_name, bundle_id)
-                retained.discard(backup_name)
-                backed_up = False
-                return conflicts
+            _verify_bundle_tree(parent, backup_name, existing_descriptor, previous)
+            backup_verified = True
         verify_project()
         _verify_bundle_tree(parent, staged_name, staged_descriptor, desired)
         _rename_directory_noreplace(parent, staged_name, bundle_id)
@@ -1120,9 +1117,16 @@ def _publish_bundle_tree(
                 _rename_directory_noreplace(parent, bundle_id, displaced)
                 retained.add(displaced)
             if backed_up:
+                # Never retry a source that failed its first authentication.
+                # Rename protects only the destination: verify both before and
+                # after restoring, retaining affected names on any late drift.
+                if not backup_verified or existing_descriptor is None:
+                    raise ValueError("backup source was not authenticated")
+                _verify_bundle_tree(parent, backup_name, existing_descriptor, previous)
                 _rename_directory_noreplace(parent, backup_name, bundle_id)
+                _verify_bundle_tree(parent, bundle_id, existing_descriptor, previous)
                 retained.discard(backup_name)
-        except OSError:
+        except (OSError, ValueError):
             retained.add(bundle_id)
             original.add_note(
                 "Bundle import recovery could not restore the active path; inspect retained paths."
