@@ -109,6 +109,51 @@ def _validate_binding_config(root: Path, config: dict) -> None:
             raise ValueError("Work service configuration does not match current project source")
 
 
+def resolve_work(raw: dict, config: dict, work_id: str, *, require_review: bool = False) -> dict:
+    """Resolve effective work providers and validate fingerprints without local writes."""
+    aliases = {"specification": "specs", "deployment": "deploy"}
+    raw = dict(raw)
+    source = raw.get("providers") or config.get("roles", {})
+    raw["providers"] = {
+        aliases.get(k, k): v
+        for k, v in source.items()
+        if aliases.get(k, k) in {"specs", "tracker", "scm", "deploy", "knowledge"}
+    }
+    work = Work.model_validate(raw).model_dump(by_alias=True)
+    if work["id"] != work_id:
+        raise ValueError("Work ID does not match filename")
+    if require_review and not work["reviewed"]:
+        raise ValueError("Work must be reviewed before mutation")
+    defaults = {
+        "specs": "openspec",
+        "scm": "github",
+        "deploy": "github-deployment",
+        "knowledge": "obsidian",
+    }
+    for role, provider_id in {**defaults, **work["providers"]}.items():
+        cfg = config.get("providers", {}).get(provider_id, {})
+        identity = {"provider_id": provider_id, "configuration": cfg}
+        # A vault's machine path is not its logical provider identity. Configure
+        # providers.<id>.vault_id when distinct vaults must retain distinct bindings.
+        if role in {"scm", "deploy"} or cfg.get("kind", provider_id) == "github-issues":
+            identity["scm"] = config.get("scm", {})
+        if role == "deploy":
+            identity["deploy"] = config.get("deploy", {})
+        account = cfg.get("account")
+        if account:
+            identity["account"] = config.get("accounts", {}).get(account, {})
+        fingerprint = hashlib.sha256(
+            json.dumps(identity, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest()
+        existing = work["bindings"].get(role)
+        if existing and existing != fingerprint:
+            raise ValueError(
+                f"Provider binding drift for {role}; explicitly review and rebind work"
+            )
+        work["bindings"][role] = fingerprint
+    return work
+
+
 class WorkService:
     @classmethod
     def from_project(
@@ -169,45 +214,7 @@ class WorkService:
         if not path.is_relative_to(self.root / ".ai-dlc/work"):
             raise ValueError("Unsafe work path")
         raw = tomllib.loads(path.read_text())
-        aliases = {"specification": "specs", "deployment": "deploy"}
-        source = raw.get("providers") or self.config.get("roles", {})
-        raw["providers"] = {
-            aliases.get(k, k): v
-            for k, v in source.items()
-            if aliases.get(k, k) in {"specs", "tracker", "scm", "deploy", "knowledge"}
-        }
-        work = Work.model_validate(raw).model_dump(by_alias=True)
-        if work["id"] != work_id:
-            raise ValueError("Work ID does not match filename")
-        if mutation and not work["reviewed"]:
-            raise ValueError("Work must be reviewed before mutation")
-        defaults = {
-            "specs": "openspec",
-            "scm": "github",
-            "deploy": "github-deployment",
-            "knowledge": "obsidian",
-        }
-        for role, provider_id in {**defaults, **work["providers"]}.items():
-            cfg = self.config.get("providers", {}).get(provider_id, {})
-            identity = {"provider_id": provider_id, "configuration": cfg}
-            # A vault's machine path is not its logical provider identity. Configure
-            # providers.<id>.vault_id when distinct vaults must retain distinct bindings.
-            if role in {"scm", "deploy"} or cfg.get("kind", provider_id) == "github-issues":
-                identity["scm"] = self.config.get("scm", {})
-            if role == "deploy":
-                identity["deploy"] = self.config.get("deploy", {})
-            account = cfg.get("account")
-            if account:
-                identity["account"] = self.config.get("accounts", {}).get(account, {})
-            fingerprint = hashlib.sha256(
-                json.dumps(identity, sort_keys=True, separators=(",", ":")).encode()
-            ).hexdigest()
-            existing = work["bindings"].get(role)
-            if existing and existing != fingerprint:
-                raise ValueError(
-                    f"Provider binding drift for {role}; explicitly review and rebind work"
-                )
-            work["bindings"][role] = fingerprint
+        work = resolve_work(raw, self.config, work_id, require_review=mutation)
         if mutation:
             self.save(work)
         return work

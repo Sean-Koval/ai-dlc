@@ -193,6 +193,67 @@ def project_rebind(
     emit(result)
 
 
+@project.command("tracker-migrate")
+def project_tracker_migrate(
+    provider_id: Annotated[str | None, typer.Argument()] = None,
+    root: Path = Path("."),
+    mode: str | None = None,
+    work: Annotated[list[str] | None, typer.Option("--work")] = None,
+    mappings: Path | None = None,
+    save_plan: Path | None = None,
+    apply_plan: Path | None = None,
+    machine: Path | None = None,
+    inspect_recovery: str | None = None,
+    resolve_recovery: str | None = None,
+):
+    """Preview a tracker default/selected move, or apply an exact saved JSON plan."""
+    from ai_dlc.tracker_migration import (
+        apply_tracker_migration,
+        inspect_tracker_migration,
+        plan_tracker_migration,
+        resolve_tracker_migration_recovery,
+        save_tracker_migration_plan,
+    )
+
+    try:
+        actions = sum(
+            value is not None for value in (apply_plan, inspect_recovery, resolve_recovery)
+        )
+        intent = any(value is not None for value in (provider_id, mode, work, mappings, save_plan))
+        if actions > 1 or (actions and intent):
+            raise ValueError("Saved apply/recovery cannot be combined with new migration intent")
+        if apply_plan is not None:
+            result = apply_tracker_migration(root, apply_plan, environ=os.environ, machine=machine)
+        elif inspect_recovery is not None:
+            result = inspect_tracker_migration(root, inspect_recovery)
+        elif resolve_recovery is not None:
+            result = resolve_tracker_migration_recovery(root, resolve_recovery)
+        else:
+            if provider_id is None or mode is None:
+                raise ValueError("Preview requires provider ID and --mode default-only or selected")
+            raw = read_toml(mappings) if mappings else {}
+            if any(not isinstance(row, dict) or set(row) != {"tracker"} for row in raw.values()):
+                raise ValueError("Mappings must have exactly tracker = REFERENCE per work table")
+            result = plan_tracker_migration(
+                root,
+                provider_id,
+                mode=mode,
+                work_ids=work,
+                mappings={key: row["tracker"] for key, row in raw.items()},
+                environ=os.environ,
+                machine=machine,
+            )
+            if save_plan is not None:
+                path = save_tracker_migration_plan(root, result, save_plan)
+                result = {"status": "planned", "plan_path": path, "plan": result}
+    except (OSError, RuntimeError, TypeError, ValueError) as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(2) from None
+    emit(result)
+    if result.get("status") in {"rolled-back", "recovery-required"} and apply_plan is not None:
+        raise typer.Exit(1)
+
+
 @agents.command("render")
 def agents_render(
     root: Path = Path("."),
