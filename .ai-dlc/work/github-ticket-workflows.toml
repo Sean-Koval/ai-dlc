@@ -1,0 +1,18 @@
+schema = 1
+id = "github-ticket-workflows"
+title = "Capability-based GitHub Issues and Projects workflows"
+scope = "Implement the authorized GitHub-first ticket slice: capabilities, optional Project statuses, setup and safe local migration; keep later providers and Confluence separate."
+requires_spec = true
+spec_reason = "Observable provider, setup and migration behavior is specified by github-ticket-workflows."
+acceptance = ["GT-01 through GT-06 are implemented and qualified with explicit remaining live gates."]
+reviewed = true
+
+[providers]
+specs = "openspec"
+scm = "github"
+knowledge = "obsidian"
+
+[artifacts]
+plan = "docs/superpowers/plans/2026-09-07-github-ticket-workflows.md"
+spec = "github-ticket-workflows"
+branch = "codex/github-ticket-workflows"
