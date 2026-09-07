@@ -720,3 +720,46 @@ def test_explicit_machine_doctor_keeps_the_nonzero_readiness_contract(monkeypatc
 
     assert result.exit_code == 1
     assert '"ready": false' in result.stdout
+
+
+@pytest.mark.parametrize("invalid", [False, True])
+def test_work_validate_is_offline_and_does_not_write_project_or_journal(
+    tmp_path, monkeypatch, invalid
+):
+    import tomli_w
+
+    from ai_dlc.cli import app
+
+    root = tmp_path / "project"
+    folder = root / ".ai-dlc/work"
+    folder.mkdir(parents=True)
+    (root / "ai-dlc.toml").write_text("schema=4\n")
+    (root / "brief.md").write_text("# Canonical requirement RQ-001")
+    record = {
+        "schema": 1,
+        "id": "target",
+        "title": "Target",
+        "scope": "bounded",
+        "requires_spec": False,
+        "spec_reason": "verification",
+        "acceptance": ["Observe result"],
+        "artifacts": {"brief": "missing.md" if invalid else "brief.md#RQ-001"},
+    }
+    (folder / "target.toml").write_text(tomli_w.dumps(record))
+    # Unrelated drafts, even malformed ones, must not block the selected closure.
+    (folder / "unrelated.toml").write_text("invalid TOML")
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "config"))
+    state = tmp_path / "state"
+    monkeypatch.setenv("XDG_STATE_HOME", str(state))
+    monkeypatch.setenv("PATH", "")
+    before = {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}
+
+    result = CliRunner().invoke(app, ["work", "validate", "target", "--root", str(root)])
+
+    assert result.exit_code == int(invalid), result.output
+    report = json.loads(result.stdout)
+    assert report["valid"] is not invalid
+    assert report["work_id"] == "target"
+    assert bool(report["errors"]) is invalid
+    assert before == {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}
+    assert not state.exists()

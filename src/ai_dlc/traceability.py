@@ -2,7 +2,6 @@
 
 import re
 
-
 WORK_ID = re.compile(r"[a-zA-Z0-9][a-zA-Z0-9_-]{0,99}")
 
 

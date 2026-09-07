@@ -459,6 +459,20 @@ def service(root: Path, machine: Path | None):
     return WorkService.from_project(root, machine=machine)
 
 
+@work.command("validate")
+def work_validate(work_id: str, root: Path = Path("."), machine: Path | None = None):
+    from ai_dlc.config import resolve_runtime
+    from ai_dlc.workflow import validate_work
+
+    try:
+        result = validate_work(root, resolve_runtime(root, machine=machine).values, work_id)
+    except (OSError, ValueError) as exc:
+        result = {"valid": False, "work_id": work_id, "dependencies": [], "errors": [str(exc)]}
+    emit(result)
+    if not result["valid"]:
+        raise typer.Exit(1)
+
+
 @work.command("publish")
 def work_publish(work_id: str, root: Path = Path("."), machine: Path | None = None):
     emit(service(root, machine).publish(work_id))
