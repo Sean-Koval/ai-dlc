@@ -35,8 +35,37 @@ def _github(root, *, alias, environ, **options):
     return connect_github_provider(root, alias=alias, environ=environ, **options)
 
 
+def _jira_discover(config, alias, *, environ):
+    from ai_dlc.jira_onboarding import discover
+
+    return discover(config, alias, environ=environ)
+
+
+def _jira_configure(discovery, selected):
+    from ai_dlc.jira_onboarding import configure
+
+    return configure(discovery, selected)
+
+
 # Trusted code registrations only: no project file can load an executable handler.
 DEFINITIONS = {
+    "jira-cloud": ProviderDefinition(
+        "jira-cloud",
+        ("tracker",),
+        frozenset(
+            {
+                "project",
+                "issue_type",
+                "open",
+                "in_progress",
+                "closed",
+                "cancelled",
+                "closed_resolution",
+                "cancelled_resolution",
+            }
+        ),
+        handler=ConnectionHandler(_jira_discover, _jira_configure),
+    ),
     "linear": ProviderDefinition(
         "linear",
         ("tracker",),

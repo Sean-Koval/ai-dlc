@@ -1,0 +1,24 @@
+schema = 1
+id = "jira-cloud-new-work"
+title = "Jira Cloud new-work lifecycle and reviewed setup"
+scope = "Implement bounded Jira Cloud identity/auth, lifecycle, field/transition validation, remote links and common onboarding; no migration, company calls or Plane deployment."
+requires_spec = true
+spec_reason = "JC-01 through JC-06 specify observable provider, onboarding, reconciliation and evidence behavior."
+acceptance = [
+  "Cloud/account/project/type and explicit authentication are validated without exposing credentials.",
+  "Real HTTP transport fixtures exercise common WorkService publish uncertainty, start, PR linking and finish gates.",
+  "Common setup preserves authored files and refuses incomplete or conflicting metadata.",
+  "Required checks and strict validation record fixture/live evidence boundaries."
+]
+reviewed = true
+
+[providers]
+specs = "openspec"
+scm = "github"
+knowledge = "obsidian"
+
+[artifacts]
+spec = "openspec/changes/jira-cloud-new-work"
+plan = "docs/superpowers/plans/2026-09-07-jira-cloud-new-work.md"
+branch = "codex/jira-cloud"
+parent_issue = "https://github.com/Sean-Koval/ai-dlc/issues/20"

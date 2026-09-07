@@ -3,24 +3,74 @@
   "components": [
     {
       "id": "openspec",
-      "roles": ["specs"],
-      "modules": ["openspec"],
-      "guidance": ["providers/openspec.md"],
+      "roles": [
+        "specs"
+      ],
+      "modules": [
+        "openspec"
+      ],
+      "guidance": [
+        "providers/openspec.md"
+      ],
       "required_config": []
     },
     {
       "id": "linear",
-      "roles": ["tracker"],
-      "modules": ["linear"],
-      "guidance": ["providers/linear.md"],
-      "required_config": ["team_id", "statuses.in_progress", "statuses.closed"]
+      "roles": [
+        "tracker"
+      ],
+      "modules": [
+        "linear"
+      ],
+      "guidance": [
+        "providers/linear.md"
+      ],
+      "required_config": [
+        "team_id",
+        "statuses.in_progress",
+        "statuses.closed"
+      ]
     },
     {
       "id": "github-issues",
-      "roles": ["tracker"],
-      "modules": ["core"],
-      "guidance": ["providers/github-issues.md"],
-      "required_config": ["repository"]
+      "roles": [
+        "tracker"
+      ],
+      "modules": [
+        "core"
+      ],
+      "guidance": [
+        "providers/github-issues.md"
+      ],
+      "required_config": [
+        "repository"
+      ]
+    },
+    {
+      "id": "jira-cloud",
+      "roles": [
+        "tracker"
+      ],
+      "modules": [],
+      "guidance": [
+        "providers/jira-cloud.md"
+      ],
+      "required_config": [
+        "site_url",
+        "cloud_id",
+        "account_id",
+        "project_id",
+        "project_key",
+        "issue_type_id",
+        "auth_mode",
+        "token_env",
+        "statuses.open",
+        "statuses.in_progress",
+        "statuses.closed",
+        "statuses.cancelled",
+        "resolutions.closed",
+        "resolutions.cancelled"
+      ]
     }
   ]
 }
