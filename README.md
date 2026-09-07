@@ -35,7 +35,7 @@ ai-dlc setup plan --profile profiles/example/ai-dlc-profile.toml
 ai-dlc setup apply --profile profiles/example/ai-dlc-profile.toml
 ```
 
-Machine setup installs the selected workstation modules. Interactive sign-ins and provider workspace selections remain explicit. Configure Linear's team and native status IDs before publishing work. Keep vault paths and account choices in a machine TOML file, and supply it with `--machine` where supported. Credentials are environment references or native tool sign-ins.
+Machine setup installs the selected workstation modules. Interactive sign-ins and provider workspace selections remain explicit. Use guided provider connection to discover and select the tracker destination before publishing work. See [GitHub Issues and Projects setup](docs/github-ticket-setup.md). Keep vault paths and account choices in a machine TOML file, and supply it with `--machine` where supported. Credentials are environment references or native tool sign-ins.
 
 ## Portable profile and machine enrollment
 
@@ -71,8 +71,9 @@ put values in AI-DLC Git files or commit `.env` files.
 
 Local CLI and local MCP execution are the current control plane. Hosted or
 cloud execution is a later qualification target, not a feature claim. Obsidian
-create/attach and provider discovery are also next-cycle gaps; current knowledge
-commands act only on an explicitly selected existing vault.
+create/attach remains a gap; current knowledge commands act only on an explicitly
+selected existing vault. Guided connection supports Linear and GitHub Issues,
+including optional GitHub Projects. See the [GitHub qualification record](docs/verification/github-ticket-workflows.md) for remaining live gates.
 
 MCP exposes reviewed work operations, read-only doctor inspection, and selected
 knowledge operations. Machine enrollment mutations remain CLI-only in this
@@ -99,7 +100,7 @@ The project owns `ai-dlc.toml` (setup, checks, gates and providers), `.mise.toml
 4. Finalize required specifications before review and merge.
 5. `work finish` checks the merged revision's configured CI evidence and any deployment gate before completing the tracker item. Handoff failures remain separately retryable.
 
-Linear, executable GitHub Issues, OpenSpec, GitHub SCM, Obsidian, and optional deployment evidence adapters are included. Configure the destination repository, workflow, target branch and provider settings explicitly. Provider changes affect new work; use reviewed rebind mappings for existing work.
+Linear, GitHub Issues with optional Projects v2 planning, OpenSpec, GitHub SCM, Obsidian, and optional deployment evidence adapters are included. Configure the destination repository, workflow, target branch and provider settings explicitly. Provider changes affect new work; use reviewed rebind mappings for existing work.
 
 ## Architecture and customization
 

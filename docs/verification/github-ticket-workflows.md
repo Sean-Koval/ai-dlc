@@ -47,7 +47,8 @@ provide source-status evidence for that reference. No broader workspace inventor
 or remote mutation was attempted from that result. Linear source completeness
 remains unverified.
 
-Task 3 is implemented in `3991faa`; task review is pending. Fresh onboarding,
+Task 3 is implemented in `3991faa` with review fix `2d9b7df`; independent
+review accepted spec compliance and quality after the fix. Fresh onboarding,
 provision and Linear-compatibility checks passed 132 tests. Six focused scaffold
 selection tests passed; changed-code format, lint, types and generated checks
 passed. A broader related-file run had 439 passes and one duplicate-node fixture
@@ -59,3 +60,10 @@ unintended read-only GitHub viewer/repository requests using ambient CLI
 authentication. The guard now rejects that mismatch before transport and its
 regressions pass. No remote writes or authentication changes occurred. These
 incidental reads do not establish planned live setup or mutation qualification.
+
+Task 3 review found that project-only configuration omitted inherited provider
+choices and enrolled account drift. The fix uses effective runtime resolution
+for dispatch, planning, binding protection and every apply check. Nine real
+enrollment regressions were added; the final related suite passed 141 tests and
+format/lint/types/generated checks passed. Scoped re-review marked the finding
+addressed with no new actionable issues.
