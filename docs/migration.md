@@ -154,7 +154,10 @@ An ordinary failed second write restores earlier writes only while both their
 identity and complete contents remain known. A partial write, authored replacement,
 interruption, or missing/corrupt result event leaves recovery evidence and prevents
 another migration from proceeding. Apply exits unsuccessfully for a rolled-back
-or recovery-required result. Inspect without writing target files:
+or recovery-required result. This subsequent-migration guard checks unresolved
+outcomes; it does not verify the integrity of every completed historical prepared
+receipt. Clone-safe historical integrity validation is deferred, preserving
+continuation in cloned checkouts. Inspect without writing target files:
 
 ```sh
 ai-dlc project tracker-migrate --inspect-recovery OPERATION_ID

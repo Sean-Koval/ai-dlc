@@ -54,12 +54,22 @@ class LinearProvider:
                 ]
             }
         elif operation == "read":
-            result = self.item(
-                self.query(
-                    "query($id:String!) { issue(id:$id) { " + fields + " } }",
-                    {"id": payload["reference"]},
-                )["issue"]
-            )
+            read_fields = fields + (" team { id }" if "team_id" in self.config else "")
+            issue = self.query(
+                "query($id:String!) { issue(id:$id) { " + read_fields + " } }",
+                {"id": payload["reference"]},
+            )["issue"]
+            if "team_id" in self.config:
+                expected = self.config["team_id"]
+                team = issue.get("team") if isinstance(issue, dict) else None
+                if (
+                    not isinstance(expected, str)
+                    or not expected
+                    or not isinstance(team, dict)
+                    or team.get("id") != expected
+                ):
+                    raise ValueError("Linear issue team identity mismatch")
+            result = self.item(issue)
         elif operation == "create":
             found = self.invoke("find", {"correlation": payload["correlation"]})["items"]
             if len(found) > 1:

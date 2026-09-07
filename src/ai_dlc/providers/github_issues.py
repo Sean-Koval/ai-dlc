@@ -125,6 +125,7 @@ class GitHubIssuesProvider:
 
     def read(self, reference):
         number = self.reference(reference)
+        self.verify_viewer()
         item = self.item(json.loads(self.gh("issue", "view", number, "--json", ISSUE_FIELDS)))
         if item["id"] != number:
             raise ValueError("Issue response identity mismatch")
