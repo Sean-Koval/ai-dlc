@@ -12,8 +12,11 @@ ownership and repeatable checks—not a speculative platform.
 flowchart TD
     A[Select capabilities] --> I[Initialize project]
     I --> B[Bootstrap and verify tools]
-    B --> F[Define product and architecture foundation]
-    F --> D[Design first vertical slice]
+    B --> F[Shape evidence, options and smallest outcome]
+    F --> J{Proceed, investigate or stop}
+    J -->|Investigate| F
+    J -->|Stop| X[Record reason]
+    J -->|Proceed| D[Design first vertical slice]
     D --> S[Specification decision]
     S --> W[Publish and start work]
     W --> V[Implement vertical slice]
@@ -60,14 +63,27 @@ baseline checks pass.
 
 ## 3. Establish product and design context
 
-Define the audience, problem, measurable outcome, exclusions, constraints, and
-owner. A PRD is useful when those decisions must survive beyond the work item.
-Create the smallest design that covers the first user journey, including empty,
-loading, error, permission, and accessibility states where relevant.
+Use discovery and the [product brief](../../agents/templates/product-brief.md)
+to establish audience, problem, observed evidence, actual user decisions and
+hypotheses. A requested dashboard or feature is a candidate solution, not proof
+of value. Compare at least two feasible approaches and doing nothing when
+meaningful, considering impact, evidence confidence, effort and dependencies.
+Select the smallest useful outcome; use a bounded investigation when the value
+or material constraints remain unknown.
 
-Document consequential architecture choices under `docs/decisions/`. Link
-decisions from the design rather than repeating their rationale. Follow the
-[design-to-implementation contract](design-to-implementation.md) before coding.
+Follow the [greenfield example](../../agents/examples/product-shaping/greenfield.md).
+Keep one canonical brief with stable OUT-001 and RQ-001 identifiers. Record scope,
+exclusions, success evidence and unresolved decisions. End with proceed,
+investigate or stop and reasons; the recommendation does not invent approval.
+Small work can use this brief alone. Use prd-draft only when additional product
+rationale is useful, preserving the same IDs and evidence links.
+
+Proceed into design/specification only within existing authorization and resolved
+material constraints. Design methods fit the change: interaction states and
+accessibility for UI, contracts or operational checks for non-UI work. Document
+consequential architecture choices under `docs/decisions/` and follow the
+[design-to-implementation contract](design-to-implementation.md) when applicable.
+Discovery does not itself publish tracker work.
 
 ## 4. Decide on formal specification
 

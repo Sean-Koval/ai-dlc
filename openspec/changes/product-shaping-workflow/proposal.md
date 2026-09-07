@@ -32,4 +32,7 @@ None. Existing schema-4, content ownership, enrollment, and finish contracts rem
 - Test tests/test_templates.py and tests/test_rendering.py
 
 Dependencies: none.
-No implementation is complete. [Execution plan](../../../docs/superpowers/plans/2026-09-05-product-shaping-workflow.md).
+Local guidance/assets and acceptance exercises are delivered; integration review,
+archival and configured finish evidence remain pending. See
+[verification](../../../docs/verification/product-shaping-workflow.md).
+[Execution plan](../../../docs/superpowers/plans/2026-09-05-product-shaping-workflow.md).

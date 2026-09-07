@@ -369,3 +369,29 @@ def test_custom_provider_index_links_to_project_instructions_without_copying_or_
     ]
     guidance.write_text("# Reviewed new custom instructions\n")
     assert render_agents(tmp_path)["clean"]
+
+
+@pytest.mark.parametrize("client,directory", [("codex", ".agents"), ("claude-code", ".claude")])
+@pytest.mark.parametrize("tracker", ["linear", "github-issues"])
+def test_product_shaping_guidance_is_available_to_selected_harness(
+    tmp_path, client, directory, tracker
+):
+    from ai_dlc.agents import render_agents
+    from ai_dlc.files import assets
+    from ai_dlc.templates import adopt
+
+    adopt(tmp_path, apply=True, providers={"tracker": tracker})
+    render_agents(tmp_path, apply=True, client=client)
+    for name in ["discovery", "prd-draft", "review-inbox"]:
+        body = (tmp_path / directory / "skills" / name / "SKILL.md").read_text()
+        assert body == (assets("agents") / "skills" / name / "SKILL.md").read_text()
+    discovery = (tmp_path / directory / "skills/discovery/SKILL.md").read_text()
+    for reference in [
+        "docs/templates/product-brief.md",
+        "docs/examples/product-shaping/greenfield.md",
+        "docs/examples/product-shaping/brownfield.md",
+    ]:
+        assert reference in discovery
+        assert (tmp_path / reference).is_file()
+    assert f".ai-dlc/providers/{tracker}.md" in (tmp_path / "AGENTS.md").read_text()
+    assert render_agents(tmp_path, client=client)["clean"]

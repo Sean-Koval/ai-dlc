@@ -61,12 +61,12 @@ For each criterion below, preserve the input, produced artifact or observation, 
 
 **Produces:** Author one greenfield task and one brownfield task with evidence, options, excluded scope, RQ IDs, and a correct next action. Include a misleading feature request and contradictory requirements.
 
-- [ ] 1.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
-- [ ] 1.2 Prepare the concrete cases and expected observations above before authoring or executing the workflow; mark human/live-only observations pending.
-- [ ] 1.3 Author one greenfield task and one brownfield task with evidence, options, excluded scope, RQ IDs, and a correct next action. Include a misleading feature request and contradictory requirements.
-- [ ] 1.4 Run `uv run --locked --no-sync pytest -q tests/test_templates.py tests/test_rendering.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
-- [ ] 1.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
-- [ ] 1.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
+- [x] 1.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
+- [x] 1.2 Prepare the concrete cases and expected observations above before authoring or executing the workflow; mark human/live-only observations pending.
+- [x] 1.3 Author one greenfield task and one brownfield task with evidence, options, excluded scope, RQ IDs, and a correct next action. Include a misleading feature request and contradictory requirements.
+- [x] 1.4 Run `uv run --locked --no-sync pytest -q tests/test_templates.py tests/test_rendering.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
+- [x] 1.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
+- [x] 1.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
 
 ### Task 2: Skills and templates
 
@@ -76,12 +76,12 @@ For each criterion below, preserve the input, produced artifact or observation, 
 
 **Produces:** Update the existing skills and PRD template using the examples; include exact output sections and decision rules. Follow skill-authoring guidance during implementation and retain upstream-provider routing.
 
-- [ ] 2.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
-- [ ] 2.2 Prepare the concrete cases and expected observations above before authoring or executing the workflow; mark human/live-only observations pending.
-- [ ] 2.3 Update the existing skills and PRD template using the examples; include exact output sections and decision rules. Follow skill-authoring guidance during implementation and retain upstream-provider routing.
-- [ ] 2.4 Run `uv run --locked --no-sync pytest -q tests/test_templates.py tests/test_rendering.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
-- [ ] 2.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
-- [ ] 2.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
+- [x] 2.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
+- [x] 2.2 Prepare the concrete cases and expected observations above before authoring or executing the workflow; mark human/live-only observations pending.
+- [x] 2.3 Update the existing skills and PRD template using the examples; include exact output sections and decision rules. Follow skill-authoring guidance during implementation and retain upstream-provider routing.
+- [x] 2.4 Run `uv run --locked --no-sync pytest -q tests/test_templates.py tests/test_rendering.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
+- [x] 2.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
+- [x] 2.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
 
 ### Task 3: Distribution and behavioral cases
 
@@ -91,12 +91,12 @@ For each criterion below, preserve the input, produced artifact or observation, 
 
 **Produces:** Regenerate digest locks/client copies/templates; add packaging tests for assets and behavioral scenarios measuring decisions rather than just headings.
 
-- [ ] 3.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
-- [ ] 3.2 Prepare the concrete cases and expected observations above before authoring or executing the workflow; mark human/live-only observations pending.
-- [ ] 3.3 Regenerate digest locks/client copies/templates; add packaging tests for assets and behavioral scenarios measuring decisions rather than just headings.
-- [ ] 3.4 Run `uv run --locked --no-sync pytest -q tests/test_templates.py tests/test_rendering.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
-- [ ] 3.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
-- [ ] 3.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
+- [x] 3.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
+- [x] 3.2 Prepare the concrete cases and expected observations above before authoring or executing the workflow; mark human/live-only observations pending.
+- [x] 3.3 Regenerate digest locks/client copies/templates; add packaging tests for assets and behavioral scenarios measuring decisions rather than just headings.
+- [x] 3.4 Run `uv run --locked --no-sync pytest -q tests/test_templates.py tests/test_rendering.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
+- [x] 3.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
+- [x] 3.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
 
 ## Requirement coverage
 
@@ -108,9 +108,18 @@ For each criterion below, preserve the input, produced artifact or observation, 
 
 ## Completion and handoff
 
-- [ ] Run `ai-dlc project check --required`; inspect all five outcomes.
+- [x] Run `ai-dlc project check --required`; inspect all five outcomes.
 - [ ] Run `openspec validate product-shaping-workflow --strict --no-interactive`, review against this plan, and archive only after all implementation tasks are complete. Update the work record to the exact archived path.
 - [ ] Create/link the PR, complete review and required CI, and use `ai-dlc work finish product-shaping-workflow` only after merge evidence exists.
 - [ ] Leave a handoff with work/ticket ID, branch and revision, delivered interfaces, checks and evidence locations, unresolved findings, and the next dependency-unblocked ticket.
 
 Stop and report a blocked task if a dependency is incomplete, an accepted interface conflicts with existing behavior, a required live environment is unavailable, or a required human label/budget is absent. Continue independent local preparation where possible. Do not invent missing product decisions or broaden scope to clear a blocker.
+
+## Local delivery evidence
+
+See [verification](../../verification/product-shaping-workflow.md) for the test-first
+asset regressions and preserved synthetic agent outputs, including the observed
+baseline gaps and the targeted correction. Implementation was kept as one coherent
+local commit so source, templates, digests, client copies and tests travel together.
+Independent source review, archive/PR/CI evidence and the configured finish step
+remain integration work; no live qualification is implied by these local checks.
