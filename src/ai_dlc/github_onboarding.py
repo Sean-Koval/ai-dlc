@@ -1,20 +1,17 @@
 """Read-only named GitHub discovery and reviewed local connection plans."""
 
-import copy
 import hashlib
 import json
 import os
 import re
 import stat
-import tempfile
-import tomllib
 from collections.abc import Mapping
 from pathlib import Path
 from urllib.parse import urlsplit
 
 from ai_dlc.config import digest, resolve_runtime
 from ai_dlc.locking import project_write_lock
-from ai_dlc.provider_onboarding import _connection_plan_parent, _set_table_value, _table_paths
+from ai_dlc.provider_onboarding import _connection_plan_parent
 from ai_dlc.providers.github_issues import GitHubIssuesProvider
 from ai_dlc.providers.github_projects import FIELDS
 
@@ -200,79 +197,27 @@ def discover_github(settings, *, environ, repository=None, project=None):
 
 
 def _snapshot(root):
-    directory = root / ".ai-dlc/work"
-    if directory.is_symlink() or directory.parent.is_symlink():
-        raise ValueError("Work bindings cannot use symlinks during connection")
-    snapshot = {}
-    for path in sorted(directory.glob("*.toml")):
-        if path.is_symlink() or not path.is_file():
-            raise ValueError("Work bindings must be regular files")
-        snapshot[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
-    return snapshot
+    from ai_dlc.connections import snapshot_work
+
+    return snapshot_work(root)
 
 
 def _render(text, alias, patch):
-    original = tomllib.loads(text)
-    expected = copy.deepcopy(original)
-    settings = expected.setdefault("providers", {}).setdefault(alias, {})
-    paths = _table_paths(text)
-    base = ("providers", alias)
-    current = original.get("providers", {}).get(alias)
-    if current is not None and base not in paths:
-        raise ValueError("GitHub TOML representation cannot be edited safely; use provider tables")
+    from ai_dlc.connections import render_patch
 
-    def update(table, values, target):
-        nonlocal text
-        for key, value in values.items():
-            if isinstance(value, dict):
-                existing = target.get(key)
-                if existing is not None and tuple((table + "." + key).split(".")) not in paths:
-                    raise ValueError(
-                        "GitHub TOML representation cannot be edited safely; use provider tables"
-                    )
-                update(table + "." + key, value, target.setdefault(key, {}))
-            else:
-                text = _set_table_value(text, table, key, value)
-                target[key] = value
-
-    if "project" in settings and "project" not in patch:
-        raise ValueError("Removing a configured Project requires a separate migration")
-    update("providers." + alias, patch, settings)
-    try:
-        actual = tomllib.loads(text)
-    except tomllib.TOMLDecodeError:
-        raise ValueError("GitHub TOML representation cannot be edited safely") from None
-    if actual != expected:
-        raise ValueError("GitHub TOML representation cannot be edited safely")
-    return text
+    return render_patch(text, alias, patch, require_project=True)
 
 
 def _guard_bound(root, config, alias, patch):
-    current = config.get("providers", {}).get(alias, {})
-    # Even adding viewer identity changes provider fingerprints: retain all bound records.
-    if all(current.get(key) == value for key, value in patch.items()):
-        return
-    for path in (root / ".ai-dlc/work").glob("*.toml"):
-        work = tomllib.loads(path.read_text())
-        selected = work.get("providers", {}).get("tracker", config.get("roles", {}).get("tracker"))
-        if selected == alias and (
-            work.get("bindings", {}).get("tracker") or work.get("artifacts", {}).get("tracker")
-        ):
-            raise ValueError("Tracker work is already bound; use a separate reviewed migration")
+    from ai_dlc.connections import guard_bound_tracker
+
+    return guard_bound_tracker(root, config, alias, patch)
 
 
 def _save_plan(root, path, plan):
-    with _connection_plan_parent(root, path, create=True) as (resolved, parent, leaf):
-        # Exclusive creation never clobbers an authored plan or follows a symlink.
-        descriptor = os.open(
-            leaf, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600, dir_fd=parent
-        )
-        with os.fdopen(descriptor, "w") as stream:
-            json.dump(plan, stream, sort_keys=True, indent=2)
-            stream.write("\n")
-            stream.flush()
-            os.fsync(stream.fileno())
-        return resolved.relative_to(root).as_posix()
+    from ai_dlc.connections import save_exclusive_plan
+
+    return save_exclusive_plan(root, path, plan)
 
 
 def _load_plan(root, path):
@@ -359,44 +304,19 @@ def _connect_existing_github(
             raise ValueError(
                 "GitHub connection plan drift: configuration, work or remote identity changed"
             )
-        with project_write_lock(root):
-            path = root / "ai-dlc.toml"
-            if path.is_symlink():
-                raise ValueError("GitHub configuration must not be a symlink")
-            before = path.read_bytes()
-            if (
-                hashlib.sha256(before).hexdigest() != saved["before_digest"]
-                or _snapshot(root) != saved["work_digest"]
-            ):
-                raise ValueError("GitHub connection source or work bindings changed")
-            if digest(resolve_runtime(root, environ=environ).values) != saved["runtime_digest"]:
-                raise ValueError("GitHub runtime configuration changed")
-            rendered = _render(before.decode(), alias, saved["patch"])
-            # A private stage is retained on failure; never delete a possibly replaced pathname.
-            stage = Path(tempfile.mkdtemp(prefix=".ai-dlc-github-", dir=root))
-            staged = stage / "config.toml"
-            descriptor = os.open(
-                staged,
-                os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
-                stat.S_IMODE(path.stat().st_mode),
-            )
-            with os.fdopen(descriptor, "w") as stream:
-                stream.write(rendered)
-                stream.flush()
-                os.fsync(stream.fileno())
-                identity = os.fstat(stream.fileno())
-            if (
-                path.is_symlink()
-                or path.read_bytes() != before
-                or _snapshot(root) != saved["work_digest"]
-                or digest(resolve_runtime(root, environ=environ).values) != saved["runtime_digest"]
-            ):
-                raise ValueError(f"GitHub source changed during apply; stage retained at {stage}")
-            current = staged.lstat()
-            if (current.st_dev, current.st_ino) != (identity.st_dev, identity.st_ino):
-                raise ValueError(f"GitHub stage changed; retained at {stage}")
-            os.replace(staged, path)
-            # Empty private directory retained intentionally; no cleanup by mutable pathname.
+        from ai_dlc.connections import apply_exact_patch
+
+        apply_exact_patch(
+            root,
+            alias,
+            saved,
+            environ=environ,
+            snapshot=_snapshot,
+            render=_render,
+            lock=project_write_lock,
+            label="GitHub",
+            stage_prefix=".ai-dlc-github-",
+        )
         return {"provider": alias, "status": "applied", "selected": saved["selected"]}
     path = root / "ai-dlc.toml"
     if path.is_symlink():
