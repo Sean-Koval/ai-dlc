@@ -311,6 +311,7 @@ def doctor(
                 signins.append("gh auth login")
         else:
             missing.append("gh")
+    if kind("scm") in {"github", "github-scm"}:
         for key in ["repository", "workflow", "target_branch"]:
             if not config.get("scm", {}).get(key):
                 configuration.append("scm." + key + " is required")
@@ -328,6 +329,27 @@ def doctor(
     from ai_dlc.providers import Registry
 
     registry = Registry(config, root=root, environ=environment)
+    provider_capabilities = []
+    tracker = roles.get("tracker")
+    if tracker:
+        try:
+            if registry.declares(tracker, "capabilities"):
+                evidence = registry.invoke(tracker, "capabilities", {})
+                provider_capabilities.append(
+                    {
+                        "provider": tracker,
+                        "ready": True,
+                        "evidence": evidence,
+                        "qualification": "declared capability read only",
+                    }
+                )
+        except Exception as exc:  # noqa: BLE001 -- doctor reports declared discovery failures
+            reason = (
+                "Declared provider capability inspection failed; verify configuration and access"
+            )
+            if "read:project" in str(exc).lower() or "project" in str(exc).lower():
+                reason = "Projects capability inspection failed; verify Project configuration and read:project permission (or equivalent access)"
+            provider_capabilities.append({"provider": tracker, "ready": False, "reason": reason})
     for name, settings in providers.items():
         if settings.get("health_reference"):
             try:
@@ -382,6 +404,7 @@ def doctor(
         "ready": not (missing or runtime_drift or signins or conflicts or configuration)
         and hooks["ready"]
         and all(item["ready"] for item in health)
+        and all(item["ready"] for item in provider_capabilities)
         and bool(user_agents["clean"]),
         "target": target,
         "capabilities": capabilities[target],
@@ -389,6 +412,7 @@ def doctor(
         "runtime_drift": runtime_drift,
         "configuration": configuration,
         "provider_health": health,
+        "provider_capabilities": provider_capabilities,
         "signins": signins,
         "managed_conflicts": conflicts,
         "knowledge": knowledge,

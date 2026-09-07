@@ -8,7 +8,7 @@ name = "AI-DLC"
 
 [roles]
 specs = "openspec"
-tracker = "linear"
+tracker = "github-issues"
 knowledge = "obsidian"
 scm = "github"
 deploy = "none"
@@ -60,3 +60,18 @@ test = "uv run --locked --no-sync pytest -q"
 
 [agents]
 servers = []
+
+[providers.github-issues]
+host = "github.com"
+kind = "github-issues"
+
+repository = "Sean-Koval/ai-dlc"
+viewer_id = "MDQ6VXNlcjQ4MDcxODcw"
+[providers.github-issues.project]
+id = "PVT_kwHOAt2Evs4BiwXI"
+status_field_id = "PVTSSF_lAHOAt2Evs4BiwXIzhhnLb8"
+
+[providers.github-issues.project.statuses]
+closed = "98236657"
+in_progress = "47fc9ee4"
+open = "f75ad846"

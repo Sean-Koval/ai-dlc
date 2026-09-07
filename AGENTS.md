@@ -8,7 +8,7 @@ Store durable architecture, decisions and runbooks in `docs/`; formal change art
 
 Use conventional commit prefixes. Describe behavior and validation in review descriptions; do not publish packages or change remote service state implicitly.
 
-<!-- ai-dlc:begin 71f536b863a278b3f66fb8adeef780e312fd942c79a8abca37b26d407459242b -->
+<!-- ai-dlc:begin d29e768d7e0c5936752e7ef94193c3a12bc92cb405bc0284e543f76b19d7fd05 -->
 # Shared project guidance
 
 Read ai-dlc.toml and the active .ai-dlc/work record before work.
@@ -33,7 +33,7 @@ Modules name installation requirements; their presence does not establish accoun
 access or platform qualification. Run `ai-dlc project readiness --root .` for
 offline requirements and use doctor for explicit provider health inspection.
 
-- tracker: linear (modules: linear); [providers/linear.md](<.ai-dlc/providers/linear.md>)
+- tracker: github-issues (modules: core); [providers/github-issues.md](<.ai-dlc/providers/github-issues.md>)
 - specs: openspec (modules: openspec); [providers/openspec.md](<.ai-dlc/providers/openspec.md>)
 - scm: github; unsupported: no component for provider: github
 - deploy: none; unsupported: no component for provider: none

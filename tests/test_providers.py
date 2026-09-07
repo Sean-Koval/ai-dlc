@@ -11,6 +11,71 @@ def test_contract_hides_completion():
     assert "create" in manifest()["operations"]
 
 
+def test_capabilities_contract_is_optional_and_validates_schema_one():
+    from ai_dlc.contracts import manifest, validate_response
+
+    tracker = manifest()["roles"]["tracker"]
+    assert "capabilities" in tracker["optional"]
+    assert validate_response(
+        "capabilities",
+        {
+            "schema": 1,
+            "lifecycle": {"in_progress": True, "closed": True},
+            "optional_operations": ["link", "prepare"],
+        },
+    ) == {
+        "schema": 1,
+        "lifecycle": {"in_progress": True, "closed": True},
+        "optional_operations": ["link", "prepare"],
+    }
+
+
+@pytest.mark.parametrize(
+    "result",
+    [
+        {
+            "lifecycle": {"in_progress": True, "closed": True},
+            "optional_operations": [],
+        },
+        {
+            "schema": True,
+            "lifecycle": {"in_progress": True, "closed": True},
+            "optional_operations": [],
+        },
+        {
+            "schema": 1.0,
+            "lifecycle": {"in_progress": True, "closed": True},
+            "optional_operations": [],
+        },
+        {
+            "schema": "1",
+            "lifecycle": {"in_progress": True, "closed": True},
+            "optional_operations": [],
+        },
+        {
+            "schema": 1,
+            "lifecycle": {"in_progress": 1, "closed": 0},
+            "optional_operations": [],
+        },
+        {
+            "schema": 1,
+            "lifecycle": {"in_progress": True, "closed": True},
+            "optional_operations": ("link",),
+        },
+        {
+            "schema": 1,
+            "lifecycle": {"in_progress": True, "closed": True},
+            "optional_operations": [1],
+        },
+    ],
+)
+def test_capabilities_contract_rejects_coerced_or_missing_wire_types(result):
+    from ai_dlc.contracts import validate_response
+
+    with pytest.raises(ValueError):
+        validate_response("capabilities", result)
+
+
 def test_journal_conflicts_and_recovers(tmp_path):
     from ai_dlc.journal import Journal
 
@@ -244,6 +309,26 @@ def test_registry_discovers_builtin_role_adapters(tmp_path):
     registry = Registry({"scm": {"repository": "a/b"}}, root=tmp_path)
     assert hasattr(registry.get("openspec"), "current")
     assert hasattr(registry.get("github"), "merged")
+
+
+def test_registry_declares_builtin_and_explicit_registered_capabilities():
+    from ai_dlc.providers import Registry
+
+    registry = Registry()
+    assert registry.declares("linear", "capabilities") is True
+    assert registry.declares("github-issues", "capabilities") is True
+    registry.register("legacy", object())
+    registry.register("modern", object(), operations=["capabilities"])
+    assert registry.declares("legacy", "capabilities") is False
+    assert registry.declares("modern", "capabilities") is True
+
+
+def test_registry_rejects_malformed_external_operation_declaration():
+    from ai_dlc.providers import Registry
+
+    registry = Registry({"providers": {"external": {"operations": "capabilities"}}})
+    with pytest.raises(TypeError, match="operations.*list"):
+        registry.declares("external", "capabilities")
 
 
 def test_executable_specification_contract(tmp_path):

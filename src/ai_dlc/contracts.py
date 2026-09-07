@@ -2,13 +2,16 @@
 
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class Request(BaseModel):
     model_config = ConfigDict(extra="forbid")
     schema_version: Literal[1] = 1
     operation: Literal[
+        "capabilities",
+        "prepare",
+        "reconcile_closed",
         "create",
         "find",
         "read",
@@ -43,6 +46,10 @@ class Read(Payload):
     reference: str = Field(min_length=1)
 
 
+class Prepare(Read):
+    operation_id: str = Field(min_length=1)
+
+
 class Link(Read):
     url: str = Field(min_length=1)
     operation_id: str = Field(min_length=1)
@@ -53,7 +60,40 @@ class Transition(Read):
     operation_id: str = Field(min_length=1)
 
 
-PAYLOADS = {"create": Create, "find": Find, "read": Read, "link": Link, "transition": Transition}
+class Capabilities(Payload):
+    pass
+
+
+class LifecycleCapabilities(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    in_progress: bool
+    closed: bool
+
+
+class CapabilityResult(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    schema_version: Literal[1] = Field(alias="schema")
+    lifecycle: LifecycleCapabilities
+    optional_operations: list[str]
+
+    @field_validator("schema_version", mode="before")
+    @classmethod
+    def exact_schema_one(cls, value):
+        if type(value) is not int or value != 1:
+            raise ValueError("Capability schema must be the integer 1")
+        return value
+
+
+PAYLOADS = {
+    "capabilities": Capabilities,
+    "prepare": Prepare,
+    "reconcile_closed": Prepare,
+    "create": Create,
+    "find": Find,
+    "read": Read,
+    "link": Link,
+    "transition": Transition,
+}
 
 
 class Item(BaseModel):
@@ -114,6 +154,9 @@ PAYLOADS.update(
     {"current": Current, "merged": Read, "ci": Revision, "deployment": Revision, "append": Append}
 )
 RESPONSES = {
+    "capabilities": CapabilityResult,
+    "prepare": Item,
+    "reconcile_closed": Item,
     "create": Item,
     "find": Found,
     "read": Item,
@@ -138,7 +181,7 @@ def validate_request(operation, payload):
 
 
 def validate_response(operation, result):
-    return RESPONSES[operation].model_validate(result).model_dump()
+    return RESPONSES[operation].model_validate(result).model_dump(by_alias=True)
 
 
 def manifest():
@@ -148,7 +191,7 @@ def manifest():
         "roles": {
             "tracker": {
                 "mandatory": ["create", "find", "read", "transition"],
-                "optional": ["link"],
+                "optional": ["capabilities", "link", "prepare", "reconcile_closed"],
             },
             "specs": {"mandatory": ["current"], "optional": []},
             "scm": {"mandatory": ["merged", "ci"], "optional": []},

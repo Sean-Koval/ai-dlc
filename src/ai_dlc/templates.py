@@ -120,12 +120,23 @@ def adopt(
     vcs_ref: str | None = None,
     capabilities: list[str] | None = None,
     initialize: bool = False,
+    providers: dict[str, str] | None = None,
 ) -> dict:
     if preset not in {"generic", "python", "node", "rust"}:
         raise ValueError("Unknown preset")
     capabilities = list(CAPABILITIES if capabilities is None else dict.fromkeys(capabilities))
     if set(capabilities) - set(CAPABILITIES):
         raise ValueError("Unknown role capability")
+    providers = providers or {}
+    if set(providers) - {"tracker"}:
+        raise ValueError("Only tracker scaffold selection is supported")
+    tracker = providers.get("tracker", "linear")
+    if tracker not in {"linear", "github-issues"}:
+        raise ValueError(
+            f"Unsupported tracker scaffold: {tracker}; custom providers remain configurable"
+        )
+    if providers and "tracker" not in capabilities:
+        raise ValueError("Tracker selection requires the tracker capability")
     root = Path(root).resolve()
     source = template_source or str(assets("project-templates"))
     before = _files(root)
@@ -136,6 +147,7 @@ def adopt(
             stage,
             data={
                 "preset": preset,
+                "tracker": tracker,
                 "capabilities": capabilities,
                 "initialize": initialize,
                 "project_name": "project-"

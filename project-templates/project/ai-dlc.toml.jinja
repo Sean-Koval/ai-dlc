@@ -5,7 +5,7 @@ schema = 4
 specs = "openspec"
 {% endif %}
 {% if 'tracker' in capabilities %}
-tracker = "linear"
+tracker = "{{ tracker }}"
 {% endif %}
 {% if 'knowledge' in capabilities %}
 knowledge = "obsidian"
@@ -21,8 +21,14 @@ agent-client = ["claude-code", "codex"]
 {% endif %}
 
 {% if 'tracker' in capabilities %}
-[providers.linear]
+[providers.{{ tracker }}]
+{% if tracker == 'linear' %}
 token_env = "LINEAR_API_KEY"
+{% else %}
+kind = "github-issues"
+# Run ai-dlc provider connect github-issues to plan repository Project setup.
+# Projects are created/reused only on saved-plan apply; --issues-only opts out.
+{% endif %}
 {% endif %}
 
 [gates]

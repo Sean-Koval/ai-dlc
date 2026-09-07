@@ -28,7 +28,16 @@ class LinearProvider:
     def invoke(self, operation, payload):
         validate_request(operation, payload)
         fields = "id url description state { id name type }"
-        if operation == "find":
+        if operation == "capabilities":
+            result = {
+                "schema": 1,
+                "lifecycle": {
+                    "in_progress": bool(self.config.get("statuses", {}).get("in_progress")),
+                    "closed": bool(self.config.get("statuses", {}).get("closed")),
+                },
+                "optional_operations": ["link"],
+            }
+        elif operation == "find":
             data = self.query(
                 "query($filter: IssueFilter) { issues(filter:$filter, first:100) { nodes { "
                 + fields
@@ -45,12 +54,22 @@ class LinearProvider:
                 ]
             }
         elif operation == "read":
-            result = self.item(
-                self.query(
-                    "query($id:String!) { issue(id:$id) { " + fields + " } }",
-                    {"id": payload["reference"]},
-                )["issue"]
-            )
+            read_fields = fields + (" team { id }" if "team_id" in self.config else "")
+            issue = self.query(
+                "query($id:String!) { issue(id:$id) { " + read_fields + " } }",
+                {"id": payload["reference"]},
+            )["issue"]
+            if "team_id" in self.config:
+                expected = self.config["team_id"]
+                team = issue.get("team") if isinstance(issue, dict) else None
+                if (
+                    not isinstance(expected, str)
+                    or not expected
+                    or not isinstance(team, dict)
+                    or team.get("id") != expected
+                ):
+                    raise ValueError("Linear issue team identity mismatch")
+            result = self.item(issue)
         elif operation == "create":
             found = self.invoke("find", {"correlation": payload["correlation"]})["items"]
             if len(found) > 1:

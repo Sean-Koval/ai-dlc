@@ -1073,3 +1073,23 @@ def test_initialized_setup_and_language_check_offline(tmp_path, preset, tool, so
         assert result.returncode == 0, result.stdout + result.stderr
     (root / source).write_text("this is deliberately invalid syntax !!!\n")
     assert run(config["checks"]["commands"]["language-check"]).returncode != 0
+
+
+@pytest.mark.parametrize("tracker", ["linear", "github-issues"])
+def test_explicit_tracker_is_persisted_in_answers(tmp_path, tracker):
+    import tomllib
+
+    import yaml
+
+    adopt(tmp_path, apply=True, providers={"tracker": tracker})
+    config = tomllib.loads((tmp_path / "ai-dlc.toml").read_text())
+    assert config["roles"]["tracker"] == tracker
+    assert yaml.safe_load((tmp_path / ".copier-answers.yml").read_text())["tracker"] == tracker
+    if tracker == "github-issues":
+        assert "linear" not in config.get("providers", {})
+
+
+def test_unsupported_scaffold_tracker_is_explicit(tmp_path):
+    with pytest.raises(ValueError, match="Unsupported tracker"):
+        adopt(tmp_path, providers={"tracker": "plane"})
+    assert not (tmp_path / "ai-dlc.toml").exists()

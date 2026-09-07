@@ -109,6 +109,51 @@ def _validate_binding_config(root: Path, config: dict) -> None:
             raise ValueError("Work service configuration does not match current project source")
 
 
+def resolve_work(raw: dict, config: dict, work_id: str, *, require_review: bool = False) -> dict:
+    """Resolve effective work providers and validate fingerprints without local writes."""
+    aliases = {"specification": "specs", "deployment": "deploy"}
+    raw = dict(raw)
+    source = raw.get("providers") or config.get("roles", {})
+    raw["providers"] = {
+        aliases.get(k, k): v
+        for k, v in source.items()
+        if aliases.get(k, k) in {"specs", "tracker", "scm", "deploy", "knowledge"}
+    }
+    work = Work.model_validate(raw).model_dump(by_alias=True)
+    if work["id"] != work_id:
+        raise ValueError("Work ID does not match filename")
+    if require_review and not work["reviewed"]:
+        raise ValueError("Work must be reviewed before mutation")
+    defaults = {
+        "specs": "openspec",
+        "scm": "github",
+        "deploy": "github-deployment",
+        "knowledge": "obsidian",
+    }
+    for role, provider_id in {**defaults, **work["providers"]}.items():
+        cfg = config.get("providers", {}).get(provider_id, {})
+        identity = {"provider_id": provider_id, "configuration": cfg}
+        # A vault's machine path is not its logical provider identity. Configure
+        # providers.<id>.vault_id when distinct vaults must retain distinct bindings.
+        if role in {"scm", "deploy"} or cfg.get("kind", provider_id) == "github-issues":
+            identity["scm"] = config.get("scm", {})
+        if role == "deploy":
+            identity["deploy"] = config.get("deploy", {})
+        account = cfg.get("account")
+        if account:
+            identity["account"] = config.get("accounts", {}).get(account, {})
+        fingerprint = hashlib.sha256(
+            json.dumps(identity, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest()
+        existing = work["bindings"].get(role)
+        if existing and existing != fingerprint:
+            raise ValueError(
+                f"Provider binding drift for {role}; explicitly review and rebind work"
+            )
+        work["bindings"][role] = fingerprint
+    return work
+
+
 class WorkService:
     @classmethod
     def from_project(
@@ -169,45 +214,7 @@ class WorkService:
         if not path.is_relative_to(self.root / ".ai-dlc/work"):
             raise ValueError("Unsafe work path")
         raw = tomllib.loads(path.read_text())
-        aliases = {"specification": "specs", "deployment": "deploy"}
-        source = raw.get("providers") or self.config.get("roles", {})
-        raw["providers"] = {
-            aliases.get(k, k): v
-            for k, v in source.items()
-            if aliases.get(k, k) in {"specs", "tracker", "scm", "deploy", "knowledge"}
-        }
-        work = Work.model_validate(raw).model_dump(by_alias=True)
-        if work["id"] != work_id:
-            raise ValueError("Work ID does not match filename")
-        if mutation and not work["reviewed"]:
-            raise ValueError("Work must be reviewed before mutation")
-        defaults = {
-            "specs": "openspec",
-            "scm": "github",
-            "deploy": "github-deployment",
-            "knowledge": "obsidian",
-        }
-        for role, provider_id in {**defaults, **work["providers"]}.items():
-            cfg = self.config.get("providers", {}).get(provider_id, {})
-            identity = {"provider_id": provider_id, "configuration": cfg}
-            # A vault's machine path is not its logical provider identity. Configure
-            # providers.<id>.vault_id when distinct vaults must retain distinct bindings.
-            if role in {"scm", "deploy"} or cfg.get("kind", provider_id) == "github-issues":
-                identity["scm"] = self.config.get("scm", {})
-            if role == "deploy":
-                identity["deploy"] = self.config.get("deploy", {})
-            account = cfg.get("account")
-            if account:
-                identity["account"] = self.config.get("accounts", {}).get(account, {})
-            fingerprint = hashlib.sha256(
-                json.dumps(identity, sort_keys=True, separators=(",", ":")).encode()
-            ).hexdigest()
-            existing = work["bindings"].get(role)
-            if existing and existing != fingerprint:
-                raise ValueError(
-                    f"Provider binding drift for {role}; explicitly review and rebind work"
-                )
-            work["bindings"][role] = fingerprint
+        work = resolve_work(raw, self.config, work_id, require_review=mutation)
         if mutation:
             self.save(work)
         return work
@@ -284,6 +291,10 @@ class WorkService:
         self.journal.succeed(operation_id, item)
         work["artifacts"]["tracker"] = item["id"]
         self.save(work)
+        if self.optional_tracker_operation(work, "prepare"):
+            item = self.mutate(
+                work, "prepare", "prepare", {"reference": item["id"]}, reconcile=True
+            )
         return {"status": "published", "work_id": work_id, "tracker": item}
 
     def link(self, work_id, artifact_kind, reference):
@@ -305,13 +316,22 @@ class WorkService:
             )
         return {"status": "linked", "work_id": work_id, "artifacts": work["artifacts"]}
 
-    def mutate(self, work, action, operation, payload):
+    def optional_tracker_operation(self, work, operation):
+        provider_id = work["providers"]["tracker"]
+        if not getattr(self.registry, "declares", lambda _id, _operation: False)(
+            provider_id, "capabilities"
+        ):
+            return False
+        capabilities = self.registry.invoke(provider_id, "capabilities", {})
+        return operation in capabilities["optional_operations"]
+
+    def mutate(self, work, action, operation, payload, *, reconcile=False):
         operation_id = self.op_id(work, action)
         payload = {**payload, "operation_id": operation_id}
         record = self.journal.begin(
             operation_id, {"provider": work["providers"]["tracker"], **payload}
         )
-        if record["status"] == "succeeded":
+        if record["status"] == "succeeded" and not reconcile:
             return record["result"]
         try:
             result = self.tracker(work).invoke(operation, payload)
@@ -355,17 +375,20 @@ class WorkService:
         work = self.load(work_id)
         if not work["reviewed"]:
             raise ValueError("Work must be reviewed before mutation")
+        provider_id = work["providers"]["tracker"]
+        declared = getattr(self.registry, "declares", lambda _id, _operation: False)(
+            provider_id, "capabilities"
+        )
+        capabilities = self.registry.invoke(provider_id, "capabilities", {}) if declared else None
         branch = self.branch(work)
         if not work["artifacts"].get("tracker"):
             self.publish(work_id)
             work = self.load(work_id, True)
-        provider_id = work["providers"]["tracker"]
-        cfg = self.config.get("providers", {}).get(provider_id, {})
-        if cfg.get("kind", cfg.get("type", provider_id)) == "github-issues":
+        if capabilities is not None and not capabilities["lifecycle"]["in_progress"]:
             item = self.tracker(work).invoke("read", {"reference": work["artifacts"]["tracker"]})
             transition = {
                 "supported": False,
-                "reason": "GitHub Issues supports open/closed; in_progress is unavailable",
+                "reason": "Tracker does not support the in_progress lifecycle state",
             }
         else:
             item = self.mutate(
@@ -373,8 +396,11 @@ class WorkService:
                 "start",
                 "transition",
                 {"reference": work["artifacts"]["tracker"], "state": "in_progress"},
+                reconcile=capabilities is not None,
             )
             transition = {"supported": True, "state": "in_progress"}
+            if capabilities is None:
+                transition["verified"] = False
         return {
             "status": "started",
             "tracker": item,
@@ -474,8 +500,18 @@ class WorkService:
         if remote["state"] == "closed":
             # A previous transition can have succeeded despite losing its response.
             # The freshly read canonical remote state reconciles that uncertainty.
-            self.journal.succeed(completion_id, remote)
             item = remote
+            if self.optional_tracker_operation(work, "reconcile_closed"):
+                item = self.mutate(
+                    work,
+                    "reconcile_closed",
+                    "reconcile_closed",
+                    {"reference": reference},
+                    reconcile=True,
+                )
+                if item["state"] != "closed":
+                    raise RuntimeError("Terminal reconciliation did not confirm completed tracker")
+            self.journal.succeed(completion_id, item)
         else:
             item = self.mutate(
                 work, "finish", "transition", {"reference": reference, "state": "closed"}

@@ -16,7 +16,7 @@ planned component/workflow support from the current interfaces listed here.
 | Stable responsibility | AI-DLC role or service | Current default | Owns |
 | --- | --- | --- | --- |
 | Formal behavior | `specs` | OpenSpec | Requirements and scenarios |
-| Priority and lifecycle | `tracker` | Linear | Work identity, priority, and status |
+| Priority and lifecycle | `tracker` | GitHub Issues and Projects | Work identity, priority, and status |
 | Personal continuity | `knowledge` | Obsidian | Private notes, reflection, and links |
 | Review, merge, and CI identity | `scm` | GitHub | Branches, pull requests, merged SHA, workflow runs, and artifacts |
 | Deployment evidence | `deploy` | None by default | Environment-specific release evidence when configured |
@@ -70,8 +70,9 @@ credential values.
 
 `ai-dlc machine status`, `plan`, `apply`, `sync`, and `doctor` own the local
 enrollment lifecycle. Local CLI and MCP execution are current; hosted or cloud
-execution is a later qualification target. Obsidian create/attach and provider
-discovery are next-cycle gaps rather than current provider capabilities.
+execution is a later qualification target. Obsidian create/attach remains a later capability. Guided discovery/setup is
+implemented for Linear and GitHub; Jira, Plane and native Antigravity integration
+remain onboarding work.
 
 Machine enrollment mutations are CLI-only in this cycle. MCP exposes exactly
 `work_publish`, `work_start`, `work_status`, `work_link`, `work_finish`,
@@ -86,12 +87,13 @@ knowledge append`.
 | --- | --- | --- |
 | Readiness and context | `ai-dlc doctor`, `ai-dlc context` | Checks the selected environment and summarizes work/check context |
 | Project creation | `ai-dlc project init`, `ai-dlc project adopt` | Initializes a project or previews/applies conflict-safe adoption |
-| Project maintenance | `ai-dlc project sync`, `ai-dlc project rebind` | Performs staged Copier updates or previews/applies reviewed provider rebinding, including an explicit saved-plan Linear connection migration |
+| Project maintenance | `ai-dlc project sync`, `ai-dlc project rebind` | Performs staged Copier updates or previews/applies reviewed provider rebinding, including reviewed provider connection rebinding |
 | Project execution | `ai-dlc project setup`, `ai-dlc project check --required` | Runs declared setup and checks and emits verification receipts |
 | Agent configuration | `ai-dlc agents render` | Previews, applies, or verifies owned project/personal client configuration |
 | Work lifecycle | `ai-dlc work publish`, `ai-dlc work start`, `ai-dlc work status`, `ai-dlc work finish` | Reconciles tracker state, binds work to a branch, and enforces completion gates |
 | Traceability | `ai-dlc work link` | Links PR, specification, branch, deployment, or tracker evidence to reviewed work |
 | Provider inspection and connection | `ai-dlc provider list`, `ai-dlc provider test`, `ai-dlc provider connect` | Discovers adapters, runs isolated contract or authorized live checks, and previews/applies an explicitly reviewed provider connection |
+| Tracker migration | `ai-dlc project tracker-migrate` | Reviews a default-only switch or selected existing-ticket mappings with local recovery evidence |
 | Personal knowledge | `ai-dlc knowledge find`, `ai-dlc knowledge note`, `ai-dlc knowledge append` | Reads or writes explicitly selected vault material |
 | Configuration profiles | `ai-dlc profile show`, `ai-dlc profile migrate`, `ai-dlc profile capture` | Resolves provenance, previews schema migration, or captures supported preferences |
 | Machine provisioning | `ai-dlc setup plan`, `ai-dlc setup apply` | Previews or applies selected workstation modules and personal agent configuration |

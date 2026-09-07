@@ -323,6 +323,7 @@ def resolve_runtime(
     personal: Path | None = None,
     project: Path | None = None,
     machine: Path | None = None,
+    machine_config: dict[str, Any] | None = None,
     home: Path | None = None,
     environ: Mapping[str, str] | None = None,
     enrollment_paths: EnrollmentPaths | None = None,
@@ -332,6 +333,8 @@ def resolve_runtime(
     from ai_dlc.files import assets
     from ai_dlc.profile_source import verify_cached_profile
 
+    if machine is not None and machine_config is not None:
+        raise ValueError("Choose a machine path or machine_config, not both")
     paths = enrollment_paths or EnrollmentPaths.from_environment(home=home, environ=environ)
     enrolled_personal: Path | None = None
     enrolled_machine: Path | None = None
@@ -340,15 +343,22 @@ def resolve_runtime(
         if lock is not None:
             if personal is None:
                 enrolled_personal = verify_cached_profile(lock, paths)
-            if machine is None:
+            if machine is None and machine_config is None:
                 enrolled_machine = paths.machine_file(lock.machine_id)
 
     project_file = project
     if project_file is None and root is not None and (root / "ai-dlc.toml").exists():
         project_file = root / "ai-dlc.toml"
-    return resolve_files(
-        base=base or assets("profiles") / "base.toml",
-        personal=personal or enrolled_personal,
-        project=project_file,
-        machine=machine or enrolled_machine,
-    )
+    layers = [
+        (name, read_toml(path))
+        for name, path in [
+            ("base", base or assets("profiles") / "base.toml"),
+            ("personal", personal or enrolled_personal),
+            ("project", project_file),
+            ("machine", machine or enrolled_machine),
+        ]
+        if path
+    ]
+    if machine_config is not None:
+        layers.append(("machine", machine_config))
+    return resolve_layers(layers)

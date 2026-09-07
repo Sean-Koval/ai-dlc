@@ -1,0 +1,48 @@
+{
+  "$defs": {
+    "LifecycleCapabilities": {
+      "additionalProperties": false,
+      "properties": {
+        "closed": {
+          "title": "Closed",
+          "type": "boolean"
+        },
+        "in_progress": {
+          "title": "In Progress",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "in_progress",
+        "closed"
+      ],
+      "title": "LifecycleCapabilities",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "lifecycle": {
+      "$ref": "#/$defs/LifecycleCapabilities"
+    },
+    "optional_operations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Optional Operations",
+      "type": "array"
+    },
+    "schema": {
+      "const": 1,
+      "title": "Schema",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema",
+    "lifecycle",
+    "optional_operations"
+  ],
+  "title": "CapabilityResult",
+  "type": "object"
+}

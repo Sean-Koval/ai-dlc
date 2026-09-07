@@ -1,8 +1,6 @@
 # AI-DLC product direction
 
-Status: approved direction from the maintainer's September 5, 2026 review and
-documentation/delivery request. Roadmap capabilities are planned work, not claims
-that they already ship.
+Status: approved product promise, updated with the maintainer's September 7 work-computer and current GitHub delivery request. The roadmap separates shipped/candidate behavior from remaining work.
 
 ## Product promise
 
@@ -11,13 +9,19 @@ and equips the chosen harness with a consistent way to take a new product or an
 existing product through a verified improvement.
 
 Its durable value is the relationship between tools, artifacts, decisions, and
-workflows. OpenSpec currently provides formal specification, Linear provides
-tracking, and Codex/Claude Code are the implemented client adapters. Those choices
-are replaceable. Stable responsibilities survive provider changes.
+workflows. OpenSpec currently provides formal specification; personal projects use GitHub Issues and Projects, while Jira Cloud is the selected work target. Codex and Claude Code have implemented client adapters; Antigravity support is an explicit onboarding deliverable. These choices are replaceable. Stable responsibilities survive provider changes.
 
 The harness performs development and can use installed tools directly. AI-DLC
 provides setup, guidance, integration, validation, and evidence services where
 useful. Existing project policies still determine required checks and completion.
+
+## Immediate adoption outcome
+
+Install AI-DLC on the work computer and adopt work repositories with their own
+Jira configuration and local credentials, exposing consistent guidance to Claude
+and Antigravity. A clone of the engine repository must not implicitly enroll work
+projects into AI-DLC's personal tracker. Keep Obsidian private; defer Confluence
+publication until the existing custom MCP can be reviewed.
 
 ## User outcomes
 
@@ -79,13 +83,17 @@ contracts, or operational evidence. Small work uses small artifacts.
 
 Initial qualification targets: native macOS arm64 and an Ubuntu 24.04 arm64
 devcontainer. Each remains unverified until its actual walkthrough succeeds.
-Hosted platforms, extra harness adapters, executable workflow packages, knowledge
-onboarding, and release publication remain separately scoped follow-ons.
+Hosted platforms, executable workflow packages, knowledge onboarding and release publication remain separately scoped follow-ons. Antigravity is now explicitly in the work-computer onboarding scope; document its contract and qualify the actual installed version rather than treating old adapter exclusions as current intent.
 
 The code remains a v4 implementation candidate. Original v4 release tasks remain
 open where evidence is missing; this roadmap does not relabel that work.
 
 ## Navigation
+
+- [Draft provider toolset requirements](design/provider-toolsets-prd.md) and
+  [implementation sequence](superpowers/plans/2026-09-06-provider-toolsets.md):
+  requested Plane/Jira/Confluence integration with Obsidian retained; proposed
+  scope, not shipping capability.
 
 - [Roadmap](roadmap.md)
 - [Delivery architecture](design/framework-delivery.md)

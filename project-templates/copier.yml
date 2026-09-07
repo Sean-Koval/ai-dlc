@@ -22,3 +22,8 @@ _exclude:
   - "{% if not initialize or preset != 'node' %}src/index.js{% endif %}"
   - "{% if not initialize or preset != 'rust' %}Cargo.toml{% endif %}"
   - "{% if not initialize or preset != 'rust' %}src/main.rs{% endif %}"
+
+tracker:
+  type: str
+  default: linear
+  choices: [linear, github-issues]

@@ -1,106 +1,87 @@
 # AI-DLC roadmap
 
-Updated: 2026-09-05. Linear owns priority and status. This document owns the
-delivery sequence; [product direction](product-direction.md) owns the intended
-outcomes. The capabilities below are planned, not shipped.
+Updated September 7, 2026 from the current maintainer request, GitHub Project,
+formal specifications and implementation evidence. The
+[AI-DLC Project](https://github.com/users/Sean-Koval/projects/2) owns current ticket
+priority/status. This document owns delivery dependencies and the immediate
+outcome; [product direction](product-direction.md) owns the durable product promise.
 
-## Direction and current baseline
+## Current outcome
 
-AI-DLC prepares portable environments and connects replaceable tools, guidance,
-artifacts, and quality workflows. The harness performs development using native
-tools or AI-DLC services as appropriate. UI/UX is an optional workflow, not the
-framework's organizing purpose.
+Make AI-DLC usable from a cloned installation on the work computer, with Claude
+and Antigravity providing an organized, consistent development workflow. AI-DLC
+prepares tools, integrations, guidance and evidence; the harness performs the work.
+Installing the engine from this repository is distinct from adopting a work
+repository, which has its own tracker/project and independent local credentials.
+Do not reuse AI-DLC's personal GitHub Project/account binding as work configuration.
 
-The current Python implementation supplies bootstrap/enrollment, scoped
-configuration, provider adapters, managed assets, work records, and finish gates.
-The next work connects those foundations and improves product-to-delivery
-guidance. See [current architecture](architecture.md) and
-[planned contracts](design/framework-delivery.md) for the distinction.
+Personal projects use GitHub Issues with repository-associated Projects by default.
+Work uses Jira Cloud for new work; no Jira migration is requested. Plane is an
+optional alternative. Obsidian remains the private journal and knowledge base.
+Selective Confluence publication is deferred until the custom MCP server can be
+inspected; it does not block the development workflow.
 
-## Dependency-ordered delivery
+## Verified foundation and immediate gaps
 
-Each row is an independently reviewed ticket with an execution plan. Plan tasks
-are steps inside that ticket, not additional disconnected issues. All ten items
-were published to the Sandbox-aidlc team; SAN-6 and SAN-7 were revised in place.
+Implemented foundations include source bootstrap, profile enrollment, scoped
+configuration, provider contracts, managed assets, readiness, work records and
+completion gates. Provider metadata, connected readiness and Linear onboarding
+have archived specifications. GitHub Issues/Projects setup, workflow operations
+and eight selected local mappings are implemented in PR #23. The Project is
+linked to `Sean-Koval/ai-dlc`; authorization and activation are complete.
 
-| Ticket | Outcome | Must follow | Execution plan |
-| --- | --- | --- | --- |
-| [SAN-9](https://linear.app/sandbox-aidlc/issue/SAN-9/connect-provider-roles-to-tool-installation-and-harness-guidance) | M1: Connect provider roles to tool installation and harness guidance | Planning integrated | [component-capability-contract](superpowers/plans/2026-09-05-component-capability-contract.md) |
-| [SAN-10](https://linear.app/sandbox-aidlc/issue/SAN-10/make-selected-project-tools-and-guidance-ready-across-machines) | M1: Make selected project tools and guidance ready across machines | SAN-9 | [connected-project-readiness](superpowers/plans/2026-09-05-connected-project-readiness.md) |
-| [SAN-11](https://linear.app/sandbox-aidlc/issue/SAN-11/discover-and-safely-configure-a-projects-linear-connection) | M1: Discover and safely configure a project's Linear connection | SAN-9 | [linear-provider-onboarding](superpowers/plans/2026-09-05-linear-provider-onboarding.md) |
-| [SAN-12](https://linear.app/sandbox-aidlc/issue/SAN-12/import-pinned-workflow-guidance-and-expose-it-to-supported-harnesses) | M1: Import pinned workflow guidance and expose it to supported harnesses | SAN-9, SAN-10 | [portable-workflow-bundles](superpowers/plans/2026-09-05-portable-workflow-bundles.md) |
-| [SAN-13](https://linear.app/sandbox-aidlc/issue/SAN-13/guide-product-discovery-and-feature-selection-for-new-and-existing) | M2: Guide product discovery and feature selection for new and existing products | Planning integrated | [product-shaping-workflow](superpowers/plans/2026-09-05-product-shaping-workflow.md) |
-| [SAN-14](https://linear.app/sandbox-aidlc/issue/SAN-14/carry-product-requirements-into-independently-deliverable) | M2: Carry product requirements into independently deliverable specifications and tickets | SAN-13 | [spec-delivery-traceability](superpowers/plans/2026-09-05-spec-delivery-traceability.md) |
-| [SAN-6](https://linear.app/sandbox-aidlc/issue/SAN-6/add-optional-uiux-design-generation-and-evaluation-workflow) | M2: Add optional UI/UX design generation and evaluation workflow | SAN-13, SAN-14 | [design-pm-workflow](superpowers/plans/2026-09-05-design-pm-workflow.md) |
-| [SAN-15](https://linear.app/sandbox-aidlc/issue/SAN-15/qualify-portable-setup-provider-replacement-and-development-handoffs) | M3: Qualify portable setup, provider replacement, and development handoffs | SAN-10, SAN-11, SAN-12, SAN-14 | [framework-qualification](superpowers/plans/2026-09-05-framework-qualification.md) |
-| [SAN-16](https://linear.app/sandbox-aidlc/issue/SAN-16/evaluate-product-shaping-and-delivery-guidance-against-baseline) | M3: Evaluate product shaping and delivery guidance against baseline behavior | SAN-13, SAN-14 | [workflow-quality-calibration](superpowers/plans/2026-09-05-workflow-quality-calibration.md) |
-| [SAN-7](https://linear.app/sandbox-aidlc/issue/SAN-7/calibrate-uiux-evaluation-and-measure-its-incremental-value) | M3: Calibrate UI/UX evaluation and measure its incremental value | SAN-6 | [design-pm-calibration](superpowers/plans/2026-09-05-design-pm-calibration.md) |
+Clean candidate `29b67b3` passed all required checks with 1,138 tests. Candidate
+`332f5b0` passed all five platform CI jobs. Live GitHub setup, bounded lifecycle
+recovery and local migration have separate evidence. PR integration and exact
+merged-revision finish remain distinct requirements.
 
-### M1: Connected setup and replaceable guidance
+Claude Code and Codex have implemented adapters. Antigravity needs an explicit
+adapter/onboarding child under #19, with current documented paths/transports and
+version-specific live qualification. The work computer's OS/architecture and
+installed Claude/Antigravity versions must be recorded before claiming that
+machine is qualified. Existing Markdown skills alone do not prove client support.
 
-A selected provider connects to its tools, local configuration requirements,
-instructions, and honest readiness checks. Linear setup no longer requires
-manually copying UUIDs. Reviewed Markdown workflows can be pinned and distributed
-without creating an arbitrary-code package system.
+## Current delivery sequence
 
-### M2: Product decisions become deliverable work
+Independent issues may run in isolated worktrees. Integrate shared interfaces in
+dependency order, with TDD, independent review and the required checks.
 
-Greenfield and brownfield examples guide evidence gathering, alternatives,
-feature selection, scope, and success criteria. Product requirement IDs flow
-into behavioral specifications and independently deliverable tickets. UI work
-can add a brief, rubric, generation, independent evaluation, and bounded revision.
+| Issue | Deliverable | Dependencies / completion boundary |
+|---|---|---|
+| [#18](https://github.com/Sean-Koval/ai-dlc/issues/18) | Finish GitHub workflow foundation and PR #23 | Implemented/reviewed/live activated; archive, integrate, verify merged CI and finish through AI-DLC |
+| [#10](https://github.com/Sean-Koval/ai-dlc/issues/10) | Preserve authored files during workflow-bundle cleanup | Existing isolated implementation; repair remaining successful-cleanup race, then review/integrate/finish |
+| [#11](https://github.com/Sean-Koval/ai-dlc/issues/11) | Greenfield/brownfield product shaping | Independent of #10; current PS-01–03 spec, portable skills/templates/examples |
+| [#19](https://github.com/Sean-Koval/ai-dlc/issues/19) | Reusable onboarding and native Claude/Antigravity setup | Build on delivered GitHub setup; separate transport/account identity and scoped readiness; explicit Antigravity child |
+| [#12](https://github.com/Sean-Koval/ai-dlc/issues/12) | Requirements-to-spec-to-ticket traceability and dependency guards | #11's reviewed artifacts; preserve authored issue content and provider-neutral workflows |
+| [#20](https://github.com/Sean-Koval/ai-dlc/issues/20) | Jira Cloud new-work adapter/setup; optional Plane | Common connection contract from #19; actual required fields/transitions; no Jira migration |
+| [#14](https://github.com/Sean-Koval/ai-dlc/issues/14) | Portable setup, substitution and fresh-session handoff qualification | #10/#12 and applicable onboarding; distinguish ordinary clone, clean-machine, container and actual client evidence |
+| [#13](https://github.com/Sean-Koval/ai-dlc/issues/13) | Optional UI/UX generation/evaluation guidance | #11/#12; UI is optional, not AI-DLC's organizing purpose |
+| [#21](https://github.com/Sean-Koval/ai-dlc/issues/21) | Remaining provider substitution/migration qualification | Existing GitHub switch/mappings are delivered; later Plane paths need a real chosen destination |
+| [#15](https://github.com/Sean-Koval/ai-dlc/issues/15) | Product-guidance calibration | #11/#12; original cases, fixed experiment protocol, real human ratings and declared budget |
+| [#16](https://github.com/Sean-Koval/ai-dlc/issues/16) | Design-guidance calibration | #13; independent evidence and human participation |
+| [#17](https://github.com/Sean-Koval/ai-dlc/issues/17) | Retained v4 release obligations | Actual clean/container/cloud evidence, enforced-egress provider conformance, declared evaluations and authorized release publication |
+| [#22](https://github.com/Sean-Koval/ai-dlc/issues/22) | Selective Confluence publication | Deferred pending custom server; no vault/site mirroring |
 
-### M3: Prove portability and quality
+The [current execution plan](superpowers/plans/2026-09-07-work-computer-readiness.md)
+coordinates these streams. Issue-specific formal specs remain the behavior
+authority. Older implementation plans may supply compatible detail; their obsolete
+Linear priority, provider choice, or access-pending claims do not override this
+sequence or current GitHub issues. The September 5 roadmap remains in Git history.
 
-Observe real setup and continuation on the named native/container targets, test
-replacement of a tracker in isolated destinations, and measure product/design
-guidance against baselines. Missing human ratings, experiment budgets, or live
-environments leave the affected evidence pending; they do not block unrelated
-preparation or become invented results.
+## Completion and qualification
 
-## Start and completion rules
+Finalize required behavior specifications before review and integration. Use
+`ai-dlc work finish` only after its specification, PR and exact merged-CI gates
+pass. A Done board option, local check or successful direct adapter call is not
+work completion. Parent issues remain open for genuinely undelivered scope.
 
-Default first implementation: [SAN-9](https://linear.app/sandbox-aidlc/issue/SAN-9/connect-provider-roles-to-tool-installation-and-harness-guidance).
-[SAN-13](https://linear.app/sandbox-aidlc/issue/SAN-13/guide-product-discovery-and-feature-selection-for-new-and-existing)
-is independently ready for a product-guidance owner. Integrate this planning
-branch before starting feature branches. Milestone labels do not serialize
-otherwise independent work.
+Prepare missing qualification runners, original cases and runbooks while external
+inputs are pending; do not invent machine walkthroughs, human preference, account
+permissions or release evidence. The v4 experiment declaration in
+`agents/evaluation.toml` has its own model, budget and human-review requirement;
+#15/#16 do not silently consume or redefine it.
 
-Seven behavior tickets have separate OpenSpec changes; the three M3 tickets
-verify predecessor behavior and do not invent new specifications. Each plan
-lists files, interfaces, acceptance, refusal cases, tests, exclusions, and
-handoff requirements. Implement and finish one selected ticket at a time.
-
-Dependencies are recorded as native Linear blocking relationships and in the
-[machine-readable delivery index](planning/delivery-index.json). The current
-Work schema does not yet support dependency fields: check the graph manually
-until SAN-14 implements that behavior.
-
-The [master plan](superpowers/plans/2026-09-05-framework-delivery.md) defines
-milestone exits. The [executor handoff](handoffs/framework-delivery.md) is the
-starting document for an agent without this conversation.
-[SAN-8: planning delivery](https://linear.app/sandbox-aidlc/issue/SAN-8/document-and-sequence-the-portable-framework-delivery-roadmap)
-tracks documentation/review only; its completion must not close these features.
-
-## Retained v4 release obligations
-
-The implementation PR is merged, but
-[portable-development-v4](../openspec/changes/portable-development-v4/tasks.md)
-remains active with four unfinished release tasks. Do not create replacement
-claims or archive it merely because this roadmap exists.
-
-- Clean-machine, container, and hosted-client walkthroughs.
-- Full live provider mutation conformance under enforced isolation.
-- Behavioral evaluations already declared in `agents/evaluation.toml`.
-- Verified release artifacts and release bootstrap manifest.
-
-[Release verification](release-verification.md) records actual evidence. M3
-evidence can satisfy an existing gate only when its scope matches. New product
-and UI comparisons do not consume or redefine existing evaluation budgets.
-
-## Explicitly deferred
-
-Additional harness/hosted adapters, executable workflow packages, knowledge
-onboarding, automatic Linear Project assignment, existing-work attachment, and
-release publication need separately scoped work. They are not hidden acceptance
-requirements for these ten tickets.
+See [release evidence](release-verification.md),
+[GitHub qualification](verification/github-ticket-workflows.md),
+[backlog adoption and provenance](planning/github-backlog-migration.md), and
+[current executor handoff](handoffs/framework-delivery.md).

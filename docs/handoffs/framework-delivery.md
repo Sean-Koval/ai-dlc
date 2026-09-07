@@ -1,5 +1,21 @@
 # Framework delivery: executor handoff
 
+## Current authority — September 7
+
+Start with [current roadmap](../roadmap.md),
+[current execution plan](../superpowers/plans/2026-09-07-work-computer-readiness.md)
+and [GitHub Project](https://github.com/users/Sean-Koval/projects/2). GitHub owns
+priority/status. Project authorization, linking and eight local mappings are
+complete in PR #23. The current goal is work-computer adoption with Claude and
+Antigravity, Jira Cloud for new work, and private Obsidian notes. Antigravity
+requires explicit onboarding support; Confluence remains deferred.
+
+The historical executor notes below preserve the separate SAN-12 branch and
+prior evidence; their old Linear-first sequence/access assumptions do not define
+the next task. #10 cleanup and #11 shaping are running in isolated worktrees;
+root coordinates GitHub closeout and native onboarding.
+
+
 Objective: deliver the [approved direction](../product-direction.md) using the
 dependency-ordered [roadmap](../roadmap.md). UI/UX is one optional part.
 
