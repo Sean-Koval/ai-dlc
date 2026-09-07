@@ -3,7 +3,10 @@
 - [ ] 1.1 Define supported toolsets and preserve legacy scaffolding behavior; demonstrate failing regressions before implementation and run the mapped focused checks.
 - [ ] 1.2 Extract reusable discovery, saved-plan validation and authored-safe apply; demonstrate failing regressions before implementation and run the mapped focused checks.
 - [ ] 1.3 Render qualified native connections and report capability-specific readiness; demonstrate failing regressions before implementation and run the mapped focused checks.
-- [ ] 1.4 Inventory existing Confluence tools, render selective knowledge guidance and test provenance/refresh/private-note instructions; qualify actual selected tools separately.
+Confluence inventory, shared knowledge guidance and actual custom-server qualification
+are deferred to #22 / team-document-publication (DP-07). They are not completed
+by this onboarding change. The explicit native-work-harnesses child covers the
+current project Claude/Antigravity slice; common connection work has its own child.
 
 ## 2. Review and finish
 

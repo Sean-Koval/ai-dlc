@@ -1,5 +1,13 @@
 # Provider Toolsets Implementation Plan
 
+Current steering (September 7): follow the [current roadmap](../../roadmap.md) and GitHub issues.
+GitHub Issues/Projects setup and capability lifecycle are delivered in PR #23.
+Work uses Jira Cloud for new work, not migration; Plane is optional. Explicit
+Claude/Antigravity native onboarding is current #19 scope. Confluence/custom MCP
+and selective shared-knowledge guidance are deferred to #22. Later detail below
+applies only where consistent with this steering and the current child specs.
+
+
 Execution update: the maintainer selected GitHub Issues and Projects. The
 [GitHub implementation child](2026-09-07-github-ticket-workflows.md) now owns the
 first capability/setup/migration increment, including optional board status

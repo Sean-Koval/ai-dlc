@@ -1,7 +1,7 @@
 ## Why
 
 Give agents concrete guidance and examples for choosing worthwhile product increments before writing specifications or code.
-This implements the approved framework direction in [product direction](../../../docs/product-direction.md), milestone M2.
+This implements the approved framework direction in [product direction](../../../../docs/product-direction.md), milestone M2.
 
 ## What Changes
 
@@ -34,5 +34,5 @@ None. Existing schema-4, content ownership, enrollment, and finish contracts rem
 Dependencies: none.
 Local guidance/assets and acceptance exercises are delivered; integration review,
 archival and configured finish evidence remain pending. See
-[verification](../../../docs/verification/product-shaping-workflow.md).
-[Execution plan](../../../docs/superpowers/plans/2026-09-05-product-shaping-workflow.md).
+[verification](../../../../docs/verification/product-shaping-workflow.md).
+[Execution plan](../../../../docs/superpowers/plans/2026-09-05-product-shaping-workflow.md).

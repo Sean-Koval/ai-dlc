@@ -1,5 +1,9 @@
 # Framework delivery: executor handoff
 
+Current completion: GitHub #18 finished through AI-DLC at merged `631d10a`; all five
+merged-revision receipts verified. #10 repair, #11 integration and #19/#12 remain
+active streams in the current work-computer execution plan.
+
 ## Current authority — September 7
 
 Start with [current roadmap](../roadmap.md),

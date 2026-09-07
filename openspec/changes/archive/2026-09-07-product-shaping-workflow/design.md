@@ -1,7 +1,7 @@
 ## Context
 
 Give agents concrete guidance and examples for choosing worthwhile product increments before writing specifications or code.
-Read [product direction](../../../docs/product-direction.md) and the [delivery architecture](../../../docs/design/framework-delivery.md).
+Read [product direction](../../../../docs/product-direction.md) and the [delivery architecture](../../../../docs/design/framework-delivery.md).
 
 ## Goals / Non-Goals
 
@@ -37,4 +37,4 @@ Use additive defaults for existing configurations. Preview before applicable mut
 - PS-02: exercise an existing workflow is changed and the corresponding expected result in the formal spec.
 - PS-03: exercise evidence is insufficient and the corresponding expected result in the formal spec.
 
-[Task-level instructions and acceptance example](../../../docs/superpowers/plans/2026-09-05-product-shaping-workflow.md).
+[Task-level instructions and acceptance example](../../../../docs/superpowers/plans/2026-09-05-product-shaping-workflow.md).

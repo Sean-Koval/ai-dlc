@@ -8,7 +8,7 @@ implementation diff.
 Begin with a shaped outcome: evidence, assumptions, alternatives, and the next
 worthwhile increment. UI/UX exploration applies when the increment changes an
 interface; API, infrastructure, and migration work use suitable design methods.
-The planned [product-shaping workflow](../../openspec/changes/product-shaping-workflow/proposal.md)
+The planned [product-shaping workflow](../../openspec/specs/product-shaping-workflow/spec.md)
 and [traceability change](../../openspec/changes/spec-delivery-traceability/proposal.md)
 extend this handoff without introducing a second specification system.
 

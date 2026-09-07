@@ -3,6 +3,21 @@
 Implementation branch: `codex/github-ticket-workflows`, based on planning commit
 `0775b90`. Live and fixture evidence are recorded separately.
 
+## Completed GitHub workflow foundation — September 7
+
+[PR #23](https://github.com/Sean-Koval/ai-dlc/pull/23) merged at
+`631d10a034ba319e76c564a43ad34c641695117d`. From a clean detached clone of
+that exact revision, source bootstrap succeeded and `ai-dlc work finish
+github-ticket-workflows` returned `completed`. The gate authenticated the merged
+PR, validated all five clean required-check receipts from target-branch run
+[34164340107](https://github.com/Sean-Koval/ai-dlc/actions/runs/34164340107), and
+confirmed the current archived specification before transitioning issue #18.
+GitHub read-back confirms native CLOSED/COMPLETED and Project Done.
+
+This is a real gated completion. The clone used this already-provisioned Apple
+silicon host; it is not factory-clean or work-laptop/client qualification. Parent
+#19 remains open for remaining onboarding. No package release was published.
+
 ## Live activation after CLI authorization
 
 AI-DLC's saved default setup reused Project #2 and verified its repository link.
@@ -237,10 +252,10 @@ This separation changes no runtime gate and does not claim an early completion.
 - [x] Live setup, selected migration and bounded mutation/recovery qualification.
 - [x] Candidate 332f5b0 passed all five platform jobs in run 34162136610.
 - [x] Archive completed behavior specifications and promote canonical requirements.
-- [ ] Independently review final archive and current-direction evidence.
-- [ ] Merge PR #23 after required candidate checks.
-- [ ] Verify all required receipts for the exact merged revision.
-- [ ] Run `ai-dlc work finish github-ticket-workflows` and verify issue #18 completion.
+- [x] Independently review final archive and current-direction evidence.
+- [x] Merge PR #23 after required candidate checks.
+- [x] Verify all required receipts for the exact merged revision.
+- [x] Run `ai-dlc work finish github-ticket-workflows` and verify issue #18 completion.
 
 The `github-project-defaults` record is a specification child contributing to #18
 and the broader #19 onboarding parent. It does not separately close #19.

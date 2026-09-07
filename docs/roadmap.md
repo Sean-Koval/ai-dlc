@@ -32,8 +32,8 @@ linked to `Sean-Koval/ai-dlc`; authorization and activation are complete.
 
 Clean candidate `29b67b3` passed all required checks with 1,138 tests. Candidate
 `332f5b0` passed all five platform CI jobs. Live GitHub setup, bounded lifecycle
-recovery and local migration have separate evidence. PR integration and exact
-merged-revision finish remain distinct requirements.
+recovery and local migration have separate evidence. PR #23 is now merged at `631d10a`; all five exact merged-revision receipts
+passed, and AI-DLC work finish completed #18 (native completed and Project Done).
 
 Claude Code and Codex have implemented adapters. Antigravity needs an explicit
 adapter/onboarding child under #19, with current documented paths/transports and
@@ -48,7 +48,7 @@ dependency order, with TDD, independent review and the required checks.
 
 | Issue | Deliverable | Dependencies / completion boundary |
 |---|---|---|
-| [#18](https://github.com/Sean-Koval/ai-dlc/issues/18) | Finish GitHub workflow foundation and PR #23 | Implemented/reviewed/live activated; archive, integrate, verify merged CI and finish through AI-DLC |
+| [#18](https://github.com/Sean-Koval/ai-dlc/issues/18) | GitHub workflow foundation and PR #23 | Completed through AI-DLC finish at merged631d10a with all five receipts |
 | [#10](https://github.com/Sean-Koval/ai-dlc/issues/10) | Preserve authored files during workflow-bundle cleanup | Existing isolated implementation; repair remaining successful-cleanup race, then review/integrate/finish |
 | [#11](https://github.com/Sean-Koval/ai-dlc/issues/11) | Greenfield/brownfield product shaping | Independent of #10; current PS-01–03 spec, portable skills/templates/examples |
 | [#19](https://github.com/Sean-Koval/ai-dlc/issues/19) | Reusable onboarding and native Claude/Antigravity setup | Build on delivered GitHub setup; separate transport/account identity and scoped readiness; explicit Antigravity child |

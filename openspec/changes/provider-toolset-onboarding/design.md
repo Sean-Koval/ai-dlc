@@ -11,11 +11,9 @@ capability presence. Omitted selections preserve legacy defaults. Configuration
 records selected provider aliases; shared provider choices override personal
 preferences, and machine data supplies only local bindings under current scopes.
 
-Admit optional `documents` selection in scaffold/component metadata for native
-Confluence access, without adding it to WorkService binding defaults or finish.
-Until the separate publication contract ships, this selection reports native
-access separately from unavailable AI-DLC publication operations. This lets
-connection/guidance setup precede the publication service without a dependency cycle.
+The optional documents/Confluence integration is deferred to #22, including
+PT-05's former shared-knowledge guidance (now DP-07). It does not block current
+tracker/native-client onboarding. Existing private Obsidian operations remain.
 
 Introduce a small built-in definition registry containing component ID, supported
 roles, connection discovery handler, and native connector defaults. Existing
@@ -42,8 +40,8 @@ packages are pinned; neither a remote URL nor a desktop installation proves logi
 Selecting a toolset composes a preview of shared provider settings, named modules,
 server definitions, and guidance. Applying local configuration and rendering are
 explicit steps using existing ownership rules. Conflicts fail before writes;
-setup never deploys Plane's backend or changes remote projects. Connections used
-by Jira and Confluence can share one server only when alias/account/endpoint
+setup never deploys Plane's backend or changes remote projects. Connections selected
+by multiple roles can share one server only when alias/account/endpoint
 bindings are identical. Different account bindings never collapse by vendor name.
 
 Obsidian component metadata describes existing-vault note operations; optional
@@ -52,17 +50,8 @@ in a container is reported as a viewing limitation, not a missing tracker depend
 
 ## Verification
 
-For Confluence with Obsidian, review the existing custom MCP server's interfaces
-before adding connections. Preserve its document graph, semantic descriptions and
-quality grading rather than duplicating these in AI-DLC. Verify scoped retrieval
-and provenance instead of assuming those user-reported capabilities are qualified.
-Generate guidance to link/read relevant pages on demand, save local derivatives
-only when requested with source URL/version when available/retrieval date, and
-preserve personal annotations on explicit refresh. Generate no automatic space
-export, vault upload or publication at finish. Relevant space/page choices scope
-the workflow, not upstream account permissions. These are harness instructions,
-not runtime enforcement by native tools; qualify the actual selected integration.
-See the [relationship design](../../../docs/design/local-and-shared-knowledge.md).
+The deferred custom-server inventory and selective shared-knowledge checks now
+belong to team-document-publication; see the relationship design there.
 
 Test two projects with different trackers/accounts on one machine, replay on a
 second machine with a different vault path, authored config conflicts, no-network

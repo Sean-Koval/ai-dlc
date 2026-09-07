@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python 3.12, existing AI-DLC CLI/services, Markdown workflow assets, OpenSpec, and configured tracker/SCM adapters. Reuse existing dependencies; any new dependency requires a documented necessity and explicit review.
 
-**Spec:** [product-shaping-workflow](../../../openspec/changes/product-shaping-workflow/specs/product-shaping-workflow/spec.md)
+**Spec:** [product-shaping-workflow](../../../openspec/specs/product-shaping-workflow/spec.md)
 
 ## Global constraints
 

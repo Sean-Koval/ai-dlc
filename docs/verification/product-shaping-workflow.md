@@ -115,3 +115,17 @@ qualification and does not establish an Antigravity adapter.
 Independent source review, configured merged-revision PR/CI evidence, archival
 and `ai-dlc work finish product-shaping-workflow` remain the integration owner's
 completion steps. This change does not bypass them or close the remote issue.
+
+## Current integration checklist
+
+Independent review accepted `332f5b0..da4bf169` for PS-01–03 and code/asset quality
+with no actionable findings. Root integrated it with the native-harness candidate;
+combined required checks and subsequent PR delivery remain separate evidence.
+The implementation task records review and this delivery checklist, avoiding a
+circular requirement to finish before the archive required by the finish gate.
+
+- [x] Independent implementation review accepted.
+- [x] Archive the completed behavior and verify its canonical requirements.
+- [ ] Pass required checks and review the integrated candidate.
+- [ ] Merge its PR and verify every required receipt for the exact merged revision.
+- [ ] Run `ai-dlc work finish product-shaping-workflow` and verify issue #11.

@@ -2,8 +2,10 @@
 
 GitHub Issues already implements the small tracker contract; extend common setup
 and qualification alongside new Plane and Jira adapters, not duplicate implementations
-of their general native tools. Existing workflow code contains a GitHub-specific
-capability branch. Status: proposed, pending target deployment and design review.
+of their general native tools. Capability-based start and GitHub setup/lifecycle are delivered by the archived
+github-ticket-workflows change and PR #23. Remaining priority is Jira Cloud for
+new work, with Plane optional. No Jira migration is requested. Live Jira/Plane
+qualification still requires a designated environment.
 
 ## What Changes
 

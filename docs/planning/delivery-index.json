@@ -96,7 +96,7 @@
       "milestone": "M2",
       "depends_on": [],
       "requires_spec": true,
-      "spec": "openspec/changes/product-shaping-workflow",
+      "spec": "openspec/changes/archive/2026-09-07-product-shaping-workflow",
       "plan": "docs/superpowers/plans/2026-09-05-product-shaping-workflow.md",
       "work": ".ai-dlc/work/product-shaping-workflow.toml",
       "requirements": [
