@@ -102,7 +102,9 @@ def provider_guidance_ready(root: Path, index: str, copies: dict[str, str], clie
             ownership = json.loads(inside(root, ".ai-dlc/agent-ownership.json").read_text())
             if ownership.get("files", {}).get(name) != hashlib.sha256(rule).hexdigest():
                 return False
-            if index.replace("](<.ai-dlc/", "](<../../.ai-dlc/") not in rule.decode():
+            if _rule_links(index) not in rule.decode():
+                return False
+            if not render_agents(root, client="antigravity")["clean"]:
                 return False
     except (OSError, ValueError):
         return False
@@ -254,12 +256,17 @@ def render_agents(
         name = ".agents/rules/ai-dlc.md"
         path = inside(root, name)
         body = _antigravity_rule("\n".join(lines))
+        current = path.read_text() if path.exists() else ""
         if path.exists():
             expected = owned_files.get(name)
-            if expected is None or hashlib.sha256(path.read_bytes()).hexdigest() != expected:
+            if expected is None:
                 raise ValueError(f"managed native rule conflict: {name}")
-        planned[name] = body
-        owned_files[name] = hashlib.sha256(body.encode()).hexdigest()
+            if "<!-- ai-dlc:begin " not in current:
+                if hashlib.sha256(current.encode()).hexdigest() != expected:
+                    raise ValueError(f"managed native rule conflict: {name}")
+                current = ""  # Upgrade the intact early whole-file owned representation.
+        planned[name] = _section(current, body)
+        owned_files[name] = hashlib.sha256(planned[name].encode()).hexdigest()
         _plan_json_mcp(
             root,
             ".agents/mcp_config.json",
@@ -307,13 +314,18 @@ def render_agents(
     return {"clean": not changed, "changed": changed, "applied": apply}
 
 
+def _rule_links(body: str) -> str:
+    # The generated provider index contains validated repository-relative targets.
+    return re.sub(r"\]\(<([^>]+)>\)", lambda match: "](<../../" + match[1] + ">)", body)
+
+
 def _antigravity_rule(body: str) -> str:
     return (
         "# AI-DLC native project rule\n\n"
         "Activate this rule as Always On in the native client. Read AGENTS.md at the "
         "repository root before work. Commands and artifact paths below are repository-root "
         "relative. Client recognition and login require a separate native walkthrough.\n\n"
-        + body.replace("](<.ai-dlc/", "](<../../.ai-dlc/")
+        + _rule_links(body)
     )
 
 

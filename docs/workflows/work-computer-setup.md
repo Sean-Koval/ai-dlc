@@ -22,7 +22,10 @@ reviewed configuration and `project sync` workflow instead of adoption.
 
 Omitting tracker selection preserves the legacy scaffold default. Choose
 `--tracker github-issues` for a personal GitHub repository; its guided connection
-proposes a repository-associated Project, with `--issues-only` available. Jira
+proposes a repository-associated Project. Run `ai-dlc provider connect github-issues`
+to preview it; `--issues-only` is an option of that connection command. Follow the
+[GitHub saved-plan setup instructions](../github-ticket-setup.md) for exact
+preview, saved-plan apply, permissions and recovery steps. Jira
 Cloud onboarding and lifecycle support are a separate #20 deliverable. Until its
 adapter is integrated and configured, native Jira access does not make AI-DLC
 publish/start/finish usable with Jira. Do not publish work to the scaffold default
@@ -67,6 +70,8 @@ Antigravity's current documented workspace contract uses `.agents/skills`,
 `.agents/rules` and `.agents/mcp_config.json`; remote entries use `serverUrl`.
 Open the project rule in the native rules UI and activate it as **Always On**.
 Inspect skills and the MCP manager, then authenticate selected remote servers.
+Native metadata outside the managed rule section is preserved on regeneration;
+keep the managed guidance body intact.
 The renderer supplies files; it does not fabricate a rule activation setting or
 claim the client has loaded them. See [skills](https://www.antigravity.google/docs/skills),
 [rules](https://www.antigravity.google/docs/rules-workflows) and

@@ -3,9 +3,10 @@
 Use existing project rendering and its owned-file/section manifest. Add a small
 client layout table for supported client IDs/skill directories and dedicated
 JSON MCP planning that keeps Claude's existing `mcp` ownership key compatible.
-Antigravity has a separate ownership key. A dedicated owned rule contains the
+Antigravity has a separate ownership key. A dedicated rule with an owned Markdown section contains the
 actual guidance; it does not assume Claude's @import semantics. Its native
-activation is checked explicitly in the client UI; no undocumented frontmatter
+activation is checked explicitly in the client UI; user/client metadata outside
+the owned section is retained, and no undocumented frontmatter
 is fabricated. Existing default client selection is unchanged.
 
 Remote definitions use documented client schemas. The public `agents.servers`

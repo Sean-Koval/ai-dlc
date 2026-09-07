@@ -2,6 +2,8 @@
 
 import json
 
+import pytest
+
 from ai_dlc.agents import render_agents
 
 
@@ -80,8 +82,6 @@ def test_codex_antigravity_share_one_owned_skill_set(tmp_path):
 
 def test_antigravity_preserves_authored_servers_and_rejects_edited_owned_entry(tmp_path):
     """Native ownership cannot overwrite an edited server or unrelated account."""
-    import pytest
-
     _native_project(tmp_path)
     mcp = tmp_path / ".agents/mcp_config.json"
     mcp.parent.mkdir()
@@ -99,8 +99,6 @@ def test_antigravity_preserves_authored_servers_and_rejects_edited_owned_entry(t
 
 def test_antigravity_authored_rule_conflict_refuses_all_writes(tmp_path):
     """A rule filename is not proof AI-DLC owns its authored contents."""
-    import pytest
-
     _native_project(tmp_path)
     rule = tmp_path / ".agents/rules/ai-dlc.md"
     rule.parent.mkdir(parents=True)
@@ -113,8 +111,6 @@ def test_antigravity_authored_rule_conflict_refuses_all_writes(tmp_path):
 
 def test_antigravity_refuses_unqualified_env_interpolation(tmp_path):
     """Never emit literal credential placeholders the native client may not expand."""
-    import pytest
-
     _native_project(tmp_path, extra='env=["SERVICE_TOKEN"]\n')
     before = _snapshot(tmp_path)
     with pytest.raises(ValueError, match="environment.*Antigravity|Antigravity.*environment"):
@@ -147,8 +143,6 @@ def test_antigravity_readiness_distinguishes_guidance_from_live_client(tmp_path)
 
 def test_antigravity_refuses_ambiguous_transport_without_writes(tmp_path):
     """A server carrying command and URL must not silently select one credential path."""
-    import pytest
-
     _native_project(tmp_path, extra='url="https://other.example.com/mcp"\n')
     before = _snapshot(tmp_path)
     with pytest.raises(ValueError, match="transport"):
@@ -157,10 +151,80 @@ def test_antigravity_refuses_ambiguous_transport_without_writes(tmp_path):
 
 
 def test_antigravity_required_hooks_remain_unqualified(tmp_path):
-    import pytest
-
     _native_project(tmp_path, extra='[agents.clients.antigravity]\nrequired_hooks=["bound-push"]\n')
     before = _snapshot(tmp_path)
     with pytest.raises(ValueError, match="unsupported required hooks"):
         render_agents(tmp_path, apply=True)
     assert before == _snapshot(tmp_path)
+
+
+def test_native_rule_custom_provider_links_resolve_to_project_files(tmp_path):
+    """A provider can put guidance anywhere permitted in the project, not just .ai-dlc."""
+    import hashlib
+    import re
+
+    _native_project(tmp_path)
+    guide = tmp_path / "providers/custom.md"
+    guide.parent.mkdir()
+    guide.write_text("Authored specification instructions.\n")
+    manifest = tmp_path / "component.json"
+    manifest.write_text(
+        json.dumps(
+            {
+                "schema": 1,
+                "components": [
+                    {
+                        "id": "custom",
+                        "roles": ["specs"],
+                        "modules": [],
+                        "guidance": ["providers/custom.md"],
+                        "required_config": [],
+                    }
+                ],
+            }
+        )
+    )
+    project = tmp_path / "ai-dlc.toml"
+    text = project.read_text().replace("[roles]\n", '[roles]\nspecs="custom"\n')
+    text += '[providers.custom]\ncomponent_manifest="component.json"\n'
+    text += f'component_manifest_sha256="{hashlib.sha256(manifest.read_bytes()).hexdigest()}"\n'
+    project.write_text(text)
+    render_agents(tmp_path, apply=True)
+    rule = tmp_path / ".agents/rules/ai-dlc.md"
+    targets = re.findall(r"\]\(<([^>]+)>\)", rule.read_text())
+    assert targets
+    assert all((rule.parent / target).is_file() for target in targets)
+    assert guide.resolve() in [(rule.parent / target).resolve() for target in targets]
+
+
+@pytest.mark.parametrize(
+    "missing", [".agents/skills/day-start/SKILL.md", ".agents/mcp_config.json"]
+)
+def test_native_readiness_refuses_missing_selected_assets(tmp_path, missing):
+    """The delivered row must not remain ready when a selected native asset disappears."""
+    from ai_dlc.config import load_project
+    from ai_dlc.readiness import inspect_readiness
+
+    _native_project(tmp_path)
+    render_agents(tmp_path, apply=True)
+    (tmp_path / missing).unlink()
+    result = inspect_readiness(tmp_path, load_project(tmp_path), environ={}, probe=lambda _: {})
+    assert not result["ready"]
+    assert any(
+        row["component"] == "antigravity"
+        and row["dimension"] == "guidance"
+        and row["status"] == "missing"
+        for row in result["checks"]
+    )
+
+
+def test_native_rule_preserves_client_authored_metadata_outside_owned_guidance(tmp_path):
+    """Native rule activation metadata must survive regeneration of owned guidance."""
+    _native_project(tmp_path)
+    render_agents(tmp_path, apply=True)
+    rule = tmp_path / ".agents/rules/ai-dlc.md"
+    metadata = "---\ndescription: My project activation settings\n---\n"
+    rule.write_text(metadata + rule.read_text())
+    render_agents(tmp_path, apply=True)
+    assert rule.read_text().startswith(metadata)
+    assert render_agents(tmp_path)["clean"]

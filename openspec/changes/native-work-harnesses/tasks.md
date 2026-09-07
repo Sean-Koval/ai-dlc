@@ -1,9 +1,9 @@
 ## 1. Implementation and evidence
 
-- [ ] 1.1 Reproduce missing Claude HTTP type with a real owned-render update test and repair it.
-- [ ] 1.2 Add red Antigravity rendering/ownership/shared-skill tests; implement project client support.
-- [ ] 1.3 Add readiness and unsupported-hook/environment mapping tests, then implement explicit guidance versus live-client evidence.
-- [ ] 1.4 Write clone-engine/adopt-work-repository setup and actual-client qualification instructions.
+- [x] 1.1 Reproduce missing Claude HTTP type with a real owned-render update test and repair it.
+- [x] 1.2 Add red Antigravity rendering/ownership/shared-skill tests; implement project client support.
+- [x] 1.3 Add readiness and unsupported-hook/environment mapping tests, then implement explicit guidance versus live-client evidence.
+- [x] 1.4 Write clone-engine/adopt-work-repository setup and actual-client qualification instructions.
 - [ ] 1.5 Run required checks, strict validation and independent review; record live gaps explicitly.
 
 ## 2. Delivery boundary

@@ -4,6 +4,7 @@
 An explicitly selected Antigravity client SHALL receive the selected skills in
 `.agents/skills` and a project rule in `.agents/rules/ai-dlc.md` containing the
 same configured provider and verification guidance as other supported clients.
+Native activation metadata outside its managed rule body SHALL survive updates.
 Codex and Antigravity sharing the skills directory SHALL yield one consistent
 owned set. Unselected clients and authored material SHALL be preserved.
 
