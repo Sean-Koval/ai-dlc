@@ -17,6 +17,26 @@ New work records list dependency work IDs, requirement IDs, exact artifact refer
 
 Add optional Work fields depends_on: list[str]=[] and requirements: list[str]=[]. Add validate_work_graph(records:dict[str,dict])->list[str] and render_ticket_body(work:dict)->str in traceability.py. Requirements are stable brief/spec requirement identifiers, not duplicated spec prose. Add ai-dlc work validate WORK_ID --root PATH (read-only, 0 valid/1 invalid). No automated interpretation of arbitrary natural-language specifications.
 
+### Current implementation clarifications
+
+Validate the selected work record and its reachable dependency closure; unrelated
+draft records do not block existing work. Empty dependency and requirement lists
+preserve old behavior. Validate local document artifact paths before any publish
+or start effects, allowing existing files/directories and fragments without
+interpreting arbitrary specification prose. Reject escapes and symlinks. HTTP(S)
+references remain unprobed; tracker, PR, branch, deployment and knowledge references
+belong to their providers, not the repository filesystem.
+
+A read-only `work validate` must not initialize mutation journals or call provider
+services. Start uses each dependency's pinned provider/binding and a fresh canonical
+`closed` state; cancelled, duplicate, unknown, unpublished and unavailable are
+not completion. No vendor names enter this lifecycle decision.
+
+Richer bodies apply to first creation. Existing tracker mappings and correlation
+matches are reconciled without modifying authored descriptions or changing old
+journal operation identities/fingerprints. An uncertain prior create stays
+uncertain rather than using a new body as permission to retry it.
+
 ### Dependency contract
 
 - product-shaping-workflow: consume its committed documented interfaces; do not implement an incompatible local substitute.
