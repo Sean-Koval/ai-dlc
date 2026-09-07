@@ -720,3 +720,192 @@ def test_explicit_machine_doctor_keeps_the_nonzero_readiness_contract(monkeypatc
 
     assert result.exit_code == 1
     assert '"ready": false' in result.stdout
+
+
+def test_agents_bundle_import_forwards_exact_preview_and_apply_contract(monkeypatch, tmp_path):
+    """Would fail if the nested CLI lost review inputs or changed service JSON."""
+    from contextlib import contextmanager
+
+    from ai_dlc import cli, workflow_bundles
+
+    (tmp_path / "ai-dlc.toml").write_text("schema = 4\n")
+    calls = []
+    candidate = object()
+    expected = {
+        "applied": False,
+        "changed": [".ai-dlc/bundles/example/bundle.json"],
+        "conflicts": [],
+        "source": "https://example.test/workflow.git",
+        "ref": "stable",
+        "bundle_id": "example",
+        "resolved_commit": "a" * 40,
+        "manifest_sha256": "b" * 64,
+        "skills": {"day-start": "skills/day/SKILL.md"},
+        "templates": {},
+        "files": {"skills/day/SKILL.md": "c" * 64},
+    }
+
+    @contextmanager
+    def resolve(source, ref, bundle_id, *, environ):
+        calls.append(("resolve", source, ref, bundle_id, environ is not None))
+        yield candidate
+
+    def import_candidate(root, received, *, apply=False, expected_commit=None):
+        calls.append(("import", root, received, apply, expected_commit))
+        return {**expected, "applied": apply}
+
+    monkeypatch.setattr(workflow_bundles, "resolve_bundle", resolve, raising=False)
+    monkeypatch.setattr(workflow_bundles, "import_bundle", import_candidate, raising=False)
+    runner = CliRunner()
+    arguments = [
+        "agents",
+        "bundle",
+        "import",
+        "https://example.test/workflow.git",
+        "--ref",
+        "stable",
+        "--id",
+        "example",
+        "--root",
+        str(tmp_path),
+    ]
+
+    preview = runner.invoke(cli.app, arguments)
+    applied = runner.invoke(cli.app, [*arguments, "--apply", "--expected-commit", "a" * 40])
+
+    assert preview.exit_code == applied.exit_code == 0
+    assert json.loads(preview.stdout) == expected
+    assert json.loads(applied.stdout) == {**expected, "applied": True}
+    assert calls == [
+        (
+            "resolve",
+            "https://example.test/workflow.git",
+            "stable",
+            "example",
+            True,
+        ),
+        ("import", tmp_path, candidate, False, None),
+        (
+            "resolve",
+            "https://example.test/workflow.git",
+            "stable",
+            "example",
+            True,
+        ),
+        ("import", tmp_path, candidate, True, "a" * 40),
+    ]
+
+
+def test_agents_bundle_import_reports_stable_redacted_errors(monkeypatch):
+    """Would fail if a rejected source leaked caller-controlled credentials or a traceback."""
+    from ai_dlc import cli, workflow_bundles
+
+    def reject(*args, **kwargs):
+        raise ValueError("bundle source is invalid")
+
+    monkeypatch.setattr(workflow_bundles, "resolve_bundle", reject, raising=False)
+    source = "https://user:synthetic-credential@example.test/workflow.git"
+    result = CliRunner().invoke(
+        cli.app,
+        ["agents", "bundle", "import", source, "--ref", "main", "--id", "example"],
+    )
+
+    assert result.exit_code == 2
+    assert result.stdout == ""
+    assert result.stderr == "Error: bundle source is invalid\n"
+    assert "synthetic-credential" not in result.output
+
+
+@pytest.mark.parametrize("invalid_root", ["missing", "non-project", "malformed", "symlink"])
+def test_agents_bundle_import_rejects_invalid_project_before_source_resolution(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, invalid_root: str
+):
+    """Would fail if an invalid project triggered Git or any local write before refusal."""
+    from ai_dlc import cli, workflow_bundles
+
+    root = tmp_path / "project"
+    if invalid_root != "missing":
+        root.mkdir()
+    if invalid_root == "malformed":
+        (root / "ai-dlc.toml").write_text("not = [valid\n")
+    elif invalid_root == "symlink":
+        (root / "ai-dlc.toml").write_text("schema = 4\n")
+        target = root
+        root = tmp_path / "project-link"
+        root.symlink_to(target, target_is_directory=True)
+    before = {
+        path.relative_to(tmp_path).as_posix(): path.read_bytes()
+        for path in tmp_path.rglob("*")
+        if path.is_file()
+    }
+    calls = []
+
+    def unexpected_resolution(*args, **kwargs):
+        calls.append((args, kwargs))
+        raise AssertionError("invalid project reached Git resolution")
+
+    monkeypatch.setattr(workflow_bundles, "resolve_bundle", unexpected_resolution)
+    result = CliRunner().invoke(
+        cli.app,
+        [
+            "agents",
+            "bundle",
+            "import",
+            "https://example.test/workflow.git",
+            "--ref",
+            "main",
+            "--id",
+            "example",
+            "--root",
+            str(root),
+        ],
+    )
+
+    assert result.exit_code == 2
+    assert result.stderr == "Error: bundle import requires a valid project root\n"
+    assert calls == []
+    assert before == {
+        path.relative_to(tmp_path).as_posix(): path.read_bytes()
+        for path in tmp_path.rglob("*")
+        if path.is_file()
+    }
+
+
+@pytest.mark.parametrize(
+    "extra_flags",
+    [["--expected-commit", "a" * 40], ["--apply"]],
+)
+def test_agents_bundle_import_rejects_incomplete_review_flags_before_resolution(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, extra_flags: list[str]
+):
+    """Would fail if contradictory review flags contacted a source before CLI validation."""
+    from ai_dlc import cli, workflow_bundles
+
+    (tmp_path / "ai-dlc.toml").write_text("schema = 4\n")
+    calls = []
+
+    def unexpected_resolution(*args, **kwargs):
+        calls.append((args, kwargs))
+        raise AssertionError("invalid flags reached Git resolution")
+
+    monkeypatch.setattr(workflow_bundles, "resolve_bundle", unexpected_resolution)
+    result = CliRunner().invoke(
+        cli.app,
+        [
+            "agents",
+            "bundle",
+            "import",
+            "https://example.test/workflow.git",
+            "--ref",
+            "main",
+            "--id",
+            "example",
+            "--root",
+            str(tmp_path),
+            *extra_flags,
+        ],
+    )
+
+    assert result.exit_code == 2
+    assert "expected-commit" in result.stderr
+    assert calls == []

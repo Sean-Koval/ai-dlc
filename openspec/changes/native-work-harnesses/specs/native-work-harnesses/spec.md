@@ -47,3 +47,14 @@ reported as live qualification, native login, or runtime completion enforcement.
 #### Scenario: A work repository uses different tools
 - **WHEN** it selects its own provider aliases and project settings
 - **THEN** rendering uses only that repository's effective shared selections and does not copy the engine repository's personal tracker/account binding
+
+### Requirement: NH-04 Shared native workflow-bundle distribution
+Selected vendored workflow skills SHALL use the same registered native client directories as packaged skills. Clients sharing a directory SHALL share one owned export, and an explicit native-client render SHALL update or remove that client's owned bundle exports without adopting retained backups.
+
+#### Scenario: Antigravity uses a selected bundle
+- **WHEN** Antigravity is selected alone or alongside Codex and a vendored skill bundle is rendered
+- **THEN** the skill is available in `.agents/skills`, no unselected Claude copy is created, and readiness uses the same directory mapping
+
+#### Scenario: A native-only render removes an old bundle
+- **WHEN** an owned bundle is deselected and Antigravity is explicitly rendered
+- **THEN** its obsolete shared skill export leaves active guidance and its retained backup is reported under the existing non-deleting transaction contract

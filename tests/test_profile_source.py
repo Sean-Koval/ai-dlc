@@ -489,6 +489,72 @@ def test_requested_ref_is_passed_as_data_without_shell_interpolation(tmp_path: P
     assert cache_snapshot(paths) == {}
 
 
+def test_git_resolution_rejects_an_invalid_advertised_object_id_before_fetch(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Would fail if malformed advertised identity reached the fetch boundary."""
+    repository = tmp_path / "checkout"
+    repository.mkdir()
+    calls: list[tuple[str, ...]] = []
+
+    def git_result(_repository: Path, *arguments: str, environ=None) -> str:
+        del environ
+        calls.append(arguments)
+        if arguments[0] == "ls-remote":
+            return "not-an-object-id\trefs/heads/main"
+        return ""
+
+    monkeypatch.setattr(profile_source, "_run_git", git_result)
+
+    with pytest.raises(RuntimeError, match="advertised object"):
+        profile_source.resolve_git_source(repository, "https://example.test/repo.git", "main")
+
+    assert not any(arguments[0] == "fetch" for arguments in calls)
+
+
+def test_git_resolution_rejects_a_fetched_object_different_from_advertised_identity(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Would fail if a ref move between advertisement and fetch silently changed reviewed bytes."""
+    repository = tmp_path / "checkout"
+    repository.mkdir()
+    advertised = "a" * 40
+    fetched = "b" * 40
+
+    def git_result(_repository: Path, *arguments: str, environ=None) -> str:
+        del environ
+        if arguments[0] == "ls-remote":
+            return f"{advertised}\trefs/heads/main"
+        if arguments[:3] == ("rev-parse", "--verify", "FETCH_HEAD"):
+            return fetched
+        if arguments[:3] == ("rev-parse", "--verify", "FETCH_HEAD^{commit}"):
+            raise AssertionError("mismatched object was peeled as a commit")
+        return ""
+
+    monkeypatch.setattr(profile_source, "_run_git", git_result)
+
+    with pytest.raises(RuntimeError, match="advertised object"):
+        profile_source.resolve_git_source(repository, "https://example.test/repo.git", "main")
+
+
+def test_git_resolution_accepts_an_annotated_tag_and_returns_its_peeled_commit(tmp_path: Path):
+    """Would fail if advertised tag-object verification confused it with the commit pin."""
+    repository, _ = disposable_git_repository(tmp_path)
+    git(repository, "tag", "-a", "v1", "-m", "release")
+    advertised = git(repository, "rev-parse", "refs/tags/v1")
+    commit = git(repository, "rev-parse", "refs/tags/v1^{commit}")
+    checkout = tmp_path / "checkout"
+    checkout.mkdir()
+
+    resolved, portable = profile_source.resolve_git_source(
+        checkout, str(repository), "refs/tags/v1"
+    )
+
+    assert advertised != commit
+    assert resolved == commit
+    assert portable is False
+
+
 def test_cached_profile_verifies_offline_after_source_disappears(tmp_path: Path):
     repository, _ = disposable_git_repository(tmp_path)
     paths = enrollment_paths(tmp_path)
