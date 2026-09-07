@@ -100,4 +100,6 @@ This operation establishes live issue creation/read evidence through GitHub CLI
 and Project creation, membership, status and view updates through official MCP.
 It does not qualify AI-DLC adapter transitions, recovery, migration application,
 completion gates, merged CI or release platforms. No Linear closure/deletion,
-Jira mutation, document publication, spec archive, PR, merge or finish occurred.
+Jira mutation, document publication, spec archive, merge or finish occurred.
+Implementation is now published in [draft PR #23](https://github.com/Sean-Koval/ai-dlc/pull/23);
+its CI and remaining live adoption gates are pending.

@@ -2,6 +2,10 @@
 
 ## Latest adoption update — September 7
 
+[Draft PR #23](https://github.com/Sean-Koval/ai-dlc/pull/23) contains the GitHub
+workflow implementation and Project default (`19995aa`). Platform CI is pending.
+No merge, archive or work finish has occurred.
+
 Latest direction: ignore Linear reconciliation for now and work from the GitHub
 issues. Project-backed GitHub setup is now the requested default. The bounded
 `github-project-defaults` child of issue #19 has a formal specification, tests

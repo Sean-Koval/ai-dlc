@@ -5,6 +5,9 @@ Implementation branch: `codex/github-ticket-workflows`, based on planning commit
 
 ## September 7 Project-default follow-through
 
+[Draft PR #23](https://github.com/Sean-Koval/ai-dlc/pull/23) publishes the candidate.
+Platform checks are pending; no archive, merge or finish has occurred.
+
 The maintainer selected the GitHub backlog as the work queue and deferred Linear
 reconciliation. Thirteen issues are now in [AI-DLC Project #2](https://github.com/users/Sean-Koval/projects/2),
 with verified status mappings and All work / Delivery board views. The
