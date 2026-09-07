@@ -1013,6 +1013,9 @@ def test_start_creates_branch_for_github_without_intermediate_state(tmp_path):
     assert result["branch"] == "work/one"
     assert git("branch", "--show-current") == "work/one"
     assert result["tracker_transition"]["supported"] is False
+    assert result["tracker_transition"]["reason"] == (
+        "Tracker does not support the in_progress lifecycle state"
+    )
     assert service.load("one")["artifacts"]["branch"] == "work/one"
     assert service.start("one")["branch"] == "work/one"
 
@@ -1041,7 +1044,10 @@ def test_start_uses_declared_capability_without_provider_name_dispatch(tmp_path)
 
     result = service.start("one")
 
-    assert result["tracker_transition"]["supported"] is False
+    assert result["tracker_transition"] == {
+        "supported": False,
+        "reason": "Tracker does not support the in_progress lifecycle state",
+    }
     assert result["tracker"]["state"] == "open"
     assert tracker.closed == 0
 

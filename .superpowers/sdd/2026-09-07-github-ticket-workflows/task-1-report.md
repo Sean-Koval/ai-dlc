@@ -52,7 +52,16 @@ GREEN:
 ## Scope and concerns
 
 - No live provider calls were made; provider semantics are fixture/offline tested.
-- The unsupported reason retains the established GitHub Issues wording for output
-  compatibility. Capability selection itself contains no provider-name branch.
+- The unsupported response retains its `supported` and `reason` shape while using
+  provider-neutral wording for every declared tracker capability.
 - Unrelated documentation/spec edits already present in the shared worktree were
   left unstaged and are not part of the Task 1 commit.
+
+## Follow-up: provider-neutral unsupported reason
+
+An integration review found that the unsupported transition reason still named
+GitHub Issues when an arbitrary declared provider lacked in-progress support.
+Regression assertions for both the GitHub fixture and arbitrary `fake` provider
+failed against that wording, then passed after replacing it with the generic
+`Tracker does not support the in_progress lifecycle state` message. The response
+shape remains unchanged.

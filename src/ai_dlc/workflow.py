@@ -368,7 +368,7 @@ class WorkService:
             item = self.tracker(work).invoke("read", {"reference": work["artifacts"]["tracker"]})
             transition = {
                 "supported": False,
-                "reason": "GitHub Issues supports open/closed; in_progress is unavailable",
+                "reason": "Tracker does not support the in_progress lifecycle state",
             }
         else:
             item = self.mutate(
