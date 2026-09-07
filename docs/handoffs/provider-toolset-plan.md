@@ -6,6 +6,16 @@
 workflow implementation and Project default (`19995aa`). Platform CI is pending.
 No merge, archive or work finish has occurred.
 
+Authorization follow-through: CLI access is verified. AI-DLC reused Project #2,
+linked it into the repository, selected GitHub as the default tracker and applied
+eight reviewed local mappings to issues #11–#18. The live disposable workflow
+check recovered uncertain attachment and lost-start replies without duplicates;
+finish correctly refused an unmerged PR. The test issue is closed and removed
+from the board. SAN-12's separate checkout stays untouched. See the
+[activation and evidence record](../planning/github-backlog-migration.md).
+Earlier access-pending notes below are historical. Remaining delivery gates are
+spec finalization/archive, PR integration, merged-revision CI and gated finish.
+
 Latest direction: ignore Linear reconciliation for now and work from the GitHub
 issues. Project-backed GitHub setup is now the requested default. The bounded
 `github-project-defaults` child of issue #19 has a formal specification, tests

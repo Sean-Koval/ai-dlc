@@ -5,5 +5,5 @@
 - [x] 1.4 Independently review the implementation and resolve findings.
 
 ## 2. Adoption and completion
-- [ ] 2.1 Associate the existing AI-DLC issues with a verified GitHub Project and record live evidence separately.
+- [x] 2.1 Associate the existing AI-DLC issues with a verified GitHub Project and record live evidence separately.
 - [ ] 2.2 Complete specification, PR, CI and work-finish gates before closing delivered work.

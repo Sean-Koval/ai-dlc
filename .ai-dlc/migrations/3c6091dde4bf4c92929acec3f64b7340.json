@@ -1,0 +1,362 @@
+{
+  "plan": {
+    "after_runtime_digest": "8554bdc7ac948d40cecb30648f32f9d1b4fcc48e6d2935d595c3b5d248a1e739",
+    "changes": {
+      "ai-dlc.toml": "d137a95c1627af034c685903d46058815ef383f1b620cf85ea1c5c78a0d537d4"
+    },
+    "digest": "946cf930d55086e4d9aa8ad4d3ba4332f6cc4128e4ebc352cb2a6bd011b2351b",
+    "mappings": {},
+    "mode": "default-only",
+    "operation_id": "3c6091dde4bf4c92929acec3f64b7340",
+    "provider": "github-issues",
+    "remote_mutations": false,
+    "retained": {
+      "component-capability-contract": {
+        "bindings": {
+          "deploy": "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160",
+          "knowledge": "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852",
+          "scm": "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72",
+          "specs": "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0",
+          "tracker": "08e58cff6eeb57842d485cdcc8cefeef0ef191438c796ee2db82bb848e4a1b4c"
+        },
+        "providers": {
+          "deploy": "none",
+          "knowledge": "obsidian",
+          "scm": "github",
+          "specs": "openspec",
+          "tracker": "linear"
+        }
+      },
+      "connected-project-readiness": {
+        "bindings": {
+          "deploy": "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160",
+          "knowledge": "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852",
+          "scm": "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72",
+          "specs": "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0",
+          "tracker": "08e58cff6eeb57842d485cdcc8cefeef0ef191438c796ee2db82bb848e4a1b4c"
+        },
+        "providers": {
+          "deploy": "none",
+          "knowledge": "obsidian",
+          "scm": "github",
+          "specs": "openspec",
+          "tracker": "linear"
+        }
+      },
+      "design-pm-calibration": {
+        "bindings": {
+          "deploy": "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160",
+          "knowledge": "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852",
+          "scm": "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72",
+          "specs": "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0",
+          "tracker": "08e58cff6eeb57842d485cdcc8cefeef0ef191438c796ee2db82bb848e4a1b4c"
+        },
+        "providers": {
+          "deploy": "none",
+          "knowledge": "obsidian",
+          "scm": "github",
+          "specs": "openspec",
+          "tracker": "linear"
+        }
+      },
+      "design-pm-workflow": {
+        "bindings": {
+          "deploy": "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160",
+          "knowledge": "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852",
+          "scm": "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72",
+          "specs": "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0",
+          "tracker": "08e58cff6eeb57842d485cdcc8cefeef0ef191438c796ee2db82bb848e4a1b4c"
+        },
+        "providers": {
+          "deploy": "none",
+          "knowledge": "obsidian",
+          "scm": "github",
+          "specs": "openspec",
+          "tracker": "linear"
+        }
+      },
+      "framework-delivery-plan": {
+        "bindings": {
+          "deploy": "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160",
+          "knowledge": "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852",
+          "scm": "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72",
+          "specs": "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0",
+          "tracker": "08e58cff6eeb57842d485cdcc8cefeef0ef191438c796ee2db82bb848e4a1b4c"
+        },
+        "providers": {
+          "deploy": "none",
+          "knowledge": "obsidian",
+          "scm": "github",
+          "specs": "openspec",
+          "tracker": "linear"
+        }
+      },
+      "framework-qualification": {
+        "bindings": {
+          "deploy": "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160",
+          "knowledge": "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852",
+          "scm": "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72",
+          "specs": "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0",
+          "tracker": "08e58cff6eeb57842d485cdcc8cefeef0ef191438c796ee2db82bb848e4a1b4c"
+        },
+        "providers": {
+          "deploy": "none",
+          "knowledge": "obsidian",
+          "scm": "github",
+          "specs": "openspec",
+          "tracker": "linear"
+        }
+      },
+      "github-project-defaults": {
+        "bindings": {
+          "deploy": "bb3dd49c4f4cb2917763afc3947c0e2c691186fe67482e488bd64505d7e3b39f",
+          "knowledge": "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852",
+          "scm": "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72",
+          "specs": "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+        },
+        "providers": {
+          "knowledge": "obsidian",
+          "scm": "github",
+          "specs": "openspec"
+        }
+      },
+      "github-ticket-workflows": {
+        "bindings": {
+          "deploy": "bb3dd49c4f4cb2917763afc3947c0e2c691186fe67482e488bd64505d7e3b39f",
+          "knowledge": "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852",
+          "scm": "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72",
+          "specs": "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+        },
+        "providers": {
+          "knowledge": "obsidian",
+          "scm": "github",
+          "specs": "openspec"
+        }
+      },
+      "linear-provider-onboarding": {
+        "bindings": {
+          "deploy": "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160",
+          "knowledge": "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852",
+          "scm": "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72",
+          "specs": "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0",
+          "tracker": "08e58cff6eeb57842d485cdcc8cefeef0ef191438c796ee2db82bb848e4a1b4c"
+        },
+        "providers": {
+          "deploy": "none",
+          "knowledge": "obsidian",
+          "scm": "github",
+          "specs": "openspec",
+          "tracker": "linear"
+        }
+      },
+      "portable-development-v4": {
+        "bindings": {
+          "deploy": "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160",
+          "knowledge": "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852",
+          "scm": "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72",
+          "specs": "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0",
+          "tracker": "08e58cff6eeb57842d485cdcc8cefeef0ef191438c796ee2db82bb848e4a1b4c"
+        },
+        "providers": {
+          "deploy": "none",
+          "knowledge": "obsidian",
+          "scm": "github",
+          "specs": "openspec",
+          "tracker": "linear"
+        }
+      },
+      "portable-profile-enrollment": {
+        "bindings": {
+          "deploy": "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160",
+          "knowledge": "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852",
+          "scm": "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72",
+          "specs": "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0",
+          "tracker": "08e58cff6eeb57842d485cdcc8cefeef0ef191438c796ee2db82bb848e4a1b4c"
+        },
+        "providers": {
+          "deploy": "none",
+          "knowledge": "obsidian",
+          "scm": "github",
+          "specs": "openspec",
+          "tracker": "linear"
+        }
+      },
+      "portable-workflow-bundles": {
+        "bindings": {
+          "deploy": "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160",
+          "knowledge": "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852",
+          "scm": "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72",
+          "specs": "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0",
+          "tracker": "08e58cff6eeb57842d485cdcc8cefeef0ef191438c796ee2db82bb848e4a1b4c"
+        },
+        "providers": {
+          "deploy": "none",
+          "knowledge": "obsidian",
+          "scm": "github",
+          "specs": "openspec",
+          "tracker": "linear"
+        }
+      },
+      "product-shaping-workflow": {
+        "bindings": {
+          "deploy": "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160",
+          "knowledge": "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852",
+          "scm": "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72",
+          "specs": "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0",
+          "tracker": "08e58cff6eeb57842d485cdcc8cefeef0ef191438c796ee2db82bb848e4a1b4c"
+        },
+        "providers": {
+          "deploy": "none",
+          "knowledge": "obsidian",
+          "scm": "github",
+          "specs": "openspec",
+          "tracker": "linear"
+        }
+      },
+      "provider-toolset-plan": {
+        "bindings": {
+          "deploy": "bb3dd49c4f4cb2917763afc3947c0e2c691186fe67482e488bd64505d7e3b39f",
+          "knowledge": "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852",
+          "scm": "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72",
+          "specs": "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+        },
+        "providers": {
+          "knowledge": "obsidian",
+          "scm": "github",
+          "specs": "openspec"
+        }
+      },
+      "spec-delivery-traceability": {
+        "bindings": {
+          "deploy": "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160",
+          "knowledge": "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852",
+          "scm": "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72",
+          "specs": "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0",
+          "tracker": "08e58cff6eeb57842d485cdcc8cefeef0ef191438c796ee2db82bb848e4a1b4c"
+        },
+        "providers": {
+          "deploy": "none",
+          "knowledge": "obsidian",
+          "scm": "github",
+          "specs": "openspec",
+          "tracker": "linear"
+        }
+      },
+      "workflow-quality-calibration": {
+        "bindings": {
+          "deploy": "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160",
+          "knowledge": "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852",
+          "scm": "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72",
+          "specs": "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0",
+          "tracker": "08e58cff6eeb57842d485cdcc8cefeef0ef191438c796ee2db82bb848e4a1b4c"
+        },
+        "providers": {
+          "deploy": "none",
+          "knowledge": "obsidian",
+          "scm": "github",
+          "specs": "openspec",
+          "tracker": "linear"
+        }
+      }
+    },
+    "root_digest": "6eccedb2406678e3bff7d842ff00e985a292ffb376ab7c4c6b126063c3574a62",
+    "runtime_digest": "cf02ecc761808fb45af0cb9e054c0974f610671fc8a815d6b03a58a80fba19f4",
+    "schema": 1,
+    "snapshot": {
+      ".ai-dlc/work/component-capability-contract.toml": {
+        "device": 16777234,
+        "inode": 93118244,
+        "sha256": "edba9e83bcbf4382572c08a16052e951d25d4776b4fd330eca0086315f3399d3"
+      },
+      ".ai-dlc/work/connected-project-readiness.toml": {
+        "device": 16777234,
+        "inode": 93118245,
+        "sha256": "48251d8f75e2c02b966045c4466e57adea4ee6ef1441724ebc7af283a339c61d"
+      },
+      ".ai-dlc/work/design-pm-calibration.toml": {
+        "device": 16777234,
+        "inode": 93118246,
+        "sha256": "8512ce523ae8db1ac327218d02df0c4999c1e9ef9e37bf5ca58bdd702c867267"
+      },
+      ".ai-dlc/work/design-pm-workflow.toml": {
+        "device": 16777234,
+        "inode": 93118247,
+        "sha256": "9b5304f5d9a4f9015f2c609d4ebb2d4ef0979e5e17fefe65d1299293fddd3ee0"
+      },
+      ".ai-dlc/work/framework-delivery-plan.toml": {
+        "device": 16777234,
+        "inode": 93118248,
+        "sha256": "c967d688bb8421f04e7870745e58d2796c31dec2cd23943db768ee235fa5f760"
+      },
+      ".ai-dlc/work/framework-qualification.toml": {
+        "device": 16777234,
+        "inode": 93118249,
+        "sha256": "5e079f34b23d9b404958adb26d0d506a787754dc305631522d35b6f5b73cf650"
+      },
+      ".ai-dlc/work/github-project-defaults.toml": {
+        "device": 16777234,
+        "inode": 93440803,
+        "sha256": "dd061c4d513b98234057dd3bf18b565e71beb9e315fb6000b60d6b885d773242"
+      },
+      ".ai-dlc/work/github-ticket-workflows.toml": {
+        "device": 16777234,
+        "inode": 93440799,
+        "sha256": "195275378d450b759289ef36ff32d043ec6baf53a007919948a586b6fb72d85e"
+      },
+      ".ai-dlc/work/linear-provider-onboarding.toml": {
+        "device": 16777234,
+        "inode": 93118250,
+        "sha256": "e4c1f7b71ddd08eb8425e3fbf9d6b89b3cfd3b1b0493e45e162c2bdfd58e2441"
+      },
+      ".ai-dlc/work/portable-development-v4.toml": {
+        "device": 16777234,
+        "inode": 93118251,
+        "sha256": "8ea08188f0a60b357233f45405f4648dfc97369677740f7584cfff5c2acd5a93"
+      },
+      ".ai-dlc/work/portable-profile-enrollment.toml": {
+        "device": 16777234,
+        "inode": 93118252,
+        "sha256": "5f14249bd65b09fb83df2b0cbb886b3c3858f49e4583b7693c3435860e861367"
+      },
+      ".ai-dlc/work/portable-workflow-bundles.toml": {
+        "device": 16777234,
+        "inode": 93118253,
+        "sha256": "f10c178c26ee70cf8fed22b1f4c28dd047976ab0100043c01ae16dac04980696"
+      },
+      ".ai-dlc/work/product-shaping-workflow.toml": {
+        "device": 16777234,
+        "inode": 93118254,
+        "sha256": "09d34954924e1be35c9e4b51453baa49171a6466df9ac074d00fc0a2f609bfd3"
+      },
+      ".ai-dlc/work/provider-toolset-plan.toml": {
+        "device": 16777234,
+        "inode": 93118255,
+        "sha256": "f1518063162feed4c88f67e5d2e7f0251246d28f79b8794c03d1e8b0cbf2996c"
+      },
+      ".ai-dlc/work/spec-delivery-traceability.toml": {
+        "device": 16777234,
+        "inode": 93118256,
+        "sha256": "36bb72ab3fb2e7c26c8e1566f05b9167f65d722b5e3367e3b867b572f188a121"
+      },
+      ".ai-dlc/work/workflow-quality-calibration.toml": {
+        "device": 16777234,
+        "inode": 93118257,
+        "sha256": "6ab4e3030cbc8f24c7bc9f43cab11b07e276337d35498f87b76e2659d80ab2f4"
+      },
+      "ai-dlc.toml": {
+        "device": 16777234,
+        "inode": 93443204,
+        "sha256": "d64f90a8afde5c0457c7556636fae330ae46c737f749be28e23b88fb94dac682"
+      }
+    },
+    "work_ids": []
+  },
+  "recovery": {
+    "ai-dlc.toml": {
+      "after": "c2NoZW1hID0gNAoKW2VuZ2luZV0KdmVyc2lvbiA9ICIwLjQuMCIKCltwcm9qZWN0XQpuYW1lID0gIkFJLURMQyIKCltyb2xlc10Kc3BlY3MgPSAib3BlbnNwZWMiCnRyYWNrZXIgPSAiZ2l0aHViLWlzc3VlcyIKa25vd2xlZGdlID0gIm9ic2lkaWFuIgpzY20gPSAiZ2l0aHViIgpkZXBsb3kgPSAibm9uZSIKYWdlbnQtY2xpZW50ID0gWyJjbGF1ZGUtY29kZSIsICJjb2RleCJdCgpbc2NtXQpyZXBvc2l0b3J5ID0gIlNlYW4tS292YWwvYWktZGxjIgp3b3JrZmxvdyA9ICJ2ZXJpZnkueW1sIgp0YXJnZXRfYnJhbmNoID0gIm1haW4iCnJlY2VpcHRfYXJ0aWZhY3RzID0gWwogICJhaS1kbGMtcmVjZWlwdC11YnVudHUtMjQuMDQiLAogICJhaS1kbGMtcmVjZWlwdC11YnVudHUtMjQuMDQtYXJtIiwKICAiYWktZGxjLXJlY2VpcHQtdWJ1bnR1LTI2LjA0IiwKICAiYWktZGxjLXJlY2VpcHQtdWJ1bnR1LTI2LjA0LWFybSIsCiAgImFpLWRsYy1yZWNlaXB0LW1hY29zLTE1LWludGVsIiwKXQoKW3Byb3ZpZGVycy5saW5lYXJdCnRva2VuX2VudiA9ICJMSU5FQVJfU0FOREJPWF9UT0tFTiIKdGVhbV9pZCA9ICI0N2I3MDFhNC1kNmE2LTRkMjctODVmYy02ZGQ0MjAzMGRkZDMiCmhlYWx0aF9yZWZlcmVuY2UgPSAiMmE4YjQ4N2YtMzQzMy00ZWJlLWE5ZTItYTE2YWM1YjE1NmRhIgoKW3Byb3ZpZGVycy5saW5lYXIuc3RhdHVzZXNdCmluX3Byb2dyZXNzID0gIjYwNzZkYzg4LWRkMmYtNGUyZS04NWFhLWFlZDFhNmQzNmJjZiIKY2xvc2VkID0gIjNlMzRmMDllLWUyNTgtNDA0NC1iMDM0LThkNWRkNGU2M2ZiNCIKCltnYXRlc10KZmluaXNoID0gWyJzcGVjaWZpY2F0aW9uLWN1cnJlbnQiLCAicHItbWVyZ2VkIiwgImNpLWdyZWVuIl0KCltbc2V0dXAuc3RlcHNdXQppZCA9ICJweXRob24tZGVwZW5kZW5jaWVzIgpjb21tYW5kID0gInV2IHN5bmMgLS1sb2NrZWQiCnZlcmlmeSA9ICJ1diBzeW5jIC0tbG9ja2VkIC0tY2hlY2siCgpbW3NldHVwLnN0ZXBzXV0KaWQgPSAidHlwZS1jaGVja2VyLXJ1bnRpbWUiCmNvbW1hbmQgPSAidXYgcnVuIC0tbG9ja2VkIC0tbm8tc3luYyBweXJpZ2h0IC0tdmVyc2lvbiIKdmVyaWZ5ID0gInV2IHJ1biAtLWxvY2tlZCAtLW5vLXN5bmMgcHlyaWdodCAtLXZlcnNpb24iCgpbY2hlY2tzXQpyZXF1aXJlZCA9IFsiZ2VuZXJhdGVkIiwgImZvcm1hdCIsICJsaW50IiwgInR5cGVzIiwgInRlc3QiXQoKW2NoZWNrcy5jb21tYW5kc10KZ2VuZXJhdGVkID0gImFpLWRsYyBhZ2VudHMgcmVuZGVyIC0tY2hlY2sgJiYgdXYgcnVuIC0tbG9ja2VkIC0tbm8tc3luYyBweXRob24gc2NyaXB0cy9jaGVja19nZW5lcmF0ZWQucHkiCmZvcm1hdCA9ICJ1diBydW4gLS1sb2NrZWQgLS1uby1zeW5jIHJ1ZmYgZm9ybWF0IC0tY2hlY2sgc3JjIHRlc3RzIHNjcmlwdHMiCmxpbnQgPSAidXYgcnVuIC0tbG9ja2VkIC0tbm8tc3luYyBydWZmIGNoZWNrIHNyYyB0ZXN0cyBzY3JpcHRzIgp0eXBlcyA9ICJ1diBydW4gLS1sb2NrZWQgLS1uby1zeW5jIHB5cmlnaHQgLS1weXRob25wYXRoIC52ZW52L2Jpbi9weXRob24iCnRlc3QgPSAidXYgcnVuIC0tbG9ja2VkIC0tbm8tc3luYyBweXRlc3QgLXEiCgpbYWdlbnRzXQpzZXJ2ZXJzID0gW10KCltwcm92aWRlcnMuZ2l0aHViLWlzc3Vlc10KaG9zdCA9ICJnaXRodWIuY29tIgpraW5kID0gImdpdGh1Yi1pc3N1ZXMiCgpyZXBvc2l0b3J5ID0gIlNlYW4tS292YWwvYWktZGxjIgp2aWV3ZXJfaWQgPSAiTURRNlZYTmxjalE0TURjeE9EY3ciCltwcm92aWRlcnMuZ2l0aHViLWlzc3Vlcy5wcm9qZWN0XQppZCA9ICJQVlRfa3dIT0F0MkV2czRCaXdYSSIKc3RhdHVzX2ZpZWxkX2lkID0gIlBWVFNTRl9sQUhPQXQyRXZzNEJpd1hJemhobkxiOCIKCltwcm92aWRlcnMuZ2l0aHViLWlzc3Vlcy5wcm9qZWN0LnN0YXR1c2VzXQpjbG9zZWQgPSAiOTgyMzY2NTciCmluX3Byb2dyZXNzID0gIjQ3ZmM5ZWU0IgpvcGVuID0gImY3NWFkODQ2Igo=",
+      "before": "c2NoZW1hID0gNAoKW2VuZ2luZV0KdmVyc2lvbiA9ICIwLjQuMCIKCltwcm9qZWN0XQpuYW1lID0gIkFJLURMQyIKCltyb2xlc10Kc3BlY3MgPSAib3BlbnNwZWMiCnRyYWNrZXIgPSAibGluZWFyIgprbm93bGVkZ2UgPSAib2JzaWRpYW4iCnNjbSA9ICJnaXRodWIiCmRlcGxveSA9ICJub25lIgphZ2VudC1jbGllbnQgPSBbImNsYXVkZS1jb2RlIiwgImNvZGV4Il0KCltzY21dCnJlcG9zaXRvcnkgPSAiU2Vhbi1Lb3ZhbC9haS1kbGMiCndvcmtmbG93ID0gInZlcmlmeS55bWwiCnRhcmdldF9icmFuY2ggPSAibWFpbiIKcmVjZWlwdF9hcnRpZmFjdHMgPSBbCiAgImFpLWRsYy1yZWNlaXB0LXVidW50dS0yNC4wNCIsCiAgImFpLWRsYy1yZWNlaXB0LXVidW50dS0yNC4wNC1hcm0iLAogICJhaS1kbGMtcmVjZWlwdC11YnVudHUtMjYuMDQiLAogICJhaS1kbGMtcmVjZWlwdC11YnVudHUtMjYuMDQtYXJtIiwKICAiYWktZGxjLXJlY2VpcHQtbWFjb3MtMTUtaW50ZWwiLApdCgpbcHJvdmlkZXJzLmxpbmVhcl0KdG9rZW5fZW52ID0gIkxJTkVBUl9TQU5EQk9YX1RPS0VOIgp0ZWFtX2lkID0gIjQ3YjcwMWE0LWQ2YTYtNGQyNy04NWZjLTZkZDQyMDMwZGRkMyIKaGVhbHRoX3JlZmVyZW5jZSA9ICIyYThiNDg3Zi0zNDMzLTRlYmUtYTllMi1hMTZhYzViMTU2ZGEiCgpbcHJvdmlkZXJzLmxpbmVhci5zdGF0dXNlc10KaW5fcHJvZ3Jlc3MgPSAiNjA3NmRjODgtZGQyZi00ZTJlLTg1YWEtYWVkMWE2ZDM2YmNmIgpjbG9zZWQgPSAiM2UzNGYwOWUtZTI1OC00MDQ0LWIwMzQtOGQ1ZGQ0ZTYzZmI0IgoKW2dhdGVzXQpmaW5pc2ggPSBbInNwZWNpZmljYXRpb24tY3VycmVudCIsICJwci1tZXJnZWQiLCAiY2ktZ3JlZW4iXQoKW1tzZXR1cC5zdGVwc11dCmlkID0gInB5dGhvbi1kZXBlbmRlbmNpZXMiCmNvbW1hbmQgPSAidXYgc3luYyAtLWxvY2tlZCIKdmVyaWZ5ID0gInV2IHN5bmMgLS1sb2NrZWQgLS1jaGVjayIKCltbc2V0dXAuc3RlcHNdXQppZCA9ICJ0eXBlLWNoZWNrZXItcnVudGltZSIKY29tbWFuZCA9ICJ1diBydW4gLS1sb2NrZWQgLS1uby1zeW5jIHB5cmlnaHQgLS12ZXJzaW9uIgp2ZXJpZnkgPSAidXYgcnVuIC0tbG9ja2VkIC0tbm8tc3luYyBweXJpZ2h0IC0tdmVyc2lvbiIKCltjaGVja3NdCnJlcXVpcmVkID0gWyJnZW5lcmF0ZWQiLCAiZm9ybWF0IiwgImxpbnQiLCAidHlwZXMiLCAidGVzdCJdCgpbY2hlY2tzLmNvbW1hbmRzXQpnZW5lcmF0ZWQgPSAiYWktZGxjIGFnZW50cyByZW5kZXIgLS1jaGVjayAmJiB1diBydW4gLS1sb2NrZWQgLS1uby1zeW5jIHB5dGhvbiBzY3JpcHRzL2NoZWNrX2dlbmVyYXRlZC5weSIKZm9ybWF0ID0gInV2IHJ1biAtLWxvY2tlZCAtLW5vLXN5bmMgcnVmZiBmb3JtYXQgLS1jaGVjayBzcmMgdGVzdHMgc2NyaXB0cyIKbGludCA9ICJ1diBydW4gLS1sb2NrZWQgLS1uby1zeW5jIHJ1ZmYgY2hlY2sgc3JjIHRlc3RzIHNjcmlwdHMiCnR5cGVzID0gInV2IHJ1biAtLWxvY2tlZCAtLW5vLXN5bmMgcHlyaWdodCAtLXB5dGhvbnBhdGggLnZlbnYvYmluL3B5dGhvbiIKdGVzdCA9ICJ1diBydW4gLS1sb2NrZWQgLS1uby1zeW5jIHB5dGVzdCAtcSIKClthZ2VudHNdCnNlcnZlcnMgPSBbXQoKW3Byb3ZpZGVycy5naXRodWItaXNzdWVzXQpob3N0ID0gImdpdGh1Yi5jb20iCmtpbmQgPSAiZ2l0aHViLWlzc3VlcyIKCnJlcG9zaXRvcnkgPSAiU2Vhbi1Lb3ZhbC9haS1kbGMiCnZpZXdlcl9pZCA9ICJNRFE2VlhObGNqUTRNRGN4T0RjdyIKW3Byb3ZpZGVycy5naXRodWItaXNzdWVzLnByb2plY3RdCmlkID0gIlBWVF9rd0hPQXQyRXZzNEJpd1hJIgpzdGF0dXNfZmllbGRfaWQgPSAiUFZUU1NGX2xBSE9BdDJFdnM0Qml3WEl6aGhuTGI4IgoKW3Byb3ZpZGVycy5naXRodWItaXNzdWVzLnByb2plY3Quc3RhdHVzZXNdCmNsb3NlZCA9ICI5ODIzNjY1NyIKaW5fcHJvZ3Jlc3MgPSAiNDdmYzllZTQiCm9wZW4gPSAiZjc1YWQ4NDYiCg=="
+    }
+  },
+  "schema": 1,
+  "status": "prepared"
+}

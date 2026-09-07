@@ -52,34 +52,53 @@ the other nine are Todo. Proposed/deferred distinctions remain in issue bodies
 and the inventory above; all issues remain open. The mapping records the actual
 Project identity and discovered field/option IDs.
 
-Repository association is a separate operation from issue membership. Linking
-this Project into the repository's Projects tab remains pending the GitHub CLI
-Project permission upgrade. Do not claim that association from the 13 attached
-items alone.
+Repository association is verified independently of issue membership: after the
+AI-DLC setup apply, `repository.projectsV2` returned this exact Project ID under
+`Sean-Koval/ai-dlc`, with no remaining result page.
 
-## Access and remaining local setup
+## Activated GitHub setup and local work
 
-The connected GitHub app's issue-create request returned HTTP 403; existing
-GitHub CLI authentication created and verified the issues instead. The official
-GitHub MCP server v1.12.0 completed browser OAuth and performed the live Project
-operations above. Its binary archive checksum was verified. The machine-local
-server enables only account and Projects tools; credentials are not tracked.
+The GitHub CLI permission refresh completed as Sean-Koval. AI-DLC's default
+connection inferred the repository, selected the existing AI-DLC Project, linked
+it to the repository, and saved its actual account/Project/field/option identities.
+The official MCP connection remains available separately; no credentials are tracked.
 
-AI-DLC's lifecycle adapter currently uses GitHub CLI authentication separately
-from harness MCP authentication. The CLI credential lacked Project permission;
-a local permission refresh is awaiting the maintainer's browser authorization.
-Browser automation is unavailable, and the authorization page must be completed
-directly by the maintainer. No token should be copied into chat or configuration.
+The reviewed default-only plan changed only `roles.tracker` to `github-issues`.
+The subsequent selected plan freshly verified and mapped eight work records to
+issues #11–#18. This explicitly enrolled the previously tracker-unbound GitHub
+workflow record into #18. Non-tracker values and effective identities were
+preserved; the v4 record's previously implicit fingerprints were materialized.
+All unselected work files remained byte-identical. Generated project guidance
+now selects GitHub Issues.
 
-After that authorization, run the new default connection preview and inspect
-its exact existing Project selection, then apply it to verify/link the repository
-and configure the alias. The local target mapping is
-`.ai-dlc/local/github-backlog-mappings.toml`; it is not an applied migration.
-Existing tracker aliases, default role and retained work records remain unchanged.
-Do not hand-edit bindings to bypass verification. Coordinate any SAN-12 binding
-change with its separate checkout rather than overwriting its in-progress work.
-Linear reconciliation is explicitly deferred and is not a prerequisite to
-organizing or implementing the GitHub backlog.
+Durable migration evidence:
+- [Default switch](../../.ai-dlc/migrations/3c6091dde4bf4c92929acec3f64b7340.json).
+- [Eight selected mappings](../../.ai-dlc/migrations/183724c897f44ca5b445ccf2a9893273.json).
+
+These changes are on `codex/github-ticket-workflows`, pending integration through
+PR #23. The separate active SAN-12 checkout and its retained mapping remain
+unchanged; its GitHub successor #10 is already on the board. Parent planning
+issues #19–#22 do not yet have local execution bindings. Historical Linear aliases
+and references are retained; no Linear calls or remote changes were needed.
+
+## Live workflow qualification
+
+[Disposable issue #24](https://github.com/Sean-Koval/ai-dlc/issues/24) exercised the
+production adapter and work service with the actual repository and Project.
+Publish retained its issue reference after a real uncertain attachment response;
+retry recovered membership without creating another issue. A deliberately lost
+reply after a successful live start exercised journal recovery. Retried start
+verified In Progress while the native issue remained open. The real unmerged PR
+blocked work finish and left the issue open.
+
+Direct adapter checks on this test issue then verified close, reopen, close and
+closed-state reconciliation. Those are adapter conformance checks, not a gated
+work-finish success. Cleanup closed the test issue and removed only its Project
+item; all 13 backlog issues remain open on the board. The captured local evidence
+is `.ai-dlc/local/github-live-qualification.json`. The initial attachment mismatch
+was transient; its exact remote cause is unproven. Recovery was observed live,
+not inferred from mocked responses. New-Project creation through AI-DLC remains
+fixture-qualified; creation of the real board used official MCP.
 
 ## Framework follow-through
 
@@ -96,10 +115,11 @@ under [#22](https://github.com/Sean-Koval/ai-dlc/issues/22), preserving private
 Obsidian notes and selective shared publication. Parent issues describe remaining
 scope so the implemented GitHub child is not duplicated.
 
-This operation establishes live issue creation/read evidence through GitHub CLI
-and Project creation, membership, status and view updates through official MCP.
-It does not qualify AI-DLC adapter transitions, recovery, migration application,
-completion gates, merged CI or release platforms. No Linear closure/deletion,
-Jira mutation, document publication, spec archive, merge or finish occurred.
-Implementation is now published in [draft PR #23](https://github.com/Sean-Koval/ai-dlc/pull/23);
-its CI and remaining live adoption gates are pending.
+Live evidence now includes issue/MCP Project operations, AI-DLC existing-Project
+setup, workflow/adapter mutation and recovery, and verified local migration.
+It does not establish a successful gated work finish or merged-revision CI.
+[Draft PR #23](https://github.com/Sean-Koval/ai-dlc/pull/23) carries the implementation
+and activation changes. The earlier candidate passed all five platform jobs;
+activation-revision checks are recorded in the verification record. No Linear
+closure/deletion, Jira mutation, document publication, spec archive, merge or
+work finish completion occurred.

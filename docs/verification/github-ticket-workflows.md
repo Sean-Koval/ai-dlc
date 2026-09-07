@@ -3,6 +3,30 @@
 Implementation branch: `codex/github-ticket-workflows`, based on planning commit
 `0775b90`. Live and fixture evidence are recorded separately.
 
+## Live activation after CLI authorization
+
+AI-DLC's saved default setup reused Project #2 and verified its repository link.
+The default-only and eight selected-work migrations applied with durable before/
+after receipts; their outcomes are `applied` with no uncertain paths. Read-back
+of `github-ticket-workflows` resolves issue #18, native open, Project In Progress.
+Non-tracker effective identities and all unselected work bytes were preserved.
+
+The live disposable issue #24 exercised the production executable adapter, work
+service, actual API responses and local journal. A real uncertain attachment was
+reconciled using the retained issue reference. A test wrapper dropped one response
+only after the actual live start succeeded; retry reconciled the same item.
+The real unmerged PR blocked finish without a terminal mutation. Separate direct
+adapter close/reopen/close/reconcile checks passed on the disposable issue, which
+was closed and removed from the board afterward. This is not evidence of a gated
+finish, infrastructure crash recovery, or the default-create path against GitHub.
+The initial transient attachment mismatch's remote cause remains unproven.
+Detailed scope and receipts are in the [adoption record](../planning/github-backlog-migration.md).
+
+PR candidate `270e957` passed all five platform jobs in run `34159101762`.
+This is PR candidate CI, not target-branch merged-revision evidence. Configuration,
+work mappings and rendered guidance changed during activation; the earlier local
+1,137-test pass does not qualify those subsequent project-file changes.
+
 ## September 7 Project-default follow-through
 
 [Draft PR #23](https://github.com/Sean-Koval/ai-dlc/pull/23) publishes the candidate.

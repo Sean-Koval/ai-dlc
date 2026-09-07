@@ -17,7 +17,7 @@
       "All work",
       "Delivery board"
     ],
-    "repository_link": "Pending CLI Project authorization and explicit link verification",
+    "repository_link": "Verified through repository.projectsV2 after AI-DLC default setup apply",
     "status_field_id": "PVTSSF_lAHOAt2Evs4BiwXIzhhnLb8",
     "status_options": {
       "Todo": "f75ad846",
@@ -25,7 +25,7 @@
       "Done": "98236657"
     }
   },
-  "local_tracker_bindings": "Unchanged; exact target alias/Project setup and verified migration apply remain pending",
+  "local_tracker_bindings": "GitHub default active on codex/github-ticket-workflows; eight reviewed records mapped to issues 11\u201318. SAN-12 separate checkout remains unchanged.",
   "excluded_integrated": [
     "component-capability-contract",
     "connected-project-readiness",
@@ -56,7 +56,8 @@
         "component-capability-contract",
         "connected-project-readiness"
       ],
-      "verified": "issue title/body/identity/open state read after creation"
+      "verified": "issue title/body/identity/open state read after creation",
+      "local_binding": "deferred: separate SAN-12 checkout"
     },
     {
       "work": "product-shaping-workflow",
@@ -77,7 +78,8 @@
       "spec": "openspec/changes/product-shaping-workflow",
       "plan": "docs/superpowers/plans/2026-09-05-product-shaping-workflow.md",
       "depends_on": [],
-      "verified": "issue title/body/identity/open state read after creation"
+      "verified": "issue title/body/identity/open state read after creation",
+      "local_binding": "applied"
     },
     {
       "work": "spec-delivery-traceability",
@@ -100,7 +102,8 @@
       "depends_on": [
         "product-shaping-workflow"
       ],
-      "verified": "issue title/body/identity/open state read after creation"
+      "verified": "issue title/body/identity/open state read after creation",
+      "local_binding": "applied"
     },
     {
       "work": "design-pm-workflow",
@@ -124,7 +127,8 @@
         "product-shaping-workflow",
         "spec-delivery-traceability"
       ],
-      "verified": "issue title/body/identity/open state read after creation"
+      "verified": "issue title/body/identity/open state read after creation",
+      "local_binding": "applied"
     },
     {
       "work": "framework-qualification",
@@ -150,7 +154,8 @@
         "portable-workflow-bundles",
         "spec-delivery-traceability"
       ],
-      "verified": "issue title/body/identity/open state read after creation"
+      "verified": "issue title/body/identity/open state read after creation",
+      "local_binding": "applied"
     },
     {
       "work": "workflow-quality-calibration",
@@ -174,7 +179,8 @@
         "product-shaping-workflow",
         "spec-delivery-traceability"
       ],
-      "verified": "issue title/body/identity/open state read after creation"
+      "verified": "issue title/body/identity/open state read after creation",
+      "local_binding": "applied"
     },
     {
       "work": "design-pm-calibration",
@@ -197,7 +203,8 @@
       "depends_on": [
         "design-pm-workflow"
       ],
-      "verified": "issue title/body/identity/open state read after creation"
+      "verified": "issue title/body/identity/open state read after creation",
+      "local_binding": "applied"
     },
     {
       "work": "portable-development-v4",
@@ -214,7 +221,8 @@
       "spec": "openspec/changes/portable-development-v4",
       "plan": null,
       "depends_on": [],
-      "verified": "issue title/body/identity/open state read after creation"
+      "verified": "issue title/body/identity/open state read after creation",
+      "local_binding": "applied"
     },
     {
       "work": "github-ticket-workflows",
@@ -231,7 +239,8 @@
       "spec": "openspec/changes/github-ticket-workflows",
       "plan": "docs/superpowers/plans/2026-09-07-github-ticket-workflows.md",
       "depends_on": [],
-      "verified": "issue title/body/identity/open state read after creation"
+      "verified": "issue title/body/identity/open state read after creation",
+      "local_binding": "applied"
     },
     {
       "work": "provider-toolset-onboarding",
@@ -248,7 +257,8 @@
       "spec": "openspec/changes/provider-toolset-onboarding",
       "plan": "docs/superpowers/plans/2026-09-06-provider-toolset-onboarding.md",
       "depends_on": [],
-      "verified": "issue title/body/identity/open state read after creation"
+      "verified": "issue title/body/identity/open state read after creation",
+      "local_binding": "parent planning issue; no local work binding applied"
     },
     {
       "work": "portable-tracker-adapters",
@@ -265,7 +275,8 @@
       "spec": "openspec/changes/portable-tracker-adapters",
       "plan": "docs/superpowers/plans/2026-09-06-portable-tracker-adapters.md",
       "depends_on": [],
-      "verified": "issue title/body/identity/open state read after creation"
+      "verified": "issue title/body/identity/open state read after creation",
+      "local_binding": "parent planning issue; no local work binding applied"
     },
     {
       "work": "selective-tracker-migration",
@@ -282,7 +293,8 @@
       "spec": "openspec/changes/selective-tracker-migration",
       "plan": "docs/superpowers/plans/2026-09-06-selective-tracker-migration.md",
       "depends_on": [],
-      "verified": "issue title/body/identity/open state read after creation"
+      "verified": "issue title/body/identity/open state read after creation",
+      "local_binding": "parent planning issue; no local work binding applied"
     },
     {
       "work": "team-document-publication",
@@ -299,7 +311,12 @@
       "spec": "openspec/changes/team-document-publication",
       "plan": "docs/superpowers/plans/2026-09-06-team-document-publication.md",
       "depends_on": [],
-      "verified": "issue title/body/identity/open state read after creation"
+      "verified": "issue title/body/identity/open state read after creation",
+      "local_binding": "parent planning issue; no local work binding applied"
     }
-  ]
+  ],
+  "applied_migrations": {
+    "default": "3c6091dde4bf4c92929acec3f64b7340",
+    "selected": "183724c897f44ca5b445ccf2a9893273"
+  }
 }
