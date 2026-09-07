@@ -35,6 +35,8 @@
           "operation": {
             "enum": [
               "capabilities",
+              "prepare",
+              "reconcile_closed",
               "create",
               "find",
               "read",
@@ -110,6 +112,8 @@
           "operation": {
             "enum": [
               "capabilities",
+              "prepare",
+              "reconcile_closed",
               "create",
               "find",
               "read",
@@ -227,6 +231,8 @@
           "operation": {
             "enum": [
               "capabilities",
+              "prepare",
+              "reconcile_closed",
               "create",
               "find",
               "read",
@@ -345,6 +351,8 @@
           "operation": {
             "enum": [
               "capabilities",
+              "prepare",
+              "reconcile_closed",
               "create",
               "find",
               "read",
@@ -453,6 +461,8 @@
           "operation": {
             "enum": [
               "capabilities",
+              "prepare",
+              "reconcile_closed",
               "create",
               "find",
               "read",
@@ -553,6 +563,8 @@
           "operation": {
             "enum": [
               "capabilities",
+              "prepare",
+              "reconcile_closed",
               "create",
               "find",
               "read",
@@ -654,6 +666,8 @@
           "operation": {
             "enum": [
               "capabilities",
+              "prepare",
+              "reconcile_closed",
               "create",
               "find",
               "read",
@@ -780,6 +794,8 @@
           "operation": {
             "enum": [
               "capabilities",
+              "prepare",
+              "reconcile_closed",
               "create",
               "find",
               "read",
@@ -876,6 +892,8 @@
           "operation": {
             "enum": [
               "capabilities",
+              "prepare",
+              "reconcile_closed",
               "create",
               "find",
               "read",
@@ -943,6 +961,110 @@
         "type": "object"
       }
     },
+    "prepare": {
+      "payload": {
+        "additionalProperties": false,
+        "properties": {
+          "operation_id": {
+            "minLength": 1,
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "reference": {
+            "minLength": 1,
+            "title": "Reference",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reference",
+          "operation_id"
+        ],
+        "title": "Prepare",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "capabilities",
+              "prepare",
+              "reconcile_closed",
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "state": {
+            "minLength": 1,
+            "title": "State",
+            "type": "string"
+          },
+          "url": {
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "state"
+        ],
+        "title": "Item",
+        "type": "object"
+      }
+    },
     "read": {
       "payload": {
         "additionalProperties": false,
@@ -965,6 +1087,8 @@
           "operation": {
             "enum": [
               "capabilities",
+              "prepare",
+              "reconcile_closed",
               "create",
               "find",
               "read",
@@ -1039,6 +1163,110 @@
         "type": "object"
       }
     },
+    "reconcile_closed": {
+      "payload": {
+        "additionalProperties": false,
+        "properties": {
+          "operation_id": {
+            "minLength": 1,
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "reference": {
+            "minLength": 1,
+            "title": "Reference",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reference",
+          "operation_id"
+        ],
+        "title": "Prepare",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "capabilities",
+              "prepare",
+              "reconcile_closed",
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "state": {
+            "minLength": 1,
+            "title": "State",
+            "type": "string"
+          },
+          "url": {
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "state"
+        ],
+        "title": "Item",
+        "type": "object"
+      }
+    },
     "transition": {
       "payload": {
         "additionalProperties": false,
@@ -1073,6 +1301,8 @@
           "operation": {
             "enum": [
               "capabilities",
+              "prepare",
+              "reconcile_closed",
               "create",
               "find",
               "read",
@@ -1183,7 +1413,9 @@
       ],
       "optional": [
         "capabilities",
-        "link"
+        "link",
+        "prepare",
+        "reconcile_closed"
       ]
     }
   },

@@ -10,6 +10,8 @@ class Request(BaseModel):
     schema_version: Literal[1] = 1
     operation: Literal[
         "capabilities",
+        "prepare",
+        "reconcile_closed",
         "create",
         "find",
         "read",
@@ -42,6 +44,10 @@ class Find(Payload):
 
 class Read(Payload):
     reference: str = Field(min_length=1)
+
+
+class Prepare(Read):
+    operation_id: str = Field(min_length=1)
 
 
 class Link(Read):
@@ -80,6 +86,8 @@ class CapabilityResult(BaseModel):
 
 PAYLOADS = {
     "capabilities": Capabilities,
+    "prepare": Prepare,
+    "reconcile_closed": Prepare,
     "create": Create,
     "find": Find,
     "read": Read,
@@ -147,6 +155,8 @@ PAYLOADS.update(
 )
 RESPONSES = {
     "capabilities": CapabilityResult,
+    "prepare": Item,
+    "reconcile_closed": Item,
     "create": Item,
     "find": Found,
     "read": Item,
@@ -181,7 +191,7 @@ def manifest():
         "roles": {
             "tracker": {
                 "mandatory": ["create", "find", "read", "transition"],
-                "optional": ["capabilities", "link"],
+                "optional": ["capabilities", "link", "prepare", "reconcile_closed"],
             },
             "specs": {"mandatory": ["current"], "optional": []},
             "scm": {"mandatory": ["merged", "ci"], "optional": []},

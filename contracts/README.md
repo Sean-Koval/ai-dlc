@@ -2,8 +2,9 @@
 
 `manifest.json` and operation schemas are generated from `ai_dlc.contracts` Pydantic models.
 They describe tracker, specs, SCM, deploy, and knowledge role capabilities.
-Completion is intentionally absent: callers must use `WorkService.finish`.
-The public `Registry.invoke` also refuses terminal tracker transitions.
+Completion is a service operation: callers must use `WorkService.finish`.
+The public `Registry.invoke` refuses terminal tracker transitions and the optional
+terminal planning reconciliation operation `reconcile_closed`.
 
 Executable providers consume one JSON object on stdin and return one JSON object on
 stdout. The request envelope contains `schema_version: 1`, `operation`, `payload`, and
@@ -32,8 +33,27 @@ Bundled adapters use the installed ai-dlc 0.4.0 release identity. GitHub Issues 
 through the installed Python module (the `ai-dlc-github-issues` console entry is also
 provided) and wraps authenticated `gh`. Linear uses HTTPS GraphQL and a `token_env`
 reference. Its `statuses` map canonical `open`, `in_progress`, and `closed` to native
-state IDs. GitHub Issues has only `open` and `closed`; work start still creates/reuses its Git branch
-and reads the issue, returning an explicit unsupported in_progress capability.
+state IDs. GitHub Issues without Projects reports unsupported in_progress while
+work start creates/reuses its branch and reads the issue. With a configured Project,
+its explicitly mapped in-progress option represents planning while the issue stays open.
+
+Optional `prepare` and `reconcile_closed` accept `{reference, operation_id}` and
+return an Item. Providers declare them in capability `optional_operations`;
+service dispatch is provider independent. Publish journals prepare after saving the
+created or recovered issue reference, and retries reconcile even a previously
+successful preparation. Prepare may establish nonterminal planning membership; it
+must never perform terminal planning updates. `reconcile_closed` is accessible only
+through finish's internal path after fresh gates and a successful terminal read.
+It reconciles associated planning for an already completed item without reopening
+or reclosing it. Finish rereads/reconciles this opt-in outcome even when its journal
+previously succeeded. Failure raises visibly and leaves the reconciliation journal
+uncertain; no completed result is returned until the selected outcome is confirmed.
+Start also reconciles declared-capability transitions on retry rather than returning
+a cached successful Item; adapters must respect stable operation IDs and revalidate
+remote state. Undeclared legacy adapters retain their prior retry behavior.
+GitHub implements prepare as membership only, preserving concurrent status changes.
+Its close transition verifies board Done before native issue close and verifies
+both afterward. These are separate remote writes, with no atomicity guarantee.
 
 Create correlation is a stable repository/work hash stored in the remote issue body.
 The SQLite journal detects payload conflicts and tracks pending, uncertain, succeeded.

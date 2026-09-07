@@ -331,7 +331,7 @@ class Registry:
         terminal.update(
             str(v).lower() for k, v in cfg.get("statuses", {}).items() if k.lower() in terminal
         )
-        if operation == "complete":
+        if operation in {"complete", "reconcile_closed"}:
             raise ValueError("Terminal transitions require work.finish and its gates")
         request = validate_request(operation, payload)
         if (

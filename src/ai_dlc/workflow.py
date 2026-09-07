@@ -284,6 +284,10 @@ class WorkService:
         self.journal.succeed(operation_id, item)
         work["artifacts"]["tracker"] = item["id"]
         self.save(work)
+        if self.optional_tracker_operation(work, "prepare"):
+            item = self.mutate(
+                work, "prepare", "prepare", {"reference": item["id"]}, reconcile=True
+            )
         return {"status": "published", "work_id": work_id, "tracker": item}
 
     def link(self, work_id, artifact_kind, reference):
@@ -305,13 +309,22 @@ class WorkService:
             )
         return {"status": "linked", "work_id": work_id, "artifacts": work["artifacts"]}
 
-    def mutate(self, work, action, operation, payload):
+    def optional_tracker_operation(self, work, operation):
+        provider_id = work["providers"]["tracker"]
+        if not getattr(self.registry, "declares", lambda _id, _operation: False)(
+            provider_id, "capabilities"
+        ):
+            return False
+        capabilities = self.registry.invoke(provider_id, "capabilities", {})
+        return operation in capabilities["optional_operations"]
+
+    def mutate(self, work, action, operation, payload, *, reconcile=False):
         operation_id = self.op_id(work, action)
         payload = {**payload, "operation_id": operation_id}
         record = self.journal.begin(
             operation_id, {"provider": work["providers"]["tracker"], **payload}
         )
-        if record["status"] == "succeeded":
+        if record["status"] == "succeeded" and not reconcile:
             return record["result"]
         try:
             result = self.tracker(work).invoke(operation, payload)
@@ -376,6 +389,7 @@ class WorkService:
                 "start",
                 "transition",
                 {"reference": work["artifacts"]["tracker"], "state": "in_progress"},
+                reconcile=capabilities is not None,
             )
             transition = {"supported": True, "state": "in_progress"}
             if capabilities is None:
@@ -479,8 +493,18 @@ class WorkService:
         if remote["state"] == "closed":
             # A previous transition can have succeeded despite losing its response.
             # The freshly read canonical remote state reconciles that uncertainty.
-            self.journal.succeed(completion_id, remote)
             item = remote
+            if self.optional_tracker_operation(work, "reconcile_closed"):
+                item = self.mutate(
+                    work,
+                    "reconcile_closed",
+                    "reconcile_closed",
+                    {"reference": reference},
+                    reconcile=True,
+                )
+                if item["state"] != "closed":
+                    raise RuntimeError("Terminal reconciliation did not confirm completed tracker")
+            self.journal.succeed(completion_id, item)
         else:
             item = self.mutate(
                 work, "finish", "transition", {"reference": reference, "state": "closed"}

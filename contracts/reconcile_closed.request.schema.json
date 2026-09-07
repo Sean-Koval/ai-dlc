@@ -1,0 +1,21 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "operation_id": {
+      "minLength": 1,
+      "title": "Operation Id",
+      "type": "string"
+    },
+    "reference": {
+      "minLength": 1,
+      "title": "Reference",
+      "type": "string"
+    }
+  },
+  "required": [
+    "reference",
+    "operation_id"
+  ],
+  "title": "Prepare",
+  "type": "object"
+}
