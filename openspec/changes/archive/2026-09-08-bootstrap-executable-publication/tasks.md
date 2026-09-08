@@ -11,3 +11,10 @@
 
 Integration, archive, merged CI and gated work finish remain coordinator-owned
 steps tracked separately from this implementation checklist.
+
+## Delivery boundary
+
+The checked tasks establish implementation/specification acceptance. Final combined
+checks, PR, exact merged-revision CI and eligible parent work finish remain pending
+in docs/verification/work-computer-toolsets.md. They are completion gates, not
+claims made by archiving this implementation specification.

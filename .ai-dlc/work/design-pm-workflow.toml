@@ -5,7 +5,7 @@ scope = "Milestone M2 optional UI/UX workflow consuming product-shaping-workflow
 requires_spec = true
 spec_reason = "Introduces observable design workflow, evidence, iteration, and managed-asset contracts."
 acceptance = [
-    "Deliver brief, rubric, evaluation, and candidate-selection templates; rationale is docs/design/design-pm.md and formal requirements are openspec/changes/design-pm-workflow.",
+    "Deliver brief, rubric, evaluation, and candidate-selection templates; rationale is docs/design/design-pm.md and formal requirements are openspec/changes/archive/2026-09-08-design-pm-workflow.",
     "Translate vague design goals into criterion IDs, score anchors, observable checks, required evidence, and a declared budget before generation.",
     "Provide separate generation/evaluation guidance with fresh-session or human fallback; label self-review and unverified interaction checks honestly.",
     "Keep required failures separate from subjective ratings; preserve candidate revisions, rubric versions, findings, and selection through bounded iteration.",
@@ -24,7 +24,7 @@ deploy = "none"
 
 [artifacts]
 plan = "docs/superpowers/plans/2026-09-05-design-pm-workflow.md"
-spec = "openspec/changes/design-pm-workflow"
+spec = "openspec/changes/archive/2026-09-08-design-pm-workflow"
 design = "docs/design/design-pm.md"
 roadmap = "docs/roadmap.md"
 tracker = "https://github.com/Sean-Koval/ai-dlc/issues/13"

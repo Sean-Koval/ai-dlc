@@ -1,8 +1,8 @@
 ## Context
 
-The [product brief](../../../docs/design/design-pm.md) defines the opportunity and
+The [product brief](../../../../docs/design/design-pm.md) defines the opportunity and
 example rubric. This is an optional M2 workflow, after product shaping and delivery
-traceability, within the [framework direction](../../../docs/product-direction.md). AI-DLC already
+traceability, within the [framework direction](../../../../docs/product-direction.md). AI-DLC already
 distributes skills/templates and preserves generated ownership. Its existing
 skill evaluation protocol is pending and evaluates different behaviors.
 
@@ -52,7 +52,7 @@ project-authored briefs and evidence.
 
 Implement design-brief and design-evaluate using Markdown artifacts and the
 selected existing generation tools. Consume the shaped product brief and delivery
-slice; preserve their requirement IDs. The [execution plan](../../../docs/superpowers/plans/2026-09-05-design-pm-workflow.md)
+slice; preserve their requirement IDs. The [execution plan](../../../../docs/superpowers/plans/2026-09-05-design-pm-workflow.md)
 defines exact files, responsibilities, sample defaults, and verification. Human
 calibration remains separate work; project-specific references and budgets are
 inputs to each evaluation rather than global framework requirements.

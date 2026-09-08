@@ -30,4 +30,4 @@ state has no established causal diagnosis; separate host evidence is required.
 Drive the real script with an isolated pinned fake archive and held old descriptors.
 Coordinate overlapping fake downloads through explicit process barriers, not a
 stress timing assumption. Inject pre-publication failures and replaced stages.
-See the [plan](../../../docs/superpowers/plans/2026-09-07-bootstrap-executable-publication.md).
+See the [plan](../../../../docs/superpowers/plans/2026-09-07-bootstrap-executable-publication.md).

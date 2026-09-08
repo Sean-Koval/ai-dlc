@@ -35,14 +35,19 @@ Clean candidate `29b67b3` passed all required checks with 1,138 tests. Candidate
 recovery and local migration have separate evidence. PR #23 is now merged at `631d10a`; all five exact merged-revision receipts
 passed, and AI-DLC work finish completed #18 (native completed and Project Done).
 
-The current onboarding candidate includes native Claude Code, Codex and
-Antigravity project adapters, reviewed shared connection plans, portable bundles
-and product shaping. Clean integrated revision `275e0b3` passed all five required
-checks with 1,408 tests. PR/merged-revision delivery remains separate from these
-local checks. Native client recognition, authentication and version-specific live
-qualification are not established by file rendering. The work computer's OS/architecture and
-installed Claude/Antigravity versions must be recorded before claiming that
-machine is qualified. Existing Markdown skills alone do not prove client support.
+PR [#25](https://github.com/Sean-Koval/ai-dlc/pull/25) delivered portable bundles,
+product shaping, native Claude Code/Codex/Antigravity project adapters and the
+shared provider connection service at merged `ab6b774`. All five platform receipts
+passed for that revision. Fresh-clone source bootstrap and gated finish completed
+#10 and #11; both native issue state and Project status confirm completion.
+
+The second integration contains reviewed traceability, toolset selection, native
+connection composition, Jira new-work onboarding and setup reliability. Its final
+combined verification and delivery are pending. Individual passing candidate
+checks do not replace integrated verification. Native client recognition,
+authentication and version-specific live qualification remain separate from file
+rendering. Record the work computer's OS/architecture and installed Claude and
+Antigravity versions before qualifying that machine.
 
 ## Current delivery sequence
 
@@ -52,9 +57,9 @@ dependency order, with TDD, independent review and the required checks.
 | Issue | Deliverable | Dependencies / completion boundary |
 |---|---|---|
 | [#18](https://github.com/Sean-Koval/ai-dlc/issues/18) | GitHub workflow foundation and PR #23 | Completed through AI-DLC finish at merged631d10a with all five receipts |
-| [#10](https://github.com/Sean-Koval/ai-dlc/issues/10) | Preserve authored files during workflow-bundle cleanup | Non-deleting retention and importer recovery repairs independently accepted; integrated candidate passes checks, archive/PR/merged-CI/finish pending |
-| [#11](https://github.com/Sean-Koval/ai-dlc/issues/11) | Greenfield/brownfield product shaping | Reviewed PS-01–03 skills/templates/examples integrated and specification archived; PR/merged-CI/finish pending |
-| [#19](https://github.com/Sean-Koval/ai-dlc/issues/19) | Reusable onboarding and native Claude/Antigravity setup | Common connection and native-client children reviewed/integrated; selected toolset and exact native connection composition remain active |
+| [#10](https://github.com/Sean-Koval/ai-dlc/issues/10) | Preserve authored files during workflow-bundle cleanup | Completed through AI-DLC finish at merged ab6b774 with five receipts; issue Completed and Project Done |
+| [#11](https://github.com/Sean-Koval/ai-dlc/issues/11) | Greenfield/brownfield product shaping | Completed through AI-DLC finish at merged ab6b774 with five receipts; issue Completed and Project Done |
+| [#19](https://github.com/Sean-Koval/ai-dlc/issues/19) | Reusable onboarding and native Claude/Antigravity setup | Common connection/native clients delivered in PR25; reviewed toolset/native composition and credential readiness integrated, final delivery pending |
 | [#12](https://github.com/Sean-Koval/ai-dlc/issues/12) | Requirements-to-spec-to-ticket traceability and dependency guards | #11's reviewed artifacts; preserve authored issue content and provider-neutral workflows |
 | [#20](https://github.com/Sean-Koval/ai-dlc/issues/20) | Jira Cloud new-work adapter/setup; optional Plane | Common connection contract from #19; actual required fields/transitions; no Jira migration |
 | [#14](https://github.com/Sean-Koval/ai-dlc/issues/14) | Portable setup, substitution and fresh-session handoff qualification | #10/#12 and applicable onboarding; distinguish ordinary clone, clean-machine, container and actual client evidence |

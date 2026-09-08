@@ -16,7 +16,7 @@ in [release verification](../release-verification.md).
 ## Prepare a work repository
 
 From the target repository, preview
-`ai-dlc project adopt --root . --preset python --tracker github-issues --knowledge obsidian --agent-client claude-code --agent-client antigravity`
+`ai-dlc project adopt --root . --preset python --tracker jira-cloud --knowledge obsidian --agent-client claude-code --agent-client antigravity`
 (or the applicable language preset and explicitly selected tracker). Inspect proposed files and resolve authored
 conflicts, then repeat with `--apply`. Existing configured repositories use their
 reviewed configuration and `project sync` workflow instead of adoption.
@@ -26,11 +26,12 @@ Omitting tracker selection preserves the legacy scaffold default. Choose
 proposes a repository-associated Project. Run `ai-dlc provider connect github-issues`
 to preview it; `--issues-only` is an option of that connection command. Follow the
 [GitHub saved-plan setup instructions](../github-ticket-setup.md) for exact
-preview, saved-plan apply, permissions and recovery steps. Jira
-Cloud onboarding and lifecycle support are a separate #20 deliverable. Until its
-adapter is integrated and configured, native Jira access does not make AI-DLC
-publish/start/finish usable with Jira. Do not publish work to the scaffold default
-merely because it appears in an initial preview.
+preview, saved-plan apply, permissions and recovery steps. For work, follow the
+[Jira Cloud setup](../runbooks/jira-cloud-setup.md) to select the actual site,
+account, project, issue type and workflow through reviewed discovery. The adapter
+supports new work through the shared lifecycle; actual company permissions and
+workflow compatibility still need verification on the work computer. Do not
+publish work to an incomplete scaffold merely because its tracker appears in a preview.
 
 The repeated `--agent-client` options persist this shared selection during
 `project adopt` or `project init`. Existing configured repositories can review the
@@ -41,8 +42,13 @@ equivalent `ai-dlc.toml` selection:
 agent-client = ["claude-code", "antigravity"]
 ```
 
-Keep the rest of its selected roles and repository-specific settings. To expose
-AI-DLC's local MCP service, add this definition if it is not already configured:
+Keep the rest of its selected roles and repository-specific settings. For reviewed
+role/account connections, follow [native connection setup](../design/native-tool-composition.md):
+preview explicit bindings, save and apply the exact configuration plan, then
+render the native files separately. Identical shared connections deduplicate;
+conflicting account or transport identities refuse. The existing manual format
+also remains supported. To expose AI-DLC's local MCP service manually, add this
+definition if it is not already configured:
 
 ```toml
 [[agents.servers]]
@@ -108,9 +114,9 @@ separate and deferred; this setup does not copy the vault or team spaces.
 ## Toolset choices and local notes
 
 Scaffold provider choices come from trusted definitions, independently of the
-language preset. Jira becomes selectable when its reviewed definition/adapter is
-included; scaffolding alone supplies no account identity or credentials. Use its
-explicit connection setup for the intended work site and project. Plane is an
+language preset. Jira Cloud is selectable in this integrated candidate;
+scaffolding alone supplies no account identity or credentials. Use its explicit
+connection setup for the intended work site and project. Plane is an
 optional selection with an explicitly unavailable AI-DLC lifecycle adapter;
 native guidance does not enable tracked-work operations. It is not a prerequisite
 for GitHub or Jira projects. Selective Confluence work remains deferred.

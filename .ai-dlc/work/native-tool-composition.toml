@@ -1,0 +1,19 @@
+schema = 1
+id = "native-tool-composition"
+title = "Reviewed native role connection composition"
+scope = "Implement NT-01 through NT-03 under issue19; native authentication remains independently unverified."
+requires_spec = true
+spec_reason = "Observable behavior is defined by the linked reviewed OpenSpec change."
+acceptance = [
+    "Meet the linked requirements, preserve authored configuration and provider identity, and pass independent review and required completion gates.",
+]
+reviewed = true
+
+[providers]
+specs = "openspec"
+scm = "github"
+
+[artifacts]
+spec = "openspec/changes/archive/2026-09-08-native-tool-composition"
+branch = "codex/work-computer-toolsets"
+parent_issue = "https://github.com/Sean-Koval/ai-dlc/issues/19"

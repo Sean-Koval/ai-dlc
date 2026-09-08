@@ -38,8 +38,12 @@ email_env = "JIRA_WORK_EMAIL"
 Native Claude/Antigravity Atlassian MCP login does not supply these credentials.
 OAuth issuance/renewal stays in the approved external tooling. The initial TOML
 is intentionally incomplete until reviewed discovery selects the remaining IDs.
-Choosing the default tracker is a separate explicit configuration choice; connect
-does not change roles or existing work bindings.
+For a newly adopted repository with no bound work, select this alias in the
+existing `[roles]` table with `tracker = "work"`; keep the other role choices.
+If you instead retain the scaffold's `jira-cloud` alias, use
+`[providers.jira-cloud]` and `provider connect jira-cloud` throughout these steps.
+Connect does not change roles or existing work bindings. Existing bound work
+requires a separate reviewed provider-switch plan; this guide performs no migration.
 
 ## 2. Discover and review the real metadata
 

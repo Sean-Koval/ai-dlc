@@ -1,0 +1,20 @@
+schema = 1
+id = "provider-toolset-onboarding"
+title = "Reusable provider onboarding and native MCP setup"
+scope = "Complete the retained PT-01 through PT-04 scope for GitHub issue19 using the reviewed common connection, toolset and native client/composition children."
+requires_spec = true
+spec_reason = "Observable behavior is defined by the linked reviewed OpenSpec change."
+acceptance = [
+    "Meet the linked requirements, preserve authored configuration and provider identity, and pass independent review and required completion gates.",
+]
+reviewed = true
+
+[providers]
+specs = "openspec"
+scm = "github"
+tracker = "github-issues"
+
+[artifacts]
+spec = "openspec/changes/provider-toolset-onboarding"
+branch = "codex/work-computer-toolsets"
+tracker = "https://github.com/Sean-Koval/ai-dlc/issues/19"

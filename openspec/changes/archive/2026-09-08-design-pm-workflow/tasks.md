@@ -2,7 +2,7 @@
 
 Current steering: product-shaping and traceability interfaces are accepted locally
 at `4058b24`; the coordinator approved isolated parallel implementation. Remote
-finish stays pending and no runtime dependency/completion checks are bypassed. Follow the [execution plan](../../../docs/superpowers/plans/2026-09-05-design-pm-workflow.md)
+finish stays pending and no runtime dependency/completion checks are bypassed. Follow the [execution plan](../../../../docs/superpowers/plans/2026-09-05-design-pm-workflow.md)
 for file ownership, examples, checks and handoff. Its Task 1 covers sections 1
 and 4.1; Task 2 covers section 2; Task 3 covers sections 3 and 4.2–4.4 below.
 These are implementation checkboxes, not evidence that planning completed them.
@@ -27,6 +27,13 @@ These are implementation checkboxes, not evidence that planning completed them.
 ## 4. Calibration protocol and validation
 
 - [x] 4.1 Supply an original example case set and a protocol for human calibration and held-out comparisons.
-- [ ] 4.2 Verify failure/unverified/score handling through meaningful workflow scenarios; distinguish fixtures from live results.
-- [ ] 4.3 Run required project checks, validate OpenSpec, and complete source review. Local required checks (1,218 tests) and strict validation (15 items) passed; independent source review remains pending.
-- [ ] 4.4 Archive the implemented specification, link PR/CI evidence, and complete through the configured finish boundary.
+- [x] 4.2 Verify failure/unverified/score handling through meaningful workflow scenarios; distinguish fixtures from live results.
+- [x] 4.3 Run required project checks, validate OpenSpec, and complete source review. Local required checks (1,218 tests) and strict validation (15 items) passed; independent source and bounded synthetic development review are recorded in docs/verification/design-pm/review.md. Final integrated delivery checks remain separate.
+- [x] 4.4 Finalize the reviewed implementation specification and retained evidence for archive.
+
+## Delivery boundary
+
+The checked tasks establish implementation/specification acceptance. Final combined
+checks, PR, exact merged-revision CI and eligible parent work finish remain pending
+in docs/verification/work-computer-toolsets.md. They are completion gates, not
+claims made by archiving this implementation specification.

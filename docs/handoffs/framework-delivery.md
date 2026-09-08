@@ -1,12 +1,22 @@
 # Framework delivery: executor handoff
 
-Current completion: GitHub #18 finished through AI-DLC at merged `631d10a`; all five
-merged-revision receipts verified. The next integrated candidate on
-`codex/work-computer-onboarding` includes reviewed #10 bundles, #11 shaping and
-#19 native/shared-connection children. Clean `275e0b3` passed all required checks
-with 1,408 tests. #10 is now locally bound to GitHub through reviewed migration;
-its own finish and #11 finish await PR/merged-CI evidence. #12, toolset/native
-composition, Jira and bootstrap reliability are active separate streams.
+Current completion: GitHub #18 finished through AI-DLC at merged `631d10a`.
+PR [#25](https://github.com/Sean-Koval/ai-dlc/pull/25) merged at
+`ab6b7743b435d63848bb45affd1be7eb6229b395`; all five platform jobs supplied
+passing exact merged-revision receipts. A fresh GitHub clone completed source
+bootstrap and AI-DLC finish for #10 and #11. Both issues are Completed and their
+Project items are Done. Native harness/shared connection children are delivered
+in that PR; parent #19 remains open for toolset and connection composition.
+
+The next integrated branch is `codex/work-computer-toolsets`: reviewed #12,
+toolset/native composition, Jira new-work onboarding, credential readiness,
+bootstrap reliability and qualification-record validation. Plane, optional Design
+PM guidance and calibration preparation are under final independent review.
+Individual candidates passed required checks. The first combined full run failed
+three tests during disk pressure, including two explicit out-of-space errors;
+its passing first four checks do not make it a successful full run. The reviewed
+packaging repair excludes compiled Rust outputs while retaining historical source.
+Final integrated checks, archives, PR and merged-CI finish remain pending.
 
 ## Current authority — September 7
 

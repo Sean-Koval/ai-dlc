@@ -19,8 +19,15 @@
 ## 4. Review and finish
 
 - [x] 4.1 Run required project checks and strict OpenSpec validation.
-- [ ] 4.2 Complete source review, archive the delivered change, link PR/CI evidence, and finish through the configured workflow.
+- [x] 4.2 Complete independent source review and prepare the delivered specification for archive.
 
-[Detailed plan](../../../docs/superpowers/plans/2026-09-05-spec-delivery-traceability.md).
+[Detailed plan](../../../../docs/superpowers/plans/2026-09-05-spec-delivery-traceability.md).
 
-Local implementation and verification: [evidence](../../../docs/verification/spec-delivery-traceability.md). Source review and delivery remain pending integration; task 4.2 is not a runtime finish prerequisite.
+Local implementation and verification: [evidence](../../../../docs/verification/spec-delivery-traceability.md). Source review and delivery remain pending integration; task 4.2 is not a runtime finish prerequisite.
+
+## Delivery boundary
+
+The checked tasks establish implementation/specification acceptance. Final combined
+checks, PR, exact merged-revision CI and eligible parent work finish remain pending
+in docs/verification/work-computer-toolsets.md. They are completion gates, not
+claims made by archiving this implementation specification.

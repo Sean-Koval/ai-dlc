@@ -1,7 +1,7 @@
 ## Context
 
 Give an executing agent an unambiguous connection from outcome to behavioral scenario, ticket, implementation step, and verification evidence.
-Read [product direction](../../../docs/product-direction.md) and the [delivery architecture](../../../docs/design/framework-delivery.md).
+Read [product direction](../../../../docs/product-direction.md) and the [delivery architecture](../../../../docs/design/framework-delivery.md).
 
 ## Goals / Non-Goals
 
@@ -64,4 +64,4 @@ Use additive defaults for existing configurations. Preview before applicable mut
 - TR-02: exercise a ticket depends on itself and the corresponding expected result in the formal spec.
 - TR-03: exercise a published item is retried and the corresponding expected result in the formal spec.
 
-[Task-level instructions and acceptance example](../../../docs/superpowers/plans/2026-09-05-spec-delivery-traceability.md).
+[Task-level instructions and acceptance example](../../../../docs/superpowers/plans/2026-09-05-spec-delivery-traceability.md).

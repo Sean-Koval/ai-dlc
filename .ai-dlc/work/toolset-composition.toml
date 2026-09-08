@@ -1,0 +1,19 @@
+schema = 1
+id = "toolset-composition"
+title = "Trusted toolset selection and local vault readiness"
+scope = "Implement the TC-01 through TC-03 child under issue19."
+requires_spec = true
+spec_reason = "Observable behavior is defined by the linked reviewed OpenSpec change."
+acceptance = [
+    "Meet the linked requirements, preserve authored configuration and provider identity, and pass independent review and required completion gates.",
+]
+reviewed = true
+
+[providers]
+specs = "openspec"
+scm = "github"
+
+[artifacts]
+spec = "openspec/changes/toolset-composition"
+branch = "codex/work-computer-toolsets"
+parent_issue = "https://github.com/Sean-Koval/ai-dlc/issues/19"

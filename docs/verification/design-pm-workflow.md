@@ -30,8 +30,8 @@ copies updated together. Guidance remains readable without a new tool service.
 [Pressure inputs and evaluator-only checks](design-pm/cases.md) were fixed before
 new skill bodies. They cover draft rubric/budget decisions, an attractive required
 failure, static/self-review limits, and earlier candidate/rubric/budget decisions.
-All observations in that packet are synthetic supplied inputs. Agent pressure
-replays are **pending**, not passing: all reviewer slots were occupied, and the
+All observations in that packet are synthetic supplied inputs. At the implementer checkpoint, agent pressure
+replays were **pending**, not passing: all reviewer slots were occupied, and the
 coordinator explicitly authorized retaining cases for independent review rather
 than spawning uncontrolled nested sessions. No failing or successful agent baseline
 is fabricated. Existing general design/handoff assets at `4058b24` remain available
@@ -86,7 +86,11 @@ target local and engine 0.4.0. This is a pre-commit local candidate result, not 
 merged-CI, human calibration or platform qualification. Only verification and task
 metadata were finalized afterward; tested skills/templates/examples remain frozen.
 
-Independent pressure/source review remains pending with the coordinator. It must
+At the implementer checkpoint independent pressure/source review was pending. The coordinator was to
 preserve A–D as separate synthetic runs: repeated illustrative candidate labels
 are not cross-case evidence identities. No archive, PR, remote mutation or finish
 was performed from this branch.
+
+## Coordinator source and development review
+
+Source candidate `eb04ca1` was independently accepted. See the [review](design-pm/review.md) for preserved synthetic input/output and limitations. Formal human calibration remains unrun; final integrated delivery checks and finish are separate.

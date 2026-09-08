@@ -35,6 +35,6 @@ Expected surfaces: `agents/skills/`, `agents/templates/`, skill integrity metada
 generated client assets, `project-templates/`, design workflow documentation, and
 generation/packaging tests. Additional clients require separate qualification.
 
-Rationale and proposed example rubric: [Design PM brief](../../../docs/design/design-pm.md).
-Work: [design-pm-workflow](../../../.ai-dlc/work/design-pm-workflow.toml).
-Empirical calibration is a separate [work item](../../../.ai-dlc/work/design-pm-calibration.toml).
+Rationale and proposed example rubric: [Design PM brief](../../../../docs/design/design-pm.md).
+Work: [design-pm-workflow](../../../../.ai-dlc/work/design-pm-workflow.toml).
+Empirical calibration is a separate [work item](../../../../.ai-dlc/work/design-pm-calibration.toml).

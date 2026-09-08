@@ -1,7 +1,7 @@
 ## Why
 
 Give an executing agent an unambiguous connection from outcome to behavioral scenario, ticket, implementation step, and verification evidence.
-This implements the approved framework direction in [product direction](../../../docs/product-direction.md), milestone M2.
+This implements the approved framework direction in [product direction](../../../../docs/product-direction.md), milestone M2.
 
 ## What Changes
 
@@ -31,4 +31,4 @@ None. Existing schema-4, content ownership, enrollment, and finish contracts rem
 - Update docs/workflows/design-to-implementation.md and generated templates
 
 Dependencies: product-shaping-workflow.
-Local implementation and required checks are complete; independent source review, archive, PR/CI integration and configured finish remain pending. See the [verification evidence](../../../docs/verification/spec-delivery-traceability.md). [Execution plan](../../../docs/superpowers/plans/2026-09-05-spec-delivery-traceability.md).
+Local implementation and required checks are complete; independent source review, archive, PR/CI integration and configured finish remain pending. See the [verification evidence](../../../../docs/verification/spec-delivery-traceability.md). [Execution plan](../../../../docs/superpowers/plans/2026-09-05-spec-delivery-traceability.md).
