@@ -197,7 +197,6 @@ def test_github_executable_wraps_gh_and_rejects_intermediate_state(tmp_path, mon
     )
     gh.chmod(0o755)
     monkeypatch.setenv("PATH", str(tmp_path) + os.pathsep + os.environ["PATH"])
-    monkeypatch.setenv("PYTHONPATH", str(__import__("pathlib").Path("src").resolve()))
     registry = Registry({"providers": {"issues": {"kind": "github-issues", "repository": "a/b"}}})
     provider = registry.get("issues")
     assert provider.invoke("read", {"reference": "12"})["id"] == "12"

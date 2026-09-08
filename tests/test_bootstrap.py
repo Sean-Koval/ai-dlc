@@ -410,3 +410,83 @@ def test_overlapping_bootstraps_publish_from_distinct_stages(tmp_path):
                 if process.poll() is None:
                     process.kill()
                     process.wait(timeout=5)
+
+
+def _release_bootstrap_fixture(tmp_path):
+    """Real release shell path; only tools/package transport are local fixtures."""
+    import io
+    import sys
+    import tarfile
+
+    command, environment, installed, contents, fakebin = _bootstrap_fixture(tmp_path)
+    command.remove("--source")
+    project = tmp_path / "project"
+    home = tmp_path / "bootstrap-home"
+    artifacts = tmp_path / "artifacts"
+    artifacts.mkdir()
+    (artifacts / "ai_dlc-fixture-py3-none-any.whl").write_bytes(b"fixture wheel")
+    (artifacts / "requirements.txt").write_bytes(b"fixture hashed constraints")
+    uv = (
+        f"#!{sys.executable}\n"
+        "import pathlib, sys\n"
+        "if sys.argv[1:3] == ['python', 'find']: print(sys.executable)\n"
+        "if sys.argv[1:2] == ['venv']:\n"
+        " p=pathlib.Path(sys.argv[-1])/'bin'; p.mkdir(parents=True)\n"
+        "if sys.argv[1:3] == ['pip', 'install'] and '--no-deps' in sys.argv:\n"
+        " p=pathlib.Path(sys.argv[sys.argv.index('--python')+1]).parent/'ai-dlc'\n"
+        ' p.write_text(\'#!/bin/sh\\nprintf \\"release-setup:%s\\\\n\\" \\"$*\\"\\n\'); p.chmod(0o755)\n'
+    ).encode()
+    contents["uv"] = uv
+    archive = home / "downloads/uv-fixture-fixture.tar.gz"
+    with tarfile.open(archive, "w:gz") as bundle:
+        for name in ("uv", "uvx"):
+            entry = tarfile.TarInfo("uv-fixture/" + name)
+            entry.size = len(contents[name])
+            entry.mode = 0o755
+            bundle.addfile(entry, io.BytesIO(contents[name]))
+    with (project / "bootstrap/versions.sh").open("a") as versions:
+        versions.write(f"AI_DLC_UV_SHA256={hashlib.sha256(archive.read_bytes()).hexdigest()}\n")
+    wheel = artifacts / "ai_dlc-fixture-py3-none-any.whl"
+    constraints = artifacts / "requirements.txt"
+    (project / "bootstrap/release.sh").write_text(
+        f"AI_DLC_WHEEL_NAME={wheel.name}\n"
+        f"AI_DLC_WHEEL_URL=https://example.test/{wheel.name}\n"
+        f"AI_DLC_WHEEL_SHA256={hashlib.sha256(wheel.read_bytes()).hexdigest()}\n"
+        "AI_DLC_CONSTRAINTS_URL=https://example.test/requirements.txt\n"
+        f"AI_DLC_CONSTRAINTS_SHA256={hashlib.sha256(constraints.read_bytes()).hexdigest()}\n"
+    )
+    _executable(
+        fakebin / "curl",
+        f"#!{sys.executable}\nimport os,pathlib,shutil,sys\n"
+        "url=next(x for x in sys.argv if x.startswith('https://'))\n"
+        "source=pathlib.Path(os.environ['RELEASE_FIXTURE_ARTIFACTS'])/url.rsplit('/',1)[1]\n"
+        "shutil.copyfile(source,sys.argv[sys.argv.index('--output')+1])\n",
+    )
+    environment["RELEASE_FIXTURE_ARTIFACTS"] = str(artifacts)
+    return command, environment, installed, artifacts
+
+
+def test_release_bootstrap_selects_verified_engine_and_runs_project_setup(tmp_path):
+    command, environment, installed, _ = _release_bootstrap_fixture(tmp_path)
+    result = subprocess.run(command, env=environment, capture_output=True, text=True, check=False)
+    assert result.returncode == 0, result.stderr
+    assert "release-setup:project setup --root" in result.stdout
+    assert (installed / "ai-dlc").is_symlink()
+    assert (installed / "ai-dlc").resolve().parent.parent.name == "engine-fixture"
+    assert "Ready." in result.stdout
+
+
+@pytest.mark.parametrize("artifact", ["ai_dlc-fixture-py3-none-any.whl", "requirements.txt"])
+def test_release_bootstrap_tampering_preserves_selected_cli_before_engine_install(
+    tmp_path, artifact
+):
+    command, environment, installed, artifacts = _release_bootstrap_fixture(tmp_path)
+    previous = installed / "ai-dlc"
+    previous.write_text("previous authored CLI\n")
+    (artifacts / artifact).write_bytes(b"tampered")
+    result = subprocess.run(command, env=environment, capture_output=True, text=True, check=False)
+    assert result.returncode != 0
+    assert "digest mismatch" in result.stderr
+    assert previous.read_text() == "previous authored CLI\n"
+    assert not (installed.parent / "engine-fixture").exists()
+    assert "Ready." not in result.stdout

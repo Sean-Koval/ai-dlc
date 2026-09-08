@@ -133,3 +133,78 @@ def test_live_github_only_reads_designated_issue(tmp_path, monkeypatch, capsys):
     result = json.loads(capsys.readouterr().out)
     assert result["scope"] == "read-only-health"
     assert result["full_conformance"] == "unavailable"
+
+
+@pytest.mark.parametrize(
+    ("target", "expected"),
+    [
+        ("jira-cloud", {"tests/test_jira_provider.py", "tests/test_jira_workflow.py"}),
+        ("plane", {"tests/test_plane_provider.py", "tests/test_plane_workflow.py"}),
+        ("github-issues", {"tests/test_providers.py", "tests/test_github_projects.py"}),
+    ],
+)
+def test_tracker_targets_include_adapter_and_lifecycle_fixtures(target, expected):
+    from ai_dlc import conformance
+
+    paths, expression = conformance.FIXTURE_TARGETS[target]
+    assert set(paths) == expected
+    # A legacy selection expression must not deselect the new lifecycle suite.
+    assert expression == (
+        "github_executable or test_github_projects" if target == "github-issues" else None
+    )
+    for aggregate in ("providers", "all"):
+        aggregate_paths, _ = conformance.FIXTURE_TARGETS[aggregate]
+        assert expected <= set(aggregate_paths)
+        assert len(aggregate_paths) == len(set(aggregate_paths))
+
+
+@pytest.mark.parametrize("target", ["jira-cloud", "plane"])
+def test_new_tracker_live_scope_remains_explicitly_unavailable(target, capsys):
+    from ai_dlc import conformance
+
+    assert conformance.main([target, "--live"]) == 2
+    result = json.loads(capsys.readouterr().out)
+    assert result["status"] == "unavailable"
+    assert result["passed"] is False
+
+
+@pytest.mark.parametrize("target", ["jira-cloud", "plane", "github-issues", "all"])
+def test_copied_package_runs_real_tracker_fixtures(target, tmp_path, monkeypatch, capsys):
+    """Run the Dockerfile's test closure, not mocked pytest output or source collection."""
+    import shlex
+    import shutil
+    from pathlib import Path
+
+    from ai_dlc import conformance
+
+    root = Path(__file__).resolve().parents[1]
+    (tmp_path / "tests").mkdir()
+    for line in (root / "containers/provider-tests.Dockerfile").read_text().splitlines():
+        if not line.startswith("COPY "):
+            continue
+        fields = shlex.split(line)
+        if fields[:1] == ["COPY"] and fields[-1] == "/kit/tests/":
+            for source in fields[1:-1]:
+                shutil.copyfile(root / source, tmp_path / "tests" / Path(source).name)
+    (tmp_path / "pyproject.toml").write_text('[tool.pytest.ini_options]\npythonpath=["src"]\n')
+    source = tmp_path / "src/ai_dlc"
+    source.mkdir(parents=True)
+    (source / "__init__.py").write_text('raise RuntimeError("repository source was imported")\n')
+    monkeypatch.setattr(conformance, "KIT_ROOT", tmp_path)
+    assert conformance.main([target]) == 0
+    result = json.loads(capsys.readouterr().out)
+    assert result["scope"] == "offline-fixtures"
+    assert result["live"] is False
+    assert result["passed"] is True
+
+
+@pytest.mark.parametrize("target", ["jira-cloud", "plane", "github-issues"])
+def test_missing_tracker_lifecycle_fixture_refuses(target, tmp_path, monkeypatch, capsys):
+    from ai_dlc import conformance
+
+    (tmp_path / "tests").mkdir()
+    for name in ("test_jira_provider.py", "test_plane_provider.py", "test_providers.py"):
+        (tmp_path / "tests" / name).write_text("")
+    monkeypatch.setattr(conformance, "KIT_ROOT", tmp_path)
+    assert conformance.main([target]) == 2
+    assert json.loads(capsys.readouterr().out)["status"] == "unavailable"

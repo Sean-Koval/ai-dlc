@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "run_id": "native-repeat-bootstrap-controlled-recovery-189913b",
+  "scenarios": [
+    {
+      "bundle_revisions": {},
+      "classification": "live-local",
+      "commit": "189913b6cfc2c42828e35f4e2755c982b7f1e2da",
+      "environment": {
+        "os": "Darwin",
+        "version": "15.3.2",
+        "architecture": "arm64",
+        "isolation": "existing-host",
+        "image_digest": null,
+        "container_id": null,
+        "inherited_tools": [
+          "Git 2.37.1 and existing prepared Python 3.12.11",
+          "Cached pinned uv 0.9.11/mise 2026.9.1/Python 3.12.11 and installed mise tools; no runtime downloads",
+          "Task-specific XDG and bootstrap paths; existing uv artifact cache used offline"
+        ]
+      },
+      "evidence": [
+        {
+          "path": "bootstrap.json",
+          "sha256": "0f2f745507eaaff9d04b53d850c9b99e6996a7d71803607f1f9a7f6e0d47e8cc",
+          "kind": "live-local",
+          "producer": "Qualification operator driving actual local CLI subprocesses",
+          "method": "Redacted raw command captures, filesystem hash snapshots and operator event records; original byte hashes retained in artifact."
+        }
+      ],
+      "expected": "Repeat the same source bootstrap revision without duplicate or changed owned project assets.",
+      "harness_name": "ai-dlc CLI",
+      "harness_version": "0.4.0",
+      "limitations": [
+        "This passes the native repeat-source-bootstrap observation, not full Q01 setup/account/vault readiness or all configured target coverage.",
+        "No profile or workflow bundle selected in this engine-bootstrap observation; adopted-project enrollment/render and bundle continuity are separate prior evidence.",
+        "Sparse clone excludes historical target build outputs. Existing artifacts, Python, mise installations and uv cache were reused; no factory-clean or fresh-download claim.",
+        "Tracked project assets were unchanged; runtime/cache writes and intentional retained extraction paths occurred. The initially seeded .venv symlink became a separate checkout environment.",
+        "Offline flags and available cached sources were used; no OS-wide network block, remote provider calls or native model-client session was tested."
+      ],
+      "observed": "Both invocations exited 0 and reported ready=true, clean agent configuration and changed=[]. Setup steps changed from completed to unchanged. All 1,803 present tracked file hashes matched before and after both invocations; Git status remained clean. Runtime environments were recreated, and two bootstrap extraction stages were retained.",
+      "profile_revision": null,
+      "provider": null,
+      "result": "passed",
+      "scenario_id": "Q01-repeat-setup",
+      "steps": [
+        "Create a clean disposable sparse source clone at the exact revision; omit historical tracked target build outputs.",
+        "Seed isolated runtime and mise directories with APFS clones of existing cached artifacts and tools; use offline flags.",
+        "Run the unchanged source bootstrap twice, recording logical readiness, setup statuses and file hashes."
+      ],
+      "target_id": "native-macos-arm64"
+    },
+    {
+      "bundle_revisions": {
+        "q01-recovery": "8472f9d393b6affcfc3c153403b9abf7e951e6c9"
+      },
+      "classification": "live-local",
+      "commit": "189913b6cfc2c42828e35f4e2755c982b7f1e2da",
+      "environment": {
+        "os": "Darwin",
+        "version": "15.3.2",
+        "architecture": "arm64",
+        "isolation": "existing-host",
+        "image_digest": null,
+        "container_id": null,
+        "inherited_tools": [
+          "Git 2.37.1 and existing prepared Python 3.12.11",
+          "Actual source CLI through prepared interpreter; isolated task XDG paths and file-only Git routing"
+        ]
+      },
+      "evidence": [
+        {
+          "path": "recovery.json",
+          "sha256": "54d1e3441e34f43fe7f67c80dcd1d0a2e92edbce8150413bb22910337b3f210b",
+          "kind": "live-local",
+          "producer": "Qualification operator driving actual local CLI subprocesses",
+          "method": "Redacted raw command captures, filesystem hash snapshots and operator event records; original byte hashes retained in artifact."
+        }
+      ],
+      "expected": "A filesystem failure after backup movement retains the staged update, restores previous active bundle bytes and reports retained paths; an explicit later retry can install the reviewed update.",
+      "harness_name": "ai-dlc CLI",
+      "harness_version": "0.4.0",
+      "limitations": [
+        "Controlled macOS filesystem/process intervention, not a spontaneous field failure or Linux recovery observation. No production hook, service mock or internal API substitution was used.",
+        "The observed boundary is after backup movement and before successful publication. No syscall trace was captured; the report does not assert a captured errno.",
+        "No installed-tree drift, unverified backup replacement or incomplete restoration case was executed.",
+        "The bundle is synthetic operator-authored content transported via a reserved HTTPS identifier routed to local Git. No remote-source portability or provider qualification.",
+        "No profile was selected in this disposable recovery project; no native model-client, factory-clean or OS-wide network-block claim. Full Q01\u201303 remain unmet."
+      ],
+      "observed": "After the backup appeared and active path was absent, the operator applied the controlled filesystem fault. Update exited 2 with a filesystem error and retained-stage diagnostic. The original active bundle was restored byte-for-byte; all preexisting project files were preserved, with only the 502-file retained stage added. After removing the operator flag, retry exited 0 with applied=true and installed pinned v2; the failed stage remained byte-identical.",
+      "profile_revision": null,
+      "provider": null,
+      "result": "passed",
+      "scenario_id": "Q01-failed-update",
+      "steps": [
+        "Adopt a disposable generic project and import a locally authored 500-template v1 bundle through the actual CLI and file-only Git routing.",
+        "Start reviewed v2 update; observe its real backup path, stop the owned process, snapshot the complete stage and backup, apply a macOS user-immutable flag to the staged directory and resume.",
+        "Capture failed CLI exit and retained-path diagnostic; compare restored active bundle and all preexisting project bytes.",
+        "Remove only the operator-applied flag, retain all paths, and run the same reviewed update again."
+      ],
+      "target_id": "native-macos-arm64"
+    }
+  ]
+}

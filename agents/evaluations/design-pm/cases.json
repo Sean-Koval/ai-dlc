@@ -1,0 +1,508 @@
+{
+  "schema": 1,
+  "dataset_version": "0.1.0-preparation",
+  "status": "prepared_pending_human_review",
+  "origin": "Six original synthetic case specifications, not executed interfaces, captured evidence, human labels or model-run results.",
+  "participant_fields": [
+    "id",
+    "task",
+    "requirements",
+    "fixtures",
+    "access_constraints"
+  ],
+  "calibration_case_ids": [
+    "DC01",
+    "DC02",
+    "DC03",
+    "DC04"
+  ],
+  "held_out_case_ids": [
+    "DH01",
+    "DH02"
+  ],
+  "cases": [
+    {
+      "id": "DC01",
+      "title": "Bicycle repair appointment",
+      "category": "polished_but_broken",
+      "held_out": false,
+      "task": "Improve the existing bicycle repair appointment flow so a rider can select a workshop and slot, review the choice and reopen the confirmation. Preserve the two-workshop service and its existing appointment fields; do not add accounts or payments.",
+      "requirements": [
+        {
+          "id": "BIKE-IDENTITY",
+          "statement": "The selected workshop, date and time must survive confirmation and reload."
+        },
+        {
+          "id": "BIKE-CLARITY",
+          "statement": "Workshop and slot must be distinguishable before commitment and in confirmation."
+        }
+      ],
+      "fixtures": {
+        "workshops": [
+          "River Workshop",
+          "River Workshop Annex"
+        ],
+        "slots": [
+          "2030-04-03 09:00",
+          "2030-04-04 09:00"
+        ],
+        "viewports": [
+          [
+            390,
+            844
+          ],
+          [
+            1280,
+            800
+          ]
+        ],
+        "locale": "en-GB"
+      },
+      "access_constraints": "Future immutable browser fixture; local synthetic data only. No bookings or service access. A running candidate is required to verify persistence.",
+      "stimulus_plan": {
+        "status": "specified_not_built",
+        "construction_recipe": "Construct an attractive seeded appointment UI whose confirmation persists the first listed date when the second date was selected. Retain a fixed source revision and record an independently executed reproduction before registration. The attractive presentation is an author intention, not a human rating.",
+        "candidate_manifest": null,
+        "actual_observations": null
+      },
+      "evaluation_proposal": {
+        "authored_by": "model",
+        "status": "proposal_not_ground_truth",
+        "criteria": [
+          {
+            "id": "BIKE-FLOW",
+            "requirement_ids": [
+              "BIKE-IDENTITY"
+            ],
+            "type": "behavioral",
+            "required": true,
+            "method": "Choose Annex and the second date, confirm, reload, inspect stored and displayed selection.",
+            "proposed_observation": "The intended seed fails identity persistence; actual outcomes await the built seed and observation."
+          },
+          {
+            "id": "BIKE-VISUAL",
+            "requirement_ids": [
+              "BIKE-CLARITY"
+            ],
+            "type": "subjective",
+            "required": true,
+            "method": "Inspect selection, review and confirmation at both viewports.",
+            "proposed_anchors": {
+              "1": "Date or workshop ambiguity requires guessing.",
+              "3": "All three states expose the chosen workshop and slot clearly.",
+              "4": "Concise disambiguation resolves the similar workshop names without distracting from booking."
+            },
+            "proposed_threshold": 3
+          }
+        ],
+        "decision_rationale": "A high visual judgment cannot qualify a candidate with failed appointment identity. A repaired candidate needs fresh evidence tied to its own revision.",
+        "uncertainties": [
+          "No candidate exists yet; the planned defect has not been observed.",
+          "Humans must judge the clarity anchors without being told the seed is attractive."
+        ]
+      },
+      "human_labels": null,
+      "human_label_status": "pending"
+    },
+    {
+      "id": "DC02",
+      "title": "Community repair queue",
+      "category": "plain_but_usable",
+      "held_out": false,
+      "task": "Improve an existing volunteer repair queue for checking an item in and tracking its queue number. Keep the small monochrome interface and current fields. Prioritize a clear task flow over decorative redesign.",
+      "requirements": [
+        {
+          "id": "QUEUE-FLOW",
+          "statement": "Item description and queue number persist after check-in and reload; repeated confirmation does not create another item."
+        },
+        {
+          "id": "QUEUE-READ",
+          "statement": "The current item and its status remain readable with long descriptions at narrow width."
+        }
+      ],
+      "fixtures": {
+        "items": [
+          "Blue folding chair with loose rear hinge and missing foot cap",
+          "Desk lamp"
+        ],
+        "queue_numbers": [
+          "Q041",
+          "Q042"
+        ],
+        "viewports": [
+          [
+            360,
+            800
+          ],
+          [
+            1280,
+            800
+          ]
+        ]
+      },
+      "access_constraints": "Future local browser fixture with resettable synthetic storage. No real customer data. Visual preference requires human observation.",
+      "stimulus_plan": {
+        "status": "specified_not_built",
+        "construction_recipe": "Construct a deliberately plain monochrome seed with working check-in, persistence and duplicate-confirmation handling. Use long descriptions without clipping. Confirm the intended behavior in a separate deterministic fixture check; do not label usability or taste as measured before review.",
+        "candidate_manifest": null,
+        "actual_observations": null
+      },
+      "evaluation_proposal": {
+        "authored_by": "model",
+        "status": "proposal_not_ground_truth",
+        "criteria": [
+          {
+            "id": "QUEUE-CHECKIN",
+            "requirement_ids": [
+              "QUEUE-FLOW"
+            ],
+            "type": "behavioral",
+            "required": true,
+            "method": "Check in the long item, confirm twice, reload and count records.",
+            "proposed_observation": "The planned seed retains one item with its original queue number."
+          },
+          {
+            "id": "QUEUE-LEGIBILITY",
+            "requirement_ids": [
+              "QUEUE-READ"
+            ],
+            "type": "subjective",
+            "required": true,
+            "method": "Inspect narrow and wide states with both fixtures.",
+            "proposed_anchors": {
+              "1": "Clipping hides the queue number or current status.",
+              "3": "Description, queue number and status stay distinguishable.",
+              "4": "Long text remains easy to scan while the next action is clear without unnecessary panels."
+            },
+            "proposed_threshold": 3
+          }
+        ],
+        "decision_rationale": "Plain presentation does not imply low usefulness. If observed required checks pass, humans may prefer the simple candidate; no preference is presumed.",
+        "uncertainties": [
+          "The intended pass state must be verified after fixture construction.",
+          "Human usefulness and visual preference can disagree and must be stored separately."
+        ]
+      },
+      "human_labels": null,
+      "human_label_status": "pending"
+    },
+    {
+      "id": "DC03",
+      "title": "Municipal collection reminder",
+      "category": "brand_constrained",
+      "held_out": false,
+      "task": "Improve the address-to-collection-day flow of an existing municipal service. Reuse the supplied council type, spacing, buttons and header. Preserve address selection and do not add a new navigation system.",
+      "requirements": [
+        {
+          "id": "WASTE-ADDRESS",
+          "statement": "The confirmed collection day belongs to the selected full address, including apartment number."
+        },
+        {
+          "id": "WASTE-BRAND",
+          "statement": "Use the supplied council components consistently; originality is task fit, not replacement of established controls."
+        }
+      ],
+      "fixtures": {
+        "addresses": [
+          "8 Orchard Lane, Apartment 1",
+          "8 Orchard Lane, Apartment 11"
+        ],
+        "collection_days": [
+          "Tuesday",
+          "Thursday"
+        ],
+        "viewports": [
+          [
+            390,
+            844
+          ],
+          [
+            1280,
+            800
+          ]
+        ],
+        "brand_asset_manifest": null
+      },
+      "access_constraints": "Future local browser fixture plus a frozen original synthetic council design kit. Brand assets must exist and be hashed before execution; a null manifest is unavailable evidence.",
+      "stimulus_plan": {
+        "status": "specified_not_built",
+        "construction_recipe": "Construct a functioning seed using an original synthetic council design kit and two similar addresses with different collection days. Freeze both kit and seed before generating variants; no real council brand or user records are supplied.",
+        "candidate_manifest": null,
+        "actual_observations": null
+      },
+      "evaluation_proposal": {
+        "authored_by": "model",
+        "status": "proposal_not_ground_truth",
+        "criteria": [
+          {
+            "id": "WASTE-MATCH",
+            "requirement_ids": [
+              "WASTE-ADDRESS"
+            ],
+            "type": "behavioral",
+            "required": true,
+            "method": "Select Apartment 11 and verify its full address and Thursday collection in review and saved state.",
+            "proposed_observation": "Correct address identity and collection day are preserved."
+          },
+          {
+            "id": "WASTE-FIT",
+            "requirement_ids": [
+              "WASTE-BRAND"
+            ],
+            "type": "subjective",
+            "required": true,
+            "method": "Compare all states against the supplied hashed kit.",
+            "proposed_anchors": {
+              "1": "Unrelated controls or navigation contradict the required kit.",
+              "3": "The supplied components are used consistently for the task.",
+              "4": "The same components add useful apartment disambiguation without unnecessary novelty."
+            },
+            "proposed_threshold": 3
+          }
+        ],
+        "decision_rationale": "Appropriate component reuse can meet the design contract. Absence of brand evidence leaves brand-fit unverified; an evaluator must not penalize reuse merely for low novelty.",
+        "uncertainties": [
+          "The brand kit has not been authored or reviewed.",
+          "Human taste anchors may vary; freeze their rationales before tuning."
+        ]
+      },
+      "human_labels": null,
+      "human_label_status": "pending"
+    },
+    {
+      "id": "DC04",
+      "title": "Museum audio guide mockup",
+      "category": "screenshot_only",
+      "held_out": false,
+      "task": "Refine a static museum audio-guide concept showing an exhibit list, an exhibit page and player controls. Keep exhibit identity clear and controls readable. Deliver static visual candidates only within this evidence condition.",
+      "requirements": [
+        {
+          "id": "AUDIO-VISUAL",
+          "statement": "Exhibit title and playback controls are legible in the supplied static states."
+        },
+        {
+          "id": "AUDIO-INTERACT",
+          "statement": "Playback, pause and restored position after reopening require observed interaction before any behavioral acceptance claim."
+        }
+      ],
+      "fixtures": {
+        "exhibits": [
+          "Water Clock",
+          "Small Boats, Long Journeys"
+        ],
+        "static_states": [
+          "exhibit list",
+          "exhibit detail",
+          "player paused"
+        ],
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      "access_constraints": "Static captures only; no runnable application or recorded interaction is supplied. A later browser-enabled experiment is a separate registered evidence condition.",
+      "stimulus_plan": {
+        "status": "specified_not_built",
+        "construction_recipe": "Prepare original fixed-resolution mockups for the three named states, without an interactive implementation. Hash each delivered capture. Do not add a fictional interaction trace or infer behavior from depicted controls.",
+        "candidate_manifest": null,
+        "actual_observations": null
+      },
+      "evaluation_proposal": {
+        "authored_by": "model",
+        "status": "proposal_not_ground_truth",
+        "criteria": [
+          {
+            "id": "AUDIO-READ",
+            "requirement_ids": [
+              "AUDIO-VISUAL"
+            ],
+            "type": "subjective",
+            "required": true,
+            "method": "Inspect only the identified supplied captures at their native viewport.",
+            "proposed_anchors": {
+              "1": "Title or playback controls cannot be read.",
+              "3": "Exhibit identity and playback controls are clear in the supplied states.",
+              "4": "Long titles remain clear and the control hierarchy supports the listening task."
+            },
+            "proposed_threshold": 3
+          },
+          {
+            "id": "AUDIO-PLAY",
+            "requirement_ids": [
+              "AUDIO-INTERACT"
+            ],
+            "type": "behavioral",
+            "required": true,
+            "method": "Attempt verification only if an identified running candidate and access become available.",
+            "proposed_observation": "Under the specified static-only evidence condition, playback and restored position remain unverified."
+          }
+        ],
+        "decision_rationale": "Static evidence permits bounded visual judgment; it cannot qualify playback or persistence. Missing interaction evidence is unverified rather than a fabricated pass or observed failure.",
+        "uncertainties": [
+          "No captures exist yet.",
+          "Human visual judgments require the actual capture bytes, not this description."
+        ]
+      },
+      "human_labels": null,
+      "human_label_status": "pending"
+    },
+    {
+      "id": "DH01",
+      "title": "Parcel counter pickup",
+      "category": "keyboard_failure",
+      "held_out": true,
+      "task": "Improve an existing parcel counter pickup flow. Users must choose a collection point, open the pickup-code dialog and close it using a keyboard. Preserve the compact layout and avoid introducing customer accounts.",
+      "requirements": [
+        {
+          "id": "PARCEL-KEYS",
+          "statement": "The journey works with keyboard controls, visible focus, and focus restoration to the invoking control after dialog closure."
+        },
+        {
+          "id": "PARCEL-POINT",
+          "statement": "The pickup code and review state retain the selected collection point."
+        }
+      ],
+      "fixtures": {
+        "points": [
+          "Station counter",
+          "Station counter overflow"
+        ],
+        "codes": [
+          "P014",
+          "P015"
+        ],
+        "viewports": [
+          [
+            390,
+            844
+          ],
+          [
+            1280,
+            800
+          ]
+        ]
+      },
+      "access_constraints": "Future resettable local browser fixture; keyboard interaction and focus evidence required. No real parcel codes or service calls.",
+      "stimulus_plan": {
+        "status": "specified_not_built",
+        "construction_recipe": "Construct a seed where the dialog can be opened by mouse but its dismiss control is unreachable by keyboard and Escape does not close it. Keep selected-point identity working. Record keyboard and focus traces from the built seed independently of experimental outputs.",
+        "candidate_manifest": null,
+        "actual_observations": null
+      },
+      "evaluation_proposal": {
+        "authored_by": "model",
+        "status": "proposal_not_ground_truth",
+        "criteria": [
+          {
+            "id": "PARCEL-FOCUS",
+            "requirement_ids": [
+              "PARCEL-KEYS"
+            ],
+            "type": "behavioral",
+            "required": true,
+            "method": "Traverse the primary journey using Tab/Enter; dismiss with the documented keyboard route and inspect focus restoration.",
+            "proposed_observation": "The intended seed fails keyboard dismissal; point persistence can pass independently."
+          },
+          {
+            "id": "PARCEL-ID",
+            "requirement_ids": [
+              "PARCEL-POINT"
+            ],
+            "type": "behavioral",
+            "required": true,
+            "method": "Select overflow, open the dialog and inspect pickup identity.",
+            "proposed_observation": "The selected collection point remains identifiable; a keyboard failure must not invent an unrelated identity defect."
+          }
+        ],
+        "decision_rationale": "Required keyboard failure blocks acceptance even if the mouse journey works. Report the specific observed failure without claiming comprehensive accessibility compliance.",
+        "uncertainties": [
+          "The intended keyboard failure requires a real built seed and observation.",
+          "Device/browser-specific behavior must be recorded, not generalized."
+        ]
+      },
+      "human_labels": null,
+      "human_label_status": "pending"
+    },
+    {
+      "id": "DH02",
+      "title": "Garden irrigation schedule",
+      "category": "revision_regression",
+      "held_out": true,
+      "task": "Improve an existing garden irrigation schedule editor while preserving zone, start time and duration. Keep the best qualifying candidate if a later revision regresses. No physical controller connection or new automation features.",
+      "requirements": [
+        {
+          "id": "GARDEN-SAVE",
+          "statement": "Editing one zone preserves other zones and retains the chosen start time and duration after reload."
+        },
+        {
+          "id": "GARDEN-IDENTITY",
+          "statement": "Any selected revision must have its own matching evidence and remain within the declared run and iteration limits."
+        }
+      ],
+      "fixtures": {
+        "zones": [
+          "North beds",
+          "North border"
+        ],
+        "durations_minutes": [
+          12,
+          21
+        ],
+        "start_times": [
+          "06:10",
+          "06:40"
+        ],
+        "viewports": [
+          [
+            390,
+            844
+          ],
+          [
+            1280,
+            800
+          ]
+        ]
+      },
+      "access_constraints": "Future local synthetic browser fixture; no device control. Candidate lineage and iteration budget must be recorded. No forced claim that generation will produce a regression.",
+      "stimulus_plan": {
+        "status": "specified_not_built",
+        "construction_recipe": "Prepare a fixed editor seed that saves each zone independently. For the separate evaluator stress stimulus, retain a prior candidate with preserved durations and a later candidate that visually improves spacing but resets another zone to 12 minutes. Label this as a constructed revision-pair probe, never as a naturally generated experimental result. Keep it separate from generation outcome metrics.",
+        "candidate_manifest": null,
+        "actual_observations": null
+      },
+      "evaluation_proposal": {
+        "authored_by": "model",
+        "status": "proposal_not_ground_truth",
+        "criteria": [
+          {
+            "id": "GARDEN-PRESERVE",
+            "requirement_ids": [
+              "GARDEN-SAVE"
+            ],
+            "type": "behavioral",
+            "required": true,
+            "method": "Set North border to 21 minutes, edit North beds, reload and inspect both zones.",
+            "proposed_observation": "A constructed later regression must fail even if its spacing is preferred."
+          },
+          {
+            "id": "GARDEN-SELECT",
+            "requirement_ids": [
+              "GARDEN-IDENTITY"
+            ],
+            "type": "behavioral",
+            "required": true,
+            "method": "Compare candidate-specific evidence and check the approved stopping conditions.",
+            "proposed_observation": "A prior qualifying candidate may be retained; exhaustion or plateau is not passing and does not justify another unapproved revision."
+          }
+        ],
+        "decision_rationale": "Candidate identity and required behavior govern selection. The prepared revision-pair stress probe is reported separately from the matched generation comparison, avoiding a claim that an artificial regression occurred naturally.",
+        "uncertainties": [
+          "No seed or revision pair exists yet.",
+          "A human must approve whether to include the optional revision-pair stress probe and its separate budget before freezing."
+        ]
+      },
+      "human_labels": null,
+      "human_label_status": "pending"
+    }
+  ]
+}

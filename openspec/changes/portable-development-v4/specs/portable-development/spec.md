@@ -43,3 +43,30 @@ isolation. Local fixture tests SHALL NOT be represented as live platform verific
 #### Scenario: Docker is unavailable
 - **WHEN** provider conformance testing is requested
 - **THEN** report unavailable and do not execute the provider on the host
+
+#### Scenario: Offline tracker conformance follows delivered adapters
+- **WHEN** a packaged offline GitHub Issues, Jira Cloud, or Plane target is selected
+- **THEN** it runs the existing real adapter transport and shared lifecycle fixtures,
+  including GitHub Projects behavior and the required packaged test helpers
+- **AND** provider and all aggregates include those fixtures without duplicate paths
+- **AND** missing fixtures fail explicitly and results remain offline-only; selecting
+  an unavailable live scope cannot inherit offline success
+
+### Requirement: Release bootstrap candidates bind verified artifacts
+Candidate release manifests SHALL bind one engine wheel and hashed dependency constraints
+by their actual SHA256 digests and an explicit HTTPS artifact base URL. Candidate generation
+SHALL validate engine identity/version and SHALL NOT publish assets or overwrite an existing
+manifest. Bootstrap SHALL reject corrupted downloads before installing the engine.
+
+#### Scenario: A maintainer prepares candidate assets
+- **WHEN** the wheel identity matches the requested engine version and constraints exist
+- **THEN** generate a shell-safe manifest of exact filenames, HTTPS URLs and artifact hashes
+- **AND** retain publication and live installation as separate verification obligations
+
+#### Scenario: A candidate is ambiguous or stale
+- **WHEN** multiple wheels, a mismatched wheel version or an existing output is supplied
+- **THEN** refuse generation without replacing the existing manifest
+
+#### Scenario: A release download is corrupted
+- **WHEN** the wheel or constraints differ from the manifest digest
+- **THEN** refuse engine installation and preserve the previously selected CLI

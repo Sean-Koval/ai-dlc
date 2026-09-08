@@ -1,6 +1,11 @@
 name: Release verification
 on:
   workflow_dispatch:
+    inputs:
+      artifact_base_url:
+        description: "Intended HTTPS directory for exact candidate assets; does not publish"
+        required: true
+        type: string
 permissions:
   contents: read
 jobs:
@@ -21,6 +26,12 @@ jobs:
           mkdir /tmp/ai-dlc-scaffold
           cd /tmp/ai-dlc-scaffold
           /tmp/ai-dlc-wheel/bin/ai-dlc-cli scaffold --all
+      - name: Prepare unpublished bootstrap manifest
+        env:
+          ARTIFACT_BASE_URL: ${{ inputs.artifact_base_url }}
+        run: |
+          ENGINE_VERSION=$(uv run --locked --no-sync python -c 'import pathlib,tomllib; print(tomllib.loads(pathlib.Path("pyproject.toml").read_text())["project"]["version"])')
+          uv run --locked --no-sync python scripts/release_manifest.py --artifacts dist --base-url "$ARTIFACT_BASE_URL" --version "$ENGINE_VERSION" --output dist/release.sh
       - uses: actions/upload-artifact@v4
         with:
           name: release-candidate

@@ -6,19 +6,42 @@ PR [#25](https://github.com/Sean-Koval/ai-dlc/pull/25) merged at
 passing exact merged-revision receipts. A fresh GitHub clone completed source
 bootstrap and AI-DLC finish for #10 and #11. Both issues are Completed and their
 Project items are Done. Native harness/shared connection children are delivered
-in that PR; parent #19 remains open for toolset and connection composition.
+in that PR; #19 was subsequently completed through PR26.
 
-The reviewed integration in PR [#26](https://github.com/Sean-Koval/ai-dlc/pull/26)
-is `codex/work-computer-toolsets`: traceability, toolset/native composition,
+PR [#26](https://github.com/Sean-Koval/ai-dlc/pull/26) merged at
+`189913b6cfc2c42828e35f4e2755c982b7f1e2da`: traceability, toolset/native composition,
 Jira and optional Plane new-work adapters, Design PM guidance, credential/SCM
 readiness, private vault setup, bootstrap reliability and qualification preparation.
 The [integration record](../verification/work-computer-toolsets.md) identifies
 accepted revisions, current checks and earlier failed attempts. GitHub owns live
-delivery status. Finish #12, then #13 and #19 only through the merged PR's exact
-CI receipts; keep actual native-client, tenant, human-calibration and release
-obligations open. Historical source checks never substitute for those observations.
+delivery status. All five exact merged-revision checks passed; gated finish
+completed #12, #13 and #19 with native Completed and Project Done. Actual
+native-client, tenant, human-calibration and release obligations remain open.
+Historical source checks never substitute for those observations.
 
-## Current authority — September 7
+## Remaining-issue implementation candidate
+
+[PR27](https://github.com/Sean-Koval/ai-dlc/pull/27), on
+`codex/remaining-qualification`, adds explicit saved target
+creation intent, identity-preserving reconciliation and migration preview evidence,
+plus original Design PM inputs and a fixed experiment protocol. Independent review
+accepted the migration identity repair, design preparation and local stimuli.
+Native/container continuity observations are documented in
+[setup continuity](../verification/setup-continuity.md). These are actual existing
+environment checks, not factory-clean or authenticated provider qualification.
+
+Parent #21 remains open for a specifically selected real Plane deployment and
+substitution/interruption rehearsal. Parent #16 remains open for approved matched
+model runs and actual human ratings. #14/#17 retain full platform/client/provider
+and release requirements. #20 needs actual selected Jira/Plane deployment evidence;
+#15 needs human evaluations and an approved experiment; #22 awaits the custom
+Confluence server. Do not use local implementation or fixtures to close these
+parents. The clean integrated revision3d78ddb passed all five required container checks
+with1,899 tests passing. Actual candidate wheel installation/scaffolding is recorded
+in [release preparation](../verification/release-candidate-preparation.md).
+Final PR and merged-revision GitHub CI remain separate from these source checks.
+
+## Current authority — September 8
 
 Start with [current roadmap](../roadmap.md),
 [current execution plan](../superpowers/plans/2026-09-07-work-computer-readiness.md)

@@ -1,6 +1,6 @@
 # AI-DLC roadmap
 
-Updated September 7, 2026 from the current maintainer request, GitHub Project,
+Updated September 8, 2026 from the current maintainer request, GitHub Project,
 formal specifications and implementation evidence. The
 [AI-DLC Project](https://github.com/users/Sean-Koval/projects/2) owns current ticket
 priority/status. This document owns delivery dependencies and the immediate
@@ -41,12 +41,13 @@ shared provider connection service at merged `ab6b774`. All five platform receip
 passed for that revision. Fresh-clone source bootstrap and gated finish completed
 #10 and #11; both native issue state and Project status confirm completion.
 
-PR [#26](https://github.com/Sean-Koval/ai-dlc/pull/26) carries reviewed traceability,
+PR [#26](https://github.com/Sean-Koval/ai-dlc/pull/26) delivered reviewed traceability,
 toolset selection, native connection composition, Jira and optional Plane new-work
 onboarding, Design PM guidance and setup reliability. The
 [integration record](verification/work-computer-toolsets.md) records exact tested
-revisions and review findings. GitHub owns live delivery status; eligible issues
-#12, #13 and #19 require gated finish after exact merged-revision CI. Native client recognition,
+revisions and review findings. PR26 merged at `189913b`; all five exact
+merged-revision checks passed. Gated finish completed #12, #13 and #19, each
+confirmed Completed and Project Done. Native client recognition,
 authentication and version-specific live qualification remain separate from file
 rendering. Record the work computer's OS/architecture and installed Claude and
 Antigravity versions before qualifying that machine.
@@ -61,14 +62,14 @@ dependency order, with TDD, independent review and the required checks.
 | [#18](https://github.com/Sean-Koval/ai-dlc/issues/18) | GitHub workflow foundation and PR #23 | Completed through AI-DLC finish at merged631d10a with all five receipts |
 | [#10](https://github.com/Sean-Koval/ai-dlc/issues/10) | Preserve authored files during workflow-bundle cleanup | Completed through AI-DLC finish at merged ab6b774 with five receipts; issue Completed and Project Done |
 | [#11](https://github.com/Sean-Koval/ai-dlc/issues/11) | Greenfield/brownfield product shaping | Completed through AI-DLC finish at merged ab6b774 with five receipts; issue Completed and Project Done |
-| [#19](https://github.com/Sean-Koval/ai-dlc/issues/19) | Reusable onboarding and native Claude/Antigravity setup | Common connection/native clients delivered in PR25; reviewed toolset/native composition and readiness in PR26; gated finish owns completion |
-| [#12](https://github.com/Sean-Koval/ai-dlc/issues/12) | Requirements-to-spec-to-ticket traceability and dependency guards | #11's reviewed artifacts; preserve authored issue content and provider-neutral workflows |
+| [#19](https://github.com/Sean-Koval/ai-dlc/issues/19) | Reusable onboarding and native Claude/Antigravity setup | Completed through gated finish at merged189913b with five receipts |
+| [#12](https://github.com/Sean-Koval/ai-dlc/issues/12) | Requirements-to-spec-to-ticket traceability and dependency guards | Completed through gated finish at merged189913b with five receipts |
 | [#20](https://github.com/Sean-Koval/ai-dlc/issues/20) | Jira Cloud new-work adapter/setup; optional Plane | Common connection contract from #19; actual required fields/transitions; no Jira migration |
 | [#14](https://github.com/Sean-Koval/ai-dlc/issues/14) | Portable setup, substitution and fresh-session handoff qualification | #10/#12 and applicable onboarding; distinguish ordinary clone, clean-machine, container and actual client evidence |
-| [#13](https://github.com/Sean-Koval/ai-dlc/issues/13) | Optional UI/UX generation/evaluation guidance | #11/#12; UI is optional, not AI-DLC's organizing purpose |
-| [#21](https://github.com/Sean-Koval/ai-dlc/issues/21) | Remaining provider substitution/migration qualification | Existing GitHub switch/mappings are delivered; later Plane paths need a real chosen destination |
+| [#13](https://github.com/Sean-Koval/ai-dlc/issues/13) | Optional UI/UX generation/evaluation guidance | Completed through gated finish at merged189913b with five receipts; UI remains optional |
+| [#21](https://github.com/Sean-Koval/ai-dlc/issues/21) | Remaining provider substitution/migration qualification | Existing GitHub switch/mappings are delivered; reviewed creation/recovery and omission/capability previews are implemented in the current candidate; actual Plane substitution remains unqualified |
 | [#15](https://github.com/Sean-Koval/ai-dlc/issues/15) | Product-guidance calibration | #11/#12; original cases, fixed experiment protocol, real human ratings and declared budget |
-| [#16](https://github.com/Sean-Koval/ai-dlc/issues/16) | Design-guidance calibration | #13; independent evidence and human participation |
+| [#16](https://github.com/Sean-Koval/ai-dlc/issues/16) | Design-guidance calibration | #13; original local inputs and protocol prepared in the current candidate; matched model runs and human participation remain pending |
 | [#17](https://github.com/Sean-Koval/ai-dlc/issues/17) | Retained v4 release obligations | Actual clean/container/cloud evidence, enforced-egress provider conformance, declared evaluations and authorized release publication |
 | [#22](https://github.com/Sean-Koval/ai-dlc/issues/22) | Selective Confluence publication | Deferred pending custom server; no vault/site mirroring |
 

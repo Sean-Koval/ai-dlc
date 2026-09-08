@@ -98,7 +98,7 @@ ai-dlc project tracker-migrate new-tickets --mode selected --work work-one --wor
 
 The adapter reads each requested target, verifies its configured project/repository
 identity, and returns its canonical ID and URL. Different references resolving to
-the same ticket are refused across selected work. Each source provider, fingerprint
+the same ticket are refused across selected work. New schema2 previews explicitly label the source as local-records-only: remote state/history and omitted comments, attachments, assignees, remote edits and remote-only issues remain unknown. They record target logical state and declared lifecycle capabilities; unsupported transitions are listed, and mapping preserves remote state without claiming completion. Legacy schema1 saved plans retain their original validation and recovery behavior. Each source provider, fingerprint
 and ticket reference is recorded alongside the requested target reference and
 verified identity. Selected work must be reviewed. Only its tracker provider,
 fingerprint and ticket reference move; non-tracker references and fingerprints
@@ -126,9 +126,7 @@ snapshot, effective runtime identity, and fresh target reads under the project
 write lock. Changes to any work file, provider/account identity, or canonical
 target require a fresh preview. The source and runtime are checked again before
 each local write and after the batch. No command here creates, closes, deletes,
-transitions, or otherwise modifies remote tickets. Remote creation requires a
-separately reviewed exact creation/reconciliation workflow and is not implemented
-by this migration command. The rules do not branch on destination vendor; custom
+transitions, or otherwise modifies remote tickets. Optional remote creation uses the separate reviewed creation/reconciliation actions below; it is never performed by tracker-migrate. The rules do not branch on destination vendor; custom
 registered-provider fixtures do not establish live Plane support.
 
 ## Interrupted tracker migration recovery
@@ -183,3 +181,38 @@ qualification. Retain the original receipt and outcome events, then create a new
 migration preview if further changes are needed. A corrupt initial receipt cannot
 be used for automated recovery inspection; preserve it and reconcile the project
 from independently reviewed copies before repairing its migration evidence.
+
+Plane existing targets must satisfy its exact AI-DLC correlation and scoped external identity contract. Ordinary native-created Plane items without that identity are refused; do not add identity markers blindly or infer ownership from a URL. Adapter fixtures establish local contract behavior only, not live Plane access.
+
+
+## Optional reviewed target creation
+
+Use this only when the selected work needs a new destination issue. Configure the target alias first. The source choice is explicitly local records: current title, scope, acceptance and traceability are rendered from reviewed work files. No source service is read; remote status/history, comments, attachments, assignees, remote edits and unrecorded issues are not imported. This is not Jira migration or a full-history importer.
+
+Preview and save an exact creation intent:
+
+```sh
+ai-dlc project tracker-create-plan new-tickets --work work-one --create work-one --source local-records --save-plan .ai-dlc/local/create-targets.json
+```
+
+Every --work needs either --create for the same ID or an existing tracker reference from --mappings using the TOML format above. The sets must be disjoint and complete. At least one --create is required. Preview performs no service calls or writes; saving only persists the local intent. Inspect the saved payloads, source omissions, selected IDs and destination before explicitly authorizing reconciliation:
+
+```sh
+ai-dlc project tracker-reconcile --plan .ai-dlc/local/create-targets.json --save-plan .ai-dlc/local/resolved-move.json
+```
+
+This action may create the reviewed target issues. It never changes local work bindings. Only when every target has a fresh verified identity and the original local files/configuration remain current does it emit/save an ordinary migration plan. Review that plan and apply separately:
+
+```sh
+ai-dlc project tracker-migrate --apply-plan .ai-dlc/local/resolved-move.json
+```
+
+Use the same --root and, if selected, --machine override for all steps. Saved files are exclusive: choose a new output filename to retain a prior plan, never overwrite authored plans. A failure saving the resolved output still reports known retained targets and the complete proposed local plan.
+
+Reconciliation binds the full saved intent fingerprint before reusing any remote result. The existing journal stores per-operation durable intent in the private XDG state directory under ai-dlc/tracker-migrations/ROOT_DIGEST/operations.sqlite3. A single Journal.begin sender wins for each stable operation ID. Plane additionally uses its existing trusted-root adapter intent files. Keep the saved intent and local journal; deleting state, changing roots/accounts, or starting a new creation intent is not a safe retry. These guarantees depend on retained local state and reviewed identity, not remote atomic uniqueness or cross-machine exactly-once execution.
+
+Pending or uncertain operations only search/read on retry. Invisible correlation after an interruption never authorizes another create, even if the original process might have stopped before sending. Duplicate/incomplete results remain unresolved for manual inspection. Once a target ID and URL are known, later correlation searches or reads must preserve both. A replacement identity is unresolved, retains the original advisory reference and cannot produce a local migration plan; state refreshes for the same identity remain allowed. The result separates freshly verified targets from retained_targets, which are known references that may currently fail read-back. Those references are advisory recovery evidence, not current access or completion proof.
+
+If local files change after creation, the creation phase has not changed any work bindings. Retry the same saved intent to reconcile prior targets read-only; do not create a fresh intent to bypass uncertainty. For a new local snapshot, put the retained verified target references into explicit existing mappings and use tracker-migrate preview. Configuration/account drift must be resolved before reusing the intent. Created issues are retained after local rollback; no remote deletion imitates an atomic transaction.
+
+The final local receipt carries the creation operation, intent digest and per-work correlation alongside source-to-target provenance. Creation provenance is historical reviewed metadata, not a fresh remote-state claim. A closed or cancelled target does not waive any specification, merge or CI gate. Real Plane substitution/recovery still requires an explicitly chosen deployment and separate live evidence.

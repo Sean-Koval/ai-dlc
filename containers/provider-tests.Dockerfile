@@ -17,7 +17,7 @@ ENV UV_PROJECT_ENVIRONMENT=/opt/ai-dlc-venv \
     HOME=/work
 COPY pyproject.toml uv.lock README.md /kit/
 COPY src /kit/src
-COPY tests/test_providers.py tests/test_workflow.py /kit/tests/
+COPY tests/test_providers.py tests/test_workflow.py tests/test_github_projects.py tests/test_jira_provider.py tests/test_jira_workflow.py tests/test_plane_provider.py tests/test_plane_workflow.py /kit/tests/
 COPY templates /kit/templates
 COPY profiles /kit/profiles
 COPY modules /kit/modules

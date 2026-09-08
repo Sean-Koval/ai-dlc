@@ -7,7 +7,7 @@
 **Tech Stack:** Existing Python, work records, journals, project locking and provider adapters.
 **Spec:** [selective-tracker-migration](../../../openspec/changes/selective-tracker-migration/specs/selective-tracker-migration/spec.md).
 
-Status: draft. [Master constraints](2026-09-06-provider-toolsets.md) apply. The current
+Historical plan: PR23 delivered default-only and verified existing-target mapping. Continue through the [September 8 plan](2026-09-08-selective-tracker-migration.md); unchecked historical tasks are not a current delivery inventory. The implemented descriptor-based local transaction is bounded and non-atomic, as documented in docs/migration.md. Status: superseded execution detail. [Master constraints](2026-09-06-provider-toolsets.md) apply. The current
 read-only preview covers 13 baseline records; do not hard-code that count.
 The personal destination is GitHub Issues and Projects. The authorized GitHub
 child implements default-only and verified selected mappings first. Resumable

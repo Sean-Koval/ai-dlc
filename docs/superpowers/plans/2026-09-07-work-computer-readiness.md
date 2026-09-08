@@ -62,3 +62,16 @@ the available platforms. Implement remaining independent guidance and calibratio
 in dependency order. Complete genuine deliverables; explicitly retain work needing
 unavailable environments, custom Confluence tooling, human ratings or release
 publication authorization. Do not conflate preparation with those results.
+
+## Task 6d: Complete local release preparation gaps
+
+The remaining-issue audit found that the offline conformance package omitted newer
+tracker suites and release candidates lacked the manifest consumed by bootstrap.
+Expand the existing packaged fixture targets without changing read-only live behavior.
+Generate a candidate manifest from actual wheel/constraints hashes and an explicit
+HTTPS destination, validate wheel identity/version and refuse ambiguous/existing output.
+Exercise real release-mode shell bootstrap with controlled tool/download boundaries for
+success and tampered wheel/constraints refusal. Wire candidate generation into the manual
+release verification workflow; do not publish assets or label fixture installation live.
+Independently review and run required checks. Actual provider mutation needs a separate
+explicit action/design; do not silently broaden the existing read-only flag.

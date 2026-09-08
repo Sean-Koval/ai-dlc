@@ -28,6 +28,15 @@ Machine provisioning and personal-agent integration pass deterministic local int
 
 A disposable clean clone completed the declared devcontainer post-create bootstrap and all required checks on Linux ARM64. Its project virtual environment is isolated in a per-devcontainer named volume so Linux executables cannot replace the host checkout's `.venv`. The Codex Cloud setup and maintenance entry scripts and the Claude Cloud setup entry script also completed in that clean Linux container; this validates their bootstrap behavior only, not either hosted platform's authentication, persistence, or network lifecycle.
 
+## Remaining-issue qualification candidate — September 8, 2026
+
+The [setup continuity record](verification/setup-continuity.md) adds actual native
+and network-disconnected container observations at clean `189913b`. Its report
+keeps complete Q-01–03 qualification unmet. Migration target creation/recovery
+and Design PM experiment inputs are separate reviewed implementation work;
+neither establishes authenticated provider conformance or human-rated benefit.
+No release assets have been published.
+
 ## Portable profile enrollment candidate — 2026-09-04
 
 The source bootstrap completed in the linked implementation worktree. The reviewed
@@ -105,3 +114,20 @@ qualification remain separate.
 See the [detailed qualification record](verification/github-ticket-workflows.md).
 Linear inventory reconciliation is deferred by the maintainer. Jira/Plane,
 Antigravity, bundle cleanup and package publication are separate deliverables.
+
+## Candidate manifest preparation
+
+The manual release verification workflow accepts an explicit intended HTTPS artifact
+base URL and produces `release.sh` alongside the built wheel and hashed
+`requirements.txt`. The generator validates the wheel filename and embedded engine
+name/version, refuses ambiguous wheels or existing output, and records actual file
+hashes. Candidate generation neither uploads assets to that URL nor establishes
+that the destination exists. After separately authorized publication and download
+verification, the reviewed manifest belongs at `bootstrap/release.sh` in the
+bootstrap distribution. Source development continues to use `--source`.
+
+Release-mode shell fixtures exercise successful selection/setup and tampered
+wheel/constraints refusal before engine installation. The tool/package transport
+boundaries are fixtures; they do not establish live artifact hosting or wheel
+installation. The manual workflow retains its real isolated wheel installation
+against exported hashed constraints before preparing the candidate manifest.
