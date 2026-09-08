@@ -1,0 +1,18 @@
+schema = 1
+id = "onboarding-readiness"
+title = "Truthful SCM and private vault onboarding"
+scope = "Repair default role readiness and document the existing private machine enrollment route without new CLI or account access."
+requires_spec = true
+spec_reason = "OR-01 through OR-03 define the bounded PT-04 follow-up."
+acceptance = ["Preserve actual SCM executable/configuration requirements and explicit inactive deployment.", "Verify documented enrollment and private vault resolution without changing project choices.", "Pass focused checks and independent review before coordinator-owned integrated delivery."]
+reviewed = true
+
+[providers]
+specs = "openspec"
+scm = "github"
+
+[artifacts]
+spec = "openspec/changes/onboarding-readiness"
+branch = "codex/onboarding-readiness"
+verification = "docs/verification/onboarding-readiness.md"
+parent_issue = "https://github.com/Sean-Koval/ai-dlc/issues/19"

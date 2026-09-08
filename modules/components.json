@@ -108,6 +108,30 @@
         "resolutions.closed",
         "resolutions.cancelled"
       ]
+    },
+    {
+      "id": "github",
+      "roles": [
+        "scm"
+      ],
+      "modules": [
+        "core"
+      ],
+      "guidance": [
+        "providers/github.md"
+      ],
+      "required_config": []
+    },
+    {
+      "id": "none",
+      "roles": [
+        "deploy"
+      ],
+      "modules": [],
+      "guidance": [
+        "providers/none.md"
+      ],
+      "required_config": []
     }
   ]
 }

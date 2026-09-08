@@ -17,6 +17,13 @@ def test_loads_the_packaged_component_catalog_and_its_guidance(tmp_path: Path):
         "schema": 1,
         "components": [
             {
+                "id": "github",
+                "roles": ["scm"],
+                "modules": ["core"],
+                "guidance": ["providers/github.md"],
+                "required_config": [],
+            },
+            {
                 "id": "github-issues",
                 "roles": ["tracker"],
                 "modules": ["core"],
@@ -51,6 +58,13 @@ def test_loads_the_packaged_component_catalog_and_its_guidance(tmp_path: Path):
                 "modules": ["linear"],
                 "guidance": ["providers/linear.md"],
                 "required_config": ["team_id", "statuses.in_progress", "statuses.closed"],
+            },
+            {
+                "id": "none",
+                "roles": ["deploy"],
+                "modules": [],
+                "guidance": ["providers/none.md"],
+                "required_config": [],
             },
             {
                 "id": "obsidian",
@@ -153,9 +167,11 @@ def test_loads_digest_verified_synthetic_component_fixtures(tmp_path: Path):
     )
 
     assert [component["id"] for component in catalog["components"]] == [
+        "github",
         "github-issues",
         "jira-cloud",
         "linear",
+        "none",
         "obsidian",
         "openspec",
         "plane",
@@ -266,9 +282,11 @@ def test_parses_the_verified_manifest_bytes_when_the_file_changes_after_read(
     )
 
     assert [component["id"] for component in catalog["components"]] == [
+        "github",
         "github-issues",
         "jira-cloud",
         "linear",
+        "none",
         "obsidian",
         "openspec",
         "plane",

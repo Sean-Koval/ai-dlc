@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from collections.abc import Callable, Mapping
 from pathlib import Path
 from typing import Any
@@ -131,16 +132,49 @@ def _tool_checks(
     return checks
 
 
-def _definition_checks(component: dict, config: dict, *, headless: bool) -> list[dict[str, str]]:
-    """Trusted bounded requirements; no executable/custom schema extensions."""
+def _component_definition(component: dict, config: dict):
     from ai_dlc.provider_definitions import DEFINITIONS
 
     settings = config.get("providers", {}).get(component["provider"], {})
     kind = settings.get("kind", settings.get("type", component["provider"]))
     definition = DEFINITIONS.get(kind)
     if definition is None or component["role"] not in definition.roles:
+        return None
+    return definition
+
+
+def _definition_checks(component: dict, config: dict, *, headless: bool) -> list[dict[str, str]]:
+    """Trusted bounded requirements; no executable/custom schema extensions."""
+    definition = _component_definition(component, config)
+    if definition is None:
         return []
     checks = []
+    if definition.inactive:
+        checks.append(
+            _check(
+                component["id"],
+                "activation",
+                "inactive",
+                f"{component['role']} is explicitly disabled; no service qualification applies.",
+                "No action required while this capability is disabled.",
+            )
+        )
+    for requirement in definition.runtime_requirements:
+        value = _config_value(config, requirement.path)
+        available = isinstance(value, str) and re.fullmatch(requirement.pattern, value) is not None
+        checks.append(
+            _check(
+                component["id"],
+                "configuration",
+                _READY if available else "missing",
+                f"{requirement.path} matches {requirement.description}; remote identity is unverified."
+                if available
+                else f"{requirement.path} must match {requirement.description}.",
+                "No action required for local configuration."
+                if available
+                else f"Configure {requirement.path} as {requirement.description}.",
+            )
+        )
     if not definition.lifecycle_available:
         checks.append(
             _check(
@@ -359,15 +393,17 @@ def inspect_readiness(
                     )
                 )
 
-        checks.append(
-            _check(
-                component["id"],
-                "provider-health",
-                "unverified",
-                "provider health is not inspected during offline readiness",
-                "Run doctor for an explicit provider health inspection.",
+        definition = _component_definition(component, config)
+        if definition is None or not definition.inactive:
+            checks.append(
+                _check(
+                    component["id"],
+                    "provider-health",
+                    "unverified",
+                    "provider health is not inspected during offline readiness",
+                    "Run doctor for an explicit provider health inspection.",
+                )
             )
-        )
 
     ready = all(
         check["status"] == _READY or check["dimension"] not in _BLOCKING_DIMENSIONS

@@ -68,6 +68,87 @@ Authored conflicts refuse before changes. `ai-dlc agents render --check` checks
 owned configuration; `ai-dlc project readiness --root .` reports missing tools,
 configuration and credentials without contacting providers.
 
+## Bind the private vault through machine enrollment
+
+Enrollment is the existing way to select a machine file for ordinary project
+commands. Use an explicitly reviewed profile Git repository and advertised branch
+or tag; inspect the preview's `resolved_commit`. A raw commit ID is not an
+advertised ref. This does not install tools or authenticate accounts.
+
+If you already have a reviewed portable profile, use its source, `profile_id` and
+ref. For a first local-only setup, create a new Git repository **outside the work
+repository** with `git init /path/to/reviewed-profile`, then add this minimal
+`ai-dlc-profile.toml` there:
+
+```toml
+schema = 4
+profile_id = "work-profile"
+```
+
+Commit the reviewed file and create its explicit tag:
+
+```sh
+git -C /path/to/reviewed-profile add ai-dlc-profile.toml
+git -C /path/to/reviewed-profile commit -m "chore: declare work profile"
+git -C /path/to/reviewed-profile tag reviewed-v1
+```
+
+This minimal profile supplies no tracker/account/client override. A local source
+is reported `portable=false`; use an approved accessible Git source when you need
+the same profile on another machine. Do not copy credentials or vault contents into
+that profile repository.
+
+Replace `/path/to/reviewed-profile` with that actual Git source. From the intended
+work repository, run:
+
+```sh
+ai-dlc machine enroll /path/to/reviewed-profile \
+  --profile-id work-profile --machine-id work-laptop --ref reviewed-v1
+# Inspect profile identity, resolved_commit, any profile change, and machine.path.
+ai-dlc machine enroll /path/to/reviewed-profile \
+  --profile-id work-profile --machine-id work-laptop --ref reviewed-v1 --apply
+```
+
+Edit **the `machine.path` printed by the result**, preserving its existing settings,
+and add the actual existing vault directory:
+
+```toml
+[paths]
+vault = "/path/to/private-vault"
+```
+
+Normally that file is under `$XDG_CONFIG_HOME/ai-dlc/machines/work-laptop.toml`
+(or `~/.config/ai-dlc/machines/work-laptop.toml` when XDG is unset). It is outside
+the shared work repository. Verify the selected layer and then use ordinary readiness:
+
+```sh
+ai-dlc profile show --project ai-dlc.toml
+ai-dlc project readiness --root .
+```
+
+The first result should show `sources.paths.vault = "machine"`; the second should
+report that Obsidian's directory exists. Other missing requirements still block
+readiness. Project tracker/client choices remain authoritative. No `--machine`
+option is needed on project readiness after enrollment, and no native login,
+vault write-access test or service qualification follows from directory presence.
+
+The default GitHub SCM role separately requires `git` and `gh` on PATH. Add or
+update the existing shared SCM table, replacing `OWNER/REPO` with the actual target
+code repository (not AI-DLC's engine repository or the Jira project):
+
+```toml
+[scm]
+repository = "OWNER/REPO"
+```
+
+Preserve any existing SCM workflow, target branch and receipt settings. A missing
+CLI, missing/malformed repository configuration, and an unauthenticated account
+are different conditions. Readiness checks the first two offline; use the approved
+local `gh` authentication for the intended account separately. Credentials stay in
+that local mechanism, never in this table. Offline readiness does not verify
+account access, PR merge or exact merged-CI evidence. The `none` deployment selection
+is explicitly inactive and requires no deployment tool or service qualification.
+
 ## Recognize the project in each client
 
 Claude Code uses `CLAUDE.md`, `.claude/skills` and `.mcp.json`. Open the target

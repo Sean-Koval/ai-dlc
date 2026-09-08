@@ -22,6 +22,15 @@ class EnvironmentRequirement:
 
 
 @dataclass(frozen=True)
+class RuntimeRequirement:
+    """Trusted root configuration path and its bounded full-match text contract."""
+
+    path: str
+    pattern: str
+    description: str
+
+
+@dataclass(frozen=True)
 class ProviderDefinition:
     kind: str
     roles: tuple[str, ...]
@@ -35,6 +44,8 @@ class ProviderDefinition:
     local_directory: str | None = None
     optional_viewer: str | None = None
     environment_requirements: tuple[EnvironmentRequirement, ...] = ()
+    runtime_requirements: tuple[RuntimeRequirement, ...] = ()
+    inactive: bool = False
 
 
 def _linear(root, *, alias, environ, **options):
@@ -75,6 +86,14 @@ def _plane_configure(discovery, selected):
 
 # Trusted code registrations only: no project file can load an executable handler.
 DEFINITIONS = {
+    "github": ProviderDefinition(
+        "github",
+        ("scm",),
+        runtime_requirements=(
+            RuntimeRequirement("scm.repository", r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", "owner/repo"),
+        ),
+    ),
+    "none": ProviderDefinition("none", ("deploy",), inactive=True),
     "obsidian": ProviderDefinition(
         "obsidian", ("knowledge",), local_directory="paths.vault", optional_viewer="obsidian"
     ),
