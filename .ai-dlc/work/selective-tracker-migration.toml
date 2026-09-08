@@ -1,11 +1,19 @@
 schema = 1
 id = "selective-tracker-migration"
-title = "Complete local selective tracker migration evidence and reconciliation"
-scope = "Preserve delivered default/selected mapping while adding honest source evidence, real adapter substitution coverage and explicit reviewed target creation. Live Plane substitution remains unverified."
+title = "Qualify remaining tracker substitution and migration paths"
+scope = "Deliver remaining selective migration contracts and qualify substitution with an explicitly selected real Plane deployment and authorized GitHub destination. Preserve the already delivered personal GitHub migration; no Jira migration or full-history import."
 requires_spec = true
 spec_reason = "TM01 through TM06 govern retained bindings, reviewed mappings, uncertainty and source evidence."
-acceptance = ["Preserve legacy plans and local recovery without relaxing finish gates.", "Report local-only source omissions and target state/capability limits with real adapter fixtures.", "Reconcile reviewed target creation without blind retry or local binding writes before complete mappings."]
+acceptance = [
+    "Preserve legacy plans and local recovery without relaxing finish gates.",
+    "Report local-only source omissions and target state/capability limits with real adapter fixtures.",
+    "Reconcile reviewed target creation without blind retry or local binding writes before complete mappings.",
+    "Record the actual chosen Plane deployment, account, project and version; demonstrate authorized GitHub/Plane substitution and interruption recovery with preserved source/target identities and receipts.",
+    "Local implementation, fixture tests and preparation do not complete parent issue21; real substitution/recovery qualification and normal finish gates must pass before work finish.",
+]
 reviewed = true
+depends_on = []
+requirements = []
 
 [providers]
 specs = "openspec"
@@ -14,6 +22,13 @@ tracker = "github-issues"
 
 [artifacts]
 spec = "openspec/changes/selective-tracker-migration"
-branch = "codex/selective-tracker-migration"
+branch = "codex/remaining-qualification"
 tracker = "https://github.com/Sean-Koval/ai-dlc/issues/21"
 verification = "docs/verification/selective-tracker-migration.md"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72"
+deploy = "bb3dd49c4f4cb2917763afc3947c0e2c691186fe67482e488bd64505d7e3b39f"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "c1d0b090971dc5829585dfa82141ca9ae4735564494f33160785fbac0ba0daa1"
