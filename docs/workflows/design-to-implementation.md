@@ -162,3 +162,38 @@ repository files. Use `./name` for an ambiguous local directory; filesystem
 notation, document suffixes such as `.md`, and existing repository paths receive
 local containment/existence checks. This does not replace the specification
 provider's archive or finish validation.
+
+## Optional interface evaluation
+
+When a shaped increment needs visual or interaction judgment, use design-brief
+with the canonical product brief and delivery slice/RQ IDs. Create a brief and
+versioned rubric before generation; keep proposed defaults and task-specific
+budget approval distinct. Small brand-constrained fixes may use one concise
+combined record and the existing component system.
+
+Use the [design brief](../../agents/templates/design-brief.md),
+[rubric](../../agents/templates/design-rubric.md),
+[evaluation](../../agents/templates/design-evaluation.md) and
+[selection](../../agents/templates/design-selection.md). The
+[original library-room examples](../../agents/examples/design-evaluation/library-rooms.md)
+show failed journeys, brand fit, static limitations and earlier-candidate selection.
+They contain synthetic observations, not executed UI or human preference evidence.
+
+The chosen existing visual tool generates an identified candidate. Design-evaluate
+receives its revision/digest, brief, rubric and access instructions; a separate
+session or human is an available review route. Same-session generator review is
+self-review. A required failure blocks design acceptance, and absent interaction
+evidence stays unverified regardless of visual scores. Keep reports and findings
+with their exact candidate and rubric; a new rubric requires reevaluation.
+
+Retain `docs/design/<work-id>/brief.md`, `rubric.md`,
+`iterations/<candidate-id>/evaluation.md` and `decision.md`, or equivalent stable
+sections in a concise record. Stop on the declared budget/plateau/decision boundary
+without inferring success or more authorized rounds. Select an earlier revision
+when its matching evidence qualifies. Hand the selected design, remaining findings
+and behavior requirements to needs-spec and the existing delivery workflow.
+
+The [calibration protocol](../../agents/examples/design-evaluation/calibration.md)
+requires a separately approved experiment and human participation. It remains
+unrun; readable Markdown and packaging checks establish no client capability or
+design-quality gain. This optional route adds no service, model, CLI or finish gate.

@@ -10,6 +10,14 @@
       "path": "skills/day-start/SKILL.md",
       "sha256": "4794aca5d1db1ed460f7ea859b22090ba0d1d0979f520a6526f06ff9bb56c9a4"
     },
+    "design-brief": {
+      "path": "skills/design-brief/SKILL.md",
+      "sha256": "5b9cc5c5d40378b273369c62b51b4ba10475a65c0dd91d799cd29df2a7c8ec58"
+    },
+    "design-evaluate": {
+      "path": "skills/design-evaluate/SKILL.md",
+      "sha256": "2117f4d49cc40f983cf342d07c4de11d93131f3419d367ab11a7f9214125e3f4"
+    },
     "discovery": {
       "path": "skills/discovery/SKILL.md",
       "sha256": "74d0a76012649f919770e37fa464d436a0ce8c7501ec011182a29d4ae14d2904"

@@ -2,6 +2,8 @@
   "files": {
     ".agents/skills/day-end/SKILL.md": "c18e67e359be9a38f55b95a9659f05d20df2cc8eb854be4661a30805128a0532",
     ".agents/skills/day-start/SKILL.md": "4794aca5d1db1ed460f7ea859b22090ba0d1d0979f520a6526f06ff9bb56c9a4",
+    ".agents/skills/design-brief/SKILL.md": "5b9cc5c5d40378b273369c62b51b4ba10475a65c0dd91d799cd29df2a7c8ec58",
+    ".agents/skills/design-evaluate/SKILL.md": "2117f4d49cc40f983cf342d07c4de11d93131f3419d367ab11a7f9214125e3f4",
     ".agents/skills/discovery/SKILL.md": "74d0a76012649f919770e37fa464d436a0ce8c7501ec011182a29d4ae14d2904",
     ".agents/skills/handoff/SKILL.md": "686c566180ad843f0ee83e65161094812f1cf2e5f2d607b4bb05b045c99f3a43",
     ".agents/skills/needs-spec/SKILL.md": "573d9e79cbc1b15e911a5dffdd61bcf2eaf1d089f491b2445d45b77d53bbb2f2",
@@ -13,6 +15,8 @@
     ".ai-dlc/providers/openspec.md": "6426917c1b20beb0ddf7a36c6d54437c650df52a78353bc317c10bd35e96fd0a",
     ".claude/skills/day-end/SKILL.md": "c18e67e359be9a38f55b95a9659f05d20df2cc8eb854be4661a30805128a0532",
     ".claude/skills/day-start/SKILL.md": "4794aca5d1db1ed460f7ea859b22090ba0d1d0979f520a6526f06ff9bb56c9a4",
+    ".claude/skills/design-brief/SKILL.md": "5b9cc5c5d40378b273369c62b51b4ba10475a65c0dd91d799cd29df2a7c8ec58",
+    ".claude/skills/design-evaluate/SKILL.md": "2117f4d49cc40f983cf342d07c4de11d93131f3419d367ab11a7f9214125e3f4",
     ".claude/skills/discovery/SKILL.md": "74d0a76012649f919770e37fa464d436a0ce8c7501ec011182a29d4ae14d2904",
     ".claude/skills/handoff/SKILL.md": "686c566180ad843f0ee83e65161094812f1cf2e5f2d607b4bb05b045c99f3a43",
     ".claude/skills/needs-spec/SKILL.md": "573d9e79cbc1b15e911a5dffdd61bcf2eaf1d089f491b2445d45b77d53bbb2f2",

@@ -783,6 +783,12 @@ def test_portable_examples_are_the_only_profiles_in_built_distributions(tmp_path
             "templates/prd.md",
             "examples/product-shaping/greenfield.md",
             "examples/product-shaping/brownfield.md",
+            "templates/design-brief.md",
+            "templates/design-rubric.md",
+            "templates/design-evaluation.md",
+            "templates/design-selection.md",
+            "examples/design-evaluation/library-rooms.md",
+            "examples/design-evaluation/calibration.md",
             "templates/delivery-slice.md",
             "examples/delivery-slices/localized-export.md",
             "examples/delivery-slices/compatibility-rehearsal.md",
@@ -801,6 +807,12 @@ def test_portable_examples_are_the_only_profiles_in_built_distributions(tmp_path
             "templates/prd.md",
             "examples/product-shaping/greenfield.md",
             "examples/product-shaping/brownfield.md",
+            "templates/design-brief.md",
+            "templates/design-rubric.md",
+            "templates/design-evaluation.md",
+            "templates/design-selection.md",
+            "examples/design-evaluation/library-rooms.md",
+            "examples/design-evaluation/calibration.md",
             "templates/delivery-slice.md",
             "examples/delivery-slices/localized-export.md",
             "examples/delivery-slices/compatibility-rehearsal.md",
@@ -1200,3 +1212,39 @@ def test_delivery_slice_assets_are_available_without_creating_work_items(tmp_pat
         skill = (root / client / "skills/spec-from-prd/SKILL.md").read_text()
         assert "docs/templates/delivery-slice.md" in skill
         assert skill == (assets("agents") / "skills/spec-from-prd/SKILL.md").read_text()
+
+
+@pytest.mark.parametrize("initialize", [False, True])
+def test_design_pm_artifacts_reach_new_and_existing_projects(tmp_path, initialize):
+    root = tmp_path / "product"
+    root.mkdir()
+    (root / "application.txt").write_text("authored application")
+    result = adopt(root, apply=True, initialize=initialize)
+    assert result["status"] == "applied"
+    assert (root / "application.txt").read_text() == "authored application"
+    for relative in [
+        "templates/design-brief.md",
+        "templates/design-rubric.md",
+        "templates/design-evaluation.md",
+        "templates/design-selection.md",
+        "examples/design-evaluation/library-rooms.md",
+        "examples/design-evaluation/calibration.md",
+    ]:
+        assert (root / "docs" / relative).read_bytes() == (assets("agents") / relative).read_bytes()
+    config = tomllib.loads((root / "ai-dlc.toml").read_text())
+    assert config["gates"]["finish"] == ["specification-current", "pr-merged", "ci-green"]
+    assert sorted(path.name for path in (root / "docs/design").iterdir()) == ["README.md"]
+
+
+@pytest.mark.parametrize(
+    "name", ["design-brief", "design-rubric", "design-evaluation", "design-selection"]
+)
+def test_design_pm_adoption_preserves_authored_artifact_templates(tmp_path, name):
+    authored = tmp_path / f"docs/templates/{name}.md"
+    authored.parent.mkdir(parents=True)
+    authored.write_text("authored design contract")
+    result = adopt(tmp_path, apply=True)
+    assert result["status"] == "conflict"
+    assert str(authored.relative_to(tmp_path)) in result["conflicts"]
+    assert authored.read_text() == "authored design contract"
+    assert not (tmp_path / "ai-dlc.toml").exists()

@@ -1,5 +1,13 @@
 # Add optional UI/UX design generation and evaluation workflow Implementation Plan
 
+Current steering (September 7): the coordinator approved this optional artifact
+design and authorized isolated parallel implementation from accepted local
+product-shaping and traceability revision `4058b24`. Their remote finish remains
+pending; that does not block this authorized local asset implementation. No
+tracker start/finish or dependency-state bypass is performed here. Approval of
+this package is distinct from each design task's budget and material decisions.
+Calibration #16 remains unrun; no paid or live experiments are authorized.
+
 > **For agentic workers:** Use superpowers:executing-plans to implement this plan task-by-task. Use superpowers:subagent-driven-development only when delegation is authorized. Steps use checkbox syntax for tracking.
 
 **Goal:** Implement the existing Design PM proposal as an optional UI/UX workflow consuming a shaped product outcome and delivering evidence for its interaction criteria.
@@ -19,8 +27,8 @@ Milestone: M2. Dependencies: `product-shaping-workflow`, `spec-delivery-traceabi
 ## Execution contract
 
 - Read AGENTS.md, ai-dlc.toml, the current work record, docs/product-direction.md, the [shared implementation clarifications](../../design/framework-delivery.md#frozen-cross-ticket-contracts), and this ticket's specification (or predecessor contracts for verification work) before edits.
-- Prepare the checkout with `sh scripts/bootstrap.sh --source` and use its printed PATH. Work on the ticket's own branch after the planning branch is integrated.
-- Dependencies below must be completed and their artifacts available. Until TR-02 is implemented, check their tracker state and accepted evidence manually; do not add unsupported fields to the current Work schema.
+- Prepare the checkout with `sh scripts/bootstrap.sh --source` and use its printed PATH. Work on the isolated branch from the accepted local dependency revision under the current steering above.
+- Consume the accepted local PS/TR artifacts. Remote dependency completion and normal start/finish gates remain coordinator-owned; do not infer remote completion or bypass the implemented dependency checks.
 - Keep each requirement's implementation, tests, source documentation, and generated assets in the same change. Preserve unrelated edits and legacy Rust source.
 - Use existing native tools directly where appropriate. Existing repository checks and `ai-dlc work finish` remain the completion boundary.
 - For implementation of skills, read the installed skill-authoring instructions at execution time; do not change only generated .agents/.claude copies. For code, demonstrate each new observable failure with a focused regression before implementation.
@@ -35,7 +43,7 @@ Input is a PS product brief and TR delivery slice with RQ IDs. Output is the exi
 
 - Create agents/skills/design-brief/SKILL.md
 - Create agents/skills/design-evaluate/SKILL.md
-- Create agents/templates/design-rubric.md, design-evaluation.md and design-selection.md
+- Create agents/templates/design-brief.md, design-rubric.md, design-evaluation.md and design-selection.md; retain the general design.md template
 - Create agents/examples/design-evaluation/
 - Update agents/skills.lock.json and generated copies
 - Modify docs/workflows/design-to-implementation.md and matching project templates
@@ -59,12 +67,12 @@ For each criterion below, preserve the input, produced artifact or observation, 
 
 **Produces:** Use the shaped product brief; add criterion-specific score anchors and examples of attractive-but-broken, brand-consistent, and unverified static outputs.
 
-- [ ] 1.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
-- [ ] 1.2 Prepare the concrete cases and expected observations above before authoring or executing the workflow; mark human/live-only observations pending.
-- [ ] 1.3 Use the shaped product brief; add criterion-specific score anchors and examples of attractive-but-broken, brand-consistent, and unverified static outputs.
-- [ ] 1.4 Run `uv run --locked --no-sync pytest -q tests/test_templates.py tests/test_rendering.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
+- [x] 1.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
+- [x] 1.2 Prepare the concrete cases and expected observations above before authoring or executing the workflow; mark human/live-only observations pending.
+- [x] 1.3 Use the shaped product brief; add criterion-specific score anchors and examples of attractive-but-broken, brand-consistent, and unverified static outputs.
+- [x] 1.4 Run `uv run --locked --no-sync pytest -q tests/test_templates.py tests/test_rendering.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
 - [ ] 1.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
-- [ ] 1.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
+- [x] 1.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
 
 ### Task 2: Portable skills and artifact handoff
 
@@ -74,12 +82,12 @@ For each criterion below, preserve the input, produced artifact or observation, 
 
 **Produces:** Implement design-brief/design-evaluate with independent-session or human fallback, reproducible findings, revision/plateau rules, and earlier-candidate selection.
 
-- [ ] 2.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
-- [ ] 2.2 Prepare the concrete cases and expected observations above before authoring or executing the workflow; mark human/live-only observations pending.
-- [ ] 2.3 Implement design-brief/design-evaluate with independent-session or human fallback, reproducible findings, revision/plateau rules, and earlier-candidate selection.
-- [ ] 2.4 Run `uv run --locked --no-sync pytest -q tests/test_templates.py tests/test_rendering.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
+- [x] 2.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
+- [x] 2.2 Prepare the concrete cases and expected observations above before authoring or executing the workflow; mark human/live-only observations pending.
+- [x] 2.3 Implement design-brief/design-evaluate with independent-session or human fallback, reproducible findings, revision/plateau rules, and earlier-candidate selection.
+- [x] 2.4 Run `uv run --locked --no-sync pytest -q tests/test_templates.py tests/test_rendering.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
 - [ ] 2.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
-- [ ] 2.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
+- [x] 2.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
 
 ### Task 3: Integration and packaging
 
@@ -89,12 +97,12 @@ For each criterion below, preserve the input, produced artifact or observation, 
 
 **Produces:** Connect the optional route from product shaping, ship templates/examples, verify owned updates and clearly leave live quality improvement pending.
 
-- [ ] 3.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
-- [ ] 3.2 Prepare the concrete cases and expected observations above before authoring or executing the workflow; mark human/live-only observations pending.
-- [ ] 3.3 Connect the optional route from product shaping, ship templates/examples, verify owned updates and clearly leave live quality improvement pending.
-- [ ] 3.4 Run `uv run --locked --no-sync pytest -q tests/test_templates.py tests/test_rendering.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
+- [x] 3.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
+- [x] 3.2 Prepare the concrete cases and expected observations above before authoring or executing the workflow; mark human/live-only observations pending.
+- [x] 3.3 Connect the optional route from product shaping, ship templates/examples, verify owned updates and clearly leave live quality improvement pending.
+- [x] 3.4 Run `uv run --locked --no-sync pytest -q tests/test_templates.py tests/test_rendering.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
 - [ ] 3.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
-- [ ] 3.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
+- [x] 3.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
 
 ## Requirement coverage
 
@@ -107,9 +115,13 @@ For each criterion below, preserve the input, produced artifact or observation, 
 | DP-05: Guidance travels through existing project distribution | 3 | Recorded behavioral case and evidence; unresolved human/live results remain pending. |
 | DP-06: Calibration claims require measured evidence | 1, 3 | Recorded behavioral case and evidence; unresolved human/live results remain pending. |
 
+Local implementation and distribution checks are complete; independent pressure
+application/source review remain pending. See [verification evidence](../../verification/design-pm-workflow.md).
+Neither fixture success nor this candidate completes calibration #16.
+
 ## Completion and handoff
 
-- [ ] Run `ai-dlc project check --required`; inspect all five outcomes.
+- [x] Run `ai-dlc project check --required`; inspect all five outcomes. Local candidate: all five passed, 1,218 tests; integrated exact-revision evidence remains separate.
 - [ ] Run `openspec validate design-pm-workflow --strict --no-interactive`, review against this plan, and archive only after all implementation tasks are complete. Update the work record to the exact archived path.
 - [ ] Create/link the PR, complete review and required CI, and use `ai-dlc work finish design-pm-workflow` only after merge evidence exists.
 - [ ] Leave a handoff with work/ticket ID, branch and revision, delivered interfaces, checks and evidence locations, unresolved findings, and the next dependency-unblocked ticket.

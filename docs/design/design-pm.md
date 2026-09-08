@@ -1,8 +1,8 @@
 # Design PM: portable briefs, evaluation, and iteration
 
 Owner: AI-DLC project maintainer
-Status: planned optional UI/UX workflow within milestone M2; implementation and live evaluation pending
-Updated: 2026-09-05
+Status: optional UI/UX artifact implementation candidate; independent review and live calibration pending
+Updated: 2026-09-07
 
 This proposal consumes the broader [product-shaping workflow](../../openspec/specs/product-shaping-workflow/spec.md)
 and [delivery traceability](../../openspec/changes/spec-delivery-traceability/proposal.md).
@@ -145,7 +145,7 @@ Suggested project paths (created when a design task needs them):
 Evidence links identify the candidate revision, viewport, fixture, and capture.
 Use repository-approved storage for recordings and screenshots; exclude secrets
 and private user data. The report records an evidence digest or immutable artifact
-reference. Formal requirements stay in OpenSpec. Linear stores work status and
+reference. Formal requirements stay in OpenSpec. The configured tracker stores work status and
 priority. These Markdown artifacts are usable directly by the selected harness.
 
 ## Iteration and evaluation of the workflow
@@ -197,5 +197,5 @@ Design PM experiment needs its own declared cases and budget.
 - [Formal proposal](../../openspec/changes/design-pm-workflow/proposal.md)
 - [Implementation work record](../../.ai-dlc/work/design-pm-workflow.toml)
 - [Calibration work record](../../.ai-dlc/work/design-pm-calibration.toml)
-- [SAN-6: workflow backlog ticket](https://linear.app/sandbox-aidlc/issue/SAN-6/add-portable-design-pm-briefs-rubrics-and-evaluation-workflow)
-- [SAN-7: calibration backlog ticket](https://linear.app/sandbox-aidlc/issue/SAN-7/calibrate-design-pm-evaluation-and-measure-quality-versus-cost)
+- [#13: workflow backlog ticket](https://github.com/Sean-Koval/ai-dlc/issues/13)
+- [#16: calibration backlog ticket](https://github.com/Sean-Koval/ai-dlc/issues/16)
