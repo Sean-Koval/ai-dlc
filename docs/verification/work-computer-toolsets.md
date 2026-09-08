@@ -104,3 +104,21 @@ runbook exercises existing private machine enrollment. The original override
 reproduction now refuses; 157 fresh focused tests and four additional custom
 component cases passed. The final integrated checks are recorded separately from
 the historical 4064bd9 checks.
+
+## Final onboarding integration verification
+
+Clean `822a5fbfcb92a17715a33ed5ff1c9af4c58e4d8b` includes both independently
+accepted onboarding commits without source changes, finalized OR-01 through OR-03
+and the reviewed current delivery documentation. Fresh local affected tests passed
+157 cases in 2.48 seconds; repository format, lint, types and generated checks passed.
+Strict OpenSpec validation passed all 23 items. Local full-suite evidence above
+continues to identify its earlier revision.
+
+The existing isolated Ubuntu24.04 ARM64 container was updated to clean 822a5fb
+and source bootstrap completed again. All five required checks passed, including
+**1,802 tests and one platform skip in 108.89 seconds**. The
+[final container receipt](work-computer-toolsets/container-checks-822a5fb.json)
+identifies exact source, clean state and devcontainer target. The same container
+and isolated environment volume were reused; no native client or live provider
+qualification is implied. Subsequent documentation-only evidence commits are
+covered by PR26 CI; exact merged-revision receipts remain mandatory for finish.
