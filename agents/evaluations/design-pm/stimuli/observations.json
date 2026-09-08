@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "classification": "constructed_input_verification_not_experiment",
+  "operator": "AI coding agent; fixture author, not independent human rater",
+  "observed_date_utc": "2026-09-08",
+  "tools": {
+    "playwright_cli": "0.1.18",
+    "node": "22.23.1",
+    "browser": "Chrome 152.0.7977.82",
+    "transport": "loopback HTTP; no remote service"
+  },
+  "human_labels": null,
+  "experiment_budget": null,
+  "experimental_runs": 0,
+  "limitations": [
+    "Observed fixture behavior only; no model-condition comparison or subjective score.",
+    "No comprehensive accessibility assessment.",
+    "Screenshot HTML sources are construction inputs, not participant assets."
+  ],
+  "cases": [
+    {
+      "case_id": "DC01",
+      "viewport": null,
+      "action": "Select Annex and second slot, review, confirm, reload.",
+      "review": "River Workshop Annex \u00b7 2030-04-04 09:00",
+      "saved": "River Workshop Annex \u00b7 2030-04-03 09:00",
+      "observed": "Required identity failure reproduced; workshop preserved.",
+      "assertions_passed": true
+    },
+    {
+      "case_id": "DC02",
+      "viewport": [
+        360,
+        800
+      ],
+      "action": "Confirm the long item twice, reload, count cards and check horizontal overflow.",
+      "records": [
+        {
+          "description": "Blue folding chair with loose rear hinge and missing foot cap",
+          "number": "Q041"
+        }
+      ],
+      "horizontal_overflow": false,
+      "observed": "One retained queue record; no duplicate or page-width overflow.",
+      "assertions_passed": true
+    },
+    {
+      "case_id": "DC03",
+      "viewport": [
+        360,
+        800
+      ],
+      "action": "Select Apartment 11, review, save, reload; inspect loaded header style.",
+      "identity": "8 Orchard Lane, Apartment 11",
+      "day": "Thursday",
+      "header_color": "rgb(23, 44, 75)",
+      "observed": "Address/day persist and original kit CSS loads. No human brand-fit score.",
+      "assertions_passed": true
+    },
+    {
+      "case_id": "DC04",
+      "viewport": [
+        390,
+        844
+      ],
+      "action": "Navigate to each static source and capture viewport PNG; inspect all three images.",
+      "states": [
+        "list",
+        "detail",
+        "paused"
+      ],
+      "observed": "Three actual PNG captures; playback and restored position remain unverified.",
+      "assertions_passed": true
+    },
+    {
+      "case_id": "DH01",
+      "viewport": [
+        360,
+        800
+      ],
+      "action": "Check both point/code mappings, then select overflow, focus opener, Enter, five Tab presses, Escape and mouse dismissal.",
+      "tab_focus": [
+        "BODY",
+        "INPUT",
+        "INPUT",
+        "BODY",
+        "INPUT"
+      ],
+      "open_after_escape": true,
+      "mouse_closed": true,
+      "location": "Station counter overflow",
+      "observed": "Required keyboard dismissal failure reproduced; point identity retained.",
+      "assertions_passed": true,
+      "codes": {
+        "Station counter": "P014",
+        "Station counter overflow": "P015"
+      }
+    },
+    {
+      "case_id": "DH02",
+      "viewport": [
+        360,
+        800
+      ],
+      "action": "Prior: set border21, edit beds start06:20, save/reload. Later: save beds, reload.",
+      "prior_border_minutes": 21,
+      "later_border_minutes": 12,
+      "observed": "Prior preserves other zone; constructed later stress probe resets it. No naturally generated regression claimed.",
+      "assertions_passed": true
+    }
+  ]
+}

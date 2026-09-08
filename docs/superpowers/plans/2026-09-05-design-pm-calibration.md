@@ -41,6 +41,17 @@ tasks. Task 3 remains unstarted. The coordinator requested statics and focused
 verification before review, with one integrated required gate after acceptance
 to avoid concurrent disk-heavy suite runs. Record this partial scope honestly.
 
+## Constructed stimulus follow-up
+
+After frozen preparation 995a39b, a separate local follow-up builds the six
+specified HTML inputs, original council kit and three actual screenshot-only
+captures. [Manifest and access rules](../../../agents/evaluations/design-pm/stimuli/README.md)
+record hashes and author browser observations. These are deliberately constructed
+inputs, not compared-model outputs. The case corpus retains the original proposal
+snapshot; the follow-up manifest owns construction status. Human labels, taste
+anchors, approved experiment allocation/freeze and actual comparisons remain
+pending. No experiment runner or remote service operation is added.
+
 ## Global constraints
 
 No paid runs without a declared budget, fabricated human preference, broad client qualification, or claim that distribution tests prove design quality.

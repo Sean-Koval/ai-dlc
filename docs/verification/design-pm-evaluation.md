@@ -1,6 +1,15 @@
 # Design PM evaluation preparation
 
 Status: **local preparation only; human-grounded evaluation remains pending**.
+
+The subsequent [constructed stimulus manifest](../../agents/evaluations/design-pm/stimuli/manifest.json)
+and [browser construction checks](../../agents/evaluations/design-pm/stimuli/README.md)
+now supply six local inputs, including three real static captures. They are
+deliberately authored inputs, not experiment outputs or human ratings. The initial
+preparation evidence below describes frozen revision 995a39b; construction follow-up
+is recorded at the end.
+
+## Initial preparation at 995a39b
 Six original synthetic case specifications and a proposed three-condition protocol
 are prepared. No UI seeds, captures, experiment calls, human labels, preferences,
 approved resource limits or quality measurements are supplied by this change.
@@ -87,3 +96,35 @@ require the designated people. Protocol choices remain proposals until approved.
 unchanged. Issue #16 stays open; normal independent review, integrated checks and
 merged-revision delivery evidence remain required, and cannot substitute for the
 actual human-grounded experiment.
+
+## Constructed stimulus follow-up
+
+Six original local HTML inputs now exist, with three 390×844 rendered PNGs for
+DC04 and an original synthetic council kit for DC03. A separate DH02 later
+revision supplies the optional constructed regression probe. Artifact hashes,
+participant allowlists and structured observed results are in the stimulus
+manifest/observations; coordinator instructions explain isolated serving/reset
+and prohibit private notes, held-out material or DC04 source in participant packets.
+The corpus itself retains the original specification snapshot and null human
+labels. No experiment registration, spending approval or human rating is implied.
+
+Installed Node 22.23.1, cached Playwright CLI 0.1.18 and installed Chrome
+152.0.7977.82 exercised the fixtures locally without downloading a browser/runtime.
+The checks reproduced the date-persistence, keyboard-dismissal and constructed
+cross-zone regression failures, and checked queue idempotency/address persistence.
+All three museum captures were visually inspected; playback remains unverified.
+These observations establish only that the deliberate inputs behave as recorded.
+No model condition or human design-quality comparison was run.
+
+A new integrity/access test first failed on the absent stimulus manifest; after
+construction, the five combined preparation tests passed. It checks actual hashes,
+case coverage, participant exclusions and PNG dimensions. Full integrated required
+checks remain coordinator-owned; current focused/static results are recorded in
+the child handoff. Human review of stimuli/anchors and approved execution limits
+remain pending before any actual comparison or held-out release.
+
+Final child verification: **5 focused tests passed in 0.04 seconds**; repository
+formatting passed for 103 files; lint passed; type validation reported zero errors,
+warnings or information messages. Managed source render and generated-asset checks
+passed, as did whitespace checks. Browser and loopback server were closed after
+capture/checks. Integrated whole-suite verification remains pending with the coordinator.

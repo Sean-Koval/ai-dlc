@@ -1,8 +1,9 @@
 # Design PM comparison protocol
 
-Status: **local preparation; not approved for execution**. No candidate interfaces,
-rendered captures, experiment responses or human ratings have been produced for
-this corpus. Proposed expectations are model-authored hypotheses, not ground truth.
+Status: **local preparation; not approved for execution**. Deliberately constructed
+seed interfaces and static captures are now recorded in [the stimulus manifest](stimuli/manifest.json)
+with [author construction checks](stimuli/README.md). They are inputs, not outputs
+of any experiment condition. No experiment responses or human ratings exist. Proposed expectations are model-authored hypotheses, not ground truth.
 This verifies the delivered [Design PM contract](../../../openspec/specs/design-pm/spec.md);
 it does not change that contract or create a production evaluation service.
 The dedicated experiment remains separate from `agents/evaluation.toml` and the
@@ -16,8 +17,10 @@ plain-but-usable, required brand reuse, static-only evidence, keyboard failure a
 revision regression. The public library-room teaching examples are not held-out
 cases and are not imported as experimental measurements.
 
-These are **case specifications**, not built stimuli. `stimulus_plan` is a private
-construction recipe. Its candidate manifest and actual observations remain null.
+The corpus preserves the original **case specification snapshot** at 995a39b.
+Its private `stimulus_plan` recipe and null candidate/observation fields describe
+that preparation point; the separate stimulus manifest and construction observations
+record the subsequent built inputs without inventing experimental results.
 Before a case can run, a coordinator must build its original seed/captures, record
 source and evidence hashes, verify the intended fixture behavior independently,
 and obtain human review of the task and scoring contract. Missing construction is
@@ -29,8 +32,8 @@ visual condition, while interaction remains unverified.
 The DH02 constructed revision-pair stress probe is optional and separately
 registered. It exercises evaluation/selection of known candidate lineage; it must
 not be counted as a naturally generated regression or pooled with matched
-three-condition generation outcomes. Its construction, inclusion and separate
-resource allocation remain pending.
+three-condition generation outcomes. Its constructed source and observed behavior are now recorded in the stimulus
+manifest; experimental inclusion and separate resource allocation remain pending.
 
 The case author has seen all cases. Fresh future participant/evaluator sessions
 must not have seen held-out cases or scoring notes before freeze. This is an

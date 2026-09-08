@@ -1,0 +1,202 @@
+{
+  "schema": 1,
+  "status": "constructed_pending_human_review",
+  "case_specification_revision": "995a39bc2e4c0a8f00ae0795eb1b5205d8c40ee0",
+  "classification": "constructed_inputs_not_experiment_results",
+  "cases": [
+    {
+      "case_id": "DC01",
+      "held_out": false,
+      "classification": "constructed_input_not_experiment_output",
+      "human_labels": null,
+      "participant_entry": "stimuli/DC01/index.html",
+      "artifacts": [
+        {
+          "path": "stimuli/DC01/index.html",
+          "sha256": "13cee83f32471538c16716d3a0c5fc83298352f741491ca5ba105988fa8c7a25",
+          "media_type": "text/html",
+          "role": "seed_or_brand_asset",
+          "participant_access": true
+        },
+        {
+          "path": "stimuli/observations.json",
+          "sha256": "5b0d6b1adee0a4a7af7a976351bb6b193131e173f6c49fc2cb57f2a99d109f91",
+          "media_type": "application/json",
+          "role": "verification",
+          "participant_access": false
+        }
+      ]
+    },
+    {
+      "case_id": "DC02",
+      "held_out": false,
+      "classification": "constructed_input_not_experiment_output",
+      "human_labels": null,
+      "participant_entry": "stimuli/DC02/index.html",
+      "artifacts": [
+        {
+          "path": "stimuli/DC02/index.html",
+          "sha256": "5e86bf10b2a9ac2cf33c0888cb5120993735808fc144d3957689b01aa3c74702",
+          "media_type": "text/html",
+          "role": "seed_or_brand_asset",
+          "participant_access": true
+        },
+        {
+          "path": "stimuli/observations.json",
+          "sha256": "5b0d6b1adee0a4a7af7a976351bb6b193131e173f6c49fc2cb57f2a99d109f91",
+          "media_type": "application/json",
+          "role": "verification",
+          "participant_access": false
+        }
+      ]
+    },
+    {
+      "case_id": "DC03",
+      "held_out": false,
+      "classification": "constructed_input_not_experiment_output",
+      "human_labels": null,
+      "participant_entry": "stimuli/DC03/index.html",
+      "artifacts": [
+        {
+          "path": "stimuli/DC03/brand.md",
+          "sha256": "ac9d7384480fc278e27daaf69c93a97cb82de5bdaf0e9add46add54324c9bb1a",
+          "media_type": "text/markdown",
+          "role": "seed_or_brand_asset",
+          "participant_access": true
+        },
+        {
+          "path": "stimuli/DC03/council.css",
+          "sha256": "bc738de726d6059544b28996cca8607b613e6b4e0e70d85feae8f78f0111e4bd",
+          "media_type": "text/css",
+          "role": "seed_or_brand_asset",
+          "participant_access": true
+        },
+        {
+          "path": "stimuli/DC03/index.html",
+          "sha256": "66713e8064453f2ebfbe143db18ac55432286f172d30895af6a5632929bf8bc4",
+          "media_type": "text/html",
+          "role": "seed_or_brand_asset",
+          "participant_access": true
+        },
+        {
+          "path": "stimuli/observations.json",
+          "sha256": "5b0d6b1adee0a4a7af7a976351bb6b193131e173f6c49fc2cb57f2a99d109f91",
+          "media_type": "application/json",
+          "role": "verification",
+          "participant_access": false
+        }
+      ]
+    },
+    {
+      "case_id": "DC04",
+      "held_out": false,
+      "classification": "constructed_input_not_experiment_output",
+      "human_labels": null,
+      "participant_entry": "stimuli/DC04/captures/",
+      "artifacts": [
+        {
+          "path": "stimuli/DC04/captures/detail.png",
+          "sha256": "d7a46c28c67756417f6a209d17a423636f5ff7a11629d644d34b813614de88f9",
+          "media_type": "image/png",
+          "role": "capture",
+          "participant_access": true
+        },
+        {
+          "path": "stimuli/DC04/captures/list.png",
+          "sha256": "0dad508c3fb377093541742a56e6344c097e2964127e7c1c0e428e0276f9c762",
+          "media_type": "image/png",
+          "role": "capture",
+          "participant_access": true
+        },
+        {
+          "path": "stimuli/DC04/captures/paused.png",
+          "sha256": "05f545cbaf1b5b36348b68ddca8854eecd54af620ca13436ece0afa1e109a8a9",
+          "media_type": "image/png",
+          "role": "capture",
+          "participant_access": true
+        },
+        {
+          "path": "stimuli/DC04/source/detail.html",
+          "sha256": "9fa493c68c110a5685f6884318bae7587eb5a4b108df81812a645e9859aee577",
+          "media_type": "text/html",
+          "role": "construction_source",
+          "participant_access": false
+        },
+        {
+          "path": "stimuli/DC04/source/list.html",
+          "sha256": "1e7c47abda68d92f68d89ce138e5d37cf79ef287abce54ec9c846d3d19318a19",
+          "media_type": "text/html",
+          "role": "construction_source",
+          "participant_access": false
+        },
+        {
+          "path": "stimuli/DC04/source/paused.html",
+          "sha256": "f01a88e46534e9ca17a72dff64adc4ef4f1211ca433314d2ddd70a103bf054f8",
+          "media_type": "text/html",
+          "role": "construction_source",
+          "participant_access": false
+        },
+        {
+          "path": "stimuli/observations.json",
+          "sha256": "5b0d6b1adee0a4a7af7a976351bb6b193131e173f6c49fc2cb57f2a99d109f91",
+          "media_type": "application/json",
+          "role": "verification",
+          "participant_access": false
+        }
+      ]
+    },
+    {
+      "case_id": "DH01",
+      "held_out": true,
+      "classification": "constructed_input_not_experiment_output",
+      "human_labels": null,
+      "participant_entry": "stimuli/DH01/index.html",
+      "artifacts": [
+        {
+          "path": "stimuli/DH01/index.html",
+          "sha256": "a32384201baf52d5f265401c7425a987daaf07dd2e097132560718dc2a824dbb",
+          "media_type": "text/html",
+          "role": "seed_or_brand_asset",
+          "participant_access": true
+        },
+        {
+          "path": "stimuli/observations.json",
+          "sha256": "5b0d6b1adee0a4a7af7a976351bb6b193131e173f6c49fc2cb57f2a99d109f91",
+          "media_type": "application/json",
+          "role": "verification",
+          "participant_access": false
+        }
+      ]
+    },
+    {
+      "case_id": "DH02",
+      "held_out": true,
+      "classification": "constructed_input_not_experiment_output",
+      "human_labels": null,
+      "participant_entry": "stimuli/DH02/index.html",
+      "artifacts": [
+        {
+          "path": "stimuli/DH02/index.html",
+          "sha256": "507bfd597c6d5dac2c982b9f5fe413f9b3f693cea59228420eee3ca248c27a77",
+          "media_type": "text/html",
+          "role": "seed_or_brand_asset",
+          "participant_access": true
+        },
+        {
+          "path": "stimuli/DH02/later.html",
+          "sha256": "d3970d2f33a4ef64f24f10ecaef7f28d57cc4c26b2c3fe8a9d92c1bdb541a8d1",
+          "media_type": "text/html",
+          "role": "optional_stress_probe",
+          "participant_access": false
+        },
+        {
+          "path": "stimuli/observations.json",
+          "sha256": "5b0d6b1adee0a4a7af7a976351bb6b193131e173f6c49fc2cb57f2a99d109f91",
+          "media_type": "application/json",
+          "role": "verification",
+          "participant_access": false
+        }
+      ]
+    }
+  ]
+}
