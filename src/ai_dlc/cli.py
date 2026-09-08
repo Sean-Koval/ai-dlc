@@ -270,6 +270,33 @@ def project_tracker_migrate(
         raise typer.Exit(1)
 
 
+@agents.command("connect")
+def agents_connect(
+    root: Path = Path("."),
+    bindings: Path | None = None,
+    save_plan: Path | None = None,
+    apply_plan: Path | None = None,
+):
+    """Review native role bindings and apply only project configuration."""
+    from ai_dlc.native_composition import apply_native_connections, plan_native_connections
+
+    try:
+        if apply_plan is not None:
+            if bindings is not None or save_plan is not None:
+                raise ValueError("Native apply consumes only the saved plan")
+            result = apply_native_connections(root, apply_plan, environ=os.environ)
+        else:
+            if bindings is None:
+                raise ValueError("Native preview requires --bindings")
+            result = plan_native_connections(
+                root, bindings, environ=os.environ, save_plan=save_plan
+            )
+    except (OSError, ValueError) as exc:
+        emit({"status": "refused", "reason": str(exc)})
+        raise typer.Exit(1) from None
+    emit(result)
+
+
 @agents.command("render")
 def agents_render(
     root: Path = Path("."),
