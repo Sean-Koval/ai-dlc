@@ -209,7 +209,7 @@ class Registry:
             return operation in self.registered_operations[id]
         cfg = self.config.get("providers", {}).get(id, {})
         kind = cfg.get("kind", cfg.get("type", id))
-        if kind in {"linear", "github-issues", "jira-cloud"}:
+        if kind in {"linear", "github-issues", "jira-cloud", "plane"}:
             return operation == "capabilities"
         operations = cfg.get("operations", [])
         if not isinstance(operations, list) or not all(
@@ -242,6 +242,27 @@ class Registry:
             from .linear import LinearProvider
 
             provider = LinearProvider(cfg, environ=self.environ)
+        elif kind == "plane":
+            context = {
+                "root": str(self.root.resolve()),
+                "state_home": str(
+                    Path(self.environ.get("XDG_STATE_HOME", Path.home() / ".local/state"))
+                ),
+            }
+            provider = ExecutableProvider(
+                {
+                    **cfg,
+                    "command": [
+                        sys.executable,
+                        "-m",
+                        "ai_dlc.providers.plane",
+                        json.dumps(cfg),
+                        json.dumps(context),
+                    ],
+                },
+                bundled=True,
+                environ=self.environ,
+            )
         elif kind in {"github-issues", "jira-cloud"}:
             provider = ExecutableProvider(
                 {
@@ -365,6 +386,7 @@ class Registry:
             "providers": list(self.config.get("providers", {})),
             "builtins": [
                 "jira-cloud",
+                "plane",
                 "linear",
                 "github-issues",
                 "openspec",

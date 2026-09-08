@@ -59,6 +59,28 @@ def test_loads_the_packaged_component_catalog_and_its_guidance(tmp_path: Path):
                 "guidance": ["providers/openspec.md"],
                 "required_config": [],
             },
+            {
+                "id": "plane",
+                "roles": ["tracker"],
+                "modules": [],
+                "guidance": ["providers/plane.md"],
+                "required_config": [
+                    "deployment",
+                    "api_url",
+                    "web_url",
+                    "auth_mode",
+                    "token_env",
+                    "account_id",
+                    "workspace_slug",
+                    "workspace_id",
+                    "project_id",
+                    "project_key",
+                    "statuses.open",
+                    "statuses.in_progress",
+                    "statuses.closed",
+                    "statuses.cancelled",
+                ],
+            },
         ],
     }
     from ai_dlc.files import assets
@@ -128,6 +150,7 @@ def test_loads_digest_verified_synthetic_component_fixtures(tmp_path: Path):
         "jira-cloud",
         "linear",
         "openspec",
+        "plane",
         "synthetic-specs",
         "synthetic-tracker",
     ]
@@ -239,6 +262,7 @@ def test_parses_the_verified_manifest_bytes_when_the_file_changes_after_read(
         "jira-cloud",
         "linear",
         "openspec",
+        "plane",
         "synthetic-specs",
     ]
 

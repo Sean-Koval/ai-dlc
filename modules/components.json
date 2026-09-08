@@ -71,6 +71,32 @@
         "resolutions.closed",
         "resolutions.cancelled"
       ]
+    },
+    {
+      "id": "plane",
+      "roles": [
+        "tracker"
+      ],
+      "modules": [],
+      "guidance": [
+        "providers/plane.md"
+      ],
+      "required_config": [
+        "deployment",
+        "api_url",
+        "web_url",
+        "auth_mode",
+        "token_env",
+        "account_id",
+        "workspace_slug",
+        "workspace_id",
+        "project_id",
+        "project_key",
+        "statuses.open",
+        "statuses.in_progress",
+        "statuses.closed",
+        "statuses.cancelled"
+      ]
     }
   ]
 }

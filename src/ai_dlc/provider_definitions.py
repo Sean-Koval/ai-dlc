@@ -47,8 +47,26 @@ def _jira_configure(discovery, selected):
     return configure(discovery, selected)
 
 
+def _plane_discover(config, alias, *, environ):
+    from ai_dlc.plane_onboarding import discover
+
+    return discover(config, alias, environ=environ)
+
+
+def _plane_configure(discovery, selected):
+    from ai_dlc.plane_onboarding import configure
+
+    return configure(discovery, selected)
+
+
 # Trusted code registrations only: no project file can load an executable handler.
 DEFINITIONS = {
+    "plane": ProviderDefinition(
+        "plane",
+        ("tracker",),
+        frozenset({"project", "open", "in_progress", "closed", "cancelled"}),
+        handler=ConnectionHandler(_plane_discover, _plane_configure),
+    ),
     "jira-cloud": ProviderDefinition(
         "jira-cloud",
         ("tracker",),
