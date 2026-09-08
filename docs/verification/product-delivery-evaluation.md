@@ -68,3 +68,24 @@ failure, not evidence that the cases or protocol passed packaging. The failed
 reproduction output was removed; tracked historical files were preserved. The two
 preparation invariants were rerun and passed. Required verification is pending
 until a complete result is recorded below.
+
+## Complete retry after the packaging repair
+
+The independently reviewed packaging fix `8551b09` was applied here as `bbcaf39`.
+It excludes compiled `target/` outputs from Python source distributions while the
+real packaging test verifies that `Cargo.toml` and historical `crates/*.rs` source
+remain included. No tracked legacy source was removed and no scanner helper was
+replaced by the cherry-pick.
+
+One full required-check retry passed **all five checks and 1,212 tests** at clean
+revision `bbcaf39d670538b72ad80460a6516f6ff85d8c91`. The
+[receipt](product-delivery-evaluation/local-checks.json) records that exact source
+revision. This evidence note and receipt were finalized afterward; the preparation
+source, tests and assets were frozen throughout the passing run. Both JSON future
+record templates in the protocol also parse, with their approval/budget/human
+fields still pending or null. The earlier failed packaging attempt remains
+recorded above rather than being relabeled successful.
+
+No new behavioral specification is required for this verification-only
+preparation. This passing local result establishes artifact and repository checks,
+not human labeling, executed experimental comparisons or product-quality gains.
