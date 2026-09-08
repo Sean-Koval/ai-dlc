@@ -1,13 +1,14 @@
 # Work-computer toolsets integration
 
-Status: reviewed component integration; final combined checks and remote delivery
-pending. This batch follows the current work-computer roadmap, not historical
+Status: reviewed integration in [PR26](https://github.com/Sean-Koval/ai-dlc/pull/26).
+Exact-source checks are recorded below; GitHub owns live delivery status. This batch follows the current work-computer roadmap, not historical
 Linear priorities. No company, Plane or Confluence service has been mutated.
 
 ## Reviewed components
 
 | Component | Independently accepted source | Evidence |
 | --- | --- | --- |
+| Onboarding requirement integrity (#19) | `37187c7` | [Onboarding](onboarding-readiness.md) |
 | Delivery traceability (#12) | `4058b24` | [Traceability](spec-delivery-traceability.md) |
 | Toolset selection (#19) | `f3d74dd` | [Toolset](toolset-composition.md) |
 | Native role composition (#19) | `6cb80b2` | [Native composition](native-tool-composition.md) |
@@ -97,5 +98,9 @@ sentinels. Ten skills and the local server definition appeared in each client.
 No native app or MCP process was launched. Missing Jira settings were reported,
 and connection refused before service access. It exposed two remaining onboarding
 gaps: default GitHub SCM/none-deploy catalog recognition and a concrete machine
-vault-binding route. Those are under bounded remediation before final delivery;
-passing tests above do not erase the walkthrough findings.
+vault-binding route. Both were repaired in independently accepted `37187c7`: SCM and inactive deployment
+are recognized, actual runtime requirements survive component overrides, and the
+runbook exercises existing private machine enrollment. The original override
+reproduction now refuses; 157 fresh focused tests and four additional custom
+component cases passed. The final integrated checks are recorded separately from
+the historical 4064bd9 checks.

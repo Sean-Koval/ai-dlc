@@ -6,4 +6,5 @@
 - [x] 4. Repair reviewed component-override mismatches, retain explicit extension compatibility and Registry aliases, and verify focused regressions.
 
 ## Delivery
-Independent review, integrated required checks, archive/PR/CI and work finish remain coordinator-owned and pending.
+Independent re-review accepted 37187c7; this specification is finalized and archived.
+Integrated checks, PR26 and exact merged-revision gated finish are recorded by the coordinator; archival alone does not complete the parent issue.

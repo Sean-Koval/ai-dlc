@@ -108,3 +108,12 @@ zero errors, warnings or information messages after making the optional-kind
 lookup explicit. Source render/check, generated assets, strict child validation
 and whitespace checks passed. Independent re-review and integrated checks remain
 pending; only this evidence paragraph changed after verification.
+
+## Coordinator acceptance
+
+Independent re-review accepted clean `37187c77ac9926a45201bb873375ca88263e7e9b`.
+The original two-kind override reproduction now refuses; 157 fresh focused tests
+passed in 2.26 seconds. Four additional custom-component/runtime requirement-union
+cases preserved configuration and reported qualification not-assessed. Integration
+retained the accepted source without conflicts; final combined checks and exact
+merged-revision finish evidence belong to the integration record and PR26.

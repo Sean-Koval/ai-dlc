@@ -12,7 +12,9 @@ specs = "openspec"
 scm = "github"
 
 [artifacts]
-spec = "openspec/changes/onboarding-readiness"
-branch = "codex/onboarding-readiness"
+spec = "openspec/changes/archive/2026-09-08-onboarding-readiness"
+branch = "codex/work-computer-toolsets"
 verification = "docs/verification/onboarding-readiness.md"
 parent_issue = "https://github.com/Sean-Koval/ai-dlc/issues/19"
+
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/26"
