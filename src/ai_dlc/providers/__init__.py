@@ -18,6 +18,15 @@ from typing import Any
 
 from ai_dlc.contracts import manifest, validate_request, validate_response
 
+# Explicit extension transports implemented by Registry.get; not vendor aliases.
+EXTENSION_PROVIDER_KINDS = frozenset({"executable", "python"})
+PROVIDER_KIND_ALIASES = {
+    "github-scm": "github",
+    "github-deployment": "github",
+    "cloudflare": "github",
+    "knowledge": "obsidian",
+}
+
 
 def verify_artifact(path, expected):
     p = Path(path)
@@ -209,7 +218,7 @@ class Registry:
             return operation in self.registered_operations[id]
         cfg = self.config.get("providers", {}).get(id, {})
         kind = cfg.get("kind", cfg.get("type", id))
-        if kind in {"linear", "github-issues"}:
+        if kind in {"linear", "github-issues", "jira-cloud", "plane"}:
             return operation == "capabilities"
         operations = cfg.get("operations", [])
         if not isinstance(operations, list) or not all(
@@ -223,15 +232,16 @@ class Registry:
             return self.cache[id]
         cfg = self.config.get("providers", {}).get(id, {})
         kind = cfg.get("kind", cfg.get("type", id))
+        kind = PROVIDER_KIND_ALIASES.get(kind, kind)
         if kind == "openspec":
             from .openspec import OpenSpecProvider
 
             provider = OpenSpecProvider(self.root, environ=self.environ)
-        elif kind in {"github", "github-scm", "github-deployment", "cloudflare"}:
+        elif kind == "github":
             from .scm import GitHubSCM
 
             provider = GitHubSCM(self.root, self.config, environ=self.environ)
-        elif kind in {"obsidian", "knowledge"}:
+        elif kind == "obsidian":
             from ai_dlc.knowledge import Knowledge
 
             vault = self.config.get("paths", {}).get("vault")
@@ -242,14 +252,36 @@ class Registry:
             from .linear import LinearProvider
 
             provider = LinearProvider(cfg, environ=self.environ)
-        elif kind == "github-issues":
+        elif kind == "plane":
+            context = {
+                "root": str(self.root.resolve()),
+                "state_home": str(
+                    Path(self.environ.get("XDG_STATE_HOME", Path.home() / ".local/state"))
+                ),
+            }
             provider = ExecutableProvider(
                 {
                     **cfg,
                     "command": [
                         sys.executable,
                         "-m",
-                        "ai_dlc.providers.github_issues",
+                        "ai_dlc.providers.plane",
+                        json.dumps(cfg),
+                        json.dumps(context),
+                    ],
+                },
+                bundled=True,
+                environ=self.environ,
+            )
+        elif kind in {"github-issues", "jira-cloud"}:
+            provider = ExecutableProvider(
+                {
+                    **cfg,
+                    "command": [
+                        sys.executable,
+                        "-m",
+                        "ai_dlc.providers."
+                        + {"github-issues": "github_issues", "jira-cloud": "jira_cloud"}[kind],
                         json.dumps(cfg),
                     ],
                 },
@@ -363,6 +395,8 @@ class Registry:
             "manifest": discovered,
             "providers": list(self.config.get("providers", {})),
             "builtins": [
+                "jira-cloud",
+                "plane",
                 "linear",
                 "github-issues",
                 "openspec",

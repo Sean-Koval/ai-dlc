@@ -290,7 +290,8 @@ def _common_preview(root, alias, definition, selections, *, environ):
     }
 
 
-def _load_common_plan(root, plan_file):
+def load_saved_plan(root, plan_file):
+    """Read a regular, non-symlink local plan; callers validate their own schema."""
     from ai_dlc.provider_onboarding import _connection_plan_parent
 
     with _connection_plan_parent(root, plan_file, create=False) as (_, parent, leaf):
@@ -298,7 +299,11 @@ def _load_common_plan(root, plan_file):
         with os.fdopen(descriptor) as stream:
             if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
                 raise ValueError("Connection plan must be a regular file")
-            plan = json.load(stream)
+            return json.load(stream)
+
+
+def _load_common_plan(root, plan_file):
+    plan = load_saved_plan(root, plan_file)
     if (
         not isinstance(plan, dict)
         or set(plan)

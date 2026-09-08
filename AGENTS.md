@@ -8,7 +8,7 @@ Store durable architecture, decisions and runbooks in `docs/`; formal change art
 
 Use conventional commit prefixes. Describe behavior and validation in review descriptions; do not publish packages or change remote service state implicitly.
 
-<!-- ai-dlc:begin d29e768d7e0c5936752e7ef94193c3a12bc92cb405bc0284e543f76b19d7fd05 -->
+<!-- ai-dlc:begin 452560be6438f127972a903b85ab3783d7c91ffd161c3ca2124987c8869dc685 -->
 # Shared project guidance
 
 Read ai-dlc.toml and the active .ai-dlc/work record before work.
@@ -33,9 +33,9 @@ Modules name installation requirements; their presence does not establish accoun
 access or platform qualification. Run `ai-dlc project readiness --root .` for
 offline requirements and use doctor for explicit provider health inspection.
 
+- scm: github (modules: core); [providers/github.md](<.ai-dlc/providers/github.md>)
 - tracker: github-issues (modules: core); [providers/github-issues.md](<.ai-dlc/providers/github-issues.md>)
+- deploy: none (modules: none); [providers/none.md](<.ai-dlc/providers/none.md>)
+- knowledge: obsidian (modules: none); [providers/obsidian.md](<.ai-dlc/providers/obsidian.md>)
 - specs: openspec (modules: openspec); [providers/openspec.md](<.ai-dlc/providers/openspec.md>)
-- scm: github; unsupported: no component for provider: github
-- deploy: none; unsupported: no component for provider: none
-- knowledge: obsidian; unsupported: no component for provider: obsidian
 <!-- ai-dlc:end -->

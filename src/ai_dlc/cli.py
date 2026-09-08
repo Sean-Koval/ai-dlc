@@ -117,6 +117,8 @@ def project_init(
     vcs_ref: str | None = None,
     capability: Annotated[list[str] | None, typer.Option("--capability")] = None,
     tracker: Annotated[str | None, typer.Option("--tracker")] = None,
+    knowledge_provider: Annotated[str | None, typer.Option("--knowledge")] = None,
+    agent_client: Annotated[list[str] | None, typer.Option("--agent-client")] = None,
 ):
     from ai_dlc.templates import adopt
 
@@ -128,7 +130,12 @@ def project_init(
             template_source=template_source,
             vcs_ref=vcs_ref,
             capabilities=capability,
-            providers={"tracker": tracker} if tracker is not None else None,
+            providers={
+                role: value
+                for role, value in (("tracker", tracker), ("knowledge", knowledge_provider))
+                if value is not None
+            },
+            agent_clients=agent_client,
             initialize=True,
         )
     )
@@ -143,6 +150,8 @@ def project_adopt(
     vcs_ref: str | None = None,
     capability: Annotated[list[str] | None, typer.Option("--capability")] = None,
     tracker: Annotated[str | None, typer.Option("--tracker")] = None,
+    knowledge_provider: Annotated[str | None, typer.Option("--knowledge")] = None,
+    agent_client: Annotated[list[str] | None, typer.Option("--agent-client")] = None,
 ):
     from ai_dlc.templates import adopt
 
@@ -154,7 +163,12 @@ def project_adopt(
             template_source=template_source,
             vcs_ref=vcs_ref,
             capabilities=capability,
-            providers={"tracker": tracker} if tracker is not None else None,
+            providers={
+                role: value
+                for role, value in (("tracker", tracker), ("knowledge", knowledge_provider))
+                if value is not None
+            },
+            agent_clients=agent_client,
         )
     )
 
@@ -254,6 +268,33 @@ def project_tracker_migrate(
     emit(result)
     if result.get("status") in {"rolled-back", "recovery-required"} and apply_plan is not None:
         raise typer.Exit(1)
+
+
+@agents.command("connect")
+def agents_connect(
+    root: Path = Path("."),
+    bindings: Path | None = None,
+    save_plan: Path | None = None,
+    apply_plan: Path | None = None,
+):
+    """Review native role bindings and apply only project configuration."""
+    from ai_dlc.native_composition import apply_native_connections, plan_native_connections
+
+    try:
+        if apply_plan is not None:
+            if bindings is not None or save_plan is not None:
+                raise ValueError("Native apply consumes only the saved plan")
+            result = apply_native_connections(root, apply_plan, environ=os.environ)
+        else:
+            if bindings is None:
+                raise ValueError("Native preview requires --bindings")
+            result = plan_native_connections(
+                root, bindings, environ=os.environ, save_plan=save_plan
+            )
+    except (OSError, ValueError) as exc:
+        emit({"status": "refused", "reason": str(exc)})
+        raise typer.Exit(1) from None
+    emit(result)
 
 
 @agents.command("render")
@@ -493,6 +534,20 @@ def service(root: Path, machine: Path | None):
     from ai_dlc.workflow import WorkService
 
     return WorkService.from_project(root, machine=machine)
+
+
+@work.command("validate")
+def work_validate(work_id: str, root: Path = Path("."), machine: Path | None = None):
+    from ai_dlc.config import resolve_runtime
+    from ai_dlc.workflow import validate_work
+
+    try:
+        result = validate_work(root, resolve_runtime(root, machine=machine).values, work_id)
+    except (OSError, ValueError) as exc:
+        result = {"valid": False, "work_id": work_id, "dependencies": [], "errors": [str(exc)]}
+    emit(result)
+    if not result["valid"]:
+        raise typer.Exit(1)
 
 
 @work.command("publish")

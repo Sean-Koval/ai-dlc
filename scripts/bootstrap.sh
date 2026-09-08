@@ -37,11 +37,12 @@ AI_DLC_UV_ARCHIVE="$AI_DLC_DOWNLOADS/uv-$AI_DLC_UV_VERSION-$AI_DLC_UV_TARGET.tar
 if [ ! -f "$AI_DLC_UV_ARCHIVE" ] || [ "$(ai_dlc_hash "$AI_DLC_UV_ARCHIVE")" != "$AI_DLC_UV_SHA256" ]; then
     ai_dlc_download "$AI_DLC_UV_URL" "$AI_DLC_UV_SHA256" "$AI_DLC_UV_ARCHIVE"
 fi
-AI_DLC_EXTRACT=$(mktemp -d "$AI_DLC_DOWNLOADS/extract.XXXXXX")
-trap 'rm -rf "$AI_DLC_EXTRACT"' EXIT HUP INT TERM
+AI_DLC_EXTRACT=$(mktemp -d "$AI_DLC_BOOTSTRAP_HOME/bin/.install.XXXXXX")
+# Retain staging paths: pathname cleanup could delete an authored replacement.
+trap 'printf "Bootstrap retained %s; inspect before removal.\n" "$AI_DLC_EXTRACT" >&2' EXIT
 tar -xzf "$AI_DLC_UV_ARCHIVE" -C "$AI_DLC_EXTRACT"
-cp "$AI_DLC_EXTRACT/uv-$AI_DLC_UV_TARGET/uv" "$AI_DLC_BOOTSTRAP_HOME/bin/uv"
-cp "$AI_DLC_EXTRACT/uv-$AI_DLC_UV_TARGET/uvx" "$AI_DLC_BOOTSTRAP_HOME/bin/uvx"
+ai_dlc_publish_executable "$AI_DLC_EXTRACT/uv-$AI_DLC_UV_TARGET/uv" "$AI_DLC_BOOTSTRAP_HOME/bin"
+ai_dlc_publish_executable "$AI_DLC_EXTRACT/uv-$AI_DLC_UV_TARGET/uvx" "$AI_DLC_BOOTSTRAP_HOME/bin"
 export PATH="$AI_DLC_BOOTSTRAP_HOME/bin:$PATH"
 export UV_PYTHON_INSTALL_DIR="$AI_DLC_BOOTSTRAP_HOME/python"
 export UV_PYTHON_BIN_DIR="$AI_DLC_BOOTSTRAP_HOME/bin"
@@ -65,8 +66,8 @@ AI_DLC_MISE_BINARY="$AI_DLC_DOWNLOADS/mise-$AI_DLC_MISE_VERSION-$AI_DLC_MISE_TAR
 if [ ! -f "$AI_DLC_MISE_BINARY" ] || [ "$(ai_dlc_hash "$AI_DLC_MISE_BINARY")" != "$AI_DLC_MISE_SHA256" ]; then
     ai_dlc_download "$AI_DLC_MISE_URL" "$AI_DLC_MISE_SHA256" "$AI_DLC_MISE_BINARY"
 fi
-cp "$AI_DLC_MISE_BINARY" "$AI_DLC_BOOTSTRAP_HOME/bin/mise"
-chmod +x "$AI_DLC_BOOTSTRAP_HOME/bin/mise"
+cp "$AI_DLC_MISE_BINARY" "$AI_DLC_EXTRACT/mise"
+ai_dlc_publish_executable "$AI_DLC_EXTRACT/mise" "$AI_DLC_BOOTSTRAP_HOME/bin"
 ln -sf "$AI_DLC_CLI" "$AI_DLC_BOOTSTRAP_HOME/bin/ai-dlc"
 ln -sf "$AI_DLC_CLI" "$AI_DLC_BOOTSTRAP_HOME/bin/ai-dlc-cli"
 export PATH="$(dirname "$AI_DLC_CLI"):$PATH"

@@ -1275,3 +1275,24 @@ def test_bundle_guidance_uses_native_shared_skill_directory(tmp_path, clients):
     result = render_agents(tmp_path, apply=True, client="antigravity")
     assert not skill.exists()
     assert result["retained_backups"]
+
+
+@pytest.mark.parametrize("client,directory", [("codex", ".agents"), ("claude-code", ".claude")])
+def test_optional_design_pm_skills_render_with_selected_harness_and_preserve_edits(
+    tmp_path, client, directory
+):
+    from ai_dlc.agents import render_agents
+    from ai_dlc.files import assets
+    from ai_dlc.templates import adopt
+
+    adopt(tmp_path, apply=True, providers={"tracker": "github-issues"})
+    render_agents(tmp_path, apply=True, client=client)
+    for name in ["design-brief", "design-evaluate"]:
+        target = tmp_path / directory / "skills" / name / "SKILL.md"
+        assert target.read_bytes() == (assets("agents") / "skills" / name / "SKILL.md").read_bytes()
+    assert render_agents(tmp_path, client=client)["clean"]
+    authored = tmp_path / directory / "skills/design-evaluate/SKILL.md"
+    authored.write_text("authored evaluation instructions")
+    with pytest.raises(ValueError, match="modified|conflict|owned"):
+        render_agents(tmp_path, apply=True, client=client)
+    assert authored.read_text() == "authored evaluation instructions"

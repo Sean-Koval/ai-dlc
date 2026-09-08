@@ -17,11 +17,40 @@ def test_loads_the_packaged_component_catalog_and_its_guidance(tmp_path: Path):
         "schema": 1,
         "components": [
             {
+                "id": "github",
+                "roles": ["scm"],
+                "modules": ["core"],
+                "guidance": ["providers/github.md"],
+                "required_config": [],
+            },
+            {
                 "id": "github-issues",
                 "roles": ["tracker"],
                 "modules": ["core"],
                 "guidance": ["providers/github-issues.md"],
                 "required_config": ["repository"],
+            },
+            {
+                "id": "jira-cloud",
+                "roles": ["tracker"],
+                "modules": [],
+                "guidance": ["providers/jira-cloud.md"],
+                "required_config": [
+                    "site_url",
+                    "cloud_id",
+                    "account_id",
+                    "project_id",
+                    "project_key",
+                    "issue_type_id",
+                    "auth_mode",
+                    "token_env",
+                    "statuses.open",
+                    "statuses.in_progress",
+                    "statuses.closed",
+                    "statuses.cancelled",
+                    "resolutions.closed",
+                    "resolutions.cancelled",
+                ],
             },
             {
                 "id": "linear",
@@ -31,11 +60,47 @@ def test_loads_the_packaged_component_catalog_and_its_guidance(tmp_path: Path):
                 "required_config": ["team_id", "statuses.in_progress", "statuses.closed"],
             },
             {
+                "id": "none",
+                "roles": ["deploy"],
+                "modules": [],
+                "guidance": ["providers/none.md"],
+                "required_config": [],
+            },
+            {
+                "id": "obsidian",
+                "roles": ["knowledge"],
+                "modules": [],
+                "guidance": ["providers/obsidian.md"],
+                "required_config": [],
+            },
+            {
                 "id": "openspec",
                 "roles": ["specs"],
                 "modules": ["openspec"],
                 "guidance": ["providers/openspec.md"],
                 "required_config": [],
+            },
+            {
+                "id": "plane",
+                "roles": ["tracker"],
+                "modules": [],
+                "guidance": ["providers/plane.md"],
+                "required_config": [
+                    "deployment",
+                    "api_url",
+                    "web_url",
+                    "auth_mode",
+                    "token_env",
+                    "account_id",
+                    "workspace_slug",
+                    "workspace_id",
+                    "project_id",
+                    "project_key",
+                    "statuses.open",
+                    "statuses.in_progress",
+                    "statuses.closed",
+                    "statuses.cancelled",
+                ],
             },
         ],
     }
@@ -102,9 +167,14 @@ def test_loads_digest_verified_synthetic_component_fixtures(tmp_path: Path):
     )
 
     assert [component["id"] for component in catalog["components"]] == [
+        "github",
         "github-issues",
+        "jira-cloud",
         "linear",
+        "none",
+        "obsidian",
         "openspec",
+        "plane",
         "synthetic-specs",
         "synthetic-tracker",
     ]
@@ -212,9 +282,14 @@ def test_parses_the_verified_manifest_bytes_when_the_file_changes_after_read(
     )
 
     assert [component["id"] for component in catalog["components"]] == [
+        "github",
         "github-issues",
+        "jira-cloud",
         "linear",
+        "none",
+        "obsidian",
         "openspec",
+        "plane",
         "synthetic-specs",
     ]
 

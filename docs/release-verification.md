@@ -8,6 +8,16 @@ Confluence is deferred. Historical evidence below applies only to its stated
 revision and environment. Plans do not establish live qualification or release
 readiness.
 
+## Current source delivery — September 8, 2026
+
+PR25 merged at `ab6b774`; all five exact merged-revision receipts passed. A fresh
+GitHub clone completed source bootstrap, then gated finish completed issues10
+and11. This is fresh-clone evidence on the existing host, not factory-clean or
+work-laptop qualification. See the [current integration record](verification/work-computer-toolsets.md)
+for PR26, including the packaging correction, onboarding repairs and exact-source
+checks. Its GitHub delivery status and gated finish are separate from the remaining
+platform, native-client, live-provider and human-evaluation qualifications.
+
 This checkout is an implementation candidate, not a published or certified cross-platform release. Native Apple silicon source bootstrap from both the development worktree and a disposable clean clone, repeated setup, language fixtures, lint/type checks, strict OpenSpec validation, a hash-constrained isolated wheel installation, the final integrated required checks, and independent source review have passed. Pull request #1's expanded matrix passed on Ubuntu 24.04 and 26.04 for x64 and ARM64 plus macOS Intel. Each job published a distinct clean receipt for the same synthetic merge revision with all five required checks passing.
 
 Outstanding: factory-clean Apple silicon setup; actual Codex Cloud and Claude Cloud hosted lifecycles; live client hook sessions; full live provider mutation conformance; behavioral skill evaluations; publication of verified release artifacts.

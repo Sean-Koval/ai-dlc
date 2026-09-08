@@ -1,10 +1,27 @@
 # Qualify portable setup, provider replacement, and development handoffs Implementation Plan
 
+Current steering (September 7): prepare the read-only qualification report validator
+and protocol before root-owned walkthroughs. The current roadmap owns provider
+priority: GitHub Issues/Projects are delivered; Jira Cloud is for new work without
+migration, and Plane is optional. No Linear calls or Jira/Plane mutations are
+part of this preparation. GitHub issues-only and Project-backed configurations
+are capabilities of one adapter; Q-02 still needs two actual tracker adapters.
+Existing-host, clean-clone and isolated-runtime evidence do not prove factory-clean,
+hosted or actual work-client qualification. Q-01–03 live gates remain unmet until
+reviewed actual evidence is supplied. Root owns global release evidence.
+
 > **For agentic workers:** Use superpowers:executing-plans to implement this plan task-by-task. Use superpowers:subagent-driven-development only when delegation is authorized. Steps use checkbox syntax for tracking.
 
 **Goal:** Produce reproducible evidence that the delivered framework works on the initial supported environments and supports one safe provider substitution.
 
-**Architecture:** Initial live qualification targets are a clean native macOS arm64 environment and clean Ubuntu 24.04 arm64 devcontainer; hosted clients and new harness adapters remain separate unqualified targets. If a target is inaccessible, record unavailable and leave the corresponding acceptance unmet. Use a disposable project and separately scoped credentials. Demonstrate provider-neutral tracker behavior using Linear and the already implemented GitHub Issues adapter on designated sandbox destinations, including absence of in_progress on GitHub Issues. Never change this project's tracker to perform the experiment. Test same-revision repeat setup, offline guidance, authored-file preservation, resumed work, and a staged update failure. All live writes require explicit disposable destinations in the run configuration.
+**Architecture:** Initial target protocols cover native macOS arm64 and Ubuntu 24.04
+arm64 containers, with actual isolation recorded. The validator exposes only
+`--schema`, `--protocol` and `--validate`; it never executes report steps or calls
+services. Provider-neutral new-work qualification needs two actual adapters on
+explicit disposable destinations. GitHub issues-only lacks in_progress; configured
+Projects can support it. Jira/Plane live scope remains unavailable. Never change
+this repository's tracker for the experiment. Hosted clients, actual work-machine
+versions and unavailable harnesses remain separate unmet qualifications.
 
 **Tech Stack:** Python 3.12, existing AI-DLC CLI/services, Markdown workflow assets, OpenSpec, and configured tracker/SCM adapters. Reuse existing dependencies; any new dependency requires a documented necessity and explicit review.
 
@@ -29,14 +46,20 @@ Milestone: M3. Dependencies: `connected-project-readiness`, `linear-provider-onb
 
 ## Scope and interfaces
 
-Report fields: commit, profile_revision, bundle_revisions, environment, harness_version, scenario_id, steps, expected, observed, evidence, result, limitations. result is passed/failed/unavailable/not-run. Evidence is fixture, live-local, live-container, or live-hosted and is never promoted between categories.
+Schema 1 records retain revision/environment/harness, scenario/target, ordered steps,
+expected/observed, result/classification, local artifact hashes and limitations.
+Result is passed/failed/unavailable/not-run. Evidence is fixture, live-local,
+live-container or live-hosted; pending records may be unclassified. Validation
+preserves classifications and reports unmet/pending-review observations only;
+it neither authenticates live evidence nor completes Q-01–03. See the
+[protocol and examples](../../verification/framework-qualification.md).
 
 ### Files and ownership
 
 - Create docs/verification/framework-qualification.md
 - Create scripts/qualify_framework.py
 - Create tests/test_qualification_report.py
-- Update docs/release-verification.md
+- Root owns docs/release-verification.md; this preparation does not edit it.
 
 All listed source/test paths are relative to the repository root. New paths are proposed deliverables, not claims that those files exist today.
 
@@ -56,12 +79,12 @@ For each criterion below, preserve the input, produced artifact or observation, 
 
 **Produces:** Write exact environment bootstrap commands, disposable source/target checks, result schema, evidence paths, and cleanup instructions; validate report classification without live writes.
 
-- [ ] 1.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
-- [ ] 1.2 Prepare the concrete cases and expected observations above before authoring or executing the workflow; mark human/live-only observations pending.
-- [ ] 1.3 Write exact environment bootstrap commands, disposable source/target checks, result schema, evidence paths, and cleanup instructions; validate report classification without live writes.
-- [ ] 1.4 Run `uv run --locked --no-sync pytest -q tests/test_qualification_report.py tests/test_machine_integration.py tests/test_rebind.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
-- [ ] 1.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
-- [ ] 1.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
+- [x] 1.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
+- [x] 1.2 Prepare the concrete cases and expected observations above before authoring or executing the workflow; mark human/live-only observations pending.
+- [x] 1.3 Write exact environment bootstrap commands, disposable source/target checks, result schema, evidence paths, and cleanup instructions; validate report classification without live writes.
+- [x] 1.4 Run `uv run --locked --no-sync pytest -q tests/test_qualification_report.py tests/test_machine_integration.py tests/test_rebind.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
+- [x] 1.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
+- [x] 1.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
 
 ### Task 2: Run supported target walkthroughs
 
@@ -99,11 +122,15 @@ For each criterion below, preserve the input, produced artifact or observation, 
 | --- | --- | --- |
 | Q-01: Setup continuity | 1, 2 | Recorded behavioral case and evidence; unresolved human/live results remain pending. |
 | Q-02: Provider substitution | 1, 2, 3 | Recorded behavioral case and evidence; unresolved human/live results remain pending. |
-| Q-03: Handoff and honest evidence | 2, 3 | Recorded behavioral case and evidence; unresolved human/live results remain pending. |
+| Q-03: Handoff and honest evidence | 1, 2, 3 | Recorded behavioral case and evidence; unresolved human/live results remain pending. |
+
+Task 1 preparation implements the read-only validator and protocol only. Its fixture
+checks do not mark Task 2 or Task 3 live observations complete. The next worker
+must retain actual artifacts and review the unmet client/provider obligations.
 
 ## Completion and handoff
 
-- [ ] Run `ai-dlc project check --required`; inspect all five outcomes.
+- [x] Run `ai-dlc project check --required`; inspect all five outcomes. Local preparation candidate: all five passed; 1,437 tests. Re-run after integration; this is not live fulfillment.
 - [ ] Create/link the PR, complete review and required CI, and use `ai-dlc work finish framework-qualification` only after merge evidence exists.
 - [ ] Leave a handoff with work/ticket ID, branch and revision, delivered interfaces, checks and evidence locations, unresolved findings, and the next dependency-unblocked ticket.
 

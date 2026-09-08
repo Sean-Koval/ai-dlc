@@ -92,3 +92,38 @@ tests, live walkthrough evidence, and project templates together. Rebind
 existing work explicitly; do not silently move it between providers. Portable
 configuration may name environment variables, but actual secrets, account
 choices, and machine-local paths remain outside portable project files.
+
+
+## Selected scaffold and client tools
+
+Preview `ai-dlc project adopt` with explicit `--tracker`, `--knowledge` and repeated
+`--agent-client` options, or use the same options with `project init`. Supported
+choices come from trusted definitions; selection does not log in, install tools
+or create remote work. Omitted options retain historical defaults. Copier answers
+preserve selections during `project sync`; authored conflicts require review.
+
+Use `ai-dlc agents render` and its explicit apply operation to deliver the selected
+native clients' owned files. Files alone do not prove client recognition or login.
+Plane has an optional lifecycle adapter and guided provider connection. Select
+and authenticate an explicit deployment/account/project; native guidance or
+scaffolding alone does not qualify a live deployment. GitHub/Jira need no Plane installation.
+
+Obsidian note storage uses the existing machine setting `paths.vault`. Its directory
+must exist; its desktop viewer is optional, including in headless environments.
+Offline readiness does not read notes or test write access. Keep personal vault
+paths and contents out of shared project configuration.
+
+## Optional Design PM route
+
+For interface work, design-brief links the shaped outcome and RQ IDs to a draft
+brief, reviewed task rubric and explicit budget. The user's existing visual tool
+performs generation. Design-evaluate records candidate-specific observations,
+required failures, ratings and unverified checks, with separate-session or human
+review where available and explicit self-review otherwise. No extra installed
+service, fixed model or mandatory paid tool is required.
+
+Follow [design to implementation](design-to-implementation.md#optional-interface-evaluation)
+for the four portable templates and original examples. Formal behavior remains
+with the selected specification provider; the tracker owns delivery status, and
+existing finish gates remain authoritative. The separate human calibration
+protocol is unrun and does not spend the existing generic skill-evaluation budget.

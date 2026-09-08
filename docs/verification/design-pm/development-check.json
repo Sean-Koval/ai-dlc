@@ -1,0 +1,31 @@
+{
+  "kind": "synthetic-development-check",
+  "candidate": "eb04ca19233cf4e2a035228c38bbcac9133e5480",
+  "baseline_source": "4058b24",
+  "baseline_model_settings": null,
+  "candidate_model_settings": null,
+  "baseline_harness": "Codex collaboration agent, fresh context",
+  "candidate_harness": "Codex CLI exec, ephemeral, read-only, user configuration ignored",
+  "candidate_timeout_seconds": 180,
+  "candidate_elapsed_seconds": 46.69387412071228,
+  "candidate_usage": {
+    "input_tokens": 17028,
+    "cached_input_tokens": 10752,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 1278,
+    "reasoning_output_tokens": 21
+  },
+  "actual_cost": null,
+  "baseline_usage": null,
+  "human_ratings": null,
+  "limits": [
+    "Scenario wording was not byte-identical; harness conditions differ. Not a controlled paired experiment.",
+    "Model identity/settings and baseline time/usage unavailable. No improvement or cost comparison.",
+    "No images, running UI, network or provider qualification. Candidate session emitted only one answer item."
+  ],
+  "sha256": {
+    "with-assets-input.md": "b88583c84c1ec99c64f8f5b6c5b69dc5c429ad0682b6e30ffd13889cefb7224d",
+    "baseline.md": "f90af7a0445552f69d9dc9a6f4e87bb5894635843d163ec74f7bc54e1a753d43",
+    "with-assets-output.md": "160ba01b91b6d5b16e2876ccc8fc511bb50f9126b150a2285ce401d919c6b959"
+  }
+}

@@ -164,3 +164,18 @@ When replacing or adding a tool:
 Never place secret values, account identifiers, or machine-local paths in this
 map. Naming a required environment variable in portable configuration is safe;
 storing its value there is not.
+
+## Optional Design PM route
+
+For interface work, design-brief links the shaped outcome and RQ IDs to a draft
+brief, reviewed task rubric and explicit budget. The user's existing visual tool
+performs generation. Design-evaluate records candidate-specific observations,
+required failures, ratings and unverified checks, with separate-session or human
+review where available and explicit self-review otherwise. No extra installed
+service, fixed model or mandatory paid tool is required.
+
+Follow [design to implementation](design-to-implementation.md#optional-interface-evaluation)
+for the four portable templates and original examples. Formal behavior remains
+with the selected specification provider; the tracker owns delivery status, and
+existing finish gates remain authoritative. The separate human calibration
+protocol is unrun and does not spend the existing generic skill-evaluation budget.

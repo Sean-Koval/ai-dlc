@@ -5,10 +5,13 @@ import re
 import shutil
 import subprocess
 import tempfile
+import tomllib
 from pathlib import Path
 
 import copier
+import yaml
 
+from ai_dlc.config import resolve_layers
 from ai_dlc.files import assets, inside
 
 RUNTIME_DIRS = {
@@ -111,6 +114,63 @@ def _apply(root: Path, before: dict, after: dict) -> list[str]:
     return changed
 
 
+def plan_toolset(*, capabilities=None, providers=None, agent_clients=None) -> dict:
+    """Pure declared selection; no account identity, remote access or destination writes."""
+    from ai_dlc.agents import CLIENT_SKILL_DIRECTORIES
+    from ai_dlc.provider_definitions import DEFINITIONS
+
+    capabilities = list(CAPABILITIES if capabilities is None else dict.fromkeys(capabilities))
+    if set(capabilities) - set(CAPABILITIES):
+        raise ValueError("Unknown role capability")
+    providers = providers or {}
+    if set(providers) - {"tracker", "knowledge"}:
+        raise ValueError("Only tracker and knowledge scaffold selections are supported")
+    for role, provider in providers.items():
+        if role not in capabilities:
+            raise ValueError(f"{role.title()} selection requires the {role} capability")
+        definition = DEFINITIONS.get(provider)
+        if definition is None or role not in definition.roles:
+            raise ValueError(
+                f"Unsupported {role} scaffold: {provider}; custom providers remain configurable"
+            )
+    if agent_clients is not None and "agent-client" not in capabilities:
+        raise ValueError("Client selection requires the agent-client capability")
+    clients = list(
+        dict.fromkeys(["claude-code", "codex"] if agent_clients is None else agent_clients)
+    )
+    if set(clients) - set(CLIENT_SKILL_DIRECTORIES):
+        raise ValueError("Unsupported agent client")
+    defaults = {
+        "specs": "openspec",
+        "tracker": "linear",
+        "knowledge": "obsidian",
+        "scm": "github",
+        "deploy": "none",
+    }
+    roles: dict = {
+        role: providers.get(role, default)
+        for role, default in defaults.items()
+        if role in capabilities
+    }
+    if "agent-client" in capabilities:
+        roles["agent-client"] = clients
+    settings = {}
+    limitations = []
+    for role in ("tracker", "knowledge"):
+        if role not in roles:
+            continue
+        definition = DEFINITIONS[roles[role]]
+        if role == "tracker" or definition.scaffold_defaults:
+            settings[definition.kind] = dict(definition.scaffold_defaults) or {
+                "kind": definition.kind
+            }
+        if not definition.lifecycle_available:
+            limitations.append(
+                f"{definition.kind}: AI-DLC {role} lifecycle adapter is unavailable; native tools do not enable tracked-work operations."
+            )
+    return {"roles": roles, "providers": settings, "limitations": limitations}
+
+
 def adopt(
     root: Path,
     preset: str = "generic",
@@ -121,22 +181,17 @@ def adopt(
     capabilities: list[str] | None = None,
     initialize: bool = False,
     providers: dict[str, str] | None = None,
+    agent_clients: list[str] | None = None,
 ) -> dict:
     if preset not in {"generic", "python", "node", "rust"}:
         raise ValueError("Unknown preset")
     capabilities = list(CAPABILITIES if capabilities is None else dict.fromkeys(capabilities))
     if set(capabilities) - set(CAPABILITIES):
         raise ValueError("Unknown role capability")
-    providers = providers or {}
-    if set(providers) - {"tracker"}:
-        raise ValueError("Only tracker scaffold selection is supported")
-    tracker = providers.get("tracker", "linear")
-    if tracker not in {"linear", "github-issues"}:
-        raise ValueError(
-            f"Unsupported tracker scaffold: {tracker}; custom providers remain configurable"
-        )
-    if providers and "tracker" not in capabilities:
-        raise ValueError("Tracker selection requires the tracker capability")
+    toolset = plan_toolset(
+        capabilities=capabilities, providers=providers, agent_clients=agent_clients
+    )
+    tracker = toolset["roles"].get("tracker", "linear")
     root = Path(root).resolve()
     source = template_source or str(assets("project-templates"))
     before = _files(root)
@@ -148,6 +203,9 @@ def adopt(
             data={
                 "preset": preset,
                 "tracker": tracker,
+                "tracker_settings": toolset["providers"].get(tracker, {}),
+                "knowledge": toolset["roles"].get("knowledge", "obsidian"),
+                "agent_clients": toolset["roles"].get("agent-client", []),
                 "capabilities": capabilities,
                 "initialize": initialize,
                 "project_name": "project-"
@@ -181,9 +239,46 @@ def adopt(
         return {
             "status": "applied" if apply else "planned",
             "files": changes,
+            "toolset": toolset,
             "template_source": source,
             "local_source": "://" not in source,
         }
+
+
+def _validate_toolset_answers(content: bytes) -> None:
+    """Check retained and staged selections before Copier can publish destination changes."""
+    try:
+        answers = yaml.safe_load(content)
+    except yaml.YAMLError:
+        raise ValueError("Copier answers must contain valid selection data") from None
+    if not isinstance(answers, dict):
+        raise ValueError("Invalid Copier answers: expected selection mapping")  # noqa: TRY004
+    capabilities = answers.get("capabilities", CAPABILITIES)
+    if not isinstance(capabilities, list) or not all(
+        isinstance(value, str) for value in capabilities
+    ):
+        raise ValueError("Copier capabilities must be a string list")
+    plan_toolset(capabilities=capabilities)
+    providers = {role: answers[role] for role in ("tracker", "knowledge") if role in answers}
+    if not all(isinstance(value, str) for value in providers.values()):
+        raise ValueError("Copier provider selections must be strings")
+    clients = answers.get("agent_clients")
+    if "agent_clients" in answers and (
+        not isinstance(clients, list) or not all(isinstance(value, str) for value in clients)
+    ):
+        raise ValueError("Copier client selections must be a string list")
+    # Answers retain defaults even for disabled capabilities; validate the declared
+    # choices without treating those retained defaults as new capability requests.
+    selected = plan_toolset(providers=providers, agent_clients=clients)
+    if "tracker_settings" in answers:
+        settings = answers["tracker_settings"]
+        tracker = selected["roles"]["tracker"]
+        if settings != selected["providers"][tracker] and not (
+            "tracker" not in capabilities and settings == {}
+        ):
+            raise ValueError(
+                "Copier tracker defaults differ from the trusted provider definition; review a fresh scaffold selection"
+            )
 
 
 def sync(root: Path, apply: bool = False, *, vcs_ref: str | None = None) -> dict:
@@ -191,6 +286,7 @@ def sync(root: Path, apply: bool = False, *, vcs_ref: str | None = None) -> dict
     before = _files(root)
     if ".copier-answers.yml" not in before:
         raise ValueError("Adopt a versioned Copier template before sync")
+    _validate_toolset_answers(before[".copier-answers.yml"])
     with tempfile.TemporaryDirectory(prefix="ai-dlc-sync-") as temporary:
         stage = Path(temporary).resolve() / "project"
         shutil.copytree(root, stage, ignore=_ignore(root), symlinks=True)
@@ -218,6 +314,8 @@ def sync(root: Path, apply: bool = False, *, vcs_ref: str | None = None) -> dict
             conflict="inline",
         )
         after = _files(stage)
+        if ".copier-answers.yml" not in after:
+            raise ValueError("Updated template must retain its Copier answers")
         conflicts = sorted(
             name
             for name in after
@@ -226,6 +324,9 @@ def sync(root: Path, apply: bool = False, *, vcs_ref: str | None = None) -> dict
         )
         if conflicts:
             return {"status": "conflict", "conflicts": conflicts}
+        _validate_toolset_answers(after[".copier-answers.yml"])
+        if "ai-dlc.toml" in after:
+            resolve_layers([("project", tomllib.loads(after["ai-dlc.toml"].decode()))])
         changed = sorted(k for k in before.keys() | after.keys() if before.get(k) != after.get(k))
         if apply:
             _apply(root, before, after)

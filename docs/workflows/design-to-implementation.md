@@ -8,9 +8,9 @@ implementation diff.
 Begin with a shaped outcome: evidence, assumptions, alternatives, and the next
 worthwhile increment. UI/UX exploration applies when the increment changes an
 interface; API, infrastructure, and migration work use suitable design methods.
-The planned [product-shaping workflow](../../openspec/specs/product-shaping-workflow/spec.md)
-and [traceability change](../../openspec/changes/spec-delivery-traceability/proposal.md)
-extend this handoff without introducing a second specification system.
+Use the [product brief](../../agents/templates/product-brief.md) and
+[delivery slice](../../agents/templates/delivery-slice.md) to carry that intent
+forward without introducing a second specification system.
 
 [Back to the workflow map](../development-workflow.md)
 
@@ -56,6 +56,53 @@ flowchart TD
 The work record is the traceability bridge. It binds approved scope and remote
 artifacts before implementation mutates the tracker or creates branch state.
 It should link durable sources rather than paste their contents.
+
+## From requirements to finishable work
+
+Use spec-from-prd with a reviewed canonical brief or PRD. Keep OUT/RQ IDs owned
+by that source; link requirement → formal scenario (when required) → deliverable
+work ID → implementation step → observed verification. Product rationale belongs
+in the brief/design, behavior with the selected specification provider, delivery
+status in work/tracker, and implementation steps inside the work item.
+
+One behavior ticket owns one independently finishable OpenSpec change. A parent
+epic coordinates children without one shared specification gate. Tests, parser,
+docs and refactoring checkboxes are steps, not automatic extra tickets. A
+verification-only item records `requires_spec=false` and its reviewed reason,
+references existing behavior and retains all applicable completion gates.
+
+See [localized export](../../agents/examples/delivery-slices/localized-export.md)
+and [compatibility rehearsal](../../agents/examples/delivery-slices/compatibility-rehearsal.md).
+These synthetic examples propose local IDs and document destinations; they do
+not install records, create remote work or establish actual approval/live results.
+
+Work records accept optional `requirements` and `depends_on` lists, defaulting to
+empty for older work. Requirements are nonblank single-token IDs, not copied spec
+prose or paths automatically interpreted as source documents. Put canonical source,
+plan, specification and evidence references in `artifacts`. Dependencies name local
+work IDs in `.ai-dlc/work/`; preserve their pinned providers and binding identity.
+
+Run `ai-dlc work validate WORK_ID --root .` before publication. It returns valid
+(exit 0) or invalid (exit 1), reads only the selected dependency closure, and
+initializes no mutation journal. Missing/unsafe IDs, self/cycles, invalid records,
+binding drift and missing local artifact files/directories fail before publish
+or start effects. Unrelated drafts do not block the selected work. Local artifact
+paths must remain in the repository without symlinks. Fragments are retained as
+references without interpreting specification text. HTTP(S) references are not
+probed, and tracker/PR/branch/deployment/knowledge references remain provider-owned.
+
+Validation does not approve scope or prove completion. `work start` freshly reads
+every reachable dependency through its pinned tracker and requires canonical
+`closed`. Cancelled, duplicate, incomplete, unpublished or unavailable statuses
+block before branch creation, work saves or tracker changes. Resolve missing
+interfaces/status with their owners; prepare independent local drafts meanwhile.
+
+First issue creation includes scope, requirement/dependency references, artifacts,
+specification decision and acceptance. Re-publication reconciles the existing
+mapping/correlation without overwriting authored descriptions or changing prior
+journal identities. It does not publish updated scope into an existing issue.
+Keep unresolved product semantics and unperformed live checks visible. Review,
+merge, exact-revision evidence and `ai-dlc work finish` remain the completion path.
 
 ## Greenfield handoff
 
@@ -107,3 +154,46 @@ or operational decision that the design does not answer, pause and update the
 reviewed artifact before continuing. Small implementation details may remain
 in code and tests. Decisions that future maintainers must understand belong in
 the repository.
+
+
+Specification references may be provider-native IDs or explicit local documents.
+Native IDs (including slash IDs and provider URIs) are not interpreted as missing
+repository files. Use `./name` for an ambiguous local directory; filesystem
+notation, document suffixes such as `.md`, and existing repository paths receive
+local containment/existence checks. This does not replace the specification
+provider's archive or finish validation.
+
+## Optional interface evaluation
+
+When a shaped increment needs visual or interaction judgment, use design-brief
+with the canonical product brief and delivery slice/RQ IDs. Create a brief and
+versioned rubric before generation; keep proposed defaults and task-specific
+budget approval distinct. Small brand-constrained fixes may use one concise
+combined record and the existing component system.
+
+Use the [design brief](../../agents/templates/design-brief.md),
+[rubric](../../agents/templates/design-rubric.md),
+[evaluation](../../agents/templates/design-evaluation.md) and
+[selection](../../agents/templates/design-selection.md). The
+[original library-room examples](../../agents/examples/design-evaluation/library-rooms.md)
+show failed journeys, brand fit, static limitations and earlier-candidate selection.
+They contain synthetic observations, not executed UI or human preference evidence.
+
+The chosen existing visual tool generates an identified candidate. Design-evaluate
+receives its revision/digest, brief, rubric and access instructions; a separate
+session or human is an available review route. Same-session generator review is
+self-review. A required failure blocks design acceptance, and absent interaction
+evidence stays unverified regardless of visual scores. Keep reports and findings
+with their exact candidate and rubric; a new rubric requires reevaluation.
+
+Retain `docs/design/<work-id>/brief.md`, `rubric.md`,
+`iterations/<candidate-id>/evaluation.md` and `decision.md`, or equivalent stable
+sections in a concise record. Stop on the declared budget/plateau/decision boundary
+without inferring success or more authorized rounds. Select an earlier revision
+when its matching evidence qualifies. Hand the selected design, remaining findings
+and behavior requirements to needs-spec and the existing delivery workflow.
+
+The [calibration protocol](../../agents/examples/design-evaluation/calibration.md)
+requires a separately approved experiment and human participation. It remains
+unrun; readable Markdown and packaging checks establish no client capability or
+design-quality gain. This optional route adds no service, model, CLI or finish gate.

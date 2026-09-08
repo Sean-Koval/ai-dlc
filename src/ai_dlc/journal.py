@@ -16,6 +16,13 @@ class Journal:
         )
         self.db.commit()
 
+    def lookup(self, operation_id):
+        """Read prior reconciliation state without changing its payload fingerprint."""
+        row = self.db.execute(
+            "SELECT status,result FROM operations WHERE id=?", (operation_id,)
+        ).fetchone()
+        return {"status": row[0], "result": json.loads(row[1]) if row[1] else None} if row else None
+
     def begin(self, operation_id, payload):
         fp = hashlib.sha256(
             json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()

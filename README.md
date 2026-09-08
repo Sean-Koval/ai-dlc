@@ -11,7 +11,8 @@ guidance, and verification where useful; repository policy defines required gate
 UI/UX design is one optional workflow within the broader product-development process.
 
 See the [product direction](docs/product-direction.md), [delivery roadmap](docs/roadmap.md),
-and [executor handoff](docs/handoffs/framework-delivery.md). Those pages distinguish
+[work-computer setup](docs/workflows/work-computer-setup.md), and
+[executor handoff](docs/handoffs/framework-delivery.md). Those pages distinguish
 planned capabilities from the implementation available today.
 
 This checkout is a **v4 implementation candidate**. Native macOS Apple silicon bootstrap, a clean ARM64 devcontainer lifecycle, required checks on Linux x64/ARM64 and macOS Intel, Docker provider isolation, and read-only Linear sandbox health have been exercised. Factory-clean macOS, hosted cloud sessions, remaining live integrations, and release publication still require explicit walkthroughs. See [verification status](docs/release-verification.md). There is no published v4 bootstrap release yet.
@@ -64,9 +65,9 @@ immutable tag to another, reenroll with the new ref. Enroll a second machine
 with the same advertised ref under the selected policy and its own machine ID.
 
 Use `ai-dlc machine status`, `plan`, `apply`, `sync`, and `doctor` to inspect,
-preview, reconcile, update, and diagnose that enrollment. Put Linear and future
-provider credentials in a password manager or keychain that injects the
-configured environment variable (for example, `LINEAR_SANDBOX_TOKEN`); never
+preview, reconcile, update, and diagnose that enrollment. Put selected tracker
+credentials in a password manager or keychain that injects the
+configured environment variable named by that provider; never
 put values in AI-DLC Git files or commit `.env` files.
 
 Local CLI and local MCP execution are the current control plane. Hosted or
@@ -84,9 +85,14 @@ Personal MCP servers declared in the selected profile are previewed by `setup pl
 ## Prepare a project
 
 ```sh
-ai-dlc project init my-project --preset python --apply
-ai-dlc project adopt --root /path/to/existing-project --preset generic
+ai-dlc project init my-project --preset python --tracker github-issues --apply
+ai-dlc project adopt --root /path/to/existing-project --preset generic --tracker github-issues
 ```
+
+For work repositories, follow [work-computer setup](docs/workflows/work-computer-setup.md)
+to select Jira Cloud, private Obsidian storage and Claude Code/Antigravity. Personal
+GitHub connection setup proposes a repository-associated Project by default; Plane
+is optional. Omitted provider options preserve legacy scaffold defaults.
 
 Adoption previews changes; add `--apply` after reviewing the preview. It stages changes and refuses conflicting destination content. Generic, Python/uv, Node, and Rust presets include durable documentation and shared instructions. Versioned Git template sources support Copier updates; bundled development templates require an explicit versioned source before cross-machine updates.
 

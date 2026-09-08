@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from collections.abc import Callable, Mapping
 from pathlib import Path
 from typing import Any
@@ -12,7 +13,7 @@ from ai_dlc.credentials import credential_status
 from ai_dlc.files import assets, inside
 
 _READY = "ready"
-_BLOCKING_DIMENSIONS = {"tool", "configuration", "credential", "guidance"}
+_BLOCKING_DIMENSIONS = {"tool", "configuration", "credential", "guidance", "lifecycle-adapter"}
 
 
 def _check(
@@ -131,6 +132,130 @@ def _tool_checks(
     return checks
 
 
+def _component_definitions(component: dict, config: dict):
+    from ai_dlc.provider_definitions import DEFINITIONS
+    from ai_dlc.providers import EXTENSION_PROVIDER_KINDS, PROVIDER_KIND_ALIASES
+
+    settings = config.get("providers", {}).get(component["provider"], {})
+    kind = settings.get("kind", settings.get("type", component["provider"]))
+    kind = PROVIDER_KIND_ALIASES.get(kind, kind)
+    runtime = DEFINITIONS.get(kind) if isinstance(kind, str) else None
+    selected = DEFINITIONS.get(component["id"])
+    problem = None
+    if runtime is not None and component["role"] not in runtime.roles:
+        problem = "runtime kind is incompatible with the selected role"
+    elif selected is not None and runtime is None and kind not in EXTENSION_PROVIDER_KINDS:
+        problem = "unknown runtime kind cannot borrow a trusted built-in component"
+    elif selected is not None and selected.inactive and runtime != selected:
+        problem = "runtime kind does not identify the selected inactive capability"
+    definitions = []
+    for definition in (selected, runtime):
+        if (
+            definition is not None
+            and component["role"] in definition.roles
+            and definition not in definitions
+        ):
+            definitions.append(definition)
+    return definitions, problem
+
+
+def _definition_checks(component: dict, config: dict, *, headless: bool) -> list[dict[str, str]]:
+    """Trusted bounded requirements; no executable/custom schema extensions."""
+    definitions, problem = _component_definitions(component, config)
+    checks = []
+    if problem:
+        checks.append(
+            _check(
+                component["id"],
+                "configuration",
+                "blocked",
+                problem,
+                f"Review providers.{component['provider']}.kind and component for the selected role.",
+            )
+        )
+    for definition in definitions:
+        checks.extend(
+            _trusted_definition_checks(
+                definition, component, config, headless=headless, compatible=problem is None
+            )
+        )
+    return checks
+
+
+def _trusted_definition_checks(definition, component, config, *, headless, compatible):
+    checks = []
+    if definition.inactive and compatible:
+        checks.append(
+            _check(
+                component["id"],
+                "activation",
+                "inactive",
+                f"{component['role']} is explicitly disabled; no service qualification applies.",
+                "No action required while this capability is disabled.",
+            )
+        )
+    for requirement in definition.runtime_requirements:
+        value = _config_value(config, requirement.path)
+        available = isinstance(value, str) and re.fullmatch(requirement.pattern, value) is not None
+        checks.append(
+            _check(
+                component["id"],
+                "configuration",
+                _READY if available else "missing",
+                f"{requirement.path} matches {requirement.description}; remote identity is unverified."
+                if available
+                else f"{requirement.path} must match {requirement.description}.",
+                "No action required for local configuration."
+                if available
+                else f"Configure {requirement.path} as {requirement.description}.",
+            )
+        )
+    if not definition.lifecycle_available:
+        checks.append(
+            _check(
+                component["id"],
+                "lifecycle-adapter",
+                "blocked",
+                f"AI-DLC {component['role']} lifecycle adapter is unavailable; native tools and guidance do not enable tracked-work operations.",
+                "Select an implemented lifecycle provider or retain this explicit unsupported capability.",
+            )
+        )
+    if definition.local_directory:
+        value = _config_value(config, definition.local_directory)
+        available = False
+        if isinstance(value, str) and value.strip():
+            try:
+                available = Path(value).expanduser().resolve().is_dir()
+            except (OSError, ValueError, RuntimeError):
+                pass
+        checks.append(
+            _check(
+                component["id"],
+                "configuration",
+                _READY if available else "missing",
+                f"{definition.local_directory} names an existing note-storage directory; write access is not tested."
+                if available
+                else f"{definition.local_directory} must name an existing note-storage directory.",
+                "No action required for directory availability; use explicit operations to verify access."
+                if available
+                else f"Configure {definition.local_directory} in machine configuration to an existing vault.",
+            )
+        )
+    if definition.optional_viewer:
+        checks.append(
+            _check(
+                component["id"],
+                "optional-viewer",
+                "unavailable" if headless else "unverified",
+                f"Optional {definition.optional_viewer} desktop viewer is unavailable in headless mode; note storage does not require it."
+                if headless
+                else f"Optional {definition.optional_viewer} desktop viewer was not inspected; note storage does not require it.",
+                "Use a desktop viewer only when visual browsing is needed; it is not a prerequisite for note operations.",
+            )
+        )
+    return checks
+
+
 def inspect_readiness(
     root: Path,
     config: dict,
@@ -225,6 +350,7 @@ def inspect_readiness(
         )
     for component in resolved["components"]:
         checks.extend(_tool_checks(component, modules, headless=headless, probe=probe))
+        checks.extend(_definition_checks(component, config, headless=headless))
 
         provider_config = config.get("providers", {}).get(component["provider"], {})
         for path in component["required_config"]:
@@ -302,15 +428,17 @@ def inspect_readiness(
                     )
                 )
 
-        checks.append(
-            _check(
-                component["id"],
-                "provider-health",
-                "unverified",
-                "provider health is not inspected during offline readiness",
-                "Run doctor for an explicit provider health inspection.",
+        definitions, problem = _component_definitions(component, config)
+        if problem or not any(definition.inactive for definition in definitions):
+            checks.append(
+                _check(
+                    component["id"],
+                    "provider-health",
+                    "unverified",
+                    "provider health is not inspected during offline readiness",
+                    "Run doctor for an explicit provider health inspection.",
+                )
             )
-        )
 
     ready = all(
         check["status"] == _READY or check["dimension"] not in _BLOCKING_DIMENSIONS

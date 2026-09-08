@@ -1,0 +1,48 @@
+{
+  "checks_digest": "eccd1990d41d372298a4c49707ce844b264b4db7b4f77c716e5d69ac198089cd",
+  "commit": "4064bd9a5ca34efc4b35d9fecde7d58c194e744f",
+  "dirty": false,
+  "engine_version": "0.4.0",
+  "environment_digest": "2efa6fc94439ea5c2e5dd0b2a5ac4b5042452c614d3c22637472e16094d7ed06",
+  "outcomes": [
+    {
+      "duration_seconds": 0.6092294999398291,
+      "exit_code": 0,
+      "id": "generated",
+      "status": "passed"
+    },
+    {
+      "duration_seconds": 0.11102012498304248,
+      "exit_code": 0,
+      "id": "format",
+      "status": "passed"
+    },
+    {
+      "duration_seconds": 0.06329537485726178,
+      "exit_code": 0,
+      "id": "lint",
+      "status": "passed"
+    },
+    {
+      "duration_seconds": 9.026388500118628,
+      "exit_code": 0,
+      "id": "types",
+      "status": "passed"
+    },
+    {
+      "duration_seconds": 477.56807866692543,
+      "exit_code": 0,
+      "id": "test",
+      "status": "passed"
+    }
+  ],
+  "required": [
+    "generated",
+    "format",
+    "lint",
+    "types",
+    "test"
+  ],
+  "schema": 1,
+  "target": "local"
+}

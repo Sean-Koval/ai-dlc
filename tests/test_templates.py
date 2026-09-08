@@ -783,6 +783,15 @@ def test_portable_examples_are_the_only_profiles_in_built_distributions(tmp_path
             "templates/prd.md",
             "examples/product-shaping/greenfield.md",
             "examples/product-shaping/brownfield.md",
+            "templates/design-brief.md",
+            "templates/design-rubric.md",
+            "templates/design-evaluation.md",
+            "templates/design-selection.md",
+            "examples/design-evaluation/library-rooms.md",
+            "examples/design-evaluation/calibration.md",
+            "templates/delivery-slice.md",
+            "examples/delivery-slices/localized-export.md",
+            "examples/delivery-slices/compatibility-rehearsal.md",
         ]:
             expected = (assets("agents") / relative).read_bytes()
             assert archive.read(f"ai_dlc/assets/agents/{relative}") == expected
@@ -798,6 +807,15 @@ def test_portable_examples_are_the_only_profiles_in_built_distributions(tmp_path
             "templates/prd.md",
             "examples/product-shaping/greenfield.md",
             "examples/product-shaping/brownfield.md",
+            "templates/design-brief.md",
+            "templates/design-rubric.md",
+            "templates/design-evaluation.md",
+            "templates/design-selection.md",
+            "examples/design-evaluation/library-rooms.md",
+            "examples/design-evaluation/calibration.md",
+            "templates/delivery-slice.md",
+            "examples/delivery-slices/localized-export.md",
+            "examples/delivery-slices/compatibility-rehearsal.md",
         ]:
             for prefix in ["agents", "project-templates/project/docs"]:
                 content = archive.extractfile(f"{source_root}/{prefix}/{relative}")
@@ -820,11 +838,14 @@ def test_portable_examples_are_the_only_profiles_in_built_distributions(tmp_path
         parts = Path(name).parts
         return bool(
             ".git" in parts
+            or parts[0] == "target"
             or Path(name).name in {"enrollment.toml", "sean.toml"}
             or Path(name).name.startswith(".env")
             or any(parts[index : index + 2] == (".ai-dlc", "local") for index in range(len(parts)))
         )
 
+    assert "Cargo.toml" in members
+    assert any(name.startswith("crates/") and name.endswith(".rs") for name in members)
     assert not [name for name in members if is_forbidden_member(name)]
 
     def contains_forbidden_content(content: bytes) -> bool:
@@ -1109,7 +1130,7 @@ def test_explicit_tracker_is_persisted_in_answers(tmp_path, tracker):
 
 def test_unsupported_scaffold_tracker_is_explicit(tmp_path):
     with pytest.raises(ValueError, match="Unsupported tracker"):
-        adopt(tmp_path, providers={"tracker": "plane"})
+        adopt(tmp_path, providers={"tracker": "unregistered"})
     assert not (tmp_path / "ai-dlc.toml").exists()
 
 
@@ -1172,3 +1193,58 @@ def _contains_private_distribution_content(content: bytes, checkout_root: Path) 
 )
 def test_distribution_privacy_scan_distinguishes_rooted_paths_from_prose(content, private):
     assert _contains_private_distribution_content(content, Path("/" + "workspace")) is private
+
+
+def test_delivery_slice_assets_are_available_without_creating_work_items(tmp_path):
+    from ai_dlc.agents import render_agents
+
+    root = tmp_path / "project"
+    adopt(root, apply=True)
+    render_agents(root, apply=True)
+    for relative in [
+        "templates/delivery-slice.md",
+        "examples/delivery-slices/localized-export.md",
+        "examples/delivery-slices/compatibility-rehearsal.md",
+    ]:
+        assert (root / "docs" / relative).read_bytes() == (assets("agents") / relative).read_bytes()
+    assert not list((root / ".ai-dlc/work").glob("*.toml"))
+    for client in [".agents", ".claude"]:
+        skill = (root / client / "skills/spec-from-prd/SKILL.md").read_text()
+        assert "docs/templates/delivery-slice.md" in skill
+        assert skill == (assets("agents") / "skills/spec-from-prd/SKILL.md").read_text()
+
+
+@pytest.mark.parametrize("initialize", [False, True])
+def test_design_pm_artifacts_reach_new_and_existing_projects(tmp_path, initialize):
+    root = tmp_path / "product"
+    root.mkdir()
+    (root / "application.txt").write_text("authored application")
+    result = adopt(root, apply=True, initialize=initialize)
+    assert result["status"] == "applied"
+    assert (root / "application.txt").read_text() == "authored application"
+    for relative in [
+        "templates/design-brief.md",
+        "templates/design-rubric.md",
+        "templates/design-evaluation.md",
+        "templates/design-selection.md",
+        "examples/design-evaluation/library-rooms.md",
+        "examples/design-evaluation/calibration.md",
+    ]:
+        assert (root / "docs" / relative).read_bytes() == (assets("agents") / relative).read_bytes()
+    config = tomllib.loads((root / "ai-dlc.toml").read_text())
+    assert config["gates"]["finish"] == ["specification-current", "pr-merged", "ci-green"]
+    assert sorted(path.name for path in (root / "docs/design").iterdir()) == ["README.md"]
+
+
+@pytest.mark.parametrize(
+    "name", ["design-brief", "design-rubric", "design-evaluation", "design-selection"]
+)
+def test_design_pm_adoption_preserves_authored_artifact_templates(tmp_path, name):
+    authored = tmp_path / f"docs/templates/{name}.md"
+    authored.parent.mkdir(parents=True)
+    authored.write_text("authored design contract")
+    result = adopt(tmp_path, apply=True)
+    assert result["status"] == "conflict"
+    assert str(authored.relative_to(tmp_path)) in result["conflicts"]
+    assert authored.read_text() == "authored design contract"
+    assert not (tmp_path / "ai-dlc.toml").exists()

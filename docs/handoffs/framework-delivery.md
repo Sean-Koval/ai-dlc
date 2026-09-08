@@ -1,12 +1,22 @@
 # Framework delivery: executor handoff
 
-Current completion: GitHub #18 finished through AI-DLC at merged `631d10a`; all five
-merged-revision receipts verified. The next integrated candidate on
-`codex/work-computer-onboarding` includes reviewed #10 bundles, #11 shaping and
-#19 native/shared-connection children. Clean `275e0b3` passed all required checks
-with 1,408 tests. #10 is now locally bound to GitHub through reviewed migration;
-its own finish and #11 finish await PR/merged-CI evidence. #12, toolset/native
-composition, Jira and bootstrap reliability are active separate streams.
+Current completion: GitHub #18 finished through AI-DLC at merged `631d10a`.
+PR [#25](https://github.com/Sean-Koval/ai-dlc/pull/25) merged at
+`ab6b7743b435d63848bb45affd1be7eb6229b395`; all five platform jobs supplied
+passing exact merged-revision receipts. A fresh GitHub clone completed source
+bootstrap and AI-DLC finish for #10 and #11. Both issues are Completed and their
+Project items are Done. Native harness/shared connection children are delivered
+in that PR; parent #19 remains open for toolset and connection composition.
+
+The reviewed integration in PR [#26](https://github.com/Sean-Koval/ai-dlc/pull/26)
+is `codex/work-computer-toolsets`: traceability, toolset/native composition,
+Jira and optional Plane new-work adapters, Design PM guidance, credential/SCM
+readiness, private vault setup, bootstrap reliability and qualification preparation.
+The [integration record](../verification/work-computer-toolsets.md) identifies
+accepted revisions, current checks and earlier failed attempts. GitHub owns live
+delivery status. Finish #12, then #13 and #19 only through the merged PR's exact
+CI receipts; keep actual native-client, tenant, human-calibration and release
+obligations open. Historical source checks never substitute for those observations.
 
 ## Current authority — September 7
 
