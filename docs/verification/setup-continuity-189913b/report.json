@@ -1,0 +1,643 @@
+{
+  "run_id": "setup-continuity-189913b-20260908",
+  "scenarios": [
+    {
+      "bundle_revisions": {},
+      "classification": null,
+      "commit": null,
+      "environment": {
+        "architecture": null,
+        "container_id": null,
+        "image_digest": null,
+        "inherited_tools": [],
+        "isolation": "planned",
+        "os": null,
+        "version": null
+      },
+      "evidence": [],
+      "expected": "Prepare the declared revision and independently scoped local bindings.",
+      "harness_name": null,
+      "harness_version": null,
+      "limitations": [
+        "This probe does not fill this slot. Bootstrap was already performed separately by root; full staged-update failure/rollback was not induced. An invalid-hash source update refused before publication with all project bytes unchanged, which is narrower evidence."
+      ],
+      "observed": "",
+      "profile_revision": null,
+      "provider": null,
+      "result": "not-run",
+      "scenario_id": "Q01-setup",
+      "steps": [
+        "Follow the reviewed framework qualification protocol; record actual actions."
+      ],
+      "target_id": "native-macos-arm64"
+    },
+    {
+      "bundle_revisions": {},
+      "classification": null,
+      "commit": null,
+      "environment": {
+        "architecture": null,
+        "container_id": null,
+        "image_digest": null,
+        "inherited_tools": [],
+        "isolation": "planned",
+        "os": null,
+        "version": null
+      },
+      "evidence": [],
+      "expected": "Prepare the declared revision and independently scoped local bindings.",
+      "harness_name": null,
+      "harness_version": null,
+      "limitations": [
+        "Not executed; revisions, environment, credentials and client availability must be recorded, not inferred."
+      ],
+      "observed": "",
+      "profile_revision": null,
+      "provider": null,
+      "result": "not-run",
+      "scenario_id": "Q01-setup",
+      "steps": [
+        "Follow the reviewed framework qualification protocol; record actual actions."
+      ],
+      "target_id": "container-ubuntu2404-arm64"
+    },
+    {
+      "bundle_revisions": {},
+      "classification": "live-local",
+      "commit": "189913b6cfc2c42828e35f4e2755c982b7f1e2da",
+      "environment": {
+        "os": "Darwin",
+        "version": "15.3.2",
+        "architecture": "arm64",
+        "isolation": "existing-host",
+        "image_digest": null,
+        "container_id": null,
+        "inherited_tools": [
+          "Prepared repository .venv Python; existing system Git; existing PATH tools. See captured version outputs."
+        ]
+      },
+      "evidence": [
+        {
+          "path": "native.json",
+          "sha256": "603fecd882014ea9961179f31b2e0c1cc3d16cde57a7fed440a74bfea591320b",
+          "kind": "live-local",
+          "producer": "AI-DLC qualification operator",
+          "method": "Task operator capture; literal source/workspace/user paths redacted. Hash identifies redacted bytes, not original raw capture. No values or outcomes changed."
+        },
+        {
+          "path": "probe.py",
+          "sha256": "ca7a0d7f127603abec87eff4347f72c83b1211f9eb732302b58e20ba9445d914",
+          "kind": "live-local",
+          "producer": "AI-DLC qualification operator",
+          "method": "Exact frozen probe source used for both actual runs; no redaction."
+        }
+      ],
+      "expected": "Repeat setup at the same revision without duplicate owned assets.",
+      "harness_name": "AI-DLC CLI subprocess (not a native model client)",
+      "harness_version": "0.4.0",
+      "limitations": [
+        "Prepared interpreter reused, no bootstrap or factory-clean claim.",
+        "Local original test inputs are deliberately authored but operations are actual CLI calls, not mocked services.",
+        "Invalid update refused before publication; failed publication/restore and race recovery remain unobserved operationally.",
+        "No native model/client session, remote provider, actual vault or human calibration.",
+        "No OS-wide network isolation; declared reserved HTTPS bundle URL routes to local file source via task-local Git insteadOf configuration; no remote portability proven.",
+        "Local profile source is nonportable; reserved bundle URL uses explicit local Git routing. Input content is synthetic qualification material; the recorded CLI operations are actual existing-host observations.",
+        "Rendering is project-file evidence, not fresh Codex/Claude/Antigravity client execution.",
+        "Native Mac15.3.2 arm64 existing host with prepared Python3.12.11 and existing Git2.37.1; source bootstrap not repeated."
+      ],
+      "observed": "Repeated actual project adoption, machine enrollment and managed rendering; project and isolated configuration snapshots were byte-identical. No duplicate owned assets.",
+      "profile_revision": "76e440c4e3a40a5a7a8ffdb1ff954458c25bae99",
+      "provider": null,
+      "result": "passed",
+      "scenario_id": "Q01-repeat-setup",
+      "steps": [
+        "adopt-repeat",
+        "enroll-repeat",
+        "render-repeat",
+        "render-repeat-check"
+      ],
+      "target_id": "native-macos-arm64"
+    },
+    {
+      "bundle_revisions": {},
+      "classification": "live-container",
+      "commit": "189913b6cfc2c42828e35f4e2755c982b7f1e2da",
+      "environment": {
+        "os": "Ubuntu",
+        "version": "24.04.3",
+        "architecture": "aarch64",
+        "isolation": "container",
+        "image_digest": "sha256:8c4580f7d5072cd04200daccda8b5aebb58608eb0aca7528bd9ee38ce692b7d3",
+        "container_id": "6751161c77769ea24d70209786b1a9cc2f9e168287d86aed4024f9455e4ffea7",
+        "inherited_tools": [
+          "Existing Ubuntu container and named virtual environment; prepared Python3.12.11 and Git reused. Network bridge disconnected for this probe."
+        ]
+      },
+      "evidence": [
+        {
+          "path": "container.json",
+          "sha256": "6ae44ef2ea730d8f47cffb2e9791d67ba00eceda73365257c1272992875e5e71",
+          "kind": "live-container",
+          "producer": "AI-DLC qualification operator",
+          "method": "Task operator capture; literal source/workspace/user paths redacted. Hash identifies redacted bytes, not original raw capture. No values or outcomes changed."
+        },
+        {
+          "path": "probe.py",
+          "sha256": "ca7a0d7f127603abec87eff4347f72c83b1211f9eb732302b58e20ba9445d914",
+          "kind": "live-container",
+          "producer": "AI-DLC qualification operator",
+          "method": "Exact frozen probe source used for both actual runs; no redaction."
+        }
+      ],
+      "expected": "Repeat setup at the same revision without duplicate owned assets.",
+      "harness_name": "AI-DLC CLI subprocess (not a native model client)",
+      "harness_version": "0.4.0",
+      "limitations": [
+        "Prepared interpreter reused, no bootstrap or factory-clean claim.",
+        "Local original test inputs are deliberately authored but operations are actual CLI calls, not mocked services.",
+        "Invalid update refused before publication; failed publication/restore and race recovery remain unobserved operationally.",
+        "No native model/client session, remote provider, actual vault or human calibration.",
+        "Local profile source is nonportable; reserved bundle URL uses explicit local Git routing. Input content is synthetic qualification material; the recorded CLI operations are actual existing-host observations.",
+        "Rendering is project-file evidence, not fresh Codex/Claude/Antigravity client execution.",
+        "Container network disconnected. Reserved HTTPS bundle syntax still routes to a local file repository; no actual remote-portability verification. Generic raw probe labels do not establish container identity; use captured container inspection."
+      ],
+      "observed": "Repeated actual project adoption, machine enrollment and managed rendering; project and isolated configuration snapshots were byte-identical. No duplicate owned assets.",
+      "profile_revision": "4f50b8d2f01f67debf9baba4dcd1c56a2b773c1b",
+      "provider": null,
+      "result": "passed",
+      "scenario_id": "Q01-repeat-setup",
+      "steps": [
+        "adopt-repeat",
+        "enroll-repeat",
+        "render-repeat",
+        "render-repeat-check"
+      ],
+      "target_id": "container-ubuntu2404-arm64"
+    },
+    {
+      "bundle_revisions": {
+        "q01-continuity": "3f83e885def665e2ce04b8ee8f4de08018aa81a7"
+      },
+      "classification": "live-local",
+      "commit": "189913b6cfc2c42828e35f4e2755c982b7f1e2da",
+      "environment": {
+        "os": "Darwin",
+        "version": "15.3.2",
+        "architecture": "arm64",
+        "isolation": "existing-host",
+        "image_digest": null,
+        "container_id": null,
+        "inherited_tools": [
+          "Prepared repository .venv Python; existing system Git; existing PATH tools. See captured version outputs."
+        ]
+      },
+      "evidence": [
+        {
+          "path": "native.json",
+          "sha256": "603fecd882014ea9961179f31b2e0c1cc3d16cde57a7fed440a74bfea591320b",
+          "kind": "live-local",
+          "producer": "AI-DLC qualification operator",
+          "method": "Task operator capture; literal source/workspace/user paths redacted. Hash identifies redacted bytes, not original raw capture. No values or outcomes changed."
+        },
+        {
+          "path": "probe.py",
+          "sha256": "ca7a0d7f127603abec87eff4347f72c83b1211f9eb732302b58e20ba9445d914",
+          "kind": "live-local",
+          "producer": "AI-DLC qualification operator",
+          "method": "Exact frozen probe source used for both actual runs; no redaction."
+        }
+      ],
+      "expected": "Refuse authored conflicts while preserving original bytes.",
+      "harness_name": "AI-DLC CLI subprocess (not a native model client)",
+      "harness_version": "0.4.0",
+      "limitations": [
+        "Prepared interpreter reused, no bootstrap or factory-clean claim.",
+        "Local original test inputs are deliberately authored but operations are actual CLI calls, not mocked services.",
+        "Invalid update refused before publication; failed publication/restore and race recovery remain unobserved operationally.",
+        "No native model/client session, remote provider, actual vault or human calibration.",
+        "No OS-wide network isolation; declared reserved HTTPS bundle URL routes to local file source via task-local Git insteadOf configuration; no remote portability proven.",
+        "Local profile source is nonportable; reserved bundle URL uses explicit local Git routing. Input content is synthetic qualification material; the recorded CLI operations are actual existing-host observations.",
+        "Rendering is project-file evidence, not fresh Codex/Claude/Antigravity client execution.",
+        "Native Mac15.3.2 arm64 existing host with prepared Python3.12.11 and existing Git2.37.1; source bootstrap not repeated."
+      ],
+      "observed": "Appending a qualification-owned marker to the managed bundle skill caused render apply exit1. Entire project snapshot including authored marker was preserved. Operator then restored only its deliberate marker to saved original bytes.",
+      "profile_revision": "76e440c4e3a40a5a7a8ffdb1ff954458c25bae99",
+      "provider": null,
+      "result": "passed",
+      "scenario_id": "Q01-authored-preservation",
+      "steps": [
+        "authored-render-refusal"
+      ],
+      "target_id": "native-macos-arm64"
+    },
+    {
+      "bundle_revisions": {
+        "q01-continuity": "2435fefc6ac5ff5f06f15396dc434e60bd0d2581"
+      },
+      "classification": "live-container",
+      "commit": "189913b6cfc2c42828e35f4e2755c982b7f1e2da",
+      "environment": {
+        "os": "Ubuntu",
+        "version": "24.04.3",
+        "architecture": "aarch64",
+        "isolation": "container",
+        "image_digest": "sha256:8c4580f7d5072cd04200daccda8b5aebb58608eb0aca7528bd9ee38ce692b7d3",
+        "container_id": "6751161c77769ea24d70209786b1a9cc2f9e168287d86aed4024f9455e4ffea7",
+        "inherited_tools": [
+          "Existing Ubuntu container and named virtual environment; prepared Python3.12.11 and Git reused. Network bridge disconnected for this probe."
+        ]
+      },
+      "evidence": [
+        {
+          "path": "container.json",
+          "sha256": "6ae44ef2ea730d8f47cffb2e9791d67ba00eceda73365257c1272992875e5e71",
+          "kind": "live-container",
+          "producer": "AI-DLC qualification operator",
+          "method": "Task operator capture; literal source/workspace/user paths redacted. Hash identifies redacted bytes, not original raw capture. No values or outcomes changed."
+        },
+        {
+          "path": "probe.py",
+          "sha256": "ca7a0d7f127603abec87eff4347f72c83b1211f9eb732302b58e20ba9445d914",
+          "kind": "live-container",
+          "producer": "AI-DLC qualification operator",
+          "method": "Exact frozen probe source used for both actual runs; no redaction."
+        }
+      ],
+      "expected": "Refuse authored conflicts while preserving original bytes.",
+      "harness_name": "AI-DLC CLI subprocess (not a native model client)",
+      "harness_version": "0.4.0",
+      "limitations": [
+        "Prepared interpreter reused, no bootstrap or factory-clean claim.",
+        "Local original test inputs are deliberately authored but operations are actual CLI calls, not mocked services.",
+        "Invalid update refused before publication; failed publication/restore and race recovery remain unobserved operationally.",
+        "No native model/client session, remote provider, actual vault or human calibration.",
+        "Local profile source is nonportable; reserved bundle URL uses explicit local Git routing. Input content is synthetic qualification material; the recorded CLI operations are actual existing-host observations.",
+        "Rendering is project-file evidence, not fresh Codex/Claude/Antigravity client execution.",
+        "Container network disconnected. Reserved HTTPS bundle syntax still routes to a local file repository; no actual remote-portability verification. Generic raw probe labels do not establish container identity; use captured container inspection."
+      ],
+      "observed": "Appending a qualification-owned marker to the managed bundle skill caused render apply exit1. Entire project snapshot including authored marker was preserved. Operator then restored only its deliberate marker to saved original bytes.",
+      "profile_revision": "4f50b8d2f01f67debf9baba4dcd1c56a2b773c1b",
+      "provider": null,
+      "result": "passed",
+      "scenario_id": "Q01-authored-preservation",
+      "steps": [
+        "authored-render-refusal"
+      ],
+      "target_id": "container-ubuntu2404-arm64"
+    },
+    {
+      "bundle_revisions": {
+        "q01-continuity": "3f83e885def665e2ce04b8ee8f4de08018aa81a7"
+      },
+      "classification": "live-local",
+      "commit": "189913b6cfc2c42828e35f4e2755c982b7f1e2da",
+      "environment": {
+        "os": "Darwin",
+        "version": "15.3.2",
+        "architecture": "arm64",
+        "isolation": "existing-host",
+        "image_digest": null,
+        "container_id": null,
+        "inherited_tools": [
+          "Prepared repository .venv Python; existing system Git; existing PATH tools. See captured version outputs."
+        ]
+      },
+      "evidence": [
+        {
+          "path": "native.json",
+          "sha256": "603fecd882014ea9961179f31b2e0c1cc3d16cde57a7fed440a74bfea591320b",
+          "kind": "live-local",
+          "producer": "AI-DLC qualification operator",
+          "method": "Task operator capture; literal source/workspace/user paths redacted. Hash identifies redacted bytes, not original raw capture. No values or outcomes changed."
+        },
+        {
+          "path": "probe.py",
+          "sha256": "ca7a0d7f127603abec87eff4347f72c83b1211f9eb732302b58e20ba9445d914",
+          "kind": "live-local",
+          "producer": "AI-DLC qualification operator",
+          "method": "Exact frozen probe source used for both actual runs; no redaction."
+        }
+      ],
+      "expected": "Read selected pinned guidance offline from a new process.",
+      "harness_name": "AI-DLC CLI subprocess (not a native model client)",
+      "harness_version": "0.4.0",
+      "limitations": [
+        "Prepared interpreter reused, no bootstrap or factory-clean claim.",
+        "Local original test inputs are deliberately authored but operations are actual CLI calls, not mocked services.",
+        "Invalid update refused before publication; failed publication/restore and race recovery remain unobserved operationally.",
+        "No native model/client session, remote provider, actual vault or human calibration.",
+        "No OS-wide network isolation; declared reserved HTTPS bundle URL routes to local file source via task-local Git insteadOf configuration; no remote portability proven.",
+        "Local profile source is nonportable; reserved bundle URL uses explicit local Git routing. Input content is synthetic qualification material; the recorded CLI operations are actual existing-host observations.",
+        "Rendering is project-file evidence, not fresh Codex/Claude/Antigravity client execution.",
+        "Native Mac15.3.2 arm64 existing host with prepared Python3.12.11 and existing Git2.37.1; source bootstrap not repeated."
+      ],
+      "observed": "Both original local Git sources were renamed out of reach and XDG cache replaced with an empty directory. Two fresh actual CLI render --check processes returned clean with exit0; Codex and Claude skill bytes matched the selected v2 bundle. No native model client or remote-portability claim.",
+      "profile_revision": "76e440c4e3a40a5a7a8ffdb1ff954458c25bae99",
+      "provider": null,
+      "result": "passed",
+      "scenario_id": "Q01-offline-restart",
+      "steps": [
+        "offline-empty-cache-render",
+        "offline-fresh-render"
+      ],
+      "target_id": "native-macos-arm64"
+    },
+    {
+      "bundle_revisions": {
+        "q01-continuity": "2435fefc6ac5ff5f06f15396dc434e60bd0d2581"
+      },
+      "classification": "live-container",
+      "commit": "189913b6cfc2c42828e35f4e2755c982b7f1e2da",
+      "environment": {
+        "os": "Ubuntu",
+        "version": "24.04.3",
+        "architecture": "aarch64",
+        "isolation": "container",
+        "image_digest": "sha256:8c4580f7d5072cd04200daccda8b5aebb58608eb0aca7528bd9ee38ce692b7d3",
+        "container_id": "6751161c77769ea24d70209786b1a9cc2f9e168287d86aed4024f9455e4ffea7",
+        "inherited_tools": [
+          "Existing Ubuntu container and named virtual environment; prepared Python3.12.11 and Git reused. Network bridge disconnected for this probe."
+        ]
+      },
+      "evidence": [
+        {
+          "path": "container.json",
+          "sha256": "6ae44ef2ea730d8f47cffb2e9791d67ba00eceda73365257c1272992875e5e71",
+          "kind": "live-container",
+          "producer": "AI-DLC qualification operator",
+          "method": "Task operator capture; literal source/workspace/user paths redacted. Hash identifies redacted bytes, not original raw capture. No values or outcomes changed."
+        },
+        {
+          "path": "probe.py",
+          "sha256": "ca7a0d7f127603abec87eff4347f72c83b1211f9eb732302b58e20ba9445d914",
+          "kind": "live-container",
+          "producer": "AI-DLC qualification operator",
+          "method": "Exact frozen probe source used for both actual runs; no redaction."
+        }
+      ],
+      "expected": "Read selected pinned guidance offline from a new process.",
+      "harness_name": "AI-DLC CLI subprocess (not a native model client)",
+      "harness_version": "0.4.0",
+      "limitations": [
+        "Prepared interpreter reused, no bootstrap or factory-clean claim.",
+        "Local original test inputs are deliberately authored but operations are actual CLI calls, not mocked services.",
+        "Invalid update refused before publication; failed publication/restore and race recovery remain unobserved operationally.",
+        "No native model/client session, remote provider, actual vault or human calibration.",
+        "Local profile source is nonportable; reserved bundle URL uses explicit local Git routing. Input content is synthetic qualification material; the recorded CLI operations are actual existing-host observations.",
+        "Rendering is project-file evidence, not fresh Codex/Claude/Antigravity client execution.",
+        "Container network disconnected. Reserved HTTPS bundle syntax still routes to a local file repository; no actual remote-portability verification. Generic raw probe labels do not establish container identity; use captured container inspection."
+      ],
+      "observed": "Both original local Git sources were renamed out of reach and XDG cache replaced with an empty directory. Two fresh actual CLI render --check processes returned clean with exit0; Codex and Claude skill bytes matched the selected v2 bundle. No native model client or remote-portability claim.",
+      "profile_revision": "4f50b8d2f01f67debf9baba4dcd1c56a2b773c1b",
+      "provider": null,
+      "result": "passed",
+      "scenario_id": "Q01-offline-restart",
+      "steps": [
+        "offline-empty-cache-render",
+        "offline-fresh-render"
+      ],
+      "target_id": "container-ubuntu2404-arm64"
+    },
+    {
+      "bundle_revisions": {},
+      "classification": null,
+      "commit": null,
+      "environment": {
+        "architecture": null,
+        "container_id": null,
+        "image_digest": null,
+        "inherited_tools": [],
+        "isolation": "planned",
+        "os": null,
+        "version": null
+      },
+      "evidence": [],
+      "expected": "Fail a staged update, preserve authored content and report recovery state.",
+      "harness_name": null,
+      "harness_version": null,
+      "limitations": [
+        "This probe does not fill this slot. Bootstrap was already performed separately by root; full staged-update failure/rollback was not induced. An invalid-hash source update refused before publication with all project bytes unchanged, which is narrower evidence."
+      ],
+      "observed": "",
+      "profile_revision": null,
+      "provider": null,
+      "result": "not-run",
+      "scenario_id": "Q01-failed-update",
+      "steps": [
+        "Follow the reviewed framework qualification protocol; record actual actions."
+      ],
+      "target_id": "native-macos-arm64"
+    },
+    {
+      "bundle_revisions": {},
+      "classification": null,
+      "commit": null,
+      "environment": {
+        "architecture": null,
+        "container_id": null,
+        "image_digest": null,
+        "inherited_tools": [],
+        "isolation": "planned",
+        "os": null,
+        "version": null
+      },
+      "evidence": [],
+      "expected": "Fail a staged update, preserve authored content and report recovery state.",
+      "harness_name": null,
+      "harness_version": null,
+      "limitations": [
+        "Not executed; revisions, environment, credentials and client availability must be recorded, not inferred."
+      ],
+      "observed": "",
+      "profile_revision": null,
+      "provider": null,
+      "result": "not-run",
+      "scenario_id": "Q01-failed-update",
+      "steps": [
+        "Follow the reviewed framework qualification protocol; record actual actions."
+      ],
+      "target_id": "container-ubuntu2404-arm64"
+    },
+    {
+      "bundle_revisions": {},
+      "classification": null,
+      "commit": null,
+      "environment": {
+        "architecture": null,
+        "container_id": null,
+        "image_digest": null,
+        "inherited_tools": [],
+        "isolation": "planned",
+        "os": null,
+        "version": null
+      },
+      "evidence": [],
+      "expected": "Use shared lifecycle services for new work on the selected actual adapter.",
+      "harness_name": null,
+      "harness_version": null,
+      "limitations": [
+        "Not executed; revisions, environment, credentials and client availability must be recorded, not inferred."
+      ],
+      "observed": "",
+      "profile_revision": null,
+      "provider": null,
+      "result": "not-run",
+      "scenario_id": "Q02-provider-cycle",
+      "steps": [
+        "Follow the reviewed framework qualification protocol; record actual actions."
+      ],
+      "target_id": "github"
+    },
+    {
+      "bundle_revisions": {},
+      "classification": null,
+      "commit": null,
+      "environment": {
+        "architecture": null,
+        "container_id": null,
+        "image_digest": null,
+        "inherited_tools": [],
+        "isolation": "planned",
+        "os": null,
+        "version": null
+      },
+      "evidence": [],
+      "expected": "Use shared lifecycle services for new work on the selected actual adapter.",
+      "harness_name": null,
+      "harness_version": null,
+      "limitations": [
+        "Not executed; revisions, environment, credentials and client availability must be recorded, not inferred."
+      ],
+      "observed": "",
+      "profile_revision": null,
+      "provider": null,
+      "result": "not-run",
+      "scenario_id": "Q02-provider-cycle",
+      "steps": [
+        "Follow the reviewed framework qualification protocol; record actual actions."
+      ],
+      "target_id": "jira"
+    },
+    {
+      "bundle_revisions": {},
+      "classification": null,
+      "commit": null,
+      "environment": {
+        "architecture": null,
+        "container_id": null,
+        "image_digest": null,
+        "inherited_tools": [],
+        "isolation": "planned",
+        "os": null,
+        "version": null
+      },
+      "evidence": [],
+      "expected": "Report the configured adapter's capabilities and refuse unsupported transitions.",
+      "harness_name": null,
+      "harness_version": null,
+      "limitations": [
+        "Not executed; revisions, environment, credentials and client availability must be recorded, not inferred."
+      ],
+      "observed": "",
+      "profile_revision": null,
+      "provider": null,
+      "result": "not-run",
+      "scenario_id": "Q02-capabilities",
+      "steps": [
+        "Follow the reviewed framework qualification protocol; record actual actions."
+      ],
+      "target_id": "planned"
+    },
+    {
+      "bundle_revisions": {},
+      "classification": null,
+      "commit": null,
+      "environment": {
+        "architecture": null,
+        "container_id": null,
+        "image_digest": null,
+        "inherited_tools": [],
+        "isolation": "planned",
+        "os": null,
+        "version": null
+      },
+      "evidence": [],
+      "expected": "Keep prior work bound while new work uses another selected adapter.",
+      "harness_name": null,
+      "harness_version": null,
+      "limitations": [
+        "Not executed; revisions, environment, credentials and client availability must be recorded, not inferred."
+      ],
+      "observed": "",
+      "profile_revision": null,
+      "provider": null,
+      "result": "not-run",
+      "scenario_id": "Q02-existing-bindings",
+      "steps": [
+        "Follow the reviewed framework qualification protocol; record actual actions."
+      ],
+      "target_id": "planned"
+    },
+    {
+      "bundle_revisions": {},
+      "classification": null,
+      "commit": null,
+      "environment": {
+        "architecture": null,
+        "container_id": null,
+        "image_digest": null,
+        "inherited_tools": [],
+        "isolation": "planned",
+        "os": null,
+        "version": null
+      },
+      "evidence": [],
+      "expected": "A fresh client session derives the next action from saved artifacts alone.",
+      "harness_name": null,
+      "harness_version": null,
+      "limitations": [
+        "Not executed; revisions, environment, credentials and client availability must be recorded, not inferred."
+      ],
+      "observed": "",
+      "profile_revision": null,
+      "provider": null,
+      "result": "not-run",
+      "scenario_id": "Q03-handoff",
+      "steps": [
+        "Follow the reviewed framework qualification protocol; record actual actions."
+      ],
+      "target_id": "claude-code"
+    },
+    {
+      "bundle_revisions": {},
+      "classification": null,
+      "commit": null,
+      "environment": {
+        "architecture": null,
+        "container_id": null,
+        "image_digest": null,
+        "inherited_tools": [],
+        "isolation": "planned",
+        "os": null,
+        "version": null
+      },
+      "evidence": [],
+      "expected": "A fresh client session derives the next action from saved artifacts alone.",
+      "harness_name": null,
+      "harness_version": null,
+      "limitations": [
+        "Not executed; revisions, environment, credentials and client availability must be recorded, not inferred."
+      ],
+      "observed": "",
+      "profile_revision": null,
+      "provider": null,
+      "result": "not-run",
+      "scenario_id": "Q03-handoff",
+      "steps": [
+        "Follow the reviewed framework qualification protocol; record actual actions."
+      ],
+      "target_id": "antigravity"
+    }
+  ],
+  "schema": 1
+}

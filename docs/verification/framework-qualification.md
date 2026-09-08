@@ -4,6 +4,10 @@ Status: local preparation under GitHub #14. This document provides the protocol
 and validator contract; it does not record completed Q-01–03 live qualification.
 Root owns actual walkthrough artifacts, review, global release evidence and finish.
 
+The September 8 [setup-continuity observations](setup-continuity.md) add actual
+native/container repeat, preservation and offline consumption evidence at189913b.
+Their report retains incomplete configured setup, staged failure and Q02/Q03 gates.
+
 ## Read-only validator
 
 Run from a prepared checkout:
