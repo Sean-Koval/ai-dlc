@@ -21,5 +21,7 @@
 ## 4. Packaged offline tracker coverage repair
 - [x] Add explicit Jira Cloud/Plane fixture targets and GitHub Projects coverage to the packaged provider/all scopes, preserving existing live limitations.
 - [x] Verify the copied fixture/helper closure through actual subprocess execution, missing-package refusal, and scope reporting; run focused and static checks.
-- [ ] Obtain independent review and integrated required checks before delivery; no new image or live-provider qualification is implied.
+- [x] Obtain independent review and integrated required checks before delivery; no new image or live-provider qualification is implied.
+
+## 5. Local release candidate preparation
 - [x] Prepare unpublished hash-bound release manifests and verify real release-shell success/tamper refusal with controlled fixtures; retain actual candidate wheel/install evidence separately from publication.

@@ -13,7 +13,14 @@ acceptance = [
 ]
 reviewed = true
 depends_on = []
-requirements = ["TM-01", "TM-02", "TM-03", "TM-04", "TM-05", "TM-06"]
+requirements = [
+    "TM-01",
+    "TM-02",
+    "TM-03",
+    "TM-04",
+    "TM-05",
+    "TM-06",
+]
 
 [providers]
 specs = "openspec"
@@ -25,6 +32,7 @@ spec = "openspec/changes/selective-tracker-migration"
 branch = "codex/remaining-qualification"
 tracker = "https://github.com/Sean-Koval/ai-dlc/issues/21"
 verification = "docs/verification/selective-tracker-migration.md"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/27"
 
 [bindings]
 specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"

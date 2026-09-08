@@ -21,7 +21,8 @@ Historical source checks never substitute for those observations.
 
 ## Remaining-issue implementation candidate
 
-The current `codex/remaining-qualification` candidate adds explicit saved target
+[PR27](https://github.com/Sean-Koval/ai-dlc/pull/27), on
+`codex/remaining-qualification`, adds explicit saved target
 creation intent, identity-preserving reconciliation and migration preview evidence,
 plus original Design PM inputs and a fixed experiment protocol. Independent review
 accepted the migration identity repair, design preparation and local stimuli.
@@ -35,8 +36,10 @@ model runs and actual human ratings. #14/#17 retain full platform/client/provide
 and release requirements. #20 needs actual selected Jira/Plane deployment evidence;
 #15 needs human evaluations and an approved experiment; #22 awaits the custom
 Confluence server. Do not use local implementation or fixtures to close these
-parents. Final integration/CI evidence must be recorded against the delivered
-revision before treating this candidate as merged.
+parents. The clean integrated revision3d78ddb passed all five required container checks
+with1,899 tests passing. Actual candidate wheel installation/scaffolding is recorded
+in [release preparation](../verification/release-candidate-preparation.md).
+Final PR and merged-revision GitHub CI remain separate from these source checks.
 
 ## Current authority — September 8
 

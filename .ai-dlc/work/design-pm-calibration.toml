@@ -30,6 +30,7 @@ design = "docs/design/design-pm.md"
 roadmap = "docs/roadmap.md"
 tracker = "https://github.com/Sean-Koval/ai-dlc/issues/16"
 branch = "codex/remaining-qualification"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/27"
 
 [bindings]
 specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
