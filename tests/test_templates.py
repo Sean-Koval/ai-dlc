@@ -826,11 +826,14 @@ def test_portable_examples_are_the_only_profiles_in_built_distributions(tmp_path
         parts = Path(name).parts
         return bool(
             ".git" in parts
+            or parts[0] == "target"
             or Path(name).name in {"enrollment.toml", "sean.toml"}
             or Path(name).name.startswith(".env")
             or any(parts[index : index + 2] == (".ai-dlc", "local") for index in range(len(parts)))
         )
 
+    assert "Cargo.toml" in members
+    assert any(name.startswith("crates/") and name.endswith(".rs") for name in members)
     assert not [name for name in members if is_forbidden_member(name)]
 
     def contains_forbidden_content(content: bytes) -> bool:
