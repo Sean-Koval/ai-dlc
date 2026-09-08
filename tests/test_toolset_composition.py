@@ -49,7 +49,7 @@ def test_selected_toolset_preview_and_real_adoption(tmp_path, preset):
     assert preview["status"] == "planned"
     assert not root.exists()
     assert preview["toolset"]["roles"]["tracker"] == "plane"
-    assert any("lifecycle" in gap for gap in preview["toolset"]["limitations"])
+    assert not any("lifecycle" in gap for gap in preview["toolset"]["limitations"])
     assert adopt(root, apply=True, **options)["status"] == "applied"
     config = tomllib.loads((root / "ai-dlc.toml").read_text())
     assert config["roles"]["tracker"] == "plane"
@@ -217,7 +217,15 @@ def test_obsidian_runtime_vault_readiness_is_independent_of_optional_gui(tmp_pat
     assert "Private note" not in str(result)
 
 
-def test_plane_guidance_cannot_mask_absent_lifecycle_adapter(tmp_path):
+def test_guidance_cannot_mask_explicitly_unavailable_lifecycle_adapter(tmp_path, monkeypatch):
+    from dataclasses import replace
+    from ai_dlc import provider_definitions
+
+    monkeypatch.setitem(
+        provider_definitions.DEFINITIONS,
+        "plane",
+        replace(provider_definitions.DEFINITIONS["plane"], lifecycle_available=False),
+    )
     from ai_dlc.agents import render_agents
     from ai_dlc.config import load_project
     from ai_dlc.readiness import inspect_readiness

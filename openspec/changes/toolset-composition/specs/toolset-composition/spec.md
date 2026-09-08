@@ -34,6 +34,6 @@ Readiness SHALL inspect Obsidian's actual runtime vault directory without requir
 - **WHEN** paths.vault is missing or does not name an existing directory, even if a provider-local vault setting exists
 - **THEN** note-storage readiness is blocked with a configuration next action and no directory is created
 
-#### Scenario: Plane guidance is selected without a lifecycle implementation
-- **WHEN** a project selects Plane and its native instructions are delivered
+#### Scenario: Guidance is selected with an explicitly unavailable lifecycle definition
+- **WHEN** a selected tracker definition explicitly marks lifecycle unavailable while native instructions are delivered
 - **THEN** readiness still explicitly blocks lifecycle operations without requiring Plane for projects selecting another tracker

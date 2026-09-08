@@ -1,0 +1,17 @@
+schema = 1
+id = "plane-new-work"
+title = "Optional Plane new-work lifecycle"
+scope = "Current Plane REST contract, explicit local HTTP loopback, durable adapter attempts and common setup; no installation, live calls or migration."
+requires_spec = true
+spec_reason = "PN-01 through PN-05 define lifecycle, recovery and onboarding."
+acceptance = ["Identity and cancellation are preserved.", "Durable attempts prevent uncertain repeat writes.", "Transport fixtures exercise real shared workflow and setup.", "Required checks distinguish fixture and live evidence."]
+reviewed = true
+[providers]
+specs = "openspec"
+scm = "github"
+knowledge = "obsidian"
+[artifacts]
+spec = "openspec/changes/plane-new-work"
+plan = "docs/superpowers/plans/2026-09-07-plane-new-work.md"
+branch = "codex/plane-new-work"
+parent_issue = "https://github.com/Sean-Koval/ai-dlc/issues/20"
