@@ -8,3 +8,7 @@
 - [ ] 2.1 Obtain independent review and address findings before integration.
 
 Archive, PR, merge, merged-CI and work finish remain coordinator-owned. Parent issue20 remains open for Plane and live qualification; no Jira migration.
+
+## 2. Independent review corrections
+- [x] 2.1 Reject empty required collections/ADF before planning or mutation and advertise Jira discovery, with red/green regressions and full required checks.
+- [ ] 2.2 Obtain narrow independent acceptance of the repair before integration.

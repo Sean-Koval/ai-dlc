@@ -79,3 +79,23 @@ claimed when prior publication journals/references are absent.
 Optional Plane, native client authentication, PR/archive/merge, merged-revision CI
 and work finish remain separate coordinator-owned scope. This child neither
 published an issue nor performed any remote mutation.
+
+## Independent review repair, September 7, 2026
+
+The independent JC-01–06 review requested two corrections: required multi-select
+values of `[]` passed element/allowed-value validation, and public provider
+discovery omitted `jira-cloud`. The repair rejects explicit empty required
+collections and null/empty/whitespace-only required ADF before plan persistence or
+remote mutation, using the existing field-ID diagnostic. It keeps the unowned
+issue ADF reader unchanged, preserves optional collection/ADF clears and valid
+`false`/`0` scalars, and includes Jira in public builtin discovery.
+
+Sixteen new regression cases failed before the guard/discovery repair; five
+compatibility cases already passed and remain passing. The focused Jira suite
+now reports **79 passed in 1.46 seconds**. All five required checks passed again,
+including **1,244 tests in 297.96 seconds**, and all **17** strict OpenSpec items
+passed. The ignored receipt `.ai-dlc/local/jira-cloud-review-fix-required.json`
+records the frozen source/test candidate at `e377d720`, `dirty=true`, target local.
+This evidence paragraph was added afterwards; source and tests stayed unchanged.
+Narrow independent re-review of the repair remains pending. The live company,
+platform, merged-CI and delivery limits above remain unchanged.
