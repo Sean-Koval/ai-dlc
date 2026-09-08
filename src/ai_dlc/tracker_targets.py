@@ -232,6 +232,23 @@ def _canonical(item):
     return {key: item[key] for key in ("id", "url", "state")}
 
 
+def _remember_target(root, journal, operation_id, item, retained, work_id, *, refresh=False):
+    """Keep the first durable identity; serialize comparison with result publication."""
+    candidate = _canonical(item)
+    with project_write_lock(root):
+        record = journal.lookup(operation_id)
+        if record is None:
+            raise ValueError("Creation journal intent is missing; preserve local state")
+        known = record["result"]
+        if known is not None:
+            retained[work_id] = _canonical(known)
+            if (candidate["id"], candidate["url"]) != (known["id"], known["url"]):
+                raise ValueError("Known target identity changed; retain the original reference")
+        if known is None or refresh:
+            journal.succeed(operation_id, candidate)
+            retained[work_id] = candidate
+
+
 def reconcile_tracker_targets(
     root, plan, *, environ=None, machine=None, machine_config=None, registry=None
 ):
@@ -305,14 +322,23 @@ def reconcile_tracker_targets(
                                     "Local creation snapshot changed; only reconcile existing targets"
                                 )
                             item = registry.invoke(plan["provider"], "create", payload)
-                    retained[work_id] = _canonical(item)
-                    journal.succeed(payload["operation_id"], retained[work_id])
+                    _remember_target(
+                        root, journal, payload["operation_id"], item, retained, work_id
+                    )
                     # Independent read establishes current identity before accepting a mapping.
                     checked = registry.invoke(plan["provider"], "read", {"reference": item["id"]})
                     if (checked["id"], checked["url"]) != (item["id"], item["url"]):
                         raise ValueError("Created target identity changed")
                     item = checked
-                    journal.succeed(payload["operation_id"], _canonical(item))
+                    _remember_target(
+                        root,
+                        journal,
+                        payload["operation_id"],
+                        item,
+                        retained,
+                        work_id,
+                        refresh=True,
+                    )
                 results[work_id] = _canonical(item)
                 retained[work_id] = results[work_id]
             except Exception as exc:  # noqa: BLE001 -- preserve targets after arbitrary transport failures
@@ -340,6 +366,15 @@ def reconcile_tracker_targets(
                         machine_config=machine_config,
                         registry=registry,
                     )
+                    for key, mapped in migration_plan["mappings"].items():
+                        target = mapped["target"]
+                        if (target["id"], target["url"]) != (
+                            results[key]["id"],
+                            results[key]["url"],
+                        ):
+                            raise ValueError(
+                                "Known target identity changed during final verification"
+                            )
                     if (
                         migration_plan["snapshot"] != plan["snapshot"]
                         or migration_plan["runtime_digest"] != plan["runtime_digest"]

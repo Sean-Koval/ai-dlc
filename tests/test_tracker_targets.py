@@ -480,3 +480,68 @@ def test_unresolved_local_migration_blocks_new_target_send(creation):
     assert result["status"] == "unresolved"
     assert "recovery required" in result["unresolved"]["one"].lower()
     assert adapter.sent == []
+
+
+@pytest.mark.parametrize("stage", ["find", "fallback-read", "independent-read", "final-read"])
+@pytest.mark.parametrize("replacement", ["id", "url"])
+def test_known_identity_drift_never_overwrites_retained_target(creation, stage, replacement):
+    _, _, _, adapter = creation
+    planned = preview(creation)
+    first = reconcile(creation, planned)
+    known = copy.deepcopy(first["retained_targets"]["one"])
+    original = adapter.invoke
+    reads = 0
+
+    def changed(item):
+        result = copy.deepcopy(item)
+        if replacement == "id":
+            result.update(id="2", url="https://fixture/2")
+        else:
+            result["url"] = "https://fixture/other-url"
+        return result
+
+    def invoke(operation, payload):
+        nonlocal reads
+        result = original(operation, payload)
+        if operation == "find":
+            if stage == "fallback-read":
+                return {"items": []}
+            if stage == "find":
+                return {"items": [changed(result["items"][0])]}
+        if operation == "read":
+            reads += 1
+            if (
+                stage in {"fallback-read", "independent-read"}
+                and reads == 1
+                or stage == "final-read"
+                and reads == 2
+            ):
+                return changed(result)
+        return result
+
+    adapter.invoke = invoke
+    second = reconcile(creation, planned)
+    assert second["status"] == "unresolved"
+    assert second["migration_plan"] is None
+    assert second["retained_targets"]["one"] == known
+    assert len(adapter.sent) == 1
+    # Restoration proves the durable journal still retains the original identity.
+    adapter.invoke = original
+    third = reconcile(creation, planned)
+    assert third["status"] == "resolved"
+    assert third["retained_targets"]["one"] == known
+    assert len(adapter.sent) == 1
+
+
+def test_same_known_identity_accepts_fresh_state_without_new_creation(creation):
+    _, _, _, adapter = creation
+    planned = preview(creation)
+    first = reconcile(creation, planned)
+    adapter.items["1"]["state"] = "cancelled"
+    second = reconcile(creation, planned)
+    assert second["status"] == "resolved"
+    assert second["retained_targets"]["one"] == {
+        **first["retained_targets"]["one"],
+        "state": "cancelled",
+    }
+    assert len(adapter.sent) == 1

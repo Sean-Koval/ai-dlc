@@ -312,3 +312,51 @@ def test_actual_adapter_local_write_interruption_preserves_remote_target(adapter
     )
     if kind == "plane":
         assert len(remote["api"].items) == 1 and remote["api"].writes == []
+
+
+def test_real_github_adapter_correlation_cannot_replace_known_target(adapter_move, monkeypatch):
+    from ai_dlc.tracker_targets import plan_tracker_targets, reconcile_tracker_targets
+
+    root, env, registry, _, _, kind = adapter_move
+    if kind != "github-issues":
+        pytest.skip("GitHub-specific independent reproduction")
+    remote = {"item": None, "creates": 0}
+
+    def run(args, **kwargs):
+        if args[1:3] == ["api", "graphql"]:
+            body = {"data": {"viewer": {"id": "expected"}}}
+        elif args[1:3] == ["issue", "list"]:
+            body = [] if remote["item"] is None else [remote["item"]]
+        elif args[1:3] == ["issue", "create"]:
+            remote["creates"] += 1
+            remote["item"] = {
+                "id": "node42",
+                "number": 42,
+                "url": "https://github.com/target/repo/issues/42",
+                "state": "OPEN",
+                "stateReason": None,
+                "body": args[args.index("--body") + 1],
+            }
+            return SimpleNamespace(returncode=0, stdout=remote["item"]["url"], stderr="")
+        else:
+            assert args[1:3] == ["issue", "view"]
+            body = remote["item"]
+        return SimpleNamespace(returncode=0, stdout=json.dumps(body), stderr="")
+
+    monkeypatch.setattr("ai_dlc.providers.github_issues.subprocess.run", run)
+    plan = plan_tracker_targets(
+        root,
+        "next",
+        work_ids=["one"],
+        create_work_ids=["one"],
+        source="local-records",
+        environ=env,
+        registry=registry,
+    )
+    first = reconcile_tracker_targets(root, plan, environ=env, registry=registry)
+    assert first["status"] == "resolved"
+    remote["item"].update(id="node43", number=43, url="https://github.com/target/repo/issues/43")
+    second = reconcile_tracker_targets(root, plan, environ=env, registry=registry)
+    assert remote["creates"] == 1
+    assert second["status"] == "unresolved", second
+    assert second["retained_targets"] == first["retained_targets"]
