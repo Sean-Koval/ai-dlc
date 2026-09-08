@@ -41,10 +41,12 @@ shared provider connection service at merged `ab6b774`. All five platform receip
 passed for that revision. Fresh-clone source bootstrap and gated finish completed
 #10 and #11; both native issue state and Project status confirm completion.
 
-The second integration contains reviewed traceability, toolset selection, native
-connection composition, Jira new-work onboarding and setup reliability. Its final
-combined verification and delivery are pending. Individual passing candidate
-checks do not replace integrated verification. Native client recognition,
+PR [#26](https://github.com/Sean-Koval/ai-dlc/pull/26) carries reviewed traceability,
+toolset selection, native connection composition, Jira and optional Plane new-work
+onboarding, Design PM guidance and setup reliability. The
+[integration record](verification/work-computer-toolsets.md) records exact tested
+revisions and review findings. GitHub owns live delivery status; eligible issues
+#12, #13 and #19 require gated finish after exact merged-revision CI. Native client recognition,
 authentication and version-specific live qualification remain separate from file
 rendering. Record the work computer's OS/architecture and installed Claude and
 Antigravity versions before qualifying that machine.
@@ -59,7 +61,7 @@ dependency order, with TDD, independent review and the required checks.
 | [#18](https://github.com/Sean-Koval/ai-dlc/issues/18) | GitHub workflow foundation and PR #23 | Completed through AI-DLC finish at merged631d10a with all five receipts |
 | [#10](https://github.com/Sean-Koval/ai-dlc/issues/10) | Preserve authored files during workflow-bundle cleanup | Completed through AI-DLC finish at merged ab6b774 with five receipts; issue Completed and Project Done |
 | [#11](https://github.com/Sean-Koval/ai-dlc/issues/11) | Greenfield/brownfield product shaping | Completed through AI-DLC finish at merged ab6b774 with five receipts; issue Completed and Project Done |
-| [#19](https://github.com/Sean-Koval/ai-dlc/issues/19) | Reusable onboarding and native Claude/Antigravity setup | Common connection/native clients delivered in PR25; reviewed toolset/native composition and credential readiness integrated, final delivery pending |
+| [#19](https://github.com/Sean-Koval/ai-dlc/issues/19) | Reusable onboarding and native Claude/Antigravity setup | Common connection/native clients delivered in PR25; reviewed toolset/native composition and readiness in PR26; gated finish owns completion |
 | [#12](https://github.com/Sean-Koval/ai-dlc/issues/12) | Requirements-to-spec-to-ticket traceability and dependency guards | #11's reviewed artifacts; preserve authored issue content and provider-neutral workflows |
 | [#20](https://github.com/Sean-Koval/ai-dlc/issues/20) | Jira Cloud new-work adapter/setup; optional Plane | Common connection contract from #19; actual required fields/transitions; no Jira migration |
 | [#14](https://github.com/Sean-Koval/ai-dlc/issues/14) | Portable setup, substitution and fresh-session handoff qualification | #10/#12 and applicable onboarding; distinguish ordinary clone, clean-machine, container and actual client evidence |

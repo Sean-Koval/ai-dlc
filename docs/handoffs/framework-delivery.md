@@ -8,15 +8,15 @@ bootstrap and AI-DLC finish for #10 and #11. Both issues are Completed and their
 Project items are Done. Native harness/shared connection children are delivered
 in that PR; parent #19 remains open for toolset and connection composition.
 
-The next integrated branch is `codex/work-computer-toolsets`: reviewed #12,
-toolset/native composition, Jira new-work onboarding, credential readiness,
-bootstrap reliability and qualification-record validation. Plane, optional Design
-PM guidance and calibration preparation are under final independent review.
-Individual candidates passed required checks. The first combined full run failed
-three tests during disk pressure, including two explicit out-of-space errors;
-its passing first four checks do not make it a successful full run. The reviewed
-packaging repair excludes compiled Rust outputs while retaining historical source.
-Final integrated checks, archives, PR and merged-CI finish remain pending.
+The reviewed integration in PR [#26](https://github.com/Sean-Koval/ai-dlc/pull/26)
+is `codex/work-computer-toolsets`: traceability, toolset/native composition,
+Jira and optional Plane new-work adapters, Design PM guidance, credential/SCM
+readiness, private vault setup, bootstrap reliability and qualification preparation.
+The [integration record](../verification/work-computer-toolsets.md) identifies
+accepted revisions, current checks and earlier failed attempts. GitHub owns live
+delivery status. Finish #12, then #13 and #19 only through the merged PR's exact
+CI receipts; keep actual native-client, tenant, human-calibration and release
+obligations open. Historical source checks never substitute for those observations.
 
 ## Current authority — September 7
 
