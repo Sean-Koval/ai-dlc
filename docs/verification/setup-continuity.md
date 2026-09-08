@@ -4,6 +4,9 @@ Observed source: clean `189913b6cfc2c42828e35f4e2755c982b7f1e2da`, September 8,
 2026. These are actual CLI/Git/filesystem observations on disposable projects.
 They extend #14/#17 evidence; they do not complete either issue.
 
+Repeated adoption safely refuses existing scaffold files; only enrollment and
+rendering demonstrate successful idempotent application.
+
 The same [frozen probe](setup-continuity-189913b/probe.py) ran on macOS 15.3.2
 arm64 and Ubuntu 24.04.3 aarch64. Each used independent temporary project,
 profile, bundle and XDG directories, with the already prepared Python 3.12.11
@@ -14,7 +17,8 @@ afterward. Native networking was not blocked at the OS level.
 
 | Observation | Native and container result |
 | --- | --- |
-| Repeat adoption, profile enrollment, render and check | Exit 0; project and local configuration snapshots unchanged byte-for-byte |
+| Repeat adoption | Exit 0 but logical status `conflict` for existing scaffold files; no reapply and no changes |
+| Repeat profile enrollment, render and check | Enrollment reports `idempotent=true`; render is clean; project and local configuration snapshots unchanged byte-for-byte |
 | Update selected bundle v1 to v2 | Exit 0; previous bundle retained at the reported backup path |
 | Invalid bundle payload hash | Exit 2; whole project snapshot unchanged |
 | Authored modification to a managed skill | Render refused, exit 1; authored bytes and whole project preserved |
@@ -44,7 +48,9 @@ context. Input content is synthetic, while the CLI operations are real.
 The first three native attempts stopped on probe setup mistakes: local-path
 bundle syntax, omitted explicit bundle selection, and an assumed existing agents
 table. Their raw evidence is retained locally; they are not passing runs. The
-fourth native attempt and first container attempt completed all probe steps.
+fourth native attempt and both container attempts completed all probe steps.
+The second container attempt adds timestamped network inspection before and after
+its execution; the first attempt did not retain independently timed network order.
 No product repair was needed for these probe corrections.
 
 Hash/structure validation succeeds and explicitly reports Q-01, Q-02 and Q-03

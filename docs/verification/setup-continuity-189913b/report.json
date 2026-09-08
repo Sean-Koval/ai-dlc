@@ -103,9 +103,10 @@
         "No OS-wide network isolation; declared reserved HTTPS bundle URL routes to local file source via task-local Git insteadOf configuration; no remote portability proven.",
         "Local profile source is nonportable; reserved bundle URL uses explicit local Git routing. Input content is synthetic qualification material; the recorded CLI operations are actual existing-host observations.",
         "Rendering is project-file evidence, not fresh Codex/Claude/Antigravity client execution.",
-        "Native Mac15.3.2 arm64 existing host with prepared Python3.12.11 and existing Git2.37.1; source bootstrap not repeated."
+        "Native Mac15.3.2 arm64 existing host with prepared Python3.12.11 and existing Git2.37.1; source bootstrap not repeated.",
+        "Adoption exit0 does not imply logical success: its captured status is conflict. Complete configured setup remains unmet."
       ],
-      "observed": "Repeated actual project adoption, machine enrollment and managed rendering; project and isolated configuration snapshots were byte-identical. No duplicate owned assets.",
+      "observed": "Repeated adoption reported status=conflict for existing scaffold files despite exit0; it did not reapply. Enrollment reported idempotent=true and both render calls were clean. Project and local configuration snapshots remained byte-identical. This passed observation covers enrollment/render continuity and safe adoption refusal, not successful adoption reapplication.",
       "profile_revision": "76e440c4e3a40a5a7a8ffdb1ff954458c25bae99",
       "provider": null,
       "result": "passed",
@@ -136,7 +137,7 @@
       "evidence": [
         {
           "path": "container.json",
-          "sha256": "6ae44ef2ea730d8f47cffb2e9791d67ba00eceda73365257c1272992875e5e71",
+          "sha256": "d8d4305d4f624538539638957067fc0b6364a6f9d70b0c98a05328a640afa16c",
           "kind": "live-container",
           "producer": "AI-DLC qualification operator",
           "method": "Task operator capture; literal source/workspace/user paths redacted. Hash identifies redacted bytes, not original raw capture. No values or outcomes changed."
@@ -159,10 +160,11 @@
         "No native model/client session, remote provider, actual vault or human calibration.",
         "Local profile source is nonportable; reserved bundle URL uses explicit local Git routing. Input content is synthetic qualification material; the recorded CLI operations are actual existing-host observations.",
         "Rendering is project-file evidence, not fresh Codex/Claude/Antigravity client execution.",
-        "Container network disconnected. Reserved HTTPS bundle syntax still routes to a local file repository; no actual remote-portability verification. Generic raw probe labels do not establish container identity; use captured container inspection."
+        "Container network disconnected. Reserved HTTPS bundle syntax still routes to a local file repository; no actual remote-portability verification. Generic raw probe labels do not establish container identity; use captured container inspection.",
+        "Adoption exit0 does not imply logical success: its captured status is conflict. Complete configured setup remains unmet."
       ],
-      "observed": "Repeated actual project adoption, machine enrollment and managed rendering; project and isolated configuration snapshots were byte-identical. No duplicate owned assets.",
-      "profile_revision": "4f50b8d2f01f67debf9baba4dcd1c56a2b773c1b",
+      "observed": "Repeated adoption reported status=conflict for existing scaffold files despite exit0; it did not reapply. Enrollment reported idempotent=true and both render calls were clean. Project and local configuration snapshots remained byte-identical. This passed observation covers enrollment/render continuity and safe adoption refusal, not successful adoption reapplication.",
+      "profile_revision": "52188adf8f4d4e72dff848221cd1593182a9f1c7",
       "provider": null,
       "result": "passed",
       "scenario_id": "Q01-repeat-setup",
@@ -232,7 +234,7 @@
     },
     {
       "bundle_revisions": {
-        "q01-continuity": "2435fefc6ac5ff5f06f15396dc434e60bd0d2581"
+        "q01-continuity": "c8da6f35ffb675e00f81dcdaf49fabd84c240f4e"
       },
       "classification": "live-container",
       "commit": "189913b6cfc2c42828e35f4e2755c982b7f1e2da",
@@ -250,7 +252,7 @@
       "evidence": [
         {
           "path": "container.json",
-          "sha256": "6ae44ef2ea730d8f47cffb2e9791d67ba00eceda73365257c1272992875e5e71",
+          "sha256": "d8d4305d4f624538539638957067fc0b6364a6f9d70b0c98a05328a640afa16c",
           "kind": "live-container",
           "producer": "AI-DLC qualification operator",
           "method": "Task operator capture; literal source/workspace/user paths redacted. Hash identifies redacted bytes, not original raw capture. No values or outcomes changed."
@@ -276,7 +278,7 @@
         "Container network disconnected. Reserved HTTPS bundle syntax still routes to a local file repository; no actual remote-portability verification. Generic raw probe labels do not establish container identity; use captured container inspection."
       ],
       "observed": "Appending a qualification-owned marker to the managed bundle skill caused render apply exit1. Entire project snapshot including authored marker was preserved. Operator then restored only its deliberate marker to saved original bytes.",
-      "profile_revision": "4f50b8d2f01f67debf9baba4dcd1c56a2b773c1b",
+      "profile_revision": "52188adf8f4d4e72dff848221cd1593182a9f1c7",
       "provider": null,
       "result": "passed",
       "scenario_id": "Q01-authored-preservation",
@@ -344,7 +346,7 @@
     },
     {
       "bundle_revisions": {
-        "q01-continuity": "2435fefc6ac5ff5f06f15396dc434e60bd0d2581"
+        "q01-continuity": "c8da6f35ffb675e00f81dcdaf49fabd84c240f4e"
       },
       "classification": "live-container",
       "commit": "189913b6cfc2c42828e35f4e2755c982b7f1e2da",
@@ -362,7 +364,7 @@
       "evidence": [
         {
           "path": "container.json",
-          "sha256": "6ae44ef2ea730d8f47cffb2e9791d67ba00eceda73365257c1272992875e5e71",
+          "sha256": "d8d4305d4f624538539638957067fc0b6364a6f9d70b0c98a05328a640afa16c",
           "kind": "live-container",
           "producer": "AI-DLC qualification operator",
           "method": "Task operator capture; literal source/workspace/user paths redacted. Hash identifies redacted bytes, not original raw capture. No values or outcomes changed."
@@ -388,7 +390,7 @@
         "Container network disconnected. Reserved HTTPS bundle syntax still routes to a local file repository; no actual remote-portability verification. Generic raw probe labels do not establish container identity; use captured container inspection."
       ],
       "observed": "Both original local Git sources were renamed out of reach and XDG cache replaced with an empty directory. Two fresh actual CLI render --check processes returned clean with exit0; Codex and Claude skill bytes matched the selected v2 bundle. No native model client or remote-portability claim.",
-      "profile_revision": "4f50b8d2f01f67debf9baba4dcd1c56a2b773c1b",
+      "profile_revision": "52188adf8f4d4e72dff848221cd1593182a9f1c7",
       "provider": null,
       "result": "passed",
       "scenario_id": "Q01-offline-restart",
