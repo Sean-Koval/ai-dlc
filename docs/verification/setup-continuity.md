@@ -36,8 +36,9 @@ refusal; no user-authored application or vault was involved.
 ## Evidence and limits
 
 The [structured report](setup-continuity-189913b/report.json) records three
-observations per environment: repeat setup, authored preservation and offline
-restart. [Native captures](setup-continuity-189913b/native.json) and
+observations per environment: partial enrollment/render continuity, authored
+preservation and offline restart. The broad repeat-setup slot remains not-run
+because repeating full setup/bootstrap was not exercised. [Native captures](setup-continuity-189913b/native.json) and
 [container captures/context](setup-continuity-189913b/container.json) preserve
 command arguments, exit status, timestamps, durations, stdout/stderr and snapshots.
 Literal machine/source/workspace paths are redacted; report hashes authenticate
