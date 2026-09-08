@@ -14,6 +14,8 @@ acceptance = [
     "Review proposed design details before implementation, pass required project checks and OpenSpec validation, and link reviewed PR and merged-revision evidence before finish.",
 ]
 reviewed = true
+requirements = ["DP-01", "DP-02", "DP-03", "DP-04", "DP-05", "DP-06"]
+depends_on = ["spec-delivery-traceability"]
 
 [providers]
 specs = "openspec"

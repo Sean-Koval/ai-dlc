@@ -8,6 +8,7 @@ acceptance = [
     "Meet the linked requirements, preserve authored configuration and provider identity, and pass independent review and required completion gates.",
 ]
 reviewed = true
+requirements = ["PT-01", "PT-02", "PT-03", "PT-04"]
 
 [providers]
 specs = "openspec"
