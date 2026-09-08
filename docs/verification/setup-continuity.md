@@ -60,3 +60,9 @@ exercised; invalid-hash refusal occurs before publication. Actual two-provider
 cycles, fresh native-client handoffs, work-laptop accounts, human evaluations and
 release gates remain separate. Rendering Claude/Codex files does not verify an
 actual Claude, Codex or Antigravity session.
+
+A [separate native follow-up](native-setup-recovery.md) records actual repeated
+source bootstrap and a controlled failure after the backup appeared, followed by
+restoration and successful retry at the same source revision. Its independent
+report supplements these observations; it does not retroactively mark this report's
+unrun scenarios complete or establish full configured setup on both targets.

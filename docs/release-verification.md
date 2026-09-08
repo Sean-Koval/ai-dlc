@@ -114,3 +114,20 @@ qualification remain separate.
 See the [detailed qualification record](verification/github-ticket-workflows.md).
 Linear inventory reconciliation is deferred by the maintainer. Jira/Plane,
 Antigravity, bundle cleanup and package publication are separate deliverables.
+
+## Candidate manifest preparation
+
+The manual release verification workflow accepts an explicit intended HTTPS artifact
+base URL and produces `release.sh` alongside the built wheel and hashed
+`requirements.txt`. The generator validates the wheel filename and embedded engine
+name/version, refuses ambiguous wheels or existing output, and records actual file
+hashes. Candidate generation neither uploads assets to that URL nor establishes
+that the destination exists. After separately authorized publication and download
+verification, the reviewed manifest belongs at `bootstrap/release.sh` in the
+bootstrap distribution. Source development continues to use `--source`.
+
+Release-mode shell fixtures exercise successful selection/setup and tampered
+wheel/constraints refusal before engine installation. The tool/package transport
+boundaries are fixtures; they do not establish live artifact hosting or wheel
+installation. The manual workflow retains its real isolated wheel installation
+against exported hashed constraints before preparing the candidate manifest.

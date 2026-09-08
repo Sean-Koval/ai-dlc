@@ -38,3 +38,9 @@ Final covering verification passed **273 tests,8 skipped in24.13seconds** across
 ## Integrated verification
 
 The earlier integrated candidate ccebc0f passed all five required native checks with 1,864 tests passing and 6 nonapplicable skips. After the identity repair, the focused target/adapter/migration set passed 121 tests with 8 nonapplicable skips; generated, format, lint and type checks passed, as did all 23 strict OpenSpec validations. These checks establish local behavior only. Final integrated release checks and GitHub delivery evidence are recorded by the coordinator; parent issue21 remains open for actual Plane substitution and interruption qualification.
+
+The clean integrated revision `f6c36743b82432e9fefc9ee4344240361cf2397b` passed all five required checks in the reused Ubuntu24.04.3 ARM64 container with networking disconnected: **1,874 passed,9 skipped in225.39seconds**. The preceding Linux run at d3089fd found one packaging privacy failure in outer container-evidence paths (1,873 passed,9 skipped); the capture was redacted and rehashed without weakening the packaging guard. Independent review accepted the corrected evidence. No runtime source changed between these two checks.
+
+The subsequent native setup/recovery evidence and release preparation are separate
+slices. They do not change migration's source/target contract or fulfill the pending
+real Plane substitution rehearsal.
