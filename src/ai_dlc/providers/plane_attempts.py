@@ -119,7 +119,7 @@ class PlaneAttemptStore:
                 )
                 created = True
             except FileExistsError:
-                fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=directory)
+                fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=directory)
             try:
                 self._check_file(directory, name, fd)
                 if created:
@@ -141,7 +141,7 @@ class PlaneAttemptStore:
     def verify(self):
         name, dev, ino, expected = self.intent
         with self.directory() as directory:
-            fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=directory)
+            fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=directory)
             try:
                 metadata = self._check_file(directory, name, fd)
                 if (metadata.st_dev, metadata.st_ino) != (dev, ino) or os.read(

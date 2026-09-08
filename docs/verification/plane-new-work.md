@@ -73,3 +73,34 @@ manufactured operation IDs do not retain prior uncertainty knowledge. Neither
 external pairs nor URL prechecks establish cross-machine atomic uniqueness.
 Unresolved outcomes stay blocked without a reset/force-retry API. Independent
 review, integration, archive/PR/merge, merged-CI and work finish remain parent-owned.
+
+
+## Independent review repairs
+
+Review of ab274c3 found that a newer reconciliation GET could reveal cancelled,
+completed or unknown state after the initial transition guard, yet still authorize
+a PATCH. It also found that opening an existing FIFO intent could block before
+the regular-file check in both begin and verify. Both findings reproduced before
+implementation: three state-change cases sent an invalid write and two bounded
+subprocess cases timed out, while two valid reconciliation cases already passed.
+
+The transition guard now validates the initial item and every fresh reconciliation
+result. A newly cancelled/unknown state or a completed-to-started reversal refuses
+without PATCH; a later retry cannot turn the retained intent into a fresh sender.
+Already-completed and lost-response completion reconcile read-only as before.
+This closes discarded-observation errors, not the unavoidable server-side interval
+between the final read and PATCH; no compare-and-swap API is claimed.
+
+Both existing-intent open paths now include O_NONBLOCK before the unchanged
+descriptor type/owner/link/inode/byte checks. Two real bounded subprocess tests
+create FIFOs without writers, require prompt unsafe-storage refusal, preserve
+the FIFO, and verify the directory lock was released for another operation. No
+path-only precheck, replacement, deletion or retry/reset API was added.
+
+The repaired Plane provider, common onboarding, shared WorkService and component
+suite passed **95 tests in 2.25 seconds** (including seven new cases). Repository
+format/lint and prepared-interpreter type checks passed; `git diff --check` passed.
+The existing Python 3.12.11 environment was reused. No bootstrap/download, full
+package build or full suite was repeated under the coordinator's disk constraint.
+These are local transport/filesystem fixtures, not live Plane qualification. Narrow
+independent repair review and integrated required checks remain coordinator-owned.

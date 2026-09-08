@@ -265,6 +265,111 @@ def test_cancelled_state_is_never_success_or_reopened(tmp_path):
     assert len(api.writes) == 1
 
 
+@pytest.mark.parametrize(
+    "new_state,target", [(U[6], "closed"), (U[5], "in_progress"), (U[9], "closed")]
+)
+def test_newer_reconciliation_state_refuses_terminal_or_unknown_write(tmp_path, new_state, target):
+    api = PlaneHTTP()
+    p = provider(tmp_path, api)
+    reference = p.invoke("create", CREATE)["id"]
+    reads = 0
+
+    def transport(request):
+        nonlocal reads
+        if request.method == "GET" and request.url.path.endswith("/work-items/" + U[7] + "/"):
+            reads += 1
+            if reads == 2:
+                api.items[0]["state"] = new_state
+        return api(request)
+
+    payload = {"reference": reference, "state": target, "operation_id": "changed-before-write"}
+    with pytest.raises(ValueError, match="terminal state reversal"):
+        provider(tmp_path, transport).invoke("transition", payload)
+    assert reads == 2
+    assert api.items[0]["state"] == new_state
+    assert len(api.writes) == 1  # Only the preceding create; no PATCH.
+    # A later nonterminal observation cannot authorize a send using that same intent.
+    api.items[0]["state"] = U[3]
+    with pytest.raises(RuntimeError, match="intent remains unresolved"):
+        p.invoke("transition", payload)
+    assert len(api.writes) == 1
+
+
+def test_newer_completed_reconciliation_succeeds_without_patch(tmp_path):
+    api = PlaneHTTP()
+    p = provider(tmp_path, api)
+    reference = p.invoke("create", CREATE)["id"]
+    reads = 0
+
+    def transport(request):
+        nonlocal reads
+        if request.method == "GET" and request.url.path.endswith("/work-items/" + U[7] + "/"):
+            reads += 1
+            if reads == 2:
+                api.items[0]["state"] = U[5]
+        return api(request)
+
+    payload = {"reference": reference, "state": "closed", "operation_id": "already-finished"}
+    assert provider(tmp_path, transport).invoke("transition", payload)["state"] == "closed"
+    assert p.invoke("transition", payload)["state"] == "closed"
+    assert len(api.writes) == 1
+
+
+def test_lost_completion_response_reconciles_without_second_patch(tmp_path):
+    api = PlaneHTTP()
+    p = provider(tmp_path, api)
+    reference = p.invoke("create", CREATE)["id"]
+    api.lose = "transition"
+    payload = {"reference": reference, "state": "closed", "operation_id": "lost-finish"}
+    assert p.invoke("transition", payload)["state"] == "closed"
+    assert p.invoke("transition", payload)["state"] == "closed"
+    assert [method for method, _, _ in api.writes] == ["POST", "PATCH"]
+
+
+@pytest.mark.parametrize("action", ["begin", "verify"])
+def test_fifo_intent_refuses_promptly_without_a_writer(tmp_path, action):
+    import subprocess
+    import sys
+
+    code = """
+import os
+import stat
+import sys
+from pathlib import Path
+from ai_dlc.providers.plane_attempts import PlaneAttemptStore
+
+root = Path(sys.argv[1]) / 'project'
+root.mkdir()
+store = PlaneAttemptStore(root, Path(sys.argv[1]) / 'state')
+store.begin('fifo-operation', {})
+intent = next(store.path.glob('*.json'))
+intent.unlink()
+os.mkfifo(intent, 0o600)
+try:
+    if sys.argv[2] == 'begin':
+        store.begin('fifo-operation', {})
+    else:
+        store.verify()
+except ValueError as exc:
+    assert 'unsafe or corrupt' in str(exc)
+else:
+    raise AssertionError('FIFO intent was accepted')
+assert stat.S_ISFIFO(intent.lstat().st_mode)
+# Refusal released the directory lock; independent legitimate operations remain usable.
+assert PlaneAttemptStore(root, Path(sys.argv[1]) / 'state').begin('another-operation', {})
+print('refused unsafe FIFO')
+"""
+    result = subprocess.run(
+        [sys.executable, "-c", code, str(tmp_path), action],
+        capture_output=True,
+        text=True,
+        timeout=3,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == "refused unsafe FIFO"
+
+
 def test_wrong_account_and_foreign_reference_refuse(tmp_path):
     api = PlaneHTTP()
     api.user = U[9]

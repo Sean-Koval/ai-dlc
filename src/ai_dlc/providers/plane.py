@@ -414,16 +414,21 @@ class PlaneProvider:
             path = self.items_path + item_id + "/"
             if operation == "transition":
                 state = payload["state"]
-                if (
-                    state not in {"in_progress", "closed"}
-                    or current["state"] in {"cancelled", "unknown"}
-                    or current["state"] == "closed"
-                    and state != "closed"
-                ):
-                    raise ValueError("Plane refuses unknown or terminal state reversal")
+
+                def validate_transition(result):
+                    if (
+                        state not in {"in_progress", "closed"}
+                        or result["state"] in {"cancelled", "unknown"}
+                        or result["state"] == "closed"
+                        and state != "closed"
+                    ):
+                        raise ValueError("Plane refuses unknown or terminal state reversal")
+
+                validate_transition(current)
 
                 def reconcile():
                     result = self.read(payload["reference"])
+                    validate_transition(result)
                     return result if result["state"] == state else None
 
                 method, body = "PATCH", {"state": self.config["statuses"][state]}
