@@ -67,9 +67,9 @@ dependency order, with TDD, independent review and the required checks.
 | [#20](https://github.com/Sean-Koval/ai-dlc/issues/20) | Jira Cloud new-work adapter/setup; optional Plane | Common connection contract from #19; actual required fields/transitions; no Jira migration |
 | [#14](https://github.com/Sean-Koval/ai-dlc/issues/14) | Portable setup, substitution and fresh-session handoff qualification | #10/#12 and applicable onboarding; distinguish ordinary clone, clean-machine, container and actual client evidence |
 | [#13](https://github.com/Sean-Koval/ai-dlc/issues/13) | Optional UI/UX generation/evaluation guidance | Completed through gated finish at merged189913b with five receipts; UI remains optional |
-| [#21](https://github.com/Sean-Koval/ai-dlc/issues/21) | Remaining provider substitution/migration qualification | Existing GitHub switch/mappings are delivered; remaining creation/evidence contracts and actual Plane substitution need qualification |
+| [#21](https://github.com/Sean-Koval/ai-dlc/issues/21) | Remaining provider substitution/migration qualification | Existing GitHub switch/mappings are delivered; reviewed creation/recovery and omission/capability previews are implemented in the current candidate; actual Plane substitution remains unqualified |
 | [#15](https://github.com/Sean-Koval/ai-dlc/issues/15) | Product-guidance calibration | #11/#12; original cases, fixed experiment protocol, real human ratings and declared budget |
-| [#16](https://github.com/Sean-Koval/ai-dlc/issues/16) | Design-guidance calibration | #13; independent evidence and human participation |
+| [#16](https://github.com/Sean-Koval/ai-dlc/issues/16) | Design-guidance calibration | #13; original local inputs and protocol prepared in the current candidate; matched model runs and human participation remain pending |
 | [#17](https://github.com/Sean-Koval/ai-dlc/issues/17) | Retained v4 release obligations | Actual clean/container/cloud evidence, enforced-egress provider conformance, declared evaluations and authorized release publication |
 | [#22](https://github.com/Sean-Koval/ai-dlc/issues/22) | Selective Confluence publication | Deferred pending custom server; no vault/site mirroring |
 

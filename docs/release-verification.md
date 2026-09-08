@@ -28,6 +28,15 @@ Machine provisioning and personal-agent integration pass deterministic local int
 
 A disposable clean clone completed the declared devcontainer post-create bootstrap and all required checks on Linux ARM64. Its project virtual environment is isolated in a per-devcontainer named volume so Linux executables cannot replace the host checkout's `.venv`. The Codex Cloud setup and maintenance entry scripts and the Claude Cloud setup entry script also completed in that clean Linux container; this validates their bootstrap behavior only, not either hosted platform's authentication, persistence, or network lifecycle.
 
+## Remaining-issue qualification candidate — September 8, 2026
+
+The [setup continuity record](verification/setup-continuity.md) adds actual native
+and network-disconnected container observations at clean `189913b`. Its report
+keeps complete Q-01–03 qualification unmet. Migration target creation/recovery
+and Design PM experiment inputs are separate reviewed implementation work;
+neither establishes authenticated provider conformance or human-rated benefit.
+No release assets have been published.
+
 ## Portable profile enrollment candidate — 2026-09-04
 
 The source bootstrap completed in the linked implementation worktree. The reviewed

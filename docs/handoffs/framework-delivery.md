@@ -19,6 +19,25 @@ completed #12, #13 and #19 with native Completed and Project Done. Actual
 native-client, tenant, human-calibration and release obligations remain open.
 Historical source checks never substitute for those observations.
 
+## Remaining-issue implementation candidate
+
+The current `codex/remaining-qualification` candidate adds explicit saved target
+creation intent, identity-preserving reconciliation and migration preview evidence,
+plus original Design PM inputs and a fixed experiment protocol. Independent review
+accepted the migration identity repair, design preparation and local stimuli.
+Native/container continuity observations are documented in
+[setup continuity](../verification/setup-continuity.md). These are actual existing
+environment checks, not factory-clean or authenticated provider qualification.
+
+Parent #21 remains open for a specifically selected real Plane deployment and
+substitution/interruption rehearsal. Parent #16 remains open for approved matched
+model runs and actual human ratings. #14/#17 retain full platform/client/provider
+and release requirements. #20 needs actual selected Jira/Plane deployment evidence;
+#15 needs human evaluations and an approved experiment; #22 awaits the custom
+Confluence server. Do not use local implementation or fixtures to close these
+parents. Final integration/CI evidence must be recorded against the delivered
+revision before treating this candidate as merged.
+
 ## Current authority — September 8
 
 Start with [current roadmap](../roadmap.md),
