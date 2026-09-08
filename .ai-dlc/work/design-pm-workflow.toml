@@ -23,6 +23,7 @@ knowledge = "obsidian"
 deploy = "none"
 
 [artifacts]
+branch = "codex/work-computer-toolsets"
 plan = "docs/superpowers/plans/2026-09-05-design-pm-workflow.md"
 spec = "openspec/changes/archive/2026-09-08-design-pm-workflow"
 design = "docs/design/design-pm.md"

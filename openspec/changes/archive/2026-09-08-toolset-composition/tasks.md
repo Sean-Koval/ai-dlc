@@ -5,6 +5,9 @@
 
 ## Delivery
 - [x] 4. Run all required checks and strict specification validation; record local evidence.
-- [ ] 5. Complete independent source review and root-owned dependency integration, archive and exact merged-revision finish evidence.
+- [x] 5. Complete independent source review and accepted dependency integration; finalize implementation evidence for archive.
 
-[Local verification and remaining parent scope](../../../docs/verification/toolset-composition.md).
+[Local verification and remaining parent scope](../../../../docs/verification/toolset-composition.md).
+
+Exact integrated checks, PR/merge/CI and eligible parent finish remain separate
+pending delivery gates in docs/verification/work-computer-toolsets.md.

@@ -104,8 +104,9 @@ preserve selections during `project sync`; authored conflicts require review.
 
 Use `ai-dlc agents render` and its explicit apply operation to deliver the selected
 native clients' owned files. Files alone do not prove client recognition or login.
-Plane remains unavailable for AI-DLC lifecycle operations even when native guidance
-is delivered. Select an implemented tracker for tracked-work operations.
+Plane has an optional lifecycle adapter and guided provider connection. Select
+and authenticate an explicit deployment/account/project; native guidance or
+scaffolding alone does not qualify a live deployment. GitHub/Jira need no Plane installation.
 
 Obsidian note storage uses the existing machine setting `paths.vault`. Its directory
 must exist; its desktop viewer is optional, including in headless environments.

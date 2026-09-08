@@ -11,6 +11,7 @@ Linear priorities. No company, Plane or Confluence service has been mutated.
 | Delivery traceability (#12) | `4058b24` | [Traceability](spec-delivery-traceability.md) |
 | Toolset selection (#19) | `f3d74dd` | [Toolset](toolset-composition.md) |
 | Native role composition (#19) | `6cb80b2` | [Native composition](native-tool-composition.md) |
+| Optional Plane new work (#20 child) | `548a6dd` | [Plane](plane-new-work.md) |
 | Jira Cloud new work (#20 child) | `03d5cbe` | [Jira](jira-cloud-new-work.md) |
 | Conditional credential readiness (#19) | `213da0e` | [Credential readiness](credential-readiness.md) |
 | Bootstrap executable publication (#14 child) | `63d6ec5` | [Bootstrap](bootstrap-executable-publication.md) |
@@ -55,3 +56,17 @@ Actual work-laptop client recognition/authentication, installed Plane behavior,
 full provider qualification, human-rated comparisons and package publication remain
 separate open obligations. Local fixtures, synthetic guidance observations and
 source reviews do not establish any of those results.
+
+## Final component integration reviews
+
+Pre-Plane integration at clean `b7d1ace` was independently accepted;132 targeted
+connection, credential, native, toolset and scanner tests passed167.31seconds.
+Plane initial review found two reproducible issues: stale terminal state before
+PATCH and a blocking FIFO intent read. Repair `548a6dd` was independently accepted;
+original reproductions now refuse promptly, no disallowed PATCH occurs, and68
+focused tests passed2.57seconds. Live deployment behavior remains unverified.
+
+The Plane merge `467de24` was independently accepted: registry and provider code
+match the accepted candidate; richer Plane configuration appears once, trusted
+credential/Obsidian fields remain, and the explicit unavailable-lifecycle fixture
+preserves its refusal scenario. The archived Jira specification was retained.

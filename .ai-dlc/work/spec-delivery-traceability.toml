@@ -25,6 +25,7 @@ knowledge = "obsidian"
 deploy = "none"
 
 [artifacts]
+branch = "codex/work-computer-toolsets"
 spec = "openspec/changes/archive/2026-09-08-spec-delivery-traceability"
 plan = "docs/superpowers/plans/2026-09-05-spec-delivery-traceability.md"
 verification = "docs/verification/spec-delivery-traceability.md"

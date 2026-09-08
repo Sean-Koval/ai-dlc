@@ -1,5 +1,8 @@
-## ADDED Requirements
+# provider-toolset-onboarding Specification
 
+## Purpose
+TBD - created by archiving change provider-toolset-onboarding. Update Purpose after archive.
+## Requirements
 ### Requirement: PT-01 Explicit provider selection
 Scaffolding and adoption SHALL accept supported provider selections independently of language preset and SHALL preserve legacy defaults when those selections are omitted.
 
@@ -37,9 +40,10 @@ AI-DLC SHALL reuse upstream native connections and existing owned rendering to e
 Readiness SHALL distinguish native harness availability, AI-DLC lifecycle adapter availability, required configuration, local credential presence, and separately observed live qualification.
 
 #### Scenario: A connector works but a lifecycle adapter is absent
-- **WHEN** native Plane tools are available but the selected AI-DLC tracker implementation is unavailable
+- **WHEN** native tracker tools are available but the selected trusted lifecycle definition explicitly reports unavailable
 - **THEN** harness support is reported separately and tracked-work operations remain unsupported
 
 #### Scenario: Obsidian GUI is unavailable in a container
 - **WHEN** note storage is configured but the optional desktop viewer is unavailable
 - **THEN** readiness describes the viewing limitation without making that GUI a prerequisite for tracker operations
+

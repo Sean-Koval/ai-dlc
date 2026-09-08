@@ -116,10 +116,10 @@ separate and deferred; this setup does not copy the vault or team spaces.
 Scaffold provider choices come from trusted definitions, independently of the
 language preset. Jira Cloud is selectable in this integrated candidate;
 scaffolding alone supplies no account identity or credentials. Use its explicit
-connection setup for the intended work site and project. Plane is an
-optional selection with an explicitly unavailable AI-DLC lifecycle adapter;
-native guidance does not enable tracked-work operations. It is not a prerequisite
-for GitHub or Jira projects. Selective Confluence work remains deferred.
+connection setup for the intended work site and project. Plane is an optional implemented lifecycle adapter with explicit deployment,
+account, workspace/project and state configuration. Follow the
+[Plane setup runbook](../runbooks/plane-setup.md); no installed deployment is
+qualified by the adapter fixtures. Plane is not a prerequisite for GitHub or Jira projects. Selective Confluence work remains deferred.
 
 Copier answers retain selected clients and tracker configuration across updates.
 Omitted options preserve the historical Linear and Claude Code/Codex defaults;

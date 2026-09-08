@@ -15,6 +15,6 @@ scm = "github"
 tracker = "github-issues"
 
 [artifacts]
-spec = "openspec/changes/provider-toolset-onboarding"
+spec = "openspec/changes/archive/2026-09-08-provider-toolset-onboarding"
 branch = "codex/work-computer-toolsets"
 tracker = "https://github.com/Sean-Koval/ai-dlc/issues/19"
