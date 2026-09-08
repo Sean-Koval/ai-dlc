@@ -26,4 +26,13 @@ _exclude:
 tracker:
   type: str
   default: linear
-  choices: [linear, github-issues]
+# CLI validates trusted definitions; persisted answers retain the selected kind.
+tracker_settings:
+  type: yaml
+  default: "{{ {'token_env': 'LINEAR_API_KEY'} if tracker == 'linear' else {'kind': tracker} }}"
+knowledge:
+  type: str
+  default: obsidian
+agent_clients:
+  type: yaml
+  default: [claude-code, codex]

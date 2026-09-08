@@ -21,6 +21,10 @@ class ProviderDefinition:
     compatibility_connect: Callable[..., dict] | None = None
     aliases: bool = True
     boolean_keys: frozenset[str] = frozenset()
+    scaffold_defaults: tuple[tuple[str, str], ...] = ()
+    lifecycle_available: bool = True
+    local_directory: str | None = None
+    optional_viewer: str | None = None
 
 
 def _linear(root, *, alias, environ, **options):
@@ -37,12 +41,17 @@ def _github(root, *, alias, environ, **options):
 
 # Trusted code registrations only: no project file can load an executable handler.
 DEFINITIONS = {
+    "plane": ProviderDefinition("plane", ("tracker",), lifecycle_available=False),
+    "obsidian": ProviderDefinition(
+        "obsidian", ("knowledge",), local_directory="paths.vault", optional_viewer="obsidian"
+    ),
     "linear": ProviderDefinition(
         "linear",
         ("tracker",),
         frozenset({"organization", "team", "in_progress", "closed"}),
         compatibility_connect=_linear,
         aliases=False,
+        scaffold_defaults=(("token_env", "LINEAR_API_KEY"),),
     ),
     "github-issues": ProviderDefinition(
         "github-issues",

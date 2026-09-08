@@ -92,3 +92,22 @@ tests, live walkthrough evidence, and project templates together. Rebind
 existing work explicitly; do not silently move it between providers. Portable
 configuration may name environment variables, but actual secrets, account
 choices, and machine-local paths remain outside portable project files.
+
+
+## Selected scaffold and client tools
+
+Preview `ai-dlc project adopt` with explicit `--tracker`, `--knowledge` and repeated
+`--agent-client` options, or use the same options with `project init`. Supported
+choices come from trusted definitions; selection does not log in, install tools
+or create remote work. Omitted options retain historical defaults. Copier answers
+preserve selections during `project sync`; authored conflicts require review.
+
+Use `ai-dlc agents render` and its explicit apply operation to deliver the selected
+native clients' owned files. Files alone do not prove client recognition or login.
+Plane remains unavailable for AI-DLC lifecycle operations even when native guidance
+is delivered. Select an implemented tracker for tracked-work operations.
+
+Obsidian note storage uses the existing machine setting `paths.vault`. Its directory
+must exist; its desktop viewer is optional, including in headless environments.
+Offline readiness does not read notes or test write access. Keep personal vault
+paths and contents out of shared project configuration.

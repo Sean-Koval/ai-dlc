@@ -117,6 +117,8 @@ def project_init(
     vcs_ref: str | None = None,
     capability: Annotated[list[str] | None, typer.Option("--capability")] = None,
     tracker: Annotated[str | None, typer.Option("--tracker")] = None,
+    knowledge_provider: Annotated[str | None, typer.Option("--knowledge")] = None,
+    agent_client: Annotated[list[str] | None, typer.Option("--agent-client")] = None,
 ):
     from ai_dlc.templates import adopt
 
@@ -128,7 +130,12 @@ def project_init(
             template_source=template_source,
             vcs_ref=vcs_ref,
             capabilities=capability,
-            providers={"tracker": tracker} if tracker is not None else None,
+            providers={
+                role: value
+                for role, value in (("tracker", tracker), ("knowledge", knowledge_provider))
+                if value is not None
+            },
+            agent_clients=agent_client,
             initialize=True,
         )
     )
@@ -143,6 +150,8 @@ def project_adopt(
     vcs_ref: str | None = None,
     capability: Annotated[list[str] | None, typer.Option("--capability")] = None,
     tracker: Annotated[str | None, typer.Option("--tracker")] = None,
+    knowledge_provider: Annotated[str | None, typer.Option("--knowledge")] = None,
+    agent_client: Annotated[list[str] | None, typer.Option("--agent-client")] = None,
 ):
     from ai_dlc.templates import adopt
 
@@ -154,7 +163,12 @@ def project_adopt(
             template_source=template_source,
             vcs_ref=vcs_ref,
             capabilities=capability,
-            providers={"tracker": tracker} if tracker is not None else None,
+            providers={
+                role: value
+                for role, value in (("tracker", tracker), ("knowledge", knowledge_provider))
+                if value is not None
+            },
+            agent_clients=agent_client,
         )
     )
 

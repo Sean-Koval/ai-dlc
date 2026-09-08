@@ -12,7 +12,7 @@ from ai_dlc.credentials import credential_status
 from ai_dlc.files import assets, inside
 
 _READY = "ready"
-_BLOCKING_DIMENSIONS = {"tool", "configuration", "credential", "guidance"}
+_BLOCKING_DIMENSIONS = {"tool", "configuration", "credential", "guidance", "lifecycle-adapter"}
 
 
 def _check(
@@ -131,6 +131,62 @@ def _tool_checks(
     return checks
 
 
+def _definition_checks(component: dict, config: dict, *, headless: bool) -> list[dict[str, str]]:
+    """Trusted bounded requirements; no executable/custom schema extensions."""
+    from ai_dlc.provider_definitions import DEFINITIONS
+
+    settings = config.get("providers", {}).get(component["provider"], {})
+    kind = settings.get("kind", settings.get("type", component["provider"]))
+    definition = DEFINITIONS.get(kind)
+    if definition is None or component["role"] not in definition.roles:
+        return []
+    checks = []
+    if not definition.lifecycle_available:
+        checks.append(
+            _check(
+                component["id"],
+                "lifecycle-adapter",
+                "blocked",
+                f"AI-DLC {component['role']} lifecycle adapter is unavailable; native tools and guidance do not enable tracked-work operations.",
+                "Select an implemented lifecycle provider or retain this explicit unsupported capability.",
+            )
+        )
+    if definition.local_directory:
+        value = _config_value(config, definition.local_directory)
+        available = False
+        if isinstance(value, str) and value.strip():
+            try:
+                available = Path(value).expanduser().resolve().is_dir()
+            except (OSError, ValueError, RuntimeError):
+                pass
+        checks.append(
+            _check(
+                component["id"],
+                "configuration",
+                _READY if available else "missing",
+                f"{definition.local_directory} names an existing note-storage directory; write access is not tested."
+                if available
+                else f"{definition.local_directory} must name an existing note-storage directory.",
+                "No action required for directory availability; use explicit operations to verify access."
+                if available
+                else f"Configure {definition.local_directory} in machine configuration to an existing vault.",
+            )
+        )
+    if definition.optional_viewer:
+        checks.append(
+            _check(
+                component["id"],
+                "optional-viewer",
+                "unavailable" if headless else "unverified",
+                f"Optional {definition.optional_viewer} desktop viewer is unavailable in headless mode; note storage does not require it."
+                if headless
+                else f"Optional {definition.optional_viewer} desktop viewer was not inspected; note storage does not require it.",
+                "Use a desktop viewer only when visual browsing is needed; it is not a prerequisite for note operations.",
+            )
+        )
+    return checks
+
+
 def inspect_readiness(
     root: Path,
     config: dict,
@@ -225,6 +281,7 @@ def inspect_readiness(
         )
     for component in resolved["components"]:
         checks.extend(_tool_checks(component, modules, headless=headless, probe=probe))
+        checks.extend(_definition_checks(component, config, headless=headless))
 
         provider_config = config.get("providers", {}).get(component["provider"], {})
         for path in component["required_config"]:

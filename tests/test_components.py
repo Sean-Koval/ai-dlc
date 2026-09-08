@@ -31,10 +31,24 @@ def test_loads_the_packaged_component_catalog_and_its_guidance(tmp_path: Path):
                 "required_config": ["team_id", "statuses.in_progress", "statuses.closed"],
             },
             {
+                "id": "obsidian",
+                "roles": ["knowledge"],
+                "modules": [],
+                "guidance": ["providers/obsidian.md"],
+                "required_config": [],
+            },
+            {
                 "id": "openspec",
                 "roles": ["specs"],
                 "modules": ["openspec"],
                 "guidance": ["providers/openspec.md"],
+                "required_config": [],
+            },
+            {
+                "id": "plane",
+                "roles": ["tracker"],
+                "modules": [],
+                "guidance": ["providers/plane.md"],
                 "required_config": [],
             },
         ],
@@ -104,7 +118,9 @@ def test_loads_digest_verified_synthetic_component_fixtures(tmp_path: Path):
     assert [component["id"] for component in catalog["components"]] == [
         "github-issues",
         "linear",
+        "obsidian",
         "openspec",
+        "plane",
         "synthetic-specs",
         "synthetic-tracker",
     ]
@@ -214,7 +230,9 @@ def test_parses_the_verified_manifest_bytes_when_the_file_changes_after_read(
     assert [component["id"] for component in catalog["components"]] == [
         "github-issues",
         "linear",
+        "obsidian",
         "openspec",
+        "plane",
         "synthetic-specs",
     ]
 

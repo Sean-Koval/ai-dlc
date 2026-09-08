@@ -21,6 +21,20 @@
       "modules": ["core"],
       "guidance": ["providers/github-issues.md"],
       "required_config": ["repository"]
+    },
+    {
+      "id": "obsidian",
+      "roles": ["knowledge"],
+      "modules": [],
+      "guidance": ["providers/obsidian.md"],
+      "required_config": []
+    },
+    {
+      "id": "plane",
+      "roles": ["tracker"],
+      "modules": [],
+      "guidance": ["providers/plane.md"],
+      "required_config": []
     }
   ]
 }
