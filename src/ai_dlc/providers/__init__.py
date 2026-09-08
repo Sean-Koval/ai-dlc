@@ -364,6 +364,7 @@ class Registry:
             "manifest": discovered,
             "providers": list(self.config.get("providers", {})),
             "builtins": [
+                "jira-cloud",
                 "linear",
                 "github-issues",
                 "openspec",

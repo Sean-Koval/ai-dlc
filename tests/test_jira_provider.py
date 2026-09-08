@@ -506,3 +506,101 @@ def test_read_refuses_incomplete_terminal_or_property_evidence(jira, damage):
         jira.issues[0]["properties"]["ai-dlc"]["schema"] = True
     with pytest.raises((ValueError, TypeError)):
         jira.provider().invoke("read", {"reference": "101"})
+
+
+@pytest.mark.parametrize("operation", ["create", "transition"])
+@pytest.mark.parametrize("has_default", [False, True])
+@pytest.mark.parametrize("has_allowed_values", [False, True])
+def test_empty_required_multiselect_refuses_before_mutation(
+    jira, operation, has_default, has_allowed_values
+):
+    from ai_dlc.providers.jira_cloud import JiraFieldError
+
+    metadata = field("customfield_1", "array", required=True, hasDefaultValue=has_default)
+    metadata["schema"]["items"] = "option"
+    if has_allowed_values:
+        metadata["allowedValues"] = [{"id": "5", "value": "Reviewed"}]
+    if operation == "create":
+        jira.fields.append(metadata)
+        jira.config["create_fields"] = {"customfield_1": []}
+        payload = PAYLOAD
+        endpoint = "/issue"
+    else:
+        jira.provider().invoke("create", PAYLOAD)
+        jira.transitions[-1]["fields"] = {"customfield_1": metadata}
+        jira.config["transitions"] = {"closed": {"fields": {"customfield_1": []}}}
+        payload = {"reference": "101", "state": "closed", "operation_id": "finish"}
+        endpoint = "/transitions"
+    with pytest.raises(JiraFieldError, match="required field.*customfield_1"):
+        jira.provider().invoke(operation, payload)
+    assert jira.writes(endpoint) == []
+
+
+def test_optional_empty_multiselect_keeps_explicit_clear_semantics(jira):
+    metadata = field("customfield_1", "array", required=False)
+    metadata["schema"]["items"] = "option"
+    metadata["allowedValues"] = [{"id": "5", "value": "Reviewed"}]
+    jira.fields.append(metadata)
+    jira.config["create_fields"] = {"customfield_1": []}
+    jira.provider().invoke("create", PAYLOAD)
+    assert jira.issues[0]["fields"]["customfield_1"] == []
+
+
+def test_registry_discovery_includes_executable_jira_without_network():
+    from ai_dlc.providers import Registry
+
+    assert "jira-cloud" in Registry(environ={}).discover()["builtins"]
+
+
+@pytest.mark.parametrize("operation", ["create", "transition"])
+@pytest.mark.parametrize(
+    "value",
+    [
+        None,
+        {"type": "doc", "version": 1, "content": []},
+        {
+            "type": "doc",
+            "version": 1,
+            "content": [{"type": "paragraph", "content": [{"type": "text", "text": "   "}]}],
+        },
+    ],
+)
+def test_required_adf_needs_nonempty_write_content(jira, operation, value):
+    from ai_dlc.providers.jira_cloud import JiraFieldError
+
+    metadata = field("customfield_1", required=True)
+    metadata["schema"]["custom"] = "com.atlassian.jira.plugin.system.customfieldtypes:textarea"
+    if operation == "create":
+        jira.fields.append(metadata)
+        jira.config["create_fields"] = {"customfield_1": value}
+        payload = PAYLOAD
+        endpoint = "/issue"
+    else:
+        jira.provider().invoke("create", PAYLOAD)
+        jira.transitions[-1]["fields"] = {"customfield_1": metadata}
+        jira.config["transitions"] = {"closed": {"fields": {"customfield_1": value}}}
+        payload = {"reference": "101", "state": "closed", "operation_id": "finish"}
+        endpoint = "/transitions"
+    with pytest.raises(JiraFieldError, match="required field.*customfield_1"):
+        jira.provider().invoke(operation, payload)
+    assert jira.writes(endpoint) == []
+
+
+@pytest.mark.parametrize(
+    "schema,value",
+    [({"type": "boolean"}, False), ({"type": "integer"}, 0), ({"type": "number"}, 0.0)],
+)
+def test_required_false_and_zero_are_valid_values(jira, schema, value):
+    jira.fields.append({**field("customfield_1", required=True), "schema": schema})
+    jira.config["create_fields"] = {"customfield_1": value}
+    jira.provider().invoke("create", PAYLOAD)
+    assert jira.issues[0]["fields"]["customfield_1"] == value
+
+
+def test_optional_null_adf_keeps_clear_semantics(jira):
+    metadata = field("customfield_1", required=False)
+    metadata["schema"]["custom"] = "com.atlassian.jira.plugin.system.customfieldtypes:textarea"
+    jira.fields.append(metadata)
+    jira.config["create_fields"] = {"customfield_1": None}
+    jira.provider().invoke("create", PAYLOAD)
+    assert jira.issues[0]["fields"]["customfield_1"] is None

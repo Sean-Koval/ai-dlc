@@ -186,6 +186,8 @@ def validate_fields(metadata, values):
         if "set" not in meta["operations"]:
             raise JiraRefusal(f"Jira field cannot be set: {key}")
         value = values[key]
+        if meta["required"] and (value is None or isinstance(value, list) and not value):
+            raise JiraFieldError(f"Jira required field needs a reviewed value: {key}")
         schema = meta.get("schema", {})
         type_name = schema.get("type")
 
@@ -217,7 +219,9 @@ def validate_fields(metadata, values):
             return False
 
         if key == "description" or str(schema.get("custom", "")).endswith(":textarea"):
-            adf_text(value)
+            texts = adf_text(value)
+            if meta["required"] and not any(text.strip() for text in texts):
+                raise JiraFieldError(f"Jira required field needs a reviewed value: {key}")
         elif type_name == "array":
             if not isinstance(value, list) or not all(
                 valid(item, schema.get("items")) for item in value

@@ -141,3 +141,20 @@ def test_selected_jira_alias_renders_packaged_guidance_without_native_auth(tmp_p
     assert guide.is_file()
     assert "personal_scoped_token_basic" in guide.read_text()
     assert "providers/jira-cloud.md" in (tmp_path / "AGENTS.md").read_text()
+
+
+def test_common_plan_refuses_required_empty_multiselect_before_saving(onboarding):
+    from test_jira_provider import field
+
+    root, path, jira = onboarding
+    metadata = field("customfield_1", "array", required=True)
+    metadata["schema"]["items"] = "option"
+    metadata["allowedValues"] = [{"id": "5", "value": "Reviewed"}]
+    jira.fields.append(metadata)
+    path.write_text(path.read_text() + "\n[providers.work.create_fields]\ncustomfield_1 = []\n")
+    before = path.read_bytes()
+    result = invoke(root, *selectors(), "--plan-file", ".ai-dlc/local/jira.json")
+    assert result.exit_code != 0
+    assert path.read_bytes() == before
+    assert not (root / ".ai-dlc/local/jira.json").exists()
+    assert jira.writes() == []
