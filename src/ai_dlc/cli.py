@@ -119,26 +119,33 @@ def project_init(
     tracker: Annotated[str | None, typer.Option("--tracker")] = None,
     knowledge_provider: Annotated[str | None, typer.Option("--knowledge")] = None,
     agent_client: Annotated[list[str] | None, typer.Option("--agent-client")] = None,
+    docs_preset: Annotated[str | None, typer.Option("--docs-preset")] = None,
+    link_vault_option: Annotated[bool, typer.Option("--link-vault")] = False,
 ):
+    from ai_dlc.moc import scaffold_5_pillar_docs
     from ai_dlc.templates import adopt
+    from ai_dlc.vault_link import link_vault
 
-    emit(
-        adopt(
-            path,
-            preset=preset,
-            apply=apply,
-            template_source=template_source,
-            vcs_ref=vcs_ref,
-            capabilities=capability,
-            providers={
-                role: value
-                for role, value in (("tracker", tracker), ("knowledge", knowledge_provider))
-                if value is not None
-            },
-            agent_clients=agent_client,
-            initialize=True,
-        )
+    result = adopt(
+        path,
+        preset=preset,
+        apply=apply,
+        template_source=template_source,
+        vcs_ref=vcs_ref,
+        capabilities=capability,
+        providers={
+            role: value
+            for role, value in (("tracker", tracker), ("knowledge", knowledge_provider))
+            if value is not None
+        },
+        agent_clients=agent_client,
+        initialize=True,
     )
+    if apply and docs_preset == "5-pillar":
+        scaffold_5_pillar_docs(path / "docs", path.name)
+    if apply and link_vault_option:
+        link_vault(path, docs_preset=docs_preset)
+    emit(result)
 
 
 @project.command("adopt")
@@ -152,25 +159,32 @@ def project_adopt(
     tracker: Annotated[str | None, typer.Option("--tracker")] = None,
     knowledge_provider: Annotated[str | None, typer.Option("--knowledge")] = None,
     agent_client: Annotated[list[str] | None, typer.Option("--agent-client")] = None,
+    docs_preset: Annotated[str | None, typer.Option("--docs-preset")] = None,
+    link_vault_option: Annotated[bool, typer.Option("--link-vault")] = False,
 ):
+    from ai_dlc.moc import scaffold_5_pillar_docs
     from ai_dlc.templates import adopt
+    from ai_dlc.vault_link import link_vault
 
-    emit(
-        adopt(
-            root,
-            preset=preset,
-            apply=apply,
-            template_source=template_source,
-            vcs_ref=vcs_ref,
-            capabilities=capability,
-            providers={
-                role: value
-                for role, value in (("tracker", tracker), ("knowledge", knowledge_provider))
-                if value is not None
-            },
-            agent_clients=agent_client,
-        )
+    result = adopt(
+        root,
+        preset=preset,
+        apply=apply,
+        template_source=template_source,
+        vcs_ref=vcs_ref,
+        capabilities=capability,
+        providers={
+            role: value
+            for role, value in (("tracker", tracker), ("knowledge", knowledge_provider))
+            if value is not None
+        },
+        agent_clients=agent_client,
     )
+    if apply and docs_preset == "5-pillar":
+        scaffold_5_pillar_docs(root / "docs", root.name)
+    if apply and link_vault_option:
+        link_vault(root, docs_preset=docs_preset)
+    emit(result)
 
 
 @project.command("sync")
@@ -178,6 +192,25 @@ def project_sync(root: Path = Path("."), apply: bool = False, vcs_ref: str | Non
     from ai_dlc.templates import sync
 
     emit(sync(root, apply=apply, vcs_ref=vcs_ref))
+
+
+@project.command("link-vault")
+def project_link_vault(
+    root: Path = Path("."),
+    vault: Annotated[Path | None, typer.Option("--vault", "-v")] = None,
+    name: Annotated[str | None, typer.Option("--name", "-n")] = None,
+    force: Annotated[bool, typer.Option("--force", "-f")] = False,
+    docs_preset: Annotated[str | None, typer.Option("--docs-preset")] = None,
+):
+    """Link project docs directory into the configured Obsidian vault."""
+    from ai_dlc.vault_link import link_vault
+
+    try:
+        result = link_vault(root, vault=vault, name=name, force=force, docs_preset=docs_preset)
+    except (OSError, RuntimeError, ValueError) as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(2) from None
+    emit(result.as_dict())
 
 
 @project.command("rebind")

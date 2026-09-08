@@ -5,18 +5,22 @@ import tempfile
 from pathlib import Path
 
 
-def inside(root: Path, relative: str) -> Path:
+def inside(root: Path, relative: str, *, allow_project_symlinks: bool = False) -> Path:
     path = Path(relative)
     if path.is_absolute() or ".." in path.parts:
         raise ValueError(f"path escapes root/vault: {relative}")
     candidate = root / path
-    if not candidate.resolve().is_relative_to(root.resolve()):
+    is_project_note = (
+        allow_project_symlinks and bool(path.parts) and path.parts[0] == "Projects"
+    )
+    if not is_project_note and not candidate.resolve().is_relative_to(root.resolve()):
         raise ValueError(f"path escapes root/vault: {relative}")
     for parent in [candidate, *candidate.parents]:
         if parent == root:
             break
         if parent.is_symlink():
-            raise ValueError(f"symlink not managed in root/vault: {relative}")
+            if not is_project_note:
+                raise ValueError(f"symlink not managed in root/vault: {relative}")
     return candidate
 
 
