@@ -219,6 +219,7 @@ def test_obsidian_runtime_vault_readiness_is_independent_of_optional_gui(tmp_pat
 
 def test_guidance_cannot_mask_explicitly_unavailable_lifecycle_adapter(tmp_path, monkeypatch):
     from dataclasses import replace
+
     from ai_dlc import provider_definitions
 
     monkeypatch.setitem(
