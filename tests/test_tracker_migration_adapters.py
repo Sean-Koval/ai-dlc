@@ -186,3 +186,129 @@ def test_unowned_plane_target_is_not_silently_adopted(adapter_move):
     remote["api"].items[0]["external_source"] = "human"
     with pytest.raises(ValueError, match="correlation"):
         preview(adapter_move)
+
+
+def test_actual_plane_create_reconciliation_preserves_adapter_ledger(adapter_move):
+    from ai_dlc.tracker_targets import plan_tracker_targets, reconcile_tracker_targets
+
+    root, env, registry, remote, _, kind = adapter_move
+    if kind != "plane":
+        pytest.skip("Plane creation contract only")
+    api = remote["api"]
+    api.items.clear()
+    planned = plan_tracker_targets(
+        root,
+        "next",
+        work_ids=["one"],
+        create_work_ids=["one"],
+        source="local-records",
+        environ=env,
+        registry=registry,
+    )
+    before = (root / ".ai-dlc/work/one.toml").read_bytes()
+    api.hide_items = True
+    api.lose = "create"
+    assert (
+        reconcile_tracker_targets(root, planned, environ=env, registry=registry)["status"]
+        == "unresolved"
+    )
+    assert (
+        reconcile_tracker_targets(root, planned, environ=env, registry=registry)["status"]
+        == "unresolved"
+    )
+    assert len(api.writes) == 1
+    api.hide_items = False
+    result = reconcile_tracker_targets(root, planned, environ=env, registry=registry)
+    assert result["status"] == "resolved"
+    assert len(api.writes) == 1
+    assert (root / ".ai-dlc/work/one.toml").read_bytes() == before
+    assert (
+        apply_tracker_migration(root, result["migration_plan"], environ=env, registry=registry)[
+            "status"
+        ]
+        == "applied"
+    )
+
+
+def test_actual_github_create_reconciliation_keeps_one_issue(adapter_move, monkeypatch):
+    from ai_dlc.tracker_targets import plan_tracker_targets, reconcile_tracker_targets
+
+    root, env, registry, _, _, kind = adapter_move
+    if kind != "github-issues":
+        pytest.skip("GitHub creation contract only")
+    remote = {"item": None, "creates": 0, "hidden": True}
+
+    def run(args, **kwargs):
+        if args[1:3] == ["api", "graphql"]:
+            body = {"data": {"viewer": {"id": "expected"}}}
+        elif args[1:3] == ["issue", "list"]:
+            body = [] if remote["hidden"] or remote["item"] is None else [remote["item"]]
+        elif args[1:3] == ["issue", "create"]:
+            remote["creates"] += 1
+            remote["item"] = {
+                "id": "node42",
+                "number": 42,
+                "url": "https://github.com/target/repo/issues/42",
+                "state": "OPEN",
+                "stateReason": None,
+                "body": args[args.index("--body") + 1],
+            }
+            # Fixture accepted the issue before the caller lost its response.
+            return SimpleNamespace(returncode=1, stdout="", stderr="response lost")
+        else:
+            assert args[1:4] == ["issue", "view", "42"]
+            body = remote["item"]
+        return SimpleNamespace(returncode=0, stdout=json.dumps(body), stderr="")
+
+    monkeypatch.setattr("ai_dlc.providers.github_issues.subprocess.run", run)
+    planned = plan_tracker_targets(
+        root,
+        "next",
+        work_ids=["one"],
+        create_work_ids=["one"],
+        source="local-records",
+        environ=env,
+        registry=registry,
+    )
+    for _ in range(2):
+        assert (
+            reconcile_tracker_targets(root, planned, environ=env, registry=registry)["status"]
+            == "unresolved"
+        )
+    remote["hidden"] = False
+    result = reconcile_tracker_targets(root, planned, environ=env, registry=registry)
+    assert result["status"] == "resolved" and remote["creates"] == 1
+    assert (
+        apply_tracker_migration(root, result["migration_plan"], environ=env, registry=registry)[
+            "status"
+        ]
+        == "applied"
+    )
+
+
+def test_actual_adapter_local_write_interruption_preserves_remote_target(adapter_move, monkeypatch):
+    import ai_dlc.tracker_migration as migration
+
+    root, env, registry, remote, _, kind = adapter_move
+    planned = preview(adapter_move)
+    before = (root / ".ai-dlc/work/one.toml").read_bytes()
+    original = migration._write_bytes
+    failed = False
+
+    def write(descriptor, data):
+        nonlocal failed
+        if b'tracker = "next"' in data and not failed:
+            failed = True
+            raise OSError("Fixture local write interruption")
+        original(descriptor, data)
+
+    monkeypatch.setattr(migration, "_write_bytes", write)
+    result = apply_tracker_migration(root, planned, environ=env, registry=registry)
+    assert result["status"] == "rolled-back"
+    assert (root / ".ai-dlc/work/one.toml").read_bytes() == before
+    assert (
+        migration.inspect_tracker_migration(root, planned["operation_id"])["status"]
+        == "rolled-back"
+    )
+    if kind == "plane":
+        assert len(remote["api"].items) == 1 and remote["api"].writes == []

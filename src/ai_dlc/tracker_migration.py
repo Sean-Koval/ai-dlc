@@ -301,6 +301,29 @@ def _validate(plan):
             or not isinstance(snapshot["sha256"], str)
         ):
             raise ValueError("Invalid migration plan snapshot")
+    if plan["schema"] == 2:
+        evidence = plan["evidence"]
+        if not isinstance(evidence, dict):
+            raise ValueError("Invalid migration evidence")
+        creation = evidence.get("creation")
+        if creation is not None:
+            if (
+                not isinstance(creation, dict)
+                or set(creation) != {"operation_id", "intent_digest", "targets"}
+                or not re.fullmatch(r"[a-f0-9]{32}", str(creation["operation_id"]))
+                or not re.fullmatch(r"[a-f0-9]{64}", str(creation["intent_digest"]))
+                or not isinstance(creation["targets"], dict)
+                or not set(creation["targets"]) <= set(plan["work_ids"])
+            ):
+                raise ValueError("Invalid creation provenance")
+            for row in creation["targets"].values():
+                if (
+                    not isinstance(row, dict)
+                    or set(row) != {"operation_id", "correlation"}
+                    or not re.fullmatch(r"[a-f0-9]{64}", str(row["operation_id"]))
+                    or row["correlation"] != f"<!-- ai-dlc:{row['operation_id']} -->"
+                ):
+                    raise ValueError("Invalid creation provenance identity")
     value = copy.deepcopy(plan)
     expected = value.pop("digest", None)
     if expected != digest(value):
@@ -499,6 +522,9 @@ def apply_tracker_migration(
             registry=registry,
             schema=saved["schema"],
         )
+        # Creation provenance is historical reviewed metadata, not a live-state claim.
+        if saved["schema"] == 2 and "creation" in saved["evidence"]:
+            fresh["evidence"]["creation"] = saved["evidence"]["creation"]
         if {**fresh, "operation_id": saved["operation_id"]} != saved:
             raise ValueError("Migration plan or verified target identity drift")
         recheck()

@@ -4,8 +4,8 @@
 
 ## Remaining local implementation
 - [x] 1.0a Add honest source omissions, target state/capability evidence and real Registry GitHub/Plane existing-target fixtures; preserve schema1 plans.
-- [ ] 1.0b Complete interrupted actual-adapter local transaction coverage alongside creation recovery.
-- [ ] 1.2b Add explicit saved reviewed optional target creation and resumable reconciliation before local apply.
+- [x] 1.0b Complete interrupted actual-adapter local transaction coverage alongside creation recovery.
+- [x] 1.2b Add explicit saved reviewed optional target creation and resumable reconciliation before local apply.
 - [ ] 1.3 Qualify selected real Plane destination and disposable substitution/interruption rehearsal. Existing GitHub production mappings remain delivered.
 
 ## Review and finish

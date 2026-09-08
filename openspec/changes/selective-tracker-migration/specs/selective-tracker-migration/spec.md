@@ -25,6 +25,20 @@ Optional destination creation SHALL require a reviewed explicit plan, reconcile 
 - **WHEN** a target exists but local apply fails its freshness check
 - **THEN** old bindings remain in force, the created target is reported and retained, and retry reuses it instead of creating a duplicate
 
+
+
+#### Scenario: Pending creation is invisible after interruption
+- **WHEN** a reviewed saved creation intent has a pending or uncertain journal and no exact target is visible
+- **THEN** reconciliation performs reads only, reports unresolved uncertainty and never issues a second create
+
+#### Scenario: Local files change after target creation
+- **WHEN** the original local snapshot is stale but the saved destination identity is unchanged
+- **THEN** retries reconcile prior targets without new creation, retain known target references and require a fresh existing-target local preview before apply
+
+#### Scenario: Concurrent processes reconcile one intent
+- **WHEN** two processes reconcile the same immutable saved creation payload and destination
+- **THEN** durable journal election permits at most one sender, and a conflicting fingerprint is refused before any result reuse
+
 ### Requirement: TM-04 Honest unavailable-source migration
 An unavailable source provider SHALL not block local preview, but its missing state or history SHALL remain explicitly unknown and SHALL not be fabricated.
 
@@ -38,6 +52,11 @@ Migration SHALL preserve existing completion policy and refuse stale configurati
 #### Scenario: A target is already closed
 - **WHEN** work is rebound to that issue
 - **THEN** the rebind itself does not finish work or waive specification, merged-revision or CI gates
+
+
+#### Scenario: A saved intent path is nonregular
+- **WHEN** a saved plan is a symlink or FIFO
+- **THEN** validation refuses promptly without following, replacing or deleting it or contacting a provider
 
 ### Requirement: TM-06 Interchangeable supported destinations
 Migration SHALL accept either GitHub Issues or Plane through the same target-verification and recovery service, without assuming Plane as the personal destination or coupling tracker choice to the SCM provider.

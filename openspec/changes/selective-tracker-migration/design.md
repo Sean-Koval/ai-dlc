@@ -12,3 +12,8 @@ Reconciliation never saves work bindings. Once every target is known and current
 
 ### Evidence boundary
 Personal GitHub migration is already delivered and is not repeated. No Jira migration, full-history importer, source cleanup or new completion evidence is included. Local fixture qualification does not establish a real Plane deployment/account/version or a live substitution rehearsal. Parent issue21 remains open until those explicit gates are satisfied.
+
+### Concrete interfaces and state placement
+`project tracker-create-plan` requires explicit --source local-records and disjoint --create/existing --mappings selections; saving uses the existing exclusive plan writer. `project tracker-reconcile --plan` is the separate remote action and optionally saves the resolved ordinary migration plan. It rejects new-intent flags and never applies local bindings.
+
+The existing Journal class uses private XDG state under ai-dlc/tracker-migrations/ROOT_DIGEST/operations.sqlite3. Journal initialization is serialized by the project lock to avoid concurrent WAL initialization failure; operation insertion/fingerprint checking retains Journal.begin sender election. All per-work fingerprints are checked before any remote read reuse. Known successful creation references survive later read-back failures in the journal and advisory retained_targets report; freshly verified mappings are separate. Failed final verification/output saving also preserves the report. Final local receipts carry bounded creation provenance (intent digest, operation and correlation IDs), not a new live-state assertion. Keeping both saved intent and local state is required; deleting state or minting a new intent is not recovery.

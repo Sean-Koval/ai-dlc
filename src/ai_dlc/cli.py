@@ -209,6 +209,73 @@ def project_rebind(
     emit(result)
 
 
+@project.command("tracker-create-plan")
+def project_tracker_create_plan(
+    provider_id: str,
+    source: Annotated[str, typer.Option("--source")],
+    work: Annotated[list[str], typer.Option("--work")],
+    create: Annotated[list[str], typer.Option("--create")],
+    root: Path = Path("."),
+    mappings: Path | None = None,
+    save_plan: Path | None = None,
+    machine: Path | None = None,
+):
+    """Preview exact local-record target creation; saving never contacts the tracker."""
+    from ai_dlc.tracker_targets import plan_tracker_targets, save_tracker_targets_plan
+
+    try:
+        raw = read_toml(mappings) if mappings else {}
+        if any(not isinstance(row, dict) or set(row) != {"tracker"} for row in raw.values()):
+            raise ValueError("Mappings must have exactly tracker = REFERENCE per work table")
+        result = plan_tracker_targets(
+            root,
+            provider_id,
+            work_ids=work,
+            create_work_ids=create,
+            source=source,
+            mappings={key: row["tracker"] for key, row in raw.items()},
+            environ=os.environ,
+            machine=machine,
+        )
+        if save_plan is not None:
+            path = save_tracker_targets_plan(root, result, save_plan)
+            result = {"status": "planned", "path": path, "plan": result}
+    except (OSError, RuntimeError, TypeError, ValueError) as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(2) from None
+    emit(result)
+
+
+@project.command("tracker-reconcile")
+def project_tracker_reconcile(
+    plan: Annotated[Path, typer.Option("--plan")],
+    root: Path = Path("."),
+    save_plan: Path | None = None,
+    machine: Path | None = None,
+):
+    """Explicitly reconcile reviewed saved creation intent; never apply local bindings."""
+    from ai_dlc.tracker_migration import save_tracker_migration_plan
+    from ai_dlc.tracker_targets import reconcile_tracker_targets
+
+    try:
+        result = reconcile_tracker_targets(root, plan, environ=os.environ, machine=machine)
+    except (OSError, RuntimeError, TypeError, ValueError) as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(2) from None
+    if save_plan is not None and result["migration_plan"] is not None:
+        try:
+            result["saved_plan"] = save_tracker_migration_plan(
+                root, result["migration_plan"], save_plan
+            )
+        except (OSError, RuntimeError, TypeError, ValueError) as exc:
+            result["save_error"] = str(exc)
+            emit(result)
+            raise typer.Exit(2) from None
+    emit(result)
+    if result["status"] != "resolved":
+        raise typer.Exit(2)
+
+
 @project.command("tracker-migrate")
 def project_tracker_migrate(
     provider_id: Annotated[str | None, typer.Argument()] = None,
