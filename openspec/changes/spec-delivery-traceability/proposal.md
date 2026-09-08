@@ -7,7 +7,7 @@ This implements the approved framework direction in [product direction](../../..
 
 - Add missing ID, self/cycle, absent artifact, stable order, and rich body cases; preserve old-schema defaults and correlation values.
 - Validate before mutation, expose work validate, check dependency completion before branch/start effects, and render richer descriptions on first create only.
-- Update skill/template examples using PS requirement IDs; show an independently finishable change and a no-spec verification item; regenerate owned copies.
+- Update skill/template examples using canonical product requirement IDs; show an independently finishable change and a no-spec verification item; regenerate owned copies.
 
 ## Capabilities
 
@@ -31,4 +31,4 @@ None. Existing schema-4, content ownership, enrollment, and finish contracts rem
 - Update docs/workflows/design-to-implementation.md and generated templates
 
 Dependencies: product-shaping-workflow.
-No implementation is complete. [Execution plan](../../../docs/superpowers/plans/2026-09-05-spec-delivery-traceability.md).
+Local implementation and required checks are complete; independent source review, archive, PR/CI integration and configured finish remain pending. See the [verification evidence](../../../docs/verification/spec-delivery-traceability.md). [Execution plan](../../../docs/superpowers/plans/2026-09-05-spec-delivery-traceability.md).

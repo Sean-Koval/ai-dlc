@@ -783,6 +783,9 @@ def test_portable_examples_are_the_only_profiles_in_built_distributions(tmp_path
             "templates/prd.md",
             "examples/product-shaping/greenfield.md",
             "examples/product-shaping/brownfield.md",
+            "templates/delivery-slice.md",
+            "examples/delivery-slices/localized-export.md",
+            "examples/delivery-slices/compatibility-rehearsal.md",
         ]:
             expected = (assets("agents") / relative).read_bytes()
             assert archive.read(f"ai_dlc/assets/agents/{relative}") == expected
@@ -798,6 +801,9 @@ def test_portable_examples_are_the_only_profiles_in_built_distributions(tmp_path
             "templates/prd.md",
             "examples/product-shaping/greenfield.md",
             "examples/product-shaping/brownfield.md",
+            "templates/delivery-slice.md",
+            "examples/delivery-slices/localized-export.md",
+            "examples/delivery-slices/compatibility-rehearsal.md",
         ]:
             for prefix in ["agents", "project-templates/project/docs"]:
                 content = archive.extractfile(f"{source_root}/{prefix}/{relative}")
@@ -1172,3 +1178,22 @@ def _contains_private_distribution_content(content: bytes, checkout_root: Path) 
 )
 def test_distribution_privacy_scan_distinguishes_rooted_paths_from_prose(content, private):
     assert _contains_private_distribution_content(content, Path("/" + "workspace")) is private
+
+
+def test_delivery_slice_assets_are_available_without_creating_work_items(tmp_path):
+    from ai_dlc.agents import render_agents
+
+    root = tmp_path / "project"
+    adopt(root, apply=True)
+    render_agents(root, apply=True)
+    for relative in [
+        "templates/delivery-slice.md",
+        "examples/delivery-slices/localized-export.md",
+        "examples/delivery-slices/compatibility-rehearsal.md",
+    ]:
+        assert (root / "docs" / relative).read_bytes() == (assets("agents") / relative).read_bytes()
+    assert not list((root / ".ai-dlc/work").glob("*.toml"))
+    for client in [".agents", ".claude"]:
+        skill = (root / client / "skills/spec-from-prd/SKILL.md").read_text()
+        assert "docs/templates/delivery-slice.md" in skill
+        assert skill == (assets("agents") / "skills/spec-from-prd/SKILL.md").read_text()

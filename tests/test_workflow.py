@@ -1289,3 +1289,492 @@ def test_handoff_rebind_uses_mapped_note_and_new_operation(tmp_path, trusted_scm
     assert service.finish("one", "Outcome")["status"] == "completed"
     assert "Outcome" in (vault / "replacement.md").read_text()
     assert tracker.closed == 1
+
+
+def traceability_record(root, work_id="target", **changes):
+    import tomli_w
+
+    record = {
+        "schema": 1,
+        "id": work_id,
+        "title": work_id,
+        "scope": "An independently finishable increment",
+        "requires_spec": False,
+        "spec_reason": "Existing behavior verification",
+        "acceptance": ["Observe the required result"],
+        "reviewed": True,
+        "providers": {"tracker": "fake"},
+    }
+    record.update(changes)
+    path = root / ".ai-dlc/work" / f"{work_id}.toml"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(tomli_w.dumps(record))
+    return path
+
+
+class TraceabilityTracker:
+    def __init__(self):
+        self.items = {}
+        self.calls = []
+
+    def invoke(self, operation, payload):
+        self.calls.append((operation, copy.deepcopy(payload)))
+        if operation == "read":
+            return dict(self.items[payload["reference"]])
+        if operation == "find":
+            return {
+                "items": [
+                    dict(item)
+                    for item in self.items.values()
+                    if payload["correlation"] in item.get("body", "")
+                ]
+            }
+        if operation == "create":
+            item = {
+                "id": "created",
+                "url": "https://tracker.invalid/created",
+                "state": "open",
+                "body": payload["body"] + payload["correlation"],
+            }
+            self.items[item["id"]] = item
+            return dict(item)
+        if operation == "transition":
+            self.items[payload["reference"]]["state"] = payload["state"]
+            return dict(self.items[payload["reference"]])
+        raise AssertionError(operation)
+
+
+@pytest.mark.parametrize("invalid", ["missing", "cycle", "artifact", "escape", "symlink"])
+def test_traceability_refusal_precedes_publication_and_binding_writes(tmp_path, invalid):
+    from ai_dlc.workflow import WorkService
+
+    root = tmp_path / "project"
+    artifacts = {}
+    depends_on = []
+    if invalid == "missing":
+        depends_on = ["absent"]
+    if invalid == "cycle":
+        depends_on = ["parent"]
+        traceability_record(root, "parent", depends_on=["target"])
+    if invalid == "artifact":
+        artifacts["brief"] = "docs/absent.md"
+    if invalid == "escape":
+        artifacts["brief"] = "../outside.md"
+        (tmp_path / "outside.md").write_text("outside")
+    if invalid == "symlink":
+        root.mkdir(exist_ok=True)
+        outside = tmp_path / "outside.md"
+        outside.write_text("outside")
+        (root / "brief.md").symlink_to(outside)
+        artifacts["brief"] = "brief.md"
+    path = traceability_record(root, depends_on=depends_on, artifacts=artifacts)
+    before = path.read_bytes()
+    tracker = TraceabilityTracker()
+    service = WorkService(root, {}, state_path=tmp_path / "state", registry=Registry(tracker))
+
+    with pytest.raises(ValueError):
+        service.publish("target")
+
+    assert path.read_bytes() == before
+    assert tracker.calls == []
+    assert service.journal.db.execute("SELECT COUNT(*) FROM operations").fetchone()[0] == 0
+
+
+def test_traceability_defaults_and_rich_create_preserve_correlation_identity(tmp_path):
+    from ai_dlc.workflow import WorkService
+
+    root = tmp_path / "project"
+    path = traceability_record(root)
+    tracker = TraceabilityTracker()
+    service = WorkService(root, {}, state_path=tmp_path / "state", registry=Registry(tracker))
+    old = service.load("target")
+    correlation = service.op_id(old, "work")
+    operation = service.op_id(old, "publish")
+    assert old["depends_on"] == old["requirements"] == []
+    (root / "brief.md").write_text("# RQ-001")
+    traceability_record(root, requirements=["brief#RQ-001"], artifacts={"brief": "brief.md#RQ-001"})
+    result = service.publish("target")
+    created = tracker.items[result["tracker"]["id"]]
+    assert "## Scope" in created["body"]
+    assert "brief#RQ-001" in created["body"]
+    assert "brief.md#RQ-001" in created["body"]
+    assert f"<!-- ai-dlc:{correlation} -->" in created["body"]
+    assert service.op_id(service.load("target"), "publish") == operation
+    assert path.exists()
+
+
+@pytest.mark.parametrize("mapped", [True, False])
+def test_rich_republication_reconciles_legacy_journal_and_preserves_authored_body(tmp_path, mapped):
+    import tomli_w
+
+    from ai_dlc.workflow import WorkService
+
+    root = tmp_path / "project"
+    path = traceability_record(root)
+    tracker = TraceabilityTracker()
+    service = WorkService(root, {}, state_path=tmp_path / "state", registry=Registry(tracker))
+    old = service.load("target")
+    old_payload = {
+        "provider": "fake",
+        "title": old["title"],
+        "body": "\n".join(old["acceptance"]),
+        "correlation": f"<!-- ai-dlc:{service.op_id(old, 'work')} -->",
+        "operation_id": service.op_id(old, "publish"),
+    }
+    service.journal.begin(old_payload["operation_id"], old_payload)
+    item = {
+        "id": "original",
+        "url": "https://tracker.invalid/original",
+        "state": "open",
+        "body": "Owner edited this description.\n" + old_payload["correlation"],
+    }
+    tracker.items[item["id"]] = item
+    service.journal.succeed(old_payload["operation_id"], item)
+    fingerprint = service.journal.db.execute("SELECT fingerprint FROM operations").fetchone()[0]
+    old["requirements"] = ["brief#RQ-001"]
+    old["scope"] = "Updated reviewed scope"
+    if mapped:
+        old["artifacts"]["tracker"] = "original"
+    path.write_text(tomli_w.dumps(old))
+
+    result = service.publish("target")
+
+    assert result["tracker"]["id"] == "original"
+    assert tracker.items["original"]["body"] == item["body"]
+    assert all(op not in {"create", "link", "transition"} for op, _ in tracker.calls)
+    assert (
+        service.journal.db.execute("SELECT fingerprint FROM operations").fetchone()[0]
+        == fingerprint
+    )
+
+
+@pytest.mark.parametrize(
+    "state", ["open", "in_progress", "cancelled", "duplicate", "unknown", None]
+)
+def test_dependency_refusal_precedes_branch_and_local_mutation(tmp_path, state):
+    import subprocess
+
+    from ai_dlc.workflow import WorkService
+
+    root = tmp_path / "project"
+    traceability_record(root, "parent", artifacts={"tracker": "parent-ref"})
+    path = traceability_record(root, depends_on=["parent"])
+    before = path.read_bytes()
+    subprocess.run(["git", "init", "-b", "main", str(root)], check=True, capture_output=True)
+    tracker = TraceabilityTracker()
+    if state is not None:
+        tracker.items["parent-ref"] = {
+            "id": "parent-ref",
+            "url": "https://tracker.invalid/parent",
+            "state": state,
+        }
+    service = WorkService(root, {}, state_path=tmp_path / "state", registry=Registry(tracker))
+
+    with pytest.raises(ValueError, match="[Dd]ependency"):
+        service.start("target")
+
+    assert path.read_bytes() == before
+    branch = subprocess.check_output(
+        ["git", "-C", str(root), "branch", "--show-current"], text=True
+    ).strip()
+    assert branch == "main"
+    assert all(op == "read" for op, _ in tracker.calls)
+
+
+def test_completed_dependencies_allow_start_with_their_pinned_provider(tmp_path):
+    import subprocess
+
+    from ai_dlc.workflow import WorkService
+
+    root = tmp_path / "project"
+    traceability_record(
+        root, "parent", artifacts={"tracker": "parent-ref"}, providers={"tracker": "other"}
+    )
+    traceability_record(root, depends_on=["parent"])
+    subprocess.run(["git", "init", "-b", "main", str(root)], check=True, capture_output=True)
+    subprocess.run(["git", "-C", str(root), "add", "."], check=True)
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(root),
+            "-c",
+            "user.name=Test",
+            "-c",
+            "user.email=test@example.com",
+            "commit",
+            "-m",
+            "fixture",
+        ],
+        check=True,
+        capture_output=True,
+    )
+    current = TraceabilityTracker()
+    parent = TraceabilityTracker()
+    parent.items["parent-ref"] = {
+        "id": "parent-ref",
+        "url": "https://tracker.invalid/parent",
+        "state": "closed",
+    }
+
+    class SelectedRegistry:
+        def get(self, provider_id):
+            return {"fake": current, "other": parent}[provider_id]
+
+    service = WorkService(root, {}, state_path=tmp_path / "state", registry=SelectedRegistry())
+    assert service.start("target")["status"] == "started"
+    assert parent.calls == [("read", {"reference": "parent-ref"})]
+    assert current.items["created"]["state"] == "in_progress"
+
+
+@pytest.mark.parametrize("status", ["pending", "uncertain", "succeeded"])
+def test_legacy_publication_journal_recovery_survives_richer_payload(tmp_path, status):
+    from ai_dlc.workflow import WorkService
+
+    root = tmp_path / "project"
+    traceability_record(root)
+
+    class DelayedIndex(TraceabilityTracker):
+        def invoke(self, operation, payload):
+            if operation == "find":
+                self.calls.append((operation, payload))
+                return {"items": []}
+            return super().invoke(operation, payload)
+
+    tracker = DelayedIndex()
+    service = WorkService(root, {}, state_path=tmp_path / "state", registry=Registry(tracker))
+    item = service.load("target")
+    operation_id = service.op_id(item, "publish")
+    payload = {
+        "provider": "fake",
+        "title": item["title"],
+        "body": "\n".join(item["acceptance"]),
+        "correlation": f"<!-- ai-dlc:{service.op_id(item, 'work')} -->",
+        "operation_id": operation_id,
+    }
+    service.journal.begin(operation_id, payload)
+    if status == "uncertain":
+        service.journal.uncertain(operation_id)
+    if status == "succeeded":
+        remote = {
+            "id": "existing",
+            "url": "https://tracker.invalid/existing",
+            "state": "open",
+            "body": "Authored body",
+        }
+        tracker.items["existing"] = remote
+        service.journal.succeed(operation_id, remote)
+        assert service.publish("target")["tracker"] == remote
+    else:
+        with pytest.raises(RuntimeError, match="uncertain"):
+            service.publish("target")
+    assert not any(op == "create" for op, _ in tracker.calls)
+    assert service.journal.db.execute("SELECT COUNT(*) FROM operations").fetchone()[0] == 1
+
+
+@pytest.mark.parametrize("requirements", [[""], [" "], ["RQ-001\ninvented requirement"]])
+def test_work_references_are_identifiers_not_blank_or_multiline_prose(tmp_path, requirements):
+    from ai_dlc.workflow import WorkService
+
+    root = tmp_path / "project"
+    traceability_record(root, requirements=requirements)
+    service = WorkService(
+        root, {}, state_path=tmp_path / "state", registry=Registry(TraceabilityTracker())
+    )
+    with pytest.raises(ValueError, match="[Rr]equirement"):
+        service.load("target")
+
+
+def test_validation_keeps_provider_artifacts_and_external_documents_unprobed(tmp_path):
+    from ai_dlc.workflow import validate_work
+
+    root = tmp_path / "project"
+    traceability_record(
+        root,
+        artifacts={
+            "tracker": "remote-item",
+            "pr": "remote-pr",
+            "branch": "work/target",
+            "deployment": "deployment-opaque-id",
+            "knowledge": "private-vault-note.md",
+            "spec": "https://specs.invalid/change#RQ-001",
+        },
+    )
+    assert validate_work(root, {}, "target")["valid"]
+
+
+def test_start_requires_every_transitive_dependency_and_refreshes_each_read(tmp_path):
+    from ai_dlc.workflow import WorkService
+
+    root = tmp_path / "project"
+    traceability_record(root, "base", artifacts={"tracker": "base-ref"})
+    traceability_record(root, "parent", depends_on=["base"], artifacts={"tracker": "parent-ref"})
+    path = traceability_record(root, depends_on=["parent"])
+    tracker = TraceabilityTracker()
+    for name in ["base", "parent"]:
+        tracker.items[f"{name}-ref"] = {
+            "id": f"{name}-ref",
+            "url": f"https://tracker.invalid/{name}",
+            "state": "closed",
+        }
+    tracker.items["base-ref"]["state"] = "open"
+    service = WorkService(root, {}, state_path=tmp_path / "state", registry=Registry(tracker))
+    before = path.read_bytes()
+    with pytest.raises(ValueError, match="Dependency base"):
+        service.start("target")
+    tracker.items["base-ref"]["state"] = "closed"
+    tracker.items["parent-ref"]["state"] = "cancelled"
+    with pytest.raises(ValueError, match="Dependency parent"):
+        service.start("target")
+    assert path.read_bytes() == before
+    assert [payload["reference"] for op, payload in tracker.calls if op == "read"] == [
+        "base-ref",
+        "base-ref",
+        "parent-ref",
+    ]
+
+
+def test_start_rejects_stale_project_configuration_before_branch_or_dependency_reads(tmp_path):
+    import subprocess
+
+    from ai_dlc.workflow import WorkService
+
+    root = tmp_path / "project"
+    traceability_record(root)
+    manifest = root / "ai-dlc.toml"
+    manifest.write_text('schema=4\n[roles]\ntracker="fake"\n')
+    subprocess.run(["git", "init", "-b", "main", str(root)], check=True, capture_output=True)
+
+    def commit():
+        subprocess.run(["git", "-C", str(root), "add", "."], check=True)
+        subprocess.run(
+            [
+                "git",
+                "-C",
+                str(root),
+                "-c",
+                "user.name=Test",
+                "-c",
+                "user.email=test@example.com",
+                "commit",
+                "-m",
+                "fixture",
+            ],
+            check=True,
+            capture_output=True,
+        )
+
+    commit()
+    tracker = TraceabilityTracker()
+    service = WorkService(
+        root,
+        {"roles": {"tracker": "fake"}},
+        state_path=tmp_path / "state",
+        registry=Registry(tracker),
+    )
+    manifest.write_text('schema=4\n[roles]\ntracker="replacement"\n')
+    commit()
+    with pytest.raises(ValueError, match="Project configuration changed"):
+        service.start("target")
+    assert (
+        subprocess.check_output(
+            ["git", "-C", str(root), "branch", "--show-current"], text=True
+        ).strip()
+        == "main"
+    )
+    assert tracker.calls == []
+
+
+@pytest.mark.parametrize(
+    "reference",
+    [
+        "github-ticket-workflows",
+        "github-project-defaults",
+        "organization/spec-id",
+        "spec-provider://organization/change",
+    ],
+)
+def test_legacy_native_spec_reference_validates_and_preserves_mapped_issue(tmp_path, reference):
+    from ai_dlc.workflow import WorkService, validate_work
+
+    traceability_record(
+        tmp_path,
+        requires_spec=True,
+        spec_reason="Existing provider specification",
+        artifacts={"spec": reference, "tracker": "mapped"},
+    )
+    tracker = TraceabilityTracker()
+    tracker.items["mapped"] = {
+        "id": "mapped",
+        "state": "open",
+        "body": "Authored issue remains intact",
+    }
+    service = WorkService(tmp_path, {}, state_path=tmp_path / "state", registry=Registry(tracker))
+    assert validate_work(tmp_path, {}, "target")["valid"]
+    for _ in range(2):
+        result = service.publish("target")
+        assert result["tracker"]["body"] == "Authored issue remains intact"
+    assert not any(operation == "create" for operation, _ in tracker.calls)
+    assert service.load("target")["artifacts"]["spec"] == reference
+
+
+@pytest.mark.parametrize(
+    "reference", ["./missing-change", "docs/missing.md", "spec.md", "../outside"]
+)
+def test_explicit_local_spec_reference_still_refuses_before_publication(tmp_path, reference):
+    from ai_dlc.workflow import WorkService
+
+    path = traceability_record(tmp_path, artifacts={"spec": reference, "tracker": "mapped"})
+    before = path.read_bytes()
+    tracker = TraceabilityTracker()
+    service = WorkService(tmp_path, {}, state_path=tmp_path / "state", registry=Registry(tracker))
+    with pytest.raises(ValueError, match="Work validation failed"):
+        service.publish("target")
+    assert tracker.calls == []
+    assert path.read_bytes() == before
+
+
+@pytest.mark.parametrize(
+    "reference",
+    [
+        "file:docs/missing.md",
+        "file:./missing-change",
+        "file:///outside/missing-change",
+        "file:../outside",
+        "FILE://localhost/missing-change",
+    ],
+)
+def test_filesystem_uri_is_reserved_and_refused_before_publication(tmp_path, reference):
+    from ai_dlc.workflow import WorkService
+
+    path = traceability_record(tmp_path, artifacts={"spec": reference, "tracker": "mapped"})
+    before = path.read_bytes()
+    tracker = TraceabilityTracker()
+    tracker.items["mapped"] = {"id": "mapped", "state": "open", "body": "Authored"}
+    service = WorkService(tmp_path, {}, state_path=tmp_path / "state", registry=Registry(tracker))
+    with pytest.raises(ValueError, match="Work validation failed"):
+        service.publish("target")
+    assert tracker.calls == []
+    assert path.read_bytes() == before
+
+
+@pytest.mark.parametrize("dangling_ancestor", [False, True])
+def test_suffixless_dangling_spec_symlink_cannot_masquerade_as_native_id(
+    tmp_path, dangling_ancestor
+):
+    from ai_dlc.workflow import WorkService
+
+    directory = tmp_path / "spec-links"
+    directory.mkdir()
+    link = directory / "dangling"
+    link.symlink_to(tmp_path.parent / "missing-outside-target", target_is_directory=True)
+    reference = "spec-links/dangling/child" if dangling_ancestor else "spec-links/dangling"
+    path = traceability_record(tmp_path, artifacts={"spec": reference, "tracker": "mapped"})
+    before = path.read_bytes()
+    tracker = TraceabilityTracker()
+    tracker.items["mapped"] = {"id": "mapped", "state": "open", "body": "Authored"}
+    service = WorkService(tmp_path, {}, state_path=tmp_path / "state", registry=Registry(tracker))
+    with pytest.raises(ValueError, match="Work validation failed"):
+        service.publish("target")
+    assert tracker.calls == []
+    assert path.read_bytes() == before

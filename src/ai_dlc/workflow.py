@@ -7,17 +7,20 @@ import re
 import subprocess
 import tomllib
 from pathlib import Path
+from urllib.parse import urlsplit
 
 import tomli_w
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from ai_dlc.config import digest as config_digest
 from ai_dlc.config import read_toml, resolve_layers, resolve_runtime
+from ai_dlc.files import inside
 from ai_dlc.journal import Journal
 from ai_dlc.locking import project_write_lock
 from ai_dlc.providers import Registry
 from ai_dlc.providers.openspec import OpenSpecProvider
 from ai_dlc.providers.scm import GitHubSCM
+from ai_dlc.traceability import artifact_is_local, render_ticket_body, validate_work_graph
 
 
 class Work(BaseModel):
@@ -30,6 +33,8 @@ class Work(BaseModel):
     spec_reason: str = Field(min_length=1)
     acceptance: list[str] = Field(min_length=1)
     reviewed: bool = False
+    depends_on: list[str] = Field(default_factory=list)
+    requirements: list[str] = Field(default_factory=list)
     providers: dict[str, str] = Field(default_factory=dict)
     artifacts: dict[str, str] = Field(default_factory=dict)
     bindings: dict[str, str] = Field(default_factory=dict)
@@ -46,6 +51,15 @@ class Work(BaseModel):
     def nonempty(cls, value):
         if not value.strip():
             raise ValueError("Work text cannot be empty")
+        return value
+
+    @field_validator("requirements")
+    @classmethod
+    def requirement_ids(cls, value):
+        if any(
+            not item or not item.isprintable() or any(c.isspace() for c in item) for item in value
+        ):
+            raise ValueError("Requirement references must be nonempty single-token identifiers")
         return value
 
     @field_validator("acceptance")
@@ -154,6 +168,73 @@ def resolve_work(raw: dict, config: dict, work_id: str, *, require_review: bool 
     return work
 
 
+def read_work_graph(root: Path, config: dict, work_id: str) -> tuple[dict[str, dict], list[str]]:
+    """Inspect only the selected dependency closure, without journals or provider calls."""
+    records = {}
+    errors = []
+    pending = [work_id]
+    attempted = set()
+    while pending:
+        current = pending.pop()
+        if current in attempted:
+            continue
+        attempted.add(current)
+        try:
+            Work.safe_id(current)
+            path = inside(root, f".ai-dlc/work/{current}.toml")
+            record = resolve_work(tomllib.loads(path.read_text()), config, current)
+        except (OSError, ValueError) as exc:
+            errors.append(f"Work {current}: {exc}")
+            continue
+        records[current] = record
+        # Validate before traversing IDs so no invalid dependency can become a path.
+        for dependency in record["depends_on"]:
+            try:
+                Work.safe_id(dependency)
+            except ValueError as exc:
+                errors.append(f"Work {current}: dependency {dependency!r}: {exc}")
+            else:
+                pending.append(dependency)
+        for kind, reference in record["artifacts"].items():
+            try:
+                if not artifact_is_local(kind, reference):
+                    if kind != "spec":
+                        continue
+                    parsed = urlsplit(reference)
+                    if parsed.scheme:
+                        continue
+                    candidate = root / parsed.path
+                    # A dangling final/ancestor symlink is still a local entry;
+                    # it must reach inside() rather than masquerade as an opaque ID.
+                    has_symlink = any(
+                        entry.is_symlink()
+                        for entry in [candidate, *candidate.parents]
+                        if entry != root and entry.is_relative_to(root)
+                    )
+                    if not candidate.exists() and not has_symlink:
+                        continue
+                parsed = urlsplit(reference)
+                if parsed.scheme or parsed.netloc or parsed.query or not parsed.path.strip():
+                    raise ValueError("Expected a local artifact path or HTTP(S) reference")
+                target = inside(root, parsed.path)
+                if not target.is_file() and not target.is_dir():
+                    raise ValueError("Referenced local artifact is absent")
+            except (OSError, ValueError) as exc:
+                errors.append(f"Work {current}: artifact {kind} ({reference}): {exc}")
+    errors.extend(validate_work_graph(records))
+    return records, sorted(set(errors))
+
+
+def validate_work(root: Path, config: dict, work_id: str) -> dict:
+    records, errors = read_work_graph(Path(root).resolve(), config, work_id)
+    return {
+        "valid": not errors,
+        "work_id": work_id,
+        "dependencies": sorted(set(records) - {work_id}),
+        "errors": errors,
+    }
+
+
 class WorkService:
     @classmethod
     def from_project(
@@ -219,15 +300,18 @@ class WorkService:
             self.save(work)
         return work
 
+    def _check_source(self):
+        try:
+            current_digest = _project_source_digest(self.root)
+        except (OSError, tomllib.TOMLDecodeError):
+            raise ValueError("Project configuration changed; retry the work mutation") from None
+        if current_digest != self.project_source_digest:
+            raise ValueError("Project configuration changed; retry the work mutation")
+
     def save(self, work):
         path = self.root / ".ai-dlc/work" / f"{work['id']}.toml"
         with project_write_lock(self.root):
-            try:
-                current_digest = _project_source_digest(self.root)
-            except (OSError, tomllib.TOMLDecodeError):
-                raise ValueError("Project configuration changed; retry the work mutation") from None
-            if current_digest != self.project_source_digest:
-                raise ValueError("Project configuration changed; retry the work mutation")
+            self._check_source()
             tmp = path.with_suffix(".toml.tmp")
             tmp.write_text(tomli_w.dumps(work))
             tmp.replace(path)
@@ -251,20 +335,36 @@ class WorkService:
             raise ValueError("Work has no pinned tracker provider")
         return self.registry.get(provider)
 
+    def validate(self, work_id):
+        return validate_work(self.root, self.config, work_id)
+
+    def validated_records(self, work_id):
+        self._check_source()
+        records, errors = read_work_graph(self.root, self.config, work_id)
+        if errors:
+            raise ValueError("Work validation failed: " + "; ".join(errors))
+        work = records[work_id]
+        if not work["reviewed"]:
+            raise ValueError("Work must be reviewed before mutation")
+        return records
+
     def publish(self, work_id):
-        work = self.load(work_id, True)
+        with project_write_lock(self.root):
+            return self._publish(work_id)
+
+    def _publish(self, work_id):
+        work = self.validated_records(work_id)[work_id]
+        self.save(work)
         provider = self.tracker(work)
         operation_id = self.op_id(work, "publish")
         payload = {
             "title": work["title"],
-            "body": "\n".join(work["acceptance"]),
+            "body": render_ticket_body(work),
             "correlation": f"<!-- ai-dlc:{self.op_id(work, 'work')} -->",
             "operation_id": operation_id,
         }
-        record = self.journal.begin(
-            operation_id, {"provider": work["providers"]["tracker"], **payload}
-        )
-        # Always reconcile remote state, including after an interrupted process or on a different computer.
+        # Reconcile before comparing create payloads: legacy bodies and authored
+        # remote edits do not change a work item's operation or provider identity.
         mapped = work["artifacts"].get("tracker")
         items = (
             [provider.invoke("read", {"reference": mapped})]
@@ -273,21 +373,24 @@ class WorkService:
         )
         if len(items) > 1:
             raise ValueError("Duplicate correlation conflict")
+        record = self.journal.lookup(operation_id)
         if items:
             item = items[0]
-        elif record["status"] == "succeeded":
+        elif record and record["status"] == "succeeded":
             item = provider.invoke("read", {"reference": record["result"]["id"]})
-        elif record["status"] == "uncertain" or not record["created"]:
-            # Search can be eventually consistent: absence is not proof that creation failed.
+        elif record:
             raise RuntimeError(
                 "Creation remains uncertain; remote correlation not yet visible; refusing duplicate retry"
             )
         else:
+            self.journal.begin(operation_id, {"provider": work["providers"]["tracker"], **payload})
             try:
                 item = provider.invoke("create", payload)
             except Exception:
                 self.journal.uncertain(operation_id)
                 raise
+        if record is None and items:
+            self.journal.begin(operation_id, {"provider": work["providers"]["tracker"], **payload})
         self.journal.succeed(operation_id, item)
         work["artifacts"]["tracker"] = item["id"]
         self.save(work)
@@ -372,9 +475,23 @@ class WorkService:
         return branch
 
     def start(self, work_id):
-        work = self.load(work_id)
-        if not work["reviewed"]:
-            raise ValueError("Work must be reviewed before mutation")
+        with project_write_lock(self.root):
+            return self._start(work_id)
+
+    def _start(self, work_id):
+        records = self.validated_records(work_id)
+        work = records[work_id]
+        for dependency in sorted(set(records) - {work_id}):
+            required = records[dependency]
+            reference = required["artifacts"].get("tracker")
+            if not reference:
+                raise ValueError(f"Dependency {dependency} is unpublished; completion unavailable")
+            try:
+                item = self.tracker(required).invoke("read", {"reference": reference})
+            except Exception as exc:
+                raise ValueError(f"Dependency {dependency} status unavailable: {exc}") from exc
+            if item.get("state") != "closed":
+                raise ValueError(f"Dependency {dependency} is not completed: {item.get('state')}")
         provider_id = work["providers"]["tracker"]
         declared = getattr(self.registry, "declares", lambda _id, _operation: False)(
             provider_id, "capabilities"

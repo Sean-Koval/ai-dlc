@@ -1,0 +1,103 @@
+{
+  "count": 16,
+  "results": [
+    {
+      "valid": true,
+      "work_id": "component-capability-contract",
+      "dependencies": [],
+      "errors": []
+    },
+    {
+      "valid": true,
+      "work_id": "connected-project-readiness",
+      "dependencies": [],
+      "errors": []
+    },
+    {
+      "valid": true,
+      "work_id": "design-pm-calibration",
+      "dependencies": [],
+      "errors": []
+    },
+    {
+      "valid": true,
+      "work_id": "design-pm-workflow",
+      "dependencies": [],
+      "errors": []
+    },
+    {
+      "valid": true,
+      "work_id": "framework-delivery-plan",
+      "dependencies": [],
+      "errors": []
+    },
+    {
+      "valid": true,
+      "work_id": "framework-qualification",
+      "dependencies": [],
+      "errors": []
+    },
+    {
+      "valid": true,
+      "work_id": "github-project-defaults",
+      "dependencies": [],
+      "errors": []
+    },
+    {
+      "valid": true,
+      "work_id": "github-ticket-workflows",
+      "dependencies": [],
+      "errors": []
+    },
+    {
+      "valid": true,
+      "work_id": "linear-provider-onboarding",
+      "dependencies": [],
+      "errors": []
+    },
+    {
+      "valid": true,
+      "work_id": "portable-development-v4",
+      "dependencies": [],
+      "errors": []
+    },
+    {
+      "valid": true,
+      "work_id": "portable-profile-enrollment",
+      "dependencies": [],
+      "errors": []
+    },
+    {
+      "valid": true,
+      "work_id": "portable-workflow-bundles",
+      "dependencies": [],
+      "errors": []
+    },
+    {
+      "valid": true,
+      "work_id": "product-shaping-workflow",
+      "dependencies": [],
+      "errors": []
+    },
+    {
+      "valid": true,
+      "work_id": "provider-toolset-plan",
+      "dependencies": [],
+      "errors": []
+    },
+    {
+      "valid": true,
+      "work_id": "spec-delivery-traceability",
+      "dependencies": [
+        "product-shaping-workflow"
+      ],
+      "errors": []
+    },
+    {
+      "valid": true,
+      "work_id": "workflow-quality-calibration",
+      "dependencies": [],
+      "errors": []
+    }
+  ]
+}

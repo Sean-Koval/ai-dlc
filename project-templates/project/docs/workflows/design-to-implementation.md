@@ -51,3 +51,58 @@ For projects with tracker and SCM roles, link the reviewed design to the work
 record before publication and use `ai-dlc work finish <work-id>` after merge.
 Without those roles, keep the same design evidence and test discipline but use
 the project's manual lifecycle until the roles are configured.
+
+## From requirements to finishable work
+
+Use spec-from-prd with a reviewed canonical brief or PRD. Keep OUT/RQ IDs owned
+by that source; link requirement → formal scenario (when required) → deliverable
+work ID → implementation step → observed verification. Product rationale belongs
+in the brief/design, behavior with the selected specification provider, delivery
+status in work/tracker, and implementation steps inside the work item.
+
+One behavior ticket owns one independently finishable OpenSpec change. A parent
+epic coordinates children without one shared specification gate. Tests, parser,
+docs and refactoring checkboxes are steps, not automatic extra tickets. A
+verification-only item records `requires_spec=false` and its reviewed reason,
+references existing behavior and retains all applicable completion gates.
+
+See [localized export](../examples/delivery-slices/localized-export.md)
+and [compatibility rehearsal](../examples/delivery-slices/compatibility-rehearsal.md).
+These synthetic examples propose local IDs and document destinations; they do
+not install records, create remote work or establish actual approval/live results.
+
+Work records accept optional `requirements` and `depends_on` lists, defaulting to
+empty for older work. Requirements are nonblank single-token IDs, not copied spec
+prose or paths automatically interpreted as source documents. Put canonical source,
+plan, specification and evidence references in `artifacts`. Dependencies name local
+work IDs in `.ai-dlc/work/`; preserve their pinned providers and binding identity.
+
+Run `ai-dlc work validate WORK_ID --root .` before publication. It returns valid
+(exit 0) or invalid (exit 1), reads only the selected dependency closure, and
+initializes no mutation journal. Missing/unsafe IDs, self/cycles, invalid records,
+binding drift and missing local artifact files/directories fail before publish
+or start effects. Unrelated drafts do not block the selected work. Local artifact
+paths must remain in the repository without symlinks. Fragments are retained as
+references without interpreting specification text. HTTP(S) references are not
+probed, and tracker/PR/branch/deployment/knowledge references remain provider-owned.
+
+Validation does not approve scope or prove completion. `work start` freshly reads
+every reachable dependency through its pinned tracker and requires canonical
+`closed`. Cancelled, duplicate, incomplete, unpublished or unavailable statuses
+block before branch creation, work saves or tracker changes. Resolve missing
+interfaces/status with their owners; prepare independent local drafts meanwhile.
+
+First issue creation includes scope, requirement/dependency references, artifacts,
+specification decision and acceptance. Re-publication reconciles the existing
+mapping/correlation without overwriting authored descriptions or changing prior
+journal identities. It does not publish updated scope into an existing issue.
+Keep unresolved product semantics and unperformed live checks visible. Review,
+merge, exact-revision evidence and `ai-dlc work finish` remain the completion path.
+
+
+Specification references may be provider-native IDs or explicit local documents.
+Native IDs (including slash IDs and provider URIs) are not interpreted as missing
+repository files. Use `./name` for an ambiguous local directory; filesystem
+notation, document suffixes such as `.md`, and existing repository paths receive
+local containment/existence checks. This does not replace the specification
+provider's archive or finish validation.

@@ -2,6 +2,8 @@
 
 > **For agentic workers:** Use superpowers:executing-plans to implement this plan task-by-task. Use superpowers:subagent-driven-development only when delegation is authorized. Steps use checkbox syntax for tracking.
 
+**Execution update (September 7):** The live issue and current work-computer roadmap govern sequencing. This slice consumes the reviewed #11 candidate; root owns integration, archive, tracker state and finish. The implementation clarifications in the change design bound graph validation and legacy publication recovery. Product examples retain canonical OUT/RQ identifiers; PS identifiers describe the framework workflow, not a new product requirement namespace.
+
 **Goal:** Give an executing agent an unambiguous connection from outcome to behavioral scenario, ticket, implementation step, and verification evidence.
 
 **Architecture:** New work records list dependency work IDs, requirement IDs, exact artifact references, and acceptance/verification text. Validate missing referenced local records, self-dependency, cycles, unsafe IDs, and absent local artifacts before publication. Dependency validation verifies graph integrity; it does not claim dependencies completed. work start checks dependency tracker state and fails explicitly on unfinished or unavailable dependencies; a terminal cancelled/duplicate item does not satisfy a completion dependency. Existing records with empty lists keep their current behavior. The native publish body includes scope, requirements, dependencies, artifacts, and acceptance plus the unchanged correlation marker. Re-publishing an already linked item remains idempotent and does not silently overwrite authored remote descriptions. Spec guidance creates one independently finishable OpenSpec change per behavior ticket; OpenSpec tasks are steps inside that ticket, not one ticket per checkbox. A shared parent epic has no completion gate over child specs.
@@ -73,12 +75,12 @@ add it at the task that owns its complete interface.
 
 **Produces:** Implement validate_work_graph and render_ticket_body with missing ID, self/cycle, stable order and rich body cases. Preserve correlation values. Task 2 owns optional Work fields, filesystem artifact checks and mutation ordering; the pure graph function does not inspect files or services.
 
-- [ ] 1.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
-- [ ] 1.2 Add focused failing cases for this task's specified behavior and failure paths. Run the named focused suite and capture the expected failure before implementation.
-- [ ] 1.3 Implement validate_work_graph and render_ticket_body with missing ID, self/cycle, stable order and rich body cases. Preserve correlation values. Task 2 owns optional Work fields, filesystem artifact checks and mutation ordering; the pure graph function does not inspect files or services.
-- [ ] 1.4 Run `uv run --locked --no-sync pytest -q tests/test_traceability.py tests/test_workflow.py tests/test_cli.py tests/test_templates.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
-- [ ] 1.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
-- [ ] 1.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
+- [x] 1.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
+- [x] 1.2 Add focused failing cases for this task's specified behavior and failure paths. Run the named focused suite and capture the expected failure before implementation.
+- [x] 1.3 Implement validate_work_graph and render_ticket_body with missing ID, self/cycle, stable order and rich body cases. Preserve correlation values. Task 2 owns optional Work fields, filesystem artifact checks and mutation ordering; the pure graph function does not inspect files or services.
+- [x] 1.4 Run `uv run --locked --no-sync pytest -q tests/test_traceability.py tests/test_workflow.py tests/test_cli.py tests/test_templates.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
+- [x] 1.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
+- [x] 1.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
 
 ### Task 2: Workflow integration
 
@@ -88,12 +90,12 @@ add it at the task that owns its complete interface.
 
 **Produces:** Validate before mutation, expose work validate, check dependency completion before branch/start effects, and render richer descriptions on first create only.
 
-- [ ] 2.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
-- [ ] 2.2 Add focused failing cases for this task's specified behavior and failure paths. Run the named focused suite and capture the expected failure before implementation.
-- [ ] 2.3 Validate before mutation, expose work validate, check dependency completion before branch/start effects, and render richer descriptions on first create only.
-- [ ] 2.4 Run `uv run --locked --no-sync pytest -q tests/test_traceability.py tests/test_workflow.py tests/test_cli.py tests/test_templates.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
-- [ ] 2.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
-- [ ] 2.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
+- [x] 2.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
+- [x] 2.2 Add focused failing cases for this task's specified behavior and failure paths. Run the named focused suite and capture the expected failure before implementation.
+- [x] 2.3 Validate before mutation, expose work validate, check dependency completion before branch/start effects, and render richer descriptions on first create only.
+- [x] 2.4 Run `uv run --locked --no-sync pytest -q tests/test_traceability.py tests/test_workflow.py tests/test_cli.py tests/test_templates.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
+- [x] 2.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
+- [x] 2.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
 
 ### Task 3: Spec and task handoff guidance
 
@@ -101,14 +103,14 @@ add it at the task that owns its complete interface.
 
 **Consumes:** Task 2's committed artifacts and the shared interface contract above.
 
-**Produces:** Update skill/template examples using PS requirement IDs; show an independently finishable change and a no-spec verification item; regenerate owned copies.
+**Produces:** Update skill/template examples using canonical product requirement IDs; show an independently finishable change and a no-spec verification item; regenerate owned copies.
 
-- [ ] 3.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
-- [ ] 3.2 Add focused failing cases for this task's specified behavior and failure paths. Run the named focused suite and capture the expected failure before implementation.
-- [ ] 3.3 Update skill/template examples using PS requirement IDs; show an independently finishable change and a no-spec verification item; regenerate owned copies.
-- [ ] 3.4 Run `uv run --locked --no-sync pytest -q tests/test_traceability.py tests/test_workflow.py tests/test_cli.py tests/test_templates.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
-- [ ] 3.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
-- [ ] 3.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
+- [x] 3.1 Inspect the named source and existing regression patterns; identify the exact requirement IDs covered by this task in the coverage table below.
+- [x] 3.2 Add focused failing cases for this task's specified behavior and failure paths. Run the named focused suite and capture the expected failure before implementation.
+- [x] 3.3 Update skill/template examples using canonical product requirement IDs; show an independently finishable change and a no-spec verification item; regenerate owned copies.
+- [x] 3.4 Run `uv run --locked --no-sync pytest -q tests/test_traceability.py tests/test_workflow.py tests/test_cli.py tests/test_templates.py` after the listed new tests exist. Expected: all focused tests pass; investigate rather than skip failures.
+- [x] 3.5 Review the result against each mapped requirement, including excluded scope and compatibility; update the OpenSpec task checkboxes only for delivered behavior.
+- [x] 3.6 Commit only this task's related files with a conventional prefix and an outcome-focused message; carry exact commit/evidence into the handoff.
 
 ## Requirement coverage
 
@@ -120,9 +122,12 @@ add it at the task that owns its complete interface.
 
 ## Completion and handoff
 
-- [ ] Run `ai-dlc project check --required`; inspect all five outcomes.
-- [ ] Run `openspec validate spec-delivery-traceability --strict --no-interactive`, review against this plan, and archive only after all implementation tasks are complete. Update the work record to the exact archived path.
+- [x] Run `ai-dlc project check --required`; inspect all five outcomes.
+- [x] Run `openspec validate spec-delivery-traceability --strict --no-interactive` and review implementation against this plan.
+- [ ] Complete independent source review and archive the delivered change during root integration. Update the work record to the exact archived path.
 - [ ] Create/link the PR, complete review and required CI, and use `ai-dlc work finish spec-delivery-traceability` only after merge evidence exists.
-- [ ] Leave a handoff with work/ticket ID, branch and revision, delivered interfaces, checks and evidence locations, unresolved findings, and the next dependency-unblocked ticket.
+- [x] Leave a handoff with work/ticket ID, branch and revision, delivered interfaces, checks and evidence locations, unresolved findings, and the next dependency-unblocked ticket.
 
 Stop and report a blocked task if a dependency is incomplete, an accepted interface conflicts with existing behavior, a required live environment is unavailable, or a required human label/budget is absent. Continue independent local preparation where possible. Do not invent missing product decisions or broaden scope to clear a blocker.
+
+Local checks and scoped consumer evidence: [verification report](../../verification/spec-delivery-traceability.md).
