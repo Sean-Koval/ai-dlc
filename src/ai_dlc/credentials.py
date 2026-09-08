@@ -3,8 +3,15 @@
 from __future__ import annotations
 
 import os
+import re
 from collections.abc import Mapping
 from typing import Any
+
+from ai_dlc.provider_definitions import DEFINITIONS, EnvironmentRequirement
+
+
+def _environment_name(value: Any) -> bool:
+    return isinstance(value, str) and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", value) is not None
 
 
 def _status_entry(
@@ -12,8 +19,12 @@ def _status_entry(
 ) -> dict[str, object]:
     source = entry.get("source")
     variable = entry.get("variable")
-    configured = source == "environment" and isinstance(variable, str)
-    present = bool(environ.get(variable)) if configured and isinstance(variable, str) else False
+    configured = source == "environment" and _environment_name(variable)
+    present = (
+        bool(environ.get(variable, "").strip())
+        if configured and isinstance(variable, str)
+        else False
+    )
     result: dict[str, object] = {
         "id": credential_id,
         "description": entry.get("description", ""),
@@ -51,20 +62,43 @@ def credential_status(
             if not isinstance(provider_id, str) or not isinstance(provider, Mapping):
                 continue
             required_by = f"provider.{provider_id}"
-            token_env = provider.get("token_env")
             kind = provider.get("kind", provider.get("type", provider_id))
-            if token_env is None and kind == "linear":
-                token_env = "LINEAR_API_KEY"
-            if (
-                isinstance(token_env, str)
-                and (required_by, token_env) not in covered_provider_variables
+            definition = DEFINITIONS.get(kind)
+            requirements = list(definition.environment_requirements) if definition else []
+            # Preserve legacy/custom explicit token references without inventing requirements.
+            if isinstance(provider.get("token_env"), str) and not any(
+                requirement.field == "token_env" for requirement in requirements
             ):
-                entries[required_by] = {
+                requirements.append(EnvironmentRequirement("token_env"))
+            for requirement in requirements:
+                if requirement.when and provider.get(requirement.when[0]) != requirement.when[1]:
+                    continue
+                variable = provider.get(requirement.field)
+                if variable is None:
+                    variable = requirement.default
+                if (
+                    _environment_name(variable)
+                    and (required_by, variable) in covered_provider_variables
+                ):
+                    continue
+                credential_id = (
+                    required_by
+                    if requirement.field == "token_env"
+                    else f"{required_by}.{requirement.field}"
+                )
+                base_id = credential_id
+                suffix = 2
+                while credential_id in entries:
+                    credential_id = f"{base_id}.{suffix}"
+                    suffix += 1
+                entries[credential_id] = {
                     "description": f"Credential for provider {provider_id}",
                     "required_by": [required_by],
                     "source": "environment",
-                    "variable": token_env,
+                    "variable": variable,
                 }
+                if _environment_name(variable):
+                    covered_provider_variables.add((required_by, variable))
     return [
         _status_entry(credential_id, entries[credential_id], environment)
         for credential_id in sorted(entries)

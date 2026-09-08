@@ -13,6 +13,15 @@ class ConnectionHandler:
 
 
 @dataclass(frozen=True)
+class EnvironmentRequirement:
+    """Trusted provider field naming a required local environment input."""
+
+    field: str
+    default: str | None = None
+    when: tuple[str, str] | None = None
+
+
+@dataclass(frozen=True)
 class ProviderDefinition:
     kind: str
     roles: tuple[str, ...]
@@ -25,6 +34,7 @@ class ProviderDefinition:
     lifecycle_available: bool = True
     local_directory: str | None = None
     optional_viewer: str | None = None
+    environment_requirements: tuple[EnvironmentRequirement, ...] = ()
 
 
 def _linear(root, *, alias, environ, **options):
@@ -73,6 +83,10 @@ DEFINITIONS = {
             }
         ),
         handler=ConnectionHandler(_jira_discover, _jira_configure),
+        environment_requirements=(
+            EnvironmentRequirement("token_env"),
+            EnvironmentRequirement("email_env", when=("auth_mode", "personal_scoped_token_basic")),
+        ),
     ),
     "linear": ProviderDefinition(
         "linear",
@@ -81,6 +95,7 @@ DEFINITIONS = {
         compatibility_connect=_linear,
         aliases=False,
         scaffold_defaults=(("token_env", "LINEAR_API_KEY"),),
+        environment_requirements=(EnvironmentRequirement("token_env", default="LINEAR_API_KEY"),),
     ),
     "github-issues": ProviderDefinition(
         "github-issues",
