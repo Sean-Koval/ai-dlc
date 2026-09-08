@@ -104,8 +104,8 @@
         "Local profile source is nonportable; reserved bundle URL uses explicit local Git routing. Input content is synthetic qualification material; the recorded CLI operations are actual existing-host observations.",
         "Rendering is project-file evidence, not fresh Codex/Claude/Antigravity client execution.",
         "Native Mac15.3.2 arm64 existing host with prepared Python3.12.11 and existing Git2.37.1; source bootstrap not repeated.",
-        "Adoption exit0 does not imply logical success: its captured status is conflict. Complete configured setup remains unmet.",
-        "Required full repeat setup/bootstrap not executed; this records partial enrollment/render continuity and safe adoption refusal only."
+        "Required full repeat setup/bootstrap not executed; this records partial enrollment/render continuity and safe adoption refusal only.",
+        "Adoption exit0 does not imply logical success: its captured status is conflict. Complete configured setup remains unmet."
       ],
       "observed": "Repeated adoption reported status=conflict for existing scaffold files despite exit0; it did not reapply. Enrollment reported idempotent=true and both render calls were clean. Project and local configuration snapshots remained byte-identical. This passed observation covers enrollment/render continuity and safe adoption refusal, not successful adoption reapplication.",
       "profile_revision": "76e440c4e3a40a5a7a8ffdb1ff954458c25bae99",
@@ -138,7 +138,7 @@
       "evidence": [
         {
           "path": "container.json",
-          "sha256": "d8d4305d4f624538539638957067fc0b6364a6f9d70b0c98a05328a640afa16c",
+          "sha256": "d9ebadbc42f31a10a4c77758ce1e690de98449f2ec5f45edc87bbdc543b8f0e0",
           "kind": "live-container",
           "producer": "AI-DLC qualification operator",
           "method": "Task operator capture; literal source/workspace/user paths redacted. Hash identifies redacted bytes, not original raw capture. No values or outcomes changed."
@@ -162,8 +162,8 @@
         "Local profile source is nonportable; reserved bundle URL uses explicit local Git routing. Input content is synthetic qualification material; the recorded CLI operations are actual existing-host observations.",
         "Rendering is project-file evidence, not fresh Codex/Claude/Antigravity client execution.",
         "Container network disconnected. Reserved HTTPS bundle syntax still routes to a local file repository; no actual remote-portability verification. Generic raw probe labels do not establish container identity; use captured container inspection.",
-        "Adoption exit0 does not imply logical success: its captured status is conflict. Complete configured setup remains unmet.",
-        "Required full repeat setup/bootstrap not executed; this records partial enrollment/render continuity and safe adoption refusal only."
+        "Required full repeat setup/bootstrap not executed; this records partial enrollment/render continuity and safe adoption refusal only.",
+        "Adoption exit0 does not imply logical success: its captured status is conflict. Complete configured setup remains unmet."
       ],
       "observed": "Repeated adoption reported status=conflict for existing scaffold files despite exit0; it did not reapply. Enrollment reported idempotent=true and both render calls were clean. Project and local configuration snapshots remained byte-identical. This passed observation covers enrollment/render continuity and safe adoption refusal, not successful adoption reapplication.",
       "profile_revision": "52188adf8f4d4e72dff848221cd1593182a9f1c7",
@@ -254,7 +254,7 @@
       "evidence": [
         {
           "path": "container.json",
-          "sha256": "d8d4305d4f624538539638957067fc0b6364a6f9d70b0c98a05328a640afa16c",
+          "sha256": "d9ebadbc42f31a10a4c77758ce1e690de98449f2ec5f45edc87bbdc543b8f0e0",
           "kind": "live-container",
           "producer": "AI-DLC qualification operator",
           "method": "Task operator capture; literal source/workspace/user paths redacted. Hash identifies redacted bytes, not original raw capture. No values or outcomes changed."
@@ -366,7 +366,7 @@
       "evidence": [
         {
           "path": "container.json",
-          "sha256": "d8d4305d4f624538539638957067fc0b6364a6f9d70b0c98a05328a640afa16c",
+          "sha256": "d9ebadbc42f31a10a4c77758ce1e690de98449f2ec5f45edc87bbdc543b8f0e0",
           "kind": "live-container",
           "producer": "AI-DLC qualification operator",
           "method": "Task operator capture; literal source/workspace/user paths redacted. Hash identifies redacted bytes, not original raw capture. No values or outcomes changed."

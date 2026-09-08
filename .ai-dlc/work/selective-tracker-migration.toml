@@ -13,7 +13,7 @@ acceptance = [
 ]
 reviewed = true
 depends_on = []
-requirements = []
+requirements = ["TM-01", "TM-02", "TM-03", "TM-04", "TM-05", "TM-06"]
 
 [providers]
 specs = "openspec"

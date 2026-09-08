@@ -113,7 +113,7 @@
         "{{.Id}} {{.Image}} {{json .Mounts}} {{json .NetworkSettings.Networks}}"
       ],
       "exit_code": 0,
-      "stdout": "6751161c77769ea24d70209786b1a9cc2f9e168287d86aed4024f9455e4ffea7 sha256:8c4580f7d5072cd04200daccda8b5aebb58608eb0aca7528bd9ee38ce692b7d3 [{\"Destination\":\"/workspace/.venv\",\"Driver\":\"local\",\"Mode\":\"z\",\"Name\":\"ai-dlc-qualification-1fdm7kyi-venv\",\"Propagation\":\"\",\"RW\":true,\"Source\":\"/var/lib/docker/volumes/ai-dlc-qualification-1fdm7kyi-venv/_data\",\"Type\":\"volume\"}] {}\n",
+      "stdout": "6751161c77769ea24d70209786b1a9cc2f9e168287d86aed4024f9455e4ffea7 sha256:8c4580f7d5072cd04200daccda8b5aebb58608eb0aca7528bd9ee38ce692b7d3 [{\"Destination\":\"<CONTAINER_SOURCE>/.venv\",\"Driver\":\"local\",\"Mode\":\"z\",\"Name\":\"ai-dlc-qualification-1fdm7kyi-venv\",\"Propagation\":\"\",\"RW\":true,\"Source\":\"/var/lib/docker/volumes/ai-dlc-qualification-1fdm7kyi-venv/_data\",\"Type\":\"volume\"}] {}\n",
       "stderr": ""
     },
     {
@@ -147,7 +147,7 @@
         "ai-dlc-qualification-1fdm7kyi",
         "git",
         "-C",
-        "/workspace",
+        "<CONTAINER_SOURCE>",
         "rev-parse",
         "HEAD"
       ],
@@ -162,7 +162,7 @@
         "ai-dlc-qualification-1fdm7kyi",
         "git",
         "-C",
-        "/workspace",
+        "<CONTAINER_SOURCE>",
         "status",
         "--porcelain"
       ],
@@ -184,7 +184,7 @@
       "finished_at": "2026-09-08T04:20:10.432956+00:00",
       "elapsed_seconds": 0.33329204213805497,
       "exit_code": 0,
-      "stdout": "6751161c77769ea24d70209786b1a9cc2f9e168287d86aed4024f9455e4ffea7 sha256:8c4580f7d5072cd04200daccda8b5aebb58608eb0aca7528bd9ee38ce692b7d3 [{\"Destination\":\"/workspace/.venv\",\"Driver\":\"local\",\"Mode\":\"z\",\"Name\":\"ai-dlc-qualification-1fdm7kyi-venv\",\"Propagation\":\"\",\"RW\":true,\"Source\":\"/var/lib/docker/volumes/ai-dlc-qualification-1fdm7kyi-venv/_data\",\"Type\":\"volume\"}] {}\n",
+      "stdout": "6751161c77769ea24d70209786b1a9cc2f9e168287d86aed4024f9455e4ffea7 sha256:8c4580f7d5072cd04200daccda8b5aebb58608eb0aca7528bd9ee38ce692b7d3 [{\"Destination\":\"<CONTAINER_SOURCE>/.venv\",\"Driver\":\"local\",\"Mode\":\"z\",\"Name\":\"ai-dlc-qualification-1fdm7kyi-venv\",\"Propagation\":\"\",\"RW\":true,\"Source\":\"/var/lib/docker/volumes/ai-dlc-qualification-1fdm7kyi-venv/_data\",\"Type\":\"volume\"}] {}\n",
       "stderr": ""
     },
     {
@@ -192,9 +192,9 @@
         "docker",
         "exec",
         "ai-dlc-qualification-1fdm7kyi",
-        "/workspace/.venv/bin/python",
+        "<CONTAINER_SOURCE>/.venv/bin/python",
         "/tmp/q01-probe.py",
-        "/workspace",
+        "<CONTAINER_SOURCE>",
         "/tmp/q01-container-189913b-run2"
       ],
       "started_at": "2026-09-08T04:20:10.433517+00:00",
