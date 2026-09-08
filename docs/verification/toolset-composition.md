@@ -74,8 +74,33 @@ compatible; invalid data is refused with the original destination bytes intact.
 The focused real update/compatibility suite passed 13 tests. YAML parsing reuses
 Copier's existing required PyYAML dependency; no package or lockfile changed.
 
-The update-boundary repair passed all five required checks with **1,214 tests**
-and strict OpenSpec validation. Its
+The update-boundary repair passed **1,214 tests**, four required checks and
+strict OpenSpec validation; lint failed on the saved-answer parsing exception
+contract. An earlier prose summary incorrectly described all five as passing. Its
 [receipt](toolset-composition/review-local-checks.json) records the dirty repair
-candidate based on `1904e9c`; source/tests/assets were frozen during the passing
-run. Independent re-review and merged-revision delivery remain pending.
+candidate based on `1904e9c`; source/tests/assets were frozen during that
+run. The later combined repair below corrects the lint failure. Independent
+re-review and merged-revision delivery remain pending.
+
+## Staged shared-configuration validation
+
+Two further real versioned-template regressions reproduced update applying a
+machine-only path or a literal credential field despite valid saved selections.
+The staged manifest now passes the normal project-layer scope/credential validator
+after Copier conflict detection and before destination writes. A third regression
+preserves legitimate authored provider configuration, including its environment
+reference. The focused update/compatibility suite passed 16 tests. No new secret
+format, package, provider operation or ownership rule was introduced.
+
+The first complete run passed 1,217 tests and four required checks; lint rejected
+the saved-answer parsing boundary raising `ValueError` for malformed external
+input. That boundary intentionally uses the existing CLI validation error contract,
+so the rule is locally suppressed rather than changing the exception contract.
+
+The corrected frozen source passed **all five required checks with 1,217 tests**.
+The [complete passing receipt](toolset-composition/scope-review-checks.json) records
+the dirty candidate based on `11f61f6`; the [first staged-validation run](toolset-composition/scope-review-first-checks.json)
+and earlier update-boundary receipt remain available with their actual lint failures.
+Strict OpenSpec validation also passed. Root's independent source review found no
+additional issues in the combined repair; integration and exact merged-revision
+verification remain root-owned delivery steps.

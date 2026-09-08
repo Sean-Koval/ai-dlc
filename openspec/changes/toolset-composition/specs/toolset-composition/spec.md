@@ -19,6 +19,10 @@ Project adoption and initialization SHALL validate selected provider roles and s
 - **WHEN** retained answers or staged update answers select an unregistered provider/client or a mismatched trusted provider default fragment
 - **THEN** update refuses before destination writes while valid legacy and selected answers remain compatible
 
+#### Scenario: Updated shared configuration violates scope or credential rules
+- **WHEN** a staged Copier manifest introduces machine-only settings or literal credential fields
+- **THEN** the standard project-layer validation refuses it before destination writes, while legitimate authored configuration and Copier conflicts retain their protections
+
 ### Requirement: TC-02 Honest local knowledge and unavailable lifecycle readiness
 Readiness SHALL inspect Obsidian's actual runtime vault directory without requiring its optional GUI, and SHALL distinguish an explicitly unavailable tracker lifecycle adapter from delivered guidance. Component catalog schema 1 SHALL remain unchanged.
 

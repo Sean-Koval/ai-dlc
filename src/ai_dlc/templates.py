@@ -5,11 +5,13 @@ import re
 import shutil
 import subprocess
 import tempfile
+import tomllib
 from pathlib import Path
 
 import copier
 import yaml
 
+from ai_dlc.config import resolve_layers
 from ai_dlc.files import assets, inside
 
 RUNTIME_DIRS = {
@@ -250,7 +252,7 @@ def _validate_toolset_answers(content: bytes) -> None:
     except yaml.YAMLError:
         raise ValueError("Copier answers must contain valid selection data") from None
     if not isinstance(answers, dict):
-        raise ValueError("Copier answers must contain a mapping")
+        raise ValueError("Invalid Copier answers: expected selection mapping")  # noqa: TRY004
     capabilities = answers.get("capabilities", CAPABILITIES)
     if not isinstance(capabilities, list) or not all(
         isinstance(value, str) for value in capabilities
@@ -314,7 +316,6 @@ def sync(root: Path, apply: bool = False, *, vcs_ref: str | None = None) -> dict
         after = _files(stage)
         if ".copier-answers.yml" not in after:
             raise ValueError("Updated template must retain its Copier answers")
-        _validate_toolset_answers(after[".copier-answers.yml"])
         conflicts = sorted(
             name
             for name in after
@@ -323,6 +324,9 @@ def sync(root: Path, apply: bool = False, *, vcs_ref: str | None = None) -> dict
         )
         if conflicts:
             return {"status": "conflict", "conflicts": conflicts}
+        _validate_toolset_answers(after[".copier-answers.yml"])
+        if "ai-dlc.toml" in after:
+            resolve_layers([("project", tomllib.loads(after["ai-dlc.toml"].decode()))])
         changed = sorted(k for k in before.keys() | after.keys() if before.get(k) != after.get(k))
         if apply:
             _apply(root, before, after)

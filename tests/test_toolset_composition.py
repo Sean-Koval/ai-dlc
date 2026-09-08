@@ -313,3 +313,44 @@ def test_real_copier_update_validates_new_defaults_before_applying(tmp_path):
     with pytest.raises(ValueError):
         sync(root, apply=True)
     assert snapshot(root) == before
+
+
+@pytest.mark.parametrize(
+    "invalid_fragment",
+    [
+        '\n[paths]\nvault="/tmp/vault"\n',
+        '\n[providers.injected]\ntoken="SYNTHETIC_TOKEN_LITERAL"\n',
+    ],
+)
+def test_staged_copier_manifest_cannot_bypass_project_scope_or_credential_rules(
+    tmp_path, invalid_fragment
+):
+    template = tmp_path / "template"
+    shutil.copytree(assets("project-templates"), template)
+    subprocess.run(["git", "init", str(template)], check=True, capture_output=True)
+    version_template(template, "v1.0.0")
+    root = tmp_path / "project"
+    adopt(root, apply=True, template_source=str(template), vcs_ref="v1.0.0")
+    manifest = template / "project/ai-dlc.toml.jinja"
+    manifest.write_text(manifest.read_text() + invalid_fragment)
+    version_template(template, "v2.0.0")
+    before = snapshot(root)
+    with pytest.raises(ValueError):
+        sync(root, apply=True)
+    assert snapshot(root) == before
+
+
+def test_real_update_keeps_authored_valid_provider_config(tmp_path):
+    template = tmp_path / "template"
+    shutil.copytree(assets("project-templates"), template)
+    subprocess.run(["git", "init", str(template)], check=True, capture_output=True)
+    version_template(template, "v1.0.0")
+    root = tmp_path / "project"
+    adopt(root, apply=True, template_source=str(template), vcs_ref="v1.0.0")
+    manifest = root / "ai-dlc.toml"
+    authored = '\n# Authored account selection\n[providers.authored]\nkind="custom"\ntoken_env="AUTHORED_TOKEN_NAME"\n'
+    manifest.write_text(manifest.read_text() + authored)
+    (template / "project/docs/architecture.md").write_text("# Updated\n")
+    version_template(template, "v2.0.0")
+    assert sync(root, apply=True)["status"] == "applied"
+    assert authored in manifest.read_text()
