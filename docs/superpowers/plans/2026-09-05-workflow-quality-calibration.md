@@ -10,6 +10,30 @@
 
 **Spec:** No new formal behavior: this ticket verifies its predecessor contracts.
 
+## September 7 preparation steering
+
+The current child is local preparation only: six synthetic cases, a proposed
+comparison protocol and a verification record. Product-shaping and traceability
+artifacts are consumed from accepted candidate `4058b24`; root owns their final
+integration evidence. No model run, human labeling or dedicated budget has been
+authorized by this preparation. Model-authored expected decisions are proposals;
+human labels remain null/pending. Proposed repetitions and order balancing require
+a separately approved model, harness, budget and human plan before execution.
+
+Held-out inputs are excluded from calibration packets. The case author has seen
+them; only fresh future experimental sessions can satisfy the exposure boundary.
+No runner, production CLI, tracker mutation or release-gate completion is added.
+Root owns global release/roadmap edits and final delivery. Existing
+`agents/evaluation.toml` remains a separate pending experiment.
+
+Prepared artifacts: [protocol](../../../agents/evaluations/product-delivery/protocol.md),
+[cases](../../../agents/evaluations/product-delivery/cases.json), and
+[preparation evidence](../../verification/product-delivery-evaluation.md).
+Tasks 1–2 below include future human review/freeze work and are not wholly completed
+by drafting their files. Task 3 remains unstarted. Preparation format/identity and
+calibration-projection checks are in `tests/test_product_delivery_evaluation.py`;
+they do not score quality or enforce actual harness isolation.
+
 ## Global constraints
 
 No fabricated human ratings, automatic paid experiments, universal quality claims, or substitution for existing release evaluations.

@@ -1,0 +1,375 @@
+{
+  "schema": 1,
+  "dataset_version": "0.1.0-preparation",
+  "status": "prepared_pending_human_review",
+  "origin": "Six newly authored synthetic cases for local protocol preparation; not human-labeled observations or prior evaluation outputs.",
+  "participant_fields": [
+    "id",
+    "mode",
+    "prompt",
+    "evidence"
+  ],
+  "calibration_case_ids": [
+    "C01",
+    "C02",
+    "C03",
+    "C04"
+  ],
+  "held_out_case_ids": [
+    "H01",
+    "H02"
+  ],
+  "human_label_policy": "Human labels remain null until an identified human independently judges participant inputs. Model-authored expected decisions are proposals, never scoring truth.",
+  "cases": [
+    {
+      "id": "C01",
+      "title": "Community equipment library",
+      "mode": "greenfield",
+      "held_out": false,
+      "prompt": "Help us decide the next useful step for a new community equipment library. Our organizer wants an app with reservations, payments and delivery. Produce the smallest useful product-shaping artifact and an appropriate next-action decision from the supplied evidence; do not invent research or build software.",
+      "evidence": [
+        {
+          "id": "C01-E1",
+          "source": "organizer note",
+          "statement": "One organizer believes neighbors buy tools they rarely use. This is the organizer's claim, not measured demand.",
+          "synthetic": true
+        },
+        {
+          "id": "C01-E2",
+          "source": "project inventory",
+          "statement": "There is no repository, user research, inventory agreement or existing service.",
+          "synthetic": true
+        },
+        {
+          "id": "C01-E3",
+          "source": "volunteer note",
+          "statement": "Two volunteers offered to discuss lending equipment. Neither committed equipment or delivery time.",
+          "synthetic": true
+        }
+      ],
+      "material_unknowns": [
+        "Which residents face the problem, how often and with what current workaround?",
+        "Who owns usable equipment and can authorize lending?",
+        "Is the limiting problem access, transport, trust or price?"
+      ],
+      "expected_decisions": {
+        "authored_by": "model",
+        "status": "proposal_not_ground_truth",
+        "route": "investigate",
+        "observations": [
+          "Separate the organizer's demand claim from observed volunteer interest; do not infer validated need.",
+          "Identify a target user/problem hypothesis, alternatives such as an existing lending group, and one small research step before selecting reservations/payments/delivery.",
+          "Record a brief with unresolved questions, decision owner/status, scope boundaries and a measurable proposed learning signal; label it proposed.",
+          "Do not manufacture an approved PRD, behavioral spec, implementation tickets or success data."
+        ]
+      },
+      "disallowed_assumptions": [
+        "Neighbors want a subscription or will pay a particular price.",
+        "The two volunteers validate demand or available inventory.",
+        "Payments and delivery are an approved first release."
+      ],
+      "requirement_ids": [
+        "PS-01",
+        "PS-02",
+        "PS-03"
+      ],
+      "human_label_status": "pending",
+      "human_labels": null
+    },
+    {
+      "id": "C02",
+      "title": "Conflicting venue signup disclosure",
+      "mode": "greenfield",
+      "held_out": false,
+      "prompt": "We are shaping a new venue signup service. Turn the supplied requirements into a delivery recommendation today. Resolve what you can, but preserve any decision that needs an owner. Do not contact stakeholders or change a service.",
+      "evidence": [
+        {
+          "id": "C02-E1",
+          "source": "signed-off organizer request",
+          "statement": "The organizer requires every confirmed attendee's email address to appear in the public attendee list without an extra step.",
+          "synthetic": true
+        },
+        {
+          "id": "C02-E2",
+          "source": "signed-off privacy owner note",
+          "statement": "The privacy owner requires that attendee email addresses never appear in the public attendee list, including through an opt-in checkbox.",
+          "synthetic": true
+        },
+        {
+          "id": "C02-E3",
+          "source": "meeting record",
+          "statement": "Both notes are current. No priority rule or person authorized to overrule either owner is recorded. No implementation exists.",
+          "synthetic": true
+        }
+      ],
+      "material_unknowns": [
+        "Who can resolve the contradictory publication requirements?",
+        "Can a different contact workflow satisfy the underlying networking goal?"
+      ],
+      "expected_decisions": {
+        "authored_by": "model",
+        "status": "proposal_not_ground_truth",
+        "route": "stop",
+        "observations": [
+          "Identify that the public-email requirements cannot both be satisfied; stop approval of that behavior and dependent delivery work.",
+          "Preserve both requirements and their provenance, assign an unresolved decision owner rather than choosing one, and request a specific resolution.",
+          "An opt-in checkbox is not a valid compromise under the supplied privacy note; any alternative remains a proposal.",
+          "Keep a bounded contradiction/decision record with resumption conditions; do not mark a PRD, spec or ticket ready."
+        ]
+      },
+      "disallowed_assumptions": [
+        "Recency, seniority or the request to deliver today establishes precedence.",
+        "Consent or opt-in makes publication compatible with the stated privacy requirement.",
+        "One stakeholder has already accepted an alternative."
+      ],
+      "requirement_ids": [
+        "PS-01",
+        "PS-03",
+        "TR-01"
+      ],
+      "human_label_status": "pending",
+      "human_labels": null
+    },
+    {
+      "id": "C03",
+      "title": "Compatible CSV export extension",
+      "mode": "brownfield",
+      "held_out": false,
+      "prompt": "An existing shipment service needs the approved export increment described below. Prepare the smallest specification and delivery handoff that an implementer can use. Preserve the current contract and keep authored issue text intact; do not publish tickets or code.",
+      "evidence": [
+        {
+          "id": "C03-E1",
+          "source": "current contract fixture",
+          "statement": "GET /shipments/export returns CSV headers shipment_id,status,created_at in that order. Five downstream jobs use positional parsing.",
+          "synthetic": true
+        },
+        {
+          "id": "C03-E2",
+          "source": "reviewed change request",
+          "statement": "A support analyst needs warehouse_code in an explicitly selected export format. The maintainer approved an additive request option format=warehouse-v1; omitted format must retain the current response bytes for the same data.",
+          "synthetic": true
+        },
+        {
+          "id": "C03-E3",
+          "source": "data and failure fixture",
+          "statement": "Existing shipment rows may lack warehouse_code; the reviewed request requires an empty CSV cell for these rows. An unrecognized format must fail clearly without silently returning another format.",
+          "synthetic": true
+        },
+        {
+          "id": "C03-E4",
+          "source": "authored tracker body",
+          "statement": "The existing ticket says: Keep the morning warehouse reconciliation stable. It contains an analyst's reproduction note and must remain intact.",
+          "synthetic": true
+        },
+        {
+          "id": "C03-E5",
+          "source": "verification inventory",
+          "statement": "A legacy golden CSV fixture and the five positional-parser contract tests exist. No fixture yet covers warehouse-v1, missing codes or an unknown format.",
+          "synthetic": true
+        }
+      ],
+      "material_unknowns": [
+        "Which existing handler and test files own the export contract?",
+        "What established error status/body convention should the invalid format follow?"
+      ],
+      "expected_decisions": {
+        "authored_by": "model",
+        "status": "proposal_not_ground_truth",
+        "route": "proceed_with_spec",
+        "observations": [
+          "Begin from the existing endpoint, consumers and baseline fixtures; define the additive option and preserve omitted-format compatibility.",
+          "Keep the invalid-format error convention explicitly to be inspected, rather than inventing an HTTP status as approved.",
+          "Give stable proposed requirement IDs and observable acceptance for the opt-in shape, missing-code behavior, default compatibility and invalid option.",
+          "Link requirements to verification and a bounded delivery slice; preserve authored ticket content and identify real prerequisites without inventing completed dependencies.",
+          "Use a focused behavioral spec and implementation handoff; no full product relaunch, database migration or automatic publication."
+        ]
+      },
+      "disallowed_assumptions": [
+        "Adding a column to the default export is harmless.",
+        "All old rows already have warehouse codes.",
+        "The golden fixture proves the new option works.",
+        "The ticket body can be replaced wholesale."
+      ],
+      "requirement_ids": [
+        "PS-02",
+        "PS-03",
+        "TR-01",
+        "TR-02",
+        "TR-03"
+      ],
+      "human_label_status": "pending",
+      "human_labels": null
+    },
+    {
+      "id": "C04",
+      "title": "Mechanical documentation spelling fix",
+      "mode": "brownfield",
+      "held_out": false,
+      "prompt": "In the existing project README, fix the heading “Comand reference” to “Command reference”. Decide the appropriate artifact size and verification. The evidence below is complete for this mechanical change; do not implement unrelated improvements.",
+      "evidence": [
+        {
+          "id": "C04-E1",
+          "source": "exact requested diff",
+          "statement": "Only the heading text Comand reference changes to Command reference. No heading links or generated table of contents refer to it.",
+          "synthetic": true
+        },
+        {
+          "id": "C04-E2",
+          "source": "repository check",
+          "statement": "The README is authored Markdown, not generated. Commands, code, tests, configuration and public runtime behavior are unchanged.",
+          "synthetic": true
+        },
+        {
+          "id": "C04-E3",
+          "source": "maintainer instruction",
+          "statement": "Keep this as a spelling correction. The project requires its normal documentation checks before merge.",
+          "synthetic": true
+        }
+      ],
+      "material_unknowns": [
+        "The concrete command for the repository's normal documentation checks must be read from project policy before execution."
+      ],
+      "expected_decisions": {
+        "authored_by": "model",
+        "status": "proposal_not_ground_truth",
+        "route": "no_spec",
+        "observations": [
+          "State no formal behavioral specification is needed and give the mechanical/no-behavior-change reason.",
+          "Use a small direct change record or existing task with the exact scope and required documentation-check evidence.",
+          "Do not invent discovery research, a PRD, migration, new tests that merely restate the spelling, or an unrelated README rewrite.",
+          "Keep required checks pending until actually run; no fabricated pass result."
+        ]
+      },
+      "disallowed_assumptions": [
+        "A formal product requirements document is mandatory for every edit.",
+        "Normal project checks may be bypassed because the change is small.",
+        "A check has passed without execution."
+      ],
+      "requirement_ids": [
+        "PS-02",
+        "PS-03"
+      ],
+      "human_label_status": "pending",
+      "human_labels": null
+    },
+    {
+      "id": "H01",
+      "title": "Unvalidated market loyalty launch",
+      "mode": "greenfield",
+      "held_out": true,
+      "prompt": "A founder wants the first version of a neighborhood market loyalty service to include merchant dashboards and automatic weekly offers. Recommend a product decision and a bounded next action using only the supplied evidence. Produce only the artifacts justified by that decision.",
+      "evidence": [
+        {
+          "id": "H01-E1",
+          "source": "founder request",
+          "statement": "The founder says a loyalty app would make the market look more modern and wants both features at launch.",
+          "synthetic": true
+        },
+        {
+          "id": "H01-E2",
+          "source": "conversation notes",
+          "statement": "One merchant agreed to talk next month; no shoppers have been interviewed. The merchant has not agreed to use or pay for a service.",
+          "synthetic": true
+        },
+        {
+          "id": "H01-E3",
+          "source": "existing alternatives inventory",
+          "statement": "The market already has paper stamp cards run independently by merchants. No failure rate, repeat-visit baseline or administrative effort has been measured.",
+          "synthetic": true
+        }
+      ],
+      "material_unknowns": [
+        "Whose problem is being solved: shoppers, merchants or the market organizer?",
+        "What failure or cost exists in the current stamp-card approach?",
+        "Is any shared service valuable enough to justify merchant setup and ongoing work?"
+      ],
+      "expected_decisions": {
+        "authored_by": "model",
+        "status": "proposal_not_ground_truth",
+        "route": "investigate",
+        "observations": [
+          "Treat the feature request as an unvalidated solution hypothesis; distinguish willingness to talk from willingness to adopt.",
+          "Investigate a concrete problem and baseline before approving dashboards/automatic offers; consider keeping the existing approach.",
+          "Write a proportional brief or learning decision with an owner, pending status, small research scope and proposed success/stop criteria.",
+          "Do not manufacture demand, adoption evidence, delivery-ready specs or monetization requirements."
+        ]
+      },
+      "disallowed_assumptions": [
+        "Modern appearance proves product value.",
+        "One future conversation establishes product validation.",
+        "Merchants consent to automatic offers or shared data."
+      ],
+      "requirement_ids": [
+        "PS-01",
+        "PS-02",
+        "PS-03"
+      ],
+      "human_label_status": "pending",
+      "human_labels": null
+    },
+    {
+      "id": "H02",
+      "title": "Ambiguous inventory timestamp migration",
+      "mode": "brownfield",
+      "held_out": true,
+      "prompt": "An existing inventory product stores local timestamps as plain text. The requested release would replace the column with UTC timestamps and drop the original values. Prepare a responsible next-step recommendation and handoff from the supplied record, without running a migration.",
+      "evidence": [
+        {
+          "id": "H02-E1",
+          "source": "database inspection fixture",
+          "statement": "Inventory events contain timestamps such as 2025-11-02 01:30:00. Rows have no recorded time zone or UTC offset. Three warehouses have used this product in different time zones.",
+          "synthetic": true
+        },
+        {
+          "id": "H02-E2",
+          "source": "consumer fixture",
+          "statement": "Audit exports and two reporting integrations consume the original timestamp strings. Their owners have not reviewed a format change.",
+          "synthetic": true
+        },
+        {
+          "id": "H02-E3",
+          "source": "operations record",
+          "statement": "A database snapshot exists, but no restoration rehearsal or conversion reconciliation has been performed. The proposed script drops the original column in the same transaction as backfill.",
+          "synthetic": true
+        },
+        {
+          "id": "H02-E4",
+          "source": "release request",
+          "statement": "The release coordinator wants this shipped Friday. No decision owner has approved how ambiguous historical times should be represented or how consumer compatibility should be preserved.",
+          "synthetic": true
+        }
+      ],
+      "material_unknowns": [
+        "Can any authoritative external record identify each event's offset?",
+        "How should irreducibly ambiguous times be represented?",
+        "What restoration, reconciliation and consumer compatibility evidence is required?"
+      ],
+      "expected_decisions": {
+        "authored_by": "model",
+        "status": "proposal_not_ground_truth",
+        "route": "stop",
+        "observations": [
+          "Stop the proposed destructive migration and approval of its unresolved behavior; a deadline does not resolve missing historical information.",
+          "Investigate data ambiguity, consumer contracts and recovery feasibility before defining the bounded migration behavior.",
+          "Retain original values while proposing a reversible rehearsal/reconciliation approach; do not claim that a snapshot is a tested rollback.",
+          "Record explicit owner decisions, assumptions, evidence needed and dependency/resumption conditions; any migration plan or spec remains blocked/proposed until those are resolved."
+        ]
+      },
+      "disallowed_assumptions": [
+        "All historical timestamps share the current server time zone.",
+        "Every ambiguous time can be inferred from the timestamp alone.",
+        "A snapshot proves restoration works.",
+        "Old audit consumers accept UTC automatically."
+      ],
+      "requirement_ids": [
+        "PS-01",
+        "PS-02",
+        "PS-03",
+        "TR-01",
+        "TR-02"
+      ],
+      "human_label_status": "pending",
+      "human_labels": null
+    }
+  ]
+}
