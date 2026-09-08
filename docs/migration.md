@@ -98,7 +98,7 @@ ai-dlc project tracker-migrate new-tickets --mode selected --work work-one --wor
 
 The adapter reads each requested target, verifies its configured project/repository
 identity, and returns its canonical ID and URL. Different references resolving to
-the same ticket are refused across selected work. Each source provider, fingerprint
+the same ticket are refused across selected work. New schema2 previews explicitly label the source as local-records-only: remote state/history and omitted comments, attachments, assignees, remote edits and remote-only issues remain unknown. They record target logical state and declared lifecycle capabilities; unsupported transitions are listed, and mapping preserves remote state without claiming completion. Legacy schema1 saved plans retain their original validation and recovery behavior. Each source provider, fingerprint
 and ticket reference is recorded alongside the requested target reference and
 verified identity. Selected work must be reviewed. Only its tracker provider,
 fingerprint and ticket reference move; non-tracker references and fingerprints
@@ -183,3 +183,5 @@ qualification. Retain the original receipt and outcome events, then create a new
 migration preview if further changes are needed. A corrupt initial receipt cannot
 be used for automated recovery inspection; preserve it and reconcile the project
 from independently reviewed copies before repairing its migration evidence.
+
+Plane existing targets must satisfy its exact AI-DLC correlation and scoped external identity contract. Ordinary native-created Plane items without that identity are refused; do not add identity markers blindly or infer ownership from a URL. Adapter fixtures establish local contract behavior only, not live Plane access.

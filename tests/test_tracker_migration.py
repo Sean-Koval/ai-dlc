@@ -693,3 +693,76 @@ def test_malformed_prepared_receipt_reports_manual_recovery(checkout, value):
         migration().inspect_tracker_migration(root, proposed["operation_id"])
     with pytest.raises(ValueError, match="recovery required"):
         apply(checkout, proposed)
+
+
+def test_new_plan_reports_local_source_omissions_and_target_state(checkout):
+    proposed = plan(checkout, mode="selected", work_ids=["one"], mappings={"one": "42"})
+    assert proposed["schema"] == 2
+    evidence = proposed["evidence"]
+    assert evidence["source"]["basis"] == "local-records-only"
+    assert evidence["source"]["remote_state"] == "unknown"
+    assert "comments" in evidence["source"]["omitted"]
+    assert evidence["targets"]["one"]["state"] == "open"
+    assert evidence["targets"]["one"]["state_action"] == "preserve"
+    assert evidence["targets"]["one"]["completion_evidence"] is False
+    assert evidence["capabilities"]["status"] == "undeclared"
+
+
+def test_legacy_schema_one_plan_keeps_original_apply_and_recovery(checkout):
+    from ai_dlc.config import digest
+
+    proposed = plan(checkout, mode="selected", work_ids=["one"], mappings={"one": "42"})
+    proposed["schema"] = 1
+    proposed.pop("evidence", None)
+    proposed.pop("digest")
+    proposed["digest"] = digest(proposed)
+    result = apply(checkout, proposed)
+    assert result["status"] == "applied"
+    assert (
+        migration().inspect_tracker_migration(checkout[0], proposed["operation_id"])["status"]
+        == "applied"
+    )
+
+
+def test_target_capability_and_state_evidence_are_fresh_at_apply(checkout):
+    _, _, registry, adapter = checkout
+    registry.declares = lambda provider, operation: operation == "capabilities"
+    original = adapter.invoke
+    state = {"in_progress": False}
+
+    def invoke(operation, payload):
+        if operation == "capabilities":
+            return {"schema": 1, "lifecycle": {**state, "closed": True}, "optional_operations": []}
+        return original(operation, payload)
+
+    adapter.invoke = invoke
+    proposed = plan(checkout, mode="selected", work_ids=["one"], mappings={"one": "42"})
+    assert proposed["evidence"]["capabilities"]["value"]["lifecycle"]["in_progress"] is False
+    assert "in_progress" in proposed["evidence"]["unsupported_transitions"]
+    state["in_progress"] = True
+    with pytest.raises(ValueError, match="identity drift"):
+        apply(checkout, proposed)
+
+
+def test_fifo_saved_plan_refuses_promptly_without_writer(checkout):
+    import subprocess
+    import sys
+
+    root = checkout[0]
+    folder = root / ".ai-dlc/local"
+    folder.mkdir()
+    target = folder / "fifo.json"
+    os.mkfifo(target)
+    script = "from pathlib import Path; from ai_dlc.tracker_migration import load_tracker_migration_plan; load_tracker_migration_plan(Path(__import__('sys').argv[1]), Path('.ai-dlc/local/fifo.json'))"
+    try:
+        result = subprocess.run(
+            [sys.executable, "-c", script, str(root)],
+            capture_output=True,
+            text=True,
+            timeout=2,
+            check=False,
+        )
+    except subprocess.TimeoutExpired:
+        pytest.fail("Nonregular saved plan blocked before validation")
+    assert result.returncode != 0
+    assert "regular files" in result.stderr

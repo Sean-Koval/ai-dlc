@@ -2,7 +2,7 @@
 
 Existing rebind requires mappings for all retained work and does not copy remote
 issues. Users need to choose a new default independently from migration, especially
-when the old service becomes unavailable. Status: proposed, no migration applied.
+when the old service becomes unavailable. PR23 delivered the GitHub default-only and selected verified-target mapping slice. Remaining local work covers explicit source/state evidence, actual adapter substitution fixtures and optional reconciled creation; real Plane qualification remains pending.
 [Requirements](../../../docs/design/provider-toolsets-prd.md).
 
 ## What Changes

@@ -43,7 +43,7 @@ def _open(root, name, flags=os.O_RDONLY):
             child = os.open(part, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=parent)
             os.close(parent)
             parent = child
-        descriptor = os.open(parts[-1], flags | os.O_NOFOLLOW, 0o600, dir_fd=parent)
+        descriptor = os.open(parts[-1], flags | os.O_NOFOLLOW | os.O_NONBLOCK, 0o600, dir_fd=parent)
         metadata = os.fstat(descriptor)
         if not stat.S_ISREG(metadata.st_mode) or metadata.st_nlink != 1:
             raise ValueError("Migration files must be regular files with no hard links")
@@ -85,7 +85,17 @@ def _runtime(root, *, environ, machine, machine_config):
 
 
 def _build(
-    root, provider_id, *, mode, work_ids, mappings, environ, machine, machine_config, registry
+    root,
+    provider_id,
+    *,
+    mode,
+    work_ids,
+    mappings,
+    environ,
+    machine,
+    machine_config,
+    registry,
+    schema=2,
 ):
     snapshot, contents = _snapshot(root)
     config = _runtime(root, environ=environ, machine=machine, machine_config=machine_config)
@@ -113,7 +123,7 @@ def _build(
         if f".ai-dlc/work/{work_id}.toml" not in contents:
             raise ValueError(f"Unknown selected work: {work_id}")
     proposed = copy.deepcopy(config)
-    changes, verified, retained = {}, {}, {}
+    changes, verified, retained, observed = {}, {}, {}, {}
     if mode == "default-only":
         proposed.setdefault("roles", {})["tracker"] = provider_id
         source = contents["ai-dlc.toml"].decode()
@@ -142,6 +152,7 @@ def _build(
                 raise ValueError("Target mapping must be a nonempty reference")
             target = registry.invoke(provider_id, "read", {"reference": reference})
             canonical = {"id": target["id"], "url": target["url"]}
+            observed[work_id] = target["state"]
             if canonical["id"] in identities:
                 raise ValueError("Duplicate canonical target identity across selected work")
             identities.add(canonical["id"])
@@ -163,7 +174,7 @@ def _build(
             # Freeze the full effective mapping, including the absence of a tracker.
             changes[name] = tomli_w.dumps(work).encode()
     planned = {
-        "schema": 1,
+        "schema": schema,
         "root_digest": digest(str(root)),
         "mode": mode,
         "provider": provider_id,
@@ -176,7 +187,42 @@ def _build(
         "changes": {name: _sha(data) for name, data in changes.items()},
         "remote_mutations": False,
     }
+    if schema == 2:
+        capabilities = {"status": "not-inspected" if mode == "default-only" else "undeclared"}
+        unsupported = []
+        if mode == "selected" and getattr(registry, "declares", lambda *_: False)(
+            provider_id, "capabilities"
+        ):
+            value = registry.invoke(provider_id, "capabilities", {})
+            capabilities = {"status": "declared", "value": value}
+            unsupported = sorted(
+                key for key, supported in value["lifecycle"].items() if not supported
+            )
+        planned["evidence"] = {
+            "source": local_source_evidence(),
+            "capabilities": capabilities,
+            "unsupported_transitions": unsupported,
+            "targets": {
+                key: {
+                    "state": state,
+                    "state_action": "preserve",
+                    "completion_evidence": False,
+                    "mapping": "not-attempted; source remote state unknown",
+                }
+                for key, state in observed.items()
+            },
+        }
     return planned, changes, contents
+
+
+def local_source_evidence():
+    return {
+        "basis": "local-records-only",
+        "remote_state": "unknown",
+        "remote_history": "unknown",
+        "omitted": ["remote-only issues", "comments", "attachments", "assignees", "remote edits"],
+        "complete_import": False,
+    }
 
 
 def plan_tracker_migration(
@@ -226,6 +272,8 @@ def _validate(plan):
         "operation_id",
         "digest",
     }
+    if isinstance(plan, dict) and plan.get("schema") == 2:
+        fields.add("evidence")
     if not isinstance(plan, dict) or set(plan) != fields:
         raise ValueError("Invalid migration plan fields")
     if (
@@ -259,7 +307,7 @@ def _validate(plan):
         raise ValueError("Migration plan digest changed")
     if (
         type(value.get("schema")) is not int
-        or value["schema"] != 1
+        or value["schema"] not in {1, 2}
         or not re.fullmatch(r"[a-f0-9]{32}", str(value.get("operation_id", "")))
     ):
         raise ValueError("Invalid migration plan schema or operation identity")
@@ -449,6 +497,7 @@ def apply_tracker_migration(
             machine=machine,
             machine_config=machine_config,
             registry=registry,
+            schema=saved["schema"],
         )
         if {**fresh, "operation_id": saved["operation_id"]} != saved:
             raise ValueError("Migration plan or verified target identity drift")

@@ -45,3 +45,11 @@ Migration SHALL accept either GitHub Issues or Plane through the same target-ver
 #### Scenario: The personal tracker choice changes
 - **WHEN** a reviewed migration selects Linear to GitHub Issues, Linear to Plane, or a switch between GitHub Issues and Plane
 - **THEN** the same selection, provenance, uncertainty and gate-preservation rules apply, unsupported state mappings are reported, and original state evidence is retained
+
+#### Scenario: Existing targets have cancelled or unknown state
+- **WHEN** a reviewed existing-target mapping reads a cancelled or unknown logical state
+- **THEN** the plan records it without changing remote state or treating it as completed work, identifies unknown source state and unsupported target transitions, and preserves completion gates
+
+#### Scenario: Legacy saved mappings remain usable
+- **WHEN** a valid schema1 saved plan is applied or its local receipt inspected
+- **THEN** its original exact validation and bounded recovery rules remain available without fabricated new evidence

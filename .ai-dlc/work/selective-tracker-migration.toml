@@ -1,0 +1,19 @@
+schema = 1
+id = "selective-tracker-migration"
+title = "Complete local selective tracker migration evidence and reconciliation"
+scope = "Preserve delivered default/selected mapping while adding honest source evidence, real adapter substitution coverage and explicit reviewed target creation. Live Plane substitution remains unverified."
+requires_spec = true
+spec_reason = "TM01 through TM06 govern retained bindings, reviewed mappings, uncertainty and source evidence."
+acceptance = ["Preserve legacy plans and local recovery without relaxing finish gates.", "Report local-only source omissions and target state/capability limits with real adapter fixtures.", "Reconcile reviewed target creation without blind retry or local binding writes before complete mappings."]
+reviewed = true
+
+[providers]
+specs = "openspec"
+scm = "github"
+tracker = "github-issues"
+
+[artifacts]
+spec = "openspec/changes/selective-tracker-migration"
+branch = "codex/selective-tracker-migration"
+tracker = "https://github.com/Sean-Koval/ai-dlc/issues/21"
+verification = "docs/verification/selective-tracker-migration.md"
