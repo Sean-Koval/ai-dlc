@@ -1,0 +1,21 @@
+schema = 1
+id = "source-fetch-cleanup"
+title = "Restore disposable source cleanup and container verification"
+scope = "Repair the PR25 Mac source-fetch background writer and container packaging-check false positive, preserving existing profile resolution and release privacy contracts."
+requires_spec = false
+spec_reason = "Bug remediation restores existing disposable source resolution and packaging verification; no public API, provider contract, configuration or workflow state changes."
+acceptance = [
+  "Real Git source fetch does not launch automatic maintenance that can outlive its disposable repository.",
+  "Distribution scanning rejects actual checkout/private-user paths while allowing embedded prose and unrelated path prefixes.",
+  "Required checks, independent review and exact merged CI pass before finish."
+]
+reviewed = true
+
+[providers]
+scm = "github"
+
+[artifacts]
+verification = "docs/verification/source-fetch-cleanup.md"
+branch = "codex/work-computer-onboarding"
+parent_issue = "https://github.com/Sean-Koval/ai-dlc/issues/14"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/25"

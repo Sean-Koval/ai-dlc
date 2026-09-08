@@ -135,6 +135,8 @@ def _resolve_commit(
         repository,
         "fetch",
         "--quiet",
+        # The caller may remove this disposable repository as soon as we return.
+        "--no-auto-maintenance",
         "--no-tags",
         "--",
         source,

@@ -899,3 +899,29 @@ def test_supported_remote_and_local_grammars_remain_distinct(source: str, portab
     """Would fail if strict rejection removed a supported URL, SCP, or local path."""
     assert source_portability(source) is portable
     assert redact_source(source) == source
+
+
+def test_disposable_source_fetch_does_not_start_automatic_maintenance(tmp_path):
+    """A detached Git writer must not outlive the disposable source operation."""
+    import json
+
+    repository, commit = disposable_git_repository(tmp_path)
+    trace = tmp_path / "git-trace.jsonl"
+    environment = {
+        **os.environ,
+        "GIT_TRACE2_EVENT": str(trace),
+        "GIT_CONFIG_COUNT": "1",
+        "GIT_CONFIG_KEY_0": "maintenance.auto",
+        "GIT_CONFIG_VALUE_0": "true",
+    }
+    candidate = resolve_profile_source(
+        str(repository), "test-development", "main", enrollment_paths(tmp_path), environ=environment
+    )
+    assert candidate.resolved_commit == commit
+    events = [json.loads(line) for line in trace.read_text().splitlines()]
+    assert any(event.get("event") == "child_start" for event in events)
+    assert not [
+        event
+        for event in events
+        if event.get("event") == "child_start" and "maintenance" in event.get("argv", [])
+    ]
