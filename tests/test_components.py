@@ -24,6 +24,28 @@ def test_loads_the_packaged_component_catalog_and_its_guidance(tmp_path: Path):
                 "required_config": ["repository"],
             },
             {
+                "id": "jira-cloud",
+                "roles": ["tracker"],
+                "modules": [],
+                "guidance": ["providers/jira-cloud.md"],
+                "required_config": [
+                    "site_url",
+                    "cloud_id",
+                    "account_id",
+                    "project_id",
+                    "project_key",
+                    "issue_type_id",
+                    "auth_mode",
+                    "token_env",
+                    "statuses.open",
+                    "statuses.in_progress",
+                    "statuses.closed",
+                    "statuses.cancelled",
+                    "resolutions.closed",
+                    "resolutions.cancelled",
+                ],
+            },
+            {
                 "id": "linear",
                 "roles": ["tracker"],
                 "modules": ["linear"],
@@ -117,6 +139,7 @@ def test_loads_digest_verified_synthetic_component_fixtures(tmp_path: Path):
 
     assert [component["id"] for component in catalog["components"]] == [
         "github-issues",
+        "jira-cloud",
         "linear",
         "obsidian",
         "openspec",
@@ -229,6 +252,7 @@ def test_parses_the_verified_manifest_bytes_when_the_file_changes_after_read(
 
     assert [component["id"] for component in catalog["components"]] == [
         "github-issues",
+        "jira-cloud",
         "linear",
         "obsidian",
         "openspec",
