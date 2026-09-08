@@ -44,6 +44,14 @@ isolation. Local fixture tests SHALL NOT be represented as live platform verific
 - **WHEN** provider conformance testing is requested
 - **THEN** report unavailable and do not execute the provider on the host
 
+#### Scenario: Offline tracker conformance follows delivered adapters
+- **WHEN** a packaged offline GitHub Issues, Jira Cloud, or Plane target is selected
+- **THEN** it runs the existing real adapter transport and shared lifecycle fixtures,
+  including GitHub Projects behavior and the required packaged test helpers
+- **AND** provider and all aggregates include those fixtures without duplicate paths
+- **AND** missing fixtures fail explicitly and results remain offline-only; selecting
+  an unavailable live scope cannot inherit offline success
+
 ### Requirement: Release bootstrap candidates bind verified artifacts
 Candidate release manifests SHALL bind one engine wheel and hashed dependency constraints
 by their actual SHA256 digests and an explicit HTTPS artifact base URL. Candidate generation

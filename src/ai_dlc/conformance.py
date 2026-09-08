@@ -21,15 +21,28 @@ import httpx
 
 KIT_ROOT = Path("/kit")
 FIXTURE_CONFIG = Path("/fixtures/provider.toml")
+PROVIDER_FIXTURES = [
+    "tests/test_providers.py",
+    "tests/test_github_projects.py",
+    "tests/test_jira_provider.py",
+    "tests/test_jira_workflow.py",
+    "tests/test_plane_provider.py",
+    "tests/test_plane_workflow.py",
+]
 FIXTURE_TARGETS = {
     "linear": (["tests/test_providers.py"], "linear"),
-    "github-issues": (["tests/test_providers.py"], "github_executable"),
+    "github-issues": (
+        ["tests/test_providers.py", "tests/test_github_projects.py"],
+        "github_executable or test_github_projects",
+    ),
+    "jira-cloud": (["tests/test_jira_provider.py", "tests/test_jira_workflow.py"], None),
+    "plane": (["tests/test_plane_provider.py", "tests/test_plane_workflow.py"], None),
     "openspec": (["tests/test_workflow.py"], "openspec or archived_spec or ignored_local_archive"),
     "github": (["tests/test_workflow.py"], "receipt or github_scm or finish_trusts"),
     "scm": (["tests/test_workflow.py"], "receipt or github_scm or finish_trusts"),
-    "providers": (["tests/test_providers.py"], None),
+    "providers": (PROVIDER_FIXTURES, None),
     "workflow": (["tests/test_workflow.py"], None),
-    "all": (["tests/test_providers.py", "tests/test_workflow.py"], None),
+    "all": ([*PROVIDER_FIXTURES, "tests/test_workflow.py"], None),
 }
 UNAVAILABLE_TARGETS = {"github-deployment", "cloudflare", "obsidian", "knowledge"}
 LIVE_TARGETS = {"linear", "github-issues"}
@@ -91,7 +104,9 @@ def fixture_suite(name: str) -> int:
             "no:cacheprovider",
             "-o",
             "pythonpath=",
-            "--import-mode=importlib",
+            # Trusted packaged test directories supply sibling fixture helpers;
+            # pythonpath remains empty so pytest cannot select repository source.
+            "--import-mode=prepend",
             "--basetemp",
             str(scratch / "pytest"),
         ]

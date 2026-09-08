@@ -48,12 +48,21 @@ is performed automatically.
 `ai-dlc-conformance --list` prints implemented scopes. Default fixture targets:
 
 - `linear`: HTTP transport read/error fixtures.
-- `github-issues`: production executable adapter wrapping a fake GitHub CLI.
+- `github-issues`: production executable adapter wrapping a fake GitHub CLI, plus
+  GitHub Projects identity, lifecycle and recovery transport fixtures.
+- `jira-cloud`: Jira HTTP transport and shared WorkService lifecycle/recovery fixtures.
+- `plane`: Plane HTTP transport, durable-intent safety and shared lifecycle/recovery
+  fixtures, including explicitly selected HTTP loopback origins.
 - `openspec`: native archive/provenance fixtures.
 - `github` or `scm`: receipt and authenticated workflow-evidence fixtures.
-- `providers`, `workflow`, or `all`: their complete packaged fixture suites.
+- `providers`: complete packaged adapter suites for Linear, GitHub Issues/Projects,
+  Jira Cloud and Plane (including the Jira/Plane shared-workflow fixtures).
+- `workflow`: the legacy shared workflow suite; `all`: the union of both aggregates.
 
-The result identifies `scope=offline-fixtures`; it does not claim live API correctness.
+Sibling fixture helpers are imported from the trusted packaged tests directory; pytest
+repository-source imports remain disabled. The result identifies `scope=offline-fixtures`;
+it does not claim live API correctness. Jira Cloud and Plane `--live` scopes explicitly
+report unavailable, even after their offline suites pass.
 Missing packaged tests, unknown targets, and unimplemented targets fail explicitly.
 Cloudflare deployment and knowledge live conformance are unavailable, rather than
 reported as passing without tests.
@@ -96,7 +105,8 @@ variables is not sufficient egress enforcement.
 
 ## Verification limits
 
-On Apple silicon, the provider-test image built from the attested official uv 0.9.11
+Historical image evidence predating the expanded Jira/Plane/Projects package:
+on Apple silicon, the provider-test image built from the attested official uv 0.9.11
 image pinned at `sha256:4ffead4f5157cc458bbd7722122f2424c17f45eb4491fe4b34529942166aa355`.
 The digest-addressed result passed the production runner's offline path and all 56
 packaged provider/workflow checks with networking disabled. A live-path probe also
@@ -105,3 +115,7 @@ intentionally invalid credential failed Linear health verification. A successful
 health call still requires an explicit sandbox workspace, reference, and credential.
 Host unit tests continue to cover command selection and error behavior with transport
 fixtures; do not treat the probe as live provider compatibility or mutation conformance.
+
+The expanded package has separate [host fixture execution evidence](../docs/verification/offline-conformance-packaging.md).
+A rebuilt image and its digest-addressed isolation run remain unverified; the historical
+56-test image result above does not qualify the expanded package.
