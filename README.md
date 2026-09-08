@@ -1,21 +1,35 @@
+![AI-DLC — A consistent workflow. Your tools.](docs/assets/ai-dlc-banner.svg)
+
 # AI-DLC
 
-AI-DLC prepares development environments and connects replaceable tools, project
-structure, and workflow guidance so people and agent harnesses can consistently
-improve new and existing products. Versioned profiles and project files carry the
-portable setup; local bindings carry machine-specific choices. Python services
-support the CLI and local MCP server.
+**Portable development setup for people and agent harnesses.**
 
-The harness can use installed tools directly. AI-DLC supplies setup, integration,
-guidance, and verification where useful; repository policy defines required gates.
-UI/UX design is one optional workflow within the broader product-development process.
+AI-DLC scaffolds repositories, connects replaceable tools, and carries shared
+workflow guidance from discovery through verification. Use Claude Code, Codex,
+or Antigravity with consistent project structure, reviewed specifications, and
+checks that travel with the repository.
+
+- **Set up once, carry it across machines.** Versioned profiles and project files
+  describe the environment; credentials and machine-specific settings stay local.
+- **Choose your integrations.** GitHub Issues + Projects for personal work, Jira
+  Cloud for work, or optional Plane. Provider capabilities keep workflow guidance
+  independent of a particular tracker.
+- **Keep development organized.** Connect requirements, specifications, tickets,
+  implementation, and verified completion through the CLI and local MCP server.
+- **Keep knowledge intentional.** Store durable team documentation in the repo and
+  personal notes in Obsidian. Selective Confluence integration remains deferred.
 
 See the [product direction](docs/product-direction.md), [delivery roadmap](docs/roadmap.md),
 [work-computer setup](docs/workflows/work-computer-setup.md), and
 [executor handoff](docs/handoffs/framework-delivery.md). Those pages distinguish
 planned capabilities from the implementation available today.
 
-This checkout is a **v4 implementation candidate**. Native macOS Apple silicon bootstrap, a clean ARM64 devcontainer lifecycle, required checks on Linux x64/ARM64 and macOS Intel, Docker provider isolation, and read-only Linear sandbox health have been exercised. Factory-clean macOS, hosted cloud sessions, remaining live integrations, and release publication still require explicit walkthroughs. See [verification status](docs/release-verification.md). There is no published v4 bootstrap release yet.
+**Install from source today.** The Python CLI, local MCP server, project scaffolding,
+tracker adapters, and harness configuration are implemented. Source checks run on
+Linux x64/ARM64 and macOS Intel, with separate native Apple silicon observations.
+Actual client and provider qualification varies by environment; calibration and
+release verification remain incomplete. There is no published v4 bootstrap release.
+See [verification status](docs/release-verification.md).
 
 ## Prepare this checkout
 
@@ -73,8 +87,8 @@ put values in AI-DLC Git files or commit `.env` files.
 Local CLI and local MCP execution are the current control plane. Hosted or
 cloud execution is a later qualification target, not a feature claim. Obsidian
 create/attach remains a gap; current knowledge commands act only on an explicitly
-selected existing vault. Guided connection supports Linear and GitHub Issues,
-including optional GitHub Projects. See the [GitHub qualification record](docs/verification/github-ticket-workflows.md) for remaining live gates.
+selected existing vault. Guided connection supports GitHub Issues and Projects, Jira Cloud, optional Plane,
+and Linear. See the [GitHub qualification record](docs/verification/github-ticket-workflows.md) for remaining live gates.
 
 MCP exposes reviewed work operations, read-only doctor inspection, and selected
 knowledge operations. Machine enrollment mutations remain CLI-only in this
@@ -106,7 +120,7 @@ The project owns `ai-dlc.toml` (setup, checks, gates and providers), `.mise.toml
 4. Finalize required specifications before review and merge.
 5. `work finish` checks the merged revision's configured CI evidence and any deployment gate before completing the tracker item. Handoff failures remain separately retryable.
 
-Linear, GitHub Issues with optional Projects v2 planning, OpenSpec, GitHub SCM, Obsidian, and optional deployment evidence adapters are included. Configure the destination repository, workflow, target branch and provider settings explicitly. Provider changes affect new work; use reviewed rebind mappings for existing work.
+GitHub Issues with Projects planning, Jira Cloud, Plane, Linear, OpenSpec, GitHub SCM, Obsidian, and optional deployment evidence adapters are included. Configure the destination repository, workflow, target branch and provider settings explicitly. Provider changes affect new work; use reviewed rebind mappings for existing work.
 
 ## Architecture and customization
 

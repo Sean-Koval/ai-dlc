@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="360" viewBox="0 0 1280 360" role="img" aria-labelledby="title desc">
+  <title id="title">AI-DLC — A consistent workflow. Your tools.</title>
+  <desc id="desc">AI-DLC connects portable project setup with a development flow from discover and specify to build and verify.</desc>
+  <defs>
+    <linearGradient id="background" x2="1" y2="1">
+      <stop stop-color="#0b1728"/><stop offset="1" stop-color="#142e40"/>
+    </linearGradient>
+    <linearGradient id="accent"><stop stop-color="#64e8c8"/><stop offset="1" stop-color="#82b6ff"/></linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#9bc5d5" stroke-opacity=".06"/></pattern>
+  </defs>
+  <rect width="1280" height="360" rx="20" fill="url(#background)"/>
+  <rect width="1280" height="360" rx="20" fill="url(#grid)"/>
+  <path d="M64 64h42" stroke="#64e8c8" stroke-width="5" stroke-linecap="round"/>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="64" y="145" font-size="70" font-weight="700" letter-spacing="-3" fill="#f2f7fb">AI-DLC</text>
+    <text x="66" y="191" font-size="25" fill="#c5d8e6">A consistent workflow. Your tools.</text>
+    <text x="66" y="243" font-size="16" fill="#90adbf">Portable setup · Replaceable integrations · Shared guidance</text>
+    <text x="66" y="307" font-size="12" letter-spacing="2.2" fill="#64e8c8">BUILT FOR PEOPLE + AGENT HARNESSES</text>
+    <g transform="translate(722 78)">
+      <path d="M98 48H296V170H98" fill="none" stroke="url(#accent)" stroke-width="2" stroke-opacity=".6"/>
+      <g fill="#132b3c" stroke="#355366">
+        <rect width="164" height="80" rx="12"/>
+        <rect x="220" width="164" height="80" rx="12"/>
+        <rect x="220" y="122" width="164" height="80" rx="12"/>
+        <rect y="122" width="164" height="80" rx="12"/>
+      </g>
+      <g font-size="11" letter-spacing="1.6" fill="#64e8c8">
+        <text x="20" y="27">01</text><text x="240" y="27">02</text>
+        <text x="240" y="149">03</text><text x="20" y="149">04</text>
+      </g>
+      <g font-size="21" fill="#edf5fb">
+        <text x="20" y="57">Discover</text><text x="240" y="57">Specify</text>
+        <text x="240" y="179">Build</text><text x="20" y="179">Verify</text>
+      </g>
+      <g fill="#82b6ff"><circle cx="193" cy="48" r="4"/><circle cx="296" cy="101" r="4"/><circle cx="193" cy="170" r="4"/></g>
+    </g>
+  </g>
+</svg>
