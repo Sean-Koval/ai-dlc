@@ -14,8 +14,17 @@ acceptance = [
     "Review proposed design details before implementation, pass required project checks and OpenSpec validation, and link reviewed PR and merged-revision evidence before finish.",
 ]
 reviewed = true
-requirements = ["DP-01", "DP-02", "DP-03", "DP-04", "DP-05", "DP-06"]
-depends_on = ["spec-delivery-traceability"]
+depends_on = [
+    "spec-delivery-traceability",
+]
+requirements = [
+    "DP-01",
+    "DP-02",
+    "DP-03",
+    "DP-04",
+    "DP-05",
+    "DP-06",
+]
 
 [providers]
 specs = "openspec"
@@ -31,8 +40,8 @@ spec = "openspec/changes/archive/2026-09-08-design-pm-workflow"
 design = "docs/design/design-pm.md"
 roadmap = "docs/roadmap.md"
 tracker = "https://github.com/Sean-Koval/ai-dlc/issues/13"
-
 verification = "docs/verification/design-pm-workflow.md"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/26"
 
 [bindings]
 specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"

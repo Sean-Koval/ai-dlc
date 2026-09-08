@@ -14,8 +14,14 @@ acceptance = [
     "Required checks, source review, and configured merged-revision completion evidence must pass; fixture tests do not establish live qualification.",
 ]
 reviewed = true
-requirements = ["TR-01", "TR-02", "TR-03"]
-depends_on = ["product-shaping-workflow"]
+depends_on = [
+    "product-shaping-workflow",
+]
+requirements = [
+    "TR-01",
+    "TR-02",
+    "TR-03",
+]
 
 [providers]
 specs = "openspec"
@@ -31,6 +37,7 @@ plan = "docs/superpowers/plans/2026-09-05-spec-delivery-traceability.md"
 verification = "docs/verification/spec-delivery-traceability.md"
 roadmap = "docs/roadmap.md"
 tracker = "https://github.com/Sean-Koval/ai-dlc/issues/12"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/26"
 
 [bindings]
 specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"

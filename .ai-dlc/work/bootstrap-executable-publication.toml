@@ -4,8 +4,14 @@ title = "Publish bootstrap executables without in-place overwrite"
 scope = "Bounded discovered-behavior repair under GitHub #14; preserve old executable readers and isolate download staging."
 requires_spec = true
 spec_reason = "Changes observable bootstrap publication and failure retention behavior."
-acceptance = ["BP-01 complete executable publication", "BP-02 independent verified download staging", "BP-03 non-deleting retention and bounded qualification claims"]
+acceptance = [
+    "BP-01 complete executable publication",
+    "BP-02 independent verified download staging",
+    "BP-03 non-deleting retention and bounded qualification claims",
+]
 reviewed = true
+depends_on = []
+requirements = []
 
 [providers]
 specs = "openspec"
@@ -13,15 +19,16 @@ scm = "github"
 knowledge = "obsidian"
 deploy = "none"
 
-[bindings]
-specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
-scm = "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72"
-deploy = "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160"
-knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
-
 [artifacts]
 spec = "openspec/changes/archive/2026-09-08-bootstrap-executable-publication"
 plan = "docs/superpowers/plans/2026-09-07-bootstrap-executable-publication.md"
 verification = "docs/verification/bootstrap-executable-publication.md"
 parent_issue = "https://github.com/Sean-Koval/ai-dlc/issues/14"
 branch = "codex/bootstrap-publication"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/26"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72"
+deploy = "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
