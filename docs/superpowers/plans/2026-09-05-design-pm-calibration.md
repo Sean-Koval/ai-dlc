@@ -10,6 +10,37 @@
 
 **Spec:** No new formal behavior: this ticket verifies its predecessor contracts.
 
+## September 8 local preparation steering
+
+The maintainer authorized local preparation of the missing case corpus, protocol,
+evidence report and focused validation. This child consumes the merged Design PM
+contract at `189913b`; it does not change workflow behavior or require a new formal
+specification. No actual experimental calls, paid runs or human ratings are
+included. Root owns global roadmap/release edits, integration and final delivery.
+
+Prepared: [six original case specifications](../../../agents/evaluations/design-pm/cases.json),
+[three-condition protocol](../../../agents/evaluations/design-pm/protocol.md), and
+[preparation evidence](../../verification/design-pm-evaluation.md). Four calibration
+and two held-out cases retain model-authored proposals and null human labels.
+Candidate stimuli/captures are specified but unbuilt; authoring them is additional
+local work before case freeze. They must not be represented as observed evidence.
+The author has seen the held-out specifications; future experimental sessions must
+not see them before freeze or receive evaluator/construction notes as inputs.
+
+Repetitions, order, resource allocation and score anchors are proposed choices,
+not approved settings or spending. Concrete model/harness/condition manifests,
+human participation, labels and a dedicated budget must be approved before
+execution. Existing `agents/evaluation.toml` remains independent and pending.
+No optional runner or production command is added.
+
+Focused format/reference and participant-projection checks are in
+`tests/test_design_pm_evaluation.py`. They do not assess design quality or actual
+harness isolation. Tasks 1–2 below include future stimulus construction, human
+review and freeze obligations, so drafting their files does not complete those
+tasks. Task 3 remains unstarted. The coordinator requested statics and focused
+verification before review, with one integrated required gate after acceptance
+to avoid concurrent disk-heavy suite runs. Record this partial scope honestly.
+
 ## Global constraints
 
 No paid runs without a declared budget, fabricated human preference, broad client qualification, or claim that distribution tests prove design quality.
