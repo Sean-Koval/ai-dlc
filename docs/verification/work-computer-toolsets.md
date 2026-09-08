@@ -70,3 +70,32 @@ The Plane merge `467de24` was independently accepted: registry and provider code
 match the accepted candidate; richer Plane configuration appears once, trusted
 credential/Obsidian fields remain, and the explicit unavailable-lifecycle fixture
 preserves its refusal scenario. The archived Jira specification was retained.
+
+## Clean combined source verification
+
+At clean `4064bd9a5ca34efc4b35d9fecde7d58c194e744f`, all five required checks
+passed locally: **1,772 tests, 476.71 seconds**. The
+[local receipt](work-computer-toolsets/local-checks-4064bd9.json) identifies the
+exact source. An earlier attempt found one import-order error in the merged
+unavailable-lifecycle regression; its test phase was intentionally interrupted,
+the import was corrected and all five checks were rerun. The failed/interrupted
+attempt remains in the ignored execution evidence, not counted as passing.
+
+The existing isolated Ubuntu24.04 ARM64 container was updated to the same clean
+revision through Git bundles. Source bootstrap completed with target devcontainer;
+all five required checks passed: **1,771 tests and one platform skip,120.43seconds**.
+The [container receipt](work-computer-toolsets/container-checks-4064bd9.json)
+records that exact clean revision and target. The earlier container and its
+isolated virtual-environment volume were reused. This is current-source container
+verification, not factory-clean setup, an actual hosted cloud session or native
+Claude/Antigravity recognition.
+
+A separate credential-free CLI walkthrough adopted a Python work repository with
+Jira, Obsidian, Claude Code and Antigravity; reviewed/applied one shared local MCP
+connection, rendered/checksummed both clients and preserved three authored
+sentinels. Ten skills and the local server definition appeared in each client.
+No native app or MCP process was launched. Missing Jira settings were reported,
+and connection refused before service access. It exposed two remaining onboarding
+gaps: default GitHub SCM/none-deploy catalog recognition and a concrete machine
+vault-binding route. Those are under bounded remediation before final delivery;
+passing tests above do not erase the walkthrough findings.
