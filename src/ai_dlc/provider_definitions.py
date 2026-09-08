@@ -88,7 +88,7 @@ def _plane_configure(discovery, selected):
 DEFINITIONS = {
     "github": ProviderDefinition(
         "github",
-        ("scm",),
+        ("scm", "deploy"),
         runtime_requirements=(
             RuntimeRequirement("scm.repository", r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", "owner/repo"),
         ),

@@ -18,6 +18,15 @@ from typing import Any
 
 from ai_dlc.contracts import manifest, validate_request, validate_response
 
+# Explicit extension transports implemented by Registry.get; not vendor aliases.
+EXTENSION_PROVIDER_KINDS = frozenset({"executable", "python"})
+PROVIDER_KIND_ALIASES = {
+    "github-scm": "github",
+    "github-deployment": "github",
+    "cloudflare": "github",
+    "knowledge": "obsidian",
+}
+
 
 def verify_artifact(path, expected):
     p = Path(path)
@@ -223,15 +232,16 @@ class Registry:
             return self.cache[id]
         cfg = self.config.get("providers", {}).get(id, {})
         kind = cfg.get("kind", cfg.get("type", id))
+        kind = PROVIDER_KIND_ALIASES.get(kind, kind)
         if kind == "openspec":
             from .openspec import OpenSpecProvider
 
             provider = OpenSpecProvider(self.root, environ=self.environ)
-        elif kind in {"github", "github-scm", "github-deployment", "cloudflare"}:
+        elif kind == "github":
             from .scm import GitHubSCM
 
             provider = GitHubSCM(self.root, self.config, environ=self.environ)
-        elif kind in {"obsidian", "knowledge"}:
+        elif kind == "obsidian":
             from ai_dlc.knowledge import Knowledge
 
             vault = self.config.get("paths", {}).get("vault")

@@ -77,3 +77,34 @@ warnings or information messages. Source agents render --check and the generated
 asset checker passed after owned guidance regeneration. Strict validation of the
 new onboarding-readiness change passed. Only evidence/task metadata was finalized
 after these checks; no full integrated success is claimed.
+
+## Independent review repair
+
+Review of facf25b found that an explicit component override could hide an
+incompatible or unknown runtime kind and its root requirements. The repair checks
+both trusted definitions, retains applicable requirements, and blocks mismatches.
+Explicit executable/Python extensions can borrow active built-in guidance with
+its requirements; digest-verified custom manifests retain metadata-only behavior.
+Neither extension loading nor live qualification occurs during readiness. Active
+extensions cannot borrow inactive deployment identity.
+
+The first override/extension regression run produced six behavior failures and
+five compatibility passes; two additional inactive-identity cases also failed
+before the repair. Canonical alias coverage exposed the missing knowledge-vault
+check. The initial GitHub alias test had an incorrect Registry constructor call;
+after correcting that test, it exposed misplaced alias normalization in the
+in-progress refactor. Normalization now lives in Registry.get and readiness uses
+the same Registry-owned mapping. Actual GitHubSCM construction passes, existing
+GitHub deployment aliases retain their runtime role, and the packaged GitHub
+component remains SCM-only. These checks do not qualify deployment.
+
+The repaired candidate passed **157 affected tests in 2.47 seconds** across
+onboarding readiness, readiness, components, credential requirements, credentials
+and providers. Full builds and the whole test suite remain coordinator-owned;
+there were no live calls or native-client claims.
+
+Final repository-wide format and lint checks passed. Type validation passed with
+zero errors, warnings or information messages after making the optional-kind
+lookup explicit. Source render/check, generated assets, strict child validation
+and whitespace checks passed. Independent re-review and integrated checks remain
+pending; only this evidence paragraph changed after verification.

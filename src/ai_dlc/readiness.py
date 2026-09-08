@@ -132,24 +132,59 @@ def _tool_checks(
     return checks
 
 
-def _component_definition(component: dict, config: dict):
+def _component_definitions(component: dict, config: dict):
     from ai_dlc.provider_definitions import DEFINITIONS
+    from ai_dlc.providers import EXTENSION_PROVIDER_KINDS, PROVIDER_KIND_ALIASES
 
     settings = config.get("providers", {}).get(component["provider"], {})
     kind = settings.get("kind", settings.get("type", component["provider"]))
-    definition = DEFINITIONS.get(kind)
-    if definition is None or component["role"] not in definition.roles:
-        return None
-    return definition
+    kind = PROVIDER_KIND_ALIASES.get(kind, kind)
+    runtime = DEFINITIONS.get(kind) if isinstance(kind, str) else None
+    selected = DEFINITIONS.get(component["id"])
+    problem = None
+    if runtime is not None and component["role"] not in runtime.roles:
+        problem = "runtime kind is incompatible with the selected role"
+    elif selected is not None and runtime is None and kind not in EXTENSION_PROVIDER_KINDS:
+        problem = "unknown runtime kind cannot borrow a trusted built-in component"
+    elif selected is not None and selected.inactive and runtime != selected:
+        problem = "runtime kind does not identify the selected inactive capability"
+    definitions = []
+    for definition in (selected, runtime):
+        if (
+            definition is not None
+            and component["role"] in definition.roles
+            and definition not in definitions
+        ):
+            definitions.append(definition)
+    return definitions, problem
 
 
 def _definition_checks(component: dict, config: dict, *, headless: bool) -> list[dict[str, str]]:
     """Trusted bounded requirements; no executable/custom schema extensions."""
-    definition = _component_definition(component, config)
-    if definition is None:
-        return []
+    definitions, problem = _component_definitions(component, config)
     checks = []
-    if definition.inactive:
+    if problem:
+        checks.append(
+            _check(
+                component["id"],
+                "configuration",
+                "blocked",
+                problem,
+                f"Review providers.{component['provider']}.kind and component for the selected role.",
+            )
+        )
+    for definition in definitions:
+        checks.extend(
+            _trusted_definition_checks(
+                definition, component, config, headless=headless, compatible=problem is None
+            )
+        )
+    return checks
+
+
+def _trusted_definition_checks(definition, component, config, *, headless, compatible):
+    checks = []
+    if definition.inactive and compatible:
         checks.append(
             _check(
                 component["id"],
@@ -393,8 +428,8 @@ def inspect_readiness(
                     )
                 )
 
-        definition = _component_definition(component, config)
-        if definition is None or not definition.inactive:
+        definitions, problem = _component_definitions(component, config)
+        if problem or not any(definition.inactive for definition in definitions):
             checks.append(
                 _check(
                     component["id"],
