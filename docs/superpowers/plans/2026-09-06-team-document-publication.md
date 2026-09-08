@@ -1,5 +1,11 @@
 # Team Document Publication Implementation Plan
 
+Current scope (September 7): deferred under #22 pending the actual custom server.
+This change owns documents-role/scaffold/component/native admission and DP-07
+selective knowledge guidance formerly assigned to #19. Reuse common connection
+primitives when available; do not make current tracker/native-client onboarding
+depend on this deferred integration.
+
 Deferred by September 7 maintainer direction. The custom server is on the work
 laptop and will be shared later. Keep this draft for future interface review;
 none of its tasks or access requirements block ticket-management delivery.

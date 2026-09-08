@@ -50,7 +50,7 @@
         "project_status": "In Progress"
       },
       "planning_status": "In progress \u2014 review blocked",
-      "spec": "openspec/changes/portable-workflow-bundles",
+      "spec": "openspec/changes/archive/2026-09-07-portable-workflow-bundles",
       "plan": "docs/superpowers/plans/2026-09-05-portable-workflow-bundles.md",
       "depends_on": [
         "component-capability-contract",
@@ -75,7 +75,7 @@
         "project_status": "Todo"
       },
       "planning_status": "Backlog",
-      "spec": "openspec/changes/product-shaping-workflow",
+      "spec": "openspec/changes/archive/2026-09-07-product-shaping-workflow",
       "plan": "docs/superpowers/plans/2026-09-05-product-shaping-workflow.md",
       "depends_on": [],
       "verified": "issue title/body/identity/open state read after creation",

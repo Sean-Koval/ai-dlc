@@ -845,6 +845,30 @@ def connect_linear_provider(
         if not any(supplied):
             return discovery
         selection = {key: value for key, value in selections.items() if value is not None}
+        from ai_dlc.connections import choose_named
+
+        organization_row = choose_named(
+            [discovery["organization"]],
+            selection["organization_id"],
+            ("id", "name", "urlKey"),
+            "Linear organization",
+        )
+        team_row = choose_named(
+            discovery["teams"],
+            selection["team_id"],
+            ("id", "name", "key"),
+            "Linear team",
+        )
+        selection = {
+            "organization_id": organization_row["id"],
+            "team_id": team_row["id"],
+            **{
+                key: choose_named(
+                    team_row["states"], selection[key], ("id", "name"), "Linear state"
+                )["id"]
+                for key in ("in_progress", "closed")
+            },
+        }
         plan = plan_linear_connection(source_config, discovery, selection)
         result = {"provider": "linear", "status": "planned", "plan": plan}
         if plan_file is not None:
@@ -858,42 +882,7 @@ def connect_linear_provider(
 
 
 def connect_provider(root: Path, *, name: str, environ: Mapping[str, str], **options) -> dict:
-    """Dispatch guided connection through explicit adapter handlers."""
-    from ai_dlc.config import resolve_runtime
-    from ai_dlc.github_onboarding import connect_github_provider
+    """Compatibility entry point for the common connection service."""
+    from ai_dlc.connections import connect_provider as connect
 
-    handlers = {
-        "linear": (connect_linear_provider, {"organization", "team", "in_progress", "closed"}),
-        "github-issues": (
-            connect_github_provider,
-            {
-                "host",
-                "repository",
-                "project",
-                "issues_only",
-                "status_field",
-                "open",
-                "in_progress",
-                "closed",
-            },
-        ),
-    }
-    config = resolve_runtime(root, environ=environ).values
-    settings = config.get("providers", {}).get(name, {})
-    kind = settings.get("kind", settings.get("type", name))
-    if name == "linear":
-        _validate_linear_settings(settings)
-    if name in handlers and kind != name:
-        raise ValueError(f"Configured provider {name} does not use its named adapter")
-    if kind not in handlers:
-        raise ValueError(f"Provider connection is not supported: {name}")
-    handler, selections = handlers[kind]
-    if handler is connect_linear_provider and name != "linear":
-        raise ValueError("Linear alias guided setup is unsupported; configure the alias explicitly")
-    accepted = selections | {"plan_file", "apply"}
-    if any(value is not None and key not in accepted for key, value in options.items()):
-        raise ValueError(f"Selection flags do not apply to {kind}")
-    arguments = {key: value for key, value in options.items() if key in accepted}
-    if handler is connect_github_provider:
-        arguments["alias"] = name
-    return handler(root, environ=environ, **arguments)
+    return connect(root, name=name, environ=environ, **options)

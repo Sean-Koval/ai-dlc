@@ -17,6 +17,7 @@ app = typer.Typer(no_args_is_help=True, help="Portable development for people an
 project = typer.Typer(no_args_is_help=True)
 work = typer.Typer(no_args_is_help=True)
 agents = typer.Typer(no_args_is_help=True)
+agent_bundle = typer.Typer(no_args_is_help=True)
 profile = typer.Typer(no_args_is_help=True)
 setup = typer.Typer(no_args_is_help=True)
 machine = typer.Typer(no_args_is_help=True)
@@ -35,6 +36,7 @@ for name, group in [
     ("mcp", mcp),
 ]:
     app.add_typer(group, name=name)
+agents.add_typer(agent_bundle, name="bundle")
 
 
 def emit(value):
@@ -279,6 +281,40 @@ def agents_render(
     emit(result)
     if check and not result["clean"]:
         raise typer.Exit(1)
+
+
+@agent_bundle.command("import")
+def agents_bundle_import(
+    source: str,
+    ref: Annotated[str, typer.Option("--ref")],
+    bundle_id: Annotated[str, typer.Option("--id")],
+    root: Annotated[Path, typer.Option("--root")] = Path("."),
+    apply: Annotated[bool, typer.Option("--apply")] = False,
+    expected_commit: Annotated[str | None, typer.Option("--expected-commit")] = None,
+):
+    """Preview or vendor one pinned portable workflow bundle."""
+    from ai_dlc.workflow_bundles import import_bundle, resolve_bundle, validate_bundle_project
+
+    try:
+        if apply and expected_commit is None:
+            raise ValueError("bundle apply requires --expected-commit")
+        if not apply and expected_commit is not None:
+            raise ValueError("bundle --expected-commit requires --apply")
+        root = validate_bundle_project(root)
+        with resolve_bundle(source, ref, bundle_id, environ=os.environ) as candidate:
+            result = import_bundle(
+                root,
+                candidate,
+                apply=apply,
+                expected_commit=expected_commit,
+            )
+    except (OSError, RuntimeError, TypeError, ValueError) as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        for note in getattr(exc, "__notes__", ()):
+            if note.startswith("Bundle import "):
+                typer.echo(note, err=True)
+        raise typer.Exit(2) from None
+    emit(result)
 
 
 @profile.command("show")
@@ -535,6 +571,7 @@ def provider_connect(
     closed: Annotated[str | None, typer.Option("--closed")] = None,
     plan_file: Annotated[Path | None, typer.Option("--plan-file")] = None,
     apply: Annotated[bool, typer.Option("--apply")] = False,
+    select: Annotated[list[str] | None, typer.Option("--select")] = None,
 ):
     """Discover or explicitly configure a supported project provider."""
     from ai_dlc.provider_onboarding import connect_provider
@@ -543,6 +580,7 @@ def provider_connect(
         result = connect_provider(
             root,
             name=name,
+            select=select,
             host=host,
             repository=repository,
             project=project,

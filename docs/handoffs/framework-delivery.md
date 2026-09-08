@@ -1,5 +1,13 @@
 # Framework delivery: executor handoff
 
+Current completion: GitHub #18 finished through AI-DLC at merged `631d10a`; all five
+merged-revision receipts verified. The next integrated candidate on
+`codex/work-computer-onboarding` includes reviewed #10 bundles, #11 shaping and
+#19 native/shared-connection children. Clean `275e0b3` passed all required checks
+with 1,408 tests. #10 is now locally bound to GitHub through reviewed migration;
+its own finish and #11 finish await PR/merged-CI evidence. #12, toolset/native
+composition, Jira and bootstrap reliability are active separate streams.
+
 ## Current authority — September 7
 
 Start with [current roadmap](../roadmap.md),
@@ -8,18 +16,19 @@ and [GitHub Project](https://github.com/users/Sean-Koval/projects/2). GitHub own
 priority/status. Project authorization, linking and eight local mappings are
 complete in PR #23. The current goal is work-computer adoption with Claude and
 Antigravity, Jira Cloud for new work, and private Obsidian notes. Antigravity
-requires explicit onboarding support; Confluence remains deferred.
+project files are implemented locally; actual-client qualification remains open.
+Confluence remains deferred.
 
 The historical executor notes below preserve the separate SAN-12 branch and
 prior evidence; their old Linear-first sequence/access assumptions do not define
-the next task. #10 cleanup and #11 shaping are running in isolated worktrees;
-root coordinates GitHub closeout and native onboarding.
+the next task. Follow the current candidate and issue matrix above; do not restart
+completed predecessors or revive old cleanup instructions.
 
 
 Objective: deliver the [approved direction](../product-direction.md) using the
 dependency-ordered [roadmap](../roadmap.md). UI/UX is one optional part.
 
-## Current state
+## Historical September 5 state
 
 - Planning branch: `codex/design-pm-roadmap`.
 - Planning review: [PR #5](https://github.com/Sean-Koval/ai-dlc/pull/5), draft at
@@ -32,7 +41,7 @@ dependency-ordered [roadmap](../roadmap.md). UI/UX is one optional part.
   Linear health do not establish complete machine enrollment.
 - See the planning ticket/PR for the final commit and fresh validation evidence.
 
-## Start here
+## Historical executor procedure
 
 1. Read `AGENTS.md`, `ai-dlc.toml`, product direction, and the master plan.
 2. Ensure the planning branch is reviewed and integrated before branching a feature

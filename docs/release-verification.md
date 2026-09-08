@@ -87,7 +87,10 @@ direct close/reopen/reconciliation and the real refusal to finish an unmerged PR
 The disposable issue was closed and removed from the board. These operations do
 not establish a successful gated finish or crash-atomic recovery. The two behavior
 specifications are archived locally and promoted to canonical specs; final archive
-review, PR integration and exact merged-revision CI/work finish are still pending.
+review passed, PR #23 merged631d10a, and all five target-branch receipts were
+authenticated before AI-DLC work finish completed #18 from a clean clone. That
+clone used the existing provisioned host; factory-clean and actual-client
+qualification remain separate.
 
 See the [detailed qualification record](verification/github-ticket-workflows.md).
 Linear inventory reconciliation is deferred by the maintainer. Jira/Plane,

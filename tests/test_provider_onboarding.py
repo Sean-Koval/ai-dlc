@@ -1037,6 +1037,46 @@ def test_provider_connect_refuses_non_linear_effective_kind_before_client_or_cre
     assert config_path.read_bytes() == before
 
 
+@pytest.mark.parametrize("team, succeeds", [("AID", True), ("AI-DLC", False)])
+def test_generic_linear_names_resolve_to_canonical_ids_or_refuse_ambiguity(
+    tmp_path, monkeypatch, team, succeeds
+):
+    from ai_dlc.cli import app
+
+    root = tmp_path / "project"
+    config = _write_connect_project(root)
+    _stub_cli_discovery(monkeypatch)
+    before = config.read_bytes()
+    plan = root / ".ai-dlc/local/named.json"
+    result = CliRunner().invoke(
+        app,
+        [
+            "provider",
+            "connect",
+            "linear",
+            "--root",
+            str(root),
+            "--select",
+            "organization=Sandbox",
+            "--select",
+            f"team={team}",
+            "--select",
+            "in-progress=In Progress",
+            "--select",
+            "closed=Done",
+            "--plan-file",
+            str(plan),
+        ],
+    )
+    assert (result.exit_code == 0) is succeeds, result.output
+    if succeeds:
+        assert json.loads(plan.read_text())["selected"] == _selection()
+    else:
+        assert "unambiguous" in result.output
+        assert not plan.exists()
+    assert config.read_bytes() == before
+
+
 def test_provider_connect_preview_can_save_only_the_non_secret_reviewed_plan(tmp_path, monkeypatch):
     """Saving the resolved provider settings could persist the environment credential."""
     from ai_dlc.cli import app

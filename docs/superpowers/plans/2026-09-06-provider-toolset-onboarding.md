@@ -1,5 +1,13 @@
 # Provider Toolset Onboarding Implementation Plan
 
+Current steering (September 7): follow the [current roadmap](../../roadmap.md) and GitHub issues.
+GitHub Issues/Projects setup and capability lifecycle are delivered in PR #23.
+Work uses Jira Cloud for new work, not migration; Plane is optional. Explicit
+Claude/Antigravity native onboarding is current #19 scope. Confluence/custom MCP
+and selective shared-knowledge guidance are deferred to #22. Later detail below
+applies only where consistent with this steering and the current child specs.
+
+
 > **For agentic workers:** Use superpowers:executing-plans after design review. Do not start later tasks by guessing an earlier interface.
 
 **Goal:** Make provider selection, connection and native harness setup reusable.

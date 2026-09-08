@@ -11,8 +11,11 @@ flowchart TD
     I[Inventory] --> P[Preview adoption]
     P --> A[Apply reviewed files]
     A --> C[Characterize current behavior]
-    C --> D[Design incremental change]
-    D --> S[Specify, publish, start]
+    C --> D[Shape compatible incremental outcome]
+    D --> J{Proceed, investigate or stop}
+    J -->|Investigate| C
+    J -->|Stop| X[Record reason]
+    J -->|Proceed| S[Specify, publish, start]
     S --> M[Implement and migrate]
     M --> V[Regression checks, review, merge, finish]
 ```
@@ -26,8 +29,17 @@ flowchart TD
    creates application source for an existing project.
 4. Separate application-owned, template-managed, provider-owned, and
    machine-local state. Keep credentials and caches out of portable files.
-5. Design the incremental transition from current behavior. State compatibility,
-   migration, rollout, observability, recovery, and rollback requirements.
+5. Use discovery and the [product brief](../templates/product-brief.md) to inspect
+   behavior, tests and consumers. Separate evidence, actual decisions and hypotheses.
+   Follow the [brownfield example](../examples/product-shaping/brownfield.md).
+   Compare options, including keeping current behavior, by impact, confidence,
+   effort and dependencies. State compatibility, migration, rollout and recovery.
+   Keep stable OUT-001/RQ-001 IDs in one canonical brief and end with proceed,
+   investigate or stop plus reasons. Resolve contradictions with their owner;
+   an additive alternative is a proposal until decided. Preserve default contracts.
+   Proceed within existing authorization when material constraints are resolved;
+   otherwise bound the investigation. UI and a larger PRD are optional. Fixture
+   success is not live qualification. Discovery does not authorize publication.
 6. Record the specification decision. Use the configured provider or local
    OpenSpec compatibility fallback when formal behavior is required; otherwise
    record `requires_spec = false` and its reviewed reason.

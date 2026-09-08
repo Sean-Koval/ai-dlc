@@ -1,5 +1,13 @@
 # Selectable provider toolsets
 
+Current steering (September 7): follow the [current roadmap](../roadmap.md) and GitHub issues.
+GitHub Issues/Projects setup and capability lifecycle are delivered in PR #23.
+Work uses Jira Cloud for new work, not migration; Plane is optional. Explicit
+Claude/Antigravity native onboarding is current #19 scope. Confluence/custom MCP
+and selective shared-knowledge guidance are deferred to #22. Later detail below
+applies only where consistent with this steering and the current child specs.
+
+
 Implementation authorized: GitHub Issues **and Projects** are the selected first
 personal toolset. Plane remains an optional later provider; no Plane installation
 is needed to use GitHub. Earlier undecided-destination and Projects-exclusion

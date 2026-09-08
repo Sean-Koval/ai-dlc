@@ -167,11 +167,15 @@ def inspect_readiness(
     if isinstance(clients, str):
         clients = [clients]
     if clients:
-        from ai_dlc.agents import provider_guidance_ready, provider_index
+        from ai_dlc.agents import (
+            CLIENT_SKILL_DIRECTORIES,
+            provider_guidance_ready,
+            provider_index,
+        )
 
         index, copies = provider_index(resolved)
         for client in clients:
-            supported = client in {"codex", "claude-code"}
+            supported = client in CLIENT_SKILL_DIRECTORIES
             delivered = supported and provider_guidance_ready(root, index, copies, client)
             checks.append(
                 _check(
@@ -191,10 +195,34 @@ def inspect_readiness(
                         "Declare the selected providers in shared ai-dlc.toml, then run "
                         "ai-dlc agents render --apply after resolving authored-file conflicts."
                         if supported
-                        else "Select an implemented agent client: codex or claude-code."
+                        else "Select an implemented agent client: codex, claude-code or antigravity."
                     ),
                 )
             )
+            if client == "antigravity":
+                checks.append(
+                    _check(
+                        client,
+                        "client-recognition",
+                        "unverified",
+                        "Offline files do not establish native rule activation, skill recognition or MCP login.",
+                        "Record the installed edition/version; activate the project rule as Always On, "
+                        "verify selected skills and use the native MCP manager to authenticate and inspect tools.",
+                    )
+                )
+
+    from ai_dlc.agents import inspect_bundle_guidance
+
+    for bundle in inspect_bundle_guidance(root, config, clients):
+        checks.append(
+            _check(
+                f"bundle:{bundle['bundle_id']}",
+                "guidance",
+                bundle["status"],
+                bundle["reason"],
+                bundle["next_action"],
+            )
+        )
     for component in resolved["components"]:
         checks.extend(_tool_checks(component, modules, headless=headless, probe=probe))
 

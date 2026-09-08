@@ -4,7 +4,7 @@ Owner: AI-DLC project maintainer
 Status: planned optional UI/UX workflow within milestone M2; implementation and live evaluation pending
 Updated: 2026-09-05
 
-This proposal consumes the broader [product-shaping workflow](../../openspec/changes/product-shaping-workflow/proposal.md)
+This proposal consumes the broader [product-shaping workflow](../../openspec/specs/product-shaping-workflow/spec.md)
 and [delivery traceability](../../openspec/changes/spec-delivery-traceability/proposal.md).
 The [framework direction](../product-direction.md) owns the product strategy;
 this document owns UI/UX-specific rationale and example evaluation criteria.

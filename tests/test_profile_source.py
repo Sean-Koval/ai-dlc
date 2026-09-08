@@ -489,6 +489,72 @@ def test_requested_ref_is_passed_as_data_without_shell_interpolation(tmp_path: P
     assert cache_snapshot(paths) == {}
 
 
+def test_git_resolution_rejects_an_invalid_advertised_object_id_before_fetch(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Would fail if malformed advertised identity reached the fetch boundary."""
+    repository = tmp_path / "checkout"
+    repository.mkdir()
+    calls: list[tuple[str, ...]] = []
+
+    def git_result(_repository: Path, *arguments: str, environ=None) -> str:
+        del environ
+        calls.append(arguments)
+        if arguments[0] == "ls-remote":
+            return "not-an-object-id\trefs/heads/main"
+        return ""
+
+    monkeypatch.setattr(profile_source, "_run_git", git_result)
+
+    with pytest.raises(RuntimeError, match="advertised object"):
+        profile_source.resolve_git_source(repository, "https://example.test/repo.git", "main")
+
+    assert not any(arguments[0] == "fetch" for arguments in calls)
+
+
+def test_git_resolution_rejects_a_fetched_object_different_from_advertised_identity(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Would fail if a ref move between advertisement and fetch silently changed reviewed bytes."""
+    repository = tmp_path / "checkout"
+    repository.mkdir()
+    advertised = "a" * 40
+    fetched = "b" * 40
+
+    def git_result(_repository: Path, *arguments: str, environ=None) -> str:
+        del environ
+        if arguments[0] == "ls-remote":
+            return f"{advertised}\trefs/heads/main"
+        if arguments[:3] == ("rev-parse", "--verify", "FETCH_HEAD"):
+            return fetched
+        if arguments[:3] == ("rev-parse", "--verify", "FETCH_HEAD^{commit}"):
+            raise AssertionError("mismatched object was peeled as a commit")
+        return ""
+
+    monkeypatch.setattr(profile_source, "_run_git", git_result)
+
+    with pytest.raises(RuntimeError, match="advertised object"):
+        profile_source.resolve_git_source(repository, "https://example.test/repo.git", "main")
+
+
+def test_git_resolution_accepts_an_annotated_tag_and_returns_its_peeled_commit(tmp_path: Path):
+    """Would fail if advertised tag-object verification confused it with the commit pin."""
+    repository, _ = disposable_git_repository(tmp_path)
+    git(repository, "tag", "-a", "v1", "-m", "release")
+    advertised = git(repository, "rev-parse", "refs/tags/v1")
+    commit = git(repository, "rev-parse", "refs/tags/v1^{commit}")
+    checkout = tmp_path / "checkout"
+    checkout.mkdir()
+
+    resolved, portable = profile_source.resolve_git_source(
+        checkout, str(repository), "refs/tags/v1"
+    )
+
+    assert advertised != commit
+    assert resolved == commit
+    assert portable is False
+
+
 def test_cached_profile_verifies_offline_after_source_disappears(tmp_path: Path):
     repository, _ = disposable_git_repository(tmp_path)
     paths = enrollment_paths(tmp_path)
@@ -833,3 +899,29 @@ def test_supported_remote_and_local_grammars_remain_distinct(source: str, portab
     """Would fail if strict rejection removed a supported URL, SCP, or local path."""
     assert source_portability(source) is portable
     assert redact_source(source) == source
+
+
+def test_disposable_source_fetch_does_not_start_automatic_maintenance(tmp_path):
+    """A detached Git writer must not outlive the disposable source operation."""
+    import json
+
+    repository, commit = disposable_git_repository(tmp_path)
+    trace = tmp_path / "git-trace.jsonl"
+    environment = {
+        **os.environ,
+        "GIT_TRACE2_EVENT": str(trace),
+        "GIT_CONFIG_COUNT": "1",
+        "GIT_CONFIG_KEY_0": "maintenance.auto",
+        "GIT_CONFIG_VALUE_0": "true",
+    }
+    candidate = resolve_profile_source(
+        str(repository), "test-development", "main", enrollment_paths(tmp_path), environ=environment
+    )
+    assert candidate.resolved_commit == commit
+    events = [json.loads(line) for line in trace.read_text().splitlines()]
+    assert any(event.get("event") == "child_start" for event in events)
+    assert not [
+        event
+        for event in events
+        if event.get("event") == "child_start" and "maintenance" in event.get("argv", [])
+    ]

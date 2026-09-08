@@ -32,12 +32,15 @@ linked to `Sean-Koval/ai-dlc`; authorization and activation are complete.
 
 Clean candidate `29b67b3` passed all required checks with 1,138 tests. Candidate
 `332f5b0` passed all five platform CI jobs. Live GitHub setup, bounded lifecycle
-recovery and local migration have separate evidence. PR integration and exact
-merged-revision finish remain distinct requirements.
+recovery and local migration have separate evidence. PR #23 is now merged at `631d10a`; all five exact merged-revision receipts
+passed, and AI-DLC work finish completed #18 (native completed and Project Done).
 
-Claude Code and Codex have implemented adapters. Antigravity needs an explicit
-adapter/onboarding child under #19, with current documented paths/transports and
-version-specific live qualification. The work computer's OS/architecture and
+The current onboarding candidate includes native Claude Code, Codex and
+Antigravity project adapters, reviewed shared connection plans, portable bundles
+and product shaping. Clean integrated revision `275e0b3` passed all five required
+checks with 1,408 tests. PR/merged-revision delivery remains separate from these
+local checks. Native client recognition, authentication and version-specific live
+qualification are not established by file rendering. The work computer's OS/architecture and
 installed Claude/Antigravity versions must be recorded before claiming that
 machine is qualified. Existing Markdown skills alone do not prove client support.
 
@@ -48,10 +51,10 @@ dependency order, with TDD, independent review and the required checks.
 
 | Issue | Deliverable | Dependencies / completion boundary |
 |---|---|---|
-| [#18](https://github.com/Sean-Koval/ai-dlc/issues/18) | Finish GitHub workflow foundation and PR #23 | Implemented/reviewed/live activated; archive, integrate, verify merged CI and finish through AI-DLC |
-| [#10](https://github.com/Sean-Koval/ai-dlc/issues/10) | Preserve authored files during workflow-bundle cleanup | Existing isolated implementation; repair remaining successful-cleanup race, then review/integrate/finish |
-| [#11](https://github.com/Sean-Koval/ai-dlc/issues/11) | Greenfield/brownfield product shaping | Independent of #10; current PS-01–03 spec, portable skills/templates/examples |
-| [#19](https://github.com/Sean-Koval/ai-dlc/issues/19) | Reusable onboarding and native Claude/Antigravity setup | Build on delivered GitHub setup; separate transport/account identity and scoped readiness; explicit Antigravity child |
+| [#18](https://github.com/Sean-Koval/ai-dlc/issues/18) | GitHub workflow foundation and PR #23 | Completed through AI-DLC finish at merged631d10a with all five receipts |
+| [#10](https://github.com/Sean-Koval/ai-dlc/issues/10) | Preserve authored files during workflow-bundle cleanup | Non-deleting retention and importer recovery repairs independently accepted; integrated candidate passes checks, archive/PR/merged-CI/finish pending |
+| [#11](https://github.com/Sean-Koval/ai-dlc/issues/11) | Greenfield/brownfield product shaping | Reviewed PS-01–03 skills/templates/examples integrated and specification archived; PR/merged-CI/finish pending |
+| [#19](https://github.com/Sean-Koval/ai-dlc/issues/19) | Reusable onboarding and native Claude/Antigravity setup | Common connection and native-client children reviewed/integrated; selected toolset and exact native connection composition remain active |
 | [#12](https://github.com/Sean-Koval/ai-dlc/issues/12) | Requirements-to-spec-to-ticket traceability and dependency guards | #11's reviewed artifacts; preserve authored issue content and provider-neutral workflows |
 | [#20](https://github.com/Sean-Koval/ai-dlc/issues/20) | Jira Cloud new-work adapter/setup; optional Plane | Common connection contract from #19; actual required fields/transitions; no Jira migration |
 | [#14](https://github.com/Sean-Koval/ai-dlc/issues/14) | Portable setup, substitution and fresh-session handoff qualification | #10/#12 and applicable onboarding; distinguish ordinary clone, clean-machine, container and actual client evidence |

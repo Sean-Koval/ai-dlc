@@ -49,3 +49,18 @@ Work finish and private note operations SHALL retain existing behavior when publ
 #### Scenario: A tracked work item finishes
 - **WHEN** its existing completion gates pass
 - **THEN** no Confluence page is created or updated merely because the documents role is configured
+
+### Requirement: DP-07 Selective shared-knowledge guidance
+When Confluence and Obsidian are selected, generated harness guidance SHALL distinguish private working notes from shared team sources, direct agents to use relevant page links and reads on request, and SHALL NOT prescribe automatic site or vault mirroring.
+
+#### Scenario: A user needs context from a team guide
+- **WHEN** guidance is generated for the selected document and knowledge tools
+- **THEN** it describes reading relevant pages without implicitly creating local copies, and saving a requested local summary with source URL, available version and retrieval date
+
+#### Scenario: A user refreshes a saved summary
+- **WHEN** generated guidance describes refreshing local derived context
+- **THEN** it requires explicit refresh, preservation of personal annotations and honest stale or inaccessible-source reporting
+
+#### Scenario: Native tools have broader permissions
+- **WHEN** selected page or space guidance accompanies a native connection
+- **THEN** setup distinguishes relevance guidance from enforced access controls and reports native-tool qualification separately from generated-instruction checks
