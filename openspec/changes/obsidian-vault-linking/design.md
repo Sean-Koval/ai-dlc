@@ -1,48 +1,59 @@
-## Context
+## Context and decision
 
-AI-DLC currently treats the Obsidian vault as an isolated filesystem location configured via `paths.vault`. Note operations implemented in `src/ai_dlc/knowledge.py` use `os.walk(followlinks=False)` and validate every path via `inside()` in `src/ai_dlc/files.py`. Because `inside()` checks `path.resolve()` against the base directory, symlinked repositories inside `<vault>/Projects/` fail validation and are omitted from knowledge searches. Furthermore, creating project documentation symlinks is currently an out-of-band manual process.
+PR #28 introduced an opt-in documentation preset and vault link. Review found
+unbounded symlink access, unsafe writes, adoption side effects after conflicts,
+and a competing specification location. The maintainer authorized repair and a
+single-source documentation model on September 8, 2026.
 
-See `proposal.md` for background motivation and `specs/obsidian-vault-linking/spec.md` for behavioral requirements.
+The five pillars are navigation categories, not compulsory duplicate folders:
+architecture, decisions, specifications, operations, and reference. A project map
+points to existing documents. OpenSpec remains the sole formal specification
+home in `openspec/`; `docs/specs/` is never scaffolded. Preserve established
+`docs/architecture.md` and `docs/decisions/` locations. New empty categories get
+small draft navigation pages, never invented architecture or factual claims.
 
-## Goals / Non-Goals
+## Ownership and lifecycle
 
-**Goals:**
-- Enable safe, opt-in symlink traversal inside `<vault>/Projects/` during knowledge operations so agents can query documentation from all linked active projects.
-- Implement a dedicated `src/ai_dlc/vault_link.py` service and expose `ai-dlc project link-vault` CLI command.
-- Support a `--docs-preset 5-pillar` option in project initialization and adoption that scaffolds `architecture/`, `adr/`, `specs/`, `runbooks/`, and `reference/`.
-- Maintain strict safety against arbitrary path traversal or symlink loops.
+An optional `docs/catalog.toml` records project-relative canonical paths, stable
+IDs, category, owner, lifecycle status, optional review date/interval and source
+references. Repository documentation stays authoritative in Git; personal notes
+stay in Obsidian; existing team pages stay in Confluence. Sources are references,
+not permission to fetch, copy, publish, or refresh content. Derived documents
+identify their sources. Superseded entries point to a replacement ID.
 
-**Non-Goals:**
-- Implementing real-time file watching or desktop Obsidian plugin integration.
-- Forcing existing AI-DLC core repositories to migrate to the 5-pillar documentation structure (it is an opt-in preset for user-built projects and MCPs).
+A read-only `project docs-check` service (also exposed through MCP) reports missing
+catalogued files, duplicate IDs/paths, missing ownership, unknown/overdue review,
+exact duplicate Markdown bodies, and uncatalogued documentation. It does not
+assert semantic freshness, fuzzy duplicate detection, or automatic cleanup.
+The catalog can list canonical OpenSpec files but does not duplicate OpenSpec's
+change/task lifecycle. Examples and templates remain distinguishable from active
+documents. Invalid metadata reports a structured finding, not a traceback.
 
-## Decisions
+## Integration and preservation
 
-### Decision 1: Controlled Symlink Following in `knowledge.py`
-Instead of globally setting `followlinks=True` across the entire vault (which risks infinite recursion on cyclical symlinks), the walker will inspect entries directly under `<vault>/Projects/`. If an entry is a directory symlink, its target is verified to be a directory and canonicalized without escaping unauthorized host paths. A cycle detection set (`visited_inodes`) will prevent loops.
-*Alternatives considered*:
-- Global `followlinks=True`: Rejected because it risks cycles and traversing unintended symlinks outside `Projects/`.
-- In-memory index table: Rejected because vault notes are file-backed and can change between runs.
+The preset is optional and aliases `5-pillar` and `organized`. Preset planning is
+part of the shared adoption service: preview includes added paths; conflicts
+cause no changes; CLI delegates rather than implementing extra side effects.
+Standalone setup uses the same planner. Existing authored files remain intact.
+Reject symlinked roots/parents and special files before writing. New files use
+exclusive creation through no-follow directory descriptors. Do not delete created
+files on failure: preserve partial results and report them for a safe retry.
+Machine vault paths never enter tracked project files.
 
-### Decision 2: Native `ai-dlc project link-vault` Command
-Create `src/ai_dlc/vault_link.py` encapsulating vault discovery from the machine configuration layer (`paths.vault`), symlink creation at `<vault>/Projects/<project_name>`, and `.gitignore` hygiene. Wire this into Typer under `@project.command("link-vault")`.
-*Alternatives considered*:
-- Keeping shell scripts in `bin/link-obsidian.sh`: Rejected because it fragments tooling and doesn't integrate with machine configuration.
+The vault presentation is a normal Markdown project portal containing canonical
+file links. It preserves canonical files and personal notes, refuses arbitrary
+external traversal, and never treats a directory name as authorization. Directory
+mounting and automatic source indexing are deliberately deferred; a portal does
+not make repository documents editable inside the main Obsidian vault. Knowledge note and
+append retain their original private-vault boundary. A link is not authority to
+write repository docs through the personal-note API. No Confluence connector,
+site crawler, synchronization engine, or remote publication is introduced.
 
-### Decision 3: Opt-in 5-Pillar Documentation Preset
-Provide `5-pillar` scaffolding within `src/ai_dlc/templates.py` or a dedicated helper. When selected, it creates:
-- `docs/index.md` (Map of Content with Mermaid diagram)
-- `docs/architecture/`
-- `docs/adr/`
-- `docs/specs/`
-- `docs/runbooks/`
-- `docs/reference/`
-Existing files in `docs/` are never overwritten.
-*Alternatives considered*:
-- Enforcing 5-pillar across all repositories: Rejected because ops/engine repositories like AI-DLC itself follow a different doc taxonomy.
+## Validation
 
-## Risks / Trade-offs
-
-- [Risk: Symlink loops] → Mitigated by tracking visited realpath / inodes during recursive traversal.
-- [Risk: Overwriting existing vault project symlink] → Mitigated by prompting or checking if target already points to the correct location; failing cleanly if pointing elsewhere without `--force`.
-- [Risk: Corrupting git repository when modifying .gitignore] → Mitigated by atomic append with newline checking and deduplication.
+Regressions cover the four reproduced PR defects; existing layouts; no duplicate
+spec home; manifest diagnostics with fixed dates; safe retry; preview/apply parity;
+CLI/MCP service boundaries; absent machine vault; invalid names; authored links;
+and exact preservation of outside/private files. Run all manifest-required checks
+and strict OpenSpec validation. Distinguish local filesystem/fixture evidence from
+actual Obsidian or Confluence qualification.

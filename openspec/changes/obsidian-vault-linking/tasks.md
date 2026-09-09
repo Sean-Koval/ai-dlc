@@ -1,19 +1,56 @@
-## 1. Safe Symlink Knowledge Traversal
+# Project Knowledge Repair Tasks
 
-- [ ] 1.1 Update `src/ai_dlc/files.py` to allow safe canonical path validation for authorized symlink targets and verify behavior with unit tests.
-- [ ] 1.2 Update `src/ai_dlc/knowledge.py` to safely traverse project directory symlinks under `<vault>/Projects/` with cycle protection and verify note discovery via `knowledge find`.
+> **For agentic workers:** Use superpowers:executing-plans to implement this plan task-by-task.
 
-## 2. Vault Link Service and CLI Command
+**Goal:** Organize canonical project documentation and link it to private knowledge without duplicate specifications or implicit synchronization.
 
-- [ ] 2.1 Implement `src/ai_dlc/vault_link.py` to resolve the machine's `paths.vault`, establish `<vault>/Projects/<name>` symlinks, and ensure `.gitignore` ignores `.obsidian/` and `.trash/`.
-- [ ] 2.2 Expose `@project.command("link-vault")` in `src/ai_dlc/cli.py` and verify CLI help and execution.
+**Architecture:** Shared documentation planning and checking services; OpenSpec owns formal requirements; vault presentation uses machine-local bindings. Preserve authored files and keep private note writes inside the vault.
 
-## 3. 5-Pillar Documentation Preset
+**Tech Stack:** Python, Typer, existing stdio MCP, TOML and Markdown.
 
-- [ ] 3.1 Implement 5-pillar scaffolding (`architecture/`, `adr/`, `specs/`, `runbooks/`, `reference/`, and `index.md` Map of Content) in project templates without overwriting existing docs.
-- [ ] 3.2 Wire `--docs-preset` option into `ai-dlc project init` and `ai-dlc project adopt` and verify with non-destructive adoption test.
+**Spec:** openspec/changes/obsidian-vault-linking/design.md and specs/obsidian-vault-linking/spec.md.
 
-## 4. Integration Verification and Test Suite
+## Global constraints
 
-- [ ] 4.1 Add unit and integration tests in `tests/test_vault_link.py` and test symlinked knowledge indexing in `tests/test_knowledge.py`.
-- [ ] 4.2 Run full test suite via `uv run pytest` and verify all checks pass.
+- No new content store, connector, crawler or semantic index.
+- No automatic publication, deletion, migration or freshness claims.
+- No vault paths in tracked project configuration.
+- Existing authored documents and OpenSpec paths remain canonical.
+
+## Task 1: Shared preset planning and safe creation
+
+Files: src/ai_dlc/document_files.py, src/ai_dlc/moc.py, src/ai_dlc/templates.py, src/ai_dlc/cli.py, tests/test_vault_link.py, tests/test_project_documents.py.
+
+- [x] Write regressions using real temporary projects for nested symlink escape and CLI adoption conflict. Assert outside bytes unchanged and no docs on conflict.
+- [x] Run focused tests; record expected failures before implementation.
+- [x] Implement `plan_documents(root: Path, project_name: str) -> dict[str, bytes]`; preserve authored paths and prefer existing category locations. Generate navigation, catalog and only missing category guides.
+- [x] Fold planned files into adoption's stage and returned path list; validate preset before mutation. Remove CLI-only scaffolding.
+- [x] Implement no-follow descriptor-based exclusive file creation for new standalone documents. Preserve any partial output with an actionable error; never unlink an authored replacement.
+- [x] Run focused tests including repeated apply, unknown preset, and preview side effects.
+
+## Task 2: Catalog inspection
+
+Files: src/ai_dlc/documents.py, src/ai_dlc/cli.py, src/ai_dlc/mcp_server.py, tests/test_project_documents.py.
+
+- [x] Write table-driven fixtures: missing source, duplicate identity/path, unknown owner/review, stale review at a fixed date, uncatalogued and byte-identical files, superseded reference, malformed TOML.
+- [x] Assert `check_documents(root, today=date(2026, 9, 8))` reports expected codes and never mutates or fetches sources.
+- [x] Implement schema validation and bounded local inspection. Share the service between CLI and MCP. Return findings and an honest freshness limitation.
+- [x] Verify CLI exit behavior and MCP exposure through their actual interfaces.
+
+## Task 3: Vault presentation repair
+
+Files: src/ai_dlc/vault_link.py, src/ai_dlc/knowledge.py, src/ai_dlc/files.py, tests/test_vault_link.py, tests/test_knowledge.py.
+
+- [x] Adopt the stated default: a local Markdown portal with canonical file links; directory mounting is deferred.
+- [x] Reproduce invalid names, symlinked parents, arbitrary project traversal, conflicting authored paths and failed-link preflight.
+- [x] Restore strict `inside` and private-note write boundaries; implement only the explicitly selected link mechanism.
+- [x] Verify portable config stays free of local bindings, existing vault content is preserved, and retries are safe.
+
+## Task 4: Delivery and review
+
+Files: docs/design/local-and-shared-knowledge.md, project-templates/project/docs/, README.md and OpenSpec change artifacts.
+
+- [x] Explain ownership, provenance, explicit review, searching before creation, supersession and selective team sources in one reusable guide.
+- [x] Add project navigation without relocating existing documentation or copying specs. Remove incidental Beads files from this PR.
+- [x] Run `ai-dlc project check --required` against the final repaired code; all five checks pass. Strict OpenSpec validation passes for all 24 items.
+- [x] Review the complete diff and reconcile tasks with actual evidence; do not claim live client qualification or finish before merge gates.

@@ -121,10 +121,9 @@ def project_init(
     agent_client: Annotated[list[str] | None, typer.Option("--agent-client")] = None,
     docs_preset: Annotated[str | None, typer.Option("--docs-preset")] = None,
     link_vault_option: Annotated[bool, typer.Option("--link-vault")] = False,
+    vault: Annotated[Path | None, typer.Option("--vault")] = None,
 ):
-    from ai_dlc.moc import scaffold_5_pillar_docs
     from ai_dlc.templates import adopt
-    from ai_dlc.vault_link import link_vault
 
     result = adopt(
         path,
@@ -140,11 +139,10 @@ def project_init(
         },
         agent_clients=agent_client,
         initialize=True,
+        docs_preset=docs_preset,
+        link_vault=link_vault_option,
+        vault=vault,
     )
-    if apply and docs_preset == "5-pillar":
-        scaffold_5_pillar_docs(path / "docs", path.name)
-    if apply and link_vault_option:
-        link_vault(path, docs_preset=docs_preset)
     emit(result)
 
 
@@ -161,10 +159,9 @@ def project_adopt(
     agent_client: Annotated[list[str] | None, typer.Option("--agent-client")] = None,
     docs_preset: Annotated[str | None, typer.Option("--docs-preset")] = None,
     link_vault_option: Annotated[bool, typer.Option("--link-vault")] = False,
+    vault: Annotated[Path | None, typer.Option("--vault")] = None,
 ):
-    from ai_dlc.moc import scaffold_5_pillar_docs
     from ai_dlc.templates import adopt
-    from ai_dlc.vault_link import link_vault
 
     result = adopt(
         root,
@@ -179,12 +176,30 @@ def project_adopt(
             if value is not None
         },
         agent_clients=agent_client,
+        docs_preset=docs_preset,
+        link_vault=link_vault_option,
+        vault=vault,
     )
-    if apply and docs_preset == "5-pillar":
-        scaffold_5_pillar_docs(root / "docs", root.name)
-    if apply and link_vault_option:
-        link_vault(root, docs_preset=docs_preset)
     emit(result)
+
+
+@project.command("docs-init")
+def project_docs_init(root: Path = Path("."), preset: str = "organized", apply: bool = False):
+    """Preview or add canonical documentation navigation without relocating existing files."""
+    from ai_dlc.moc import initialize_documents
+
+    emit(initialize_documents(root, preset=preset, apply=apply))
+
+
+@project.command("docs-check")
+def project_docs_check(root: Path = Path("."), strict: bool = False):
+    """Inspect canonical document ownership, coverage and review metadata without mutation."""
+    from ai_dlc.documents import check_documents
+
+    result = check_documents(root)
+    emit(result)
+    if strict and result["findings"]:
+        raise typer.Exit(2)
 
 
 @project.command("sync")
@@ -199,14 +214,19 @@ def project_link_vault(
     root: Path = Path("."),
     vault: Annotated[Path | None, typer.Option("--vault", "-v")] = None,
     name: Annotated[str | None, typer.Option("--name", "-n")] = None,
-    force: Annotated[bool, typer.Option("--force", "-f")] = False,
+    force: Annotated[
+        bool, typer.Option("--force", "-f", help="Compatibility flag; never overwrites notes.")
+    ] = False,
+    preview: Annotated[bool, typer.Option("--preview")] = False,
     docs_preset: Annotated[str | None, typer.Option("--docs-preset")] = None,
 ):
-    """Link project docs directory into the configured Obsidian vault."""
+    """Create a machine-local portal linking to canonical project documentation."""
     from ai_dlc.vault_link import link_vault
 
     try:
-        result = link_vault(root, vault=vault, name=name, force=force, docs_preset=docs_preset)
+        result = link_vault(
+            root, vault=vault, name=name, force=force, docs_preset=docs_preset, apply=not preview
+        )
     except (OSError, RuntimeError, ValueError) as exc:
         typer.echo(f"Error: {exc}", err=True)
         raise typer.Exit(2) from None

@@ -1,107 +1,115 @@
-from pathlib import Path
 import pytest
 
 from ai_dlc.knowledge import Knowledge
-from ai_dlc.moc import scaffold_5_pillar_docs
-from ai_dlc.vault_link import ensure_gitignore_entries, link_vault
+from ai_dlc.vault_link import link_vault
 
 
-def test_ensure_gitignore_entries(tmp_path: Path):
-    project = tmp_path / "project"
-    project.mkdir()
-    gitignore = project / ".gitignore"
-    gitignore.write_text("node_modules/\n.venv/\n")
-
-    updated = ensure_gitignore_entries(project, [".obsidian/", ".trash/"])
-    assert updated is True
-    content = gitignore.read_text()
-    assert ".obsidian/" in content
-    assert ".trash/" in content
-    assert "node_modules/" in content
-
-    # Calling again should be idempotent
-    assert ensure_gitignore_entries(project, [".obsidian/", ".trash/"]) is False
-
-
-def test_scaffold_5_pillar_docs_non_destructive(tmp_path: Path):
-    docs = tmp_path / "docs"
-    docs.mkdir()
-    (docs / "index.md").write_text("# Custom Existing Index\n")
-
-    created = scaffold_5_pillar_docs(docs, "my-app")
-    assert "index.md" not in created
-    assert (docs / "index.md").read_text() == "# Custom Existing Index\n"
-    assert (docs / "architecture" / "system-design.md").exists()
-    assert (docs / "adr" / "0000-template.md").exists()
-    assert (docs / "specs" / "README.md").exists()
-    assert (docs / "runbooks" / "README.md").exists()
-    assert (docs / "reference" / "README.md").exists()
-
-
-def test_link_vault_creates_symlink_and_gitignores(tmp_path: Path):
+def setup(tmp_path):
     vault = tmp_path / "vault"
     vault.mkdir()
     project = tmp_path / "my-service"
-    project.mkdir()
+    (project / "docs").mkdir(parents=True)
+    (project / "docs" / "index.md").write_text("# Canonical project map\n")
+    return project, vault
 
-    res = link_vault(project, vault=vault, docs_preset="5-pillar")
-    assert res.created_link is True
-    assert res.created_docs is True
-    assert res.gitignore_updated is True
-    assert (project / ".gitignore").exists()
 
+def test_vault_link_is_a_portal_not_a_second_document_home(tmp_path):
+    project, vault = setup(tmp_path)
+    (project / "openspec").mkdir()
+    result = link_vault(project, vault=vault)
+    portal = vault / "Projects" / "my-service.md"
+    assert portal.is_file() and not portal.is_symlink()
+    body = portal.read_text()
+    assert (project / "docs" / "index.md").as_uri() in body
+    assert (project / "openspec").as_uri() in body
+    assert "Canonical project map" not in body
+    assert not (project / ".gitignore").exists()
+    assert result.created_link
+    assert not link_vault(project, vault=vault).created_link
+    assert Knowledge(vault).find("my-service")[0]["path"] == "Projects/my-service.md"
+
+
+@pytest.mark.parametrize(
+    "name", ["../escape", "../../escape", "ABSOLUTE", ".", "..", "a/b", "a\\b", ""]
+)
+def test_link_name_refused_before_mutation(tmp_path, name):
+    project, vault = setup(tmp_path)
+    if name == "ABSOLUTE":
+        name = str(tmp_path / "absolute")
+    with pytest.raises(ValueError):
+        link_vault(project, vault=vault, name=name)
+    assert list(vault.iterdir()) == []
+
+
+def test_portal_preserves_authored_content_even_with_force(tmp_path):
+    project, vault = setup(tmp_path)
+    (vault / "Projects").mkdir()
+    portal = vault / "Projects" / "my-service.md"
+    portal.write_text("Personal notes")
+    with pytest.raises(ValueError):
+        link_vault(project, vault=vault, force=True)
+    assert portal.read_text() == "Personal notes"
+
+
+def test_portal_refuses_symlinked_parent_and_does_not_scaffold_on_conflict(tmp_path):
+    project, vault = setup(tmp_path)
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (vault / "Projects").symlink_to(outside, target_is_directory=True)
+    with pytest.raises(ValueError):
+        link_vault(project, vault=vault, docs_preset="organized")
+    assert list(outside.iterdir()) == []
+    assert not (project / "docs" / "catalog.toml").exists()
+
+
+def test_portal_never_replaces_legacy_symlink(tmp_path):
+    project, vault = setup(tmp_path)
+    (vault / "Projects").mkdir()
     link = vault / "Projects" / "my-service"
+    link.symlink_to(project / "docs", target_is_directory=True)
+    with pytest.raises(ValueError, match="legacy|Legacy"):
+        link_vault(project, vault=vault)
     assert link.is_symlink()
-    assert link.resolve() == (project / "docs").resolve()
-
-    # Verify Knowledge integration
-    knowledge = Knowledge(vault)
-    find_results = knowledge.find("Map of Content")
-    assert len(find_results) >= 1
-    assert any(item["path"] == "Projects/my-service/index.md" for item in find_results)
 
 
-def test_link_vault_idempotency_and_force(tmp_path: Path):
-    vault = tmp_path / "vault"
-    vault.mkdir()
-    project1 = tmp_path / "proj1"
-    project1.mkdir()
-    project2 = tmp_path / "proj2"
-    project2.mkdir()
-
-    # Initial link
-    res1 = link_vault(project1, vault=vault, name="shared-name")
-    assert res1.created_link is True
-
-    # Same project relink is a no-op
-    res2 = link_vault(project1, vault=vault, name="shared-name")
-    assert res2.created_link is False
-
-    # Different project collision without force fails
-    with pytest.raises(ValueError, match="already points to"):
-        link_vault(project2, vault=vault, name="shared-name", force=False)
-
-    # Different project with force updates
-    res3 = link_vault(project2, vault=vault, name="shared-name", force=True)
-    assert res3.created_link is True
-    assert (vault / "Projects" / "shared-name").resolve() == (project2 / "docs").resolve()
-
-
-def test_link_vault_existing_directory_refuses_overwrite(tmp_path: Path):
-    vault = tmp_path / "vault"
-    (vault / "Projects" / "real-dir").mkdir(parents=True)
-    project = tmp_path / "proj"
+def test_missing_vault_does_not_create_docs(tmp_path):
+    project = tmp_path / "project"
     project.mkdir()
+    with pytest.raises(ValueError, match="vault"):
+        link_vault(project, home=tmp_path / "home", environ={}, docs_preset="organized")
+    assert list(project.iterdir()) == []
 
-    with pytest.raises(ValueError, match="Refusing to overwrite"):
-        link_vault(project, vault=vault, name="real-dir", force=True)
+
+def test_preview_does_not_create_portal_or_documentation(tmp_path):
+    project, vault = setup(tmp_path)
+    result = link_vault(project, vault=vault, docs_preset="organized", apply=False)
+    assert not result.created_link
+    assert list(vault.iterdir()) == []
+    assert not (project / "docs" / "catalog.toml").exists()
 
 
-def test_link_vault_missing_vault_raises(tmp_path: Path):
-    project = tmp_path / "proj"
-    project.mkdir()
-    empty_home = tmp_path / "empty_home"
-    empty_home.mkdir()
+def test_symlinked_vault_preflight_preserves_repository(tmp_path):
+    project, vault = setup(tmp_path)
+    alias = tmp_path / "vault-alias"
+    alias.symlink_to(vault, target_is_directory=True)
+    with pytest.raises(ValueError):
+        link_vault(project, vault=alias, docs_preset="organized")
+    assert not (project / "docs/catalog.toml").exists()
+    assert list(vault.iterdir()) == []
 
-    with pytest.raises(ValueError, match="Configure paths.vault"):
-        link_vault(project, vault=None, home=empty_home, environ={})
+
+@pytest.mark.parametrize("special", [False, True])
+def test_non_directory_portal_parent_refused_before_scaffolding(tmp_path, special):
+    import os
+
+    project, vault = setup(tmp_path)
+    parent = vault / "Projects"
+    if special:
+        os.mkfifo(parent)
+    else:
+        parent.write_text("Authored file")
+    with pytest.raises(ValueError):
+        link_vault(project, vault=vault, docs_preset="organized")
+    assert not (project / "docs/catalog.toml").exists()
+    if not special:
+        assert parent.read_text() == "Authored file"

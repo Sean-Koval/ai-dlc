@@ -1,26 +1,36 @@
 ## Why
 
-Projects in AI-DLC require bidirectional integration with Obsidian vaults. Currently, `knowledge_find` explicitly skips symlinks within vaults, preventing agents from indexing and retrieving documentation from symlinked project documentation trees (`Projects/<name>`). Furthermore, linking a repository's `docs/` folder into an Obsidian vault currently requires ad-hoc bash scripts rather than a first-class AI-DLC CLI command with automatic `.gitignore` safeguards and agent rules configuration.
+Project documentation must be discoverable without creating duplicate specifications,
+copying private notes into repositories, or granting filesystem access based on a
+folder name. PR #28's initial symlink implementation violated these boundaries.
+The maintainer authorized a single-source documentation repair.
 
 ## What Changes
 
-- Add safe symlink traversal to `src/ai_dlc/knowledge.py` and `src/ai_dlc/files.py` so notes under symlinked directories (e.g. `Projects/<name>`) within the configured vault can be discovered and indexed without path escaping vulnerabilities.
-- Add `ai-dlc project link-vault` CLI command (and `--link-vault` option to `project init` and `project adopt`) that resolves the machine's `paths.vault`, symlinks `<project>/docs` to `<vault>/Projects/<name>`, updates `.gitignore` with `.obsidian/` and `.trash/`, and records the link metadata.
-- Introduce an opt-in `5-pillar` documentation preset for project scaffolding and adoption (`docs/index.md` Map of Content, `architecture/`, `adr/`, `specs/`, `runbooks/`, `reference/`).
-- Ensure non-destructive project adoption when a repository already has an existing `docs/` directory.
+- Replace the folder-first five-pillar preset with optional organized navigation,
+  preserving existing layouts and pointing to canonical OpenSpec artifacts.
+- Add an explicit document catalog and read-only CLI/MCP diagnostics for ownership,
+  provenance, coverage, duplicate bodies, broken local links and review metadata.
+- Integrate document and portal previews into the shared adoption service.
+- Replace unsafe directory mounting with a machine-local Markdown project portal.
+  Existing mounts are preserved for manual inspection; personal note APIs remain
+  confined to the vault. Direct editing of repository docs inside the main vault
+  is not provided by this portal.
+- Provide portable upkeep guidance and preserve authored content through exclusive
+  no-follow creation. No automatic cleanup, publication, synchronization, connector
+  or tracker substitution is introduced.
 
 ## Capabilities
 
 ### New Capabilities
-- `obsidian-vault-linking`: Manages bidirectional project documentation linking into Obsidian vaults, safe symlink traversal in knowledge operations, and the 5-pillar documentation structure.
+- `obsidian-vault-linking`: canonical documentation organization and local portal setup.
 
 ### Modified Capabilities
-<!-- None: existing capability requirements remain backward-compatible -->
+- None.
 
 ## Impact
 
-- `src/ai_dlc/knowledge.py`: Update note scanning and path validation to safely traverse symlinks within the vault.
-- `src/ai_dlc/files.py`: Refine `inside()` helper to safely permit canonical symlink targets when explicitly authorized.
-- `src/ai_dlc/cli.py`: Expose `@project.command("link-vault")` and `--link-vault` flag.
-- `src/ai_dlc/templates.py`: Support `5-pillar` documentation preset.
-- Automated tests in `tests/test_knowledge.py` and `tests/test_vault_link.py`.
+Shared adoption, knowledge filesystem boundaries, CLI and MCP, optional document
+setup, portable guidance and tests. The original PR's force-replace symlink behavior
+is intentionally withdrawn before release. Actual Obsidian client behavior and the
+custom Confluence MCP remain separate qualification boundaries.

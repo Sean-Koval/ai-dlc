@@ -48,6 +48,13 @@ def make_server(root: Path, machine: Path | None = None) -> FastMCP:
 
         return inspect(root, target, machine)
 
+    @server.tool()
+    def project_docs_check() -> dict:
+        """Inspect local document ownership and review gaps; never fetch or publish content."""
+        from ai_dlc.documents import check_documents
+
+        return check_documents(root)
+
     def knowledge():
         from ai_dlc.knowledge import Knowledge
 

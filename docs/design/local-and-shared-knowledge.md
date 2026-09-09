@@ -76,3 +76,7 @@ Generated-guidance fixtures verify that these instructions are present and scope
 Actual behavior of the selected tools requires separate live qualification.
 The custom server repository/interface is still pending; no existing integration
 was inspected or replaced.
+
+## Project navigation
+
+The [project documentation model](project-documentation.md) defines canonical navigation, optional catalog diagnostics and local Obsidian portals. It preserves OpenSpec ownership and does not introduce Confluence publication or synchronization.

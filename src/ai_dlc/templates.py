@@ -182,7 +182,14 @@ def adopt(
     initialize: bool = False,
     providers: dict[str, str] | None = None,
     agent_clients: list[str] | None = None,
+    docs_preset: str | None = None,
+    link_vault: bool = False,
+    vault: Path | str | None = None,
 ) -> dict:
+    from ai_dlc.moc import PRESETS, plan_documents
+
+    if docs_preset not in PRESETS:
+        raise ValueError("Unknown documentation preset")
     if preset not in {"generic", "python", "node", "rust"}:
         raise ValueError("Unknown preset")
     capabilities = list(CAPABILITIES if capabilities is None else dict.fromkeys(capabilities))
@@ -233,12 +240,52 @@ def adopt(
         conflicts.sort()
         if conflicts:
             return {"status": "conflict", "conflicts": conflicts}
+        if docs_preset:
+            # Plan against the union of authored and template documents, preserving both.
+            for name, body in before.items():
+                target = stage / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(body)
+            # Validate live destinations as well: staging must not hide authored symlinks.
+            plan_documents(root, root.name)
+            rendered.update(plan_documents(stage, root.name))
+        from ai_dlc.vault_link import apply_vault_link, plan_vault_link
+
+        portal = plan_vault_link(root, vault=vault) if link_vault else None
+        if portal and not any(name.startswith("docs/") for name in before.keys() | rendered.keys()):
+            raise ValueError("Project docs are missing; select --docs-preset organized.")
         changes = sorted(rendered)
         if apply:
-            _apply(root, before, {**before, **rendered})
+            from ai_dlc.document_files import create_document
+
+            if _files(root) != before:
+                raise ValueError("Checkout changed during staging; retry")
+            for name in changes:
+                inside(root, name)
+            created = []
+            try:
+                for name in changes:
+                    if not create_document(root / name, rendered[name]):
+                        raise ValueError(f"Authored file appeared during adoption: {name}")
+                    created.append(name)
+            except (OSError, ValueError) as exc:
+                raise ValueError(
+                    f"Adoption stopped; retained created files {created}: {exc}"
+                ) from exc
+        portal_result = None
+        if portal:
+            portal_result = portal.preview()
+            if apply:
+                try:
+                    portal_result["created"] = apply_vault_link(portal)
+                except (OSError, ValueError) as exc:
+                    raise ValueError(
+                        f"Project files retained; portal setup failed. Retry project link-vault: {exc}"
+                    ) from exc
         return {
             "status": "applied" if apply else "planned",
             "files": changes,
+            **({"vault_link": portal_result} if portal_result is not None else {}),
             "toolset": toolset,
             "template_source": source,
             "local_source": "://" not in source,
