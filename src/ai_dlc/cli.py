@@ -119,26 +119,31 @@ def project_init(
     tracker: Annotated[str | None, typer.Option("--tracker")] = None,
     knowledge_provider: Annotated[str | None, typer.Option("--knowledge")] = None,
     agent_client: Annotated[list[str] | None, typer.Option("--agent-client")] = None,
+    docs_preset: Annotated[str | None, typer.Option("--docs-preset")] = None,
+    link_vault_option: Annotated[bool, typer.Option("--link-vault")] = False,
+    vault: Annotated[Path | None, typer.Option("--vault")] = None,
 ):
     from ai_dlc.templates import adopt
 
-    emit(
-        adopt(
-            path,
-            preset=preset,
-            apply=apply,
-            template_source=template_source,
-            vcs_ref=vcs_ref,
-            capabilities=capability,
-            providers={
-                role: value
-                for role, value in (("tracker", tracker), ("knowledge", knowledge_provider))
-                if value is not None
-            },
-            agent_clients=agent_client,
-            initialize=True,
-        )
+    result = adopt(
+        path,
+        preset=preset,
+        apply=apply,
+        template_source=template_source,
+        vcs_ref=vcs_ref,
+        capabilities=capability,
+        providers={
+            role: value
+            for role, value in (("tracker", tracker), ("knowledge", knowledge_provider))
+            if value is not None
+        },
+        agent_clients=agent_client,
+        initialize=True,
+        docs_preset=docs_preset,
+        link_vault=link_vault_option,
+        vault=vault,
     )
+    emit(result)
 
 
 @project.command("adopt")
@@ -152,25 +157,49 @@ def project_adopt(
     tracker: Annotated[str | None, typer.Option("--tracker")] = None,
     knowledge_provider: Annotated[str | None, typer.Option("--knowledge")] = None,
     agent_client: Annotated[list[str] | None, typer.Option("--agent-client")] = None,
+    docs_preset: Annotated[str | None, typer.Option("--docs-preset")] = None,
+    link_vault_option: Annotated[bool, typer.Option("--link-vault")] = False,
+    vault: Annotated[Path | None, typer.Option("--vault")] = None,
 ):
     from ai_dlc.templates import adopt
 
-    emit(
-        adopt(
-            root,
-            preset=preset,
-            apply=apply,
-            template_source=template_source,
-            vcs_ref=vcs_ref,
-            capabilities=capability,
-            providers={
-                role: value
-                for role, value in (("tracker", tracker), ("knowledge", knowledge_provider))
-                if value is not None
-            },
-            agent_clients=agent_client,
-        )
+    result = adopt(
+        root,
+        preset=preset,
+        apply=apply,
+        template_source=template_source,
+        vcs_ref=vcs_ref,
+        capabilities=capability,
+        providers={
+            role: value
+            for role, value in (("tracker", tracker), ("knowledge", knowledge_provider))
+            if value is not None
+        },
+        agent_clients=agent_client,
+        docs_preset=docs_preset,
+        link_vault=link_vault_option,
+        vault=vault,
     )
+    emit(result)
+
+
+@project.command("docs-init")
+def project_docs_init(root: Path = Path("."), preset: str = "organized", apply: bool = False):
+    """Preview or add canonical documentation navigation without relocating existing files."""
+    from ai_dlc.moc import initialize_documents
+
+    emit(initialize_documents(root, preset=preset, apply=apply))
+
+
+@project.command("docs-check")
+def project_docs_check(root: Path = Path("."), strict: bool = False):
+    """Inspect canonical document ownership, coverage and review metadata without mutation."""
+    from ai_dlc.documents import check_documents
+
+    result = check_documents(root)
+    emit(result)
+    if strict and result["findings"]:
+        raise typer.Exit(2)
 
 
 @project.command("sync")
@@ -178,6 +207,30 @@ def project_sync(root: Path = Path("."), apply: bool = False, vcs_ref: str | Non
     from ai_dlc.templates import sync
 
     emit(sync(root, apply=apply, vcs_ref=vcs_ref))
+
+
+@project.command("link-vault")
+def project_link_vault(
+    root: Path = Path("."),
+    vault: Annotated[Path | None, typer.Option("--vault", "-v")] = None,
+    name: Annotated[str | None, typer.Option("--name", "-n")] = None,
+    force: Annotated[
+        bool, typer.Option("--force", "-f", help="Compatibility flag; never overwrites notes.")
+    ] = False,
+    preview: Annotated[bool, typer.Option("--preview")] = False,
+    docs_preset: Annotated[str | None, typer.Option("--docs-preset")] = None,
+):
+    """Create a machine-local portal linking to canonical project documentation."""
+    from ai_dlc.vault_link import link_vault
+
+    try:
+        result = link_vault(
+            root, vault=vault, name=name, force=force, docs_preset=docs_preset, apply=not preview
+        )
+    except (OSError, RuntimeError, ValueError) as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(2) from None
+    emit(result.as_dict())
 
 
 @project.command("rebind")

@@ -1,0 +1,20 @@
+schema = 1
+id = "project-knowledge-repair"
+title = "Repair single-source project documentation and Obsidian linking"
+scope = "Repair PR28 and establish optional documentation navigation, ownership and deterministic health checks without a second specification home."
+requires_spec = true
+spec_reason = "Changes filesystem access, adoption planning, and documentation lifecycle guidance."
+reviewed = true
+acceptance = ["OpenSpec remains canonical", "Authored/private files survive rejected operations", "Document provenance and review gaps are discoverable", "Required checks pass"]
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+[artifacts]
+spec = "openspec/changes/obsidian-vault-linking"
+plan = "openspec/changes/obsidian-vault-linking/tasks.md"
+branch = "codex/project-knowledge-repair"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/28"
+verification = "docs/verification/project-knowledge-repair.md"

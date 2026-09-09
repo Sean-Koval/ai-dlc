@@ -133,3 +133,7 @@ GitHub Issues with Projects planning, Jira Cloud, Plane, Linear, OpenSpec, GitHu
 Local execution and GitHub Actions use one checks manifest. CI runs this checkout's implementation and publishes a receipt; completion checks verify workflow identity, merged SHA and manifest digests. Client hooks cover documented tool paths only. Repository merge rules must be configured by the repository owner.
 
 The legacy `ai-dlc-cli scaffold --provider gemini` and `--all` interface remains available through Python. Rust source is retained for reference; Rust publishing is retired. See the migration guide for PATH conflicts.
+
+### Keep project documentation organized
+
+Use `ai-dlc project docs-init` to preview an optional documentation map, then add `--apply` to create missing navigation. OpenSpec remains the home for specifications. `ai-dlc project docs-check` reports ownership, review and local-link gaps without editing content. `ai-dlc project link-vault` creates a local Obsidian project note linking to canonical files. See the [documentation workflow](docs/design/project-documentation.md).

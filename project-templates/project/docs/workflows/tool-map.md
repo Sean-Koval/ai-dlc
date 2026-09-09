@@ -14,7 +14,7 @@ not configured provider choices.
 | Review and merge | `scm` | GitHub | Branch, PR, merged SHA, CI runs, and artifacts |
 | Deployment evidence | `deploy` | None | Environment evidence when configured |
 | Interactive agent | `agent-client` | Claude Code and Codex | Analysis, authoring, and authorized tool use |
-| Workflow enforcement | AI-DLC CLI and selected MCP services | Local services | CLI: validation, machine bindings, reconciliation, receipts, and gates; MCP: reviewed work, doctor, and knowledge only |
+| Workflow enforcement | AI-DLC CLI and selected MCP services | Local services | CLI: validation, machine bindings, reconciliation, receipts, and gates; MCP: reviewed work, doctor, document inspection, and knowledge |
 | Project lifecycle | Copier | Template service | Answers, source revision, preview, and three-way updates |
 
 The complete publish/start/status/finish lifecycle requires configured tracker
@@ -58,12 +58,11 @@ credential values.
 
 `ai-dlc machine status`, `plan`, `apply`, `sync`, and `doctor` own the local
 enrollment lifecycle. Local CLI and MCP execution are current; hosted or cloud
-execution is a later qualification target. Obsidian create/attach and provider
-discovery are next-cycle gaps rather than current provider capabilities.
+execution is a later qualification target. Obsidian project portals are machine-local canonical file links; they neither mount nor synchronize document bodies. Provider discovery remains separately scoped.
 
 Machine enrollment mutations are CLI-only in this cycle. MCP exposes exactly
 `work_publish`, `work_start`, `work_status`, `work_link`, `work_finish`,
-`doctor`, `knowledge_find`, `knowledge_append`, and `knowledge_note`; it does
+`doctor`, `project_docs_check`, `knowledge_find`, `knowledge_append`, and `knowledge_note`; it does
 not expose machine enrollment mutation. These MCP identifiers differ from the
 space-separated CLI commands, such as `ai-dlc work publish` and `ai-dlc
 knowledge append`.
@@ -77,9 +76,10 @@ knowledge append`.
 | Agent configuration | `ai-dlc agents render` |
 | Work and traceability | `ai-dlc work publish`, `ai-dlc work link`, `ai-dlc work start`, `ai-dlc work status`, `ai-dlc work finish` |
 | Provider verification | `ai-dlc provider list`, `ai-dlc provider test` |
+| Project documentation | `ai-dlc project docs-init`, `ai-dlc project docs-check`, `ai-dlc project link-vault` |
 | Personal knowledge | `ai-dlc knowledge find`, `ai-dlc knowledge note`, `ai-dlc knowledge append` |
 | Profiles and machine setup | `ai-dlc profile show`, `ai-dlc profile migrate`, `ai-dlc profile capture`; `ai-dlc setup plan`, `ai-dlc setup apply` |
-| Agent-native access | `ai-dlc mcp serve` — reviewed work, read-only doctor, and selected knowledge services; machine enrollment mutation remains CLI-only |
+| Agent-native access | `ai-dlc mcp serve` — reviewed work, read-only doctor/document inspection, and selected knowledge services; machine enrollment mutation remains CLI-only |
 | Legacy compatibility | `ai-dlc scaffold` |
 
 The local MCP server exposes only the reviewed services listed above; machine

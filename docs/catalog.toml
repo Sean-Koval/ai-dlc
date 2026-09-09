@@ -1,0 +1,36 @@
+schema = 1
+
+[[documents]]
+id = "product-direction"
+path = "docs/product-direction.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "active"
+
+[[documents]]
+id = "architecture"
+path = "docs/architecture.md"
+kind = "architecture"
+owner = "repository-maintainers"
+status = "active"
+
+[[documents]]
+id = "documentation-ownership"
+path = "docs/design/project-documentation.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+
+[[documents]]
+id = "local-shared-knowledge"
+path = "docs/design/local-and-shared-knowledge.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+
+[[documents]]
+id = "release-verification"
+path = "docs/release-verification.md"
+kind = "runbook"
+owner = "repository-maintainers"
+status = "active"
