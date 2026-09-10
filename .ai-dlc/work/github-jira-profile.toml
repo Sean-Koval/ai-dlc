@@ -1,0 +1,38 @@
+schema = 1
+id = "github-jira-profile"
+title = "Use GitHub delivery tracking with upstream Jira outcomes"
+scope = "Update Sean's personal tracker preference and workflow guidance for manual Jira outcome links to GitHub delivery issues; defer automated intake and synchronization."
+requires_spec = false
+spec_reason = "Approved personal profile and documentation change using existing tracker selection and artifact references; no runtime behavior, public API, schema or shared completion contract changes."
+acceptance = [
+    "Sean's profile resolves to github-issues without the Linear installation module; project overrides and existing GitHub board mappings are preserved.",
+    "Guidance defines Jira outcome ownership, GitHub delivery ownership, manual jira_parent URL links and business acceptance after verified delivery.",
+    "Setup defaults its example to GitHub delivery while retaining explicit Jira-only setup; automation and company access remain clearly unverified or deferred.",
+    "Required project checks pass; no Jira calls, automated synchronization, generic-default changes, historical work migrations or enrollment changes are performed.",
+    "The authorized GitHub issue and PR lifecycle completes through work finish using the merged revision and all configured CI receipts.",
+]
+reviewed = true
+depends_on = []
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+branch = "codex/github-jira-profile"
+profile = "profiles/sean.toml"
+workflow = "docs/development-workflow.md"
+setup = "docs/workflows/work-computer-setup.md"
+tracker = "37"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/38"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72"
+deploy = "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "c1d0b090971dc5829585dfa82141ca9ae4735564494f33160785fbac0ba0daa1"

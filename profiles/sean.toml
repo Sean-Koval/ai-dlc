@@ -1,14 +1,21 @@
 schema = 4
 
 [modules]
-include = ["core", "python", "node", "rust", "docker", "vscode", "codex", "claude-code", "openspec", "linear", "obsidian", "context7", "serena"]
+include = ["core", "python", "node", "rust", "docker", "vscode", "codex", "claude-code", "openspec", "obsidian", "context7", "serena"]
 
 [preferences]
 headless = false
 
 [roles]
 specs = "openspec"
-tracker = "linear"
+# GitHub Issues owns delivery tasks; GitHub Projects organizes their progress.
+# Keep repository, account and Project board mappings in each project's ai-dlc.toml.
+# Jira is the planned upstream owner of business outcomes and acceptance:
+# one Jira outcome can link to several GitHub delivery issues; engineering work
+# can also begin in GitHub. Links and summaries are manual; automated sync is planned.
+# This is workflow guidance, not an enabled Jira connection or sync setting.
+# See docs/development-workflow.md#github-delivery-with-jira-outcomes.
+tracker = "github-issues"
 knowledge = "obsidian"
 scm = "github"
 deploy = "none"
