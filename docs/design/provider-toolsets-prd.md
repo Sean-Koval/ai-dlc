@@ -154,7 +154,7 @@ is a machine-level setup step, not something repeated by project bootstrap.
 - [Product direction](../product-direction.md)
 - [Code audit and alternatives](../planning/provider-toolset-code-audit.md)
 - [Implementation sequence](../superpowers/plans/2026-09-06-provider-toolsets.md)
-- [Toolset setup spec](../../openspec/changes/provider-toolset-onboarding/specs/provider-toolset-onboarding/spec.md)
+- [Toolset setup spec](../../openspec/changes/archive/2026-09-08-provider-toolset-onboarding/specs/provider-toolset-onboarding/spec.md)
 - [Tracker adapter spec](../../openspec/changes/portable-tracker-adapters/specs/portable-tracker-adapters/spec.md)
 - [Migration spec](../../openspec/changes/selective-tracker-migration/specs/selective-tracker-migration/spec.md)
 - [Publication spec](../../openspec/changes/team-document-publication/specs/team-document-publication/spec.md)

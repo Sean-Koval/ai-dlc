@@ -55,6 +55,54 @@ def make_server(root: Path, machine: Path | None = None) -> FastMCP:
 
         return check_documents(root)
 
+    @server.tool()
+    def project_docs_impact(base: str) -> dict:
+        """Read changed sources and documentation review candidates for a Git comparison."""
+        from ai_dlc.document_impact import inspect_impact
+
+        return inspect_impact(root, base=base)
+
+    @server.tool()
+    def project_docs_disposition(base: str, decisions: list[dict], reviewer: str) -> dict:
+        """Prepare evidence from explicit reviewed dispositions without writing files."""
+        from ai_dlc.document_impact import prepare_disposition
+
+        return prepare_disposition(root, base=base, decisions=decisions, reviewer=reviewer)
+
+    @server.tool()
+    def project_docs_gate(
+        evidence: str = ".ai-dlc/documentation/current.json",
+        baseline: str = ".ai-dlc/documentation/baseline.json",
+        base: str | None = None,
+    ) -> dict:
+        """Check reviewed documentation evidence and historical debt; no mutation."""
+        from ai_dlc.document_impact import check_gate
+
+        return check_gate(root, evidence_path=evidence, baseline_path=baseline, base=base)
+
+    @server.tool()
+    def project_docs_review(base: str, paths: list[str], max_bytes: int = 64000) -> dict:
+        """Prepare selected local document bodies and mapped evidence for a harness review."""
+        from ai_dlc.document_review import prepare_review
+
+        return prepare_review(root, paths=paths, base=base, max_bytes=max_bytes)
+
+    @server.tool()
+    def project_docs_review_check(packet: dict, review: dict) -> dict:
+        """Validate a harness review's citations and scope against current local sources."""
+        from ai_dlc.document_review import validate_review
+
+        return validate_review(root, packet=packet, review=review)
+
+    @server.tool()
+    def project_workspace_preview(name: str | None = None, bases: bool = False) -> dict:
+        """Preview an additive linked workspace using the configured private vault; no writes."""
+        from ai_dlc.knowledge_workspace import setup_workspace
+
+        return setup_workspace(
+            root, vault=config.get("paths", {}).get("vault"), name=name, bases=bases
+        )
+
     def knowledge():
         from ai_dlc.knowledge import Knowledge
 

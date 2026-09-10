@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python, Typer, existing stdio MCP, TOML and Markdown.
 
-**Spec:** openspec/changes/obsidian-vault-linking/design.md and specs/obsidian-vault-linking/spec.md.
+**Spec:** design.md and specs/obsidian-vault-linking/spec.md (relative to this archived change).
 
 ## Global constraints
 

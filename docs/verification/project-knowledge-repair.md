@@ -1,7 +1,7 @@
 # Project knowledge repair verification
 
 Scope: repair PR #28's document organization and vault boundary behavior. The
-[formal change](../../openspec/changes/obsidian-vault-linking/) owns requirements
+[formal change](../../openspec/changes/archive/2026-09-10-obsidian-vault-linking/) owns requirements
 and the execution checklist. The source guide lives in the project template and
 is linked from the design record rather than copied into another maintained guide.
 
@@ -45,3 +45,33 @@ links. It is a review queue, not authorization for bulk rewriting, new review
 dates, deletions or an assertion of semantic freshness. Existing authored files
 and legacy mounts are preserved. No package publication, spec archive or gated
 work finish is part of this repair before merge and exact merged-CI evidence.
+
+## September 10 delivery reconciliation
+
+Read-only GitHub inspection confirmed PR28 is MERGED at
+`74b90c67f9f0b29a0a4bae688ea6b670608aea18`, with head
+`6c0a732d127a6bb610fe66057965701e9c1cbf3b`. Its five Verify checks succeeded in
+[run 34309239909](https://github.com/Sean-Koval/ai-dlc/actions/runs/34309239909).
+These are PR-head checks, not independently verified exact merged-revision receipts.
+No gated work finish is claimed by this editorial reconciliation.
+
+The following source/fixture reconciliation was performed against the merged source
+in this checkout. A fresh focused run of `tests/test_project_documents.py`,
+`tests/test_vault_link.py` and `tests/test_knowledge.py` passed all 46 tests.
+
+| Requirement | Delivered source and evidence | Boundary |
+| --- | --- | --- |
+| DK-01 | `src/ai_dlc/moc.py:plan_documents`; existing layout and missing-spec navigation regressions | Navigation preserves canonical files; it does not invent architecture |
+| DK-02 | `src/ai_dlc/templates.py:adopt`, `src/ai_dlc/document_files.py`; conflict, preview parity and concurrent authored-file regressions | Exclusive creation retains partial output; no implicit cleanup |
+| DK-03 | `src/ai_dlc/vault_link.py`; safe name, authored portal, missing vault and legacy-link regressions | Markdown portal only; actual Obsidian editing is unqualified |
+| DK-04 | `src/ai_dlc/knowledge.py` and `src/ai_dlc/files.py`; arbitrary/nested symlink regressions | Private-note boundary; linked source bodies are not fetched |
+| DK-05 | `src/ai_dlc/documents.py`; catalog provenance, ownership, supersession and malformed metadata cases | Metadata is explicit; source URLs grant no publication authority |
+| DK-06 | `src/ai_dlc/documents.py`, CLI and MCP interfaces; shared-result and read-only diagnostics regressions | No semantic freshness, remote source checks or automatic repair |
+| DK-07 | `project-templates/project/docs/documentation-guide.md` and generated map in `src/ai_dlc/moc.py` | Upkeep guidance preserves separate tracker, specification and publication authority |
+
+`openspec archive obsidian-vault-linking --yes` validated and archived the delivered
+change as `2026-09-10-obsidian-vault-linking`, creating the canonical
+[DK specification](../../openspec/specs/obsidian-vault-linking/spec.md).
+The work record now points to that archive. Earlier pre-merge statements above
+remain historical evidence. Source inspection and these regressions do not add
+live Obsidian, Confluence, native-client, or platform qualification.

@@ -10,7 +10,7 @@
 
 **Tech Stack:** Python 3.12, existing AI-DLC CLI/services, Markdown workflow assets, OpenSpec, and configured tracker/SCM adapters. Reuse existing dependencies; any new dependency requires a documented necessity and explicit review.
 
-**Spec:** [spec-delivery-traceability](../../../openspec/changes/spec-delivery-traceability/specs/spec-delivery-traceability/spec.md)
+**Spec:** [spec-delivery-traceability](../../../openspec/changes/archive/2026-09-08-spec-delivery-traceability/specs/spec-delivery-traceability/spec.md)
 
 ## Global constraints
 

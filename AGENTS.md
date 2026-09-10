@@ -8,7 +8,7 @@ Store durable architecture, decisions and runbooks in `docs/`; formal change art
 
 Use conventional commit prefixes. Describe behavior and validation in review descriptions; do not publish packages or change remote service state implicitly.
 
-<!-- ai-dlc:begin 452560be6438f127972a903b85ab3783d7c91ffd161c3ca2124987c8869dc685 -->
+<!-- ai-dlc:begin 3da41bd13b41c7a113bc4decd64dbea726043a4901e0ec29ab790196e05cc485 -->
 # Shared project guidance
 
 Read ai-dlc.toml and the active .ai-dlc/work record before work.
@@ -23,6 +23,7 @@ Store architecture, design, decisions and runbooks in docs/. Keep personal notes
 - lint: `uv run --locked --no-sync ruff check src tests scripts`
 - types: `uv run --locked --no-sync pyright --pythonpath .venv/bin/python`
 - test: `uv run --locked --no-sync pytest -q`
+- documentation: `ai-dlc project docs-gate`
 
 Run `ai-dlc project check --required` in the prepared project environment.
 

@@ -1,5 +1,9 @@
 # Phase 1 Implementation Plan: Standalone Scaffolding CLI
 
+Status: historical Rust implementation plan. The current release implementation is
+Python in `src/ai_dlc/`; see [architecture](architecture.md). Retained for rationale,
+not an instruction to replace the Python packaging path.
+
 ## 1. Objective
 
 The goal of Phase 1 is to produce a single, self-contained, cross-platform binary, `ai-dlc`, built in Rust. This tool's primary function will be to scaffold new projects with best-practice templates for various AI providers. It must be easy to distribute and use, with no external dependencies for the end-user.

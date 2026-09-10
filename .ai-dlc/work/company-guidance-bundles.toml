@@ -1,0 +1,38 @@
+schema = 1
+id = "company-guidance-bundles"
+title = "Distribute versioned SDK skills with supporting references"
+scope = "Distribute versioned SDK skills with supporting references. Deliver the linked OpenSpec requirements."
+requires_spec = true
+spec_reason = "Observable documentation lifecycle, guidance or service behavior."
+acceptance = [
+    "Workflow bundles SHALL support declared Markdown skill references through a new compatible schema while retaining schema-1 behavior, pinned digests, safe paths, ownership and offline rendering guarantees.",
+    "Company guidance SHALL identify its owner, source provenance, applicable SDK versions and review status. Tentative observations SHALL be distinct from approved rules; conflicting or incompatible selections SHALL produce actionable diagnostics.",
+    "Guidance SHALL define evidence-backed promotion from personal observation to reviewed company procedure. Existing company sources SHALL retain authority; selection SHALL not import unrelated company context or publish private notes.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "CG-01",
+    "CG-02",
+    "CG-03",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+scm = "github"
+knowledge = "obsidian"
+
+[artifacts]
+spec = "openspec/changes/archive/2026-09-10-company-guidance-bundles"
+plan = "openspec/changes/archive/2026-09-10-company-guidance-bundles/tasks.md"
+branch = "codex/documentation-knowledge"
+tracker = "33"
+verification = "docs/verification/documentation-workflow.md"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72"
+deploy = "bb3dd49c4f4cb2917763afc3947c0e2c691186fe67482e488bd64505d7e3b39f"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "c1d0b090971dc5829585dfa82141ca9ae4735564494f33160785fbac0ba0daa1"

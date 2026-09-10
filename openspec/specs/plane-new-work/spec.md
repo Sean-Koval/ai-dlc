@@ -1,7 +1,7 @@
 # plane-new-work Specification
 
 ## Purpose
-TBD - created by archiving change plane-new-work. Update Purpose after archive.
+Support explicit optional Plane deployments through identity-checked discovery, durable single-attempt mutations and faithful lifecycle links without overstating live qualification.
 ## Requirements
 ### Requirement: PN-01 Explicit deployment and account identity
 Plane SHALL support explicit Cloud HTTPS and self_hosted HTTPS or HTTP loopback origins with strict host/port parsing, no redirects, and named API-key or externally managed OAuth environment credentials. Account/workspace/project identity SHALL be revalidated without leaking credentials.

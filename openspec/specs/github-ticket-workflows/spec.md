@@ -1,7 +1,7 @@
 # github-ticket-workflows Specification
 
 ## Purpose
-TBD - created by archiving change github-ticket-workflows. Update Purpose after archive.
+Support capability-driven GitHub issue lifecycles, optional Project planning, recoverable identity and reviewed setup or selected migration with explicit evidence boundaries.
 ## Requirements
 ### Requirement: GT-01 Capability-based lifecycle
 Work start SHALL consume declared tracker lifecycle capabilities without provider-name branching. Discovery SHALL be optional for legacy adapters, with explicit unverified fallback only when discovery is not declared. Declared discovery failures SHALL fail visibly.

@@ -1,7 +1,7 @@
 # github-project-defaults Specification
 
 ## Purpose
-TBD - created by archiving change github-project-defaults. Update Purpose after archive.
+Provide reviewed Project-backed GitHub setup with repository association, explicit issues-only compatibility and no remote creation during offline scaffolding.
 ## Requirements
 ### Requirement: GP-01 Project-backed GitHub default
 GitHub connection SHALL default to a Project named after the configured project,

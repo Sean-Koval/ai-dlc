@@ -1,7 +1,7 @@
 # toolset-composition Specification
 
 ## Purpose
-TBD - created by archiving change toolset-composition. Update Purpose after archive.
+Plan definition-driven provider and agent selections without remote operations or invented bindings, preserving defaults and reporting local knowledge and unavailable lifecycle capabilities honestly.
 ## Requirements
 ### Requirement: TC-01 Definition-driven scaffold selection
 Project adoption and initialization SHALL validate selected provider roles and supported agent clients through a pure plan, preserve omitted legacy defaults, and persist selected non-secret configuration in Copier answers. They SHALL NOT invent account bindings or execute service operations.

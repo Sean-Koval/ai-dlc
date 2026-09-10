@@ -1,7 +1,7 @@
 # component-capability-contract Specification
 
 ## Purpose
-TBD - created by archiving change component-capability-contract. Update Purpose after archive.
+Resolve selected component capabilities and installation requirements deterministically from verified extension metadata with explicit compatibility and provenance.
 ## Requirements
 ### Requirement: CC-01 Deterministic capability resolution
 

@@ -34,4 +34,18 @@ Confluence MCP after inspecting its interface. See
 [local and shared knowledge](local-and-shared-knowledge.md) for that workflow.
 
 The formal requirements and repair rationale are in the
-[OpenSpec change](../../openspec/changes/obsidian-vault-linking/).
+[OpenSpec change](../../openspec/changes/archive/2026-09-10-obsidian-vault-linking/).
+
+## Evidence and private-workspace extensions
+
+The approved documentation program adds Git impact inspection, explicit
+content-bound dispositions, scoped harness review packets and citation validation.
+These services coordinate review; they cannot infer semantic accuracy. A linked
+Obsidian workspace adds personal navigation and templates while canonical document
+bodies remain in Git. SDK workflow bundles may carry declared references and exact
+version applicability, preserving pinned ownership and independent company authority.
+
+The reusable documentation guide linked above owns commands and editorial process.
+Formal behavior remains in the corresponding OpenSpec changes; verified execution
+and remaining live qualification are recorded in
+[documentation workflow verification](../verification/documentation-workflow.md).

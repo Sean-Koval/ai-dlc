@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python 3.12, existing AI-DLC CLI/services, Markdown workflow assets, OpenSpec, and configured tracker/SCM adapters. Reuse existing dependencies; any new dependency requires a documented necessity and explicit review.
 
-**Spec:** [connected-project-readiness](../../../openspec/changes/connected-project-readiness/specs/connected-project-readiness/spec.md)
+**Spec:** [connected-project-readiness](../../../openspec/changes/archive/2026-09-05-connected-project-readiness/specs/connected-project-readiness/spec.md)
 
 ## Global constraints
 

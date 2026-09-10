@@ -1,5 +1,9 @@
 schema = 1
 
+# Remaining historical/supporting inventory and explicit review dispositions:
+# docs/verification/documentation-baseline.json. Classification is not factual review.
+# Unknown review dates stay unknown until an owner performs a scoped content review.
+
 [[documents]]
 id = "product-direction"
 path = "docs/product-direction.md"
@@ -34,3 +38,49 @@ path = "docs/release-verification.md"
 kind = "runbook"
 owner = "repository-maintainers"
 status = "active"
+
+[[documents]]
+id = "roadmap"
+path = "docs/roadmap.md"
+kind = "navigation"
+owner = "repository-maintainers"
+status = "active"
+
+[[documents]]
+id = "delivery-handoff"
+path = "docs/handoffs/framework-delivery.md"
+kind = "navigation"
+owner = "repository-maintainers"
+status = "active"
+
+[[documents]]
+id = "historical-provider-handoff"
+path = "docs/handoffs/provider-toolset-plan.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "project-knowledge-evidence"
+path = "docs/verification/project-knowledge-repair.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "active"
+
+[[documents]]
+id = "documentation-workflow-verification"
+path = "docs/verification/documentation-workflow.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "active"
+code_paths = ["src/ai_dlc/document_*.py", "src/ai_dlc/knowledge_workspace.py", "src/ai_dlc/workflow_bundles.py", "src/ai_dlc/agents.py", "src/ai_dlc/config.py"]
+verification_paths = ["tests/test_document_*.py", "tests/test_knowledge_workspace.py", "tests/test_company_guidance.py"]
+requirements = ["openspec/specs/documentation-lifecycle-reconciliation/spec.md", "openspec/specs/documentation-impact-workflow/spec.md", "openspec/specs/document-evidence-review/spec.md", "openspec/specs/obsidian-project-workspace/spec.md", "openspec/specs/company-guidance-bundles/spec.md", "openspec/specs/documentation-workflow-qualification/spec.md"]
+
+[[documents]]
+id = "workflow-tool-map"
+path = "docs/workflows/tool-map.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "active"
+code_paths = ["src/ai_dlc/mcp_server.py", "src/ai_dlc/cli.py"]

@@ -1,7 +1,7 @@
 # native-work-harnesses Specification
 
 ## Purpose
-TBD - created by archiving change native-work-harnesses. Update Purpose after archive.
+Distribute owned project guidance and workflow bundles across selected native harnesses with client-specific transports and honest readiness reporting.
 ## Requirements
 ### Requirement: NH-01 Native project guidance
 An explicitly selected Antigravity client SHALL receive the selected skills in

@@ -198,7 +198,7 @@ def test_validates_and_normalizes_a_complete_schema_one_bundle(tmp_path: Path):
         ),
         (
             {"schema": 2, "id": "example", "skills": {}, "templates": {}, "files": {}},
-            "schema must be 1",
+            "schema 2 bundle manifest must contain exactly",
         ),
         (
             {"schema": 1, "id": 1, "skills": {}, "templates": {}, "files": {}},

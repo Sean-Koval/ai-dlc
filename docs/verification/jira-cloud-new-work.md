@@ -2,7 +2,7 @@
 
 This is the bounded Jira child of [issue20](https://github.com/Sean-Koval/ai-dlc/issues/20),
 not completion of its optional Plane/live-qualification scope. The formal
-[JC01–06 specification](../../openspec/changes/jira-cloud-new-work/specs/jira-cloud-new-work/spec.md),
+[JC01–06 specification](../../openspec/changes/archive/2026-09-08-jira-cloud-new-work/specs/jira-cloud-new-work/spec.md),
 [adapter design](../design/jira-cloud.md) and [setup runbook](../runbooks/jira-cloud-setup.md)
 state the supported contract and remaining inputs. No company API was contacted.
 

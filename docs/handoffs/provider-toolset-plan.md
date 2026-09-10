@@ -1,6 +1,13 @@
-# Provider toolset planning handoff
+# Historical provider toolset planning handoff
 
-## Latest adoption update — September 7
+Status: historical planning and checkpoint evidence, retained September 10, 2026.
+Use the [current roadmap](../roadmap.md) and [delivery handoff](framework-delivery.md)
+for reconciled status. PR23, PR25, PR26 and PR28 are merged; earlier draft, pending
+and access-blocked statements below describe their original checkpoints. Issues
+#14/#15/#16/#17/#20/#21/#22 were cancelled as NOT_PLANNED, not completed.
+This record does not authorize restarting that scope.
+
+## Historical adoption update — September 7
 
 [Draft PR #23](https://github.com/Sean-Koval/ai-dlc/pull/23) contains the GitHub
 workflow implementation and Project default (`19995aa`). Platform CI is pending.
@@ -69,7 +76,7 @@ no tracker issue was published and no remote priority/status was changed.
 The independent SAN-12 branch remains at `04c65cb` with its separate cleanup
 blocker; its implementation is not included or assumed merged here.
 
-## Current priority
+## Historical priority
 
 Latest maintainer steering: focus on task/ticket management using GitHub Issues
 and Projects for personal coding projects; retain Linear as the source for

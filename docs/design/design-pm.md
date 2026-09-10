@@ -5,7 +5,7 @@ Status: optional UI/UX artifact implementation candidate; independent review and
 Updated: 2026-09-07
 
 This proposal consumes the broader [product-shaping workflow](../../openspec/specs/product-shaping-workflow/spec.md)
-and [delivery traceability](../../openspec/changes/spec-delivery-traceability/proposal.md).
+and [delivery traceability](../../openspec/changes/archive/2026-09-08-spec-delivery-traceability/proposal.md).
 The [framework direction](../product-direction.md) owns the product strategy;
 this document owns UI/UX-specific rationale and example evaluation criteria.
 Execution details are in the [implementation plan](../superpowers/plans/2026-09-05-design-pm-workflow.md).
@@ -194,7 +194,7 @@ Design PM experiment needs its own declared cases and budget.
 
 - [Roadmap](../roadmap.md)
 - [Current design handoff](../workflows/design-to-implementation.md)
-- [Formal proposal](../../openspec/changes/design-pm-workflow/proposal.md)
+- [Formal proposal](../../openspec/changes/archive/2026-09-08-design-pm-workflow/proposal.md)
 - [Implementation work record](../../.ai-dlc/work/design-pm-workflow.toml)
 - [Calibration work record](../../.ai-dlc/work/design-pm-calibration.toml)
 - [#13: workflow backlog ticket](https://github.com/Sean-Koval/ai-dlc/issues/13)

@@ -1,0 +1,43 @@
+schema = 1
+id = "documentation-workflow-qualification"
+title = "Package and qualify portable documentation practices"
+scope = "Package and qualify portable documentation practices. Deliver the linked OpenSpec requirements."
+requires_spec = true
+spec_reason = "Observable documentation lifecycle, guidance or service behavior."
+acceptance = [
+    "Supported harness guidance and OpenSpec artifact rules SHALL require audience, purpose, canonical placement and evidence appropriate to document type, with concrete examples where useful, without replacing OpenSpec artifact ownership.",
+    "Optional existing Markdown and Vale integrations SHALL expose objective and stylistic checks separately from factual judgments without implicit tool installation or certification.",
+    "The delivery SHALL demonstrate a repository and disposable brownfield workflow using original semantic cases and reviewed judgments. Actual Claude, Antigravity and Obsidian walkthroughs SHALL be recorded separately from fixtures; unavailable company inputs SHALL remain explicitly pending.",
+]
+reviewed = true
+depends_on = [
+    "documentation-impact-workflow",
+    "document-evidence-review",
+    "obsidian-project-workspace",
+    "company-guidance-bundles",
+]
+requirements = [
+    "DQ-01",
+    "DQ-02",
+    "DQ-03",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+scm = "github"
+knowledge = "obsidian"
+
+[artifacts]
+spec = "openspec/changes/archive/2026-09-10-documentation-workflow-qualification"
+plan = "openspec/changes/archive/2026-09-10-documentation-workflow-qualification/tasks.md"
+branch = "codex/documentation-knowledge"
+tracker = "34"
+verification = "docs/verification/documentation-workflow.md"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72"
+deploy = "bb3dd49c4f4cb2917763afc3947c0e2c691186fe67482e488bd64505d7e3b39f"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "c1d0b090971dc5829585dfa82141ca9ae4735564494f33160785fbac0ba0daa1"

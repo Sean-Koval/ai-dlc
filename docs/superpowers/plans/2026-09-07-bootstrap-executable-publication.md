@@ -1,7 +1,7 @@
 # Bootstrap executable publication repair
 
 Authorized bounded discovered-behavior child of GitHub #14. Base: root `64cb09f`.
-Spec: [bootstrap-executable-publication](../../../openspec/changes/bootstrap-executable-publication/specs/bootstrap-executable-publication/spec.md).
+Spec: [bootstrap-executable-publication](../../../openspec/changes/archive/2026-09-08-bootstrap-executable-publication/specs/bootstrap-executable-publication/spec.md).
 
 1. Demonstrate red real-script old-descriptor regressions for uv/uvx/mise and a synchronized overlapping-download regression. Use isolated local fixtures, no network or shared tools.
 2. Publish staged executable bytes and mode by same-filesystem rename. Use independent download files. Preserve previous installed files on failures; retain/report staging instead of deleting mutable pathnames.
