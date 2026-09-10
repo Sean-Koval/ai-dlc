@@ -9,7 +9,7 @@ import pytest
 
 def test_loads_the_packaged_component_catalog_and_its_guidance(tmp_path: Path):
     """Would fail if a distributed provider component or its guidance were omitted."""
-    from ai_dlc.components import load_component_catalog
+    from ai_dlc.harness.components import load_component_catalog
 
     catalog = load_component_catalog(tmp_path, {})
 
@@ -125,7 +125,7 @@ def _write_manifest(root: Path, name: str, component: dict) -> tuple[str, str]:
 
 def test_loads_digest_verified_synthetic_component_fixtures(tmp_path: Path):
     """Would fail if verified repository metadata could not extend built-in components."""
-    from ai_dlc.components import load_component_catalog
+    from ai_dlc.harness.components import load_component_catalog
 
     specs_manifest, specs_digest = _write_manifest(
         tmp_path,
@@ -182,7 +182,7 @@ def test_loads_digest_verified_synthetic_component_fixtures(tmp_path: Path):
 
 def test_rejects_a_raw_custom_manifest_without_its_digest(tmp_path: Path):
     """Would fail if the public loader accepted incomplete provider metadata."""
-    from ai_dlc.components import load_component_catalog
+    from ai_dlc.harness.components import load_component_catalog
 
     manifest, _ = _write_manifest(
         tmp_path,
@@ -207,7 +207,7 @@ def test_rejects_a_raw_custom_manifest_without_its_digest(tmp_path: Path):
 
 def test_rejects_a_manifest_when_its_configured_digest_does_not_match(tmp_path: Path):
     """Would fail if altered metadata were parsed without integrity verification."""
-    from ai_dlc.components import load_component_catalog
+    from ai_dlc.harness.components import load_component_catalog
 
     manifest, digest = _write_manifest(
         tmp_path,
@@ -240,7 +240,7 @@ def test_parses_the_verified_manifest_bytes_when_the_file_changes_after_read(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if parsing reread a manifest after its digest check."""
-    from ai_dlc.components import load_component_catalog
+    from ai_dlc.harness.components import load_component_catalog
 
     manifest, digest = _write_manifest(tmp_path, "race.json", _component())
     manifest_path = tmp_path / manifest
@@ -296,7 +296,7 @@ def test_parses_the_verified_manifest_bytes_when_the_file_changes_after_read(
 
 def test_rejects_an_unsafe_component_manifest_path(tmp_path: Path):
     """Would fail if custom metadata could escape the selected repository."""
-    from ai_dlc.components import load_component_catalog
+    from ai_dlc.harness.components import load_component_catalog
 
     outside = tmp_path.parent / "outside-components.json"
     outside.write_text('{"schema": 1, "components": []}')
@@ -319,7 +319,7 @@ def test_rejects_an_unsafe_component_manifest_path(tmp_path: Path):
 
 def test_rejects_a_drive_qualified_component_manifest_path(tmp_path: Path):
     """Would fail if a Windows drive path bypassed repository path validation."""
-    from ai_dlc.components import load_component_catalog
+    from ai_dlc.harness.components import load_component_catalog
 
     with pytest.raises(ValueError, match="relative normalized path"):
         load_component_catalog(
@@ -362,7 +362,7 @@ def test_rejects_component_metadata_outside_the_schema(
     tmp_path: Path, components: list[dict], match: str
 ):
     """Would fail if manifests could name untrusted metadata or unavailable resources."""
-    from ai_dlc.components import load_component_catalog
+    from ai_dlc.harness.components import load_component_catalog
 
     (tmp_path / "components").mkdir()
     manifest = tmp_path / "components" / "invalid.json"
@@ -386,7 +386,7 @@ def test_rejects_component_metadata_outside_the_schema(
 
 def test_rejects_a_non_normalized_guidance_path(tmp_path: Path):
     """Would fail if equivalent path spellings bypassed repository path validation."""
-    from ai_dlc.components import load_component_catalog
+    from ai_dlc.harness.components import load_component_catalog
 
     (tmp_path / "guidance").mkdir()
     (tmp_path / "guidance" / "synthetic-specs.md").write_text("# guidance\n")
@@ -416,7 +416,7 @@ def test_rejects_a_non_normalized_guidance_path(tmp_path: Path):
 
 def test_resolves_an_explicit_openspec_role_to_its_component_requirements():
     """Would fail if an explicit OpenSpec selection did not require its component."""
-    from ai_dlc.components import resolve_components
+    from ai_dlc.harness.components import resolve_components
 
     result = resolve_components(
         {"roles": {"specs": "openspec"}},
@@ -452,8 +452,8 @@ def test_resolves_an_explicit_openspec_role_to_its_component_requirements():
 
 def test_resolves_only_personal_or_project_roles_from_a_layered_configuration():
     """Would fail if compatibility-only base roles authorized component installation."""
-    from ai_dlc.components import resolve_components
     from ai_dlc.config import resolve_layers
+    from ai_dlc.harness.components import resolve_components
 
     resolved = resolve_layers(
         [
@@ -510,7 +510,7 @@ def test_resolves_only_personal_or_project_roles_from_a_layered_configuration():
 @pytest.mark.parametrize("tracker", ["linear", "github-issues"])
 def test_ignores_normal_schema_4_agent_clients_when_resolving_raw_roles(tmp_path: Path, tracker):
     """Would fail if a list-valued client role were treated as a component provider."""
-    from ai_dlc.components import load_component_catalog, resolve_components
+    from ai_dlc.harness.components import load_component_catalog, resolve_components
 
     config = {
         "schema": 4,
@@ -534,8 +534,8 @@ def test_ignores_normal_schema_4_agent_clients_when_resolving_raw_roles(tmp_path
 
 def test_ignores_empty_explicit_agent_clients_in_a_layered_configuration():
     """Would fail if an empty client list reached provider lookup after provenance filtering."""
-    from ai_dlc.components import resolve_components
     from ai_dlc.config import resolve_layers
+    from ai_dlc.harness.components import resolve_components
 
     resolved = resolve_layers(
         [
@@ -574,7 +574,7 @@ def test_ignores_empty_explicit_agent_clients_in_a_layered_configuration():
 
 def test_resolves_a_provider_alias_through_its_declared_kind():
     """Would fail if a provider alias could not use its registered component kind."""
-    from ai_dlc.components import resolve_components
+    from ai_dlc.harness.components import resolve_components
 
     result = resolve_components(
         {
@@ -613,7 +613,7 @@ def test_resolves_a_provider_alias_through_its_declared_kind():
 
 def test_resolves_a_provider_component_override_before_its_kind():
     """Would fail if an explicit component override were ignored for a provider."""
-    from ai_dlc.components import resolve_components
+    from ai_dlc.harness.components import resolve_components
 
     result = resolve_components(
         {
@@ -661,7 +661,7 @@ def test_resolves_a_provider_component_override_before_its_kind():
 
 def test_reports_an_unknown_component_override_without_using_the_provider_kind():
     """Would fail if an unknown override silently fell back to the provider kind."""
-    from ai_dlc.components import resolve_components
+    from ai_dlc.harness.components import resolve_components
 
     result = resolve_components(
         {
@@ -699,7 +699,7 @@ def test_reports_an_unknown_component_override_without_using_the_provider_kind()
 
 def test_reports_an_unknown_selected_provider_without_a_fallback():
     """Would fail if an unknown provider selection were silently ignored or substituted."""
-    from ai_dlc.components import resolve_components
+    from ai_dlc.harness.components import resolve_components
 
     result = resolve_components(
         {"roles": {"tracker": "unlisted-tracker"}},
@@ -732,7 +732,7 @@ def test_reports_an_unknown_selected_provider_without_a_fallback():
 
 def test_reports_a_component_that_is_incompatible_with_the_selected_role():
     """Would fail if an incompatible component were treated as a valid role selection."""
-    from ai_dlc.components import resolve_components
+    from ai_dlc.harness.components import resolve_components
 
     result = resolve_components(
         {"roles": {"specs": "linear"}},
@@ -765,7 +765,7 @@ def test_reports_a_component_that_is_incompatible_with_the_selected_role():
 
 def test_sorts_resolved_components_and_their_requirement_lists():
     """Would fail if catalog declaration order changed the capability result."""
-    from ai_dlc.components import resolve_components
+    from ai_dlc.harness.components import resolve_components
 
     result = resolve_components(
         {"roles": {"specs": "openspec", "tracker": "linear"}},
@@ -816,7 +816,7 @@ def test_sorts_resolved_components_and_their_requirement_lists():
 
 def test_deduplicates_module_requirements_for_a_resolved_component():
     """Would fail if a component could emit the same installation module twice."""
-    from ai_dlc.components import resolve_components
+    from ai_dlc.harness.components import resolve_components
 
     result = resolve_components(
         {"roles": {"tracker": "linear"}},
@@ -839,7 +839,7 @@ def test_deduplicates_module_requirements_for_a_resolved_component():
 
 def test_sorts_unresolved_selections_by_provider_and_role():
     """Would fail if caller input order changed the unresolved diagnostics."""
-    from ai_dlc.components import resolve_components
+    from ai_dlc.harness.components import resolve_components
 
     result = resolve_components(
         {"roles": {"tracker": "zeta", "specs": "alpha"}},

@@ -21,7 +21,7 @@ knowledge = "obsidian"
 
 [artifacts]
 spec = "openspec/changes/archive/2026-09-08-jira-cloud-new-work"
-plan = "docs/superpowers/plans/2026-09-07-jira-cloud-new-work.md"
+plan = "openspec/changes/archive/2026-09-08-jira-cloud-new-work/2026-09-07-jira-cloud-new-work.md"
 branch = "codex/jira-cloud"
 parent_issue = "https://github.com/Sean-Koval/ai-dlc/issues/20"
 pr = "https://github.com/Sean-Koval/ai-dlc/pull/26"

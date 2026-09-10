@@ -36,7 +36,7 @@ verification_paths = ["tests/test_api.py"]
 
 
 def api():
-    from ai_dlc import document_impact
+    from ai_dlc.documentation import document_impact
 
     return document_impact
 

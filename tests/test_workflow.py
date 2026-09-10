@@ -5,7 +5,7 @@ import pytest
 
 @pytest.fixture
 def trusted_scm(monkeypatch):
-    from ai_dlc import workflow
+    from ai_dlc.work import workflow
 
     class SCM:
         def __init__(self, root, config):
@@ -75,7 +75,7 @@ class Tracker:
 
 
 def test_uncertain_close_reconciles_without_repeating_remote_mutation(tmp_path, trusted_scm):
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
 
@@ -371,7 +371,7 @@ def test_work_service_from_project_preserves_machine_overlay(tmp_path):
     """Coherent project resolution must retain explicitly selected machine settings."""
     import tomllib
 
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     (tmp_path / "ai-dlc.toml").write_text(
         'schema = 4\n[roles]\ntracker = "linear"\n'
@@ -407,7 +407,7 @@ def test_work_service_from_project_preserves_machine_overlay(tmp_path):
 
 
 def test_publish_reconciles_uncertain_creation(tmp_path):
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
     tracker = Tracker()
@@ -425,7 +425,7 @@ def test_publish_reconciles_uncertain_creation(tmp_path):
 
 
 def test_unknown_gate_never_closes(tmp_path):
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
     tracker = Tracker()
@@ -441,7 +441,7 @@ def test_unknown_gate_never_closes(tmp_path):
 
 
 def test_handoff_pending_retry_does_not_repeat_close(tmp_path, trusted_scm):
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
     tracker = Tracker()
@@ -461,7 +461,7 @@ def test_handoff_can_recover_after_vault_configuration(tmp_path, monkeypatch, tr
     import sys
     import types
 
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
     tracker = Tracker()
@@ -481,14 +481,16 @@ def test_handoff_can_recover_after_vault_configuration(tmp_path, monkeypatch, tr
         def append(self, path, body, operation_id):
             return {"path": path}
 
-    monkeypatch.setitem(sys.modules, "ai_dlc.knowledge", types.SimpleNamespace(Knowledge=Knowledge))
+    monkeypatch.setitem(
+        sys.modules, "ai_dlc.documentation.knowledge", types.SimpleNamespace(Knowledge=Knowledge)
+    )
     service.config["paths"] = {"vault": str(tmp_path / "vault")}
     assert service.finish("one", handoff="Done")["status"] == "completed"
     assert tracker.closed == 1
 
 
 def test_reopened_remote_cannot_be_completed_from_local_record(tmp_path, trusted_scm):
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
     tracker = Tracker()
@@ -623,7 +625,7 @@ def test_github_scm_rejects_missing_receipt_in_matrix(tmp_path):
 
 
 def test_unreviewed_work_cannot_publish(tmp_path):
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
     path = tmp_path / ".ai-dlc/work/one.toml"
@@ -659,7 +661,7 @@ def test_receipt_matches_root_check_manifest():
 
 
 def test_publish_pending_crash_does_not_create_again(tmp_path):
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
     tracker = Tracker()
@@ -724,7 +726,7 @@ def test_finish_trusts_only_matching_authenticated_run(tmp_path, monkeypatch, fa
     import tomli_w
 
     from ai_dlc.providers.scm import digest
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
     tracker = Tracker()
@@ -815,7 +817,7 @@ def test_finish_trusts_only_matching_authenticated_run(tmp_path, monkeypatch, fa
 
 def test_work_uses_pinned_specification_provider(tmp_path, trusted_scm):
     from ai_dlc.providers import Registry as ProviderRegistry
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
     path = tmp_path / ".ai-dlc/work/one.toml"
@@ -848,7 +850,7 @@ def test_work_uses_pinned_specification_provider(tmp_path, trusted_scm):
 
 def test_false_specification_evidence_cannot_close(tmp_path, trusted_scm):
     from ai_dlc.providers import Registry as ProviderRegistry
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
     path = tmp_path / ".ai-dlc/work/one.toml"
@@ -908,7 +910,7 @@ def test_receipt_rejects_malformed_outcomes(fault):
 
 
 def test_work_filters_agent_roles_and_normalizes_workflow_roles(tmp_path):
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
     path = tmp_path / ".ai-dlc/work/one.toml"
@@ -935,7 +937,7 @@ def test_work_filters_agent_roles_and_normalizes_workflow_roles(tmp_path):
 
 
 def test_provider_workspace_drift_is_blocked(tmp_path):
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
     tracker = Tracker()
@@ -950,7 +952,7 @@ def test_provider_workspace_drift_is_blocked(tmp_path):
 
 
 def test_empty_gates_cannot_bypass_merge_and_ci(tmp_path):
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
     tracker = Tracker()
@@ -985,7 +987,7 @@ def init_git(tmp_path):
 
 def test_start_creates_branch_for_github_without_intermediate_state(tmp_path):
     from ai_dlc.providers import Registry as ProviderRegistry
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
     git = init_git(tmp_path)
@@ -1022,7 +1024,7 @@ def test_start_creates_branch_for_github_without_intermediate_state(tmp_path):
 
 def test_start_uses_declared_capability_without_provider_name_dispatch(tmp_path):
     from ai_dlc.providers import Registry
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
     init_git(tmp_path)
@@ -1054,7 +1056,7 @@ def test_start_uses_declared_capability_without_provider_name_dispatch(tmp_path)
 
 def test_start_refuses_failed_declared_capability_without_legacy_fallback(tmp_path):
     from ai_dlc.providers import Registry
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
     init_git(tmp_path)
@@ -1077,7 +1079,7 @@ def test_start_refuses_failed_declared_capability_without_legacy_fallback(tmp_pa
 
 def test_start_rejects_malformed_declared_capability_before_mutation(tmp_path):
     from ai_dlc.providers import Registry
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
     git = init_git(tmp_path)
@@ -1105,7 +1107,7 @@ def test_start_rejects_malformed_declared_capability_before_mutation(tmp_path):
 
 def test_start_marks_absent_capability_declaration_as_unverified(tmp_path):
     from ai_dlc.providers import Registry
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
     init_git(tmp_path)
@@ -1124,7 +1126,7 @@ def test_start_marks_absent_capability_declaration_as_unverified(tmp_path):
 
 
 def test_start_preserves_dirty_work_and_linked_branch(tmp_path):
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
     git = init_git(tmp_path)
@@ -1218,7 +1220,7 @@ def test_clean_archived_spec_is_bound_to_merged_sha(tmp_path, monkeypatch):
 
 
 def test_machine_vault_relocation_does_not_rebind_work(tmp_path):
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
     config = {"paths": {"vault": str(tmp_path / "first-vault")}}
@@ -1231,7 +1233,7 @@ def test_machine_vault_relocation_does_not_rebind_work(tmp_path):
 
 
 def test_rebound_mapped_tracker_reuses_item_and_gets_new_journal_identity(tmp_path):
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
     original = Tracker()
@@ -1264,8 +1266,8 @@ def test_rebound_mapped_tracker_reuses_item_and_gets_new_journal_identity(tmp_pa
 
 
 def test_handoff_rebind_uses_mapped_note_and_new_operation(tmp_path, trusted_scm):
-    from ai_dlc.knowledge import Knowledge
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.documentation.knowledge import Knowledge
+    from ai_dlc.work.workflow import WorkService
 
     work(tmp_path)
     tracker = Tracker()
@@ -1346,7 +1348,7 @@ class TraceabilityTracker:
 
 @pytest.mark.parametrize("invalid", ["missing", "cycle", "artifact", "escape", "symlink"])
 def test_traceability_refusal_precedes_publication_and_binding_writes(tmp_path, invalid):
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     root = tmp_path / "project"
     artifacts = {}
@@ -1381,7 +1383,7 @@ def test_traceability_refusal_precedes_publication_and_binding_writes(tmp_path, 
 
 
 def test_traceability_defaults_and_rich_create_preserve_correlation_identity(tmp_path):
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     root = tmp_path / "project"
     path = traceability_record(root)
@@ -1407,7 +1409,7 @@ def test_traceability_defaults_and_rich_create_preserve_correlation_identity(tmp
 def test_rich_republication_reconciles_legacy_journal_and_preserves_authored_body(tmp_path, mapped):
     import tomli_w
 
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     root = tmp_path / "project"
     path = traceability_record(root)
@@ -1454,7 +1456,7 @@ def test_rich_republication_reconciles_legacy_journal_and_preserves_authored_bod
 def test_dependency_refusal_precedes_branch_and_local_mutation(tmp_path, state):
     import subprocess
 
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     root = tmp_path / "project"
     traceability_record(root, "parent", artifacts={"tracker": "parent-ref"})
@@ -1484,7 +1486,7 @@ def test_dependency_refusal_precedes_branch_and_local_mutation(tmp_path, state):
 def test_completed_dependencies_allow_start_with_their_pinned_provider(tmp_path):
     import subprocess
 
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     root = tmp_path / "project"
     traceability_record(
@@ -1529,7 +1531,7 @@ def test_completed_dependencies_allow_start_with_their_pinned_provider(tmp_path)
 
 @pytest.mark.parametrize("status", ["pending", "uncertain", "succeeded"])
 def test_legacy_publication_journal_recovery_survives_richer_payload(tmp_path, status):
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     root = tmp_path / "project"
     traceability_record(root)
@@ -1574,7 +1576,7 @@ def test_legacy_publication_journal_recovery_survives_richer_payload(tmp_path, s
 
 @pytest.mark.parametrize("requirements", [[""], [" "], ["RQ-001\ninvented requirement"]])
 def test_work_references_are_identifiers_not_blank_or_multiline_prose(tmp_path, requirements):
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     root = tmp_path / "project"
     traceability_record(root, requirements=requirements)
@@ -1586,7 +1588,7 @@ def test_work_references_are_identifiers_not_blank_or_multiline_prose(tmp_path, 
 
 
 def test_validation_keeps_provider_artifacts_and_external_documents_unprobed(tmp_path):
-    from ai_dlc.workflow import validate_work
+    from ai_dlc.work.workflow import validate_work
 
     root = tmp_path / "project"
     traceability_record(
@@ -1604,7 +1606,7 @@ def test_validation_keeps_provider_artifacts_and_external_documents_unprobed(tmp
 
 
 def test_start_requires_every_transitive_dependency_and_refreshes_each_read(tmp_path):
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     root = tmp_path / "project"
     traceability_record(root, "base", artifacts={"tracker": "base-ref"})
@@ -1637,7 +1639,7 @@ def test_start_requires_every_transitive_dependency_and_refreshes_each_read(tmp_
 def test_start_rejects_stale_project_configuration_before_branch_or_dependency_reads(tmp_path):
     import subprocess
 
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     root = tmp_path / "project"
     traceability_record(root)
@@ -1695,7 +1697,7 @@ def test_start_rejects_stale_project_configuration_before_branch_or_dependency_r
     ],
 )
 def test_legacy_native_spec_reference_validates_and_preserves_mapped_issue(tmp_path, reference):
-    from ai_dlc.workflow import WorkService, validate_work
+    from ai_dlc.work.workflow import WorkService, validate_work
 
     traceability_record(
         tmp_path,
@@ -1722,7 +1724,7 @@ def test_legacy_native_spec_reference_validates_and_preserves_mapped_issue(tmp_p
     "reference", ["./missing-change", "docs/missing.md", "spec.md", "../outside"]
 )
 def test_explicit_local_spec_reference_still_refuses_before_publication(tmp_path, reference):
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     path = traceability_record(tmp_path, artifacts={"spec": reference, "tracker": "mapped"})
     before = path.read_bytes()
@@ -1745,7 +1747,7 @@ def test_explicit_local_spec_reference_still_refuses_before_publication(tmp_path
     ],
 )
 def test_filesystem_uri_is_reserved_and_refused_before_publication(tmp_path, reference):
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     path = traceability_record(tmp_path, artifacts={"spec": reference, "tracker": "mapped"})
     before = path.read_bytes()
@@ -1762,7 +1764,7 @@ def test_filesystem_uri_is_reserved_and_refused_before_publication(tmp_path, ref
 def test_suffixless_dangling_spec_symlink_cannot_masquerade_as_native_id(
     tmp_path, dangling_ancestor
 ):
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     directory = tmp_path / "spec-links"
     directory.mkdir()

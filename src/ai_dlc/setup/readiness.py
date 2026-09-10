@@ -1,0 +1,456 @@
+"""Offline project readiness derived from validated component requirements."""
+
+from __future__ import annotations
+
+import re
+from collections.abc import Callable, Mapping
+from pathlib import Path
+from typing import Any
+
+from ai_dlc.config import read_toml
+from ai_dlc.environment.credentials import credential_status
+from ai_dlc.files import assets, inside
+from ai_dlc.harness.components import (
+    MissingComponentGuidance,
+    load_component_catalog,
+    resolve_components,
+)
+
+_READY = "ready"
+_BLOCKING_DIMENSIONS = {"tool", "configuration", "credential", "guidance", "lifecycle-adapter"}
+
+
+def _check(
+    component: str,
+    dimension: str,
+    status: str,
+    reason: str,
+    next_action: str,
+) -> dict[str, str]:
+    return {
+        "component": component,
+        "dimension": dimension,
+        "status": status,
+        "reason": reason,
+        "next_action": next_action,
+    }
+
+
+def _configured(value: Any) -> bool:
+    return value is not None and (not isinstance(value, str) or bool(value.strip()))
+
+
+def _config_value(config: Mapping[str, Any], path: str) -> Any:
+    value: Any = config
+    for part in path.split("."):
+        if not isinstance(value, Mapping) or part not in value:
+            return None
+        value = value[part]
+    return value
+
+
+def _guidance_available(root: Path, path: str) -> bool:
+    packaged = assets("agents") / path
+    if packaged.is_file() and not packaged.is_symlink():
+        return True
+    try:
+        project_path = inside(root, path)
+    except ValueError:
+        return False
+    return project_path.is_file() and not project_path.is_symlink()
+
+
+def _probe_module(commands: list[str], probe: Callable[[list[str]], dict]) -> bool | None:
+    try:
+        result = probe(commands)
+    except Exception:  # noqa: BLE001 -- readiness reports an unavailable bounded probe
+        return None
+    available = result.get("available") if isinstance(result, Mapping) else None
+    return available if type(available) is bool else None
+
+
+def _tool_checks(
+    component: dict[str, Any],
+    catalog: Mapping[str, Any],
+    *,
+    headless: bool,
+    probe: Callable[[list[str]], dict],
+) -> list[dict[str, str]]:
+    checks: list[dict[str, str]] = []
+    for module_id in component["modules"]:
+        module = catalog[module_id]
+        if headless and module.get("desktop"):
+            checks.append(
+                _check(
+                    component["id"],
+                    "tool",
+                    "blocked",
+                    f"headless desktop capability unavailable for module {module_id}",
+                    f"Use a non-headless environment to provide module {module_id}.",
+                )
+            )
+            continue
+        commands = module.get("verify", [])
+        if not commands:
+            checks.append(
+                _check(
+                    component["id"],
+                    "tool",
+                    _READY,
+                    f"module {module_id} has no executable verification requirement",
+                    "No action required.",
+                )
+            )
+            continue
+        available = _probe_module(commands, probe)
+        if available is True:
+            checks.append(
+                _check(
+                    component["id"],
+                    "tool",
+                    _READY,
+                    f"module {module_id} executable requirements are available",
+                    "No action required.",
+                )
+            )
+        elif available is False:
+            checks.append(
+                _check(
+                    component["id"],
+                    "tool",
+                    "missing",
+                    f"module {module_id} executable requirements are unavailable",
+                    f"Install module {module_id} with the explicit setup apply command.",
+                )
+            )
+        else:
+            checks.append(
+                _check(
+                    component["id"],
+                    "tool",
+                    "unverified",
+                    f"module {module_id} executable requirements could not be inspected",
+                    f"Run the module {module_id} verification in a prepared environment.",
+                )
+            )
+    return checks
+
+
+def _component_definitions(component: dict, config: dict):
+    from ai_dlc.provider_definitions import DEFINITIONS
+    from ai_dlc.providers import EXTENSION_PROVIDER_KINDS, PROVIDER_KIND_ALIASES
+
+    settings = config.get("providers", {}).get(component["provider"], {})
+    kind = settings.get("kind", settings.get("type", component["provider"]))
+    kind = PROVIDER_KIND_ALIASES.get(kind, kind)
+    runtime = DEFINITIONS.get(kind) if isinstance(kind, str) else None
+    selected = DEFINITIONS.get(component["id"])
+    problem = None
+    if runtime is not None and component["role"] not in runtime.roles:
+        problem = "runtime kind is incompatible with the selected role"
+    elif selected is not None and runtime is None and kind not in EXTENSION_PROVIDER_KINDS:
+        problem = "unknown runtime kind cannot borrow a trusted built-in component"
+    elif selected is not None and selected.inactive and runtime != selected:
+        problem = "runtime kind does not identify the selected inactive capability"
+    definitions = []
+    for definition in (selected, runtime):
+        if (
+            definition is not None
+            and component["role"] in definition.roles
+            and definition not in definitions
+        ):
+            definitions.append(definition)
+    return definitions, problem
+
+
+def _definition_checks(component: dict, config: dict, *, headless: bool) -> list[dict[str, str]]:
+    """Trusted bounded requirements; no executable/custom schema extensions."""
+    definitions, problem = _component_definitions(component, config)
+    checks = []
+    if problem:
+        checks.append(
+            _check(
+                component["id"],
+                "configuration",
+                "blocked",
+                problem,
+                f"Review providers.{component['provider']}.kind and component for the selected role.",
+            )
+        )
+    for definition in definitions:
+        checks.extend(
+            _trusted_definition_checks(
+                definition, component, config, headless=headless, compatible=problem is None
+            )
+        )
+    return checks
+
+
+def _trusted_definition_checks(definition, component, config, *, headless, compatible):
+    checks = []
+    if definition.inactive and compatible:
+        checks.append(
+            _check(
+                component["id"],
+                "activation",
+                "inactive",
+                f"{component['role']} is explicitly disabled; no service qualification applies.",
+                "No action required while this capability is disabled.",
+            )
+        )
+    for requirement in definition.runtime_requirements:
+        value = _config_value(config, requirement.path)
+        available = isinstance(value, str) and re.fullmatch(requirement.pattern, value) is not None
+        checks.append(
+            _check(
+                component["id"],
+                "configuration",
+                _READY if available else "missing",
+                f"{requirement.path} matches {requirement.description}; remote identity is unverified."
+                if available
+                else f"{requirement.path} must match {requirement.description}.",
+                "No action required for local configuration."
+                if available
+                else f"Configure {requirement.path} as {requirement.description}.",
+            )
+        )
+    if not definition.lifecycle_available:
+        checks.append(
+            _check(
+                component["id"],
+                "lifecycle-adapter",
+                "blocked",
+                f"AI-DLC {component['role']} lifecycle adapter is unavailable; native tools and guidance do not enable tracked-work operations.",
+                "Select an implemented lifecycle provider or retain this explicit unsupported capability.",
+            )
+        )
+    if definition.local_directory:
+        value = _config_value(config, definition.local_directory)
+        available = False
+        if isinstance(value, str) and value.strip():
+            try:
+                available = Path(value).expanduser().resolve().is_dir()
+            except (OSError, ValueError, RuntimeError):
+                pass
+        checks.append(
+            _check(
+                component["id"],
+                "configuration",
+                _READY if available else "missing",
+                f"{definition.local_directory} names an existing note-storage directory; write access is not tested."
+                if available
+                else f"{definition.local_directory} must name an existing note-storage directory.",
+                "No action required for directory availability; use explicit operations to verify access."
+                if available
+                else f"Configure {definition.local_directory} in machine configuration to an existing vault.",
+            )
+        )
+    if definition.optional_viewer:
+        checks.append(
+            _check(
+                component["id"],
+                "optional-viewer",
+                "unavailable" if headless else "unverified",
+                f"Optional {definition.optional_viewer} desktop viewer is unavailable in headless mode; note storage does not require it."
+                if headless
+                else f"Optional {definition.optional_viewer} desktop viewer was not inspected; note storage does not require it.",
+                "Use a desktop viewer only when visual browsing is needed; it is not a prerequisite for note operations.",
+            )
+        )
+    return checks
+
+
+def inspect_readiness(
+    root: Path,
+    config: dict,
+    *,
+    environ: Mapping[str, str],
+    probe: Callable[[list[str]], dict],
+) -> dict:
+    """Inspect offline requirements without reading credentials or contacting providers."""
+    root = Path(root).resolve()
+    missing_guidance: set[tuple[str, str]] = set()
+    try:
+        catalog = load_component_catalog(root, config)
+    except MissingComponentGuidance as exc:
+        catalog = exc.catalog
+        missing_guidance = set(exc.missing)
+    resolved = resolve_components(config, catalog)
+    modules = read_toml(assets("modules") / "catalog.toml")
+    checks: list[dict[str, str]] = []
+    headless = bool(config.get("preferences", {}).get("headless", False))
+
+    for unresolved in resolved["unresolved"]:
+        checks.append(
+            _check(
+                unresolved["provider"],
+                "configuration",
+                "blocked",
+                unresolved["reason"],
+                "Select a compatible configured provider component.",
+            )
+        )
+
+    credentials = credential_status(config, environ)
+    clients = config.get("roles", {}).get("agent-client", [])
+    if isinstance(clients, str):
+        clients = [clients]
+    if clients:
+        from ai_dlc.harness.agents import (
+            CLIENT_SKILL_DIRECTORIES,
+            provider_guidance_ready,
+            provider_index,
+        )
+
+        index, copies = provider_index(resolved)
+        for client in clients:
+            supported = client in CLIENT_SKILL_DIRECTORIES
+            delivered = supported and provider_guidance_ready(root, index, copies, client)
+            checks.append(
+                _check(
+                    client,
+                    "guidance",
+                    _READY if delivered else "missing" if supported else "blocked",
+                    "configured provider index is delivered"
+                    if delivered
+                    else (
+                        "configured provider index or instructions are missing or stale"
+                        if supported
+                        else "unsupported agent client"
+                    ),
+                    "No action required."
+                    if delivered
+                    else (
+                        "Declare the selected providers in shared ai-dlc.toml, then run "
+                        "ai-dlc agents render --apply after resolving authored-file conflicts."
+                        if supported
+                        else "Select an implemented agent client: codex, claude-code or antigravity."
+                    ),
+                )
+            )
+            if client == "antigravity":
+                checks.append(
+                    _check(
+                        client,
+                        "client-recognition",
+                        "unverified",
+                        "Offline files do not establish native rule activation, skill recognition or MCP login.",
+                        "Record the installed edition/version; activate the project rule as Always On, "
+                        "verify selected skills and use the native MCP manager to authenticate and inspect tools.",
+                    )
+                )
+
+    from ai_dlc.harness.agents import inspect_bundle_guidance
+
+    for bundle in inspect_bundle_guidance(root, config, clients):
+        checks.append(
+            _check(
+                f"bundle:{bundle['bundle_id']}",
+                "guidance",
+                bundle["status"],
+                bundle["reason"],
+                bundle["next_action"],
+            )
+        )
+    for component in resolved["components"]:
+        checks.extend(_tool_checks(component, modules, headless=headless, probe=probe))
+        checks.extend(_definition_checks(component, config, headless=headless))
+
+        provider_config = config.get("providers", {}).get(component["provider"], {})
+        for path in component["required_config"]:
+            value = _config_value(provider_config, path)
+            if _configured(value):
+                checks.append(
+                    _check(
+                        component["id"],
+                        "configuration",
+                        _READY,
+                        f"provider configuration {path} is set",
+                        "No action required.",
+                    )
+                )
+            else:
+                checks.append(
+                    _check(
+                        component["id"],
+                        "configuration",
+                        "missing",
+                        f"provider configuration {path} is required",
+                        f"Configure providers.{component['provider']}.{path}.",
+                    )
+                )
+
+        for credential in credentials:
+            required_by = credential.get("required_by", [])
+            if (
+                not isinstance(required_by, list)
+                or f"provider.{component['provider']}" not in required_by
+            ):
+                continue
+            configured = credential["configured"]
+            present = credential["present"]
+            if present:
+                status = _READY
+                reason = f"credential {credential['id']} is present"
+                action = "No action required."
+            elif configured:
+                status = "missing"
+                reason = f"credential {credential['id']} is not present"
+                variable = credential.get("variable")
+                action = (
+                    f"Set {variable} using your credential store."
+                    if isinstance(variable, str)
+                    else f"Bind credential {credential['id']} in machine configuration."
+                )
+            else:
+                status = "blocked"
+                reason = f"credential {credential['id']} has no environment binding"
+                action = f"Bind credential {credential['id']} in machine configuration."
+            checks.append(_check(component["id"], "credential", status, reason, action))
+
+        for guidance in component["guidance"]:
+            if (component["id"], guidance) not in missing_guidance and _guidance_available(
+                root, guidance
+            ):
+                checks.append(
+                    _check(
+                        component["id"],
+                        "guidance",
+                        _READY,
+                        f"guidance {guidance} is available",
+                        "No action required.",
+                    )
+                )
+            else:
+                checks.append(
+                    _check(
+                        component["id"],
+                        "guidance",
+                        "missing",
+                        f"guidance {guidance} is unavailable",
+                        f"Restore the configured guidance file {guidance}.",
+                    )
+                )
+
+        definitions, problem = _component_definitions(component, config)
+        if problem or not any(definition.inactive for definition in definitions):
+            checks.append(
+                _check(
+                    component["id"],
+                    "provider-health",
+                    "unverified",
+                    "provider health is not inspected during offline readiness",
+                    "Run doctor for an explicit provider health inspection.",
+                )
+            )
+
+    ready = all(
+        check["status"] == _READY or check["dimension"] not in _BLOCKING_DIMENSIONS
+        for check in checks
+    )
+    return {
+        "schema": 1,
+        "ready": ready,
+        "checks": checks,
+        "qualification": "not-assessed",
+    }

@@ -6,7 +6,7 @@ requires_spec = true
 spec_reason = "Adds observable workflow, integration or guidance behavior; the linked OpenSpec change defines acceptance."
 acceptance = [
     "Milestone M2. Give an executing agent an unambiguous connection from outcome to behavioral scenario, ticket, implementation step, and verification evidence.",
-    "Dependencies: product-shaping-workflow. Follow docs/superpowers/plans/2026-09-05-spec-delivery-traceability.md before implementation.",
+    "Dependencies: product-shaping-workflow. Follow openspec/changes/archive/2026-09-08-spec-delivery-traceability/2026-09-05-spec-delivery-traceability.md before implementation.",
     "TR-01: New delivery guidance SHALL map product requirement IDs to formal behavioral scenarios when needed, a deliverable work item, and verification. Scope, rationale, spec, and task list SHALL retain distinct ownership.",
     "TR-02: Work validation SHALL reject missing or cyclic dependencies and absent referenced artifacts before publication; start SHALL refuse incomplete or unavailable required dependency status.",
     "TR-03: New issue publication SHALL include scope, references, dependencies, and acceptance while preserving existing correlation/idempotency and authored descriptions on repeat publication.",
@@ -33,7 +33,7 @@ deploy = "none"
 [artifacts]
 branch = "codex/work-computer-toolsets"
 spec = "openspec/changes/archive/2026-09-08-spec-delivery-traceability"
-plan = "docs/superpowers/plans/2026-09-05-spec-delivery-traceability.md"
+plan = "openspec/changes/archive/2026-09-08-spec-delivery-traceability/2026-09-05-spec-delivery-traceability.md"
 verification = "docs/verification/spec-delivery-traceability.md"
 roadmap = "docs/roadmap.md"
 tracker = "https://github.com/Sean-Koval/ai-dlc/issues/12"

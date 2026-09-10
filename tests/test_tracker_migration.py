@@ -13,12 +13,12 @@ from typer.testing import CliRunner
 
 from ai_dlc.config import resolve_runtime
 from ai_dlc.providers import Registry
-from ai_dlc.workflow import WorkService
+from ai_dlc.work.workflow import WorkService
 
 
 def migration():
-    assert importlib.util.find_spec("ai_dlc.tracker_migration"), "Migration service is missing"
-    return importlib.import_module("ai_dlc.tracker_migration")
+    assert importlib.util.find_spec("ai_dlc.work.tracker_migration"), "Migration service is missing"
+    return importlib.import_module("ai_dlc.work.tracker_migration")
 
 
 class Tickets:
@@ -349,7 +349,7 @@ def test_cli_saves_and_applies_exact_preview_and_rejects_combined_new_intent(che
 def test_real_enrollment_preserves_inherited_alias_and_detects_account_drift(checkout):
     from test_config import _write_enrollment
 
-    from ai_dlc.enrollment import EnrollmentPaths
+    from ai_dlc.environment.enrollment import EnrollmentPaths
 
     root, env, registry, _ = checkout
     paths = EnrollmentPaths.from_environment(environ=env)
@@ -415,7 +415,7 @@ def test_explicit_machine_mapping_uses_runtime_precedence_and_validated_scopes(c
 def test_explicit_machine_mapping_replaces_enrolled_machine(checkout):
     from test_config import _write_enrollment
 
-    from ai_dlc.enrollment import EnrollmentPaths
+    from ai_dlc.environment.enrollment import EnrollmentPaths
 
     root, env, registry, _ = checkout
     paths = EnrollmentPaths.from_environment(environ=env)
@@ -753,7 +753,7 @@ def test_fifo_saved_plan_refuses_promptly_without_writer(checkout):
     folder.mkdir()
     target = folder / "fifo.json"
     os.mkfifo(target)
-    script = "from pathlib import Path; from ai_dlc.tracker_migration import load_tracker_migration_plan; load_tracker_migration_plan(Path(__import__('sys').argv[1]), Path('.ai-dlc/local/fifo.json'))"
+    script = "from pathlib import Path; from ai_dlc.work.tracker_migration import load_tracker_migration_plan; load_tracker_migration_plan(Path(__import__('sys').argv[1]), Path('.ai-dlc/local/fifo.json'))"
     try:
         result = subprocess.run(
             [sys.executable, "-c", script, str(root)],

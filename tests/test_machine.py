@@ -6,8 +6,8 @@ from pathlib import Path
 
 import pytest
 
-from ai_dlc import profile_source
-from ai_dlc.enrollment import EnrollmentLock, EnrollmentPaths, read_lock, write_lock
+from ai_dlc.environment import profile_source
+from ai_dlc.environment.enrollment import EnrollmentLock, EnrollmentPaths, read_lock, write_lock
 
 PROFILE = """\
 schema = 4
@@ -32,8 +32,8 @@ LEGACY_PROFILE = PROFILE.replace('profile_id = "portable-development"\n', "")
 
 def test_doctor_adds_project_readiness_without_overriding_missing_enrollment(tmp_path, monkeypatch):
     """A ready project must not turn an unenrolled machine doctor green."""
-    from ai_dlc import provision
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
+    from ai_dlc.setup import provision
 
     service, _ = manager(tmp_path, environ={})
     root = tmp_path / "project"
@@ -53,7 +53,7 @@ def test_doctor_adds_project_readiness_without_overriding_missing_enrollment(tmp
 
 def test_doctor_keeps_partial_diagnostics_for_invalid_component_manifest(tmp_path, monkeypatch):
     """Invalid readiness metadata must not erase authoritative machine enrollment diagnostics."""
-    from ai_dlc import provision
+    from ai_dlc.setup import provision
 
     service, _ = manager(tmp_path, environ={})
     root = tmp_path / "project"
@@ -102,7 +102,7 @@ def disposable_profile(
 
 
 def manager(tmp_path: Path, environ: dict[str, str] | None = None):
-    from ai_dlc.machine import MachineManager
+    from ai_dlc.environment.machine import MachineManager
 
     home = tmp_path / "home"
     paths = EnrollmentPaths.from_environment(home=home, environ={})
@@ -202,7 +202,7 @@ def test_enroll_uses_only_the_injected_git_environment(tmp_path: Path, monkeypat
 
 def test_sync_uses_only_the_injected_git_environment(tmp_path: Path, monkeypatch):
     """Would fail if synchronization launched Git from the ambient PATH."""
-    from ai_dlc.machine import MachineManager
+    from ai_dlc.environment.machine import MachineManager
 
     source, old_commit = disposable_profile(tmp_path)
     enrolled, paths = manager(tmp_path, {"PATH": os.environ["PATH"]})
@@ -227,7 +227,7 @@ def test_sync_with_an_explicit_empty_environment_never_invokes_ambient_git(
     tmp_path: Path, monkeypatch
 ):
     """Would fail if empty PATH fell through to ambient Git during synchronization."""
-    from ai_dlc.machine import MachineManager
+    from ai_dlc.environment.machine import MachineManager
 
     source, _ = disposable_profile(tmp_path)
     service, paths = manager(tmp_path)
@@ -247,7 +247,7 @@ def test_enroll_without_an_environment_retains_ambient_git_compatibility(
     tmp_path: Path, monkeypatch
 ):
     """Would fail if the optional environment changed existing direct behavior."""
-    from ai_dlc.machine import MachineManager
+    from ai_dlc.environment.machine import MachineManager
 
     source, commit = disposable_profile(tmp_path)
     ambient_path = os.environ["PATH"]
@@ -775,7 +775,7 @@ def test_explicit_profile_replaces_only_the_personal_scope_for_reconciliation(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, operation: str, provision_name: str
 ):
     """Would fail if an explicit profile discarded the active machine binding."""
-    from ai_dlc import provision
+    from ai_dlc.setup import provision
 
     source, _ = disposable_profile(tmp_path)
     service, paths = manager(tmp_path)
@@ -811,7 +811,7 @@ def test_explicit_machine_replaces_only_the_machine_scope_for_doctor(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if doctor lost the verified enrolled personal profile for --machine."""
-    from ai_dlc import provision
+    from ai_dlc.setup import provision
 
     source, _ = disposable_profile(tmp_path)
     service, paths = manager(tmp_path, {"LINEAR_SANDBOX_TOKEN": "present"})
@@ -852,7 +852,7 @@ def test_doctor_without_enrollment_forwards_an_explicit_machine(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if explicit-machine doctor discarded legacy no-profile compatibility."""
-    from ai_dlc import provision
+    from ai_dlc.setup import provision
 
     service, _ = manager(tmp_path)
     machine = tmp_path / "machine.toml"
@@ -891,7 +891,7 @@ def test_explicit_machine_replaces_degraded_enrolled_machine_readiness(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if drift on the replaced enrolled machine still blocked doctor readiness."""
-    from ai_dlc import provision
+    from ai_dlc.setup import provision
 
     source, _ = disposable_profile(tmp_path)
     service, paths = manager(tmp_path, {"LINEAR_SANDBOX_TOKEN": "present"})
@@ -913,7 +913,7 @@ def test_explicit_machine_does_not_hide_a_corrupt_active_personal_cache(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if machine replacement made a corrupt unreplaced personal cache ready."""
-    from ai_dlc import provision
+    from ai_dlc.setup import provision
 
     source, _ = disposable_profile(tmp_path)
     service, paths = manager(tmp_path)
@@ -965,7 +965,7 @@ def test_plan_uses_only_the_verified_active_profile_and_machine_without_writing(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if plan fetched, selected another binding, or changed local state."""
-    from ai_dlc import provision
+    from ai_dlc.setup import provision
 
     source, _ = disposable_profile(tmp_path)
     service, paths = manager(tmp_path)
@@ -1019,7 +1019,7 @@ def test_root_aware_reconciliation_forwards_the_selected_project(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, operation: str, provision_name: str
 ):
     """Would fail if setup accepted a root but did not pass it to provisioning."""
-    from ai_dlc import provision
+    from ai_dlc.setup import provision
 
     source, _ = disposable_profile(tmp_path)
     service, paths = manager(tmp_path)
@@ -1045,7 +1045,7 @@ def test_apply_returns_active_lock_identity_with_the_reconciliation_result(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if apply omitted lock identity or reconciled without the active binding."""
-    from ai_dlc import provision
+    from ai_dlc.setup import provision
 
     source, _ = disposable_profile(tmp_path)
     service, paths = manager(tmp_path)
@@ -1081,7 +1081,7 @@ def test_sync_preview_fetches_a_moved_ref_and_preserves_lock_and_clients(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if preview activated a candidate or rewrote an agent client."""
-    from ai_dlc import provision
+    from ai_dlc.setup import provision
 
     source, old_commit = disposable_profile(tmp_path)
     service, paths = manager(tmp_path, {"LINEAR_SANDBOX_TOKEN": "present"})
@@ -1130,7 +1130,7 @@ def test_sync_apply_reconciles_candidate_before_activating_its_lock(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if sync activated the new commit before candidate reconciliation."""
-    from ai_dlc import provision
+    from ai_dlc.setup import provision
 
     source, _ = disposable_profile(tmp_path)
     service, paths = manager(tmp_path, {"LINEAR_SANDBOX_TOKEN": "present"})
@@ -1178,7 +1178,7 @@ def test_failed_sync_reconciliation_preserves_lock_and_labels_package_side_effec
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if a partial package operation activated or obscured the candidate."""
-    from ai_dlc import provision
+    from ai_dlc.setup import provision
 
     source, _ = disposable_profile(tmp_path)
     service, paths = manager(tmp_path)
@@ -1237,7 +1237,7 @@ def test_sync_to_the_active_commit_is_idempotent_without_reconciliation(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if an unchanged source caused package or client side effects."""
-    from ai_dlc import provision
+    from ai_dlc.setup import provision
 
     source, commit = disposable_profile(tmp_path)
     service, paths = manager(tmp_path)
@@ -1263,7 +1263,7 @@ def test_machine_doctor_combines_status_and_shared_checks_without_environment_va
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if doctor skipped active layers or exposed a credential value."""
-    from ai_dlc import provision
+    from ai_dlc.setup import provision
 
     marker = "credential-value-that-must-not-escape-doctor"
     source, _ = disposable_profile(tmp_path)
@@ -1333,7 +1333,7 @@ def test_machine_doctor_returns_partial_diagnostics_when_enrollment_is_unavailab
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, condition: str
 ):
     """Would fail if a known enrollment problem made doctor raise or fetch."""
-    from ai_dlc import provision
+    from ai_dlc.setup import provision
 
     service, paths = manager(tmp_path)
     if condition != "unenrolled":
@@ -1390,9 +1390,9 @@ def test_manager_injected_environment_flows_through_status_plan_apply_and_doctor
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if any lifecycle method consulted ambient credential state."""
-    from ai_dlc import provision
     from ai_dlc.config import resolve_files
-    from ai_dlc.credentials import credential_status
+    from ai_dlc.environment.credentials import credential_status
+    from ai_dlc.setup import provision
 
     marker = "injected-machine-credential"
     monkeypatch.delenv("LINEAR_SANDBOX_TOKEN", raising=False)
@@ -1468,7 +1468,7 @@ def test_legacy_default_manifest_migration_syncs_unchanged_and_after_ref_movemen
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if legacy sync guessed identity compatibility from the filename."""
-    from ai_dlc import provision
+    from ai_dlc.setup import provision
 
     source, first_commit = disposable_profile(tmp_path, manifest=LEGACY_PROFILE)
     service, paths = manager(tmp_path)

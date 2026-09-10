@@ -216,3 +216,11 @@ Pending or uncertain operations only search/read on retry. Invisible correlation
 If local files change after creation, the creation phase has not changed any work bindings. Retry the same saved intent to reconcile prior targets read-only; do not create a fresh intent to bypass uncertainty. For a new local snapshot, put the retained verified target references into explicit existing mappings and use tracker-migrate preview. Configuration/account drift must be resolved before reusing the intent. Created issues are retained after local rollback; no remote deletion imitates an atomic transaction.
 
 The final local receipt carries the creation operation, intent digest and per-work correlation alongside source-to-target provenance. Creation provenance is historical reviewed metadata, not a fresh remote-state claim. A closed or cancelled target does not waive any specification, merge or CI gate. Real Plane substitution/recovery still requires an explicitly chosen deployment and separate live evidence.
+
+## Internal Python source organization
+
+Repository organization moved internal services into responsibility-based packages;
+see the [source map](architecture.md#source-layout). Custom Python integrations
+that imported internal modules must update those imports, for example
+`ai_dlc.agents` becomes `ai_dlc.harness.agents`. Public console entry points,
+command arguments, MCP tools and provider wire contracts remain unchanged.

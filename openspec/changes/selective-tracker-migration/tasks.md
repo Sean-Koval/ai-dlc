@@ -13,4 +13,4 @@
 - [ ] 2.2 Independent review; record fixture versus real qualification limits.
 - [ ] 2.3 Archive only delivered scope and finish with PR/merged-CI evidence after required live gates.
 
-[Current implementation plan](../../../docs/superpowers/plans/2026-09-08-selective-tracker-migration.md). Parent live qualification remains open.
+[Current implementation plan](2026-09-08-selective-tracker-migration.md). Parent live qualification remains open.

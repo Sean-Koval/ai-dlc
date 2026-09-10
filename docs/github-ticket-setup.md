@@ -28,7 +28,7 @@ A connected GitHub MCP app can expose issue tools, but installed tool names and
 account repository permissions do not prove its write grants or Projects access.
 The official GitHub MCP server supports a Projects toolset and local OAuth login.
 The current AI-DLC lifecycle adapter uses `gh`; its authentication is separate.
-See the [actual adoption/access findings](planning/github-backlog-migration.md).
+See the [actual adoption/access findings](archive/planning/github-backlog-migration.md).
 
 ## Connect a repository and optional Project
 

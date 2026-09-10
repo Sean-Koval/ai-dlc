@@ -4,9 +4,9 @@ from pathlib import Path
 
 import pytest
 
-from ai_dlc import profile_source
-from ai_dlc.enrollment import EnrollmentLock, EnrollmentPaths
-from ai_dlc.profile_source import (
+from ai_dlc.environment import profile_source
+from ai_dlc.environment.enrollment import EnrollmentLock, EnrollmentPaths
+from ai_dlc.environment.profile_source import (
     ProfileCandidate,
     redact_source,
     resolve_profile_source,

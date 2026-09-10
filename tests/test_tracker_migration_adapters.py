@@ -13,8 +13,8 @@ from ai_dlc.config import resolve_runtime
 from ai_dlc.providers import Registry
 from ai_dlc.providers.github_issues import GitHubIssuesProvider
 from ai_dlc.providers.plane import PlaneProvider
-from ai_dlc.tracker_migration import apply_tracker_migration, plan_tracker_migration
-from ai_dlc.workflow import WorkService
+from ai_dlc.work.tracker_migration import apply_tracker_migration, plan_tracker_migration
+from ai_dlc.work.workflow import WorkService
 
 
 @pytest.fixture(
@@ -189,7 +189,7 @@ def test_unowned_plane_target_is_not_silently_adopted(adapter_move):
 
 
 def test_actual_plane_create_reconciliation_preserves_adapter_ledger(adapter_move):
-    from ai_dlc.tracker_targets import plan_tracker_targets, reconcile_tracker_targets
+    from ai_dlc.setup.tracker_targets import plan_tracker_targets, reconcile_tracker_targets
 
     root, env, registry, remote, _, kind = adapter_move
     if kind != "plane":
@@ -231,7 +231,7 @@ def test_actual_plane_create_reconciliation_preserves_adapter_ledger(adapter_mov
 
 
 def test_actual_github_create_reconciliation_keeps_one_issue(adapter_move, monkeypatch):
-    from ai_dlc.tracker_targets import plan_tracker_targets, reconcile_tracker_targets
+    from ai_dlc.setup.tracker_targets import plan_tracker_targets, reconcile_tracker_targets
 
     root, env, registry, _, _, kind = adapter_move
     if kind != "github-issues":
@@ -287,7 +287,7 @@ def test_actual_github_create_reconciliation_keeps_one_issue(adapter_move, monke
 
 
 def test_actual_adapter_local_write_interruption_preserves_remote_target(adapter_move, monkeypatch):
-    import ai_dlc.tracker_migration as migration
+    import ai_dlc.work.tracker_migration as migration
 
     root, env, registry, remote, _, kind = adapter_move
     planned = preview(adapter_move)
@@ -315,7 +315,7 @@ def test_actual_adapter_local_write_interruption_preserves_remote_target(adapter
 
 
 def test_real_github_adapter_correlation_cannot_replace_known_target(adapter_move, monkeypatch):
-    from ai_dlc.tracker_targets import plan_tracker_targets, reconcile_tracker_targets
+    from ai_dlc.setup.tracker_targets import plan_tracker_targets, reconcile_tracker_targets
 
     root, env, registry, _, _, kind = adapter_move
     if kind != "github-issues":

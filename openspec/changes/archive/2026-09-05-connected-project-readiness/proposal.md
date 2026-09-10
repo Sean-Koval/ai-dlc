@@ -30,4 +30,4 @@ None. Existing schema-4, content ownership, enrollment, and finish contracts rem
 - Modify tests/test_machine.py, tests/test_cli.py, tests/test_rendering.py
 
 Dependencies: component-capability-contract.
-No implementation is complete. [Execution plan](../../../docs/superpowers/plans/2026-09-05-connected-project-readiness.md).
+No implementation is complete. [Execution plan](2026-09-05-connected-project-readiness.md).

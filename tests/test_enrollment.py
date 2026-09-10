@@ -24,7 +24,7 @@ def valid_lock(**overrides):
 
 
 def test_enrollment_paths_use_explicit_xdg_roots(tmp_path):
-    from ai_dlc.enrollment import EnrollmentPaths
+    from ai_dlc.environment.enrollment import EnrollmentPaths
 
     paths = EnrollmentPaths.from_environment(
         environ={
@@ -46,7 +46,7 @@ def test_enrollment_paths_use_explicit_xdg_roots(tmp_path):
 
 
 def test_enrollment_paths_fall_back_to_xdg_locations_under_supplied_home(tmp_path):
-    from ai_dlc.enrollment import EnrollmentPaths
+    from ai_dlc.environment.enrollment import EnrollmentPaths
 
     paths = EnrollmentPaths.from_environment(home=tmp_path, environ={})
 
@@ -56,7 +56,7 @@ def test_enrollment_paths_fall_back_to_xdg_locations_under_supplied_home(tmp_pat
 
 
 def test_enrollment_lock_accepts_the_supported_pinned_profile_shape():
-    from ai_dlc.enrollment import EnrollmentLock
+    from ai_dlc.environment.enrollment import EnrollmentLock
 
     lock = EnrollmentLock(**valid_lock(schema=1))
 
@@ -92,7 +92,7 @@ def test_enrollment_lock_accepts_the_supported_pinned_profile_shape():
     ],
 )
 def test_invalid_enrollment_lock_values_fail_before_write(tmp_path, field, value):
-    from ai_dlc.enrollment import EnrollmentLock, EnrollmentPaths
+    from ai_dlc.environment.enrollment import EnrollmentLock, EnrollmentPaths
 
     paths = EnrollmentPaths.from_environment(home=tmp_path, environ={})
     with pytest.raises(ValidationError):
@@ -102,7 +102,7 @@ def test_invalid_enrollment_lock_values_fail_before_write(tmp_path, field, value
 
 
 def test_unknown_enrollment_lock_fields_fail_before_write(tmp_path):
-    from ai_dlc.enrollment import EnrollmentLock, EnrollmentPaths
+    from ai_dlc.environment.enrollment import EnrollmentLock, EnrollmentPaths
 
     paths = EnrollmentPaths.from_environment(home=tmp_path, environ={})
     with pytest.raises(ValidationError):
@@ -112,7 +112,7 @@ def test_unknown_enrollment_lock_fields_fail_before_write(tmp_path):
 
 
 def test_internal_schema_alias_is_rejected_as_an_unknown_lock_field(tmp_path):
-    from ai_dlc.enrollment import EnrollmentLock, EnrollmentPaths
+    from ai_dlc.environment.enrollment import EnrollmentLock, EnrollmentPaths
 
     paths = EnrollmentPaths.from_environment(home=tmp_path, environ={})
     with pytest.raises(ValidationError):
@@ -122,7 +122,7 @@ def test_internal_schema_alias_is_rejected_as_an_unknown_lock_field(tmp_path):
 
 
 def test_write_lock_is_parseable_private_and_leaves_no_temporary_final_file(tmp_path):
-    from ai_dlc.enrollment import EnrollmentLock, EnrollmentPaths, read_lock, write_lock
+    from ai_dlc.environment.enrollment import EnrollmentLock, EnrollmentPaths, read_lock, write_lock
 
     paths = EnrollmentPaths.from_environment(home=tmp_path, environ={})
     path = write_lock(paths, EnrollmentLock(**valid_lock()))
@@ -139,7 +139,7 @@ def test_write_lock_is_parseable_private_and_leaves_no_temporary_final_file(tmp_
 
 def test_enrollment_module_imports_without_warnings_when_warnings_are_errors():
     result = subprocess.run(
-        [sys.executable, "-W", "error::UserWarning", "-c", "import ai_dlc.enrollment"],
+        [sys.executable, "-W", "error::UserWarning", "-c", "import ai_dlc.environment.enrollment"],
         capture_output=True,
         check=False,
         text=True,
@@ -149,7 +149,7 @@ def test_enrollment_module_imports_without_warnings_when_warnings_are_errors():
 
 
 def test_machine_file_is_private_schema_four_and_is_not_replaced(tmp_path):
-    from ai_dlc.enrollment import EnrollmentPaths, ensure_machine_file
+    from ai_dlc.environment.enrollment import EnrollmentPaths, ensure_machine_file
 
     paths = EnrollmentPaths.from_environment(home=tmp_path, environ={})
     path = ensure_machine_file(paths, "workstation-01")
@@ -164,7 +164,7 @@ def test_machine_file_is_private_schema_four_and_is_not_replaced(tmp_path):
 
 def test_machine_file_publish_failure_leaves_no_partial_final_file(tmp_path, monkeypatch):
     import ai_dlc.files
-    from ai_dlc.enrollment import EnrollmentPaths, ensure_machine_file
+    from ai_dlc.environment.enrollment import EnrollmentPaths, ensure_machine_file
 
     paths = EnrollmentPaths.from_environment(home=tmp_path, environ={})
     path = paths.machine_file("workstation-01")
@@ -187,7 +187,7 @@ def test_failed_lock_replacement_preserves_prior_bytes_and_cleans_staging_file(
     tmp_path, monkeypatch
 ):
     import ai_dlc.files
-    from ai_dlc.enrollment import EnrollmentLock, EnrollmentPaths, write_lock
+    from ai_dlc.environment.enrollment import EnrollmentLock, EnrollmentPaths, write_lock
 
     paths = EnrollmentPaths.from_environment(home=tmp_path, environ={})
     write_lock(paths, EnrollmentLock(**valid_lock(requested_ref="old")))
@@ -207,7 +207,7 @@ def test_failed_lock_replacement_preserves_prior_bytes_and_cleans_staging_file(
 
 
 def test_active_profile_file_combines_only_validated_relative_components(tmp_path):
-    from ai_dlc.enrollment import EnrollmentLock, EnrollmentPaths, active_profile_file
+    from ai_dlc.environment.enrollment import EnrollmentLock, EnrollmentPaths, active_profile_file
 
     paths = EnrollmentPaths.from_environment(home=tmp_path, environ={})
     lock = EnrollmentLock(**valid_lock(subdirectory="", profile_file="profiles/current.toml"))
@@ -219,7 +219,7 @@ def test_active_profile_file_combines_only_validated_relative_components(tmp_pat
 
 def test_runtime_resolution_does_not_cross_home_or_xdg_enrollment_roots(tmp_path):
     from ai_dlc.config import resolve_runtime
-    from ai_dlc.enrollment import EnrollmentLock, EnrollmentPaths, write_lock
+    from ai_dlc.environment.enrollment import EnrollmentLock, EnrollmentPaths, write_lock
 
     def enroll(paths: EnrollmentPaths, profile_id: str, workspace: str) -> None:
         content = f'schema = 4\nprofile_id = "{profile_id}"\n'.encode()

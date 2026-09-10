@@ -12,4 +12,4 @@
 - [ ] 2.2 Complete independent review and record actual live evidence or explicit unverified gates.
 - [ ] 2.3 Archive only delivered scope, link PR/CI evidence, and finish the reviewed implementation work through the configured workflow.
 
-[Execution plan](../../../docs/superpowers/plans/2026-09-06-team-document-publication.md). All items are proposed work, not delivered behavior.
+[Execution plan](2026-09-06-team-document-publication.md). All items are proposed work, not delivered behavior.

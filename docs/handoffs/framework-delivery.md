@@ -58,7 +58,7 @@ Final PR and merged-revision GitHub CI remain separate from these source checks.
 ## Historical authority checkpoint — September 8
 
 Start with [current roadmap](../roadmap.md),
-[current execution plan](../superpowers/plans/2026-09-07-work-computer-readiness.md)
+[current execution plan](../archive/planning/2026-09-07-work-computer-readiness.md)
 and [GitHub Project](https://github.com/users/Sean-Koval/projects/2). GitHub owns
 priority/status. Project authorization, linking and eight local mappings are
 complete in PR #23. The current goal is work-computer adoption with Claude and
@@ -79,7 +79,7 @@ dependency-ordered [roadmap](../roadmap.md). UI/UX is one optional part.
 
 - Planning branch: `codex/design-pm-roadmap`.
 - Planning review: [PR #5](https://github.com/Sean-Koval/ai-dlc/pull/5), draft at
-  handoff; [validation evidence](../planning/framework-delivery-review.md).
+  handoff; [validation evidence](../archive/planning/framework-delivery-review.md).
 - Implementation baseline: `241e715`, portable profile enrollment merged into main.
 - This planning delivery adds documentation, specifications, work records, and
   sandbox ticket bindings. It does not implement the planned commands or skills.

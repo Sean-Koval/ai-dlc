@@ -10,7 +10,7 @@ from test_jira_provider import Jira
 @pytest.fixture
 def lifecycle(tmp_path):
     from ai_dlc.providers import Registry
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     jira = Jira()
     config = {

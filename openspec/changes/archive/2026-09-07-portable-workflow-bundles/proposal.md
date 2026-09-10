@@ -54,4 +54,4 @@ retains failed stages and reports their filenames/paths instead of deleting by
 name; portable filesystem APIs do not offer an identity-conditioned unlink.
 The separate successful-transaction backup deletion race remains outside this
 stage repair. OpenSpec archive, PR/CI/merge, and work finish remain blocked on
-whole-change acceptance. [Execution plan](../../../../docs/superpowers/plans/2026-09-05-portable-workflow-bundles.md).
+whole-change acceptance. [Execution plan](2026-09-05-portable-workflow-bundles.md).

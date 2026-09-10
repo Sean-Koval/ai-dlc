@@ -32,7 +32,7 @@ def _linear_config(*, headless: bool = False) -> dict:
 
 def test_reports_a_missing_tool_with_an_actionable_next_step(tmp_path: Path):
     """Would fail if an unavailable module executable did not block readiness."""
-    from ai_dlc.readiness import inspect_readiness
+    from ai_dlc.setup.readiness import inspect_readiness
 
     result = inspect_readiness(
         tmp_path,
@@ -51,7 +51,7 @@ def test_reports_a_missing_tool_with_an_actionable_next_step(tmp_path: Path):
 
 def test_reports_missing_component_configuration_separately(tmp_path: Path):
     """Would fail if required provider configuration were mistaken for tool readiness."""
-    from ai_dlc.readiness import inspect_readiness
+    from ai_dlc.setup.readiness import inspect_readiness
 
     result = inspect_readiness(
         tmp_path,
@@ -68,7 +68,7 @@ def test_reports_missing_component_configuration_separately(tmp_path: Path):
 
 def test_reports_an_absent_environment_credential_without_its_value(tmp_path: Path):
     """Would fail if readiness treated an unset credential binding as ready or exposed it."""
-    from ai_dlc.readiness import inspect_readiness
+    from ai_dlc.setup.readiness import inspect_readiness
 
     result = inspect_readiness(
         tmp_path,
@@ -88,8 +88,8 @@ def test_reports_missing_guidance_without_declaring_the_component_ready(tmp_path
     import hashlib
     import json
 
-    from ai_dlc import readiness
-    from ai_dlc.components import load_component_catalog
+    from ai_dlc.harness.components import load_component_catalog
+    from ai_dlc.setup import readiness
 
     manifest = tmp_path / "component.json"
     manifest.write_text(
@@ -142,7 +142,7 @@ def test_reports_missing_guidance_without_declaring_the_component_ready(tmp_path
 
 def test_reports_ready_offline_requirements_and_unverified_provider_health(tmp_path: Path):
     """Would fail if offline readiness performed health checks or treated them as blocking."""
-    from ai_dlc.readiness import inspect_readiness
+    from ai_dlc.setup.readiness import inspect_readiness
 
     probes: list[list[str]] = []
     result = inspect_readiness(
@@ -162,7 +162,7 @@ def test_reports_ready_offline_requirements_and_unverified_provider_health(tmp_p
 
 def test_reports_headless_desktop_capability_as_blocked(tmp_path: Path):
     """Would fail if headless readiness silently substituted or accepted a desktop module."""
-    from ai_dlc.readiness import inspect_readiness
+    from ai_dlc.setup.readiness import inspect_readiness
 
     result = inspect_readiness(
         tmp_path,
@@ -180,7 +180,7 @@ def test_reports_headless_desktop_capability_as_blocked(tmp_path: Path):
 
 def test_never_returns_credential_values(tmp_path: Path):
     """Would fail if any readiness field copied a supplied credential value."""
-    from ai_dlc.readiness import inspect_readiness
+    from ai_dlc.setup.readiness import inspect_readiness
 
     credential_value = "readiness-credential-value-that-must-not-escape"
     result = inspect_readiness(
@@ -197,9 +197,9 @@ def test_never_returns_credential_values(tmp_path: Path):
 @pytest.mark.parametrize("client", ["codex", "claude-code"])
 def test_selected_harness_requires_delivered_provider_index(tmp_path, client):
     """Source instructions alone must not satisfy selected harness delivery."""
-    from ai_dlc.agents import render_agents
     from ai_dlc.config import load_project
-    from ai_dlc.readiness import inspect_readiness
+    from ai_dlc.harness.agents import render_agents
+    from ai_dlc.setup.readiness import inspect_readiness
 
     (tmp_path / "ai-dlc.toml").write_text(
         f'schema=4\n[roles]\nspecs="openspec"\nagent-client=["{client}"]\n'
@@ -223,7 +223,7 @@ def test_selected_harness_requires_delivered_provider_index(tmp_path, client):
 
 def test_unknown_harness_is_explicitly_blocked(tmp_path):
     """An unimplemented harness must not inherit supported-client guidance readiness."""
-    from ai_dlc.readiness import inspect_readiness
+    from ai_dlc.setup.readiness import inspect_readiness
 
     result = inspect_readiness(
         tmp_path,
@@ -237,9 +237,9 @@ def test_unknown_harness_is_explicitly_blocked(tmp_path):
 
 def test_duplicate_managed_sections_cannot_claim_guidance_readiness(tmp_path):
     """A conflicting duplicate index must require repair even if one section is intact."""
-    from ai_dlc.agents import render_agents
     from ai_dlc.config import load_project
-    from ai_dlc.readiness import inspect_readiness
+    from ai_dlc.harness.agents import render_agents
+    from ai_dlc.setup.readiness import inspect_readiness
 
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[roles]\nspecs="openspec"\nagent-client=["codex"]\n'
@@ -255,8 +255,8 @@ def test_duplicate_managed_sections_cannot_claim_guidance_readiness(tmp_path):
 
 def test_personal_only_provider_has_actionable_delivery_gap_without_changing_project(tmp_path):
     """Missing personal provider delivery must not prescribe a render that cannot fix it."""
-    from ai_dlc.agents import render_agents
-    from ai_dlc.readiness import inspect_readiness
+    from ai_dlc.harness.agents import render_agents
+    from ai_dlc.setup.readiness import inspect_readiness
 
     project = tmp_path / "ai-dlc.toml"
     project.write_text('schema=4\n[roles]\nagent-client=["codex"]\n')
@@ -276,7 +276,7 @@ def test_personal_only_provider_has_actionable_delivery_gap_without_changing_pro
 
 def test_bundle_guidance_inspection_reports_missing_blocked_stale_and_ready(tmp_path):
     """Would fail if selected unusable guidance could satisfy offline readiness."""
-    from ai_dlc.agents import inspect_bundle_guidance, render_agents
+    from ai_dlc.harness.agents import inspect_bundle_guidance, render_agents
 
     clients = ["codex", "claude-code"]
     config = {"agents": {"bundles": ["review-flow"]}}
@@ -323,7 +323,7 @@ def test_missing_vendored_payload_is_missing_but_integrity_failure_takes_precede
     """Would fail if absent vendored bytes were collapsed into generic invalid content."""
     import json
 
-    from ai_dlc.agents import inspect_bundle_guidance
+    from ai_dlc.harness.agents import inspect_bundle_guidance
 
     _write_vendored_bundle(
         tmp_path,
@@ -359,7 +359,7 @@ def test_missing_payload_does_not_hide_independent_bundle_integrity_failure(
     tmp_path, independent_failure, expected_reason
 ):
     """Would fail if exact-tree absence short-circuited a separately provable blocker."""
-    from ai_dlc.agents import inspect_bundle_guidance
+    from ai_dlc.harness.agents import inspect_bundle_guidance
 
     _write_vendored_bundle(
         tmp_path,
@@ -390,7 +390,7 @@ def test_missing_manifest_does_not_hide_present_invalid_lock(tmp_path):
     """Would fail if missing metadata short-circuited validation of present metadata."""
     import json
 
-    from ai_dlc.agents import inspect_bundle_guidance
+    from ai_dlc.harness.agents import inspect_bundle_guidance
 
     _write_vendored_bundle(
         tmp_path,
@@ -416,7 +416,7 @@ def test_missing_manifest_does_not_hide_present_invalid_lock(tmp_path):
 
 def test_bundle_collision_blocks_every_participating_readiness_result(tmp_path):
     """Would fail if a global export collision were attributed to only one claimant."""
-    from ai_dlc.agents import inspect_bundle_guidance
+    from ai_dlc.harness.agents import inspect_bundle_guidance
 
     for bundle_id in ["z-bundle", "a-bundle"]:
         _write_vendored_bundle(
@@ -437,7 +437,7 @@ def test_bundle_collision_blocks_every_participating_readiness_result(tmp_path):
 
 def test_bundle_guidance_symlinked_output_is_blocked_even_when_bytes_match(tmp_path):
     """Would fail if readiness followed a substituted owned output outside the project."""
-    from ai_dlc.agents import inspect_bundle_guidance, render_agents
+    from ai_dlc.harness.agents import inspect_bundle_guidance, render_agents
 
     config = {"agents": {"bundles": ["review-flow"]}}
     _write_vendored_bundle(
@@ -463,7 +463,7 @@ def test_bundle_guidance_symlinked_output_is_blocked_even_when_bytes_match(tmp_p
 
 def test_bundle_guidance_list_ownership_document_returns_blocked_result(tmp_path):
     """Would fail if a non-object ownership document escaped structured readiness."""
-    from ai_dlc.agents import inspect_bundle_guidance
+    from ai_dlc.harness.agents import inspect_bundle_guidance
 
     _write_vendored_bundle(
         tmp_path,
@@ -494,7 +494,7 @@ def test_bundle_guidance_list_ownership_document_returns_blocked_result(tmp_path
 
 def test_bundle_guidance_directory_output_returns_blocked_result(tmp_path):
     """Would fail if a non-file owned destination crashed readiness inspection."""
-    from ai_dlc.agents import inspect_bundle_guidance, render_agents
+    from ai_dlc.harness.agents import inspect_bundle_guidance, render_agents
 
     config = {"agents": {"bundles": ["review-flow"]}}
     _write_vendored_bundle(
@@ -521,7 +521,7 @@ def test_bundle_guidance_directory_output_returns_blocked_result(tmp_path):
 
 def test_bundle_cross_owner_collision_blocks_old_and_new_selected_owners(tmp_path):
     """Would fail if readiness omitted the selected prior owner from a destination claim."""
-    from ai_dlc.agents import inspect_bundle_guidance, render_agents
+    from ai_dlc.harness.agents import inspect_bundle_guidance, render_agents
 
     config_path = tmp_path / "ai-dlc.toml"
     config_path.write_text('schema=4\n[agents]\nbundles=["one"]\nskills=[]\n')
@@ -555,7 +555,7 @@ def test_bundle_cross_owner_collision_blocks_old_and_new_selected_owners(tmp_pat
 
 def test_bundle_cross_owner_directory_collision_blocks_both_selected_owners(tmp_path):
     """Would fail if an invalid destination type hid its prior selected owner."""
-    from ai_dlc.agents import inspect_bundle_guidance, render_agents
+    from ai_dlc.harness.agents import inspect_bundle_guidance, render_agents
 
     config_path = tmp_path / "ai-dlc.toml"
     config_path.write_text('schema=4\n[agents]\nbundles=["one"]\nskills=[]\n')
@@ -592,7 +592,7 @@ def test_bundle_cross_owner_directory_collision_blocks_both_selected_owners(tmp_
 
 def test_project_readiness_maps_bundle_guidance_and_keeps_missing_bundle_blocking(tmp_path):
     """Would fail if bundle inspection did not participate in the guidance gate."""
-    from ai_dlc.readiness import inspect_readiness
+    from ai_dlc.setup.readiness import inspect_readiness
 
     config = {
         "roles": {"agent-client": ["codex"]},
@@ -615,7 +615,7 @@ def test_project_readiness_maps_bundle_guidance_and_keeps_missing_bundle_blockin
 
 def test_vendored_root_git_is_blocked_bundle_readiness(tmp_path):
     """Undeclared committed Git content must prevent bundle guidance readiness."""
-    from ai_dlc.agents import inspect_bundle_guidance
+    from ai_dlc.harness.agents import inspect_bundle_guidance
 
     _write_vendored_bundle(
         tmp_path,
@@ -638,7 +638,7 @@ def test_missing_payload_cannot_hide_canonical_lock_manifest_disagreement(tmp_pa
     """A complete metadata contradiction takes precedence over missing payload bytes."""
     import json
 
-    from ai_dlc.agents import inspect_bundle_guidance
+    from ai_dlc.harness.agents import inspect_bundle_guidance
 
     _write_vendored_bundle(
         tmp_path,
@@ -662,7 +662,7 @@ def test_missing_payload_cannot_hide_canonical_lock_manifest_disagreement(tmp_pa
 
 def test_duplicate_selected_export_with_missing_payload_blocks_both_bundles(tmp_path):
     """Authenticated export claims remain colliding when one payload disappears."""
-    from ai_dlc.agents import inspect_bundle_guidance
+    from ai_dlc.harness.agents import inspect_bundle_guidance
 
     for bundle_id in ["one", "two"]:
         _write_vendored_bundle(
@@ -680,7 +680,7 @@ def test_duplicate_selected_export_with_missing_payload_blocks_both_bundles(tmp_
 
 def test_contested_symlink_blocks_both_selected_bundle_owners(tmp_path):
     """A symlink must not hide the prior selected owner of a contested destination."""
-    from ai_dlc.agents import inspect_bundle_guidance, render_agents
+    from ai_dlc.harness.agents import inspect_bundle_guidance, render_agents
 
     (tmp_path / "ai-dlc.toml").write_text('schema=4\n[agents]\nbundles=["one"]\nskills=[]\n')
     _write_vendored_bundle(
@@ -708,7 +708,7 @@ def test_contested_symlink_blocks_both_selected_bundle_owners(tmp_path):
 @pytest.mark.parametrize("filename", ["AGENTS.md", "CLAUDE.md"])
 def test_non_utf8_managed_guidance_returns_blocked_bundle_readiness(tmp_path, filename):
     """Malformed guidance must yield actionable per-bundle results without decode errors."""
-    from ai_dlc.agents import inspect_bundle_guidance, render_agents
+    from ai_dlc.harness.agents import inspect_bundle_guidance, render_agents
 
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'

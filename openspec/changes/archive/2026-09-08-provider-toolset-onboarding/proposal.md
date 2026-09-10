@@ -31,4 +31,4 @@ None. Existing behavior is preserved when new options are omitted.
 Copier questions/templates, templates and CLI services, provider onboarding,
 component/readiness/provision services, native client rendering, bundled guidance
 and module metadata. No new marketplace, daemon, credential store, or service hosting.
-See the [implementation plan](../../../../docs/superpowers/plans/2026-09-06-provider-toolset-onboarding.md).
+See the [implementation plan](2026-09-06-provider-toolset-onboarding.md).

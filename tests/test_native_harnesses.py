@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from ai_dlc.agents import render_agents
+from ai_dlc.harness.agents import render_agents
 
 
 def test_claude_remote_definition_upgrades_owned_url_only_entry(tmp_path):
@@ -121,7 +121,7 @@ def test_antigravity_refuses_unqualified_env_interpolation(tmp_path):
 def test_antigravity_readiness_distinguishes_guidance_from_live_client(tmp_path):
     """Delivered files alone must not become a native recognition/login claim."""
     from ai_dlc.config import load_project
-    from ai_dlc.readiness import inspect_readiness
+    from ai_dlc.setup.readiness import inspect_readiness
 
     _native_project(tmp_path)
     render_agents(tmp_path, apply=True)
@@ -203,7 +203,7 @@ def test_native_rule_custom_provider_links_resolve_to_project_files(tmp_path):
 def test_native_readiness_refuses_missing_selected_assets(tmp_path, missing):
     """The delivered row must not remain ready when a selected native asset disappears."""
     from ai_dlc.config import load_project
-    from ai_dlc.readiness import inspect_readiness
+    from ai_dlc.setup.readiness import inspect_readiness
 
     _native_project(tmp_path)
     render_agents(tmp_path, apply=True)

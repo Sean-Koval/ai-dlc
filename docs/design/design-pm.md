@@ -8,7 +8,7 @@ This proposal consumes the broader [product-shaping workflow](../../openspec/spe
 and [delivery traceability](../../openspec/changes/archive/2026-09-08-spec-delivery-traceability/proposal.md).
 The [framework direction](../product-direction.md) owns the product strategy;
 this document owns UI/UX-specific rationale and example evaluation criteria.
-Execution details are in the [implementation plan](../superpowers/plans/2026-09-05-design-pm-workflow.md).
+Execution details are in the [implementation plan](../../openspec/changes/archive/2026-09-08-design-pm-workflow/2026-09-05-design-pm-workflow.md).
 
 ## Problem and audience
 

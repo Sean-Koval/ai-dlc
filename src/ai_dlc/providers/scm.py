@@ -20,7 +20,7 @@ def digest(value):
 
 
 def required_checks(config):
-    from ai_dlc.project import _check_definitions
+    from ai_dlc.setup.project import _check_definitions
 
     required, _ = _check_definitions(config)
     if not required:

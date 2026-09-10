@@ -109,7 +109,7 @@ Use these commands alongside direct instructions to agents (`@workflow-orchestra
 
 ## Output Checklist
 - Updated `.claude/commands/` or `.claude/agents/` assets.
-- Embedded templates synced (`scripts/sync-cli-templates.sh`) and rebuilt.
+- Embedded templates synced (`scripts/legacy/sync-cli-templates.sh`) and rebuilt.
 - PRD/PRP and testing plan stored for traceability.
 - Documentation and changelog entries reflecting the new command.
 - Release notes drafted for rollout.

@@ -1,10 +1,10 @@
 import pytest
 
-from ai_dlc.knowledge import Knowledge
+from ai_dlc.documentation.knowledge import Knowledge
 
 
 def test_append_is_idempotent_and_preserves_note(tmp_path):
-    from ai_dlc.knowledge import Knowledge
+    from ai_dlc.documentation.knowledge import Knowledge
 
     note = tmp_path / "Daily.md"
     note.write_text("Existing note\n")
@@ -18,7 +18,7 @@ def test_append_is_idempotent_and_preserves_note(tmp_path):
 
 
 def test_vault_escape_and_symlinks_rejected(tmp_path):
-    from ai_dlc.knowledge import Knowledge
+    from ai_dlc.documentation.knowledge import Knowledge
 
     vault = tmp_path / "vault"
     vault.mkdir()
@@ -30,7 +30,7 @@ def test_vault_escape_and_symlinks_rejected(tmp_path):
 
 
 def test_unavailable_vault_is_not_created(tmp_path):
-    from ai_dlc.knowledge import Knowledge
+    from ai_dlc.documentation.knowledge import Knowledge
 
     with pytest.raises(ValueError, match="unavailable"):
         Knowledge(tmp_path / "missing")

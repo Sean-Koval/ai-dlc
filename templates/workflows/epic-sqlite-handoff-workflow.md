@@ -202,7 +202,7 @@ For each feature (`shared-storage-schema`, `mcp-bridge-service`, `agent-tooling-
 - `/act:act` should report completion of RED → GREEN → REFACTOR cycle. If interrupts mid-cycle, rerun after addressing issues.
 - `/commit:commit` must create a conventional commit. Review the diff to ensure only intended files included; if tool suggests splitting commits, follow guidance before proceeding.
 - Todo entry ensures smoke tests run later; *QA* checks presence.
-- Developers manually run `scripts/sync-cli-templates.sh` + `cargo build` and attach notes to orchestration tracker; if build fails, resolve before moving to verification.
+- Developers manually run `scripts/legacy/sync-cli-templates.sh` + `cargo build` and attach notes to orchestration tracker; if build fails, resolve before moving to verification.
 
 **Agent orchestration sequence**
 1. Workflow-orchestrator assigns tasks to fullstack-developer agent referencing design doc paths.

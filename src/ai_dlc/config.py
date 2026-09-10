@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from ai_dlc.enrollment import EnrollmentPaths
+    from ai_dlc.environment.enrollment import EnrollmentPaths
 
 SCHEMA = 4
 SCOPES = {
@@ -361,9 +361,9 @@ def resolve_runtime(
     enrollment_paths: EnrollmentPaths | None = None,
 ) -> Resolved:
     """Resolve the packaged base plus any active, verified enrollment layers."""
-    from ai_dlc.enrollment import EnrollmentPaths, read_lock
+    from ai_dlc.environment.enrollment import EnrollmentPaths, read_lock
+    from ai_dlc.environment.profile_source import verify_cached_profile
     from ai_dlc.files import assets
-    from ai_dlc.profile_source import verify_cached_profile
 
     if machine is not None and machine_config is not None:
         raise ValueError("Choose a machine path or machine_config, not both")

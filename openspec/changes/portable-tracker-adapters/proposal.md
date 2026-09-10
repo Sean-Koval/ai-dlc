@@ -29,4 +29,4 @@ definitions, generated contract schemas, fixtures and live qualification evidenc
 Jira Data Center is excluded until the actual work deployment is known; if required,
 revise this proposed scope rather than using Cloud endpoints against it.
 [Requirements](../../../docs/design/provider-toolsets-prd.md),
-[plan](../../../docs/superpowers/plans/2026-09-06-portable-tracker-adapters.md).
+[plan](2026-09-06-portable-tracker-adapters.md).

@@ -1,709 +1,1482 @@
 {
   "schema": 1,
-  "base": "74b90c67f9f0b29a0a4bae688ea6b670608aea18",
-  "snapshot": "c78fc0b4b3cf182c4e960a4be0d43ed20a265a0e870f1a8511cabaf161c8e63a",
-  "reviewer": "Codex implementation review with independent scoped reviewers",
+  "base": "baa8629343e47f245e9a7f0b225935ac49aea446",
+  "snapshot": "5a6fcd2780d8cd2e392b763c3671ad220e57e081dd5d3bb09da6393d9f8b0d61",
+  "reviewer": "Codex repository organization review",
   "decisions": [
     {
-      "target": ".agents/skills/day-end/SKILL.md",
+      "target": ".ai-dlc/work/bootstrap-executable-publication.toml",
       "outcome": "no-impact",
-      "reason": "Portable or rendered harness guidance, work correlation or integrity metadata. Reviewed source guidance owns the instructions; generated copies are checked for integrity and are not additional canonical project documents."
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
     },
     {
-      "target": ".agents/skills/day-start/SKILL.md",
+      "target": ".ai-dlc/work/component-capability-contract.toml",
       "outcome": "no-impact",
-      "reason": "Portable or rendered harness guidance, work correlation or integrity metadata. Reviewed source guidance owns the instructions; generated copies are checked for integrity and are not additional canonical project documents."
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
     },
     {
-      "target": ".agents/skills/document-review/SKILL.md",
+      "target": ".ai-dlc/work/connected-project-readiness.toml",
       "outcome": "no-impact",
-      "reason": "Portable or rendered harness guidance, work correlation or integrity metadata. Reviewed source guidance owns the instructions; generated copies are checked for integrity and are not additional canonical project documents."
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
     },
     {
-      "target": ".ai-dlc/agent-ownership.json",
+      "target": ".ai-dlc/work/design-pm-calibration.toml",
       "outcome": "no-impact",
-      "reason": "Portable or rendered harness guidance, work correlation or integrity metadata. Reviewed source guidance owns the instructions; generated copies are checked for integrity and are not additional canonical project documents."
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
     },
     {
-      "target": ".ai-dlc/providers/openspec.md",
+      "target": ".ai-dlc/work/design-pm-workflow.toml",
       "outcome": "no-impact",
-      "reason": "Portable or rendered harness guidance, work correlation or integrity metadata. Reviewed source guidance owns the instructions; generated copies are checked for integrity and are not additional canonical project documents."
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
     },
     {
-      "target": ".ai-dlc/work/company-guidance-bundles.toml",
+      "target": ".ai-dlc/work/framework-delivery-plan.toml",
       "outcome": "no-impact",
-      "reason": "Portable or rendered harness guidance, work correlation or integrity metadata. Reviewed source guidance owns the instructions; generated copies are checked for integrity and are not additional canonical project documents."
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
     },
     {
-      "target": ".ai-dlc/work/document-evidence-review.toml",
+      "target": ".ai-dlc/work/framework-qualification.toml",
       "outcome": "no-impact",
-      "reason": "Portable or rendered harness guidance, work correlation or integrity metadata. Reviewed source guidance owns the instructions; generated copies are checked for integrity and are not additional canonical project documents."
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
     },
     {
-      "target": ".ai-dlc/work/documentation-impact-workflow.toml",
+      "target": ".ai-dlc/work/github-ticket-workflows.toml",
       "outcome": "no-impact",
-      "reason": "Portable or rendered harness guidance, work correlation or integrity metadata. Reviewed source guidance owns the instructions; generated copies are checked for integrity and are not additional canonical project documents."
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
     },
     {
-      "target": ".ai-dlc/work/documentation-lifecycle-reconciliation.toml",
+      "target": ".ai-dlc/work/jira-cloud-new-work.toml",
       "outcome": "no-impact",
-      "reason": "Portable or rendered harness guidance, work correlation or integrity metadata. Reviewed source guidance owns the instructions; generated copies are checked for integrity and are not additional canonical project documents."
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
     },
     {
-      "target": ".ai-dlc/work/documentation-workflow-qualification.toml",
+      "target": ".ai-dlc/work/linear-provider-onboarding.toml",
       "outcome": "no-impact",
-      "reason": "Portable or rendered harness guidance, work correlation or integrity metadata. Reviewed source guidance owns the instructions; generated copies are checked for integrity and are not additional canonical project documents."
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
     },
     {
-      "target": ".ai-dlc/work/obsidian-project-workspace.toml",
+      "target": ".ai-dlc/work/plane-new-work.toml",
       "outcome": "no-impact",
-      "reason": "Portable or rendered harness guidance, work correlation or integrity metadata. Reviewed source guidance owns the instructions; generated copies are checked for integrity and are not additional canonical project documents."
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
     },
     {
-      "target": ".ai-dlc/work/project-knowledge-repair.toml",
+      "target": ".ai-dlc/work/portable-workflow-bundles.toml",
       "outcome": "no-impact",
-      "reason": "Portable or rendered harness guidance, work correlation or integrity metadata. Reviewed source guidance owns the instructions; generated copies are checked for integrity and are not additional canonical project documents."
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
     },
     {
-      "target": ".claude/skills/day-end/SKILL.md",
+      "target": ".ai-dlc/work/product-shaping-workflow.toml",
       "outcome": "no-impact",
-      "reason": "Portable or rendered harness guidance, work correlation or integrity metadata. Reviewed source guidance owns the instructions; generated copies are checked for integrity and are not additional canonical project documents."
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
     },
     {
-      "target": ".claude/skills/day-start/SKILL.md",
+      "target": ".ai-dlc/work/provider-connection-service.toml",
       "outcome": "no-impact",
-      "reason": "Portable or rendered harness guidance, work correlation or integrity metadata. Reviewed source guidance owns the instructions; generated copies are checked for integrity and are not additional canonical project documents."
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
     },
     {
-      "target": ".claude/skills/document-review/SKILL.md",
+      "target": ".ai-dlc/work/provider-toolset-plan.toml",
       "outcome": "no-impact",
-      "reason": "Portable or rendered harness guidance, work correlation or integrity metadata. Reviewed source guidance owns the instructions; generated copies are checked for integrity and are not additional canonical project documents."
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
     },
     {
-      "target": ".github/workflows/verify.yml",
+      "target": ".ai-dlc/work/repository-organization.toml",
       "outcome": "no-impact",
-      "reason": "Enables the documented opt-in documentation gate and independent CI comparison base. Existing project defaults remain unchanged; required checks verify the selected policy."
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": ".ai-dlc/work/spec-delivery-traceability.toml",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": ".ai-dlc/work/workflow-quality-calibration.toml",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": ".superpowers/sdd/2026-09-07-github-ticket-workflows/task-1-report.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
       "target": "AGENTS.md",
-      "outcome": "no-impact",
-      "reason": "Portable or rendered harness guidance, work correlation or integrity metadata. Reviewed source guidance owns the instructions; generated copies are checked for integrity and are not additional canonical project documents."
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "CLAUDE.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "CONTRIBUTING.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
       "target": "README.md",
       "outcome": "updated",
-      "reason": "User-facing setup and document lifecycle instructions now describe implemented commands, private/source boundaries, applicability, and honest qualification limits."
-    },
-    {
-      "target": "agents/providers/openspec.md",
-      "outcome": "no-impact",
-      "reason": "Portable or rendered harness guidance, work correlation or integrity metadata. Reviewed source guidance owns the instructions; generated copies are checked for integrity and are not additional canonical project documents."
-    },
-    {
-      "target": "agents/skills.lock.json",
-      "outcome": "no-impact",
-      "reason": "Portable or rendered harness guidance, work correlation or integrity metadata. Reviewed source guidance owns the instructions; generated copies are checked for integrity and are not additional canonical project documents."
-    },
-    {
-      "target": "agents/skills/day-end/SKILL.md",
-      "outcome": "no-impact",
-      "reason": "Portable or rendered harness guidance, work correlation or integrity metadata. Reviewed source guidance owns the instructions; generated copies are checked for integrity and are not additional canonical project documents."
-    },
-    {
-      "target": "agents/skills/day-start/SKILL.md",
-      "outcome": "no-impact",
-      "reason": "Portable or rendered harness guidance, work correlation or integrity metadata. Reviewed source guidance owns the instructions; generated copies are checked for integrity and are not additional canonical project documents."
-    },
-    {
-      "target": "agents/skills/document-review/SKILL.md",
-      "outcome": "no-impact",
-      "reason": "Portable or rendered harness guidance, work correlation or integrity metadata. Reviewed source guidance owns the instructions; generated copies are checked for integrity and are not additional canonical project documents."
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
       "target": "ai-dlc.toml",
       "outcome": "no-impact",
-      "reason": "Enables the documented opt-in documentation gate and independent CI comparison base. Existing project defaults remain unchanged; required checks verify the selected policy."
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "ai_dlc_tool_evolution_plan.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "aidlc_restructure_plan.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "crates/ai-dlc-cli/README.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/architecture.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/README.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/legacy/phase-1-rust.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/legacy/restructure-plan.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/legacy/rust-evolution-plan.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/planning/2026-09-05-design-pm-calibration.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/planning/2026-09-05-framework-delivery.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/planning/2026-09-05-framework-qualification.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/planning/2026-09-05-workflow-quality-calibration.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/planning/2026-09-06-provider-toolsets.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/planning/2026-09-07-work-computer-readiness.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/planning/delivery-index.json",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/archive/planning/framework-delivery-review.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/planning/github-backlog-migration.json",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/archive/planning/github-backlog-migration.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/planning/implementation-v4.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/planning/provider-substitution-2026-09-06.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/planning/provider-toolset-code-audit.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/planning/provider-toolset-handoff.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/planning/stage-cleanup-review-2026-09-06.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/planning/tracker-adapter-follow-through.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/research/awesome_claude_framework.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/research/claude_architecture.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/research/claude_components_workflow_analysis.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/research/jinja2_template_generation.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/research/repository_command_workflow_analysis.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/archive/research/super_claude_framework.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
     },
     {
       "target": "docs/catalog.toml",
       "outcome": "updated",
-      "reason": "Editorial reconciliation of current authority, historical delivery and source links. The dated baseline records retained limitations; this edit does not establish a complete factual freshness review."
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
       "target": "docs/design/design-pm.md",
       "outcome": "updated",
-      "reason": "Editorial reconciliation of current authority, historical delivery and source links. The dated baseline records retained limitations; this edit does not establish a complete factual freshness review."
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
     },
     {
-      "target": "docs/design/project-documentation.md",
+      "target": "docs/design/framework-delivery.md",
       "outcome": "updated",
-      "reason": "Reviewed the documentation workflow and SDK reference changes against their scoped tests, implementation and independent review; runtime behavior and qualification limits are described in docs/verification/documentation-workflow.md."
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/design/provider-connections.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
     },
     {
       "target": "docs/design/provider-toolsets-prd.md",
       "outcome": "updated",
-      "reason": "Editorial reconciliation of current authority, historical delivery and source links. The dated baseline records retained limitations; this edit does not establish a complete factual freshness review."
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/development-workflow.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/github-ticket-setup.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
     },
     {
       "target": "docs/handoffs/framework-delivery.md",
       "outcome": "updated",
-      "reason": "Reviewed the documentation workflow and SDK reference changes against their scoped tests, implementation and independent review; runtime behavior and qualification limits are described in docs/verification/documentation-workflow.md."
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
     },
     {
       "target": "docs/handoffs/provider-toolset-plan.md",
       "outcome": "updated",
-      "reason": "Reviewed the documentation workflow and SDK reference changes against their scoped tests, implementation and independent review; runtime behavior and qualification limits are described in docs/verification/documentation-workflow.md."
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/implementation-v4.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
       "target": "docs/index.md",
       "outcome": "updated",
-      "reason": "Editorial reconciliation of current authority, historical delivery and source links. The dated baseline records retained limitations; this edit does not establish a complete factual freshness review."
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/migration.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
     },
     {
       "target": "docs/phase_1_rust.md",
       "outcome": "updated",
-      "reason": "Editorial reconciliation of current authority, historical delivery and source links. The dated baseline records retained limitations; this edit does not establish a complete factual freshness review."
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/planning/delivery-index.json",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/planning/framework-delivery-review.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/planning/github-backlog-migration.json",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/planning/github-backlog-migration.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/planning/provider-substitution-2026-09-06.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/planning/provider-toolset-code-audit.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/planning/stage-cleanup-review-2026-09-06.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/planning/tracker-adapter-follow-through.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
       "target": "docs/product-direction.md",
       "outcome": "updated",
-      "reason": "Reviewed the documentation workflow and SDK reference changes against their scoped tests, implementation and independent review; runtime behavior and qualification limits are described in docs/verification/documentation-workflow.md."
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
     },
     {
       "target": "docs/prompts/jinja2_template_generation.md",
       "outcome": "updated",
-      "reason": "Editorial reconciliation of current authority, historical delivery and source links. The dated baseline records retained limitations; this edit does not establish a complete factual freshness review."
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
-      "target": "docs/release-verification.md",
+      "target": "docs/reviews/2026-09-03-portable-profile-enrollment.md",
       "outcome": "updated",
-      "reason": "Reviewed the documentation workflow and SDK reference changes against their scoped tests, implementation and independent review; runtime behavior and qualification limits are described in docs/verification/documentation-workflow.md."
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
     },
     {
       "target": "docs/roadmap.md",
       "outcome": "updated",
-      "reason": "Reviewed the documentation workflow and SDK reference changes against their scoped tests, implementation and independent review; runtime behavior and qualification limits are described in docs/verification/documentation-workflow.md."
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/runbooks/linear-setup.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/runbooks/machine-enrollment.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/superpowers/plans/2026-09-03-portable-profile-enrollment.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
       "target": "docs/superpowers/plans/2026-09-05-component-capability-contract.md",
       "outcome": "updated",
-      "reason": "Editorial reconciliation of current authority, historical delivery and source links. The dated baseline records retained limitations; this edit does not establish a complete factual freshness review."
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
       "target": "docs/superpowers/plans/2026-09-05-connected-project-readiness.md",
       "outcome": "updated",
-      "reason": "Editorial reconciliation of current authority, historical delivery and source links. The dated baseline records retained limitations; this edit does not establish a complete factual freshness review."
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/superpowers/plans/2026-09-05-design-pm-calibration.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
       "target": "docs/superpowers/plans/2026-09-05-design-pm-workflow.md",
       "outcome": "updated",
-      "reason": "Editorial reconciliation of current authority, historical delivery and source links. The dated baseline records retained limitations; this edit does not establish a complete factual freshness review."
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/superpowers/plans/2026-09-05-framework-delivery.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/superpowers/plans/2026-09-05-framework-qualification.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/superpowers/plans/2026-09-05-linear-provider-onboarding.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/superpowers/plans/2026-09-05-portable-workflow-bundles.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/superpowers/plans/2026-09-05-product-shaping-workflow.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
       "target": "docs/superpowers/plans/2026-09-05-spec-delivery-traceability.md",
       "outcome": "updated",
-      "reason": "Editorial reconciliation of current authority, historical delivery and source links. The dated baseline records retained limitations; this edit does not establish a complete factual freshness review."
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/superpowers/plans/2026-09-05-workflow-quality-calibration.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/superpowers/plans/2026-09-06-portable-tracker-adapters.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
       "target": "docs/superpowers/plans/2026-09-06-provider-toolset-onboarding.md",
       "outcome": "updated",
-      "reason": "Editorial reconciliation of current authority, historical delivery and source links. The dated baseline records retained limitations; this edit does not establish a complete factual freshness review."
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/superpowers/plans/2026-09-06-provider-toolsets.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/superpowers/plans/2026-09-06-selective-tracker-migration.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/superpowers/plans/2026-09-06-team-document-publication.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
       "target": "docs/superpowers/plans/2026-09-07-bootstrap-executable-publication.md",
       "outcome": "updated",
-      "reason": "Editorial reconciliation of current authority, historical delivery and source links. The dated baseline records retained limitations; this edit does not establish a complete factual freshness review."
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/superpowers/plans/2026-09-07-github-ticket-workflows.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/superpowers/plans/2026-09-07-jira-cloud-new-work.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/superpowers/plans/2026-09-07-native-work-harnesses.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/superpowers/plans/2026-09-07-plane-new-work.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/superpowers/plans/2026-09-07-provider-connection-service.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
       "target": "docs/superpowers/plans/2026-09-07-work-computer-readiness.md",
       "outcome": "updated",
-      "reason": "Editorial reconciliation of current authority, historical delivery and source links. The dated baseline records retained limitations; this edit does not establish a complete factual freshness review."
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
-      "target": "docs/verification/documentation-baseline.json",
+      "target": "docs/superpowers/plans/2026-09-08-selective-tracker-migration.md",
       "outcome": "updated",
-      "reason": "Editorial reconciliation of current authority, historical delivery and source links. The dated baseline records retained limitations; this edit does not establish a complete factual freshness review."
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/superpowers/specs/2026-09-03-portable-profile-enrollment-design.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/templates/awesome_claude_framework.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/templates/claude_architecture.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/templates/claude_components_workflow_analysis.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/templates/repository_command_workflow_analysis.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/templates/super_claude_framework.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "docs/verification/design-pm-evaluation.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
     },
     {
       "target": "docs/verification/documentation-workflow.md",
-      "outcome": "updated",
-      "reason": "Reviewed the documentation workflow and SDK reference changes against their scoped tests, implementation and independent review; runtime behavior and qualification limits are described in docs/verification/documentation-workflow.md."
+      "outcome": "reviewed-no-change",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
     },
     {
-      "target": "docs/verification/jira-cloud-new-work.md",
+      "target": "docs/verification/github-ticket-workflows.md",
       "outcome": "updated",
-      "reason": "Editorial reconciliation of current authority, historical delivery and source links. The dated baseline records retained limitations; this edit does not establish a complete factual freshness review."
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
     },
     {
-      "target": "docs/verification/native-tool-composition.md",
+      "target": "docs/verification/portable-workflow-bundle-cleanup.md",
       "outcome": "updated",
-      "reason": "Editorial reconciliation of current authority, historical delivery and source links. The dated baseline records retained limitations; this edit does not establish a complete factual freshness review."
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
     },
     {
-      "target": "docs/verification/project-knowledge-repair.md",
+      "target": "docs/verification/product-delivery-evaluation.md",
       "outcome": "updated",
-      "reason": "Reviewed the documentation workflow and SDK reference changes against their scoped tests, implementation and independent review; runtime behavior and qualification limits are described in docs/verification/documentation-workflow.md."
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "docs/verification/repository-organization.md",
+      "outcome": "updated",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
     },
     {
       "target": "docs/workflows/tool-map.md",
+      "outcome": "reviewed-no-change",
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-03-portable-profile-enrollment/2026-09-03-portable-profile-enrollment.md",
       "outcome": "updated",
-      "reason": "Reviewed the documentation workflow and SDK reference changes against their scoped tests, implementation and independent review; runtime behavior and qualification limits are described in docs/verification/documentation-workflow.md."
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
-      "target": "openspec/changes/archive/2026-09-10-company-guidance-bundles/design.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-company-guidance-bundles/proposal.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-company-guidance-bundles/specs/company-guidance-bundles/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-company-guidance-bundles/tasks.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-document-evidence-review/design.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-document-evidence-review/proposal.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-document-evidence-review/specs/document-evidence-review/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-document-evidence-review/tasks.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-documentation-impact-workflow/design.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-documentation-impact-workflow/proposal.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-documentation-impact-workflow/specs/documentation-impact-workflow/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-documentation-impact-workflow/tasks.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-documentation-lifecycle-reconciliation/design.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-documentation-lifecycle-reconciliation/proposal.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-documentation-lifecycle-reconciliation/specs/documentation-lifecycle-reconciliation/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-documentation-lifecycle-reconciliation/tasks.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-documentation-workflow-qualification/design.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-documentation-workflow-qualification/proposal.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-documentation-workflow-qualification/specs/documentation-workflow-qualification/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-documentation-workflow-qualification/tasks.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-obsidian-project-workspace/design.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-obsidian-project-workspace/proposal.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-obsidian-project-workspace/specs/obsidian-project-workspace/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-obsidian-project-workspace/tasks.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-obsidian-vault-linking/.openspec.yaml",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-obsidian-vault-linking/design.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-obsidian-vault-linking/proposal.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-obsidian-vault-linking/specs/obsidian-vault-linking/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/archive/2026-09-10-obsidian-vault-linking/tasks.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/obsidian-vault-linking/.openspec.yaml",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/obsidian-vault-linking/design.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/obsidian-vault-linking/proposal.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/obsidian-vault-linking/specs/obsidian-vault-linking/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/changes/obsidian-vault-linking/tasks.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/config.yaml",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/specs/bootstrap-executable-publication/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/specs/component-capability-contract/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/specs/connected-project-readiness/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/specs/design-pm/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/specs/github-project-defaults/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/specs/github-ticket-workflows/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/specs/jira-cloud-new-work/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/specs/native-tool-composition/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/specs/native-work-harnesses/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/specs/obsidian-vault-linking/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/specs/onboarding-readiness/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/specs/plane-new-work/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/specs/portable-workflow-bundles/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/specs/product-shaping-workflow/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/specs/provider-connection-service/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/specs/provider-toolset-onboarding/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/specs/spec-delivery-traceability/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "openspec/specs/toolset-composition/spec.md",
-      "outcome": "no-impact",
-      "reason": "Formal requirement, design, task or archive artifact remains owned by OpenSpec. Durable explanations and remaining qualification are linked from the project documentation map."
-    },
-    {
-      "target": "project-templates/project/AI-DLC.md",
+      "target": "openspec/changes/archive/2026-09-03-portable-profile-enrollment/design.md",
       "outcome": "updated",
-      "reason": "User-facing setup and document lifecycle instructions now describe implemented commands, private/source boundaries, applicability, and honest qualification limits."
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
-      "target": "project-templates/project/docs/documentation-guide.md",
+      "target": "openspec/changes/archive/2026-09-03-portable-profile-enrollment/historical-design.md",
       "outcome": "updated",
-      "reason": "User-facing setup and document lifecycle instructions now describe implemented commands, private/source boundaries, applicability, and honest qualification limits."
+      "reason": "Reviewed repository organization: source packages and current navigation match relocated files. Historical observations retain their provenance; no semantic freshness is inferred. See docs/verification/repository-organization.md."
     },
     {
-      "target": "project-templates/project/docs/workflows/tool-map.md",
+      "target": "openspec/changes/archive/2026-09-03-portable-profile-enrollment/proposal.md",
       "outcome": "updated",
-      "reason": "User-facing setup and document lifecycle instructions now describe implemented commands, private/source boundaries, applicability, and honest qualification limits."
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
-      "target": "tests/fixtures/document_review_case/case.md",
-      "outcome": "no-impact",
-      "reason": "Original regression or fictional evaluation material validates the documented workflow; it is not a new authoritative product guide or company SDK policy."
+      "target": "openspec/changes/archive/2026-09-03-portable-profile-enrollment/tasks.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
-      "target": "tests/fixtures/document_review_case/project/docs/catalog.toml",
-      "outcome": "no-impact",
-      "reason": "Original regression or fictional evaluation material validates the documented workflow; it is not a new authoritative product guide or company SDK policy."
+      "target": "openspec/changes/archive/2026-09-05-component-capability-contract/2026-09-05-component-capability-contract.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
-      "target": "tests/fixtures/document_review_case/project/docs/duplicate-reference.md",
-      "outcome": "no-impact",
-      "reason": "Original regression or fictional evaluation material validates the documented workflow; it is not a new authoritative product guide or company SDK policy."
+      "target": "openspec/changes/archive/2026-09-05-component-capability-contract/design.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
-      "target": "tests/fixtures/document_review_case/project/docs/onboarding.md",
-      "outcome": "no-impact",
-      "reason": "Original regression or fictional evaluation material validates the documented workflow; it is not a new authoritative product guide or company SDK policy."
+      "target": "openspec/changes/archive/2026-09-05-component-capability-contract/proposal.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
-      "target": "tests/fixtures/document_review_case/project/docs/reference.md",
-      "outcome": "no-impact",
-      "reason": "Original regression or fictional evaluation material validates the documented workflow; it is not a new authoritative product guide or company SDK policy."
+      "target": "openspec/changes/archive/2026-09-05-component-capability-contract/tasks.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
-      "target": "tests/fixtures/document_review_case/project/openspec/specs/payments/spec.md",
-      "outcome": "no-impact",
-      "reason": "Original regression or fictional evaluation material validates the documented workflow; it is not a new authoritative product guide or company SDK policy."
+      "target": "openspec/changes/archive/2026-09-05-connected-project-readiness/2026-09-05-connected-project-readiness.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
     },
     {
-      "target": "tests/fixtures/document_review_case/project/src/client.py",
+      "target": "openspec/changes/archive/2026-09-05-connected-project-readiness/design.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-05-connected-project-readiness/proposal.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-05-connected-project-readiness/tasks.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-06-linear-provider-onboarding/2026-09-05-linear-provider-onboarding.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-06-linear-provider-onboarding/design.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-06-linear-provider-onboarding/proposal.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-06-linear-provider-onboarding/tasks.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-07-github-ticket-workflows/2026-09-07-github-ticket-workflows.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-07-native-work-harnesses/2026-09-07-native-work-harnesses.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-07-portable-workflow-bundles/2026-09-05-portable-workflow-bundles.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-07-portable-workflow-bundles/design.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-07-portable-workflow-bundles/proposal.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-07-portable-workflow-bundles/tasks.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-07-product-shaping-workflow/2026-09-05-product-shaping-workflow.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-07-product-shaping-workflow/design.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-07-product-shaping-workflow/proposal.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-07-product-shaping-workflow/tasks.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-07-provider-connection-service/2026-09-07-provider-connection-service.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-08-bootstrap-executable-publication/2026-09-07-bootstrap-executable-publication.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-08-bootstrap-executable-publication/design.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-08-design-pm-workflow/2026-09-05-design-pm-workflow.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-08-design-pm-workflow/design.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-08-design-pm-workflow/tasks.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-08-jira-cloud-new-work/2026-09-07-jira-cloud-new-work.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-08-plane-new-work/2026-09-07-plane-new-work.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-08-provider-toolset-onboarding/2026-09-06-provider-toolset-onboarding.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-08-provider-toolset-onboarding/design.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-08-provider-toolset-onboarding/proposal.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-08-spec-delivery-traceability/2026-09-05-spec-delivery-traceability.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-08-spec-delivery-traceability/design.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-08-spec-delivery-traceability/proposal.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-08-spec-delivery-traceability/tasks.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/portable-tracker-adapters/2026-09-06-portable-tracker-adapters.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/portable-tracker-adapters/proposal.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/portable-tracker-adapters/tasks.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/repository-organization/design.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/repository-organization/proposal.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/repository-organization/specs/repository-organization/spec.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/repository-organization/tasks.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/selective-tracker-migration/2026-09-06-selective-tracker-migration.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/selective-tracker-migration/2026-09-08-selective-tracker-migration.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/selective-tracker-migration/proposal.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/selective-tracker-migration/tasks.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/team-document-publication/2026-09-06-team-document-publication.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/team-document-publication/proposal.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "openspec/changes/team-document-publication/tasks.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "scripts/check_env.sh",
       "outcome": "no-impact",
-      "reason": "Original regression or fictional evaluation material validates the documented workflow; it is not a new authoritative product guide or company SDK policy."
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "scripts/sync-cli-templates.sh",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "templates/workflows/epic-sqlite-handoff-workflow.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "templates/workflows/template-extension-direct-commands.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "templates/workflows/template-extension-workflow.md",
+      "outcome": "updated",
+      "reason": "Relocated or consolidated documentation and formal artifacts; update current paths while preserving historical observations. This is a structural review, not a claim of complete factual accuracy."
+    },
+    {
+      "target": "tests/test_checks.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_cli.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_components.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_config.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_connections.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_credential_requirements.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_credentials.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_enrollment.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_github_onboarding.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_github_project_defaults.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_github_projects.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_hooks.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_jira_onboarding.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_jira_workflow.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_knowledge.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_machine.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_machine_integration.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_native_composition.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_native_harnesses.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_onboarding_readiness.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_plane_onboarding.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_plane_workflow.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_profile_source.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_project.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_project_documents.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_provider_onboarding.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_providers.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_provision.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_readiness.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_rebind.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_rendering.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_repository_layout.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_sandbox.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_templates.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_toolset_composition.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_traceability.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_tracker_migration.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_tracker_migration_adapters.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_tracker_read_identity.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_tracker_targets.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_user_agents.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_vault_link.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_workflow.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
     },
     {
       "target": "tests/test_workflow_bundles.py",
       "outcome": "no-impact",
-      "reason": "Original regression or fictional evaluation material validates the documented workflow; it is not a new authoritative product guide or company SDK policy."
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
+    },
+    {
+      "target": "tests/test_workstation.py",
+      "outcome": "no-impact",
+      "reason": "Internal import or source-path relocation, test/packaging check, work reference, or generated configuration supporting the documented organization. Public commands and provider contracts retain their existing interfaces."
     }
   ],
   "sources": {
-    ".agents/skills/day-end/SKILL.md": "2453f271ade54bb141927c9bfe5aa8d96e3599b670d1571d562bbce2f3bad115",
-    ".agents/skills/day-start/SKILL.md": "4de3148d1e72b9f44271bcf18fb961c0a5ff0c6b16c865a7fc8e3cadc9004960",
-    ".agents/skills/document-review/SKILL.md": "430a11bbb50ad32ca14a45074057fca3f761659b1289b77b36fbc617d2b0fb98",
-    ".ai-dlc/agent-ownership.json": "1bb6953bc51fd703a0fc8f2ce02a96401d01a30ced60b9c6b4d07cdb273f2ea7",
-    ".ai-dlc/providers/openspec.md": "1ed8ff13684019a71d77effc1b6344cf96bffa0c08221a75bcc9710cc44ae5d7",
-    ".ai-dlc/work/company-guidance-bundles.toml": "39c13fef0253482367fdc70f96cec31570e95b32b27a87aa5d299f922d41823a",
-    ".ai-dlc/work/document-evidence-review.toml": "3ec08c9a132355a8cd03127f27795c5c4ba1ddd69963975bd6c83c7354da65c7",
-    ".ai-dlc/work/documentation-impact-workflow.toml": "1d923ba0ec0f1677312689030c16a7e18ad2d0bb401a2dcbc35d650a7fcac165",
-    ".ai-dlc/work/documentation-lifecycle-reconciliation.toml": "b4f41d3fbf9d5082f7e80c3733001d20e4103c649b903ed1bee326273f9b6a52",
-    ".ai-dlc/work/documentation-workflow-qualification.toml": "cbfe3eecd8cab975a705cb201bac16307ec8f1ac3d849dc03f0b444ec941d521",
-    ".ai-dlc/work/obsidian-project-workspace.toml": "22bfb6cfd673a5b9473828ebef0ff349ebd838430bb35c22be7aa3a43e3ed2eb",
-    ".ai-dlc/work/project-knowledge-repair.toml": "cbb7a1c434cea9443c2283a745601b655d5e0295924e332321f5d441526fcf17",
-    ".claude/skills/day-end/SKILL.md": "2453f271ade54bb141927c9bfe5aa8d96e3599b670d1571d562bbce2f3bad115",
-    ".claude/skills/day-start/SKILL.md": "4de3148d1e72b9f44271bcf18fb961c0a5ff0c6b16c865a7fc8e3cadc9004960",
-    ".claude/skills/document-review/SKILL.md": "430a11bbb50ad32ca14a45074057fca3f761659b1289b77b36fbc617d2b0fb98",
-    ".github/workflows/verify.yml": "a462087cb30b4987c49f4bc4b419928fbaaf316654089f219284cf65337cb4bd",
-    "AGENTS.md": "22966b7edf13d154310ba46047ec5ff95504ca11b6b75ff8cb7db846f0cd3a6b",
-    "README.md": "3dd7f42dcff07b7b1925566717e20969dcea4b736c9fc89e7560ebccbb6de90c",
-    "agents/providers/openspec.md": "1ed8ff13684019a71d77effc1b6344cf96bffa0c08221a75bcc9710cc44ae5d7",
-    "agents/skills.lock.json": "6808687d2a421216470dcd37ec21a96685d72cdeabe374e64baf454e18afdc49",
-    "agents/skills/day-end/SKILL.md": "2453f271ade54bb141927c9bfe5aa8d96e3599b670d1571d562bbce2f3bad115",
-    "agents/skills/day-start/SKILL.md": "4de3148d1e72b9f44271bcf18fb961c0a5ff0c6b16c865a7fc8e3cadc9004960",
-    "agents/skills/document-review/SKILL.md": "430a11bbb50ad32ca14a45074057fca3f761659b1289b77b36fbc617d2b0fb98",
-    "ai-dlc.toml": "b8b78807222e56aff932f0fd775cfb8eb47a4789ab89b2c8236fc2b2bd9ef9a8",
-    "docs/catalog.toml": "3ee463a70457609a7551c5e8a39d8e1b60ad4c114acf0de7e76a04521d80be08",
-    "docs/design/design-pm.md": "10987ea4d0b9c07633e3f9d11ecbeb27cfe8e2565a699c3e080ee3c35c12d8b0",
-    "docs/design/project-documentation.md": "1a011122c69a3cfc9d0d005c5c29aae28e6516149155c4645920cd474c98809f",
-    "docs/design/provider-toolsets-prd.md": "68d5e91c898b4e1d4917a7b85296fd634cee7a0542d92b8135ad935680f4a626",
-    "docs/handoffs/framework-delivery.md": "59e3c2c1e80fb74d54f9772e4c0c19a8739f5bbec28287ced40906a25859409f",
-    "docs/handoffs/provider-toolset-plan.md": "a698c948de05e388c2470df2c0d557647610005f420c399fc3caeef59bc8c387",
-    "docs/index.md": "2387cd5c06bc32101a1b9e9c85c2d3f7b0712f171de710c20d59cd85919dda34",
-    "docs/phase_1_rust.md": "f275ab9f15fbf0651b4cbc1f284ae8968f16c4c6a291c0455ff2e93cf9d573d7",
-    "docs/product-direction.md": "e7928e727db0fd7c775b6e2dd25a66fba50e1a2d0720cbfe022505a05f55c22e",
-    "docs/prompts/jinja2_template_generation.md": "bab39d67439e25f0e1c20f17236962e548d963f0cf4d69812f4f838f45a400e1",
-    "docs/release-verification.md": "cb2fb39cfc1b4d53da6d3b0b0f814b1e60f21c787caa13220bbcb739970c8154",
-    "docs/roadmap.md": "cb741aa9cf8584d50a2b4c2e59ff0f30f41b2ead926f1364ac44109e1b7b0d53",
-    "docs/superpowers/plans/2026-09-05-component-capability-contract.md": "204ff06b8945ca5dca850989b6a001807b999c083e75c7c531349d35e525419d",
-    "docs/superpowers/plans/2026-09-05-connected-project-readiness.md": "50bbdf18fe333760d4d600efaecf789acf0b49d8fd0c573d2ef550519a87ce36",
-    "docs/superpowers/plans/2026-09-05-design-pm-workflow.md": "ec2e4054c276ba1fff555ae2784633954dd79ae4de1448be6d8d11fd2c0341ff",
-    "docs/superpowers/plans/2026-09-05-spec-delivery-traceability.md": "bf5b8a6ef4c27ee69f61b071c0f6343f0c8aae9adabdb5a19f3b692ea878cb08",
-    "docs/superpowers/plans/2026-09-06-provider-toolset-onboarding.md": "89b143dc3427528cb4ac2cf14faafaee8ab517a6f0858736ee96c5094e262479",
-    "docs/superpowers/plans/2026-09-07-bootstrap-executable-publication.md": "b03970257d8ad07ad8799a0f0a7cc804e9ace23284884d7f84221b620caec189",
-    "docs/superpowers/plans/2026-09-07-work-computer-readiness.md": "508562560c18d505694d12804a83a06697881743b67ca0c0e804f40e53d96db8",
-    "docs/verification/documentation-baseline.json": "6869ff9bf653f095d4055d9ee5e0c492e69c24609bed79dc41a4f8d1117f08ca",
+    ".ai-dlc/work/bootstrap-executable-publication.toml": "bd303785b50fa996e86bf5c19055939e08500d3c4cb508bf363626d143513b7e",
+    ".ai-dlc/work/component-capability-contract.toml": "4fd1f8c5913ee0d03d0e75b472ce8146c3d65d4e8ac49b890170a5c0007f8947",
+    ".ai-dlc/work/connected-project-readiness.toml": "3b1c275cf9cba19ac41a0681b6bb681f18c3449afdfd106b9871d125d7a1b4b0",
+    ".ai-dlc/work/design-pm-calibration.toml": "d668177570e035ad8dcc6baafc8aceeddcf3be37974af2cabe6066d2f19d578b",
+    ".ai-dlc/work/design-pm-workflow.toml": "72a4278f36430fae86e9d38dbbda763132c0447259db9a04df75c8660d4f9d58",
+    ".ai-dlc/work/framework-delivery-plan.toml": "dde8433d4fc56d8d51c730637307343f0b8e3d49189919a0ca421add4ba4ce1d",
+    ".ai-dlc/work/framework-qualification.toml": "949dd99658cc2a8498d40ded8cf74fdfe869ac28b42fb0622afdf45d9e4cc72e",
+    ".ai-dlc/work/github-ticket-workflows.toml": "fe826e4ce6a901aafe9ec9daf116eec71ddf693b43dad3379c28abffcf480c3e",
+    ".ai-dlc/work/jira-cloud-new-work.toml": "6232664247a466c68824a2b5ef49c5fcf915bdbb0cb1a490ee2043a98cd9690d",
+    ".ai-dlc/work/linear-provider-onboarding.toml": "346837376f200a6544a51ffa23473b0c248bb927af6396ab19b563ad1d8720cc",
+    ".ai-dlc/work/plane-new-work.toml": "fc7faa5c5cbf82ab73693523971d9ae44e6b68ecdda46da34a3fd97ab0bd6adb",
+    ".ai-dlc/work/portable-workflow-bundles.toml": "1e1318d82b797e9acd1d4f23e4437b2ea781e901220fc0cc178d54d78314ad03",
+    ".ai-dlc/work/product-shaping-workflow.toml": "a3a0b0d0613d94a89590b0a6c775b0d786d8c8a07b458a90fc56bf4f5ffcb6a4",
+    ".ai-dlc/work/provider-connection-service.toml": "f4bd0fd8c3e66510e39a9ca2216a9202f770890bf36ea8d03e881bf77e245cba",
+    ".ai-dlc/work/provider-toolset-plan.toml": "8ed466d50440352a4f3af13d9f07cb8439008fc20066ac411a57bc3476366dd6",
+    ".ai-dlc/work/repository-organization.toml": "f772e10c544d5fe512e17792f25481d2eb0910c7cd209af82e03ec3a51dab160",
+    ".ai-dlc/work/spec-delivery-traceability.toml": "3b7e629c7c2d1cf6e9010d86923eab5b3c05b7c96c702b1a9a1a62ef922b662c",
+    ".ai-dlc/work/workflow-quality-calibration.toml": "1d549d779d8e3ebd4ca62e60a4fc1e7b713979c1ebe88b2aa13ca52949714b57",
+    ".superpowers/sdd/2026-09-07-github-ticket-workflows/task-1-report.md": "missing",
+    "AGENTS.md": "4a5ffbf11d6f05c31b6d784e0729c9093f80fe9eac2f447b0339e8a9d0986cf5",
+    "CLAUDE.md": "336cc4fbf19beaada7ccf9986414fa91851a8d7a07dfb3ccbe800a69eed0ab49",
+    "CONTRIBUTING.md": "4b4b334a44b0da819d1290b32a57a0ad0e97b46f8f92b8c718f634426c81be71",
+    "README.md": "d47348264154da0fa96b194698b473c0091f7cc878d52310c006c0505c9b8981",
+    "ai-dlc.toml": "685c3f8ad1adbeab2fe4f5c7641db9bb76a19ef6b9a0d4978a303a26fef7be60",
+    "ai_dlc_tool_evolution_plan.md": "missing",
+    "aidlc_restructure_plan.md": "missing",
+    "crates/ai-dlc-cli/README.md": "2f7e432b87437c5462e8ac092f24b7c7bcc8c00f15dab7cb278650a0cd30ba21",
+    "docs/architecture.md": "55504e1b15988ca190dd4f31e643e218476777b6993a675476560a94e23ebfab",
+    "docs/archive/README.md": "0cb2c0da2b69cc388fa3fcb7f0ee3c53bc3a861e4644c26c94981ed550f1a09a",
+    "docs/archive/legacy/phase-1-rust.md": "6f14a6cc61332be62aec29643a6d11453cc86a6059a0ae724c4e24e86e320fc1",
+    "docs/archive/legacy/restructure-plan.md": "20626c0a35df82e16e84d553e6e87035df3b7ab22991711a6d75c591345f0e83",
+    "docs/archive/legacy/rust-evolution-plan.md": "26825442bfdb2a6d9e743a124b5a4c2860eda5e74e4a4ba016679d9630d86642",
+    "docs/archive/planning/2026-09-05-design-pm-calibration.md": "e4435635810f5b7a32f16a75cf98cda7cab4a036de8e0522cdd570ff9b5c6422",
+    "docs/archive/planning/2026-09-05-framework-delivery.md": "96560ed9829660844cc718c7daa12c50201d9fda0b43f7f2f7bf8d2318f0841d",
+    "docs/archive/planning/2026-09-05-framework-qualification.md": "54feaae4b8df829d062d1514df56fbaa1493e1674bc4952d5426605328e42072",
+    "docs/archive/planning/2026-09-05-workflow-quality-calibration.md": "bc38dfff29d477dce52aa37c11f7e44d7dca4a36a775b57427eb73e1b816d98e",
+    "docs/archive/planning/2026-09-06-provider-toolsets.md": "9b3778911977dc1350b329812bdb1fe12d987a097d259bf854b330723cd07249",
+    "docs/archive/planning/2026-09-07-work-computer-readiness.md": "4799686a75dcd94dbbc2433605f680915692feb5d7735262ed3495db3c4fcb77",
+    "docs/archive/planning/delivery-index.json": "83e337fb4dad41dec05ea5c64b17884e56fb865166d488781d737dffd301307b",
+    "docs/archive/planning/framework-delivery-review.md": "5bbb8b5f2077c51246e18b2a0575b8ae020bb8d2f0422fd990cb99ef6d4eee6b",
+    "docs/archive/planning/github-backlog-migration.json": "57ce93862182fa72b53f03abc3a5831fb8651e7540f4711031e3ef6180a76a74",
+    "docs/archive/planning/github-backlog-migration.md": "7454d5845e20388d3240f0bc67c9b237eaa968bb36046ad6a9b999f0cc4c4118",
+    "docs/archive/planning/implementation-v4.md": "92e4409bd2c81a3fd623cddf4284ddd4d2a627fcda6cd61a115fdfe6867f230b",
+    "docs/archive/planning/provider-substitution-2026-09-06.md": "885e91f99340ed0d9c621287536d64fa838cd40461c19f93a3debcf3002c8b54",
+    "docs/archive/planning/provider-toolset-code-audit.md": "5334830dc9fc380971b374aeaa8ec17374d630890b6c3af894f575f961ee62e1",
+    "docs/archive/planning/provider-toolset-handoff.md": "7b03195c4b6cb31bc812e12626afdaa52ffa24ce0d99d05322e7018d60e9b96c",
+    "docs/archive/planning/stage-cleanup-review-2026-09-06.md": "a186e93b1be75f12ce4905087663f2e1a753a7700f3d1798796e9831b6385119",
+    "docs/archive/planning/tracker-adapter-follow-through.md": "c40711f942ea21dbea108944dc429278ddab68946cfd110fcaaa2887f6aa27a2",
+    "docs/archive/research/awesome_claude_framework.md": "433342864096558991d07ad0ab531727ebaea993c2dc49fa0fa8c7fdcd280313",
+    "docs/archive/research/claude_architecture.md": "1844e0f7465ad06f5ac690f3f2511606d215616017546fd111c60a8103b428b7",
+    "docs/archive/research/claude_components_workflow_analysis.md": "9c3e057122b93e7dc592de8ac0dea7da4517c504155b0ec0fa1092fbd1cd283f",
+    "docs/archive/research/jinja2_template_generation.md": "e7aea0e3850415a1c45f9a55a6e5644ad48b612b83469e74644ed62c99170f07",
+    "docs/archive/research/repository_command_workflow_analysis.md": "69c89fe5ac5bd33286f9047fedf360dd5c971688a411c5d06ec770508664cb3e",
+    "docs/archive/research/super_claude_framework.md": "22b7cbe0778fa441ffc7a8fa6f2da728259d8834ae1f70e4c99f5a1a01e20e67",
+    "docs/catalog.toml": "381e96987d234658c2e7cdae0429d54e6d2184718bb9509d07bfbd0b7c3e2e66",
+    "docs/design/design-pm.md": "76a22a66f6f7da65355246f4e6ec3eebbd200cd893c59ac6e8575c5f9d4020ae",
+    "docs/design/framework-delivery.md": "7c4b4d12a08ac8b5d573826e382bb8422f58ba440f3f2f172b52c56cdcddaa0b",
+    "docs/design/provider-connections.md": "fbca47729f6efab8f3a681147a0854bbb87d7b324c49aef32bf0a9c63ee72e56",
+    "docs/design/provider-toolsets-prd.md": "59f165ee44f8139794f15af9d626029ddeec5d391693ad18003e3da2980eba96",
+    "docs/development-workflow.md": "39cbe7f0981b500c9a4db856dbf179f70f84cbcb84538931b82eb50b75b1307e",
+    "docs/github-ticket-setup.md": "57950efaa536176d116f57c20f2c3ae14292b91e92feaa2af80ec744fba373d1",
+    "docs/handoffs/framework-delivery.md": "3f90141bacd9135a2ebec810a7a032db9d65594ef38ab55e797649bfc988c5f8",
+    "docs/handoffs/provider-toolset-plan.md": "missing",
+    "docs/implementation-v4.md": "missing",
+    "docs/index.md": "c44d29d447f7cc60319be56994144ab5faaa1b1518e946d9bb5ac732a5800932",
+    "docs/migration.md": "7cac423492227101e8b0c5ae5678215394dc1a036f9bef8314c742f00bd7ea2b",
+    "docs/phase_1_rust.md": "missing",
+    "docs/planning/delivery-index.json": "missing",
+    "docs/planning/framework-delivery-review.md": "missing",
+    "docs/planning/github-backlog-migration.json": "missing",
+    "docs/planning/github-backlog-migration.md": "missing",
+    "docs/planning/provider-substitution-2026-09-06.md": "missing",
+    "docs/planning/provider-toolset-code-audit.md": "missing",
+    "docs/planning/stage-cleanup-review-2026-09-06.md": "missing",
+    "docs/planning/tracker-adapter-follow-through.md": "missing",
+    "docs/product-direction.md": "0cd881faa32496fc3e38cc4c1c677ae3e408a7f482e47b3d42a1d3129310b992",
+    "docs/prompts/jinja2_template_generation.md": "missing",
+    "docs/reviews/2026-09-03-portable-profile-enrollment.md": "c11c63e9caf7252f7cac12db36da485a969f7bb70213fe476e9836073c894a54",
+    "docs/roadmap.md": "e5e54659d1d0a112f2245f408d518a9d71423e4bc961eb1d2729adfe6db14eb5",
+    "docs/runbooks/linear-setup.md": "cd256d7a52c0af7854a5cdbb88ee1ca6e953b88a5f35e75a2bb2130de6ff5e27",
+    "docs/runbooks/machine-enrollment.md": "166738c35c9a1d75f695ccc858e637a3bbcf76eb2d6939eb719cb2e0125a1b53",
+    "docs/superpowers/plans/2026-09-03-portable-profile-enrollment.md": "missing",
+    "docs/superpowers/plans/2026-09-05-component-capability-contract.md": "missing",
+    "docs/superpowers/plans/2026-09-05-connected-project-readiness.md": "missing",
+    "docs/superpowers/plans/2026-09-05-design-pm-calibration.md": "missing",
+    "docs/superpowers/plans/2026-09-05-design-pm-workflow.md": "missing",
+    "docs/superpowers/plans/2026-09-05-framework-delivery.md": "missing",
+    "docs/superpowers/plans/2026-09-05-framework-qualification.md": "missing",
+    "docs/superpowers/plans/2026-09-05-linear-provider-onboarding.md": "missing",
+    "docs/superpowers/plans/2026-09-05-portable-workflow-bundles.md": "missing",
+    "docs/superpowers/plans/2026-09-05-product-shaping-workflow.md": "missing",
+    "docs/superpowers/plans/2026-09-05-spec-delivery-traceability.md": "missing",
+    "docs/superpowers/plans/2026-09-05-workflow-quality-calibration.md": "missing",
+    "docs/superpowers/plans/2026-09-06-portable-tracker-adapters.md": "missing",
+    "docs/superpowers/plans/2026-09-06-provider-toolset-onboarding.md": "missing",
+    "docs/superpowers/plans/2026-09-06-provider-toolsets.md": "missing",
+    "docs/superpowers/plans/2026-09-06-selective-tracker-migration.md": "missing",
+    "docs/superpowers/plans/2026-09-06-team-document-publication.md": "missing",
+    "docs/superpowers/plans/2026-09-07-bootstrap-executable-publication.md": "missing",
+    "docs/superpowers/plans/2026-09-07-github-ticket-workflows.md": "missing",
+    "docs/superpowers/plans/2026-09-07-jira-cloud-new-work.md": "missing",
+    "docs/superpowers/plans/2026-09-07-native-work-harnesses.md": "missing",
+    "docs/superpowers/plans/2026-09-07-plane-new-work.md": "missing",
+    "docs/superpowers/plans/2026-09-07-provider-connection-service.md": "missing",
+    "docs/superpowers/plans/2026-09-07-work-computer-readiness.md": "missing",
+    "docs/superpowers/plans/2026-09-08-selective-tracker-migration.md": "missing",
+    "docs/superpowers/specs/2026-09-03-portable-profile-enrollment-design.md": "missing",
+    "docs/templates/awesome_claude_framework.md": "missing",
+    "docs/templates/claude_architecture.md": "missing",
+    "docs/templates/claude_components_workflow_analysis.md": "missing",
+    "docs/templates/repository_command_workflow_analysis.md": "missing",
+    "docs/templates/super_claude_framework.md": "missing",
+    "docs/verification/design-pm-evaluation.md": "f4bcc07c8e42d37149042b4bfedb47a0ebdf24cd6832444e6da028c49728d179",
     "docs/verification/documentation-workflow.md": "b81ad3e690a41f55eaa44c1d40f1459e12090774765e9cb094dfe1a43c722a16",
-    "docs/verification/jira-cloud-new-work.md": "7d9daa3e72625961193cb05297db0bf5b78acf5b11be29dd56ceccfa48d1c305",
-    "docs/verification/native-tool-composition.md": "2f37d699d33c4421d11ac38f7beb575163ac1ef01e33353b01cdc874d8ada45e",
-    "docs/verification/project-knowledge-repair.md": "1808939dbb196f1f735f0f95bfcbafedcf11bf3f7a8e734b07debb7d6c46285d",
+    "docs/verification/github-ticket-workflows.md": "49efd63a9df84b97d15e796b225819f46beac5d4cae616369cb1793a5245b2eb",
+    "docs/verification/portable-workflow-bundle-cleanup.md": "1b7aff2a2661564711de4fcd40ecc131e4858ba183fcd163e82b1eba4b8ffc4f",
+    "docs/verification/product-delivery-evaluation.md": "5a4ad27e03708d68ce0953b320cf00953793a1dacd2843e2d3aa0859d3e294c8",
+    "docs/verification/repository-organization.md": "742cc6a7d913a9e61ecc2610070fcda5c11f9393ad80f9b484d6182071c217ed",
     "docs/workflows/tool-map.md": "cf10dfac69cdf7fd723b15a1157fb3b8c430e2056ebce39f32a55fb0ecabf1d4",
-    "openspec/changes/archive/2026-09-10-company-guidance-bundles/design.md": "24626cc06056679823cded62d50b8f7de671f690a521da490f5b3a3dc4fef18d",
-    "openspec/changes/archive/2026-09-10-company-guidance-bundles/proposal.md": "e15e8d9ea60bd6083dd007e464439c1bacf245a1cb419bbd6ec51509af292975",
-    "openspec/changes/archive/2026-09-10-company-guidance-bundles/specs/company-guidance-bundles/spec.md": "59ea146cf7d434dd5f4fd8db086a2598289c87830c6c69706ead480ce69b902b",
-    "openspec/changes/archive/2026-09-10-company-guidance-bundles/tasks.md": "e6eda13105182e596ba18d5a86868abb616af6a5ee631a93febf03f9c6757ca1",
-    "openspec/changes/archive/2026-09-10-document-evidence-review/design.md": "0ba29fd837c9bd49ab51d20a4c96b9e2a5144e3f6684b4e628f48b1bfd4de82d",
-    "openspec/changes/archive/2026-09-10-document-evidence-review/proposal.md": "ea1964112040f2f452135cd51704a10518d27ee78aaa9feff6dbc30b389d07a4",
-    "openspec/changes/archive/2026-09-10-document-evidence-review/specs/document-evidence-review/spec.md": "3edf3fa16cafd210c2d16779c2596093c97b145b8a70a92ed87771b286f97901",
-    "openspec/changes/archive/2026-09-10-document-evidence-review/tasks.md": "b21249177dbff66e456ea81f1d7720f1371a31cdf191bd8fbeeb2d4d0957a897",
-    "openspec/changes/archive/2026-09-10-documentation-impact-workflow/design.md": "af9f31e88f71b0c86febcdb47c9c65dc2859da8b6a102196d0a60c87b7f1477e",
-    "openspec/changes/archive/2026-09-10-documentation-impact-workflow/proposal.md": "a5760793697960dc06abbfb2f76d1107285a5b3277fcc4601ff3c52d581be856",
-    "openspec/changes/archive/2026-09-10-documentation-impact-workflow/specs/documentation-impact-workflow/spec.md": "f2231a8e660ef9bb0fccc6faa747080ba43e3128d2dbf8d1de430a585bfaac73",
-    "openspec/changes/archive/2026-09-10-documentation-impact-workflow/tasks.md": "2fa8b8ddd5c7c75585b0e53253b1db33f169a06fc4f4f5f73f95631ca76b76b9",
-    "openspec/changes/archive/2026-09-10-documentation-lifecycle-reconciliation/design.md": "20b0406e34a3af11f742ab86daffa1cad09edb3a1f0c163eeacaf365752c6889",
-    "openspec/changes/archive/2026-09-10-documentation-lifecycle-reconciliation/proposal.md": "78241d9ebcdc09d280cfd9739e1a8020d4da299eb46edd1172e6a6c6f5b84f84",
-    "openspec/changes/archive/2026-09-10-documentation-lifecycle-reconciliation/specs/documentation-lifecycle-reconciliation/spec.md": "a52476dcd63f5c0975086e692c27444c781cd94d19a5cf8c5a464833fb8412b9",
-    "openspec/changes/archive/2026-09-10-documentation-lifecycle-reconciliation/tasks.md": "83704582e3d5476e21ccd5e8246940dcaa08289f6dd280f71e287cb0180e6110",
-    "openspec/changes/archive/2026-09-10-documentation-workflow-qualification/design.md": "c99c97165752fbc8c1de34008a95fafabb541c810497bad2b9e727ef85088303",
-    "openspec/changes/archive/2026-09-10-documentation-workflow-qualification/proposal.md": "a0a5cdf12245b4c74eec8d4d2e65b9d676857a1b3f34f63a8780435c42be07de",
-    "openspec/changes/archive/2026-09-10-documentation-workflow-qualification/specs/documentation-workflow-qualification/spec.md": "2ee497be6cefbb73f47e6e42e84b81a7eb21051cf1d852904fe5ace25b561858",
-    "openspec/changes/archive/2026-09-10-documentation-workflow-qualification/tasks.md": "19aeff140b845f3d108c5488530f8f5a3252ffa6df7c1072e3e045130e50f59b",
-    "openspec/changes/archive/2026-09-10-obsidian-project-workspace/design.md": "7f3924eb009ec94c0c1a31a6c93fd8905a43d08e038a11a43fb6054068a9a7e2",
-    "openspec/changes/archive/2026-09-10-obsidian-project-workspace/proposal.md": "fa8bf3cdfac9571834139ff3f1c5db4da56b793454f4fe96bc0d5dbf1e188512",
-    "openspec/changes/archive/2026-09-10-obsidian-project-workspace/specs/obsidian-project-workspace/spec.md": "e3803a0874d21a65cbb56483487dc4f0c631216b355ea046f734076caebe8d0b",
-    "openspec/changes/archive/2026-09-10-obsidian-project-workspace/tasks.md": "0c8b30a3600ad13e366841535f1563aa202af27d24d79326a01522a1448eec51",
-    "openspec/changes/archive/2026-09-10-obsidian-vault-linking/.openspec.yaml": "8119cfe5ad04f1801d3027066b1b671140c63203d1b9ea7592d49018a901fa91",
-    "openspec/changes/archive/2026-09-10-obsidian-vault-linking/design.md": "5920834f300b30b3ae5b1b8ba4dbe209b39b8e490548393b924be5fdadd9f470",
-    "openspec/changes/archive/2026-09-10-obsidian-vault-linking/proposal.md": "167267af7fea1e179d7742eba9b0efe52140687fe3f7dd762fc1baa122d084e7",
-    "openspec/changes/archive/2026-09-10-obsidian-vault-linking/specs/obsidian-vault-linking/spec.md": "f3ca6718cf42d9164a8f6e199b977c0b7b83cb4c60b8083f35132e9acd982ed5",
-    "openspec/changes/archive/2026-09-10-obsidian-vault-linking/tasks.md": "fb21550def2daa115792ae1d3755b0f9191d576474157683c703722e9748d7d6",
-    "openspec/changes/obsidian-vault-linking/.openspec.yaml": "missing",
-    "openspec/changes/obsidian-vault-linking/design.md": "missing",
-    "openspec/changes/obsidian-vault-linking/proposal.md": "missing",
-    "openspec/changes/obsidian-vault-linking/specs/obsidian-vault-linking/spec.md": "missing",
-    "openspec/changes/obsidian-vault-linking/tasks.md": "missing",
-    "openspec/config.yaml": "80c44481e83ebafd83db4d9933b25111a46c4a09f75635af7bfb3beadd085e5f",
-    "openspec/specs/bootstrap-executable-publication/spec.md": "8bcb3332702dd9085e37ad44f9ad55e924582afb0d390b85a047e9fe23b413a3",
+    "openspec/changes/archive/2026-09-03-portable-profile-enrollment/2026-09-03-portable-profile-enrollment.md": "b35c764fdd3e827d0f96a1efed8bb2f5e036d52a8137583c0b0dba35ad5fb4ca",
+    "openspec/changes/archive/2026-09-03-portable-profile-enrollment/design.md": "ee73b9b015373924906b5c6633f36eaaba21b8cfda81238fc63c54ddf13a7ace",
+    "openspec/changes/archive/2026-09-03-portable-profile-enrollment/historical-design.md": "75956575d0d8513ec24683c8cac5c68b6ad41fee68b8ef7d0a4f297d7c00b207",
+    "openspec/changes/archive/2026-09-03-portable-profile-enrollment/proposal.md": "28cec88cab37c31cb14480b62fc037ee59c9fb6539e3471a5f31146cd1bb8a7e",
+    "openspec/changes/archive/2026-09-03-portable-profile-enrollment/tasks.md": "c329ef3abc95eeed4bd4b3fa795825020c3555d5b9e63f0955c7d68cf6b9b5dd",
+    "openspec/changes/archive/2026-09-05-component-capability-contract/2026-09-05-component-capability-contract.md": "9bba4a4cd8daa7f40cbbbc9217322fe2cf0e1f5b3c4fa1f5d872a480e5b24d35",
+    "openspec/changes/archive/2026-09-05-component-capability-contract/design.md": "41c57db2a1983fdc34ede08e901756bdfa7a3fa920a1b5ea8744787f8af5b720",
+    "openspec/changes/archive/2026-09-05-component-capability-contract/proposal.md": "8fd988e6a4f9696a29c4b0eef56433410a571a73df75001dcabc642b622ee28f",
+    "openspec/changes/archive/2026-09-05-component-capability-contract/tasks.md": "f6b8c3605f839a05f03314af94ef5e84134a71ec227742e6f61e10056ed7ecc4",
+    "openspec/changes/archive/2026-09-05-connected-project-readiness/2026-09-05-connected-project-readiness.md": "e6aaa7a5899c779241d78f20b658ef5f451814abb4de0b7e04216497c1df71ea",
+    "openspec/changes/archive/2026-09-05-connected-project-readiness/design.md": "bb878c8ba4a67efcfc79221b39a57265acf848f290b7b4e57dd5c5506e68a44c",
+    "openspec/changes/archive/2026-09-05-connected-project-readiness/proposal.md": "75a90d91369a1076d152eed6fbaa0c01a589520db329512db1163e02bad62dcb",
+    "openspec/changes/archive/2026-09-05-connected-project-readiness/tasks.md": "a11c7020c007b24c2030445eeed96dfb0c3f2b9d4c0574d1e2d35c0675994849",
+    "openspec/changes/archive/2026-09-06-linear-provider-onboarding/2026-09-05-linear-provider-onboarding.md": "655d44d0fa45d6b31e14d046e29237ae3819bcccfced77e8978b3098c629a7e1",
+    "openspec/changes/archive/2026-09-06-linear-provider-onboarding/design.md": "56c48277d5f03d0cb4dd088433c0fafe1c604a8136d7cd5aebf7bfd2b39827f9",
+    "openspec/changes/archive/2026-09-06-linear-provider-onboarding/proposal.md": "9973aa39755590148004e4845ec507861d4fda4b2769290e94a6f075e52bd3d1",
+    "openspec/changes/archive/2026-09-06-linear-provider-onboarding/tasks.md": "b28f2b699d584a5860de891dddf74900a592886178402bf1b61678ea3c661f65",
+    "openspec/changes/archive/2026-09-07-github-ticket-workflows/2026-09-07-github-ticket-workflows.md": "88705ad3ef44af15b5905d0caaa579cae69d56cb7d8de50f0d82bf7ff530ab38",
+    "openspec/changes/archive/2026-09-07-native-work-harnesses/2026-09-07-native-work-harnesses.md": "451cd780c7d556dad5d7aee25195bcbf5a21a092fcdf53592cbf42461854f7c4",
+    "openspec/changes/archive/2026-09-07-portable-workflow-bundles/2026-09-05-portable-workflow-bundles.md": "d4fcfd91e426ce8956bc997111b9b1f468914fa336a507bef1a4cd5fb5e7b9bf",
+    "openspec/changes/archive/2026-09-07-portable-workflow-bundles/design.md": "132131b4a624c92be02b3308c5ca1b8f9b0521d6f915fc5b86869cd2c141b519",
+    "openspec/changes/archive/2026-09-07-portable-workflow-bundles/proposal.md": "cd2bb0b048b46e976de9bebabb0ff269969e20bed2b1dd8e7461d8466c162a73",
+    "openspec/changes/archive/2026-09-07-portable-workflow-bundles/tasks.md": "57598a8874bc7b496b084f31b44a64314ea1eedb531bac263f2e7bceb7dae424",
+    "openspec/changes/archive/2026-09-07-product-shaping-workflow/2026-09-05-product-shaping-workflow.md": "8a4311390ea3244b2aeb07b43fa3da5041e85750c2c066694fffce97fbf07311",
+    "openspec/changes/archive/2026-09-07-product-shaping-workflow/design.md": "043f2e496a754a003b14c1636cde45c64f60b263655335aa7c9d95c14449cae1",
+    "openspec/changes/archive/2026-09-07-product-shaping-workflow/proposal.md": "d0ad8a7cdde78e348bcc9c70f9e191a8a61727ad0048ccee07aea73bdf2afbf1",
+    "openspec/changes/archive/2026-09-07-product-shaping-workflow/tasks.md": "795d721c6fcecd066d045bde16af579276992a89e3e2c67b675a9082afaf7fc4",
+    "openspec/changes/archive/2026-09-07-provider-connection-service/2026-09-07-provider-connection-service.md": "3c6b3f66848bbf098b16f08ca2fddc241fbfeb6cf6ba9e832c1bc22515c504f6",
+    "openspec/changes/archive/2026-09-08-bootstrap-executable-publication/2026-09-07-bootstrap-executable-publication.md": "ebdf3512964df9d2be5470be19413b0aa01560bab26546400e6a4783b4a681fe",
+    "openspec/changes/archive/2026-09-08-bootstrap-executable-publication/design.md": "142ddaefaed4370b99ee2eae67e0308a035982638b3644777a35114542a1873e",
+    "openspec/changes/archive/2026-09-08-design-pm-workflow/2026-09-05-design-pm-workflow.md": "d8e204bcda437012420bc5159899f923db979b7d7a68de0805b94c1ae7c30fc6",
+    "openspec/changes/archive/2026-09-08-design-pm-workflow/design.md": "c7c19456a337413408d108685e4f6abb57383c3ed1987de7a7b83ee50b4e9aa3",
+    "openspec/changes/archive/2026-09-08-design-pm-workflow/tasks.md": "24e9428d8825ff1e5221e4ef57b8d2a80018171b996445135f429abcf6b1dd00",
+    "openspec/changes/archive/2026-09-08-jira-cloud-new-work/2026-09-07-jira-cloud-new-work.md": "4f1b8bb09514d3f67fe3395217624d6200fea736c1dc50d5bd50f54f6c7f7fc9",
+    "openspec/changes/archive/2026-09-08-plane-new-work/2026-09-07-plane-new-work.md": "9741e45d5cc25b0ee8ed561d6b3edc78dcfbe28af08feca7ffa3c97746a5ac21",
+    "openspec/changes/archive/2026-09-08-provider-toolset-onboarding/2026-09-06-provider-toolset-onboarding.md": "c2bced046b16cfd222cd1f8e3804b19fef580224f9680c08c0e46125aab46428",
+    "openspec/changes/archive/2026-09-08-provider-toolset-onboarding/design.md": "44263c5d9d7490bc8cabb29b592609b9ab20182d31c3b7e5debc881c16771009",
+    "openspec/changes/archive/2026-09-08-provider-toolset-onboarding/proposal.md": "9abf8c1894c71eeaec9125f58d137e56c3b9c7a7183794a13f146299a0c5ac9f",
+    "openspec/changes/archive/2026-09-08-spec-delivery-traceability/2026-09-05-spec-delivery-traceability.md": "bd321a1956b3a238bf0bf93d0af6e5beb98540009c7dd4c3308ae5ae6778aeb4",
+    "openspec/changes/archive/2026-09-08-spec-delivery-traceability/design.md": "e9d0819a40544d69a5678ea66797c5d1b8cdd1e8bef4f2198b1c268628bf0f94",
+    "openspec/changes/archive/2026-09-08-spec-delivery-traceability/proposal.md": "0e632932c273c6dd71334abcc934e689773921fda0a80ec71aa5f1dbf26c95c5",
+    "openspec/changes/archive/2026-09-08-spec-delivery-traceability/tasks.md": "91114921db754c37289c6e05aabc29525add82035a6a79b086963ce0af8880c1",
+    "openspec/changes/portable-tracker-adapters/2026-09-06-portable-tracker-adapters.md": "957b865c36644bac1f7ca6a4376c171d4c08a0e4f3ad4c014135416fa9129c5d",
+    "openspec/changes/portable-tracker-adapters/proposal.md": "a6bc6c8b6027210c5cf0a54fbc7f9585a91e8038e855e300f8e9aee550b8bc80",
+    "openspec/changes/portable-tracker-adapters/tasks.md": "acff4c0a9c619d94ddb5bf118aea53127a1e623a9072fea45ba0876f3c68190a",
+    "openspec/changes/repository-organization/design.md": "81f908e4aad55058bc6b8c1c00dca3f1ad1837cfbce0fbc901478f46244df03e",
+    "openspec/changes/repository-organization/proposal.md": "f1169ab6c130e80cb3fd6b58ab56dd43366426ce3438f90e3ad1317514c8542f",
+    "openspec/changes/repository-organization/specs/repository-organization/spec.md": "f7685fe450d53882a5f40f25dff69df8017f5fbe3130d468d104366fe14e10de",
+    "openspec/changes/repository-organization/tasks.md": "0e0d3c5ea0f6102d521c5e6bf6efb7bb73c720b454cd362af3a93b4927330315",
+    "openspec/changes/selective-tracker-migration/2026-09-06-selective-tracker-migration.md": "fdfc4e3409d352e2584f21c693840f6ebe83be23619d71832fcc8144351dc631",
+    "openspec/changes/selective-tracker-migration/2026-09-08-selective-tracker-migration.md": "96c50e62b732aca36ef798f68276a0319d1cc95929804b79370996e31adb6274",
+    "openspec/changes/selective-tracker-migration/proposal.md": "6cd8771e2c5c9cb9edd351b83eeb8b15d919f349296fb35cb206f783c8587efa",
+    "openspec/changes/selective-tracker-migration/tasks.md": "21a78fc5a1e5e576c22b940496115ee7f8a183978bb8d3a85dd5aa1f7d9fbf3e",
+    "openspec/changes/team-document-publication/2026-09-06-team-document-publication.md": "36c9b60e0559a06cbef8d51383d77f8b883afcefd316d02ddbf0fd44d83002b8",
+    "openspec/changes/team-document-publication/proposal.md": "1a6d8e9bbf4b3e78c9fd171a7c86bd3fdc0b2842adbf1b4d51d9e26ecaeec92b",
+    "openspec/changes/team-document-publication/tasks.md": "42e164e2aa76ba7340502f27f461dca0f28f3724108f9655664a06da2caaf8ba",
     "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
-    "openspec/specs/component-capability-contract/spec.md": "153b3cc84d839e64864b04ad2840a57f79a674d7be272f5fa262cbc07171b76a",
-    "openspec/specs/connected-project-readiness/spec.md": "1e10dfdca66700ab2fe3c81e63d2847b9246a1d24b6456b76d637b72a51dfc12",
-    "openspec/specs/design-pm/spec.md": "85e2f4480cb37b652601fd54a78a7fd969775ebff0ff8c3cc5c292e75f7ca0b5",
     "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
     "openspec/specs/documentation-impact-workflow/spec.md": "a542eff3ea8b8308b59b4d518bcdd12c50fbc4d40b61ef2df227730dbd5c048d",
     "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
     "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
-    "openspec/specs/github-project-defaults/spec.md": "e4e0f1dd53c3cf852b85a882987dd8306bdb042637df63e916bfe6c30de5abc5",
-    "openspec/specs/github-ticket-workflows/spec.md": "27f16d5841c989552d557d5878e8762b69d7805a83305c6a14b2ad3fd7dbb58b",
-    "openspec/specs/jira-cloud-new-work/spec.md": "90d9ff96a0ddd757731d9cc7724902879f20d245fe5da1777a227048dec121a0",
-    "openspec/specs/native-tool-composition/spec.md": "b273d88be57a0b201580a7f9066c8b54783bc7e7d518fbc691a736a7877af43d",
-    "openspec/specs/native-work-harnesses/spec.md": "acd32962b8d8d63f169d5813c7e3f952717f3d26c2c0da2e604a314febfe89dc",
     "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
-    "openspec/specs/obsidian-vault-linking/spec.md": "5de72875e357cd5e9821fbf89388f19e8ae1fea7c7ca1c484c295fc0fbdf4d38",
-    "openspec/specs/onboarding-readiness/spec.md": "d5a03896651096e4be382a113016c5e99300d099a86bcb9c7ec6d44f74465e83",
-    "openspec/specs/plane-new-work/spec.md": "182c9336451817f9ba4ccb4ffa27e48d182045f229bb272306e84305d1d8dcf4",
-    "openspec/specs/portable-workflow-bundles/spec.md": "04a718b34d6108896972ae807e30c1a09bc61ff260d3acece250d437b92ac9fa",
-    "openspec/specs/product-shaping-workflow/spec.md": "7e6ddded702a12c810d079bd06d67f3a943b198d6c1cb9de4746f327bd71c8cb",
-    "openspec/specs/provider-connection-service/spec.md": "1b169b3340554666d733dd15d25996c9871ac1a4830bdf1e44a8273a2a3b4706",
-    "openspec/specs/provider-toolset-onboarding/spec.md": "0be53627fe5e8aaaf3113306ea8582e4084408b1deefff04f6ea676f37152e75",
-    "openspec/specs/spec-delivery-traceability/spec.md": "29aea1b6fa0dc7a1f576a0a991de6837e8a07b4579db9c534c2c6f47aa2ae038",
-    "openspec/specs/toolset-composition/spec.md": "bd1241df5b19b7e5cc375485eacf64e6f0d1a192793b733855062688ea610e15",
-    "project-templates/project/AI-DLC.md": "456cd50d76ff8d0902c82d37969aa7205b7e8d2ec6db3788f05c4d0a4bdf2fbc",
-    "project-templates/project/docs/documentation-guide.md": "814a97379f92a78a22f6167b24bd99c3077b20fc5f196b00e7ab8bee74bcced4",
-    "project-templates/project/docs/workflows/tool-map.md": "781fc70576dc9a4de203846dff26e9d9823fe3919343aa7bebc8be1aff33b17b",
-    "src/ai_dlc/agents.py": "ac04215cced3872173c10111c3a4fb02e4e5390a299f54ed86ee0dc1944d55d8",
-    "src/ai_dlc/cli.py": "693c40af1b5cd31e5f5e6b9a9f3476607c6b970c50befa4e2730e3da8afe2040",
-    "src/ai_dlc/config.py": "8b6732b2b67c2800334464863295c3b98086936cff1fb53a54f24b03c9bce049",
-    "src/ai_dlc/document_files.py": "1e823b96dfe44b335fb52248adcc9773616b763fd617d8dd0832f1ce3da1f4f3",
-    "src/ai_dlc/document_impact.py": "8f149ac534e3eb4383b5f7e760b32a3dec3558e71b41be66d7ad1c0411c038e4",
-    "src/ai_dlc/document_review.py": "d6a16b84749d098574dde421f5af3aa146e74e149982338fc1c6cbbcdf855f7f",
-    "src/ai_dlc/document_style.py": "e84d4153e5972430748262e0a7d4bc6bc8a1d53a4f0f0ab8b920e076ef9aa42e",
-    "src/ai_dlc/knowledge_workspace.py": "04ebb994a2f6a221f96e5f9ad6242b936e66dd2615a66414d15fecca7e3b0c20",
-    "src/ai_dlc/mcp_server.py": "e85d6f8dc6d94e92cdea8f45b0c8efeac6658c95597cd49dc10de5ed90c55875",
-    "src/ai_dlc/workflow_bundles.py": "3380a299c37cc540f8912bd7f05cde7d54a62dc282e43664b670101c87f5042f",
-    "tests/fixtures/document_review_case/case.md": "784ade4c9236095041a0972e9160f2a7451cc3157bb331d0e7f3f8c4315198aa",
-    "tests/fixtures/document_review_case/project/docs/catalog.toml": "22c416b54bf1e5229fe303c996c813e1cd13d6384f76a307b7c6a1c9fdc91f22",
-    "tests/fixtures/document_review_case/project/docs/duplicate-reference.md": "1be5f674d3cc20f5c571652dc127d8fefc57df45a05d0cc534a5542dab862ca3",
-    "tests/fixtures/document_review_case/project/docs/onboarding.md": "54df4db1176a489d730df10b74517dfaf4fd18da7a3a10ef1c6f723232163aab",
-    "tests/fixtures/document_review_case/project/docs/reference.md": "580cc80ff5d3e23485d895feadbc5f8e5ad94186f41bd003934485c0ee9ed949",
-    "tests/fixtures/document_review_case/project/openspec/specs/payments/spec.md": "c6fc119b6d0d89d82a489909b47c8f15019ade24de33edd22dd61f9b0dae9019",
-    "tests/fixtures/document_review_case/project/src/client.py": "f3d986bb59e513a391935dff7a9816b7f62500ca086b5901e94a7f7ce466d950",
-    "tests/test_company_guidance.py": "1a27d40da60257194c86a4d0674b4de441380daec3fb8096d44648915ee79e75",
-    "tests/test_document_impact.py": "0dfec93991f5fd7fb27d0942bd91b03343ca6dc87d72bc5749828d3b829d8a1f",
-    "tests/test_document_review.py": "a7356503fdfd5c6ec2da42120eb25fddc99eafec168e2ac652b9ee0c1aa3a21a",
-    "tests/test_document_style.py": "0c4bd22075e67018a0a7c4b074e59662ff828f044cf0cc45a34d475a97662d17",
-    "tests/test_knowledge_workspace.py": "bdd964c0b818b4b1a5c66c888cddd48b4dc9e1e51a6db920dc831d8d703fc204",
-    "tests/test_workflow_bundles.py": "d1b16ce756049aab3fafcc046f1a758da1ab784dfd017dffaddcc4fe929b6a98"
+    "pyproject.toml": "9cb4d37f9aba00fb6668ba69de8c53a06471128f2964d63848ca8d7afe3a14cf",
+    "scripts/check_env.sh": "missing",
+    "scripts/check_generated.py": "845e3ac89acb10720eab193712430a09b767272862a02369f391a982da6e7267",
+    "scripts/check_layout.py": "26fde5445108c55e36a1ea3083f5dc01a71ecfcd9b1d38542c515d86afe5ab4d",
+    "scripts/legacy/sync-cli-templates.sh": "235f53f0e4f4785ad2bb5559b4a01f91f4e88b228437af033857c6335593fa12",
+    "scripts/qualify_framework.py": "01dd9e6acbe14e740f068662aa539e9a7ed0ba57ab97e9457e0a05d968a25fb6",
+    "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+    "scripts/sync-cli-templates.sh": "missing",
+    "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
+    "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
+    "src/ai_dlc/agents.py": "missing",
+    "src/ai_dlc/cli.py": "7fcc5af6d52a9e87a34e5d6ad86b0151a314e9489578463a8a1e5f882489eb2c",
+    "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
+    "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
+    "src/ai_dlc/components.py": "missing",
+    "src/ai_dlc/config.py": "31677c538713aa41d3625ef9570f962ed8ee5d32bd4b5b3747437e8fd8fb9d02",
+    "src/ai_dlc/conformance.py": "9d18cdbf21aa8f9889d880729c368d9567f32f83c066693dceb06ce6549b6082",
+    "src/ai_dlc/connections.py": "missing",
+    "src/ai_dlc/contracts.py": "a6d7c5ad8f3e2a513621883c75bff187e1104315ab337cddc023d5343a9e7538",
+    "src/ai_dlc/credentials.py": "missing",
+    "src/ai_dlc/document_files.py": "missing",
+    "src/ai_dlc/document_impact.py": "missing",
+    "src/ai_dlc/document_review.py": "missing",
+    "src/ai_dlc/document_style.py": "missing",
+    "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
+    "src/ai_dlc/documentation/document_files.py": "1e823b96dfe44b335fb52248adcc9773616b763fd617d8dd0832f1ce3da1f4f3",
+    "src/ai_dlc/documentation/document_impact.py": "50efbd92561a85d052842596e5fa903dce9d60207f330b9ed2429d9c7bf28043",
+    "src/ai_dlc/documentation/document_review.py": "b61e80ff68e0f20c5e96c4e5e0a2488b5b42fcfc4caa0d0cb1181dd740e364f3",
+    "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
+    "src/ai_dlc/documentation/documents.py": "b698ca1f3716ccb98533c00a10a58a74e7ffd7d4a6aa01e9cd205ea793ff06e6",
+    "src/ai_dlc/documentation/knowledge.py": "91aad53eccc1889d4077ef59c137ff1b35b03c433efa05b7be61d2e534fa7db6",
+    "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
+    "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
+    "src/ai_dlc/documentation/vault_link.py": "3ddd84f953a0f111647abdbeffb3b81a440bda6ff479a5c633eaf32fe8ca046f",
+    "src/ai_dlc/documents.py": "missing",
+    "src/ai_dlc/enrollment.py": "missing",
+    "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
+    "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
+    "src/ai_dlc/environment/enrollment.py": "fb0e82fb7b9e5808e1ee3571a53d129ddc8b8b6c83ab5918d7acab9566f7e9d1",
+    "src/ai_dlc/environment/machine.py": "491128faaec9634ec29ef0ebc9a38af3dfe25499e533543fcecf0734d2e50d1a",
+    "src/ai_dlc/environment/profile_source.py": "517b6bd0ae788a9270da5aee872abc2502c523d9faf75e52ab54ba5c6861e906",
+    "src/ai_dlc/files.py": "383ba27f055a5637c384462a172ff678165b643408c77d0945fd8f4622b00580",
+    "src/ai_dlc/github_onboarding.py": "missing",
+    "src/ai_dlc/github_project_setup.py": "missing",
+    "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
+    "src/ai_dlc/harness/agents.py": "7217b03580b97666994b2bb8afa3cc429d33aaabff55036bcdafdfaea9adc601",
+    "src/ai_dlc/harness/components.py": "59a50ce61709daaf4b9209c154498eb5efacb84a8747550685421cc269ea7f3c",
+    "src/ai_dlc/harness/hooks.py": "2081bdfd82651e53870c7f6fec6a38a3bc587b0e4dfae46a3043b6617add9994",
+    "src/ai_dlc/harness/native_composition.py": "7cd919fd40adb70eea1a775dbd5ea8328fde9eda6302d6f52565f14ea3d244ab",
+    "src/ai_dlc/harness/user_agents.py": "6fad6edd1d1d89b0c105291f2fa8b69f223ce00bd5095d77357d7c05e6eb3f4a",
+    "src/ai_dlc/harness/workflow_bundles.py": "e0943696bdced1e841bf15a68c2040e37e484fe7c021119dec1c25e82be0fe38",
+    "src/ai_dlc/hooks.py": "missing",
+    "src/ai_dlc/jira_onboarding.py": "missing",
+    "src/ai_dlc/journal.py": "missing",
+    "src/ai_dlc/knowledge.py": "missing",
+    "src/ai_dlc/knowledge_workspace.py": "missing",
+    "src/ai_dlc/legacy.py": "missing",
+    "src/ai_dlc/locking.py": "f1cfe828e897e11d73b645130060362e2699f75aac9307ed8cb4955b0533b629",
+    "src/ai_dlc/machine.py": "missing",
+    "src/ai_dlc/mcp_server.py": "6ab439262cf486536c58c77380642b89c30506aa324a0cbcc036d446074dcdc7",
+    "src/ai_dlc/moc.py": "missing",
+    "src/ai_dlc/native_composition.py": "missing",
+    "src/ai_dlc/plane_onboarding.py": "missing",
+    "src/ai_dlc/profile_source.py": "missing",
+    "src/ai_dlc/project.py": "missing",
+    "src/ai_dlc/provider_definitions.py": "e90c2d41a839bc4a32dcb3989f59fa6c9073bd1233f3db2088bd176e1bc513d3",
+    "src/ai_dlc/provider_onboarding.py": "missing",
+    "src/ai_dlc/providers/__init__.py": "85325d9c7d4f2ac948510ad6ac20342ec0bd92d02857dda65637dc7b594181ae",
+    "src/ai_dlc/providers/github_issues.py": "55a18a178fc329a94ff95f39b72c5599117c5a8e79842d7cc7c6c8966cbed405",
+    "src/ai_dlc/providers/github_projects.py": "65b338648b52f637cd97b73a0a19fbc030e498994f51cf3943cdac23cfc47470",
+    "src/ai_dlc/providers/jira_cloud.py": "0c4ee8f892ca3f329e822400a81c1e80d5607c087910329251acb9165345cc28",
+    "src/ai_dlc/providers/linear.py": "fa90bd64765c8e8bee1cbfa54e47e17688e8e6407c7492ae0ed863b4615c2b95",
+    "src/ai_dlc/providers/openspec.py": "7999519332d372eb9344fbbf9dced0cc57f4d408c048f9b39215b7c54cdcb136",
+    "src/ai_dlc/providers/plane.py": "76fab3893bf0d4536c58500e4ab5a90f59893977c057be4777d78068e278ca1c",
+    "src/ai_dlc/providers/plane_attempts.py": "9a90b719e348d5592865e415bd29c3686969263f733a44275d6029fee019743c",
+    "src/ai_dlc/providers/python_exec.py": "3aaafe9bf74a4a949b59d71ed2079b9c48114462a9c823b3641a1772af5a6ff1",
+    "src/ai_dlc/providers/scm.py": "2cdf9479741d0a3f37405e5b1cfd9c7d7b0c68038feefb75f3b910b894c088e8",
+    "src/ai_dlc/provision.py": "missing",
+    "src/ai_dlc/readiness.py": "missing",
+    "src/ai_dlc/rebind.py": "missing",
+    "src/ai_dlc/sandbox.py": "missing",
+    "src/ai_dlc/setup/__init__.py": "8eb444a69a67d0c1a59ffc0c80ce59efda159976bea58d40154e97f8bdecf18c",
+    "src/ai_dlc/setup/connections.py": "35d04e1c6778227b0947034d2ed5d535ab8c79ee783496a2c2c7285d694b5595",
+    "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
+    "src/ai_dlc/setup/github_project_setup.py": "86b97dcaa4447082252008da1df64159cac09a077198a7e84e3577294ad540d2",
+    "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
+    "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
+    "src/ai_dlc/setup/project.py": "309f87bd8ce73dab926ac8dbdfa3672858b777198cd74632cea81a03e76c7dce",
+    "src/ai_dlc/setup/provider_onboarding.py": "8a9407894dc494faa4a431ad219e0ebbd472504893434ac3b66f7be6f6acfdf6",
+    "src/ai_dlc/setup/provision.py": "5d5af0be37b5620a561ab324b41febc541b07e0a5b35051869b025f114effdd2",
+    "src/ai_dlc/setup/readiness.py": "7c7c2767520b3da2e7f8dd74be4ed6359a7dca66bc413c68eba2b1b4bad7f52c",
+    "src/ai_dlc/setup/rebind.py": "c083e35c27f10415986d3170bb81905944254bd12485c5a4db71b77b0a38adf2",
+    "src/ai_dlc/setup/templates.py": "95e60c4339286b85fb393318d69e797b2990b41303e7dd16a3767141ededf69c",
+    "src/ai_dlc/setup/tracker_targets.py": "1b3fe3fea13732748d5498e1cbc2a2d16395eca7bd942789389c6bc08b214fd8",
+    "src/ai_dlc/setup/workstation.py": "4abcc68e4d30ee4ce32ed1ff9b872d5926c15747de2ec2a92b88c7352813206a",
+    "src/ai_dlc/templates.py": "missing",
+    "src/ai_dlc/test_proxy.py": "missing",
+    "src/ai_dlc/traceability.py": "missing",
+    "src/ai_dlc/tracker_migration.py": "missing",
+    "src/ai_dlc/tracker_targets.py": "missing",
+    "src/ai_dlc/user_agents.py": "missing",
+    "src/ai_dlc/vault_link.py": "missing",
+    "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
+    "src/ai_dlc/verification/sandbox.py": "b830bd80df60802c29dbc2e1c639958537f289592052b404e6972ff377d25681",
+    "src/ai_dlc/verification/test_proxy.py": "f38cb2a28c8501c743613b0bfdf7e17f367c101ce7984a304e20ab3095eb7880",
+    "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
+    "src/ai_dlc/work/journal.py": "f5801d312b0434262c9dda76ac3b94cd1ac099fe98650dc9f745927898a89b52",
+    "src/ai_dlc/work/traceability.py": "646e7595cad285ef07672b436625321443d6603cbf8a3518a3b2b2c5c51d6a33",
+    "src/ai_dlc/work/tracker_migration.py": "65fc8eb4a708947c12a5f4fd3cfe664f409ee32c282b68a48bd725152e5b18a3",
+    "src/ai_dlc/work/workflow.py": "c891477baf6b8e8e4280096d9bd047f2fe7fafab9f03d8801791750841f36abc",
+    "src/ai_dlc/workflow.py": "missing",
+    "src/ai_dlc/workflow_bundles.py": "missing",
+    "src/ai_dlc/workstation.py": "missing",
+    "templates/workflows/epic-sqlite-handoff-workflow.md": "31ca6644772cc903aee4e397231b607f63ea6bee7b4b68015bad0b8fd83179ea",
+    "templates/workflows/template-extension-direct-commands.md": "e091b3f18847017de837be96915c1310f10d84b138acfbdea45ed96e70ab2c71",
+    "templates/workflows/template-extension-workflow.md": "8f0ff56f32d2b991c1cc677f72f5476f5e6f0fa15ac6df40c48417991b617630",
+    "tests/test_checks.py": "ac346340a0e2bf23ff405c7ee216c4cbb147eb7bc09666e4444c18e8560e23e9",
+    "tests/test_cli.py": "172e492d438b3f0f7bde8b9eb682a7972fb11d021d038060cf9d6240b2766483",
+    "tests/test_company_guidance.py": "2157af2cd002d74a411ab3555afb26cbaec9381061721c6e6b3470d376eefe38",
+    "tests/test_components.py": "47a35e787ad2a19958841a41e5817ca4019db6f3d29dc43efee690ecca70b784",
+    "tests/test_config.py": "a8b5f19e34b2b8cef47d00685465b69a22d6c4aaba850353c4475ab1ee1403b6",
+    "tests/test_connections.py": "3166925154eb4952b4766c945358f6c9bd6aebd08d4faedaa00cc0bc9e3e6555",
+    "tests/test_credential_requirements.py": "e488ed74e88cc967f7ce2a922d4dd53e39135fc8cbc770df8a1bcb8da49856a0",
+    "tests/test_credentials.py": "0f4ac01e0daec1969a541f55dfd3d5fc57ee2920abf8c647eb3d02501a482bd6",
+    "tests/test_document_impact.py": "623d165291104ce6d5c891db8aa4c5f03f223ba1c1d6ff357b71797fd3853672",
+    "tests/test_document_review.py": "43d72df8bdd24980ad5ee2d4c5f2cbef204fbecd11d501f1ae8f1f02b480111b",
+    "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
+    "tests/test_enrollment.py": "853278c094f2864539151753afe384987bf3a65d9e0ae77aadee1d0bf2dad7aa",
+    "tests/test_github_onboarding.py": "402e3af27c6468d056f76e3f129b210116fb5a49a001558b5e2e159a5957bb4a",
+    "tests/test_github_project_defaults.py": "0a994f1c01748a68cc1873f1a6b75c1a2072015cbab5ed767bd0ff52cca1f2bf",
+    "tests/test_github_projects.py": "46ff2f133234e6afe3e5806a1d9bbfc7d35eeda43de724d61967084b06fb488b",
+    "tests/test_hooks.py": "ef1466cfd469d02da0ffbfbef12df947fd17250c41cdcd71459b3c47d20e3131",
+    "tests/test_jira_onboarding.py": "a5bd6177aa8ff43e8c8ba4e26e153dc2c134991a388df1516b503cb085a20897",
+    "tests/test_jira_workflow.py": "fc9e9da636bf6206f4a060eb79cd50b7a831853bedc4ac66242a4fd129e2a804",
+    "tests/test_knowledge.py": "4766f0fd4de9c4a66c96fe93b56b03e275c1adcb5e303e773e92a9e528112be7",
+    "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7",
+    "tests/test_machine.py": "4ad57b2f679a982c9d3024fc4e52261d9aca420a40d10c5aedac72d82ee09601",
+    "tests/test_machine_integration.py": "e3df590dbdfe5de84bf3cbdc79ac4b39a286534d79e371717de8d98f0461ac14",
+    "tests/test_native_composition.py": "42d02c70f3d829d92fe7c630bfbb16e4e119375ea5936a89c839392f788b3f6e",
+    "tests/test_native_harnesses.py": "eaf0add65f2212692fd30f3143b5571038fa1169243d9208f7fbf58a1d7c3366",
+    "tests/test_onboarding_readiness.py": "191a73a940305b8a80a7fcbdfc23d5cae16b975fa53420b94469337d45488080",
+    "tests/test_plane_onboarding.py": "8f1171a6c097dcdf0bcfe2f3e46367426eb83f965f07eeb019affd228cbdd0a0",
+    "tests/test_plane_workflow.py": "a462e62ece304847e5a954b79423a07c907b16ef1fa424e9e241a046ae17bb03",
+    "tests/test_profile_source.py": "5cfe61061583524a9982f5a61bdfa8e766232c30b22ddb2fa5317caffbfd6f60",
+    "tests/test_project.py": "0863470fa695afffc68bba51602585cd2539174cc9a8599a7cf838773f170b93",
+    "tests/test_project_documents.py": "e9c5b4afe6cf0acf4f542eb3e28407cea16632e841328b8a86b6fe8439789cd2",
+    "tests/test_provider_onboarding.py": "be24b1b191a96fa28e4909e3e1a87fcb6338ec22b9e94da5d2ec434ccef5faa5",
+    "tests/test_providers.py": "701379ba4e02b4f9011da1da0790360d6bc201e54153fe4266a7af4e8551464a",
+    "tests/test_provision.py": "5eba2a255f068800b73f0c7f84b7a1c63815fb75ba7c5abbfeb210bc36ddda9e",
+    "tests/test_readiness.py": "08fae7b12de83d6e3da6525cbf8778e7b277b52377051d75ea9d8e4d01253f21",
+    "tests/test_rebind.py": "dd7c0a5bb29e4691f5d5575fa5fee92932f2d1763f9230e28013a1e3ab1f93f6",
+    "tests/test_rendering.py": "8d7141710c8a8ab6cfc282b867477adababbdab68c615c8b8d5922fa4af975c6",
+    "tests/test_repository_layout.py": "6a5cf4babc6943e0f73807af2902c7f6de6bf175867c75ad6645b9fd44b24d04",
+    "tests/test_sandbox.py": "75b73f1d16c900a5fbd260e5e65bc13605a9e7c9dd4b036bb10c3576655586ed",
+    "tests/test_templates.py": "f0122f1ffe58c91827cd926ad9062b9bba30c4e8de812c51bedfae34188f9ea6",
+    "tests/test_toolset_composition.py": "a65db434524ff91b9fa66ff7034942d70e04df0829ed6da0d7024d35cf582943",
+    "tests/test_traceability.py": "024e648716ae2d9b49ea4d6cde965d9302afae0c5c4d9548d947bd6dbb3983bf",
+    "tests/test_tracker_migration.py": "6daaf67b7dba488ee8991278deeded7e231da74a8be1de1eb32bf2d2078d09a4",
+    "tests/test_tracker_migration_adapters.py": "26063126422a2e2256d9664be98a39db065d46cd33cfaae32fb29cffcf6bf899",
+    "tests/test_tracker_read_identity.py": "5a5fa845f8d243c9de6c7ae8e5653abd4637f478f9adf5b6cfb78765a2f42fd7",
+    "tests/test_tracker_targets.py": "3d2119623704e50de5fbb835bf759f8876501483c22b49e922b773a11b2419aa",
+    "tests/test_user_agents.py": "340ac65662bd475f3e5219ea6a339af7c1c03b504dddfe4ea959ca321f6a024e",
+    "tests/test_vault_link.py": "fd146d4d15041021ac343257c9d91a8c1950878d275420eda85d13747065e110",
+    "tests/test_workflow.py": "223d0c516141e292f4b76cd57633ee8c5882fdfd88d468feed26399b370cd5e6",
+    "tests/test_workflow_bundles.py": "7f49340e79ae956142ccf471afb06107f6aa6e4966cfcf355c3177e922082fff",
+    "tests/test_workstation.py": "2ec1853bc41cb3cf0e65ccf62aea2540964393224e09f69450d15507b7c5a7f7"
   }
 }

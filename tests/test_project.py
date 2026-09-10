@@ -7,7 +7,8 @@ import tomli_w
 
 @pytest.fixture
 def setup_fixture(tmp_path, monkeypatch):
-    from ai_dlc import agents, project
+    from ai_dlc.harness import agents
+    from ai_dlc.setup import project
 
     (tmp_path / ".mise.toml").write_text("[tools]\n")
     monkeypatch.setattr(agents, "render_agents", lambda *args, **kwargs: {"clean": True})

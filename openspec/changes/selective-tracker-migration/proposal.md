@@ -24,4 +24,4 @@ None. Legacy all-record rebind remains available and keeps its mapping requireme
 
 Rebind/work services, local migration plans/journals, CLI, instructions and tests.
 No source deletion, complete ticket-history import, new completion evidence, or
-implicit remote writes. [Plan](../../../docs/superpowers/plans/2026-09-06-selective-tracker-migration.md).
+implicit remote writes. [Plan](2026-09-06-selective-tracker-migration.md).

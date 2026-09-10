@@ -35,4 +35,4 @@ Contracts/registry, optional role metadata/scaffold choices, new publication ser
 a qualified bridge to the existing custom Confluence MCP server or a Cloud adapter
 for demonstrated gaps, CLI/shared MCP facade, publication records and tests.
 No automatic publication at finish, vault mirroring, two-way sync, or Data Center
-claim. [Plan](../../../docs/superpowers/plans/2026-09-06-team-document-publication.md).
+claim. [Plan](2026-09-06-team-document-publication.md).

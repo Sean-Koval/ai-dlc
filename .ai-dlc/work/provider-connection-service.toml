@@ -17,7 +17,7 @@ scm = "github"
 knowledge = "obsidian"
 
 [artifacts]
-plan = "docs/superpowers/plans/2026-09-07-provider-connection-service.md"
+plan = "openspec/changes/archive/2026-09-07-provider-connection-service/2026-09-07-provider-connection-service.md"
 spec = "openspec/changes/archive/2026-09-07-provider-connection-service"
 branch = "codex/work-computer-onboarding"
 parent_issue = "https://github.com/Sean-Koval/ai-dlc/issues/19"
