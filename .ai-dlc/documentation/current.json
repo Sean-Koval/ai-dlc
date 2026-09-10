@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "base": "b7c6fdbdce903d530cc5621634b5df4a2bfed716",
-  "snapshot": "fe577c4a2682aac591f08f89103afaf9310fd23ea4a662675a48e42032793ff6",
+  "snapshot": "0cdc74b903e4bd3dd7291cb79a7efbd3ec1d2714ac19f406a921049a7f3ce5f9",
   "reviewer": "Codex repository organization review",
   "decisions": [
     {
@@ -1146,7 +1146,7 @@
     ".ai-dlc/work/product-shaping-workflow.toml": "a3a0b0d0613d94a89590b0a6c775b0d786d8c8a07b458a90fc56bf4f5ffcb6a4",
     ".ai-dlc/work/provider-connection-service.toml": "f4bd0fd8c3e66510e39a9ca2216a9202f770890bf36ea8d03e881bf77e245cba",
     ".ai-dlc/work/provider-toolset-plan.toml": "8ed466d50440352a4f3af13d9f07cb8439008fc20066ac411a57bc3476366dd6",
-    ".ai-dlc/work/repository-organization.toml": "f772e10c544d5fe512e17792f25481d2eb0910c7cd209af82e03ec3a51dab160",
+    ".ai-dlc/work/repository-organization.toml": "9a4abe3207a29398348f057d123ea9527812d34fce9e56cae72ef5c12d9b357a",
     ".ai-dlc/work/spec-delivery-traceability.toml": "3b7e629c7c2d1cf6e9010d86923eab5b3c05b7c96c702b1a9a1a62ef922b662c",
     ".ai-dlc/work/workflow-quality-calibration.toml": "1d549d779d8e3ebd4ca62e60a4fc1e7b713979c1ebe88b2aa13ca52949714b57",
     ".superpowers/sdd/2026-09-07-github-ticket-workflows/task-1-report.md": "missing",
