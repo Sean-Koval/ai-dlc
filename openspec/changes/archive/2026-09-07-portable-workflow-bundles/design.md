@@ -280,4 +280,4 @@ preserve authored project content and prior provider bindings.
   and authored collisions, config-layer rejection, rollback, generated index, and
   readiness blocking with real files wherever practical.
 
-[Task-level instructions and acceptance example](../../../../docs/superpowers/plans/2026-09-05-portable-workflow-bundles.md).
+[Task-level instructions and acceptance example](2026-09-05-portable-workflow-bundles.md).

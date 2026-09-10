@@ -1,5 +1,5 @@
 def test_hook_blocks_supported_unbound_push_and_does_not_loop(tmp_path):
-    from ai_dlc.hooks import handle_hook
+    from ai_dlc.harness.hooks import handle_hook
 
     payload = {
         "tool_name": "exec_command",
@@ -14,7 +14,7 @@ def test_hook_blocks_supported_unbound_push_and_does_not_loop(tmp_path):
 
 
 def test_required_unsupported_path_is_reported():
-    from ai_dlc.hooks import classify_command
+    from ai_dlc.harness.hooks import classify_command
 
     assert classify_command("git -C elsewhere push") == "unsupported"
     assert classify_command("gh pr create --title 'hi'") == "bound-operation"
@@ -22,7 +22,7 @@ def test_required_unsupported_path_is_reported():
 
 
 def test_destructive_flags_and_spec_warning(tmp_path):
-    from ai_dlc.hooks import classify_command, handle_hook
+    from ai_dlc.harness.hooks import classify_command, handle_hook
 
     for command in [
         "git reset --hard HEAD~1",

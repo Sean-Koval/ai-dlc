@@ -1,7 +1,7 @@
 # connected-project-readiness Specification
 
 ## Purpose
-TBD - created by archiving change connected-project-readiness. Update Purpose after archive.
+Plan project-aware provisioning and report actionable scoped readiness while preserving machine-local identity and existing setup behavior.
 ## Requirements
 ### Requirement: RD-01 Connected provisioning plan
 

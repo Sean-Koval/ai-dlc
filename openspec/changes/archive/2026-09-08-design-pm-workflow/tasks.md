@@ -2,7 +2,7 @@
 
 Current steering: product-shaping and traceability interfaces are accepted locally
 at `4058b24`; the coordinator approved isolated parallel implementation. Remote
-finish stays pending and no runtime dependency/completion checks are bypassed. Follow the [execution plan](../../../../docs/superpowers/plans/2026-09-05-design-pm-workflow.md)
+finish stays pending and no runtime dependency/completion checks are bypassed. Follow the [execution plan](2026-09-05-design-pm-workflow.md)
 for file ownership, examples, checks and handoff. Its Task 1 covers sections 1
 and 4.1; Task 2 covers section 2; Task 3 covers sections 3 and 4.2–4.4 below.
 These are implementation checkboxes, not evidence that planning completed them.

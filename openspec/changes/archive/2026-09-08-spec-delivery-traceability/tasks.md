@@ -21,7 +21,7 @@
 - [x] 4.1 Run required project checks and strict OpenSpec validation.
 - [x] 4.2 Complete independent source review and prepare the delivered specification for archive.
 
-[Detailed plan](../../../../docs/superpowers/plans/2026-09-05-spec-delivery-traceability.md).
+[Detailed plan](2026-09-05-spec-delivery-traceability.md).
 
 Local implementation and verification: [evidence](../../../../docs/verification/spec-delivery-traceability.md). Source review and delivery remain pending integration; task 4.2 is not a runtime finish prerequisite.
 

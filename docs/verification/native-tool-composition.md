@@ -7,7 +7,7 @@ connection primitives and native rendering dependency. Subsequent toolset review
 repairs and parent archive moves are integrated separately by the root coordinator.
 
 The input/plan format and behavior are specified in
-[the child spec](../../openspec/changes/native-tool-composition/specs/native-tool-composition/spec.md).
+[the child spec](../../openspec/changes/archive/2026-09-08-native-tool-composition/specs/native-tool-composition/spec.md).
 [The runbook](../design/native-tool-composition.md) includes an actual local
 AI-DLC MCP-service binding and the separate native rendering step. No provider
 MCP defaults, endpoint URLs, authentication or lifecycle adapter are fabricated.

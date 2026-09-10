@@ -1,14 +1,13 @@
 # Release verification
 
-Current planning context (2026-09-07): the [framework roadmap](roadmap.md) and
-[AI-DLC Project](https://github.com/users/Sean-Koval/projects/2) define the current
-delivery sequence. Personal tracking uses GitHub Issues/Projects. Work-computer
-Jira and Claude/Antigravity onboarding are current implementation priorities;
-Confluence is deferred. Historical evidence below applies only to its stated
-revision and environment. Plans do not establish live qualification or release
-readiness.
+Delivery status reconciled September 10, 2026: the [roadmap](roadmap.md) and
+[GitHub issues](https://github.com/Sean-Koval/ai-dlc/issues) own current priority.
+PR28 is merged; former qualification/publication issues #14/#15/#16/#17/#20/#21/#22
+are cancelled (NOT_PLANNED), not completed. Outstanding release evidence below
+remains outstanding despite cancellation. Historical checks apply only to their
+stated revision and environment; plans and fixtures do not establish live readiness.
 
-## Current source delivery — September 8, 2026
+## Historical source delivery — September 8, 2026
 
 PR25 merged at `ab6b774`; all five exact merged-revision receipts passed. A fresh
 GitHub clone completed source bootstrap, then gated finish completed issues10

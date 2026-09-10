@@ -1,7 +1,7 @@
 # portable-workflow-bundles Specification
 
 ## Purpose
-TBD - created by archiving change portable-workflow-bundles. Update Purpose after archive.
+Import pinned workflow assets with complete provenance and integrity, preserve owned rendering boundaries and enable direct use and verified offline continuation.
 ## Requirements
 ### Requirement: WB-01 Pinned portable workflow assets
 

@@ -28,4 +28,4 @@ None. Existing schema-4, content ownership, enrollment, and finish contracts rem
 - Modify tests/test_cli.py, tests/test_rebind.py
 
 Dependencies: component-capability-contract.
-Implementation and review evidence are recorded in the archived tasks and [execution plan](../../../../docs/superpowers/plans/2026-09-05-linear-provider-onboarding.md); merged-revision completion remains governed by the work record.
+Implementation and review evidence are recorded in the archived tasks and [execution plan](2026-09-05-linear-provider-onboarding.md); merged-revision completion remains governed by the work record.

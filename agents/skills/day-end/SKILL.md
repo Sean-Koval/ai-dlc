@@ -8,3 +8,5 @@ description: Use when wrapping up a work day or recording progress for later.
 Return outcomes supported by checks, unfinished work, blockers, and next actions with links. Keep architecture, decisions, and operational guidance in repository documents. Personal reflections belong to the knowledge role. Use the work service for requested persistence and completion; a summary never substitutes for completion gates.
 
 Resolve provider-specific commands from the configured role provider’s instructions. The agent supplies judgment; services store, validate, and link artifacts.
+
+Capture selected learning or unresolved questions with project/source links and applicability, using the linked workspace templates when available. Keep observations distinct from reviewed rules; never automatically copy every work log into the vault or promote a private note to company guidance.

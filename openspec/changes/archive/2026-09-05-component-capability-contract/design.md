@@ -37,4 +37,4 @@ Use additive defaults for existing configurations. Preview before applicable mut
 - CC-02: exercise custom metadata is altered and the corresponding expected result in the formal spec.
 - CC-03: exercise an alternative tracker is selected and the corresponding expected result in the formal spec.
 
-[Task-level instructions and acceptance example](../../../docs/superpowers/plans/2026-09-05-component-capability-contract.md).
+[Task-level instructions and acceptance example](2026-09-05-component-capability-contract.md).

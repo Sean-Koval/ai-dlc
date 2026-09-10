@@ -125,8 +125,8 @@ def test_project_readiness_is_offline_read_only_and_exits_for_required_gaps(tmp_
     """Readiness must report gaps, never execute tools or load secret files, and return 0 after rendering."""
     import subprocess
 
-    from ai_dlc.agents import render_agents
     from ai_dlc.cli import app
+    from ai_dlc.harness.agents import render_agents
 
     monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "config"))
     root = tmp_path / "project"
@@ -171,7 +171,7 @@ def test_project_readiness_is_offline_read_only_and_exits_for_required_gaps(tmp_
 
 
 def _write_cli_enrollment(tmp_path: Path) -> dict[str, str]:
-    from ai_dlc.enrollment import EnrollmentLock, EnrollmentPaths, write_lock
+    from ai_dlc.environment.enrollment import EnrollmentLock, EnrollmentPaths, write_lock
 
     environment = {
         "XDG_CONFIG_HOME": str(tmp_path / "config"),
@@ -373,12 +373,14 @@ def test_scaffold_matches_legacy_assets_and_preserves_conflicts(tmp_path, monkey
 
 
 def test_provider_conformance_failure_is_nonzero(tmp_path, monkeypatch):
-    import ai_dlc.sandbox
+    import ai_dlc.verification.sandbox
     from ai_dlc.cli import app
 
     manifest = tmp_path / "test.toml"
     manifest.write_text("")
-    monkeypatch.setattr(ai_dlc.sandbox, "test_provider", lambda *args, **kwargs: {"passed": False})
+    monkeypatch.setattr(
+        ai_dlc.verification.sandbox, "test_provider", lambda *args, **kwargs: {"passed": False}
+    )
     result = CliRunner().invoke(app, ["provider", "test", "linear", str(manifest)])
     assert result.exit_code == 1
 
@@ -421,18 +423,18 @@ def test_personal_agent_render_is_explicit_and_project_independent(tmp_path, mon
 
 
 def test_setup_commands_accept_documented_profile_option(tmp_path, monkeypatch):
-    import ai_dlc.provision
+    import ai_dlc.setup.provision
     from ai_dlc.cli import app
 
     profile = tmp_path / "profile.toml"
     profile.write_text("schema=4\n")
     monkeypatch.setattr(
-        ai_dlc.provision,
+        ai_dlc.setup.provision,
         "machine_plan",
         lambda profile, headless=False, home=None, **kwargs: {"profile": str(profile)},
     )
     monkeypatch.setattr(
-        ai_dlc.provision,
+        ai_dlc.setup.provision,
         "machine_apply",
         lambda profile, headless=False, home=None, **kwargs: {"profile": str(profile)},
     )
@@ -726,7 +728,8 @@ def test_agents_bundle_import_forwards_exact_preview_and_apply_contract(monkeypa
     """Would fail if the nested CLI lost review inputs or changed service JSON."""
     from contextlib import contextmanager
 
-    from ai_dlc import cli, workflow_bundles
+    from ai_dlc import cli
+    from ai_dlc.harness import workflow_bundles
 
     (tmp_path / "ai-dlc.toml").write_text("schema = 4\n")
     calls = []
@@ -798,7 +801,8 @@ def test_agents_bundle_import_forwards_exact_preview_and_apply_contract(monkeypa
 
 def test_agents_bundle_import_reports_stable_redacted_errors(monkeypatch):
     """Would fail if a rejected source leaked caller-controlled credentials or a traceback."""
-    from ai_dlc import cli, workflow_bundles
+    from ai_dlc import cli
+    from ai_dlc.harness import workflow_bundles
 
     def reject(*args, **kwargs):
         raise ValueError("bundle source is invalid")
@@ -821,7 +825,8 @@ def test_agents_bundle_import_rejects_invalid_project_before_source_resolution(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, invalid_root: str
 ):
     """Would fail if an invalid project triggered Git or any local write before refusal."""
-    from ai_dlc import cli, workflow_bundles
+    from ai_dlc import cli
+    from ai_dlc.harness import workflow_bundles
 
     root = tmp_path / "project"
     if invalid_root != "missing":
@@ -879,7 +884,8 @@ def test_agents_bundle_import_rejects_incomplete_review_flags_before_resolution(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, extra_flags: list[str]
 ):
     """Would fail if contradictory review flags contacted a source before CLI validation."""
-    from ai_dlc import cli, workflow_bundles
+    from ai_dlc import cli
+    from ai_dlc.harness import workflow_bundles
 
     (tmp_path / "ai-dlc.toml").write_text("schema = 4\n")
     calls = []

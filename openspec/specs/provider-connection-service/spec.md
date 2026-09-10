@@ -1,7 +1,7 @@
 # provider-connection-service Specification
 
 ## Purpose
-TBD - created by archiving change provider-connection-service. Update Purpose after archive.
+Expose declared provider connection capabilities through common reviewed discovery and configuration plans while preserving legacy connections and explicit delivery limits.
 ## Requirements
 ### Requirement: PC-01 Declared connection capability
 Trusted definitions SHALL declare kind, roles and supported named selections. Guided connection SHALL resolve the configured alias/kind without provider branches in the CLI. A missing handler SHALL report unsupported setup without changing lifecycle capability or configuration.

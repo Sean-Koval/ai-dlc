@@ -65,7 +65,7 @@ Use this workflow to add or enhance assets under `.claude/commands/` or `.claude
 /sc:task "Embed command assets inside crates/ai-dlc-cli/embedded-templates" --owner fullstack-developer
 ```
 - Create or modify markdown prompt files in the correct command directory.
-- Run `scripts/sync-cli-templates.sh` to copy assets into the embedded bundle and rebuild the CLI.
+- Run `scripts/legacy/sync-cli-templates.sh` to copy assets into the embedded bundle and rebuild the CLI.
 - Keep commits atomic (scaffold, prompt content, embedded sync) for easier review.
 
 ## Phase 4 – Quality & Verification
@@ -99,7 +99,7 @@ Use this workflow to add or enhance assets under `.claude/commands/` or `.claude
 
 ## Expected Artifacts
 - `templates/claude/.claude/commands/<new-command>/` (or equivalent agent directory) with finalized prompt assets.
-- Embedded template sync applied to `crates/ai-dlc-cli/embedded-templates/` (run `scripts/sync-cli-templates.sh`).
+- Embedded template sync applied to `crates/ai-dlc-cli/embedded-templates/` (run `scripts/legacy/sync-cli-templates.sh`).
 - Research brief, implementation outline, and validation logs stored in `docs/` or `/ref`.
 - README/workflow updates and changelog entries referencing the new capability.
 

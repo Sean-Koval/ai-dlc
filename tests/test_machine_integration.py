@@ -9,9 +9,9 @@ from types import SimpleNamespace
 import pytest
 
 from ai_dlc.config import digest, resolve_files
-from ai_dlc.enrollment import EnrollmentPaths, read_lock
-from ai_dlc.machine import MachineManager
-from ai_dlc.profile_source import verify_cached_profile
+from ai_dlc.environment.enrollment import EnrollmentPaths, read_lock
+from ai_dlc.environment.machine import MachineManager
+from ai_dlc.environment.profile_source import verify_cached_profile
 
 PROFILE = """\
 schema = 4
@@ -78,14 +78,14 @@ def _bind(paths: EnrollmentPaths, machine_id: str, variable: str) -> None:
 
 
 def _replace_external_execution(monkeypatch: pytest.MonkeyPatch, *, fail: bool = False) -> None:
-    import ai_dlc.provision
+    import ai_dlc.setup.provision
 
     def execute(*args, **kwargs):
         del args, kwargs
         if fail:
             raise RuntimeError("synthetic package manager failure")
 
-    monkeypatch.setattr(ai_dlc.provision, "subprocess", SimpleNamespace(run=execute))
+    monkeypatch.setattr(ai_dlc.setup.provision, "subprocess", SimpleNamespace(run=execute))
 
 
 def _returned_without_sentinels(results: list[object]) -> None:

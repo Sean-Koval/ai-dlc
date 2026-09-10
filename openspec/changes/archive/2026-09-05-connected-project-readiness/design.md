@@ -37,4 +37,4 @@ Use additive defaults for existing configurations. Preview before applicable mut
 - RD-02: exercise tool installation alone is insufficient and the corresponding expected result in the formal spec.
 - RD-03: exercise a second environment is headless and the corresponding expected result in the formal spec.
 
-[Task-level instructions and acceptance example](../../../docs/superpowers/plans/2026-09-05-connected-project-readiness.md).
+[Task-level instructions and acceptance example](2026-09-05-connected-project-readiness.md).

@@ -1,6 +1,6 @@
 # AI-DLC product direction
 
-Status: approved product promise, updated with the maintainer's September 7 work-computer and current GitHub delivery request. The roadmap separates shipped/candidate behavior from remaining work.
+Status: approved product promise; delivery references reconciled September 10, 2026. The roadmap distinguishes implemented, proposed, cancelled and unverified scope.
 
 ## Product promise
 
@@ -9,7 +9,7 @@ and equips the chosen harness with a consistent way to take a new product or an
 existing product through a verified improvement.
 
 Its durable value is the relationship between tools, artifacts, decisions, and
-workflows. OpenSpec currently provides formal specification; personal projects use GitHub Issues and Projects, while Jira Cloud is the selected work target. Codex and Claude Code have implemented client adapters; Antigravity support is an explicit onboarding deliverable. These choices are replaceable. Stable responsibilities survive provider changes.
+workflows. OpenSpec currently provides formal specification; personal projects use GitHub Issues and Projects, while Jira Cloud is the selected work target. Codex and Claude Code have implemented client adapters; Antigravity project guidance is implemented; installed-client qualification remains unverified. These choices are replaceable. Stable responsibilities survive provider changes.
 
 The harness performs development and can use installed tools directly. AI-DLC
 provides setup, guidance, integration, validation, and evidence services where
@@ -38,12 +38,12 @@ publication until the existing custom MCP can be reviewed.
 
 ## Responsibilities and replaceability
 
-| Part | Stable responsibility | Current foundation | Next delivery |
+| Part | Stable responsibility | Implemented foundation | Qualification or proposed follow-on |
 | --- | --- | --- | --- |
-| Environment | Reproduce tools and local bindings | Bootstrap, enrollment, native recipes, project setup | Connect roles to required modules and readiness |
-| Integrations | Connect capabilities to selected systems | Provider registry, contracts, configuration | Component metadata and scoped onboarding |
-| Harness support | Expose tools, guidance, and context | Managed Codex/Claude assets and optional MCP definitions | Provider guidance index and pinned Markdown bundles |
-| Workflows | Guide decisions and handoffs | Discovery/PRD/spec skills and project guides | Worked product-shaping and delivery-slice workflows |
+| Environment | Reproduce tools and local bindings | Bootstrap, enrollment, project setup and connected readiness | Qualify selected machine and installed clients |
+| Integrations | Connect capabilities to selected systems | Provider metadata, contracts and scoped onboarding | Qualify actual selected provider deployments |
+| Harness support | Expose tools, guidance, and context | Managed Codex/Claude/Antigravity guidance and pinned bundles | Qualify native recognition and authentication |
+| Workflows | Guide decisions and handoffs | Product shaping, traceability and optional Design PM guidance | Measure outcomes using approved human evaluations |
 | Evaluation | Establish achieved outcomes | Checks, gates, pending skill experiments | Target walkthroughs and product/design comparisons |
 
 ## Product development workflow
@@ -83,15 +83,16 @@ contracts, or operational evidence. Small work uses small artifacts.
 
 Initial qualification targets: native macOS arm64 and an Ubuntu 24.04 arm64
 devcontainer. Each remains unverified until its actual walkthrough succeeds.
-Hosted platforms, executable workflow packages, knowledge onboarding and release publication remain separately scoped follow-ons. Antigravity is now explicitly in the work-computer onboarding scope; document its contract and qualify the actual installed version rather than treating old adapter exclusions as current intent.
+Hosted platforms, executable workflow packages, knowledge onboarding and release publication remain separately scoped follow-ons. Antigravity project adapters are implemented; qualify the actual installed version before claiming successful client adoption.
 
-The code remains a v4 implementation candidate. Original v4 release tasks remain
-open where evidence is missing; this roadmap does not relabel that work.
+The code remains a v4 implementation candidate. Missing v4 qualification and release evidence remains missing. The former
+tracking issue #17 was cancelled as NOT_PLANNED, not completed; any renewed
+release work requires separately approved scope.
 
 ## Navigation
 
 - [Draft provider toolset requirements](design/provider-toolsets-prd.md) and
-  [implementation sequence](superpowers/plans/2026-09-06-provider-toolsets.md):
+  [implementation sequence](archive/planning/2026-09-06-provider-toolsets.md):
   requested Plane/Jira/Confluence integration with Obsidian retained; proposed
   scope, not shipping capability.
 
@@ -99,6 +100,6 @@ open where evidence is missing; this roadmap does not relabel that work.
 - [Delivery architecture](design/framework-delivery.md)
 - [Executor handoff](handoffs/framework-delivery.md)
 - [V4 proposal](../openspec/changes/portable-development-v4/proposal.md)
-- [Enrollment design and follow-on cycles](superpowers/specs/2026-09-03-portable-profile-enrollment-design.md)
+- [Enrollment design and follow-on cycles](../openspec/changes/archive/2026-09-03-portable-profile-enrollment/historical-design.md)
 - [Current architecture](architecture.md)
 - [Actual release evidence](release-verification.md)

@@ -2,7 +2,7 @@
 
 import pytest
 
-from ai_dlc.readiness import inspect_readiness
+from ai_dlc.setup.readiness import inspect_readiness
 
 
 def inspect(tmp_path, config, *, gh=True):

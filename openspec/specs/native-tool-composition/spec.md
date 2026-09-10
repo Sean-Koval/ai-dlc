@@ -1,7 +1,7 @@
 # native-tool-composition Specification
 
 ## Purpose
-TBD - created by archiving change native-tool-composition. Update Purpose after archive.
+Compose reviewed role bindings into native client connections with exact local apply, preserved manual configuration and explicit separation of declared and authenticated identity.
 ## Requirements
 ### Requirement: NT-01 Reviewed role and native connection composition
 The agents CLI SHALL compose explicitly reviewed project bindings into existing agents.servers, deduplicating only exact alias, declared account and transport identity while preserving each selected role and its guidance.

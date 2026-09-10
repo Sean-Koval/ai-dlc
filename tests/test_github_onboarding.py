@@ -83,7 +83,7 @@ def remote(monkeypatch):
 
 
 def connect(root, **kwargs):
-    from ai_dlc.github_onboarding import connect_github_provider
+    from ai_dlc.setup.github_onboarding import connect_github_provider
 
     environment = kwargs.pop(
         "environ",
@@ -365,7 +365,7 @@ def enrolled(tmp_path, monkeypatch):
     """A real verified enrollment, deliberately different from the ambient XDG paths."""
     import hashlib
 
-    from ai_dlc.enrollment import EnrollmentLock, EnrollmentPaths, write_lock
+    from ai_dlc.environment.enrollment import EnrollmentLock, EnrollmentPaths, write_lock
 
     environment = {
         "XDG_CONFIG_HOME": str(tmp_path / "enrolled/config"),
@@ -410,7 +410,7 @@ def enrolled(tmp_path, monkeypatch):
 
 
 def test_inherited_github_alias_dispatch_uses_explicit_runtime(checkout, remote, enrolled):
-    from ai_dlc.provider_onboarding import connect_provider
+    from ai_dlc.setup.provider_onboarding import connect_provider
 
     environment, _, _ = enrolled
     before = (checkout / "ai-dlc.toml").read_bytes()
@@ -477,7 +477,7 @@ def test_effective_runtime_rechecked_during_apply(checkout, remote, enrolled, mo
     import os
     from contextlib import contextmanager
 
-    from ai_dlc import github_onboarding
+    from ai_dlc.setup import github_onboarding
 
     environment, paths, _ = enrolled
     plan_file = Path(".ai-dlc/local/github.json")
@@ -516,7 +516,7 @@ def test_effective_runtime_rechecked_during_apply(checkout, remote, enrolled, mo
 def test_reserved_linear_name_refuses_inherited_github_kind_before_transport(
     checkout, enrolled, monkeypatch
 ):
-    from ai_dlc import provider_onboarding
+    from ai_dlc.setup import provider_onboarding
 
     environment, _, install = enrolled
     install(alias="linear")

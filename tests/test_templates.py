@@ -12,9 +12,9 @@ from urllib.parse import unquote
 import pytest
 
 from ai_dlc.config import resolve_files
-from ai_dlc.credentials import credential_status
+from ai_dlc.environment.credentials import credential_status
 from ai_dlc.files import assets
-from ai_dlc.templates import adopt, sync
+from ai_dlc.setup.templates import adopt, sync
 
 _PROHIBITED_PUBLIC_TOKENS = {
     "personal",
@@ -414,7 +414,9 @@ def test_portable_profile_examples_and_rendered_handbook_are_safe(tmp_path):
 
     mcp_tools = {tool.name for tool in asyncio.run(make_server(root).list_tools())}
     tool_map = pages[Path("docs/workflows/tool-map.md")].lower()
-    documented_mcp_tools = set(re.findall(r"`((?:work|knowledge)_[a-z_]+|doctor)`", tool_map))
+    documented_mcp_tools = set(
+        re.findall(r"`((?:work|knowledge|project)_[a-z_]+|doctor)`", tool_map)
+    )
     assert documented_mcp_tools == mcp_tools
     assert not {name for name in mcp_tools if name.startswith("machine_")}
     assert not re.findall(r"`machine_[a-z_]+`", tool_map)
@@ -882,7 +884,7 @@ def test_portable_examples_are_the_only_profiles_in_built_distributions(tmp_path
 
 
 def test_initialized_python_check_does_not_dirty_repository(tmp_path):
-    from ai_dlc.project import check_project, setup_project
+    from ai_dlc.setup.project import check_project, setup_project
 
     root = tmp_path / "python"
     assert adopt(root, "python", apply=True, initialize=True)["status"] == "applied"
@@ -928,7 +930,7 @@ def test_managed_symlink_is_conflict(tmp_path, template):
 def test_runtime_and_ignored_files_are_not_read_or_copied(tmp_path, template, monkeypatch):
     from pathlib import Path
 
-    from ai_dlc import templates
+    from ai_dlc.setup import templates
 
     root = tmp_path / "app"
     adopt(root, apply=True, template_source=str(template), vcs_ref="v1.0.0")
@@ -969,7 +971,7 @@ def test_runtime_and_ignored_files_are_not_read_or_copied(tmp_path, template, mo
 
 
 def test_checkout_changed_during_stage_requires_retry(tmp_path, template, monkeypatch):
-    from ai_dlc import templates
+    from ai_dlc.setup import templates
 
     root = tmp_path / "app"
     root.mkdir()
@@ -1068,7 +1070,7 @@ def test_initialized_setup_and_language_check_offline(tmp_path, preset, tool, so
     import tomllib
     from pathlib import Path
 
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
 
     if not shutil.which(tool):
         pytest.skip(f"{tool} unavailable")
@@ -1196,7 +1198,7 @@ def test_distribution_privacy_scan_distinguishes_rooted_paths_from_prose(content
 
 
 def test_delivery_slice_assets_are_available_without_creating_work_items(tmp_path):
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
 
     root = tmp_path / "project"
     adopt(root, apply=True)

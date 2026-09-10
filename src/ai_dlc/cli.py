@@ -11,7 +11,7 @@ from typing import Annotated
 import typer
 
 from ai_dlc.config import load_project, read_toml, resolve_files, resolve_runtime
-from ai_dlc.machine import MachineManager
+from ai_dlc.environment.machine import MachineManager
 
 app = typer.Typer(no_args_is_help=True, help="Portable development for people and agents.")
 project = typer.Typer(no_args_is_help=True)
@@ -52,7 +52,7 @@ def scaffold(
     provider: Annotated[list[str] | None, typer.Option("--provider", "-p")] = None,
     all: bool = False,
 ):
-    from ai_dlc.legacy import scaffold as run
+    from ai_dlc.compatibility.legacy import scaffold as run
 
     emit(run(Path.cwd(), provider or [], all))
 
@@ -65,7 +65,7 @@ def project_check(
     json_output: Annotated[bool, typer.Option("--json")] = False,
     receipt: Path | None = None,
 ):
-    from ai_dlc.project import check_project
+    from ai_dlc.setup.project import check_project
 
     result = check_project(root, target, required_only=required)
     if receipt:
@@ -81,7 +81,7 @@ def project_check(
 
 @project.command("setup")
 def project_setup(root: Path = Path("."), target: str = "local"):
-    from ai_dlc.project import setup_project
+    from ai_dlc.setup.project import setup_project
 
     emit(setup_project(root, target))
 
@@ -91,7 +91,7 @@ def project_readiness(root: Path = Path(".")):
     """Inspect selected project requirements offline without applying changes."""
     import os
 
-    from ai_dlc.provision import project_readiness as inspect
+    from ai_dlc.setup.provision import project_readiness as inspect
 
     # Resolve local bindings while retaining only explicit provider selections.
     resolved = resolve_runtime(root)
@@ -119,26 +119,31 @@ def project_init(
     tracker: Annotated[str | None, typer.Option("--tracker")] = None,
     knowledge_provider: Annotated[str | None, typer.Option("--knowledge")] = None,
     agent_client: Annotated[list[str] | None, typer.Option("--agent-client")] = None,
+    docs_preset: Annotated[str | None, typer.Option("--docs-preset")] = None,
+    link_vault_option: Annotated[bool, typer.Option("--link-vault")] = False,
+    vault: Annotated[Path | None, typer.Option("--vault")] = None,
 ):
-    from ai_dlc.templates import adopt
+    from ai_dlc.setup.templates import adopt
 
-    emit(
-        adopt(
-            path,
-            preset=preset,
-            apply=apply,
-            template_source=template_source,
-            vcs_ref=vcs_ref,
-            capabilities=capability,
-            providers={
-                role: value
-                for role, value in (("tracker", tracker), ("knowledge", knowledge_provider))
-                if value is not None
-            },
-            agent_clients=agent_client,
-            initialize=True,
-        )
+    result = adopt(
+        path,
+        preset=preset,
+        apply=apply,
+        template_source=template_source,
+        vcs_ref=vcs_ref,
+        capabilities=capability,
+        providers={
+            role: value
+            for role, value in (("tracker", tracker), ("knowledge", knowledge_provider))
+            if value is not None
+        },
+        agent_clients=agent_client,
+        initialize=True,
+        docs_preset=docs_preset,
+        link_vault=link_vault_option,
+        vault=vault,
     )
+    emit(result)
 
 
 @project.command("adopt")
@@ -152,32 +157,203 @@ def project_adopt(
     tracker: Annotated[str | None, typer.Option("--tracker")] = None,
     knowledge_provider: Annotated[str | None, typer.Option("--knowledge")] = None,
     agent_client: Annotated[list[str] | None, typer.Option("--agent-client")] = None,
+    docs_preset: Annotated[str | None, typer.Option("--docs-preset")] = None,
+    link_vault_option: Annotated[bool, typer.Option("--link-vault")] = False,
+    vault: Annotated[Path | None, typer.Option("--vault")] = None,
 ):
-    from ai_dlc.templates import adopt
+    from ai_dlc.setup.templates import adopt
+
+    result = adopt(
+        root,
+        preset=preset,
+        apply=apply,
+        template_source=template_source,
+        vcs_ref=vcs_ref,
+        capabilities=capability,
+        providers={
+            role: value
+            for role, value in (("tracker", tracker), ("knowledge", knowledge_provider))
+            if value is not None
+        },
+        agent_clients=agent_client,
+        docs_preset=docs_preset,
+        link_vault=link_vault_option,
+        vault=vault,
+    )
+    emit(result)
+
+
+@project.command("docs-init")
+def project_docs_init(root: Path = Path("."), preset: str = "organized", apply: bool = False):
+    """Preview or add canonical documentation navigation without relocating existing files."""
+    from ai_dlc.documentation.moc import initialize_documents
+
+    emit(initialize_documents(root, preset=preset, apply=apply))
+
+
+@project.command("docs-check")
+def project_docs_check(root: Path = Path("."), strict: bool = False):
+    """Inspect canonical document ownership, coverage and review metadata without mutation."""
+    from ai_dlc.documentation.documents import check_documents
+
+    result = check_documents(root)
+    emit(result)
+    if strict and result["findings"]:
+        raise typer.Exit(2)
+
+
+@project.command("docs-impact")
+def project_docs_impact(base: Annotated[str, typer.Option()], root: Path = Path(".")):
+    """Identify documentation affected by a Git comparison and working changes."""
+    from ai_dlc.documentation.document_impact import inspect_impact
+
+    emit(inspect_impact(root, base=base))
+
+
+@project.command("docs-disposition")
+def project_docs_disposition(
+    base: Annotated[str, typer.Option()],
+    decisions: Annotated[Path, typer.Option()],
+    reviewer: Annotated[str, typer.Option()],
+    root: Path = Path("."),
+):
+    """Emit current content-bound evidence from reviewed JSON decisions; does not write files."""
+    from ai_dlc.documentation.document_files import read_document
+    from ai_dlc.documentation.document_impact import prepare_disposition
 
     emit(
-        adopt(
+        prepare_disposition(
             root,
-            preset=preset,
-            apply=apply,
-            template_source=template_source,
-            vcs_ref=vcs_ref,
-            capabilities=capability,
-            providers={
-                role: value
-                for role, value in (("tracker", tracker), ("knowledge", knowledge_provider))
-                if value is not None
-            },
-            agent_clients=agent_client,
+            base=base,
+            decisions=json.loads(read_document(decisions.absolute())),
+            reviewer=reviewer,
         )
     )
 
 
+@project.command("docs-baseline")
+def project_docs_baseline(
+    owner: Annotated[str, typer.Option()],
+    reason: Annotated[str, typer.Option()],
+    root: Path = Path("."),
+):
+    """Emit an explicit proposed historical-debt baseline for review."""
+    from ai_dlc.documentation.document_impact import prepare_baseline
+
+    emit(prepare_baseline(root, owner=owner, reason=reason))
+
+
+@project.command("docs-style")
+def project_docs_style(
+    paths: Annotated[list[str], typer.Option("--path")],
+    root: Path = Path("."),
+    strict: bool = False,
+):
+    """Run explicitly configured optional Vale checks without installing tools."""
+    from ai_dlc.documentation.document_style import check_style
+
+    result = check_style(root, paths=paths)
+    emit(result)
+    if strict and result["status"] != "passed":
+        raise typer.Exit(2)
+
+
+@project.command("docs-review")
+def project_docs_review(
+    base: Annotated[str, typer.Option()],
+    paths: Annotated[list[str], typer.Option("--path")],
+    root: Path = Path("."),
+    max_bytes: int = 64000,
+):
+    """Prepare bounded selected-document evidence for the existing harness."""
+    from ai_dlc.documentation.document_review import prepare_review
+
+    emit(prepare_review(root, paths=paths, base=base, max_bytes=max_bytes))
+
+
+@project.command("docs-review-check")
+def project_docs_review_check(
+    packet: Annotated[Path, typer.Option()],
+    review: Annotated[Path, typer.Option()],
+    root: Path = Path("."),
+):
+    """Check citation grounding and current source bytes, not semantic truth."""
+    from ai_dlc.documentation.document_files import read_document
+    from ai_dlc.documentation.document_review import validate_review
+
+    result = validate_review(
+        root,
+        packet=json.loads(read_document(packet.absolute())),
+        review=json.loads(read_document(review.absolute())),
+    )
+    emit(result)
+    if not result["valid"]:
+        raise typer.Exit(2)
+
+
+@project.command("docs-gate")
+def project_docs_gate(
+    root: Path = Path("."),
+    evidence: str = ".ai-dlc/documentation/current.json",
+    baseline: str = ".ai-dlc/documentation/baseline.json",
+    base: Annotated[str | None, typer.Option(envvar="AI_DLC_DOCS_BASE")] = None,
+):
+    """Require current dispositions and refuse new objective documentation defects."""
+    from ai_dlc.documentation.document_impact import check_gate
+
+    result = check_gate(root, evidence_path=evidence, baseline_path=baseline, base=base)
+    emit(result)
+    if not result["valid"]:
+        raise typer.Exit(2)
+
+
 @project.command("sync")
 def project_sync(root: Path = Path("."), apply: bool = False, vcs_ref: str | None = None):
-    from ai_dlc.templates import sync
+    from ai_dlc.setup.templates import sync
 
     emit(sync(root, apply=apply, vcs_ref=vcs_ref))
+
+
+@project.command("link-vault")
+def project_link_vault(
+    root: Path = Path("."),
+    vault: Annotated[Path | None, typer.Option("--vault", "-v")] = None,
+    name: Annotated[str | None, typer.Option("--name", "-n")] = None,
+    force: Annotated[
+        bool, typer.Option("--force", "-f", help="Compatibility flag; never overwrites notes.")
+    ] = False,
+    preview: Annotated[bool, typer.Option("--preview")] = False,
+    docs_preset: Annotated[str | None, typer.Option("--docs-preset")] = None,
+):
+    """Create a machine-local portal linking to canonical project documentation."""
+    from ai_dlc.documentation.vault_link import link_vault
+
+    try:
+        result = link_vault(
+            root, vault=vault, name=name, force=force, docs_preset=docs_preset, apply=not preview
+        )
+    except (OSError, RuntimeError, ValueError) as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(2) from None
+    emit(result.as_dict())
+
+
+@project.command("workspace-init")
+def project_workspace_init(
+    root: Path = Path("."),
+    vault: Path | None = None,
+    name: str | None = None,
+    bases: bool = False,
+    apply: bool = False,
+):
+    """Preview or add linked Obsidian project navigation and personal note templates."""
+    from ai_dlc.documentation.knowledge_workspace import setup_workspace
+
+    try:
+        emit(setup_workspace(root, vault=vault, name=name, bases=bases, apply=apply))
+    except (OSError, ValueError) as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(2) from None
 
 
 @project.command("rebind")
@@ -190,7 +366,7 @@ def project_rebind(
     machine: Path | None = None,
     connection_plan: Annotated[Path | None, typer.Option("--connection-plan")] = None,
 ):
-    from ai_dlc.rebind import rebind
+    from ai_dlc.setup.rebind import rebind
 
     try:
         result = rebind(
@@ -221,7 +397,7 @@ def project_tracker_create_plan(
     machine: Path | None = None,
 ):
     """Preview exact local-record target creation; saving never contacts the tracker."""
-    from ai_dlc.tracker_targets import plan_tracker_targets, save_tracker_targets_plan
+    from ai_dlc.setup.tracker_targets import plan_tracker_targets, save_tracker_targets_plan
 
     try:
         raw = read_toml(mappings) if mappings else {}
@@ -254,8 +430,8 @@ def project_tracker_reconcile(
     machine: Path | None = None,
 ):
     """Explicitly reconcile reviewed saved creation intent; never apply local bindings."""
-    from ai_dlc.tracker_migration import save_tracker_migration_plan
-    from ai_dlc.tracker_targets import reconcile_tracker_targets
+    from ai_dlc.setup.tracker_targets import reconcile_tracker_targets
+    from ai_dlc.work.tracker_migration import save_tracker_migration_plan
 
     try:
         result = reconcile_tracker_targets(root, plan, environ=os.environ, machine=machine)
@@ -290,7 +466,7 @@ def project_tracker_migrate(
     resolve_recovery: str | None = None,
 ):
     """Preview a tracker default/selected move, or apply an exact saved JSON plan."""
-    from ai_dlc.tracker_migration import (
+    from ai_dlc.work.tracker_migration import (
         apply_tracker_migration,
         inspect_tracker_migration,
         plan_tracker_migration,
@@ -345,7 +521,7 @@ def agents_connect(
     apply_plan: Path | None = None,
 ):
     """Review native role bindings and apply only project configuration."""
-    from ai_dlc.native_composition import apply_native_connections, plan_native_connections
+    from ai_dlc.harness.native_composition import apply_native_connections, plan_native_connections
 
     try:
         if apply_plan is not None:
@@ -378,12 +554,12 @@ def agents_render(
     if home is not None and personal is None:
         raise typer.BadParameter("--home requires --personal")
     if personal is not None:
-        from ai_dlc.user_agents import render_user_agents
+        from ai_dlc.harness.user_agents import render_user_agents
 
         config = resolve_files(personal=personal).values
         result = render_user_agents(config, home or Path.home(), apply=apply, client=client)
     else:
-        from ai_dlc.agents import render_agents
+        from ai_dlc.harness.agents import render_agents
 
         result = render_agents(root, apply=apply, client=client)
     emit(result)
@@ -401,7 +577,11 @@ def agents_bundle_import(
     expected_commit: Annotated[str | None, typer.Option("--expected-commit")] = None,
 ):
     """Preview or vendor one pinned portable workflow bundle."""
-    from ai_dlc.workflow_bundles import import_bundle, resolve_bundle, validate_bundle_project
+    from ai_dlc.harness.workflow_bundles import (
+        import_bundle,
+        resolve_bundle,
+        validate_bundle_project,
+    )
 
     try:
         if apply and expected_commit is None:
@@ -439,14 +619,14 @@ def profile_show(
 
 @profile.command("migrate")
 def profile_migrate(path: Path, apply: bool = False):
-    from ai_dlc.provision import migrate
+    from ai_dlc.setup.provision import migrate
 
     emit(migrate(path, apply))
 
 
 @profile.command("capture")
 def profile_capture(profile: Path):
-    from ai_dlc.provision import capture
+    from ai_dlc.setup.provision import capture
 
     emit(capture(profile))
 
@@ -598,7 +778,7 @@ def context(root: Path = Path("."), brief: bool = False):
 
 
 def service(root: Path, machine: Path | None):
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     return WorkService.from_project(root, machine=machine)
 
@@ -606,7 +786,7 @@ def service(root: Path, machine: Path | None):
 @work.command("validate")
 def work_validate(work_id: str, root: Path = Path("."), machine: Path | None = None):
     from ai_dlc.config import resolve_runtime
-    from ai_dlc.workflow import validate_work
+    from ai_dlc.work.workflow import validate_work
 
     try:
         result = validate_work(root, resolve_runtime(root, machine=machine).values, work_id)
@@ -651,21 +831,21 @@ def work_finish(
 
 @knowledge.command("find")
 def knowledge_find(query: str, vault: Path):
-    from ai_dlc.knowledge import Knowledge
+    from ai_dlc.documentation.knowledge import Knowledge
 
     emit(Knowledge(vault).find(query))
 
 
 @knowledge.command("note")
 def knowledge_note(path: str, body: Path, operation_id: str, vault: Path):
-    from ai_dlc.knowledge import Knowledge
+    from ai_dlc.documentation.knowledge import Knowledge
 
     emit(Knowledge(vault).note(path, body.read_text(), operation_id))
 
 
 @knowledge.command("append")
 def knowledge_append(path: str, body: Path, operation_id: str, vault: Path):
-    from ai_dlc.knowledge import Knowledge
+    from ai_dlc.documentation.knowledge import Knowledge
 
     emit(Knowledge(vault).append(path, body.read_text(), operation_id))
 
@@ -696,7 +876,7 @@ def provider_connect(
     select: Annotated[list[str] | None, typer.Option("--select")] = None,
 ):
     """Discover or explicitly configure a supported project provider."""
-    from ai_dlc.provider_onboarding import connect_provider
+    from ai_dlc.setup.provider_onboarding import connect_provider
 
     try:
         result = connect_provider(
@@ -725,7 +905,7 @@ def provider_connect(
 
 @provider.command("test")
 def provider_test(name: str, manifest: Path, live: bool = False):
-    from ai_dlc.sandbox import test_provider
+    from ai_dlc.verification.sandbox import test_provider
 
     result = test_provider(name, read_toml(manifest), live=live)
     emit(result)
@@ -742,7 +922,7 @@ def mcp_serve(root: Path = Path("."), machine: Path | None = None):
 
 @app.command("hook", hidden=True)
 def hook(event: str, root: Path = Path(".")):
-    from ai_dlc.hooks import handle_hook
+    from ai_dlc.harness.hooks import handle_hook
 
     result = handle_hook(root, event, json.load(sys.stdin))
     if result.get("decision") == "deny":

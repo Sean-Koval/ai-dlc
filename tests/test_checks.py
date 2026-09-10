@@ -28,7 +28,7 @@ def repository(tmp_path):
 
 
 def test_failed_required_check_is_recorded_and_not_skipped(tmp_path):
-    from ai_dlc.project import check_project
+    from ai_dlc.setup.project import check_project
 
     root = repository(tmp_path)
     receipt = check_project(root, target="local", use_mise=False)
@@ -44,7 +44,7 @@ def test_failed_required_check_is_recorded_and_not_skipped(tmp_path):
 def test_missing_required_command_rejected_before_execution(tmp_path):
     import pytest
 
-    from ai_dlc.project import check_project
+    from ai_dlc.setup.project import check_project
 
     repository(tmp_path)
     (tmp_path / "ai-dlc.toml").write_text('schema=4\n[checks]\nrequired=["missing"]\n')
@@ -55,7 +55,7 @@ def test_missing_required_command_rejected_before_execution(tmp_path):
 def test_setup_resume_tracks_successful_steps_only(tmp_path):
     import pytest
 
-    from ai_dlc.project import setup_project
+    from ai_dlc.setup.project import setup_project
 
     (tmp_path / ".mise.toml").write_text("[tools]\n")
     (tmp_path / "ai-dlc.toml").write_text(

@@ -1,0 +1,698 @@
+# Structural inventory only. Unknown factual reviews remain explicitly unknown.
+schema = 1
+
+[[documents]]
+id = "product-direction"
+path = "docs/product-direction.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "active"
+
+[[documents]]
+id = "architecture"
+path = "docs/architecture.md"
+kind = "architecture"
+owner = "repository-maintainers"
+status = "active"
+code_paths = [
+    "src/ai_dlc/*.py",
+    "src/ai_dlc/**/*.py",
+    "scripts/*.py",
+    "scripts/legacy/*.sh",
+    "pyproject.toml",
+]
+
+[[documents]]
+id = "documentation-ownership"
+path = "docs/design/project-documentation.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+
+[[documents]]
+id = "local-shared-knowledge"
+path = "docs/design/local-and-shared-knowledge.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+
+[[documents]]
+id = "release-verification"
+path = "docs/release-verification.md"
+kind = "runbook"
+owner = "repository-maintainers"
+status = "active"
+
+[[documents]]
+id = "roadmap"
+path = "docs/roadmap.md"
+kind = "navigation"
+owner = "repository-maintainers"
+status = "active"
+
+[[documents]]
+id = "delivery-handoff"
+path = "docs/handoffs/framework-delivery.md"
+kind = "navigation"
+owner = "repository-maintainers"
+status = "active"
+
+[[documents]]
+id = "historical-provider-handoff"
+path = "docs/archive/planning/provider-toolset-handoff.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "project-knowledge-evidence"
+path = "docs/verification/project-knowledge-repair.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "active"
+
+[[documents]]
+id = "documentation-workflow-verification"
+path = "docs/verification/documentation-workflow.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "active"
+code_paths = [
+    "src/ai_dlc/documentation/document_*.py",
+    "src/ai_dlc/documentation/knowledge_workspace.py",
+    "src/ai_dlc/harness/workflow_bundles.py",
+    "src/ai_dlc/harness/agents.py",
+    "src/ai_dlc/config.py",
+]
+verification_paths = [
+    "tests/test_document_*.py",
+    "tests/test_knowledge_workspace.py",
+    "tests/test_company_guidance.py",
+]
+requirements = [
+    "openspec/specs/documentation-lifecycle-reconciliation/spec.md",
+    "openspec/specs/documentation-impact-workflow/spec.md",
+    "openspec/specs/document-evidence-review/spec.md",
+    "openspec/specs/obsidian-project-workspace/spec.md",
+    "openspec/specs/company-guidance-bundles/spec.md",
+    "openspec/specs/documentation-workflow-qualification/spec.md",
+]
+
+[[documents]]
+id = "workflow-tool-map"
+path = "docs/workflows/tool-map.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "active"
+code_paths = [
+    "src/ai_dlc/mcp_server.py",
+    "src/ai_dlc/cli.py",
+]
+
+[[documents]]
+id = "repo-archive-README"
+path = "docs/archive/README.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-legacy-phase-1-rust"
+path = "docs/archive/legacy/phase-1-rust.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-legacy-restructure-plan"
+path = "docs/archive/legacy/restructure-plan.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-legacy-rust-evolution-plan"
+path = "docs/archive/legacy/rust-evolution-plan.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-planning-2026-09-03-portable-profile-enrollment-design"
+path = "openspec/changes/archive/2026-09-03-portable-profile-enrollment/historical-design.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-planning-2026-09-05-design-pm-calibration"
+path = "docs/archive/planning/2026-09-05-design-pm-calibration.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-planning-2026-09-05-framework-delivery"
+path = "docs/archive/planning/2026-09-05-framework-delivery.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-planning-2026-09-05-framework-qualification"
+path = "docs/archive/planning/2026-09-05-framework-qualification.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-planning-2026-09-05-workflow-quality-calibration"
+path = "docs/archive/planning/2026-09-05-workflow-quality-calibration.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-planning-2026-09-06-provider-toolsets"
+path = "docs/archive/planning/2026-09-06-provider-toolsets.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-planning-2026-09-07-work-computer-readiness"
+path = "docs/archive/planning/2026-09-07-work-computer-readiness.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-planning-framework-delivery-review"
+path = "docs/archive/planning/framework-delivery-review.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-planning-github-backlog-migration"
+path = "docs/archive/planning/github-backlog-migration.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-planning-implementation-v4"
+path = "docs/archive/planning/implementation-v4.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-planning-provider-substitution-2026-09-06"
+path = "docs/archive/planning/provider-substitution-2026-09-06.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-planning-provider-toolset-code-audit"
+path = "docs/archive/planning/provider-toolset-code-audit.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-planning-stage-cleanup-review-2026-09-06"
+path = "docs/archive/planning/stage-cleanup-review-2026-09-06.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-planning-tracker-adapter-follow-through"
+path = "docs/archive/planning/tracker-adapter-follow-through.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-research-awesome_claude_framework"
+path = "docs/archive/research/awesome_claude_framework.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-research-claude_architecture"
+path = "docs/archive/research/claude_architecture.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-research-claude_components_workflow_analysis"
+path = "docs/archive/research/claude_components_workflow_analysis.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-research-jinja2_template_generation"
+path = "docs/archive/research/jinja2_template_generation.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-research-repository_command_workflow_analysis"
+path = "docs/archive/research/repository_command_workflow_analysis.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-archive-research-super_claude_framework"
+path = "docs/archive/research/super_claude_framework.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-design-design-pm"
+path = "docs/design/design-pm.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+
+[[documents]]
+id = "repo-design-framework-delivery"
+path = "docs/design/framework-delivery.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+
+[[documents]]
+id = "repo-design-jira-cloud"
+path = "docs/design/jira-cloud.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+
+[[documents]]
+id = "repo-design-native-tool-composition"
+path = "docs/design/native-tool-composition.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+
+[[documents]]
+id = "repo-design-plane-new-work"
+path = "docs/design/plane-new-work.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+
+[[documents]]
+id = "repo-design-provider-connections"
+path = "docs/design/provider-connections.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+
+[[documents]]
+id = "repo-design-provider-toolsets-prd"
+path = "docs/design/provider-toolsets-prd.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+
+[[documents]]
+id = "repo-development-workflow"
+path = "docs/development-workflow.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+
+[[documents]]
+id = "repo-github-ticket-setup"
+path = "docs/github-ticket-setup.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+
+[[documents]]
+id = "repo-index"
+path = "docs/index.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+
+[[documents]]
+id = "repo-migration"
+path = "docs/migration.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+
+[[documents]]
+id = "repo-reviews-2026-09-03-portable-profile-enrollment"
+path = "docs/reviews/2026-09-03-portable-profile-enrollment.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-runbooks-jira-cloud-setup"
+path = "docs/runbooks/jira-cloud-setup.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+
+[[documents]]
+id = "repo-runbooks-plane-setup"
+path = "docs/runbooks/plane-setup.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+
+[[documents]]
+id = "repo-verification-bootstrap-executable-publication"
+path = "docs/verification/bootstrap-executable-publication.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-credential-readiness"
+path = "docs/verification/credential-readiness.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-design-pm-baseline"
+path = "docs/verification/design-pm/baseline.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-design-pm-cases"
+path = "docs/verification/design-pm/cases.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-design-pm-review"
+path = "docs/verification/design-pm/review.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-design-pm-with-assets-input"
+path = "docs/verification/design-pm/with-assets-input.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-design-pm-with-assets-output"
+path = "docs/verification/design-pm/with-assets-output.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-design-pm-evaluation"
+path = "docs/verification/design-pm-evaluation.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-design-pm-workflow"
+path = "docs/verification/design-pm-workflow.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-framework-qualification"
+path = "docs/verification/framework-qualification.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-github-ticket-workflows"
+path = "docs/verification/github-ticket-workflows.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-jira-cloud-new-work"
+path = "docs/verification/jira-cloud-new-work.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-native-setup-recovery"
+path = "docs/verification/native-setup-recovery.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-native-tool-composition"
+path = "docs/verification/native-tool-composition.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-native-work-harnesses"
+path = "docs/verification/native-work-harnesses.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-offline-conformance-packaging"
+path = "docs/verification/offline-conformance-packaging.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-onboarding-readiness"
+path = "docs/verification/onboarding-readiness.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-plane-new-work"
+path = "docs/verification/plane-new-work.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-portable-workflow-bundle-cleanup"
+path = "docs/verification/portable-workflow-bundle-cleanup.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-portable-workflow-bundle-import-repair"
+path = "docs/verification/portable-workflow-bundle-import-repair.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-product-delivery-evaluation"
+path = "docs/verification/product-delivery-evaluation.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-product-shaping-baseline-with-assets"
+path = "docs/verification/product-shaping/baseline-with-assets.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-product-shaping-baseline"
+path = "docs/verification/product-shaping/baseline.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-product-shaping-cases"
+path = "docs/verification/product-shaping/cases.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-product-shaping-final-targeted"
+path = "docs/verification/product-shaping/final-targeted.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-product-shaping-first-post-change"
+path = "docs/verification/product-shaping/first-post-change.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-product-shaping-workflow"
+path = "docs/verification/product-shaping-workflow.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-provider-connections"
+path = "docs/verification/provider-connections.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-provider-mutation-protocol"
+path = "docs/verification/provider-mutation-protocol.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-release-candidate-preparation"
+path = "docs/verification/release-candidate-preparation.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-selective-tracker-migration"
+path = "docs/verification/selective-tracker-migration.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-setup-continuity"
+path = "docs/verification/setup-continuity.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-source-fetch-cleanup"
+path = "docs/verification/source-fetch-cleanup.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-spec-delivery-traceability-baseline"
+path = "docs/verification/spec-delivery-traceability/baseline.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-spec-delivery-traceability-cases"
+path = "docs/verification/spec-delivery-traceability/cases.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-spec-delivery-traceability-post"
+path = "docs/verification/spec-delivery-traceability/post.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-spec-delivery-traceability"
+path = "docs/verification/spec-delivery-traceability.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-toolset-composition"
+path = "docs/verification/toolset-composition.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-verification-work-computer-toolsets"
+path = "docs/verification/work-computer-toolsets.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "repo-workflows-brownfield"
+path = "docs/workflows/brownfield.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+
+[[documents]]
+id = "repo-workflows-design-to-implementation"
+path = "docs/workflows/design-to-implementation.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+
+[[documents]]
+id = "repo-workflows-greenfield"
+path = "docs/workflows/greenfield.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+
+[[documents]]
+id = "repo-workflows-work-computer-setup"
+path = "docs/workflows/work-computer-setup.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+
+[[documents]]
+id = "repo-runbooks-machine-enrollment"
+path = "docs/runbooks/machine-enrollment.md"
+kind = "runbook"
+owner = "repository-maintainers"
+status = "active"
+
+[[documents]]
+id = "repo-runbooks-linear-setup"
+path = "docs/runbooks/linear-setup.md"
+kind = "runbook"
+owner = "repository-maintainers"
+status = "active"
+
+[[documents]]
+id = "repo-verification-repository-organization"
+path = "docs/verification/repository-organization.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "active"

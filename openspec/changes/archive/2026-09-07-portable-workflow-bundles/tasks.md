@@ -21,4 +21,4 @@
 - [x] 4.1 Run required project checks and strict OpenSpec validation.
 - [x] 4.2 Complete source and integration review, finalize delivered specification scope, and preserve the separate archive/PR/merged-CI/work-finish checklist in the verification record.
 
-[Detailed plan](../../../../docs/superpowers/plans/2026-09-05-portable-workflow-bundles.md).
+[Detailed plan](2026-09-05-portable-workflow-bundles.md).

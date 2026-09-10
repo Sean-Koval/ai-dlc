@@ -64,4 +64,4 @@ Use additive defaults for existing configurations. Preview before applicable mut
 - TR-02: exercise a ticket depends on itself and the corresponding expected result in the formal spec.
 - TR-03: exercise a published item is retried and the corresponding expected result in the formal spec.
 
-[Task-level instructions and acceptance example](../../../../docs/superpowers/plans/2026-09-05-spec-delivery-traceability.md).
+[Task-level instructions and acceptance example](2026-09-05-spec-delivery-traceability.md).

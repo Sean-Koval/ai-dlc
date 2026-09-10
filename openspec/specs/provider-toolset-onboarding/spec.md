@@ -1,7 +1,7 @@
 # provider-toolset-onboarding Specification
 
 ## Purpose
-TBD - created by archiving change provider-toolset-onboarding. Update Purpose after archive.
+Select providers independently of language presets and offer reusable connection workflows, native harness connections and truthful capability readiness.
 ## Requirements
 ### Requirement: PT-01 Explicit provider selection
 Scaffolding and adoption SHALL accept supported provider selections independently of language preset and SHALL preserve legacy defaults when those selections are omitted.

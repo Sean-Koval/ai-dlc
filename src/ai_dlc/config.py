@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from ai_dlc.enrollment import EnrollmentPaths
+    from ai_dlc.environment.enrollment import EnrollmentPaths
 
 SCHEMA = 4
 SCOPES = {
@@ -216,6 +216,22 @@ def _validate(layer: str, data: dict[str, Any]) -> None:
     agents = data.get("agents")
     if agents is not None and not isinstance(agents, dict):
         raise TypeError(f"{layer}: agents must be a table")
+    if isinstance(agents, dict) and "sdk_versions" in agents:
+        if layer != "project":
+            raise ValueError(f"{layer}: cannot set agents.sdk_versions")
+        versions = agents["sdk_versions"]
+        if not isinstance(versions, dict) or not all(
+            isinstance(name, str)
+            and _BUNDLE_ID.fullmatch(name)
+            and isinstance(version, str)
+            and version.strip()
+            and version == version.strip()
+            and not any(ord(c) < 32 or ord(c) == 127 for c in version)
+            for name, version in versions.items()
+        ):
+            raise ValueError(
+                "project: agents.sdk_versions must map SDK slugs to exact version strings"
+            )
     if isinstance(agents, dict) and "bundles" in agents:
         if layer != "project":
             raise ValueError(f"{layer}: cannot set agents.bundles")
@@ -345,9 +361,9 @@ def resolve_runtime(
     enrollment_paths: EnrollmentPaths | None = None,
 ) -> Resolved:
     """Resolve the packaged base plus any active, verified enrollment layers."""
-    from ai_dlc.enrollment import EnrollmentPaths, read_lock
+    from ai_dlc.environment.enrollment import EnrollmentPaths, read_lock
+    from ai_dlc.environment.profile_source import verify_cached_profile
     from ai_dlc.files import assets
-    from ai_dlc.profile_source import verify_cached_profile
 
     if machine is not None and machine_config is not None:
         raise ValueError("Choose a machine path or machine_config, not both")

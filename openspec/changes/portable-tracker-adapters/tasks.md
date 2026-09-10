@@ -13,5 +13,5 @@
 - [ ] 2.2 Complete independent review and record actual live evidence or explicit unverified gates.
 - [ ] 2.3 Archive only delivered scope, link PR/CI evidence, and finish the reviewed implementation work through the configured workflow.
 
-[Execution plan](../../../docs/superpowers/plans/2026-09-06-portable-tracker-adapters.md). GitHub/capability scope is delivered. Bounded Jira and Plane implementations are reviewed; their child specifications are archived under2026-09-08. Deployment qualification and parent finish remain open.
+[Execution plan](2026-09-06-portable-tracker-adapters.md). GitHub/capability scope is delivered. Bounded Jira and Plane implementations are reviewed; their child specifications are archived under2026-09-08. Deployment qualification and parent finish remain open.
 Implement Jira Cloud for new work before the optional Plane slice; no Jira migration.

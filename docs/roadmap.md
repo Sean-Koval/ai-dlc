@@ -1,6 +1,6 @@
 # AI-DLC roadmap
 
-Updated September 8, 2026 from the current maintainer request, GitHub Project,
+Reconciled September 10, 2026 from the current maintainer request, GitHub Project,
 formal specifications and implementation evidence. The
 [AI-DLC Project](https://github.com/users/Sean-Koval/projects/2) owns current ticket
 priority/status. This document owns delivery dependencies and the immediate
@@ -52,10 +52,30 @@ authentication and version-specific live qualification remain separate from file
 rendering. Record the work computer's OS/architecture and installed Claude and
 Antigravity versions before qualifying that machine.
 
-## Current delivery sequence
+## Delivery status at plan approval
 
-Independent issues may run in isolated worktrees. Integrate shared interfaces in
-dependency order, with TDD, independent review and the required checks.
+GitHub native closure reasons were checked for this reconciliation. Issues #10,
+#11, #12, #13, #18 and #19 are Completed. Issues #14, #15, #16, #17, #20, #21
+and #22 are CLOSED with reason NOT_PLANNED: cancelled, not delivered. The board's
+Done value does not change that meaning. There were no open issues at approval;
+new documentation work is tracked separately and does not reopen cancelled scope.
+
+PR [#28](https://github.com/Sean-Koval/ai-dlc/pull/28) merged at
+`74b90c67f9f0b29a0a4bae688ea6b670608aea18`. Five CI checks passed on its head
+`6c0a732`; this is head evidence, not a claim of exact merged-revision receipts
+or gated work finish. It delivered optional documentation navigation, local portals
+and read-only catalog checks. See the [DK-01–07 reconciliation](verification/project-knowledge-repair.md)
+and [documentation baseline](verification/documentation-baseline.json).
+
+The next approved increment, [issue #29](https://github.com/Sean-Koval/ai-dlc/issues/29),
+reconciles documentation authority and lifecycle.
+Proposed follow-ons cover document evidence review, Obsidian project workspaces,
+company guidance bundles, documentation impact and workflow qualification; their
+OpenSpec changes and newly published issues own scope and priority.
+
+## Delivered and cancelled scope
+
+This table records delivery and cancellation; it is not a queue to execute.
 
 | Issue | Deliverable | Dependencies / completion boundary |
 |---|---|---|
@@ -64,35 +84,35 @@ dependency order, with TDD, independent review and the required checks.
 | [#11](https://github.com/Sean-Koval/ai-dlc/issues/11) | Greenfield/brownfield product shaping | Completed through AI-DLC finish at merged ab6b774 with five receipts; issue Completed and Project Done |
 | [#19](https://github.com/Sean-Koval/ai-dlc/issues/19) | Reusable onboarding and native Claude/Antigravity setup | Completed through gated finish at merged189913b with five receipts |
 | [#12](https://github.com/Sean-Koval/ai-dlc/issues/12) | Requirements-to-spec-to-ticket traceability and dependency guards | Completed through gated finish at merged189913b with five receipts |
-| [#20](https://github.com/Sean-Koval/ai-dlc/issues/20) | Jira Cloud new-work adapter/setup; optional Plane | Common connection contract from #19; actual required fields/transitions; no Jira migration |
-| [#14](https://github.com/Sean-Koval/ai-dlc/issues/14) | Portable setup, substitution and fresh-session handoff qualification | #10/#12 and applicable onboarding; distinguish ordinary clone, clean-machine, container and actual client evidence |
+| [#20](https://github.com/Sean-Koval/ai-dlc/issues/20) | Jira Cloud new-work adapter/setup; optional Plane | Cancelled (CLOSED / NOT_PLANNED); Jira/Plane adapters shipped; actual selected deployment qualification remains unverified |
+| [#14](https://github.com/Sean-Koval/ai-dlc/issues/14) | Portable setup, substitution and fresh-session handoff qualification | Cancelled (CLOSED / NOT_PLANNED); Some bootstrap/continuity evidence exists; full clean-machine and client qualification remains unverified |
 | [#13](https://github.com/Sean-Koval/ai-dlc/issues/13) | Optional UI/UX generation/evaluation guidance | Completed through gated finish at merged189913b with five receipts; UI remains optional |
-| [#21](https://github.com/Sean-Koval/ai-dlc/issues/21) | Remaining provider substitution/migration qualification | Existing GitHub switch/mappings are delivered; reviewed creation/recovery and omission/capability previews are implemented in the current candidate; actual Plane substitution remains unqualified |
-| [#15](https://github.com/Sean-Koval/ai-dlc/issues/15) | Product-guidance calibration | #11/#12; original cases, fixed experiment protocol, real human ratings and declared budget |
-| [#16](https://github.com/Sean-Koval/ai-dlc/issues/16) | Design-guidance calibration | #13; original local inputs and protocol prepared in the current candidate; matched model runs and human participation remain pending |
-| [#17](https://github.com/Sean-Koval/ai-dlc/issues/17) | Retained v4 release obligations | Actual clean/container/cloud evidence, enforced-egress provider conformance, declared evaluations and authorized release publication |
-| [#22](https://github.com/Sean-Koval/ai-dlc/issues/22) | Selective Confluence publication | Deferred pending custom server; no vault/site mirroring |
+| [#21](https://github.com/Sean-Koval/ai-dlc/issues/21) | Remaining provider substitution/migration qualification | Cancelled (CLOSED / NOT_PLANNED); GitHub mappings shipped; actual Plane substitution remains unqualified |
+| [#15](https://github.com/Sean-Koval/ai-dlc/issues/15) | Product-guidance calibration | Cancelled (CLOSED / NOT_PLANNED); Prepared cases/protocol are not human evaluation results |
+| [#16](https://github.com/Sean-Koval/ai-dlc/issues/16) | Design-guidance calibration | Cancelled (CLOSED / NOT_PLANNED); Prepared stimuli/protocol are not matched model runs or human ratings |
+| [#17](https://github.com/Sean-Koval/ai-dlc/issues/17) | Retained v4 release obligations | Cancelled (CLOSED / NOT_PLANNED); Full platform/provider/evaluation evidence and release publication remain outstanding |
+| [#22](https://github.com/Sean-Koval/ai-dlc/issues/22) | Selective Confluence publication | Cancelled (CLOSED / NOT_PLANNED); Selective Confluence publication remains unimplemented pending custom server review |
 
-The [current execution plan](superpowers/plans/2026-09-07-work-computer-readiness.md)
-coordinates these streams. Issue-specific formal specs remain the behavior
+The [historical execution plan](archive/planning/2026-09-07-work-computer-readiness.md)
+records the earlier work-computer sequence; it is not an active backlog. Issue-specific formal specs remain the behavior
 authority. Older implementation plans may supply compatible detail; their obsolete
 Linear priority, provider choice, or access-pending claims do not override this
-sequence or current GitHub issues. The September 5 roadmap remains in Git history.
+status record or current GitHub issues. The September 5 roadmap remains in Git history.
 
 ## Completion and qualification
 
 Finalize required behavior specifications before review and integration. Use
 `ai-dlc work finish` only after its specification, PR and exact merged-CI gates
 pass. A Done board option, local check or successful direct adapter call is not
-work completion. Parent issues remain open for genuinely undelivered scope.
+work completion. Cancelled issues do not prove delivery of their undelivered scope.
 
-Prepare missing qualification runners, original cases and runbooks while external
-inputs are pending; do not invent machine walkthroughs, human preference, account
+For separately approved qualification work, prepare runners, original cases and
+runbooks while external inputs are pending; do not invent machine walkthroughs, human preference, account
 permissions or release evidence. The v4 experiment declaration in
 `agents/evaluation.toml` has its own model, budget and human-review requirement;
 #15/#16 do not silently consume or redefine it.
 
 See [release evidence](release-verification.md),
 [GitHub qualification](verification/github-ticket-workflows.md),
-[backlog adoption and provenance](planning/github-backlog-migration.md), and
+[backlog adoption and provenance](archive/planning/github-backlog-migration.md), and
 [current executor handoff](handoffs/framework-delivery.md).

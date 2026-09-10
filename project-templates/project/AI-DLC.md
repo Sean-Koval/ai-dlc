@@ -16,3 +16,9 @@ machine enrollment mutation remains CLI-only.
 Select scm.repository and provider account/environment references before external operations. Every preset checks generated agent files. New-project initialization also creates a minimal language app and requires its syntax/compiler check; first setup creates its lockfile and later setup is locked. Adoption leaves existing application manifests/source untouched and requires existing language lockfiles. Add acceptance tests and further required check IDs as behavior develops.
 
 This development template needs the AI-DLC release bootstrap artifacts before CI can run. The template includes reviewed scripts/bootstrap.sh and bootstrap prerequisite pins; supply bootstrap/release.sh and the corresponding locked artifact manifest from a published AI-DLC release. Verify the release integrity; do not download an unpinned latest script. No public release location is assumed.
+
+## Documentation upkeep
+
+Read [documentation guidance](docs/documentation-guide.md). Search the project map, catalog and canonical specifications before creating a document. Update existing authoritative docs, record owners and sources, and review affected docs with code changes. Keep private notes separate from shared drafts.
+
+For documentation changes, use the [documentation ownership and review workflow](docs/documentation-guide.md). Review affected sources and canonical documents before adding another explanation; record an evidence-bound disposition when the project enables documentation checks.

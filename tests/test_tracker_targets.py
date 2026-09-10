@@ -8,14 +8,14 @@ import json
 import pytest
 from test_tracker_migration import checkout, files  # noqa: F401 -- shared real project fixture
 
-from ai_dlc.tracker_migration import apply_tracker_migration
+from ai_dlc.work.tracker_migration import apply_tracker_migration
 
 
 def targets():
-    assert importlib.util.find_spec("ai_dlc.tracker_targets"), (
+    assert importlib.util.find_spec("ai_dlc.setup.tracker_targets"), (
         "Reviewed target reconciliation service is missing"
     )
-    return importlib.import_module("ai_dlc.tracker_targets")
+    return importlib.import_module("ai_dlc.setup.tracker_targets")
 
 
 class TargetAdapter:
@@ -312,7 +312,7 @@ def _competing_reconciler(root, env, plan, start, output):
 
     from ai_dlc.config import resolve_runtime
     from ai_dlc.providers import Registry
-    from ai_dlc.tracker_targets import reconcile_tracker_targets
+    from ai_dlc.setup.tracker_targets import reconcile_tracker_targets
 
     class Transport:
         def invoke(self, operation, payload):
@@ -424,7 +424,7 @@ def test_existing_and_created_targets_must_all_verify_before_binding(creation):
 
 
 def test_later_local_transaction_failure_keeps_created_target(creation, monkeypatch):
-    import ai_dlc.tracker_migration as migration
+    import ai_dlc.work.tracker_migration as migration
 
     root, env, registry, adapter = creation
     planned = preview(creation)

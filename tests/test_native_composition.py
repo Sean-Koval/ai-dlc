@@ -63,7 +63,7 @@ def bindings_file(root, rows):
 
 
 def test_exact_shared_connection_deduplicates_without_changing_role_guidance(project):
-    from ai_dlc.native_composition import plan_native_connections
+    from ai_dlc.harness.native_composition import plan_native_connections
 
     root, environ = project
     rows = [binding(), binding("knowledge", "private-notes")]
@@ -98,7 +98,7 @@ def test_exact_shared_connection_deduplicates_without_changing_role_guidance(pro
     ],
 )
 def test_conflicting_shared_alias_refuses_before_writes(project, change):
-    from ai_dlc.native_composition import plan_native_connections
+    from ai_dlc.harness.native_composition import plan_native_connections
 
     root, environ = project
     second = binding("knowledge", "private-notes", **change)
@@ -125,7 +125,7 @@ def test_conflicting_shared_alias_refuses_before_writes(project, change):
     ],
 )
 def test_invalid_binding_refuses_without_rewriting_configuration(project, change):
-    from ai_dlc.native_composition import plan_native_connections
+    from ai_dlc.harness.native_composition import plan_native_connections
 
     root, environ = project
     source = bindings_file(root, [binding(**change)])
@@ -136,7 +136,7 @@ def test_invalid_binding_refuses_without_rewriting_configuration(project, change
 
 
 def test_two_projects_keep_distinct_account_expectations_at_one_endpoint(tmp_path):
-    from ai_dlc.native_composition import plan_native_connections
+    from ai_dlc.harness.native_composition import plan_native_connections
 
     plans = []
     for account in ["personal", "work"]:
@@ -175,7 +175,7 @@ def test_two_projects_keep_distinct_account_expectations_at_one_endpoint(tmp_pat
     "representation", ["empty-inline", "nonempty-inline", "multiline-inline", "array-tables"]
 )
 def test_saved_cli_apply_preserves_manual_source_and_defers_render(project, representation):
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
 
     root, environ = project
     manual = {"id": "authored", "command": "authored-command", "args": []}
@@ -242,7 +242,7 @@ def test_saved_cli_apply_preserves_manual_source_and_defers_render(project, repr
 
 @pytest.mark.parametrize("drift", ["source", "input", "role", "account", "plan"])
 def test_stale_or_tampered_saved_plan_refuses_config_apply(project, drift):
-    from ai_dlc.native_composition import apply_native_connections, plan_native_connections
+    from ai_dlc.harness.native_composition import apply_native_connections, plan_native_connections
 
     root, environ = project
     source = bindings_file(root, [binding()])
@@ -272,7 +272,7 @@ def test_stale_or_tampered_saved_plan_refuses_config_apply(project, drift):
 
 
 def test_existing_manual_alias_with_unknown_account_is_not_assumed_compatible(project):
-    from ai_dlc.native_composition import plan_native_connections
+    from ai_dlc.harness.native_composition import plan_native_connections
 
     root, environ = project
     path = root / "ai-dlc.toml"
@@ -289,8 +289,8 @@ def test_existing_manual_alias_with_unknown_account_is_not_assumed_compatible(pr
 def test_personal_servers_are_never_copied_into_project(project):
     from test_config import _write_enrollment
 
-    from ai_dlc.enrollment import EnrollmentPaths
-    from ai_dlc.native_composition import plan_native_connections
+    from ai_dlc.environment.enrollment import EnrollmentPaths
+    from ai_dlc.harness.native_composition import plan_native_connections
 
     root, environ = project
     config = tomllib.loads((root / "ai-dlc.toml").read_text())
@@ -308,7 +308,7 @@ def test_personal_servers_are_never_copied_into_project(project):
 
 @pytest.mark.parametrize("target", ["input", "plan"])
 def test_symlink_input_or_saved_plan_refuses_without_writes(project, target):
-    from ai_dlc.native_composition import apply_native_connections, plan_native_connections
+    from ai_dlc.harness.native_composition import apply_native_connections, plan_native_connections
 
     root, environ = project
     source = bindings_file(root, [binding()])
@@ -327,8 +327,8 @@ def test_symlink_input_or_saved_plan_refuses_without_writes(project, target):
 def test_machine_account_change_invalidates_saved_native_plan(project):
     from test_config import _write_enrollment
 
-    from ai_dlc.enrollment import EnrollmentPaths
-    from ai_dlc.native_composition import apply_native_connections, plan_native_connections
+    from ai_dlc.environment.enrollment import EnrollmentPaths
+    from ai_dlc.harness.native_composition import apply_native_connections, plan_native_connections
 
     root, environ = project
     paths = EnrollmentPaths.from_environment(environ=environ)
@@ -350,7 +350,7 @@ def test_machine_account_change_invalidates_saved_native_plan(project):
 
 
 def test_binding_change_during_staging_refuses_destination_write(project, monkeypatch):
-    from ai_dlc import native_composition
+    from ai_dlc.harness import native_composition
 
     root, environ = project
     source = bindings_file(root, [binding()])
@@ -375,8 +375,8 @@ def test_binding_change_during_staging_refuses_destination_write(project, monkey
 
 
 def test_config_only_apply_does_not_override_authored_native_file(project):
-    from ai_dlc.agents import render_agents
-    from ai_dlc.native_composition import apply_native_connections, plan_native_connections
+    from ai_dlc.harness.agents import render_agents
+    from ai_dlc.harness.native_composition import apply_native_connections, plan_native_connections
 
     root, environ = project
     authored = b'{"mcpServers":{"shared":{"command":"authored-owner"}}}\n'

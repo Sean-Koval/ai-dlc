@@ -8,7 +8,7 @@ acceptance = [
     "Current documentation presents portable setup and replaceable tools/workflows as the core, with UI/UX optional.",
     "Ten child work items have explicit scope, dependency order, interfaces, file ownership, acceptance, verification, exclusions, and handoff guidance.",
     "Seven behavior changes are represented by independently finishable OpenSpec changes; three verification items retain honest evidence boundaries.",
-    "Existing SAN-6/SAN-7 tickets are revised in place, new tickets are deduplicated, and native dependency links match docs/planning/delivery-index.json.",
+    "Existing SAN-6/SAN-7 tickets are revised in place, new tickets are deduplicated, and native dependency links match docs/archive/planning/delivery-index.json.",
     "OpenSpec validation, documentation/reference checks, work-record validation, and required project checks pass.",
     "Planning PR and evidence are linked without marking planned implementation or missing live evidence complete.",
 ]
@@ -23,7 +23,7 @@ deploy = "none"
 
 [artifacts]
 branch = "codex/design-pm-roadmap"
-plan = "docs/superpowers/plans/2026-09-05-framework-delivery.md"
+plan = "docs/archive/planning/2026-09-05-framework-delivery.md"
 roadmap = "docs/roadmap.md"
 tracker = "402c879f-ddd3-4693-a37b-6a145489a506"
 pr = "https://github.com/Sean-Koval/ai-dlc/pull/5"

@@ -242,7 +242,7 @@ class Registry:
 
             provider = GitHubSCM(self.root, self.config, environ=self.environ)
         elif kind == "obsidian":
-            from ai_dlc.knowledge import Knowledge
+            from ai_dlc.documentation.knowledge import Knowledge
 
             vault = self.config.get("paths", {}).get("vault")
             if not vault:

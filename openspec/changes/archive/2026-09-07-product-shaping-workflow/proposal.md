@@ -35,4 +35,4 @@ Dependencies: none.
 Local guidance/assets and acceptance exercises are delivered; integration review,
 archival and configured finish evidence remain pending. See
 [verification](../../../../docs/verification/product-shaping-workflow.md).
-[Execution plan](../../../../docs/superpowers/plans/2026-09-05-product-shaping-workflow.md).
+[Execution plan](2026-09-05-product-shaping-workflow.md).

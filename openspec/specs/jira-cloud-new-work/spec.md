@@ -1,7 +1,7 @@
 # jira-cloud-new-work Specification
 
 ## Purpose
-TBD - created by archiving change jira-cloud-new-work. Update Purpose after archive.
+Provide scoped Jira Cloud onboarding and correlated issue creation, reviewed fields, faithful transitions and links while enforcing selected account identity and bounded qualification claims.
 ## Requirements
 ### Requirement: JC-01 Explicit scoped Cloud identity
 Jira requests SHALL use a selected Cloud UUID/site/account/project/standard issue type and explicit oauth_bearer or personal_scoped_token_basic environment credentials. Requests SHALL refuse redirects, foreign references, mismatched Cloud/account identity and unsupported editions without credential-bearing diagnostics.

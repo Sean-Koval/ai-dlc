@@ -9,8 +9,8 @@ import pytest
 from typer.testing import CliRunner
 
 from ai_dlc.cli import app
-from ai_dlc.github_onboarding import connect_github_provider
 from ai_dlc.providers.github_issues import GitHubIssuesProvider
+from ai_dlc.setup.github_onboarding import connect_github_provider
 
 
 @pytest.fixture

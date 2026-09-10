@@ -4,7 +4,7 @@ import pytest
 
 
 def test_dependency_graph_reports_cycles_missing_ids_and_stable_errors():
-    from ai_dlc.traceability import validate_work_graph
+    from ai_dlc.work.traceability import validate_work_graph
 
     records = {
         "b": {"id": "b", "depends_on": ["a", "missing"]},
@@ -31,13 +31,13 @@ def test_dependency_graph_reports_cycles_missing_ids_and_stable_errors():
     ],
 )
 def test_dependency_graph_refuses_invalid_records(records, expected):
-    from ai_dlc.traceability import validate_work_graph
+    from ai_dlc.work.traceability import validate_work_graph
 
     assert any(expected in error for error in validate_work_graph(records))
 
 
 def test_dependency_graph_accepts_shared_dependencies_legacy_defaults_and_deep_chains():
-    from ai_dlc.traceability import validate_work_graph
+    from ai_dlc.work.traceability import validate_work_graph
 
     records = {"base": {"id": "base"}}
     for index in range(1500):
@@ -47,7 +47,7 @@ def test_dependency_graph_accepts_shared_dependencies_legacy_defaults_and_deep_c
 
 
 def test_ticket_body_renders_traceability_without_inventing_scope_or_changing_inputs():
-    from ai_dlc.traceability import render_ticket_body
+    from ai_dlc.work.traceability import render_ticket_body
 
     work = {
         "id": "localized-export",
@@ -79,7 +79,7 @@ def test_ticket_body_renders_traceability_without_inventing_scope_or_changing_in
 
 
 def test_legacy_ticket_body_has_no_invented_dependencies_or_requirements():
-    from ai_dlc.traceability import render_ticket_body
+    from ai_dlc.work.traceability import render_ticket_body
 
     body = render_ticket_body(
         {
@@ -114,6 +114,6 @@ def test_legacy_ticket_body_has_no_invented_dependencies_or_requirements():
 def test_artifact_ownership_distinguishes_native_spec_identity_from_local_documents(
     kind, reference, exists, local
 ):
-    from ai_dlc.traceability import artifact_is_local
+    from ai_dlc.work.traceability import artifact_is_local
 
     assert artifact_is_local(kind, reference, existing_path=exists) is local

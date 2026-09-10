@@ -6,3 +6,15 @@ context: |
   the merged revision. Preserve existing project content, credentials and vault notes.
   Durable documentation lives in the repository; personal knowledge lives in the
   selected vault. Never claim a target is verified based on mocks alone.
+
+rules:
+  proposal:
+    - Identify affected canonical documents and audience; link existing authority before proposing new files.
+  design:
+    - Separate observed implementation from intended requirements and record code/spec disagreements explicitly.
+    - Explain documentation impact and canonical ownership without copying the specification into another home.
+  specs:
+    - Require observable behavior and concrete scenarios; do not replace intended behavior merely to match a bug.
+  tasks:
+    - Include affected-document review and content-bound dispositions when the project documentation gate is enabled.
+    - Keep this task list authoritative; tickets link deliverable scope rather than repeat every checkbox.

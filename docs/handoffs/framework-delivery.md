@@ -1,4 +1,18 @@
-# Framework delivery: executor handoff
+# Framework delivery: current status and historical executor handoff
+
+Status reconciled September 10, 2026. Use the [roadmap](../roadmap.md) and
+[GitHub issues](https://github.com/Sean-Koval/ai-dlc/issues) for present delivery
+status. #10/#11/#12/#13/#18/#19 are Completed; #14/#15/#16/#17/#20/#21/#22
+are cancelled (CLOSED / NOT_PLANNED), not delivered. Their qualification gaps
+remain unverified, but they are no longer open implementation instructions.
+PR28 merged at `74b90c67f9f0b29a0a4bae688ea6b670608aea18`; its head `6c0a732`
+had five passing CI checks. See [PR28 evidence](../verification/project-knowledge-repair.md).
+No gated finish or exact merge-revision CI is inferred from that head result.
+
+Everything below is a historical execution record. Its pending/open statements
+apply to the recorded checkpoint, not current priority. Preserve it for rationale.
+
+## Historical PR23–26 completion evidence
 
 Current completion: GitHub #18 finished through AI-DLC at merged `631d10a`.
 PR [#25](https://github.com/Sean-Koval/ai-dlc/pull/25) merged at
@@ -19,7 +33,7 @@ completed #12, #13 and #19 with native Completed and Project Done. Actual
 native-client, tenant, human-calibration and release obligations remain open.
 Historical source checks never substitute for those observations.
 
-## Remaining-issue implementation candidate
+## Historical PR27 implementation candidate
 
 [PR27](https://github.com/Sean-Koval/ai-dlc/pull/27), on
 `codex/remaining-qualification`, adds explicit saved target
@@ -30,8 +44,8 @@ Native/container continuity observations are documented in
 [setup continuity](../verification/setup-continuity.md). These are actual existing
 environment checks, not factory-clean or authenticated provider qualification.
 
-Parent #21 remains open for a specifically selected real Plane deployment and
-substitution/interruption rehearsal. Parent #16 remains open for approved matched
+At this checkpoint, parent #21 remained open for a specifically selected real Plane deployment and
+substitution/interruption rehearsal. At this checkpoint, parent #16 remained open for approved matched
 model runs and actual human ratings. #14/#17 retain full platform/client/provider
 and release requirements. #20 needs actual selected Jira/Plane deployment evidence;
 #15 needs human evaluations and an approved experiment; #22 awaits the custom
@@ -41,10 +55,10 @@ with1,899 tests passing. Actual candidate wheel installation/scaffolding is reco
 in [release preparation](../verification/release-candidate-preparation.md).
 Final PR and merged-revision GitHub CI remain separate from these source checks.
 
-## Current authority — September 8
+## Historical authority checkpoint — September 8
 
 Start with [current roadmap](../roadmap.md),
-[current execution plan](../superpowers/plans/2026-09-07-work-computer-readiness.md)
+[current execution plan](../archive/planning/2026-09-07-work-computer-readiness.md)
 and [GitHub Project](https://github.com/users/Sean-Koval/projects/2). GitHub owns
 priority/status. Project authorization, linking and eight local mappings are
 complete in PR #23. The current goal is work-computer adoption with Claude and
@@ -65,7 +79,7 @@ dependency-ordered [roadmap](../roadmap.md). UI/UX is one optional part.
 
 - Planning branch: `codex/design-pm-roadmap`.
 - Planning review: [PR #5](https://github.com/Sean-Koval/ai-dlc/pull/5), draft at
-  handoff; [validation evidence](../planning/framework-delivery-review.md).
+  handoff; [validation evidence](../archive/planning/framework-delivery-review.md).
 - Implementation baseline: `241e715`, portable profile enrollment merged into main.
 - This planning delivery adds documentation, specifications, work records, and
   sandbox ticket bindings. It does not implement the planned commands or skills.

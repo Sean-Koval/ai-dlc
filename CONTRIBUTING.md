@@ -1,20 +1,23 @@
-# Contributing to the AI-DLC Repository
+# Contributing
 
-We're excited that you're interested in contributing! This document provides guidelines for contributing to the project.
+Read [AGENTS.md](AGENTS.md) for repository boundaries and [the documentation
+index](docs/index.md) for authoritative sources. AI-DLC currently ships Python;
+the historical Rust implementation is retained for provenance and compatibility.
 
-## How to Contribute
+1. Start from the current roadmap and the linked GitHub issue. Read the relevant
+   OpenSpec requirements before changing behavior. Keep formal change artifacts
+   together in OpenSpec.
+2. Prepare the checkout with `sh scripts/bootstrap.sh --source`. Use an isolated
+   branch and add regression tests for observable changes.
+3. Follow the [source map](docs/architecture.md#source-layout). Put durable docs
+   in their existing home, update the catalog and record documentation impact.
+4. Run `ai-dlc project check --required` and strict OpenSpec validation. Review
+   generated changes and preserve authored content.
+5. Describe the behavior, verification and remaining limits in the pull request.
+   After merge and exact-revision CI, complete tracked work with `ai-dlc work finish`.
 
-There are several ways you can contribute:
-
-*   **Adding New Templates:** If you have a prompt, agent definition, or command for a tool like Claude, Cursor, or Gemini, we'd love to see it. Place it in the appropriate directory under `/templates`.
-*   **Improving Existing Templates:** If you have an improvement for an existing template, please open a pull request with your changes.
-*   **Enhancing the `ai-dlc` Tool:** If you have a bug fix or a feature idea for the command-line tool, please open an issue to discuss it first.
-*   **Writing Documentation:** Our docs can always be improved. If you find something unclear or have an idea for a new guide, please let us know.
-
-## Pull Request Process
-
-1.  Fork the repository.
-2.  Create a new branch for your feature or fix.
-3.  Make your changes.
-4.  Please add or update tests for any code changes.
-5.  Open a pull request with a clear description of your changes.
+Portable skills live in `agents/`, current project scaffolding in
+`project-templates/`, and supported legacy scaffold assets in `templates/`.
+Generated client copies and embedded Rust snapshots are not independent sources
+of truth. Repository layout checks apply to AI-DLC itself; downstream projects
+retain their chosen structure.

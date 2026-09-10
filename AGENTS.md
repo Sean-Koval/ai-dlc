@@ -1,14 +1,40 @@
-# Repository guidelines
+# Repository guidance
 
-The current implementation is Python in `src/ai_dlc/`. CLI and MCP entry points share application services. Keep provider details behind contracts, credentials outside tracked configuration, and machine settings outside shared project files.
+AI-DLC is a Python scaffolding and harness-configuration framework. It prepares
+tools and guides agents; it is not a hosted autonomous development orchestrator.
+CLI and MCP entry points share application services. Provider details belong behind
+contracts; credentials and machine paths never belong in shared configuration.
 
-Prepare the checkout with `sh scripts/bootstrap.sh --source`. Run the required manifest checks using `ai-dlc project check --required`. Tests cover configuration boundaries, receipts, recovery, provider integrity, managed files, and legacy scaffold fixtures. Preserve historical Rust source; it is no longer the release packaging path.
+Prepare this checkout with `sh scripts/bootstrap.sh --source`; run
+`ai-dlc project check --required`. Use the Python implementation in `src/ai_dlc/`.
+The [architecture](docs/architecture.md) maps its packages and entry points.
+`crates/` is historical Rust; `templates/` still supplies the supported legacy
+scaffold command. Preserve compatibility tests and packaged assets.
 
-Store durable architecture, decisions and runbooks in `docs/`; formal change artifacts belong in `openspec/`. Update tests for observable behavior. Never claim live service or platform verification from mocked fixtures. See `docs/release-verification.md` for outstanding release gates.
+## Placement and upkeep
 
-Use conventional commit prefixes. Describe behavior and validation in review descriptions; do not publish packages or change remote service state implicitly.
+- Read [docs/index.md](docs/index.md) before creating documentation. Update the
+  canonical explanation instead of adding another summary or completion report.
+- Keep proposal, design, requirements and tasks together in `openspec/changes/`.
+  Keep durable explanations in `docs/design/`, procedures in `docs/runbooks/` or
+  `docs/workflows/`, and actual qualification evidence in `docs/verification/`.
+- `docs/archive/` preserves explicitly historical material. Its old commands and
+  tool instructions are not current guidance. Never manufacture review freshness.
+- Keep disposable execution logs in ignored `.ai-dlc/local/`; do not create root
+  planning files, `.superpowers/`, or tool-specific planning hierarchies.
+- Enroll durable documents in `docs/catalog.toml`; update code mappings and links
+  when moving sources. Record a documentation-impact disposition for changes.
+- Put new Python modules in the responsible subpackage; keep CLI/MCP thin and
+  provider-specific logic inside adapters. Do not infer dead code from filenames.
+- Project templates and portable skills serve downstream projects. Keep their
+  setup guidance generic; never embed this repository's personal account choices.
 
-<!-- ai-dlc:begin 452560be6438f127972a903b85ab3783d7c91ffd161c3ca2124987c8869dc685 -->
+Use conventional commit prefixes. Test observable changes and preserve ownership,
+recovery and configuration boundaries. Mocked tests do not prove live platform
+qualification; consult [release gates](docs/release-verification.md). Do not
+publish packages or mutate remote services implicitly.
+
+<!-- ai-dlc:begin 4b1c24b0c06397a3c8709df10d421a0630eb2469d29a6a43aaa23dfb1953e3d1 -->
 # Shared project guidance
 
 Read ai-dlc.toml and the active .ai-dlc/work record before work.
@@ -18,11 +44,13 @@ Store architecture, design, decisions and runbooks in docs/. Keep personal notes
 
 ## Verification
 
+- layout: `uv run --locked --no-sync python scripts/check_layout.py`
 - generated: `ai-dlc agents render --check && uv run --locked --no-sync python scripts/check_generated.py`
 - format: `uv run --locked --no-sync ruff format --check src tests scripts`
 - lint: `uv run --locked --no-sync ruff check src tests scripts`
 - types: `uv run --locked --no-sync pyright --pythonpath .venv/bin/python`
 - test: `uv run --locked --no-sync pytest -q`
+- documentation: `ai-dlc project docs-gate`
 
 Run `ai-dlc project check --required` in the prepared project environment.
 

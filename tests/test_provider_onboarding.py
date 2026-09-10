@@ -30,7 +30,7 @@ def _complete_page(nodes):
 
 def test_discovery_returns_all_teams_and_states_without_guessing_duplicate_names():
     """Dropping duplicate labels or one of two started states would hide valid ID choices."""
-    from ai_dlc.provider_onboarding import discover_linear
+    from ai_dlc.setup.provider_onboarding import discover_linear
 
     requests = []
 
@@ -105,7 +105,7 @@ def test_discovery_returns_all_teams_and_states_without_guessing_duplicate_names
 
 def test_discovery_consumes_independent_team_and_state_pages():
     """Stopping at either connection's first page would return an incomplete choice set."""
-    from ai_dlc.provider_onboarding import discover_linear
+    from ai_dlc.setup.provider_onboarding import discover_linear
 
     seen = []
 
@@ -191,7 +191,7 @@ def test_discovery_consumes_independent_team_and_state_pages():
 )
 def test_discovery_refuses_connections_that_claim_an_unpageable_remainder(connection, payload):
     """Treating a missing next cursor as completion would silently truncate discovery."""
-    from ai_dlc.provider_onboarding import discover_linear
+    from ai_dlc.setup.provider_onboarding import discover_linear
 
     def handle(request):
         body = json.loads(request.content)
@@ -215,7 +215,7 @@ def test_discovery_refuses_connections_that_claim_an_unpageable_remainder(connec
 
 def test_discovery_refuses_partial_graphql_data_and_redacts_echoed_credential():
     """GraphQL errors must not yield partial discovery or expose the configured secret."""
-    from ai_dlc.provider_onboarding import discover_linear
+    from ai_dlc.setup.provider_onboarding import discover_linear
 
     secret = "linear-secret-sentinel"
 
@@ -235,7 +235,7 @@ def test_discovery_refuses_partial_graphql_data_and_redacts_echoed_credential():
 
 def test_discovery_refuses_non_object_json_without_exposing_credential():
     """A valid JSON value with the wrong shape must become a safe discovery failure."""
-    from ai_dlc.provider_onboarding import discover_linear
+    from ai_dlc.setup.provider_onboarding import discover_linear
 
     secret = "linear-secret-sentinel"
 
@@ -249,7 +249,7 @@ def test_discovery_refuses_non_object_json_without_exposing_credential():
 
 def test_discovery_refuses_a_repeated_non_empty_pagination_cursor():
     """A server repeating its cursor must fail instead of looping forever."""
-    from ai_dlc.provider_onboarding import discover_linear
+    from ai_dlc.setup.provider_onboarding import discover_linear
 
     calls = 0
 
@@ -277,7 +277,7 @@ def test_discovery_refuses_a_repeated_non_empty_pagination_cursor():
 
 def test_discovery_refuses_workflow_states_returned_for_another_team():
     """Associating states with the wrong team would permit an invalid later selection."""
-    from ai_dlc.provider_onboarding import discover_linear
+    from ai_dlc.setup.provider_onboarding import discover_linear
 
     def handle(request):
         body = json.loads(request.content)
@@ -307,7 +307,7 @@ def test_discovery_refuses_workflow_states_returned_for_another_team():
 @pytest.mark.parametrize("status_code", [401, 403])
 def test_discovery_reports_authorization_failure_without_exposing_credential(status_code):
     """Authorization responses must become actionable, credential-safe failures."""
-    from ai_dlc.provider_onboarding import discover_linear
+    from ai_dlc.setup.provider_onboarding import discover_linear
 
     secret = "linear-secret-sentinel"
 
@@ -322,7 +322,7 @@ def test_discovery_reports_authorization_failure_without_exposing_credential(sta
 
 def test_discovery_requires_configured_credential_without_contacting_linear():
     """Missing local authorization must fail before any remote request is attempted."""
-    from ai_dlc.provider_onboarding import discover_linear
+    from ai_dlc.setup.provider_onboarding import discover_linear
 
     def handle(_request):
         raise AssertionError("request should not be attempted")
@@ -386,7 +386,7 @@ def _linear_config(secret="credential-sentinel"):
 
 def test_plan_validates_ids_and_returns_only_the_reviewed_non_secret_mapping():
     """Copying provider settings into a plan could persist a credential value."""
-    from ai_dlc.provider_onboarding import plan_linear_connection
+    from ai_dlc.setup.provider_onboarding import plan_linear_connection
 
     config = _linear_config()
     result = plan_linear_connection(config, _selection_discovery(), _selection())
@@ -419,7 +419,7 @@ def test_plan_refuses_foreign_or_wrong_type_selections_without_writing(
     tmp_path, overrides, message
 ):
     """Accepting an ID by existence alone could bind a team to another team's state."""
-    from ai_dlc.provider_onboarding import plan_linear_connection
+    from ai_dlc.setup.provider_onboarding import plan_linear_connection
 
     path = tmp_path / "ai-dlc.toml"
     path.write_text('schema = 4\n# retained\n[providers.linear]\ntoken_env = "TOKEN"\n')
@@ -435,7 +435,7 @@ def test_plan_refuses_foreign_or_wrong_type_selections_without_writing(
 
 def test_apply_updates_only_selected_mappings_and_preserves_comments_and_token_env(tmp_path):
     """Reserializing the config would erase comments and can disturb unrelated values."""
-    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+    from ai_dlc.setup.provider_onboarding import apply_linear_connection, plan_linear_connection
 
     path = tmp_path / "ai-dlc.toml"
     path.write_text(
@@ -479,7 +479,7 @@ def test_apply_updates_only_selected_mappings_and_preserves_comments_and_token_e
 
 def test_apply_adds_missing_linear_mapping_tables_without_reserializing_existing_content(tmp_path):
     """A project without mapping tables still needs a focused additive patch."""
-    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+    from ai_dlc.setup.provider_onboarding import apply_linear_connection, plan_linear_connection
 
     path = tmp_path / "ai-dlc.toml"
     path.write_text('schema = 4\n# keep this\n[project]\nname = "Example"\n')
@@ -500,7 +500,7 @@ def test_apply_adds_missing_linear_mapping_tables_without_reserializing_existing
 
 def test_apply_refuses_a_stale_digest_without_modifying_the_changed_file(tmp_path):
     """Applying after semantic config drift would overwrite a plan the user did not review."""
-    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+    from ai_dlc.setup.provider_onboarding import apply_linear_connection, plan_linear_connection
 
     path = tmp_path / "ai-dlc.toml"
     path.write_text('schema = 4\n[project]\nname = "Before"\n')
@@ -518,7 +518,7 @@ def test_apply_refuses_a_stale_digest_without_modifying_the_changed_file(tmp_pat
 
 def test_apply_preserves_comment_only_changes_made_after_preview(tmp_path):
     """Canonical digest approval must not discard newer comments from the current text."""
-    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+    from ai_dlc.setup.provider_onboarding import apply_linear_connection, plan_linear_connection
 
     path = tmp_path / "ai-dlc.toml"
     path.write_text('schema = 4\n[project]\nname = "Example"\n')
@@ -534,7 +534,7 @@ def test_apply_preserves_comment_only_changes_made_after_preview(tmp_path):
 
 def test_apply_rejects_a_tampered_patch_without_modifying_the_file(tmp_path):
     """Allowing patch fields beyond the selection could overwrite credentials or other settings."""
-    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+    from ai_dlc.setup.provider_onboarding import apply_linear_connection, plan_linear_connection
 
     path = tmp_path / "ai-dlc.toml"
     path.write_text('schema = 4\n[providers.linear]\ntoken_env = "TOKEN"\n')
@@ -553,7 +553,7 @@ def test_apply_rejects_a_tampered_patch_without_modifying_the_file(tmp_path):
 
 def test_apply_atomic_replace_failure_preserves_original_bytes(tmp_path, monkeypatch):
     """A failed final replacement must leave the approved source file recoverable."""
-    import ai_dlc.provider_onboarding as onboarding
+    import ai_dlc.setup.provider_onboarding as onboarding
 
     path = tmp_path / "ai-dlc.toml"
     path.write_text('schema = 4\n[project]\nname = "Example"\n')
@@ -575,7 +575,7 @@ def test_apply_atomic_replace_failure_preserves_original_bytes(tmp_path, monkeyp
 
 def test_apply_refuses_a_concurrent_comment_change_before_atomic_replace(tmp_path, monkeypatch):
     """A write racing apply must not erase newer authored comments with the same config digest."""
-    import ai_dlc.provider_onboarding as onboarding
+    import ai_dlc.setup.provider_onboarding as onboarding
 
     path = tmp_path / "ai-dlc.toml"
     path.write_text('schema = 4\n[project]\nname = "Example"\n')
@@ -599,7 +599,7 @@ def test_apply_refuses_a_concurrent_comment_change_before_atomic_replace(tmp_pat
 @pytest.mark.parametrize("delimiter", ['"""', "'''"])
 def test_apply_ignores_table_like_lines_inside_unrelated_multiline_strings(tmp_path, delimiter):
     """Physical lines inside TOML strings must never be mistaken for provider syntax."""
-    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+    from ai_dlc.setup.provider_onboarding import apply_linear_connection, plan_linear_connection
 
     path = tmp_path / "ai-dlc.toml"
     path.write_text(
@@ -628,7 +628,7 @@ def test_apply_ignores_table_like_lines_inside_unrelated_multiline_strings(tmp_p
 
 def test_apply_updates_real_tables_after_a_multiline_string_decoy(tmp_path):
     """A decoy header must not hide or redirect edits away from the real provider tables."""
-    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+    from ai_dlc.setup.provider_onboarding import apply_linear_connection, plan_linear_connection
 
     path = tmp_path / "ai-dlc.toml"
     path.write_text(
@@ -653,7 +653,7 @@ def test_apply_updates_real_tables_after_a_multiline_string_decoy(tmp_path):
 
 def test_apply_supports_quoted_provider_table_segments(tmp_path):
     """Quoted table path segments are equivalent TOML and can be preserved safely."""
-    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+    from ai_dlc.setup.provider_onboarding import apply_linear_connection, plan_linear_connection
 
     path = tmp_path / "ai-dlc.toml"
     path.write_text(
@@ -700,7 +700,7 @@ def test_apply_supports_quoted_provider_table_segments(tmp_path):
 )
 def test_apply_deliberately_refuses_valid_toml_representations_it_cannot_preserve(tmp_path, source):
     """Unsupported equivalent layouts need an actionable domain refusal, not parser leakage."""
-    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+    from ai_dlc.setup.provider_onboarding import apply_linear_connection, plan_linear_connection
 
     path = tmp_path / "ai-dlc.toml"
     path.write_text(source)
@@ -718,7 +718,7 @@ def test_apply_deliberately_refuses_valid_toml_representations_it_cannot_preserv
 
 def test_apply_semantic_verification_rejects_any_unrelated_rendered_change(tmp_path, monkeypatch):
     """Parseable output is unsafe unless its complete semantic delta is exactly the patch."""
-    import ai_dlc.provider_onboarding as onboarding
+    import ai_dlc.setup.provider_onboarding as onboarding
 
     path = tmp_path / "ai-dlc.toml"
     path.write_text('schema = 4\n[project]\nname = "Keep"\n')
@@ -746,7 +746,7 @@ def test_apply_ignores_assignment_decoys_inside_target_table_multiline_values(
     tmp_path, delimiter, target_table, real_assignment
 ):
     """Assignments embedded in provider notes must not receive or prevent the mapping update."""
-    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+    from ai_dlc.setup.provider_onboarding import apply_linear_connection, plan_linear_connection
 
     if target_table == "provider":
         provider_body = f'notes = {delimiter}\nteam_id = "decoy-team"\n{delimiter}\n' + (
@@ -794,7 +794,7 @@ def test_apply_ignores_assignment_decoys_inside_target_table_multiline_values(
 
 def test_apply_semantic_verification_is_type_sensitive(tmp_path, monkeypatch):
     """Python equality must not let an unrelated integer-to-boolean change pass as exact."""
-    import ai_dlc.provider_onboarding as onboarding
+    import ai_dlc.setup.provider_onboarding as onboarding
 
     path = tmp_path / "ai-dlc.toml"
     path.write_text("schema = 4\n[project]\nretries = 1\n")
@@ -817,7 +817,7 @@ def test_apply_semantic_verification_is_type_sensitive(tmp_path, monkeypatch):
 
 def test_apply_preserves_restrictive_source_mode(tmp_path):
     """Atomic replacement must not broaden access to project configuration metadata."""
-    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+    from ai_dlc.setup.provider_onboarding import apply_linear_connection, plan_linear_connection
 
     path = tmp_path / "ai-dlc.toml"
     path.write_text('schema = 4\n[providers.linear]\ntoken_env = "TOKEN"\n')
@@ -844,7 +844,7 @@ def test_apply_preserves_restrictive_source_mode(tmp_path):
 )
 def test_apply_inserts_missing_mappings_at_real_toml_boundaries(tmp_path, source):
     """EOF and array-table boundaries must not redirect an otherwise safe insertion."""
-    from ai_dlc.provider_onboarding import apply_linear_connection, plan_linear_connection
+    from ai_dlc.setup.provider_onboarding import apply_linear_connection, plan_linear_connection
 
     path = tmp_path / "ai-dlc.toml"
     path.write_text(source)
@@ -899,7 +899,7 @@ def _write_connect_project(root: Path, *, bound: bool = False) -> Path:
 
 
 def _stub_cli_discovery(monkeypatch, discovery=None):
-    import ai_dlc.provider_onboarding as onboarding
+    import ai_dlc.setup.provider_onboarding as onboarding
 
     calls = []
     result = _selection_discovery() if discovery is None else discovery
@@ -1008,7 +1008,7 @@ def test_provider_connect_refuses_non_linear_effective_kind_before_client_or_cre
     tmp_path, monkeypatch, field
 ):
     """A provider alias must never send another adapter's credential to Linear."""
-    import ai_dlc.provider_onboarding as onboarding
+    import ai_dlc.setup.provider_onboarding as onboarding
     from ai_dlc.cli import app
 
     root = tmp_path / "project"
@@ -1163,7 +1163,7 @@ def test_provider_connect_refuses_a_symlinked_local_confinement_anchor(
 
 def test_connection_plan_load_refuses_a_symlinked_local_anchor(tmp_path):
     """Apply must not read a shared file through a redirected local-state anchor."""
-    from ai_dlc.provider_onboarding import _load_connection_plan
+    from ai_dlc.setup.provider_onboarding import _load_connection_plan
 
     root = tmp_path / "project"
     root.mkdir()
@@ -1328,10 +1328,10 @@ def test_provider_connect_apply_refuses_work_that_becomes_bound_during_staging(
     tmp_path, monkeypatch, race
 ):
     """The final coordinated boundary must see bindings created after initial validation."""
-    import ai_dlc.provider_onboarding as onboarding
+    import ai_dlc.setup.provider_onboarding as onboarding
     from ai_dlc.cli import app
     from ai_dlc.config import load_project
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     root = tmp_path / "project"
     config_path = _write_connect_project(root)
@@ -1393,10 +1393,10 @@ def test_provider_connect_serializes_and_rejects_a_pending_stale_work_writer(tmp
     """A writer waiting on apply must not save a binding calculated from the old config."""
     import threading
 
-    import ai_dlc.provider_onboarding as onboarding
+    import ai_dlc.setup.provider_onboarding as onboarding
     from ai_dlc.cli import app
     from ai_dlc.config import load_project
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     root = tmp_path / "project"
     config_path = _write_connect_project(root)
@@ -1460,9 +1460,9 @@ def test_work_service_constructor_cannot_pair_old_runtime_with_new_source_versio
     tmp_path, monkeypatch
 ):
     """Apply during service construction must not bless stale resolved provider settings."""
-    from ai_dlc import workflow
     from ai_dlc.config import load_project
-    from ai_dlc.provider_onboarding import connect_linear_provider
+    from ai_dlc.setup.provider_onboarding import connect_linear_provider
+    from ai_dlc.work import workflow
 
     root = tmp_path / "project"
     config_path = _write_connect_project(root)
@@ -1516,7 +1516,7 @@ def test_work_service_constructor_cannot_pair_old_runtime_with_new_source_versio
 def test_work_service_direct_constructor_refuses_already_stale_project_settings(tmp_path):
     """A direct caller cannot present old provider settings as the current project snapshot."""
     from ai_dlc.config import load_project
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     root = tmp_path / "project"
     config_path = _write_connect_project(root)
@@ -1547,7 +1547,7 @@ def test_provider_connect_apply_refuses_remote_membership_drift_without_recomput
         state for state in discovery["teams"][0]["states"] if state["id"] != "doing-a"
     ]
     monkeypatch.setattr(
-        __import__("ai_dlc.provider_onboarding", fromlist=["discover_linear"]),
+        __import__("ai_dlc.setup.provider_onboarding", fromlist=["discover_linear"]),
         "discover_linear",
         lambda settings, *, environ, client: deepcopy(discovery),
     )
@@ -1690,7 +1690,7 @@ def test_bound_mapping_refusal_guides_atomic_explicit_connection_rebind(tmp_path
     """Recovery must migrate only listed bound Linear work in a mixed tracker history."""
     from ai_dlc.cli import app
     from ai_dlc.config import load_project
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     root = tmp_path / "project"
     config_path = _write_connect_project(root, bound=True)
@@ -1807,7 +1807,7 @@ def test_explicit_connection_rebind_failures_leave_every_project_file_unchanged(
     tmp_path, monkeypatch, failure
 ):
     """No validation or discovery failure may partially update config or work records."""
-    import ai_dlc.provider_onboarding as onboarding
+    import ai_dlc.setup.provider_onboarding as onboarding
     from ai_dlc.cli import app
 
     root = tmp_path / "project"
@@ -1875,7 +1875,7 @@ def test_provider_connect_redacts_remote_credential_sentinel_from_stable_cli_err
     tmp_path, monkeypatch
 ):
     """Provider failures must not echo an authorization value into terminal output."""
-    import ai_dlc.provider_onboarding as onboarding
+    import ai_dlc.setup.provider_onboarding as onboarding
     from ai_dlc.cli import app
 
     root = tmp_path / "project"

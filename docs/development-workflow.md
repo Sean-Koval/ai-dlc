@@ -42,8 +42,7 @@ flowchart TD
 
 AI-DLC does not host an autonomous orchestrator. The human and agent decide
 what work is useful. Skills provide judgment; the CLI validates, stores, links,
-reconciles, and gates the resulting work. MCP exposes only its reviewed work,
-doctor, and knowledge services.
+reconciles, and gates the resulting work. MCP exposes shared work, doctor, knowledge and documentation services.
 
 ## Stage contracts
 
@@ -75,134 +74,13 @@ It does not create a second workflow. The design-to-implementation handoff is co
 approved design, any required specification, and the reviewed work record let
 implementation proceed without inventing behavior.
 
-## Portable profile and machine enrollment
+## Environment preparation
 
-Keep a personal `ai-dlc-profile.toml` in a separate private Git repository and
-pin the revision enrolled on each machine. The profile owns portable modules,
-logical credential requirements, and agent preferences; the project repository
-owns shared policy and durable docs. Each machine independently owns its
-binding, including paths, account selection, and environment-variable names.
-Credential values belong only to a password manager, keychain, or process
-environment. Generated Codex and Claude client files remain owned by their
-client configuration, which AI-DLC updates through its ownership rules.
-
-Use `ai-dlc machine status`, `plan`, `apply`, `sync`, and `doctor` to inspect,
-preview, reconcile, update, and diagnose local enrollment. Local CLI and MCP
-execution are the current control plane; hosted or cloud execution is a later
-qualification target. Obsidian create/attach and provider discovery are
-next-cycle gaps, so knowledge remains provider-neutral and is attached only to
-an explicitly selected existing store.
-
-Use `ai-dlc project readiness --root PATH` to inspect the selected component
-requirements offline. Its JSON separates tool availability, provider configuration,
-credential presence, harness guidance, and provider health, with a next action for
-each gap. Exit 0 means all required offline checks are ready; missing, blocked, or
-unverified required checks return 1. Tools are located on the current environment's
-PATH without execution. Credentials are checked only in that environment; secret
-files are never loaded. Provider health stays informational and unverified, and
-`qualification` is always `not-assessed`.
-Missing custom Markdown instructions produce a component-specific guidance gap
-and a restoration action while independent checks continue. Manifest digest,
-schema, path, and symlink violations still block catalog inspection.
-
-`ai-dlc agents render --apply --root PATH` delivers the project-owned provider/tool
-index in `AGENTS.md`, which Claude Code receives through its managed `CLAUDE.md`
-import. Packaged instructions are owned copies in `.ai-dlc/providers/`; custom
-component instructions remain linked project files. Edited or authored copies
-are preserved through the existing conflict rules. A provider selected only in a
-personal profile can have a missing-delivery gap: declare the intended shared
-provider in `ai-dlc.toml` before rendering. Rendering does not promote private
-configuration automatically. Missing component metadata is reported explicitly;
-the index does not establish new provider or client support.
-Rendering refuses any managed removal that would leave selected instructions
-with a dangling link, including deselected skills in either client directory.
-Move those instructions to a project-owned path and update the manifest first.
-
-Setup plan/apply with `--root` adds selected project component requirements to
-machine provisioning. Global MCP settings continue to use the personal profile
-and machine configuration; project server lists remain scoped to the project.
-
-Root and machine doctor retain their enrollment and readiness decisions and add
-these offline diagnostics under `project_readiness`. Their existing explicit
-provider-health inspection remains separate, as do work finish and release gates.
-
-### Linear connection discovery and sandbox walkthrough
-
-`ai-dlc provider connect linear --root PATH` reads the organization, every team,
-and every workflow state visible to the project's configured `token_env`. With no
-selection flags it prints that complete discovery and writes nothing. It never
-chooses between duplicate team names or multiple `started` states.
-
-For an authorized sandbox read-only walkthrough:
-
-1. Confirm `PATH/ai-dlc.toml` selects the intended Linear credential environment
-   variable and inject that variable into the current process. Do not put its value
-   in the project, `.ai-dlc/local/`, or the command line.
-2. Confirm the credential is restricted to the intended sandbox organization and
-   that no apply or selection flags are present.
-3. Run `ai-dlc provider connect linear --root PATH` and review the returned
-   organization, team IDs, and all workflow-state IDs/types. This procedure makes
-   GraphQL reads only; it does not create keys, change accounts, create projects or
-   issues, or update the repository.
-4. Record live evidence only when the actual authorized sandbox read completed.
-   Fixture output proves behavior, not live access or qualification.
-
-To prepare a change, pass all four explicit selection flags:
-`--organization`, `--team`, `--in-progress`, and `--closed`. Add `--plan-file
-.ai-dlc/local/linear-plan.json` to save the reviewed non-secret JSON plan. Apply
-only that saved plan with `--plan-file ... --apply`; apply repeats read-only
-discovery, revalidates every saved ID and type, and refuses source, plan, remote
-membership, or work-binding drift.
-
-Existing tracker-bound work requires an explicit connection rebind. Run the
-selection preview with `--plan-file .ai-dlc/local/linear-plan.json`; the command
-saves that non-secret plan but refuses the shared mapping change and lists every
-affected work ID. This affected set contains only work whose effective tracker
-is Linear and which already has a tracker binding. Create
-`.ai-dlc/local/linear-rebind.toml` with one table for every listed ID and an
-explicit replacement tracker reference:
-
-```toml
-[work-one]
-tracker = "SAN-101"
-
-[work-two]
-tracker = "SAN-102"
-```
-
-Review the saved connection plan, every old and replacement tracker artifact,
-and the fresh sandbox scope. Then apply both the mapping and work migration as
-one transaction:
-
-```sh
-ai-dlc project rebind tracker linear --root PATH --connection-plan .ai-dlc/local/linear-plan.json --mappings .ai-dlc/local/linear-rebind.toml --no-plan
-```
-
-This command rejects incomplete mappings, a stale or tampered plan, changed
-remote membership, a non-Linear effective adapter, or concurrent project edits
-before changing shared files. It computes each replacement binding against the
-new configuration. Work pinned to another tracker and work without an existing
-Linear tracker binding are not migration inputs and their records remain
-byte-for-byte unchanged. The process is explicit: provider onboarding never
-invents tracker references or rebinds work automatically.
-
-Preview a private profile enrollment can materialize an inactive cache, but it
-does not change active enrollment, client configuration, or package state.
-Repeat the same command with `--apply` to activate it:
-
-```sh
-ai-dlc machine enroll SOURCE --profile-id example-development --machine-id MACHINE_A --ref IMMUTABLE_REF_OR_TAG
-ai-dlc machine enroll SOURCE --profile-id example-development --machine-id MACHINE_A --ref IMMUTABLE_REF_OR_TAG --apply
-```
-
-The lock always records the exact resolved commit. An immutable advertised tag
-or ref gives cross-machine reproducibility, and `ai-dlc machine sync` is
-idempotent for it. An intentionally movable advertised branch instead enables
-`ai-dlc machine sync` to preview a candidate and `ai-dlc machine sync --apply`
-to activate it after validation and reconciliation. To move from one immutable
-tag to another, reenroll with the new ref. Enroll a second machine with the
-same advertised ref under the selected policy and a different machine ID; its
-local binding remains independent.
+Use the [machine enrollment runbook](runbooks/machine-enrollment.md) for private
+profiles, readiness and client setup. Provider setup belongs in the relevant
+runbook: [GitHub](github-ticket-setup.md), [Linear](runbooks/linear-setup.md),
+[Plane](runbooks/plane-setup.md), or [Jira](runbooks/jira-cloud-setup.md).
+The lifecycle below stays independent of the selected provider.
 
 ## Sources of truth
 

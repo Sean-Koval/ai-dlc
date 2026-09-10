@@ -68,7 +68,7 @@ def test_provider_switch_refuses_to_delete_still_referenced_owned_guidance(
     import hashlib
     import json
 
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
 
     project = tmp_path / "ai-dlc.toml"
     project.write_text('schema=4\n[roles]\nspecs="openspec"\n')
@@ -109,8 +109,8 @@ def test_provider_index_delivers_real_owned_instructions_and_removes_stale_copie
     """Provider selection changes must update links and owned instructions together."""
     import json
 
-    from ai_dlc.agents import render_agents
     from ai_dlc.files import assets
+    from ai_dlc.harness.agents import render_agents
 
     config = tmp_path / "ai-dlc.toml"
     config.write_text('schema=4\n[roles]\nspecs="openspec"\ntracker="linear"\n')
@@ -132,7 +132,7 @@ def test_provider_index_delivers_real_owned_instructions_and_removes_stale_copie
 @pytest.mark.parametrize("owned", [False, True])
 def test_provider_copy_conflicts_preserve_authored_files_without_partial_writes(tmp_path, owned):
     """Authored and edited owned provider instructions must never be overwritten."""
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
 
     (tmp_path / "ai-dlc.toml").write_text('schema=4\n[roles]\nspecs="openspec"\n')
     if owned:
@@ -149,7 +149,7 @@ def test_provider_copy_conflicts_preserve_authored_files_without_partial_writes(
 
 
 def test_render_preserves_authored_text_and_detects_stale_generated_section(tmp_path):
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
 
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[checks]\nrequired=["test"]\n[checks.commands]\ntest="pytest"\n[roles]\ntracker="linear"\n'
@@ -167,7 +167,7 @@ def test_render_preserves_authored_text_and_detects_stale_generated_section(tmp_
 
 
 def test_edits_inside_managed_section_are_not_overwritten(tmp_path):
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
 
     (tmp_path / "ai-dlc.toml").write_text("schema=4\n")
     render_agents(tmp_path, apply=True)
@@ -180,7 +180,7 @@ def test_edits_inside_managed_section_are_not_overwritten(tmp_path):
 
 
 def test_mcp_conflicting_server_preserved(tmp_path):
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
 
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[[agents.servers]]\nid="docs"\ncommand="server"\nargs=["run"]\n'
@@ -192,7 +192,7 @@ def test_mcp_conflicting_server_preserved(tmp_path):
 
 
 def test_unsupported_required_hook_fails_readiness():
-    from ai_dlc.agents import hook_readiness
+    from ai_dlc.harness.agents import hook_readiness
 
     result = hook_readiness("codex", "0.151.0", "local", ["request-approval"])
     assert result["ready"] is False
@@ -202,8 +202,8 @@ def test_unsupported_required_hook_fails_readiness():
 def test_skills_selection_partial_ownership_and_removal(tmp_path):
     import json
 
-    from ai_dlc.agents import render_agents
     from ai_dlc.files import assets
+    from ai_dlc.harness.agents import render_agents
 
     config = tmp_path / "ai-dlc.toml"
     config.write_text('schema=4\n[agents]\nskills=["day-start"]\n')
@@ -223,7 +223,7 @@ def test_skills_selection_partial_ownership_and_removal(tmp_path):
 
 
 def test_skill_conflict_has_no_partial_writes(tmp_path):
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
 
     (tmp_path / "ai-dlc.toml").write_text("schema=4\n")
     skill = tmp_path / ".agents/skills/day-start/SKILL.md"
@@ -238,8 +238,8 @@ def test_skill_conflict_has_no_partial_writes(tmp_path):
 def test_required_hooks_preserve_unmanaged_and_target_independent(tmp_path):
     import json
 
-    from ai_dlc.agents import render_agents, target_hooks
     from ai_dlc.config import load_project
+    from ai_dlc.harness.agents import render_agents, target_hooks
 
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents.clients.codex]\nversion="0.151.0"\nrequired_hooks=["bound-push","session-context","stop-reminder"]\n'
@@ -258,7 +258,7 @@ def test_required_hooks_preserve_unmanaged_and_target_independent(tmp_path):
 
 
 def test_unsupported_required_hooks_fail_before_writes(tmp_path):
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
 
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents.clients.codex]\nversion="0.151.0"\nrequired_hooks=["request-approval"]\n'
@@ -271,8 +271,8 @@ def test_unsupported_required_hooks_fail_before_writes(tmp_path):
 def test_digest_mismatch_prevents_all_writes(tmp_path, monkeypatch):
     import shutil
 
-    from ai_dlc import agents
     from ai_dlc.files import assets
+    from ai_dlc.harness import agents
 
     package = tmp_path / "package"
     shutil.copytree(assets("agents"), package)
@@ -293,8 +293,8 @@ def test_unchanged_owned_skill_updates_and_edited_removal_conflicts(tmp_path, mo
     import json
     import shutil
 
-    from ai_dlc import agents
     from ai_dlc.files import assets
+    from ai_dlc.harness import agents
 
     package = tmp_path / "package"
     shutil.copytree(assets("agents"), package)
@@ -326,7 +326,7 @@ def test_unchanged_owned_skill_updates_and_edited_removal_conflicts(tmp_path, mo
 def test_codex_partial_keeps_claude_mcp_ownership_for_later_removal(tmp_path):
     import json
 
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
 
     config = tmp_path / "ai-dlc.toml"
     config.write_text('schema=4\n[[agents.servers]]\nid="docs"\ncommand="server"\n')
@@ -341,7 +341,7 @@ def test_codex_partial_keeps_claude_mcp_ownership_for_later_removal(tmp_path):
 def test_hook_edit_conflict_and_removal_preserve_user_hook(tmp_path):
     import json
 
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
 
     config = tmp_path / "ai-dlc.toml"
     config.write_text(
@@ -363,7 +363,7 @@ def test_hook_edit_conflict_and_removal_preserve_user_hook(tmp_path):
 
 
 def test_unknown_client_version_has_no_claimed_hook_support():
-    from ai_dlc.agents import hook_readiness
+    from ai_dlc.harness.agents import hook_readiness
 
     result = hook_readiness("codex", "999.0.0", "local", ["bound-push"])
     assert not result["ready"]
@@ -378,9 +378,9 @@ def test_custom_provider_index_links_to_project_instructions_without_copying_or_
     import hashlib
     import json
 
-    from ai_dlc.agents import render_agents
     from ai_dlc.config import load_project
-    from ai_dlc.readiness import inspect_readiness
+    from ai_dlc.harness.agents import render_agents
+    from ai_dlc.setup.readiness import inspect_readiness
 
     guidance = tmp_path / "providers/openspec.md"
     guidance.parent.mkdir()
@@ -427,9 +427,9 @@ def test_custom_provider_index_links_to_project_instructions_without_copying_or_
 def test_product_shaping_guidance_is_available_to_selected_harness(
     tmp_path, client, directory, tracker
 ):
-    from ai_dlc.agents import render_agents
     from ai_dlc.files import assets
-    from ai_dlc.templates import adopt
+    from ai_dlc.harness.agents import render_agents
+    from ai_dlc.setup.templates import adopt
 
     adopt(tmp_path, apply=True, providers={"tracker": tracker})
     render_agents(tmp_path, apply=True, client=client)
@@ -454,8 +454,8 @@ def test_selected_bundle_renders_offline_to_clients_template_and_index(tmp_path,
     import subprocess
     import urllib.request
 
-    from ai_dlc import workflow_bundles
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness import workflow_bundles
+    from ai_dlc.harness.agents import render_agents
 
     fresh_checkout = tmp_path / "fresh-checkout"
     fresh_checkout.mkdir()
@@ -507,7 +507,7 @@ def test_selected_bundle_renders_offline_to_clients_template_and_index(tmp_path,
 
 def test_bundle_crlf_template_is_clean_after_apply(tmp_path):
     """Would fail if render checks normalized valid bundle payload newlines."""
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
 
     body = "# Review note\r\n\r\nPreserve these bytes.\r\n"
     _write_vendored_bundle(
@@ -529,7 +529,7 @@ def test_bundle_crlf_template_is_clean_after_apply(tmp_path):
 @pytest.mark.parametrize("collision", ["authored", "shipped", "duplicate"])
 def test_bundle_collisions_block_the_whole_render_without_writes(tmp_path, collision):
     """Would fail if authored, shipped, or cross-bundle claims were overwritten."""
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
 
     if collision == "authored":
         _write_vendored_bundle(
@@ -573,7 +573,7 @@ def test_bundle_collisions_block_the_whole_render_without_writes(tmp_path, colli
 
 def test_bundle_render_rejects_a_symlinked_vendored_parent_without_writes(tmp_path):
     """Would fail if rendering followed a substituted parent outside the project."""
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
 
     outside = tmp_path / "outside"
     outside.mkdir()
@@ -596,7 +596,7 @@ def test_bundle_render_rejects_a_symlinked_vendored_parent_without_writes(tmp_pa
 
 def test_bundle_same_owner_update_partial_client_and_edited_removal(tmp_path):
     """Would fail if partial renders lost ownership or edited obsolete outputs were deleted."""
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
 
     config = tmp_path / "ai-dlc.toml"
     config.write_text('schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n')
@@ -641,7 +641,7 @@ def test_bundle_same_owner_update_partial_client_and_edited_removal(tmp_path):
 
 def test_bundle_render_operational_failure_restores_every_affected_byte(tmp_path, monkeypatch):
     """Would fail if a multi-file bundle publication could leave a partial render."""
-    from ai_dlc import agents
+    from ai_dlc.harness import agents
 
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
@@ -687,7 +687,7 @@ def test_bundle_render_operational_failure_restores_every_affected_byte(tmp_path
 
 def test_bundle_render_invalid_template_ancestor_preserves_obsolete_outputs(tmp_path):
     """A late invalid ancestor must not strand earlier removed owned files."""
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
 
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
@@ -715,7 +715,7 @@ def test_bundle_render_invalid_template_ancestor_preserves_obsolete_outputs(tmp_
 @pytest.mark.parametrize("existing", [False, True])
 def test_bundle_render_preserves_late_edit_after_planning(tmp_path, monkeypatch, existing):
     """Publication must refuse changed bytes and newly authored destinations."""
-    from ai_dlc import agents
+    from ai_dlc.harness import agents
 
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
@@ -749,7 +749,7 @@ def test_bundle_render_preserves_late_edit_after_planning(tmp_path, monkeypatch,
 
 def test_bundle_render_parent_swap_cannot_modify_external_file(tmp_path, monkeypatch):
     """Publication must remain bound to validated project directories through replacement."""
-    from ai_dlc import agents
+    from ai_dlc.harness import agents
 
     project = tmp_path / "project"
     project.mkdir()
@@ -786,7 +786,7 @@ def test_bundle_render_parent_swap_cannot_modify_external_file(tmp_path, monkeyp
 
 def test_bundle_render_rejects_undeclared_vendored_root_git(tmp_path):
     """Only source checkouts may exempt root Git metadata from exact-tree validation."""
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
 
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
@@ -809,7 +809,7 @@ def test_bundle_render_rejects_undeclared_vendored_root_git(tmp_path):
 
 def test_bundle_render_rollback_continues_after_one_restore_failure(tmp_path, monkeypatch):
     """Recovery must restore every path and preserve the publication error after cleanup fails."""
-    from ai_dlc import agents
+    from ai_dlc.harness import agents
 
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
@@ -861,7 +861,7 @@ def test_bundle_render_rollback_continues_after_one_restore_failure(tmp_path, mo
 
 def test_bundle_render_staging_collision_preserves_authored_file(tmp_path, monkeypatch):
     """Failed exclusive staging must never clean up a file it did not create."""
-    from ai_dlc import agents
+    from ai_dlc.harness import agents
 
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
@@ -886,7 +886,7 @@ def test_bundle_render_staging_collision_preserves_authored_file(tmp_path, monke
 
 def test_bundle_render_recovery_preserves_late_deletion_of_untouched_file(tmp_path, monkeypatch):
     """Rollback must only restore files that this transaction actually mutated."""
-    from ai_dlc import agents
+    from ai_dlc.harness import agents
 
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
@@ -917,7 +917,7 @@ def test_bundle_render_rejects_changed_completed_stage_bytes(tmp_path, monkeypat
     """A completed stage must stay authenticated to the content planned for ownership."""
     import os
 
-    from ai_dlc import agents
+    from ai_dlc.harness import agents
 
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
@@ -959,7 +959,7 @@ def test_render_stage_cleanup_preserves_replacement_at_delete_boundary(
     """A pathname reused just before deletion must retain the authored inode."""
     import os
 
-    from ai_dlc import agents
+    from ai_dlc.harness import agents
 
     parent = os.open(tmp_path, os.O_RDONLY | os.O_DIRECTORY)
     original_unlink = os.unlink
@@ -1006,7 +1006,7 @@ def test_render_stage_cleanup_preserves_replacement_at_delete_boundary(
 
 def test_bundle_render_failure_restores_outputs_and_reports_retained_stages(tmp_path, monkeypatch):
     """Safe residue must be discoverable without changing the original render failure."""
-    from ai_dlc import agents
+    from ai_dlc.harness import agents
 
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
@@ -1046,7 +1046,7 @@ def test_bundle_render_recovery_retry_reports_partial_recovery_stage(
     """A failed recovery stage remains reported after a later retry restores the output."""
     import os
 
-    from ai_dlc import agents
+    from ai_dlc.harness import agents
 
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
@@ -1106,7 +1106,7 @@ def test_successful_bundle_render_preserves_backup_mutated_after_validation(
     tmp_path, monkeypatch, mutation
 ):
     """A final backup check must not authorize deletion of a later pathname occupant."""
-    from ai_dlc import agents
+    from ai_dlc.harness import agents
 
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
@@ -1160,7 +1160,7 @@ def test_successful_bundle_render_preserves_backup_mutated_after_validation(
 @pytest.mark.parametrize("remove_export", [False, True])
 def test_successful_bundle_render_reports_backups_without_adopting_them(tmp_path, remove_export):
     """Retained old output bytes must be discoverable and stay outside managed ownership."""
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
 
     config = tmp_path / "ai-dlc.toml"
     config.write_text('schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n')
@@ -1205,7 +1205,7 @@ def test_bundle_render_recovery_preserves_authored_completed_stage_replacement(
     """Target conflict recovery must not unlink a replacement of the completed stage."""
     import os
 
-    from ai_dlc import agents
+    from ai_dlc.harness import agents
 
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
@@ -1247,8 +1247,8 @@ def test_bundle_render_recovery_preserves_authored_completed_stage_replacement(
 
 @pytest.mark.parametrize("clients", [["antigravity"], ["codex", "antigravity"]])
 def test_bundle_guidance_uses_native_shared_skill_directory(tmp_path, clients):
-    from ai_dlc.agents import inspect_bundle_guidance, render_agents
     from ai_dlc.config import load_project
+    from ai_dlc.harness.agents import inspect_bundle_guidance, render_agents
 
     manifest = tmp_path / "ai-dlc.toml"
     manifest.write_text(
@@ -1281,9 +1281,9 @@ def test_bundle_guidance_uses_native_shared_skill_directory(tmp_path, clients):
 def test_optional_design_pm_skills_render_with_selected_harness_and_preserve_edits(
     tmp_path, client, directory
 ):
-    from ai_dlc.agents import render_agents
     from ai_dlc.files import assets
-    from ai_dlc.templates import adopt
+    from ai_dlc.harness.agents import render_agents
+    from ai_dlc.setup.templates import adopt
 
     adopt(tmp_path, apply=True, providers={"tracker": "github-issues"})
     render_agents(tmp_path, apply=True, client=client)
@@ -1296,3 +1296,18 @@ def test_optional_design_pm_skills_render_with_selected_harness_and_preserve_edi
     with pytest.raises(ValueError, match="modified|conflict|owned"):
         render_agents(tmp_path, apply=True, client=client)
     assert authored.read_text() == "authored evaluation instructions"
+
+
+@pytest.mark.parametrize("existing", ["", "@AGENTS.md\n"])
+def test_plain_claude_reference_remains_plain_and_ready(tmp_path, existing):
+    from ai_dlc.harness.agents import _managed_section_state, render_agents
+
+    (tmp_path / "ai-dlc.toml").write_text('schema=4\n[roles]\nagent-client=["claude-code"]\n')
+    if existing:
+        (tmp_path / "CLAUDE.md").write_text(existing)
+    render_agents(tmp_path, apply=True)
+    assert (tmp_path / "CLAUDE.md").read_text() == "@AGENTS.md\n"
+    assert _managed_section_state(tmp_path / "CLAUDE.md", "@AGENTS.md\n") == "ready"
+    before = (tmp_path / "CLAUDE.md").read_bytes()
+    render_agents(tmp_path, apply=True)
+    assert (tmp_path / "CLAUDE.md").read_bytes() == before
