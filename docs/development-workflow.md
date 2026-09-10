@@ -211,7 +211,9 @@ local binding remains independent.
 - The configured specification provider exclusively owns formal behavior
   specifications. Repository design documents link to specifications instead
   of copying them.
-- The tracker owns priority and lifecycle status.
+- The selected delivery tracker owns engineering priority and lifecycle status.
+  When an upstream business tracker is used, it owns business priority, outcome
+  scope and acceptance; see the Jira/GitHub ownership model below.
 - SCM and CI own review, merge identity, and merged-revision evidence.
 - Personal knowledge stores continuity, reflection, and private notes. It links
   durable repository material and is not a repository mirror.
@@ -224,6 +226,100 @@ local binding remains independent.
 
 When sources disagree, reconcile their owned facts rather than overwriting one
 store with a copy from another.
+
+## GitHub delivery with Jira outcomes
+
+Sean's personal profile selects GitHub Issues for delivery, with a GitHub Project
+configured per repository for planning. Jira is the upstream owner of business
+outcomes when work needs it. One Jira story or epic can link to several GitHub
+delivery issues. Small fixes and maintenance may start in GitHub without a Jira
+parent; link them upstream when they affect a business commitment.
+
+This is a manual workflow today. The profile comments express intent, not an
+enabled Jira connection or synchronization service. Each work record still has
+one selected tracker. Selecting `jira-cloud` instead makes Jira that delivery
+tracker; it does not connect Jira outcomes to GitHub issues.
+
+| Location | Owns |
+| --- | --- |
+| Jira | Business outcome, stakeholder priority, scope and acceptance |
+| Repository documents | Discovery, product rationale and design decisions |
+| OpenSpec | Required behavioral specifications |
+| GitHub Issues | Deliverable engineering tasks, dependencies and acceptance evidence |
+| GitHub Projects | Delivery planning, sequencing and progress |
+| Pull requests and CI | Review, merge and verification evidence |
+
+### From intake to business acceptance
+
+1. **Intake:** A Jira ticket identifies an outcome. Triage decides whether it
+   needs discovery, clarification or delivery planning. Creating the ticket does
+   not authorize development. GitHub-originated engineering work enters the same
+   shaping and specification decision stages at the depth it needs.
+2. **Shaping:** Capture discovery, product requirements when needed, and design
+   decisions in repository documents. Review the requirements and record the
+   formal specification decision; keep required OpenSpec artifacts current.
+3. **Breakdown:** Create reviewed work records for independently deliverable
+   GitHub issues. Link their requirements, design and specification, and record
+   the Jira outcome URL as `artifacts.jira_parent` when applicable. Sequence the
+   issues and their dependencies in GitHub Projects.
+4. **Delivery:** Publish and start the reviewed work through AI-DLC, implement
+   through pull requests, run required checks, and use `ai-dlc work finish` after
+   merge to verify the configured completion gates. A board status alone is not
+   delivery evidence.
+5. **Acceptance:** When all agreed delivery work is verified, summarize the
+   evidence and remaining concerns on Jira as ready for acceptance. Business
+   acceptance controls Jira closure. One merged PR or completed child issue does
+   not complete the outcome; partial delivery remains visible as outstanding work.
+
+"Ready for acceptance" describes a handoff, not a prescribed Jira status ID or
+automatic transition. Use the actual team's reviewed workflow. Jira scope changes
+return to shaping and a review of affected specifications and delivery issues.
+Cancellation or reopening requires explicit reconciliation of remaining work;
+neither system's status automatically propagates to the other.
+
+### Manual links now
+
+Add the parent to the existing artifact table in each applicable work record:
+
+```toml
+[artifacts]
+# Illustrative URL: replace with the actual Jira outcome's full URL.
+jira_parent = "https://example.atlassian.net/browse/TEAM-123"
+```
+
+Retain the record's other artifact entries. `jira_parent` is an artifact naming
+convention, not a second tracker binding or a validated cross-system parent-child
+relationship. New GitHub issue publication includes these artifact references.
+Repeat publication preserves authored issue descriptions, so adding the reference
+later does not update an already published issue: manually add the link there too.
+Maintain reciprocal links and concise delivery summaries on the Jira outcome.
+Keep business rationale, design and formal behavior in their owned locations and
+link them instead of maintaining competing copies.
+
+Where configured, Atlassian's GitHub integration can show branches, commits and
+pull requests on Jira work items when their keys appear in development work.
+This provides development visibility; the workflow above still needs its manual
+issue links and outcome summaries. See
+[Atlassian's GitHub integration guidance](https://support.atlassian.com/jira-cloud-administration/docs/use-the-github-for-jira-app/).
+
+### Gaps before automated synchronization
+
+The existing Jira Cloud adapter supports Jira as the selected tracker. The
+following coordination capabilities remain future work:
+
+- Explicit Jira intake that prepares reviewable local discovery and work context.
+- Structured outcome-to-delivery mappings across work items and repositories.
+- Aggregate reporting of verified, outstanding and blocked delivery work.
+- Field ownership and conflict handling: Jira supplies business scope and priority;
+  GitHub supplies engineering progress. Changed scope returns for review.
+- Retry-safe synchronization that preserves authored content, reconciles uncertain
+  writes, and never closes a Jira outcome merely because one PR merged.
+
+Company Jira access and workflow compatibility remain unverified. Manual linking
+does not require enabling the Jira adapter; future automation needs the actual
+approved company connection and workflow mappings. See
+[work-computer setup](workflows/work-computer-setup.md) for GitHub delivery setup
+and the explicit Jira-only alternative.
 
 ## Capability boundaries
 

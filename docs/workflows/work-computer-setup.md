@@ -15,23 +15,36 @@ in [release verification](../release-verification.md).
 
 ## Prepare a work repository
 
-From the target repository, preview
-`ai-dlc project adopt --root . --preset python --tracker jira-cloud --knowledge obsidian --agent-client claude-code --agent-client antigravity`
+For GitHub delivery with optional upstream Jira outcomes, preview from the target
+repository:
+`ai-dlc project adopt --root . --preset python --tracker github-issues --knowledge obsidian --agent-client claude-code --agent-client antigravity`
 (or the applicable language preset and explicitly selected tracker). Inspect proposed files and resolve authored
 conflicts, then repeat with `--apply`. Existing configured repositories use their
 reviewed configuration and `project sync` workflow instead of adoption.
 
-Omitting tracker selection preserves the legacy scaffold default. Choose
-`--tracker github-issues` for a personal GitHub repository; its guided connection
-proposes a repository-associated Project. Run `ai-dlc provider connect github-issues`
+Omitting tracker selection preserves the legacy scaffold default. Explicitly choose
+`--tracker github-issues` for this delivery model, for personal or work repositories.
+Its guided connection proposes a repository-associated Project. Run
+`ai-dlc provider connect github-issues`
 to preview it; `--issues-only` is an option of that connection command. Follow the
 [GitHub saved-plan setup instructions](../github-ticket-setup.md) for exact
-preview, saved-plan apply, permissions and recovery steps. For work, follow the
+preview, saved-plan apply, permissions and recovery steps. Keep repository, account
+and board mappings specific to the target project; do not copy AI-DLC's own IDs.
+
+Jira can own business outcomes while GitHub owns the delivery issues. Use manual
+`artifacts.jira_parent` URL references and reciprocal links as described in
+[GitHub delivery with Jira outcomes](../development-workflow.md#github-delivery-with-jira-outcomes).
+Jira intake and progress synchronization are planned, not enabled by the personal
+profile. This arrangement does not require selecting or connecting `jira-cloud`.
+
+If a repository should use **Jira as its delivery tracker**, explicitly substitute
+`--tracker jira-cloud` in the adoption command. Follow the
 [Jira Cloud setup](../runbooks/jira-cloud-setup.md) to select the actual site,
-account, project, issue type and workflow through reviewed discovery. The adapter
-supports new work through the shared lifecycle; actual company permissions and
-workflow compatibility still need verification on the work computer. Do not
-publish work to an incomplete scaffold merely because its tracker appears in a preview.
+account, project, issue type and workflow through reviewed discovery. This is an
+alternative single-tracker lifecycle, not Jira/GitHub synchronization. Actual
+company permissions and workflow compatibility still need verification on the
+work computer. Do not publish work to an incomplete scaffold merely because its
+tracker appears in a preview.
 
 The repeated `--agent-client` options persist this shared selection during
 `project adopt` or `project init`. Existing configured repositories can review the
