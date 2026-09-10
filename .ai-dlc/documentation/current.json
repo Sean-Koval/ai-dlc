@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "base": "58aab877bb003bd85da8c5a108cd6643a2caae6a",
-  "snapshot": "7640c5699915e0054272d1fb10b6fd23fec7edf18896c6afaf7586bb71d070a2",
+  "snapshot": "8e04640e80dd60345d05a1d9a38b233f649da008d1fb5a98387d6ef1f1ebf395",
   "reviewer": "Codex",
   "decisions": [
     {
@@ -26,7 +26,7 @@
     }
   ],
   "sources": {
-    ".ai-dlc/work/github-jira-profile.toml": "7b74bcca8c16dc18e79bd7aaff0932aaba9027d4aefe5efebc0a920928de8edd",
+    ".ai-dlc/work/github-jira-profile.toml": "187bd72099c96ca6813014c92c97de8c63776f23c31873435722395ccca7f47b",
     "docs/catalog.toml": "381e96987d234658c2e7cdae0429d54e6d2184718bb9509d07bfbd0b7c3e2e66",
     "docs/development-workflow.md": "3ee994b8b90e6a8469bd6d79430f51b226f4140f995cc176c882eda60e12ccfd",
     "docs/workflows/work-computer-setup.md": "b73100b1cc3e64067be1caf60093c0e68f9b64c3c866227f26e6b7b265071e24",
