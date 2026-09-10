@@ -1,7 +1,7 @@
 # product-shaping-workflow Specification
 
 ## Purpose
-TBD - created by archiving change product-shaping-workflow. Update Purpose after archive.
+Turn greenfield ideas and brownfield observations into evidence-based bounded outcomes with proportional handoffs that distinguish decisions from hypotheses.
 ## Requirements
 ### Requirement: PS-01 Evidence-based product shaping
 

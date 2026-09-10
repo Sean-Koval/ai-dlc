@@ -20,6 +20,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any, Self
+from urllib.parse import urlsplit
 
 from ai_dlc.config import resolve_layers
 from ai_dlc.files import inside
@@ -407,15 +408,70 @@ def _validate_payload_tree(
     return decoded, missing_path
 
 
+def _nonempty_text(value: Any) -> bool:
+    return (
+        type(value) is str
+        and bool(value.strip())
+        and value == value.strip()
+        and not any(unicodedata.category(c).startswith("C") for c in value)
+    )
+
+
+def _validate_guidance(value: Any, skills: dict[str, str]) -> dict[str, Any]:
+    if type(value) is not dict or not set(value) <= set(skills):
+        raise ValueError("guidance must map exported skill names to reviewed metadata")
+    for name, entry in value.items():
+        if type(entry) is not dict or set(entry) != {"owner", "status", "sources", "sdk"}:
+            raise ValueError(f"guidance {name} requires owner, status, sources and sdk")
+        if not _nonempty_text(entry["owner"]):
+            raise ValueError(f"guidance {name} owner must be nonempty text")
+        if type(entry["status"]) is not str or entry["status"] not in {
+            "approved",
+            "draft",
+            "superseded",
+        }:
+            raise ValueError(f"guidance {name} status must be approved, draft or superseded")
+        sources = entry["sources"]
+        if type(sources) is not list or not sources:
+            raise ValueError(f"guidance {name} sources must be a nonempty HTTPS URL list")
+        for source in sources:
+            if not _nonempty_text(source) or any(c.isspace() for c in source):
+                raise ValueError(f"guidance {name} source must be an HTTPS URL")
+            parsed = urlsplit(source)
+            if (
+                parsed.scheme != "https"
+                or not parsed.hostname
+                or parsed.username
+                or parsed.password
+            ):
+                raise ValueError(f"guidance {name} source must be an HTTPS URL")
+        sdk = entry["sdk"]
+        if type(sdk) is not dict or set(sdk) != {"name", "versions"}:
+            raise ValueError(f"guidance {name} sdk requires name and versions")
+        _slug(sdk["name"], field="guidance sdk name")
+        versions = sdk["versions"]
+        if (
+            type(versions) is not list
+            or not versions
+            or not all(_nonempty_text(v) for v in versions)
+        ):
+            raise ValueError(f"guidance {name} sdk versions must be nonempty exact version strings")
+    return value
+
+
 def _validate_manifest(manifest: dict) -> dict:
     if type(manifest) is not dict:
         raise ValueError("bundle manifest must be a JSON object")
-    if set(manifest) != _MANIFEST_FIELDS:
+    schema = manifest.get("schema")
+    if type(schema) is not int or schema not in {1, 2}:
+        raise ValueError("bundle schema must be 1 or 2")
+    fields = _MANIFEST_FIELDS | ({"references", "guidance"} if schema == 2 else set())
+    if set(manifest) != fields:
         raise ValueError(
             "bundle manifest must contain exactly schema, id, skills, templates, and files"
+            if schema == 1
+            else "schema 2 bundle manifest must contain exactly schema, id, skills, templates, files, references, and guidance"
         )
-    if type(manifest["schema"]) is not int or manifest["schema"] != 1:
-        raise ValueError("bundle schema must be 1")
 
     bundle_id = _slug(manifest["id"], field="bundle id")
     skills = _export_map(manifest["skills"], field="skills")
@@ -427,14 +483,48 @@ def _validate_manifest(manifest: dict) -> dict:
     if set(skills) & set(templates):
         raise ValueError("skill and template export names must be unique")
 
-    export_paths = [*skills.values(), *templates.values()]
+    references: dict[str, list[str]] = {}
+    guidance: dict[str, Any] = {}
+    if schema == 2:
+        if any(PurePosixPath(path).name != "SKILL.md" for path in skills.values()):
+            raise ValueError("schema 2 skills require the exact SKILL.md filename")
+        raw_references = manifest["references"]
+        if type(raw_references) is not dict or not set(raw_references) <= set(skills):
+            raise ValueError("references must map exported skill names to Markdown paths")
+        for name, paths in raw_references.items():
+            if type(paths) is not list:
+                raise ValueError("references must contain lists of Markdown paths")
+            directory = PurePosixPath(skills[name]).parent
+            references[name] = []
+            for raw_path in paths:
+                path = _payload_path(raw_path, field=f"references.{name}")
+                relative = PurePosixPath(path)
+                if not path.endswith(".md") or directory not in relative.parents:
+                    raise ValueError(
+                        "reference must be Markdown beneath its exported skill directory"
+                    )
+                # Nested source skill directories must not borrow one another's content.
+                if any(
+                    other != name and PurePosixPath(export).parent in relative.parents
+                    for other, export in skills.items()
+                ):
+                    raise ValueError("reference crosses another exported skill directory")
+                references[name].append(path)
+        guidance = _validate_guidance(manifest["guidance"], skills)
+
+    export_paths = [
+        *skills.values(),
+        *templates.values(),
+        *(path for paths in references.values() for path in paths),
+    ]
     if len(export_paths) != len(set(export_paths)):
         raise ValueError("each payload path may have only one export")
     if set(files) != set(export_paths):
         raise ValueError("files keys must equal the export paths exactly")
 
     return {
-        "schema": 1,
+        **({"references": references, "guidance": guidance} if schema == 2 else {}),
+        "schema": schema,
         "id": bundle_id,
         "skills": skills,
         "templates": templates,
@@ -468,7 +558,7 @@ def _validate_bundle(root: _DirectoryRoot, manifest: dict, *, metadata_paths: se
 
 
 def validate_bundle(root: Path, manifest: dict) -> dict:
-    """Validate and normalize an already parsed schema-1 bundle and its complete tree."""
+    """Validate and normalize an already parsed schema-1 or schema-2 bundle and its complete tree."""
     return _validate_bundle(Path(root), manifest, metadata_paths=set())
 
 
@@ -728,9 +818,7 @@ def _owned_bundle_conflicts(destination: int, bundle_id: str) -> list[str]:
     if hashlib.sha256(manifest_bytes).hexdigest() != lock["manifest_sha256"]:
         return [f"{base}/bundle.json: existing bundle file has local edits"]
     try:
-        if type(raw_manifest) is not dict or set(raw_manifest) != _MANIFEST_FIELDS:
-            raise ValueError("invalid manifest")
-        manifest_files = _file_map(raw_manifest["files"])
+        manifest_files = _validate_manifest(raw_manifest)["files"]
     except (KeyError, TypeError, ValueError):
         return [f"{base}/bundle.json: existing bundle manifest is invalid"]
     if raw_manifest.get("id") != bundle_id or manifest_files != lock["files"]:
@@ -1156,6 +1244,9 @@ def _result(
         "templates": dict(sorted(candidate.manifest["templates"].items())),
         "files": dict(sorted(candidate.file_hashes.items())),
     }
+    if candidate.manifest["schema"] == 2:
+        result["references"] = candidate.manifest["references"]
+        result["guidance"] = candidate.manifest["guidance"]
     if retained:
         result["retained_paths"] = [f".ai-dlc/bundles/{name}" for name in sorted(retained)]
     return result

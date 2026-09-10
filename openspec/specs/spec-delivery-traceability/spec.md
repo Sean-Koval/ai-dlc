@@ -1,7 +1,7 @@
 # spec-delivery-traceability Specification
 
 ## Purpose
-TBD - created by archiving change spec-delivery-traceability. Update Purpose after archive.
+Connect requirements, behavioral scenarios, deliverable work and verification through explicit links, valid dependency graphs and compatible rich tracker publication.
 ## Requirements
 ### Requirement: TR-01 Explicit traceability
 

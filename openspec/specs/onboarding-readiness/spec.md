@@ -1,7 +1,7 @@
 # onboarding-readiness Specification
 
 ## Purpose
-TBD - created by archiving change onboarding-readiness. Update Purpose after archive.
+Report truthful SCM and deployment readiness and guide private vault enrollment without equating local configuration with authentication or live qualification.
 ## Requirements
 ### Requirement: OR-01 Truthful SCM readiness
 The standard GitHub SCM selection SHALL resolve its packaged guidance, existing git/gh executable requirements and root-level scm.repository configuration. Repository identity SHALL follow the runtime owner/repo syntax, and local prerequisites SHALL NOT claim authentication or live CI qualification.

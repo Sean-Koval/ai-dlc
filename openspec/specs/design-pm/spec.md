@@ -1,7 +1,7 @@
 # design-pm Specification
 
 ## Purpose
-TBD - created by archiving change design-pm-workflow. Update Purpose after archive.
+Guide portable design briefing, evidence-based evaluation, independent review and bounded iteration without treating unmeasured calibration as product quality.
 ## Requirements
 ### Requirement: DP-01 Design intent precedes evaluation
 

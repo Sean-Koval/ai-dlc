@@ -1,0 +1,28 @@
+schema = 1
+
+[[documents]]
+id = "reference"
+path = "docs/reference.md"
+kind = "reference"
+owner = "maintainers"
+status = "active"
+code_paths = ["src/client.py"]
+requirements = ["openspec/specs/payments/spec.md"]
+
+[[documents]]
+id = "duplicate-reference"
+path = "docs/duplicate-reference.md"
+kind = "reference"
+owner = "maintainers"
+status = "active"
+code_paths = ["src/client.py"]
+requirements = ["openspec/specs/payments/spec.md"]
+
+[[documents]]
+id = "onboarding"
+path = "docs/onboarding.md"
+kind = "reference"
+owner = "maintainers"
+status = "active"
+code_paths = ["src/client.py"]
+requirements = ["openspec/specs/payments/spec.md"]

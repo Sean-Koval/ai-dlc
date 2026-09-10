@@ -1,4 +1,8 @@
-# Current GitHub delivery and work-computer readiness
+# Historical GitHub delivery and work-computer readiness plan
+
+Status: historical September 7 execution plan. The [September 10 roadmap](../../roadmap.md)
+reconciles completed and cancelled issues. Pending instructions below preserve
+checkpoint context and do not reopen CLOSED / NOT_PLANNED work.
 
 Authority: maintainer's September 7 request to complete the GitHub Project issues
 with subagents, aligned to the current product direction and specs, so AI-DLC can

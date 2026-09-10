@@ -427,6 +427,37 @@ def _raise_bundle_collisions(bundles: dict[str, dict[str, Any]]) -> None:
         raise ValueError("bundle collision: " + "; ".join(messages))
 
 
+def _guidance_selection_details(
+    bundles: dict[str, dict[str, Any]], config: dict[str, Any]
+) -> dict[str, list[str]]:
+    details: dict[str, list[str]] = {bundle_id: [] for bundle_id in bundles}
+    selections: dict[str, list[tuple[str, set[str]]]] = {}
+    versions = config.get("agents", {}).get("sdk_versions", {})
+    for bundle_id, bundle in bundles.items():
+        for skill, entry in bundle["manifest"].get("guidance", {}).items():
+            sdk = entry["sdk"]["name"]
+            supported = entry["sdk"]["versions"]
+            label = f"guidance {skill} for SDK {sdk}"
+            if entry["status"] != "approved":
+                details[bundle_id].append(f"{label} is {entry['status']}; select approved guidance")
+            if sdk not in versions:
+                details[bundle_id].append(
+                    f"{label} applicability is unknown; declare agents.sdk_versions.{sdk}"
+                )
+            elif versions[sdk] not in supported:
+                details[bundle_id].append(
+                    f"{label} version {versions[sdk]} is unsupported; supported versions: {', '.join(supported)}"
+                )
+            selections.setdefault(sdk, []).append((bundle_id, set(supported)))
+    for sdk, entries in selections.items():
+        if not set.intersection(*(versions for _, versions in entries)):
+            for bundle_id, _ in entries:
+                details[bundle_id].append(
+                    f"conflicting guidance selections for SDK {sdk}; choose guidance with compatible versions"
+                )
+    return details
+
+
 def _bundle_index(bundles: dict[str, dict[str, Any]]) -> str:
     if not bundles:
         return ""
@@ -447,21 +478,10 @@ def _bundle_index(bundles: dict[str, dict[str, Any]]) -> str:
 def _bundle_outputs(
     bundles: dict[str, dict[str, Any]], clients: list[str]
 ) -> dict[str, tuple[str, str]]:
-    outputs: dict[str, tuple[str, str]] = {}
-    for bundle_id, bundle in sorted(bundles.items()):
-        manifest = bundle["manifest"]
-        payload = bundle["payload"]
-        for name, relative in sorted(manifest["skills"].items()):
-            for directory in sorted(
-                {CLIENT_SKILL_DIRECTORIES[c] for c in clients if c in CLIENT_SKILL_DIRECTORIES}
-            ):
-                outputs[f"{directory}/skills/{name}/SKILL.md"] = (
-                    bundle_id,
-                    payload[relative],
-                )
-        for name, relative in sorted(manifest["templates"].items()):
-            outputs[f"docs/templates/{name}.md"] = (bundle_id, payload[relative])
-    return outputs
+    return {
+        path: (bundle_id, bundles[bundle_id]["payload"][relative])
+        for path, bundle_id, relative in _bundle_claims(bundles, clients)
+    }
 
 
 def _bundle_claims(
@@ -474,6 +494,9 @@ def _bundle_claims(
                 {CLIENT_SKILL_DIRECTORIES[c] for c in clients if c in CLIENT_SKILL_DIRECTORIES}
             ):
                 claims.append((f"{directory}/skills/{name}/SKILL.md", bundle_id, relative))
+                for reference in bundle["manifest"].get("references", {}).get(name, []):
+                    suffix = PurePosixPath(reference).relative_to(PurePosixPath(relative).parent)
+                    claims.append((f"{directory}/skills/{name}/{suffix}", bundle_id, reference))
         for name, relative in sorted(bundle["manifest"]["templates"].items()):
             claims.append((f"docs/templates/{name}.md", bundle_id, relative))
     return claims
@@ -688,6 +711,8 @@ def inspect_bundle_guidance(root: Path, config: dict, clients: list[str]) -> lis
             states[bundle_id]["blocked"].append(str(exc))
 
     collisions = _bundle_collision_details(bundles)
+    for bundle_id, details in _guidance_selection_details(bundles, config).items():
+        states[bundle_id]["blocked"].extend(details)
     for bundle_id, details in collisions.items():
         states[bundle_id]["blocked"].extend(details)
 
@@ -837,6 +862,13 @@ def _render_agents(
     bundle_ids = _selected_bundle_ids(config)
     bundles = _load_selected_bundles(root, bundle_ids)
     _raise_bundle_collisions(bundles)
+    guidance_errors = [
+        detail
+        for details in _guidance_selection_details(bundles, config).values()
+        for detail in details
+    ]
+    if guidance_errors:
+        raise ValueError("; ".join(guidance_errors))
     clients = (
         [client]
         if client

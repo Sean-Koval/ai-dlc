@@ -16,7 +16,7 @@ Calibration #16 remains unrun; no paid or live experiments are authorized.
 
 **Tech Stack:** Python 3.12, existing AI-DLC CLI/services, Markdown workflow assets, OpenSpec, and configured tracker/SCM adapters. Reuse existing dependencies; any new dependency requires a documented necessity and explicit review.
 
-**Spec:** [design-pm-workflow](../../../openspec/changes/design-pm-workflow/specs/design-pm/spec.md)
+**Spec:** [design-pm-workflow](../../../openspec/changes/archive/2026-09-08-design-pm-workflow/specs/design-pm/spec.md)
 
 ## Global constraints
 

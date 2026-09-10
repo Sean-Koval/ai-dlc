@@ -1,7 +1,7 @@
 # bootstrap-executable-publication Specification
 
 ## Purpose
-TBD - created by archiving change bootstrap-executable-publication. Update Purpose after archive.
+Publish complete executable downloads through independent destination-local staging while preserving installed bytes and retaining failed stages for inspection.
 ## Requirements
 ### Requirement: BP-01 Complete executable publication
 Bootstrap SHALL prepare executable bytes and permissions on the destination filesystem before replacing an owned installed executable, without modifying the previously installed object.

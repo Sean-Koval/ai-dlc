@@ -202,6 +202,111 @@ def project_docs_check(root: Path = Path("."), strict: bool = False):
         raise typer.Exit(2)
 
 
+@project.command("docs-impact")
+def project_docs_impact(base: Annotated[str, typer.Option()], root: Path = Path(".")):
+    """Identify documentation affected by a Git comparison and working changes."""
+    from ai_dlc.document_impact import inspect_impact
+
+    emit(inspect_impact(root, base=base))
+
+
+@project.command("docs-disposition")
+def project_docs_disposition(
+    base: Annotated[str, typer.Option()],
+    decisions: Annotated[Path, typer.Option()],
+    reviewer: Annotated[str, typer.Option()],
+    root: Path = Path("."),
+):
+    """Emit current content-bound evidence from reviewed JSON decisions; does not write files."""
+    from ai_dlc.document_files import read_document
+    from ai_dlc.document_impact import prepare_disposition
+
+    emit(
+        prepare_disposition(
+            root,
+            base=base,
+            decisions=json.loads(read_document(decisions.absolute())),
+            reviewer=reviewer,
+        )
+    )
+
+
+@project.command("docs-baseline")
+def project_docs_baseline(
+    owner: Annotated[str, typer.Option()],
+    reason: Annotated[str, typer.Option()],
+    root: Path = Path("."),
+):
+    """Emit an explicit proposed historical-debt baseline for review."""
+    from ai_dlc.document_impact import prepare_baseline
+
+    emit(prepare_baseline(root, owner=owner, reason=reason))
+
+
+@project.command("docs-style")
+def project_docs_style(
+    paths: Annotated[list[str], typer.Option("--path")],
+    root: Path = Path("."),
+    strict: bool = False,
+):
+    """Run explicitly configured optional Vale checks without installing tools."""
+    from ai_dlc.document_style import check_style
+
+    result = check_style(root, paths=paths)
+    emit(result)
+    if strict and result["status"] != "passed":
+        raise typer.Exit(2)
+
+
+@project.command("docs-review")
+def project_docs_review(
+    base: Annotated[str, typer.Option()],
+    paths: Annotated[list[str], typer.Option("--path")],
+    root: Path = Path("."),
+    max_bytes: int = 64000,
+):
+    """Prepare bounded selected-document evidence for the existing harness."""
+    from ai_dlc.document_review import prepare_review
+
+    emit(prepare_review(root, paths=paths, base=base, max_bytes=max_bytes))
+
+
+@project.command("docs-review-check")
+def project_docs_review_check(
+    packet: Annotated[Path, typer.Option()],
+    review: Annotated[Path, typer.Option()],
+    root: Path = Path("."),
+):
+    """Check citation grounding and current source bytes, not semantic truth."""
+    from ai_dlc.document_files import read_document
+    from ai_dlc.document_review import validate_review
+
+    result = validate_review(
+        root,
+        packet=json.loads(read_document(packet.absolute())),
+        review=json.loads(read_document(review.absolute())),
+    )
+    emit(result)
+    if not result["valid"]:
+        raise typer.Exit(2)
+
+
+@project.command("docs-gate")
+def project_docs_gate(
+    root: Path = Path("."),
+    evidence: str = ".ai-dlc/documentation/current.json",
+    baseline: str = ".ai-dlc/documentation/baseline.json",
+    base: Annotated[str | None, typer.Option(envvar="AI_DLC_DOCS_BASE")] = None,
+):
+    """Require current dispositions and refuse new objective documentation defects."""
+    from ai_dlc.document_impact import check_gate
+
+    result = check_gate(root, evidence_path=evidence, baseline_path=baseline, base=base)
+    emit(result)
+    if not result["valid"]:
+        raise typer.Exit(2)
+
+
 @project.command("sync")
 def project_sync(root: Path = Path("."), apply: bool = False, vcs_ref: str | None = None):
     from ai_dlc.templates import sync
@@ -231,6 +336,24 @@ def project_link_vault(
         typer.echo(f"Error: {exc}", err=True)
         raise typer.Exit(2) from None
     emit(result.as_dict())
+
+
+@project.command("workspace-init")
+def project_workspace_init(
+    root: Path = Path("."),
+    vault: Path | None = None,
+    name: str | None = None,
+    bases: bool = False,
+    apply: bool = False,
+):
+    """Preview or add linked Obsidian project navigation and personal note templates."""
+    from ai_dlc.knowledge_workspace import setup_workspace
+
+    try:
+        emit(setup_workspace(root, vault=vault, name=name, bases=bases, apply=apply))
+    except (OSError, ValueError) as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(2) from None
 
 
 @project.command("rebind")

@@ -13,7 +13,7 @@ applies only where consistent with this steering and the current child specs.
 **Goal:** Make provider selection, connection and native harness setup reusable.
 **Architecture:** Add a small built-in definition registry and common connection service; compose existing configuration and owned assets.
 **Tech Stack:** Existing Python, Copier, Typer and native client renderers.
-**Spec:** [provider-toolset-onboarding](../../../openspec/changes/provider-toolset-onboarding/specs/provider-toolset-onboarding/spec.md).
+**Spec:** [provider-toolset-onboarding](../../../openspec/changes/archive/2026-09-08-provider-toolset-onboarding/specs/provider-toolset-onboarding/spec.md).
 
 Status: draft. Global constraints from [master plan](2026-09-06-provider-toolsets.md) apply.
 

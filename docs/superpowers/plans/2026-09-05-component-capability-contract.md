@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python 3.12, existing AI-DLC CLI/services, Markdown workflow assets, OpenSpec, and configured tracker/SCM adapters. Reuse existing dependencies; any new dependency requires a documented necessity and explicit review.
 
-**Spec:** [component-capability-contract](../../../openspec/changes/component-capability-contract/specs/component-capability-contract/spec.md)
+**Spec:** [component-capability-contract](../../../openspec/changes/archive/2026-09-05-component-capability-contract/specs/component-capability-contract/spec.md)
 
 ## Global constraints
 

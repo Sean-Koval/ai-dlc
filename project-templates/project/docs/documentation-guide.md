@@ -110,3 +110,175 @@ later have a publication binding with target identity, source digest and expecte
 remote version. Team edits require reconciliation. Reuse the custom MCP's graph
 and grading tools after reviewing its interface. No Confluence connector or
 publication implementation is added here. 
+
+## Review affected documentation during development
+
+Before implementation, choose the Git comparison base and inspect affected sources:
+
+```sh
+ai-dlc project docs-impact --base origin/main
+```
+
+Catalog entries may declare `code_paths`, `requirements`, and `verification_paths`
+as project-relative paths or globs. These relationships identify review candidates;
+they cannot prove that every affected document was found. Unmapped changes remain
+explicit and need a disposition. A requirement reference points to its canonical
+OpenSpec file, not another copy of its text.
+
+Read existing explanations before creating a new document. State the audience and
+question being answered. Use the narrowest canonical owner document that serves
+that purpose. Introduce concrete behavior, relevant examples, limitations and
+operational consequences; remove generic claims and repeated introductions.
+A short document can be complete, while a long one can still omit the essential
+procedure. Do not use word counts or an LLM grade as a quality guarantee.
+
+After reviewing the implementation and documentation, prepare decisions as JSON:
+
+```json
+[
+  {
+    "target": "docs/reference/api.md",
+    "outcome": "updated",
+    "reason": "Updated retry guidance against the changed request loop and retry test."
+  },
+  {
+    "target": "tests/test_retry.py",
+    "outcome": "no-impact",
+    "reason": "Test-only parameterization; the public retry contract is unchanged."
+  }
+]
+```
+
+Use actual targets from the impact report. Every affected document and unmapped
+file requires one disposition: `updated`, `reviewed-no-change`, or `no-impact`,
+with a concrete reason. The service records the supplied review; it cannot prove
+that a reviewer inspected the material.
+
+```sh
+ai-dlc project docs-disposition --base origin/main --decisions decisions.json --reviewer repository-maintainers
+```
+
+This emits content-bound evidence; explicitly save the reviewed output as
+`.ai-dlc/documentation/current.json`. That reserved directory holds evidence only,
+never source documents. Review the chosen comparison base as part of the evidence.
+Do not reset it to hide changes. Changed document, source, mapping or change-scope
+bytes invalidate the evidence and require another inspection.
+
+An opted-in project can require `ai-dlc project docs-gate` through its normal check
+manifest. First inspect historical diagnostics and explicitly review a baseline:
+
+```sh
+ai-dlc project docs-baseline --owner repository-maintainers --reason "Historical findings remain in the linked cleanup backlog."
+```
+
+Save only the accepted historical dispositions to
+`.ai-dlc/documentation/baseline.json`. Baselines bind affected document bytes and
+require an owner/reason. They are reviewable exceptions, not a command to suppress
+all future errors. The gate rejects new objective errors, absent ownership and
+uncatalogued documents. Unknown review dates and similarity require judgment.
+Use `docs-gate --base <expected-base>` when CI supplies an independently selected
+comparison. Existing repositories are not automatically enrolled.
+
+## Evidence-backed semantic review
+
+Prepare a small set of catalogued documents for the active harness:
+
+```sh
+ai-dlc project docs-review --base origin/main --path docs/reference/api.md --max-bytes 64000
+```
+
+The packet contains selected document bodies, mapped local evidence, hashes and
+line numbers, plus omitted and unreviewed material. Budgets apply to body bytes;
+large or unavailable files remain explicitly unreviewed. Links do not authorize
+fetching remote content. Save the packet under the reserved evidence directory.
+
+Review claims, not whole-document similarity scores. For each finding, cite an
+exact target passage and supporting passages, identify uncertainty, and recommend
+`revise`, `consolidate`, `retain`, or `investigate`. Categories distinguish
+contradictions, unsupported claims, obsolete instructions, unnecessary repetition,
+missing explanation, vague prose and useful repetition. A useful-repetition finding
+uses `retain`. Preserve audience-specific summaries, warnings and unique rationale.
+Two documents with similar words may answer different questions; two paraphrases
+may still compete as the same authoritative instruction.
+
+The review JSON identifies its packet snapshot, reviewed and unreviewed selected
+paths, and findings. Each citation contains path, inclusive start/end line and the
+exact quoted passage. Each finding supplies target, nonempty supporting citations,
+uncertainty, suggested_disposition and rationale. The validator checks source bytes,
+scope and citation grounding:
+
+```sh
+ai-dlc project docs-review-check --packet .ai-dlc/documentation/packet.json --review .ai-dlc/documentation/review.json
+```
+
+Passing establishes grounded citations, not semantic truth. Record partial coverage
+honestly. Reconcile code/spec disagreements as defects or proposed requirement
+changes; never silently rewrite approved intent to match an implementation bug.
+Consolidation remains a reviewed Git edit: choose the canonical explanation, retain
+unique facts and historical rationale, and link from supporting documents.
+
+## Linked personal workspace
+
+```sh
+ai-dlc project workspace-init --vault /path/to/vault --name example --bases
+ai-dlc project workspace-init --vault /path/to/vault --name example --bases --apply
+```
+
+The first call previews exact additions. The existing project portal remains
+unchanged. A companion `Projects/example-workspace.md` organizes private focus,
+daily links, questions and learnings. This has a distinct personal purpose; it does
+not copy canonical documents. Existing annotations survive repeated setup.
+Templates in `AI-DLC/Templates/` provide small structured notes; set their `project`
+property to the workspace link and distinguish evidence from interpretation.
+Optional native Bases views in `AI-DLC/Views/` show active projects, unresolved
+questions and unreviewed learnings. Open those views in Obsidian; normal backlinks
+and links also work without Bases. No community plugin is required by this setup.
+
+At day start, select the relevant project and unresolved questions, then consult
+current tracker/spec/code evidence. At day end, capture selected learning or an
+unresolved question with its source links; do not copy every tool log or summarize
+all activity automatically. Promotion to a team rule is a separate reviewed action.
+
+## Company knowledge and SDK practices
+
+Keep existing company policies and Confluence pages authoritative. A private
+learning is an observation until evidence and a responsible owner establish its
+applicability. Promote a selected observation into a candidate procedure, review it
+against SDK behavior and company rules, then distribute the approved skill through
+a pinned private Git bundle. Procedure and reference material have different jobs:
+the skill states when/how to act; supporting references contain examples, rationale,
+source provenance and limitations. Load only material needed for the current task.
+
+Select separate bundles for unrelated company contexts. Record exact supported
+SDK versions and the project's selected versions; incompatibility or unknown
+applicability must be resolved before claiming readiness. Do not pretend all SDKs
+share one semantic-version convention. Preserve authored local edits when upgrading
+pinned guidance. Never automatically promote personal notes, fetch all Confluence
+pages, or choose a winner when company guidance conflicts with project policy.
+
+## Formatting and prose checks
+
+The existing Markdown link/metadata checks remain objective diagnostics. Optionally
+configure Vale and run `ai-dlc project docs-style --path docs/reference/api.md`.
+AI-DLC invokes only the explicit check, never installs styles or runs Vale sync.
+The default reports unavailable tools and alerts without a mandatory failure;
+`--strict` requires the configured style check to pass. Keep local vocabulary and
+style policy reviewed. A prose linter cannot verify implementation claims.
+
+A schema-2 bundle keeps the original manifest fields and adds `references` and
+`guidance`. For exported skill `sdk-requests` at `skills/sdk-requests/SKILL.md`,
+its `references` entry can list `skills/sdk-requests/references/requests.md`.
+Include every referenced file in the manifest `files` digest map. The supporting
+path retains that relative location beside each rendered native skill.
+
+Its `guidance` entry contains an owner, `status` (`approved`, `draft`, or
+`superseded`), nonempty HTTPS `sources`, and `sdk` with `name` plus exact supported
+`versions`. Declare the project's chosen version under `[agents.sdk_versions]`,
+for example `example-sdk = "2.0"`. Draft/unknown/incompatible guidance may be
+previewed and imported for inspection but cannot claim ready or render as active
+guidance. Schema-1 bundles continue to work unchanged.
+
+CI can set `AI_DLC_DOCS_BASE` to its independently selected PR base or push
+predecessor; the `docs-gate` CLI uses it unless `--base` is explicitly provided.
+Fetch that commit/history before checking. A stale or unavailable comparison must
+be reviewed or fetched, not silently replaced with HEAD to hide changes.

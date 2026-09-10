@@ -20,3 +20,5 @@ This development template needs the AI-DLC release bootstrap artifacts before CI
 ## Documentation upkeep
 
 Read [documentation guidance](docs/documentation-guide.md). Search the project map, catalog and canonical specifications before creating a document. Update existing authoritative docs, record owners and sources, and review affected docs with code changes. Keep private notes separate from shared drafts.
+
+For documentation changes, use the [documentation ownership and review workflow](docs/documentation-guide.md). Review affected sources and canonical documents before adding another explanation; record an evidence-bound disposition when the project enables documentation checks.

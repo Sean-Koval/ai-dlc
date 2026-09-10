@@ -49,7 +49,7 @@ command = "uv run --locked --no-sync pyright --version"
 verify = "uv run --locked --no-sync pyright --version"
 
 [checks]
-required = ["generated", "format", "lint", "types", "test"]
+required = ["generated", "format", "lint", "types", "test", "documentation"]
 
 [checks.commands]
 generated = "ai-dlc agents render --check && uv run --locked --no-sync python scripts/check_generated.py"
@@ -57,6 +57,7 @@ format = "uv run --locked --no-sync ruff format --check src tests scripts"
 lint = "uv run --locked --no-sync ruff check src tests scripts"
 types = "uv run --locked --no-sync pyright --pythonpath .venv/bin/python"
 test = "uv run --locked --no-sync pytest -q"
+documentation = "ai-dlc project docs-gate"
 
 [agents]
 servers = []

@@ -4,11 +4,11 @@
   "skills": {
     "day-end": {
       "path": "skills/day-end/SKILL.md",
-      "sha256": "c18e67e359be9a38f55b95a9659f05d20df2cc8eb854be4661a30805128a0532"
+      "sha256": "2453f271ade54bb141927c9bfe5aa8d96e3599b670d1571d562bbce2f3bad115"
     },
     "day-start": {
       "path": "skills/day-start/SKILL.md",
-      "sha256": "4794aca5d1db1ed460f7ea859b22090ba0d1d0979f520a6526f06ff9bb56c9a4"
+      "sha256": "4de3148d1e72b9f44271bcf18fb961c0a5ff0c6b16c865a7fc8e3cadc9004960"
     },
     "design-brief": {
       "path": "skills/design-brief/SKILL.md",
@@ -21,6 +21,10 @@
     "discovery": {
       "path": "skills/discovery/SKILL.md",
       "sha256": "74d0a76012649f919770e37fa464d436a0ce8c7501ec011182a29d4ae14d2904"
+    },
+    "document-review": {
+      "path": "skills/document-review/SKILL.md",
+      "sha256": "430a11bbb50ad32ca14a45074057fca3f761659b1289b77b36fbc617d2b0fb98"
     },
     "handoff": {
       "path": "skills/handoff/SKILL.md",

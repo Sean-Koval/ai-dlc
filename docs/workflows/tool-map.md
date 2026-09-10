@@ -179,3 +179,18 @@ for the four portable templates and original examples. Formal behavior remains
 with the selected specification provider; the tracker owns delivery status, and
 existing finish gates remain authoritative. The separate human calibration
 protocol is unrun and does not spend the existing generic skill-evaluation budget.
+
+## Documentation and private workspace tools
+
+| MCP tool | CLI counterpart | Purpose |
+|---|---|---|
+| `project_docs_impact` | `project docs-impact` | Find mapped documents and unmapped changes for an explicit Git comparison |
+| `project_docs_disposition` | `project docs-disposition` | Emit content-bound reviewed decisions without writing evidence |
+| `project_docs_gate` | `project docs-gate` | Check current dispositions and new objective debt |
+| `project_docs_review` | `project docs-review` | Prepare bounded selected-document context for the active harness |
+| `project_docs_review_check` | `project docs-review-check` | Check citations, scope and source bytes; does not certify semantic truth |
+| `project_workspace_preview` | `project workspace-init` | Preview additive private project navigation; CLI apply explicitly creates files |
+
+The [documentation guide](../../project-templates/project/docs/documentation-guide.md) explains ownership, packet
+review, baselines and workspace use. The optional CLI `project docs-style` invokes
+configured Vale; it does not install a tool or establish factual correctness.
