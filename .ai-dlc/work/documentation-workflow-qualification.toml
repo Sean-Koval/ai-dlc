@@ -34,6 +34,7 @@ plan = "openspec/changes/archive/2026-09-10-documentation-workflow-qualification
 branch = "codex/documentation-knowledge"
 tracker = "34"
 verification = "docs/verification/documentation-workflow.md"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/35"
 
 [bindings]
 specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"

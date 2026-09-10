@@ -170,6 +170,7 @@ def test_cli_honors_independently_supplied_ci_base(project, monkeypatch):
 
     from ai_dlc.cli import app
 
+    monkeypatch.delenv("AI_DLC_DOCS_BASE", raising=False)
     service = api()
     evidence_dir = project / ".ai-dlc/documentation"
     evidence_dir.mkdir(parents=True)

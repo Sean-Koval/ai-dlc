@@ -1,6 +1,6 @@
 # Documentation and knowledge workflow verification
 
-Status: implementation candidate, September 10, 2026. GitHub issues29–34 track
+Status: implementation candidate, September 10, 2026. GitHub issues 29–34 track
 delivery; no issue is complete merely because the implementation is locally tested.
 
 ## Scope
@@ -21,9 +21,15 @@ not a merged-revision qualification. Source remained unchanged during the run.
 Scoped integration earlier passed 375 tests. All 30 strict OpenSpec validations
 passed before archive finalization. The final source review approved the branch.
 
-Only OpenSpec archival, artifact-link and verification metadata are finalized
-after that full run; the corresponding structural and evidence checks are rerun.
-No full-test or live-CI result is inferred from an archive operation.
+OpenSpec archival, artifact-link and verification metadata were finalized after
+that full run; their structural and evidence checks passed. The initial GitHub CI
+run exposed one test isolation defect: the disposable-repository CLI test inherited
+the real repository's comparison revision. The test now clears that environment
+value before checking the default, then explicitly sets its invalid-base case.
+The failure was reproduced locally with CI's environment; all 10 impact tests
+passed after the correction. No full-test or live-CI success is inferred from
+that focused rerun. [PR #35](https://github.com/Sean-Koval/ai-dlc/pull/35) owns the
+current CI results.
 
 ## Qualification boundaries
 
@@ -79,7 +85,7 @@ base or push predecessor. The CLI pins that independently supplied revision, so
 changing only the evidence's base cannot bypass the intended CI comparison.
 
 The brownfield evolution then changed the fictional code/documents deliberately:
-a probe failed for the 10-second implementation and passed after the15-second
+a probe failed for the 10-second implementation and passed after the 15-second
 spec-aligned repair; the duplicate reference became a canonical link and onboarding
 kept its rationale. The previous review was rejected as stale; new dispositions
 validated, and repeat workspace setup created no files or replaced annotations.
