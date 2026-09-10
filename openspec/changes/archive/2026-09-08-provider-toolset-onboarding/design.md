@@ -1,6 +1,6 @@
 ## Context
 
-See the [source audit](../../../../docs/planning/provider-toolset-code-audit.md).
+See the [source audit](../../../../docs/archive/planning/provider-toolset-code-audit.md).
 Reuse schema-4 `roles`, provider aliases, `agents.servers`, existing module recipes,
 component schema 1, and native client ownership. Do not create another plugin format.
 

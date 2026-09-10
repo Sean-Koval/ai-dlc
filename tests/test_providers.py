@@ -77,7 +77,7 @@ def test_capabilities_contract_rejects_coerced_or_missing_wire_types(result):
 
 
 def test_journal_conflicts_and_recovers(tmp_path):
-    from ai_dlc.journal import Journal
+    from ai_dlc.work.journal import Journal
 
     j = Journal(tmp_path / "state.db")
     assert j.begin("op", {"x": 1})["status"] == "pending"

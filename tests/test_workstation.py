@@ -1,6 +1,6 @@
 import pytest
 
-from ai_dlc.workstation import activate_workstation
+from ai_dlc.setup.workstation import activate_workstation
 
 
 def test_activation_preserves_user_config_and_converges(tmp_path):
@@ -29,7 +29,7 @@ def test_activation_preserves_user_config_and_converges(tmp_path):
 
 
 def test_native_installer_rejects_mismatch_before_execution(tmp_path, monkeypatch):
-    from ai_dlc import workstation
+    from ai_dlc.setup import workstation
 
     monkeypatch.setattr(workstation.shutil, "which", lambda name: None)
     monkeypatch.setattr(workstation.Path, "exists", lambda path: False)

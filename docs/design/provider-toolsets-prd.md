@@ -12,7 +12,7 @@ Implementation authorized: GitHub Issues **and Projects** are the selected first
 personal toolset. Plane remains an optional later provider; no Plane installation
 is needed to use GitHub. Earlier undecided-destination and Projects-exclusion
 notes below are historical and superseded by this selection.
-See [the executing child](../superpowers/plans/2026-09-07-github-ticket-workflows.md).
+See [the executing child](../../openspec/changes/archive/2026-09-07-github-ticket-workflows/2026-09-07-github-ticket-workflows.md).
 
 Owner: AI-DLC maintainer.
 Status: draft updated with maintainer context, September 7, 2026. Planning requested;
@@ -42,7 +42,7 @@ Obsidian can view or edit those repository documents directly. Eligibility for
 explicit publication follows the selected document roots and private-note
 exclusions, not which editor opens the file.
 
-The [source audit](../planning/provider-toolset-code-audit.md) distinguishes
+The [source audit](../archive/planning/provider-toolset-code-audit.md) distinguishes
 shipped support from SAN-12's unmerged bundle work. It identifies real gaps in
 scaffolding, onboarding, capability handling, and migration UX. Existing upstream
 MCP tools, including the maintainer's existing custom Confluence server, should
@@ -152,8 +152,8 @@ is a machine-level setup step, not something repeated by project bootstrap.
 ## Links
 
 - [Product direction](../product-direction.md)
-- [Code audit and alternatives](../planning/provider-toolset-code-audit.md)
-- [Implementation sequence](../superpowers/plans/2026-09-06-provider-toolsets.md)
+- [Code audit and alternatives](../archive/planning/provider-toolset-code-audit.md)
+- [Implementation sequence](../archive/planning/2026-09-06-provider-toolsets.md)
 - [Toolset setup spec](../../openspec/changes/archive/2026-09-08-provider-toolset-onboarding/specs/provider-toolset-onboarding/spec.md)
 - [Tracker adapter spec](../../openspec/changes/portable-tracker-adapters/specs/portable-tracker-adapters/spec.md)
 - [Migration spec](../../openspec/changes/selective-tracker-migration/specs/selective-tracker-migration/spec.md)

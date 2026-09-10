@@ -1,7 +1,7 @@
 import pytest
 
-from ai_dlc.knowledge import Knowledge
-from ai_dlc.vault_link import link_vault
+from ai_dlc.documentation.knowledge import Knowledge
+from ai_dlc.documentation.vault_link import link_vault
 
 
 def setup(tmp_path):

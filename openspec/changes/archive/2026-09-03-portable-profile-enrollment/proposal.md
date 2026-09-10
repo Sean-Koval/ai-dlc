@@ -5,7 +5,7 @@ cannot yet enroll a new machine from one portable, reviewable source of personal
 desired state. That leaves profile paths, machine-specific settings, and repeated
 setup as manual knowledge rather than a safe lifecycle.
 
-The approved [portable profile and machine enrollment design](../../../../docs/superpowers/specs/2026-09-03-portable-profile-enrollment-design.md)
+The approved [portable profile and machine enrollment design](historical-design.md)
 defines the first dogfooding cycle that closes this gap without adding a hosted
 control plane or bringing credentials into AI-DLC-managed files.
 

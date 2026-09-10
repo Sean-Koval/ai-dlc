@@ -7,7 +7,7 @@ experimental transcripts, scores or improvement findings from this work.
 
 - [Protocol](../../agents/evaluations/product-delivery/protocol.md)
 - [Case corpus](../../agents/evaluations/product-delivery/cases.json)
-- [Scoped plan steering](../superpowers/plans/2026-09-05-workflow-quality-calibration.md)
+- [Scoped plan steering](../archive/planning/2026-09-05-workflow-quality-calibration.md)
 
 ## Delivered preparation
 

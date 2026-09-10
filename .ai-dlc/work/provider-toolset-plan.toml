@@ -18,7 +18,7 @@ scm = "github"
 knowledge = "obsidian"
 
 [artifacts]
-plan = "docs/superpowers/plans/2026-09-06-provider-toolsets.md"
+plan = "docs/archive/planning/2026-09-06-provider-toolsets.md"
 requirements = "docs/design/provider-toolsets-prd.md"
-audit = "docs/planning/provider-toolset-code-audit.md"
+audit = "docs/archive/planning/provider-toolset-code-audit.md"
 branch = "codex/provider-toolset-plan"

@@ -93,7 +93,7 @@ This table records delivery and cancellation; it is not a queue to execute.
 | [#17](https://github.com/Sean-Koval/ai-dlc/issues/17) | Retained v4 release obligations | Cancelled (CLOSED / NOT_PLANNED); Full platform/provider/evaluation evidence and release publication remain outstanding |
 | [#22](https://github.com/Sean-Koval/ai-dlc/issues/22) | Selective Confluence publication | Cancelled (CLOSED / NOT_PLANNED); Selective Confluence publication remains unimplemented pending custom server review |
 
-The [historical execution plan](superpowers/plans/2026-09-07-work-computer-readiness.md)
+The [historical execution plan](archive/planning/2026-09-07-work-computer-readiness.md)
 records the earlier work-computer sequence; it is not an active backlog. Issue-specific formal specs remain the behavior
 authority. Older implementation plans may supply compatible detail; their obsolete
 Linear priority, provider choice, or access-pending claims do not override this
@@ -114,5 +114,5 @@ permissions or release evidence. The v4 experiment declaration in
 
 See [release evidence](release-verification.md),
 [GitHub qualification](verification/github-ticket-workflows.md),
-[backlog adoption and provenance](planning/github-backlog-migration.md), and
+[backlog adoption and provenance](archive/planning/github-backlog-migration.md), and
 [current executor handoff](handoffs/framework-delivery.md).

@@ -1,7 +1,7 @@
 ## Context
 
 This change implements the approved [portable profile and machine enrollment
-design](../../../../docs/superpowers/specs/2026-09-03-portable-profile-enrollment-design.md).
+design](historical-design.md).
 It turns existing configuration and setup primitives into a local-first,
 reproducible enrollment workflow: a Git profile supplies shared desired state and
 each enrolled machine supplies only its local bindings.

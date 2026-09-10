@@ -92,7 +92,7 @@ release work requires separately approved scope.
 ## Navigation
 
 - [Draft provider toolset requirements](design/provider-toolsets-prd.md) and
-  [implementation sequence](superpowers/plans/2026-09-06-provider-toolsets.md):
+  [implementation sequence](archive/planning/2026-09-06-provider-toolsets.md):
   requested Plane/Jira/Confluence integration with Obsidian retained; proposed
   scope, not shipping capability.
 
@@ -100,6 +100,6 @@ release work requires separately approved scope.
 - [Delivery architecture](design/framework-delivery.md)
 - [Executor handoff](handoffs/framework-delivery.md)
 - [V4 proposal](../openspec/changes/portable-development-v4/proposal.md)
-- [Enrollment design and follow-on cycles](superpowers/specs/2026-09-03-portable-profile-enrollment-design.md)
+- [Enrollment design and follow-on cycles](../openspec/changes/archive/2026-09-03-portable-profile-enrollment/historical-design.md)
 - [Current architecture](architecture.md)
 - [Actual release evidence](release-verification.md)

@@ -31,4 +31,4 @@ None. Existing schema-4, content ownership, enrollment, and finish contracts rem
 - Update docs/workflows/design-to-implementation.md and generated templates
 
 Dependencies: product-shaping-workflow.
-Local implementation and required checks are complete; independent source review, archive, PR/CI integration and configured finish remain pending. See the [verification evidence](../../../../docs/verification/spec-delivery-traceability.md). [Execution plan](../../../../docs/superpowers/plans/2026-09-05-spec-delivery-traceability.md).
+Local implementation and required checks are complete; independent source review, archive, PR/CI integration and configured finish remain pending. See the [verification evidence](../../../../docs/verification/spec-delivery-traceability.md). [Execution plan](2026-09-05-spec-delivery-traceability.md).

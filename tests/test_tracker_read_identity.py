@@ -12,8 +12,8 @@ import tomli_w
 from ai_dlc.providers import Registry
 from ai_dlc.providers.github_issues import GitHubIssuesProvider
 from ai_dlc.providers.linear import LinearProvider
-from ai_dlc.tracker_migration import apply_tracker_migration, plan_tracker_migration
-from ai_dlc.workflow import WorkService
+from ai_dlc.work.tracker_migration import apply_tracker_migration, plan_tracker_migration
+from ai_dlc.work.workflow import WorkService
 
 
 @pytest.fixture(params=["github-issues", "linear"])

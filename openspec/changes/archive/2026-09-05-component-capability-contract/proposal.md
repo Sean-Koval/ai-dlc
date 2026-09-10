@@ -28,4 +28,4 @@ None. Existing schema-4, content ownership, enrollment, and finish contracts rem
 - Modify tests/test_config.py
 
 Dependencies: none.
-No implementation is complete. [Execution plan](../../../docs/superpowers/plans/2026-09-05-component-capability-contract.md).
+No implementation is complete. [Execution plan](2026-09-05-component-capability-contract.md).

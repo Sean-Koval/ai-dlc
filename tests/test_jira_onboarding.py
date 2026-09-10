@@ -11,8 +11,8 @@ from ai_dlc.cli import app
 
 @pytest.fixture
 def onboarding(tmp_path, monkeypatch):
-    from ai_dlc import jira_onboarding
     from ai_dlc.providers.jira_cloud import JiraCloudProvider
+    from ai_dlc.setup import jira_onboarding
 
     jira = Jira()
     settings = {
@@ -124,7 +124,7 @@ def test_onboarding_requests_only_projects_where_creation_is_available(onboardin
 def test_selected_jira_alias_renders_packaged_guidance_without_native_auth(tmp_path):
     from test_jira_provider import SETTINGS
 
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
 
     (tmp_path / "ai-dlc.toml").write_text(
         tomli_w.dumps(

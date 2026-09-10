@@ -8,9 +8,9 @@ from pathlib import Path
 import pytest
 from test_workflow_bundles import _bundle_repository, _git
 
-from ai_dlc.agents import inspect_bundle_guidance, render_agents
 from ai_dlc.config import resolve_layers
-from ai_dlc.workflow_bundles import import_bundle, resolve_bundle, validate_bundle
+from ai_dlc.harness.agents import inspect_bundle_guidance, render_agents
+from ai_dlc.harness.workflow_bundles import import_bundle, resolve_bundle, validate_bundle
 
 
 def company(root: Path):
@@ -174,7 +174,7 @@ def test_reference_tree_remains_closed(tmp_path, mutation):
 
 
 def test_conflicting_selections_report_compatibility_without_prose_inference(tmp_path):
-    from ai_dlc.agents import _guidance_selection_details
+    from ai_dlc.harness.agents import _guidance_selection_details
 
     manifest = company(tmp_path)
     second = json.loads(json.dumps(manifest))
@@ -188,7 +188,7 @@ def test_conflicting_selections_report_compatibility_without_prose_inference(tmp
 
 
 def test_reference_update_preserves_vendored_local_edits(tmp_path):
-    from ai_dlc.workflow_bundles import load_vendored_bundle
+    from ai_dlc.harness.workflow_bundles import load_vendored_bundle
 
     project = enroll(tmp_path)
     vendored = project / ".ai-dlc/bundles/company/skills/sdk/references/rules.md"

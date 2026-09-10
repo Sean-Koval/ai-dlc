@@ -9,7 +9,7 @@ def _write_enrollment(
     paths, *, content: bytes, machine_id: str = "workstation-01", machine: str = "schema = 4\n"
 ) -> None:
     """Create a real, digest-verified cache and its active enrollment lock."""
-    from ai_dlc.enrollment import EnrollmentLock, write_lock
+    from ai_dlc.environment.enrollment import EnrollmentLock, write_lock
 
     profile_id = "personal-profile"
     resolved_commit = "a" * 40
@@ -37,7 +37,7 @@ def _write_enrollment(
 
 def test_runtime_resolution_uses_enrolled_files_and_fixed_precedence(tmp_path: Path):
     from ai_dlc.config import resolve_runtime
-    from ai_dlc.enrollment import EnrollmentPaths
+    from ai_dlc.environment.enrollment import EnrollmentPaths
 
     paths = EnrollmentPaths.from_environment(home=tmp_path / "home", environ={})
     _write_enrollment(
@@ -74,7 +74,7 @@ def test_runtime_resolution_uses_enrolled_files_and_fixed_precedence(tmp_path: P
 
 def test_runtime_explicit_personal_replaces_enrollment_without_reordering_project(tmp_path: Path):
     from ai_dlc.config import resolve_runtime
-    from ai_dlc.enrollment import EnrollmentPaths
+    from ai_dlc.environment.enrollment import EnrollmentPaths
 
     paths = EnrollmentPaths.from_environment(home=tmp_path / "home", environ={})
     _write_enrollment(
@@ -101,7 +101,7 @@ def test_runtime_explicit_personal_does_not_verify_the_replaced_enrolled_cache(
     tmp_path: Path, cache_state: str
 ):
     from ai_dlc.config import resolve_runtime
-    from ai_dlc.enrollment import EnrollmentPaths
+    from ai_dlc.environment.enrollment import EnrollmentPaths
 
     paths = EnrollmentPaths.from_environment(home=tmp_path / "home", environ={})
     _write_enrollment(
@@ -129,7 +129,7 @@ def test_runtime_explicit_machine_replaces_enrollment_and_cannot_weaken_project_
     tmp_path: Path,
 ):
     from ai_dlc.config import resolve_runtime
-    from ai_dlc.enrollment import EnrollmentPaths
+    from ai_dlc.environment.enrollment import EnrollmentPaths
 
     paths = EnrollmentPaths.from_environment(home=tmp_path / "home", environ={})
     _write_enrollment(
@@ -172,7 +172,7 @@ def test_runtime_without_enrollment_uses_base_and_an_existing_project_only(tmp_p
 @pytest.mark.parametrize("failure", ["missing", "changed", "malformed"])
 def test_runtime_rejects_an_invalid_active_cache(tmp_path: Path, failure: str):
     from ai_dlc.config import resolve_runtime
-    from ai_dlc.enrollment import EnrollmentPaths
+    from ai_dlc.environment.enrollment import EnrollmentPaths
 
     paths = EnrollmentPaths.from_environment(home=tmp_path / "home", environ={})
     content = b'schema = 4\nprofile_id = "personal-profile"\n'

@@ -5,8 +5,8 @@ import pytest
 from typer.testing import CliRunner
 
 from ai_dlc.cli import app
-from ai_dlc.moc import scaffold_5_pillar_docs
-from ai_dlc.templates import adopt
+from ai_dlc.documentation.moc import scaffold_5_pillar_docs
+from ai_dlc.setup.templates import adopt
 
 
 def test_scaffold_rejects_symlink_before_any_writes(tmp_path):
@@ -90,7 +90,7 @@ def test_unknown_docs_preset_refused_before_adoption(tmp_path):
 
 
 def test_document_inspection_reports_real_gaps_without_mutating(tmp_path):
-    from ai_dlc.documents import check_documents
+    from ai_dlc.documentation.documents import check_documents
 
     docs = tmp_path / "docs"
     docs.mkdir()
@@ -128,7 +128,7 @@ status = "draft"
 
 @pytest.mark.parametrize("body", ["broken = [", "schema = 2", 'schema = 1\ndocuments = "bad"'])
 def test_invalid_catalog_reports_findings(tmp_path, body):
-    from ai_dlc.documents import check_documents
+    from ai_dlc.documentation.documents import check_documents
 
     (tmp_path / "docs").mkdir()
     (tmp_path / "docs" / "catalog.toml").write_text(body)
@@ -136,7 +136,7 @@ def test_invalid_catalog_reports_findings(tmp_path, body):
 
 
 def test_catalog_paths_and_sources_do_not_authorize_outside_reads(tmp_path):
-    from ai_dlc.documents import check_documents
+    from ai_dlc.documentation.documents import check_documents
 
     docs = tmp_path / "docs"
     docs.mkdir()
@@ -171,7 +171,7 @@ def test_docs_check_cli_and_mcp_share_read_only_result(tmp_path):
 def test_catalog_identifies_duplicates_supersession_and_provenance(tmp_path):
     import tomli_w
 
-    from ai_dlc.documents import check_documents
+    from ai_dlc.documentation.documents import check_documents
 
     (tmp_path / "docs").mkdir()
     (tmp_path / "docs/a.md").write_text("A")
@@ -228,7 +228,7 @@ def test_adoption_preflights_vault_and_preview_includes_portal(tmp_path):
 
 
 def test_adoption_preserves_file_inserted_after_planning(tmp_path, monkeypatch):
-    from ai_dlc import document_files
+    from ai_dlc.documentation import document_files
 
     template = _template(tmp_path)
     project = tmp_path / "project"
@@ -260,7 +260,7 @@ def test_docs_init_is_preview_first_and_preserves_existing_index(tmp_path):
 
 
 def test_docs_check_detects_broken_local_navigation_without_fetching_urls(tmp_path):
-    from ai_dlc.documents import check_documents
+    from ai_dlc.documentation.documents import check_documents
 
     docs = tmp_path / "docs"
     docs.mkdir()
@@ -279,7 +279,7 @@ def test_docs_check_detects_broken_local_navigation_without_fetching_urls(tmp_pa
 def test_malformed_entry_fields_never_crash_inspection(tmp_path, field, value):
     import tomli_w
 
-    from ai_dlc.documents import check_documents
+    from ai_dlc.documentation.documents import check_documents
 
     docs = tmp_path / "docs"
     docs.mkdir()
@@ -300,7 +300,7 @@ def test_malformed_entry_fields_never_crash_inspection(tmp_path, field, value):
 def test_empty_normalized_catalog_path_is_reported(tmp_path, relative):
     import tomli_w
 
-    from ai_dlc.documents import check_documents
+    from ai_dlc.documentation.documents import check_documents
 
     (tmp_path / "docs").mkdir()
     (tmp_path / "docs/catalog.toml").write_text(
@@ -310,7 +310,7 @@ def test_empty_normalized_catalog_path_is_reported(tmp_path, relative):
 
 
 def test_malformed_url_does_not_abort_document_scan(tmp_path):
-    from ai_dlc.documents import check_documents
+    from ai_dlc.documentation.documents import check_documents
 
     docs = tmp_path / "docs"
     docs.mkdir()

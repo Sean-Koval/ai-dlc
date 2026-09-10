@@ -166,7 +166,7 @@ def test_definition_without_setup_does_not_change_lifecycle_configuration(connec
 
 
 def test_common_facade_preserves_unrelated_project_setting(connection):
-    from ai_dlc.connections import apply_connection, discover_connection, plan_connection
+    from ai_dlc.setup.connections import apply_connection, discover_connection, plan_connection
 
     root, config, _, _ = connection
     config.write_text(config.read_text() + 'project="authored-project" # keep\n')
@@ -184,7 +184,7 @@ def test_common_facade_preserves_unrelated_project_setting(connection):
 def test_common_writer_refuses_unsafe_or_changed_inputs(connection, monkeypatch, mode):
     from contextlib import contextmanager
 
-    from ai_dlc import connections
+    from ai_dlc.setup import connections
 
     root, config, remote, _ = connection
     if mode == "inline":

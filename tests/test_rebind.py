@@ -4,7 +4,7 @@ import pytest
 import tomli_w
 from typer.testing import CliRunner
 
-from ai_dlc.rebind import rebind
+from ai_dlc.setup.rebind import rebind
 
 
 @pytest.fixture
@@ -74,7 +74,7 @@ def test_rebind_same_provider_requires_explicit_artifact_mapping(project):
 
 def test_machine_configuration_preserves_unrelated_bindings(project, tmp_path):
     from ai_dlc.config import load_project, resolve_layers
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     machine = {"schema": 4, "paths": {"vault": str(tmp_path / "vault")}}
     resolved = resolve_layers([("project", load_project(project)), ("machine", machine)]).values

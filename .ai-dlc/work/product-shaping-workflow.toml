@@ -6,7 +6,7 @@ requires_spec = true
 spec_reason = "Adds observable workflow, integration or guidance behavior; the linked OpenSpec change defines acceptance."
 acceptance = [
     "Milestone M2. Give agents concrete guidance and examples for choosing worthwhile product increments before writing specifications or code.",
-    "Dependencies: none. Follow docs/superpowers/plans/2026-09-05-product-shaping-workflow.md before implementation.",
+    "Dependencies: none. Follow openspec/changes/archive/2026-09-07-product-shaping-workflow/2026-09-05-product-shaping-workflow.md before implementation.",
     "PS-01: The workflow SHALL distinguish observed evidence, user decisions, and hypotheses; it SHALL compare feasible options and identify a bounded outcome before proposing implementation.",
     "PS-02: Greenfield guidance SHALL shape the smallest useful outcome; brownfield guidance SHALL inspect existing behavior and preserve explicit compatibility boundaries.",
     "PS-03: The workflow SHALL produce traceable outcome/requirement IDs and an explicit proceed, investigate, or stop decision; material unknowns SHALL remain visible and SHALL NOT become invented acceptance facts.",
@@ -24,7 +24,7 @@ deploy = "none"
 
 [artifacts]
 spec = "openspec/changes/archive/2026-09-07-product-shaping-workflow"
-plan = "docs/superpowers/plans/2026-09-05-product-shaping-workflow.md"
+plan = "openspec/changes/archive/2026-09-07-product-shaping-workflow/2026-09-05-product-shaping-workflow.md"
 verification = "docs/verification/product-shaping-workflow.md"
 roadmap = "docs/roadmap.md"
 tracker = "https://github.com/Sean-Koval/ai-dlc/issues/11"

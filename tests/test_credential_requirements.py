@@ -2,8 +2,8 @@
 
 import pytest
 
-from ai_dlc.credentials import credential_status
-from ai_dlc.readiness import inspect_readiness
+from ai_dlc.environment.credentials import credential_status
+from ai_dlc.setup.readiness import inspect_readiness
 
 
 def jira_config(alias="work", mode="personal_scoped_token_basic"):

@@ -4,7 +4,7 @@ import pytest
 
 
 def api():
-    from ai_dlc.document_style import check_style
+    from ai_dlc.documentation.document_style import check_style
 
     return check_style
 

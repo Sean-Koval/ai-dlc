@@ -21,7 +21,7 @@
 - [x] 4.1 Run required project checks and strict OpenSpec validation.
 - [x] 4.2 Complete independent source review and record the separate archive/PR/merged-CI/work-finish delivery checklist in the verification report.
 
-[Detailed plan](../../../../docs/superpowers/plans/2026-09-05-product-shaping-workflow.md).
+[Detailed plan](2026-09-05-product-shaping-workflow.md).
 
 Local behavioral and packaging evidence: [verification report](../../../../docs/verification/product-shaping-workflow.md).
 Independent source review accepted da4bf169. The verification report tracks actual

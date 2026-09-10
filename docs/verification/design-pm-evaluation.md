@@ -16,7 +16,7 @@ approved resource limits or quality measurements are supplied by this change.
 
 - [Case specifications](../../agents/evaluations/design-pm/cases.json)
 - [Protocol and future record templates](../../agents/evaluations/design-pm/protocol.md)
-- [Scoped plan](../superpowers/plans/2026-09-05-design-pm-calibration.md)
+- [Scoped plan](../archive/planning/2026-09-05-design-pm-calibration.md)
 - [Predecessor contract](../../openspec/specs/design-pm/spec.md)
 
 ## Prepared scope

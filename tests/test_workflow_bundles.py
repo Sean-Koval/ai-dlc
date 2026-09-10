@@ -75,7 +75,7 @@ def _bundle_project(tmp_path: Path) -> Path:
 
 def test_loads_duplicate_key_free_utf8_bundle_manifest(tmp_path: Path):
     """Would fail if the raw loader did not return the complete JSON object."""
-    from ai_dlc.workflow_bundles import load_bundle_manifest
+    from ai_dlc.harness.workflow_bundles import load_bundle_manifest
 
     manifest = _write_bundle(tmp_path)
 
@@ -92,7 +92,7 @@ def test_loads_duplicate_key_free_utf8_bundle_manifest(tmp_path: Path):
 )
 def test_raw_loader_rejects_duplicate_keys_at_every_manifest_level(tmp_path: Path, document: bytes):
     """Would fail if JSON decoding silently accepted an overwritten key."""
-    from ai_dlc.workflow_bundles import load_bundle_manifest
+    from ai_dlc.harness.workflow_bundles import load_bundle_manifest
 
     (tmp_path / "bundle.json").write_bytes(document)
 
@@ -110,7 +110,7 @@ def test_raw_loader_rejects_duplicate_keys_at_every_manifest_level(tmp_path: Pat
 )
 def test_raw_loader_rejects_malformed_manifest(tmp_path: Path, content: bytes, message: str):
     """Would fail if malformed raw metadata crossed the dictionary boundary."""
-    from ai_dlc.workflow_bundles import load_bundle_manifest
+    from ai_dlc.harness.workflow_bundles import load_bundle_manifest
 
     (tmp_path / "bundle.json").write_bytes(content)
 
@@ -120,7 +120,7 @@ def test_raw_loader_rejects_malformed_manifest(tmp_path: Path, content: bytes, m
 
 def test_raw_loader_rejects_manifest_larger_than_one_mib(tmp_path: Path):
     """Would fail if an oversized manifest were read and decoded."""
-    from ai_dlc.workflow_bundles import load_bundle_manifest
+    from ai_dlc.harness.workflow_bundles import load_bundle_manifest
 
     (tmp_path / "bundle.json").write_bytes(b" " * (1024 * 1024 + 1))
 
@@ -131,7 +131,7 @@ def test_raw_loader_rejects_manifest_larger_than_one_mib(tmp_path: Path):
 @pytest.mark.parametrize("replacement", ["symlink", "directory"])
 def test_raw_loader_requires_a_regular_bundle_json(tmp_path: Path, replacement: str):
     """Would fail if the manifest boundary followed a link or accepted a non-file."""
-    from ai_dlc.workflow_bundles import load_bundle_manifest
+    from ai_dlc.harness.workflow_bundles import load_bundle_manifest
 
     if replacement == "symlink":
         target = tmp_path / "outside.json"
@@ -146,7 +146,7 @@ def test_raw_loader_requires_a_regular_bundle_json(tmp_path: Path, replacement: 
 
 def test_validates_and_normalizes_a_complete_schema_one_bundle(tmp_path: Path):
     """Would fail if valid portable skills/templates were refused or returned unsorted."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     manifest = _write_bundle(
         tmp_path,
@@ -224,7 +224,7 @@ def test_validates_and_normalizes_a_complete_schema_one_bundle(tmp_path: Path):
 )
 def test_rejects_wrong_manifest_fields_and_types(tmp_path: Path, manifest: Any, message: str):
     """Would fail if schema-1 accepted fields or JSON types outside its exact shape."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     with pytest.raises((TypeError, ValueError), match=message):
         validate_bundle(tmp_path, manifest)
@@ -240,7 +240,7 @@ def test_rejects_wrong_manifest_fields_and_types(tmp_path: Path, manifest: Any, 
 )
 def test_rejects_non_slug_export_names(tmp_path: Path, field: str, name: str):
     """Would fail if a non-portable export name entered the shared namespace."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     manifest = _write_bundle(tmp_path)
     original = next(iter(manifest[field]))
@@ -267,7 +267,7 @@ def test_rejects_non_slug_export_names(tmp_path: Path, field: str, name: str):
 )
 def test_rejects_unsafe_or_nonnormalized_paths(tmp_path: Path, path: str):
     """Would fail if a payload path could escape or vary across filesystems."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     manifest = _write_bundle(tmp_path)
     old_path = manifest["skills"]["day-start"]
@@ -281,7 +281,7 @@ def test_rejects_unsafe_or_nonnormalized_paths(tmp_path: Path, path: str):
 
 def test_rejects_paths_deeper_than_sixteen_segments(tmp_path: Path):
     """Would fail if bundle traversal admitted an over-deep payload."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     path = "/".join([*(["a"] * 16), "SKILL.md"])
     manifest = _write_bundle(tmp_path)
@@ -303,7 +303,7 @@ def test_rejects_paths_deeper_than_sixteen_segments(tmp_path: Path):
 )
 def test_rejects_non_markdown_export_paths(tmp_path: Path, field: str, path: str, message: str):
     """Would fail if schema 1 admitted scripts or non-Markdown payloads."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     manifest = _write_bundle(tmp_path)
     old_path = next(iter(manifest[field].values()))
@@ -318,7 +318,7 @@ def test_rejects_non_markdown_export_paths(tmp_path: Path, field: str, path: str
 
 def test_requires_at_least_one_export(tmp_path: Path):
     """Would fail if an empty bundle could pass schema validation."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     manifest = _write_bundle(tmp_path, skills={}, templates={})
 
@@ -329,7 +329,7 @@ def test_requires_at_least_one_export(tmp_path: Path):
 @pytest.mark.parametrize("collision", ["name", "path"])
 def test_skill_and_template_exports_form_one_namespace(tmp_path: Path, collision: str):
     """Would fail if two exports could claim the same name or payload path."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     manifest = _write_bundle(tmp_path)
     if collision == "name":
@@ -349,7 +349,7 @@ def test_skill_and_template_exports_form_one_namespace(tmp_path: Path, collision
 @pytest.mark.parametrize("difference", ["missing", "undeclared"])
 def test_files_are_exactly_the_export_path_union(tmp_path: Path, difference: str):
     """Would fail if files omitted an export or admitted undefined supporting content."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     manifest = _write_bundle(tmp_path)
     if difference == "missing":
@@ -365,7 +365,7 @@ def test_files_are_exactly_the_export_path_union(tmp_path: Path, difference: str
 @pytest.mark.parametrize("digest", ["A" * 64, "0" * 63, 7])
 def test_rejects_non_lowercase_sha256_file_digests(tmp_path: Path, digest: Any):
     """Would fail if a file digest were not an exact lowercase SHA-256 value."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     manifest = _write_bundle(tmp_path)
     manifest["files"]["skills/day/SKILL.md"] = digest
@@ -377,7 +377,7 @@ def test_rejects_non_lowercase_sha256_file_digests(tmp_path: Path, digest: Any):
 
 def test_rejects_more_than_1024_payload_files(tmp_path: Path):
     """Would fail if a manifest could exceed the payload-count resource bound."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     templates = {f"template-{index}": (f"templates/{index}.md", b"# T\n") for index in range(1025)}
     manifest = {
@@ -396,7 +396,7 @@ def test_rejects_more_than_1024_payload_files(tmp_path: Path):
 @pytest.mark.parametrize("kind", ["file", "directory"])
 def test_rejects_symlinks_at_any_payload_path_component(tmp_path: Path, kind: str):
     """Would fail if validation followed an export or ancestor symlink."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     manifest = _write_bundle(tmp_path)
     outside = tmp_path.parent / f"{tmp_path.name}-outside"
@@ -417,7 +417,7 @@ def test_rejects_symlinks_at_any_payload_path_component(tmp_path: Path, kind: st
 
 def test_rejects_a_nonregular_payload(tmp_path: Path):
     """Would fail if a declared export were a directory rather than a regular file."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     manifest = _write_bundle(tmp_path)
     path = tmp_path / "skills/day/SKILL.md"
@@ -430,7 +430,7 @@ def test_rejects_a_nonregular_payload(tmp_path: Path):
 
 def test_rejects_missing_and_extra_checkout_entries_without_writing(tmp_path: Path):
     """Would fail if incomplete or undeclared checkout content passed, or validation wrote."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     manifest = _write_bundle(tmp_path)
     (tmp_path / "skills/day/SKILL.md").unlink()
@@ -446,7 +446,7 @@ def test_rejects_missing_and_extra_checkout_entries_without_writing(tmp_path: Pa
 
 def test_ignores_only_the_checkout_roots_git_metadata(tmp_path: Path):
     """Would fail if normal root Git metadata were treated as payload."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     manifest = _write_bundle(tmp_path)
     (tmp_path / ".git/objects").mkdir(parents=True)
@@ -457,7 +457,7 @@ def test_ignores_only_the_checkout_roots_git_metadata(tmp_path: Path):
 
 def test_rejects_a_nested_git_entry_as_undeclared_content(tmp_path: Path):
     """Would fail if nested Git metadata received the checkout-root exception."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     manifest = _write_bundle(tmp_path)
     (tmp_path / "skills/day/.git").mkdir()
@@ -468,7 +468,7 @@ def test_rejects_a_nested_git_entry_as_undeclared_content(tmp_path: Path):
 
 def test_rejects_a_payload_digest_mismatch(tmp_path: Path):
     """Would fail if tampered Markdown bytes passed authenticated validation."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     manifest = _write_bundle(tmp_path)
     (tmp_path / "templates/product-brief.md").write_text("# Tampered\n")
@@ -479,7 +479,7 @@ def test_rejects_a_payload_digest_mismatch(tmp_path: Path):
 
 def test_rejects_non_utf8_markdown(tmp_path: Path):
     """Would fail if payload bytes were authenticated but not portable UTF-8 Markdown."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     manifest = _write_bundle(
         tmp_path,
@@ -493,7 +493,7 @@ def test_rejects_non_utf8_markdown(tmp_path: Path):
 
 def test_rejects_a_payload_larger_than_two_mib(tmp_path: Path):
     """Would fail if a single payload could exceed its resource bound."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     content = b"# T\n" + b"a" * (2 * 1024 * 1024)
     manifest = _write_bundle(
@@ -508,7 +508,7 @@ def test_rejects_a_payload_larger_than_two_mib(tmp_path: Path):
 
 def test_rejects_more_than_ten_mib_total_payload(tmp_path: Path):
     """Would fail if individually valid files could exceed the aggregate resource bound."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     content = b"# T\n" + b"a" * (2 * 1024 * 1024 - 4)
     templates = {f"template-{index}": (f"templates/{index}.md", content) for index in range(6)}
@@ -544,7 +544,7 @@ def test_rejects_nonportable_skill_frontmatter_or_body(
     tmp_path: Path, content: bytes, message: str
 ):
     """Would fail if a skill could render differently across supported harnesses."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     manifest = _write_bundle(
         tmp_path,
@@ -558,7 +558,7 @@ def test_rejects_nonportable_skill_frontmatter_or_body(
 
 def test_accepts_the_maximum_skill_description_length(tmp_path: Path):
     """Would fail on an off-by-one error at the 1,024-character boundary."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     content = b"---\nname: day-start\ndescription: " + b"a" * 1024 + b"\n---\n\n# Start\n"
     manifest = _write_bundle(
@@ -572,7 +572,7 @@ def test_accepts_the_maximum_skill_description_length(tmp_path: Path):
 
 def test_rejects_an_empty_template(tmp_path: Path):
     """Would fail if a template contained no usable Markdown body."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     manifest = _write_bundle(
         tmp_path,
@@ -588,7 +588,7 @@ def test_validation_rejects_leaf_symlink_swap_between_check_and_read(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if a checked leaf were reopened by mutable pathname for reading."""
-    from ai_dlc import workflow_bundles
+    from ai_dlc.harness import workflow_bundles
 
     manifest = _write_bundle(
         tmp_path,
@@ -620,7 +620,7 @@ def test_validation_rejects_growth_past_per_file_limit_between_stat_and_read(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if a file could grow past its limit after its metadata check."""
-    from ai_dlc import workflow_bundles
+    from ai_dlc.harness import workflow_bundles
 
     manifest = _write_bundle(
         tmp_path,
@@ -649,7 +649,7 @@ def test_validation_rejects_tree_mutation_after_scan(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if validation trusted a checkout snapshot after the tree changed."""
-    from ai_dlc import workflow_bundles
+    from ai_dlc.harness import workflow_bundles
 
     manifest = _write_bundle(tmp_path)
     real_checkout_tree = workflow_bundles._checkout_tree
@@ -672,7 +672,7 @@ def test_validation_rejects_tree_mutation_after_scan(
 @pytest.mark.parametrize("control", ["\u202e", "\u200b", "\u2066", "\ufeff"])
 def test_rejects_every_unicode_category_c_description_control(tmp_path: Path, control: str):
     """Would fail if a format control could make skill metadata display deceptively."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     content = (f"---\nname: day-start\ndescription: Start{control}here\n---\n\n# Start\n").encode()
     manifest = _write_bundle(
@@ -690,7 +690,7 @@ def test_filesystem_errors_are_normalized_and_do_not_disclose_paths(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, operation: str
 ):
     """Would fail if an OS error or absolute source path escaped the validation boundary."""
-    from ai_dlc import workflow_bundles
+    from ai_dlc.harness import workflow_bundles
 
     manifest = _write_bundle(tmp_path)
     original_path_read = Path.read_bytes
@@ -739,7 +739,7 @@ def test_filesystem_errors_are_normalized_and_do_not_disclose_paths(
 
 def test_duplicate_key_error_does_not_echo_the_arbitrary_key(tmp_path: Path):
     """Would fail if attacker-controlled JSON keys were included in refusal messages."""
-    from ai_dlc.workflow_bundles import load_bundle_manifest
+    from ai_dlc.harness.workflow_bundles import load_bundle_manifest
 
     secret_key = f"{tmp_path}/credential-sentinel"
     (tmp_path / "bundle.json").write_text(
@@ -759,7 +759,7 @@ def test_manifest_loader_rejects_same_inode_content_mutation_during_read(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if equal-length in-place changes escaped post-read identity validation."""
-    from ai_dlc import workflow_bundles
+    from ai_dlc.harness import workflow_bundles
 
     manifest_path = tmp_path / "bundle.json"
     manifest_path.write_bytes(b'{"before":1}')
@@ -786,7 +786,7 @@ def test_manifest_loader_rejects_same_inode_content_mutation_during_read(
 
 def test_overdeep_undeclared_tree_is_rejected_without_recursion_error(tmp_path: Path):
     """Would fail if undeclared traversal were not bounded by the 16-segment contract."""
-    from ai_dlc.workflow_bundles import validate_bundle
+    from ai_dlc.harness.workflow_bundles import validate_bundle
 
     manifest = _write_bundle(tmp_path)
     overdeep = tmp_path
@@ -841,7 +841,7 @@ def _project_files(root: Path) -> dict[str, bytes]:
 
 def test_resolve_bundle_uses_portable_git_and_cleans_up_candidate(tmp_path: Path):
     """Would fail if resolution accepted no portable ref or leaked its temporary checkout."""
-    from ai_dlc.workflow_bundles import resolve_bundle
+    from ai_dlc.harness.workflow_bundles import resolve_bundle
 
     repository, source, environment = _bundle_repository(tmp_path)
     commit = _git(repository, "rev-parse", "HEAD")
@@ -864,8 +864,8 @@ def test_resolve_bundle_refuses_machine_specific_sources_before_git(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, source: str
 ):
     """Would fail if local provenance reached Git or the eventual import lock."""
-    from ai_dlc import profile_source
-    from ai_dlc.workflow_bundles import resolve_bundle
+    from ai_dlc.environment import profile_source
+    from ai_dlc.harness.workflow_bundles import resolve_bundle
 
     calls: list[object] = []
     monkeypatch.setattr(profile_source, "_run_git", lambda *args, **kwargs: calls.append(args))
@@ -880,7 +880,7 @@ def test_resolve_bundle_refuses_machine_specific_sources_before_git(
 def test_resolve_bundle_requires_requested_and_manifest_ids_to_match(tmp_path: Path):
     """Would fail if a caller could vendor a bundle under a misleading requested identity."""
     _, source, environment = _bundle_repository(tmp_path)
-    from ai_dlc.workflow_bundles import resolve_bundle
+    from ai_dlc.harness.workflow_bundles import resolve_bundle
 
     with pytest.raises(ValueError, match="manifest id does not match"):
         resolve_bundle(source, "main", "other-bundle", environ=environment)
@@ -888,7 +888,7 @@ def test_resolve_bundle_requires_requested_and_manifest_ids_to_match(tmp_path: P
 
 def test_import_preview_is_exact_sorted_and_writes_nothing(tmp_path: Path):
     """Would fail if preview omitted reviewed metadata, reordered maps, or touched the project."""
-    from ai_dlc.workflow_bundles import import_bundle, resolve_bundle
+    from ai_dlc.harness.workflow_bundles import import_bundle, resolve_bundle
 
     _, source, environment = _bundle_repository(tmp_path)
     project = _bundle_project(tmp_path)
@@ -924,7 +924,7 @@ def test_import_preview_is_exact_sorted_and_writes_nothing(tmp_path: Path):
 
 def test_apply_requires_reviewed_commit_and_vendors_complete_deterministic_lock(tmp_path: Path):
     """Would fail if apply skipped the preview pin or omitted authenticated vendored bytes."""
-    from ai_dlc.workflow_bundles import import_bundle, resolve_bundle
+    from ai_dlc.harness.workflow_bundles import import_bundle, resolve_bundle
 
     repository, source, environment = _bundle_repository(tmp_path)
     project = _bundle_project(tmp_path)
@@ -969,7 +969,7 @@ def test_apply_requires_reviewed_commit_and_vendors_complete_deterministic_lock(
 
 def test_apply_revalidates_candidate_bytes_immediately_before_writing(tmp_path: Path):
     """Would fail if a resolved candidate could be altered after preview and still publish."""
-    from ai_dlc.workflow_bundles import import_bundle, resolve_bundle
+    from ai_dlc.harness.workflow_bundles import import_bundle, resolve_bundle
 
     _, source, environment = _bundle_repository(tmp_path)
     project = _bundle_project(tmp_path)
@@ -983,7 +983,7 @@ def test_apply_revalidates_candidate_bytes_immediately_before_writing(tmp_path: 
 
 def test_same_owner_update_and_idempotent_apply_are_supported(tmp_path: Path):
     """Would fail if intact owned content could not update or a repeat apply reported drift."""
-    from ai_dlc.workflow_bundles import import_bundle, resolve_bundle
+    from ai_dlc.harness.workflow_bundles import import_bundle, resolve_bundle
 
     repository, source, environment = _bundle_repository(tmp_path)
     project = _bundle_project(tmp_path)
@@ -1015,7 +1015,7 @@ def test_same_owner_update_and_idempotent_apply_are_supported(tmp_path: Path):
 
 def test_apply_refuses_a_ref_that_moved_after_preview(tmp_path: Path):
     """Would fail if apply accepted newly resolved bytes under an earlier review commit."""
-    from ai_dlc.workflow_bundles import import_bundle, resolve_bundle
+    from ai_dlc.harness.workflow_bundles import import_bundle, resolve_bundle
 
     repository, source, environment = _bundle_repository(tmp_path)
     with resolve_bundle(source, "main", "example-bundle", environ=environment) as preview:
@@ -1042,7 +1042,7 @@ def test_apply_rechecks_existing_owner_after_staging_before_replace(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if a local edit arriving during staging could be overwritten."""
-    from ai_dlc import workflow_bundles
+    from ai_dlc.harness import workflow_bundles
 
     repository, source, environment = _bundle_repository(tmp_path)
     project = _bundle_project(tmp_path)
@@ -1087,7 +1087,7 @@ def test_apply_rechecks_existing_owner_after_staging_before_replace(
 @pytest.mark.parametrize("damage", ["authored", "extra", "local-edit", "invalid-lock"])
 def test_existing_destination_conflicts_are_stable_and_preserve_bytes(tmp_path: Path, damage: str):
     """Would fail if import adopted, repaired, or partially replaced untrusted existing state."""
-    from ai_dlc.workflow_bundles import import_bundle, resolve_bundle
+    from ai_dlc.harness.workflow_bundles import import_bundle, resolve_bundle
 
     _, source, environment = _bundle_repository(tmp_path)
     project = _bundle_project(tmp_path)
@@ -1126,7 +1126,7 @@ def test_publication_failure_rolls_back_previous_bundle_byte_for_byte(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if a failed staged replacement lost an intact prior bundle."""
-    from ai_dlc import workflow_bundles
+    from ai_dlc.harness import workflow_bundles
 
     repository, source, environment = _bundle_repository(tmp_path)
     project = _bundle_project(tmp_path)
@@ -1174,7 +1174,7 @@ def test_first_publication_failure_retains_and_reports_stage(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """A failed first publication must retain and report its unused stage."""
-    from ai_dlc import workflow_bundles
+    from ai_dlc.harness import workflow_bundles
 
     _, source, environment = _bundle_repository(tmp_path)
     project = _bundle_project(tmp_path)
@@ -1204,7 +1204,7 @@ def test_existing_lock_requires_exact_schema_type_and_deterministic_bytes(
     tmp_path: Path, damage: str
 ):
     """Would fail if a semantic reparse silently adopted edited lock metadata."""
-    from ai_dlc.workflow_bundles import import_bundle, resolve_bundle
+    from ai_dlc.harness.workflow_bundles import import_bundle, resolve_bundle
 
     _, source, environment = _bundle_repository(tmp_path)
     project = _bundle_project(tmp_path)
@@ -1234,7 +1234,7 @@ def test_existing_lock_requires_exact_schema_type_and_deterministic_bytes(
 
 def test_successful_updates_retain_reported_backups_without_blocking_later_imports(tmp_path):
     """Retained backup content is never adopted, changed, or a blocker for later updates."""
-    from ai_dlc.workflow_bundles import import_bundle
+    from ai_dlc.harness.workflow_bundles import import_bundle
 
     project = _bundle_project(tmp_path)
     first, second, third = [_local_candidate(tmp_path, revision) for revision in ("1", "2", "3")]
@@ -1269,7 +1269,7 @@ def test_publication_binds_post_validation_local_edit_to_replacement(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if an edit after the last scan could be overwritten by publication."""
-    from ai_dlc import workflow_bundles
+    from ai_dlc.harness import workflow_bundles
 
     repository, source, environment = _bundle_repository(tmp_path)
     project = _bundle_project(tmp_path)
@@ -1315,7 +1315,7 @@ def test_publication_binds_validated_destination_identity_to_replacement(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if a swapped destination could be silently deleted and overwritten."""
-    from ai_dlc import workflow_bundles
+    from ai_dlc.harness import workflow_bundles
 
     repository, source, environment = _bundle_repository(tmp_path)
     project = _bundle_project(tmp_path)
@@ -1359,7 +1359,7 @@ def test_publication_refuses_bundles_parent_symlink_swap_without_external_write(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if final path operations followed a replaced bundles parent."""
-    from ai_dlc import workflow_bundles
+    from ai_dlc.harness import workflow_bundles
 
     repository, source, environment = _bundle_repository(tmp_path)
     project = _bundle_project(tmp_path)
@@ -1407,7 +1407,7 @@ def test_apply_binds_requested_project_root_identity_through_return(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, swap_point: str
 ):
     """Would fail if publication continued in a project displaced from its requested pathname."""
-    from ai_dlc import workflow_bundles
+    from ai_dlc.harness import workflow_bundles
 
     _, source, environment = _bundle_repository(tmp_path)
     project = _bundle_project(tmp_path)
@@ -1458,7 +1458,7 @@ def test_apply_binds_requested_project_root_identity_through_return(
 
 def test_post_stage_conflict_retains_stage_and_reports_it(tmp_path, monkeypatch):
     """An authored edit detected after staging is preserved and residue is discoverable."""
-    from ai_dlc import workflow_bundles as bundles
+    from ai_dlc.harness import workflow_bundles as bundles
 
     project = _bundle_project(tmp_path)
     first, second = _local_candidate(tmp_path, "1"), _local_candidate(tmp_path, "2")
@@ -1485,7 +1485,7 @@ def test_stage_open_failure_after_create_retains_and_reports_stage(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """A failed stage open must retain and report the directory already created."""
-    from ai_dlc import workflow_bundles
+    from ai_dlc.harness import workflow_bundles
 
     _, source, environment = _bundle_repository(tmp_path)
     project = _bundle_project(tmp_path)
@@ -1520,7 +1520,7 @@ def test_first_import_placeholder_swap_preserves_empty_authored_destination(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if first publication clobbered a concurrent empty authored destination."""
-    from ai_dlc import workflow_bundles
+    from ai_dlc.harness import workflow_bundles
 
     _, source, environment = _bundle_repository(tmp_path)
     project = _bundle_project(tmp_path)
@@ -1550,7 +1550,7 @@ def test_first_import_detects_placeholder_swap_inside_replace_boundary(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if a swap after the precheck let replace erase an empty authored directory."""
-    from ai_dlc import workflow_bundles
+    from ai_dlc.harness import workflow_bundles
 
     _, source, environment = _bundle_repository(tmp_path)
     project = _bundle_project(tmp_path)
@@ -1585,7 +1585,7 @@ def test_created_destination_parent_is_removed_when_immediate_open_fails(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, created_name: str
 ):
     """Would fail if mkdir escaped cleanup coverage before its descriptor opened."""
-    from ai_dlc import workflow_bundles
+    from ai_dlc.harness import workflow_bundles
 
     _, source, environment = _bundle_repository(tmp_path)
     project = _bundle_project(tmp_path)
@@ -1623,7 +1623,7 @@ def test_first_import_never_uses_overwriting_replace_after_external_placeholder_
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail when replace lost a placeholder moved outside the searched parent."""
-    from ai_dlc import workflow_bundles
+    from ai_dlc.harness import workflow_bundles
 
     _, source, environment = _bundle_repository(tmp_path)
     project = _bundle_project(tmp_path)
@@ -1659,7 +1659,7 @@ def test_first_import_atomic_no_clobber_preserves_concurrent_empty_authored_dest
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if first publication overwrote a destination created at its atomic boundary."""
-    from ai_dlc import workflow_bundles
+    from ai_dlc.harness import workflow_bundles
 
     _, source, environment = _bundle_repository(tmp_path)
     project = _bundle_project(tmp_path)
@@ -1697,7 +1697,7 @@ def test_first_import_fails_closed_when_atomic_no_clobber_is_unavailable(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     """Would fail if an unsupported host fell back to an overwriting directory rename."""
-    from ai_dlc import workflow_bundles
+    from ai_dlc.harness import workflow_bundles
 
     _, source, environment = _bundle_repository(tmp_path)
     project = _bundle_project(tmp_path)
@@ -1721,7 +1721,7 @@ def test_first_import_fails_closed_when_atomic_no_clobber_is_unavailable(
 
 def _local_candidate(tmp_path: Path, revision: str):
     """A local service fixture; does not assert remote source qualification."""
-    from ai_dlc.workflow_bundles import BundleCandidate
+    from ai_dlc.harness.workflow_bundles import BundleCandidate
 
     root = tmp_path / ("candidate-" + revision)
     root.mkdir()
@@ -1744,7 +1744,7 @@ def _local_candidate(tmp_path: Path, revision: str):
 @pytest.mark.parametrize("mutation", ["entry", "edit", "replacement"])
 def test_import_retains_authored_backup_occupants(tmp_path, monkeypatch, mutation):
     """A successful update must not recursively delete newly authored backup occupants."""
-    from ai_dlc import workflow_bundles as bundles
+    from ai_dlc.harness import workflow_bundles as bundles
 
     project = _bundle_project(tmp_path)
     first, second = _local_candidate(tmp_path, "1"), _local_candidate(tmp_path, "2")
@@ -1788,7 +1788,7 @@ def test_import_authenticates_complete_tree_and_retains_drift(
     tmp_path, monkeypatch, update, timing, mutation
 ):
     """Publishing a changed stage must fail visibly and preserve every authored byte."""
-    from ai_dlc import workflow_bundles as bundles
+    from ai_dlc.harness import workflow_bundles as bundles
 
     project = _bundle_project(tmp_path)
     first, second = _local_candidate(tmp_path, "1"), _local_candidate(tmp_path, "2")
@@ -1857,7 +1857,7 @@ def test_import_rollback_preserves_concurrent_destination_and_reports_original_b
     tmp_path, monkeypatch
 ):
     """Recovery must not clobber an authored destination that appeared during publication."""
-    from ai_dlc import workflow_bundles as bundles
+    from ai_dlc.harness import workflow_bundles as bundles
 
     project = _bundle_project(tmp_path)
     first, second = _local_candidate(tmp_path, "1"), _local_candidate(tmp_path, "2")
@@ -1886,7 +1886,7 @@ def test_import_rollback_preserves_concurrent_destination_and_reports_original_b
 @pytest.mark.parametrize("mutation", ["edit", "replacement"])
 def test_failed_import_stage_creation_retains_authored_state(tmp_path, monkeypatch, mutation):
     """A partially constructed stage is never recursively removed after a write failure."""
-    from ai_dlc import workflow_bundles as bundles
+    from ai_dlc.harness import workflow_bundles as bundles
 
     project = _bundle_project(tmp_path)
     candidate = _local_candidate(tmp_path, "1")
@@ -1928,7 +1928,7 @@ def test_import_rejects_unlisted_empty_directory_and_retains_it(
     tmp_path, monkeypatch, update, timing
 ):
     """Comparing only regular-file bytes must not accept an undeclared empty directory."""
-    from ai_dlc import workflow_bundles as bundles
+    from ai_dlc.harness import workflow_bundles as bundles
 
     project = _bundle_project(tmp_path)
     first, second = _local_candidate(tmp_path, "1"), _local_candidate(tmp_path, "2")
@@ -1973,8 +1973,8 @@ def test_import_cli_reports_retained_stage_paths_without_leaking_error_details(
     """The command must expose retained-file guidance rather than discard exception notes."""
     from typer.testing import CliRunner
 
-    from ai_dlc import workflow_bundles as bundles
     from ai_dlc.cli import app
+    from ai_dlc.harness import workflow_bundles as bundles
 
     project = _bundle_project(tmp_path)
     candidate = _local_candidate(tmp_path, "1")
@@ -2017,7 +2017,7 @@ def test_import_cli_reports_retained_stage_paths_without_leaking_error_details(
 @pytest.mark.parametrize("mutation", ["replacement", "edit", "entry"])
 def test_import_recovery_authenticates_backup_source(tmp_path, monkeypatch, timing, mutation):
     """Recovery must refuse a known changed source and report a late changed restore."""
-    from ai_dlc import workflow_bundles as bundles
+    from ai_dlc.harness import workflow_bundles as bundles
 
     project = _bundle_project(tmp_path)
     first, second = _local_candidate(tmp_path, "1"), _local_candidate(tmp_path, "2")

@@ -32,7 +32,7 @@ path = "docs/b.md"
 
 
 def packet(root, **kwargs):
-    from ai_dlc.document_review import prepare_review
+    from ai_dlc.documentation.document_review import prepare_review
 
     return prepare_review(root, paths=["docs/a.md"], base="HEAD", **kwargs)
 
@@ -64,7 +64,7 @@ def review(p):
 
 
 def check(root, p, r):
-    from ai_dlc.document_review import validate_review
+    from ai_dlc.documentation.document_review import validate_review
 
     return validate_review(root, packet=p, review=r)
 
@@ -93,7 +93,7 @@ def test_invalid_budget(project, budget):
 
 
 def test_actual_bytes_invalidate_even_rehashed_forgery(project):
-    from ai_dlc.document_impact import digest
+    from ai_dlc.documentation.document_impact import digest
 
     p = packet(project)
     forged = copy.deepcopy(p)
@@ -153,7 +153,7 @@ def test_binary_symlink_and_fifo_omitted(project):
 
 
 def test_selection_rejected_outside_catalog(project):
-    from ai_dlc.document_review import prepare_review
+    from ai_dlc.documentation.document_review import prepare_review
 
     for paths in (["../outside"], ["src/api.py"], [], ["docs/a.md"] * 33):
         with pytest.raises(ValueError):
@@ -175,7 +175,7 @@ def test_document_freshness_and_incomplete_coverage(project):
 
 
 def test_body_budget_is_total_and_oversized_body_not_read(project, monkeypatch):
-    import ai_dlc.document_review as service
+    import ai_dlc.documentation.document_review as service
 
     original = service.os.fdopen
     opened = []

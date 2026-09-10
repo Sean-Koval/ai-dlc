@@ -6,8 +6,7 @@ increments. UI/UX is one optional workflow; portable setup, replaceable integrat
 and effective greenfield/brownfield development remain the framework's core.
 
 AI-DLC v4 runs as a local Python CLI and library. The CLI owns machine
-enrollment mutation; the MCP facade exposes only reviewed work, doctor, and
-knowledge services. Project adoption uses Copier; provider adapters isolate
+enrollment mutation; the MCP facade exposes shared work, doctor, knowledge and documentation services. Project adoption uses Copier; provider adapters isolate
 vendor-specific operations; agent skills provide judgment. There is no hosted
 orchestration service.
 
@@ -50,8 +49,8 @@ The repository stores architecture, design rationale, decisions, runbooks and re
 Prefer one application with explicit module responsibilities over speculative service decomposition. CLI, MCP, and agent clients share validation where an MCP service is exposed; the CLI alone owns machine enrollment mutation. The local CLI and local MCP are today's primary control plane; hosted or cloud execution is a later qualification target. External provider failures and uncertain mutations remain visible. Credentials are environment references, never template values.
 
 Knowledge ownership stays provider-neutral: private knowledge links durable
-repository material but does not mirror it. Obsidian create/attach remains
-unimplemented. Guided tracker discovery supports Linear and GitHub Issues with
+repository material but does not mirror it. Linked Obsidian portals and additive personal workspaces are implemented;
+native application qualification remains separately recorded. Guided tracker discovery supports Linear and GitHub Issues with
 optional Projects; live qualification is recorded separately.
 
 ## Tracker capabilities and connection
@@ -71,4 +70,34 @@ are separate actions. Native MCP access supplies broader service context; it
 does not substitute for these lifecycle contracts. See the
 [provider contract](../contracts/README.md),
 [GitHub setup guide](github-ticket-setup.md), and
-[later adapter boundaries](planning/tracker-adapter-follow-through.md).
+[later adapter boundaries](archive/planning/tracker-adapter-follow-through.md).
+
+## Source layout
+
+| Location under `src/ai_dlc/` | Responsibility |
+| --- | --- |
+| `cli.py`, `mcp_server.py`, `__main__.py` | Public command and MCP entry points |
+| `conformance.py` | Public conformance runner entry point |
+| `setup/` | Project adoption, provisioning, readiness and provider connection setup |
+| `work/` | Work lifecycle, traceability, journals and explicit tracker migration |
+| `environment/` | Machine enrollment, profile sources and credential references |
+| `harness/` | Skills, pinned bundles, client rendering, components and hooks |
+| `documentation/` | Catalog checks, impact/evidence review, knowledge notes and vault links |
+| `providers/` | Contract-backed external service adapters and isolated provider execution |
+| `verification/` | Sandbox orchestration and its conformance network proxy |
+| `compatibility/` | Supported legacy scaffold behavior |
+| `config.py`, `contracts.py`, `provider_definitions.py` | Shared configuration and provider contracts |
+| `files.py`, `locking.py` | Shared filesystem boundaries and locking |
+
+These are internal Python packages, not separate deployable services. Public
+console entry points remain stable. Internal imports use the responsible package;
+there is no duplicate tree of compatibility forwarding modules. Application
+services share contracts; provider details stay inside adapters.
+
+`scripts/` holds source bootstrap, repository checks and qualification/release
+utility entry points. `scripts/cloud/` holds hosted-harness setup;
+`scripts/legacy/sync-cli-templates.sh` refreshes only the historical Rust embedded
+snapshot. The obsolete unlocked `check_env.sh` installer has been removed.
+`templates/` remains packaged because the legacy scaffold command still uses it.
+Do not delete subprocess entry points or assets merely because imports do not
+reference them directly.

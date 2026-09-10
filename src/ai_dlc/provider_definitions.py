@@ -49,37 +49,37 @@ class ProviderDefinition:
 
 
 def _linear(root, *, alias, environ, **options):
-    from ai_dlc.provider_onboarding import connect_linear_provider
+    from ai_dlc.setup.provider_onboarding import connect_linear_provider
 
     return connect_linear_provider(root, environ=environ, **options)
 
 
 def _github(root, *, alias, environ, **options):
-    from ai_dlc.github_onboarding import connect_github_provider
+    from ai_dlc.setup.github_onboarding import connect_github_provider
 
     return connect_github_provider(root, alias=alias, environ=environ, **options)
 
 
 def _jira_discover(config, alias, *, environ):
-    from ai_dlc.jira_onboarding import discover
+    from ai_dlc.setup.jira_onboarding import discover
 
     return discover(config, alias, environ=environ)
 
 
 def _jira_configure(discovery, selected):
-    from ai_dlc.jira_onboarding import configure
+    from ai_dlc.setup.jira_onboarding import configure
 
     return configure(discovery, selected)
 
 
 def _plane_discover(config, alias, *, environ):
-    from ai_dlc.plane_onboarding import discover
+    from ai_dlc.setup.plane_onboarding import discover
 
     return discover(config, alias, environ=environ)
 
 
 def _plane_configure(discovery, selected):
-    from ai_dlc.plane_onboarding import configure
+    from ai_dlc.setup.plane_onboarding import configure
 
     return configure(discovery, selected)
 

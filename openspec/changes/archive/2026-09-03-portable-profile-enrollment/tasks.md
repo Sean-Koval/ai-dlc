@@ -1,5 +1,5 @@
 Task 0 is the completed bootstrap record: it creates the reviewed work record and
-this OpenSpec change from the approved [detailed design](../../../../docs/superpowers/specs/2026-09-03-portable-profile-enrollment-design.md).
+this OpenSpec change from the approved [detailed design](historical-design.md).
 
 ## 1. Portable credential declarations and machine bindings
 

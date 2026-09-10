@@ -12,8 +12,8 @@ from ai_dlc.cli import app
 
 @pytest.fixture
 def onboarding(tmp_path, monkeypatch):
-    from ai_dlc import plane_onboarding
     from ai_dlc.providers.plane import PlaneProvider
+    from ai_dlc.setup import plane_onboarding
 
     api = PlaneHTTP()
     settings = {
@@ -114,7 +114,7 @@ def test_plane_is_optional_when_other_trackers_are_selected(tmp_path):
 
 
 def test_selected_plane_renders_packaged_guide(tmp_path):
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
 
     (tmp_path / "ai-dlc.toml").write_text(
         tomli_w.dumps(

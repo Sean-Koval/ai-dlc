@@ -15,7 +15,7 @@ from test_plane_provider import CFG, PlaneHTTP, U
 def lifecycle(tmp_path):
     from ai_dlc.providers import Registry
     from ai_dlc.providers.plane import PlaneProvider
-    from ai_dlc.workflow import WorkService
+    from ai_dlc.work.workflow import WorkService
 
     api = PlaneHTTP()
     config = {

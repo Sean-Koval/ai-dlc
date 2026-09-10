@@ -28,18 +28,19 @@ or work in progress; [archived changes](../openspec/changes/archive/) retain del
 rationale. A merged specification does not establish live platform qualification.
 
 The [executor handoff](handoffs/framework-delivery.md) leads with current status and
-labels older checkpoints. The [provider planning handoff](handoffs/provider-toolset-plan.md),
-[execution plans](superpowers/plans/), [planning assessments](planning/),
-[v4 ledger](implementation-v4.md) and [Rust Phase 1 plan](phase_1_rust.md) preserve
+labels older checkpoints. The [provider planning handoff](archive/planning/provider-toolset-handoff.md),
+[historical planning records](archive/planning/),
+[v4 ledger](archive/planning/implementation-v4.md) and [Rust Phase 1 plan](archive/legacy/phase-1-rust.md) preserve
 history; their old instructions are not current task assignments. Template research
-in [templates](templates/) and the [historical generation prompt](prompts/jinja2_template_generation.md)
+in [template research](archive/research/) and the [historical generation prompt](archive/research/jinja2_template_generation.md)
 are supporting material, not current Python implementation contracts.
 
-The [September 10 baseline and dispositions](verification/documentation-baseline.json)
+The original [September 10 baseline and dispositions](verification/documentation-baseline.json)
 accounts for every initial docs-check finding, including retained historical material,
 unknown factual review and illustrative missing paths. It records source hashes,
-responsible roles and reasons without copying document bodies. Remaining diagnostics
-are deliberately visible; this inventory does not certify all documents as current.
+responsible roles and reasons without copying document bodies. That dated inventory retains the pre-cleanup paths and hashes; it is not a live
+inventory. The current catalog and docs-check output describe the reorganized tree.
+Unknown factual reviews remain visible.
 
 ## Documentation workflow delivery
 
@@ -47,3 +48,12 @@ are deliberately visible; this inventory does not certify all documents as curre
 tracks the new impact/review, personal workspace and SDK guidance behavior.
 [The reusable guide](../project-templates/project/docs/documentation-guide.md) owns
 setup and ongoing practice; OpenSpec changes own the delivery requirements.
+
+## Placement rules
+
+Current explanations belong in design/, procedures in runbooks/ or workflows/,
+and actual verification records in verification/. Formal plans and requirements
+stay together in OpenSpec. [The archive](archive/README.md) is historical context.
+Use Git history for removed scratch reports; do not create another document solely
+to report that a change completed. The catalog identifies lifecycle and ownership,
+not an assertion that every document has received a factual review.

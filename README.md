@@ -128,7 +128,7 @@ GitHub Issues with Projects planning, Jira Cloud, Plane, Linear, OpenSpec, GitHu
 - `profiles/`, `modules/`, `targets/`: preferences, delegated installation recipes, target capabilities.
 - `agents/`: shared skills, pinned sources, client capability declarations and owned configuration.
 - `project-templates/`, `playbook/`, `contracts/`: Copier presets, development process, generated provider schemas.
-- `docs/`: [architecture](docs/architecture.md), [workflow](docs/development-workflow.md), [migration](docs/migration.md), and [implementation record](docs/implementation-v4.md).
+- `docs/`: [architecture](docs/architecture.md), [workflow](docs/development-workflow.md), [migration](docs/migration.md), and [implementation record](docs/archive/planning/implementation-v4.md).
 
 Local execution and GitHub Actions use one checks manifest. CI runs this checkout's implementation and publishes a receipt; completion checks verify workflow identity, merged SHA and manifest digests. Client hooks cover documented tool paths only. Repository merge rules must be configured by the repository owner.
 

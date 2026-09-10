@@ -35,7 +35,7 @@ adapter close/reopen/close/reconcile checks passed on the disposable issue, whic
 was closed and removed from the board afterward. This is not evidence of a gated
 finish, infrastructure crash recovery, or the default-create path against GitHub.
 The initial transient attachment mismatch's remote cause remains unproven.
-Detailed scope and receipts are in the [adoption record](../planning/github-backlog-migration.md).
+Detailed scope and receipts are in the [adoption record](../archive/planning/github-backlog-migration.md).
 
 PR candidate `270e957` passed all five platform jobs in run `34159101762`.
 This is PR candidate CI, not target-branch merged-revision evidence. Configuration,
@@ -69,7 +69,7 @@ Platform checks are pending; no archive, merge or finish has occurred.
 The maintainer selected the GitHub backlog as the work queue and deferred Linear
 reconciliation. Thirteen issues are now in [AI-DLC Project #2](https://github.com/users/Sean-Koval/projects/2),
 with verified status mappings and All work / Delivery board views. The
-[adoption record](../planning/github-backlog-migration.md) separates actual MCP
+[adoption record](../archive/planning/github-backlog-migration.md) separates actual MCP
 Project operations from pending CLI permission, repository linking, and local
 tracker activation. Earlier no-mutation/source-inventory notes below describe
 prior checkpoints and are superseded by that record.

@@ -28,7 +28,7 @@ ai-dlc-cli scaffold --provider claude
 ai-dlc-cli scaffold --all
 ```
 
-The CLI embeds its template assets at compile time. Run `scripts/sync-cli-templates.sh` from the repository root before packaging to keep the embedded copies in sync with the canonical `templates/` directory.
+The CLI embeds its template assets at compile time. Run `scripts/legacy/sync-cli-templates.sh` from the repository root before packaging to keep the embedded copies in sync with the canonical `templates/` directory.
 
 ## License
 

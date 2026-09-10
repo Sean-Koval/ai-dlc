@@ -37,4 +37,4 @@ Use additive defaults for existing configurations. Preview before applicable mut
 - LN-02: exercise configuration changes after preview and the corresponding expected result in the formal spec.
 - LN-03: exercise an existing binding would change and the corresponding expected result in the formal spec.
 
-[Task-level instructions and acceptance example](../../../../docs/superpowers/plans/2026-09-05-linear-provider-onboarding.md).
+[Task-level instructions and acceptance example](2026-09-05-linear-provider-onboarding.md).

@@ -2,11 +2,11 @@
 
 import pytest
 
-from ai_dlc.vault_link import link_vault
+from ai_dlc.documentation.vault_link import link_vault
 
 
 def api():
-    from ai_dlc.knowledge_workspace import setup_workspace
+    from ai_dlc.documentation.knowledge_workspace import setup_workspace
 
     return setup_workspace
 
@@ -81,7 +81,7 @@ def test_missing_repository_and_symlink_parent_refuse(workspace):
 
 def test_concurrent_destination_appearance_is_preserved(workspace, monkeypatch):
     root, vault = workspace
-    from ai_dlc import document_files
+    from ai_dlc.documentation import document_files
 
     original = document_files.create_document
 
@@ -119,7 +119,7 @@ def test_workspace_cli_preview_and_mcp_are_available(workspace):
 
 
 def test_partial_creation_failure_reports_attempted_path(workspace, monkeypatch):
-    import ai_dlc.document_files as files
+    import ai_dlc.documentation.document_files as files
 
     root, vault = workspace
 

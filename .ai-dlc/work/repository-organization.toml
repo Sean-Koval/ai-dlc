@@ -1,0 +1,38 @@
+schema = 1
+id = "repository-organization"
+title = "Organize repository sources and canonical documentation"
+scope = "Clean up repository artifacts and group internal code while preserving supported interfaces."
+requires_spec = true
+spec_reason = "Plain Claude context rendering and repository layout enforcement change observable behavior."
+acceptance = [
+    "CLAUDE.md contains only @AGENTS.md and remains stable on render",
+    "Historical records are classified and current references resolve",
+    "Internal packages preserve public CLI, MCP and provider behavior",
+    "Required checks reject renewed layout drift",
+]
+reviewed = true
+depends_on = [
+    "documentation-workflow-qualification",
+]
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/repository-organization"
+plan = "openspec/changes/repository-organization/tasks.md"
+branch = "codex/repository-organization"
+verification = "docs/verification/repository-organization.md"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/36"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72"
+deploy = "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "c1d0b090971dc5829585dfa82141ca9ae4735564494f33160785fbac0ba0daa1"

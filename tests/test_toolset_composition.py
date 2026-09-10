@@ -10,7 +10,7 @@ from typer.testing import CliRunner
 
 from ai_dlc.cli import app
 from ai_dlc.files import assets
-from ai_dlc.templates import adopt, sync
+from ai_dlc.setup.templates import adopt, sync
 
 
 def snapshot(root):
@@ -19,7 +19,7 @@ def snapshot(root):
 
 def test_declared_toolset_plan_is_pure_and_extensible(monkeypatch):
     from ai_dlc import provider_definitions as definitions
-    from ai_dlc.templates import plan_toolset
+    from ai_dlc.setup.templates import plan_toolset
 
     monkeypatch.setitem(
         definitions.DEFINITIONS,
@@ -110,7 +110,7 @@ def test_project_cli_accepts_repeated_native_clients(tmp_path, command):
 
 
 def test_selected_native_render_uses_existing_owned_adapter(tmp_path):
-    from ai_dlc.agents import render_agents
+    from ai_dlc.harness.agents import render_agents
 
     adopt(
         tmp_path,
@@ -180,7 +180,7 @@ def test_selected_adoption_preserves_authored_conflict(tmp_path):
 
 @pytest.mark.parametrize("vault_state", ["missing", "absent", "file", "alias-only", "directory"])
 def test_obsidian_runtime_vault_readiness_is_independent_of_optional_gui(tmp_path, vault_state):
-    from ai_dlc.readiness import inspect_readiness
+    from ai_dlc.setup.readiness import inspect_readiness
 
     vault = tmp_path / "vault"
     config = {
@@ -227,9 +227,9 @@ def test_guidance_cannot_mask_explicitly_unavailable_lifecycle_adapter(tmp_path,
         "plane",
         replace(provider_definitions.DEFINITIONS["plane"], lifecycle_available=False),
     )
-    from ai_dlc.agents import render_agents
     from ai_dlc.config import load_project
-    from ai_dlc.readiness import inspect_readiness
+    from ai_dlc.harness.agents import render_agents
+    from ai_dlc.setup.readiness import inspect_readiness
 
     adopt(
         tmp_path,

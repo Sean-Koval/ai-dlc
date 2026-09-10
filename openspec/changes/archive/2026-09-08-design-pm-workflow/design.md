@@ -52,7 +52,7 @@ project-authored briefs and evidence.
 
 Implement design-brief and design-evaluate using Markdown artifacts and the
 selected existing generation tools. Consume the shaped product brief and delivery
-slice; preserve their requirement IDs. The [execution plan](../../../../docs/superpowers/plans/2026-09-05-design-pm-workflow.md)
+slice; preserve their requirement IDs. The [execution plan](2026-09-05-design-pm-workflow.md)
 defines exact files, responsibilities, sample defaults, and verification. Human
 calibration remains separate work; project-specific references and budgets are
 inputs to each evaluation rather than global framework requirements.

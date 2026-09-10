@@ -1,6 +1,6 @@
 # Common provider connections
 
-The connection service in `src/ai_dlc/connections.py` owns discovery dispatch,
+The connection service in `src/ai_dlc/setup/connections.py` owns discovery dispatch,
 named selection, saved plans and local configuration application. It is separate
 from lifecycle provider registration. A custom lifecycle provider can remain
 usable while guided setup reports that no connection handler is available.

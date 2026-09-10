@@ -20,10 +20,10 @@ def test_root_aware_setup_preserves_personal_mcp_scope(
 
     import tomli_w
 
-    from ai_dlc.agents import render_agents
     from ai_dlc.config import resolve_files
-    from ai_dlc.provision import machine_apply, machine_plan
-    from ai_dlc.user_agents import render_user_agents
+    from ai_dlc.harness.agents import render_agents
+    from ai_dlc.harness.user_agents import render_user_agents
+    from ai_dlc.setup.provision import machine_apply, machine_plan
 
     profile = tmp_path / "profile.toml"
     profile.write_text(
@@ -46,8 +46,8 @@ def test_root_aware_setup_preserves_personal_mcp_scope(
     binaries.mkdir()
     for name in ["brew", "mise"]:
         executable(binaries / name, "exit 0\n")
-    monkeypatch.setattr("ai_dlc.provision.platform.system", lambda: "Darwin")
-    monkeypatch.setattr("ai_dlc.provision.platform.machine", lambda: "arm64")
+    monkeypatch.setattr("ai_dlc.setup.provision.platform.system", lambda: "Darwin")
+    monkeypatch.setattr("ai_dlc.setup.provision.platform.machine", lambda: "arm64")
 
     operation = machine_apply if apply else machine_plan
     result = operation(
@@ -71,7 +71,7 @@ def test_root_aware_setup_preserves_personal_mcp_scope(
 
 
 def test_headless_plan_omits_desktop_and_does_not_upgrade(tmp_path):
-    from ai_dlc.provision import machine_plan
+    from ai_dlc.setup.provision import machine_plan
 
     profile = tmp_path / "profile.toml"
     profile.write_text('schema=4\n[modules]\ninclude=["core","vscode","obsidian"]\n')
@@ -83,7 +83,7 @@ def test_headless_plan_omits_desktop_and_does_not_upgrade(tmp_path):
 
 def test_machine_plan_accepts_legacy_positional_environ_argument(tmp_path):
     """Would fail if adding root shifted an existing positional environment argument."""
-    from ai_dlc.provision import machine_plan
+    from ai_dlc.setup.provision import machine_plan
 
     profile = tmp_path / "profile.toml"
     profile.write_text("schema = 4\n")
@@ -104,7 +104,7 @@ def test_machine_plan_accepts_legacy_positional_environ_argument(tmp_path):
 
 def test_root_aware_plan_unions_explicit_component_modules_without_editing_profile(tmp_path):
     """Would fail if a selected project component did not add its declared module to setup."""
-    from ai_dlc.provision import machine_plan
+    from ai_dlc.setup.provision import machine_plan
 
     profile = tmp_path / "profile.toml"
     profile.write_text('schema = 4\n[modules]\ninclude = ["core"]\n')
@@ -131,7 +131,7 @@ def test_root_aware_plan_unions_explicit_component_modules_without_editing_profi
 
 def test_root_aware_plan_keeps_machine_module_precedence_and_no_root_behavior(tmp_path):
     """Would fail if project setup replaced local modules or changed an omitted-root plan."""
-    from ai_dlc.provision import machine_plan
+    from ai_dlc.setup.provision import machine_plan
 
     profile = tmp_path / "profile.toml"
     profile.write_text('schema = 4\n[modules]\ninclude = ["core"]\n')
@@ -174,7 +174,7 @@ def test_root_aware_plan_keeps_machine_module_precedence_and_no_root_behavior(tm
 
 def test_root_aware_plan_refuses_an_unresolved_explicit_component(tmp_path):
     """Would fail if setup silently substituted an unknown selected provider component."""
-    from ai_dlc.provision import machine_plan
+    from ai_dlc.setup.provision import machine_plan
 
     profile = tmp_path / "profile.toml"
     profile.write_text("schema = 4\n")
@@ -187,7 +187,7 @@ def test_root_aware_plan_refuses_an_unresolved_explicit_component(tmp_path):
 
 
 def test_unsupported_os_fails_before_install(tmp_path):
-    from ai_dlc.provision import machine_plan
+    from ai_dlc.setup.provision import machine_plan
 
     profile = tmp_path / "p.toml"
     profile.write_text("schema=4\n")
@@ -196,7 +196,7 @@ def test_unsupported_os_fails_before_install(tmp_path):
 
 
 def test_migration_refuses_unknown_future_version_without_writing(tmp_path):
-    from ai_dlc.provision import migrate
+    from ai_dlc.setup.provision import migrate
 
     profile = tmp_path / "p.toml"
     profile.write_text("schema=99\n")
@@ -207,7 +207,8 @@ def test_migration_refuses_unknown_future_version_without_writing(tmp_path):
 
 
 def test_doctor_checks_alias_provider_requirements(tmp_path, monkeypatch):
-    from ai_dlc import agents, provision
+    from ai_dlc.harness import agents
+    from ai_dlc.setup import provision
 
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[roles]\ntracker="team-tracker"\n[providers.team-tracker]\nkind="linear"\ntoken_env="AI_DLC_TEST_MISSING_TOKEN"\n'
@@ -226,8 +227,9 @@ def test_doctor_uses_merged_bindings_and_shared_redacted_credential_readiness(
     tmp_path, monkeypatch
 ):
     """Would fail if doctor bypassed bindings, changed provider kind, or leaked a value."""
-    from ai_dlc import agents, provision
+    from ai_dlc.harness import agents
     from ai_dlc.providers import Registry
+    from ai_dlc.setup import provision
 
     marker = "credential-value-that-must-not-escape-doctor"
     root = tmp_path / "project"
@@ -320,8 +322,9 @@ def test_doctor_redacts_logical_and_distinct_provider_compatibility_credentials(
     tmp_path, monkeypatch
 ):
     """Would fail if any provider credential value survived a health failure."""
-    from ai_dlc import agents, provision
+    from ai_dlc.harness import agents
     from ai_dlc.providers import Registry
+    from ai_dlc.setup import provision
 
     logical_value = "logical-secret-value"
     compatibility_value = "compatibility-secret-value"
@@ -382,7 +385,8 @@ def test_doctor_reports_the_injected_default_linear_credential_as_absent_or_pres
     """Would fail if the Linear default used ambient state or bypassed readiness."""
     from types import SimpleNamespace
 
-    from ai_dlc import agents, provision
+    from ai_dlc.harness import agents
+    from ai_dlc.setup import provision
 
     root = tmp_path / "project"
     root.mkdir()
@@ -425,7 +429,8 @@ def test_doctor_provider_health_uses_the_same_explicit_environment_as_readiness(
     """Would fail if executable health inherited a token that readiness cannot see."""
     import hashlib
 
-    from ai_dlc import agents, provision
+    from ai_dlc.harness import agents
+    from ai_dlc.setup import provision
 
     provider_marker = tmp_path / "provider-marker"
     provider = executable(
@@ -476,7 +481,8 @@ health_reference = "1"
 
 def test_doctor_command_discovery_and_execution_respect_explicit_path(tmp_path, monkeypatch):
     """Would fail if doctor discovered or ran ambient tools for an explicit environment."""
-    from ai_dlc import agents, provision
+    from ai_dlc.harness import agents
+    from ai_dlc.setup import provision
 
     ambient_bin = tmp_path / "ambient-bin"
     ambient_bin.mkdir()
@@ -524,7 +530,7 @@ def test_machine_apply_activates_runtimes_and_personal_agents(tmp_path, monkeypa
     import json
     import tomllib
 
-    from ai_dlc.provision import machine_apply
+    from ai_dlc.setup.provision import machine_apply
 
     binaries = tmp_path / "bin"
     binaries.mkdir()
@@ -561,8 +567,8 @@ notes = "personal"
     monkeypatch.setenv("XDG_DATA_HOME", str(tmp_path / "data"))
     monkeypatch.setenv("AI_DLC_BOOTSTRAP_HOME", str(bootstrap))
     monkeypatch.setenv("SHELL", "/bin/zsh")
-    monkeypatch.setattr("ai_dlc.provision.platform.system", lambda: "Darwin")
-    monkeypatch.setattr("ai_dlc.provision.platform.machine", lambda: "arm64")
+    monkeypatch.setattr("ai_dlc.setup.provision.platform.system", lambda: "Darwin")
+    monkeypatch.setattr("ai_dlc.setup.provision.platform.machine", lambda: "arm64")
 
     result = machine_apply(profile, home=home, machine=machine)
 
@@ -583,7 +589,7 @@ notes = "personal"
 
 
 def test_machine_plan_previews_personal_agents_without_writing(tmp_path):
-    from ai_dlc.provision import machine_plan
+    from ai_dlc.setup.provision import machine_plan
 
     profile = tmp_path / "profile.toml"
     profile.write_text('schema=4\n[[agents.servers]]\nid="notes"\ncommand="notes-mcp"\n')
@@ -599,7 +605,7 @@ def test_machine_plan_merges_machine_readiness_without_exposing_environment_valu
     tmp_path, monkeypatch
 ):
     """Would fail if machine bindings were ignored or a credential value entered a plan."""
-    from ai_dlc.provision import machine_plan
+    from ai_dlc.setup.provision import machine_plan
 
     marker = "credential-value-that-must-not-enter-the-plan"
     profile = tmp_path / "profile.toml"
@@ -659,7 +665,7 @@ variable = "LINEAR_SANDBOX_TOKEN"
 
 
 def test_machine_apply_scopes_default_workstation_state_to_explicit_home(tmp_path, monkeypatch):
-    from ai_dlc.provision import machine_apply
+    from ai_dlc.setup.provision import machine_apply
 
     binaries = tmp_path / "bin"
     binaries.mkdir()
@@ -675,8 +681,8 @@ def test_machine_apply_scopes_default_workstation_state_to_explicit_home(tmp_pat
     monkeypatch.delenv("XDG_DATA_HOME", raising=False)
     monkeypatch.delenv("AI_DLC_BOOTSTRAP_HOME", raising=False)
     monkeypatch.setenv("SHELL", "/bin/zsh")
-    monkeypatch.setattr("ai_dlc.provision.platform.system", lambda: "Darwin")
-    monkeypatch.setattr("ai_dlc.provision.platform.machine", lambda: "arm64")
+    monkeypatch.setattr("ai_dlc.setup.provision.platform.system", lambda: "Darwin")
+    monkeypatch.setattr("ai_dlc.setup.provision.platform.machine", lambda: "arm64")
 
     machine_apply(profile, home=home)
 
@@ -685,7 +691,7 @@ def test_machine_apply_scopes_default_workstation_state_to_explicit_home(tmp_pat
 
 def test_machine_apply_accepts_legacy_positional_environ_argument(tmp_path, monkeypatch):
     """Would fail if adding root shifted apply's existing positional environment argument."""
-    from ai_dlc.provision import machine_apply
+    from ai_dlc.setup.provision import machine_apply
 
     binaries = tmp_path / "bin"
     binaries.mkdir()
@@ -695,8 +701,8 @@ def test_machine_apply_accepts_legacy_positional_environ_argument(tmp_path, monk
     profile.write_text("schema = 4\n[modules]\ninclude = []\n")
     home = tmp_path / "selected-home"
     environment = {"PATH": str(binaries), "SHELL": "/bin/zsh"}
-    monkeypatch.setattr("ai_dlc.provision.platform.system", lambda: "Darwin")
-    monkeypatch.setattr("ai_dlc.provision.platform.machine", lambda: "arm64")
+    monkeypatch.setattr("ai_dlc.setup.provision.platform.system", lambda: "Darwin")
+    monkeypatch.setattr("ai_dlc.setup.provision.platform.machine", lambda: "arm64")
 
     result = machine_apply(profile, False, home, None, environment)
 
@@ -706,7 +712,7 @@ def test_machine_apply_accepts_legacy_positional_environ_argument(tmp_path, monk
 
 def test_machine_apply_command_discovery_and_execution_respect_explicit_path(tmp_path, monkeypatch):
     """Would fail if apply selected or ran ambient mise for an explicit environment."""
-    from ai_dlc.provision import machine_apply
+    from ai_dlc.setup.provision import machine_apply
 
     ambient_bin = tmp_path / "ambient-bin"
     ambient_bin.mkdir()
@@ -725,8 +731,8 @@ def test_machine_apply_command_discovery_and_execution_respect_explicit_path(tmp
     monkeypatch.setenv("PATH", str(ambient_bin))
     monkeypatch.setenv("TOOL_ORIGIN", "ambient")
     monkeypatch.setenv("TRACE_FILE", str(ambient_trace))
-    monkeypatch.setattr("ai_dlc.provision.platform.system", lambda: "Darwin")
-    monkeypatch.setattr("ai_dlc.provision.platform.machine", lambda: "arm64")
+    monkeypatch.setattr("ai_dlc.setup.provision.platform.system", lambda: "Darwin")
+    monkeypatch.setattr("ai_dlc.setup.provision.platform.machine", lambda: "arm64")
 
     with pytest.raises(RuntimeError, match="mise is required"):
         machine_apply(profile, home=tmp_path / "empty-home", environ={})
@@ -764,8 +770,9 @@ def test_machine_apply_command_discovery_and_execution_respect_explicit_path(tmp
 
 @pytest.mark.parametrize("scm", ['scm="none"\n', ""])
 def test_doctor_tracker_only_github_does_not_require_scm(tmp_path, monkeypatch, scm):
-    from ai_dlc import agents, provision
+    from ai_dlc.harness import agents
     from ai_dlc.providers import Registry
+    from ai_dlc.setup import provision
 
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[roles]\ntracker="tickets"\n'
@@ -788,8 +795,9 @@ def test_doctor_tracker_only_github_does_not_require_scm(tmp_path, monkeypatch, 
 
 
 def test_doctor_declared_capability_failure_is_distinct_from_signin(tmp_path, monkeypatch):
-    from ai_dlc import agents, provision
+    from ai_dlc.harness import agents
     from ai_dlc.providers import Registry
+    from ai_dlc.setup import provision
 
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[roles]\ntracker="tickets"\nscm="none"\n[providers.tickets]\nkind="github-issues"\nrepository="acme/app"\n'

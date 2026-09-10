@@ -5,7 +5,7 @@ Work: [GitHub issue 10](https://github.com/Sean-Koval/ai-dlc/issues/10),
 accepted failed-stage retention fix `83d0718`. The existing isolated branch is
 `codex/portable-workflow-bundles`. This follow-on addresses the remaining
 successful-render backup cleanup finding identified in the
-[September 6 review](../planning/stage-cleanup-review-2026-09-06.md).
+[September 6 review](../archive/planning/stage-cleanup-review-2026-09-06.md).
 The older report's Linear status is historical; GitHub issue 10 is the current
 successor. This repair does not reconcile the older work record's tracker binding.
 

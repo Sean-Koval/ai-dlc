@@ -61,7 +61,7 @@ Provider code continues to own remote operations and evidence interpretation.
    behavior requires a new specification decision.
 
 Exact service signatures, file ownership, refusal cases, and sample regressions
-are in the [execution plans](../superpowers/plans/2026-09-05-framework-delivery.md).
+are in the [execution plans](../archive/planning/2026-09-05-framework-delivery.md).
 Dependent tickets must consume those interfaces rather than invent alternatives.
 
 Implementation clarifications:

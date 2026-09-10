@@ -1,5 +1,5 @@
 def test_status_reports_presence_without_returning_environment_value(monkeypatch):
-    from ai_dlc.credentials import credential_status
+    from ai_dlc.environment.credentials import credential_status
 
     marker = "fake-value-that-must-not-escape"
     monkeypatch.setenv("LINEAR_SANDBOX_TOKEN", marker)
@@ -31,7 +31,7 @@ def test_status_reports_presence_without_returning_environment_value(monkeypatch
 
 
 def test_status_marks_unbound_requirement_as_not_configured_or_present():
-    from ai_dlc.credentials import credential_status
+    from ai_dlc.environment.credentials import credential_status
 
     result = credential_status(
         {
@@ -50,7 +50,7 @@ def test_status_marks_unbound_requirement_as_not_configured_or_present():
 
 
 def test_status_marks_unset_environment_binding_as_configured_but_not_present():
-    from ai_dlc.credentials import credential_status
+    from ai_dlc.environment.credentials import credential_status
 
     result = credential_status(
         {
@@ -71,7 +71,7 @@ def test_status_marks_unset_environment_binding_as_configured_but_not_present():
 
 
 def test_status_normalizes_uncovered_legacy_provider_token_environment():
-    from ai_dlc.credentials import credential_status
+    from ai_dlc.environment.credentials import credential_status
 
     result = credential_status(
         {"providers": {"linear": {"token_env": "LINEAR_API_KEY"}}},
@@ -88,7 +88,7 @@ def test_status_normalizes_uncovered_legacy_provider_token_environment():
 
 def test_status_normalizes_the_linear_default_token_environment():
     """Would fail if default Linear authentication bypassed shared readiness."""
-    from ai_dlc.credentials import credential_status
+    from ai_dlc.environment.credentials import credential_status
 
     absent = credential_status(
         {"providers": {"linear": {"kind": "linear"}}},
@@ -114,7 +114,7 @@ def test_status_normalizes_the_linear_default_token_environment():
 
 
 def test_distinct_provider_token_environment_remains_visible_with_logical_requirement():
-    from ai_dlc.credentials import credential_status
+    from ai_dlc.environment.credentials import credential_status
 
     result = credential_status(
         {
@@ -140,7 +140,7 @@ def test_distinct_provider_token_environment_remains_visible_with_logical_requir
 
 def test_matching_provider_token_environment_is_not_reported_twice():
     """Would fail if one physical credential produced duplicate readiness entries."""
-    from ai_dlc.credentials import credential_status
+    from ai_dlc.environment.credentials import credential_status
 
     result = credential_status(
         {
@@ -161,7 +161,7 @@ def test_matching_provider_token_environment_is_not_reported_twice():
 
 
 def test_status_uses_supplied_environment_mapping_without_mutating_process_environment(monkeypatch):
-    from ai_dlc.credentials import credential_status
+    from ai_dlc.environment.credentials import credential_status
 
     monkeypatch.delenv("LINEAR_SANDBOX_TOKEN", raising=False)
     config = {
@@ -182,7 +182,7 @@ def test_status_uses_supplied_environment_mapping_without_mutating_process_envir
 
 
 def test_status_is_sorted_by_logical_credential_id():
-    from ai_dlc.credentials import credential_status
+    from ai_dlc.environment.credentials import credential_status
 
     result = credential_status(
         {

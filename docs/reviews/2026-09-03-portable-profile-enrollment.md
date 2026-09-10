@@ -3,8 +3,8 @@
 ## Status and review basis
 
 This record catalogs the independent task reviews completed during implementation of
-the approved [portable profile enrollment design](../superpowers/specs/2026-09-03-portable-profile-enrollment-design.md)
-and [implementation plan](../superpowers/plans/2026-09-03-portable-profile-enrollment.md).
+the approved [portable profile enrollment design](../../openspec/changes/archive/2026-09-03-portable-profile-enrollment/historical-design.md)
+and [implementation plan](../../openspec/changes/archive/2026-09-03-portable-profile-enrollment/2026-09-03-portable-profile-enrollment.md).
 The branch starts from `b256acd` and the last reviewed Task 9 revision is `6c490f4`.
 Task briefs, implementation reports, review diffs, findings, fix rounds, and re-review
 outcomes are retained in the ignored SDD execution ledger.
