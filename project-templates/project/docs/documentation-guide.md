@@ -34,6 +34,50 @@ Preview includes those files; apply refuses known conflicts before writes.
 Unexpected concurrent failure retains any created files and reports them; inspect
 partial output before retrying, especially after an interrupted adoption.
 
+## Organizing an existing repository
+
+For an outcome such as “organize the scattered project docs,” use the shipped
+`document-organize` skill. Discovery starts before catalog enrollment:
+
+```sh
+ai-dlc project docs-inventory
+ai-dlc project docs-review --base HEAD --source inventory --path README.md --path legacy/setup.md
+```
+
+Select actual paths returned by inventory. It lists tracked and nonignored `.md`
+files throughout the repository, including root and legacy directories, without
+reading document bodies. Git-ignored paths, Git metadata and nested repositories
+are excluded explicitly; symlinks are never followed, and missing/inaccessible
+paths remain reported. Tracked documents remain eligible even if ignore patterns
+match them. This is a local working-tree inventory, not a claim of content review.
+
+`docs-review` defaults to `--source catalog` for existing callers. Explicit
+`--source inventory` permits 1–32 selected inventory documents without creating a
+catalog. Existing catalog mappings still supply local evidence, but unselected
+inventory documents remain outside review scope. Uncatalogued documents have no
+inferred code mappings: select related documents deliberately and inspect relevant
+code/spec sources separately, stating which evidence is outside the packet. The
+same total byte budget, hashes, exact citations and stale-source checks apply.
+A changed inventory scope also requires a fresh packet. Its inventory field retains
+excluded and inaccessible paths; omitted bodies must remain unreviewed.
+
+Review purpose, audience, claims and unique content before proposing a destination
+or consolidation. Present a concrete source-to-destination plan with retain,
+revise, consolidate or archive decisions and reasons. Apply reviewed decisions as
+ordinary Git moves and edits within the authorized task. Preserve unique rationale
+and useful summaries; label retained history and point to its successor. Keep
+OpenSpec requirements and change records under OpenSpec ownership. Repair inbound
+and outbound links, including relative paths whose base changed, then update the
+map and catalog for canonical documents. Keep a useful root entry point when it
+serves repository readers. Do not create empty folders as a substitute for cleanup.
+
+Inspect the resulting Git diff, run document diagnostics and required project
+checks, and record reviewed impact dispositions after content settles. Check
+reference-style links, anchors and wiki links separately where the local checker
+cannot verify them. Report actual changes and remaining omissions. An inventory,
+a recommendation report or additive `docs-init` output alone does not complete an
+authorized organization request.
+
 ## Catalog and provenance
 
 Enroll useful authoritative documents incrementally. Use stable IDs and real

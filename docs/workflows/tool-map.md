@@ -187,7 +187,8 @@ protocol is unrun and does not spend the existing generic skill-evaluation budge
 | `project_docs_impact` | `project docs-impact` | Find mapped documents and unmapped changes for an explicit Git comparison |
 | `project_docs_disposition` | `project docs-disposition` | Emit content-bound reviewed decisions without writing evidence |
 | `project_docs_gate` | `project docs-gate` | Check current dispositions and new objective debt |
-| `project_docs_review` | `project docs-review` | Prepare bounded selected-document context for the active harness |
+| `project_docs_inventory` | `project docs-inventory` | Discover repository Markdown paths, exclusions and unavailable paths without reading bodies |
+| `project_docs_review` | `project docs-review` | Prepare bounded selected-document context; explicit `source=inventory` permits uncatalogued documents |
 | `project_docs_review_check` | `project docs-review-check` | Check citations, scope and source bytes; does not certify semantic truth |
 | `project_workspace_preview` | `project workspace-init` | Preview additive private project navigation; CLI apply explicitly creates files |
 
