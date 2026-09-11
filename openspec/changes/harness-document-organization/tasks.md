@@ -1,8 +1,8 @@
 # Organize existing project documentation through harness skills and tools
 
 ## Implementation
-- [ ] 1.1 Implement and test DO-01 Repository inventory.
-- [ ] 2.1 Implement and test DO-02 Uncatalogued review.
+- [x] 1.1 Implement and test DO-01 Repository inventory.
+- [x] 2.1 Implement and test DO-02 Uncatalogued review.
 - [ ] 3.1 Implement and test DO-03 Harness organization.
 
 ## Verification and delivery

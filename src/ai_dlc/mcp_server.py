@@ -81,11 +81,20 @@ def make_server(root: Path, machine: Path | None = None) -> FastMCP:
         return check_gate(root, evidence_path=evidence, baseline_path=baseline, base=base)
 
     @server.tool()
-    def project_docs_review(base: str, paths: list[str], max_bytes: int = 64000) -> dict:
+    def project_docs_inventory() -> dict:
+        """Discover repository Markdown paths and exclusions without reading bodies."""
+        from ai_dlc.documentation.document_inventory import inventory_documents
+
+        return inventory_documents(root)
+
+    @server.tool()
+    def project_docs_review(
+        base: str, paths: list[str], max_bytes: int = 64000, source: str = "catalog"
+    ) -> dict:
         """Prepare selected local document bodies and mapped evidence for a harness review."""
         from ai_dlc.documentation.document_review import prepare_review
 
-        return prepare_review(root, paths=paths, base=base, max_bytes=max_bytes)
+        return prepare_review(root, paths=paths, base=base, max_bytes=max_bytes, source=source)
 
     @server.tool()
     def project_docs_review_check(packet: dict, review: dict) -> dict:

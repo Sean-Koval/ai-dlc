@@ -52,7 +52,12 @@ def _body(root: Path, relative: str, remaining: int) -> dict:
 
 
 def prepare_review(
-    root: Path | str, *, paths: list[str], base: str, max_bytes: int = 64000
+    root: Path | str,
+    *,
+    paths: list[str],
+    base: str,
+    max_bytes: int = 64000,
+    source: str = "catalog",
 ) -> dict:
     """Include only selected documents and their mapped, bounded local evidence."""
     root = Path(root).absolute()
@@ -64,17 +69,30 @@ def prepare_review(
         or any(not isinstance(p, str) for p in paths)
         or len(set(paths)) != len(paths)
     ):
-        raise ValueError("Select 1 to 32 unique catalog document paths")
+        raise ValueError("Select 1 to 32 unique document paths")
+    if source not in ("catalog", "inventory"):
+        raise ValueError("source must be catalog or inventory")
     selected = sorted(_path(p) for p in paths)
     if not isinstance(base, str) or not base:
         raise ValueError("A Git base is required")
     revision = (
         _git(root, "rev-parse", "--verify", "--end-of-options", base + "^{commit}").decode().strip()
     )
-    entries = read_catalog(root)
+    inventory = None
+    if source == "inventory":
+        from ai_dlc.documentation.document_inventory import inventory_documents
+
+        inventory = inventory_documents(root)
+    try:
+        entries = read_catalog(root)
+    except FileNotFoundError:
+        if source == "catalog":
+            raise
+        entries = []
     catalog = {entry["path"]: entry for entry in entries}
-    if set(selected) - catalog.keys():
-        raise ValueError("Select only catalog document paths")
+    eligible = set(inventory["documents"]) if inventory is not None else set(catalog)
+    if set(selected) - eligible:
+        raise ValueError(f"Select only {source} document paths")
     files = set(
         _git(root, "ls-files", "--cached", "--others", "--exclude-standard", "-z")
         .decode()
@@ -83,7 +101,7 @@ def prepare_review(
     sources = set()
     omitted = []
     for path in selected:
-        entry = catalog[path]
+        entry = catalog.get(path, {})
         for field in MAPPINGS:
             for pattern in entry.get(field, []):
                 matches = {p for p in files if fnmatch.fnmatchcase(p, pattern)}
@@ -92,8 +110,11 @@ def prepare_review(
                 if not matches:
                     omitted.append({"path": pattern, "reason": "mapping has no local matches"})
                 sources.update(matches)
-    # A nonselected catalog document remains out of review scope even if a broad mapping matches it.
-    excluded = (sources & catalog.keys()) - set(selected)
+    # Nonselected documents remain out of review scope even when a broad mapping matches.
+    document_scope = eligible
+    if source == "inventory":
+        document_scope = eligible | {p for p in sources if Path(p).suffix.lower() == ".md"}
+    excluded = (sources & document_scope) - set(selected)
     omitted.extend({"path": p, "reason": "document not selected"} for p in sorted(excluded))
     sources -= excluded | set(selected)
     documents, evidence = [], []
@@ -116,7 +137,7 @@ def prepare_review(
         "documents": documents,
         "evidence": evidence,
         "omitted": omitted,
-        "unreviewed": sorted(catalog.keys() - set(selected)),
+        "unreviewed": sorted(eligible - set(selected)),
         "constraints": [
             LIMITATION,
             "No automatic edits, deletion or external fetching.",
@@ -129,6 +150,9 @@ def prepare_review(
             "Record useful repetition with retain; state uncertainty explicitly.",
         ],
     }
+    if inventory is not None:
+        result["source"] = "inventory"
+        result["inventory"] = inventory
     result["snapshot"] = digest(result)
     return result
 
@@ -173,6 +197,7 @@ def validate_review(root: Path | str, *, packet: dict, review: dict) -> dict:
             paths=packet.get("selected", []),
             base=packet.get("base", ""),
             max_bytes=packet.get("max_bytes", 0),
+            source=packet.get("source", "catalog"),
         )
         if current != packet:
             raise ValueError("Stale or fabricated review packet; prepare current evidence again")

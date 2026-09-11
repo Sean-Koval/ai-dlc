@@ -258,17 +258,26 @@ def project_docs_style(
         raise typer.Exit(2)
 
 
+@project.command("docs-inventory")
+def project_docs_inventory(root: Path = Path(".")):
+    """Discover repository Markdown paths and exclusions without reading bodies."""
+    from ai_dlc.documentation.document_inventory import inventory_documents
+
+    emit(inventory_documents(root))
+
+
 @project.command("docs-review")
 def project_docs_review(
     base: Annotated[str, typer.Option()],
     paths: Annotated[list[str], typer.Option("--path")],
     root: Path = Path("."),
     max_bytes: int = 64000,
+    source: str = "catalog",
 ):
     """Prepare bounded selected-document evidence for the existing harness."""
     from ai_dlc.documentation.document_review import prepare_review
 
-    emit(prepare_review(root, paths=paths, base=base, max_bytes=max_bytes))
+    emit(prepare_review(root, paths=paths, base=base, max_bytes=max_bytes, source=source))
 
 
 @project.command("docs-review-check")

@@ -22,6 +22,10 @@
       "path": "skills/discovery/SKILL.md",
       "sha256": "74d0a76012649f919770e37fa464d436a0ce8c7501ec011182a29d4ae14d2904"
     },
+    "document-organize": {
+      "path": "skills/document-organize/SKILL.md",
+      "sha256": "e1e2293756847e0ffd771ab5b8fb7df604fff697858f0e6e48447c57e7fa5a29"
+    },
     "document-review": {
       "path": "skills/document-review/SKILL.md",
       "sha256": "430a11bbb50ad32ca14a45074057fca3f761659b1289b77b36fbc617d2b0fb98"
