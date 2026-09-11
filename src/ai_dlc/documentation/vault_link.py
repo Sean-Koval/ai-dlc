@@ -14,6 +14,7 @@ from ai_dlc.documentation.document_files import (
     validate_parent,
 )
 from ai_dlc.documentation.moc import PRESETS, plan_documents
+from ai_dlc.documentation.vault_mount import VaultMountResult, mount_vault
 from ai_dlc.files import inside
 
 
@@ -126,19 +127,36 @@ def link_vault(
     vault: Path | str | None = None,
     name: str | None = None,
     force: bool = False,
+    mode: str = "portal",
+    adopt: bool = False,
     create_docs: bool = True,
     docs_preset: str | None = None,
     apply: bool = True,
     environ: Mapping[str, str] | None = None,
     home: Path | None = None,
     enrollment_paths: Any = None,
-) -> VaultLinkResult:
+) -> VaultLinkResult | VaultMountResult:
     """Create an additive project portal. Force never grants permission to overwrite notes."""
     project_root = Path(root).absolute()
     if not project_root.is_dir():
         raise ValueError("Project directory does not exist.")
     if docs_preset not in PRESETS:
         raise ValueError("Unknown documentation preset")
+    if mode not in {"portal", "mount"}:
+        raise ValueError("Unknown vault link mode; choose portal or mount.")
+    if mode == "mount":
+        if docs_preset:
+            raise ValueError("Initialize documentation separately before mounting.")
+        if vault is None:
+            resolved = resolve_runtime(
+                project_root, environ=environ, home=home, enrollment_paths=enrollment_paths
+            )
+            vault = resolved.values.get("paths", {}).get("vault")
+        if vault is None:
+            raise ValueError("Configure paths.vault or pass --vault.")
+        return mount_vault(project_root, Path(vault), name, adopt=adopt, apply=apply)
+    if adopt:
+        raise ValueError("Adoption applies only to mount mode.")
     plan = plan_vault_link(
         project_root,
         vault=vault,

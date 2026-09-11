@@ -324,13 +324,22 @@ def project_link_vault(
     ] = False,
     preview: Annotated[bool, typer.Option("--preview")] = False,
     docs_preset: Annotated[str | None, typer.Option("--docs-preset")] = None,
+    mode: str = "portal",
+    adopt: Annotated[bool, typer.Option("--adopt")] = False,
 ):
-    """Create a machine-local portal linking to canonical project documentation."""
+    """Create a local portal or explicit canonical directory mounts; --preview writes nothing."""
     from ai_dlc.documentation.vault_link import link_vault
 
     try:
         result = link_vault(
-            root, vault=vault, name=name, force=force, docs_preset=docs_preset, apply=not preview
+            root,
+            vault=vault,
+            name=name,
+            force=force,
+            docs_preset=docs_preset,
+            apply=not preview,
+            mode=mode,
+            adopt=adopt,
         )
     except (OSError, RuntimeError, ValueError) as exc:
         typer.echo(f"Error: {exc}", err=True)

@@ -104,6 +104,42 @@ content require a new name or deliberate manual reconciliation, never `--force`.
 Legacy directory links are left untouched and require manual inspection. The
 private knowledge API does not follow directory symlinks or fetch portal links.
 
+### Opt in to native project folders
+
+```sh
+ai-dlc project link-vault --mode mount --vault /path/to/local/vault --preview
+ai-dlc project link-vault --mode mount --vault /path/to/local/vault
+```
+
+Run from the stable Git checkout root, with existing `docs/` and ignored
+`.ai-dlc/local/`. Linked Git worktrees cannot supply mount sources. Preview reports
+exact source and destination paths, each action, missing sources, and the local
+binding content and path. Omitting `--preview` explicitly applies setup, consistent
+with portal linking. The MCP `project_vault_mount_preview` provides the same
+read-only mount inspection.
+
+Mount mode creates sibling directory symlinks at `Projects/<name>/docs` and,
+when initialized, `Projects/<name>/openspec`. Missing OpenSpec is reported without
+creation. It exposes the original repository files for native client editing;
+normal Git review and specification ownership still apply. Initialize documentation
+separately; mount mode does not scaffold it. Existing portals and nearby personal
+notes remain untouched.
+
+Bindings live only in ignored `.ai-dlc/local/vault-mounts/<destination-hash>.json`;
+they identify the stable checkout, vault and project name. Shared configuration
+never contains these machine paths. Repeating setup preserves matching owned
+mounts. Matching unowned links require `--adopt`; conflicting paths are never
+replaced. Sources cannot contain nested symlinks or special files. Vault/project
+overlap, loops and overlapping targets of existing vault links are rejected.
+Unexpected failures report retained output, including the binding and completed
+links; inspect it and retry without deleting authored content.
+
+Filesystem tests establish exercised creation, editing and preservation behavior.
+They do not qualify Obsidian indexing, external-editor refresh, file watching,
+Git tooling, Sync or another client/platform. Qualify those on the intended client
+before relying on them. Native mounts do not enable synchronization, publication
+or symlink traversal through the private knowledge API.
+
 Existing Confluence pages remain team authority; relevant page links and on-demand
 reads provide context. An explicitly selected repository-authored team guide may
 later have a publication binding with target identity, source digest and expected

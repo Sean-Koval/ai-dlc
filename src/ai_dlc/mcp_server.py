@@ -103,6 +103,22 @@ def make_server(root: Path, machine: Path | None = None) -> FastMCP:
             root, vault=config.get("paths", {}).get("vault"), name=name, bases=bases
         )
 
+    @server.tool()
+    def project_vault_mount_preview(
+        vault: str | None = None, name: str | None = None, adopt: bool = False
+    ) -> dict:
+        """Preview exact native mount paths and local binding; no filesystem writes."""
+        from ai_dlc.documentation.vault_link import link_vault
+
+        return link_vault(
+            root,
+            vault=vault or config.get("paths", {}).get("vault"),
+            name=name,
+            mode="mount",
+            adopt=adopt,
+            apply=False,
+        ).as_dict()
+
     def knowledge():
         from ai_dlc.documentation.knowledge import Knowledge
 

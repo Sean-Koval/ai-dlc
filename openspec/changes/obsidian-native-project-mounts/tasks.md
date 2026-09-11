@@ -1,9 +1,9 @@
 # Expose canonical project documents as editable Obsidian folders
 
 ## Implementation
-- [ ] 1.1 Implement and test OM-01 Explicit local mounts.
-- [ ] 2.1 Implement and test OM-02 Preservation and recovery.
-- [ ] 3.1 Implement and test OM-03 Independent knowledge boundaries.
+- [x] 1.1 Implement and test OM-01 Explicit local mounts.
+- [x] 2.1 Implement and test OM-02 Preservation and recovery.
+- [x] 3.1 Implement and test OM-03 Independent knowledge boundaries.
 
 ## Verification and delivery
 - [ ] 9.1 Review canonical guidance and record documentation-impact dispositions.
