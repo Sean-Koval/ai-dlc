@@ -322,6 +322,12 @@ never source documents. Review the chosen comparison base as part of the evidenc
 Do not reset it to hide changes. Changed document, source, mapping or change-scope
 bytes invalidate the evidence and require another inspection.
 
+The base is an exact commit. `docs-disposition` refuses a base that the checkout
+does not contain, and a check against another base reports both commits before
+evaluating decisions. When the target branch moves, update the branch from it,
+inspect impact against the new target commit and record dispositions again.
+Do this immediately before merge, then wait for fresh checks.
+
 An opted-in project can require `ai-dlc project docs-gate` through its normal check
 manifest. First inspect historical diagnostics and explicitly review a baseline:
 
@@ -440,3 +446,7 @@ CI can set `AI_DLC_DOCS_BASE` to its independently selected PR base or push
 predecessor; the `docs-gate` CLI uses it unless `--base` is explicitly provided.
 Fetch that commit/history before checking. A stale or unavailable comparison must
 be reviewed or fetched, not silently replaced with HEAD to hide changes.
+Pull request checks do not rerun when the target branch moves, and a post-merge
+check compares against the commit the merge replaced. Where the SCM supports it,
+require branches to be up to date before merging so passing evidence still names
+that commit.

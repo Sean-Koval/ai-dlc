@@ -1,0 +1,37 @@
+schema = 1
+id = "documentation-evidence-merge-freshness"
+title = "Detect documentation evidence recorded against a superseded target branch"
+scope = "Detect documentation evidence recorded against a superseded target branch. Deliver the approved requirements using existing AI-DLC boundaries."
+requires_spec = true
+spec_reason = "Observable documentation gate behavior and delivery guidance changes approved by the user."
+acceptance = [
+    "The documentation gate SHALL report an evidence/comparison base mismatch, naming both commits and the update-and-re-record remedy, before validating decisions.",
+    "Disposition recording SHALL refuse a comparison base that the checkout does not contain.",
+    "Canonical, template and portable skill guidance SHALL require updating from the target branch and refreshing base-bound evidence and checks immediately before merge, and recommend requiring up-to-date branches.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "DI-02",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/documentation-evidence-merge-freshness"
+plan = "openspec/changes/documentation-evidence-merge-freshness/tasks.md"
+branch = "codex/documentation-evidence-merge-freshness"
+related_incident = "https://github.com/Sean-Koval/ai-dlc/pull/44"
+tracker = "48"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72"
+deploy = "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "c1d0b090971dc5829585dfa82141ca9ae4735564494f33160785fbac0ba0daa1"

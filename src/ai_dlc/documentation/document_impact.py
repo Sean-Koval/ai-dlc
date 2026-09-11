@@ -145,10 +145,30 @@ def _decisions(impact: dict, decisions: object, reviewer: object) -> None:
         raise ValueError("Missing documentation disposition: " + ", ".join(sorted(required - seen)))
 
 
+def _require_contained_base(root: Path, revision: str) -> None:
+    result = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", revision, "HEAD"],
+        cwd=root,
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode == 1:
+        raise ValueError(
+            f"Comparison base {revision} is not contained in HEAD; update the branch from "
+            "the target branch before recording documentation dispositions"
+        )
+    if result.returncode:
+        raise ValueError(
+            "Git comparison unavailable: " + result.stderr.decode(errors="replace").strip()
+        )
+
+
 def prepare_disposition(
     root: Path | str, *, base: str, decisions: list[dict], reviewer: str
 ) -> dict:
     impact = inspect_impact(root, base=base)
+    # CI compares against a revision its checkout contains; other evidence cannot pass there.
+    _require_contained_base(Path(root).absolute(), impact["base"])
     _decisions(impact, decisions, reviewer)
     return {
         "schema": 1,
@@ -163,12 +183,22 @@ def prepare_disposition(
 def check_disposition(root: Path | str, *, base: str, evidence: object) -> dict:
     try:
         impact = inspect_impact(root, base=base)
-        if not isinstance(evidence, dict) or evidence.get("schema") != 1:
+        if (
+            not isinstance(evidence, dict)
+            or evidence.get("schema") != 1
+            or not isinstance(evidence.get("base"), str)
+        ):
             raise ValueError("Invalid documentation evidence")
+        # Report a moved target branch before decisions, whose targets depend on the base.
+        if evidence["base"] != impact["base"]:
+            raise ValueError(
+                f"Documentation evidence was recorded against base {evidence['base']}, but "
+                f"this check compares against {impact['base']}. Update the branch from the "
+                "target branch, inspect impact against that base and record dispositions again"
+            )
         _decisions(impact, evidence.get("decisions"), evidence.get("reviewer"))
         if (
-            evidence.get("base") != impact["base"]
-            or evidence.get("snapshot") != impact["snapshot"]
+            evidence.get("snapshot") != impact["snapshot"]
             or evidence.get("sources") != impact["sources"]
         ):
             raise ValueError("Stale documentation evidence; review current sources again")

@@ -914,6 +914,7 @@ def _render_agents(
         "Read ai-dlc.toml and the active .ai-dlc/work record before work.",
         "Use specification artifacts for implementation tasks and the tracker for priority/status.",
         "Finalize required specifications before review. Complete work through ai-dlc work finish.",
+        "Immediately before merge, update from the target branch and refresh base-bound evidence and checks.",
         "Store architecture, design, decisions and runbooks in docs/. Keep personal notes in knowledge.",
         "",
         "## Verification",
