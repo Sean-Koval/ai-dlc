@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "base": "2b2bd65ac640b8dcde453a5457a46e3986b4be6e",
-  "snapshot": "8103c590ce5dbe847f86a6f95c9cada443ed5301f33119eec054513abf45e562",
+  "snapshot": "36d9d94a146684280c676c2c6a17af0db0d91b8ae6f73b8944b37758f9ebaba2",
   "reviewer": "Codex",
   "decisions": [
     {
@@ -138,11 +138,16 @@
       "target": "project-templates/project/docs/documentation-guide.md",
       "outcome": "updated",
       "reason": "Reviewed and updated canonical guidance/navigation or scoped evidence against the implemented inventory, review or local mount services; preserve OpenSpec ownership, authored content and private knowledge boundaries."
+    },
+    {
+      "target": "project-templates/project/docs/workflows/tool-map.md",
+      "outcome": "updated",
+      "reason": "Reviewed and updated canonical guidance/navigation or scoped evidence against the implemented inventory, review or local mount services; preserve OpenSpec ownership, authored content and private knowledge boundaries."
     }
   ],
   "sources": {
     ".ai-dlc/work/harness-document-organization.toml": "ecf5755fce7a6eff0e4711c13956c26b5d8f19eabc57cf119c99fbb90153a23e",
-    ".ai-dlc/work/obsidian-native-project-mounts.toml": "2d8a4275cdb6acb42f15526490f4097bba68d2ada8cfb27469f2abc43b47cc6e",
+    ".ai-dlc/work/obsidian-native-project-mounts.toml": "d17edfe5caff3dae41dc39ce56462f0cbe7e99c784b749517e39232619fad175",
     ".ai-dlc/work/project-document-access.toml": "4e01d7317cf743de1766943c227a2c13e277c534a22f09ed7205f0de2f2b72dd",
     ".ai-dlc/work/project-workspace-diagnostics.toml": "9f48346a5d06228340e4f01a4ed7cfb537b3b5c58f6a6c70463c93a5863984e7",
     "docs/architecture.md": "fa3d6171f60fbaed478ec2a94f4ef6837573f5234fdffd25ace767d0967ac110",
@@ -158,7 +163,7 @@
     "openspec/changes/obsidian-native-project-mounts/proposal.md": "784dbb803f2b57b5954d2c22825dcd6113638968a3403087b4dae5d23fc5d287",
     "openspec/changes/obsidian-native-project-mounts/specs/obsidian-native-project-mounts/spec.md": "43c29b99912073dff43e9a6e35ad7f7fb37dbe6378d780a1c607c647a27ef774",
     "openspec/changes/obsidian-native-project-mounts/specs/obsidian-vault-linking/spec.md": "43df00683c38a50d462d5f009362c75e5d3ebb78b5a565b981e417cd58eb4728",
-    "openspec/changes/obsidian-native-project-mounts/tasks.md": "9f011ad6eb406d44ba9edaaca213bf396d128103d1ddae89d564884c64c9ef4c",
+    "openspec/changes/obsidian-native-project-mounts/tasks.md": "2d15171727c1a1891943924aabdd7afe4a2191204a1b448a679de44b222eec4b",
     "openspec/changes/project-document-access/design.md": "12c44710d67ed0b9e0649d6400153425af7c8ff30eddbf968c3e28d7ca9101db",
     "openspec/changes/project-document-access/proposal.md": "ff296da7330870cab04b4a75d9f79e7a5db8c52fa16c734419715a4411807431",
     "openspec/changes/project-document-access/specs/project-document-access/spec.md": "aeb7cfe21a7b4ead99f3abe6989bfddf2380724b0af15b77e79513c94ff7b714",
@@ -175,6 +180,7 @@
     "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
     "openspec/specs/obsidian-vault-linking/spec.md": "5de72875e357cd5e9821fbf89388f19e8ae1fea7c7ca1c484c295fc0fbdf4d38",
     "project-templates/project/docs/documentation-guide.md": "640d64c9b4c59bc0b246e066405efcd4e4149b362598ff63b9f64d5888348128",
+    "project-templates/project/docs/workflows/tool-map.md": "9475b403f01ad8795db2a4b4fd0aea4033e884dd63ff2a9bee66cf83e4cd6870",
     "pyproject.toml": "9cb4d37f9aba00fb6668ba69de8c53a06471128f2964d63848ca8d7afe3a14cf",
     "scripts/check_generated.py": "845e3ac89acb10720eab193712430a09b767272862a02369f391a982da6e7267",
     "scripts/check_layout.py": "26fde5445108c55e36a1ea3083f5dc01a71ecfcd9b1d38542c515d86afe5ab4d",
