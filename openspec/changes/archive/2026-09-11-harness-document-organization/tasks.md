@@ -7,7 +7,7 @@
 
 ## Verification and delivery
 - [x] 9.1 Review canonical guidance and record documentation-impact dispositions.
-- [ ] 9.2 Validate this OpenSpec change and run required project checks.
+- [x] 9.2 Validate this OpenSpec change and run required project checks.
 - [x] 9.3 Prepare the reviewed PR and bind its gated completion handoff.
 - [x] 9.4 Record observed client evidence and explicitly pending unavailable qualification.
 

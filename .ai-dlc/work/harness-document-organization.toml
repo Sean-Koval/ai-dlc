@@ -25,8 +25,8 @@ scm = "github"
 deploy = "none"
 
 [artifacts]
-spec = "openspec/changes/harness-document-organization"
-plan = "openspec/changes/harness-document-organization/tasks.md"
+spec = "openspec/changes/archive/2026-09-11-harness-document-organization"
+plan = "openspec/changes/archive/2026-09-11-harness-document-organization/tasks.md"
 branch = "codex/harness-document-organization"
 related_workspace = "https://github.com/Sean-Koval/ai-dlc/issues/32"
 related_qualification = "https://github.com/Sean-Koval/ai-dlc/issues/34"
