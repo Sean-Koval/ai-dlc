@@ -8,4 +8,4 @@
 ## Verification and delivery
 - [x] 9.1 Review canonical guidance and record documentation-impact dispositions.
 - [x] 9.2 Validate this OpenSpec change and run required project checks.
-- [ ] 9.3 Update from the target branch, re-record evidence, review PR, merge with fresh checks and verify merged-revision CI receipts.
+- [x] 9.3 Update from the target branch, re-record evidence, review PR, merge with fresh checks and verify merged-revision CI receipts.

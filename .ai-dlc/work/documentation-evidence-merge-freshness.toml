@@ -23,8 +23,8 @@ scm = "github"
 deploy = "none"
 
 [artifacts]
-spec = "openspec/changes/documentation-evidence-merge-freshness"
-plan = "openspec/changes/documentation-evidence-merge-freshness/tasks.md"
+spec = "openspec/changes/archive/2026-09-11-documentation-evidence-merge-freshness"
+plan = "openspec/changes/archive/2026-09-11-documentation-evidence-merge-freshness/tasks.md"
 branch = "codex/documentation-evidence-merge-freshness"
 related_incident = "https://github.com/Sean-Koval/ai-dlc/pull/44"
 tracker = "48"
