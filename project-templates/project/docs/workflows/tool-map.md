@@ -143,6 +143,7 @@ protocol is unrun and does not spend the existing generic skill-evaluation budge
 | `project_docs_review_check` | `project docs-review-check` | Check citations, scope and source bytes; does not certify semantic truth |
 | `project_workspace_preview` | `project workspace-init` | Preview additive private project navigation; CLI apply explicitly creates files |
 | `project_vault_mount_preview` | `project link-vault --mode mount --preview` | Preview canonical docs and existing OpenSpec directory mounts; omit CLI `--preview` to apply |
+| `project_workspace_check` | `project workspace-check` | Report installation, shell activation, each mount binding and link navigation separately; read-only, native client not assessed |
 
 Project-document search and read cover repository files, never private notes.
 Declare additional Markdown per call with repeated `--source` (MCP `sources`);

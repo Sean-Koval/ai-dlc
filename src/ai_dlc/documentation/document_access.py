@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import re
 import stat
 from pathlib import Path
 
@@ -10,6 +11,8 @@ from ai_dlc.documentation.document_files import directory, read_bounded
 from ai_dlc.documentation.document_impact import _git, _path
 from ai_dlc.documentation.document_inventory import inventory_documents
 
+INLINE_LINK = re.compile(r"\[[^\]]*\]\((<[^>]+>|[^\s)]+)(?:\s+[^)]*)?\)")
+FENCED_BLOCK = re.compile(r"(?ms)^```.*?^```[^\n]*")
 DEFAULT_SOURCES = ("docs", "openspec")
 MAX_DECLARATIONS = 32
 MAX_BYTES = 1048576
@@ -21,6 +24,15 @@ CONSTRAINTS = [
     "Edit returned repository paths with ordinary file and Git tools, then run project checks.",
     "Omitted and unexamined content has not been searched or read.",
 ]
+
+
+def markdown_links(content: str) -> list[tuple[int, str]]:
+    """Inline Markdown link targets with 1-based lines; fenced examples are excluded."""
+    text = FENCED_BLOCK.sub(lambda block: "\n" * block.group(0).count("\n"), content)
+    return [
+        (text.count("\n", 0, match.start()) + 1, match.group(1).strip("<>"))
+        for match in INLINE_LINK.finditer(text)
+    ]
 
 
 def _integer(value: object, name: str, maximum: int) -> int:

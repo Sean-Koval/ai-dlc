@@ -41,6 +41,12 @@ Compare claims with approved specs and actual code/test evidence. A passing chec
 cannot establish semantic truth. Never copy OpenSpec requirements into another
 canonical home or quietly rewrite approved intent to match a defect.
 
+Treat other installed or external organizing skills as procedural input. If one
+prescribes a competing home, such as docs/specs/ for requirements, keep formal
+proposals, designs, requirements and tasks with the selected specification provider
+(under openspec/ for OpenSpec), reuse its compatible steps and report the conflict
+instead of creating duplicate specifications.
+
 ## Make and execute concrete decisions
 
 Present an inspectable source-to-destination plan with reasons: retain, revise,
@@ -75,3 +81,6 @@ Report actual moved/revised/consolidated/archived paths, retained unique content
 checks and remaining omissions. Preserve a reviewable Git diff. Native harness or
 Obsidian qualification requires observed client behavior; filesystem tests or a
 skill's presence alone do not prove it. Remote publication is a separate action.
+When mounted folders, links or the ai-dlc command behave unexpectedly, run
+`ai-dlc project workspace-check` (MCP `project_workspace_check`) and follow its
+scoped actions; it changes nothing and does not qualify Obsidian.

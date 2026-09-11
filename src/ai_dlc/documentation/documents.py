@@ -2,7 +2,6 @@
 
 import hashlib
 import os
-import re
 import tomllib
 from datetime import UTC, date, datetime
 from pathlib import Path
@@ -205,9 +204,9 @@ def check_documents(root: Path | str = ".", *, today: date | None = None) -> dic
                     )
                     continue
                 # Check ordinary inline Markdown links only, excluding fenced examples.
-                text = re.sub(r"(?ms)^```.*?^```[^\n]*", "", body.decode(errors="replace"))
-                for match in re.finditer(r"\[[^\]]*\]\((<[^>]+>|[^\s)]+)(?:\s+[^)]*)?\)", text):
-                    target = match.group(1).strip("<>")
+                from ai_dlc.documentation.document_access import markdown_links
+
+                for _line, target in markdown_links(body.decode(errors="replace")):
                     try:
                         parsed = urlsplit(target)
                     except ValueError:

@@ -48,6 +48,8 @@ Unknown factual reviews remain visible.
 tracks the new impact/review, personal workspace and SDK guidance behavior.
 [The reusable guide](../project-templates/project/docs/documentation-guide.md) owns
 setup and ongoing practice; OpenSpec changes own the delivery requirements.
+[The workspace qualification walkthrough](runbooks/document-workspace-qualification.md)
+repeats the messy-project organization and native Obsidian checks.
 
 ## Placement rules
 

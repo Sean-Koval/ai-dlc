@@ -148,6 +148,13 @@ def make_server(root: Path, machine: Path | None = None) -> FastMCP:
             apply=False,
         ).as_dict()
 
+    @server.tool()
+    def project_workspace_check() -> dict:
+        """Inspect installation, activation, local mounts and navigation; never mutates."""
+        from ai_dlc.documentation.workspace_diagnostics import inspect_project_workspace
+
+        return inspect_project_workspace(root, vault=config.get("paths", {}).get("vault"))
+
     def knowledge():
         from ai_dlc.documentation.knowledge import Knowledge
 
