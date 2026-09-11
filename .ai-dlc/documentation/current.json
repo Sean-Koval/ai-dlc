@@ -1,35 +1,300 @@
 {
   "schema": 1,
-  "base": "58aab877bb003bd85da8c5a108cd6643a2caae6a",
-  "snapshot": "8e04640e80dd60345d05a1d9a38b233f649da008d1fb5a98387d6ef1f1ebf395",
+  "base": "2b2bd65ac640b8dcde453a5457a46e3986b4be6e",
+  "snapshot": "c4aca0d228c782d1c6be6965a68b2481721faababf7dfa8006e8295ab9ae2978",
   "reviewer": "Codex",
   "decisions": [
     {
-      "target": "docs/development-workflow.md",
+      "target": ".agents/skills/document-organize/SKILL.md",
       "outcome": "updated",
-      "reason": "Reviewed the combined guide against tracker selection, artifact publication and finish services; it now defines manual Jira outcome links, GitHub delivery ownership and acceptance without claiming synchronization."
+      "reason": "Reviewed portable and rendered harness guidance against the shared tool interfaces and approved organization workflow; harnesses supply reviewed Git edits and semantic judgment without changing specification or private-note authority."
     },
     {
-      "target": "docs/workflows/work-computer-setup.md",
+      "target": ".agents/skills/document-review/SKILL.md",
       "outcome": "updated",
-      "reason": "Reviewed setup against existing GitHub and Jira connection commands; GitHub delivery is the example and Jira-only delivery remains an explicit alternative."
+      "reason": "Reviewed portable and rendered harness guidance against the shared tool interfaces and approved organization workflow; harnesses supply reviewed Git edits and semantic judgment without changing specification or private-note authority."
     },
     {
-      "target": "profiles/sean.toml",
-      "outcome": "updated",
-      "reason": "The personal tracker preference and installation modules now match the workflow guide; Jira comments describe future intent and do not add runtime settings."
-    },
-    {
-      "target": ".ai-dlc/work/github-jira-profile.toml",
+      "target": ".ai-dlc/agent-ownership.json",
       "outcome": "no-impact",
-      "reason": "This reviewed change record supplies acceptance and delivery references; it introduces no additional product behavior or canonical explanation beyond the two updated guides."
+      "reason": "Reviewed implementation or generated metadata against the updated canonical guides and requirements; no additional independently maintained explanation is needed for this supporting change."
+    },
+    {
+      "target": ".ai-dlc/work/harness-document-organization.toml",
+      "outcome": "no-impact",
+      "reason": "Reviewed work metadata links approved scope, requirements, dependencies and delivery references; it does not introduce separate runtime behavior or replace canonical documentation."
+    },
+    {
+      "target": ".ai-dlc/work/obsidian-native-project-mounts.toml",
+      "outcome": "no-impact",
+      "reason": "Reviewed work metadata links approved scope, requirements, dependencies and delivery references; it does not introduce separate runtime behavior or replace canonical documentation."
+    },
+    {
+      "target": ".ai-dlc/work/project-document-access.toml",
+      "outcome": "no-impact",
+      "reason": "Reviewed work metadata links approved scope, requirements, dependencies and delivery references; it does not introduce separate runtime behavior or replace canonical documentation."
+    },
+    {
+      "target": ".ai-dlc/work/project-workspace-diagnostics.toml",
+      "outcome": "no-impact",
+      "reason": "Reviewed work metadata links approved scope, requirements, dependencies and delivery references; it does not introduce separate runtime behavior or replace canonical documentation."
+    },
+    {
+      "target": ".claude/skills/document-organize/SKILL.md",
+      "outcome": "updated",
+      "reason": "Reviewed portable and rendered harness guidance against the shared tool interfaces and approved organization workflow; harnesses supply reviewed Git edits and semantic judgment without changing specification or private-note authority."
+    },
+    {
+      "target": ".claude/skills/document-review/SKILL.md",
+      "outcome": "updated",
+      "reason": "Reviewed portable and rendered harness guidance against the shared tool interfaces and approved organization workflow; harnesses supply reviewed Git edits and semantic judgment without changing specification or private-note authority."
+    },
+    {
+      "target": "agents/skills.lock.json",
+      "outcome": "updated",
+      "reason": "Reviewed portable and rendered harness guidance against the shared tool interfaces and approved organization workflow; harnesses supply reviewed Git edits and semantic judgment without changing specification or private-note authority."
+    },
+    {
+      "target": "agents/skills/document-organize/SKILL.md",
+      "outcome": "updated",
+      "reason": "Reviewed portable and rendered harness guidance against the shared tool interfaces and approved organization workflow; harnesses supply reviewed Git edits and semantic judgment without changing specification or private-note authority."
+    },
+    {
+      "target": "agents/skills/document-review/SKILL.md",
+      "outcome": "updated",
+      "reason": "Reviewed portable and rendered harness guidance against the shared tool interfaces and approved organization workflow; harnesses supply reviewed Git edits and semantic judgment without changing specification or private-note authority."
+    },
+    {
+      "target": "docs/architecture.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed this mapped canonical explanation against the change; its existing responsibility and boundary description remains accurate, while detailed commands live in the updated documentation guide/tool map."
+    },
+    {
+      "target": "docs/verification/documentation-workflow.md",
+      "outcome": "updated",
+      "reason": "Reviewed and updated canonical guidance/navigation or scoped evidence against the implemented inventory, review or local mount services; preserve OpenSpec ownership, authored content and private knowledge boundaries."
+    },
+    {
+      "target": "docs/workflows/tool-map.md",
+      "outcome": "updated",
+      "reason": "Reviewed and updated canonical guidance/navigation or scoped evidence against the implemented inventory, review or local mount services; preserve OpenSpec ownership, authored content and private knowledge boundaries."
+    },
+    {
+      "target": "openspec/changes/harness-document-organization/design.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
+    },
+    {
+      "target": "openspec/changes/harness-document-organization/proposal.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
+    },
+    {
+      "target": "openspec/changes/harness-document-organization/specs/harness-document-organization/spec.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
+    },
+    {
+      "target": "openspec/changes/harness-document-organization/tasks.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
+    },
+    {
+      "target": "openspec/changes/obsidian-native-project-mounts/design.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
+    },
+    {
+      "target": "openspec/changes/obsidian-native-project-mounts/proposal.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
+    },
+    {
+      "target": "openspec/changes/obsidian-native-project-mounts/specs/obsidian-native-project-mounts/spec.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
+    },
+    {
+      "target": "openspec/changes/obsidian-native-project-mounts/tasks.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
+    },
+    {
+      "target": "openspec/changes/project-document-access/design.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
+    },
+    {
+      "target": "openspec/changes/project-document-access/proposal.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
+    },
+    {
+      "target": "openspec/changes/project-document-access/specs/project-document-access/spec.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
+    },
+    {
+      "target": "openspec/changes/project-document-access/tasks.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
+    },
+    {
+      "target": "openspec/changes/project-workspace-diagnostics/design.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
+    },
+    {
+      "target": "openspec/changes/project-workspace-diagnostics/proposal.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
+    },
+    {
+      "target": "openspec/changes/project-workspace-diagnostics/specs/project-workspace-diagnostics/spec.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
+    },
+    {
+      "target": "openspec/changes/project-workspace-diagnostics/tasks.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
+    },
+    {
+      "target": "project-templates/project/docs/documentation-guide.md",
+      "outcome": "updated",
+      "reason": "Reviewed and updated canonical guidance/navigation or scoped evidence against the implemented inventory, review or local mount services; preserve OpenSpec ownership, authored content and private knowledge boundaries."
+    },
+    {
+      "target": "project-templates/project/docs/workflows/tool-map.md",
+      "outcome": "updated",
+      "reason": "Reviewed and updated canonical guidance/navigation or scoped evidence against the implemented inventory, review or local mount services; preserve OpenSpec ownership, authored content and private knowledge boundaries."
+    },
+    {
+      "target": "tests/test_rendering.py",
+      "outcome": "no-impact",
+      "reason": "Regression coverage exercises the documented shared-service boundaries; test fixtures do not establish native client or company qualification."
     }
   ],
   "sources": {
-    ".ai-dlc/work/github-jira-profile.toml": "187bd72099c96ca6813014c92c97de8c63776f23c31873435722395ccca7f47b",
+    ".agents/skills/document-organize/SKILL.md": "e1e2293756847e0ffd771ab5b8fb7df604fff697858f0e6e48447c57e7fa5a29",
+    ".agents/skills/document-review/SKILL.md": "5426eaa82efef7f0637f31257b5c079da76a9b3ba0ce13fd8f0df922cbfb345d",
+    ".ai-dlc/agent-ownership.json": "e57aae3c0948200a6ae676d8b5243774c799e7871f7a2e1c34a9eebd636f55f7",
+    ".ai-dlc/work/harness-document-organization.toml": "ecf5755fce7a6eff0e4711c13956c26b5d8f19eabc57cf119c99fbb90153a23e",
+    ".ai-dlc/work/obsidian-native-project-mounts.toml": "2d8a4275cdb6acb42f15526490f4097bba68d2ada8cfb27469f2abc43b47cc6e",
+    ".ai-dlc/work/project-document-access.toml": "4e01d7317cf743de1766943c227a2c13e277c534a22f09ed7205f0de2f2b72dd",
+    ".ai-dlc/work/project-workspace-diagnostics.toml": "96ed7f6f64c3dbb6636230c55943738bf72565e27108a358cad61b75243961a3",
+    ".claude/skills/document-organize/SKILL.md": "e1e2293756847e0ffd771ab5b8fb7df604fff697858f0e6e48447c57e7fa5a29",
+    ".claude/skills/document-review/SKILL.md": "5426eaa82efef7f0637f31257b5c079da76a9b3ba0ce13fd8f0df922cbfb345d",
+    "agents/skills.lock.json": "6b88e547755b533c84175ffdca53fe66878797a03046878122ab92fefe4f2713",
+    "agents/skills/document-organize/SKILL.md": "e1e2293756847e0ffd771ab5b8fb7df604fff697858f0e6e48447c57e7fa5a29",
+    "agents/skills/document-review/SKILL.md": "5426eaa82efef7f0637f31257b5c079da76a9b3ba0ce13fd8f0df922cbfb345d",
+    "docs/architecture.md": "55504e1b15988ca190dd4f31e643e218476777b6993a675476560a94e23ebfab",
     "docs/catalog.toml": "381e96987d234658c2e7cdae0429d54e6d2184718bb9509d07bfbd0b7c3e2e66",
-    "docs/development-workflow.md": "3ee994b8b90e6a8469bd6d79430f51b226f4140f995cc176c882eda60e12ccfd",
-    "docs/workflows/work-computer-setup.md": "b73100b1cc3e64067be1caf60093c0e68f9b64c3c866227f26e6b7b265071e24",
-    "profiles/sean.toml": "10f981b735e4cd3e2b7c953d2b634db4411aa85a8800ae73421fcb5a15aa720c"
+    "docs/verification/documentation-workflow.md": "6d32ed29deeee7378ea41c810bb77e28498b6bde0dacf44fde4e842364b9a9fa",
+    "docs/workflows/tool-map.md": "6511988c8e5064dcca58245b7c5b46a8d38d81559b4a7a4bcd01eaf23a9a6500",
+    "openspec/changes/harness-document-organization/design.md": "e5137098a734992575764a121a75e6dec353656b92d151b38619863a75c22653",
+    "openspec/changes/harness-document-organization/proposal.md": "c6f7c3ae2c976ca031dceab479acffb53638f32fe7c81254d638b66f38a95973",
+    "openspec/changes/harness-document-organization/specs/harness-document-organization/spec.md": "ea46b9c9d762b79ffba1ae06b3cf1dbd3d1273fa2ea51555ee6c1089620fd3bc",
+    "openspec/changes/harness-document-organization/tasks.md": "7b99f18a9d5e9d19c6dda452dbf9e4db8feb20134ccda952079c5af73b4c3b55",
+    "openspec/changes/obsidian-native-project-mounts/design.md": "fbeae41a2ca27ac3999a0aaf414e793d61d2eb95929645a6895568f47b96c708",
+    "openspec/changes/obsidian-native-project-mounts/proposal.md": "784dbb803f2b57b5954d2c22825dcd6113638968a3403087b4dae5d23fc5d287",
+    "openspec/changes/obsidian-native-project-mounts/specs/obsidian-native-project-mounts/spec.md": "43c29b99912073dff43e9a6e35ad7f7fb37dbe6378d780a1c607c647a27ef774",
+    "openspec/changes/obsidian-native-project-mounts/tasks.md": "896519982707c717f8f7c73ebbc96b8a090832c4251fe56cc1a8708d1ac1c8c7",
+    "openspec/changes/project-document-access/design.md": "12c44710d67ed0b9e0649d6400153425af7c8ff30eddbf968c3e28d7ca9101db",
+    "openspec/changes/project-document-access/proposal.md": "ff296da7330870cab04b4a75d9f79e7a5db8c52fa16c734419715a4411807431",
+    "openspec/changes/project-document-access/specs/project-document-access/spec.md": "aeb7cfe21a7b4ead99f3abe6989bfddf2380724b0af15b77e79513c94ff7b714",
+    "openspec/changes/project-document-access/tasks.md": "f7877193bc8188fcf0437934bcb7582206a611dc4b361509b0319b72b18099a7",
+    "openspec/changes/project-workspace-diagnostics/design.md": "cac30e7c3bee084291556366f3c9c1041103f8386f9d356c9161aee535994028",
+    "openspec/changes/project-workspace-diagnostics/proposal.md": "1c0ff223f3f0a2cad024264fc4fbc60259d1d7bf40cd16cef7301c04eb965df0",
+    "openspec/changes/project-workspace-diagnostics/specs/project-workspace-diagnostics/spec.md": "2ab2efd15587a3b009dde7bc7aa9f22727495ff6c94ee8b228f883ad5c601ab0",
+    "openspec/changes/project-workspace-diagnostics/tasks.md": "48eced1aef69d10f1e6e33f2b21fef922408a0c62d72a0b5b3ca4e69d5b583b9",
+    "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
+    "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
+    "openspec/specs/documentation-impact-workflow/spec.md": "a542eff3ea8b8308b59b4d518bcdd12c50fbc4d40b61ef2df227730dbd5c048d",
+    "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
+    "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
+    "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
+    "project-templates/project/docs/documentation-guide.md": "880d56b09fbd009f76eb95bc57a4b5a25a4c0162992432b4c989f75f28e835c0",
+    "project-templates/project/docs/workflows/tool-map.md": "d09d193fb1f4e8e3965f65085b7fc6fa78f626fe87692289433abcfe7a53eb6f",
+    "pyproject.toml": "9cb4d37f9aba00fb6668ba69de8c53a06471128f2964d63848ca8d7afe3a14cf",
+    "scripts/check_generated.py": "845e3ac89acb10720eab193712430a09b767272862a02369f391a982da6e7267",
+    "scripts/check_layout.py": "26fde5445108c55e36a1ea3083f5dc01a71ecfcd9b1d38542c515d86afe5ab4d",
+    "scripts/legacy/sync-cli-templates.sh": "235f53f0e4f4785ad2bb5559b4a01f91f4e88b228437af033857c6335593fa12",
+    "scripts/qualify_framework.py": "01dd9e6acbe14e740f068662aa539e9a7ed0ba57ab97e9457e0a05d968a25fb6",
+    "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+    "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
+    "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
+    "src/ai_dlc/cli.py": "3335621843f414ce821d43f6f551bafab4043b045ea36c7a62920c73c2783941",
+    "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
+    "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
+    "src/ai_dlc/config.py": "31677c538713aa41d3625ef9570f962ed8ee5d32bd4b5b3747437e8fd8fb9d02",
+    "src/ai_dlc/conformance.py": "9d18cdbf21aa8f9889d880729c368d9567f32f83c066693dceb06ce6549b6082",
+    "src/ai_dlc/contracts.py": "a6d7c5ad8f3e2a513621883c75bff187e1104315ab337cddc023d5343a9e7538",
+    "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
+    "src/ai_dlc/documentation/document_files.py": "1e823b96dfe44b335fb52248adcc9773616b763fd617d8dd0832f1ce3da1f4f3",
+    "src/ai_dlc/documentation/document_impact.py": "50efbd92561a85d052842596e5fa903dce9d60207f330b9ed2429d9c7bf28043",
+    "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
+    "src/ai_dlc/documentation/document_review.py": "ac22def46cd83949e3838cd4aeabd0b9ff8deeb145d687fab588a2a98869e170",
+    "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
+    "src/ai_dlc/documentation/documents.py": "b698ca1f3716ccb98533c00a10a58a74e7ffd7d4a6aa01e9cd205ea793ff06e6",
+    "src/ai_dlc/documentation/knowledge.py": "91aad53eccc1889d4077ef59c137ff1b35b03c433efa05b7be61d2e534fa7db6",
+    "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
+    "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
+    "src/ai_dlc/documentation/vault_link.py": "3ddd84f953a0f111647abdbeffb3b81a440bda6ff479a5c633eaf32fe8ca046f",
+    "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
+    "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
+    "src/ai_dlc/environment/enrollment.py": "fb0e82fb7b9e5808e1ee3571a53d129ddc8b8b6c83ab5918d7acab9566f7e9d1",
+    "src/ai_dlc/environment/machine.py": "491128faaec9634ec29ef0ebc9a38af3dfe25499e533543fcecf0734d2e50d1a",
+    "src/ai_dlc/environment/profile_source.py": "517b6bd0ae788a9270da5aee872abc2502c523d9faf75e52ab54ba5c6861e906",
+    "src/ai_dlc/files.py": "383ba27f055a5637c384462a172ff678165b643408c77d0945fd8f4622b00580",
+    "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
+    "src/ai_dlc/harness/agents.py": "7217b03580b97666994b2bb8afa3cc429d33aaabff55036bcdafdfaea9adc601",
+    "src/ai_dlc/harness/components.py": "59a50ce61709daaf4b9209c154498eb5efacb84a8747550685421cc269ea7f3c",
+    "src/ai_dlc/harness/hooks.py": "2081bdfd82651e53870c7f6fec6a38a3bc587b0e4dfae46a3043b6617add9994",
+    "src/ai_dlc/harness/native_composition.py": "7cd919fd40adb70eea1a775dbd5ea8328fde9eda6302d6f52565f14ea3d244ab",
+    "src/ai_dlc/harness/user_agents.py": "6fad6edd1d1d89b0c105291f2fa8b69f223ce00bd5095d77357d7c05e6eb3f4a",
+    "src/ai_dlc/harness/workflow_bundles.py": "e0943696bdced1e841bf15a68c2040e37e484fe7c021119dec1c25e82be0fe38",
+    "src/ai_dlc/locking.py": "f1cfe828e897e11d73b645130060362e2699f75aac9307ed8cb4955b0533b629",
+    "src/ai_dlc/mcp_server.py": "215adcd140f7b3b45796d875c36c89b8d7011383a0fb9267b3722fedf7d8fc8f",
+    "src/ai_dlc/provider_definitions.py": "e90c2d41a839bc4a32dcb3989f59fa6c9073bd1233f3db2088bd176e1bc513d3",
+    "src/ai_dlc/providers/__init__.py": "85325d9c7d4f2ac948510ad6ac20342ec0bd92d02857dda65637dc7b594181ae",
+    "src/ai_dlc/providers/github_issues.py": "55a18a178fc329a94ff95f39b72c5599117c5a8e79842d7cc7c6c8966cbed405",
+    "src/ai_dlc/providers/github_projects.py": "65b338648b52f637cd97b73a0a19fbc030e498994f51cf3943cdac23cfc47470",
+    "src/ai_dlc/providers/jira_cloud.py": "0c4ee8f892ca3f329e822400a81c1e80d5607c087910329251acb9165345cc28",
+    "src/ai_dlc/providers/linear.py": "fa90bd64765c8e8bee1cbfa54e47e17688e8e6407c7492ae0ed863b4615c2b95",
+    "src/ai_dlc/providers/openspec.py": "7999519332d372eb9344fbbf9dced0cc57f4d408c048f9b39215b7c54cdcb136",
+    "src/ai_dlc/providers/plane.py": "76fab3893bf0d4536c58500e4ab5a90f59893977c057be4777d78068e278ca1c",
+    "src/ai_dlc/providers/plane_attempts.py": "9a90b719e348d5592865e415bd29c3686969263f733a44275d6029fee019743c",
+    "src/ai_dlc/providers/python_exec.py": "3aaafe9bf74a4a949b59d71ed2079b9c48114462a9c823b3641a1772af5a6ff1",
+    "src/ai_dlc/providers/scm.py": "2cdf9479741d0a3f37405e5b1cfd9c7d7b0c68038feefb75f3b910b894c088e8",
+    "src/ai_dlc/setup/__init__.py": "8eb444a69a67d0c1a59ffc0c80ce59efda159976bea58d40154e97f8bdecf18c",
+    "src/ai_dlc/setup/connections.py": "35d04e1c6778227b0947034d2ed5d535ab8c79ee783496a2c2c7285d694b5595",
+    "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
+    "src/ai_dlc/setup/github_project_setup.py": "86b97dcaa4447082252008da1df64159cac09a077198a7e84e3577294ad540d2",
+    "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
+    "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
+    "src/ai_dlc/setup/project.py": "309f87bd8ce73dab926ac8dbdfa3672858b777198cd74632cea81a03e76c7dce",
+    "src/ai_dlc/setup/provider_onboarding.py": "8a9407894dc494faa4a431ad219e0ebbd472504893434ac3b66f7be6f6acfdf6",
+    "src/ai_dlc/setup/provision.py": "5d5af0be37b5620a561ab324b41febc541b07e0a5b35051869b025f114effdd2",
+    "src/ai_dlc/setup/readiness.py": "7c7c2767520b3da2e7f8dd74be4ed6359a7dca66bc413c68eba2b1b4bad7f52c",
+    "src/ai_dlc/setup/rebind.py": "c083e35c27f10415986d3170bb81905944254bd12485c5a4db71b77b0a38adf2",
+    "src/ai_dlc/setup/templates.py": "95e60c4339286b85fb393318d69e797b2990b41303e7dd16a3767141ededf69c",
+    "src/ai_dlc/setup/tracker_targets.py": "1b3fe3fea13732748d5498e1cbc2a2d16395eca7bd942789389c6bc08b214fd8",
+    "src/ai_dlc/setup/workstation.py": "4abcc68e4d30ee4ce32ed1ff9b872d5926c15747de2ec2a92b88c7352813206a",
+    "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
+    "src/ai_dlc/verification/sandbox.py": "b830bd80df60802c29dbc2e1c639958537f289592052b404e6972ff377d25681",
+    "src/ai_dlc/verification/test_proxy.py": "f38cb2a28c8501c743613b0bfdf7e17f367c101ce7984a304e20ab3095eb7880",
+    "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
+    "src/ai_dlc/work/journal.py": "f5801d312b0434262c9dda76ac3b94cd1ac099fe98650dc9f745927898a89b52",
+    "src/ai_dlc/work/traceability.py": "646e7595cad285ef07672b436625321443d6603cbf8a3518a3b2b2c5c51d6a33",
+    "src/ai_dlc/work/tracker_migration.py": "65fc8eb4a708947c12a5f4fd3cfe664f409ee32c282b68a48bd725152e5b18a3",
+    "src/ai_dlc/work/workflow.py": "c891477baf6b8e8e4280096d9bd047f2fe7fafab9f03d8801791750841f36abc",
+    "tests/test_company_guidance.py": "2157af2cd002d74a411ab3555afb26cbaec9381061721c6e6b3470d376eefe38",
+    "tests/test_document_impact.py": "623d165291104ce6d5c891db8aa4c5f03f223ba1c1d6ff357b71797fd3853672",
+    "tests/test_document_inventory.py": "927199563751af6b2dd5aa8e93cddb43cc62192adffea49694dada37ef6bf14c",
+    "tests/test_document_review.py": "43d72df8bdd24980ad5ee2d4c5f2cbef204fbecd11d501f1ae8f1f02b480111b",
+    "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
+    "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7",
+    "tests/test_rendering.py": "83407753dffe637e61228a3c45fa0e4c57f53d23c1ab1535433316945353ad36"
   }
 }

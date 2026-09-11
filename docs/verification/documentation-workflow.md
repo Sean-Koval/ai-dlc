@@ -94,3 +94,35 @@ The six implementation changes have been archived with canonical purpose text an
 work references updated. Their GitHub issues remain open until integration and
 AI-DLC completion gates pass. Archival does not certify the pending native or
 company-specific walkthroughs.
+
+## Harness organization qualification — September 11, 2026
+
+A fresh harness received an outcome-level request to organize a disposable Parcel
+repository, the shipped document-organize skill and the new CLI. No file-by-file
+move list or baseline proposal was supplied. It used repository inventory and
+three bounded review packets to inspect all nine initial Markdown documents, then
+prepared a concrete proposal for coordinator review.
+
+After review, it moved operational/reference documents into runbook/reference
+folders and root/legacy history into an archive; consolidated overlapping
+architecture text while preserving unique carrier rationale; repaired links; and
+created a documentation map, catalog and archive index. Existing ADR and
+architecture conventions were retained. Operational statements unsupported by
+the intentionally small source snapshot were preserved with explicit uncertainty.
+The OpenSpec document remained byte-identical. The complete working-tree artifact
+contained 13 path entries, including three new navigation/catalog files.
+
+The pre-edit review passed citation/current-source validation. Post-edit relative
+Markdown links and diff whitespace passed; old moved-path references were absent.
+Document checks reported only five unknown-review warnings; dates were not
+manufactured. The fixture had no configured project runtime, so its required
+manifest check was unavailable and is not claimed. Toolkit required checks and
+CI qualify the toolkit independently.
+
+The baseline harness could propose organization using general reasoning, but old
+`docs-init` offered only five navigation scaffolds and old `docs-review` could not
+prepare a packet without a catalog. This is evidence of a supported workflow, not
+a measured semantic-quality improvement. Review corrected both an inference from
+missing fixture code and an overly broad intermediate ADR move; this was a
+reviewed iterative workflow, not a one-shot or unattended success. Native
+Antigravity and company-project qualification remain pending.
