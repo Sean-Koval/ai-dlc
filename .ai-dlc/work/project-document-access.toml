@@ -26,8 +26,8 @@ scm = "github"
 deploy = "none"
 
 [artifacts]
-spec = "openspec/changes/project-document-access"
-plan = "openspec/changes/project-document-access/tasks.md"
+spec = "openspec/changes/archive/2026-09-11-project-document-access"
+plan = "openspec/changes/archive/2026-09-11-project-document-access/tasks.md"
 branch = "codex/project-document-access"
 related_workspace = "https://github.com/Sean-Koval/ai-dlc/issues/32"
 related_qualification = "https://github.com/Sean-Koval/ai-dlc/issues/34"

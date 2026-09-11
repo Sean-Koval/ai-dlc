@@ -10,9 +10,9 @@
 - [x] 2.2 Exercise scoped harness routing from mounted-document inspection to canonical repository edits; confirm private knowledge, portal and catalog-review compatibility and record actual evidence limits.
 
 ## Verification and delivery
-- [ ] 9.1 Review canonical guidance and record documentation-impact dispositions.
-- [ ] 9.2 Validate this OpenSpec change and run required project checks.
-- [ ] 9.3 Prepare the reviewed PR and bind its gated completion handoff.
+- [x] 9.1 Review canonical guidance and record documentation-impact dispositions.
+- [x] 9.2 Validate this OpenSpec change and run required project checks.
+- [x] 9.3 Prepare the reviewed PR and bind its gated completion handoff.
 - [x] 9.4 Record observed client evidence and explicitly pending unavailable qualification.
 
 Actual merge, exact merged-revision CI receipt verification and tracker completion
