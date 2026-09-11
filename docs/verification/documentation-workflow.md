@@ -94,3 +94,25 @@ The six implementation changes have been archived with canonical purpose text an
 work references updated. Their GitHub issues remain open until integration and
 AI-DLC completion gates pass. Archival does not certify the pending native or
 company-specific walkthroughs.
+
+## Native directory mount qualification — September 11, 2026
+
+A disposable, independently initialized Git checkout and separate local vault were
+used with the native mount implementation from commit `3231636`. This exercised
+Obsidian 1.13.7 on the current macOS host through the native UI:
+
+- Mount preview/apply exposed `docs/` and `openspec/` beneath the same project.
+- Native search for a term in the fixture returned 11 matches across architecture,
+  ADR and OpenSpec bodies. Architecture showed two backlinks.
+- A relative documentation-to-OpenSpec link opened the specification inside the
+  vault, with its project breadcrumb and one backlink.
+- An edit typed in Obsidian appeared in the repository's Git diff. An external
+  repository edit refreshed in the already open Obsidian editor.
+- Qualification markers were removed after checking exact baseline bytes; the
+  fixture returned to a clean Git state. Existing personal vault content was not
+  changed.
+
+This qualifies those native behaviors on this host and fixture only. Company
+repositories, the work-computer vault, Antigravity, other desktop platforms and
+synchronization are unverified. Test fixtures remain distinct from this native
+walkthrough. The new mode does not qualify portal links as in-vault document access.

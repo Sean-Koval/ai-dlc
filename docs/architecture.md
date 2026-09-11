@@ -49,7 +49,7 @@ The repository stores architecture, design rationale, decisions, runbooks and re
 Prefer one application with explicit module responsibilities over speculative service decomposition. CLI, MCP, and agent clients share validation where an MCP service is exposed; the CLI alone owns machine enrollment mutation. The local CLI and local MCP are today's primary control plane; hosted or cloud execution is a later qualification target. External provider failures and uncertain mutations remain visible. Credentials are environment references, never template values.
 
 Knowledge ownership stays provider-neutral: private knowledge links durable
-repository material but does not mirror it. Linked Obsidian portals and additive personal workspaces are implemented;
+repository material but does not mirror it. Linked Obsidian portals, additive personal workspaces and explicit local directory mounts are implemented;
 native application qualification remains separately recorded. Guided tracker discovery supports Linear and GitHub Issues with
 optional Projects; live qualification is recorded separately.
 
