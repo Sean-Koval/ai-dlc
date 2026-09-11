@@ -1,0 +1,40 @@
+schema = 1
+id = "obsidian-native-project-mounts"
+title = "Expose canonical project documents as editable Obsidian folders"
+scope = "Expose canonical project documents as editable Obsidian folders. Deliver the approved requirements using existing AI-DLC boundaries."
+requires_spec = true
+spec_reason = "Observable documentation, filesystem access and harness workflow changes approved by the user."
+acceptance = [
+    "Vault linking SHALL retain portal default behavior and provide explicit mount mode exposing canonical docs and existing openspec directories as siblings beneath Projects/project. Bindings SHALL remain machine-local and use a stable checkout.",
+    "Mount setup SHALL be idempotent, preserve authored notes and portals, support explicit adoption of matching links, reject conflicts, loops, overlapping targets and unexpected nested traversal, and report retained partial output.",
+    "Private knowledge operations SHALL retain their existing filesystem boundary; native mounts SHALL not authorize generic symlink traversal, synchronization or publication.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "OM-01",
+    "OM-02",
+    "OM-03",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/obsidian-native-project-mounts"
+plan = "openspec/changes/obsidian-native-project-mounts/tasks.md"
+branch = "codex/obsidian-native-project-mounts"
+related_workspace = "https://github.com/Sean-Koval/ai-dlc/issues/32"
+related_qualification = "https://github.com/Sean-Koval/ai-dlc/issues/34"
+tracker = "40"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72"
+deploy = "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "c1d0b090971dc5829585dfa82141ca9ae4735564494f33160785fbac0ba0daa1"
