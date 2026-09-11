@@ -19,6 +19,9 @@ mappings; state separately inspected code/spec evidence and uncertainty. Both
 modes retain bounded bodies, hashes, citations and explicit omissions. Use the
 document-organize skill when the outcome requires actual repository organization.
 Do not fetch links or expand into private notes simply because they are mentioned.
+To find a related passage, use `docs-search` or `docs-read` (MCP
+`project_docs_search`, `project_docs_read`); declare files outside docs/ and
+openspec/ explicitly, and report partial search coverage instead of absence.
 
 For each actionable finding, cite exact target and supporting passages with path
 and inclusive line numbers; state uncertainty and a concrete disposition. Compare

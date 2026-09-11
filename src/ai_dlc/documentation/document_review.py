@@ -3,12 +3,9 @@
 from __future__ import annotations
 
 import fnmatch
-import hashlib
-import os
-import stat
 from pathlib import Path
 
-from ai_dlc.documentation.document_files import directory
+from ai_dlc.documentation.document_files import read_bounded
 from ai_dlc.documentation.document_impact import MAPPINGS, _git, _path, digest, read_catalog
 
 LIMITATION = "Citation grounding does not establish semantic truth or repository-wide accuracy."
@@ -24,31 +21,7 @@ CATEGORIES = {
 
 
 def _body(root: Path, relative: str, remaining: int) -> dict:
-    path = root / _path(relative)
-    with directory(path.parent) as parent:
-        fd = os.open(path.name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=parent)
-        try:
-            info = os.fstat(fd)
-            if not stat.S_ISREG(info.st_mode):
-                raise ValueError("not a regular file")
-            if info.st_size > remaining:
-                raise ValueError("body budget exceeded; content not read")
-            with os.fdopen(fd, "rb", closefd=False) as stream:
-                raw = stream.read(remaining + 1)
-            if len(raw) > remaining:
-                raise ValueError("body budget exceeded")
-            text = raw.decode("utf-8")
-            if any(ord(c) < 32 and c not in "\n\r\t" for c in text):
-                raise ValueError("binary content")
-            return {
-                "path": relative,
-                "content": text,
-                "digest": hashlib.sha256(raw).hexdigest(),
-                "start_line": 1,
-                "end_line": len(text.splitlines()),
-            }
-        finally:
-            os.close(fd)
+    return read_bounded(root, _path(relative), remaining)
 
 
 def prepare_review(

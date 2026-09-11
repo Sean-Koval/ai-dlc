@@ -1,5 +1,6 @@
 """No-follow, descriptor-relative access for explicitly selected document trees."""
 
+import hashlib
 import os
 import stat
 from contextlib import contextmanager
@@ -38,6 +39,35 @@ def read_document(path: Path) -> bytes:
                 raise ValueError(f"Document is not a regular file: {path}")
             with os.fdopen(fd, "rb", closefd=False) as stream:
                 return stream.read()
+        finally:
+            os.close(fd)
+
+
+def read_bounded(root: Path, relative: str, remaining: int) -> dict:
+    """Read one complete UTF-8 body within a byte budget; oversized bodies stay unread."""
+    path = root / relative
+    with directory(path.parent) as parent:
+        fd = os.open(path.name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=parent)
+        try:
+            info = os.fstat(fd)
+            if not stat.S_ISREG(info.st_mode):
+                raise ValueError("not a regular file")
+            if info.st_size > remaining:
+                raise ValueError("body budget exceeded; content not read")
+            with os.fdopen(fd, "rb", closefd=False) as stream:
+                raw = stream.read(remaining + 1)
+            if len(raw) > remaining:
+                raise ValueError("body budget exceeded")
+            text = raw.decode("utf-8")
+            if any(ord(c) < 32 and c not in "\n\r\t" for c in text):
+                raise ValueError("binary content")
+            return {
+                "path": relative,
+                "content": text,
+                "digest": hashlib.sha256(raw).hexdigest(),
+                "start_line": 1,
+                "end_line": len(text.splitlines()),
+            }
         finally:
             os.close(fd)
 

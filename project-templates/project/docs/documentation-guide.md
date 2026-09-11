@@ -78,6 +78,43 @@ cannot verify them. Report actual changes and remaining omissions. An inventory,
 a recommendation report or additive `docs-init` output alone does not complete an
 authorized organization request.
 
+## Search and read project documents
+
+Harnesses search and read repository documentation through project operations,
+not the private knowledge API:
+
+```sh
+ai-dlc project docs-search "retry policy"
+ai-dlc project docs-read docs/architecture.md
+ai-dlc project docs-read README.md --source README.md
+```
+
+MCP `project_docs_search` and `project_docs_read` return the same results for the
+selected repository. Default scope is inventory-eligible Markdown beneath `docs/`
+and `openspec/`; either directory may be absent and is then reported, not created.
+Repeat `--source` (MCP `sources`) to add up to 32 exact inventory-eligible Markdown
+files, such as a root README, for that call only. Nothing is written to
+configuration or the catalog. A read path alone never widens scope, and globs,
+directories, ignored files and symlinks are rejected before any body is read.
+
+Search is a literal, case-insensitive match against repository-relative paths and
+single body lines. It visits documents in sorted order, reports at most one match
+per document and charges every examined body, including nonmatches, to one
+`--max-bytes` budget (default 64000, at most 1048576). `--limit` (default 20, at
+most 100) bounds matches. Oversized bodies are skipped without being read. Results
+name the repository root, each document's absolute and repository-relative path,
+its source scope and content digest and, for body matches, the line and a bounded
+excerpt. `coverage.complete` is false whenever budget, limit, unreadable, binary or
+symlinked content left material unexamined. A partial search is not evidence that
+no match exists. Read returns a complete body with digest and line range, or an
+explicit omission; there is no partial-file read.
+
+Edit returned repository paths with ordinary file and Git tools, then review the
+diff and run project checks. Do not write project documents through
+`knowledge_append` or `knowledge_note`, and do not treat a portal link, mounted
+vault folder or Markdown link as authority to read other files. Private notes stay
+behind the knowledge tools and are never searched by these operations.
+
 ## Catalog and provenance
 
 Enroll useful authoritative documents incrementally. Use stable IDs and real
