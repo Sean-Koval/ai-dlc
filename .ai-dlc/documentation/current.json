@@ -1,10 +1,17 @@
 {
   "base": "a53dee45a2366536f43888f53cc064307ce873ca",
-  "decisions": [],
+  "decisions": [
+    {
+      "outcome": "no-impact",
+      "reason": "Rebinds the mount work record's delivery PR to this evidence repair so completion verifies a green merged revision; canonical mount guidance, specifications and implementation are unchanged.",
+      "target": ".ai-dlc/work/obsidian-native-project-mounts.toml"
+    }
+  ],
   "reviewer": "Claude Code",
   "schema": 1,
-  "snapshot": "5099d98b738cd3270166cdb9c533b545ec697ab54b228186381b2eded2272386",
+  "snapshot": "e3772f441c3a1848a9150e7b63d55d6ddfd3bd594b7b8926b05f3ea38714c9c5",
   "sources": {
+    ".ai-dlc/work/obsidian-native-project-mounts.toml": "373c813951671245294af619e545f8fb6b54367869ea4e919a8149d1c3df752c",
     "docs/catalog.toml": "b22cb67fa709bb07c8623c1d7b0c302d865fbc9b1aadbf2f9365fc666ada1601"
   }
 }
