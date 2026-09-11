@@ -31,7 +31,7 @@ branch = "codex/obsidian-native-project-mounts"
 related_workspace = "https://github.com/Sean-Koval/ai-dlc/issues/32"
 related_qualification = "https://github.com/Sean-Koval/ai-dlc/issues/34"
 tracker = "40"
-pr = "https://github.com/Sean-Koval/ai-dlc/pull/44"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/45"
 
 [bindings]
 specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
