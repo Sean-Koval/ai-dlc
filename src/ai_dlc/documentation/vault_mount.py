@@ -47,11 +47,29 @@ def _git(root: Path, *args: str) -> str:
     return result.stdout.strip()
 
 
+def _canonical_directory(path: Path) -> Path:
+    raw = path.expanduser().absolute()
+    # Check lexical components before collapsing '..', which could conceal a link.
+    cursor = Path(raw.anchor)
+    for part in raw.parts[1:]:
+        cursor = cursor / part
+        if cursor.is_symlink():
+            raise ValueError(f"Mount directory traverses a symlink: {cursor}")
+    normalized = Path(os.path.abspath(raw))
+    with directory(normalized):
+        pass
+    return normalized.resolve()
+
+
+def _inaccessible(exc: OSError) -> None:
+    raise ValueError(f"Mount inspection encountered an inaccessible directory: {exc}") from exc
+
+
 def _source(path: Path) -> None:
     with directory(path):
         pass
     # A mounted tree must not silently grant access through another symlink.
-    for parent, dirs, files in os.walk(path, followlinks=False):
+    for parent, dirs, files in os.walk(path, followlinks=False, onerror=_inaccessible):
         for name in dirs + files:
             child = Path(parent) / name
             mode = child.lstat().st_mode
@@ -62,7 +80,7 @@ def _source(path: Path) -> None:
 
 
 def mount_vault(root: Path, vault: Path, name: str | None, *, adopt: bool, apply: bool):
-    root, vault = root.absolute(), vault.expanduser().absolute()
+    root, vault = _canonical_directory(root), _canonical_directory(vault)
     name = root.name if name is None else name
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,99}", name):
         raise ValueError("Project name must be one safe filename.")
@@ -120,7 +138,7 @@ def mount_vault(root: Path, vault: Path, name: str | None, *, adopt: bool, apply
             raise ValueError(f"Mount target conflicts: {destination}")
         mounts.append({"source": str(source), "path": str(destination), "action": action})
     expected = {Path(item["path"]) for item in mounts}
-    for parent, dirs, files in os.walk(vault, followlinks=False):
+    for parent, dirs, files in os.walk(vault, followlinks=False, onerror=_inaccessible):
         for entry in dirs + files:
             other = Path(parent) / entry
             if not other.is_symlink() or other in expected:

@@ -189,3 +189,44 @@ def test_mount_cannot_duplicate_binding_under_another_project_name(tmp_path):
     mount(root, vault)
     with pytest.raises(ValueError, match="overlap"):
         mount(root, vault, name="another")
+
+
+def test_lexical_parent_segments_cannot_bypass_mount_overlap(tmp_path):
+    root, _ = setup(tmp_path)
+    (tmp_path / "other").mkdir()
+    alias = tmp_path / "other" / ".." / root.name
+    vault = root / "docs/vault"
+    vault.mkdir()
+    with pytest.raises(ValueError, match="overlap"):
+        mount(alias, vault)
+    assert not (vault / "Projects").exists()
+
+
+@pytest.mark.parametrize("surface", ["source", "vault"])
+def test_unreadable_tree_refuses_mount_before_binding(tmp_path, monkeypatch, surface):
+    import os
+
+    root, vault = setup(tmp_path)
+    hidden = (root / "docs" if surface == "source" else vault) / "hidden"
+    hidden.mkdir()
+    original = os.scandir
+
+    def denied(path):
+        if str(path) == str(hidden):
+            raise PermissionError("directory unreadable")
+        return original(path)
+
+    monkeypatch.setattr(os, "scandir", denied)
+    with pytest.raises(ValueError, match="inaccessible"):
+        mount(root, vault)
+    assert not (root / ".ai-dlc/local").exists()
+    assert not (vault / "Projects").exists()
+
+
+def test_mount_normalization_does_not_hide_symlink_components(tmp_path):
+    root, vault = setup(tmp_path)
+    alias = tmp_path / "alias"
+    alias.symlink_to(root / "docs", target_is_directory=True)
+    with pytest.raises(ValueError):
+        mount(alias / "..", vault)
+    assert not (vault / "Projects").exists()
