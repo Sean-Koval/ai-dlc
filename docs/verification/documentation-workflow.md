@@ -148,3 +148,27 @@ a measured semantic-quality improvement. Review corrected both an inference from
 missing fixture code and an overly broad intermediate ADR move; this was a
 reviewed iterative workflow, not a one-shot or unattended success. Native
 Antigravity and company-project qualification remain pending.
+
+## Scoped project-document access routing — September 11, 2026
+
+Claude Code acted as the harness in a local session, using the project-document
+access working tree based on `e23413d` against a disposable Git checkout and a
+separate local vault:
+
+- Mount setup exposed `docs/` and `openspec/` beneath `Projects/parcel/`.
+- Starting from the mounted architecture note, `project docs-search` returned the
+  architecture and OpenSpec matches with canonical repository paths, source scopes
+  and line numbers, and reported complete coverage. A declared `README.md` joined
+  the results for that call only.
+- The mounted vault path as a read target, the undeclared root README and the
+  vault directory as a repository root were refused.
+- An in-process MCP server returned the same search result as the CLI.
+- The harness edited the returned canonical path with its ordinary file tool. The
+  change appeared in the repository's Git diff and through the mount, and a fresh
+  read returned the new digest. No file was created in the vault, and private-note
+  search found only the existing private note.
+
+This exercises shared CLI/MCP service routing and ordinary repository edits on
+this macOS host. It does not re-qualify native Obsidian behavior, an external MCP
+client session, Antigravity, company repositories or other platforms. Automated
+fixture tests remain distinct from this exercise.
