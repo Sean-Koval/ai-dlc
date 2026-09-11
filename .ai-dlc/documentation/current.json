@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "base": "2b2bd65ac640b8dcde453a5457a46e3986b4be6e",
-  "snapshot": "36d9d94a146684280c676c2c6a17af0db0d91b8ae6f73b8944b37758f9ebaba2",
+  "snapshot": "2a11e26397038b7ae5ce2b685046cd91ee82c92f239931d43a171bd06569f451",
   "reviewer": "Codex",
   "decisions": [
     {
@@ -50,6 +50,31 @@
       "reason": "Reviewed and updated canonical guidance/navigation or scoped evidence against the implemented inventory, review or local mount services; preserve OpenSpec ownership, authored content and private knowledge boundaries."
     },
     {
+      "target": "openspec/changes/archive/2026-09-11-obsidian-native-project-mounts/design.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-11-obsidian-native-project-mounts/proposal.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-11-obsidian-native-project-mounts/specs/obsidian-native-project-mounts/spec.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-11-obsidian-native-project-mounts/specs/obsidian-vault-linking/spec.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
+    },
+    {
+      "target": "openspec/changes/archive/2026-09-11-obsidian-native-project-mounts/tasks.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
+    },
+    {
       "target": "openspec/changes/harness-document-organization/design.md",
       "outcome": "no-impact",
       "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
@@ -66,31 +91,6 @@
     },
     {
       "target": "openspec/changes/harness-document-organization/tasks.md",
-      "outcome": "no-impact",
-      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
-    },
-    {
-      "target": "openspec/changes/obsidian-native-project-mounts/design.md",
-      "outcome": "no-impact",
-      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
-    },
-    {
-      "target": "openspec/changes/obsidian-native-project-mounts/proposal.md",
-      "outcome": "no-impact",
-      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
-    },
-    {
-      "target": "openspec/changes/obsidian-native-project-mounts/specs/obsidian-native-project-mounts/spec.md",
-      "outcome": "no-impact",
-      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
-    },
-    {
-      "target": "openspec/changes/obsidian-native-project-mounts/specs/obsidian-vault-linking/spec.md",
-      "outcome": "no-impact",
-      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
-    },
-    {
-      "target": "openspec/changes/obsidian-native-project-mounts/tasks.md",
       "outcome": "no-impact",
       "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
     },
@@ -135,6 +135,11 @@
       "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
     },
     {
+      "target": "openspec/specs/obsidian-native-project-mounts/spec.md",
+      "outcome": "no-impact",
+      "reason": "Reviewed formal change artifacts for the approved workspace program; OpenSpec owns these requirements and delivery tasks, linked from work records. They do not establish additional current implementation or live qualification beyond the updated canonical guides."
+    },
+    {
       "target": "project-templates/project/docs/documentation-guide.md",
       "outcome": "updated",
       "reason": "Reviewed and updated canonical guidance/navigation or scoped evidence against the implemented inventory, review or local mount services; preserve OpenSpec ownership, authored content and private knowledge boundaries."
@@ -147,7 +152,7 @@
   ],
   "sources": {
     ".ai-dlc/work/harness-document-organization.toml": "ecf5755fce7a6eff0e4711c13956c26b5d8f19eabc57cf119c99fbb90153a23e",
-    ".ai-dlc/work/obsidian-native-project-mounts.toml": "d17edfe5caff3dae41dc39ce56462f0cbe7e99c784b749517e39232619fad175",
+    ".ai-dlc/work/obsidian-native-project-mounts.toml": "2ffc824a3b78c5f45d35c47c779f58e6b8fdf28bbcf57ccf5d4a8fd56f482795",
     ".ai-dlc/work/project-document-access.toml": "4e01d7317cf743de1766943c227a2c13e277c534a22f09ed7205f0de2f2b72dd",
     ".ai-dlc/work/project-workspace-diagnostics.toml": "9f48346a5d06228340e4f01a4ed7cfb537b3b5c58f6a6c70463c93a5863984e7",
     "docs/architecture.md": "fa3d6171f60fbaed478ec2a94f4ef6837573f5234fdffd25ace767d0967ac110",
@@ -155,15 +160,15 @@
     "docs/design/local-and-shared-knowledge.md": "d78bf8487c03bcdafefca2ab7603776ce0e9072f91112825fab650b80c9f7880",
     "docs/verification/documentation-workflow.md": "a16c2c091d7e7ad0e4524f76f3d33df465981fa04e76ed15cdb282fe40629531",
     "docs/workflows/tool-map.md": "c168729122080bf23192b8d62b4f03d1aba0d7370765c3a0b8bcc1cc5297455f",
+    "openspec/changes/archive/2026-09-11-obsidian-native-project-mounts/design.md": "fbeae41a2ca27ac3999a0aaf414e793d61d2eb95929645a6895568f47b96c708",
+    "openspec/changes/archive/2026-09-11-obsidian-native-project-mounts/proposal.md": "784dbb803f2b57b5954d2c22825dcd6113638968a3403087b4dae5d23fc5d287",
+    "openspec/changes/archive/2026-09-11-obsidian-native-project-mounts/specs/obsidian-native-project-mounts/spec.md": "43c29b99912073dff43e9a6e35ad7f7fb37dbe6378d780a1c607c647a27ef774",
+    "openspec/changes/archive/2026-09-11-obsidian-native-project-mounts/specs/obsidian-vault-linking/spec.md": "43df00683c38a50d462d5f009362c75e5d3ebb78b5a565b981e417cd58eb4728",
+    "openspec/changes/archive/2026-09-11-obsidian-native-project-mounts/tasks.md": "e4e1729eaeee9ba90c29aa79e7e2dacc7dcac7608d9127034c73de65706c956f",
     "openspec/changes/harness-document-organization/design.md": "e5137098a734992575764a121a75e6dec353656b92d151b38619863a75c22653",
     "openspec/changes/harness-document-organization/proposal.md": "c6f7c3ae2c976ca031dceab479acffb53638f32fe7c81254d638b66f38a95973",
     "openspec/changes/harness-document-organization/specs/harness-document-organization/spec.md": "ea46b9c9d762b79ffba1ae06b3cf1dbd3d1273fa2ea51555ee6c1089620fd3bc",
     "openspec/changes/harness-document-organization/tasks.md": "2322b926130fd6829e11fcbd0a3e92859050e345411f7c1da39b3d0b37ecd35d",
-    "openspec/changes/obsidian-native-project-mounts/design.md": "fbeae41a2ca27ac3999a0aaf414e793d61d2eb95929645a6895568f47b96c708",
-    "openspec/changes/obsidian-native-project-mounts/proposal.md": "784dbb803f2b57b5954d2c22825dcd6113638968a3403087b4dae5d23fc5d287",
-    "openspec/changes/obsidian-native-project-mounts/specs/obsidian-native-project-mounts/spec.md": "43c29b99912073dff43e9a6e35ad7f7fb37dbe6378d780a1c607c647a27ef774",
-    "openspec/changes/obsidian-native-project-mounts/specs/obsidian-vault-linking/spec.md": "43df00683c38a50d462d5f009362c75e5d3ebb78b5a565b981e417cd58eb4728",
-    "openspec/changes/obsidian-native-project-mounts/tasks.md": "2d15171727c1a1891943924aabdd7afe4a2191204a1b448a679de44b222eec4b",
     "openspec/changes/project-document-access/design.md": "12c44710d67ed0b9e0649d6400153425af7c8ff30eddbf968c3e28d7ca9101db",
     "openspec/changes/project-document-access/proposal.md": "ff296da7330870cab04b4a75d9f79e7a5db8c52fa16c734419715a4411807431",
     "openspec/changes/project-document-access/specs/project-document-access/spec.md": "aeb7cfe21a7b4ead99f3abe6989bfddf2380724b0af15b77e79513c94ff7b714",
@@ -177,8 +182,9 @@
     "openspec/specs/documentation-impact-workflow/spec.md": "a542eff3ea8b8308b59b4d518bcdd12c50fbc4d40b61ef2df227730dbd5c048d",
     "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
     "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
+    "openspec/specs/obsidian-native-project-mounts/spec.md": "08190425a6ccc5b532c916a1a09f4dd47da0dca1172c78733a57f31ff02334fb",
     "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
-    "openspec/specs/obsidian-vault-linking/spec.md": "5de72875e357cd5e9821fbf89388f19e8ae1fea7c7ca1c484c295fc0fbdf4d38",
+    "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
     "project-templates/project/docs/documentation-guide.md": "640d64c9b4c59bc0b246e066405efcd4e4149b362598ff63b9f64d5888348128",
     "project-templates/project/docs/workflows/tool-map.md": "9475b403f01ad8795db2a4b4fd0aea4033e884dd63ff2a9bee66cf83e4cd6870",
     "pyproject.toml": "9cb4d37f9aba00fb6668ba69de8c53a06471128f2964d63848ca8d7afe3a14cf",

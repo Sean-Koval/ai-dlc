@@ -30,7 +30,7 @@ Documentation planning SHALL be part of the shared adoption service. Preview SHA
 - **THEN** setup refuses before publication and preserves outside files
 
 ### Requirement: DK-03 Local project portals
-Vault linking SHALL create a normal Markdown project portal containing canonical file links, not document copies or directory symlinks. Vault paths SHALL resolve from machine configuration or an explicit local argument and SHALL not enter tracked project files. Portal creation SHALL validate a single safe filename, refuse symlinked destinations and legacy project mounts, preserve authored content even with the legacy force flag, and allow repeated identical setup without replacing personal annotations.
+By default, vault linking SHALL create a normal Markdown project portal containing canonical file links, not document copies or directory symlinks. Vault paths SHALL resolve from machine configuration or an explicit local argument and SHALL not enter tracked project files. Explicit mount mode MAY expose canonical directories under the native project mount requirements. Portal creation SHALL validate a single safe filename, refuse symlinked destinations and legacy project mounts, preserve authored content even with the legacy force flag, and allow repeated identical setup without replacing personal annotations.
 
 #### Scenario: A project links to Obsidian
 - **WHEN** a user links a project to an existing selected vault
@@ -79,3 +79,4 @@ Generated project guidance SHALL direct agents to find and update canonical docu
 #### Scenario: A harness proposes a new guide
 - **WHEN** it consumes project documentation guidance
 - **THEN** the instructions require checking the project map, catalog and relevant specification artifacts first and distinguish personal notes from a reviewed team document
+

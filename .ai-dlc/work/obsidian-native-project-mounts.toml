@@ -25,8 +25,8 @@ scm = "github"
 deploy = "none"
 
 [artifacts]
-spec = "openspec/changes/obsidian-native-project-mounts"
-plan = "openspec/changes/obsidian-native-project-mounts/tasks.md"
+spec = "openspec/changes/archive/2026-09-11-obsidian-native-project-mounts"
+plan = "openspec/changes/archive/2026-09-11-obsidian-native-project-mounts/tasks.md"
 branch = "codex/obsidian-native-project-mounts"
 related_workspace = "https://github.com/Sean-Koval/ai-dlc/issues/32"
 related_qualification = "https://github.com/Sean-Koval/ai-dlc/issues/34"
