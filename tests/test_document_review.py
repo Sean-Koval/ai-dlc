@@ -175,7 +175,7 @@ def test_document_freshness_and_incomplete_coverage(project):
 
 
 def test_body_budget_is_total_and_oversized_body_not_read(project, monkeypatch):
-    import ai_dlc.documentation.document_review as service
+    import ai_dlc.documentation.document_files as service
 
     original = service.os.fdopen
     opened = []

@@ -82,7 +82,7 @@ does not substitute for these lifecycle contracts. See the
 | `work/` | Work lifecycle, traceability, journals and explicit tracker migration |
 | `environment/` | Machine enrollment, profile sources and credential references |
 | `harness/` | Skills, pinned bundles, client rendering, components and hooks |
-| `documentation/` | Catalog checks, impact/evidence review, knowledge notes and vault links |
+| `documentation/` | Catalog checks, impact/evidence review, scoped project-document access, knowledge notes and vault links |
 | `providers/` | Contract-backed external service adapters and isolated provider execution |
 | `verification/` | Sandbox orchestration and its conformance network proxy |
 | `compatibility/` | Supported legacy scaffold behavior |

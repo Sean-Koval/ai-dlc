@@ -1,17 +1,247 @@
 {
-  "base": "a53dee45a2366536f43888f53cc064307ce873ca",
+  "base": "5edbde8eb919139c71bfd24e94ac51fd9c12f529",
   "decisions": [
     {
       "outcome": "no-impact",
-      "reason": "Rebinds the mount work record's delivery PR to this evidence repair so completion verifies a green merged revision; canonical mount guidance, specifications and implementation are unchanged.",
-      "target": ".ai-dlc/work/obsidian-native-project-mounts.toml"
+      "reason": "Rendered copy of the reviewed source skill; the generated check confirms it matches the source.",
+      "target": ".agents/skills/document-organize/SKILL.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Rendered copy of the reviewed source skill; the generated check confirms it matches the source.",
+      "target": ".agents/skills/document-review/SKILL.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Generated ownership digests for the rendered skill copies; no explanation changes.",
+      "target": ".ai-dlc/agent-ownership.json"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Binds the reviewed work record to its pull request and archived specification; no explanation changes.",
+      "target": ".ai-dlc/work/project-document-access.toml"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Rendered copy of the reviewed source skill; the generated check confirms it matches the source.",
+      "target": ".claude/skills/document-organize/SKILL.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Rendered copy of the reviewed source skill; the generated check confirms it matches the source.",
+      "target": ".claude/skills/document-review/SKILL.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Digest update for the reviewed source skills; no explanation changes.",
+      "target": "agents/skills.lock.json"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Directs harnesses to search and read project documents through the scoped operations, declare files outside docs/ and openspec/ explicitly, and edit canonical repository paths rather than private-note writes or mounted vault paths.",
+      "target": "agents/skills/document-organize/SKILL.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Directs harnesses to search and read project documents through the scoped operations, declare files outside docs/ and openspec/ explicitly, and edit canonical repository paths rather than private-note writes or mounted vault paths.",
+      "target": "agents/skills/document-review/SKILL.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Adds scoped project-document access to the documentation package responsibilities.",
+      "target": "docs/architecture.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Explains that project-document search and read reach mounted repository documents through canonical paths while private notes stay behind the knowledge tools.",
+      "target": "docs/design/local-and-shared-knowledge.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Records the scoped routing exercise with its host, fixture and explicit limits, separate from automated tests.",
+      "target": "docs/verification/documentation-workflow.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Lists project_docs_search and project_docs_read with CLI counterparts, per-call source declarations and the private-note boundary.",
+      "target": "docs/workflows/tool-map.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Archived the approved PA-01 and PA-02 change with its completed implementation and verification tasks; canonical requirements now live under openspec/specs.",
+      "target": "openspec/changes/archive/2026-09-11-project-document-access/design.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Archived the approved PA-01 and PA-02 change with its completed implementation and verification tasks; canonical requirements now live under openspec/specs.",
+      "target": "openspec/changes/archive/2026-09-11-project-document-access/proposal.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Archived the approved PA-01 and PA-02 change with its completed implementation and verification tasks; canonical requirements now live under openspec/specs.",
+      "target": "openspec/changes/archive/2026-09-11-project-document-access/specs/project-document-access/spec.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Archived the approved PA-01 and PA-02 change with its completed implementation and verification tasks; canonical requirements now live under openspec/specs.",
+      "target": "openspec/changes/archive/2026-09-11-project-document-access/tasks.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Removed from active changes by OpenSpec archival; the reviewed artifacts are preserved unchanged apart from completed tasks under the archive path.",
+      "target": "openspec/changes/project-document-access/design.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Removed from active changes by OpenSpec archival; the reviewed artifacts are preserved unchanged apart from completed tasks under the archive path.",
+      "target": "openspec/changes/project-document-access/proposal.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Removed from active changes by OpenSpec archival; the reviewed artifacts are preserved unchanged apart from completed tasks under the archive path.",
+      "target": "openspec/changes/project-document-access/specs/project-document-access/spec.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Removed from active changes by OpenSpec archival; the reviewed artifacts are preserved unchanged apart from completed tasks under the archive path.",
+      "target": "openspec/changes/project-document-access/tasks.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Canonical PA-01 and PA-02 requirements applied from the reviewed change by OpenSpec archival.",
+      "target": "openspec/specs/project-document-access/spec.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Adds the portable search and read procedure: default scope, declarations, budgets, coverage semantics and edit routing.",
+      "target": "project-templates/project/docs/documentation-guide.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Adds the portable tool-map entries and boundary statement matching the shipped MCP tools.",
+      "target": "project-templates/project/docs/workflows/tool-map.md"
     }
   ],
   "reviewer": "Claude Code",
   "schema": 1,
-  "snapshot": "e3772f441c3a1848a9150e7b63d55d6ddfd3bd594b7b8926b05f3ea38714c9c5",
+  "snapshot": "c75f83ff516ff239cbf3a1f97f20ad5a571602b645a2112b89511c49c5bc6978",
   "sources": {
-    ".ai-dlc/work/obsidian-native-project-mounts.toml": "373c813951671245294af619e545f8fb6b54367869ea4e919a8149d1c3df752c",
-    "docs/catalog.toml": "b22cb67fa709bb07c8623c1d7b0c302d865fbc9b1aadbf2f9365fc666ada1601"
+    ".agents/skills/document-organize/SKILL.md": "c608dc578c414fb12254b1d07df447f66cf94fbcc8aef7eb67d55caa62d23dc2",
+    ".agents/skills/document-review/SKILL.md": "f2cd7b80eda74e13a4a2a51a9668e1533e7c1e6c3566f90577477f66d2a1176b",
+    ".ai-dlc/agent-ownership.json": "d64772cb09660aed976e91302cf577ccedc75320b104b2f28acb1c270bcdf153",
+    ".ai-dlc/work/project-document-access.toml": "16734be09803e42c6bf18b39c281e541706249a8c42ea329fc993bb1a0370958",
+    ".claude/skills/document-organize/SKILL.md": "c608dc578c414fb12254b1d07df447f66cf94fbcc8aef7eb67d55caa62d23dc2",
+    ".claude/skills/document-review/SKILL.md": "f2cd7b80eda74e13a4a2a51a9668e1533e7c1e6c3566f90577477f66d2a1176b",
+    "agents/skills.lock.json": "735a765bf2ae04e0407b413c42aadbc216b3f5e39446bc18205bca15ccba7bfd",
+    "agents/skills/document-organize/SKILL.md": "c608dc578c414fb12254b1d07df447f66cf94fbcc8aef7eb67d55caa62d23dc2",
+    "agents/skills/document-review/SKILL.md": "f2cd7b80eda74e13a4a2a51a9668e1533e7c1e6c3566f90577477f66d2a1176b",
+    "docs/architecture.md": "f46ab1ec15ddde33381bfcf4287d6d7ebc4ba0a45605e8b2adffd217c2df3e8b",
+    "docs/catalog.toml": "b22cb67fa709bb07c8623c1d7b0c302d865fbc9b1aadbf2f9365fc666ada1601",
+    "docs/design/local-and-shared-knowledge.md": "b08b6ebf0a1c4b9287e6f81a1a5763ae463c22228aa0f7a5ef8c730dd8303b15",
+    "docs/verification/documentation-workflow.md": "98c0a87693a3ef0f6f2d1cd6fd502ccb530defc4de0ee47673c391e878c72667",
+    "docs/workflows/tool-map.md": "9ff4d98be814ed0588a98f7c170f69ac3797e3a7bbbd8c104e0b86846ffd9798",
+    "openspec/changes/archive/2026-09-11-project-document-access/design.md": "509d47530793459e9e5fb99069ed248e831976a67ac67ff59acbb39947a95bb7",
+    "openspec/changes/archive/2026-09-11-project-document-access/proposal.md": "d846e24432662070b711c89b3cc2ecd8b68a1f776fc87d65b149940d67ccce23",
+    "openspec/changes/archive/2026-09-11-project-document-access/specs/project-document-access/spec.md": "2d5bc8719a6523f9c31ba378796df03bd1c4d60b1474e028464b5fd0c6a4d6d8",
+    "openspec/changes/archive/2026-09-11-project-document-access/tasks.md": "a7193e1b77853aa86eeba39694485ce312ac013720f3a39e0838136b4022caa7",
+    "openspec/changes/project-document-access/design.md": "missing",
+    "openspec/changes/project-document-access/proposal.md": "missing",
+    "openspec/changes/project-document-access/specs/project-document-access/spec.md": "missing",
+    "openspec/changes/project-document-access/tasks.md": "missing",
+    "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
+    "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
+    "openspec/specs/documentation-impact-workflow/spec.md": "a542eff3ea8b8308b59b4d518bcdd12c50fbc4d40b61ef2df227730dbd5c048d",
+    "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
+    "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
+    "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
+    "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
+    "openspec/specs/project-document-access/spec.md": "76412010c633903408a2aff05a7cd0aa7797042d096c9f28aed19a4dce9cbd0e",
+    "project-templates/project/docs/documentation-guide.md": "fb1b3838d09c23b29f208a03f81ac66c5ecb8606d14d328cdc7eb307f141496d",
+    "project-templates/project/docs/workflows/tool-map.md": "3db09adf7a0cca5853cc1a26c1a9dc980bc2772a4237fa094bcea8a2422c2e65",
+    "pyproject.toml": "9cb4d37f9aba00fb6668ba69de8c53a06471128f2964d63848ca8d7afe3a14cf",
+    "scripts/check_generated.py": "845e3ac89acb10720eab193712430a09b767272862a02369f391a982da6e7267",
+    "scripts/check_layout.py": "26fde5445108c55e36a1ea3083f5dc01a71ecfcd9b1d38542c515d86afe5ab4d",
+    "scripts/legacy/sync-cli-templates.sh": "235f53f0e4f4785ad2bb5559b4a01f91f4e88b228437af033857c6335593fa12",
+    "scripts/qualify_framework.py": "01dd9e6acbe14e740f068662aa539e9a7ed0ba57ab97e9457e0a05d968a25fb6",
+    "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+    "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
+    "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
+    "src/ai_dlc/cli.py": "33aaca7468f1dbcb54e41c15d5aecc84f710b20cbc504fde2200dee2f158b932",
+    "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
+    "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
+    "src/ai_dlc/config.py": "31677c538713aa41d3625ef9570f962ed8ee5d32bd4b5b3747437e8fd8fb9d02",
+    "src/ai_dlc/conformance.py": "9d18cdbf21aa8f9889d880729c368d9567f32f83c066693dceb06ce6549b6082",
+    "src/ai_dlc/contracts.py": "a6d7c5ad8f3e2a513621883c75bff187e1104315ab337cddc023d5343a9e7538",
+    "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
+    "src/ai_dlc/documentation/document_access.py": "a020708d706cb6aa5891e3768fe810c7e35a8b0575f783b796cd5d7a073dc281",
+    "src/ai_dlc/documentation/document_files.py": "503a38d4df2a1f9d0832d083dcd420ebd1215389385293dd0605fc768c5dd320",
+    "src/ai_dlc/documentation/document_impact.py": "50efbd92561a85d052842596e5fa903dce9d60207f330b9ed2429d9c7bf28043",
+    "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
+    "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
+    "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
+    "src/ai_dlc/documentation/documents.py": "b698ca1f3716ccb98533c00a10a58a74e7ffd7d4a6aa01e9cd205ea793ff06e6",
+    "src/ai_dlc/documentation/knowledge.py": "91aad53eccc1889d4077ef59c137ff1b35b03c433efa05b7be61d2e534fa7db6",
+    "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
+    "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
+    "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
+    "src/ai_dlc/documentation/vault_mount.py": "d42a797e2f23d925c1816879ca8d9e1e21ec27107f92b44c357b6d46be170ebe",
+    "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
+    "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
+    "src/ai_dlc/environment/enrollment.py": "fb0e82fb7b9e5808e1ee3571a53d129ddc8b8b6c83ab5918d7acab9566f7e9d1",
+    "src/ai_dlc/environment/machine.py": "491128faaec9634ec29ef0ebc9a38af3dfe25499e533543fcecf0734d2e50d1a",
+    "src/ai_dlc/environment/profile_source.py": "517b6bd0ae788a9270da5aee872abc2502c523d9faf75e52ab54ba5c6861e906",
+    "src/ai_dlc/files.py": "383ba27f055a5637c384462a172ff678165b643408c77d0945fd8f4622b00580",
+    "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
+    "src/ai_dlc/harness/agents.py": "7217b03580b97666994b2bb8afa3cc429d33aaabff55036bcdafdfaea9adc601",
+    "src/ai_dlc/harness/components.py": "59a50ce61709daaf4b9209c154498eb5efacb84a8747550685421cc269ea7f3c",
+    "src/ai_dlc/harness/hooks.py": "2081bdfd82651e53870c7f6fec6a38a3bc587b0e4dfae46a3043b6617add9994",
+    "src/ai_dlc/harness/native_composition.py": "7cd919fd40adb70eea1a775dbd5ea8328fde9eda6302d6f52565f14ea3d244ab",
+    "src/ai_dlc/harness/user_agents.py": "6fad6edd1d1d89b0c105291f2fa8b69f223ce00bd5095d77357d7c05e6eb3f4a",
+    "src/ai_dlc/harness/workflow_bundles.py": "e0943696bdced1e841bf15a68c2040e37e484fe7c021119dec1c25e82be0fe38",
+    "src/ai_dlc/locking.py": "f1cfe828e897e11d73b645130060362e2699f75aac9307ed8cb4955b0533b629",
+    "src/ai_dlc/mcp_server.py": "1d5e40c8632e185b6a4eb82f9f18fcbaf178cce5e63f30ce50631f94aa12f79e",
+    "src/ai_dlc/provider_definitions.py": "e90c2d41a839bc4a32dcb3989f59fa6c9073bd1233f3db2088bd176e1bc513d3",
+    "src/ai_dlc/providers/__init__.py": "85325d9c7d4f2ac948510ad6ac20342ec0bd92d02857dda65637dc7b594181ae",
+    "src/ai_dlc/providers/github_issues.py": "55a18a178fc329a94ff95f39b72c5599117c5a8e79842d7cc7c6c8966cbed405",
+    "src/ai_dlc/providers/github_projects.py": "65b338648b52f637cd97b73a0a19fbc030e498994f51cf3943cdac23cfc47470",
+    "src/ai_dlc/providers/jira_cloud.py": "0c4ee8f892ca3f329e822400a81c1e80d5607c087910329251acb9165345cc28",
+    "src/ai_dlc/providers/linear.py": "fa90bd64765c8e8bee1cbfa54e47e17688e8e6407c7492ae0ed863b4615c2b95",
+    "src/ai_dlc/providers/openspec.py": "7999519332d372eb9344fbbf9dced0cc57f4d408c048f9b39215b7c54cdcb136",
+    "src/ai_dlc/providers/plane.py": "76fab3893bf0d4536c58500e4ab5a90f59893977c057be4777d78068e278ca1c",
+    "src/ai_dlc/providers/plane_attempts.py": "9a90b719e348d5592865e415bd29c3686969263f733a44275d6029fee019743c",
+    "src/ai_dlc/providers/python_exec.py": "3aaafe9bf74a4a949b59d71ed2079b9c48114462a9c823b3641a1772af5a6ff1",
+    "src/ai_dlc/providers/scm.py": "2cdf9479741d0a3f37405e5b1cfd9c7d7b0c68038feefb75f3b910b894c088e8",
+    "src/ai_dlc/setup/__init__.py": "8eb444a69a67d0c1a59ffc0c80ce59efda159976bea58d40154e97f8bdecf18c",
+    "src/ai_dlc/setup/connections.py": "35d04e1c6778227b0947034d2ed5d535ab8c79ee783496a2c2c7285d694b5595",
+    "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
+    "src/ai_dlc/setup/github_project_setup.py": "86b97dcaa4447082252008da1df64159cac09a077198a7e84e3577294ad540d2",
+    "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
+    "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
+    "src/ai_dlc/setup/project.py": "309f87bd8ce73dab926ac8dbdfa3672858b777198cd74632cea81a03e76c7dce",
+    "src/ai_dlc/setup/provider_onboarding.py": "8a9407894dc494faa4a431ad219e0ebbd472504893434ac3b66f7be6f6acfdf6",
+    "src/ai_dlc/setup/provision.py": "5d5af0be37b5620a561ab324b41febc541b07e0a5b35051869b025f114effdd2",
+    "src/ai_dlc/setup/readiness.py": "7c7c2767520b3da2e7f8dd74be4ed6359a7dca66bc413c68eba2b1b4bad7f52c",
+    "src/ai_dlc/setup/rebind.py": "c083e35c27f10415986d3170bb81905944254bd12485c5a4db71b77b0a38adf2",
+    "src/ai_dlc/setup/templates.py": "95e60c4339286b85fb393318d69e797b2990b41303e7dd16a3767141ededf69c",
+    "src/ai_dlc/setup/tracker_targets.py": "1b3fe3fea13732748d5498e1cbc2a2d16395eca7bd942789389c6bc08b214fd8",
+    "src/ai_dlc/setup/workstation.py": "4abcc68e4d30ee4ce32ed1ff9b872d5926c15747de2ec2a92b88c7352813206a",
+    "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
+    "src/ai_dlc/verification/sandbox.py": "b830bd80df60802c29dbc2e1c639958537f289592052b404e6972ff377d25681",
+    "src/ai_dlc/verification/test_proxy.py": "f38cb2a28c8501c743613b0bfdf7e17f367c101ce7984a304e20ab3095eb7880",
+    "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
+    "src/ai_dlc/work/journal.py": "f5801d312b0434262c9dda76ac3b94cd1ac099fe98650dc9f745927898a89b52",
+    "src/ai_dlc/work/traceability.py": "646e7595cad285ef07672b436625321443d6603cbf8a3518a3b2b2c5c51d6a33",
+    "src/ai_dlc/work/tracker_migration.py": "65fc8eb4a708947c12a5f4fd3cfe664f409ee32c282b68a48bd725152e5b18a3",
+    "src/ai_dlc/work/workflow.py": "c891477baf6b8e8e4280096d9bd047f2fe7fafab9f03d8801791750841f36abc",
+    "tests/test_company_guidance.py": "2157af2cd002d74a411ab3555afb26cbaec9381061721c6e6b3470d376eefe38",
+    "tests/test_document_access.py": "bdf96af4afb1ad6f985204ad243a624d4da8b56d527af63cc072908a76beeff4",
+    "tests/test_document_impact.py": "623d165291104ce6d5c891db8aa4c5f03f223ba1c1d6ff357b71797fd3853672",
+    "tests/test_document_inventory.py": "927199563751af6b2dd5aa8e93cddb43cc62192adffea49694dada37ef6bf14c",
+    "tests/test_document_review.py": "88f37e6365c7e9b545d668f978993ef7ad9acfa146e7d549728f4ef9cab8008a",
+    "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
+    "tests/test_knowledge.py": "4766f0fd4de9c4a66c96fe93b56b03e275c1adcb5e303e773e92a9e528112be7",
+    "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7",
+    "tests/test_vault_link.py": "fd146d4d15041021ac343257c9d91a8c1950878d275420eda85d13747065e110",
+    "tests/test_vault_mount.py": "f6a5dc947af0d68e4688c37d05294c6b4868aa98ead91d26aa0c8ffec8018424"
   }
 }

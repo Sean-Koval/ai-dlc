@@ -266,6 +266,37 @@ def project_docs_inventory(root: Path = Path(".")):
     emit(inventory_documents(root))
 
 
+@project.command("docs-search")
+def project_docs_search(
+    query: str,
+    root: Path = Path("."),
+    sources: Annotated[list[str] | None, typer.Option("--source")] = None,
+    max_bytes: int = 64000,
+    limit: int = 20,
+):
+    """Search docs/, openspec/ and declared project Markdown; bounded, never private notes."""
+    from ai_dlc.documentation.document_access import search_project_documents
+
+    emit(
+        search_project_documents(
+            root, query=query, sources=sources, max_bytes=max_bytes, limit=limit
+        )
+    )
+
+
+@project.command("docs-read")
+def project_docs_read(
+    path: str,
+    root: Path = Path("."),
+    sources: Annotated[list[str] | None, typer.Option("--source")] = None,
+    max_bytes: int = 64000,
+):
+    """Read one complete eligible project document within a byte budget."""
+    from ai_dlc.documentation.document_access import read_project_document
+
+    emit(read_project_document(root, path=path, sources=sources, max_bytes=max_bytes))
+
+
 @project.command("docs-review")
 def project_docs_review(
     base: Annotated[str, typer.Option()],

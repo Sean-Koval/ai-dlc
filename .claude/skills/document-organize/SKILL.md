@@ -28,6 +28,13 @@ when code/spec evidence was inspected separately because no mapping exists.
 Use document-review for grounded findings and `docs-review-check` to validate
 citations against current sources before acting on the review.
 
+To locate or reread specific material, use `ai-dlc project docs-search` and
+`docs-read` (MCP `project_docs_search` and `project_docs_read`). They cover docs/
+and openspec/ by default; declare root or legacy files explicitly with `--source`
+(MCP `sources`). Treat an incomplete coverage result as unsearched material, not
+as absence. Edit returned repository paths with ordinary file and Git tools, never
+through private-note writes or a mounted vault path.
+
 Read content, not just names. For each selected document identify its audience,
 question, authority, obsolete instructions, overlap and unique facts or rationale.
 Compare claims with approved specs and actual code/test evidence. A passing check

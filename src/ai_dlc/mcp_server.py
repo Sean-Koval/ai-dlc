@@ -88,6 +88,26 @@ def make_server(root: Path, machine: Path | None = None) -> FastMCP:
         return inventory_documents(root)
 
     @server.tool()
+    def project_docs_search(
+        query: str, sources: list[str] | None = None, max_bytes: int = 64000, limit: int = 20
+    ) -> dict:
+        """Search docs/, openspec/ and declared project Markdown; bounded, never private notes."""
+        from ai_dlc.documentation.document_access import search_project_documents
+
+        return search_project_documents(
+            root, query=query, sources=sources, max_bytes=max_bytes, limit=limit
+        )
+
+    @server.tool()
+    def project_docs_read(
+        path: str, sources: list[str] | None = None, max_bytes: int = 64000
+    ) -> dict:
+        """Read one complete eligible project document within a byte budget."""
+        from ai_dlc.documentation.document_access import read_project_document
+
+        return read_project_document(root, path=path, sources=sources, max_bytes=max_bytes)
+
+    @server.tool()
     def project_docs_review(
         base: str, paths: list[str], max_bytes: int = 64000, source: str = "catalog"
     ) -> dict:

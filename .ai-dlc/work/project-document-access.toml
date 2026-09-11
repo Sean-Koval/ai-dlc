@@ -26,12 +26,13 @@ scm = "github"
 deploy = "none"
 
 [artifacts]
-spec = "openspec/changes/project-document-access"
-plan = "openspec/changes/project-document-access/tasks.md"
+spec = "openspec/changes/archive/2026-09-11-project-document-access"
+plan = "openspec/changes/archive/2026-09-11-project-document-access/tasks.md"
 branch = "codex/project-document-access"
 related_workspace = "https://github.com/Sean-Koval/ai-dlc/issues/32"
 related_qualification = "https://github.com/Sean-Koval/ai-dlc/issues/34"
 tracker = "41"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/46"
 
 [bindings]
 specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
