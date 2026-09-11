@@ -1311,3 +1311,16 @@ def test_plain_claude_reference_remains_plain_and_ready(tmp_path, existing):
     before = (tmp_path / "CLAUDE.md").read_bytes()
     render_agents(tmp_path, apply=True)
     assert (tmp_path / "CLAUDE.md").read_bytes() == before
+
+
+def test_document_organization_is_distributed_to_both_native_harnesses(tmp_path):
+    """Default rendering must make the shipped organization skill discoverable in each client."""
+    from ai_dlc.harness.agents import render_agents
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nagent-client=["codex", "claude-code"]\n'
+    )
+    render_agents(tmp_path, apply=True)
+    for native in (".agents", ".claude"):
+        skill = tmp_path / native / "skills/document-organize/SKILL.md"
+        assert skill.is_file()

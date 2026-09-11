@@ -1,0 +1,41 @@
+schema = 1
+id = "harness-document-organization"
+title = "Organize existing project documentation through harness skills and tools"
+scope = "Organize existing project documentation through harness skills and tools. Deliver the approved requirements using existing AI-DLC boundaries."
+requires_spec = true
+spec_reason = "Observable documentation, filesystem access and harness workflow changes approved by the user."
+acceptance = [
+    "CLI and MCP SHALL share a read-only inventory of tracked and nonignored Markdown across the repository, including root and legacy directories, with explicit exclusion and inaccessible/symlink reporting.",
+    "Review preparation SHALL accept explicitly selected inventory documents before catalog enrollment and retain bounded reads, source fingerprints, citation validation and explicit omissions.",
+    "A shipped document-organize skill SHALL guide the harness from discovery through content review, reviewed moves/consolidations/archive decisions, ordinary Git edits, link repair and navigation/catalog maintenance; OpenSpec remains canonical.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "DO-01",
+    "DO-02",
+    "DO-03",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/archive/2026-09-11-harness-document-organization"
+plan = "openspec/changes/archive/2026-09-11-harness-document-organization/tasks.md"
+branch = "codex/harness-document-organization"
+related_workspace = "https://github.com/Sean-Koval/ai-dlc/issues/32"
+related_qualification = "https://github.com/Sean-Koval/ai-dlc/issues/34"
+tracker = "39"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/43"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72"
+deploy = "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "c1d0b090971dc5829585dfa82141ca9ae4735564494f33160785fbac0ba0daa1"
