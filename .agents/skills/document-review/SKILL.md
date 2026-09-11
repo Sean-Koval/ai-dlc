@@ -10,8 +10,14 @@ an explanation. Identify audience, question and canonical owner. Keep observed
 code behavior distinct from approved requirements; a mismatch may be a code defect.
 
 Use the shared documentation impact/review services from the project tool map.
-Select a small set of catalogued documents, an explicit Git base and their mapped
-code/tests/spec evidence. The prepared packet lists included sources and omissions.
+Choose an explicit Git base and a small set of documents. Catalogued review is
+the default and includes their mapped code/tests/spec evidence. When organizing
+uncatalogued files, first use `docs-inventory`, then explicitly select returned
+paths with `docs-review --source inventory` (MCP `source="inventory"`). Do not
+require catalog enrollment first. Uncatalogued files have no inferred evidence
+mappings; state separately inspected code/spec evidence and uncertainty. Both
+modes retain bounded bodies, hashes, citations and explicit omissions. Use the
+document-organize skill when the outcome requires actual repository organization.
 Do not fetch links or expand into private notes simply because they are mentioned.
 
 For each actionable finding, cite exact target and supporting passages with path
