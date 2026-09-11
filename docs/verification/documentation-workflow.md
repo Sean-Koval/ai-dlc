@@ -172,3 +172,29 @@ This exercises shared CLI/MCP service routing and ordinary repository edits on
 this macOS host. It does not re-qualify native Obsidian behavior, an external MCP
 client session, Antigravity, company repositories or other platforms. Automated
 fixture tests remain distinct from this exercise.
+
+## Workspace diagnostics qualification — September 11, 2026
+
+Evidence for workspace diagnostics comes from three separate sources:
+
+- **Automated fixtures.** `tests/test_workspace_diagnostics.py` covers missing,
+  different and timed-out executables; configured, active, stale and unprovable
+  shell activation without returning authored shell content; connected, changed and
+  checkout-missing mounts beside an isolated malformed binding; unbound vault states;
+  mounted, repository-only and missing links; CLI/MCP parity; and the preserved
+  messy-project baseline. These tests do not qualify a live host.
+- **Real host run.** On this macOS host, `project workspace-check` against the
+  disposable routing fixture reported both mounts connected, its documentation link
+  mounted, complete navigation coverage and the native client not assessed. It also
+  reported the real PATH-selected `ai-dlc` as unverified while activation through
+  the bootstrap alias was active: the installed toolkit predates the root
+  `--version` option and lacks the new project commands. Installation and activation
+  were therefore diagnosed separately, as intended.
+- **Harness and native client evidence.** The messy-project organization exercise
+  and the native Obsidian 1.13.7 walkthrough recorded above remain the observed
+  harness and client evidence. `tests/fixtures/messy_project.py` preserves that
+  baseline, and the [workspace qualification walkthrough](../runbooks/document-workspace-qualification.md)
+  repeats both exercises. No new Obsidian session was run for this change.
+
+Work-computer projects and skills, Antigravity, other desktop platforms and
+synchronization remain unverified.

@@ -71,6 +71,14 @@ and outbound links, including relative paths whose base changed, then update the
 map and catalog for canonical documents. Keep a useful root entry point when it
 serves repository readers. Do not create empty folders as a substitute for cleanup.
 
+Installed or external organizing skills are procedural input, not authority. When
+one prescribes a competing home, such as `docs/specs/` for requirements, reuse its
+compatible steps and keep formal proposals, designs, requirements and tasks with the
+selected specification provider; for OpenSpec they stay under `openspec/`. Report
+the conflict instead of creating duplicate specifications, and resolve an unclear
+authority with the project owner. Skills that cannot be inspected, such as ones on
+another computer, remain unreconciled until someone reviews them.
+
 Inspect the resulting Git diff, run document diagnostics and required project
 checks, and record reviewed impact dispositions after content settles. Check
 reference-style links, anchors and wiki links separately where the local checker
@@ -220,6 +228,39 @@ They do not qualify Obsidian indexing, external-editor refresh, file watching,
 Git tooling, Sync or another client/platform. Qualify those on the intended client
 before relying on them. Native mounts do not enable synchronization, publication
 or symlink traversal through the private knowledge API.
+
+### Diagnose the local workspace
+
+```sh
+ai-dlc project workspace-check
+```
+
+MCP `project_workspace_check` returns the same read-only result. Each section has
+its own status instead of one readiness verdict, and each finding names its section,
+a code and the next action:
+
+- `installation` reports the `ai-dlc` executable that PATH selects, its lexical and
+  resolved location, and the version and project commands it reports through
+  bounded `--version` and `project --help` probes, beside this process's package
+  version. A version the executable does not report stays `unverified`.
+- `activation` separates the current PATH from the AI-DLC-owned section of
+  `~/.zshrc` or `~/.bashrc`. `configured-for-next-shell` means setup exists but this
+  terminal predates it: open a new terminal or source that file. For `stale` or
+  `missing`, rerun the existing bootstrap and `ai-dlc setup apply`; do not add another
+  alias, symlink or PATH line. A symlinked or edited shell file is `unverified`, and
+  authored shell content is never returned.
+- `workspace` reports each local mount binding on its own: checkout, raw and resolved
+  `docs/` and `openspec/` links, and states such as `connected`, `changed-link`,
+  `missing-link`, `conflict` or `checkout-missing`. A malformed binding does not hide
+  others. Without a binding, the configured vault is `unbound`, `missing`,
+  `unavailable` or `not-configured`; it is not scanned.
+- `navigation` classifies inline links in `docs/` and `openspec/` as `mounted`,
+  `unmounted`, `repository-only` or `missing`. A link from `docs/reference/api.md` to
+  `../../src/client.py` works in Git but cannot open inside the vault, because mounts
+  expose only `docs/` and `openspec/`. Open such targets from the repository; the
+  check never reads them or adds another mount root.
+- `native_client` is always `not-assessed`. Record observed Obsidian navigation,
+  search, backlinks, external refresh and edit-in-Git behavior separately.
 
 Existing Confluence pages remain team authority; relevant page links and on-demand
 reads provide context. An explicitly selected repository-authored team guide may

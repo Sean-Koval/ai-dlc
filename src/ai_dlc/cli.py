@@ -47,6 +47,26 @@ def config_for(root: Path, machine: Path | None = None) -> dict:
     return resolve_runtime(root, machine=machine).values
 
 
+def _show_version(value: bool) -> None:
+    if value:
+        from ai_dlc import __version__
+
+        typer.echo(f"ai-dlc {__version__}")
+        raise typer.Exit()
+
+
+@app.callback()
+def main(
+    version: Annotated[
+        bool,
+        typer.Option(
+            "--version", callback=_show_version, is_eager=True, help="Show the version and exit."
+        ),
+    ] = False,
+):
+    """Portable development for people and agents."""
+
+
 @app.command()
 def scaffold(
     provider: Annotated[list[str] | None, typer.Option("--provider", "-p")] = None,
@@ -385,6 +405,15 @@ def project_link_vault(
         typer.echo(f"Error: {exc}", err=True)
         raise typer.Exit(2) from None
     emit(result.as_dict())
+
+
+@project.command("workspace-check")
+def project_workspace_check(root: Path = Path(".")):
+    """Inspect installation, activation, local mounts and navigation without changes."""
+    from ai_dlc.documentation.workspace_diagnostics import inspect_project_workspace
+
+    vault = config_for(root).get("paths", {}).get("vault")
+    emit(inspect_project_workspace(root, vault=vault))
 
 
 @project.command("workspace-init")

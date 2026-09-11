@@ -39,8 +39,14 @@ code_paths = [
     "src/ai_dlc/documentation/vault_link.py",
     "src/ai_dlc/documentation/vault_mount.py",
     "src/ai_dlc/documentation/knowledge.py",
+    "src/ai_dlc/documentation/workspace_diagnostics.py",
 ]
-verification_paths = ["tests/test_vault_link.py", "tests/test_vault_mount.py", "tests/test_knowledge.py"]
+verification_paths = [
+    "tests/test_vault_link.py",
+    "tests/test_vault_mount.py",
+    "tests/test_knowledge.py",
+    "tests/test_workspace_diagnostics.py",
+]
 requirements = ["openspec/specs/obsidian-vault-linking/spec.md"]
 
 [[documents]]
@@ -689,6 +695,15 @@ path = "docs/runbooks/machine-enrollment.md"
 kind = "runbook"
 owner = "repository-maintainers"
 status = "active"
+
+[[documents]]
+id = "repo-runbooks-document-workspace-qualification"
+path = "docs/runbooks/document-workspace-qualification.md"
+kind = "runbook"
+owner = "repository-maintainers"
+status = "active"
+code_paths = ["tests/fixtures/messy_project.py"]
+verification_paths = ["tests/test_workspace_diagnostics.py"]
 
 [[documents]]
 id = "repo-runbooks-linear-setup"

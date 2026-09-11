@@ -199,8 +199,12 @@ def mount_vault(root: Path, vault: Path, name: str | None, *, adopt: bool, apply
     )
 
 
-def read_mount_bindings(root: Path | str) -> list[dict]:
-    """Read machine-local binding identities for diagnostics without following links."""
+def read_mount_bindings(root: Path | str, *, strict: bool = True) -> list[dict]:
+    """Read machine-local binding identities for diagnostics without following links.
+
+    Non-strict reads report each unreadable or malformed binding in place, so one bad
+    file does not hide independent bindings.
+    """
     base = Path(root).absolute() / ".ai-dlc/local/vault-mounts"
     try:
         with directory(base) as parent:
@@ -212,15 +216,21 @@ def read_mount_bindings(root: Path | str) -> list[dict]:
         if not name.endswith(".json"):
             continue
         path = base / name
-        body = json.loads(read_document(path))
-        if (
-            not isinstance(body, dict)
-            or body.get("schema") != 1
-            or any(
-                not isinstance(body.get(key), str)
-                for key in ("project_root", "vault_path", "project_name")
-            )
-        ):
-            raise ValueError(f"Malformed mount binding: {path}")
+        try:
+            body = json.loads(read_document(path))
+            if (
+                not isinstance(body, dict)
+                or body.get("schema") != 1
+                or any(
+                    not isinstance(body.get(key), str)
+                    for key in ("project_root", "vault_path", "project_name")
+                )
+            ):
+                raise ValueError(f"Malformed mount binding: {path}")
+        except (OSError, ValueError) as exc:
+            if strict:
+                raise
+            results.append({"binding_path": str(path), "error": str(exc)})
+            continue
         results.append({**body, "binding_path": str(path)})
     return results

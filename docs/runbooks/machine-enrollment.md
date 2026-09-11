@@ -23,6 +23,15 @@ unverified required checks return 1. Tools are located on the current environmen
 PATH without execution. Credentials are checked only in that environment; secret
 files are never loaded. Provider health stays informational and unverified, and
 `qualification` is always `not-assessed`.
+
+When `ai-dlc` is missing, reports an unexpected version, or works only in new
+terminals, run `ai-dlc project workspace-check --root PATH`. It separates the
+executable PATH selects from the AI-DLC-owned shell activation. If no `ai-dlc` is on
+PATH, run the same check through the bootstrap's published alias by its full path,
+by default `~/.local/share/ai-dlc/bootstrap/bin/ai-dlc`. `configured-for-next-shell`
+needs only a new terminal or sourcing the shell file. Repair `stale` or `missing`
+activation by rerunning the bootstrap and `ai-dlc setup apply`, not by adding
+symlinks or PATH lines.
 Missing custom Markdown instructions produce a component-specific guidance gap
 and a restoration action while independent checks continue. Manifest digest,
 schema, path, and symlink violations still block catalog inspection.

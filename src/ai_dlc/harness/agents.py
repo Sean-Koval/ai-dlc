@@ -276,25 +276,44 @@ CLIENT_SKILL_DIRECTORIES = {
 }
 
 
-def _section(current: str, body: str, toml: bool = False) -> str:
-    start = "# ai-dlc:begin " if toml else "<!-- ai-dlc:begin "
-    end = "# ai-dlc:end" if toml else "<!-- ai-dlc:end -->"
-    suffix = "" if toml else " -->"
+def _markers(toml: bool) -> tuple[str, str, str]:
+    if toml:
+        return "# ai-dlc:begin ", "# ai-dlc:end", ""
+    return "<!-- ai-dlc:begin ", "<!-- ai-dlc:end -->", " -->"
+
+
+def read_managed_section(current: str, *, toml: bool = False) -> dict:
+    """Locate the one owned section and report edits without choosing a winner."""
+    start, end, suffix = _markers(toml)
     pattern = re.compile(
         re.escape(start) + r"([0-9a-f]{64})" + re.escape(suffix) + r"\n(.*?)" + re.escape(end),
         re.DOTALL,
     )
     matches = list(pattern.finditer(current))
     if len(matches) > 1 or (start in current and not matches):
+        return {"state": "malformed"}
+    if not matches:
+        return {"state": "absent"}
+    match = matches[0]
+    intact = hashlib.sha256(match.group(2).encode()).hexdigest() == match.group(1)
+    return {
+        "state": "present" if intact else "modified",
+        "body": match.group(2),
+        "span": (match.start(), match.end()),
+    }
+
+
+def _section(current: str, body: str, toml: bool = False) -> str:
+    start, end, suffix = _markers(toml)
+    found = read_managed_section(current, toml=toml)
+    if found["state"] == "malformed":
         raise ValueError("managed section conflict: malformed markers")
     new = start + hashlib.sha256(body.encode()).hexdigest() + suffix + "\n" + body + end
-    if matches:
-        match = matches[0]
-        if hashlib.sha256(match.group(2).encode()).hexdigest() != match.group(1):
-            raise ValueError(
-                "managed section conflict: preserve user edit and resolve before apply"
-            )
-        return current[: match.start()] + new + current[match.end() :]
+    if found["state"] == "modified":
+        raise ValueError("managed section conflict: preserve user edit and resolve before apply")
+    if found["state"] == "present":
+        begin, finish = found["span"]
+        return current[:begin] + new + current[finish:]
     return current.rstrip() + ("\n\n" if current else "") + new + "\n"
 
 
