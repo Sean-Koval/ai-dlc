@@ -29,8 +29,8 @@ scm = "github"
 deploy = "none"
 
 [artifacts]
-spec = "openspec/changes/project-workspace-diagnostics"
-plan = "openspec/changes/project-workspace-diagnostics/tasks.md"
+spec = "openspec/changes/archive/2026-09-11-project-workspace-diagnostics"
+plan = "openspec/changes/archive/2026-09-11-project-workspace-diagnostics/tasks.md"
 branch = "codex/project-workspace-diagnostics"
 related_workspace = "https://github.com/Sean-Koval/ai-dlc/issues/32"
 related_qualification = "https://github.com/Sean-Koval/ai-dlc/issues/34"
