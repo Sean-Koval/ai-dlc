@@ -70,7 +70,7 @@ credential values.
 
 `ai-dlc machine status`, `plan`, `apply`, `sync`, and `doctor` own the local
 enrollment lifecycle. Local CLI and MCP execution are current; hosted or cloud
-execution is a later qualification target. Obsidian create/attach remains a later capability. Guided discovery/setup is
+execution is a later qualification target. Existing Obsidian vaults support portal linking and explicit local project mounts; vault creation is not provided. Guided discovery/setup is
 implemented for Linear and GitHub; Jira, Plane and native Antigravity integration
 remain onboarding work.
 
@@ -195,3 +195,11 @@ protocol is unrun and does not spend the existing generic skill-evaluation budge
 The [documentation guide](../../project-templates/project/docs/documentation-guide.md) explains ownership, packet
 review, baselines and workspace use. The optional CLI `project docs-style` invokes
 configured Vale; it does not install a tool or establish factual correctness.
+
+### Native project mounts
+
+`ai-dlc project link-vault --mode mount --preview` previews canonical `docs/` and
+existing `openspec/` directory mounts; omit `--preview` to apply. The MCP
+`project_vault_mount_preview` tool uses the same read-only plan. Portal mode
+remains the default. Mounting does not expand private knowledge read/write access.
+See the documentation guide for stable-checkout, adoption and conflict handling.

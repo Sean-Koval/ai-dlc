@@ -24,4 +24,3 @@ A shipped document-organize skill SHALL guide the harness from discovery through
 #### Scenario: Outcome-level request
 - **WHEN** a harness receives only an outcome-level organization request for a messy fixture
 - **THEN** it uses supplied skills/tools to propose and execute reviewed organization preserving unique content and useful history and producing an inspectable Git diff; a report or empty structure alone is insufficient
-

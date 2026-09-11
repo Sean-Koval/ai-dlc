@@ -80,3 +80,14 @@ was inspected or replaced.
 ## Project navigation
 
 The [project documentation model](project-documentation.md) defines canonical navigation, optional catalog diagnostics and local Obsidian portals. It preserves OpenSpec ownership and does not introduce Confluence publication or synchronization.
+
+
+Explicit `link-vault --mode mount` can additionally expose a stable Git checkout's
+existing `docs/` and `openspec/` as sibling folders beneath `Projects/<name>/`.
+Portal linking remains the default. Mount identities are ignored machine-local
+bindings; existing matching links need explicit adoption before AI-DLC owns the
+binding. Setup refuses overlapping targets and nested traversal, and preserves
+partial output for inspection. This does not broaden the private knowledge API's
+filesystem boundary. See the [portable documentation guide](../../project-templates/project/docs/documentation-guide.md#opt-in-to-native-project-folders)
+for preview/apply and recovery. Filesystem verification alone does not qualify
+Obsidian indexing, file watching or synchronization.

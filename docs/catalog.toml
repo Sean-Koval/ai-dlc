@@ -35,6 +35,13 @@ path = "docs/design/local-and-shared-knowledge.md"
 kind = "reference"
 owner = "repository-maintainers"
 status = "draft"
+code_paths = [
+    "src/ai_dlc/documentation/vault_link.py",
+    "src/ai_dlc/documentation/vault_mount.py",
+    "src/ai_dlc/documentation/knowledge.py",
+]
+verification_paths = ["tests/test_vault_link.py", "tests/test_vault_mount.py", "tests/test_knowledge.py"]
+requirements = ["openspec/specs/obsidian-vault-linking/spec.md"]
 
 [[documents]]
 id = "release-verification"
