@@ -31,6 +31,7 @@ branch = "codex/harness-document-organization"
 related_workspace = "https://github.com/Sean-Koval/ai-dlc/issues/32"
 related_qualification = "https://github.com/Sean-Koval/ai-dlc/issues/34"
 tracker = "39"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/43"
 
 [bindings]
 specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"

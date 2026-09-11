@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "base": "2b2bd65ac640b8dcde453a5457a46e3986b4be6e",
-  "snapshot": "c4aca0d228c782d1c6be6965a68b2481721faababf7dfa8006e8295ab9ae2978",
+  "snapshot": "d06134f203a7912271bb90f71e5fbdeb8a6687c72d80b4d14f0e4fbb434faa69",
   "reviewer": "Codex",
   "decisions": [
     {
@@ -179,7 +179,7 @@
     ".agents/skills/document-organize/SKILL.md": "e1e2293756847e0ffd771ab5b8fb7df604fff697858f0e6e48447c57e7fa5a29",
     ".agents/skills/document-review/SKILL.md": "5426eaa82efef7f0637f31257b5c079da76a9b3ba0ce13fd8f0df922cbfb345d",
     ".ai-dlc/agent-ownership.json": "e57aae3c0948200a6ae676d8b5243774c799e7871f7a2e1c34a9eebd636f55f7",
-    ".ai-dlc/work/harness-document-organization.toml": "ecf5755fce7a6eff0e4711c13956c26b5d8f19eabc57cf119c99fbb90153a23e",
+    ".ai-dlc/work/harness-document-organization.toml": "fd34675736aafed5efb51062ac16ae82c2e63c2126e3833edca2b97371f1c54b",
     ".ai-dlc/work/obsidian-native-project-mounts.toml": "2d8a4275cdb6acb42f15526490f4097bba68d2ada8cfb27469f2abc43b47cc6e",
     ".ai-dlc/work/project-document-access.toml": "4e01d7317cf743de1766943c227a2c13e277c534a22f09ed7205f0de2f2b72dd",
     ".ai-dlc/work/project-workspace-diagnostics.toml": "96ed7f6f64c3dbb6636230c55943738bf72565e27108a358cad61b75243961a3",
@@ -195,7 +195,7 @@
     "openspec/changes/harness-document-organization/design.md": "e5137098a734992575764a121a75e6dec353656b92d151b38619863a75c22653",
     "openspec/changes/harness-document-organization/proposal.md": "c6f7c3ae2c976ca031dceab479acffb53638f32fe7c81254d638b66f38a95973",
     "openspec/changes/harness-document-organization/specs/harness-document-organization/spec.md": "ea46b9c9d762b79ffba1ae06b3cf1dbd3d1273fa2ea51555ee6c1089620fd3bc",
-    "openspec/changes/harness-document-organization/tasks.md": "7b99f18a9d5e9d19c6dda452dbf9e4db8feb20134ccda952079c5af73b4c3b55",
+    "openspec/changes/harness-document-organization/tasks.md": "dad3cd1b1a0d75cba18002bd95aa5e81e40ab42f8e8959a83dac562e2680e4a9",
     "openspec/changes/obsidian-native-project-mounts/design.md": "fbeae41a2ca27ac3999a0aaf414e793d61d2eb95929645a6895568f47b96c708",
     "openspec/changes/obsidian-native-project-mounts/proposal.md": "784dbb803f2b57b5954d2c22825dcd6113638968a3403087b4dae5d23fc5d287",
     "openspec/changes/obsidian-native-project-mounts/specs/obsidian-native-project-mounts/spec.md": "43c29b99912073dff43e9a6e35ad7f7fb37dbe6378d780a1c607c647a27ef774",
