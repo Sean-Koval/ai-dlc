@@ -84,6 +84,19 @@ GitHub CI fetches comparison history and supplies `AI_DLC_DOCS_BASE` from the PR
 base or push predecessor. The CLI pins that independently supplied revision, so
 changing only the evidence's base cannot bypass the intended CI comparison.
 
+That pin does not make a passing pull request check current. PR #44 passed against
+`2b2bd65`; PR #43 then merged, and #44 merged without fresh checks. The run for
+merge commit `a53dee4` compared against `059f1df` and failed with an unknown-target
+error, although the merged tree matched the PR head. Replaying `docs-gate` on
+`a53dee4` locally reproduced both outcomes. The gate now reports the base mismatch
+with both commits, recording refuses a base the checkout lacks, and workflow
+guidance requires updating and re-recording before merge. The replay and regression
+tests do not qualify repository settings. PR #45 re-recorded evidence against
+`a53dee4` and became the delivery PR for #40, so `work finish` verified a successful
+merged revision. The `main` ruleset now requires up-to-date branches and the five
+Verify jobs as separate checks; its first entry combined four job names into one
+check that could never report and was corrected.
+
 The brownfield evolution then changed the fictional code/documents deliberately:
 a probe failed for the 10-second implementation and passed after the 15-second
 spec-aligned repair; the duplicate reference became a canonical link and onboarding

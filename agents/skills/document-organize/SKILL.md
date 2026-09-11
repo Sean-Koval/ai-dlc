@@ -75,7 +75,8 @@ Inspect the final Git diff for content loss, stale links, unrelated edits and
 unnecessary duplicate explanations. Run docs-check and required project checks;
 inspect anchors, reference-style links and wiki links separately where the checker
 does not cover them. Record documentation-impact dispositions after content
-settles. Do not validate old packets after edits as though they were still current.
+settles, and again after updating from the target branch immediately before merge.
+Do not validate old packets after edits as though they were still current.
 
 Report actual moved/revised/consolidated/archived paths, retained unique content,
 checks and remaining omissions. Preserve a reviewable Git diff. Native harness or

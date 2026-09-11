@@ -41,6 +41,8 @@ review against current sources. Validation proves grounding, not semantic truth.
 
 Make consolidation as a reviewed Git edit and repair affected links. Record the
 required impact dispositions after code/docs settle; changed source bytes invalidate
-older evidence. Keep omissions and unresolved contradictions explicit. Consult the
-project documentation guide for commands and schema details. Do not certify the
-whole knowledge base or update review dates solely because checks pass.
+older evidence. Evidence names an exact target commit: immediately before merge,
+update from the target branch and record dispositions again. Keep omissions and
+unresolved contradictions explicit. Consult the project documentation guide for
+commands and schema details. Do not certify the whole knowledge base or update
+review dates solely because checks pass.

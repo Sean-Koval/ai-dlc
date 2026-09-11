@@ -46,6 +46,12 @@ flowchart TD
 | Review, merge, and finish | Reviewed PR, merged SHA, CI receipts, and deployment evidence when configured | `ai-dlc work finish <work-id>` accepts every finish gate |
 | Continuity | Handoff, runbook updates, and linked personal notes | Remote state and next action are unambiguous |
 
+Evidence such as documentation-impact dispositions names the exact target-branch
+commit it reviewed, and pull request checks do not rerun when that branch moves.
+Immediately before merge, update the branch from the target branch, refresh that
+evidence and wait for fresh required checks. Where the SCM supports it, require
+branches to be up to date before merging.
+
 ## Sources of truth
 
 - This repository owns architecture, rationale, design, decisions, runbooks,

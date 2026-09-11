@@ -24,11 +24,11 @@
     },
     "document-organize": {
       "path": "skills/document-organize/SKILL.md",
-      "sha256": "40f9a8e0ed2cac85a7117962e0e8f62f01299be8f57485b4ea25ff946785d694"
+      "sha256": "0b86758664dc572341ac21710aa6cc91b76f3be3d310d6d90bbdcb0cf75cc3bb"
     },
     "document-review": {
       "path": "skills/document-review/SKILL.md",
-      "sha256": "f2cd7b80eda74e13a4a2a51a9668e1533e7c1e6c3566f90577477f66d2a1176b"
+      "sha256": "44d4c656a2fa70cf87510ed9f7f0facb7f22dc5a09ab08fe9474f97bade3d9f6"
     },
     "handoff": {
       "path": "skills/handoff/SKILL.md",

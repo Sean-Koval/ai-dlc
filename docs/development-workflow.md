@@ -55,7 +55,7 @@ reconciles, and gates the resulting work. MCP exposes shared work, doctor, knowl
 | Specification decision | Decide whether formal behavior needs a specification | Recorded decision and, when required, provider-owned specification | Required scenarios and acceptance criteria are current |
 | Work publication | Bind reviewed scope to durable tracker state | `.ai-dlc/work/<id>.toml` and tracker item | The record is reviewed before external mutation |
 | Implementation | Deliver the smallest coherent change on the bound branch | Code, tests, migrations, and updated durable docs | Local required checks pass |
-| Review and merge | Evaluate correctness, maintainability, risk, and scope | Reviewed pull request and merged revision | Required review and repository rules pass |
+| Review and merge | Evaluate correctness, maintainability, risk, and scope | Reviewed pull request and merged revision | Required review, repository rules, and fresh checks pass against the current target branch |
 | Verification and finish | Authenticate the merge and its configured evidence | CI receipts and optional deployment evidence | `ai-dlc work finish <work-id>` accepts every configured gate |
 | Continuity | Preserve only what the next person or session needs | Handoff, runbook updates, and linked personal notes | Remote state and remaining work are unambiguous |
 
@@ -235,9 +235,10 @@ overridden. The tracker has no fallback.
 6. Review the work record, then publish and start it through AI-DLC.
 7. Implement on the bound branch with acceptance and regression tests.
 8. Run `ai-dlc project check --required` before review.
-9. Merge through the configured SCM and finish through AI-DLC so current
-   specification, merged revision, CI receipts, and deployment evidence are
-   checked together.
+9. Immediately before merge, update the branch from the target branch and
+   refresh base-bound evidence and checks. Merge through the configured SCM and
+   finish through AI-DLC so current specification, merged revision, CI receipts,
+   and deployment evidence are checked together.
 10. Update durable documentation and leave a concise handoff when continuity is
     needed.
 
@@ -253,6 +254,35 @@ mismatched, duplicate, or expired receipt blocks completion.
 Tracker completion never substitutes for a merge, green CI, a current required
 specification, or configured deployment evidence. Failures remain visible and
 retryable instead of being converted into success.
+
+## Merge against the current target branch
+
+Documentation-impact dispositions name the exact target-branch commit they were
+reviewed against. Pull request CI supplies the pull request's base commit, and
+the target-branch run after merge supplies the commit that the merge replaced.
+Both runs must see the recorded base, so a merge is safe only when the target
+branch has not moved since the evidence was recorded and checked.
+
+Pull request checks do not rerun when the target branch moves, and re-running an
+old pull request job reuses its original commit and base. A green check can
+therefore describe a superseded base. Immediately before merging:
+
+1. Fetch and update the branch from the target branch.
+2. Inspect impact against the new target commit and record dispositions again.
+3. Push the update and wait for fresh required checks.
+4. Merge only if the target branch is still that commit; otherwise repeat.
+
+Enable the branch protection or ruleset option that requires branches to be up
+to date before merging, with the Verify jobs as required checks. The SCM then
+enforces this sequence. It is a repository setting that an administrator changes
+deliberately; AI-DLC does not change it. `verify.yml` has no merge-queue trigger,
+and exact-base evidence cannot anticipate a queued predecessor.
+
+`docs-gate` reports a base mismatch first and names both commits.
+`docs-disposition` refuses a base that the checkout does not contain. If a stale
+base still reaches the target branch, that merge's run stays failed and
+`work finish` stays blocked, because rerunning repeats the same comparison. Do not
+edit evidence to name the old base; reconcile the work item explicitly.
 
 ## Maintaining this handbook
 

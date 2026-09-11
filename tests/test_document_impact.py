@@ -182,3 +182,66 @@ def test_cli_honors_independently_supplied_ci_base(project, monkeypatch):
     assert runner.invoke(app, ["project", "docs-gate", "--root", str(project)]).exit_code == 0
     monkeypatch.setenv("AI_DLC_DOCS_BASE", "missing-ci-base")
     assert runner.invoke(app, ["project", "docs-gate", "--root", str(project)]).exit_code == 2
+
+
+API_DECISIONS = [
+    {"target": "docs/api.md", "outcome": "updated", "reason": "Guide covers version two."}
+]
+
+
+def diverge(project):
+    """Record feature evidence, then advance the target branch past its base."""
+    git(project, "branch", "-M", "main")
+    old_base = git(project, "rev-parse", "HEAD")
+    git(project, "switch", "-qc", "feature")
+    (project / "src/api.py").write_text("VERSION = 2\n")
+    git(project, "commit", "-qam", "feature")
+    receipt = api().prepare_disposition(
+        project, base=old_base, decisions=API_DECISIONS, reviewer="maintainer"
+    )
+    git(project, "switch", "-q", "main")
+    (project / "other.py").write_text("merged_elsewhere = True\n")
+    git(project, "add", "other.py")
+    git(project, "commit", "-qm", "other pull request")
+    new_base = git(project, "rev-parse", "HEAD")
+    git(project, "switch", "-q", "feature")
+    return old_base, new_base, receipt
+
+
+def test_superseded_target_base_is_reported_before_dispositions(project, monkeypatch):
+    from typer.testing import CliRunner
+
+    from ai_dlc.cli import app
+
+    old_base, new_base, receipt = diverge(project)
+    git(project, "merge", "-q", "--no-edit", "main")
+    report = api().check_disposition(project, base=new_base, evidence=receipt)
+    assert not report["valid"]
+    assert old_base in report["errors"][0]
+    assert new_base in report["errors"][0]
+    assert "record dispositions again" in report["errors"][0]
+
+    evidence_dir = project / ".ai-dlc/documentation"
+    evidence_dir.mkdir(parents=True)
+    baseline = api().prepare_baseline(project, owner="maintainer", reason="No objective defects.")
+    (evidence_dir / "baseline.json").write_text(json.dumps(baseline))
+    (evidence_dir / "current.json").write_text(json.dumps(receipt))
+    monkeypatch.setenv("AI_DLC_DOCS_BASE", new_base)
+    result = CliRunner().invoke(app, ["project", "docs-gate", "--root", str(project)])
+    assert result.exit_code == 2
+    assert "Update the branch from the target branch" in result.stdout
+
+    refreshed = api().prepare_disposition(
+        project, base=new_base, decisions=API_DECISIONS, reviewer="maintainer"
+    )
+    (evidence_dir / "current.json").write_text(json.dumps(refreshed))
+    result = CliRunner().invoke(app, ["project", "docs-gate", "--root", str(project)])
+    assert result.exit_code == 0, result.stdout
+
+
+def test_disposition_refuses_base_missing_from_checkout(project):
+    _, new_base, _ = diverge(project)
+    with pytest.raises(ValueError, match="not contained in HEAD"):
+        api().prepare_disposition(
+            project, base=new_base, decisions=API_DECISIONS, reviewer="maintainer"
+        )
