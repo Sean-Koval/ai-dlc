@@ -35,6 +35,14 @@ symlinks or PATH lines. When the runtime manager the project selects is absent,
 `ai-dlc project check` refuses before any check runs: it exits nonzero, names the
 missing executable, repeats that same activation remedy, and keeps its output
 machine-readable without writing a receipt.
+
+The shared `ai-dlc` and `ai-dlc-cli` aliases are one machine-wide selection. Source
+bootstrap prepares a separate environment per checkout and leaves an existing
+working alias alone, so bootstrapping a linked worktree no longer changes the
+`ai-dlc` other shells use; it publishes the aliases only with `--publish-aliases`
+or when no working alias exists. Bootstrap output names the checkout the alias runs
+and the executable for the current checkout. When the alias belongs to another
+checkout, `project workspace-check` reports that checkout under activation.
 Missing custom Markdown instructions produce a component-specific guidance gap
 and a restoration action while independent checks continue. Manifest digest,
 schema, path, and symlink violations still block catalog inspection.
