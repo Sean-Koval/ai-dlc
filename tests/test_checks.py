@@ -66,3 +66,55 @@ def test_setup_resume_tracks_successful_steps_only(tmp_path):
     (tmp_path / "ready").touch()
     setup_project(tmp_path, state_path=tmp_path / "state.db", use_mise=False)
     assert (tmp_path / "count").read_text() == "run\n"
+
+
+def test_missing_runtime_fails_before_any_check_runs(tmp_path, monkeypatch):
+    import pytest
+
+    from ai_dlc.setup.project import RuntimeUnavailable, check_project
+
+    root = repository(tmp_path)
+    monkeypatch.setenv("PATH", "")
+    with pytest.raises(RuntimeUnavailable) as failure:
+        check_project(root, use_mise=True)
+    assert failure.value.executable == "mise"
+    assert failure.value.remedy
+
+
+def test_missing_runtime_reports_structured_failure_without_receipt(tmp_path, monkeypatch):
+    from typer.testing import CliRunner
+
+    from ai_dlc.cli import app
+
+    root = repository(tmp_path)
+    receipt = tmp_path / "receipts" / "local.json"
+    monkeypatch.setenv("PATH", "")
+    result = CliRunner().invoke(
+        app,
+        ["project", "check", "--root", str(root), "--json", "--receipt", str(receipt)],
+    )
+    assert result.exit_code == 1
+    assert result.exception is None or isinstance(result.exception, SystemExit)
+    report = json.loads(result.stdout)
+    assert report["status"] == "runtime-unavailable"
+    assert report["ran"] is False
+    assert report["outcomes"] == []
+    assert report["executable"] == "mise"
+    assert report["remedy"]
+    assert "Traceback" not in result.stdout
+    assert not receipt.exists()
+
+
+def test_missing_runtime_human_output_names_the_remedy(tmp_path, monkeypatch):
+    from typer.testing import CliRunner
+
+    from ai_dlc.cli import app
+
+    root = repository(tmp_path)
+    monkeypatch.setenv("PATH", "")
+    result = CliRunner().invoke(app, ["project", "check", "--root", str(root)])
+    assert result.exit_code == 1
+    assert "mise is not on PATH" in result.stderr
+    assert "workspace-check" in result.stderr
+    assert "Traceback" not in result.stderr
+    assert json.loads(result.stdout)["ran"] is False

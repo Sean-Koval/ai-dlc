@@ -29,11 +29,24 @@ def environment_digest(root: Path, config: dict[str, Any]) -> str:
     return digest({"mise": read_toml(root / ".mise.toml"), "setup": config.get("setup", {})})
 
 
+class RuntimeUnavailable(RuntimeError):
+    """A configured runtime manager is absent, so no command can run reproducibly."""
+
+    def __init__(self, executable: str) -> None:
+        self.executable = executable
+        self.remedy = [
+            "Inspect installation and shell activation with `ai-dlc project workspace-check`.",
+            "Open a new terminal or source the AI-DLC shell file to activate the bootstrap bin directory.",
+            "Rerun the repository bootstrap if the bootstrap bin directory is absent.",
+        ]
+        super().__init__(f"{executable} is not on PATH; no check can run reproducibly")
+
+
 def runtime_env(root: Path, use_mise: bool) -> dict[str, str]:
     env = dict(os.environ)
     if use_mise:
         if not shutil.which("mise"):
-            raise RuntimeError("mise unavailable; run the repository bootstrap first")
+            raise RuntimeUnavailable("mise")
         # Explicitly forbid mise from installing tools as a side effect of checks.
         env["MISE_AUTO_INSTALL"] = "0"
         tools = read_toml(root / ".mise.toml").get("tools", {})
@@ -89,6 +102,8 @@ def check_project(
     root = root.resolve()
     config = load_project(root)
     required, commands = _check_definitions(config)
+    # Resolve the runtime before any check so a missing one cannot be reported as a check failure.
+    runtime_env(root, use_mise)
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
     status = subprocess.check_output(["git", "status", "--porcelain"], cwd=root, text=True)
     receipt: dict[str, Any] = {
