@@ -915,6 +915,7 @@ def _render_agents(
         "Use specification artifacts for implementation tasks and the tracker for priority/status.",
         "Finalize required specifications before review. Complete work through ai-dlc work finish.",
         "Immediately before merge, update from the target branch and refresh base-bound evidence and checks.",
+        "Finish from a checkout at the merge commit; when the target branch moved, use a temporary detached worktree.",
         "Store architecture, design, decisions and runbooks in docs/. Keep personal notes in knowledge.",
         "",
         "## Verification",

@@ -52,6 +52,13 @@ Immediately before merge, update the branch from the target branch, refresh that
 evidence and wait for fresh required checks. Where the SCM supports it, require
 branches to be up to date before merging.
 
+Finish reads the archived specification from the working checkout, which must be
+exactly the pull request's merge commit with a clean specification tree. Finishing
+right after merge satisfies this from the updated main checkout. When the target
+branch has already moved, add a temporary detached worktree at that merge commit,
+run finish there and remove the worktree afterwards. The blocked reason names the
+expected merge commit and the revision the checkout holds.
+
 ## Sources of truth
 
 - This repository owns architecture, rationale, design, decisions, runbooks,
