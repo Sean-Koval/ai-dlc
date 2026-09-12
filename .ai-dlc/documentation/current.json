@@ -204,9 +204,9 @@
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "94451a46b8a99c2e7e4bbcff377dd5b33bfd3010eb08829d19106188cd0285f5",
+  "snapshot": "08ab3bdfcbde2fcede9bd14782eb8278d2fefa7124906087458b08373eb6df96",
   "sources": {
-    ".ai-dlc/work/cancelled-change-reconciliation.toml": "e3823cef31323f31d75ab8b7e9b78984eb303ee650814c7797c327b1aef0ec89",
+    ".ai-dlc/work/cancelled-change-reconciliation.toml": "1fb5e8f872b91c989f8e25ab3236d302dd95d2b8a3383779e0a6ec6166a945d8",
     ".ai-dlc/work/portable-development-v4.toml": "68b13c6994aee295cdbc4757fd6889c890242f6a1e9b407d7e086a7e6753ac77",
     ".ai-dlc/work/selective-tracker-migration.toml": "f6e8b7312e88e18aeb7842297a6067ecb3b9ab18dd5ea17f6afc36e9926a3bad",
     "docs/archive/planning/2026-09-06-provider-toolsets.md": "961f38f76597466b86bf991be1b2728e31c9299318734eaac5491837e378cfe6",

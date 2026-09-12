@@ -25,6 +25,7 @@ deploy = "none"
 [artifacts]
 tracker = "65"
 branch = "work/cancelled-change-reconciliation"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/67"
 
 [bindings]
 specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
