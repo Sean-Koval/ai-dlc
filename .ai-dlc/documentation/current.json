@@ -24,42 +24,48 @@
     {
       "outcome": "no-impact",
       "reason": "OpenSpec owns this change proposal; repository documents link to it instead of copying it.",
-      "target": "openspec/changes/project-check-runtime-failure/proposal.md"
+      "target": "openspec/changes/archive/2026-09-12-project-check-runtime-failure/proposal.md"
     },
     {
       "outcome": "no-impact",
       "reason": "OpenSpec owns this change's design context for the delivered behavior.",
-      "target": "openspec/changes/project-check-runtime-failure/design.md"
+      "target": "openspec/changes/archive/2026-09-12-project-check-runtime-failure/design.md"
     },
     {
       "outcome": "no-impact",
       "reason": "OpenSpec owns this change's task list.",
-      "target": "openspec/changes/project-check-runtime-failure/tasks.md"
+      "target": "openspec/changes/archive/2026-09-12-project-check-runtime-failure/tasks.md"
     },
     {
       "outcome": "no-impact",
       "reason": "OpenSpec exclusively owns the formal requirement; repository documents do not copy it.",
-      "target": "openspec/changes/project-check-runtime-failure/specs/connected-project-readiness/spec.md"
+      "target": "openspec/changes/archive/2026-09-12-project-check-runtime-failure/specs/connected-project-readiness/spec.md"
     },
     {
       "outcome": "no-impact",
       "reason": "Regression tests for the new failure path; durable explanations live in the runbook and the specification.",
       "target": "tests/test_checks.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "OpenSpec exclusively owns the archived capability requirement; repository documents link to it instead of copying it.",
+      "target": "openspec/specs/connected-project-readiness/spec.md"
     }
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "795d2ae00860f82b60b480f152059f4c148c5dc3ecfadeb7a9261b3895e2c50f",
+  "snapshot": "3317ef5be164eeed949161e0e4a06cc35b206aa3ae7301a42a2b1d91e3a69438",
   "sources": {
-    ".ai-dlc/work/project-check-runtime-failure.toml": "e9142e977e8eeb6201d07aaf553861b0c971a36d8d985e7cb4ff35e330f6808f",
+    ".ai-dlc/work/project-check-runtime-failure.toml": "36a8035bc5bd55afb39d1708e227cda3a13638aa2f46ce60320eb65815b8ca20",
     "docs/architecture.md": "129106a2268e4db12f73c4ada54ea0de8b6b51607bec3e09356ea8df280eb8db",
     "docs/catalog.toml": "ab1cd2875d3cd10c277e3c103ee99ac65ac057dd06ccfc84b9091b868cbf8cec",
     "docs/runbooks/machine-enrollment.md": "7b7746f212737a5fc62a60b62e1c969439c9175d17a1c349ae25e41986a83dc1",
     "docs/workflows/tool-map.md": "8a846e94874071edf5b6595ef53708c6fd011ce7e928712a4f735ac44ce9b401",
-    "openspec/changes/project-check-runtime-failure/design.md": "6e30f64abd622fb681a240788f9c07a8ea7eed21fa8fc369e1096c0910ec5fbe",
-    "openspec/changes/project-check-runtime-failure/proposal.md": "9d0a8dbc8f2b6774bcb4f7c60771fb7dedbacb361ea73d85277b7f4c617e663d",
-    "openspec/changes/project-check-runtime-failure/specs/connected-project-readiness/spec.md": "9fd552b76255db6783e66b4cbf9b667e92a24cc7237cb846b6bd25aab59e2eca",
-    "openspec/changes/project-check-runtime-failure/tasks.md": "e6fde38c7048bf86f1fca84c6cc8be60407cdcbd58287e7dc69d6dd07e4f4627",
+    "openspec/changes/archive/2026-09-12-project-check-runtime-failure/design.md": "6e30f64abd622fb681a240788f9c07a8ea7eed21fa8fc369e1096c0910ec5fbe",
+    "openspec/changes/archive/2026-09-12-project-check-runtime-failure/proposal.md": "9d0a8dbc8f2b6774bcb4f7c60771fb7dedbacb361ea73d85277b7f4c617e663d",
+    "openspec/changes/archive/2026-09-12-project-check-runtime-failure/specs/connected-project-readiness/spec.md": "9fd552b76255db6783e66b4cbf9b667e92a24cc7237cb846b6bd25aab59e2eca",
+    "openspec/changes/archive/2026-09-12-project-check-runtime-failure/tasks.md": "44a0b3c35c7a022f676cbbcb0bb558f72e242cde121ebc06fa096046686fe5cb",
+    "openspec/specs/connected-project-readiness/spec.md": "72e195ceaaf40f568b33f41e01c6ac297d70fbac0eaa6ec88f44279c1148895a",
     "pyproject.toml": "9cb4d37f9aba00fb6668ba69de8c53a06471128f2964d63848ca8d7afe3a14cf",
     "scripts/check_generated.py": "845e3ac89acb10720eab193712430a09b767272862a02369f391a982da6e7267",
     "scripts/check_layout.py": "26fde5445108c55e36a1ea3083f5dc01a71ecfcd9b1d38542c515d86afe5ab4d",
