@@ -114,7 +114,25 @@ def _configured_bin(body: str) -> str | None:
     return None
 
 
-def _activation(environ: Mapping[str, str], home: Path, installation: dict) -> dict:
+def _alias_checkout(alias: Path, root: Path) -> dict:
+    """Attribute the shared alias to a checkout through the environment it selects."""
+    result = {"alias_environment": None, "alias_checkout": None, "alias_is_this_checkout": None}
+    if not os.path.exists(alias):
+        return result
+    environment = Path(os.path.realpath(alias)).parent.parent
+    result["alias_environment"] = str(environment)
+    try:
+        recorded = read_document(environment / "ai-dlc-source-root").decode("utf-8").strip()
+    except (OSError, ValueError, UnicodeDecodeError):
+        return result
+    if not recorded:
+        return result
+    result["alias_checkout"] = recorded
+    result["alias_is_this_checkout"] = os.path.realpath(recorded) == os.path.realpath(root)
+    return result
+
+
+def _activation(environ: Mapping[str, str], home: Path, installation: dict, root: Path) -> dict:
     bin_dir = _bootstrap_bin(environ, home)
     alias = bin_dir / "ai-dlc"
     if not os.path.lexists(alias):
@@ -127,6 +145,7 @@ def _activation(environ: Mapping[str, str], home: Path, installation: dict) -> d
     current = {
         "bootstrap_bin": str(bin_dir),
         "bootstrap_alias": alias_state,
+        **_alias_checkout(alias, root),
         "bootstrap_bin_on_path": any(
             os.path.realpath(entry) == os.path.realpath(bin_dir) for entry in entries
         ),
@@ -419,6 +438,16 @@ def _activation_findings(activation: dict) -> list[dict]:
         message = f"Shell activation cannot be proved safely: {configured['section']}."
         action = "Inspect shell activation manually; diagnostics return no authored shell content."
         return [_finding("activation", "activation-unverified", message, action)]
+    if activation["current"]["alias_is_this_checkout"] is False:
+        message = (
+            "The selected shared bootstrap alias runs another checkout: "
+            f"{activation['current']['alias_checkout']}."
+        )
+        action = (
+            "Use this checkout's own environment, or rerun its bootstrap with "
+            "`--publish-aliases` to repoint the shared alias deliberately."
+        )
+        return [_finding("activation", "alias-other-checkout", message, action)]
     return []
 
 
@@ -496,7 +525,7 @@ def inspect_project_workspace(
     home = Path(environment.get("HOME") or Path.home())
     repository = _repository(root)
     installation = _installation(environment)
-    activation = _activation(environment, home, installation)
+    activation = _activation(environment, home, installation, repository)
     workspace = _workspace(repository, None if vault is None else str(vault))
     navigation = _navigation(repository, workspace)
     native_client = {
