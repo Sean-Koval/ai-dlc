@@ -34,44 +34,50 @@
     {
       "outcome": "no-impact",
       "reason": "Change artifact owning its own rationale and evidence.",
-      "target": "openspec/changes/provider-identity-projection/proposal.md"
+      "target": "openspec/changes/archive/2026-09-12-provider-identity-projection/proposal.md"
     },
     {
       "outcome": "no-impact",
       "reason": "Change artifact owning the identity-versus-evidence decision and the rebind scope.",
-      "target": "openspec/changes/provider-identity-projection/design.md"
+      "target": "openspec/changes/archive/2026-09-12-provider-identity-projection/design.md"
     },
     {
       "outcome": "no-impact",
       "reason": "Change artifact tracking delivery tasks.",
-      "target": "openspec/changes/provider-identity-projection/tasks.md"
+      "target": "openspec/changes/archive/2026-09-12-provider-identity-projection/tasks.md"
     },
     {
       "outcome": "no-impact",
       "reason": "Requirement delta promoted into the capability specification on archive.",
-      "target": "openspec/changes/provider-identity-projection/specs/spec-delivery-traceability/spec.md"
+      "target": "openspec/changes/archive/2026-09-12-provider-identity-projection/specs/spec-delivery-traceability/spec.md"
     },
     {
       "outcome": "no-impact",
       "reason": "Regression tests for the projection, the retained identity settings and the unrecognised-key fail-safe.",
       "target": "tests/test_workflow.py"
+    },
+    {
+      "outcome": "updated",
+      "reason": "TR-05 promoted from the archived change delta on archive.",
+      "target": "openspec/specs/spec-delivery-traceability/spec.md"
     }
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "3889a80306e797b0f577162ee720b402d08037ef1c3e26cc7427ef0af531497b",
+  "snapshot": "aa8fb8e56498aa7f1d560ea52b65e3f6075fb1c59b64c6cef8e3df7f2e9bfd59",
   "sources": {
     ".ai-dlc/work/portable-development-v4.toml": "6403e14c2212fffbc1b9c66deea3c5936330feaa53be9d893ddfdc7d5e9585f6",
-    ".ai-dlc/work/provider-identity-projection.toml": "bd3081119ddf777dfb35cbc16784f93a4725a7d6e8b6a0d0b7a5cc27c099c7a7",
+    ".ai-dlc/work/provider-identity-projection.toml": "fa36c4a7b584b402c79ac254ce59fb6b57b5fc2ecb7a86580a5122ccbf5c3866",
     ".ai-dlc/work/repository-organization.toml": "61203b1dbc7e6190be221c3d7e1a8f3075b2a77ffbc3f5e2be546b548cc02ddf",
     ".ai-dlc/work/selective-tracker-migration.toml": "6c7215c931f4907732e11db6c7641c3e0d1980dddc5a12a9b52af7417588bad4",
     "docs/architecture.md": "129106a2268e4db12f73c4ada54ea0de8b6b51607bec3e09356ea8df280eb8db",
     "docs/catalog.toml": "ed0f05393b1bdcefeb9e6d0957e7bfe75c0f05d11e3c291a86ca6c35e7845623",
     "docs/development-workflow.md": "4a02176f91dbdbccef82a83f7d88b905544d1129bf135749de8ca086e6b24fdb",
-    "openspec/changes/provider-identity-projection/design.md": "ad4ddebb2babcd66b77a3172c50edb7fcf13508493a2776474ee5cfd124875e7",
-    "openspec/changes/provider-identity-projection/proposal.md": "2939190a737b851ef65b7b8c8c1969769aa837ed6585a7c5fddb9df81e097a41",
-    "openspec/changes/provider-identity-projection/specs/spec-delivery-traceability/spec.md": "68bb227093c9e4552bfc657c5da0e2e0dc2af46d79de5c2a8f0576342575b12a",
-    "openspec/changes/provider-identity-projection/tasks.md": "46af7a71356f608abc5e1b976c35a3343680af53aadb3c05a9e3a1de827042df",
+    "openspec/changes/archive/2026-09-12-provider-identity-projection/design.md": "ad4ddebb2babcd66b77a3172c50edb7fcf13508493a2776474ee5cfd124875e7",
+    "openspec/changes/archive/2026-09-12-provider-identity-projection/proposal.md": "2939190a737b851ef65b7b8c8c1969769aa837ed6585a7c5fddb9df81e097a41",
+    "openspec/changes/archive/2026-09-12-provider-identity-projection/specs/spec-delivery-traceability/spec.md": "68bb227093c9e4552bfc657c5da0e2e0dc2af46d79de5c2a8f0576342575b12a",
+    "openspec/changes/archive/2026-09-12-provider-identity-projection/tasks.md": "1abcd6b8785356fef21f7c663c417b41994011dd44f7d2b56611abe1368f16c4",
+    "openspec/specs/spec-delivery-traceability/spec.md": "9cb6a99b82b654e8bb3f4bf6cdd21766813805044c669a34d6865e4546bc83bf",
     "pyproject.toml": "9cb4d37f9aba00fb6668ba69de8c53a06471128f2964d63848ca8d7afe3a14cf",
     "scripts/check_generated.py": "845e3ac89acb10720eab193712430a09b767272862a02369f391a982da6e7267",
     "scripts/check_layout.py": "26fde5445108c55e36a1ea3083f5dc01a71ecfcd9b1d38542c515d86afe5ab4d",

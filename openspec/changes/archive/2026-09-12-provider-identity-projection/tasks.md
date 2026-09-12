@@ -8,6 +8,6 @@
 - [x] 2.2 Correct the canonical development workflow so it no longer claims the fingerprint authenticates receipts.
 
 ## Verification and delivery
-- [ ] 9.1 Record documentation-impact dispositions for the change.
-- [ ] 9.2 Validate this OpenSpec change and run required project checks.
-- [ ] 9.3 Update from the target branch, review the pull request, merge with fresh checks and verify merged-revision CI receipts.
+- [x] 9.1 Record documentation-impact dispositions for the change.
+- [x] 9.2 Validate this OpenSpec change and run required project checks.
+- [x] 9.3 Update from the target branch, review the pull request, merge with fresh checks and verify merged-revision CI receipts.
