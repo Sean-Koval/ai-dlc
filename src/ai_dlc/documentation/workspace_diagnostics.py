@@ -116,7 +116,11 @@ def _configured_bin(body: str) -> str | None:
 
 def _alias_checkout(alias: Path, root: Path) -> dict:
     """Attribute the shared alias to a checkout through the environment it selects."""
-    result = {"alias_environment": None, "alias_checkout": None, "alias_is_this_checkout": None}
+    result: dict[str, str | bool | None] = {
+        "alias_environment": None,
+        "alias_checkout": None,
+        "alias_is_this_checkout": None,
+    }
     if not os.path.exists(alias):
         return result
     environment = Path(os.path.realpath(alias)).parent.parent
