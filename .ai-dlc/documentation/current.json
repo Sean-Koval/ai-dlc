@@ -59,10 +59,10 @@
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "50ca8205684e41b375d7820a41872ad36ba4fc4428ab8d8397c661d48c23943e",
+  "snapshot": "3889a80306e797b0f577162ee720b402d08037ef1c3e26cc7427ef0af531497b",
   "sources": {
     ".ai-dlc/work/portable-development-v4.toml": "6403e14c2212fffbc1b9c66deea3c5936330feaa53be9d893ddfdc7d5e9585f6",
-    ".ai-dlc/work/provider-identity-projection.toml": "b72b6c7eb78aeabd083afecaed4de159572e8f765a82fedd12add875d166252e",
+    ".ai-dlc/work/provider-identity-projection.toml": "bd3081119ddf777dfb35cbc16784f93a4725a7d6e8b6a0d0b7a5cc27c099c7a7",
     ".ai-dlc/work/repository-organization.toml": "61203b1dbc7e6190be221c3d7e1a8f3075b2a77ffbc3f5e2be546b548cc02ddf",
     ".ai-dlc/work/selective-tracker-migration.toml": "6c7215c931f4907732e11db6c7641c3e0d1980dddc5a12a9b52af7417588bad4",
     "docs/architecture.md": "129106a2268e4db12f73c4ada54ea0de8b6b51607bec3e09356ea8df280eb8db",
