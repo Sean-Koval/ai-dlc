@@ -84,7 +84,7 @@
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "2a75848773073b2a2e6e6935c99c5b564993c59ef143d9240c36f649cf837509",
+  "snapshot": "80153f61718eb643e9c335a5ef6fdf9f320fe893c39b10c701a820590b218d8c",
   "sources": {
     ".ai-dlc/work/bootstrap-alias-scope.toml": "999fd80af7a6b13e143cb0f87d5689122584a1837a04b8d4a2cfa58bd8aa62b6",
     "AGENTS.md": "94b2f0758f625dad0afa03bcde4305a85b5e9ad7bb9ac1371fdb40c115c7a400",
@@ -130,7 +130,7 @@
     "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
     "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
     "src/ai_dlc/documentation/vault_mount.py": "ca1a57a8aaca083674cd685a75971b0ede92d5f34617e6a026271edc4369ca96",
-    "src/ai_dlc/documentation/workspace_diagnostics.py": "24c316ab86994ec544984c8db9ce8bf5b2f44652703220a0315bd88c0999aba6",
+    "src/ai_dlc/documentation/workspace_diagnostics.py": "c53cc66966888078108662d6a307b00c8746c6a8f1d8098938529c65d5694b61",
     "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
     "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
     "src/ai_dlc/environment/enrollment.py": "fb0e82fb7b9e5808e1ee3571a53d129ddc8b8b6c83ab5918d7acab9566f7e9d1",
