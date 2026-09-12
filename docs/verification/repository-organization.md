@@ -1,7 +1,7 @@
 # Repository organization verification
 
 Base: `baa8629343e47f245e9a7f0b225935ac49aea446` (unmerged PR35).
-Change: [repository organization](../../openspec/changes/repository-organization/).
+Change: [repository organization](../../openspec/changes/archive/2026-09-12-repository-organization/).
 This record describes local cleanup; it does not establish merged or live-platform qualification.
 
 ## Scope and provenance
@@ -52,3 +52,23 @@ all seven checks passed, including **2,028 tests passed and 8 skipped** in
 local pre-commit evidence, not an exact merged-CI receipt. After recording these
 results, only this record, the task checklist and content-bound documentation
 disposition were updated; source and tests were unchanged.
+
+## Requirement promotion confirmed — September 12, 2026
+
+The change was archived and its three requirements were promoted into
+`openspec/specs/repository-organization/spec.md`. Each was confirmed against
+current enforcement before promotion rather than promoted unchanged on the
+strength of the original delivery:
+
+- `Canonical repository context` matches `scripts/check_layout.py`, which requires
+  `CLAUDE.md` to be exactly `@AGENTS.md` and a newline; the tracked file is.
+- `Repository organization` matches the same script's refusal of ungrouped
+  `src/ai_dlc/*.py` modules and its docs placement rules.
+- `Prevent renewed layout drift` matches the root Markdown allowlist, whose failure
+  names the offending path with placement guidance, and the scratch-directory
+  refusal.
+
+No drift was found, so no requirement text was corrected. The promotion records
+requirements for behavior that PR 36 shipped and that the required layout check has
+enforced since; it does not establish any new qualification, and the live-platform
+limits stated above still apply.
