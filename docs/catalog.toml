@@ -731,3 +731,4 @@ path = "docs/verification/repository-organization.md"
 kind = "reference"
 owner = "repository-maintainers"
 status = "active"
+requirements = ["openspec/specs/repository-organization/spec.md"]
