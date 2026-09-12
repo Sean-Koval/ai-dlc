@@ -85,9 +85,27 @@ def project_check(
     json_output: Annotated[bool, typer.Option("--json")] = False,
     receipt: Path | None = None,
 ):
-    from ai_dlc.setup.project import check_project
+    from ai_dlc.setup.project import RuntimeUnavailable, check_project
 
-    result = check_project(root, target, required_only=required)
+    try:
+        result = check_project(root, target, required_only=required)
+    except RuntimeUnavailable as exc:
+        # No check ran, so no receipt is written and no outcome may read as passing.
+        failure = {
+            "schema": 1,
+            "status": "runtime-unavailable",
+            "ran": False,
+            "error": str(exc),
+            "executable": exc.executable,
+            "remedy": exc.remedy,
+            "outcomes": [],
+        }
+        emit(failure)
+        if not json_output:
+            typer.echo(f"error: {exc}", err=True)
+            for step in exc.remedy:
+                typer.echo(f"  - {step}", err=True)
+        raise typer.Exit(1) from None
     if receipt:
         receipt.parent.mkdir(parents=True, exist_ok=True)
         receipt.write_text(json.dumps(result, indent=2) + "\n")
