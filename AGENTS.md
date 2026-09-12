@@ -34,13 +34,14 @@ recovery and configuration boundaries. Mocked tests do not prove live platform
 qualification; consult [release gates](docs/release-verification.md). Do not
 publish packages or mutate remote services implicitly.
 
-<!-- ai-dlc:begin 28d30881639873ef66b4afd508bf5f2d540c271cfd7015021f61d3c1ba559b53 -->
+<!-- ai-dlc:begin cf032b0a51ef7b05830edac1266136ea0e441dbe4b21ad6a8b99b735f4414959 -->
 # Shared project guidance
 
 Read ai-dlc.toml and the active .ai-dlc/work record before work.
 Use specification artifacts for implementation tasks and the tracker for priority/status.
 Finalize required specifications before review. Complete work through ai-dlc work finish.
 Immediately before merge, update from the target branch and refresh base-bound evidence and checks.
+Finish from a checkout at the merge commit; when the target branch moved, use a temporary detached worktree.
 Store architecture, design, decisions and runbooks in docs/. Keep personal notes in knowledge.
 
 ## Verification

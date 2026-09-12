@@ -255,6 +255,27 @@ Tracker completion never substitutes for a merge, green CI, a current required
 specification, or configured deployment evidence. Failures remain visible and
 retryable instead of being converted into success.
 
+### Finishing after the target branch moved
+
+The specification gate reads the archived change from the working checkout, so
+that checkout must be exactly the pull request's merge commit with a clean
+`openspec/` tree. Finishing immediately after merge satisfies this from the
+updated main checkout. Once the target branch advances, or when several merged
+items are finished later, prepare a temporary detached checkout instead:
+
+```sh
+git worktree add --detach /tmp/finish-<work-id> <merge-commit>
+cd /tmp/finish-<work-id> && ai-dlc work finish <work-id>
+cd - && git worktree remove /tmp/finish-<work-id>
+```
+
+Take the merge commit from the pull request the work record binds; the blocked
+reason also names it together with the revision the current checkout holds. Each
+item finished this way needs its own merge commit. The gate is unchanged: a
+checkout that is not exactly the merged revision, or one with modified or
+untracked `openspec/` files, still refuses. Do not relax the gate or re-archive a
+change to make a later checkout match.
+
 ## Merge against the current target branch
 
 Documentation-impact dispositions name the exact target-branch commit they were
