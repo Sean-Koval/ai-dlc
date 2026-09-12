@@ -155,6 +155,6 @@ is a machine-level setup step, not something repeated by project bootstrap.
 - [Code audit and alternatives](../archive/planning/provider-toolset-code-audit.md)
 - [Implementation sequence](../archive/planning/2026-09-06-provider-toolsets.md)
 - [Toolset setup spec](../../openspec/changes/archive/2026-09-08-provider-toolset-onboarding/specs/provider-toolset-onboarding/spec.md)
-- [Tracker adapter spec](../../openspec/changes/portable-tracker-adapters/specs/portable-tracker-adapters/spec.md)
-- [Migration spec](../../openspec/changes/selective-tracker-migration/specs/selective-tracker-migration/spec.md)
+- [Tracker adapter spec](../../openspec/specs/portable-tracker-adapters/spec.md)
+- [Migration spec](../../openspec/specs/selective-tracker-migration/spec.md)
 - [Publication spec](../../openspec/changes/team-document-publication/specs/team-document-publication/spec.md)

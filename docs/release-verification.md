@@ -7,6 +7,37 @@ are cancelled (NOT_PLANNED), not completed. Outstanding release evidence below
 remains outstanding despite cancellation. Historical checks apply only to their
 stated revision and environment; plans and fixtures do not establish live readiness.
 
+## Cancelled change reconciliation — September 12, 2026
+
+The OpenSpec change directories for `portable-development-v4`, `portable-tracker-adapters`
+and `selective-tracker-migration` were archived to their delivered scope, so `openspec list`
+no longer presents cancelled work as active. Their requirements entered the specification
+baseline as `portable-development`, `portable-tracker-adapters` and
+`selective-tracker-migration`.
+
+Archiving records obligations, not qualification. A baseline requirement states what the
+system SHALL do; the evidence for what was actually proven stays in this document and in
+`verification/`. Nothing outstanding above or below became satisfied, and each archived
+task list keeps its unperformed steps under an explicit "Deferred live qualification — not
+delivered" heading rather than marking them done. The requirements themselves carry the
+distinction: portable development requires that "Local fixture tests SHALL NOT be
+represented as live platform verification", TA-05 requires adapters to separate fixture,
+health and live workflow evidence, and TM-04 requires unavailable source state to remain
+explicitly unknown.
+
+Outstanding after this reconciliation, unchanged: clean-machine, container and cloud
+walkthroughs; full live provider mutation conformance with enforced egress; behavioral
+skill evaluations at the declared model and budget; publication of verified release assets;
+live Plane deployment qualification with a substitution and interruption rehearsal; and
+live Jira deployment and workflow qualification.
+
+`portable-tracker-adapters` had no work record and no tracker item, so it could not be
+completed through `ai-dlc work finish`. It was reconciled as a documentation-only archive
+under this record rather than by creating a retrospective work record, because a new
+reviewed record would imply a delivery and review cycle that never took place for the
+parent. Its delivered substance was reviewed and finished through its children, whose
+specifications were archived on 2026-09-08 as `jira-cloud-new-work` and `plane-new-work`.
+
 ## Historical source delivery — September 8, 2026
 
 PR25 merged at `ab6b774`; all five exact merged-revision receipts passed. A fresh

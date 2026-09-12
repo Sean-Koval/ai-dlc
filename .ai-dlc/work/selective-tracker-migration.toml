@@ -28,7 +28,7 @@ scm = "github"
 tracker = "github-issues"
 
 [artifacts]
-spec = "openspec/changes/selective-tracker-migration"
+spec = "openspec/changes/archive/2026-09-12-selective-tracker-migration"
 branch = "codex/remaining-qualification"
 tracker = "https://github.com/Sean-Koval/ai-dlc/issues/21"
 verification = "docs/verification/selective-tracker-migration.md"
@@ -37,3 +37,6 @@ pr = "https://github.com/Sean-Koval/ai-dlc/pull/27"
 [bindings]
 specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
 knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "703c40d264ea88c3746a774d6f525525fbe45d3dbe9c3176f51e55f6f7db0d26"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"

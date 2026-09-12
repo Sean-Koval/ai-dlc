@@ -1,83 +1,251 @@
 {
-  "base": "e6978c14e7766da5e2eac74038c08b41850cbd74",
+  "base": "5d1c635270869f9a6b46731136979e0ab92d95f7",
   "decisions": [
     {
       "outcome": "updated",
-      "reason": "Records the September 12 confirmation of each promoted requirement against current enforcement in scripts/check_layout.py, and repoints the change link to the archived path.",
-      "target": "docs/verification/repository-organization.md"
+      "reason": "Records the September 12 reconciliation: which changes were archived to delivered scope, that archiving records obligations rather than qualification, the unchanged outstanding list, and the explicit decision about portable-tracker-adapters' absent work record.",
+      "target": "docs/release-verification.md"
     },
     {
       "outcome": "updated",
-      "reason": "Links the verification document to the newly promoted openspec/specs/repository-organization/spec.md requirements path.",
-      "target": "docs/catalog.toml"
+      "reason": "V4 proposal link repointed to the archived change path; the proposal content is unchanged.",
+      "target": "docs/product-direction.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Tracker adapter and migration specification links repointed to the promoted baseline capabilities, which a current design document should cite rather than an archived delta.",
+      "target": "docs/design/provider-toolsets-prd.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Four historical execution-plan links repointed to the archived change paths; the historical content is unchanged.",
+      "target": "docs/archive/planning/2026-09-06-provider-toolsets.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Work record for this change, reconciled with the existing tracker item 64.",
-      "target": ".ai-dlc/work/repository-organization-archive.toml"
+      "reason": "Work record for this change, reconciled with the existing tracker item 65.",
+      "target": ".ai-dlc/work/cancelled-change-reconciliation.toml"
     },
     {
       "outcome": "no-impact",
-      "reason": "Spec and plan artifacts repointed to the archived change path, which archiving would otherwise have left dangling.",
-      "target": ".ai-dlc/work/repository-organization.toml"
+      "reason": "Spec artifact repointed to the archived change path, which archiving would otherwise have left dangling.",
+      "target": ".ai-dlc/work/portable-development-v4.toml"
     },
     {
       "outcome": "no-impact",
-      "reason": "Delivered change artifact relocated unchanged into the archive.",
-      "target": "openspec/changes/archive/2026-09-12-repository-organization/proposal.md"
+      "reason": "Spec artifact repointed to the archived change path, which archiving would otherwise have left dangling.",
+      "target": ".ai-dlc/work/selective-tracker-migration.toml"
     },
     {
       "outcome": "no-impact",
-      "reason": "Delivered change artifact relocated unchanged into the archive.",
-      "target": "openspec/changes/archive/2026-09-12-repository-organization/design.md"
+      "reason": "Change artifact relocated unchanged into the archive.",
+      "target": "openspec/changes/archive/2026-09-12-portable-development-v4/proposal.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Completed task checklist relocated unchanged into the archive.",
-      "target": "openspec/changes/archive/2026-09-12-repository-organization/tasks.md"
+      "reason": "Change artifact relocated unchanged into the archive.",
+      "target": "openspec/changes/archive/2026-09-12-portable-development-v4/design.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Requirement delta relocated unchanged; its three requirements were promoted into the specification baseline.",
-      "target": "openspec/changes/archive/2026-09-12-repository-organization/specs/repository-organization/spec.md"
+      "reason": "Task list archived with its unperformed live-qualification steps retained under an explicit deferred heading rather than marked complete.",
+      "target": "openspec/changes/archive/2026-09-12-portable-development-v4/tasks.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Requirement delta relocated unchanged; its requirements were promoted into the specification baseline.",
+      "target": "openspec/changes/archive/2026-09-12-portable-development-v4/specs/portable-development/spec.md"
     },
     {
       "outcome": "no-impact",
       "reason": "Removed by archiving; the content is preserved under the archive path.",
-      "target": "openspec/changes/repository-organization/proposal.md"
+      "target": "openspec/changes/portable-development-v4/proposal.md"
     },
     {
       "outcome": "no-impact",
       "reason": "Removed by archiving; the content is preserved under the archive path.",
-      "target": "openspec/changes/repository-organization/design.md"
+      "target": "openspec/changes/portable-development-v4/design.md"
     },
     {
       "outcome": "no-impact",
       "reason": "Removed by archiving; the content is preserved under the archive path.",
-      "target": "openspec/changes/repository-organization/tasks.md"
+      "target": "openspec/changes/portable-development-v4/tasks.md"
     },
     {
       "outcome": "no-impact",
       "reason": "Removed by archiving; the delta is preserved under the archive path and promoted into the baseline.",
-      "target": "openspec/changes/repository-organization/specs/repository-organization/spec.md"
+      "target": "openspec/changes/portable-development-v4/specs/portable-development/spec.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Delivered requirements promoted into the baseline. The requirements are normative obligations and themselves mandate separating fixture evidence from live qualification; no outstanding qualification is recorded as satisfied.",
+      "target": "openspec/specs/portable-development/spec.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Change artifact relocated unchanged into the archive.",
+      "target": "openspec/changes/archive/2026-09-12-portable-tracker-adapters/proposal.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Change artifact relocated unchanged into the archive.",
+      "target": "openspec/changes/archive/2026-09-12-portable-tracker-adapters/design.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Task list archived with its unperformed live-qualification steps retained under an explicit deferred heading rather than marked complete.",
+      "target": "openspec/changes/archive/2026-09-12-portable-tracker-adapters/tasks.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Requirement delta relocated unchanged; its requirements were promoted into the specification baseline.",
+      "target": "openspec/changes/archive/2026-09-12-portable-tracker-adapters/specs/portable-tracker-adapters/spec.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed by archiving; the content is preserved under the archive path.",
+      "target": "openspec/changes/portable-tracker-adapters/proposal.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed by archiving; the content is preserved under the archive path.",
+      "target": "openspec/changes/portable-tracker-adapters/design.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed by archiving; the content is preserved under the archive path.",
+      "target": "openspec/changes/portable-tracker-adapters/tasks.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed by archiving; the delta is preserved under the archive path and promoted into the baseline.",
+      "target": "openspec/changes/portable-tracker-adapters/specs/portable-tracker-adapters/spec.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Delivered requirements promoted into the baseline. The requirements are normative obligations and themselves mandate separating fixture evidence from live qualification; no outstanding qualification is recorded as satisfied.",
+      "target": "openspec/specs/portable-tracker-adapters/spec.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Change artifact relocated unchanged into the archive.",
+      "target": "openspec/changes/archive/2026-09-12-selective-tracker-migration/proposal.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Change artifact relocated unchanged into the archive.",
+      "target": "openspec/changes/archive/2026-09-12-selective-tracker-migration/design.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Task list archived with its unperformed live-qualification steps retained under an explicit deferred heading rather than marked complete.",
+      "target": "openspec/changes/archive/2026-09-12-selective-tracker-migration/tasks.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Requirement delta relocated unchanged; its requirements were promoted into the specification baseline.",
+      "target": "openspec/changes/archive/2026-09-12-selective-tracker-migration/specs/selective-tracker-migration/spec.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed by archiving; the content is preserved under the archive path.",
+      "target": "openspec/changes/selective-tracker-migration/proposal.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed by archiving; the content is preserved under the archive path.",
+      "target": "openspec/changes/selective-tracker-migration/design.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed by archiving; the content is preserved under the archive path.",
+      "target": "openspec/changes/selective-tracker-migration/tasks.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed by archiving; the delta is preserved under the archive path and promoted into the baseline.",
+      "target": "openspec/changes/selective-tracker-migration/specs/selective-tracker-migration/spec.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Delivered requirements promoted into the baseline. The requirements are normative obligations and themselves mandate separating fixture evidence from live qualification; no outstanding qualification is recorded as satisfied.",
+      "target": "openspec/specs/selective-tracker-migration/spec.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Execution plan document relocated unchanged by archiving.",
+      "target": "openspec/changes/archive/2026-09-12-portable-tracker-adapters/2026-09-06-portable-tracker-adapters.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Execution plan document relocated unchanged by archiving.",
+      "target": "openspec/changes/portable-tracker-adapters/2026-09-06-portable-tracker-adapters.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Execution plan document relocated unchanged by archiving.",
+      "target": "openspec/changes/archive/2026-09-12-selective-tracker-migration/2026-09-06-selective-tracker-migration.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Execution plan document relocated unchanged by archiving.",
+      "target": "openspec/changes/archive/2026-09-12-selective-tracker-migration/2026-09-08-selective-tracker-migration.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Execution plan document relocated unchanged by archiving.",
+      "target": "openspec/changes/selective-tracker-migration/2026-09-06-selective-tracker-migration.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Execution plan document relocated unchanged by archiving.",
+      "target": "openspec/changes/selective-tracker-migration/2026-09-08-selective-tracker-migration.md"
     }
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "935b585511a12aecad9b5f1870f362976f32617fb4b2d0881a4ed067d8e1fe8e",
+  "snapshot": "08ab3bdfcbde2fcede9bd14782eb8278d2fefa7124906087458b08373eb6df96",
   "sources": {
-    ".ai-dlc/work/repository-organization-archive.toml": "2a74e37ed10b759683096031eeac870bd7afff26dbaa1f37e17e13679ddf3d61",
-    ".ai-dlc/work/repository-organization.toml": "c2493671e720835f15fdef442c4dc19e37b954acfbbb050b33b3a0c9ca8963aa",
+    ".ai-dlc/work/cancelled-change-reconciliation.toml": "1fb5e8f872b91c989f8e25ab3236d302dd95d2b8a3383779e0a6ec6166a945d8",
+    ".ai-dlc/work/portable-development-v4.toml": "68b13c6994aee295cdbc4757fd6889c890242f6a1e9b407d7e086a7e6753ac77",
+    ".ai-dlc/work/selective-tracker-migration.toml": "f6e8b7312e88e18aeb7842297a6067ecb3b9ab18dd5ea17f6afc36e9926a3bad",
+    "docs/archive/planning/2026-09-06-provider-toolsets.md": "961f38f76597466b86bf991be1b2728e31c9299318734eaac5491837e378cfe6",
     "docs/catalog.toml": "99a6f1d02653fca91231e8202ac597a69eee0ff1b3e6edb633b8733984e45a6f",
-    "docs/verification/repository-organization.md": "362de3ccfaccc5b978fcb70c922c39024175d18f84a7a1e4e5964ac20e88feb5",
-    "openspec/changes/archive/2026-09-12-repository-organization/design.md": "81f908e4aad55058bc6b8c1c00dca3f1ad1837cfbce0fbc901478f46244df03e",
-    "openspec/changes/archive/2026-09-12-repository-organization/proposal.md": "f1169ab6c130e80cb3fd6b58ab56dd43366426ce3438f90e3ad1317514c8542f",
-    "openspec/changes/archive/2026-09-12-repository-organization/specs/repository-organization/spec.md": "f7685fe450d53882a5f40f25dff69df8017f5fbe3130d468d104366fe14e10de",
-    "openspec/changes/archive/2026-09-12-repository-organization/tasks.md": "0e0d3c5ea0f6102d521c5e6bf6efb7bb73c720b454cd362af3a93b4927330315",
-    "openspec/changes/repository-organization/design.md": "missing",
-    "openspec/changes/repository-organization/proposal.md": "missing",
-    "openspec/changes/repository-organization/specs/repository-organization/spec.md": "missing",
-    "openspec/changes/repository-organization/tasks.md": "missing",
-    "openspec/specs/repository-organization/spec.md": "f908091bebe8bc8a46b821c1c873fecc70415a0be697a8187fbd0eae9fd6334f"
+    "docs/design/provider-toolsets-prd.md": "18752b885922a482f5a4819baf76d659ceb5156560543006465869b91c81e488",
+    "docs/product-direction.md": "f71844e637dabf13f7e24b1df123fd090bc3a4753ab4858ee6cba59f808dfa02",
+    "docs/release-verification.md": "6c0707bf3137b533a9cfdad8f28a858ce36f6605edfbf21cc9014125208f699c",
+    "openspec/changes/archive/2026-09-12-portable-development-v4/design.md": "197664f62a47e1887b907d9f3b5fad32896b8b84577e6dd496e97b9dea31d05c",
+    "openspec/changes/archive/2026-09-12-portable-development-v4/proposal.md": "acbb254863042a49ca70dadb2c3ef4fb15e4135a05dbf8e96f8dbfb38a8aeb4a",
+    "openspec/changes/archive/2026-09-12-portable-development-v4/specs/portable-development/spec.md": "e6a73339bc6de0ec5f0b47a567af4d1ea63a7fc62061b3c25a91659a374871ff",
+    "openspec/changes/archive/2026-09-12-portable-development-v4/tasks.md": "ece41c0ed927ca29b95f33394a01daee91863f8c8b2148a679ee88dcebef7364",
+    "openspec/changes/archive/2026-09-12-portable-tracker-adapters/2026-09-06-portable-tracker-adapters.md": "957b865c36644bac1f7ca6a4376c171d4c08a0e4f3ad4c014135416fa9129c5d",
+    "openspec/changes/archive/2026-09-12-portable-tracker-adapters/design.md": "77d454d22048303dc6f727dc176614dd8e43a46b6724caad3b14af01310f4ef6",
+    "openspec/changes/archive/2026-09-12-portable-tracker-adapters/proposal.md": "a6bc6c8b6027210c5cf0a54fbc7f9585a91e8038e855e300f8e9aee550b8bc80",
+    "openspec/changes/archive/2026-09-12-portable-tracker-adapters/specs/portable-tracker-adapters/spec.md": "79414a55465d9b5d4de5714f6c2c2d7f3bce2b067403bee5e206c9a553e3e4ce",
+    "openspec/changes/archive/2026-09-12-portable-tracker-adapters/tasks.md": "86393c4072cc89f496690f81f4b781eee379da2efc0568e39426b52c1e3c0cbf",
+    "openspec/changes/archive/2026-09-12-selective-tracker-migration/2026-09-06-selective-tracker-migration.md": "fdfc4e3409d352e2584f21c693840f6ebe83be23619d71832fcc8144351dc631",
+    "openspec/changes/archive/2026-09-12-selective-tracker-migration/2026-09-08-selective-tracker-migration.md": "96c50e62b732aca36ef798f68276a0319d1cc95929804b79370996e31adb6274",
+    "openspec/changes/archive/2026-09-12-selective-tracker-migration/design.md": "248192c9200911c405a6c184c1fcd74715693fbc97da0164460d90760f04833e",
+    "openspec/changes/archive/2026-09-12-selective-tracker-migration/proposal.md": "6cd8771e2c5c9cb9edd351b83eeb8b15d919f349296fb35cb206f783c8587efa",
+    "openspec/changes/archive/2026-09-12-selective-tracker-migration/specs/selective-tracker-migration/spec.md": "d3ba028cd8e2e92e72374b26c6895c1c78e3e2888e34d6d84dcba2af72ef1eeb",
+    "openspec/changes/archive/2026-09-12-selective-tracker-migration/tasks.md": "60f3456f283c9b71f20f7c122eb38cd1718b6329c27e48adc419454ab121ae5b",
+    "openspec/changes/portable-development-v4/design.md": "missing",
+    "openspec/changes/portable-development-v4/proposal.md": "missing",
+    "openspec/changes/portable-development-v4/specs/portable-development/spec.md": "missing",
+    "openspec/changes/portable-development-v4/tasks.md": "missing",
+    "openspec/changes/portable-tracker-adapters/2026-09-06-portable-tracker-adapters.md": "missing",
+    "openspec/changes/portable-tracker-adapters/design.md": "missing",
+    "openspec/changes/portable-tracker-adapters/proposal.md": "missing",
+    "openspec/changes/portable-tracker-adapters/specs/portable-tracker-adapters/spec.md": "missing",
+    "openspec/changes/portable-tracker-adapters/tasks.md": "missing",
+    "openspec/changes/selective-tracker-migration/2026-09-06-selective-tracker-migration.md": "missing",
+    "openspec/changes/selective-tracker-migration/2026-09-08-selective-tracker-migration.md": "missing",
+    "openspec/changes/selective-tracker-migration/design.md": "missing",
+    "openspec/changes/selective-tracker-migration/proposal.md": "missing",
+    "openspec/changes/selective-tracker-migration/specs/selective-tracker-migration/spec.md": "missing",
+    "openspec/changes/selective-tracker-migration/tasks.md": "missing",
+    "openspec/specs/portable-development/spec.md": "09ce7f444033d3c1fe7681b3982a3145f48e07e720fa503acedfa24220e61028",
+    "openspec/specs/portable-tracker-adapters/spec.md": "bfa86a007cfca5e8ad9fb548863cd677f63e8c83e76b224a213de3fa8a992762",
+    "openspec/specs/selective-tracker-migration/spec.md": "fdf1c43933a05f723ce458a2b5cfed558e97e508d189241c895f7b45adde5861"
   }
 }
