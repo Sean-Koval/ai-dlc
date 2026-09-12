@@ -463,7 +463,20 @@ id = "repo-verification-github-ticket-workflows"
 path = "docs/verification/github-ticket-workflows.md"
 kind = "reference"
 owner = "repository-maintainers"
-status = "archived"
+status = "active"
+reviewed_on = "2026-09-12"
+review_after_days = 180
+code_paths = [
+    "src/ai_dlc/providers/github_issues.py",
+    "src/ai_dlc/providers/github_projects.py",
+]
+verification_paths = [
+    "tests/test_github_projects.py",
+]
+requirements = [
+    "openspec/specs/github-ticket-workflows/spec.md",
+    "openspec/specs/github-project-defaults/spec.md",
+]
 
 [[documents]]
 id = "repo-verification-jira-cloud-new-work"

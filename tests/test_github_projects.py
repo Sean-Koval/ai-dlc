@@ -50,6 +50,8 @@ class GitHubWire:
         self.lose = set()
         self.fail = set()
         self.paginate = False
+        # Number of item reads that omit an attached item, simulating replication lag.
+        self.delay_visibility = 0
 
     def mutate(self, event):
         self.events.append(event)
@@ -83,7 +85,9 @@ class GitHubWire:
                 }
             elif "query ProjectItems" in query:
                 rows = copy.deepcopy(self.other_items)
-                if self.member:
+                if self.member and self.delay_visibility:
+                    self.delay_visibility -= 1
+                elif self.member:
                     rows.append(
                         {
                             "id": "ITEM_1",
@@ -506,3 +510,68 @@ def test_graphql_uses_explicit_post_with_json_variables_in_body(wire):
     assert "--method" in args and args[args.index("--method") + 1] == "POST"
     assert json.loads(kwargs["input"])["variables"] == {"project": "PROJECT_1", "after": None}
     assert "PROJECT_1" not in args
+
+
+@pytest.fixture
+def waits(monkeypatch):
+    """Record backoff without spending it; fixtures never prove live GitHub timing."""
+    recorded = []
+    monkeypatch.setattr(
+        "ai_dlc.providers.github_projects.time.sleep", lambda seconds: recorded.append(seconds)
+    )
+    return recorded
+
+
+def test_delayed_membership_visibility_attaches_once_and_verifies(wire, waits):
+    wire.delay_visibility = 2
+    item = provider().invoke("prepare", {"reference": "1", "operation_id": "op"})
+    assert item["project"]["item_id"] == "ITEM_1"
+    assert wire.events.count("attach") == 1
+    assert waits == [0.5, 1.0]
+
+
+def test_membership_absent_past_the_bound_remains_uncertain(wire, waits):
+    wire.delay_visibility = 99
+    with pytest.raises(RuntimeError, match="uncertain"):
+        provider().invoke("prepare", {"reference": "1", "operation_id": "op"})
+    assert wire.events.count("attach") == 1
+    assert len(waits) == 3
+
+
+def test_conflicting_item_identity_fails_without_further_retries(wire, waits):
+    original = wire.run
+
+    def mismatch(args, **kwargs):
+        if args[1] == "api" and "mutation AttachIssue" in kwargs["input"]:
+            original(args, **kwargs)
+            return SimpleNamespace(
+                returncode=0,
+                stdout=json.dumps({"data": {"addProjectV2ItemById": {"item": {"id": "ITEM_X"}}}}),
+                stderr="",
+            )
+        return original(args, **kwargs)
+
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setattr("ai_dlc.providers.github_issues.subprocess.run", mismatch)
+        with pytest.raises(RuntimeError, match="uncertain"):
+            provider().invoke("prepare", {"reference": "1", "operation_id": "op"})
+    assert waits == []
+
+
+def test_attachment_without_item_identity_is_reported_distinctly(wire, waits):
+    original = wire.run
+
+    def empty(args, **kwargs):
+        if args[1] == "api" and "mutation AttachIssue" in kwargs["input"]:
+            return SimpleNamespace(
+                returncode=0,
+                stdout=json.dumps({"data": {"addProjectV2ItemById": {"item": {}}}}),
+                stderr="",
+            )
+        return original(args, **kwargs)
+
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setattr("ai_dlc.providers.github_issues.subprocess.run", empty)
+        with pytest.raises(RuntimeError, match="no item identity"):
+            provider().invoke("prepare", {"reference": "1", "operation_id": "op"})
+    assert waits == []
