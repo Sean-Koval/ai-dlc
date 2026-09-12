@@ -255,6 +255,23 @@ Tracker completion never substitutes for a merge, green CI, a current required
 specification, or configured deployment evidence. Failures remain visible and
 retryable instead of being converted into success.
 
+### Changing the configured evidence invalidates work bindings
+
+A work record pins a fingerprint per provider role. The SCM fingerprint covers the
+whole `[scm]` table, including `receipt_artifacts`, and the tracker and deployment
+fingerprints embed that same table. Changing the CI matrix, and with it the expected
+receipt names, therefore drifts three of the five bindings on every existing record,
+and `ai-dlc work finish` refuses with `Provider binding drift` until each affected
+record is reviewed again.
+
+This is the guard working: the finish gate must not authenticate receipts a record
+was never bound to. Review the affected records and remove the drifted binding
+lines so they are recomputed against the current configuration. Do not use
+`ai-dlc project rebind`, which migrates a role to a different provider and requires
+explicit replacement artifacts for every retained record. Records already finished
+keep their historical fingerprints; leaving them untouched preserves what they were
+actually reviewed against.
+
 ### Finishing after the target branch moved
 
 The specification gate reads the archived change from the working checkout, so
