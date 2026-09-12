@@ -101,8 +101,8 @@ notes; the knowledge tools remain the only private-note interface. See the
 
 `project workspace-check` explains why a mounted workspace does not behave as
 expected without changing it. It reports the PATH-selected executable, owned shell
-activation, each machine-local mount binding and link reachability as separate
-results. Links to repository files outside `docs/` and `openspec/` remain
+activation, the checkout the shared bootstrap alias runs, each machine-local mount
+binding and link reachability as separate results. Links to repository files outside `docs/` and `openspec/` remain
 repository-only; the diagnostic never widens mounts or the private-note boundary,
 and it cannot qualify Obsidian. See the
 [documentation guide](../../project-templates/project/docs/documentation-guide.md#diagnose-the-local-workspace).

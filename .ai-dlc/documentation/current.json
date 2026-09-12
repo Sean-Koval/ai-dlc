@@ -1,133 +1,109 @@
 {
-  "base": "274ecaef1efa7b3a942a2b5aa7f57d41fa1ccc20",
+  "base": "687e0e595addea9f27a0a4aca5a99d5fd4a8b506",
   "decisions": [
     {
-      "outcome": "no-impact",
-      "reason": "Rendered copy of the reviewed source skill; the generated check confirms it.",
-      "target": ".agents/skills/document-organize/SKILL.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Rendered copy of the reviewed source skill; the generated check confirms it.",
-      "target": ".agents/skills/document-review/SKILL.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Generated ownership digests for rendered guidance; no explanation changes.",
-      "target": ".ai-dlc/agent-ownership.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Reviewed work record bound to its tracker issue, pull request and archived specification; no explanation changes.",
-      "target": ".ai-dlc/work/documentation-evidence-merge-freshness.toml"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Rendered copy of the reviewed source skill; the generated check confirms it.",
-      "target": ".claude/skills/document-organize/SKILL.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Rendered copy of the reviewed source skill; the generated check confirms it.",
-      "target": ".claude/skills/document-review/SKILL.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Generated project guidance rendered from the updated agents.py line; the generated check confirms it.",
-      "target": "AGENTS.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Digest update for the reviewed source skills; no explanation changes.",
-      "target": "agents/skills.lock.json"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Directs harnesses to record dispositions again after updating from the target branch immediately before merge, because evidence names an exact target commit.",
-      "target": "agents/skills/document-organize/SKILL.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Directs harnesses to record dispositions again after updating from the target branch immediately before merge, because evidence names an exact target commit.",
-      "target": "agents/skills/document-review/SKILL.md"
-    },
-    {
       "outcome": "reviewed-no-change",
-      "reason": "The documentation and harness package descriptions remain accurate: the change adds diagnostics inside existing impact evidence and one generated guidance line.",
+      "reason": "The bootstrap and documentation package descriptions remain accurate: alias publication becomes conditional and one diagnostic field is added, with no new module or entry point.",
       "target": "docs/architecture.md"
     },
     {
       "outcome": "updated",
-      "reason": "Adds the pre-merge update-and-re-record sequence, explains why PR checks can describe a superseded base, and recommends the up-to-date-branch setting.",
-      "target": "docs/development-workflow.md"
+      "reason": "Explains that the shared aliases are one machine-wide selection, that source bootstrap leaves an existing one alone, and where the owning checkout is reported.",
+      "target": "docs/runbooks/machine-enrollment.md"
     },
     {
       "outcome": "updated",
-      "reason": "Records the PR #44 incident, its replay, the #45 repair and the corrected main ruleset, separating regression tests from repository settings.",
-      "target": "docs/verification/documentation-workflow.md"
+      "reason": "Adds the shared alias attribution to the list of separate workspace-check results it enumerates.",
+      "target": "docs/design/local-and-shared-knowledge.md"
+    },
+    {
+      "outcome": "reviewed-no-change",
+      "reason": "Its native workspace exercise checks mounts, link classification and not-assessed native client; alias attribution adds a field without changing any step of that procedure.",
+      "target": "docs/runbooks/document-workspace-qualification.md"
     },
     {
       "outcome": "updated",
-      "reason": "Archived the approved DI-02 change with completed tasks; canonical requirements now live under openspec/specs.",
-      "target": "openspec/changes/archive/2026-09-11-documentation-evidence-merge-freshness/design.md"
+      "reason": "Tells every checkout, including agent worktrees, that the documented bootstrap command no longer repoints the shared alias and how to opt in.",
+      "target": "AGENTS.md"
     },
     {
-      "outcome": "updated",
-      "reason": "Archived the approved DI-02 change with completed tasks; canonical requirements now live under openspec/specs.",
-      "target": "openspec/changes/archive/2026-09-11-documentation-evidence-merge-freshness/proposal.md"
+      "outcome": "no-impact",
+      "reason": "Reviewed work record bound to its tracker issue, branch, archived specification and pull request; no explanation changes.",
+      "target": ".ai-dlc/work/bootstrap-alias-scope.toml"
     },
     {
-      "outcome": "updated",
-      "reason": "Archived the approved DI-02 change with completed tasks; canonical requirements now live under openspec/specs.",
-      "target": "openspec/changes/archive/2026-09-11-documentation-evidence-merge-freshness/specs/documentation-impact-workflow/spec.md"
+      "outcome": "no-impact",
+      "reason": "The changed behavior is explained in the enrollment runbook, AGENTS.md and the specification rather than duplicated as prose.",
+      "target": "scripts/bootstrap.sh"
     },
     {
-      "outcome": "updated",
-      "reason": "Archived the approved DI-02 change with completed tasks; canonical requirements now live under openspec/specs.",
-      "target": "openspec/changes/archive/2026-09-11-documentation-evidence-merge-freshness/tasks.md"
+      "outcome": "no-impact",
+      "reason": "Byte-equivalent scaffold copy required by BP-03; the generated artifact check confirms equality.",
+      "target": "project-templates/project/scripts/bootstrap.sh"
     },
     {
-      "outcome": "updated",
-      "reason": "Adds portable pre-merge guidance to update from the target branch, refresh base-bound evidence and require up-to-date branches where supported.",
-      "target": "project-templates/project/docs/development-workflow.md.jinja"
+      "outcome": "no-impact",
+      "reason": "OpenSpec owns this change proposal; repository documents link to it instead of copying it.",
+      "target": "openspec/changes/archive/2026-09-12-bootstrap-alias-scope/proposal.md"
     },
     {
-      "outcome": "updated",
-      "reason": "Explains exact-commit bases, the refusal and mismatch diagnostics, and re-recording after the target branch moves.",
-      "target": "project-templates/project/docs/documentation-guide.md"
+      "outcome": "no-impact",
+      "reason": "OpenSpec owns this change's design context for the delivered behavior.",
+      "target": "openspec/changes/archive/2026-09-12-bootstrap-alias-scope/design.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "OpenSpec owns this change's task list.",
+      "target": "openspec/changes/archive/2026-09-12-bootstrap-alias-scope/tasks.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "OpenSpec exclusively owns the added publication requirement; repository documents do not copy it.",
+      "target": "openspec/changes/archive/2026-09-12-bootstrap-alias-scope/specs/bootstrap-executable-publication/spec.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "OpenSpec exclusively owns the modified diagnostics requirement; repository documents do not copy it.",
+      "target": "openspec/changes/archive/2026-09-12-bootstrap-alias-scope/specs/project-workspace-diagnostics/spec.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "OpenSpec exclusively owns the promoted capability requirement.",
+      "target": "openspec/specs/bootstrap-executable-publication/spec.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "OpenSpec exclusively owns the promoted capability requirement.",
+      "target": "openspec/specs/project-workspace-diagnostics/spec.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Regression tests running the real script against pinned local fixtures; durable explanations live in the runbook and the specification.",
+      "target": "tests/test_bootstrap.py"
     }
   ],
-  "reviewer": "Claude Code",
+  "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "3f20684844fd0ea1409160f33a7484dde42ed149d9c9f8ebdbab2ceb6a63022f",
+  "snapshot": "2a75848773073b2a2e6e6935c99c5b564993c59ef143d9240c36f649cf837509",
   "sources": {
-    ".agents/skills/document-organize/SKILL.md": "0b86758664dc572341ac21710aa6cc91b76f3be3d310d6d90bbdcb0cf75cc3bb",
-    ".agents/skills/document-review/SKILL.md": "44d4c656a2fa70cf87510ed9f7f0facb7f22dc5a09ab08fe9474f97bade3d9f6",
-    ".ai-dlc/agent-ownership.json": "c8863c54f3cee4eb883584bcc51401a5dd38894ee9c51170aaeb30516c7b7f6b",
-    ".ai-dlc/work/documentation-evidence-merge-freshness.toml": "6a92357a4fab964df6419ebe767c190fe8e4ec79956c0dd9293c61d97dbdade6",
-    ".claude/skills/document-organize/SKILL.md": "0b86758664dc572341ac21710aa6cc91b76f3be3d310d6d90bbdcb0cf75cc3bb",
-    ".claude/skills/document-review/SKILL.md": "44d4c656a2fa70cf87510ed9f7f0facb7f22dc5a09ab08fe9474f97bade3d9f6",
-    "AGENTS.md": "d1f5391f7a685a9ac7fb406c62e314cabf0bdd2a7887f7a032bfc33e46ab6afb",
-    "agents/skills.lock.json": "8d13869cc0677c1e2393bf43f3eb0b77e974d1b2eb9c4e799c54eede0fb63d99",
-    "agents/skills/document-organize/SKILL.md": "0b86758664dc572341ac21710aa6cc91b76f3be3d310d6d90bbdcb0cf75cc3bb",
-    "agents/skills/document-review/SKILL.md": "44d4c656a2fa70cf87510ed9f7f0facb7f22dc5a09ab08fe9474f97bade3d9f6",
+    ".ai-dlc/work/bootstrap-alias-scope.toml": "999fd80af7a6b13e143cb0f87d5689122584a1837a04b8d4a2cfa58bd8aa62b6",
+    "AGENTS.md": "94b2f0758f625dad0afa03bcde4305a85b5e9ad7bb9ac1371fdb40c115c7a400",
     "docs/architecture.md": "129106a2268e4db12f73c4ada54ea0de8b6b51607bec3e09356ea8df280eb8db",
     "docs/catalog.toml": "ab1cd2875d3cd10c277e3c103ee99ac65ac057dd06ccfc84b9091b868cbf8cec",
-    "docs/development-workflow.md": "c94035c7aa3a2131005f623add5a4a1a68d7a8e5722d720bf5bf07288153334b",
-    "docs/verification/documentation-workflow.md": "036a53ebf3a05edbc77eceaac841b40151cce05a762fe3ef631e14f057a89a0f",
-    "openspec/changes/archive/2026-09-11-documentation-evidence-merge-freshness/design.md": "89b04d32d25d48067e40ab90bccd031ebe67a6b4d71676fe1d873c4d371289ea",
-    "openspec/changes/archive/2026-09-11-documentation-evidence-merge-freshness/proposal.md": "67068ac2641ea67d434aaaccdf9ff8047248dc66a30c494ea17eefdec38590f9",
-    "openspec/changes/archive/2026-09-11-documentation-evidence-merge-freshness/specs/documentation-impact-workflow/spec.md": "8c566d190e34e1e79fb22cfa21de7b9106ccd1587d62b996bfcaf92df2aa9412",
-    "openspec/changes/archive/2026-09-11-documentation-evidence-merge-freshness/tasks.md": "49342a9de068c06b57ba6fb65e715e0e5338f5f946a01b94f1a095843bf7fbad",
-    "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
-    "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
-    "openspec/specs/documentation-impact-workflow/spec.md": "52f07085c5f87622f04b801de04a98d430a90364869ea0226047271dbd4ea977",
-    "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
-    "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
-    "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
-    "project-templates/project/docs/development-workflow.md.jinja": "b27eb469da0c48eece09541784c5e414b6c112c7259a7522dca65b15a82dac0e",
-    "project-templates/project/docs/documentation-guide.md": "22a608eebf0fb960e158bad4c75a0e682562a737d5f9c72f51033e4ddf037aab",
+    "docs/design/local-and-shared-knowledge.md": "3bae3c9e3e9f7a7294002726a046a784a8f6907b4517560d1081c9cc686eb2c1",
+    "docs/runbooks/document-workspace-qualification.md": "0cb82c08c333033fcefd9013c9bf58cfb9f6fc84ec91355a21ce17f379681ac5",
+    "docs/runbooks/machine-enrollment.md": "e0892f69ce79ffd0498a329959a0ca6ec1c80d36cc2ec61d8c1cbf6320a768e5",
+    "openspec/changes/archive/2026-09-12-bootstrap-alias-scope/design.md": "ed97defef78793c7cab92c4a0c91a45c8a1b65432eb207c61eec5799c99447c5",
+    "openspec/changes/archive/2026-09-12-bootstrap-alias-scope/proposal.md": "d94286d9397efcb3aa2b0096a7cac1abc9b168b19aeafec1e368faa3fd8d1ed1",
+    "openspec/changes/archive/2026-09-12-bootstrap-alias-scope/specs/bootstrap-executable-publication/spec.md": "c6319426a0f8e8040fb568660cfc8f65d478deaf29f9a93fbedab1812ed9949e",
+    "openspec/changes/archive/2026-09-12-bootstrap-alias-scope/specs/project-workspace-diagnostics/spec.md": "6b610b38fe12bb997fa3c7d67df7e836637cdc03fd0e16bf0bc531c984dfde4b",
+    "openspec/changes/archive/2026-09-12-bootstrap-alias-scope/tasks.md": "f125d15cb8e11269223b6ad606caabbfab78cde9deefd7c1308b66e2115ee449",
+    "openspec/specs/bootstrap-executable-publication/spec.md": "66df07c124c5062d6da01cbc26e0a8c48ba8e50a5b8c23b879b59ddc51579bbf",
+    "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
+    "openspec/specs/project-workspace-diagnostics/spec.md": "a5631b1713737c4cd5bfed42c8946a9003269090c424c08d4afd9f2048d307a8",
+    "project-templates/project/scripts/bootstrap.sh": "b60c00e422245a7d8416dafbd1015914c1c1f5d6214faa2a1e18cc80c090e8ed",
     "pyproject.toml": "9cb4d37f9aba00fb6668ba69de8c53a06471128f2964d63848ca8d7afe3a14cf",
+    "scripts/bootstrap.sh": "b60c00e422245a7d8416dafbd1015914c1c1f5d6214faa2a1e18cc80c090e8ed",
     "scripts/check_generated.py": "845e3ac89acb10720eab193712430a09b767272862a02369f391a982da6e7267",
     "scripts/check_layout.py": "26fde5445108c55e36a1ea3083f5dc01a71ecfcd9b1d38542c515d86afe5ab4d",
     "scripts/legacy/sync-cli-templates.sh": "235f53f0e4f4785ad2bb5559b4a01f91f4e88b228437af033857c6335593fa12",
@@ -154,7 +130,7 @@
     "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
     "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
     "src/ai_dlc/documentation/vault_mount.py": "ca1a57a8aaca083674cd685a75971b0ede92d5f34617e6a026271edc4369ca96",
-    "src/ai_dlc/documentation/workspace_diagnostics.py": "2755381cb137a19180348cb66043363745167b02a6a5cef360a8455faa3f6690",
+    "src/ai_dlc/documentation/workspace_diagnostics.py": "24c316ab86994ec544984c8db9ce8bf5b2f44652703220a0315bd88c0999aba6",
     "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
     "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
     "src/ai_dlc/environment/enrollment.py": "fb0e82fb7b9e5808e1ee3571a53d129ddc8b8b6c83ab5918d7acab9566f7e9d1",
@@ -203,12 +179,11 @@
     "src/ai_dlc/work/traceability.py": "646e7595cad285ef07672b436625321443d6603cbf8a3518a3b2b2c5c51d6a33",
     "src/ai_dlc/work/tracker_migration.py": "65fc8eb4a708947c12a5f4fd3cfe664f409ee32c282b68a48bd725152e5b18a3",
     "src/ai_dlc/work/workflow.py": "c891477baf6b8e8e4280096d9bd047f2fe7fafab9f03d8801791750841f36abc",
-    "tests/test_company_guidance.py": "2157af2cd002d74a411ab3555afb26cbaec9381061721c6e6b3470d376eefe38",
-    "tests/test_document_access.py": "bdf96af4afb1ad6f985204ad243a624d4da8b56d527af63cc072908a76beeff4",
-    "tests/test_document_impact.py": "308684c1dda24359e86d2a9b79200455ebe781e97baa18169f5b9979e4eb2a14",
-    "tests/test_document_inventory.py": "927199563751af6b2dd5aa8e93cddb43cc62192adffea49694dada37ef6bf14c",
-    "tests/test_document_review.py": "88f37e6365c7e9b545d668f978993ef7ad9acfa146e7d549728f4ef9cab8008a",
-    "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
-    "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7"
+    "tests/fixtures/messy_project.py": "719e8bd5da992f35efb3b39ae87bb9bff955b362f77eaf05fa0554a7e6cf1422",
+    "tests/test_bootstrap.py": "9912a10e2085b72b9779204943cd53a41cf47799b79332852b4c470e61e21679",
+    "tests/test_knowledge.py": "4766f0fd4de9c4a66c96fe93b56b03e275c1adcb5e303e773e92a9e528112be7",
+    "tests/test_vault_link.py": "fd146d4d15041021ac343257c9d91a8c1950878d275420eda85d13747065e110",
+    "tests/test_vault_mount.py": "f6a5dc947af0d68e4688c37d05294c6b4868aa98ead91d26aa0c8ffec8018424",
+    "tests/test_workspace_diagnostics.py": "c4237345308d5a9c4096c8692f957f8d53bf3ca0f6cd6cdfeb479ea7b41350d5"
   }
 }
