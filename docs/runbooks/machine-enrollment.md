@@ -31,7 +31,10 @@ PATH, run the same check through the bootstrap's published alias by its full pat
 by default `~/.local/share/ai-dlc/bootstrap/bin/ai-dlc`. `configured-for-next-shell`
 needs only a new terminal or sourcing the shell file. Repair `stale` or `missing`
 activation by rerunning the bootstrap and `ai-dlc setup apply`, not by adding
-symlinks or PATH lines.
+symlinks or PATH lines. When the runtime manager the project selects is absent,
+`ai-dlc project check` refuses before any check runs: it exits nonzero, names the
+missing executable, repeats that same activation remedy, and keeps its output
+machine-readable without writing a receipt.
 
 The shared `ai-dlc` and `ai-dlc-cli` aliases are one machine-wide selection. Source
 bootstrap prepares a separate environment per checkout and leaves an existing
