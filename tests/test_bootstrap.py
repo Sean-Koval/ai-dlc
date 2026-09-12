@@ -490,3 +490,99 @@ def test_release_bootstrap_tampering_preserves_selected_cli_before_engine_instal
     assert previous.read_text() == "previous authored CLI\n"
     assert not (installed.parent / "engine-fixture").exists()
     assert "Ready." not in result.stdout
+
+
+def _second_checkout(tmp_path, name):
+    """A separate checkout sharing the bootstrap home, as a linked worktree does."""
+    import shutil
+
+    other = tmp_path / name
+    shutil.copytree(tmp_path / "project", other)
+    return other
+
+
+def _alias_target(installed):
+    alias = installed / "ai-dlc"
+    return Path(os.readlink(alias)) if alias.is_symlink() else None
+
+
+def test_source_bootstrap_publishes_the_alias_when_none_exists(tmp_path):
+    command, environment, installed, _, _ = _bootstrap_fixture(tmp_path)
+    result = subprocess.run(
+        command, env=environment, capture_output=True, text=True, check=False, timeout=30
+    )
+    assert result.returncode == 0, result.stderr
+    target = _alias_target(installed)
+    assert target is not None
+    assert (target.parent.parent / "ai-dlc-source-root").read_text().strip() == str(
+        tmp_path / "project"
+    )
+    assert "runs this checkout" in result.stdout
+    assert str(tmp_path / "project") in result.stdout
+
+
+@pytest.mark.parametrize("name", ["worktree", "second-checkout"])
+def test_another_checkout_leaves_the_existing_alias_unchanged(tmp_path, name):
+    command, environment, installed, _, _ = _bootstrap_fixture(tmp_path)
+    first = subprocess.run(
+        command, env=environment, capture_output=True, text=True, check=False, timeout=30
+    )
+    assert first.returncode == 0, first.stderr
+    published = _alias_target(installed)
+
+    other = _second_checkout(tmp_path, name)
+    second = subprocess.run(
+        ["sh", str(ROOT / "scripts/bootstrap.sh"), "--source", "--root", str(other)],
+        env=environment,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=30,
+    )
+    assert second.returncode == 0, second.stderr
+    assert _alias_target(installed) == published
+    assert "is unchanged and runs" in second.stdout
+    assert str(tmp_path / "project") in second.stdout
+    assert "--publish-aliases" in second.stdout
+    # The second checkout still gets its own prepared environment to run directly.
+    environments = {
+        path.parent: path.read_text().strip()
+        for path in (installed.parent).glob("source-*/ai-dlc-source-root")
+    }
+    assert sorted(environments.values()) == sorted([str(tmp_path / "project"), str(other)])
+    own = next(path for path, checkout in environments.items() if checkout == str(other))
+    assert f"Use {own}/bin/ai-dlc for this checkout" in second.stdout
+
+
+def test_explicit_opt_in_repoints_the_alias_to_the_requesting_checkout(tmp_path):
+    command, environment, installed, _, _ = _bootstrap_fixture(tmp_path)
+    assert (
+        subprocess.run(
+            command, env=environment, capture_output=True, text=True, check=False, timeout=30
+        ).returncode
+        == 0
+    )
+    published = _alias_target(installed)
+
+    other = _second_checkout(tmp_path, "opt-in-checkout")
+    result = subprocess.run(
+        [
+            "sh",
+            str(ROOT / "scripts/bootstrap.sh"),
+            "--source",
+            "--publish-aliases",
+            "--root",
+            str(other),
+        ],
+        env=environment,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=30,
+    )
+    assert result.returncode == 0, result.stderr
+    repointed = _alias_target(installed)
+    assert repointed != published
+    assert (repointed.parent.parent / "ai-dlc-source-root").read_text().strip() == str(other)
+    assert Path(os.readlink(installed / "ai-dlc-cli")) == repointed
+    assert "runs this checkout" in result.stdout and str(other) in result.stdout

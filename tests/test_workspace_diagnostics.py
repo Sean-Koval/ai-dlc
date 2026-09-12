@@ -372,3 +372,51 @@ def test_messy_project_fixture_preserves_approved_baseline(tmp_path, machine):
     assert {link["status"] for link in navigation["links"]} == {"unmounted"}
     with pytest.raises(ValueError):
         build_messy_project(root)
+
+
+def source_environment(root: Path, checkout: Path) -> Path:
+    """A bootstrap source environment that records the checkout it was synced from."""
+    executable = fake_cli(root / "bin")
+    (root / "ai-dlc-source-root").write_text(f"{checkout}\n")
+    return executable
+
+
+def test_shared_alias_is_attributed_to_the_checkout_it_runs(project, machine, tmp_path):
+    other = tmp_path / "other-checkout"
+    other.mkdir()
+    executable = source_environment(tmp_path / "source-other", other)
+    alias = machine.bin / "ai-dlc"
+    alias.unlink()
+    alias.symlink_to(executable)
+    active = machine.environ | {"PATH": f"{machine.bin}{os.pathsep}{machine.environ['PATH']}"}
+
+    result = inspect(project, environ=active)
+    current = result["activation"]["current"]
+    assert result["activation"]["status"] == "active"
+    assert current["alias_checkout"] == str(other)
+    assert current["alias_is_this_checkout"] is False
+    assert "alias-other-checkout" in codes(result)
+    assert "--publish-aliases" in json.dumps(result["findings"])
+
+
+def test_shared_alias_for_this_checkout_reports_no_alias_finding(project, machine, tmp_path):
+    executable = source_environment(tmp_path / "source-self", project)
+    alias = machine.bin / "ai-dlc"
+    alias.unlink()
+    alias.symlink_to(executable)
+    active = machine.environ | {"PATH": f"{machine.bin}{os.pathsep}{machine.environ['PATH']}"}
+
+    result = inspect(project, environ=active)
+    current = result["activation"]["current"]
+    assert current["alias_checkout"] == str(project)
+    assert current["alias_is_this_checkout"] is True
+    assert "alias-other-checkout" not in codes(result)
+
+
+def test_unattributed_alias_stays_unknown_rather_than_assumed(project, machine):
+    active = machine.environ | {"PATH": f"{machine.bin}{os.pathsep}{machine.environ['PATH']}"}
+
+    current = inspect(project, environ=active)["activation"]["current"]
+    assert current["alias_environment"] is not None
+    assert current["alias_checkout"] is None
+    assert current["alias_is_this_checkout"] is None
