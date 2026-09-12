@@ -1,5 +1,13 @@
 """Projects v2 planning operations, independent of native issue lifecycle."""
 
+import time
+
+# A newly added item is not always visible in the next item connection read. The
+# mutation's item identity is durable, so only the readback is retried, and only
+# within a bound: a persistently invisible item must still fail visibly.
+READBACK_ATTEMPTS = 4
+READBACK_DELAY_SECONDS = 0.5
+
 FIELDS = """query ProjectFields($project: ID!, $after: String) {
   node(id: $project) { __typename id ... on ProjectV2 {
     fields(first: 100, after: $after) { nodes {
@@ -150,10 +158,19 @@ class GitHubProjects:
         # GitHub returns the existing item if another actor attached it concurrently.
         result = self.graphql(ATTACH, {"project": self.config["id"], "content": issue["node_id"]})
         item_id = result.get("addProjectV2ItemById", {}).get("item", {}).get("id")
-        current = self.snapshot(issue)
-        if not item_id or current["item_id"] != item_id:
-            raise RuntimeError("Project attachment remains uncertain")
-        return current
+        if not item_id:
+            raise RuntimeError("Project attachment returned no item identity")
+        delay = READBACK_DELAY_SECONDS
+        for remaining in range(READBACK_ATTEMPTS - 1, -1, -1):
+            current = self.snapshot(issue)
+            if current["item_id"] == item_id:
+                return current
+            # Another visible item is a conflicting attachment, not replication lag.
+            if current["item_id"] is not None or not remaining:
+                break
+            time.sleep(delay)
+            delay *= 2
+        raise RuntimeError("Project attachment remains uncertain")
 
     def set_status(self, issue, state):
         current = self.snapshot(issue)

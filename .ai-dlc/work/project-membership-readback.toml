@@ -1,0 +1,37 @@
+schema = 1
+id = "project-membership-readback"
+title = "Retry Project membership readback before reporting uncertain attachment"
+scope = "Retry a delayed Project membership readback within a bound before reporting uncertainty. Deliver the approved requirements using existing AI-DLC boundaries."
+requires_spec = true
+spec_reason = "Observable tracker attachment outcomes and uncertainty semantics approved by the user."
+acceptance = [
+    "Delayed membership visibility within the bound SHALL let attachment succeed with verified membership.",
+    "Persistent absence, a different item identity or ambiguous membership SHALL still fail and leave the operation uncertain.",
+    "No duplicate attachment SHALL be created by the retry.",
+    "Fixture tests SHALL simulate delayed visibility and persistent absence, recorded separately from live GitHub behavior.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "GT-03",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+branch = "codex/project-membership-readback"
+tracker = "52"
+spec = "openspec/changes/archive/2026-09-12-project-membership-readback"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/57"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72"
+deploy = "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "c1d0b090971dc5829585dfa82141ca9ae4735564494f33160785fbac0ba0daa1"

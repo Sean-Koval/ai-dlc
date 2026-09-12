@@ -1,132 +1,61 @@
 {
-  "base": "274ecaef1efa7b3a942a2b5aa7f57d41fa1ccc20",
+  "base": "687e0e595addea9f27a0a4aca5a99d5fd4a8b506",
   "decisions": [
     {
-      "outcome": "no-impact",
-      "reason": "Rendered copy of the reviewed source skill; the generated check confirms it.",
-      "target": ".agents/skills/document-organize/SKILL.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Rendered copy of the reviewed source skill; the generated check confirms it.",
-      "target": ".agents/skills/document-review/SKILL.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Generated ownership digests for rendered guidance; no explanation changes.",
-      "target": ".ai-dlc/agent-ownership.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Reviewed work record bound to its tracker issue, pull request and archived specification; no explanation changes.",
-      "target": ".ai-dlc/work/documentation-evidence-merge-freshness.toml"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Rendered copy of the reviewed source skill; the generated check confirms it.",
-      "target": ".claude/skills/document-organize/SKILL.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Rendered copy of the reviewed source skill; the generated check confirms it.",
-      "target": ".claude/skills/document-review/SKILL.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Generated project guidance rendered from the updated agents.py line; the generated check confirms it.",
-      "target": "AGENTS.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Digest update for the reviewed source skills; no explanation changes.",
-      "target": "agents/skills.lock.json"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Directs harnesses to record dispositions again after updating from the target branch immediately before merge, because evidence names an exact target commit.",
-      "target": "agents/skills/document-organize/SKILL.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Directs harnesses to record dispositions again after updating from the target branch immediately before merge, because evidence names an exact target commit.",
-      "target": "agents/skills/document-review/SKILL.md"
-    },
-    {
       "outcome": "reviewed-no-change",
-      "reason": "The documentation and harness package descriptions remain accurate: the change adds diagnostics inside existing impact evidence and one generated guidance line.",
+      "reason": "The providers package description remains accurate: the change bounds one readback inside the existing Projects adapter without adding a module or entry point.",
       "target": "docs/architecture.md"
     },
     {
       "outcome": "updated",
-      "reason": "Adds the pre-merge update-and-re-record sequence, explains why PR checks can describe a superseded base, and recommends the up-to-date-branch setting.",
-      "target": "docs/development-workflow.md"
+      "reason": "Records the new fixture evidence for delayed visibility and the terminal cases, and states plainly that the live delayed-visibility observation is still pending.",
+      "target": "docs/verification/github-ticket-workflows.md"
     },
     {
       "outcome": "updated",
-      "reason": "Records the PR #44 incident, its replay, the #45 repair and the corrected main ruleset, separating regression tests from repository settings.",
-      "target": "docs/verification/documentation-workflow.md"
+      "reason": "Activates the GitHub ticket workflow verification record with its code, test and requirement mappings and a current review date, so later adapter changes map to it.",
+      "target": "docs/catalog.toml"
     },
     {
-      "outcome": "updated",
-      "reason": "Archived the approved DI-02 change with completed tasks; canonical requirements now live under openspec/specs.",
-      "target": "openspec/changes/archive/2026-09-11-documentation-evidence-merge-freshness/design.md"
+      "outcome": "no-impact",
+      "reason": "Reviewed work record bound to its tracker issue, branch and archived specification; no explanation changes.",
+      "target": ".ai-dlc/work/project-membership-readback.toml"
     },
     {
-      "outcome": "updated",
-      "reason": "Archived the approved DI-02 change with completed tasks; canonical requirements now live under openspec/specs.",
-      "target": "openspec/changes/archive/2026-09-11-documentation-evidence-merge-freshness/proposal.md"
+      "outcome": "no-impact",
+      "reason": "OpenSpec owns this change proposal; repository documents link to it instead of copying it.",
+      "target": "openspec/changes/archive/2026-09-12-project-membership-readback/proposal.md"
     },
     {
-      "outcome": "updated",
-      "reason": "Archived the approved DI-02 change with completed tasks; canonical requirements now live under openspec/specs.",
-      "target": "openspec/changes/archive/2026-09-11-documentation-evidence-merge-freshness/specs/documentation-impact-workflow/spec.md"
+      "outcome": "no-impact",
+      "reason": "OpenSpec owns this change's design context for the delivered behavior.",
+      "target": "openspec/changes/archive/2026-09-12-project-membership-readback/design.md"
     },
     {
-      "outcome": "updated",
-      "reason": "Archived the approved DI-02 change with completed tasks; canonical requirements now live under openspec/specs.",
-      "target": "openspec/changes/archive/2026-09-11-documentation-evidence-merge-freshness/tasks.md"
+      "outcome": "no-impact",
+      "reason": "OpenSpec owns this change's task list.",
+      "target": "openspec/changes/archive/2026-09-12-project-membership-readback/tasks.md"
     },
     {
-      "outcome": "updated",
-      "reason": "Adds portable pre-merge guidance to update from the target branch, refresh base-bound evidence and require up-to-date branches where supported.",
-      "target": "project-templates/project/docs/development-workflow.md.jinja"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Explains exact-commit bases, the refusal and mismatch diagnostics, and re-recording after the target branch moves.",
-      "target": "project-templates/project/docs/documentation-guide.md"
+      "outcome": "no-impact",
+      "reason": "OpenSpec exclusively owns the modified requirement; the verification record links to it rather than copying it.",
+      "target": "openspec/changes/archive/2026-09-12-project-membership-readback/specs/github-ticket-workflows/spec.md"
     }
   ],
-  "reviewer": "Claude Code",
+  "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "3f20684844fd0ea1409160f33a7484dde42ed149d9c9f8ebdbab2ceb6a63022f",
+  "snapshot": "38bb56948784ea933b4beb3197c20a66890e7f15ffcee31aa9b6dc3dc0a39657",
   "sources": {
-    ".agents/skills/document-organize/SKILL.md": "0b86758664dc572341ac21710aa6cc91b76f3be3d310d6d90bbdcb0cf75cc3bb",
-    ".agents/skills/document-review/SKILL.md": "44d4c656a2fa70cf87510ed9f7f0facb7f22dc5a09ab08fe9474f97bade3d9f6",
-    ".ai-dlc/agent-ownership.json": "c8863c54f3cee4eb883584bcc51401a5dd38894ee9c51170aaeb30516c7b7f6b",
-    ".ai-dlc/work/documentation-evidence-merge-freshness.toml": "6a92357a4fab964df6419ebe767c190fe8e4ec79956c0dd9293c61d97dbdade6",
-    ".claude/skills/document-organize/SKILL.md": "0b86758664dc572341ac21710aa6cc91b76f3be3d310d6d90bbdcb0cf75cc3bb",
-    ".claude/skills/document-review/SKILL.md": "44d4c656a2fa70cf87510ed9f7f0facb7f22dc5a09ab08fe9474f97bade3d9f6",
-    "AGENTS.md": "d1f5391f7a685a9ac7fb406c62e314cabf0bdd2a7887f7a032bfc33e46ab6afb",
-    "agents/skills.lock.json": "8d13869cc0677c1e2393bf43f3eb0b77e974d1b2eb9c4e799c54eede0fb63d99",
-    "agents/skills/document-organize/SKILL.md": "0b86758664dc572341ac21710aa6cc91b76f3be3d310d6d90bbdcb0cf75cc3bb",
-    "agents/skills/document-review/SKILL.md": "44d4c656a2fa70cf87510ed9f7f0facb7f22dc5a09ab08fe9474f97bade3d9f6",
+    ".ai-dlc/work/project-membership-readback.toml": "ed0572473228157238e308979f10780c6ddad72e75f52f6b6e0a5d434c4985e5",
     "docs/architecture.md": "129106a2268e4db12f73c4ada54ea0de8b6b51607bec3e09356ea8df280eb8db",
-    "docs/catalog.toml": "ab1cd2875d3cd10c277e3c103ee99ac65ac057dd06ccfc84b9091b868cbf8cec",
-    "docs/development-workflow.md": "c94035c7aa3a2131005f623add5a4a1a68d7a8e5722d720bf5bf07288153334b",
-    "docs/verification/documentation-workflow.md": "036a53ebf3a05edbc77eceaac841b40151cce05a762fe3ef631e14f057a89a0f",
-    "openspec/changes/archive/2026-09-11-documentation-evidence-merge-freshness/design.md": "89b04d32d25d48067e40ab90bccd031ebe67a6b4d71676fe1d873c4d371289ea",
-    "openspec/changes/archive/2026-09-11-documentation-evidence-merge-freshness/proposal.md": "67068ac2641ea67d434aaaccdf9ff8047248dc66a30c494ea17eefdec38590f9",
-    "openspec/changes/archive/2026-09-11-documentation-evidence-merge-freshness/specs/documentation-impact-workflow/spec.md": "8c566d190e34e1e79fb22cfa21de7b9106ccd1587d62b996bfcaf92df2aa9412",
-    "openspec/changes/archive/2026-09-11-documentation-evidence-merge-freshness/tasks.md": "49342a9de068c06b57ba6fb65e715e0e5338f5f946a01b94f1a095843bf7fbad",
-    "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
-    "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
-    "openspec/specs/documentation-impact-workflow/spec.md": "52f07085c5f87622f04b801de04a98d430a90364869ea0226047271dbd4ea977",
-    "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
-    "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
-    "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
-    "project-templates/project/docs/development-workflow.md.jinja": "b27eb469da0c48eece09541784c5e414b6c112c7259a7522dca65b15a82dac0e",
-    "project-templates/project/docs/documentation-guide.md": "22a608eebf0fb960e158bad4c75a0e682562a737d5f9c72f51033e4ddf037aab",
+    "docs/catalog.toml": "ed0f05393b1bdcefeb9e6d0957e7bfe75c0f05d11e3c291a86ca6c35e7845623",
+    "docs/verification/github-ticket-workflows.md": "f41ebedf58068b0d70c1290ec9c533903bc1b12fd332ea3247727f23bdacfe8d",
+    "openspec/changes/archive/2026-09-12-project-membership-readback/design.md": "0a362ba175664c72293bc5410694b6577e6720e0bae6b3a4c095f8225ed1eaa0",
+    "openspec/changes/archive/2026-09-12-project-membership-readback/proposal.md": "2f16202835f0a793ffa95308ff2dd964ebdd0a234baae56e03fd090851f3580a",
+    "openspec/changes/archive/2026-09-12-project-membership-readback/specs/github-ticket-workflows/spec.md": "3d58134d521d38a36e6134bf32c5c462158b33fe6a4388c2e8e299208718cd88",
+    "openspec/changes/archive/2026-09-12-project-membership-readback/tasks.md": "e10e104b48a6425f703d84d732cb511962a999e6fcf6957ddae0e114b301d148",
+    "openspec/specs/github-project-defaults/spec.md": "e4e0f1dd53c3cf852b85a882987dd8306bdb042637df63e916bfe6c30de5abc5",
+    "openspec/specs/github-ticket-workflows/spec.md": "a64561ef8cff11fc3909cca93f9690786a9d71c133a18c5b3d78857c4cea6379",
     "pyproject.toml": "9cb4d37f9aba00fb6668ba69de8c53a06471128f2964d63848ca8d7afe3a14cf",
     "scripts/check_generated.py": "845e3ac89acb10720eab193712430a09b767272862a02369f391a982da6e7267",
     "scripts/check_layout.py": "26fde5445108c55e36a1ea3083f5dc01a71ecfcd9b1d38542c515d86afe5ab4d",
@@ -173,7 +102,7 @@
     "src/ai_dlc/provider_definitions.py": "e90c2d41a839bc4a32dcb3989f59fa6c9073bd1233f3db2088bd176e1bc513d3",
     "src/ai_dlc/providers/__init__.py": "85325d9c7d4f2ac948510ad6ac20342ec0bd92d02857dda65637dc7b594181ae",
     "src/ai_dlc/providers/github_issues.py": "55a18a178fc329a94ff95f39b72c5599117c5a8e79842d7cc7c6c8966cbed405",
-    "src/ai_dlc/providers/github_projects.py": "65b338648b52f637cd97b73a0a19fbc030e498994f51cf3943cdac23cfc47470",
+    "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
     "src/ai_dlc/providers/jira_cloud.py": "0c4ee8f892ca3f329e822400a81c1e80d5607c087910329251acb9165345cc28",
     "src/ai_dlc/providers/linear.py": "fa90bd64765c8e8bee1cbfa54e47e17688e8e6407c7492ae0ed863b4615c2b95",
     "src/ai_dlc/providers/openspec.py": "7999519332d372eb9344fbbf9dced0cc57f4d408c048f9b39215b7c54cdcb136",
@@ -203,12 +132,6 @@
     "src/ai_dlc/work/traceability.py": "646e7595cad285ef07672b436625321443d6603cbf8a3518a3b2b2c5c51d6a33",
     "src/ai_dlc/work/tracker_migration.py": "65fc8eb4a708947c12a5f4fd3cfe664f409ee32c282b68a48bd725152e5b18a3",
     "src/ai_dlc/work/workflow.py": "c891477baf6b8e8e4280096d9bd047f2fe7fafab9f03d8801791750841f36abc",
-    "tests/test_company_guidance.py": "2157af2cd002d74a411ab3555afb26cbaec9381061721c6e6b3470d376eefe38",
-    "tests/test_document_access.py": "bdf96af4afb1ad6f985204ad243a624d4da8b56d527af63cc072908a76beeff4",
-    "tests/test_document_impact.py": "308684c1dda24359e86d2a9b79200455ebe781e97baa18169f5b9979e4eb2a14",
-    "tests/test_document_inventory.py": "927199563751af6b2dd5aa8e93cddb43cc62192adffea49694dada37ef6bf14c",
-    "tests/test_document_review.py": "88f37e6365c7e9b545d668f978993ef7ad9acfa146e7d549728f4ef9cab8008a",
-    "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
-    "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7"
+    "tests/test_github_projects.py": "f2c32d700cb7a4ea32675d5621f22d49bbff28622c1677fe58c0f604e58b51c0"
   }
 }
