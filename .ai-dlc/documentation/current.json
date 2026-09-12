@@ -1,147 +1,23 @@
 {
-  "base": "96cb212b0e4dc207b61ce1bdebdb58b897619e9c",
+  "base": "2416b52866a601c958a40d36ef72de87afecacb6",
   "decisions": [
     {
-      "outcome": "reviewed-no-change",
-      "reason": "The CLI and setup package descriptions remain accurate: the change adds one failure class and its rendering inside the existing project check entry point.",
-      "target": "docs/architecture.md"
-    },
-    {
-      "outcome": "reviewed-no-change",
-      "reason": "The project check row still describes the same command and receipt purpose; no tool, ownership or MCP mapping changed.",
-      "target": "docs/workflows/tool-map.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Records that project check now refuses a missing runtime manager with the existing activation remedy, machine-readable output and no receipt.",
-      "target": "docs/runbooks/machine-enrollment.md"
+      "outcome": "no-impact",
+      "reason": "The matrix keeps five platform jobs and every step is unchanged; no document names the individual runner labels as current guidance.",
+      "target": ".github/workflows/verify.yml"
     },
     {
       "outcome": "no-impact",
-      "reason": "Reviewed work record bound to its tracker issue and branch; no explanation changes.",
-      "target": ".ai-dlc/work/project-check-runtime-failure.toml"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "OpenSpec owns this change proposal; repository documents link to it instead of copying it.",
-      "target": "openspec/changes/archive/2026-09-12-project-check-runtime-failure/proposal.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "OpenSpec owns this change's design context for the delivered behavior.",
-      "target": "openspec/changes/archive/2026-09-12-project-check-runtime-failure/design.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "OpenSpec owns this change's task list.",
-      "target": "openspec/changes/archive/2026-09-12-project-check-runtime-failure/tasks.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "OpenSpec exclusively owns the formal requirement; repository documents do not copy it.",
-      "target": "openspec/changes/archive/2026-09-12-project-check-runtime-failure/specs/connected-project-readiness/spec.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Regression tests for the new failure path; durable explanations live in the runbook and the specification.",
-      "target": "tests/test_checks.py"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "OpenSpec exclusively owns the archived capability requirement; repository documents link to it instead of copying it.",
-      "target": "openspec/specs/connected-project-readiness/spec.md"
+      "reason": "The expected receipt artifact name follows the runner label. Guidance describes scm.receipt_artifacts as the configured list rather than naming its entries.",
+      "target": "ai-dlc.toml"
     }
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "1bc59f6fdd267221a7e68e3eeac8ff91c06f07d2c6499cf7c5a3f42b695aff2a",
+  "snapshot": "a9a84cdbb5c95d85a094a591ecb6642e0ebbff228f81ae66389c496920fb44fb",
   "sources": {
-    ".ai-dlc/work/project-check-runtime-failure.toml": "36a8035bc5bd55afb39d1708e227cda3a13638aa2f46ce60320eb65815b8ca20",
-    "docs/architecture.md": "129106a2268e4db12f73c4ada54ea0de8b6b51607bec3e09356ea8df280eb8db",
-    "docs/catalog.toml": "ab1cd2875d3cd10c277e3c103ee99ac65ac057dd06ccfc84b9091b868cbf8cec",
-    "docs/runbooks/machine-enrollment.md": "3dfa17bc68c32a3c3761a9a2ff9664b947b2e4ca07f81b46e19de7fb5813b230",
-    "docs/workflows/tool-map.md": "8a846e94874071edf5b6595ef53708c6fd011ce7e928712a4f735ac44ce9b401",
-    "openspec/changes/archive/2026-09-12-project-check-runtime-failure/design.md": "6e30f64abd622fb681a240788f9c07a8ea7eed21fa8fc369e1096c0910ec5fbe",
-    "openspec/changes/archive/2026-09-12-project-check-runtime-failure/proposal.md": "9d0a8dbc8f2b6774bcb4f7c60771fb7dedbacb361ea73d85277b7f4c617e663d",
-    "openspec/changes/archive/2026-09-12-project-check-runtime-failure/specs/connected-project-readiness/spec.md": "9fd552b76255db6783e66b4cbf9b667e92a24cc7237cb846b6bd25aab59e2eca",
-    "openspec/changes/archive/2026-09-12-project-check-runtime-failure/tasks.md": "44a0b3c35c7a022f676cbbcb0bb558f72e242cde121ebc06fa096046686fe5cb",
-    "openspec/specs/connected-project-readiness/spec.md": "72e195ceaaf40f568b33f41e01c6ac297d70fbac0eaa6ec88f44279c1148895a",
-    "pyproject.toml": "9cb4d37f9aba00fb6668ba69de8c53a06471128f2964d63848ca8d7afe3a14cf",
-    "scripts/check_generated.py": "845e3ac89acb10720eab193712430a09b767272862a02369f391a982da6e7267",
-    "scripts/check_layout.py": "26fde5445108c55e36a1ea3083f5dc01a71ecfcd9b1d38542c515d86afe5ab4d",
-    "scripts/legacy/sync-cli-templates.sh": "235f53f0e4f4785ad2bb5559b4a01f91f4e88b228437af033857c6335593fa12",
-    "scripts/qualify_framework.py": "01dd9e6acbe14e740f068662aa539e9a7ed0ba57ab97e9457e0a05d968a25fb6",
-    "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
-    "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
-    "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
-    "src/ai_dlc/cli.py": "f37f6ee2db26182ad3fd0490d66ad314af05abaab633737b1386c2d882f3c87b",
-    "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
-    "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
-    "src/ai_dlc/config.py": "31677c538713aa41d3625ef9570f962ed8ee5d32bd4b5b3747437e8fd8fb9d02",
-    "src/ai_dlc/conformance.py": "9d18cdbf21aa8f9889d880729c368d9567f32f83c066693dceb06ce6549b6082",
-    "src/ai_dlc/contracts.py": "a6d7c5ad8f3e2a513621883c75bff187e1104315ab337cddc023d5343a9e7538",
-    "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
-    "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
-    "src/ai_dlc/documentation/document_files.py": "503a38d4df2a1f9d0832d083dcd420ebd1215389385293dd0605fc768c5dd320",
-    "src/ai_dlc/documentation/document_impact.py": "a2976dd6499441c793b425dda1bd82a753fa45c9e7721bacc29d6b18181ee290",
-    "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
-    "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
-    "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
-    "src/ai_dlc/documentation/documents.py": "50391941ed6b8da74cfd30aa6501a8fd330c5084ed4413a9a00fbafe68d9e328",
-    "src/ai_dlc/documentation/knowledge.py": "91aad53eccc1889d4077ef59c137ff1b35b03c433efa05b7be61d2e534fa7db6",
-    "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
-    "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
-    "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
-    "src/ai_dlc/documentation/vault_mount.py": "ca1a57a8aaca083674cd685a75971b0ede92d5f34617e6a026271edc4369ca96",
-    "src/ai_dlc/documentation/workspace_diagnostics.py": "c53cc66966888078108662d6a307b00c8746c6a8f1d8098938529c65d5694b61",
-    "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
-    "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
-    "src/ai_dlc/environment/enrollment.py": "fb0e82fb7b9e5808e1ee3571a53d129ddc8b8b6c83ab5918d7acab9566f7e9d1",
-    "src/ai_dlc/environment/machine.py": "491128faaec9634ec29ef0ebc9a38af3dfe25499e533543fcecf0734d2e50d1a",
-    "src/ai_dlc/environment/profile_source.py": "517b6bd0ae788a9270da5aee872abc2502c523d9faf75e52ab54ba5c6861e906",
-    "src/ai_dlc/files.py": "383ba27f055a5637c384462a172ff678165b643408c77d0945fd8f4622b00580",
-    "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
-    "src/ai_dlc/harness/agents.py": "e65335a2b8643d13fa11a31ea7ad1b73bbbb3a3547b6a2e89db0ecde027eaf23",
-    "src/ai_dlc/harness/components.py": "59a50ce61709daaf4b9209c154498eb5efacb84a8747550685421cc269ea7f3c",
-    "src/ai_dlc/harness/hooks.py": "2081bdfd82651e53870c7f6fec6a38a3bc587b0e4dfae46a3043b6617add9994",
-    "src/ai_dlc/harness/native_composition.py": "7cd919fd40adb70eea1a775dbd5ea8328fde9eda6302d6f52565f14ea3d244ab",
-    "src/ai_dlc/harness/user_agents.py": "6fad6edd1d1d89b0c105291f2fa8b69f223ce00bd5095d77357d7c05e6eb3f4a",
-    "src/ai_dlc/harness/workflow_bundles.py": "e0943696bdced1e841bf15a68c2040e37e484fe7c021119dec1c25e82be0fe38",
-    "src/ai_dlc/locking.py": "f1cfe828e897e11d73b645130060362e2699f75aac9307ed8cb4955b0533b629",
-    "src/ai_dlc/mcp_server.py": "3b867e8b66f8d1b30258da9af7f30640e1df0a605af37a2ba1c16b2584af0f1d",
-    "src/ai_dlc/provider_definitions.py": "e90c2d41a839bc4a32dcb3989f59fa6c9073bd1233f3db2088bd176e1bc513d3",
-    "src/ai_dlc/providers/__init__.py": "85325d9c7d4f2ac948510ad6ac20342ec0bd92d02857dda65637dc7b594181ae",
-    "src/ai_dlc/providers/github_issues.py": "55a18a178fc329a94ff95f39b72c5599117c5a8e79842d7cc7c6c8966cbed405",
-    "src/ai_dlc/providers/github_projects.py": "65b338648b52f637cd97b73a0a19fbc030e498994f51cf3943cdac23cfc47470",
-    "src/ai_dlc/providers/jira_cloud.py": "0c4ee8f892ca3f329e822400a81c1e80d5607c087910329251acb9165345cc28",
-    "src/ai_dlc/providers/linear.py": "fa90bd64765c8e8bee1cbfa54e47e17688e8e6407c7492ae0ed863b4615c2b95",
-    "src/ai_dlc/providers/openspec.py": "7999519332d372eb9344fbbf9dced0cc57f4d408c048f9b39215b7c54cdcb136",
-    "src/ai_dlc/providers/plane.py": "76fab3893bf0d4536c58500e4ab5a90f59893977c057be4777d78068e278ca1c",
-    "src/ai_dlc/providers/plane_attempts.py": "9a90b719e348d5592865e415bd29c3686969263f733a44275d6029fee019743c",
-    "src/ai_dlc/providers/python_exec.py": "3aaafe9bf74a4a949b59d71ed2079b9c48114462a9c823b3641a1772af5a6ff1",
-    "src/ai_dlc/providers/scm.py": "2cdf9479741d0a3f37405e5b1cfd9c7d7b0c68038feefb75f3b910b894c088e8",
-    "src/ai_dlc/setup/__init__.py": "8eb444a69a67d0c1a59ffc0c80ce59efda159976bea58d40154e97f8bdecf18c",
-    "src/ai_dlc/setup/connections.py": "35d04e1c6778227b0947034d2ed5d535ab8c79ee783496a2c2c7285d694b5595",
-    "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
-    "src/ai_dlc/setup/github_project_setup.py": "86b97dcaa4447082252008da1df64159cac09a077198a7e84e3577294ad540d2",
-    "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
-    "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
-    "src/ai_dlc/setup/project.py": "086a4d74f18e08226e3f39b163d359aa32b90fedb9ae55599dd16e59049f7c3d",
-    "src/ai_dlc/setup/provider_onboarding.py": "8a9407894dc494faa4a431ad219e0ebbd472504893434ac3b66f7be6f6acfdf6",
-    "src/ai_dlc/setup/provision.py": "5d5af0be37b5620a561ab324b41febc541b07e0a5b35051869b025f114effdd2",
-    "src/ai_dlc/setup/readiness.py": "7c7c2767520b3da2e7f8dd74be4ed6359a7dca66bc413c68eba2b1b4bad7f52c",
-    "src/ai_dlc/setup/rebind.py": "c083e35c27f10415986d3170bb81905944254bd12485c5a4db71b77b0a38adf2",
-    "src/ai_dlc/setup/templates.py": "95e60c4339286b85fb393318d69e797b2990b41303e7dd16a3767141ededf69c",
-    "src/ai_dlc/setup/tracker_targets.py": "1b3fe3fea13732748d5498e1cbc2a2d16395eca7bd942789389c6bc08b214fd8",
-    "src/ai_dlc/setup/workstation.py": "4abcc68e4d30ee4ce32ed1ff9b872d5926c15747de2ec2a92b88c7352813206a",
-    "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
-    "src/ai_dlc/verification/sandbox.py": "b830bd80df60802c29dbc2e1c639958537f289592052b404e6972ff377d25681",
-    "src/ai_dlc/verification/test_proxy.py": "f38cb2a28c8501c743613b0bfdf7e17f367c101ce7984a304e20ab3095eb7880",
-    "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
-    "src/ai_dlc/work/journal.py": "f5801d312b0434262c9dda76ac3b94cd1ac099fe98650dc9f745927898a89b52",
-    "src/ai_dlc/work/traceability.py": "646e7595cad285ef07672b436625321443d6603cbf8a3518a3b2b2c5c51d6a33",
-    "src/ai_dlc/work/tracker_migration.py": "65fc8eb4a708947c12a5f4fd3cfe664f409ee32c282b68a48bd725152e5b18a3",
-    "src/ai_dlc/work/workflow.py": "c891477baf6b8e8e4280096d9bd047f2fe7fafab9f03d8801791750841f36abc",
-    "tests/test_checks.py": "e7d2368e26ffa5b2090bf2dcb783820ecd1604f5e56c5826389e6c83af3c53c8"
+    ".github/workflows/verify.yml": "ba3ed0b7f50cc47ecd3d66b8dac7f1198841a7e7e717d4ee024748e38c630a8f",
+    "ai-dlc.toml": "cae01af71a445199e7626d0b39237a36363ece75da40d6c75d4e3568d7ea47c6",
+    "docs/catalog.toml": "ab1cd2875d3cd10c277e3c103ee99ac65ac057dd06ccfc84b9091b868cbf8cec"
   }
 }
