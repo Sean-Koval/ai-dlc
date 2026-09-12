@@ -44,9 +44,9 @@
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "2eb3ed8ab667ff6fb9a7abbaf60090fde082d8d328edc23f377cb93bdc2bab24",
+  "snapshot": "38bb56948784ea933b4beb3197c20a66890e7f15ffcee31aa9b6dc3dc0a39657",
   "sources": {
-    ".ai-dlc/work/project-membership-readback.toml": "aac9eb4309da557634bd102f819bbbd1500c37522a689a426d820ce5695d3bf8",
+    ".ai-dlc/work/project-membership-readback.toml": "ed0572473228157238e308979f10780c6ddad72e75f52f6b6e0a5d434c4985e5",
     "docs/architecture.md": "129106a2268e4db12f73c4ada54ea0de8b6b51607bec3e09356ea8df280eb8db",
     "docs/catalog.toml": "ed0f05393b1bdcefeb9e6d0957e7bfe75c0f05d11e3c291a86ca6c35e7845623",
     "docs/verification/github-ticket-workflows.md": "f41ebedf58068b0d70c1290ec9c533903bc1b12fd332ea3247727f23bdacfe8d",
