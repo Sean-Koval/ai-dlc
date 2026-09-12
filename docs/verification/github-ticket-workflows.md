@@ -259,3 +259,22 @@ This separation changes no runtime gate and does not claim an early completion.
 
 The `github-project-defaults` record is a specification child contributing to #18
 and the broader #19 onboarding parent. It does not separately close #19.
+
+## Bounded membership readback — September 12
+
+Delayed Project membership visibility is now separated from an uncertain
+attachment. Fixture evidence covers the behavior: a stateful wire fixture hides a
+just-attached item for a bounded number of item reads and attachment still
+verifies the same item with one attachment request; an item that stays invisible
+past the bound still fails as uncertain; a conflicting visible item identity and a
+response without an item identity fail immediately without backoff. Recorded
+backoff values come from an injected clock, so the fixtures prove ordering and
+bounds, not real replication timing.
+
+Live evidence remains limited to what the service actually produced. The earlier
+transient mismatches on the issues later numbered #39-#42 and #48 are the observed
+failures this change addresses; their remote cause is still unproven. Publishing
+issues #55 and #52 through `ai-dlc work publish` on this host verified membership
+on the first readback, so it exercised the unchanged fast path and did not
+reproduce the delayed one. A live delayed-visibility observation and the retry's
+behavior during an actual Projects outage remain pending.

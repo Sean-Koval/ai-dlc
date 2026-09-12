@@ -1,8 +1,5 @@
-# project-workspace-diagnostics Specification
+## MODIFIED Requirements
 
-## Purpose
-TBD - created by archiving change project-workspace-diagnostics. Update Purpose after archive.
-## Requirements
 ### Requirement: WD-01 Operational diagnostics
 One shared read-only project workspace service SHALL be exposed through CLI
 `project workspace-check` and MCP `project_workspace_check`. It SHALL separately
@@ -54,32 +51,3 @@ alias resolves into and SHALL remain unknown when no such record exists.
 #### Scenario: Filesystem state cannot qualify Obsidian
 - **WHEN** mount bindings and links resolve on disk
 - **THEN** the diagnostic result keeps native-client qualification not-assessed; observed Obsidian navigation, search, backlinks, external refresh and edit-in-Git evidence is recorded separately and is never inferred by this inspection
-
-### Requirement: WD-02 Portable guidance
-Canonical and generated guidance SHALL explain organization, local mounts,
-repository-only navigation limits, project access, reuse of existing activation
-repair and reconciliation of external organizing skills with the selected formal
-specification provider.
-
-#### Scenario: Old skill instructions
-- **WHEN** an installed external skill proposes docs/specs as a competing formal home
-- **THEN** guidance requires reconciliation with OpenSpec rather than creating duplicate specifications; inaccessible work-computer files remain pending
-
-#### Scenario: Existing activation is stale
-- **WHEN** installation exists but the current shell or owned activation points at a stale executable
-- **THEN** guidance uses existing bootstrap/workstation reconciliation and does not prescribe a redundant symlink or competing shell stanza
-
-### Requirement: WD-03 Qualification evidence
-Verification SHALL distinguish automated fixtures, a real harness messy-project
-organization exercise, and separately observed native Obsidian
-navigation/search/backlinks/external-refresh/edit-in-Git evidence. Unavailable
-work-computer, Antigravity or platform checks SHALL remain pending.
-
-#### Scenario: End-to-end exercise
-- **WHEN** the workflow is qualified
-- **THEN** observed results, exact scope and missing client evidence are recorded honestly without treating passing unit tests as live qualification
-
-#### Scenario: Messy-project exercise is repeated
-- **WHEN** a maintainer repeats document organization qualification
-- **THEN** a controlled reusable messy-project fixture and canonical manual walkthrough preserve the approved baseline and expected review points without autonomous repository organization or native-client automation
-
