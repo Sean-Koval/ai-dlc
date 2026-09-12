@@ -255,22 +255,31 @@ Tracker completion never substitutes for a merge, green CI, a current required
 specification, or configured deployment evidence. Failures remain visible and
 retryable instead of being converted into success.
 
-### Changing the configured evidence invalidates work bindings
+### Changing the trusted service invalidates work bindings
 
-A work record pins a fingerprint per provider role. The SCM fingerprint covers the
-whole `[scm]` table, including `receipt_artifacts`, and the tracker and deployment
-fingerprints embed that same table. Changing the CI matrix, and with it the expected
-receipt names, therefore drifts three of the five bindings on every existing record,
-and `ai-dlc work finish` refuses with `Provider binding drift` until each affected
-record is reviewed again.
+A work record pins a fingerprint per provider role, so reviewed work cannot be
+retargeted at a different service without an explicit review. The SCM fingerprint
+covers the `[scm]` settings that decide which service is trusted: `repository`,
+`target_branch` and `workflow`. The tracker and deployment fingerprints embed the
+same projection. Changing any of them drifts three of the five bindings on every
+existing record, and `ai-dlc work finish` refuses with `Provider binding drift`
+until each affected record is reviewed again.
 
-This is the guard working: the finish gate must not authenticate receipts a record
-was never bound to. Review the affected records and remove the drifted binding
-lines so they are recomputed against the current configuration. Do not use
+Receipt artifact policy is deliberately excluded. The finish gate reads the expected
+receipt names from `ai-dlc.toml` at the merged revision, never from a binding, so
+hashing `receipt_artifacts` would invalidate every record on each CI matrix change
+without protecting anything. Changing the receipt matrix therefore does not drift
+bindings, and the gate still requires every receipt the merged manifest names. Any
+other `[scm]` key does contribute to identity, so a new setting cannot bypass the
+guard by being unrecognised.
+
+When a binding does drift, review the affected records and remove the drifted
+binding lines so they are recomputed against the current configuration. Do not use
 `ai-dlc project rebind`, which migrates a role to a different provider and requires
 explicit replacement artifacts for every retained record. Records already finished
 keep their historical fingerprints; leaving them untouched preserves what they were
-actually reviewed against.
+actually reviewed against, so resuming old work still meets the refusal and the same
+review.
 
 ### Finishing after the target branch moved
 

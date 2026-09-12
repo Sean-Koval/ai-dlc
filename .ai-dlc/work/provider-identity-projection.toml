@@ -1,0 +1,33 @@
+schema = 1
+id = "provider-identity-projection"
+title = "Exclude evidence policy from provider identity fingerprints"
+scope = "Project provider identity fingerprints over configuration that determines which external service and runs are trusted, excluding receipt artifact policy. Rebind the in-flight records whose drift is proven to be receipt policy alone. Deliver the approved requirements using existing AI-DLC boundaries."
+requires_spec = true
+spec_reason = "Changes when ai-dlc work mutations refuse with provider binding drift, an observable gate outcome."
+acceptance = [
+    "Provider identity SHALL cover SCM configuration that determines which repository, branch and workflow runs are trusted.",
+    "Receipt artifact policy SHALL NOT contribute to any provider identity fingerprint, so changing the CI receipt matrix SHALL let existing work finish without rebinding.",
+    "A repository, target branch or workflow change SHALL still refuse mutation with provider binding drift.",
+    "An SCM configuration key that is not recognised evidence policy SHALL still contribute to identity, so unknown configuration cannot silently bypass the guard.",
+    "Delivery guidance SHALL state that the receipt matrix no longer drifts bindings and SHALL NOT claim the fingerprint authenticates receipts.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "TR-05",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+tracker = "62"
+branch = "work/provider-identity-projection"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"

@@ -123,6 +123,19 @@ def _validate_binding_config(root: Path, config: dict) -> None:
             raise ValueError("Work service configuration does not match current project source")
 
 
+# Receipt artifact names are evidence policy, not provider identity: the finish gate
+# reads the expected names from the manifest at the merged revision, never from a
+# binding, so hashing them would invalidate every record whenever the CI matrix
+# changes without protecting anything. Every other key stays in the identity so an
+# unrecognised setting cannot silently bypass the drift guard.
+SCM_EVIDENCE_POLICY_KEYS = frozenset({"receipt_artifact", "receipt_artifacts"})
+
+
+def _scm_identity(scm: dict) -> dict:
+    """Project SCM configuration onto the settings that decide which service is trusted."""
+    return {key: value for key, value in scm.items() if key not in SCM_EVIDENCE_POLICY_KEYS}
+
+
 def resolve_work(raw: dict, config: dict, work_id: str, *, require_review: bool = False) -> dict:
     """Resolve effective work providers and validate fingerprints without local writes."""
     aliases = {"specification": "specs", "deployment": "deploy"}
@@ -150,7 +163,7 @@ def resolve_work(raw: dict, config: dict, work_id: str, *, require_review: bool 
         # A vault's machine path is not its logical provider identity. Configure
         # providers.<id>.vault_id when distinct vaults must retain distinct bindings.
         if role in {"scm", "deploy"} or cfg.get("kind", provider_id) == "github-issues":
-            identity["scm"] = config.get("scm", {})
+            identity["scm"] = _scm_identity(config.get("scm", {}))
         if role == "deploy":
             identity["deploy"] = config.get("deploy", {})
         account = cfg.get("account")
