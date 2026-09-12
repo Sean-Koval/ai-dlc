@@ -951,6 +951,88 @@ def test_provider_workspace_drift_is_blocked(tmp_path):
         service.status("one")
 
 
+def identity_record(bindings=None):
+    return {
+        "schema": 1,
+        "id": "one",
+        "title": "One",
+        "scope": "small",
+        "requires_spec": False,
+        "spec_reason": "No behavior change",
+        "acceptance": ["Tests pass"],
+        "reviewed": True,
+        "providers": {"scm": "github", "tracker": "github-issues", "deploy": "none"},
+        "bindings": bindings or {},
+    }
+
+
+def identity_config(**scm):
+    settings = {
+        "repository": "owner/repo",
+        "target_branch": "main",
+        "workflow": "verify.yml",
+        "receipt_artifacts": ["ai-dlc-receipt-linux"],
+    }
+    settings.update(scm)
+    return {
+        "roles": {"scm": "github", "tracker": "github-issues", "deploy": "none"},
+        "providers": {"github-issues": {"kind": "github-issues"}},
+        "scm": settings,
+    }
+
+
+def test_receipt_artifact_policy_does_not_drift_bindings():
+    """The finish gate reads receipt names from the merged manifest, so policy is not identity."""
+    from ai_dlc.work.workflow import resolve_work
+
+    bound = resolve_work(identity_record(), identity_config(), "one")["bindings"]
+    assert {"scm", "deploy", "tracker"} <= set(bound)
+
+    for replacement in (
+        {"receipt_artifacts": ["ai-dlc-receipt-linux", "ai-dlc-receipt-macos"]},
+        {"receipt_artifacts": ["ai-dlc-receipt-renamed"]},
+        {"receipt_artifact": "ai-dlc-receipt", "receipt_artifacts": None},
+    ):
+        settings = {k: v for k, v in replacement.items() if v is not None}
+        config = identity_config(**settings)
+        if "receipt_artifacts" not in settings:
+            config["scm"].pop("receipt_artifacts")
+        resolved = resolve_work(identity_record(bound), config, "one")
+        assert resolved["bindings"] == bound
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        {"repository": "owner/other"},
+        {"target_branch": "release"},
+        {"workflow": "other.yml"},
+        {"host": "github.example.com"},
+    ],
+)
+def test_trusted_scm_settings_still_drift_bindings(change):
+    """Identity settings, including an unrecognised one, must still force an explicit review."""
+    from ai_dlc.work.workflow import resolve_work
+
+    bound = resolve_work(identity_record(), identity_config(), "one")["bindings"]
+    with pytest.raises(ValueError, match="binding drift"):
+        resolve_work(identity_record(bound), identity_config(**change), "one")
+
+
+def test_deployment_identity_covers_configured_deployment_evidence():
+    """Both deployment settings decide which run is trusted, so neither leaves the identity."""
+    from ai_dlc.work.workflow import resolve_work
+
+    config = identity_config()
+    config["deploy"] = {"workflow": "deploy.yml", "environment": "production"}
+    bound = resolve_work(identity_record(), config, "one")["bindings"]
+    for change in ({"workflow": "other.yml"}, {"environment": "staging"}):
+        moved = copy.deepcopy(config)
+        moved["deploy"].update(change)
+        with pytest.raises(ValueError, match="binding drift"):
+            resolve_work(identity_record(bound), moved, "one")
+
+
 def test_empty_gates_cannot_bypass_merge_and_ci(tmp_path):
     from ai_dlc.work.workflow import WorkService
 
