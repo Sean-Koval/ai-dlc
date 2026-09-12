@@ -26,6 +26,7 @@ deploy = "none"
 branch = "codex/merged-revision-finish-guidance"
 tracker = "54"
 spec = "openspec/changes/archive/2026-09-12-merged-revision-finish-guidance"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/58"
 
 [bindings]
 specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
