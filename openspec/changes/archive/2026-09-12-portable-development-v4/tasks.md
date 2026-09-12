@@ -12,11 +12,7 @@
 ## 3. Release verification
 - [x] Run final integrated required checks and independent review.
 - [x] Verify wheel installation with exported hashed constraints.
-- [ ] Complete supported clean-machine/container/cloud walkthroughs.
 - [x] Run read-only live provider health with enforced egress in available Docker infrastructure.
-- [ ] Run full live provider mutation conformance with enforced egress.
-- [ ] Run configured behavioral skill evaluations with the declared model and budget.
-- [ ] Publish verified release assets and populate the release bootstrap manifest.
 
 ## 4. Packaged offline tracker coverage repair
 - [x] Add explicit Jira Cloud/Plane fixture targets and GitHub Projects coverage to the packaged provider/all scopes, preserving existing live limitations.
@@ -25,3 +21,16 @@
 
 ## 5. Local release candidate preparation
 - [x] Prepare unpublished hash-bound release manifests and verify real release-shell success/tamper refusal with controlled fixtures; retain actual candidate wheel/install evidence separately from publication.
+
+## Deferred live qualification — not delivered
+
+These steps were never performed and are **not** satisfied by this archive. Issues
+#14/#15/#16/#17/#20/#21/#22 were cancelled (NOT_PLANNED), not completed, and the
+outstanding evidence remains tracked in
+[release verification](../../../../docs/release-verification.md). Archiving records the
+delivered scope's requirements as obligations; it asserts no live qualification.
+
+- [ ] Complete supported clean-machine/container/cloud walkthroughs.
+- [ ] Run full live provider mutation conformance with enforced egress.
+- [ ] Run configured behavioral skill evaluations with the declared model and budget.
+- [ ] Publish verified release assets and populate the release bootstrap manifest.
