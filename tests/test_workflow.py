@@ -1163,6 +1163,73 @@ def test_openspec_rejects_archive_not_at_merged_revision(tmp_path):
         )
 
 
+def test_revision_mismatch_names_both_revisions_and_the_remedy(tmp_path):
+    from ai_dlc.providers.openspec import OpenSpecProvider
+
+    git = init_git(tmp_path)
+    archive = tmp_path / "openspec/changes/archive/2026-01-01-one"
+    archive.mkdir(parents=True)
+    (archive / "tasks.md").write_text("- [x] Done")
+    (archive / "proposal.md").write_text("# Proposal")
+    git("add", "openspec")
+    git("commit", "-m", "archive spec")
+    head = git("rev-parse", "HEAD")
+    merged = "0" * 40
+    with pytest.raises(ValueError) as failure:
+        OpenSpecProvider(tmp_path).current(
+            {"id": "one", "artifacts": {"spec": str(archive.relative_to(tmp_path))}},
+            revision=merged,
+        )
+    reason = str(failure.value)
+    assert merged in reason and head in reason
+    assert "git worktree add --detach" in reason
+
+
+def test_dirty_tree_at_the_merged_revision_is_a_distinct_reason(tmp_path, monkeypatch):
+    import subprocess
+
+    from ai_dlc.providers.openspec import OpenSpecProvider
+
+    git = init_git(tmp_path)
+    archive = tmp_path / "openspec/changes/archive/2026-01-01-one"
+    archive.mkdir(parents=True)
+    (archive / "tasks.md").write_text("- [x] Done")
+    (archive / "proposal.md").write_text("# Proposal")
+    git("add", "openspec")
+    git("commit", "-m", "archive spec")
+    sha = git("rev-parse", "HEAD")
+    (archive / "extra.md").write_text("# Untracked")
+    real_run = subprocess.run
+
+    def run(command, **kwargs):
+        if command[0] == "openspec":
+            return subprocess.CompletedProcess(command, 0, "--all --strict --no-interactive", "")
+        return real_run(command, **kwargs)
+
+    monkeypatch.setattr(subprocess, "run", run)
+    with pytest.raises(ValueError) as failure:
+        OpenSpecProvider(tmp_path).current(
+            {"id": "one", "artifacts": {"spec": str(archive.relative_to(tmp_path))}}, revision=sha
+        )
+    reason = str(failure.value)
+    assert "dirty" in reason and sha in reason
+    assert "worktree" not in reason
+
+
+def test_unknown_merged_revision_is_reported_without_a_comparison(tmp_path):
+    from ai_dlc.providers.openspec import OpenSpecProvider
+
+    init_git(tmp_path)
+    archive = tmp_path / "openspec/changes/archive/2026-01-01-one"
+    archive.mkdir(parents=True)
+    (archive / "tasks.md").write_text("- [x] Done")
+    (archive / "proposal.md").write_text("# Proposal")
+    with pytest.raises(ValueError, match="merged revision is unknown"):
+        OpenSpecProvider(tmp_path).current(
+            {"id": "one", "artifacts": {"spec": str(archive.relative_to(tmp_path))}}, revision=""
+        )
+
+
 def test_ignored_local_archive_is_not_merged_evidence(tmp_path, monkeypatch):
     import subprocess
 

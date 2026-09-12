@@ -21,8 +21,24 @@ class OpenSpecProvider:
                 check=False,
                 env=self.environ,
             )
-            if not revision or head.returncode or head.stdout.strip() != revision:
-                raise ValueError("OpenSpec checkout revision must equal the merged revision")
+            if head.returncode:
+                raise ValueError(
+                    "OpenSpec checkout revision is unavailable: "
+                    + (head.stderr.strip() or "git rev-parse HEAD failed")
+                )
+            current = head.stdout.strip()
+            if not revision:
+                raise ValueError(
+                    "OpenSpec merged revision is unknown; authenticate the merged pull request "
+                    "before requiring current specification evidence"
+                )
+            if current != revision:
+                raise ValueError(
+                    f"OpenSpec checkout revision must equal the merged revision {revision}, but "
+                    f"this checkout holds {current}. Prepare a temporary detached checkout at the "
+                    "merged revision, run finish from it, then remove it: "
+                    f"git worktree add --detach <path> {revision}"
+                )
             status = subprocess.run(
                 ["git", "status", "--porcelain", "--untracked-files=all", "--", "openspec"],
                 cwd=self.root,
@@ -32,8 +48,16 @@ class OpenSpecProvider:
                 check=False,
                 env=self.environ,
             )
-            if status.returncode or status.stdout.strip():
-                raise ValueError("OpenSpec files are dirty or untracked at the merged revision")
+            if status.returncode:
+                raise ValueError(
+                    "OpenSpec tree status is unavailable: "
+                    + (status.stderr.strip() or "git status failed")
+                )
+            if status.stdout.strip():
+                raise ValueError(
+                    "OpenSpec files are dirty or untracked at the merged revision "
+                    f"{revision}; finish from a clean checkout of that revision"
+                )
         if revision is not None and (
             (self.root / "openspec").is_symlink()
             or any(p.is_symlink() for p in (self.root / "openspec").rglob("*"))

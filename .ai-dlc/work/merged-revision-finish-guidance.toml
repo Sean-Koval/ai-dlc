@@ -1,0 +1,36 @@
+schema = 1
+id = "merged-revision-finish-guidance"
+title = "Explain and document finishing work after the target branch moves"
+scope = "Name the required merged revision in the blocked finish reason and document the procedure. Deliver the approved requirements using existing AI-DLC boundaries."
+requires_spec = true
+spec_reason = "Observable finish gate reasons and canonical delivery guidance changes approved by the user."
+acceptance = [
+    "A blocked specification gate SHALL name the expected merged revision, the current checkout revision and the remedy.",
+    "Canonical and generated delivery guidance SHALL describe finishing work after the target branch moved.",
+    "The gate SHALL still refuse a checkout that is not exactly the merged revision or has dirty OpenSpec files.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "TR-04",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+branch = "codex/merged-revision-finish-guidance"
+tracker = "54"
+spec = "openspec/changes/archive/2026-09-12-merged-revision-finish-guidance"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/58"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "23b0865e22fda020405adc9fc56b580f198fa030b0c0136f2b4f1b5942ab0e72"
+deploy = "723f01d121ffcb46ffdacc0bbc45383408acf9aeed65484acafcbe1d72e24160"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "c1d0b090971dc5829585dfa82141ca9ae4735564494f33160785fbac0ba0daa1"
