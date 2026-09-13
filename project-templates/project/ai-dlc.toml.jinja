@@ -33,10 +33,11 @@ agent-client = {{ agent_clients | tojson }}
 finish = ["specification-current", "pr-merged", "ci-green"]
 
 [checks]
-required = ["generated"{% if initialize and preset != 'generic' %}, "language-check"{% endif %}]
+required = ["generated", "work-records"{% if initialize and preset != 'generic' %}, "language-check"{% endif %}]
 
 [checks.commands]
 generated = "ai-dlc agents render --check"
+work-records = "ai-dlc work validate --all"
 {% if initialize and preset == 'python' %}
 language-check = "uv run --locked --no-sync python -m compileall -f -q src"
 {% elif initialize and preset == 'node' %}

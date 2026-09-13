@@ -904,7 +904,7 @@ def test_initialized_python_check_does_not_dirty_repository(tmp_path):
 
     receipt = check_project(root, use_mise=False)
 
-    assert [item["status"] for item in receipt["outcomes"]] == ["passed", "passed"]
+    assert [item["status"] for item in receipt["outcomes"]] == ["passed", "passed", "passed"]
     assert receipt["dirty"] is False
     assert git(root, "status", "--porcelain") == ""
 
@@ -1033,7 +1033,7 @@ def test_initialize_starters_and_adoption_preservation(tmp_path, preset, manifes
     config = tomllib.loads((initialized / "ai-dlc.toml").read_text())
     assert (initialized / manifest).exists()
     assert (initialized / source).exists()
-    assert config["checks"]["required"] == ["generated", "language-check"]
+    assert config["checks"]["required"] == ["generated", "work-records", "language-check"]
     assert config["checks"]["commands"]["generated"] == "ai-dlc agents render --check"
     existing = tmp_path / ("existing-" + preset)
     existing.mkdir()
@@ -1042,7 +1042,8 @@ def test_initialize_starters_and_adoption_preservation(tmp_path, preset, manifes
     assert (existing / manifest).read_text() == "user-authored manifest"
     assert not (existing / source).exists()
     assert tomllib.loads((existing / "ai-dlc.toml").read_text())["checks"]["required"] == [
-        "generated"
+        "generated",
+        "work-records",
     ]
 
 
@@ -1051,7 +1052,7 @@ def test_generic_requires_generated_check(tmp_path):
 
     adopt(tmp_path, apply=True, initialize=True)
     config = tomllib.loads((tmp_path / "ai-dlc.toml").read_text())
-    assert config["checks"]["required"] == ["generated"]
+    assert config["checks"]["required"] == ["generated", "work-records"]
     assert config["setup"]["steps"] == []
 
 

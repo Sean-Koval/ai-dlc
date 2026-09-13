@@ -918,6 +918,67 @@ def test_agents_bundle_import_rejects_incomplete_review_flags_before_resolution(
 
 
 @pytest.mark.parametrize("invalid", [False, True])
+def test_work_validate_all_records_is_offline_and_reports_dangling_artifacts(
+    tmp_path, monkeypatch, invalid
+):
+    import tomli_w
+
+    from ai_dlc.cli import app
+
+    root = tmp_path / "project"
+    folder = root / ".ai-dlc/work"
+    folder.mkdir(parents=True)
+    (root / "ai-dlc.toml").write_text("schema=4\n")
+    (root / "openspec/changes/kept").mkdir(parents=True)
+    for work_id, spec in [("kept", "openspec/changes/kept"), ("moved", "openspec/changes/moved")]:
+        record = {
+            "schema": 1,
+            "id": work_id,
+            "title": work_id,
+            "scope": "bounded",
+            "requires_spec": True,
+            "spec_reason": "behavior",
+            "acceptance": ["Observe result"],
+            "artifacts": {
+                "spec": spec if invalid or work_id == "kept" else "openspec/changes/kept"
+            },
+            # Historical fingerprints never drift a repository-wide check.
+            "bindings": {"scm": "0" * 64},
+        }
+        (folder / f"{work_id}.toml").write_text(tomli_w.dumps(record))
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "config"))
+    state = tmp_path / "state"
+    monkeypatch.setenv("XDG_STATE_HOME", str(state))
+    monkeypatch.setenv("PATH", "")
+    before = {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}
+
+    result = CliRunner().invoke(app, ["work", "validate", "--all", "--root", str(root)])
+
+    assert result.exit_code == int(invalid), result.output
+    report = json.loads(result.stdout)
+    assert report["valid"] is not invalid
+    assert report["records"] == ["kept", "moved"]
+    assert report["errors"] == (
+        ["Work moved: artifact spec (openspec/changes/moved): Referenced local artifact is absent"]
+        if invalid
+        else []
+    )
+    assert before == {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}
+    assert not state.exists()
+
+
+@pytest.mark.parametrize("arguments", [[], ["target", "--all"]])
+def test_work_validate_requires_exactly_one_selection(tmp_path, arguments):
+    from ai_dlc.cli import app
+
+    result = CliRunner().invoke(app, ["work", "validate", *arguments, "--root", str(tmp_path)])
+
+    assert result.exit_code == 2, result.output
+    assert "error: Provide exactly one of a work ID or --all" in result.stderr
+    assert result.stdout == ""
+
+
+@pytest.mark.parametrize("invalid", [False, True])
 def test_work_validate_is_offline_and_does_not_write_project_or_journal(
     tmp_path, monkeypatch, invalid
 ):

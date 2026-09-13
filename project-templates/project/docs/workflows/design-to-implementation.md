@@ -86,6 +86,15 @@ paths must remain in the repository without symlinks. Fragments are retained as
 references without interpreting specification text. HTTP(S) references are not
 probed, and tracker/PR/branch/deployment/knowledge references remain provider-owned.
 
+A suffix-less specification path whose first segment is a repository directory,
+such as an OpenSpec change directory, stays a local artifact after the directory
+is moved and is reported as absent; an opaque slash ID or provider URI that is
+not anchored in the repository stays provider-owned. `ai-dlc work validate --all
+--root .` validates every record's shape, local artifacts and dependency graph
+together, offline and without resolving provider bindings, so finished records
+with historical fingerprints do not fail it. Run it as a required project check
+so archiving cannot leave a dangling reference undetected.
+
 Validation does not approve scope or prove completion. `work start` freshly reads
 every reachable dependency through its pinned tracker and requires canonical
 `closed`. Cancelled, duplicate, incomplete, unpublished or unavailable statuses
