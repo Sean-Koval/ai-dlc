@@ -1251,3 +1251,67 @@ def test_design_pm_adoption_preserves_authored_artifact_templates(tmp_path, name
     assert str(authored.relative_to(tmp_path)) in result["conflicts"]
     assert authored.read_text() == "authored design contract"
     assert not (tmp_path / "ai-dlc.toml").exists()
+
+
+def test_generation_includes_the_engine_retained_release_manifest(tmp_path, monkeypatch):
+    from ai_dlc.setup import templates
+
+    manifest = tmp_path / "engine/release.sh"
+    manifest.parent.mkdir()
+    manifest.write_text("AI_DLC_WHEEL_NAME=ai_dlc-9.9.9-py3-none-any.whl\n")
+    monkeypatch.setattr(templates, "release_manifest_path", lambda: manifest)
+    root = tmp_path / "generated"
+
+    result = adopt(root, "python", apply=True, initialize=True)
+
+    assert result["release_manifest"] == "included"
+    assert "bootstrap/release.sh" in result["files"]
+    assert (root / "bootstrap/release.sh").read_bytes() == manifest.read_bytes()
+    assert (root / "bootstrap/download.sh").is_file()
+
+
+@pytest.mark.parametrize("shape", ["missing", "empty", "symlink"])
+def test_generation_reports_an_absent_release_manifest(tmp_path, monkeypatch, shape):
+    from ai_dlc.setup import templates
+
+    manifest = tmp_path / "engine/release.sh"
+    manifest.parent.mkdir()
+    if shape == "empty":
+        manifest.write_text("\n")
+    if shape == "symlink":
+        (tmp_path / "engine/real.sh").write_text("AI_DLC_WHEEL_NAME=x\n")
+        manifest.symlink_to(tmp_path / "engine/real.sh")
+    monkeypatch.setattr(templates, "release_manifest_path", lambda: manifest)
+    root = tmp_path / "generated"
+
+    result = adopt(root, "python", apply=True, initialize=True)
+
+    assert result["release_manifest"] == "absent"
+    assert "bootstrap/release.sh" not in result["files"]
+    assert not (root / "bootstrap/release.sh").exists()
+
+
+def test_authored_release_manifest_is_a_conflict_not_an_overwrite(tmp_path, monkeypatch):
+    from ai_dlc.setup import templates
+
+    manifest = tmp_path / "engine/release.sh"
+    manifest.parent.mkdir()
+    manifest.write_text("AI_DLC_WHEEL_NAME=ai_dlc-9.9.9-py3-none-any.whl\n")
+    monkeypatch.setattr(templates, "release_manifest_path", lambda: manifest)
+    root = tmp_path / "existing"
+    (root / "bootstrap").mkdir(parents=True)
+    (root / "bootstrap/release.sh").write_text("authored\n")
+
+    result = adopt(root, "generic", apply=True)
+
+    assert result["status"] == "conflict"
+    assert "bootstrap/release.sh" in result["conflicts"]
+    assert (root / "bootstrap/release.sh").read_text() == "authored\n"
+
+
+def test_source_environment_has_no_release_manifest():
+    from ai_dlc.setup.templates import release_manifest_path
+
+    # This test process runs from a source environment; its prefix carries no manifest.
+    assert release_manifest_path().name == "release.sh"
+    assert not release_manifest_path().exists()

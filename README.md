@@ -24,12 +24,36 @@ See the [product direction](docs/product-direction.md), [delivery roadmap](docs/
 [executor handoff](docs/handoffs/framework-delivery.md). Those pages distinguish
 planned capabilities from the implementation available today.
 
-**Install from source today.** The Python CLI, local MCP server, project scaffolding,
-tracker adapters, and harness configuration are implemented. Source checks run on
-Linux x64/ARM64 and macOS Intel, with separate native Apple silicon observations.
-Actual client and provider qualification varies by environment; calibration and
-release verification remain incomplete. There is no published v4 bootstrap release.
-See [verification status](docs/release-verification.md).
+**Install from a release or from source.** The Python CLI, local MCP server,
+project scaffolding, tracker adapters, and harness configuration are implemented.
+Releases are published from version tags by the `Release` workflow as hash-bound
+assets; the [release runbook](docs/runbooks/release-publication.md) describes
+publishing and installing. If no release is listed on GitHub yet, install from
+source below. Source checks run on Linux x64/ARM64 and macOS ARM64. Actual client
+and provider qualification varies by environment; calibration and several release
+obligations remain incomplete. See [verification status](docs/release-verification.md).
+
+## Install from a published release
+
+On a machine with a POSIX shell, `curl`, CA certificates and `tar`, download the
+four bootstrap files and the checksum list from the release, verify them, and run
+the installer:
+
+```sh
+mkdir -p ai-dlc-install/scripts ai-dlc-install/bootstrap && cd ai-dlc-install
+for f in bootstrap.sh versions.sh download.sh release.sh SHA256SUMS; do
+  curl --fail --location --proto '=https' --tlsv1.2 -O "https://github.com/Sean-Koval/ai-dlc/releases/download/v0.4.0/$f"
+done
+grep -E ' (release|bootstrap|versions|download)\.sh$' SHA256SUMS | sha256sum -c -
+mv bootstrap.sh scripts/ && mv versions.sh download.sh release.sh bootstrap/
+printf 'schema = 4\n' > ai-dlc.toml
+sh scripts/bootstrap.sh
+```
+
+The installer downloads uv, a managed Python and mise at pinned digests, installs
+the wheel with hashed constraints, keeps `release.sh` beside the engine, and prints
+the directories to add to `PATH`. Projects created with `ai-dlc project init` from
+that engine include `bootstrap/release.sh`, so their own bootstrap and CI work.
 
 ## Prepare this checkout
 

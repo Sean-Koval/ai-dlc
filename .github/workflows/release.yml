@@ -1,4 +1,7 @@
-name: Release verification
+name: Release
+# Manual dispatch builds an unpublished candidate for inspection.
+# A v<version> tag builds, verifies and publishes exactly the verified assets,
+# then bootstraps a throwaway project from the published release.
 on:
   workflow_dispatch:
     inputs:
@@ -6,14 +9,27 @@ on:
         description: "Intended HTTPS directory for exact candidate assets; does not publish"
         required: true
         type: string
+  push:
+    tags: ["v*"]
 permissions:
   contents: read
 jobs:
   package:
     runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
       - run: sh scripts/bootstrap.sh --source --target github-actions
+      - name: Resolve the engine version and refuse a mismatched tag
+        id: version
+        run: |
+          VERSION=$(uv run --locked --no-sync python -c 'import pathlib,tomllib; print(tomllib.loads(pathlib.Path("pyproject.toml").read_text())["project"]["version"])')
+          if [ "${{ github.ref_type }}" = tag ] && [ "${{ github.ref_name }}" != "v$VERSION" ]; then
+            echo "Tag ${{ github.ref_name }} does not match engine version $VERSION" >&2
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
       - run: ai-dlc project check --required --target github-actions
       - run: uv build
       - run: uv export --locked --no-dev --no-emit-project --format requirements-txt --output-file dist/requirements.txt
@@ -26,13 +42,79 @@ jobs:
           mkdir /tmp/ai-dlc-scaffold
           cd /tmp/ai-dlc-scaffold
           /tmp/ai-dlc-wheel/bin/ai-dlc-cli scaffold --all
-      - name: Prepare unpublished bootstrap manifest
+      - name: Prepare the hash-bound bootstrap manifest
         env:
-          ARTIFACT_BASE_URL: ${{ inputs.artifact_base_url }}
+          ARTIFACT_BASE_URL: ${{ github.ref_type == 'tag' && format('https://github.com/{0}/releases/download/{1}', github.repository, github.ref_name) || inputs.artifact_base_url }}
         run: |
-          ENGINE_VERSION=$(uv run --locked --no-sync python -c 'import pathlib,tomllib; print(tomllib.loads(pathlib.Path("pyproject.toml").read_text())["project"]["version"])')
-          uv run --locked --no-sync python scripts/release_manifest.py --artifacts dist --base-url "$ARTIFACT_BASE_URL" --version "$ENGINE_VERSION" --output dist/release.sh
+          rm -f dist/.gitignore
+          uv run --locked --no-sync python scripts/release_manifest.py --artifacts dist --base-url "$ARTIFACT_BASE_URL" --version "${{ steps.version.outputs.version }}" --output dist/release.sh
+          cp project-templates/project/scripts/bootstrap.sh dist/bootstrap.sh
+          cp project-templates/project/bootstrap/versions.sh project-templates/project/bootstrap/download.sh dist/
+          (cd dist && sha256sum ai_dlc-*.whl ai_dlc-*.tar.gz requirements.txt release.sh bootstrap.sh versions.sh download.sh > SHA256SUMS)
+          cat dist/release.sh dist/SHA256SUMS
       - uses: actions/upload-artifact@v4
         with:
           name: release-candidate
           path: dist/
+          if-no-files-found: error
+
+  publish:
+    if: github.ref_type == 'tag'
+    needs: package
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-candidate
+          path: dist
+      - name: Publish exactly the verified assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            --repo "${{ github.repository }}" \
+            --title "AI-DLC ${{ github.ref_name }}" \
+            --notes "Hash-bound bootstrap release. Install with the runbook in docs/runbooks/release-publication.md; verify assets against SHA256SUMS." \
+            --verify-tag \
+            dist/ai_dlc-${{ needs.package.outputs.version }}-py3-none-any.whl \
+            dist/ai_dlc-${{ needs.package.outputs.version }}.tar.gz \
+            dist/requirements.txt \
+            dist/release.sh \
+            dist/bootstrap.sh \
+            dist/versions.sh \
+            dist/download.sh \
+            dist/SHA256SUMS
+
+  verify-published:
+    if: github.ref_type == 'tag'
+    needs: [package, publish]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-15]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Bootstrap from the published assets alone
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          mkdir -p /tmp/seed/bootstrap /tmp/seed/scripts && cd /tmp/seed
+          for f in bootstrap.sh versions.sh download.sh release.sh SHA256SUMS; do
+            gh release download "${{ github.ref_name }}" --repo "${{ github.repository }}" --pattern "$f" --dir .
+          done
+          grep -E ' (release|bootstrap|versions|download)\.sh$' SHA256SUMS | (command -v sha256sum >/dev/null && sha256sum -c - || shasum -a 256 -c -)
+          mv bootstrap.sh scripts/ && mv versions.sh download.sh release.sh bootstrap/
+          printf 'schema = 4\n' > ai-dlc.toml
+          sh scripts/bootstrap.sh --target github-actions --root /tmp/seed
+      - name: Generate and check a python project with the released engine
+        run: |
+          set -eu
+          ai-dlc --version
+          ai-dlc project init /tmp/demo --preset python
+          test -f /tmp/demo/bootstrap/release.sh
+          cmp /tmp/demo/bootstrap/release.sh /tmp/seed/bootstrap/release.sh
+          cd /tmp/demo
+          ai-dlc project check --required --target github-actions

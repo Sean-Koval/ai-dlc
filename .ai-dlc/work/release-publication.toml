@@ -1,0 +1,39 @@
+schema = 1
+id = "release-publication"
+title = "Publish a versioned AI-DLC release with bootstrap artifacts"
+scope = "Publish hash-bound release assets from a Git tag through the release workflow, keep the release manifest beside the installed engine, and let generated projects receive it so their bootstrap and CI can run outside this checkout. Deliver the approved requirements using existing AI-DLC boundaries."
+requires_spec = true
+spec_reason = "Adds observable release-mode bootstrap behaviour and a publication procedure whose assets downstream projects depend on."
+acceptance = [
+    "A reproducible procedure SHALL produce the wheel, the hash-bound manifest and the release bootstrap assets from a tagged commit.",
+    "A clean-environment run SHALL install AI-DLC from release assets and scaffold and check a python preset project.",
+    "The template's bootstrap SHALL no longer depend on an unpublished location once the maintainer runs the documented publish step.",
+    "docs/release-verification.md SHALL record precisely which outstanding obligations this release satisfies and which remain.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "RP-01",
+    "RP-02",
+    "RP-03",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/archive/2026-09-13-release-publication"
+tracker = "71"
+branch = "work/release-publication"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/88"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"

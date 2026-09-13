@@ -719,6 +719,21 @@ code_paths = ["tests/fixtures/messy_project.py"]
 verification_paths = ["tests/test_workspace_diagnostics.py"]
 
 [[documents]]
+id = "repo-runbooks-release-publication"
+path = "docs/runbooks/release-publication.md"
+kind = "runbook"
+owner = "repository-maintainers"
+status = "active"
+code_paths = [
+    ".github/workflows/release.yml",
+    "scripts/release_manifest.py",
+    "scripts/bootstrap.sh",
+    "project-templates/project/scripts/bootstrap.sh",
+    "src/ai_dlc/setup/templates.py",
+]
+verification_paths = ["tests/test_release_manifest.py", "tests/test_bootstrap.py"]
+
+[[documents]]
 id = "repo-runbooks-linear-setup"
 path = "docs/runbooks/linear-setup.md"
 kind = "runbook"

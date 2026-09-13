@@ -1,5 +1,8 @@
 import json
+import os
 import subprocess
+
+import pytest
 
 
 def repository(tmp_path):
@@ -118,3 +121,31 @@ def test_missing_runtime_human_output_names_the_remedy(tmp_path, monkeypatch):
     assert "workspace-check" in result.stderr
     assert "Traceback" not in result.stderr
     assert json.loads(result.stdout)["ran"] is False
+
+
+@pytest.mark.parametrize("declares_tools", [False, True])
+def test_setup_activates_mise_only_when_the_project_declares_tools(
+    tmp_path, monkeypatch, declares_tools
+):
+    from ai_dlc.setup.project import setup_project
+
+    root = tmp_path / "project"
+    root.mkdir()
+    (root / "ai-dlc.toml").write_text("schema = 4\n")
+    if declares_tools:
+        (root / ".mise.toml").write_text("[tools]\n")
+    calls = tmp_path / "mise-calls.log"
+    fakebin = tmp_path / "bin"
+    fakebin.mkdir()
+    fake = fakebin / "mise"
+    fake.write_text(f'#!/bin/sh\nprintf "%s\\n" "$*" >> "{calls}"\n')
+    fake.chmod(0o755)
+    monkeypatch.setenv("PATH", f"{fakebin}:{os.environ['PATH']}")
+
+    setup_project(root, state_path=tmp_path / "state.db", use_mise=True)
+
+    recorded = calls.read_text().splitlines() if calls.exists() else []
+    if declares_tools:
+        assert recorded == [f"trust {root / '.mise.toml'}", "install"]
+    else:
+        assert recorded == []

@@ -476,6 +476,18 @@ def test_release_bootstrap_selects_verified_engine_and_runs_project_setup(tmp_pa
     assert "Ready." in result.stdout
 
 
+def test_release_bootstrap_retains_the_manifest_beside_the_installed_engine(tmp_path):
+    command, environment, installed, _ = _release_bootstrap_fixture(tmp_path)
+    manifest = (tmp_path / "project/bootstrap/release.sh").read_bytes()
+    result = subprocess.run(command, env=environment, capture_output=True, text=True, check=False)
+    assert result.returncode == 0, result.stderr
+    retained = installed.parent / "engine-fixture/release.sh"
+    assert retained.is_file() and not retained.is_symlink()
+    assert retained.read_bytes() == manifest
+    # The project's own copy is untouched: the engine keeps a copy, not the original.
+    assert (tmp_path / "project/bootstrap/release.sh").read_bytes() == manifest
+
+
 @pytest.mark.parametrize("artifact", ["ai_dlc-fixture-py3-none-any.whl", "requirements.txt"])
 def test_release_bootstrap_tampering_preserves_selected_cli_before_engine_install(
     tmp_path, artifact

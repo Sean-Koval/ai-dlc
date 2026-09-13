@@ -4,6 +4,7 @@ import os
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 import tomllib
 from pathlib import Path
@@ -171,6 +172,26 @@ def plan_toolset(*, capabilities=None, providers=None, agent_clients=None) -> di
     return {"roles": roles, "providers": settings, "limitations": limitations}
 
 
+RELEASE_MANIFEST_NAME = "bootstrap/release.sh"
+
+
+def release_manifest_path() -> Path:
+    """Where release-mode bootstrap retains the manifest that installed this engine.
+
+    A source environment has no manifest: generation must report absence rather
+    than hand a project a bootstrap that claims verified assets.
+    """
+    return Path(sys.prefix) / "release.sh"
+
+
+def _release_manifest() -> bytes | None:
+    path = release_manifest_path()
+    if path.is_symlink() or not path.is_file():
+        return None
+    content = path.read_bytes()
+    return content if content.strip() else None
+
+
 def adopt(
     root: Path,
     preset: str = "generic",
@@ -224,6 +245,10 @@ def adopt(
             skip_tasks=True,
         )
         rendered = _files(stage)
+        manifest = _release_manifest() if "bootstrap/download.sh" in rendered else None
+        if manifest is not None:
+            # Same conflict and authored-file protections as every template file.
+            rendered[RELEASE_MANIFEST_NAME] = manifest
         conflicts = []
         for name in rendered:
             path = root / name
@@ -289,6 +314,7 @@ def adopt(
             "toolset": toolset,
             "template_source": source,
             "local_source": "://" not in source,
+            "release_manifest": "included" if manifest is not None else "absent",
         }
 
 
