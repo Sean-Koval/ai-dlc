@@ -67,6 +67,9 @@ else
     uv pip install --python "$AI_DLC_BOOTSTRAP_HOME/engine-$AI_DLC_ENGINE_VERSION/bin/python" --require-hashes -r "$AI_DLC_DOWNLOADS/constraints.txt"
     uv pip install --python "$AI_DLC_BOOTSTRAP_HOME/engine-$AI_DLC_ENGINE_VERSION/bin/python" --no-deps "$AI_DLC_DOWNLOADS/$AI_DLC_WHEEL_NAME"
     AI_DLC_CLI="$AI_DLC_BOOTSTRAP_HOME/engine-$AI_DLC_ENGINE_VERSION/bin/ai-dlc"
+    # The manifest cannot live inside the wheel it hashes. Keep it beside the engine
+    # so project generation can hand generated projects the exact assets that built it.
+    cp "$AI_DLC_ROOT/bootstrap/release.sh" "$AI_DLC_BOOTSTRAP_HOME/engine-$AI_DLC_ENGINE_VERSION/release.sh"
 fi
 AI_DLC_MISE_BINARY="$AI_DLC_DOWNLOADS/mise-$AI_DLC_MISE_VERSION-$AI_DLC_MISE_TARGET"
 if [ ! -f "$AI_DLC_MISE_BINARY" ] || [ "$(ai_dlc_hash "$AI_DLC_MISE_BINARY")" != "$AI_DLC_MISE_SHA256" ]; then

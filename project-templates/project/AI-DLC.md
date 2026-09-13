@@ -15,7 +15,7 @@ machine enrollment mutation remains CLI-only.
 
 Select scm.repository and provider account/environment references before external operations. Every preset checks generated agent files. New-project initialization also creates a minimal language app and requires its syntax/compiler check; first setup creates its lockfile and later setup is locked. Adoption leaves existing application manifests/source untouched and requires existing language lockfiles. Add acceptance tests and further required check IDs as behavior develops.
 
-This development template needs the AI-DLC release bootstrap artifacts before CI can run. The template includes reviewed scripts/bootstrap.sh and bootstrap prerequisite pins; supply bootstrap/release.sh and the corresponding locked artifact manifest from a published AI-DLC release. Verify the release integrity; do not download an unpinned latest script. No public release location is assumed.
+This project's `scripts/bootstrap.sh` runs in release mode: it installs the AI-DLC engine named by `bootstrap/release.sh`, a hash-bound manifest from a published AI-DLC release. An engine that was itself installed from a release writes that file when it generates a project; an engine running from an AI-DLC source checkout cannot, and reports `"release_manifest": "absent"`. In that case add `bootstrap/release.sh` from a published release before enabling CI, verify it against the release's `SHA256SUMS`, and never download an unpinned latest script.
 
 ## Documentation upkeep
 

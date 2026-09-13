@@ -264,7 +264,9 @@ def setup_project(
     hook_policy = target_hooks(config, target)
     if not hook_policy["ready"]:
         raise ValueError(f"required target hooks unavailable: {hook_policy['unavailable']}")
-    if use_mise:
+    # A bare install directory (only ai-dlc.toml, as the release runbook creates) declares
+    # no tools; activating mise there would fail on the absent file, not on a real problem.
+    if use_mise and (root / ".mise.toml").is_file():
         subprocess.run(["mise", "trust", str(root / ".mise.toml")], cwd=root, check=True)
         subprocess.run(["mise", "install"], cwd=root, check=True)
     steps = config.get("setup", {}).get("steps", [])

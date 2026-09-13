@@ -1,5 +1,8 @@
-## ADDED Requirements
+# release-publication Specification
 
+## Purpose
+TBD - created by archiving change release-publication. Update Purpose after archive.
+## Requirements
 ### Requirement: RP-01 Tag-driven publication of verified assets
 A release SHALL be published only from a Git tag whose version equals the engine version, through the release workflow. The workflow SHALL build the wheel and locked hashed constraints, verify wheel installation and scaffolding against those constraints, generate the hash-bound manifest with the release download directory as its base URL, and publish exactly those verified assets together with their digests. A manual workflow run SHALL produce only a candidate artifact and publish nothing.
 
@@ -26,6 +29,10 @@ Release-mode bootstrap SHALL retain the sourced manifest beside the installed en
 - **WHEN** generation runs from a source environment
 - **THEN** no `bootstrap/release.sh` is written, the result reports the manifest as absent, and the project's release-mode bootstrap keeps refusing with its existing message
 
+#### Scenario: A bare install directory bootstraps in release mode
+- **WHEN** release-mode bootstrap runs in a directory holding only the bootstrap files and a minimal `ai-dlc.toml`, with no `.mise.toml`
+- **THEN** the engine installs and project setup completes without attempting to activate tools the directory does not declare
+
 #### Scenario: A generated project bootstraps in release mode
 - **WHEN** the generated project's `scripts/bootstrap.sh` runs without `--source`
 - **THEN** it downloads and verifies the wheel and constraints named by the included manifest, installs the engine and runs project setup
@@ -36,3 +43,4 @@ Release documentation SHALL describe the publication procedure and SHALL disting
 #### Scenario: A release cycle is recorded
 - **WHEN** release evidence is added to the verification record
 - **THEN** it names the revision, the environment, the host that served the assets and which outstanding obligations the run satisfied or left open
+
