@@ -1,0 +1,24 @@
+schema = 1
+id = "rust-retirement"
+title = "Retire the Rust remnants from the repository and the source distribution"
+scope = "Untrack the committed Rust build output, delete the historical Rust crate with its embedded template mirror, the npm installer shim, the template sync script and its broken slash command, and the stray Microsoft package key; rewrite the source-distribution assertions so they describe what must ship; update every current document that still names Rust tooling as current. No change to the Python scaffold command or to the contents of templates/."
+requires_spec = false
+spec_reason = "Removes retired, unreferenced tooling and build artifacts; no observable command, contract or configuration behaviour changes."
+acceptance = [
+  "No file under target/, crates/, npm/ or matching Cargo.* is tracked, and the source distribution contains none of them.",
+  "Clone size before and after is reported in the pull request.",
+  "No current document or command references the sync script, cargo or the Rust CLI as current tooling.",
+  "All required checks pass."
+]
+reviewed = true
+depends_on = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+tracker = "91"
