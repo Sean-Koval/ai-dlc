@@ -1,0 +1,34 @@
+schema = 1
+id = "legacy-template-cleanup"
+title = "Reduce the legacy Claude template to the files AI-DLC actually authored and describes"
+scope = "Delete the community-sourced commands and hook configurations, the empty gemini and roo templates and the dangling workflow documents from the packaged legacy scaffold assets; rewrite the AI-DLC-authored README, CLAUDE.md and settings.json so they describe only what ships, wiring the three shell hooks through Claude Code's real settings schema; point the scaffold test at real content. The scaffold command, its release gate and the current project templates are unchanged."
+requires_spec = false
+spec_reason = "Packaged static assets only; the scaffold command's observable contract (copy a provider tree, refuse conflicting content) is unchanged and remains tested."
+acceptance = [
+    "Every command, hook and file named in the template's README, CLAUDE.md and settings.json exists in the tree.",
+    "ai-dlc scaffold --all into an empty directory produces no empty files, and a test proves it.",
+    "No packaged template file is copied from an external collection or references removed collections, /sc: commands or cargo.",
+    "All required checks pass.",
+]
+reviewed = true
+depends_on = []
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+tracker = "92"
+branch = "work/legacy-template-cleanup"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/105"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"
