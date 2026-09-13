@@ -3,7 +3,6 @@
 import os
 import re
 import shutil
-import subprocess
 import sys
 import tempfile
 import tomllib
@@ -13,7 +12,7 @@ import copier
 import yaml
 
 from ai_dlc.config import resolve_layers
-from ai_dlc.files import assets, inside
+from ai_dlc.files import assets, inside, run_git
 
 RUNTIME_DIRS = {
     ".git",
@@ -33,11 +32,9 @@ CAPABILITIES = ["specs", "tracker", "knowledge", "scm", "deploy", "agent-client"
 def _ignore(root: Path):
     ignored = set()
     if root.is_dir():
-        result = subprocess.run(
-            [
-                "git",
-                "-C",
-                str(root),
+        result = run_git(
+            root,
+            *[
                 "ls-files",
                 "--others",
                 "--ignored",
@@ -47,9 +44,8 @@ def _ignore(root: Path):
                 "--exclude=.ai-dlc/local/",
                 "-z",
             ],
-            capture_output=True,
             check=False,
-            timeout=30,
+            text=False,
         )
         if result.returncode == 0:
             ignored = {
@@ -376,7 +372,7 @@ def sync(root: Path, apply: bool = False, *, vcs_ref: str | None = None) -> dict
                 "Staged project",
             ),
         ]:
-            subprocess.run(["git", "-C", str(stage), *args], check=True, capture_output=True)
+            run_git(stage, *args, context="Staging the project for sync failed")
         copier.run_update(
             stage,
             vcs_ref=vcs_ref,

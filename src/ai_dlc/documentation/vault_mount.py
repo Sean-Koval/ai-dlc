@@ -5,7 +5,6 @@ import json
 import os
 import re
 import stat
-import subprocess
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
@@ -15,6 +14,7 @@ from ai_dlc.documentation.document_files import (
     read_document,
     validate_parent,
 )
+from ai_dlc.files import run_git
 
 
 @dataclass(frozen=True)
@@ -37,14 +37,11 @@ class VaultMountResult:
 
 
 def _git(root: Path, *args: str) -> str:
-    result = subprocess.run(
-        ["git", "-C", str(root), *args], capture_output=True, text=True, check=False
-    )
-    if result.returncode:
-        raise ValueError(
-            "Mounts require a stable Git checkout with ignored .ai-dlc/local/ bindings."
-        )
-    return result.stdout.strip()
+    return run_git(
+        root,
+        *args,
+        context="Mounts require a stable Git checkout with ignored .ai-dlc/local/ bindings",
+    ).stdout.strip()
 
 
 def _canonical_directory(path: Path) -> Path:

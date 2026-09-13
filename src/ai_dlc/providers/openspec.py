@@ -4,6 +4,8 @@ import subprocess
 from collections.abc import Mapping
 from pathlib import Path
 
+from ai_dlc.files import run_git
+
 
 class OpenSpecProvider:
     def __init__(self, root, *, environ: Mapping[str, str] | None = None):
@@ -12,21 +14,13 @@ class OpenSpecProvider:
 
     def current(self, work, revision=None):
         if revision is not None:
-            head = subprocess.run(
-                ["git", "rev-parse", "HEAD"],
-                cwd=self.root,
-                text=True,
-                capture_output=True,
-                timeout=30,
-                check=False,
-                env=self.environ,
-            )
-            if head.returncode:
-                raise ValueError(
-                    "OpenSpec checkout revision is unavailable: "
-                    + (head.stderr.strip() or "git rev-parse HEAD failed")
-                )
-            current = head.stdout.strip()
+            current = run_git(
+                self.root,
+                "rev-parse",
+                "HEAD",
+                environ=self.environ,
+                context="OpenSpec checkout revision is unavailable",
+            ).stdout.strip()
             if not revision:
                 raise ValueError(
                     "OpenSpec merged revision is unknown; authenticate the merged pull request "
@@ -39,14 +33,15 @@ class OpenSpecProvider:
                     "merged revision, run finish from it, then remove it: "
                     f"git worktree add --detach <path> {revision}"
                 )
-            status = subprocess.run(
-                ["git", "status", "--porcelain", "--untracked-files=all", "--", "openspec"],
-                cwd=self.root,
-                text=True,
-                capture_output=True,
-                timeout=30,
+            status = run_git(
+                self.root,
+                "status",
+                "--porcelain",
+                "--untracked-files=all",
+                "--",
+                "openspec",
+                environ=self.environ,
                 check=False,
-                env=self.environ,
             )
             if status.returncode:
                 raise ValueError(
@@ -79,21 +74,15 @@ class OpenSpecProvider:
         if not (path / "proposal.md").is_file() or not (path / "tasks.md").is_file():
             raise ValueError("OpenSpec archive is missing proposal or tasks")
         if revision is not None:
-            tracked = subprocess.run(
-                [
-                    "git",
-                    "ls-files",
-                    "--error-unmatch",
-                    "--",
-                    str((path / "proposal.md").relative_to(self.root)),
-                    str((path / "tasks.md").relative_to(self.root)),
-                ],
-                cwd=self.root,
-                text=True,
-                capture_output=True,
-                timeout=30,
+            tracked = run_git(
+                self.root,
+                "ls-files",
+                "--error-unmatch",
+                "--",
+                str((path / "proposal.md").relative_to(self.root)),
+                str((path / "tasks.md").relative_to(self.root)),
+                environ=self.environ,
                 check=False,
-                env=self.environ,
             )
             if tracked.returncode:
                 raise ValueError("OpenSpec archive must be tracked at the merged revision")

@@ -5,14 +5,13 @@ from __future__ import annotations
 import fnmatch
 import hashlib
 import json
-import subprocess
 import tomllib
 from pathlib import Path
 
 from ai_dlc.config import digest
 from ai_dlc.documentation.document_files import read_document
 from ai_dlc.documentation.documents import check_documents
-from ai_dlc.files import inside
+from ai_dlc.files import inside, run_git
 
 EVIDENCE_PREFIX = ".ai-dlc/documentation/"
 MAPPINGS = ("code_paths", "requirements", "verification_paths")
@@ -20,12 +19,7 @@ OBJECTIVE = {"owner-missing", "uncatalogued"}
 
 
 def _git(root: Path, *args: str) -> bytes:
-    result = subprocess.run(["git", *args], cwd=root, capture_output=True, check=False)
-    if result.returncode:
-        raise ValueError(
-            "Git comparison unavailable: " + result.stderr.decode(errors="replace").strip()
-        )
-    return result.stdout
+    return run_git(root, *args, text=False, context="Git comparison unavailable").stdout
 
 
 def _path(value: str) -> str:
@@ -141,12 +135,7 @@ def _decisions(impact: dict, decisions: object, reviewer: object) -> None:
 
 
 def _require_contained_base(root: Path, revision: str) -> None:
-    result = subprocess.run(
-        ["git", "merge-base", "--is-ancestor", revision, "HEAD"],
-        cwd=root,
-        capture_output=True,
-        check=False,
-    )
+    result = run_git(root, "merge-base", "--is-ancestor", revision, "HEAD", check=False)
     if result.returncode == 1:
         raise ValueError(
             f"Comparison base {revision} is not contained in HEAD; update the branch from "
