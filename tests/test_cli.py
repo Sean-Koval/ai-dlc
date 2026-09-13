@@ -358,18 +358,46 @@ def test_scaffold_matches_legacy_assets_and_preserves_conflicts(tmp_path, monkey
 
     monkeypatch.chdir(tmp_path)
     runner = CliRunner()
-    result = runner.invoke(app, ["scaffold", "--provider", "gemini"])
+    result = runner.invoke(app, ["scaffold", "--provider", "claude"])
     assert result.exit_code == 0, result.output
-    source = assets("legacy") / "gemini"
+    source = assets("legacy") / "claude" / ".claude"
     files = [p for p in source.rglob("*") if p.is_file()]
     assert files
     for file in files:
-        assert (tmp_path / ".gemini" / file.relative_to(source)).read_bytes() == file.read_bytes()
-    modified = tmp_path / ".gemini" / files[0].relative_to(source)
+        copied = tmp_path / ".claude" / file.relative_to(source)
+        assert copied.read_bytes() == file.read_bytes()
+        assert copied.stat().st_size > 0, copied
+    modified = tmp_path / ".claude" / files[0].relative_to(source)
     modified.write_text("custom")
-    result = runner.invoke(app, ["scaffold", "--provider", "gemini"])
+    result = runner.invoke(app, ["scaffold", "--provider", "claude"])
     assert result.exit_code != 0
     assert modified.read_text() == "custom"
+
+
+def test_scaffold_all_emits_only_real_wired_content(tmp_path, monkeypatch):
+    """Would fail if the legacy template shipped empty files or hooks that settings.json cannot reach."""
+    import json
+
+    from ai_dlc.cli import app
+
+    monkeypatch.chdir(tmp_path)
+    result = CliRunner().invoke(app, ["scaffold", "--all"])
+    assert result.exit_code == 0, result.output
+    emitted = [p for p in tmp_path.rglob("*") if p.is_file()]
+    assert emitted
+    assert not [p for p in emitted if p.stat().st_size == 0]
+    assert not [p for p in emitted if p.parts[len(tmp_path.parts)] != ".claude"]
+    settings = json.loads((tmp_path / ".claude/settings.json").read_text())
+    commands = [
+        hook["command"]
+        for event in settings["hooks"].values()
+        for group in event
+        for hook in group["hooks"]
+    ]
+    assert commands
+    for command in commands:
+        script = command.removeprefix("bash ")
+        assert (tmp_path / script).is_file(), command
 
 
 def test_provider_conformance_failure_is_nonzero(tmp_path, monkeypatch):

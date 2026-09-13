@@ -156,7 +156,7 @@ GitHub Issues with Projects planning, Jira Cloud, Plane, Linear, OpenSpec, GitHu
 
 Local execution and GitHub Actions use one checks manifest. CI runs this checkout's implementation and publishes a receipt; completion checks verify workflow identity, merged SHA and manifest digests. Client hooks cover documented tool paths only. Repository merge rules must be configured by the repository owner.
 
-The legacy `ai-dlc-cli scaffold --provider gemini` and `--all` interface remains available through Python. The Rust implementation is retired and removed. See the migration guide for PATH conflicts.
+The legacy `ai-dlc-cli scaffold --provider claude` and `--all` interface remains available through Python; it copies a small Claude Code hook and workflow set. The Rust implementation is retired and removed. See the migration guide for PATH conflicts.
 
 ### Keep project documentation organized
 
