@@ -1,12 +1,12 @@
 schema = 1
 id = "legacy-asset-attribution"
 title = "Remove personal paths and attribute vendored agents in the legacy scaffold assets"
-scope = "Drop the vendored obsidian-ops-team agent team, whose files carry another person's home directory and vault layout, from the packaged legacy Claude templates; ship the upstream MIT licence and an origin notice with the vendored ot_agents and ot_commands trees; refresh the historical Rust embedded snapshot; add distribution tests that reject macOS home paths and require the notices. No runtime, provider or configuration change."
+scope = "Remove every third-party agent, mode and command collection vendored into the packaged legacy Claude template (VoltAgent subagents, SuperClaude agents, modes and commands, claude-code-templates agents and commands), including the obsidian-ops-team files that carry another person's home directory and vault layout; refresh the historical Rust embedded snapshot; add distribution tests that reject macOS home paths and vendored trees. No runtime, provider or configuration change."
 requires_spec = false
 spec_reason = "Release hygiene for packaged static assets: removes personal data and adds licence attribution without changing any observable command, contract or configuration behaviour."
 acceptance = [
     "Neither the wheel nor the source distribution contains /Users/cam or any other macOS home-directory path.",
-    "The packaged ot_agents and ot_commands trees carry the upstream MIT licence and a notice naming their origin.",
+    "Neither artifact ships a vendored agent, mode or command collection; the template keeps only this repository's own commands, hooks and workflows.",
     "The legacy scaffold, distribution privacy scan and every required check pass before the v0.4.0 tag.",
 ]
 reviewed = true
