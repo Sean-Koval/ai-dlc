@@ -11,12 +11,16 @@ _PROVIDER_ARTIFACTS = {"tracker", "pr", "branch", "deployment", "knowledge"}
 _DOCUMENT_SUFFIXES = {".md", ".markdown", ".rst", ".txt", ".json", ".toml", ".yaml", ".yml", ".pdf"}
 
 
-def artifact_is_local(kind: str, reference: str, *, existing_path: bool = False) -> bool:
+def artifact_is_local(kind: str, reference: str, *, anchored: bool = False) -> bool:
     """Classify document ownership, without interpreting a specification provider's IDs.
 
     Spec IDs (including slash IDs and provider URIs) belong to their provider.
-    Filesystem notation, document suffixes and already existing repository paths
-    explicitly identify local spec artifacts. Ambiguous bare directories use ./.
+    Filesystem notation, document suffixes and repository-anchored paths explicitly
+    identify local spec artifacts. ``anchored`` is the caller's finding that the
+    reference's leading path segment is an entry of the repository root, so the
+    reference keeps its local classification after the path itself is moved or
+    removed: a dangling repository path must fail as absent rather than be
+    reinterpreted as an opaque provider ID. Ambiguous bare directories use ./.
     """
     if kind in _PROVIDER_ARTIFACTS:
         return False
@@ -33,7 +37,7 @@ def artifact_is_local(kind: str, reference: str, *, existing_path: bool = False)
         return True
     if parsed.scheme:
         return False
-    return existing_path or PurePosixPath(parsed.path).suffix.lower() in _DOCUMENT_SUFFIXES
+    return anchored or PurePosixPath(parsed.path).suffix.lower() in _DOCUMENT_SUFFIXES
 
 
 def validate_work_graph(records: dict[str, dict]) -> list[str]:

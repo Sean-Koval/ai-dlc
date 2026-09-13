@@ -1909,6 +1909,112 @@ def test_filesystem_uri_is_reserved_and_refused_before_publication(tmp_path, ref
     assert path.read_bytes() == before
 
 
+def test_moved_bare_spec_directory_is_reported_absent_rather_than_reclassified(tmp_path):
+    from ai_dlc.work.workflow import validate_work
+
+    change = tmp_path / "openspec/changes/target"
+    change.mkdir(parents=True)
+    traceability_record(tmp_path, artifacts={"spec": "openspec/changes/target"})
+    assert validate_work(tmp_path, {}, "target")["valid"]
+
+    # Archiving moves the directory; the reference keeps pointing at the old location.
+    (tmp_path / "openspec/changes/archive").mkdir()
+    change.rename(tmp_path / "openspec/changes/archive/2026-09-12-target")
+
+    result = validate_work(tmp_path, {}, "target")
+    assert result["errors"] == [
+        "Work target: artifact spec (openspec/changes/target): Referenced local artifact is absent"
+    ]
+    assert not result["valid"]
+
+
+def test_anchored_spec_path_that_never_existed_is_reported_absent(tmp_path):
+    from ai_dlc.work.workflow import validate_work
+
+    (tmp_path / "docs").mkdir()
+    traceability_record(tmp_path, artifacts={"spec": "docs/never-written"})
+    result = validate_work(tmp_path, {}, "target")
+    assert result["errors"] == [
+        "Work target: artifact spec (docs/never-written): Referenced local artifact is absent"
+    ]
+
+
+@pytest.mark.parametrize("reference", ["organization/spec-id", "provider://organization/spec-id"])
+def test_unanchored_provider_native_spec_id_is_not_validated_as_a_path(tmp_path, reference):
+    from ai_dlc.work.workflow import validate_work
+
+    (tmp_path / "openspec/changes").mkdir(parents=True)
+    traceability_record(tmp_path, artifacts={"spec": reference})
+    assert validate_work(tmp_path, {}, "target") == {
+        "valid": True,
+        "work_id": "target",
+        "dependencies": [],
+        "errors": [],
+    }
+
+
+def test_validate_work_records_reports_dangling_artifacts_without_resolving_bindings(tmp_path):
+    from ai_dlc.work.workflow import validate_work_records
+
+    (tmp_path / "openspec/changes/kept").mkdir(parents=True)
+    (tmp_path / "docs").mkdir()
+    (tmp_path / "docs/plan.md").write_text("plan")
+    traceability_record(
+        tmp_path,
+        "kept",
+        artifacts={"spec": "openspec/changes/kept", "plan": "docs/plan.md"},
+        # A finished record keeps its historical fingerprint; drift is not a repository invariant.
+        bindings={"scm": "0" * 64, "tracker": "1" * 64},
+    )
+    traceability_record(tmp_path, "moved", artifacts={"spec": "openspec/changes/moved"})
+    traceability_record(
+        tmp_path, "planless", artifacts={"plan": "docs/absent.md"}, depends_on=["kept"]
+    )
+    traceability_record(
+        tmp_path,
+        "native",
+        artifacts={
+            "spec": "organization/spec-id",
+            "tracker": "42",
+            "pr": "https://example.test/pull/1",
+        },
+    )
+
+    result = validate_work_records(tmp_path)
+
+    assert result == {
+        "valid": False,
+        "records": ["kept", "moved", "native", "planless"],
+        "errors": [
+            "Work moved: artifact spec (openspec/changes/moved): Referenced local artifact is absent",
+            "Work planless: artifact plan (docs/absent.md): Referenced local artifact is absent",
+        ],
+    }
+
+
+def test_validate_work_records_reports_unreadable_records_and_graph_errors(tmp_path):
+    from ai_dlc.work.workflow import validate_work_records
+
+    assert validate_work_records(tmp_path) == {"valid": True, "records": [], "errors": []}
+    folder = tmp_path / ".ai-dlc/work"
+    folder.mkdir(parents=True)
+    (folder / "broken.toml").write_text("invalid TOML")
+    (folder / "bad id.toml").write_text("")
+    traceability_record(tmp_path, "renamed", id="other")
+    traceability_record(tmp_path, "cyclic", depends_on=["cyclic"])
+    traceability_record(tmp_path, "orphan", depends_on=["missing"])
+
+    result = validate_work_records(tmp_path)
+
+    assert result["records"] == ["cyclic", "orphan"]
+    assert not result["valid"]
+    assert "Work renamed: Work ID does not match filename" in result["errors"]
+    assert "Work cyclic: self dependency cycle" in result["errors"]
+    assert "Work orphan: missing dependency missing" in result["errors"]
+    assert any(error.startswith("Work broken: ") for error in result["errors"])
+    assert any(error.startswith("Work bad id: ") for error in result["errors"])
+
+
 @pytest.mark.parametrize("dangling_ancestor", [False, True])
 def test_suffixless_dangling_spec_symlink_cannot_masquerade_as_native_id(
     tmp_path, dangling_ancestor

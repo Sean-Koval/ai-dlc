@@ -1,0 +1,29 @@
+schema = 1
+id = "work-artifact-validation"
+title = "Validate work record artifact references as a repository invariant"
+scope = "Classify repository-anchored specification paths as local artifacts regardless of whether they currently exist, validate every work record's artifacts together as a required project check, and keep provider-native specification identifiers provider-owned. Deliver the approved requirements using existing AI-DLC boundaries."
+requires_spec = true
+spec_reason = "Changes which specification references work validation refuses and adds a required project check, both observable gate outcomes."
+acceptance = [
+    "A work record whose spec or plan reference points at a missing repository path SHALL be reported as an absent local artifact, whether or not the path ever existed.",
+    "Genuine provider-native specification identifiers, including opaque slash IDs and provider URIs, SHALL still be accepted and SHALL NOT be treated as local paths.",
+    "A dangling artifact reference anywhere in .ai-dlc/work/ SHALL be detectable by a required check without running ai-dlc work validate per record.",
+    "Regression tests SHALL cover a bare-directory reference that has been moved away and a provider-native identifier that must not be validated as a path.",
+    "ai-dlc project check --required SHALL pass.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "TR-02",
+    "TR-03",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/work-artifact-validation"

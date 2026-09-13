@@ -880,14 +880,33 @@ def service(root: Path, machine: Path | None):
 
 
 @work.command("validate")
-def work_validate(work_id: str, root: Path = Path("."), machine: Path | None = None):
+def work_validate(
+    work_id: Annotated[str | None, typer.Argument()] = None,
+    root: Path = Path("."),
+    machine: Path | None = None,
+    all_records: Annotated[
+        bool,
+        typer.Option(
+            "--all",
+            help="Validate every record under .ai-dlc/work: record shape, local artifacts "
+            "and the dependency graph, without resolving provider bindings.",
+        ),
+    ] = False,
+):
+    """Validate one record's dependency closure, or every record's artifacts with --all."""
     from ai_dlc.config import resolve_runtime
-    from ai_dlc.work.workflow import validate_work
+    from ai_dlc.work.workflow import validate_work, validate_work_records
 
-    try:
-        result = validate_work(root, resolve_runtime(root, machine=machine).values, work_id)
-    except (OSError, ValueError) as exc:
-        result = {"valid": False, "work_id": work_id, "dependencies": [], "errors": [str(exc)]}
+    if all_records == (work_id is not None):
+        raise typer.BadParameter("Provide exactly one of a work ID or --all")
+    if all_records:
+        result = validate_work_records(root)
+    else:
+        assert work_id is not None
+        try:
+            result = validate_work(root, resolve_runtime(root, machine=machine).values, work_id)
+        except (OSError, ValueError) as exc:
+            result = {"valid": False, "work_id": work_id, "dependencies": [], "errors": [str(exc)]}
     emit(result)
     if not result["valid"]:
         raise typer.Exit(1)

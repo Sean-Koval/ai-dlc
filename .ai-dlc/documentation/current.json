@@ -1,251 +1,183 @@
 {
-  "base": "5d1c635270869f9a6b46731136979e0ab92d95f7",
+  "base": "3d82c4e0f9f3fb7c49d3a159cae828ee67208138",
   "decisions": [
     {
-      "outcome": "updated",
-      "reason": "Records the September 12 reconciliation: which changes were archived to delivered scope, that archiving records obligations rather than qualification, the unchanged outstanding list, and the explicit decision about portable-tracker-adapters' absent work record.",
-      "target": "docs/release-verification.md"
+      "outcome": "reviewed-no-change",
+      "reason": "The work package row already covers traceability and validation; the repository-wide reader and the validate --all flag add no package or entry-point boundary.",
+      "target": "docs/architecture.md"
     },
     {
       "outcome": "updated",
-      "reason": "V4 proposal link repointed to the archived change path; the proposal content is unchanged.",
-      "target": "docs/product-direction.md"
+      "reason": "Describes the repository-anchored specification classification and the work validate --all run that a required project check executes without resolving bindings.",
+      "target": "docs/workflows/design-to-implementation.md"
+    },
+    {
+      "outcome": "reviewed-no-change",
+      "reason": "Maps roles to providers and skills; the CLI keeps owning validation and the new flag introduces no role, provider or MCP operation.",
+      "target": "docs/workflows/tool-map.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Work record for this change, reconciled with the existing tracker item 68.",
+      "target": ".ai-dlc/work/work-artifact-validation.toml"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Rendered verification list gained the work-records check from ai-dlc.toml; no authored guidance changed.",
+      "target": "AGENTS.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Adds the required work-records check that runs ai-dlc work validate --all.",
+      "target": "ai-dlc.toml"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "OpenSpec owns the change proposal; documentation links to specifications rather than copying them.",
+      "target": "openspec/changes/work-artifact-validation/proposal.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "OpenSpec owns the change design and its recorded decisions.",
+      "target": "openspec/changes/work-artifact-validation/design.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "OpenSpec owns the change task list.",
+      "target": "openspec/changes/work-artifact-validation/tasks.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Specification delta for TR-02 and TR-03; promoted to the baseline capability at archive time.",
+      "target": "openspec/changes/work-artifact-validation/specs/spec-delivery-traceability/spec.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Template manifest gains the same required work-records check for downstream projects.",
+      "target": "project-templates/project/ai-dlc.toml.jinja"
     },
     {
       "outcome": "updated",
-      "reason": "Tracker adapter and migration specification links repointed to the promoted baseline capabilities, which a current design document should cite rather than an archived delta.",
-      "target": "docs/design/provider-toolsets-prd.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Four historical execution-plan links repointed to the archived change paths; the historical content is unchanged.",
-      "target": "docs/archive/planning/2026-09-06-provider-toolsets.md"
+      "reason": "Template copy of the delivery guidance kept in step with docs/workflows/design-to-implementation.md.",
+      "target": "project-templates/project/docs/workflows/design-to-implementation.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Work record for this change, reconciled with the existing tracker item 65.",
-      "target": ".ai-dlc/work/cancelled-change-reconciliation.toml"
+      "reason": "Regression tests for work validate --all and the exactly-one-selection rule.",
+      "target": "tests/test_cli.py"
     },
     {
       "outcome": "no-impact",
-      "reason": "Spec artifact repointed to the archived change path, which archiving would otherwise have left dangling.",
-      "target": ".ai-dlc/work/portable-development-v4.toml"
+      "reason": "Template expectations updated for the added required check.",
+      "target": "tests/test_templates.py"
     },
     {
       "outcome": "no-impact",
-      "reason": "Spec artifact repointed to the archived change path, which archiving would otherwise have left dangling.",
-      "target": ".ai-dlc/work/selective-tracker-migration.toml"
+      "reason": "Pure classifier cases for anchored and unanchored specification references.",
+      "target": "tests/test_traceability.py"
     },
     {
       "outcome": "no-impact",
-      "reason": "Change artifact relocated unchanged into the archive.",
-      "target": "openspec/changes/archive/2026-09-12-portable-development-v4/proposal.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Change artifact relocated unchanged into the archive.",
-      "target": "openspec/changes/archive/2026-09-12-portable-development-v4/design.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Task list archived with its unperformed live-qualification steps retained under an explicit deferred heading rather than marked complete.",
-      "target": "openspec/changes/archive/2026-09-12-portable-development-v4/tasks.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Requirement delta relocated unchanged; its requirements were promoted into the specification baseline.",
-      "target": "openspec/changes/archive/2026-09-12-portable-development-v4/specs/portable-development/spec.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Removed by archiving; the content is preserved under the archive path.",
-      "target": "openspec/changes/portable-development-v4/proposal.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Removed by archiving; the content is preserved under the archive path.",
-      "target": "openspec/changes/portable-development-v4/design.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Removed by archiving; the content is preserved under the archive path.",
-      "target": "openspec/changes/portable-development-v4/tasks.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Removed by archiving; the delta is preserved under the archive path and promoted into the baseline.",
-      "target": "openspec/changes/portable-development-v4/specs/portable-development/spec.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Delivered requirements promoted into the baseline. The requirements are normative obligations and themselves mandate separating fixture evidence from live qualification; no outstanding qualification is recorded as satisfied.",
-      "target": "openspec/specs/portable-development/spec.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Change artifact relocated unchanged into the archive.",
-      "target": "openspec/changes/archive/2026-09-12-portable-tracker-adapters/proposal.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Change artifact relocated unchanged into the archive.",
-      "target": "openspec/changes/archive/2026-09-12-portable-tracker-adapters/design.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Task list archived with its unperformed live-qualification steps retained under an explicit deferred heading rather than marked complete.",
-      "target": "openspec/changes/archive/2026-09-12-portable-tracker-adapters/tasks.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Requirement delta relocated unchanged; its requirements were promoted into the specification baseline.",
-      "target": "openspec/changes/archive/2026-09-12-portable-tracker-adapters/specs/portable-tracker-adapters/spec.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Removed by archiving; the content is preserved under the archive path.",
-      "target": "openspec/changes/portable-tracker-adapters/proposal.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Removed by archiving; the content is preserved under the archive path.",
-      "target": "openspec/changes/portable-tracker-adapters/design.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Removed by archiving; the content is preserved under the archive path.",
-      "target": "openspec/changes/portable-tracker-adapters/tasks.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Removed by archiving; the delta is preserved under the archive path and promoted into the baseline.",
-      "target": "openspec/changes/portable-tracker-adapters/specs/portable-tracker-adapters/spec.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Delivered requirements promoted into the baseline. The requirements are normative obligations and themselves mandate separating fixture evidence from live qualification; no outstanding qualification is recorded as satisfied.",
-      "target": "openspec/specs/portable-tracker-adapters/spec.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Change artifact relocated unchanged into the archive.",
-      "target": "openspec/changes/archive/2026-09-12-selective-tracker-migration/proposal.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Change artifact relocated unchanged into the archive.",
-      "target": "openspec/changes/archive/2026-09-12-selective-tracker-migration/design.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Task list archived with its unperformed live-qualification steps retained under an explicit deferred heading rather than marked complete.",
-      "target": "openspec/changes/archive/2026-09-12-selective-tracker-migration/tasks.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Requirement delta relocated unchanged; its requirements were promoted into the specification baseline.",
-      "target": "openspec/changes/archive/2026-09-12-selective-tracker-migration/specs/selective-tracker-migration/spec.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Removed by archiving; the content is preserved under the archive path.",
-      "target": "openspec/changes/selective-tracker-migration/proposal.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Removed by archiving; the content is preserved under the archive path.",
-      "target": "openspec/changes/selective-tracker-migration/design.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Removed by archiving; the content is preserved under the archive path.",
-      "target": "openspec/changes/selective-tracker-migration/tasks.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Removed by archiving; the delta is preserved under the archive path and promoted into the baseline.",
-      "target": "openspec/changes/selective-tracker-migration/specs/selective-tracker-migration/spec.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Delivered requirements promoted into the baseline. The requirements are normative obligations and themselves mandate separating fixture evidence from live qualification; no outstanding qualification is recorded as satisfied.",
-      "target": "openspec/specs/selective-tracker-migration/spec.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Execution plan document relocated unchanged by archiving.",
-      "target": "openspec/changes/archive/2026-09-12-portable-tracker-adapters/2026-09-06-portable-tracker-adapters.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Execution plan document relocated unchanged by archiving.",
-      "target": "openspec/changes/portable-tracker-adapters/2026-09-06-portable-tracker-adapters.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Execution plan document relocated unchanged by archiving.",
-      "target": "openspec/changes/archive/2026-09-12-selective-tracker-migration/2026-09-06-selective-tracker-migration.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Execution plan document relocated unchanged by archiving.",
-      "target": "openspec/changes/archive/2026-09-12-selective-tracker-migration/2026-09-08-selective-tracker-migration.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Execution plan document relocated unchanged by archiving.",
-      "target": "openspec/changes/selective-tracker-migration/2026-09-06-selective-tracker-migration.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Execution plan document relocated unchanged by archiving.",
-      "target": "openspec/changes/selective-tracker-migration/2026-09-08-selective-tracker-migration.md"
+      "reason": "Regression tests for a moved change directory, provider-native identifiers and repository-wide validation.",
+      "target": "tests/test_workflow.py"
     }
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "08ab3bdfcbde2fcede9bd14782eb8278d2fefa7124906087458b08373eb6df96",
+  "snapshot": "9b7bc2144510f6079707499f0e11c3a606a6028640a077be1b1bce3a4a193951",
   "sources": {
-    ".ai-dlc/work/cancelled-change-reconciliation.toml": "1fb5e8f872b91c989f8e25ab3236d302dd95d2b8a3383779e0a6ec6166a945d8",
-    ".ai-dlc/work/portable-development-v4.toml": "68b13c6994aee295cdbc4757fd6889c890242f6a1e9b407d7e086a7e6753ac77",
-    ".ai-dlc/work/selective-tracker-migration.toml": "f6e8b7312e88e18aeb7842297a6067ecb3b9ab18dd5ea17f6afc36e9926a3bad",
-    "docs/archive/planning/2026-09-06-provider-toolsets.md": "961f38f76597466b86bf991be1b2728e31c9299318734eaac5491837e378cfe6",
+    ".ai-dlc/work/work-artifact-validation.toml": "7bdf4045c2ba411458bb5811ad8313388248bf0c5cf880f9950883411e2d9360",
+    "AGENTS.md": "5e6a1c4110f8bdefc71b4a3244d10bbaa43b4b46c8ad2d8a2b1420e813e7ae43",
+    "ai-dlc.toml": "12929bc72aad5e4e4ddc2e5b7f58586b4683bab86db221f4eb118ef687618047",
+    "docs/architecture.md": "129106a2268e4db12f73c4ada54ea0de8b6b51607bec3e09356ea8df280eb8db",
     "docs/catalog.toml": "99a6f1d02653fca91231e8202ac597a69eee0ff1b3e6edb633b8733984e45a6f",
-    "docs/design/provider-toolsets-prd.md": "18752b885922a482f5a4819baf76d659ceb5156560543006465869b91c81e488",
-    "docs/product-direction.md": "f71844e637dabf13f7e24b1df123fd090bc3a4753ab4858ee6cba59f808dfa02",
-    "docs/release-verification.md": "6c0707bf3137b533a9cfdad8f28a858ce36f6605edfbf21cc9014125208f699c",
-    "openspec/changes/archive/2026-09-12-portable-development-v4/design.md": "197664f62a47e1887b907d9f3b5fad32896b8b84577e6dd496e97b9dea31d05c",
-    "openspec/changes/archive/2026-09-12-portable-development-v4/proposal.md": "acbb254863042a49ca70dadb2c3ef4fb15e4135a05dbf8e96f8dbfb38a8aeb4a",
-    "openspec/changes/archive/2026-09-12-portable-development-v4/specs/portable-development/spec.md": "e6a73339bc6de0ec5f0b47a567af4d1ea63a7fc62061b3c25a91659a374871ff",
-    "openspec/changes/archive/2026-09-12-portable-development-v4/tasks.md": "ece41c0ed927ca29b95f33394a01daee91863f8c8b2148a679ee88dcebef7364",
-    "openspec/changes/archive/2026-09-12-portable-tracker-adapters/2026-09-06-portable-tracker-adapters.md": "957b865c36644bac1f7ca6a4376c171d4c08a0e4f3ad4c014135416fa9129c5d",
-    "openspec/changes/archive/2026-09-12-portable-tracker-adapters/design.md": "77d454d22048303dc6f727dc176614dd8e43a46b6724caad3b14af01310f4ef6",
-    "openspec/changes/archive/2026-09-12-portable-tracker-adapters/proposal.md": "a6bc6c8b6027210c5cf0a54fbc7f9585a91e8038e855e300f8e9aee550b8bc80",
-    "openspec/changes/archive/2026-09-12-portable-tracker-adapters/specs/portable-tracker-adapters/spec.md": "79414a55465d9b5d4de5714f6c2c2d7f3bce2b067403bee5e206c9a553e3e4ce",
-    "openspec/changes/archive/2026-09-12-portable-tracker-adapters/tasks.md": "86393c4072cc89f496690f81f4b781eee379da2efc0568e39426b52c1e3c0cbf",
-    "openspec/changes/archive/2026-09-12-selective-tracker-migration/2026-09-06-selective-tracker-migration.md": "fdfc4e3409d352e2584f21c693840f6ebe83be23619d71832fcc8144351dc631",
-    "openspec/changes/archive/2026-09-12-selective-tracker-migration/2026-09-08-selective-tracker-migration.md": "96c50e62b732aca36ef798f68276a0319d1cc95929804b79370996e31adb6274",
-    "openspec/changes/archive/2026-09-12-selective-tracker-migration/design.md": "248192c9200911c405a6c184c1fcd74715693fbc97da0164460d90760f04833e",
-    "openspec/changes/archive/2026-09-12-selective-tracker-migration/proposal.md": "6cd8771e2c5c9cb9edd351b83eeb8b15d919f349296fb35cb206f783c8587efa",
-    "openspec/changes/archive/2026-09-12-selective-tracker-migration/specs/selective-tracker-migration/spec.md": "d3ba028cd8e2e92e72374b26c6895c1c78e3e2888e34d6d84dcba2af72ef1eeb",
-    "openspec/changes/archive/2026-09-12-selective-tracker-migration/tasks.md": "60f3456f283c9b71f20f7c122eb38cd1718b6329c27e48adc419454ab121ae5b",
-    "openspec/changes/portable-development-v4/design.md": "missing",
-    "openspec/changes/portable-development-v4/proposal.md": "missing",
-    "openspec/changes/portable-development-v4/specs/portable-development/spec.md": "missing",
-    "openspec/changes/portable-development-v4/tasks.md": "missing",
-    "openspec/changes/portable-tracker-adapters/2026-09-06-portable-tracker-adapters.md": "missing",
-    "openspec/changes/portable-tracker-adapters/design.md": "missing",
-    "openspec/changes/portable-tracker-adapters/proposal.md": "missing",
-    "openspec/changes/portable-tracker-adapters/specs/portable-tracker-adapters/spec.md": "missing",
-    "openspec/changes/portable-tracker-adapters/tasks.md": "missing",
-    "openspec/changes/selective-tracker-migration/2026-09-06-selective-tracker-migration.md": "missing",
-    "openspec/changes/selective-tracker-migration/2026-09-08-selective-tracker-migration.md": "missing",
-    "openspec/changes/selective-tracker-migration/design.md": "missing",
-    "openspec/changes/selective-tracker-migration/proposal.md": "missing",
-    "openspec/changes/selective-tracker-migration/specs/selective-tracker-migration/spec.md": "missing",
-    "openspec/changes/selective-tracker-migration/tasks.md": "missing",
-    "openspec/specs/portable-development/spec.md": "09ce7f444033d3c1fe7681b3982a3145f48e07e720fa503acedfa24220e61028",
-    "openspec/specs/portable-tracker-adapters/spec.md": "bfa86a007cfca5e8ad9fb548863cd677f63e8c83e76b224a213de3fa8a992762",
-    "openspec/specs/selective-tracker-migration/spec.md": "fdf1c43933a05f723ce458a2b5cfed558e97e508d189241c895f7b45adde5861"
+    "docs/workflows/design-to-implementation.md": "5c44eadd228e026b636582c6a2e5c9e8e98c959c72f43760c29d58efbf016599",
+    "docs/workflows/tool-map.md": "8a846e94874071edf5b6595ef53708c6fd011ce7e928712a4f735ac44ce9b401",
+    "openspec/changes/work-artifact-validation/design.md": "4d59ecdd5a70c7dbe0b2ecb82165aca16f1f4ab0db53145cc65f11ba42bfbce5",
+    "openspec/changes/work-artifact-validation/proposal.md": "0ed7e58a06c395d29a2c83e7d48118bb818b17421a18aaebc8eb2d683405baf7",
+    "openspec/changes/work-artifact-validation/specs/spec-delivery-traceability/spec.md": "5b0d2d91c2a118c4917394e3ef56cabda4b390302cf5b93c7d896d2eed0d953f",
+    "openspec/changes/work-artifact-validation/tasks.md": "d7b7035eb0b37fa3c51dd94635495588de0df10cb628e16b24e59d9156654312",
+    "project-templates/project/ai-dlc.toml.jinja": "7f2165e45ddde23199dbbecd3df5cd429ff2c6913d200c91f57d1c7f406c9067",
+    "project-templates/project/docs/workflows/design-to-implementation.md": "d548256d287e8ebf89d0661abf14bd0c01ef88c899f14d70da2f570adf6fbb6b",
+    "pyproject.toml": "9cb4d37f9aba00fb6668ba69de8c53a06471128f2964d63848ca8d7afe3a14cf",
+    "scripts/check_generated.py": "845e3ac89acb10720eab193712430a09b767272862a02369f391a982da6e7267",
+    "scripts/check_layout.py": "26fde5445108c55e36a1ea3083f5dc01a71ecfcd9b1d38542c515d86afe5ab4d",
+    "scripts/legacy/sync-cli-templates.sh": "235f53f0e4f4785ad2bb5559b4a01f91f4e88b228437af033857c6335593fa12",
+    "scripts/qualify_framework.py": "01dd9e6acbe14e740f068662aa539e9a7ed0ba57ab97e9457e0a05d968a25fb6",
+    "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+    "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
+    "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
+    "src/ai_dlc/cli.py": "6fbe7302d009f0fcb36252a018143ae163386a03c636b98a963c1d4070f3e436",
+    "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
+    "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
+    "src/ai_dlc/config.py": "31677c538713aa41d3625ef9570f962ed8ee5d32bd4b5b3747437e8fd8fb9d02",
+    "src/ai_dlc/conformance.py": "9d18cdbf21aa8f9889d880729c368d9567f32f83c066693dceb06ce6549b6082",
+    "src/ai_dlc/contracts.py": "a6d7c5ad8f3e2a513621883c75bff187e1104315ab337cddc023d5343a9e7538",
+    "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
+    "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
+    "src/ai_dlc/documentation/document_files.py": "503a38d4df2a1f9d0832d083dcd420ebd1215389385293dd0605fc768c5dd320",
+    "src/ai_dlc/documentation/document_impact.py": "a2976dd6499441c793b425dda1bd82a753fa45c9e7721bacc29d6b18181ee290",
+    "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
+    "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
+    "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
+    "src/ai_dlc/documentation/documents.py": "50391941ed6b8da74cfd30aa6501a8fd330c5084ed4413a9a00fbafe68d9e328",
+    "src/ai_dlc/documentation/knowledge.py": "91aad53eccc1889d4077ef59c137ff1b35b03c433efa05b7be61d2e534fa7db6",
+    "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
+    "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
+    "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
+    "src/ai_dlc/documentation/vault_mount.py": "ca1a57a8aaca083674cd685a75971b0ede92d5f34617e6a026271edc4369ca96",
+    "src/ai_dlc/documentation/workspace_diagnostics.py": "c53cc66966888078108662d6a307b00c8746c6a8f1d8098938529c65d5694b61",
+    "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
+    "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
+    "src/ai_dlc/environment/enrollment.py": "fb0e82fb7b9e5808e1ee3571a53d129ddc8b8b6c83ab5918d7acab9566f7e9d1",
+    "src/ai_dlc/environment/machine.py": "491128faaec9634ec29ef0ebc9a38af3dfe25499e533543fcecf0734d2e50d1a",
+    "src/ai_dlc/environment/profile_source.py": "517b6bd0ae788a9270da5aee872abc2502c523d9faf75e52ab54ba5c6861e906",
+    "src/ai_dlc/files.py": "383ba27f055a5637c384462a172ff678165b643408c77d0945fd8f4622b00580",
+    "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
+    "src/ai_dlc/harness/agents.py": "c1914456027ef059c8b3da321a429a96e69cb4c97e7cc583d437397406f6855c",
+    "src/ai_dlc/harness/components.py": "59a50ce61709daaf4b9209c154498eb5efacb84a8747550685421cc269ea7f3c",
+    "src/ai_dlc/harness/hooks.py": "2081bdfd82651e53870c7f6fec6a38a3bc587b0e4dfae46a3043b6617add9994",
+    "src/ai_dlc/harness/native_composition.py": "7cd919fd40adb70eea1a775dbd5ea8328fde9eda6302d6f52565f14ea3d244ab",
+    "src/ai_dlc/harness/user_agents.py": "6fad6edd1d1d89b0c105291f2fa8b69f223ce00bd5095d77357d7c05e6eb3f4a",
+    "src/ai_dlc/harness/workflow_bundles.py": "e0943696bdced1e841bf15a68c2040e37e484fe7c021119dec1c25e82be0fe38",
+    "src/ai_dlc/locking.py": "f1cfe828e897e11d73b645130060362e2699f75aac9307ed8cb4955b0533b629",
+    "src/ai_dlc/mcp_server.py": "3b867e8b66f8d1b30258da9af7f30640e1df0a605af37a2ba1c16b2584af0f1d",
+    "src/ai_dlc/provider_definitions.py": "e90c2d41a839bc4a32dcb3989f59fa6c9073bd1233f3db2088bd176e1bc513d3",
+    "src/ai_dlc/providers/__init__.py": "85325d9c7d4f2ac948510ad6ac20342ec0bd92d02857dda65637dc7b594181ae",
+    "src/ai_dlc/providers/github_issues.py": "55a18a178fc329a94ff95f39b72c5599117c5a8e79842d7cc7c6c8966cbed405",
+    "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
+    "src/ai_dlc/providers/jira_cloud.py": "0c4ee8f892ca3f329e822400a81c1e80d5607c087910329251acb9165345cc28",
+    "src/ai_dlc/providers/linear.py": "fa90bd64765c8e8bee1cbfa54e47e17688e8e6407c7492ae0ed863b4615c2b95",
+    "src/ai_dlc/providers/openspec.py": "c45cba2218b2201d67c66eb012fc1f16d4d492ea43b702e4c9236bde99caa83f",
+    "src/ai_dlc/providers/plane.py": "76fab3893bf0d4536c58500e4ab5a90f59893977c057be4777d78068e278ca1c",
+    "src/ai_dlc/providers/plane_attempts.py": "9a90b719e348d5592865e415bd29c3686969263f733a44275d6029fee019743c",
+    "src/ai_dlc/providers/python_exec.py": "3aaafe9bf74a4a949b59d71ed2079b9c48114462a9c823b3641a1772af5a6ff1",
+    "src/ai_dlc/providers/scm.py": "2cdf9479741d0a3f37405e5b1cfd9c7d7b0c68038feefb75f3b910b894c088e8",
+    "src/ai_dlc/setup/__init__.py": "8eb444a69a67d0c1a59ffc0c80ce59efda159976bea58d40154e97f8bdecf18c",
+    "src/ai_dlc/setup/connections.py": "35d04e1c6778227b0947034d2ed5d535ab8c79ee783496a2c2c7285d694b5595",
+    "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
+    "src/ai_dlc/setup/github_project_setup.py": "86b97dcaa4447082252008da1df64159cac09a077198a7e84e3577294ad540d2",
+    "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
+    "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
+    "src/ai_dlc/setup/project.py": "086a4d74f18e08226e3f39b163d359aa32b90fedb9ae55599dd16e59049f7c3d",
+    "src/ai_dlc/setup/provider_onboarding.py": "8a9407894dc494faa4a431ad219e0ebbd472504893434ac3b66f7be6f6acfdf6",
+    "src/ai_dlc/setup/provision.py": "5d5af0be37b5620a561ab324b41febc541b07e0a5b35051869b025f114effdd2",
+    "src/ai_dlc/setup/readiness.py": "7c7c2767520b3da2e7f8dd74be4ed6359a7dca66bc413c68eba2b1b4bad7f52c",
+    "src/ai_dlc/setup/rebind.py": "c083e35c27f10415986d3170bb81905944254bd12485c5a4db71b77b0a38adf2",
+    "src/ai_dlc/setup/templates.py": "95e60c4339286b85fb393318d69e797b2990b41303e7dd16a3767141ededf69c",
+    "src/ai_dlc/setup/tracker_targets.py": "1b3fe3fea13732748d5498e1cbc2a2d16395eca7bd942789389c6bc08b214fd8",
+    "src/ai_dlc/setup/workstation.py": "4abcc68e4d30ee4ce32ed1ff9b872d5926c15747de2ec2a92b88c7352813206a",
+    "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
+    "src/ai_dlc/verification/sandbox.py": "b830bd80df60802c29dbc2e1c639958537f289592052b404e6972ff377d25681",
+    "src/ai_dlc/verification/test_proxy.py": "f38cb2a28c8501c743613b0bfdf7e17f367c101ce7984a304e20ab3095eb7880",
+    "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
+    "src/ai_dlc/work/journal.py": "f5801d312b0434262c9dda76ac3b94cd1ac099fe98650dc9f745927898a89b52",
+    "src/ai_dlc/work/traceability.py": "c4062335f26218e99f58e236425674c513ea6f2fce7f68b624a4df4dcd8ab3aa",
+    "src/ai_dlc/work/tracker_migration.py": "65fc8eb4a708947c12a5f4fd3cfe664f409ee32c282b68a48bd725152e5b18a3",
+    "src/ai_dlc/work/workflow.py": "f988f7ca8e6193ce9a0e0906d73a7bfae251e2d385edea08ab4630089f7182e9",
+    "tests/test_cli.py": "4972763af248f42e2ded462ae6f7680a18bbd88ef6662ee03a890b4f7d149974",
+    "tests/test_templates.py": "4fef05ce50f34da2d9f81ee721bd5d417e79cfd98811f20d957c8db7be50fb7a",
+    "tests/test_traceability.py": "ea0c58e0a6210a2260a576e8b84e8fb62079cfa6840387d37baa522a893b730d",
+    "tests/test_workflow.py": "7d82dd902c9606adfc888b5f255dc6a22f86de7952102fd5694984c148ea799b"
   }
 }

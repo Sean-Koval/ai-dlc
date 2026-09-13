@@ -6,7 +6,7 @@ import os
 import re
 import subprocess
 import tomllib
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from urllib.parse import urlsplit
 
 import tomli_w
@@ -208,34 +208,44 @@ def read_work_graph(root: Path, config: dict, work_id: str) -> tuple[dict[str, d
                 errors.append(f"Work {current}: dependency {dependency!r}: {exc}")
             else:
                 pending.append(dependency)
-        for kind, reference in record["artifacts"].items():
-            try:
-                if not artifact_is_local(kind, reference):
-                    if kind != "spec":
-                        continue
-                    parsed = urlsplit(reference)
-                    if parsed.scheme:
-                        continue
-                    candidate = root / parsed.path
-                    # A dangling final/ancestor symlink is still a local entry;
-                    # it must reach inside() rather than masquerade as an opaque ID.
-                    has_symlink = any(
-                        entry.is_symlink()
-                        for entry in [candidate, *candidate.parents]
-                        if entry != root and entry.is_relative_to(root)
-                    )
-                    if not candidate.exists() and not has_symlink:
-                        continue
-                parsed = urlsplit(reference)
-                if parsed.scheme or parsed.netloc or parsed.query or not parsed.path.strip():
-                    raise ValueError("Expected a local artifact path or HTTP(S) reference")
-                target = inside(root, parsed.path)
-                if not target.is_file() and not target.is_dir():
-                    raise ValueError("Referenced local artifact is absent")
-            except (OSError, ValueError) as exc:
-                errors.append(f"Work {current}: artifact {kind} ({reference}): {exc}")
+        errors.extend(f"Work {current}: {error}" for error in validate_artifacts(root, record))
     errors.extend(validate_work_graph(records))
     return records, sorted(set(errors))
+
+
+def _anchored(root: Path, path: str) -> bool:
+    """Whether a relative reference's leading segment is an entry of the repository root."""
+    parts = PurePosixPath(path).parts
+    if not parts or parts[0] in {".", ".."}:
+        return False
+    entry = root / parts[0]
+    # A dangling symlink is still a local entry; it must reach inside() rather than
+    # masquerade as an opaque ID.
+    return entry.exists() or entry.is_symlink()
+
+
+def validate_artifacts(root: Path, record: dict) -> list[str]:
+    """Check a record's local artifact references without probing provider-owned ones.
+
+    The repository anchor, not the referenced leaf, decides whether a suffix-less
+    specification path is local, so a change directory that archiving moved away is
+    reported as absent instead of silently becoming an opaque provider ID.
+    """
+    errors = []
+    for kind, reference in record["artifacts"].items():
+        try:
+            parsed = urlsplit(reference)
+            anchored = kind == "spec" and not parsed.scheme and _anchored(root, parsed.path)
+            if not artifact_is_local(kind, reference, anchored=anchored):
+                continue
+            if parsed.scheme or parsed.netloc or parsed.query or not parsed.path.strip():
+                raise ValueError("Expected a local artifact path or HTTP(S) reference")
+            target = inside(root, parsed.path)
+            if not target.is_file() and not target.is_dir():
+                raise ValueError("Referenced local artifact is absent")
+        except (OSError, ValueError) as exc:
+            errors.append(f"artifact {kind} ({reference}): {exc}")
+    return errors
 
 
 def validate_work(root: Path, config: dict, work_id: str) -> dict:
@@ -246,6 +256,41 @@ def validate_work(root: Path, config: dict, work_id: str) -> dict:
         "dependencies": sorted(set(records) - {work_id}),
         "errors": errors,
     }
+
+
+def read_work_records(root: Path) -> tuple[dict[str, dict], list[str]]:
+    """Read every record under .ai-dlc/work: shape, local artifacts and the graph.
+
+    Provider bindings are deliberately not resolved. Binding drift is a mutation-time
+    refusal for the record being changed, and finished records keep their historical
+    fingerprints, so a repository-wide invariant cannot include it. Nothing is probed
+    outside the repository tree.
+    """
+    records: dict[str, dict] = {}
+    errors: list[str] = []
+    directory = root / ".ai-dlc/work"
+    if not directory.is_dir():
+        return records, errors
+    for path in sorted(directory.glob("*.toml")):
+        work_id = path.stem
+        try:
+            Work.safe_id(work_id)
+            record = Work.model_validate(tomllib.loads(path.read_text())).model_dump(by_alias=True)
+            if record["id"] != work_id:
+                raise ValueError("Work ID does not match filename")
+        except (OSError, ValueError) as exc:
+            errors.append(f"Work {work_id}: {exc}")
+            continue
+        records[work_id] = record
+        errors.extend(f"Work {work_id}: {error}" for error in validate_artifacts(root, record))
+    errors.extend(validate_work_graph(records))
+    return records, sorted(set(errors))
+
+
+def validate_work_records(root: Path) -> dict:
+    """Validate every work record together so a dangling artifact fails a required check."""
+    records, errors = read_work_records(Path(root).resolve())
+    return {"valid": not errors, "records": sorted(records), "errors": errors}
 
 
 class WorkService:

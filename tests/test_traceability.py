@@ -95,7 +95,7 @@ def test_legacy_ticket_body_has_no_invented_dependencies_or_requirements():
 
 
 @pytest.mark.parametrize(
-    ("kind", "reference", "exists", "local"),
+    ("kind", "reference", "anchored", "local"),
     [
         ("spec", "github-ticket-workflows", False, False),
         ("spec", "organization/spec-id", False, False),
@@ -107,13 +107,16 @@ def test_legacy_ticket_body_has_no_invented_dependencies_or_requirements():
         ("spec", "docs/missing.md", False, True),
         ("spec", "spec.md", False, True),
         ("spec", "changes/existing", True, True),
+        # The repository anchor, not the leaf, keeps a moved change directory local.
+        ("spec", "openspec/changes/moved-away", True, True),
+        ("spec", "docs/never-existed", True, True),
         ("brief", "missing", False, True),
         ("tracker", "organization/issue", False, False),
     ],
 )
 def test_artifact_ownership_distinguishes_native_spec_identity_from_local_documents(
-    kind, reference, exists, local
+    kind, reference, anchored, local
 ):
     from ai_dlc.work.traceability import artifact_is_local
 
-    assert artifact_is_local(kind, reference, existing_path=exists) is local
+    assert artifact_is_local(kind, reference, anchored=anchored) is local
