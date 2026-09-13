@@ -54,9 +54,9 @@
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "ff5843e57bcc03a7eff39903090b3580a60e3234569bffdb91e49b1860ed2c28",
+  "snapshot": "c8b3ab270961e839fe0d61e18827bb9afb78f7790aa3862fcab5003c3af455c6",
   "sources": {
-    ".ai-dlc/work/work-artifact-validation.toml": "649fdb1cb3a80a092a6e93b4768d66ca56b6497ec917796101cae5676329dbf0",
+    ".ai-dlc/work/work-artifact-validation.toml": "8fcd4ed90148577dec5a6073ca51ed73a44721104b5bf8fb575e73aae969313f",
     "docs/catalog.toml": "99a6f1d02653fca91231e8202ac597a69eee0ff1b3e6edb633b8733984e45a6f",
     "openspec/changes/archive/2026-09-13-work-artifact-validation/design.md": "4d59ecdd5a70c7dbe0b2ecb82165aca16f1f4ab0db53145cc65f11ba42bfbce5",
     "openspec/changes/archive/2026-09-13-work-artifact-validation/proposal.md": "0ed7e58a06c395d29a2c83e7d48118bb818b17421a18aaebc8eb2d683405baf7",
