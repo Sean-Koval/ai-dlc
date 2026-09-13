@@ -19,9 +19,9 @@
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "f897c7531e8cc9afb674b6e38db629a9cebd737d833fea73fcc77cde87db6e3e",
+  "snapshot": "be668788ade5651f4e4350e366b26d9ef8c60459d2b7db13b634ffff36efa8bd",
   "sources": {
-    ".ai-dlc/work/packaging-force-includes.toml": "38d546361b06998ab28edcf4877c41ef1ae5ff678e4edad52adacd8c228b30d8",
+    ".ai-dlc/work/packaging-force-includes.toml": "e71c279c0691f3d6eb5d7821136e45a30c74484595394dd3b8a8595802cb689c",
     "docs/architecture.md": "3b392e7c6a2b1d3cd5c02ee533eadfe4f9df70418c5f33dbc796b80b5710c147",
     "docs/catalog.toml": "d5fa5e30cece81c49c5566245360214704388357b4afe5ba7adb7d9f379abe59",
     "pyproject.toml": "57b5a7f4ea777185ab5df4b34c4117a190d41434e1e236b38735987c96ccc529",
