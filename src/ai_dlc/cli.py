@@ -898,7 +898,9 @@ def work_validate(
     from ai_dlc.work.workflow import validate_work, validate_work_records
 
     if all_records == (work_id is not None):
-        raise typer.BadParameter("Provide exactly one of a work ID or --all")
+        # Plain text keeps the refusal readable and testable under any terminal renderer.
+        typer.echo("error: Provide exactly one of a work ID or --all", err=True)
+        raise typer.Exit(2)
     if all_records:
         result = validate_work_records(root)
     else:

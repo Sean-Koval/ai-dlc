@@ -974,7 +974,8 @@ def test_work_validate_requires_exactly_one_selection(tmp_path, arguments):
     result = CliRunner().invoke(app, ["work", "validate", *arguments, "--root", str(tmp_path)])
 
     assert result.exit_code == 2, result.output
-    assert "exactly one of a work ID or --all" in result.output
+    assert "error: Provide exactly one of a work ID or --all" in result.stderr
+    assert result.stdout == ""
 
 
 @pytest.mark.parametrize("invalid", [False, True])

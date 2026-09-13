@@ -84,7 +84,7 @@
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "64d08e3f155607d124c50517b688da24db2681510637728f2fe9a7574d718fda",
+  "snapshot": "e4a1b498d4ee690180c2563abc99041e304bc786569e5ab88105557ce8a2b9b2",
   "sources": {
     ".ai-dlc/work/work-artifact-validation.toml": "20b223e64832b486964bd9115e5ddd6f4669790efdd5e3f189ede39e18478821",
     "AGENTS.md": "5e6a1c4110f8bdefc71b4a3244d10bbaa43b4b46c8ad2d8a2b1420e813e7ae43",
@@ -107,7 +107,7 @@
     "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
     "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
     "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
-    "src/ai_dlc/cli.py": "6fbe7302d009f0fcb36252a018143ae163386a03c636b98a963c1d4070f3e436",
+    "src/ai_dlc/cli.py": "b58464f47f6789f7eb8cb6613823af33a9b3dcb47baa5549234ce444f71b49c0",
     "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
     "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
     "src/ai_dlc/config.py": "31677c538713aa41d3625ef9570f962ed8ee5d32bd4b5b3747437e8fd8fb9d02",
@@ -175,7 +175,7 @@
     "src/ai_dlc/work/traceability.py": "c4062335f26218e99f58e236425674c513ea6f2fce7f68b624a4df4dcd8ab3aa",
     "src/ai_dlc/work/tracker_migration.py": "65fc8eb4a708947c12a5f4fd3cfe664f409ee32c282b68a48bd725152e5b18a3",
     "src/ai_dlc/work/workflow.py": "f988f7ca8e6193ce9a0e0906d73a7bfae251e2d385edea08ab4630089f7182e9",
-    "tests/test_cli.py": "4972763af248f42e2ded462ae6f7680a18bbd88ef6662ee03a890b4f7d149974",
+    "tests/test_cli.py": "26967fdb0d9d54a2137a8435dc16c5b31144bfbabfa3c4e7a7bb5e255a369588",
     "tests/test_templates.py": "4fef05ce50f34da2d9f81ee721bd5d417e79cfd98811f20d957c8db7be50fb7a",
     "tests/test_traceability.py": "ea0c58e0a6210a2260a576e8b84e8fb62079cfa6840387d37baa522a893b730d",
     "tests/test_workflow.py": "7d82dd902c9606adfc888b5f255dc6a22f86de7952102fd5694984c148ea799b"
