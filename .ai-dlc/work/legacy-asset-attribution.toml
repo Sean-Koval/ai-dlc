@@ -1,0 +1,32 @@
+schema = 1
+id = "legacy-asset-attribution"
+title = "Remove personal paths and attribute vendored agents in the legacy scaffold assets"
+scope = "Drop the vendored obsidian-ops-team agent team, whose files carry another person's home directory and vault layout, from the packaged legacy Claude templates; ship the upstream MIT licence and an origin notice with the vendored ot_agents and ot_commands trees; refresh the historical Rust embedded snapshot; add distribution tests that reject macOS home paths and require the notices. No runtime, provider or configuration change."
+requires_spec = false
+spec_reason = "Release hygiene for packaged static assets: removes personal data and adds licence attribution without changing any observable command, contract or configuration behaviour."
+acceptance = [
+    "Neither the wheel nor the source distribution contains /Users/cam or any other macOS home-directory path.",
+    "The packaged ot_agents and ot_commands trees carry the upstream MIT licence and a notice naming their origin.",
+    "The legacy scaffold, distribution privacy scan and every required check pass before the v0.4.0 tag.",
+]
+reviewed = true
+depends_on = []
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+branch = "work/legacy-asset-attribution"
+tracker = "89"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"
