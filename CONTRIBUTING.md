@@ -1,8 +1,8 @@
 # Contributing
 
 Read [AGENTS.md](AGENTS.md) for repository boundaries and [the documentation
-index](docs/index.md) for authoritative sources. AI-DLC currently ships Python;
-the historical Rust implementation is retained for provenance and compatibility.
+index](docs/index.md) for authoritative sources. AI-DLC ships Python; the
+retired Rust implementation survives only as archived plans and git history.
 
 1. Start from the current roadmap and the linked GitHub issue. Read the relevant
    OpenSpec requirements before changing behavior. Keep formal change artifacts
@@ -18,6 +18,5 @@ the historical Rust implementation is retained for provenance and compatibility.
 
 Portable skills live in `agents/`, current project scaffolding in
 `project-templates/`, and supported legacy scaffold assets in `templates/`.
-Generated client copies and embedded Rust snapshots are not independent sources
-of truth. Repository layout checks apply to AI-DLC itself; downstream projects
+Generated client copies are not independent sources of truth. Repository layout checks apply to AI-DLC itself; downstream projects
 retain their chosen structure.

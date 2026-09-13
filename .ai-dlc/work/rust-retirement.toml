@@ -1,0 +1,34 @@
+schema = 1
+id = "rust-retirement"
+title = "Retire the Rust remnants from the repository and the source distribution"
+scope = "Untrack the committed Rust build output, delete the historical Rust crate with its embedded template mirror, the npm installer shim, the template sync script and its broken slash command, and the stray Microsoft package key; rewrite the source-distribution assertions so they describe what must ship; update every current document that still names Rust tooling as current. No change to the Python scaffold command or to the contents of templates/."
+requires_spec = false
+spec_reason = "Removes retired, unreferenced tooling and build artifacts; no observable command, contract or configuration behaviour changes."
+acceptance = [
+    "No file under target/, crates/, npm/ or matching Cargo.* is tracked, and the source distribution contains none of them.",
+    "Clone size before and after is reported in the pull request.",
+    "No current document or command references the sync script, cargo or the Rust CLI as current tooling.",
+    "All required checks pass.",
+]
+reviewed = true
+depends_on = []
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+tracker = "91"
+branch = "work/rust-retirement"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/104"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"

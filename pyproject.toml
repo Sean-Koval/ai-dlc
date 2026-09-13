@@ -41,7 +41,7 @@ exclude = ["/profiles/sean.toml", "/.ai-dlc/local/**", "/.superpowers/**", "/tar
 [tool.ruff]
 target-version = "py312"
 line-length = 100
-extend-exclude = ["templates", "crates", "project-templates"]
+extend-exclude = ["templates", "project-templates"]
 
 [tool.pyright]
 include = ["src/ai_dlc"]
