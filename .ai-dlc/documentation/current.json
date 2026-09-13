@@ -24,9 +24,9 @@
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "8237388ec3a7d5d3aba4039b02206fce7723e74fc7e2327a2314e54a1da246bc",
+  "snapshot": "2c58b33511beef6451cf983e4716f9f8f5c259e644d5248ecc87d3aa1c5e5021",
   "sources": {
-    ".ai-dlc/work/digest-consolidation.toml": "ae495f1ab1de63c2b8bf0ef5b477e97c70231f99bd649b7878a91bf4377536e6",
+    ".ai-dlc/work/digest-consolidation.toml": "a011d681ebf5d613cdf0579b1d597c9e6b6ce2448222bf5698456a8877a02b05",
     "docs/architecture.md": "3b392e7c6a2b1d3cd5c02ee533eadfe4f9df70418c5f33dbc796b80b5710c147",
     "docs/catalog.toml": "d5fa5e30cece81c49c5566245360214704388357b4afe5ba7adb7d9f379abe59",
     "docs/verification/documentation-workflow.md": "036a53ebf3a05edbc77eceaac841b40151cce05a762fe3ef631e14f057a89a0f",
