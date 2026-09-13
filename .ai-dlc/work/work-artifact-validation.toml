@@ -26,10 +26,10 @@ scm = "github"
 deploy = "none"
 
 [artifacts]
-spec = "openspec/changes/work-artifact-validation"
+spec = "openspec/changes/archive/2026-09-13-work-artifact-validation"
 tracker = "68"
 branch = "work/work-artifact-validation"
-pr = "https://github.com/Sean-Koval/ai-dlc/pull/69"
+delivery_pr = "https://github.com/Sean-Koval/ai-dlc/pull/69"
 
 [bindings]
 specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
