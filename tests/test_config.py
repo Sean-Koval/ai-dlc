@@ -657,3 +657,21 @@ def test_credential_tables_must_be_mappings(credentials: object):
 
     with pytest.raises(TypeError, match="credentials"):
         resolve_layers([("personal", {"schema": 4, "credentials": credentials})])
+
+
+def test_digest_rejects_nan_everywhere_it_is_used():
+    """Would fail if any digest site fell back to a copy that lets NaN through as a non-round-trippable hash."""
+    import math
+
+    import pytest
+
+    from ai_dlc import config
+    from ai_dlc.documentation import document_impact
+    from ai_dlc.providers import plane_attempts, scm
+    from ai_dlc.work import journal
+
+    for module in [document_impact, scm, plane_attempts, journal]:
+        assert module.digest is config.digest
+    assert config.digest({"b": 1, "a": [2, 3]}) == config.digest({"a": [2, 3], "b": 1})
+    with pytest.raises(ValueError):
+        config.digest({"value": math.nan})
