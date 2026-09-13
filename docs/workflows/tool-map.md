@@ -75,7 +75,7 @@ implemented for Linear and GitHub; Jira, Plane and native Antigravity integratio
 remain onboarding work.
 
 Machine enrollment mutations are CLI-only in this cycle. MCP exposes exactly
-`work_publish`, `work_start`, `work_status`, `work_link`, `work_finish`,
+`work_context`, `work_publish`, `work_start`, `work_status`, `work_link`, `work_finish`,
 `doctor`, `knowledge_find`, `knowledge_append`, and `knowledge_note`; it does
 not expose machine enrollment mutation. These MCP identifiers differ from the
 space-separated CLI commands, such as `ai-dlc work publish` and `ai-dlc

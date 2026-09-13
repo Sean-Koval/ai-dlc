@@ -3,18 +3,23 @@
   "decisions": [
     {
       "outcome": "no-impact",
-      "reason": "Work record for this change, published as tracker item 95.",
+      "reason": "Work record for this change, published as tracker item 95 and linked to its pull request.",
       "target": ".ai-dlc/work/cli-service-boundaries.toml"
     },
     {
       "outcome": "reviewed-no-change",
-      "reason": "Logic moved from the CLI into the work and setup packages the map already names; MCP gained a context tool over the same service. No boundary changed.",
+      "reason": "Logic moved from the CLI into the work and setup packages the map already names; MCP gained work_context over the same service. No boundary changed.",
       "target": "docs/architecture.md"
     },
     {
-      "outcome": "reviewed-no-change",
-      "reason": "Command output and documented behaviour are unchanged; the logic moved behind the service boundary.",
+      "outcome": "updated",
+      "reason": "Adds work_context to the exact list of MCP tools.",
       "target": "docs/workflows/tool-map.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Mirrors the tool map change for generated projects.",
+      "target": "project-templates/project/docs/workflows/tool-map.md"
     },
     {
       "outcome": "no-impact",
@@ -34,12 +39,13 @@
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "8cc4668d937866d5a2d270025e379376901b7a2fb79c304b3ac122ee8e53f33d",
+  "snapshot": "3e6d5d4baedd7cf2afd05a079c8ac8879be2f57c662d0a9d0aec029620ec64d6",
   "sources": {
-    ".ai-dlc/work/cli-service-boundaries.toml": "60e8a9af435620b2513b359df4ef4ad6d1905fb49bb37b319dae829c4d2ff879",
+    ".ai-dlc/work/cli-service-boundaries.toml": "cbff4aba5f7682b8130ce566e5518093533841957502854690861bf80b8f60ba",
     "docs/architecture.md": "3b392e7c6a2b1d3cd5c02ee533eadfe4f9df70418c5f33dbc796b80b5710c147",
     "docs/catalog.toml": "d5fa5e30cece81c49c5566245360214704388357b4afe5ba7adb7d9f379abe59",
-    "docs/workflows/tool-map.md": "8a846e94874071edf5b6595ef53708c6fd011ce7e928712a4f735ac44ce9b401",
+    "docs/workflows/tool-map.md": "197bcde7330cdef95f57c3a040a35f6c3c256c746ffdb45b2ad13eed4ed0730a",
+    "project-templates/project/docs/workflows/tool-map.md": "0038ff7873c54019965ff136febeb646f55089357da74e486a48bd789e9d9c66",
     "pyproject.toml": "57b5a7f4ea777185ab5df4b34c4117a190d41434e1e236b38735987c96ccc529",
     "scripts/check_generated.py": "845e3ac89acb10720eab193712430a09b767272862a02369f391a982da6e7267",
     "scripts/check_layout.py": "26fde5445108c55e36a1ea3083f5dc01a71ecfcd9b1d38542c515d86afe5ab4d",
@@ -81,7 +87,7 @@
     "src/ai_dlc/harness/user_agents.py": "6fad6edd1d1d89b0c105291f2fa8b69f223ce00bd5095d77357d7c05e6eb3f4a",
     "src/ai_dlc/harness/workflow_bundles.py": "e0943696bdced1e841bf15a68c2040e37e484fe7c021119dec1c25e82be0fe38",
     "src/ai_dlc/locking.py": "f1cfe828e897e11d73b645130060362e2699f75aac9307ed8cb4955b0533b629",
-    "src/ai_dlc/mcp_server.py": "b4643b19885000c359bd76301be5f95c494d4ef8d8fee14327c50a08656eb9b3",
+    "src/ai_dlc/mcp_server.py": "21f30c12ce9ae74551b3484b5cb765ed9d225f8be8a0f5c24885429af47d2169",
     "src/ai_dlc/provider_definitions.py": "e90c2d41a839bc4a32dcb3989f59fa6c9073bd1233f3db2088bd176e1bc513d3",
     "src/ai_dlc/providers/__init__.py": "85325d9c7d4f2ac948510ad6ac20342ec0bd92d02857dda65637dc7b594181ae",
     "src/ai_dlc/providers/github_issues.py": "55a18a178fc329a94ff95f39b72c5599117c5a8e79842d7cc7c6c8966cbed405",

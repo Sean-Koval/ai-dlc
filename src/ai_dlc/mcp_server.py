@@ -17,7 +17,7 @@ def make_server(root: Path, machine: Path | None = None) -> FastMCP:
     server = FastMCP("AI-DLC")
 
     @server.tool()
-    def context(brief: bool = False) -> dict:
+    def work_context(brief: bool = False) -> dict:
         """Offline session context: local work records and required checks; no remote calls."""
         from ai_dlc.work.workflow import build_context
 

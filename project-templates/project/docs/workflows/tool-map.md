@@ -61,7 +61,7 @@ enrollment lifecycle. Local CLI and MCP execution are current; hosted or cloud
 execution is a later qualification target. Obsidian project portals are the default machine-local canonical file links; explicit mount mode exposes existing canonical directories from a stable checkout. Neither mode synchronizes document bodies. Provider discovery remains separately scoped.
 
 Machine enrollment mutations are CLI-only in this cycle. MCP exposes
-`work_publish`, `work_start`, `work_status`, `work_link`, `work_finish`,
+`work_context`, `work_publish`, `work_start`, `work_status`, `work_link`, `work_finish`,
 `doctor`, `project_docs_check`, `knowledge_find`, `knowledge_append`, and `knowledge_note`,
 plus the documentation and workspace tools below; it does
 not expose machine enrollment mutation. These MCP identifiers differ from the
