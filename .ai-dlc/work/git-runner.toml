@@ -1,0 +1,25 @@
+schema = 1
+id = "git-runner"
+title = "Route every git invocation through one runner with an explicit timeout and one error type"
+scope = "Add a shared run_git helper in ai_dlc.files with an explicit timeout, optional environment-scoped executable resolution and one GitError that carries stderr; route the four module-level runners and every raw subprocess git call in documentation, environment, providers, setup, work and harness through it. Existing error messages and the tests that patch subprocess.run or profile_source._run_git keep working."
+requires_spec = false
+spec_reason = "Internal subprocess plumbing; no command, contract or configuration behaviour changes. Failures surface with the same messages, now uniformly typed and bounded by a timeout."
+acceptance = [
+  "No subprocess call with a git argv exists in src/ai_dlc outside the shared runner, and a test proves it.",
+  "Every git invocation has an explicit timeout.",
+  "GitError is the single error raised for git failures and it carries stderr; it remains catchable as ValueError and RuntimeError so existing handlers and tests are unaffected.",
+  "All required checks pass."
+]
+reviewed = true
+depends_on = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+tracker = "94"
+branch = "work/git-runner"
