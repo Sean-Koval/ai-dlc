@@ -399,9 +399,9 @@
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "b8b93cc66d1daf49aacdcf5b3aea7a146f4717bb699efa648f68f42fc4f9162c",
+  "snapshot": "11226e8e6fc41ef9833248f4d7886161ad671a91dbea95ae1f8f4c28b2dc66ce",
   "sources": {
-    ".ai-dlc/work/legacy-template-cleanup.toml": "5d443952a2d843c8350376a8ab67e7da19a1aa8235149beabc421d818ea4af82",
+    ".ai-dlc/work/legacy-template-cleanup.toml": "fdfb34a8463ab119119ccf32cd9530e5b1527c32250e8c4eec0cd6269a39ec0e",
     "README.md": "a5ba6b500cdc42e339bd545b5409879369618ff49acb9c18c04e56154093ae00",
     "docs/catalog.toml": "d5fa5e30cece81c49c5566245360214704388357b4afe5ba7adb7d9f379abe59",
     "templates/claude/.claude/commands/act/act.md": "missing",
