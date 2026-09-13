@@ -849,6 +849,10 @@ def test_portable_examples_are_the_only_profiles_in_built_distributions(tmp_path
     assert "Cargo.toml" in members
     assert any(name.startswith("crates/") and name.endswith(".rs") for name in members)
     assert not [name for name in members if is_forbidden_member(name)]
+    # Third-party agent collections were removed from the legacy template; none may return.
+    vendored = re.compile(r"/\.claude/(?:agents/|modes/|commands/(?:ot|sc)_commands/)")
+    assert not [name for name in members if vendored.search(name)]
+    assert "ai_dlc/assets/legacy/claude/.claude/commands/commit/commit.md" in members
 
     def contains_forbidden_content(content: bytes) -> bool:
         return _contains_private_distribution_content(content, project)
@@ -1172,12 +1176,20 @@ def test_product_shaping_adoption_preserves_authored_brief(tmp_path):
     assert not (tmp_path / "ai-dlc.toml").exists()
 
 
+# macOS home directories name a real account; only the repository's "example" placeholder is allowed.
+_MACOS_HOME_PATH = re.compile(rb"(?<![\w.~-])/Users" + rb"/(?!example/)[^/\s`\"']+/")
+
+
 def _contains_private_distribution_content(content: bytes, checkout_root: Path) -> bool:
     local_user = b"sean" + b"koval"
     rooted_path = re.compile(
         rb"(?<![\w.~-])" + re.escape(str(checkout_root).encode()) + rb"(?![\w.~-])"
     )
-    return local_user in content or rooted_path.search(content) is not None
+    return (
+        local_user in content
+        or rooted_path.search(content) is not None
+        or _MACOS_HOME_PATH.search(content) is not None
+    )
 
 
 @pytest.mark.parametrize(
@@ -1192,6 +1204,11 @@ def _contains_private_distribution_content(content: bytes, checkout_root: Path) 
         (b"`/" + b"workspace`", True),
         (b"prefix /" + b"workspace suffix", True),
         (b"/Users/" + b"sean" + b"koval" + b"/checkout", True),
+        (b"/Users/" + b"someone" + b"/VAULT/System_Files/script.py", True),
+        (b"python3 /Users/" + b"someone" + b"/tool.py --flag", True),
+        (b"/Users/", False),
+        (b"/Users/example/profile", False),
+        (b"the Users/ directory", False),
     ],
 )
 def test_distribution_privacy_scan_distinguishes_rooted_paths_from_prose(content, private):

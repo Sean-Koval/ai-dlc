@@ -99,5 +99,8 @@ utility entry points. `scripts/cloud/` holds hosted-harness setup;
 `scripts/legacy/sync-cli-templates.sh` refreshes only the historical Rust embedded
 snapshot. The obsolete unlocked `check_env.sh` installer has been removed.
 `templates/` remains packaged because the legacy scaffold command still uses it.
+It carries only this repository's own commands, hooks and workflows: the
+third-party agent and command collections once copied into it were removed, and
+packaged assets must not contain vendored trees or personal machine paths.
 Do not delete subprocess entry points or assets merely because imports do not
 reference them directly.

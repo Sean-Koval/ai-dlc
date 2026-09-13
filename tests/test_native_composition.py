@@ -121,7 +121,7 @@ def test_conflicting_shared_alias_refuses_before_writes(project, change):
         {"env": ["TOKEN_NAME=value"]},
         {"headers": {"Authorization": "not-a-supported-format"}},
         {"url": "https://mcp.example.invalid/path"},
-        {"command": "/Users/private/bin/tool"},
+        {"command": "/Users/" + "private/bin/tool"},
     ],
 )
 def test_invalid_binding_refuses_without_rewriting_configuration(project, change):
