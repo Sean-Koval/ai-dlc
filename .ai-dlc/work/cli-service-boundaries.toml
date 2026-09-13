@@ -1,0 +1,24 @@
+schema = 1
+id = "cli-service-boundaries"
+title = "Move the context brief, readiness role derivation and tracker-plan validation out of the CLI"
+scope = "Relocate three pieces of policy from src/ai_dlc/cli.py into their responsible services: the context brief into the work package, the explicit-provider-selection filter for readiness into setup/provision.py, and the tracker mapping-table validation into setup/tracker_targets.py. Expose the context brief through MCP. The CLI keeps only argument parsing and output; observable output of every command is unchanged."
+requires_spec = false
+spec_reason = "Internal relocation of existing behaviour with identical command output; no new observable behaviour. Issue 77's redesign of the brief's content stays separate."
+acceptance = [
+  "No function in cli.py reads configuration, globs work records or validates payload shape beyond argument parsing; each moved behaviour has a service-level test.",
+  "ai-dlc context and context --brief print byte-identical output before and after, and MCP exposes the same brief.",
+  "All required checks pass."
+]
+reviewed = true
+depends_on = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+tracker = "95"
+branch = "work/cli-service-boundaries"
