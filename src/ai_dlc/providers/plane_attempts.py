@@ -1,18 +1,13 @@
 """Immutable private Plane intents: one local sender, no reset or deletion API."""
 
 import fcntl
-import hashlib
 import json
 import os
 import stat
 from contextlib import contextmanager
 from pathlib import Path
 
-
-def digest(value):
-    return hashlib.sha256(
-        json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
-    ).hexdigest()
+from ai_dlc.config import digest
 
 
 def unsafe():
