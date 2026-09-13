@@ -8,7 +8,6 @@ import os
 import re
 import shutil
 import stat
-import subprocess
 import tempfile
 import tomllib
 import unicodedata
@@ -18,6 +17,7 @@ from pathlib import Path, PurePosixPath
 
 from ai_dlc.config import resolve_layers
 from ai_dlc.environment.enrollment import EnrollmentLock, EnrollmentPaths
+from ai_dlc.files import run_git
 
 _COMMIT = re.compile(r"^[0-9a-f]{40}$")
 _SCHEME = re.compile(r"^([A-Za-z][A-Za-z0-9+.-]*):")
@@ -75,28 +75,15 @@ def _run_git(
     *arguments: str,
     environ: Mapping[str, str] | None = None,
 ) -> str:
-    if environ is None:
-        command = "git"
-    else:
-        command = shutil.which("git", path=environ.get("PATH", ""))
-        if command is None:
-            raise RuntimeError("Git is required to resolve a source")
-    try:
-        result = subprocess.run(
-            [command, "-C", str(repository), *arguments],
-            capture_output=True,
-            check=False,
-            text=True,
-            timeout=_GIT_TIMEOUT_SECONDS,
-            env=environ,
-        )
-    except FileNotFoundError as error:
-        raise RuntimeError("Git is required to resolve a source") from error
-    except subprocess.TimeoutExpired as error:
-        raise RuntimeError("Git source operation timed out") from error
-    if result.returncode != 0:
-        raise RuntimeError("Git source operation failed")
-    return result.stdout.strip()
+    return run_git(
+        None,
+        "-C",
+        str(repository),
+        *arguments,
+        environ=environ,
+        timeout=_GIT_TIMEOUT_SECONDS,
+        context="Git source operation failed",
+    ).stdout.strip()
 
 
 def _resolve_commit(

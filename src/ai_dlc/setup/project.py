@@ -16,6 +16,7 @@ from typing import Any
 
 from ai_dlc import __version__
 from ai_dlc.config import digest, load_project, read_toml
+from ai_dlc.files import run_git
 
 
 def state_file() -> Path:
@@ -104,8 +105,8 @@ def check_project(
     required, commands = _check_definitions(config)
     # Resolve the runtime before any check so a missing one cannot be reported as a check failure.
     runtime_env(root, use_mise)
-    commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
-    status = subprocess.check_output(["git", "status", "--porcelain"], cwd=root, text=True)
+    commit = run_git(root, "rev-parse", "HEAD").stdout.strip()
+    status = run_git(root, "status", "--porcelain").stdout
     receipt: dict[str, Any] = {
         "schema": 1,
         "commit": commit,
@@ -136,7 +137,7 @@ def check_project(
         )
         if outcome == "cancelled":
             break
-    after = subprocess.check_output(["git", "status", "--porcelain"], cwd=root, text=True)
+    after = run_git(root, "status", "--porcelain").stdout
     receipt["dirty"] = receipt["dirty"] or bool(after)
     return receipt
 

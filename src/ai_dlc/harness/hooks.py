@@ -78,15 +78,9 @@ def handle_hook(root: Path, event: str, payload: dict) -> dict:
             "reason": "Destructive operation denied: this hook cannot request native approval. Review and authorize it through the client's native controls.",
         }
     if category == "bound-operation":
-        import subprocess
+        from ai_dlc.files import run_git
 
-        branch = subprocess.run(
-            ["git", "branch", "--show-current"],
-            cwd=root,
-            capture_output=True,
-            text=True,
-            check=False,
-        ).stdout.strip()
+        branch = run_git(root, "branch", "--show-current", check=False).stdout.strip()
         bound = False
         for record in (root / ".ai-dlc/work").glob("*.toml"):
             value = tomllib.loads(record.read_text())

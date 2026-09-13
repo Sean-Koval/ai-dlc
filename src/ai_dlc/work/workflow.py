@@ -4,7 +4,6 @@ import hashlib
 import json
 import os
 import re
-import subprocess
 import tomllib
 from pathlib import Path, PurePosixPath
 from urllib.parse import urlsplit
@@ -14,7 +13,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from ai_dlc.config import digest as config_digest
 from ai_dlc.config import read_toml, resolve_layers, resolve_runtime
-from ai_dlc.files import inside
+from ai_dlc.files import inside, run_git
 from ai_dlc.locking import project_write_lock
 from ai_dlc.providers import Registry
 from ai_dlc.providers.openspec import OpenSpecProvider
@@ -503,12 +502,7 @@ class WorkService:
         return result
 
     def git(self, *args, check=True):
-        result = subprocess.run(
-            ["git", *args], cwd=self.root, capture_output=True, text=True, timeout=30, check=False
-        )
-        if check and result.returncode:
-            raise ValueError("Git branch operation failed: " + result.stderr.strip())
-        return result
+        return run_git(self.root, *args, check=check, context="Git branch operation failed")
 
     def branch(self, work):
         branch = work["artifacts"].get("branch", "work/" + work["id"])
