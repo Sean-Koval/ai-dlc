@@ -1,16 +1,17 @@
 schema = 1
 id = "packaging-force-includes"
 title = "Stop packaging asset directories that nothing reads from the installed wheel"
-scope = "Remove the playbook and contracts force-includes from the wheel build: no code resolves either through ai_dlc.files.assets, the contract schemas are generated from the Python contracts module and consumed from the project root, and the playbook is documentation. Both directories stay in the repository and the source distribution. Extend the distribution test so every force-included asset directory has a reader."
+scope = "Remove the playbook, contracts and bootstrap force-includes from the wheel build: no code resolves any of them through ai_dlc.files.assets, the contract schemas are generated from the Python contracts module and consumed from the project root, generated projects receive bootstrap files from project-templates, and the playbook is documentation. Both directories stay in the repository and the source distribution. Extend the distribution test so every force-included asset directory has a reader."
 requires_spec = false
 spec_reason = "Packaging of unread static files only; no command, contract or configuration behaviour changes."
 acceptance = [
-  "Every force-included wheel directory has at least one assets(...) reader in src/ai_dlc, and a test proves it.",
-  "The wheel no longer contains ai_dlc/assets/playbook or ai_dlc/assets/contracts; the source distribution still carries both directories.",
-  "All required checks pass."
+    "Every force-included wheel directory has at least one assets(...) reader in src/ai_dlc, and a test proves it.",
+    "The wheel no longer contains ai_dlc/assets/playbook, ai_dlc/assets/contracts or ai_dlc/assets/bootstrap; the source distribution still carries all three directories.",
+    "All required checks pass.",
 ]
 reviewed = true
 depends_on = []
+requirements = []
 
 [providers]
 specs = "openspec"
@@ -22,3 +23,10 @@ deploy = "none"
 [artifacts]
 tracker = "101"
 branch = "work/packaging-force-includes"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"

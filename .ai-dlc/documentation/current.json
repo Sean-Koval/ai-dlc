@@ -1,485 +1,104 @@
 {
-  "base": "f60c12f976cf8d3266fdaaed030d791ad601960d",
+  "base": "8e505417bcbe2e8427b1796f89f7db5ce28686bc",
   "decisions": [
     {
       "outcome": "no-impact",
-      "reason": "Work record for this change, published as tracker item 92.",
-      "target": ".ai-dlc/work/legacy-template-cleanup.toml"
+      "reason": "Work record for this change, published as tracker item 101.",
+      "target": ".ai-dlc/work/packaging-force-includes.toml"
     },
     {
-      "outcome": "updated",
-      "reason": "Legacy scaffold sentence names the claude provider and what it copies.",
-      "target": "README.md"
+      "outcome": "reviewed-no-change",
+      "reason": "The architecture map does not enumerate wheel force-includes; the packaged-asset statement still holds.",
+      "target": "docs/architecture.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Community-sourced slash command copied from an external collection without attribution, removed from the legacy template.",
-      "target": "templates/claude/.claude/commands/act/act.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Community-sourced slash command copied from an external collection without attribution, removed from the legacy template.",
-      "target": "templates/claude/.claude/commands/add-to-changelog/add-to-changelog.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Community-sourced slash command copied from an external collection without attribution, removed from the legacy template.",
-      "target": "templates/claude/.claude/commands/clean/clean.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Community-sourced slash command copied from an external collection without attribution, removed from the legacy template.",
-      "target": "templates/claude/.claude/commands/commit/commit.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Community-sourced slash command copied from an external collection without attribution, removed from the legacy template.",
-      "target": "templates/claude/.claude/commands/context-prime/context-prime.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Community-sourced slash command copied from an external collection without attribution, removed from the legacy template.",
-      "target": "templates/claude/.claude/commands/create-jtbd/create-jtbd.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Community-sourced slash command copied from an external collection without attribution, removed from the legacy template.",
-      "target": "templates/claude/.claude/commands/create-pr/create-pr.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Community-sourced slash command copied from an external collection without attribution, removed from the legacy template.",
-      "target": "templates/claude/.claude/commands/create-prd/create-prd.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Community-sourced slash command copied from an external collection without attribution, removed from the legacy template.",
-      "target": "templates/claude/.claude/commands/create-prp/create-prp.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Community-sourced slash command copied from an external collection without attribution, removed from the legacy template.",
-      "target": "templates/claude/.claude/commands/create-pull-request/create-pull-request.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Community-sourced slash command copied from an external collection without attribution, removed from the legacy template.",
-      "target": "templates/claude/.claude/commands/create-worktrees/create-worktrees.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Community-sourced slash command copied from an external collection without attribution, removed from the legacy template.",
-      "target": "templates/claude/.claude/commands/fix-github-issue/fix-github-issue.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Community-sourced slash command copied from an external collection without attribution, removed from the legacy template.",
-      "target": "templates/claude/.claude/commands/husky/husky.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Community-sourced slash command copied from an external collection without attribution, removed from the legacy template.",
-      "target": "templates/claude/.claude/commands/initref/initref.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Community-sourced slash command copied from an external collection without attribution, removed from the legacy template.",
-      "target": "templates/claude/.claude/commands/load-llms-txt/load-llms-txt.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Community-sourced slash command copied from an external collection without attribution, removed from the legacy template.",
-      "target": "templates/claude/.claude/commands/pr-review/pr-review.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Community-sourced slash command copied from an external collection without attribution, removed from the legacy template.",
-      "target": "templates/claude/.claude/commands/release/release.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Community-sourced slash command copied from an external collection without attribution, removed from the legacy template.",
-      "target": "templates/claude/.claude/commands/testing_plan_integration/testing_plan_integration.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Community-sourced slash command copied from an external collection without attribution, removed from the legacy template.",
-      "target": "templates/claude/.claude/commands/todo/todo.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Community-sourced slash command copied from an external collection without attribution, removed from the legacy template.",
-      "target": "templates/claude/.claude/commands/update-branch-name/update-branch-name.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Community-sourced slash command copied from an external collection without attribution, removed from the legacy template.",
-      "target": "templates/claude/.claude/commands/update-docs/update-docs.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/automation/agents-md-loader.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/automation/build-on-change.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/automation/dependency-checker.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/automation/deployment-health-monitor.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/automation/discord-detailed-notifications.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/automation/discord-error-notifications.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/automation/discord-notifications.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/automation/simple-notifications.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/automation/slack-detailed-notifications.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/automation/slack-error-notifications.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/automation/slack-notifications.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/automation/telegram-detailed-notifications.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/automation/telegram-error-notifications.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/automation/telegram-notifications.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/automation/vercel-auto-deploy.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/automation/vercel-environment-sync.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/development-tools/change-tracker.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/development-tools/command-logger.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/development-tools/file-backup.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/development-tools/lint-on-save.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/development-tools/nextjs-code-quality-enforcer.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/development-tools/smart-formatting.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/git-workflow/auto-git-add.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/git-workflow/smart-commit.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/performance/performance-budget-guard.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/performance/performance-monitor.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/post-tool/format-javascript-files.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/post-tool/format-python-files.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/post-tool/git-add-changes.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/post-tool/run-tests-after-changes.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/pre-tool/backup-before-edit.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/pre-tool/notify-before-bash.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/pre-tool/update-search-year.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/security/file-protection.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/security/security-scanner.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Hook configuration copied from an external collection without attribution and never wired by the template, removed.",
-      "target": "templates/claude/.claude/hooks/testing/test-runner.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Example overrides for a settings schema Claude Code does not read, removed.",
-      "target": "templates/claude/.claude/settings.example.local.json"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Rewritten in Claude Code's hook schema so the Stop event runs the two shipped check scripts.",
-      "target": "templates/claude/.claude/settings.json"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Rewritten as tool-neutral guidance; no longer cites slash commands that never existed.",
-      "target": "templates/claude/.claude/workflows/feature-development/workflow.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Rewritten as tool-neutral guidance; no longer cites slash commands that never existed.",
-      "target": "templates/claude/.claude/workflows/tdd/workflow.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Rust-only project instructions that the scaffold never copied, removed.",
-      "target": "templates/claude/CLAUDE.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Rewritten to describe only the files the scaffold copies and how the hooks are wired.",
-      "target": "templates/claude/README.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Zero-byte placeholder outside the scaffolded .claude tree, removed.",
-      "target": "templates/claude/agents/example.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Zero-byte placeholder file from the retired Rust era, removed with its provider tree.",
-      "target": "templates/gemini/agents/example.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Zero-byte placeholder file from the retired Rust era, removed with its provider tree.",
-      "target": "templates/roo/slash_commands/README.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Zero-byte placeholder file from the retired Rust era, removed with its provider tree.",
-      "target": "templates/roo/slash_commands/features/README.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Zero-byte placeholder file from the retired Rust era, removed with its provider tree.",
-      "target": "templates/roo/slash_commands/features/prompt_template_generation/generate_jinja2_revised.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Zero-byte placeholder file from the retired Rust era, removed with its provider tree.",
-      "target": "templates/roo/slash_commands/features/prompt_template_generation/generate_jinja2_template.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Zero-byte placeholder file from the retired Rust era, removed with its provider tree.",
-      "target": "templates/roo/slash_commands/features/prompt_template_generation/generate_jinja2_template_implementation_plan.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Zero-byte placeholder file from the retired Rust era, removed with its provider tree.",
-      "target": "templates/roo/slash_commands/initial/ai_dlc_prompt_tool_overview.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Zero-byte placeholder file from the retired Rust era, removed with its provider tree.",
-      "target": "templates/roo/slash_commands/initial/implementation_plan.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Workflow document whose personas and commands referred only to the removed collections, removed.",
-      "target": "templates/workflows/epic-sqlite-handoff-workflow.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Workflow document whose personas and commands referred only to the removed collections, removed.",
-      "target": "templates/workflows/template-extension-direct-commands.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Workflow document whose personas and commands referred only to the removed collections, removed.",
-      "target": "templates/workflows/template-extension-workflow.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Scaffold tests now exercise the claude provider and prove no empty or unwired files ship.",
-      "target": "tests/test_cli.py"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Distribution test asserts the template settings file ships instead of a removed command.",
+      "reason": "Distribution test now proves every force-included asset directory has a reader and the unread ones stay out of the wheel.",
       "target": "tests/test_templates.py"
     }
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "11226e8e6fc41ef9833248f4d7886161ad671a91dbea95ae1f8f4c28b2dc66ce",
+  "snapshot": "f897c7531e8cc9afb674b6e38db629a9cebd737d833fea73fcc77cde87db6e3e",
   "sources": {
-    ".ai-dlc/work/legacy-template-cleanup.toml": "fdfb34a8463ab119119ccf32cd9530e5b1527c32250e8c4eec0cd6269a39ec0e",
-    "README.md": "a5ba6b500cdc42e339bd545b5409879369618ff49acb9c18c04e56154093ae00",
+    ".ai-dlc/work/packaging-force-includes.toml": "38d546361b06998ab28edcf4877c41ef1ae5ff678e4edad52adacd8c228b30d8",
+    "docs/architecture.md": "3b392e7c6a2b1d3cd5c02ee533eadfe4f9df70418c5f33dbc796b80b5710c147",
     "docs/catalog.toml": "d5fa5e30cece81c49c5566245360214704388357b4afe5ba7adb7d9f379abe59",
-    "templates/claude/.claude/commands/act/act.md": "missing",
-    "templates/claude/.claude/commands/add-to-changelog/add-to-changelog.md": "missing",
-    "templates/claude/.claude/commands/clean/clean.md": "missing",
-    "templates/claude/.claude/commands/commit/commit.md": "missing",
-    "templates/claude/.claude/commands/context-prime/context-prime.md": "missing",
-    "templates/claude/.claude/commands/create-jtbd/create-jtbd.md": "missing",
-    "templates/claude/.claude/commands/create-pr/create-pr.md": "missing",
-    "templates/claude/.claude/commands/create-prd/create-prd.md": "missing",
-    "templates/claude/.claude/commands/create-prp/create-prp.md": "missing",
-    "templates/claude/.claude/commands/create-pull-request/create-pull-request.md": "missing",
-    "templates/claude/.claude/commands/create-worktrees/create-worktrees.md": "missing",
-    "templates/claude/.claude/commands/fix-github-issue/fix-github-issue.md": "missing",
-    "templates/claude/.claude/commands/husky/husky.md": "missing",
-    "templates/claude/.claude/commands/initref/initref.md": "missing",
-    "templates/claude/.claude/commands/load-llms-txt/load-llms-txt.md": "missing",
-    "templates/claude/.claude/commands/pr-review/pr-review.md": "missing",
-    "templates/claude/.claude/commands/release/release.md": "missing",
-    "templates/claude/.claude/commands/testing_plan_integration/testing_plan_integration.md": "missing",
-    "templates/claude/.claude/commands/todo/todo.md": "missing",
-    "templates/claude/.claude/commands/update-branch-name/update-branch-name.md": "missing",
-    "templates/claude/.claude/commands/update-docs/update-docs.md": "missing",
-    "templates/claude/.claude/hooks/automation/agents-md-loader.json": "missing",
-    "templates/claude/.claude/hooks/automation/build-on-change.json": "missing",
-    "templates/claude/.claude/hooks/automation/dependency-checker.json": "missing",
-    "templates/claude/.claude/hooks/automation/deployment-health-monitor.json": "missing",
-    "templates/claude/.claude/hooks/automation/discord-detailed-notifications.json": "missing",
-    "templates/claude/.claude/hooks/automation/discord-error-notifications.json": "missing",
-    "templates/claude/.claude/hooks/automation/discord-notifications.json": "missing",
-    "templates/claude/.claude/hooks/automation/simple-notifications.json": "missing",
-    "templates/claude/.claude/hooks/automation/slack-detailed-notifications.json": "missing",
-    "templates/claude/.claude/hooks/automation/slack-error-notifications.json": "missing",
-    "templates/claude/.claude/hooks/automation/slack-notifications.json": "missing",
-    "templates/claude/.claude/hooks/automation/telegram-detailed-notifications.json": "missing",
-    "templates/claude/.claude/hooks/automation/telegram-error-notifications.json": "missing",
-    "templates/claude/.claude/hooks/automation/telegram-notifications.json": "missing",
-    "templates/claude/.claude/hooks/automation/vercel-auto-deploy.json": "missing",
-    "templates/claude/.claude/hooks/automation/vercel-environment-sync.json": "missing",
-    "templates/claude/.claude/hooks/development-tools/change-tracker.json": "missing",
-    "templates/claude/.claude/hooks/development-tools/command-logger.json": "missing",
-    "templates/claude/.claude/hooks/development-tools/file-backup.json": "missing",
-    "templates/claude/.claude/hooks/development-tools/lint-on-save.json": "missing",
-    "templates/claude/.claude/hooks/development-tools/nextjs-code-quality-enforcer.json": "missing",
-    "templates/claude/.claude/hooks/development-tools/smart-formatting.json": "missing",
-    "templates/claude/.claude/hooks/git-workflow/auto-git-add.json": "missing",
-    "templates/claude/.claude/hooks/git-workflow/smart-commit.json": "missing",
-    "templates/claude/.claude/hooks/performance/performance-budget-guard.json": "missing",
-    "templates/claude/.claude/hooks/performance/performance-monitor.json": "missing",
-    "templates/claude/.claude/hooks/post-tool/format-javascript-files.json": "missing",
-    "templates/claude/.claude/hooks/post-tool/format-python-files.json": "missing",
-    "templates/claude/.claude/hooks/post-tool/git-add-changes.json": "missing",
-    "templates/claude/.claude/hooks/post-tool/run-tests-after-changes.json": "missing",
-    "templates/claude/.claude/hooks/pre-tool/backup-before-edit.json": "missing",
-    "templates/claude/.claude/hooks/pre-tool/notify-before-bash.json": "missing",
-    "templates/claude/.claude/hooks/pre-tool/update-search-year.json": "missing",
-    "templates/claude/.claude/hooks/security/file-protection.json": "missing",
-    "templates/claude/.claude/hooks/security/security-scanner.json": "missing",
-    "templates/claude/.claude/hooks/testing/test-runner.json": "missing",
-    "templates/claude/.claude/settings.example.local.json": "missing",
-    "templates/claude/.claude/settings.json": "4d0389ddabc9fa1f424a2ca0b49a44736358add8afb9731ad00cf48d80e0e0cd",
-    "templates/claude/.claude/workflows/feature-development/workflow.md": "2be426b60170333be5d2ccb1dd69fd03a30891319ff38e0b4da595edf26571f6",
-    "templates/claude/.claude/workflows/tdd/workflow.md": "9eeee0172f69143a88de72493e83d66830f65d905c1707465595a9d2f8ad43c5",
-    "templates/claude/CLAUDE.md": "missing",
-    "templates/claude/README.md": "778120c70ab79acb4fa2246a9b616fba27b84e70cb803b848b2c7307dfe5d82e",
-    "templates/claude/agents/example.md": "missing",
-    "templates/gemini/agents/example.md": "missing",
-    "templates/roo/slash_commands/README.md": "missing",
-    "templates/roo/slash_commands/features/README.md": "missing",
-    "templates/roo/slash_commands/features/prompt_template_generation/generate_jinja2_revised.md": "missing",
-    "templates/roo/slash_commands/features/prompt_template_generation/generate_jinja2_template.md": "missing",
-    "templates/roo/slash_commands/features/prompt_template_generation/generate_jinja2_template_implementation_plan.md": "missing",
-    "templates/roo/slash_commands/initial/ai_dlc_prompt_tool_overview.md": "missing",
-    "templates/roo/slash_commands/initial/implementation_plan.md": "missing",
-    "templates/workflows/epic-sqlite-handoff-workflow.md": "missing",
-    "templates/workflows/template-extension-direct-commands.md": "missing",
-    "templates/workflows/template-extension-workflow.md": "missing",
-    "tests/test_cli.py": "9b31f3ff7ea2312b21e7565dca6ffb4682c04c2d5c38ad6462396c347b0f9afb",
-    "tests/test_templates.py": "3bc7dbed3d9741bf359274b7cbd373ec52171f6a5af49c5652318b01b564fa53"
+    "pyproject.toml": "57b5a7f4ea777185ab5df4b34c4117a190d41434e1e236b38735987c96ccc529",
+    "scripts/check_generated.py": "845e3ac89acb10720eab193712430a09b767272862a02369f391a982da6e7267",
+    "scripts/check_layout.py": "26fde5445108c55e36a1ea3083f5dc01a71ecfcd9b1d38542c515d86afe5ab4d",
+    "scripts/qualify_framework.py": "01dd9e6acbe14e740f068662aa539e9a7ed0ba57ab97e9457e0a05d968a25fb6",
+    "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+    "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
+    "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
+    "src/ai_dlc/cli.py": "b58464f47f6789f7eb8cb6613823af33a9b3dcb47baa5549234ce444f71b49c0",
+    "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
+    "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
+    "src/ai_dlc/config.py": "31677c538713aa41d3625ef9570f962ed8ee5d32bd4b5b3747437e8fd8fb9d02",
+    "src/ai_dlc/conformance.py": "9d18cdbf21aa8f9889d880729c368d9567f32f83c066693dceb06ce6549b6082",
+    "src/ai_dlc/contracts.py": "a6d7c5ad8f3e2a513621883c75bff187e1104315ab337cddc023d5343a9e7538",
+    "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
+    "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
+    "src/ai_dlc/documentation/document_files.py": "503a38d4df2a1f9d0832d083dcd420ebd1215389385293dd0605fc768c5dd320",
+    "src/ai_dlc/documentation/document_impact.py": "a2976dd6499441c793b425dda1bd82a753fa45c9e7721bacc29d6b18181ee290",
+    "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
+    "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
+    "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
+    "src/ai_dlc/documentation/documents.py": "50391941ed6b8da74cfd30aa6501a8fd330c5084ed4413a9a00fbafe68d9e328",
+    "src/ai_dlc/documentation/knowledge.py": "91aad53eccc1889d4077ef59c137ff1b35b03c433efa05b7be61d2e534fa7db6",
+    "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
+    "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
+    "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
+    "src/ai_dlc/documentation/vault_mount.py": "ca1a57a8aaca083674cd685a75971b0ede92d5f34617e6a026271edc4369ca96",
+    "src/ai_dlc/documentation/workspace_diagnostics.py": "c53cc66966888078108662d6a307b00c8746c6a8f1d8098938529c65d5694b61",
+    "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
+    "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
+    "src/ai_dlc/environment/enrollment.py": "fb0e82fb7b9e5808e1ee3571a53d129ddc8b8b6c83ab5918d7acab9566f7e9d1",
+    "src/ai_dlc/environment/machine.py": "491128faaec9634ec29ef0ebc9a38af3dfe25499e533543fcecf0734d2e50d1a",
+    "src/ai_dlc/environment/profile_source.py": "517b6bd0ae788a9270da5aee872abc2502c523d9faf75e52ab54ba5c6861e906",
+    "src/ai_dlc/files.py": "383ba27f055a5637c384462a172ff678165b643408c77d0945fd8f4622b00580",
+    "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
+    "src/ai_dlc/harness/agents.py": "c1914456027ef059c8b3da321a429a96e69cb4c97e7cc583d437397406f6855c",
+    "src/ai_dlc/harness/components.py": "59a50ce61709daaf4b9209c154498eb5efacb84a8747550685421cc269ea7f3c",
+    "src/ai_dlc/harness/hooks.py": "2081bdfd82651e53870c7f6fec6a38a3bc587b0e4dfae46a3043b6617add9994",
+    "src/ai_dlc/harness/native_composition.py": "7cd919fd40adb70eea1a775dbd5ea8328fde9eda6302d6f52565f14ea3d244ab",
+    "src/ai_dlc/harness/user_agents.py": "6fad6edd1d1d89b0c105291f2fa8b69f223ce00bd5095d77357d7c05e6eb3f4a",
+    "src/ai_dlc/harness/workflow_bundles.py": "e0943696bdced1e841bf15a68c2040e37e484fe7c021119dec1c25e82be0fe38",
+    "src/ai_dlc/locking.py": "f1cfe828e897e11d73b645130060362e2699f75aac9307ed8cb4955b0533b629",
+    "src/ai_dlc/mcp_server.py": "3b867e8b66f8d1b30258da9af7f30640e1df0a605af37a2ba1c16b2584af0f1d",
+    "src/ai_dlc/provider_definitions.py": "e90c2d41a839bc4a32dcb3989f59fa6c9073bd1233f3db2088bd176e1bc513d3",
+    "src/ai_dlc/providers/__init__.py": "85325d9c7d4f2ac948510ad6ac20342ec0bd92d02857dda65637dc7b594181ae",
+    "src/ai_dlc/providers/github_issues.py": "55a18a178fc329a94ff95f39b72c5599117c5a8e79842d7cc7c6c8966cbed405",
+    "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
+    "src/ai_dlc/providers/jira_cloud.py": "0c4ee8f892ca3f329e822400a81c1e80d5607c087910329251acb9165345cc28",
+    "src/ai_dlc/providers/linear.py": "fa90bd64765c8e8bee1cbfa54e47e17688e8e6407c7492ae0ed863b4615c2b95",
+    "src/ai_dlc/providers/openspec.py": "c45cba2218b2201d67c66eb012fc1f16d4d492ea43b702e4c9236bde99caa83f",
+    "src/ai_dlc/providers/plane.py": "76fab3893bf0d4536c58500e4ab5a90f59893977c057be4777d78068e278ca1c",
+    "src/ai_dlc/providers/plane_attempts.py": "9a90b719e348d5592865e415bd29c3686969263f733a44275d6029fee019743c",
+    "src/ai_dlc/providers/python_exec.py": "3aaafe9bf74a4a949b59d71ed2079b9c48114462a9c823b3641a1772af5a6ff1",
+    "src/ai_dlc/providers/scm.py": "2cdf9479741d0a3f37405e5b1cfd9c7d7b0c68038feefb75f3b910b894c088e8",
+    "src/ai_dlc/setup/__init__.py": "8eb444a69a67d0c1a59ffc0c80ce59efda159976bea58d40154e97f8bdecf18c",
+    "src/ai_dlc/setup/connections.py": "35d04e1c6778227b0947034d2ed5d535ab8c79ee783496a2c2c7285d694b5595",
+    "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
+    "src/ai_dlc/setup/github_project_setup.py": "86b97dcaa4447082252008da1df64159cac09a077198a7e84e3577294ad540d2",
+    "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
+    "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
+    "src/ai_dlc/setup/project.py": "6ac73c0138181e8a9f971626c3178b00fafe208c5a66eb82726c2fbebe863425",
+    "src/ai_dlc/setup/provider_onboarding.py": "8a9407894dc494faa4a431ad219e0ebbd472504893434ac3b66f7be6f6acfdf6",
+    "src/ai_dlc/setup/provision.py": "5d5af0be37b5620a561ab324b41febc541b07e0a5b35051869b025f114effdd2",
+    "src/ai_dlc/setup/readiness.py": "7c7c2767520b3da2e7f8dd74be4ed6359a7dca66bc413c68eba2b1b4bad7f52c",
+    "src/ai_dlc/setup/rebind.py": "c083e35c27f10415986d3170bb81905944254bd12485c5a4db71b77b0a38adf2",
+    "src/ai_dlc/setup/templates.py": "0c46babe46b3cdcc4e02bb12cb00b624b7120868fa30984d34db46a0cb504e55",
+    "src/ai_dlc/setup/tracker_targets.py": "1b3fe3fea13732748d5498e1cbc2a2d16395eca7bd942789389c6bc08b214fd8",
+    "src/ai_dlc/setup/workstation.py": "4abcc68e4d30ee4ce32ed1ff9b872d5926c15747de2ec2a92b88c7352813206a",
+    "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
+    "src/ai_dlc/verification/sandbox.py": "b830bd80df60802c29dbc2e1c639958537f289592052b404e6972ff377d25681",
+    "src/ai_dlc/verification/test_proxy.py": "f38cb2a28c8501c743613b0bfdf7e17f367c101ce7984a304e20ab3095eb7880",
+    "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
+    "src/ai_dlc/work/journal.py": "f5801d312b0434262c9dda76ac3b94cd1ac099fe98650dc9f745927898a89b52",
+    "src/ai_dlc/work/traceability.py": "c4062335f26218e99f58e236425674c513ea6f2fce7f68b624a4df4dcd8ab3aa",
+    "src/ai_dlc/work/tracker_migration.py": "65fc8eb4a708947c12a5f4fd3cfe664f409ee32c282b68a48bd725152e5b18a3",
+    "src/ai_dlc/work/workflow.py": "f988f7ca8e6193ce9a0e0906d73a7bfae251e2d385edea08ab4630089f7182e9",
+    "tests/test_templates.py": "548a8e41995be86d387b15141eb0b513dac592ad5eb0d293bfc36c27df98e709"
   }
 }

@@ -30,10 +30,7 @@ packages = ["src/ai_dlc"]
 "modules" = "ai_dlc/assets/modules"
 "agents" = "ai_dlc/assets/agents"
 "project-templates" = "ai_dlc/assets/project-templates"
-"contracts" = "ai_dlc/assets/contracts"
 "targets" = "ai_dlc/assets/targets"
-"playbook" = "ai_dlc/assets/playbook"
-"bootstrap" = "ai_dlc/assets/bootstrap"
 
 [tool.hatch.build.targets.sdist]
 exclude = ["/profiles/sean.toml", "/.ai-dlc/local/**", "/.superpowers/**", "/target/**"]
