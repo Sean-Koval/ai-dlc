@@ -18,7 +18,6 @@ code_paths = [
     "src/ai_dlc/*.py",
     "src/ai_dlc/**/*.py",
     "scripts/*.py",
-    "scripts/legacy/*.sh",
     "pyproject.toml",
 ]
 

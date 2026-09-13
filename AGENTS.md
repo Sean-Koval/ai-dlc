@@ -10,8 +10,9 @@ Prepare this checkout with `sh scripts/bootstrap.sh --source`; run
 and leaves the shared `ai-dlc` alias alone; use the printed environment path, or
 pass `--publish-aliases` to repoint the alias deliberately. Use the Python implementation in `src/ai_dlc/`.
 The [architecture](docs/architecture.md) maps its packages and entry points.
-`crates/` is historical Rust; `templates/` still supplies the supported legacy
-scaffold command. Preserve compatibility tests and packaged assets.
+The Rust implementation is retired and removed; its plans stay in `docs/archive/`.
+`templates/` still supplies the supported legacy scaffold command. Preserve
+compatibility tests and packaged assets.
 
 ## Placement and upkeep
 

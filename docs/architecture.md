@@ -95,9 +95,10 @@ there is no duplicate tree of compatibility forwarding modules. Application
 services share contracts; provider details stay inside adapters.
 
 `scripts/` holds source bootstrap, repository checks and qualification/release
-utility entry points. `scripts/cloud/` holds hosted-harness setup;
-`scripts/legacy/sync-cli-templates.sh` refreshes only the historical Rust embedded
-snapshot. The obsolete unlocked `check_env.sh` installer has been removed.
+utility entry points. `scripts/cloud/` holds hosted-harness setup. The obsolete unlocked `check_env.sh`
+installer, the historical Rust crate with its embedded template mirror, and the
+script that synchronised them have been removed; the retired Rust plans remain in
+`docs/archive/legacy/`.
 `templates/` remains packaged because the legacy scaffold command still uses it.
 It carries only this repository's own commands, hooks and workflows: the
 third-party agent and command collections once copied into it were removed, and
