@@ -1,0 +1,24 @@
+schema = 1
+id = "digest-consolidation"
+title = "Consolidate the canonical JSON digest helpers onto config.digest"
+scope = "Replace the three copies of the canonical JSON digest function and the two inline copies of the same compact form with imports of ai_dlc.config.digest, so every digest rejects NaN and produces one canonical form. The operation-identity hash in work/workflow.py keeps its existing non-compact form because tracker correlation comments on published items depend on it."
+requires_spec = false
+spec_reason = "Internal helper consolidation with byte-identical output for every existing input; no command, contract or configuration behaviour changes."
+acceptance = [
+  "Exactly one canonical JSON digest implementation exists in src/ai_dlc and it passes allow_nan=False.",
+  "A regression test proves a NaN payload raises instead of digesting.",
+  "No stored digest, fingerprint or fixture changes; all required checks pass."
+]
+reviewed = true
+depends_on = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+tracker = "93"
+branch = "work/digest-consolidation"
