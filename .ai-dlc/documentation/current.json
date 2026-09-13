@@ -34,9 +34,9 @@
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "dc09879e0d3a4aada2e2e308876322e17a7a286955b98889bc47f537d1f76e06",
+  "snapshot": "509f358165b9736b6a153a1b4c5be0e808e489be84e7c2114ff20f722309a759",
   "sources": {
-    ".ai-dlc/work/git-runner.toml": "76a6a6256d63b5f640b5b57eafb20fad57c25836057006f17606d26a23b7ad9d",
+    ".ai-dlc/work/git-runner.toml": "f14ef5cc2f3a82ecd5248c39ea3179ecc5fde32391cdb39c6b5c140558a53c15",
     ".github/workflows/release.yml": "7ddd05d4f6d18ce5f9db254c5361591fdfb8810eb8604db07def99fff8ab30b6",
     "docs/architecture.md": "3b392e7c6a2b1d3cd5c02ee533eadfe4f9df70418c5f33dbc796b80b5710c147",
     "docs/catalog.toml": "d5fa5e30cece81c49c5566245360214704388357b4afe5ba7adb7d9f379abe59",
