@@ -130,6 +130,13 @@ Settings are loaded in the following priority order:
 3. **Project settings** (`.claude/settings.json`)
 4. **Global defaults** (built-in)
 
+### Third-Party Content
+
+`agents/ot_agents/` and `commands/ot_commands/` are vendored from the
+MIT-licensed [claude-code-templates](https://github.com/davila7/claude-code-templates)
+project. Each directory carries the upstream `LICENSE` and a `NOTICE` that names
+the origin and any local changes; keep both files when copying these trees.
+
 ## Claude Code Slash Commands
 
 These commands are used within Claude Code terminal sessions to enhance your development workflow:

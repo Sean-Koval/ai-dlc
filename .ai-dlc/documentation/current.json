@@ -1,97 +1,295 @@
 {
-  "base": "577afb5bc28b9a92d9c126434e44a766f3632a88",
+  "base": "f1becc4b417622a8ca1853275c562c5ce1f90df0",
   "decisions": [
     {
-      "outcome": "reviewed-no-change",
-      "reason": "Project generation and setup gained release-manifest handling inside the existing setup package; no package boundary or entry point changed.",
+      "outcome": "no-impact",
+      "reason": "Work record for this change, published as tracker item 89.",
+      "target": ".ai-dlc/work/legacy-asset-attribution.toml"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Upstream MIT licence text shipped beside the vendored claude-code-templates tree; attribution is explained in docs/architecture.md and the template README.",
+      "target": "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/LICENSE"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Origin notice for the vendored claude-code-templates tree; attribution is explained in docs/architecture.md and the template README.",
+      "target": "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/NOTICE"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/daily_notes_connector.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/enhance_tag_standardizer.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/find_keyword_connections.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/fix_quoted_tags.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/implement_entity_connections.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/link_suggester.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/metadata_adder.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/moc_generator.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/parse_keyword_connections.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/tag_standardizer.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/connection-agent.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/content-curator.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/metadata-agent.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/moc-agent.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/review-agent.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/tag-agent.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/vault-optimizer.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Upstream MIT licence text shipped beside the vendored claude-code-templates tree; attribution is explained in docs/architecture.md and the template README.",
+      "target": "crates/ai-dlc-cli/embedded-templates/claude/.claude/commands/ot_commands/LICENSE"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Origin notice for the vendored claude-code-templates tree; attribution is explained in docs/architecture.md and the template README.",
+      "target": "crates/ai-dlc-cli/embedded-templates/claude/.claude/commands/ot_commands/NOTICE"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Historical Rust embedded snapshot refreshed by scripts/legacy/sync-cli-templates.sh so it mirrors templates/; not current guidance.",
+      "target": "crates/ai-dlc-cli/embedded-templates/claude/.claude/commands/todo/todo.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Historical Rust embedded snapshot refreshed by scripts/legacy/sync-cli-templates.sh so it mirrors templates/; not current guidance.",
+      "target": "crates/ai-dlc-cli/embedded-templates/workflows/epic-sqlite-handoff-workflow.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Historical Rust embedded snapshot refreshed by scripts/legacy/sync-cli-templates.sh so it mirrors templates/; not current guidance.",
+      "target": "crates/ai-dlc-cli/embedded-templates/workflows/template-extension-direct-commands.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Historical Rust embedded snapshot refreshed by scripts/legacy/sync-cli-templates.sh so it mirrors templates/; not current guidance.",
+      "target": "crates/ai-dlc-cli/embedded-templates/workflows/template-extension-workflow.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Records that the ot_agents and ot_commands trees are vendored from claude-code-templates with their licence and notice, and that packaged assets carry no personal machine paths.",
       "target": "docs/architecture.md"
     },
     {
+      "outcome": "no-impact",
+      "reason": "Upstream MIT licence text shipped beside the vendored claude-code-templates tree; attribution is explained in docs/architecture.md and the template README.",
+      "target": "templates/claude/.claude/agents/ot_agents/LICENSE"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Origin notice for the vendored claude-code-templates tree; attribution is explained in docs/architecture.md and the template README.",
+      "target": "templates/claude/.claude/agents/ot_agents/NOTICE"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/daily_notes_connector.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/enhance_tag_standardizer.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/find_keyword_connections.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/fix_quoted_tags.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/implement_entity_connections.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/link_suggester.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/metadata_adder.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/moc_generator.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/parse_keyword_connections.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/tag_standardizer.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/connection-agent.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/content-curator.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/metadata-agent.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/moc-agent.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/review-agent.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/tag-agent.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Removed vendored agent-team file that referenced another person's home directory and vault layout; no document describes it.",
+      "target": "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/vault-optimizer.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Upstream MIT licence text shipped beside the vendored claude-code-templates tree; attribution is explained in docs/architecture.md and the template README.",
+      "target": "templates/claude/.claude/commands/ot_commands/LICENSE"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Origin notice for the vendored claude-code-templates tree; attribution is explained in docs/architecture.md and the template README.",
+      "target": "templates/claude/.claude/commands/ot_commands/NOTICE"
+    },
+    {
       "outcome": "updated",
-      "reason": "Adds the release publication path section: the workflow, the local release-mode proof on a stand-in host, and the unchanged outstanding obligations.",
-      "target": "docs/release-verification.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "New runbook for publishing from a tag and installing from a release, enrolled in the catalog with its code and verification mappings.",
-      "target": "docs/runbooks/release-publication.md"
+      "reason": "Adds a Third-Party Content section pointing at the vendored trees' LICENSE and NOTICE files.",
+      "target": "templates/claude/README.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Work record for this change, reconciled with tracker item 71 and repointed at the archived change.",
-      "target": ".ai-dlc/work/release-publication.toml"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Replaces the no-published-release statement with the release install procedure and points at the runbook; source install remains documented.",
-      "target": "README.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Enrols the release runbook with code_paths for the workflow, manifest builder, bootstrap scripts and templates module.",
-      "target": "docs/catalog.toml"
+      "reason": "Splits a fixture path literal so the source distribution privacy scan does not flag the test file itself.",
+      "target": "tests/test_native_composition.py"
     },
     {
       "outcome": "no-impact",
-      "reason": "OpenSpec owns the archived change proposal.",
-      "target": "openspec/changes/archive/2026-09-13-release-publication/proposal.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "OpenSpec owns the archived change design.",
-      "target": "openspec/changes/archive/2026-09-13-release-publication/design.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "OpenSpec owns the archived task list; 9.3 stays open until merge.",
-      "target": "openspec/changes/archive/2026-09-13-release-publication/tasks.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Archived delta, promoted into the baseline capability.",
-      "target": "openspec/changes/archive/2026-09-13-release-publication/specs/release-publication/spec.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "New baseline capability RP-01 to RP-03 promoted from the reviewed delta.",
-      "target": "openspec/specs/release-publication/spec.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Template guidance now explains that a release-installed engine writes bootstrap/release.sh and what to do when it is absent.",
-      "target": "project-templates/project/AI-DLC.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Regression test for tool activation only when a project declares tools.",
-      "target": "tests/test_checks.py"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Regression tests for manifest inclusion, absence and conflict protection.",
+      "reason": "Regression tests: distributions reject macOS home paths and must ship the vendored trees' LICENSE and NOTICE without obsidian-ops-team.",
       "target": "tests/test_templates.py"
     }
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "8b2b3a87b121bf61fede06d81090da666b98074717c79364e6e20e15f34ba0c9",
+  "snapshot": "bb2a17aeb12558dfd91e5633998a50401453504e5d8449a08f24ddc29a75f520",
   "sources": {
-    ".ai-dlc/work/release-publication.toml": "aeb4ae340c98bb0bf3fa6cb74a779fe2efebe434dbcadab9cf01b82ecd8c4657",
-    ".github/workflows/release.yml": "7ddd05d4f6d18ce5f9db254c5361591fdfb8810eb8604db07def99fff8ab30b6",
-    "README.md": "bb735a73acc1963956a2c106ba0c496d2ae2410fce237246b19dec28ee470bac",
-    "docs/architecture.md": "129106a2268e4db12f73c4ada54ea0de8b6b51607bec3e09356ea8df280eb8db",
+    ".ai-dlc/work/legacy-asset-attribution.toml": "20d672b79202bba7a8afb9db0276ab1e9300c460764fed000b561ff8af1e1a2c",
+    "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/LICENSE": "15cc073ffa3a01bb7da145aeae2a842b473860d142c92485536ee9c91195a705",
+    "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/NOTICE": "62586b4efdf074c4ada4a79e2e812d3d1801b389599545279eb39be8bb8ae31d",
+    "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/daily_notes_connector.py": "missing",
+    "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/enhance_tag_standardizer.py": "missing",
+    "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/find_keyword_connections.py": "missing",
+    "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/fix_quoted_tags.py": "missing",
+    "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/implement_entity_connections.py": "missing",
+    "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/link_suggester.py": "missing",
+    "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/metadata_adder.py": "missing",
+    "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/moc_generator.py": "missing",
+    "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/parse_keyword_connections.py": "missing",
+    "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/tag_standardizer.py": "missing",
+    "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/connection-agent.md": "missing",
+    "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/content-curator.md": "missing",
+    "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/metadata-agent.md": "missing",
+    "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/moc-agent.md": "missing",
+    "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/review-agent.md": "missing",
+    "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/tag-agent.md": "missing",
+    "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/vault-optimizer.md": "missing",
+    "crates/ai-dlc-cli/embedded-templates/claude/.claude/commands/ot_commands/LICENSE": "15cc073ffa3a01bb7da145aeae2a842b473860d142c92485536ee9c91195a705",
+    "crates/ai-dlc-cli/embedded-templates/claude/.claude/commands/ot_commands/NOTICE": "9ab0322d741b14d638d009729dc90f7dab2a1301f2f2df33a521a5a0a7741eaa",
+    "crates/ai-dlc-cli/embedded-templates/claude/.claude/commands/todo/todo.md": "61810aba77f0621ac3feccc02f166272f98405c684568feff3237a38665ef7be",
+    "crates/ai-dlc-cli/embedded-templates/workflows/epic-sqlite-handoff-workflow.md": "31ca6644772cc903aee4e397231b607f63ea6bee7b4b68015bad0b8fd83179ea",
+    "crates/ai-dlc-cli/embedded-templates/workflows/template-extension-direct-commands.md": "e091b3f18847017de837be96915c1310f10d84b138acfbdea45ed96e70ab2c71",
+    "crates/ai-dlc-cli/embedded-templates/workflows/template-extension-workflow.md": "8f0ff56f32d2b991c1cc677f72f5476f5e6f0fa15ac6df40c48417991b617630",
+    "docs/architecture.md": "88f85dd62e0809c9e39cd27ce4025c807ae3af255d46f8f51bc43e8e524ae8b1",
     "docs/catalog.toml": "7d0a875005eaaa67c0d4857e59c797142ad5b1df5537cd762190925ff415f060",
-    "docs/release-verification.md": "de248fb186cf5df3a198a6b3fcbf80c2112e7f034126ca2cf59867e4a887986f",
-    "docs/runbooks/release-publication.md": "949d2367ab71c0a6b958d91abcf49e3d86263ff4d91001bf6d47ddbd15e29166",
-    "openspec/changes/archive/2026-09-13-release-publication/design.md": "d1aa35c9557cb04cd69c1b7fcbd3cff14d7bcabe2571bb56ee896bf5772bed7e",
-    "openspec/changes/archive/2026-09-13-release-publication/proposal.md": "a39b292024f67a9c212c90bda2687ff8fe2112618321b0146a40f0d430de1ae4",
-    "openspec/changes/archive/2026-09-13-release-publication/specs/release-publication/spec.md": "ebe3a45145d1b9a88d7d399e2d0bed44436cb65046c7a8a97172789811f32bb9",
-    "openspec/changes/archive/2026-09-13-release-publication/tasks.md": "3c2fc1b41356cc95c0b6bf4ce9a23d6a0a9c80179c8ea64372019c599366e3ae",
-    "openspec/specs/release-publication/spec.md": "64b94e503b2bc6177d50c6231137a85647ce68eaef1924240edfdbb88d5391fb",
-    "project-templates/project/AI-DLC.md": "e55dec307408c7247d8675b507c114ece61c9eb7f7d1ace006b09518eea3b2a1",
-    "project-templates/project/scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
     "pyproject.toml": "9cb4d37f9aba00fb6668ba69de8c53a06471128f2964d63848ca8d7afe3a14cf",
-    "scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
     "scripts/check_generated.py": "845e3ac89acb10720eab193712430a09b767272862a02369f391a982da6e7267",
     "scripts/check_layout.py": "26fde5445108c55e36a1ea3083f5dc01a71ecfcd9b1d38542c515d86afe5ab4d",
     "scripts/legacy/sync-cli-templates.sh": "235f53f0e4f4785ad2bb5559b4a01f91f4e88b228437af033857c6335593fa12",
@@ -167,9 +365,29 @@
     "src/ai_dlc/work/traceability.py": "c4062335f26218e99f58e236425674c513ea6f2fce7f68b624a4df4dcd8ab3aa",
     "src/ai_dlc/work/tracker_migration.py": "65fc8eb4a708947c12a5f4fd3cfe664f409ee32c282b68a48bd725152e5b18a3",
     "src/ai_dlc/work/workflow.py": "f988f7ca8e6193ce9a0e0906d73a7bfae251e2d385edea08ab4630089f7182e9",
-    "tests/test_bootstrap.py": "30e1d9868fb88967737f8acd64182a1f8bbcb79cbb12d25f72b7e3dd11d2e171",
-    "tests/test_checks.py": "53fd70c9b50c9fce69e8e7c2e1c696b89d6564447deb2d7d88a15a69430bcd09",
-    "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
-    "tests/test_templates.py": "5d3d4e5707eae7f119bfa946ded0affa12e1c045c7ec7948f0c968ed0fb5fda0"
+    "templates/claude/.claude/agents/ot_agents/LICENSE": "15cc073ffa3a01bb7da145aeae2a842b473860d142c92485536ee9c91195a705",
+    "templates/claude/.claude/agents/ot_agents/NOTICE": "62586b4efdf074c4ada4a79e2e812d3d1801b389599545279eb39be8bb8ae31d",
+    "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/daily_notes_connector.py": "missing",
+    "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/enhance_tag_standardizer.py": "missing",
+    "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/find_keyword_connections.py": "missing",
+    "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/fix_quoted_tags.py": "missing",
+    "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/implement_entity_connections.py": "missing",
+    "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/link_suggester.py": "missing",
+    "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/metadata_adder.py": "missing",
+    "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/moc_generator.py": "missing",
+    "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/parse_keyword_connections.py": "missing",
+    "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/tag_standardizer.py": "missing",
+    "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/connection-agent.md": "missing",
+    "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/content-curator.md": "missing",
+    "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/metadata-agent.md": "missing",
+    "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/moc-agent.md": "missing",
+    "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/review-agent.md": "missing",
+    "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/tag-agent.md": "missing",
+    "templates/claude/.claude/agents/ot_agents/obsidian-ops-team/vault-optimizer.md": "missing",
+    "templates/claude/.claude/commands/ot_commands/LICENSE": "15cc073ffa3a01bb7da145aeae2a842b473860d142c92485536ee9c91195a705",
+    "templates/claude/.claude/commands/ot_commands/NOTICE": "9ab0322d741b14d638d009729dc90f7dab2a1301f2f2df33a521a5a0a7741eaa",
+    "templates/claude/README.md": "6bd3a1c5056ef4c6dacfb2d8502edca9c65b0b43eef69b053f52b952e941c64e",
+    "tests/test_native_composition.py": "c2a7d6d2ad50d09c4d7bdde8b70200634e34a4d27492d9bd54776cf37d6a6562",
+    "tests/test_templates.py": "b3c8292af5e0fc7096aad726f4c3f842eefdaa17dcefc4977cfdfc21090e9692"
   }
 }
