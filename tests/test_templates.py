@@ -860,6 +860,26 @@ def test_portable_examples_are_the_only_profiles_in_built_distributions(tmp_path
     vendored = re.compile(r"/\.claude/(?:agents/|modes/|commands/(?:ot|sc)_commands/)")
     assert not [name for name in members if vendored.search(name)]
     assert "ai_dlc/assets/legacy/claude/.claude/settings.json" in members
+    # Unread directories stay in the checkout and sdist but must not be packaged into the wheel.
+    with zipfile.ZipFile(wheel) as archive:
+        wheel_asset_dirs = {
+            name.split("/")[2] for name in archive.namelist() if name.startswith("ai_dlc/assets/")
+        }
+    assert not wheel_asset_dirs & {"playbook", "contracts", "bootstrap"}
+    assert {"playbook/README.md", "contracts/manifest.json", "bootstrap/download.sh"} <= set(
+        members
+    )
+    readers = {
+        match
+        for path in (project / "src/ai_dlc").rglob("*.py")
+        for match in re.findall(r'assets\("([a-z-]+)"\)', path.read_text())
+    }
+    forced = tomllib.loads((project / "pyproject.toml").read_text())["tool"]["hatch"]["build"][
+        "targets"
+    ]["wheel"]["force-include"]
+    packaged = {value.removeprefix("ai_dlc/assets/").split("/")[0] for value in forced.values()}
+    assert wheel_asset_dirs == packaged
+    assert packaged == readers, (packaged - readers, readers - packaged)
 
     def contains_forbidden_content(content: bytes) -> bool:
         return _contains_private_distribution_content(content, project)
