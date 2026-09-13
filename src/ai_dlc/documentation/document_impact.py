@@ -9,6 +9,7 @@ import subprocess
 import tomllib
 from pathlib import Path
 
+from ai_dlc.config import digest
 from ai_dlc.documentation.document_files import read_document
 from ai_dlc.documentation.documents import check_documents
 from ai_dlc.files import inside
@@ -42,12 +43,6 @@ def content_digest(root: Path, relative: str) -> str:
         return hashlib.sha256(read_document(path)).hexdigest()
     except FileNotFoundError:
         return "missing"
-
-
-def digest(value: object) -> str:
-    return hashlib.sha256(
-        json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
-    ).hexdigest()
 
 
 def read_catalog(root: Path) -> list[dict]:

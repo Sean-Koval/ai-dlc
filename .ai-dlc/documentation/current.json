@@ -1,29 +1,41 @@
 {
-  "base": "8e505417bcbe2e8427b1796f89f7db5ce28686bc",
+  "base": "5320fdeb5b9da454a5cc90913cb4a43a5224217c",
   "decisions": [
     {
       "outcome": "no-impact",
-      "reason": "Work record for this change, published as tracker item 101.",
-      "target": ".ai-dlc/work/packaging-force-includes.toml"
+      "reason": "Work record for this change, published as tracker item 93.",
+      "target": ".ai-dlc/work/digest-consolidation.toml"
     },
     {
       "outcome": "reviewed-no-change",
-      "reason": "The architecture map does not enumerate wheel force-includes; the packaged-asset statement still holds.",
+      "reason": "Helper consolidation inside existing packages; no boundary or entry point changed.",
       "target": "docs/architecture.md"
     },
     {
+      "outcome": "reviewed-no-change",
+      "reason": "Documentation impact keeps the same canonical digest output; the recorded verification still describes current behaviour.",
+      "target": "docs/verification/documentation-workflow.md"
+    },
+    {
       "outcome": "no-impact",
-      "reason": "Distribution test now proves every force-included asset directory has a reader and the unread ones stay out of the wheel.",
-      "target": "tests/test_templates.py"
+      "reason": "Regression test that every digest site shares config.digest and NaN is rejected.",
+      "target": "tests/test_config.py"
     }
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "be668788ade5651f4e4350e366b26d9ef8c60459d2b7db13b634ffff36efa8bd",
+  "snapshot": "2c58b33511beef6451cf983e4716f9f8f5c259e644d5248ecc87d3aa1c5e5021",
   "sources": {
-    ".ai-dlc/work/packaging-force-includes.toml": "e71c279c0691f3d6eb5d7821136e45a30c74484595394dd3b8a8595802cb689c",
+    ".ai-dlc/work/digest-consolidation.toml": "a011d681ebf5d613cdf0579b1d597c9e6b6ce2448222bf5698456a8877a02b05",
     "docs/architecture.md": "3b392e7c6a2b1d3cd5c02ee533eadfe4f9df70418c5f33dbc796b80b5710c147",
     "docs/catalog.toml": "d5fa5e30cece81c49c5566245360214704388357b4afe5ba7adb7d9f379abe59",
+    "docs/verification/documentation-workflow.md": "036a53ebf3a05edbc77eceaac841b40151cce05a762fe3ef631e14f057a89a0f",
+    "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
+    "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
+    "openspec/specs/documentation-impact-workflow/spec.md": "52f07085c5f87622f04b801de04a98d430a90364869ea0226047271dbd4ea977",
+    "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
+    "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
+    "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
     "pyproject.toml": "57b5a7f4ea777185ab5df4b34c4117a190d41434e1e236b38735987c96ccc529",
     "scripts/check_generated.py": "845e3ac89acb10720eab193712430a09b767272862a02369f391a982da6e7267",
     "scripts/check_layout.py": "26fde5445108c55e36a1ea3083f5dc01a71ecfcd9b1d38542c515d86afe5ab4d",
@@ -40,7 +52,7 @@
     "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
     "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
     "src/ai_dlc/documentation/document_files.py": "503a38d4df2a1f9d0832d083dcd420ebd1215389385293dd0605fc768c5dd320",
-    "src/ai_dlc/documentation/document_impact.py": "a2976dd6499441c793b425dda1bd82a753fa45c9e7721bacc29d6b18181ee290",
+    "src/ai_dlc/documentation/document_impact.py": "341dddffa96a68e5b5d95671bba9bd5d8a0772b59ee9ec648f2a29bea88c6a02",
     "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
     "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
     "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
@@ -74,9 +86,9 @@
     "src/ai_dlc/providers/linear.py": "fa90bd64765c8e8bee1cbfa54e47e17688e8e6407c7492ae0ed863b4615c2b95",
     "src/ai_dlc/providers/openspec.py": "c45cba2218b2201d67c66eb012fc1f16d4d492ea43b702e4c9236bde99caa83f",
     "src/ai_dlc/providers/plane.py": "76fab3893bf0d4536c58500e4ab5a90f59893977c057be4777d78068e278ca1c",
-    "src/ai_dlc/providers/plane_attempts.py": "9a90b719e348d5592865e415bd29c3686969263f733a44275d6029fee019743c",
+    "src/ai_dlc/providers/plane_attempts.py": "bfa9b5015f7dc554b9e58af82c680d97d3f0a5271bc0afe6102a81fbf697c20a",
     "src/ai_dlc/providers/python_exec.py": "3aaafe9bf74a4a949b59d71ed2079b9c48114462a9c823b3641a1772af5a6ff1",
-    "src/ai_dlc/providers/scm.py": "2cdf9479741d0a3f37405e5b1cfd9c7d7b0c68038feefb75f3b910b894c088e8",
+    "src/ai_dlc/providers/scm.py": "a3af42ee57b84fcc5870ae300160e708d14ab49c0e7601bd0a2796ec6077a3c1",
     "src/ai_dlc/setup/__init__.py": "8eb444a69a67d0c1a59ffc0c80ce59efda159976bea58d40154e97f8bdecf18c",
     "src/ai_dlc/setup/connections.py": "35d04e1c6778227b0947034d2ed5d535ab8c79ee783496a2c2c7285d694b5595",
     "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
@@ -95,10 +107,17 @@
     "src/ai_dlc/verification/sandbox.py": "b830bd80df60802c29dbc2e1c639958537f289592052b404e6972ff377d25681",
     "src/ai_dlc/verification/test_proxy.py": "f38cb2a28c8501c743613b0bfdf7e17f367c101ce7984a304e20ab3095eb7880",
     "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
-    "src/ai_dlc/work/journal.py": "f5801d312b0434262c9dda76ac3b94cd1ac099fe98650dc9f745927898a89b52",
+    "src/ai_dlc/work/journal.py": "c088818e99c8c06cc4745ae403a62f9de8c5d503fdc7ab6107760f212ffa5106",
     "src/ai_dlc/work/traceability.py": "c4062335f26218e99f58e236425674c513ea6f2fce7f68b624a4df4dcd8ab3aa",
     "src/ai_dlc/work/tracker_migration.py": "65fc8eb4a708947c12a5f4fd3cfe664f409ee32c282b68a48bd725152e5b18a3",
-    "src/ai_dlc/work/workflow.py": "f988f7ca8e6193ce9a0e0906d73a7bfae251e2d385edea08ab4630089f7182e9",
-    "tests/test_templates.py": "548a8e41995be86d387b15141eb0b513dac592ad5eb0d293bfc36c27df98e709"
+    "src/ai_dlc/work/workflow.py": "25f4ab2824b5b696e260940555ae3a0fa0012a0b204ea318494080b248427308",
+    "tests/test_company_guidance.py": "2157af2cd002d74a411ab3555afb26cbaec9381061721c6e6b3470d376eefe38",
+    "tests/test_config.py": "18e42f4534da20b296549bf8c248ef52a3d963cbc9ed1dbaf3a2ccf70faf57e4",
+    "tests/test_document_access.py": "bdf96af4afb1ad6f985204ad243a624d4da8b56d527af63cc072908a76beeff4",
+    "tests/test_document_impact.py": "308684c1dda24359e86d2a9b79200455ebe781e97baa18169f5b9979e4eb2a14",
+    "tests/test_document_inventory.py": "927199563751af6b2dd5aa8e93cddb43cc62192adffea49694dada37ef6bf14c",
+    "tests/test_document_review.py": "88f37e6365c7e9b545d668f978993ef7ad9acfa146e7d549728f4ef9cab8008a",
+    "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
+    "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7"
   }
 }

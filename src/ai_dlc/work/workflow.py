@@ -169,9 +169,7 @@ def resolve_work(raw: dict, config: dict, work_id: str, *, require_review: bool 
         account = cfg.get("account")
         if account:
             identity["account"] = config.get("accounts", {}).get(account, {})
-        fingerprint = hashlib.sha256(
-            json.dumps(identity, sort_keys=True, separators=(",", ":")).encode()
-        ).hexdigest()
+        fingerprint = config_digest(identity)
         existing = work["bindings"].get(role)
         if existing and existing != fingerprint:
             raise ValueError(

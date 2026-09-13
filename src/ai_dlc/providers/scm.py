@@ -1,7 +1,6 @@
 """Authenticated GitHub merge and workflow evidence, pinned to merged manifests."""
 
 import base64
-import hashlib
 import json
 import math
 import os
@@ -12,11 +11,7 @@ import tomllib
 from collections.abc import Mapping
 from pathlib import Path
 
-
-def digest(value):
-    return hashlib.sha256(
-        json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
-    ).hexdigest()
+from ai_dlc.config import digest
 
 
 def required_checks(config):

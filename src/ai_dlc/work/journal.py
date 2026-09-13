@@ -1,9 +1,10 @@
 """Durable mutation journal; remote reconciliation bounds cross-machine idempotency."""
 
-import hashlib
 import json
 import sqlite3
 from pathlib import Path
+
+from ai_dlc.config import digest
 
 
 class Journal:
@@ -24,9 +25,7 @@ class Journal:
         return {"status": row[0], "result": json.loads(row[1]) if row[1] else None} if row else None
 
     def begin(self, operation_id, payload):
-        fp = hashlib.sha256(
-            json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
-        ).hexdigest()
+        fp = digest(payload)
         with self.db:
             inserted = (
                 self.db.execute(
