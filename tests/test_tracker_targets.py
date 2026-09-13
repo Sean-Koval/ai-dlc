@@ -545,3 +545,18 @@ def test_same_known_identity_accepts_fresh_state_without_new_creation(creation):
         "state": "cancelled",
     }
     assert len(adapter.sent) == 1
+
+
+def test_read_tracker_mappings_validates_shape_and_flattens(tmp_path):
+    from ai_dlc.setup.tracker_targets import read_tracker_mappings
+
+    assert read_tracker_mappings(None) == {}
+    table = tmp_path / "mappings.toml"
+    table.write_text('[one]\ntracker = "11"\n\n[two]\ntracker = "22"\n')
+    assert read_tracker_mappings(table) == {"one": "11", "two": "22"}
+    table.write_text('[one]\ntracker = "11"\nextra = true\n')
+    with pytest.raises(ValueError, match="exactly tracker = REFERENCE"):
+        read_tracker_mappings(table)
+    table.write_text('one = "11"\n')
+    with pytest.raises(ValueError, match="exactly tracker = REFERENCE"):
+        read_tracker_mappings(table)

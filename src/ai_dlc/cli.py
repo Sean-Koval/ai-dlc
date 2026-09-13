@@ -130,17 +130,9 @@ def project_readiness(root: Path = Path(".")):
     import os
 
     from ai_dlc.setup.provision import project_readiness as inspect
+    from ai_dlc.setup.provision import readiness_config
 
-    # Resolve local bindings while retaining only explicit provider selections.
-    resolved = resolve_runtime(root)
-    config = dict(resolved.values)
-    config["roles"] = {
-        role: value
-        for role, value in config.get("roles", {}).items()
-        if role == "agent-client"
-        or resolved.sources.get(f"roles.{role}") in {"personal", "project"}
-    }
-    result = inspect(root, config, os.environ)
+    result = inspect(root, readiness_config(root), os.environ)
     emit(result)
     if not result["ready"]:
         raise typer.Exit(1)
@@ -493,19 +485,20 @@ def project_tracker_create_plan(
     machine: Path | None = None,
 ):
     """Preview exact local-record target creation; saving never contacts the tracker."""
-    from ai_dlc.setup.tracker_targets import plan_tracker_targets, save_tracker_targets_plan
+    from ai_dlc.setup.tracker_targets import (
+        plan_tracker_targets,
+        read_tracker_mappings,
+        save_tracker_targets_plan,
+    )
 
     try:
-        raw = read_toml(mappings) if mappings else {}
-        if any(not isinstance(row, dict) or set(row) != {"tracker"} for row in raw.values()):
-            raise ValueError("Mappings must have exactly tracker = REFERENCE per work table")
         result = plan_tracker_targets(
             root,
             provider_id,
             work_ids=work,
             create_work_ids=create,
             source=source,
-            mappings={key: row["tracker"] for key, row in raw.items()},
+            mappings=read_tracker_mappings(mappings),
             environ=os.environ,
             machine=machine,
         )
@@ -562,6 +555,7 @@ def project_tracker_migrate(
     resolve_recovery: str | None = None,
 ):
     """Preview a tracker default/selected move, or apply an exact saved JSON plan."""
+    from ai_dlc.setup.tracker_targets import read_tracker_mappings
     from ai_dlc.work.tracker_migration import (
         apply_tracker_migration,
         inspect_tracker_migration,
@@ -586,15 +580,12 @@ def project_tracker_migrate(
         else:
             if provider_id is None or mode is None:
                 raise ValueError("Preview requires provider ID and --mode default-only or selected")
-            raw = read_toml(mappings) if mappings else {}
-            if any(not isinstance(row, dict) or set(row) != {"tracker"} for row in raw.values()):
-                raise ValueError("Mappings must have exactly tracker = REFERENCE per work table")
             result = plan_tracker_migration(
                 root,
                 provider_id,
                 mode=mode,
                 work_ids=work,
-                mappings={key: row["tracker"] for key, row in raw.items()},
+                mappings=read_tracker_mappings(mappings),
                 environ=os.environ,
                 machine=machine,
             )
@@ -859,17 +850,10 @@ def doctor(
 
 @app.command()
 def context(root: Path = Path("."), brief: bool = False):
-    config = load_project(root)
-    records = []
-    for path in sorted((root / ".ai-dlc/work").glob("*.toml")):
-        record = read_toml(path)
-        records.append({k: record.get(k) for k in ["id", "title", "artifacts", "providers"]})
-    result = {
-        "work": records[-3:] if brief else records,
-        "required": config.get("checks", {}).get("required", []),
-        "next": "Select work; prepare specification when required; publish/start; check; finish; handoff.",
-    }
-    text = json.dumps(result, indent=2)
+    """Print the offline session context; --brief keeps the newest records and truncates."""
+    from ai_dlc.work.workflow import build_context
+
+    text = json.dumps(build_context(root, brief=brief), indent=2)
     typer.echo(text[:2000] if brief else text)
 
 

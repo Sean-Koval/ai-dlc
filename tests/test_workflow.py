@@ -2035,3 +2035,44 @@ def test_suffixless_dangling_spec_symlink_cannot_masquerade_as_native_id(
         service.publish("target")
     assert tracker.calls == []
     assert path.read_bytes() == before
+
+
+def test_build_context_reads_records_as_written_and_cli_prints_the_same_json(tmp_path):
+    """Would fail if the CLI context command diverged from the work service it now delegates to."""
+    import json
+
+    from typer.testing import CliRunner
+
+    from ai_dlc.cli import app
+    from ai_dlc.work.workflow import build_context
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema = 4\n[project]\nname = "demo"\n[checks]\nrequired = ["lint", "test"]\n'
+    )
+    work_dir = tmp_path / ".ai-dlc/work"
+    work_dir.mkdir(parents=True)
+    for index in range(4):
+        (work_dir / f"item-{index}.toml").write_text(
+            f'schema = 1\nid = "item-{index}"\ntitle = "Item {index}"\n[artifacts]\nbranch = "b{index}"\n'
+        )
+    (work_dir / "malformed.toml").write_text("only_a_title = true\n")
+
+    full = build_context(tmp_path)
+    assert [record["id"] for record in full["work"]] == [
+        "item-0",
+        "item-1",
+        "item-2",
+        "item-3",
+        None,
+    ]
+    assert full["work"][0]["artifacts"] == {"branch": "b0"}
+    assert full["required"] == ["lint", "test"]
+    assert full["next"].startswith("Select work;")
+    brief = build_context(tmp_path, brief=True)
+    assert [record["id"] for record in brief["work"]] == ["item-2", "item-3", None]
+
+    result = CliRunner().invoke(app, ["context", "--root", str(tmp_path)])
+    assert result.exit_code == 0, result.output
+    assert result.output == json.dumps(full, indent=2) + "\n"
+    result = CliRunner().invoke(app, ["context", "--root", str(tmp_path), "--brief"])
+    assert result.output == json.dumps(brief, indent=2)[:2000] + "\n"

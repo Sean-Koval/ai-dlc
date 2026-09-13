@@ -814,3 +814,24 @@ def test_doctor_declared_capability_failure_is_distinct_from_signin(tmp_path, mo
     assert "read:project" in result["provider_capabilities"][0]["reason"]
     assert "secret-token" not in str(result)
     assert not result["ready"]
+
+
+def test_readiness_config_keeps_only_explicit_provider_selections(tmp_path, monkeypatch):
+    """Would fail if readiness reported roles that only a default or machine layer supplied."""
+    from types import SimpleNamespace
+
+    from ai_dlc.setup import provision
+    from ai_dlc.setup.provision import readiness_config
+
+    resolved = SimpleNamespace(
+        values={
+            "roles": {"tracker": "github-issues", "scm": "github", "agent-client": ["codex"]},
+            "checks": {"required": ["lint"]},
+        },
+        sources={"roles.tracker": "project", "roles.scm": "base", "roles.agent-client": "base"},
+    )
+    monkeypatch.setattr(provision, "resolve_runtime", lambda root: resolved)
+    config = readiness_config(tmp_path)
+    assert config["roles"] == {"tracker": "github-issues", "agent-client": ["codex"]}
+    assert config["checks"] == {"required": ["lint"]}
+    assert resolved.values["roles"]["scm"] == "github", "the resolved layers are not mutated"

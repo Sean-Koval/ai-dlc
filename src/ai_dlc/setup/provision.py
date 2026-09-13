@@ -13,7 +13,7 @@ from pathlib import Path
 
 import tomli_w
 
-from ai_dlc.config import SCHEMA, read_toml, resolve_files
+from ai_dlc.config import SCHEMA, read_toml, resolve_files, resolve_runtime
 from ai_dlc.environment.credentials import credential_status
 from ai_dlc.files import assets, atomic_write
 from ai_dlc.harness.components import load_component_catalog, resolve_components
@@ -23,6 +23,23 @@ def _which(command: str, environ: Mapping[str, str] | None) -> str | None:
     if environ is None:
         return shutil.which(command)
     return shutil.which(command, path=environ.get("PATH", ""))
+
+
+def readiness_config(root: Path) -> dict:
+    """Resolve local bindings while retaining only explicit provider selections.
+
+    Roles that only a default or machine layer supplies are dropped so readiness reports
+    the project's own choices; the agent-client role is always kept.
+    """
+    resolved = resolve_runtime(root)
+    config = dict(resolved.values)
+    config["roles"] = {
+        role: value
+        for role, value in config.get("roles", {}).items()
+        if role == "agent-client"
+        or resolved.sources.get(f"roles.{role}") in {"personal", "project"}
+    }
+    return config
 
 
 def project_readiness(root: Path, config: dict, environ: Mapping[str, str]) -> dict:
