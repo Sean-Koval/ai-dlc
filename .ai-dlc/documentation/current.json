@@ -4664,9 +4664,9 @@
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "48940a1312da10acf82d77e87a0b8f7bd8b7405a0919ada1aed83fcbebd497a5",
+  "snapshot": "6c91ef79b1a954ae03802e7aa18e22cdf21db49310173023f43c2b0bf54de6e9",
   "sources": {
-    ".ai-dlc/work/rust-retirement.toml": "c59cef11fefe56c71777fed8f2833c01b1105ed6867f6aae4cbec47a85869572",
+    ".ai-dlc/work/rust-retirement.toml": "334acbdf85a73dc43f273e4b82c87552d9a67f4b3c5bd2131535b5675a19f892",
     ".claude/commands/sync_template_files.md": "missing",
     "AGENTS.md": "b2a9f3a6d00553d5fc2fc876442aea631f67f3a205b890f212f27cc5f00f7d02",
     "CONTRIBUTING.md": "3e44848217cbd3d20fec648edcf87276b55dfeb6b35e0e6fbd03a318b184a683",
