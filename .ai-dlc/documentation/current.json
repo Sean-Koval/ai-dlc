@@ -259,9 +259,9 @@
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "bb2a17aeb12558dfd91e5633998a50401453504e5d8449a08f24ddc29a75f520",
+  "snapshot": "daec03bdff470cafe4ece8f3780112e9223ec0303b03edff7665d06cda7441aa",
   "sources": {
-    ".ai-dlc/work/legacy-asset-attribution.toml": "20d672b79202bba7a8afb9db0276ab1e9300c460764fed000b561ff8af1e1a2c",
+    ".ai-dlc/work/legacy-asset-attribution.toml": "b0ae1e21d34d3112adc766e12cec35aec66e1bd919691a27f50fb088398d51ed",
     "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/LICENSE": "15cc073ffa3a01bb7da145aeae2a842b473860d142c92485536ee9c91195a705",
     "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/NOTICE": "62586b4efdf074c4ada4a79e2e812d3d1801b389599545279eb39be8bb8ae31d",
     "crates/ai-dlc-cli/embedded-templates/claude/.claude/agents/ot_agents/obsidian-ops-team/Scripts/daily_notes_connector.py": "missing",
