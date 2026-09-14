@@ -59,7 +59,7 @@
   ],
   "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "64ee92666168e3dd7e3f4ec08edf37014bc88385aaa478b989117048d6609ab9",
+  "snapshot": "8b41763ae8d174e8c29622039dc21131524b152d6bf04860e8726c9c8b0cb6fd",
   "sources": {
     "docs/architecture.md": "a726bbe6b412f8f55683fc59517d29f7d580c97a9d23b6f032f9522bc55a655c",
     "docs/catalog.toml": "670dbede7fce8375e7e555fb0edcae5c6eddac44218d9df5fe701c0a2274bdc2",
@@ -113,7 +113,7 @@
     "src/ai_dlc/environment/enrollment.py": "f8e826a9dca7a8e308f9ad52c8f178ad7e6f2c6c536da7459a68c123d51e9c53",
     "src/ai_dlc/environment/machine.py": "2c3981ab3e8e4e52d2c3f86f02d8714bf92dd3229eaff99c72ac91961fbbd16a",
     "src/ai_dlc/environment/profile_source.py": "f177cc9336ed7c69e37299bc70107f14a7878ff72abbd1070dc3560340d451cc",
-    "src/ai_dlc/environment/source_content.py": "488a87e67ff5c6d18cdbf412679eb6f73f4462bfcbbd40e0f1c64f8b5c68713f",
+    "src/ai_dlc/environment/source_content.py": "c11618009a7d4c3dbaa03b49d80df3a6f7cae37338a9fe92166865379d89670a",
     "src/ai_dlc/environment/source_schema.py": "929944f86aef4a0aa2e257f3fbb4bee26ce07c522ed2eb35c2e1bbba38ec44d0",
     "src/ai_dlc/environment/team_sources.py": "20d583a9046adfac9f0f5bf6de7aca537654eb29d0ff636c27f5a78c7c5c21a6",
     "src/ai_dlc/errors.py": "b8c0da78ec0e9ea75ef71b4495b501570625988ba5ae54c4631f1ca20a8362c1",
@@ -175,7 +175,7 @@
     "tests/test_document_review.py": "88f37e6365c7e9b545d668f978993ef7ad9acfa146e7d549728f4ef9cab8008a",
     "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
     "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7",
-    "tests/test_team_sources.py": "74409b693252bd02cc2600cbb30cade3af54c2972a688874b150dfdc1bc791ac",
+    "tests/test_team_sources.py": "a195cbfe523caaf8785d5517063e10777207becd18faf3abfa6b33350d5a0f53",
     "uv.lock": "162c3bfa0583b2ed462415348e0f8b0fb10ff8fe609ec3b322ddc6df6fd457f5"
   }
 }

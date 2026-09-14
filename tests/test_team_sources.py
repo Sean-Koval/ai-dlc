@@ -454,12 +454,34 @@ def test_mcp_separate_secret_arguments_are_refused(source_setup, layout, flag):
     assert not setup[4].lock_file.exists()
 
 
-def test_source_rules_can_discuss_secret_hygiene(source_setup):
-    files = native_files()
+@pytest.mark.parametrize("layout", ["ai-dlc", "teamai"])
+@pytest.mark.parametrize(
+    "assignment",
+    [
+        '{"token": "SENTINEL123"}',
+        '"password": "SENTINEL123"',
+        "'api_key' : 'SENTINEL123'",
+        '"secret" = "SENTINEL123"',
+    ],
+)
+def test_source_markdown_quoted_credentials_are_refused(source_setup, layout, assignment):
+    files = teamai_files() if layout == "teamai" else native_files()
+    files["rules/review.md"] = f"# Security\n\n```text\n{assignment}\n```\n"
+    setup = source_setup(files, layout=layout)
+    with pytest.raises(ValueError, match="rules/review.md") as raised:
+        enroll(setup)
+    assert "SENTINEL123" not in str(raised.value)
+    assert not setup[4].lock_file.exists()
+
+
+@pytest.mark.parametrize("layout", ["ai-dlc", "teamai"])
+def test_source_rules_can_discuss_secret_hygiene(source_setup, layout):
+    files = teamai_files() if layout == "teamai" else native_files()
     files["rules/review.md"] = (
         "Never commit a token to Git. Keep password values in your keychain.\n"
+        'Never commit a "token" to Git.\n'
     )
-    setup = source_setup(files)
+    setup = source_setup(files, layout=layout)
     enroll(setup)
     render_agents(setup[-1], apply=True)
     assert files["rules/review.md"] in (setup[-1] / "AGENTS.md").read_text()

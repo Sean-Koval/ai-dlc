@@ -65,7 +65,7 @@ def reject_values(value: Any, path: str) -> None:
         for child in value:
             reject_values(child, path)
     elif isinstance(value, str) and re.search(
-        r"(?i)(?:token|password|passwd|secret|api[_-]?key|authorization)\s*[=:]|"
+        r"(?i)(?:token|password|passwd|secret|api[_-]?key|authorization)[\"']?\s*[=:]|"
         r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|"
         r"https?://[^/\s]*@|(?:gh[pousr]_|sk-)[A-Za-z0-9]{12,}",
         value,
