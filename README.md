@@ -11,9 +11,10 @@ checks that travel with the repository.
 
 - **Set up once, carry it across machines.** Versioned profiles and project files
   describe the environment; credentials and machine-specific settings stay local.
-- **Choose your integrations.** GitHub Issues + Projects for personal work, Jira
-  Cloud for work, or optional Plane. Provider capabilities keep workflow guidance
-  independent of a particular tracker.
+- **Choose your integrations.** GitHub Issues + Projects is the default work
+  tracker with recorded live evidence. Jira Cloud is available but its live work
+  cycle remains unqualified; Plane is an available, unqualified adapter outside
+  the default toolset. Provider capabilities keep workflow guidance portable.
 - **Keep development organized.** Connect requirements, specifications, tickets,
   implementation, and verified completion through the CLI and local MCP server.
 - **Keep knowledge intentional.** Store durable team documentation in the repo and
@@ -129,9 +130,11 @@ ai-dlc project adopt --root /path/to/existing-project --preset generic --tracker
 ```
 
 For work repositories, follow [work-computer setup](docs/workflows/work-computer-setup.md)
-to select Jira Cloud, private Obsidian storage and Claude Code/Antigravity. Personal
-GitHub connection setup proposes a repository-associated Project by default; Plane
-is optional. Omitted provider options preserve legacy scaffold defaults.
+for company-specific provider selection, private Obsidian storage and
+Claude Code/Antigravity. GitHub connection setup proposes a repository-associated
+Project by default. Qualify Jira Cloud in an approved disposable project before
+selecting it for work; see the [prepared walkthrough and blockers](docs/verification/jira-cloud-new-work.md#walkthrough-preparation--september-14-2026).
+Plane remains an available, unqualified adapter outside the default toolset. Omitted provider options preserve legacy scaffold defaults.
 
 Adoption previews changes; add `--apply` after reviewing the preview. It stages changes and refuses conflicting destination content. Generic, Python/uv, Node, and Rust presets include durable documentation and shared instructions. Versioned Git template sources support Copier updates; bundled development templates require an explicit versioned source before cross-machine updates.
 

@@ -28,6 +28,13 @@ Projects may omit roles they do not need. Confirm the actual mapping in the
 project's `ai-dlc.toml`; do not infer an account, workspace, repository, or
 environment from these defaults.
 
+GitHub Issues and Projects is the recommended work tracker with recorded live
+evidence. Jira Cloud remains available pending its live workflow qualification;
+Plane is an available, unqualified adapter outside the default toolset. Follow the
+[Jira preparation record](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/jira-cloud-new-work.md)
+for prerequisites and execution limits; adapter availability alone does not
+establish readiness.
+
 The complete evidence-gated work cycle currently requires configured tracker
 and SCM roles. The runtime retains compatibility fallbacks for local OpenSpec
 and GitHub, but they do not choose account, repository, or authorization.
@@ -71,8 +78,8 @@ credential values.
 `ai-dlc machine status`, `plan`, `apply`, `sync`, and `doctor` own the local
 enrollment lifecycle. Local CLI and MCP execution are current; hosted or cloud
 execution is a later qualification target. Existing Obsidian vaults support portal linking and explicit local project mounts; vault creation is not provided. Guided discovery/setup is
-implemented for Linear and GitHub; Jira, Plane and native Antigravity integration
-remain onboarding work.
+implemented for Linear, GitHub, Jira Cloud and Plane. Jira and Plane live workflow
+qualification and native Antigravity integration remain pending.
 
 Machine enrollment mutations are CLI-only in this cycle. MCP exposes exactly
 `work_context`, `work_publish`, `work_start`, `work_status`, `work_link`, `work_finish`,

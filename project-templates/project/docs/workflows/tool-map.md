@@ -28,6 +28,13 @@ local OpenSpec fallback when its artifacts exist; otherwise work must be
 reviewed with `requires_spec = false`. Knowledge, deployment, and agent clients
 are optional.
 
+GitHub Issues and Projects is the recommended work tracker with recorded live
+evidence. Jira Cloud remains available pending its live workflow qualification;
+Plane is an available, unqualified adapter outside the default toolset. Follow the
+[Jira preparation record](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/jira-cloud-new-work.md)
+for prerequisites and execution limits; adapter availability alone does not
+establish readiness.
+
 ## Skills by stage
 
 | Stage | Skill |
