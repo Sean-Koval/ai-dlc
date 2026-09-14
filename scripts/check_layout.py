@@ -23,6 +23,7 @@ ROOT_MODULES = {
     "files.py",
     "locking.py",
     "provider_definitions.py",
+    "toml_edit.py",
 }
 DOC_ENTRY_POINTS = {
     "index.md",
