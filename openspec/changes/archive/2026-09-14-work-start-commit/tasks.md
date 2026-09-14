@@ -8,5 +8,5 @@
 
 ## Verification and delivery
 - [x] 9.1 Record documentation-impact dispositions for the change.
-- [ ] 9.2 Validate this OpenSpec change and run required project checks.
+- [x] 9.2 Validate this OpenSpec change and run required project checks.
 After delivery handoff, the integrator updates from the target branch, reviews and merges with fresh checks, verifies merged-revision CI receipts, then runs `ai-dlc work finish work-start-commit`. This is post-review integration, not an implementation task.

@@ -210,11 +210,26 @@
       "outcome": "no-impact",
       "reason": "Generated metadata, work traceability and regression fixtures are covered by the updated delivery guidance and formal specification; no new canonical document is needed.",
       "target": "tests/test_workflow.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Inherited delivery regression fixtures supply requested issue titles and explicit local Git identity; existing delivery guidance covers observable behavior.",
+      "target": "tests/test_jira_workflow.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Inherited delivery regression fixtures supply requested issue titles and explicit local Git identity; existing delivery guidance covers observable behavior.",
+      "target": "tests/test_plane_workflow.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Inherited delivery regression fixtures supply requested issue titles and explicit local Git identity; existing delivery guidance covers observable behavior.",
+      "target": "tests/test_tracker_read_identity.py"
     }
   ],
-  "reviewer": "Codex",
+  "reviewer": "codex-delivery",
   "schema": 1,
-  "snapshot": "0b2e415f21df2af138292d3924ad7ee1433cf32c5143b43816fb86b929b81bfb",
+  "snapshot": "5b986aa49bf048bee12b0a69da52d748d5c132f4b1e8fffab0b441795d0c9fa9",
   "sources": {
     ".agents/skills/handoff/SKILL.md": "e4f3b4ef1ae4c978d2598229db2e8a2b1777d2790655728f95aaab8091b03a93",
     ".agents/skills/spec-from-prd/SKILL.md": "31484bb55fd2d3b6eca48fb8e11bd74c7adbe169dad032b6a8c51076bf3854a7",
@@ -222,7 +237,7 @@
     ".ai-dlc/providers/github.md": "3dcc30bc2a7185159e0de28b93066e53deabca2c540b05ca43fed8d9b18402c0",
     ".ai-dlc/work/work-archive.toml": "f8f0099d3527f7df1161b16c4042425371ab276265c881359be1a8601b27acd2",
     ".ai-dlc/work/work-new-from-issue.toml": "d7bcf6843700a3770d030f2787a42a70f5b9f52871cf220748a970d00ff38cd8",
-    ".ai-dlc/work/work-start-commit.toml": "e3e8572740948573b8bcdbfa489052e2236791efb2c74a50ff2892e8b66627f7",
+    ".ai-dlc/work/work-start-commit.toml": "cd4ec9e4930e33bbe20e76ac9682bd2b42cfa6a66b2059e8c42c6565aa0d7bea",
     ".claude/skills/handoff/SKILL.md": "e4f3b4ef1ae4c978d2598229db2e8a2b1777d2790655728f95aaab8091b03a93",
     ".claude/skills/spec-from-prd/SKILL.md": "31484bb55fd2d3b6eca48fb8e11bd74c7adbe169dad032b6a8c51076bf3854a7",
     "AGENTS.md": "da00a99d45b7236c7824a6d2644b57e6bc871b730559e4c2e9ddc0bad422532e",
@@ -252,7 +267,7 @@
     "openspec/changes/archive/2026-09-14-work-start-commit/design.md": "832cf7219c31ebd6869a3aff5f7fe17f5d776fd1798653e2992fa9a38abf9f6a",
     "openspec/changes/archive/2026-09-14-work-start-commit/proposal.md": "614deb24605fd84e18f3c674bb7c2075c7f866f8dc5246c7c633eab463453395",
     "openspec/changes/archive/2026-09-14-work-start-commit/specs/spec-delivery-traceability/spec.md": "4143285bc372fa3b81db264389e64fed9b4e7cf2fd21770bf1552f00622d1bb3",
-    "openspec/changes/archive/2026-09-14-work-start-commit/tasks.md": "024fc27aab299976e88e4199f83154c42ad0f1ae06dd0e65f5f0dd8b64945735",
+    "openspec/changes/archive/2026-09-14-work-start-commit/tasks.md": "a24bca4750782989b2298b987bb20b3ea14da4a74526890d7f0972aff0787a88",
     "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
     "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
     "openspec/specs/documentation-impact-workflow/spec.md": "52f07085c5f87622f04b801de04a98d430a90364869ea0226047271dbd4ea977",
@@ -347,10 +362,13 @@
     "tests/test_document_review.py": "88f37e6365c7e9b545d668f978993ef7ad9acfa146e7d549728f4ef9cab8008a",
     "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
     "tests/test_github_projects.py": "8ddbcd782029494fde1bf652aa71eb93ae59912a542e6d6e152d0e180af2d84e",
+    "tests/test_jira_workflow.py": "6dcb08bff820a23d1b69c569c28a139d8f47f39dc680f60faa9946464377e97f",
     "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7",
+    "tests/test_plane_workflow.py": "9eee591c8c8a029e4b096440b16eb00bf1595846f2686649fee221dbfc844381",
     "tests/test_provider_onboarding.py": "af4ebc8ecc88113bc1dddfbddc3754ca805704441a15d5a49ed79b24b2529ad1",
     "tests/test_providers.py": "c16a6e63eaad86d498184a290ad73c0031697dab7a8f6cadc557b102473bfd4d",
     "tests/test_traceability.py": "a3d5d37e08e0d913397192acee820d8cf367e5ad18b33a1d8f9181d2250a4c74",
-    "tests/test_workflow.py": "3c3e611f4e946ec9f937a9fe1eeb8375fa5addf163391f2301d30ebaecd7b3bb"
+    "tests/test_tracker_read_identity.py": "660c1935a84e9e3ceec4a31530dba5003e083c0d3512f63603736dcdda75f220",
+    "tests/test_workflow.py": "bab2a9d4c099044c63543898676490a835ed32f1f45283cc9cbb00683ba881d4"
   }
 }
