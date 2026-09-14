@@ -32,6 +32,17 @@ provider and human-evaluation obligations.
 
 ## Published v0.4.0 evidence — September 14, 2026
 
+The original release implementation was delivered in
+[PR #88](https://github.com/Sean-Koval/ai-dlc/pull/88), merged September 13 at
+`f1becc4b417622a8ca1853275c562c5ce1f90df0`.
+[Verify run 34771458251](https://github.com/Sean-Koval/ai-dlc/actions/runs/34771458251)
+passed all five configured platforms; each downloaded receipt names that exact
+merge, reports a clean tree, and passes all eight required checks. Its archived
+delivery item 9.3 remained unchecked, so the original `release-publication` work
+record is linked to a corrective follow-up that finalizes this evidence. The
+original PR and merge remain historical provenance; normal work finish still
+requires the follow-up's own merge and fresh merged-revision CI receipts.
+
 The [v0.4.0 release](https://github.com/Sean-Koval/ai-dlc/releases/tag/v0.4.0)
 was published at 05:27:15 UTC from tag commit
 `cace021895330ae74a5f344ed5630c25547001de`.

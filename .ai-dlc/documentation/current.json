@@ -1,66 +1,27 @@
 {
-  "base": "c9d3db25ce569cc0d6e485683a82338386811ddf",
+  "base": "ad72a444669346122438958f9c8bd2c7a6a0501a",
   "decisions": [
     {
       "outcome": "updated",
-      "reason": "Inspected unchanged published v0.4.0 hashes, exact publication/failed replay logs and successful replay34810567728 receipts on Linux x64/ARM64 and macOS ARM64; preserves original failures and pending clean-machine/container/provider/human qualifications.",
+      "reason": "Preserves original PR88 merge and all five inspected clean merged-revision receipts as historical provenance while explaining the corrective follow-up needed to finalize the remaining archived delivery task through normal gates.",
       "target": "docs/release-verification.md"
     },
     {
-      "outcome": "updated",
-      "reason": "Explains candidate versus read-only existing-tag dispatch, first-use setup then CI freshness checks, and conditional harness replay versus explicit defective-artifact withdrawal.",
-      "target": "docs/runbooks/release-publication.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Maps release workflow and regression evidence to canonical verification and runbook documents.",
-      "target": "docs/catalog.toml"
-    },
-    {
       "outcome": "no-impact",
-      "reason": "Archived reviewed requirements and work metadata bind the bounded replay change; canonical release verification and runbook own its durable explanation.",
-      "target": "openspec/changes/archive/2026-09-14-release-publication-verification/design.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Archived reviewed requirements and work metadata bind the bounded replay change; canonical release verification and runbook own its durable explanation.",
-      "target": "openspec/changes/archive/2026-09-14-release-publication-verification/proposal.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Archived reviewed requirements and work metadata bind the bounded replay change; canonical release verification and runbook own its durable explanation.",
-      "target": "openspec/changes/archive/2026-09-14-release-publication-verification/specs/release-publication/spec.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Archived reviewed requirements and work metadata bind the bounded replay change; canonical release verification and runbook own its durable explanation.",
-      "target": "openspec/changes/archive/2026-09-14-release-publication-verification/tasks.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "The actual published release and successful three-platform consumer replay now support replacing the conditional no-release instruction with the concrete v0.4.0 install status.",
-      "target": "README.md"
+      "reason": "Checks the previously unfinished delivery item against the actual merged PR88 and five clean exact-merge receipts; canonical release verification records the original and corrective-review provenance without changing delivered requirements.",
+      "target": "openspec/changes/archive/2026-09-13-release-publication/tasks.md"
     }
   ],
   "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "90dc8b81d1fb165092b236373d93e10d6a60c0bb1513b7e1c1a9064739c5e356",
+  "snapshot": "63176f45cdde611ca0f546ed1f510c7751789c437710270e292832ef9925e01a",
   "sources": {
     ".github/workflows/release.yml": "c32926d61ee30cd32aa03fa899c74f395decdb152833f572d4e1ade4c28993b5",
-    "README.md": "36181eccd23b4d471c48aeb567cf140c7dca013eb7171d2d7a7e953cb2501a99",
     "docs/catalog.toml": "2d26cc3de271b239d02f381e227975d403bba0e619b01149f1e8f9cf842bbb72",
-    "docs/release-verification.md": "5c902c588fb79418b58363ef0485a0157ce30a1411efd3ac939e19c57b8c7fea",
-    "docs/runbooks/release-publication.md": "54b176eafc5e7749feb163cb24487edccd60aea57c6cef32ef3d7da9f7ed48a1",
-    "openspec/changes/archive/2026-09-14-release-publication-verification/design.md": "dc3af6949f2be446baedfad348284a9124fcbe7351b8041f18147d8303e6a5f8",
-    "openspec/changes/archive/2026-09-14-release-publication-verification/proposal.md": "cb7a9e5f975c6595d6b22e69bc153d5396699fc12bb04c49069b6757670b8303",
-    "openspec/changes/archive/2026-09-14-release-publication-verification/specs/release-publication/spec.md": "368d96ea9c790488b8147cab8fb9401c20e7349f23ca681d68ecd1084652c29c",
-    "openspec/changes/archive/2026-09-14-release-publication-verification/tasks.md": "206f05992bf761180c9ba24dbcbc6cfc469a0d8edcd7465a2d52d08e8a04efb6",
+    "docs/release-verification.md": "f644f124b8dd9099374933222eb484565fd626ecbc34adb2e575c02df1ce9de6",
+    "openspec/changes/archive/2026-09-13-release-publication/tasks.md": "3ea7292cf8fc05a3b2e67af5caac998ea75ea0276aa5190581d4c5db6c76dd70",
     "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
-    "project-templates/project/scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
-    "scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
     "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
-    "src/ai_dlc/setup/templates.py": "bbfb4f26c103e3a5210fb8b97a6d843b615efac5f10ddedb28734f254061beb6",
-    "tests/test_bootstrap.py": "20c1c5d49181b22b969a19063ff108554be7eb492711bcec95c9a52599cf1bf2",
     "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
     "tests/test_release_workflow.py": "a50523b5d6dec682188d489780d29a74f2a01c60c310071ce6758898f3d12dc0"
   }
