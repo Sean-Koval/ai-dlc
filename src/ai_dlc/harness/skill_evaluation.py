@@ -6,6 +6,7 @@ import re
 import tomllib
 from datetime import UTC, datetime
 from pathlib import Path
+from urllib.parse import urlsplit
 
 _SAFE_NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]*")
 
@@ -19,6 +20,37 @@ def _read_relative(root, name):
 
 def load_plan(declaration: Path) -> dict:
     config = tomllib.loads(declaration.read_text())
+    allowed = {
+        "schema",
+        "status",
+        "model",
+        "reasoning_effort",
+        "repetitions",
+        "max_output_tokens",
+        "max_total_tokens",
+        "require_control",
+        "require_human_review",
+        "credential_env",
+        "api_url",
+        "scenarios",
+    }
+    if set(config) - allowed:
+        raise ValueError(
+            "Unknown evaluation settings; credentials belong only in the named environment variable"
+        )
+    api_url = config.get("api_url")
+    if not isinstance(api_url, str):
+        raise ValueError("api_url must name an HTTPS endpoint without credentials")  # noqa: TRY004 -- persisted configuration validation
+    endpoint = urlsplit(api_url)
+    if (
+        endpoint.scheme != "https"
+        or not endpoint.netloc
+        or endpoint.username
+        or endpoint.password
+        or endpoint.query
+        or endpoint.fragment
+    ):
+        raise ValueError("api_url must name an HTTPS endpoint without credentials")
     if config.get("schema") != 1:
         raise ValueError("Unsupported evaluation schema")
     if config.get("require_control") is not True or config.get("require_human_review") is not True:
@@ -26,7 +58,7 @@ def load_plan(declaration: Path) -> dict:
     for key in ("repetitions", "max_output_tokens", "max_total_tokens"):
         if type(config.get(key)) is not int or config[key] <= 0:
             raise ValueError(f"{key} must be a positive integer")
-    if not _SAFE_NAME.fullmatch(config.get("model", "")):
+    if not isinstance(config.get("model"), str) or not _SAFE_NAME.fullmatch(config["model"]):
         raise ValueError("Invalid evaluation model")
     if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", config.get("credential_env", "")):
         raise ValueError("credential_env must name an environment variable")

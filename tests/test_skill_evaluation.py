@@ -234,3 +234,19 @@ def test_report_actual_usage_if_provider_violates_reserved_budget(tmp_path, monk
     assert result["stop_reason"] == "usage-contract-violation"
     assert result["total_tokens"] == 40
     assert len(result["transcripts"]) == 1
+
+
+def test_declaration_refuses_embedded_credentials_even_for_dry_run(tmp_path):
+    from ai_dlc.harness.skill_evaluation import run
+
+    config = declaration(tmp_path)
+    config.write_text(config.read_text() + '\napi_key = "must-not-be-read"\n')
+    with pytest.raises(ValueError, match="Unknown evaluation settings"):
+        run(config, dry_run=True)
+    config.write_text(
+        config.read_text()
+        .replace('\napi_key = "must-not-be-read"\n', "")
+        .replace("https://api.openai.com", "https://user:password@api.openai.com")
+    )
+    with pytest.raises(ValueError, match="without credentials"):
+        run(config, dry_run=True)

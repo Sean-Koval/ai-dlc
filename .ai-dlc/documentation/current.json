@@ -49,7 +49,7 @@
   ],
   "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "474c21ebb2f906e4622c6430de2dbaf1767da144dba07cccbf95c267989bc842",
+  "snapshot": "e6c4bb076124099e1dbe6f4b97945036092abfeb2ccfbffb417ec54466d98308",
   "sources": {
     ".ai-dlc/work/skill-evaluation.toml": "3dfba4d7344db6ed2cfe9f0ec3c62f2d5feab965c4997873c5154b0fe569f1d1",
     "agents/evaluation-scenarios.json": "bf523609610234800a9b2356fbcf4ecbf86f840e5ad7c3d1f71cde7409672fb0",
@@ -103,7 +103,7 @@
     "src/ai_dlc/harness/components.py": "b64cd2ae837f83a37ddd1c74dad25fcd16fe8733715c224c7d64673784ebba11",
     "src/ai_dlc/harness/hooks.py": "e76b94c5d13168816506d5ef71360646d929659561974000561829ab49a08e11",
     "src/ai_dlc/harness/native_composition.py": "1e4c5729ff31cb91820bd8df3d15b60c1067b4a5f2b89381888211470dc79bc8",
-    "src/ai_dlc/harness/skill_evaluation.py": "e4e970199dadb64b0d1ebaabc8f6f17da6ecbde2c5d39f9519b8789dc56c2080",
+    "src/ai_dlc/harness/skill_evaluation.py": "73ded6785d5d0ff53f5f44ba4d1ede7406f367635676c269d5044358030ebc2e",
     "src/ai_dlc/harness/user_agents.py": "c99f9a52a379feaa0c1721081b95fef91f51c44f0a9e906145de51154616e937",
     "src/ai_dlc/harness/workflow_bundles.py": "477dc842b3cdfe240a54a96910786693f9f3b75f2fd528753440c29f26330b36",
     "src/ai_dlc/locking.py": "f1cfe828e897e11d73b645130060362e2699f75aac9307ed8cb4955b0533b629",
@@ -143,6 +143,6 @@
     "src/ai_dlc/work/traceability.py": "c4062335f26218e99f58e236425674c513ea6f2fce7f68b624a4df4dcd8ab3aa",
     "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
     "src/ai_dlc/work/workflow.py": "98a6e3eee1526864845fe53c73dd9c78c07b22256a86dde9e4e12f300a08db23",
-    "tests/test_skill_evaluation.py": "ce6969f043d2515be36916c8b06bf42cdf760cb134d78d8cfd22498fa100a794"
+    "tests/test_skill_evaluation.py": "dc4df05fcfcd50846e4e9bafcf8364b004b6f4f38ec6490ccb9b4bd6488f7e7b"
   }
 }
