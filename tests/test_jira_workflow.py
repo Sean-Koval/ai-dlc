@@ -40,6 +40,8 @@ def lifecycle(tmp_path):
     subprocess.run(
         ["git", "init", "-b", "work/one", str(tmp_path)], check=True, capture_output=True
     )
+    for key, value in [("user.name", "Fixture"), ("user.email", "fixture@example.invalid")]:
+        subprocess.run(["git", "-C", str(tmp_path), "config", key, value], check=True)
 
     class SCM:
         allowed = False
@@ -111,7 +113,10 @@ def test_cancelled_result_never_completes_or_repeats_transition(lifecycle):
     jira.transition_resolution = "2000"
     with pytest.raises(RuntimeError, match="requested state"):
         service.finish("one")
-    assert service.status("one")["tracker"]["state"] == "cancelled"
+    before = len(jira.requests)
+    assert service.status("one")["tracker"] is None
+    assert len(jira.requests) == before
+    assert jira.provider().read("101")["state"] == "cancelled"
     with pytest.raises(ValueError, match="terminal"):
         service.finish("one")
     assert len(jira.writes("/transitions")) == 1

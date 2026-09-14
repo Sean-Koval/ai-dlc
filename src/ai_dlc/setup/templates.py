@@ -27,7 +27,7 @@ RUNTIME_DIRS = {
     ".cache",
 }
 CAPABILITIES = ["specs", "tracker", "knowledge", "scm", "deploy", "agent-client"]
-OPTIONAL_CAPABILITIES = ["frontend"]
+OPTIONAL_CAPABILITIES = ["backend", "frontend"]
 
 
 def _ignore(root: Path):

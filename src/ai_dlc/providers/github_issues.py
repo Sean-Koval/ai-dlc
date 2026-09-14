@@ -10,7 +10,7 @@ from urllib.parse import urlsplit
 from ai_dlc.contracts import Request, validate_request, validate_response
 from ai_dlc.providers.github_projects import GitHubProjects
 
-ISSUE_FIELDS = "id,number,url,state,stateReason,body"
+ISSUE_FIELDS = "id,number,url,state,stateReason,title,body"
 
 
 class GitHubIssuesProvider:

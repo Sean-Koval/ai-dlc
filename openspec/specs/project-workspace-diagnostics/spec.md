@@ -12,6 +12,9 @@ current-process and configured shell activation; the checkout the shared bootstr
 alias runs; canonical source and machine-local mount identity, connectivity
 and mounted navigation; and native-client qualification. It SHALL return scoped
 findings and limitations without mutation or a single aggregate readiness claim.
+Configured activation SHALL recognise bash, zsh and fish through their rc files
+and SHALL name the exact activation line for the detected shell; the finding for a
+missing owned shell section SHALL repeat that line and the command that writes it.
 
 The root CLI SHALL expose `--version`. Workspace diagnostics SHALL use bounded,
 time-limited `--version` and explicit `--help` probes of the PATH-selected executable
@@ -22,6 +25,10 @@ alias resolves into and SHALL remain unknown when no such record exists.
 #### Scenario: Unactivated or stale setup
 - **WHEN** the executable is missing from PATH or a mount points at a missing checkout
 - **THEN** diagnostics report actionable scoped findings without mutation or unsupported claims of native readiness
+
+#### Scenario: No owned shell section exists
+- **WHEN** the detected shell is bash, zsh or fish and its rc file has no AI-DLC-owned section
+- **THEN** the activation-missing finding names the exact copy-pasteable activation line for that shell and the `workspace-init --shell` command that writes it, and diagnostics write nothing
 
 #### Scenario: Configured shell is not active
 - **WHEN** the existing AI-DLC-owned shell configuration names the bootstrap bin but the current PATH does not select it
@@ -82,4 +89,19 @@ work-computer, Antigravity or platform checks SHALL remain pending.
 #### Scenario: Messy-project exercise is repeated
 - **WHEN** a maintainer repeats document organization qualification
 - **THEN** a controlled reusable messy-project fixture and canonical manual walkthrough preserve the approved baseline and expected review points without autonomous repository organization or native-client automation
+
+### Requirement: WD-04 Owned shell activation repair
+`project workspace-init --shell` SHALL preview, and with `--apply` write, only the AI-DLC-owned section of the detected shell's rc file so that it activates the bootstrap bin directory. It SHALL preserve every authored line and every other owned line, SHALL report the exact activation line it writes, and SHALL refuse without writing when the shell is unsupported, the rc file is a symlink, unreadable or not a regular file, or the owned section carries authored edits or malformed markers. The written section SHALL be the one workspace diagnostics parse.
+
+#### Scenario: The rc file has no owned section
+- **WHEN** the detected shell is supported and its rc file exists without an owned section
+- **THEN** preview reports the section it would append and writes nothing, and `--apply` appends only that section, leaving the authored content byte-identical
+
+#### Scenario: An owned section from setup apply names another directory
+- **WHEN** the rc file's intact owned section names a different bin directory beside other owned lines
+- **THEN** `--apply` replaces only the PATH line inside the section, keeps the other owned lines, and diagnostics then report the section as matching the bootstrap bin
+
+#### Scenario: The rc file cannot be owned safely
+- **WHEN** the rc file is a symlink, unreadable, not a regular file, or its owned section is modified or malformed
+- **THEN** the command refuses before writing and names the reason, and the file is unchanged
 

@@ -31,7 +31,7 @@ checks afterwards. Do not give that list or a move plan to the harness under tes
 4. Let it apply the reviewed plan. Inspect the Git diff against each review point:
    preserved rationale, the retained ADR convention, labelled history, an unchanged
    OpenSpec file, repaired links and no `docs/specs/` tree.
-5. Run `ai-dlc project docs-check` in the fixture. Record remaining findings and any
+5. Run `ai-dlc docs check` in the fixture. Record remaining findings and any
    corrections the reviewer had to make.
 
 ## Native workspace exercise

@@ -48,9 +48,14 @@ specification/evidence paths in `artifacts`. Keep missing formats or error behav
 as open decisions; incomplete draft scenarios are not accepted executable criteria.
 Resolve material product choices with their owner before dependent implementation.
 
+For a change affecting an HTTP interface, update `docs/api/openapi.yaml` in the same
+PR as the behavior and reference the contract from the work record as
+`artifacts.contract`. Run the backend capability's required `api-contract` check;
+for supported FastAPI projects, also review any `api-contract-drift` diff.
+
 ## Validate and hand off
 
-Prepare the supported Work fields using the template. Run
+Create the local draft with `ai-dlc work new WORK_ID --from-issue REF` when a tracker item exists, or explicit `--title`, `--scope` and repeated `--acceptance` flags for offline work. Drafts remain unreviewed; replace TODOs, record the specification decision, add artifact/requirement/dependency references and review before mutation. Existing records are never overwritten. Run
 `ai-dlc work validate WORK_ID --root PATH` before publication. This read-only check
 validates the selected dependency graph and local artifacts, not remote completion
 or specification meaning. Do not invent successful validation when it was not run.

@@ -121,3 +121,47 @@ def render_ticket_body(work: dict) -> str:
     )
     sections.extend(f"- {item}" for item in work.get("acceptance", []))
     return "\n".join(sections).rstrip() + "\n"
+
+
+def render_pull_request_body(work: dict, *, closes: str | None = None) -> str:
+    """Render a pull request body from the record's own scope and acceptance.
+
+    ``closes`` is the bare tracker number to close through GitHub's keyword; the caller
+    decides whether the tracker is GitHub Issues, since only then does the keyword act.
+    """
+    sections = ["## Scope", "", work["scope"], "", "## Acceptance", ""]
+    sections.extend(f"- {item}" for item in work.get("acceptance", []))
+    body = "\n".join(sections).rstrip() + "\n"
+    if closes:
+        body += f"\nCloses #{closes}\n"
+    return body
+
+
+def draft_issue_fields(body: str) -> dict:
+    """Extract source prose and acceptance bullets; missing facts stay explicit."""
+    scope_lines = []
+    acceptance = []
+    in_acceptance = False
+    for line in body.splitlines():
+        heading = re.match(r"^#{1,6}\s+(.+?)\s*#*\s*$", line)
+        if heading:
+            in_acceptance = bool(
+                re.fullmatch(r"Acceptance(?: criteria)?", heading[1], re.IGNORECASE)
+            ) and line.startswith("## ")
+        elif in_acceptance:
+            bullet = re.match(r"^\s*[-*+]\s+(.+)", line)
+            if bullet:
+                acceptance.append(bullet[1].strip())
+    for paragraph in re.split(r"\n\s*\n", body.strip()):
+        lines = [
+            line
+            for line in paragraph.splitlines()
+            if not re.match(r"^\s*(?:#{1,6}\s|[-*+]\s)", line)
+        ]
+        if lines:
+            scope_lines = lines
+            break
+    return {
+        "scope": "\n".join(scope_lines).strip() or "TODO: state scope",
+        "acceptance": acceptance or ["TODO: state acceptance"],
+    }

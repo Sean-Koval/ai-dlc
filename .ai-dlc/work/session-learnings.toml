@@ -1,0 +1,40 @@
+schema = 1
+id = "session-learnings"
+title = "Capture session learnings at day-end and finish, and recall them at work start"
+scope = "Store an optional learning note at work finish through the knowledge provider's idempotent note operation, recall matching learning notes at work start and session start, count session friction locally in the hook and remind at the stop event, and point the day-end, handoff and day-start skills at the note format. Deliver the approved requirements using existing AI-DLC boundaries."
+requires_spec = true
+spec_reason = "Adds an observable finish option, a recall result on work start and the session-start hook, and a threshold-gated stop reminder."
+acceptance = [
+    "Finishing with a learning SHALL store it once even when finish is retried; finishing without one SHALL still complete.",
+    "work start on a record whose title words match a stored learning SHALL print that path; a project with no vault SHALL print nothing and SHALL NOT fail.",
+    "The stop hook friction message SHALL appear only above the threshold; tests SHALL cover both sides.",
+    "No new network calls SHALL be added; the knowledge provider SHALL remain the only vault writer.",
+    "ai-dlc project check --required SHALL pass.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "SL-01",
+    "SL-02",
+    "SL-03",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/archive/2026-09-14-session-learnings"
+tracker = "82"
+branch = "work/session-learnings"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/120"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"

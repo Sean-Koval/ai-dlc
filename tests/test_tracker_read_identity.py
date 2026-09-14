@@ -33,6 +33,7 @@ def destination(request, monkeypatch):
                 assert args[1:4] == ["issue", "view", "42"]
                 row = {
                     "id": "ISSUE_42",
+                    "title": "Fixture issue",
                     "number": 42,
                     "url": "https://github.com/org/repo/issues/42",
                     "state": "CLOSED" if remote["closed"] else "OPEN",

@@ -21,9 +21,9 @@ claims about the implemented system.
 From the adopted project:
 
 ```sh
-ai-dlc project docs-init
-ai-dlc project docs-init --apply
-ai-dlc project docs-check
+ai-dlc docs init
+ai-dlc docs init --apply
+ai-dlc docs check
 ```
 
 The first command previews additive paths. `--preset organized` is the default;
@@ -40,8 +40,8 @@ For an outcome such as “organize the scattered project docs,” use the shippe
 `document-organize` skill. Discovery starts before catalog enrollment:
 
 ```sh
-ai-dlc project docs-inventory
-ai-dlc project docs-review --base HEAD --source inventory --path README.md --path legacy/setup.md
+ai-dlc docs check --inventory
+ai-dlc docs review --report --base HEAD --source inventory --path README.md --path legacy/setup.md
 ```
 
 Select actual paths returned by inventory. It lists tracked and nonignored `.md`
@@ -51,7 +51,7 @@ are excluded explicitly; symlinks are never followed, and missing/inaccessible
 paths remain reported. Tracked documents remain eligible even if ignore patterns
 match them. This is a local working-tree inventory, not a claim of content review.
 
-`docs-review` defaults to `--source catalog` for existing callers. Explicit
+`docs review --report` defaults to `--source catalog` for existing callers. Explicit
 `--source inventory` permits 1–32 selected inventory documents without creating a
 catalog. Existing catalog mappings still supply local evidence, but unselected
 inventory documents remain outside review scope. Uncatalogued documents have no
@@ -83,7 +83,7 @@ Inspect the resulting Git diff, run document diagnostics and required project
 checks, and record reviewed impact dispositions after content settles. Check
 reference-style links, anchors and wiki links separately where the local checker
 cannot verify them. Report actual changes and remaining omissions. An inventory,
-a recommendation report or additive `docs-init` output alone does not complete an
+a recommendation report or additive `docs init` output alone does not complete an
 authorized organization request.
 
 ## Search and read project documents
@@ -92,9 +92,9 @@ Harnesses search and read repository documentation through project operations,
 not the private knowledge API:
 
 ```sh
-ai-dlc project docs-search "retry policy"
-ai-dlc project docs-read docs/architecture.md
-ai-dlc project docs-read README.md --source README.md
+ai-dlc docs search "retry policy"
+ai-dlc docs read docs/architecture.md
+ai-dlc docs read README.md --source README.md
 ```
 
 MCP `project_docs_search` and `project_docs_read` return the same results for the
@@ -156,7 +156,7 @@ Use `status = "superseded"` and `superseded_by = "replacement-id"` to direct rea
 to a replacement; retain the old rationale/history. Archived documents remain
 historical. A modification timestamp or a passing check is not a review.
 
-`docs-check` reads local metadata and Markdown only. It reports unknown/overdue
+`docs check` reads local metadata and Markdown only. It reports unknown/overdue
 reviews, missing owners/paths, invalid metadata, unlisted files, exact duplicate
 bodies and broken inline local Markdown links. It does not inspect link anchors,
 reference-style links, wiki links or remote destinations, determine semantic
@@ -274,7 +274,7 @@ publication implementation is added here.
 Before implementation, choose the Git comparison base and inspect affected sources:
 
 ```sh
-ai-dlc project docs-impact --base origin/main
+ai-dlc docs review --base origin/main
 ```
 
 Catalog entries may declare `code_paths`, `requirements`, and `verification_paths`
@@ -313,7 +313,7 @@ with a concrete reason. The service records the supplied review; it cannot prove
 that a reviewer inspected the material.
 
 ```sh
-ai-dlc project docs-disposition --base origin/main --decisions decisions.json --reviewer repository-maintainers
+ai-dlc docs review --base origin/main --disposition decisions.json --reviewer repository-maintainers
 ```
 
 This emits content-bound evidence; explicitly save the reviewed output as
@@ -322,17 +322,17 @@ never source documents. Review the chosen comparison base as part of the evidenc
 Do not reset it to hide changes. Changed document, source, mapping or change-scope
 bytes invalidate the evidence and require another inspection.
 
-The base is an exact commit. `docs-disposition` refuses a base that the checkout
+The base is an exact commit. `docs review --disposition` refuses a base that the checkout
 does not contain, and a check against another base reports both commits before
 evaluating decisions. When the target branch moves, update the branch from it,
 inspect impact against the new target commit and record dispositions again.
 Do this immediately before merge, then wait for fresh checks.
 
-An opted-in project can require `ai-dlc project docs-gate` through its normal check
+An opted-in project can require `ai-dlc docs gate` through its normal check
 manifest. First inspect historical diagnostics and explicitly review a baseline:
 
 ```sh
-ai-dlc project docs-baseline --owner repository-maintainers --reason "Historical findings remain in the linked cleanup backlog."
+ai-dlc docs review --baseline --owner repository-maintainers --reason "Historical findings remain in the linked cleanup backlog."
 ```
 
 Save only the accepted historical dispositions to
@@ -340,7 +340,7 @@ Save only the accepted historical dispositions to
 require an owner/reason. They are reviewable exceptions, not a command to suppress
 all future errors. The gate rejects new objective errors, absent ownership and
 uncatalogued documents. Unknown review dates and similarity require judgment.
-Use `docs-gate --base <expected-base>` when CI supplies an independently selected
+Use `docs gate --base <expected-base>` when CI supplies an independently selected
 comparison. Existing repositories are not automatically enrolled.
 
 ## Evidence-backed semantic review
@@ -348,7 +348,7 @@ comparison. Existing repositories are not automatically enrolled.
 Prepare a small set of catalogued documents for the active harness:
 
 ```sh
-ai-dlc project docs-review --base origin/main --path docs/reference/api.md --max-bytes 64000
+ai-dlc docs review --report --base origin/main --path docs/reference/api.md --max-bytes 64000
 ```
 
 The packet contains selected document bodies, mapped local evidence, hashes and
@@ -372,7 +372,7 @@ uncertainty, suggested_disposition and rationale. The validator checks source by
 scope and citation grounding:
 
 ```sh
-ai-dlc project docs-review-check --packet .ai-dlc/documentation/packet.json --review .ai-dlc/documentation/review.json
+ai-dlc docs review --check --packet .ai-dlc/documentation/packet.json --review .ai-dlc/documentation/review.json
 ```
 
 Passing establishes grounded citations, not semantic truth. Record partial coverage
@@ -423,7 +423,7 @@ pages, or choose a winner when company guidance conflicts with project policy.
 ## Formatting and prose checks
 
 The existing Markdown link/metadata checks remain objective diagnostics. Optionally
-configure Vale and run `ai-dlc project docs-style --path docs/reference/api.md`.
+configure Vale and run `ai-dlc docs check --style --path docs/reference/api.md`.
 AI-DLC invokes only the explicit check, never installs styles or runs Vale sync.
 The default reports unavailable tools and alerts without a mandatory failure;
 `--strict` requires the configured style check to pass. Keep local vocabulary and
@@ -443,10 +443,17 @@ previewed and imported for inspection but cannot claim ready or render as active
 guidance. Schema-1 bundles continue to work unchanged.
 
 CI can set `AI_DLC_DOCS_BASE` to its independently selected PR base or push
-predecessor; the `docs-gate` CLI uses it unless `--base` is explicitly provided.
+predecessor; the `docs gate` CLI uses it unless `--base` is explicitly provided.
 Fetch that commit/history before checking. A stale or unavailable comparison must
 be reviewed or fetched, not silently replaced with HEAD to hide changes.
 Pull request checks do not rerun when the target branch moves, and a post-merge
 check compares against the commit the merge replaced. Where the SCM supports it,
 require branches to be up to date before merging so passing evidence still names
 that commit.
+
+Shell activation can be previewed with `ai-dlc project workspace-init --shell` and
+written with `--apply`. It supports bash, zsh and fish, preserves authored content,
+and refuses edited owned sections or unsafe rc files. Workspace diagnostics name
+the exact temporary PATH remedy. Project checks can find mise in the bootstrap
+bin without changing the process PATH or installing tools. Ordinary work-record
+edits do not invalidate documentation dispositions; explicit catalog mappings do.
