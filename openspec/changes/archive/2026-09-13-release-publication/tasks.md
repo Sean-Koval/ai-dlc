@@ -10,4 +10,6 @@
 ## Verification and delivery
 - [x] 9.1 Record documentation-impact dispositions for the change.
 - [x] 9.2 Validate this OpenSpec change and run required project checks.
-- [ ] 9.3 Update from the target branch, review the pull request, merge with fresh checks and verify merged-revision CI receipts.
+- [x] 9.3 Update from the target branch, review the pull request, merge with fresh checks and verify merged-revision CI receipts.
+
+Delivery evidence: PR #88 merged at `f1becc4b417622a8ca1853275c562c5ce1f90df0`; Verify run `34771458251` supplied all five clean merged-revision receipts with all eight required checks passing. This previously unchecked delivery item is finalized by a corrective follow-up; the original merge is unchanged. Canonical publication, replay and qualification boundaries remain in `docs/release-verification.md`.
