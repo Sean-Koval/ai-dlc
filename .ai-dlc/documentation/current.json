@@ -39,13 +39,13 @@
   ],
   "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "c0aa3dd4d877bbf4aa900ee82683e5e472a2a3f73656aa9a2eb019904b212966",
+  "snapshot": "6e13c32f6529508e6fa04bd9f13a9e849dfad49c5939b813aa3fb679712959a6",
   "sources": {
-    ".github/workflows/release.yml": "92acaf180e69ae83abdc1cf35525ad00620aa721e71dc143ff91f54764d85b6c",
+    ".github/workflows/release.yml": "c32926d61ee30cd32aa03fa899c74f395decdb152833f572d4e1ade4c28993b5",
     "docs/catalog.toml": "858491fc462a155911259661eb0d0d799772735529f97cab0aaa7313d0515880",
-    "docs/release-verification.md": "794754defcc963eb26c6f7c83d88b5399fe4961c172f86da02dbef9dada71240",
-    "docs/runbooks/release-publication.md": "a59efeba648aa8d193ab724a1b5a8846a4761e7ae8acf3b1da69e1c47bc70da6",
-    "openspec/changes/archive/2026-09-14-release-publication-verification/design.md": "16ae50ab093c219cec0c44bf84198f8f9dd519c209b1c82443d3b1688ae89d57",
+    "docs/release-verification.md": "82fef7c4e77854ab0270631ec6cb80f9b5d2d11f5eabe2228de96b7a9dfe8347",
+    "docs/runbooks/release-publication.md": "54b176eafc5e7749feb163cb24487edccd60aea57c6cef32ef3d7da9f7ed48a1",
+    "openspec/changes/archive/2026-09-14-release-publication-verification/design.md": "dc3af6949f2be446baedfad348284a9124fcbe7351b8041f18147d8303e6a5f8",
     "openspec/changes/archive/2026-09-14-release-publication-verification/proposal.md": "cb7a9e5f975c6595d6b22e69bc153d5396699fc12bb04c49069b6757670b8303",
     "openspec/changes/archive/2026-09-14-release-publication-verification/specs/release-publication/spec.md": "368d96ea9c790488b8147cab8fb9401c20e7349f23ca681d68ecd1084652c29c",
     "openspec/changes/archive/2026-09-14-release-publication-verification/tasks.md": "1a424fff4657adb88327548ac80577632de176b3a56cb5f97978abbf009941cf",
@@ -56,6 +56,6 @@
     "src/ai_dlc/setup/templates.py": "bbfb4f26c103e3a5210fb8b97a6d843b615efac5f10ddedb28734f254061beb6",
     "tests/test_bootstrap.py": "20c1c5d49181b22b969a19063ff108554be7eb492711bcec95c9a52599cf1bf2",
     "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
-    "tests/test_release_workflow.py": "b83340a6b8d512add3b85c462448a2e9a2ac38fd756c20488f30b0f86530b9eb"
+    "tests/test_release_workflow.py": "a50523b5d6dec682188d489780d29a74f2a01c60c310071ce6758898f3d12dc0"
   }
 }

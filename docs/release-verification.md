@@ -77,11 +77,18 @@ An isolated on-host recovery check against these real published assets then
 reproduced the seed CI failure and succeeded with local first-use setup. On
 macOS, separate bootstrap and mise data directories kept the shared aliases
 unchanged. The released engine generated a demo with a byte-identical
-manifest; the demo's release-mode bootstrap completed, followed by all three
-required checks (`generated`, `work-records`, `language-check`) with explicit
-`--target github-actions`. This establishes the package's working first-use path
-on that host. It is separate from the failed hosted jobs and does not establish
-the outstanding container or three-platform hosted evidence.
+manifest and the demo's release-mode bootstrap completed. Its three required
+checks passed, but the demo was nested inside the source repository and its
+receipt inherited that parent's Git revision. That check is not standalone
+consumer evidence.
+
+The first [read-only replay, run 34810385278](https://github.com/Sean-Koval/ai-dlc/actions/runs/34810385278),
+at workflow commit `82845700dc9eefea8135df1a9c8b5335abd7815c`, correctly skipped
+package and publication. All three hosted runners completed seed and demo
+bootstrap, then failed final checks because `/tmp/demo` had no Git repository.
+The corrected fixture initializes and commits its own Git repository after setup
+before checking, preserving the receipt's required revision identity. A successful
+standalone hosted replay remains pending.
 
 ## Release publication path — September 13, 2026
 

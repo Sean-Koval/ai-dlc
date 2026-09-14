@@ -1,11 +1,12 @@
 """First-use release verification must initialize before checking CI freshness."""
 
 import shlex
+import subprocess
 from pathlib import Path
 
 import yaml
 
-from ai_dlc.setup.project import setup_project
+from ai_dlc.setup.project import check_project, setup_project
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -74,3 +75,27 @@ def test_release_demo_bootstraps_before_required_ci_checks(tmp_path):
     assert setup_project(tmp_path, "github-actions", state_path=tmp_path / "state.db")[
         "agent_configuration"
     ]["clean"]
+
+
+def test_release_demo_owns_the_git_revision_used_for_check_receipts(tmp_path, monkeypatch):
+    """A fixture must not borrow a checkout from any parent directory."""
+    monkeypatch.setenv("GIT_CEILING_DIRECTORIES", str(tmp_path.parent))
+    commands = [
+        shlex.split(line) for line in consumer_steps()[1]["run"].splitlines() if line.strip()
+    ]
+    check_index = next(
+        i for i, command in enumerate(commands) if command[:3] == ["ai-dlc", "project", "check"]
+    )
+    (tmp_path / "ai-dlc.toml").write_text("schema = 4\n")
+    setup_project(tmp_path, "local", state_path=tmp_path / "state.db")
+    (tmp_path / ".mise.toml").write_text("[tools]\n")
+    for command in commands[:check_index]:
+        if command[0] == "git":
+            subprocess.run(command, cwd=tmp_path, check=True, capture_output=True)
+    assert (tmp_path / ".git").is_dir(), "The demo has no Git repository of its own"
+    result = check_project(tmp_path, "github-actions", use_mise=False)
+    head = subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=tmp_path, check=True, capture_output=True, text=True
+    ).stdout.strip()
+    assert result["commit"] == head
+    assert result["dirty"] is False

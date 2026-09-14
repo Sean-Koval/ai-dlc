@@ -133,4 +133,9 @@ jobs:
           cmp /tmp/demo/bootstrap/release.sh /tmp/seed/bootstrap/release.sh
           cd /tmp/demo
           sh scripts/bootstrap.sh --target local
+          git init
+          git config user.name "AI-DLC release verification"
+          git config user.email "release-verification@example.invalid"
+          git add .
+          git commit -m "Initialize release verification fixture"
           ai-dlc project check --required --target github-actions

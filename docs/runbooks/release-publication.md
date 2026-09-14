@@ -75,8 +75,9 @@ The selected tag enters quoted download arguments through `RELEASE_TAG`.
 The consumer seed uses local first-use setup so generated files can be created.
 The released engine generates a Python demo; its included manifest is compared
 byte for byte with the seed's manifest. The demo then runs its own release-mode
-bootstrap with local first-use setup before explicit `github-actions` required
-checks. This preserves the production CI freshness policy for initialized
+bootstrap with local first-use setup, initializes and commits its own Git
+repository with repository-local fixture identity, then runs explicit
+`github-actions` required checks. This preserves the production CI freshness policy for initialized
 projects. `GITHUB_PATH` still carries the installed tools to subsequent steps.
 
 Record both the original publication tag/commit/run and the replay workflow
