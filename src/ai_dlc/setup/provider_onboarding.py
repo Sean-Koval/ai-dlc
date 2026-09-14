@@ -17,6 +17,7 @@ import httpx
 from ai_dlc.config import digest
 from ai_dlc.locking import project_write_lock
 from ai_dlc.providers.linear import LinearProvider
+from ai_dlc.toml_edit import set_table_value, table_paths
 from ai_dlc.work.workflow import Work
 
 _ORGANIZATION_QUERY = """
@@ -274,117 +275,6 @@ def _validated_plan(plan: dict) -> tuple[str, dict[str, Any]]:
     return before_digest, expected_patch
 
 
-def _comment_suffix(value: str) -> str:
-    quote: str | None = None
-    escaped = False
-    for index, character in enumerate(value):
-        if escaped:
-            escaped = False
-        elif quote == '"' and character == "\\":
-            escaped = True
-        elif quote is not None and character == quote:
-            quote = None
-        elif quote is None and character in {'"', "'"}:
-            quote = character
-        elif quote is None and character == "#":
-            start = index
-            while start and value[start - 1] in {" ", "\t"}:
-                start -= 1
-            return value[start:]
-    return ""
-
-
-def _is_escaped(value: str, index: int) -> bool:
-    backslashes = 0
-    index -= 1
-    while index >= 0 and value[index] == "\\":
-        backslashes += 1
-        index -= 1
-    return bool(backslashes % 2)
-
-
-def _structural_lines(lines: list[str]) -> list[bool]:
-    """Mark lines that begin outside a TOML multiline string."""
-    multiline: str | None = None
-    structural = []
-    for line in lines:
-        structural.append(multiline is None)
-        index = 0
-        single: str | None = None
-        while index < len(line):
-            if multiline == "basic":
-                if line.startswith('"""', index) and not _is_escaped(line, index):
-                    multiline = None
-                    index += 3
-                else:
-                    index += 1
-            elif multiline == "literal":
-                if line.startswith("'''", index):
-                    multiline = None
-                    index += 3
-                else:
-                    index += 1
-            elif single == "basic":
-                if line[index] == '"' and not _is_escaped(line, index):
-                    single = None
-                index += 1
-            elif single == "literal":
-                if line[index] == "'":
-                    single = None
-                index += 1
-            elif line[index] == "#":
-                break
-            elif line.startswith('"""', index):
-                multiline = "basic"
-                index += 3
-            elif line.startswith("'''", index):
-                multiline = "literal"
-                index += 3
-            elif line[index] == '"':
-                single = "basic"
-                index += 1
-            elif line[index] == "'":
-                single = "literal"
-                index += 1
-            else:
-                index += 1
-    return structural
-
-
-def _marker_path(value: Any, path: tuple[str, ...] = ()) -> tuple[str, ...] | None:
-    if isinstance(value, list):
-        for child in value:
-            found = _marker_path(child, path)
-            if found is not None:
-                return found
-        return None
-    if not isinstance(value, dict):
-        return None
-    if value.get("__ai_dlc_table_marker__") is True:
-        return path
-    for key, child in value.items():
-        found = _marker_path(child, (*path, key))
-        if found is not None:
-            return found
-    return None
-
-
-def _table_path(line: str) -> tuple[str, ...] | None:
-    if not line.lstrip().startswith("["):
-        return None
-    try:
-        parsed = tomllib.loads(f"{line.rstrip()}\n__ai_dlc_table_marker__ = true\n")
-    except tomllib.TOMLDecodeError:
-        return None
-    return _marker_path(parsed)
-
-
-def _table_paths(text: str) -> list[tuple[str, ...] | None]:
-    lines = text.splitlines(keepends=True)
-    structural = _structural_lines(lines)
-    return [_table_path(line) if structural[index] else None for index, line in enumerate(lines)]
-
-
 def _unsupported_representation() -> NoReturn:
     raise ValueError(
         "Linear TOML representation cannot be updated safely; use "
@@ -393,7 +283,7 @@ def _unsupported_representation() -> NoReturn:
 
 
 def _validate_editable_representation(
-    config: dict[str, Any], table_paths: list[tuple[str, ...] | None]
+    config: dict[str, Any], header_paths: list[tuple[str, ...] | None]
 ) -> None:
     providers = config.get("providers")
     if providers is None:
@@ -408,7 +298,7 @@ def _validate_editable_representation(
 
     provider_path = ("providers", "linear")
     status_path = (*provider_path, "statuses")
-    paths = {path for path in table_paths if path is not None}
+    paths = {path for path in header_paths if path is not None}
     if provider_path not in paths and not any(
         path[: len(provider_path)] == provider_path and len(path) > len(provider_path)
         for path in paths
@@ -426,47 +316,15 @@ def _validate_editable_representation(
         _unsupported_representation()
 
 
-def _set_table_value(text: str, table: str, key: str, value: str) -> str:
-    lines = text.splitlines(keepends=True)
-    structural = _structural_lines(lines)
-    paths = _table_paths(text)
-    target_path = tuple(table.split("."))
-    start = next((index for index, path in enumerate(paths) if path == target_path), None)
-    encoded = json.dumps(value, ensure_ascii=False)
-
-    if start is None:
-        if text and not text.endswith(("\n", "\r")):
-            text += "\n"
-        separator = "" if not text or text.endswith("\n\n") else "\n"
-        return f"{text}{separator}[{table}]\n{key} = {encoded}\n"
-
-    end = next((index for index in range(start + 1, len(lines)) if paths[index]), len(lines))
-    key_pattern = rf'(?:{re.escape(key)}|"{re.escape(key)}"|\'{re.escape(key)}\')'
-    assignment = re.compile(rf"^(\s*{key_pattern}\s*=\s*)(.*?)(\r?\n)?$")
-    for index in range(start + 1, end):
-        if not structural[index]:
-            continue
-        match = assignment.match(lines[index])
-        if match:
-            newline = match.group(3) or ""
-            lines[index] = f"{match.group(1)}{encoded}{_comment_suffix(match.group(2))}{newline}"
-            return "".join(lines)
-    prefix = ""
-    if end and not lines[end - 1].endswith(("\n", "\r")):
-        prefix = "\n"
-    lines.insert(end, f"{prefix}{key} = {encoded}\n")
-    return "".join(lines)
-
-
 def _render_patch(text: str, patch: dict[str, Any]) -> str:
-    rendered = _set_table_value(text, "providers.linear", "team_id", patch["team_id"])
-    rendered = _set_table_value(
+    rendered = set_table_value(text, "providers.linear", "team_id", patch["team_id"])
+    rendered = set_table_value(
         rendered,
         "providers.linear.statuses",
         "in_progress",
         patch["statuses"]["in_progress"],
     )
-    return _set_table_value(
+    return set_table_value(
         rendered,
         "providers.linear.statuses",
         "closed",
@@ -507,7 +365,7 @@ def _apply_linear_connection(
         raise ValueError("Current Linear configuration is invalid") from None
     if digest(current_config) != before_digest:
         raise ValueError("Linear connection plan source digest changed")
-    _validate_editable_representation(current_config, _table_paths(current_text))
+    _validate_editable_representation(current_config, table_paths(current_text))
     rendered = _render_patch(current_text, patch)
     # Parse and compare semantics before staging so a preservation bug can never
     # replace the source merely because the rewritten text remains valid TOML.

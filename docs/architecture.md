@@ -87,7 +87,7 @@ does not substitute for these lifecycle contracts. See the
 | `verification/` | Sandbox orchestration and its conformance network proxy |
 | `compatibility/` | Supported legacy scaffold behavior |
 | `config.py`, `contracts.py`, `provider_definitions.py` | Shared configuration and provider contracts |
-| `files.py`, `locking.py` | Shared filesystem boundaries and locking |
+| `files.py`, `locking.py`, `toml_edit.py` | Shared filesystem boundaries, locking and comment-preserving TOML edits |
 
 These are internal Python packages, not separate deployable services. Public
 console entry points remain stable. Internal imports use the responsible package;

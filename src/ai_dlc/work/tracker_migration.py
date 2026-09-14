@@ -22,7 +22,7 @@ import tomli_w
 from ai_dlc.config import digest, resolve_runtime
 from ai_dlc.locking import project_write_lock
 from ai_dlc.providers import Registry
-from ai_dlc.setup.provider_onboarding import _set_table_value
+from ai_dlc.toml_edit import set_table_value
 from ai_dlc.work.workflow import Work, resolve_work
 
 
@@ -127,7 +127,7 @@ def _build(
     if mode == "default-only":
         proposed.setdefault("roles", {})["tracker"] = provider_id
         source = contents["ai-dlc.toml"].decode()
-        edited = _set_table_value(source, "roles", "tracker", provider_id)
+        edited = set_table_value(source, "roles", "tracker", provider_id)
         expected = tomllib.loads(source)
         expected.setdefault("roles", {})["tracker"] = provider_id
         if tomllib.loads(edited) != expected:

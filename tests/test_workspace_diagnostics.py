@@ -47,9 +47,11 @@ def codes(result):
 
 
 def owned_rc(authored: str, bin_dir: Path) -> str:
-    from ai_dlc.harness.agents import _section
+    from ai_dlc.harness.agents import managed_section
 
-    return _section(authored, f'export PATH={shlex.quote(str(bin_dir))}:"$PATH"\n', toml=True)
+    return managed_section(
+        authored, f'export PATH={shlex.quote(str(bin_dir))}:"$PATH"\n', toml=True
+    )
 
 
 def snapshot(*roots):

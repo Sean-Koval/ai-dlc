@@ -1300,14 +1300,26 @@ def test_optional_design_pm_skills_render_with_selected_harness_and_preserve_edi
 
 @pytest.mark.parametrize("existing", ["", "@AGENTS.md\n"])
 def test_plain_claude_reference_remains_plain_and_ready(tmp_path, existing):
-    from ai_dlc.harness.agents import _managed_section_state, render_agents
+    from ai_dlc.config import load_project
+    from ai_dlc.harness.agents import render_agents
+    from ai_dlc.setup.readiness import inspect_readiness
 
-    (tmp_path / "ai-dlc.toml").write_text('schema=4\n[roles]\nagent-client=["claude-code"]\n')
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nspecs="openspec"\nagent-client=["claude-code"]\n'
+    )
     if existing:
         (tmp_path / "CLAUDE.md").write_text(existing)
     render_agents(tmp_path, apply=True)
     assert (tmp_path / "CLAUDE.md").read_text() == "@AGENTS.md\n"
-    assert _managed_section_state(tmp_path / "CLAUDE.md", "@AGENTS.md\n") == "ready"
+    readiness = inspect_readiness(
+        tmp_path, load_project(tmp_path), environ={}, probe=lambda _: {"available": True}
+    )
+    assert readiness["ready"] is True
+    assert [
+        check["status"]
+        for check in readiness["checks"]
+        if check["dimension"] == "guidance" and check["component"] == "claude-code"
+    ] == ["ready"]
     before = (tmp_path / "CLAUDE.md").read_bytes()
     render_agents(tmp_path, apply=True)
     assert (tmp_path / "CLAUDE.md").read_bytes() == before

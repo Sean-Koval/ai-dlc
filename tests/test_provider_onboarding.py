@@ -1161,22 +1161,40 @@ def test_provider_connect_refuses_a_symlinked_local_confinement_anchor(
     assert all(path.read_bytes() == contents for path, contents in before.items())
 
 
-def test_connection_plan_load_refuses_a_symlinked_local_anchor(tmp_path):
+def test_connection_plan_load_refuses_a_symlinked_local_anchor(tmp_path, monkeypatch):
     """Apply must not read a shared file through a redirected local-state anchor."""
-    from ai_dlc.setup.provider_onboarding import _load_connection_plan
+    from ai_dlc.cli import app
 
     root = tmp_path / "project"
-    root.mkdir()
+    config_path = _write_connect_project(root)
     shared = root / "reviewed.json"
     shared.write_text('{"shared": true}\n')
     local = root / ".ai-dlc/local"
-    local.parent.mkdir()
+    local.parent.mkdir(exist_ok=True)
     local.symlink_to(root, target_is_directory=True)
+    calls = _stub_cli_discovery(monkeypatch)
+    monkeypatch.setenv("LINEAR_TEST_TOKEN", "credential-sentinel")
+    before = config_path.read_bytes()
 
-    with pytest.raises(ValueError, match=".ai-dlc/local"):
-        _load_connection_plan(root, local / shared.name)
+    result = CliRunner().invoke(
+        app,
+        [
+            "provider",
+            "connect",
+            "linear",
+            "--root",
+            str(root),
+            "--plan-file",
+            str(local / shared.name),
+            "--apply",
+        ],
+    )
 
+    assert result.exit_code != 0
+    assert ".ai-dlc/local" in result.output
+    assert calls == []
     assert shared.read_text() == '{"shared": true}\n'
+    assert config_path.read_bytes() == before
 
 
 @pytest.mark.parametrize("component", ["ai-dlc", "intermediate", "leaf"])

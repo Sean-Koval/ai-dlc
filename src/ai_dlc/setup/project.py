@@ -83,7 +83,8 @@ def run_command(
     )
 
 
-def _check_definitions(config: dict[str, Any]) -> tuple[list[str], dict[str, str]]:
+def check_definitions(config: dict[str, Any]) -> tuple[list[str], dict[str, str]]:
+    """Validated required check IDs and their commands from project configuration."""
     checks = config.get("checks", {})
     required = checks.get("required", [])
     commands = checks.get("commands", {})
@@ -102,7 +103,7 @@ def check_project(
 ) -> dict[str, Any]:
     root = root.resolve()
     config = load_project(root)
-    required, commands = _check_definitions(config)
+    required, commands = check_definitions(config)
     # Resolve the runtime before any check so a missing one cannot be reported as a check failure.
     runtime_env(root, use_mise)
     commit = run_git(root, "rev-parse", "HEAD").stdout.strip()
@@ -255,7 +256,7 @@ def setup_project(
 ) -> dict[str, Any]:
     root = root.resolve()
     config = load_project(root)
-    _check_definitions(config)
+    check_definitions(config)
     from ai_dlc.files import assets
     from ai_dlc.harness.agents import render_agents, target_hooks
 

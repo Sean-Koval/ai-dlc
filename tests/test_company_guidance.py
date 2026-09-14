@@ -174,17 +174,53 @@ def test_reference_tree_remains_closed(tmp_path, mutation):
 
 
 def test_conflicting_selections_report_compatibility_without_prose_inference(tmp_path):
-    from ai_dlc.harness.agents import _guidance_selection_details
+    project = tmp_path / "project"
+    config = {"agents": {"bundles": ["one", "two"], "sdk_versions": {"sdk": "1.2"}}}
+    (project / ".ai-dlc/bundles").mkdir(parents=True)
+    (project / "ai-dlc.toml").write_text(
+        'schema = 4\n[agents]\nbundles = ["one", "two"]\n[agents.sdk_versions]\nsdk = "1.2"\n'
+    )
 
-    manifest = company(tmp_path)
-    second = json.loads(json.dumps(manifest))
-    second["guidance"]["company-sdk"]["sdk"]["versions"] = ["2"]
-    bundles = {"one": {"manifest": manifest}, "two": {"manifest": second}}
-    config = {"agents": {"sdk_versions": {"sdk": "1.2"}}}
-    details = _guidance_selection_details(bundles, config)
-    assert all(any("conflicting" in d for d in errors) for errors in details.values())
-    second["guidance"]["company-sdk"]["sdk"]["versions"] = ["1.2", "2"]
-    assert _guidance_selection_details(bundles, config) == {"one": [], "two": []}
+    def vendor(bundle_id: str, versions: list[str]) -> None:
+        destination = project / ".ai-dlc/bundles" / bundle_id
+        manifest = company(destination)
+        manifest["id"] = bundle_id
+        skill_path = manifest["skills"].pop("company-sdk")
+        skill = destination / skill_path
+        skill.write_text(skill.read_text().replace("name: company-sdk", f"name: {bundle_id}-sdk"))
+        manifest["files"][skill_path] = hashlib.sha256(skill.read_bytes()).hexdigest()
+        manifest["skills"] = {f"{bundle_id}-sdk": skill_path}
+        manifest["references"] = {f"{bundle_id}-sdk": manifest["references"].pop("company-sdk")}
+        guidance = manifest["guidance"].pop("company-sdk")
+        guidance["sdk"]["versions"] = versions
+        manifest["guidance"] = {f"{bundle_id}-sdk": guidance}
+        manifest_bytes = (json.dumps(manifest, indent=2, sort_keys=True) + "\n").encode()
+        (destination / "bundle.json").write_bytes(manifest_bytes)
+        lock = {
+            "schema": 1,
+            "id": bundle_id,
+            "source": f"https://example.test/{bundle_id}.git",
+            "ref": "v1",
+            "resolved_commit": "a" * 40,
+            "manifest_sha256": hashlib.sha256(manifest_bytes).hexdigest(),
+            "files": manifest["files"],
+        }
+        (destination / "bundle.lock.json").write_text(
+            json.dumps(lock, indent=2, sort_keys=True) + "\n"
+        )
+
+    vendor("one", ["1.2"])
+    vendor("two", ["2"])
+    results = inspect_bundle_guidance(project, config, ["codex"])
+    assert [result["status"] for result in results] == ["blocked", "blocked"]
+    assert all("conflicting" in result["reason"] for result in results)
+    with pytest.raises(ValueError, match="conflicting"):
+        render_agents(project, apply=True)
+
+    vendor("two", ["1.2", "2"])
+    results = inspect_bundle_guidance(project, config, ["codex"])
+    assert [result["status"] for result in results] == ["missing", "missing"]
+    assert not any("conflicting" in result["reason"] for result in results)
 
 
 def test_reference_update_preserves_vendored_local_edits(tmp_path):

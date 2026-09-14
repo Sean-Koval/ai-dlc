@@ -10,8 +10,8 @@ import tomli_w
 
 from ai_dlc.config import load_project, resolve_layers
 from ai_dlc.locking import project_write_lock
-from ai_dlc.setup.templates import _apply, _files
-from ai_dlc.work.workflow import Work, WorkService, _project_source_digest
+from ai_dlc.setup.templates import apply_files, checkout_files
+from ai_dlc.work.workflow import Work, WorkService, project_source_digest
 
 ARTIFACTS = {
     "tracker": {"tracker"},
@@ -47,7 +47,7 @@ def _rebind(
         raise ValueError("A Linear connection migration requires the selected tracker to be linear")
     proposed = copy.deepcopy(config)
     proposed.setdefault("roles", {})[role] = provider_id
-    before = _files(root)
+    before = checkout_files(root)
     all_work_items = []
     for path in sorted((root / ".ai-dlc/work").glob("*.toml")):
         work = Work.model_validate(tomllib.loads(path.read_text())).model_dump(by_alias=True)
@@ -143,12 +143,12 @@ def _rebind(
                 stage,
                 resolved,
                 state_path=stage / "state",
-                _source_digest=_project_source_digest(stage),
+                _source_digest=project_source_digest(stage),
             )
             updated = service.load(work["id"], mutation=False)
             after[name] = tomli_w.dumps(updated).encode()
         after["ai-dlc.toml"] = staged_config.read_bytes()
-        _apply(root, before, after)
+        apply_files(root, before, after)
     return {
         **plan,
         "status": "applied",
