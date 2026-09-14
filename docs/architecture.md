@@ -124,3 +124,10 @@ third-party agent and command collections once copied into it were removed, and
 packaged assets must not contain vendored trees or personal machine paths.
 Do not delete subprocess entry points or assets merely because imports do not
 reference them directly.
+
+### FDE engagement documents
+
+`documentation/fde.py` owns local engagement generation and stage checks behind
+the thin `fde` CLI group. It reads only the explicit charter and stage landing
+pages, and has no provider or private-knowledge connection. See the
+[FDE runbook](runbooks/fde-documents.md) for paths, metadata and publication limits.

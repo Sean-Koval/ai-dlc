@@ -99,3 +99,106 @@ records the frozen source/test candidate at `e377d720`, `dirty=true`, target loc
 This evidence paragraph was added afterwards; source and tests stayed unchanged.
 Narrow independent re-review of the repair remains pending. The live company,
 platform, merged-CI and delivery limits above remain unchanged.
+
+## Walkthrough preparation — September 14, 2026
+
+Tracked by [issue #85](https://github.com/Sean-Koval/ai-dlc/issues/85).
+The inspected engine revision is `dd05f1f1ba919d2647e46049b7cd48fbb21be1fb` (the merge of PR #131), on macOS
+15.3.2 (24D81), ARM64, Python 3.12.11, AI-DLC 0.4.0. This is preparation evidence,
+not a live Jira qualification. No Jira host was contacted and no Jira request,
+issue, transition, PR or completion response was produced by this walkthrough.
+
+**Stopped after preparation.** The maintainer has not supplied a disposable Jira
+project, its selected provider configuration and credential environment-variable
+name, or the exact approved host allowlist. No credential store was searched and
+no company tenant was inferred from another ticket. The successful GitHub default
+remains the qualified work tracker within its recorded scope; Jira and Plane
+remain unqualified for this live cycle.
+
+Two additional execution limits were verified against this revision:
+
+- `ai-dlc work status WORK_ID` intentionally reports `tracker_status = "not queried
+  (local status)"`. It must not be recorded as a fresh Jira read. Use the explicit
+  provider read below for that observation.
+- `ai-dlc provider test jira-cloud MANIFEST --live` routes to the existing sandbox,
+  but its conformance entry point implements only Linear/GitHub read-only health.
+  Jira live execution and all live mutation conformance are unavailable. The runner
+  requires pinned test/proxy/enforcement image digests and exact `allow_hosts`;
+  it cannot yet execute an arbitrary multi-step work walkthrough. Adding a reviewed
+  Jira mutation target is a prerequisite to step 3 of the issue. Do not run the
+  commands on the host as an isolation substitute or relabel fixture results.
+
+### Prepared sequence (not executed)
+
+Run this sequence only inside a future qualified runner target, using an approved
+throwaway repository and Jira project. Follow the
+[Jira setup runbook](../runbooks/jira-cloud-setup.md) to establish the actual Cloud
+UUID, account, issue type, required fields, statuses and resolutions. Pin the
+engine revision and all three runner image digests. Review every allowed host:
+Jira uses `api.atlassian.com` through the Cloud UUID gateway; the configured site
+identifies the tenant. GitHub PR/CI receipt retrieval may require additional exact
+hosts. Capture proxy observations, and stop on an unapproved host rather than
+expanding the allowlist automatically. Never mount a home directory into the runner.
+
+1. In the throwaway Git repository, create and review
+   `.ai-dlc/work/jira-qualification.toml` with schema 1, disposable scope and the
+   normal specification, merged-PR and exact-revision CI gates. If no behavior is
+   changed, record `requires_spec = false` with a reason; do not disable other gates.
+   Commit the record. Configure `[scm]` for the throwaway repository and the actual
+   receipt-producing Verify workflow. The tracker role must name the configured
+   Jira provider alias, not this repository's GitHub provider.
+2. Execute each command separately, retaining its exit status and redacted output:
+
+   ```sh
+   ai-dlc work publish jira-qualification
+   ai-dlc work publish jira-qualification
+   ai-dlc work start jira-qualification
+   ai-dlc work status jira-qualification
+   ```
+
+   Compare both publish results' tracker IDs and independently search the sandbox
+   project for duplicate correlation. Read back the configured in-progress status;
+   local `work status` is not that evidence. From the same throwaway root, an
+   explicit fresh read using the engine's provider boundary is:
+
+   ```sh
+   python - <<'PY'
+   import json
+   import tomllib
+   from pathlib import Path
+   from ai_dlc.providers.jira_cloud import JiraCloudProvider
+
+   config = tomllib.loads(Path('ai-dlc.toml').read_text())
+   work = tomllib.loads(Path('.ai-dlc/work/jira-qualification.toml').read_text())
+   alias = work['providers']['tracker']
+   provider = JiraCloudProvider(config['providers'][alias])
+   item = provider.invoke('read', {'reference': work['artifacts']['tracker']})
+   print(json.dumps({key: item.get(key) for key in ('id', 'state', 'url')}, indent=2))
+   PY
+   ```
+
+3. Before a PR is merged, run `ai-dlc work finish jira-qualification`. Record the
+   nonzero refusal, the specific failing gate, and a fresh Jira read proving no
+   completion transition occurred. Unexpected success is a defect: stop and retain
+   evidence rather than continuing.
+4. Commit a harmless disposable repository change, record documentation
+   dispositions if that repository requires them, and pass
+   `ai-dlc project check --required`. Archive any required OpenSpec change with
+   `ai-dlc work archive jira-qualification` before review. Push the bound branch,
+   create the sandbox PR with `ai-dlc work pr jira-qualification`, and push the
+   resulting link commit. Obtain the normal review and maintainer merge; no merge
+   is authorized by this preparation record.
+5. Fetch the actual merge revision into a clean checkout. Wait for its configured
+   Verify run and receipts, then run `ai-dlc work finish jira-qualification` from
+   that exact revision. Record the PR URL, merge SHA, run URL, receipt identities,
+   successful finish and fresh Jira state/resolution. Repeat finish and verify it
+   remains idempotent. If the target has moved, use a temporary detached checkout
+   of the merge as documented in the development workflow.
+
+For every numbered step, append the actual UTC time, engine/fixture revisions,
+command, exit status, redacted request method/path, response status and relevant
+IDs/states to this record. Include contacted hosts from the enforced proxy.
+Remove authorization headers, token values, personal fields and unrelated issue
+bodies before committing evidence. The absence of a response in this preparation
+is **not** an observed success. Keep issue #85 and the release gate open until the
+missing inputs and runner capability are supplied and the cycle actually passes.

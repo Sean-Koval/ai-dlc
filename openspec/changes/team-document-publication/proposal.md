@@ -1,8 +1,19 @@
 ## Why
 
-Deferred: maintainer requests ticket-management focus. The custom server will be
-shared later; this draft remains open for revision and is not an implementation
-dependency for GitHub Issues, Plane or Jira.
+Issue #50 requests implementation using the production ai-docs source. On
+September 14, 2026 the referenced source and md_to_confluence.py were absent from
+the available local repository/work locations. The source inventory prerequisite
+remains blocked; no alternative converter/client has been presented as its port.
+No corporate remote service was accessed or qualified.
+
+The independently specified local FDE scaffold and stage checks are delivered by
+[fde-document-scaffold](../archive/2026-09-14-fde-document-scaffold/proposal.md). They do not complete
+this change or issue #50. Remaining work includes inspecting the actual source,
+porting/reusing conversion and transport under these safety contracts, selective
+preview/apply, version conflicts, recovery/registry mapping, optional remote
+hierarchy creation and disposable-space/harness qualification. Resolve the
+issue's bidirectional-sync description against this proposal's deliberate
+one-way reviewed publication contract when the source can be inspected.
 
 Private notes and team publication are distinct responsibilities. The existing
 knowledge append contract cannot represent controlled updates to shared documents.
