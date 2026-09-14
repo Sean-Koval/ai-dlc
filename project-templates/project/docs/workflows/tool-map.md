@@ -72,7 +72,7 @@ knowledge append`.
 
 | Area | Interfaces |
 | --- | --- |
-| Readiness and context | `ai-dlc doctor`, `ai-dlc context` |
+| Readiness and context | `ai-dlc doctor`, `ai-dlc next`, `ai-dlc context` |
 | Project lifecycle | `ai-dlc project init`, `ai-dlc project adopt`, `ai-dlc project sync`, `ai-dlc project setup`, `ai-dlc project check --required`, `ai-dlc project rebind` |
 | Agent configuration | `ai-dlc agents render` |
 | Work and traceability | `ai-dlc work publish`, `ai-dlc work link`, `ai-dlc work start`, `ai-dlc work status`, `ai-dlc work finish` |

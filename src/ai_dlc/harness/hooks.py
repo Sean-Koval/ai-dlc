@@ -37,6 +37,22 @@ def classify_command(command: str) -> str:
     return "ordinary"
 
 
+SESSION_INSTRUCTION = "Read AGENTS.md and .ai-dlc/work; run ai-dlc next for the full summary."
+SESSION_SUMMARY_LINES = 10
+
+
+def session_context(root: Path) -> str:
+    """The instruction plus the first lines of the offline summary; never blocks a session."""
+    from ai_dlc.work.summary import next_text
+
+    try:
+        lines = next_text(root).splitlines()[:SESSION_SUMMARY_LINES]
+    except (OSError, ValueError):
+        # A missing project or unreadable configuration still gets the plain instruction.
+        return SESSION_INSTRUCTION
+    return "\n".join([SESSION_INSTRUCTION, *lines])
+
+
 def handle_hook(root: Path, event: str, payload: dict) -> dict:
     if event == "stop":
         if payload.get("stop_hook_active"):
@@ -55,7 +71,7 @@ def handle_hook(root: Path, event: str, payload: dict) -> dict:
             "message": "Record outcomes and next steps when convenient; unavailable knowledge can remain pending.",
         }
     if event == "session-start":
-        return {"context": "Read AGENTS.md and .ai-dlc/work; use ai-dlc context --brief."}
+        return {"context": session_context(root)}
     tool = payload.get("tool_name")
     if tool in {"Edit", "Write"}:
         file_path = payload.get("tool_input", {}).get("file_path", "")

@@ -76,6 +76,11 @@ implementation proceed without inventing behavior.
 
 ## Environment preparation
 
+Start a session with `ai-dlc next` (or `context --brief`) for local next actions,
+required checks and explicit tracker-not-consulted status. PR and archived-spec
+references do not prove completion; finish remains evidence-gated. The session-start
+hook includes the first ten summary lines. Plain `context` remains JSON.
+
 Use the [machine enrollment runbook](runbooks/machine-enrollment.md) for private
 profiles, readiness and client setup. Provider setup belongs in the relevant
 runbook: [GitHub](github-ticket-setup.md), [Linear](runbooks/linear-setup.md),

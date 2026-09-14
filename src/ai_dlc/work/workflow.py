@@ -173,7 +173,13 @@ def resolve_work(raw: dict, config: dict, work_id: str, *, require_review: bool 
         existing = work["bindings"].get(role)
         if existing and existing != fingerprint:
             raise ValueError(
-                f"Provider binding drift for {role}; explicitly review and rebind work"
+                f"Provider binding drift for {role}: this record was bound under a different "
+                f"{role} configuration. If the record is still active, review "
+                f".ai-dlc/work/{work_id}.toml against the current configuration, remove "
+                f"only the drifted {role} binding after review, and run "
+                f"'ai-dlc work validate {work_id}' before the next work mutation "
+                "persists the reviewed binding; finished records keep historical bindings "
+                "and are validated with 'ai-dlc work validate --all'."
             )
         work["bindings"][role] = fingerprint
     return work
@@ -265,16 +271,21 @@ def build_context(root: Path, brief: bool = False) -> dict:
     """Offline session context: local work records and the required checks.
 
     Records are read as written, without validation, so a malformed record still
-    appears; ``brief`` keeps only the three most recent by filename order. Nothing is
-    probed outside the repository tree.
+    appears. ``brief`` returns the what-next summary instead, with its rendered
+    ``text``. Nothing is probed outside the repository tree.
     """
+    if brief:
+        from ai_dlc.work.summary import render_next, summarize_next
+
+        summary = summarize_next(root)
+        return {**summary, "text": render_next(summary)}
     config = load_project(root)
     records = []
     for path in sorted((root / ".ai-dlc/work").glob("*.toml")):
         record = read_toml(path)
         records.append({k: record.get(k) for k in ["id", "title", "artifacts", "providers"]})
     return {
-        "work": records[-3:] if brief else records,
+        "work": records,
         "required": config.get("checks", {}).get("required", []),
         "next": CONTEXT_NEXT,
     }

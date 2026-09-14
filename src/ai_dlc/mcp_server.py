@@ -14,7 +14,7 @@ def _register_work_tools(server: FastMCP, root: Path, machine: Path | None) -> N
 
     @server.tool()
     def work_context(brief: bool = False) -> dict:
-        """Offline session context: local work records and required checks; no remote calls."""
+        """Offline session context; brief=True returns the what-next summary. No remote calls."""
         from ai_dlc.work.workflow import build_context
 
         return build_context(root, brief=brief)
