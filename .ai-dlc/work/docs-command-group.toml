@@ -1,0 +1,27 @@
+schema = 1
+id = "docs-command-group"
+title = "Fold the twelve docs-* commands into ai-dlc docs check|review|gate"
+scope = "Create the ai-dlc docs group with exactly check, review, gate, read, search and init, fold the twelve project docs-* commands into it behind mode flags, keep every legacy name as a hidden alias that prints one deprecation line to stderr, switch the required documentation check to ai-dlc docs gate, re-render AGENTS.md and rename every current mention. Documentation behaviour, evidence formats, gate rules, MCP tool names and every function under src/ai_dlc/documentation/ are unchanged. The empty design and tracker groups the issue names were already removed."
+requires_spec = true
+spec_reason = "Changes the CLI surface for the documentation workflow and adds a deprecation contract for the legacy names, both observable behaviour."
+acceptance = [
+    "ai-dlc docs --help SHALL list exactly check, review, gate, read, search and init.",
+    "Every former project docs-* invocation in tests/ SHALL pass unchanged except for the added stderr line.",
+    "ai-dlc design and ai-dlc tracker SHALL either have commands or not exist.",
+    "The full required check SHALL pass with the new documentation command line.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "DI-01",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/docs-command-group"
