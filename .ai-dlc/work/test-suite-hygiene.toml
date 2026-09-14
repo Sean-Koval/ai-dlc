@@ -1,0 +1,33 @@
+schema = 1
+id = "test-suite-hygiene"
+title = "Build distributions once per test session and move shared test helpers into conftest"
+scope = "Add a session-scoped fixture that builds the wheel and sdist once and make every distribution test consume it. Move helpers that test modules currently import from sibling test modules (git repository helpers, vendored bundle writers, enrollment writers, provider fakes and the shared real-project checkout) into tests/conftest.py fixtures or a tests/support package, and delete every cross-test-module import. Test behaviour and coverage are unchanged; the PR records suite wall-clock before and after."
+requires_spec = false
+spec_reason = "Test infrastructure only; no observable product behaviour changes."
+acceptance = [
+    "At most one uv build runs per test session.",
+    "No test module imports from another test module.",
+    "All required checks pass.",
+]
+reviewed = true
+depends_on = []
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+tracker = "100"
+branch = "work/test-suite-hygiene"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/111"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"

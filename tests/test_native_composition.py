@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 import tomli_w
+from fixtures.enrollment import write_enrollment
 from typer.testing import CliRunner
 
 from ai_dlc.cli import app
@@ -287,8 +288,6 @@ def test_existing_manual_alias_with_unknown_account_is_not_assumed_compatible(pr
 
 
 def test_personal_servers_are_never_copied_into_project(project):
-    from test_config import _write_enrollment
-
     from ai_dlc.environment.enrollment import EnrollmentPaths
     from ai_dlc.harness.native_composition import plan_native_connections
 
@@ -297,7 +296,7 @@ def test_personal_servers_are_never_copied_into_project(project):
     del config["agents"]
     (root / "ai-dlc.toml").write_text(tomli_w.dumps(config))
     paths = EnrollmentPaths.from_environment(environ=environ)
-    _write_enrollment(
+    write_enrollment(
         paths,
         content=b'schema = 4\n[[agents.servers]]\nid="personal-only"\ncommand="private-tool"\n',
     )
@@ -325,14 +324,12 @@ def test_symlink_input_or_saved_plan_refuses_without_writes(project, target):
 
 
 def test_machine_account_change_invalidates_saved_native_plan(project):
-    from test_config import _write_enrollment
-
     from ai_dlc.environment.enrollment import EnrollmentPaths
     from ai_dlc.harness.native_composition import apply_native_connections, plan_native_connections
 
     root, environ = project
     paths = EnrollmentPaths.from_environment(environ=environ)
-    _write_enrollment(
+    write_enrollment(
         paths,
         content=b"schema=4\n",
         machine='schema=4\n[providers.work-tracker]\naccount="machine-work"\n',

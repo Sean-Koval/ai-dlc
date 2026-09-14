@@ -9,82 +9,17 @@ import tomllib
 
 import pytest
 import tomli_w
+from fixtures.enrollment import write_enrollment
+from fixtures.tracker import files
 from typer.testing import CliRunner
 
 from ai_dlc.config import resolve_runtime
-from ai_dlc.providers import Registry
 from ai_dlc.work.workflow import WorkService
 
 
 def migration():
     assert importlib.util.find_spec("ai_dlc.work.tracker_migration"), "Migration service is missing"
     return importlib.import_module("ai_dlc.work.tracker_migration")
-
-
-class Tickets:
-    """Adapter fixture owns configured project validation and canonical ticket identity."""
-
-    def __init__(self):
-        self.identities = {"42": "T42", "url/42": "T42", "43": "T43"}
-        self.calls = []
-        self.on_read = None
-
-    def invoke(self, operation, payload):
-        self.calls.append(operation)
-        assert operation == "read", "Migration must never mutate remote tickets"
-        if self.on_read:
-            self.on_read()
-        reference = payload["reference"]
-        if reference not in self.identities:
-            raise ValueError("Target belongs to wrong project")
-        ticket = self.identities[reference]
-        return {"id": ticket, "url": f"https://tracker.test/project/{ticket}", "state": "open"}
-
-
-@pytest.fixture
-def checkout(tmp_path):
-    root = tmp_path / "project"
-    root.mkdir()
-    (root / "ai-dlc.toml").write_text(
-        '# authored project\nschema = 4\n[roles]\ntracker = "old" # retain alias\n'
-        'specs = "openspec"\nscm = "github"\n[providers.old]\nkind = "linear"\n'
-        'team_id = "old-team"\n[providers.destination]\nkind = "fixture-plane"\n'
-        '[scm]\nrepository = "org/repo"\n[gates]\nfinish = ["pr-merged", "ci-green"]\n'
-    )
-    directory = root / ".ai-dlc/work"
-    directory.mkdir(parents=True)
-    for work_id, providers in [
-        ("one", {}),
-        ("two", {"tracker": "old"}),
-        ("spec", {"specs": "openspec"}),
-    ]:
-        work = {
-            "schema": 1,
-            "id": work_id,
-            "title": work_id,
-            "scope": "scope",
-            "requires_spec": False,
-            "spec_reason": "fixture",
-            "acceptance": ["verified"],
-            "reviewed": True,
-            "providers": providers,
-            "artifacts": {"tracker": f"OLD-{work_id}", "pr": "pull/7", "spec": "change"},
-        }
-        (directory / f"{work_id}.toml").write_text("# work comment\n" + tomli_w.dumps(work))
-    env = {
-        key: str(tmp_path / key) for key in ["XDG_CONFIG_HOME", "XDG_CACHE_HOME", "XDG_STATE_HOME"]
-    }
-    registry = Registry()
-    adapter = Tickets()
-    registry.register("destination", adapter)
-    return root, env, registry, adapter
-
-
-def files(root):
-    return {
-        str(p.relative_to(root)): p.read_bytes()
-        for p in [root / "ai-dlc.toml", *sorted((root / ".ai-dlc/work").glob("*.toml"))]
-    }
 
 
 def plan(checkout, **options):
@@ -347,13 +282,11 @@ def test_cli_saves_and_applies_exact_preview_and_rejects_combined_new_intent(che
 
 
 def test_real_enrollment_preserves_inherited_alias_and_detects_account_drift(checkout):
-    from test_config import _write_enrollment
-
     from ai_dlc.environment.enrollment import EnrollmentPaths
 
     root, env, registry, _ = checkout
     paths = EnrollmentPaths.from_environment(environ=env)
-    _write_enrollment(
+    write_enrollment(
         paths,
         content=b'schema=4\nprofile_id="personal-profile"\n[roles]\ntracker="inherited"\n[providers.inherited]\nkind="linear"\nteam_id="original-team"\n',
         machine='schema=4\n[providers.inherited]\naccount="primary"\n[accounts.primary]\nidentity="first"\n',
@@ -413,13 +346,11 @@ def test_explicit_machine_mapping_uses_runtime_precedence_and_validated_scopes(c
 
 
 def test_explicit_machine_mapping_replaces_enrolled_machine(checkout):
-    from test_config import _write_enrollment
-
     from ai_dlc.environment.enrollment import EnrollmentPaths
 
     root, env, registry, _ = checkout
     paths = EnrollmentPaths.from_environment(environ=env)
-    _write_enrollment(
+    write_enrollment(
         paths,
         content=b'schema=4\nprofile_id="personal-profile"\n',
         machine='schema=4\n[accounts.enrolled]\nidentity="enrolled"\n[providers.old]\naccount="enrolled"\n',

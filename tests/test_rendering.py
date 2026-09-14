@@ -1,55 +1,9 @@
 import hashlib
 import json
 import shutil
-from pathlib import Path
 
 import pytest
-
-
-def _write_vendored_bundle(
-    root: Path,
-    bundle_id: str,
-    *,
-    skills: dict[str, tuple[str, str]] | None = None,
-    templates: dict[str, tuple[str, str]] | None = None,
-) -> None:
-    skills = skills or {}
-    templates = templates or {}
-    destination = root / ".ai-dlc/bundles" / bundle_id
-    files = {
-        path: hashlib.sha256(body.encode()).hexdigest()
-        for path, body in [*skills.values(), *templates.values()]
-    }
-    manifest = {
-        "schema": 1,
-        "id": bundle_id,
-        "skills": {name: path for name, (path, _) in skills.items()},
-        "templates": {name: path for name, (path, _) in templates.items()},
-        "files": files,
-    }
-    manifest_bytes = (json.dumps(manifest, indent=2, sort_keys=True) + "\n").encode()
-    lock = {
-        "schema": 1,
-        "id": bundle_id,
-        "source": f"https://example.test/{bundle_id}.git",
-        "ref": "v1",
-        "resolved_commit": "a" * 40,
-        "manifest_sha256": hashlib.sha256(manifest_bytes).hexdigest(),
-        "files": files,
-    }
-    if destination.exists():
-        shutil.rmtree(destination)
-    destination.mkdir(parents=True, exist_ok=True)
-    (destination / "bundle.json").write_bytes(manifest_bytes)
-    (destination / "bundle.lock.json").write_text(json.dumps(lock, indent=2, sort_keys=True) + "\n")
-    for path, body in [*skills.values(), *templates.values()]:
-        output = destination / path
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(body)
-
-
-def _skill(name: str, body: str = "Use the reviewed workflow.") -> str:
-    return f"---\nname: {name}\ndescription: Portable reviewed workflow\n---\n{body}\n"
+from fixtures.bundles import skill_document, write_vendored_bundle
 
 
 @pytest.mark.parametrize("apply", [False, True])
@@ -269,7 +223,6 @@ def test_unsupported_required_hooks_fail_before_writes(tmp_path):
 
 
 def test_digest_mismatch_prevents_all_writes(tmp_path, monkeypatch):
-    import shutil
 
     from ai_dlc.files import assets
     from ai_dlc.harness import agents
@@ -291,7 +244,6 @@ def test_digest_mismatch_prevents_all_writes(tmp_path, monkeypatch):
 def test_unchanged_owned_skill_updates_and_edited_removal_conflicts(tmp_path, monkeypatch):
     import hashlib
     import json
-    import shutil
 
     from ai_dlc.files import assets
     from ai_dlc.harness import agents
@@ -459,10 +411,10 @@ def test_selected_bundle_renders_offline_to_clients_template_and_index(tmp_path,
 
     fresh_checkout = tmp_path / "fresh-checkout"
     fresh_checkout.mkdir()
-    _write_vendored_bundle(
+    write_vendored_bundle(
         fresh_checkout,
         "review-flow",
-        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow"))},
+        skills={"review-flow": ("skills/review/SKILL.md", skill_document("review-flow"))},
         templates={"review-note": ("templates/review-note.md", "# Review note\n")},
     )
     (fresh_checkout / "ai-dlc.toml").write_text(
@@ -481,7 +433,7 @@ def test_selected_bundle_renders_offline_to_clients_template_and_index(tmp_path,
     result = render_agents(fresh_checkout, apply=True)
 
     assert result["applied"] is True
-    skill = _skill("review-flow")
+    skill = skill_document("review-flow")
     assert (fresh_checkout / ".agents/skills/review-flow/SKILL.md").read_text() == skill
     assert (fresh_checkout / ".claude/skills/review-flow/SKILL.md").read_text() == skill
     assert (fresh_checkout / "docs/templates/review-note.md").read_text() == "# Review note\n"
@@ -510,7 +462,7 @@ def test_bundle_crlf_template_is_clean_after_apply(tmp_path):
     from ai_dlc.harness.agents import render_agents
 
     body = "# Review note\r\n\r\nPreserve these bytes.\r\n"
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
         templates={"review-note": ("templates/review-note.md", body)},
@@ -532,7 +484,7 @@ def test_bundle_collisions_block_the_whole_render_without_writes(tmp_path, colli
     from ai_dlc.harness.agents import render_agents
 
     if collision == "authored":
-        _write_vendored_bundle(
+        write_vendored_bundle(
             tmp_path,
             "one",
             templates={"review-note": ("templates/note.md", "# Review note\n")},
@@ -542,16 +494,16 @@ def test_bundle_collisions_block_the_whole_render_without_writes(tmp_path, colli
         authored.write_text("# Review note\n")
         bundles = ["one"]
     elif collision == "shipped":
-        _write_vendored_bundle(
+        write_vendored_bundle(
             tmp_path,
             "one",
-            skills={"day-start": ("skills/day/SKILL.md", _skill("day-start"))},
+            skills={"day-start": ("skills/day/SKILL.md", skill_document("day-start"))},
         )
         authored = None
         bundles = ["one"]
     else:
         for bundle_id in ["one", "two"]:
-            _write_vendored_bundle(
+            write_vendored_bundle(
                 tmp_path,
                 bundle_id,
                 templates={"review-note": ("templates/note.md", f"# {bundle_id}\n")},
@@ -577,10 +529,10 @@ def test_bundle_render_rejects_a_symlinked_vendored_parent_without_writes(tmp_pa
 
     outside = tmp_path / "outside"
     outside.mkdir()
-    _write_vendored_bundle(
+    write_vendored_bundle(
         outside,
         "review-flow",
-        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow"))},
+        skills={"review-flow": ("skills/review/SKILL.md", skill_document("review-flow"))},
     )
     (tmp_path / ".ai-dlc").mkdir()
     (tmp_path / ".ai-dlc/bundles").symlink_to(outside / ".ai-dlc/bundles")
@@ -600,18 +552,22 @@ def test_bundle_same_owner_update_partial_client_and_edited_removal(tmp_path):
 
     config = tmp_path / "ai-dlc.toml"
     config.write_text('schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n')
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
-        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow", "Version one"))},
+        skills={
+            "review-flow": ("skills/review/SKILL.md", skill_document("review-flow", "Version one"))
+        },
     )
     render_agents(tmp_path, apply=True)
     claude = tmp_path / ".claude/skills/review-flow/SKILL.md"
     claude_before = claude.read_bytes()
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
-        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow", "Version two"))},
+        skills={
+            "review-flow": ("skills/review/SKILL.md", skill_document("review-flow", "Version two"))
+        },
     )
 
     render_agents(tmp_path, apply=True, client="codex")
@@ -630,7 +586,7 @@ def test_bundle_same_owner_update_partial_client_and_edited_removal(tmp_path):
         render_agents(tmp_path, apply=True)
     assert {path: path.read_bytes() for path in before} == before
 
-    edited.write_text(_skill("review-flow", "Version two"))
+    edited.write_text(skill_document("review-flow", "Version two"))
     render_agents(tmp_path, apply=True)
     ownership = json.loads((tmp_path / ".ai-dlc/agent-ownership.json").read_text())
     assert ownership["schema"] == 3
@@ -646,10 +602,12 @@ def test_bundle_render_operational_failure_restores_every_affected_byte(tmp_path
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
     )
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
-        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow", "Version one"))},
+        skills={
+            "review-flow": ("skills/review/SKILL.md", skill_document("review-flow", "Version one"))
+        },
         templates={"review-note": ("templates/review-note.md", "# One\n")},
     )
     agents.render_agents(tmp_path, apply=True)
@@ -662,10 +620,12 @@ def test_bundle_render_operational_failure_restores_every_affected_byte(tmp_path
     read_only = affected[0]
     read_only.chmod(0o444)
     before = {path: (path.read_bytes(), path.stat().st_mode & 0o777) for path in affected}
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
-        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow", "Version two"))},
+        skills={
+            "review-flow": ("skills/review/SKILL.md", skill_document("review-flow", "Version two"))
+        },
         templates={"review-note": ("templates/review-note.md", "# Two\n")},
     )
     original = agents._publish_render_change
@@ -692,13 +652,13 @@ def test_bundle_render_invalid_template_ancestor_preserves_obsolete_outputs(tmp_
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
     )
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
-        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow"))},
+        skills={"review-flow": ("skills/review/SKILL.md", skill_document("review-flow"))},
     )
     render_agents(tmp_path, apply=True)
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
         templates={"review-note": ("templates/note.md", "# Note\n")},
@@ -720,14 +680,14 @@ def test_bundle_render_preserves_late_edit_after_planning(tmp_path, monkeypatch,
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
     )
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
         templates={"review-note": ("templates/note.md", "# One\n")},
     )
     if existing:
         agents.render_agents(tmp_path, apply=True)
-        _write_vendored_bundle(
+        write_vendored_bundle(
             tmp_path,
             "review-flow",
             templates={"review-note": ("templates/note.md", "# Two\n")},
@@ -754,13 +714,13 @@ def test_bundle_render_parent_swap_cannot_modify_external_file(tmp_path, monkeyp
     project = tmp_path / "project"
     project.mkdir()
     (project / "ai-dlc.toml").write_text('schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n')
-    _write_vendored_bundle(
+    write_vendored_bundle(
         project,
         "review-flow",
         templates={"review-note": ("templates/note.md", "# One\n")},
     )
     agents.render_agents(project, apply=True)
-    _write_vendored_bundle(
+    write_vendored_bundle(
         project,
         "review-flow",
         templates={"review-note": ("templates/note.md", "# Two\n")},
@@ -791,7 +751,7 @@ def test_bundle_render_rejects_undeclared_vendored_root_git(tmp_path):
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
     )
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
         templates={"review-note": ("templates/note.md", "# Note\n")},
@@ -814,13 +774,13 @@ def test_bundle_render_rollback_continues_after_one_restore_failure(tmp_path, mo
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
     )
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
-        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow"))},
+        skills={"review-flow": ("skills/review/SKILL.md", skill_document("review-flow"))},
     )
     agents.render_agents(tmp_path, apply=True)
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
         templates={"review-note": ("templates/note.md", "# Note\n")},
@@ -866,11 +826,11 @@ def test_bundle_render_staging_collision_preserves_authored_file(tmp_path, monke
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
     )
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# One\n")}
     )
     agents.render_agents(tmp_path, apply=True)
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# Two\n")}
     )
     authored = tmp_path / "docs/templates/.ai-dlc-collision"
@@ -891,11 +851,11 @@ def test_bundle_render_recovery_preserves_late_deletion_of_untouched_file(tmp_pa
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
     )
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# One\n")}
     )
     agents.render_agents(tmp_path, apply=True)
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# Two\n")}
     )
     ownership = tmp_path / ".ai-dlc/agent-ownership.json"
@@ -922,13 +882,13 @@ def test_bundle_render_rejects_changed_completed_stage_bytes(tmp_path, monkeypat
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
     )
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# One\n")}
     )
     agents.render_agents(tmp_path, apply=True)
     ownership = tmp_path / ".ai-dlc/agent-ownership.json"
     ownership_before = ownership.read_bytes()
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# Two\n")}
     )
     original_stage = agents._stage_render_file
@@ -1011,11 +971,11 @@ def test_bundle_render_failure_restores_outputs_and_reports_retained_stages(tmp_
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
     )
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# One\n")}
     )
     agents.render_agents(tmp_path, apply=True)
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# Two\n")}
     )
     before = {path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()}
@@ -1051,11 +1011,11 @@ def test_bundle_render_recovery_retry_reports_partial_recovery_stage(
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
     )
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# One\n")}
     )
     agents.render_agents(tmp_path, apply=True)
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# Two\n")}
     )
     before = {path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()}
@@ -1111,11 +1071,11 @@ def test_successful_bundle_render_preserves_backup_mutated_after_validation(
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
     )
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# One\n")}
     )
     agents.render_agents(tmp_path, apply=True)
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# Two\n")}
     )
     original_publish, original_read = agents._publish_render_change, agents._read_render_file
@@ -1164,14 +1124,14 @@ def test_successful_bundle_render_reports_backups_without_adopting_them(tmp_path
 
     config = tmp_path / "ai-dlc.toml"
     config.write_text('schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n')
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# One\n")}
     )
     render_agents(tmp_path, apply=True)
     if remove_export:
         config.write_text("schema=4\n[agents]\nbundles=[]\nskills=[]\n")
     else:
-        _write_vendored_bundle(
+        write_vendored_bundle(
             tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# Two\n")}
         )
     before = {path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()}
@@ -1210,14 +1170,14 @@ def test_bundle_render_recovery_preserves_authored_completed_stage_replacement(
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
     )
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# One\n")}
     )
     agents.render_agents(tmp_path, apply=True)
     destination = tmp_path / "docs/templates/review-note.md"
     ownership = tmp_path / ".ai-dlc/agent-ownership.json"
     ownership_before = ownership.read_bytes()
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path, "review-flow", templates={"review-note": ("templates/note.md", "# Two\n")}
     )
     original_stage = agents._stage_render_file
@@ -1256,14 +1216,14 @@ def test_bundle_guidance_uses_native_shared_skill_directory(tmp_path, clients):
         + json.dumps(clients)
         + '\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
     )
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
-        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow"))},
+        skills={"review-flow": ("skills/review/SKILL.md", skill_document("review-flow"))},
     )
     render_agents(tmp_path, apply=True)
     skill = tmp_path / ".agents/skills/review-flow/SKILL.md"
-    assert skill.read_text() == _skill("review-flow")
+    assert skill.read_text() == skill_document("review-flow")
     assert not (tmp_path / ".claude/skills/review-flow/SKILL.md").exists()
     assert render_agents(tmp_path)["clean"]
     assert (

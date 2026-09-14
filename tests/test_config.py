@@ -3,36 +3,7 @@ import tomllib
 from pathlib import Path
 
 import pytest
-
-
-def _write_enrollment(
-    paths, *, content: bytes, machine_id: str = "workstation-01", machine: str = "schema = 4\n"
-) -> None:
-    """Create a real, digest-verified cache and its active enrollment lock."""
-    from ai_dlc.environment.enrollment import EnrollmentLock, write_lock
-
-    profile_id = "personal-profile"
-    resolved_commit = "a" * 40
-    profile_file = "ai-dlc-profile.toml"
-    digest = hashlib.sha256(
-        profile_file.encode("utf-8") + b"\0" + str(len(content)).encode("ascii") + b"\0" + content
-    ).hexdigest()
-    cached_profile = paths.profile_root(profile_id, resolved_commit) / profile_file
-    cached_profile.parent.mkdir(parents=True)
-    cached_profile.write_bytes(content)
-    paths.machine_file(machine_id).parent.mkdir(parents=True)
-    paths.machine_file(machine_id).write_text(machine)
-    write_lock(
-        paths,
-        EnrollmentLock(
-            profile_id=profile_id,
-            source="https://example.test/profiles.git",
-            requested_ref="main",
-            resolved_commit=resolved_commit,
-            content_sha256=digest,
-            machine_id=machine_id,
-        ),
-    )
+from fixtures.enrollment import write_enrollment
 
 
 def test_runtime_resolution_uses_enrolled_files_and_fixed_precedence(tmp_path: Path):
@@ -40,7 +11,7 @@ def test_runtime_resolution_uses_enrolled_files_and_fixed_precedence(tmp_path: P
     from ai_dlc.environment.enrollment import EnrollmentPaths
 
     paths = EnrollmentPaths.from_environment(home=tmp_path / "home", environ={})
-    _write_enrollment(
+    write_enrollment(
         paths,
         content=(
             b'schema = 4\nprofile_id = "personal-profile"\n[roles]\ntracker = "personal"\n'
@@ -77,7 +48,7 @@ def test_runtime_explicit_personal_replaces_enrollment_without_reordering_projec
     from ai_dlc.environment.enrollment import EnrollmentPaths
 
     paths = EnrollmentPaths.from_environment(home=tmp_path / "home", environ={})
-    _write_enrollment(
+    write_enrollment(
         paths,
         content=(b'schema = 4\nprofile_id = "personal-profile"\n[roles]\ntracker = "cached"\n'),
     )
@@ -104,7 +75,7 @@ def test_runtime_explicit_personal_does_not_verify_the_replaced_enrolled_cache(
     from ai_dlc.environment.enrollment import EnrollmentPaths
 
     paths = EnrollmentPaths.from_environment(home=tmp_path / "home", environ={})
-    _write_enrollment(
+    write_enrollment(
         paths,
         content=b'schema = 4\nprofile_id = "personal-profile"\n',
         machine='schema = 4\n[paths]\nworkspace = "/enrolled"\n',
@@ -132,7 +103,7 @@ def test_runtime_explicit_machine_replaces_enrollment_and_cannot_weaken_project_
     from ai_dlc.environment.enrollment import EnrollmentPaths
 
     paths = EnrollmentPaths.from_environment(home=tmp_path / "home", environ={})
-    _write_enrollment(
+    write_enrollment(
         paths,
         content=b'schema = 4\nprofile_id = "personal-profile"\n',
         machine='schema = 4\n[paths]\nworkspace = "/enrolled"\n',
@@ -176,7 +147,7 @@ def test_runtime_rejects_an_invalid_active_cache(tmp_path: Path, failure: str):
 
     paths = EnrollmentPaths.from_environment(home=tmp_path / "home", environ={})
     content = b'schema = 4\nprofile_id = "personal-profile"\n'
-    _write_enrollment(paths, content=content)
+    write_enrollment(paths, content=content)
     cached_profile = paths.profile_root("personal-profile", "a" * 40) / "ai-dlc-profile.toml"
     if failure == "missing":
         cached_profile.unlink()
