@@ -1643,6 +1643,8 @@ def test_completed_dependencies_allow_start_with_their_pinned_provider(tmp_path)
     )
     traceability_record(root, depends_on=["parent"])
     subprocess.run(["git", "init", "-b", "main", str(root)], check=True, capture_output=True)
+    for key, value in [("user.name", "Fixture"), ("user.email", "fixture@example.invalid")]:
+        subprocess.run(["git", "-C", str(root), "config", key, value], check=True)
     subprocess.run(["git", "-C", str(root), "add", "."], check=True)
     subprocess.run(
         [
