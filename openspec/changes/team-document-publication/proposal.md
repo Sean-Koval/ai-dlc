@@ -7,7 +7,7 @@ remains blocked; no alternative converter/client has been presented as its port.
 No corporate remote service was accessed or qualified.
 
 The independently specified local FDE scaffold and stage checks are delivered by
-[fde-document-scaffold](../fde-document-scaffold/proposal.md). They do not complete
+[fde-document-scaffold](../archive/2026-09-14-fde-document-scaffold/proposal.md). They do not complete
 this change or issue #50. Remaining work includes inspecting the actual source,
 porting/reusing conversion and transport under these safety contracts, selective
 preview/apply, version conflicts, recovery/registry mapping, optional remote
