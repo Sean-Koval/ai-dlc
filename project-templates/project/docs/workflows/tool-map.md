@@ -17,7 +17,7 @@ not configured provider choices.
 | Workflow enforcement | AI-DLC CLI and selected MCP services | Local services | CLI: validation, machine bindings, reconciliation, receipts, and gates; MCP: reviewed work, doctor, document inspection, and knowledge |
 | Project lifecycle | Copier | Template service | Answers, source revision, preview, and three-way updates |
 
-The complete publish/start/status/finish lifecycle requires configured tracker
+The complete publish/start/finish lifecycle requires configured tracker
 and SCM roles. Local OpenSpec and GitHub compatibility fallbacks exist, but do
 not select account, repository, or authorization. GitHub uses conventional
 `verify.yml` and `main` defaults unless overridden; the tracker has no fallback.
@@ -72,10 +72,13 @@ knowledge append`.
 
 | Area | Interfaces |
 | --- | --- |
-| Readiness and context | `ai-dlc doctor`, `ai-dlc context` |
+| Readiness and context | `ai-dlc doctor`, `ai-dlc next`, `ai-dlc context` |
 | Project lifecycle | `ai-dlc project init`, `ai-dlc project adopt`, `ai-dlc project sync`, `ai-dlc project setup`, `ai-dlc project check --required`, `ai-dlc project rebind` |
 | Agent configuration | `ai-dlc agents render` |
-| Work and traceability | `ai-dlc work publish`, `ai-dlc work link`, `ai-dlc work start`, `ai-dlc work status`, `ai-dlc work finish` |
+| Local work drafting | `ai-dlc work new WORK_ID [--from-issue REF]` creates an unreviewed record without publication or mutation state |
+| Work and traceability | `ai-dlc work publish`, `ai-dlc work link`, `ai-dlc work start`, `ai-dlc work finish` |
+| Local work inspection | `ai-dlc work status` reads the local record and specification state without querying the tracker |
+| Specification finalization | `ai-dlc work archive` finalizes the owned OpenSpec change, repoints the record and commits affected files before merge |
 | Provider verification | `ai-dlc provider list`, `ai-dlc provider test` |
 | Project documentation | `ai-dlc docs init`, `ai-dlc docs check`, `ai-dlc project link-vault` |
 | Personal knowledge | `ai-dlc knowledge find`, `ai-dlc knowledge note`, `ai-dlc knowledge append` |
@@ -165,3 +168,11 @@ the note pending and preserves completion. `work start` returns up to five
 matching learning paths and first lines; read relevant notes before implementing.
 The session-start hook recalls notes for the branch's bound work record. Stop
 reminders use only ignored local friction counts and never transmit them.
+
+### Local frontend evidence
+
+The optional node `frontend` capability supplies a Playwright smoke check.
+`ai-dlc design capture` writes viewport screenshots and a manifest for
+`design-evaluate`; browser installation belongs to explicit setup. A named state
+waits for its visible selector and does not certify untested interactions.
+See [frontend smoke and capture](design-to-implementation.md#frontend-smoke-and-capture-evidence).

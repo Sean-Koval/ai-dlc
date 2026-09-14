@@ -22,3 +22,15 @@ This project's `scripts/bootstrap.sh` runs in release mode: it installs the AI-D
 Read [documentation guidance](docs/documentation-guide.md). Search the project map, catalog and canonical specifications before creating a document. Update existing authoritative docs, record owners and sources, and review affected docs with code changes. Keep private notes separate from shared drafts.
 
 For documentation changes, use the [documentation ownership and review workflow](docs/documentation-guide.md). Review affected sources and canonical documents before adding another explanation; record an evidence-bound disposition when the project enables documentation checks.
+
+## Optional frontend capability
+
+The node `frontend` capability adds Playwright smoke and screenshot evidence.
+Use `--capability frontend` alongside any desired provider roles. Set `BASE_URL`
+for a running app; otherwise smoke explicitly skips. Install the exact
+`@playwright/test@1.58.2` development dependency during setup (initialization
+already declares it; adoption preserves your package manifest), then run
+`npx --no-install playwright install chromium`. Required checks install neither
+packages nor browsers. `ai-dlc design capture --url URL` records viewport PNGs
+and a manifest under ignored `.ai-dlc/local/design/`; see the
+[design handoff](docs/workflows/design-to-implementation.md) for selectors and evidence limits.

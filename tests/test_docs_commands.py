@@ -89,7 +89,7 @@ def test_no_empty_group_is_registered():
         command = root.get_command(None, name)  # type: ignore[attr-defined]
         if hasattr(command, "list_commands"):
             assert command.list_commands(None), f"{name} is an empty group"
-    assert root.get_command(None, "design") is None  # type: ignore[attr-defined]
+    assert visible_commands(click_group("design")) == {"capture"}
     assert root.get_command(None, "tracker") is None  # type: ignore[attr-defined]
 
 

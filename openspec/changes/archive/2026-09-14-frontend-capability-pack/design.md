@@ -1,0 +1,5 @@
+# Frontend design
+
+Use the existing repeated capability list and an OPTIONAL_CAPABILITIES entry; frontend never becomes a provider role or default selection. Require the node preset. Initialize adds pinned @playwright/test; adoption preserves authored package files and documents explicit dependency setup. Smoke checks first skip with an explicit message when BASE_URL is unset; configured execution uses npx --no-install with browser downloads disabled. Browser installation is a documented setup action only.
+
+Capture uses the locally installed Playwright screenshot CLI for each viewport and named selector. A state selector is a visible-element wait condition, not an invented click workflow; screenshots capture the viewport after the selector appears. Validate HTTP(S) URL, dimensions, unique safe state names and repository-contained output without symlinks before launch. Do not overwrite prior capture sets. PNGs and a successful manifest remain in the requested directory; partial failure is visible and cannot claim a complete manifest. Report URL/time/viewports/states/files and retain missing interaction evidence as unverified.

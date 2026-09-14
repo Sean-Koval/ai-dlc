@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+{% if 'frontend' in capabilities %}
+  "devDependencies": { "@playwright/test": "1.58.2" },
+{% endif %}
   "scripts": {
     "start": "node src/index.js",
     "check": "node --check src/index.js"

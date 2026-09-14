@@ -5,11 +5,23 @@ Connect requirements, behavioral scenarios, deliverable work and verification th
 ## Requirements
 ### Requirement: TR-01 Explicit traceability
 
-New delivery guidance SHALL map product requirement IDs to formal behavioral scenarios when needed, a deliverable work item, and verification. Scope, rationale, spec, and task list SHALL retain distinct ownership.
+New delivery guidance SHALL map product requirement IDs to formal behavioral scenarios when needed, a deliverable work item, and verification. Scope, rationale, spec, and task list SHALL retain distinct ownership. `work new` SHALL create a schema-valid unreviewed record from explicit fields or a configured tracker item without publication or mutation state. Existing records and unsafe IDs SHALL be refused without writing. Missing tracker content SHALL remain explicit TODO placeholders.
 
 #### Scenario: A feature is decomposed
 - **WHEN** one outcome needs independently releasable behavior changes
 - **THEN** each ticket has explicit requirement references, dependencies, exclusions, and acceptance while each required OpenSpec change can finish independently
+
+#### Scenario: A record is created from a tracker item
+- **WHEN** an issue has an Acceptance or Acceptance criteria section with bullet lines
+- **THEN** the new record carries those acceptance lines, its tracker reference and reviewed=false
+
+#### Scenario: Missing issue content remains explicit
+- **WHEN** an issue has no acceptance section
+- **THEN** acceptance contains TODO: state acceptance and no content is invented
+
+#### Scenario: Offline drafting
+- **WHEN** explicit title, scope and acceptance are supplied without an issue
+- **THEN** creation and validation need no provider call or state directory
 
 ### Requirement: TR-02 Valid dependency graph
 
@@ -70,8 +82,22 @@ The specification gate SHALL continue to require a checkout that is exactly the 
 - **WHEN** a person or agent reads canonical or generated delivery guidance
 - **THEN** it explains preparing a temporary detached checkout at the merge commit, finishing there and removing it afterwards
 
+#### Scenario: An active change is reported before merge
+- **WHEN** local work status or PR preparation sees an active OpenSpec change
+- **THEN** it reports active change, archive before merge; status requires no network call
+
+#### Scenario: The gate names the archive remedy
+- **WHEN** required specification evidence still references an active change
+- **THEN** finish names work archive on the delivery branch or a linked follow-up pull request without relaxing its gates
+
+#### Scenario: Archive commits only its selected work
+- **WHEN** work archive runs for a reviewed record and its own active change
+- **THEN** the adapter archives and promotes it, the service repoints spec and a contained plan, and commits only affected specification files and the record
+
 ### Requirement: TR-05 Provider identity excludes evidence policy
 A provider identity fingerprint SHALL cover the configuration that determines which external service, branch and workflow runs a work record was reviewed against. It SHALL NOT cover receipt artifact policy, which the finish gate authenticates from the merged manifest rather than from the binding. An SCM configuration key that is not recognised evidence policy SHALL contribute to identity. Canonical delivery guidance SHALL describe this boundary without claiming the fingerprint authenticates receipts.
+
+Binding drift refusals SHALL name the role, explain the different role configuration, and direct active work to review and refresh only its drifted binding before single-record validation and its next mutation. Finished records SHALL retain historical bindings and use `ai-dlc work validate --all`. Single-record CLI validation SHALL add a top-level hint repeating the remedy only when every error is binding drift. Repository-wide validation output SHALL remain unchanged.
 
 #### Scenario: The CI receipt matrix changes
 - **WHEN** the configured receipt artifact names change and a work record holds bindings from before the change
@@ -88,6 +114,18 @@ A provider identity fingerprint SHALL cover the configuration that determines wh
 #### Scenario: Guidance describes the boundary
 - **WHEN** a person or agent reads canonical delivery guidance on configured evidence and bindings
 - **THEN** it states that the receipt matrix does not drift bindings and does not claim the fingerprint authenticates receipts
+
+#### Scenario: Active record has binding drift
+- **WHEN** a work mutation or single-record validation encounters a changed provider fingerprint
+- **THEN** the refusal retains the leading `Provider binding drift for <role>` and explains reviewed active repair and historical-record validation without changing bindings
+
+#### Scenario: Every validation error is binding drift
+- **WHEN** single-record CLI validation reports only binding-drift errors
+- **THEN** its JSON output includes a hint repeating the same remedy
+
+#### Scenario: Historical records are checked together
+- **WHEN** repository-wide validation checks finished records with historical bindings
+- **THEN** its output and binding-independent validation behavior remain unchanged
 
 ### Requirement: TR-06 One command between delivery gates
 

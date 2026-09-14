@@ -707,12 +707,23 @@ kind = "reference"
 owner = "repository-maintainers"
 status = "draft"
 
+code_paths = [
+    "src/ai_dlc/harness/design_capture.py",
+    "project-templates/project/playwright.config.ts",
+    "project-templates/project/tests/e2e/*.ts",
+]
+verification_paths = ["tests/test_frontend.py"]
+requirements = ["openspec/specs/frontend-capability-pack/spec.md"]
+
 [[documents]]
 id = "repo-workflows-greenfield"
 path = "docs/workflows/greenfield.md"
 kind = "reference"
 owner = "repository-maintainers"
 status = "draft"
+code_paths = ["src/ai_dlc/setup/templates.py", "project-templates/project/ai-dlc.toml.jinja", "project-templates/project/docs/api/openapi.yaml", "project-templates/project/scripts/check_api_contract_drift.py"]
+requirements = ["openspec/specs/backend-capability-pack/spec.md"]
+verification_paths = ["tests/test_backend_capability.py"]
 
 [[documents]]
 id = "repo-workflows-work-computer-setup"
@@ -720,6 +731,16 @@ path = "docs/workflows/work-computer-setup.md"
 kind = "reference"
 owner = "repository-maintainers"
 status = "draft"
+
+[[documents]]
+id = "repo-verification-backend-contracts"
+path = "docs/verification/backend-contracts.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "active"
+code_paths = ["project-templates/project/ai-dlc.toml.jinja", "project-templates/project/scripts/check_api_contract_drift.py"]
+requirements = ["openspec/specs/backend-capability-pack/spec.md"]
+verification_paths = ["tests/test_backend_capability.py"]
 
 [[documents]]
 id = "repo-runbooks-machine-enrollment"
@@ -766,3 +787,13 @@ kind = "reference"
 owner = "repository-maintainers"
 status = "active"
 requirements = ["openspec/specs/repository-organization/spec.md"]
+
+[[documents]]
+id = "repo-verification-skill-evaluation"
+path = "docs/verification/skill-evaluation.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "active"
+code_paths = ["scripts/run_skill_evaluation.py", "src/ai_dlc/harness/skill_evaluation.py", "src/ai_dlc/providers/evaluation_api.py", "agents/evaluation.toml", "agents/evaluation-scenarios.json"]
+verification_paths = ["tests/test_skill_evaluation.py"]
+requirements = ["openspec/specs/skill-evaluation/spec.md"]

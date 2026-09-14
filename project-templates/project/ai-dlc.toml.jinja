@@ -33,11 +33,14 @@ agent-client = {{ agent_clients | tojson }}
 finish = ["specification-current", "pr-merged", "ci-green"]
 
 [checks]
-required = ["generated", "work-records"{% if initialize and preset != 'generic' %}, "language-check"{% endif %}]
+required = ["generated", "work-records"{% if 'frontend' in capabilities %}, "frontend-smoke"{% endif %}{% if initialize and preset != 'generic' %}, "language-check"{% endif %}{% if 'backend' in capabilities %}, "api-contract"{% if preset == 'python' %}, "api-contract-drift"{% endif %}{% endif %}]
 
 [checks.commands]
 generated = "ai-dlc agents render --check"
 work-records = "ai-dlc work validate --all"
+{% if 'frontend' in capabilities %}
+frontend-smoke = "if [ -z \"${BASE_URL:-}\" ]; then echo 'Skipping frontend smoke: BASE_URL is unset'; else PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npx --offline --no-install playwright test --reporter=line; fi"
+{% endif %}
 {% if initialize and preset == 'python' %}
 language-check = "uv run --locked --no-sync python -m compileall -f -q src"
 {% elif initialize and preset == 'node' %}
@@ -46,16 +49,36 @@ language-check = "node --check src/index.js"
 language-check = "cargo check --locked"
 {% endif %}
 
-[setup]
-{% if preset == 'python' %}
-steps = [{id = "dependencies", command = "{% if initialize %}(test -f uv.lock || uv lock) && {% else %}test -f uv.lock && {% endif %}uv sync --locked", verify = "uv sync --locked --check"}]
-{% elif preset == 'node' %}
-steps = [{id = "dependencies", command = "{% if initialize %}(test -f package-lock.json || npm install --package-lock-only --ignore-scripts) && {% endif %}npm ci", verify = "npm ls --all --parseable"}]
-{% elif preset == 'rust' %}
-steps = [{id = "dependencies", command = "{% if initialize %}(test -f Cargo.lock || cargo generate-lockfile) && {% endif %}cargo fetch --locked", verify = "cargo fetch --locked --offline"}]
+{% if 'backend' in capabilities %}
+{% if preset == 'node' %}
+api-contract = "REDOCLY_TELEMETRY=off REDOCLY_SUPPRESS_UPDATE_NOTICE=true npx --offline --no-install @redocly/cli@1.34.16 lint docs/api/openapi.yaml --extends minimal"
+{% elif preset == 'python' %}
+api-contract = "uv run --locked --no-sync --offline --with openapi-spec-validator==0.7.2 python -m openapi_spec_validator docs/api/openapi.yaml"
+api-contract-drift = "uv run --locked --no-sync --offline --with openapi-spec-validator==0.7.2 python scripts/check_api_contract_drift.py"
 {% else %}
-steps = []
+api-contract = "uvx --offline --from openapi-spec-validator==0.7.2 openapi-spec-validator docs/api/openapi.yaml"
 {% endif %}
+{% endif %}
+
+[setup]
+steps = [
+{% if preset == 'python' %}
+  {id = "dependencies", command = "{% if initialize %}(test -f uv.lock || uv lock) && {% else %}test -f uv.lock && {% endif %}uv sync --locked", verify = "uv sync --locked --check"},
+{% elif preset == 'node' %}
+  {id = "dependencies", command = "{% if initialize %}(test -f package-lock.json || npm install --package-lock-only --ignore-scripts) && {% endif %}{% if 'frontend' in capabilities %}PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 {% endif %}npm ci", verify = "npm ls --all --parseable"},
+{% elif preset == 'rust' %}
+  {id = "dependencies", command = "{% if initialize %}(test -f Cargo.lock || cargo generate-lockfile) && {% endif %}cargo fetch --locked", verify = "cargo fetch --locked --offline"},
+{% endif %}
+{% if 'backend' in capabilities %}
+{% if preset == 'node' %}
+  {id = "api-contract-tools", command = "REDOCLY_TELEMETRY=off REDOCLY_SUPPRESS_UPDATE_NOTICE=true npx --yes @redocly/cli@1.34.16 --version", verify = "REDOCLY_TELEMETRY=off REDOCLY_SUPPRESS_UPDATE_NOTICE=true npx --offline --no-install @redocly/cli@1.34.16 --version"},
+{% elif preset == 'python' %}
+  {id = "api-contract-tools", command = "uv run --locked --no-sync --with openapi-spec-validator==0.7.2 python -m openapi_spec_validator docs/api/openapi.yaml", verify = "uv run --locked --no-sync --offline --with openapi-spec-validator==0.7.2 python -c 'import openapi_spec_validator'"},
+{% else %}
+  {id = "api-contract-tools", command = "uvx --from openapi-spec-validator==0.7.2 openapi-spec-validator docs/api/openapi.yaml", verify = "uvx --offline --from openapi-spec-validator==0.7.2 openapi-spec-validator --help"},
+{% endif %}
+{% endif %}
+]
 
 # Set scm.repository to your selected owner/repository before SCM operations.
 # Extend required checks with application-specific validation before completing real work.

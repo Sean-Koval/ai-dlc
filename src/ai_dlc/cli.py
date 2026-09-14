@@ -37,6 +37,7 @@ machine = typer.Typer(no_args_is_help=True)
 knowledge = typer.Typer(no_args_is_help=True)
 provider = typer.Typer(no_args_is_help=True)
 mcp = typer.Typer(no_args_is_help=True)
+design = typer.Typer(no_args_is_help=True)
 for name, group in [
     ("project", project),
     ("docs", docs),
@@ -48,6 +49,7 @@ for name, group in [
     ("knowledge", knowledge),
     ("provider", provider),
     ("mcp", mcp),
+    ("design", design),
 ]:
     app.add_typer(group, name=name)
 agents.add_typer(agent_bundle, name="bundle")
@@ -113,6 +115,21 @@ def scaffold(
     from ai_dlc.compatibility.legacy import scaffold as run
 
     emit(run(Path.cwd(), provider or [], all))
+
+
+@design.command("capture")
+def design_capture(
+    url: Annotated[str, typer.Option("--url")],
+    out: Annotated[Path | None, typer.Option("--out")] = None,
+    viewport: Annotated[list[str] | None, typer.Option("--viewport")] = None,
+    state: Annotated[list[str] | None, typer.Option("--state")] = None,
+    root: Path = Path("."),
+):
+    """Capture viewport evidence after optional named selectors become visible."""
+    from ai_dlc.harness.design_capture import capture_design
+
+    with service_call():
+        conclude(capture_design(root, url=url, out=out, viewports=viewport, states=state))
 
 
 @project.command("check")
@@ -1085,11 +1102,30 @@ def doctor(
 
 @app.command()
 def context(root: Path = Path("."), brief: bool = False):
-    """Print the offline session context; --brief keeps the newest records and truncates."""
+    """Print the offline session context as JSON; --brief prints the what-next summary."""
     from ai_dlc.work.workflow import build_context
 
-    text = json.dumps(build_context(root, brief=brief), indent=2)
-    typer.echo(text[:2000] if brief else text)
+    result = build_context(root, brief=brief)
+    typer.echo(result["text"], nl=False) if brief else typer.echo(json.dumps(result, indent=2))
+
+
+@app.command("next")
+def next_summary(
+    root: Annotated[Path, typer.Option("--root")] = Path("."),
+    all_records: Annotated[
+        bool, typer.Option("--all", help="Include unpublished records (no tracker artifact).")
+    ] = False,
+    as_json: Annotated[bool, typer.Option("--json", help="Print the same data as JSON.")] = False,
+):
+    """Summarize what to do next from local work records; the tracker is not consulted."""
+    from ai_dlc.work.summary import render_next, summarize_next
+
+    with service_call():
+        summary = summarize_next(root, include_all=all_records)
+    if as_json:
+        emit(summary["records"])
+    else:
+        typer.echo(render_next(summary), nl=False)
 
 
 def service(root: Path, machine: Path | None):
@@ -1128,7 +1164,49 @@ def work_validate(
             result = validate_work(root, resolve_runtime(root, machine=machine).values, work_id)
         except SERVICE_FAILURES as exc:
             result = {"valid": False, "work_id": work_id, "dependencies": [], "errors": [str(exc)]}
+    errors = result.get("errors", [])
+    if (
+        not all_records
+        and errors
+        and all("Provider binding drift for " in error for error in errors)
+    ):
+        result["hint"] = "\n".join(
+            "Provider binding drift for " + error.split("Provider binding drift for ", 1)[1]
+            for error in errors
+        )
     conclude(result)
+
+
+@work.command("new")
+def work_new(
+    work_id: str,
+    from_issue: Annotated[str | None, typer.Option("--from-issue")] = None,
+    title: str | None = None,
+    scope: str | None = None,
+    requires_spec: Annotated[
+        bool | None, typer.Option("--requires-spec/--no-requires-spec")
+    ] = None,
+    spec_reason: str | None = None,
+    acceptance: Annotated[list[str] | None, typer.Option("--acceptance")] = None,
+    root: Path = Path("."),
+    machine: Path | None = None,
+):
+    """Create an unreviewed local work record from explicit fields or an issue."""
+    try:
+        record = service(root, machine).new(
+            work_id,
+            tracker_reference=from_issue,
+            title=title,
+            scope=scope,
+            requires_spec=requires_spec,
+            spec_reason=spec_reason,
+            acceptance=acceptance,
+        )
+    except SERVICE_FAILURES as exc:
+        typer.echo(f"error: {exc}", err=True)
+        raise typer.Exit(1) from exc
+    emit(record)
+    typer.echo(str(root.resolve() / ".ai-dlc/work" / f"{work_id}.toml"), err=True)
 
 
 @work.command("publish")
@@ -1169,6 +1247,13 @@ def work_pr(work_id: str, root: Path = Path("."), machine: Path | None = None):
     """Open the pull request for the bound branch once, link it and commit the record."""
     with service_call():
         conclude(service(root, machine).pr(work_id))
+
+
+@work.command("archive")
+def work_archive(work_id: str, root: Path = Path("."), machine: Path | None = None):
+    """Archive this work's active OpenSpec change and commit its affected files."""
+    with service_call():
+        conclude(service(root, machine).archive(work_id))
 
 
 @work.command("status")

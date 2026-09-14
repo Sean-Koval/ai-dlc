@@ -2071,13 +2071,15 @@ def test_build_context_reads_records_as_written_and_cli_prints_the_same_json(tmp
     assert full["required"] == ["lint", "test"]
     assert full["next"].startswith("Select work;")
     brief = build_context(tmp_path, brief=True)
-    assert [record["id"] for record in brief["work"]] == ["item-2", "item-3", None]
+    assert brief["records"] == []
+    assert brief["total"] == 5
+    assert brief["errors"]
 
     result = CliRunner().invoke(app, ["context", "--root", str(tmp_path)])
     assert result.exit_code == 0, result.output
     assert result.output == json.dumps(full, indent=2) + "\n"
     result = CliRunner().invoke(app, ["context", "--root", str(tmp_path), "--brief"])
-    assert result.output == json.dumps(brief, indent=2)[:2000] + "\n"
+    assert result.output == brief["text"]
 
 
 def test_optional_learning_is_idempotent_and_survives_unavailable_vault(
@@ -2462,6 +2464,276 @@ def test_pr_recovers_success_before_record_link(tmp_path, monkeypatch):
     assert len(scm.pull_requests) == 1
 
 
+def test_new_work_offline_is_unreviewed_valid_and_creates_no_state(tmp_path):
+    from ai_dlc.work.workflow import WorkService, validate_work
+
+    state = tmp_path / "state"
+    service = WorkService(
+        tmp_path, {"roles": {"tracker": "fake", "agent-client": ["codex"]}}, state_path=state
+    )
+    result = service.new("demo", title="T", scope="S", acceptance=["A"])
+    assert result["reviewed"] is False
+    assert result["providers"] == {"tracker": "fake"}
+    assert result["requirements"] == result["depends_on"] == []
+    assert validate_work(tmp_path, service.config, "demo")["valid"]
+    assert not state.exists()
+    with pytest.raises(ValueError, match="reviewed"):
+        service.load("demo", mutation=True)
+
+
+@pytest.mark.parametrize(
+    "body, acceptance",
+    [
+        (
+            "## Why\n\nFirst paragraph.\nStill first.\n\nSecond.\n\n## Acceptance criteria\n- A\n* B\n\n## Other\n- C",
+            ["A", "B"],
+        ),
+        ("Scope only.", ["TODO: state acceptance"]),
+        ("## Acceptance\n- One\n+ Two", ["One", "Two"]),
+    ],
+)
+def test_new_work_from_issue_preserves_source_fields(tmp_path, body, acceptance):
+    from ai_dlc.work.workflow import WorkService
+
+    tracker = Tracker()
+    tracker.items = [{"id": "68", "title": "Issue title", "body": body, "state": "open"}]
+    service = WorkService(
+        tmp_path,
+        {"roles": {"tracker": "fake"}},
+        state_path=tmp_path / "state",
+        registry=Registry(tracker),
+    )
+    result = service.new("demo", tracker_reference="68")
+    assert result["title"] == "Issue title"
+    assert result["acceptance"] == acceptance
+    assert result["artifacts"] == {"tracker": "68"}
+    assert result["requires_spec"] is True
+    assert result["spec_reason"] == "TODO: record the specification decision"
+    assert result["reviewed"] is False
+    if body.startswith("## Why"):
+        assert result["scope"] == "First paragraph.\nStill first."
+
+
+def test_new_work_overrides_and_refusals_do_not_overwrite(tmp_path):
+    from ai_dlc.work.workflow import WorkService
+
+    tracker = Tracker()
+    tracker.items = [{"title": "Issue", "body": "Issue scope."}]
+    service = WorkService(
+        tmp_path,
+        {"roles": {"tracker": "fake"}},
+        state_path=tmp_path / "state",
+        registry=Registry(tracker),
+    )
+    result = service.new(
+        "demo",
+        tracker_reference="68",
+        title="Override",
+        scope="Explicit",
+        acceptance=["A"],
+        requires_spec=False,
+        spec_reason="Configuration only",
+    )
+    assert result["title"] == "Override" and result["scope"] == "Explicit"
+    assert result["requires_spec"] is False and result["acceptance"] == ["A"]
+    path = tmp_path / ".ai-dlc/work/demo.toml"
+    before = path.read_bytes()
+    for work_id in ["demo", "../escape", ""]:
+        with pytest.raises(ValueError):
+            service.new(work_id, tracker_reference="68")
+    assert path.read_bytes() == before
+    with pytest.raises(ValueError):
+        service.new("invalid", title="", scope="S", acceptance=[])
+    assert not (path.parent / "invalid.toml").exists()
+
+
+def test_new_work_refuses_symlink_and_configuration_change_during_read(tmp_path):
+    from ai_dlc.work.workflow import WorkService
+
+    project = tmp_path / "ai-dlc.toml"
+    project.write_text('schema=4\n[roles]\ntracker="fake"\n')
+    tracker = Tracker()
+    service = WorkService(
+        tmp_path,
+        {"schema": 4, "roles": {"tracker": "fake"}},
+        state_path=tmp_path / "state",
+        registry=Registry(tracker),
+    )
+    directory = tmp_path / ".ai-dlc/work"
+    directory.mkdir(parents=True)
+    (directory / "linked.toml").symlink_to(tmp_path / "missing")
+    with pytest.raises(ValueError, match="symlink"):
+        service.new("linked", title="T", scope="S", acceptance=["A"])
+
+    def read_with_drift(operation, payload):
+        project.write_text('schema=4\n[roles]\ntracker="other"\n')
+        return {"title": "Issue", "body": "Scope"}
+
+    tracker.invoke = read_with_drift
+    with pytest.raises(ValueError, match="configuration changed"):
+        service.new("drift", tracker_reference="68")
+    assert not (directory / "drift.toml").exists()
+
+
+def archive_service(tmp_path):
+    service, scm, git = started_service(tmp_path)
+    change = tmp_path / "openspec/changes/one"
+    (change / "specs/demo").mkdir(parents=True)
+    (change / "proposal.md").write_text("Proposal")
+    (change / "tasks.md").write_text("- [x] Implement")
+    (change / "specs/demo/spec.md").write_text("Delta")
+    canonical = tmp_path / "openspec/specs/demo/spec.md"
+    canonical.parent.mkdir(parents=True)
+    canonical.write_text("Original")
+    record = service.load("one")
+    record["requires_spec"] = True
+    record["artifacts"].update(spec="openspec/changes/one", plan="openspec/changes/one/tasks.md")
+    service.save(record)
+    git("add", "openspec", ".ai-dlc/work/one.toml")
+    git("commit", "-m", "specification")
+    return service, scm, git
+
+
+def fake_archive_cli(tmp_path, monkeypatch):
+    import json
+    import shutil
+    import subprocess
+
+    run = subprocess.run
+    calls = []
+
+    def execute(args, **kwargs):
+        if args[0] != "openspec":
+            return run(args, **kwargs)
+        calls.append(args)
+        source = tmp_path / "openspec/changes/one"
+        target = tmp_path / "openspec/changes/archive/2026-09-14-one"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.move(source, target)
+        (tmp_path / "openspec/specs/demo/spec.md").write_text("Promoted")
+        return subprocess.CompletedProcess(
+            args,
+            0,
+            json.dumps(
+                {
+                    "archive": {
+                        "change": "one",
+                        "archivedAs": target.name,
+                        "path": str(target),
+                        "specsUpdated": True,
+                    }
+                }
+            ),
+            "",
+        )
+
+    monkeypatch.setattr(subprocess, "run", execute)
+    return calls
+
+
+def test_archive_repoints_and_commits_only_its_files(tmp_path, monkeypatch):
+    from ai_dlc.work.workflow import validate_work_records
+
+    service, _, git = archive_service(tmp_path)
+    (tmp_path / "other.txt").write_text("Unrelated staged content")
+    git("add", "other.txt")
+    calls = fake_archive_cli(tmp_path, monkeypatch)
+    result = service.archive("one")
+    assert calls == [["openspec", "archive", "one", "--yes", "--json"]]
+    assert result["promoted_specs"] == ["openspec/specs/demo/spec.md"]
+    record = service.load("one")
+    assert record["artifacts"]["spec"] == "openspec/changes/archive/2026-09-14-one"
+    assert record["artifacts"]["plan"] == "openspec/changes/archive/2026-09-14-one/tasks.md"
+    assert git("log", "-1", "--format=%s") == "docs(specs): archive one"
+    assert git("diff", "--cached", "--name-only") == "other.txt"
+    assert "other.txt" not in git("show", "--name-only", "--format=", "HEAD")
+    assert validate_work_records(tmp_path)["valid"]
+
+
+def test_archive_refuses_dirty_promoted_spec_or_foreign_change(tmp_path, monkeypatch):
+    service, _, _ = archive_service(tmp_path)
+    calls = fake_archive_cli(tmp_path, monkeypatch)
+    (tmp_path / "openspec/specs/demo/spec.md").write_text("Unrelated local change")
+    with pytest.raises(ValueError, match="dirty"):
+        service.archive("one")
+    assert not calls
+    record = service.load("one")
+    record["artifacts"]["spec"] = "openspec/changes/someone-else"
+    service.save(record)
+    with pytest.raises(ValueError, match="own active"):
+        service.archive("one")
+    assert not calls
+
+
+def test_specification_status_is_local_and_pr_warns(tmp_path):
+    service, scm, _ = archive_service(tmp_path)
+
+    def no_tracker(*args):
+        raise AssertionError("Status cannot call the network")
+
+    original = scm.invoke
+    scm.invoke = no_tracker
+    assert service.status("one")["specification"] == "active change, archive before merge"
+    record = service.load("one")
+    record["artifacts"]["spec"] = "openspec/changes/archive/2026-09-14-one"
+    service.save(record)
+    assert service.status("one")["specification"] == "archived"
+    record["artifacts"]["spec"] = "openspec/changes/one"
+    service.save(record)
+    scm.invoke = original
+    assert "archive before merge" in service.pr("one")["specification"]
+
+
+def test_unarchived_specification_gate_names_the_remedy(tmp_path):
+    from ai_dlc.providers.openspec import OpenSpecProvider
+
+    service, _, _ = archive_service(tmp_path)
+    with pytest.raises(ValueError, match="Run `ai-dlc work archive one`") as caught:
+        OpenSpecProvider(tmp_path).current(service.load("one"))
+    assert "work link one pr <url>" in str(caught.value)
+
+
+def test_archive_invalid_json_does_not_repoint_record(tmp_path, monkeypatch):
+    import subprocess
+
+    service, _, _ = archive_service(tmp_path)
+    before = (tmp_path / ".ai-dlc/work/one.toml").read_bytes()
+    original = subprocess.run
+
+    def invalid(args, **kwargs):
+        if args[0] == "openspec":
+            return subprocess.CompletedProcess(args, 0, "invalid JSON", "")
+        return original(args, **kwargs)
+
+    monkeypatch.setattr(subprocess, "run", invalid)
+    with pytest.raises(RuntimeError, match="inspect the active change"):
+        service.archive("one")
+    assert (tmp_path / ".ai-dlc/work/one.toml").read_bytes() == before
+
+
+def test_archive_refuses_symlinked_source_before_invocation(tmp_path, monkeypatch):
+    service, _, _ = archive_service(tmp_path)
+    source = tmp_path / "openspec/changes/one"
+    (source / "external").symlink_to(tmp_path / "elsewhere")
+    calls = fake_archive_cli(tmp_path, monkeypatch)
+    with pytest.raises(ValueError, match="symlink"):
+        service.archive("one")
+    assert calls == []
+
+
+def test_work_status_cli_is_offline_and_shows_archive_warning(tmp_path, monkeypatch):
+    from typer.testing import CliRunner
+
+    from ai_dlc.cli import app
+    from ai_dlc.work.workflow import WorkService
+
+    service, _, _ = archive_service(tmp_path)
+    monkeypatch.setattr(WorkService, "from_project", lambda *args, **kwargs: service)
+    result = CliRunner().invoke(app, ["work", "status", "one", "--root", str(tmp_path)])
+    assert result.exit_code == 0, result.output
+    assert "active change, archive before merge" in result.output
+
+
 def test_pr_does_not_close_same_number_in_a_different_tracker_repository(tmp_path):
     config = {
         "providers": {"fake": {"kind": "github-issues", "repository": "a/issues"}},
@@ -2491,3 +2763,38 @@ def test_github_scm_refuses_main_tracking_branch_that_was_never_pushed(tmp_path,
             "Title", "body", "main", "work/one"
         )
     assert not log.exists()
+
+
+def test_new_work_gets_real_github_title_from_requested_fields(tmp_path, monkeypatch):
+    import json
+    import subprocess
+
+    from ai_dlc.providers.github_issues import GitHubIssuesProvider
+    from ai_dlc.work.workflow import WorkService
+
+    issue = {
+        "id": "I_68",
+        "number": 68,
+        "url": "https://github.com/a/b/issues/68",
+        "state": "OPEN",
+        "stateReason": "",
+        "title": "Actual issue title",
+        "body": "Scope.\n\n## Acceptance\n- A",
+    }
+
+    def gh(args, **kwargs):
+        fields = args[args.index("--json") + 1].split(",")
+        return subprocess.CompletedProcess(
+            args, 0, json.dumps({field: issue[field] for field in fields}), ""
+        )
+
+    monkeypatch.setattr(subprocess, "run", gh)
+    tracker = GitHubIssuesProvider({"repository": "a/b"})
+    service = WorkService(
+        tmp_path,
+        {"roles": {"tracker": "github-issues"}},
+        state_path=tmp_path / "state",
+        registry=Registry(tracker),
+    )
+    draft = service.new("demo", tracker_reference="68")
+    assert draft["title"] == "Actual issue title"

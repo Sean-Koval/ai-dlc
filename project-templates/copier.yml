@@ -7,7 +7,7 @@ capabilities:
   type: str
   multiselect: true
   default: [specs, tracker, knowledge, scm, deploy, agent-client]
-  choices: [specs, tracker, knowledge, scm, deploy, agent-client]
+  choices: [specs, tracker, knowledge, scm, deploy, agent-client, backend, frontend]
 initialize:
   type: bool
   default: false
@@ -15,6 +15,11 @@ project_name:
   type: str
   default: project-app
 _exclude:
+  - "{% if 'frontend' not in capabilities %}playwright.config.ts{% endif %}"
+  - "{% if 'frontend' not in capabilities %}tests/e2e{% endif %}"
+  - "{% if 'backend' not in capabilities %}docs/api{% endif %}"
+  - "{% if 'backend' not in capabilities %}docs/catalog.toml{% endif %}"
+  - "{% if 'backend' not in capabilities or preset != 'python' %}scripts/check_api_contract_drift.py{% endif %}"
   - "{% if 'scm' not in capabilities %}.github{% endif %}"
   - "{% if not initialize or preset != 'python' %}pyproject.toml{% endif %}"
   - "{% if not initialize or preset != 'python' %}src/main.py{% endif %}"

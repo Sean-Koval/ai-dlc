@@ -76,6 +76,15 @@ and [compatibility rehearsal](../../agents/examples/delivery-slices/compatibilit
 These synthetic examples propose local IDs and document destinations; they do
 not install records, create remote work or establish actual approval/live results.
 
+Create a draft with `ai-dlc work new WORK_ID --from-issue REF`, or use explicit
+`--title`, `--scope` and repeated `--acceptance` values for offline work. The command
+copies the configured binding roles and issue acceptance bullets when present;
+missing source content and the default specification decision remain explicit
+TODOs. Explicit flags override derived fields. New records are always unreviewed:
+replace TODOs, link the formal artifacts and review the scope before setting
+`reviewed = true` and publishing or starting. Existing records and unsafe IDs
+are refused without being overwritten; offline drafting creates no mutation state.
+
 Work records accept optional `requirements` and `depends_on` lists, defaulting to
 empty for older work. Requirements are nonblank single-token IDs, not copied spec
 prose or paths automatically interpreted as source documents. Put canonical source,
@@ -99,6 +108,13 @@ not anchored in the repository stays provider-owned. `ai-dlc work validate --all
 together, offline and without resolving provider bindings, so finished records
 with historical fingerprints do not fail it. Run it as a required project check
 so archiving cannot leave a dangling reference undetected.
+
+Binding drift is a mutation-time refusal, also surfaced by single-record validation.
+For active work, review the record against current provider configuration, remove
+only the drifted binding under `[bindings]`, and run `ai-dlc work validate WORK_ID`;
+the next normal work mutation persists the reviewed binding. Preserve finished
+records' historical bindings and check them with `ai-dlc work validate --all`.
+`project rebind` migrates a provider role and is not a binding-drift repair command.
 
 Validation does not approve scope or prove completion. `work start` freshly reads
 every reachable dependency through its pinned tracker and requires canonical
@@ -153,6 +169,13 @@ implementation:
 Start delivery with `ai-dlc work start <work-id>`. It commits only the bound
 work record; `work link` also commits its record by default. Use `--no-commit`
 when deliberately batching record edits. Neither command stages unrelated files.
+Archive the required OpenSpec change on its delivery branch before merge with
+`ai-dlc work archive <work-id>`. It promotes the specifications, repoints the
+record and any plan inside that change, and commits only affected specification
+files and the record. Commit or preserve any dirty shared canonical specification
+before archiving. `work status` reports local specification state without a network
+call; an active change is also warned about by `work pr`. If the archive command
+fails, inspect its local changes before retrying.
 After implementation, specification finalization and required checks, push the
 branch explicitly and run `ai-dlc work pr <work-id>`. This creates the pull request,
 links its URL and commits the record; push that new link commit before review.
@@ -216,3 +239,34 @@ The [calibration protocol](../../agents/examples/design-evaluation/calibration.m
 requires a separately approved experiment and human participation. It remains
 unrun; readable Markdown and packaging checks establish no client capability or
 design-quality gain. This optional route adds no service, model, CLI or finish gate.
+
+## Frontend smoke and capture evidence
+
+Select `--preset node --capability frontend` when initializing or adopting a
+frontend project; repeat the other desired role capabilities explicitly. New
+projects pin `@playwright/test` to 1.58.2. Adoption preserves your package manifest;
+add that exact development dependency and update its lockfile during setup.
+Run dependency setup with `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1`, then explicitly
+install the browser with `npx --no-install playwright install chromium`. Checks
+never install packages or browsers. The required frontend-smoke check exits
+successfully with a skip message until `BASE_URL` names your running app; with
+that URL it visits the root, checks a nonempty title and records a screenshot
+under `.ai-dlc/local/design/smoke/`. A skipped check does not verify the app.
+
+Run `ai-dlc design capture --url http://localhost:3000 --viewport 1280x800
+--viewport 390x844 --state ready=#ready` from the project after browser setup.
+The default destination is a new timestamped `.ai-dlc/local/design/` directory;
+`--out` selects another new or empty directory inside the repository. Output
+paths must not escape or traverse symlinks. Capture records PNGs and a
+`manifest.json` with URL, timestamp, dimensions, named states and file references.
+A state selector waits for visible page content before taking a viewport
+screenshot; it does not click controls or prove an interaction journey. Cite the
+manifest and its images in the evaluation and keep uncaptured states or untested
+interactions unverified. On failure, inspect the partial capture directory;
+a complete manifest is written only after every screenshot succeeds.
+
+Select both `--capability backend --capability frontend` for a node project that
+needs API contract validation and browser smoke. Both required checks remain
+active, setup prepares each pinned tool once, and frontend keeps Node 22.23.1.
+Adoption preserves an authored package manifest; add the documented Playwright
+dependency deliberately before running smoke.

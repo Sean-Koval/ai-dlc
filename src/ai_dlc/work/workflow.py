@@ -22,6 +22,7 @@ from ai_dlc.providers.scm import GitHubSCM
 from ai_dlc.work.journal import Journal
 from ai_dlc.work.traceability import (
     artifact_is_local,
+    draft_issue_fields,
     render_pull_request_body,
     render_ticket_body,
     validate_work_graph,
@@ -179,7 +180,13 @@ def resolve_work(raw: dict, config: dict, work_id: str, *, require_review: bool 
         existing = work["bindings"].get(role)
         if existing and existing != fingerprint:
             raise ValueError(
-                f"Provider binding drift for {role}; explicitly review and rebind work"
+                f"Provider binding drift for {role}: this record was bound under a different "
+                f"{role} configuration. If the record is still active, review "
+                f".ai-dlc/work/{work_id}.toml against the current configuration, remove "
+                f"only the drifted {role} binding after review, and run "
+                f"'ai-dlc work validate {work_id}' before the next work mutation "
+                "persists the reviewed binding; finished records keep historical bindings "
+                "and are validated with 'ai-dlc work validate --all'."
             )
         work["bindings"][role] = fingerprint
     return work
@@ -271,16 +278,21 @@ def build_context(root: Path, brief: bool = False) -> dict:
     """Offline session context: local work records and the required checks.
 
     Records are read as written, without validation, so a malformed record still
-    appears; ``brief`` keeps only the three most recent by filename order. Nothing is
-    probed outside the repository tree.
+    appears. ``brief`` returns the what-next summary instead, with its rendered
+    ``text``. Nothing is probed outside the repository tree.
     """
+    if brief:
+        from ai_dlc.work.summary import render_next, summarize_next
+
+        summary = summarize_next(root)
+        return {**summary, "text": render_next(summary)}
     config = load_project(root)
     records = []
     for path in sorted((root / ".ai-dlc/work").glob("*.toml")):
         record = read_toml(path)
         records.append({k: record.get(k) for k in ["id", "title", "artifacts", "providers"]})
     return {
-        "work": records[-3:] if brief else records,
+        "work": records,
         "required": config.get("checks", {}).get("required", []),
         "next": CONTEXT_NEXT,
     }
@@ -366,8 +378,78 @@ class WorkService:
                 if state_path
                 else Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "ai-dlc"
             )
-            self.journal = Journal(state / "operations.sqlite3")
+            self._journal_path = state / "operations.sqlite3"
+            self._journal: Journal | None = None
             self.registry = registry or Registry(config, root=self.root)
+
+    @property
+    def journal(self):
+        if self._journal is None:
+            self._journal = Journal(self._journal_path)
+        return self._journal
+
+    def new(
+        self,
+        work_id,
+        *,
+        tracker_reference=None,
+        title=None,
+        scope=None,
+        requires_spec=None,
+        spec_reason=None,
+        acceptance=None,
+    ):
+        """Create a local unreviewed draft without publishing or opening a journal."""
+        Work.safe_id(work_id)
+        with project_write_lock(self.root):
+            self._check_source()
+            path = inside(self.root, f".ai-dlc/work/{work_id}.toml")
+            if path.exists():
+                raise RefusedError(f"Work record already exists: {work_id}")
+            providers = {
+                role: provider
+                for role, provider in self.config.get("roles", {}).items()
+                if role in {"specs", "tracker", "knowledge", "scm", "deploy"}
+            }
+            item = {}
+            if tracker_reference is not None:
+                if not isinstance(tracker_reference, str) or not tracker_reference.strip():
+                    raise RefusedError("Tracker reference cannot be empty")
+                if not providers.get("tracker"):
+                    raise RefusedError("Configure a tracker before using --from-issue")
+                item = self.registry.get(providers["tracker"]).invoke(
+                    "read", {"reference": tracker_reference}
+                )
+            derived = draft_issue_fields(item.get("body") or "")
+            record = Work.model_validate(
+                {
+                    "schema": 1,
+                    "id": work_id,
+                    "title": title
+                    if title is not None
+                    else item.get("title") or "TODO: state title",
+                    "scope": scope if scope is not None else derived["scope"],
+                    "acceptance": acceptance if acceptance is not None else derived["acceptance"],
+                    "requires_spec": requires_spec if requires_spec is not None else True,
+                    "spec_reason": spec_reason
+                    if spec_reason is not None
+                    else "TODO: record the specification decision",
+                    "reviewed": False,
+                    "providers": providers,
+                    "artifacts": {"tracker": tracker_reference}
+                    if tracker_reference is not None
+                    else {},
+                    "requirements": [],
+                    "depends_on": [],
+                }
+            ).model_dump(by_alias=True)
+            self._check_source()
+            path = inside(self.root, f".ai-dlc/work/{work_id}.toml")
+            path.parent.mkdir(parents=True, exist_ok=True)
+            # Exclusive creation also refuses a concurrent non-cooperating writer.
+            with path.open("x") as handle:
+                handle.write(tomli_w.dumps(record))
+            return record
 
     def load(self, work_id, mutation=False):
         if mutation:
@@ -650,7 +732,9 @@ class WorkService:
     def pr(self, work_id):
         """Open the pull request for the bound branch once, link it and commit the record."""
         with project_write_lock(self.root):
-            return self._pr(work_id)
+            result = self._pr(work_id)
+            result["specification"] = self.specification_status(self.load(work_id))
+            return result
 
     def _pr(self, work_id):
         self._check_source()
@@ -722,14 +806,78 @@ class WorkService:
             "commit": linked["commit"],
         }
 
+    @staticmethod
+    def specification_status(work):
+        reference = work["artifacts"].get("spec", "")
+        path = PurePosixPath(reference)
+        if path.parts[:2] == ("openspec", "changes"):
+            return (
+                "archived"
+                if len(path.parts) > 2 and path.parts[2] == "archive"
+                else "active change, archive before merge"
+            )
+        return "not required" if not work["requires_spec"] else "provider-owned reference"
+
     def status(self, work_id):
         work = self.load(work_id)
-        item = (
-            self.tracker(work).invoke("read", {"reference": work["artifacts"]["tracker"]})
-            if work["artifacts"].get("tracker")
-            else None
-        )
-        return {"work": work, "tracker": item}
+        return {
+            "work": work,
+            "tracker": None,
+            "tracker_status": "not queried (local status)",
+            "specification": self.specification_status(work),
+        }
+
+    def archive(self, work_id):
+        with project_write_lock(self.root):
+            self._check_source()
+            work = self.load(work_id)
+            if not work["reviewed"]:
+                raise RefusedError("Work must be reviewed before mutation")
+            reference = work["artifacts"].get("spec", "")
+            if (
+                reference != f"openspec/changes/{work_id}"
+                or not inside(self.root, reference).is_dir()
+            ):
+                raise RefusedError(
+                    "Work archive requires its own active openspec/changes/<id> directory"
+                )
+            branch = work["artifacts"].get("branch")
+            if not branch or self.git("branch", "--show-current").stdout.strip() != branch:
+                raise RefusedError("Switch to the work record's bound branch before archiving")
+            records, errors = read_work_records(self.root)
+            if errors:
+                raise RefusedError(
+                    "Fix work artifact validation before archiving: " + "; ".join(errors)
+                )
+            for other_id, other in records.items():
+                if other_id != work_id and any(
+                    value == reference or value.startswith(reference + "/")
+                    for value in other["artifacts"].values()
+                ):
+                    raise RefusedError(
+                        f"Active change is also referenced by work {other_id}; reconcile ownership first"
+                    )
+            provider = self.role(work, "specs", lambda: OpenSpecProvider(self.root))
+            if not isinstance(provider, OpenSpecProvider):
+                raise RefusedError("Work archive requires the OpenSpec provider")
+            result = provider.archive(work_id)
+            target = result["archive"]
+            work["artifacts"]["spec"] = target
+            plan = work["artifacts"].get("plan", "")
+            if plan == reference or plan.startswith(reference + "/"):
+                work["artifacts"]["plan"] = target + plan[len(reference) :]
+            self.save(work)
+            paths = [reference, target, *result["promoted_specs"], f".ai-dlc/work/{work_id}.toml"]
+            self.git("add", "-A", "--", *paths)
+            self.git(
+                "commit", "--quiet", "--only", "-m", f"docs(specs): archive {work_id}", "--", *paths
+            )
+            return {
+                "status": "archived",
+                "work_id": work_id,
+                **result,
+                "commit": self.git("rev-parse", "HEAD").stdout.strip(),
+            }
 
     def role(self, work, role, fallback):
         provider_id = work["providers"].get(role)

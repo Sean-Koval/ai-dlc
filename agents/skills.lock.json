@@ -8,7 +8,7 @@
     },
     "day-start": {
       "path": "skills/day-start/SKILL.md",
-      "sha256": "9535c7de7de2ad869bc9de93c498c909246948cf43acd2c2d9cc4f2f5e49e77e"
+      "sha256": "61f3338c54a4aef5e08229784e5756ed712124932acaf691fdc4941f7409659c"
     },
     "design-brief": {
       "path": "skills/design-brief/SKILL.md",
@@ -16,7 +16,7 @@
     },
     "design-evaluate": {
       "path": "skills/design-evaluate/SKILL.md",
-      "sha256": "2117f4d49cc40f983cf342d07c4de11d93131f3419d367ab11a7f9214125e3f4"
+      "sha256": "41084df0a78a63e3742ee089acf167c019aad3a13b96a78995620dfd90e661e6"
     },
     "discovery": {
       "path": "skills/discovery/SKILL.md",
@@ -48,7 +48,7 @@
     },
     "spec-from-prd": {
       "path": "skills/spec-from-prd/SKILL.md",
-      "sha256": "2eb7ed662abb19409ff15478c8d3df907e626744259886017e476365979fa59b"
+      "sha256": "68fa18a6e5fd7fdceaedd74f09c2e26e66ffad8c1d9121525a4d727df8bbb441"
     }
   },
   "version": "0.4.0"
