@@ -28,7 +28,7 @@ scm = "github"
 deploy = "none"
 
 [artifacts]
-spec = "openspec/changes/team-sources"
+spec = "openspec/changes/archive/2026-09-14-team-sources"
 related_issue = "https://github.com/Sean-Koval/ai-dlc/issues/84"
 tracker = "83"
 branch = "work/team-sources"
