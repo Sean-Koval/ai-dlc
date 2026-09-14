@@ -257,6 +257,206 @@ def _remember_target(root, journal, operation_id, item, retained, work_id, *, re
             retained[work_id] = candidate
 
 
+def _begin_creation_records(journal, plan):
+    """Validate every full immutable fingerprint before any remote result reuse."""
+    return {
+        key: journal.begin(
+            intent["payload"]["operation_id"], {"creation_plan": plan, "work_id": key}
+        )
+        for key, intent in plan["creates"].items()
+    }
+
+
+def _create_target(root, plan, registry, payload, *, env, machine, machine_config):
+    """Create under the project lock only while the local snapshot is unchanged."""
+    with project_write_lock(root):
+        _pending(root)
+        if (
+            not _fresh(root, plan)
+            or digest(_runtime(root, environ=env, machine=machine, machine_config=machine_config))
+            != plan["runtime_digest"]
+        ):
+            raise ValueError("Local creation snapshot changed; only reconcile existing targets")
+        return registry.invoke(plan["provider"], "create", payload)
+
+
+def _locate_target(root, plan, registry, record, payload, *, env, machine, machine_config):
+    """Find, reread or create one target; absence never authorizes a retry."""
+    found = registry.invoke(plan["provider"], "find", {"correlation": payload["correlation"]})[
+        "items"
+    ]
+    if len(found) > 1:
+        raise ValueError("Duplicate target correlation; inspect retained targets")
+    if found:
+        return found[0]
+    if record["status"] == "succeeded":
+        known = record["result"]
+        if not isinstance(known, dict):
+            raise ValueError("Successful creation journal lacks target identity")
+        return registry.invoke(plan["provider"], "read", {"reference": known["id"]})
+    if not record["created"]:
+        raise RuntimeError("Creation remains uncertain; absence never authorizes retry")
+    return _create_target(
+        root, plan, registry, payload, env=env, machine=machine, machine_config=machine_config
+    )
+
+
+def _resolve_created_target(
+    root, plan, registry, journal, record, work_id, retained, *, env, machine, machine_config
+):
+    """Resolve one create intent and journal its verified identity."""
+    payload = plan["creates"][work_id]["payload"]
+    if record["result"] is not None:
+        retained[work_id] = _canonical(record["result"])
+    item = _locate_target(
+        root,
+        plan,
+        registry,
+        record,
+        payload,
+        env=env,
+        machine=machine,
+        machine_config=machine_config,
+    )
+    _remember_target(root, journal, payload["operation_id"], item, retained, work_id)
+    # Independent read establishes current identity before accepting a mapping.
+    checked = registry.invoke(plan["provider"], "read", {"reference": item["id"]})
+    if (checked["id"], checked["url"]) != (item["id"], item["url"]):
+        raise ValueError("Created target identity changed")
+    _remember_target(
+        root, journal, payload["operation_id"], checked, retained, work_id, refresh=True
+    )
+    return checked
+
+
+def _resolve_targets(root, plan, registry, journal, records, *, env, machine, machine_config):
+    """Resolve every selected work item, retaining targets across transport failures."""
+    results, unresolved, retained = {}, {}, {}
+    for work_id in plan["work_ids"]:
+        try:
+            if work_id in plan["mappings"]:
+                item = registry.invoke(
+                    plan["provider"], "read", {"reference": plan["mappings"][work_id]}
+                )
+            else:
+                item = _resolve_created_target(
+                    root,
+                    plan,
+                    registry,
+                    journal,
+                    records[work_id],
+                    work_id,
+                    retained,
+                    env=env,
+                    machine=machine,
+                    machine_config=machine_config,
+                )
+            results[work_id] = _canonical(item)
+            retained[work_id] = results[work_id]
+        except Exception as exc:  # noqa: BLE001 -- preserve targets after arbitrary transport failures
+            if work_id in plan["creates"] and work_id not in retained:
+                journal.uncertain(plan["creates"][work_id]["payload"]["operation_id"])
+            unresolved[work_id] = str(exc)
+    return results, unresolved, retained
+
+
+def _verify_migration_targets(migration_plan, results):
+    """Every planned mapping must still name the reconciled target identity."""
+    for key, mapped in migration_plan["mappings"].items():
+        target = mapped["target"]
+        if (target["id"], target["url"]) != (results[key]["id"], results[key]["url"]):
+            raise ValueError("Known target identity changed during final verification")
+
+
+def _creation_evidence(plan):
+    """Evidence tying the migration plan back to the reviewed creation intent."""
+    return {
+        "operation_id": plan["operation_id"],
+        "intent_digest": plan["digest"],
+        "targets": {
+            key: {
+                "operation_id": intent["payload"]["operation_id"],
+                "correlation": intent["payload"]["correlation"],
+            }
+            for key, intent in plan["creates"].items()
+        },
+    }
+
+
+def _bind_creation_evidence(migration_plan, plan):
+    """Attach creation evidence and recompute the plan digest last."""
+    migration_plan["evidence"]["creation"] = _creation_evidence(plan)
+    migration_plan.pop("digest")
+    migration_plan["digest"] = digest(migration_plan)
+    return migration_plan
+
+
+def _plan_selected_migration(root, plan, results, registry, *, env, machine, machine_config):
+    """Plan the separate local apply and verify it against the reconciled targets."""
+    migration_plan = plan_tracker_migration(
+        root,
+        plan["provider"],
+        mode="selected",
+        work_ids=plan["work_ids"],
+        mappings={key: row["id"] for key, row in results.items()},
+        environ=env,
+        machine=machine,
+        machine_config=machine_config,
+        registry=registry,
+    )
+    _verify_migration_targets(migration_plan, results)
+    if (
+        migration_plan["snapshot"] != plan["snapshot"]
+        or migration_plan["runtime_digest"] != plan["runtime_digest"]
+    ):
+        return "local-conflict", None
+    return "resolved", _bind_creation_evidence(migration_plan, plan)
+
+
+def _summarize_reconciliation(
+    root, plan, results, unresolved, registry, *, env, machine, machine_config
+):
+    """Derive the final status and, when resolved, the local migration plan."""
+    status = "unresolved" if unresolved else "resolved"
+    migration_plan = None
+    if not _fresh(root, plan):
+        status = "local-conflict"
+    elif not unresolved:
+        if len({item["id"] for item in results.values()}) != len(results):
+            status = "unresolved"
+            unresolved["mappings"] = "Duplicate target identity across selected work"
+        else:
+            try:
+                status, migration_plan = _plan_selected_migration(
+                    root,
+                    plan,
+                    results,
+                    registry,
+                    env=env,
+                    machine=machine,
+                    machine_config=machine_config,
+                )
+            except Exception as exc:  # noqa: BLE001 -- preserve targets after arbitrary transport failures
+                status, migration_plan = "unresolved", None
+                unresolved["mappings"] = str(exc)
+    return status, migration_plan
+
+
+def _reconciliation_result(plan, status, results, retained, unresolved, migration_plan):
+    """Shape the reconciliation report."""
+    return {
+        "status": status,
+        "operation_id": plan["operation_id"],
+        "targets": results,
+        "retained_targets": retained,
+        "unresolved": unresolved,
+        "migration_plan": migration_plan,
+        "next_action": "Review/save the local migration plan, then apply separately."
+        if migration_plan
+        else "Retain the saved intent and local state; rerun only reconciles. Reuse retained targets in fresh existing mappings after local conflicts.",
+    }
+
+
 def reconcile_tracker_targets(
     root, plan, *, environ=None, machine=None, machine_config=None, registry=None
 ):
@@ -275,146 +475,28 @@ def reconcile_tracker_targets(
     state = Path(env.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "ai-dlc"
     with project_write_lock(root):
         journal = Journal(state / "tracker-migrations" / plan["root_digest"] / "operations.sqlite3")
-    results, unresolved, retained = {}, {}, {}
     try:
-        # Validate every full immutable fingerprint before any remote result reuse.
-        records = {
-            key: journal.begin(
-                intent["payload"]["operation_id"], {"creation_plan": plan, "work_id": key}
-            )
-            for key, intent in plan["creates"].items()
-        }
-        for work_id in plan["work_ids"]:
-            try:
-                if work_id in plan["mappings"]:
-                    item = registry.invoke(
-                        plan["provider"], "read", {"reference": plan["mappings"][work_id]}
-                    )
-                else:
-                    payload = plan["creates"][work_id]["payload"]
-                    record = records[work_id]
-                    if record["result"] is not None:
-                        retained[work_id] = _canonical(record["result"])
-                    found = registry.invoke(
-                        plan["provider"], "find", {"correlation": payload["correlation"]}
-                    )["items"]
-                    if len(found) > 1:
-                        raise ValueError("Duplicate target correlation; inspect retained targets")
-                    if found:
-                        item = found[0]
-                    elif record["status"] == "succeeded":
-                        known = record["result"]
-                        if not isinstance(known, dict):
-                            raise ValueError("Successful creation journal lacks target identity")
-                        item = registry.invoke(plan["provider"], "read", {"reference": known["id"]})
-                    elif not record["created"]:
-                        raise RuntimeError(
-                            "Creation remains uncertain; absence never authorizes retry"
-                        )
-                    else:
-                        with project_write_lock(root):
-                            _pending(root)
-                            if (
-                                not _fresh(root, plan)
-                                or digest(
-                                    _runtime(
-                                        root,
-                                        environ=env,
-                                        machine=machine,
-                                        machine_config=machine_config,
-                                    )
-                                )
-                                != plan["runtime_digest"]
-                            ):
-                                raise ValueError(
-                                    "Local creation snapshot changed; only reconcile existing targets"
-                                )
-                            item = registry.invoke(plan["provider"], "create", payload)
-                    _remember_target(
-                        root, journal, payload["operation_id"], item, retained, work_id
-                    )
-                    # Independent read establishes current identity before accepting a mapping.
-                    checked = registry.invoke(plan["provider"], "read", {"reference": item["id"]})
-                    if (checked["id"], checked["url"]) != (item["id"], item["url"]):
-                        raise ValueError("Created target identity changed")
-                    item = checked
-                    _remember_target(
-                        root,
-                        journal,
-                        payload["operation_id"],
-                        item,
-                        retained,
-                        work_id,
-                        refresh=True,
-                    )
-                results[work_id] = _canonical(item)
-                retained[work_id] = results[work_id]
-            except Exception as exc:  # noqa: BLE001 -- preserve targets after arbitrary transport failures
-                if work_id in plan["creates"] and work_id not in retained:
-                    journal.uncertain(plan["creates"][work_id]["payload"]["operation_id"])
-                unresolved[work_id] = str(exc)
-        status = "unresolved" if unresolved else "resolved"
-        migration_plan = None
-        if not _fresh(root, plan):
-            status = "local-conflict"
-        elif not unresolved:
-            if len({item["id"] for item in results.values()}) != len(results):
-                status = "unresolved"
-                unresolved["mappings"] = "Duplicate target identity across selected work"
-            else:
-                try:
-                    migration_plan = plan_tracker_migration(
-                        root,
-                        plan["provider"],
-                        mode="selected",
-                        work_ids=plan["work_ids"],
-                        mappings={key: row["id"] for key, row in results.items()},
-                        environ=env,
-                        machine=machine,
-                        machine_config=machine_config,
-                        registry=registry,
-                    )
-                    for key, mapped in migration_plan["mappings"].items():
-                        target = mapped["target"]
-                        if (target["id"], target["url"]) != (
-                            results[key]["id"],
-                            results[key]["url"],
-                        ):
-                            raise ValueError(
-                                "Known target identity changed during final verification"
-                            )
-                    if (
-                        migration_plan["snapshot"] != plan["snapshot"]
-                        or migration_plan["runtime_digest"] != plan["runtime_digest"]
-                    ):
-                        status, migration_plan = "local-conflict", None
-                    else:
-                        migration_plan["evidence"]["creation"] = {
-                            "operation_id": plan["operation_id"],
-                            "intent_digest": plan["digest"],
-                            "targets": {
-                                key: {
-                                    "operation_id": intent["payload"]["operation_id"],
-                                    "correlation": intent["payload"]["correlation"],
-                                }
-                                for key, intent in plan["creates"].items()
-                            },
-                        }
-                        migration_plan.pop("digest")
-                        migration_plan["digest"] = digest(migration_plan)
-                except Exception as exc:  # noqa: BLE001 -- preserve targets after arbitrary transport failures
-                    status, migration_plan = "unresolved", None
-                    unresolved["mappings"] = str(exc)
-        return {
-            "status": status,
-            "operation_id": plan["operation_id"],
-            "targets": results,
-            "retained_targets": retained,
-            "unresolved": unresolved,
-            "migration_plan": migration_plan,
-            "next_action": "Review/save the local migration plan, then apply separately."
-            if migration_plan
-            else "Retain the saved intent and local state; rerun only reconciles. Reuse retained targets in fresh existing mappings after local conflicts.",
-        }
+        records = _begin_creation_records(journal, plan)
+        results, unresolved, retained = _resolve_targets(
+            root,
+            plan,
+            registry,
+            journal,
+            records,
+            env=env,
+            machine=machine,
+            machine_config=machine_config,
+        )
+        status, migration_plan = _summarize_reconciliation(
+            root,
+            plan,
+            results,
+            unresolved,
+            registry,
+            env=env,
+            machine=machine,
+            machine_config=machine_config,
+        )
+        return _reconciliation_result(plan, status, results, retained, unresolved, migration_plan)
     finally:
         journal.db.close()

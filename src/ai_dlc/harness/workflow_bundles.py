@@ -1253,6 +1253,170 @@ def _result(
     return result
 
 
+def _check_apply_request(apply: bool, expected_commit: str | None, resolved_commit: str) -> None:
+    """Apply requires the exact reviewed commit; preview accepts none."""
+    if not apply and expected_commit is not None:
+        raise ValueError("bundle expected commit requires apply")
+    if apply and (type(expected_commit) is not str or _COMMIT.fullmatch(expected_commit) is None):
+        raise ValueError("bundle apply requires a 40-character expected commit")
+    if apply and expected_commit != resolved_commit:
+        raise ValueError("bundle resolved commit does not match the reviewed commit")
+
+
+def _filesystem_failure(original: BaseException) -> ValueError:
+    """Replace a filesystem error with a generic one, keeping only import notes."""
+    error = ValueError(_FILESYSTEM_ERROR)
+    for note in getattr(original, "__notes__", ()):
+        if note.startswith("Bundle import "):
+            error.add_note(note)
+    return error
+
+
+def _close_bundle_directories(
+    root_descriptor: int,
+    metadata_descriptor: int | None,
+    bundles_descriptor: int | None,
+    staged_descriptor: int | None,
+    existing_descriptor: int | None,
+    *,
+    metadata_created: bool,
+    bundles_created: bool,
+) -> None:
+    """Close descriptors and remove only the empty directories this import created."""
+    if existing_descriptor is not None:
+        os.close(existing_descriptor)
+    if staged_descriptor is not None:
+        os.close(staged_descriptor)
+    if bundles_descriptor is not None:
+        os.close(bundles_descriptor)
+    if bundles_created and metadata_descriptor is not None:
+        try:
+            os.rmdir("bundles", dir_fd=metadata_descriptor)
+        except OSError:
+            pass
+    if metadata_descriptor is not None:
+        os.close(metadata_descriptor)
+    if metadata_created:
+        try:
+            os.rmdir(".ai-dlc", dir_fd=root_descriptor)
+        except OSError:
+            pass
+
+
+def _vendor_bundle_at(
+    absolute_root: Path,
+    root_parent_descriptor: int,
+    root_descriptor: int,
+    candidate: BundleCandidate,
+    desired: dict[str, bytes],
+) -> tuple[dict[str, Any] | None, list[str], set[str]]:
+    """Stage, verify and publish under the lock; return an early result or the changes."""
+    metadata_descriptor = bundles_descriptor = None
+    metadata_created = bundles_created = False
+    staged_name: str | None = None
+    staged_descriptor: int | None = None
+    existing_descriptor: int | None = None
+    retained: set[str] = set()
+    try:
+        metadata_descriptor, metadata_created = _ensure_named_directory(root_descriptor, ".ai-dlc")
+        bundles_descriptor, bundles_created = _ensure_named_directory(
+            metadata_descriptor, "bundles"
+        )
+        staged_name, staged_descriptor = _stage_bundle_at(
+            bundles_descriptor, candidate.bundle_id, desired
+        )
+        retained.add(staged_name)
+        _candidate_bytes(candidate)
+        _verify_project_path(absolute_root, root_parent_descriptor, root_descriptor)
+        _verify_named_directory(root_descriptor, ".ai-dlc", metadata_descriptor)
+        _verify_named_directory(metadata_descriptor, "bundles", bundles_descriptor)
+        try:
+            existing_descriptor = _destination_descriptor(bundles_descriptor, candidate.bundle_id)
+        except OSError:
+            return (
+                _result(
+                    candidate,
+                    applied=False,
+                    changed=[],
+                    conflicts=[
+                        (
+                            f"{_relative_bundle_path(candidate.bundle_id)}: "
+                            "existing bundle destination is not an owned directory"
+                        )
+                    ],
+                    retained=retained,
+                ),
+                [],
+                retained,
+            )
+        if existing_descriptor is not None:
+            conflicts = _owned_bundle_conflicts(existing_descriptor, candidate.bundle_id)
+            if conflicts:
+                return (
+                    _result(
+                        candidate,
+                        applied=False,
+                        changed=[],
+                        conflicts=conflicts,
+                        retained=retained,
+                    ),
+                    [],
+                    retained,
+                )
+        changed = _changed_paths_at(existing_descriptor, candidate.bundle_id, desired)
+        if not changed:
+            return (
+                _result(candidate, applied=True, changed=[], conflicts=[], retained=retained),
+                [],
+                retained,
+            )
+
+        def verify_project() -> None:
+            _verify_project_path(absolute_root, root_parent_descriptor, root_descriptor)
+            _verify_named_directory(root_descriptor, ".ai-dlc", metadata_descriptor)
+            _verify_named_directory(metadata_descriptor, "bundles", bundles_descriptor)
+
+        conflicts = _publish_bundle_tree(
+            bundles_descriptor,
+            candidate.bundle_id,
+            staged_name,
+            staged_descriptor,
+            existing_descriptor,
+            verify_project,
+            desired,
+            retained,
+        )
+        if conflicts:
+            return (
+                _result(
+                    candidate,
+                    applied=False,
+                    changed=[],
+                    conflicts=conflicts,
+                    retained=retained,
+                ),
+                [],
+                retained,
+            )
+        return None, changed, retained
+    except BaseException as error:
+        for name in sorted(retained):
+            error.add_note(
+                f"Bundle import retained .ai-dlc/bundles/{name}; inspect before removal."
+            )
+        raise
+    finally:
+        _close_bundle_directories(
+            root_descriptor,
+            metadata_descriptor,
+            bundles_descriptor,
+            staged_descriptor,
+            existing_descriptor,
+            metadata_created=metadata_created,
+            bundles_created=bundles_created,
+        )
+
+
 def import_bundle(
     root: Path,
     candidate: BundleCandidate,
@@ -1261,12 +1425,7 @@ def import_bundle(
     expected_commit: str | None = None,
 ) -> dict[str, Any]:
     """Preview or transactionally vendor an unchanged, reviewed bundle candidate."""
-    if not apply and expected_commit is not None:
-        raise ValueError("bundle expected commit requires apply")
-    if apply and (type(expected_commit) is not str or _COMMIT.fullmatch(expected_commit) is None):
-        raise ValueError("bundle apply requires a 40-character expected commit")
-    if apply and expected_commit != candidate.resolved_commit:
-        raise ValueError("bundle resolved commit does not match the reviewed commit")
+    _check_apply_request(apply, expected_commit, candidate.resolved_commit)
     try:
         with _bound_project_root(root) as (
             absolute_root,
@@ -1291,117 +1450,14 @@ def import_bundle(
                     return _result(candidate, applied=False, changed=[], conflicts=conflicts)
                 if not changed:
                     return _result(candidate, applied=True, changed=[], conflicts=[])
-                metadata_descriptor = bundles_descriptor = None
-                metadata_created = bundles_created = False
-                staged_name: str | None = None
-                staged_descriptor: int | None = None
-                existing_descriptor: int | None = None
-                retained: set[str] = set()
-                try:
-                    metadata_descriptor, metadata_created = _ensure_named_directory(
-                        root_descriptor, ".ai-dlc"
-                    )
-                    bundles_descriptor, bundles_created = _ensure_named_directory(
-                        metadata_descriptor, "bundles"
-                    )
-                    staged_name, staged_descriptor = _stage_bundle_at(
-                        bundles_descriptor, candidate.bundle_id, desired
-                    )
-                    retained.add(staged_name)
-                    _candidate_bytes(candidate)
-                    _verify_project_path(absolute_root, root_parent_descriptor, root_descriptor)
-                    _verify_named_directory(root_descriptor, ".ai-dlc", metadata_descriptor)
-                    _verify_named_directory(metadata_descriptor, "bundles", bundles_descriptor)
-                    try:
-                        existing_descriptor = _destination_descriptor(
-                            bundles_descriptor, candidate.bundle_id
-                        )
-                    except OSError:
-                        return _result(
-                            candidate,
-                            applied=False,
-                            changed=[],
-                            conflicts=[
-                                (
-                                    f"{_relative_bundle_path(candidate.bundle_id)}: "
-                                    "existing bundle destination is not an owned directory"
-                                )
-                            ],
-                            retained=retained,
-                        )
-                    if existing_descriptor is not None:
-                        conflicts = _owned_bundle_conflicts(
-                            existing_descriptor, candidate.bundle_id
-                        )
-                        if conflicts:
-                            return _result(
-                                candidate,
-                                applied=False,
-                                changed=[],
-                                conflicts=conflicts,
-                                retained=retained,
-                            )
-                    changed = _changed_paths_at(existing_descriptor, candidate.bundle_id, desired)
-                    if not changed:
-                        return _result(
-                            candidate, applied=True, changed=[], conflicts=[], retained=retained
-                        )
-
-                    def verify_project() -> None:
-                        _verify_project_path(absolute_root, root_parent_descriptor, root_descriptor)
-                        _verify_named_directory(root_descriptor, ".ai-dlc", metadata_descriptor)
-                        _verify_named_directory(metadata_descriptor, "bundles", bundles_descriptor)
-
-                    conflicts = _publish_bundle_tree(
-                        bundles_descriptor,
-                        candidate.bundle_id,
-                        staged_name,
-                        staged_descriptor,
-                        existing_descriptor,
-                        verify_project,
-                        desired,
-                        retained,
-                    )
-                    if conflicts:
-                        return _result(
-                            candidate,
-                            applied=False,
-                            changed=[],
-                            conflicts=conflicts,
-                            retained=retained,
-                        )
-                except BaseException as error:
-                    for name in sorted(retained):
-                        error.add_note(
-                            f"Bundle import retained .ai-dlc/bundles/{name}; inspect before removal."
-                        )
-                    raise
-                finally:
-                    if existing_descriptor is not None:
-                        os.close(existing_descriptor)
-                    if staged_descriptor is not None:
-                        os.close(staged_descriptor)
-                    if bundles_descriptor is not None:
-                        os.close(bundles_descriptor)
-                    if bundles_created and metadata_descriptor is not None:
-                        try:
-                            os.rmdir("bundles", dir_fd=metadata_descriptor)
-                        except OSError:
-                            pass
-                    if metadata_descriptor is not None:
-                        os.close(metadata_descriptor)
-                    if metadata_created:
-                        try:
-                            os.rmdir(".ai-dlc", dir_fd=root_descriptor)
-                        except OSError:
-                            pass
+                early, changed, retained = _vendor_bundle_at(
+                    absolute_root, root_parent_descriptor, root_descriptor, candidate, desired
+                )
+                if early is not None:
+                    return early
             _verify_project_path(absolute_root, root_parent_descriptor, root_descriptor)
             return _result(
                 candidate, applied=True, changed=changed, conflicts=[], retained=retained
             )
     except OSError as original:
-        error = ValueError(_FILESYSTEM_ERROR)
-        for note in getattr(original, "__notes__", ()):
-            if note.startswith("Bundle import "):
-                error.add_note(note)
-        raise error from None
+        raise _filesystem_failure(original) from None
