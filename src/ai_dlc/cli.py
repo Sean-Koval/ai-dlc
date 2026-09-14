@@ -17,7 +17,17 @@ from ai_dlc.environment.machine import MachineManager
 from ai_dlc.errors import AiDlcError
 
 app = typer.Typer(no_args_is_help=True, help="Portable development for people and agents.")
-project = typer.Typer(no_args_is_help=True)
+LEGACY_DOCS_NOTE = (
+    "The former docs-* commands moved to `ai-dlc docs`. For one release docs-init, "
+    "docs-check, docs-inventory, docs-style, docs-impact, docs-disposition, "
+    "docs-baseline, docs-review, docs-review-check, docs-gate, docs-search and "
+    "docs-read still run here and name their replacement."
+)
+project = typer.Typer(no_args_is_help=True, epilog=LEGACY_DOCS_NOTE)
+docs = typer.Typer(
+    no_args_is_help=True,
+    help="Project documentation: ownership checks, impact review, the gate, search and navigation.",
+)
 work = typer.Typer(no_args_is_help=True)
 agents = typer.Typer(no_args_is_help=True)
 agent_bundle = typer.Typer(no_args_is_help=True)
@@ -29,6 +39,7 @@ provider = typer.Typer(no_args_is_help=True)
 mcp = typer.Typer(no_args_is_help=True)
 for name, group in [
     ("project", project),
+    ("docs", docs),
     ("work", work),
     ("agents", agents),
     ("profile", profile),
@@ -238,17 +249,25 @@ def project_adopt(
     emit(result)
 
 
-@project.command("docs-init")
-def project_docs_init(root: Path = Path("."), preset: str = "organized", apply: bool = False):
-    """Preview or add canonical documentation navigation without relocating existing files."""
+# Documentation commands. Every `docs` command and every hidden `project docs-*` alias
+# calls the same helper, so an alias cannot drift from its replacement.
+
+
+def _deprecated(old: str, new: str) -> None:
+    typer.echo(
+        f"Deprecated: `ai-dlc project {old}` is now `ai-dlc {new}`; "
+        "the old name is removed in the next release.",
+        err=True,
+    )
+
+
+def _docs_init(root: Path, preset: str, apply: bool) -> None:
     from ai_dlc.documentation.moc import initialize_documents
 
     emit(initialize_documents(root, preset=preset, apply=apply))
 
 
-@project.command("docs-check")
-def project_docs_check(root: Path = Path("."), strict: bool = False):
-    """Inspect canonical document ownership, coverage and review metadata without mutation."""
+def _docs_check(root: Path, strict: bool) -> None:
     from ai_dlc.documentation.documents import check_documents
 
     result = check_documents(root)
@@ -257,22 +276,28 @@ def project_docs_check(root: Path = Path("."), strict: bool = False):
         raise typer.Exit(2)
 
 
-@project.command("docs-impact")
-def project_docs_impact(base: Annotated[str, typer.Option()], root: Path = Path(".")):
-    """Identify documentation affected by a Git comparison and working changes."""
+def _docs_inventory(root: Path) -> None:
+    from ai_dlc.documentation.document_inventory import inventory_documents
+
+    emit(inventory_documents(root))
+
+
+def _docs_style(root: Path, paths: list[str], strict: bool) -> None:
+    from ai_dlc.documentation.document_style import check_style
+
+    result = check_style(root, paths=paths)
+    emit(result)
+    if strict and result["status"] != "passed":
+        raise typer.Exit(2)
+
+
+def _docs_impact(root: Path, base: str) -> None:
     from ai_dlc.documentation.document_impact import inspect_impact
 
     emit(inspect_impact(root, base=base))
 
 
-@project.command("docs-disposition")
-def project_docs_disposition(
-    base: Annotated[str, typer.Option()],
-    decisions: Annotated[Path, typer.Option()],
-    reviewer: Annotated[str, typer.Option()],
-    root: Path = Path("."),
-):
-    """Emit current content-bound evidence from reviewed JSON decisions; does not write files."""
+def _docs_disposition(root: Path, base: str, decisions: Path, reviewer: str) -> None:
     from ai_dlc.documentation.document_files import read_document
     from ai_dlc.documentation.document_impact import prepare_disposition
 
@@ -286,93 +311,19 @@ def project_docs_disposition(
     )
 
 
-@project.command("docs-baseline")
-def project_docs_baseline(
-    owner: Annotated[str, typer.Option()],
-    reason: Annotated[str, typer.Option()],
-    root: Path = Path("."),
-):
-    """Emit an explicit proposed historical-debt baseline for review."""
+def _docs_baseline(root: Path, owner: str, reason: str) -> None:
     from ai_dlc.documentation.document_impact import prepare_baseline
 
     emit(prepare_baseline(root, owner=owner, reason=reason))
 
 
-@project.command("docs-style")
-def project_docs_style(
-    paths: Annotated[list[str], typer.Option("--path")],
-    root: Path = Path("."),
-    strict: bool = False,
-):
-    """Run explicitly configured optional Vale checks without installing tools."""
-    from ai_dlc.documentation.document_style import check_style
-
-    result = check_style(root, paths=paths)
-    emit(result)
-    if strict and result["status"] != "passed":
-        raise typer.Exit(2)
-
-
-@project.command("docs-inventory")
-def project_docs_inventory(root: Path = Path(".")):
-    """Discover repository Markdown paths and exclusions without reading bodies."""
-    from ai_dlc.documentation.document_inventory import inventory_documents
-
-    emit(inventory_documents(root))
-
-
-@project.command("docs-search")
-def project_docs_search(
-    query: str,
-    root: Path = Path("."),
-    sources: Annotated[list[str] | None, typer.Option("--source")] = None,
-    max_bytes: int = 64000,
-    limit: int = 20,
-):
-    """Search docs/, openspec/ and declared project Markdown; bounded, never private notes."""
-    from ai_dlc.documentation.document_access import search_project_documents
-
-    emit(
-        search_project_documents(
-            root, query=query, sources=sources, max_bytes=max_bytes, limit=limit
-        )
-    )
-
-
-@project.command("docs-read")
-def project_docs_read(
-    path: str,
-    root: Path = Path("."),
-    sources: Annotated[list[str] | None, typer.Option("--source")] = None,
-    max_bytes: int = 64000,
-):
-    """Read one complete eligible project document within a byte budget."""
-    from ai_dlc.documentation.document_access import read_project_document
-
-    emit(read_project_document(root, path=path, sources=sources, max_bytes=max_bytes))
-
-
-@project.command("docs-review")
-def project_docs_review(
-    base: Annotated[str, typer.Option()],
-    paths: Annotated[list[str], typer.Option("--path")],
-    root: Path = Path("."),
-    max_bytes: int = 64000,
-    source: str = "catalog",
-):
-    """Prepare bounded selected-document evidence for the existing harness."""
+def _docs_review_packet(root: Path, base: str, paths: list[str], max_bytes: int, source: str):
     from ai_dlc.documentation.document_review import prepare_review
 
     emit(prepare_review(root, paths=paths, base=base, max_bytes=max_bytes, source=source))
 
 
-@project.command("docs-review-check")
-def project_docs_review_check(
-    packet: Annotated[Path, typer.Option()],
-    review: Annotated[Path, typer.Option()],
-    root: Path = Path("."),
-):
-    """Check citation grounding and current source bytes, not semantic truth."""
+def _docs_review_check(root: Path, packet: Path, review: Path) -> None:
     from ai_dlc.documentation.document_files import read_document
     from ai_dlc.documentation.document_review import validate_review
 
@@ -386,20 +337,299 @@ def project_docs_review_check(
         raise typer.Exit(2)
 
 
-@project.command("docs-gate")
-def project_docs_gate(
-    root: Path = Path("."),
-    evidence: str = ".ai-dlc/documentation/current.json",
-    baseline: str = ".ai-dlc/documentation/baseline.json",
-    base: Annotated[str | None, typer.Option(envvar="AI_DLC_DOCS_BASE")] = None,
-):
-    """Require current dispositions and refuse new objective documentation defects."""
+def _docs_gate(root: Path, evidence: str, baseline: str, base: str | None) -> None:
     from ai_dlc.documentation.document_impact import check_gate
 
     result = check_gate(root, evidence_path=evidence, baseline_path=baseline, base=base)
     emit(result)
     if not result["valid"]:
         raise typer.Exit(2)
+
+
+def _docs_search(root: Path, query: str, sources, max_bytes: int, limit: int) -> None:
+    from ai_dlc.documentation.document_access import search_project_documents
+
+    emit(
+        search_project_documents(
+            root, query=query, sources=sources, max_bytes=max_bytes, limit=limit
+        )
+    )
+
+
+def _docs_read(root: Path, path: str, sources, max_bytes: int) -> None:
+    from ai_dlc.documentation.document_access import read_project_document
+
+    emit(read_project_document(root, path=path, sources=sources, max_bytes=max_bytes))
+
+
+# Options each `docs review` mode requires, keyed by the callback parameter name.
+REVIEW_MODE_OPTIONS = {
+    "disposition": {"reviewer": "--reviewer"},
+    "baseline": {"owner": "--owner", "reason": "--reason"},
+    "report": {"paths": "--path"},
+    "check": {"packet": "--packet", "review": "--review"},
+}
+
+
+def _review_mode(values: dict) -> str:
+    """Pick the one review mode the options select; refuse mixed, incomplete or stray ones."""
+    selected = [name for name in REVIEW_MODE_OPTIONS if values[name]]
+    if len(selected) > 1:
+        raise typer.BadParameter("choose one mode: " + " ".join(f"--{m}" for m in selected))
+    mode = selected[0] if selected else "impact"
+    for name, options in REVIEW_MODE_OPTIONS.items():
+        given = [flag for key, flag in options.items() if values[key]]
+        missing = [flag for key, flag in options.items() if not values[key]]
+        if name == mode and missing:
+            raise typer.BadParameter(f"--{name} needs {', '.join(missing)}", param_hint=missing[0])
+        if name != mode and given:
+            raise typer.BadParameter(f"{', '.join(given)} applies to --{name}", param_hint=given[0])
+    if mode in ("impact", "disposition", "report") and not values["base"]:
+        raise typer.BadParameter("--base is required", param_hint="--base")
+    return mode
+
+
+@docs.command("init")
+def docs_init(root: Path = Path("."), preset: str = "organized", apply: bool = False):
+    """Preview or add canonical documentation navigation without relocating existing files."""
+    _docs_init(root, preset, apply)
+
+
+@docs.command("check")
+def docs_check(
+    root: Path = Path("."),
+    strict: bool = False,
+    inventory: Annotated[
+        bool, typer.Option("--inventory", help="List repository Markdown paths instead.")
+    ] = False,
+    style: Annotated[
+        bool, typer.Option("--style", help="Run configured Vale on each --path instead.")
+    ] = False,
+    paths: Annotated[list[str] | None, typer.Option("--path")] = None,
+):
+    """Inspect document ownership, coverage and links; --inventory and --style are alternatives."""
+    if inventory and style:
+        raise typer.BadParameter("choose --inventory or --style, not both")
+    if paths and not style:
+        raise typer.BadParameter("--path applies to --style", param_hint="--path")
+    if style and not paths:
+        raise typer.BadParameter("--style needs at least one --path", param_hint="--path")
+    if inventory:
+        _docs_inventory(root)
+    elif style:
+        _docs_style(root, paths or [], strict)
+    else:
+        _docs_check(root, strict)
+
+
+@docs.command("review")
+def docs_review(
+    root: Path = Path("."),
+    base: Annotated[str | None, typer.Option(help="Git comparison base.")] = None,
+    disposition: Annotated[
+        Path | None,
+        typer.Option(help="Read reviewed decisions from this JSON file; emit evidence to stdout."),
+    ] = None,
+    reviewer: str | None = None,
+    baseline: Annotated[
+        bool, typer.Option("--baseline", help="Propose a historical-debt baseline.")
+    ] = False,
+    owner: str | None = None,
+    reason: str | None = None,
+    report: Annotated[
+        bool, typer.Option("--report", help="Prepare a bounded review packet.")
+    ] = False,
+    paths: Annotated[list[str] | None, typer.Option("--path")] = None,
+    max_bytes: int | None = None,
+    source: str | None = None,
+    check: Annotated[
+        bool, typer.Option("--check", help="Validate a review against its packet.")
+    ] = False,
+    packet: Path | None = None,
+    review: Path | None = None,
+):
+    """Inspect documentation impact; one mode flag records, baselines, reports or checks instead."""
+    mode = _review_mode(
+        {
+            "base": base,
+            "disposition": disposition,
+            "reviewer": reviewer,
+            "baseline": baseline,
+            "owner": owner,
+            "reason": reason,
+            "report": report,
+            "paths": paths,
+            "check": check,
+            "packet": packet,
+            "review": review,
+        }
+    )
+    if mode != "report" and (max_bytes is not None or source is not None):
+        raise typer.BadParameter("--max-bytes and --source apply to --report")
+    if mode == "disposition":
+        _docs_disposition(root, str(base), Path(str(disposition)), str(reviewer))
+    elif mode == "baseline":
+        _docs_baseline(root, str(owner), str(reason))
+    elif mode == "report":
+        _docs_review_packet(
+            root,
+            str(base),
+            paths or [],
+            64000 if max_bytes is None else max_bytes,
+            source or "catalog",
+        )
+    elif mode == "check":
+        _docs_review_check(root, Path(str(packet)), Path(str(review)))
+    else:
+        _docs_impact(root, str(base))
+
+
+@docs.command("gate")
+def docs_gate(
+    root: Path = Path("."),
+    evidence: str = ".ai-dlc/documentation/current.json",
+    baseline: str = ".ai-dlc/documentation/baseline.json",
+    base: Annotated[str | None, typer.Option(envvar="AI_DLC_DOCS_BASE")] = None,
+):
+    """Require current dispositions and refuse new objective documentation defects."""
+    _docs_gate(root, evidence, baseline, base)
+
+
+@docs.command("search")
+def docs_search(
+    query: str,
+    root: Path = Path("."),
+    sources: Annotated[list[str] | None, typer.Option("--source")] = None,
+    max_bytes: int = 64000,
+    limit: int = 20,
+):
+    """Search docs/, openspec/ and declared project Markdown; bounded, never private notes."""
+    _docs_search(root, query, sources, max_bytes, limit)
+
+
+@docs.command("read")
+def docs_read(
+    path: str,
+    root: Path = Path("."),
+    sources: Annotated[list[str] | None, typer.Option("--source")] = None,
+    max_bytes: int = 64000,
+):
+    """Read one complete eligible project document within a byte budget."""
+    _docs_read(root, path, sources, max_bytes)
+
+
+# Hidden aliases: one release of compatibility for the former `project docs-*` names.
+
+
+@project.command("docs-init", hidden=True)
+def project_docs_init(root: Path = Path("."), preset: str = "organized", apply: bool = False):
+    _deprecated("docs-init", "docs init")
+    _docs_init(root, preset, apply)
+
+
+@project.command("docs-check", hidden=True)
+def project_docs_check(root: Path = Path("."), strict: bool = False):
+    _deprecated("docs-check", "docs check")
+    _docs_check(root, strict)
+
+
+@project.command("docs-impact", hidden=True)
+def project_docs_impact(base: Annotated[str, typer.Option()], root: Path = Path(".")):
+    _deprecated("docs-impact", "docs review")
+    _docs_impact(root, base)
+
+
+@project.command("docs-disposition", hidden=True)
+def project_docs_disposition(
+    base: Annotated[str, typer.Option()],
+    decisions: Annotated[Path, typer.Option()],
+    reviewer: Annotated[str, typer.Option()],
+    root: Path = Path("."),
+):
+    _deprecated("docs-disposition", "docs review --disposition FILE --reviewer NAME")
+    _docs_disposition(root, base, decisions, reviewer)
+
+
+@project.command("docs-baseline", hidden=True)
+def project_docs_baseline(
+    owner: Annotated[str, typer.Option()],
+    reason: Annotated[str, typer.Option()],
+    root: Path = Path("."),
+):
+    _deprecated("docs-baseline", "docs review --baseline")
+    _docs_baseline(root, owner, reason)
+
+
+@project.command("docs-style", hidden=True)
+def project_docs_style(
+    paths: Annotated[list[str], typer.Option("--path")],
+    root: Path = Path("."),
+    strict: bool = False,
+):
+    _deprecated("docs-style", "docs check --style")
+    _docs_style(root, paths, strict)
+
+
+@project.command("docs-inventory", hidden=True)
+def project_docs_inventory(root: Path = Path(".")):
+    _deprecated("docs-inventory", "docs check --inventory")
+    _docs_inventory(root)
+
+
+@project.command("docs-search", hidden=True)
+def project_docs_search(
+    query: str,
+    root: Path = Path("."),
+    sources: Annotated[list[str] | None, typer.Option("--source")] = None,
+    max_bytes: int = 64000,
+    limit: int = 20,
+):
+    _deprecated("docs-search", "docs search")
+    _docs_search(root, query, sources, max_bytes, limit)
+
+
+@project.command("docs-read", hidden=True)
+def project_docs_read(
+    path: str,
+    root: Path = Path("."),
+    sources: Annotated[list[str] | None, typer.Option("--source")] = None,
+    max_bytes: int = 64000,
+):
+    _deprecated("docs-read", "docs read")
+    _docs_read(root, path, sources, max_bytes)
+
+
+@project.command("docs-review", hidden=True)
+def project_docs_review(
+    base: Annotated[str, typer.Option()],
+    paths: Annotated[list[str], typer.Option("--path")],
+    root: Path = Path("."),
+    max_bytes: int = 64000,
+    source: str = "catalog",
+):
+    _deprecated("docs-review", "docs review --report")
+    _docs_review_packet(root, base, paths, max_bytes, source)
+
+
+@project.command("docs-review-check", hidden=True)
+def project_docs_review_check(
+    packet: Annotated[Path, typer.Option()],
+    review: Annotated[Path, typer.Option()],
+    root: Path = Path("."),
+):
+    _deprecated("docs-review-check", "docs review --check")
+    _docs_review_check(root, packet, review)
+
+
+@project.command("docs-gate", hidden=True)
+def project_docs_gate(
+    root: Path = Path("."),
+    evidence: str = ".ai-dlc/documentation/current.json",
+    baseline: str = ".ai-dlc/documentation/baseline.json",
+    base: Annotated[str | None, typer.Option(envvar="AI_DLC_DOCS_BASE")] = None,
+):
+    _deprecated("docs-gate", "docs gate")
+    _docs_gate(root, evidence, baseline, base)
 
 
 @project.command("sync")
@@ -455,11 +685,19 @@ def project_workspace_init(
     name: str | None = None,
     bases: bool = False,
     apply: bool = False,
+    shell: bool = False,
 ):
     """Preview or add linked Obsidian project navigation and personal note templates."""
     from ai_dlc.documentation.knowledge_workspace import setup_workspace
 
+    if shell and (vault is not None or name is not None or bases):
+        raise typer.BadParameter("--shell cannot be combined with --vault, --name or --bases")
     with service_call():
+        if shell:
+            from ai_dlc.environment.bootstrap import plan_shell_activation
+
+            emit(plan_shell_activation(apply=apply))
+            return
         emit(setup_workspace(root, vault=vault, name=name, bases=bases, apply=apply))
 
 
@@ -847,11 +1085,30 @@ def doctor(
 
 @app.command()
 def context(root: Path = Path("."), brief: bool = False):
-    """Print the offline session context; --brief keeps the newest records and truncates."""
+    """Print the offline session context as JSON; --brief prints the what-next summary."""
     from ai_dlc.work.workflow import build_context
 
-    text = json.dumps(build_context(root, brief=brief), indent=2)
-    typer.echo(text[:2000] if brief else text)
+    result = build_context(root, brief=brief)
+    typer.echo(result["text"], nl=False) if brief else typer.echo(json.dumps(result, indent=2))
+
+
+@app.command("next")
+def next_summary(
+    root: Annotated[Path, typer.Option("--root")] = Path("."),
+    all_records: Annotated[
+        bool, typer.Option("--all", help="Include unpublished records (no tracker artifact).")
+    ] = False,
+    as_json: Annotated[bool, typer.Option("--json", help="Print the same data as JSON.")] = False,
+):
+    """Summarize what to do next from local work records; the tracker is not consulted."""
+    from ai_dlc.work.summary import render_next, summarize_next
+
+    with service_call():
+        summary = summarize_next(root, include_all=all_records)
+    if as_json:
+        emit(summary["records"])
+    else:
+        typer.echo(render_next(summary), nl=False)
 
 
 def service(root: Path, machine: Path | None):
@@ -890,6 +1147,16 @@ def work_validate(
             result = validate_work(root, resolve_runtime(root, machine=machine).values, work_id)
         except SERVICE_FAILURES as exc:
             result = {"valid": False, "work_id": work_id, "dependencies": [], "errors": [str(exc)]}
+    errors = result.get("errors", [])
+    if (
+        not all_records
+        and errors
+        and all("Provider binding drift for " in error for error in errors)
+    ):
+        result["hint"] = "\n".join(
+            "Provider binding drift for " + error.split("Provider binding drift for ", 1)[1]
+            for error in errors
+        )
     conclude(result)
 
 
@@ -972,9 +1239,17 @@ def work_status(work_id: str, root: Path = Path("."), machine: Path | None = Non
 
 @work.command("finish")
 def work_finish(
-    work_id: str, root: Path = Path("."), machine: Path | None = None, handoff: Path | None = None
+    work_id: str,
+    root: Path = Path("."),
+    machine: Path | None = None,
+    handoff: Path | None = None,
+    learning: Path | None = None,
 ):
-    result = service(root, machine).finish(work_id, handoff.read_text() if handoff else None)
+    result = service(root, machine).finish(
+        work_id,
+        handoff.read_text() if handoff else None,
+        learning.read_text() if learning else None,
+    )
     conclude(result)
 
 
@@ -1072,6 +1347,8 @@ def hook(event: str, root: Path = Path(".")):
     if result.get("decision") == "deny":
         typer.echo(result["reason"], err=True)
         raise typer.Exit(2)
+    if result.get("friction"):
+        typer.echo(result["friction"])
     if result.get("reminder"):
         typer.echo(result["message"])
     elif result.get("context"):

@@ -64,3 +64,13 @@ def test_nested_project_symlink_is_not_a_note_write_boundary(tmp_path):
     with pytest.raises(ValueError):
         Knowledge(vault).note("Projects/project/escape/new.md", "private", "escape")
     assert not (outside / "new.md").exists()
+
+
+def test_new_learning_preserves_front_matter_at_start(tmp_path):
+    knowledge = Knowledge(tmp_path)
+    body = "---\nwork: one\nrepository: owner/repo\npr: 1\ntags: [retry]\n---\n## What happened\nRetry lesson"
+    knowledge.note("learnings/2026-09-14-one.md", body, "learning-one")
+    text = (tmp_path / "learnings/2026-09-14-one.md").read_text()
+    assert text.startswith(body)
+    knowledge.note("learnings/2026-09-14-one.md", body, "learning-one")
+    assert (tmp_path / "learnings/2026-09-14-one.md").read_text() == text

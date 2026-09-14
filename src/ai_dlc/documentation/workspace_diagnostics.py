@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import os
 import re
-import shlex
 import shutil
 import stat
 import subprocess
@@ -17,6 +16,7 @@ from ai_dlc import __version__
 from ai_dlc.documentation.document_access import _reason, _repository, _scope, markdown_links
 from ai_dlc.documentation.document_files import directory, read_bounded, read_document
 from ai_dlc.documentation.vault_mount import read_mount_bindings
+from ai_dlc.environment.bootstrap import activation_line, bootstrap_bin, configured_bin, shell_rc
 from ai_dlc.harness.agents import read_managed_section
 
 REQUIRED_COMMANDS = ("docs-search", "docs-read", "workspace-check")
@@ -96,24 +96,6 @@ def _installation(environ: Mapping[str, str]) -> dict:
     return result
 
 
-def _bootstrap_bin(environ: Mapping[str, str], home: Path) -> Path:
-    data = environ.get("XDG_DATA_HOME") or str(home / ".local/share")
-    return Path(environ.get("AI_DLC_BOOTSTRAP_HOME") or f"{data}/ai-dlc/bootstrap") / "bin"
-
-
-def _configured_bin(body: str) -> str | None:
-    for line in body.splitlines():
-        if not line.startswith("export PATH="):
-            continue
-        try:
-            words = shlex.split(line.removeprefix("export PATH="))
-        except ValueError:
-            return None
-        if len(words) == 1 and words[0].endswith(":$PATH"):
-            return words[0].removesuffix(":$PATH")
-    return None
-
-
 def _alias_checkout(alias: Path, root: Path) -> dict:
     """Attribute the shared alias to a checkout through the environment it selects."""
     result: dict[str, str | bool | None] = {
@@ -137,7 +119,7 @@ def _alias_checkout(alias: Path, root: Path) -> dict:
 
 
 def _activation(environ: Mapping[str, str], home: Path, installation: dict, root: Path) -> dict:
-    bin_dir = _bootstrap_bin(environ, home)
+    bin_dir = bootstrap_bin(environ, home)
     alias = bin_dir / "ai-dlc"
     if not os.path.lexists(alias):
         alias_state = "missing"
@@ -164,8 +146,9 @@ def _activation(environ: Mapping[str, str], home: Path, installation: dict, root
         "configured_bin": None,
         "matches_bootstrap_bin": None,
     }
-    if shell in ("bash", "zsh"):
-        rc = home / (".zshrc" if shell == "zsh" else ".bashrc")
+    if shell in ("bash", "zsh", "fish"):
+        rc = shell_rc(shell, home)
+        configured["activation_line"] = activation_line(shell, bin_dir, home)
         configured["rc_file"] = str(rc)
         try:
             found = read_managed_section(read_document(rc).decode("utf-8"), toml=True)
@@ -176,7 +159,7 @@ def _activation(environ: Mapping[str, str], home: Path, installation: dict, root
         else:
             configured["section"] = found["state"]
             if found["state"] == "present":
-                value = _configured_bin(found["body"])
+                value = configured_bin(found["body"], home)
                 configured["configured_bin"] = value
                 configured["matches_bootstrap_bin"] = value is not None and os.path.realpath(
                     value
@@ -437,7 +420,8 @@ def _activation_findings(activation: dict) -> list[dict]:
         return [_finding("activation", "activation-stale", message, REPAIR)]
     if status == "missing":
         message = "No owned shell activation exists and PATH does not select the bootstrap alias."
-        return [_finding("activation", "activation-missing", message, REPAIR)]
+        action = f"Run `{configured['activation_line']}` now; preview `ai-dlc project workspace-init --shell` and use `--apply` to persist it."
+        return [_finding("activation", "activation-missing", message, action)]
     if status == "unverified":
         message = f"Shell activation cannot be proved safely: {configured['section']}."
         action = "Inspect shell activation manually; diagnostics return no authored shell content."
