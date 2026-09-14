@@ -51,6 +51,11 @@ setup and ongoing practice; OpenSpec changes own the delivery requirements.
 [The workspace qualification walkthrough](runbooks/document-workspace-qualification.md)
 repeats the messy-project organization and native Obsidian checks.
 
+## FDE engagement documents
+
+[The FDE runbook](runbooks/fde-documents.md) describes the local seven-stage
+scaffold, explicit stage checks and the outstanding Confluence publication boundary.
+
 ## Placement rules
 
 Current explanations belong in design/, procedures in runbooks/ or workflows/,

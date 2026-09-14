@@ -236,3 +236,13 @@ The optional node `frontend` capability supplies a Playwright smoke check.
 `design-evaluate`; browser installation belongs to explicit setup. A named state
 waits for its visible selector and does not certify untested interactions.
 See [frontend smoke and capture](design-to-implementation.md#frontend-smoke-and-capture-evidence).
+
+## Local FDE engagement documents
+
+`ai-dlc fde scaffold SLUG --title TITLE` creates an engagement charter, seven
+stage landing pages and portable guidance beneath repository docs. `--dry-run`
+returns exact proposed content without writing. `ai-dlc fde check SLUG` validates
+structure, lifecycle states and preceding exit evidence. These CLI operations
+share the documentation application service and have no provider connection or
+MCP facade. See the [FDE runbook](../runbooks/fde-documents.md) for configuration
+and the explicitly outstanding Confluence publication capability.

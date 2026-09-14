@@ -75,7 +75,10 @@ model processing is on-device or that native tools enforce AI-DLC guidance.
 Generated-guidance fixtures verify that these instructions are present and scoped.
 Actual behavior of the selected tools requires separate live qualification.
 The custom server repository/interface is still pending; no existing integration
-was inspected or replaced.
+was inspected or replaced. Issue #50 identified a production ai-docs source, but
+it was unavailable in the September 14 implementation environment. The local
+[FDE scaffold](../runbooks/fde-documents.md) is independently usable; conversion,
+publication and actual Confluence qualification remain outstanding.
 
 ## Project navigation
 
