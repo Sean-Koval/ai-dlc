@@ -69,7 +69,8 @@ class Work(BaseModel):
         return value
 
 
-def _project_source_digest(root: Path) -> str | None:
+def project_source_digest(root: Path) -> str | None:
+    """Canonical digest of the authored ai-dlc.toml, or None when it is absent."""
     project_file = root / "ai-dlc.toml"
     if not project_file.is_file():
         return None
@@ -326,7 +327,7 @@ class WorkService:
     ):
         root = Path(root).resolve()
         with project_write_lock(root):
-            source_digest = _project_source_digest(root)
+            source_digest = project_source_digest(root)
             config = resolve_runtime(root, machine=machine).values
             return cls(
                 root,
@@ -347,7 +348,7 @@ class WorkService:
     ):
         self.root = Path(root).resolve()
         with project_write_lock(self.root):
-            current_digest = _project_source_digest(self.root)
+            current_digest = project_source_digest(self.root)
             if _source_digest is _UNSET_SOURCE:
                 _validate_binding_config(self.root, config)
             elif _source_digest != current_digest:
@@ -381,7 +382,7 @@ class WorkService:
 
     def _check_source(self):
         try:
-            current_digest = _project_source_digest(self.root)
+            current_digest = project_source_digest(self.root)
         except (OSError, tomllib.TOMLDecodeError):
             raise ValueError("Project configuration changed; retry the work mutation") from None
         if current_digest != self.project_source_digest:

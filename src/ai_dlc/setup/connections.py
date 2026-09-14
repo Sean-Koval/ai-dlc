@@ -32,12 +32,12 @@ def snapshot_work(root):
 
 
 def render_patch(text, alias, patch, *, require_project=False):
-    from ai_dlc.setup.provider_onboarding import _set_table_value, _table_paths
+    from ai_dlc.toml_edit import set_table_value, table_paths
 
     original = tomllib.loads(text)
     expected = copy.deepcopy(original)
     settings = expected.setdefault("providers", {}).setdefault(alias, {})
-    paths = _table_paths(text)
+    paths = table_paths(text)
     base = ("providers", alias)
     current = original.get("providers", {}).get(alias)
     if current is not None and base not in paths:
@@ -56,7 +56,7 @@ def render_patch(text, alias, patch, *, require_project=False):
                     )
                 update(table + "." + key, value, target.setdefault(key, {}))
             else:
-                text = _set_table_value(text, table, key, value)
+                text = set_table_value(text, table, key, value)
                 target[key] = value
 
     if require_project and "project" in settings and "project" not in patch:

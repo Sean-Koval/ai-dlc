@@ -15,9 +15,9 @@ from ai_dlc.config import digest
 
 
 def required_checks(config):
-    from ai_dlc.setup.project import _check_definitions
+    from ai_dlc.setup.project import check_definitions
 
-    required, _ = _check_definitions(config)
+    required, _ = check_definitions(config)
     if not required:
         raise ValueError("CI completion requires nonempty required checks")
     return required

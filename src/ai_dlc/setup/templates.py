@@ -65,7 +65,8 @@ def _ignore(root: Path):
     return exclude
 
 
-def _files(root: Path) -> dict[str, bytes]:
+def checkout_files(root: Path) -> dict[str, bytes]:
+    """Snapshot every regular file under root that template staging may replace."""
     result = {}
     exclude = _ignore(root)
     for directory, dirs, names in os.walk(root, followlinks=False):
@@ -78,10 +79,11 @@ def _files(root: Path) -> dict[str, bytes]:
     return result
 
 
-def _apply(root: Path, before: dict, after: dict) -> list[str]:
+def apply_files(root: Path, before: dict, after: dict) -> list[str]:
+    """Write the staged snapshot, restoring the previous one if any write fails."""
     changed = sorted(k for k in before.keys() | after.keys() if before.get(k) != after.get(k))
     # Recheck the checkout after staging, before writing anything.
-    if _files(root) != before:
+    if checkout_files(root) != before:
         raise ValueError("Checkout changed during template staging; retry")
     for name in changed:
         inside(root, name)
@@ -218,7 +220,7 @@ def adopt(
     tracker = toolset["roles"].get("tracker", "linear")
     root = Path(root).resolve()
     source = template_source or str(assets("project-templates"))
-    before = _files(root)
+    before = checkout_files(root)
     with tempfile.TemporaryDirectory(prefix="ai-dlc-adopt-") as temporary:
         stage = Path(temporary).resolve() / "project"
         copier.run_copy(
@@ -240,7 +242,7 @@ def adopt(
             quiet=True,
             skip_tasks=True,
         )
-        rendered = _files(stage)
+        rendered = checkout_files(stage)
         manifest = _release_manifest() if "bootstrap/download.sh" in rendered else None
         if manifest is not None:
             # Same conflict and authored-file protections as every template file.
@@ -279,7 +281,7 @@ def adopt(
         if apply:
             from ai_dlc.documentation.document_files import create_document
 
-            if _files(root) != before:
+            if checkout_files(root) != before:
                 raise ValueError("Checkout changed during staging; retry")
             for name in changes:
                 inside(root, name)
@@ -352,7 +354,7 @@ def _validate_toolset_answers(content: bytes) -> None:
 
 def sync(root: Path, apply: bool = False, *, vcs_ref: str | None = None) -> dict:
     root = Path(root).resolve()
-    before = _files(root)
+    before = checkout_files(root)
     if ".copier-answers.yml" not in before:
         raise ValueError("Adopt a versioned Copier template before sync")
     _validate_toolset_answers(before[".copier-answers.yml"])
@@ -382,7 +384,7 @@ def sync(root: Path, apply: bool = False, *, vcs_ref: str | None = None) -> dict
             skip_tasks=True,
             conflict="inline",
         )
-        after = _files(stage)
+        after = checkout_files(stage)
         if ".copier-answers.yml" not in after:
             raise ValueError("Updated template must retain its Copier answers")
         conflicts = sorted(
@@ -398,5 +400,5 @@ def sync(root: Path, apply: bool = False, *, vcs_ref: str | None = None) -> dict
             resolve_layers([("project", tomllib.loads(after["ai-dlc.toml"].decode()))])
         changed = sorted(k for k in before.keys() | after.keys() if before.get(k) != after.get(k))
         if apply:
-            _apply(root, before, after)
+            apply_files(root, before, after)
         return {"status": "applied" if apply else "planned", "files": changed}

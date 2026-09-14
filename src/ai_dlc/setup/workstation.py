@@ -14,7 +14,7 @@ import tomli_w
 
 from ai_dlc.config import read_toml
 from ai_dlc.files import assets, atomic_write
-from ai_dlc.harness.agents import _section
+from ai_dlc.harness.agents import managed_section
 
 
 def ensure_brew(root: Path, architecture: str, *, environ: Mapping[str, str] | None = None) -> str:
@@ -83,7 +83,7 @@ def activate_workstation(
     if brew:
         lines.append('eval "$(' + shlex.quote(brew) + ' shellenv)"')
     lines.append('eval "$(' + shlex.quote(mise) + " activate " + shell + ')"')
-    rendered_rc = _section(
+    rendered_rc = managed_section(
         rc.read_text() if rc.exists() else "", "\n".join(lines) + "\n", toml=True
     )
     # Validate all conflicts first; each file has one declared owner.

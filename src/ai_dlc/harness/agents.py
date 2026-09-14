@@ -303,7 +303,8 @@ def read_managed_section(current: str, *, toml: bool = False) -> dict:
     }
 
 
-def _section(current: str, body: str, toml: bool = False) -> str:
+def managed_section(current: str, body: str, toml: bool = False) -> str:
+    """Replace or append the managed section in an authored file, refusing user edits."""
     start, end, suffix = _markers(toml)
     found = read_managed_section(current, toml=toml)
     if found["state"] == "malformed":
@@ -936,7 +937,9 @@ def _render_agents(
             continue
         current = text(filename)
         planned[filename] = (
-            body if filename == "CLAUDE.md" and current in {"", body} else _section(current, body)
+            body
+            if filename == "CLAUDE.md" and current in {"", body}
+            else managed_section(current, body)
         )
     servers = {}
     codex = {}
@@ -1051,7 +1054,7 @@ def _render_agents(
                 if hashlib.sha256(current_bytes).hexdigest() != expected:
                     raise ValueError(f"managed native rule conflict: {name}")
                 current = ""  # Upgrade the intact early whole-file owned representation.
-        planned[name] = _section(current, body)
+        planned[name] = managed_section(current, body)
         owned_files[name] = hashlib.sha256(planned[name].encode()).hexdigest()
         _plan_json_mcp(
             read,
@@ -1071,7 +1074,7 @@ def _render_agents(
             if codex
             else "# No project MCP servers configured.\n"
         )
-        planned[".codex/config.toml"] = _section(current, body, toml=True)
+        planned[".codex/config.toml"] = managed_section(current, body, toml=True)
         # Validate duplicate tables or invalid unmanaged text before writing any file.
         import tomllib
 

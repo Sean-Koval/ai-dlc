@@ -1,0 +1,33 @@
+schema = 1
+id = "toml-editor"
+title = "Extract the comment-preserving TOML editor into a public module and remove private cross-package imports"
+scope = "Move the string-state TOML editing primitives out of setup/provider_onboarding.py into a public ai_dlc.toml_edit module with direct tests. Give the remaining privately imported helpers public names in their responsible packages (managed sections in harness/agents.py, checkout snapshots in setup/templates.py, the project source digest in work/workflow.py, check definitions in setup/project.py) and re-express tests that reached for underscore names through public entry points. Behaviour of every editor and onboarding fixture is unchanged."
+requires_spec = false
+spec_reason = "Internal module extraction and renaming with identical behaviour; no new observable behaviour."
+acceptance = [
+    "No `from ai_dlc.<pkg> import _name` crosses a package boundary in src/ or tests/.",
+    "ai_dlc.toml_edit has direct tests covering quoted strings, escaped quotes, comments, multiline strings and table headers, and the existing onboarding fixtures pass unchanged.",
+    "All required checks pass.",
+]
+reviewed = true
+depends_on = []
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+tracker = "96"
+branch = "work/toml-editor"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/110"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"

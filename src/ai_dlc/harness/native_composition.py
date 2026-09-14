@@ -19,7 +19,7 @@ from ai_dlc.setup.connections import (
     save_exclusive_plan,
     snapshot_work,
 )
-from ai_dlc.setup.provider_onboarding import _comment_suffix, _structural_lines, _table_paths
+from ai_dlc.toml_edit import comment_suffix, structural_lines, table_paths
 
 _ROLES = {"specs", "tracker", "knowledge", "scm", "deploy"}
 _ALIAS = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,99}")
@@ -177,8 +177,8 @@ def render_native_patch(text, _alias, patch):
     expected = copy.deepcopy(original)
     expected.setdefault("agents", {})["servers"] = servers
     lines = text.splitlines(keepends=True)
-    paths = _table_paths(text)
-    structural = _structural_lines(lines)
+    paths = table_paths(text)
+    structural = structural_lines(lines)
     section = None
     rendered = None
     assignment = re.compile(r'^(\s*(?:servers|"servers"|\'servers\')\s*=\s*)(.*?)(\r?\n)?$')
@@ -200,7 +200,7 @@ def render_native_patch(text, _alias, patch):
             if parsed != {"servers": existing}:
                 break
             last = lines[end]
-            comment = _comment_suffix(last.rstrip("\r\n"))
+            comment = comment_suffix(last.rstrip("\r\n"))
             meaningful = last[: len(last.rstrip("\r\n")) - len(comment)]
             closing = meaningful.rfind("]")
             if closing < 0:
