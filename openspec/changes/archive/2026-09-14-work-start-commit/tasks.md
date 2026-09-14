@@ -7,6 +7,6 @@
 - [x] 2.1 Update delivery guidance, the GitHub provider instructions and the tool map (with template copies) to the two-command path.
 
 ## Verification and delivery
-- [ ] 9.1 Record documentation-impact dispositions for the change.
+- [x] 9.1 Record documentation-impact dispositions for the change.
 - [ ] 9.2 Validate this OpenSpec change and run required project checks.
 After delivery handoff, the integrator updates from the target branch, reviews and merges with fresh checks, verifies merged-revision CI receipts, then runs `ai-dlc work finish work-start-commit`. This is post-review integration, not an implementation task.

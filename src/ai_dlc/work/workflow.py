@@ -745,7 +745,11 @@ class WorkService:
         reference = work["artifacts"].get("tracker", "")
         closes = (
             reference
-            if tracker_cfg.get("kind", tracker_id) == "github-issues" and reference.isdigit()
+            if tracker_cfg.get("kind", tracker_id) == "github-issues"
+            and reference.isdigit()
+            and tracker_cfg.get("repository", self.config.get("scm", {}).get("repository"))
+            == self.config.get("scm", {}).get("repository")
+            and tracker_cfg.get("host", "github.com") == "github.com"
             else None
         )
         payload = {"title": work["title"], "body": render_pull_request_body(work, closes=closes)}
