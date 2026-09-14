@@ -91,7 +91,8 @@ def test_capture_refuses_unsafe_states_symlinks_and_failed_capture(tmp_path, mon
     assert not (tmp_path / "capture/manifest.json").exists()
 
 
-def test_frontend_capture_and_smoke_against_real_local_page(tmp_path, monkeypatch):
+@pytest.mark.parametrize("capabilities", [["frontend"], ["backend", "frontend"]])
+def test_frontend_capture_and_smoke_against_real_local_page(tmp_path, monkeypatch, capabilities):
     """Optional local qualification after explicit pinned Playwright/browser setup."""
     import contextlib
     import functools
@@ -107,7 +108,7 @@ def test_frontend_capture_and_smoke_against_real_local_page(tmp_path, monkeypatc
         pytest.skip("Explicit Playwright/browser setup is required for live local qualification")
     runtime = Path(configured)
     root = tmp_path / "app"
-    adopt(root, "node", True, initialize=True, capabilities=["frontend"])
+    adopt(root, "node", True, initialize=True, capabilities=capabilities)
     (root / "node_modules").symlink_to(runtime / "node_modules", target_is_directory=True)
     (root / "index.html").write_text(
         '<!doctype html><title>Frontend fixture</title><main id="ready">Ready</main>'
@@ -202,3 +203,52 @@ def test_design_capture_cli_emits_manifest_and_refuses_invalid_input(tmp_path, m
     )
     assert refused.exit_code != 0
     assert "HTTP(S)" in refused.output
+
+
+@pytest.mark.parametrize("packs", [["backend", "frontend"], ["frontend", "backend"]])
+@pytest.mark.parametrize("with_scm", [False, True])
+def test_joint_node_packs_preserve_selection_setup_and_checks(tmp_path, packs, with_scm):
+    import tomllib
+
+    import yaml
+
+    from ai_dlc.setup.templates import adopt
+
+    capabilities = packs + (["scm"] if with_scm else [])
+    root = tmp_path / "joint"
+    result = adopt(root, "node", True, initialize=True, capabilities=capabilities)
+    expected_roles = {"scm": "github"} if with_scm else {}
+    assert result["toolset"]["roles"] == expected_roles
+    config = tomllib.loads((root / "ai-dlc.toml").read_text())
+    assert config["roles"] == expected_roles
+    saved = yaml.safe_load((root / ".copier-answers.yml").read_text())["capabilities"]
+    assert set(saved) == set(capabilities)
+    assert len(saved) == len(capabilities)
+    assert set(config["checks"]["required"]) == {
+        "generated",
+        "work-records",
+        "language-check",
+        "frontend-smoke",
+        "api-contract",
+    }
+    assert "api-contract-drift" not in config["checks"]["commands"]
+    steps = config["setup"]["steps"]
+    assert [step["id"] for step in steps] == ["dependencies", "api-contract-tools"]
+    assert "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm ci" in steps[0]["command"]
+    assert "@redocly/cli@1.34.16" in steps[1]["command"]
+    assert tomllib.loads((root / ".mise.toml").read_text())["tools"]["node"] == "22.23.1"
+    assert (
+        json.loads((root / "package.json").read_text())["devDependencies"]["@playwright/test"]
+        == "1.58.2"
+    )
+    assert (root / "docs/api/openapi.yaml").is_file()
+    assert (root / "playwright.config.ts").is_file()
+    assert (root / "tests/e2e/smoke.spec.ts").is_file()
+    assert not (root / "scripts/check_api_contract_drift.py").exists()
+    assert (root / ".github").exists() == with_scm
+    authored = tmp_path / "authored"
+    authored.mkdir()
+    manifest = '{"name":"keep-authored","scripts":{"test":"custom"}}\n'
+    (authored / "package.json").write_text(manifest)
+    adopt(authored, "node", True, capabilities=capabilities)
+    assert (authored / "package.json").read_text() == manifest

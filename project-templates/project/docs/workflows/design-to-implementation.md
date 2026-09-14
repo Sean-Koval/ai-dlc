@@ -199,3 +199,9 @@ screenshot; it does not click controls or prove an interaction journey. Cite the
 manifest and its images in the evaluation and keep uncaptured states or untested
 interactions unverified. On failure, inspect the partial capture directory;
 a complete manifest is written only after every screenshot succeeds.
+
+Select both `--capability backend --capability frontend` for a node project that
+needs API contract validation and browser smoke. Both required checks remain
+active, setup prepares each pinned tool once, and frontend keeps Node 22.23.1.
+Adoption preserves an authored package manifest; add the documented Playwright
+dependency deliberately before running smoke.

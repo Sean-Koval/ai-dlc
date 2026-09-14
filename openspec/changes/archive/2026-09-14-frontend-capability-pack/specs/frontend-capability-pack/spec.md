@@ -12,6 +12,10 @@ The node frontend capability SHALL add a Playwright smoke test and required fron
 - **WHEN** BASE_URL names a running app with a nonempty title
 - **THEN** smoke visits it and writes a screenshot
 
+#### Scenario: Frontend composes with backend
+- **WHEN** a node project selects frontend and backend in either order, optionally with SCM
+- **THEN** both smoke and API contract checks, tool setup and generated assets remain present without creating provider roles for either pack or replacing an authored package manifest
+
 ### Requirement: FE-02 Contained capture evidence
 
 Design capture SHALL record PNG files for requested viewports and visible-selector states plus a manifest with URL, capture time, viewports, states and file references inside a repository-contained output directory. Invalid paths, symlinks, unsafe names and existing capture sets SHALL be refused before capture. Failed capture SHALL NOT create a successful manifest.
