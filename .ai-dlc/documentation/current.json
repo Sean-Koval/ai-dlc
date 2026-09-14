@@ -213,7 +213,7 @@
     },
     {
       "outcome": "no-impact",
-      "reason": "Inherited delivery regression fixtures supply requested issue titles and explicit local Git identity; existing delivery guidance covers observable behavior.",
+      "reason": "Jira lifecycle coverage now verifies local status makes no request and reads cancellation through the provider; the updated offline-status guidance covers this behavior and finish refusal remains unchanged.",
       "target": "tests/test_jira_workflow.py"
     },
     {
