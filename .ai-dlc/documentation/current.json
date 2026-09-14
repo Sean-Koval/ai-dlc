@@ -49,9 +49,9 @@
   ],
   "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "acfc33e8d09a7aceb07885e1d852d67e04c202fe5c1953bb4c7504e50cc49d2d",
+  "snapshot": "777ac95a259a5798eca63a14a3f7de75632a279d5bbb4468bf5287d8bd257488",
   "sources": {
-    ".ai-dlc/work/github-operation-budget.toml": "70c37e7628bcb7cc05b00a815b36621605e25d4bfa6e5f2e509408ac8cdb3db1",
+    ".ai-dlc/work/github-operation-budget.toml": "fe940a657498dca8f24b9f737220d931bd2cf43a57afe5248f077b7ad5f80fd6",
     "docs/architecture.md": "8bafa96f47da57bde830616401e193107eea00298d89d3ae8ee633a1dfc30604",
     "docs/catalog.toml": "53ab3b989c9addd8dc18968f6471afa3a151834c6c95a77a789d8af13b41c22e",
     "docs/github-ticket-setup.md": "09e6a60879083aafb575c08eb4cad3eb89cc64047d7a7339c8b4ecf5d5f3b613",
