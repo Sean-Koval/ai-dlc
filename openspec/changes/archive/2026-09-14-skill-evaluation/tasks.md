@@ -8,8 +8,8 @@
 - [x] 2.1 Record the runner, the dry-run evidence and the outstanding live run in `docs/verification/skill-evaluation.md`, enrol it in the catalog and link it from release verification.
 
 ## Verification and delivery
-- [ ] 9.1 Record documentation-impact dispositions for the change.
-- [ ] 9.2 Validate this OpenSpec change and run required project checks.
+- [x] 9.1 Record documentation-impact dispositions for the change.
+- [x] 9.2 Validate this OpenSpec change and run required project checks.
 Integration follow-up: the maintainer owns fresh-base review, merge, merged-revision CI receipts, and evidence-gated work finish.
 
 ## Deferred live qualification — not delivered

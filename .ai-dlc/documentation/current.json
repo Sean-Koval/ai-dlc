@@ -49,7 +49,7 @@
   ],
   "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "e6c4bb076124099e1dbe6f4b97945036092abfeb2ccfbffb417ec54466d98308",
+  "snapshot": "b745a71c7fa969c4ee0d10f7607c140104e5ce93e905202eff906e3e156e0131",
   "sources": {
     ".ai-dlc/work/skill-evaluation.toml": "3dfba4d7344db6ed2cfe9f0ec3c62f2d5feab965c4997873c5154b0fe569f1d1",
     "agents/evaluation-scenarios.json": "bf523609610234800a9b2356fbcf4ecbf86f840e5ad7c3d1f71cde7409672fb0",
@@ -61,7 +61,7 @@
     "openspec/changes/archive/2026-09-14-skill-evaluation/design.md": "4397623b3b42ef14ef18bd62dfa05bd1df9e1b3c1fbe39aa1202444bb55e01ea",
     "openspec/changes/archive/2026-09-14-skill-evaluation/proposal.md": "ff0bb42e1ae1fb4a979a7d546de2a55a3c823bf1dc4cce1c201edb3a1a265340",
     "openspec/changes/archive/2026-09-14-skill-evaluation/specs/skill-evaluation/spec.md": "7adef7e649653bcd9a78bd17df0e808342a2e2f7fde0a7b9758253c4b7feb40c",
-    "openspec/changes/archive/2026-09-14-skill-evaluation/tasks.md": "1336b637ac8c96a189d2ff8a27aa767c62ba476f30cdcfe91f6460eda45ff646",
+    "openspec/changes/archive/2026-09-14-skill-evaluation/tasks.md": "ba075355c9ed5d4c9c203a204787cb3d604e98a3e4dfcf23f4aaf64cd981ec6a",
     "openspec/specs/skill-evaluation/spec.md": "36d643a82dc7d5a556d77cf10e11c7a8fb961cd4548c9c62ec4b50f45ece99de",
     "pyproject.toml": "57b5a7f4ea777185ab5df4b34c4117a190d41434e1e236b38735987c96ccc529",
     "scripts/check_generated.py": "2a5e65cb653c0cf9b44dc34765a6d2d4affcfda9b310231a2abed4b3de82771a",
