@@ -94,7 +94,7 @@
   ],
   "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "c2569bf390931dc27111549b38e5c38ce4ed6528cd5a518fb34e4cc0b311ed11",
+  "snapshot": "116173d9adcd4ebac7ffdfa9509ef7d9c3a0474e4142dd747a81045a10166bc6",
   "sources": {
     ".agents/skills/spec-from-prd/SKILL.md": "14722e17cd63f16390e6af09a7da96e2c9f4991c2aa2f1eb20b0078ca6aa6dfb",
     ".ai-dlc/agent-ownership.json": "65855140dba6f07500b9456bfd93c8587ba55a5c6a2d1535e07791371de13ac1",
@@ -110,7 +110,7 @@
     "openspec/changes/archive/2026-09-14-backend-capability-pack/design.md": "4611572cb660d0595ba9ad8470008fc41e7a0862c7d6dca55600610554fc631d",
     "openspec/changes/archive/2026-09-14-backend-capability-pack/proposal.md": "4ff2ee5879eabb7fd0145c7c9c438109d471cdba0a900e257e452f8436831603",
     "openspec/changes/archive/2026-09-14-backend-capability-pack/specs/backend-capability-pack/spec.md": "e435f2c7a9bf27409317ecbd5421ca0a812e1de7dff2561440ae7c569dd24053",
-    "openspec/changes/archive/2026-09-14-backend-capability-pack/tasks.md": "6eb9abb7242be75919c37be3108f9aacc5d648f810db720d991c11a6df3b61a7",
+    "openspec/changes/archive/2026-09-14-backend-capability-pack/tasks.md": "6728ae5368e6ee59583640f49f7b680d7d2710934045d5361dc838ffcb80fb06",
     "openspec/specs/backend-capability-pack/spec.md": "45fc3ca17f9953edf4aa15f24c1a4176e84bceaf179fdb10f35ab58fd85e6a3e",
     "project-templates/copier.yml": "17bcc277107d87c368c4fe5f87de0a5a42ff0b82ef152a7a553a26a51fcc3fee",
     "project-templates/project/.mise.toml.jinja": "f000c769b4c237f8b2fe503f092f17ab45d18aba251f478f29b061a48b89d002",
