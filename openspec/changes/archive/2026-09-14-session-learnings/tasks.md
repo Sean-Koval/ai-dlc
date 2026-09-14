@@ -9,6 +9,6 @@
 - [x] 2.2 Document `--learning` and the recall in both tool maps.
 
 ## Verification and delivery
-- [ ] 9.1 Record documentation-impact dispositions for the change.
-- [ ] 9.2 Validate this OpenSpec change and run required project checks.
+- [x] 9.1 Record documentation-impact dispositions for the change.
+- [x] 9.2 Validate this OpenSpec change and run required project checks.
 Integration follow-up: the maintainer completes fresh-base PR review, merge, merged-revision CI receipts, and `ai-dlc work finish`. These post-review actions are not implementation qualification evidence.

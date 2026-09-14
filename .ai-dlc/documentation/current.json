@@ -114,7 +114,7 @@
   ],
   "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "391e9222b7edaa1b1bcd4be1e11da365ffffbb990f841dcf2c8bd7bc7e6b6ea4",
+  "snapshot": "5e61654c04d5f4340342bff38169e7f286c4598fb7f2042ae241510b6cb2450d",
   "sources": {
     ".agents/skills/day-end/SKILL.md": "1580b5be8ecfdeb4a3f52e3d73bbf747dc10b3bf0ca57a81727934096431f0ab",
     ".agents/skills/day-start/SKILL.md": "9535c7de7de2ad869bc9de93c498c909246948cf43acd2c2d9cc4f2f5e49e77e",
@@ -135,7 +135,7 @@
     "openspec/changes/archive/2026-09-14-session-learnings/design.md": "4afe6ae7175dcfd8808edea6958a3a33f1de9ac8e7101217f94f579de914eb31",
     "openspec/changes/archive/2026-09-14-session-learnings/proposal.md": "42ed876a65f8acea211ffd1acee07f7c73a95d2bcfc83680f38aeb6d41f73589",
     "openspec/changes/archive/2026-09-14-session-learnings/specs/session-learnings/spec.md": "a7dc17736ccb8b732b579b5c9fb091b1a42a94d5bca74f954f5051b441b50ce7",
-    "openspec/changes/archive/2026-09-14-session-learnings/tasks.md": "265bc5a841d32f6af6c1598d2ced8075a2b054aeca71178629a425dc0ae19ee1",
+    "openspec/changes/archive/2026-09-14-session-learnings/tasks.md": "476e1a5b357b76e1f7ec5cc1e6acfa6de38e1ff407e1d2c7afb0abe77df992a5",
     "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
     "openspec/specs/session-learnings/spec.md": "d6d288fc9b8aee72b85b56b30e2cb88dcb4acd2530c3b3b7c0e31854492cc89b",
     "project-templates/project/docs/workflows/tool-map.md": "030aef448cf4df0279c1a0e6f3b9f8c5f6f6cc71bee172cca90f3196e5368b6e",
