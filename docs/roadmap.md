@@ -65,7 +65,7 @@ PR [#28](https://github.com/Sean-Koval/ai-dlc/pull/28) merged at
 `6c0a732`; this is head evidence, not a claim of exact merged-revision receipts
 or gated work finish. It delivered optional documentation navigation, local portals
 and read-only catalog checks. See the [DK-01–07 reconciliation](verification/project-knowledge-repair.md)
-and [documentation baseline](verification/documentation-baseline.json).
+and [documentation baseline](archive/verification/documentation-baseline.json).
 
 The next approved increment, [issue #29](https://github.com/Sean-Koval/ai-dlc/issues/29),
 reconciles documentation authority and lifecycle.

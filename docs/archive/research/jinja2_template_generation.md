@@ -6,7 +6,7 @@
 Status: historical example, retained for provenance. The `cli/` and `schemas/`
 links below refer to the earlier described layout, which is absent from the current
 Python implementation. They are not operational navigation; see the
-[documentation baseline](../../verification/documentation-baseline.json) for their
+[documentation baseline](../verification/documentation-baseline.json) for their
 explicit dispositions and [current architecture](../../architecture.md) for implementation.
 
 This document explains how to use the Jinja2 Template Generation feature, which is implemented following a :ArchitecturalPattern:GeneratorPattern. This feature allows users to generate customized Jinja2 templates based on their specific needs and available data schemas.

@@ -59,6 +59,12 @@ The following source/fixture reconciliation was performed against the merged sou
 in this checkout. A fresh focused run of `tests/test_project_documents.py`,
 `tests/test_vault_link.py` and `tests/test_knowledge.py` passed all 46 tests.
 
+Module paths in the table below are the ones in force when this reconciliation was
+recorded. They have since moved: `src/ai_dlc/moc.py`, `document_files.py`,
+`vault_link.py`, `knowledge.py` and `documents.py` live under
+`src/ai_dlc/documentation/`, and `src/ai_dlc/templates.py` is
+`src/ai_dlc/setup/templates.py`. The evidence is unchanged.
+
 | Requirement | Delivered source and evidence | Boundary |
 | --- | --- | --- |
 | DK-01 | `src/ai_dlc/moc.py:plan_documents`; existing layout and missing-spec navigation regressions | Navigation preserves canonical files; it does not invent architecture |

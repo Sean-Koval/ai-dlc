@@ -35,7 +35,7 @@ history; their old instructions are not current task assignments. Template resea
 in [template research](archive/research/) and the [historical generation prompt](archive/research/jinja2_template_generation.md)
 are supporting material, not current Python implementation contracts.
 
-The original [September 10 baseline and dispositions](verification/documentation-baseline.json)
+The original [September 10 baseline and dispositions](archive/verification/documentation-baseline.json)
 accounts for every initial docs-check finding, including retained historical material,
 unknown factual review and illustrative missing paths. It records source hashes,
 responsible roles and reasons without copying document bodies. That dated inventory retains the pre-cleanup paths and hashes; it is not a live

@@ -26,6 +26,8 @@ receipt_artifacts = [
   "ai-dlc-receipt-macos-15",
 ]
 
+# Linear sandbox retained for the five finished work records bound to tracker = "linear"
+# and the recorded Linear onboarding qualification; the active tracker role is github-issues.
 [providers.linear]
 token_env = "LINEAR_SANDBOX_TOKEN"
 team_id = "47b701a4-d6a6-4d27-85fc-6dd42030ddd3"

@@ -17,6 +17,8 @@ specs = "openspec"
 scm = "github"
 knowledge = "obsidian"
 
+# Historical planning record: no tracker item ever existed for this work; its outputs
+# live under docs/archive/planning/ and docs/design/. Disposition recorded 2026-09-14.
 [artifacts]
 plan = "docs/archive/planning/2026-09-06-provider-toolsets.md"
 requirements = "docs/design/provider-toolsets-prd.md"
