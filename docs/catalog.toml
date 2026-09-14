@@ -719,6 +719,16 @@ owner = "repository-maintainers"
 status = "draft"
 
 [[documents]]
+id = "repo-verification-backend-contracts"
+path = "docs/verification/backend-contracts.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "active"
+code_paths = ["project-templates/project/ai-dlc.toml.jinja", "project-templates/project/scripts/check_api_contract_drift.py"]
+requirements = ["openspec/specs/backend-capability-pack/spec.md"]
+verification_paths = ["tests/test_backend_capability.py"]
+
+[[documents]]
 id = "repo-runbooks-machine-enrollment"
 path = "docs/runbooks/machine-enrollment.md"
 kind = "runbook"

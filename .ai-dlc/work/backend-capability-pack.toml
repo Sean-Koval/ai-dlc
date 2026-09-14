@@ -24,7 +24,7 @@ scm = "github"
 deploy = "none"
 
 [artifacts]
-spec = "openspec/changes/backend-capability-pack"
+spec = "openspec/changes/archive/2026-09-14-backend-capability-pack"
 tracker = "80"
 branch = "work/backend-capability-pack"
 

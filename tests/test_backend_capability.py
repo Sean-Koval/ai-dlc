@@ -60,12 +60,15 @@ def test_python_drift_skips_absent_or_other_framework_app(tmp_path):
     assert "skipped" in run_drift(tmp_path).stdout
     pkg = tmp_path / "src/service"
     pkg.mkdir()
-    (pkg / "app.py").write_text('raise RuntimeError("not FastAPI; must not import")\n')
+    (pkg / "app.py").write_text(
+        'class OtherApp:\n    def openapi(self):\n        raise RuntimeError("not FastAPI")\napp = OtherApp()\n'
+    )
     result = run_drift(tmp_path)
     assert result.returncode == 0 and "skipped" in result.stdout
 
 
-def test_python_drift_compares_contract_and_reports_import_failure(tmp_path):
+@pytest.mark.parametrize("export", ["direct", "reexport", "factory"])
+def test_python_drift_compares_contract_and_reports_import_failure(tmp_path, export):
     adopt(tmp_path, preset="python", capabilities=["backend"], initialize=True, apply=True)
     # A bounded fixture supplies only the FastAPI surface used by the drift script.
     source = tmp_path / "src"
@@ -76,6 +79,14 @@ def test_python_drift_compares_contract_and_reports_import_failure(tmp_path):
     pkg.mkdir()
     app = pkg / "app.py"
     app.write_text("from fastapi import FastAPI\napp = FastAPI()\n")
+    if export == "reexport":
+        (pkg / "implementation.py").write_text(app.read_text())
+        app.write_text("from .implementation import app\n")
+    elif export == "factory":
+        (pkg / "implementation.py").write_text(
+            "from fastapi import FastAPI\ndef create_app():\n    return FastAPI()\n"
+        )
+        app.write_text("from .implementation import create_app\napp = create_app()\n")
     contract = tmp_path / "docs/api/openapi.yaml"
     before = contract.read_bytes()
     result = run_drift(tmp_path)

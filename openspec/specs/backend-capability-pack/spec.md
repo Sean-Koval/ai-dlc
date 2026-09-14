@@ -1,5 +1,8 @@
-## ADDED Requirements
+# backend-capability-pack Specification
 
+## Purpose
+TBD - created by archiving change backend-capability-pack. Update Purpose after archive.
+## Requirements
 ### Requirement: BE-01 Pinned API contract validation
 The optional backend capability SHALL render docs/api/openapi.yaml as a valid OpenAPI 3.1 document with one health endpoint and register it in the documentation catalog. It SHALL add a required api-contract check using an exact pinned validator version for every supported preset. Setup SHALL prepare the validator; checks SHALL run offline after setup and SHALL report malformed contract failures. Capability omission SHALL preserve existing scaffolds. HTTP interface guidance SHALL require updating the contract in the same PR and referencing it as artifacts.contract.
 
@@ -25,3 +28,8 @@ Python backend projects SHALL include api-contract-drift. It SHALL skip cleanly 
 #### Scenario: Application schema changed
 - **WHEN** the FastAPI application's OpenAPI object differs from the committed contract
 - **THEN** drift validation fails and prints the changed contract without modifying files
+
+#### Scenario: Application is re-exported or created by a factory
+- **WHEN** the supported app.py exposes a FastAPI app imported or constructed through another module
+- **THEN** drift validation compares that exported instance regardless of where FastAPI was imported
+
