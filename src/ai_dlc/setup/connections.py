@@ -377,20 +377,3 @@ def connect_provider(root: Path, *, name: str, environ: Mapping[str, str], selec
             raise ValueError("Saving a connection plan requires every declared selection")
         result["plan_file"] = save_exclusive_plan(root, plan_file, result["plan"])
     return result
-
-
-def discover_connection(root, provider_id, *, environ):
-    """Discover resources or the provider's existing default preview, without saving."""
-    return connect_provider(root, name=provider_id, environ=environ)
-
-
-def plan_connection(root, provider_id, selections, *, environ, plan_file=None):
-    return connect_provider(
-        root, name=provider_id, environ=environ, plan_file=plan_file, **selections
-    )
-
-
-def apply_connection(root, provider_id, plan_file, *, environ):
-    return connect_provider(
-        root, name=provider_id, environ=environ, plan_file=plan_file, apply=True
-    )

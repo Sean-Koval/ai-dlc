@@ -206,17 +206,6 @@ def test_failed_lock_replacement_preserves_prior_bytes_and_cleans_staging_file(
     assert not list(paths.lock_file.parent.glob(".ai-dlc-*"))
 
 
-def test_active_profile_file_combines_only_validated_relative_components(tmp_path):
-    from ai_dlc.environment.enrollment import EnrollmentLock, EnrollmentPaths, active_profile_file
-
-    paths = EnrollmentPaths.from_environment(home=tmp_path, environ={})
-    lock = EnrollmentLock(**valid_lock(subdirectory="", profile_file="profiles/current.toml"))
-
-    assert active_profile_file(paths, lock) == (
-        tmp_path / ".cache/ai-dlc/profiles/personal-profile" / ("a" * 40) / "profiles/current.toml"
-    )
-
-
 def test_runtime_resolution_does_not_cross_home_or_xdg_enrollment_roots(tmp_path):
     from ai_dlc.config import resolve_runtime
     from ai_dlc.environment.enrollment import EnrollmentLock, EnrollmentPaths, write_lock

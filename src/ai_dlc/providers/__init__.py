@@ -5,13 +5,10 @@ import importlib.machinery
 import importlib.metadata
 import importlib.util
 import json
-import math
 import os
-import queue
 import re
 import subprocess
 import sys
-import threading
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
@@ -33,27 +30,6 @@ def verify_artifact(path, expected):
     if not expected or hashlib.sha256(p.read_bytes()).hexdigest() != expected:
         raise ValueError(f"Provider artifact digest mismatch: {p}")
     return p
-
-
-def reject_unsafe_imports(files):
-    """Refuse import state that cannot be tied to the verified source closure.
-
-    Python providers requiring already imported third-party modules should use
-    the executable interface in a dedicated environment instead.
-    """
-    paths = {Path(file).resolve() for file in files}
-    for path in paths:
-        if path.suffix == ".py" and (
-            path.with_suffix(".pyc").exists()
-            or any((path.parent / "__pycache__").glob(path.stem + ".*.pyc"))
-        ):
-            raise ValueError(f"Unchecked Python bytecode may shadow verified source: {path}")
-    for module in tuple(sys.modules.values()):
-        origin = getattr(module, "__file__", None)
-        if origin and Path(origin).resolve() in paths:
-            raise ValueError(
-                "Python provider dependency already imported; use an isolated executable provider"
-            )
 
 
 class ExecutableProvider:
@@ -99,45 +75,6 @@ class ExecutableProvider:
 
     def append(self, path, body, operation_id):
         return self.invoke("append", {"path": path, "body": body, "operation_id": operation_id})
-
-
-class PythonProvider(ExecutableProvider):
-    """Bounded caller deadline; timed-out trusted code may still be executing.
-
-    Mutations therefore remain uncertain and must reconcile remote state.
-    """
-
-    def __init__(self, provider, *, timeout=30):
-        if not isinstance(timeout, (int, float)) or not math.isfinite(timeout) or timeout <= 0:
-            raise ValueError("Provider timeout must be positive and finite")
-        self.provider = provider
-        self.timeout = timeout
-
-    def invoke(self, operation, payload):
-        request = validate_request(operation, payload)
-        completed = queue.Queue(maxsize=1)
-
-        def call():
-            try:
-                if operation in {"current", "merged", "ci", "deployment", "append"}:
-                    result = getattr(self.provider, operation)(**request.payload)
-                else:
-                    result = self.provider.invoke(operation, request.payload)
-                completed.put((True, result))
-            except Exception as exc:  # noqa: BLE001 -- preserve provider errors across the worker boundary
-                completed.put((False, exc))
-
-        thread = threading.Thread(target=call, daemon=True)
-        thread.start()
-        try:
-            success, result = completed.get(timeout=self.timeout)
-        except queue.Empty as exc:
-            raise TimeoutError(
-                "Python provider deadline exceeded; operation outcome is uncertain"
-            ) from exc
-        if not success:
-            raise result
-        return validate_response(operation, result)
 
 
 def module_manifest(distribution, files, hashes):
