@@ -34,7 +34,7 @@ and GitHub, but they do not choose account, repository, or authorization.
 GitHub uses conventional `verify.yml` and `main` defaults unless overridden;
 the tracker has no fallback. Without a configured tracker or SCM role, project
 initialization, adoption, setup, checks, design, and documentation remain
-available, but publish/start/status/finish is not a usable end-to-end lifecycle.
+available, but publish/start/finish is not a usable end-to-end lifecycle.
 A missing specification role may deliberately use local OpenSpec when its
 artifacts exist; otherwise the work must be reviewed with
 `requires_spec = false`. Knowledge, deployment, and agent clients remain
