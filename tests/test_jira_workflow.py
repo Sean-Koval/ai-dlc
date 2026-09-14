@@ -40,6 +40,8 @@ def lifecycle(tmp_path):
     subprocess.run(
         ["git", "init", "-b", "work/one", str(tmp_path)], check=True, capture_output=True
     )
+    for key, value in [("user.name", "Fixture"), ("user.email", "fixture@example.invalid")]:
+        subprocess.run(["git", "-C", str(tmp_path), "config", key, value], check=True)
 
     class SCM:
         allowed = False
