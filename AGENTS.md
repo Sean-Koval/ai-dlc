@@ -37,12 +37,12 @@ recovery and configuration boundaries. Mocked tests do not prove live platform
 qualification; consult [release gates](docs/release-verification.md). Do not
 publish packages or mutate remote services implicitly.
 
-<!-- ai-dlc:begin 259e2079bc0b8d8da359ca4238c281e10ab3f0446813ec8196b0c05bf0cf8a25 -->
+<!-- ai-dlc:begin dea193c6675691f5fa73d20f088cc8bdf6b1098e746b172d3f77b81e9f5ac61b -->
 # Shared project guidance
 
 Read ai-dlc.toml and the active .ai-dlc/work record before work.
 Use specification artifacts for implementation tasks and the tracker for priority/status.
-Finalize required specifications before review. Complete work through ai-dlc work finish.
+Finalize required specifications before review; archive OpenSpec changes on the delivery branch before merge with ai-dlc work archive. Complete work through ai-dlc work finish.
 Immediately before merge, update from the target branch and refresh base-bound evidence and checks.
 Finish from a checkout at the merge commit; when the target branch moved, use a temporary detached worktree.
 Store architecture, design, decisions and runbooks in docs/. Keep personal notes in knowledge.

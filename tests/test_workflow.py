@@ -2510,3 +2510,162 @@ def test_new_work_refuses_symlink_and_configuration_change_during_read(tmp_path)
     with pytest.raises(ValueError, match="configuration changed"):
         service.new("drift", tracker_reference="68")
     assert not (directory / "drift.toml").exists()
+
+
+def archive_service(tmp_path):
+    service, scm, git = started_service(tmp_path)
+    change = tmp_path / "openspec/changes/one"
+    (change / "specs/demo").mkdir(parents=True)
+    (change / "proposal.md").write_text("Proposal")
+    (change / "tasks.md").write_text("- [x] Implement")
+    (change / "specs/demo/spec.md").write_text("Delta")
+    canonical = tmp_path / "openspec/specs/demo/spec.md"
+    canonical.parent.mkdir(parents=True)
+    canonical.write_text("Original")
+    record = service.load("one")
+    record["requires_spec"] = True
+    record["artifacts"].update(spec="openspec/changes/one", plan="openspec/changes/one/tasks.md")
+    service.save(record)
+    git("add", "openspec", ".ai-dlc/work/one.toml")
+    git("commit", "-m", "specification")
+    return service, scm, git
+
+
+def fake_archive_cli(tmp_path, monkeypatch):
+    import json
+    import shutil
+    import subprocess
+
+    run = subprocess.run
+    calls = []
+
+    def execute(args, **kwargs):
+        if args[0] != "openspec":
+            return run(args, **kwargs)
+        calls.append(args)
+        source = tmp_path / "openspec/changes/one"
+        target = tmp_path / "openspec/changes/archive/2026-09-14-one"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.move(source, target)
+        (tmp_path / "openspec/specs/demo/spec.md").write_text("Promoted")
+        return subprocess.CompletedProcess(
+            args,
+            0,
+            json.dumps(
+                {
+                    "archive": {
+                        "change": "one",
+                        "archivedAs": target.name,
+                        "path": str(target),
+                        "specsUpdated": True,
+                    }
+                }
+            ),
+            "",
+        )
+
+    monkeypatch.setattr(subprocess, "run", execute)
+    return calls
+
+
+def test_archive_repoints_and_commits_only_its_files(tmp_path, monkeypatch):
+    from ai_dlc.work.workflow import validate_work_records
+
+    service, _, git = archive_service(tmp_path)
+    (tmp_path / "other.txt").write_text("Unrelated staged content")
+    git("add", "other.txt")
+    calls = fake_archive_cli(tmp_path, monkeypatch)
+    result = service.archive("one")
+    assert calls == [["openspec", "archive", "one", "--yes", "--json"]]
+    assert result["promoted_specs"] == ["openspec/specs/demo/spec.md"]
+    record = service.load("one")
+    assert record["artifacts"]["spec"] == "openspec/changes/archive/2026-09-14-one"
+    assert record["artifacts"]["plan"] == "openspec/changes/archive/2026-09-14-one/tasks.md"
+    assert git("log", "-1", "--format=%s") == "docs(specs): archive one"
+    assert git("diff", "--cached", "--name-only") == "other.txt"
+    assert "other.txt" not in git("show", "--name-only", "--format=", "HEAD")
+    assert validate_work_records(tmp_path)["valid"]
+
+
+def test_archive_refuses_dirty_promoted_spec_or_foreign_change(tmp_path, monkeypatch):
+    service, _, _ = archive_service(tmp_path)
+    calls = fake_archive_cli(tmp_path, monkeypatch)
+    (tmp_path / "openspec/specs/demo/spec.md").write_text("Unrelated local change")
+    with pytest.raises(ValueError, match="dirty"):
+        service.archive("one")
+    assert not calls
+    record = service.load("one")
+    record["artifacts"]["spec"] = "openspec/changes/someone-else"
+    service.save(record)
+    with pytest.raises(ValueError, match="own active"):
+        service.archive("one")
+    assert not calls
+
+
+def test_specification_status_is_local_and_pr_warns(tmp_path):
+    service, scm, _ = archive_service(tmp_path)
+
+    def no_tracker(*args):
+        raise AssertionError("Status cannot call the network")
+
+    original = scm.invoke
+    scm.invoke = no_tracker
+    assert service.status("one")["specification"] == "active change, archive before merge"
+    record = service.load("one")
+    record["artifacts"]["spec"] = "openspec/changes/archive/2026-09-14-one"
+    service.save(record)
+    assert service.status("one")["specification"] == "archived"
+    record["artifacts"]["spec"] = "openspec/changes/one"
+    service.save(record)
+    scm.invoke = original
+    assert "archive before merge" in service.pr("one")["specification"]
+
+
+def test_unarchived_specification_gate_names_the_remedy(tmp_path):
+    from ai_dlc.providers.openspec import OpenSpecProvider
+
+    service, _, _ = archive_service(tmp_path)
+    with pytest.raises(ValueError, match="Run `ai-dlc work archive one`") as caught:
+        OpenSpecProvider(tmp_path).current(service.load("one"))
+    assert "work link one pr <url>" in str(caught.value)
+
+
+def test_archive_invalid_json_does_not_repoint_record(tmp_path, monkeypatch):
+    import subprocess
+
+    service, _, _ = archive_service(tmp_path)
+    before = (tmp_path / ".ai-dlc/work/one.toml").read_bytes()
+    original = subprocess.run
+
+    def invalid(args, **kwargs):
+        if args[0] == "openspec":
+            return subprocess.CompletedProcess(args, 0, "invalid JSON", "")
+        return original(args, **kwargs)
+
+    monkeypatch.setattr(subprocess, "run", invalid)
+    with pytest.raises(RuntimeError, match="inspect the active change"):
+        service.archive("one")
+    assert (tmp_path / ".ai-dlc/work/one.toml").read_bytes() == before
+
+
+def test_archive_refuses_symlinked_source_before_invocation(tmp_path, monkeypatch):
+    service, _, _ = archive_service(tmp_path)
+    source = tmp_path / "openspec/changes/one"
+    (source / "external").symlink_to(tmp_path / "elsewhere")
+    calls = fake_archive_cli(tmp_path, monkeypatch)
+    with pytest.raises(ValueError, match="symlink"):
+        service.archive("one")
+    assert calls == []
+
+
+def test_work_status_cli_is_offline_and_shows_archive_warning(tmp_path, monkeypatch):
+    from typer.testing import CliRunner
+
+    from ai_dlc.cli import app
+    from ai_dlc.work.workflow import WorkService
+
+    service, _, _ = archive_service(tmp_path)
+    monkeypatch.setattr(WorkService, "from_project", lambda *args, **kwargs: service)
+    result = CliRunner().invoke(app, ["work", "status", "one", "--root", str(tmp_path)])
+    assert result.exit_code == 0, result.output
+    assert "active change, archive before merge" in result.output

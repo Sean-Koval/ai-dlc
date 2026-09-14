@@ -1,0 +1,29 @@
+schema = 1
+id = "work-archive"
+title = "Archive work specifications on the delivery branch"
+scope = "Add provider-backed work archive, local specification status, PR warnings and an actionable finish remedy without weakening merged-revision gates."
+requires_spec = true
+spec_reason = "Adds archive mutation and changes visible local status and finish guidance."
+acceptance = [
+    "Archive repoints the record and contained plan and commits the moved files plus promoted specs.",
+    "Local work status distinguishes active and archived references without network calls.",
+    "An unarchived specification finish failure names work archive and follow-up PR remedies.",
+    "Tests fake the OpenSpec process and cover scope, status, record updates and gate reasons.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "TR-04",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/work-archive"
+tracker = "74"
+branch = "codex/work-archive"
