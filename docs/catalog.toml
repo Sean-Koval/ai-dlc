@@ -64,10 +64,24 @@ status = "active"
 
 [[documents]]
 id = "delivery-handoff"
-path = "docs/handoffs/framework-delivery.md"
-kind = "navigation"
+path = "docs/archive/handoffs/framework-delivery.md"
+kind = "reference"
 owner = "repository-maintainers"
-status = "active"
+status = "archived"
+
+[[documents]]
+id = "roadmap-ledger-2026-09"
+path = "docs/archive/planning/2026-09-roadmap-ledger.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
+
+[[documents]]
+id = "release-verification-history"
+path = "docs/archive/verification/release-history.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "archived"
 
 [[documents]]
 id = "historical-provider-handoff"
