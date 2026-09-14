@@ -49,7 +49,7 @@
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "b40d5740a0deed76fd6b3cd7e2e5d2fff02000f8ec7144b2061d5c0612071dba",
+  "snapshot": "566d86937d4762d4cc735e22c593bd960c2900f93ff9fdd238869e2825775f05",
   "sources": {
     ".ai-dlc/work/toml-editor.toml": "ae46cba4042d736a586d9bfcc92f269c3a8f3b06d37a1c1f196638da2d0bc649",
     ".github/workflows/release.yml": "7ddd05d4f6d18ce5f9db254c5361591fdfb8810eb8604db07def99fff8ab30b6",
@@ -70,7 +70,7 @@
     "pyproject.toml": "57b5a7f4ea777185ab5df4b34c4117a190d41434e1e236b38735987c96ccc529",
     "scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
     "scripts/check_generated.py": "845e3ac89acb10720eab193712430a09b767272862a02369f391a982da6e7267",
-    "scripts/check_layout.py": "26fde5445108c55e36a1ea3083f5dc01a71ecfcd9b1d38542c515d86afe5ab4d",
+    "scripts/check_layout.py": "38d3c2664a2a4eb5155573948f64a948a690d5dc7f68b911a36f402acad0c801",
     "scripts/qualify_framework.py": "01dd9e6acbe14e740f068662aa539e9a7ed0ba57ab97e9457e0a05d968a25fb6",
     "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
     "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
