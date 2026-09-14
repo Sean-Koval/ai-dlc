@@ -1,0 +1,30 @@
+schema = 1
+id = "session-learnings"
+title = "Capture session learnings at day-end and finish, and recall them at work start"
+scope = "Store an optional learning note at work finish through the knowledge provider's idempotent note operation, recall matching learning notes at work start and session start, count session friction locally in the hook and remind at the stop event, and point the day-end, handoff and day-start skills at the note format. Deliver the approved requirements using existing AI-DLC boundaries."
+requires_spec = true
+spec_reason = "Adds an observable finish option, a recall result on work start and the session-start hook, and a threshold-gated stop reminder."
+acceptance = [
+    "Finishing with a learning SHALL store it once even when finish is retried; finishing without one SHALL still complete.",
+    "work start on a record whose title words match a stored learning SHALL print that path; a project with no vault SHALL print nothing and SHALL NOT fail.",
+    "The stop hook friction message SHALL appear only above the threshold; tests SHALL cover both sides.",
+    "No new network calls SHALL be added; the knowledge provider SHALL remain the only vault writer.",
+    "ai-dlc project check --required SHALL pass.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "SL-01",
+    "SL-02",
+    "SL-03",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/session-learnings"
