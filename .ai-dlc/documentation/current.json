@@ -49,9 +49,9 @@
   ],
   "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "4f83c7de217a89f1828c0925cd996f1fee94b933cd42051c0d0bbc5493af943c",
+  "snapshot": "474c21ebb2f906e4622c6430de2dbaf1767da144dba07cccbf95c267989bc842",
   "sources": {
-    ".ai-dlc/work/skill-evaluation.toml": "98b4831df09d7307c7ecd4cf0da6184191f81e59caa71538fac5159ef2c55b04",
+    ".ai-dlc/work/skill-evaluation.toml": "3dfba4d7344db6ed2cfe9f0ec3c62f2d5feab965c4997873c5154b0fe569f1d1",
     "agents/evaluation-scenarios.json": "bf523609610234800a9b2356fbcf4ecbf86f840e5ad7c3d1f71cde7409672fb0",
     "agents/evaluation.toml": "712f6d68be0ce1c53a190717e70971d379775ec2812a0ed2e76abf63067541df",
     "docs/architecture.md": "8bafa96f47da57bde830616401e193107eea00298d89d3ae8ee633a1dfc30604",
