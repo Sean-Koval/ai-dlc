@@ -28,27 +28,27 @@
     },
     {
       "outcome": "updated",
-      "reason": "Reviewed and archived the team-source requirements, design and implementation tasks with the promoted capability specification; final verification task remains pending this run.",
+      "reason": "Reviewed and archived the team-source requirements, design and completed implementation tasks with the promoted capability specification; compatibility repairs preserve the specified behavior.",
       "target": "openspec/changes/archive/2026-09-14-team-sources/design.md"
     },
     {
       "outcome": "updated",
-      "reason": "Reviewed and archived the team-source requirements, design and implementation tasks with the promoted capability specification; final verification task remains pending this run.",
+      "reason": "Reviewed and archived the team-source requirements, design and completed implementation tasks with the promoted capability specification; compatibility repairs preserve the specified behavior.",
       "target": "openspec/changes/archive/2026-09-14-team-sources/proposal.md"
     },
     {
       "outcome": "updated",
-      "reason": "Reviewed and archived the team-source requirements, design and implementation tasks with the promoted capability specification; final verification task remains pending this run.",
+      "reason": "Reviewed and archived the team-source requirements, design and completed implementation tasks with the promoted capability specification; compatibility repairs preserve the specified behavior.",
       "target": "openspec/changes/archive/2026-09-14-team-sources/specs/team-sources/spec.md"
     },
     {
       "outcome": "updated",
-      "reason": "Reviewed and archived the team-source requirements, design and implementation tasks with the promoted capability specification; final verification task remains pending this run.",
+      "reason": "Reviewed and archived the team-source requirements, design and completed implementation tasks with the promoted capability specification; compatibility repairs preserve the specified behavior.",
       "target": "openspec/changes/archive/2026-09-14-team-sources/tasks.md"
     },
     {
       "outcome": "updated",
-      "reason": "Reviewed and archived the team-source requirements, design and implementation tasks with the promoted capability specification; final verification task remains pending this run.",
+      "reason": "Reviewed and archived the team-source requirements, design and completed implementation tasks with the promoted capability specification; compatibility repairs preserve the specified behavior.",
       "target": "openspec/specs/team-sources/spec.md"
     },
     {
@@ -59,7 +59,7 @@
   ],
   "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "f8ba26bb3ca3004e54cdc7a197721c08a2320cb4692a5eec58d5e69b5ab11b2e",
+  "snapshot": "64ee92666168e3dd7e3f4ec08edf37014bc88385aaa478b989117048d6609ab9",
   "sources": {
     "docs/architecture.md": "a726bbe6b412f8f55683fc59517d29f7d580c97a9d23b6f032f9522bc55a655c",
     "docs/catalog.toml": "670dbede7fce8375e7e555fb0edcae5c6eddac44218d9df5fe701c0a2274bdc2",
@@ -69,15 +69,15 @@
     "openspec/changes/archive/2026-09-14-team-sources/design.md": "9afd82120d5ee3b909807bd42a49e6f8cf4bae51ae0f237c8cd15d4de6559578",
     "openspec/changes/archive/2026-09-14-team-sources/proposal.md": "8f88065ea8a80accc5018066c063602440049886e1c2c11af59a0539d6b30afb",
     "openspec/changes/archive/2026-09-14-team-sources/specs/team-sources/spec.md": "382268926a4b4abbefad34df409752359ef38f2c6e71d145855564e5a465defe",
-    "openspec/changes/archive/2026-09-14-team-sources/tasks.md": "c3c4cb60cd0b84a8cd0f8016f1404a9892a59c1132678eca39299a6c6e0a9529",
+    "openspec/changes/archive/2026-09-14-team-sources/tasks.md": "2aa1cc7187365e307d34e70131ff53bfd37cf0caac3cd225315dd9e10526aabd",
     "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
     "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
     "openspec/specs/documentation-impact-workflow/spec.md": "4276be0854842fecb781efb90ef5f1789b4f7e4c652904e11c5d0c705d457233",
     "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
     "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
     "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
-    "openspec/specs/team-sources/spec.md": "238d2f78ef8b98e78fa77f9c7042012273bcc3df64af1acc6397cca324c67571",
-    "profiles/example/ai-dlc-profile.toml": "fd60bfa4c9ad4baece64814c5335854310356fa12271f4fc3da74684d479d81d",
+    "openspec/specs/team-sources/spec.md": "5a4f9a8da322cce3cb0d4d6e69e6cea16a4d787154d9ebac12fef0a21de187a3",
+    "profiles/example/ai-dlc-profile.toml": "29b58a995e46b38ac75e5db5756e766e6b130f26e162448fc41fee898e7ff01e",
     "pyproject.toml": "3f7860a5946dc0fe46dc8675ec62854676e1c4207195575c123a39af19d5f368",
     "scripts/check_generated.py": "2a5e65cb653c0cf9b44dc34765a6d2d4affcfda9b310231a2abed4b3de82771a",
     "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
@@ -89,7 +89,7 @@
     "src/ai_dlc/cli.py": "be00f7a7c8e8f7b9caa0a65cb386af48bcbbc52d2ccd999b560a5bb0665eea94",
     "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
     "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
-    "src/ai_dlc/config.py": "5b74198d9cd3b24d936df79985abd80ad9df1fe50684dffbdc6b75d3d2deffb7",
+    "src/ai_dlc/config.py": "dd596570054e3f455b90dc5cea2a86c97175b2c4ec4243328755dc1884ececc1",
     "src/ai_dlc/conformance.py": "9d18cdbf21aa8f9889d880729c368d9567f32f83c066693dceb06ce6549b6082",
     "src/ai_dlc/contracts.py": "e2202d26b4815674bde05fc1190fbaedfe7cabdf6d8c913a721d1f0b53619d1e",
     "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
