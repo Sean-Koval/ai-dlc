@@ -49,7 +49,7 @@
   ],
   "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "777ac95a259a5798eca63a14a3f7de75632a279d5bbb4468bf5287d8bd257488",
+  "snapshot": "a53d5d40e273bedcd4795222f3dbd3351193050d6968a7e306633aed425244c8",
   "sources": {
     ".ai-dlc/work/github-operation-budget.toml": "fe940a657498dca8f24b9f737220d931bd2cf43a57afe5248f077b7ad5f80fd6",
     "docs/architecture.md": "8bafa96f47da57bde830616401e193107eea00298d89d3ae8ee633a1dfc30604",
@@ -58,7 +58,7 @@
     "openspec/changes/archive/2026-09-14-github-operation-budget/design.md": "72770b4951344df77f7cb4f24f017d0c41900b693e30d7849cd4f8f74086e6d5",
     "openspec/changes/archive/2026-09-14-github-operation-budget/proposal.md": "36041f75cce099dedf8a391a15ab54b2a8dbfb6e3c2f9e7bc910521889167bb1",
     "openspec/changes/archive/2026-09-14-github-operation-budget/specs/github-operation-budget/spec.md": "975330d0a33ef705f2c3300a449ecbf2e9a67d9beef4003c9c9d5f898d971e18",
-    "openspec/changes/archive/2026-09-14-github-operation-budget/tasks.md": "1632ea2b88bfc42c98434c5cc7bf1a9d8a7cbf9b2e8a5a874ca083f07668b7d8",
+    "openspec/changes/archive/2026-09-14-github-operation-budget/tasks.md": "3073a6ef9cf7e846d84e1aa1686b6f6a3ea642205735e70b64c3efcbf0dc7326",
     "openspec/specs/github-operation-budget/spec.md": "ef95a7bb2f2176a7e3e2e161d0ad375cd30f27b3f8c04645fd3f9f30ed706215",
     "pyproject.toml": "57b5a7f4ea777185ab5df4b34c4117a190d41434e1e236b38735987c96ccc529",
     "scripts/check_generated.py": "2a5e65cb653c0cf9b44dc34765a6d2d4affcfda9b310231a2abed4b3de82771a",
