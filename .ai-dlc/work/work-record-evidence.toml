@@ -23,7 +23,7 @@ scm = "github"
 deploy = "none"
 
 [artifacts]
-spec = "openspec/changes/work-record-evidence"
+spec = "openspec/changes/archive/2026-09-14-work-record-evidence"
 tracker = "75"
 branch = "work/bootstrap-runtime"
 
