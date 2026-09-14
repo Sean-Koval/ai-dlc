@@ -71,7 +71,7 @@ AI-DLC now opts into the documentation manifest check. Historical exemptions and
 current dispositions are explicit reviewed JSON under `.ai-dlc/documentation/`.
 Those records bind source bytes and the selected base; they do not prove the
 reviewer's semantic judgment. Fresh project adoption does not enable this gate
-automatically. CI may independently pin the comparison using `docs-gate --base`.
+automatically. CI may independently pin the comparison using `docs gate --base`.
 
 The fresh native Claude structured rerun passed current-source/citation validation:
 three documents reviewed, four findings, no omitted bodies. No source edits or
@@ -87,7 +87,7 @@ changing only the evidence's base cannot bypass the intended CI comparison.
 That pin does not make a passing pull request check current. PR #44 passed against
 `2b2bd65`; PR #43 then merged, and #44 merged without fresh checks. The run for
 merge commit `a53dee4` compared against `059f1df` and failed with an unknown-target
-error, although the merged tree matched the PR head. Replaying `docs-gate` on
+error, although the merged tree matched the PR head. Replaying `docs gate` on
 `a53dee4` locally reproduced both outcomes. The gate now reports the base mismatch
 with both commits, recording refuses a base the checkout lacks, and workflow
 guidance requires updating and re-recording before merge. The replay and regression
@@ -155,7 +155,7 @@ manifest check was unavailable and is not claimed. Toolkit required checks and
 CI qualify the toolkit independently.
 
 The baseline harness could propose organization using general reasoning, but old
-`docs-init` offered only five navigation scaffolds and old `docs-review` could not
+`docs init` offered only five navigation scaffolds and old `docs review --report` could not
 prepare a packet without a catalog. This is evidence of a supported workflow, not
 a measured semantic-quality improvement. Review corrected both an inference from
 missing fixture code and an overly broad intermediate ADR move; this was a
@@ -169,7 +169,7 @@ access working tree based on `e23413d` against a disposable Git checkout and a
 separate local vault:
 
 - Mount setup exposed `docs/` and `openspec/` beneath `Projects/parcel/`.
-- Starting from the mounted architecture note, `project docs-search` returned the
+- Starting from the mounted architecture note, `docs search` returned the
   architecture and OpenSpec matches with canonical repository paths, source scopes
   and line numbers, and reported complete coverage. A declared `README.md` joined
   the results for that call only.

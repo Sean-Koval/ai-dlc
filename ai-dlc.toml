@@ -69,7 +69,7 @@ format = "uv run --locked --no-sync ruff format --check src tests scripts"
 lint = "uv run --locked --no-sync ruff check src tests scripts"
 types = "uv run --locked --no-sync pyright --pythonpath .venv/bin/python"
 test = "uv run --locked --no-sync pytest -q"
-documentation = "ai-dlc project docs-gate"
+documentation = "ai-dlc docs gate"
 work-records = "ai-dlc work validate --all"
 
 [agents]

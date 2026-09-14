@@ -406,7 +406,9 @@ class WorkService:
         repo = self.config.get("scm", {}).get("repository", str(self.root))
         identity = {"repository": repo, "work": work["id"], "action": action}
         if action != "work":
-            role = {"handoff": "knowledge", "pr": "scm"}.get(action, "tracker")
+            role = {"handoff": "knowledge", "learning": "knowledge", "pr": "scm"}.get(
+                action, "tracker"
+            )
             identity["provider"] = work["providers"].get(role)
             identity["binding"] = work["bindings"].get(role)
             if role == "knowledge":
@@ -634,7 +636,11 @@ class WorkService:
             transition = {"supported": True, "state": "in_progress"}
             if capabilities is None:
                 transition["verified"] = False
+        from ai_dlc.documentation.learnings import recall_work
+
+        recalled = recall_work(work, self.config, self.registry)
         return {
+            **({"learnings": recalled} if recalled else {}),
             "status": "started",
             "tracker": item,
             "branch": branch,
@@ -729,7 +735,7 @@ class WorkService:
         provider_id = work["providers"].get(role)
         return self.registry.get(provider_id) if provider_id else fallback()
 
-    def finish(self, work_id, handoff: str | None = None):
+    def finish(self, work_id, handoff: str | None = None, learning: str | None = None):
         work = self.load(work_id, True)
         gates = list(
             dict.fromkeys(
@@ -825,6 +831,14 @@ class WorkService:
                 work, "finish", "transition", {"reference": reference, "state": "closed"}
             )
         result = {"status": "completed", "work_id": work_id, "tracker": item, "evidence": evidence}
+        if learning is not None:
+            from ai_dlc.documentation.learnings import store_learning
+
+            store_learning(self, work, learning, result)
+        else:
+            result["learning_reminder"] = (
+                "Consider recording a learning with work finish --learning FILE."
+            )
         if handoff:
             operation_id = self.op_id(work, "handoff")
             payload = {"body": handoff}
@@ -851,6 +865,6 @@ class WorkService:
                 result["handoff"] = note
             except Exception as exc:  # noqa: BLE001 -- completion must survive any handoff-provider failure
                 self.journal.uncertain(operation_id)
-                result["status"] = "completed,handoff_pending"
+                result["status"] += ",handoff_pending"
                 result["handoff_error"] = str(exc)
         return result
