@@ -90,7 +90,9 @@ knowledge append`.
 | Project maintenance | `ai-dlc project sync`, `ai-dlc project rebind` | Performs staged Copier updates or previews/applies reviewed provider rebinding, including reviewed provider connection rebinding |
 | Project execution | `ai-dlc project setup`, `ai-dlc project check --required` | Runs declared setup and checks and emits verification receipts |
 | Agent configuration | `ai-dlc agents render` | Previews, applies, or verifies owned project/personal client configuration |
-| Work lifecycle | `ai-dlc work publish`, `ai-dlc work start`, `ai-dlc work pr`, `ai-dlc work status`, `ai-dlc work finish` | Reconciles tracker state, binds work to a branch, and enforces completion gates |
+| Work lifecycle | `ai-dlc work publish`, `ai-dlc work start`, `ai-dlc work pr`, `ai-dlc work finish` | Reconciles tracker state, binds work to a branch, and enforces completion gates |
+| Local work inspection | `ai-dlc work status` | Reads the local record and active/archived specification state without querying tracker status |
+| Specification finalization | `ai-dlc work archive` | Archives this work's OpenSpec change, promotes specifications, repoints the record and commits only affected files before merge |
 | Traceability | `ai-dlc work link` | Links PR, specification, branch, deployment, or tracker evidence and commits only the work record by default |
 | Provider inspection and connection | `ai-dlc provider list`, `ai-dlc provider test`, `ai-dlc provider connect` | Discovers adapters, runs isolated contract or authorized live checks, and previews/applies an explicitly reviewed provider connection |
 | Tracker migration | `ai-dlc project tracker-migrate` | Reviews a default-only switch or selected existing-ticket mappings with local recovery evidence |
