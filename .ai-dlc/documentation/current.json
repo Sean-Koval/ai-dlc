@@ -1,5 +1,5 @@
 {
-  "base": "ff946f23a882d237eb8ec857f64f15443ef1cf3f",
+  "base": "cace021895330ae74a5f344ed5630c25547001de",
   "decisions": [
     {
       "outcome": "reviewed-no-change",
@@ -10,11 +10,6 @@
       "outcome": "updated",
       "reason": "Documented separate bounded operation and request defaults, explicit override and normal reconciliation remedy.",
       "target": "docs/github-ticket-setup.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Work binding and lifecycle metadata for issue 117; no additional documentation impact.",
-      "target": ".ai-dlc/work/github-operation-budget.toml"
     },
     {
       "outcome": "no-impact",
@@ -49,10 +44,9 @@
   ],
   "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "a53d5d40e273bedcd4795222f3dbd3351193050d6968a7e306633aed425244c8",
+  "snapshot": "592cb0c82fdd720e9d22e553f7d2da0d40cce593c984e2fb8fc89e466dad855b",
   "sources": {
-    ".ai-dlc/work/github-operation-budget.toml": "fe940a657498dca8f24b9f737220d931bd2cf43a57afe5248f077b7ad5f80fd6",
-    "docs/architecture.md": "8bafa96f47da57bde830616401e193107eea00298d89d3ae8ee633a1dfc30604",
+    "docs/architecture.md": "a8aace94253d79c6384f2fe5b8c7b45f0f1b1b4da27b2d5bd6d1cd3da612a4e8",
     "docs/catalog.toml": "53ab3b989c9addd8dc18968f6471afa3a151834c6c95a77a789d8af13b41c22e",
     "docs/github-ticket-setup.md": "09e6a60879083aafb575c08eb4cad3eb89cc64047d7a7339c8b4ecf5d5f3b613",
     "openspec/changes/archive/2026-09-14-github-operation-budget/design.md": "72770b4951344df77f7cb4f24f017d0c41900b693e30d7849cd4f8f74086e6d5",
@@ -67,7 +61,7 @@
     "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
     "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
     "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
-    "src/ai_dlc/cli.py": "cdac16f2aa3123643eaf9299130cda6cc0ab3a6b72b3962b6af28d508d1bf508",
+    "src/ai_dlc/cli.py": "81fa466167ef31aafa167dc7285cf8096e4378ea0e874975a601671b00763704",
     "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
     "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
     "src/ai_dlc/config.py": "31677c538713aa41d3625ef9570f962ed8ee5d32bd4b5b3747437e8fd8fb9d02",
@@ -76,7 +70,7 @@
     "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
     "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
     "src/ai_dlc/documentation/document_files.py": "503a38d4df2a1f9d0832d083dcd420ebd1215389385293dd0605fc768c5dd320",
-    "src/ai_dlc/documentation/document_impact.py": "585114e1808a5557c00f261a873868a8a5a91baaff29c4b790a65d213dfd97a9",
+    "src/ai_dlc/documentation/document_impact.py": "f569053c4e42c2b03d39521e368f8fa3c0e559f20057088ccc02c24ccc5576b7",
     "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
     "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
     "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
@@ -86,8 +80,9 @@
     "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
     "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
     "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
-    "src/ai_dlc/documentation/workspace_diagnostics.py": "c53cc66966888078108662d6a307b00c8746c6a8f1d8098938529c65d5694b61",
+    "src/ai_dlc/documentation/workspace_diagnostics.py": "4a0ec1bf837e4a6a1d59482ebc86557edc2ae41cec843a8528b828b04f27422b",
     "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
+    "src/ai_dlc/environment/bootstrap.py": "d006353cb750ae2d57e591cf67629eab41cab1ddc6ed41d2fe60bcee60595bfd",
     "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
     "src/ai_dlc/environment/enrollment.py": "ab1f0e729ee497af2c0dea9faf81aba0b46d19deac102371b0f786dd4d4c4343",
     "src/ai_dlc/environment/machine.py": "491128faaec9634ec29ef0ebc9a38af3dfe25499e533543fcecf0734d2e50d1a",
@@ -120,9 +115,9 @@
     "src/ai_dlc/setup/github_project_setup.py": "55984de17559ba2d56b3b1c7483dabb8a6f05f1e773e8bd9d40437a2d30ee85e",
     "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
     "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
-    "src/ai_dlc/setup/project.py": "23909295adda10d5ecddb226aedae85c7db19db992e0fcf10a581c15bab5db13",
+    "src/ai_dlc/setup/project.py": "d5d69d608448111ff1e37ad5c5ae044c4b1e519530fad1085714e23b9c81c1aa",
     "src/ai_dlc/setup/provider_onboarding.py": "be120ad6e93c178f041fd338a45a5df7c75b9a30591725cfbf7800bca531045e",
-    "src/ai_dlc/setup/provision.py": "39958dca8c86512546ce17262d1df2338053de11895541540438f53cb9b5d2fc",
+    "src/ai_dlc/setup/provision.py": "6ec463fb9516aa01de58b482a8f14c3cc8c14585a25fa46e42b144d4c2fe5dfc",
     "src/ai_dlc/setup/readiness.py": "e0984a1f504ee87f3c4c1939624b34ccfe2fd6b7315df365166e95ff3b975d55",
     "src/ai_dlc/setup/rebind.py": "2458691c83e22c613ee3eb7541e103aee7264e7b23a78c17194135bc3d5a35c6",
     "src/ai_dlc/setup/templates.py": "bbfb4f26c103e3a5210fb8b97a6d843b615efac5f10ddedb28734f254061beb6",
