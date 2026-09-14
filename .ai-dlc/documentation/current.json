@@ -1,63 +1,144 @@
 {
-  "base": "03987da0bb47d9cdcc2ee62869b0821eaff89491",
+  "base": "db34303780719a363b443e9e8c8488fa1b7a2765",
   "decisions": [
     {
-      "outcome": "updated",
-      "reason": "The shared-module table now lists toml_edit.py alongside files.py and locking.py.",
-      "target": "docs/architecture.md"
-    },
-    {
       "outcome": "reviewed-no-change",
-      "reason": "Mapped harness and config sources only gained public names for existing helpers; the knowledge design is unaffected.",
-      "target": "docs/design/local-and-shared-knowledge.md"
-    },
-    {
-      "outcome": "reviewed-no-change",
-      "reason": "Workspace diagnostics behaviour is unchanged; only the test helper's import name moved to a public symbol.",
-      "target": "docs/runbooks/document-workspace-qualification.md"
-    },
-    {
-      "outcome": "reviewed-no-change",
-      "reason": "Mapped setup sources were renamed internally; the release procedure is unchanged.",
-      "target": "docs/runbooks/release-publication.md"
-    },
-    {
-      "outcome": "reviewed-no-change",
-      "reason": "Documentation workflow code is untouched; the impact is via shared code mappings only.",
+      "reason": "Only the workspace-diagnostics test moved its git helper import to tests/fixtures; the documented workflow is unchanged.",
       "target": "docs/verification/documentation-workflow.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Work record for this change, published as tracker item 96.",
-      "target": ".ai-dlc/work/toml-editor.toml"
+      "reason": "Work record for this change, published as tracker item 100.",
+      "target": ".ai-dlc/work/test-suite-hygiene.toml"
     },
     {
       "outcome": "no-impact",
-      "reason": "Symlinked-anchor test re-expressed through the provider connect command instead of a private loader.",
-      "target": "tests/test_provider_onboarding.py"
+      "reason": "The provider test kit now copies the shared jira and plane fixture modules its tests import.",
+      "target": "containers/provider-tests.Dockerfile"
     },
     {
       "outcome": "no-impact",
-      "reason": "Plain CLAUDE.md readiness test re-expressed through inspect_readiness instead of a private state helper.",
+      "reason": "Session-scoped distribution build fixture and the shared tracker checkout fixture.",
+      "target": "tests/conftest.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Shared test fixture module moved out of a sibling test module; no product behaviour.",
+      "target": "tests/fixtures/bundles.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Shared test fixture module moved out of a sibling test module; no product behaviour.",
+      "target": "tests/fixtures/enrollment.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Shared test fixture module moved out of a sibling test module; no product behaviour.",
+      "target": "tests/fixtures/git.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Shared test fixture module moved out of a sibling test module; no product behaviour.",
+      "target": "tests/fixtures/jira.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Shared test fixture module moved out of a sibling test module; no product behaviour.",
+      "target": "tests/fixtures/plane.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Shared test fixture module moved out of a sibling test module; no product behaviour.",
+      "target": "tests/fixtures/tracker.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Test module now imports shared fixtures from tests/fixtures instead of a sibling test module.",
+      "target": "tests/test_config.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "The kit-copy test mirrors the Dockerfile COPY destinations, including tests/fixtures.",
+      "target": "tests/test_conformance.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Test module now imports shared fixtures from tests/fixtures instead of a sibling test module.",
+      "target": "tests/test_jira_onboarding.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Test module now imports shared fixtures from tests/fixtures instead of a sibling test module.",
+      "target": "tests/test_jira_provider.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Test module now imports shared fixtures from tests/fixtures instead of a sibling test module.",
+      "target": "tests/test_jira_workflow.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Test module now imports shared fixtures from tests/fixtures instead of a sibling test module.",
+      "target": "tests/test_native_composition.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Test module now imports shared fixtures from tests/fixtures instead of a sibling test module.",
+      "target": "tests/test_plane_onboarding.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Test module now imports shared fixtures from tests/fixtures instead of a sibling test module.",
+      "target": "tests/test_plane_provider.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Test module now imports shared fixtures from tests/fixtures instead of a sibling test module.",
+      "target": "tests/test_plane_workflow.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Test module now imports shared fixtures from tests/fixtures instead of a sibling test module.",
+      "target": "tests/test_readiness.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Test module now imports shared fixtures from tests/fixtures instead of a sibling test module.",
       "target": "tests/test_rendering.py"
     },
     {
       "outcome": "no-impact",
-      "reason": "Direct tests for the extracted ai_dlc.toml_edit module.",
-      "target": "tests/test_toml_edit.py"
+      "reason": "Test module now imports shared fixtures from tests/fixtures instead of a sibling test module.",
+      "target": "tests/test_templates.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Test module now imports shared fixtures from tests/fixtures instead of a sibling test module.",
+      "target": "tests/test_tracker_migration.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Test module now imports shared fixtures from tests/fixtures instead of a sibling test module.",
+      "target": "tests/test_tracker_migration_adapters.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Test module now imports shared fixtures from tests/fixtures instead of a sibling test module.",
+      "target": "tests/test_tracker_targets.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Test module now imports shared fixtures from tests/fixtures instead of a sibling test module.",
+      "target": "tests/test_workflow_bundles.py"
     }
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "566d86937d4762d4cc735e22c593bd960c2900f93ff9fdd238869e2825775f05",
+  "snapshot": "1be26fa0bd7a3e536c4dc62620c2bc5663ca715f7a8f506c2d3c5d7b2b1d4e3e",
   "sources": {
-    ".ai-dlc/work/toml-editor.toml": "ae46cba4042d736a586d9bfcc92f269c3a8f3b06d37a1c1f196638da2d0bc649",
-    ".github/workflows/release.yml": "7ddd05d4f6d18ce5f9db254c5361591fdfb8810eb8604db07def99fff8ab30b6",
-    "docs/architecture.md": "a9de2039b4743567929264c6bd0928b81e3a7724f5af2d48f9a88772439f94ef",
+    ".ai-dlc/work/test-suite-hygiene.toml": "fe1ff984f62436bd415ac48b33ee23001a0c09b271ab8059991c8d383cd6400c",
+    "containers/provider-tests.Dockerfile": "208bbac61e648b81b73cdbe032629f8e9642335b60c15d23030e23c9c584fa21",
     "docs/catalog.toml": "d5fa5e30cece81c49c5566245360214704388357b4afe5ba7adb7d9f379abe59",
-    "docs/design/local-and-shared-knowledge.md": "3bae3c9e3e9f7a7294002726a046a784a8f6907b4517560d1081c9cc686eb2c1",
-    "docs/runbooks/document-workspace-qualification.md": "0cb82c08c333033fcefd9013c9bf58cfb9f6fc84ec91355a21ce17f379681ac5",
-    "docs/runbooks/release-publication.md": "949d2367ab71c0a6b958d91abcf49e3d86263ff4d91001bf6d47ddbd15e29166",
     "docs/verification/documentation-workflow.md": "036a53ebf3a05edbc77eceaac841b40151cce05a762fe3ef631e14f057a89a0f",
     "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
     "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
@@ -65,101 +146,45 @@
     "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
     "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
     "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
-    "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
-    "project-templates/project/scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
-    "pyproject.toml": "57b5a7f4ea777185ab5df4b34c4117a190d41434e1e236b38735987c96ccc529",
-    "scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
-    "scripts/check_generated.py": "845e3ac89acb10720eab193712430a09b767272862a02369f391a982da6e7267",
-    "scripts/check_layout.py": "38d3c2664a2a4eb5155573948f64a948a690d5dc7f68b911a36f402acad0c801",
-    "scripts/qualify_framework.py": "01dd9e6acbe14e740f068662aa539e9a7ed0ba57ab97e9457e0a05d968a25fb6",
-    "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
-    "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
-    "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
-    "src/ai_dlc/cli.py": "fae8c057acf369046f4d07faa6f568be5b1441a57c97d577ce035cbcfb81f184",
-    "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
-    "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
     "src/ai_dlc/config.py": "31677c538713aa41d3625ef9570f962ed8ee5d32bd4b5b3747437e8fd8fb9d02",
-    "src/ai_dlc/conformance.py": "9d18cdbf21aa8f9889d880729c368d9567f32f83c066693dceb06ce6549b6082",
-    "src/ai_dlc/contracts.py": "a6d7c5ad8f3e2a513621883c75bff187e1104315ab337cddc023d5343a9e7538",
-    "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
     "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
     "src/ai_dlc/documentation/document_files.py": "503a38d4df2a1f9d0832d083dcd420ebd1215389385293dd0605fc768c5dd320",
     "src/ai_dlc/documentation/document_impact.py": "585114e1808a5557c00f261a873868a8a5a91baaff29c4b790a65d213dfd97a9",
     "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
     "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
     "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
-    "src/ai_dlc/documentation/documents.py": "50391941ed6b8da74cfd30aa6501a8fd330c5084ed4413a9a00fbafe68d9e328",
-    "src/ai_dlc/documentation/knowledge.py": "91aad53eccc1889d4077ef59c137ff1b35b03c433efa05b7be61d2e534fa7db6",
     "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
-    "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
-    "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
-    "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
-    "src/ai_dlc/documentation/workspace_diagnostics.py": "c53cc66966888078108662d6a307b00c8746c6a8f1d8098938529c65d5694b61",
-    "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
-    "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
-    "src/ai_dlc/environment/enrollment.py": "fb0e82fb7b9e5808e1ee3571a53d129ddc8b8b6c83ab5918d7acab9566f7e9d1",
-    "src/ai_dlc/environment/machine.py": "491128faaec9634ec29ef0ebc9a38af3dfe25499e533543fcecf0734d2e50d1a",
-    "src/ai_dlc/environment/profile_source.py": "f177cc9336ed7c69e37299bc70107f14a7878ff72abbd1070dc3560340d451cc",
-    "src/ai_dlc/files.py": "e84b5ecd3d51158042f7eec9ee71b2431f78cc0465f5cb97840bd3b3390fcf3a",
-    "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
     "src/ai_dlc/harness/agents.py": "6dfd35e15344a81f2de8f4b4db41c23544ab93c83549c279b98e3962c3d5b01a",
-    "src/ai_dlc/harness/components.py": "59a50ce61709daaf4b9209c154498eb5efacb84a8747550685421cc269ea7f3c",
-    "src/ai_dlc/harness/hooks.py": "e76b94c5d13168816506d5ef71360646d929659561974000561829ab49a08e11",
-    "src/ai_dlc/harness/native_composition.py": "1e4c5729ff31cb91820bd8df3d15b60c1067b4a5f2b89381888211470dc79bc8",
-    "src/ai_dlc/harness/user_agents.py": "6fad6edd1d1d89b0c105291f2fa8b69f223ce00bd5095d77357d7c05e6eb3f4a",
     "src/ai_dlc/harness/workflow_bundles.py": "e0943696bdced1e841bf15a68c2040e37e484fe7c021119dec1c25e82be0fe38",
-    "src/ai_dlc/locking.py": "f1cfe828e897e11d73b645130060362e2699f75aac9307ed8cb4955b0533b629",
-    "src/ai_dlc/mcp_server.py": "21f30c12ce9ae74551b3484b5cb765ed9d225f8be8a0f5c24885429af47d2169",
-    "src/ai_dlc/provider_definitions.py": "e90c2d41a839bc4a32dcb3989f59fa6c9073bd1233f3db2088bd176e1bc513d3",
-    "src/ai_dlc/providers/__init__.py": "85325d9c7d4f2ac948510ad6ac20342ec0bd92d02857dda65637dc7b594181ae",
-    "src/ai_dlc/providers/github_issues.py": "55a18a178fc329a94ff95f39b72c5599117c5a8e79842d7cc7c6c8966cbed405",
-    "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
-    "src/ai_dlc/providers/jira_cloud.py": "0c4ee8f892ca3f329e822400a81c1e80d5607c087910329251acb9165345cc28",
-    "src/ai_dlc/providers/linear.py": "fa90bd64765c8e8bee1cbfa54e47e17688e8e6407c7492ae0ed863b4615c2b95",
-    "src/ai_dlc/providers/openspec.py": "5568fd528a83ee659d05cf9e48d9303ae26e2ded7eeb241ba6331a06c63068ee",
-    "src/ai_dlc/providers/plane.py": "76fab3893bf0d4536c58500e4ab5a90f59893977c057be4777d78068e278ca1c",
-    "src/ai_dlc/providers/plane_attempts.py": "bfa9b5015f7dc554b9e58af82c680d97d3f0a5271bc0afe6102a81fbf697c20a",
-    "src/ai_dlc/providers/python_exec.py": "3aaafe9bf74a4a949b59d71ed2079b9c48114462a9c823b3641a1772af5a6ff1",
-    "src/ai_dlc/providers/scm.py": "55d21698f752048cbc99c8e7443f54fcd1f8ab062301112a7d6b1f71953cfe57",
-    "src/ai_dlc/setup/__init__.py": "8eb444a69a67d0c1a59ffc0c80ce59efda159976bea58d40154e97f8bdecf18c",
-    "src/ai_dlc/setup/connections.py": "c6bccc31ddd11e01f8ae853abc38e430519b9445495278bfbdc2c3dca4c56cb6",
-    "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
-    "src/ai_dlc/setup/github_project_setup.py": "86b97dcaa4447082252008da1df64159cac09a077198a7e84e3577294ad540d2",
-    "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
-    "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
-    "src/ai_dlc/setup/project.py": "ac2e591d92a61021797bbe3888b2432e477ac6a19c5362adca0cfc2568a8877e",
-    "src/ai_dlc/setup/provider_onboarding.py": "be120ad6e93c178f041fd338a45a5df7c75b9a30591725cfbf7800bca531045e",
-    "src/ai_dlc/setup/provision.py": "726df31af9cddf90f4f23096bfb133aeaf8ee951ed5195c1c3f0dce32ecd83b5",
-    "src/ai_dlc/setup/readiness.py": "7c7c2767520b3da2e7f8dd74be4ed6359a7dca66bc413c68eba2b1b4bad7f52c",
-    "src/ai_dlc/setup/rebind.py": "399b3f5baaae0ea6faf5f4205f742e10bef51930e55467c0799c74e1a6a456d5",
-    "src/ai_dlc/setup/templates.py": "bbfb4f26c103e3a5210fb8b97a6d843b615efac5f10ddedb28734f254061beb6",
-    "src/ai_dlc/setup/tracker_targets.py": "78be40a24c1020bb17e13410dc40404f964fc638993131b95d7e2a657a2355ed",
-    "src/ai_dlc/setup/workstation.py": "8ac8f2467ee925392f777e15d921ad79da8a10c94267bbd30f5386455db4e8d2",
-    "src/ai_dlc/toml_edit.py": "696057b2848ca8b57e5189d1c78441fc6c1e06994f480f6f13f8dd31c050515e",
-    "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
-    "src/ai_dlc/verification/sandbox.py": "b830bd80df60802c29dbc2e1c639958537f289592052b404e6972ff377d25681",
-    "src/ai_dlc/verification/test_proxy.py": "f38cb2a28c8501c743613b0bfdf7e17f367c101ce7984a304e20ab3095eb7880",
-    "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
-    "src/ai_dlc/work/journal.py": "c088818e99c8c06cc4745ae403a62f9de8c5d503fdc7ab6107760f212ffa5106",
-    "src/ai_dlc/work/traceability.py": "c4062335f26218e99f58e236425674c513ea6f2fce7f68b624a4df4dcd8ab3aa",
-    "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
-    "src/ai_dlc/work/workflow.py": "98a6e3eee1526864845fe53c73dd9c78c07b22256a86dde9e4e12f300a08db23",
-    "tests/fixtures/messy_project.py": "719e8bd5da992f35efb3b39ae87bb9bff955b362f77eaf05fa0554a7e6cf1422",
-    "tests/test_bootstrap.py": "30e1d9868fb88967737f8acd64182a1f8bbcb79cbb12d25f72b7e3dd11d2e171",
-    "tests/test_company_guidance.py": "58794ed77b7454e338c52036fb125ac6e6ee4aa2e5255ede87cfa7a812f5caf4",
+    "tests/conftest.py": "b44a579903af476f74eb90a217383bac24265b6c95897eaeb81c45f4d9d9e5fc",
+    "tests/fixtures/bundles.py": "b896d4ad7cb700a1ea9a6e6e07f7c68ca4672b8135080cb9e37b4344ec71b34a",
+    "tests/fixtures/enrollment.py": "5925df16a8b02ec7331d4681c76c2d9f00a359b06f09c2e1e4b42ebcd0c3466e",
+    "tests/fixtures/git.py": "d27eb873d6b422f0f01eb1d8d8ab549352faeb6a595191632dc98e42bfa4658d",
+    "tests/fixtures/jira.py": "508b7360d65149ffa0f57ba12b2ebedbcc56d25315fe4771f68644f3b239a6a8",
+    "tests/fixtures/plane.py": "7d8e82df07f26522e2f3a000011fda581da62a0218841a1bb17259f2f615387c",
+    "tests/fixtures/tracker.py": "180ba99cad4ed04dbc63fdc0283966d86623b108a99ca23fa14113150a4c7dae",
+    "tests/test_company_guidance.py": "ab39bed3342d9de7d4c68db6c6c54fd66e13c12f2f2167c38e8d345c7dc9736e",
+    "tests/test_config.py": "671b2f1fd295cc37a15f0ac8e6bc5df94e094cd5b7457c7f9414bc158119b1e3",
+    "tests/test_conformance.py": "41cb28ee52c90d9c9bc6853e8675ea6b5846c1e02262825b554c86bb82d1466c",
     "tests/test_document_access.py": "bdf96af4afb1ad6f985204ad243a624d4da8b56d527af63cc072908a76beeff4",
     "tests/test_document_impact.py": "308684c1dda24359e86d2a9b79200455ebe781e97baa18169f5b9979e4eb2a14",
     "tests/test_document_inventory.py": "927199563751af6b2dd5aa8e93cddb43cc62192adffea49694dada37ef6bf14c",
     "tests/test_document_review.py": "88f37e6365c7e9b545d668f978993ef7ad9acfa146e7d549728f4ef9cab8008a",
     "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
-    "tests/test_knowledge.py": "4766f0fd4de9c4a66c96fe93b56b03e275c1adcb5e303e773e92a9e528112be7",
+    "tests/test_jira_onboarding.py": "5bda7b939849fce53bd9c1cbc679ad714455b6062dcec2c1785afea5189fb309",
+    "tests/test_jira_provider.py": "9287c817345fa2c4487926c05a0ee8d6ba7e20a27251566e1bff18b67d63eddc",
+    "tests/test_jira_workflow.py": "d3f7da7b06eeafd1be1752af62640180bfcbe3ece9b15b84ace2246ec158a741",
     "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7",
-    "tests/test_provider_onboarding.py": "27fb9183bb10db1b72375f9d871deee35c5945413225122f189fb7118a10754d",
-    "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
-    "tests/test_rendering.py": "9c8fbcd2926dad231ceae9fdd69b4760b4e68ade548c31dda88080ded12e9e6e",
-    "tests/test_toml_edit.py": "f3d97573ac3ee8fc3ad52ff9b077149e5f2fe5586e26c572c161754170a6f90c",
-    "tests/test_vault_link.py": "fd146d4d15041021ac343257c9d91a8c1950878d275420eda85d13747065e110",
-    "tests/test_vault_mount.py": "f6a5dc947af0d68e4688c37d05294c6b4868aa98ead91d26aa0c8ffec8018424",
-    "tests/test_workspace_diagnostics.py": "ab9e91a770c751d132d8e2d963a0f537a1041ab6fa56b00ee14f2f6f153ac25e"
+    "tests/test_native_composition.py": "8dcd38bf6fecc7379fc66fb3491807a671d435eafc6dafe9e53cd20d0e2c8ba9",
+    "tests/test_plane_onboarding.py": "3a61acf3254b3273af506e22f40e4efbeac14ffb73e3689424caf318fa10ea7c",
+    "tests/test_plane_provider.py": "30733fe472eff91830edeb7bcaf811a171e925d01e87a39a277cf75f9e51a4a0",
+    "tests/test_plane_workflow.py": "24b15c29912da6ccb4dd8d7498dd6626c5134adc4819108abee88ee0f94740ae",
+    "tests/test_readiness.py": "5ddebfcaf3ee0e239152a33b606aaf5d037ccfeb4e1eea64ba7cc4b38aa084d9",
+    "tests/test_rendering.py": "5adb76a575344e77ae50379087ee6634c32993d016e4193bcedaeedc3fc98961",
+    "tests/test_templates.py": "b220a82ee2676f89d4bcd4366f7892a92d2b1bf642a503d1b0be057d92cecf13",
+    "tests/test_tracker_migration.py": "08593736d5535dea1554fbf1775f5999621ae1bccae46f78119be0451275adff",
+    "tests/test_tracker_migration_adapters.py": "76cc0f3504d3ae2983aeb5fa71bfc682e4beb11dd9b4b53d773f3b64e0b44538",
+    "tests/test_tracker_targets.py": "0be016c9c4867ee0590b764a63be3a5700c2abf5e4d80dbce31fdd1ef060e40d",
+    "tests/test_workflow_bundles.py": "3de2f856c57942dd7a64302c1f1db368ccdeadf8f7fc0e1859f6c59c8fdec446"
   }
 }
