@@ -134,7 +134,7 @@
   ],
   "reviewer": "codex-delivery",
   "schema": 1,
-  "snapshot": "10fa93956d6c37fee83e5ae72eeba8ae457a9433012fe6a2ed3af375396cc145",
+  "snapshot": "c9dcd92e64873faf41bf22359daaf11c64db3bdbd8bcd53d4bfd8d24715383ba",
   "sources": {
     ".agents/skills/design-evaluate/SKILL.md": "41084df0a78a63e3742ee089acf167c019aad3a13b96a78995620dfd90e661e6",
     ".ai-dlc/agent-ownership.json": "23d42cf7db9834d5b86f89a1e614f79ab819edde97c886697f373f17e876c30a",
@@ -154,7 +154,7 @@
     "openspec/changes/archive/2026-09-14-frontend-capability-pack/proposal.md": "d5e9c98271458cd8cdc358ac7c3803e0b7e2584c7a1a8273a2d1fbd5292e96a7",
     "openspec/changes/archive/2026-09-14-frontend-capability-pack/specs/design-pm/spec.md": "b601ee9b9f2af82c1a9d9dc90e6c29cc348e63481f6b78836445a998bd0472a9",
     "openspec/changes/archive/2026-09-14-frontend-capability-pack/specs/frontend-capability-pack/spec.md": "e3be488f8118be789a9ee37e571450df2be8a9434e4a87e6607008c36d707709",
-    "openspec/changes/archive/2026-09-14-frontend-capability-pack/tasks.md": "e84d3fd87eda9015e3617122860ef91c7e1f4c48494455685e683239d0de44c8",
+    "openspec/changes/archive/2026-09-14-frontend-capability-pack/tasks.md": "449c0eb94573b0b3da134d619cfd7cb5a37d5e4d5ef89a713e86488d7189ec91",
     "openspec/specs/backend-capability-pack/spec.md": "45fc3ca17f9953edf4aa15f24c1a4176e84bceaf179fdb10f35ab58fd85e6a3e",
     "openspec/specs/design-pm/spec.md": "a186d74fce9b492ec4b434891e818ad4895b4067583f014541dc463bc9e4a3b3",
     "openspec/specs/frontend-capability-pack/spec.md": "4832235ee58b5277725efcb9aa056b163a8165d968c3c969c6d9383bd6d4a167",
