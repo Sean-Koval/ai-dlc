@@ -96,7 +96,12 @@ def _handle_hook(root: Path, event: str, payload: dict) -> dict:
             "message": "Record outcomes and next steps when convenient; unavailable knowledge can remain pending.",
         }
     if event == "session-start":
+        from ai_dlc.environment.team_sources import source_update_notices
+
         context = session_context(root)
+        notices = source_update_notices()
+        if notices:
+            context += "\n" + "\n".join(notices)
         recalled = _session_recall(root)
         if recalled:
             context += "\nRelevant learnings (read these notes):\n" + "\n".join(

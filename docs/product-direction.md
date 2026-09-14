@@ -66,6 +66,8 @@ contracts, or operational evidence. Small work uses small artifacts.
 ## Principles and limits
 
 - Prefer existing tools; build integration where it removes coordination work.
+  Tencent teamai repositories are a supported team-source format, not a runtime
+  dependency; AI-DLC reads their safe, pinned subset through profile subscriptions.
   Prove a small component contract with real adapters before expanding it.
 - Make installation, configuration, instructions, and readiness understandable
   together while preserving their separate data ownership.

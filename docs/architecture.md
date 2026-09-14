@@ -15,18 +15,23 @@ orchestration service.
 Configuration resolves five ownership layers with provenance:
 
 1. A private Git profile owns portable modules, MCP preferences, workflow
-   choices, and logical credential requirements. Pin an exact revision before
+   choices, logical credential requirements and pinned team-source subscriptions. Pin an exact revision before
    enrolling it on every machine.
 2. The project repository owns shared project configuration, policy, durable
    architecture, decisions, and runbooks.
 3. Each machine binding owns local paths, account selections, and mappings from
-   logical credentials to environment-variable names.
+   logical credentials to environment-variable names, plus the person's team roles.
 4. A password manager, keychain, or process environment owns credential values.
    AI-DLC never records, prints, or synchronizes those values.
 5. Codex and Claude user/project configuration owns generated client files;
    AI-DLC re-renders only entries it owns.
 
-Enrollment locks, profile caches, and operation journals are local control
+Team-source content is selected from verified local caches and rendered through
+project ownership checks. Source commits advance only through explicit machine
+sync activation; session-start remote-ref notices never update content. The
+teamai adapter reads a supported subset without executing upstream tooling.
+
+Enrollment locks, profile/source caches, and operation journals are local control
 state, not portable authority. The profile is synchronized by its private Git
 repository; the project is synchronized by its repository; machine bindings,
 credential stores, and local journals stay on their respective machines.
@@ -94,7 +99,7 @@ does not substitute for these lifecycle contracts. See the
 | `conformance.py` | Public conformance runner entry point |
 | `setup/` | Project adoption, provisioning, readiness and provider connection setup |
 | `work/` | Work lifecycle, traceability, journals and explicit tracker migration |
-| `environment/` | Shared bootstrap runtime location and owned shell activation; machine enrollment, profile sources and credential references |
+| `environment/` | Shared bootstrap runtime location and owned shell activation; machine enrollment, pinned profile/team sources and credential references |
 | `harness/` | Skills, pinned bundles, client rendering, components, hooks and local design capture |
 | `documentation/` | Catalog checks, impact/evidence review, scoped project-document access, workspace diagnostics, knowledge notes and vault links |
 | `providers/` | Contract-backed external service adapters and isolated provider execution |

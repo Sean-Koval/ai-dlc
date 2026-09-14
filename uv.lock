@@ -18,6 +18,7 @@ dependencies = [
     { name = "jinja2" },
     { name = "mcp" },
     { name = "pydantic" },
+    { name = "pyyaml" },
     { name = "tomli-w" },
     { name = "typer" },
 ]
@@ -37,6 +38,7 @@ requires-dist = [
     { name = "jinja2", specifier = ">=3.1.6,<4" },
     { name = "mcp", specifier = ">=1.20,<2" },
     { name = "pydantic", specifier = ">=2.11,<3" },
+    { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "tomli-w", specifier = ">=1.2,<2" },
     { name = "typer", specifier = ">=0.16,<1" },
 ]

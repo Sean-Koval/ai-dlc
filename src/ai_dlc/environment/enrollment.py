@@ -11,6 +11,7 @@ from typing import Literal
 import tomli_w
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from ai_dlc.environment.source_schema import SourceLock
 from ai_dlc.files import atomic_create, atomic_write
 
 _STABLE_ID = re.compile(r"^[a-z0-9][a-z0-9-]*$")
@@ -60,6 +61,7 @@ class EnrollmentLock(BaseModel):
     machine_id: str
     subdirectory: str = ""
     profile_file: str = "ai-dlc-profile.toml"
+    sources: list[SourceLock] = Field(default_factory=list)
 
     @property
     def schema(self) -> Literal[1]:

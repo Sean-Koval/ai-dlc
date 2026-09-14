@@ -748,6 +748,16 @@ path = "docs/runbooks/machine-enrollment.md"
 kind = "runbook"
 owner = "repository-maintainers"
 status = "active"
+code_paths = [
+    "src/ai_dlc/environment/*.py",
+    "src/ai_dlc/config.py",
+    "src/ai_dlc/harness/agents.py",
+    "src/ai_dlc/harness/team_source_render.py",
+    "src/ai_dlc/harness/hooks.py",
+    "src/ai_dlc/providers/teamai.py",
+    "profiles/example/ai-dlc-profile.toml",
+    "tests/test_team_sources.py",
+]
 
 [[documents]]
 id = "repo-runbooks-document-workspace-qualification"
