@@ -1,0 +1,32 @@
+schema = 1
+id = "readme-tooling"
+title = "Refresh README tooling and workflows"
+scope = "Explain current features and tool responsibilities, add a workflow visual and concise setup/configuration/examples, and remove obsolete or repetitive README content."
+requires_spec = false
+spec_reason = "Documentation-only rewrite of implemented behavior; no runtime or formal requirements change."
+acceptance = [
+    "README explains the main features and tool responsibilities with a compact visual.",
+    "Setup and workflow examples match current CLI behavior and distinguish release from source-only additions.",
+    "Remove historical handoffs, legacy implementation detail and duplicated qualification caveats; retain links to authoritative guidance.",
+]
+reviewed = true
+depends_on = []
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+tracker = "135"
+branch = "docs/readme-tooling"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"
