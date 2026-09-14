@@ -14,22 +14,22 @@ bounded review, not an autonomous move engine.
 
 Read repository guidance, the documentation map/catalog if present, and relevant
 OpenSpec records. Inspect Git status and protect unrelated authored edits. Use
-`ai-dlc project docs-inventory` (MCP `project_docs_inventory`) to discover tracked
+`ai-dlc docs check --inventory` (MCP `project_docs_inventory`) to discover tracked
 and nonignored Markdown throughout root, docs and legacy directories. Report
 excluded, inaccessible and symlinked paths; never follow them into another store.
 
 Choose an explicit Git base and small groups of actual inventory paths. Prepare
-`ai-dlc project docs-review --source inventory --base HEAD --path README.md`
+`ai-dlc docs review --report --source inventory --base HEAD --path README.md`
 (or MCP `project_docs_review` with `source="inventory"`). Repeat `--path` for related
 documents. This works before catalog enrollment. The catalog mode remains the
 default; do not create an empty catalog just to bypass a missing-catalog failure.
 Bodies are bounded, hashed and line-numbered. Keep omissions unreviewed, and state
 when code/spec evidence was inspected separately because no mapping exists.
-Use document-review for grounded findings and `docs-review-check` to validate
+Use document-review for grounded findings and `docs review --check` to validate
 citations against current sources before acting on the review.
 
-To locate or reread specific material, use `ai-dlc project docs-search` and
-`docs-read` (MCP `project_docs_search` and `project_docs_read`). They cover docs/
+To locate or reread specific material, use `ai-dlc docs search` and
+`docs read` (MCP `project_docs_search` and `project_docs_read`). They cover docs/
 and openspec/ by default; declare root or legacy files explicitly with `--source`
 (MCP `sources`). Treat an incomplete coverage result as unsearched material, not
 as absence. Edit returned repository paths with ordinary file and Git tools, never
@@ -59,7 +59,7 @@ Within the user's authorized organization scope, execute those reviewed decision
 with ordinary Git moves and content edits. Do not stop after the plan or ask again
 for actions already authorized. Resolve a genuinely ambiguous authority or
 content-loss decision with the user while continuing independent safe work.
-`docs-init --apply` creates navigation only; it does not replace moving or revising
+`docs init --apply` creates navigation only; it does not replace moving or revising
 the scattered documents. Empty directory structures are not an organization result.
 
 Repair inbound and outbound links after each move or consolidation, including
@@ -72,7 +72,7 @@ review; never infer freshness from modification times or successful checks.
 ## Verify the outcome
 
 Inspect the final Git diff for content loss, stale links, unrelated edits and
-unnecessary duplicate explanations. Run docs-check and required project checks;
+unnecessary duplicate explanations. Run docs check and required project checks;
 inspect anchors, reference-style links and wiki links separately where the checker
 does not cover them. Record documentation-impact dispositions after content
 settles, and again after updating from the target branch immediately before merge.

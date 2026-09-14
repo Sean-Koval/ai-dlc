@@ -54,6 +54,31 @@ def session_context(root: Path) -> str:
 
 
 def handle_hook(root: Path, event: str, payload: dict) -> dict:
+    from ai_dlc.harness.friction import track_friction
+
+    return track_friction(root, event, payload, _handle_hook(root, event, payload))
+
+
+def _session_recall(root: Path) -> list[dict]:
+    from ai_dlc.config import resolve_runtime
+    from ai_dlc.documentation.learnings import recall_work
+    from ai_dlc.files import run_git
+    from ai_dlc.providers import Registry
+
+    try:
+        branch = run_git(root, "branch", "--show-current", check=False).stdout.strip()
+        config = resolve_runtime(root).values
+        registry = Registry(config, root=root)
+        for path in sorted((root / ".ai-dlc/work").glob("*.toml")):
+            work = tomllib.loads(path.read_text())
+            if branch and work.get("artifacts", {}).get("branch") == branch:
+                return recall_work(work, config, registry)
+    except Exception:  # noqa: BLE001 -- session context remains optional
+        return []
+    return []
+
+
+def _handle_hook(root: Path, event: str, payload: dict) -> dict:
     if event == "stop":
         if payload.get("stop_hook_active"):
             return {"reminder": False}
@@ -71,7 +96,13 @@ def handle_hook(root: Path, event: str, payload: dict) -> dict:
             "message": "Record outcomes and next steps when convenient; unavailable knowledge can remain pending.",
         }
     if event == "session-start":
-        return {"context": session_context(root)}
+        context = session_context(root)
+        recalled = _session_recall(root)
+        if recalled:
+            context += "\nRelevant learnings (read these notes):\n" + "\n".join(
+                f"{note['path']}: {note['first_line']}" for note in recalled
+            )
+        return {"context": context}
     tool = payload.get("tool_name")
     if tool in {"Edit", "Write"}:
         file_path = payload.get("tool_input", {}).get("file_path", "")

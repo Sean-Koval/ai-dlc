@@ -37,7 +37,7 @@ recovery and configuration boundaries. Mocked tests do not prove live platform
 qualification; consult [release gates](docs/release-verification.md). Do not
 publish packages or mutate remote services implicitly.
 
-<!-- ai-dlc:begin 259e2079bc0b8d8da359ca4238c281e10ab3f0446813ec8196b0c05bf0cf8a25 -->
+<!-- ai-dlc:begin 58cd8c890acf8c7ff77b0b8100fbbf7377490170e5a4ed55f5207a980e034bd9 -->
 # Shared project guidance
 
 Read ai-dlc.toml and the active .ai-dlc/work record before work.
@@ -55,7 +55,7 @@ Store architecture, design, decisions and runbooks in docs/. Keep personal notes
 - lint: `uv run --locked --no-sync ruff check src tests scripts`
 - types: `uv run --locked --no-sync pyright --pythonpath .venv/bin/python`
 - test: `uv run --locked --no-sync pytest -q`
-- documentation: `ai-dlc project docs-gate`
+- documentation: `ai-dlc docs gate`
 - work-records: `ai-dlc work validate --all`
 
 Run `ai-dlc project check --required` in the prepared project environment.

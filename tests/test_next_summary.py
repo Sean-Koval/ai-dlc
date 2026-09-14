@@ -161,7 +161,7 @@ def test_context_brief_prints_the_summary_and_plain_context_is_unchanged(tmp_pat
     assert result.output == EXPECTED
 
 
-def test_session_start_hook_includes_the_first_ten_lines(tmp_path):
+def test_session_start_hook_includes_the_first_ten_lines(tmp_path, monkeypatch):
     from ai_dlc.harness.hooks import handle_hook
 
     root = project(tmp_path)
@@ -176,3 +176,12 @@ def test_session_start_hook_includes_the_first_ten_lines(tmp_path):
 
     fallback = handle_hook(tmp_path / "absent", "session-start", {})["context"]
     assert fallback == "Read AGENTS.md and .ai-dlc/work; run ai-dlc next for the full summary."
+
+    monkeypatch.setattr(
+        "ai_dlc.harness.hooks._session_recall",
+        lambda root: [{"path": "learnings/retry.md", "first_line": "Retry lessons"}],
+    )
+    combined = handle_hook(root, "session-start", {})["context"]
+    assert combined == context + (
+        "\nRelevant learnings (read these notes):\nlearnings/retry.md: Retry lessons"
+    )

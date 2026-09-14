@@ -90,8 +90,8 @@ knowledge append`.
 | Project maintenance | `ai-dlc project sync`, `ai-dlc project rebind` | Performs staged Copier updates or previews/applies reviewed provider rebinding, including reviewed provider connection rebinding |
 | Project execution | `ai-dlc project setup`, `ai-dlc project check --required` | Runs declared setup and checks and emits verification receipts |
 | Agent configuration | `ai-dlc agents render` | Previews, applies, or verifies owned project/personal client configuration |
-| Work lifecycle | `ai-dlc work publish`, `ai-dlc work start`, `ai-dlc work status`, `ai-dlc work finish` | Reconciles tracker state, binds work to a branch, and enforces completion gates |
-| Traceability | `ai-dlc work link` | Links PR, specification, branch, deployment, or tracker evidence to reviewed work |
+| Work lifecycle | `ai-dlc work publish`, `ai-dlc work start`, `ai-dlc work pr`, `ai-dlc work status`, `ai-dlc work finish` | Reconciles tracker state, binds work to a branch, and enforces completion gates |
+| Traceability | `ai-dlc work link` | Links PR, specification, branch, deployment, or tracker evidence and commits only the work record by default |
 | Provider inspection and connection | `ai-dlc provider list`, `ai-dlc provider test`, `ai-dlc provider connect` | Discovers adapters, runs isolated contract or authorized live checks, and previews/applies an explicitly reviewed provider connection |
 | Tracker migration | `ai-dlc project tracker-migrate` | Reviews a default-only switch or selected existing-ticket mappings with local recovery evidence |
 | Personal knowledge | `ai-dlc knowledge find`, `ai-dlc knowledge note`, `ai-dlc knowledge append` | Reads or writes explicitly selected vault material |
@@ -184,15 +184,16 @@ protocol is unrun and does not spend the existing generic skill-evaluation budge
 
 | MCP tool | CLI counterpart | Purpose |
 |---|---|---|
-| `project_docs_impact` | `project docs-impact` | Find mapped documents and unmapped changes for an explicit Git comparison |
-| `project_docs_disposition` | `project docs-disposition` | Emit content-bound reviewed decisions without writing evidence |
-| `project_docs_gate` | `project docs-gate` | Check current dispositions and new objective debt |
-| `project_docs_inventory` | `project docs-inventory` | Discover repository Markdown paths, exclusions and unavailable paths without reading bodies |
-| `project_docs_search` | `project docs-search` | Search `docs/`, `openspec/` and per-call declared Markdown under one body budget; returns canonical paths, digests and explicit omissions |
-| `project_docs_read` | `project docs-read` | Read one complete eligible project document within a byte budget; undeclared root or legacy files are refused |
-| `project_docs_review` | `project docs-review` | Prepare bounded selected-document context; explicit `source=inventory` permits uncatalogued documents |
-| `project_docs_review_check` | `project docs-review-check` | Check citations, scope and source bytes; does not certify semantic truth |
+| `project_docs_impact` | `docs review` | Find mapped documents and unmapped changes for an explicit Git comparison |
+| `project_docs_disposition` | `docs review --disposition` | Emit content-bound reviewed decisions without writing evidence |
+| `project_docs_gate` | `docs gate` | Check current dispositions and new objective debt |
+| `project_docs_inventory` | `docs check --inventory` | Discover repository Markdown paths, exclusions and unavailable paths without reading bodies |
+| `project_docs_search` | `docs search` | Search `docs/`, `openspec/` and per-call declared Markdown under one body budget; returns canonical paths, digests and explicit omissions |
+| `project_docs_read` | `docs read` | Read one complete eligible project document within a byte budget; undeclared root or legacy files are refused |
+| `project_docs_review` | `docs review --report` | Prepare bounded selected-document context; explicit `source=inventory` permits uncatalogued documents |
+| `project_docs_review_check` | `docs review --check` | Check citations, scope and source bytes; does not certify semantic truth |
 | `project_workspace_preview` | `project workspace-init` | Preview additive private project navigation; CLI apply explicitly creates files |
+| CLI only | `project workspace-init --shell` | Preview the owned bash, zsh or fish PATH section; `--apply` writes after ownership checks |
 | `project_workspace_check` | `project workspace-check` | Report installation, shell activation, each mount binding and link navigation separately; read-only, native client not assessed |
 
 Project-document search and read cover repository files, never private notes.
@@ -202,7 +203,7 @@ tools and run project checks. The `knowledge_*` tools remain for private notes,
 and a vault portal, mounted folder or Markdown link does not grant access.
 
 The [documentation guide](../../project-templates/project/docs/documentation-guide.md#search-and-read-project-documents) explains ownership, packet
-review, project-document access, baselines and workspace use. The optional CLI `project docs-style` invokes
+review, project-document access, baselines and workspace use. The optional CLI `docs check --style` invokes
 configured Vale; it does not install a tool or establish factual correctness.
 
 ### Native project mounts
@@ -214,3 +215,13 @@ remains the default. Mounting does not expand private knowledge read/write acces
 See the documentation guide for stable-checkout, adoption and conflict handling.
 `ai-dlc project workspace-check` (MCP `project_workspace_check`) diagnoses the
 executable, shell activation, bindings and navigation without changing them.
+
+### Session continuity
+
+`ai-dlc work finish <id> --learning FILE` optionally stores an authored learning
+through the knowledge provider after completion gates pass. MCP `work_finish`
+accepts `learning` text alongside its existing `handoff`. Missing knowledge leaves
+the note pending and preserves completion. `work start` returns up to five
+matching learning paths and first lines; read relevant notes before implementing.
+The session-start hook recalls notes for the branch's bound work record. Stop
+reminders use only ignored local friction counts and never transmit them.

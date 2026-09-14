@@ -4,14 +4,26 @@
 Require revision-bound documentation impact dispositions.
 ## Requirements
 ### Requirement: DI-01 Scoped impact inspection
-A shared CLI and MCP service SHALL inspect a Git comparison plus current working content, match optional catalog code, requirement and verification references, and expose changed unmapped files. Reads SHALL stay inside the repository.
+A shared CLI and MCP service SHALL inspect a Git comparison plus current working content, match optional catalog code, requirement and verification references, and expose changed unmapped files. Reads SHALL stay inside the repository. The CLI SHALL expose the documentation workflow under one `ai-dlc docs` group whose commands are exactly `check`, `review`, `gate`, `read`, `search` and `init`; impact inspection, disposition recording, baseline proposal, review-packet preparation and review validation SHALL be modes of `ai-dlc docs review`. Each former `ai-dlc project docs-*` command SHALL keep working for one release as a hidden alias that runs the same service, keeps its stdout and exit status, and prints one deprecation line naming its replacement to stderr.
 
 #### Scenario: Scoped impact inspection
 - **WHEN** a mapped public interface changes
 - **THEN** the matching document requires review and unmapped changes remain visible
 
+#### Scenario: The documentation group lists its commands
+- **WHEN** a user runs `ai-dlc docs --help`
+- **THEN** exactly `check`, `review`, `gate`, `read`, `search` and `init` are listed and no empty command group is registered
+
+#### Scenario: Legacy command names keep working with a deprecation notice
+- **WHEN** a caller runs a former `ai-dlc project docs-*` command
+- **THEN** the same service runs with the same stdout and exit status, the name is absent from the command list in `ai-dlc project --help`, and one deprecation line naming the `ai-dlc docs` replacement is printed to stderr
+
+#### Scenario: A review mode is given incomplete options
+- **WHEN** `ai-dlc docs review` is run with a mode flag whose required options are missing, with two modes at once, or with a mode-specific option and no mode
+- **THEN** the CLI reports a usage error and runs no service
+
 ### Requirement: DI-02 Revision-bound dispositions
-Documentation dispositions SHALL identify updated, reviewed-no-change or justified no-impact outcomes and bind inspected source and document content to evidence. Missing or changed evidence SHALL not satisfy an enabled check. Evidence recorded against a base other than the check's comparison SHALL be reported as a base mismatch naming both commits before decisions are evaluated. Recording SHALL refuse a comparison base that the checkout does not contain.
+Documentation dispositions SHALL identify updated, reviewed-no-change or justified no-impact outcomes and bind inspected source and document content to evidence. Work records under `.ai-dlc/work/` SHALL be excluded from changed files, unmapped files and source evidence unless a catalog mapping explicitly targets those paths; the work-records check validates their delivery state. Missing or changed evidence SHALL not satisfy an enabled check. Evidence recorded against a base other than the check's comparison SHALL be reported as a base mismatch naming both commits before decisions are evaluated. Recording SHALL refuse a comparison base that the checkout does not contain.
 
 #### Scenario: Revision-bound dispositions
 - **WHEN** a source changes after disposition
@@ -24,6 +36,14 @@ Documentation dispositions SHALL identify updated, reviewed-no-change or justifi
 #### Scenario: Comparison base missing from the checkout
 - **WHEN** dispositions are recorded against a target commit that the branch does not contain
 - **THEN** recording refuses and directs the user to update the branch first
+
+#### Scenario: A work record changes after dispositions are recorded
+- **WHEN** a work record without an explicit catalog mapping changes after dispositions are recorded
+- **THEN** the recorded documentation evidence still passes the gate
+
+#### Scenario: A work record has an explicit catalog mapping
+- **WHEN** an explicitly mapped work record changes
+- **THEN** its mapped document requires review and its content remains bound to evidence
 
 ### Requirement: DI-03 Prevent new objective debt
 Documentation checks SHALL be project-selectable, compare current objective findings against an explicit historical baseline, and refuse new defects without blocking solely on unchanged accepted historical findings. AI-DLC SHALL enroll after recording its baseline.

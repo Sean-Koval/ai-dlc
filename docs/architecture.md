@@ -94,7 +94,7 @@ does not substitute for these lifecycle contracts. See the
 | `conformance.py` | Public conformance runner entry point |
 | `setup/` | Project adoption, provisioning, readiness and provider connection setup |
 | `work/` | Work lifecycle, traceability, journals and explicit tracker migration |
-| `environment/` | Machine enrollment, profile sources and credential references |
+| `environment/` | Shared bootstrap runtime location and owned shell activation; machine enrollment, profile sources and credential references |
 | `harness/` | Skills, pinned bundles, client rendering, components and hooks |
 | `documentation/` | Catalog checks, impact/evidence review, scoped project-document access, workspace diagnostics, knowledge notes and vault links |
 | `providers/` | Contract-backed external service adapters and isolated provider execution |

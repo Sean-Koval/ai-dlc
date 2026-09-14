@@ -1,0 +1,21 @@
+{
+  "additionalProperties": true,
+  "properties": {
+    "number": {
+      "minimum": 1,
+      "title": "Number",
+      "type": "integer"
+    },
+    "url": {
+      "minLength": 1,
+      "title": "Url",
+      "type": "string"
+    }
+  },
+  "required": [
+    "url",
+    "number"
+  ],
+  "title": "PullRequestResult",
+  "type": "object"
+}

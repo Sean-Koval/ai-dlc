@@ -330,8 +330,8 @@ enforces this sequence. It is a repository setting that an administrator changes
 deliberately; AI-DLC does not change it. `verify.yml` has no merge-queue trigger,
 and exact-base evidence cannot anticipate a queued predecessor.
 
-`docs-gate` reports a base mismatch first and names both commits.
-`docs-disposition` refuses a base that the checkout does not contain. If a stale
+`docs gate` reports a base mismatch first and names both commits.
+`docs review --disposition` refuses a base that the checkout does not contain. If a stale
 base still reaches the target branch, that merge's run stays failed and
 `work finish` stays blocked, because rerunning repeats the same comparison. Do not
 edit evidence to name the old base; reconcile the work item explicitly.

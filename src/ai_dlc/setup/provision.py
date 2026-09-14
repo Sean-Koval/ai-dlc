@@ -194,16 +194,9 @@ def machine_apply(
 
     # Detect user-authored configuration conflicts before invoking package managers.
     render_user_agents(config, home)
-    bootstrap_home = Path(
-        environment.get(
-            "AI_DLC_BOOTSTRAP_HOME",
-            str(
-                Path(environment.get("XDG_DATA_HOME", str(home / ".local/share")))
-                / "ai-dlc/bootstrap"
-            ),
-        )
-    )
-    bootstrap_bin = bootstrap_home / "bin"
+    from ai_dlc.environment.bootstrap import bootstrap_bin as resolve_bootstrap_bin
+
+    bootstrap_bin = resolve_bootstrap_bin(environment, home)
     mise = _which("mise", environ)
     if not mise and (bootstrap_bin / "mise").is_file():
         mise = str(bootstrap_bin / "mise")

@@ -157,6 +157,16 @@ implementation:
 - make uncertainty visible instead of inventing product behavior;
 - run required project checks before review.
 
+Start delivery with `ai-dlc work start <work-id>`. It commits only the bound
+work record; `work link` also commits its record by default. Use `--no-commit`
+when deliberately batching record edits. Neither command stages unrelated files.
+After implementation, specification finalization and required checks, push the
+branch explicitly and run `ai-dlc work pr <work-id>`. This creates the pull request,
+links its URL and commits the record; push that new link commit before review.
+Repeating `work pr` returns the linked URL without opening another pull request.
+If creation was interrupted before its result was recorded, inspect the provider
+and recover with `work link <work-id> pr <url>`; an uncertain create is never repeated.
+
 The pull request should explain the outcome, design decisions, compatibility
 or migration effects, and evidence. Review compares implementation with the
 linked design and specification. `ai-dlc work finish <work-id>` then verifies
