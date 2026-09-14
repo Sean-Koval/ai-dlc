@@ -6,7 +6,7 @@ import importlib.util
 import json
 
 import pytest
-from test_tracker_migration import checkout, files  # noqa: F401 -- shared real project fixture
+from fixtures.tracker import files
 
 from ai_dlc.work.tracker_migration import apply_tracker_migration
 
@@ -62,7 +62,7 @@ class TargetAdapter:
 
 
 @pytest.fixture
-def creation(checkout):  # noqa: F811 -- pytest resolves the imported shared fixture
+def creation(checkout):
     root, env, registry, _ = checkout
     adapter = TargetAdapter()
     registry.register("destination", adapter)

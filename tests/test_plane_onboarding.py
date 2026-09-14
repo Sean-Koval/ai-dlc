@@ -4,7 +4,7 @@ import tomllib
 import httpx
 import pytest
 import tomli_w
-from test_plane_provider import CFG, PlaneHTTP, U
+from fixtures.plane import CFG, PlaneHTTP, U
 from typer.testing import CliRunner
 
 from ai_dlc.cli import app

@@ -4,7 +4,7 @@ import subprocess
 
 import pytest
 import tomli_w
-from test_jira_provider import Jira
+from fixtures.jira import Jira
 
 
 @pytest.fixture
