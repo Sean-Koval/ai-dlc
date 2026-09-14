@@ -917,9 +917,17 @@ def work_status(work_id: str, root: Path = Path("."), machine: Path | None = Non
 
 @work.command("finish")
 def work_finish(
-    work_id: str, root: Path = Path("."), machine: Path | None = None, handoff: Path | None = None
+    work_id: str,
+    root: Path = Path("."),
+    machine: Path | None = None,
+    handoff: Path | None = None,
+    learning: Path | None = None,
 ):
-    result = service(root, machine).finish(work_id, handoff.read_text() if handoff else None)
+    result = service(root, machine).finish(
+        work_id,
+        handoff.read_text() if handoff else None,
+        learning.read_text() if learning else None,
+    )
     conclude(result)
 
 
@@ -1017,6 +1025,8 @@ def hook(event: str, root: Path = Path(".")):
     if result.get("decision") == "deny":
         typer.echo(result["reason"], err=True)
         raise typer.Exit(2)
+    if result.get("friction"):
+        typer.echo(result["friction"])
     if result.get("reminder"):
         typer.echo(result["message"])
     elif result.get("context"):

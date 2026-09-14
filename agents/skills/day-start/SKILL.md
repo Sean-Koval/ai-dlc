@@ -10,3 +10,8 @@ Return a short ordered focus list with evidence links, blockers, and the next co
 Resolve provider-specific commands from the configured role provider’s instructions. The agent supplies judgment; services store, validate, and link artifacts.
 
 When a linked project workspace is available, use its project association and unresolved questions to retrieve only relevant personal context. Follow source links back to current repository or selected team authority; private interpretations and old daily logs do not override current specifications.
+
+Read relevant learning notes recalled by `work start` or the session-start hook.
+The returned paths and first lines are bounded personal context; inspect useful
+notes and reconcile them against current specifications and evidence before acting.
+A missing vault or no matching notes requires no setup and does not block work.

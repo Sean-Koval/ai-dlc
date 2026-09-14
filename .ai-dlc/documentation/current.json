@@ -1,106 +1,228 @@
 {
-  "base": "c3789a7caa6a3ff70cd35df9564a358af92fc6c3",
+  "base": "ff946f23a882d237eb8ec857f64f15443ef1cf3f",
   "decisions": [
     {
-      "outcome": "updated",
-      "reason": "Lists the handoffs/ directory, the roadmap ledger and the release history so every moved section is reachable.",
-      "target": "docs/archive/README.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Executor handoff moved from docs/handoffs/ with links repointed and a moved-file note; content otherwise unchanged.",
-      "target": "docs/archive/handoffs/framework-delivery.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Handoff link repointed to docs/archive/handoffs/; wording unchanged.",
-      "target": "docs/archive/planning/2026-09-05-framework-delivery.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "New archive document holding the roadmap's reconciliation and delivered-and-cancelled sections verbatim.",
-      "target": "docs/archive/planning/2026-09-roadmap-ledger.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Handoff link repointed to docs/archive/handoffs/; wording unchanged.",
-      "target": "docs/archive/planning/framework-delivery-review.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Handoff link repointed to docs/archive/handoffs/; wording unchanged.",
-      "target": "docs/archive/planning/provider-toolset-handoff.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Handoff link repointed to docs/archive/handoffs/; wording unchanged.",
-      "target": "docs/archive/planning/stage-cleanup-review-2026-09-06.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "New archive document holding the dated release records older than the latest reconciliation verbatim.",
-      "target": "docs/archive/verification/release-history.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Handoff link repointed to the archive and its sentence made historical; navigation only.",
-      "target": "docs/index.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Handoff link repointed to the archive; wording unchanged.",
-      "target": "docs/product-direction.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Keeps what a release must prove, the outstanding list and the September 12 and 13 records; older dated sections moved to the archive with a pointer.",
-      "target": "docs/release-verification.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Rewritten to the current outcome, next three increments, status tracking and not-planned list; the ledger sections moved to the archive.",
-      "target": "docs/roadmap.md"
+      "outcome": "no-impact",
+      "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
+      "target": ".agents/skills/day-end/SKILL.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Work record for this change, published as tracker item 87.",
-      "target": ".ai-dlc/work/roadmap-ledger-archive.toml"
+      "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
+      "target": ".agents/skills/day-start/SKILL.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Handoff link repointed to the archive; wording unchanged.",
-      "target": "README.md"
+      "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
+      "target": ".agents/skills/handoff/SKILL.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Handoff entry repathed and archived; ledger and release-history entries added.",
+      "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
+      "target": ".ai-dlc/agent-ownership.json"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Reviewed work and archived SL-01 through SL-03 requirements track the implementation; no separate durable narrative required.",
+      "target": ".ai-dlc/work/session-learnings.toml"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
+      "target": ".claude/skills/day-end/SKILL.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
+      "target": ".claude/skills/day-start/SKILL.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
+      "target": ".claude/skills/handoff/SKILL.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
+      "target": "agents/skills.lock.json"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
+      "target": "agents/skills/day-end/SKILL.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
+      "target": "agents/skills/day-start/SKILL.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
+      "target": "agents/skills/handoff/SKILL.md"
+    },
+    {
+      "outcome": "reviewed-no-change",
+      "reason": "Reviewed service, provider and package boundaries: optional knowledge remains in documentation and local hints remain in harness; existing architecture remains accurate.",
+      "target": "docs/architecture.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Documents optional authored learning storage, bounded recall and local friction without changing completion gates or claiming live qualification.",
       "target": "docs/catalog.toml"
     },
     {
+      "outcome": "updated",
+      "reason": "Documents optional authored learning storage, bounded recall and local friction without changing completion gates or claiming live qualification.",
+      "target": "docs/design/local-and-shared-knowledge.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Documents optional authored learning storage, bounded recall and local friction without changing completion gates or claiming live qualification.",
+      "target": "docs/workflows/tool-map.md"
+    },
+    {
       "outcome": "no-impact",
-      "reason": "Former location of the executor handoff, now under docs/archive/handoffs/.",
-      "target": "docs/handoffs/framework-delivery.md"
+      "reason": "Reviewed work and archived SL-01 through SL-03 requirements track the implementation; no separate durable narrative required.",
+      "target": "openspec/changes/archive/2026-09-14-session-learnings/design.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Reviewed work and archived SL-01 through SL-03 requirements track the implementation; no separate durable narrative required.",
+      "target": "openspec/changes/archive/2026-09-14-session-learnings/proposal.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Reviewed work and archived SL-01 through SL-03 requirements track the implementation; no separate durable narrative required.",
+      "target": "openspec/changes/archive/2026-09-14-session-learnings/specs/session-learnings/spec.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Reviewed work and archived SL-01 through SL-03 requirements track the implementation; no separate durable narrative required.",
+      "target": "openspec/changes/archive/2026-09-14-session-learnings/tasks.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Documents optional authored learning storage, bounded recall and local friction without changing completion gates or claiming live qualification.",
+      "target": "project-templates/project/docs/workflows/tool-map.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Regression coverage and internal implementation are explained by canonical knowledge and tool-map documentation; no additional document owner is needed.",
+      "target": "tests/test_workflow.py"
     }
   ],
-  "reviewer": "Sean Koval",
+  "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "c6e748634dcf5c20e57a17f5d77a023d4fad767a8b1c76f80d3959baef2cede7",
+  "snapshot": "11a6e439e6a5a4ad8a1cdb53689c980936b9f44c0ec470ab840650b763adf1e6",
   "sources": {
-    ".ai-dlc/work/roadmap-ledger-archive.toml": "97e31ed6fbec2ee5422b3ce8c0e2b755d9ed7e31f354e2eee6f03f161c55b6b7",
-    "README.md": "07e3c8a1bd7d3f8c91280d7fd368cc4c0d5d3c356cd7e66825ba66a7da28c08b",
-    "docs/archive/README.md": "24430d48193d4792845f55f4c7b8b2de071b73b629b0036a9c3b39532d929a6d",
-    "docs/archive/handoffs/framework-delivery.md": "0f5e94fed1613dfa663d6153b9c4206130414bb8684155df97f943dec95e6c51",
-    "docs/archive/planning/2026-09-05-framework-delivery.md": "746908e75b07de225b69a531221b8a4588450d251617d643e50d3f048d1d81ee",
-    "docs/archive/planning/2026-09-roadmap-ledger.md": "ac1df95fd9a726cbb1ec52d3d75d59c1436a3e94cd91659d913dab8e87793ed4",
-    "docs/archive/planning/framework-delivery-review.md": "737c9423d652e6cea876a246b141da4fb00bc31b30a6430a6cd1483e73541d71",
-    "docs/archive/planning/provider-toolset-handoff.md": "c2b706d81be54f1d781480ceec514f6efd21f4a4303bb772b068e3483749e69b",
-    "docs/archive/planning/stage-cleanup-review-2026-09-06.md": "8ea1d55659e113e3115d129917087af35096829a539bed7cf4f22d87985032d4",
-    "docs/archive/verification/release-history.md": "9da0d5bc05d9be650876abf597ef2c90c76076aaf4a3ae3018152d966cec8718",
-    "docs/catalog.toml": "53ab3b989c9addd8dc18968f6471afa3a151834c6c95a77a789d8af13b41c22e",
-    "docs/handoffs/framework-delivery.md": "missing",
-    "docs/index.md": "66e4ee1579ef27ed992567a8f072b5189bbb8eb0f8a057d9ba87f4085f2e8d97",
-    "docs/product-direction.md": "8135010ba7af6af0ba9fad5f07d54f643f55d2ee43ca704cd3408a14355c3841",
-    "docs/release-verification.md": "5925c941134e4580f16a9003976fdfb1e9f03a084463fc4db5601dbf99f157ee",
-    "docs/roadmap.md": "fdf03e50a90409aebc4867a4a1ba54747843dc79ba8f6b00022ca7149d6f0cf2"
+    ".agents/skills/day-end/SKILL.md": "1580b5be8ecfdeb4a3f52e3d73bbf747dc10b3bf0ca57a81727934096431f0ab",
+    ".agents/skills/day-start/SKILL.md": "9535c7de7de2ad869bc9de93c498c909246948cf43acd2c2d9cc4f2f5e49e77e",
+    ".agents/skills/handoff/SKILL.md": "e789e8a9b14f98731b54511ff76adbcb325935066820e64bc9535a414859df6b",
+    ".ai-dlc/agent-ownership.json": "31c29e473ce790fdf3ce67d41b985754eed18e0ca6477fcd37691c29c0496e1a",
+    ".ai-dlc/work/session-learnings.toml": "fe1b1dc7f274bb46ff5bc80a5322d9006f889fc18b40c2c6d7366e9b35a6dbc1",
+    ".claude/skills/day-end/SKILL.md": "1580b5be8ecfdeb4a3f52e3d73bbf747dc10b3bf0ca57a81727934096431f0ab",
+    ".claude/skills/day-start/SKILL.md": "9535c7de7de2ad869bc9de93c498c909246948cf43acd2c2d9cc4f2f5e49e77e",
+    ".claude/skills/handoff/SKILL.md": "e789e8a9b14f98731b54511ff76adbcb325935066820e64bc9535a414859df6b",
+    "agents/skills.lock.json": "dcc94efb95e5a412ccdfbeb2dceefa3c3cb5d094b5efbbd41d5b078af769798d",
+    "agents/skills/day-end/SKILL.md": "1580b5be8ecfdeb4a3f52e3d73bbf747dc10b3bf0ca57a81727934096431f0ab",
+    "agents/skills/day-start/SKILL.md": "9535c7de7de2ad869bc9de93c498c909246948cf43acd2c2d9cc4f2f5e49e77e",
+    "agents/skills/handoff/SKILL.md": "e789e8a9b14f98731b54511ff76adbcb325935066820e64bc9535a414859df6b",
+    "docs/architecture.md": "8bafa96f47da57bde830616401e193107eea00298d89d3ae8ee633a1dfc30604",
+    "docs/catalog.toml": "ae73af3778eb22ac0a74555b430e2f32257b1a79bac5d1d3666314be9e2c095f",
+    "docs/design/local-and-shared-knowledge.md": "350186edba432243e768cca349558aa3fa125f2ef7d71ec9d63e1104608da432",
+    "docs/workflows/tool-map.md": "e14f944469e5cdbf0f6e21970a6c4f572d7c7272d44d41d6fe74cd150d486269",
+    "openspec/changes/archive/2026-09-14-session-learnings/design.md": "4afe6ae7175dcfd8808edea6958a3a33f1de9ac8e7101217f94f579de914eb31",
+    "openspec/changes/archive/2026-09-14-session-learnings/proposal.md": "42ed876a65f8acea211ffd1acee07f7c73a95d2bcfc83680f38aeb6d41f73589",
+    "openspec/changes/archive/2026-09-14-session-learnings/specs/session-learnings/spec.md": "a7dc17736ccb8b732b579b5c9fb091b1a42a94d5bca74f954f5051b441b50ce7",
+    "openspec/changes/archive/2026-09-14-session-learnings/tasks.md": "265bc5a841d32f6af6c1598d2ced8075a2b054aeca71178629a425dc0ae19ee1",
+    "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
+    "openspec/specs/session-learnings/spec.md": "d6d288fc9b8aee72b85b56b30e2cb88dcb4acd2530c3b3b7c0e31854492cc89b",
+    "project-templates/project/docs/workflows/tool-map.md": "030aef448cf4df0279c1a0e6f3b9f8c5f6f6cc71bee172cca90f3196e5368b6e",
+    "pyproject.toml": "57b5a7f4ea777185ab5df4b34c4117a190d41434e1e236b38735987c96ccc529",
+    "scripts/check_generated.py": "2a5e65cb653c0cf9b44dc34765a6d2d4affcfda9b310231a2abed4b3de82771a",
+    "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
+    "scripts/qualify_framework.py": "01dd9e6acbe14e740f068662aa539e9a7ed0ba57ab97e9457e0a05d968a25fb6",
+    "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+    "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
+    "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
+    "src/ai_dlc/cli.py": "f0a5d91926db9448be4dbd451baca545970e27072c430806f9a0d51e558d8c8d",
+    "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
+    "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
+    "src/ai_dlc/config.py": "31677c538713aa41d3625ef9570f962ed8ee5d32bd4b5b3747437e8fd8fb9d02",
+    "src/ai_dlc/conformance.py": "9d18cdbf21aa8f9889d880729c368d9567f32f83c066693dceb06ce6549b6082",
+    "src/ai_dlc/contracts.py": "f61ee2fc622d4f58f8e424f7d4b6a5258f6ab3b7edc7ea3d019e8ca9aa0e48a9",
+    "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
+    "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
+    "src/ai_dlc/documentation/document_files.py": "503a38d4df2a1f9d0832d083dcd420ebd1215389385293dd0605fc768c5dd320",
+    "src/ai_dlc/documentation/document_impact.py": "585114e1808a5557c00f261a873868a8a5a91baaff29c4b790a65d213dfd97a9",
+    "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
+    "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
+    "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
+    "src/ai_dlc/documentation/documents.py": "f42322918de5da6b8caa39e9f18e88aff26501d7f2253fbe2462d242126ea29e",
+    "src/ai_dlc/documentation/knowledge.py": "49cbeb865bd6ef281f57b1d6a0fe7483150cfe828e73d6fbe0d46194f9ecfcba",
+    "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
+    "src/ai_dlc/documentation/learnings.py": "5ea35f5bcb5d8ae7f0fbf593136822c1faa15fbe003957665cb4dcd4d6db1c3a",
+    "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
+    "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
+    "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
+    "src/ai_dlc/documentation/workspace_diagnostics.py": "c53cc66966888078108662d6a307b00c8746c6a8f1d8098938529c65d5694b61",
+    "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
+    "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
+    "src/ai_dlc/environment/enrollment.py": "ab1f0e729ee497af2c0dea9faf81aba0b46d19deac102371b0f786dd4d4c4343",
+    "src/ai_dlc/environment/machine.py": "491128faaec9634ec29ef0ebc9a38af3dfe25499e533543fcecf0734d2e50d1a",
+    "src/ai_dlc/environment/profile_source.py": "f177cc9336ed7c69e37299bc70107f14a7878ff72abbd1070dc3560340d451cc",
+    "src/ai_dlc/errors.py": "b8c0da78ec0e9ea75ef71b4495b501570625988ba5ae54c4631f1ca20a8362c1",
+    "src/ai_dlc/files.py": "2f05c94534fc6222cc7dd6f61c603cf48b99baeb78eeb31de03c5ae87e779ef2",
+    "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
+    "src/ai_dlc/harness/agents.py": "65607b98a6f113f608b26d726656cb29b5f7bff2e58c4f7ee25f0c3c8d6940c4",
+    "src/ai_dlc/harness/components.py": "b64cd2ae837f83a37ddd1c74dad25fcd16fe8733715c224c7d64673784ebba11",
+    "src/ai_dlc/harness/friction.py": "2ee91f430edda968db2f00762f07245a7717618f992b3a260683d79e390c2882",
+    "src/ai_dlc/harness/hooks.py": "6841d63a9b1942a206c57aec4b1067606d5ce0b8ad409ce42b9b4b155bbf16ff",
+    "src/ai_dlc/harness/native_composition.py": "1e4c5729ff31cb91820bd8df3d15b60c1067b4a5f2b89381888211470dc79bc8",
+    "src/ai_dlc/harness/user_agents.py": "c99f9a52a379feaa0c1721081b95fef91f51c44f0a9e906145de51154616e937",
+    "src/ai_dlc/harness/workflow_bundles.py": "477dc842b3cdfe240a54a96910786693f9f3b75f2fd528753440c29f26330b36",
+    "src/ai_dlc/locking.py": "f1cfe828e897e11d73b645130060362e2699f75aac9307ed8cb4955b0533b629",
+    "src/ai_dlc/mcp_server.py": "d97a85c9f2e3af650353231ed68b550a3511a5ab3d409b5ad1094578930e8ad9",
+    "src/ai_dlc/provider_definitions.py": "e90c2d41a839bc4a32dcb3989f59fa6c9073bd1233f3db2088bd176e1bc513d3",
+    "src/ai_dlc/providers/__init__.py": "79308afdb659a23865b422bb423bbd57c01cc1aa52929f56674c79c6e3cbfd6a",
+    "src/ai_dlc/providers/github_issues.py": "55a18a178fc329a94ff95f39b72c5599117c5a8e79842d7cc7c6c8966cbed405",
+    "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
+    "src/ai_dlc/providers/jira_cloud.py": "d9b83ba88fb964816450b1479fc775a526455c023725ecff3c8ca695ac7cd8c8",
+    "src/ai_dlc/providers/linear.py": "fa90bd64765c8e8bee1cbfa54e47e17688e8e6407c7492ae0ed863b4615c2b95",
+    "src/ai_dlc/providers/openspec.py": "5568fd528a83ee659d05cf9e48d9303ae26e2ded7eeb241ba6331a06c63068ee",
+    "src/ai_dlc/providers/plane.py": "f05450be6fa35ae10c8ae7531518797be5a3f778ec25d517c88fb49efbe9f9a3",
+    "src/ai_dlc/providers/plane_attempts.py": "bfa9b5015f7dc554b9e58af82c680d97d3f0a5271bc0afe6102a81fbf697c20a",
+    "src/ai_dlc/providers/python_exec.py": "3aaafe9bf74a4a949b59d71ed2079b9c48114462a9c823b3641a1772af5a6ff1",
+    "src/ai_dlc/providers/scm.py": "55d21698f752048cbc99c8e7443f54fcd1f8ab062301112a7d6b1f71953cfe57",
+    "src/ai_dlc/setup/__init__.py": "8eb444a69a67d0c1a59ffc0c80ce59efda159976bea58d40154e97f8bdecf18c",
+    "src/ai_dlc/setup/connections.py": "e80cbe0e1e94ae5f9d8f60ae044918e8f9e377e173a25ff7bd91f28180a24d15",
+    "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
+    "src/ai_dlc/setup/github_project_setup.py": "55984de17559ba2d56b3b1c7483dabb8a6f05f1e773e8bd9d40437a2d30ee85e",
+    "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
+    "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
+    "src/ai_dlc/setup/project.py": "23909295adda10d5ecddb226aedae85c7db19db992e0fcf10a581c15bab5db13",
+    "src/ai_dlc/setup/provider_onboarding.py": "be120ad6e93c178f041fd338a45a5df7c75b9a30591725cfbf7800bca531045e",
+    "src/ai_dlc/setup/provision.py": "39958dca8c86512546ce17262d1df2338053de11895541540438f53cb9b5d2fc",
+    "src/ai_dlc/setup/readiness.py": "e0984a1f504ee87f3c4c1939624b34ccfe2fd6b7315df365166e95ff3b975d55",
+    "src/ai_dlc/setup/rebind.py": "2458691c83e22c613ee3eb7541e103aee7264e7b23a78c17194135bc3d5a35c6",
+    "src/ai_dlc/setup/templates.py": "bbfb4f26c103e3a5210fb8b97a6d843b615efac5f10ddedb28734f254061beb6",
+    "src/ai_dlc/setup/tracker_targets.py": "b04533ac254bde0aa7bddf083097d815153998f15b1042645ac4ffc38f848319",
+    "src/ai_dlc/setup/workstation.py": "8ac8f2467ee925392f777e15d921ad79da8a10c94267bbd30f5386455db4e8d2",
+    "src/ai_dlc/toml_edit.py": "696057b2848ca8b57e5189d1c78441fc6c1e06994f480f6f13f8dd31c050515e",
+    "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
+    "src/ai_dlc/verification/sandbox.py": "c017bd12115b8f144d07eba619f4e15ddbd00db323e4d386f569c4bcb08646e0",
+    "src/ai_dlc/verification/test_proxy.py": "f38cb2a28c8501c743613b0bfdf7e17f367c101ce7984a304e20ab3095eb7880",
+    "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
+    "src/ai_dlc/work/journal.py": "c088818e99c8c06cc4745ae403a62f9de8c5d503fdc7ab6107760f212ffa5106",
+    "src/ai_dlc/work/traceability.py": "c4062335f26218e99f58e236425674c513ea6f2fce7f68b624a4df4dcd8ab3aa",
+    "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
+    "src/ai_dlc/work/workflow.py": "3ccaffd53e36ea37345ff648a9579ecc770737e35d8778c5acfb46d6fee3c4e7",
+    "tests/test_knowledge.py": "38e5cda9c9dc1fe97d12618a0bd9a86b2725cff059d412232152582af1547af1",
+    "tests/test_session_learnings.py": "32bb7c3143db24ff96fb43ac5081285e77a93bd8d8d825076f3422cbfe194796",
+    "tests/test_vault_link.py": "fd146d4d15041021ac343257c9d91a8c1950878d275420eda85d13747065e110",
+    "tests/test_vault_mount.py": "f6a5dc947af0d68e4688c37d05294c6b4868aa98ead91d26aa0c8ffec8018424",
+    "tests/test_workflow.py": "0a4bd19ac2b4d1061d45e766a55ae25ecd7609846316d0dd9039d4d046fdcb0b",
+    "tests/test_workspace_diagnostics.py": "ab9e91a770c751d132d8e2d963a0f537a1041ab6fa56b00ee14f2f6f153ac25e"
   }
 }

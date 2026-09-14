@@ -27,7 +27,7 @@ scm = "github"
 deploy = "none"
 
 [artifacts]
-spec = "openspec/changes/session-learnings"
+spec = "openspec/changes/archive/2026-09-14-session-learnings"
 tracker = "82"
 branch = "work/session-learnings"
 
