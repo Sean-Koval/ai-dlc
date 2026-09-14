@@ -868,7 +868,7 @@ def next_summary(
     with service_call():
         summary = summarize_next(root, include_all=all_records)
     if as_json:
-        emit(summary)
+        emit(summary["records"])
     else:
         typer.echo(render_next(summary), nl=False)
 

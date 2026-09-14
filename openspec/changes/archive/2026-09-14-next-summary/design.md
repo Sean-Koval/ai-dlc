@@ -12,7 +12,7 @@ Give a person or agent a readable list of active records with the next command f
 - Lines are ordered by how actionable they are for a new session: `in progress`, then `awaiting merge, archive first`, then `awaiting merge`, then `unpublished`, and by ID within a state. The session-start hook keeps only the first ten lines, so the work an agent should continue comes first.
 - The next command for `in progress` is `ai-dlc work pr <id>`, which issue #73 delivers; the summary names the command the workflow intends rather than a workaround.
 - The text is rendered by the work package and printed verbatim by the CLI; the hook calls the same function and falls back to the previous one-line instruction when the project cannot be read, so a broken record never blocks a session start.
-- `--json` returns an object with a `status` string and the record list rather than a bare list, following the repository's result-envelope rule; the fields per record are exactly `id`, `state`, `tracker`, `pr` and `next`.
+- `--json` emits the explicitly requested row list, with exactly `id`, `state`, `tracker`, `pr` and `next` per record. The shared service and MCP brief response retain the summary envelope internally; the CLI list is the presentation contract requested by issue #77.
 - Rejected: reading the operation journal for finish evidence. It is machine-local, keyed by binding fingerprints, and absent in a fresh checkout, so it would make the summary differ between machines.
 
 ## Risks / Trade-offs

@@ -128,14 +128,14 @@ def test_next_command_prints_text_or_json_offline(tmp_path, monkeypatch):
     result = CliRunner().invoke(app, ["next", "--root", str(root), "--json"])
     assert result.exit_code == 0, result.output
     payload = json.loads(result.output)
-    assert payload["status"] == "ok"
-    assert [record["id"] for record in payload["records"]] == [
+    assert isinstance(payload, list)
+    assert [record["id"] for record in payload] == [
         "provider-identity-projection",
         "unarchived",
         "no-spec",
         "work-artifact-validation",
     ]
-    assert set(payload["records"][0]) == {"id", "state", "tracker", "pr", "next"}
+    assert set(payload[0]) == {"id", "state", "tracker", "pr", "next"}
 
     result = CliRunner().invoke(app, ["next", "--root", str(root), "--all"])
     assert result.output.startswith("Active work (5 of 5 records; tracker not consulted)")

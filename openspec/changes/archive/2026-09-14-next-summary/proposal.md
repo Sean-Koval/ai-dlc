@@ -5,7 +5,7 @@
 
 ## What Changes
 - A new offline `ai-dlc next` command SHALL derive each record's lifecycle state from its local artifacts alone: `unpublished` (no tracker artifact), `in progress` (tracker, no pull request), `awaiting merge, archive first` (pull request and an unarchived OpenSpec change) and `awaiting merge` (pull request and an archived change, or no specification required).
-- The summary SHALL print a fixed plain-text shape with one line per active record, the required checks and the check command, and SHALL state that the tracker was not consulted. Records without a tracker are listed only with `--all`. `--json` SHALL return the same data with a `status` string.
+- The summary SHALL print a fixed plain-text shape with one line per active record, the required checks and the check command, and SHALL state that the tracker was not consulted. Records without a tracker are listed only with `--all`. `--json` SHALL return the requested list of record objects.
 - `ai-dlc context --brief` SHALL print that text; `ai-dlc context` without the flag is unchanged for machines.
 - The session-start hook SHALL include the first ten lines of the summary in the context it returns.
 - The tool map and the `day-start` skill SHALL point at `ai-dlc next`.

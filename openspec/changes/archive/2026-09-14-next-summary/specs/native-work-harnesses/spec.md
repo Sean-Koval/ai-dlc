@@ -2,7 +2,7 @@
 
 ### Requirement: NH-05 Offline next-step summary
 
-`ai-dlc next` SHALL derive each work record's lifecycle state from its local artifacts alone and print a plain-text summary naming the state and the next command per record, the required checks and the check command, and stating that the tracker was not consulted. A record without a `tracker` artifact is `unpublished`; with a tracker and no `pr` it is `in progress`; with a `pr` and a specification under `openspec/changes/` outside `openspec/changes/archive/` it is `awaiting merge, archive first`; with a `pr` and an archived specification, or no required specification, it is `awaiting merge`. Unpublished records SHALL appear only with `--all`. `--json` SHALL return the same records as `id`, `state`, `tracker`, `pr` and `next` with a `status` string. `ai-dlc context --brief` SHALL print the same text, `ai-dlc context` SHALL keep its machine-readable output, and the session-start hook SHALL include the first ten lines of the summary.
+`ai-dlc next` SHALL derive each work record's lifecycle state from its local artifacts alone and print a plain-text summary naming the state and the next command per record, the required checks and the check command, and stating that the tracker was not consulted. A record without a `tracker` artifact is `unpublished`; with a tracker and no `pr` it is `in progress`; with a `pr` and a specification under `openspec/changes/` outside `openspec/changes/archive/` it is `awaiting merge, archive first`; with a `pr` and an archived specification, or no required specification, it is `awaiting merge`. Unpublished records SHALL appear only with `--all`. `--json` SHALL return a JSON list of records with exactly `id`, `state`, `tracker`, `pr` and `next` fields. `ai-dlc context --brief` SHALL print the same text, `ai-dlc context` SHALL keep its machine-readable output, and the session-start hook SHALL include the first ten lines of the summary.
 
 #### Scenario: A record has no tracker artifact
 - **WHEN** the summary reads a record whose artifacts have no `tracker`
@@ -22,7 +22,7 @@
 
 #### Scenario: The summary makes no remote calls
 - **WHEN** `ai-dlc next` runs with an empty `PATH` and no network
-- **THEN** it exits 0 in under one second, reads only the repository tree, and its JSON form carries a `status` string
+- **THEN** it exits 0 in under one second, reads only the repository tree, and its JSON form is the requested list of record objects
 
 #### Scenario: A session starts
 - **WHEN** the session-start hook runs in a project whose records can be read
