@@ -229,7 +229,7 @@
   ],
   "reviewer": "codex-delivery",
   "schema": 1,
-  "snapshot": "7b388b458706fc5b2f16e9c94808397d44bcac77afd3435b15ab7e32b5be2ef5",
+  "snapshot": "9055c2c895092942029ee784f2bba6585c53ac005ca079f4e721ba40165aac4b",
   "sources": {
     ".agents/skills/handoff/SKILL.md": "e4f3b4ef1ae4c978d2598229db2e8a2b1777d2790655728f95aaab8091b03a93",
     ".agents/skills/spec-from-prd/SKILL.md": "31484bb55fd2d3b6eca48fb8e11bd74c7adbe169dad032b6a8c51076bf3854a7",
@@ -362,7 +362,7 @@
     "tests/test_document_review.py": "88f37e6365c7e9b545d668f978993ef7ad9acfa146e7d549728f4ef9cab8008a",
     "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
     "tests/test_github_projects.py": "8ddbcd782029494fde1bf652aa71eb93ae59912a542e6d6e152d0e180af2d84e",
-    "tests/test_jira_workflow.py": "6dcb08bff820a23d1b69c569c28a139d8f47f39dc680f60faa9946464377e97f",
+    "tests/test_jira_workflow.py": "e29ed7069f11d08cbaeb3e2f4bd16bd3ea0bd2aab2e179c6e423b75255288a6b",
     "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7",
     "tests/test_plane_workflow.py": "9eee591c8c8a029e4b096440b16eb00bf1595846f2686649fee221dbfc844381",
     "tests/test_provider_onboarding.py": "af4ebc8ecc88113bc1dddfbddc3754ca805704441a15d5a49ed79b24b2529ad1",
