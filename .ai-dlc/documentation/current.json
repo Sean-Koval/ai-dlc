@@ -189,7 +189,7 @@
   ],
   "reviewer": "codex-delivery",
   "schema": 1,
-  "snapshot": "ccd0d4373da6daeca6f446aae94f941e481677d16215ab94fc11186507ddebeb",
+  "snapshot": "7458a4fad25e36012db1bc5788919300c186d3ab495616b6b1bfc03b66ba8681",
   "sources": {
     ".agents/skills/handoff/SKILL.md": "e4f3b4ef1ae4c978d2598229db2e8a2b1777d2790655728f95aaab8091b03a93",
     ".agents/skills/spec-from-prd/SKILL.md": "31484bb55fd2d3b6eca48fb8e11bd74c7adbe169dad032b6a8c51076bf3854a7",
@@ -215,7 +215,7 @@
     "openspec/changes/archive/2026-09-14-work-new-from-issue/design.md": "14d74fb4f164ce8bf29ef544e9b7b41ad2e8c6c9bf85f8c5bba4a80e5c13a77c",
     "openspec/changes/archive/2026-09-14-work-new-from-issue/proposal.md": "8becfa187c2b6cbdaf744dad552f0daac6200afdd3b908753fe1a897cb808f26",
     "openspec/changes/archive/2026-09-14-work-new-from-issue/specs/spec-delivery-traceability/spec.md": "c592e2560b37f5cd4e891cd85e0a7ff1d41a217b85ffe53f325010e4d4337aa1",
-    "openspec/changes/archive/2026-09-14-work-new-from-issue/tasks.md": "bdabc4bdf77d0429cd6626c8bbe98c0a013bff76ca253d658c9c73b7c7052e96",
+    "openspec/changes/archive/2026-09-14-work-new-from-issue/tasks.md": "64eb4dacdf8135688c52df517b07ddf93d8305da89beedfd77d44c4a70ffbd71",
     "openspec/changes/archive/2026-09-14-work-start-commit/design.md": "832cf7219c31ebd6869a3aff5f7fe17f5d776fd1798653e2992fa9a38abf9f6a",
     "openspec/changes/archive/2026-09-14-work-start-commit/proposal.md": "614deb24605fd84e18f3c674bb7c2075c7f866f8dc5246c7c633eab463453395",
     "openspec/changes/archive/2026-09-14-work-start-commit/specs/spec-delivery-traceability/spec.md": "4143285bc372fa3b81db264389e64fed9b4e7cf2fd21770bf1552f00622d1bb3",
