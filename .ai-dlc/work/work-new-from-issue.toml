@@ -1,0 +1,29 @@
+schema = 1
+id = "work-new-from-issue"
+title = "Create unreviewed work records from tracker items"
+scope = "Add work new with safe offline drafting, issue-derived fields and explicit TODOs; preserve review and provider ownership boundaries."
+requires_spec = true
+spec_reason = "Adds observable work record creation and CLI behavior."
+acceptance = [
+    "Issue acceptance bullets are copied with reviewed=false and the tracker reference.",
+    "Offline creation and validation do not initialize mutation state.",
+    "Existing records and unsafe IDs are refused without writes.",
+    "Tests cover missing issue sections, explicit overrides and fresh record validation.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "TR-01",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/work-new-from-issue"
+tracker = "72"
+branch = "codex/work-new-from-issue"

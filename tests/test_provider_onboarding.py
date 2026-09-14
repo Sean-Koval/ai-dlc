@@ -1522,6 +1522,7 @@ def test_work_service_constructor_cannot_pair_old_runtime_with_new_source_versio
 
     monkeypatch.setattr(workflow, "Journal", journal_after_apply)
     service = workflow.WorkService(root, old_config, state_path=tmp_path / "state")
+    _ = service.journal  # Trigger the lazy journal initialization/configuration race.
 
     with pytest.raises(ValueError, match="configuration changed"):
         service.load("constructor-race", mutation=True)

@@ -2399,3 +2399,114 @@ def test_pr_recovers_success_before_record_link(tmp_path, monkeypatch):
     monkeypatch.setattr(service, "link", original)
     assert service.pr("one")["pr"]["url"] == scm.url
     assert len(scm.pull_requests) == 1
+
+
+def test_new_work_offline_is_unreviewed_valid_and_creates_no_state(tmp_path):
+    from ai_dlc.work.workflow import WorkService, validate_work
+
+    state = tmp_path / "state"
+    service = WorkService(
+        tmp_path, {"roles": {"tracker": "fake", "agent-client": ["codex"]}}, state_path=state
+    )
+    result = service.new("demo", title="T", scope="S", acceptance=["A"])
+    assert result["reviewed"] is False
+    assert result["providers"] == {"tracker": "fake"}
+    assert result["requirements"] == result["depends_on"] == []
+    assert validate_work(tmp_path, service.config, "demo")["valid"]
+    assert not state.exists()
+    with pytest.raises(ValueError, match="reviewed"):
+        service.load("demo", mutation=True)
+
+
+@pytest.mark.parametrize(
+    "body, acceptance",
+    [
+        (
+            "## Why\n\nFirst paragraph.\nStill first.\n\nSecond.\n\n## Acceptance criteria\n- A\n* B\n\n## Other\n- C",
+            ["A", "B"],
+        ),
+        ("Scope only.", ["TODO: state acceptance"]),
+        ("## Acceptance\n- One\n+ Two", ["One", "Two"]),
+    ],
+)
+def test_new_work_from_issue_preserves_source_fields(tmp_path, body, acceptance):
+    from ai_dlc.work.workflow import WorkService
+
+    tracker = Tracker()
+    tracker.items = [{"id": "68", "title": "Issue title", "body": body, "state": "open"}]
+    service = WorkService(
+        tmp_path,
+        {"roles": {"tracker": "fake"}},
+        state_path=tmp_path / "state",
+        registry=Registry(tracker),
+    )
+    result = service.new("demo", tracker_reference="68")
+    assert result["title"] == "Issue title"
+    assert result["acceptance"] == acceptance
+    assert result["artifacts"] == {"tracker": "68"}
+    assert result["requires_spec"] is True
+    assert result["spec_reason"] == "TODO: record the specification decision"
+    assert result["reviewed"] is False
+    if body.startswith("## Why"):
+        assert result["scope"] == "First paragraph.\nStill first."
+
+
+def test_new_work_overrides_and_refusals_do_not_overwrite(tmp_path):
+    from ai_dlc.work.workflow import WorkService
+
+    tracker = Tracker()
+    tracker.items = [{"title": "Issue", "body": "Issue scope."}]
+    service = WorkService(
+        tmp_path,
+        {"roles": {"tracker": "fake"}},
+        state_path=tmp_path / "state",
+        registry=Registry(tracker),
+    )
+    result = service.new(
+        "demo",
+        tracker_reference="68",
+        title="Override",
+        scope="Explicit",
+        acceptance=["A"],
+        requires_spec=False,
+        spec_reason="Configuration only",
+    )
+    assert result["title"] == "Override" and result["scope"] == "Explicit"
+    assert result["requires_spec"] is False and result["acceptance"] == ["A"]
+    path = tmp_path / ".ai-dlc/work/demo.toml"
+    before = path.read_bytes()
+    for work_id in ["demo", "../escape", ""]:
+        with pytest.raises(ValueError):
+            service.new(work_id, tracker_reference="68")
+    assert path.read_bytes() == before
+    with pytest.raises(ValueError):
+        service.new("invalid", title="", scope="S", acceptance=[])
+    assert not (path.parent / "invalid.toml").exists()
+
+
+def test_new_work_refuses_symlink_and_configuration_change_during_read(tmp_path):
+    from ai_dlc.work.workflow import WorkService
+
+    project = tmp_path / "ai-dlc.toml"
+    project.write_text('schema=4\n[roles]\ntracker="fake"\n')
+    tracker = Tracker()
+    service = WorkService(
+        tmp_path,
+        {"schema": 4, "roles": {"tracker": "fake"}},
+        state_path=tmp_path / "state",
+        registry=Registry(tracker),
+    )
+    directory = tmp_path / ".ai-dlc/work"
+    directory.mkdir(parents=True)
+    (directory / "linked.toml").symlink_to(tmp_path / "missing")
+    with pytest.raises(ValueError, match="symlink"):
+        service.new("linked", title="T", scope="S", acceptance=["A"])
+
+    def read_with_drift(operation, payload):
+        project.write_text('schema=4\n[roles]\ntracker="other"\n')
+        return {"title": "Issue", "body": "Scope"}
+
+    tracker.invoke = read_with_drift
+    with pytest.raises(ValueError, match="configuration changed"):
+        service.new("drift", tracker_reference="68")
+    assert not (directory / "drift.toml").exists()

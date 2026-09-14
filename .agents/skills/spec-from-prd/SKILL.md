@@ -50,7 +50,7 @@ Resolve material product choices with their owner before dependent implementatio
 
 ## Validate and hand off
 
-Prepare the supported Work fields using the template. Run
+Create the local draft with `ai-dlc work new WORK_ID --from-issue REF` when a tracker item exists, or explicit `--title`, `--scope` and repeated `--acceptance` flags for offline work. Drafts remain unreviewed; replace TODOs, record the specification decision, add artifact/requirement/dependency references and review before mutation. Existing records are never overwritten. Run
 `ai-dlc work validate WORK_ID --root PATH` before publication. This read-only check
 validates the selected dependency graph and local artifacts, not remote completion
 or specification meaning. Do not invent successful validation when it was not run.

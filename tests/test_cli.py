@@ -1117,3 +1117,41 @@ def test_work_start_and_link_offer_no_commit(command):
 
     assert result.exit_code == 0, result.output
     assert "--no-commit" in unstyle(result.output)
+
+
+def test_work_new_offline_output_validation_and_refusal(tmp_path, monkeypatch):
+    import json
+
+    from typer.testing import CliRunner
+
+    from ai_dlc.cli import app
+
+    monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "state"))
+    (tmp_path / "ai-dlc.toml").write_text("schema=4\n")
+    args = [
+        "work",
+        "new",
+        "demo",
+        "--root",
+        str(tmp_path),
+        "--title",
+        "T",
+        "--scope",
+        "S",
+        "--acceptance",
+        "A",
+        "--acceptance",
+        "B",
+    ]
+    result = CliRunner().invoke(app, args)
+    assert result.exit_code == 0, result.output
+    assert json.loads(result.stdout)["acceptance"] == ["A", "B"]
+    assert str(tmp_path / ".ai-dlc/work/demo.toml") in result.stderr
+    assert (
+        CliRunner().invoke(app, ["work", "validate", "demo", "--root", str(tmp_path)]).exit_code
+        == 0
+    )
+    assert not (tmp_path / "state").exists()
+    refused = CliRunner().invoke(app, args)
+    assert refused.exit_code == 1
+    assert "error:" in refused.stderr

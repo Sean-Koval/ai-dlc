@@ -893,6 +893,38 @@ def work_validate(
     conclude(result)
 
 
+@work.command("new")
+def work_new(
+    work_id: str,
+    from_issue: Annotated[str | None, typer.Option("--from-issue")] = None,
+    title: str | None = None,
+    scope: str | None = None,
+    requires_spec: Annotated[
+        bool | None, typer.Option("--requires-spec/--no-requires-spec")
+    ] = None,
+    spec_reason: str | None = None,
+    acceptance: Annotated[list[str] | None, typer.Option("--acceptance")] = None,
+    root: Path = Path("."),
+    machine: Path | None = None,
+):
+    """Create an unreviewed local work record from explicit fields or an issue."""
+    try:
+        record = service(root, machine).new(
+            work_id,
+            tracker_reference=from_issue,
+            title=title,
+            scope=scope,
+            requires_spec=requires_spec,
+            spec_reason=spec_reason,
+            acceptance=acceptance,
+        )
+    except SERVICE_FAILURES as exc:
+        typer.echo(f"error: {exc}", err=True)
+        raise typer.Exit(1) from exc
+    emit(record)
+    typer.echo(str(root.resolve() / ".ai-dlc/work" / f"{work_id}.toml"), err=True)
+
+
 @work.command("publish")
 def work_publish(work_id: str, root: Path = Path("."), machine: Path | None = None):
     emit(service(root, machine).publish(work_id))
