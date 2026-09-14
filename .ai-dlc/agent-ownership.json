@@ -11,7 +11,7 @@
     ".agents/skills/needs-spec/SKILL.md": "573d9e79cbc1b15e911a5dffdd61bcf2eaf1d089f491b2445d45b77d53bbb2f2",
     ".agents/skills/prd-draft/SKILL.md": "e6d457ee65f4d7dd184bef4fc8285253951098484fba9bb3cedbe1512729dc0e",
     ".agents/skills/review-inbox/SKILL.md": "8b58913b870212b4b04b14d921efb72ed92007cec043513eb3baef36e907c846",
-    ".agents/skills/spec-from-prd/SKILL.md": "2eb7ed662abb19409ff15478c8d3df907e626744259886017e476365979fa59b",
+    ".agents/skills/spec-from-prd/SKILL.md": "14722e17cd63f16390e6af09a7da96e2c9f4991c2aa2f1eb20b0078ca6aa6dfb",
     ".ai-dlc/providers/github-issues.md": "ba2561b54321146c8e63dc7f7e3ec72b8838f2c76480c36c99866075aecc3203",
     ".ai-dlc/providers/github.md": "98807e0581fb150c5e24d2769807e792d7e929d1cde8bf4961000e010db47fe8",
     ".ai-dlc/providers/none.md": "a38c86e4b3a20c3dd2380de93d43a32cbef17ed2c9a6b564be9fcc6590830ed7",
@@ -28,7 +28,7 @@
     ".claude/skills/needs-spec/SKILL.md": "573d9e79cbc1b15e911a5dffdd61bcf2eaf1d089f491b2445d45b77d53bbb2f2",
     ".claude/skills/prd-draft/SKILL.md": "e6d457ee65f4d7dd184bef4fc8285253951098484fba9bb3cedbe1512729dc0e",
     ".claude/skills/review-inbox/SKILL.md": "8b58913b870212b4b04b14d921efb72ed92007cec043513eb3baef36e907c846",
-    ".claude/skills/spec-from-prd/SKILL.md": "2eb7ed662abb19409ff15478c8d3df907e626744259886017e476365979fa59b"
+    ".claude/skills/spec-from-prd/SKILL.md": "14722e17cd63f16390e6af09a7da96e2c9f4991c2aa2f1eb20b0078ca6aa6dfb"
   },
   "mcp": {},
   "schema": 2

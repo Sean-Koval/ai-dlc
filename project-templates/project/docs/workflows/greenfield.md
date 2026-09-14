@@ -6,6 +6,16 @@ independent operational ownership.
 
 [Back to the workflow map](../development-workflow.md)
 
+For an HTTP backend, include `--capability backend` in the selected capability list.
+It creates `docs/api/openapi.yaml` with a health endpoint, catalogs the contract,
+and adds `api-contract`. Setup prepares exact pinned validators; subsequent checks
+use offline execution. Python uses openapi-spec-validator 0.7.2 and Node uses
+Redocly CLI 1.34.16; generic and Rust use the pinned Python validator through uvx.
+Python also adds `api-contract-drift`, which skips absent/non-FastAPI apps and
+compares one `src/<pkg>/app.py` FastAPI app against the committed contract with a
+readable diff. Update the contract with HTTP behavior changes and record its path
+as `artifacts.contract`; the check never rewrites it.
+
 ```mermaid
 flowchart TD
     I[Initialize] --> B[Bootstrap]
