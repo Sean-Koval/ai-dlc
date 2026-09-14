@@ -1,5 +1,5 @@
 {
-  "base": "ad72a444669346122438958f9c8bd2c7a6a0501a",
+  "base": "ddbba9c139c6061dd31627a2bd8f320e4f598225",
   "decisions": [
     {
       "outcome": "updated",
@@ -14,11 +14,11 @@
   ],
   "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "63176f45cdde611ca0f546ed1f510c7751789c437710270e292832ef9925e01a",
+  "snapshot": "772dd8d705eb5e58af0d265db1313ed36358c78f57f3e77258cd5c01d97284ee",
   "sources": {
     ".github/workflows/release.yml": "c32926d61ee30cd32aa03fa899c74f395decdb152833f572d4e1ade4c28993b5",
-    "docs/catalog.toml": "2d26cc3de271b239d02f381e227975d403bba0e619b01149f1e8f9cf842bbb72",
-    "docs/release-verification.md": "f644f124b8dd9099374933222eb484565fd626ecbc34adb2e575c02df1ce9de6",
+    "docs/catalog.toml": "177674bfa816a6966f84c9b7ef5f625576b531ed1b406159425d9042b70e11a0",
+    "docs/release-verification.md": "77885fb550e5d8b994488285397fec181e57d7a69c8c77ed4ba5529398760096",
     "openspec/changes/archive/2026-09-13-release-publication/tasks.md": "3ea7292cf8fc05a3b2e67af5caac998ea75ea0276aa5190581d4c5db6c76dd70",
     "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
     "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
