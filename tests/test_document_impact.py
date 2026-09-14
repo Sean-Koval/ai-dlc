@@ -245,3 +245,51 @@ def test_disposition_refuses_base_missing_from_checkout(project):
         api().prepare_disposition(
             project, base=new_base, decisions=API_DECISIONS, reviewer="maintainer"
         )
+
+
+def test_unmapped_work_edits_do_not_invalidate_evidence(project):
+    (project / "src/api.py").write_text("VERSION = 2\n")
+    service = api()
+    evidence = service.prepare_disposition(
+        project,
+        base="HEAD",
+        decisions=[
+            {"target": "docs/api.md", "outcome": "updated", "reason": "Reviewed API update."}
+        ],
+        reviewer="maintainer",
+    )
+    record = project / ".ai-dlc/work/example.toml"
+    record.parent.mkdir(parents=True)
+    record.write_text("schema = 1\n")
+    impact = service.inspect_impact(project, base="HEAD")
+    assert str(record.relative_to(project)) not in impact["unmapped"]
+    assert str(record.relative_to(project)) not in impact["sources"]
+    assert service.check_disposition(project, base="HEAD", evidence=evidence)["valid"]
+    (project / "src/api.py").write_text("VERSION = 3\n")
+    assert not service.check_disposition(project, base="HEAD", evidence=evidence)["valid"]
+
+
+def test_explicit_work_mapping_remains_content_bound(project):
+    catalog = project / "docs/catalog.toml"
+    catalog.write_text(catalog.read_text().replace('"src/*.py"', '".ai-dlc/work/*.toml"'))
+    git(project, "add", ".")
+    git(project, "commit", "-qm", "Map work explicitly")
+    record = project / ".ai-dlc/work/example.toml"
+    record.parent.mkdir(parents=True)
+    record.write_text("schema = 1\n")
+    service = api()
+    evidence = service.prepare_disposition(
+        project,
+        base="HEAD",
+        decisions=[
+            {
+                "target": "docs/api.md",
+                "outcome": "reviewed-no-change",
+                "reason": "Explicit work mapping reviewed.",
+            }
+        ],
+        reviewer="maintainer",
+    )
+    assert ".ai-dlc/work/example.toml" in service.inspect_impact(project, base="HEAD")["sources"]
+    record.write_text("schema = 1\n# changed\n")
+    assert not service.check_disposition(project, base="HEAD", evidence=evidence)["valid"]

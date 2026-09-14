@@ -40,6 +40,8 @@ The formal requirements and repair rationale are in the
 
 The approved documentation program adds Git impact inspection, explicit
 content-bound dispositions, scoped harness review packets and citation validation.
+Work records are validated by the `work-records` check and are not documentation
+evidence unless explicitly mapped in the catalog.
 These services coordinate review; they cannot infer semantic accuracy. A linked
 Obsidian workspace adds personal navigation and templates while canonical document
 bodies remain in Git. SDK workflow bundles may carry declared references and exact
