@@ -1,130 +1,112 @@
 {
-  "base": "2fa016b9b797250d8ca3b82b5e04cd9defbb653b",
+  "base": "8fe7deb7f811ee6734a7ad8a08f3c0586428c83e",
   "decisions": [
     {
       "outcome": "reviewed-no-change",
-      "reason": "Reviewed shared CLI/service/provider boundaries and local journal ownership; lazy journal initialization preserves these responsibilities.",
+      "reason": "Reviewed provider/service ownership and visible uncertain failures; archive subprocess handling remains in the OpenSpec provider and commits remain in WorkService.",
       "target": "docs/architecture.md"
     },
     {
+      "outcome": "updated",
+      "reason": "Canonical and portable guides now require owned OpenSpec archiving before merge, explain scoped record/specification commits and recovery, and distinguish offline work status from direct tracker reads.",
+      "target": "docs/development-workflow.md"
+    },
+    {
       "outcome": "reviewed-no-change",
-      "reason": "Reviewed the dated GitHub workflow qualification evidence; local draft creation adds no new completed live lifecycle claim and does not rewrite historical outcomes.",
-      "target": "docs/verification/github-ticket-workflows.md"
+      "reason": "Reviewed dated qualification scope and evidence limits; these historical records do not claim validation of the new archive/status behavior and are intentionally unchanged.",
+      "target": "docs/verification/documentation-workflow.md"
     },
     {
       "outcome": "updated",
-      "reason": "Canonical and portable guides now describe local work drafting, source-field derivation, explicit TODO/review boundaries, and no publication or mutation state.",
+      "reason": "Canonical and portable guides now require owned OpenSpec archiving before merge, explain scoped record/specification commits and recovery, and distinguish offline work status from direct tracker reads.",
       "target": "docs/workflows/design-to-implementation.md"
     },
     {
       "outcome": "updated",
-      "reason": "Canonical and portable guides now describe local work drafting, source-field derivation, explicit TODO/review boundaries, and no publication or mutation state.",
+      "reason": "Canonical and portable guides now require owned OpenSpec archiving before merge, explain scoped record/specification commits and recovery, and distinguish offline work status from direct tracker reads.",
       "target": "docs/workflows/tool-map.md"
     },
     {
       "outcome": "updated",
-      "reason": "Reviewed and updated draft creation or inherited record-commit/PR guidance; drafts remain unreviewed, preserve issue source fields and require explicit review before mutation.",
-      "target": ".agents/skills/spec-from-prd/SKILL.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Draft creation code, schema-valid work traceability, generated metadata or regression coverage is explained by the updated delivery guide and formal specification; no additional durable document needed.",
-      "target": ".ai-dlc/agent-ownership.json"
+      "reason": "Generated shared guidance directs archive on the delivery branch before merge while preserving current checks and provider guidance.",
+      "target": "AGENTS.md"
     },
     {
       "outcome": "updated",
-      "reason": "Reviewed and updated draft creation or inherited record-commit/PR guidance; drafts remain unreviewed, preserve issue source fields and require explicit review before mutation.",
-      "target": ".claude/skills/spec-from-prd/SKILL.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Draft creation code, schema-valid work traceability, generated metadata or regression coverage is explained by the updated delivery guide and formal specification; no additional durable document needed.",
-      "target": "agents/skills.lock.json"
+      "reason": "The archived behavior change and promoted traceability specification define scoped archive commits, local status and the unchanged finish gate remedy; real OpenSpec self-archive succeeded.",
+      "target": "openspec/changes/archive/2026-09-14-work-archive/design.md"
     },
     {
       "outcome": "updated",
-      "reason": "Reviewed and updated draft creation or inherited record-commit/PR guidance; drafts remain unreviewed, preserve issue source fields and require explicit review before mutation.",
-      "target": "agents/skills/spec-from-prd/SKILL.md"
+      "reason": "The archived behavior change and promoted traceability specification define scoped archive commits, local status and the unchanged finish gate remedy; real OpenSpec self-archive succeeded.",
+      "target": "openspec/changes/archive/2026-09-14-work-archive/proposal.md"
     },
     {
       "outcome": "updated",
-      "reason": "Formal traceability requirements and archived change describe issue-derived and offline draft creation with explicit TODOs; inherited delivery specification remains current.",
-      "target": "openspec/changes/archive/2026-09-14-work-new-from-issue/design.md"
+      "reason": "The archived behavior change and promoted traceability specification define scoped archive commits, local status and the unchanged finish gate remedy; real OpenSpec self-archive succeeded.",
+      "target": "openspec/changes/archive/2026-09-14-work-archive/specs/spec-delivery-traceability/spec.md"
     },
     {
       "outcome": "updated",
-      "reason": "Formal traceability requirements and archived change describe issue-derived and offline draft creation with explicit TODOs; inherited delivery specification remains current.",
-      "target": "openspec/changes/archive/2026-09-14-work-new-from-issue/proposal.md"
+      "reason": "The archived behavior change and promoted traceability specification define scoped archive commits, local status and the unchanged finish gate remedy; real OpenSpec self-archive succeeded.",
+      "target": "openspec/changes/archive/2026-09-14-work-archive/tasks.md"
     },
     {
       "outcome": "updated",
-      "reason": "Formal traceability requirements and archived change describe issue-derived and offline draft creation with explicit TODOs; inherited delivery specification remains current.",
-      "target": "openspec/changes/archive/2026-09-14-work-new-from-issue/specs/spec-delivery-traceability/spec.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Formal traceability requirements and archived change describe issue-derived and offline draft creation with explicit TODOs; inherited delivery specification remains current.",
-      "target": "openspec/changes/archive/2026-09-14-work-new-from-issue/tasks.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Formal traceability requirements and archived change describe issue-derived and offline draft creation with explicit TODOs; inherited delivery specification remains current.",
+      "reason": "The archived behavior change and promoted traceability specification define scoped archive commits, local status and the unchanged finish gate remedy; real OpenSpec self-archive succeeded.",
       "target": "openspec/specs/spec-delivery-traceability/spec.md"
     },
     {
       "outcome": "updated",
-      "reason": "Canonical and portable guides now describe local work drafting, source-field derivation, explicit TODO/review boundaries, and no publication or mutation state.",
+      "reason": "Canonical and portable guides now require owned OpenSpec archiving before merge, explain scoped record/specification commits and recovery, and distinguish offline work status from direct tracker reads.",
+      "target": "project-templates/project/docs/development-workflow.md.jinja"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Canonical and portable guides now require owned OpenSpec archiving before merge, explain scoped record/specification commits and recovery, and distinguish offline work status from direct tracker reads.",
       "target": "project-templates/project/docs/workflows/design-to-implementation.md"
     },
     {
       "outcome": "updated",
-      "reason": "Canonical and portable guides now describe local work drafting, source-field derivation, explicit TODO/review boundaries, and no publication or mutation state.",
+      "reason": "Canonical and portable guides now require owned OpenSpec archiving before merge, explain scoped record/specification commits and recovery, and distinguish offline work status from direct tracker reads.",
       "target": "project-templates/project/docs/workflows/tool-map.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Draft creation code, schema-valid work traceability, generated metadata or regression coverage is explained by the updated delivery guide and formal specification; no additional durable document needed.",
-      "target": "tests/test_cli.py"
+      "reason": "Jira lifecycle coverage now verifies local status makes no request and reads cancellation through the provider; the updated offline-status guidance covers this behavior and finish refusal remains unchanged.",
+      "target": "tests/test_jira_workflow.py"
     },
     {
       "outcome": "no-impact",
-      "reason": "Draft creation code, schema-valid work traceability, generated metadata or regression coverage is explained by the updated delivery guide and formal specification; no additional durable document needed.",
-      "target": "tests/test_provider_onboarding.py"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "The fixture now supplies the real requested title field; the documented issue draft behavior is unchanged.",
-      "target": "tests/test_tracker_read_identity.py"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Draft creation code, schema-valid work traceability, generated metadata or regression coverage is explained by the updated delivery guide and formal specification; no additional durable document needed.",
+      "reason": "Generated metadata, work traceability and regression fixtures are covered by the updated delivery guidance and formal specification; no new canonical document is needed.",
       "target": "tests/test_workflow.py"
     }
   ],
   "reviewer": "codex-delivery",
   "schema": 1,
-  "snapshot": "5cf08e17acd97f5406c4943e411c8c45534d8d612afe1ebd7698b36266df65f1",
+  "snapshot": "869e56e1e71af15a487431ac73f13ec0647a69cfac8f71a65e80994163111bce",
   "sources": {
-    ".agents/skills/spec-from-prd/SKILL.md": "31484bb55fd2d3b6eca48fb8e11bd74c7adbe169dad032b6a8c51076bf3854a7",
-    ".ai-dlc/agent-ownership.json": "f7085641985afdac499f5fa6102a8f07a6fdbdca0296352d523ff5a8fdff03db",
-    ".claude/skills/spec-from-prd/SKILL.md": "31484bb55fd2d3b6eca48fb8e11bd74c7adbe169dad032b6a8c51076bf3854a7",
-    "agents/skills.lock.json": "09ad9d81d299e760e3dbefd6647e696301773d4d9d286b7c004c0bed6df1d1d6",
-    "agents/skills/spec-from-prd/SKILL.md": "31484bb55fd2d3b6eca48fb8e11bd74c7adbe169dad032b6a8c51076bf3854a7",
+    "AGENTS.md": "eab1ce20a00f63e257c775d4b0cd626f4ee2bc31fda879480a1d5baa3aa109bf",
     "docs/architecture.md": "a8aace94253d79c6384f2fe5b8c7b45f0f1b1b4da27b2d5bd6d1cd3da612a4e8",
     "docs/catalog.toml": "2d26cc3de271b239d02f381e227975d403bba0e619b01149f1e8f9cf842bbb72",
-    "docs/verification/github-ticket-workflows.md": "f41ebedf58068b0d70c1290ec9c533903bc1b12fd332ea3247727f23bdacfe8d",
-    "docs/workflows/design-to-implementation.md": "66317d11220f716af4006cb900f3e79c1bf251fc767e3cdb47e588c11bcefab5",
-    "docs/workflows/tool-map.md": "875891874e94956079cdc4b1f7a2f7ee408d76742bab9d63c1a65426f0af978d",
-    "openspec/changes/archive/2026-09-14-work-new-from-issue/design.md": "14d74fb4f164ce8bf29ef544e9b7b41ad2e8c6c9bf85f8c5bba4a80e5c13a77c",
-    "openspec/changes/archive/2026-09-14-work-new-from-issue/proposal.md": "8becfa187c2b6cbdaf744dad552f0daac6200afdd3b908753fe1a897cb808f26",
-    "openspec/changes/archive/2026-09-14-work-new-from-issue/specs/spec-delivery-traceability/spec.md": "c592e2560b37f5cd4e891cd85e0a7ff1d41a217b85ffe53f325010e4d4337aa1",
-    "openspec/changes/archive/2026-09-14-work-new-from-issue/tasks.md": "64eb4dacdf8135688c52df517b07ddf93d8305da89beedfd77d44c4a70ffbd71",
-    "openspec/specs/github-project-defaults/spec.md": "e4e0f1dd53c3cf852b85a882987dd8306bdb042637df63e916bfe6c30de5abc5",
-    "openspec/specs/github-ticket-workflows/spec.md": "a64561ef8cff11fc3909cca93f9690786a9d71c133a18c5b3d78857c4cea6379",
-    "openspec/specs/spec-delivery-traceability/spec.md": "5d801d46674ade6df2d084d04a970527c2df2d759f7aa84695700388bf5639ca",
-    "project-templates/project/docs/workflows/design-to-implementation.md": "ac7177ae49b9ee360830397b76e94a002cde5d58f681c08e2785faa0e3f5683e",
-    "project-templates/project/docs/workflows/tool-map.md": "ae275062c6056614b952f4edad1a191a724e34afc4862a414a923bf9eb6b7796",
+    "docs/development-workflow.md": "6217458737c91cecf2246cb2d6043179dc3ee2e96f3e4c7db4fa9a93bd842d81",
+    "docs/verification/documentation-workflow.md": "671ec80d465b56f052a6e1cdd6570503c73b9f1fa1b78a4a1a3b69ee6a152eca",
+    "docs/workflows/design-to-implementation.md": "a107355c7e4c3ba465bdabd0aa63fce455e274f541ec09cae30bb563d1b2aee4",
+    "docs/workflows/tool-map.md": "1bdf71bfd3253f1239790612b414de15ce5b11d34f91ea06232e29ed9c5c5f86",
+    "openspec/changes/archive/2026-09-14-work-archive/design.md": "895ec90613e5c81a668806a2943c4466787b6070f76a432f7adf346d2d92a916",
+    "openspec/changes/archive/2026-09-14-work-archive/proposal.md": "795061d845479f0f7bf3aa618e48c6a9bf0a457dce89f37a5b75b4cc975e6c4e",
+    "openspec/changes/archive/2026-09-14-work-archive/specs/spec-delivery-traceability/spec.md": "a5961ee7a448d4a1a2c03d3a34d94909d377f0fa5bc4b1ec1beda46281214b8d",
+    "openspec/changes/archive/2026-09-14-work-archive/tasks.md": "fbe8f1a39b62ce5d85acac2953d6a901322bc9be22054873fcaeb8e01fdcc213",
+    "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
+    "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
+    "openspec/specs/documentation-impact-workflow/spec.md": "4276be0854842fecb781efb90ef5f1789b4f7e4c652904e11c5d0c705d457233",
+    "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
+    "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
+    "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
+    "openspec/specs/spec-delivery-traceability/spec.md": "142ea3270c80628d3b3e971c69cad0b0db68d6bea08b2a706f983e87fec3b02b",
+    "project-templates/project/docs/development-workflow.md.jinja": "2489534a712821e8b9290d03c4451b494110025c195be14b0999d97b95aa006b",
+    "project-templates/project/docs/workflows/design-to-implementation.md": "fc621bc19d905c049d114434b00d71305f8ae0612b0087d671cb7b1ab68646be",
+    "project-templates/project/docs/workflows/tool-map.md": "dd65f3ed5f75487daf208cf8b193f2d62b9def065965b76efa035765b5c5d2fe",
     "pyproject.toml": "57b5a7f4ea777185ab5df4b34c4117a190d41434e1e236b38735987c96ccc529",
     "scripts/check_generated.py": "2a5e65cb653c0cf9b44dc34765a6d2d4affcfda9b310231a2abed4b3de82771a",
     "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
@@ -132,7 +114,7 @@
     "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
     "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
     "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
-    "src/ai_dlc/cli.py": "9a19ce96e9d1c7e85ba02dabcfe8e0cd55819731ca63daa8c93b5876d29b5cbe",
+    "src/ai_dlc/cli.py": "be08dc553bd0408474293d95ec00331bf7fa917105e8f0ee6d36778554582212",
     "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
     "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
     "src/ai_dlc/config.py": "31677c538713aa41d3625ef9570f962ed8ee5d32bd4b5b3747437e8fd8fb9d02",
@@ -162,7 +144,7 @@
     "src/ai_dlc/errors.py": "b8c0da78ec0e9ea75ef71b4495b501570625988ba5ae54c4631f1ca20a8362c1",
     "src/ai_dlc/files.py": "2f05c94534fc6222cc7dd6f61c603cf48b99baeb78eeb31de03c5ae87e779ef2",
     "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
-    "src/ai_dlc/harness/agents.py": "65607b98a6f113f608b26d726656cb29b5f7bff2e58c4f7ee25f0c3c8d6940c4",
+    "src/ai_dlc/harness/agents.py": "eb9bf3fc625498b1b654b2564b65b8cd5594c1a4ecb0ce50e9d735519eda7937",
     "src/ai_dlc/harness/components.py": "b64cd2ae837f83a37ddd1c74dad25fcd16fe8733715c224c7d64673784ebba11",
     "src/ai_dlc/harness/friction.py": "2ee91f430edda968db2f00762f07245a7717618f992b3a260683d79e390c2882",
     "src/ai_dlc/harness/hooks.py": "1d91a86e9a0362fa3d2a293a828ca3c050af20155811cba336742ad58b2bf308",
@@ -177,7 +159,7 @@
     "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
     "src/ai_dlc/providers/jira_cloud.py": "d9b83ba88fb964816450b1479fc775a526455c023725ecff3c8ca695ac7cd8c8",
     "src/ai_dlc/providers/linear.py": "fa90bd64765c8e8bee1cbfa54e47e17688e8e6407c7492ae0ed863b4615c2b95",
-    "src/ai_dlc/providers/openspec.py": "5568fd528a83ee659d05cf9e48d9303ae26e2ded7eeb241ba6331a06c63068ee",
+    "src/ai_dlc/providers/openspec.py": "aa7343d5910542e31982ae3c24b84cdb6ef2446a57de9d8ed0bdcc88950ae70a",
     "src/ai_dlc/providers/plane.py": "f05450be6fa35ae10c8ae7531518797be5a3f778ec25d517c88fb49efbe9f9a3",
     "src/ai_dlc/providers/plane_attempts.py": "bfa9b5015f7dc554b9e58af82c680d97d3f0a5271bc0afe6102a81fbf697c20a",
     "src/ai_dlc/providers/python_exec.py": "3aaafe9bf74a4a949b59d71ed2079b9c48114462a9c823b3641a1772af5a6ff1",
@@ -205,11 +187,15 @@
     "src/ai_dlc/work/summary.py": "af386fc470b222d5c7b600ea3169ee7f26be7bdfafdcac8b4098b1fff2f0bd8e",
     "src/ai_dlc/work/traceability.py": "e9fbca5153cdd710b78872c66651269184ee5f3f1313f313b65df212430e8cc8",
     "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
-    "src/ai_dlc/work/workflow.py": "96554976e0c9fa408eaa82d87f1ba2c1b6b72688d53a8a0651cc1d6f1a69bf7f",
-    "tests/test_cli.py": "1b94f5259534b6dc5156ffeda41f37c2c1df077718002ae786902783fc08a066",
-    "tests/test_github_projects.py": "8ddbcd782029494fde1bf652aa71eb93ae59912a542e6d6e152d0e180af2d84e",
-    "tests/test_provider_onboarding.py": "af4ebc8ecc88113bc1dddfbddc3754ca805704441a15d5a49ed79b24b2529ad1",
-    "tests/test_tracker_read_identity.py": "660c1935a84e9e3ceec4a31530dba5003e083c0d3512f63603736dcdda75f220",
-    "tests/test_workflow.py": "c405b3d591d64123a66ad71d4d046691473b14b0bb2e29cc8203f20455e8af8b"
+    "src/ai_dlc/work/workflow.py": "b16ef66b0bea70ece8aaf15003e5e0233dbcff82051b3da24d59b94106da3fca",
+    "tests/test_company_guidance.py": "ab39bed3342d9de7d4c68db6c6c54fd66e13c12f2f2167c38e8d345c7dc9736e",
+    "tests/test_document_access.py": "bdf96af4afb1ad6f985204ad243a624d4da8b56d527af63cc072908a76beeff4",
+    "tests/test_document_impact.py": "a9cccc6fa777d01add578c103adb8efa099541c02fa9132790dd2377fa45c728",
+    "tests/test_document_inventory.py": "927199563751af6b2dd5aa8e93cddb43cc62192adffea49694dada37ef6bf14c",
+    "tests/test_document_review.py": "88f37e6365c7e9b545d668f978993ef7ad9acfa146e7d549728f4ef9cab8008a",
+    "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
+    "tests/test_jira_workflow.py": "e29ed7069f11d08cbaeb3e2f4bd16bd3ea0bd2aab2e179c6e423b75255288a6b",
+    "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7",
+    "tests/test_workflow.py": "f8b5e5373c882ec21d5f049169cbd8e270eae8b7cda2829255872663e3f9e9ae"
   }
 }

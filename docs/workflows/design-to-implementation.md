@@ -169,6 +169,13 @@ implementation:
 Start delivery with `ai-dlc work start <work-id>`. It commits only the bound
 work record; `work link` also commits its record by default. Use `--no-commit`
 when deliberately batching record edits. Neither command stages unrelated files.
+Archive the required OpenSpec change on its delivery branch before merge with
+`ai-dlc work archive <work-id>`. It promotes the specifications, repoints the
+record and any plan inside that change, and commits only affected specification
+files and the record. Commit or preserve any dirty shared canonical specification
+before archiving. `work status` reports local specification state without a network
+call; an active change is also warned about by `work pr`. If the archive command
+fails, inspect its local changes before retrying.
 After implementation, specification finalization and required checks, push the
 branch explicitly and run `ai-dlc work pr <work-id>`. This creates the pull request,
 links its URL and commits the record; push that new link commit before review.

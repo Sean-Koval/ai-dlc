@@ -143,7 +143,9 @@ Apply these boundaries:
 
 - Project setup, checks, architecture, design, decisions, and runbooks work
   without external providers.
-- The complete publish/start/status/finish lifecycle requires configured
+- `work status` inspects the local record and specification archive state without
+  querying the tracker. Read the configured tracker directly for current remote status.
+- The complete publish/start/finish lifecycle requires configured
   tracker and SCM roles. Without both, use local checks and manual tracking, or
   configure the missing role before publishing work.
 - Without a declared specification role, work may deliberately use the local

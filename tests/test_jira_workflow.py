@@ -113,7 +113,10 @@ def test_cancelled_result_never_completes_or_repeats_transition(lifecycle):
     jira.transition_resolution = "2000"
     with pytest.raises(RuntimeError, match="requested state"):
         service.finish("one")
-    assert service.status("one")["tracker"]["state"] == "cancelled"
+    before = len(jira.requests)
+    assert service.status("one")["tracker"] is None
+    assert len(jira.requests) == before
+    assert jira.provider().read("101")["state"] == "cancelled"
     with pytest.raises(ValueError, match="terminal"):
         service.finish("one")
     assert len(jira.writes("/transitions")) == 1

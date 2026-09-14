@@ -82,6 +82,18 @@ The specification gate SHALL continue to require a checkout that is exactly the 
 - **WHEN** a person or agent reads canonical or generated delivery guidance
 - **THEN** it explains preparing a temporary detached checkout at the merge commit, finishing there and removing it afterwards
 
+#### Scenario: An active change is reported before merge
+- **WHEN** local work status or PR preparation sees an active OpenSpec change
+- **THEN** it reports active change, archive before merge; status requires no network call
+
+#### Scenario: The gate names the archive remedy
+- **WHEN** required specification evidence still references an active change
+- **THEN** finish names work archive on the delivery branch or a linked follow-up pull request without relaxing its gates
+
+#### Scenario: Archive commits only its selected work
+- **WHEN** work archive runs for a reviewed record and its own active change
+- **THEN** the adapter archives and promotes it, the service repoints spec and a contained plan, and commits only affected specification files and the record
+
 ### Requirement: TR-05 Provider identity excludes evidence policy
 A provider identity fingerprint SHALL cover the configuration that determines which external service, branch and workflow runs a work record was reviewed against. It SHALL NOT cover receipt artifact policy, which the finish gate authenticates from the merged manifest rather than from the binding. An SCM configuration key that is not recognised evidence policy SHALL contribute to identity. Canonical delivery guidance SHALL describe this boundary without claiming the fingerprint authenticates receipts.
 

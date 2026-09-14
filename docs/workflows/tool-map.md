@@ -34,7 +34,7 @@ and GitHub, but they do not choose account, repository, or authorization.
 GitHub uses conventional `verify.yml` and `main` defaults unless overridden;
 the tracker has no fallback. Without a configured tracker or SCM role, project
 initialization, adoption, setup, checks, design, and documentation remain
-available, but publish/start/status/finish is not a usable end-to-end lifecycle.
+available, but publish/start/finish is not a usable end-to-end lifecycle.
 A missing specification role may deliberately use local OpenSpec when its
 artifacts exist; otherwise the work must be reviewed with
 `requires_spec = false`. Knowledge, deployment, and agent clients remain
@@ -91,7 +91,9 @@ knowledge append`.
 | Project execution | `ai-dlc project setup`, `ai-dlc project check --required` | Runs declared setup and checks and emits verification receipts |
 | Agent configuration | `ai-dlc agents render` | Previews, applies, or verifies owned project/personal client configuration |
 | Local work drafting | `ai-dlc work new WORK_ID [--from-issue REF]` | Creates an unreviewed record from explicit fields or a configured tracker read; does not publish or initialize mutation state |
-| Work lifecycle | `ai-dlc work publish`, `ai-dlc work start`, `ai-dlc work pr`, `ai-dlc work status`, `ai-dlc work finish` | Reconciles tracker state, binds work to a branch, and enforces completion gates |
+| Work lifecycle | `ai-dlc work publish`, `ai-dlc work start`, `ai-dlc work pr`, `ai-dlc work finish` | Reconciles tracker state, binds work to a branch, and enforces completion gates |
+| Local work inspection | `ai-dlc work status` | Reads the local record and active/archived specification state without querying tracker status |
+| Specification finalization | `ai-dlc work archive` | Archives this work's OpenSpec change, promotes specifications, repoints the record and commits only affected files before merge |
 | Traceability | `ai-dlc work link` | Links PR, specification, branch, deployment, or tracker evidence and commits only the work record by default |
 | Provider inspection and connection | `ai-dlc provider list`, `ai-dlc provider test`, `ai-dlc provider connect` | Discovers adapters, runs isolated contract or authorized live checks, and previews/applies an explicitly reviewed provider connection |
 | Tracker migration | `ai-dlc project tracker-migrate` | Reviews a default-only switch or selected existing-ticket mappings with local recovery evidence |

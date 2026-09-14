@@ -132,6 +132,14 @@ notation, document suffixes such as `.md`, and existing repository paths receive
 local containment/existence checks. This does not replace the specification
 provider's archive or finish validation.
 
+Archive the required OpenSpec change on its delivery branch before merge with
+`ai-dlc work archive <work-id>`. It promotes the specifications, repoints the
+record and any plan inside that change, and commits only affected specification
+files and the record. Commit or preserve any dirty shared canonical specification
+before archiving. `work status` reports local specification state without a network
+call; an active change is also warned about by `work pr`. If the archive command
+fails, inspect its local changes before retrying.
+
 ## Optional interface evaluation
 
 When a shaped increment needs visual or interaction judgment, use design-brief

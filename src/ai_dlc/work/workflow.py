@@ -732,7 +732,9 @@ class WorkService:
     def pr(self, work_id):
         """Open the pull request for the bound branch once, link it and commit the record."""
         with project_write_lock(self.root):
-            return self._pr(work_id)
+            result = self._pr(work_id)
+            result["specification"] = self.specification_status(self.load(work_id))
+            return result
 
     def _pr(self, work_id):
         self._check_source()
@@ -804,14 +806,78 @@ class WorkService:
             "commit": linked["commit"],
         }
 
+    @staticmethod
+    def specification_status(work):
+        reference = work["artifacts"].get("spec", "")
+        path = PurePosixPath(reference)
+        if path.parts[:2] == ("openspec", "changes"):
+            return (
+                "archived"
+                if len(path.parts) > 2 and path.parts[2] == "archive"
+                else "active change, archive before merge"
+            )
+        return "not required" if not work["requires_spec"] else "provider-owned reference"
+
     def status(self, work_id):
         work = self.load(work_id)
-        item = (
-            self.tracker(work).invoke("read", {"reference": work["artifacts"]["tracker"]})
-            if work["artifacts"].get("tracker")
-            else None
-        )
-        return {"work": work, "tracker": item}
+        return {
+            "work": work,
+            "tracker": None,
+            "tracker_status": "not queried (local status)",
+            "specification": self.specification_status(work),
+        }
+
+    def archive(self, work_id):
+        with project_write_lock(self.root):
+            self._check_source()
+            work = self.load(work_id)
+            if not work["reviewed"]:
+                raise RefusedError("Work must be reviewed before mutation")
+            reference = work["artifacts"].get("spec", "")
+            if (
+                reference != f"openspec/changes/{work_id}"
+                or not inside(self.root, reference).is_dir()
+            ):
+                raise RefusedError(
+                    "Work archive requires its own active openspec/changes/<id> directory"
+                )
+            branch = work["artifacts"].get("branch")
+            if not branch or self.git("branch", "--show-current").stdout.strip() != branch:
+                raise RefusedError("Switch to the work record's bound branch before archiving")
+            records, errors = read_work_records(self.root)
+            if errors:
+                raise RefusedError(
+                    "Fix work artifact validation before archiving: " + "; ".join(errors)
+                )
+            for other_id, other in records.items():
+                if other_id != work_id and any(
+                    value == reference or value.startswith(reference + "/")
+                    for value in other["artifacts"].values()
+                ):
+                    raise RefusedError(
+                        f"Active change is also referenced by work {other_id}; reconcile ownership first"
+                    )
+            provider = self.role(work, "specs", lambda: OpenSpecProvider(self.root))
+            if not isinstance(provider, OpenSpecProvider):
+                raise RefusedError("Work archive requires the OpenSpec provider")
+            result = provider.archive(work_id)
+            target = result["archive"]
+            work["artifacts"]["spec"] = target
+            plan = work["artifacts"].get("plan", "")
+            if plan == reference or plan.startswith(reference + "/"):
+                work["artifacts"]["plan"] = target + plan[len(reference) :]
+            self.save(work)
+            paths = [reference, target, *result["promoted_specs"], f".ai-dlc/work/{work_id}.toml"]
+            self.git("add", "-A", "--", *paths)
+            self.git(
+                "commit", "--quiet", "--only", "-m", f"docs(specs): archive {work_id}", "--", *paths
+            )
+            return {
+                "status": "archived",
+                "work_id": work_id,
+                **result,
+                "commit": self.git("rev-parse", "HEAD").stdout.strip(),
+            }
 
     def role(self, work, role, fallback):
         provider_id = work["providers"].get(role)

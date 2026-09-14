@@ -1232,6 +1232,13 @@ def work_pr(work_id: str, root: Path = Path("."), machine: Path | None = None):
         conclude(service(root, machine).pr(work_id))
 
 
+@work.command("archive")
+def work_archive(work_id: str, root: Path = Path("."), machine: Path | None = None):
+    """Archive this work's active OpenSpec change and commit its affected files."""
+    with service_call():
+        conclude(service(root, machine).archive(work_id))
+
+
 @work.command("status")
 def work_status(work_id: str, root: Path = Path("."), machine: Path | None = None):
     emit(service(root, machine).status(work_id))
