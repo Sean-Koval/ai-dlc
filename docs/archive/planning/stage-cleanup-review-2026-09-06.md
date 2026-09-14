@@ -49,7 +49,7 @@ selected in this cycle.
   passed generated, format, lint, types, and test outcomes, with 1,141 full tests
   passing. Strict OpenSpec validation and patch hygiene passed. These are local
   checks of the repair before commit, not merged-revision CI or live-platform
-  qualification. See the [executor handoff](../../handoffs/framework-delivery.md).
+  qualification. See the [executor handoff](../handoffs/framework-delivery.md).
   Earlier 744-focused and
   1,139-full passes preceded the note-forwarding correction and are not its final
   evidence.

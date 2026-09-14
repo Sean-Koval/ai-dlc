@@ -49,6 +49,6 @@ component schemas, skills, bundle behavior and evaluation protocols remain
 future work. Original v4 release tasks and missing human/live evidence remain
 open under their existing contracts.
 
-Start implementation from the [executor handoff](../../handoffs/framework-delivery.md)
+Start implementation from the [executor handoff](../handoffs/framework-delivery.md)
 after this planning change is integrated. SAN-9 is the default first ticket;
 SAN-13 is independently ready for a product-guidance owner.

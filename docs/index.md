@@ -27,8 +27,8 @@ and [release limits](release-verification.md). Active OpenSpec changes are propo
 or work in progress; [archived changes](../openspec/changes/archive/) retain delivery
 rationale. A merged specification does not establish live platform qualification.
 
-The [executor handoff](handoffs/framework-delivery.md) leads with current status and
-labels older checkpoints. The [provider planning handoff](archive/planning/provider-toolset-handoff.md),
+The [historical executor handoff](archive/handoffs/framework-delivery.md) preserves
+earlier checkpoints; the roadmap owns current status. The [provider planning handoff](archive/planning/provider-toolset-handoff.md),
 [historical planning records](archive/planning/),
 [v4 ledger](archive/planning/implementation-v4.md) and [Rust Phase 1 plan](archive/legacy/phase-1-rust.md) preserve
 history; their old instructions are not current task assignments. Template research

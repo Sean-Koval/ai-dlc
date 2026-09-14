@@ -21,7 +21,7 @@ checks that travel with the repository.
 
 See the [product direction](docs/product-direction.md), [delivery roadmap](docs/roadmap.md),
 [work-computer setup](docs/workflows/work-computer-setup.md), and
-[executor handoff](docs/handoffs/framework-delivery.md). Those pages distinguish
+[historical executor handoff](docs/archive/handoffs/framework-delivery.md). Those pages distinguish
 planned capabilities from the implementation available today.
 
 **Install from a release or from source.** The Python CLI, local MCP server,
