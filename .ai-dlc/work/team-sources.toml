@@ -1,0 +1,27 @@
+schema = 1
+id = "team-sources"
+title = "Enroll pinned team sources and read the teamai layout"
+scope = "Implement issues #83 and #84: personal subscriptions, exact source locks, role/tag filtering, owned rendering, explicit sync activation, advisory session notices, and fail-closed native/teamai content validation."
+requires_spec = true
+spec_reason = "Adds observable profile enrollment, rendering and source security behavior."
+acceptance = [
+  "A local bare Git repository used as a source in tests is enrolled, locked at a commit, and its tagged skill appears in rendered AGENTS.md only for a matching role.",
+  "Moving the source ref does not change rendered output until machine sync --apply.",
+  "A source containing a symlink, an executable or an env/ directory is refused.",
+  "A fixture directory in the teamai layout imports its skills and rules into a rendered AGENTS.md; an env/ file and a token value inside mcp/mcp.yaml each cause refusal with a message naming the path.",
+  "No network access in tests.",
+]
+reviewed = true
+depends_on = []
+requirements = ["TS-01", "TS-02", "TS-03", "TS-04"]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/team-sources"
+related_issue = "https://github.com/Sean-Koval/ai-dlc/issues/84"
