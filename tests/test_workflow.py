@@ -2541,3 +2541,38 @@ def test_github_scm_refuses_main_tracking_branch_that_was_never_pushed(tmp_path,
             "Title", "body", "main", "work/one"
         )
     assert not log.exists()
+
+
+def test_new_work_gets_real_github_title_from_requested_fields(tmp_path, monkeypatch):
+    import json
+    import subprocess
+
+    from ai_dlc.providers.github_issues import GitHubIssuesProvider
+    from ai_dlc.work.workflow import WorkService
+
+    issue = {
+        "id": "I_68",
+        "number": 68,
+        "url": "https://github.com/a/b/issues/68",
+        "state": "OPEN",
+        "stateReason": "",
+        "title": "Actual issue title",
+        "body": "Scope.\n\n## Acceptance\n- A",
+    }
+
+    def gh(args, **kwargs):
+        fields = args[args.index("--json") + 1].split(",")
+        return subprocess.CompletedProcess(
+            args, 0, json.dumps({field: issue[field] for field in fields}), ""
+        )
+
+    monkeypatch.setattr(subprocess, "run", gh)
+    tracker = GitHubIssuesProvider({"repository": "a/b"})
+    service = WorkService(
+        tmp_path,
+        {"roles": {"tracker": "github-issues"}},
+        state_path=tmp_path / "state",
+        registry=Registry(tracker),
+    )
+    draft = service.new("demo", tracker_reference="68")
+    assert draft["title"] == "Actual issue title"

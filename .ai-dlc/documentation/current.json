@@ -174,13 +174,13 @@
   ],
   "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "d365bb92695f9d756ca2699cc58e4271df255fcd688a02aa64ab1809f608a201",
+  "snapshot": "a4442fbfa2c01e590ab9183df7caf7585f4ee08a8b539b7c5977b157f17bd480",
   "sources": {
     ".agents/skills/handoff/SKILL.md": "e4f3b4ef1ae4c978d2598229db2e8a2b1777d2790655728f95aaab8091b03a93",
     ".agents/skills/spec-from-prd/SKILL.md": "31484bb55fd2d3b6eca48fb8e11bd74c7adbe169dad032b6a8c51076bf3854a7",
     ".ai-dlc/agent-ownership.json": "7c1fbee6ac9873626c4ed4f08fcc1130e88dfaf831a1c623f297aab525a788bf",
     ".ai-dlc/providers/github.md": "3dcc30bc2a7185159e0de28b93066e53deabca2c540b05ca43fed8d9b18402c0",
-    ".ai-dlc/work/work-new-from-issue.toml": "6a35e4a2a357a9ec6a43d47905bbe183940723fad7efb0f514411ebd1701c260",
+    ".ai-dlc/work/work-new-from-issue.toml": "d7bcf6843700a3770d030f2787a42a70f5b9f52871cf220748a970d00ff38cd8",
     ".ai-dlc/work/work-start-commit.toml": "e3e8572740948573b8bcdbfa489052e2236791efb2c74a50ff2892e8b66627f7",
     ".claude/skills/handoff/SKILL.md": "e4f3b4ef1ae4c978d2598229db2e8a2b1777d2790655728f95aaab8091b03a93",
     ".claude/skills/spec-from-prd/SKILL.md": "31484bb55fd2d3b6eca48fb8e11bd74c7adbe169dad032b6a8c51076bf3854a7",
@@ -253,7 +253,7 @@
     "src/ai_dlc/mcp_server.py": "a743c48d33e49408e097add497f56b017cff0afcc41209c6743c2eed68609c09",
     "src/ai_dlc/provider_definitions.py": "e90c2d41a839bc4a32dcb3989f59fa6c9073bd1233f3db2088bd176e1bc513d3",
     "src/ai_dlc/providers/__init__.py": "3de473ed0c1bc1dfc292b7155d300b3ac72ebf3b3e9fffdb3f85e24261742f69",
-    "src/ai_dlc/providers/github_issues.py": "55a18a178fc329a94ff95f39b72c5599117c5a8e79842d7cc7c6c8966cbed405",
+    "src/ai_dlc/providers/github_issues.py": "b4977e4f9d9c6bf08835786d25ee625f0667558a3f7fbfe9a5fa4936309f0953",
     "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
     "src/ai_dlc/providers/jira_cloud.py": "d9b83ba88fb964816450b1479fc775a526455c023725ecff3c8ca695ac7cd8c8",
     "src/ai_dlc/providers/linear.py": "fa90bd64765c8e8bee1cbfa54e47e17688e8e6407c7492ae0ed863b4615c2b95",
@@ -290,6 +290,6 @@
     "tests/test_provider_onboarding.py": "af4ebc8ecc88113bc1dddfbddc3754ca805704441a15d5a49ed79b24b2529ad1",
     "tests/test_providers.py": "c16a6e63eaad86d498184a290ad73c0031697dab7a8f6cadc557b102473bfd4d",
     "tests/test_traceability.py": "a3d5d37e08e0d913397192acee820d8cf367e5ad18b33a1d8f9181d2250a4c74",
-    "tests/test_workflow.py": "31a4ec28bff7a78d4e26a2d262e0d30f52dbee8d0d23f0a60e59a933f22123d3"
+    "tests/test_workflow.py": "ca06ecdb7acd24afccfdb164407e034ff350eb50d47db005d6cc7ecdd968b630"
   }
 }
