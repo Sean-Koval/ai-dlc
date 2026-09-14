@@ -20,6 +20,9 @@ jobs:
       version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The documentation gate compares against the recorded base commit.
+          fetch-depth: 0
       - run: sh scripts/bootstrap.sh --source --target github-actions
       - name: Resolve the engine version and refuse a mismatched tag
         id: version

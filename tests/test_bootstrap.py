@@ -118,8 +118,43 @@ def _bootstrap_fixture(tmp_path):
         "AI_DLC_BOOTSTRAP_HOME": str(home),
         "PATH": str(fakebin) + ":" + os.environ["PATH"],
     }
+    # Real bootstrap publishes activation paths; fixture tools must never reach the runner.
+    for name in (
+        "GITHUB_PATH",
+        "GITHUB_ENV",
+        "GITHUB_OUTPUT",
+        "GITHUB_STEP_SUMMARY",
+        "GITHUB_STATE",
+    ):
+        environment[name] = str(tmp_path / name)
     command = ["sh", str(ROOT / "scripts/bootstrap.sh"), "--source", "--root", str(project)]
     return command, environment, installed, contents, fakebin
+
+
+def test_bootstrap_fixture_isolates_runner_command_files(tmp_path, monkeypatch):
+    runner_files = {}
+    for name in (
+        "GITHUB_PATH",
+        "GITHUB_ENV",
+        "GITHUB_OUTPUT",
+        "GITHUB_STEP_SUMMARY",
+        "GITHUB_STATE",
+    ):
+        path = tmp_path / name
+        path.write_text("external runner state\n")
+        monkeypatch.setenv(name, str(path))
+        runner_files[name] = path
+
+    fixture_root = tmp_path / "fixture"
+    command, environment, installed, _, _ = _bootstrap_fixture(fixture_root)
+    result = subprocess.run(
+        command, env=environment, capture_output=True, text=True, check=False, timeout=15
+    )
+    assert result.returncode == 0, result.stderr
+    for name, path in runner_files.items():
+        assert path.read_text() == "external runner state\n", name
+        assert Path(environment[name]).is_relative_to(fixture_root), name
+    assert str(installed) in Path(environment["GITHUB_PATH"]).read_text().splitlines()
 
 
 @pytest.mark.parametrize("tool", ["uv", "uvx", "mise"])

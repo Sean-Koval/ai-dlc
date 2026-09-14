@@ -1,0 +1,39 @@
+schema = 1
+id = "bootstrap-runtime"
+title = "Make project check find its bootstrap runtime and let diagnostics repair the shell entry"
+scope = "Resolve the mise runtime from the AI-DLC bootstrap bin directory when PATH lacks it so project check runs and records a receipt, make workspace-check name the exact shell activation line for the detected shell, and let workspace-init --shell preview or write only the AI-DLC-owned section of the shell rc file. Share the bootstrap bin resolver between setup and documentation without cross-package private imports. No check installs tools and the bootstrap installer is unchanged."
+requires_spec = true
+spec_reason = "Changes when project check refuses, what workspace-check findings say and adds a shell-entry mutation command; all are observable gate and diagnostic outcomes."
+acceptance = [
+    "In a shell whose PATH lacks the bootstrap bin, ai-dlc project check --required SHALL run the checks and write a receipt whose environment_digest is unchanged from a run with PATH set.",
+    "workspace-check SHALL print a copy-pasteable remedy line for the detected shell.",
+    "No check SHALL install tools; runtime_env SHALL keep its MISE_AUTO_INSTALL refusal.",
+    "ai-dlc project check --required SHALL pass.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "RD-04",
+    "WD-01",
+    "WD-04",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/archive/2026-09-14-bootstrap-runtime"
+tracker = "76"
+branch = "work/bootstrap-runtime"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/119"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"
