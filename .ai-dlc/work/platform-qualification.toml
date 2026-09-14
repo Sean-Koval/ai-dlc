@@ -5,10 +5,10 @@ scope = "Prepare issue 85's Jira lifecycle walkthrough and record missing live p
 requires_spec = false
 spec_reason = "Documentation and observed qualification evidence only; no runtime behavior or specification changes."
 acceptance = [
-  "Record a dated Jira verification entry with exact revision, missing preconditions, commands and how far the run got; do not simulate live outcomes.",
-  "Present GitHub Issues and Projects as the qualified default tracker; identify Jira and Plane qualification limits explicitly.",
-  "Account for every issue 53 check with dated host/client observations or a reason that the environment is outside this run's scope.",
-  "Keep fixture, external MCP transport and native client evidence separate."
+    "Record a dated Jira verification entry with exact revision, missing preconditions, commands and how far the run got; do not simulate live outcomes.",
+    "Present GitHub Issues and Projects as the qualified default tracker; identify Jira and Plane qualification limits explicitly.",
+    "Account for every issue 53 check with dated host/client observations or a reason that the environment is outside this run's scope.",
+    "Keep fixture, external MCP transport and native client evidence separate.",
 ]
 reviewed = true
 depends_on = []
@@ -25,3 +25,11 @@ deploy = "none"
 verification = "docs/verification/jira-cloud-new-work.md"
 native_verification = "docs/verification/documentation-workflow.md"
 native_issue = "https://github.com/Sean-Koval/ai-dlc/issues/53"
+tracker = "85"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"
