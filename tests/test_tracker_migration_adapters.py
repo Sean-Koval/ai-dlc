@@ -7,7 +7,7 @@ from types import SimpleNamespace
 import httpx
 import pytest
 import tomli_w
-from test_plane_provider import CFG, CREATE, PlaneHTTP, U
+from fixtures.plane import CFG, CREATE, PlaneHTTP, U
 
 from ai_dlc.config import resolve_runtime
 from ai_dlc.providers import Registry

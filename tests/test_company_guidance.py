@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 
 import pytest
-from test_workflow_bundles import _bundle_repository, _git
+from fixtures.bundles import bundle_repository, git
 
 from ai_dlc.config import resolve_layers
 from ai_dlc.harness.agents import inspect_bundle_guidance, render_agents
@@ -74,13 +74,13 @@ def test_sdk_versions_validate_exact_string_selection(versions):
 
 
 def enroll(tmp_path, status="approved"):
-    repository, source, env = _bundle_repository(tmp_path)
-    _git(repository, "rm", "-r", ".")
+    repository, source, env = bundle_repository(tmp_path)
+    git(repository, "rm", "-r", ".")
     manifest = company(repository)
     manifest["guidance"]["company-sdk"]["status"] = status
     (repository / "bundle.json").write_text(json.dumps(manifest))
-    _git(repository, "add", ".")
-    _git(repository, "commit", "-m", "company guidance")
+    git(repository, "add", ".")
+    git(repository, "commit", "-m", "company guidance")
     project = tmp_path / "project"
     project.mkdir()
     (project / "ai-dlc.toml").write_text(

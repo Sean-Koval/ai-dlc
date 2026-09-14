@@ -3,7 +3,7 @@ import tomllib
 
 import pytest
 import tomli_w
-from test_jira_provider import Jira
+from fixtures.jira import SETTINGS, Jira, field
 from typer.testing import CliRunner
 
 from ai_dlc.cli import app
@@ -107,8 +107,6 @@ def test_onboarding_refuses_stale_identity_fields_and_overlapping_mappings(onboa
         if damage == "account":
             jira.account = "other"
         else:
-            from test_jira_provider import field
-
             jira.fields.append(field("customfield_1", required=True))
         assert invoke(root, "--plan-file", ".ai-dlc/local/jira.json", "--apply").exit_code != 0
     assert path.read_bytes() == before and jira.writes() == []
@@ -122,8 +120,6 @@ def test_onboarding_requests_only_projects_where_creation_is_available(onboardin
 
 
 def test_selected_jira_alias_renders_packaged_guidance_without_native_auth(tmp_path):
-    from test_jira_provider import SETTINGS
-
     from ai_dlc.harness.agents import render_agents
 
     (tmp_path / "ai-dlc.toml").write_text(
@@ -144,8 +140,6 @@ def test_selected_jira_alias_renders_packaged_guidance_without_native_auth(tmp_p
 
 
 def test_common_plan_refuses_required_empty_multiselect_before_saving(onboarding):
-    from test_jira_provider import field
-
     root, path, jira = onboarding
     metadata = field("customfield_1", "array", required=True)
     metadata["schema"]["items"] = "option"

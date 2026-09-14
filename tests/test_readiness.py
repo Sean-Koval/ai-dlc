@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-from test_rendering import _skill, _write_vendored_bundle
+from fixtures.bundles import skill_document, write_vendored_bundle
 
 
 def _checks(result: dict, component: str, dimension: str) -> list[dict]:
@@ -282,10 +282,12 @@ def test_bundle_guidance_inspection_reports_missing_blocked_stale_and_ready(tmp_
     config = {"agents": {"bundles": ["review-flow"]}}
     assert inspect_bundle_guidance(tmp_path, config, clients)[0]["status"] == "missing"
 
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
-        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow", "Version one"))},
+        skills={
+            "review-flow": ("skills/review/SKILL.md", skill_document("review-flow", "Version one"))
+        },
     )
     assert inspect_bundle_guidance(tmp_path, config, clients)[0]["status"] == "missing"
 
@@ -302,10 +304,12 @@ def test_bundle_guidance_inspection_reports_missing_blocked_stale_and_ready(tmp_
         }
     ]
 
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
-        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow", "Version two"))},
+        skills={
+            "review-flow": ("skills/review/SKILL.md", skill_document("review-flow", "Version two"))
+        },
     )
     stale = inspect_bundle_guidance(tmp_path, config, clients)[0]
     assert stale["status"] == "missing"
@@ -325,7 +329,7 @@ def test_missing_vendored_payload_is_missing_but_integrity_failure_takes_precede
 
     from ai_dlc.harness.agents import inspect_bundle_guidance
 
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
         templates={"review-note": ("templates/note.md", "# Note\n")},
@@ -361,7 +365,7 @@ def test_missing_payload_does_not_hide_independent_bundle_integrity_failure(
     """Would fail if exact-tree absence short-circuited a separately provable blocker."""
     from ai_dlc.harness.agents import inspect_bundle_guidance
 
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
         templates={
@@ -392,7 +396,7 @@ def test_missing_manifest_does_not_hide_present_invalid_lock(tmp_path):
 
     from ai_dlc.harness.agents import inspect_bundle_guidance
 
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
         templates={"review-note": ("templates/note.md", "# Note\n")},
@@ -419,7 +423,7 @@ def test_bundle_collision_blocks_every_participating_readiness_result(tmp_path):
     from ai_dlc.harness.agents import inspect_bundle_guidance
 
     for bundle_id in ["z-bundle", "a-bundle"]:
-        _write_vendored_bundle(
+        write_vendored_bundle(
             tmp_path,
             bundle_id,
             templates={"review-note": ("templates/note.md", f"# {bundle_id}\n")},
@@ -440,10 +444,10 @@ def test_bundle_guidance_symlinked_output_is_blocked_even_when_bytes_match(tmp_p
     from ai_dlc.harness.agents import inspect_bundle_guidance, render_agents
 
     config = {"agents": {"bundles": ["review-flow"]}}
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
-        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow"))},
+        skills={"review-flow": ("skills/review/SKILL.md", skill_document("review-flow"))},
     )
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[roles]\nagent-client=["codex"]\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
@@ -465,7 +469,7 @@ def test_bundle_guidance_list_ownership_document_returns_blocked_result(tmp_path
     """Would fail if a non-object ownership document escaped structured readiness."""
     from ai_dlc.harness.agents import inspect_bundle_guidance
 
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
         templates={"review-note": ("templates/note.md", "# Note\n")},
@@ -497,10 +501,10 @@ def test_bundle_guidance_directory_output_returns_blocked_result(tmp_path):
     from ai_dlc.harness.agents import inspect_bundle_guidance, render_agents
 
     config = {"agents": {"bundles": ["review-flow"]}}
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
-        skills={"review-flow": ("skills/review/SKILL.md", _skill("review-flow"))},
+        skills={"review-flow": ("skills/review/SKILL.md", skill_document("review-flow"))},
     )
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[roles]\nagent-client=["codex"]\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
@@ -525,18 +529,18 @@ def test_bundle_cross_owner_collision_blocks_old_and_new_selected_owners(tmp_pat
 
     config_path = tmp_path / "ai-dlc.toml"
     config_path.write_text('schema=4\n[agents]\nbundles=["one"]\nskills=[]\n')
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "one",
         templates={"review-note": ("templates/note.md", "# One\n")},
     )
     render_agents(tmp_path, apply=True)
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "one",
         templates={"other-note": ("templates/other.md", "# Other\n")},
     )
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "two",
         templates={"review-note": ("templates/note.md", "# Two\n")},
@@ -559,18 +563,18 @@ def test_bundle_cross_owner_directory_collision_blocks_both_selected_owners(tmp_
 
     config_path = tmp_path / "ai-dlc.toml"
     config_path.write_text('schema=4\n[agents]\nbundles=["one"]\nskills=[]\n')
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "one",
         templates={"review-note": ("templates/note.md", "# One\n")},
     )
     render_agents(tmp_path, apply=True)
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "one",
         templates={"other-note": ("templates/other.md", "# Other\n")},
     )
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "two",
         templates={"review-note": ("templates/note.md", "# Two\n")},
@@ -617,7 +621,7 @@ def test_vendored_root_git_is_blocked_bundle_readiness(tmp_path):
     """Undeclared committed Git content must prevent bundle guidance readiness."""
     from ai_dlc.harness.agents import inspect_bundle_guidance
 
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
         templates={"review-note": ("templates/note.md", "# Note\n")},
@@ -640,7 +644,7 @@ def test_missing_payload_cannot_hide_canonical_lock_manifest_disagreement(tmp_pa
 
     from ai_dlc.harness.agents import inspect_bundle_guidance
 
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
         templates={"review-note": ("templates/note.md", "# Note\n")},
@@ -665,7 +669,7 @@ def test_duplicate_selected_export_with_missing_payload_blocks_both_bundles(tmp_
     from ai_dlc.harness.agents import inspect_bundle_guidance
 
     for bundle_id in ["one", "two"]:
-        _write_vendored_bundle(
+        write_vendored_bundle(
             tmp_path,
             bundle_id,
             templates={"review-note": ("templates/note.md", f"# {bundle_id}\n")},
@@ -683,14 +687,14 @@ def test_contested_symlink_blocks_both_selected_bundle_owners(tmp_path):
     from ai_dlc.harness.agents import inspect_bundle_guidance, render_agents
 
     (tmp_path / "ai-dlc.toml").write_text('schema=4\n[agents]\nbundles=["one"]\nskills=[]\n')
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path, "one", templates={"review-note": ("templates/note.md", "# One\n")}
     )
     render_agents(tmp_path, apply=True)
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path, "one", templates={"other-note": ("templates/other.md", "# Other\n")}
     )
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path, "two", templates={"review-note": ("templates/note.md", "# Two\n")}
     )
     destination = tmp_path / "docs/templates/review-note.md"
@@ -713,7 +717,7 @@ def test_non_utf8_managed_guidance_returns_blocked_bundle_readiness(tmp_path, fi
     (tmp_path / "ai-dlc.toml").write_text(
         'schema=4\n[agents]\nbundles=["review-flow"]\nskills=[]\n'
     )
-    _write_vendored_bundle(
+    write_vendored_bundle(
         tmp_path,
         "review-flow",
         templates={"review-note": ("templates/note.md", "# Note\n")},

@@ -8,7 +8,7 @@ import sys
 import httpx
 import pytest
 import tomli_w
-from test_plane_provider import CFG, PlaneHTTP, U
+from fixtures.plane import CFG, CREATE, PlaneHTTP, U
 
 
 @pytest.fixture
@@ -145,8 +145,6 @@ def test_registry_supplies_root_and_state_only_as_trusted_invocation_context(tmp
 
 
 def test_direct_executable_without_trusted_context_refuses_mutation():
-    from test_plane_provider import CREATE
-
     result = subprocess.run(
         [sys.executable, "-m", "ai_dlc.providers.plane", json.dumps(CFG)],
         input=json.dumps({"operation": "create", "payload": CREATE}),

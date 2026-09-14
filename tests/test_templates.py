@@ -434,19 +434,9 @@ def test_portable_profile_examples_and_rendered_handbook_are_safe(tmp_path):
         )
 
 
-def test_component_catalog_and_guidance_ship_in_the_distribution(tmp_path):
+def test_component_catalog_and_guidance_ship_in_the_distribution(built_distributions):
     """Catch a package build that omits the catalog or its provider guidance."""
-    project = Path(__file__).resolve().parents[1]
-    subprocess.run(
-        ["uv", "build", "--wheel", "--out-dir", str(tmp_path)],
-        cwd=project,
-        check=True,
-        capture_output=True,
-        text=True,
-        env={**os.environ, "UV_OFFLINE": "1"},
-    )
-
-    wheel = next(tmp_path.glob("ai_dlc-*.whl"))
+    wheel = built_distributions.wheel
     with zipfile.ZipFile(wheel) as archive:
         catalog = archive.read("ai_dlc/assets/modules/components.json")
         members = set(archive.namelist())
@@ -749,24 +739,13 @@ def test_handbook_helper_allows_normalized_direct_negation(guide):
     _assert_handbook_safety({"guide": guide})
 
 
-def test_portable_examples_are_the_only_profiles_in_built_distributions(tmp_path):
+def test_portable_examples_are_the_only_profiles_in_built_distributions(
+    built_distributions, tmp_path
+):
     """Catch private assets in either release artifact while validating public profiles."""
     project = Path(__file__).resolve().parents[1]
-    subprocess.run(
-        [
-            "uv",
-            "build",
-            "--out-dir",
-            str(tmp_path),
-        ],
-        cwd=project,
-        check=True,
-        capture_output=True,
-        text=True,
-        env={**os.environ, "UV_OFFLINE": "1"},
-    )
-    wheel = next(tmp_path.glob("ai_dlc-*.whl"))
-    source_distribution = next(tmp_path.glob("ai_dlc-*.tar.gz"))
+    wheel = built_distributions.wheel
+    source_distribution = built_distributions.source_distribution
     wheel_profiles = {
         "ai_dlc/assets/profiles/base.toml",
         "ai_dlc/assets/profiles/example/ai-dlc-profile.toml",
@@ -1096,7 +1075,6 @@ def test_generic_requires_generated_check(tmp_path):
     ],
 )
 def test_initialized_setup_and_language_check_offline(tmp_path, preset, tool, source, lock):
-    import os
     import shutil
     import sys
     import tomllib

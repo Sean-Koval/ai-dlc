@@ -183,9 +183,11 @@ def test_copied_package_runs_real_tracker_fixtures(target, tmp_path, monkeypatch
         if not line.startswith("COPY "):
             continue
         fields = shlex.split(line)
-        if fields[:1] == ["COPY"] and fields[-1] == "/kit/tests/":
+        if fields[:1] == ["COPY"] and fields[-1].startswith("/kit/tests/"):
+            destination = tmp_path / Path(fields[-1]).relative_to("/kit")
+            destination.mkdir(parents=True, exist_ok=True)
             for source in fields[1:-1]:
-                shutil.copyfile(root / source, tmp_path / "tests" / Path(source).name)
+                shutil.copyfile(root / source, destination / Path(source).name)
     (tmp_path / "pyproject.toml").write_text('[tool.pytest.ini_options]\npythonpath=["src"]\n')
     source = tmp_path / "src/ai_dlc"
     source.mkdir(parents=True)
