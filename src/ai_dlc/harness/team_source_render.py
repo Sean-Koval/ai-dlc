@@ -61,8 +61,9 @@ def check_source_skill_destinations(
     directories: dict[str, str],
     source_skills: dict[str, str],
     previous: dict[str, Any],
-) -> dict[str, str]:
+) -> tuple[dict[str, str], dict[str, str]]:
     prior = previous.get("source_skills", {})
+    owned_directories = dict(previous.get("source_directories", {}))
     if not isinstance(prior, dict):
         raise ValueError("invalid team source skill ownership")  # noqa: TRY004 -- reject untrusted document content
     ownership = dict(prior)
@@ -73,9 +74,20 @@ def check_source_skill_destinations(
                 del ownership[path]
         for name, source_id in source_skills.items():
             path = prefix + name + "/SKILL.md"
-            if ((root / path).parent.exists() or read(path) is not None) and (
-                prior.get(path) != source_id or path not in previous.get("files", {})
-            ):
+            current = read(path)
+            directory = (root / path).parent
+            relative_directory = str(directory.relative_to(root))
+            if current is not None:
+                conflict = prior.get(path) != source_id or path not in previous.get("files", {})
+            else:
+                # Transactional retirement retains recovery backups in this directory.
+                # Its recorded provenance permits restoring the absent SKILL.md without
+                # touching those backups or claiming a genuinely authored directory.
+                conflict = (
+                    directory.exists() and owned_directories.get(relative_directory) != source_id
+                )
+            if conflict:
                 raise ValueError(f"team source skill conflict with local ownership: {path}")
             ownership[path] = source_id
-    return ownership
+            owned_directories[relative_directory] = source_id
+    return ownership, owned_directories

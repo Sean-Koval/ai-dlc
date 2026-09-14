@@ -1213,12 +1213,13 @@ def _render_agents(
     bundle_participates = bool(
         bundle_ids or prior_bundle_files or selected_sources.enrolled or previous.get("schema") == 3
     )
-    source_ownership = check_source_skill_destinations(
+    source_ownership, source_directories = check_source_skill_destinations(
         root, read, clients, CLIENT_SKILL_DIRECTORIES, source_skills, previous
     )
     ownership: dict[str, Any] = dict(previous)
     if selected_sources.enrolled or "source_skills" in previous:
         ownership["source_skills"] = source_ownership
+        ownership["source_directories"] = source_directories
     ownership["schema"] = 3 if bundle_participates else 2
     owned_files = dict(previous.get("files", {}))
     bundle_files = dict(prior_bundle_files)

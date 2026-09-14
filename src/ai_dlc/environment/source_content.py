@@ -35,7 +35,11 @@ def slug(value: Any, path: str) -> str:
 def selectors(value: Any, path: str) -> tuple[str, ...]:
     if not isinstance(value, list):
         raise ValueError(f"source roles/tags must be a list: {path}")  # noqa: TRY004 -- reject untrusted document content
-    values = tuple(slug(entry, path) for entry in value)
+    if not all(
+        isinstance(entry, str) and re.fullmatch(r"[a-z0-9][a-z0-9_-]*", entry) for entry in value
+    ):
+        raise ValueError(f"source roles/tags must be safe lowercase identifiers: {path}")
+    values = tuple(value)
     if len(set(values)) != len(values):
         raise ValueError(f"duplicate source role/tag: {path}")
     return values
@@ -61,7 +65,7 @@ def reject_values(value: Any, path: str) -> None:
         for child in value:
             reject_values(child, path)
     elif isinstance(value, str) and re.search(
-        r"(?i)(?:token|password|passwd|secret|api[_-]?key|authorization)\s*(?:[=:]|\s)|"
+        r"(?i)(?:token|password|passwd|secret|api[_-]?key|authorization)\s*[=:]|"
         r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|"
         r"https?://[^/\s]*@|(?:gh[pousr]_|sk-)[A-Za-z0-9]{12,}",
         value,
@@ -155,6 +159,14 @@ def command_server(value: Any, path: str, *, teamai: bool = False) -> dict[str, 
         for arg in args
     ):
         raise ValueError(f"source MCP arguments must be portable strings: {path}")
+    for arg in args:
+        option = arg.lstrip("-").split("=", 1)[0]
+        if (
+            arg.startswith("-")
+            and (_is_sensitive_field(_field_tokens(option)) or option in {"env", "environment"})
+        ) or re.match(r"[A-Z_][A-Z0-9_]*=", arg):
+            # Inspect option names even when the value is the next argv element.
+            raise ValueError(f"source MCP credential or environment argument prohibited: {path}")
     return {"id": name, "command": command, "args": args}
 
 

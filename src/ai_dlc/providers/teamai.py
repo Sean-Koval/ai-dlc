@@ -80,7 +80,7 @@ def _role_map(value: Any, path: str) -> dict[str, set[str]]:
     for role in value:
         if not isinstance(role, dict):
             raise ValueError(f"source role must be a mapping: {path}")  # noqa: TRY004 -- reject untrusted document content
-        role_id = slug(role.get("id"), path)
+        role_id = selectors([role.get("id")], path)[0]
         if role_id in seen:
             raise ValueError(f"duplicate source role: {path}")
         seen.add(role_id)
@@ -139,7 +139,7 @@ def teamai_items(files: dict[str, str]) -> tuple[list[SourceItem], list[str]]:
             tags.update(tag_map[kind + "s"].get(name, ()))
             tags.update(tag_map[kind + "s"].get("/".join(parts[1:-1]), ()))
         if kind == "skill" and len(parts) == 4:
-            namespace = slug(parts[1], path)
+            namespace = selectors([parts[1]], path)[0]
             # Unknown namespaces stay restricted, never accidentally universal.
             roles.update(role_map.get(namespace, {namespace}))
         items.append(SourceItem(kind, name, path, tuple(sorted(roles)), tuple(sorted(tags)), body))

@@ -21,9 +21,9 @@ class SourceSubscription(BaseModel):
         import re
 
         if len(set(values)) != len(values) or any(
-            re.fullmatch(r"[a-z0-9][a-z0-9-]*", value) is None for value in values
+            re.fullmatch(r"[a-z0-9][a-z0-9_-]*", value) is None for value in values
         ):
-            raise ValueError("source roles and tags must be unique lowercase slugs")
+            raise ValueError("source roles and tags must be unique safe lowercase identifiers")
         return values
 
 

@@ -1,7 +1,8 @@
 # team-sources Specification
 
 ## Purpose
-TBD - created by archiving change team-sources. Update Purpose after archive.
+Distribute reviewed team guidance and safe client declarations through pinned
+profile subscriptions, explicit activation and ownership-preserving rendering.
 ## Requirements
 ### Requirement: TS-01 Pinned and locked team sources
 Personal schema 4 profiles SHALL accept additive source subscriptions with id, git, ref, roles, tags and optional layout. Enrollment SHALL lock exact source commits and content digests beside the profile commit. Rendering SHALL verify and use only locked content offline. Sync SHALL preview candidate changes and activate only after explicit apply succeeds.

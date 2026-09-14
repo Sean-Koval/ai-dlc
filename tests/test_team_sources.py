@@ -175,6 +175,10 @@ def test_machine_roles_are_additive_and_can_deselect(source_setup):
     paths.machine_file("laptop").write_text("schema=4\nroles=[]\n")
     render_agents(root, apply=True)
     assert not (root / ".agents/skills/team-review/SKILL.md").exists()
+    paths.machine_file("laptop").write_text('schema=4\nroles=["developer"]\n')
+    render_agents(root, apply=True)
+    for directory in (".agents", ".claude"):
+        assert (root / directory / "skills/team-review/SKILL.md").read_text() == SKILL
 
 
 @pytest.mark.parametrize("layer", ["machine", "project"])
@@ -424,3 +428,52 @@ def test_disabled_shipped_skill_names_remain_reserved(source_setup):
     with pytest.raises(ValueError, match="skill collision: day-start"):
         render_agents(setup[-1], apply=True)
     assert not (setup[-1] / "AGENTS.md").exists()
+
+
+@pytest.mark.parametrize("layout", ["ai-dlc", "teamai"])
+@pytest.mark.parametrize("flag", ["--token", "--api-key", "--client-secret"])
+def test_mcp_separate_secret_arguments_are_refused(source_setup, layout, flag):
+    files = teamai_files() if layout == "teamai" else native_files()
+    if layout == "teamai":
+        path = "mcp/mcp.yaml"
+        files[path] = (
+            f'servers:\n  - name: team-tools\n    command: tool\n    args: ["{flag}", "SENTINEL123"]\n'
+        )
+    else:
+        path = "mcp/servers.toml"
+        files[path] = tomli_w.dumps(
+            {"servers": [{"id": "team-tools", "command": "tool", "args": [flag, "SENTINEL123"]}]}
+        )
+        files["manifest.toml"] += (
+            '\n[[items]]\nkind="mcp"\nname="team-tools"\npath="mcp/servers.toml"\n'
+        )
+    setup = source_setup(files, layout=layout)
+    with pytest.raises(ValueError, match=path) as raised:
+        enroll(setup)
+    assert "SENTINEL123" not in str(raised.value)
+    assert not setup[4].lock_file.exists()
+
+
+def test_source_rules_can_discuss_secret_hygiene(source_setup):
+    files = native_files()
+    files["rules/review.md"] = (
+        "Never commit a token to Git. Keep password values in your keychain.\n"
+    )
+    setup = source_setup(files)
+    enroll(setup)
+    render_agents(setup[-1], apply=True)
+    assert files["rules/review.md"] in (setup[-1] / "AGENTS.md").read_text()
+
+
+def test_teamai_underscore_roles_and_namespaces(source_setup):
+    files = teamai_files()
+    files["skills/hai_core/team-review/SKILL.md"] = files.pop("skills/team-review/SKILL.md")
+    files["teamai.yaml"] = "name: Team\n"
+    files["manifest/roles.yaml"] = (
+        "version: 1\nroles:\n  - id: hai_dev\n    resources:\n      skills: [hai_core]\n      knowledge: []\n"
+    )
+    setup = source_setup(files, layout="teamai", roles=["hai_dev"])
+    enroll(setup)
+    setup[4].machine_file("laptop").write_text('schema=4\nroles=["hai_dev"]\n')
+    render_agents(setup[-1], apply=True)
+    assert "team-review" in (setup[-1] / "AGENTS.md").read_text()

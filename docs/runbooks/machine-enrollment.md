@@ -119,7 +119,9 @@ client configuration. Offline status and rendering do not inspect remote refs.
 A machine binding may add the person's roles with a top-level
 `roles = ["developer"]` string list. This is distinct from the profile/project
 `[roles]` table selecting providers; machine roles never replace that table.
-Source `roles` and machine roles are combined, while source `tags` select tag
+Role, namespace and tag identifiers may contain lowercase letters, digits,
+hyphens and underscores (for example `hai_dev`). Source `roles` and machine roles
+are combined, while source `tags` select tag
 subscriptions. Items without selectors are universal; other items require any
 matching role or tag. Validation applies to every item before filtering, so an
 unselected item cannot hide unsafe content. Unenrollment or role deselection
