@@ -1,27 +1,76 @@
 {
-  "base": "ddbba9c139c6061dd31627a2bd8f320e4f598225",
+  "base": "dd05f1f1ba919d2647e46049b7cd48fbb21be1fb",
   "decisions": [
     {
       "outcome": "updated",
-      "reason": "Preserves original PR88 merge and all five inspected clean merged-revision receipts as historical provenance while explaining the corrective follow-up needed to finalize the remaining archived delivery task through normal gates.",
+      "reason": "Updated with explicit Jira execution blockers and the bounded native follow-up; outstanding release gates remain open.",
       "target": "docs/release-verification.md"
     },
     {
-      "outcome": "no-impact",
-      "reason": "Checks the previously unfinished delivery item against the actual merged PR88 and five clean exact-merge receipts; canonical release verification records the original and corrective-review provenance without changing delivered requirements.",
-      "target": "openspec/changes/archive/2026-09-13-release-publication/tasks.md"
+      "outcome": "updated",
+      "reason": "Recorded observed native workspace/MCP session outcomes and each unavailable environment separately.",
+      "target": "docs/verification/documentation-workflow.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Added dated unexecuted lifecycle sequence, missing maintainer inputs and verified runner/status limitations.",
+      "target": "docs/verification/jira-cloud-new-work.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Clarified qualified default and existing adapter availability without live Jira/Plane claims.",
+      "target": "docs/workflows/tool-map.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Aligned default tracker claims with current live evidence and linked the blocked Jira walkthrough.",
+      "target": "README.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Applied the same qualification guidance to the portable workflow, retaining its existing template-specific content.",
+      "target": "project-templates/project/docs/workflows/tool-map.md"
     }
   ],
   "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "772dd8d705eb5e58af0d265db1313ed36358c78f57f3e77258cd5c01d97284ee",
+  "snapshot": "4fa64d8ebdb9cdcc566895552e63949190ba8d390c28b8bcb1c7411a16d4dfa4",
   "sources": {
     ".github/workflows/release.yml": "c32926d61ee30cd32aa03fa899c74f395decdb152833f572d4e1ade4c28993b5",
+    "README.md": "11302d62e0c830d4bfb7ad7c81fa0375179944e01185f824c77ce1d7584f6195",
     "docs/catalog.toml": "177674bfa816a6966f84c9b7ef5f625576b531ed1b406159425d9042b70e11a0",
-    "docs/release-verification.md": "77885fb550e5d8b994488285397fec181e57d7a69c8c77ed4ba5529398760096",
-    "openspec/changes/archive/2026-09-13-release-publication/tasks.md": "3ea7292cf8fc05a3b2e67af5caac998ea75ea0276aa5190581d4c5db6c76dd70",
+    "docs/release-verification.md": "9af4985e3533881a05be144333528ce1f9aaed73d87d096f3e08c7c6101d642f",
+    "docs/verification/documentation-workflow.md": "8be9cbb3cabca959c60aa0744e2188a00d476042607dc10b61c4a72e061b8203",
+    "docs/verification/jira-cloud-new-work.md": "402d8d1ae86d5296aaf5c8da48e433bc76b9736843f98470ba9f5a7166afa830",
+    "docs/workflows/tool-map.md": "3d884c478a7111a49919d0b8561ce771fc969ff113e84e31c74cab9fd1a678fa",
+    "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
+    "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
+    "openspec/specs/documentation-impact-workflow/spec.md": "4276be0854842fecb781efb90ef5f1789b4f7e4c652904e11c5d0c705d457233",
+    "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
+    "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
+    "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
     "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
+    "project-templates/project/docs/workflows/tool-map.md": "30a897c0221f3c503afedcf0c70e066b7ff8e692405cc6e0384fdbc773b3d8b9",
     "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+    "src/ai_dlc/cli.py": "be00f7a7c8e8f7b9caa0a65cb386af48bcbbc52d2ccd999b560a5bb0665eea94",
+    "src/ai_dlc/config.py": "31677c538713aa41d3625ef9570f962ed8ee5d32bd4b5b3747437e8fd8fb9d02",
+    "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
+    "src/ai_dlc/documentation/document_files.py": "503a38d4df2a1f9d0832d083dcd420ebd1215389385293dd0605fc768c5dd320",
+    "src/ai_dlc/documentation/document_impact.py": "f569053c4e42c2b03d39521e368f8fa3c0e559f20057088ccc02c24ccc5576b7",
+    "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
+    "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
+    "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
+    "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
+    "src/ai_dlc/harness/agents.py": "eb9bf3fc625498b1b654b2564b65b8cd5594c1a4ecb0ce50e9d735519eda7937",
+    "src/ai_dlc/harness/workflow_bundles.py": "477dc842b3cdfe240a54a96910786693f9f3b75f2fd528753440c29f26330b36",
+    "src/ai_dlc/mcp_server.py": "46991bd47879083f4f8a515759cb8452d667e6742d713f6dc2b564c0e56b08ed",
+    "tests/test_company_guidance.py": "ab39bed3342d9de7d4c68db6c6c54fd66e13c12f2f2167c38e8d345c7dc9736e",
+    "tests/test_document_access.py": "bdf96af4afb1ad6f985204ad243a624d4da8b56d527af63cc072908a76beeff4",
+    "tests/test_document_impact.py": "a9cccc6fa777d01add578c103adb8efa099541c02fa9132790dd2377fa45c728",
+    "tests/test_document_inventory.py": "927199563751af6b2dd5aa8e93cddb43cc62192adffea49694dada37ef6bf14c",
+    "tests/test_document_review.py": "88f37e6365c7e9b545d668f978993ef7ad9acfa146e7d549728f4ef9cab8008a",
+    "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
+    "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7",
     "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
     "tests/test_release_workflow.py": "a50523b5d6dec682188d489780d29a74f2a01c60c310071ce6758898f3d12dc0"
   }

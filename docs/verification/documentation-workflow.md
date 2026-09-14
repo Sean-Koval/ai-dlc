@@ -211,3 +211,58 @@ Evidence for workspace diagnostics comes from three separate sources:
 
 Work-computer projects and skills, Antigravity, other desktop platforms and
 synchronization remain unverified.
+
+## Native workspace and external MCP follow-up — September 14, 2026
+
+[Issue #53](https://github.com/Sean-Koval/ai-dlc/issues/53) tracks the remaining
+qualification. Engine revision `dd05f1f1ba919d2647e46049b7cd48fbb21be1fb` (PR #131 merge), AI-DLC 0.4.0, Python
+3.12.11, macOS 15.3.2 (24D81), ARM64. A new disposable copy of the controlled
+messy project was built with `tests/fixtures/messy_project.py`; its committed
+revision was `3fc1c15a7c48d0fc823238d9b42bf8a58811c158`. A separate new vault
+was mounted with `project link-vault --mode mount --name parcel`.
+
+`project workspace-check` reported both `docs/` and `openspec/` connected, all
+seven inspected documentation links mounted, six documents examined and complete
+navigation coverage. The checkout-specific executable reported version 0.4.0 and
+all three probed commands available. Activation remained `missing`: this run used
+the checkout executable, not the shared alias, and did not alter shell settings.
+`native_client` remained `not-assessed`, correctly preserving the boundary between
+filesystem checks and the following native observation.
+
+In **Obsidian 1.13.7**, the new vault's native quick switcher found
+`Projects/parcel/docs/architecture` and `architecture-notes`. Opening architecture
+showed the expected document body and two backlinks. In reading view, following
+its `retry specification` link opened `Projects/parcel/openspec/specs/delivery/spec`
+with the three-attempt requirement and one backlink. The native document and
+specification agreed with the mounted paths reported by workspace-check. No
+repository content was edited; the fixture's Git status remained clean. This is
+an observed comparison with the live native client on this macOS host, not a
+claim that workspace-check itself assesses a client. The earlier September 11
+native edit/refresh/search evidence retains its original scope and date.
+
+A separate **Python MCP SDK 1.29.1 external client process** initialized an actual
+stdio session to `ai-dlc mcp serve --root <disposable-project>` and made these calls:
+
+| Call | Observed outcome |
+| --- | --- |
+| `project_docs_search(query="carrier")` | Four matching documents across docs and OpenSpec; six examined documents, 1,525 bytes, complete coverage. |
+| `project_docs_read(path="docs/architecture.md")` | Complete five-line, 272-byte document with SHA-256 `1fe4bada5567f0a236a9b495e7e4af4712c8344d49cde33cfaa19345ab672d05`. |
+| `project_docs_read(path="README.md")` | MCP error refusing the undeclared source; no README body returned. |
+
+This closes the external-process transport exercise using the identified SDK
+client, not a native Codex/Claude/Antigravity MCP integration claim. The exercise
+used a real server subprocess and tool protocol, not the in-process fixture
+server. Its transcript and workspace output are retained only in ignored local
+qualification data; no personal vault or corporate content was read.
+
+| Remaining issue #53 check | Disposition for this run |
+| --- | --- |
+| Antigravity document review, organization and workspace guidance | Not performed: Antigravity is not installed in the available application directory. Client version unavailable; no native outcome inferred. |
+| Work-computer repositories, private skills and company SDK guidance | Outside this host's scope: no supplied company checkout or approved reference source is available. The referenced production `ai-docs` source is also absent. |
+| Obsidian on other platforms and synchronization | Outside this host's scope: only one macOS host and local disposable vault are available; no Windows/Linux native client or approved sync pair was supplied. |
+| Native observation against workspace-check | Performed above with Obsidian 1.13.7; activation warning retained, mount/navigation agreement observed. |
+| External MCP search/read session | Performed above with SDK 1.29.1 over stdio; native harness integrations remain separately unqualified. |
+
+Issue #53 stays open for the unavailable environments. These scoped exclusions
+explain this run's boundary; they do not cancel company, synchronization or
+cross-platform obligations or promote automated fixtures to native qualification.

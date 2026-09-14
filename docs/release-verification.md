@@ -30,6 +30,12 @@ and successful replay below satisfy asset availability, integrity and hosted
 consumer evidence for v0.4.0. They do not satisfy those remaining walkthroughs or
 provider and human-evaluation obligations.
 
+The [September 14 Jira preparation](verification/jira-cloud-new-work.md#walkthrough-preparation--september-14-2026)
+records missing sandbox inputs and the absent live Jira mutation target.
+[Native workspace and external MCP follow-up](verification/documentation-workflow.md#native-workspace-and-external-mcp-follow-up--september-14-2026)
+adds scoped macOS evidence while retaining unavailable company, Antigravity and
+cross-platform checks. Neither record qualifies Jira or Plane.
+
 ## Published v0.4.0 evidence — September 14, 2026
 
 The original release implementation was delivered in
