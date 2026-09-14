@@ -1,0 +1,24 @@
+schema = 1
+id = "release-publication-verification"
+title = "Record verified v0.4.0 publication evidence"
+scope = "Reconcile canonical release verification against the actual v0.4.0 tag, publication run, published assets, and three hosted runner consumer checks. Preserve outstanding clean-machine, container, provider and human-evaluation qualification limits."
+requires_spec = false
+spec_reason = "Documentation-only evidence reconciliation; no behavior or requirement changes."
+acceptance = [
+    "Record the exact published tag, source commit, workflow runs, assets and successful consumer platforms from inspected live evidence.",
+    "Identify the release publication obligations satisfied and preserve unperformed qualification obligations explicitly.",
+    "Pass documentation impact validation and required project checks.",
+]
+reviewed = true
+depends_on = []
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+branch = "codex/release-publication-verification"
