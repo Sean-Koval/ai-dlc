@@ -30,6 +30,7 @@ deploy = "none"
 spec = "openspec/changes/archive/2026-09-14-fde-document-scaffold"
 tracker = "50"
 branch = "work/fde-document-scaffold"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/133"
 
 [bindings]
 specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
