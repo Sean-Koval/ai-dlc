@@ -1,0 +1,32 @@
+schema = 1
+id = "provider-dead-code"
+title = "Remove the test-only in-process PythonProvider, reject_unsafe_imports and connection wrappers"
+scope = "Delete PythonProvider and reject_unsafe_imports from ai_dlc.providers, which Registry.get never constructs or calls, together with their tests. Delete the three one-call forwarding wrappers in setup/connections.py and have their test call connect_provider directly; update the provider-connections design note that names them. Verify with a symbol scan that no module-level function or class in src/ai_dlc is referenced only from tests, and record the method in the PR."
+requires_spec = false
+spec_reason = "Removal of unreachable code; no supported behaviour changes. Registry.get already builds only IsolatedPythonProvider for kind = python."
+acceptance = [
+    "No function or class in src/ai_dlc is referenced only from tests, verified by a symbol scan recorded in the PR.",
+    "The provider-connections design note no longer documents removed functions.",
+    "All required checks pass.",
+]
+reviewed = true
+depends_on = []
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+tracker = "97"
+branch = "work/provider-dead-code"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"
