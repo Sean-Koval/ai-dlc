@@ -760,3 +760,13 @@ kind = "reference"
 owner = "repository-maintainers"
 status = "active"
 requirements = ["openspec/specs/repository-organization/spec.md"]
+
+[[documents]]
+id = "repo-verification-skill-evaluation"
+path = "docs/verification/skill-evaluation.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "active"
+code_paths = ["scripts/run_skill_evaluation.py", "src/ai_dlc/harness/skill_evaluation.py", "src/ai_dlc/providers/evaluation_api.py", "agents/evaluation.toml", "agents/evaluation-scenarios.json"]
+verification_paths = ["tests/test_skill_evaluation.py"]
+requirements = ["openspec/specs/skill-evaluation/spec.md"]

@@ -21,7 +21,7 @@ never stand in for live platform, provider or human-evaluation evidence.
 
 Unchanged since the September 12 reconciliation: clean-machine, container and
 cloud walkthroughs; full live provider mutation conformance with enforced egress;
-behavioral skill evaluations at the declared model and budget; publication of
+[behavioral skill evaluations](verification/skill-evaluation.md) at the declared model and budget; publication of
 verified release assets and the `verify-published` outcome for a real tag; live
 Plane deployment qualification with a substitution and interruption rehearsal;
 and live Jira deployment and workflow qualification. Package index publication
