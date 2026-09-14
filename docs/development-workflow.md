@@ -76,6 +76,11 @@ implementation proceed without inventing behavior.
 
 ## Environment preparation
 
+Start a session with `ai-dlc next` (or `context --brief`) for local next actions,
+required checks and explicit tracker-not-consulted status. PR and archived-spec
+references do not prove completion; finish remains evidence-gated. The session-start
+hook includes the first ten summary lines. Plain `context` remains JSON.
+
 Use the [machine enrollment runbook](runbooks/machine-enrollment.md) for private
 profiles, readiness and client setup. Provider setup belongs in the relevant
 runbook: [GitHub](github-ticket-setup.md), [Linear](runbooks/linear-setup.md),
@@ -211,9 +216,11 @@ overridden. The tracker has no fallback.
 
 - Project setup, checks, architecture, design, decisions, and runbooks remain
   useful without external providers.
-- The full publish/start/status/finish lifecycle requires configured tracker and
+- The publish/start/finish lifecycle requires configured tracker and
   SCM roles. Without either role, use the local project lifecycle and manual
   tracking, or configure the missing role before publishing work.
+- `work status` inspects the local record and specification archive state without
+  querying the tracker. Read the configured tracker directly for current remote status.
 - Without a declared specification role, work may deliberately use the local
   OpenSpec compatibility fallback when its formal artifacts exist. Otherwise,
   work that does not require a specification records `requires_spec = false`
@@ -325,8 +332,8 @@ enforces this sequence. It is a repository setting that an administrator changes
 deliberately; AI-DLC does not change it. `verify.yml` has no merge-queue trigger,
 and exact-base evidence cannot anticipate a queued predecessor.
 
-`docs-gate` reports a base mismatch first and names both commits.
-`docs-disposition` refuses a base that the checkout does not contain. If a stale
+`docs gate` reports a base mismatch first and names both commits.
+`docs review --disposition` refuses a base that the checkout does not contain. If a stale
 base still reaches the target branch, that merge's run stays failed and
 `work finish` stays blocked, because rerunning repeats the same comparison. Do not
 edit evidence to name the old base; reconcile the work item explicitly.

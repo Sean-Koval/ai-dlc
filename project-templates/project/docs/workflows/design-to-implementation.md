@@ -71,6 +71,15 @@ and [compatibility rehearsal](../examples/delivery-slices/compatibility-rehearsa
 These synthetic examples propose local IDs and document destinations; they do
 not install records, create remote work or establish actual approval/live results.
 
+Create a draft with `ai-dlc work new WORK_ID --from-issue REF`, or use explicit
+`--title`, `--scope` and repeated `--acceptance` values for offline work. The command
+copies the configured binding roles and issue acceptance bullets when present;
+missing source content and the default specification decision remain explicit
+TODOs. Explicit flags override derived fields. New records are always unreviewed:
+replace TODOs, link the formal artifacts and review the scope before setting
+`reviewed = true` and publishing or starting. Existing records and unsafe IDs
+are refused without being overwritten; offline drafting creates no mutation state.
+
 Work records accept optional `requirements` and `depends_on` lists, defaulting to
 empty for older work. Requirements are nonblank single-token IDs, not copied spec
 prose or paths automatically interpreted as source documents. Put canonical source,
@@ -95,6 +104,13 @@ together, offline and without resolving provider bindings, so finished records
 with historical fingerprints do not fail it. Run it as a required project check
 so archiving cannot leave a dangling reference undetected.
 
+Binding drift is a mutation-time refusal, also surfaced by single-record validation.
+For active work, review the record against current provider configuration, remove
+only the drifted binding under `[bindings]`, and run `ai-dlc work validate WORK_ID`;
+the next normal work mutation persists the reviewed binding. Preserve finished
+records' historical bindings and check them with `ai-dlc work validate --all`.
+`project rebind` migrates a provider role and is not a binding-drift repair command.
+
 Validation does not approve scope or prove completion. `work start` freshly reads
 every reachable dependency through its pinned tracker and requires canonical
 `closed`. Cancelled, duplicate, incomplete, unpublished or unavailable statuses
@@ -115,6 +131,14 @@ repository files. Use `./name` for an ambiguous local directory; filesystem
 notation, document suffixes such as `.md`, and existing repository paths receive
 local containment/existence checks. This does not replace the specification
 provider's archive or finish validation.
+
+Archive the required OpenSpec change on its delivery branch before merge with
+`ai-dlc work archive <work-id>`. It promotes the specifications, repoints the
+record and any plan inside that change, and commits only affected specification
+files and the record. Commit or preserve any dirty shared canonical specification
+before archiving. `work status` reports local specification state without a network
+call; an active change is also warned about by `work pr`. If the archive command
+fails, inspect its local changes before retrying.
 
 ## Optional interface evaluation
 

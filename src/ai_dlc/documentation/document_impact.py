@@ -14,6 +14,7 @@ from ai_dlc.documentation.documents import check_documents
 from ai_dlc.files import inside, run_git
 
 EVIDENCE_PREFIX = ".ai-dlc/documentation/"
+WORK_PREFIX = ".ai-dlc/work/"
 MAPPINGS = ("code_paths", "requirements", "verification_paths")
 OBJECTIVE = {"owner-missing", "uncatalogued"}
 
@@ -78,12 +79,26 @@ def inspect_impact(root: Path | str, *, base: str) -> dict:
     changed.update(untracked)
     changed = {p for p in changed if p and not p.startswith(EVIDENCE_PREFIX)}
     entries = read_catalog(root)
+    explicit_work = [
+        p
+        for entry in entries
+        for field in MAPPINGS
+        for p in entry.get(field, [])
+        if p.startswith(WORK_PREFIX)
+    ]
+
+    def included(path: str) -> bool:
+        return not path.startswith(WORK_PREFIX) or any(
+            fnmatch.fnmatchcase(path, pattern) for pattern in explicit_work
+        )
+
+    changed = {p for p in changed if included(p)}
     files = set(
         _git(root, "ls-files", "--cached", "--others", "--exclude-standard", "-z")
         .decode()
         .split("\0")
     ) - {""}
-    files = {p for p in files if not p.startswith(EVIDENCE_PREFIX)}
+    files = {p for p in files if not p.startswith(EVIDENCE_PREFIX) and included(p)}
     impacted, mapped, evidence = set(), set(), {"docs/catalog.toml"} | changed
     for entry in entries:
         patterns = [entry["path"]] + [p for f in MAPPINGS for p in entry.get(f, [])]

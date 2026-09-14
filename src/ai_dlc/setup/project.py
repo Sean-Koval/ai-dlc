@@ -16,6 +16,7 @@ from typing import Any
 
 from ai_dlc import __version__
 from ai_dlc.config import digest, load_project, read_toml
+from ai_dlc.environment.bootstrap import bootstrap_bin
 from ai_dlc.errors import UncertainError
 from ai_dlc.files import run_git
 
@@ -44,11 +45,20 @@ class RuntimeUnavailable(UncertainError):
         super().__init__(f"{executable} is not on PATH; no check can run reproducibly")
 
 
-def runtime_env(root: Path, use_mise: bool) -> dict[str, str]:
+def runtime_env(root: Path, use_mise: bool, *, notify: bool = True) -> dict[str, str]:
     env = dict(os.environ)
     if use_mise:
         if not shutil.which("mise"):
-            raise RuntimeUnavailable("mise")
+            directory = bootstrap_bin(env, Path(env.get("HOME") or Path.home()))
+            executable = directory / "mise"
+            if not executable.is_file() or not os.access(executable, os.X_OK):
+                raise RuntimeUnavailable("mise")
+            env["PATH"] = str(directory) + os.pathsep + env.get("PATH", "")
+            if notify:
+                print(
+                    f"note: using bootstrap runtime at {directory}; add it to PATH permanently with `ai-dlc project workspace-init --shell --apply`",
+                    file=sys.stderr,
+                )
         # Explicitly forbid mise from installing tools as a side effect of checks.
         env["MISE_AUTO_INSTALL"] = "0"
         tools = read_toml(root / ".mise.toml").get("tools", {})
@@ -75,7 +85,7 @@ def run_command(
     return subprocess.run(
         argv,
         cwd=root,
-        env=runtime_env(root, use_mise),
+        env=runtime_env(root, use_mise, notify=False),
         text=True,
         stdout=sys.stderr,
         stderr=sys.stderr,

@@ -45,6 +45,11 @@ class Journal:
             "result": json.loads(row[2]) if row[2] else None,
         }
 
+    def refused(self, operation_id):
+        """Record a confirmed refusal before effects, allowing an explicit retry."""
+        with self.db:
+            self.db.execute("UPDATE operations SET status=? WHERE id=?", ("refused", operation_id))
+
     def uncertain(self, operation_id):
         with self.db:
             self.db.execute(
