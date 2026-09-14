@@ -1,5 +1,5 @@
 {
-  "base": "dd05f1f1ba919d2647e46049b7cd48fbb21be1fb",
+  "base": "c9db6f3549983485305892c98f829a179f3cd6b3",
   "decisions": [
     {
       "outcome": "updated",
@@ -57,15 +57,15 @@
       "target": "uv.lock"
     }
   ],
-  "reviewer": "Codex",
+  "reviewer": "Codex integration review",
   "schema": 1,
-  "snapshot": "8b41763ae8d174e8c29622039dc21131524b152d6bf04860e8726c9c8b0cb6fd",
+  "snapshot": "d05bc0620cf5f8e8db748442d332ac01dfa2d13edfd68ee8fb1c91a1249340e0",
   "sources": {
-    "docs/architecture.md": "a726bbe6b412f8f55683fc59517d29f7d580c97a9d23b6f032f9522bc55a655c",
-    "docs/catalog.toml": "670dbede7fce8375e7e555fb0edcae5c6eddac44218d9df5fe701c0a2274bdc2",
+    "docs/architecture.md": "d173cb5f44ce0267e8004a9649c7ffd2676ce6f7fb0013d16bf8e62864f7fcd5",
+    "docs/catalog.toml": "700669c3d3e7e702f59d14af12ff3d0201c42b6c94adf204af8eb5b123f395fa",
     "docs/product-direction.md": "d33b6b58fc2f423b5514ac6b185f5cd7d5d1889117f5e95f892f7ae291f46c3a",
     "docs/runbooks/machine-enrollment.md": "d7d23292dbee05de0e0857fc3bb3074f4467c27bb5449ffdd19a8cdc9bf93ae1",
-    "docs/verification/documentation-workflow.md": "671ec80d465b56f052a6e1cdd6570503c73b9f1fa1b78a4a1a3b69ee6a152eca",
+    "docs/verification/documentation-workflow.md": "8be9cbb3cabca959c60aa0744e2188a00d476042607dc10b61c4a72e061b8203",
     "openspec/changes/archive/2026-09-14-team-sources/design.md": "9afd82120d5ee3b909807bd42a49e6f8cf4bae51ae0f237c8cd15d4de6559578",
     "openspec/changes/archive/2026-09-14-team-sources/proposal.md": "8f88065ea8a80accc5018066c063602440049886e1c2c11af59a0539d6b30afb",
     "openspec/changes/archive/2026-09-14-team-sources/specs/team-sources/spec.md": "382268926a4b4abbefad34df409752359ef38f2c6e71d145855564e5a465defe",
@@ -78,7 +78,7 @@
     "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
     "openspec/specs/team-sources/spec.md": "5a4f9a8da322cce3cb0d4d6e69e6cea16a4d787154d9ebac12fef0a21de187a3",
     "profiles/example/ai-dlc-profile.toml": "29b58a995e46b38ac75e5db5756e766e6b130f26e162448fc41fee898e7ff01e",
-    "pyproject.toml": "3f7860a5946dc0fe46dc8675ec62854676e1c4207195575c123a39af19d5f368",
+    "pyproject.toml": "296acf5ff015bc4aaf17576c4210e8c69988beb35e11507250a45c0dc534e4d5",
     "scripts/check_generated.py": "2a5e65cb653c0cf9b44dc34765a6d2d4affcfda9b310231a2abed4b3de82771a",
     "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
     "scripts/qualify_framework.py": "01dd9e6acbe14e740f068662aa539e9a7ed0ba57ab97e9457e0a05d968a25fb6",
@@ -86,7 +86,7 @@
     "scripts/run_skill_evaluation.py": "46a97694bae155b2418d172971480e031f510acc864b9d91fa546f98c754729f",
     "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
     "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
-    "src/ai_dlc/cli.py": "be00f7a7c8e8f7b9caa0a65cb386af48bcbbc52d2ccd999b560a5bb0665eea94",
+    "src/ai_dlc/cli.py": "fd671ec2813bf23b813cf8b28c3a3428186911a424e15ddd4e8990690d129e94",
     "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
     "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
     "src/ai_dlc/config.py": "dd596570054e3f455b90dc5cea2a86c97175b2c4ec4243328755dc1884ececc1",
@@ -100,6 +100,7 @@
     "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
     "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
     "src/ai_dlc/documentation/documents.py": "f42322918de5da6b8caa39e9f18e88aff26501d7f2253fbe2462d242126ea29e",
+    "src/ai_dlc/documentation/fde.py": "3664430ebca9f3ef7ba7c7c431f7e4790176066510904ebe4d43d0a88ecf26e1",
     "src/ai_dlc/documentation/knowledge.py": "49cbeb865bd6ef281f57b1d6a0fe7483150cfe828e73d6fbe0d46194f9ecfcba",
     "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
     "src/ai_dlc/documentation/learnings.py": "5ea35f5bcb5d8ae7f0fbf593136822c1faa15fbe003957665cb4dcd4d6db1c3a",
@@ -176,6 +177,6 @@
     "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
     "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7",
     "tests/test_team_sources.py": "a195cbfe523caaf8785d5517063e10777207becd18faf3abfa6b33350d5a0f53",
-    "uv.lock": "162c3bfa0583b2ed462415348e0f8b0fb10ff8fe609ec3b322ddc6df6fd457f5"
+    "uv.lock": "27a8a0c68a0b3989bfe66dd0b6b9da379d4285b1e34490bb814011c042f36f07"
   }
 }
