@@ -1,13 +1,18 @@
 name: Release
-# Manual dispatch builds an unpublished candidate for inspection.
+# Manual dispatch builds a candidate or verifies an existing published tag, without publication.
 # A v<version> tag builds, verifies and publishes exactly the verified assets,
 # then bootstraps a throwaway project from the published release.
 on:
   workflow_dispatch:
     inputs:
       artifact_base_url:
-        description: "Intended HTTPS directory for exact candidate assets; does not publish"
+        description: "Candidate HTTPS directory (ignored when verifying an existing tag)"
         required: true
+        type: string
+      verify_published_tag:
+        description: "Existing tag to verify read-only; skips candidate build and publication"
+        required: false
+        default: ""
         type: string
   push:
     tags: ["v*"]
@@ -15,6 +20,7 @@ permissions:
   contents: read
 jobs:
   package:
+    if: github.event_name != 'workflow_dispatch' || inputs.verify_published_tag == ''
     runs-on: ubuntu-24.04
     outputs:
       version: ${{ steps.version.outputs.version }}
@@ -28,7 +34,7 @@ jobs:
         id: version
         run: |
           VERSION=$(uv run --locked --no-sync python -c 'import pathlib,tomllib; print(tomllib.loads(pathlib.Path("pyproject.toml").read_text())["project"]["version"])')
-          if [ "${{ github.ref_type }}" = tag ] && [ "${{ github.ref_name }}" != "v$VERSION" ]; then
+          if [ "${{ github.event_name }}" = push ] && [ "${{ github.ref_type }}" = tag ] && [ "${{ github.ref_name }}" != "v$VERSION" ]; then
             echo "Tag ${{ github.ref_name }} does not match engine version $VERSION" >&2
             exit 1
           fi
@@ -47,7 +53,7 @@ jobs:
           /tmp/ai-dlc-wheel/bin/ai-dlc-cli scaffold --all
       - name: Prepare the hash-bound bootstrap manifest
         env:
-          ARTIFACT_BASE_URL: ${{ github.ref_type == 'tag' && format('https://github.com/{0}/releases/download/{1}', github.repository, github.ref_name) || inputs.artifact_base_url }}
+          ARTIFACT_BASE_URL: ${{ github.event_name == 'push' && github.ref_type == 'tag' && format('https://github.com/{0}/releases/download/{1}', github.repository, github.ref_name) || inputs.artifact_base_url }}
         run: |
           rm -f dist/.gitignore
           uv run --locked --no-sync python scripts/release_manifest.py --artifacts dist --base-url "$ARTIFACT_BASE_URL" --version "${{ steps.version.outputs.version }}" --output dist/release.sh
@@ -62,7 +68,7 @@ jobs:
           if-no-files-found: error
 
   publish:
-    if: github.ref_type == 'tag'
+    if: github.event_name == 'push' && github.ref_type == 'tag'
     needs: package
     runs-on: ubuntu-24.04
     permissions:
@@ -91,8 +97,14 @@ jobs:
             dist/SHA256SUMS
 
   verify-published:
-    if: github.ref_type == 'tag'
+    if: >-
+      !cancelled() &&
+      ((github.event_name == 'workflow_dispatch' && inputs.verify_published_tag != '') ||
+       (github.event_name == 'push' && github.ref_type == 'tag' &&
+        needs.package.result == 'success' && needs.publish.result == 'success'))
     needs: [package, publish]
+    env:
+      RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.verify_published_tag || github.ref_name }}
     strategy:
       fail-fast: false
       matrix:
@@ -106,12 +118,12 @@ jobs:
           set -eu
           mkdir -p /tmp/seed/bootstrap /tmp/seed/scripts && cd /tmp/seed
           for f in bootstrap.sh versions.sh download.sh release.sh SHA256SUMS; do
-            gh release download "${{ github.ref_name }}" --repo "${{ github.repository }}" --pattern "$f" --dir .
+            gh release download "$RELEASE_TAG" --repo "${{ github.repository }}" --pattern "$f" --dir .
           done
           grep -E ' (release|bootstrap|versions|download)\.sh$' SHA256SUMS | (command -v sha256sum >/dev/null && sha256sum -c - || shasum -a 256 -c -)
           mv bootstrap.sh scripts/ && mv versions.sh download.sh release.sh bootstrap/
           printf 'schema = 4\n' > ai-dlc.toml
-          sh scripts/bootstrap.sh --target github-actions --root /tmp/seed
+          sh scripts/bootstrap.sh --target local --root /tmp/seed
       - name: Generate and check a python project with the released engine
         run: |
           set -eu
@@ -120,4 +132,5 @@ jobs:
           test -f /tmp/demo/bootstrap/release.sh
           cmp /tmp/demo/bootstrap/release.sh /tmp/seed/bootstrap/release.sh
           cd /tmp/demo
+          sh scripts/bootstrap.sh --target local
           ai-dlc project check --required --target github-actions
