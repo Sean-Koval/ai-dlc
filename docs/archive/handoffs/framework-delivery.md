@@ -1,15 +1,16 @@
 # Framework delivery: current status and historical executor handoff
 
-Status reconciled September 10, 2026. Use the [roadmap](../roadmap.md) and
+Status reconciled September 10, 2026. Use the [roadmap](../../roadmap.md) and
 [GitHub issues](https://github.com/Sean-Koval/ai-dlc/issues) for present delivery
 status. #10/#11/#12/#13/#18/#19 are Completed; #14/#15/#16/#17/#20/#21/#22
 are cancelled (CLOSED / NOT_PLANNED), not delivered. Their qualification gaps
 remain unverified, but they are no longer open implementation instructions.
 PR28 merged at `74b90c67f9f0b29a0a4bae688ea6b670608aea18`; its head `6c0a732`
-had five passing CI checks. See [PR28 evidence](../verification/project-knowledge-repair.md).
+had five passing CI checks. See [PR28 evidence](../../verification/project-knowledge-repair.md).
 No gated finish or exact merge-revision CI is inferred from that head result.
 
-Everything below is a historical execution record. Its pending/open statements
+This file was moved from `docs/handoffs/` to the archive on 2026-09-14; only links
+changed. Everything below is a historical execution record. Its pending/open statements
 apply to the recorded checkpoint, not current priority. Preserve it for rationale.
 
 ## Historical PR23–26 completion evidence
@@ -26,7 +27,7 @@ PR [#26](https://github.com/Sean-Koval/ai-dlc/pull/26) merged at
 `189913b6cfc2c42828e35f4e2755c982b7f1e2da`: traceability, toolset/native composition,
 Jira and optional Plane new-work adapters, Design PM guidance, credential/SCM
 readiness, private vault setup, bootstrap reliability and qualification preparation.
-The [integration record](../verification/work-computer-toolsets.md) identifies
+The [integration record](../../verification/work-computer-toolsets.md) identifies
 accepted revisions, current checks and earlier failed attempts. GitHub owns live
 delivery status. All five exact merged-revision checks passed; gated finish
 completed #12, #13 and #19 with native Completed and Project Done. Actual
@@ -41,7 +42,7 @@ creation intent, identity-preserving reconciliation and migration preview eviden
 plus original Design PM inputs and a fixed experiment protocol. Independent review
 accepted the migration identity repair, design preparation and local stimuli.
 Native/container continuity observations are documented in
-[setup continuity](../verification/setup-continuity.md). These are actual existing
+[setup continuity](../../verification/setup-continuity.md). These are actual existing
 environment checks, not factory-clean or authenticated provider qualification.
 
 At this checkpoint, parent #21 remained open for a specifically selected real Plane deployment and
@@ -52,13 +53,13 @@ and release requirements. #20 needs actual selected Jira/Plane deployment eviden
 Confluence server. Do not use local implementation or fixtures to close these
 parents. The clean integrated revision3d78ddb passed all five required container checks
 with1,899 tests passing. Actual candidate wheel installation/scaffolding is recorded
-in [release preparation](../verification/release-candidate-preparation.md).
+in [release preparation](../../verification/release-candidate-preparation.md).
 Final PR and merged-revision GitHub CI remain separate from these source checks.
 
 ## Historical authority checkpoint — September 8
 
-Start with [current roadmap](../roadmap.md),
-[current execution plan](../archive/planning/2026-09-07-work-computer-readiness.md)
+Start with [current roadmap](../../roadmap.md),
+[current execution plan](../../archive/planning/2026-09-07-work-computer-readiness.md)
 and [GitHub Project](https://github.com/users/Sean-Koval/projects/2). GitHub owns
 priority/status. Project authorization, linking and eight local mappings are
 complete in PR #23. The current goal is work-computer adoption with Claude and
@@ -72,14 +73,14 @@ the next task. Follow the current candidate and issue matrix above; do not resta
 completed predecessors or revive old cleanup instructions.
 
 
-Objective: deliver the [approved direction](../product-direction.md) using the
-dependency-ordered [roadmap](../roadmap.md). UI/UX is one optional part.
+Objective: deliver the [approved direction](../../product-direction.md) using the
+dependency-ordered [roadmap](../../roadmap.md). UI/UX is one optional part.
 
 ## Historical September 5 state
 
 - Planning branch: `codex/design-pm-roadmap`.
 - Planning review: [PR #5](https://github.com/Sean-Koval/ai-dlc/pull/5), draft at
-  handoff; [validation evidence](../archive/planning/framework-delivery-review.md).
+  handoff; [validation evidence](../../archive/planning/framework-delivery-review.md).
 - Implementation baseline: `241e715`, portable profile enrollment merged into main.
 - This planning delivery adds documentation, specifications, work records, and
   sandbox ticket bindings. It does not implement the planned commands or skills.
