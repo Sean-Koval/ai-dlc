@@ -137,9 +137,9 @@
       "target": "tests/test_workflow.py"
     }
   ],
-  "reviewer": "Codex",
+  "reviewer": "codex-delivery",
   "schema": 1,
-  "snapshot": "f4fe9e521ad0dba1932708393f525ff03034c005cc1b170d82779b4770dbafff",
+  "snapshot": "f62347c769074a55725a8af19789971c3dfcbfe47e2e7bb52b0031830e68f344",
   "sources": {
     ".agents/skills/handoff/SKILL.md": "e4f3b4ef1ae4c978d2598229db2e8a2b1777d2790655728f95aaab8091b03a93",
     ".ai-dlc/agent-ownership.json": "d1e68b208b12ea18661a9e8ed4d5d2146baeb5310cdc90cfd59ab99458a7450a",
@@ -161,7 +161,7 @@
     "openspec/changes/archive/2026-09-14-work-start-commit/design.md": "832cf7219c31ebd6869a3aff5f7fe17f5d776fd1798653e2992fa9a38abf9f6a",
     "openspec/changes/archive/2026-09-14-work-start-commit/proposal.md": "614deb24605fd84e18f3c674bb7c2075c7f866f8dc5246c7c633eab463453395",
     "openspec/changes/archive/2026-09-14-work-start-commit/specs/spec-delivery-traceability/spec.md": "4143285bc372fa3b81db264389e64fed9b4e7cf2fd21770bf1552f00622d1bb3",
-    "openspec/changes/archive/2026-09-14-work-start-commit/tasks.md": "024fc27aab299976e88e4199f83154c42ad0f1ae06dd0e65f5f0dd8b64945735",
+    "openspec/changes/archive/2026-09-14-work-start-commit/tasks.md": "a24bca4750782989b2298b987bb20b3ea14da4a74526890d7f0972aff0787a88",
     "openspec/specs/github-project-defaults/spec.md": "e4e0f1dd53c3cf852b85a882987dd8306bdb042637df63e916bfe6c30de5abc5",
     "openspec/specs/github-ticket-workflows/spec.md": "a64561ef8cff11fc3909cca93f9690786a9d71c133a18c5b3d78857c4cea6379",
     "openspec/specs/spec-delivery-traceability/spec.md": "dba133ed472bf112d391a58554859c7ca8bbe782755427bfc1dd4fc0d6314a7f",
