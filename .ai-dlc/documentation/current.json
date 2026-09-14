@@ -1,159 +1,60 @@
 {
-  "base": "c095af6f613393bc32a7d3254f6e42ec595e6bc0",
+  "base": "cace021895330ae74a5f344ed5630c25547001de",
   "decisions": [
     {
-      "outcome": "updated",
-      "reason": "Maps shared bootstrap location and shell activation to the environment package.",
+      "outcome": "reviewed-no-change",
+      "reason": "Reviewed provider registry and architecture: trusted adapter boundaries, shared configuration identity, per-request limits and evidence-gated completion remain unchanged.",
       "target": "docs/architecture.md"
     },
     {
-      "outcome": "reviewed-no-change",
-      "reason": "Private knowledge and mount ownership are unchanged; shell repair uses a separate explicit CLI operation.",
-      "target": "docs/design/local-and-shared-knowledge.md"
-    },
-    {
       "outcome": "updated",
-      "reason": "Explains work-record exclusion and explicit catalog opt-in.",
-      "target": "docs/design/project-documentation.md"
-    },
-    {
-      "outcome": "reviewed-no-change",
-      "reason": "Native workspace observation remains required; automated shell tests do not qualify Obsidian.",
-      "target": "docs/runbooks/document-workspace-qualification.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Replaces obsolete missing-runtime refusal guidance with fallback and owned shell repair.",
-      "target": "docs/runbooks/machine-enrollment.md"
-    },
-    {
-      "outcome": "reviewed-no-change",
-      "reason": "Historical qualification evidence remains factual; this change makes no additional live qualification claim.",
-      "target": "docs/verification/documentation-workflow.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Adds the CLI-only shell repair entry and mirrors it in the template.",
-      "target": "docs/workflows/tool-map.md"
+      "reason": "Documented separate bounded operation and request defaults, explicit override and normal reconciliation remedy.",
+      "target": "docs/github-ticket-setup.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Formal specification and delivery artifacts describe the tested runtime and evidence boundaries.",
-      "target": "openspec/changes/archive/2026-09-14-bootstrap-runtime/design.md"
+      "reason": "Formal specification and delivery design for the bounded GitHub operation fix; canonical timeout guidance is updated in docs/github-ticket-setup.md.",
+      "target": "openspec/changes/archive/2026-09-14-github-operation-budget/design.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Formal specification and delivery artifacts describe the tested runtime and evidence boundaries.",
-      "target": "openspec/changes/archive/2026-09-14-bootstrap-runtime/proposal.md"
+      "reason": "Formal specification and delivery design for the bounded GitHub operation fix; canonical timeout guidance is updated in docs/github-ticket-setup.md.",
+      "target": "openspec/changes/archive/2026-09-14-github-operation-budget/proposal.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Formal specification and delivery artifacts describe the tested runtime and evidence boundaries.",
-      "target": "openspec/changes/archive/2026-09-14-bootstrap-runtime/specs/connected-project-readiness/spec.md"
+      "reason": "Formal specification and delivery design for the bounded GitHub operation fix; canonical timeout guidance is updated in docs/github-ticket-setup.md.",
+      "target": "openspec/changes/archive/2026-09-14-github-operation-budget/specs/github-operation-budget/spec.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Formal specification and delivery artifacts describe the tested runtime and evidence boundaries.",
-      "target": "openspec/changes/archive/2026-09-14-bootstrap-runtime/specs/project-workspace-diagnostics/spec.md"
+      "reason": "Formal specification and delivery design for the bounded GitHub operation fix; canonical timeout guidance is updated in docs/github-ticket-setup.md.",
+      "target": "openspec/changes/archive/2026-09-14-github-operation-budget/tasks.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Formal specification and delivery artifacts describe the tested runtime and evidence boundaries.",
-      "target": "openspec/changes/archive/2026-09-14-bootstrap-runtime/tasks.md"
+      "reason": "Formal specification and delivery design for the bounded GitHub operation fix; canonical timeout guidance is updated in docs/github-ticket-setup.md.",
+      "target": "openspec/specs/github-operation-budget/spec.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Formal specification and delivery artifacts describe the tested runtime and evidence boundaries.",
-      "target": "openspec/changes/archive/2026-09-14-work-record-evidence/design.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Formal specification and delivery artifacts describe the tested runtime and evidence boundaries.",
-      "target": "openspec/changes/archive/2026-09-14-work-record-evidence/proposal.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Formal specification and delivery artifacts describe the tested runtime and evidence boundaries.",
-      "target": "openspec/changes/archive/2026-09-14-work-record-evidence/specs/documentation-impact-workflow/spec.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Formal specification and delivery artifacts describe the tested runtime and evidence boundaries.",
-      "target": "openspec/changes/archive/2026-09-14-work-record-evidence/tasks.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Formal specification and delivery artifacts describe the tested runtime and evidence boundaries.",
-      "target": "openspec/specs/connected-project-readiness/spec.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Formal specification and delivery artifacts describe the tested runtime and evidence boundaries.",
-      "target": "openspec/specs/project-workspace-diagnostics/spec.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Portable guide and command map describe the same shell activation and evidence behavior.",
-      "target": "project-templates/project/docs/documentation-guide.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Portable guide and command map describe the same shell activation and evidence behavior.",
-      "target": "project-templates/project/docs/workflows/tool-map.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Regression coverage verifies runtime fallback and owned shell safety; operator guidance is updated in the machine enrollment runbook.",
-      "target": "tests/test_bootstrap_activation.py"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Regression coverage verifies runtime fallback and owned shell safety; operator guidance is updated in the machine enrollment runbook.",
-      "target": "tests/test_checks.py"
-    },
-    {
-      "outcome": "reviewed-no-change",
-      "reason": "Bootstrap test fixtures now isolate runner command files so fake tools cannot contaminate later release steps. Production bootstrap publication and the documented build/install workflow remain unchanged.",
-      "target": "docs/runbooks/release-publication.md"
+      "reason": "Regression scenarios exercise compound-operation completion and explicit/default timeout failures while preserving child request limits.",
+      "target": "tests/test_github_operation_budget.py"
     }
   ],
   "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "b7f6ad679bed7f88f61cd9adcbfd14f29e6a63237a38eef4ccddf20a2b9d4a9f",
+  "snapshot": "592cb0c82fdd720e9d22e553f7d2da0d40cce593c984e2fb8fc89e466dad855b",
   "sources": {
-    ".github/workflows/release.yml": "9fa9f2bc09c5555d9e1ae9e75a6f9c10beecaacdafb6cd43671c9e7d89b7bd22",
     "docs/architecture.md": "a8aace94253d79c6384f2fe5b8c7b45f0f1b1b4da27b2d5bd6d1cd3da612a4e8",
     "docs/catalog.toml": "53ab3b989c9addd8dc18968f6471afa3a151834c6c95a77a789d8af13b41c22e",
-    "docs/design/local-and-shared-knowledge.md": "3bae3c9e3e9f7a7294002726a046a784a8f6907b4517560d1081c9cc686eb2c1",
-    "docs/design/project-documentation.md": "d19ce7a85d85669ab80c20a1637079e02025b7ab57a225eb4acb0f2de46d228b",
-    "docs/runbooks/document-workspace-qualification.md": "0cb82c08c333033fcefd9013c9bf58cfb9f6fc84ec91355a21ce17f379681ac5",
-    "docs/runbooks/machine-enrollment.md": "23ea80d121ef5091b87d1461457d408c9d32859d81027ece356fb8c206f478c8",
-    "docs/runbooks/release-publication.md": "949d2367ab71c0a6b958d91abcf49e3d86263ff4d91001bf6d47ddbd15e29166",
-    "docs/verification/documentation-workflow.md": "e4725fcc0754a9ff460320b64ae48e33a6120d047d7c06ae2f83e0c95679a7e0",
-    "docs/workflows/tool-map.md": "8102e1e81745d95264feb72e0cd0224df8756869e747fb58a3947c83b59dd5ba",
-    "openspec/changes/archive/2026-09-14-bootstrap-runtime/design.md": "87604f05e52416b19a09085907a0268487ef8bf4c60022cca8d098f3bdb3c123",
-    "openspec/changes/archive/2026-09-14-bootstrap-runtime/proposal.md": "ecc17002935e45f646e18f99352450a765397c735e985dd58f7467f96464c2d4",
-    "openspec/changes/archive/2026-09-14-bootstrap-runtime/specs/connected-project-readiness/spec.md": "ba93ea3a4e717090c9bc75595fd5c39971535f8ac8650c3129247812538c08a3",
-    "openspec/changes/archive/2026-09-14-bootstrap-runtime/specs/project-workspace-diagnostics/spec.md": "4bead5a5d1f45f1d0d27e83adbd3479e00404cf4df409869061a851c183cedfa",
-    "openspec/changes/archive/2026-09-14-bootstrap-runtime/tasks.md": "ef64be3980a91d84d880166e2a033e04fbf2b08c12c1a108690506d62104cc23",
-    "openspec/changes/archive/2026-09-14-work-record-evidence/design.md": "782898b49c3a9d4a2e0b85d7637f84659a325bb79368a190100292baff4a8372",
-    "openspec/changes/archive/2026-09-14-work-record-evidence/proposal.md": "25cc40e70d6935375e5976b9c0fb61b2f056c7adba4655bcfa11842410551f5b",
-    "openspec/changes/archive/2026-09-14-work-record-evidence/specs/documentation-impact-workflow/spec.md": "199edd662d773899bd3f61ccf1d24d6a09c7103a410b8fb45e2fe3586c235de0",
-    "openspec/changes/archive/2026-09-14-work-record-evidence/tasks.md": "6063be9433c8eebc93ca3f60aa455d4b2a57592fff85c8e6798895d3b334f0f5",
-    "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
-    "openspec/specs/connected-project-readiness/spec.md": "e9844791e58dbfa37f117eb7999b62f994121138f0d5316b18ec6fa83be2b3be",
-    "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
-    "openspec/specs/documentation-impact-workflow/spec.md": "703e1ac9993837d28f1da11c595dc36d57859f2c5301c6f4e7a89d354b0a8152",
-    "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
-    "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
-    "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
-    "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
-    "openspec/specs/project-workspace-diagnostics/spec.md": "27e9c5a42bd5f39ac25b08bc0b90e8c277638c935186615d21df7ecde51a9387",
-    "project-templates/project/docs/documentation-guide.md": "f9cf3e10a6cac8e8bed4417351d88a5a15a85fe55686db24d4d76b228b415488",
-    "project-templates/project/docs/workflows/tool-map.md": "9b9d51f55262da52309feba9e59f54f9ab7d29c091aad3407038c1aeecd414db",
-    "project-templates/project/scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
+    "docs/github-ticket-setup.md": "09e6a60879083aafb575c08eb4cad3eb89cc64047d7a7339c8b4ecf5d5f3b613",
+    "openspec/changes/archive/2026-09-14-github-operation-budget/design.md": "72770b4951344df77f7cb4f24f017d0c41900b693e30d7849cd4f8f74086e6d5",
+    "openspec/changes/archive/2026-09-14-github-operation-budget/proposal.md": "36041f75cce099dedf8a391a15ab54b2a8dbfb6e3c2f9e7bc910521889167bb1",
+    "openspec/changes/archive/2026-09-14-github-operation-budget/specs/github-operation-budget/spec.md": "975330d0a33ef705f2c3300a449ecbf2e9a67d9beef4003c9c9d5f898d971e18",
+    "openspec/changes/archive/2026-09-14-github-operation-budget/tasks.md": "3073a6ef9cf7e846d84e1aa1686b6f6a3ea642205735e70b64c3efcbf0dc7326",
+    "openspec/specs/github-operation-budget/spec.md": "ef95a7bb2f2176a7e3e2e161d0ad375cd30f27b3f8c04645fd3f9f30ed706215",
     "pyproject.toml": "57b5a7f4ea777185ab5df4b34c4117a190d41434e1e236b38735987c96ccc529",
-    "scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
     "scripts/check_generated.py": "2a5e65cb653c0cf9b44dc34765a6d2d4affcfda9b310231a2abed4b3de82771a",
     "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
     "scripts/qualify_framework.py": "01dd9e6acbe14e740f068662aa539e9a7ed0ba57ab97e9457e0a05d968a25fb6",
@@ -198,7 +99,7 @@
     "src/ai_dlc/locking.py": "f1cfe828e897e11d73b645130060362e2699f75aac9307ed8cb4955b0533b629",
     "src/ai_dlc/mcp_server.py": "a743c48d33e49408e097add497f56b017cff0afcc41209c6743c2eed68609c09",
     "src/ai_dlc/provider_definitions.py": "e90c2d41a839bc4a32dcb3989f59fa6c9073bd1233f3db2088bd176e1bc513d3",
-    "src/ai_dlc/providers/__init__.py": "79308afdb659a23865b422bb423bbd57c01cc1aa52929f56674c79c6e3cbfd6a",
+    "src/ai_dlc/providers/__init__.py": "cfba7bd16db1ffa269d569f04349e5367160d9b6a7db9edd0ebaaa03c67569d8",
     "src/ai_dlc/providers/github_issues.py": "55a18a178fc329a94ff95f39b72c5599117c5a8e79842d7cc7c6c8966cbed405",
     "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
     "src/ai_dlc/providers/jira_cloud.py": "d9b83ba88fb964816450b1479fc775a526455c023725ecff3c8ca695ac7cd8c8",
@@ -231,21 +132,6 @@
     "src/ai_dlc/work/traceability.py": "c4062335f26218e99f58e236425674c513ea6f2fce7f68b624a4df4dcd8ab3aa",
     "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
     "src/ai_dlc/work/workflow.py": "98a6e3eee1526864845fe53c73dd9c78c07b22256a86dde9e4e12f300a08db23",
-    "tests/fixtures/messy_project.py": "719e8bd5da992f35efb3b39ae87bb9bff955b362f77eaf05fa0554a7e6cf1422",
-    "tests/test_bootstrap.py": "20c1c5d49181b22b969a19063ff108554be7eb492711bcec95c9a52599cf1bf2",
-    "tests/test_bootstrap_activation.py": "6f7ab8d1906f0ac538cfdbea8a71bd9de4cc4846a0e795cccda0c8fcad182367",
-    "tests/test_checks.py": "8988e78eb9d2823967ed6b686e9b8ce7872e823167e82ccb5a342b72b7306460",
-    "tests/test_company_guidance.py": "ab39bed3342d9de7d4c68db6c6c54fd66e13c12f2f2167c38e8d345c7dc9736e",
-    "tests/test_document_access.py": "bdf96af4afb1ad6f985204ad243a624d4da8b56d527af63cc072908a76beeff4",
-    "tests/test_document_impact.py": "a9cccc6fa777d01add578c103adb8efa099541c02fa9132790dd2377fa45c728",
-    "tests/test_document_inventory.py": "927199563751af6b2dd5aa8e93cddb43cc62192adffea49694dada37ef6bf14c",
-    "tests/test_document_review.py": "88f37e6365c7e9b545d668f978993ef7ad9acfa146e7d549728f4ef9cab8008a",
-    "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
-    "tests/test_knowledge.py": "4766f0fd4de9c4a66c96fe93b56b03e275c1adcb5e303e773e92a9e528112be7",
-    "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7",
-    "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
-    "tests/test_vault_link.py": "fd146d4d15041021ac343257c9d91a8c1950878d275420eda85d13747065e110",
-    "tests/test_vault_mount.py": "f6a5dc947af0d68e4688c37d05294c6b4868aa98ead91d26aa0c8ffec8018424",
-    "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
+    "tests/test_github_operation_budget.py": "ab1d7215ae8e320da12c95b1e3141111d39b08f4d22bcc4c57bc318adfbeb8dc"
   }
 }
