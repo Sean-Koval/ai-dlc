@@ -136,9 +136,18 @@ class GitHubSCM:
             check=False,
             context="Pull request upstream check failed",
         )
-        if upstream.returncode:
+        tracked_branch = run_git(
+            self.root,
+            "config",
+            "--get",
+            f"branch.{head}.merge",
+            environ=self.environ,
+            check=False,
+            context="Pull request upstream check failed",
+        )
+        if upstream.returncode or tracked_branch.stdout.strip() != f"refs/heads/{head}":
             raise RefusedError(
-                f"Branch {head} has no upstream; push the branch first: git push -u origin {head}"
+                f"Branch {head} has no matching pushed upstream; push the branch first: git push -u origin {head}"
             )
         with tempfile.NamedTemporaryFile(
             "w", prefix="ai-dlc-pr-", suffix=".md", delete=False
