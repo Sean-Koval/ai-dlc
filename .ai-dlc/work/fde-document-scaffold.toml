@@ -27,7 +27,7 @@ scm = "github"
 deploy = "none"
 
 [artifacts]
-spec = "openspec/changes/fde-document-scaffold"
+spec = "openspec/changes/archive/2026-09-14-fde-document-scaffold"
 tracker = "50"
 branch = "feat/team-document-publication"
 
