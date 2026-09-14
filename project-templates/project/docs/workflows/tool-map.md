@@ -75,6 +75,7 @@ knowledge append`.
 | Readiness and context | `ai-dlc doctor`, `ai-dlc next`, `ai-dlc context` |
 | Project lifecycle | `ai-dlc project init`, `ai-dlc project adopt`, `ai-dlc project sync`, `ai-dlc project setup`, `ai-dlc project check --required`, `ai-dlc project rebind` |
 | Agent configuration | `ai-dlc agents render` |
+| Local work drafting | `ai-dlc work new WORK_ID [--from-issue REF]` creates an unreviewed record without publication or mutation state |
 | Work and traceability | `ai-dlc work publish`, `ai-dlc work link`, `ai-dlc work start`, `ai-dlc work status`, `ai-dlc work finish` |
 | Provider verification | `ai-dlc provider list`, `ai-dlc provider test` |
 | Project documentation | `ai-dlc docs init`, `ai-dlc docs check`, `ai-dlc project link-vault` |

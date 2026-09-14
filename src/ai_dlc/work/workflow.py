@@ -22,6 +22,7 @@ from ai_dlc.providers.scm import GitHubSCM
 from ai_dlc.work.journal import Journal
 from ai_dlc.work.traceability import (
     artifact_is_local,
+    draft_issue_fields,
     render_pull_request_body,
     render_ticket_body,
     validate_work_graph,
@@ -377,8 +378,78 @@ class WorkService:
                 if state_path
                 else Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "ai-dlc"
             )
-            self.journal = Journal(state / "operations.sqlite3")
+            self._journal_path = state / "operations.sqlite3"
+            self._journal: Journal | None = None
             self.registry = registry or Registry(config, root=self.root)
+
+    @property
+    def journal(self):
+        if self._journal is None:
+            self._journal = Journal(self._journal_path)
+        return self._journal
+
+    def new(
+        self,
+        work_id,
+        *,
+        tracker_reference=None,
+        title=None,
+        scope=None,
+        requires_spec=None,
+        spec_reason=None,
+        acceptance=None,
+    ):
+        """Create a local unreviewed draft without publishing or opening a journal."""
+        Work.safe_id(work_id)
+        with project_write_lock(self.root):
+            self._check_source()
+            path = inside(self.root, f".ai-dlc/work/{work_id}.toml")
+            if path.exists():
+                raise RefusedError(f"Work record already exists: {work_id}")
+            providers = {
+                role: provider
+                for role, provider in self.config.get("roles", {}).items()
+                if role in {"specs", "tracker", "knowledge", "scm", "deploy"}
+            }
+            item = {}
+            if tracker_reference is not None:
+                if not isinstance(tracker_reference, str) or not tracker_reference.strip():
+                    raise RefusedError("Tracker reference cannot be empty")
+                if not providers.get("tracker"):
+                    raise RefusedError("Configure a tracker before using --from-issue")
+                item = self.registry.get(providers["tracker"]).invoke(
+                    "read", {"reference": tracker_reference}
+                )
+            derived = draft_issue_fields(item.get("body") or "")
+            record = Work.model_validate(
+                {
+                    "schema": 1,
+                    "id": work_id,
+                    "title": title
+                    if title is not None
+                    else item.get("title") or "TODO: state title",
+                    "scope": scope if scope is not None else derived["scope"],
+                    "acceptance": acceptance if acceptance is not None else derived["acceptance"],
+                    "requires_spec": requires_spec if requires_spec is not None else True,
+                    "spec_reason": spec_reason
+                    if spec_reason is not None
+                    else "TODO: record the specification decision",
+                    "reviewed": False,
+                    "providers": providers,
+                    "artifacts": {"tracker": tracker_reference}
+                    if tracker_reference is not None
+                    else {},
+                    "requirements": [],
+                    "depends_on": [],
+                }
+            ).model_dump(by_alias=True)
+            self._check_source()
+            path = inside(self.root, f".ai-dlc/work/{work_id}.toml")
+            path.parent.mkdir(parents=True, exist_ok=True)
+            # Exclusive creation also refuses a concurrent non-cooperating writer.
+            with path.open("x") as handle:
+                handle.write(tomli_w.dumps(record))
+            return record
 
     def load(self, work_id, mutation=False):
         if mutation:
