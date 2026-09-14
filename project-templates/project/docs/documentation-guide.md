@@ -450,3 +450,10 @@ Pull request checks do not rerun when the target branch moves, and a post-merge
 check compares against the commit the merge replaced. Where the SCM supports it,
 require branches to be up to date before merging so passing evidence still names
 that commit.
+
+Shell activation can be previewed with `ai-dlc project workspace-init --shell` and
+written with `--apply`. It supports bash, zsh and fish, preserves authored content,
+and refuses edited owned sections or unsafe rc files. Workspace diagnostics name
+the exact temporary PATH remedy. Project checks can find mise in the bootstrap
+bin without changing the process PATH or installing tools. Ordinary work-record
+edits do not invalidate documentation dispositions; explicit catalog mappings do.

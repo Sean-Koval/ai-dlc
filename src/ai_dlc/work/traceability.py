@@ -121,3 +121,17 @@ def render_ticket_body(work: dict) -> str:
     )
     sections.extend(f"- {item}" for item in work.get("acceptance", []))
     return "\n".join(sections).rstrip() + "\n"
+
+
+def render_pull_request_body(work: dict, *, closes: str | None = None) -> str:
+    """Render a pull request body from the record's own scope and acceptance.
+
+    ``closes`` is the bare tracker number to close through GitHub's keyword; the caller
+    decides whether the tracker is GitHub Issues, since only then does the keyword act.
+    """
+    sections = ["## Scope", "", work["scope"], "", "## Acceptance", ""]
+    sections.extend(f"- {item}" for item in work.get("acceptance", []))
+    body = "\n".join(sections).rstrip() + "\n"
+    if closes:
+        body += f"\nCloses #{closes}\n"
+    return body

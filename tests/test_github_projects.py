@@ -496,11 +496,11 @@ def test_work_start_rechecks_terminal_state_after_successful_start_journal(
 ):
     app = service(tmp_path, wire)
     monkeypatch.setattr(app, "branch", lambda work: "work/one")
-    assert app.start("one")["tracker"]["state"] == "in_progress"
+    assert app.start("one", commit=False)["tracker"]["state"] == "in_progress"
     wire.issue.update(state="CLOSED", stateReason="NOT_PLANNED")
     wire.events.clear()
     with pytest.raises(ValueError, match="terminal"):
-        app.start("one")
+        app.start("one", commit=False)
     assert wire.events == []
 
 

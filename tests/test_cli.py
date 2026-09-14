@@ -1047,3 +1047,73 @@ def test_work_validate_is_offline_and_does_not_write_project_or_journal(
     assert bool(report["errors"]) is invalid
     assert before == {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}
     assert not state.exists()
+
+
+def _work_pr_project(tmp_path):
+    import tomli_w
+
+    root = tmp_path / "project"
+    folder = root / ".ai-dlc/work"
+    folder.mkdir(parents=True)
+    (root / "ai-dlc.toml").write_text("schema=4\n")
+    record = {
+        "schema": 1,
+        "id": "target",
+        "title": "Target",
+        "scope": "bounded",
+        "requires_spec": False,
+        "spec_reason": "verification",
+        "acceptance": ["Observe result"],
+        "reviewed": True,
+        "providers": {"tracker": "github-issues"},
+        "artifacts": {"branch": "work/target", "pr": "https://github.com/a/b/pull/3"},
+    }
+    (folder / "target.toml").write_text(tomli_w.dumps(record))
+    return root
+
+
+def test_work_pr_prints_an_existing_pull_request_without_creating_another(tmp_path, monkeypatch):
+    from ai_dlc.cli import app
+
+    root = _work_pr_project(tmp_path)
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "config"))
+    monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "state"))
+    monkeypatch.setenv("PATH", "")
+
+    result = CliRunner().invoke(app, ["work", "pr", "target", "--root", str(root)])
+
+    assert result.exit_code == 0, result.output
+    report = json.loads(result.stdout)
+    assert report["status"] == "linked"
+    assert report["created"] is False
+    assert report["pr"]["url"] == "https://github.com/a/b/pull/3"
+
+
+def test_work_pr_reports_a_refusal_as_a_plain_error(tmp_path, monkeypatch):
+    from ai_dlc.cli import app
+
+    root = _work_pr_project(tmp_path)
+    (root / ".ai-dlc/work/target.toml").write_text(
+        (root / ".ai-dlc/work/target.toml")
+        .read_text()
+        .replace("reviewed = true\n", "reviewed = false\n")
+    )
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "config"))
+    monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "state"))
+    monkeypatch.setenv("PATH", "")
+
+    result = CliRunner().invoke(app, ["work", "pr", "target", "--root", str(root)])
+
+    assert result.exit_code != 0
+    assert "Error: Work must be reviewed before mutation" in result.stderr
+    assert result.stdout == ""
+
+
+@pytest.mark.parametrize("command", ["start", "link"])
+def test_work_start_and_link_offer_no_commit(command):
+    from ai_dlc.cli import app
+
+    result = CliRunner().invoke(app, ["work", command, "--help"])
+
+    assert result.exit_code == 0, result.output
+    assert "--no-commit" in unstyle(result.output)

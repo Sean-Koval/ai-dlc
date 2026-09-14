@@ -71,13 +71,35 @@ def test_setup_resume_tracks_successful_steps_only(tmp_path):
     assert (tmp_path / "count").read_text() == "run\n"
 
 
+def no_runtime_anywhere(tmp_path, monkeypatch):
+    """PATH and the bootstrap bin both lack mise; the real bootstrap of this machine is hidden."""
+    monkeypatch.setenv("PATH", "")
+    monkeypatch.setenv("HOME", str(tmp_path / "home"))
+    monkeypatch.setenv("AI_DLC_BOOTSTRAP_HOME", str(tmp_path / "bootstrap"))
+
+
+def fake_mise(directory):
+    """A mise stand-in that runs `exec` commands and installs nothing."""
+    directory.mkdir(parents=True, exist_ok=True)
+    script = directory / "mise"
+    script.write_text(
+        "#!/bin/sh\n"
+        'case "$1" in\n'
+        '  exec) shift; [ "$1" = -- ] && shift; exec "$@" ;;\n'
+        "  *) exit 0 ;;\n"
+        "esac\n"
+    )
+    script.chmod(0o755)
+    return script
+
+
 def test_missing_runtime_fails_before_any_check_runs(tmp_path, monkeypatch):
     import pytest
 
     from ai_dlc.setup.project import RuntimeUnavailable, check_project
 
     root = repository(tmp_path)
-    monkeypatch.setenv("PATH", "")
+    no_runtime_anywhere(tmp_path, monkeypatch)
     with pytest.raises(RuntimeUnavailable) as failure:
         check_project(root, use_mise=True)
     assert failure.value.executable == "mise"
@@ -91,7 +113,7 @@ def test_missing_runtime_reports_structured_failure_without_receipt(tmp_path, mo
 
     root = repository(tmp_path)
     receipt = tmp_path / "receipts" / "local.json"
-    monkeypatch.setenv("PATH", "")
+    no_runtime_anywhere(tmp_path, monkeypatch)
     result = CliRunner().invoke(
         app,
         ["project", "check", "--root", str(root), "--json", "--receipt", str(receipt)],
@@ -114,13 +136,101 @@ def test_missing_runtime_human_output_names_the_remedy(tmp_path, monkeypatch):
     from ai_dlc.cli import app
 
     root = repository(tmp_path)
-    monkeypatch.setenv("PATH", "")
+    no_runtime_anywhere(tmp_path, monkeypatch)
     result = CliRunner().invoke(app, ["project", "check", "--root", str(root)])
     assert result.exit_code == 1
     assert "mise is not on PATH" in result.stderr
     assert "workspace-check" in result.stderr
     assert "Traceback" not in result.stderr
     assert json.loads(result.stdout)["ran"] is False
+
+
+def test_runtime_env_uses_the_bootstrap_bin_when_path_lacks_mise(tmp_path, monkeypatch, capfd):
+    from ai_dlc.setup.project import runtime_env
+
+    root = repository(tmp_path)
+    no_runtime_anywhere(tmp_path, monkeypatch)
+    bin_dir = tmp_path / "bootstrap/bin"
+    fake_mise(bin_dir)
+    env = runtime_env(root, use_mise=True)
+    assert env["PATH"].split(os.pathsep)[0] == str(bin_dir)
+    assert env["MISE_AUTO_INSTALL"] == "0"
+    assert os.environ["PATH"] == ""
+    note = capfd.readouterr().err
+    assert note.count("\n") == 1
+    assert note.startswith(f"note: using bootstrap runtime at {bin_dir}")
+    assert "workspace-init --shell" in note
+    # Per-check resolution stays silent so the note appears once per invocation.
+    runtime_env(root, use_mise=True, notify=False)
+    assert capfd.readouterr().err == ""
+
+
+def test_runtime_env_prefers_mise_on_path_and_stays_quiet(tmp_path, monkeypatch, capfd):
+    from ai_dlc.setup.project import runtime_env
+
+    root = repository(tmp_path)
+    no_runtime_anywhere(tmp_path, monkeypatch)
+    fake_mise(tmp_path / "bootstrap/bin")
+    on_path = tmp_path / "path-bin"
+    fake_mise(on_path)
+    monkeypatch.setenv("PATH", str(on_path))
+    env = runtime_env(root, use_mise=True)
+    assert env["PATH"] == str(on_path)
+    assert capfd.readouterr().err == ""
+
+
+def test_bootstrap_runtime_runs_checks_with_an_unchanged_receipt_digest(
+    tmp_path, monkeypatch, capfd
+):
+    from ai_dlc.setup.project import check_project
+
+    root = repository(tmp_path)
+    no_runtime_anywhere(tmp_path, monkeypatch)
+    bin_dir = tmp_path / "bootstrap/bin"
+    fake_mise(bin_dir)
+    monkeypatch.setenv("PATH", "/usr/bin:/bin")
+    fallback = check_project(root, use_mise=True)
+    assert [x["status"] for x in fallback["outcomes"]] == ["passed", "failed"]
+    assert capfd.readouterr().err.count("note: using bootstrap runtime") == 1
+    monkeypatch.setenv("PATH", str(bin_dir) + ":/usr/bin:/bin")
+    activated = check_project(root, use_mise=True)
+    assert activated["environment_digest"] == fallback["environment_digest"]
+    assert activated["checks_digest"] == fallback["checks_digest"]
+    assert capfd.readouterr().err.count("note: using bootstrap runtime") == 0
+
+
+def test_cli_check_writes_a_receipt_through_the_bootstrap_runtime(tmp_path, monkeypatch):
+    import sys
+
+    root = repository(tmp_path)
+    (root / "ai-dlc.toml").write_text(
+        'schema=4\n[checks]\nrequired=["ok"]\n[checks.commands]\nok="exit 0"\n'
+    )
+    no_runtime_anywhere(tmp_path, monkeypatch)
+    fake_mise(tmp_path / "bootstrap/bin")
+    monkeypatch.setenv("PATH", "/usr/bin:/bin")
+    receipt = tmp_path / "receipts" / "local.json"
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "ai_dlc",
+            "project",
+            "check",
+            "--root",
+            str(root),
+            "--json",
+            "--receipt",
+            str(receipt),
+        ],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    assert receipt.exists()
+    assert json.loads(result.stdout)["outcomes"][0]["status"] == "passed"
+    assert "note: using bootstrap runtime" in result.stderr
 
 
 @pytest.mark.parametrize("declares_tools", [False, True])
