@@ -29,9 +29,9 @@ repository, Project and status names through the same option, including
 only the provider, root, `--plan-file` and `--apply`; selections come from that file.
 No default tracker role is changed by connection setup.
 
-The application API exposes `discover_connection(root, provider_id, environ=...)`,
-`plan_connection(root, provider_id, selections, environ=..., plan_file=...)` and
-`apply_connection(root, provider_id, plan_file, environ=...)`. Discovery retains
+The application API is one function, `connect_provider(root, name=..., environ=...)`:
+called with no selections it discovers; with selections and `plan_file` it saves a
+plan; with `plan_file` and `apply=True` it applies that saved plan. Discovery retains
 each builtin's existing preview behavior. In particular, GitHub's default Project
 preview and journaled apply stay in its existing application service.
 
