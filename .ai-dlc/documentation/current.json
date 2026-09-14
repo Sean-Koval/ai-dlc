@@ -1,52 +1,74 @@
 {
-  "base": "7d2075374c3c001fdd617e6d1ad65c093064e9c8",
+  "base": "03987da0bb47d9cdcc2ee62869b0821eaff89491",
   "decisions": [
     {
-      "outcome": "no-impact",
-      "reason": "Work record for this change, published as tracker item 95 and linked to its pull request.",
-      "target": ".ai-dlc/work/cli-service-boundaries.toml"
-    },
-    {
-      "outcome": "reviewed-no-change",
-      "reason": "Logic moved from the CLI into the work and setup packages the map already names; MCP gained work_context over the same service. No boundary changed.",
+      "outcome": "updated",
+      "reason": "The shared-module table now lists toml_edit.py alongside files.py and locking.py.",
       "target": "docs/architecture.md"
     },
     {
-      "outcome": "updated",
-      "reason": "Adds work_context to the exact list of MCP tools.",
-      "target": "docs/workflows/tool-map.md"
+      "outcome": "reviewed-no-change",
+      "reason": "Mapped harness and config sources only gained public names for existing helpers; the knowledge design is unaffected.",
+      "target": "docs/design/local-and-shared-knowledge.md"
     },
     {
-      "outcome": "updated",
-      "reason": "Mirrors the tool map change for generated projects.",
-      "target": "project-templates/project/docs/workflows/tool-map.md"
+      "outcome": "reviewed-no-change",
+      "reason": "Workspace diagnostics behaviour is unchanged; only the test helper's import name moved to a public symbol.",
+      "target": "docs/runbooks/document-workspace-qualification.md"
+    },
+    {
+      "outcome": "reviewed-no-change",
+      "reason": "Mapped setup sources were renamed internally; the release procedure is unchanged.",
+      "target": "docs/runbooks/release-publication.md"
+    },
+    {
+      "outcome": "reviewed-no-change",
+      "reason": "Documentation workflow code is untouched; the impact is via shared code mappings only.",
+      "target": "docs/verification/documentation-workflow.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Service-level test for readiness_config.",
-      "target": "tests/test_provision.py"
+      "reason": "Work record for this change, published as tracker item 96.",
+      "target": ".ai-dlc/work/toml-editor.toml"
     },
     {
       "outcome": "no-impact",
-      "reason": "Service-level test for read_tracker_mappings.",
-      "target": "tests/test_tracker_targets.py"
+      "reason": "Symlinked-anchor test re-expressed through the provider connect command instead of a private loader.",
+      "target": "tests/test_provider_onboarding.py"
     },
     {
       "outcome": "no-impact",
-      "reason": "Service-level test for build_context and CLI output equivalence.",
-      "target": "tests/test_workflow.py"
+      "reason": "Plain CLAUDE.md readiness test re-expressed through inspect_readiness instead of a private state helper.",
+      "target": "tests/test_rendering.py"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Direct tests for the extracted ai_dlc.toml_edit module.",
+      "target": "tests/test_toml_edit.py"
     }
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "3e6d5d4baedd7cf2afd05a079c8ac8879be2f57c662d0a9d0aec029620ec64d6",
+  "snapshot": "500513668bf7197f530342f39ca69a2c8354ed8d2deb573117d4610ff4482b17",
   "sources": {
-    ".ai-dlc/work/cli-service-boundaries.toml": "cbff4aba5f7682b8130ce566e5518093533841957502854690861bf80b8f60ba",
-    "docs/architecture.md": "3b392e7c6a2b1d3cd5c02ee533eadfe4f9df70418c5f33dbc796b80b5710c147",
+    ".ai-dlc/work/toml-editor.toml": "0e597440e07fe53eaedac655c33cecdc553e11ef2eaf21400c5e3a3c1ba2236f",
+    ".github/workflows/release.yml": "7ddd05d4f6d18ce5f9db254c5361591fdfb8810eb8604db07def99fff8ab30b6",
+    "docs/architecture.md": "a9de2039b4743567929264c6bd0928b81e3a7724f5af2d48f9a88772439f94ef",
     "docs/catalog.toml": "d5fa5e30cece81c49c5566245360214704388357b4afe5ba7adb7d9f379abe59",
-    "docs/workflows/tool-map.md": "197bcde7330cdef95f57c3a040a35f6c3c256c746ffdb45b2ad13eed4ed0730a",
-    "project-templates/project/docs/workflows/tool-map.md": "0038ff7873c54019965ff136febeb646f55089357da74e486a48bd789e9d9c66",
+    "docs/design/local-and-shared-knowledge.md": "3bae3c9e3e9f7a7294002726a046a784a8f6907b4517560d1081c9cc686eb2c1",
+    "docs/runbooks/document-workspace-qualification.md": "0cb82c08c333033fcefd9013c9bf58cfb9f6fc84ec91355a21ce17f379681ac5",
+    "docs/runbooks/release-publication.md": "949d2367ab71c0a6b958d91abcf49e3d86263ff4d91001bf6d47ddbd15e29166",
+    "docs/verification/documentation-workflow.md": "036a53ebf3a05edbc77eceaac841b40151cce05a762fe3ef631e14f057a89a0f",
+    "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
+    "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
+    "openspec/specs/documentation-impact-workflow/spec.md": "52f07085c5f87622f04b801de04a98d430a90364869ea0226047271dbd4ea977",
+    "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
+    "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
+    "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
+    "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
+    "project-templates/project/scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
     "pyproject.toml": "57b5a7f4ea777185ab5df4b34c4117a190d41434e1e236b38735987c96ccc529",
+    "scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
     "scripts/check_generated.py": "845e3ac89acb10720eab193712430a09b767272862a02369f391a982da6e7267",
     "scripts/check_layout.py": "26fde5445108c55e36a1ea3083f5dc01a71ecfcd9b1d38542c515d86afe5ab4d",
     "scripts/qualify_framework.py": "01dd9e6acbe14e740f068662aa539e9a7ed0ba57ab97e9457e0a05d968a25fb6",
@@ -80,10 +102,10 @@
     "src/ai_dlc/environment/profile_source.py": "f177cc9336ed7c69e37299bc70107f14a7878ff72abbd1070dc3560340d451cc",
     "src/ai_dlc/files.py": "e84b5ecd3d51158042f7eec9ee71b2431f78cc0465f5cb97840bd3b3390fcf3a",
     "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
-    "src/ai_dlc/harness/agents.py": "c1914456027ef059c8b3da321a429a96e69cb4c97e7cc583d437397406f6855c",
+    "src/ai_dlc/harness/agents.py": "6dfd35e15344a81f2de8f4b4db41c23544ab93c83549c279b98e3962c3d5b01a",
     "src/ai_dlc/harness/components.py": "59a50ce61709daaf4b9209c154498eb5efacb84a8747550685421cc269ea7f3c",
     "src/ai_dlc/harness/hooks.py": "e76b94c5d13168816506d5ef71360646d929659561974000561829ab49a08e11",
-    "src/ai_dlc/harness/native_composition.py": "7cd919fd40adb70eea1a775dbd5ea8328fde9eda6302d6f52565f14ea3d244ab",
+    "src/ai_dlc/harness/native_composition.py": "1e4c5729ff31cb91820bd8df3d15b60c1067b4a5f2b89381888211470dc79bc8",
     "src/ai_dlc/harness/user_agents.py": "6fad6edd1d1d89b0c105291f2fa8b69f223ce00bd5095d77357d7c05e6eb3f4a",
     "src/ai_dlc/harness/workflow_bundles.py": "e0943696bdced1e841bf15a68c2040e37e484fe7c021119dec1c25e82be0fe38",
     "src/ai_dlc/locking.py": "f1cfe828e897e11d73b645130060362e2699f75aac9307ed8cb4955b0533b629",
@@ -98,31 +120,46 @@
     "src/ai_dlc/providers/plane.py": "76fab3893bf0d4536c58500e4ab5a90f59893977c057be4777d78068e278ca1c",
     "src/ai_dlc/providers/plane_attempts.py": "bfa9b5015f7dc554b9e58af82c680d97d3f0a5271bc0afe6102a81fbf697c20a",
     "src/ai_dlc/providers/python_exec.py": "3aaafe9bf74a4a949b59d71ed2079b9c48114462a9c823b3641a1772af5a6ff1",
-    "src/ai_dlc/providers/scm.py": "a3af42ee57b84fcc5870ae300160e708d14ab49c0e7601bd0a2796ec6077a3c1",
+    "src/ai_dlc/providers/scm.py": "55d21698f752048cbc99c8e7443f54fcd1f8ab062301112a7d6b1f71953cfe57",
     "src/ai_dlc/setup/__init__.py": "8eb444a69a67d0c1a59ffc0c80ce59efda159976bea58d40154e97f8bdecf18c",
-    "src/ai_dlc/setup/connections.py": "35d04e1c6778227b0947034d2ed5d535ab8c79ee783496a2c2c7285d694b5595",
+    "src/ai_dlc/setup/connections.py": "c6bccc31ddd11e01f8ae853abc38e430519b9445495278bfbdc2c3dca4c56cb6",
     "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
     "src/ai_dlc/setup/github_project_setup.py": "86b97dcaa4447082252008da1df64159cac09a077198a7e84e3577294ad540d2",
     "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
     "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
-    "src/ai_dlc/setup/project.py": "8173b546158a250db4797a9c917f199092bd18b3af4ed0789f136852b9bc0f7d",
-    "src/ai_dlc/setup/provider_onboarding.py": "8a9407894dc494faa4a431ad219e0ebbd472504893434ac3b66f7be6f6acfdf6",
+    "src/ai_dlc/setup/project.py": "ac2e591d92a61021797bbe3888b2432e477ac6a19c5362adca0cfc2568a8877e",
+    "src/ai_dlc/setup/provider_onboarding.py": "be120ad6e93c178f041fd338a45a5df7c75b9a30591725cfbf7800bca531045e",
     "src/ai_dlc/setup/provision.py": "726df31af9cddf90f4f23096bfb133aeaf8ee951ed5195c1c3f0dce32ecd83b5",
     "src/ai_dlc/setup/readiness.py": "7c7c2767520b3da2e7f8dd74be4ed6359a7dca66bc413c68eba2b1b4bad7f52c",
-    "src/ai_dlc/setup/rebind.py": "c083e35c27f10415986d3170bb81905944254bd12485c5a4db71b77b0a38adf2",
-    "src/ai_dlc/setup/templates.py": "0f775e138fb7b94247e062263ad8a6aaaee85a1296637649470b3f598a49cdd1",
+    "src/ai_dlc/setup/rebind.py": "399b3f5baaae0ea6faf5f4205f742e10bef51930e55467c0799c74e1a6a456d5",
+    "src/ai_dlc/setup/templates.py": "bbfb4f26c103e3a5210fb8b97a6d843b615efac5f10ddedb28734f254061beb6",
     "src/ai_dlc/setup/tracker_targets.py": "78be40a24c1020bb17e13410dc40404f964fc638993131b95d7e2a657a2355ed",
-    "src/ai_dlc/setup/workstation.py": "4abcc68e4d30ee4ce32ed1ff9b872d5926c15747de2ec2a92b88c7352813206a",
+    "src/ai_dlc/setup/workstation.py": "8ac8f2467ee925392f777e15d921ad79da8a10c94267bbd30f5386455db4e8d2",
+    "src/ai_dlc/toml_edit.py": "696057b2848ca8b57e5189d1c78441fc6c1e06994f480f6f13f8dd31c050515e",
     "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
     "src/ai_dlc/verification/sandbox.py": "b830bd80df60802c29dbc2e1c639958537f289592052b404e6972ff377d25681",
     "src/ai_dlc/verification/test_proxy.py": "f38cb2a28c8501c743613b0bfdf7e17f367c101ce7984a304e20ab3095eb7880",
     "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
     "src/ai_dlc/work/journal.py": "c088818e99c8c06cc4745ae403a62f9de8c5d503fdc7ab6107760f212ffa5106",
     "src/ai_dlc/work/traceability.py": "c4062335f26218e99f58e236425674c513ea6f2fce7f68b624a4df4dcd8ab3aa",
-    "src/ai_dlc/work/tracker_migration.py": "65fc8eb4a708947c12a5f4fd3cfe664f409ee32c282b68a48bd725152e5b18a3",
-    "src/ai_dlc/work/workflow.py": "d608da0dc4a5cc8f53985a5a6a60aea7310b814e63c69b9168305b1daded48d6",
-    "tests/test_provision.py": "3aeff504fcd56161d2ed2a997ffa8fbccf35dfe3387f8766224ad1bdbbeb919b",
-    "tests/test_tracker_targets.py": "31e0582fc495f31d656a7c90e93e46a6eecffb5414fa0bede6fe38381d131a66",
-    "tests/test_workflow.py": "be865f5f4ac6fb3885c94c28b9e4c1747e6862c620fba9219e5e540058ffe275"
+    "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
+    "src/ai_dlc/work/workflow.py": "98a6e3eee1526864845fe53c73dd9c78c07b22256a86dde9e4e12f300a08db23",
+    "tests/fixtures/messy_project.py": "719e8bd5da992f35efb3b39ae87bb9bff955b362f77eaf05fa0554a7e6cf1422",
+    "tests/test_bootstrap.py": "30e1d9868fb88967737f8acd64182a1f8bbcb79cbb12d25f72b7e3dd11d2e171",
+    "tests/test_company_guidance.py": "58794ed77b7454e338c52036fb125ac6e6ee4aa2e5255ede87cfa7a812f5caf4",
+    "tests/test_document_access.py": "bdf96af4afb1ad6f985204ad243a624d4da8b56d527af63cc072908a76beeff4",
+    "tests/test_document_impact.py": "308684c1dda24359e86d2a9b79200455ebe781e97baa18169f5b9979e4eb2a14",
+    "tests/test_document_inventory.py": "927199563751af6b2dd5aa8e93cddb43cc62192adffea49694dada37ef6bf14c",
+    "tests/test_document_review.py": "88f37e6365c7e9b545d668f978993ef7ad9acfa146e7d549728f4ef9cab8008a",
+    "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
+    "tests/test_knowledge.py": "4766f0fd4de9c4a66c96fe93b56b03e275c1adcb5e303e773e92a9e528112be7",
+    "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7",
+    "tests/test_provider_onboarding.py": "27fb9183bb10db1b72375f9d871deee35c5945413225122f189fb7118a10754d",
+    "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
+    "tests/test_rendering.py": "9c8fbcd2926dad231ceae9fdd69b4760b4e68ade548c31dda88080ded12e9e6e",
+    "tests/test_toml_edit.py": "f3d97573ac3ee8fc3ad52ff9b077149e5f2fe5586e26c572c161754170a6f90c",
+    "tests/test_vault_link.py": "fd146d4d15041021ac343257c9d91a8c1950878d275420eda85d13747065e110",
+    "tests/test_vault_mount.py": "f6a5dc947af0d68e4688c37d05294c6b4868aa98ead91d26aa0c8ffec8018424",
+    "tests/test_workspace_diagnostics.py": "ab9e91a770c751d132d8e2d963a0f537a1041ab6fa56b00ee14f2f6f153ac25e"
   }
 }
