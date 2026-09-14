@@ -1,0 +1,29 @@
+schema = 1
+id = "backend-capability-pack"
+title = "Validate backend OpenAPI contracts with pinned offline checks"
+scope = "Add optional backend capability contract, pinned validation setup/checks, Python-only FastAPI drift and contract-linked skill guidance."
+requires_spec = true
+spec_reason = "Adds scaffold artifacts, required checks and explicit skip/failure behavior."
+acceptance = [
+    "Python backend required checks pass offline after setup; malformed YAML fails api-contract.",
+    "Template regression coverage includes Python and Node.",
+    "All added validator invocations use exact pins with offline checks.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "BE-01",
+    "BE-02",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/backend-capability-pack"
+tracker = "80"
+branch = "work/backend-capability-pack"
