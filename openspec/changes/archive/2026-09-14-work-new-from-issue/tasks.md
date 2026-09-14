@@ -1,7 +1,7 @@
 # Implementation tasks
 
-- [ ] Add schema-validating, non-overwriting draft creation and tracker text extraction.
-- [ ] Add CLI, offline/refusal/issue tests and preserve mutation-time review checks.
+- [x] Add schema-validating, non-overwriting draft creation and tracker text extraction.
+- [x] Add CLI, offline/refusal/issue tests and preserve mutation-time review checks.
 - [ ] Update guidance, validate/archive the change and record documentation dispositions.
 - [ ] Run required project checks and prepare the delivery PR.
 
