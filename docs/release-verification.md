@@ -22,8 +22,8 @@ never stand in for live platform, provider or human-evaluation evidence.
 ## Outstanding
 
 Clean-machine, container and cloud walkthroughs; full live provider mutation
-conformance with enforced egress; behavioral skill evaluations at the declared
-model and budget, including human review; live Plane deployment qualification
+conformance with enforced egress; [behavioral skill evaluations](verification/skill-evaluation.md)
+at the declared model and budget, including human review; live Plane deployment qualification
 with a substitution and interruption rehearsal; and live Jira deployment and workflow qualification remain
 outstanding. Package index publication is not planned. The publication
 and successful replay below satisfy asset availability, integrity and hosted

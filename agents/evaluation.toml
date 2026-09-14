@@ -1,5 +1,7 @@
 schema = 1
 status = "pending"
+credential_env = "OPENAI_API_KEY"
+api_url = "https://api.openai.com/v1/responses"
 model = "gpt-5.6-sol"
 reasoning_effort = "high"
 repetitions = 5
