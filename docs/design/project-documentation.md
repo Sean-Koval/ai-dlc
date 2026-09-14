@@ -14,7 +14,7 @@ OpenSpec owns formal behavior and change artifacts. Repository `docs/` owns dura
 architecture, decisions and operational material. A project index and optional
 catalog identify canonical paths, ownership, lifecycle and source provenance.
 
-`docs-check` exposes deterministic gaps for review: unknown ownership/review,
+`docs check` exposes deterministic gaps for review: unknown ownership/review,
 missing paths, limited local Markdown-link checks, uncatalogued files and exact
 content duplicates. It does not certify accuracy or automatically consolidate
 content. Review dates represent an actual review, not filesystem timestamps.

@@ -15,7 +15,7 @@ than reproducing them.
 
 [Catalog](catalog.toml) records selected canonical documents. It is an incremental
 inventory, not a claim that every historical plan or verification record has been
-reviewed. Run `ai-dlc project docs-check` to inspect gaps; findings require review,
+reviewed. Run `ai-dlc docs check` to inspect gaps; findings require review,
 not automatic deletion. Historical execution plans supply context but do not
 supersede current product direction, formal requirements or tracker status.
 
@@ -36,10 +36,10 @@ in [template research](archive/research/) and the [historical generation prompt]
 are supporting material, not current Python implementation contracts.
 
 The original [September 10 baseline and dispositions](archive/verification/documentation-baseline.json)
-accounts for every initial docs-check finding, including retained historical material,
+accounts for every initial docs check finding, including retained historical material,
 unknown factual review and illustrative missing paths. It records source hashes,
 responsible roles and reasons without copying document bodies. That dated inventory retains the pre-cleanup paths and hashes; it is not a live
-inventory. The current catalog and docs-check output describe the reorganized tree.
+inventory. The current catalog and docs check output describe the reorganized tree.
 Unknown factual reviews remain visible.
 
 ## Documentation workflow delivery
