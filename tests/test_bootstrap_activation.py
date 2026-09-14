@@ -6,6 +6,7 @@ import shlex
 from pathlib import Path
 
 import pytest
+from click import unstyle
 from typer.testing import CliRunner
 
 from ai_dlc.cli import app
@@ -204,7 +205,7 @@ def test_cli_workspace_init_shell_previews_then_applies(machine, monkeypatch, tm
         app,
         ["project", "workspace-init", "--root", str(tmp_path), "--shell", "--vault", str(tmp_path)],
     )
-    assert mixed.exit_code == 2 and "--shell" in mixed.stderr
+    assert mixed.exit_code == 2 and "--shell" in unstyle(mixed.stderr)
 
 
 def test_unreadable_rc_is_refused(machine):
