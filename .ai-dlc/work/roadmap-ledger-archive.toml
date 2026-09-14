@@ -1,0 +1,35 @@
+schema = 1
+id = "roadmap-ledger-archive"
+title = "Move cancelled-scope ledgers to the archive and rewrite the roadmap around the next increments"
+scope = "Move the roadmap's reconciliation and delivered-and-cancelled sections verbatim into docs/archive/planning/2026-09-roadmap-ledger.md and the dated release-verification sections older than the latest reconciliation into docs/archive/verification/release-history.md. Rewrite docs/roadmap.md to the current outcome, the next three increments, how status is tracked and what is not planned. Reduce docs/release-verification.md to what a release must prove, the outstanding list and the latest dated evidence. Move the executor handoff to docs/archive/handoffs/. Update the catalog, the index and every link; record dispositions. Nothing historical is deleted and no qualification claim changes."
+requires_spec = false
+spec_reason = "Documentation placement and navigation only; no product behaviour changes."
+acceptance = [
+    "docs/roadmap.md states the outcome and the next three increments and contains no cancelled-issue table.",
+    "ai-dlc project docs-check reports no broken links and ai-dlc project docs-gate passes.",
+    "Nothing historical is deleted; every moved section is reachable from docs/archive/README.md.",
+    "No claim of qualification or completion is added or removed by the move; wording changes are limited to navigation.",
+    "All required checks pass.",
+]
+reviewed = true
+depends_on = []
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+tracker = "87"
+branch = "work/roadmap-ledger-archive"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/116"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"
