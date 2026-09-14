@@ -214,3 +214,12 @@ remains the default. Mounting does not expand private knowledge read/write acces
 See the documentation guide for stable-checkout, adoption and conflict handling.
 `ai-dlc project workspace-check` (MCP `project_workspace_check`) diagnoses the
 executable, shell activation, bindings and navigation without changing them.
+
+
+### Local frontend evidence
+
+The optional node `frontend` capability supplies a Playwright smoke check.
+`ai-dlc design capture` writes viewport screenshots and a manifest for
+`design-evaluate`; browser installation belongs to explicit setup. A named state
+waits for its visible selector and does not certify untested interactions.
+See [frontend smoke and capture](design-to-implementation.md#frontend-smoke-and-capture-evidence).

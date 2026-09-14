@@ -1,106 +1,247 @@
 {
-  "base": "c3789a7caa6a3ff70cd35df9564a358af92fc6c3",
+  "base": "ff946f23a882d237eb8ec857f64f15443ef1cf3f",
   "decisions": [
     {
       "outcome": "updated",
-      "reason": "Lists the handoffs/ directory, the roadmap ledger and the release history so every moved section is reachable.",
-      "target": "docs/archive/README.md"
+      "reason": "The harness package source map now includes local design capture; credentials, provider boundaries and local evidence ownership remain intact.",
+      "target": "docs/architecture.md"
+    },
+    {
+      "outcome": "reviewed-no-change",
+      "reason": "Reviewed publication, bootstrap asset copying and source-install limits; optional frontend assets use existing packaging and do not change release commands or claim live release qualification.",
+      "target": "docs/runbooks/release-publication.md"
     },
     {
       "outcome": "updated",
-      "reason": "Executor handoff moved from docs/handoffs/ with links repointed and a moved-file note; content otherwise unchanged.",
-      "target": "docs/archive/handoffs/framework-delivery.md"
+      "reason": "Explains opt-in node frontend setup, pinned Playwright/browser installation, unset BASE_URL skip limits, and contained screenshot manifests with visible-selector states rather than interaction claims.",
+      "target": "docs/workflows/design-to-implementation.md"
     },
     {
       "outcome": "updated",
-      "reason": "Handoff link repointed to docs/archive/handoffs/; wording unchanged.",
-      "target": "docs/archive/planning/2026-09-05-framework-delivery.md"
+      "reason": "Explains opt-in node frontend setup, pinned Playwright/browser installation, unset BASE_URL skip limits, and contained screenshot manifests with visible-selector states rather than interaction claims.",
+      "target": "docs/workflows/tool-map.md"
     },
     {
       "outcome": "updated",
-      "reason": "New archive document holding the roadmap's reconciliation and delivered-and-cancelled sections verbatim.",
-      "target": "docs/archive/planning/2026-09-roadmap-ledger.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Handoff link repointed to docs/archive/handoffs/; wording unchanged.",
-      "target": "docs/archive/planning/framework-delivery-review.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Handoff link repointed to docs/archive/handoffs/; wording unchanged.",
-      "target": "docs/archive/planning/provider-toolset-handoff.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Handoff link repointed to docs/archive/handoffs/; wording unchanged.",
-      "target": "docs/archive/planning/stage-cleanup-review-2026-09-06.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "New archive document holding the dated release records older than the latest reconciliation verbatim.",
-      "target": "docs/archive/verification/release-history.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Handoff link repointed to the archive and its sentence made historical; navigation only.",
-      "target": "docs/index.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Handoff link repointed to the archive; wording unchanged.",
-      "target": "docs/product-direction.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Keeps what a release must prove, the outstanding list and the September 12 and 13 records; older dated sections moved to the archive with a pointer.",
-      "target": "docs/release-verification.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Rewritten to the current outcome, next three increments, status tracking and not-planned list; the ledger sections moved to the archive.",
-      "target": "docs/roadmap.md"
+      "reason": "Design evaluation requests and cites viewport/state capture manifests; missing evidence and untested interactions remain unverified.",
+      "target": ".agents/skills/design-evaluate/SKILL.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Work record for this change, published as tracker item 87.",
-      "target": ".ai-dlc/work/roadmap-ledger-archive.toml"
+      "reason": "Template wiring, pinned module recipe, generated ownership or work metadata is explained by the updated design workflow; no additional durable document is needed.",
+      "target": ".ai-dlc/agent-ownership.json"
     },
     {
       "outcome": "no-impact",
-      "reason": "Handoff link repointed to the archive; wording unchanged.",
-      "target": "README.md"
+      "reason": "Template wiring, pinned module recipe, generated ownership or work metadata is explained by the updated design workflow; no additional durable document is needed.",
+      "target": ".ai-dlc/work/frontend-capability-pack.toml"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Design evaluation requests and cites viewport/state capture manifests; missing evidence and untested interactions remain unverified.",
+      "target": ".claude/skills/design-evaluate/SKILL.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Handoff entry repathed and archived; ledger and release-history entries added.",
+      "reason": "Template wiring, pinned module recipe, generated ownership or work metadata is explained by the updated design workflow; no additional durable document is needed.",
+      "target": "agents/skills.lock.json"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Design evaluation requests and cites viewport/state capture manifests; missing evidence and untested interactions remain unverified.",
+      "target": "agents/skills/design-evaluate/SKILL.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Maps the capture implementation, generated browser assets, frontend tests and formal requirements to the existing canonical design workflow.",
       "target": "docs/catalog.toml"
     },
     {
       "outcome": "no-impact",
-      "reason": "Former location of the executor handoff, now under docs/archive/handoffs/.",
-      "target": "docs/handoffs/framework-delivery.md"
+      "reason": "Template wiring, pinned module recipe, generated ownership or work metadata is explained by the updated design workflow; no additional durable document is needed.",
+      "target": "modules/catalog.toml"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Archived frontend change and canonical FE-01/FE-02 requirements define smoke and capture behavior; DP-02 preserves evidence uncertainty and references the manifest.",
+      "target": "openspec/changes/archive/2026-09-14-frontend-capability-pack/design.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Archived frontend change and canonical FE-01/FE-02 requirements define smoke and capture behavior; DP-02 preserves evidence uncertainty and references the manifest.",
+      "target": "openspec/changes/archive/2026-09-14-frontend-capability-pack/proposal.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Archived frontend change and canonical FE-01/FE-02 requirements define smoke and capture behavior; DP-02 preserves evidence uncertainty and references the manifest.",
+      "target": "openspec/changes/archive/2026-09-14-frontend-capability-pack/specs/design-pm/spec.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Archived frontend change and canonical FE-01/FE-02 requirements define smoke and capture behavior; DP-02 preserves evidence uncertainty and references the manifest.",
+      "target": "openspec/changes/archive/2026-09-14-frontend-capability-pack/specs/frontend-capability-pack/spec.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Archived frontend change and canonical FE-01/FE-02 requirements define smoke and capture behavior; DP-02 preserves evidence uncertainty and references the manifest.",
+      "target": "openspec/changes/archive/2026-09-14-frontend-capability-pack/tasks.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Archived frontend change and canonical FE-01/FE-02 requirements define smoke and capture behavior; DP-02 preserves evidence uncertainty and references the manifest.",
+      "target": "openspec/specs/design-pm/spec.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Template wiring, pinned module recipe, generated ownership or work metadata is explained by the updated design workflow; no additional durable document is needed.",
+      "target": "project-templates/copier.yml"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Template wiring, pinned module recipe, generated ownership or work metadata is explained by the updated design workflow; no additional durable document is needed.",
+      "target": "project-templates/project/.mise.toml.jinja"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Explains opt-in node frontend setup, pinned Playwright/browser installation, unset BASE_URL skip limits, and contained screenshot manifests with visible-selector states rather than interaction claims.",
+      "target": "project-templates/project/AI-DLC.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Template wiring, pinned module recipe, generated ownership or work metadata is explained by the updated design workflow; no additional durable document is needed.",
+      "target": "project-templates/project/ai-dlc.toml.jinja"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Explains opt-in node frontend setup, pinned Playwright/browser installation, unset BASE_URL skip limits, and contained screenshot manifests with visible-selector states rather than interaction claims.",
+      "target": "project-templates/project/docs/workflows/design-to-implementation.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Explains opt-in node frontend setup, pinned Playwright/browser installation, unset BASE_URL skip limits, and contained screenshot manifests with visible-selector states rather than interaction claims.",
+      "target": "project-templates/project/docs/workflows/tool-map.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Template wiring, pinned module recipe, generated ownership or work metadata is explained by the updated design workflow; no additional durable document is needed.",
+      "target": "project-templates/project/package.json.jinja"
     }
   ],
-  "reviewer": "Sean Koval",
+  "reviewer": "codex-delivery",
   "schema": 1,
-  "snapshot": "c6e748634dcf5c20e57a17f5d77a023d4fad767a8b1c76f80d3959baef2cede7",
+  "snapshot": "fd747d2022d741da7f71810434a61dc1c3ea8bc1b48ac084066e47b1ff8ed142",
   "sources": {
-    ".ai-dlc/work/roadmap-ledger-archive.toml": "97e31ed6fbec2ee5422b3ce8c0e2b755d9ed7e31f354e2eee6f03f161c55b6b7",
-    "README.md": "07e3c8a1bd7d3f8c91280d7fd368cc4c0d5d3c356cd7e66825ba66a7da28c08b",
-    "docs/archive/README.md": "24430d48193d4792845f55f4c7b8b2de071b73b629b0036a9c3b39532d929a6d",
-    "docs/archive/handoffs/framework-delivery.md": "0f5e94fed1613dfa663d6153b9c4206130414bb8684155df97f943dec95e6c51",
-    "docs/archive/planning/2026-09-05-framework-delivery.md": "746908e75b07de225b69a531221b8a4588450d251617d643e50d3f048d1d81ee",
-    "docs/archive/planning/2026-09-roadmap-ledger.md": "ac1df95fd9a726cbb1ec52d3d75d59c1436a3e94cd91659d913dab8e87793ed4",
-    "docs/archive/planning/framework-delivery-review.md": "737c9423d652e6cea876a246b141da4fb00bc31b30a6430a6cd1483e73541d71",
-    "docs/archive/planning/provider-toolset-handoff.md": "c2b706d81be54f1d781480ceec514f6efd21f4a4303bb772b068e3483749e69b",
-    "docs/archive/planning/stage-cleanup-review-2026-09-06.md": "8ea1d55659e113e3115d129917087af35096829a539bed7cf4f22d87985032d4",
-    "docs/archive/verification/release-history.md": "9da0d5bc05d9be650876abf597ef2c90c76076aaf4a3ae3018152d966cec8718",
-    "docs/catalog.toml": "53ab3b989c9addd8dc18968f6471afa3a151834c6c95a77a789d8af13b41c22e",
-    "docs/handoffs/framework-delivery.md": "missing",
-    "docs/index.md": "66e4ee1579ef27ed992567a8f072b5189bbb8eb0f8a057d9ba87f4085f2e8d97",
-    "docs/product-direction.md": "8135010ba7af6af0ba9fad5f07d54f643f55d2ee43ca704cd3408a14355c3841",
-    "docs/release-verification.md": "5925c941134e4580f16a9003976fdfb1e9f03a084463fc4db5601dbf99f157ee",
-    "docs/roadmap.md": "fdf03e50a90409aebc4867a4a1ba54747843dc79ba8f6b00022ca7149d6f0cf2"
+    ".agents/skills/design-evaluate/SKILL.md": "41084df0a78a63e3742ee089acf167c019aad3a13b96a78995620dfd90e661e6",
+    ".ai-dlc/agent-ownership.json": "97ea42c897fd70968dcfd8c63da1cf2f8ec1e967798666005caa54e3df307f32",
+    ".ai-dlc/work/frontend-capability-pack.toml": "683a0a1c2145c09c46bae898646f6ba652e10714a8eff1098139d544aa7dc0bb",
+    ".claude/skills/design-evaluate/SKILL.md": "41084df0a78a63e3742ee089acf167c019aad3a13b96a78995620dfd90e661e6",
+    ".github/workflows/release.yml": "7ddd05d4f6d18ce5f9db254c5361591fdfb8810eb8604db07def99fff8ab30b6",
+    "agents/skills.lock.json": "6092497125782d0502c3e6f5e3d82f53ff1496fded14a42a99c2762dd194d7bd",
+    "agents/skills/design-evaluate/SKILL.md": "41084df0a78a63e3742ee089acf167c019aad3a13b96a78995620dfd90e661e6",
+    "docs/architecture.md": "433cd9d0848afacffd39224e251cdff909bcfaa94fb45afa6945bde42d560441",
+    "docs/catalog.toml": "f60965970cd0618754dc5ad01316418777ff6a466d43f009994dd0a98da6b05b",
+    "docs/runbooks/release-publication.md": "949d2367ab71c0a6b958d91abcf49e3d86263ff4d91001bf6d47ddbd15e29166",
+    "docs/workflows/design-to-implementation.md": "b3eec3e53a9d93080b92b54dd53f7d187513645c6498f2ec19100f3cae792869",
+    "docs/workflows/tool-map.md": "0ef18944cba9ba7846d3c57d19f6625e24eaaa2ee34380915042c9d9ba3be319",
+    "modules/catalog.toml": "d879c26c07fddb46601dcb62b138d4334ed99631c48ff663451d376d633c6f38",
+    "openspec/changes/archive/2026-09-14-frontend-capability-pack/design.md": "6cd6584dff4cd28a748fcca964b4c1e45034bbd9616ce9b01ce9136676c32b7c",
+    "openspec/changes/archive/2026-09-14-frontend-capability-pack/proposal.md": "d5e9c98271458cd8cdc358ac7c3803e0b7e2584c7a1a8273a2d1fbd5292e96a7",
+    "openspec/changes/archive/2026-09-14-frontend-capability-pack/specs/design-pm/spec.md": "b601ee9b9f2af82c1a9d9dc90e6c29cc348e63481f6b78836445a998bd0472a9",
+    "openspec/changes/archive/2026-09-14-frontend-capability-pack/specs/frontend-capability-pack/spec.md": "9412f0f1ffe6244a92f6b33629a1f3cd7b732ba549d75d0f434116ad9f18de8f",
+    "openspec/changes/archive/2026-09-14-frontend-capability-pack/tasks.md": "494ca290f15f5121c2356a9328a42f4ddb9f6b1f031d704e237fbd4d103b897a",
+    "openspec/specs/design-pm/spec.md": "a186d74fce9b492ec4b434891e818ad4895b4067583f014541dc463bc9e4a3b3",
+    "openspec/specs/frontend-capability-pack/spec.md": "c4f070e7fdc13ac61ea6b82dc95cd13dc66ea1dbfbb4ba8926e4f4f96ba55eb4",
+    "project-templates/copier.yml": "0e77360691527beb9673f9a9f3b4c6f0360e4ab135b2fb520705734155ec2d3e",
+    "project-templates/project/.mise.toml.jinja": "31a684102872470aba9b690870fe71b64eb73929077d2b69f0d1655658825e15",
+    "project-templates/project/AI-DLC.md": "310b09a3bd74141b14f8992f2fc7568a29b62dc3c03f99bc424c2fc06d9bf2db",
+    "project-templates/project/ai-dlc.toml.jinja": "0a0e61a44b01458d6504eef33bf1b5d764e4f190fd0840c5f47e66dae33f3e43",
+    "project-templates/project/docs/workflows/design-to-implementation.md": "851981fafca0741ab8b5292ed32bf6980d62f0991824df833b54193f8d5b9613",
+    "project-templates/project/docs/workflows/tool-map.md": "b017539d3da8b2e1a8482d04a63a200e4ec89a23d9e3af8fef6758cf9bc99976",
+    "project-templates/project/package.json.jinja": "a661ce7863571dfbe09d00ae9355d5ad9953011ab86d833a02765a2821efe650",
+    "project-templates/project/playwright.config.ts": "d06e3c907f16f5027d6e2f47112b5cca353e68525a528957f6f760eca940fd78",
+    "project-templates/project/scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
+    "project-templates/project/tests/e2e/smoke.spec.ts": "91b5f3fe1d42286e031f1fe37bbaf4610ede0dcda47bfa3eb69d8c77bdbab2e0",
+    "pyproject.toml": "57b5a7f4ea777185ab5df4b34c4117a190d41434e1e236b38735987c96ccc529",
+    "scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
+    "scripts/check_generated.py": "2a5e65cb653c0cf9b44dc34765a6d2d4affcfda9b310231a2abed4b3de82771a",
+    "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
+    "scripts/qualify_framework.py": "01dd9e6acbe14e740f068662aa539e9a7ed0ba57ab97e9457e0a05d968a25fb6",
+    "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+    "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
+    "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
+    "src/ai_dlc/cli.py": "badf303c9bbac0a6088617ae9ac884dd38817620993a91d2addda381402d6753",
+    "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
+    "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
+    "src/ai_dlc/config.py": "31677c538713aa41d3625ef9570f962ed8ee5d32bd4b5b3747437e8fd8fb9d02",
+    "src/ai_dlc/conformance.py": "9d18cdbf21aa8f9889d880729c368d9567f32f83c066693dceb06ce6549b6082",
+    "src/ai_dlc/contracts.py": "f61ee2fc622d4f58f8e424f7d4b6a5258f6ab3b7edc7ea3d019e8ca9aa0e48a9",
+    "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
+    "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
+    "src/ai_dlc/documentation/document_files.py": "503a38d4df2a1f9d0832d083dcd420ebd1215389385293dd0605fc768c5dd320",
+    "src/ai_dlc/documentation/document_impact.py": "585114e1808a5557c00f261a873868a8a5a91baaff29c4b790a65d213dfd97a9",
+    "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
+    "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
+    "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
+    "src/ai_dlc/documentation/documents.py": "f42322918de5da6b8caa39e9f18e88aff26501d7f2253fbe2462d242126ea29e",
+    "src/ai_dlc/documentation/knowledge.py": "91aad53eccc1889d4077ef59c137ff1b35b03c433efa05b7be61d2e534fa7db6",
+    "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
+    "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
+    "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
+    "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
+    "src/ai_dlc/documentation/workspace_diagnostics.py": "c53cc66966888078108662d6a307b00c8746c6a8f1d8098938529c65d5694b61",
+    "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
+    "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
+    "src/ai_dlc/environment/enrollment.py": "ab1f0e729ee497af2c0dea9faf81aba0b46d19deac102371b0f786dd4d4c4343",
+    "src/ai_dlc/environment/machine.py": "491128faaec9634ec29ef0ebc9a38af3dfe25499e533543fcecf0734d2e50d1a",
+    "src/ai_dlc/environment/profile_source.py": "f177cc9336ed7c69e37299bc70107f14a7878ff72abbd1070dc3560340d451cc",
+    "src/ai_dlc/errors.py": "b8c0da78ec0e9ea75ef71b4495b501570625988ba5ae54c4631f1ca20a8362c1",
+    "src/ai_dlc/files.py": "2f05c94534fc6222cc7dd6f61c603cf48b99baeb78eeb31de03c5ae87e779ef2",
+    "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
+    "src/ai_dlc/harness/agents.py": "65607b98a6f113f608b26d726656cb29b5f7bff2e58c4f7ee25f0c3c8d6940c4",
+    "src/ai_dlc/harness/components.py": "b64cd2ae837f83a37ddd1c74dad25fcd16fe8733715c224c7d64673784ebba11",
+    "src/ai_dlc/harness/design_capture.py": "8b872492b88f4a7728bedf0ae8a1edaad2312a918248bf8f5d051c8bd8b42a58",
+    "src/ai_dlc/harness/hooks.py": "e76b94c5d13168816506d5ef71360646d929659561974000561829ab49a08e11",
+    "src/ai_dlc/harness/native_composition.py": "1e4c5729ff31cb91820bd8df3d15b60c1067b4a5f2b89381888211470dc79bc8",
+    "src/ai_dlc/harness/user_agents.py": "c99f9a52a379feaa0c1721081b95fef91f51c44f0a9e906145de51154616e937",
+    "src/ai_dlc/harness/workflow_bundles.py": "477dc842b3cdfe240a54a96910786693f9f3b75f2fd528753440c29f26330b36",
+    "src/ai_dlc/locking.py": "f1cfe828e897e11d73b645130060362e2699f75aac9307ed8cb4955b0533b629",
+    "src/ai_dlc/mcp_server.py": "a743c48d33e49408e097add497f56b017cff0afcc41209c6743c2eed68609c09",
+    "src/ai_dlc/provider_definitions.py": "e90c2d41a839bc4a32dcb3989f59fa6c9073bd1233f3db2088bd176e1bc513d3",
+    "src/ai_dlc/providers/__init__.py": "79308afdb659a23865b422bb423bbd57c01cc1aa52929f56674c79c6e3cbfd6a",
+    "src/ai_dlc/providers/github_issues.py": "55a18a178fc329a94ff95f39b72c5599117c5a8e79842d7cc7c6c8966cbed405",
+    "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
+    "src/ai_dlc/providers/jira_cloud.py": "d9b83ba88fb964816450b1479fc775a526455c023725ecff3c8ca695ac7cd8c8",
+    "src/ai_dlc/providers/linear.py": "fa90bd64765c8e8bee1cbfa54e47e17688e8e6407c7492ae0ed863b4615c2b95",
+    "src/ai_dlc/providers/openspec.py": "5568fd528a83ee659d05cf9e48d9303ae26e2ded7eeb241ba6331a06c63068ee",
+    "src/ai_dlc/providers/plane.py": "f05450be6fa35ae10c8ae7531518797be5a3f778ec25d517c88fb49efbe9f9a3",
+    "src/ai_dlc/providers/plane_attempts.py": "bfa9b5015f7dc554b9e58af82c680d97d3f0a5271bc0afe6102a81fbf697c20a",
+    "src/ai_dlc/providers/python_exec.py": "3aaafe9bf74a4a949b59d71ed2079b9c48114462a9c823b3641a1772af5a6ff1",
+    "src/ai_dlc/providers/scm.py": "55d21698f752048cbc99c8e7443f54fcd1f8ab062301112a7d6b1f71953cfe57",
+    "src/ai_dlc/setup/__init__.py": "8eb444a69a67d0c1a59ffc0c80ce59efda159976bea58d40154e97f8bdecf18c",
+    "src/ai_dlc/setup/connections.py": "e80cbe0e1e94ae5f9d8f60ae044918e8f9e377e173a25ff7bd91f28180a24d15",
+    "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
+    "src/ai_dlc/setup/github_project_setup.py": "55984de17559ba2d56b3b1c7483dabb8a6f05f1e773e8bd9d40437a2d30ee85e",
+    "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
+    "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
+    "src/ai_dlc/setup/project.py": "23909295adda10d5ecddb226aedae85c7db19db992e0fcf10a581c15bab5db13",
+    "src/ai_dlc/setup/provider_onboarding.py": "be120ad6e93c178f041fd338a45a5df7c75b9a30591725cfbf7800bca531045e",
+    "src/ai_dlc/setup/provision.py": "39958dca8c86512546ce17262d1df2338053de11895541540438f53cb9b5d2fc",
+    "src/ai_dlc/setup/readiness.py": "e0984a1f504ee87f3c4c1939624b34ccfe2fd6b7315df365166e95ff3b975d55",
+    "src/ai_dlc/setup/rebind.py": "2458691c83e22c613ee3eb7541e103aee7264e7b23a78c17194135bc3d5a35c6",
+    "src/ai_dlc/setup/templates.py": "b53ebef3ecd70faa1d896720ee4560a26696f74c261cfc58ba6e7a360bd41422",
+    "src/ai_dlc/setup/tracker_targets.py": "b04533ac254bde0aa7bddf083097d815153998f15b1042645ac4ffc38f848319",
+    "src/ai_dlc/setup/workstation.py": "8ac8f2467ee925392f777e15d921ad79da8a10c94267bbd30f5386455db4e8d2",
+    "src/ai_dlc/toml_edit.py": "696057b2848ca8b57e5189d1c78441fc6c1e06994f480f6f13f8dd31c050515e",
+    "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
+    "src/ai_dlc/verification/sandbox.py": "c017bd12115b8f144d07eba619f4e15ddbd00db323e4d386f569c4bcb08646e0",
+    "src/ai_dlc/verification/test_proxy.py": "f38cb2a28c8501c743613b0bfdf7e17f367c101ce7984a304e20ab3095eb7880",
+    "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
+    "src/ai_dlc/work/journal.py": "c088818e99c8c06cc4745ae403a62f9de8c5d503fdc7ab6107760f212ffa5106",
+    "src/ai_dlc/work/traceability.py": "c4062335f26218e99f58e236425674c513ea6f2fce7f68b624a4df4dcd8ab3aa",
+    "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
+    "src/ai_dlc/work/workflow.py": "98a6e3eee1526864845fe53c73dd9c78c07b22256a86dde9e4e12f300a08db23",
+    "tests/test_bootstrap.py": "30e1d9868fb88967737f8acd64182a1f8bbcb79cbb12d25f72b7e3dd11d2e171",
+    "tests/test_frontend.py": "a0c28a6a398ca24e0862b597c3cdbbb7a6746e4556c6b6a69ba7ce71c39541e5",
+    "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8"
   }
 }

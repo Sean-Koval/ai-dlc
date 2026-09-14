@@ -150,3 +150,28 @@ The [calibration protocol](../examples/design-evaluation/calibration.md)
 requires a separately approved experiment and human participation. It remains
 unrun; readable Markdown and packaging checks establish no client capability or
 design-quality gain. This optional route adds no service, model, CLI or finish gate.
+
+## Frontend smoke and capture evidence
+
+Select `--preset node --capability frontend` when initializing or adopting a
+frontend project; repeat the other desired role capabilities explicitly. New
+projects pin `@playwright/test` to 1.58.2. Adoption preserves your package manifest;
+add that exact development dependency and update its lockfile during setup.
+Run dependency setup with `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1`, then explicitly
+install the browser with `npx --no-install playwright install chromium`. Checks
+never install packages or browsers. The required frontend-smoke check exits
+successfully with a skip message until `BASE_URL` names your running app; with
+that URL it visits the root, checks a nonempty title and records a screenshot
+under `.ai-dlc/local/design/smoke/`. A skipped check does not verify the app.
+
+Run `ai-dlc design capture --url http://localhost:3000 --viewport 1280x800
+--viewport 390x844 --state ready=#ready` from the project after browser setup.
+The default destination is a new timestamped `.ai-dlc/local/design/` directory;
+`--out` selects another new or empty directory inside the repository. Output
+paths must not escape or traverse symlinks. Capture records PNGs and a
+`manifest.json` with URL, timestamp, dimensions, named states and file references.
+A state selector waits for visible page content before taking a viewport
+screenshot; it does not click controls or prove an interaction journey. Cite the
+manifest and its images in the evaluation and keep uncaptured states or untested
+interactions unverified. On failure, inspect the partial capture directory;
+a complete manifest is written only after every screenshot succeeds.

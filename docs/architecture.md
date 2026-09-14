@@ -95,7 +95,7 @@ does not substitute for these lifecycle contracts. See the
 | `setup/` | Project adoption, provisioning, readiness and provider connection setup |
 | `work/` | Work lifecycle, traceability, journals and explicit tracker migration |
 | `environment/` | Machine enrollment, profile sources and credential references |
-| `harness/` | Skills, pinned bundles, client rendering, components and hooks |
+| `harness/` | Skills, pinned bundles, client rendering, components, hooks and local design capture |
 | `documentation/` | Catalog checks, impact/evidence review, scoped project-document access, workspace diagnostics, knowledge notes and vault links |
 | `providers/` | Contract-backed external service adapters and isolated provider execution |
 | `verification/` | Sandbox orchestration and its conformance network proxy |

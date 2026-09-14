@@ -154,3 +154,12 @@ and a vault portal, mounted folder or Markdown link does not grant access.
 The [documentation guide](../documentation-guide.md#search-and-read-project-documents) explains ownership, packet
 review, project-document access, baselines and workspace use. The optional CLI `project docs-style` invokes
 configured Vale; it does not install a tool or establish factual correctness.
+
+
+### Local frontend evidence
+
+The optional node `frontend` capability supplies a Playwright smoke check.
+`ai-dlc design capture` writes viewport screenshots and a manifest for
+`design-evaluate`; browser installation belongs to explicit setup. A named state
+waits for its visible selector and does not certify untested interactions.
+See [frontend smoke and capture](design-to-implementation.md#frontend-smoke-and-capture-evidence).

@@ -27,6 +27,7 @@ RUNTIME_DIRS = {
     ".cache",
 }
 CAPABILITIES = ["specs", "tracker", "knowledge", "scm", "deploy", "agent-client"]
+OPTIONAL_CAPABILITIES = ["frontend"]
 
 
 def _ignore(root: Path):
@@ -119,7 +120,7 @@ def plan_toolset(*, capabilities=None, providers=None, agent_clients=None) -> di
     from ai_dlc.provider_definitions import DEFINITIONS
 
     capabilities = list(CAPABILITIES if capabilities is None else dict.fromkeys(capabilities))
-    if set(capabilities) - set(CAPABILITIES):
+    if set(capabilities) - set(CAPABILITIES + OPTIONAL_CAPABILITIES):
         raise ValueError("Unknown role capability")
     providers = providers or {}
     if set(providers) - {"tracker", "knowledge"}:
@@ -212,8 +213,10 @@ def adopt(
     if preset not in {"generic", "python", "node", "rust"}:
         raise ValueError("Unknown preset")
     capabilities = list(CAPABILITIES if capabilities is None else dict.fromkeys(capabilities))
-    if set(capabilities) - set(CAPABILITIES):
+    if set(capabilities) - set(CAPABILITIES + OPTIONAL_CAPABILITIES):
         raise ValueError("Unknown role capability")
+    if "frontend" in capabilities and preset != "node":
+        raise ValueError("The frontend capability requires the node preset")
     toolset = plan_toolset(
         capabilities=capabilities, providers=providers, agent_clients=agent_clients
     )

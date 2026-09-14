@@ -37,6 +37,10 @@ access or evidence SHALL NOT count as passing behavior.
 - **THEN** the report can evaluate observed visual criteria but records the
   interaction checks as unverified
 
+#### Scenario: Capture evidence identifies viewports and visible states
+- **WHEN** evaluation reports observed screenshots from a running app
+- **THEN** it cites the design capture manifest and files; missing capture or untested interactions remain unverified
+
 ### Requirement: DP-03 Independent review is explicit
 
 The workflow SHALL define generator and evaluator responsibilities independently.
