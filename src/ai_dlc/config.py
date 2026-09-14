@@ -221,9 +221,15 @@ def _validate(layer: str, data: dict[str, Any]) -> None:
     if layer == "machine" and "roles" in data:
         from ai_dlc.environment.source_schema import SourceSubscription
 
-        SourceSubscription.model_validate(
-            {"id": "machine", "git": "unused", "ref": "main", "roles": data["roles"]}
-        )
+        try:
+            SourceSubscription.model_validate(
+                {"id": "machine", "git": "unused", "ref": "main", "roles": data["roles"]}
+            )
+        except ValueError:
+            raise ValueError(
+                "machine: roles must be a list of unique safe person-role identifiers; "
+                "provider-role overrides are prohibited"
+            ) from None
     agents = data.get("agents")
     if agents is not None and not isinstance(agents, dict):
         raise TypeError(f"{layer}: agents must be a table")

@@ -23,7 +23,7 @@ required_by = ["provider.linear"]
 # exact commit; machine sync previews updates and --apply activates them.
 # [[sources]]
 # id = "engineering"
-# git = "https://example.com/team/practices.git"
+# git = "SOURCE"
 # ref = "main"
 # roles = []
 # tags = ["review"]

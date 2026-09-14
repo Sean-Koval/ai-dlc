@@ -39,4 +39,3 @@ Sources SHALL contain only regular bounded UTF-8 files without symlinks, executa
 #### Scenario: Unsafe source contents
 - **WHEN** either layout includes a symlink, executable or env/ file, or teamai MCP contains a token value
 - **THEN** enrollment and sync refuse with a diagnostic naming the unsafe path and preserve the active lock
-

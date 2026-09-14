@@ -34,4 +34,4 @@ Files: providers/teamai.py, tests/test_team_sources.py, profiles/example/ai-dlc-
 - [x] Implement the documented adapter using safe YAML parsing; preserve whole-tree validation before ignores.
 - [x] Update canonical docs and example with exact native/teamai formats and source/machine boundaries.
 - [x] Run `openspec validate team-sources --strict --no-interactive`, archive the change, update work spec reference and check tasks.
-- [ ] Record documentation dispositions, run `ai-dlc project check --required`, inspect diff and commit; hand off for controller review without pushing or opening a PR.
+- [x] Record documentation dispositions, run `ai-dlc project check --required`, inspect diff and commit; hand off for controller review without pushing or opening a PR.
