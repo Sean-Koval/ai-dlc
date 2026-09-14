@@ -98,7 +98,7 @@ release work requires separately approved scope.
 
 - [Roadmap](roadmap.md)
 - [Delivery architecture](design/framework-delivery.md)
-- [Executor handoff](handoffs/framework-delivery.md)
+- [Executor handoff](archive/handoffs/framework-delivery.md)
 - [V4 proposal](../openspec/changes/archive/2026-09-12-portable-development-v4/proposal.md)
 - [Enrollment design and follow-on cycles](../openspec/changes/archive/2026-09-03-portable-profile-enrollment/historical-design.md)
 - [Current architecture](architecture.md)
