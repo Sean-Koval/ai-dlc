@@ -12,6 +12,8 @@ from collections.abc import Mapping
 from pathlib import Path
 
 from ai_dlc.config import digest
+from ai_dlc.errors import RefusedError
+from ai_dlc.files import run_git
 
 
 def required_checks(config):
@@ -122,6 +124,63 @@ class GitHubSCM:
         if not sha:
             raise ValueError("Merged PR has no merge SHA")
         return {"sha": sha, "pr": pr}
+
+    def pull_request_create(self, title, body, base, head):
+        """Open a pull request for a pushed branch; never push on the caller's behalf."""
+        upstream = run_git(
+            self.root,
+            "rev-parse",
+            "--abbrev-ref",
+            f"{head}@{{u}}",
+            environ=self.environ,
+            check=False,
+            context="Pull request upstream check failed",
+        )
+        tracked_branch = run_git(
+            self.root,
+            "config",
+            "--get",
+            f"branch.{head}.merge",
+            environ=self.environ,
+            check=False,
+            context="Pull request upstream check failed",
+        )
+        if upstream.returncode or tracked_branch.stdout.strip() != f"refs/heads/{head}":
+            raise RefusedError(
+                f"Branch {head} has no matching pushed upstream; push the branch first: git push -u origin {head}"
+            )
+        with tempfile.NamedTemporaryFile(
+            "w", prefix="ai-dlc-pr-", suffix=".md", delete=False
+        ) as handle:
+            handle.write(body)
+            body_file = handle.name
+        try:
+            output = self.run(
+                "pr",
+                "create",
+                "--repo",
+                self.repo,
+                "--base",
+                base,
+                "--head",
+                head,
+                "--title",
+                title,
+                "--body-file",
+                body_file,
+            )
+        finally:
+            os.unlink(body_file)
+        urls = re.findall(r"https://github\.com/[^/\s]+/[^/\s]+/pull/\d+", output)
+        if not urls:
+            raise RuntimeError(
+                "gh pr create did not report the pull request URL: " + output.strip()
+            )
+        match = re.fullmatch(r"https://github\.com/([^/]+/[^/]+)/pull/(\d+)", urls[-1])
+        assert match is not None
+        if match.group(1) != self.repo:
+            raise ValueError("Created pull request does not belong to the configured repository")
+        return {"url": urls[-1], "number": int(match.group(2))}
 
     def file_at(self, path, sha):
         value = self.api(f"repos/{self.repo}/contents/{path}?ref={sha}")
