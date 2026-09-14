@@ -1,6 +1,6 @@
 # Release verification
 
-Delivery status reconciled September 10, 2026: the [roadmap](roadmap.md) and
+Release evidence reconciled September 14, 2026: the [roadmap](roadmap.md) and
 [GitHub issues](https://github.com/Sean-Koval/ai-dlc/issues) own current priority.
 PR28 is merged; former qualification/publication issues #14/#15/#16/#17/#20/#21/#22
 are cancelled (NOT_PLANNED), not completed. Outstanding release evidence below
@@ -12,20 +12,116 @@ stated revision and environment; plans and fixtures do not establish live readin
 A release is a `v<version>` tag whose `Release` workflow passes the required checks,
 builds the wheel and locked constraints, publishes the hash-bound bootstrap assets,
 and installs from the published assets on the Linux x64, Linux ARM64 and macOS
-runners; see the [release runbook](runbooks/release-publication.md). Work
+runners; see the [release runbook](runbooks/release-publication.md). After a
+verification harness failure, a successful read-only replay may establish consumer
+proof for the unchanged published assets; it does not alter the original run. Work
 completion is separate: `ai-dlc work finish` passes only with the specification,
 merged PR and exact merged-revision CI gates. Local checks, fixtures and plans
 never stand in for live platform, provider or human-evaluation evidence.
 
 ## Outstanding
 
-Unchanged since the September 12 reconciliation: clean-machine, container and
-cloud walkthroughs; full live provider mutation conformance with enforced egress;
-behavioral skill evaluations at the declared model and budget; publication of
-verified release assets and the `verify-published` outcome for a real tag; live
-Plane deployment qualification with a substitution and interruption rehearsal;
-and live Jira deployment and workflow qualification. Package index publication
-is not planned.
+Clean-machine, container and cloud walkthroughs; full live provider mutation
+conformance with enforced egress; [behavioral skill evaluations](verification/skill-evaluation.md)
+at the declared model and budget, including human review; live Plane deployment qualification
+with a substitution and interruption rehearsal; and live Jira deployment and workflow qualification remain
+outstanding. Package index publication is not planned. The publication
+and successful replay below satisfy asset availability, integrity and hosted
+consumer evidence for v0.4.0. They do not satisfy those remaining walkthroughs or
+provider and human-evaluation obligations.
+
+## Published v0.4.0 evidence — September 14, 2026
+
+The [v0.4.0 release](https://github.com/Sean-Koval/ai-dlc/releases/tag/v0.4.0)
+was published at 05:27:15 UTC from tag commit
+`cace021895330ae74a5f344ed5630c25547001de`.
+[Release run 34809544011](https://github.com/Sean-Koval/ai-dlc/actions/runs/34809544011)
+passed `package` and `publish`; the overall run failed because all three
+`verify-published` jobs failed. The later successful read-only replay below
+provides the consumer evidence against the same published bytes.
+
+Before publication, [candidate run 34809155596](https://github.com/Sean-Koval/ai-dlc/actions/runs/34809155596)
+passed package checks, build, constrained wheel installation and legacy scaffolding.
+[Main Verify run 34809148728](https://github.com/Sean-Koval/ai-dlc/actions/runs/34809148728)
+passed all five configured jobs at the same source commit. The tag's package job
+repeated required checks, built the wheel and source distribution, installed the
+wheel against hashed constraints, and generated six legacy scaffold files.
+
+Eight assets were published: `ai_dlc-0.4.0-py3-none-any.whl`,
+`ai_dlc-0.4.0.tar.gz`, `requirements.txt`, `release.sh`, `bootstrap.sh`,
+`versions.sh`, `download.sh`, and `SHA256SUMS`. An independent download from the
+real release verified all seven entries in `SHA256SUMS`. The manifest names the
+v0.4.0 release download URLs and binds these exact SHA-256 digests:
+
+| Asset | SHA-256 |
+| --- | --- |
+| Wheel | `246c6322c219921542fa31bd9529be0ea8578787dc90cc52ae86313e1e6906de` |
+| Hashed constraints | `1287f22a7b96b8b13112b23bb8cfcfcd51831badfcc906c1df2ebfb4ac1ab26a` |
+| Manifest | `40270bf873fa9b4355f01b9ac69c2b18f651883097019bf7f78d84c0712d4ae1` |
+
+The consumer logs establish only the following:
+
+| Hosted runner | Observed result |
+| --- | --- |
+| [Ubuntu 24.04 x64](https://github.com/Sean-Koval/ai-dlc/actions/runs/34809544011/job/103868395800) | Shell checksums passed and AI-DLC 0.4.0 installed; seed setup failed with `generated project files are stale; render and commit before CI`. |
+| [Ubuntu 24.04 ARM64](https://github.com/Sean-Koval/ai-dlc/actions/runs/34809544011/job/103868395798) | Same checksum, installation and seed-setup outcome as x64. |
+| [macOS 15](https://github.com/Sean-Koval/ai-dlc/actions/runs/34809544011/job/103868395774) | GitHub returned HTTP 500 while downloading `release.sh`; installation was not reached. |
+
+The Linux seed contains only `schema = 4` and bootstrap files. Running its first
+setup with `--target github-actions` invokes the generated-file freshness check
+before those files exist. All three jobs stopped before generating and checking
+`/tmp/demo`. Neither a clean-container walkthrough nor a successful three-platform
+consumer run can be inferred from these failures. Recovery retains the failed run's identity; the [runbook](runbooks/release-publication.md) describes a read-only
+replay that preserves the published tag and asset bytes.
+
+An isolated on-host recovery check against these real published assets then
+reproduced the seed CI failure and succeeded with local first-use setup. On
+macOS, separate bootstrap and mise data directories kept the shared aliases
+unchanged. The released engine generated a demo with a byte-identical
+manifest and the demo's release-mode bootstrap completed. Its three required
+checks passed, but the demo was nested inside the source repository and its
+receipt inherited that parent's Git revision. That check is not standalone
+consumer evidence.
+
+The first [read-only replay, run 34810385278](https://github.com/Sean-Koval/ai-dlc/actions/runs/34810385278),
+at workflow commit `82845700dc9eefea8135df1a9c8b5335abd7815c`, correctly skipped
+package and publication. All three hosted runners completed seed and demo
+bootstrap, then failed final checks because `/tmp/demo` had no Git repository.
+The corrected fixture initializes and commits its own Git repository after setup
+before checking, preserving the receipt's required revision identity. A successful
+standalone hosted replay then passed as recorded below.
+
+### Successful read-only hosted replay
+
+[Release replay 34810567728](https://github.com/Sean-Koval/ai-dlc/actions/runs/34810567728)
+passed on September 14, 2026 using workflow commit
+`74fd6bf6bc08c158440aba4d277b7fa2821d3834`, with `verify_published_tag=v0.4.0`.
+`package` and `publish` were skipped. The release tag still resolves to
+`cace021895330ae74a5f344ed5630c25547001de`; no package was rebuilt and no asset or
+tag was replaced.
+
+| Consumer job | Runner image version | Clean demo receipt commit |
+| --- | --- | --- |
+| [Linux x64, Ubuntu 24.04](https://github.com/Sean-Koval/ai-dlc/actions/runs/34810567728/job/103870914729) | `20260907.300.1` | `f0d8bd20bda293a254f165ad96a075c463c16bc8` |
+| [Linux ARM64, Ubuntu 24.04](https://github.com/Sean-Koval/ai-dlc/actions/runs/34810567728/job/103870914640) | `20260907.118.1` | `aa834101d329d171297ac38013f483db4b520cc1` |
+| [macOS 15 ARM64](https://github.com/Sean-Koval/ai-dlc/actions/runs/34810567728/job/103870914686) | `20260907.0337.1` | `14f3c441189472d9584991d80cfcd683b78ce664` |
+
+Every job downloaded the existing release bootstrap assets from GitHub, verified
+all four shell-file digests, installed the hash-bound wheel and constraints, and
+initialized the seed. The released engine reported `release_manifest: included`
+when generating the Python demo; the workflow's byte comparison passed. The
+demo's own release-mode bootstrap completed, its independent Git fixture was
+committed, and `ai-dlc project check --required --target github-actions` passed
+`generated`, `work-records`, and `language-check`. All three receipts reported
+`engine_version: 0.4.0` and `dirty: false`.
+
+This satisfies verified release asset publication, published-asset installation
+on the three named hosted platforms, manifest propagation, and generated Python
+project bootstrap/check evidence. The original publication workflow and first
+replay remain failed historical runs. A hosted runner with preinstalled tools is
+not a factory-clean machine or clean container; cloud-client walkthroughs, live
+provider mutation and deployment qualification, and declared-model skill results
+with human review remain outstanding. No package-index publication is claimed.
 
 ## Release publication path — September 13, 2026
 
@@ -67,9 +163,8 @@ supplied through `CURL_CA_BUNDLE`):
 
 This is on-host proof of the release-mode path against a local stand-in, not a
 published release, not a factory-clean machine and not a hosted-client session.
-The workflow's `verify-published` job repeats the consumer steps against the real
-release on three runners once the maintainer pushes a tag; that outcome is to be
-recorded here with the tag and commit. Outstanding and unchanged: clean-machine,
+The September 14 publication, failed attempts, and successful read-only replay
+above are separate evidence against the real release. Outstanding and unchanged: clean-machine,
 container and cloud walkthroughs; full live provider mutation conformance;
 behavioral skill evaluations; live Plane and Jira qualification. Package index
 publication is not planned.
@@ -92,7 +187,7 @@ represented as live platform verification", TA-05 requires adapters to separate 
 health and live workflow evidence, and TM-04 requires unavailable source state to remain
 explicitly unknown.
 
-Outstanding after this reconciliation, unchanged: clean-machine, container and cloud
+At the September 12 checkpoint, outstanding obligations were: clean-machine, container and cloud
 walkthroughs; full live provider mutation conformance with enforced egress; behavioral
 skill evaluations at the declared model and budget; publication of verified release assets;
 live Plane deployment qualification with a substitution and interruption rehearsal; and

@@ -1,0 +1,3 @@
+# Draft creation design
+
+Validate the ID and refuse existing or symlinked paths before provider calls. Copy only the five configured binding roles. Derive the title, first prose paragraph and acceptance-section bullet lines from a tracker read, with explicit flags taking precedence. Missing fields remain TODOs. Validate the complete schema before writing under the project lock. Keep reviewed false and empty dependency/requirement lists. Initialize the operation journal lazily so creating and validating a draft needs no mutation state. CLI emits the record as JSON and prints its path on stderr. Update canonical delivery guidance and its template copy; fixture checks do not establish live provider qualification.

@@ -93,7 +93,7 @@ for preview/apply and recovery. Filesystem verification alone does not qualify
 Obsidian indexing, file watching or synchronization.
 
 Harnesses reach repository documents, including those visible through a mount,
-with `project docs-search` and `project docs-read`. These operations are scoped to
+with `docs search` and `docs read`. These operations are scoped to
 the selected repository's `docs/`, `openspec/` and per-call declared Markdown, and
 return canonical repository paths for ordinary Git edits. They never read vault
 notes; the knowledge tools remain the only private-note interface. See the
@@ -106,3 +106,54 @@ binding and link reachability as separate results. Links to repository files out
 repository-only; the diagnostic never widens mounts or the private-note boundary,
 and it cannot qualify Obsidian. See the
 [documentation guide](../../project-templates/project/docs/documentation-guide.md#diagnose-the-local-workspace).
+
+## Session learnings
+
+An agent may select one short lesson for the knowledge provider at
+`learnings/<YYYY-MM-DD>-<work-id>.md`. The tool stores the supplied text; it does
+not summarize logs or publish notes. Use this format:
+
+```markdown
+---
+work: example-work
+repository: owner/project
+pr: https://github.com/owner/project/pull/123
+tags: [retry, testing]
+---
+## What happened
+A concise observation, including its limits.
+
+## What to do differently
+A concrete practice to try next time.
+
+## Links
+- Link the authoritative work, specification, or evidence.
+```
+
+After the normal completion gates pass, `ai-dlc work finish <id> --learning FILE`
+stores the file through the existing knowledge provider's idempotent `note`
+operation. MCP `work_finish` accepts the equivalent `learning` text; its existing
+`handoff` text remains a separate append operation. The first attempt records the
+UTC date and note path locally so retries on later days use the same path and
+operation identity. Reusing the operation with different text reports a conflict;
+it never overwrites the stored note. A failed or unavailable vault leaves a
+`learning_pending` result without reversing tracker completion. Finish without a
+learning completes and returns a one-line reminder. Day-end may instead call
+`ai-dlc knowledge note learnings/<date>-<work-id>.md --body FILE --operation-id ID --vault PATH`
+using the configured vault and a stable operation ID.
+
+`work start` and the session-start hook recall at most five matching learning
+paths and first content lines. Recall uses title words
+and the specification change name; the session hook selects the record bound to
+the current branch. It reads only `learnings/`, never writes, and stays quiet when
+the vault is missing or has no matches. Read relevant recalled notes as personal
+context and reconcile them against current repository authority.
+
+The hook skips payloads without a usable session ID. It recognizes direct results,
+shell stdout JSON, and MCP text/structured results. The hook records friction counts and a hash of the preceding command beneath
+`.ai-dlc/local/session/`. It counts hook denials, repeated commands, and failed or
+blocked work results when a tool response is provided. At three events the stop
+hook suggests a learning note. Tool-response coverage depends on the harness;
+this does not install a new post-tool hook or claim to observe every failure.
+Counters and command hashes are local and are never transmitted or copied into
+learning notes. This is a reminder, not a completion gate.

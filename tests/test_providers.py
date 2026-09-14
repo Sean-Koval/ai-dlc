@@ -428,3 +428,23 @@ def test_isolated_provider_ignores_shadow_modules_and_poisoned_bytecode(tmp_path
     dependency.write_text('value="changed"\n')
     with pytest.raises(RuntimeError, match="digest changed"):
         provider.invoke("read", {"reference": "1"})
+
+
+def test_pull_request_create_is_an_optional_scm_operation():
+    from ai_dlc.contracts import manifest, validate_request, validate_response
+
+    scm = manifest()["roles"]["scm"]
+    assert scm["mandatory"] == ["merged", "ci"]
+    assert "pull_request_create" in scm["optional"]
+    request = validate_request(
+        "pull_request_create",
+        {"title": "Title", "body": "", "base": "main", "head": "work/one"},
+    )
+    assert request.payload == {"title": "Title", "body": "", "base": "main", "head": "work/one"}
+    assert validate_response(
+        "pull_request_create", {"url": "https://github.com/a/b/pull/7", "number": 7}
+    ) == {"url": "https://github.com/a/b/pull/7", "number": 7}
+    with pytest.raises(ValueError):
+        validate_request("pull_request_create", {"title": "", "base": "main", "head": "x"})
+    with pytest.raises(ValueError):
+        validate_response("pull_request_create", {"url": "", "number": 7})

@@ -38,15 +38,18 @@ code_paths = [
     "src/ai_dlc/documentation/vault_link.py",
     "src/ai_dlc/documentation/vault_mount.py",
     "src/ai_dlc/documentation/knowledge.py",
+    "src/ai_dlc/documentation/learnings.py",
+    "src/ai_dlc/harness/friction.py",
     "src/ai_dlc/documentation/workspace_diagnostics.py",
 ]
 verification_paths = [
     "tests/test_vault_link.py",
     "tests/test_vault_mount.py",
     "tests/test_knowledge.py",
+    "tests/test_session_learnings.py",
     "tests/test_workspace_diagnostics.py",
 ]
-requirements = ["openspec/specs/obsidian-vault-linking/spec.md"]
+requirements = ["openspec/specs/obsidian-vault-linking/spec.md", "openspec/specs/session-learnings/spec.md"]
 
 [[documents]]
 id = "release-verification"
@@ -54,6 +57,9 @@ path = "docs/release-verification.md"
 kind = "runbook"
 owner = "repository-maintainers"
 status = "active"
+code_paths = [".github/workflows/release.yml", "scripts/release_manifest.py"]
+verification_paths = ["tests/test_release_manifest.py", "tests/test_release_workflow.py"]
+requirements = ["openspec/specs/release-publication/spec.md"]
 
 [[documents]]
 id = "roadmap"
@@ -757,7 +763,7 @@ code_paths = [
     "project-templates/project/scripts/bootstrap.sh",
     "src/ai_dlc/setup/templates.py",
 ]
-verification_paths = ["tests/test_release_manifest.py", "tests/test_bootstrap.py"]
+verification_paths = ["tests/test_release_manifest.py", "tests/test_bootstrap.py", "tests/test_release_workflow.py"]
 
 [[documents]]
 id = "repo-runbooks-linear-setup"
@@ -773,3 +779,13 @@ kind = "reference"
 owner = "repository-maintainers"
 status = "active"
 requirements = ["openspec/specs/repository-organization/spec.md"]
+
+[[documents]]
+id = "repo-verification-skill-evaluation"
+path = "docs/verification/skill-evaluation.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "active"
+code_paths = ["scripts/run_skill_evaluation.py", "src/ai_dlc/harness/skill_evaluation.py", "src/ai_dlc/providers/evaluation_api.py", "agents/evaluation.toml", "agents/evaluation-scenarios.json"]
+verification_paths = ["tests/test_skill_evaluation.py"]
+requirements = ["openspec/specs/skill-evaluation/spec.md"]
