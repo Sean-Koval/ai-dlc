@@ -1,5 +1,5 @@
 {
-  "base": "dd05f1f1ba919d2647e46049b7cd48fbb21be1fb",
+  "base": "dd5209dec0e4abe15743f9b5dd0052fc5483f8b5",
   "decisions": [
     {
       "outcome": "updated",
@@ -62,16 +62,16 @@
       "target": "uv.lock"
     }
   ],
-  "reviewer": "Codex FDE implementation review",
+  "reviewer": "Codex integration review",
   "schema": 1,
-  "snapshot": "361c13d2f685b5421a09809015ac45292863af2d38cfbc294ecae31d461fdbaa",
+  "snapshot": "75e618f0cebf3f14f3c6f31eb2a2bbfb3f51186263dec4b939d072c97f5f4e68",
   "sources": {
     "docs/architecture.md": "a4bbc57e8189295f589cf34195e07f8b37220d5973d611e90785ba68a646bc09",
     "docs/catalog.toml": "034588a872fb32cd52eae5e99904428d53ee1a50a7134584f1ced8b8da4b7d94",
     "docs/design/local-and-shared-knowledge.md": "c5daa2c9300f8e21597a64f90c46c214f0c4a6f800e011e97dfc29c69e6bada0",
     "docs/index.md": "56ea1c4f95bf69d54797e6fb732a0a85a1c06944691d7df9f6475b68fd312a1c",
     "docs/runbooks/fde-documents.md": "dccc1263264a3fd514a1e8e668856bd011765ddb32df3fe53a06745b07508d49",
-    "docs/workflows/tool-map.md": "1787c4cdce657f196d18b6008aef5a1f9c0ac89b503cbb11a286113e295c3a58",
+    "docs/workflows/tool-map.md": "9be99e1c3bc720d5e2e984ea622a27034f50cea15db06f735bd5013b4f8be9c6",
     "openspec/changes/archive/2026-09-14-fde-document-scaffold/design.md": "5f89d1c57e0c10fc21845aaebebcc83960775cc15c06cfbb9661d59fb43b448b",
     "openspec/changes/archive/2026-09-14-fde-document-scaffold/proposal.md": "72ef1d3b16525444f783ea73166276fe6c59d0ad61b7939dcde29d53a5e79414",
     "openspec/changes/archive/2026-09-14-fde-document-scaffold/specs/fde-document-scaffold/spec.md": "ce5794bf8f954c1463cd0ba2be6879a2028503fc8b20e48202fdb8acd269418f",
