@@ -155,3 +155,13 @@ and a vault portal, mounted folder or Markdown link does not grant access.
 The [documentation guide](../documentation-guide.md#search-and-read-project-documents) explains ownership, packet
 review, project-document access, baselines and workspace use. The optional CLI `project docs-style` invokes
 configured Vale; it does not install a tool or establish factual correctness.
+
+### Session continuity
+
+`ai-dlc work finish <id> --learning FILE` optionally stores an authored learning
+through the knowledge provider after completion gates pass. MCP `work_finish`
+accepts `learning` text alongside its existing `handoff`. Missing knowledge leaves
+the note pending and preserves completion. `work start` returns up to five
+matching learning paths and first lines; read relevant notes before implementing.
+The session-start hook recalls notes for the branch's bound work record. Stop
+reminders use only ignored local friction counts and never transmit them.

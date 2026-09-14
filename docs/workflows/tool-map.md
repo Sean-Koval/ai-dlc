@@ -215,3 +215,13 @@ remains the default. Mounting does not expand private knowledge read/write acces
 See the documentation guide for stable-checkout, adoption and conflict handling.
 `ai-dlc project workspace-check` (MCP `project_workspace_check`) diagnoses the
 executable, shell activation, bindings and navigation without changing them.
+
+### Session continuity
+
+`ai-dlc work finish <id> --learning FILE` optionally stores an authored learning
+through the knowledge provider after completion gates pass. MCP `work_finish`
+accepts `learning` text alongside its existing `handoff`. Missing knowledge leaves
+the note pending and preserves completion. `work start` returns up to five
+matching learning paths and first lines; read relevant notes before implementing.
+The session-start hook recalls notes for the branch's bound work record. Stop
+reminders use only ignored local friction counts and never transmit them.

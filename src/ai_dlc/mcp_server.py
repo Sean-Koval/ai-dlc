@@ -40,9 +40,9 @@ def _register_work_tools(server: FastMCP, root: Path, machine: Path | None) -> N
         return work().link(work_id, kind, reference)
 
     @server.tool()
-    def work_finish(work_id: str, handoff: str | None = None) -> dict:
+    def work_finish(work_id: str, handoff: str | None = None, learning: str | None = None) -> dict:
         """Verify completion gates, then complete work and optionally record handoff."""
-        return work().finish(work_id, handoff)
+        return work().finish(work_id, handoff, learning)
 
     @server.tool()
     def doctor(target: str = "local") -> dict:
