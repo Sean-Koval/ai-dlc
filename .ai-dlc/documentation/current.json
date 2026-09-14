@@ -125,11 +125,16 @@
       "outcome": "no-impact",
       "reason": "Template wiring, pinned module recipe, generated ownership or work metadata is explained by the updated design workflow; no additional durable document is needed.",
       "target": "project-templates/project/package.json.jinja"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Template wiring, pinned module recipe, generated ownership or work metadata is explained by the updated design workflow; no additional durable document is needed.",
+      "target": "tests/test_docs_commands.py"
     }
   ],
   "reviewer": "codex-delivery",
   "schema": 1,
-  "snapshot": "b9208c68635b5daefd3424066f5a535ad61b328932918dacdb532f50188a2ed8",
+  "snapshot": "10fa93956d6c37fee83e5ae72eeba8ae457a9433012fe6a2ed3af375396cc145",
   "sources": {
     ".agents/skills/design-evaluate/SKILL.md": "41084df0a78a63e3742ee089acf167c019aad3a13b96a78995620dfd90e661e6",
     ".ai-dlc/agent-ownership.json": "23d42cf7db9834d5b86f89a1e614f79ab819edde97c886697f373f17e876c30a",
@@ -140,7 +145,7 @@
     "docs/architecture.md": "5f39851083b6cf1ac1ef9a9d0ad69be7b322841838930478fd41ce2ccd215004",
     "docs/catalog.toml": "177674bfa816a6966f84c9b7ef5f625576b531ed1b406159425d9042b70e11a0",
     "docs/runbooks/release-publication.md": "54b176eafc5e7749feb163cb24487edccd60aea57c6cef32ef3d7da9f7ed48a1",
-    "docs/verification/backend-contracts.md": "e3676ee86e0db9dc0565f9a8f13d8c750abb02cfc175547c6785d995b8bb4907",
+    "docs/verification/backend-contracts.md": "24d63cd64db3cc487950487a8a3210bfe02892fa07a7c0294d52ca86b5d523c6",
     "docs/workflows/design-to-implementation.md": "f9bc89d43e21e10339424461c7ec59498e91fd9b564df132ac7bf0858ab0bb1e",
     "docs/workflows/greenfield.md": "fe61ff87be4661c5e66758314a32efe7758506d57db78e74c2353bf55a09c3da",
     "docs/workflows/tool-map.md": "5be4c6b7715a057a90aad314bd272cc5b0cc949aba961c8665dd59120ca731a8",
@@ -253,6 +258,7 @@
     "src/ai_dlc/work/workflow.py": "b16ef66b0bea70ece8aaf15003e5e0233dbcff82051b3da24d59b94106da3fca",
     "tests/test_backend_capability.py": "aedd591caa61c646bcc13812728f9990e235dfa4f84f021ebf629f10d3f6d2e2",
     "tests/test_bootstrap.py": "20c1c5d49181b22b969a19063ff108554be7eb492711bcec95c9a52599cf1bf2",
+    "tests/test_docs_commands.py": "1536b70efbb99ed30ba2d119892f6d946151f061895b5a5787022def1c1ad670",
     "tests/test_frontend.py": "8a8b7c0d049e885295e7685243965bf734959451723250178f93094cb740d0a6",
     "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
     "tests/test_release_workflow.py": "a50523b5d6dec682188d489780d29a74f2a01c60c310071ce6758898f3d12dc0"

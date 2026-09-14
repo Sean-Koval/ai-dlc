@@ -44,6 +44,9 @@ setup, retained both check sets and passed all five required checks with no
 BASE_URL (smoke explicitly skipped). Malformed API YAML failed contract validation;
 restoring the contract passed. With a local static page, all five checks passed
 including real Playwright smoke. The design capture command produced PNGs and a
-manifest for 1280x800 and 390x844 viewports with a visible `ready` selector. Browser
-installation occurred during explicit setup. Screenshots establish the observed
+manifest for 1280x800 and 390x844 viewports with a visible `ready` selector. The
+browser cache came from an earlier explicit `playwright install chromium`
+invocation using pinned Playwright 1.58.2 during local qualification. Generated
+project setup installed dependencies and the API validator, skipped browser
+downloads, and reused that cache for smoke. Screenshots establish the observed
 page and dimensions, not untested application interactions.
