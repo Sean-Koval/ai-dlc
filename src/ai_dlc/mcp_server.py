@@ -17,6 +17,13 @@ def make_server(root: Path, machine: Path | None = None) -> FastMCP:
     server = FastMCP("AI-DLC")
 
     @server.tool()
+    def work_context(brief: bool = False) -> dict:
+        """Offline session context: local work records and required checks; no remote calls."""
+        from ai_dlc.work.workflow import build_context
+
+        return build_context(root, brief=brief)
+
+    @server.tool()
     def work_publish(work_id: str) -> dict:
         """Publish a reviewed work record to its bound tracker."""
         return work().publish(work_id)

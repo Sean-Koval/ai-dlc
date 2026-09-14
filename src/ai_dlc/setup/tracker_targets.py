@@ -7,7 +7,7 @@ import tomllib
 import uuid
 from pathlib import Path
 
-from ai_dlc.config import digest
+from ai_dlc.config import digest, read_toml
 from ai_dlc.contracts import validate_request
 from ai_dlc.locking import project_write_lock
 from ai_dlc.providers import Registry
@@ -129,6 +129,14 @@ def _validate(plan):
         ):
             raise ValueError("Creation payload or correlation identity changed")
     return plan
+
+
+def read_tracker_mappings(path) -> dict[str, str]:
+    """Read a reviewed mapping table: one ``[work-id]`` table with exactly ``tracker``."""
+    raw = read_toml(Path(path)) if path else {}
+    if any(not isinstance(row, dict) or set(row) != {"tracker"} for row in raw.values()):
+        raise ValueError("Mappings must have exactly tracker = REFERENCE per work table")
+    return {key: row["tracker"] for key, row in raw.items()}
 
 
 def plan_tracker_targets(

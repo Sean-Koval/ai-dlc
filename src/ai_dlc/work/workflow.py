@@ -12,7 +12,7 @@ import tomli_w
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from ai_dlc.config import digest as config_digest
-from ai_dlc.config import read_toml, resolve_layers, resolve_runtime
+from ai_dlc.config import load_project, read_toml, resolve_layers, resolve_runtime
 from ai_dlc.files import inside, run_git
 from ai_dlc.locking import project_write_lock
 from ai_dlc.providers import Registry
@@ -252,6 +252,30 @@ def validate_work(root: Path, config: dict, work_id: str) -> dict:
         "work_id": work_id,
         "dependencies": sorted(set(records) - {work_id}),
         "errors": errors,
+    }
+
+
+CONTEXT_NEXT = (
+    "Select work; prepare specification when required; publish/start; check; finish; handoff."
+)
+
+
+def build_context(root: Path, brief: bool = False) -> dict:
+    """Offline session context: local work records and the required checks.
+
+    Records are read as written, without validation, so a malformed record still
+    appears; ``brief`` keeps only the three most recent by filename order. Nothing is
+    probed outside the repository tree.
+    """
+    config = load_project(root)
+    records = []
+    for path in sorted((root / ".ai-dlc/work").glob("*.toml")):
+        record = read_toml(path)
+        records.append({k: record.get(k) for k in ["id", "title", "artifacts", "providers"]})
+    return {
+        "work": records[-3:] if brief else records,
+        "required": config.get("checks", {}).get("required", []),
+        "next": CONTEXT_NEXT,
     }
 
 
