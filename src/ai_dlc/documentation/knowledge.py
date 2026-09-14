@@ -26,6 +26,36 @@ class Knowledge:
                     break
         return results
 
+    def recall(self, terms: list[str], limit: int = 5) -> list[dict]:
+        """Return only learning paths and a first content line, without writing."""
+        limit = min(5, max(0, limit))
+        terms = [term.casefold() for term in terms if term.strip()]
+        if not limit or not terms:
+            return []
+        results = []
+        for path in sorted((self.root / "learnings").rglob("*.md")):
+            if path.is_symlink() or not path.resolve().is_relative_to(self.root):
+                continue
+            body = path.read_text(errors="replace")
+            if not any(
+                term in (str(path.relative_to(self.root)) + "\n" + body).casefold()
+                for term in terms
+            ):
+                continue
+            lines = [
+                line.strip()
+                for line in body.splitlines()
+                if line.strip() and not line.strip().startswith("<!-- ai-dlc:")
+            ]
+            if lines[:1] == ["---"] and "---" in lines[1:]:
+                lines = lines[lines.index("---", 1) + 1 :]
+            results.append(
+                {"path": str(path.relative_to(self.root)), "first_line": lines[0] if lines else ""}
+            )
+            if len(results) >= limit:
+                break
+        return results
+
     def note(self, path: str, body: str, operation_id: str) -> dict:
         target = inside(self.root, path)
         if target.exists() and f"<!-- ai-dlc:{operation_id}:" not in target.read_text():
@@ -47,5 +77,8 @@ class Knowledge:
                 if marker not in current:
                     raise ValueError("note operation conflict: ID reused with different content")
                 return {"path": path, "created": False, "url": target.as_uri()}
-            atomic_write(target, current + "\n" + marker + "\n" + body.rstrip() + "\n")
+            addition = "\n" + marker + "\n" + body.rstrip() + "\n"
+            if not current:
+                addition = body.rstrip() + "\n" + marker + "\n"
+            atomic_write(target, current + addition)
         return {"path": path, "created": True, "url": target.as_uri()}

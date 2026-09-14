@@ -14,7 +14,7 @@ OpenSpec owns formal behavior and change artifacts. Repository `docs/` owns dura
 architecture, decisions and operational material. A project index and optional
 catalog identify canonical paths, ownership, lifecycle and source provenance.
 
-`docs-check` exposes deterministic gaps for review: unknown ownership/review,
+`docs check` exposes deterministic gaps for review: unknown ownership/review,
 missing paths, limited local Markdown-link checks, uncatalogued files and exact
 content duplicates. It does not certify accuracy or automatically consolidate
 content. Review dates represent an actual review, not filesystem timestamps.
@@ -40,6 +40,8 @@ The formal requirements and repair rationale are in the
 
 The approved documentation program adds Git impact inspection, explicit
 content-bound dispositions, scoped harness review packets and citation validation.
+Work records are validated by the `work-records` check and are not documentation
+evidence unless explicitly mapped in the catalog.
 These services coordinate review; they cannot infer semantic accuracy. A linked
 Obsidian workspace adds personal navigation and templates while canonical document
 bodies remain in Git. SDK workflow bundles may carry declared references and exact

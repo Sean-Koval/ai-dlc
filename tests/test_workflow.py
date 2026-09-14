@@ -2071,13 +2071,74 @@ def test_build_context_reads_records_as_written_and_cli_prints_the_same_json(tmp
     assert full["required"] == ["lint", "test"]
     assert full["next"].startswith("Select work;")
     brief = build_context(tmp_path, brief=True)
-    assert [record["id"] for record in brief["work"]] == ["item-2", "item-3", None]
+    assert brief["records"] == []
+    assert brief["total"] == 5
+    assert brief["errors"]
 
     result = CliRunner().invoke(app, ["context", "--root", str(tmp_path)])
     assert result.exit_code == 0, result.output
     assert result.output == json.dumps(full, indent=2) + "\n"
     result = CliRunner().invoke(app, ["context", "--root", str(tmp_path), "--brief"])
-    assert result.output == json.dumps(brief, indent=2)[:2000] + "\n"
+    assert result.output == brief["text"]
+
+
+def test_optional_learning_is_idempotent_and_survives_unavailable_vault(
+    tmp_path, trusted_scm, monkeypatch
+):
+    from ai_dlc.work.workflow import WorkService
+
+    work(tmp_path)
+    tracker = Tracker()
+    service = WorkService(tmp_path, {}, state_path=tmp_path / "state", registry=Registry(tracker))
+    service.publish("one")
+    assert "learning_reminder" in service.finish("one")
+    assert (
+        service.finish("one", learning="A retry lesson")["status"] == "completed,learning_pending"
+    )
+    vault = tmp_path / "vault"
+    vault.mkdir()
+    service.config["paths"] = {"vault": str(vault)}
+    from ai_dlc.documentation import learnings
+
+    class LaterDay:
+        @staticmethod
+        def now(zone):
+            raise AssertionError("Retry must reuse its saved date/path")
+
+    monkeypatch.setattr(learnings, "datetime", LaterDay)
+    first = service.finish("one", learning="A retry lesson")
+    second = service.finish("one", learning="A retry lesson")
+    assert first["status"] == second["status"] == "completed"
+    assert first["learning"] == second["learning"]
+    notes = list((vault / "learnings").glob("*-one.md"))
+    assert len(notes) == 1
+    assert notes[0].read_text().count("A retry lesson") == 1
+    assert tracker.closed == 1
+
+
+def test_start_recalls_title_matches_without_requiring_vault(tmp_path, monkeypatch):
+    from ai_dlc.work.workflow import WorkService
+
+    work(tmp_path)
+    record = tmp_path / ".ai-dlc/work/one.toml"
+    record.write_text(record.read_text().replace('title="One"', 'title="Retry operations"'))
+    vault = tmp_path / "vault"
+    (vault / "learnings").mkdir(parents=True)
+    (vault / "learnings/lesson.md").write_text("Retry carefully")
+    tracker = Tracker()
+    service = WorkService(
+        tmp_path,
+        {"paths": {"vault": str(vault)}},
+        state_path=tmp_path / "state",
+        registry=Registry(tracker),
+    )
+    monkeypatch.setattr(service, "branch", lambda work: "work/one")
+    service.publish("one")
+    assert service.start("one", commit=False)["learnings"] == [
+        {"path": "learnings/lesson.md", "first_line": "Retry carefully"}
+    ]
+    service.config["paths"] = {}
+    assert "learnings" not in service.start("one", commit=False)
 
 
 def _git_output(tmp_path, *args):
