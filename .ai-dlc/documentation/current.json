@@ -1,5 +1,5 @@
 {
-  "base": "ff946f23a882d237eb8ec857f64f15443ef1cf3f",
+  "base": "21e6e96f098bfe08b4fc27e732f7613f2c764b31",
   "decisions": [
     {
       "outcome": "no-impact",
@@ -13,18 +13,13 @@
     },
     {
       "outcome": "no-impact",
-      "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
+      "reason": "Reviewed combined handoff guidance retains main work start/PR/record-commit instructions and optional learning format; generated copies and ownership hashes match.",
       "target": ".agents/skills/handoff/SKILL.md"
     },
     {
       "outcome": "no-impact",
       "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
       "target": ".ai-dlc/agent-ownership.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Reviewed work and archived SL-01 through SL-03 requirements track the implementation; no separate durable narrative required.",
-      "target": ".ai-dlc/work/session-learnings.toml"
     },
     {
       "outcome": "no-impact",
@@ -38,7 +33,7 @@
     },
     {
       "outcome": "no-impact",
-      "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
+      "reason": "Reviewed combined handoff guidance retains main work start/PR/record-commit instructions and optional learning format; generated copies and ownership hashes match.",
       "target": ".claude/skills/handoff/SKILL.md"
     },
     {
@@ -58,7 +53,7 @@
     },
     {
       "outcome": "no-impact",
-      "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
+      "reason": "Reviewed combined handoff guidance retains main work start/PR/record-commit instructions and optional learning format; generated copies and ownership hashes match.",
       "target": "agents/skills/handoff/SKILL.md"
     },
     {
@@ -108,37 +103,36 @@
     },
     {
       "outcome": "no-impact",
-      "reason": "Regression coverage and internal implementation are explained by canonical knowledge and tool-map documentation; no additional document owner is needed.",
+      "reason": "Reviewed merge integration preserves new record commit/PR behavior and adds optional learning recall; the isolated recall fixture opts out of Git commits, and full workflow tests cover both features together.",
       "target": "tests/test_workflow.py"
     }
   ],
   "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "5e61654c04d5f4340342bff38169e7f286c4598fb7f2042ae241510b6cb2450d",
+  "snapshot": "8c278062ab13ca0e8092984f775a7606c2e948dd358a29aa8e64533a54e327a3",
   "sources": {
     ".agents/skills/day-end/SKILL.md": "1580b5be8ecfdeb4a3f52e3d73bbf747dc10b3bf0ca57a81727934096431f0ab",
     ".agents/skills/day-start/SKILL.md": "9535c7de7de2ad869bc9de93c498c909246948cf43acd2c2d9cc4f2f5e49e77e",
-    ".agents/skills/handoff/SKILL.md": "e789e8a9b14f98731b54511ff76adbcb325935066820e64bc9535a414859df6b",
-    ".ai-dlc/agent-ownership.json": "31c29e473ce790fdf3ce67d41b985754eed18e0ca6477fcd37691c29c0496e1a",
-    ".ai-dlc/work/session-learnings.toml": "f5e0c2acb6cd9ed0b4bfbaaeff2f31b84b98b4cda85fe52e962ba2272413f062",
+    ".agents/skills/handoff/SKILL.md": "07efbf6239a14af8b519f11a4f602555fcdc1b5b6fffaafd6ac838cd7898d2d2",
+    ".ai-dlc/agent-ownership.json": "f98aff96f1094995981b65a239ece6379cd0c0aa06ef58440039bc3002faef16",
     ".claude/skills/day-end/SKILL.md": "1580b5be8ecfdeb4a3f52e3d73bbf747dc10b3bf0ca57a81727934096431f0ab",
     ".claude/skills/day-start/SKILL.md": "9535c7de7de2ad869bc9de93c498c909246948cf43acd2c2d9cc4f2f5e49e77e",
-    ".claude/skills/handoff/SKILL.md": "e789e8a9b14f98731b54511ff76adbcb325935066820e64bc9535a414859df6b",
-    "agents/skills.lock.json": "dcc94efb95e5a412ccdfbeb2dceefa3c3cb5d094b5efbbd41d5b078af769798d",
+    ".claude/skills/handoff/SKILL.md": "07efbf6239a14af8b519f11a4f602555fcdc1b5b6fffaafd6ac838cd7898d2d2",
+    "agents/skills.lock.json": "f6ddda70b4748225fa43e16deedfe34084cb114d630f40188ddad925f76d4459",
     "agents/skills/day-end/SKILL.md": "1580b5be8ecfdeb4a3f52e3d73bbf747dc10b3bf0ca57a81727934096431f0ab",
     "agents/skills/day-start/SKILL.md": "9535c7de7de2ad869bc9de93c498c909246948cf43acd2c2d9cc4f2f5e49e77e",
-    "agents/skills/handoff/SKILL.md": "e789e8a9b14f98731b54511ff76adbcb325935066820e64bc9535a414859df6b",
-    "docs/architecture.md": "8bafa96f47da57bde830616401e193107eea00298d89d3ae8ee633a1dfc30604",
+    "agents/skills/handoff/SKILL.md": "07efbf6239a14af8b519f11a4f602555fcdc1b5b6fffaafd6ac838cd7898d2d2",
+    "docs/architecture.md": "a8aace94253d79c6384f2fe5b8c7b45f0f1b1b4da27b2d5bd6d1cd3da612a4e8",
     "docs/catalog.toml": "ae73af3778eb22ac0a74555b430e2f32257b1a79bac5d1d3666314be9e2c095f",
     "docs/design/local-and-shared-knowledge.md": "350186edba432243e768cca349558aa3fa125f2ef7d71ec9d63e1104608da432",
-    "docs/workflows/tool-map.md": "e14f944469e5cdbf0f6e21970a6c4f572d7c7272d44d41d6fe74cd150d486269",
+    "docs/workflows/tool-map.md": "b0b779f0994d61b8b08ae9970e1ae7474425e13d0b953ba22fe70c695a141f3b",
     "openspec/changes/archive/2026-09-14-session-learnings/design.md": "4afe6ae7175dcfd8808edea6958a3a33f1de9ac8e7101217f94f579de914eb31",
     "openspec/changes/archive/2026-09-14-session-learnings/proposal.md": "42ed876a65f8acea211ffd1acee07f7c73a95d2bcfc83680f38aeb6d41f73589",
     "openspec/changes/archive/2026-09-14-session-learnings/specs/session-learnings/spec.md": "a7dc17736ccb8b732b579b5c9fb091b1a42a94d5bca74f954f5051b441b50ce7",
     "openspec/changes/archive/2026-09-14-session-learnings/tasks.md": "476e1a5b357b76e1f7ec5cc1e6acfa6de38e1ff407e1d2c7afb0abe77df992a5",
     "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
     "openspec/specs/session-learnings/spec.md": "d6d288fc9b8aee72b85b56b30e2cb88dcb4acd2530c3b3b7c0e31854492cc89b",
-    "project-templates/project/docs/workflows/tool-map.md": "030aef448cf4df0279c1a0e6f3b9f8c5f6f6cc71bee172cca90f3196e5368b6e",
+    "project-templates/project/docs/workflows/tool-map.md": "760ec62afbab2e77bb8fe0789c76abdf715aa670460fbf921be023f56a69bf46",
     "pyproject.toml": "57b5a7f4ea777185ab5df4b34c4117a190d41434e1e236b38735987c96ccc529",
     "scripts/check_generated.py": "2a5e65cb653c0cf9b44dc34765a6d2d4affcfda9b310231a2abed4b3de82771a",
     "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
@@ -146,16 +140,16 @@
     "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
     "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
     "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
-    "src/ai_dlc/cli.py": "f0a5d91926db9448be4dbd451baca545970e27072c430806f9a0d51e558d8c8d",
+    "src/ai_dlc/cli.py": "6e9e70707e0d6619bde4b9e41d9886563d47393cc5b88b46d86e03195cd65a59",
     "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
     "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
     "src/ai_dlc/config.py": "31677c538713aa41d3625ef9570f962ed8ee5d32bd4b5b3747437e8fd8fb9d02",
     "src/ai_dlc/conformance.py": "9d18cdbf21aa8f9889d880729c368d9567f32f83c066693dceb06ce6549b6082",
-    "src/ai_dlc/contracts.py": "f61ee2fc622d4f58f8e424f7d4b6a5258f6ab3b7edc7ea3d019e8ca9aa0e48a9",
+    "src/ai_dlc/contracts.py": "e2202d26b4815674bde05fc1190fbaedfe7cabdf6d8c913a721d1f0b53619d1e",
     "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
     "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
     "src/ai_dlc/documentation/document_files.py": "503a38d4df2a1f9d0832d083dcd420ebd1215389385293dd0605fc768c5dd320",
-    "src/ai_dlc/documentation/document_impact.py": "585114e1808a5557c00f261a873868a8a5a91baaff29c4b790a65d213dfd97a9",
+    "src/ai_dlc/documentation/document_impact.py": "f569053c4e42c2b03d39521e368f8fa3c0e559f20057088ccc02c24ccc5576b7",
     "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
     "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
     "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
@@ -166,8 +160,9 @@
     "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
     "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
     "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
-    "src/ai_dlc/documentation/workspace_diagnostics.py": "c53cc66966888078108662d6a307b00c8746c6a8f1d8098938529c65d5694b61",
+    "src/ai_dlc/documentation/workspace_diagnostics.py": "4a0ec1bf837e4a6a1d59482ebc86557edc2ae41cec843a8528b828b04f27422b",
     "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
+    "src/ai_dlc/environment/bootstrap.py": "d006353cb750ae2d57e591cf67629eab41cab1ddc6ed41d2fe60bcee60595bfd",
     "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
     "src/ai_dlc/environment/enrollment.py": "ab1f0e729ee497af2c0dea9faf81aba0b46d19deac102371b0f786dd4d4c4343",
     "src/ai_dlc/environment/machine.py": "491128faaec9634ec29ef0ebc9a38af3dfe25499e533543fcecf0734d2e50d1a",
@@ -185,7 +180,7 @@
     "src/ai_dlc/locking.py": "f1cfe828e897e11d73b645130060362e2699f75aac9307ed8cb4955b0533b629",
     "src/ai_dlc/mcp_server.py": "d97a85c9f2e3af650353231ed68b550a3511a5ab3d409b5ad1094578930e8ad9",
     "src/ai_dlc/provider_definitions.py": "e90c2d41a839bc4a32dcb3989f59fa6c9073bd1233f3db2088bd176e1bc513d3",
-    "src/ai_dlc/providers/__init__.py": "79308afdb659a23865b422bb423bbd57c01cc1aa52929f56674c79c6e3cbfd6a",
+    "src/ai_dlc/providers/__init__.py": "5ea49e6d446942d80f9744acf9702bb42ce041a55a7e3e25e9b871f9d3bc3162",
     "src/ai_dlc/providers/github_issues.py": "55a18a178fc329a94ff95f39b72c5599117c5a8e79842d7cc7c6c8966cbed405",
     "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
     "src/ai_dlc/providers/jira_cloud.py": "d9b83ba88fb964816450b1479fc775a526455c023725ecff3c8ca695ac7cd8c8",
@@ -194,16 +189,16 @@
     "src/ai_dlc/providers/plane.py": "f05450be6fa35ae10c8ae7531518797be5a3f778ec25d517c88fb49efbe9f9a3",
     "src/ai_dlc/providers/plane_attempts.py": "bfa9b5015f7dc554b9e58af82c680d97d3f0a5271bc0afe6102a81fbf697c20a",
     "src/ai_dlc/providers/python_exec.py": "3aaafe9bf74a4a949b59d71ed2079b9c48114462a9c823b3641a1772af5a6ff1",
-    "src/ai_dlc/providers/scm.py": "55d21698f752048cbc99c8e7443f54fcd1f8ab062301112a7d6b1f71953cfe57",
+    "src/ai_dlc/providers/scm.py": "3213f9c9690d598a9d7024b687044ca3b0844b972909cd96ad14e270081409d9",
     "src/ai_dlc/setup/__init__.py": "8eb444a69a67d0c1a59ffc0c80ce59efda159976bea58d40154e97f8bdecf18c",
     "src/ai_dlc/setup/connections.py": "e80cbe0e1e94ae5f9d8f60ae044918e8f9e377e173a25ff7bd91f28180a24d15",
     "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
     "src/ai_dlc/setup/github_project_setup.py": "55984de17559ba2d56b3b1c7483dabb8a6f05f1e773e8bd9d40437a2d30ee85e",
     "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
     "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
-    "src/ai_dlc/setup/project.py": "23909295adda10d5ecddb226aedae85c7db19db992e0fcf10a581c15bab5db13",
+    "src/ai_dlc/setup/project.py": "d5d69d608448111ff1e37ad5c5ae044c4b1e519530fad1085714e23b9c81c1aa",
     "src/ai_dlc/setup/provider_onboarding.py": "be120ad6e93c178f041fd338a45a5df7c75b9a30591725cfbf7800bca531045e",
-    "src/ai_dlc/setup/provision.py": "39958dca8c86512546ce17262d1df2338053de11895541540438f53cb9b5d2fc",
+    "src/ai_dlc/setup/provision.py": "6ec463fb9516aa01de58b482a8f14c3cc8c14585a25fa46e42b144d4c2fe5dfc",
     "src/ai_dlc/setup/readiness.py": "e0984a1f504ee87f3c4c1939624b34ccfe2fd6b7315df365166e95ff3b975d55",
     "src/ai_dlc/setup/rebind.py": "2458691c83e22c613ee3eb7541e103aee7264e7b23a78c17194135bc3d5a35c6",
     "src/ai_dlc/setup/templates.py": "bbfb4f26c103e3a5210fb8b97a6d843b615efac5f10ddedb28734f254061beb6",
@@ -214,15 +209,15 @@
     "src/ai_dlc/verification/sandbox.py": "c017bd12115b8f144d07eba619f4e15ddbd00db323e4d386f569c4bcb08646e0",
     "src/ai_dlc/verification/test_proxy.py": "f38cb2a28c8501c743613b0bfdf7e17f367c101ce7984a304e20ab3095eb7880",
     "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
-    "src/ai_dlc/work/journal.py": "c088818e99c8c06cc4745ae403a62f9de8c5d503fdc7ab6107760f212ffa5106",
-    "src/ai_dlc/work/traceability.py": "c4062335f26218e99f58e236425674c513ea6f2fce7f68b624a4df4dcd8ab3aa",
+    "src/ai_dlc/work/journal.py": "91bf194b430c5d0228a5600444a02d79029121a21079ec4c319e96fdaa68543b",
+    "src/ai_dlc/work/traceability.py": "01aa783e51539b581a0f07a4ff36a7280fd1efe19ac0c0b00d657498c35702d5",
     "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
-    "src/ai_dlc/work/workflow.py": "3ccaffd53e36ea37345ff648a9579ecc770737e35d8778c5acfb46d6fee3c4e7",
+    "src/ai_dlc/work/workflow.py": "7a973621b3d4eb9fca5e6c5e3ae47c2a7b118cb9fd6e6349a398bd06eac84d78",
     "tests/test_knowledge.py": "38e5cda9c9dc1fe97d12618a0bd9a86b2725cff059d412232152582af1547af1",
     "tests/test_session_learnings.py": "32bb7c3143db24ff96fb43ac5081285e77a93bd8d8d825076f3422cbfe194796",
     "tests/test_vault_link.py": "fd146d4d15041021ac343257c9d91a8c1950878d275420eda85d13747065e110",
     "tests/test_vault_mount.py": "f6a5dc947af0d68e4688c37d05294c6b4868aa98ead91d26aa0c8ffec8018424",
-    "tests/test_workflow.py": "0a4bd19ac2b4d1061d45e766a55ae25ecd7609846316d0dd9039d4d046fdcb0b",
-    "tests/test_workspace_diagnostics.py": "ab9e91a770c751d132d8e2d963a0f537a1041ab6fa56b00ee14f2f6f153ac25e"
+    "tests/test_workflow.py": "89b5390f1d26ea0aacc941a3c835af938b8574d331b5cd0ead14665380b20629",
+    "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
   }
 }
