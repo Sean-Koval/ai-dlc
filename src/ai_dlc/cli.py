@@ -1085,11 +1085,30 @@ def doctor(
 
 @app.command()
 def context(root: Path = Path("."), brief: bool = False):
-    """Print the offline session context; --brief keeps the newest records and truncates."""
+    """Print the offline session context as JSON; --brief prints the what-next summary."""
     from ai_dlc.work.workflow import build_context
 
-    text = json.dumps(build_context(root, brief=brief), indent=2)
-    typer.echo(text[:2000] if brief else text)
+    result = build_context(root, brief=brief)
+    typer.echo(result["text"], nl=False) if brief else typer.echo(json.dumps(result, indent=2))
+
+
+@app.command("next")
+def next_summary(
+    root: Annotated[Path, typer.Option("--root")] = Path("."),
+    all_records: Annotated[
+        bool, typer.Option("--all", help="Include unpublished records (no tracker artifact).")
+    ] = False,
+    as_json: Annotated[bool, typer.Option("--json", help="Print the same data as JSON.")] = False,
+):
+    """Summarize what to do next from local work records; the tracker is not consulted."""
+    from ai_dlc.work.summary import render_next, summarize_next
+
+    with service_call():
+        summary = summarize_next(root, include_all=all_records)
+    if as_json:
+        emit(summary["records"])
+    else:
+        typer.echo(render_next(summary), nl=False)
 
 
 def service(root: Path, machine: Path | None):
@@ -1128,6 +1147,16 @@ def work_validate(
             result = validate_work(root, resolve_runtime(root, machine=machine).values, work_id)
         except SERVICE_FAILURES as exc:
             result = {"valid": False, "work_id": work_id, "dependencies": [], "errors": [str(exc)]}
+    errors = result.get("errors", [])
+    if (
+        not all_records
+        and errors
+        and all("Provider binding drift for " in error for error in errors)
+    ):
+        result["hint"] = "\n".join(
+            "Provider binding drift for " + error.split("Provider binding drift for ", 1)[1]
+            for error in errors
+        )
     conclude(result)
 
 

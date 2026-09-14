@@ -37,6 +37,22 @@ def classify_command(command: str) -> str:
     return "ordinary"
 
 
+SESSION_INSTRUCTION = "Read AGENTS.md and .ai-dlc/work; run ai-dlc next for the full summary."
+SESSION_SUMMARY_LINES = 10
+
+
+def session_context(root: Path) -> str:
+    """The instruction plus the first lines of the offline summary; never blocks a session."""
+    from ai_dlc.work.summary import next_text
+
+    try:
+        lines = next_text(root).splitlines()[:SESSION_SUMMARY_LINES]
+    except (OSError, ValueError):
+        # A missing project or unreadable configuration still gets the plain instruction.
+        return SESSION_INSTRUCTION
+    return "\n".join([SESSION_INSTRUCTION, *lines])
+
+
 def handle_hook(root: Path, event: str, payload: dict) -> dict:
     from ai_dlc.harness.friction import track_friction
 
@@ -80,7 +96,7 @@ def _handle_hook(root: Path, event: str, payload: dict) -> dict:
             "message": "Record outcomes and next steps when convenient; unavailable knowledge can remain pending.",
         }
     if event == "session-start":
-        context = "Read AGENTS.md and .ai-dlc/work; use ai-dlc context --brief."
+        context = session_context(root)
         recalled = _session_recall(root)
         if recalled:
             context += "\nRelevant learnings (read these notes):\n" + "\n".join(

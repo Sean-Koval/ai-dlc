@@ -85,7 +85,7 @@ knowledge append`.
 
 | Area | Interfaces | Effect |
 | --- | --- | --- |
-| Readiness and context | `ai-dlc doctor`, `ai-dlc context` | Checks the selected environment and summarizes work/check context |
+| Readiness and context | `ai-dlc doctor`, `ai-dlc next`, `ai-dlc context` | Checks the selected environment; `next` and `context --brief` show local next actions without consulting the tracker |
 | Project creation | `ai-dlc project init`, `ai-dlc project adopt` | Initializes a project or previews/applies conflict-safe adoption |
 | Project maintenance | `ai-dlc project sync`, `ai-dlc project rebind` | Performs staged Copier updates or previews/applies reviewed provider rebinding, including reviewed provider connection rebinding |
 | Project execution | `ai-dlc project setup`, `ai-dlc project check --required` | Runs declared setup and checks and emits verification receipts |

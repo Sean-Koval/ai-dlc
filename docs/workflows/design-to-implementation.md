@@ -100,6 +100,13 @@ together, offline and without resolving provider bindings, so finished records
 with historical fingerprints do not fail it. Run it as a required project check
 so archiving cannot leave a dangling reference undetected.
 
+Binding drift is a mutation-time refusal, also surfaced by single-record validation.
+For active work, review the record against current provider configuration, remove
+only the drifted binding under `[bindings]`, and run `ai-dlc work validate WORK_ID`;
+the next normal work mutation persists the reviewed binding. Preserve finished
+records' historical bindings and check them with `ai-dlc work validate --all`.
+`project rebind` migrates a provider role and is not a binding-drift repair command.
+
 Validation does not approve scope or prove completion. `work start` freshly reads
 every reachable dependency through its pinned tracker and requires canonical
 `closed`. Cancelled, duplicate, incomplete, unpublished or unavailable statuses

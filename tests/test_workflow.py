@@ -2071,13 +2071,15 @@ def test_build_context_reads_records_as_written_and_cli_prints_the_same_json(tmp
     assert full["required"] == ["lint", "test"]
     assert full["next"].startswith("Select work;")
     brief = build_context(tmp_path, brief=True)
-    assert [record["id"] for record in brief["work"]] == ["item-2", "item-3", None]
+    assert brief["records"] == []
+    assert brief["total"] == 5
+    assert brief["errors"]
 
     result = CliRunner().invoke(app, ["context", "--root", str(tmp_path)])
     assert result.exit_code == 0, result.output
     assert result.output == json.dumps(full, indent=2) + "\n"
     result = CliRunner().invoke(app, ["context", "--root", str(tmp_path), "--brief"])
-    assert result.output == json.dumps(brief, indent=2)[:2000] + "\n"
+    assert result.output == brief["text"]
 
 
 def test_optional_learning_is_idempotent_and_survives_unavailable_vault(

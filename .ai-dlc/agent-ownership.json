@@ -1,7 +1,7 @@
 {
   "files": {
     ".agents/skills/day-end/SKILL.md": "1580b5be8ecfdeb4a3f52e3d73bbf747dc10b3bf0ca57a81727934096431f0ab",
-    ".agents/skills/day-start/SKILL.md": "9535c7de7de2ad869bc9de93c498c909246948cf43acd2c2d9cc4f2f5e49e77e",
+    ".agents/skills/day-start/SKILL.md": "61f3338c54a4aef5e08229784e5756ed712124932acaf691fdc4941f7409659c",
     ".agents/skills/design-brief/SKILL.md": "5b9cc5c5d40378b273369c62b51b4ba10475a65c0dd91d799cd29df2a7c8ec58",
     ".agents/skills/design-evaluate/SKILL.md": "2117f4d49cc40f983cf342d07c4de11d93131f3419d367ab11a7f9214125e3f4",
     ".agents/skills/discovery/SKILL.md": "74d0a76012649f919770e37fa464d436a0ce8c7501ec011182a29d4ae14d2904",
@@ -18,7 +18,7 @@
     ".ai-dlc/providers/obsidian.md": "4b809db2085921fc2e45d1cba067636cf59f71f6d7e25b08e5c7d4aab48140e9",
     ".ai-dlc/providers/openspec.md": "1ed8ff13684019a71d77effc1b6344cf96bffa0c08221a75bcc9710cc44ae5d7",
     ".claude/skills/day-end/SKILL.md": "1580b5be8ecfdeb4a3f52e3d73bbf747dc10b3bf0ca57a81727934096431f0ab",
-    ".claude/skills/day-start/SKILL.md": "9535c7de7de2ad869bc9de93c498c909246948cf43acd2c2d9cc4f2f5e49e77e",
+    ".claude/skills/day-start/SKILL.md": "61f3338c54a4aef5e08229784e5756ed712124932acaf691fdc4941f7409659c",
     ".claude/skills/design-brief/SKILL.md": "5b9cc5c5d40378b273369c62b51b4ba10475a65c0dd91d799cd29df2a7c8ec58",
     ".claude/skills/design-evaluate/SKILL.md": "2117f4d49cc40f983cf342d07c4de11d93131f3419d367ab11a7f9214125e3f4",
     ".claude/skills/discovery/SKILL.md": "74d0a76012649f919770e37fa464d436a0ce8c7501ec011182a29d4ae14d2904",
