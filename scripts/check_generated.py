@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 
-from ai_dlc.contracts import PAYLOADS, RESPONSES, manifest
+from ai_dlc.contracts import PAYLOADS, RESPONSES, ServiceResult, manifest
 
 root = Path(__file__).resolve().parents[1]
 actual = json.loads((root / "contracts/manifest.json").read_text())
@@ -15,6 +15,10 @@ for operation in PAYLOADS:
         path = root / "contracts" / f"{operation}.{suffix}.schema.json"
         if json.loads(path.read_text()) != model.model_json_schema():
             raise SystemExit(f"Generated schema is stale: {path.name}")
+if json.loads((root / "contracts/service-result.schema.json").read_text()) != (
+    ServiceResult.model_json_schema()
+):
+    raise SystemExit("Generated schema is stale: service-result.schema.json")
 for relative in ["scripts/bootstrap.sh", "bootstrap/versions.sh", "bootstrap/download.sh"]:
     if (root / relative).read_bytes() != (
         root / "project-templates/project" / relative

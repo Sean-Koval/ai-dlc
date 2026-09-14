@@ -1,6 +1,7 @@
 """Versioned provider wire contracts. Completion is a workflow service operation."""
 
-from typing import Literal
+from collections.abc import Mapping
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -171,6 +172,51 @@ RESPONSES = {
 
 
 OPERATIONS = set(PAYLOADS)
+
+FAILURE_STATUSES = frozenset(
+    {
+        "blocked",
+        "failed",
+        "refused",
+        "unavailable",
+        "runtime-unavailable",
+        "rolled-back",
+        "recovery-required",
+    }
+)
+VERDICT_KEYS = ("valid", "ready", "passed", "clean")
+
+
+class ServiceResult(BaseModel):
+    """Envelope every application service result satisfies; see docs/architecture.md."""
+
+    model_config = ConfigDict(extra="allow")
+
+    status: str | None = Field(
+        default=None,
+        description="Canonical outcome. Members of FAILURE_STATUSES are failures; any other value succeeded.",
+    )
+    valid: bool | None = Field(
+        default=None, description="Legacy verdict key; authoritative when present."
+    )
+    ready: bool | None = Field(
+        default=None, description="Legacy verdict key; authoritative when present."
+    )
+    passed: bool | None = Field(
+        default=None, description="Legacy verdict key; authoritative when present."
+    )
+    clean: bool | None = Field(
+        default=None, description="Legacy verdict key; authoritative when present."
+    )
+
+
+def succeeded(result: Mapping[str, Any]) -> bool:
+    """Whether a service result reports success under the shared envelope."""
+    for key in VERDICT_KEYS:
+        if key in result:
+            return bool(result[key])
+    status = result.get("status")
+    return not (isinstance(status, str) and status in FAILURE_STATUSES)
 
 
 def validate_request(operation, payload):

@@ -48,6 +48,20 @@ The repository stores architecture, design rationale, decisions, runbooks and re
 
 Prefer one application with explicit module responsibilities over speculative service decomposition. CLI, MCP, and agent clients share validation where an MCP service is exposed; the CLI alone owns machine enrollment mutation. The local CLI and local MCP are today's primary control plane; hosted or cloud execution is a later qualification target. External provider failures and uncertain mutations remain visible. Credentials are environment references, never template values.
 
+Application services signal outcomes in one of two ways. A failure the service detected
+raises an exception derived from `ai_dlc.errors.AiDlcError` (`RefusedError` for an
+operation refused before any change, `UncertainError` for one whose effect must be
+reconciled); the CLI reports every such failure through one handler as `Error: <message>`
+on stderr with the exception's exit code, and MCP lets it propagate as a tool error.
+A completed service call returns a JSON object that satisfies the
+[service result envelope](../contracts/service-result.schema.json): `status` is the
+canonical outcome string, and the values in `ai_dlc.contracts.FAILURE_STATUSES` are the
+failures. Results that still carry a boolean verdict key (`valid`, `ready`, `passed`,
+`clean`) are authoritative through that key until they migrate to `status`.
+`ai_dlc.contracts.succeeded` is the one reader of that envelope; commands that map a
+returned result to exit status 1 use it. Bare `ValueError` remains for argument
+validation and is caught by the same CLI handler while services move to typed errors.
+
 Knowledge ownership stays provider-neutral: private knowledge links durable
 repository material but does not mirror it. Linked Obsidian portals, additive personal workspaces and explicit local directory mounts are implemented;
 native application qualification remains separately recorded. Guided tracker discovery supports Linear and GitHub Issues with
@@ -86,7 +100,7 @@ does not substitute for these lifecycle contracts. See the
 | `providers/` | Contract-backed external service adapters and isolated provider execution |
 | `verification/` | Sandbox orchestration and its conformance network proxy |
 | `compatibility/` | Supported legacy scaffold behavior |
-| `config.py`, `contracts.py`, `provider_definitions.py` | Shared configuration and provider contracts |
+| `config.py`, `contracts.py`, `errors.py`, `provider_definitions.py` | Shared configuration, provider contracts, the result envelope and the exception base |
 | `files.py`, `locking.py`, `toml_edit.py` | Shared filesystem boundaries, locking and comment-preserving TOML edits |
 
 These are internal Python packages, not separate deployable services. Public

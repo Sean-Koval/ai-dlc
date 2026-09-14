@@ -7,15 +7,16 @@ import tempfile
 from collections.abc import Mapping
 from pathlib import Path
 
+from ai_dlc.errors import AiDlcError
+
 GIT_TIMEOUT_SECONDS = 30
 
 
-class GitError(ValueError, RuntimeError):
+class GitError(AiDlcError, ValueError, RuntimeError):
     """A git invocation failed, timed out or could not start.
 
-    The message carries the context the caller supplied and git's stderr. It derives from
-    both ValueError and RuntimeError so every existing handler keeps catching it until a
-    single application error base exists.
+    The message carries the context the caller supplied and git's stderr. It keeps both
+    ValueError and RuntimeError as bases so every existing handler still catches it.
     """
 
     def __init__(self, message: str, *, stderr: str = "", returncode: int | None = None):

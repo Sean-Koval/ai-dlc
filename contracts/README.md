@@ -1,6 +1,9 @@
 # AI-DLC provider contract v1
 
 `manifest.json` and operation schemas are generated from `ai_dlc.contracts` Pydantic models.
+`service-result.schema.json` is the envelope application services return to the CLI and
+MCP; it is generated from `ai_dlc.contracts.ServiceResult` and explained in
+`docs/architecture.md`.
 They describe tracker, specs, SCM, deploy, and knowledge role capabilities.
 Completion is a service operation: callers must use `WorkService.finish`.
 The public `Registry.invoke` refuses terminal tracker transitions and the optional
