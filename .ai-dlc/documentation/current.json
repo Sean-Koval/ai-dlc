@@ -1,65 +1,127 @@
 {
-  "base": "5ea1b3fd594558c6b0bcb0fe2b43c4d1b2190a58",
+  "base": "c8eee5f6a04272c213c6e06980deb17655cffb86",
   "decisions": [
     {
       "outcome": "reviewed-no-change",
-      "reason": "Reviewed source layout and adapter boundary: the standalone evaluation script remains thin, reusable orchestration is in harness, and OpenAI transport is isolated in providers.",
+      "reason": "Optional scaffold checks use the existing setup and template boundaries and create no provider role or new application service.",
       "target": "docs/architecture.md"
     },
     {
+      "outcome": "reviewed-no-change",
+      "reason": "Backend assets use existing packaged template distribution; release installation and publication steps are unchanged.",
+      "target": "docs/runbooks/release-publication.md"
+    },
+    {
       "outcome": "updated",
-      "reason": "Enrolls the canonical evaluation verification document and maps the runner, declaration, scenario, adapter and regression sources.",
+      "reason": "Records bounded real Python and Node offline validator results and clearly separates fixture FastAPI coverage from live application qualification.",
+      "target": "docs/verification/backend-contracts.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Explains opt-in backend capability, pinned offline checks, editable contract ownership and Python application import/drift behavior.",
+      "target": "docs/workflows/greenfield.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Portable API guidance and generated owned copies require the contract and artifacts.contract in the same HTTP interface change.",
+      "target": ".agents/skills/spec-from-prd/SKILL.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Portable API guidance and generated owned copies require the contract and artifacts.contract in the same HTTP interface change.",
+      "target": ".ai-dlc/agent-ownership.json"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Portable API guidance and generated owned copies require the contract and artifacts.contract in the same HTTP interface change.",
+      "target": ".claude/skills/spec-from-prd/SKILL.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Portable API guidance and generated owned copies require the contract and artifacts.contract in the same HTTP interface change.",
+      "target": "agents/skills.lock.json"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Portable API guidance and generated owned copies require the contract and artifacts.contract in the same HTTP interface change.",
+      "target": "agents/skills/spec-from-prd/SKILL.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Catalog enrolls the verification record and links backend checks to canonical workflow and specifications.",
       "target": "docs/catalog.toml"
     },
     {
+      "outcome": "no-impact",
+      "reason": "Formal specification and archived delivery artifacts define BE-01 and BE-02; durable operational guidance is in the greenfield workflow.",
+      "target": "openspec/changes/archive/2026-09-14-backend-capability-pack/design.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Formal specification and archived delivery artifacts define BE-01 and BE-02; durable operational guidance is in the greenfield workflow.",
+      "target": "openspec/changes/archive/2026-09-14-backend-capability-pack/proposal.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Formal specification and archived delivery artifacts define BE-01 and BE-02; durable operational guidance is in the greenfield workflow.",
+      "target": "openspec/changes/archive/2026-09-14-backend-capability-pack/specs/backend-capability-pack/spec.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Formal specification and archived delivery artifacts define BE-01 and BE-02; durable operational guidance is in the greenfield workflow.",
+      "target": "openspec/changes/archive/2026-09-14-backend-capability-pack/tasks.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Scaffold capability/runtime/catalog selection is covered by the canonical greenfield workflow and bounded backend qualification record.",
+      "target": "project-templates/copier.yml"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Scaffold capability/runtime/catalog selection is covered by the canonical greenfield workflow and bounded backend qualification record.",
+      "target": "project-templates/project/.mise.toml.jinja"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Scaffold capability/runtime/catalog selection is covered by the canonical greenfield workflow and bounded backend qualification record.",
+      "target": "project-templates/project/docs/catalog.toml.jinja"
+    },
+    {
       "outcome": "updated",
-      "reason": "Preserves all current main publication/replay success and failure evidence while linking the outstanding declared-model skill evaluation to its honest runner/dry-run verification; no live transcript or human score claim is introduced.",
-      "target": "docs/release-verification.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Records runner and dry-run verification while preserving outstanding live transcripts and human scoring; no platform qualification is inferred from fake-client tests.",
-      "target": "docs/verification/skill-evaluation.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Reviewed work and archived EV-01 through EV-03 specifications track this delivery; the canonical verification document owns operation, budgets and honest live-evidence limits.",
-      "target": "openspec/changes/archive/2026-09-14-skill-evaluation/design.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Reviewed work and archived EV-01 through EV-03 specifications track this delivery; the canonical verification document owns operation, budgets and honest live-evidence limits.",
-      "target": "openspec/changes/archive/2026-09-14-skill-evaluation/proposal.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Reviewed work and archived EV-01 through EV-03 specifications track this delivery; the canonical verification document owns operation, budgets and honest live-evidence limits.",
-      "target": "openspec/changes/archive/2026-09-14-skill-evaluation/specs/skill-evaluation/spec.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Reviewed work and archived EV-01 through EV-03 specifications track this delivery; the canonical verification document owns operation, budgets and honest live-evidence limits.",
-      "target": "openspec/changes/archive/2026-09-14-skill-evaluation/tasks.md"
+      "reason": "Portable workflow mirrors canonical backend selection, pinned checks and explicit application import behavior.",
+      "target": "project-templates/project/docs/workflows/greenfield.md"
     }
   ],
   "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "911857b06b39e6868d2f835504afbcbcd094ea28500a64b13c6eda97a99c450e",
+  "snapshot": "adc098a0867f6cae4111f490233941e2c37298e51d89dd161e1b3bd281e7d0be",
   "sources": {
+    ".agents/skills/spec-from-prd/SKILL.md": "68fa18a6e5fd7fdceaedd74f09c2e26e66ffad8c1d9121525a4d727df8bbb441",
+    ".ai-dlc/agent-ownership.json": "e06411c029ca0ac3415bdd88aeec18de6d3686e69f8d1abffe56a4dba3bd6a3f",
+    ".claude/skills/spec-from-prd/SKILL.md": "68fa18a6e5fd7fdceaedd74f09c2e26e66ffad8c1d9121525a4d727df8bbb441",
     ".github/workflows/release.yml": "c32926d61ee30cd32aa03fa899c74f395decdb152833f572d4e1ade4c28993b5",
-    "agents/evaluation-scenarios.json": "bf523609610234800a9b2356fbcf4ecbf86f840e5ad7c3d1f71cde7409672fb0",
-    "agents/evaluation.toml": "712f6d68be0ce1c53a190717e70971d379775ec2812a0ed2e76abf63067541df",
+    "agents/skills.lock.json": "5a82e68a687803be238f7e5c2878cd6bf0ae8ace193b10d48845e2ad23b4a8e3",
+    "agents/skills/spec-from-prd/SKILL.md": "68fa18a6e5fd7fdceaedd74f09c2e26e66ffad8c1d9121525a4d727df8bbb441",
     "docs/architecture.md": "a8aace94253d79c6384f2fe5b8c7b45f0f1b1b4da27b2d5bd6d1cd3da612a4e8",
-    "docs/catalog.toml": "0ebf105b310e4751f539d470ed97344dbda2ca4d8eebacc89701ebfb9ce7802b",
-    "docs/release-verification.md": "b394eb65b50f1d717863c0efd9850de19496f1d2635e22a57403508bdd70e234",
-    "docs/verification/skill-evaluation.md": "3c60b001721ea1c50511cb8f620ef595ccf361c17ca8ad6ccc7fc36dd5cb3814",
-    "openspec/changes/archive/2026-09-14-skill-evaluation/design.md": "4397623b3b42ef14ef18bd62dfa05bd1df9e1b3c1fbe39aa1202444bb55e01ea",
-    "openspec/changes/archive/2026-09-14-skill-evaluation/proposal.md": "ff0bb42e1ae1fb4a979a7d546de2a55a3c823bf1dc4cce1c201edb3a1a265340",
-    "openspec/changes/archive/2026-09-14-skill-evaluation/specs/skill-evaluation/spec.md": "7adef7e649653bcd9a78bd17df0e808342a2e2f7fde0a7b9758253c4b7feb40c",
-    "openspec/changes/archive/2026-09-14-skill-evaluation/tasks.md": "ba075355c9ed5d4c9c203a204787cb3d604e98a3e4dfcf23f4aaf64cd981ec6a",
-    "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
-    "openspec/specs/skill-evaluation/spec.md": "36d643a82dc7d5a556d77cf10e11c7a8fb961cd4548c9c62ec4b50f45ece99de",
+    "docs/catalog.toml": "9a24a3a3511eecdf2240773ca080b8701b5eb9a8f4a8071621d69d634043517d",
+    "docs/runbooks/release-publication.md": "54b176eafc5e7749feb163cb24487edccd60aea57c6cef32ef3d7da9f7ed48a1",
+    "docs/verification/backend-contracts.md": "0d273fc43e534bc1217b7a746b9b53ab9cc036fa6dee127aa4147118af86c342",
+    "docs/workflows/greenfield.md": "fe61ff87be4661c5e66758314a32efe7758506d57db78e74c2353bf55a09c3da",
+    "openspec/changes/archive/2026-09-14-backend-capability-pack/design.md": "4611572cb660d0595ba9ad8470008fc41e7a0862c7d6dca55600610554fc631d",
+    "openspec/changes/archive/2026-09-14-backend-capability-pack/proposal.md": "4ff2ee5879eabb7fd0145c7c9c438109d471cdba0a900e257e452f8436831603",
+    "openspec/changes/archive/2026-09-14-backend-capability-pack/specs/backend-capability-pack/spec.md": "e435f2c7a9bf27409317ecbd5421ca0a812e1de7dff2561440ae7c569dd24053",
+    "openspec/changes/archive/2026-09-14-backend-capability-pack/tasks.md": "6728ae5368e6ee59583640f49f7b680d7d2710934045d5361dc838ffcb80fb06",
+    "openspec/specs/backend-capability-pack/spec.md": "45fc3ca17f9953edf4aa15f24c1a4176e84bceaf179fdb10f35ab58fd85e6a3e",
+    "project-templates/copier.yml": "17bcc277107d87c368c4fe5f87de0a5a42ff0b82ef152a7a553a26a51fcc3fee",
+    "project-templates/project/.mise.toml.jinja": "f000c769b4c237f8b2fe503f092f17ab45d18aba251f478f29b061a48b89d002",
+    "project-templates/project/ai-dlc.toml.jinja": "b1717cdd1ba154f1d9dae7a22f27664c4078bb211911235f18de4fb660269b28",
+    "project-templates/project/docs/api/openapi.yaml": "744e869692de7df60d4195669a45f8ade009b04c00c203c4853e30f4b9af5b2d",
+    "project-templates/project/docs/catalog.toml.jinja": "51120727a77bbba96f34e239a490d3c2373ba3b1bb68dfc347997ffd2b40af9c",
+    "project-templates/project/docs/workflows/greenfield.md": "4a0a6b71b99f74174e4735145c3c06d46422337b46d80a6f7d466f5a91716b0b",
+    "project-templates/project/scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
+    "project-templates/project/scripts/check_api_contract_drift.py": "81c6da34445a1329223f2592eb1389aaf35d2e12b73da73d7b9c9ffdb0b55173",
     "pyproject.toml": "57b5a7f4ea777185ab5df4b34c4117a190d41434e1e236b38735987c96ccc529",
+    "scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
     "scripts/check_generated.py": "2a5e65cb653c0cf9b44dc34765a6d2d4affcfda9b310231a2abed4b3de82771a",
     "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
     "scripts/qualify_framework.py": "01dd9e6acbe14e740f068662aa539e9a7ed0ba57ab97e9457e0a05d968a25fb6",
@@ -130,7 +192,7 @@
     "src/ai_dlc/setup/provision.py": "6ec463fb9516aa01de58b482a8f14c3cc8c14585a25fa46e42b144d4c2fe5dfc",
     "src/ai_dlc/setup/readiness.py": "e0984a1f504ee87f3c4c1939624b34ccfe2fd6b7315df365166e95ff3b975d55",
     "src/ai_dlc/setup/rebind.py": "2458691c83e22c613ee3eb7541e103aee7264e7b23a78c17194135bc3d5a35c6",
-    "src/ai_dlc/setup/templates.py": "bbfb4f26c103e3a5210fb8b97a6d843b615efac5f10ddedb28734f254061beb6",
+    "src/ai_dlc/setup/templates.py": "28b83efe00da56e8fad524ab92446b2c5aa39f38a02ed9d022b1683fbb6f1a1a",
     "src/ai_dlc/setup/tracker_targets.py": "b04533ac254bde0aa7bddf083097d815153998f15b1042645ac4ffc38f848319",
     "src/ai_dlc/setup/workstation.py": "8ac8f2467ee925392f777e15d921ad79da8a10c94267bbd30f5386455db4e8d2",
     "src/ai_dlc/toml_edit.py": "696057b2848ca8b57e5189d1c78441fc6c1e06994f480f6f13f8dd31c050515e",
@@ -143,8 +205,9 @@
     "src/ai_dlc/work/traceability.py": "e9fbca5153cdd710b78872c66651269184ee5f3f1313f313b65df212430e8cc8",
     "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
     "src/ai_dlc/work/workflow.py": "b16ef66b0bea70ece8aaf15003e5e0233dbcff82051b3da24d59b94106da3fca",
+    "tests/test_backend_capability.py": "38d0b269ab04e174685d1dedf92e669f9995fb77bb77cca93d723ed1cf82abe4",
+    "tests/test_bootstrap.py": "20c1c5d49181b22b969a19063ff108554be7eb492711bcec95c9a52599cf1bf2",
     "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
-    "tests/test_release_workflow.py": "a50523b5d6dec682188d489780d29a74f2a01c60c310071ce6758898f3d12dc0",
-    "tests/test_skill_evaluation.py": "dc4df05fcfcd50846e4e9bafcf8364b004b6f4f38ec6490ccb9b4bd6488f7e7b"
+    "tests/test_release_workflow.py": "a50523b5d6dec682188d489780d29a74f2a01c60c310071ce6758898f3d12dc0"
   }
 }

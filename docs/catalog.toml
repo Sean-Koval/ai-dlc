@@ -713,6 +713,9 @@ path = "docs/workflows/greenfield.md"
 kind = "reference"
 owner = "repository-maintainers"
 status = "draft"
+code_paths = ["src/ai_dlc/setup/templates.py", "project-templates/project/ai-dlc.toml.jinja", "project-templates/project/docs/api/openapi.yaml", "project-templates/project/scripts/check_api_contract_drift.py"]
+requirements = ["openspec/specs/backend-capability-pack/spec.md"]
+verification_paths = ["tests/test_backend_capability.py"]
 
 [[documents]]
 id = "repo-workflows-work-computer-setup"
@@ -720,6 +723,16 @@ path = "docs/workflows/work-computer-setup.md"
 kind = "reference"
 owner = "repository-maintainers"
 status = "draft"
+
+[[documents]]
+id = "repo-verification-backend-contracts"
+path = "docs/verification/backend-contracts.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "active"
+code_paths = ["project-templates/project/ai-dlc.toml.jinja", "project-templates/project/scripts/check_api_contract_drift.py"]
+requirements = ["openspec/specs/backend-capability-pack/spec.md"]
+verification_paths = ["tests/test_backend_capability.py"]
 
 [[documents]]
 id = "repo-runbooks-machine-enrollment"
