@@ -1,138 +1,175 @@
 {
-  "base": "21e6e96f098bfe08b4fc27e732f7613f2c764b31",
+  "base": "25b2b828e846e042e02f22c466e7c1af4ca88580",
   "decisions": [
     {
-      "outcome": "no-impact",
-      "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
-      "target": ".agents/skills/day-end/SKILL.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
-      "target": ".agents/skills/day-start/SKILL.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Reviewed combined handoff guidance retains main work start/PR/record-commit instructions and optional learning format; generated copies and ownership hashes match.",
-      "target": ".agents/skills/handoff/SKILL.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
-      "target": ".ai-dlc/agent-ownership.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
-      "target": ".claude/skills/day-end/SKILL.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
-      "target": ".claude/skills/day-start/SKILL.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Reviewed combined handoff guidance retains main work start/PR/record-commit instructions and optional learning format; generated copies and ownership hashes match.",
-      "target": ".claude/skills/handoff/SKILL.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
-      "target": "agents/skills.lock.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
-      "target": "agents/skills/day-end/SKILL.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Portable guidance and owned render outputs now reference the authored learning format and recall; hashes refreshed; canonical knowledge and tool-map guidance updated together.",
-      "target": "agents/skills/day-start/SKILL.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Reviewed combined handoff guidance retains main work start/PR/record-commit instructions and optional learning format; generated copies and ownership hashes match.",
-      "target": "agents/skills/handoff/SKILL.md"
-    },
-    {
       "outcome": "reviewed-no-change",
-      "reason": "Reviewed service, provider and package boundaries: optional knowledge remains in documentation and local hints remain in harness; existing architecture remains accurate.",
+      "reason": "CLI grouping keeps the same documented package/service boundaries.",
       "target": "docs/architecture.md"
     },
     {
       "outcome": "updated",
-      "reason": "Documents optional authored learning storage, bounded recall and local friction without changing completion gates or claiming live qualification.",
-      "target": "docs/catalog.toml"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Documents optional authored learning storage, bounded recall and local friction without changing completion gates or claiming live qualification.",
+      "reason": "Updated current command names and flags to the six-command docs group; service semantics and historical qualification limits remain unchanged.",
       "target": "docs/design/local-and-shared-knowledge.md"
     },
     {
       "outcome": "updated",
-      "reason": "Documents optional authored learning storage, bounded recall and local friction without changing completion gates or claiming live qualification.",
-      "target": "docs/workflows/tool-map.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Reviewed work and archived SL-01 through SL-03 requirements track the implementation; no separate durable narrative required.",
-      "target": "openspec/changes/archive/2026-09-14-session-learnings/design.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Reviewed work and archived SL-01 through SL-03 requirements track the implementation; no separate durable narrative required.",
-      "target": "openspec/changes/archive/2026-09-14-session-learnings/proposal.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Reviewed work and archived SL-01 through SL-03 requirements track the implementation; no separate durable narrative required.",
-      "target": "openspec/changes/archive/2026-09-14-session-learnings/specs/session-learnings/spec.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Reviewed work and archived SL-01 through SL-03 requirements track the implementation; no separate durable narrative required.",
-      "target": "openspec/changes/archive/2026-09-14-session-learnings/tasks.md"
+      "reason": "Updated current command names and flags to the six-command docs group; service semantics and historical qualification limits remain unchanged.",
+      "target": "docs/design/project-documentation.md"
     },
     {
       "outcome": "updated",
-      "reason": "Documents optional authored learning storage, bounded recall and local friction without changing completion gates or claiming live qualification.",
+      "reason": "Updated current command names and flags to the six-command docs group; service semantics and historical qualification limits remain unchanged.",
+      "target": "docs/development-workflow.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Updated current command names and flags to the six-command docs group; service semantics and historical qualification limits remain unchanged.",
+      "target": "docs/index.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Updated current command names and flags to the six-command docs group; service semantics and historical qualification limits remain unchanged.",
+      "target": "docs/runbooks/document-workspace-qualification.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Updated current command names and flags to the six-command docs group; service semantics and historical qualification limits remain unchanged.",
+      "target": "docs/verification/documentation-workflow.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Updated current command names and flags to the six-command docs group; service semantics and historical qualification limits remain unchanged.",
+      "target": "docs/workflows/tool-map.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Migrates portable documentation or generated harness command references; legacy aliases preserve one release of compatibility.",
+      "target": ".agents/skills/document-organize/SKILL.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Migrates portable documentation or generated harness command references; legacy aliases preserve one release of compatibility.",
+      "target": ".agents/skills/document-review/SKILL.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Reviewed CLI migration support artifact; evidence format and documentation service behavior are unchanged.",
+      "target": ".ai-dlc/agent-ownership.json"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Migrates portable documentation or generated harness command references; legacy aliases preserve one release of compatibility.",
+      "target": ".claude/skills/document-organize/SKILL.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Migrates portable documentation or generated harness command references; legacy aliases preserve one release of compatibility.",
+      "target": ".claude/skills/document-review/SKILL.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Migrates portable documentation or generated harness command references; legacy aliases preserve one release of compatibility.",
+      "target": "AGENTS.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Migrates portable documentation or generated harness command references; legacy aliases preserve one release of compatibility.",
+      "target": "README.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Reviewed CLI migration support artifact; evidence format and documentation service behavior are unchanged.",
+      "target": "agents/skills.lock.json"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Migrates portable documentation or generated harness command references; legacy aliases preserve one release of compatibility.",
+      "target": "agents/skills/document-organize/SKILL.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Migrates portable documentation or generated harness command references; legacy aliases preserve one release of compatibility.",
+      "target": "agents/skills/document-review/SKILL.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Reviewed CLI migration support artifact; evidence format and documentation service behavior are unchanged.",
+      "target": "ai-dlc.toml"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Reviewed CLI migration support artifact; evidence format and documentation service behavior are unchanged.",
+      "target": "openspec/changes/archive/2026-09-14-docs-command-group/design.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Reviewed CLI migration support artifact; evidence format and documentation service behavior are unchanged.",
+      "target": "openspec/changes/archive/2026-09-14-docs-command-group/proposal.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Reviewed CLI migration support artifact; evidence format and documentation service behavior are unchanged.",
+      "target": "openspec/changes/archive/2026-09-14-docs-command-group/specs/documentation-impact-workflow/spec.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Reviewed CLI migration support artifact; evidence format and documentation service behavior are unchanged.",
+      "target": "openspec/changes/archive/2026-09-14-docs-command-group/tasks.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Migrates portable documentation or generated harness command references; legacy aliases preserve one release of compatibility.",
+      "target": "project-templates/project/docs/documentation-guide.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Migrates portable documentation or generated harness command references; legacy aliases preserve one release of compatibility.",
       "target": "project-templates/project/docs/workflows/tool-map.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Reviewed merge integration preserves new record commit/PR behavior and adds optional learning recall; the isolated recall fixture opts out of Git commits, and full workflow tests cover both features together.",
-      "target": "tests/test_workflow.py"
+      "reason": "Reviewed CLI migration support artifact; evidence format and documentation service behavior are unchanged.",
+      "target": "tests/test_docs_commands.py"
     }
   ],
   "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "8c278062ab13ca0e8092984f775a7606c2e948dd358a29aa8e64533a54e327a3",
+  "snapshot": "638636ebe2d1d8922cbd10060eedcb629dbba5c253ecaa52a240a10014d5bbd5",
   "sources": {
-    ".agents/skills/day-end/SKILL.md": "1580b5be8ecfdeb4a3f52e3d73bbf747dc10b3bf0ca57a81727934096431f0ab",
-    ".agents/skills/day-start/SKILL.md": "9535c7de7de2ad869bc9de93c498c909246948cf43acd2c2d9cc4f2f5e49e77e",
-    ".agents/skills/handoff/SKILL.md": "07efbf6239a14af8b519f11a4f602555fcdc1b5b6fffaafd6ac838cd7898d2d2",
-    ".ai-dlc/agent-ownership.json": "f98aff96f1094995981b65a239ece6379cd0c0aa06ef58440039bc3002faef16",
-    ".claude/skills/day-end/SKILL.md": "1580b5be8ecfdeb4a3f52e3d73bbf747dc10b3bf0ca57a81727934096431f0ab",
-    ".claude/skills/day-start/SKILL.md": "9535c7de7de2ad869bc9de93c498c909246948cf43acd2c2d9cc4f2f5e49e77e",
-    ".claude/skills/handoff/SKILL.md": "07efbf6239a14af8b519f11a4f602555fcdc1b5b6fffaafd6ac838cd7898d2d2",
-    "agents/skills.lock.json": "f6ddda70b4748225fa43e16deedfe34084cb114d630f40188ddad925f76d4459",
-    "agents/skills/day-end/SKILL.md": "1580b5be8ecfdeb4a3f52e3d73bbf747dc10b3bf0ca57a81727934096431f0ab",
-    "agents/skills/day-start/SKILL.md": "9535c7de7de2ad869bc9de93c498c909246948cf43acd2c2d9cc4f2f5e49e77e",
-    "agents/skills/handoff/SKILL.md": "07efbf6239a14af8b519f11a4f602555fcdc1b5b6fffaafd6ac838cd7898d2d2",
+    ".agents/skills/document-organize/SKILL.md": "2d5dfa8013f8ae1fafd5cb3ec4a78295e3dc9fad976e36fefbb2735d128d20cc",
+    ".agents/skills/document-review/SKILL.md": "2c9533828173a13129825be2eab4e88dc7b08b5bd2e33b7dc5b99cec20f30cf1",
+    ".ai-dlc/agent-ownership.json": "2f34a280fd80eb7f9911b50d30d04dfc0145ed1d53937dff61a2f8d19e83197d",
+    ".claude/skills/document-organize/SKILL.md": "2d5dfa8013f8ae1fafd5cb3ec4a78295e3dc9fad976e36fefbb2735d128d20cc",
+    ".claude/skills/document-review/SKILL.md": "2c9533828173a13129825be2eab4e88dc7b08b5bd2e33b7dc5b99cec20f30cf1",
+    "AGENTS.md": "22890e849c737bac35ad5d08f024d8f59236a9f0ecdeacc8c2c238597989a0a1",
+    "README.md": "84b78b0ab4382855e0b9ecf03d257e3ad1f2865a9be23c93eed15d4b9488b08b",
+    "agents/skills.lock.json": "b6b1380e8a4b645f90160165b7afe49c710cebd4ab4a7a50f5535f52a3d07d40",
+    "agents/skills/document-organize/SKILL.md": "2d5dfa8013f8ae1fafd5cb3ec4a78295e3dc9fad976e36fefbb2735d128d20cc",
+    "agents/skills/document-review/SKILL.md": "2c9533828173a13129825be2eab4e88dc7b08b5bd2e33b7dc5b99cec20f30cf1",
+    "ai-dlc.toml": "d83779e0635cd72da1c376fd41065a8aa5263743526b83ded8dd586f54a4dab7",
     "docs/architecture.md": "a8aace94253d79c6384f2fe5b8c7b45f0f1b1b4da27b2d5bd6d1cd3da612a4e8",
     "docs/catalog.toml": "ae73af3778eb22ac0a74555b430e2f32257b1a79bac5d1d3666314be9e2c095f",
-    "docs/design/local-and-shared-knowledge.md": "350186edba432243e768cca349558aa3fa125f2ef7d71ec9d63e1104608da432",
-    "docs/workflows/tool-map.md": "b0b779f0994d61b8b08ae9970e1ae7474425e13d0b953ba22fe70c695a141f3b",
-    "openspec/changes/archive/2026-09-14-session-learnings/design.md": "4afe6ae7175dcfd8808edea6958a3a33f1de9ac8e7101217f94f579de914eb31",
-    "openspec/changes/archive/2026-09-14-session-learnings/proposal.md": "42ed876a65f8acea211ffd1acee07f7c73a95d2bcfc83680f38aeb6d41f73589",
-    "openspec/changes/archive/2026-09-14-session-learnings/specs/session-learnings/spec.md": "a7dc17736ccb8b732b579b5c9fb091b1a42a94d5bca74f954f5051b441b50ce7",
-    "openspec/changes/archive/2026-09-14-session-learnings/tasks.md": "476e1a5b357b76e1f7ec5cc1e6acfa6de38e1ff407e1d2c7afb0abe77df992a5",
+    "docs/design/local-and-shared-knowledge.md": "a2e33b0c349116983f5d3cb14e1cbaf1cf82f9926978e081f86167444ea76b3d",
+    "docs/design/project-documentation.md": "89ae3f68ffc1cd56e3cdb94adece8bae5d50700ac4db894b8a3e57d05a75d606",
+    "docs/development-workflow.md": "f4509d0ffbbdbc1e5f790bbe3bd27ad0723e17118dc826c4dae622a2ff351c46",
+    "docs/index.md": "509ddfc96b5c8a300adb712eb90b2c7dda8113ddb6f7642520c4e67139feb3bc",
+    "docs/runbooks/document-workspace-qualification.md": "ac9e67a4a6ffaef1f395db9de5f5ac29f56257dca63c4f383047702d8277413b",
+    "docs/verification/documentation-workflow.md": "671ec80d465b56f052a6e1cdd6570503c73b9f1fa1b78a4a1a3b69ee6a152eca",
+    "docs/workflows/tool-map.md": "df6c909ebdecc3834f05c909385c96d52d4d85c0522436b3b8635c1f9a4c8bde",
+    "openspec/changes/archive/2026-09-14-docs-command-group/design.md": "574603d23583177d7bbcf0bcdcd0e598ca655be2d8d195e5830da2eec3dd09e7",
+    "openspec/changes/archive/2026-09-14-docs-command-group/proposal.md": "ed5bce95b3d00842f142eb49c64965f63688a1b7619406590b69e51bc92aa663",
+    "openspec/changes/archive/2026-09-14-docs-command-group/specs/documentation-impact-workflow/spec.md": "87866ccd7c4d7a25e40cc0e8252bc8c2ae8f9c395c5923fd3f1f66fd1bbe9af3",
+    "openspec/changes/archive/2026-09-14-docs-command-group/tasks.md": "83c507758a24ad71863e3b619c2075c226d99282862b3289f272c8a5c4ee0867",
+    "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
+    "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
+    "openspec/specs/documentation-impact-workflow/spec.md": "4276be0854842fecb781efb90ef5f1789b4f7e4c652904e11c5d0c705d457233",
+    "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
+    "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
+    "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
     "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
     "openspec/specs/session-learnings/spec.md": "d6d288fc9b8aee72b85b56b30e2cb88dcb4acd2530c3b3b7c0e31854492cc89b",
-    "project-templates/project/docs/workflows/tool-map.md": "760ec62afbab2e77bb8fe0789c76abdf715aa670460fbf921be023f56a69bf46",
+    "project-templates/project/docs/documentation-guide.md": "e2161580312705c68cc9b1916a12687c2043c083b3b7edd75db4355e638e1fca",
+    "project-templates/project/docs/workflows/tool-map.md": "377bde7e62984fa110fef82df001a732c44a89f606ea0b22df414e6ccea199ac",
     "pyproject.toml": "57b5a7f4ea777185ab5df4b34c4117a190d41434e1e236b38735987c96ccc529",
     "scripts/check_generated.py": "2a5e65cb653c0cf9b44dc34765a6d2d4affcfda9b310231a2abed4b3de82771a",
     "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
@@ -140,7 +177,7 @@
     "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
     "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
     "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
-    "src/ai_dlc/cli.py": "6e9e70707e0d6619bde4b9e41d9886563d47393cc5b88b46d86e03195cd65a59",
+    "src/ai_dlc/cli.py": "2d89d3f05b5b98fc68877c450627fa91050eaae20e3b51ad5fffa47e3858b5fc",
     "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
     "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
     "src/ai_dlc/config.py": "31677c538713aa41d3625ef9570f962ed8ee5d32bd4b5b3747437e8fd8fb9d02",
@@ -213,11 +250,19 @@
     "src/ai_dlc/work/traceability.py": "01aa783e51539b581a0f07a4ff36a7280fd1efe19ac0c0b00d657498c35702d5",
     "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
     "src/ai_dlc/work/workflow.py": "7a973621b3d4eb9fca5e6c5e3ae47c2a7b118cb9fd6e6349a398bd06eac84d78",
+    "tests/fixtures/messy_project.py": "719e8bd5da992f35efb3b39ae87bb9bff955b362f77eaf05fa0554a7e6cf1422",
+    "tests/test_company_guidance.py": "ab39bed3342d9de7d4c68db6c6c54fd66e13c12f2f2167c38e8d345c7dc9736e",
+    "tests/test_docs_commands.py": "d2f9fc846cbdffc177349a8eac7fbf6165e4aeb73f3cc642baf3d53bd727d9d0",
+    "tests/test_document_access.py": "bdf96af4afb1ad6f985204ad243a624d4da8b56d527af63cc072908a76beeff4",
+    "tests/test_document_impact.py": "a9cccc6fa777d01add578c103adb8efa099541c02fa9132790dd2377fa45c728",
+    "tests/test_document_inventory.py": "927199563751af6b2dd5aa8e93cddb43cc62192adffea49694dada37ef6bf14c",
+    "tests/test_document_review.py": "88f37e6365c7e9b545d668f978993ef7ad9acfa146e7d549728f4ef9cab8008a",
+    "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
     "tests/test_knowledge.py": "38e5cda9c9dc1fe97d12618a0bd9a86b2725cff059d412232152582af1547af1",
+    "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7",
     "tests/test_session_learnings.py": "32bb7c3143db24ff96fb43ac5081285e77a93bd8d8d825076f3422cbfe194796",
     "tests/test_vault_link.py": "fd146d4d15041021ac343257c9d91a8c1950878d275420eda85d13747065e110",
     "tests/test_vault_mount.py": "f6a5dc947af0d68e4688c37d05294c6b4868aa98ead91d26aa0c8ffec8018424",
-    "tests/test_workflow.py": "89b5390f1d26ea0aacc941a3c835af938b8574d331b5cd0ead14665380b20629",
     "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
   }
 }

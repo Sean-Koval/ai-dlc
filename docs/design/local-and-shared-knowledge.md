@@ -93,7 +93,7 @@ for preview/apply and recovery. Filesystem verification alone does not qualify
 Obsidian indexing, file watching or synchronization.
 
 Harnesses reach repository documents, including those visible through a mount,
-with `project docs-search` and `project docs-read`. These operations are scoped to
+with `docs search` and `docs read`. These operations are scoped to
 the selected repository's `docs/`, `openspec/` and per-call declared Markdown, and
 return canonical repository paths for ordinary Git edits. They never read vault
 notes; the knowledge tools remain the only private-note interface. See the

@@ -12,14 +12,14 @@ code behavior distinct from approved requirements; a mismatch may be a code defe
 Use the shared documentation impact/review services from the project tool map.
 Choose an explicit Git base and a small set of documents. Catalogued review is
 the default and includes their mapped code/tests/spec evidence. When organizing
-uncatalogued files, first use `docs-inventory`, then explicitly select returned
-paths with `docs-review --source inventory` (MCP `source="inventory"`). Do not
+uncatalogued files, first use `docs check --inventory`, then explicitly select returned
+paths with `docs review --report --source inventory` (MCP `source="inventory"`). Do not
 require catalog enrollment first. Uncatalogued files have no inferred evidence
 mappings; state separately inspected code/spec evidence and uncertainty. Both
 modes retain bounded bodies, hashes, citations and explicit omissions. Use the
 document-organize skill when the outcome requires actual repository organization.
 Do not fetch links or expand into private notes simply because they are mentioned.
-To find a related passage, use `docs-search` or `docs-read` (MCP
+To find a related passage, use `docs search` or `docs read` (MCP
 `project_docs_search`, `project_docs_read`); declare files outside docs/ and
 openspec/ explicitly, and report partial search coverage instead of absence.
 

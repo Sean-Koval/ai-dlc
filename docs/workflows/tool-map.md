@@ -184,14 +184,14 @@ protocol is unrun and does not spend the existing generic skill-evaluation budge
 
 | MCP tool | CLI counterpart | Purpose |
 |---|---|---|
-| `project_docs_impact` | `project docs-impact` | Find mapped documents and unmapped changes for an explicit Git comparison |
-| `project_docs_disposition` | `project docs-disposition` | Emit content-bound reviewed decisions without writing evidence |
-| `project_docs_gate` | `project docs-gate` | Check current dispositions and new objective debt |
-| `project_docs_inventory` | `project docs-inventory` | Discover repository Markdown paths, exclusions and unavailable paths without reading bodies |
-| `project_docs_search` | `project docs-search` | Search `docs/`, `openspec/` and per-call declared Markdown under one body budget; returns canonical paths, digests and explicit omissions |
-| `project_docs_read` | `project docs-read` | Read one complete eligible project document within a byte budget; undeclared root or legacy files are refused |
-| `project_docs_review` | `project docs-review` | Prepare bounded selected-document context; explicit `source=inventory` permits uncatalogued documents |
-| `project_docs_review_check` | `project docs-review-check` | Check citations, scope and source bytes; does not certify semantic truth |
+| `project_docs_impact` | `docs review` | Find mapped documents and unmapped changes for an explicit Git comparison |
+| `project_docs_disposition` | `docs review --disposition` | Emit content-bound reviewed decisions without writing evidence |
+| `project_docs_gate` | `docs gate` | Check current dispositions and new objective debt |
+| `project_docs_inventory` | `docs check --inventory` | Discover repository Markdown paths, exclusions and unavailable paths without reading bodies |
+| `project_docs_search` | `docs search` | Search `docs/`, `openspec/` and per-call declared Markdown under one body budget; returns canonical paths, digests and explicit omissions |
+| `project_docs_read` | `docs read` | Read one complete eligible project document within a byte budget; undeclared root or legacy files are refused |
+| `project_docs_review` | `docs review --report` | Prepare bounded selected-document context; explicit `source=inventory` permits uncatalogued documents |
+| `project_docs_review_check` | `docs review --check` | Check citations, scope and source bytes; does not certify semantic truth |
 | `project_workspace_preview` | `project workspace-init` | Preview additive private project navigation; CLI apply explicitly creates files |
 | CLI only | `project workspace-init --shell` | Preview the owned bash, zsh or fish PATH section; `--apply` writes after ownership checks |
 | `project_workspace_check` | `project workspace-check` | Report installation, shell activation, each mount binding and link navigation separately; read-only, native client not assessed |
@@ -203,7 +203,7 @@ tools and run project checks. The `knowledge_*` tools remain for private notes,
 and a vault portal, mounted folder or Markdown link does not grant access.
 
 The [documentation guide](../../project-templates/project/docs/documentation-guide.md#search-and-read-project-documents) explains ownership, packet
-review, project-document access, baselines and workspace use. The optional CLI `project docs-style` invokes
+review, project-document access, baselines and workspace use. The optional CLI `docs check --style` invokes
 configured Vale; it does not install a tool or establish factual correctness.
 
 ### Native project mounts
