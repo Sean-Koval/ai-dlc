@@ -898,16 +898,39 @@ def work_publish(work_id: str, root: Path = Path("."), machine: Path | None = No
     emit(service(root, machine).publish(work_id))
 
 
+CommitOption = Annotated[
+    bool,
+    typer.Option(
+        "--commit/--no-commit",
+        help="Commit the edited work record, staging only .ai-dlc/work/<id>.toml.",
+    ),
+]
+
+
 @work.command("link")
 def work_link(
-    work_id: str, kind: str, reference: str, root: Path = Path("."), machine: Path | None = None
+    work_id: str,
+    kind: str,
+    reference: str,
+    root: Path = Path("."),
+    machine: Path | None = None,
+    commit: CommitOption = True,
 ):
-    emit(service(root, machine).link(work_id, kind, reference))
+    emit(service(root, machine).link(work_id, kind, reference, commit=commit))
 
 
 @work.command("start")
-def work_start(work_id: str, root: Path = Path("."), machine: Path | None = None):
-    emit(service(root, machine).start(work_id))
+def work_start(
+    work_id: str, root: Path = Path("."), machine: Path | None = None, commit: CommitOption = True
+):
+    emit(service(root, machine).start(work_id, commit=commit))
+
+
+@work.command("pr")
+def work_pr(work_id: str, root: Path = Path("."), machine: Path | None = None):
+    """Open the pull request for the bound branch once, link it and commit the record."""
+    with service_call():
+        conclude(service(root, machine).pr(work_id))
 
 
 @work.command("status")

@@ -12,7 +12,11 @@ terminal planning reconciliation operation `reconcile_closed`.
 Executable providers consume one JSON object on stdin and return one JSON object on
 stdout. The request envelope contains `schema_version: 1`, `operation`, `payload`, and
 `operation_id` (null for reads). Diagnostics belong on stderr; nonzero exit is failure.
-Every mutation payload includes its stable operation ID. Executables have a configured
+Tracker and knowledge mutation payloads include their stable operation ID.
+The optional SCM `pull_request_create` payload is `{title, body, base, head}` and
+returns `{url, number}`. WorkService journals its creation identity locally; a
+pending or uncertain creation requires reconciliation instead of a second create.
+A durably succeeded result is reused if linking the work record was interrupted. Executables have a configured
 `timeout` (30 seconds by default). Invalid output fails response validation.
 
 An executable provider configuration uses `kind = "executable"`, an absolute `command`,

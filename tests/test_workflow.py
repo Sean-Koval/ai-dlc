@@ -807,7 +807,7 @@ def test_finish_trusts_only_matching_authenticated_run(tmp_path, monkeypatch, fa
         tmp_path, config, state_path=tmp_path / "state", registry=Registry(tracker)
     )
     service.publish("one")
-    service.link("one", "pr", "https://github.com/a/b/pull/12")
+    service.link("one", "pr", "https://github.com/a/b/pull/12", commit=False)
     result = service.finish("one")
     assert result["status"] == ("completed" if fault is None else "blocked")
     assert tracker.closed == (1 if fault is None else 0)
@@ -2076,3 +2076,326 @@ def test_build_context_reads_records_as_written_and_cli_prints_the_same_json(tmp
     assert result.output == json.dumps(full, indent=2) + "\n"
     result = CliRunner().invoke(app, ["context", "--root", str(tmp_path), "--brief"])
     assert result.output == json.dumps(brief, indent=2)[:2000] + "\n"
+
+
+def _git_output(tmp_path, *args):
+    import subprocess
+
+    return subprocess.run(
+        ["git", *args], cwd=tmp_path, text=True, capture_output=True, check=True
+    ).stdout.strip()
+
+
+def test_start_commits_only_its_record_and_stays_idempotent(tmp_path):
+    from ai_dlc.work.workflow import WorkService
+
+    work(tmp_path)
+    git = init_git(tmp_path)
+    service = WorkService(tmp_path, {}, state_path=tmp_path / "state", registry=Registry(Tracker()))
+
+    result = service.start("one")
+
+    assert git("status", "--porcelain") == ""
+    assert git("log", "-1", "--format=%s") == "chore(work): start one"
+    assert git("show", "--name-only", "--format=", "HEAD") == ".ai-dlc/work/one.toml"
+    assert result["commit"] == git("rev-parse", "HEAD")
+    head = git("rev-parse", "HEAD")
+    again = service.start("one")
+    assert git("rev-parse", "HEAD") == head
+    assert again["commit"] is None
+
+
+def test_start_without_commit_keeps_the_record_dirty(tmp_path):
+    from ai_dlc.work.workflow import WorkService
+
+    work(tmp_path)
+    git = init_git(tmp_path)
+    service = WorkService(tmp_path, {}, state_path=tmp_path / "state", registry=Registry(Tracker()))
+
+    result = service.start("one", commit=False)
+
+    assert result["commit"] is None
+    assert git("status", "--porcelain") == "M .ai-dlc/work/one.toml"
+    assert git("log", "-1", "--format=%s") == "initial"
+
+
+def test_link_commits_only_its_record_and_leaves_other_staged_files_alone(tmp_path):
+    from ai_dlc.work.workflow import WorkService
+
+    work(tmp_path)
+    git = init_git(tmp_path)
+    (tmp_path / "source.txt").write_text("staged elsewhere")
+    git("add", "source.txt")
+    (tmp_path / "notes.txt").write_text("untracked")
+    service = WorkService(tmp_path, {}, state_path=tmp_path / "state", registry=Registry(Tracker()))
+
+    result = service.link("one", "spec", "openspec/changes/kept")
+
+    assert git("log", "-1", "--format=%s") == "chore(work): link spec for one"
+    assert git("show", "--name-only", "--format=", "HEAD") == ".ai-dlc/work/one.toml"
+    assert git("diff", "--cached", "--name-only") == "source.txt"
+    assert (tmp_path / "notes.txt").read_text() == "untracked"
+    assert result["commit"] == git("rev-parse", "HEAD")
+    assert service.link("one", "spec", "openspec/changes/kept", commit=False)["commit"] is None
+
+
+class FakeSCM(Tracker):
+    """One registered provider serving both the tracker and the SCM role of a record."""
+
+    def __init__(self, url="https://github.com/a/b/pull/7"):
+        super().__init__()
+        self.url = url
+        self.pull_requests = []
+        self.refuse = None
+
+    def pull_request_create(self, title, body, base, head):
+        if self.refuse:
+            raise self.refuse
+        self.pull_requests.append({"title": title, "body": body, "base": base, "head": head})
+        return {"url": self.url, "number": 7}
+
+
+def started_service(tmp_path, config=None):
+    from ai_dlc.work.workflow import WorkService
+
+    work(tmp_path)
+    git = init_git(tmp_path)
+    record_path = tmp_path / ".ai-dlc/work/one.toml"
+    record_path.write_text(
+        record_path.read_text().replace('tracker="fake"', 'tracker="fake"\nscm="fake"')
+    )
+    scm = FakeSCM()
+    service = WorkService(
+        tmp_path, config or {}, state_path=tmp_path / "state", registry=Registry(scm)
+    )
+    service.start("one")
+    return service, scm, git
+
+
+def test_pr_opens_once_links_the_url_and_commits_the_record(tmp_path):
+    service, scm, git = started_service(tmp_path)
+
+    result = service.pr("one")
+
+    assert result["status"] == "created"
+    assert result["created"] is True
+    assert result["pr"] == {"url": "https://github.com/a/b/pull/7", "number": 7}
+    assert scm.pull_requests == [
+        {
+            "title": "One",
+            "body": "## Scope\n\nsmall\n\n## Acceptance\n\n- Tests pass\n",
+            "base": "main",
+            "head": "work/one",
+        }
+    ]
+    assert service.load("one")["artifacts"]["pr"] == "https://github.com/a/b/pull/7"
+    assert git("status", "--porcelain") == ""
+    assert git("log", "-1", "--format=%s") == "chore(work): link pr for one"
+    assert git("show", "--name-only", "--format=", "HEAD") == ".ai-dlc/work/one.toml"
+    head = git("rev-parse", "HEAD")
+
+    again = service.pr("one")
+
+    assert again["status"] == "linked"
+    assert again["created"] is False
+    assert again["pr"]["url"] == "https://github.com/a/b/pull/7"
+    assert len(scm.pull_requests) == 1
+    assert git("rev-parse", "HEAD") == head
+
+
+def test_pr_closes_the_issue_only_for_a_bare_github_issue_number(tmp_path):
+    config = {
+        "providers": {"fake": {"kind": "github-issues"}},
+        "scm": {"repository": "a/b", "target_branch": "trunk"},
+    }
+    service, scm, _ = started_service(tmp_path, config)
+
+    service.pr("one")
+
+    assert scm.pull_requests[0]["base"] == "trunk"
+    assert scm.pull_requests[0]["body"].endswith("- Tests pass\n\nCloses #1\n")
+
+
+def test_pr_retry_after_a_lost_response_reuses_the_journaled_pull_request(tmp_path):
+    service, scm, _ = started_service(tmp_path)
+    original = scm.pull_request_create
+
+    def lose_response(*args, **kwargs):
+        original(*args, **kwargs)
+        raise TimeoutError("response lost after creation")
+
+    scm.pull_request_create = lose_response
+    with pytest.raises(TimeoutError):
+        service.pr("one")
+    assert "pr" not in service.load("one")["artifacts"]
+    scm.pull_request_create = original
+
+    with pytest.raises(RuntimeError, match="uncertain") as caught:
+        service.pr("one")
+
+    assert "work link one pr" in str(caught.value)
+    assert len(scm.pull_requests) == 1
+    assert "pr" not in service.load("one")["artifacts"]
+
+
+def test_pr_refusal_from_the_scm_has_no_side_effects(tmp_path):
+    from ai_dlc.errors import RefusedError
+
+    service, scm, git = started_service(tmp_path)
+    scm.refuse = RefusedError("Branch work/one has no upstream; push the branch first")
+    head = git("rev-parse", "HEAD")
+    before = (tmp_path / ".ai-dlc/work/one.toml").read_bytes()
+
+    with pytest.raises(RefusedError, match="push the branch first"):
+        service.pr("one")
+
+    assert scm.pull_requests == []
+    assert git("rev-parse", "HEAD") == head
+    assert git("status", "--porcelain") == ""
+    assert (tmp_path / ".ai-dlc/work/one.toml").read_bytes() == before
+    scm.refuse = None
+    assert service.pr("one")["created"] is True
+    assert len(scm.pull_requests) == 1
+
+
+def test_pr_requires_a_started_record(tmp_path):
+    from ai_dlc.errors import RefusedError
+    from ai_dlc.work.workflow import WorkService
+
+    work(tmp_path)
+    init_git(tmp_path)
+    record_path = tmp_path / ".ai-dlc/work/one.toml"
+    record_path.write_text(
+        record_path.read_text().replace('tracker="fake"', 'tracker="fake"\nscm="fake"')
+    )
+    scm = FakeSCM()
+    service = WorkService(tmp_path, {}, state_path=tmp_path / "state", registry=Registry(scm))
+
+    with pytest.raises(RefusedError, match="work start"):
+        service.pr("one")
+    assert scm.pull_requests == []
+
+
+def fake_gh(tmp_path, monkeypatch):
+    """Install a gh stand-in that records its arguments and prints a pull request URL."""
+    import os
+
+    bin_dir = tmp_path / "bin"
+    bin_dir.mkdir()
+    log = tmp_path / "gh.log"
+    script = bin_dir / "gh"
+    script.write_text(
+        "#!/bin/sh\n"
+        f'printf "%s\\n" "$@" > "{log}"\n'
+        'while [ "$#" -gt 0 ]; do\n'
+        '  if [ "$1" = "--body-file" ]; then cat "$2" > "$(dirname "$0")/body.md"; fi\n'
+        "  shift\n"
+        "done\n"
+        'echo "Creating pull request"\n'
+        'echo "https://github.com/a/b/pull/12"\n'
+    )
+    script.chmod(0o755)
+    monkeypatch.setenv("PATH", f"{bin_dir}{os.pathsep}{os.environ['PATH']}")
+    return log, bin_dir / "body.md"
+
+
+def test_github_scm_creates_the_pull_request_through_gh_for_a_pushed_branch(tmp_path, monkeypatch):
+    from ai_dlc.providers.scm import GitHubSCM
+
+    log, body_file = fake_gh(tmp_path, monkeypatch)
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    git = init_git(repo)
+    git("switch", "-c", "work/one")
+    remote = tmp_path / "remote.git"
+    _git_output(tmp_path, "init", "--bare", str(remote))
+    git("remote", "add", "origin", str(remote))
+    git("push", "-u", "origin", "work/one")
+    scm = GitHubSCM(repo, {"scm": {"repository": "a/b"}})
+
+    result = scm.pull_request_create("Title", "## Scope\n\nbody\n", "main", "work/one")
+
+    assert result == {"url": "https://github.com/a/b/pull/12", "number": 12}
+    arguments = log.read_text().splitlines()
+    assert arguments[:8] == [
+        "pr",
+        "create",
+        "--repo",
+        "a/b",
+        "--base",
+        "main",
+        "--head",
+        "work/one",
+    ]
+    assert arguments[8:10] == ["--title", "Title"]
+    assert arguments[10] == "--body-file"
+    assert body_file.read_text() == "## Scope\n\nbody\n"
+
+
+def test_github_scm_refuses_a_branch_without_upstream_before_calling_gh(tmp_path, monkeypatch):
+    from ai_dlc.errors import RefusedError
+    from ai_dlc.providers.scm import GitHubSCM
+
+    log, _ = fake_gh(tmp_path, monkeypatch)
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    git = init_git(repo)
+    git("switch", "-c", "work/one")
+    scm = GitHubSCM(repo, {"scm": {"repository": "a/b"}})
+
+    with pytest.raises(RefusedError, match="push the branch first") as caught:
+        scm.pull_request_create("Title", "body", "main", "work/one")
+
+    assert "git push -u origin work/one" in str(caught.value)
+    assert not log.exists()
+
+
+def test_github_scm_rejects_a_pull_request_url_from_another_repository(tmp_path, monkeypatch):
+    from ai_dlc.providers.scm import GitHubSCM
+
+    fake_gh(tmp_path, monkeypatch)
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    git = init_git(repo)
+    git("switch", "-c", "work/one")
+    remote = tmp_path / "remote.git"
+    _git_output(tmp_path, "init", "--bare", str(remote))
+    git("remote", "add", "origin", str(remote))
+    git("push", "-u", "origin", "work/one")
+    scm = GitHubSCM(repo, {"scm": {"repository": "other/repo"}})
+
+    with pytest.raises(ValueError, match="configured repository"):
+        scm.pull_request_create("Title", "body", "main", "work/one")
+
+
+def test_pr_pending_journal_never_repeats_creation(tmp_path):
+    service, scm, _ = started_service(tmp_path)
+    record = service.load("one")
+    service.journal.begin(
+        service.op_id(record, "pr"),
+        {"provider": record["providers"].get("scm"), "base": "main", "head": "work/one"},
+    )
+    with pytest.raises(RuntimeError, match="uncertain"):
+        service.pr("one")
+    assert scm.pull_requests == []
+
+
+def test_pr_refuses_an_unrelated_checkout_without_writing(tmp_path):
+    service, scm, git = started_service(tmp_path)
+    git("switch", "-c", "unrelated")
+    before = (tmp_path / ".ai-dlc/work/one.toml").read_bytes()
+    with pytest.raises(ValueError, match="bound branch"):
+        service.pr("one")
+    assert scm.pull_requests == []
+    assert (tmp_path / ".ai-dlc/work/one.toml").read_bytes() == before
+
+
+def test_pr_recovers_success_before_record_link(tmp_path, monkeypatch):
+    service, scm, _ = started_service(tmp_path)
+    original = service.link
+    monkeypatch.setattr(service, "link", lambda *args: (_ for _ in ()).throw(OSError("disk")))
+    with pytest.raises(OSError, match="disk"):
+        service.pr("one")
+    monkeypatch.setattr(service, "link", original)
+    assert service.pr("one")["pr"]["url"] == scm.url
+    assert len(scm.pull_requests) == 1

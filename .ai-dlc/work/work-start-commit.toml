@@ -24,7 +24,7 @@ scm = "github"
 deploy = "none"
 
 [artifacts]
-spec = "openspec/changes/work-start-commit"
+spec = "openspec/changes/archive/2026-09-14-work-start-commit"
 tracker = "73"
 branch = "work/work-start-commit"
 
