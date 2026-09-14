@@ -2,171 +2,240 @@
 
 # AI-DLC
 
-**Portable development setup for people and agent harnesses.**
+**Portable development setup and workflows for people and coding agents.**
 
-AI-DLC scaffolds repositories, connects replaceable tools, and carries shared
-workflow guidance from discovery through verification. Use Claude Code, Codex,
-or Antigravity with consistent project structure, reviewed specifications, and
-checks that travel with the repository.
+AI-DLC brings project setup, agent guidance, specifications, tickets, documentation,
+and verification into one repository-owned workflow. Work in Claude Code or Codex,
+keep your preferred tools, and carry the same configuration across machines.
+You and your agent do the development; AI-DLC prepares the environment and checks
+the evidence needed to finish the work.
 
-- **Set up once, carry it across machines.** Versioned profiles and project files
-  describe the environment; credentials and machine-specific settings stay local.
-- **Choose your integrations.** GitHub Issues + Projects is the default work
-  tracker with recorded live evidence. Jira Cloud is available but its live work
-  cycle remains unqualified; Plane is an available, unqualified adapter outside
-  the default toolset. Provider capabilities keep workflow guidance portable.
-- **Keep development organized.** Connect requirements, specifications, tickets,
-  implementation, and verified completion through the CLI and local MCP server.
-- **Keep knowledge intentional.** Store durable team documentation in the repo and
-  personal notes in Obsidian. Selective Confluence integration remains deferred.
+## Main features
 
-See the [product direction](docs/product-direction.md), [delivery roadmap](docs/roadmap.md),
-[work-computer setup](docs/workflows/work-computer-setup.md), and
-[historical executor handoff](docs/archive/handoffs/framework-delivery.md). Those pages distinguish
-planned capabilities from the implementation available today.
+- **Repeatable setup.** Versioned profiles select runtimes, tools, and personal
+  agent settings. Each machine keeps its own paths and account bindings.
+- **Project scaffolding and updates.** Start or adopt a generic, Python, Node, or
+  Rust project. Copier templates provide shared instructions, documentation,
+  setup commands, and checks, with previews for adoption and updates.
+- **Shared agent guidance.** Render project instructions, skills, hooks, and MCP
+  configuration for supported clients. Subscribe to pinned team repositories,
+  filter by role or tag, and import supported Tencent teamai layouts.
+- **Tickets connected to delivery.** Bind reviewed scope and specifications to a
+  ticket, branch, and PR. Completion verifies the merged revision and its CI
+  receipts before closing the ticket.
+- **Repository docs and private knowledge.** Search project documents, review
+  documentation impact, and check ownership and links. Connect canonical project
+  docs to an existing Obsidian vault while keeping personal notes separate.
+- **Engagement and design workflows.** Scaffold seven-stage forward-deployed
+  engineering (FDE) engagement docs with local stage checks. Optional frontend tooling captures Playwright evidence
+  for design review.
 
-**Install from a release or from source.** The Python CLI, local MCP server,
-project scaffolding, tracker adapters, and harness configuration are implemented.
-Releases are published from version tags by the `Release` workflow as hash-bound
-assets; the [release runbook](docs/runbooks/release-publication.md) describes
-publishing and installing. [v0.4.0 is published](https://github.com/Sean-Koval/ai-dlc/releases/tag/v0.4.0)
-and its unchanged assets passed consumer checks on Linux x64/ARM64 and macOS ARM64.
-Use the source path below for development. Actual client
-and provider qualification varies by environment; calibration and several release
-obligations remain incomplete. See [verification status](docs/release-verification.md).
+## How the tools fit together
 
-## Install from a published release
-
-On a machine with a POSIX shell, `curl`, CA certificates and `tar`, download the
-four bootstrap files and the checksum list from the release, verify them, and run
-the installer:
-
-```sh
-mkdir -p ai-dlc-install/scripts ai-dlc-install/bootstrap && cd ai-dlc-install
-for f in bootstrap.sh versions.sh download.sh release.sh SHA256SUMS; do
-  curl --fail --location --proto '=https' --tlsv1.2 -O "https://github.com/Sean-Koval/ai-dlc/releases/download/v0.4.0/$f"
-done
-grep -E ' (release|bootstrap|versions|download)\.sh$' SHA256SUMS | sha256sum -c -
-mv bootstrap.sh scripts/ && mv versions.sh download.sh release.sh bootstrap/
-printf 'schema = 4\n' > ai-dlc.toml
-sh scripts/bootstrap.sh
+```mermaid
+flowchart LR
+    Scope["Review scope & specifications"] --> Work["Ticket & branch"]
+    Work --> Build["Develop with your agent"]
+    Build --> Review["Project checks & PR review"]
+    Review --> Merge["Merge & run CI"]
+    Merge --> Finish["Verify evidence & close ticket"]
 ```
 
-The installer downloads uv, a managed Python and mise at pinned digests, installs
-the wheel with hashed constraints, keeps `release.sh` beside the engine, and prints
-the directories to add to `PATH`. Projects created with `ai-dlc project init` from
-that engine include `bootstrap/release.sh`, so their own bootstrap and CI work.
+| Tool | Responsibility |
+| --- | --- |
+| **AI-DLC CLI + local MCP server** | Setup, configuration rendering, work records, document tools, and completion gates. MCP exposes selected services to agents; machine mutations stay in the CLI. |
+| **Claude Code / Codex** | Interactive development using shared instructions and skills for discovery, PRDs, specifications, and handoffs. |
+| **uv + mise** | Python environments and dependencies, pinned runtimes, and delegated tool installation. |
+| **Copier** | Project templates, recorded template versions, and staged updates. |
+| **OpenSpec** | Formal requirements, scenarios, and archived changes when the work needs a specification. |
+| **GitHub Issues + Projects / GitHub Actions** | Ticket identity and planning, PR review and merge, and CI evidence. |
+| **Obsidian** | Private continuity notes and navigation to canonical repository documents. |
 
-## Prepare this checkout
+Provider roles are configurable. GitHub Issues + Projects is the recommended
+tracker with recorded live evidence; Linear is also supported. Jira Cloud and
+Plane adapters are available, with live workflow qualification still pending.
+For agent access, register `ai-dlc mcp serve --root /absolute/path/to/project`
+as a stdio MCP server in your client. See the [tool map](docs/workflows/tool-map.md)
+for available commands, MCP tools, and skills.
 
-From a checkout of this repository:
+## Get started
+
+**Choose an installation:** [v0.4.0](https://github.com/Sean-Koval/ai-dlc/releases/tag/v0.4.0)
+is the published release; follow the [verified release installation steps](docs/runbooks/release-publication.md#install-from-a-release).
+The team-source imports and FDE scaffold described here were added after that
+release. Use a source checkout for those features:
 
 ```sh
+git clone https://github.com/Sean-Koval/ai-dlc.git
+cd ai-dlc
 sh scripts/bootstrap.sh --source
 ```
 
-The standalone script verifies and installs its pinned uv and mise downloads, prepares a private engine interpreter, installs the checked-out implementation, and prepares the project. It needs a POSIX shell, curl, CA certificates, tar, and standard platform utilities. It prints the two directories to add to your shell's PATH. It does not require preinstalled Python, Node, Rust, mise, or AI-DLC.
+Bootstrap needs a POSIX shell, curl, CA certificates, tar, and standard platform
+utilities. It installs pinned uv, Python, and mise, prepares this checkout, and
+prints the directories to add to `PATH`; no preinstalled Python or Node is needed.
+Use the printed checkout-specific path when another AI-DLC installation exists.
 
-After adding those directories:
+After activating those paths, verify the checkout:
 
 ```sh
 ai-dlc project check --required
 ai-dlc doctor
-ai-dlc setup plan --profile profiles/example/ai-dlc-profile.toml
-ai-dlc setup apply --profile profiles/example/ai-dlc-profile.toml
 ```
 
-Machine setup installs the selected workstation modules. Interactive sign-ins and provider workspace selections remain explicit. Use guided provider connection to discover and select the tracker destination before publishing work. See [GitHub Issues and Projects setup](docs/github-ticket-setup.md). Keep vault paths and account choices in a machine TOML file, and supply it with `--machine` where supported. Credentials are environment references or native tool sign-ins.
-
-## Portable profile and machine enrollment
-
-Keep a personal `ai-dlc-profile.toml` in a separate private Git repository. It
-contains portable module choices, logical credential requirements, and optional
-agent configuration, but no account selection, path, repository, vault, or
-credential value. Enroll a reviewed, pinned Git revision on the first machine,
-then enroll that same pinned revision on a second machine with its own machine
-ID and binding. Each machine edits its local binding independently.
-
-Preview enrollment can materialize an inactive cache, but does not change the
-active enrollment, client configuration, or package state. Repeat the same
-command with `--apply` to activate it:
+### Create or adopt a project
 
 ```sh
-ai-dlc machine enroll SOURCE --profile-id example-development --machine-id MACHINE_A --ref IMMUTABLE_REF_OR_TAG
-ai-dlc machine enroll SOURCE --profile-id example-development --machine-id MACHINE_A --ref IMMUTABLE_REF_OR_TAG --apply
+# Create a Python project with the GitHub tracker selected.
+ai-dlc project init my-project --preset python --tracker github-issues
+
+# Or preview adding AI-DLC to an existing repository.
+ai-dlc project adopt --root /path/to/repo --preset generic --tracker github-issues
+# Repeat the adoption command with --apply to write the reviewed changes.
 ```
 
-The local lock always records the exact resolved commit. Choose one of two
-policies: an immutable advertised tag or ref gives cross-machine reproducibility
-and makes `ai-dlc machine sync` idempotent; an intentionally movable advertised
-branch lets `ai-dlc machine sync` preview a newer candidate and `ai-dlc machine
-sync --apply` activate it after validation and reconciliation. To move from one
-immutable tag to another, reenroll with the new ref. Enroll a second machine
-with the same advertised ref under the selected policy and its own machine ID.
+Run `ai-dlc project setup` and `ai-dlc project check --required` from the new
+project. Choose `generic`, `python`, `node`, or `rust`; optional capabilities
+include `backend` contract checks and `frontend` browser smoke tests.
 
-Use `ai-dlc machine status`, `plan`, `apply`, `sync`, and `doctor` to inspect,
-preview, reconcile, update, and diagnose that enrollment. Put selected tracker
-credentials in a password manager or keychain that injects the
-configured environment variable named by that provider; never
-put values in AI-DLC Git files or commit `.env` files.
+Projects created with the released engine carry its release manifest for their
+own bootstrap and CI. Source-generated projects need a published
+`bootstrap/release.sh` before release-mode bootstrap; see the
+[release guide](docs/runbooks/release-publication.md#install-from-a-release).
 
-Local CLI and local MCP execution are the current control plane. Hosted or
-cloud execution is a later qualification target, not a feature claim. Obsidian
-create/attach remains a gap; current knowledge commands act only on an explicitly
-selected existing vault. Guided connection supports GitHub Issues and Projects, Jira Cloud, optional Plane,
-and Linear. See the [GitHub qualification record](docs/verification/github-ticket-workflows.md) for remaining live gates.
+### Connect tools and configure the project
 
-MCP exposes reviewed work operations, read-only doctor inspection, and selected
-knowledge operations. Machine enrollment mutations remain CLI-only in this
-cycle.
+The generated `ai-dlc.toml` owns shared policy. For example, these sections select
+providers and the repository whose merge/CI evidence must be checked:
 
-Personal MCP servers declared in the selected profile are previewed by `setup plan` and merged into the supported user-level Codex and Claude configuration during `setup apply`. AI-DLC records only the entries it owns, preserves unrelated settings, and stops on edited or colliding entries. To review or apply only this layer, use `ai-dlc agents render --personal <profile> --check` and then replace `--check` with `--apply`.
+```toml
+[roles]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+agent-client = ["claude-code", "codex"]
 
-## Prepare a project
+[scm]
+repository = "your-org/your-project"
+workflow = "verify.yml"
+target_branch = "main"
+```
+
+Authenticate the GitHub CLI with access to your repository and Project. Then
+preview the connection and apply its saved choices from the project root:
 
 ```sh
-ai-dlc project init my-project --preset python --tracker github-issues --apply
-ai-dlc project adopt --root /path/to/existing-project --preset generic --tracker github-issues
+ai-dlc provider connect github-issues --plan-file .ai-dlc/local/github-project.json
+ai-dlc provider connect github-issues --plan-file .ai-dlc/local/github-project.json --apply
+ai-dlc agents render --apply
+ai-dlc project readiness
 ```
 
-For work repositories, follow [work-computer setup](docs/workflows/work-computer-setup.md)
-for company-specific provider selection, private Obsidian storage and
-Claude Code/Antigravity. GitHub connection setup proposes a repository-associated
-Project by default. Qualify Jira Cloud in an approved disposable project before
-selecting it for work; see the [prepared walkthrough and blockers](docs/verification/jira-cloud-new-work.md#walkthrough-preparation--september-14-2026).
-Plane remains an available, unqualified adapter outside the default toolset. Omitted provider options preserve legacy scaffold defaults.
+Connection apply can create or reuse a GitHub Project; inspect the preview first.
+Readiness checks local requirements; `doctor` also inspects configured provider
+health. See [GitHub setup](docs/github-ticket-setup.md) for existing Projects,
+custom statuses, and issues-only mode.
 
-Adoption previews changes; add `--apply` after reviewing the preview. It stages changes and refuses conflicting destination content. Generic, Python/uv, Node, and Rust presets include durable documentation and shared instructions. Versioned Git template sources support Copier updates; bundled development templates require an explicit versioned source before cross-machine updates.
+| Configuration | Where it belongs |
+| --- | --- |
+| Shared providers, setup, checks, gates, agent guidance | Project `ai-dlc.toml`, `.mise.toml`, and repository files |
+| Portable tools, personal agent preferences, team subscriptions | Private `ai-dlc-profile.toml` repository |
+| Local paths, account selections, credential environment-variable names | Machine binding; use `--machine` where supported |
+| Secret values | Password manager, keychain, or injected process environment; never Git |
 
-The project owns `ai-dlc.toml` (setup, checks, gates and providers), `.mise.toml` (runtimes), `.ai-dlc/work/` (reviewed work bindings), and repository documentation. Machine configuration owns local paths. Personal notes remain in your existing Obsidian vault.
+### Carry preferences and team guidance across machines
 
-## Work cycle
+Enroll a private profile repository at a reviewed tag or advertised Git ref.
+Use the same revision on another machine with its own machine ID:
 
-1. Use discovery and specification skills to review scope and acceptance criteria. Record whether a formal specification is required.
-2. Prepare `.ai-dlc/work/<id>.toml`; `work publish` creates or reuses the tracker item.
-3. `work start` binds a branch. Implement, run `project check --required`, and update durable docs.
-4. Finalize required specifications before review and merge.
-5. `work finish` checks the merged revision's configured CI evidence and any deployment gate before completing the tracker item. Handoff failures remain separately retryable.
+```sh
+ai-dlc machine enroll SOURCE --profile-id my-development --machine-id laptop --ref v1
+# Review the plan, then repeat with --apply.
+ai-dlc machine status
+```
 
-GitHub Issues with Projects planning, Jira Cloud, Plane, Linear, OpenSpec, GitHub SCM, Obsidian, and optional deployment evidence adapters are included. Configure the destination repository, workflow, target branch and provider settings explicitly. Provider changes affect new work; use reviewed rebind mappings for existing work.
+Add reviewed team subscriptions to that profile:
 
-## Architecture and customization
+```toml
+[[sources]]
+id = "engineering"
+git = "https://example.com/team/practices.git"
+ref = "main"
+tags = ["review"]
+layout = "ai-dlc" # Use "teamai" for the supported teamai reader.
+```
 
-- `src/ai_dlc/`: configuration, provisioning, setup/check execution, workflow services, providers, CLI and MCP.
-- `profiles/`, `modules/`, `targets/`: preferences, delegated installation recipes, target capabilities.
-- `agents/`: shared skills, pinned sources, client capability declarations and owned configuration.
-- `project-templates/`, `playbook/`, `contracts/`: Copier presets, development process, generated provider schemas.
-- `docs/`: [architecture](docs/architecture.md), [workflow](docs/development-workflow.md), [migration](docs/migration.md), and [implementation record](docs/archive/planning/implementation-v4.md).
+Enrollment locks exact source commits and content digests. `ai-dlc machine sync`
+previews newer revisions; `ai-dlc machine sync --apply` activates them. Render the
+updated guidance into a project with `ai-dlc agents render --apply --root PATH`.
+AI-DLC preserves unrelated client settings and refuses collisions or edits to
+owned outputs. See [machine enrollment](docs/runbooks/machine-enrollment.md) for
+profile setup, role/tag selection, personal MCP servers, and source restrictions.
 
-Local execution and GitHub Actions use one checks manifest. CI runs this checkout's implementation and publishes a receipt; completion checks verify workflow identity, merged SHA and manifest digests. Client hooks cover documented tool paths only. Repository merge rules must be configured by the repository owner.
+## Example workflows
 
-The legacy `ai-dlc-cli scaffold --provider claude` and `--all` interface remains available through Python; it copies a small Claude Code hook and workflow set. The Rust implementation is retired and removed. See the migration guide for PATH conflicts.
+### Take a ticket through delivery
 
-### Keep project documentation organized
+With tracker and SCM connections configured, draft work from an existing issue:
 
-Use `ai-dlc docs init` to preview an optional documentation map, then add `--apply` to create missing navigation. OpenSpec remains the home for specifications. `ai-dlc docs check` reports ownership, review and local-link gaps without editing content. `ai-dlc project link-vault` creates a local Obsidian project note linking to canonical files. See the [documentation workflow](docs/design/project-documentation.md).
+```sh
+ai-dlc work new improve-setup --from-issue 42
+```
 
-Documentation upkeep now includes explicit Git impact review, source-bound
-dispositions, bounded semantic-review packets and optional linked Obsidian
-workspaces. See the [documentation workflow](project-templates/project/docs/documentation-guide.md)
-for setup, company SDK guidance and the limits of automated checks.
+Review `.ai-dlc/work/improve-setup.toml`: set scope and acceptance criteria,
+decide whether a specification is required, link it when needed, and set
+`reviewed = true`. Then:
+
+```sh
+ai-dlc work publish improve-setup
+ai-dlc work start improve-setup
+# Implement, commit, and update the affected documentation.
+ai-dlc project check --required
+# If this work requires OpenSpec, finalize it with work archive before review.
+# Push the bound branch before opening its PR.
+ai-dlc work pr improve-setup
+# Push the work-record link commit created by work pr, then review and merge.
+```
+
+From a checkout at the merge commit, after CI succeeds, run
+`ai-dlc work finish improve-setup`. This validates the required specification,
+PR merge, and exact merged-revision CI evidence, plus configured deployment gates.
+`work status` is a local inspection, not a fresh tracker read.
+
+### Keep project documents useful
+
+```sh
+ai-dlc docs init                  # Preview missing navigation.
+ai-dlc docs check                 # Inspect ownership, coverage, and links.
+ai-dlc docs search "authentication"
+ai-dlc docs review --base origin/main
+```
+
+Use reviewed dispositions and `ai-dlc docs gate` to keep documentation current
+with a change. Project-document access covers repository files; private vault
+access uses separate knowledge tools. The [documentation guide](project-templates/project/docs/documentation-guide.md)
+covers review, MCP search/read, and optional Obsidian portals and mounts.
+
+### Start an FDE engagement
+
+```sh
+ai-dlc fde scaffold customer-delivery --title "Customer delivery" --dry-run
+ai-dlc fde scaffold customer-delivery --title "Customer delivery"
+ai-dlc fde check customer-delivery
+```
+
+This creates a charter and Discover → Frame → Design → Build → Deploy → Enable →
+Expand landing pages under `docs/fde_engagements/`. Stage checks require earlier
+exit criteria and recorded evidence before downstream activation. See the
+[FDE guide](docs/runbooks/fde-documents.md) for configuration and stage metadata.
+Confluence publication and synchronization remain unimplemented.
+
+## Go deeper
+
+- [Architecture](docs/architecture.md) — services, configuration layers, and extension points.
+- [Development workflows](docs/development-workflow.md) — discovery, greenfield, brownfield, and design review.
+- [Machine enrollment](docs/runbooks/machine-enrollment.md) — profiles, team sources, client configuration, and troubleshooting.
+- [Verification status](docs/release-verification.md) — platform/provider evidence and remaining qualification gaps, including Antigravity and hosted execution.
+- [Documentation map](docs/index.md) — the full guide index.
