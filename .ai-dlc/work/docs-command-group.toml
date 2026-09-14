@@ -24,7 +24,7 @@ scm = "github"
 deploy = "none"
 
 [artifacts]
-spec = "openspec/changes/docs-command-group"
+spec = "openspec/changes/archive/2026-09-14-docs-command-group"
 tracker = "86"
 branch = "work/docs-command-group"
 
