@@ -1,0 +1,38 @@
+schema = 1
+id = "fde-document-scaffold"
+title = "Scaffold and validate local FDE engagement documents"
+scope = "Implement the independently deliverable local scaffold and portable guidance portion of issue #50. Seven stage landing pages, charter, safe repository-owned output and stage gating. Confluence source inventory, converter/client port, publication and qualification remain outstanding under #50."
+requires_spec = true
+spec_reason = "Adds scaffold output and stage validation contracts"
+acceptance = [
+    "Seven stage landing pages and engagement charter are generated with explicit lifecycle states",
+    "Unsafe paths and existing output refuse without overwriting; dry run writes nothing",
+    "Validation rejects downstream activation until all preceding exit criteria are met",
+    "Required checks pass; Confluence publication is explicitly unavailable",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "FDE-01",
+    "FDE-02",
+    "FDE-03",
+    "FDE-04",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/fde-document-scaffold"
+tracker = "50"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"
