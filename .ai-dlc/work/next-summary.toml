@@ -1,0 +1,26 @@
+schema = 1
+id = "next-summary"
+title = "Replace the JSON context brief with a readable what-next summary"
+scope = "Add an offline ai-dlc next command that derives each work record's lifecycle state from its local artifacts, prints a plain-text what-next summary with the required checks, exposes the same data as JSON, makes context --brief print that text, includes the summary in the session-start hook context, and points the tool map and day-start skill at it. The tracker is never consulted."
+requires_spec = true
+spec_reason = "Adds a command, changes what context --brief and the session-start hook print, and defines how lifecycle states are derived from local artifacts; all are observable harness behaviour."
+acceptance = [
+    "ai-dlc next in this repository lists only records with a tracker and no finish evidence, states the derivation rule, and exits 0 in under one second with PATH=\"\" (no gh or git needed).",
+    "Each derived state has a test fixture and the next command text is asserted exactly.",
+    "The session-start hook output contains the summary.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "NH-05",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/next-summary"
