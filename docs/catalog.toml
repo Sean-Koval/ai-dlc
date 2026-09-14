@@ -57,6 +57,9 @@ path = "docs/release-verification.md"
 kind = "runbook"
 owner = "repository-maintainers"
 status = "active"
+code_paths = [".github/workflows/release.yml", "scripts/release_manifest.py"]
+verification_paths = ["tests/test_release_manifest.py", "tests/test_release_workflow.py"]
+requirements = ["openspec/specs/release-publication/spec.md"]
 
 [[documents]]
 id = "roadmap"
@@ -747,7 +750,7 @@ code_paths = [
     "project-templates/project/scripts/bootstrap.sh",
     "src/ai_dlc/setup/templates.py",
 ]
-verification_paths = ["tests/test_release_manifest.py", "tests/test_bootstrap.py"]
+verification_paths = ["tests/test_release_manifest.py", "tests/test_bootstrap.py", "tests/test_release_workflow.py"]
 
 [[documents]]
 id = "repo-runbooks-linear-setup"

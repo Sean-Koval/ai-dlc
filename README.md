@@ -28,8 +28,9 @@ planned capabilities from the implementation available today.
 project scaffolding, tracker adapters, and harness configuration are implemented.
 Releases are published from version tags by the `Release` workflow as hash-bound
 assets; the [release runbook](docs/runbooks/release-publication.md) describes
-publishing and installing. If no release is listed on GitHub yet, install from
-source below. Source checks run on Linux x64/ARM64 and macOS ARM64. Actual client
+publishing and installing. [v0.4.0 is published](https://github.com/Sean-Koval/ai-dlc/releases/tag/v0.4.0)
+and its unchanged assets passed consumer checks on Linux x64/ARM64 and macOS ARM64.
+Use the source path below for development. Actual client
 and provider qualification varies by environment; calibration and several release
 obligations remain incomplete. See [verification status](docs/release-verification.md).
 
