@@ -1,0 +1,19 @@
+schema = 1
+id = "release-gate-history"
+title = "Give the Release workflow the Git history its documentation gate needs"
+scope = "The v0.4.0 tag run failed its required documentation check because the Release workflow's package job checks out a depth-1 history, so the gate cannot resolve the recorded comparison base. Check out the full history in the package job, matching the Verify workflow, so a tag run evaluates the same gate as the merged commit. No gate rule changes."
+requires_spec = false
+spec_reason = "Workflow configuration only; the documentation gate's behaviour is unchanged."
+acceptance = [
+  "The Release workflow's package job checks out the full history so ai-dlc project docs-gate resolves the recorded base on a tag checkout.",
+  "All required checks pass."
+]
+reviewed = true
+depends_on = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
