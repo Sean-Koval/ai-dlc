@@ -1,0 +1,29 @@
+schema = 1
+id = "bootstrap-runtime"
+title = "Make project check find its bootstrap runtime and let diagnostics repair the shell entry"
+scope = "Resolve the mise runtime from the AI-DLC bootstrap bin directory when PATH lacks it so project check runs and records a receipt, make workspace-check name the exact shell activation line for the detected shell, and let workspace-init --shell preview or write only the AI-DLC-owned section of the shell rc file. Share the bootstrap bin resolver between setup and documentation without cross-package private imports. No check installs tools and the bootstrap installer is unchanged."
+requires_spec = true
+spec_reason = "Changes when project check refuses, what workspace-check findings say and adds a shell-entry mutation command; all are observable gate and diagnostic outcomes."
+acceptance = [
+    "In a shell whose PATH lacks the bootstrap bin, ai-dlc project check --required SHALL run the checks and write a receipt whose environment_digest is unchanged from a run with PATH set.",
+    "workspace-check SHALL print a copy-pasteable remedy line for the detected shell.",
+    "No check SHALL install tools; runtime_env SHALL keep its MISE_AUTO_INSTALL refusal.",
+    "ai-dlc project check --required SHALL pass.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "RD-04",
+    "WD-01",
+    "WD-04",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/bootstrap-runtime"
