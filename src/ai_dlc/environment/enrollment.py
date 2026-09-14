@@ -143,11 +143,3 @@ def ensure_machine_file(paths: EnrollmentPaths, machine_id: str) -> Path:
     path = paths.machine_file(machine_id)
     atomic_create(path, tomli_w.dumps({"schema": 4}), mode=0o600)
     return path
-
-
-def active_profile_file(paths: EnrollmentPaths, lock: EnrollmentLock) -> Path:
-    return (
-        paths.profile_root(lock.profile_id, lock.resolved_commit)
-        / lock.subdirectory
-        / lock.profile_file
-    )

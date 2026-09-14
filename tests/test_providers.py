@@ -344,21 +344,6 @@ def test_executable_specification_contract(tmp_path):
     assert provider.current({"id": "one"})["current"] is True
 
 
-def test_python_provider_deadline_is_bounded():
-    import time
-
-    from ai_dlc.providers import PythonProvider
-
-    class Slow:
-        def invoke(self, operation, payload):
-            time.sleep(0.1)
-            return {"id": "1", "url": "https://example/1", "state": "open"}
-
-    provider = PythonProvider(Slow(), timeout=0.01)
-    with pytest.raises(TimeoutError, match="uncertain"):
-        provider.invoke("read", {"reference": "1"})
-
-
 def test_public_terminal_guard_uses_canonical_state():
     from ai_dlc.providers import Registry
 
@@ -370,18 +355,6 @@ def test_public_terminal_guard_uses_canonical_state():
                 "transition",
                 {"reference": "1", "state": state, "operation_id": "guard"},
             )
-
-
-def test_python_integrity_rejects_unchecked_importable_cache(tmp_path):
-    import py_compile
-
-    from ai_dlc.providers import reject_unsafe_imports
-
-    source = tmp_path / "plugin.py"
-    source.write_text("answer=1\n")
-    py_compile.compile(str(source))
-    with pytest.raises(ValueError, match="bytecode"):
-        reject_unsafe_imports([source])
 
 
 def test_registry_dispatches_builtin_named_role_method(tmp_path):

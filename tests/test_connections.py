@@ -166,15 +166,14 @@ def test_definition_without_setup_does_not_change_lifecycle_configuration(connec
 
 
 def test_common_facade_preserves_unrelated_project_setting(connection):
-    from ai_dlc.setup.connections import apply_connection, discover_connection, plan_connection
+    from ai_dlc.setup.connections import connect_provider
 
     root, config, _, _ = connection
     config.write_text(config.read_text() + 'project="authored-project" # keep\n')
-    assert discover_connection(root, "work", environ={})["status"] == "discovered"
-    saved = plan_connection(
-        root, "work", {"project": "P1"}, environ={}, plan_file=root / ".ai-dlc/local/p.json"
-    )
-    apply_connection(root, "work", saved["plan_file"], environ={})
+    assert connect_provider(root, name="work", environ={})["status"] == "discovered"
+    plan_file = root / ".ai-dlc/local/p.json"
+    saved = connect_provider(root, name="work", environ={}, plan_file=plan_file, project="P1")
+    connect_provider(root, name="work", environ={}, plan_file=saved["plan_file"], apply=True)
     assert 'project="authored-project" # keep' in config.read_text()
 
 
