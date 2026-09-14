@@ -685,11 +685,19 @@ def project_workspace_init(
     name: str | None = None,
     bases: bool = False,
     apply: bool = False,
+    shell: bool = False,
 ):
     """Preview or add linked Obsidian project navigation and personal note templates."""
     from ai_dlc.documentation.knowledge_workspace import setup_workspace
 
+    if shell and (vault is not None or name is not None or bases):
+        raise typer.BadParameter("--shell cannot be combined with --vault, --name or --bases")
     with service_call():
+        if shell:
+            from ai_dlc.environment.bootstrap import plan_shell_activation
+
+            emit(plan_shell_activation(apply=apply))
+            return
         emit(setup_workspace(root, vault=vault, name=name, bases=bases, apply=apply))
 
 
@@ -1128,16 +1136,39 @@ def work_publish(work_id: str, root: Path = Path("."), machine: Path | None = No
     emit(service(root, machine).publish(work_id))
 
 
+CommitOption = Annotated[
+    bool,
+    typer.Option(
+        "--commit/--no-commit",
+        help="Commit the edited work record, staging only .ai-dlc/work/<id>.toml.",
+    ),
+]
+
+
 @work.command("link")
 def work_link(
-    work_id: str, kind: str, reference: str, root: Path = Path("."), machine: Path | None = None
+    work_id: str,
+    kind: str,
+    reference: str,
+    root: Path = Path("."),
+    machine: Path | None = None,
+    commit: CommitOption = True,
 ):
-    emit(service(root, machine).link(work_id, kind, reference))
+    emit(service(root, machine).link(work_id, kind, reference, commit=commit))
 
 
 @work.command("start")
-def work_start(work_id: str, root: Path = Path("."), machine: Path | None = None):
-    emit(service(root, machine).start(work_id))
+def work_start(
+    work_id: str, root: Path = Path("."), machine: Path | None = None, commit: CommitOption = True
+):
+    emit(service(root, machine).start(work_id, commit=commit))
+
+
+@work.command("pr")
+def work_pr(work_id: str, root: Path = Path("."), machine: Path | None = None):
+    """Open the pull request for the bound branch once, link it and commit the record."""
+    with service_call():
+        conclude(service(root, machine).pr(work_id))
 
 
 @work.command("status")
@@ -1147,9 +1178,17 @@ def work_status(work_id: str, root: Path = Path("."), machine: Path | None = Non
 
 @work.command("finish")
 def work_finish(
-    work_id: str, root: Path = Path("."), machine: Path | None = None, handoff: Path | None = None
+    work_id: str,
+    root: Path = Path("."),
+    machine: Path | None = None,
+    handoff: Path | None = None,
+    learning: Path | None = None,
 ):
-    result = service(root, machine).finish(work_id, handoff.read_text() if handoff else None)
+    result = service(root, machine).finish(
+        work_id,
+        handoff.read_text() if handoff else None,
+        learning.read_text() if learning else None,
+    )
     conclude(result)
 
 
@@ -1247,6 +1286,8 @@ def hook(event: str, root: Path = Path(".")):
     if result.get("decision") == "deny":
         typer.echo(result["reason"], err=True)
         raise typer.Exit(2)
+    if result.get("friction"):
+        typer.echo(result["friction"])
     if result.get("reminder"):
         typer.echo(result["message"])
     elif result.get("context"):

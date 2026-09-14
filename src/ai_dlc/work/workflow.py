@@ -13,13 +13,19 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from ai_dlc.config import digest as config_digest
 from ai_dlc.config import load_project, read_toml, resolve_layers, resolve_runtime
+from ai_dlc.errors import RefusedError, UncertainError
 from ai_dlc.files import inside, run_git
 from ai_dlc.locking import project_write_lock
 from ai_dlc.providers import Registry
 from ai_dlc.providers.openspec import OpenSpecProvider
 from ai_dlc.providers.scm import GitHubSCM
 from ai_dlc.work.journal import Journal
-from ai_dlc.work.traceability import artifact_is_local, render_ticket_body, validate_work_graph
+from ai_dlc.work.traceability import (
+    artifact_is_local,
+    render_pull_request_body,
+    render_ticket_body,
+    validate_work_graph,
+)
 
 
 class Work(BaseModel):
@@ -400,11 +406,15 @@ class WorkService:
         repo = self.config.get("scm", {}).get("repository", str(self.root))
         identity = {"repository": repo, "work": work["id"], "action": action}
         if action != "work":
-            role = "knowledge" if action == "handoff" else "tracker"
+            role = {"handoff": "knowledge", "learning": "knowledge", "pr": "scm"}.get(
+                action, "tracker"
+            )
             identity["provider"] = work["providers"].get(role)
             identity["binding"] = work["bindings"].get(role)
             if role == "knowledge":
                 identity["artifact"] = work["artifacts"].get("knowledge", f"ai-dlc/{work['id']}.md")
+            if role == "scm":
+                identity["artifact"] = work["artifacts"].get("branch")
             if role == "tracker" and action != "publish":
                 identity["artifact"] = work["artifacts"].get("tracker")
         return hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()
@@ -480,7 +490,7 @@ class WorkService:
             )
         return {"status": "published", "work_id": work_id, "tracker": item}
 
-    def link(self, work_id, artifact_kind, reference):
+    def link(self, work_id, artifact_kind, reference, *, commit=True):
         work = self.load(work_id, True)
         if artifact_kind not in {"pr", "spec", "branch", "deployment", "tracker"}:
             raise ValueError("Unknown artifact kind")
@@ -497,7 +507,17 @@ class WorkService:
             self.mutate(
                 work, action, "link", {"reference": work["artifacts"]["tracker"], "url": reference}
             )
-        return {"status": "linked", "work_id": work_id, "artifacts": work["artifacts"]}
+        sha = (
+            self.commit_record(work_id, f"chore(work): link {artifact_kind} for {work_id}")
+            if commit
+            else None
+        )
+        return {
+            "status": "linked",
+            "work_id": work_id,
+            "artifacts": work["artifacts"],
+            "commit": sha,
+        }
 
     def optional_tracker_operation(self, work, operation):
         provider_id = work["providers"]["tracker"]
@@ -527,6 +547,25 @@ class WorkService:
     def git(self, *args, check=True):
         return run_git(self.root, *args, check=check, context="Git branch operation failed")
 
+    def commit_record(self, work_id, message):
+        """Commit only ``.ai-dlc/work/<id>.toml``; return the commit SHA or None if unchanged.
+
+        ``git commit --only`` limits the commit to the record whatever else is staged, so
+        other staged or dirty files are neither included nor disturbed.
+        """
+        record = f".ai-dlc/work/{work_id}.toml"
+        context = "Git record commit failed"
+        changed = run_git(
+            self.root, "status", "--porcelain", "--", record, context=context
+        ).stdout.strip()
+        if not changed:
+            return None
+        run_git(self.root, "add", "--", record, context=context)
+        run_git(
+            self.root, "commit", "--quiet", "--only", "-m", message, "--", record, context=context
+        )
+        return run_git(self.root, "rev-parse", "HEAD", context=context).stdout.strip()
+
     def branch(self, work):
         branch = work["artifacts"].get("branch", "work/" + work["id"])
         self.git("check-ref-format", "--branch", branch)
@@ -549,9 +588,13 @@ class WorkService:
         self.save(work)
         return branch
 
-    def start(self, work_id):
+    def start(self, work_id, *, commit=True):
         with project_write_lock(self.root):
-            return self._start(work_id)
+            result = self._start(work_id)
+            result["commit"] = (
+                self.commit_record(work_id, f"chore(work): start {work_id}") if commit else None
+            )
+            return result
 
     def _start(self, work_id):
         records = self.validated_records(work_id)
@@ -593,11 +636,90 @@ class WorkService:
             transition = {"supported": True, "state": "in_progress"}
             if capabilities is None:
                 transition["verified"] = False
+        from ai_dlc.documentation.learnings import recall_work
+
+        recalled = recall_work(work, self.config, self.registry)
         return {
+            **({"learnings": recalled} if recalled else {}),
             "status": "started",
             "tracker": item,
             "branch": branch,
             "tracker_transition": transition,
+        }
+
+    def pr(self, work_id):
+        """Open the pull request for the bound branch once, link it and commit the record."""
+        with project_write_lock(self.root):
+            return self._pr(work_id)
+
+    def _pr(self, work_id):
+        self._check_source()
+        work = self.load(work_id)
+        if not work["reviewed"]:
+            raise RefusedError("Work must be reviewed before mutation")
+        existing = work["artifacts"].get("pr")
+        if existing:
+            return {
+                "status": "linked",
+                "work_id": work_id,
+                "created": False,
+                "pr": {"url": existing},
+            }
+        head = work["artifacts"].get("branch")
+        if not head:
+            raise RefusedError(
+                f"Work {work_id} has no bound branch; run `ai-dlc work start {work_id}` first"
+            )
+        if self.git("branch", "--show-current").stdout.strip() != head:
+            raise RefusedError(f"Switch to the bound branch {head} before opening its pull request")
+        base = self.config.get("scm", {}).get("target_branch", "main")
+        tracker_id = work["providers"].get("tracker")
+        tracker_cfg = self.config.get("providers", {}).get(tracker_id, {}) if tracker_id else {}
+        reference = work["artifacts"].get("tracker", "")
+        closes = (
+            reference
+            if tracker_cfg.get("kind", tracker_id) == "github-issues"
+            and reference.isdigit()
+            and tracker_cfg.get("repository", self.config.get("scm", {}).get("repository"))
+            == self.config.get("scm", {}).get("repository")
+            and tracker_cfg.get("host", "github.com") == "github.com"
+            else None
+        )
+        payload = {"title": work["title"], "body": render_pull_request_body(work, closes=closes)}
+        operation_id = self.op_id(work, "pr")
+        record = self.journal.lookup(operation_id)
+        if record and record["status"] in {"pending", "uncertain"}:
+            raise UncertainError(
+                "A previous pull request creation is uncertain; find the pull request for "
+                f"{head} on the SCM and link it with `ai-dlc work link {work_id} pr <url>`"
+            )
+        if record and record["status"] == "succeeded":
+            created = record["result"]
+        else:
+            # The journal fingerprints the pull request's identity, not its text, so a retry
+            # with an edited record cannot conflict with, or repeat, an earlier creation.
+            self.journal.begin(
+                operation_id, {"provider": work["providers"].get("scm"), "base": base, "head": head}
+            )
+            scm = self.role(work, "scm", lambda: GitHubSCM(self.root, self.config))
+            self.journal.uncertain(operation_id)
+            try:
+                created = scm.pull_request_create(payload["title"], payload["body"], base, head)
+            except RefusedError:
+                self.journal.refused(operation_id)
+                raise
+            except Exception:
+                self.journal.uncertain(operation_id)
+                raise
+            self.journal.succeed(operation_id, created)
+        linked = self.link(work_id, "pr", created["url"])
+        return {
+            "status": "created",
+            "work_id": work_id,
+            "created": True,
+            "pr": created,
+            "artifacts": linked["artifacts"],
+            "commit": linked["commit"],
         }
 
     def status(self, work_id):
@@ -613,7 +735,7 @@ class WorkService:
         provider_id = work["providers"].get(role)
         return self.registry.get(provider_id) if provider_id else fallback()
 
-    def finish(self, work_id, handoff: str | None = None):
+    def finish(self, work_id, handoff: str | None = None, learning: str | None = None):
         work = self.load(work_id, True)
         gates = list(
             dict.fromkeys(
@@ -709,6 +831,14 @@ class WorkService:
                 work, "finish", "transition", {"reference": reference, "state": "closed"}
             )
         result = {"status": "completed", "work_id": work_id, "tracker": item, "evidence": evidence}
+        if learning is not None:
+            from ai_dlc.documentation.learnings import store_learning
+
+            store_learning(self, work, learning, result)
+        else:
+            result["learning_reminder"] = (
+                "Consider recording a learning with work finish --learning FILE."
+            )
         if handoff:
             operation_id = self.op_id(work, "handoff")
             payload = {"body": handoff}
@@ -735,6 +865,6 @@ class WorkService:
                 result["handoff"] = note
             except Exception as exc:  # noqa: BLE001 -- completion must survive any handoff-provider failure
                 self.journal.uncertain(operation_id)
-                result["status"] = "completed,handoff_pending"
+                result["status"] += ",handoff_pending"
                 result["handoff_error"] = str(exc)
         return result

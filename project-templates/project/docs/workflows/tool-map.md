@@ -143,6 +143,7 @@ protocol is unrun and does not spend the existing generic skill-evaluation budge
 | `project_docs_review_check` | `docs review --check` | Check citations, scope and source bytes; does not certify semantic truth |
 | `project_workspace_preview` | `project workspace-init` | Preview additive private project navigation; CLI apply explicitly creates files |
 | `project_vault_mount_preview` | `project link-vault --mode mount --preview` | Preview canonical docs and existing OpenSpec directory mounts; omit CLI `--preview` to apply |
+| CLI only | `project workspace-init --shell` | Preview the owned bash, zsh or fish PATH section; `--apply` writes after ownership checks |
 | `project_workspace_check` | `project workspace-check` | Report installation, shell activation, each mount binding and link navigation separately; read-only, native client not assessed |
 
 Project-document search and read cover repository files, never private notes.
@@ -154,3 +155,13 @@ and a vault portal, mounted folder or Markdown link does not grant access.
 The [documentation guide](../documentation-guide.md#search-and-read-project-documents) explains ownership, packet
 review, project-document access, baselines and workspace use. The optional CLI `docs check --style` invokes
 configured Vale; it does not install a tool or establish factual correctness.
+
+### Session continuity
+
+`ai-dlc work finish <id> --learning FILE` optionally stores an authored learning
+through the knowledge provider after completion gates pass. MCP `work_finish`
+accepts `learning` text alongside its existing `handoff`. Missing knowledge leaves
+the note pending and preserves completion. `work start` returns up to five
+matching learning paths and first lines; read relevant notes before implementing.
+The session-start hook recalls notes for the branch's bound work record. Stop
+reminders use only ignored local friction counts and never transmit them.

@@ -38,15 +38,18 @@ code_paths = [
     "src/ai_dlc/documentation/vault_link.py",
     "src/ai_dlc/documentation/vault_mount.py",
     "src/ai_dlc/documentation/knowledge.py",
+    "src/ai_dlc/documentation/learnings.py",
+    "src/ai_dlc/harness/friction.py",
     "src/ai_dlc/documentation/workspace_diagnostics.py",
 ]
 verification_paths = [
     "tests/test_vault_link.py",
     "tests/test_vault_mount.py",
     "tests/test_knowledge.py",
+    "tests/test_session_learnings.py",
     "tests/test_workspace_diagnostics.py",
 ]
-requirements = ["openspec/specs/obsidian-vault-linking/spec.md"]
+requirements = ["openspec/specs/obsidian-vault-linking/spec.md", "openspec/specs/session-learnings/spec.md"]
 
 [[documents]]
 id = "release-verification"

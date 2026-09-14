@@ -76,6 +76,11 @@ class ExecutableProvider:
     def append(self, path, body, operation_id):
         return self.invoke("append", {"path": path, "body": body, "operation_id": operation_id})
 
+    def pull_request_create(self, title, body, base, head):
+        return self.invoke(
+            "pull_request_create", {"title": title, "body": body, "base": base, "head": head}
+        )
+
 
 def module_manifest(distribution, files, hashes):
     modules = {}
@@ -214,6 +219,9 @@ class Registry:
             provider = ExecutableProvider(
                 {
                     **cfg,
+                    # Project reconciliation spans several independently bounded gh requests.
+                    # Keep this process budget out of the serialized request configuration.
+                    "timeout": cfg.get("timeout", 120 if kind == "github-issues" else 30),
                     "command": [
                         sys.executable,
                         "-m",
@@ -309,7 +317,14 @@ class Registry:
         ):
             raise ValueError("Terminal transitions require work.finish and its gates")
         provider = self.get(provider_id)
-        if operation in {"current", "merged", "ci", "deployment", "append"}:
+        if operation in {
+            "current",
+            "merged",
+            "ci",
+            "deployment",
+            "append",
+            "pull_request_create",
+        }:
             result = getattr(provider, operation)(**request.payload)
         else:
             result = provider.invoke(operation, request.payload)

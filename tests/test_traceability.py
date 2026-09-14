@@ -120,3 +120,27 @@ def test_artifact_ownership_distinguishes_native_spec_identity_from_local_docume
     from ai_dlc.work.traceability import artifact_is_local
 
     assert artifact_is_local(kind, reference, anchored=anchored) is local
+
+
+def test_pull_request_body_renders_scope_and_acceptance_and_closes_only_when_asked():
+    from ai_dlc.work.traceability import render_pull_request_body
+
+    work = {
+        "title": "One",
+        "scope": "A bounded change",
+        "acceptance": ["First result", "Second result"],
+        "requirements": ["RQ-1"],
+        "artifacts": {"tracker": "42"},
+    }
+    before = deepcopy(work)
+
+    plain = render_pull_request_body(work)
+    closing = render_pull_request_body(work, closes="42")
+
+    assert (
+        plain
+        == "## Scope\n\nA bounded change\n\n## Acceptance\n\n- First result\n- Second result\n"
+    )
+    assert closing == plain + "\nCloses #42\n"
+    assert "RQ-1" not in plain
+    assert work == before

@@ -29,12 +29,16 @@ terminals, run `ai-dlc project workspace-check --root PATH`. It separates the
 executable PATH selects from the AI-DLC-owned shell activation. If no `ai-dlc` is on
 PATH, run the same check through the bootstrap's published alias by its full path,
 by default `~/.local/share/ai-dlc/bootstrap/bin/ai-dlc`. `configured-for-next-shell`
-needs only a new terminal or sourcing the shell file. Repair `stale` or `missing`
-activation by rerunning the bootstrap and `ai-dlc setup apply`, not by adding
-symlinks or PATH lines. When the runtime manager the project selects is absent,
-`ai-dlc project check` refuses before any check runs: it exits nonzero, names the
-missing executable, repeats that same activation remedy, and keeps its output
-machine-readable without writing a receipt.
+needs only a new terminal or sourcing the shell file. Missing activation includes a
+copy-pasteable PATH command for bash, zsh or fish. Preview permanent repair with
+`ai-dlc project workspace-init --shell`; add `--apply` to write only the owned
+section. Authored content and other owned lines are preserved; symlinked,
+unreadable, non-regular files and edited owned sections are refused.
+When mise is missing from PATH, project checks use the executable in the bootstrap
+bin directory and emit one stderr note. Checks never install tools, and the
+receipt's environment digest is independent of this fallback. When neither
+location supplies mise, the command refuses before running checks or writing a
+receipt. Rerun the bootstrap if its bin directory is absent.
 
 The shared `ai-dlc` and `ai-dlc-cli` aliases are one machine-wide selection. Source
 bootstrap prepares a separate environment per checkout and leaves an existing
