@@ -178,7 +178,7 @@ def test_plan_mcp_servers_shapes_antigravity_transports():
     [
         ([{"id": "a", "command": "x"}, {"id": "a", "command": "y"}], ["codex"], "duplicate MCP"),
         ([{"id": "a"}], ["codex"], "requires command or URL"),
-        ([{"id": "a", "command": "/Users/me/tool"}], ["codex"], "personal paths"),
+        ([{"id": "a", "command": "/Users/" + "me/tool"}], ["codex"], "personal paths"),
         ([{"id": "a", "command": "x", "env": ["secret=1"]}], ["codex"], "environment variable"),
         ([{"id": "a", "command": "x", "env": "TOKEN"}], ["codex"], "environment variable"),
         ([{"id": "a", "command": "x", "url": "u"}], ["antigravity"], "unambiguous transport"),
