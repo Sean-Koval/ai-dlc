@@ -132,7 +132,7 @@ def test_check_modes_are_exclusive_and_style_needs_a_path(project, monkeypatch):
     assert invoke("docs", "check", "--root", str(project), "--style", "--strict").exit_code == 2
     both = invoke("docs", "check", "--root", str(project), "--style", "--inventory")
     assert both.exit_code == 2
-    assert "--inventory" in both.output and "--style" in both.output
+    assert "--inventory" in unstyle(both.output) and "--style" in unstyle(both.output)
 
 
 def test_review_default_is_impact_and_disposition_mode_records(project, tmp_path):
@@ -176,8 +176,8 @@ def test_review_default_is_impact_and_disposition_mode_records(project, tmp_path
     assert baseline.exit_code == 0, baseline.output
     (project / ".ai-dlc/documentation/baseline.json").write_text(baseline.stdout)
     (project / ".ai-dlc/documentation/current.json").write_text(recorded.stdout)
-    assert invoke("docs", "gate", "--root", str(project)).exit_code == 0
-    assert invoke("project", "docs-gate", "--root", str(project)).exit_code == 0
+    assert invoke("docs", "gate", "--root", str(project), "--base", "HEAD").exit_code == 0
+    assert invoke("project", "docs-gate", "--root", str(project), "--base", "HEAD").exit_code == 0
 
 
 def test_review_baseline_report_and_check_modes(project, tmp_path):
