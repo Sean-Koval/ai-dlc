@@ -149,11 +149,11 @@
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "c838603ec27f58648f833601f419aac7bcae857d7c157557bfe4c37cffe3cc0a",
+  "snapshot": "9f91dacf38250d5ba304728175b88124a6a38ab3d76cf18290fb9bc78e7ca26b",
   "sources": {
     ".ai-dlc/work/portable-profile-enrollment.toml": "1df79185178b4433dc26ad865b82853e2fb0dce6afee6c0069813b4f59e5191c",
     ".ai-dlc/work/provider-toolset-plan.toml": "42c943c8b6b5d8ec7496fe921c9ddf6aa7b19caefaeb23f498e7657983f94240",
-    ".ai-dlc/work/verification-evidence-archive.toml": "25d786824ef9308c74283dc09e6e73fba457c2d22d6d61748551ec2985f18c1b",
+    ".ai-dlc/work/verification-evidence-archive.toml": "c45904eb1f086b123edacd3adeec693ffd047585d724c2a648d7689670dee52a",
     "ai-dlc.toml": "ef35c3f6769d6ed552eae0d5a917b800ced2e3e5e8ee805db22607e11d5a84d8",
     "docs/archive/README.md": "88d91cfc7ee51a288d196ddfc70aaf29edb994e4af33fb56f5e5b299ac8c6495",
     "docs/archive/research/jinja2_template_generation.md": "f507a7e6d40b8d8913700ce97bf53a02b1f80f15dd466424991c0ab318ce843f",
