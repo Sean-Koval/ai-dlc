@@ -28,6 +28,7 @@ docs = typer.Typer(
     no_args_is_help=True,
     help="Project documentation: ownership checks, impact review, the gate, search and navigation.",
 )
+fde = typer.Typer(no_args_is_help=True, help="Local FDE engagement documents and stage gates.")
 work = typer.Typer(no_args_is_help=True)
 agents = typer.Typer(no_args_is_help=True)
 agent_bundle = typer.Typer(no_args_is_help=True)
@@ -41,6 +42,7 @@ design = typer.Typer(no_args_is_help=True)
 for name, group in [
     ("project", project),
     ("docs", docs),
+    ("fde", fde),
     ("work", work),
     ("agents", agents),
     ("profile", profile),
@@ -115,6 +117,45 @@ def scaffold(
     from ai_dlc.compatibility.legacy import scaffold as run
 
     emit(run(Path.cwd(), provider or [], all))
+
+
+@fde.command("scaffold")
+def fde_scaffold(
+    slug: str,
+    title: Annotated[str, typer.Option("--title")],
+    root: Path = Path("."),
+    docs_dir: str | None = None,
+    space: str | None = None,
+    parent: str | None = None,
+    dry_run: bool = False,
+):
+    """Create a charter and seven stage landing pages locally; never publishes."""
+    from ai_dlc.documentation.fde import scaffold_engagement
+
+    with service_call():
+        emit(
+            scaffold_engagement(
+                root,
+                slug,
+                title=title,
+                docs_dir=docs_dir,
+                space=space,
+                parent=parent,
+                dry_run=dry_run,
+            )
+        )
+
+
+@fde.command("check")
+def fde_check(slug: str, root: Path = Path("."), docs_dir: str | None = None):
+    """Validate local landing pages and the prerequisites for active stages."""
+    from ai_dlc.documentation.fde import check_engagement
+
+    with service_call():
+        result = check_engagement(root, slug, docs_dir=docs_dir)
+    emit(result)
+    if not result["valid"]:
+        raise typer.Exit(1)
 
 
 @design.command("capture")
