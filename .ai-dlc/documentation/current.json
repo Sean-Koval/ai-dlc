@@ -14,9 +14,9 @@
   ],
   "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "736390f9985ded774b068b747016a76003977d42ffec3005a0edff387e43ac15",
+  "snapshot": "27b8a0c4fa76449e2ac21fb86d4dd95ac6938019ffca338ee677f32ee705b1e1",
   "sources": {
-    ".ai-dlc/work/release-gate-history.toml": "6c15b25e2859c3deee6bcf96211e662d5c8786e2b32eae023d2d27d1819053f0",
+    ".ai-dlc/work/release-gate-history.toml": "722d6187dd39a5d1a3b2ca7e8c3c73d6476fce613f3c1838743b4218b09ec855",
     ".github/workflows/release.yml": "9fa9f2bc09c5555d9e1ae9e75a6f9c10beecaacdafb6cd43671c9e7d89b7bd22",
     "docs/catalog.toml": "53ab3b989c9addd8dc18968f6471afa3a151834c6c95a77a789d8af13b41c22e",
     "docs/runbooks/release-publication.md": "949d2367ab71c0a6b958d91abcf49e3d86263ff4d91001bf6d47ddbd15e29166",
