@@ -168,3 +168,11 @@ the note pending and preserves completion. `work start` returns up to five
 matching learning paths and first lines; read relevant notes before implementing.
 The session-start hook recalls notes for the branch's bound work record. Stop
 reminders use only ignored local friction counts and never transmit them.
+
+### Local frontend evidence
+
+The optional node `frontend` capability supplies a Playwright smoke check.
+`ai-dlc design capture` writes viewport screenshots and a manifest for
+`design-evaluate`; browser installation belongs to explicit setup. A named state
+waits for its visible selector and does not certify untested interactions.
+See [frontend smoke and capture](design-to-implementation.md#frontend-smoke-and-capture-evidence).

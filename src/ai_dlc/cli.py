@@ -37,6 +37,7 @@ machine = typer.Typer(no_args_is_help=True)
 knowledge = typer.Typer(no_args_is_help=True)
 provider = typer.Typer(no_args_is_help=True)
 mcp = typer.Typer(no_args_is_help=True)
+design = typer.Typer(no_args_is_help=True)
 for name, group in [
     ("project", project),
     ("docs", docs),
@@ -48,6 +49,7 @@ for name, group in [
     ("knowledge", knowledge),
     ("provider", provider),
     ("mcp", mcp),
+    ("design", design),
 ]:
     app.add_typer(group, name=name)
 agents.add_typer(agent_bundle, name="bundle")
@@ -113,6 +115,21 @@ def scaffold(
     from ai_dlc.compatibility.legacy import scaffold as run
 
     emit(run(Path.cwd(), provider or [], all))
+
+
+@design.command("capture")
+def design_capture(
+    url: Annotated[str, typer.Option("--url")],
+    out: Annotated[Path | None, typer.Option("--out")] = None,
+    viewport: Annotated[list[str] | None, typer.Option("--viewport")] = None,
+    state: Annotated[list[str] | None, typer.Option("--state")] = None,
+    root: Path = Path("."),
+):
+    """Capture viewport evidence after optional named selectors become visible."""
+    from ai_dlc.harness.design_capture import capture_design
+
+    with service_call():
+        conclude(capture_design(root, url=url, out=out, viewports=viewport, states=state))
 
 
 @project.command("check")

@@ -3,7 +3,7 @@
 python = "3.13.7"
 uv = "0.8.15"
 {% elif preset == 'node' %}
-node = "22.19.0"
+node = "{% if 'frontend' in capabilities %}22.23.1{% else %}22.19.0{% endif %}"
 {% endif %}
 {% if preset == 'rust' %}
 rust = "1.89.0"

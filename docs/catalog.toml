@@ -707,6 +707,14 @@ kind = "reference"
 owner = "repository-maintainers"
 status = "draft"
 
+code_paths = [
+    "src/ai_dlc/harness/design_capture.py",
+    "project-templates/project/playwright.config.ts",
+    "project-templates/project/tests/e2e/*.ts",
+]
+verification_paths = ["tests/test_frontend.py"]
+requirements = ["openspec/specs/frontend-capability-pack/spec.md"]
+
 [[documents]]
 id = "repo-workflows-greenfield"
 path = "docs/workflows/greenfield.md"

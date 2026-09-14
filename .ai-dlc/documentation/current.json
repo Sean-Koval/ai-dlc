@@ -1,125 +1,175 @@
 {
-  "base": "c8eee5f6a04272c213c6e06980deb17655cffb86",
+  "base": "68e9e4892c096eac2489a6e95d9142ce68d46af5",
   "decisions": [
     {
-      "outcome": "reviewed-no-change",
-      "reason": "Optional scaffold checks use the existing setup and template boundaries and create no provider role or new application service.",
+      "outcome": "updated",
+      "reason": "The harness package source map now includes local design capture; credentials, provider boundaries and local evidence ownership remain intact.",
       "target": "docs/architecture.md"
     },
     {
       "outcome": "reviewed-no-change",
-      "reason": "Backend assets use existing packaged template distribution; release installation and publication steps are unchanged.",
+      "reason": "Reviewed publication, bootstrap asset copying and source-install limits; optional frontend assets use existing packaging and do not change release commands or claim live release qualification.",
       "target": "docs/runbooks/release-publication.md"
     },
     {
       "outcome": "updated",
-      "reason": "Records bounded real Python and Node offline validator results and clearly separates fixture FastAPI coverage from live application qualification.",
+      "reason": "Records actual joint setup/offline/malformed-contract/live smoke and capture evidence plus the bounded installed-Redocly notifier probe: one update attempt before suppression, zero after, with no network sent.",
       "target": "docs/verification/backend-contracts.md"
     },
     {
       "outcome": "updated",
-      "reason": "Explains opt-in backend capability, pinned offline checks, editable contract ownership and Python application import/drift behavior.",
+      "reason": "Explains opt-in node frontend setup, pinned Playwright/browser installation, unset BASE_URL skip limits, and contained screenshot manifests with visible-selector states rather than interaction claims.",
+      "target": "docs/workflows/design-to-implementation.md"
+    },
+    {
+      "outcome": "reviewed-no-change",
+      "reason": "Reviewed backend setup and offline-check guidance; explicit update-notifier suppression restores the stated offline boundary without changing the documented user workflow.",
       "target": "docs/workflows/greenfield.md"
     },
     {
-      "outcome": "no-impact",
-      "reason": "Portable API guidance and generated owned copies require the contract and artifacts.contract in the same HTTP interface change.",
-      "target": ".agents/skills/spec-from-prd/SKILL.md"
+      "outcome": "updated",
+      "reason": "Explains opt-in node frontend setup, pinned Playwright/browser installation, unset BASE_URL skip limits, and contained screenshot manifests with visible-selector states rather than interaction claims.",
+      "target": "docs/workflows/tool-map.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Design evaluation requests and cites viewport/state capture manifests; missing evidence and untested interactions remain unverified.",
+      "target": ".agents/skills/design-evaluate/SKILL.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Portable API guidance and generated owned copies require the contract and artifacts.contract in the same HTTP interface change.",
+      "reason": "Template wiring, pinned module recipe, generated ownership or work metadata is explained by the updated design workflow; no additional durable document is needed.",
       "target": ".ai-dlc/agent-ownership.json"
     },
     {
-      "outcome": "no-impact",
-      "reason": "Portable API guidance and generated owned copies require the contract and artifacts.contract in the same HTTP interface change.",
-      "target": ".claude/skills/spec-from-prd/SKILL.md"
+      "outcome": "updated",
+      "reason": "Design evaluation requests and cites viewport/state capture manifests; missing evidence and untested interactions remain unverified.",
+      "target": ".claude/skills/design-evaluate/SKILL.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Portable API guidance and generated owned copies require the contract and artifacts.contract in the same HTTP interface change.",
+      "reason": "Template wiring, pinned module recipe, generated ownership or work metadata is explained by the updated design workflow; no additional durable document is needed.",
       "target": "agents/skills.lock.json"
     },
     {
-      "outcome": "no-impact",
-      "reason": "Portable API guidance and generated owned copies require the contract and artifacts.contract in the same HTTP interface change.",
-      "target": "agents/skills/spec-from-prd/SKILL.md"
+      "outcome": "updated",
+      "reason": "Design evaluation requests and cites viewport/state capture manifests; missing evidence and untested interactions remain unverified.",
+      "target": "agents/skills/design-evaluate/SKILL.md"
     },
     {
-      "outcome": "no-impact",
-      "reason": "Catalog enrolls the verification record and links backend checks to canonical workflow and specifications.",
+      "outcome": "updated",
+      "reason": "Maps the capture implementation, generated browser assets, frontend tests and formal requirements to the existing canonical design workflow.",
       "target": "docs/catalog.toml"
     },
     {
       "outcome": "no-impact",
-      "reason": "Formal specification and archived delivery artifacts define BE-01 and BE-02; durable operational guidance is in the greenfield workflow.",
-      "target": "openspec/changes/archive/2026-09-14-backend-capability-pack/design.md"
+      "reason": "Template wiring, pinned module recipe, generated ownership or work metadata is explained by the updated design workflow; no additional durable document is needed.",
+      "target": "modules/catalog.toml"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Archived frontend change and canonical FE-01/FE-02 requirements define smoke and capture behavior; DP-02 preserves evidence uncertainty and references the manifest.",
+      "target": "openspec/changes/archive/2026-09-14-frontend-capability-pack/design.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Archived frontend change and canonical FE-01/FE-02 requirements define smoke and capture behavior; DP-02 preserves evidence uncertainty and references the manifest.",
+      "target": "openspec/changes/archive/2026-09-14-frontend-capability-pack/proposal.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Archived frontend change and canonical FE-01/FE-02 requirements define smoke and capture behavior; DP-02 preserves evidence uncertainty and references the manifest.",
+      "target": "openspec/changes/archive/2026-09-14-frontend-capability-pack/specs/design-pm/spec.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Archived frontend change and canonical FE-01/FE-02 requirements define smoke and capture behavior; DP-02 preserves evidence uncertainty and references the manifest.",
+      "target": "openspec/changes/archive/2026-09-14-frontend-capability-pack/specs/frontend-capability-pack/spec.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Archived frontend change and canonical FE-01/FE-02 requirements define smoke and capture behavior; DP-02 preserves evidence uncertainty and references the manifest.",
+      "target": "openspec/changes/archive/2026-09-14-frontend-capability-pack/tasks.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Archived frontend change and canonical FE-01/FE-02 requirements define smoke and capture behavior; DP-02 preserves evidence uncertainty and references the manifest.",
+      "target": "openspec/specs/design-pm/spec.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Formal specification and archived delivery artifacts define BE-01 and BE-02; durable operational guidance is in the greenfield workflow.",
-      "target": "openspec/changes/archive/2026-09-14-backend-capability-pack/proposal.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Formal specification and archived delivery artifacts define BE-01 and BE-02; durable operational guidance is in the greenfield workflow.",
-      "target": "openspec/changes/archive/2026-09-14-backend-capability-pack/specs/backend-capability-pack/spec.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Formal specification and archived delivery artifacts define BE-01 and BE-02; durable operational guidance is in the greenfield workflow.",
-      "target": "openspec/changes/archive/2026-09-14-backend-capability-pack/tasks.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Scaffold capability/runtime/catalog selection is covered by the canonical greenfield workflow and bounded backend qualification record.",
+      "reason": "Template wiring, pinned module recipe, generated ownership or work metadata is explained by the updated design workflow; no additional durable document is needed.",
       "target": "project-templates/copier.yml"
     },
     {
       "outcome": "no-impact",
-      "reason": "Scaffold capability/runtime/catalog selection is covered by the canonical greenfield workflow and bounded backend qualification record.",
+      "reason": "Template wiring, pinned module recipe, generated ownership or work metadata is explained by the updated design workflow; no additional durable document is needed.",
       "target": "project-templates/project/.mise.toml.jinja"
     },
     {
-      "outcome": "no-impact",
-      "reason": "Scaffold capability/runtime/catalog selection is covered by the canonical greenfield workflow and bounded backend qualification record.",
-      "target": "project-templates/project/docs/catalog.toml.jinja"
+      "outcome": "updated",
+      "reason": "Explains opt-in node frontend setup, pinned Playwright/browser installation, unset BASE_URL skip limits, and contained screenshot manifests with visible-selector states rather than interaction claims.",
+      "target": "project-templates/project/AI-DLC.md"
     },
     {
       "outcome": "updated",
-      "reason": "Portable workflow mirrors canonical backend selection, pinned checks and explicit application import behavior.",
-      "target": "project-templates/project/docs/workflows/greenfield.md"
+      "reason": "Explains opt-in node frontend setup, pinned Playwright/browser installation, unset BASE_URL skip limits, and contained screenshot manifests with visible-selector states rather than interaction claims.",
+      "target": "project-templates/project/docs/workflows/design-to-implementation.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Explains opt-in node frontend setup, pinned Playwright/browser installation, unset BASE_URL skip limits, and contained screenshot manifests with visible-selector states rather than interaction claims.",
+      "target": "project-templates/project/docs/workflows/tool-map.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Template wiring, pinned module recipe, generated ownership or work metadata is explained by the updated design workflow; no additional durable document is needed.",
+      "target": "project-templates/project/package.json.jinja"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Template wiring, pinned module recipe, generated ownership or work metadata is explained by the updated design workflow; no additional durable document is needed.",
+      "target": "tests/test_docs_commands.py"
     }
   ],
-  "reviewer": "Codex",
+  "reviewer": "codex-delivery",
   "schema": 1,
-  "snapshot": "adc098a0867f6cae4111f490233941e2c37298e51d89dd161e1b3bd281e7d0be",
+  "snapshot": "c9dcd92e64873faf41bf22359daaf11c64db3bdbd8bcd53d4bfd8d24715383ba",
   "sources": {
-    ".agents/skills/spec-from-prd/SKILL.md": "68fa18a6e5fd7fdceaedd74f09c2e26e66ffad8c1d9121525a4d727df8bbb441",
-    ".ai-dlc/agent-ownership.json": "e06411c029ca0ac3415bdd88aeec18de6d3686e69f8d1abffe56a4dba3bd6a3f",
-    ".claude/skills/spec-from-prd/SKILL.md": "68fa18a6e5fd7fdceaedd74f09c2e26e66ffad8c1d9121525a4d727df8bbb441",
+    ".agents/skills/design-evaluate/SKILL.md": "41084df0a78a63e3742ee089acf167c019aad3a13b96a78995620dfd90e661e6",
+    ".ai-dlc/agent-ownership.json": "23d42cf7db9834d5b86f89a1e614f79ab819edde97c886697f373f17e876c30a",
+    ".claude/skills/design-evaluate/SKILL.md": "41084df0a78a63e3742ee089acf167c019aad3a13b96a78995620dfd90e661e6",
     ".github/workflows/release.yml": "c32926d61ee30cd32aa03fa899c74f395decdb152833f572d4e1ade4c28993b5",
-    "agents/skills.lock.json": "5a82e68a687803be238f7e5c2878cd6bf0ae8ace193b10d48845e2ad23b4a8e3",
-    "agents/skills/spec-from-prd/SKILL.md": "68fa18a6e5fd7fdceaedd74f09c2e26e66ffad8c1d9121525a4d727df8bbb441",
-    "docs/architecture.md": "a8aace94253d79c6384f2fe5b8c7b45f0f1b1b4da27b2d5bd6d1cd3da612a4e8",
-    "docs/catalog.toml": "9a24a3a3511eecdf2240773ca080b8701b5eb9a8f4a8071621d69d634043517d",
+    "agents/skills.lock.json": "93789ced0464ce5f3095b9da921c7aa9723678e04573ff6173366a1414e42b64",
+    "agents/skills/design-evaluate/SKILL.md": "41084df0a78a63e3742ee089acf167c019aad3a13b96a78995620dfd90e661e6",
+    "docs/architecture.md": "5f39851083b6cf1ac1ef9a9d0ad69be7b322841838930478fd41ce2ccd215004",
+    "docs/catalog.toml": "177674bfa816a6966f84c9b7ef5f625576b531ed1b406159425d9042b70e11a0",
     "docs/runbooks/release-publication.md": "54b176eafc5e7749feb163cb24487edccd60aea57c6cef32ef3d7da9f7ed48a1",
-    "docs/verification/backend-contracts.md": "0d273fc43e534bc1217b7a746b9b53ab9cc036fa6dee127aa4147118af86c342",
+    "docs/verification/backend-contracts.md": "24d63cd64db3cc487950487a8a3210bfe02892fa07a7c0294d52ca86b5d523c6",
+    "docs/workflows/design-to-implementation.md": "f9bc89d43e21e10339424461c7ec59498e91fd9b564df132ac7bf0858ab0bb1e",
     "docs/workflows/greenfield.md": "fe61ff87be4661c5e66758314a32efe7758506d57db78e74c2353bf55a09c3da",
-    "openspec/changes/archive/2026-09-14-backend-capability-pack/design.md": "4611572cb660d0595ba9ad8470008fc41e7a0862c7d6dca55600610554fc631d",
-    "openspec/changes/archive/2026-09-14-backend-capability-pack/proposal.md": "4ff2ee5879eabb7fd0145c7c9c438109d471cdba0a900e257e452f8436831603",
-    "openspec/changes/archive/2026-09-14-backend-capability-pack/specs/backend-capability-pack/spec.md": "e435f2c7a9bf27409317ecbd5421ca0a812e1de7dff2561440ae7c569dd24053",
-    "openspec/changes/archive/2026-09-14-backend-capability-pack/tasks.md": "6728ae5368e6ee59583640f49f7b680d7d2710934045d5361dc838ffcb80fb06",
+    "docs/workflows/tool-map.md": "5be4c6b7715a057a90aad314bd272cc5b0cc949aba961c8665dd59120ca731a8",
+    "modules/catalog.toml": "d879c26c07fddb46601dcb62b138d4334ed99631c48ff663451d376d633c6f38",
+    "openspec/changes/archive/2026-09-14-frontend-capability-pack/design.md": "6cd6584dff4cd28a748fcca964b4c1e45034bbd9616ce9b01ce9136676c32b7c",
+    "openspec/changes/archive/2026-09-14-frontend-capability-pack/proposal.md": "d5e9c98271458cd8cdc358ac7c3803e0b7e2584c7a1a8273a2d1fbd5292e96a7",
+    "openspec/changes/archive/2026-09-14-frontend-capability-pack/specs/design-pm/spec.md": "b601ee9b9f2af82c1a9d9dc90e6c29cc348e63481f6b78836445a998bd0472a9",
+    "openspec/changes/archive/2026-09-14-frontend-capability-pack/specs/frontend-capability-pack/spec.md": "e3be488f8118be789a9ee37e571450df2be8a9434e4a87e6607008c36d707709",
+    "openspec/changes/archive/2026-09-14-frontend-capability-pack/tasks.md": "449c0eb94573b0b3da134d619cfd7cb5a37d5e4d5ef89a713e86488d7189ec91",
     "openspec/specs/backend-capability-pack/spec.md": "45fc3ca17f9953edf4aa15f24c1a4176e84bceaf179fdb10f35ab58fd85e6a3e",
-    "project-templates/copier.yml": "17bcc277107d87c368c4fe5f87de0a5a42ff0b82ef152a7a553a26a51fcc3fee",
-    "project-templates/project/.mise.toml.jinja": "f000c769b4c237f8b2fe503f092f17ab45d18aba251f478f29b061a48b89d002",
-    "project-templates/project/ai-dlc.toml.jinja": "b1717cdd1ba154f1d9dae7a22f27664c4078bb211911235f18de4fb660269b28",
+    "openspec/specs/design-pm/spec.md": "a186d74fce9b492ec4b434891e818ad4895b4067583f014541dc463bc9e4a3b3",
+    "openspec/specs/frontend-capability-pack/spec.md": "4832235ee58b5277725efcb9aa056b163a8165d968c3c969c6d9383bd6d4a167",
+    "project-templates/copier.yml": "ffd5d0621cb457326a8e105060d8938f7be63bfe7451a82679d93b7a31e3abce",
+    "project-templates/project/.mise.toml.jinja": "705656d395a9dd753333552b76416fe84af8506421aab6b628431cc664c00eab",
+    "project-templates/project/AI-DLC.md": "310b09a3bd74141b14f8992f2fc7568a29b62dc3c03f99bc424c2fc06d9bf2db",
+    "project-templates/project/ai-dlc.toml.jinja": "1e221b847ac0bbcb3641370a9e7240282c8291fe708f0ea3936051d6d64620d0",
     "project-templates/project/docs/api/openapi.yaml": "744e869692de7df60d4195669a45f8ade009b04c00c203c4853e30f4b9af5b2d",
-    "project-templates/project/docs/catalog.toml.jinja": "51120727a77bbba96f34e239a490d3c2373ba3b1bb68dfc347997ffd2b40af9c",
-    "project-templates/project/docs/workflows/greenfield.md": "4a0a6b71b99f74174e4735145c3c06d46422337b46d80a6f7d466f5a91716b0b",
+    "project-templates/project/docs/workflows/design-to-implementation.md": "72723e9962807c9542f477c27e89a8889426d67fa225ea9a57aa1bae95b104e7",
+    "project-templates/project/docs/workflows/tool-map.md": "7f5c6949e7011e96fe0899575a9fab33e390ce4e3f911e3f51cfe61ea64774f9",
+    "project-templates/project/package.json.jinja": "a661ce7863571dfbe09d00ae9355d5ad9953011ab86d833a02765a2821efe650",
+    "project-templates/project/playwright.config.ts": "d06e3c907f16f5027d6e2f47112b5cca353e68525a528957f6f760eca940fd78",
     "project-templates/project/scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
     "project-templates/project/scripts/check_api_contract_drift.py": "81c6da34445a1329223f2592eb1389aaf35d2e12b73da73d7b9c9ffdb0b55173",
+    "project-templates/project/tests/e2e/smoke.spec.ts": "91b5f3fe1d42286e031f1fe37bbaf4610ede0dcda47bfa3eb69d8c77bdbab2e0",
     "pyproject.toml": "57b5a7f4ea777185ab5df4b34c4117a190d41434e1e236b38735987c96ccc529",
     "scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
     "scripts/check_generated.py": "2a5e65cb653c0cf9b44dc34765a6d2d4affcfda9b310231a2abed4b3de82771a",
@@ -129,7 +179,7 @@
     "scripts/run_skill_evaluation.py": "46a97694bae155b2418d172971480e031f510acc864b9d91fa546f98c754729f",
     "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
     "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
-    "src/ai_dlc/cli.py": "be08dc553bd0408474293d95ec00331bf7fa917105e8f0ee6d36778554582212",
+    "src/ai_dlc/cli.py": "be00f7a7c8e8f7b9caa0a65cb386af48bcbbc52d2ccd999b560a5bb0665eea94",
     "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
     "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
     "src/ai_dlc/config.py": "31677c538713aa41d3625ef9570f962ed8ee5d32bd4b5b3747437e8fd8fb9d02",
@@ -161,6 +211,7 @@
     "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
     "src/ai_dlc/harness/agents.py": "eb9bf3fc625498b1b654b2564b65b8cd5594c1a4ecb0ce50e9d735519eda7937",
     "src/ai_dlc/harness/components.py": "b64cd2ae837f83a37ddd1c74dad25fcd16fe8733715c224c7d64673784ebba11",
+    "src/ai_dlc/harness/design_capture.py": "8b872492b88f4a7728bedf0ae8a1edaad2312a918248bf8f5d051c8bd8b42a58",
     "src/ai_dlc/harness/friction.py": "2ee91f430edda968db2f00762f07245a7717618f992b3a260683d79e390c2882",
     "src/ai_dlc/harness/hooks.py": "1d91a86e9a0362fa3d2a293a828ca3c050af20155811cba336742ad58b2bf308",
     "src/ai_dlc/harness/native_composition.py": "1e4c5729ff31cb91820bd8df3d15b60c1067b4a5f2b89381888211470dc79bc8",
@@ -192,7 +243,7 @@
     "src/ai_dlc/setup/provision.py": "6ec463fb9516aa01de58b482a8f14c3cc8c14585a25fa46e42b144d4c2fe5dfc",
     "src/ai_dlc/setup/readiness.py": "e0984a1f504ee87f3c4c1939624b34ccfe2fd6b7315df365166e95ff3b975d55",
     "src/ai_dlc/setup/rebind.py": "2458691c83e22c613ee3eb7541e103aee7264e7b23a78c17194135bc3d5a35c6",
-    "src/ai_dlc/setup/templates.py": "28b83efe00da56e8fad524ab92446b2c5aa39f38a02ed9d022b1683fbb6f1a1a",
+    "src/ai_dlc/setup/templates.py": "04ca259418b15f41c826c8085025f6cbab0c22c998fde294ef9acbb132cc2f55",
     "src/ai_dlc/setup/tracker_targets.py": "b04533ac254bde0aa7bddf083097d815153998f15b1042645ac4ffc38f848319",
     "src/ai_dlc/setup/workstation.py": "8ac8f2467ee925392f777e15d921ad79da8a10c94267bbd30f5386455db4e8d2",
     "src/ai_dlc/toml_edit.py": "696057b2848ca8b57e5189d1c78441fc6c1e06994f480f6f13f8dd31c050515e",
@@ -205,8 +256,10 @@
     "src/ai_dlc/work/traceability.py": "e9fbca5153cdd710b78872c66651269184ee5f3f1313f313b65df212430e8cc8",
     "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
     "src/ai_dlc/work/workflow.py": "b16ef66b0bea70ece8aaf15003e5e0233dbcff82051b3da24d59b94106da3fca",
-    "tests/test_backend_capability.py": "38d0b269ab04e174685d1dedf92e669f9995fb77bb77cca93d723ed1cf82abe4",
+    "tests/test_backend_capability.py": "aedd591caa61c646bcc13812728f9990e235dfa4f84f021ebf629f10d3f6d2e2",
     "tests/test_bootstrap.py": "20c1c5d49181b22b969a19063ff108554be7eb492711bcec95c9a52599cf1bf2",
+    "tests/test_docs_commands.py": "1536b70efbb99ed30ba2d119892f6d946151f061895b5a5787022def1c1ad670",
+    "tests/test_frontend.py": "8a8b7c0d049e885295e7685243965bf734959451723250178f93094cb740d0a6",
     "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
     "tests/test_release_workflow.py": "a50523b5d6dec682188d489780d29a74f2a01c60c310071ce6758898f3d12dc0"
   }

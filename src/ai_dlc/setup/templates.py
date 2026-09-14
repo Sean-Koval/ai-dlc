@@ -27,7 +27,7 @@ RUNTIME_DIRS = {
     ".cache",
 }
 CAPABILITIES = ["specs", "tracker", "knowledge", "scm", "deploy", "agent-client"]
-OPTIONAL_CAPABILITIES = ["backend"]
+OPTIONAL_CAPABILITIES = ["backend", "frontend"]
 
 
 def _ignore(root: Path):
@@ -215,6 +215,8 @@ def adopt(
     capabilities = list(CAPABILITIES if capabilities is None else dict.fromkeys(capabilities))
     if set(capabilities) - set(CAPABILITIES + OPTIONAL_CAPABILITIES):
         raise ValueError("Unknown role capability")
+    if "frontend" in capabilities and preset != "node":
+        raise ValueError("The frontend capability requires the node preset")
     toolset = plan_toolset(
         capabilities=capabilities, providers=providers, agent_clients=agent_clients
     )
