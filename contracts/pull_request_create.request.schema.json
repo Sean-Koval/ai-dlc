@@ -1,0 +1,32 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "base": {
+      "minLength": 1,
+      "title": "Base",
+      "type": "string"
+    },
+    "body": {
+      "default": "",
+      "title": "Body",
+      "type": "string"
+    },
+    "head": {
+      "minLength": 1,
+      "title": "Head",
+      "type": "string"
+    },
+    "title": {
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "base",
+    "head"
+  ],
+  "title": "PullRequestCreate",
+  "type": "object"
+}

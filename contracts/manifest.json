@@ -46,7 +46,8 @@
               "merged",
               "ci",
               "deployment",
-              "append"
+              "append",
+              "pull_request_create"
             ],
             "title": "Operation",
             "type": "string"
@@ -123,7 +124,8 @@
               "merged",
               "ci",
               "deployment",
-              "append"
+              "append",
+              "pull_request_create"
             ],
             "title": "Operation",
             "type": "string"
@@ -242,7 +244,8 @@
               "merged",
               "ci",
               "deployment",
-              "append"
+              "append",
+              "pull_request_create"
             ],
             "title": "Operation",
             "type": "string"
@@ -362,7 +365,8 @@
               "merged",
               "ci",
               "deployment",
-              "append"
+              "append",
+              "pull_request_create"
             ],
             "title": "Operation",
             "type": "string"
@@ -472,7 +476,8 @@
               "merged",
               "ci",
               "deployment",
-              "append"
+              "append",
+              "pull_request_create"
             ],
             "title": "Operation",
             "type": "string"
@@ -574,7 +579,8 @@
               "merged",
               "ci",
               "deployment",
-              "append"
+              "append",
+              "pull_request_create"
             ],
             "title": "Operation",
             "type": "string"
@@ -677,7 +683,8 @@
               "merged",
               "ci",
               "deployment",
-              "append"
+              "append",
+              "pull_request_create"
             ],
             "title": "Operation",
             "type": "string"
@@ -805,7 +812,8 @@
               "merged",
               "ci",
               "deployment",
-              "append"
+              "append",
+              "pull_request_create"
             ],
             "title": "Operation",
             "type": "string"
@@ -903,7 +911,8 @@
               "merged",
               "ci",
               "deployment",
-              "append"
+              "append",
+              "pull_request_create"
             ],
             "title": "Operation",
             "type": "string"
@@ -1000,7 +1009,8 @@
               "merged",
               "ci",
               "deployment",
-              "append"
+              "append",
+              "pull_request_create"
             ],
             "title": "Operation",
             "type": "string"
@@ -1065,6 +1075,116 @@
         "type": "object"
       }
     },
+    "pull_request_create": {
+      "payload": {
+        "additionalProperties": false,
+        "properties": {
+          "base": {
+            "minLength": 1,
+            "title": "Base",
+            "type": "string"
+          },
+          "body": {
+            "default": "",
+            "title": "Body",
+            "type": "string"
+          },
+          "head": {
+            "minLength": 1,
+            "title": "Head",
+            "type": "string"
+          },
+          "title": {
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "base",
+          "head"
+        ],
+        "title": "PullRequestCreate",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "capabilities",
+              "prepare",
+              "reconcile_closed",
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append",
+              "pull_request_create"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "additionalProperties": true,
+        "properties": {
+          "number": {
+            "minimum": 1,
+            "title": "Number",
+            "type": "integer"
+          },
+          "url": {
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "number"
+        ],
+        "title": "PullRequestResult",
+        "type": "object"
+      }
+    },
     "read": {
       "payload": {
         "additionalProperties": false,
@@ -1098,7 +1218,8 @@
               "merged",
               "ci",
               "deployment",
-              "append"
+              "append",
+              "pull_request_create"
             ],
             "title": "Operation",
             "type": "string"
@@ -1202,7 +1323,8 @@
               "merged",
               "ci",
               "deployment",
-              "append"
+              "append",
+              "pull_request_create"
             ],
             "title": "Operation",
             "type": "string"
@@ -1312,7 +1434,8 @@
               "merged",
               "ci",
               "deployment",
-              "append"
+              "append",
+              "pull_request_create"
             ],
             "title": "Operation",
             "type": "string"
@@ -1396,7 +1519,9 @@
         "merged",
         "ci"
       ],
-      "optional": []
+      "optional": [
+        "pull_request_create"
+      ]
     },
     "specs": {
       "mandatory": [

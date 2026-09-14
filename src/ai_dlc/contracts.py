@@ -23,6 +23,7 @@ class Request(BaseModel):
         "ci",
         "deployment",
         "append",
+        "pull_request_create",
     ]
     payload: dict
     operation_id: str | None = None
@@ -151,8 +152,28 @@ class AppendResult(BaseModel):
     path: str = Field(min_length=1)
 
 
+class PullRequestCreate(Payload):
+    title: str = Field(min_length=1)
+    body: str = ""
+    base: str = Field(min_length=1)
+    head: str = Field(min_length=1)
+
+
+class PullRequestResult(BaseModel):
+    model_config = ConfigDict(extra="allow")
+    url: str = Field(min_length=1)
+    number: int = Field(ge=1)
+
+
 PAYLOADS.update(
-    {"current": Current, "merged": Read, "ci": Revision, "deployment": Revision, "append": Append}
+    {
+        "current": Current,
+        "merged": Read,
+        "ci": Revision,
+        "deployment": Revision,
+        "append": Append,
+        "pull_request_create": PullRequestCreate,
+    }
 )
 RESPONSES = {
     "capabilities": CapabilityResult,
@@ -168,6 +189,7 @@ RESPONSES = {
     "ci": CIResult,
     "deployment": DeploymentResult,
     "append": AppendResult,
+    "pull_request_create": PullRequestResult,
 }
 
 
@@ -240,7 +262,7 @@ def manifest():
                 "optional": ["capabilities", "link", "prepare", "reconcile_closed"],
             },
             "specs": {"mandatory": ["current"], "optional": []},
-            "scm": {"mandatory": ["merged", "ci"], "optional": []},
+            "scm": {"mandatory": ["merged", "ci"], "optional": ["pull_request_create"]},
             "deploy": {"mandatory": ["deployment"], "optional": []},
             "knowledge": {"mandatory": ["append"], "optional": []},
         },

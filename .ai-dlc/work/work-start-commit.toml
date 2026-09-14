@@ -1,0 +1,37 @@
+schema = 1
+id = "work-start-commit"
+title = "Collapse the delivery path: work start commits its record and work pr opens the pull request"
+scope = "Commit the work record from work start and work link (staging only the record, with --no-commit preserving the previous behaviour), add the optional SCM contract operation pull_request_create implemented by the GitHub adapter through gh pr create, and add work pr <id> which renders the body from the record, opens the pull request once under a journaled operation, links the URL and commits the record. Update delivery guidance to the two-command path."
+requires_spec = true
+spec_reason = "Changes the observable behaviour of work start and work link, adds an SCM contract operation and a new work command, all observable delivery outcomes."
+acceptance = [
+    "After work start <id>, git status --porcelain is empty and git log -1 is the start commit touching only the record.",
+    "work pr <id> on a pushed branch creates exactly one PR, links it, commits the link; a second call is a no-op that prints the existing URL.",
+    "work pr without an upstream refuses with a remedy and no side effects.",
+    "Tests use a fake SCM provider and a real temporary git repository (see existing start tests); no test calls GitHub.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "TR-06",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/archive/2026-09-14-work-start-commit"
+tracker = "73"
+branch = "work/work-start-commit"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/123"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"
