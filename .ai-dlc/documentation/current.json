@@ -12,8 +12,8 @@
       "target": "docs/runbooks/release-publication.md"
     },
     {
-      "outcome": "no-impact",
-      "reason": "Template wiring, pinned module recipe, generated ownership or work metadata is explained by the updated design workflow; no additional durable document is needed.",
+      "outcome": "updated",
+      "reason": "Records actual joint setup/offline/malformed-contract/live smoke and capture evidence plus the bounded installed-Redocly notifier probe: one update attempt before suppression, zero after, with no network sent.",
       "target": "docs/verification/backend-contracts.md"
     },
     {
@@ -22,8 +22,8 @@
       "target": "docs/workflows/design-to-implementation.md"
     },
     {
-      "outcome": "updated",
-      "reason": "Explains opt-in node frontend setup, pinned Playwright/browser installation, unset BASE_URL skip limits, and contained screenshot manifests with visible-selector states rather than interaction claims.",
+      "outcome": "reviewed-no-change",
+      "reason": "Reviewed backend setup and offline-check guidance; explicit update-notifier suppression restores the stated offline boundary without changing the documented user workflow.",
       "target": "docs/workflows/greenfield.md"
     },
     {
@@ -129,7 +129,7 @@
   ],
   "reviewer": "codex-delivery",
   "schema": 1,
-  "snapshot": "15b56839a6239ddd3ffe32adec599c6d2b8715e0d00eb39ff20cbd7da454794f",
+  "snapshot": "b9208c68635b5daefd3424066f5a535ad61b328932918dacdb532f50188a2ed8",
   "sources": {
     ".agents/skills/design-evaluate/SKILL.md": "41084df0a78a63e3742ee089acf167c019aad3a13b96a78995620dfd90e661e6",
     ".ai-dlc/agent-ownership.json": "23d42cf7db9834d5b86f89a1e614f79ab819edde97c886697f373f17e876c30a",
@@ -140,7 +140,7 @@
     "docs/architecture.md": "5f39851083b6cf1ac1ef9a9d0ad69be7b322841838930478fd41ce2ccd215004",
     "docs/catalog.toml": "177674bfa816a6966f84c9b7ef5f625576b531ed1b406159425d9042b70e11a0",
     "docs/runbooks/release-publication.md": "54b176eafc5e7749feb163cb24487edccd60aea57c6cef32ef3d7da9f7ed48a1",
-    "docs/verification/backend-contracts.md": "0d273fc43e534bc1217b7a746b9b53ab9cc036fa6dee127aa4147118af86c342",
+    "docs/verification/backend-contracts.md": "e3676ee86e0db9dc0565f9a8f13d8c750abb02cfc175547c6785d995b8bb4907",
     "docs/workflows/design-to-implementation.md": "f9bc89d43e21e10339424461c7ec59498e91fd9b564df132ac7bf0858ab0bb1e",
     "docs/workflows/greenfield.md": "fe61ff87be4661c5e66758314a32efe7758506d57db78e74c2353bf55a09c3da",
     "docs/workflows/tool-map.md": "5be4c6b7715a057a90aad314bd272cc5b0cc949aba961c8665dd59120ca731a8",
@@ -156,7 +156,7 @@
     "project-templates/copier.yml": "ffd5d0621cb457326a8e105060d8938f7be63bfe7451a82679d93b7a31e3abce",
     "project-templates/project/.mise.toml.jinja": "705656d395a9dd753333552b76416fe84af8506421aab6b628431cc664c00eab",
     "project-templates/project/AI-DLC.md": "310b09a3bd74141b14f8992f2fc7568a29b62dc3c03f99bc424c2fc06d9bf2db",
-    "project-templates/project/ai-dlc.toml.jinja": "4566727f36ab868faa3961e42bba899d745ee88db236f7abfb45470b90e09d08",
+    "project-templates/project/ai-dlc.toml.jinja": "1e221b847ac0bbcb3641370a9e7240282c8291fe708f0ea3936051d6d64620d0",
     "project-templates/project/docs/api/openapi.yaml": "744e869692de7df60d4195669a45f8ade009b04c00c203c4853e30f4b9af5b2d",
     "project-templates/project/docs/workflows/design-to-implementation.md": "72723e9962807c9542f477c27e89a8889426d67fa225ea9a57aa1bae95b104e7",
     "project-templates/project/docs/workflows/tool-map.md": "7f5c6949e7011e96fe0899575a9fab33e390ce4e3f911e3f51cfe61ea64774f9",
@@ -251,7 +251,7 @@
     "src/ai_dlc/work/traceability.py": "e9fbca5153cdd710b78872c66651269184ee5f3f1313f313b65df212430e8cc8",
     "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
     "src/ai_dlc/work/workflow.py": "b16ef66b0bea70ece8aaf15003e5e0233dbcff82051b3da24d59b94106da3fca",
-    "tests/test_backend_capability.py": "38d0b269ab04e174685d1dedf92e669f9995fb77bb77cca93d723ed1cf82abe4",
+    "tests/test_backend_capability.py": "aedd591caa61c646bcc13812728f9990e235dfa4f84f021ebf629f10d3f6d2e2",
     "tests/test_bootstrap.py": "20c1c5d49181b22b969a19063ff108554be7eb492711bcec95c9a52599cf1bf2",
     "tests/test_frontend.py": "8a8b7c0d049e885295e7685243965bf734959451723250178f93094cb740d0a6",
     "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",

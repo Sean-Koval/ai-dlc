@@ -100,3 +100,37 @@ def test_python_drift_compares_contract_and_reports_import_failure(tmp_path, exp
     app.write_text('from fastapi import FastAPI\nraise RuntimeError("broken app")\n')
     result = run_drift(tmp_path)
     assert result.returncode != 0 and "broken app" in result.stderr
+
+
+@pytest.mark.parametrize("capabilities", [["backend"], ["frontend", "backend"]])
+def test_node_contract_commands_disable_validator_update_requests(tmp_path, capabilities):
+    import os
+
+    root = tmp_path / "node"
+    adopt(root, preset="node", capabilities=capabilities, initialize=True, apply=True)
+    manifest = tomllib.loads((root / "ai-dlc.toml").read_text())
+    executable = tmp_path / "bin/npx"
+    executable.parent.mkdir()
+    executable.write_text(
+        '#!/bin/sh\nprintf "%s\\n" "$REDOCLY_SUPPRESS_UPDATE_NOTICE"\n'
+        '[ "$REDOCLY_SUPPRESS_UPDATE_NOTICE" = true ]\n'
+    )
+    executable.chmod(0o755)
+    environment = dict(os.environ, PATH=str(executable.parent))
+    environment.pop("REDOCLY_SUPPRESS_UPDATE_NOTICE", None)
+    setup = next(step for step in manifest["setup"]["steps"] if step["id"] == "api-contract-tools")
+    for command in [
+        manifest["checks"]["commands"]["api-contract"],
+        setup["command"],
+        setup["verify"],
+    ]:
+        result = subprocess.run(
+            command,
+            shell=True,
+            cwd=root,
+            env=environment,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert result.returncode == 0 and result.stdout.strip() == "true"
