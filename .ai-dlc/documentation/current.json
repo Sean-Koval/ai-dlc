@@ -1,5 +1,5 @@
 {
-  "base": "21e6e96f098bfe08b4fc27e732f7613f2c764b31",
+  "base": "c9d3db25ce569cc0d6e485683a82338386811ddf",
   "decisions": [
     {
       "outcome": "updated",
@@ -44,11 +44,11 @@
   ],
   "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "e7aae7cc1b702abbd4e5140d055db4d23743367088233a14de67ec51d66a5b96",
+  "snapshot": "90dc8b81d1fb165092b236373d93e10d6a60c0bb1513b7e1c1a9064739c5e356",
   "sources": {
     ".github/workflows/release.yml": "c32926d61ee30cd32aa03fa899c74f395decdb152833f572d4e1ade4c28993b5",
-    "README.md": "c4c56107d924adef211227168370f50ef47833b648e6e87eb830f4a22d633974",
-    "docs/catalog.toml": "858491fc462a155911259661eb0d0d799772735529f97cab0aaa7313d0515880",
+    "README.md": "36181eccd23b4d471c48aeb567cf140c7dca013eb7171d2d7a7e953cb2501a99",
+    "docs/catalog.toml": "2d26cc3de271b239d02f381e227975d403bba0e619b01149f1e8f9cf842bbb72",
     "docs/release-verification.md": "5c902c588fb79418b58363ef0485a0157ce30a1411efd3ac939e19c57b8c7fea",
     "docs/runbooks/release-publication.md": "54b176eafc5e7749feb163cb24487edccd60aea57c6cef32ef3d7da9f7ed48a1",
     "openspec/changes/archive/2026-09-14-release-publication-verification/design.md": "dc3af6949f2be446baedfad348284a9124fcbe7351b8041f18147d8303e6a5f8",
