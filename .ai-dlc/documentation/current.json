@@ -1,208 +1,106 @@
 {
-  "base": "3e85143b6f6d64a598eb347c6cd00a59e1d7d69f",
+  "base": "c3789a7caa6a3ff70cd35df9564a358af92fc6c3",
   "decisions": [
     {
       "outcome": "updated",
-      "reason": "Adds the verification/ entry so every moved capture is reachable from the archive index.",
+      "reason": "Lists the handoffs/ directory, the roadmap ledger and the release history so every moved section is reachable.",
       "target": "docs/archive/README.md"
     },
     {
       "outcome": "updated",
-      "reason": "Link to the documentation baseline repointed to its archived path; navigation only.",
-      "target": "docs/archive/research/jinja2_template_generation.md"
+      "reason": "Executor handoff moved from docs/handoffs/ with links repointed and a moved-file note; content otherwise unchanged.",
+      "target": "docs/archive/handoffs/framework-delivery.md"
     },
     {
       "outcome": "updated",
-      "reason": "Baseline link repointed to docs/archive/verification/; wording unchanged.",
+      "reason": "Handoff link repointed to docs/archive/handoffs/; wording unchanged.",
+      "target": "docs/archive/planning/2026-09-05-framework-delivery.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "New archive document holding the roadmap's reconciliation and delivered-and-cancelled sections verbatim.",
+      "target": "docs/archive/planning/2026-09-roadmap-ledger.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Handoff link repointed to docs/archive/handoffs/; wording unchanged.",
+      "target": "docs/archive/planning/framework-delivery-review.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Handoff link repointed to docs/archive/handoffs/; wording unchanged.",
+      "target": "docs/archive/planning/provider-toolset-handoff.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Handoff link repointed to docs/archive/handoffs/; wording unchanged.",
+      "target": "docs/archive/planning/stage-cleanup-review-2026-09-06.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "New archive document holding the dated release records older than the latest reconciliation verbatim.",
+      "target": "docs/archive/verification/release-history.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Handoff link repointed to the archive and its sentence made historical; navigation only.",
       "target": "docs/index.md"
     },
     {
       "outcome": "updated",
-      "reason": "Baseline link repointed to docs/archive/verification/; wording unchanged.",
+      "reason": "Handoff link repointed to the archive; wording unchanged.",
+      "target": "docs/product-direction.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Keeps what a release must prove, the outstanding list and the September 12 and 13 records; older dated sections moved to the archive with a pointer.",
+      "target": "docs/release-verification.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Rewritten to the current outcome, next three increments, status tracking and not-planned list; the ledger sections moved to the archive.",
       "target": "docs/roadmap.md"
     },
     {
-      "outcome": "updated",
-      "reason": "Historical baseline link repointed to its archived path.",
-      "target": "docs/verification/documentation-workflow.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Typo at189913b corrected to at 189913b.",
-      "target": "docs/verification/framework-qualification.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Capture links repointed to docs/archive/verification/native-setup-recovery-189913b/.",
-      "target": "docs/verification/native-setup-recovery.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Adds a note mapping the pre-move module paths in the DK table to their current locations.",
-      "target": "docs/verification/project-knowledge-repair.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Capture links repointed to docs/archive/verification/setup-continuity-189913b/.",
-      "target": "docs/verification/setup-continuity.md"
+      "outcome": "no-impact",
+      "reason": "Work record for this change, published as tracker item 87.",
+      "target": ".ai-dlc/work/roadmap-ledger-archive.toml"
     },
     {
       "outcome": "no-impact",
-      "reason": "Comment recording that this historical record delivered against the Linear sandbox without a ticket.",
-      "target": ".ai-dlc/work/portable-profile-enrollment.toml"
+      "reason": "Handoff link repointed to the archive; wording unchanged.",
+      "target": "README.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Comment recording that this planning record never had a tracker item.",
-      "target": ".ai-dlc/work/provider-toolset-plan.toml"
+      "reason": "Handoff entry repathed and archived; ledger and release-history entries added.",
+      "target": "docs/catalog.toml"
     },
     {
       "outcome": "no-impact",
-      "reason": "Work record for this change, published as tracker item 102.",
-      "target": ".ai-dlc/work/verification-evidence-archive.toml"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Comment only, explaining why the Linear sandbox block is retained; configuration values unchanged.",
-      "target": "ai-dlc.toml"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Dated evidence capture moved byte-for-byte from docs/verification/ to the archive.",
-      "target": "docs/archive/verification/documentation-baseline.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Dated evidence capture moved byte-for-byte from docs/verification/ to the archive.",
-      "target": "docs/archive/verification/native-setup-recovery-189913b/bootstrap.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Dated evidence capture moved byte-for-byte from docs/verification/ to the archive.",
-      "target": "docs/archive/verification/native-setup-recovery-189913b/recovery.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Dated evidence capture moved byte-for-byte from docs/verification/ to the archive.",
-      "target": "docs/archive/verification/native-setup-recovery-189913b/report.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Dated evidence capture moved byte-for-byte from docs/verification/ to the archive.",
-      "target": "docs/archive/verification/setup-continuity-189913b/container.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Dated evidence capture moved byte-for-byte from docs/verification/ to the archive.",
-      "target": "docs/archive/verification/setup-continuity-189913b/native.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Dated evidence capture moved byte-for-byte from docs/verification/ to the archive.",
-      "target": "docs/archive/verification/setup-continuity-189913b/probe.py"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Dated evidence capture moved byte-for-byte from docs/verification/ to the archive.",
-      "target": "docs/archive/verification/setup-continuity-189913b/report.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Former location of a dated evidence capture now under docs/archive/verification/.",
-      "target": "docs/verification/documentation-baseline.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Former location of a dated evidence capture now under docs/archive/verification/.",
-      "target": "docs/verification/native-setup-recovery-189913b/bootstrap.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Former location of a dated evidence capture now under docs/archive/verification/.",
-      "target": "docs/verification/native-setup-recovery-189913b/recovery.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Former location of a dated evidence capture now under docs/archive/verification/.",
-      "target": "docs/verification/native-setup-recovery-189913b/report.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Former location of a dated evidence capture now under docs/archive/verification/.",
-      "target": "docs/verification/setup-continuity-189913b/container.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Former location of a dated evidence capture now under docs/archive/verification/.",
-      "target": "docs/verification/setup-continuity-189913b/native.json"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Former location of a dated evidence capture now under docs/archive/verification/.",
-      "target": "docs/verification/setup-continuity-189913b/probe.py"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Former location of a dated evidence capture now under docs/archive/verification/.",
-      "target": "docs/verification/setup-continuity-189913b/report.json"
+      "reason": "Former location of the executor handoff, now under docs/archive/handoffs/.",
+      "target": "docs/handoffs/framework-delivery.md"
     }
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "9f91dacf38250d5ba304728175b88124a6a38ab3d76cf18290fb9bc78e7ca26b",
+  "snapshot": "31851513e23b150bade3223259189518c36eaa7235e9886f64e95f76553fb41c",
   "sources": {
-    ".ai-dlc/work/portable-profile-enrollment.toml": "1df79185178b4433dc26ad865b82853e2fb0dce6afee6c0069813b4f59e5191c",
-    ".ai-dlc/work/provider-toolset-plan.toml": "42c943c8b6b5d8ec7496fe921c9ddf6aa7b19caefaeb23f498e7657983f94240",
-    ".ai-dlc/work/verification-evidence-archive.toml": "c45904eb1f086b123edacd3adeec693ffd047585d724c2a648d7689670dee52a",
-    "ai-dlc.toml": "ef35c3f6769d6ed552eae0d5a917b800ced2e3e5e8ee805db22607e11d5a84d8",
-    "docs/archive/README.md": "88d91cfc7ee51a288d196ddfc70aaf29edb994e4af33fb56f5e5b299ac8c6495",
-    "docs/archive/research/jinja2_template_generation.md": "f507a7e6d40b8d8913700ce97bf53a02b1f80f15dd466424991c0ab318ce843f",
-    "docs/archive/verification/documentation-baseline.json": "6869ff9bf653f095d4055d9ee5e0c492e69c24609bed79dc41a4f8d1117f08ca",
-    "docs/archive/verification/native-setup-recovery-189913b/bootstrap.json": "0f2f745507eaaff9d04b53d850c9b99e6996a7d71803607f1f9a7f6e0d47e8cc",
-    "docs/archive/verification/native-setup-recovery-189913b/recovery.json": "54d1e3441e34f43fe7f67c80dcd1d0a2e92edbce8150413bb22910337b3f210b",
-    "docs/archive/verification/native-setup-recovery-189913b/report.json": "f721e8ef7f2bfb1c71d1007d2e7c31011564b0709d8ad384f66131fe7d56e949",
-    "docs/archive/verification/setup-continuity-189913b/container.json": "d9ebadbc42f31a10a4c77758ce1e690de98449f2ec5f45edc87bbdc543b8f0e0",
-    "docs/archive/verification/setup-continuity-189913b/native.json": "603fecd882014ea9961179f31b2e0c1cc3d16cde57a7fed440a74bfea591320b",
-    "docs/archive/verification/setup-continuity-189913b/probe.py": "ca7a0d7f127603abec87eff4347f72c83b1211f9eb732302b58e20ba9445d914",
-    "docs/archive/verification/setup-continuity-189913b/report.json": "a42ae1e7cb043f7c29fba697c9f21244edf0ceeebc2b4c0499617123ffead864",
-    "docs/catalog.toml": "d5fa5e30cece81c49c5566245360214704388357b4afe5ba7adb7d9f379abe59",
-    "docs/index.md": "29667bdeef1a38437693aac71e1337a79ff74dd0be1d00c2f959fc3285774fe9",
-    "docs/roadmap.md": "43f23386ebf62d6a52dcd1d0cb962de576638bf42ea184fd4a15145b592fa59d",
-    "docs/verification/documentation-baseline.json": "missing",
-    "docs/verification/documentation-workflow.md": "e4725fcc0754a9ff460320b64ae48e33a6120d047d7c06ae2f83e0c95679a7e0",
-    "docs/verification/framework-qualification.md": "743cc77a75f047d2d68d7dc7b1c0a882976029972245d3d52164c5f103fc9264",
-    "docs/verification/native-setup-recovery-189913b/bootstrap.json": "missing",
-    "docs/verification/native-setup-recovery-189913b/recovery.json": "missing",
-    "docs/verification/native-setup-recovery-189913b/report.json": "missing",
-    "docs/verification/native-setup-recovery.md": "612abdb8754455c038a84e8ff4776b3457e48068909f9836eaa86a101631c862",
-    "docs/verification/project-knowledge-repair.md": "ed2afb554054e034c5d782efc0905f7ded7a5072b482a79f08458fd3ea0f786a",
-    "docs/verification/setup-continuity-189913b/container.json": "missing",
-    "docs/verification/setup-continuity-189913b/native.json": "missing",
-    "docs/verification/setup-continuity-189913b/probe.py": "missing",
-    "docs/verification/setup-continuity-189913b/report.json": "missing",
-    "docs/verification/setup-continuity.md": "c963b21a72546e31d08a1e583109dbff060d6536743d2b8e5b5eba6e75e725bd",
-    "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
-    "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
-    "openspec/specs/documentation-impact-workflow/spec.md": "52f07085c5f87622f04b801de04a98d430a90364869ea0226047271dbd4ea977",
-    "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
-    "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
-    "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
-    "src/ai_dlc/config.py": "31677c538713aa41d3625ef9570f962ed8ee5d32bd4b5b3747437e8fd8fb9d02",
-    "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
-    "src/ai_dlc/documentation/document_files.py": "503a38d4df2a1f9d0832d083dcd420ebd1215389385293dd0605fc768c5dd320",
-    "src/ai_dlc/documentation/document_impact.py": "585114e1808a5557c00f261a873868a8a5a91baaff29c4b790a65d213dfd97a9",
-    "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
-    "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
-    "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
-    "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
-    "src/ai_dlc/harness/agents.py": "65607b98a6f113f608b26d726656cb29b5f7bff2e58c4f7ee25f0c3c8d6940c4",
-    "src/ai_dlc/harness/workflow_bundles.py": "477dc842b3cdfe240a54a96910786693f9f3b75f2fd528753440c29f26330b36",
-    "tests/test_company_guidance.py": "ab39bed3342d9de7d4c68db6c6c54fd66e13c12f2f2167c38e8d345c7dc9736e",
-    "tests/test_document_access.py": "bdf96af4afb1ad6f985204ad243a624d4da8b56d527af63cc072908a76beeff4",
-    "tests/test_document_impact.py": "308684c1dda24359e86d2a9b79200455ebe781e97baa18169f5b9979e4eb2a14",
-    "tests/test_document_inventory.py": "927199563751af6b2dd5aa8e93cddb43cc62192adffea49694dada37ef6bf14c",
-    "tests/test_document_review.py": "88f37e6365c7e9b545d668f978993ef7ad9acfa146e7d549728f4ef9cab8008a",
-    "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
-    "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7"
+    ".ai-dlc/work/roadmap-ledger-archive.toml": "012b2f68997e383ffdeb69371805352187f5799e3659979b64722c12a1d47c77",
+    "README.md": "07e3c8a1bd7d3f8c91280d7fd368cc4c0d5d3c356cd7e66825ba66a7da28c08b",
+    "docs/archive/README.md": "24430d48193d4792845f55f4c7b8b2de071b73b629b0036a9c3b39532d929a6d",
+    "docs/archive/handoffs/framework-delivery.md": "0f5e94fed1613dfa663d6153b9c4206130414bb8684155df97f943dec95e6c51",
+    "docs/archive/planning/2026-09-05-framework-delivery.md": "746908e75b07de225b69a531221b8a4588450d251617d643e50d3f048d1d81ee",
+    "docs/archive/planning/2026-09-roadmap-ledger.md": "ac1df95fd9a726cbb1ec52d3d75d59c1436a3e94cd91659d913dab8e87793ed4",
+    "docs/archive/planning/framework-delivery-review.md": "737c9423d652e6cea876a246b141da4fb00bc31b30a6430a6cd1483e73541d71",
+    "docs/archive/planning/provider-toolset-handoff.md": "c2b706d81be54f1d781480ceec514f6efd21f4a4303bb772b068e3483749e69b",
+    "docs/archive/planning/stage-cleanup-review-2026-09-06.md": "8ea1d55659e113e3115d129917087af35096829a539bed7cf4f22d87985032d4",
+    "docs/archive/verification/release-history.md": "9da0d5bc05d9be650876abf597ef2c90c76076aaf4a3ae3018152d966cec8718",
+    "docs/catalog.toml": "53ab3b989c9addd8dc18968f6471afa3a151834c6c95a77a789d8af13b41c22e",
+    "docs/handoffs/framework-delivery.md": "missing",
+    "docs/index.md": "66e4ee1579ef27ed992567a8f072b5189bbb8eb0f8a057d9ba87f4085f2e8d97",
+    "docs/product-direction.md": "8135010ba7af6af0ba9fad5f07d54f643f55d2ee43ca704cd3408a14355c3841",
+    "docs/release-verification.md": "5925c941134e4580f16a9003976fdfb1e9f03a084463fc4db5601dbf99f157ee",
+    "docs/roadmap.md": "fdf03e50a90409aebc4867a4a1ba54747843dc79ba8f6b00022ca7149d6f0cf2"
   }
 }
