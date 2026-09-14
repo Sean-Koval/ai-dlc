@@ -4,7 +4,7 @@
 # Historical provider toolset planning handoff
 
 Status: historical planning and checkpoint evidence, retained September 10, 2026.
-Use the [current roadmap](../../roadmap.md) and [delivery handoff](../../handoffs/framework-delivery.md)
+Use the [current roadmap](../../roadmap.md) and [delivery handoff](../handoffs/framework-delivery.md)
 for reconciled status. PR23, PR25, PR26 and PR28 are merged; earlier draft, pending
 and access-blocked statements below describe their original checkpoints. Issues
 #14/#15/#16/#17/#20/#21/#22 were cancelled as NOT_PLANNED, not completed.
