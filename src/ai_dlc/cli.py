@@ -455,11 +455,19 @@ def project_workspace_init(
     name: str | None = None,
     bases: bool = False,
     apply: bool = False,
+    shell: bool = False,
 ):
     """Preview or add linked Obsidian project navigation and personal note templates."""
     from ai_dlc.documentation.knowledge_workspace import setup_workspace
 
+    if shell and (vault is not None or name is not None or bases):
+        raise typer.BadParameter("--shell cannot be combined with --vault, --name or --bases")
     with service_call():
+        if shell:
+            from ai_dlc.environment.bootstrap import plan_shell_activation
+
+            emit(plan_shell_activation(apply=apply))
+            return
         emit(setup_workspace(root, vault=vault, name=name, bases=bases, apply=apply))
 
 
