@@ -22,32 +22,18 @@ ARTIFACTS = {
 }
 
 
-def _rebind(
-    root: Path,
-    role: str,
-    provider_id: str,
-    apply: bool = False,
-    mappings: dict | None = None,
-    *,
-    machine_config: dict | None = None,
-    connection_plan: Path | None = None,
-    environ=None,
-    client=None,
-) -> dict:
-    root = Path(root).resolve()
-    if role not in ARTIFACTS:
-        raise ValueError("Unknown work provider role")
-    if not provider_id.strip():
-        raise ValueError("Provider ID is required")
-    mappings = mappings or {}
-    config = load_project(root)
+def _validate_connection_plan_request(
+    role: str, provider_id: str, config: dict, connection_plan: Path | None
+) -> None:
+    """A Linear connection plan only accompanies a tracker rebind to the selected linear."""
     if connection_plan is not None and (role != "tracker" or provider_id != "linear"):
         raise ValueError("A Linear connection plan requires rebind tracker linear")
     if connection_plan is not None and config.get("roles", {}).get("tracker") != "linear":
         raise ValueError("A Linear connection migration requires the selected tracker to be linear")
-    proposed = copy.deepcopy(config)
-    proposed.setdefault("roles", {})[role] = provider_id
-    before = checkout_files(root)
+
+
+def _collect_work_items(root: Path, role: str, config: dict) -> list[tuple[str, dict, str]]:
+    """Every work record bound to the role as (relative path, record, current provider)."""
     all_work_items = []
     for path in sorted((root / ".ai-dlc/work").glob("*.toml")):
         work = Work.model_validate(tomllib.loads(path.read_text())).model_dump(by_alias=True)
@@ -57,15 +43,11 @@ def _rebind(
         # A local status string is not evidence of completion: retain every work item.
         if old is not None:
             all_work_items.append((path.relative_to(root).as_posix(), work, old))
-    saved_connection_plan = None
-    if connection_plan is not None:
-        from ai_dlc.setup.provider_onboarding import _bound_linear_work, _load_connection_plan
+    return all_work_items
 
-        connection_path, saved_connection_plan = _load_connection_plan(root, connection_plan)
-        affected_ids = set(_bound_linear_work(root, config))
-        work_items = [item for item in all_work_items if item[1]["id"] in affected_ids]
-    else:
-        work_items = all_work_items
+
+def _plan_rebind(role: str, provider_id: str, work_items: list) -> dict:
+    """Describe the retained work and the mapping policy without changing anything."""
     active = [
         {
             "id": work["id"],
@@ -75,17 +57,17 @@ def _rebind(
         }
         for _, work, old in work_items
     ]
-    plan = {
+    return {
         "status": "planned",
         "role": role,
         "provider": provider_id,
         "active_work": active,
         "completion_policy": "Retained work requires mapping; local completion flags are not proof",
     }
-    if connection_plan is not None:
-        plan["connection_plan"] = connection_path.relative_to(root).as_posix()
-    if not apply:
-        return plan
+
+
+def _validate_mappings(role: str, mappings: dict, work_items: list) -> dict:
+    """Require one explicit, non-empty replacement per expected artifact of each work item."""
     unknown = set(mappings) - {work["id"] for _, work, _ in work_items}
     if unknown:
         raise ValueError(f"Unknown work mapping: {sorted(unknown)}")
@@ -106,16 +88,21 @@ def _rebind(
                 f"Explicit replacement artifact mapping required for {work['id']}: {sorted(expected)}"
             )
         validated_mappings[work["id"]] = replacements
+    return validated_mappings
 
-    if connection_plan is not None:
-        from ai_dlc.setup.provider_onboarding import revalidate_saved_linear_connection
 
-        config, saved_connection_plan = revalidate_saved_linear_connection(
-            root,
-            connection_plan,
-            environ=os.environ if environ is None else environ,
-            client=client,
-        )
+def _stage_and_apply(
+    root: Path,
+    role: str,
+    provider_id: str,
+    proposed: dict,
+    before: dict,
+    work_items: list,
+    validated_mappings: dict,
+    machine_config: dict | None,
+    saved_connection_plan,
+) -> None:
+    """Rewrite configuration and work records in a staging directory, then apply atomically."""
     after = dict(before)
     with tempfile.TemporaryDirectory(prefix="ai-dlc-rebind-") as temporary:
         stage = Path(temporary).resolve()
@@ -149,6 +136,68 @@ def _rebind(
             after[name] = tomli_w.dumps(updated).encode()
         after["ai-dlc.toml"] = staged_config.read_bytes()
         apply_files(root, before, after)
+
+
+def _rebind(
+    root: Path,
+    role: str,
+    provider_id: str,
+    apply: bool = False,
+    mappings: dict | None = None,
+    *,
+    machine_config: dict | None = None,
+    connection_plan: Path | None = None,
+    environ=None,
+    client=None,
+) -> dict:
+    root = Path(root).resolve()
+    if role not in ARTIFACTS:
+        raise ValueError("Unknown work provider role")
+    if not provider_id.strip():
+        raise ValueError("Provider ID is required")
+    mappings = mappings or {}
+    config = load_project(root)
+    _validate_connection_plan_request(role, provider_id, config, connection_plan)
+    proposed = copy.deepcopy(config)
+    proposed.setdefault("roles", {})[role] = provider_id
+    before = checkout_files(root)
+    all_work_items = _collect_work_items(root, role, config)
+    saved_connection_plan = None
+    if connection_plan is not None:
+        from ai_dlc.setup.provider_onboarding import _bound_linear_work, _load_connection_plan
+
+        connection_path, saved_connection_plan = _load_connection_plan(root, connection_plan)
+        affected_ids = set(_bound_linear_work(root, config))
+        work_items = [item for item in all_work_items if item[1]["id"] in affected_ids]
+    else:
+        work_items = all_work_items
+    plan = _plan_rebind(role, provider_id, work_items)
+    if connection_plan is not None:
+        plan["connection_plan"] = connection_path.relative_to(root).as_posix()
+    if not apply:
+        return plan
+    validated_mappings = _validate_mappings(role, mappings, work_items)
+
+    if connection_plan is not None:
+        from ai_dlc.setup.provider_onboarding import revalidate_saved_linear_connection
+
+        config, saved_connection_plan = revalidate_saved_linear_connection(
+            root,
+            connection_plan,
+            environ=os.environ if environ is None else environ,
+            client=client,
+        )
+    _stage_and_apply(
+        root,
+        role,
+        provider_id,
+        proposed,
+        before,
+        work_items,
+        validated_mappings,
+        machine_config,
+        saved_connection_plan,
+    )
     return {
         **plan,
         "status": "applied",

@@ -8,13 +8,9 @@ from ai_dlc.cli import config_for
 from ai_dlc.work.workflow import WorkService
 
 
-def make_server(root: Path, machine: Path | None = None) -> FastMCP:
-    config = config_for(root, machine)
-
+def _register_work_tools(server: FastMCP, root: Path, machine: Path | None) -> None:
     def work():
         return WorkService.from_project(root, machine=machine)
-
-    server = FastMCP("AI-DLC")
 
     @server.tool()
     def work_context(brief: bool = False) -> dict:
@@ -55,6 +51,8 @@ def make_server(root: Path, machine: Path | None = None) -> FastMCP:
 
         return inspect(root, target, machine)
 
+
+def _register_docs_tools(server: FastMCP, root: Path) -> None:
     @server.tool()
     def project_docs_check() -> dict:
         """Inspect local document ownership and review gaps; never fetch or publish content."""
@@ -130,6 +128,8 @@ def make_server(root: Path, machine: Path | None = None) -> FastMCP:
 
         return validate_review(root, packet=packet, review=review)
 
+
+def _register_workspace_tools(server: FastMCP, root: Path, config: dict) -> None:
     @server.tool()
     def project_workspace_preview(name: str | None = None, bases: bool = False) -> dict:
         """Preview an additive linked workspace using the configured private vault; no writes."""
@@ -162,6 +162,8 @@ def make_server(root: Path, machine: Path | None = None) -> FastMCP:
 
         return inspect_project_workspace(root, vault=config.get("paths", {}).get("vault"))
 
+
+def _register_knowledge_tools(server: FastMCP, config: dict) -> None:
     def knowledge():
         from ai_dlc.documentation.knowledge import Knowledge
 
@@ -185,6 +187,14 @@ def make_server(root: Path, machine: Path | None = None) -> FastMCP:
         """Create a vault note without replacing existing content."""
         return knowledge().note(path, body, operation_id)
 
+
+def make_server(root: Path, machine: Path | None = None) -> FastMCP:
+    config = config_for(root, machine)
+    server = FastMCP("AI-DLC")
+    _register_work_tools(server, root, machine)
+    _register_docs_tools(server, root)
+    _register_workspace_tools(server, root, config)
+    _register_knowledge_tools(server, config)
     return server
 
 

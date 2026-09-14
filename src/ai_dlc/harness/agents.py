@@ -696,14 +696,13 @@ def _managed_section_state(path: Path, required: str) -> str:
     return "ready" if required in match.group(2) else "missing"
 
 
-def inspect_bundle_guidance(root: Path, config: dict, clients: list[str]) -> list[dict]:
-    """Inspect selected vendored guidance and rendered outputs without source access."""
-    bundle_ids = _selected_bundle_ids(config)
-    if not bundle_ids:
-        return []
-    states: dict[str, dict[str, list[str]]] = {
-        bundle_id: {"blocked": [], "missing": []} for bundle_id in bundle_ids
-    }
+_BundleStates = dict[str, dict[str, list[str]]]
+
+
+def _load_inspected_bundles(
+    root: Path, bundle_ids: list[str], states: _BundleStates
+) -> dict[str, dict[str, Any]]:
+    """Load each selected vendored bundle, recording missing or invalid ones."""
     bundles: dict[str, dict[str, Any]] = {}
     for bundle_id in bundle_ids:
         path = root / ".ai-dlc" / "bundles" / bundle_id
@@ -718,15 +717,14 @@ def inspect_bundle_guidance(root: Path, config: dict, clients: list[str]) -> lis
                 bundles[bundle_id] = {"manifest": exc.manifest, "payload": {}}
         except ValueError as exc:
             states[bundle_id]["blocked"].append(str(exc))
+    return bundles
 
-    collisions = _bundle_collision_details(bundles)
-    for bundle_id, details in _guidance_selection_details(bundles, config).items():
-        states[bundle_id]["blocked"].extend(details)
-    for bundle_id, details in collisions.items():
-        states[bundle_id]["blocked"].extend(details)
 
+def _load_inspected_ownership(
+    root: Path, bundle_ids: list[str], states: _BundleStates
+) -> dict[str, dict[str, str]]:
+    """Read prior bundle ownership, blocking every bundle when it is invalid."""
     ownership_path = root / ".ai-dlc" / "agent-ownership.json"
-    previous: dict[str, Any] = {}
     prior_bundle_files: dict[str, dict[str, str]] = {}
     if ownership_path.exists():
         try:
@@ -735,8 +733,17 @@ def inspect_bundle_guidance(root: Path, config: dict, clients: list[str]) -> lis
         except (OSError, TypeError, ValueError, json.JSONDecodeError) as exc:
             for bundle_id in bundle_ids:
                 states[bundle_id]["blocked"].append(f"bundle ownership is invalid: {exc}")
+    return prior_bundle_files
 
-    claims = _bundle_claims(bundles, clients)
+
+def _inspect_bundle_claims(
+    root: Path,
+    bundles: dict[str, dict[str, Any]],
+    claims: list[tuple[str, str, str]],
+    prior_bundle_files: dict[str, dict[str, str]],
+    states: _BundleStates,
+) -> None:
+    """Compare each desired bundle output with its rendered file and ownership."""
     for path, bundle_id, relative in claims:
         ownership = prior_bundle_files.get(path)
         if ownership is not None and ownership["owner"] != bundle_id:
@@ -777,7 +784,14 @@ def inspect_bundle_guidance(root: Path, config: dict, clients: list[str]) -> lis
         ) is not None and current_digest != hashlib.sha256(body.encode()).hexdigest():
             states[bundle_id]["missing"].append(f"rendered bundle output is stale: {path}")
 
-    desired_paths = {path for path, _, _ in claims}
+
+def _inspect_obsolete_bundle_outputs(
+    root: Path,
+    prior_bundle_files: dict[str, dict[str, str]],
+    desired_paths: set[str],
+    states: _BundleStates,
+) -> None:
+    """Record previously owned bundle outputs that are no longer desired."""
     for path, ownership in prior_bundle_files.items():
         bundle_id = ownership["owner"]
         if bundle_id not in states or path in desired_paths:
@@ -806,6 +820,15 @@ def inspect_bundle_guidance(root: Path, config: dict, clients: list[str]) -> lis
         else:
             states[bundle_id]["missing"].append(f"obsolete bundle output requires removal: {path}")
 
+
+def _inspect_managed_sections(
+    root: Path,
+    bundles: dict[str, dict[str, Any]],
+    bundle_ids: list[str],
+    clients: list[str],
+    states: _BundleStates,
+) -> None:
+    """Check the managed AGENTS.md bundle index and the CLAUDE.md reference."""
     index_state = _managed_section_state(root / "AGENTS.md", _bundle_index(bundles))
     if index_state != "ready":
         for bundle_id in bundle_ids:
@@ -816,6 +839,9 @@ def inspect_bundle_guidance(root: Path, config: dict, clients: list[str]) -> lis
             for bundle_id in bundle_ids:
                 states[bundle_id][claude_state].append("CLAUDE.md does not reference AGENTS.md")
 
+
+def _summarize_bundle_states(bundle_ids: list[str], states: _BundleStates) -> list[dict]:
+    """Reduce collected blocked and missing details to one status per bundle."""
     results = []
     for bundle_id in bundle_ids:
         blocked = sorted(set(states[bundle_id]["blocked"]))
@@ -849,14 +875,35 @@ def inspect_bundle_guidance(root: Path, config: dict, clients: list[str]) -> lis
     return results
 
 
-def _render_agents(
-    root: Path,
-    apply: bool = False,
-    client: str | None = None,
-    target: str = "local",
-    state: _RenderState | None = None,
-) -> dict[str, Any]:
-    root = Path(root).resolve()
+def inspect_bundle_guidance(root: Path, config: dict, clients: list[str]) -> list[dict]:
+    """Inspect selected vendored guidance and rendered outputs without source access."""
+    bundle_ids = _selected_bundle_ids(config)
+    if not bundle_ids:
+        return []
+    states: _BundleStates = {bundle_id: {"blocked": [], "missing": []} for bundle_id in bundle_ids}
+    bundles = _load_inspected_bundles(root, bundle_ids, states)
+
+    collisions = _bundle_collision_details(bundles)
+    for bundle_id, details in _guidance_selection_details(bundles, config).items():
+        states[bundle_id]["blocked"].extend(details)
+    for bundle_id, details in collisions.items():
+        states[bundle_id]["blocked"].extend(details)
+
+    prior_bundle_files = _load_inspected_ownership(root, bundle_ids, states)
+    claims = _bundle_claims(bundles, clients)
+    _inspect_bundle_claims(root, bundles, claims, prior_bundle_files, states)
+    desired_paths = {path for path, _, _ in claims}
+    _inspect_obsolete_bundle_outputs(root, prior_bundle_files, desired_paths, states)
+    _inspect_managed_sections(root, bundles, bundle_ids, clients, states)
+    return _summarize_bundle_states(bundle_ids, states)
+
+
+_Reader = Callable[[str], bytes | None]
+_TextReader = Callable[[str], str]
+
+
+def _render_readers(root: Path, state: _RenderState | None) -> tuple[_Reader, _TextReader]:
+    """Build byte and normalized-text readers bound to the transaction state or root."""
 
     def read(name: str) -> bytes | None:
         if state is not None:
@@ -867,17 +914,11 @@ def _render_agents(
     def text(name: str) -> str:
         return (read(name) or b"").decode().replace("\r\n", "\n").replace("\r", "\n")
 
-    config = load_project(root)
-    bundle_ids = _selected_bundle_ids(config)
-    bundles = _load_selected_bundles(root, bundle_ids)
-    _raise_bundle_collisions(bundles)
-    guidance_errors = [
-        detail
-        for details in _guidance_selection_details(bundles, config).values()
-        for detail in details
-    ]
-    if guidance_errors:
-        raise ValueError("; ".join(guidance_errors))
+    return read, text
+
+
+def _resolve_render_clients(config: dict[str, Any], client: str | None) -> list[str]:
+    """Select the agent clients to render and reject unregistered ones."""
     clients = (
         [client]
         if client
@@ -887,6 +928,11 @@ def _render_agents(
         clients = [clients]
     if set(clients) - set(CLIENT_SKILL_DIRECTORIES):
         raise ValueError("unsupported agent client; register a client adapter before rendering")
+    return clients
+
+
+def _validate_required_hooks(config: dict[str, Any], clients: list[str]) -> None:
+    """Reject required hooks that the selected client versions cannot provide locally."""
     for selected_client in clients:
         settings = config.get("agents", {}).get("clients", {}).get(selected_client, {})
         readiness = hook_readiness(
@@ -899,16 +945,10 @@ def _render_agents(
             raise ValueError(
                 f"unsupported required hooks for {selected_client}: {readiness['unavailable']}"
             )
-    skill_sources = _skill_sources(config)
-    try:
-        components = resolve_components(config, load_component_catalog(root, config))
-    except TypeError as exc:
-        raise ValueError(f"invalid component metadata: {exc}") from exc
-    index, provider_copies = provider_index(components)
-    referenced_guidance = {
-        guidance for component in components["components"] for guidance in component["guidance"]
-    }
-    checks = config.get("checks", {})
+
+
+def _shared_guidance_lines(checks: dict[str, Any], index: str, bundle_index: str) -> list[str]:
+    """Compose the shared AGENTS.md guidance body lines."""
     lines = [
         "# Shared project guidance",
         "",
@@ -928,11 +968,15 @@ def _render_agents(
         ["", "Run `ai-dlc project check --required` in the prepared project environment.", ""]
     )
     lines.append(index)
-    bundle_index = _bundle_index(bundles)
     if bundle_index:
         lines.append(bundle_index)
+    return lines
+
+
+def _plan_guidance_files(text: _TextReader, agents_body: str, clients: list[str]) -> dict[str, str]:
+    """Plan the managed AGENTS.md section and the CLAUDE.md reference."""
     planned: dict[str, str] = {}
-    for filename, body in [("AGENTS.md", "\n".join(lines)), ("CLAUDE.md", "@AGENTS.md\n")]:
+    for filename, body in [("AGENTS.md", agents_body), ("CLAUDE.md", "@AGENTS.md\n")]:
         if filename == "CLAUDE.md" and "claude-code" not in clients:
             continue
         current = text(filename)
@@ -941,9 +985,16 @@ def _render_agents(
             if filename == "CLAUDE.md" and current in {"", body}
             else managed_section(current, body)
         )
-    servers = {}
-    codex = {}
-    antigravity = {}
+    return planned
+
+
+def _plan_mcp_servers(
+    config: dict[str, Any], clients: list[str]
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    """Validate configured MCP servers and shape them per client (claude, codex, antigravity)."""
+    servers: dict[str, Any] = {}
+    codex: dict[str, Any] = {}
+    antigravity: dict[str, Any] = {}
     for server in config.get("agents", {}).get("servers", []):
         sid = server["id"]
         if sid in servers:
@@ -980,15 +1031,17 @@ def _render_agents(
             antigravity[sid] = (
                 {"serverUrl": definition["url"]} if "url" in definition else dict(definition)
             )
-    manifest_bytes = read(".ai-dlc/agent-ownership.json")
-    previous = json.loads(manifest_bytes) if manifest_bytes is not None else {"mcp": {}}
-    prior_bundle_files = _prior_bundle_files(previous)
-    bundle_participates = bool(bundle_ids or prior_bundle_files or previous.get("schema") == 3)
-    ownership: dict[str, Any] = dict(previous)
-    ownership["schema"] = 3 if bundle_participates else 2
-    owned_files = dict(previous.get("files", {}))
-    bundle_files = dict(prior_bundle_files)
-    removed = []
+    return servers, codex, antigravity
+
+
+def _plan_provider_guidance(
+    read: _Reader,
+    provider_copies: dict[str, str],
+    owned_files: dict[str, str],
+    planned: dict[str, str],
+    removed: list[str],
+) -> None:
+    """Retire obsolete managed provider guidance and plan the desired copies."""
     for name, old_digest in list(owned_files.items()):
         if not name.startswith(".ai-dlc/providers/"):
             continue
@@ -1005,28 +1058,167 @@ def _render_agents(
             raise ValueError(f"authored provider guidance conflict: {name}")
         planned[name] = body
         owned_files[name] = hashlib.sha256(body.encode()).hexdigest()
+
+
+def _plan_client_skills(
+    read: _Reader,
+    prefix: str,
+    desired: dict[str, str],
+    prior_bundle_files: dict[str, dict[str, str]],
+    owned_files: dict[str, str],
+    planned: dict[str, str],
+    removed: list[str],
+) -> None:
+    """Retire obsolete managed skills under one client prefix and plan the desired ones."""
+    for name, old_digest in list(owned_files.items()):
+        if not name.startswith(prefix):
+            continue
+        if name in prior_bundle_files:
+            continue
+        current = read(name)
+        if current is not None and hashlib.sha256(current).hexdigest() != old_digest:
+            raise ValueError(f"managed skill conflict: {name}")
+        if name not in desired:
+            if current is not None:
+                removed.append(name)
+            del owned_files[name]
+    for name, body in desired.items():
+        current = read(name)
+        if name not in owned_files and current is not None and current != body.encode():
+            raise ValueError(f"authored skill conflict: {name}")
+        planned[name] = body
+        owned_files[name] = hashlib.sha256(body.encode()).hexdigest()
+
+
+def _plan_antigravity_rule(
+    read: _Reader,
+    text: _TextReader,
+    agents_body: str,
+    owned_files: dict[str, str],
+    planned: dict[str, str],
+) -> None:
+    """Plan the managed Antigravity native rule, upgrading the early whole-file form."""
+    name = ".agents/rules/ai-dlc.md"
+    current_bytes = read(name)
+    body = _antigravity_rule(agents_body)
+    current = text(name)
+    if current_bytes is not None:
+        expected = owned_files.get(name)
+        if expected is None:
+            raise ValueError(f"managed native rule conflict: {name}")
+        if "<!-- ai-dlc:begin " not in current:
+            if hashlib.sha256(current_bytes).hexdigest() != expected:
+                raise ValueError(f"managed native rule conflict: {name}")
+            current = ""  # Upgrade the intact early whole-file owned representation.
+    planned[name] = managed_section(current, body)
+    owned_files[name] = hashlib.sha256(planned[name].encode()).hexdigest()
+
+
+def _plan_codex_config(text: _TextReader, codex: dict[str, Any], planned: dict[str, str]) -> None:
+    """Plan the managed Codex MCP table and validate the resulting TOML document."""
+    current = text(".codex/config.toml")
+    body = (
+        tomli_w.dumps({"mcp_servers": codex}) if codex else "# No project MCP servers configured.\n"
+    )
+    planned[".codex/config.toml"] = managed_section(current, body, toml=True)
+    # Validate duplicate tables or invalid unmanaged text before writing any file.
+    import tomllib
+
+    tomllib.loads(planned[".codex/config.toml"])
+
+
+def _collect_render_changes(
+    read: _Reader,
+    planned: dict[str, str],
+    removed: list[str],
+    referenced_guidance: set[str],
+) -> list[str]:
+    """List planned files whose bytes differ, plus removals, rejecting referenced removals."""
+    changed = [name for name, text in planned.items() if read(name) != text.encode()]
+    changed.extend(removed)
+    for name in removed:
+        if name in referenced_guidance:
+            raise ValueError(
+                f"managed provider guidance conflict: {name} is still referenced; "
+                "copy the instructions to a project-owned path and update the component manifest"
+            )
+    return changed
+
+
+def _apply_render_plan(
+    root: Path,
+    state: _RenderState | None,
+    bundle_participates: bool,
+    planned: dict[str, str],
+    removed: list[str],
+    changed: list[str],
+) -> list[str]:
+    """Write the plan transactionally for bundle renders, otherwise file by file."""
+    if bundle_participates:
+        if state is None:
+            raise ValueError("bundle render requires a bound project transaction")
+        return _apply_render_transaction(state, planned, removed, changed)
+    for name in removed:
+        inside(root, name).unlink()
+    for name in changed:
+        if name in removed:
+            continue
+        atomic_write(inside(root, name), planned[name])
+    return []
+
+
+def _render_agents(
+    root: Path,
+    apply: bool = False,
+    client: str | None = None,
+    target: str = "local",
+    state: _RenderState | None = None,
+) -> dict[str, Any]:
+    root = Path(root).resolve()
+    read, text = _render_readers(root, state)
+
+    config = load_project(root)
+    bundle_ids = _selected_bundle_ids(config)
+    bundles = _load_selected_bundles(root, bundle_ids)
+    _raise_bundle_collisions(bundles)
+    guidance_errors = [
+        detail
+        for details in _guidance_selection_details(bundles, config).values()
+        for detail in details
+    ]
+    if guidance_errors:
+        raise ValueError("; ".join(guidance_errors))
+    clients = _resolve_render_clients(config, client)
+    _validate_required_hooks(config, clients)
+    skill_sources = _skill_sources(config)
+    try:
+        components = resolve_components(config, load_component_catalog(root, config))
+    except TypeError as exc:
+        raise ValueError(f"invalid component metadata: {exc}") from exc
+    index, provider_copies = provider_index(components)
+    referenced_guidance = {
+        guidance for component in components["components"] for guidance in component["guidance"]
+    }
+    lines = _shared_guidance_lines(config.get("checks", {}), index, _bundle_index(bundles))
+    agents_body = "\n".join(lines)
+    planned = _plan_guidance_files(text, agents_body, clients)
+    servers, codex, antigravity = _plan_mcp_servers(config, clients)
+    manifest_bytes = read(".ai-dlc/agent-ownership.json")
+    previous = json.loads(manifest_bytes) if manifest_bytes is not None else {"mcp": {}}
+    prior_bundle_files = _prior_bundle_files(previous)
+    bundle_participates = bool(bundle_ids or prior_bundle_files or previous.get("schema") == 3)
+    ownership: dict[str, Any] = dict(previous)
+    ownership["schema"] = 3 if bundle_participates else 2
+    owned_files = dict(previous.get("files", {}))
+    bundle_files = dict(prior_bundle_files)
+    removed: list[str] = []
+    _plan_provider_guidance(read, provider_copies, owned_files, planned, removed)
     for selected_client in clients:
-        directory = CLIENT_SKILL_DIRECTORIES[selected_client]
-        prefix = directory + "/skills/"
+        prefix = CLIENT_SKILL_DIRECTORIES[selected_client] + "/skills/"
         desired = {prefix + name + "/SKILL.md": body for name, body in skill_sources.items()}
-        for name, old_digest in list(owned_files.items()):
-            if not name.startswith(prefix):
-                continue
-            if name in prior_bundle_files:
-                continue
-            current = read(name)
-            if current is not None and hashlib.sha256(current).hexdigest() != old_digest:
-                raise ValueError(f"managed skill conflict: {name}")
-            if name not in desired:
-                if current is not None:
-                    removed.append(name)
-                del owned_files[name]
-        for name, body in desired.items():
-            current = read(name)
-            if name not in owned_files and current is not None and current != body.encode():
-                raise ValueError(f"authored skill conflict: {name}")
-            planned[name] = body
-            owned_files[name] = hashlib.sha256(body.encode()).hexdigest()
+        _plan_client_skills(
+            read, prefix, desired, prior_bundle_files, owned_files, planned, removed
+        )
         _plan_hooks(read, config, selected_client, previous, ownership, planned)
     _plan_bundle_files(
         read,
@@ -1042,20 +1234,7 @@ def _render_agents(
     if bundle_participates:
         ownership["bundle_files"] = bundle_files
     if "antigravity" in clients:
-        name = ".agents/rules/ai-dlc.md"
-        current_bytes = read(name)
-        body = _antigravity_rule("\n".join(lines))
-        current = text(name)
-        if current_bytes is not None:
-            expected = owned_files.get(name)
-            if expected is None:
-                raise ValueError(f"managed native rule conflict: {name}")
-            if "<!-- ai-dlc:begin " not in current:
-                if hashlib.sha256(current_bytes).hexdigest() != expected:
-                    raise ValueError(f"managed native rule conflict: {name}")
-                current = ""  # Upgrade the intact early whole-file owned representation.
-        planned[name] = managed_section(current, body)
-        owned_files[name] = hashlib.sha256(planned[name].encode()).hexdigest()
+        _plan_antigravity_rule(read, text, agents_body, owned_files, planned)
         _plan_json_mcp(
             read,
             ".agents/mcp_config.json",
@@ -1068,39 +1247,14 @@ def _render_agents(
     if "claude-code" in clients:
         _plan_json_mcp(read, ".mcp.json", "mcp", servers, previous, ownership, planned)
     if "codex" in clients:
-        current = text(".codex/config.toml")
-        body = (
-            tomli_w.dumps({"mcp_servers": codex})
-            if codex
-            else "# No project MCP servers configured.\n"
-        )
-        planned[".codex/config.toml"] = managed_section(current, body, toml=True)
-        # Validate duplicate tables or invalid unmanaged text before writing any file.
-        import tomllib
-
-        tomllib.loads(planned[".codex/config.toml"])
+        _plan_codex_config(text, codex, planned)
     planned[".ai-dlc/agent-ownership.json"] = json.dumps(ownership, indent=2, sort_keys=True) + "\n"
-    changed = [name for name, text in planned.items() if read(name) != text.encode()]
-    changed.extend(removed)
-    for name in removed:
-        if name in referenced_guidance:
-            raise ValueError(
-                f"managed provider guidance conflict: {name} is still referenced; "
-                "copy the instructions to a project-owned path and update the component manifest"
-            )
-    retained_backups = []
+    changed = _collect_render_changes(read, planned, removed, referenced_guidance)
+    retained_backups: list[str] = []
     if apply:
-        if bundle_participates:
-            if state is None:
-                raise ValueError("bundle render requires a bound project transaction")
-            retained_backups = _apply_render_transaction(state, planned, removed, changed)
-        else:
-            for name in removed:
-                inside(root, name).unlink()
-            for name in changed:
-                if name in removed:
-                    continue
-                atomic_write(inside(root, name), planned[name])
+        retained_backups = _apply_render_plan(
+            root, state, bundle_participates, planned, removed, changed
+        )
     result: dict[str, Any] = {"clean": not changed, "changed": changed, "applied": apply}
     if retained_backups:
         result["retained_backups"] = retained_backups
