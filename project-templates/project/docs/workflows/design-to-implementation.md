@@ -71,6 +71,15 @@ and [compatibility rehearsal](../examples/delivery-slices/compatibility-rehearsa
 These synthetic examples propose local IDs and document destinations; they do
 not install records, create remote work or establish actual approval/live results.
 
+Create a draft with `ai-dlc work new WORK_ID --from-issue REF`, or use explicit
+`--title`, `--scope` and repeated `--acceptance` values for offline work. The command
+copies the configured binding roles and issue acceptance bullets when present;
+missing source content and the default specification decision remain explicit
+TODOs. Explicit flags override derived fields. New records are always unreviewed:
+replace TODOs, link the formal artifacts and review the scope before setting
+`reviewed = true` and publishing or starting. Existing records and unsafe IDs
+are refused without being overwritten; offline drafting creates no mutation state.
+
 Work records accept optional `requirements` and `depends_on` lists, defaulting to
 empty for older work. Requirements are nonblank single-token IDs, not copied spec
 prose or paths automatically interpreted as source documents. Put canonical source,

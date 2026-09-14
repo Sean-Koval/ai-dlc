@@ -90,6 +90,7 @@ knowledge append`.
 | Project maintenance | `ai-dlc project sync`, `ai-dlc project rebind` | Performs staged Copier updates or previews/applies reviewed provider rebinding, including reviewed provider connection rebinding |
 | Project execution | `ai-dlc project setup`, `ai-dlc project check --required` | Runs declared setup and checks and emits verification receipts |
 | Agent configuration | `ai-dlc agents render` | Previews, applies, or verifies owned project/personal client configuration |
+| Local work drafting | `ai-dlc work new WORK_ID [--from-issue REF]` | Creates an unreviewed record from explicit fields or a configured tracker read; does not publish or initialize mutation state |
 | Work lifecycle | `ai-dlc work publish`, `ai-dlc work start`, `ai-dlc work pr`, `ai-dlc work status`, `ai-dlc work finish` | Reconciles tracker state, binds work to a branch, and enforces completion gates |
 | Traceability | `ai-dlc work link` | Links PR, specification, branch, deployment, or tracker evidence and commits only the work record by default |
 | Provider inspection and connection | `ai-dlc provider list`, `ai-dlc provider test`, `ai-dlc provider connect` | Discovers adapters, runs isolated contract or authorized live checks, and previews/applies an explicitly reviewed provider connection |
