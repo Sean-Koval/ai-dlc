@@ -9,9 +9,9 @@
   ],
   "reviewer": "Codex README review",
   "schema": 1,
-  "snapshot": "869b34d2320fd6a440d3bd844fe592309f7d85c4fece1ca93008c068e6b4f6f7",
+  "snapshot": "c1c4c1a7304acefdf2d756bc78c4de1886b08f2abbc61c9c02ea472baa4a7ca5",
   "sources": {
-    "README.md": "69e7114b8c779b894e591809332a731cb6fbae46e5ab8a2056067e3a7f691749",
+    "README.md": "55592722d160d25f74bb478388e5a91020234e890639c920ff5246b7a804815b",
     "docs/catalog.toml": "700669c3d3e7e702f59d14af12ff3d0201c42b6c94adf204af8eb5b123f395fa"
   }
 }

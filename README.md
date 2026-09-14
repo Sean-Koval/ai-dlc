@@ -34,11 +34,9 @@ the evidence needed to finish the work.
 
 ```mermaid
 flowchart LR
-    Scope["Review scope & specifications"] --> Work["Ticket & branch"]
-    Work --> Build["Develop with your agent"]
-    Build --> Review["Project checks & PR review"]
-    Review --> Merge["Merge & run CI"]
-    Merge --> Finish["Verify evidence & close ticket"]
+    Scope["Shape<br/>Scope, specs, ticket"] --> Build["Build<br/>Agent, branch, PR"]
+    Build --> Verify["Verify<br/>Checks, review, merge"]
+    Verify --> Finish["Finish<br/>Merged CI, close ticket"]
 ```
 
 | Tool | Responsibility |
