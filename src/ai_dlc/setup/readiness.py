@@ -260,6 +260,203 @@ def _trusted_definition_checks(definition, component, config, *, headless, compa
     return checks
 
 
+def _unresolved_checks(resolved: dict) -> list[dict[str, str]]:
+    return [
+        _check(
+            unresolved["provider"],
+            "configuration",
+            "blocked",
+            unresolved["reason"],
+            "Select a compatible configured provider component.",
+        )
+        for unresolved in resolved["unresolved"]
+    ]
+
+
+def _agent_clients(config: Mapping[str, Any]) -> list[str]:
+    clients = config.get("roles", {}).get("agent-client", [])
+    if isinstance(clients, str):
+        clients = [clients]
+    return clients
+
+
+def _client_guidance_checks(root: Path, resolved: dict, clients: list[str]) -> list[dict[str, str]]:
+    checks: list[dict[str, str]] = []
+    if not clients:
+        return checks
+    from ai_dlc.harness.agents import (
+        CLIENT_SKILL_DIRECTORIES,
+        provider_guidance_ready,
+        provider_index,
+    )
+
+    index, copies = provider_index(resolved)
+    for client in clients:
+        supported = client in CLIENT_SKILL_DIRECTORIES
+        delivered = supported and provider_guidance_ready(root, index, copies, client)
+        checks.append(
+            _check(
+                client,
+                "guidance",
+                _READY if delivered else "missing" if supported else "blocked",
+                "configured provider index is delivered"
+                if delivered
+                else (
+                    "configured provider index or instructions are missing or stale"
+                    if supported
+                    else "unsupported agent client"
+                ),
+                "No action required."
+                if delivered
+                else (
+                    "Declare the selected providers in shared ai-dlc.toml, then run "
+                    "ai-dlc agents render --apply after resolving authored-file conflicts."
+                    if supported
+                    else "Select an implemented agent client: codex, claude-code or antigravity."
+                ),
+            )
+        )
+        if client == "antigravity":
+            checks.append(
+                _check(
+                    client,
+                    "client-recognition",
+                    "unverified",
+                    "Offline files do not establish native rule activation, skill recognition or MCP login.",
+                    "Record the installed edition/version; activate the project rule as Always On, "
+                    "verify selected skills and use the native MCP manager to authenticate and inspect tools.",
+                )
+            )
+    return checks
+
+
+def _bundle_checks(root: Path, config: dict, clients: list[str]) -> list[dict[str, str]]:
+    from ai_dlc.harness.agents import inspect_bundle_guidance
+
+    return [
+        _check(
+            f"bundle:{bundle['bundle_id']}",
+            "guidance",
+            bundle["status"],
+            bundle["reason"],
+            bundle["next_action"],
+        )
+        for bundle in inspect_bundle_guidance(root, config, clients)
+    ]
+
+
+def _provider_config_checks(component: dict, config: Mapping[str, Any]) -> list[dict[str, str]]:
+    provider_config = config.get("providers", {}).get(component["provider"], {})
+    checks: list[dict[str, str]] = []
+    for path in component["required_config"]:
+        value = _config_value(provider_config, path)
+        if _configured(value):
+            checks.append(
+                _check(
+                    component["id"],
+                    "configuration",
+                    _READY,
+                    f"provider configuration {path} is set",
+                    "No action required.",
+                )
+            )
+        else:
+            checks.append(
+                _check(
+                    component["id"],
+                    "configuration",
+                    "missing",
+                    f"provider configuration {path} is required",
+                    f"Configure providers.{component['provider']}.{path}.",
+                )
+            )
+    return checks
+
+
+def _credential_checks(component: dict, credentials: list[dict]) -> list[dict[str, str]]:
+    checks: list[dict[str, str]] = []
+    for credential in credentials:
+        required_by = credential.get("required_by", [])
+        if (
+            not isinstance(required_by, list)
+            or f"provider.{component['provider']}" not in required_by
+        ):
+            continue
+        configured = credential["configured"]
+        present = credential["present"]
+        if present:
+            status = _READY
+            reason = f"credential {credential['id']} is present"
+            action = "No action required."
+        elif configured:
+            status = "missing"
+            reason = f"credential {credential['id']} is not present"
+            variable = credential.get("variable")
+            action = (
+                f"Set {variable} using your credential store."
+                if isinstance(variable, str)
+                else f"Bind credential {credential['id']} in machine configuration."
+            )
+        else:
+            status = "blocked"
+            reason = f"credential {credential['id']} has no environment binding"
+            action = f"Bind credential {credential['id']} in machine configuration."
+        checks.append(_check(component["id"], "credential", status, reason, action))
+    return checks
+
+
+def _guidance_checks(
+    root: Path, component: dict, missing_guidance: set[tuple[str, str]]
+) -> list[dict[str, str]]:
+    checks: list[dict[str, str]] = []
+    for guidance in component["guidance"]:
+        if (component["id"], guidance) not in missing_guidance and _guidance_available(
+            root, guidance
+        ):
+            checks.append(
+                _check(
+                    component["id"],
+                    "guidance",
+                    _READY,
+                    f"guidance {guidance} is available",
+                    "No action required.",
+                )
+            )
+        else:
+            checks.append(
+                _check(
+                    component["id"],
+                    "guidance",
+                    "missing",
+                    f"guidance {guidance} is unavailable",
+                    f"Restore the configured guidance file {guidance}.",
+                )
+            )
+    return checks
+
+
+def _provider_health_checks(component: dict, config: dict) -> list[dict[str, str]]:
+    definitions, problem = _component_definitions(component, config)
+    if problem or not any(definition.inactive for definition in definitions):
+        return [
+            _check(
+                component["id"],
+                "provider-health",
+                "unverified",
+                "provider health is not inspected during offline readiness",
+                "Run doctor for an explicit provider health inspection.",
+            )
+        ]
+    return []
+
+
+def _summarize_ready(checks: list[dict[str, str]]) -> bool:
+    return all(
+        check["status"] == _READY or check["dimension"] not in _BLOCKING_DIMENSIONS
+        for check in checks
+    )
+
+
 def inspect_readiness(
     root: Path,
     config: dict,
@@ -277,180 +474,24 @@ def inspect_readiness(
         missing_guidance = set(exc.missing)
     resolved = resolve_components(config, catalog)
     modules = read_toml(assets("modules") / "catalog.toml")
-    checks: list[dict[str, str]] = []
     headless = bool(config.get("preferences", {}).get("headless", False))
 
-    for unresolved in resolved["unresolved"]:
-        checks.append(
-            _check(
-                unresolved["provider"],
-                "configuration",
-                "blocked",
-                unresolved["reason"],
-                "Select a compatible configured provider component.",
-            )
-        )
-
+    checks: list[dict[str, str]] = _unresolved_checks(resolved)
     credentials = credential_status(config, environ)
-    clients = config.get("roles", {}).get("agent-client", [])
-    if isinstance(clients, str):
-        clients = [clients]
-    if clients:
-        from ai_dlc.harness.agents import (
-            CLIENT_SKILL_DIRECTORIES,
-            provider_guidance_ready,
-            provider_index,
-        )
-
-        index, copies = provider_index(resolved)
-        for client in clients:
-            supported = client in CLIENT_SKILL_DIRECTORIES
-            delivered = supported and provider_guidance_ready(root, index, copies, client)
-            checks.append(
-                _check(
-                    client,
-                    "guidance",
-                    _READY if delivered else "missing" if supported else "blocked",
-                    "configured provider index is delivered"
-                    if delivered
-                    else (
-                        "configured provider index or instructions are missing or stale"
-                        if supported
-                        else "unsupported agent client"
-                    ),
-                    "No action required."
-                    if delivered
-                    else (
-                        "Declare the selected providers in shared ai-dlc.toml, then run "
-                        "ai-dlc agents render --apply after resolving authored-file conflicts."
-                        if supported
-                        else "Select an implemented agent client: codex, claude-code or antigravity."
-                    ),
-                )
-            )
-            if client == "antigravity":
-                checks.append(
-                    _check(
-                        client,
-                        "client-recognition",
-                        "unverified",
-                        "Offline files do not establish native rule activation, skill recognition or MCP login.",
-                        "Record the installed edition/version; activate the project rule as Always On, "
-                        "verify selected skills and use the native MCP manager to authenticate and inspect tools.",
-                    )
-                )
-
-    from ai_dlc.harness.agents import inspect_bundle_guidance
-
-    for bundle in inspect_bundle_guidance(root, config, clients):
-        checks.append(
-            _check(
-                f"bundle:{bundle['bundle_id']}",
-                "guidance",
-                bundle["status"],
-                bundle["reason"],
-                bundle["next_action"],
-            )
-        )
+    clients = _agent_clients(config)
+    checks.extend(_client_guidance_checks(root, resolved, clients))
+    checks.extend(_bundle_checks(root, config, clients))
     for component in resolved["components"]:
         checks.extend(_tool_checks(component, modules, headless=headless, probe=probe))
         checks.extend(_definition_checks(component, config, headless=headless))
+        checks.extend(_provider_config_checks(component, config))
+        checks.extend(_credential_checks(component, credentials))
+        checks.extend(_guidance_checks(root, component, missing_guidance))
+        checks.extend(_provider_health_checks(component, config))
 
-        provider_config = config.get("providers", {}).get(component["provider"], {})
-        for path in component["required_config"]:
-            value = _config_value(provider_config, path)
-            if _configured(value):
-                checks.append(
-                    _check(
-                        component["id"],
-                        "configuration",
-                        _READY,
-                        f"provider configuration {path} is set",
-                        "No action required.",
-                    )
-                )
-            else:
-                checks.append(
-                    _check(
-                        component["id"],
-                        "configuration",
-                        "missing",
-                        f"provider configuration {path} is required",
-                        f"Configure providers.{component['provider']}.{path}.",
-                    )
-                )
-
-        for credential in credentials:
-            required_by = credential.get("required_by", [])
-            if (
-                not isinstance(required_by, list)
-                or f"provider.{component['provider']}" not in required_by
-            ):
-                continue
-            configured = credential["configured"]
-            present = credential["present"]
-            if present:
-                status = _READY
-                reason = f"credential {credential['id']} is present"
-                action = "No action required."
-            elif configured:
-                status = "missing"
-                reason = f"credential {credential['id']} is not present"
-                variable = credential.get("variable")
-                action = (
-                    f"Set {variable} using your credential store."
-                    if isinstance(variable, str)
-                    else f"Bind credential {credential['id']} in machine configuration."
-                )
-            else:
-                status = "blocked"
-                reason = f"credential {credential['id']} has no environment binding"
-                action = f"Bind credential {credential['id']} in machine configuration."
-            checks.append(_check(component["id"], "credential", status, reason, action))
-
-        for guidance in component["guidance"]:
-            if (component["id"], guidance) not in missing_guidance and _guidance_available(
-                root, guidance
-            ):
-                checks.append(
-                    _check(
-                        component["id"],
-                        "guidance",
-                        _READY,
-                        f"guidance {guidance} is available",
-                        "No action required.",
-                    )
-                )
-            else:
-                checks.append(
-                    _check(
-                        component["id"],
-                        "guidance",
-                        "missing",
-                        f"guidance {guidance} is unavailable",
-                        f"Restore the configured guidance file {guidance}.",
-                    )
-                )
-
-        definitions, problem = _component_definitions(component, config)
-        if problem or not any(definition.inactive for definition in definitions):
-            checks.append(
-                _check(
-                    component["id"],
-                    "provider-health",
-                    "unverified",
-                    "provider health is not inspected during offline readiness",
-                    "Run doctor for an explicit provider health inspection.",
-                )
-            )
-
-    ready = all(
-        check["status"] == _READY or check["dimension"] not in _BLOCKING_DIMENSIONS
-        for check in checks
-    )
     return {
         "schema": 1,
-        "ready": ready,
+        "ready": _summarize_ready(checks),
         "checks": checks,
         "qualification": "not-assessed",
     }

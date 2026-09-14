@@ -347,6 +347,126 @@ class PlaneProvider:
             raise ValueError("Plane returned a different work item")
         return result
 
+    def _scope(self):
+        return {
+            key: self.config[key]
+            for key in (
+                "deployment",
+                "api_url",
+                "web_url",
+                "account_id",
+                "workspace_slug",
+                "workspace_id",
+                "project_id",
+                "project_key",
+                "statuses",
+            )
+        }
+
+    def _create_intent(self, payload):
+        """Reconciler and request for a create; the marker must be exact and unambiguous."""
+        reconcile = lambda: self.find(payload["correlation"])
+        path, method = self.items_path, "POST"
+        body = {
+            "name": payload["title"],
+            "description_html": "<p>"
+            + html.escape(payload["body"])
+            + "</p><p>"
+            + html.escape(payload["correlation"])
+            + "</p>",
+            "state": self.config["statuses"]["open"],
+            "external_source": "ai-dlc",
+            "external_id": self.external_id(payload["correlation"]),
+        }
+        return reconcile, path, method, body
+
+    def _transition_intent(self, payload, current):
+        """Reconciler and request for a transition; refuses unknown or terminal reversals."""
+        state = payload["state"]
+
+        def validate_transition(result):
+            if (
+                state not in {"in_progress", "closed"}
+                or result["state"] in {"cancelled", "unknown"}
+                or result["state"] == "closed"
+                and state != "closed"
+            ):
+                raise ValueError("Plane refuses unknown or terminal state reversal")
+
+        validate_transition(current)
+
+        def reconcile():
+            result = self.read(payload["reference"])
+            validate_transition(result)
+            return result if result["state"] == state else None
+
+        method, body = "PATCH", {"state": self.config["statuses"][state]}
+        return reconcile, method, body
+
+    def _link_intent(self, payload, current, item_id, path):
+        """Reconciler and request for a link; the exact HTTPS URL must appear at most once."""
+        parsed = urlsplit(payload["url"])
+        if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password:
+            raise ValueError("Plane artifact URL must be an HTTPS reference")
+        path += "links/"
+
+        def reconcile():
+            matches = []
+            for row in self.pages(path):
+                if (
+                    row.get("project") != self.config["project_id"]
+                    or row.get("workspace") != self.config["workspace_id"]
+                    or row.get("issue") != item_id
+                ):
+                    raise ValueError("Plane link has foreign identity")
+                if row.get("url") == payload["url"]:
+                    matches.append(row)
+            if len(matches) > 1:
+                raise ValueError("Plane exact URL is duplicated; inspect the operation")
+            return current if matches else None
+
+        method, body = "POST", {"url": payload["url"], "title": "AI-DLC work evidence"}
+        return reconcile, path, method, body
+
+    def _mutation_intent(self, operation, payload):
+        """Resolve the reconciler and the single request a mutation would send."""
+        if operation == "create":
+            return self._create_intent(payload)
+        current = self.read(payload["reference"])
+        item_id = self.reference(current["id"])
+        path = self.items_path + item_id + "/"
+        if operation == "transition":
+            reconcile, method, body = self._transition_intent(payload, current)
+            return reconcile, path, method, body
+        return self._link_intent(payload, current, item_id, path)
+
+    def _settle(self, store, fresh, reconcile, path, method, body, payload):
+        """Reconcile first; send the request only for a fresh intent; reconcile again."""
+        result = reconcile()
+        if result is not None:
+            store.verify()
+            return result
+        if not fresh:
+            raise PlaneUncertain(
+                "Plane intent remains unresolved; inspect "
+                + payload["operation_id"]
+                + "; retain local state, rerun only reconciles"
+            )
+        store.verify()
+        try:
+            self.request(method, path, body=body)
+        except PlaneUncertain:
+            pass
+        result = reconcile()
+        if result is None:
+            raise PlaneUncertain(
+                "Plane outcome remains unresolved; inspect "
+                + payload["operation_id"]
+                + "; retain local state"
+            )
+        store.verify()
+        return result
+
     def invoke(self, operation, payload):
         payload = validate_request(operation, payload).payload
         self.requests = 0
@@ -376,113 +496,13 @@ class PlaneProvider:
             or not re.fullmatch(r"<!-- ai-dlc:[^<>\r\n]+ -->", payload["correlation"])
         ):
             raise ValueError("Plane requires one unambiguous exact correlation marker")
-        scope = {
-            key: self.config[key]
-            for key in (
-                "deployment",
-                "api_url",
-                "web_url",
-                "account_id",
-                "workspace_slug",
-                "workspace_id",
-                "project_id",
-                "project_key",
-                "statuses",
-            )
-        }
         store = PlaneAttemptStore(self.root, self.state_home)
         fresh = store.begin(
-            payload["operation_id"], {"scope": scope, "operation": operation, "payload": payload}
+            payload["operation_id"],
+            {"scope": self._scope(), "operation": operation, "payload": payload},
         )
-        if operation == "create":
-            reconcile = lambda: self.find(payload["correlation"])
-            path, method = self.items_path, "POST"
-            body = {
-                "name": payload["title"],
-                "description_html": "<p>"
-                + html.escape(payload["body"])
-                + "</p><p>"
-                + html.escape(payload["correlation"])
-                + "</p>",
-                "state": self.config["statuses"]["open"],
-                "external_source": "ai-dlc",
-                "external_id": self.external_id(payload["correlation"]),
-            }
-        else:
-            current = self.read(payload["reference"])
-            item_id = self.reference(current["id"])
-            path = self.items_path + item_id + "/"
-            if operation == "transition":
-                state = payload["state"]
-
-                def validate_transition(result):
-                    if (
-                        state not in {"in_progress", "closed"}
-                        or result["state"] in {"cancelled", "unknown"}
-                        or result["state"] == "closed"
-                        and state != "closed"
-                    ):
-                        raise ValueError("Plane refuses unknown or terminal state reversal")
-
-                validate_transition(current)
-
-                def reconcile():
-                    result = self.read(payload["reference"])
-                    validate_transition(result)
-                    return result if result["state"] == state else None
-
-                method, body = "PATCH", {"state": self.config["statuses"][state]}
-            else:
-                parsed = urlsplit(payload["url"])
-                if (
-                    parsed.scheme != "https"
-                    or not parsed.hostname
-                    or parsed.username
-                    or parsed.password
-                ):
-                    raise ValueError("Plane artifact URL must be an HTTPS reference")
-                path += "links/"
-
-                def reconcile():
-                    matches = []
-                    for row in self.pages(path):
-                        if (
-                            row.get("project") != self.config["project_id"]
-                            or row.get("workspace") != self.config["workspace_id"]
-                            or row.get("issue") != item_id
-                        ):
-                            raise ValueError("Plane link has foreign identity")
-                        if row.get("url") == payload["url"]:
-                            matches.append(row)
-                    if len(matches) > 1:
-                        raise ValueError("Plane exact URL is duplicated; inspect the operation")
-                    return current if matches else None
-
-                method, body = "POST", {"url": payload["url"], "title": "AI-DLC work evidence"}
-        result = reconcile()
-        if result is not None:
-            store.verify()
-            return result
-        if not fresh:
-            raise PlaneUncertain(
-                "Plane intent remains unresolved; inspect "
-                + payload["operation_id"]
-                + "; retain local state, rerun only reconciles"
-            )
-        store.verify()
-        try:
-            self.request(method, path, body=body)
-        except PlaneUncertain:
-            pass
-        result = reconcile()
-        if result is None:
-            raise PlaneUncertain(
-                "Plane outcome remains unresolved; inspect "
-                + payload["operation_id"]
-                + "; retain local state"
-            )
-        store.verify()
-        return result
+        reconcile, path, method, body = self._mutation_intent(operation, payload)
+        return self._settle(store, fresh, reconcile, path, method, body, payload)
 
 
 def main():

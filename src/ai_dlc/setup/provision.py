@@ -270,22 +270,8 @@ def machine_apply(
     }
 
 
-def doctor(
-    root: Path,
-    target: str = "local",
-    machine: Path | None = None,
-    *,
-    personal: Path | None = None,
-    home: Path | None = None,
-    environ: Mapping[str, str] | None = None,
-) -> dict:
-    capabilities = read_toml(assets("targets") / "capabilities.toml")
-    if target not in capabilities:
-        raise ValueError(f"unsupported execution target: {target}")
-    environment = os.environ if environ is None else environ
-    config = resolve_files(personal=personal, project=root / "ai-dlc.toml", machine=machine).values
-    credentials = credential_status(config, environment)
-    missing = [tool for tool in ["git", "mise"] if not _which(tool, environ)]
+def _runtime_drift(root: Path, missing: list[str], environment: Mapping[str, str]) -> list[str]:
+    """Ask mise which active project runtimes are not installed; skip when mise is absent."""
     runtime_drift = []
     if "mise" not in missing:
         result = subprocess.run(
@@ -304,18 +290,30 @@ def doctor(
                 for version in versions:
                     if version.get("active") and not version.get("installed"):
                         runtime_drift.append(tool + "@" + version.get("version", "unknown"))
-    signins = []
-    configuration = []
-    health = []
+    return runtime_drift
+
+
+def _provider_kind(roles: Mapping, providers: Mapping, role: str):
+    """Resolve the provider kind bound to a role, falling back to the provider name."""
+    name = roles.get(role)
+    settings = providers.get(name, {})
+    return settings.get("kind", settings.get("type", name))
+
+
+def _github_signins(
+    config: Mapping,
+    missing: list[str],
+    environ: Mapping[str, str] | None,
+    environment: Mapping[str, str],
+) -> list[str]:
+    """Report a missing gh executable or an unauthenticated gh session for GitHub roles."""
     roles = config.get("roles", {})
     providers = config.get("providers", {})
-
-    def kind(role):
-        name = roles.get(role)
-        settings = providers.get(name, {})
-        return settings.get("kind", settings.get("type", name))
-
-    if kind("scm") in {"github", "github-scm"} or kind("tracker") == "github-issues":
+    signins = []
+    if (
+        _provider_kind(roles, providers, "scm") in {"github", "github-scm"}
+        or _provider_kind(roles, providers, "tracker") == "github-issues"
+    ):
         if _which("gh", environ):
             status = subprocess.run(
                 ["gh", "auth", "status"],
@@ -328,26 +326,43 @@ def doctor(
                 signins.append("gh auth login")
         else:
             missing.append("gh")
-    if kind("scm") in {"github", "github-scm"}:
+    return signins
+
+
+def _configuration_gaps(config: Mapping) -> list[str]:
+    """Required provider settings that the resolved configuration does not supply."""
+    roles = config.get("roles", {})
+    providers = config.get("providers", {})
+    configuration = []
+    if _provider_kind(roles, providers, "scm") in {"github", "github-scm"}:
         for key in ["repository", "workflow", "target_branch"]:
             if not config.get("scm", {}).get(key):
                 configuration.append("scm." + key + " is required")
-    if kind("tracker") == "github-issues" and not providers.get(roles["tracker"], {}).get(
-        "repository"
-    ):
+    if _provider_kind(roles, providers, "tracker") == "github-issues" and not providers.get(
+        roles["tracker"], {}
+    ).get("repository"):
         configuration.append("tracker repository is required")
-    if kind("tracker") == "linear":
+    if _provider_kind(roles, providers, "tracker") == "linear":
         settings = providers.get(roles["tracker"], {})
         if not settings.get("team_id"):
             configuration.append("tracker team_id is required for creation")
         for state in ["in_progress", "closed"]:
             if not settings.get("statuses", {}).get(state):
                 configuration.append("tracker statuses." + state + " is required")
-    from ai_dlc.providers import Registry
+    return configuration
 
-    registry = Registry(config, root=root, environ=environment)
+
+def _capability_failure_reason(exc: Exception) -> str:
+    """Explain a declared capability read failure, calling out Projects access gaps."""
+    reason = "Declared provider capability inspection failed; verify configuration and access"
+    if "read:project" in str(exc).lower() or "project" in str(exc).lower():
+        reason = "Projects capability inspection failed; verify Project configuration and read:project permission (or equivalent access)"
+    return reason
+
+
+def _inspect_provider_capabilities(registry, tracker) -> list[dict]:
+    """Read the tracker's declared capabilities without any mutation."""
     provider_capabilities = []
-    tracker = roles.get("tracker")
     if tracker:
         try:
             if registry.declares(tracker, "capabilities"):
@@ -361,12 +376,15 @@ def doctor(
                     }
                 )
         except Exception as exc:  # noqa: BLE001 -- doctor reports declared discovery failures
-            reason = (
-                "Declared provider capability inspection failed; verify configuration and access"
+            provider_capabilities.append(
+                {"provider": tracker, "ready": False, "reason": _capability_failure_reason(exc)}
             )
-            if "read:project" in str(exc).lower() or "project" in str(exc).lower():
-                reason = "Projects capability inspection failed; verify Project configuration and read:project permission (or equivalent access)"
-            provider_capabilities.append({"provider": tracker, "ready": False, "reason": reason})
+    return provider_capabilities
+
+
+def _inspect_provider_health(registry, providers: Mapping) -> list[dict]:
+    """Read each provider's configured health reference; failures are reported, not raised."""
+    health = []
     for name, settings in providers.items():
         if settings.get("health_reference"):
             try:
@@ -380,35 +398,45 @@ def doctor(
                         "reason": "provider health check failed",
                     }
                 )
-    from ai_dlc.harness.agents import render_agents, target_hooks
+    return health
 
-    hooks = target_hooks(config, target)
+
+def _managed_conflicts(root: Path) -> list:
+    """Render managed agent files without applying; ownership errors become conflicts."""
+    from ai_dlc.harness.agents import render_agents
 
     try:
         rendered = render_agents(root)
-        conflicts = rendered["changed"]
+        return rendered["changed"]
     except ValueError as exc:
-        conflicts = [str(exc)]
-    vault = config.get("paths", {}).get("vault")
-    knowledge = "available" if vault and Path(vault).expanduser().is_dir() else "unavailable"
+        return [str(exc)]
+
+
+def _inspect_user_agents(config: dict, personal: Path | None, home: Path | None) -> dict:
+    """Preview user-level agent configuration only when a personal profile is selected."""
     if personal is None:
         user_agents: dict[str, object] = {"clean": True, "changed": [], "applied": False}
-    else:
-        from ai_dlc.harness.user_agents import UserAgentOwnershipConflict, render_user_agents
+        return user_agents
+    from ai_dlc.harness.user_agents import UserAgentOwnershipConflict, render_user_agents
 
-        try:
-            user_agents = render_user_agents(
-                config,
-                (Path.home() if home is None else Path(home)).resolve(),
-                apply=False,
-            )
-        except UserAgentOwnershipConflict as exc:
-            user_agents = {
-                "clean": False,
-                "changed": [],
-                "applied": False,
-                "conflicts": [str(exc)],
-            }
+    try:
+        return render_user_agents(
+            config,
+            (Path.home() if home is None else Path(home)).resolve(),
+            apply=False,
+        )
+    except UserAgentOwnershipConflict as exc:
+        return {
+            "clean": False,
+            "changed": [],
+            "applied": False,
+            "conflicts": [str(exc)],
+        }
+
+
+def _credential_signins(credentials: list[dict]) -> list[str]:
+    """Sign-in instructions for every credential that is not present."""
+    signins = []
     for credential in credentials:
         if credential["present"]:
             continue
@@ -417,6 +445,43 @@ def doctor(
             signins.append(f"Set {variable} using your credential store")
         else:
             signins.append(f"Bind credential {credential['id']} in machine configuration")
+    return signins
+
+
+def doctor(
+    root: Path,
+    target: str = "local",
+    machine: Path | None = None,
+    *,
+    personal: Path | None = None,
+    home: Path | None = None,
+    environ: Mapping[str, str] | None = None,
+) -> dict:
+    capabilities = read_toml(assets("targets") / "capabilities.toml")
+    if target not in capabilities:
+        raise ValueError(f"unsupported execution target: {target}")
+    environment = os.environ if environ is None else environ
+    config = resolve_files(personal=personal, project=root / "ai-dlc.toml", machine=machine).values
+    credentials = credential_status(config, environment)
+    missing = [tool for tool in ["git", "mise"] if not _which(tool, environ)]
+    runtime_drift = _runtime_drift(root, missing, environment)
+    signins = _github_signins(config, missing, environ, environment)
+    configuration = _configuration_gaps(config)
+    roles = config.get("roles", {})
+    providers = config.get("providers", {})
+    from ai_dlc.providers import Registry
+
+    registry = Registry(config, root=root, environ=environment)
+    provider_capabilities = _inspect_provider_capabilities(registry, roles.get("tracker"))
+    health = _inspect_provider_health(registry, providers)
+    from ai_dlc.harness.agents import target_hooks
+
+    hooks = target_hooks(config, target)
+    conflicts = _managed_conflicts(root)
+    vault = config.get("paths", {}).get("vault")
+    knowledge = "available" if vault and Path(vault).expanduser().is_dir() else "unavailable"
+    user_agents = _inspect_user_agents(config, personal, home)
+    signins.extend(_credential_signins(credentials))
     return {
         "ready": not (missing or runtime_drift or signins or conflicts or configuration)
         and hooks["ready"]

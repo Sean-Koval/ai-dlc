@@ -191,15 +191,175 @@ def _check_local(root, saved, environ):
         raise ValueError("GitHub Project setup source or work bindings changed")
 
 
-def apply_plan(root, saved, *, environ):
-    from ai_dlc.setup.github_onboarding import (
-        _connect_existing_github,
-        _connection_plan_parent,
-        _query,
-        _require,
-        _save_plan,
-        discover_github,
+def _setup_identity(saved):
+    """Immutable identity of the reviewed create and its journal operation id."""
+    identity = {
+        "host": saved["host"].lower(),
+        "repository_id": saved["repository_id"],
+        "owner_id": saved["owner"]["id"],
+        "title": saved["title"],
+    }
+    return identity, "github-project-create:" + digest(identity)
+
+
+def _check_remote_identity(current, owner, saved):
+    if (
+        current["viewer"] != saved["viewer"]
+        or current["repository"]["id"] != saved["repository_id"]
+        or owner != saved["owner"]
+    ):
+        raise ValueError("GitHub Project setup remote identity changed")
+
+
+def _observe_remote(provider, saved, environ):
+    from ai_dlc.setup.github_onboarding import _query, discover_github
+
+    # Identity is freshly observed even when resuming a recorded successful create.
+    current = discover_github(
+        {"host": saved["host"]}, environ=environ, repository=saved["repository"]
     )
+    owner = _query(provider, OWNER, {"owner": saved["owner"]["login"]}, projects=True).get(
+        "repositoryOwner"
+    )
+    _check_remote_identity(current, owner, saved)
+
+
+def _open_journal(root):
+    from ai_dlc.setup.github_onboarding import _connection_plan_parent
+
+    journal_path = root / ".ai-dlc/local/project-setup.sqlite3"
+    with _connection_plan_parent(root, journal_path, create=True):
+        if journal_path.is_symlink():
+            raise ValueError("Project setup journal cannot be a symlink")
+        return Journal(journal_path)
+
+
+def _recorded_project(record):
+    """A journaled create is reused only when it recorded a successful identity."""
+    if record[0] != "succeeded" or not record[1]:
+        raise RuntimeError(
+            "GitHub Project creation remains uncertain; inspect the remote Project and select its exact URL. Refusing duplicate create."
+        )
+    import json
+
+    return json.loads(record[1])
+
+
+def _check_plan_drift(root, saved, environ):
+    fresh = preview(
+        root,
+        alias=saved["provider"],
+        host=saved["host"],
+        repository=saved["repository"],
+        environ=environ,
+    )["plan"]
+    if fresh != saved:
+        raise ValueError("GitHub Project setup plan drift; preview again")
+
+
+def _create_project(provider, saved, journal, operation, identity):
+    from ai_dlc.setup.github_onboarding import _require
+
+    journal.begin(operation, identity)
+    try:
+        selected = _require(
+            provider.graphql(
+                CREATE,
+                {
+                    "owner": saved["owner"]["id"],
+                    "repository": saved["repository_id"],
+                    "title": saved["title"],
+                },
+            )
+            .get("createProjectV2", {})
+            .get("projectV2"),
+            "id",
+            "title",
+            "url",
+        )
+        if selected["title"] != saved["title"]:
+            raise ValueError("Created Project title mismatch")
+    except (OSError, RuntimeError, ValueError, TypeError):
+        journal.uncertain(operation)
+        raise RuntimeError(
+            "GitHub Project creation is uncertain; inspect remote state before retrying. No local binding was changed."
+        ) from None
+    journal.succeed(operation, selected)
+    return selected
+
+
+def _select_project(root, saved, environ, provider, journal, operation, identity):
+    """Reuse the reviewed, journaled or freshly created Project."""
+    selected = saved["project"]
+    if selected is None:
+        record = journal.db.execute(
+            "SELECT status,result FROM operations WHERE id=?", (operation,)
+        ).fetchone()
+        if record is not None:
+            selected = _recorded_project(record)
+        else:
+            _check_plan_drift(root, saved, environ)
+            _check_local(root, saved, environ)
+            selected = _create_project(provider, saved, journal, operation, identity)
+    else:
+        _check_plan_drift(root, saved, environ)
+    return selected
+
+
+def _check_connection_identity(connection, saved, selected):
+    if (
+        connection["plan"]["patch"]["project"]["id"] != selected["id"]
+        or connection["plan"]["discovery"]["viewer"] != saved["viewer"]
+        or connection["plan"]["discovery"]["repository"]["id"] != saved["repository_id"]
+    ):
+        raise ValueError("GitHub Project setup identity changed")
+
+
+def _connect_project(root, saved, selected, environ):
+    from ai_dlc.setup.github_onboarding import _connect_existing_github
+
+    # URL lookup checks owner/host; compare the returned immutable Project identity.
+    connection = _connect_existing_github(
+        root,
+        alias=saved["provider"],
+        host=saved["host"],
+        repository=saved["repository"],
+        project=selected["url"],
+        environ=environ,
+        **DEFAULT_STATES,
+    )
+    _check_connection_identity(connection, saved, selected)
+    return connection
+
+
+def _link_project(provider, saved, selected):
+    try:
+        linked = provider.graphql(
+            LINK, {"project": selected["id"], "repository": saved["repository_id"]}
+        )
+        if (
+            linked.get("linkProjectV2ToRepository", {}).get("repository", {}).get("id")
+            != saved["repository_id"]
+        ):
+            raise ValueError("Project repository association mismatch")
+    except (OSError, RuntimeError, ValueError, TypeError):
+        raise RuntimeError(
+            "GitHub Project repository association failed; retry the saved plan. The Project is retained."
+        ) from None
+
+
+def _save_connection_plan(root, connection):
+    from ai_dlc.setup.github_onboarding import _save_plan
+
+    # Save the observed IDs before using the existing authored-safe connection writer.
+    child = Path(".ai-dlc/local") / ("project-connection-" + digest(connection["plan"]) + ".json")
+    if not (root / child).exists():
+        _save_plan(root, child, connection["plan"])
+    return child
+
+
+def apply_plan(root, saved, *, environ):
+    from ai_dlc.setup.github_onboarding import _connect_existing_github
 
     root = Path(root).resolve()
     validate_plan(saved)
@@ -208,128 +368,16 @@ def apply_plan(root, saved, *, environ):
         provider = GitHubIssuesProvider(
             {"host": saved["host"], "repository": saved["repository"]}, environ=environ
         )
-        # Identity is freshly observed even when resuming a recorded successful create.
-        current = discover_github(
-            {"host": saved["host"]}, environ=environ, repository=saved["repository"]
-        )
-        owner = _query(provider, OWNER, {"owner": saved["owner"]["login"]}, projects=True).get(
-            "repositoryOwner"
-        )
-        if (
-            current["viewer"] != saved["viewer"]
-            or current["repository"]["id"] != saved["repository_id"]
-            or owner != saved["owner"]
-        ):
-            raise ValueError("GitHub Project setup remote identity changed")
-        journal_path = root / ".ai-dlc/local/project-setup.sqlite3"
-        with _connection_plan_parent(root, journal_path, create=True):
-            if journal_path.is_symlink():
-                raise ValueError("Project setup journal cannot be a symlink")
-            journal = Journal(journal_path)
-        identity = {
-            "host": saved["host"].lower(),
-            "repository_id": saved["repository_id"],
-            "owner_id": saved["owner"]["id"],
-            "title": saved["title"],
-        }
-        operation = "github-project-create:" + digest(identity)
+        _observe_remote(provider, saved, environ)
+        journal = _open_journal(root)
+        identity, operation = _setup_identity(saved)
         try:
-            selected = saved["project"]
-            if selected is None:
-                record = journal.db.execute(
-                    "SELECT status,result FROM operations WHERE id=?", (operation,)
-                ).fetchone()
-                if record is not None:
-                    if record[0] != "succeeded" or not record[1]:
-                        raise RuntimeError(
-                            "GitHub Project creation remains uncertain; inspect the remote Project and select its exact URL. Refusing duplicate create."
-                        )
-                    import json
-
-                    selected = json.loads(record[1])
-                else:
-                    fresh = preview(
-                        root,
-                        alias=saved["provider"],
-                        host=saved["host"],
-                        repository=saved["repository"],
-                        environ=environ,
-                    )["plan"]
-                    if fresh != saved:
-                        raise ValueError("GitHub Project setup plan drift; preview again")
-                    _check_local(root, saved, environ)
-                    journal.begin(operation, identity)
-                    try:
-                        selected = _require(
-                            provider.graphql(
-                                CREATE,
-                                {
-                                    "owner": saved["owner"]["id"],
-                                    "repository": saved["repository_id"],
-                                    "title": saved["title"],
-                                },
-                            )
-                            .get("createProjectV2", {})
-                            .get("projectV2"),
-                            "id",
-                            "title",
-                            "url",
-                        )
-                        if selected["title"] != saved["title"]:
-                            raise ValueError("Created Project title mismatch")
-                    except (OSError, RuntimeError, ValueError, TypeError):
-                        journal.uncertain(operation)
-                        raise RuntimeError(
-                            "GitHub Project creation is uncertain; inspect remote state before retrying. No local binding was changed."
-                        ) from None
-                    journal.succeed(operation, selected)
-            else:
-                fresh = preview(
-                    root,
-                    alias=saved["provider"],
-                    host=saved["host"],
-                    repository=saved["repository"],
-                    environ=environ,
-                )["plan"]
-                if fresh != saved:
-                    raise ValueError("GitHub Project setup plan drift; preview again")
-            # URL lookup checks owner/host; compare the returned immutable Project identity.
-            connection = _connect_existing_github(
-                root,
-                alias=saved["provider"],
-                host=saved["host"],
-                repository=saved["repository"],
-                project=selected["url"],
-                environ=environ,
-                **DEFAULT_STATES,
-            )
-            if (
-                connection["plan"]["patch"]["project"]["id"] != selected["id"]
-                or connection["plan"]["discovery"]["viewer"] != saved["viewer"]
-                or connection["plan"]["discovery"]["repository"]["id"] != saved["repository_id"]
-            ):
-                raise ValueError("GitHub Project setup identity changed")
+            selected = _select_project(root, saved, environ, provider, journal, operation, identity)
+            connection = _connect_project(root, saved, selected, environ)
             _check_local(root, saved, environ)
-            try:
-                linked = provider.graphql(
-                    LINK, {"project": selected["id"], "repository": saved["repository_id"]}
-                )
-                if (
-                    linked.get("linkProjectV2ToRepository", {}).get("repository", {}).get("id")
-                    != saved["repository_id"]
-                ):
-                    raise ValueError("Project repository association mismatch")
-            except (OSError, RuntimeError, ValueError, TypeError):
-                raise RuntimeError(
-                    "GitHub Project repository association failed; retry the saved plan. The Project is retained."
-                ) from None
+            _link_project(provider, saved, selected)
             _check_local(root, saved, environ)
-            # Save the observed IDs before using the existing authored-safe connection writer.
-            child = Path(".ai-dlc/local") / (
-                "project-connection-" + digest(connection["plan"]) + ".json"
-            )
-            if not (root / child).exists():
-                _save_plan(root, child, connection["plan"])
+            child = _save_connection_plan(root, connection)
         finally:
             journal.db.close()
     result = _connect_existing_github(
