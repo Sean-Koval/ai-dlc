@@ -210,6 +210,40 @@ def test_configured_shell_is_distinguished_from_active_path(project, machine):
     assert not codes(result) & {"activation-next-shell", "executable-missing"}
 
 
+def test_missing_section_finding_names_the_exact_line_for_the_shell(project, machine):
+    from ai_dlc.environment.bootstrap import activation_line
+
+    for shell, rc_name in (
+        ("zsh", ".zshrc"),
+        ("bash", ".bashrc"),
+        ("fish", ".config/fish/config.fish"),
+    ):
+        result = inspect(project, environ=machine.environ | {"SHELL": f"/bin/{shell}"})
+        assert result["activation"]["status"] == "missing"
+        configured = result["activation"]["configured"]
+        line = activation_line(shell, machine.bin, machine.home)
+        assert configured["rc_file"] == str(machine.home / rc_name)
+        assert configured["activation_line"] == line
+        finding = next(f for f in result["findings"] if f["code"] == "activation-missing")
+        assert line in finding["action"]
+        assert "workspace-init --shell" in finding["action"]
+        assert not (machine.home / rc_name).exists()
+
+
+def test_fish_owned_section_is_recognised(project, machine):
+    from ai_dlc.environment.bootstrap import activation_line
+    from ai_dlc.harness.agents import managed_section
+
+    rc = machine.home / ".config/fish/config.fish"
+    rc.parent.mkdir(parents=True)
+    line = activation_line("fish", machine.bin, machine.home)
+    rc.write_text(managed_section("set -gx SECRET do-not-return\n", line + "\n", toml=True))
+    result = inspect(project, environ=machine.environ | {"SHELL": "/usr/bin/fish"})
+    assert result["activation"]["status"] == "configured-for-next-shell"
+    assert result["activation"]["configured"]["matches_bootstrap_bin"] is True
+    assert "do-not-return" not in json.dumps(result)
+
+
 @pytest.mark.parametrize(
     ("case", "status", "section"),
     [
@@ -237,7 +271,7 @@ def test_stale_or_unprovable_activation(project, machine, case, status, section)
         real.write_text(owned_rc(authored, machine.bin))
         rc.symlink_to(real)
     elif case == "unsupported-shell":
-        environ = environ | {"SHELL": "/usr/bin/fish"}
+        environ = environ | {"SHELL": "/bin/tcsh"}
     result = inspect(project, environ=environ)
     assert result["activation"]["status"] == status
     assert result["activation"]["configured"]["section"] == section

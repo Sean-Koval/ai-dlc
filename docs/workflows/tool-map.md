@@ -193,6 +193,7 @@ protocol is unrun and does not spend the existing generic skill-evaluation budge
 | `project_docs_review` | `project docs-review` | Prepare bounded selected-document context; explicit `source=inventory` permits uncatalogued documents |
 | `project_docs_review_check` | `project docs-review-check` | Check citations, scope and source bytes; does not certify semantic truth |
 | `project_workspace_preview` | `project workspace-init` | Preview additive private project navigation; CLI apply explicitly creates files |
+| CLI only | `project workspace-init --shell` | Preview the owned bash, zsh or fish PATH section; `--apply` writes after ownership checks |
 | `project_workspace_check` | `project workspace-check` | Report installation, shell activation, each mount binding and link navigation separately; read-only, native client not assessed |
 
 Project-document search and read cover repository files, never private notes.

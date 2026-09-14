@@ -107,3 +107,10 @@ The [verification record](verification/github-ticket-workflows.md) identifies
 current fixture results and remaining live gates. Plane installation and the
 custom Confluence MCP server are not prerequisites for this setup. Obsidian and
 other non-tracker provider choices remain independent.
+
+The bundled GitHub Issues adapter allows 120 seconds for a complete operation,
+with a separate 30-second default for each GitHub CLI request. Project operations
+perform several reads and may legitimately take longer than one request. An
+explicit provider `timeout` overrides both defaults. A timeout still leaves an
+uncertain mutation for normal reconciliation; retry through `ai-dlc work finish`
+so merge, CI, issue state and Project readback are verified again.

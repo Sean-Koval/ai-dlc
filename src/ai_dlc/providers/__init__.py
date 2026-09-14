@@ -219,6 +219,9 @@ class Registry:
             provider = ExecutableProvider(
                 {
                     **cfg,
+                    # Project reconciliation spans several independently bounded gh requests.
+                    # Keep this process budget out of the serialized request configuration.
+                    "timeout": cfg.get("timeout", 120 if kind == "github-issues" else 30),
                     "command": [
                         sys.executable,
                         "-m",
