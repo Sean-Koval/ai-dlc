@@ -129,11 +129,11 @@
   ],
   "reviewer": "codex-delivery",
   "schema": 1,
-  "snapshot": "fd747d2022d741da7f71810434a61dc1c3ea8bc1b48ac084066e47b1ff8ed142",
+  "snapshot": "8eb4316aa421ac510bdbcd4afb94db6d2ef231a2ed575e89956db1ce2821ffb9",
   "sources": {
     ".agents/skills/design-evaluate/SKILL.md": "41084df0a78a63e3742ee089acf167c019aad3a13b96a78995620dfd90e661e6",
     ".ai-dlc/agent-ownership.json": "97ea42c897fd70968dcfd8c63da1cf2f8ec1e967798666005caa54e3df307f32",
-    ".ai-dlc/work/frontend-capability-pack.toml": "683a0a1c2145c09c46bae898646f6ba652e10714a8eff1098139d544aa7dc0bb",
+    ".ai-dlc/work/frontend-capability-pack.toml": "0dfec44fd14d79b89bb06d61718ab96f322a6a52f4b35592cad65b50520d2eb8",
     ".claude/skills/design-evaluate/SKILL.md": "41084df0a78a63e3742ee089acf167c019aad3a13b96a78995620dfd90e661e6",
     ".github/workflows/release.yml": "7ddd05d4f6d18ce5f9db254c5361591fdfb8810eb8604db07def99fff8ab30b6",
     "agents/skills.lock.json": "6092497125782d0502c3e6f5e3d82f53ff1496fded14a42a99c2762dd194d7bd",
