@@ -14,6 +14,7 @@ from urllib.parse import urlsplit
 import httpx
 
 from ai_dlc.contracts import validate_request, validate_response
+from ai_dlc.errors import RefusedError, UncertainError
 
 MAX_PAGES = 100
 MAX_ROWS = 10000
@@ -24,11 +25,11 @@ STATES = ("open", "in_progress", "closed", "cancelled")
 RESERVED = {"project", "issuetype", "summary", "description", "properties", "ai-dlc"}
 
 
-class JiraRefusal(ValueError):
+class JiraRefusal(RefusedError):
     """Sanitized provider refusal safe for executable diagnostics."""
 
 
-class JiraUncertain(RuntimeError):
+class JiraUncertain(UncertainError):
     """Sanitized remote failure; no transport payload is retained in the message."""
 
 

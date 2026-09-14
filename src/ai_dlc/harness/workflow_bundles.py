@@ -24,6 +24,7 @@ from urllib.parse import urlsplit
 
 from ai_dlc.config import resolve_layers
 from ai_dlc.environment.profile_source import resolve_git_source, source_portability
+from ai_dlc.errors import RefusedError
 from ai_dlc.files import inside
 from ai_dlc.locking import project_write_lock
 
@@ -63,7 +64,7 @@ _TreeSnapshot = tuple[_Identity, dict[str, _Identity]]
 _DirectoryRoot = Path | int
 
 
-class MissingBundlePath(ValueError):
+class MissingBundlePath(RefusedError):
     """A required path is absent from an otherwise inspectable bundle tree."""
 
     def __init__(self, path: str, message: str | None = None) -> None:

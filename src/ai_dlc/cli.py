@@ -5,13 +5,16 @@ from __future__ import annotations
 import json
 import os
 import sys
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Annotated
 
 import typer
 
 from ai_dlc.config import load_project, read_toml, resolve_files, resolve_runtime
+from ai_dlc.contracts import succeeded
 from ai_dlc.environment.machine import MachineManager
+from ai_dlc.errors import AiDlcError
 
 app = typer.Typer(no_args_is_help=True, help="Portable development for people and agents.")
 project = typer.Typer(no_args_is_help=True)
@@ -41,6 +44,30 @@ agents.add_typer(agent_bundle, name="bundle")
 
 def emit(value):
     typer.echo(json.dumps(value, indent=2, sort_keys=True, default=str))
+
+
+# Failures a service may raise. AiDlcError is the application's own base; the builtin
+# types stay until every bare raise in the services has moved to a typed error.
+SERVICE_FAILURES = (AiDlcError, OSError, RuntimeError, TypeError, ValueError)
+
+
+@contextmanager
+def service_call():
+    """Report a failed service call once: message and notes on stderr, exit code from the error."""
+    try:
+        yield
+    except SERVICE_FAILURES as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        for note in getattr(exc, "__notes__", ()):
+            typer.echo(note, err=True)
+        raise typer.Exit(getattr(exc, "exit_code", 2)) from None
+
+
+def conclude(result) -> None:
+    """Emit a completed service result and map its envelope to the exit status."""
+    emit(result)
+    if not succeeded(result):
+        raise typer.Exit(1)
 
 
 def config_for(root: Path, machine: Path | None = None) -> dict:
@@ -133,9 +160,7 @@ def project_readiness(root: Path = Path(".")):
     from ai_dlc.setup.provision import readiness_config
 
     result = inspect(root, readiness_config(root), os.environ)
-    emit(result)
-    if not result["ready"]:
-        raise typer.Exit(1)
+    conclude(result)
 
 
 @project.command("init")
@@ -400,7 +425,7 @@ def project_link_vault(
     """Create a local portal or explicit canonical directory mounts; --preview writes nothing."""
     from ai_dlc.documentation.vault_link import link_vault
 
-    try:
+    with service_call():
         result = link_vault(
             root,
             vault=vault,
@@ -411,9 +436,6 @@ def project_link_vault(
             mode=mode,
             adopt=adopt,
         )
-    except (OSError, RuntimeError, ValueError) as exc:
-        typer.echo(f"Error: {exc}", err=True)
-        raise typer.Exit(2) from None
     emit(result.as_dict())
 
 
@@ -437,11 +459,8 @@ def project_workspace_init(
     """Preview or add linked Obsidian project navigation and personal note templates."""
     from ai_dlc.documentation.knowledge_workspace import setup_workspace
 
-    try:
+    with service_call():
         emit(setup_workspace(root, vault=vault, name=name, bases=bases, apply=apply))
-    except (OSError, ValueError) as exc:
-        typer.echo(f"Error: {exc}", err=True)
-        raise typer.Exit(2) from None
 
 
 @project.command("rebind")
@@ -456,7 +475,7 @@ def project_rebind(
 ):
     from ai_dlc.setup.rebind import rebind
 
-    try:
+    with service_call():
         result = rebind(
             root,
             role,
@@ -467,9 +486,6 @@ def project_rebind(
             connection_plan=connection_plan,
             environ=os.environ,
         )
-    except (OSError, RuntimeError, TypeError, ValueError) as exc:
-        typer.echo(f"Error: {exc}", err=True)
-        raise typer.Exit(2) from None
     emit(result)
 
 
@@ -491,7 +507,7 @@ def project_tracker_create_plan(
         save_tracker_targets_plan,
     )
 
-    try:
+    with service_call():
         result = plan_tracker_targets(
             root,
             provider_id,
@@ -505,9 +521,6 @@ def project_tracker_create_plan(
         if save_plan is not None:
             path = save_tracker_targets_plan(root, result, save_plan)
             result = {"status": "planned", "path": path, "plan": result}
-    except (OSError, RuntimeError, TypeError, ValueError) as exc:
-        typer.echo(f"Error: {exc}", err=True)
-        raise typer.Exit(2) from None
     emit(result)
 
 
@@ -522,17 +535,14 @@ def project_tracker_reconcile(
     from ai_dlc.setup.tracker_targets import reconcile_tracker_targets
     from ai_dlc.work.tracker_migration import save_tracker_migration_plan
 
-    try:
+    with service_call():
         result = reconcile_tracker_targets(root, plan, environ=os.environ, machine=machine)
-    except (OSError, RuntimeError, TypeError, ValueError) as exc:
-        typer.echo(f"Error: {exc}", err=True)
-        raise typer.Exit(2) from None
     if save_plan is not None and result["migration_plan"] is not None:
         try:
             result["saved_plan"] = save_tracker_migration_plan(
                 root, result["migration_plan"], save_plan
             )
-        except (OSError, RuntimeError, TypeError, ValueError) as exc:
+        except SERVICE_FAILURES as exc:
             result["save_error"] = str(exc)
             emit(result)
             raise typer.Exit(2) from None
@@ -564,7 +574,7 @@ def project_tracker_migrate(
         save_tracker_migration_plan,
     )
 
-    try:
+    with service_call():
         actions = sum(
             value is not None for value in (apply_plan, inspect_recovery, resolve_recovery)
         )
@@ -592,11 +602,8 @@ def project_tracker_migrate(
             if save_plan is not None:
                 path = save_tracker_migration_plan(root, result, save_plan)
                 result = {"status": "planned", "plan_path": path, "plan": result}
-    except (OSError, RuntimeError, TypeError, ValueError) as exc:
-        typer.echo(f"Error: {exc}", err=True)
-        raise typer.Exit(2) from None
     emit(result)
-    if result.get("status") in {"rolled-back", "recovery-required"} and apply_plan is not None:
+    if apply_plan is not None and not succeeded(result):
         raise typer.Exit(1)
 
 
@@ -621,7 +628,7 @@ def agents_connect(
             result = plan_native_connections(
                 root, bindings, environ=os.environ, save_plan=save_plan
             )
-    except (OSError, ValueError) as exc:
+    except SERVICE_FAILURES as exc:
         emit({"status": "refused", "reason": str(exc)})
         raise typer.Exit(1) from None
     emit(result)
@@ -650,7 +657,7 @@ def agents_render(
 
         result = render_agents(root, apply=apply, client=client)
     emit(result)
-    if check and not result["clean"]:
+    if check and not succeeded(result):
         raise typer.Exit(1)
 
 
@@ -670,7 +677,7 @@ def agents_bundle_import(
         validate_bundle_project,
     )
 
-    try:
+    with service_call():
         if apply and expected_commit is None:
             raise ValueError("bundle apply requires --expected-commit")
         if not apply and expected_commit is not None:
@@ -683,12 +690,6 @@ def agents_bundle_import(
                 apply=apply,
                 expected_commit=expected_commit,
             )
-    except (OSError, RuntimeError, TypeError, ValueError) as exc:
-        typer.echo(f"Error: {exc}", err=True)
-        for note in getattr(exc, "__notes__", ()):
-            if note.startswith("Bundle import "):
-                typer.echo(note, err=True)
-        raise typer.Exit(2) from None
     emit(result)
 
 
@@ -829,9 +830,7 @@ def machine_doctor(
     root: Annotated[Path, typer.Option("--root")] = Path("."), target: str = "local"
 ):
     result = MachineManager().doctor(root, target=target)
-    emit(result)
-    if not result["ready"]:
-        raise typer.Exit(1)
+    conclude(result)
 
 
 @app.command()
@@ -843,9 +842,7 @@ def doctor(
 ):
     selected_root = root or root_option
     result = MachineManager().doctor(selected_root, target=target, machine=machine)
-    emit(result)
-    if not result["ready"]:
-        raise typer.Exit(1)
+    conclude(result)
 
 
 @app.command()
@@ -891,11 +888,9 @@ def work_validate(
         assert work_id is not None
         try:
             result = validate_work(root, resolve_runtime(root, machine=machine).values, work_id)
-        except (OSError, ValueError) as exc:
+        except SERVICE_FAILURES as exc:
             result = {"valid": False, "work_id": work_id, "dependencies": [], "errors": [str(exc)]}
-    emit(result)
-    if not result["valid"]:
-        raise typer.Exit(1)
+    conclude(result)
 
 
 @work.command("publish")
@@ -925,9 +920,7 @@ def work_finish(
     work_id: str, root: Path = Path("."), machine: Path | None = None, handoff: Path | None = None
 ):
     result = service(root, machine).finish(work_id, handoff.read_text() if handoff else None)
-    emit(result)
-    if result.get("status") == "blocked":
-        raise typer.Exit(1)
+    conclude(result)
 
 
 @knowledge.command("find")
@@ -979,7 +972,7 @@ def provider_connect(
     """Discover or explicitly configure a supported project provider."""
     from ai_dlc.setup.provider_onboarding import connect_provider
 
-    try:
+    with service_call():
         result = connect_provider(
             root,
             name=name,
@@ -998,9 +991,6 @@ def provider_connect(
             apply=apply,
             environ=os.environ,
         )
-    except (OSError, RuntimeError, TypeError, ValueError) as exc:
-        typer.echo(f"Error: {exc}", err=True)
-        raise typer.Exit(2) from None
     emit(result)
 
 
@@ -1009,9 +999,7 @@ def provider_test(name: str, manifest: Path, live: bool = False):
     from ai_dlc.verification.sandbox import test_provider
 
     result = test_provider(name, read_toml(manifest), live=live)
-    emit(result)
-    if not result["passed"]:
-        raise typer.Exit(1)
+    conclude(result)
 
 
 @mcp.command("serve")

@@ -9,6 +9,7 @@ from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any
 
 from ai_dlc.config import Resolved, read_toml, validate_provider_metadata
+from ai_dlc.errors import RefusedError
 from ai_dlc.files import assets, inside
 
 _CATALOG_FIELDS = {"schema", "components"}
@@ -18,7 +19,7 @@ _CONFIG_PATH = re.compile(r"^[a-z][a-z0-9_-]*(?:\.[a-z][a-z0-9_-]*)*$")
 _ROLES = {"specs", "tracker", "knowledge", "scm", "deploy"}
 
 
-class MissingComponentGuidance(ValueError):
+class MissingComponentGuidance(RefusedError):
     """Authenticated, structurally valid metadata has missing Markdown targets.
 
     Loading still refuses this catalog. Offline inspection may use its validated

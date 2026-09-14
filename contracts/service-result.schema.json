@@ -1,0 +1,73 @@
+{
+  "additionalProperties": true,
+  "description": "Envelope every application service result satisfies; see docs/architecture.md.",
+  "properties": {
+    "status": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Canonical outcome. Members of FAILURE_STATUSES are failures; any other value succeeded.",
+      "title": "Status"
+    },
+    "valid": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Legacy verdict key; authoritative when present.",
+      "title": "Valid"
+    },
+    "ready": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Legacy verdict key; authoritative when present.",
+      "title": "Ready"
+    },
+    "passed": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Legacy verdict key; authoritative when present.",
+      "title": "Passed"
+    },
+    "clean": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Legacy verdict key; authoritative when present.",
+      "title": "Clean"
+    }
+  },
+  "title": "ServiceResult",
+  "type": "object"
+}
