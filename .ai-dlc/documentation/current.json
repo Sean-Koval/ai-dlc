@@ -69,7 +69,7 @@
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "8e583343b3aae234b24ccb1bbc33c74588a42c919ee19837e62cf35af2b62491",
+  "snapshot": "4d52f12463e14747a3c7244bfeb6f5d82205b9cbebb01a94808b8a46e300e7dc",
   "sources": {
     ".ai-dlc/work/long-function-split.toml": "f71b329f5ef2fec9009b9dbcd8383a5713ec9a5da1926b6e8629d5132aed2b81",
     "docs/architecture.md": "8bafa96f47da57bde830616401e193107eea00298d89d3ae8ee633a1dfc30604",
@@ -159,7 +159,7 @@
     "src/ai_dlc/work/traceability.py": "c4062335f26218e99f58e236425674c513ea6f2fce7f68b624a4df4dcd8ab3aa",
     "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
     "src/ai_dlc/work/workflow.py": "98a6e3eee1526864845fe53c73dd9c78c07b22256a86dde9e4e12f300a08db23",
-    "tests/test_agents_phases.py": "557f7177219b7576099ddabda2a5dbe08a7f00321118e2884678add4dba94081",
+    "tests/test_agents_phases.py": "6f94405aa60f2de6ab2f6a23275512ee458236d3a70ff60b83e1fa55f1faa0f6",
     "tests/test_company_guidance.py": "ab39bed3342d9de7d4c68db6c6c54fd66e13c12f2f2167c38e8d345c7dc9736e",
     "tests/test_document_access.py": "bdf96af4afb1ad6f985204ad243a624d4da8b56d527af63cc072908a76beeff4",
     "tests/test_document_impact.py": "308684c1dda24359e86d2a9b79200455ebe781e97baa18169f5b9979e4eb2a14",
