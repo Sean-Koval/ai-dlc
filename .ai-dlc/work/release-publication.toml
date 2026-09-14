@@ -28,7 +28,7 @@ deploy = "none"
 [artifacts]
 spec = "openspec/changes/archive/2026-09-13-release-publication"
 tracker = "71"
-branch = "work/release-publication"
+branch = "codex/finalize-release-publication"
 pr = "https://github.com/Sean-Koval/ai-dlc/pull/88"
 
 [bindings]
