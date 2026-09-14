@@ -9,7 +9,7 @@ The change reconciles existing documentation, adds content-bound impact review,
 prepares bounded evidence for existing harnesses, validates citations, creates
 additive private workspaces, and extends pinned SDK skills with references.
 Formal scenarios live in the six named OpenSpec changes. The
-[historical baseline](documentation-baseline.json) owns the initial inventory and
+[historical baseline](../archive/verification/documentation-baseline.json) owns the initial inventory and
 its dated dispositions; later changes do not silently refresh that record.
 
 ## Required local checks

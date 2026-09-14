@@ -20,6 +20,8 @@ scm = "github"
 knowledge = "obsidian"
 deploy = "none"
 
+# Historical record delivered against the Linear sandbox without a ticket; the archived
+# OpenSpec change is the durable trace. Disposition recorded 2026-09-14.
 [artifacts]
 spec = "openspec/changes/archive/2026-09-03-portable-profile-enrollment"
 branch = "codex/portable-profile-enrollment"

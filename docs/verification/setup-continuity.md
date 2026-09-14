@@ -7,7 +7,7 @@ They extend #14/#17 evidence; they do not complete either issue.
 Repeated adoption safely refuses existing scaffold files; only enrollment and
 rendering demonstrate successful idempotent application.
 
-The same [frozen probe](setup-continuity-189913b/probe.py) ran on macOS 15.3.2
+The same [frozen probe](../archive/verification/setup-continuity-189913b/probe.py) ran on macOS 15.3.2
 arm64 and Ubuntu 24.04.3 aarch64. Each used independent temporary project,
 profile, bundle and XDG directories, with the already prepared Python 3.12.11
 interpreter. The native host and Linux container/environment were reused; no
@@ -35,11 +35,11 @@ refusal; no user-authored application or vault was involved.
 
 ## Evidence and limits
 
-The [structured report](setup-continuity-189913b/report.json) records three
+The [structured report](../archive/verification/setup-continuity-189913b/report.json) records three
 observations per environment: partial enrollment/render continuity, authored
 preservation and offline restart. The broad repeat-setup slot remains not-run
-because repeating full setup/bootstrap was not exercised. [Native captures](setup-continuity-189913b/native.json) and
-[container captures/context](setup-continuity-189913b/container.json) preserve
+because repeating full setup/bootstrap was not exercised. [Native captures](../archive/verification/setup-continuity-189913b/native.json) and
+[container captures/context](../archive/verification/setup-continuity-189913b/container.json) preserve
 command arguments, exit status, timestamps, durations, stdout/stderr and snapshots.
 Literal machine/source/workspace paths are redacted; report hashes authenticate
 these redacted artifacts. The probe source is unchanged. Generic probe labels do

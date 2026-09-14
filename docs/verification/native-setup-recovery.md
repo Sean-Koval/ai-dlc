@@ -6,9 +6,9 @@ repeat source bootstrap and one controlled bundle publication failure followed b
 recovery. They do not complete Q01–03, account or vault readiness, container
 coverage, or fresh native model-client qualification.
 
-The [report](native-setup-recovery-189913b/report.json) references redacted
-[bootstrap captures](native-setup-recovery-189913b/bootstrap.json) and
-[recovery captures](native-setup-recovery-189913b/recovery.json). Each artifact
+The [report](../archive/verification/native-setup-recovery-189913b/report.json) references redacted
+[bootstrap captures](../archive/verification/native-setup-recovery-189913b/bootstrap.json) and
+[recovery captures](../archive/verification/native-setup-recovery-189913b/recovery.json). Each artifact
 includes the exact historical probe text after disclosed path redaction, raw
 capture hashes, commands, outcomes and filesystem hash snapshots. The probes are
 historical evidence, not a supported execution interface. No production source or
