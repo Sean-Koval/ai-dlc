@@ -20,7 +20,7 @@ SCHEMA = 4
 SCOPES = {
     "schema": {"base", "personal", "project", "machine"},
     "engine": {"base", "project"},
-    "roles": {"base", "personal", "project"},
+    "roles": {"base", "personal", "project", "machine"},
     "providers": {"base", "personal", "project", "machine"},
     "checks": {"base", "project"},
     "gates": {"base", "project"},
@@ -36,6 +36,7 @@ SCOPES = {
     "project": {"base", "project"},
     "contracts": {"base", "project"},
     "profile_id": {"personal"},
+    "sources": {"personal"},
     "credentials": {"personal", "machine"},
 }
 
@@ -213,6 +214,22 @@ def _validate(layer: str, data: dict[str, Any]) -> None:
                 secrets(child, path)
 
     secrets(data)
+    if "sources" in data:
+        from ai_dlc.environment.source_schema import subscriptions
+
+        subscriptions(data["sources"])
+    if layer == "machine" and "roles" in data:
+        from ai_dlc.environment.source_schema import SourceSubscription
+
+        try:
+            SourceSubscription.model_validate(
+                {"id": "machine", "git": "unused", "ref": "main", "roles": data["roles"]}
+            )
+        except ValueError:
+            raise ValueError(
+                "machine: roles must be a list of unique safe person-role identifiers; "
+                "provider-role overrides are prohibited"
+            ) from None
     agents = data.get("agents")
     if agents is not None and not isinstance(agents, dict):
         raise TypeError(f"{layer}: agents must be a table")
@@ -320,6 +337,11 @@ def resolve_layers(layers: list[tuple[str, dict[str, Any]]]) -> Resolved:
         if index < previous:
             raise ValueError("layers must be base → personal → project → machine")
         previous = index
+        if layer == "machine" and "roles" in data:
+            # Person roles select team resources; provider roles remain project-owned.
+            values["team_roles"] = copy.deepcopy(data["roles"])
+            sources["team_roles"] = layer
+            data = {key: value for key, value in data.items() if key != "roles"}
         values = merge(values, data, "", layer)
     return Resolved(values, sources)
 

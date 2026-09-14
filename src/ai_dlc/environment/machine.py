@@ -26,6 +26,7 @@ from ai_dlc.environment.profile_source import (
     source_portability,
     verify_cached_profile,
 )
+from ai_dlc.environment.team_sources import load_sources, resolve_sources
 from ai_dlc.harness.user_agents import UserAgentOwnershipConflict, render_user_agents
 
 
@@ -126,6 +127,10 @@ class MachineManager:
             drift.append("machine binding is invalid")
             config = self._personal_config(profile_file)
 
+        try:
+            load_sources(lock, self.paths, config.get("team_roles", []))
+        except (OSError, ValueError, RuntimeError):
+            drift.append("team source cache is corrupt")
         credentials = credential_status(config, self.environ)
         missing_credentials = (
             [entry for entry in credentials if not entry["present"]]
@@ -237,7 +242,10 @@ class MachineManager:
         except Exception as exc:  # noqa: BLE001 -- every failure must preserve the lock
             self._raise_sync_failure("candidate resolution", prior_lock_bytes, exc)
 
-        candidate_lock = self._lock_from_candidate(candidate, lock.machine_id)
+        try:
+            candidate_lock = self._lock_from_candidate(candidate, lock.machine_id)
+        except Exception as exc:  # noqa: BLE001 -- preserve the active lock on any candidate failure
+            self._raise_sync_failure("source resolution", prior_lock_bytes, exc)
         candidate_profile = candidate.cache_root / candidate.subdirectory / candidate.profile_file
         configuration_diff = "".join(
             difflib.unified_diff(
@@ -257,9 +265,16 @@ class MachineManager:
                 "to": candidate.content_sha256,
             },
             "configuration": configuration_diff,
+            "sources": {
+                "from": [source.model_dump() for source in lock.sources],
+                "to": [source.model_dump() for source in candidate_lock.sources],
+            },
         }
         try:
             config = self._resolved_config(candidate_profile, machine_file)
+            selected_sources = load_sources(
+                candidate_lock, self.paths, config.get("team_roles", [])
+            )
             credentials = credential_status(config, self.environ)
         except Exception as exc:  # noqa: BLE001 -- every failure must preserve the lock
             self._raise_sync_failure("candidate readiness", prior_lock_bytes, exc)
@@ -269,6 +284,7 @@ class MachineManager:
             "idempotent": idempotent,
             "lock": candidate_lock.model_dump(by_alias=True),
             "changes": changes,
+            "source_notes": selected_sources.notes,
             "readiness": {
                 "ready": all(bool(entry["present"]) for entry in credentials),
                 "credentials": credentials,
@@ -442,8 +458,7 @@ class MachineManager:
             raise RuntimeError("active machine binding is missing")
         return machine_file
 
-    @staticmethod
-    def _lock_from_candidate(candidate: ProfileCandidate, machine_id: str) -> EnrollmentLock:
+    def _lock_from_candidate(self, candidate: ProfileCandidate, machine_id: str) -> EnrollmentLock:
         return EnrollmentLock(
             profile_id=candidate.profile_id,
             source=source_lock_value(candidate.source),
@@ -453,6 +468,13 @@ class MachineManager:
             machine_id=machine_id,
             subdirectory=candidate.subdirectory,
             profile_file=candidate.profile_file,
+            sources=resolve_sources(
+                self._personal_config(
+                    candidate.cache_root / candidate.subdirectory / candidate.profile_file
+                ),
+                self.paths,
+                self.environ,
+            ),
         )
 
     def _raise_sync_failure(
@@ -486,6 +508,7 @@ class MachineManager:
             candidate.cache_root / candidate.subdirectory / candidate.profile_file,
             machine_file if machine_file.is_file() else None,
         )
+        selected_sources = load_sources(lock, self.paths, config.get("team_roles", []))
         agent_preview, conflicts = self._agent_preview(config)
         profile_change = (
             {"from": current.profile_id, "to": lock.profile_id}
@@ -516,6 +539,7 @@ class MachineManager:
             "user_agents": agent_preview,
             "ownership_conflicts": conflicts,
             "profile_change": profile_change,
+            "source_notes": selected_sources.notes,
         }
         if apply:
             ensure_machine_file(self.paths, machine_id)

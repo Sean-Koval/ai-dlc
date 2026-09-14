@@ -16,9 +16,11 @@ from typing import Any
 import tomli_w
 
 from ai_dlc.config import load_project
+from ai_dlc.environment.team_sources import enrolled_sources
 from ai_dlc.files import assets, atomic_write, inside
 from ai_dlc.harness import workflow_bundles as bundle_fs
 from ai_dlc.harness.components import load_component_catalog, resolve_components
+from ai_dlc.harness.team_source_render import check_source_skill_destinations, merge_source_items
 from ai_dlc.harness.workflow_bundles import MissingBundlePath, load_vendored_bundle
 from ai_dlc.locking import project_write_lock
 
@@ -1189,8 +1191,10 @@ def _render_agents(
     if guidance_errors:
         raise ValueError("; ".join(guidance_errors))
     clients = _resolve_render_clients(config, client)
-    _validate_required_hooks(config, clients)
     skill_sources = _skill_sources(config)
+    selected_sources = enrolled_sources()
+    team_body, source_skills = merge_source_items(selected_sources, config, skill_sources, bundles)
+    _validate_required_hooks(config, clients)
     try:
         components = resolve_components(config, load_component_catalog(root, config))
     except TypeError as exc:
@@ -1200,14 +1204,22 @@ def _render_agents(
         guidance for component in components["components"] for guidance in component["guidance"]
     }
     lines = _shared_guidance_lines(config.get("checks", {}), index, _bundle_index(bundles))
-    agents_body = "\n".join(lines)
+    agents_body = "\n".join(lines) + team_body
     planned = _plan_guidance_files(text, agents_body, clients)
     servers, codex, antigravity = _plan_mcp_servers(config, clients)
     manifest_bytes = read(".ai-dlc/agent-ownership.json")
     previous = json.loads(manifest_bytes) if manifest_bytes is not None else {"mcp": {}}
     prior_bundle_files = _prior_bundle_files(previous)
-    bundle_participates = bool(bundle_ids or prior_bundle_files or previous.get("schema") == 3)
+    bundle_participates = bool(
+        bundle_ids or prior_bundle_files or selected_sources.enrolled or previous.get("schema") == 3
+    )
+    source_ownership, source_directories = check_source_skill_destinations(
+        root, read, clients, CLIENT_SKILL_DIRECTORIES, source_skills, previous
+    )
     ownership: dict[str, Any] = dict(previous)
+    if selected_sources.enrolled or "source_skills" in previous:
+        ownership["source_skills"] = source_ownership
+        ownership["source_directories"] = source_directories
     ownership["schema"] = 3 if bundle_participates else 2
     owned_files = dict(previous.get("files", {}))
     bundle_files = dict(prior_bundle_files)
@@ -1256,6 +1268,8 @@ def _render_agents(
             root, state, bundle_participates, planned, removed, changed
         )
     result: dict[str, Any] = {"clean": not changed, "changed": changed, "applied": apply}
+    if selected_sources.notes:
+        result["source_notes"] = selected_sources.notes
     if retained_backups:
         result["retained_backups"] = retained_backups
     return result
@@ -1269,7 +1283,7 @@ def render_agents(
     if not apply:
         return _render_agents(absolute, apply=False, client=client, target=target)
     config = load_project(absolute)
-    selected = bool(_selected_bundle_ids(config))
+    selected = bool(_selected_bundle_ids(config)) or enrolled_sources().enrolled
     ownership_path = absolute / ".ai-dlc" / "agent-ownership.json"
     previous: dict[str, Any] = {}
     if ownership_path.exists():

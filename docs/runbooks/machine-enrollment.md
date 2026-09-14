@@ -89,3 +89,99 @@ to activate it after validation and reconciliation. To move from one immutable
 tag to another, reenroll with the new ref. Enroll a second machine with the
 same advertised ref under the selected policy and a different machine ID; its
 local binding remains independent.
+
+## Team sources
+
+A personal profile can subscribe to reviewed team repositories without installing
+or running their contents. Add subscriptions to the private profile, then enroll
+it as usual. Source definitions cannot be set by project or machine layers:
+
+```toml
+[[sources]]
+id = "engineering"
+git = "https://example.com/team/practices.git"
+ref = "main"
+roles = []
+tags = ["review"]
+# layout = "teamai" # default: "ai-dlc"
+```
+
+Each source has an exact commit and content digest in the machine enrollment
+lock. Rendering verifies this cache offline. `ai-dlc machine sync` fetches and
+validates candidates but only previews them; `ai-dlc machine sync --apply`
+activates them after machine reconciliation succeeds. Run
+`ai-dlc agents render --apply --root PATH` to deliver the selected source revision
+to a project. Session-start checks advertised refs within a three-second total
+budget and only reports `team source <id> has a newer revision; run
+\`ai-dlc machine sync\``. It never fetches source contents, changes locks or writes
+client configuration. Offline status and rendering do not inspect remote refs.
+
+A machine binding may add the person's roles with a top-level
+`roles = ["developer"]` string list. This is distinct from the profile/project
+`[roles]` table selecting providers; machine roles never replace that table.
+Role, namespace and tag identifiers may contain lowercase letters, digits,
+hyphens and underscores (for example `hai_dev`). Source `roles` and machine roles
+are combined, while source `tags` select tag
+subscriptions. Items without selectors are universal; other items require any
+matching role or tag. Validation applies to every item before filtering, so an
+unselected item cannot hide unsafe content. Unenrollment or role deselection
+removes only previously owned source outputs on the next render. Source skill
+names cannot collide with any shipped or selected bundled skills, other source skills,
+or authored client skills; even an identical authored file remains unowned.
+Edited owned outputs are also preserved through refusal. Source rules appear in
+AGENTS.md's owned section, and skills also appear in selected client skill files.
+
+The native layout contains `manifest.toml`, `skills/<name>/SKILL.md`,
+`rules/<name>.md`, and optional `mcp/servers.toml` and `hooks/hooks.toml`.
+Every exported item is listed in the manifest; other files are refused:
+
+```toml
+schema = 1
+
+[[items]]
+kind = "skill"
+name = "team-review"
+path = "skills/team-review/SKILL.md"
+roles = ["developer"]
+tags = ["review"]
+
+[[items]]
+kind = "rule"
+name = "review"
+path = "rules/review.md"
+
+[[items]]
+kind = "mcp"
+name = "team-tools"
+path = "mcp/servers.toml"
+
+[[items]]
+kind = "hook"
+name = "session-context"
+path = "hooks/hooks.toml"
+```
+
+`mcp/servers.toml` declares `[[servers]]` entries with `id`, `command` and optional
+`args = ["serve"]`. Commands are portable executable names; AI-DLC imports the
+configuration without executing the command. URLs, headers, environment values,
+credential arguments and machine paths are refused. Hook content is only
+`features = ["session-context"]` or other existing `bound-push` and
+`stop-reminder` features. Arbitrary shell hooks are refused. The selected client's
+configured version must already support those features in AI-DLC's capability
+matrix. All source paths must be regular UTF-8 files without symlinks or execute
+bits, up to 2 MiB each and 10 MiB total, with at most 1,024 files and 16 path
+segments. Structured manifests are limited to 1 MiB. `env/` directories are
+refused, and credential diagnostics name the source path without echoing values.
+
+Set `layout = "teamai"` to read an existing
+[Tencent teamai repository](https://github.com/Tencent/teamai-cli). AI-DLC imports
+flat or namespaced skills, flat rules, `culture.md` as the `culture` rule, and
+`mcp/mcp.yaml`'s `servers` list with `name`, optional `transport: stdio`, `command`
+and `args`. It reads role/tag metadata from `teamai.yaml` when present, Markdown
+frontmatter, and the current upstream `manifest/roles.yaml` role-to-skill-namespace
+mapping and `tags.yaml` skill/rule tag maps. AI-DLC applies the selection rule
+above rather than upstream's permissive no-subscription fallback. Hooks, agents
+and docs are ignored with notes after safety validation; `env/` and embedded
+MCP token/environment values are refused. YAML aliases and duplicate keys are
+refused. This is a deliberately limited source reader: it does not install
+teamai, execute its hooks, import packages, write back, or access its dashboards.

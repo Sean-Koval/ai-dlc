@@ -1,86 +1,84 @@
 {
-  "base": "dd5209dec0e4abe15743f9b5dd0052fc5483f8b5",
+  "base": "c9db6f3549983485305892c98f829a179f3cd6b3",
   "decisions": [
     {
       "outcome": "updated",
-      "reason": "Documented the local FDE application service and absence of provider or private-knowledge connections.",
+      "reason": "Updated canonical ownership, enrollment, teamai source limits and source mappings for the implemented team-source behavior.",
       "target": "docs/architecture.md"
     },
     {
       "outcome": "updated",
-      "reason": "Enrolled the FDE runbook and mapped service, tests and promoted specification.",
+      "reason": "Updated canonical ownership, enrollment, teamai source limits and source mappings for the implemented team-source behavior.",
       "target": "docs/catalog.toml"
     },
     {
       "outcome": "updated",
-      "reason": "Recorded unavailable production source and distinguished delivered scaffold from outstanding Confluence publication.",
-      "target": "docs/design/local-and-shared-knowledge.md"
+      "reason": "Updated canonical ownership, enrollment, teamai source limits and source mappings for the implemented team-source behavior.",
+      "target": "docs/product-direction.md"
     },
     {
       "outcome": "updated",
-      "reason": "Linked the canonical FDE runbook.",
-      "target": "docs/index.md"
+      "reason": "Updated canonical ownership, enrollment, teamai source limits and source mappings for the implemented team-source behavior.",
+      "target": "docs/runbooks/machine-enrollment.md"
+    },
+    {
+      "outcome": "reviewed-no-change",
+      "reason": "Historical documentation-workflow qualification evidence remains accurate for its stated scope; team-source fixture tests do not refresh those live-client or document-workflow claims.",
+      "target": "docs/verification/documentation-workflow.md"
     },
     {
       "outcome": "updated",
-      "reason": "Documented exact scaffold/check commands, configuration and safe output, lifecycle metadata, private boundaries and unavailable publication.",
-      "target": "docs/runbooks/fde-documents.md"
+      "reason": "Reviewed and archived the team-source requirements, design and completed implementation tasks with the promoted capability specification; compatibility repairs preserve the specified behavior.",
+      "target": "openspec/changes/archive/2026-09-14-team-sources/design.md"
     },
     {
       "outcome": "updated",
-      "reason": "Added the local FDE CLI group and service ownership without claiming a provider or MCP facade.",
-      "target": "docs/workflows/tool-map.md"
+      "reason": "Reviewed and archived the team-source requirements, design and completed implementation tasks with the promoted capability specification; compatibility repairs preserve the specified behavior.",
+      "target": "openspec/changes/archive/2026-09-14-team-sources/proposal.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Reviewed and archived the team-source requirements, design and completed implementation tasks with the promoted capability specification; compatibility repairs preserve the specified behavior.",
+      "target": "openspec/changes/archive/2026-09-14-team-sources/specs/team-sources/spec.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Reviewed and archived the team-source requirements, design and completed implementation tasks with the promoted capability specification; compatibility repairs preserve the specified behavior.",
+      "target": "openspec/changes/archive/2026-09-14-team-sources/tasks.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Reviewed and archived the team-source requirements, design and completed implementation tasks with the promoted capability specification; compatibility repairs preserve the specified behavior.",
+      "target": "openspec/specs/team-sources/spec.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Archived only the delivered local scaffold requirements and implementation plan; provider publication requirements remain separately active. No duplicated durable guidance is needed.",
-      "target": "openspec/changes/archive/2026-09-14-fde-document-scaffold/design.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Archived only the delivered local scaffold requirements and implementation plan; provider publication requirements remain separately active. No duplicated durable guidance is needed.",
-      "target": "openspec/changes/archive/2026-09-14-fde-document-scaffold/proposal.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Archived only the delivered local scaffold requirements and implementation plan; provider publication requirements remain separately active. No duplicated durable guidance is needed.",
-      "target": "openspec/changes/archive/2026-09-14-fde-document-scaffold/specs/fde-document-scaffold/spec.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "Archived only the delivered local scaffold requirements and implementation plan; provider publication requirements remain separately active. No duplicated durable guidance is needed.",
-      "target": "openspec/changes/archive/2026-09-14-fde-document-scaffold/tasks.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Retained full blocked publication scope, recorded missing source, linked separately archived local scaffold, and left issue 50 outstanding.",
-      "target": "openspec/changes/team-document-publication/proposal.md"
-    },
-    {
-      "outcome": "updated",
-      "reason": "Added explicit PyYAML dependency already present transitively; metadata parsing is documented in the FDE runbook.",
+      "reason": "Lock declares the already-resolved PyYAML dependency explicitly for the supported teamai parser; usage and security limits are documented in the enrollment runbook.",
       "target": "uv.lock"
     }
   ],
   "reviewer": "Codex integration review",
   "schema": 1,
-  "snapshot": "75e618f0cebf3f14f3c6f31eb2a2bbfb3f51186263dec4b939d072c97f5f4e68",
+  "snapshot": "d05bc0620cf5f8e8db748442d332ac01dfa2d13edfd68ee8fb1c91a1249340e0",
   "sources": {
-    "docs/architecture.md": "a4bbc57e8189295f589cf34195e07f8b37220d5973d611e90785ba68a646bc09",
-    "docs/catalog.toml": "034588a872fb32cd52eae5e99904428d53ee1a50a7134584f1ced8b8da4b7d94",
-    "docs/design/local-and-shared-knowledge.md": "c5daa2c9300f8e21597a64f90c46c214f0c4a6f800e011e97dfc29c69e6bada0",
-    "docs/index.md": "56ea1c4f95bf69d54797e6fb732a0a85a1c06944691d7df9f6475b68fd312a1c",
-    "docs/runbooks/fde-documents.md": "dccc1263264a3fd514a1e8e668856bd011765ddb32df3fe53a06745b07508d49",
-    "docs/workflows/tool-map.md": "9be99e1c3bc720d5e2e984ea622a27034f50cea15db06f735bd5013b4f8be9c6",
-    "openspec/changes/archive/2026-09-14-fde-document-scaffold/design.md": "5f89d1c57e0c10fc21845aaebebcc83960775cc15c06cfbb9661d59fb43b448b",
-    "openspec/changes/archive/2026-09-14-fde-document-scaffold/proposal.md": "72ef1d3b16525444f783ea73166276fe6c59d0ad61b7939dcde29d53a5e79414",
-    "openspec/changes/archive/2026-09-14-fde-document-scaffold/specs/fde-document-scaffold/spec.md": "ce5794bf8f954c1463cd0ba2be6879a2028503fc8b20e48202fdb8acd269418f",
-    "openspec/changes/archive/2026-09-14-fde-document-scaffold/tasks.md": "e3ab53a3da024eea7648e694ad5fae477345ed511b3d2dde780a59a7a450ac67",
-    "openspec/changes/team-document-publication/proposal.md": "5a24fc96030a9bcc8a0dc0dfb833a3be99cbd0e8499f773001801bffba7aabe3",
-    "openspec/specs/fde-document-scaffold/spec.md": "076ec7b45fa9ac45ed01716fce486ef740842aabfb9f72e7557cb4ed0eb93ee3",
-    "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
-    "openspec/specs/session-learnings/spec.md": "d6d288fc9b8aee72b85b56b30e2cb88dcb4acd2530c3b3b7c0e31854492cc89b",
-    "pyproject.toml": "623813873d6f6cae3c5c8fa9e369dfe524cd0f5299ecf05f50c51693ff4aaf88",
+    "docs/architecture.md": "d173cb5f44ce0267e8004a9649c7ffd2676ce6f7fb0013d16bf8e62864f7fcd5",
+    "docs/catalog.toml": "700669c3d3e7e702f59d14af12ff3d0201c42b6c94adf204af8eb5b123f395fa",
+    "docs/product-direction.md": "d33b6b58fc2f423b5514ac6b185f5cd7d5d1889117f5e95f892f7ae291f46c3a",
+    "docs/runbooks/machine-enrollment.md": "d7d23292dbee05de0e0857fc3bb3074f4467c27bb5449ffdd19a8cdc9bf93ae1",
+    "docs/verification/documentation-workflow.md": "8be9cbb3cabca959c60aa0744e2188a00d476042607dc10b61c4a72e061b8203",
+    "openspec/changes/archive/2026-09-14-team-sources/design.md": "9afd82120d5ee3b909807bd42a49e6f8cf4bae51ae0f237c8cd15d4de6559578",
+    "openspec/changes/archive/2026-09-14-team-sources/proposal.md": "8f88065ea8a80accc5018066c063602440049886e1c2c11af59a0539d6b30afb",
+    "openspec/changes/archive/2026-09-14-team-sources/specs/team-sources/spec.md": "382268926a4b4abbefad34df409752359ef38f2c6e71d145855564e5a465defe",
+    "openspec/changes/archive/2026-09-14-team-sources/tasks.md": "2aa1cc7187365e307d34e70131ff53bfd37cf0caac3cd225315dd9e10526aabd",
+    "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
+    "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
+    "openspec/specs/documentation-impact-workflow/spec.md": "4276be0854842fecb781efb90ef5f1789b4f7e4c652904e11c5d0c705d457233",
+    "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
+    "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
+    "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
+    "openspec/specs/team-sources/spec.md": "5a4f9a8da322cce3cb0d4d6e69e6cea16a4d787154d9ebac12fef0a21de187a3",
+    "profiles/example/ai-dlc-profile.toml": "29b58a995e46b38ac75e5db5756e766e6b130f26e162448fc41fee898e7ff01e",
+    "pyproject.toml": "296acf5ff015bc4aaf17576c4210e8c69988beb35e11507250a45c0dc534e4d5",
     "scripts/check_generated.py": "2a5e65cb653c0cf9b44dc34765a6d2d4affcfda9b310231a2abed4b3de82771a",
     "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
     "scripts/qualify_framework.py": "01dd9e6acbe14e740f068662aa539e9a7ed0ba57ab97e9457e0a05d968a25fb6",
@@ -91,7 +89,7 @@
     "src/ai_dlc/cli.py": "fd671ec2813bf23b813cf8b28c3a3428186911a424e15ddd4e8990690d129e94",
     "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
     "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
-    "src/ai_dlc/config.py": "31677c538713aa41d3625ef9570f962ed8ee5d32bd4b5b3747437e8fd8fb9d02",
+    "src/ai_dlc/config.py": "dd596570054e3f455b90dc5cea2a86c97175b2c4ec4243328755dc1884ececc1",
     "src/ai_dlc/conformance.py": "9d18cdbf21aa8f9889d880729c368d9567f32f83c066693dceb06ce6549b6082",
     "src/ai_dlc/contracts.py": "e2202d26b4815674bde05fc1190fbaedfe7cabdf6d8c913a721d1f0b53619d1e",
     "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
@@ -113,19 +111,23 @@
     "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
     "src/ai_dlc/environment/bootstrap.py": "d006353cb750ae2d57e591cf67629eab41cab1ddc6ed41d2fe60bcee60595bfd",
     "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
-    "src/ai_dlc/environment/enrollment.py": "ab1f0e729ee497af2c0dea9faf81aba0b46d19deac102371b0f786dd4d4c4343",
-    "src/ai_dlc/environment/machine.py": "491128faaec9634ec29ef0ebc9a38af3dfe25499e533543fcecf0734d2e50d1a",
+    "src/ai_dlc/environment/enrollment.py": "f8e826a9dca7a8e308f9ad52c8f178ad7e6f2c6c536da7459a68c123d51e9c53",
+    "src/ai_dlc/environment/machine.py": "2c3981ab3e8e4e52d2c3f86f02d8714bf92dd3229eaff99c72ac91961fbbd16a",
     "src/ai_dlc/environment/profile_source.py": "f177cc9336ed7c69e37299bc70107f14a7878ff72abbd1070dc3560340d451cc",
+    "src/ai_dlc/environment/source_content.py": "c11618009a7d4c3dbaa03b49d80df3a6f7cae37338a9fe92166865379d89670a",
+    "src/ai_dlc/environment/source_schema.py": "929944f86aef4a0aa2e257f3fbb4bee26ce07c522ed2eb35c2e1bbba38ec44d0",
+    "src/ai_dlc/environment/team_sources.py": "20d583a9046adfac9f0f5bf6de7aca537654eb29d0ff636c27f5a78c7c5c21a6",
     "src/ai_dlc/errors.py": "b8c0da78ec0e9ea75ef71b4495b501570625988ba5ae54c4631f1ca20a8362c1",
     "src/ai_dlc/files.py": "2f05c94534fc6222cc7dd6f61c603cf48b99baeb78eeb31de03c5ae87e779ef2",
     "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
-    "src/ai_dlc/harness/agents.py": "eb9bf3fc625498b1b654b2564b65b8cd5594c1a4ecb0ce50e9d735519eda7937",
+    "src/ai_dlc/harness/agents.py": "852ad7e68cc608880e96120b115d9a17ef7fab895eacc3384c3e4a83b7d1bdb8",
     "src/ai_dlc/harness/components.py": "b64cd2ae837f83a37ddd1c74dad25fcd16fe8733715c224c7d64673784ebba11",
     "src/ai_dlc/harness/design_capture.py": "8b872492b88f4a7728bedf0ae8a1edaad2312a918248bf8f5d051c8bd8b42a58",
     "src/ai_dlc/harness/friction.py": "2ee91f430edda968db2f00762f07245a7717618f992b3a260683d79e390c2882",
-    "src/ai_dlc/harness/hooks.py": "1d91a86e9a0362fa3d2a293a828ca3c050af20155811cba336742ad58b2bf308",
+    "src/ai_dlc/harness/hooks.py": "4c1d41b1d6294dd97ad5ecf14bc49026d100b387bf8de9867c49ee8c41e8d311",
     "src/ai_dlc/harness/native_composition.py": "1e4c5729ff31cb91820bd8df3d15b60c1067b4a5f2b89381888211470dc79bc8",
     "src/ai_dlc/harness/skill_evaluation.py": "73ded6785d5d0ff53f5f44ba4d1ede7406f367635676c269d5044358030ebc2e",
+    "src/ai_dlc/harness/team_source_render.py": "a841a5563972588056ba321a8d2de9e1217e3ad4804a3b460bba79b83d8528af",
     "src/ai_dlc/harness/user_agents.py": "c99f9a52a379feaa0c1721081b95fef91f51c44f0a9e906145de51154616e937",
     "src/ai_dlc/harness/workflow_bundles.py": "477dc842b3cdfe240a54a96910786693f9f3b75f2fd528753440c29f26330b36",
     "src/ai_dlc/locking.py": "f1cfe828e897e11d73b645130060362e2699f75aac9307ed8cb4955b0533b629",
@@ -142,6 +144,7 @@
     "src/ai_dlc/providers/plane_attempts.py": "bfa9b5015f7dc554b9e58af82c680d97d3f0a5271bc0afe6102a81fbf697c20a",
     "src/ai_dlc/providers/python_exec.py": "3aaafe9bf74a4a949b59d71ed2079b9c48114462a9c823b3641a1772af5a6ff1",
     "src/ai_dlc/providers/scm.py": "3213f9c9690d598a9d7024b687044ca3b0844b972909cd96ad14e270081409d9",
+    "src/ai_dlc/providers/teamai.py": "ff7a781abcaeeca1c978f9472502156e31a1fc6d192ac50e1e489d333b77a5e6",
     "src/ai_dlc/setup/__init__.py": "8eb444a69a67d0c1a59ffc0c80ce59efda159976bea58d40154e97f8bdecf18c",
     "src/ai_dlc/setup/connections.py": "e80cbe0e1e94ae5f9d8f60ae044918e8f9e377e173a25ff7bd91f28180a24d15",
     "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
@@ -166,12 +169,14 @@
     "src/ai_dlc/work/traceability.py": "e9fbca5153cdd710b78872c66651269184ee5f3f1313f313b65df212430e8cc8",
     "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
     "src/ai_dlc/work/workflow.py": "b16ef66b0bea70ece8aaf15003e5e0233dbcff82051b3da24d59b94106da3fca",
-    "tests/test_fde.py": "49ba121125e95cc694259217e840570ee186247e748845cc6a0d75a1e158aaca",
-    "tests/test_knowledge.py": "38e5cda9c9dc1fe97d12618a0bd9a86b2725cff059d412232152582af1547af1",
-    "tests/test_session_learnings.py": "32bb7c3143db24ff96fb43ac5081285e77a93bd8d8d825076f3422cbfe194796",
-    "tests/test_vault_link.py": "fd146d4d15041021ac343257c9d91a8c1950878d275420eda85d13747065e110",
-    "tests/test_vault_mount.py": "f6a5dc947af0d68e4688c37d05294c6b4868aa98ead91d26aa0c8ffec8018424",
-    "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9",
-    "uv.lock": "8070535ff074414058cbcb9f508db2387650deaf6ccd2e9fbb911524b8629466"
+    "tests/test_company_guidance.py": "ab39bed3342d9de7d4c68db6c6c54fd66e13c12f2f2167c38e8d345c7dc9736e",
+    "tests/test_document_access.py": "bdf96af4afb1ad6f985204ad243a624d4da8b56d527af63cc072908a76beeff4",
+    "tests/test_document_impact.py": "a9cccc6fa777d01add578c103adb8efa099541c02fa9132790dd2377fa45c728",
+    "tests/test_document_inventory.py": "927199563751af6b2dd5aa8e93cddb43cc62192adffea49694dada37ef6bf14c",
+    "tests/test_document_review.py": "88f37e6365c7e9b545d668f978993ef7ad9acfa146e7d549728f4ef9cab8008a",
+    "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
+    "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7",
+    "tests/test_team_sources.py": "a195cbfe523caaf8785d5517063e10777207becd18faf3abfa6b33350d5a0f53",
+    "uv.lock": "27a8a0c68a0b3989bfe66dd0b6b9da379d4285b1e34490bb814011c042f36f07"
   }
 }
