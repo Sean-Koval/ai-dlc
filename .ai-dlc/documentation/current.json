@@ -134,9 +134,9 @@
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "1be26fa0bd7a3e536c4dc62620c2bc5663ca715f7a8f506c2d3c5d7b2b1d4e3e",
+  "snapshot": "b8d21962a54d8db1104f17de29a827e0f3dae1d2885ffada56559912aeb9782e",
   "sources": {
-    ".ai-dlc/work/test-suite-hygiene.toml": "fe1ff984f62436bd415ac48b33ee23001a0c09b271ab8059991c8d383cd6400c",
+    ".ai-dlc/work/test-suite-hygiene.toml": "a094e1b6305014c10d2119dd95107c47e61e6772b7c71577d4524c55dd405958",
     "containers/provider-tests.Dockerfile": "208bbac61e648b81b73cdbe032629f8e9642335b60c15d23030e23c9c584fa21",
     "docs/catalog.toml": "d5fa5e30cece81c49c5566245360214704388357b4afe5ba7adb7d9f379abe59",
     "docs/verification/documentation-workflow.md": "036a53ebf3a05edbc77eceaac841b40151cce05a762fe3ef631e14f057a89a0f",
