@@ -43,10 +43,14 @@ def bootstrap_target(script):
 def test_release_seed_first_setup_initializes_generated_files(tmp_path):
     """The workflow's selected target must accept a seed with no generated files."""
     (tmp_path / "ai-dlc.toml").write_text("schema = 4\n")
-    result = setup_project(tmp_path, bootstrap_target(consumer_steps()[0]["run"]))
+    result = setup_project(
+        tmp_path, bootstrap_target(consumer_steps()[0]["run"]), state_path=tmp_path / "state.db"
+    )
     assert result["ready"]
     assert (tmp_path / "AGENTS.md").exists()
-    assert setup_project(tmp_path, "github-actions")["agent_configuration"]["clean"]
+    assert setup_project(tmp_path, "github-actions", state_path=tmp_path / "state.db")[
+        "agent_configuration"
+    ]["clean"]
 
 
 def test_release_demo_bootstraps_before_required_ci_checks(tmp_path):
@@ -64,5 +68,9 @@ def test_release_demo_bootstraps_before_required_ci_checks(tmp_path):
     assert setup_index < check_index
     assert commands[check_index][-2:] == ["--target", "github-actions"]
     (tmp_path / "ai-dlc.toml").write_text("schema = 4\n")
-    assert setup_project(tmp_path, bootstrap_target(script))["ready"]
-    assert setup_project(tmp_path, "github-actions")["agent_configuration"]["clean"]
+    assert setup_project(tmp_path, bootstrap_target(script), state_path=tmp_path / "state.db")[
+        "ready"
+    ]
+    assert setup_project(tmp_path, "github-actions", state_path=tmp_path / "state.db")[
+        "agent_configuration"
+    ]["clean"]

@@ -39,7 +39,7 @@
   ],
   "reviewer": "Codex",
   "schema": 1,
-  "snapshot": "79ffd860ec413b65bf82f63dcea3d472c95ec5b717723c34b147345588bc6bf7",
+  "snapshot": "c0aa3dd4d877bbf4aa900ee82683e5e472a2a3f73656aa9a2eb019904b212966",
   "sources": {
     ".github/workflows/release.yml": "92acaf180e69ae83abdc1cf35525ad00620aa721e71dc143ff91f54764d85b6c",
     "docs/catalog.toml": "858491fc462a155911259661eb0d0d799772735529f97cab0aaa7313d0515880",
@@ -56,6 +56,6 @@
     "src/ai_dlc/setup/templates.py": "bbfb4f26c103e3a5210fb8b97a6d843b615efac5f10ddedb28734f254061beb6",
     "tests/test_bootstrap.py": "20c1c5d49181b22b969a19063ff108554be7eb492711bcec95c9a52599cf1bf2",
     "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
-    "tests/test_release_workflow.py": "c34ce6609666f56daea1fff86434441177f88f1eeeba9d34ecd0d84130fa07d8"
+    "tests/test_release_workflow.py": "b83340a6b8d512add3b85c462448a2e9a2ac38fd756c20488f30b0f86530b9eb"
   }
 }
