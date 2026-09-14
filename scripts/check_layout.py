@@ -20,6 +20,7 @@ ROOT_MODULES = {
     "conformance.py",
     "config.py",
     "contracts.py",
+    "errors.py",
     "files.py",
     "locking.py",
     "provider_definitions.py",

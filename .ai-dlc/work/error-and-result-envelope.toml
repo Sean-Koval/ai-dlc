@@ -1,0 +1,33 @@
+schema = 1
+id = "error-and-result-envelope"
+title = "Adopt one exception base and one service result envelope for the CLI and MCP"
+scope = "Introduce ai_dlc.errors.AiDlcError as the single base for the framework's own exception classes and derive the existing custom classes from it while keeping their ValueError or RuntimeError compatibility bases. Replace the repeated four-type except blocks in cli.py with one failure handler and one exit-code mapping. Define the service result envelope (a status string as the canonical success signal, with the legacy valid, ready, passed and clean keys read through one accessor until migrated), generate its contract schema alongside the provider contracts, and document it in docs/architecture.md. Command output for every existing command is unchanged; converting the hundreds of bare ValueError raises is left to follow-up work."
+requires_spec = false
+spec_reason = "Internal error-handling structure and documentation; command output and provider wire behaviour are unchanged."
+acceptance = [
+    "Every custom exception class in src/ai_dlc derives from AiDlcError and cli.py contains one failure handler instead of repeated four-type except blocks.",
+    "docs/architecture.md documents the result envelope and the generated contract for it is checked by scripts/check_generated.py.",
+    "All required checks pass.",
+]
+reviewed = true
+depends_on = []
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+tracker = "98"
+branch = "work/error-and-result-envelope"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/113"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"

@@ -12,6 +12,7 @@ from typing import Any
 
 import tomli_w
 
+from ai_dlc.errors import RefusedError
 from ai_dlc.files import atomic_write, inside
 
 _CLIENTS = {"claude-code", "codex"}
@@ -24,7 +25,7 @@ _CODEX_SECTION = re.compile(
 )
 
 
-class UserAgentOwnershipConflict(ValueError):
+class UserAgentOwnershipConflict(RefusedError):
     """A persisted client configuration prevents AI-DLC from safely changing it."""
 
 

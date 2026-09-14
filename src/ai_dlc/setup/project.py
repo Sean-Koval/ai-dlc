@@ -16,6 +16,7 @@ from typing import Any
 
 from ai_dlc import __version__
 from ai_dlc.config import digest, load_project, read_toml
+from ai_dlc.errors import UncertainError
 from ai_dlc.files import run_git
 
 
@@ -30,7 +31,7 @@ def environment_digest(root: Path, config: dict[str, Any]) -> str:
     return digest({"mise": read_toml(root / ".mise.toml"), "setup": config.get("setup", {})})
 
 
-class RuntimeUnavailable(RuntimeError):
+class RuntimeUnavailable(UncertainError):
     """A configured runtime manager is absent, so no command can run reproducibly."""
 
     def __init__(self, executable: str) -> None:

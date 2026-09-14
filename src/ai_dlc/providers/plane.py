@@ -15,6 +15,7 @@ from urllib.parse import urlsplit
 import httpx
 
 from ai_dlc.contracts import validate_request, validate_response
+from ai_dlc.errors import UncertainError
 from ai_dlc.providers.plane_attempts import PlaneAttemptStore, digest
 
 MAX_PAGES, MAX_ROWS, MAX_REQUESTS, MAX_BYTES = 100, 10000, 300, 8 * 1024 * 1024
@@ -27,8 +28,8 @@ GROUPS = {
 }
 
 
-class PlaneUncertain(RuntimeError):
-    pass
+class PlaneUncertain(UncertainError):
+    """A Plane mutation outcome is unknown; reconcile before retrying."""
 
 
 def uid(value):

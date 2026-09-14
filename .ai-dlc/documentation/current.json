@@ -1,58 +1,72 @@
 {
-  "base": "830ca73f8d44bc3507474f1be6ef5c118b3ec113",
+  "base": "2cd42528b99fe827d19b5c2398349b52c2f5733b",
   "decisions": [
     {
-      "outcome": "reviewed-no-change",
-      "reason": "The provider package map is unchanged; the removed in-process provider was never named there.",
+      "outcome": "updated",
+      "reason": "Documents the exception base, the service result envelope and the single CLI failure handler; the module table lists errors.py.",
       "target": "docs/architecture.md"
     },
     {
-      "outcome": "updated",
-      "reason": "The application API paragraph now describes connect_provider directly instead of the removed forwarding wrappers.",
-      "target": "docs/design/provider-connections.md"
+      "outcome": "reviewed-no-change",
+      "reason": "Reached through the shared cli.py mapping; the documentation workflow commands and their evidence are unchanged.",
+      "target": "docs/verification/documentation-workflow.md"
+    },
+    {
+      "outcome": "reviewed-no-change",
+      "reason": "No CLI or MCP tool was added, renamed or removed; only the failure handling inside cli.py changed.",
+      "target": "docs/workflows/tool-map.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Work record for this change, published as tracker item 97.",
-      "target": ".ai-dlc/work/provider-dead-code.toml"
+      "reason": "Work record for this change, published as tracker item 98.",
+      "target": ".ai-dlc/work/error-and-result-envelope.toml"
     },
     {
       "outcome": "no-impact",
-      "reason": "The facade test now calls connect_provider directly.",
-      "target": "tests/test_connections.py"
+      "reason": "Names the generated service-result schema and points to the architecture explanation.",
+      "target": "contracts/README.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "Test for the removed active_profile_file helper deleted.",
-      "target": "tests/test_enrollment.py"
+      "reason": "Generated from ai_dlc.contracts.ServiceResult and verified by scripts/check_generated.py.",
+      "target": "contracts/service-result.schema.json"
     },
     {
       "outcome": "no-impact",
-      "reason": "Tests for the removed PythonProvider and reject_unsafe_imports deleted.",
-      "target": "tests/test_providers.py"
+      "reason": "Tests for the exception hierarchy, the envelope reader and the CLI handler.",
+      "target": "tests/test_errors.py"
     }
   ],
   "reviewer": "Sean Koval",
   "schema": 1,
-  "snapshot": "9fd500069f5cc80347da799a1740d05563f224208258d484a36d2bb75bc6c491",
+  "snapshot": "09077fc4dbd1098b2f12fbff68913d97a0cb95a2f61d423b024031a71d5fa01f",
   "sources": {
-    ".ai-dlc/work/provider-dead-code.toml": "001d0e0363473c157c4ae344c8f2844d75d94d9c4478a9758b1581eb9d0565c4",
-    "docs/architecture.md": "a9de2039b4743567929264c6bd0928b81e3a7724f5af2d48f9a88772439f94ef",
+    ".ai-dlc/work/error-and-result-envelope.toml": "1e1189f84f01fe3905ebf293ea0fc9ff8c48a1b1b272b2236ed733e5c934f132",
+    "contracts/README.md": "2db80581d380b3f7dafbedc9c3d883e8543618db4bf4c0303fd15dc0d1ca9d71",
+    "contracts/service-result.schema.json": "00cae42f6bf23f5584c360b4204359e8dc62d5dacf7de66dc4ccda99c7d46510",
+    "docs/architecture.md": "8bafa96f47da57bde830616401e193107eea00298d89d3ae8ee633a1dfc30604",
     "docs/catalog.toml": "d5fa5e30cece81c49c5566245360214704388357b4afe5ba7adb7d9f379abe59",
-    "docs/design/provider-connections.md": "71da4e065d2e6009e75c3ae6b5e33c35959db2f075b329b6fb53da79605a3d94",
+    "docs/verification/documentation-workflow.md": "036a53ebf3a05edbc77eceaac841b40151cce05a762fe3ef631e14f057a89a0f",
+    "docs/workflows/tool-map.md": "197bcde7330cdef95f57c3a040a35f6c3c256c746ffdb45b2ad13eed4ed0730a",
+    "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
+    "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
+    "openspec/specs/documentation-impact-workflow/spec.md": "52f07085c5f87622f04b801de04a98d430a90364869ea0226047271dbd4ea977",
+    "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
+    "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
+    "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
     "pyproject.toml": "57b5a7f4ea777185ab5df4b34c4117a190d41434e1e236b38735987c96ccc529",
-    "scripts/check_generated.py": "845e3ac89acb10720eab193712430a09b767272862a02369f391a982da6e7267",
-    "scripts/check_layout.py": "38d3c2664a2a4eb5155573948f64a948a690d5dc7f68b911a36f402acad0c801",
+    "scripts/check_generated.py": "2a5e65cb653c0cf9b44dc34765a6d2d4affcfda9b310231a2abed4b3de82771a",
+    "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
     "scripts/qualify_framework.py": "01dd9e6acbe14e740f068662aa539e9a7ed0ba57ab97e9457e0a05d968a25fb6",
     "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
     "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
     "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
-    "src/ai_dlc/cli.py": "fae8c057acf369046f4d07faa6f568be5b1441a57c97d577ce035cbcfb81f184",
+    "src/ai_dlc/cli.py": "cdac16f2aa3123643eaf9299130cda6cc0ab3a6b72b3962b6af28d508d1bf508",
     "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
     "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
     "src/ai_dlc/config.py": "31677c538713aa41d3625ef9570f962ed8ee5d32bd4b5b3747437e8fd8fb9d02",
     "src/ai_dlc/conformance.py": "9d18cdbf21aa8f9889d880729c368d9567f32f83c066693dceb06ce6549b6082",
-    "src/ai_dlc/contracts.py": "a6d7c5ad8f3e2a513621883c75bff187e1104315ab337cddc023d5343a9e7538",
+    "src/ai_dlc/contracts.py": "f61ee2fc622d4f58f8e424f7d4b6a5258f6ab3b7edc7ea3d019e8ca9aa0e48a9",
     "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
     "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
     "src/ai_dlc/documentation/document_files.py": "503a38d4df2a1f9d0832d083dcd420ebd1215389385293dd0605fc768c5dd320",
@@ -72,24 +86,25 @@
     "src/ai_dlc/environment/enrollment.py": "ab1f0e729ee497af2c0dea9faf81aba0b46d19deac102371b0f786dd4d4c4343",
     "src/ai_dlc/environment/machine.py": "491128faaec9634ec29ef0ebc9a38af3dfe25499e533543fcecf0734d2e50d1a",
     "src/ai_dlc/environment/profile_source.py": "f177cc9336ed7c69e37299bc70107f14a7878ff72abbd1070dc3560340d451cc",
-    "src/ai_dlc/files.py": "e84b5ecd3d51158042f7eec9ee71b2431f78cc0465f5cb97840bd3b3390fcf3a",
+    "src/ai_dlc/errors.py": "b8c0da78ec0e9ea75ef71b4495b501570625988ba5ae54c4631f1ca20a8362c1",
+    "src/ai_dlc/files.py": "2f05c94534fc6222cc7dd6f61c603cf48b99baeb78eeb31de03c5ae87e779ef2",
     "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
     "src/ai_dlc/harness/agents.py": "6dfd35e15344a81f2de8f4b4db41c23544ab93c83549c279b98e3962c3d5b01a",
-    "src/ai_dlc/harness/components.py": "59a50ce61709daaf4b9209c154498eb5efacb84a8747550685421cc269ea7f3c",
+    "src/ai_dlc/harness/components.py": "b64cd2ae837f83a37ddd1c74dad25fcd16fe8733715c224c7d64673784ebba11",
     "src/ai_dlc/harness/hooks.py": "e76b94c5d13168816506d5ef71360646d929659561974000561829ab49a08e11",
     "src/ai_dlc/harness/native_composition.py": "1e4c5729ff31cb91820bd8df3d15b60c1067b4a5f2b89381888211470dc79bc8",
-    "src/ai_dlc/harness/user_agents.py": "6fad6edd1d1d89b0c105291f2fa8b69f223ce00bd5095d77357d7c05e6eb3f4a",
-    "src/ai_dlc/harness/workflow_bundles.py": "e0943696bdced1e841bf15a68c2040e37e484fe7c021119dec1c25e82be0fe38",
+    "src/ai_dlc/harness/user_agents.py": "c99f9a52a379feaa0c1721081b95fef91f51c44f0a9e906145de51154616e937",
+    "src/ai_dlc/harness/workflow_bundles.py": "4e7409429fb0e1d5db9fb9620801d7b6f9116eeeb897807d45cbbd1c5cb0a0d4",
     "src/ai_dlc/locking.py": "f1cfe828e897e11d73b645130060362e2699f75aac9307ed8cb4955b0533b629",
     "src/ai_dlc/mcp_server.py": "21f30c12ce9ae74551b3484b5cb765ed9d225f8be8a0f5c24885429af47d2169",
     "src/ai_dlc/provider_definitions.py": "e90c2d41a839bc4a32dcb3989f59fa6c9073bd1233f3db2088bd176e1bc513d3",
     "src/ai_dlc/providers/__init__.py": "79308afdb659a23865b422bb423bbd57c01cc1aa52929f56674c79c6e3cbfd6a",
     "src/ai_dlc/providers/github_issues.py": "55a18a178fc329a94ff95f39b72c5599117c5a8e79842d7cc7c6c8966cbed405",
     "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
-    "src/ai_dlc/providers/jira_cloud.py": "0c4ee8f892ca3f329e822400a81c1e80d5607c087910329251acb9165345cc28",
+    "src/ai_dlc/providers/jira_cloud.py": "d9b83ba88fb964816450b1479fc775a526455c023725ecff3c8ca695ac7cd8c8",
     "src/ai_dlc/providers/linear.py": "fa90bd64765c8e8bee1cbfa54e47e17688e8e6407c7492ae0ed863b4615c2b95",
     "src/ai_dlc/providers/openspec.py": "5568fd528a83ee659d05cf9e48d9303ae26e2ded7eeb241ba6331a06c63068ee",
-    "src/ai_dlc/providers/plane.py": "76fab3893bf0d4536c58500e4ab5a90f59893977c057be4777d78068e278ca1c",
+    "src/ai_dlc/providers/plane.py": "251f8dc48e7bd939923a3cc7e3efd000fb628856b282455c8fd2ec4438afa376",
     "src/ai_dlc/providers/plane_attempts.py": "bfa9b5015f7dc554b9e58af82c680d97d3f0a5271bc0afe6102a81fbf697c20a",
     "src/ai_dlc/providers/python_exec.py": "3aaafe9bf74a4a949b59d71ed2079b9c48114462a9c823b3641a1772af5a6ff1",
     "src/ai_dlc/providers/scm.py": "55d21698f752048cbc99c8e7443f54fcd1f8ab062301112a7d6b1f71953cfe57",
@@ -99,7 +114,7 @@
     "src/ai_dlc/setup/github_project_setup.py": "86b97dcaa4447082252008da1df64159cac09a077198a7e84e3577294ad540d2",
     "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
     "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
-    "src/ai_dlc/setup/project.py": "ac2e591d92a61021797bbe3888b2432e477ac6a19c5362adca0cfc2568a8877e",
+    "src/ai_dlc/setup/project.py": "23909295adda10d5ecddb226aedae85c7db19db992e0fcf10a581c15bab5db13",
     "src/ai_dlc/setup/provider_onboarding.py": "be120ad6e93c178f041fd338a45a5df7c75b9a30591725cfbf7800bca531045e",
     "src/ai_dlc/setup/provision.py": "726df31af9cddf90f4f23096bfb133aeaf8ee951ed5195c1c3f0dce32ecd83b5",
     "src/ai_dlc/setup/readiness.py": "7c7c2767520b3da2e7f8dd74be4ed6359a7dca66bc413c68eba2b1b4bad7f52c",
@@ -116,8 +131,13 @@
     "src/ai_dlc/work/traceability.py": "c4062335f26218e99f58e236425674c513ea6f2fce7f68b624a4df4dcd8ab3aa",
     "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
     "src/ai_dlc/work/workflow.py": "98a6e3eee1526864845fe53c73dd9c78c07b22256a86dde9e4e12f300a08db23",
-    "tests/test_connections.py": "a29289fe51ee7d59f6200dc4161fcead83bdcc4f81b70877c62136238ae4ba0d",
-    "tests/test_enrollment.py": "13fe4efcd8ec5f9643bacc67c8704d3aa468edbbe1cd96b63df23538892f2748",
-    "tests/test_providers.py": "e0c9d75a70c7cfa918536652303fdeb3b78620ebcab240963fedffde687f5c29"
+    "tests/test_company_guidance.py": "ab39bed3342d9de7d4c68db6c6c54fd66e13c12f2f2167c38e8d345c7dc9736e",
+    "tests/test_document_access.py": "bdf96af4afb1ad6f985204ad243a624d4da8b56d527af63cc072908a76beeff4",
+    "tests/test_document_impact.py": "308684c1dda24359e86d2a9b79200455ebe781e97baa18169f5b9979e4eb2a14",
+    "tests/test_document_inventory.py": "927199563751af6b2dd5aa8e93cddb43cc62192adffea49694dada37ef6bf14c",
+    "tests/test_document_review.py": "88f37e6365c7e9b545d668f978993ef7ad9acfa146e7d549728f4ef9cab8008a",
+    "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
+    "tests/test_errors.py": "f06e72c9f7d5ddcdaaeab5b5e22c22c0edfcdbb5e26a727a971d5f6074c3f8c0",
+    "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7"
   }
 }
