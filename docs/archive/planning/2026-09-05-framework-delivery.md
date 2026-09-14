@@ -75,7 +75,7 @@ M1 and M2 are outcomes, not a requirement to serialize independent work.
 5. Review against exclusions and requirement coverage, then run required checks.
 6. For behavior tickets, validate and archive the completed OpenSpec change and update its work reference.
 7. Link reviewed PR and merged-revision evidence; finish through the existing service.
-8. Use the [handoff checklist](../../handoffs/framework-delivery.md) for continuation.
+8. Use the [handoff checklist](../handoffs/framework-delivery.md) for continuation.
 
 ## Review of this planning delivery
 
