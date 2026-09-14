@@ -2399,3 +2399,34 @@ def test_pr_recovers_success_before_record_link(tmp_path, monkeypatch):
     monkeypatch.setattr(service, "link", original)
     assert service.pr("one")["pr"]["url"] == scm.url
     assert len(scm.pull_requests) == 1
+
+
+def test_pr_does_not_close_same_number_in_a_different_tracker_repository(tmp_path):
+    config = {
+        "providers": {"fake": {"kind": "github-issues", "repository": "a/issues"}},
+        "scm": {"repository": "a/code"},
+    }
+    service, scm, _ = started_service(tmp_path, config)
+    service.pr("one")
+    assert "Closes #1" not in scm.pull_requests[0]["body"]
+
+
+def test_github_scm_refuses_main_tracking_branch_that_was_never_pushed(tmp_path, monkeypatch):
+    from ai_dlc.errors import RefusedError
+    from ai_dlc.providers.scm import GitHubSCM
+
+    log, _ = fake_gh(tmp_path, monkeypatch)
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    git = init_git(repo)
+    git("branch", "-M", "main")
+    remote = tmp_path / "remote.git"
+    _git_output(tmp_path, "init", "--bare", str(remote))
+    git("remote", "add", "origin", str(remote))
+    git("push", "-u", "origin", "main")
+    git("switch", "-c", "work/one", "origin/main")
+    with pytest.raises(RefusedError, match="push the branch first"):
+        GitHubSCM(repo, {"scm": {"repository": "a/b"}}).pull_request_create(
+            "Title", "body", "main", "work/one"
+        )
+    assert not log.exists()
