@@ -1,0 +1,29 @@
+schema = 1
+id = "skill-evaluation"
+title = "Run the declared skill evaluation once with controls and archive the results"
+scope = "Add a runner that executes the evaluation declared in agents/evaluation.toml against the declared model with control and treatment prompts per scenario, stores every transcript verbatim under agents/evaluations/runs/ with a usage summary and a human review sheet, never scores automatically, offers a dry run that makes no network call, and records the run or its outstanding status in docs/verification/skill-evaluation.md. Deliver the runner, dry-run evidence, tests and documentation; perform the live run only when the named credential is available."
+requires_spec = true
+spec_reason = "Adds an observable evaluation runner whose budget stop, verbatim records, refusal to score and network-free dry run are gate-relevant behaviors."
+acceptance = [
+    "python scripts/run_skill_evaluation.py --dry-run SHALL print every prompt pair and the total budget and SHALL make no network call, asserted with PATH empty and no credential set.",
+    "With a credential, one real run SHALL produce transcripts and a review sheet, and the documentation SHALL record it honestly; without a credential the live run SHALL be recorded as outstanding and no result SHALL be fabricated.",
+    "The declaration's require_human_review = true SHALL be enforced: the script SHALL be unable to write any pass/fail field.",
+    "ai-dlc project check --required SHALL pass.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "EV-01",
+    "EV-02",
+    "EV-03",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/skill-evaluation"
