@@ -13,12 +13,13 @@ Spec: [requirements](specs/end-to-end-evaluation/spec.md) and [design](design.md
   matrix, resolve the installation source and budgets, and refuse on missing
   fields without reading credential values or starting Docker.
 - [ ] 3. (Lifecycle, deterministic steps, limits, cancellation, evidence and
-  cleanup delivered; wheel installation through bootstrap is open, see design.)
+  cleanup delivered; the recipe that builds the candidate image from a wheel
+  remains, see design.)
   Implement the attempt lifecycle and deterministic driver. Add Docker
   integration tests for fresh state per attempt, wheel installation through
   bootstrap, timeout, cancellation, resource limits, evidence before cleanup and
   retained cleanup failure. Mark them to skip, not pass, without Docker.
-- [ ] 4. Add the CSV fixture and controller-side hidden tests; implement the
+- [x] 4. Add the CSV fixture and controller-side hidden tests; implement the
   evaluator with separate dimensions and outcome classes.
 - [ ] 5. Add synthetic negative tests: forged completion text, missing mandatory
   observation, changed artifact, malformed or truncated events, hidden-test

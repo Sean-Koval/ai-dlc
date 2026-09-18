@@ -34,6 +34,19 @@
           "title": "Dimension",
           "type": "string"
         },
+        "expect": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expect"
+        },
         "id": {
           "pattern": "^[a-z0-9][a-z0-9-]*$",
           "title": "Id",
@@ -60,21 +73,35 @@
     },
     "Fixture": {
       "additionalProperties": false,
+      "description": "Paths resolve beside the suite file. `hidden` stays with the controller.",
       "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Digest",
+          "type": "string"
+        },
+        "hidden": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Hidden"
+        },
         "path": {
           "minLength": 1,
           "title": "Path",
-          "type": "string"
-        },
-        "revision": {
-          "pattern": "^[0-9a-f]{40}$",
-          "title": "Revision",
           "type": "string"
         }
       },
       "required": [
         "path",
-        "revision"
+        "digest"
       ],
       "title": "Fixture",
       "type": "object"
