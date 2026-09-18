@@ -1,28 +1,35 @@
 {
-  "base": "78e9329079cdc89139e7ca14d26531454f2ee60d",
+  "base": "ae15d52877aee9957911db1f254d162216585e67",
   "decisions": [
     {
-      "outcome": "updated",
-      "reason": "Replaced completed increments #71-#78 and #103 with adoption, delivery-path and evaluation increments; recorded deferred #53 and #50.",
-      "target": "docs/roadmap.md"
+      "outcome": "no-impact",
+      "reason": "New proposed OpenSpec change for #137; no implemented behavior or durable document changes yet.",
+      "target": "openspec/changes/end-to-end-evaluation/design.md"
     },
     {
-      "outcome": "updated",
-      "reason": "New measured baseline of process cost at 78e9329 with friction-log template.",
-      "target": "docs/verification/delivery-path-baseline.md"
+      "outcome": "no-impact",
+      "reason": "New proposed OpenSpec change for #137; no implemented behavior or durable document changes yet.",
+      "target": "openspec/changes/end-to-end-evaluation/proposal.md"
     },
     {
-      "outcome": "updated",
-      "reason": "Enrolled the delivery path baseline.",
-      "target": "docs/catalog.toml"
+      "outcome": "no-impact",
+      "reason": "New proposed OpenSpec change for #137; no implemented behavior or durable document changes yet.",
+      "target": "openspec/changes/end-to-end-evaluation/specs/end-to-end-evaluation/spec.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "New proposed OpenSpec change for #137; no implemented behavior or durable document changes yet.",
+      "target": "openspec/changes/end-to-end-evaluation/tasks.md"
     }
   ],
   "reviewer": "Claude Code, directed by Sean Koval",
   "schema": 1,
-  "snapshot": "1d1529b32fd872444975c622f5bb22e749fd658443d34443a7736c8ba546a98f",
+  "snapshot": "6cff06a9bd34301cf77249d1ae575c6269ed339e0550fac2029b72bc6ecdc45c",
   "sources": {
     "docs/catalog.toml": "532bc084864f6734ddc652c78bf19049a7438fb4ba4493e1fa1396d5d4b67786",
-    "docs/roadmap.md": "c2e3a3d778c8e2d99f73918c3be77532ca5bfe2810b64993d7563f2af5481cae",
-    "docs/verification/delivery-path-baseline.md": "2bfc439b7af44a9d76fbe0d1ebce4c885e9036e5fd53c8ee38f4ba1fa6a5f7a3"
+    "openspec/changes/end-to-end-evaluation/design.md": "e3640fb056f076b9a7d7e3023f8cf58542c44bb4a0f86849ccf29ee221ac1a59",
+    "openspec/changes/end-to-end-evaluation/proposal.md": "b43e567c17acb704c6cf07af838553e3f014b5cf63e9a0107768ee09d6bb4841",
+    "openspec/changes/end-to-end-evaluation/specs/end-to-end-evaluation/spec.md": "e08f7fd7c1b767dd8eab9b4ccec51d65df80ef26392044eb5991fe2750d4dc41",
+    "openspec/changes/end-to-end-evaluation/tasks.md": "27483025691a53c7a12506d888f63109bcfdf2f624a757893eae4b5257d123f5"
   }
 }
