@@ -54,13 +54,26 @@ content moves on. `docs review --prune` lists and, with `--apply`, removes files
 with no matching decision; it never gates.
 
 **Recording.** `ai-dlc docs review --disposition <file> --reviewer <name>
-[--evidence-id <id>]` writes `.ai-dlc/documentation/evidence/<id>.json` itself.
-`<id>` defaults to the work record bound to the current branch and is otherwise
-required. Existing decisions in that file whose `bound` map still matches are
-kept; supplied decisions replace or add targets; decisions for targets no longer
-required are dropped. Supplying a decision for an unrequired target is still an
-error. Output reports kept, added, replaced and dropped targets. Stdout-only
-recording remains when `--evidence-id -` is given.
+--evidence-id <id>` writes `.ai-dlc/documentation/evidence/<id>.json` itself.
+Existing decisions in that file whose `bound` map still matches are kept; supplied
+decisions replace or add targets; decisions for targets no longer required are
+dropped. Supplying a decision for an unrequired target is still an error. Output
+reports kept, added, replaced and dropped targets, and names `current.json` when
+it is still present. Without `--evidence-id` the command keeps emitting schema 1
+evidence to stdout: DI-01 requires the deprecated `project docs-disposition`
+alias to keep its stdout for one release, and a parity test binds the two names.
+Defaulting the identifier from the work record bound to the current branch is
+deferred to the release that removes schema 1, when stdout recording goes too.
+
+**Default comparison.** CI always supplies the comparison. Locally, with per-work
+evidence and no `--base`, the gate compares against the configured
+`scm.target_branch` (default `main`), preferring `origin/<branch>`, and fails
+closed naming the branch when neither ref exists. It never reads a comparison
+from evidence.
+
+**Closest stale decision.** When several stored decisions exist for a stale
+target, the report names the differing paths of the closest one (fewest
+differences), which is the smallest thing left to review.
 
 **Rejected.**
 - *Keep one file, add a merge driver or `--refresh`.* Still one commit and one CI

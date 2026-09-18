@@ -25,5 +25,6 @@ deploy = "none"
 [artifacts]
 spec = "openspec/changes/documentation-evidence-content-binding"
 tracker = "146"
+branch = "work/content-binding-impl"
 
 [bindings]

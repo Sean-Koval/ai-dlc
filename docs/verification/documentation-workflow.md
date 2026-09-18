@@ -266,3 +266,29 @@ qualification data; no personal vault or corporate content was read.
 Issue #53 stays open for the unavailable environments. These scoped exclusions
 explain this run's boundary; they do not cancel company, synchronization or
 cross-platform obligations or promote automated fixtures to native qualification.
+
+## Content-bound per-work evidence — September 18, 2026
+
+Issue #146. On this date PRs #142 and #143 changed disjoint files, yet #143
+conflicted in `.ai-dlc/documentation/current.json` once #142 merged; #148 then hit
+the same conflict after #147. Each resolution re-recorded identical decisions and
+waited for a full Verify cycle. The September 11 base-mismatch rule above made
+that failure legible; it did not remove the rewrite.
+
+Evidence now lives in `.ai-dlc/documentation/evidence/<id>.json` and each decision
+binds its target's and mapped sources' content plus the document's catalog entry.
+The gate still takes its comparison from `AI_DLC_DOCS_BASE` or `--base`, never
+from evidence, and computes changes from the merge base. `tests/test_document_evidence.py`
+exercises, against real temporary Git repositories: disjoint branches merging in
+either order with no rewrite, including the target-branch run after each merge; a
+target-branch change to a bound source reported as stale with the path named; a
+catalog entry change that stales only its document; a branch behind its target; a
+merge whose conflict resolution alters bound content; incremental recording;
+forged and malformed evidence; unsafe identifiers; the schema 1 fallback; the
+configured target branch as the local default comparison; and pruning.
+
+This repository deleted `current.json` and recorded its own delivery as the first
+per-work evidence file. That is one delivery on one repository. The PR #44
+sequence was not replayed under the new rules, no second concurrent pull request
+has yet been merged with them, and generated projects have not exercised the
+template workflow's new full-depth checkout and `AI_DLC_DOCS_BASE`.

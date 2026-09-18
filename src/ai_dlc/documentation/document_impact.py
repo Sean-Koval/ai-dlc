@@ -14,6 +14,9 @@ from ai_dlc.documentation.documents import check_documents
 from ai_dlc.files import inside, run_git
 
 EVIDENCE_PREFIX = ".ai-dlc/documentation/"
+EVIDENCE_DIR = ".ai-dlc/documentation/evidence"
+LEGACY_EVIDENCE = ".ai-dlc/documentation/current.json"
+OUTCOMES = ("updated", "reviewed-no-change", "no-impact")
 WORK_PREFIX = ".ai-dlc/work/"
 MAPPINGS = ("code_paths", "requirements", "verification_paths")
 OBJECTIVE = {"owner-missing", "uncatalogued"}
@@ -129,7 +132,7 @@ def inspect_impact(root: Path | str, *, base: str) -> dict:
     return result
 
 
-def _decisions(impact: dict, decisions: object, reviewer: object) -> None:
+def _decisions(impact: dict, decisions: object, reviewer: object, *, partial: bool = False) -> None:
     if not isinstance(reviewer, str) or not reviewer.strip() or not isinstance(decisions, list):
         raise ValueError("A reviewer and documentation dispositions are required")
     required = set(impact["documents"]) | set(impact["unmapped"])
@@ -140,12 +143,12 @@ def _decisions(impact: dict, decisions: object, reviewer: object) -> None:
         target = decision.get("target")
         if not isinstance(target, str) or target not in required or target in seen:
             raise ValueError("Unknown or duplicate documentation disposition target")
-        if decision.get("outcome") not in ("updated", "reviewed-no-change", "no-impact"):
+        if decision.get("outcome") not in OUTCOMES:
             raise ValueError("Invalid documentation disposition outcome")
         if not isinstance(decision.get("reason"), str) or not decision["reason"].strip():
             raise ValueError("A documentation disposition needs a concrete reason")
         seen.add(target)
-    if seen != required:
+    if seen != required and not partial:
         raise ValueError("Missing documentation disposition: " + ", ".join(sorted(required - seen)))
 
 
@@ -204,6 +207,178 @@ def check_disposition(root: Path | str, *, base: str, evidence: object) -> dict:
         return {"valid": True, "errors": []}
     except (OSError, ValueError) as exc:
         return {"valid": False, "errors": [str(exc)]}
+
+
+def _resolve(root: Path, revision: str) -> str:
+    verified = _git(root, "rev-parse", "--verify", "--end-of-options", revision + "^{commit}")
+    return verified.decode().strip()
+
+
+def inspect_targets(root: Path | str, *, base: str) -> dict:
+    """Required targets since the merge base, each with the content a decision must bind."""
+    root = Path(root).absolute()
+    start = _git(root, "merge-base", _resolve(root, base), "HEAD").decode().strip()
+    impact = inspect_impact(root, base=start)
+    tracked = set(_git(root, "ls-files", "--cached", "--others", "--exclude-standard", "-z")
+                  .decode().split("\0")) - {""}  # fmt: skip
+    tracked = {p for p in tracked if not p.startswith((EVIDENCE_PREFIX, WORK_PREFIX))}
+    bound: dict[str, dict[str, str]] = {}
+    for entry in read_catalog(root):
+        if entry["path"] not in impact["documents"]:
+            continue
+        patterns = [p for field in MAPPINGS for p in entry.get(field, [])]
+        paths = {entry["path"]} | {p for p in patterns if not any(c in p for c in "*?[")}
+        paths |= {p for p in tracked if any(fnmatch.fnmatchcase(p, pat) for pat in patterns)}
+        paths |= {p for p in impact["sources"] if any(fnmatch.fnmatchcase(p, x) for x in patterns)}
+        bound[entry["path"]] = {p: content_digest(root, p) for p in sorted(paths)}
+        # The entry, not the catalog file: unrelated enrollments must not stale this decision.
+        bound[entry["path"]]["catalog:" + entry["path"]] = digest(entry)
+    for path in impact["unmapped"]:
+        bound[path] = {path: content_digest(root, path)}
+    return {"schema": 2, "start": start, "changed": impact["changed"], "bound": bound}
+
+
+def _stored_decisions(root: Path) -> tuple[list[dict], list[str]]:
+    """Well-formed decisions from every per-work file; malformed files are errors, not evidence."""
+    folder = inside(root, EVIDENCE_DIR)
+    decisions, errors = [], []
+    for path in sorted(folder.glob("*.json")) if folder.is_dir() else []:
+        relative = f"{EVIDENCE_DIR}/{path.name}"
+        try:
+            raw = json.loads(read_document(path))
+            if not isinstance(raw, dict) or raw.get("schema") != 2:
+                raise ValueError
+            for item in raw["decisions"]:
+                if (
+                    item["outcome"] not in OUTCOMES
+                    or not all(
+                        isinstance(item[k], str) and item[k].strip()
+                        for k in ("target", "reason", "reviewer")
+                    )
+                    or not isinstance(item["bound"], dict)
+                    or not item["bound"]
+                ):
+                    raise ValueError
+                decisions.append(dict(item, file=relative))
+        except (OSError, ValueError, KeyError, TypeError):
+            errors.append("Invalid documentation evidence: " + relative)
+    return decisions, errors
+
+
+def _has_evidence(root: Path) -> bool:
+    folder = inside(root, EVIDENCE_DIR)
+    return folder.is_dir() and any(folder.glob("*.json"))
+
+
+def check_evidence(root: Path | str, *, base: str) -> dict:
+    """A target passes when any stored decision bound exactly the content present now."""
+    root = Path(root).absolute()
+    try:
+        required = inspect_targets(root, base=base)["bound"]
+        decisions, errors = _stored_decisions(root)
+    except (OSError, ValueError) as exc:
+        return {"valid": False, "missing": [], "stale": [], "errors": [str(exc)]}
+    missing, stale = [], []
+    for target, current in sorted(required.items()):
+        candidates = [d["bound"] for d in decisions if d["target"] == target]
+        if current in candidates:
+            continue
+        if not candidates:
+            missing.append(target)
+            continue
+        differing = [
+            sorted(p for p in current.keys() | old.keys() if current.get(p) != old.get(p))
+            for old in candidates
+        ]
+        stale.append({"target": target, "paths": min(differing, key=lambda d: (len(d), d))})
+    return {
+        "valid": not (missing or stale or errors),
+        "missing": missing,
+        "stale": stale,
+        "errors": errors,
+    }
+
+
+def _evidence_file(root: Path, evidence_id: object) -> Path:
+    if (
+        not isinstance(evidence_id, str)
+        or not evidence_id
+        or evidence_id.startswith(".")
+        or not all(c.isalnum() or c in "-_." for c in evidence_id)
+    ):
+        raise ValueError("Unsafe documentation evidence identifier")
+    return inside(root, f"{EVIDENCE_DIR}/{evidence_id}.json")
+
+
+def record_disposition(
+    root: Path | str, *, base: str, decisions: object, reviewer: object, evidence_id: object
+) -> dict:
+    """Merge reviewed decisions into one work item's evidence, keeping those still valid."""
+    root = Path(root).absolute()
+    path = _evidence_file(root, evidence_id)
+    required = inspect_targets(root, base=base)["bound"]
+    _decisions({"documents": list(required), "unmapped": []}, decisions, reviewer, partial=True)
+    relative = f"{EVIDENCE_DIR}/{path.name}"
+    previous = [d for d in _stored_decisions(root)[0] if d["file"] == relative]
+    supplied = {d["target"]: d for d in decisions}  # type: ignore[union-attr]
+    kept = {
+        d["target"]: d
+        for d in previous
+        if d["target"] not in supplied and required.get(d["target"]) == d["bound"]
+    }
+    outstanding = sorted(required.keys() - supplied.keys() - kept.keys())
+    if outstanding:
+        raise ValueError("Missing documentation disposition: " + ", ".join(outstanding))
+    known = {d["target"] for d in previous}
+    merged = [
+        {
+            "target": target,
+            "outcome": item["outcome"],
+            "reason": item["reason"],
+            "reviewer": item["reviewer"] if target in kept else reviewer,
+            "bound": required[target],
+        }
+        for target, item in sorted({**kept, **supplied}.items())
+    ]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps({"schema": 2, "decisions": merged}, indent=2, sort_keys=True) + "\n")
+    return {
+        "path": relative,
+        "kept": sorted(kept),
+        "added": sorted(supplied.keys() - known),
+        "replaced": sorted(supplied.keys() & known),
+        "dropped": sorted(known - required.keys()),
+        "legacy": LEGACY_EVIDENCE if inside(root, LEGACY_EVIDENCE).exists() else None,
+    }
+
+
+def prune_evidence(root: Path | str, *, base: str, apply: bool = False) -> dict:
+    """List, or remove, evidence files in which no decision satisfies a current target."""
+    root = Path(root).absolute()
+    required = inspect_targets(root, base=base)["bound"]
+    decisions, _ = _stored_decisions(root)
+    live = {d["file"] for d in decisions if required.get(d["target"]) == d["bound"]}
+    inert = sorted({d["file"] for d in decisions} - live)
+    if apply:
+        for relative in inert:
+            inside(root, relative).unlink()
+    return {"inert": inert, "removed": inert if apply else []}
+
+
+def _target_branch(root: Path) -> str:
+    """Without a supplied comparison, compare against the configured target branch."""
+    try:
+        config = tomllib.loads(read_document(inside(root, "ai-dlc.toml")).decode())
+    except FileNotFoundError:
+        config = {}
+    branch = config.get("scm", {}).get("target_branch", "main")
+    for candidate in (f"origin/{branch}", branch):
+        if not run_git(root, "rev-parse", "--verify", "--quiet", candidate, check=False).returncode:
+            return candidate
+    raise ValueError(
+        f"Documentation comparison unavailable: target branch {branch} is not in this "
+        "checkout; pass --base"
+    )
 
 
 def _findings(root: Path) -> list[dict]:
@@ -267,8 +442,17 @@ def check_gate(
     """Validate the selected reviewed comparison and historical-debt dispositions."""
     root = Path(root).absolute()
     try:
-        evidence = json.loads(read_document(inside(root, evidence_path)))
         baseline = json.loads(read_document(inside(root, baseline_path)))
+        if _has_evidence(root):
+            disposition = check_evidence(root, base=base or _target_branch(root))
+            debt = check_objective_debt(root, baseline=baseline)
+            return {
+                "valid": disposition["valid"] and debt["valid"],
+                "disposition": disposition,
+                "debt": debt,
+            }
+        # Schema 1 keeps its recorded-base rules for one release.
+        evidence = json.loads(read_document(inside(root, evidence_path)))
         if not isinstance(evidence, dict) or not isinstance(evidence.get("base"), str):
             raise ValueError("Invalid comparison evidence")  # noqa: TRY004
         comparison = base or evidence["base"]

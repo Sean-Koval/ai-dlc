@@ -355,18 +355,27 @@ def _docs_impact(root: Path, base: str) -> None:
     emit(inspect_impact(root, base=base))
 
 
-def _docs_disposition(root: Path, base: str, decisions: Path, reviewer: str) -> None:
+def _docs_disposition(
+    root: Path, base: str, decisions: Path, reviewer: str, evidence_id: str | None = None
+) -> None:
     from ai_dlc.documentation.document_files import read_document
-    from ai_dlc.documentation.document_impact import prepare_disposition
+    from ai_dlc.documentation.document_impact import prepare_disposition, record_disposition
 
+    reviewed = json.loads(read_document(decisions.absolute()))
+    if evidence_id is None:
+        emit(prepare_disposition(root, base=base, decisions=reviewed, reviewer=reviewer))
+        return
     emit(
-        prepare_disposition(
-            root,
-            base=base,
-            decisions=json.loads(read_document(decisions.absolute())),
-            reviewer=reviewer,
+        record_disposition(
+            root, base=base, decisions=reviewed, reviewer=reviewer, evidence_id=evidence_id
         )
     )
+
+
+def _docs_prune(root: Path, base: str, apply: bool) -> None:
+    from ai_dlc.documentation.document_impact import prune_evidence
+
+    emit(prune_evidence(root, base=base, apply=apply))
 
 
 def _docs_baseline(root: Path, owner: str, reason: str) -> None:
@@ -426,6 +435,7 @@ REVIEW_MODE_OPTIONS = {
     "baseline": {"owner": "--owner", "reason": "--reason"},
     "report": {"paths": "--path"},
     "check": {"packet": "--packet", "review": "--review"},
+    "prune": {},
 }
 
 
@@ -442,7 +452,7 @@ def _review_mode(values: dict) -> str:
             raise typer.BadParameter(f"--{name} needs {', '.join(missing)}", param_hint=missing[0])
         if name != mode and given:
             raise typer.BadParameter(f"{', '.join(given)} applies to --{name}", param_hint=given[0])
-    if mode in ("impact", "disposition", "report") and not values["base"]:
+    if mode in ("impact", "disposition", "report", "prune") and not values["base"]:
         raise typer.BadParameter("--base is required", param_hint="--base")
     return mode
 
@@ -505,6 +515,14 @@ def docs_review(
     ] = False,
     packet: Path | None = None,
     review: Path | None = None,
+    evidence_id: Annotated[
+        str | None,
+        typer.Option(help="With --disposition, merge into this work item's evidence file."),
+    ] = None,
+    prune: Annotated[
+        bool, typer.Option("--prune", help="List evidence files no current target uses.")
+    ] = False,
+    apply: Annotated[bool, typer.Option("--apply", help="With --prune, remove them.")] = False,
 ):
     """Inspect documentation impact; one mode flag records, baselines, reports or checks instead."""
     mode = _review_mode(
@@ -520,12 +538,19 @@ def docs_review(
             "check": check,
             "packet": packet,
             "review": review,
+            "prune": prune,
         }
     )
+    if evidence_id is not None and mode != "disposition":
+        raise typer.BadParameter("--evidence-id applies to --disposition")
+    if apply and mode != "prune":
+        raise typer.BadParameter("--apply applies to --prune")
     if mode != "report" and (max_bytes is not None or source is not None):
         raise typer.BadParameter("--max-bytes and --source apply to --report")
     if mode == "disposition":
-        _docs_disposition(root, str(base), Path(str(disposition)), str(reviewer))
+        _docs_disposition(root, str(base), Path(str(disposition)), str(reviewer), evidence_id)
+    elif mode == "prune":
+        _docs_prune(root, str(base), apply)
     elif mode == "baseline":
         _docs_baseline(root, str(owner), str(reason))
     elif mode == "report":
