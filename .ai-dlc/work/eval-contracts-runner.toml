@@ -1,0 +1,31 @@
+schema = 1
+id = "eval-contracts-runner"
+title = "Evaluation 1/4: Add contracts, disposable Docker runner and evidence reports"
+scope = "First increment of the end-to-end evaluation capability (#137): ai-dlc eval plan|run|report, versioned scenario, profile, event and report contracts, a disposable Docker attempt lifecycle installing the candidate wheel through bootstrap, a deterministic driver, controller-side hidden tests, and separate workflow, correctness and quality results. Adds a baseline arm (EE-05) that runs each scenario without AI-DLC. Real client adapters, providers and CI lanes remain in #138-#140."
+requires_spec = true
+spec_reason = "Adds verification behavior and versioned contracts; specified in openspec/changes/end-to-end-evaluation."
+acceptance = [
+    "Offline plan validates the scenario, arm and attempt matrix, installation source, resources, assertions and budgets without launching environments or reading secret values.",
+    "Docker integration proves fresh installation, separate writable state, timeout, cancellation and resource controls, evidence collection before cleanup and retained cleanup failures.",
+    "Defaults are 30 minutes and 20 turns; model, token and spend settings are explicit and reports disclose metering limits.",
+    "JSON, JUnit and failure timelines rebuild from retained evidence; a failed journey can be rerun against another candidate.",
+    "Forged completion text, missing mandatory observations, changed artifacts, malformed evidence, hidden-test failure, secret leakage and cleanup failure never produce a pass.",
+    "Every scenario runs in treatment and baseline arms that differ only in AI-DLC's presence, and the report states per-scenario differences with attempt counts.",
+    "Existing provider conformance and skill evaluation interfaces are unchanged.",
+]
+reviewed = false
+depends_on = []
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/end-to-end-evaluation"
+tracker = "137"
+
+[bindings]

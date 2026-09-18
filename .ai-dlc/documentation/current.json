@@ -1,17 +1,35 @@
 {
-  "base": "ebbddcc13daf142501d4f2181b2309217807a0bf",
+  "base": "78e9329079cdc89139e7ca14d26531454f2ee60d",
   "decisions": [
     {
-      "outcome": "updated",
-      "reason": "Rewrote the entry point against the current CLI and canonical guides: features, workflow diagram, tooling roles, setup and configuration examples, team sources and FDE; distinguished source additions from v0.4.0 and removed historical/repetitive detail.",
-      "target": "README.md"
+      "outcome": "no-impact",
+      "reason": "New proposed OpenSpec change for #137; no implemented behavior or durable document changes yet.",
+      "target": "openspec/changes/end-to-end-evaluation/design.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "New proposed OpenSpec change for #137; no implemented behavior or durable document changes yet.",
+      "target": "openspec/changes/end-to-end-evaluation/proposal.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "New proposed OpenSpec change for #137; no implemented behavior or durable document changes yet.",
+      "target": "openspec/changes/end-to-end-evaluation/specs/end-to-end-evaluation/spec.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "New proposed OpenSpec change for #137; no implemented behavior or durable document changes yet.",
+      "target": "openspec/changes/end-to-end-evaluation/tasks.md"
     }
   ],
-  "reviewer": "Codex README review",
+  "reviewer": "Claude Code, directed by Sean Koval",
   "schema": 1,
-  "snapshot": "c1c4c1a7304acefdf2d756bc78c4de1886b08f2abbc61c9c02ea472baa4a7ca5",
+  "snapshot": "8af265425548b24638fe3dff8f334c57b88eea9075e492756835f5b6fb45d010",
   "sources": {
-    "README.md": "55592722d160d25f74bb478388e5a91020234e890639c920ff5246b7a804815b",
-    "docs/catalog.toml": "700669c3d3e7e702f59d14af12ff3d0201c42b6c94adf204af8eb5b123f395fa"
+    "docs/catalog.toml": "700669c3d3e7e702f59d14af12ff3d0201c42b6c94adf204af8eb5b123f395fa",
+    "openspec/changes/end-to-end-evaluation/design.md": "e3640fb056f076b9a7d7e3023f8cf58542c44bb4a0f86849ccf29ee221ac1a59",
+    "openspec/changes/end-to-end-evaluation/proposal.md": "b43e567c17acb704c6cf07af838553e3f014b5cf63e9a0107768ee09d6bb4841",
+    "openspec/changes/end-to-end-evaluation/specs/end-to-end-evaluation/spec.md": "e08f7fd7c1b767dd8eab9b4ccec51d65df80ef26392044eb5991fe2750d4dc41",
+    "openspec/changes/end-to-end-evaluation/tasks.md": "27483025691a53c7a12506d888f63109bcfdf2f624a757893eae4b5257d123f5"
   }
 }
