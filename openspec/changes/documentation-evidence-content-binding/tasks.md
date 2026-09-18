@@ -27,7 +27,7 @@ and [design](design.md).
 - [x] 5a. Give `project-templates/project/.github/workflows/verify.yml` full-depth
   checkout and `AI_DLC_DOCS_BASE`, matching this repository's workflow, with a
   template test.
-- [ ] 6. Migrate this repository: record schema 2 evidence, delete `current.json`.
+- [x] 6. Migrate this repository: record schema 2 evidence, delete `current.json`.
   Re-measure documentation-evidence commands and commits for this delivery and
   add them to `docs/verification/delivery-path-baseline.md`.
-- [ ] 7. Run required checks, validate and archive.
+- [x] 7. Run required checks, validate and archive.
