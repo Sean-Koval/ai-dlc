@@ -278,3 +278,15 @@ issues #55 and #52 through `ai-dlc work publish` on this host verified membershi
 on the first readback, so it exercised the unchanged fast path and did not
 reproduce the delayed one. A live delayed-visibility observation and the retry's
 behavior during an actual Projects outage remain pending.
+
+## Under-scoped token — September 18, 2026
+
+Issue #144. On a workstation whose `gh` token held `gist`, `read:org` and `repo`,
+`ai-dlc work new <id> --from-issue 144` against this repository's configured
+Project failed with GitHub's raw per-field GraphQL refusal. After the change the
+same command on the same token reports the missing `read:project` scope, the
+granted scopes and `gh auth refresh --hostname github.com --scopes read:project`,
+and writes no record. Fixture tests replay the captured refusal text and confirm
+unrelated `gh` failures keep their message. The repaired token path, write scopes
+and GitHub Enterprise hosts were not exercised. Drafting a record without Project
+fields was not delivered; the read contract is shared and stays fail-closed.

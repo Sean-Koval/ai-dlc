@@ -34,6 +34,10 @@ See the [actual adoption/access findings](archive/planning/github-backlog-migrat
 
 Install and authenticate the GitHub CLI locally. The selected account needs
 repository access and, when using Projects, appropriate Project read/write access.
+A default `gh auth login` token carries `repo` but no Project scope: with a Project
+configured, every tracker read needs `read:project`, and status changes need
+`project`. Add them with `gh auth refresh --hostname github.com --scopes project`.
+A read without the scope refuses and names the missing scope and this command.
 Never paste tokens into project configuration or chat. Machine authentication and
 shared non-secret connection choices have separate lifetimes.
 

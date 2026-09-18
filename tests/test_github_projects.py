@@ -575,3 +575,39 @@ def test_attachment_without_item_identity_is_reported_distinctly(wire, waits):
         with pytest.raises(RuntimeError, match="no item identity"):
             provider().invoke("prepare", {"reference": "1", "operation_id": "op"})
     assert waits == []
+
+
+SCOPE_ERROR = (
+    "gh: Your token has not been granted the required scopes to execute this query. "
+    "The 'id' field requires one of the following scopes: ['read:project'], but your token "
+    "has only been granted the: ['gist', 'read:org', 'repo'] scopes. Please modify your "
+    "token's scopes at: https://github.com/settings/tokens."
+)
+
+
+def test_missing_token_scope_names_the_scope_and_the_repair_command(monkeypatch):
+    def denied(args, **kwargs):
+        del kwargs
+        if args[1:3] == ["api", "graphql"]:
+            return SimpleNamespace(returncode=1, stdout="", stderr=SCOPE_ERROR + "\n" + SCOPE_ERROR)
+        return SimpleNamespace(returncode=0, stdout="{}", stderr="")
+
+    monkeypatch.setattr("ai_dlc.providers.github_issues.subprocess.run", denied)
+    config = copy.deepcopy(CONFIG)
+    config["host"] = "github.example.com"
+    with pytest.raises(RuntimeError) as raised:
+        GitHubIssuesProvider(config).read("1")
+    message = str(raised.value)
+    assert "read:project" in message
+    assert "gh auth refresh --hostname github.example.com --scopes read:project" in message
+    assert "repo" in message and "settings/tokens" not in message
+    assert message.count("read:project") <= 3  # repeated gh lines collapse into one explanation
+
+
+def test_other_gh_failures_keep_their_original_message(monkeypatch):
+    monkeypatch.setattr(
+        "ai_dlc.providers.github_issues.subprocess.run",
+        lambda args, **kwargs: SimpleNamespace(returncode=1, stdout="", stderr="HTTP 502\n"),
+    )
+    with pytest.raises(RuntimeError, match="^HTTP 502$"):
+        GitHubIssuesProvider(copy.deepcopy(CONFIG)).read("1")
