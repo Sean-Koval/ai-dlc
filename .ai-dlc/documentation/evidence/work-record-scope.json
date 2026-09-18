@@ -1,0 +1,25 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "catalog:docs/development-workflow.md": "ed2dba4ee9eacac4ecf7498a164bbc1a5736973c46b0dc8d6f587607263dffdb",
+        "docs/development-workflow.md": "802deb4ca928e938ed099a07fd640b6d7ec964a6d24ca8ff3c854add496ed916"
+      },
+      "outcome": "updated",
+      "reason": "Adds when a work record is needed; no gate requires one per change.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "docs/development-workflow.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/delivery-path-baseline.md": "d3002373e4382ffae72b3fcc382ef6a86b0cd5bded5f3791f00edfdd5e4170dd",
+        "docs/verification/delivery-path-baseline.md": "45f2ea92d4a955c1c78b5d113116bf05f1a93edc3b628eaabf6a083dba02c15d"
+      },
+      "outcome": "updated",
+      "reason": "Records the observed second pull request under content-bound evidence and that candidate 2 needed no code.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "docs/verification/delivery-path-baseline.md"
+    }
+  ],
+  "schema": 2
+}
