@@ -1,35 +1,17 @@
 {
-  "base": "ae15d52877aee9957911db1f254d162216585e67",
+  "base": "5928fc554881be51ec88d3b12fd965caafb93b1f",
   "decisions": [
     {
       "outcome": "no-impact",
-      "reason": "New proposed OpenSpec change for #137; no implemented behavior or durable document changes yet.",
-      "target": "openspec/changes/end-to-end-evaluation/design.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "New proposed OpenSpec change for #137; no implemented behavior or durable document changes yet.",
-      "target": "openspec/changes/end-to-end-evaluation/proposal.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "New proposed OpenSpec change for #137; no implemented behavior or durable document changes yet.",
-      "target": "openspec/changes/end-to-end-evaluation/specs/end-to-end-evaluation/spec.md"
-    },
-    {
-      "outcome": "no-impact",
-      "reason": "New proposed OpenSpec change for #137; no implemented behavior or durable document changes yet.",
-      "target": "openspec/changes/end-to-end-evaluation/tasks.md"
+      "reason": "Test-only isolation fix; no documented behavior changes.",
+      "target": "tests/test_machine_integration.py"
     }
   ],
   "reviewer": "Claude Code, directed by Sean Koval",
   "schema": 1,
-  "snapshot": "6cff06a9bd34301cf77249d1ae575c6269ed339e0550fac2029b72bc6ecdc45c",
+  "snapshot": "6b8185e14aed75c432b58f4a56100f52f5c6676e8400ece469ab0744abbf5110",
   "sources": {
     "docs/catalog.toml": "532bc084864f6734ddc652c78bf19049a7438fb4ba4493e1fa1396d5d4b67786",
-    "openspec/changes/end-to-end-evaluation/design.md": "e3640fb056f076b9a7d7e3023f8cf58542c44bb4a0f86849ccf29ee221ac1a59",
-    "openspec/changes/end-to-end-evaluation/proposal.md": "b43e567c17acb704c6cf07af838553e3f014b5cf63e9a0107768ee09d6bb4841",
-    "openspec/changes/end-to-end-evaluation/specs/end-to-end-evaluation/spec.md": "e08f7fd7c1b767dd8eab9b4ccec51d65df80ef26392044eb5991fe2750d4dc41",
-    "openspec/changes/end-to-end-evaluation/tasks.md": "27483025691a53c7a12506d888f63109bcfdf2f624a757893eae4b5257d123f5"
+    "tests/test_machine_integration.py": "1366d90088e72ef45c80c5fa28be68731dee9476cba9cbfc4c90cd2bb498619e"
   }
 }
