@@ -13,7 +13,7 @@ acceptance = [
     "Every scenario runs in treatment and baseline arms that differ only in AI-DLC's presence, and the report states per-scenario differences with attempt counts.",
     "Existing provider conformance and skill evaluation interfaces are unchanged.",
 ]
-reviewed = false
+reviewed = true
 depends_on = []
 requirements = []
 
