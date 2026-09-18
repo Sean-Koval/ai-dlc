@@ -310,6 +310,21 @@ checkout that is not exactly the merged revision, or one with modified or
 untracked `openspec/` files, still refuses. Do not relax the gate or re-archive a
 change to make a later checkout match.
 
+## When a work record is needed
+
+A work record binds reviewed scope to a tracker item, a branch and a pull request
+so that `ai-dlc work finish` can close that item against the merged revision and
+its CI receipts. Create one when the change delivers a tracker item or needs a
+formal specification.
+
+No required check demands a record for every change. `work validate --all` checks
+the records that exist, and the documentation gate reads evidence, not records. A
+change with no tracker item and no specification decision — a documentation
+correction, a roadmap edit, a dependency bump — needs only its pull request, with
+scope and verification in the body, and documentation evidence recorded under any
+identifier (`--evidence-id <branch-or-topic>`). A record created for such a change
+has nothing to finish and stays open in the context brief indefinitely.
+
 ## Merge against the current target branch
 
 Documentation-impact decisions are stored per work item under

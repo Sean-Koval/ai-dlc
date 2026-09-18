@@ -103,6 +103,23 @@ candidates 2 and 4. The deleted `current.json` removes the per-target-movement
 rewrite, which the repository-wide count put at up to 90 of 450 commits; that
 saving is projected, not yet observed across concurrent pull requests.
 
+### Second pull request under the new rules
+
+PR #150 was stacked on #149 and held its own evidence file. After #149 merged,
+#150 was retargeted to `main` and updated from it with no Git conflict and no
+recording; the gate stayed valid, Verify passed on all five platforms, and the
+target-branch run after each merge passed. Under schema 1 the same sequence cost
+a conflict, a recording, a commit and a Verify cycle twice earlier the same day
+(#143 after #142, and #148 after #147). Two pull requests by one author on one
+day; not yet a team or a busy target branch.
+
+### Candidate 2 needed no code
+
+No gate requires a work record per change; only the guidance implied it. The
+[development workflow](../development-workflow.md#when-a-work-record-is-needed)
+now says when a record is needed. #142 carried a record with no tracker item to
+finish, and its `roadmap-refresh` record remains open for that reason.
+
 ## Friction log
 
 Adopting repositories keep this table in their ignored `.ai-dlc/local/friction.md`
