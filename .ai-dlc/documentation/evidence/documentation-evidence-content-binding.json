@@ -193,11 +193,21 @@
     },
     {
       "bound": {
+        "catalog:docs/verification/delivery-path-baseline.md": "d3002373e4382ffae72b3fcc382ef6a86b0cd5bded5f3791f00edfdd5e4170dd",
+        "docs/verification/delivery-path-baseline.md": "2f4709e01d7e7cf20c5d292a86041fa6879c1250d8fb0556cf109b8ea95bb824"
+      },
+      "outcome": "updated",
+      "reason": "Added the observed after-measurement for content-bound evidence and what remains projected.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "docs/verification/delivery-path-baseline.md"
+    },
+    {
+      "bound": {
         "catalog:docs/verification/documentation-workflow.md": "6e620e11c354a39b24ec8e47a66bcde387ef4e32ca055e7ac526f50363b0ddfe",
         "docs/verification/documentation-workflow.md": "ef20411dd92aa4546d9961a9e6754aa53bf854467dbe1f1fe9b7740e2564e678",
         "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
         "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
-        "openspec/specs/documentation-impact-workflow/spec.md": "4276be0854842fecb781efb90ef5f1789b4f7e4c652904e11c5d0c705d457233",
+        "openspec/specs/documentation-impact-workflow/spec.md": "80b65bef76266ee1ea22b5cdf9f5a452125569a4b0e9f8d3a0b5cc8dd84ba786",
         "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
         "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
         "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
@@ -220,8 +230,8 @@
         "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
         "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7"
       },
-      "outcome": "updated",
-      "reason": "Added the dated content-bound evidence entry with what the tests cover and what remains unqualified.",
+      "outcome": "reviewed-no-change",
+      "reason": "Stale only because DI-02 was promoted into the mapped specification; the dated entry added in this delivery already describes content-bound dispositions.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "docs/verification/documentation-workflow.md"
     },
@@ -239,19 +249,73 @@
     },
     {
       "bound": {
-        "openspec/changes/documentation-evidence-content-binding/design.md": "f8e83d98bac4eb327d3509818eac9310ea6d2890dd9b8d58a2c550ab960c808b"
+        "openspec/changes/archive/2026-09-18-documentation-evidence-content-binding/design.md": "f8e83d98bac4eb327d3509818eac9310ea6d2890dd9b8d58a2c550ab960c808b"
       },
-      "outcome": "updated",
-      "reason": "Recorded the deferred default identifier, default comparison and closest-stale decisions.",
+      "outcome": "no-impact",
+      "reason": "Archived OpenSpec change; historical record of the delivered specification.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "openspec/changes/archive/2026-09-18-documentation-evidence-content-binding/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-18-documentation-evidence-content-binding/proposal.md": "f3392037dc61a9f03f2fabdccb0428c9e3f7ddb44f322e04c798ac4b52b55613"
+      },
+      "outcome": "no-impact",
+      "reason": "Archived OpenSpec change; historical record of the delivered specification.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "openspec/changes/archive/2026-09-18-documentation-evidence-content-binding/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-18-documentation-evidence-content-binding/specs/documentation-impact-workflow/spec.md": "4e289b7050427f114bb6dfdc519ac1f2e18da991c0532c5efcae43ec0c1e1b88"
+      },
+      "outcome": "no-impact",
+      "reason": "Archived OpenSpec change; historical record of the delivered specification.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "openspec/changes/archive/2026-09-18-documentation-evidence-content-binding/specs/documentation-impact-workflow/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-18-documentation-evidence-content-binding/tasks.md": "75f498aed824ef244e8a2e67ee6004de492082dde4eb0dfe530cd3ebecd311b3"
+      },
+      "outcome": "no-impact",
+      "reason": "Archived OpenSpec change; historical record of the delivered specification.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "openspec/changes/archive/2026-09-18-documentation-evidence-content-binding/tasks.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/documentation-evidence-content-binding/design.md": "missing"
+      },
+      "outcome": "no-impact",
+      "reason": "Active change files moved to the archive by work archive.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "openspec/changes/documentation-evidence-content-binding/design.md"
     },
     {
       "bound": {
-        "openspec/changes/documentation-evidence-content-binding/tasks.md": "5015ef116500a12f9b8153bcdd39d01c4d8bf6a482f9ba94c370d82b7daa1186"
+        "openspec/changes/documentation-evidence-content-binding/proposal.md": "missing"
       },
-      "outcome": "updated",
-      "reason": "Ticked delivered tasks and scoped task 3.",
+      "outcome": "no-impact",
+      "reason": "Active change files moved to the archive by work archive.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "openspec/changes/documentation-evidence-content-binding/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/documentation-evidence-content-binding/specs/documentation-impact-workflow/spec.md": "missing"
+      },
+      "outcome": "no-impact",
+      "reason": "Active change files moved to the archive by work archive.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "openspec/changes/documentation-evidence-content-binding/specs/documentation-impact-workflow/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/documentation-evidence-content-binding/tasks.md": "missing"
+      },
+      "outcome": "no-impact",
+      "reason": "Active change files moved to the archive by work archive.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "openspec/changes/documentation-evidence-content-binding/tasks.md"
     },

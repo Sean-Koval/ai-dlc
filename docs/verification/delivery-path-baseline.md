@@ -84,6 +84,25 @@ gate behavior changes, an OpenSpec change.
 4. **One pre-merge command.** `work refresh` that merges the target, recomputes
    evidence and runs required checks, replacing three separate steps.
 
+## After content-bound evidence — September 18, 2026
+
+Candidate reduction 1 was delivered as per-work, content-bound evidence (#146).
+Observed on that delivery itself, one item on one repository:
+
+| Measure | Schema 1 path | This delivery |
+| --- | --- | --- |
+| Evidence recordings | after implementation, after archive, after each target movement | 2: after implementation and after archive |
+| Decisions written at the second recording | all 16 again, plus the new targets | only the new and stale targets; the rest were kept |
+| Evidence-only commits | one per recording | 1; the first recording rode the implementation commit |
+| Git conflict on evidence when another pull request merges first | always | none possible; the path is per work item |
+
+The archive step still forces a second recording because it moves the change's
+files and promotes a specification that a mapped document depends on; the gate
+named exactly those targets. Halving the roughly 20 issued commands still needs
+candidates 2 and 4. The deleted `current.json` removes the per-target-movement
+rewrite, which the repository-wide count put at up to 90 of 450 commits; that
+saving is projected, not yet observed across concurrent pull requests.
+
 ## Friction log
 
 Adopting repositories keep this table in their ignored `.ai-dlc/local/friction.md`
