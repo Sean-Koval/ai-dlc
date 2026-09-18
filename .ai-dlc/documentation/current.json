@@ -1,5 +1,5 @@
 {
-  "base": "5928fc554881be51ec88d3b12fd965caafb93b1f",
+  "base": "59cd3afcc92046f790defc97031b77808566fbd6",
   "decisions": [
     {
       "outcome": "no-impact",
@@ -24,7 +24,7 @@
   ],
   "reviewer": "Claude Code, directed by Sean Koval",
   "schema": 1,
-  "snapshot": "815e5ad1fa6ca11918cbb463e9b4482b6428e78135ab78d9cdf3c1ab8940a052",
+  "snapshot": "7d741c1341af381e60d9623ec5c22639148a9520c2652cd66aa39e7b3a542968",
   "sources": {
     "docs/catalog.toml": "532bc084864f6734ddc652c78bf19049a7438fb4ba4493e1fa1396d5d4b67786",
     "openspec/changes/documentation-evidence-content-binding/design.md": "9e351139f2ff486d20ca97b8f411f116043f28adad7a4d038ace782976454de1",
