@@ -8,7 +8,7 @@ acceptance = [
     "Roadmap lists no completed issue as a next increment and names the deferred items #53 and #50.",
     "Baseline records method, repository-wide and sampled counts, the manual command path and candidate reductions, and is enrolled in the catalog.",
 ]
-reviewed = false
+reviewed = true
 depends_on = []
 requirements = []
 
