@@ -9,7 +9,7 @@ acceptance = [
     "Other gh failures keep their original message.",
     "The real command on an under-scoped token shows the explanation and writes no record.",
 ]
-reviewed = false
+reviewed = true
 depends_on = []
 requirements = []
 
