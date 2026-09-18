@@ -67,6 +67,41 @@ enough to rerun the same scenario against another wheel.
   checked by `scripts/check_generated.py`, matching the provider contracts.
 - Suites and profiles load from JSON or TOML by file extension.
 
+## Decisions made during increment 2 (attempt lifecycle)
+
+- The project lives in a per-attempt Docker volume, not a tmpfs or a host mount.
+  After a timeout or cancellation the controller stops the agent's container and
+  a separate read-only collector container archives the volume, so evidence
+  survives the agent's death and the agent cannot influence collection. A
+  controller-owned stager is the only root process and exits before the agent
+  starts. Nothing from the host is mounted.
+- The agent runs as uid 1000 with no network, a read-only root, all capabilities
+  dropped, no-new-privileges, and memory and process limits. Home is a fresh
+  tmpfs. Disk is not enforced: the local volume driver has no quota, so the
+  result lists it as metered by collection size only.
+- Collected archives are unpacked with the `data` tar filter; an archive that
+  tries to leave the run directory makes the attempt `incomplete` at `collect`.
+- Driver-level outcomes are `completed`, `infrastructure` (Docker missing,
+  provisioning, installation, memory limit) and `incomplete` (timeout,
+  cancellation, a failed step, unreadable evidence). `product` and
+  `workflow-violation` belong to the evaluator in the next increment.
+- Removal failures are recorded per resource in the result and in
+  `cleanup-ledger.jsonl`; one failed removal does not skip the others.
+- Real-Docker tests use a digest-pinned image that must already be present and
+  are skipped, never passed, otherwise. They never pull, so required CI does not
+  depend on a registry; on hosted runners they currently skip.
+
+**Open: installing a candidate through bootstrap.** EE-02 requires the treatment
+arm to install the candidate wheel "through the supported bootstrap path".
+`scripts/bootstrap.sh` has two modes: `--source`, which needs the checkout, and
+release, which downloads an HTTPS wheel and constraints named by a published
+`bootstrap/release.sh`. There is no supported way to install an unpublished
+local wheel, and an attempt has no network. Installation is therefore a declared
+command stage for now. Release-mode qualification can use the published path
+once an egress allowlist exists; candidate mode needs a maintainer decision
+between a local release manifest that bootstrap accepts, or a prebuilt image
+containing the bootstrapped candidate.
+
 ## Not decided here
 
 Real client adapters, fake and live providers, recovery journeys, CI lanes and
