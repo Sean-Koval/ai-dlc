@@ -1,0 +1,171 @@
+{
+  "$defs": {
+    "Answer": {
+      "additionalProperties": false,
+      "description": "A bounded reply; a question matching no answer becomes needs-input.",
+      "properties": {
+        "match": {
+          "minLength": 1,
+          "title": "Match",
+          "type": "string"
+        },
+        "reply": {
+          "minLength": 1,
+          "title": "Reply",
+          "type": "string"
+        }
+      },
+      "required": [
+        "match",
+        "reply"
+      ],
+      "title": "Answer",
+      "type": "object"
+    },
+    "Assertion": {
+      "additionalProperties": false,
+      "properties": {
+        "dimension": {
+          "enum": [
+            "workflow",
+            "correctness",
+            "quality"
+          ],
+          "title": "Dimension",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "title": "Kind",
+          "type": "string"
+        },
+        "mandatory": {
+          "default": true,
+          "title": "Mandatory",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "dimension",
+        "kind"
+      ],
+      "title": "Assertion",
+      "type": "object"
+    },
+    "Fixture": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "revision": {
+          "pattern": "^[0-9a-f]{40}$",
+          "title": "Revision",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "revision"
+      ],
+      "title": "Fixture",
+      "type": "object"
+    },
+    "Limits": {
+      "additionalProperties": false,
+      "properties": {
+        "max_turns": {
+          "default": 20,
+          "minimum": 1,
+          "title": "Max Turns",
+          "type": "integer"
+        },
+        "timeout_minutes": {
+          "default": 30,
+          "minimum": 1,
+          "title": "Timeout Minutes",
+          "type": "integer"
+        }
+      },
+      "title": "Limits",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "answers": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Answer"
+      },
+      "title": "Answers",
+      "type": "array"
+    },
+    "arms": {
+      "items": {
+        "enum": [
+          "treatment",
+          "baseline"
+        ],
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Arms",
+      "type": "array"
+    },
+    "assertions": {
+      "items": {
+        "$ref": "#/$defs/Assertion"
+      },
+      "minItems": 1,
+      "title": "Assertions",
+      "type": "array"
+    },
+    "checkpoints": {
+      "default": [],
+      "items": {
+        "pattern": "^[a-z0-9][a-z0-9-]*$",
+        "type": "string"
+      },
+      "title": "Checkpoints",
+      "type": "array"
+    },
+    "fixture": {
+      "$ref": "#/$defs/Fixture"
+    },
+    "goal": {
+      "minLength": 1,
+      "title": "Goal",
+      "type": "string"
+    },
+    "id": {
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "title": "Id",
+      "type": "string"
+    },
+    "limits": {
+      "$ref": "#/$defs/Limits",
+      "default": {
+        "max_turns": 20,
+        "timeout_minutes": 30
+      }
+    }
+  },
+  "required": [
+    "id",
+    "goal",
+    "fixture",
+    "assertions",
+    "arms"
+  ],
+  "title": "Scenario",
+  "type": "object"
+}

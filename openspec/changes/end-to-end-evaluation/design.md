@@ -53,6 +53,20 @@ records image digest, architecture, engine, driver and model identities, inputs,
 events, hashes, diffs, hidden-test output, usage and cleanup status, which is
 enough to rerun the same scenario against another wheel.
 
+## Decisions made during increment 1
+
+- An arm is a name, not an object. Because a scenario cannot express a per-arm
+  goal, fixture, answer or limit, "arms differ in anything else" is refused by the
+  contract itself, and every scenario must declare both arms. The baseline attempt
+  plans with no engine artifact; workflow assertions are omitted from it.
+- Planning refuses credential-shaped keys and recognizable token formats in a
+  suite and names the field, never the value. It is a tripwire, not proof of
+  absence; the run-time check against profile-named variables (EE-04) is the real
+  control.
+- Schemas are generated from Pydantic models into `contracts/evaluation/` and
+  checked by `scripts/check_generated.py`, matching the provider contracts.
+- Suites and profiles load from JSON or TOML by file extension.
+
 ## Not decided here
 
 Real client adapters, fake and live providers, recovery journeys, CI lanes and
