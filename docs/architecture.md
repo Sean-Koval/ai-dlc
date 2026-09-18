@@ -103,7 +103,7 @@ does not substitute for these lifecycle contracts. See the
 | `harness/` | Skills, pinned bundles, client rendering, components, hooks and local design capture |
 | `documentation/` | Catalog checks, impact/evidence review, scoped project-document access, workspace diagnostics, knowledge notes and vault links |
 | `providers/` | Contract-backed external service adapters and isolated provider execution |
-| `verification/` | Sandbox orchestration and its conformance network proxy; `evaluation/` holds the end-to-end evaluation contracts (generated into `contracts/evaluation/`) and the offline planner behind the `eval` CLI group |
+| `verification/` | Sandbox orchestration and its conformance network proxy; `evaluation/` holds the end-to-end evaluation contracts (generated into `contracts/evaluation/`) the offline planner behind the `eval` CLI group, and the isolated Docker attempt lifecycle |
 | `compatibility/` | Supported legacy scaffold behavior |
 | `config.py`, `contracts.py`, `errors.py`, `provider_definitions.py` | Shared configuration, provider contracts, the result envelope and the exception base |
 | `files.py`, `locking.py`, `toml_edit.py` | Shared filesystem boundaries, locking and comment-preserving TOML edits |

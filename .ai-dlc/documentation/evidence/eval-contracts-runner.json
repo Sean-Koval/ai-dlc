@@ -2,44 +2,8 @@
   "decisions": [
     {
       "bound": {
-        "contracts/evaluation/event.schema.json": "99e6a8c4e4835346e288fd6599b874fcb1b743fb488cd2727af255a713526260"
-      },
-      "outcome": "no-impact",
-      "reason": "Schema generated from the evaluation Pydantic models and verified by scripts/check_generated.py.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "contracts/evaluation/event.schema.json"
-    },
-    {
-      "bound": {
-        "contracts/evaluation/profile.schema.json": "8e79f579d3509ef7ee675b2a199dab1aa2b0a7da5b3e542f07be0fb6a390659f"
-      },
-      "outcome": "no-impact",
-      "reason": "Schema generated from the evaluation Pydantic models and verified by scripts/check_generated.py.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "contracts/evaluation/profile.schema.json"
-    },
-    {
-      "bound": {
-        "contracts/evaluation/report.schema.json": "62eb16efda09c758bcdc26388bca84d861d1b72e5223c1c0270f81118b78d6ef"
-      },
-      "outcome": "no-impact",
-      "reason": "Schema generated from the evaluation Pydantic models and verified by scripts/check_generated.py.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "contracts/evaluation/report.schema.json"
-    },
-    {
-      "bound": {
-        "contracts/evaluation/scenario.schema.json": "2fa7bbf6ac44b38c8a7bb739fac0b1da84b59ddad210c18fb9e55032672587a5"
-      },
-      "outcome": "no-impact",
-      "reason": "Schema generated from the evaluation Pydantic models and verified by scripts/check_generated.py.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "contracts/evaluation/scenario.schema.json"
-    },
-    {
-      "bound": {
         "catalog:docs/architecture.md": "1f6e70913f96f235139fc0202ea5c5e9f90e16afd4473e90f500f16994a4ec40",
-        "docs/architecture.md": "3e7067e8b1bd7ffe6971c64ea4492b5114fe9744d8ea34c2e17da24bb15f6b70",
+        "docs/architecture.md": "d4f94bd4311748a0e94d6767babb3f2f13e289697cdbb812280bb9a013a00ab8",
         "pyproject.toml": "296acf5ff015bc4aaf17576c4210e8c69988beb35e11507250a45c0dc534e4d5",
         "scripts/check_generated.py": "00e325b0da860ed329f3fbc40a99cc503d9a6b185f98f5627c1d465591681f98",
         "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
@@ -124,6 +88,7 @@
         "src/ai_dlc/toml_edit.py": "696057b2848ca8b57e5189d1c78441fc6c1e06994f480f6f13f8dd31c050515e",
         "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
         "src/ai_dlc/verification/evaluation/__init__.py": "7cf0a3add5298d2f8d58954210cee24b3fb6a5f81e505ef3b948a7078cbb0eb8",
+        "src/ai_dlc/verification/evaluation/attempt.py": "a33ee8fb536f3382e3b34f211fcf8c6297c87b65caa98b9d854d5ec1a9a6cfc6",
         "src/ai_dlc/verification/evaluation/contracts.py": "f943b86250a15e8117feda91059df533e58b3802f2bc98fec7862e7d6adf3cef",
         "src/ai_dlc/verification/evaluation/planning.py": "126ea0885b44d6b11a088393fa5546ea0c9470bda6d34c11e678c48e33facedd",
         "src/ai_dlc/verification/sandbox.py": "c017bd12115b8f144d07eba619f4e15ddbd00db323e4d386f569c4bcb08646e0",
@@ -136,57 +101,36 @@
         "src/ai_dlc/work/workflow.py": "b16ef66b0bea70ece8aaf15003e5e0233dbcff82051b3da24d59b94106da3fca"
       },
       "outcome": "updated",
-      "reason": "Verification package row now names the evaluation subpackage, its generated contracts and the eval CLI group.",
+      "reason": "Verification row now names the isolated Docker attempt lifecycle.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "docs/architecture.md"
     },
     {
       "bound": {
-        "catalog:docs/workflows/tool-map.md": "f50e0a853e00ab08729f6bd5bdf4cca447b033b23ca5169bb5f6556c0991dc8e",
-        "docs/workflows/tool-map.md": "485f177e9507c928d9dc7427cd21ff8f969907a43926377563aeb697294a9b9a",
-        "src/ai_dlc/cli.py": "49fb4363ce2b5baf1e342cbac4271e616e28e771dfe0f8de395944299b0bb1e1",
-        "src/ai_dlc/mcp_server.py": "f159ac251bd9b65fb4fdeb404380be3a2afb9fbac013e0a0e19315ad738bd612"
+        "openspec/changes/end-to-end-evaluation/design.md": "7088420b9b1f534c7546fdd2190159aad27c8e968e35d0116737406e9a9cbacc"
       },
       "outcome": "updated",
-      "reason": "Adds the maintainer eval plan command and states run and report are not implemented.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "docs/workflows/tool-map.md"
-    },
-    {
-      "bound": {
-        "openspec/changes/end-to-end-evaluation/design.md": "06ebe814138df6011d7820cc6e5eea986a8b5cd83168c74524d0596ed26c2ac7"
-      },
-      "outcome": "updated",
-      "reason": "Records the arm, secret tripwire, schema generation and file format decisions.",
+      "reason": "Records the volume and collector design, isolation controls, outcome classes, cleanup ledger, skip policy and the open bootstrap installation question.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "openspec/changes/end-to-end-evaluation/design.md"
     },
     {
       "bound": {
-        "openspec/changes/end-to-end-evaluation/tasks.md": "5b11ea5be36af0686f5ab61e92b597633432ddf2ccffca73e4b5e693ab0850c9"
+        "openspec/changes/end-to-end-evaluation/tasks.md": "840567a12086e606a5db82b2163083df9bbeb440bf1dc11d384c27b4699ac9e2"
       },
       "outcome": "updated",
-      "reason": "Ticks tasks 0 to 2 and names the actual test file.",
+      "reason": "Annotates task 3 with what is delivered and what is open.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "openspec/changes/end-to-end-evaluation/tasks.md"
     },
     {
       "bound": {
-        "project-templates/project/docs/workflows/tool-map.md": "91fbf531b3ea2a94d0750862218ec44c69e5f820ff0ef750b74c66278ba4d187"
-      },
-      "outcome": "updated",
-      "reason": "Mirrors the canonical tool map row.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "project-templates/project/docs/workflows/tool-map.md"
-    },
-    {
-      "bound": {
-        "tests/test_evaluation_planning.py": "62f727d395c0822827bc3da7712f2dbe8270ab0075aa48bad5ea4ce38ea4ec04"
+        "tests/test_evaluation_attempt.py": "432739434aa58c1ee2cf2fd392b3d0b1f4078980eb9f69c6e5a07018e1e3ec00"
       },
       "outcome": "no-impact",
-      "reason": "New tests for offline planning; behavior is described in the active OpenSpec change.",
+      "reason": "New lifecycle tests; behavior is described in the active OpenSpec change.",
       "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "tests/test_evaluation_planning.py"
+      "target": "tests/test_evaluation_attempt.py"
     }
   ],
   "schema": 2
