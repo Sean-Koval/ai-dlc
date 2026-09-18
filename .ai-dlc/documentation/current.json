@@ -1,35 +1,35 @@
 {
-  "base": "ae15d52877aee9957911db1f254d162216585e67",
+  "base": "5928fc554881be51ec88d3b12fd965caafb93b1f",
   "decisions": [
     {
       "outcome": "no-impact",
-      "reason": "New proposed OpenSpec change for #137; no implemented behavior or durable document changes yet.",
-      "target": "openspec/changes/end-to-end-evaluation/design.md"
+      "reason": "Proposed OpenSpec change for #146; no implemented behavior or durable document changes yet.",
+      "target": "openspec/changes/documentation-evidence-content-binding/design.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "New proposed OpenSpec change for #137; no implemented behavior or durable document changes yet.",
-      "target": "openspec/changes/end-to-end-evaluation/proposal.md"
+      "reason": "Proposed OpenSpec change for #146; no implemented behavior or durable document changes yet.",
+      "target": "openspec/changes/documentation-evidence-content-binding/proposal.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "New proposed OpenSpec change for #137; no implemented behavior or durable document changes yet.",
-      "target": "openspec/changes/end-to-end-evaluation/specs/end-to-end-evaluation/spec.md"
+      "reason": "Proposed OpenSpec change for #146; no implemented behavior or durable document changes yet.",
+      "target": "openspec/changes/documentation-evidence-content-binding/specs/documentation-impact-workflow/spec.md"
     },
     {
       "outcome": "no-impact",
-      "reason": "New proposed OpenSpec change for #137; no implemented behavior or durable document changes yet.",
-      "target": "openspec/changes/end-to-end-evaluation/tasks.md"
+      "reason": "Proposed OpenSpec change for #146; no implemented behavior or durable document changes yet.",
+      "target": "openspec/changes/documentation-evidence-content-binding/tasks.md"
     }
   ],
   "reviewer": "Claude Code, directed by Sean Koval",
   "schema": 1,
-  "snapshot": "6cff06a9bd34301cf77249d1ae575c6269ed339e0550fac2029b72bc6ecdc45c",
+  "snapshot": "815e5ad1fa6ca11918cbb463e9b4482b6428e78135ab78d9cdf3c1ab8940a052",
   "sources": {
     "docs/catalog.toml": "532bc084864f6734ddc652c78bf19049a7438fb4ba4493e1fa1396d5d4b67786",
-    "openspec/changes/end-to-end-evaluation/design.md": "e3640fb056f076b9a7d7e3023f8cf58542c44bb4a0f86849ccf29ee221ac1a59",
-    "openspec/changes/end-to-end-evaluation/proposal.md": "b43e567c17acb704c6cf07af838553e3f014b5cf63e9a0107768ee09d6bb4841",
-    "openspec/changes/end-to-end-evaluation/specs/end-to-end-evaluation/spec.md": "e08f7fd7c1b767dd8eab9b4ccec51d65df80ef26392044eb5991fe2750d4dc41",
-    "openspec/changes/end-to-end-evaluation/tasks.md": "27483025691a53c7a12506d888f63109bcfdf2f624a757893eae4b5257d123f5"
+    "openspec/changes/documentation-evidence-content-binding/design.md": "9e351139f2ff486d20ca97b8f411f116043f28adad7a4d038ace782976454de1",
+    "openspec/changes/documentation-evidence-content-binding/proposal.md": "f3392037dc61a9f03f2fabdccb0428c9e3f7ddb44f322e04c798ac4b52b55613",
+    "openspec/changes/documentation-evidence-content-binding/specs/documentation-impact-workflow/spec.md": "4e289b7050427f114bb6dfdc519ac1f2e18da991c0532c5efcae43ec0c1e1b88",
+    "openspec/changes/documentation-evidence-content-binding/tasks.md": "0e2cc29db4883edec773ed6658b4bda61b45c195597bd6e1365baf1d22b9f189"
   }
 }
