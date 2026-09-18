@@ -27,5 +27,6 @@ deploy = "none"
 [artifacts]
 spec = "openspec/changes/end-to-end-evaluation"
 tracker = "137"
+branch = "work/eval-contracts-runner-impl"
 
 [bindings]

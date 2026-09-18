@@ -5,11 +5,11 @@ Architecture: `verification/evaluation/` owns contracts, planning, the attempt
 lifecycle, observation and reporting; `cli.py` delegates. Reuse `sandbox.py` controls.
 Spec: [requirements](specs/end-to-end-evaluation/spec.md) and [design](design.md).
 
-- [ ] 0. Update #137's body to include the baseline arm (EE-05), which the
+- [x] 0. Update #137's body to include the baseline arm (EE-05), which the
   maintainer confirmed on September 18, 2026.
-- [ ] 1. Add the four schemas under `contracts/` and failing tests in
-  `tests/test_evaluation_contracts.py` for version, secret-free and arm validation.
-- [ ] 2. Implement `eval plan` offline: expand the scenario, arm and attempt
+- [x] 1. Add the four schemas under `contracts/` and failing tests in
+  `tests/test_evaluation_planning.py` for version, secret-free and arm validation.
+- [x] 2. Implement `eval plan` offline: expand the scenario, arm and attempt
   matrix, resolve the installation source and budgets, and refuse on missing
   fields without reading credential values or starting Docker.
 - [ ] 3. Implement the attempt lifecycle and deterministic driver. Add Docker

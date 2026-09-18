@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import tomllib
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Annotated
@@ -39,6 +40,9 @@ knowledge = typer.Typer(no_args_is_help=True)
 provider = typer.Typer(no_args_is_help=True)
 mcp = typer.Typer(no_args_is_help=True)
 design = typer.Typer(no_args_is_help=True)
+evaluation = typer.Typer(
+    no_args_is_help=True, help="Maintainer end-to-end evaluation: plan, run and report."
+)
 for name, group in [
     ("project", project),
     ("docs", docs),
@@ -52,6 +56,7 @@ for name, group in [
     ("provider", provider),
     ("mcp", mcp),
     ("design", design),
+    ("eval", evaluation),
 ]:
     app.add_typer(group, name=name)
 agents.add_typer(agent_bundle, name="bundle")
@@ -455,6 +460,24 @@ def _review_mode(values: dict) -> str:
     if mode in ("impact", "disposition", "report", "prune") and not values["base"]:
         raise typer.BadParameter("--base is required", param_hint="--base")
     return mode
+
+
+def _read_declaration(path: Path) -> object:
+    from ai_dlc.documentation.document_files import read_document
+
+    raw = read_document(path.absolute()).decode()
+    return tomllib.loads(raw) if path.suffix == ".toml" else json.loads(raw)
+
+
+@evaluation.command("plan")
+def eval_plan(
+    suite: Path,
+    profile: Annotated[Path, typer.Option(help="Execution profile (JSON or TOML).")],
+):
+    """Validate a suite and profile and print the attempt matrix; starts nothing, reads no secret."""
+    from ai_dlc.verification.evaluation.planning import plan
+
+    emit(plan(_read_declaration(suite), _read_declaration(profile)))
 
 
 @docs.command("init")

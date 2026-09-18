@@ -108,6 +108,7 @@ knowledge append`.
 | Configuration profiles | `ai-dlc profile show`, `ai-dlc profile migrate`, `ai-dlc profile capture` | Resolves provenance, previews schema migration, or captures supported preferences |
 | Machine provisioning | `ai-dlc setup plan`, `ai-dlc setup apply` | Previews or applies selected workstation modules and personal agent configuration |
 | Agent-native access | `ai-dlc mcp serve` | Exposes reviewed work, read-only doctor, and selected knowledge services through local MCP; machine enrollment mutation remains CLI-only |
+| Engine evaluation (maintainers) | `ai-dlc eval plan SUITE --profile PROFILE` | Validates an end-to-end evaluation suite and execution profile offline and prints the scenario, arm and attempt matrix; starts no container and reads no credential value. `run` and `report` are not implemented yet |
 | Legacy compatibility | `ai-dlc scaffold` | Preserves the retired Rust-era provider scaffolding interface |
 
 ## Artifact ownership
