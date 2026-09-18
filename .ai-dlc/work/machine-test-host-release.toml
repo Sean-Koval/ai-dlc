@@ -9,7 +9,7 @@ acceptance = [
     "All three failures in #145 share the host-release cause, confirmed by the single stub change fixing them.",
     "ai-dlc project check --required passes on the Ubuntu 22.04 development host.",
 ]
-reviewed = false
+reviewed = true
 depends_on = []
 requirements = []
 
