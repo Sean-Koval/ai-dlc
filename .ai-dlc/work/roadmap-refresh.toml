@@ -1,0 +1,24 @@
+schema = 1
+id = "roadmap-refresh"
+title = "Refresh roadmap and record the delivery path baseline"
+scope = "Replace the completed September increments in docs/roadmap.md with adoption, shorter delivery path and value-measuring evaluation increments; add docs/verification/delivery-path-baseline.md with measured process cost, candidate reductions and the adoption friction-log template."
+requires_spec = false
+spec_reason = "Documentation-only planning and measurement; no runtime or formal requirements change."
+acceptance = [
+    "Roadmap lists no completed issue as a next increment and names the deferred items #53 and #50.",
+    "Baseline records method, repository-wide and sampled counts, the manual command path and candidate reductions, and is enrolled in the catalog.",
+]
+reviewed = true
+depends_on = []
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+
+[bindings]

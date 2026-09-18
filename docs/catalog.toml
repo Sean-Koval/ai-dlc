@@ -817,3 +817,10 @@ status = "active"
 code_paths = ["src/ai_dlc/documentation/fde.py"]
 verification_paths = ["tests/test_fde.py"]
 requirements = ["openspec/specs/fde-document-scaffold/spec.md"]
+
+[[documents]]
+id = "repo-verification-delivery-path-baseline"
+path = "docs/verification/delivery-path-baseline.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "active"

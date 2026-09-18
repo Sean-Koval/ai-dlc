@@ -21,27 +21,39 @@ implemented; the outstanding qualification list is in release verification.
 
 ## Next three increments
 
-1. **Delivery path.** Collapse the record-to-PR path so `work start` commits its
-   record and `work pr` opens the pull request
-   ([#73](https://github.com/Sean-Koval/ai-dlc/issues/73)), create reviewed records
-   from tracker items ([#72](https://github.com/Sean-Koval/ai-dlc/issues/72)), and
-   archive the OpenSpec change on the delivery branch before merge
-   ([#74](https://github.com/Sean-Koval/ai-dlc/issues/74)).
-2. **Diagnostics that explain themselves.** Make `project check` find its bootstrap
-   runtime and let diagnostics repair the shell entry
-   ([#76](https://github.com/Sean-Koval/ai-dlc/issues/76)), replace the JSON context
-   brief with a readable "what next" summary
-   ([#77](https://github.com/Sean-Koval/ai-dlc/issues/77)), explain binding-drift
-   refusals ([#78](https://github.com/Sean-Koval/ai-dlc/issues/78)), and stop
-   record-only edits from invalidating documentation evidence
-   ([#75](https://github.com/Sean-Koval/ai-dlc/issues/75)).
-3. **A published release.** Publish a versioned release with bootstrap artifacts
-   and record the `verify-published` outcome
-   ([#71](https://github.com/Sean-Koval/ai-dlc/issues/71)).
+The September delivery-path, diagnostics and release increments are complete
+(#71–#78, #103). The next increments test whether the workflow helps on real work
+before adding surface area.
 
-Repository cleanup after the v0.4.0 audit continues under
-[#103](https://github.com/Sean-Koval/ai-dlc/issues/103); the P1 and P2 issues
-there and elsewhere follow these three.
+1. **Adoption on real repositories.** Adopt one work repository with Jira Cloud and
+   one personal repository with GitHub Issues, deliver ordinary work through them
+   for two weeks, and keep a friction log of every refusal, repeated step and
+   workaround. The work-repository run supplies the live lifecycle record that
+   [#85](https://github.com/Sean-Koval/ai-dlc/issues/85) requires; on success,
+   present one qualified work tracker and mark Plane and Linear as available but
+   unqualified. Friction-log entries become issues; nothing else enters the queue
+   until they are triaged.
+2. **A shorter delivery path.** Count the manual commands between a tracker item
+   and `work finish` on the adopted repositories, then remove or fold steps until
+   the count is halved. The [delivery path baseline](verification/delivery-path-baseline.md)
+   records the starting counts and candidate reductions; start with documentation
+   evidence that is re-recorded and committed after each non-record edit.
+3. **Evaluation that measures value.** Deliver the first evaluation slice
+   ([#137](https://github.com/Sean-Koval/ai-dlc/issues/137)) with one journey and a
+   baseline arm: the same seeded task and hidden acceptance tests run with AI-DLC
+   and with the bare client. Report correctness, turns, time and spend for both.
+   Commit the `end-to-end-evaluation` OpenSpec change that #137–#141 reference
+   before implementation; it is not yet in the repository. Whether to build
+   [#138](https://github.com/Sean-Koval/ai-dlc/issues/138)–[#140](https://github.com/Sean-Koval/ai-dlc/issues/140)
+   is decided from that comparison.
+
+Waiting on environments or decisions, not scheduled:
+[#53](https://github.com/Sean-Koval/ai-dlc/issues/53) native client, company and
+cross-platform qualification; and the Confluence publication half of
+[#50](https://github.com/Sean-Koval/ai-dlc/issues/50)
+(`team-document-publication`, no tasks started), which stays deferred under the
+"Not planned" entry below until the custom server review happens. The FDE scaffold
+half of #50 is delivered.
 
 ## How status is tracked
 
