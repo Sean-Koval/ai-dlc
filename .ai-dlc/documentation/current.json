@@ -1,17 +1,28 @@
 {
-  "base": "ebbddcc13daf142501d4f2181b2309217807a0bf",
+  "base": "78e9329079cdc89139e7ca14d26531454f2ee60d",
   "decisions": [
     {
       "outcome": "updated",
-      "reason": "Rewrote the entry point against the current CLI and canonical guides: features, workflow diagram, tooling roles, setup and configuration examples, team sources and FDE; distinguished source additions from v0.4.0 and removed historical/repetitive detail.",
-      "target": "README.md"
+      "reason": "Replaced completed increments #71-#78 and #103 with adoption, delivery-path and evaluation increments; recorded deferred #53 and #50.",
+      "target": "docs/roadmap.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "New measured baseline of process cost at 78e9329 with friction-log template.",
+      "target": "docs/verification/delivery-path-baseline.md"
+    },
+    {
+      "outcome": "updated",
+      "reason": "Enrolled the delivery path baseline.",
+      "target": "docs/catalog.toml"
     }
   ],
-  "reviewer": "Codex README review",
+  "reviewer": "Claude Code, directed by Sean Koval",
   "schema": 1,
-  "snapshot": "c1c4c1a7304acefdf2d756bc78c4de1886b08f2abbc61c9c02ea472baa4a7ca5",
+  "snapshot": "1d1529b32fd872444975c622f5bb22e749fd658443d34443a7736c8ba546a98f",
   "sources": {
-    "README.md": "55592722d160d25f74bb478388e5a91020234e890639c920ff5246b7a804815b",
-    "docs/catalog.toml": "700669c3d3e7e702f59d14af12ff3d0201c42b6c94adf204af8eb5b123f395fa"
+    "docs/catalog.toml": "532bc084864f6734ddc652c78bf19049a7438fb4ba4493e1fa1396d5d4b67786",
+    "docs/roadmap.md": "c2e3a3d778c8e2d99f73918c3be77532ca5bfe2810b64993d7563f2af5481cae",
+    "docs/verification/delivery-path-baseline.md": "2bfc439b7af44a9d76fbe0d1ebce4c885e9036e5fd53c8ee38f4ba1fa6a5f7a3"
   }
 }
