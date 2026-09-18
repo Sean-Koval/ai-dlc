@@ -299,3 +299,16 @@ def test_generated_project_ci_supplies_an_independent_comparison_with_history():
     assert "AI_DLC_DOCS_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}" in (
         workflow
     )
+
+
+def test_recording_counts_targets_another_work_item_already_decided(main):
+    branch_with_guide_change(main)
+    git(main, "switch", "-qc", "stacked", "guide")
+    (main / "tool.sh").write_text("echo tool\n")
+    report = record(main, "stacked", [no_impact("tool.sh")])
+    assert report["added"] == ["tool.sh"]
+    assert report["elsewhere"] == ["docs/api.md"]
+    assert gate(main)["valid"]
+    (main / "src/api.py").write_text("VERSION = 3\n")
+    with pytest.raises(ValueError, match=r"Missing documentation disposition: docs/api\.md"):
+        record(main, "stacked", [])

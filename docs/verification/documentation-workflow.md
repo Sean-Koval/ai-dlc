@@ -284,6 +284,8 @@ either order with no rewrite, including the target-branch run after each merge; 
 target-branch change to a bound source reported as stale with the path named; a
 catalog entry change that stales only its document; a branch behind its target; a
 merge whose conflict resolution alters bound content; incremental recording;
+recording on a stacked branch, where another work item already decided a target
+(found by using the change on its own follow-up branch);
 forged and malformed evidence; unsafe identifiers; the schema 1 fallback; the
 configured target branch as the local default comparison; and pruning.
 

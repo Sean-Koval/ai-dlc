@@ -75,7 +75,7 @@
         "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
         "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
         "src/ai_dlc/documentation/document_files.py": "503a38d4df2a1f9d0832d083dcd420ebd1215389385293dd0605fc768c5dd320",
-        "src/ai_dlc/documentation/document_impact.py": "1c83bd52d39eae256b72940c5ac5ee6de31b8ff552bd8ba3926b3da5fe304e94",
+        "src/ai_dlc/documentation/document_impact.py": "bf3353c2ab99166c4900647ac7a0626bba3ee08a4a4f92ffa9269167f86012ca",
         "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
         "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
         "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
@@ -151,7 +151,7 @@
         "src/ai_dlc/work/workflow.py": "b16ef66b0bea70ece8aaf15003e5e0233dbcff82051b3da24d59b94106da3fca"
       },
       "outcome": "reviewed-no-change",
-      "reason": "The documentation package row (catalog checks, impact/evidence review) still describes the package; no entry point or package boundary changed.",
+      "reason": "Recording now counts decisions held by other work items; the documentation package description is unchanged.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "docs/architecture.md"
     },
@@ -204,7 +204,7 @@
     {
       "bound": {
         "catalog:docs/verification/documentation-workflow.md": "6e620e11c354a39b24ec8e47a66bcde387ef4e32ca055e7ac526f50363b0ddfe",
-        "docs/verification/documentation-workflow.md": "ef20411dd92aa4546d9961a9e6754aa53bf854467dbe1f1fe9b7740e2564e678",
+        "docs/verification/documentation-workflow.md": "838edaa1c9c693a577f8dd704db6f75ad7dfee541b3656c26d73d6d1474cc419",
         "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
         "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
         "openspec/specs/documentation-impact-workflow/spec.md": "80b65bef76266ee1ea22b5cdf9f5a452125569a4b0e9f8d3a0b5cc8dd84ba786",
@@ -214,7 +214,7 @@
         "src/ai_dlc/config.py": "dd596570054e3f455b90dc5cea2a86c97175b2c4ec4243328755dc1884ececc1",
         "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
         "src/ai_dlc/documentation/document_files.py": "503a38d4df2a1f9d0832d083dcd420ebd1215389385293dd0605fc768c5dd320",
-        "src/ai_dlc/documentation/document_impact.py": "1c83bd52d39eae256b72940c5ac5ee6de31b8ff552bd8ba3926b3da5fe304e94",
+        "src/ai_dlc/documentation/document_impact.py": "bf3353c2ab99166c4900647ac7a0626bba3ee08a4a4f92ffa9269167f86012ca",
         "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
         "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
         "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
@@ -223,15 +223,15 @@
         "src/ai_dlc/harness/workflow_bundles.py": "477dc842b3cdfe240a54a96910786693f9f3b75f2fd528753440c29f26330b36",
         "tests/test_company_guidance.py": "ab39bed3342d9de7d4c68db6c6c54fd66e13c12f2f2167c38e8d345c7dc9736e",
         "tests/test_document_access.py": "bdf96af4afb1ad6f985204ad243a624d4da8b56d527af63cc072908a76beeff4",
-        "tests/test_document_evidence.py": "22155aa0c68323c8aa7d84fca98b1954f8671203d9e23a0cdc339b3c03761a5d",
+        "tests/test_document_evidence.py": "c5263165cc63dd1f2df99491828a97aea167468171348840b29d9f047b63c85d",
         "tests/test_document_impact.py": "a9cccc6fa777d01add578c103adb8efa099541c02fa9132790dd2377fa45c728",
         "tests/test_document_inventory.py": "927199563751af6b2dd5aa8e93cddb43cc62192adffea49694dada37ef6bf14c",
         "tests/test_document_review.py": "88f37e6365c7e9b545d668f978993ef7ad9acfa146e7d549728f4ef9cab8008a",
         "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
         "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7"
       },
-      "outcome": "reviewed-no-change",
-      "reason": "Stale only because DI-02 was promoted into the mapped specification; the dated entry added in this delivery already describes content-bound dispositions.",
+      "outcome": "updated",
+      "reason": "Entry now lists the stacked-branch recording case and how it was found.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "docs/verification/documentation-workflow.md"
     },

@@ -319,14 +319,21 @@ def record_disposition(
     required = inspect_targets(root, base=base)["bound"]
     _decisions({"documents": list(required), "unmapped": []}, decisions, reviewer, partial=True)
     relative = f"{EVIDENCE_DIR}/{path.name}"
-    previous = [d for d in _stored_decisions(root)[0] if d["file"] == relative]
+    stored = _stored_decisions(root)[0]
+    previous = [d for d in stored if d["file"] == relative]
+    # The gate accepts a valid decision from any work item, so recording must too.
+    elsewhere = {
+        d["target"]
+        for d in stored
+        if d["file"] != relative and required.get(d["target"]) == d["bound"]
+    }
     supplied = {d["target"]: d for d in decisions}  # type: ignore[union-attr]
     kept = {
         d["target"]: d
         for d in previous
         if d["target"] not in supplied and required.get(d["target"]) == d["bound"]
     }
-    outstanding = sorted(required.keys() - supplied.keys() - kept.keys())
+    outstanding = sorted(required.keys() - supplied.keys() - kept.keys() - elsewhere)
     if outstanding:
         raise ValueError("Missing documentation disposition: " + ", ".join(outstanding))
     known = {d["target"] for d in previous}
@@ -348,6 +355,7 @@ def record_disposition(
         "added": sorted(supplied.keys() - known),
         "replaced": sorted(supplied.keys() & known),
         "dropped": sorted(known - required.keys()),
+        "elsewhere": sorted(elsewhere - supplied.keys() - kept.keys()),
         "legacy": LEGACY_EVIDENCE if inside(root, LEGACY_EVIDENCE).exists() else None,
     }
 
