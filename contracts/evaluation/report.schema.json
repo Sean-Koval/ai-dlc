@@ -124,6 +124,11 @@
       "title": "Arms",
       "type": "array"
     },
+    "comparison": {
+      "additionalProperties": true,
+      "title": "Comparison",
+      "type": "object"
+    },
     "evidence_kind": {
       "enum": [
         "fixture",
@@ -153,7 +158,8 @@
     "suite",
     "profile",
     "evidence_kind",
-    "arms"
+    "arms",
+    "comparison"
   ],
   "title": "Report",
   "type": "object"

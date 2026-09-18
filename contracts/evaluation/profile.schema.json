@@ -34,6 +34,19 @@
           "title": "Kind",
           "type": "string"
         },
+        "script": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Script"
+        },
         "version": {
           "minLength": 1,
           "title": "Version",
@@ -49,10 +62,16 @@
     },
     "Engine": {
       "additionalProperties": false,
+      "description": "The candidate's identity, and the prebuilt image that already contains it.",
       "properties": {
         "artifact": {
           "minLength": 1,
           "title": "Artifact",
+          "type": "string"
+        },
+        "image": {
+          "pattern": "^([^\\s@]+@)?sha256:[0-9a-f]{64}$",
+          "title": "Image",
           "type": "string"
         },
         "sha256": {
@@ -63,7 +82,8 @@
       },
       "required": [
         "artifact",
-        "sha256"
+        "sha256",
+        "image"
       ],
       "title": "Engine",
       "type": "object"
@@ -100,7 +120,7 @@
       "type": "string"
     },
     "image": {
-      "pattern": "^[^\\s]+@sha256:[0-9a-f]{64}$",
+      "pattern": "^([^\\s@]+@)?sha256:[0-9a-f]{64}$",
       "title": "Image",
       "type": "string"
     },

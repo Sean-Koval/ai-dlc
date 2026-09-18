@@ -20,7 +20,7 @@ import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 
-PINNED = re.compile(r"[^\s]+@sha256:[0-9a-f]{64}")
+PINNED = re.compile(r"([^\s@]+@)?sha256:[0-9a-f]{64}")
 AGENT = "1000:1000"
 ISOLATION = [
     "--network=none",
@@ -331,3 +331,35 @@ def run_attempt(
     result["cleanup"] = state.cleanup() if state.created else {"clean": True, "failed": []}
     (run_dir / "attempt.json").write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
     return result
+
+
+def run_isolated(image: str, archive: bytes, command: str, *, timeout: float) -> dict:
+    """Run a controller-owned command over an unpacked archive; no network, nothing mounted."""
+    if not PINNED.fullmatch(image):
+        raise ValueError("Evaluation image must be pinned by digest")
+    done = _docker(
+        [
+            "run",
+            "--rm",
+            "-i",
+            *ISOLATION,
+            f"--user={AGENT}",
+            "--memory=512m",
+            "--pids-limit=128",
+            "--tmpfs=/tmp:rw,nosuid,size=64m",
+            "--tmpfs=/g:rw,nosuid,exec,uid=1000,gid=1000,size=256m",
+            "--env=HOME=/tmp",
+            "--env=PYTHONDONTWRITEBYTECODE=1",
+            image,
+            "sh",
+            "-c",
+            f"tar -x -C /g && cd /g && {command}",
+        ],
+        timeout=timeout,
+        input=archive,
+    )
+    return {
+        "exit_code": done.returncode,
+        "stdout": done.stdout.decode(errors="replace"),
+        "stderr": done.stderr.decode(errors="replace"),
+    }

@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "id": "local-deterministic",
+  "mode": "candidate",
+  "image": "python@sha256:57cd7c3a7a273101a6485ba99423ee568157882804b1124b4dd04266317710de",
+  "engine": {
+    "artifact": "dist/ai_dlc-candidate.whl",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "image": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "driver": {
+    "kind": "deterministic",
+    "version": "1",
+    "script": "local-deterministic.script.json"
+  },
+  "model": "none",
+  "budgets": {
+    "max_tokens": 0,
+    "max_spend_usd": 0
+  },
+  "credentials": [],
+  "resources": [
+    "docker"
+  ],
+  "attempts": 1
+}

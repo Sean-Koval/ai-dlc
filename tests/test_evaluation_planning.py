@@ -12,7 +12,7 @@ IMAGE = "ghcr.io/example/eval@sha256:" + "a" * 64
 SCENARIO = {
     "id": "csv-feature",
     "goal": "Add duplicate-row detection to the CSV validator.",
-    "fixture": {"path": "fixtures/csv-validator", "revision": "b" * 40},
+    "fixture": {"path": "fixtures/csv-validator", "digest": "b" * 64},
     "answers": [{"match": "which column", "reply": "Use every column."}],
     "checkpoints": ["reviewed-work", "pull-request"],
     "assertions": [
@@ -28,8 +28,12 @@ PROFILE = {
     "id": "local-deterministic",
     "mode": "candidate",
     "image": IMAGE,
-    "engine": {"artifact": "dist/ai_dlc-0.4.0-py3-none-any.whl", "sha256": "c" * 64},
-    "driver": {"kind": "deterministic", "version": "1"},
+    "engine": {
+        "artifact": "dist/ai_dlc-0.4.0-py3-none-any.whl",
+        "sha256": "c" * 64,
+        "image": "sha256:" + "d" * 64,
+    },
+    "driver": {"kind": "deterministic", "version": "1", "script": "script.json"},
     "model": "none",
     "budgets": {"max_tokens": 0, "max_spend_usd": 0},
     "credentials": ["EVAL_GITHUB_TOKEN"],
@@ -69,7 +73,8 @@ def test_plan_lists_every_scenario_arm_and_attempt_with_its_pinned_inputs():
         ("csv-feature", "baseline", 2),
     ]
     first = result["attempts"][0]
-    assert first["image"] == IMAGE
+    assert first["image"] == "sha256:" + "d" * 64  # the prebuilt candidate image
+    assert result["attempts"][2]["image"] == IMAGE
     assert first["engine_sha256"] == "c" * 64
     assert first["limits"] == {"timeout_minutes": 30, "max_turns": 20}
     assert result["budgets"] == {"max_tokens": 0, "max_spend_usd": 0}
@@ -101,6 +106,8 @@ def test_single_attempt_is_labelled_as_no_basis_for_comparison():
         (["credentials"], ["lowercase_name"], "credentials"),
         (["attempts"], 0, "attempts"),
         (["driver"], {"kind": "telepathy", "version": "1"}, "kind"),
+        (["driver", "script"], None, "script"),
+        (["engine", "image"], "candidate:latest", "image"),
     ],
 )
 def test_incomplete_or_unpinned_profiles_are_refused_by_field(path, value, named):

@@ -56,6 +56,10 @@ def plan(suite: object, profile: object) -> dict:
     settings = _validated(Profile, profile, "profile")
     if settings.mode == "release" and not settings.engine.artifact.startswith("https://"):
         raise ValueError("Release mode requires a published https engine artifact and its sha256")
+    if settings.driver.kind == "deterministic" and not settings.driver.script:
+        raise ValueError(
+            "Invalid evaluation profile: driver.script: the deterministic driver needs one"
+        )
     _unique([s.id for s in checked.scenarios], "scenario identifier")
     attempts = []
     for scenario in checked.scenarios:
@@ -73,7 +77,9 @@ def plan(suite: object, profile: object) -> dict:
                         "scenario": scenario.id,
                         "arm": arm,
                         "attempt": attempt,
-                        "image": settings.image,
+                        # Option 2: the candidate is prebuilt into an image derived from
+                        # the baseline image; the run verifies that derivation.
+                        "image": settings.engine.image if arm == "treatment" else settings.image,
                         "fixture": scenario.fixture.model_dump(),
                         # The baseline differs in exactly one thing: no engine is installed.
                         "engine_sha256": settings.engine.sha256 if arm == "treatment" else None,
