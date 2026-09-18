@@ -75,6 +75,17 @@ def _register_docs_tools(server: FastMCP, root: Path) -> None:
         return prepare_disposition(root, base=base, decisions=decisions, reviewer=reviewer)
 
     @server.tool()
+    def project_docs_record(
+        base: str, decisions: list[dict], reviewer: str, evidence_id: str
+    ) -> dict:
+        """Merge reviewed dispositions into one work item's content-bound evidence file."""
+        from ai_dlc.documentation.document_impact import record_disposition
+
+        return record_disposition(
+            root, base=base, decisions=decisions, reviewer=reviewer, evidence_id=evidence_id
+        )
+
+    @server.tool()
     def project_docs_gate(
         evidence: str = ".ai-dlc/documentation/current.json",
         baseline: str = ".ai-dlc/documentation/baseline.json",

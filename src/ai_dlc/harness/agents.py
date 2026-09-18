@@ -957,7 +957,7 @@ def _shared_guidance_lines(checks: dict[str, Any], index: str, bundle_index: str
         "Read ai-dlc.toml and the active .ai-dlc/work record before work.",
         "Use specification artifacts for implementation tasks and the tracker for priority/status.",
         "Finalize required specifications before review; archive OpenSpec changes on the delivery branch before merge with ai-dlc work archive. Complete work through ai-dlc work finish.",
-        "Immediately before merge, update from the target branch and refresh base-bound evidence and checks.",
+        "Immediately before merge, update from the target branch and rerun required checks; record documentation dispositions again only for targets the gate reports stale.",
         "Finish from a checkout at the merge commit; when the target branch moved, use a temporary detached worktree.",
         "Store architecture, design, decisions and runbooks in docs/. Keep personal notes in knowledge.",
         "",

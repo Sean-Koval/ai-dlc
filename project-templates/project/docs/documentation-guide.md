@@ -313,20 +313,24 @@ with a concrete reason. The service records the supplied review; it cannot prove
 that a reviewer inspected the material.
 
 ```sh
-ai-dlc docs review --base origin/main --disposition decisions.json --reviewer repository-maintainers
+ai-dlc docs review --base origin/main --disposition decisions.json --reviewer repository-maintainers --evidence-id <work-id>
 ```
 
-This emits content-bound evidence; explicitly save the reviewed output as
-`.ai-dlc/documentation/current.json`. That reserved directory holds evidence only,
-never source documents. Review the chosen comparison base as part of the evidence.
-Do not reset it to hide changes. Changed document, source, mapping or change-scope
-bytes invalidate the evidence and require another inspection.
+This merges the decisions into `.ai-dlc/documentation/evidence/<work-id>.json` and
+reports which targets were kept, added, replaced or dropped. That reserved
+directory holds evidence only, never source documents. Each decision binds the
+content of its target and of the sources mapped to it, including the document's
+catalog entry; changed bytes in any of them make that decision stale, and the
+gate names the paths. Decisions that remain valid are kept, so a later recording
+needs only the new or stale targets.
 
-The base is an exact commit. `docs review --disposition` refuses a base that the checkout
-does not contain, and a check against another base reports both commits before
-evaluating decisions. When the target branch moves, update the branch from it,
-inspect impact against the new target commit and record dispositions again.
-Do this immediately before merge, then wait for fresh checks.
+Evidence does not name a target-branch commit. The gate takes its comparison from
+`--base` or `AI_DLC_DOCS_BASE`, otherwise from the configured target branch, and
+computes changes from the merge base. When the target branch moves, update the
+branch and rerun checks; record again only what the gate reports stale. Without
+`--evidence-id` the command still emits schema 1 evidence for
+`.ai-dlc/documentation/current.json`, which names an exact commit and is honored
+for one release while no per-work evidence exists.
 
 An opted-in project can require `ai-dlc docs gate` through its normal check
 manifest. First inspect historical diagnostics and explicitly review a baseline:

@@ -196,6 +196,7 @@ protocol is unrun and does not spend the existing generic skill-evaluation budge
 |---|---|---|
 | `project_docs_impact` | `docs review` | Find mapped documents and unmapped changes for an explicit Git comparison |
 | `project_docs_disposition` | `docs review --disposition` | Emit content-bound reviewed decisions without writing evidence |
+| `project_docs_record` | `docs review --disposition --evidence-id` | Merge reviewed decisions into one work item's evidence file, keeping decisions whose bound content is unchanged |
 | `project_docs_gate` | `docs gate` | Check current dispositions and new objective debt |
 | `project_docs_inventory` | `docs check --inventory` | Discover repository Markdown paths, exclusions and unavailable paths without reading bodies |
 | `project_docs_search` | `docs search` | Search `docs/`, `openspec/` and per-call declared Markdown under one body budget; returns canonical paths, digests and explicit omissions |

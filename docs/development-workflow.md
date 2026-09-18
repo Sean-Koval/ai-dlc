@@ -242,8 +242,9 @@ overridden. The tracker has no fallback.
 6. Review the work record, then publish and start it through AI-DLC.
 7. Implement on the bound branch with acceptance and regression tests.
 8. Run `ai-dlc project check --required` before review.
-9. Immediately before merge, update the branch from the target branch and
-   refresh base-bound evidence and checks. Merge through the configured SCM and
+9. Immediately before merge, update the branch from the target branch and rerun
+   required checks; record documentation dispositions again only for targets the
+   gate reports stale. Merge through the configured SCM and
    finish through AI-DLC so current specification, merged revision, CI receipts,
    and deployment evidence are checked together.
 10. Update durable documentation and leave a concise handoff when continuity is
@@ -311,32 +312,39 @@ change to make a later checkout match.
 
 ## Merge against the current target branch
 
-Documentation-impact dispositions name the exact target-branch commit they were
-reviewed against. Pull request CI supplies the pull request's base commit, and
-the target-branch run after merge supplies the commit that the merge replaced.
-Both runs must see the recorded base, so a merge is safe only when the target
-branch has not moved since the evidence was recorded and checked.
+Documentation-impact decisions are stored per work item under
+`.ai-dlc/documentation/evidence/<id>.json`. Each decision binds the content of its
+own target and of the sources mapped to it, including that document's catalog
+entry. It does not name a target-branch commit. Pull request CI supplies the pull
+request's base commit, the target-branch run after merge supplies the commit that
+the merge replaced, and the gate computes changed files from the merge base of
+that comparison and `HEAD`. The comparison never comes from the evidence.
 
-Pull request checks do not rerun when the target branch moves, and re-running an
-old pull request job reuses its original commit and base. A green check can
-therefore describe a superseded base. Immediately before merging:
+A moved target branch therefore invalidates a decision only when it changed
+content that the decision bound. Branches with disjoint changes merge in either
+order with no evidence rewrite and no shared file to conflict on. Immediately
+before merging:
 
 1. Fetch and update the branch from the target branch.
-2. Inspect impact against the new target commit and record dispositions again.
+2. Run `ai-dlc project check --required`. When `docs gate` reports a *stale*
+   target it names the paths whose content differs; review those and record that
+   target again with `docs review --disposition ... --evidence-id <id>`, which
+   keeps the decisions that remain valid. *Missing* targets need a first decision.
 3. Push the update and wait for fresh required checks.
-4. Merge only if the target branch is still that commit; otherwise repeat.
 
-Enable the branch protection or ruleset option that requires branches to be up
-to date before merging, with the Verify jobs as required checks. The SCM then
-enforces this sequence. It is a repository setting that an administrator changes
-deliberately; AI-DLC does not change it. `verify.yml` has no merge-queue trigger,
-and exact-base evidence cannot anticipate a queued predecessor.
+Pull request checks do not rerun when the target branch moves, so a green check
+can predate a target change that touched bound content; the target-branch run
+after merge then fails and names it. Enable the branch protection or ruleset
+option that requires branches to be up to date before merging, with the Verify
+jobs as required checks, to catch that before merge. It is a repository setting
+that an administrator changes deliberately; AI-DLC does not change it.
 
-`docs gate` reports a base mismatch first and names both commits.
-`docs review --disposition` refuses a base that the checkout does not contain. If a stale
-base still reaches the target branch, that merge's run stays failed and
-`work finish` stays blocked, because rerunning repeats the same comparison. Do not
-edit evidence to name the old base; reconcile the work item explicitly.
+Evidence files whose decisions no longer match any current target are inert.
+`ai-dlc docs review --base <target> --prune` lists them and `--apply` removes
+them; pruning never gates. A project that still holds only schema 1
+`.ai-dlc/documentation/current.json` keeps its recorded-base rules for one
+release: that file names an exact commit and must be recorded again whenever the
+target branch moves. The first per-work recording supersedes it; delete it then.
 
 ## Maintaining this handbook
 
