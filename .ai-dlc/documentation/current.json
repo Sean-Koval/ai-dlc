@@ -1,17 +1,35 @@
 {
-  "base": "5928fc554881be51ec88d3b12fd965caafb93b1f",
+  "base": "59cd3afcc92046f790defc97031b77808566fbd6",
   "decisions": [
     {
       "outcome": "no-impact",
-      "reason": "Test-only isolation fix; no documented behavior changes.",
-      "target": "tests/test_machine_integration.py"
+      "reason": "Proposed OpenSpec change for #146; no implemented behavior or durable document changes yet.",
+      "target": "openspec/changes/documentation-evidence-content-binding/design.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Proposed OpenSpec change for #146; no implemented behavior or durable document changes yet.",
+      "target": "openspec/changes/documentation-evidence-content-binding/proposal.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Proposed OpenSpec change for #146; no implemented behavior or durable document changes yet.",
+      "target": "openspec/changes/documentation-evidence-content-binding/specs/documentation-impact-workflow/spec.md"
+    },
+    {
+      "outcome": "no-impact",
+      "reason": "Proposed OpenSpec change for #146; no implemented behavior or durable document changes yet.",
+      "target": "openspec/changes/documentation-evidence-content-binding/tasks.md"
     }
   ],
   "reviewer": "Claude Code, directed by Sean Koval",
   "schema": 1,
-  "snapshot": "6b8185e14aed75c432b58f4a56100f52f5c6676e8400ece469ab0744abbf5110",
+  "snapshot": "7d741c1341af381e60d9623ec5c22639148a9520c2652cd66aa39e7b3a542968",
   "sources": {
     "docs/catalog.toml": "532bc084864f6734ddc652c78bf19049a7438fb4ba4493e1fa1396d5d4b67786",
-    "tests/test_machine_integration.py": "1366d90088e72ef45c80c5fa28be68731dee9476cba9cbfc4c90cd2bb498619e"
+    "openspec/changes/documentation-evidence-content-binding/design.md": "9e351139f2ff486d20ca97b8f411f116043f28adad7a4d038ace782976454de1",
+    "openspec/changes/documentation-evidence-content-binding/proposal.md": "f3392037dc61a9f03f2fabdccb0428c9e3f7ddb44f322e04c798ac4b52b55613",
+    "openspec/changes/documentation-evidence-content-binding/specs/documentation-impact-workflow/spec.md": "4e289b7050427f114bb6dfdc519ac1f2e18da991c0532c5efcae43ec0c1e1b88",
+    "openspec/changes/documentation-evidence-content-binding/tasks.md": "0e2cc29db4883edec773ed6658b4bda61b45c195597bd6e1365baf1d22b9f189"
   }
 }
