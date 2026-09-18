@@ -9,7 +9,7 @@ acceptance = [
     "Evidence still binds to content: a changed mapped document or source without a current decision fails the gate and is named.",
     "The number of manual documentation-evidence commands per delivery is recorded against the delivery path baseline.",
 ]
-reviewed = false
+reviewed = true
 depends_on = []
 requirements = [
     "DI-02",
