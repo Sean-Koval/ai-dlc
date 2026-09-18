@@ -86,6 +86,12 @@ def _replace_external_execution(monkeypatch: pytest.MonkeyPatch, *, fail: bool =
             raise RuntimeError("synthetic package manager failure")
 
     monkeypatch.setattr(ai_dlc.setup.provision, "subprocess", SimpleNamespace(run=execute))
+    # The supported-release refusal reads the real host; pin it so isolation holds anywhere.
+    monkeypatch.setattr(
+        ai_dlc.setup.provision.platform,
+        "freedesktop_os_release",
+        lambda: {"ID": "ubuntu", "VERSION_ID": "24.04"},
+    )
 
 
 def _returned_without_sentinels(results: list[object]) -> None:

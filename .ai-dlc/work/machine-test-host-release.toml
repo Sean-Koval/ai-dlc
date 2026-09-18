@@ -1,0 +1,26 @@
+schema = 1
+id = "machine-test-host-release"
+title = "Machine integration tests fail instead of skipping on unsupported Linux releases"
+scope = "Pin the host OS release inside the machine integration tests' external-execution stub so the three tests that reach machine_apply run on any development host instead of failing on the supported-release refusal. Test-only; the refusal in src/ai_dlc/setup/provision.py is unchanged."
+requires_spec = false
+spec_reason = "Test isolation fix; no observable product behavior changes."
+acceptance = [
+    "tests/test_machine_integration.py passes on a host that is not Ubuntu 24.04 or 26.04.",
+    "All three failures in #145 share the host-release cause, confirmed by the single stub change fixing them.",
+    "ai-dlc project check --required passes on the Ubuntu 22.04 development host.",
+]
+reviewed = true
+depends_on = []
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+tracker = "145"
+
+[bindings]
