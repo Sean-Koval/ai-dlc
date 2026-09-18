@@ -40,8 +40,23 @@ class GitHubIssuesProvider:
             check=False,
         )
         if result.returncode:
-            raise RuntimeError(result.stderr.strip())
+            raise RuntimeError(self.explain(result.stderr.strip()))
         return result.stdout.strip()
+
+    def explain(self, error):
+        """Turn gh's repeated per-field scope refusals into one repairable explanation."""
+        required = re.findall(r"requires one of the following scopes: \[([^\]]*)\]", error)
+        if not required:
+            return error
+        granted = re.search(r"only been granted the: \[([^\]]*)\]", error)
+        # gh lists alternatives per field; the first of each is the narrowest that satisfies it.
+        scopes = sorted({re.findall(r"'([^']+)'", group)[0] for group in required if "'" in group})
+        held = ", ".join(re.findall(r"'([^']+)'", granted.group(1))) if granted else "unknown"
+        return (
+            f"GitHub token lacks the {', '.join(scopes)} scope needed for the configured "
+            f"Project (granted: {held}). Run `gh auth refresh --hostname {self.host} "
+            f"--scopes {','.join(scopes)}`, or create the work record from explicit fields."
+        )
 
     def gh(self, *args):
         return self.run([*args, "--repo", f"{self.host}/{self.config['repository']}"])

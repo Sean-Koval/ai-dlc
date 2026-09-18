@@ -1,0 +1,27 @@
+schema = 1
+id = "tracker-read-project-scope"
+title = "Tracker read fails with a raw GraphQL scope error when the gh token lacks read:project"
+scope = "Translate gh's repeated per-field token scope refusals in the GitHub Issues provider into one explanation naming the missing scope, the granted scopes and the gh auth refresh command. Drafting a record without Project fields is not delivered: the provider read contract is strict and shared by every tracker, and read must stay fail-closed for status-dependent callers."
+requires_spec = false
+spec_reason = "Error wording only; no contract, gate or lifecycle behavior changes."
+acceptance = [
+    "A scope-denied GraphQL response produces one message naming the missing scope, the granted scopes and the exact gh auth refresh command for the configured host.",
+    "Other gh failures keep their original message.",
+    "The real command on an under-scoped token shows the explanation and writes no record.",
+]
+reviewed = false
+depends_on = []
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+tracker = "144"
+branch = "work/tracker-read-project-scope"
+
+[bindings]
