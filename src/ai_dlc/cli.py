@@ -506,7 +506,10 @@ def eval_image(
         raise typer.BadParameter("--profile and --write go together")
     built = build_candidate(root.absolute(), base)
     if profile is not None and write is not None:
-        resolved = resolve_profile(_read_declaration(profile), built)
+        declared = _read_declaration(profile)
+        if not isinstance(declared, dict):
+            raise typer.BadParameter("the profile must be a table", param_hint="--profile")
+        resolved = resolve_profile(declared, built)
         write.write_text(json.dumps(resolved, indent=2, sort_keys=True) + "\n")
     emit(built)
 

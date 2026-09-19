@@ -12,7 +12,7 @@
         "scripts/run_skill_evaluation.py": "46a97694bae155b2418d172971480e031f510acc864b9d91fa546f98c754729f",
         "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
         "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
-        "src/ai_dlc/cli.py": "13fe251b11a4682a37ca9f36c302c139102da51e5aa29e5d1c0f53e2aee1298e",
+        "src/ai_dlc/cli.py": "036e143f817c2af52a1d277e87f18dff72deddf303bafcbde1aea81cca57332f",
         "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
         "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
         "src/ai_dlc/config.py": "dd596570054e3f455b90dc5cea2a86c97175b2c4ec4243328755dc1884ececc1",
@@ -105,7 +105,7 @@
         "src/ai_dlc/work/workflow.py": "b16ef66b0bea70ece8aaf15003e5e0233dbcff82051b3da24d59b94106da3fca"
       },
       "outcome": "updated",
-      "reason": "Verification row now names the candidate image recipe.",
+      "reason": "Verification row names the candidate image recipe; the type-narrowing fix in cli.py changes nothing it describes.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "docs/architecture.md"
     },
@@ -113,11 +113,11 @@
       "bound": {
         "catalog:docs/workflows/tool-map.md": "f50e0a853e00ab08729f6bd5bdf4cca447b033b23ca5169bb5f6556c0991dc8e",
         "docs/workflows/tool-map.md": "004b8b54f4297e30c2f164ceeb9b5c4200f8de961978a52ab624167f238ef257",
-        "src/ai_dlc/cli.py": "13fe251b11a4682a37ca9f36c302c139102da51e5aa29e5d1c0f53e2aee1298e",
+        "src/ai_dlc/cli.py": "036e143f817c2af52a1d277e87f18dff72deddf303bafcbde1aea81cca57332f",
         "src/ai_dlc/mcp_server.py": "f159ac251bd9b65fb4fdeb404380be3a2afb9fbac013e0a0e19315ad738bd612"
       },
       "outcome": "updated",
-      "reason": "Adds eval image and its uv, Docker and package index requirements.",
+      "reason": "Adds eval image and its requirements; the type-narrowing fix in cli.py changes nothing it describes.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "docs/workflows/tool-map.md"
     },
