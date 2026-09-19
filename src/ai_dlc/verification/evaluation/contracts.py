@@ -125,6 +125,11 @@ class ArmReport(Strict):
     outcome: Literal[
         "completed", "infrastructure", "product", "workflow-violation", "unavailable", "incomplete"
     ]
+    stage: str | None = None
+    limit: str | None = None
+    detail: str | None = None
+    cleanup_clean: bool
+    metrics: dict
     assertions: list[AssertionResult]
 
 

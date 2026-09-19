@@ -91,7 +91,7 @@ knowledge append`.
 | Personal knowledge | `ai-dlc knowledge find`, `ai-dlc knowledge note`, `ai-dlc knowledge append` |
 | Profiles and machine setup | `ai-dlc profile show`, `ai-dlc profile migrate`, `ai-dlc profile capture`; `ai-dlc setup plan`, `ai-dlc setup apply` |
 | Agent-native access | `ai-dlc mcp serve` — reviewed work, read-only doctor/document inspection, and selected knowledge services; machine enrollment mutation remains CLI-only |
-| Engine evaluation (maintainers) | `ai-dlc eval plan SUITE --profile PROFILE`, `ai-dlc eval run SUITE --profile PROFILE --out DIR` | `plan` validates a suite and execution profile offline and prints the scenario, arm and attempt matrix. `run` executes each attempt in an isolated, network-less container, grades hidden acceptance tests in a separate container and retains inputs and evidence; it needs Docker and locally present pinned images, and never pulls. `report` is not implemented yet |
+| Engine evaluation (maintainers) | `ai-dlc eval plan SUITE --profile PROFILE`, `ai-dlc eval run SUITE --profile PROFILE --out DIR`, `ai-dlc eval report DIR` | `plan` validates a suite and execution profile offline and prints the scenario, arm and attempt matrix. `run` executes each attempt in an isolated, network-less container, grades hidden acceptance tests in a separate container and retains inputs and evidence; it needs Docker and locally present pinned images, and never pulls. `report` rebuilds `report.json`, JUnit and a failure timeline from a run directory alone, and marks changed, missing or truncated evidence as incomplete |
 | Legacy compatibility | `ai-dlc scaffold` |
 
 The local MCP server exposes only the reviewed services listed above; machine

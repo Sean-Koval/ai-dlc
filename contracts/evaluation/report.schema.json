@@ -23,6 +23,39 @@
           "title": "Attempt",
           "type": "integer"
         },
+        "cleanup_clean": {
+          "title": "Cleanup Clean",
+          "type": "boolean"
+        },
+        "detail": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Detail"
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Limit"
+        },
+        "metrics": {
+          "additionalProperties": true,
+          "title": "Metrics",
+          "type": "object"
+        },
         "outcome": {
           "enum": [
             "completed",
@@ -39,6 +72,18 @@
           "pattern": "^[a-z0-9][a-z0-9-]*$",
           "title": "Scenario",
           "type": "string"
+        },
+        "stage": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stage"
         }
       },
       "required": [
@@ -46,6 +91,8 @@
         "arm",
         "attempt",
         "outcome",
+        "cleanup_clean",
+        "metrics",
         "assertions"
       ],
       "title": "ArmReport",
