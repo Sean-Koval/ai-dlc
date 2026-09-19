@@ -5,14 +5,15 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+import os
 import tarfile
 import threading
 import tomllib
 from pathlib import Path
 
 from ai_dlc.verification.evaluation import attempt as lifecycle
-from ai_dlc.verification.evaluation.evaluate import evaluate
 from ai_dlc.verification.evaluation.planning import plan
+from ai_dlc.verification.evaluation.report import MANIFEST, manifest_of, write_report
 
 WRITER = "import pathlib,sys;p=pathlib.Path(sys.argv[1]);p.parent.mkdir(parents=True,exist_ok=True);p.write_text(sys.argv[2])"
 
@@ -93,7 +94,6 @@ def run_suite(
     (out / "plan.json").write_text(json.dumps(planned, indent=2, sort_keys=True) + "\n")
     for name, value in [("suite", suite), ("profile", profile), ("script", script)]:
         (out / f"inputs/{name}.json").write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
-    arms = []
     for item in planned["attempts"]:
         scenario = scenarios[item["scenario"]]
         run_dir = out / item["scenario"] / item["arm"] / str(item["attempt"])
@@ -106,30 +106,47 @@ def run_suite(
             cancel=cancel,
         )
         hidden = scenario["fixture"].get("hidden")
-        grade = (
-            _grader(profile["image"], (suite_path.parent / hidden).resolve()) if hidden else None
-        )
-        report = evaluate(
-            result,
-            assertions=scenario["assertions"],
-            planned=item["assertions"],
-            run_dir=run_dir,
-            grade=grade or _no_grader,
-        )
-        (run_dir / "arm-report.json").write_text(json.dumps(report, indent=2, sort_keys=True))
-        arms.append(report)
-    summary = {
-        "schema": 1,
-        "suite": planned["suite"],
-        "profile": planned["profile"],
-        # Deterministic scripts and fixture providers never qualify live behavior.
-        "evidence_kind": "fixture",
-        "arms": arms,
-        "comparison": planned["comparison"],
-    }
-    (out / "report.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
-    return summary
+        if hidden and (run_dir / "tree/project").is_dir():
+            _retain_grading(
+                run_dir, _grader(profile["image"], (suite_path.parent / hidden).resolve())
+            )
+        _redact(run_dir, result, profile["credentials"])
+        (run_dir / "attempt.json").write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
+        _redact(run_dir, {}, profile["credentials"])  # the record just written is evidence too
+        (run_dir / MANIFEST).write_text(json.dumps(manifest_of(run_dir), indent=2, sort_keys=True))
+    return write_report(out)
 
 
-def _no_grader(run_dir: Path) -> dict:
-    raise RuntimeError("scenario declares no hidden tests")
+def _retain_grading(run_dir: Path, grade) -> None:
+    """Grade once, at run time; reports only ever read what is retained here."""
+    try:
+        graded = grade(run_dir)
+    except (lifecycle.Stopped, OSError, ValueError):
+        return  # no file: the rebuilt result is unavailable, never a pass
+    (run_dir / "grading").mkdir(exist_ok=True)
+    (run_dir / "grading/hidden-tests.json").write_text(
+        json.dumps(graded, indent=2, sort_keys=True) + "\n"
+    )
+
+
+def _redact(run_dir: Path, result: dict, names: list[str]) -> None:
+    """Remove profile-named credential values from retained evidence and fail the attempt.
+
+    Values shorter than eight characters are ignored to avoid shredding ordinary text.
+    """
+    found = []
+    for name in names:
+        value = os.environ.get(name, "").encode()
+        if len(value) < 8:
+            continue
+        for path in sorted(p for p in run_dir.rglob("*") if p.is_file()):
+            data = path.read_bytes()
+            if value in data:
+                path.write_bytes(data.replace(value, f"[REDACTED:{name}]".encode()))
+                found.append(f"{name} in {path.relative_to(run_dir).as_posix()}")
+    if found:
+        result.update(
+            outcome="incomplete",
+            stage="redaction",
+            detail="credential value found in evidence and redacted: " + ", ".join(found),
+        )

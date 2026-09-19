@@ -125,6 +125,30 @@ recipe that builds that image from a wheel is the remainder of task 3.
   treatment arm only. It proves the runner and grader, and its report is labelled
   fixture evidence with no comparison claim.
 
+## Decisions made during increment 4 (report and hardening)
+
+- `run` and `report` share one builder. `run` grades once, retains the grader's
+  output, then calls the same offline builder that `report` uses, so a rebuilt
+  report equals the original by construction. The builder starts no process and
+  opens no socket.
+- Each attempt directory carries a manifest of file hashes. A changed, missing or
+  extra file, a malformed or truncated event trace, or a missing attempt record
+  makes the attempt `incomplete`, names the files, and turns every non-pending
+  result into `unavailable`. The manifest detects accidental and partial changes;
+  it is not a signature and does not detect someone who rewrites it too.
+- Values of profile-named credential variables found in retained evidence are
+  replaced with `[REDACTED:<NAME>]`, the attempt becomes `incomplete` at stage
+  `redaction`, and the detail names the variable and files, never the value.
+  Values shorter than eight characters are ignored to avoid shredding ordinary
+  text. This is the run-time control that planning's tripwire anticipates.
+- The comparison states, per scenario, attempts passing all mandatory correctness
+  assertions, mean turns, mean wall seconds and usage for each arm with the
+  treatment-minus-baseline difference. Usage is null unless a driver meters it.
+  A cleanup failure is reported on the arm; it never upgrades or hides a result.
+- JUnit maps fail to failure, unavailable to error and pending to skipped. The
+  timeline lists controller events and assertion evidence; step output is never
+  quoted.
+
 ## Not decided here
 
 Real client adapters, fake and live providers, recovery journeys, CI lanes and

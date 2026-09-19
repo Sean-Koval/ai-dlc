@@ -21,10 +21,10 @@ Spec: [requirements](specs/end-to-end-evaluation/spec.md) and [design](design.md
   retained cleanup failure. Mark them to skip, not pass, without Docker.
 - [x] 4. Add the CSV fixture and controller-side hidden tests; implement the
   evaluator with separate dimensions and outcome classes.
-- [ ] 5. Add synthetic negative tests: forged completion text, missing mandatory
+- [x] 5. Add synthetic negative tests: forged completion text, missing mandatory
   observation, changed artifact, malformed or truncated events, hidden-test
   failure, secret in evidence, cleanup failure. None may produce a pass.
-- [ ] 6. Implement `eval report` reconstruction (JSON, JUnit, timeline) including
+- [x] 6. Implement `eval report` reconstruction (JSON, JUnit, timeline) including
   the per-scenario arm comparison.
 - [ ] 7. Document the commands in the verification runbook, enroll catalog and
   code mappings, run required checks, record documentation dispositions, archive.
