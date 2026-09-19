@@ -292,23 +292,24 @@ def project_adopt(
 ):
     from ai_dlc.setup.templates import adopt
 
-    result = adopt(
-        root,
-        preset=preset,
-        apply=apply,
-        template_source=template_source,
-        vcs_ref=vcs_ref,
-        capabilities=capability,
-        providers={
-            role: value
-            for role, value in (("tracker", tracker), ("knowledge", knowledge_provider))
-            if value is not None
-        },
-        agent_clients=agent_client,
-        docs_preset=docs_preset,
-        link_vault=link_vault_option,
-        vault=vault,
-    )
+    with service_call():
+        result = adopt(
+            root,
+            preset=preset,
+            apply=apply,
+            template_source=template_source,
+            vcs_ref=vcs_ref,
+            capabilities=capability,
+            providers={
+                role: value
+                for role, value in (("tracker", tracker), ("knowledge", knowledge_provider))
+                if value is not None
+            },
+            agent_clients=agent_client,
+            docs_preset=docs_preset,
+            link_vault=link_vault_option,
+            vault=vault,
+        )
     emit(result)
 
 

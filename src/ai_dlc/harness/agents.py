@@ -1358,8 +1358,14 @@ def _skill_sources(config: dict) -> dict[str, str]:
     content = {}
     for name, path in sorted(available.items()):
         data = path.read_bytes()
-        if hashlib.sha256(data).hexdigest() != lock["skills"][name]["sha256"]:
-            raise ValueError(f"skill digest mismatch: {name}")
+        actual = hashlib.sha256(data).hexdigest()
+        recorded = lock["skills"][name]["sha256"]
+        if actual != recorded:
+            raise ValueError(
+                f"skill digest mismatch: {name}: {base / 'skills.lock.json'} records "
+                f"{recorded} but {path.name} is {actual}. If the edit is intended, set "
+                f"skills.{name}.sha256 in the lock file to the new digest and render again"
+            )
         content[name] = data.decode("utf-8")
     selected = config.get("agents", {}).get("skills", sorted(content))
     if not isinstance(selected, list) or not all(isinstance(name, str) for name in selected):
