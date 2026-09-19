@@ -15,7 +15,7 @@ def test_skill_digest_mismatch_names_the_lock_file_and_both_digests(tmp_path, mo
 
     base = tmp_path / "agents"
     shutil.copytree(assets("agents"), base)
-    name = sorted(p.parent.name for p in (base / "skills").glob("*/SKILL.md"))[0]
+    name = min(p.parent.name for p in (base / "skills").glob("*/SKILL.md"))
     skill = base / "skills" / name / "SKILL.md"
     skill.write_text(skill.read_text() + "\nedited\n")
     recorded = json.loads((base / "skills.lock.json").read_text())["skills"][name]["sha256"]
