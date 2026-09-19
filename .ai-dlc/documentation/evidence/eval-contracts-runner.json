@@ -111,6 +111,42 @@
     },
     {
       "bound": {
+        "docs/catalog.toml": "7e4534aeaa8b154481ab7eda04c521d75b55126e69adc8606398320c86e27c13"
+      },
+      "outcome": "updated",
+      "reason": "Enrolls the evaluation runbook with its code, test and requirement mappings.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "docs/catalog.toml"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/end-to-end-evaluation.md": "89228f581127b24abeee5d5eebe947bf08548c335706c76bba68cc20de8e67c1",
+        "docs/verification/end-to-end-evaluation.md": "1d1ec84c42d68f72f4c73ddfe44284f02ce1494479698e98589315f831715f15",
+        "evaluations/README.md": "141d85e3f5fe3872c571351f3e4f20f93222ad07c656c80abde8080672d69567",
+        "evaluations/profiles/local-deterministic.json": "0e0deb70f592f3ebad0a420daf815c536eab6c74c421ec4e10329614a65d3d6b",
+        "evaluations/suites/smoke.json": "4f24319f9c734a2b5fa01cc01b2f831bb79a230800697b160ad29aa87f98a9d7",
+        "openspec/specs/end-to-end-evaluation/spec.md": "ae46e6902ba9f869b9e3351b8a2c7f3f538b30db127198c0148e6804af663aae",
+        "src/ai_dlc/verification/evaluation/__init__.py": "7cf0a3add5298d2f8d58954210cee24b3fb6a5f81e505ef3b948a7078cbb0eb8",
+        "src/ai_dlc/verification/evaluation/attempt.py": "fa94af0a1ecf3cd012e36794d30f7f96f03a92e82a3f37d3c0cc0d52633bbb1b",
+        "src/ai_dlc/verification/evaluation/contracts.py": "04dcee90204b58d1ffb6a3f9cdb2dcf80b590ff59f0d4ea4c4a7975953631f1b",
+        "src/ai_dlc/verification/evaluation/evaluate.py": "c83284feaefa2ac7e780660c99b8f6603d10a1cb875d00aeec191ef7298d8be1",
+        "src/ai_dlc/verification/evaluation/image.py": "20df9b1165e57bb262ebfc4718ead9eee74fbbd86ef364b9ad694ad47441613b",
+        "src/ai_dlc/verification/evaluation/planning.py": "22e407e92b233919d465feb91351b39f1684cf2fb4801a02badab5ad224f73e9",
+        "src/ai_dlc/verification/evaluation/report.py": "26995243e1725bbdb3ac07990bab41b7a2b0e73a32accd4b034b0b1953eee237",
+        "src/ai_dlc/verification/evaluation/run.py": "2044d186941c2b593b1fea6fabde00cadbcb4874a61187c00ec225077ccd48aa",
+        "tests/test_evaluation_attempt.py": "432739434aa58c1ee2cf2fd392b3d0b1f4078980eb9f69c6e5a07018e1e3ec00",
+        "tests/test_evaluation_image.py": "b76a456529ea17dab1476bd7e9e60ab904af1130574fcf6be1404a12d9801ba9",
+        "tests/test_evaluation_planning.py": "3745f05df7f260feff6789d8da3747cebb1d6b8c5033c7aec3ca91f5da167d76",
+        "tests/test_evaluation_report.py": "95494d689a851b7fa20a0a8a3ddbf30f5a01adbc10cdf0e2b1f4c5f1600c8cd9",
+        "tests/test_evaluation_run.py": "edc99627ced20eba905a8d4952b81802a4c6daf63e3577feac77c07972da41db"
+      },
+      "outcome": "updated",
+      "reason": "New maintainer runbook: commands, outcome classes, verified evidence and its limits.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "docs/verification/end-to-end-evaluation.md"
+    },
+    {
+      "bound": {
         "catalog:docs/workflows/tool-map.md": "f50e0a853e00ab08729f6bd5bdf4cca447b033b23ca5169bb5f6556c0991dc8e",
         "docs/workflows/tool-map.md": "004b8b54f4297e30c2f164ceeb9b5c4200f8de961978a52ab624167f238ef257",
         "src/ai_dlc/cli.py": "036e143f817c2af52a1d277e87f18dff72deddf303bafcbde1aea81cca57332f",
@@ -123,15 +159,6 @@
     },
     {
       "bound": {
-        "evaluations/README.md": "141d85e3f5fe3872c571351f3e4f20f93222ad07c656c80abde8080672d69567"
-      },
-      "outcome": "updated",
-      "reason": "Adds the build, run and report sequence and explains the candidate script.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "evaluations/README.md"
-    },
-    {
-      "bound": {
         "evaluations/profiles/local-candidate.script.json": "f665e4b5f90f9f872cc6462051299160673bb0e86e2f3f1883bdab5c218122a6"
       },
       "outcome": "no-impact",
@@ -141,19 +168,73 @@
     },
     {
       "bound": {
-        "openspec/changes/end-to-end-evaluation/design.md": "ea457a8f55ef3459262a89a772df528deec3f400364c1704cc8df8b747d1ecc4"
+        "openspec/changes/archive/2026-09-19-end-to-end-evaluation/design.md": "ea457a8f55ef3459262a89a772df528deec3f400364c1704cc8df8b747d1ecc4"
       },
       "outcome": "updated",
-      "reason": "Records the image recipe, that it is not a bootstrap run, and the missing-Git finding for #138.",
+      "reason": "Archived copy of the design, including the increment 5 decisions.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "openspec/changes/archive/2026-09-19-end-to-end-evaluation/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-19-end-to-end-evaluation/proposal.md": "b43e567c17acb704c6cf07af838553e3f014b5cf63e9a0107768ee09d6bb4841"
+      },
+      "outcome": "updated",
+      "reason": "Archived copy of the proposal.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "openspec/changes/archive/2026-09-19-end-to-end-evaluation/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-19-end-to-end-evaluation/specs/end-to-end-evaluation/spec.md": "6c00b1edebabacdeb0729db6ea3901e2cc987b9353ab336a034eeaf116254094"
+      },
+      "outcome": "updated",
+      "reason": "Archived copy of the delta promoted to openspec/specs.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "openspec/changes/archive/2026-09-19-end-to-end-evaluation/specs/end-to-end-evaluation/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-19-end-to-end-evaluation/tasks.md": "5a71bdc998885ae0d5ba1aef6c9da5c7332c36ebec83efd5fa135e2847f23fd0"
+      },
+      "outcome": "updated",
+      "reason": "Archived with all tasks ticked, task 7 included.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "openspec/changes/archive/2026-09-19-end-to-end-evaluation/tasks.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/end-to-end-evaluation/design.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Moved unchanged to the archive when the change was archived; the requirements now live in openspec/specs/end-to-end-evaluation/spec.md.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "openspec/changes/end-to-end-evaluation/design.md"
     },
     {
       "bound": {
-        "openspec/changes/end-to-end-evaluation/tasks.md": "83fbafcec770a4721886f024a4f6f8ea70cc96ce5fa029af8b58f61e485149b6"
+        "openspec/changes/end-to-end-evaluation/proposal.md": "missing"
       },
       "outcome": "updated",
-      "reason": "Ticks task 3 under the prebuilt-image decision.",
+      "reason": "Moved unchanged to the archive when the change was archived; the requirements now live in openspec/specs/end-to-end-evaluation/spec.md.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "openspec/changes/end-to-end-evaluation/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/end-to-end-evaluation/specs/end-to-end-evaluation/spec.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Moved unchanged to the archive when the change was archived; the requirements now live in openspec/specs/end-to-end-evaluation/spec.md.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "openspec/changes/end-to-end-evaluation/specs/end-to-end-evaluation/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/end-to-end-evaluation/tasks.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Moved unchanged to the archive when the change was archived; the requirements now live in openspec/specs/end-to-end-evaluation/spec.md.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "openspec/changes/end-to-end-evaluation/tasks.md"
     },
@@ -165,15 +246,6 @@
       "reason": "Mirrors the canonical tool map row.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "project-templates/project/docs/workflows/tool-map.md"
-    },
-    {
-      "bound": {
-        "tests/test_evaluation_image.py": "b76a456529ea17dab1476bd7e9e60ab904af1130574fcf6be1404a12d9801ba9"
-      },
-      "outcome": "no-impact",
-      "reason": "Tests for behavior described in the active OpenSpec change.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "tests/test_evaluation_image.py"
     }
   ],
   "schema": 2

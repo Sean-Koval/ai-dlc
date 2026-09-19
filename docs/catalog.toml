@@ -809,6 +809,16 @@ verification_paths = ["tests/test_skill_evaluation.py"]
 requirements = ["openspec/specs/skill-evaluation/spec.md"]
 
 [[documents]]
+id = "repo-verification-end-to-end-evaluation"
+path = "docs/verification/end-to-end-evaluation.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "active"
+code_paths = ["src/ai_dlc/verification/evaluation/__init__.py", "src/ai_dlc/verification/evaluation/attempt.py", "src/ai_dlc/verification/evaluation/contracts.py", "src/ai_dlc/verification/evaluation/evaluate.py", "src/ai_dlc/verification/evaluation/image.py", "src/ai_dlc/verification/evaluation/planning.py", "src/ai_dlc/verification/evaluation/report.py", "src/ai_dlc/verification/evaluation/run.py", "evaluations/README.md", "evaluations/suites/smoke.json", "evaluations/profiles/local-deterministic.json"]
+verification_paths = ["tests/test_evaluation_planning.py", "tests/test_evaluation_attempt.py", "tests/test_evaluation_run.py", "tests/test_evaluation_report.py", "tests/test_evaluation_image.py"]
+requirements = ["openspec/specs/end-to-end-evaluation/spec.md"]
+
+[[documents]]
 id = "fde-documents"
 path = "docs/runbooks/fde-documents.md"
 kind = "runbook"

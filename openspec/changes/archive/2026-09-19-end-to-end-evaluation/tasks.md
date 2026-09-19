@@ -24,5 +24,5 @@ Spec: [requirements](specs/end-to-end-evaluation/spec.md) and [design](design.md
   failure, secret in evidence, cleanup failure. None may produce a pass.
 - [x] 6. Implement `eval report` reconstruction (JSON, JUnit, timeline) including
   the per-scenario arm comparison.
-- [ ] 7. Document the commands in the verification runbook, enroll catalog and
+- [x] 7. Document the commands in the verification runbook, enroll catalog and
   code mappings, run required checks, record documentation dispositions, archive.
