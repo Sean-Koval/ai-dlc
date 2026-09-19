@@ -492,6 +492,14 @@ def eval_run(
     emit(run_suite(suite.absolute(), profile.absolute(), out.absolute()))
 
 
+@evaluation.command("report")
+def eval_report(run_directory: Path):
+    """Rebuild JSON, JUnit and a failure timeline from a run directory; starts nothing."""
+    from ai_dlc.verification.evaluation.report import write_report
+
+    emit(write_report(run_directory.absolute()))
+
+
 @docs.command("init")
 def docs_init(root: Path = Path("."), preset: str = "organized", apply: bool = False):
     """Preview or add canonical documentation navigation without relocating existing files."""

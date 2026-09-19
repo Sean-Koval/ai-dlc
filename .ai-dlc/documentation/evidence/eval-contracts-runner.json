@@ -11,7 +11,7 @@
     },
     {
       "bound": {
-        "contracts/evaluation/report.schema.json": "cfbb4e78bef3c200fb09d29566be00e55753eda83fb1ef6567ce8ddbdbb2da77"
+        "contracts/evaluation/report.schema.json": "3e8299faf1a8d81f1dd4c4479f4f4645b0a244c7b8081f55b7376c432ca6f3c3"
       },
       "outcome": "no-impact",
       "reason": "Schema regenerated from the evaluation models and verified by scripts/check_generated.py.",
@@ -30,7 +30,7 @@
     {
       "bound": {
         "catalog:docs/architecture.md": "1f6e70913f96f235139fc0202ea5c5e9f90e16afd4473e90f500f16994a4ec40",
-        "docs/architecture.md": "e6e0e07d71a6b7281c662df15628a858679167be096cc9b100f5866f37a5e306",
+        "docs/architecture.md": "924cdc7eedeb602e081eb8e3057fb473aaf0f3fa6390cdf9618c6054245274ac",
         "pyproject.toml": "296acf5ff015bc4aaf17576c4210e8c69988beb35e11507250a45c0dc534e4d5",
         "scripts/check_generated.py": "00e325b0da860ed329f3fbc40a99cc503d9a6b185f98f5627c1d465591681f98",
         "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
@@ -39,7 +39,7 @@
         "scripts/run_skill_evaluation.py": "46a97694bae155b2418d172971480e031f510acc864b9d91fa546f98c754729f",
         "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
         "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
-        "src/ai_dlc/cli.py": "69e14af8ac010f1f867ffc2d5664b746a81470c5981a7cafc9ee26963dbaddd8",
+        "src/ai_dlc/cli.py": "b3fb0001ce43b136e0ee53fcb2050c9f98932002cbe6b5d237680deba5cb0711",
         "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
         "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
         "src/ai_dlc/config.py": "dd596570054e3f455b90dc5cea2a86c97175b2c4ec4243328755dc1884ececc1",
@@ -116,10 +116,11 @@
         "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
         "src/ai_dlc/verification/evaluation/__init__.py": "7cf0a3add5298d2f8d58954210cee24b3fb6a5f81e505ef3b948a7078cbb0eb8",
         "src/ai_dlc/verification/evaluation/attempt.py": "fa94af0a1ecf3cd012e36794d30f7f96f03a92e82a3f37d3c0cc0d52633bbb1b",
-        "src/ai_dlc/verification/evaluation/contracts.py": "7e97e30748accae39d096b6d2f45a714c1d29384e91a86803fc4e5b36e02f832",
-        "src/ai_dlc/verification/evaluation/evaluate.py": "e871f3b61b38a08ec9dc62e7bd60c82e060b1ec2a28bd112511999935c842e15",
+        "src/ai_dlc/verification/evaluation/contracts.py": "04dcee90204b58d1ffb6a3f9cdb2dcf80b590ff59f0d4ea4c4a7975953631f1b",
+        "src/ai_dlc/verification/evaluation/evaluate.py": "c83284feaefa2ac7e780660c99b8f6603d10a1cb875d00aeec191ef7298d8be1",
         "src/ai_dlc/verification/evaluation/planning.py": "22e407e92b233919d465feb91351b39f1684cf2fb4801a02badab5ad224f73e9",
-        "src/ai_dlc/verification/evaluation/run.py": "3e713676e165c15a83101104d23a91b18e6876779987ba49c794fa108347f15e",
+        "src/ai_dlc/verification/evaluation/report.py": "26995243e1725bbdb3ac07990bab41b7a2b0e73a32accd4b034b0b1953eee237",
+        "src/ai_dlc/verification/evaluation/run.py": "2044d186941c2b593b1fea6fabde00cadbcb4874a61187c00ec225077ccd48aa",
         "src/ai_dlc/verification/sandbox.py": "c017bd12115b8f144d07eba619f4e15ddbd00db323e4d386f569c4bcb08646e0",
         "src/ai_dlc/verification/test_proxy.py": "f38cb2a28c8501c743613b0bfdf7e17f367c101ce7984a304e20ab3095eb7880",
         "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
@@ -130,19 +131,19 @@
         "src/ai_dlc/work/workflow.py": "b16ef66b0bea70ece8aaf15003e5e0233dbcff82051b3da24d59b94106da3fca"
       },
       "outcome": "updated",
-      "reason": "Verification row now names the evaluator, the suite runner and the unpackaged evaluations directory.",
+      "reason": "Verification row now names the offline report builder.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "docs/architecture.md"
     },
     {
       "bound": {
         "catalog:docs/workflows/tool-map.md": "f50e0a853e00ab08729f6bd5bdf4cca447b033b23ca5169bb5f6556c0991dc8e",
-        "docs/workflows/tool-map.md": "7c86b9134d08a3d9f2a3f46214be128aadcc0683dd05cc3541eb127112ae013e",
-        "src/ai_dlc/cli.py": "69e14af8ac010f1f867ffc2d5664b746a81470c5981a7cafc9ee26963dbaddd8",
+        "docs/workflows/tool-map.md": "f1dfb969e1af4a8b5b17db905e41912f40eb5e452a6a8db33538990043661293",
+        "src/ai_dlc/cli.py": "b3fb0001ce43b136e0ee53fcb2050c9f98932002cbe6b5d237680deba5cb0711",
         "src/ai_dlc/mcp_server.py": "f159ac251bd9b65fb4fdeb404380be3a2afb9fbac013e0a0e19315ad738bd612"
       },
       "outcome": "updated",
-      "reason": "Adds eval run and its Docker, local-image and never-pull conditions.",
+      "reason": "Adds eval report and how it treats changed, missing or truncated evidence.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "docs/workflows/tool-map.md"
     },
@@ -256,10 +257,10 @@
     },
     {
       "bound": {
-        "openspec/changes/end-to-end-evaluation/design.md": "9f5499e72ae8587216b87d3943583bd0702fb12080ccacb7a52b24e2dd494bc0"
+        "openspec/changes/end-to-end-evaluation/design.md": "017e5d904ded54c7f433eb462d189c573f20219e7ba1b9c7413ad424d380f625"
       },
       "outcome": "updated",
-      "reason": "Records the prebuilt candidate image decision and the fixture, grader, observer, outcome and retention decisions.",
+      "reason": "Records the shared builder, manifest limits, redaction, comparison and JUnit decisions.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "openspec/changes/end-to-end-evaluation/design.md"
     },
@@ -274,16 +275,16 @@
     },
     {
       "bound": {
-        "openspec/changes/end-to-end-evaluation/tasks.md": "d8ab6040940cd651805524fa127b38d4452b2fd0c3a7b00217a97a5d800de4f9"
+        "openspec/changes/end-to-end-evaluation/tasks.md": "ce76f1b0fd4e12a0efcfd6b6090145a21940fb06bf62faf852694a8d5d35091c"
       },
       "outcome": "updated",
-      "reason": "Ticks task 4 and restates what remains of task 3.",
+      "reason": "Ticks tasks 5 and 6.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "openspec/changes/end-to-end-evaluation/tasks.md"
     },
     {
       "bound": {
-        "project-templates/project/docs/workflows/tool-map.md": "dfccfda04e1e756891da3811dba3c2065bd4a6683ef8736dd6f80532f1d9b745"
+        "project-templates/project/docs/workflows/tool-map.md": "0e79a4668a69bfe67216d04477d4063958963474a9509f3fee47bffdd174d9cf"
       },
       "outcome": "updated",
       "reason": "Mirrors the canonical tool map row.",
@@ -298,6 +299,15 @@
       "reason": "Tests for behavior described in the active OpenSpec change.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "tests/test_evaluation_planning.py"
+    },
+    {
+      "bound": {
+        "tests/test_evaluation_report.py": "95494d689a851b7fa20a0a8a3ddbf30f5a01adbc10cdf0e2b1f4c5f1600c8cd9"
+      },
+      "outcome": "no-impact",
+      "reason": "Tests for behavior described in the active OpenSpec change.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "tests/test_evaluation_report.py"
     },
     {
       "bound": {

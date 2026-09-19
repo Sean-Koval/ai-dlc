@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import fnmatch
-import json
 from collections.abc import Callable
 from pathlib import Path
 
@@ -13,9 +12,6 @@ def _hidden_tests(run_dir: Path, grade: Callable[[Path], dict]) -> tuple[str, st
         graded = grade(run_dir)
     except Exception as exc:  # noqa: BLE001 -- any grader failure is an unavailable observation
         return "unavailable", f"grader did not run: {exc}", []
-    folder = run_dir / "grading"
-    folder.mkdir(exist_ok=True)
-    (folder / "hidden-tests.json").write_text(json.dumps(graded, indent=2, sort_keys=True) + "\n")
     summary = (graded["stderr"].strip().splitlines() or ["no output"])[-1]
     result = "pass" if graded["exit_code"] == 0 else "fail"
     return result, f"exit {graded['exit_code']}: {summary}", ["grading/hidden-tests.json"]
