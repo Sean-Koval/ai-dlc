@@ -25,7 +25,7 @@ scm = "github"
 deploy = "none"
 
 [artifacts]
-spec = "openspec/changes/end-to-end-evaluation"
+spec = "openspec/changes/archive/2026-09-19-end-to-end-evaluation"
 tracker = "137"
 branch = "work/eval-contracts-runner-impl"
 
