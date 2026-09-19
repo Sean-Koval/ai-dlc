@@ -183,7 +183,7 @@
     },
     {
       "bound": {
-        "tests/test_refusal_messages.py": "0ef73912df6c113202df58b1ec3d12e07bea0a395cb1df353867128d97311a9e"
+        "tests/test_refusal_messages.py": "fe570f9af93f05d2879803291a75c92dcff981c833c7af1df87f5eb10e92b9a6"
       },
       "outcome": "no-impact",
       "reason": "New regression tests for two refusal messages; no document describes them.",
