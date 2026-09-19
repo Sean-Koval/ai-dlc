@@ -480,6 +480,18 @@ def eval_plan(
     emit(plan(_read_declaration(suite), _read_declaration(profile)))
 
 
+@evaluation.command("run")
+def eval_run(
+    suite: Path,
+    profile: Annotated[Path, typer.Option(help="Execution profile (JSON or TOML).")],
+    out: Annotated[Path, typer.Option(help="Empty directory that receives the run.")],
+):
+    """Run every planned attempt in isolated containers and grade it independently."""
+    from ai_dlc.verification.evaluation.run import run_suite
+
+    emit(run_suite(suite.absolute(), profile.absolute(), out.absolute()))
+
+
 @docs.command("init")
 def docs_init(root: Path = Path("."), preset: str = "organized", apply: bool = False):
     """Preview or add canonical documentation navigation without relocating existing files."""

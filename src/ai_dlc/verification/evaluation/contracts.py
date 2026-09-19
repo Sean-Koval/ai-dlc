@@ -9,6 +9,8 @@ from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 Identifier = Annotated[str, StringConstraints(pattern=r"^[a-z0-9][a-z0-9-]*$")]
 Sha256 = Annotated[str, StringConstraints(pattern=r"^[0-9a-f]{64}$")]
 Text = Annotated[str, StringConstraints(min_length=1)]
+# A registry digest, or the local image ID of a prebuilt candidate image.
+Image = Annotated[str, StringConstraints(pattern=r"^([^\s@]+@)?sha256:[0-9a-f]{64}$")]
 Dimension = Literal["workflow", "correctness", "quality"]
 ARMS = ("treatment", "baseline")
 
@@ -18,8 +20,11 @@ class Strict(BaseModel):
 
 
 class Fixture(Strict):
+    """Paths resolve beside the suite file. `hidden` stays with the controller."""
+
     path: Text
-    revision: Annotated[str, StringConstraints(pattern=r"^[0-9a-f]{40}$")]
+    digest: Sha256
+    hidden: Text | None = None
 
 
 class Answer(Strict):
@@ -33,6 +38,7 @@ class Assertion(Strict):
     id: Identifier
     dimension: Dimension
     kind: Identifier
+    expect: Text | None = None
     mandatory: bool = True
 
 
@@ -60,13 +66,17 @@ class Suite(Strict):
 
 
 class Engine(Strict):
+    """The candidate's identity, and the prebuilt image that already contains it."""
+
     artifact: Text
     sha256: Sha256
+    image: Image
 
 
 class Driver(Strict):
     kind: Literal["deterministic", "codex", "claude-code"]
     version: Text
+    script: Text | None = None
 
 
 class Budgets(Strict):
@@ -80,7 +90,7 @@ class Profile(Strict):
     schema_version: Literal[1] = Field(alias="schema")
     id: Identifier
     mode: Literal["candidate", "release"]
-    image: Annotated[str, StringConstraints(pattern=r"^[^\s]+@sha256:[0-9a-f]{64}$")]
+    image: Image
     engine: Engine
     driver: Driver
     model: Text
@@ -124,6 +134,7 @@ class Report(Strict):
     profile: Identifier
     evidence_kind: Literal["fixture", "live"]
     arms: list[ArmReport]
+    comparison: dict
 
 
 SCHEMAS = {"scenario": Scenario, "profile": Profile, "event": Event, "report": Report}

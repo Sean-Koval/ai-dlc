@@ -91,16 +91,39 @@ enough to rerun the same scenario against another wheel.
   are skipped, never passed, otherwise. They never pull, so required CI does not
   depend on a registry; on hosted runners they currently skip.
 
-**Open: installing a candidate through bootstrap.** EE-02 requires the treatment
-arm to install the candidate wheel "through the supported bootstrap path".
-`scripts/bootstrap.sh` has two modes: `--source`, which needs the checkout, and
-release, which downloads an HTTPS wheel and constraints named by a published
-`bootstrap/release.sh`. There is no supported way to install an unpublished
-local wheel, and an attempt has no network. Installation is therefore a declared
-command stage for now. Release-mode qualification can use the published path
-once an egress allowlist exists; candidate mode needs a maintainer decision
-between a local release manifest that bootstrap accepts, or a prebuilt image
-containing the bootstrapped candidate.
+**Decided September 18, 2026: the candidate is prebuilt into an image.**
+`scripts/bootstrap.sh` installs only from a checkout or from a published HTTPS
+release, and that HTTPS-only rule is a security property that testing should not
+loosen. The treatment arm therefore runs a prebuilt candidate image, and EE-02 and
+EE-05 were amended: the run inspects both images and refuses unless the treatment
+image is the baseline image plus added layers, which keeps "differs only in
+AI-DLC" mechanically checkable. Registry digests and local image IDs are both
+accepted as pins, because a candidate image is normally built locally. The
+recipe that builds that image from a wheel is the remainder of task 3.
+
+## Decisions made during increment 3 (fixture, evaluator, run)
+
+- Evaluation inputs live in top-level `evaluations/`, which the wheel does not
+  package. `agents/` ships inside the wheel, so hidden tests placed there would
+  be readable inside a treatment attempt. A test guards the packaging.
+- Fixtures are bound by a content digest over relative paths and file bytes, not
+  a Git revision, so a fixture can live in this repository and ignore timestamps.
+- Hidden tests are graded in a separate network-less container on the baseline
+  image, from the collected tree plus the controller-held tests. The result file
+  is the only correctness evidence; step output is never read by the evaluator.
+- Implemented observers: `hidden-tests` (correctness) and `artifact-present`
+  (workflow, a glob over the collected project). Any other kind is `unavailable`
+  until #138 adds process and MCP observers. Quality is always `pending`.
+- Attempt outcome: a driver-level failure stands; otherwise a mandatory
+  correctness failure is `product`, a mandatory workflow failure is
+  `workflow-violation`, and a mandatory unavailable observation is `unavailable`.
+- A run retains `plan.json`, the suite, profile and script under `inputs/`, and
+  per attempt its inputs, events, steps, collected tree, grading and arm report.
+  `run` refuses a non-empty output directory and images that are not present
+  locally; it never pulls.
+- The shipped `local-deterministic` profile writes the reference solution in the
+  treatment arm only. It proves the runner and grader, and its report is labelled
+  fixture evidence with no comparison claim.
 
 ## Not decided here
 

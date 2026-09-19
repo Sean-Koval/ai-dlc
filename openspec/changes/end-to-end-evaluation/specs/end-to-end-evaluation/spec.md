@@ -16,11 +16,12 @@ SHALL NOT start a container, open a network connection or read a credential valu
 
 ### Requirement: EE-02 Isolated attempts
 Each attempt SHALL run in a new container with a new home, project, machine
-binding and vault, SHALL install the treatment arm's candidate wheel through the
-supported bootstrap path, and SHALL NOT mount the development checkout as the
-installed product. Release mode SHALL require published, hash-verified assets.
-Docker being unavailable SHALL produce an `infrastructure` outcome with no host
-fallback.
+binding and vault, and SHALL NOT mount the development checkout or any host path.
+The treatment arm SHALL run in a prebuilt candidate image in which the candidate
+wheel was installed at image build time; the profile SHALL record the wheel's
+hash and the image identity. Release mode SHALL require published, hash-verified
+assets. Docker being unavailable SHALL produce an `infrastructure` outcome with no
+host fallback.
 
 #### Scenario: Two consecutive attempts
 - **WHEN** an attempt writes files to its home and project and a second attempt starts
@@ -60,15 +61,23 @@ count as evidence.
 
 ### Requirement: EE-05 Baseline arm
 Every scenario SHALL be runnable in a `treatment` arm and a `baseline` arm that
-share image digest, fixture revision, goal, bounded answers, limits and driver.
-The baseline arm SHALL contain no AI-DLC installation or generated guidance.
-Workflow assertions SHALL apply only to the treatment arm. The report SHALL state
-per scenario the difference between arms in correctness, turns, wall time and
-metered usage, together with the number of attempts per arm.
+share fixture content, goal, bounded answers, limits and driver. The baseline
+image SHALL contain no AI-DLC installation or generated guidance. The treatment
+image SHALL be the baseline image with the candidate installed in added layers
+only, and a run SHALL refuse a treatment image that is not derived from the
+baseline image layer for layer. Hidden acceptance tests SHALL be graded on the
+baseline image for both arms. Workflow assertions SHALL apply only to the
+treatment arm. The report SHALL state per scenario the difference between arms in
+correctness, turns, wall time and metered usage, together with the number of
+attempts per arm.
 
 #### Scenario: Arms differ in anything else
-- **WHEN** the planned arms differ in image, fixture, goal, answers or limits
-- **THEN** planning refuses and names the difference
+- **WHEN** a scenario tries to give an arm its own fixture, goal, answers or limits
+- **THEN** planning refuses and names the field
+
+#### Scenario: Treatment image not derived from the baseline
+- **WHEN** the treatment image is identical to the baseline image or does not start with all of its layers
+- **THEN** the run refuses before any attempt starts
 
 #### Scenario: Single attempt
 - **WHEN** each arm has one attempt
