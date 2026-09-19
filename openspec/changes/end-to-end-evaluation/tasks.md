@@ -12,10 +12,8 @@ Spec: [requirements](specs/end-to-end-evaluation/spec.md) and [design](design.md
 - [x] 2. Implement `eval plan` offline: expand the scenario, arm and attempt
   matrix, resolve the installation source and budgets, and refuse on missing
   fields without reading credential values or starting Docker.
-- [ ] 3. (Lifecycle, deterministic steps, limits, cancellation, evidence and
-  cleanup delivered; the recipe that builds the candidate image from a wheel
-  remains, see design.)
-  Implement the attempt lifecycle and deterministic driver. Add Docker
+- [x] 3. (Installation is a prebuilt candidate image from `eval image`, by the
+  September 18 decision; see design.) Implement the attempt lifecycle and deterministic driver. Add Docker
   integration tests for fresh state per attempt, wheel installation through
   bootstrap, timeout, cancellation, resource limits, evidence before cleanup and
   retained cleanup failure. Mark them to skip, not pass, without Docker.

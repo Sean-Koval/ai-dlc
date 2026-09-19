@@ -1,0 +1,34 @@
+{
+  "install": [
+    [
+      "ai-dlc",
+      "--version"
+    ]
+  ],
+  "treatment": [
+    [
+      "ai-dlc",
+      "--version"
+    ],
+    {
+      "write": "csvcheck/validate.py",
+      "from": "../hidden/csv-validator/reference/validate.py"
+    },
+    {
+      "write": ".ai-dlc/work/csv-duplicate-rows.toml",
+      "from": "local-deterministic.record.toml"
+    }
+  ],
+  "baseline": [
+    [
+      "sh",
+      "-c",
+      "! command -v ai-dlc"
+    ],
+    [
+      "python",
+      "-c",
+      "print('ALL TESTS PASS')"
+    ]
+  ]
+}

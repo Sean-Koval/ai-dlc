@@ -2,35 +2,8 @@
   "decisions": [
     {
       "bound": {
-        "contracts/evaluation/profile.schema.json": "10181c2513423f054b3e98604922b8c03a48860d007eaa34ed42908736555d02"
-      },
-      "outcome": "no-impact",
-      "reason": "Schema regenerated from the evaluation models and verified by scripts/check_generated.py.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "contracts/evaluation/profile.schema.json"
-    },
-    {
-      "bound": {
-        "contracts/evaluation/report.schema.json": "3e8299faf1a8d81f1dd4c4479f4f4645b0a244c7b8081f55b7376c432ca6f3c3"
-      },
-      "outcome": "no-impact",
-      "reason": "Schema regenerated from the evaluation models and verified by scripts/check_generated.py.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "contracts/evaluation/report.schema.json"
-    },
-    {
-      "bound": {
-        "contracts/evaluation/scenario.schema.json": "99d683af60eea7b131e237b33dc280fbf45cd53e4c61b516492c88418439551c"
-      },
-      "outcome": "no-impact",
-      "reason": "Schema regenerated from the evaluation models and verified by scripts/check_generated.py.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "contracts/evaluation/scenario.schema.json"
-    },
-    {
-      "bound": {
         "catalog:docs/architecture.md": "1f6e70913f96f235139fc0202ea5c5e9f90e16afd4473e90f500f16994a4ec40",
-        "docs/architecture.md": "924cdc7eedeb602e081eb8e3057fb473aaf0f3fa6390cdf9618c6054245274ac",
+        "docs/architecture.md": "d9e2c70edaf700ce80864f183e9884ee89b41b159d4b264c47fcab599772ce33",
         "pyproject.toml": "296acf5ff015bc4aaf17576c4210e8c69988beb35e11507250a45c0dc534e4d5",
         "scripts/check_generated.py": "00e325b0da860ed329f3fbc40a99cc503d9a6b185f98f5627c1d465591681f98",
         "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
@@ -39,7 +12,7 @@
         "scripts/run_skill_evaluation.py": "46a97694bae155b2418d172971480e031f510acc864b9d91fa546f98c754729f",
         "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
         "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
-        "src/ai_dlc/cli.py": "b3fb0001ce43b136e0ee53fcb2050c9f98932002cbe6b5d237680deba5cb0711",
+        "src/ai_dlc/cli.py": "036e143f817c2af52a1d277e87f18dff72deddf303bafcbde1aea81cca57332f",
         "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
         "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
         "src/ai_dlc/config.py": "dd596570054e3f455b90dc5cea2a86c97175b2c4ec4243328755dc1884ececc1",
@@ -118,6 +91,7 @@
         "src/ai_dlc/verification/evaluation/attempt.py": "fa94af0a1ecf3cd012e36794d30f7f96f03a92e82a3f37d3c0cc0d52633bbb1b",
         "src/ai_dlc/verification/evaluation/contracts.py": "04dcee90204b58d1ffb6a3f9cdb2dcf80b590ff59f0d4ea4c4a7975953631f1b",
         "src/ai_dlc/verification/evaluation/evaluate.py": "c83284feaefa2ac7e780660c99b8f6603d10a1cb875d00aeec191ef7298d8be1",
+        "src/ai_dlc/verification/evaluation/image.py": "20df9b1165e57bb262ebfc4718ead9eee74fbbd86ef364b9ad694ad47441613b",
         "src/ai_dlc/verification/evaluation/planning.py": "22e407e92b233919d465feb91351b39f1684cf2fb4801a02badab5ad224f73e9",
         "src/ai_dlc/verification/evaluation/report.py": "26995243e1725bbdb3ac07990bab41b7a2b0e73a32accd4b034b0b1953eee237",
         "src/ai_dlc/verification/evaluation/run.py": "2044d186941c2b593b1fea6fabde00cadbcb4874a61187c00ec225077ccd48aa",
@@ -131,160 +105,61 @@
         "src/ai_dlc/work/workflow.py": "b16ef66b0bea70ece8aaf15003e5e0233dbcff82051b3da24d59b94106da3fca"
       },
       "outcome": "updated",
-      "reason": "Verification row now names the offline report builder.",
+      "reason": "Verification row names the candidate image recipe; the type-narrowing fix in cli.py changes nothing it describes.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "docs/architecture.md"
     },
     {
       "bound": {
         "catalog:docs/workflows/tool-map.md": "f50e0a853e00ab08729f6bd5bdf4cca447b033b23ca5169bb5f6556c0991dc8e",
-        "docs/workflows/tool-map.md": "f1dfb969e1af4a8b5b17db905e41912f40eb5e452a6a8db33538990043661293",
-        "src/ai_dlc/cli.py": "b3fb0001ce43b136e0ee53fcb2050c9f98932002cbe6b5d237680deba5cb0711",
+        "docs/workflows/tool-map.md": "004b8b54f4297e30c2f164ceeb9b5c4200f8de961978a52ab624167f238ef257",
+        "src/ai_dlc/cli.py": "036e143f817c2af52a1d277e87f18dff72deddf303bafcbde1aea81cca57332f",
         "src/ai_dlc/mcp_server.py": "f159ac251bd9b65fb4fdeb404380be3a2afb9fbac013e0a0e19315ad738bd612"
       },
       "outcome": "updated",
-      "reason": "Adds eval report and how it treats changed, missing or truncated evidence.",
+      "reason": "Adds eval image and its requirements; the type-narrowing fix in cli.py changes nothing it describes.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "docs/workflows/tool-map.md"
     },
     {
       "bound": {
-        "evaluations/README.md": "0135ebc407207f1c10019f0b05d015bc9304454f3d800ba528e6f38a19e25179"
+        "evaluations/README.md": "141d85e3f5fe3872c571351f3e4f20f93222ad07c656c80abde8080672d69567"
       },
       "outcome": "updated",
-      "reason": "New maintainer note explaining the directory, why it is outside the wheel and what the deterministic profile does not show.",
+      "reason": "Adds the build, run and report sequence and explains the candidate script.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "evaluations/README.md"
     },
     {
       "bound": {
-        "evaluations/fixtures/csv-validator/README.md": "b1b7921c50746986bf98717736b3c907a90d0149aef91a21d58805b44264b3db"
+        "evaluations/profiles/local-candidate.script.json": "f665e4b5f90f9f872cc6462051299160673bb0e86e2f3f1883bdab5c218122a6"
       },
       "outcome": "no-impact",
-      "reason": "Evaluation input data described by evaluations/README.md and the active OpenSpec change.",
+      "reason": "Evaluation input data described by evaluations/README.md.",
       "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "evaluations/fixtures/csv-validator/README.md"
+      "target": "evaluations/profiles/local-candidate.script.json"
     },
     {
       "bound": {
-        "evaluations/fixtures/csv-validator/csvcheck/__init__.py": "960cc16c2bf78d9ae04c03ebf9ac0832c15b00ad23edcc1fb0c3a30e3c0e1308"
-      },
-      "outcome": "no-impact",
-      "reason": "Evaluation input data described by evaluations/README.md and the active OpenSpec change.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "evaluations/fixtures/csv-validator/csvcheck/__init__.py"
-    },
-    {
-      "bound": {
-        "evaluations/fixtures/csv-validator/csvcheck/__main__.py": "16e8f4101e9c44b66758ac17c889fe77e582606b21179347b8eb9d6a1e697cd9"
-      },
-      "outcome": "no-impact",
-      "reason": "Evaluation input data described by evaluations/README.md and the active OpenSpec change.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "evaluations/fixtures/csv-validator/csvcheck/__main__.py"
-    },
-    {
-      "bound": {
-        "evaluations/fixtures/csv-validator/csvcheck/validate.py": "b1d8252a3d5519d64dc9df0f64a1f3c84e27ba954cfdd4f615b39403e291cb24"
-      },
-      "outcome": "no-impact",
-      "reason": "Evaluation input data described by evaluations/README.md and the active OpenSpec change.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "evaluations/fixtures/csv-validator/csvcheck/validate.py"
-    },
-    {
-      "bound": {
-        "evaluations/fixtures/csv-validator/tests/test_validate.py": "2ade5fdc9376eaec24794c2a9e07031ae3516a407bc64ffbb1ef9db206d487a6"
-      },
-      "outcome": "no-impact",
-      "reason": "Evaluation input data described by evaluations/README.md and the active OpenSpec change.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "evaluations/fixtures/csv-validator/tests/test_validate.py"
-    },
-    {
-      "bound": {
-        "evaluations/hidden/csv-validator/reference/validate.py": "1a81cfa7be96d7a8ea297904b515a374077d96b294df1ffd6d28a55abf1acb35"
-      },
-      "outcome": "no-impact",
-      "reason": "Evaluation input data described by evaluations/README.md and the active OpenSpec change.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "evaluations/hidden/csv-validator/reference/validate.py"
-    },
-    {
-      "bound": {
-        "evaluations/hidden/csv-validator/test_acceptance.py": "46f4d349e513e187f60a3b7f67aa195f063df22f6496d38d274663d7a4a70601"
-      },
-      "outcome": "no-impact",
-      "reason": "Evaluation input data described by evaluations/README.md and the active OpenSpec change.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "evaluations/hidden/csv-validator/test_acceptance.py"
-    },
-    {
-      "bound": {
-        "evaluations/profiles/local-deterministic.json": "0e0deb70f592f3ebad0a420daf815c536eab6c74c421ec4e10329614a65d3d6b"
-      },
-      "outcome": "no-impact",
-      "reason": "Evaluation input data described by evaluations/README.md and the active OpenSpec change.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "evaluations/profiles/local-deterministic.json"
-    },
-    {
-      "bound": {
-        "evaluations/profiles/local-deterministic.record.toml": "594ac2a75fc958449ed41d82a4bb3ac5c3fe6b34c23c2fff5c611581bff2faa1"
-      },
-      "outcome": "no-impact",
-      "reason": "Evaluation input data described by evaluations/README.md and the active OpenSpec change.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "evaluations/profiles/local-deterministic.record.toml"
-    },
-    {
-      "bound": {
-        "evaluations/profiles/local-deterministic.script.json": "a8f67e070841efb853effb380035a51475602c58fdceacb987cf0b425f790e49"
-      },
-      "outcome": "no-impact",
-      "reason": "Evaluation input data described by evaluations/README.md and the active OpenSpec change.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "evaluations/profiles/local-deterministic.script.json"
-    },
-    {
-      "bound": {
-        "evaluations/suites/smoke.json": "4f24319f9c734a2b5fa01cc01b2f831bb79a230800697b160ad29aa87f98a9d7"
-      },
-      "outcome": "no-impact",
-      "reason": "Evaluation input data described by evaluations/README.md and the active OpenSpec change.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "evaluations/suites/smoke.json"
-    },
-    {
-      "bound": {
-        "openspec/changes/end-to-end-evaluation/design.md": "017e5d904ded54c7f433eb462d189c573f20219e7ba1b9c7413ad424d380f625"
+        "openspec/changes/end-to-end-evaluation/design.md": "ea457a8f55ef3459262a89a772df528deec3f400364c1704cc8df8b747d1ecc4"
       },
       "outcome": "updated",
-      "reason": "Records the shared builder, manifest limits, redaction, comparison and JUnit decisions.",
+      "reason": "Records the image recipe, that it is not a bootstrap run, and the missing-Git finding for #138.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "openspec/changes/end-to-end-evaluation/design.md"
     },
     {
       "bound": {
-        "openspec/changes/end-to-end-evaluation/specs/end-to-end-evaluation/spec.md": "6c00b1edebabacdeb0729db6ea3901e2cc987b9353ab336a034eeaf116254094"
+        "openspec/changes/end-to-end-evaluation/tasks.md": "83fbafcec770a4721886f024a4f6f8ea70cc96ce5fa029af8b58f61e485149b6"
       },
       "outcome": "updated",
-      "reason": "EE-02 and EE-05 amended for the maintainer's prebuilt-image decision: derived treatment image, grading on the baseline image.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "openspec/changes/end-to-end-evaluation/specs/end-to-end-evaluation/spec.md"
-    },
-    {
-      "bound": {
-        "openspec/changes/end-to-end-evaluation/tasks.md": "ce76f1b0fd4e12a0efcfd6b6090145a21940fb06bf62faf852694a8d5d35091c"
-      },
-      "outcome": "updated",
-      "reason": "Ticks tasks 5 and 6.",
+      "reason": "Ticks task 3 under the prebuilt-image decision.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "openspec/changes/end-to-end-evaluation/tasks.md"
     },
     {
       "bound": {
-        "project-templates/project/docs/workflows/tool-map.md": "0e79a4668a69bfe67216d04477d4063958963474a9509f3fee47bffdd174d9cf"
+        "project-templates/project/docs/workflows/tool-map.md": "855681e791d37c85c4fdfae758058304b42c00af0e20dbf588e14619f33e578a"
       },
       "outcome": "updated",
       "reason": "Mirrors the canonical tool map row.",
@@ -293,30 +168,12 @@
     },
     {
       "bound": {
-        "tests/test_evaluation_planning.py": "3745f05df7f260feff6789d8da3747cebb1d6b8c5033c7aec3ca91f5da167d76"
+        "tests/test_evaluation_image.py": "b76a456529ea17dab1476bd7e9e60ab904af1130574fcf6be1404a12d9801ba9"
       },
       "outcome": "no-impact",
       "reason": "Tests for behavior described in the active OpenSpec change.",
       "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "tests/test_evaluation_planning.py"
-    },
-    {
-      "bound": {
-        "tests/test_evaluation_report.py": "95494d689a851b7fa20a0a8a3ddbf30f5a01adbc10cdf0e2b1f4c5f1600c8cd9"
-      },
-      "outcome": "no-impact",
-      "reason": "Tests for behavior described in the active OpenSpec change.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "tests/test_evaluation_report.py"
-    },
-    {
-      "bound": {
-        "tests/test_evaluation_run.py": "edc99627ced20eba905a8d4952b81802a4c6daf63e3577feac77c07972da41db"
-      },
-      "outcome": "no-impact",
-      "reason": "Tests for behavior described in the active OpenSpec change.",
-      "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "tests/test_evaluation_run.py"
+      "target": "tests/test_evaluation_image.py"
     }
   ],
   "schema": 2

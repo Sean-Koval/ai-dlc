@@ -149,6 +149,29 @@ recipe that builds that image from a wheel is the remainder of task 3.
   timeline lists controller events and assertion evidence; step output is never
   quoted.
 
+## Decisions made during increment 5 (candidate image)
+
+- `ai-dlc eval image --base <pinned image>` builds the wheel with `uv build`,
+  exports locked hash-pinned constraints exactly as the release workflow does,
+  and installs them with `--require-hashes` followed by the wheel with
+  `--no-deps` inside `docker build` on the baseline image. The build context
+  holds only the Dockerfile, the constraints and the wheel; the checkout is never
+  copied. The command verifies that the result is derived from the baseline image
+  and that `ai-dlc --version` runs with no network, and returns the image ID and
+  the wheel's hash. `--profile` with `--write` binds a copy of a profile to the
+  build; the source profile is not edited.
+- This is an equivalent engine install, not a run of `scripts/bootstrap.sh`. The
+  base image's Python is used and bootstrap's managed Python, uv and mise are
+  absent, so an evaluation says nothing about bootstrap itself; the release
+  workflow's install verification and `verify-published` cover that path.
+- The real build needs a package index and is opt-in in tests
+  (`AI_DLC_EVAL_BUILD=1`). Attempts never have a network.
+
+**Finding for #138.** `python:3.12-slim` has no Git, and `ai-dlc project adopt`
+fails inside it with "git is not available". A real-agent journey needs a
+purpose-built, digest-pinned base image containing Git (and whatever a coding
+client needs) that both arms share; the candidate image is then built on that.
+
 ## Not decided here
 
 Real client adapters, fake and live providers, recovery journeys, CI lanes and
