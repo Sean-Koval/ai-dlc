@@ -56,7 +56,9 @@ def run_git(
             env=None if environ is None else dict(environ),
         )
     except FileNotFoundError as error:
-        raise GitError(f"{context}: git is not available") from error
+        raise GitError(
+            f"{context}: git is not available; install Git and put it on PATH"
+        ) from error
     except subprocess.TimeoutExpired as error:
         raise GitError(f"{context}: timed out after {timeout:g}s") from error
     if check and result.returncode:
