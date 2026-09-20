@@ -1,0 +1,29 @@
+schema = 1
+id = "real-client-evaluation"
+title = "Evaluation 2/4, first slice: one real client in both arms with restricted egress"
+scope = "First slice of #138: a claude-code driver, an allow-listing egress proxy, a Git-capable pinned base image, enforced budgets and a Git observer, ending in one real treatment-versus-baseline run. Codex, multi-turn answers, recovery, vault journeys, fake providers and the fixture MCP server stay in #138."
+requires_spec = true
+spec_reason = "Adds verification behavior (EE-08 to EE-11) to the end-to-end-evaluation capability."
+acceptance = [
+    "The same client version, model and goal prompt run in both arms; the stream is retained and a truncated stream is incomplete.",
+    "An unlisted network destination is refused and named in the report.",
+    "The credential value never appears in the plan, inputs or evidence; a run stops before exceeding its budget.",
+    "Commit ordering is decided from the collected repository, never client output.",
+    "One real run with three attempts per arm is recorded in the runbook with its limits.",
+]
+reviewed = false
+depends_on = []
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/real-client-evaluation"
+tracker = "138"
+
+[bindings]
