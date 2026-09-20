@@ -1,5 +1,5 @@
 - [x] 0. Maintainer confirms the client, credential variable, caps and base image.
-- [ ] 1. Driver contract; move `deterministic` behind it with no behavior change.
+- [x] 1. Driver contract; move `deterministic` behind it with no behavior change.
 - [ ] 2. Base image recipe with Git and the pinned client; `eval image` accepts it.
 - [ ] 3. Egress proxy, per-attempt internal network, retained proxy log; real-Docker
   tests that an unlisted host is refused and a listed one connects.

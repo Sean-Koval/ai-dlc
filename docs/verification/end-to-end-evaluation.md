@@ -10,7 +10,8 @@ the wheel.
 
 As of September 19, 2026 the runner, grader, report and candidate-image recipe
 are delivered and verified on one machine (WSL2 Ubuntu 22.04, Docker 26.1.3). The
-only driver is `deterministic`: a script of fixed steps. The shipped script writes
+only implemented driver is `deterministic`: a script of fixed steps. A profile
+naming `codex` or `claude-code` is refused before anything starts. The shipped script writes
 the reference solution in the treatment arm only, so its result exercises the
 machinery and **says nothing about AI-DLC's value**. Every report from it carries
 `evidence_kind = "fixture"` and the claim `none`. A finding needs a real coding
