@@ -86,6 +86,15 @@ class Budgets(Strict):
     max_spend_usd: Annotated[float, Field(ge=0)]
 
 
+class Egress(Strict):
+    # Port 443 only. The proxy resolves each name once and refuses non-global addresses.
+    hosts: Annotated[
+        list[Annotated[str, StringConstraints(pattern=r"^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$")]],
+        Field(min_length=1),
+    ]
+    proxy_image: Image
+
+
 class Profile(Strict):
     schema_version: Literal[1] = Field(alias="schema")
     id: Identifier
@@ -98,6 +107,8 @@ class Profile(Strict):
     # Environment-variable names only; values are read by the runner, never by planning.
     credentials: list[Annotated[str, StringConstraints(pattern=r"^[A-Z_][A-Z0-9_]*$")]] = []
     resources: list[Text] = []
+    # Destinations a real client may reach; absent means no network at all.
+    egress: Egress | None = None
     attempts: Annotated[int, Field(ge=1)]
 
 

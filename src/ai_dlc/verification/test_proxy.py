@@ -1,6 +1,7 @@
 """HTTPS CONNECT allowlisting proxy used only by live conformance containers."""
 
 import ipaddress
+import json
 import os
 import select
 import socket
@@ -29,10 +30,16 @@ class Handler(socketserver.StreamRequestHandler):
         try:
             host, port_text = line[1].rsplit(":", 1)
             port = int(port_text)
-            addresses = resolve(host)
-            if not allowed_destination(
+            addresses = resolve(host) if host in os.environ["ALLOW_HOSTS"].split(",") else []
+            allowed = allowed_destination(
                 host, port, set(os.environ["ALLOW_HOSTS"].split(",")), lambda _: addresses
-            ):
+            )
+            # One line per decision; the evaluation runner retains this log as evidence.
+            print(
+                json.dumps({"allowed": allowed, "host": host, "port": port}, sort_keys=True),
+                flush=True,
+            )
+            if not allowed:
                 raise ValueError("denied destination")
             for _ in range(100):
                 if self.rfile.readline(8192) in {b"\r\n", b"\n", b""}:

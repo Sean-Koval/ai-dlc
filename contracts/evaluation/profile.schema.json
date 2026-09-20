@@ -60,6 +60,31 @@
       "title": "Driver",
       "type": "object"
     },
+    "Egress": {
+      "additionalProperties": false,
+      "properties": {
+        "hosts": {
+          "items": {
+            "pattern": "^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Hosts",
+          "type": "array"
+        },
+        "proxy_image": {
+          "pattern": "^([^\\s@]+@)?sha256:[0-9a-f]{64}$",
+          "title": "Proxy Image",
+          "type": "string"
+        }
+      },
+      "required": [
+        "hosts",
+        "proxy_image"
+      ],
+      "title": "Egress",
+      "type": "object"
+    },
     "Engine": {
       "additionalProperties": false,
       "description": "The candidate's identity, and the prebuilt image that already contains it.",
@@ -110,6 +135,17 @@
     },
     "driver": {
       "$ref": "#/$defs/Driver"
+    },
+    "egress": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Egress"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "engine": {
       "$ref": "#/$defs/Engine"

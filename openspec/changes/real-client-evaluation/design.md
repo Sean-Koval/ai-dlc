@@ -56,6 +56,30 @@ Nothing else about process or MCP observation is added here.
 "one attempt". The claim stays descriptive: counts and ranges, no significance
 test.
 
+## Decisions made during task 3 (egress)
+
+- The proxy is the existing conformance allow-listing proxy
+  (`verification/test_proxy.py`), not a second one. It already connects the
+  address it validated, so a second DNS answer cannot redirect it, and refuses
+  non-global addresses. It gained one line of JSON per decision on stdout, and it
+  no longer resolves names that are not on the list.
+- Its source is passed to `python -c`; nothing is bind-mounted from the host.
+- The profile gains `egress = {hosts, proxy_image}`. Port 443 only. `eval plan`
+  refuses it with the deterministic driver and without a pinned proxy image.
+- The agent container joins a per-attempt `--internal` network; the proxy is the
+  only member that also has an external network. The stager, collector and grader
+  keep `--network=none`.
+- The proxy log is retained as `egress.jsonl`, hashed into the attempt's
+  evidence, and summarised in an `egress` event. The report puts refused hosts in
+  `metrics.egress_refused` and the timeline. A missing or malformed log makes the
+  attempt `incomplete`; the collected tree is kept.
+- Verified with real Docker on the maintainer machine: a direct connection to
+  1.1.1.1:443 is blocked, CONNECT to `api.anthropic.com:443` returns 200, CONNECT
+  to `pypi.org:443` returns 403 and is logged, and no container or network
+  remains. That test needs the network and skips on hosted CI.
+- Not covered: the agent can still send arbitrary data to a listed host. The
+  allow-list limits destinations, not content.
+
 ## Risks
 
 - Model output varies; three attempts will often disagree. The report shows the

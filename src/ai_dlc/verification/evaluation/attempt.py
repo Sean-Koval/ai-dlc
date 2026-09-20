@@ -22,8 +22,9 @@ from pathlib import Path
 
 PINNED = re.compile(r"([^\s@]+@)?sha256:[0-9a-f]{64}")
 AGENT = "1000:1000"
+HOST = re.compile(r"[a-z0-9]([a-z0-9.-]*[a-z0-9])?")
+PROXY_SOURCE = Path(__file__).parents[1] / "test_proxy.py"
 ISOLATION = [
-    "--network=none",
     "--read-only",
     "--cap-drop=ALL",
     "--security-opt=no-new-privileges",
@@ -107,13 +108,16 @@ def _extract(data: bytes, destination: Path) -> dict[str, str]:
 
 
 class _Attempt:
-    def __init__(self, planned, run_dir, fixture, install, steps, timeout, cancel, memory, pids):
-        self.planned, self.run_dir = planned, run_dir
+    def __init__(
+        self, planned, run_dir, fixture, install, steps, timeout, cancel, memory, pids, egress
+    ):
+        self.planned, self.run_dir, self.egress = planned, run_dir, egress
         self.fixture, self.install, self.steps = fixture, install, steps
         self.cancel, self.memory, self.pids = cancel, memory, pids
         self.deadline = time.monotonic() + timeout
         uid = "ai-dlc-eval-" + uuid.uuid4().hex[:12]
         self.container, self.volume = uid, uid + "-work"
+        self.proxy, self.internal, self.external = uid + "-proxy", uid + "-int", uid + "-ext"
         self.created: list[tuple[str, str]] = []
 
     def event(self, kind: str, **fields) -> None:
@@ -155,6 +159,7 @@ class _Attempt:
             "create",
             "--name",
             self.container,
+            *(self.start_proxy() if self.egress else ["--network=none"]),
             *ISOLATION,
             f"--user={AGENT}",
             f"--memory={self.memory}",
@@ -171,6 +176,58 @@ class _Attempt:
         )
         self.created.append(("container", self.container))
         self.event("provision", container=self.container, volume=self.volume)
+
+    def start_proxy(self) -> list[str]:
+        """The agent's only route out: an internal network whose one other member is the proxy."""
+        self.must("provision", "infrastructure", "network", "create", "--internal", self.internal)
+        self.created.append(("network", self.internal))
+        self.must("provision", "infrastructure", "network", "create", self.external)
+        self.created.append(("network", self.external))
+        self.must(
+            "provision",
+            "infrastructure",
+            "run",
+            "-d",
+            "--name",
+            self.proxy,
+            f"--network={self.external}",
+            *ISOLATION,
+            "--user=65534:65534",
+            "--memory=128m",
+            "--pids-limit=128",
+            "--env=ALLOW_HOSTS=" + ",".join(self.egress["hosts"]),
+            self.egress["proxy_image"],
+            "python",
+            "-u",
+            "-c",
+            # Passed as text so that no host path is mounted anywhere.
+            PROXY_SOURCE.read_text(),
+        )
+        self.created.append(("container", self.proxy))
+        self.must("provision", "infrastructure", "network", "connect", self.internal, self.proxy)
+        address = f"http://{self.proxy}:8080"
+        return [
+            f"--network={self.internal}",
+            f"--env=HTTPS_PROXY={address}",
+            f"--env=https_proxy={address}",
+        ]
+
+    def collect_egress(self) -> dict:
+        """Retain the proxy's decision log verbatim; an unreadable log is not a clean result."""
+        done = self.docker("logs", self.proxy, bounded=False)
+        if done.returncode:
+            raise StageFailed("collect", "incomplete", "egress log unavailable")
+        (self.run_dir / "egress.jsonl").write_bytes(done.stdout)
+        seen: dict[bool, set[str]] = {True: set(), False: set()}
+        for line in done.stdout.decode(errors="replace").splitlines():
+            try:
+                record = json.loads(line)
+                seen[bool(record["allowed"])].add(str(record["host"]))
+            except (ValueError, KeyError, TypeError) as exc:
+                raise StageFailed("collect", "incomplete", "egress log malformed") from exc
+        summary = {"allowed": sorted(seen[True]), "refused": sorted(seen[False])}
+        self.event("egress", **summary)
+        return summary
 
     def stage_fixture(self) -> None:
         # Controller-owned stager: the only root process, gone before the agent starts.
@@ -261,7 +318,11 @@ class _Attempt:
     def cleanup(self) -> dict:
         failed = []
         for kind, name in reversed(self.created):
-            args = ("rm", "-f", name) if kind == "container" else ("volume", "rm", "-f", name)
+            args = {
+                "container": ("rm", "-f", name),
+                "volume": ("volume", "rm", "-f", name),
+                "network": ("network", "rm", name),
+            }[kind]
             try:
                 done = self.docker(*args, bounded=False)
                 error = done.stderr.decode(errors="replace").strip() if done.returncode else None
@@ -288,17 +349,26 @@ def run_attempt(
     cancel: threading.Event | None = None,
     memory: str = "1g",
     pids: int = 256,
+    egress: dict | None = None,
 ) -> dict:
     """Run one planned attempt and return its driver-level outcome with evidence references."""
     if not PINNED.fullmatch(planned.get("image", "")):
         raise ValueError("Evaluation image must be pinned by digest")
+    if egress is not None and (
+        not PINNED.fullmatch(egress.get("proxy_image", ""))
+        or not egress.get("hosts")
+        or not all(HOST.fullmatch(host) for host in egress["hosts"])
+    ):
+        raise ValueError("Evaluation egress needs host names and a proxy image pinned by digest")
     _fixture_archive(fixture)  # refuse an unsafe fixture before anything is created
     run_dir.mkdir(parents=True, exist_ok=True)
     (run_dir / "inputs.json").write_text(
         json.dumps({"planned": planned, "steps": steps, "install": install or []}, indent=2)
     )
     timeout = timeout_seconds or planned["limits"]["timeout_minutes"] * 60
-    state = _Attempt(planned, run_dir, fixture, install or [], steps, timeout, cancel, memory, pids)
+    state = _Attempt(
+        planned, run_dir, fixture, install or [], steps, timeout, cancel, memory, pids, egress
+    )
     result: dict = {
         "scenario": planned["scenario"],
         "arm": planned["arm"],
@@ -323,9 +393,13 @@ def run_attempt(
         if failure.detail == "memory limit reached":
             result["limit"] = "memory"
     try:
-        result["evidence"] = state.collect() if state.created else {"tree": {}}
+        evidence: dict = state.collect() if state.created else {"tree": {}}
+        result["evidence"] = evidence
+        if egress and ("container", state.proxy) in state.created:
+            result["egress"] = state.collect_egress()
+            evidence["egress.jsonl"] = sha256((run_dir / "egress.jsonl").read_bytes())
     except (Stopped, StageFailed) as failure:
-        result["evidence"] = {"tree": {}}
+        result.setdefault("evidence", {"tree": {}})  # a collected tree survives a lost log
         if result["outcome"] == "completed":
             result.update(outcome="incomplete", stage="collect", detail=str(failure))
     result["cleanup"] = state.cleanup() if state.created else {"clean": True, "failed": []}
@@ -342,6 +416,7 @@ def run_isolated(image: str, archive: bytes, command: str, *, timeout: float) ->
             "run",
             "--rm",
             "-i",
+            "--network=none",
             *ISOLATION,
             f"--user={AGENT}",
             "--memory=512m",
