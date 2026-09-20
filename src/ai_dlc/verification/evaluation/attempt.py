@@ -393,10 +393,11 @@ def run_attempt(
         if failure.detail == "memory limit reached":
             result["limit"] = "memory"
     try:
-        result["evidence"] = state.collect() if state.created else {"tree": {}}
+        evidence: dict = state.collect() if state.created else {"tree": {}}
+        result["evidence"] = evidence
         if egress and ("container", state.proxy) in state.created:
             result["egress"] = state.collect_egress()
-            result["evidence"]["egress.jsonl"] = sha256((run_dir / "egress.jsonl").read_bytes())
+            evidence["egress.jsonl"] = sha256((run_dir / "egress.jsonl").read_bytes())
     except (Stopped, StageFailed) as failure:
         result.setdefault("evidence", {"tree": {}})  # a collected tree survives a lost log
         if result["outcome"] == "completed":
