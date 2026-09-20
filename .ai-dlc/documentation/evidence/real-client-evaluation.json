@@ -2,17 +2,17 @@
   "decisions": [
     {
       "bound": {
-        "contracts/evaluation/profile.schema.json": "498d9fe733a72ec1972a80bacf22351e17b922b64a4b6a1aaa2bf6cf70902bad"
+        "contracts/evaluation/base-image.schema.json": "52c6a86e3d3004ef3f2ed181579944dc8524a97ad48a1356546759551eaecd51"
       },
       "outcome": "updated",
-      "reason": "Regenerated for the new optional egress field.",
+      "reason": "New generated schema for the base image recipe.",
       "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "contracts/evaluation/profile.schema.json"
+      "target": "contracts/evaluation/base-image.schema.json"
     },
     {
       "bound": {
         "catalog:docs/architecture.md": "1f6e70913f96f235139fc0202ea5c5e9f90e16afd4473e90f500f16994a4ec40",
-        "docs/architecture.md": "766e63828ec86940f253b42e03070b3074cf5e3a95833b545d5c6b30e2131bf0",
+        "docs/architecture.md": "b8e3626d51380f70f345931419c1cafe541d750b5045ec68f49ed84d58c180cb",
         "pyproject.toml": "296acf5ff015bc4aaf17576c4210e8c69988beb35e11507250a45c0dc534e4d5",
         "scripts/check_generated.py": "00e325b0da860ed329f3fbc40a99cc503d9a6b185f98f5627c1d465591681f98",
         "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
@@ -21,7 +21,7 @@
         "scripts/run_skill_evaluation.py": "46a97694bae155b2418d172971480e031f510acc864b9d91fa546f98c754729f",
         "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
         "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
-        "src/ai_dlc/cli.py": "345299a833a263242649621066ffaa896ac8e9260a37bad6e0758a6d347d7f96",
+        "src/ai_dlc/cli.py": "adf101a1ea24b8c9478aba4c408124f45940bfd349f7103c956ca897c22e7b36",
         "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
         "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
         "src/ai_dlc/config.py": "dd596570054e3f455b90dc5cea2a86c97175b2c4ec4243328755dc1884ececc1",
@@ -98,10 +98,10 @@
         "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
         "src/ai_dlc/verification/evaluation/__init__.py": "7cf0a3add5298d2f8d58954210cee24b3fb6a5f81e505ef3b948a7078cbb0eb8",
         "src/ai_dlc/verification/evaluation/attempt.py": "e8fefb69d710c98aa589e4a39bcdedd155c6d3d2c3a4bd35a45dcff70f85e1c3",
-        "src/ai_dlc/verification/evaluation/contracts.py": "e0c1577ea747140ac55fec46e8c2162ea20a4793461ceb7522a79f02ec8d4c14",
+        "src/ai_dlc/verification/evaluation/contracts.py": "e99d3e0eace1f8061d0d322ff9d7d7f04c36d73c9ff85abcd97aecf55af2cefd",
         "src/ai_dlc/verification/evaluation/drivers.py": "a05e42d43c79c05e95fd786156b3cedcef032faea9a9609bfb8c69aa68fdc1df",
         "src/ai_dlc/verification/evaluation/evaluate.py": "c83284feaefa2ac7e780660c99b8f6603d10a1cb875d00aeec191ef7298d8be1",
-        "src/ai_dlc/verification/evaluation/image.py": "20df9b1165e57bb262ebfc4718ead9eee74fbbd86ef364b9ad694ad47441613b",
+        "src/ai_dlc/verification/evaluation/image.py": "d3f2970ca488c1b7a1ceaf516f0f86c8b602f74b0fffe1ddbd2d35a13b31167b",
         "src/ai_dlc/verification/evaluation/planning.py": "6e619cd5b3bc7710c4ddc94151e0c265941a0d266dff280b95137a7b0231c912",
         "src/ai_dlc/verification/evaluation/report.py": "c00f8fe201c88a6b0bbabe1f77cbd6e35a8c7e31d357ddfb1cadbab239421097",
         "src/ai_dlc/verification/evaluation/run.py": "cfbe671eb1958f3b7042a4f81048dd1f852ab9acd50839772c21362853f9189e",
@@ -114,38 +114,40 @@
         "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
         "src/ai_dlc/work/workflow.py": "b16ef66b0bea70ece8aaf15003e5e0233dbcff82051b3da24d59b94106da3fca"
       },
-      "outcome": "reviewed-no-change",
-      "reason": "The row already names the attempt lifecycle and the conformance proxy; egress is a behavior of those, not a new piece.",
+      "outcome": "updated",
+      "reason": "Names the base image recipe beside the candidate one.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "docs/architecture.md"
     },
     {
       "bound": {
-        "docs/catalog.toml": "33320fe0bd4c78dc7e93edb2df462e8b7424f1cbae14e5b4277d560f23f92b23"
+        "docs/catalog.toml": "8909ec47ebddc34ae2a32ff11844a72388af6f03ab0ad85d5046df70285b2226"
       },
       "outcome": "updated",
-      "reason": "Maps the egress test to the evaluation runbook.",
+      "reason": "Maps the recipe and its test to the evaluation runbook.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "docs/catalog.toml"
     },
     {
       "bound": {
-        "catalog:docs/verification/end-to-end-evaluation.md": "9d0a1d6078afb8a7f463b059c60b08b9a5a808e3f37a00bdc2269b5674f445eb",
-        "docs/verification/end-to-end-evaluation.md": "f5cb45768458b9c38f2c07f08ff918e710b8b08a18349fe4e84d1632b6934aa0",
-        "evaluations/README.md": "141d85e3f5fe3872c571351f3e4f20f93222ad07c656c80abde8080672d69567",
+        "catalog:docs/verification/end-to-end-evaluation.md": "2b35fcb0e55ecb9d12c9513e2e2b038512a9767d12cd4604f854b5cec9a76f83",
+        "docs/verification/end-to-end-evaluation.md": "c04780f6b68f52a1ec572ba1c9f82d73cbe0e5011cf68799798bd2f9819f426c",
+        "evaluations/README.md": "175dba8846945a883c0d949565bdb99aa32eff79b9a57cac7eb1ab515d578464",
+        "evaluations/images/claude-code.json": "025911bda6303e83be72ed61ddb912863366b4e7df41d49af00f6dbebb0fa96d",
         "evaluations/profiles/local-deterministic.json": "0e0deb70f592f3ebad0a420daf815c536eab6c74c421ec4e10329614a65d3d6b",
         "evaluations/suites/smoke.json": "4f24319f9c734a2b5fa01cc01b2f831bb79a230800697b160ad29aa87f98a9d7",
         "openspec/specs/end-to-end-evaluation/spec.md": "ae46e6902ba9f869b9e3351b8a2c7f3f538b30db127198c0148e6804af663aae",
         "src/ai_dlc/verification/evaluation/__init__.py": "7cf0a3add5298d2f8d58954210cee24b3fb6a5f81e505ef3b948a7078cbb0eb8",
         "src/ai_dlc/verification/evaluation/attempt.py": "e8fefb69d710c98aa589e4a39bcdedd155c6d3d2c3a4bd35a45dcff70f85e1c3",
-        "src/ai_dlc/verification/evaluation/contracts.py": "e0c1577ea747140ac55fec46e8c2162ea20a4793461ceb7522a79f02ec8d4c14",
+        "src/ai_dlc/verification/evaluation/contracts.py": "e99d3e0eace1f8061d0d322ff9d7d7f04c36d73c9ff85abcd97aecf55af2cefd",
         "src/ai_dlc/verification/evaluation/drivers.py": "a05e42d43c79c05e95fd786156b3cedcef032faea9a9609bfb8c69aa68fdc1df",
         "src/ai_dlc/verification/evaluation/evaluate.py": "c83284feaefa2ac7e780660c99b8f6603d10a1cb875d00aeec191ef7298d8be1",
-        "src/ai_dlc/verification/evaluation/image.py": "20df9b1165e57bb262ebfc4718ead9eee74fbbd86ef364b9ad694ad47441613b",
+        "src/ai_dlc/verification/evaluation/image.py": "d3f2970ca488c1b7a1ceaf516f0f86c8b602f74b0fffe1ddbd2d35a13b31167b",
         "src/ai_dlc/verification/evaluation/planning.py": "6e619cd5b3bc7710c4ddc94151e0c265941a0d266dff280b95137a7b0231c912",
         "src/ai_dlc/verification/evaluation/report.py": "c00f8fe201c88a6b0bbabe1f77cbd6e35a8c7e31d357ddfb1cadbab239421097",
         "src/ai_dlc/verification/evaluation/run.py": "cfbe671eb1958f3b7042a4f81048dd1f852ab9acd50839772c21362853f9189e",
         "tests/test_evaluation_attempt.py": "432739434aa58c1ee2cf2fd392b3d0b1f4078980eb9f69c6e5a07018e1e3ec00",
+        "tests/test_evaluation_base_image.py": "f31cfc552efde0250fb23babae732dc3582b289882ae299ecb2b8078f1bc5d37",
         "tests/test_evaluation_driver.py": "bae0e72a3dab4c1f6d3f713f3ee54301bf1f6b3632e5f98f56afa1c5bcdbe62e",
         "tests/test_evaluation_egress.py": "92a0b9629e039da35da0572e3afe2f20ab5e4cefda500f5dae0a1c104a4db810",
         "tests/test_evaluation_image.py": "b76a456529ea17dab1476bd7e9e60ab904af1130574fcf6be1404a12d9801ba9",
@@ -154,27 +156,48 @@
         "tests/test_evaluation_run.py": "edc99627ced20eba905a8d4952b81802a4c6daf63e3577feac77c07972da41db"
       },
       "outcome": "updated",
-      "reason": "Adds the restricted-network section with its verification and limit.",
+      "reason": "Adds the base image section with its verification and limits; removes the closed no-Git gap.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "docs/verification/end-to-end-evaluation.md"
     },
     {
       "bound": {
-        "openspec/changes/real-client-evaluation/design.md": "af18702edf76ca5ccba13dfc6d5b503dd8df05838a549f63e553d178b02f9b1b"
+        "catalog:docs/workflows/tool-map.md": "f50e0a853e00ab08729f6bd5bdf4cca447b033b23ca5169bb5f6556c0991dc8e",
+        "docs/workflows/tool-map.md": "b2e9ee65c31abd12caa4ae6d61511c159b455aa698b07743bc1f6fa04795d7ef",
+        "src/ai_dlc/cli.py": "adf101a1ea24b8c9478aba4c408124f45940bfd349f7103c956ca897c22e7b36",
+        "src/ai_dlc/mcp_server.py": "f159ac251bd9b65fb4fdeb404380be3a2afb9fbac013e0a0e19315ad738bd612"
       },
       "outcome": "updated",
-      "reason": "Records the task 3 decisions, the real-Docker verification and what the allow-list does not cover.",
+      "reason": "Documents ai-dlc eval base.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "docs/workflows/tool-map.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/real-client-evaluation/design.md": "c19c3a2f4a305be404e1fa99f2106ffb4587df87484bfc1f59e33bb279d44b02"
+      },
+      "outcome": "updated",
+      "reason": "Records the task 2 decisions, the BuildKit finding and the adopt finding for task 7.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "openspec/changes/real-client-evaluation/design.md"
     },
     {
       "bound": {
-        "openspec/changes/real-client-evaluation/tasks.md": "bec878919a58bb01f5df4ad9a589dd5d6c60170479f187f2757d751a26bce18d"
+        "openspec/changes/real-client-evaluation/tasks.md": "12970d1ee8bdf7dbd6357bbdabb4920e3007b38caf9873d30e08fa5306c1ab3c"
       },
       "outcome": "updated",
-      "reason": "Ticks task 3.",
+      "reason": "Ticks task 2.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "openspec/changes/real-client-evaluation/tasks.md"
+    },
+    {
+      "bound": {
+        "project-templates/project/docs/workflows/tool-map.md": "b7bf01ba4c201d7cd8d0d98943d524fb052f79bb33919987a3b207bb2cb9b2fb"
+      },
+      "outcome": "updated",
+      "reason": "Mirrors the tool map.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "project-templates/project/docs/workflows/tool-map.md"
     }
   ],
   "schema": 2
