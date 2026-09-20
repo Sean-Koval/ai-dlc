@@ -90,6 +90,7 @@ def run_suite(
             fixture=(suite_path.parent / scenario["fixture"]["path"]).resolve(),
             install=driver.install(item),
             steps=driver.steps(item),
+            egress=planned["egress"],
             cancel=cancel,
         )
         hidden = scenario["fixture"].get("hidden")

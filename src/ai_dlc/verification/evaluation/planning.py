@@ -60,6 +60,10 @@ def plan(suite: object, profile: object) -> dict:
         raise ValueError(
             "Invalid evaluation profile: driver.script: the deterministic driver needs one"
         )
+    if settings.egress and settings.driver.kind == "deterministic":
+        raise ValueError(
+            "Invalid evaluation profile: egress: the deterministic driver runs with no network"
+        )
     _unique([s.id for s in checked.scenarios], "scenario identifier")
     attempts = []
     for scenario in checked.scenarios:
@@ -102,6 +106,7 @@ def plan(suite: object, profile: object) -> dict:
         "budgets": settings.budgets.model_dump(),
         "credentials": settings.credentials,
         "resources": settings.resources,
+        "egress": settings.egress.model_dump() if settings.egress else None,
         "attempts": attempts,
         "comparison": {
             "attempts_per_arm": settings.attempts,

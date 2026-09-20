@@ -91,6 +91,19 @@ reports it. With one attempt per arm the claim is `none`: a difference, not a
 conclusion. Check `cleanup_clean` on every arm; `false` names the container or
 volume to remove by hand from `cleanup-ledger.jsonl`.
 
+## Restricted network for real clients
+
+A profile may declare `egress = {hosts, proxy_image}`. Each attempt then joins a
+per-attempt internal Docker network whose only other member is a hardened,
+digest-pinned allow-listing proxy; port 443 to the named hosts is the only way
+out. The proxy's decisions are retained as `egress.jsonl`, and refused hosts
+appear in the report as `metrics.egress_refused` and in the timeline. `eval plan`
+refuses `egress` with the deterministic driver, which always runs with no network.
+
+Verified September 20, 2026 with real Docker: direct traffic blocked, a listed
+host connects, an unlisted host gets 403 and is logged, nothing left behind. No
+driver uses this yet. The allow-list limits destinations, not what is sent to them.
+
 ## Known gaps
 
 - `python:3.12-slim` has no Git, and `ai-dlc project adopt` fails without it.

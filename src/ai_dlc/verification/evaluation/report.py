@@ -60,7 +60,11 @@ def _metrics(events: list[dict]) -> dict:
         first, last = (datetime.fromisoformat(events[i]["at"]) for i in (0, -1))
         wall = round((last - first).total_seconds(), 3)
     # Usage is reported only when a driver meters it; the deterministic driver does not.
-    return {"turns": sum(e["kind"] == "step" for e in events), "wall_seconds": wall, "usage": None}
+    metrics = {"turns": sum(e["kind"] == "step" for e in events), "wall_seconds": wall}
+    refused = [e.get("refused", []) for e in events if e["kind"] == "egress"]
+    if refused:  # present only for attempts that had a network at all
+        metrics["egress_refused"] = sorted({host for hosts in refused for host in hosts})
+    return {**metrics, "usage": None}
 
 
 def _arm(out: Path, planned: dict, scenario: dict) -> dict:
@@ -199,6 +203,8 @@ def _timeline(out: Path, report: dict) -> str:
                 lines.append(f"- {key}: {arm[key]}")
         if not arm["cleanup_clean"]:
             lines.append("- cleanup: NOT clean; see cleanup-ledger.jsonl")
+        if arm["metrics"].get("egress_refused"):
+            lines.append("- refused destinations: " + ", ".join(arm["metrics"]["egress_refused"]))
         events, _ = _events(run_dir)
         # Controller events only; step output is never quoted as if it were evidence.
         lines += [f"- {e['at']} {e['kind']}" for e in events]
