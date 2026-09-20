@@ -12,10 +12,9 @@ import tomllib
 from pathlib import Path
 
 from ai_dlc.verification.evaluation import attempt as lifecycle
+from ai_dlc.verification.evaluation.drivers import load_driver
 from ai_dlc.verification.evaluation.planning import plan
 from ai_dlc.verification.evaluation.report import MANIFEST, manifest_of, write_report
-
-WRITER = "import pathlib,sys;p=pathlib.Path(sys.argv[1]);p.parent.mkdir(parents=True,exist_ok=True);p.write_text(sys.argv[2])"
 
 
 def read_declaration(path: Path) -> dict:
@@ -46,17 +45,6 @@ def _layers(image: str) -> list[str]:
     return json.loads(done.stdout)
 
 
-def _steps(declared: list, base: Path) -> list[list[str]]:
-    """A step is an argv list, or {"write": path, "from": file} to place controller-held text."""
-    steps = []
-    for step in declared:
-        if isinstance(step, dict):
-            steps.append(["python", "-c", WRITER, step["write"], (base / step["from"]).read_text()])
-        else:
-            steps.append([str(part) for part in step])
-    return steps
-
-
 def _grader(image: str, hidden: Path):
     def grade(run_dir: Path) -> dict:
         buffer = io.BytesIO()
@@ -79,8 +67,7 @@ def run_suite(
     planned = plan(suite, profile)
     if out.exists() and any(out.iterdir()):
         raise ValueError(f"Evaluation output directory is not empty: {out}")
-    script_path = (profile_path.parent / profile["driver"]["script"]).resolve()
-    script = json.loads(script_path.read_text())
+    driver = load_driver(profile, profile_path)
     scenarios = {s["id"]: s for s in suite["scenarios"]}
     for scenario in scenarios.values():
         fixture = (suite_path.parent / scenario["fixture"]["path"]).resolve()
@@ -92,7 +79,7 @@ def run_suite(
         )
     (out / "inputs").mkdir(parents=True)
     (out / "plan.json").write_text(json.dumps(planned, indent=2, sort_keys=True) + "\n")
-    for name, value in [("suite", suite), ("profile", profile), ("script", script)]:
+    for name, value in [("suite", suite), ("profile", profile), *driver.retained().items()]:
         (out / f"inputs/{name}.json").write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
     for item in planned["attempts"]:
         scenario = scenarios[item["scenario"]]
@@ -101,8 +88,8 @@ def run_suite(
             item,
             run_dir=run_dir,
             fixture=(suite_path.parent / scenario["fixture"]["path"]).resolve(),
-            install=_steps(script.get("install", []), script_path.parent),
-            steps=_steps(script.get(item["arm"], []), script_path.parent),
+            install=driver.install(item),
+            steps=driver.steps(item),
             cancel=cancel,
         )
         hidden = scenario["fixture"].get("hidden")
