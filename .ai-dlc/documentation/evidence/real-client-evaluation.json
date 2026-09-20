@@ -2,10 +2,10 @@
   "decisions": [
     {
       "bound": {
-        "openspec/changes/real-client-evaluation/design.md": "98c6feba7f4659484aa48f5d68f4b3c083793de56e8338421c0a1e187518b4ae"
+        "openspec/changes/real-client-evaluation/design.md": "a38294ff65592ac94972d48d763a6de6ff4c829d17ba7c25fb0b68ffa1cffa9c"
       },
       "outcome": "updated",
-      "reason": "New design: client choice, egress proxy, credential, budgets, base image, Git observer; two defaults marked unconfirmed.",
+      "reason": "Marks the client choice and caps as confirmed by the maintainer.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "openspec/changes/real-client-evaluation/design.md"
     },
@@ -29,10 +29,10 @@
     },
     {
       "bound": {
-        "openspec/changes/real-client-evaluation/tasks.md": "ac9ae2c2df9befeab6fd799b3510bd430e7fa3650496e3e07f10ff6c3a351f24"
+        "openspec/changes/real-client-evaluation/tasks.md": "90404f755d65618000ba279593a1fbf3b26387b135da36c7f0107c0d65308c45"
       },
       "outcome": "updated",
-      "reason": "New task list; task 0 is the maintainer's confirmation.",
+      "reason": "Ticks task 0 after the maintainer's confirmation.",
       "reviewer": "Claude Code, directed by Sean Koval",
       "target": "openspec/changes/real-client-evaluation/tasks.md"
     }
