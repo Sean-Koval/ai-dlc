@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "from": "python@sha256:57cd7c3a7a273101a6485ba99423ee568157882804b1124b4dd04266317710de",
+  "packages": [
+    "git",
+    "ca-certificates"
+  ],
+  "client": {
+    "kind": "claude-code",
+    "version": "2.1.220",
+    "sha256": {
+      "linux-x64": "674f61f20ff306f3100cf9200e4c36c4b70278b5bef2884549819b942a89c863",
+      "linux-arm64": "159e4a51d796f3bf14677577100f7efb845611b1ceaf0c30cbd8d4650d942185"
+    }
+  }
+}

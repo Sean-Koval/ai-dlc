@@ -153,4 +153,26 @@ class Report(Strict):
     comparison: dict
 
 
-SCHEMAS = {"scenario": Scenario, "profile": Profile, "event": Event, "report": Report}
+class Client(Strict):
+    kind: Literal["claude-code"]
+    version: Annotated[str, StringConstraints(pattern=r"^[0-9]+\.[0-9]+\.[0-9]+$")]
+    # The published binary's digest per platform; the build refuses any other bytes.
+    sha256: Annotated[dict[Literal["linux-x64", "linux-arm64"], Sha256], Field(min_length=1)]
+
+
+class BaseImage(Strict):
+    """The image both arms share: a pinned parent, distribution packages and one client."""
+
+    schema_version: Literal[1] = Field(alias="schema")
+    parent: Image = Field(alias="from")
+    packages: list[Annotated[str, StringConstraints(pattern=r"^[a-z0-9][a-z0-9+.-]*$")]] = []
+    client: Client
+
+
+SCHEMAS = {
+    "scenario": Scenario,
+    "profile": Profile,
+    "event": Event,
+    "report": Report,
+    "base-image": BaseImage,
+}

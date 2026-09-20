@@ -91,6 +91,21 @@ reports it. With one attempt per arm the claim is `none`: a difference, not a
 conclusion. Check `cleanup_clean` on every arm; `false` names the container or
 volume to remove by hand from `cleanup-ledger.jsonl`.
 
+## Base image for real clients
+
+`ai-dlc eval base evaluations/images/claude-code.json` builds the image both
+arms share: the pinned Python parent, Git, and the Claude Code native binary at
+the recipe's version. The controller downloads the binary, refuses bytes whose
+sha256 differs from the recipe, and copies it in; the build needs no BuildKit.
+Git and the client are then run offline as uid 1000. Pass the printed image ID to
+`eval image --base` to build the candidate on top.
+
+Verified September 20, 2026: base built with Git 2.47.3 and client 2.1.220; the
+candidate built on it; `ai-dlc project adopt --apply` ran offline inside it.
+Distribution packages are not version-pinned, so rebuild both images together
+and never compare runs made on different base image IDs. The real build runs in
+tests only with `AI_DLC_EVAL_BUILD=1`.
+
 ## Restricted network for real clients
 
 A profile may declare `egress = {hosts, proxy_image}`. Each attempt then joins a
@@ -106,8 +121,5 @@ driver uses this yet. The allow-list limits destinations, not what is sent to th
 
 ## Known gaps
 
-- `python:3.12-slim` has no Git, and `ai-dlc project adopt` fails without it.
-  Real-client runs need a purpose-built, digest-pinned base image with Git and
-  the client's prerequisites, shared by both arms (#138).
 - No process, MCP or Git observer exists yet, so the only workflow assertion
   that can pass is `artifact-present`.

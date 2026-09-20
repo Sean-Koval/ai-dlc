@@ -7,6 +7,7 @@ solutions that an attempt must never be able to read.
 - `suites/` scenarios; fixture paths resolve beside the suite file and are bound by content digest.
 - `fixtures/` the project an agent is given.
 - `hidden/` acceptance tests and a reference solution, used only by the grader.
+- `images/` recipes for the base image both arms share (`ai-dlc eval base`).
 - `profiles/` execution profiles. `local-deterministic` exercises the runner and
   grader with a scripted driver: it writes the reference solution in the
   treatment arm only, so its result says nothing about AI-DLC. Its `engine.image`

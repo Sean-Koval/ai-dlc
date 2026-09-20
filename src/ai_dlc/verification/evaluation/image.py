@@ -13,6 +13,7 @@ import hashlib
 import json
 import subprocess
 import tempfile
+import urllib.request
 from pathlib import Path
 
 from ai_dlc.verification.evaluation.attempt import PINNED
@@ -27,6 +28,26 @@ RUN python -m venv /opt/ai-dlc/engine \\
 """
 
 
+RELEASES = "https://downloads.claude.ai/claude-code-releases"
+PLATFORMS = {"amd64": "linux-x64", "arm64": "linux-arm64"}
+AGENT_CHECK = ["docker", "run", "--rm", "--network=none", "--cap-drop=ALL", "--user=1000:1000"]
+# The controller downloads and verifies the client; the build itself downloads none.
+# Plain COPY keeps the context file's mode, so this works without BuildKit.
+BASE_DOCKERFILE = """FROM {parent}
+RUN apt-get update \\
+ && apt-get install -y --no-install-recommends {packages} \\
+ && rm -rf /var/lib/apt/lists/*
+COPY claude /usr/local/bin/claude
+"""
+
+
+def _fetch(url: str) -> bytes:
+    if not url.startswith("https://"):
+        raise ValueError("The client is fetched over https only")
+    with urllib.request.urlopen(url, timeout=600) as response:
+        return response.read()
+
+
 def _run(args, *, cwd=None, timeout=None):
     return subprocess.run(
         args, cwd=cwd, capture_output=True, text=True, timeout=timeout, check=False
@@ -36,7 +57,8 @@ def _run(args, *, cwd=None, timeout=None):
 def _must(args, what: str, **options):
     done = _run(args, **options)
     if done.returncode:
-        raise RuntimeError(f"{what} failed: {done.stderr.strip()}")
+        tail = "\n".join(done.stderr.strip().splitlines()[-5:])
+        raise RuntimeError(f"{what} failed: {tail}")
     return done
 
 
@@ -92,6 +114,52 @@ def build_candidate(root: Path, base: str) -> dict:
         "image": image,
         "engine": {"artifact": wheel.name, "sha256": digest, "image": image},
         "version": smoke.stdout.strip(),
+    }
+
+
+def build_base(recipe: object) -> dict:
+    """Build the image both arms share and prove Git and the pinned client run offline.
+
+    Distribution packages are not version-pinned; the result is identified by its image
+    ID, and both arms use that same ID, so the arms cannot differ in them.
+    """
+    from ai_dlc.verification.evaluation.contracts import BaseImage
+    from ai_dlc.verification.evaluation.planning import _validated
+
+    declared = _validated(BaseImage, recipe, "base image")
+    arch = _must(
+        ["docker", "version", "--format", "{{.Server.Arch}}"], "reading the daemon", timeout=60
+    ).stdout.strip()
+    platform = PLATFORMS.get(arch)
+    if platform is None or platform not in declared.client.sha256:
+        raise ValueError(f"The base image recipe has no client sha256 for architecture {arch}")
+    version = declared.client.version
+    binary = _fetch(f"{RELEASES}/{version}/{platform}/claude")
+    actual = hashlib.sha256(binary).hexdigest()
+    if actual != declared.client.sha256[platform]:
+        raise RuntimeError(f"The downloaded client's sha256 is {actual}, not the recipe's")
+    with tempfile.TemporaryDirectory(prefix="ai-dlc-base-") as folder:
+        context = Path(folder)
+        (context / "claude").write_bytes(binary)
+        (context / "claude").chmod(0o755)
+        (context / "Dockerfile").write_text(
+            BASE_DOCKERFILE.format(parent=declared.parent, packages=" ".join(declared.packages))
+        )
+        built = _must(["docker", "build", "-q", folder], "building the base image", timeout=1800)
+    image = built.stdout.strip().splitlines()[-1]
+    if not derived_from(_layers(image), _layers(declared.parent)):
+        raise RuntimeError("The built image is not derived from its declared parent")
+    git = _must([*AGENT_CHECK, image, "git", "--version"], "running git offline", timeout=120)
+    client = _must(
+        [*AGENT_CHECK, image, "claude", "--version"], "running the client offline", timeout=120
+    )
+    if client.stdout.split()[:1] != [version]:
+        raise RuntimeError(f"The client reports {client.stdout.strip()!r}, not {version}")
+    return {
+        "image": image,
+        "from": declared.parent,
+        "client": {"kind": declared.client.kind, "version": version, "platform": platform},
+        "git": git.stdout.strip(),
     }
 
 
