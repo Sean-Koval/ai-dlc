@@ -11,7 +11,7 @@ acceptance = [
     "Commit ordering is decided from the collected repository, never client output.",
     "One real run with three attempts per arm is recorded in the runbook with its limits.",
 ]
-reviewed = false
+reviewed = true
 depends_on = []
 requirements = []
 

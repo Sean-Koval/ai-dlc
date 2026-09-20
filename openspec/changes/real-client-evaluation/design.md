@@ -3,8 +3,8 @@
 **One client first: Claude Code.** It is installed on the maintainer machine, has
 a documented headless mode (`claude -p`) with `--output-format stream-json`, and
 reports session id, turns, token usage and cost in its final event. Codex follows
-only if the first report justifies a second client. *Recommended default; the
-maintainer has not confirmed it.*
+only if the first report justifies a second client. Confirmed by the maintainer on
+September 20, 2026.
 
 **The driver is a contract, not a special case.** `driver.kind = "claude-code"`
 joins `deterministic`. A driver receives the attempt, the goal and the limits,
@@ -33,8 +33,7 @@ writable host credential store.
 turn limit. `max_spend_usd` and `max_tokens` are checked against the stream's
 usage after each attempt; the run stops before starting an attempt that the
 remaining budget cannot cover at the worst case seen so far. Recommended caps for
-the first run: 20 turns, 30 minutes, USD 2 per attempt, USD 10 per run.
-*Maintainer to confirm.*
+the first run: 20 turns, 30 minutes, USD 2 per attempt, USD 10 per run. Confirmed by the maintainer on September 20, 2026.
 
 **Base image.** A Dockerfile under `evaluations/images/` builds from the pinned
 Python image and adds Git and the pinned client version. `eval image` builds the
