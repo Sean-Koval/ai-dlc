@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "openspec/changes/real-client-evaluation/design.md": "98c6feba7f4659484aa48f5d68f4b3c083793de56e8338421c0a1e187518b4ae"
+      },
+      "outcome": "updated",
+      "reason": "New design: client choice, egress proxy, credential, budgets, base image, Git observer; two defaults marked unconfirmed.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "openspec/changes/real-client-evaluation/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/real-client-evaluation/proposal.md": "23fdc37f3aebbe43d4bf57da175d08c161ed82c97004f980679526c0847b65d0"
+      },
+      "outcome": "updated",
+      "reason": "New proposal: a first slice of #138 sized to one honest comparison.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "openspec/changes/real-client-evaluation/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/real-client-evaluation/specs/end-to-end-evaluation/spec.md": "7b2b754eb1363f06e98178a42b1dbb1e7d30b4c3ac9c245f3845ee0b804b4f06"
+      },
+      "outcome": "updated",
+      "reason": "Adds EE-08 to EE-11.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "openspec/changes/real-client-evaluation/specs/end-to-end-evaluation/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/real-client-evaluation/tasks.md": "ac9ae2c2df9befeab6fd799b3510bd430e7fa3650496e3e07f10ff6c3a351f24"
+      },
+      "outcome": "updated",
+      "reason": "New task list; task 0 is the maintainer's confirmation.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "openspec/changes/real-client-evaluation/tasks.md"
+    }
+  ],
+  "schema": 2
+}
