@@ -9,7 +9,7 @@ acceptance = [
     "An unlisted network destination is refused and named in the report.",
     "The credential value never appears in the plan, inputs or evidence; observed-usage scheduling refuses further unaffordable or unmetered attempts and reports native in-flight billing limits.",
     "Commit ordering is decided from the collected repository, never client output.",
-    "Treatment adoption provides normal selected-client guidance and usable offline checks; implementation evidence and the deferred paid comparison are recorded honestly.",
+    "Treatment adoption provides normal selected-client guidance; implementation evidence, required check-runtime prerequisites and the deferred paid comparison are recorded honestly.",
 ]
 reviewed = true
 depends_on = []

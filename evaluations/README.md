@@ -31,5 +31,9 @@ baseline arm; it needs a real candidate image.
 
 The Claude Code driver and its current qualification limits are documented in
 [the evaluation runbook](../docs/verification/end-to-end-evaluation.md#claude-code-driver-task-4).
-Run-wide budgets and treatment adoption remain pending; use the deterministic
-profile to exercise this slice without model charges.
+Run-wide budgets, treatment adoption and Git observation are implemented.
+`suites/real-client.json` uses the same neutral CSV goal with Git workflow
+assertions; the original `smoke.json` remains the deterministic machinery check.
+The paid comparison is deferred, and the wheel-only candidate image still needs
+a prepared runtime for its declared project checks; see the runbook before a real
+comparison. Use the deterministic profile without model charges.

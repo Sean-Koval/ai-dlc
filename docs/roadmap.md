@@ -46,11 +46,13 @@ before adding surface area.
    [#137](https://github.com/Sean-Koval/ai-dlc/issues/137) are delivered. Their
    deterministic fixture runs verify the machinery, not AI-DLC's value; see the
    [evaluation evidence](verification/end-to-end-evaluation.md). Complete the first
-   slice of [#138](https://github.com/Sean-Koval/ai-dlc/issues/138): one real coding
+   comparison in [#138](https://github.com/Sean-Koval/ai-dlc/issues/138), using the
+   code slice tracked in [#166](https://github.com/Sean-Koval/ai-dlc/issues/166): one real coding
    client, with the same version, model and goal in both arms, taking the same
    seeded task through hidden acceptance tests with AI-DLC and with the bare
    client. Report correctness, turns, time and spend for both. That comparison
-   remains pending; use its results to decide the broader client, recovery and
+   remains explicitly deferred. Prepare the candidate check runtime first, as
+   described in the evaluation runbook; use results to decide broader client, recovery and
    observer work in #138–#140.
 
 Waiting on environments or decisions, not scheduled:

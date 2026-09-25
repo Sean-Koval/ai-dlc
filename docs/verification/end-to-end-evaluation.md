@@ -11,8 +11,8 @@ the wheel.
 As of September 19, 2026 the runner, grader, report and candidate-image recipe
 are delivered and verified on one machine (WSL2 Ubuntu 22.04, Docker 26.1.3). The
 original driver was `deterministic`: a script of fixed steps. The Claude Code
-driver is now implemented with recorded-stream and mocked-container tests,
-described below; `codex` remains unsupported. The shipped script writes
+driver, run budgets, treatment adoption and Git observation are now implemented
+with the bounded evidence described below; `codex` remains unsupported. The shipped script writes
 the reference solution in the treatment arm only, so its result exercises the
 machinery and **says nothing about AI-DLC's value**. Every report from it carries
 `evidence_kind = "fixture"` and the claim `none`. A finding needs a real coding
@@ -86,9 +86,9 @@ Each arm has one outcome:
 Quality assertions on executed attempts are `pending`; only a person records them.
 All assertions on a `not-started` attempt are `unavailable`, and JUnit marks them
 `skipped`. They cannot contribute correctness successes, including scenarios with
-no mandatory correctness assertions. Workflow
-kinds without an observer (`ordering`, process and MCP observation) are
-`unavailable`. The baseline arm is graded on correctness only.
+no mandatory correctness assertions. Process and MCP workflow kinds without an
+observer remain `unavailable`. Git assertions use the controller observation
+described below. The baseline arm is graded on correctness only.
 
 The comparison gives, per scenario, hidden-test passes, turns and wall seconds
 for each arm and their difference. `metrics.usage` is total tokens and
@@ -145,8 +145,8 @@ The driver checks `claude --version` before starting the session, then uses
 unchanged goal as one argument. It loads project/local settings and guidance,
 uses `bypassPermissions` inside the existing disposable non-root container,
 and disables session persistence, updates and nonessential traffic. No host
-configuration is mounted and no system-prompt text is added. The driver does
-not perform treatment adoption yet; that is task 7.
+configuration is mounted and no system-prompt text is added. The treatment arm
+uses ordinary project adoption before the client starts, as described below.
 
 Each attempt retains `client-version.txt` and `client-stream.jsonl`, including
 partial bytes on timeout/cancellation. A credential leak is redacted and makes
@@ -227,10 +227,79 @@ Verified with recorded native streams and mocked Docker boundaries: zero and exa
 boundaries, independent token/spend exhaustion, changing native spend caps,
 multiple scenarios and arms, terminal errors, unknown usage, overruns, offline
 reconstruction and damaged refusal evidence. No paid calls or live billing
-qualification were performed for this change. Treatment adoption, the Git
-observer and the real comparison remain tasks 6–8.
+qualification were performed for this change. The paid comparison remains
+explicitly deferred; implementation does not establish a productivity benefit.
+
+## Git observation and treatment adoption (tasks 6–7)
+
+Real-client attempts start from the same deterministic Git root, with a neutral
+local author identity in both arms. The controller records its object ID before
+installation. Fixtures containing Git metadata are refused. Treatment then runs
+`ai-dlc project adopt --apply --capability agent-client --agent-client claude-code`
+and `ai-dlc agents render --apply --client claude-code`; baseline receives neither
+engine adoption nor generated guidance. The goal prompt is unchanged between
+arms and contains no injected setup commands or skill text.
+
+The observer reads the collected repository and retains `grading/git.json` before
+the evidence manifest. It requires the collected anchor to match the controller's
+recorded initial commit and excludes that commit from workflow grading:
+
+- `commit-present` requires a later commit, optionally matching a `path` glob.
+- `path-committed` requires a matching post-anchor change and a matching path at
+  HEAD whose collected content and executable mode agree with the committed blob.
+- `ordering` requires a commit matching `before` to be a strict ancestor of every
+  implementation commit matching `after`. Committing both in one change fails.
+
+History queries use controller-owned Git configuration, never the collected
+configuration or index. File comparison reads bytes directly, so repository
+filters cannot execute and index flags cannot hide changed content. External,
+shallow, replacement or malformed history is unavailable. Inspection has bounded
+history, output, file-size and time limits; it does not prove real-world chronology
+against an agent deliberately forging its entire post-anchor commit graph.
+
+`evaluations/suites/real-client.json` adds these assertions to the same neutral
+CSV goal and fixture. The original deterministic `smoke.json` remains unchanged.
+The real-client suite measures a particular work-record-before-code policy; teams
+should select workflow assertions only for policies they actually require.
+Correctness remains independently graded, and human quality review stays pending.
+
+Verified with real temporary Git repositories and negative cases for missing or
+changed anchors, wrong ordering, uncommitted files, unsafe metadata, executable
+clean/process filters and index flags. Native lifecycle tests cover identical
+initial history and treatment-only adoption. These are implementation checks,
+not a paid coding-agent comparison.
+
+Verified September 25, 2026 with the actual candidate image: ordinary adoption
+and Claude rendering, direct render consistency, identical initial commit IDs,
+no baseline guidance, and the same three existing fixture tests in both arms.
+The candidate adoption smoke passed; the existing deterministic Docker run also
+passed. The candidate was built with the legacy Docker builder because this
+host's BuildKit could not use the local content-addressed parent directly.
+
+- Base image: `sha256:1f6e200876852c16c015a78149eef7645caa497b4200d2a93337a797592966b2`.
+- Candidate image: `sha256:5e5f8d56ce0b926e51166ed27ac2bd05575145405248d2a515339681c63b0f85`.
+- Candidate wheel SHA256: `372e62c3d1060e2b3ad7bb9a1fb7a3ef414803b15f1a647c0ae5131082e2e36a`.
+
+## Deferred comparison and runtime prerequisite
+
+On September 25, 2026 the maintainer explicitly deferred the paid comparison.
+The code slice is tracked by [#166](https://github.com/Sean-Koval/ai-dlc/issues/166);
+[#138](https://github.com/Sean-Koval/ai-dlc/issues/138) remains open for the real
+three-attempt-per-arm run and broader journeys.
+
+The wheel-only candidate image can adopt the project and render Claude guidance,
+but it does not include `mise`. The ordinary `ai-dlc project check --required`
+runner currently requires that runtime even for a generic project with an empty
+`[tools]` table. It refuses before running checks in this image. Directly running
+individual checks would bypass that declared runner and does not qualify it.
+Prepare and verify a suitable check runtime before the paid comparison; otherwise
+setup failure would confound the value measurement. This image smoke is not a
+full bootstrap qualification. No paid API calls or productivity results are
+claimed by this delivery.
 
 ## Known gaps
 
-- No process, MCP or Git observer exists yet, so the only workflow assertion
-  that can pass is `artifact-present`.
+- Process and MCP observers, Codex, declared multi-turn answers and recovery remain
+  outside this slice.
+- Actual model billing, the full check runtime in the comparison image, the paid
+  comparison and human quality review remain unqualified.

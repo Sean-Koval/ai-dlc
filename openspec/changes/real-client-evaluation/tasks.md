@@ -6,9 +6,9 @@
 - [x] 4. `claude-code` driver: headless run, retained stream, usage, fail closed on
   malformed or truncated streams (tested with recorded streams, no network).
 - [x] 5. Budget enforcement across a run.
-- [ ] 6. Git observer and the three assertion kinds, with negative tests.
-- [ ] 7. Treatment install stage runs `project adopt --apply`; scenario goal prompt.
-- [ ] 8. Record implementation evidence and the explicit paid-comparison deferral
+- [x] 6. Git observer and the three assertion kinds, with negative tests.
+- [x] 7. Treatment install stage runs `project adopt --apply`; scenario goal prompt.
+- [x] 8. Record implementation evidence and the explicit paid-comparison deferral
   in the runbook; refresh catalog dispositions and archive the delivered code.
 
 ## Deferred qualification (original task 8)
