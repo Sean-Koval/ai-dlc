@@ -146,7 +146,8 @@ def parse_claude_stream(data: bytes, expected: dict) -> dict:
         usage = final["usage"]
         tokens = {key: usage[key] for key in TOKEN_FIELDS}
         turns, cost = final["num_turns"], final["total_cost_usd"]
-        if any(type(n) is not int or n < 0 for n in [turns, *tokens.values()]):
+        # Native JavaScript counters must fit its exact integer range.
+        if any(type(n) is not int or not 0 <= n <= 2**53 - 1 for n in [turns, *tokens.values()]):
             raise ValueError
         if type(cost) not in (int, float) or not math.isfinite(cost) or cost < 0:
             raise ValueError
@@ -170,7 +171,7 @@ def parse_claude_stream(data: bytes, expected: dict) -> dict:
                 subtype
             ),
         }
-    except (ValueError, KeyError, TypeError, UnicodeError):
+    except (ValueError, KeyError, TypeError, UnicodeError, OverflowError):
         raise ValueError(
             "Claude Code stream malformed, incomplete, or missing identity/usage"
         ) from None

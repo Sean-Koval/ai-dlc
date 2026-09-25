@@ -357,3 +357,14 @@ def test_nonstandard_json_constant_anywhere_in_stream_is_malformed():
     data = STREAM.read_bytes().replace(b'"ttft_ms":11', b'"ttft_ms":NaN')
     with pytest.raises(ValueError, match="Claude Code"):
         parse(data)
+
+
+@pytest.mark.parametrize("field", ["cost", "tokens"])
+def test_unrepresentable_native_usage_is_refused_without_crashing(field):
+    events = native()
+    if field == "cost":
+        events[-1]["total_cost_usd"] = 10**400
+    else:
+        events[-1]["usage"]["input_tokens"] = 10**400
+    with pytest.raises(ValueError, match="Claude Code"):
+        parse(encoded(events))
