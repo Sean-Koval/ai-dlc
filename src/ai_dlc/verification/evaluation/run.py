@@ -14,6 +14,7 @@ from pathlib import Path
 from ai_dlc.verification.evaluation import attempt as lifecycle
 from ai_dlc.verification.evaluation.budgets import RECEIPT, RunBudget, refused_attempt
 from ai_dlc.verification.evaluation.drivers import load_driver
+from ai_dlc.verification.evaluation.git_observer import retain_git_observation
 from ai_dlc.verification.evaluation.planning import plan
 from ai_dlc.verification.evaluation.report import MANIFEST, manifest_of, write_report
 
@@ -116,6 +117,13 @@ def run_suite(
                 _retain_grading(
                     run_dir, _grader(profile["image"], (suite_path.parent / hidden).resolve())
                 )
+            git_planned = any(
+                assertion["id"] in item["assertions"]
+                and assertion["kind"] in ("commit-present", "path-committed", "ordering")
+                for assertion in scenario["assertions"]
+            )
+            if result.get("git_anchor") is not None or git_planned:
+                retain_git_observation(run_dir, expected_anchor=result.get("git_anchor"))
         _redact(run_dir, result, profile["credentials"])
         (run_dir / "attempt.json").write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
         _redact(run_dir, {}, profile["credentials"])  # the record just written is evidence too

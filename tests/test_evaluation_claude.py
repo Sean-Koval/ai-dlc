@@ -163,7 +163,6 @@ def test_real_driver_adopts_only_offline_claude_guidance_before_the_client(tmp_p
             "claude-code",
         ],
         ["ai-dlc", "agents", "render", "--apply", "--client", "claude-code"],
-        ["ai-dlc", "project", "check", "--required"],
     ]
 
 
@@ -239,6 +238,19 @@ def test_real_driver_runs_both_arms_through_lifecycle_and_rebuilds_usage(tmp_pat
     assert not any(
         b"private-evaluation-key" in p.read_bytes() for p in out.rglob("*") if p.is_file()
     )
+
+
+def test_run_retains_controller_git_observation_before_sealing_evidence(tmp_path, monkeypatch):
+    out, _, _ = run_native(tmp_path, monkeypatch)
+
+    for attempt_path in out.rglob("attempt.json"):
+        run_dir = attempt_path.parent
+        attempt_record = json.loads(attempt_path.read_text())
+        observation = json.loads((run_dir / "grading/git.json").read_text())
+        manifest = json.loads((run_dir / "manifest.json").read_text())
+        assert observation["status"] == "unavailable"  # fake collector has no .git directory
+        assert observation["anchor_commit"] == attempt_record["git_anchor"]
+        assert "grading/git.json" in manifest
 
 
 @pytest.mark.parametrize("damage", ["truncate", "malformed", "usage", "version", "timeout", "leak"])

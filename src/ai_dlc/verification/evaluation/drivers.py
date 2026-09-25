@@ -228,7 +228,6 @@ class ClaudeCode:
                 "claude-code",
             ],
             ["ai-dlc", "agents", "render", "--apply", "--client", "claude-code"],
-            ["ai-dlc", "project", "check", "--required"],
         ]
 
     def steps(self, item: dict) -> list[list[str]]:
