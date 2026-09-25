@@ -145,6 +145,28 @@ def declaration(tmp_path):
     return profile, path
 
 
+def test_real_driver_adopts_only_offline_claude_guidance_before_the_client(tmp_path):
+    from ai_dlc.verification.evaluation.drivers import load_driver
+
+    profile, path = declaration(tmp_path)
+    driver = load_driver(profile, path)
+
+    assert driver.install({"arm": "treatment"}) == [
+        [
+            "ai-dlc",
+            "project",
+            "adopt",
+            "--apply",
+            "--capability",
+            "agent-client",
+            "--agent-client",
+            "claude-code",
+        ],
+        ["ai-dlc", "agents", "render", "--apply", "--client", "claude-code"],
+        ["ai-dlc", "project", "check", "--required"],
+    ]
+
+
 class NativeDocker(FakeDocker):
     def __init__(self, stream=None, version="2.1.220", interrupted=False, exit_code=0, oom=False):
         super().__init__()

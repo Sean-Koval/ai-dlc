@@ -215,8 +215,21 @@ class ClaudeCode:
         return {}
 
     def install(self, item: dict) -> list[list[str]]:
-        # Guidance selection/adoption belongs to task 7; this stage remains explicit.
-        return []
+        del item
+        return [
+            [
+                "ai-dlc",
+                "project",
+                "adopt",
+                "--apply",
+                "--capability",
+                "agent-client",
+                "--agent-client",
+                "claude-code",
+            ],
+            ["ai-dlc", "agents", "render", "--apply", "--client", "claude-code"],
+            ["ai-dlc", "project", "check", "--required"],
+        ]
 
     def steps(self, item: dict) -> list[list[str]]:
         return [

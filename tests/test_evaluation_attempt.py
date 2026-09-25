@@ -11,6 +11,7 @@ from types import SimpleNamespace
 import pytest
 
 IMAGE = "python@sha256:57cd7c3a7a273101a6485ba99423ee568157882804b1124b4dd04266317710de"
+ANCHOR = "1" * 40
 PLANNED = {
     "scenario": "csv-feature",
     "arm": "treatment",
@@ -19,6 +20,15 @@ PLANNED = {
     "engine_sha256": "c" * 64,
     "limits": {"timeout_minutes": 30, "max_turns": 20},
     "assertions": ["hidden-tests"],
+}
+REAL_PLANNED = {
+    **PLANNED,
+    "client": {
+        "kind": "claude-code",
+        "version": "2.1.220",
+        "model": "claude-sonnet-4-6",
+        "goal_sha256": "a" * 64,
+    },
 }
 
 
@@ -60,7 +70,13 @@ class FakeDocker:
         verb = self.verb(args)
         if verb in self.fail:
             return SimpleNamespace(returncode=1, stdout=b"", stderr=self.fail[verb].encode())
-        stdout = self.tree if verb == "collect" else b""
+        stdout = (
+            self.tree
+            if verb == "collect"
+            else f"{ANCHOR}\n".encode()
+            if args[0] == "exec" and "rev-parse" in args
+            else b""
+        )
         return SimpleNamespace(returncode=0, stdout=stdout, stderr=b"")
 
     @staticmethod
@@ -86,8 +102,9 @@ def fake(monkeypatch):
 
 
 def run(tmp_path, fixture_dir, **options):
+    planned = options.pop("planned", PLANNED)
     options.setdefault("steps", [["sh", "-c", "step-one"]])
-    return attempt().run_attempt(PLANNED, run_dir=tmp_path / "run", fixture=fixture_dir, **options)
+    return attempt().run_attempt(planned, run_dir=tmp_path / "run", fixture=fixture_dir, **options)
 
 
 def test_evidence_is_collected_before_cleanup_and_hashed(tmp_path, fixture_dir, fake):
@@ -126,6 +143,50 @@ def test_baseline_arm_skips_installation(tmp_path, fixture_dir, fake):
     )  # fmt: skip
     assert "exec:install" not in fake.verbs()
     assert "exec:step-one" in fake.verbs()
+
+
+def test_controller_stages_a_neutral_git_anchor_before_treatment_install(
+    tmp_path, fixture_dir, fake
+):
+    result = run(
+        tmp_path,
+        fixture_dir,
+        planned=REAL_PLANNED,
+        install=[["sh", "-c", "install"]],
+    )
+
+    assert result["git_anchor"] == ANCHOR
+    commands = [call for call in fake.calls if call[0] == "exec"]
+    init = next(call for call in commands if "init" in call)
+    identity = [call for call in commands if "config" in call]
+    commit = next(call for call in commands if "commit" in call)
+    anchor = next(call for call in commands if "update-ref" in call)
+    install = next(call for call in commands if call[-1] == "install")
+    assert "--initial-branch=main" in init and "--template=" in init
+    assert any(call[-2:] == ["user.name", "AI-DLC Evaluation"] for call in identity)
+    assert any(call[-2:] == ["user.email", "evaluation@example.invalid"] for call in identity)
+    assert "--env=GIT_AUTHOR_DATE=2000-01-01T00:00:00Z" in commit
+    assert "--env=GIT_COMMITTER_DATE=2000-01-01T00:00:00Z" in commit
+    assert anchor[-2:] == ["refs/ai-dlc/evaluation-anchor", ANCHOR]
+    assert (
+        commands.index(init)
+        < commands.index(commit)
+        < commands.index(anchor)
+        < commands.index(install)
+    )
+    assert all(not any("ANTHROPIC_API_KEY" in part for part in call) for call in commands[:-1])
+    events = [json.loads(line) for line in (tmp_path / "run/events.jsonl").read_text().splitlines()]
+    assert [event["kind"] for event in events][2] == "git-anchor"
+
+
+def test_fixture_cannot_supply_git_metadata_for_the_controller_anchor(tmp_path, fixture_dir, fake):
+    (fixture_dir / ".git").mkdir()
+    (fixture_dir / ".git/config").write_text("[core]\n\thooksPath = /fixture-hook\n")
+
+    with pytest.raises(ValueError, match="Git metadata"):
+        run(tmp_path, fixture_dir)
+
+    assert fake.calls == []
 
 
 def test_cleanup_failure_is_recorded_with_resource_ids_and_keeps_evidence(

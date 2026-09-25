@@ -25,6 +25,11 @@ from ai_dlc.verification.evaluation.drivers import Driver
 PINNED = re.compile(r"([^\s@]+@)?sha256:[0-9a-f]{64}")
 AGENT = "1000:1000"
 HOST = re.compile(r"[a-z0-9]([a-z0-9.-]*[a-z0-9])?")
+GIT_OBJECT = re.compile(r"[0-9a-f]{40}|[0-9a-f]{64}")
+GIT_ANCHOR_REF = "refs/ai-dlc/evaluation-anchor"
+GIT_AUTHOR = "AI-DLC Evaluation"
+GIT_EMAIL = "evaluation@example.invalid"
+GIT_DATE = "2000-01-01T00:00:00Z"
 PROXY_SOURCE = Path(__file__).parents[1] / "test_proxy.py"
 ISOLATION = [
     "--read-only",
@@ -89,6 +94,8 @@ def _fixture_archive(fixture: Path) -> bytes:
     fixture = fixture.resolve()
     if not fixture.is_dir():
         raise ValueError(f"Evaluation fixture is not a directory: {fixture}")
+    if any(".git" in path.relative_to(fixture).parts for path in fixture.rglob("*")):
+        raise ValueError("Evaluation fixtures cannot include Git metadata")
     if any(p.is_symlink() for p in fixture.rglob("*")):
         raise ValueError("Evaluation fixtures cannot include a symlink")
     buffer = io.BytesIO()
@@ -126,6 +133,7 @@ class _Attempt:
     ):
         self.planned, self.run_dir, self.egress = planned, run_dir, egress
         self.driver, self.client = driver, None
+        self.git_anchor: str | None = None
         self.fixture, self.install, self.steps = fixture, install, steps
         self.cancel, self.memory, self.pids = cancel, memory, pids
         self.deadline = time.monotonic() + timeout
@@ -274,6 +282,49 @@ class _Attempt:
         for command in commands:
             self.must("install", "infrastructure", "exec", self.container, *command)
         self.event("install", commands=len(commands), engine_sha256=self.planned["engine_sha256"])
+
+    def initialize_repository(self) -> None:
+        """Create the same controller-owned Git root before either arm diverges."""
+
+        common = [
+            "--env=GIT_CONFIG_NOSYSTEM=1",
+            "--env=GIT_CONFIG_GLOBAL=/dev/null",
+        ]
+
+        def git(*args: str, environment: tuple[str, ...] = ()):
+            return self.must(
+                "git-anchor",
+                "infrastructure",
+                "exec",
+                *common,
+                *[f"--env={entry}" for entry in environment],
+                self.container,
+                "git",
+                *args,
+            )
+
+        git("init", "--quiet", "--initial-branch=main", "--template=")
+        git("config", "--local", "user.name", GIT_AUTHOR)
+        git("config", "--local", "user.email", GIT_EMAIL)
+        git("add", "--all", "--", ".")
+        git(
+            "-c",
+            "commit.gpgsign=false",
+            "-c",
+            "core.hooksPath=/dev/null",
+            "commit",
+            "--quiet",
+            "--no-verify",
+            "-m",
+            "chore: stage evaluation fixture",
+            environment=(f"GIT_AUTHOR_DATE={GIT_DATE}", f"GIT_COMMITTER_DATE={GIT_DATE}"),
+        )
+        anchor = git("rev-parse", "--verify", "HEAD^{commit}").stdout.decode().strip()
+        if not GIT_OBJECT.fullmatch(anchor):
+            raise StageFailed("git-anchor", "infrastructure", "Git returned an invalid anchor")
+        git("update-ref", GIT_ANCHOR_REF, anchor)
+        self.git_anchor = anchor
+        self.event("git-anchor", commit=anchor, ref=GIT_ANCHOR_REF)
 
     def drive(self) -> None:
         (self.run_dir / "steps").mkdir(exist_ok=True)
@@ -436,6 +487,8 @@ def run_attempt(
     try:
         state.provision()
         state.stage_fixture()
+        if "client" in planned:
+            state.initialize_repository()
         state.run_install()
         state.drive()
     except Stopped as stop:
@@ -446,6 +499,8 @@ def run_attempt(
             result["limit"] = "memory"
     if driver:
         result["client"] = state.client
+    if "client" in planned:
+        result["git_anchor"] = state.git_anchor
     try:
         evidence: dict = state.collect() if state.created else {"tree": {}}
         result["evidence"] = evidence
