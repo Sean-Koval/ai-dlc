@@ -36,16 +36,24 @@ before adding surface area.
 2. **A shorter delivery path.** Count the manual commands between a tracker item
    and `work finish` on the adopted repositories, then remove or fold steps until
    the count is halved. The [delivery path baseline](verification/delivery-path-baseline.md)
-   records the starting counts and candidate reductions; start with documentation
-   evidence that is re-recorded and committed after each non-record edit.
-3. **Evaluation that measures value.** Deliver the first evaluation slice
-   ([#137](https://github.com/Sean-Koval/ai-dlc/issues/137)) with one journey and a
-   baseline arm: the same seeded task and hidden acceptance tests run with AI-DLC
-   and with the bare client. Report correctness, turns, time and spend for both.
-   Commit the `end-to-end-evaluation` OpenSpec change that #137–#141 reference
-   before implementation; it is not yet in the repository. Whether to build
-   [#138](https://github.com/Sean-Koval/ai-dlc/issues/138)–[#140](https://github.com/Sean-Koval/ai-dlc/issues/140)
-   is decided from that comparison.
+   records the starting counts, candidate reductions and the delivered per-work,
+   content-bound documentation evidence (#146). Re-record only new or stale
+   targets; unchanged decisions survive unrelated edits and target-branch movement.
+   Use observed adoption friction to prioritize the remaining reductions, including
+   the baseline's proposal for one pre-merge command.
+3. **Evaluation that measures value.** The runner, grader, report and
+   [baseline specification](../openspec/specs/end-to-end-evaluation/spec.md) from
+   [#137](https://github.com/Sean-Koval/ai-dlc/issues/137) are delivered. Their
+   deterministic fixture runs verify the machinery, not AI-DLC's value; see the
+   [evaluation evidence](verification/end-to-end-evaluation.md). Complete the first
+   comparison in [#138](https://github.com/Sean-Koval/ai-dlc/issues/138), using the
+   code slice tracked in [#166](https://github.com/Sean-Koval/ai-dlc/issues/166): one real coding
+   client, with the same version, model and goal in both arms, taking the same
+   seeded task through hidden acceptance tests with AI-DLC and with the bare
+   client. Report correctness, turns, time and spend for both. That comparison
+   remains explicitly deferred. Prepare the candidate check runtime first, as
+   described in the evaluation runbook; use results to decide broader client, recovery and
+   observer work in #138–#140.
 
 Waiting on environments or decisions, not scheduled:
 [#53](https://github.com/Sean-Koval/ai-dlc/issues/53) native client, company and

@@ -17,7 +17,13 @@ SCENARIO = {
     "checkpoints": ["reviewed-work", "pull-request"],
     "assertions": [
         {"id": "hidden-tests", "dimension": "correctness", "kind": "hidden-tests"},
-        {"id": "work-before-code", "dimension": "workflow", "kind": "ordering"},
+        {
+            "id": "work-before-code",
+            "dimension": "workflow",
+            "kind": "ordering",
+            "before": ".ai-dlc/work/*.toml",
+            "after": "src/*.py",
+        },
         {"id": "handoff-rubric", "dimension": "quality", "kind": "human-review"},
     ],
     "arms": ["treatment", "baseline"],

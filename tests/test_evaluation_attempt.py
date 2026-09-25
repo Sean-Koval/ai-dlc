@@ -2,15 +2,18 @@
 
 import io
 import json
+import os
 import shutil
 import subprocess
 import tarfile
 import threading
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
 
 IMAGE = "python@sha256:57cd7c3a7a273101a6485ba99423ee568157882804b1124b4dd04266317710de"
+ANCHOR = "1" * 40
 PLANNED = {
     "scenario": "csv-feature",
     "arm": "treatment",
@@ -19,6 +22,15 @@ PLANNED = {
     "engine_sha256": "c" * 64,
     "limits": {"timeout_minutes": 30, "max_turns": 20},
     "assertions": ["hidden-tests"],
+}
+REAL_PLANNED = {
+    **PLANNED,
+    "client": {
+        "kind": "claude-code",
+        "version": "2.1.220",
+        "model": "claude-sonnet-4-6",
+        "goal_sha256": "a" * 64,
+    },
 }
 
 
@@ -60,7 +72,13 @@ class FakeDocker:
         verb = self.verb(args)
         if verb in self.fail:
             return SimpleNamespace(returncode=1, stdout=b"", stderr=self.fail[verb].encode())
-        stdout = self.tree if verb == "collect" else b""
+        stdout = (
+            self.tree
+            if verb == "collect"
+            else f"{ANCHOR}\n".encode()
+            if args[0] == "exec" and "rev-parse" in args
+            else b""
+        )
         return SimpleNamespace(returncode=0, stdout=stdout, stderr=b"")
 
     @staticmethod
@@ -86,8 +104,9 @@ def fake(monkeypatch):
 
 
 def run(tmp_path, fixture_dir, **options):
+    planned = options.pop("planned", PLANNED)
     options.setdefault("steps", [["sh", "-c", "step-one"]])
-    return attempt().run_attempt(PLANNED, run_dir=tmp_path / "run", fixture=fixture_dir, **options)
+    return attempt().run_attempt(planned, run_dir=tmp_path / "run", fixture=fixture_dir, **options)
 
 
 def test_evidence_is_collected_before_cleanup_and_hashed(tmp_path, fixture_dir, fake):
@@ -126,6 +145,50 @@ def test_baseline_arm_skips_installation(tmp_path, fixture_dir, fake):
     )  # fmt: skip
     assert "exec:install" not in fake.verbs()
     assert "exec:step-one" in fake.verbs()
+
+
+def test_controller_stages_a_neutral_git_anchor_before_treatment_install(
+    tmp_path, fixture_dir, fake
+):
+    result = run(
+        tmp_path,
+        fixture_dir,
+        planned=REAL_PLANNED,
+        install=[["sh", "-c", "install"]],
+    )
+
+    assert result["git_anchor"] == ANCHOR
+    commands = [call for call in fake.calls if call[0] == "exec"]
+    init = next(call for call in commands if "init" in call)
+    identity = [call for call in commands if "config" in call]
+    commit = next(call for call in commands if "commit" in call)
+    anchor = next(call for call in commands if "update-ref" in call)
+    install = next(call for call in commands if call[-1] == "install")
+    assert "--initial-branch=main" in init and "--template=" in init
+    assert any(call[-2:] == ["user.name", "AI-DLC Evaluation"] for call in identity)
+    assert any(call[-2:] == ["user.email", "evaluation@example.invalid"] for call in identity)
+    assert "--env=GIT_AUTHOR_DATE=2000-01-01T00:00:00Z" in commit
+    assert "--env=GIT_COMMITTER_DATE=2000-01-01T00:00:00Z" in commit
+    assert anchor[-2:] == ["refs/ai-dlc/evaluation-anchor", ANCHOR]
+    assert (
+        commands.index(init)
+        < commands.index(commit)
+        < commands.index(anchor)
+        < commands.index(install)
+    )
+    assert all(not any("ANTHROPIC_API_KEY" in part for part in call) for call in commands[:-1])
+    events = [json.loads(line) for line in (tmp_path / "run/events.jsonl").read_text().splitlines()]
+    assert [event["kind"] for event in events][2] == "git-anchor"
+
+
+def test_fixture_cannot_supply_git_metadata_for_the_controller_anchor(tmp_path, fixture_dir, fake):
+    (fixture_dir / ".git").mkdir()
+    (fixture_dir / ".git/config").write_text("[core]\n\thooksPath = /fixture-hook\n")
+
+    with pytest.raises(ValueError, match="Git metadata"):
+        run(tmp_path, fixture_dir)
+
+    assert fake.calls == []
 
 
 def test_cleanup_failure_is_recorded_with_resource_ids_and_keeps_evidence(
@@ -200,6 +263,29 @@ def docker_ready():
 docker = pytest.mark.skipif(
     not docker_ready(), reason="Docker or the digest-pinned image is unavailable; never pulled"
 )
+CANDIDATE = os.environ.get("AI_DLC_EVAL_CANDIDATE_IMAGE")
+BASE_IMAGE = os.environ.get("AI_DLC_EVAL_BASE_IMAGE")
+
+
+def candidate_ready():
+    if not CANDIDATE or not BASE_IMAGE or not shutil.which("docker"):
+        return False
+    return all(
+        subprocess.run(
+            ["docker", "image", "inspect", image],
+            capture_output=True,
+            check=False,
+            timeout=30,
+        ).returncode
+        == 0
+        for image in (CANDIDATE, BASE_IMAGE)
+    )
+
+
+candidate = pytest.mark.skipif(
+    not candidate_ready(),
+    reason="Set AI_DLC_EVAL_BASE_IMAGE and AI_DLC_EVAL_CANDIDATE_IMAGE to local images",
+)
 PY = ["python", "-c"]
 WRITE = (
     "import pathlib,os;pathlib.Path('/work/project/made.txt').write_text('one');"
@@ -214,6 +300,57 @@ EGRESS = (
     "import socket,sys;s=socket.socket();s.settimeout(3);"
     "sys.exit(0 if s.connect_ex(('1.1.1.1',443)) else 1)"
 )
+
+
+@candidate
+def test_real_candidate_adopts_guidance_without_leaking_it_to_baseline(tmp_path):
+    from ai_dlc.verification.evaluation.drivers import ClaudeCode
+
+    planned = dict(REAL_PLANNED, image=CANDIDATE)
+    install = ClaudeCode().install(planned)
+    verify = [
+        "sh",
+        "-c",
+        (
+            "test -f CLAUDE.md && test -f .claude/skills/day-start/SKILL.md "
+            "&& ai-dlc agents render --check "
+            "&& python -m unittest discover -s tests"
+        ),
+    ]
+
+    result = attempt().run_attempt(
+        planned,
+        run_dir=tmp_path / "run",
+        fixture=Path(__file__).resolve().parents[1] / "evaluations/fixtures/csv-validator",
+        install=install,
+        steps=[verify],
+        timeout_seconds=120,
+    )
+    baseline = attempt().run_attempt(
+        dict(REAL_PLANNED, arm="baseline", image=BASE_IMAGE, engine_sha256=None),
+        run_dir=tmp_path / "baseline",
+        fixture=Path(__file__).resolve().parents[1] / "evaluations/fixtures/csv-validator",
+        install=install,
+        steps=[["python", "-m", "unittest", "discover", "-s", "tests"]],
+        timeout_seconds=120,
+    )
+
+    assert result["outcome"] == "completed", result
+    assert baseline["outcome"] == "completed", baseline
+    assert result["git_anchor"] == baseline["git_anchor"]
+    project = tmp_path / "run/tree/project"
+    baseline_project = tmp_path / "baseline/tree/project"
+    assert (project / "CLAUDE.md").read_text() == "@AGENTS.md\n"
+    assert (project / ".claude/skills/day-start/SKILL.md").is_file()
+    assert (project / ".git/refs/ai-dlc/evaluation-anchor").read_text().strip() == result[
+        "git_anchor"
+    ]
+    assert not (baseline_project / "CLAUDE.md").exists()
+    assert not (baseline_project / "AI-DLC.md").exists()
+    assert not (baseline_project / "ai-dlc.toml").exists()
+    step = json.loads((tmp_path / "run/steps/01.json").read_text())
+    assert step["exit_code"] == 0
+    assert "Ran 3 tests" in step["stderr"]
 
 
 @docker

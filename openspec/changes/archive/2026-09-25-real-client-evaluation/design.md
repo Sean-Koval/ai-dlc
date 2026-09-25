@@ -80,6 +80,32 @@ test.
 - Not covered: the agent can still send arbitrary data to a listed host. The
   allow-list limits destinations, not content.
 
+## Decisions made during task 2 (base image)
+
+- The recipe is data, `evaluations/images/claude-code.json`, validated by a
+  `base-image` contract: a digest-pinned parent, distribution packages, and one
+  client with its version and the published binary's sha256 per Linux platform.
+  `ai-dlc eval base RECIPE` builds it; `eval image --base <its id>` builds the
+  candidate on top, unchanged.
+- The controller downloads the client over https, checks the sha256 against the
+  recipe, and copies it into the build. The first attempt used
+  `ADD --checksum`, which needs BuildKit; the maintainer machine's Docker has no
+  buildx, so the build must not depend on it. Verifying in our own code is also
+  testable without Docker.
+- The client is the native binary from the vendor's release bucket, not the npm
+  package, so the image needs no Node.
+- After building, Git and the client are run with no network as uid 1000, and
+  the client must report the recipe's version.
+- Distribution packages are not version-pinned. The result is identified by its
+  image ID and both arms use that ID, so the arms cannot differ in them; two
+  builds on different days can.
+- Verified on the maintainer machine: base built in 15 s with Git 2.47.3 and
+  client 2.1.220; the candidate built on it; `ai-dlc project adopt --apply` ran
+  offline as uid 1000 and exited 0, where the slim image failed for lack of Git.
+- Finding for task 7: that adopt wrote `AI-DLC.md` but no `CLAUDE.md` or
+  `.claude/`. The install stage must select the client
+  (`--agent-client`) or the agent has no guidance to discover.
+
 ## Risks
 
 - Model output varies; three attempts will often disagree. The report shows the
@@ -87,3 +113,13 @@ test.
 - The proxy is new attack surface inside the isolation boundary. It is a fixed,
   pinned image with a static allow-list and no credential.
 - A real run costs money. Nothing runs on CI; every real run is started by hand.
+
+## Delivery and deferred qualification
+
+On September 25, 2026 the maintainer requested code completion and merge,
+explicitly deferring the paid comparison. Tasks 0–7 define this implementation
+slice. The original task 8 comparison is retained as deferred qualification, not
+as an executed task. A future run uses the same three-attempt-per-arm design and
+approved budget; no budget increase or productivity claim follows from merging
+the machinery. The code slice receives its own tracker reference; parent #138
+remains open for the comparison and its broader pending journeys.

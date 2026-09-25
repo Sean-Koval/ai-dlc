@@ -2,17 +2,35 @@
   "decisions": [
     {
       "bound": {
-        "contracts/evaluation/profile.schema.json": "498d9fe733a72ec1972a80bacf22351e17b922b64a4b6a1aaa2bf6cf70902bad"
+        "contracts/evaluation/base-image.schema.json": "52c6a86e3d3004ef3f2ed181579944dc8524a97ad48a1356546759551eaecd51"
       },
       "outcome": "updated",
-      "reason": "Regenerated for the new optional egress field.",
+      "reason": "New generated schema for the base image recipe.",
       "reviewer": "Claude Code, directed by Sean Koval",
-      "target": "contracts/evaluation/profile.schema.json"
+      "target": "contracts/evaluation/base-image.schema.json"
+    },
+    {
+      "bound": {
+        "contracts/evaluation/report.schema.json": "05b0d2e99b88eddc1caedc4b11521852fed28ef2f475bcf1db27bb811a3dacfa"
+      },
+      "outcome": "updated",
+      "reason": "Regenerated the report contract to represent not-started budget refusals without classifying them as product or infrastructure failures.",
+      "reviewer": "Codex task5 implementation documentation review",
+      "target": "contracts/evaluation/report.schema.json"
+    },
+    {
+      "bound": {
+        "contracts/evaluation/scenario.schema.json": "53335b042ae572c7f62ce40dff62cd756d306a564027fe62cbbfbbca53bd6f64"
+      },
+      "outcome": "updated",
+      "reason": "Generated schema exposes Git assertion path/before/after selectors with validated combinations.",
+      "reviewer": "Codex integration review against code, scoped reviews and actual adoption evidence",
+      "target": "contracts/evaluation/scenario.schema.json"
     },
     {
       "bound": {
         "catalog:docs/architecture.md": "1f6e70913f96f235139fc0202ea5c5e9f90e16afd4473e90f500f16994a4ec40",
-        "docs/architecture.md": "766e63828ec86940f253b42e03070b3074cf5e3a95833b545d5c6b30e2131bf0",
+        "docs/architecture.md": "b8e3626d51380f70f345931419c1cafe541d750b5045ec68f49ed84d58c180cb",
         "pyproject.toml": "296acf5ff015bc4aaf17576c4210e8c69988beb35e11507250a45c0dc534e4d5",
         "scripts/check_generated.py": "00e325b0da860ed329f3fbc40a99cc503d9a6b185f98f5627c1d465591681f98",
         "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
@@ -21,7 +39,7 @@
         "scripts/run_skill_evaluation.py": "46a97694bae155b2418d172971480e031f510acc864b9d91fa546f98c754729f",
         "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
         "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
-        "src/ai_dlc/cli.py": "345299a833a263242649621066ffaa896ac8e9260a37bad6e0758a6d347d7f96",
+        "src/ai_dlc/cli.py": "adf101a1ea24b8c9478aba4c408124f45940bfd349f7103c956ca897c22e7b36",
         "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
         "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
         "src/ai_dlc/config.py": "dd596570054e3f455b90dc5cea2a86c97175b2c4ec4243328755dc1884ececc1",
@@ -66,7 +84,7 @@
         "src/ai_dlc/harness/user_agents.py": "c99f9a52a379feaa0c1721081b95fef91f51c44f0a9e906145de51154616e937",
         "src/ai_dlc/harness/workflow_bundles.py": "477dc842b3cdfe240a54a96910786693f9f3b75f2fd528753440c29f26330b36",
         "src/ai_dlc/locking.py": "f1cfe828e897e11d73b645130060362e2699f75aac9307ed8cb4955b0533b629",
-        "src/ai_dlc/mcp_server.py": "f159ac251bd9b65fb4fdeb404380be3a2afb9fbac013e0a0e19315ad738bd612",
+        "src/ai_dlc/mcp_server.py": "607eba3e47a8573862d83e5209e824b78ec0af74545fa51727b8d3f7c03db410",
         "src/ai_dlc/provider_definitions.py": "e90c2d41a839bc4a32dcb3989f59fa6c9073bd1233f3db2088bd176e1bc513d3",
         "src/ai_dlc/providers/__init__.py": "5ea49e6d446942d80f9744acf9702bb42ce041a55a7e3e25e9b871f9d3bc3162",
         "src/ai_dlc/providers/evaluation_api.py": "5c3a9b890c88d4633fc553dbe206c415c5ceb1f6679cefdf7d215d8680fcec17",
@@ -97,14 +115,16 @@
         "src/ai_dlc/toml_edit.py": "696057b2848ca8b57e5189d1c78441fc6c1e06994f480f6f13f8dd31c050515e",
         "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
         "src/ai_dlc/verification/evaluation/__init__.py": "7cf0a3add5298d2f8d58954210cee24b3fb6a5f81e505ef3b948a7078cbb0eb8",
-        "src/ai_dlc/verification/evaluation/attempt.py": "e8fefb69d710c98aa589e4a39bcdedd155c6d3d2c3a4bd35a45dcff70f85e1c3",
-        "src/ai_dlc/verification/evaluation/contracts.py": "e0c1577ea747140ac55fec46e8c2162ea20a4793461ceb7522a79f02ec8d4c14",
-        "src/ai_dlc/verification/evaluation/drivers.py": "a05e42d43c79c05e95fd786156b3cedcef032faea9a9609bfb8c69aa68fdc1df",
-        "src/ai_dlc/verification/evaluation/evaluate.py": "c83284feaefa2ac7e780660c99b8f6603d10a1cb875d00aeec191ef7298d8be1",
-        "src/ai_dlc/verification/evaluation/image.py": "20df9b1165e57bb262ebfc4718ead9eee74fbbd86ef364b9ad694ad47441613b",
-        "src/ai_dlc/verification/evaluation/planning.py": "6e619cd5b3bc7710c4ddc94151e0c265941a0d266dff280b95137a7b0231c912",
-        "src/ai_dlc/verification/evaluation/report.py": "c00f8fe201c88a6b0bbabe1f77cbd6e35a8c7e31d357ddfb1cadbab239421097",
-        "src/ai_dlc/verification/evaluation/run.py": "cfbe671eb1958f3b7042a4f81048dd1f852ab9acd50839772c21362853f9189e",
+        "src/ai_dlc/verification/evaluation/attempt.py": "a249ad3af90f034cac3774c5406f819afe54209fe88307064c4fd822750a4717",
+        "src/ai_dlc/verification/evaluation/budgets.py": "8069eb9a4f6d24e7fe88774581b47a7d817445ac950a266684aee77fc5378826",
+        "src/ai_dlc/verification/evaluation/contracts.py": "5ab6a604c6a6ab6be54c69f58ba6a11c8db9b800011860ec9775f982908515d3",
+        "src/ai_dlc/verification/evaluation/drivers.py": "f4a81dea2b7f3f4ca793e6f1953fb7e384cc8359eae4a308768b41cccceea47f",
+        "src/ai_dlc/verification/evaluation/evaluate.py": "e8a2405d3f6e9c0e3a121b4936f617ee335abaef54e7688eafb813985e90de3a",
+        "src/ai_dlc/verification/evaluation/git_observer.py": "f6a422a1f989b3056cf82484716f0e0101719caffb54e8e96477845ed75445b3",
+        "src/ai_dlc/verification/evaluation/image.py": "d3f2970ca488c1b7a1ceaf516f0f86c8b602f74b0fffe1ddbd2d35a13b31167b",
+        "src/ai_dlc/verification/evaluation/planning.py": "f0a6844c5511db3d4c420f9c7638e47b6d86810968d16a3767de6373c2a971c6",
+        "src/ai_dlc/verification/evaluation/report.py": "fa025c820f8a1a411ec413a7541d30fdf355955bec1f70bc9da220910993c88b",
+        "src/ai_dlc/verification/evaluation/run.py": "271c2aabb8af62d3629a78c6db6d38e23956a3cb5f0363a6a8ec38e6394d52e4",
         "src/ai_dlc/verification/sandbox.py": "c017bd12115b8f144d07eba619f4e15ddbd00db323e4d386f569c4bcb08646e0",
         "src/ai_dlc/verification/test_proxy.py": "30ec2d29bf722d48f7341977542feef4a0c5ef9f90c90b158e869c5025d1c8d5",
         "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
@@ -115,66 +135,206 @@
         "src/ai_dlc/work/workflow.py": "b16ef66b0bea70ece8aaf15003e5e0233dbcff82051b3da24d59b94106da3fca"
       },
       "outcome": "reviewed-no-change",
-      "reason": "The row already names the attempt lifecycle and the conformance proxy; egress is a behavior of those, not a new piece.",
-      "reviewer": "Claude Code, directed by Sean Koval",
+      "reason": "Git observation, native adoption and budget integration remain inside the existing evaluation package and controller/evaluator responsibilities; no public entry-point or package boundary changed.",
+      "reviewer": "Codex integration review against code, scoped reviews and actual adoption evidence",
       "target": "docs/architecture.md"
     },
     {
       "bound": {
-        "docs/catalog.toml": "33320fe0bd4c78dc7e93edb2df462e8b7424f1cbae14e5b4277d560f23f92b23"
+        "docs/catalog.toml": "157cc64d885b9bb069289db320e6bc114a8f3964be2c5526f4943d74640702bf"
       },
       "outcome": "updated",
-      "reason": "Maps the egress test to the evaluation runbook.",
-      "reviewer": "Claude Code, directed by Sean Koval",
+      "reason": "Maps the new Git observer, real-client suite and actual-Git regression tests to the existing canonical evaluation verification page.",
+      "reviewer": "Codex integration review against code, scoped reviews and actual adoption evidence",
       "target": "docs/catalog.toml"
     },
     {
       "bound": {
-        "catalog:docs/verification/end-to-end-evaluation.md": "9d0a1d6078afb8a7f463b059c60b08b9a5a808e3f37a00bdc2269b5674f445eb",
-        "docs/verification/end-to-end-evaluation.md": "f5cb45768458b9c38f2c07f08ff918e710b8b08a18349fe4e84d1632b6934aa0",
-        "evaluations/README.md": "141d85e3f5fe3872c571351f3e4f20f93222ad07c656c80abde8080672d69567",
-        "evaluations/profiles/local-deterministic.json": "0e0deb70f592f3ebad0a420daf815c536eab6c74c421ec4e10329614a65d3d6b",
-        "evaluations/suites/smoke.json": "4f24319f9c734a2b5fa01cc01b2f831bb79a230800697b160ad29aa87f98a9d7",
-        "openspec/specs/end-to-end-evaluation/spec.md": "ae46e6902ba9f869b9e3351b8a2c7f3f538b30db127198c0148e6804af663aae",
-        "src/ai_dlc/verification/evaluation/__init__.py": "7cf0a3add5298d2f8d58954210cee24b3fb6a5f81e505ef3b948a7078cbb0eb8",
-        "src/ai_dlc/verification/evaluation/attempt.py": "e8fefb69d710c98aa589e4a39bcdedd155c6d3d2c3a4bd35a45dcff70f85e1c3",
-        "src/ai_dlc/verification/evaluation/contracts.py": "e0c1577ea747140ac55fec46e8c2162ea20a4793461ceb7522a79f02ec8d4c14",
-        "src/ai_dlc/verification/evaluation/drivers.py": "a05e42d43c79c05e95fd786156b3cedcef032faea9a9609bfb8c69aa68fdc1df",
-        "src/ai_dlc/verification/evaluation/evaluate.py": "c83284feaefa2ac7e780660c99b8f6603d10a1cb875d00aeec191ef7298d8be1",
-        "src/ai_dlc/verification/evaluation/image.py": "20df9b1165e57bb262ebfc4718ead9eee74fbbd86ef364b9ad694ad47441613b",
-        "src/ai_dlc/verification/evaluation/planning.py": "6e619cd5b3bc7710c4ddc94151e0c265941a0d266dff280b95137a7b0231c912",
-        "src/ai_dlc/verification/evaluation/report.py": "c00f8fe201c88a6b0bbabe1f77cbd6e35a8c7e31d357ddfb1cadbab239421097",
-        "src/ai_dlc/verification/evaluation/run.py": "cfbe671eb1958f3b7042a4f81048dd1f852ab9acd50839772c21362853f9189e",
-        "tests/test_evaluation_attempt.py": "432739434aa58c1ee2cf2fd392b3d0b1f4078980eb9f69c6e5a07018e1e3ec00",
-        "tests/test_evaluation_driver.py": "bae0e72a3dab4c1f6d3f713f3ee54301bf1f6b3632e5f98f56afa1c5bcdbe62e",
-        "tests/test_evaluation_egress.py": "92a0b9629e039da35da0572e3afe2f20ab5e4cefda500f5dae0a1c104a4db810",
-        "tests/test_evaluation_image.py": "b76a456529ea17dab1476bd7e9e60ab904af1130574fcf6be1404a12d9801ba9",
-        "tests/test_evaluation_planning.py": "3745f05df7f260feff6789d8da3747cebb1d6b8c5033c7aec3ca91f5da167d76",
-        "tests/test_evaluation_report.py": "95494d689a851b7fa20a0a8a3ddbf30f5a01adbc10cdf0e2b1f4c5f1600c8cd9",
-        "tests/test_evaluation_run.py": "edc99627ced20eba905a8d4952b81802a4c6daf63e3577feac77c07972da41db"
+        "catalog:docs/development-workflow.md": "ed2dba4ee9eacac4ecf7498a164bbc1a5736973c46b0dc8d6f587607263dffdb",
+        "docs/development-workflow.md": "f18e02fe48517933a4abd54a81ec921e433c4f69e6e0649b8586dd1941275f67"
       },
       "outcome": "updated",
-      "reason": "Adds the restricted-network section with its verification and limit.",
-      "reviewer": "Claude Code, directed by Sean Koval",
+      "reason": "Explains team-selected capabilities, shipped skill selection, existing acceptance commands and the distinction between generated checks and behavioral verification.",
+      "reviewer": "Codex integration review against code, scoped reviews and actual adoption evidence",
+      "target": "docs/development-workflow.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/product-direction.md": "51c77801463e07f0a30be18f575c2a7142670fc4b6138c842213a0767c5a21fa",
+        "docs/product-direction.md": "eca807dc02dae204451dde582e28b2443fb6222f087284e58488ae65ff4c7e88"
+      },
+      "outcome": "updated",
+      "reason": "States team-owned workflows and small relevant context as direction, without claiming unimplemented progressive loading or proven productivity gains.",
+      "reviewer": "Codex integration review against code, scoped reviews and actual adoption evidence",
+      "target": "docs/product-direction.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/roadmap.md": "3bf3afbf1117b7747e4c261c4a0ac1781559085c96abed00632a9804166918b8",
+        "docs/roadmap.md": "3ebef191419fdc4ca46672014b3e79b7e406132adc04b69b88e50bbd2d6b959c"
+      },
+      "outcome": "updated",
+      "reason": "Separates delivered code issue166 from deferred paid comparison and broader138; names the candidate check-runtime prerequisite.",
+      "reviewer": "Codex integration review against code, scoped reviews and actual adoption evidence",
+      "target": "docs/roadmap.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/runbooks/machine-enrollment.md": "f4f15742945ec70529ad55b6edec7845ff9ba881d049b9df4cd7b99fa38c3093",
+        "docs/runbooks/machine-enrollment.md": "d55b2c81c4e2c783a99f4d6cbca8934440268dbfc3d86297bd77c5ddf5bfe46f",
+        "profiles/example/ai-dlc-profile.toml": "29b58a995e46b38ac75e5db5756e766e6b130f26e162448fc41fee898e7ff01e",
+        "src/ai_dlc/config.py": "dd596570054e3f455b90dc5cea2a86c97175b2c4ec4243328755dc1884ececc1",
+        "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
+        "src/ai_dlc/environment/bootstrap.py": "d006353cb750ae2d57e591cf67629eab41cab1ddc6ed41d2fe60bcee60595bfd",
+        "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
+        "src/ai_dlc/environment/enrollment.py": "f8e826a9dca7a8e308f9ad52c8f178ad7e6f2c6c536da7459a68c123d51e9c53",
+        "src/ai_dlc/environment/machine.py": "2c3981ab3e8e4e52d2c3f86f02d8714bf92dd3229eaff99c72ac91961fbbd16a",
+        "src/ai_dlc/environment/profile_source.py": "f177cc9336ed7c69e37299bc70107f14a7878ff72abbd1070dc3560340d451cc",
+        "src/ai_dlc/environment/source_content.py": "c11618009a7d4c3dbaa03b49d80df3a6f7cae37338a9fe92166865379d89670a",
+        "src/ai_dlc/environment/source_schema.py": "929944f86aef4a0aa2e257f3fbb4bee26ce07c522ed2eb35c2e1bbba38ec44d0",
+        "src/ai_dlc/environment/team_sources.py": "20d583a9046adfac9f0f5bf6de7aca537654eb29d0ff636c27f5a78c7c5c21a6",
+        "src/ai_dlc/harness/agents.py": "1a34ea2684a93d9d4d443bfc69a46a691ebc6004fcfe1b92e8c7c0e824999589",
+        "src/ai_dlc/harness/hooks.py": "4c1d41b1d6294dd97ad5ecf14bc49026d100b387bf8de9867c49ee8c41e8d311",
+        "src/ai_dlc/harness/team_source_render.py": "a841a5563972588056ba321a8d2de9e1217e3ad4804a3b460bba79b83d8528af",
+        "src/ai_dlc/providers/teamai.py": "ff7a781abcaeeca1c978f9472502156e31a1fc6d192ac50e1e489d333b77a5e6",
+        "tests/test_team_sources.py": "a195cbfe523caaf8785d5517063e10777207becd18faf3abfa6b33350d5a0f53"
+      },
+      "outcome": "updated",
+      "reason": "Discloses current eager duplication of selected team skill bodies in shared guidance and native skill files; no on-demand loading claim.",
+      "reviewer": "Codex integration review against code, scoped reviews and actual adoption evidence",
+      "target": "docs/runbooks/machine-enrollment.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/end-to-end-evaluation.md": "05f143aee20a2185097e34892dc7ca2af1124103a0a69901af06397dd877a2c8",
+        "docs/verification/end-to-end-evaluation.md": "905b6365ff8576927ae13d8ffa3e5e3a37e9d35a3457688b11de970c495a8d5f",
+        "evaluations/README.md": "15de8ce286ed8dad9b3a0a8bd0c8250d702cd422fa8a01df48f62e9417464c43",
+        "evaluations/images/claude-code.json": "025911bda6303e83be72ed61ddb912863366b4e7df41d49af00f6dbebb0fa96d",
+        "evaluations/profiles/local-deterministic.json": "0e0deb70f592f3ebad0a420daf815c536eab6c74c421ec4e10329614a65d3d6b",
+        "evaluations/suites/real-client.json": "a21ef76ccde1adeba48a15e3373839586a38b925acaaed9fed23f666a66e886e",
+        "evaluations/suites/smoke.json": "4f24319f9c734a2b5fa01cc01b2f831bb79a230800697b160ad29aa87f98a9d7",
+        "openspec/specs/end-to-end-evaluation/spec.md": "e6bac03b7eabc83bd62443bd0e05fe668ecb3444a805970367fa2487dab71372",
+        "src/ai_dlc/verification/evaluation/__init__.py": "7cf0a3add5298d2f8d58954210cee24b3fb6a5f81e505ef3b948a7078cbb0eb8",
+        "src/ai_dlc/verification/evaluation/attempt.py": "a249ad3af90f034cac3774c5406f819afe54209fe88307064c4fd822750a4717",
+        "src/ai_dlc/verification/evaluation/budgets.py": "8069eb9a4f6d24e7fe88774581b47a7d817445ac950a266684aee77fc5378826",
+        "src/ai_dlc/verification/evaluation/contracts.py": "5ab6a604c6a6ab6be54c69f58ba6a11c8db9b800011860ec9775f982908515d3",
+        "src/ai_dlc/verification/evaluation/drivers.py": "f4a81dea2b7f3f4ca793e6f1953fb7e384cc8359eae4a308768b41cccceea47f",
+        "src/ai_dlc/verification/evaluation/evaluate.py": "e8a2405d3f6e9c0e3a121b4936f617ee335abaef54e7688eafb813985e90de3a",
+        "src/ai_dlc/verification/evaluation/git_observer.py": "f6a422a1f989b3056cf82484716f0e0101719caffb54e8e96477845ed75445b3",
+        "src/ai_dlc/verification/evaluation/image.py": "d3f2970ca488c1b7a1ceaf516f0f86c8b602f74b0fffe1ddbd2d35a13b31167b",
+        "src/ai_dlc/verification/evaluation/planning.py": "f0a6844c5511db3d4c420f9c7638e47b6d86810968d16a3767de6373c2a971c6",
+        "src/ai_dlc/verification/evaluation/report.py": "fa025c820f8a1a411ec413a7541d30fdf355955bec1f70bc9da220910993c88b",
+        "src/ai_dlc/verification/evaluation/run.py": "271c2aabb8af62d3629a78c6db6d38e23956a3cb5f0363a6a8ec38e6394d52e4",
+        "tests/fixtures/evaluation/claude-code-2.1.220.jsonl": "9801333e7ad60c9f64e3c4f7e9e5f74134fc0ad0b572a9e71db4e33326a86d00",
+        "tests/test_evaluation_attempt.py": "2a6c484aee2488af5508bf208dc9a294d1413e95b03dc1a7356262a0a9bc893f",
+        "tests/test_evaluation_base_image.py": "ff95e2bab7233fbbf37734231a2892753e48f5669ffbad31c234479e71884400",
+        "tests/test_evaluation_budgets.py": "649afd1b4482ce257b1f1f166102b049b04203d1a7a60b0721ee66d80726bdef",
+        "tests/test_evaluation_claude.py": "5a44c43c50560abbd0bdab3fc22e84f6e5cd5dba41729048d89f8aaf4ecafa31",
+        "tests/test_evaluation_driver.py": "bae0e72a3dab4c1f6d3f713f3ee54301bf1f6b3632e5f98f56afa1c5bcdbe62e",
+        "tests/test_evaluation_egress.py": "8b650b41e20766814bec8cd7747972cc33a95aa58923b33466d2124f35852e50",
+        "tests/test_evaluation_git_observer.py": "06305ee9985cb79e434628bbc08d4b3124742987db390859507ad6c9be5d88b7",
+        "tests/test_evaluation_image.py": "b76a456529ea17dab1476bd7e9e60ab904af1130574fcf6be1404a12d9801ba9",
+        "tests/test_evaluation_planning.py": "3cc3389999c746b4c7bc20960316fa4b8242121ab5c2a1a2ed06cded8794fc7f",
+        "tests/test_evaluation_report.py": "8671fac524cdfc38b85b4819b4e8e5cde3b610c1295f41d9ede075772e14a94c",
+        "tests/test_evaluation_run.py": "4677004ea79065b86371b23700041e0cb3cbf7b15ef7770d40868fc1bd616b62"
+      },
+      "outcome": "updated",
+      "reason": "Documents controller anchor and safe Git observation, ordinary treatment adoption, actual image smoke provenance, deterministic compatibility, and explicit missing-mise and paid-comparison limits; distinguishes implementation archive from outcome qualification.",
+      "reviewer": "Codex integration review against code, scoped reviews and actual adoption evidence",
       "target": "docs/verification/end-to-end-evaluation.md"
     },
     {
       "bound": {
-        "openspec/changes/real-client-evaluation/design.md": "af18702edf76ca5ccba13dfc6d5b503dd8df05838a549f63e553d178b02f9b1b"
+        "catalog:docs/workflows/tool-map.md": "f50e0a853e00ab08729f6bd5bdf4cca447b033b23ca5169bb5f6556c0991dc8e",
+        "docs/workflows/tool-map.md": "db0754512351b202e27aa6fcefd02463cbc067a8f3c3c6488e2cd9f679c1ec20",
+        "src/ai_dlc/cli.py": "adf101a1ea24b8c9478aba4c408124f45940bfd349f7103c956ca897c22e7b36",
+        "src/ai_dlc/mcp_server.py": "607eba3e47a8573862d83e5209e824b78ec0af74545fa51727b8d3f7c03db410"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Reviewed the guidance cherry-pick conflict resolution: retained expanded MCP documentation/workspace capabilities and the real-client restricted-network description together. Budget detail belongs in the canonical evaluation runbook.",
+      "reviewer": "Codex task5 implementation documentation review",
+      "target": "docs/workflows/tool-map.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-25-real-client-evaluation/design.md": "b1a658d09439d72518bdfd6bd5bb1f05e08b3be451cbce93dad9b1a21555a6e1"
       },
       "outcome": "updated",
-      "reason": "Records the task 3 decisions, the real-Docker verification and what the allow-list does not cover.",
-      "reviewer": "Claude Code, directed by Sean Koval",
+      "reason": "Archived the delivered EE08\u2013EE11 implementation and retained the maintainer-directed paid-comparison deferral explicitly; tasks do not claim a model run occurred.",
+      "reviewer": "Codex integration review against code, scoped reviews and actual adoption evidence",
+      "target": "openspec/changes/archive/2026-09-25-real-client-evaluation/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-25-real-client-evaluation/proposal.md": "ed8200fc9fd42daeab4eaec48360322d36777546ba60530539472143b19cfa8e"
+      },
+      "outcome": "updated",
+      "reason": "Archived the delivered EE08\u2013EE11 implementation and retained the maintainer-directed paid-comparison deferral explicitly; tasks do not claim a model run occurred.",
+      "reviewer": "Codex integration review against code, scoped reviews and actual adoption evidence",
+      "target": "openspec/changes/archive/2026-09-25-real-client-evaluation/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-25-real-client-evaluation/specs/end-to-end-evaluation/spec.md": "7b2b754eb1363f06e98178a42b1dbb1e7d30b4c3ac9c245f3845ee0b804b4f06"
+      },
+      "outcome": "updated",
+      "reason": "Archived the delivered EE08\u2013EE11 implementation and retained the maintainer-directed paid-comparison deferral explicitly; tasks do not claim a model run occurred.",
+      "reviewer": "Codex integration review against code, scoped reviews and actual adoption evidence",
+      "target": "openspec/changes/archive/2026-09-25-real-client-evaluation/specs/end-to-end-evaluation/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-25-real-client-evaluation/tasks.md": "e596b96ff9cf477cc236ba606b67013d00f833a9284dea8ca6dc0d3bf260cc5d"
+      },
+      "outcome": "updated",
+      "reason": "Archived the delivered EE08\u2013EE11 implementation and retained the maintainer-directed paid-comparison deferral explicitly; tasks do not claim a model run occurred.",
+      "reviewer": "Codex integration review against code, scoped reviews and actual adoption evidence",
+      "target": "openspec/changes/archive/2026-09-25-real-client-evaluation/tasks.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/real-client-evaluation/design.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Moved this active change artifact to openspec/changes/archive/2026-09-25-real-client-evaluation via work archive; preserved its rationale and deferred comparison, and promoted delivered requirements.",
+      "reviewer": "Codex integration review against code, scoped reviews and actual adoption evidence",
       "target": "openspec/changes/real-client-evaluation/design.md"
     },
     {
       "bound": {
-        "openspec/changes/real-client-evaluation/tasks.md": "bec878919a58bb01f5df4ad9a589dd5d6c60170479f187f2757d751a26bce18d"
+        "openspec/changes/real-client-evaluation/proposal.md": "missing"
       },
       "outcome": "updated",
-      "reason": "Ticks task 3.",
-      "reviewer": "Claude Code, directed by Sean Koval",
+      "reason": "Moved this active change artifact to openspec/changes/archive/2026-09-25-real-client-evaluation via work archive; preserved its rationale and deferred comparison, and promoted delivered requirements.",
+      "reviewer": "Codex integration review against code, scoped reviews and actual adoption evidence",
+      "target": "openspec/changes/real-client-evaluation/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/real-client-evaluation/specs/end-to-end-evaluation/spec.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Moved this active change artifact to openspec/changes/archive/2026-09-25-real-client-evaluation via work archive; preserved its rationale and deferred comparison, and promoted delivered requirements.",
+      "reviewer": "Codex integration review against code, scoped reviews and actual adoption evidence",
+      "target": "openspec/changes/real-client-evaluation/specs/end-to-end-evaluation/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/real-client-evaluation/tasks.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Moved this active change artifact to openspec/changes/archive/2026-09-25-real-client-evaluation via work archive; preserved its rationale and deferred comparison, and promoted delivered requirements.",
+      "reviewer": "Codex integration review against code, scoped reviews and actual adoption evidence",
       "target": "openspec/changes/real-client-evaluation/tasks.md"
+    },
+    {
+      "bound": {
+        "project-templates/project/docs/workflows/tool-map.md": "2e802429dca934204f0087a21380e518f80b3c368e7063cde0af8922c058b90b"
+      },
+      "outcome": "updated",
+      "reason": "Keeps the portable tool map aligned with deterministic offline and real-client restricted proxy behavior.",
+      "reviewer": "Codex task4 review-fix implementation review",
+      "target": "project-templates/project/docs/workflows/tool-map.md"
     }
   ],
   "schema": 2

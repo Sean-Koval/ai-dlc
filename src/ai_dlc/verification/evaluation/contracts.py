@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
 Identifier = Annotated[str, StringConstraints(pattern=r"^[a-z0-9][a-z0-9-]*$")]
 Sha256 = Annotated[str, StringConstraints(pattern=r"^[0-9a-f]{64}$")]
@@ -39,12 +39,30 @@ class Assertion(Strict):
     dimension: Dimension
     kind: Identifier
     expect: Text | None = None
+    path: Text | None = None
+    before: Text | None = None
+    after: Text | None = None
     mandatory: bool = True
+
+    @model_validator(mode="after")
+    def git_selectors(self):
+        if self.kind == "commit-present":
+            if self.before is not None or self.after is not None:
+                raise ValueError("commit-present accepts only the optional path selector")
+        elif self.kind == "path-committed":
+            if self.path is None or self.before is not None or self.after is not None:
+                raise ValueError("path-committed requires path and no ordering selectors")
+        elif self.kind == "ordering" and (
+            self.before is None or self.after is None or self.path is not None
+        ):
+            raise ValueError("ordering requires before and after selectors")
+        return self
 
 
 class Limits(Strict):
     timeout_minutes: Annotated[int, Field(ge=1)] = 30
     max_turns: Annotated[int, Field(ge=1)] = 20
+    max_spend_usd: Annotated[float, Field(ge=0, allow_inf_nan=False)] | None = None
 
 
 class Scenario(Strict):
@@ -83,7 +101,7 @@ class Budgets(Strict):
     """Explicit on purpose: a missing spend setting must not become an unlimited one."""
 
     max_tokens: Annotated[int, Field(ge=0)]
-    max_spend_usd: Annotated[float, Field(ge=0)]
+    max_spend_usd: Annotated[float, Field(ge=0, allow_inf_nan=False)]
 
 
 class Egress(Strict):
@@ -134,7 +152,13 @@ class ArmReport(Strict):
     arm: Literal["treatment", "baseline"]
     attempt: Annotated[int, Field(ge=1)]
     outcome: Literal[
-        "completed", "infrastructure", "product", "workflow-violation", "unavailable", "incomplete"
+        "completed",
+        "infrastructure",
+        "product",
+        "workflow-violation",
+        "unavailable",
+        "incomplete",
+        "not-started",
     ]
     stage: str | None = None
     limit: str | None = None
@@ -153,4 +177,26 @@ class Report(Strict):
     comparison: dict
 
 
-SCHEMAS = {"scenario": Scenario, "profile": Profile, "event": Event, "report": Report}
+class Client(Strict):
+    kind: Literal["claude-code"]
+    version: Annotated[str, StringConstraints(pattern=r"^[0-9]+\.[0-9]+\.[0-9]+$")]
+    # The published binary's digest per platform; the build refuses any other bytes.
+    sha256: Annotated[dict[Literal["linux-x64", "linux-arm64"], Sha256], Field(min_length=1)]
+
+
+class BaseImage(Strict):
+    """The image both arms share: a pinned parent, distribution packages and one client."""
+
+    schema_version: Literal[1] = Field(alias="schema")
+    parent: Image = Field(alias="from")
+    packages: list[Annotated[str, StringConstraints(pattern=r"^[a-z0-9][a-z0-9+.-]*$")]] = []
+    client: Client
+
+
+SCHEMAS = {
+    "scenario": Scenario,
+    "profile": Profile,
+    "event": Event,
+    "report": Report,
+    "base-image": BaseImage,
+}

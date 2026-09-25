@@ -515,6 +515,16 @@ def eval_image(
     emit(built)
 
 
+@evaluation.command("base")
+def eval_base(recipe: Path):
+    """Build the image both arms share from a recipe: pinned parent, Git and a pinned client."""
+    from ai_dlc.verification.evaluation.image import build_base
+
+    with service_call():
+        built = build_base(_read_declaration(recipe))
+    emit(built)
+
+
 @evaluation.command("report")
 def eval_report(run_directory: Path):
     """Rebuild JSON, JUnit and a failure timeline from a run directory; starts nothing."""

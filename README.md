@@ -92,9 +92,22 @@ ai-dlc project adopt --root /path/to/repo --preset generic --tracker github-issu
 # Repeat the adoption command with --apply to write the reviewed changes.
 ```
 
-Run `ai-dlc project setup` and `ai-dlc project check --required` from the new
-project. Choose `generic`, `python`, `node`, or `rust`; optional capabilities
-include `backend` contract checks and `frontend` browser smoke tests.
+For a newly generated project, initialize Git, run setup, and commit the generated
+configuration and lockfile before checking. Checks bind their receipt to `HEAD`:
+
+```sh
+cd my-project
+git init
+ai-dlc project setup
+git add .
+git commit -m "chore: initialize project"
+ai-dlc project check --required
+```
+
+For an adopted repository, use its existing Git history; run setup and review and
+commit the adoption and setup changes before checking. Choose `generic`, `python`,
+`node`, or `rust`; optional capabilities include `backend` contract checks and
+`frontend` browser smoke tests.
 
 Projects created with the released engine carry its release manifest for their
 own bootstrap and CI. Source-generated projects need a published

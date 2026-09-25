@@ -20,9 +20,16 @@ import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 
+from ai_dlc.verification.evaluation.drivers import Driver
+
 PINNED = re.compile(r"([^\s@]+@)?sha256:[0-9a-f]{64}")
 AGENT = "1000:1000"
 HOST = re.compile(r"[a-z0-9]([a-z0-9.-]*[a-z0-9])?")
+GIT_OBJECT = re.compile(r"[0-9a-f]{40}|[0-9a-f]{64}")
+GIT_ANCHOR_REF = "refs/ai-dlc/evaluation-anchor"
+GIT_AUTHOR = "AI-DLC Evaluation"
+GIT_EMAIL = "evaluation@example.invalid"
+GIT_DATE = "2000-01-01T00:00:00Z"
 PROXY_SOURCE = Path(__file__).parents[1] / "test_proxy.py"
 ISOLATION = [
     "--read-only",
@@ -34,9 +41,9 @@ ISOLATION = [
 class Stopped(Exception):
     """A limit or cancellation ended the attempt; `limit` names which."""
 
-    def __init__(self, limit: str):
+    def __init__(self, limit: str, *, stdout: bytes = b"", stderr: bytes = b""):
         super().__init__(limit)
-        self.limit = limit
+        self.limit, self.stdout, self.stderr = limit, stdout, stderr
 
 
 class StageFailed(Exception):
@@ -77,7 +84,7 @@ def _docker(args, *, timeout: float, input: bytes | None = None, cancel=None):
         if limit and reader.is_alive():
             process.kill()
             reader.join(5)
-            raise Stopped(limit)
+            raise Stopped(limit, stdout=result.get("out", b""), stderr=result.get("err", b""))
     return subprocess.CompletedProcess(
         args, process.returncode, result.get("out", b""), result.get("err", b"")
     )
@@ -87,6 +94,8 @@ def _fixture_archive(fixture: Path) -> bytes:
     fixture = fixture.resolve()
     if not fixture.is_dir():
         raise ValueError(f"Evaluation fixture is not a directory: {fixture}")
+    if any(".git" in path.relative_to(fixture).parts for path in fixture.rglob("*")):
+        raise ValueError("Evaluation fixtures cannot include Git metadata")
     if any(p.is_symlink() for p in fixture.rglob("*")):
         raise ValueError("Evaluation fixtures cannot include a symlink")
     buffer = io.BytesIO()
@@ -109,9 +118,22 @@ def _extract(data: bytes, destination: Path) -> dict[str, str]:
 
 class _Attempt:
     def __init__(
-        self, planned, run_dir, fixture, install, steps, timeout, cancel, memory, pids, egress
+        self,
+        planned,
+        run_dir,
+        fixture,
+        install,
+        steps,
+        timeout,
+        cancel,
+        memory,
+        pids,
+        egress,
+        driver,
     ):
         self.planned, self.run_dir, self.egress = planned, run_dir, egress
+        self.driver, self.client = driver, None
+        self.git_anchor: str | None = None
         self.fixture, self.install, self.steps = fixture, install, steps
         self.cancel, self.memory, self.pids = cancel, memory, pids
         self.deadline = time.monotonic() + timeout
@@ -261,10 +283,61 @@ class _Attempt:
             self.must("install", "infrastructure", "exec", self.container, *command)
         self.event("install", commands=len(commands), engine_sha256=self.planned["engine_sha256"])
 
+    def initialize_repository(self) -> None:
+        """Create the same controller-owned Git root before either arm diverges."""
+
+        common = [
+            "--env=GIT_CONFIG_NOSYSTEM=1",
+            "--env=GIT_CONFIG_GLOBAL=/dev/null",
+        ]
+
+        def git(*args: str, environment: tuple[str, ...] = ()):
+            return self.must(
+                "git-anchor",
+                "infrastructure",
+                "exec",
+                *common,
+                *[f"--env={entry}" for entry in environment],
+                self.container,
+                "git",
+                *args,
+            )
+
+        git("init", "--quiet", "--initial-branch=main", "--template=")
+        git("config", "--local", "user.name", GIT_AUTHOR)
+        git("config", "--local", "user.email", GIT_EMAIL)
+        git("add", "--all", "--", ".")
+        git(
+            "-c",
+            "commit.gpgsign=false",
+            "-c",
+            "core.hooksPath=/dev/null",
+            "commit",
+            "--quiet",
+            "--no-verify",
+            "-m",
+            "chore: stage evaluation fixture",
+            environment=(f"GIT_AUTHOR_DATE={GIT_DATE}", f"GIT_COMMITTER_DATE={GIT_DATE}"),
+        )
+        anchor = git("rev-parse", "--verify", "HEAD^{commit}").stdout.decode().strip()
+        if not GIT_OBJECT.fullmatch(anchor):
+            raise StageFailed("git-anchor", "infrastructure", "Git returned an invalid anchor")
+        git("update-ref", GIT_ANCHOR_REF, anchor)
+        self.git_anchor = anchor
+        self.event("git-anchor", commit=anchor, ref=GIT_ANCHOR_REF)
+
     def drive(self) -> None:
         (self.run_dir / "steps").mkdir(exist_ok=True)
         for index, command in enumerate(self.steps, start=1):
-            done = self.docker("exec", self.container, *command)
+            environment = self.driver.environment(index) if self.driver else []
+            interrupted = None
+            try:
+                done = self.docker(
+                    "exec", *[f"--env={entry}" for entry in environment], self.container, *command
+                )
+            except Stopped as stop:
+                interrupted = stop
+                done = subprocess.CompletedProcess(command, -1, stop.stdout, stop.stderr)
             record = {
                 "command": command,
                 "exit_code": done.returncode,
@@ -275,13 +348,32 @@ class _Attempt:
                 json.dumps(record, indent=2, sort_keys=True) + "\n"
             )
             self.event("step", index=index, exit_code=done.returncode)
+            problem = None
+            if self.driver:
+                try:
+                    self.client = self.driver.observe(
+                        self.planned, index, done.stdout, self.run_dir
+                    )
+                except ValueError as exc:
+                    problem = str(exc)
+            if interrupted:
+                raise interrupted
+            # Observation retains raw bytes first, but a broken stream must not
+            # hide a controller-observed process/resource failure.
             if done.returncode:
                 killed = self.docker(
                     "inspect", "--format", "{{.State.OOMKilled}}", self.container, bounded=False
                 )
                 if killed.stdout.decode().strip() == "true" or done.returncode == 137:
                     raise StageFailed("step", "infrastructure", "memory limit reached")
+            if self.client and not self.client["complete"]:
+                if self.client["limit"]:
+                    raise Stopped(self.client["limit"])
+                raise StageFailed("driver", "incomplete", "Claude Code returned a terminal error")
+            if done.returncode:
                 raise StageFailed("step", "incomplete", f"step {index} exited {done.returncode}")
+            if problem:
+                raise StageFailed("driver", "incomplete", problem)
 
     def collect(self) -> dict:
         """Stop the agent, then read its project through a separate read-only collector."""
@@ -350,6 +442,7 @@ def run_attempt(
     memory: str = "1g",
     pids: int = 256,
     egress: dict | None = None,
+    driver: Driver | None = None,
 ) -> dict:
     """Run one planned attempt and return its driver-level outcome with evidence references."""
     if not PINNED.fullmatch(planned.get("image", "")):
@@ -367,7 +460,17 @@ def run_attempt(
     )
     timeout = timeout_seconds or planned["limits"]["timeout_minutes"] * 60
     state = _Attempt(
-        planned, run_dir, fixture, install or [], steps, timeout, cancel, memory, pids, egress
+        planned,
+        run_dir,
+        fixture,
+        install or [],
+        steps,
+        timeout,
+        cancel,
+        memory,
+        pids,
+        egress,
+        driver,
     )
     result: dict = {
         "scenario": planned["scenario"],
@@ -384,6 +487,8 @@ def run_attempt(
     try:
         state.provision()
         state.stage_fixture()
+        if "client" in planned:
+            state.initialize_repository()
         state.run_install()
         state.drive()
     except Stopped as stop:
@@ -392,6 +497,10 @@ def run_attempt(
         result.update(outcome=failure.outcome, stage=failure.stage, detail=failure.detail)
         if failure.detail == "memory limit reached":
             result["limit"] = "memory"
+    if driver:
+        result["client"] = state.client
+    if "client" in planned:
+        result["git_anchor"] = state.git_anchor
     try:
         evidence: dict = state.collect() if state.created else {"tree": {}}
         result["evidence"] = evidence

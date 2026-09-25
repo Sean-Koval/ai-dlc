@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import re
 
 from pydantic import ValidationError
@@ -64,6 +65,22 @@ def plan(suite: object, profile: object) -> dict:
         raise ValueError(
             "Invalid evaluation profile: egress: the deterministic driver runs with no network"
         )
+    real_client = settings.driver.kind == "claude-code"
+    if real_client:
+        if not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", settings.driver.version):
+            raise ValueError("Invalid evaluation profile: driver.version must pin a client version")
+        if not re.fullmatch(r"claude-[a-z0-9.-]+", settings.model) or settings.model.endswith(
+            "-latest"
+        ):
+            raise ValueError(
+                "Invalid evaluation profile: model must be a full Claude model identifier"
+            )
+        if settings.credentials != ["ANTHROPIC_API_KEY"]:
+            raise ValueError(
+                "Invalid evaluation profile: credentials must name ANTHROPIC_API_KEY only"
+            )
+        if not settings.egress:
+            raise ValueError("Invalid evaluation profile: egress is required for Claude Code")
     _unique([s.id for s in checked.scenarios], "scenario identifier")
     attempts = []
     for scenario in checked.scenarios:
@@ -87,7 +104,7 @@ def plan(suite: object, profile: object) -> dict:
                         "fixture": scenario.fixture.model_dump(),
                         # The baseline differs in exactly one thing: no engine is installed.
                         "engine_sha256": settings.engine.sha256 if arm == "treatment" else None,
-                        "limits": scenario.limits.model_dump(),
+                        "limits": scenario.limits.model_dump(exclude_none=True),
                         "assertions": [
                             a.id
                             for a in scenario.assertions
@@ -95,6 +112,22 @@ def plan(suite: object, profile: object) -> dict:
                         ],
                     }
                 )
+                if real_client:
+                    attempts[-1].update(
+                        goal=scenario.goal,
+                        client={
+                            "kind": "claude-code",
+                            "version": settings.driver.version,
+                            "model": settings.model,
+                            "goal_sha256": hashlib.sha256(scenario.goal.encode()).hexdigest(),
+                        },
+                    )
+                    attempts[-1]["limits"]["max_spend_usd"] = min(
+                        scenario.limits.max_spend_usd
+                        if scenario.limits.max_spend_usd is not None
+                        else 2.0,
+                        settings.budgets.max_spend_usd,
+                    )
     return {
         "schema": 1,
         "suite": checked.id,

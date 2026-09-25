@@ -166,6 +166,35 @@ def test_shipped_suite_plans_and_its_fixture_digest_is_current():
     assert tree_digest(ROOT / "evaluations/suites" / fixture["path"]) == fixture["digest"]
 
 
+def test_shipped_scenario_keeps_the_goal_neutral_and_grades_committed_work():
+    suite = json.loads((ROOT / "evaluations/suites/real-client.json").read_text())
+    scenario = suite["scenarios"][0]
+    goal = scenario["goal"].lower()
+    assert all(term not in goal for term in ("ai-dlc", "git commit", "python -m", "skill"))
+    assert {
+        item["id"]: {
+            key: value for key, value in item.items() if key in ("kind", "path", "before", "after")
+        }
+        for item in scenario["assertions"]
+        if item["dimension"] == "workflow"
+    } == {
+        "process-commit": {"kind": "commit-present"},
+        "work-record-committed": {
+            "kind": "path-committed",
+            "path": ".ai-dlc/work/*.toml",
+        },
+        "implementation-committed": {
+            "kind": "path-committed",
+            "path": "csvcheck/validate.py",
+        },
+        "work-before-code": {
+            "kind": "ordering",
+            "before": ".ai-dlc/work/*.toml",
+            "after": "csvcheck/validate.py",
+        },
+    }
+
+
 # --- Real Docker. Skipped, never passed, when Docker or the pinned image is absent. ---
 
 

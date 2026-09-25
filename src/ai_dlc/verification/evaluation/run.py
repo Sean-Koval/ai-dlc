@@ -12,7 +12,9 @@ import tomllib
 from pathlib import Path
 
 from ai_dlc.verification.evaluation import attempt as lifecycle
+from ai_dlc.verification.evaluation.budgets import RECEIPT, RunBudget, refused_attempt
 from ai_dlc.verification.evaluation.drivers import load_driver
+from ai_dlc.verification.evaluation.git_observer import retain_git_observation
 from ai_dlc.verification.evaluation.planning import plan
 from ai_dlc.verification.evaluation.report import MANIFEST, manifest_of, write_report
 
@@ -68,6 +70,8 @@ def run_suite(
     if out.exists() and any(out.iterdir()):
         raise ValueError(f"Evaluation output directory is not empty: {out}")
     driver = load_driver(profile, profile_path)
+    if profile["driver"]["kind"] == "claude-code" and not os.environ.get("ANTHROPIC_API_KEY"):
+        raise ValueError("Claude Code requires the ANTHROPIC_API_KEY environment variable")
     scenarios = {s["id"]: s for s in suite["scenarios"]}
     for scenario in scenarios.values():
         fixture = (suite_path.parent / scenario["fixture"]["path"]).resolve()
@@ -81,27 +85,51 @@ def run_suite(
     (out / "plan.json").write_text(json.dumps(planned, indent=2, sort_keys=True) + "\n")
     for name, value in [("suite", suite), ("profile", profile), *driver.retained().items()]:
         (out / f"inputs/{name}.json").write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
+    budget = RunBudget(planned["budgets"]) if planned["driver"]["kind"] == "claude-code" else None
     for item in planned["attempts"]:
         scenario = scenarios[item["scenario"]]
         run_dir = out / item["scenario"] / item["arm"] / str(item["attempt"])
-        result = lifecycle.run_attempt(
-            item,
-            run_dir=run_dir,
-            fixture=(suite_path.parent / scenario["fixture"]["path"]).resolve(),
-            install=driver.install(item),
-            steps=driver.steps(item),
-            egress=planned["egress"],
-            cancel=cancel,
-        )
-        hidden = scenario["fixture"].get("hidden")
-        if hidden and (run_dir / "tree/project").is_dir():
-            _retain_grading(
-                run_dir, _grader(profile["image"], (suite_path.parent / hidden).resolve())
+        decision = budget.decision(item) if budget else None
+        if decision:
+            run_dir.mkdir(parents=True, exist_ok=True)
+            (run_dir / RECEIPT).write_text(json.dumps(decision, indent=2, sort_keys=True) + "\n")
+        if decision and not decision["start"]:
+            result = refused_attempt(decision)
+        else:
+            # Keep the immutable plan's client identity and goal; narrow only runtime spend.
+            runtime = (
+                dict(item, limits={**item["limits"], "max_spend_usd": decision["max_spend_usd"]})
+                if decision
+                else item
             )
+            result = lifecycle.run_attempt(
+                runtime,
+                run_dir=run_dir,
+                fixture=(suite_path.parent / scenario["fixture"]["path"]).resolve(),
+                install=driver.install(runtime),
+                steps=driver.steps(runtime),
+                egress=planned["egress"],
+                driver=driver,
+                cancel=cancel,
+            )
+            hidden = scenario["fixture"].get("hidden")
+            if hidden and (run_dir / "tree/project").is_dir():
+                _retain_grading(
+                    run_dir, _grader(profile["image"], (suite_path.parent / hidden).resolve())
+                )
+            git_planned = any(
+                assertion["id"] in item["assertions"]
+                and assertion["kind"] in ("commit-present", "path-committed", "ordering")
+                for assertion in scenario["assertions"]
+            )
+            if result.get("git_anchor") is not None or git_planned:
+                retain_git_observation(run_dir, expected_anchor=result.get("git_anchor"))
         _redact(run_dir, result, profile["credentials"])
         (run_dir / "attempt.json").write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
         _redact(run_dir, {}, profile["credentials"])  # the record just written is evidence too
         (run_dir / MANIFEST).write_text(json.dumps(manifest_of(run_dir), indent=2, sort_keys=True))
+        if budget and decision and decision["start"]:
+            budget.observe(result.get("client") if result.get("stage") != "redaction" else None)
     return write_report(out)
 
 
