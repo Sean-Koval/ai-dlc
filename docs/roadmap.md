@@ -36,8 +36,11 @@ before adding surface area.
 2. **A shorter delivery path.** Count the manual commands between a tracker item
    and `work finish` on the adopted repositories, then remove or fold steps until
    the count is halved. The [delivery path baseline](verification/delivery-path-baseline.md)
-   records the starting counts and candidate reductions; start with documentation
-   evidence that is re-recorded and committed after each non-record edit.
+   records the starting counts, candidate reductions and the delivered per-work,
+   content-bound documentation evidence (#146). Re-record only new or stale
+   targets; unchanged decisions survive unrelated edits and target-branch movement.
+   Use observed adoption friction to prioritize the remaining reductions, including
+   the baseline's proposal for one pre-merge command.
 3. **Evaluation that measures value.** The runner, grader, report and
    [baseline specification](../openspec/specs/end-to-end-evaluation/spec.md) from
    [#137](https://github.com/Sean-Koval/ai-dlc/issues/137) are delivered. Their

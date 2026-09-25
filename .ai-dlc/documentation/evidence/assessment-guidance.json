@@ -122,10 +122,10 @@
     {
       "bound": {
         "catalog:docs/roadmap.md": "3bf3afbf1117b7747e4c261c4a0ac1781559085c96abed00632a9804166918b8",
-        "docs/roadmap.md": "231bef142296e10d32943ed7bd727283933641eec994bbf988f8b1b6571dd0a4"
+        "docs/roadmap.md": "fbd09d8a6cfb7cba0d590709463281d6034e32cc993332c69f5eb73ef52eca70"
       },
       "outcome": "updated",
-      "reason": "Replace obsolete absent-spec/undelivered-runner instructions with delivered fixture machinery and the pending first real-client comparison; adoption priorities and deferred qualification remain unchanged.",
+      "reason": "Retain delivered #137 fixture machinery and pending #138 real-client comparison; acknowledge delivered #146 content-bound evidence, re-record only new or stale targets, and prioritize remaining delivery reductions from observed adoption friction. Adoption and deferred qualification boundaries are unchanged.",
       "reviewer": "codex-assessment-guidance",
       "target": "docs/roadmap.md"
     },
