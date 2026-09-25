@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
 Identifier = Annotated[str, StringConstraints(pattern=r"^[a-z0-9][a-z0-9-]*$")]
 Sha256 = Annotated[str, StringConstraints(pattern=r"^[0-9a-f]{64}$")]
@@ -39,7 +39,24 @@ class Assertion(Strict):
     dimension: Dimension
     kind: Identifier
     expect: Text | None = None
+    path: Text | None = None
+    before: Text | None = None
+    after: Text | None = None
     mandatory: bool = True
+
+    @model_validator(mode="after")
+    def git_selectors(self):
+        if self.kind == "commit-present":
+            if self.before is not None or self.after is not None:
+                raise ValueError("commit-present accepts only the optional path selector")
+        elif self.kind == "path-committed":
+            if self.path is None or self.before is not None or self.after is not None:
+                raise ValueError("path-committed requires path and no ordering selectors")
+        elif self.kind == "ordering" and (
+            self.before is None or self.after is None or self.path is not None
+        ):
+            raise ValueError("ordering requires before and after selectors")
+        return self
 
 
 class Limits(Strict):

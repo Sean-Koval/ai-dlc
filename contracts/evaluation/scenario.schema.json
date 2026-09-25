@@ -25,6 +25,32 @@
     "Assertion": {
       "additionalProperties": false,
       "properties": {
+        "after": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "After"
+        },
+        "before": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Before"
+        },
         "dimension": {
           "enum": [
             "workflow",
@@ -61,6 +87,19 @@
           "default": true,
           "title": "Mandatory",
           "type": "boolean"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
         }
       },
       "required": [

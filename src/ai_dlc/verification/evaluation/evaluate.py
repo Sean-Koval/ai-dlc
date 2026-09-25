@@ -6,6 +6,8 @@ import fnmatch
 from collections.abc import Callable
 from pathlib import Path
 
+from ai_dlc.verification.evaluation.git_observer import evaluate_git_assertion
+
 
 def _hidden_tests(run_dir: Path, grade: Callable[[Path], dict]) -> tuple[str, str | None, list]:
     try:
@@ -52,6 +54,24 @@ def evaluate(
         elif kind == "artifact-present":
             outcome = _artifact_present(run_dir, expect)
             expected = f"collected project contains {expect}"
+        elif kind in ("commit-present", "path-committed", "ordering"):
+            outcome = evaluate_git_assertion(
+                run_dir,
+                kind,
+                path=assertion.get("path"),
+                before=assertion.get("before"),
+                after=assertion.get("after"),
+            )
+            if kind == "commit-present":
+                expected = (
+                    f"a post-anchor commit changes {assertion['path']}"
+                    if assertion.get("path")
+                    else "at least one post-anchor commit"
+                )
+            elif kind == "path-committed":
+                expected = f"a clean path matching {assertion.get('path')} is committed at HEAD"
+            else:
+                expected = f"{assertion.get('before')} is committed before {assertion.get('after')}"
         else:
             outcome = ("unavailable", f"no observer implements {kind}", [])
             expected = expect or kind
