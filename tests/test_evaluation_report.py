@@ -243,3 +243,25 @@ def test_cli_report_rebuilds_without_docker(tmp_path, profile_path, docker):
     assert done.exit_code == 0, done.output
     assert json.loads(done.stdout)["suite"] == "smoke"
     assert (tmp_path / "out/report.junit.xml").is_file()
+
+
+def test_historical_attempts_may_omit_optional_diagnostic_and_cleanup_fields(
+    tmp_path, profile_path, docker
+):
+    from ai_dlc.verification.evaluation.contracts import Report
+    from ai_dlc.verification.evaluation.report import manifest_of
+
+    run(tmp_path, profile_path)
+    directory = tmp_path / "out/csv-duplicate-rows/treatment/1"
+    path = directory / "attempt.json"
+    record = json.loads(path.read_text())
+    for key in ("stage", "limit", "detail", "cleanup"):
+        record.pop(key, None)
+    path.write_text(json.dumps(record))
+    (directory / "manifest.json").write_text(json.dumps(manifest_of(directory)))
+    report = rebuild(tmp_path)
+    Report.model_validate(report)
+    treatment = arm(report, "treatment")
+    assert treatment["outcome"] == "completed"
+    assert treatment["stage"] is None and treatment["limit"] is None
+    assert treatment["cleanup_clean"] is False

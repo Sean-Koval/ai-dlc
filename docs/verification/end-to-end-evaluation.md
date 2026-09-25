@@ -203,7 +203,10 @@ Each real-client attempt retains a `budget.json` decision, covered by its eviden
 manifest. Reports replay decisions in planned order against earlier trusted native
 usage. A refused attempt has only its decision, attempt record and manifest;
 missing, malformed, contradictory or extra execution evidence makes it
-`incomplete`. Reports give every planned row, plus per-arm `attempts_not_started`
+`incomplete`. Attempt records must carry the planned identity and a recognized
+outcome; malformed consumed fields cannot bypass validation or crash rebuilding.
+Older records may omit optional diagnostics and cleanup fields. Reports give every
+planned row, plus per-arm `attempts_not_started`
 and `attempts_incomplete` counts alongside the planned `attempts_per_arm`. All
 measurements for refused rows are `null`, so they do not lower mean time or usage.
 Tampering with earlier usage also invalidates dependent refusal receipts. These

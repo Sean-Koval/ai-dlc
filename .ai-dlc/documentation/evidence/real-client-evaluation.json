@@ -122,7 +122,7 @@
         "src/ai_dlc/verification/evaluation/evaluate.py": "c83284feaefa2ac7e780660c99b8f6603d10a1cb875d00aeec191ef7298d8be1",
         "src/ai_dlc/verification/evaluation/image.py": "d3f2970ca488c1b7a1ceaf516f0f86c8b602f74b0fffe1ddbd2d35a13b31167b",
         "src/ai_dlc/verification/evaluation/planning.py": "f0a6844c5511db3d4c420f9c7638e47b6d86810968d16a3767de6373c2a971c6",
-        "src/ai_dlc/verification/evaluation/report.py": "f26277b663f7b416cbb4f28991327f222a2b5c51baae598baff9c47b2ed91628",
+        "src/ai_dlc/verification/evaluation/report.py": "fa025c820f8a1a411ec413a7541d30fdf355955bec1f70bc9da220910993c88b",
         "src/ai_dlc/verification/evaluation/run.py": "f7cf9805223a20e91da3b8cad2fe08df607ec3035ffab2288422516724d1826f",
         "src/ai_dlc/verification/sandbox.py": "c017bd12115b8f144d07eba619f4e15ddbd00db323e4d386f569c4bcb08646e0",
         "src/ai_dlc/verification/test_proxy.py": "30ec2d29bf722d48f7341977542feef4a0c5ef9f90c90b158e869c5025d1c8d5",
@@ -135,7 +135,7 @@
       },
       "outcome": "reviewed-no-change",
       "reason": "The shared verification/evaluation package still owns contracts, the suite runner and offline reports; the new local budget ledger does not change package, provider or CLI/MCP boundaries. The existing MCP services description also covers the separately integrated capability-guidance correction.",
-      "reviewer": "Codex task5 implementation documentation review",
+      "reviewer": "Codex task5 scoped review-fix documentation review",
       "target": "docs/architecture.md"
     },
     {
@@ -150,7 +150,7 @@
     {
       "bound": {
         "catalog:docs/verification/end-to-end-evaluation.md": "cdbc4391325240a5f257765129aa0d9b9166918f6d80ea4a181d67160c14a18f",
-        "docs/verification/end-to-end-evaluation.md": "beff28d9895615ee165629e25a6e87127aa191cbe5cb8715f625589b7a427ef9",
+        "docs/verification/end-to-end-evaluation.md": "8cf2c326e5471901bc2493280e8f0019488c73c4fe3fcf320266c61a24993c60",
         "evaluations/README.md": "3b4a1c4aa02ded1df343804bb5bf595bf17e74d6b298c6c1a4ec93bc6150a4fb",
         "evaluations/images/claude-code.json": "025911bda6303e83be72ed61ddb912863366b4e7df41d49af00f6dbebb0fa96d",
         "evaluations/profiles/local-deterministic.json": "0e0deb70f592f3ebad0a420daf815c536eab6c74c421ec4e10329614a65d3d6b",
@@ -164,23 +164,23 @@
         "src/ai_dlc/verification/evaluation/evaluate.py": "c83284feaefa2ac7e780660c99b8f6603d10a1cb875d00aeec191ef7298d8be1",
         "src/ai_dlc/verification/evaluation/image.py": "d3f2970ca488c1b7a1ceaf516f0f86c8b602f74b0fffe1ddbd2d35a13b31167b",
         "src/ai_dlc/verification/evaluation/planning.py": "f0a6844c5511db3d4c420f9c7638e47b6d86810968d16a3767de6373c2a971c6",
-        "src/ai_dlc/verification/evaluation/report.py": "f26277b663f7b416cbb4f28991327f222a2b5c51baae598baff9c47b2ed91628",
+        "src/ai_dlc/verification/evaluation/report.py": "fa025c820f8a1a411ec413a7541d30fdf355955bec1f70bc9da220910993c88b",
         "src/ai_dlc/verification/evaluation/run.py": "f7cf9805223a20e91da3b8cad2fe08df607ec3035ffab2288422516724d1826f",
         "tests/fixtures/evaluation/claude-code-2.1.220.jsonl": "9801333e7ad60c9f64e3c4f7e9e5f74134fc0ad0b572a9e71db4e33326a86d00",
         "tests/test_evaluation_attempt.py": "432739434aa58c1ee2cf2fd392b3d0b1f4078980eb9f69c6e5a07018e1e3ec00",
         "tests/test_evaluation_base_image.py": "ff95e2bab7233fbbf37734231a2892753e48f5669ffbad31c234479e71884400",
-        "tests/test_evaluation_budgets.py": "f734e31857a30db6ac456e1de7002bf0863e4824d6263742f31c30583cf3da3d",
+        "tests/test_evaluation_budgets.py": "578fc634ae017f8e0fd1982cb837ab84a3a1a4ba172f2069bbd1434acc6277db",
         "tests/test_evaluation_claude.py": "bf5b3dd6823dad01f9ab397ef1323a43458afad4344eb5cb0b1cef4d05b611b2",
         "tests/test_evaluation_driver.py": "bae0e72a3dab4c1f6d3f713f3ee54301bf1f6b3632e5f98f56afa1c5bcdbe62e",
         "tests/test_evaluation_egress.py": "8b650b41e20766814bec8cd7747972cc33a95aa58923b33466d2124f35852e50",
         "tests/test_evaluation_image.py": "b76a456529ea17dab1476bd7e9e60ab904af1130574fcf6be1404a12d9801ba9",
         "tests/test_evaluation_planning.py": "3745f05df7f260feff6789d8da3747cebb1d6b8c5033c7aec3ca91f5da167d76",
-        "tests/test_evaluation_report.py": "95494d689a851b7fa20a0a8a3ddbf30f5a01adbc10cdf0e2b1f4c5f1600c8cd9",
+        "tests/test_evaluation_report.py": "8671fac524cdfc38b85b4819b4e8e5cde3b610c1295f41d9ede075772e14a94c",
         "tests/test_evaluation_run.py": "edc99627ced20eba905a8d4952b81802a4c6daf63e3577feac77c07972da41db"
       },
       "outcome": "updated",
       "reason": "Documented observed-worst-case scheduling, first-attempt and native in-flight billing limits, exact boundaries, unknown usage, retained refusal validation, per-arm coverage, null refused measurements and mocked verification limits.",
-      "reviewer": "Codex task5 implementation documentation review",
+      "reviewer": "Codex task5 scoped review-fix documentation review",
       "target": "docs/verification/end-to-end-evaluation.md"
     },
     {

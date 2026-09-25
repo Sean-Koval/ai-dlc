@@ -260,3 +260,61 @@ def test_refused_workflow_only_rows_cannot_be_vacuous_correctness_success(tmp_pa
     path.write_text(json.dumps(suite))
     counts = build_report(out)["comparison"]["scenarios"]["case-0"]["correctness_passed"]
     assert counts == {"treatment": 0, "baseline": 0, "difference": 0}
+
+
+@pytest.mark.parametrize("refresh_manifest", [False, True])
+def test_empty_attempt_record_rebuilds_as_incomplete(tmp_path, monkeypatch, refresh_manifest):
+    from ai_dlc.verification.evaluation.contracts import Report
+    from ai_dlc.verification.evaluation.report import build_report, manifest_of
+
+    out, _, _ = run_budget(tmp_path, monkeypatch, tokens=0, attempts=1)
+    directory = out / "case-0/treatment/1"
+    (directory / "attempt.json").write_text("{}")
+    if refresh_manifest:
+        (directory / "manifest.json").write_text(json.dumps(manifest_of(directory)))
+    report = build_report(out)
+    Report.model_validate(report)
+    assert report["arms"][0]["outcome"] == "incomplete"
+    assert not any(a["result"] == "pass" for a in report["arms"][0]["assertions"])
+
+
+@pytest.mark.parametrize("tokens", [0, 65])
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("outcome", None),
+        ("outcome", []),
+        ("outcome", "unrecognized"),
+        ("scenario", "another-scenario"),
+        ("arm", "baseline"),
+        ("attempt", True),
+        ("stage", []),
+        ("limit", {}),
+        ("detail", ["untrusted"]),
+        ("cleanup", []),
+        ("cleanup", {"clean": "yes"}),
+    ],
+)
+def test_malformed_attempt_fields_cannot_break_or_forge_reports(
+    tmp_path, monkeypatch, tokens, field, value
+):
+    from ai_dlc.verification.evaluation.contracts import Report
+    from ai_dlc.verification.evaluation.report import build_report, manifest_of
+
+    out, _, _ = run_budget(tmp_path, monkeypatch, tokens=tokens, attempts=1)
+    directory = out / "case-0/treatment/1"
+    path = directory / "attempt.json"
+    record = json.loads(path.read_text())
+    if value is None:
+        del record[field]
+    else:
+        record[field] = value
+    path.write_text(json.dumps(record))
+    (directory / "manifest.json").write_text(json.dumps(manifest_of(directory)))
+    report = build_report(out)
+    Report.model_validate(report)
+    arm = report["arms"][0]
+    assert (arm["scenario"], arm["arm"], arm["attempt"]) == ("case-0", "treatment", 1)
+    assert arm["outcome"] == "incomplete"
+    assert arm["metrics"]["usage"] is None
+    assert not any(a["result"] == "pass" for a in arm["assertions"])

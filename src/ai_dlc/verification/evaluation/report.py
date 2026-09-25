@@ -90,14 +90,43 @@ def _unique_fields(pairs: list[tuple[str, object]]) -> dict:
     return fields
 
 
+def _valid_attempt_record(attempt: object, planned: dict) -> bool:
+    """Validate fields consumed by reports; absent historical optional fields stay valid."""
+    if not isinstance(attempt, dict):
+        return False
+    if any(attempt.get(key) != planned[key] for key in ("scenario", "arm", "attempt")):
+        return False
+    if type(attempt.get("attempt")) is not int:
+        return False
+    if attempt.get("outcome") not in (
+        "completed",
+        "infrastructure",
+        "product",
+        "workflow-violation",
+        "unavailable",
+        "incomplete",
+        "not-started",
+    ):
+        return False
+    if any(
+        attempt.get(key) is not None and not isinstance(attempt[key], str)
+        for key in ("stage", "limit", "detail")
+    ):
+        return False
+    cleanup = attempt.get("cleanup", {})
+    return isinstance(cleanup, dict) and isinstance(cleanup.get("clean", False), bool)
+
+
 def _arm(out: Path, planned: dict, scenario: dict, decision: dict | None = None) -> dict:
     run_dir = out / planned["scenario"] / planned["arm"] / str(planned["attempt"])
+    record_valid = False
     try:
         attempt = json.loads(
             (run_dir / "attempt.json").read_text(), object_pairs_hook=_unique_fields
         )
-        if not isinstance(attempt, dict):
-            raise TypeError("malformed attempt record")
+        if not _valid_attempt_record(attempt, planned):
+            raise ValueError("malformed attempt record")
+        record_valid = True
     except (OSError, ValueError, TypeError):
         attempt = {
             "scenario": planned["scenario"],
@@ -105,7 +134,7 @@ def _arm(out: Path, planned: dict, scenario: dict, decision: dict | None = None)
             "attempt": planned["attempt"],
             "outcome": "incomplete",
             "stage": "collect",
-            "detail": "attempt record missing or unreadable",
+            "detail": "attempt record missing, malformed or inconsistent with plan",
         }
         problems = [attempt["detail"]]
         events: list[dict] = []
@@ -138,7 +167,7 @@ def _arm(out: Path, planned: dict, scenario: dict, decision: dict | None = None)
             problems.append("not-started attempt contains unexpected execution evidence")
         return _not_started(planned, scenario, attempt, problems)
     if decision and not decision["start"]:
-        problems.append("attempt started despite a run-budget refusal")
+        problems.append("execution record conflicts with a run-budget refusal")
     trustworthy = not problems
     client = None
     if planned.get("client"):
@@ -160,7 +189,7 @@ def _arm(out: Path, planned: dict, scenario: dict, decision: dict | None = None)
     if problems:
         # Evidence that cannot be trusted supports no result, in either direction.
         for item in graded["assertions"]:
-            if item["result"] != "pending":
+            if item["result"] != "pending" or not record_valid:
                 item.update(result="unavailable", observed="evidence not trustworthy", evidence=[])
         graded["outcome"] = "incomplete"
     # Keep authoritative runtime diagnostics alongside stream-validation problems.
