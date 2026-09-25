@@ -8,7 +8,7 @@ from copy import deepcopy
 from xml.etree import ElementTree as ET
 
 import pytest
-from test_evaluation_claude import ROOT, NativeDocker, declaration, encoded, native
+from test_evaluation_claude import DEEP_STREAM, ROOT, NativeDocker, declaration, encoded, native
 
 
 def run_budget(
@@ -318,3 +318,51 @@ def test_malformed_attempt_fields_cannot_break_or_forge_reports(
     assert arm["outcome"] == "incomplete"
     assert arm["metrics"]["usage"] is None
     assert not any(a["result"] == "pass" for a in arm["assertions"])
+
+
+@pytest.mark.parametrize("leak", [False, True])
+def test_decoder_recursion_retains_cleanup_redaction_and_later_budget_refusal(
+    tmp_path, monkeypatch, leak
+):
+    from ai_dlc.verification.evaluation.report import build_report
+
+    stream = (b'{"type":"system","note":"private-evaluation-key"}\n' if leak else b"") + DEEP_STREAM
+    out, report, fake = run_budget(tmp_path, monkeypatch, stream=stream)
+    assert len(sessions(fake)) == 1
+    first = report["arms"][0]
+    assert first["outcome"] == "incomplete"
+    assert first["stage"] == ("redaction" if leak else "driver")
+    assert first["cleanup_clean"] is True
+    assert first["metrics"]["usage"] is None
+    assert not any(a["result"] == "pass" for a in first["assertions"])
+    directory = out / "case-0/treatment/1"
+    attempt = json.loads((directory / "attempt.json").read_text())
+    assert attempt["outcome"] == "incomplete"
+    assert attempt["cleanup"] == {"clean": True, "failed": []}
+    assert (directory / "tree/project/app.py").is_file()
+    assert (directory / "manifest.json").is_file()
+    assert (directory / "client-stream.jsonl").read_bytes() == stream.replace(
+        b"private-evaluation-key", b"[REDACTED:ANTHROPIC_API_KEY]"
+    )
+    assert any(call[0] == "kill" for call in fake.calls)
+    assert any(call[:2] == ["volume", "rm"] for call in fake.calls)
+    assert all(
+        a["outcome"] == "not-started" and a["limit"] == "unknown-usage" for a in report["arms"][1:]
+    )
+    assert not any(
+        b"private-evaluation-key" in p.read_bytes() for p in out.rglob("*") if p.is_file()
+    )
+    assert build_report(out) == report
+
+
+def test_rebuild_normalizes_decoder_recursion_in_retained_client_stream(tmp_path, monkeypatch):
+    from ai_dlc.verification.evaluation.report import build_report, manifest_of
+
+    out, _, _ = run_budget(tmp_path, monkeypatch, tokens=65)
+    directory = out / "case-0/treatment/1"
+    (directory / "client-stream.jsonl").write_bytes(DEEP_STREAM)
+    (directory / "manifest.json").write_text(json.dumps(manifest_of(directory)))
+    report = build_report(out)
+    assert report["arms"][0]["outcome"] == "incomplete"
+    assert report["arms"][0]["metrics"]["usage"] is None
+    assert not any(a["result"] == "pass" for arm in report["arms"] for a in arm["assertions"])

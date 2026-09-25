@@ -22,6 +22,7 @@ from test_evaluation_attempt import FakeDocker
 ROOT = Path(__file__).resolve().parents[1]
 STREAM = ROOT / "tests/fixtures/evaluation/claude-code-2.1.220.jsonl"
 MODEL = "claude-sonnet-4-6"
+DEEP_STREAM = b'{"type":"system","extra":' + b"[" * 10000 + b"0" + b"]" * 10000 + b"}\n"
 CLIENT = {"kind": "claude-code", "version": "2.1.220", "model": MODEL, "goal_sha256": "a" * 64}
 
 
@@ -454,3 +455,8 @@ def test_nonzero_exit_with_partial_stream_keeps_exit_diagnosis(tmp_path, monkeyp
         assert attempt["stage"] == "step"
         assert "exited 42" in attempt["detail"]
     assert "exited 42" in report["arms"][0]["detail"]
+
+
+def test_decoder_recursion_is_a_malformed_stream_error():
+    with pytest.raises(ValueError, match="Claude Code stream malformed"):
+        parse(DEEP_STREAM)

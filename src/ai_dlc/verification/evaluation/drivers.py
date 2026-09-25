@@ -188,7 +188,7 @@ def parse_claude_stream(data: bytes, expected: dict) -> dict:
                 subtype
             ),
         }
-    except (ValueError, KeyError, TypeError, UnicodeError, OverflowError):
+    except (ValueError, KeyError, TypeError, UnicodeError, OverflowError, RecursionError):
         raise ValueError(
             "Claude Code stream malformed, incomplete, or missing identity/usage"
         ) from None

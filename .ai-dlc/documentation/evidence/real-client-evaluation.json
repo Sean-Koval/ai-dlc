@@ -118,7 +118,7 @@
         "src/ai_dlc/verification/evaluation/attempt.py": "5756b98a34de52ef4b22e266e1838797fa1b246527d49de72e76df1a9857b475",
         "src/ai_dlc/verification/evaluation/budgets.py": "8069eb9a4f6d24e7fe88774581b47a7d817445ac950a266684aee77fc5378826",
         "src/ai_dlc/verification/evaluation/contracts.py": "5b108eecdafa1968a6fa691447b0c366359a5b64f09b59ccf969d29e0d2ffc4f",
-        "src/ai_dlc/verification/evaluation/drivers.py": "58cab3098fd819b36b69ebb6cd7303fd88f17d2a23a7e26b7b2ecbdd7d138425",
+        "src/ai_dlc/verification/evaluation/drivers.py": "ba05e3b30e0bab7767d9f4243c5253a02698b591d8715666fdb4e7d5c30a5245",
         "src/ai_dlc/verification/evaluation/evaluate.py": "c83284feaefa2ac7e780660c99b8f6603d10a1cb875d00aeec191ef7298d8be1",
         "src/ai_dlc/verification/evaluation/image.py": "d3f2970ca488c1b7a1ceaf516f0f86c8b602f74b0fffe1ddbd2d35a13b31167b",
         "src/ai_dlc/verification/evaluation/planning.py": "f0a6844c5511db3d4c420f9c7638e47b6d86810968d16a3767de6373c2a971c6",
@@ -134,8 +134,8 @@
         "src/ai_dlc/work/workflow.py": "b16ef66b0bea70ece8aaf15003e5e0233dbcff82051b3da24d59b94106da3fca"
       },
       "outcome": "reviewed-no-change",
-      "reason": "The shared verification/evaluation package still owns contracts, the suite runner and offline reports; the new local budget ledger does not change package, provider or CLI/MCP boundaries. The existing MCP services description also covers the separately integrated capability-guidance correction.",
-      "reviewer": "Codex task5 scoped review-fix documentation review",
+      "reason": "The decoder recursion fix stays within the existing evaluation driver parser and lifecycle contract; package ownership and entry points are unchanged.",
+      "reviewer": "Codex final review fix round 1",
       "target": "docs/architecture.md"
     },
     {
@@ -160,7 +160,7 @@
         "src/ai_dlc/verification/evaluation/attempt.py": "5756b98a34de52ef4b22e266e1838797fa1b246527d49de72e76df1a9857b475",
         "src/ai_dlc/verification/evaluation/budgets.py": "8069eb9a4f6d24e7fe88774581b47a7d817445ac950a266684aee77fc5378826",
         "src/ai_dlc/verification/evaluation/contracts.py": "5b108eecdafa1968a6fa691447b0c366359a5b64f09b59ccf969d29e0d2ffc4f",
-        "src/ai_dlc/verification/evaluation/drivers.py": "58cab3098fd819b36b69ebb6cd7303fd88f17d2a23a7e26b7b2ecbdd7d138425",
+        "src/ai_dlc/verification/evaluation/drivers.py": "ba05e3b30e0bab7767d9f4243c5253a02698b591d8715666fdb4e7d5c30a5245",
         "src/ai_dlc/verification/evaluation/evaluate.py": "c83284feaefa2ac7e780660c99b8f6603d10a1cb875d00aeec191ef7298d8be1",
         "src/ai_dlc/verification/evaluation/image.py": "d3f2970ca488c1b7a1ceaf516f0f86c8b602f74b0fffe1ddbd2d35a13b31167b",
         "src/ai_dlc/verification/evaluation/planning.py": "f0a6844c5511db3d4c420f9c7638e47b6d86810968d16a3767de6373c2a971c6",
@@ -169,8 +169,8 @@
         "tests/fixtures/evaluation/claude-code-2.1.220.jsonl": "9801333e7ad60c9f64e3c4f7e9e5f74134fc0ad0b572a9e71db4e33326a86d00",
         "tests/test_evaluation_attempt.py": "432739434aa58c1ee2cf2fd392b3d0b1f4078980eb9f69c6e5a07018e1e3ec00",
         "tests/test_evaluation_base_image.py": "ff95e2bab7233fbbf37734231a2892753e48f5669ffbad31c234479e71884400",
-        "tests/test_evaluation_budgets.py": "578fc634ae017f8e0fd1982cb837ab84a3a1a4ba172f2069bbd1434acc6277db",
-        "tests/test_evaluation_claude.py": "bf5b3dd6823dad01f9ab397ef1323a43458afad4344eb5cb0b1cef4d05b611b2",
+        "tests/test_evaluation_budgets.py": "649afd1b4482ce257b1f1f166102b049b04203d1a7a60b0721ee66d80726bdef",
+        "tests/test_evaluation_claude.py": "9d6aec32d0efd7b72ec0402ab6239bcbb3ada892e8ad03d3db44d8f0f50566db",
         "tests/test_evaluation_driver.py": "bae0e72a3dab4c1f6d3f713f3ee54301bf1f6b3632e5f98f56afa1c5bcdbe62e",
         "tests/test_evaluation_egress.py": "8b650b41e20766814bec8cd7747972cc33a95aa58923b33466d2124f35852e50",
         "tests/test_evaluation_image.py": "b76a456529ea17dab1476bd7e9e60ab904af1130574fcf6be1404a12d9801ba9",
@@ -178,9 +178,9 @@
         "tests/test_evaluation_report.py": "8671fac524cdfc38b85b4819b4e8e5cde3b610c1295f41d9ede075772e14a94c",
         "tests/test_evaluation_run.py": "edc99627ced20eba905a8d4952b81802a4c6daf63e3577feac77c07972da41db"
       },
-      "outcome": "updated",
-      "reason": "Documented observed-worst-case scheduling, first-attempt and native in-flight billing limits, exact boundaries, unknown usage, retained refusal validation, per-arm coverage, null refused measurements and mocked verification limits.",
-      "reviewer": "Codex task5 scoped review-fix documentation review",
+      "outcome": "reviewed-no-change",
+      "reason": "The existing runbook requires malformed client streams to become incomplete with retained raw evidence, redaction, and unknown-usage budget refusal. Normalizing decoder RecursionError restores that documented behavior; the new regressions verify cleanup, record retention, redaction, refusal and offline rebuilding without changing the procedure or qualification claims.",
+      "reviewer": "Codex final review fix round 1",
       "target": "docs/verification/end-to-end-evaluation.md"
     },
     {
