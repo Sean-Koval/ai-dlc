@@ -31,7 +31,7 @@ def _register_work_tools(server: FastMCP, root: Path, machine: Path | None) -> N
 
     @server.tool()
     def work_status(work_id: str) -> dict:
-        """Read tracker-authoritative work status."""
+        """Read the local work record, bindings and specification state; no tracker query."""
         return work().status(work_id)
 
     @server.tool()

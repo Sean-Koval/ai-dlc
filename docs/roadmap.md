@@ -38,14 +38,17 @@ before adding surface area.
    the count is halved. The [delivery path baseline](verification/delivery-path-baseline.md)
    records the starting counts and candidate reductions; start with documentation
    evidence that is re-recorded and committed after each non-record edit.
-3. **Evaluation that measures value.** Deliver the first evaluation slice
-   ([#137](https://github.com/Sean-Koval/ai-dlc/issues/137)) with one journey and a
-   baseline arm: the same seeded task and hidden acceptance tests run with AI-DLC
-   and with the bare client. Report correctness, turns, time and spend for both.
-   Commit the `end-to-end-evaluation` OpenSpec change that #137–#141 reference
-   before implementation; it is not yet in the repository. Whether to build
-   [#138](https://github.com/Sean-Koval/ai-dlc/issues/138)–[#140](https://github.com/Sean-Koval/ai-dlc/issues/140)
-   is decided from that comparison.
+3. **Evaluation that measures value.** The runner, grader, report and
+   [baseline specification](../openspec/specs/end-to-end-evaluation/spec.md) from
+   [#137](https://github.com/Sean-Koval/ai-dlc/issues/137) are delivered. Their
+   deterministic fixture runs verify the machinery, not AI-DLC's value; see the
+   [evaluation evidence](verification/end-to-end-evaluation.md). Complete the first
+   slice of [#138](https://github.com/Sean-Koval/ai-dlc/issues/138): one real coding
+   client, with the same version, model and goal in both arms, taking the same
+   seeded task through hidden acceptance tests with AI-DLC and with the bare
+   client. Report correctness, turns, time and spend for both. That comparison
+   remains pending; use its results to decide the broader client, recovery and
+   observer work in #138–#140.
 
 Waiting on environments or decisions, not scheduled:
 [#53](https://github.com/Sean-Koval/ai-dlc/issues/53) native client, company and

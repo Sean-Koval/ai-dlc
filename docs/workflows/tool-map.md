@@ -21,7 +21,7 @@ planned component/workflow support from the current interfaces listed here.
 | Review, merge, and CI identity | `scm` | GitHub | Branches, pull requests, merged SHA, workflow runs, and artifacts |
 | Deployment evidence | `deploy` | None by default | Environment-specific release evidence when configured |
 | Interactive agent | `agent-client` | Claude Code and Codex | Analysis, judgment, authoring, and tool use under user authorization |
-| Deterministic workflow | AI-DLC CLI and selected MCP services | Local Python implementation | CLI: validation, rendering, machine bindings, reconciliation, receipts, and gates; MCP: reviewed work, doctor, and knowledge only |
+| Deterministic workflow | AI-DLC CLI and selected MCP services | Local Python implementation | CLI: validation, rendering, machine bindings, reconciliation, receipts, and gates; MCP: reviewed work, doctor, project documentation, workspace inspection, and knowledge |
 | Project generation and updates | Template service | Copier | Template answers, source revision, preview, and three-way updates |
 
 Projects may omit roles they do not need. Confirm the actual mapping in the
@@ -81,10 +81,11 @@ execution is a later qualification target. Existing Obsidian vaults support port
 implemented for Linear, GitHub, Jira Cloud and Plane. Jira and Plane live workflow
 qualification and native Antigravity integration remain pending.
 
-Machine enrollment mutations are CLI-only in this cycle. MCP exposes exactly
+Machine enrollment mutations are CLI-only in this cycle. MCP includes
 `work_context`, `work_publish`, `work_start`, `work_status`, `work_link`, `work_finish`,
-`doctor`, `knowledge_find`, `knowledge_append`, and `knowledge_note`; it does
-not expose machine enrollment mutation. These MCP identifiers differ from the
+`doctor`, `knowledge_find`, `knowledge_append`, and `knowledge_note`, alongside
+project-document tools and workspace previews and inspection. It does not expose
+machine enrollment mutation. These MCP identifiers differ from the
 space-separated CLI commands, such as `ai-dlc work publish` and `ai-dlc
 knowledge append`.
 
@@ -99,7 +100,7 @@ knowledge append`.
 | Agent configuration | `ai-dlc agents render` | Previews, applies, or verifies owned project/personal client configuration |
 | Local work drafting | `ai-dlc work new WORK_ID [--from-issue REF]` | Creates an unreviewed record from explicit fields or a configured tracker read; does not publish or initialize mutation state |
 | Work lifecycle | `ai-dlc work publish`, `ai-dlc work start`, `ai-dlc work pr`, `ai-dlc work finish` | Reconciles tracker state, binds work to a branch, and enforces completion gates |
-| Local work inspection | `ai-dlc work status` | Reads the local record and active/archived specification state without querying tracker status |
+| Local work inspection | `ai-dlc work status`, MCP `work_status` | Reads the local record, bindings and active/archived specification state without querying tracker status |
 | Specification finalization | `ai-dlc work archive` | Archives this work's OpenSpec change, promotes specifications, repoints the record and commits only affected files before merge |
 | Traceability | `ai-dlc work link` | Links PR, specification, branch, deployment, or tracker evidence and commits only the work record by default |
 | Provider inspection and connection | `ai-dlc provider list`, `ai-dlc provider test`, `ai-dlc provider connect` | Discovers adapters, runs isolated contract or authorized live checks, and previews/applies an explicitly reviewed provider connection |
@@ -107,7 +108,7 @@ knowledge append`.
 | Personal knowledge | `ai-dlc knowledge find`, `ai-dlc knowledge note`, `ai-dlc knowledge append` | Reads or writes explicitly selected vault material |
 | Configuration profiles | `ai-dlc profile show`, `ai-dlc profile migrate`, `ai-dlc profile capture` | Resolves provenance, previews schema migration, or captures supported preferences |
 | Machine provisioning | `ai-dlc setup plan`, `ai-dlc setup apply` | Previews or applies selected workstation modules and personal agent configuration |
-| Agent-native access | `ai-dlc mcp serve` | Exposes reviewed work, read-only doctor, and selected knowledge services through local MCP; machine enrollment mutation remains CLI-only |
+| Agent-native access | `ai-dlc mcp serve` | Exposes reviewed work, read-only doctor, project documentation, workspace previews and inspection, and selected knowledge services through local MCP; machine enrollment mutation remains CLI-only |
 | Engine evaluation (maintainers) | `ai-dlc eval plan SUITE --profile PROFILE`, `ai-dlc eval run SUITE --profile PROFILE --out DIR`, `ai-dlc eval report DIR`, `ai-dlc eval image --base IMAGE`, `ai-dlc eval base RECIPE` | `plan` validates a suite and execution profile offline and prints the scenario, arm and attempt matrix. `run` executes each attempt in an isolated container (offline for deterministic scripts, with an allow-listing proxy for real clients), grades hidden acceptance tests in a separate container and retains inputs and evidence; it needs Docker and locally present pinned images, and never pulls. `image` builds the treatment arm's candidate image from this checkout's wheel and locked, hash-pinned constraints on top of the baseline image; it needs uv, Docker and a package index. `base` builds the image both arms share from a recipe: a pinned parent, Git and a coding client whose binary it downloads and checks against the recipe's sha256; it needs Docker and network. `report` rebuilds `report.json`, JUnit and a failure timeline from a run directory alone, and marks changed, missing or truncated evidence as incomplete |
 | Legacy compatibility | `ai-dlc scaffold` | Preserves the retired Rust-era provider scaffolding interface |
 
