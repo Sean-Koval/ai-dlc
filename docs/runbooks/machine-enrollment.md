@@ -130,6 +130,8 @@ names cannot collide with any shipped or selected bundled skills, other source s
 or authored client skills; even an identical authored file remains unowned.
 Edited owned outputs are also preserved through refusal. Source rules appear in
 AGENTS.md's owned section, and skills also appear in selected client skill files.
+Keep selected content short: the renderer currently includes both rule and skill
+bodies in shared AGENTS.md guidance, as well as writing native skill files.
 
 The native layout contains `manifest.toml`, `skills/<name>/SKILL.md`,
 `rules/<name>.md`, and optional `mcp/servers.toml` and `hooks/hooks.toml`.

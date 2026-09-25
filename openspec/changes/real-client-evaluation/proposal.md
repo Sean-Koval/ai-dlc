@@ -34,3 +34,13 @@ MCP server, process and MCP observers, failure injection, CI lanes. Each stays i
 `src/ai_dlc/verification/evaluation/`, `contracts/evaluation/`, `evaluations/`,
 the runbook. No change to product commands, provider conformance or skill
 evaluation.
+
+## Delivery boundary, September 25, 2026
+
+The maintainer explicitly requested that the code be finished and merged while
+the paid comparison remains pending. This delivery implements EE-08 through EE-11
+and the treatment setup needed to run that comparison. It does not establish a
+productivity benefit or qualify live model billing. The three-attempt-per-arm
+comparison remains follow-up qualification under #138; the broader issue stays
+open. The implementation is tracked as a separate delivered slice so its gated
+finish cannot close the broader evaluation outcome.

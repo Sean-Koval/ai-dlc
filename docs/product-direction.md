@@ -15,6 +15,13 @@ The harness performs development and can use installed tools directly. AI-DLC
 provides setup, guidance, integration, validation, and evidence services where
 useful. Existing project policies still determine required checks and completion.
 
+Teams should be able to scaffold their own development flow: choose supported
+tools and clients, keep repository policy and acceptance commands in the project,
+and share only the guidance they need. Start with setup, selected guidance and
+useful local checks. Add tracked delivery, formal specifications and other stages
+when the team's work needs them. Profiles and team sources carry selected
+practices; they do not make this repository's own process mandatory downstream.
+
 ## Immediate adoption outcome
 
 Install AI-DLC on the work computer and adopt work repositories with their own
@@ -65,6 +72,10 @@ contracts, or operational evidence. Small work uses small artifacts.
 
 ## Principles and limits
 
+- Keep recurring context small and relevant. Prefer short shared rules and links
+  to task-specific guidance; measure cost and failures caught before adding more
+  process. Required commands should test project behavior; product choices, test
+  adequacy and design quality remain review judgments.
 - Prefer existing tools; build integration where it removes coordination work.
   Tencent teamai repositories are a supported team-source format, not a runtime
   dependency; AI-DLC reads their safe, pinned subset through profile subscriptions.

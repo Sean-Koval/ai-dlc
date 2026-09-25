@@ -113,3 +113,13 @@ test.
 - The proxy is new attack surface inside the isolation boundary. It is a fixed,
   pinned image with a static allow-list and no credential.
 - A real run costs money. Nothing runs on CI; every real run is started by hand.
+
+## Delivery and deferred qualification
+
+On September 25, 2026 the maintainer requested code completion and merge,
+explicitly deferring the paid comparison. Tasks 0–7 define this implementation
+slice. The original task 8 comparison is retained as deferred qualification, not
+as an executed task. A future run uses the same three-attempt-per-arm design and
+approved budget; no budget increase or productivity claim follows from merging
+the machinery. The code slice receives its own tracker reference; parent #138
+remains open for the comparison and its broader pending journeys.

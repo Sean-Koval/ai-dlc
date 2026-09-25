@@ -231,6 +231,15 @@ overridden. The tracker has no fallback.
 - Omitting SCM also omits the generated GitHub workflow. Local required checks
   still run, but merged-revision CI completion is unavailable.
 
+Start team adoption with the repository's existing development commands. Select
+the capabilities and clients it needs, choose shipped skills through
+`agents.skills`, and put acceptance and regression commands in `checks.commands`
+and `checks.required`. Scaffold checks are a starting point: a generated Python
+project's language check compiles source and does not establish correct behavior.
+Setup and required checks remain useful without external providers; the tracked
+loop below applies when tracker and SCM are configured. Use the small-change path
+below when there is no tracker item or formal specification to deliver.
+
 ## Daily operating loop
 
 1. Reconcile tracker priority, work bindings, branch state, and fresh evidence.
