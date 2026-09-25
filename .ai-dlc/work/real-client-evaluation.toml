@@ -23,7 +23,7 @@ scm = "github"
 deploy = "none"
 
 [artifacts]
-spec = "openspec/changes/real-client-evaluation"
+spec = "openspec/changes/archive/2026-09-25-real-client-evaluation"
 tracker = "166"
 parent_issue = "https://github.com/Sean-Koval/ai-dlc/issues/138"
 branch = "codex/real-client-driver"
