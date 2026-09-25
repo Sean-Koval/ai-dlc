@@ -171,47 +171,33 @@ def test_the_proxy_logs_each_decision_as_one_json_line(monkeypatch, capsys):
 def test_the_runner_hands_egress_to_every_attempt_and_the_report_names_refusals(
     tmp_path, monkeypatch
 ):
-    from pathlib import Path
+    from test_evaluation_claude import ROOT, NativeDocker, declaration
 
     from ai_dlc.verification.evaluation import run
 
-    root = Path(__file__).resolve().parents[1]
-    candidate = "sha256:" + "d" * 64
-    profile = json.loads((root / "evaluations/profiles/local-deterministic.json").read_text())
-    profile["image"], profile["engine"]["image"] = IMAGE, candidate
-    profile["driver"] = {"kind": "claude-code", "version": "2.1.220"}
-    profile["egress"] = EGRESS
-    profile["model"] = "claude-sonnet-4-6"
-    profile["credentials"] = ["ANTHROPIC_API_KEY"]
+    profile, path = declaration(tmp_path)  # positive real-client budgets
+
+    class RefusedDocker(NativeDocker):
+        def __call__(self, args, **kwargs):
+            done = super().__call__(args, **kwargs)
+            if args[0] == "logs":
+                return SimpleNamespace(returncode=0, stdout=LOG, stderr=b"")
+            return done
+
+    fake = RefusedDocker()
+    monkeypatch.setattr(run.lifecycle, "_docker", fake)
+    monkeypatch.setattr(run.lifecycle.shutil, "which", lambda _: "/usr/bin/docker")
     monkeypatch.setenv("ANTHROPIC_API_KEY", "fixture-key-not-real")
-    path = tmp_path / "profile.json"
-    path.write_text(json.dumps(profile))
-
-    class Driver:
-        retained = staticmethod(dict)
-        install = staticmethod(lambda item: [])
-        steps = staticmethod(lambda item: [["true"]])
-
-    seen = []
-
-    def run_attempt(item, *, run_dir, egress, **_):
-        seen.append(egress)
-        run_dir.mkdir(parents=True)
-        event = {"schema": 1, "source": "controller", "at": "2026-09-20T00:00:00+00:00",
-                 "kind": "egress", "allowed": [], "refused": ["pypi.org"]}  # fmt: skip
-        (run_dir / "events.jsonl").write_text(json.dumps(event) + "\n")
-        return {"scenario": item["scenario"], "arm": item["arm"], "attempt": 1,
-                "outcome": "completed", "stage": None, "cleanup": {"clean": True}}  # fmt: skip
-
-    monkeypatch.setattr(run, "load_driver", lambda profile, path: Driver)
     monkeypatch.setattr(
-        run, "_layers", lambda image: ["l1"] + (["l2"] if image == candidate else [])
+        run,
+        "_layers",
+        lambda image: ["base", "candidate"] if image == profile["engine"]["image"] else ["base"],
     )
-    monkeypatch.setattr(run.lifecycle, "run_attempt", run_attempt)
-    report = run.run_suite(root / "evaluations/suites/smoke.json", path, tmp_path / "out")
-    assert seen == [EGRESS, EGRESS]
+    report = run.run_suite(ROOT / "evaluations/suites/smoke.json", path, tmp_path / "out")
+    assert len([c for c in fake.calls if c[0] == "network" and "--internal" in c]) == 2
     for arm in report["arms"]:
         assert arm["metrics"]["egress_refused"] == ["pypi.org"]
+        assert arm["metrics"]["usage"] == 65
     assert "pypi.org" in (tmp_path / "out/report.timeline.md").read_text()
 
 

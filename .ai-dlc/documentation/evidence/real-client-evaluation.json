@@ -11,6 +11,15 @@
     },
     {
       "bound": {
+        "contracts/evaluation/report.schema.json": "05b0d2e99b88eddc1caedc4b11521852fed28ef2f475bcf1db27bb811a3dacfa"
+      },
+      "outcome": "updated",
+      "reason": "Regenerated the report contract to represent not-started budget refusals without classifying them as product or infrastructure failures.",
+      "reviewer": "Codex task5 implementation documentation review",
+      "target": "contracts/evaluation/report.schema.json"
+    },
+    {
+      "bound": {
         "contracts/evaluation/scenario.schema.json": "052e01bd76dcddfce0fd27586bd853ee079cac76e9711cac24f5731d3fe3d784"
       },
       "outcome": "updated",
@@ -75,7 +84,7 @@
         "src/ai_dlc/harness/user_agents.py": "c99f9a52a379feaa0c1721081b95fef91f51c44f0a9e906145de51154616e937",
         "src/ai_dlc/harness/workflow_bundles.py": "477dc842b3cdfe240a54a96910786693f9f3b75f2fd528753440c29f26330b36",
         "src/ai_dlc/locking.py": "f1cfe828e897e11d73b645130060362e2699f75aac9307ed8cb4955b0533b629",
-        "src/ai_dlc/mcp_server.py": "f159ac251bd9b65fb4fdeb404380be3a2afb9fbac013e0a0e19315ad738bd612",
+        "src/ai_dlc/mcp_server.py": "607eba3e47a8573862d83e5209e824b78ec0af74545fa51727b8d3f7c03db410",
         "src/ai_dlc/provider_definitions.py": "e90c2d41a839bc4a32dcb3989f59fa6c9073bd1233f3db2088bd176e1bc513d3",
         "src/ai_dlc/providers/__init__.py": "5ea49e6d446942d80f9744acf9702bb42ce041a55a7e3e25e9b871f9d3bc3162",
         "src/ai_dlc/providers/evaluation_api.py": "5c3a9b890c88d4633fc553dbe206c415c5ceb1f6679cefdf7d215d8680fcec17",
@@ -107,13 +116,14 @@
         "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
         "src/ai_dlc/verification/evaluation/__init__.py": "7cf0a3add5298d2f8d58954210cee24b3fb6a5f81e505ef3b948a7078cbb0eb8",
         "src/ai_dlc/verification/evaluation/attempt.py": "5756b98a34de52ef4b22e266e1838797fa1b246527d49de72e76df1a9857b475",
-        "src/ai_dlc/verification/evaluation/contracts.py": "d4af5787e6ce3def29276a0e4c26ce91c43698e82205ad2d9326ef5fe40b9550",
+        "src/ai_dlc/verification/evaluation/budgets.py": "8069eb9a4f6d24e7fe88774581b47a7d817445ac950a266684aee77fc5378826",
+        "src/ai_dlc/verification/evaluation/contracts.py": "5b108eecdafa1968a6fa691447b0c366359a5b64f09b59ccf969d29e0d2ffc4f",
         "src/ai_dlc/verification/evaluation/drivers.py": "58cab3098fd819b36b69ebb6cd7303fd88f17d2a23a7e26b7b2ecbdd7d138425",
         "src/ai_dlc/verification/evaluation/evaluate.py": "c83284feaefa2ac7e780660c99b8f6603d10a1cb875d00aeec191ef7298d8be1",
         "src/ai_dlc/verification/evaluation/image.py": "d3f2970ca488c1b7a1ceaf516f0f86c8b602f74b0fffe1ddbd2d35a13b31167b",
         "src/ai_dlc/verification/evaluation/planning.py": "f0a6844c5511db3d4c420f9c7638e47b6d86810968d16a3767de6373c2a971c6",
-        "src/ai_dlc/verification/evaluation/report.py": "9fb1fe3e3d49835f0764f9d662b3411c26de82db01e6d109c8767850169c7145",
-        "src/ai_dlc/verification/evaluation/run.py": "f7e9f3143673108d4f352e5d0b8ca70c72b74972792112781f4e935c13528172",
+        "src/ai_dlc/verification/evaluation/report.py": "f26277b663f7b416cbb4f28991327f222a2b5c51baae598baff9c47b2ed91628",
+        "src/ai_dlc/verification/evaluation/run.py": "f7cf9805223a20e91da3b8cad2fe08df607ec3035ffab2288422516724d1826f",
         "src/ai_dlc/verification/sandbox.py": "c017bd12115b8f144d07eba619f4e15ddbd00db323e4d386f569c4bcb08646e0",
         "src/ai_dlc/verification/test_proxy.py": "30ec2d29bf722d48f7341977542feef4a0c5ef9f90c90b158e869c5025d1c8d5",
         "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
@@ -124,23 +134,23 @@
         "src/ai_dlc/work/workflow.py": "b16ef66b0bea70ece8aaf15003e5e0233dbcff82051b3da24d59b94106da3fca"
       },
       "outcome": "reviewed-no-change",
-      "reason": "The evaluation driver contract and shared lifecycle remain in the existing verification/evaluation package; the detailed client behavior and qualification limits live in the mapped runbook.",
-      "reviewer": "Codex task4 review-fix implementation review",
+      "reason": "The shared verification/evaluation package still owns contracts, the suite runner and offline reports; the new local budget ledger does not change package, provider or CLI/MCP boundaries. The existing MCP services description also covers the separately integrated capability-guidance correction.",
+      "reviewer": "Codex task5 implementation documentation review",
       "target": "docs/architecture.md"
     },
     {
       "bound": {
-        "docs/catalog.toml": "a2eac31c69640d0a3d0d3fa4c1c62512118bc9a52f657e5e7fe45c708c934aae"
+        "docs/catalog.toml": "a5bcd77c72ced1a13bcf29417b5d235c4d4e9491b5d791505e1c7a0a8581ab36"
       },
       "outcome": "updated",
-      "reason": "Maps native-driver regression tests and recorded-stream fixture to the existing evaluation runbook.",
-      "reviewer": "Codex task4 review-fix implementation review",
+      "reason": "Mapped the run budget ledger and its focused regressions to the canonical end-to-end evaluation verification document.",
+      "reviewer": "Codex task5 implementation documentation review",
       "target": "docs/catalog.toml"
     },
     {
       "bound": {
-        "catalog:docs/verification/end-to-end-evaluation.md": "846dba10fa4a6fc06ebf9c2b6a921e883fdaa1c32df276d77dc38dc36066d4e2",
-        "docs/verification/end-to-end-evaluation.md": "bfbf37ce80af199ef1ecb8217a38cfbc57aae39fdf5202b793e7bbe0b2b69104",
+        "catalog:docs/verification/end-to-end-evaluation.md": "cdbc4391325240a5f257765129aa0d9b9166918f6d80ea4a181d67160c14a18f",
+        "docs/verification/end-to-end-evaluation.md": "beff28d9895615ee165629e25a6e87127aa191cbe5cb8715f625589b7a427ef9",
         "evaluations/README.md": "3b4a1c4aa02ded1df343804bb5bf595bf17e74d6b298c6c1a4ec93bc6150a4fb",
         "evaluations/images/claude-code.json": "025911bda6303e83be72ed61ddb912863366b4e7df41d49af00f6dbebb0fa96d",
         "evaluations/profiles/local-deterministic.json": "0e0deb70f592f3ebad0a420daf815c536eab6c74c421ec4e10329614a65d3d6b",
@@ -148,39 +158,41 @@
         "openspec/specs/end-to-end-evaluation/spec.md": "ae46e6902ba9f869b9e3351b8a2c7f3f538b30db127198c0148e6804af663aae",
         "src/ai_dlc/verification/evaluation/__init__.py": "7cf0a3add5298d2f8d58954210cee24b3fb6a5f81e505ef3b948a7078cbb0eb8",
         "src/ai_dlc/verification/evaluation/attempt.py": "5756b98a34de52ef4b22e266e1838797fa1b246527d49de72e76df1a9857b475",
-        "src/ai_dlc/verification/evaluation/contracts.py": "d4af5787e6ce3def29276a0e4c26ce91c43698e82205ad2d9326ef5fe40b9550",
+        "src/ai_dlc/verification/evaluation/budgets.py": "8069eb9a4f6d24e7fe88774581b47a7d817445ac950a266684aee77fc5378826",
+        "src/ai_dlc/verification/evaluation/contracts.py": "5b108eecdafa1968a6fa691447b0c366359a5b64f09b59ccf969d29e0d2ffc4f",
         "src/ai_dlc/verification/evaluation/drivers.py": "58cab3098fd819b36b69ebb6cd7303fd88f17d2a23a7e26b7b2ecbdd7d138425",
         "src/ai_dlc/verification/evaluation/evaluate.py": "c83284feaefa2ac7e780660c99b8f6603d10a1cb875d00aeec191ef7298d8be1",
         "src/ai_dlc/verification/evaluation/image.py": "d3f2970ca488c1b7a1ceaf516f0f86c8b602f74b0fffe1ddbd2d35a13b31167b",
         "src/ai_dlc/verification/evaluation/planning.py": "f0a6844c5511db3d4c420f9c7638e47b6d86810968d16a3767de6373c2a971c6",
-        "src/ai_dlc/verification/evaluation/report.py": "9fb1fe3e3d49835f0764f9d662b3411c26de82db01e6d109c8767850169c7145",
-        "src/ai_dlc/verification/evaluation/run.py": "f7e9f3143673108d4f352e5d0b8ca70c72b74972792112781f4e935c13528172",
+        "src/ai_dlc/verification/evaluation/report.py": "f26277b663f7b416cbb4f28991327f222a2b5c51baae598baff9c47b2ed91628",
+        "src/ai_dlc/verification/evaluation/run.py": "f7cf9805223a20e91da3b8cad2fe08df607ec3035ffab2288422516724d1826f",
         "tests/fixtures/evaluation/claude-code-2.1.220.jsonl": "9801333e7ad60c9f64e3c4f7e9e5f74134fc0ad0b572a9e71db4e33326a86d00",
         "tests/test_evaluation_attempt.py": "432739434aa58c1ee2cf2fd392b3d0b1f4078980eb9f69c6e5a07018e1e3ec00",
         "tests/test_evaluation_base_image.py": "ff95e2bab7233fbbf37734231a2892753e48f5669ffbad31c234479e71884400",
-        "tests/test_evaluation_claude.py": "2ecdc97bbeb9bb8ec6ed55f7a3410dcac0545b2d31a8544314797bbb49cca313",
+        "tests/test_evaluation_budgets.py": "f734e31857a30db6ac456e1de7002bf0863e4824d6263742f31c30583cf3da3d",
+        "tests/test_evaluation_claude.py": "bf5b3dd6823dad01f9ab397ef1323a43458afad4344eb5cb0b1cef4d05b611b2",
         "tests/test_evaluation_driver.py": "bae0e72a3dab4c1f6d3f713f3ee54301bf1f6b3632e5f98f56afa1c5bcdbe62e",
-        "tests/test_evaluation_egress.py": "a4ecef4e94839d50cb41cf5423d7ff2bfc5bc0be3954f211b49a0eea3fdb906a",
+        "tests/test_evaluation_egress.py": "8b650b41e20766814bec8cd7747972cc33a95aa58923b33466d2124f35852e50",
         "tests/test_evaluation_image.py": "b76a456529ea17dab1476bd7e9e60ab904af1130574fcf6be1404a12d9801ba9",
         "tests/test_evaluation_planning.py": "3745f05df7f260feff6789d8da3747cebb1d6b8c5033c7aec3ca91f5da167d76",
         "tests/test_evaluation_report.py": "95494d689a851b7fa20a0a8a3ddbf30f5a01adbc10cdf0e2b1f4c5f1600c8cd9",
         "tests/test_evaluation_run.py": "edc99627ced20eba905a8d4952b81802a4c6daf63e3577feac77c07972da41db"
       },
       "outcome": "updated",
-      "reason": "Documents native Claude Code invocation, identity and mandatory metering validation, partial-stream retention, environment-only credential forwarding, fixture classification and explicitly pending budget/adoption/live qualification tasks.",
-      "reviewer": "Codex task4 review-fix implementation review",
+      "reason": "Documented observed-worst-case scheduling, first-attempt and native in-flight billing limits, exact boundaries, unknown usage, retained refusal validation, per-arm coverage, null refused measurements and mocked verification limits.",
+      "reviewer": "Codex task5 implementation documentation review",
       "target": "docs/verification/end-to-end-evaluation.md"
     },
     {
       "bound": {
         "catalog:docs/workflows/tool-map.md": "f50e0a853e00ab08729f6bd5bdf4cca447b033b23ca5169bb5f6556c0991dc8e",
-        "docs/workflows/tool-map.md": "91e553c4a841129280c81a9bacac3e4cfc261c789c6fb5190e7fd9b8324078c0",
+        "docs/workflows/tool-map.md": "db0754512351b202e27aa6fcefd02463cbc067a8f3c3c6488e2cd9f679c1ec20",
         "src/ai_dlc/cli.py": "adf101a1ea24b8c9478aba4c408124f45940bfd349f7103c956ca897c22e7b36",
-        "src/ai_dlc/mcp_server.py": "f159ac251bd9b65fb4fdeb404380be3a2afb9fbac013e0a0e19315ad738bd612"
+        "src/ai_dlc/mcp_server.py": "607eba3e47a8573862d83e5209e824b78ec0af74545fa51727b8d3f7c03db410"
       },
-      "outcome": "updated",
-      "reason": "Corrects the evaluation network description: deterministic offline execution versus restricted proxy egress for real clients.",
-      "reviewer": "Codex task4 review-fix implementation review",
+      "outcome": "reviewed-no-change",
+      "reason": "Reviewed the guidance cherry-pick conflict resolution: retained expanded MCP documentation/workspace capabilities and the real-client restricted-network description together. Budget detail belongs in the canonical evaluation runbook.",
+      "reviewer": "Codex task5 implementation documentation review",
       "target": "docs/workflows/tool-map.md"
     },
     {
@@ -194,11 +206,11 @@
     },
     {
       "bound": {
-        "openspec/changes/real-client-evaluation/tasks.md": "bfc2c312a16e3a58406a0815d5537702d5b3e9d290e32d30007edb0d2707d5c1"
+        "openspec/changes/real-client-evaluation/tasks.md": "fd96e7e71e5c6e26c06067947fe874e855e54ebf7d3d8f957be553d47b677afa"
       },
       "outcome": "updated",
-      "reason": "Marks only task 4 complete after native-stream and mocked lifecycle verification; run scheduling, adoption and paid comparison remain pending.",
-      "reviewer": "Codex task4 review-fix implementation review",
+      "reason": "Checked task5 after local focused regressions; tasks6 through8 remain pending and the reviewed requirements are unchanged.",
+      "reviewer": "Codex task5 implementation documentation review",
       "target": "openspec/changes/real-client-evaluation/tasks.md"
     },
     {

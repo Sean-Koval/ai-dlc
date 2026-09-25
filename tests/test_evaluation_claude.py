@@ -237,12 +237,12 @@ def test_driver_failures_never_pass_assertions_and_keep_evidence(tmp_path, monke
         events[-1]["result"] = "private-evaluation-key"
         options["stream"] = encoded(events)
     out, report, fake = run_native(tmp_path, monkeypatch, **options)
-    assert all(a["outcome"] == "incomplete" for a in report["arms"])
+    assert [a["outcome"] for a in report["arms"]] == ["incomplete", "not-started"]
     assert all(x["result"] != "pass" for a in report["arms"] for x in a["assertions"])
     if damage == "version":
         assert not any("-p" in call for call in fake.calls)
     else:
-        assert len(list(out.rglob("client-stream.jsonl"))) == 2
+        assert len(list(out.rglob("client-stream.jsonl"))) == 1
     if damage == "malformed":
         assert all(p.read_bytes().startswith(b"\xff") for p in out.rglob("client-stream.jsonl"))
     assert not any(
@@ -401,7 +401,8 @@ def test_response_model_mismatch_blocks_execution_and_offline_rebuild(
     with pytest.raises(ValueError, match="Claude Code"):
         parse(changed)
     out, report, _ = run_native(tmp_path, monkeypatch, stream=changed)
-    for arm in report["arms"]:
+    assert report["arms"][1]["outcome"] == "not-started"
+    for arm in report["arms"][:1]:
         assert arm["outcome"] == "incomplete"
         assert arm["metrics"]["usage"] is None
         assert not any(a["result"] == "pass" for a in arm["assertions"])
@@ -416,7 +417,8 @@ def test_response_model_mismatch_blocks_execution_and_offline_rebuild(
         (stream.parent / "manifest.json").write_text(json.dumps(manifest_of(stream.parent)))
     rebuilt = build_report(out)
     assert all(
-        a["outcome"] == "incomplete" and a["metrics"]["usage"] is None for a in rebuilt["arms"]
+        a["outcome"] in ("incomplete", "not-started") and a["metrics"]["usage"] is None
+        for a in rebuilt["arms"]
     )
     assert not any(item["result"] == "pass" for a in rebuilt["arms"] for item in a["assertions"])
 
@@ -429,14 +431,16 @@ def test_partial_stream_keeps_memory_diagnosis_in_attempt_and_report(
 
     partial = encoded(native()[:-1])
     out, report, _ = run_native(tmp_path, monkeypatch, stream=partial, exit_code=exit_code, oom=oom)
-    for attempt_path in out.rglob("attempt.json"):
+    assert report["arms"][1]["outcome"] == "not-started"
+    for stream in out.rglob("client-stream.jsonl"):
+        attempt_path = stream.parent / "attempt.json"
         attempt = json.loads(attempt_path.read_text())
         assert attempt["outcome"] == "infrastructure"
         assert attempt["limit"] == "memory"
         assert attempt["detail"] == "memory limit reached"
         assert (attempt_path.parent / "client-stream.jsonl").read_bytes() == partial
     assert build_report(out) == report
-    for arm in report["arms"]:
+    for arm in report["arms"][:1]:
         assert arm["limit"] == "memory"
         assert "memory limit reached" in arm["detail"]
         assert not any(a["result"] == "pass" for a in arm["assertions"])
@@ -444,8 +448,9 @@ def test_partial_stream_keeps_memory_diagnosis_in_attempt_and_report(
 
 def test_nonzero_exit_with_partial_stream_keeps_exit_diagnosis(tmp_path, monkeypatch):
     out, report, _ = run_native(tmp_path, monkeypatch, stream=encoded(native()[:-1]), exit_code=42)
-    for attempt_path in out.rglob("attempt.json"):
-        attempt = json.loads(attempt_path.read_text())
+    assert report["arms"][1]["outcome"] == "not-started"
+    for stream in out.rglob("client-stream.jsonl"):
+        attempt = json.loads((stream.parent / "attempt.json").read_text())
         assert attempt["stage"] == "step"
         assert "exited 42" in attempt["detail"]
-    assert all("exited 42" in arm["detail"] for arm in report["arms"])
+    assert "exited 42" in report["arms"][0]["detail"]

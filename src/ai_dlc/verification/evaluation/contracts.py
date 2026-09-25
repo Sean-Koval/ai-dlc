@@ -84,7 +84,7 @@ class Budgets(Strict):
     """Explicit on purpose: a missing spend setting must not become an unlimited one."""
 
     max_tokens: Annotated[int, Field(ge=0)]
-    max_spend_usd: Annotated[float, Field(ge=0)]
+    max_spend_usd: Annotated[float, Field(ge=0, allow_inf_nan=False)]
 
 
 class Egress(Strict):
@@ -135,7 +135,13 @@ class ArmReport(Strict):
     arm: Literal["treatment", "baseline"]
     attempt: Annotated[int, Field(ge=1)]
     outcome: Literal[
-        "completed", "infrastructure", "product", "workflow-violation", "unavailable", "incomplete"
+        "completed",
+        "infrastructure",
+        "product",
+        "workflow-violation",
+        "unavailable",
+        "incomplete",
+        "not-started",
     ]
     stage: str | None = None
     limit: str | None = None

@@ -63,7 +63,8 @@
             "product",
             "workflow-violation",
             "unavailable",
-            "incomplete"
+            "incomplete",
+            "not-started"
           ],
           "title": "Outcome",
           "type": "string"

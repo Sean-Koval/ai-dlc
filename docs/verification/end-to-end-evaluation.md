@@ -81,8 +81,12 @@ Each arm has one outcome:
 | `infrastructure` | provisioning, staging or installation failed; not the product's fault |
 | `unavailable` | a mandatory observation could not be made |
 | `incomplete` | timeout, cancellation, damaged or tampered evidence, or a leaked credential |
+| `not-started` | the run budget refused this planned attempt before any attempt resources or client session started |
 
-Quality assertions are always `pending`; only a person records them. Workflow
+Quality assertions on executed attempts are `pending`; only a person records them.
+All assertions on a `not-started` attempt are `unavailable`, and JUnit marks them
+`skipped`. They cannot contribute correctness successes, including scenarios with
+no mandatory correctness assertions. Workflow
 kinds without an observer (`ordering`, process and MCP observation) are
 `unavailable`. The baseline arm is graded on correctness only.
 
@@ -159,10 +163,9 @@ client prose never grades the collected code.
 
 `limits.max_turns` sets the client turn limit. An optional scenario
 `limits.max_spend_usd` sets its spend cap (default USD 2, capped by the declared
-run spend budget). These are client limits, not a guarantee that an in-flight
-API request cannot exceed the cap. **Run-wide token/spend scheduling is still
-task 5; do not use this slice for a paid comparison yet.** Multi-turn declared
-answers are not delivered. Reports remain labelled `fixture`: a real client
+run spend budget). The runner narrows this cap again to the remaining run spend
+before each session. These are client limits, not a guarantee that an in-flight
+API request cannot exceed the cap. Multi-turn declared answers are not delivered. Reports remain labelled `fixture`: a real client
 alone does not qualify the fixture providers or prove AI-DLC's value.
 
 Verified September 24, 2026: both-arm execution, credential isolation, raw
@@ -178,6 +181,51 @@ macOS with Docker 20.10.17, Linux arm64; it verifies the Git/client image only.
 The implementation follows the vendor's [headless stream documentation](https://code.claude.com/docs/en/headless)
 and [CLI flags](https://code.claude.com/docs/en/cli-reference), checked against
 the pinned client. In particular, it does not use newer flags that 2.1.220 lacks.
+
+## Run budgets (task 5)
+
+The runner uses one sequential ledger for all scenarios and both arms. Before
+an attempt starts, both remaining run budgets must be positive and at least the
+largest corresponding consumption observed in any earlier attempt. Positive
+remaining budget exactly equal to the observed maximum permits one attempt;
+exhausted budget permits none. Spend arithmetic uses decimal values, avoiding
+binary rounding at boundaries such as USD 0.3 minus three USD 0.1 sessions.
+Zero run tokens, zero run spend, or a zero scenario spend cap starts no client.
+The deterministic driver retains its conventional zero-budget behavior.
+
+Consumption comes from the validated final native result, counting input, output,
+cache creation and cache read tokens once. Terminal errors still consume their
+reported usage. Missing or malformed usage, and credential redaction, block later
+client attempts conservatively; the original attempt keeps its resource, stream
+or credential diagnosis. Budgets are never silently raised to finish the matrix.
+
+Each real-client attempt retains a `budget.json` decision, covered by its evidence
+manifest. Reports replay decisions in planned order against earlier trusted native
+usage. A refused attempt has only its decision, attempt record and manifest;
+missing, malformed, contradictory or extra execution evidence makes it
+`incomplete`. Reports give every planned row, plus per-arm `attempts_not_started`
+and `attempts_incomplete` counts alongside the planned `attempts_per_arm`. All
+measurements for refused rows are `null`, so they do not lower mean time or usage.
+Tampering with earlier usage also invalidates dependent refusal receipts. These
+hashes detect damage, not an adversary who consistently rewrites the whole run.
+Older real-client recordings without decision receipts cannot establish the new
+budget contract and rebuild as incomplete; deterministic reports remain supported.
+
+**This is an observed-usage scheduling rule, not a strict billing ceiling.** The
+first attempt has no observed maximum and may start with any positive run budget;
+future attempts can consume more than any earlier one. Claude Code 2.1.220 exposes
+no hard total-token cap. Its spend limit may overshoot while a request is in flight.
+Actual reported overruns are retained without clipping, and subsequent attempts
+are refused. Three attempts per arm at the recommended USD 2 attempt cap can
+exceed the recommended USD 10 run allocation; inspect refused coverage and do not
+interpret an unequal or incomplete matrix as a completed comparison.
+
+Verified with recorded native streams and mocked Docker boundaries: zero and exact
+boundaries, independent token/spend exhaustion, changing native spend caps,
+multiple scenarios and arms, terminal errors, unknown usage, overruns, offline
+reconstruction and damaged refusal evidence. No paid calls or live billing
+qualification were performed for this change. Treatment adoption, the Git
+observer and the real comparison remain tasks 6–8.
 
 ## Known gaps
 

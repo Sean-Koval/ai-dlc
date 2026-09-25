@@ -12,6 +12,7 @@ from datetime import datetime
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
+from ai_dlc.verification.evaluation.budgets import RECEIPT, RunBudget, refused_attempt
 from ai_dlc.verification.evaluation.drivers import retained_client
 from ai_dlc.verification.evaluation.evaluate import evaluate
 
@@ -29,6 +30,10 @@ def manifest_of(run_dir: Path) -> dict[str, str]:
 def _integrity(run_dir: Path) -> list[str]:
     try:
         recorded = json.loads((run_dir / MANIFEST).read_text())
+        if not isinstance(recorded, dict) or not all(
+            isinstance(key, str) and isinstance(value, str) for key, value in recorded.items()
+        ):
+            raise ValueError("malformed evidence manifest")
     except (OSError, ValueError):
         return ["evidence manifest missing or unreadable"]
     current = manifest_of(run_dir)
@@ -76,11 +81,24 @@ def _metrics(events: list[dict], client: dict | None = None) -> dict:
     return {**metrics, "usage": None, "cost_usd": None}
 
 
-def _arm(out: Path, planned: dict, scenario: dict) -> dict:
+def _unique_fields(pairs: list[tuple[str, object]]) -> dict:
+    fields = {}
+    for key, value in pairs:
+        if key in fields:
+            raise ValueError("duplicate evidence field")
+        fields[key] = value
+    return fields
+
+
+def _arm(out: Path, planned: dict, scenario: dict, decision: dict | None = None) -> dict:
     run_dir = out / planned["scenario"] / planned["arm"] / str(planned["attempt"])
     try:
-        attempt = json.loads((run_dir / "attempt.json").read_text())
-    except (OSError, ValueError):
+        attempt = json.loads(
+            (run_dir / "attempt.json").read_text(), object_pairs_hook=_unique_fields
+        )
+        if not isinstance(attempt, dict):
+            raise TypeError("malformed attempt record")
+    except (OSError, ValueError, TypeError):
         attempt = {
             "scenario": planned["scenario"],
             "arm": planned["arm"],
@@ -92,8 +110,35 @@ def _arm(out: Path, planned: dict, scenario: dict) -> dict:
         problems = [attempt["detail"]]
         events: list[dict] = []
     else:
-        events, problems = _events(run_dir)
+        if attempt.get("outcome") == "not-started":
+            events, problems = [], []
+        else:
+            events, problems = _events(run_dir)
         problems = _integrity(run_dir) + problems
+    if decision:
+        try:
+            receipt = json.loads((run_dir / RECEIPT).read_text(), object_pairs_hook=_unique_fields)
+            if json.dumps(receipt, sort_keys=True) != json.dumps(decision, sort_keys=True):
+                raise ValueError
+        except (OSError, ValueError):
+            problems.append(
+                "budget decision missing, malformed or inconsistent with retained usage"
+            )
+    if attempt.get("outcome") == "not-started":
+        if (
+            not decision
+            or decision["start"]
+            or json.dumps(attempt, sort_keys=True)
+            != json.dumps(refused_attempt(decision), sort_keys=True)
+        ):
+            problems.append(
+                "budget refusal does not match the planned attempt and remaining budget"
+            )
+        if set(manifest_of(run_dir)) != {RECEIPT, "attempt.json"}:
+            problems.append("not-started attempt contains unexpected execution evidence")
+        return _not_started(planned, scenario, attempt, problems)
+    if decision and not decision["start"]:
+        problems.append("attempt started despite a run-budget refusal")
     trustworthy = not problems
     client = None
     if planned.get("client"):
@@ -135,6 +180,33 @@ def _arm(out: Path, planned: dict, scenario: dict) -> dict:
     }
 
 
+def _not_started(planned: dict, scenario: dict, attempt: dict, problems: list[str]) -> dict:
+    """No execution means no observation, elapsed time, metering or passing assertions."""
+    return {
+        **{key: planned[key] for key in ("scenario", "arm", "attempt")},
+        "outcome": "incomplete" if problems else "not-started",
+        "stage": "budget",
+        "limit": attempt.get("limit") if isinstance(attempt.get("limit"), str) else None,
+        "detail": "; ".join(problems) if problems else attempt["detail"],
+        "cleanup_clean": not problems,
+        "metrics": {"turns": None, "wall_seconds": None, "usage": None, "cost_usd": None},
+        "assertions": [
+            {
+                "id": a["id"],
+                "dimension": a["dimension"],
+                "expected": a.get("expect") or a["kind"],
+                "observed": "evidence not trustworthy"
+                if problems
+                else "attempt not started: " + attempt["detail"],
+                "evidence": [] if problems else [RECEIPT],
+                "result": "unavailable",
+            }
+            for a in scenario["assertions"]
+            if a["id"] in planned["assertions"]
+        ],
+    }
+
+
 def _spread(values: dict[str, float | None], precision: int = 3) -> dict:
     both = values["treatment"] is not None and values["baseline"] is not None
     difference = round(values["treatment"] - values["baseline"], precision) if both else None  # type: ignore[operator]
@@ -162,12 +234,20 @@ def _comparison(plan: dict, suite: dict, arms: list[dict]) -> dict:
 
         def passed(name: str) -> int:
             return sum(
-                all(x["result"] == "pass" for x in a["assertions"] if x["id"] in mandatory)  # noqa: B023
+                a["outcome"] not in ("not-started", "incomplete")
+                and bool(mandatory)  # noqa: B023
+                and all(x["result"] == "pass" for x in a["assertions"] if x["id"] in mandatory)  # noqa: B023
                 for a in rows[name]  # noqa: B023
             )
 
         scenarios[scenario["id"]] = {
             "correctness_passed": _spread({n: passed(n) for n in rows}),
+            "attempts_not_started": _spread(
+                {n: sum(a["outcome"] == "not-started" for a in rows[n]) for n in rows}
+            ),
+            "attempts_incomplete": _spread(
+                {n: sum(a["outcome"] == "incomplete" for a in rows[n]) for n in rows}
+            ),
             "turns": _spread({n: mean(n, "turns") for n in rows}),
             "wall_seconds": _spread({n: mean(n, "wall_seconds") for n in rows}),
             "usage": _spread({n: mean(n, "usage") for n in rows}),
@@ -180,7 +260,14 @@ def build_report(out: Path) -> dict:
     plan = json.loads((out / "plan.json").read_text())
     suite = json.loads((out / "inputs/suite.json").read_text())
     scenarios = {s["id"]: s for s in suite["scenarios"]}
-    arms = [_arm(out, planned, scenarios[planned["scenario"]]) for planned in plan["attempts"]]
+    budget = RunBudget(plan["budgets"]) if plan["driver"]["kind"] == "claude-code" else None
+    arms = []
+    for planned in plan["attempts"]:
+        decision = budget.decision(planned) if budget else None
+        arm = _arm(out, planned, scenarios[planned["scenario"]], decision)
+        arms.append(arm)
+        if budget and arm["outcome"] != "not-started":
+            budget.observe(arm["metrics"].get("client") if arm["stage"] != "redaction" else None)
     return {
         "schema": 1,
         "suite": plan["suite"],
@@ -209,6 +296,8 @@ def _junit(report: dict) -> ET.Element:
             tag = {"fail": "failure", "unavailable": "error", "pending": "skipped"}.get(
                 item["result"]
             )
+            if arm["outcome"] == "not-started":
+                tag = "skipped"
             if tag:
                 ET.SubElement(
                     case, tag, message=item["observed"] or item["result"]
