@@ -136,10 +136,10 @@ real_build = pytest.mark.skipif(
 
 
 @real_build
-def test_real_base_image_has_git_and_the_pinned_client(recipe):
-    built = image_module().build_base(recipe)
+def test_real_base_image_has_git_and_the_pinned_client(shipped):
+    built = image_module().build_base(shipped)
     try:
-        assert built["client"]["version"] == recipe["client"]["version"]
+        assert built["client"]["version"] == shipped["client"]["version"]
         assert built["git"].startswith("git version")
     finally:
         subprocess.run(["docker", "rmi", "-f", built["image"]], capture_output=True, check=False)

@@ -147,7 +147,7 @@
         "src/ai_dlc/verification/evaluation/report.py": "c00f8fe201c88a6b0bbabe1f77cbd6e35a8c7e31d357ddfb1cadbab239421097",
         "src/ai_dlc/verification/evaluation/run.py": "cfbe671eb1958f3b7042a4f81048dd1f852ab9acd50839772c21362853f9189e",
         "tests/test_evaluation_attempt.py": "432739434aa58c1ee2cf2fd392b3d0b1f4078980eb9f69c6e5a07018e1e3ec00",
-        "tests/test_evaluation_base_image.py": "f31cfc552efde0250fb23babae732dc3582b289882ae299ecb2b8078f1bc5d37",
+        "tests/test_evaluation_base_image.py": "ff95e2bab7233fbbf37734231a2892753e48f5669ffbad31c234479e71884400",
         "tests/test_evaluation_driver.py": "bae0e72a3dab4c1f6d3f713f3ee54301bf1f6b3632e5f98f56afa1c5bcdbe62e",
         "tests/test_evaluation_egress.py": "92a0b9629e039da35da0572e3afe2f20ab5e4cefda500f5dae0a1c104a4db810",
         "tests/test_evaluation_image.py": "b76a456529ea17dab1476bd7e9e60ab904af1130574fcf6be1404a12d9801ba9",
@@ -155,9 +155,9 @@
         "tests/test_evaluation_report.py": "95494d689a851b7fa20a0a8a3ddbf30f5a01adbc10cdf0e2b1f4c5f1600c8cd9",
         "tests/test_evaluation_run.py": "edc99627ced20eba905a8d4952b81802a4c6daf63e3577feac77c07972da41db"
       },
-      "outcome": "updated",
-      "reason": "Adds the base image section with its verification and limits; removes the closed no-Git gap.",
-      "reviewer": "Claude Code, directed by Sean Koval",
+      "outcome": "reviewed-no-change",
+      "reason": "Reviewed the base-image instructions against the test fixture correction. The opt-in live build now uses the shipped recipe's published checksums instead of stand-in bytes; the documented command, checksum verification, opt-in variable and qualification limits remain accurate. No live build was rerun for this test-only fix.",
+      "reviewer": "Codex, directed by Sean Koval",
       "target": "docs/verification/end-to-end-evaluation.md"
     },
     {
