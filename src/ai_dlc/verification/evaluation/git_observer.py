@@ -3,21 +3,26 @@
 from __future__ import annotations
 
 import fnmatch
+import hashlib
 import json
 import os
 import re
 import shutil
 import stat
 import subprocess
+import tempfile
 import threading
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 ANCHOR_REF = "refs/ai-dlc/evaluation-anchor"
 MAX_COMMITS = 512
 MAX_GIT_ENTRIES = 100_000
 MAX_OUTPUT_BYTES = 1_048_576
+MAX_WORKTREE_BYTES = 268_435_456
+MAX_WORKTREE_FILE_BYTES = 16_777_216
 GIT_TIMEOUT_SECONDS = 10
 OBJECT_ID = re.compile(r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
+REF_NAME = re.compile(r"^refs/[A-Za-z0-9._/-]+$")
 EVIDENCE = "grading/git.json"
 
 
@@ -25,19 +30,17 @@ class GitUnavailable(Exception):
     """The collected repository cannot provide a bounded, trustworthy observation."""
 
 
-def _git(project: Path, *arguments: str) -> bytes:
+def _git(objects: Path, controller_git_dir: Path, *arguments: str) -> bytes:
     executable = shutil.which("git")
     if not executable:
         raise GitUnavailable("controller Git is unavailable")
     environment = {
         "PATH": os.defpath,
         "LC_ALL": "C",
-        # GIT_CONFIG replaces the repository config too. The other settings make
-        # the boundary explicit across Git versions.
-        "GIT_CONFIG": os.devnull,
         "GIT_CONFIG_NOSYSTEM": "1",
         "GIT_CONFIG_GLOBAL": os.devnull,
         "GIT_CONFIG_SYSTEM": os.devnull,
+        "GIT_OBJECT_DIRECTORY": str(objects),
         "GIT_OPTIONAL_LOCKS": "0",
         "GIT_NO_LAZY_FETCH": "1",
         "GIT_NO_REPLACE_OBJECTS": "1",
@@ -49,14 +52,7 @@ def _git(project: Path, *arguments: str) -> bytes:
         "--no-pager",
         "--no-optional-locks",
         "--no-replace-objects",
-        f"--git-dir={project / '.git'}",
-        f"--work-tree={project}",
-        "-c",
-        "core.fsmonitor=false",
-        "-c",
-        "core.untrackedCache=false",
-        "-c",
-        "submodule.recurse=false",
+        f"--git-dir={controller_git_dir}",
         *arguments,
     ]
     try:
@@ -120,15 +116,6 @@ def _preflight(project: Path) -> Path:
     replacement_refs = git_dir / "refs/replace"
     if replacement_refs.exists() or replacement_refs.is_symlink():
         raise GitUnavailable("collected Git directory contains replacement history")
-    packed_refs = git_dir / "packed-refs"
-    if packed_refs.exists():
-        if packed_refs.is_symlink() or not packed_refs.is_file():
-            raise GitUnavailable("collected Git directory contains an unsafe reference path")
-        if packed_refs.stat().st_size > MAX_OUTPUT_BYTES:
-            raise GitUnavailable("collected Git references exceed their size limit")
-        if "refs/replace/" in packed_refs.read_text(errors="replace"):
-            raise GitUnavailable("collected Git directory contains replacement history")
-
     entries = 0
     for root, directories, files in os.walk(git_dir, followlinks=False):
         for name in [*directories, *files]:
@@ -139,16 +126,84 @@ def _preflight(project: Path) -> Path:
             mode = path.lstat().st_mode
             if stat.S_ISLNK(mode) or not (stat.S_ISDIR(mode) or stat.S_ISREG(mode)):
                 raise GitUnavailable("collected Git directory contains an unsafe path")
+    packed_refs = git_dir / "packed-refs"
+    if packed_refs.exists():
+        if not packed_refs.is_file():
+            raise GitUnavailable("collected Git directory contains an unsafe reference path")
+        if packed_refs.stat().st_size > MAX_OUTPUT_BYTES:
+            raise GitUnavailable("collected Git references exceed their size limit")
+        if "refs/replace/" in packed_refs.read_text(errors="replace"):
+            raise GitUnavailable("collected Git directory contains replacement history")
     return git_dir
 
 
 def _decode_path(value: bytes) -> str:
-    return value.decode("utf-8", errors="backslashreplace")
+    return value.decode("utf-8", errors="surrogateescape")
 
 
-def _paths(project: Path, commit: str) -> list[str]:
+def _read_ref_file(path: Path) -> str:
+    if not path.is_file() or path.stat().st_size > 4_096:
+        raise GitUnavailable("collected Git reference is missing or malformed")
+    return path.read_text(errors="replace").strip()
+
+
+def _valid_ref_name(name: str) -> bool:
+    parts = PurePosixPath(name).parts
+    return bool(
+        REF_NAME.fullmatch(name)
+        and parts
+        and all(part not in ("", ".", "..") and not part.endswith(".lock") for part in parts)
+    )
+
+
+def _packed_refs(git_dir: Path) -> dict[str, str]:
+    path = git_dir / "packed-refs"
+    if not path.exists():
+        return {}
+    refs: dict[str, str] = {}
+    for line in path.read_text(errors="replace").splitlines():
+        if not line or line.startswith(("#", "^")):
+            continue
+        try:
+            object_id, name = line.split(" ", 1)
+        except ValueError as exc:
+            raise GitUnavailable("collected packed references are malformed") from exc
+        if not OBJECT_ID.fullmatch(object_id) or not _valid_ref_name(name) or name in refs:
+            raise GitUnavailable("collected packed references are malformed")
+        refs[name] = object_id
+    return refs
+
+
+def _resolve_ref(git_dir: Path, name: str, packed: dict[str, str], depth: int = 0) -> str:
+    if depth > 4 or (name != "HEAD" and not _valid_ref_name(name)):
+        raise GitUnavailable("collected Git reference is unsafe")
+    path = git_dir / name
+    value = _read_ref_file(path) if path.exists() else packed.get(name, "")
+    if OBJECT_ID.fullmatch(value):
+        return value
+    if value.startswith("ref: "):
+        return _resolve_ref(git_dir, value.removeprefix("ref: "), packed, depth + 1)
+    raise GitUnavailable("collected Git reference is missing or malformed")
+
+
+def _controller_git_dir(root: Path, object_id: str) -> Path:
+    git_dir = root / "repository.git"
+    git_dir.mkdir()
+    (git_dir / "objects").mkdir()
+    (git_dir / "refs").mkdir()
+    if len(object_id) == 64:
+        config = "[core]\n\trepositoryformatversion = 1\n\tbare = true\n[extensions]\n\tobjectformat = sha256\n"
+    else:
+        config = "[core]\n\trepositoryformatversion = 0\n\tbare = true\n"
+    (git_dir / "config").write_text(config)
+    (git_dir / "HEAD").write_text(object_id + "\n")
+    return git_dir
+
+
+def _paths(objects: Path, controller_git_dir: Path, commit: str) -> list[str]:
     raw = _git(
-        project,
+        objects,
+        controller_git_dir,
         "diff-tree",
         "--root",
         "-m",
@@ -163,76 +218,152 @@ def _paths(project: Path, commit: str) -> list[str]:
     return sorted({_decode_path(path) for path in raw.split(b"\0") if path})
 
 
-def _dirty_paths(project: Path) -> list[str]:
-    raw = _git(
-        project,
-        "status",
-        "--porcelain=v1",
-        "-z",
-        "--untracked-files=all",
-        "--ignore-submodules=all",
-    )
-    records = raw.split(b"\0")
-    dirty: set[str] = set()
-    index = 0
-    while index < len(records):
-        record = records[index]
-        index += 1
+def _tree_entries(objects: Path, controller_git_dir: Path, head: str) -> list[dict[str, str]]:
+    raw = _git(objects, controller_git_dir, "ls-tree", "-r", "-z", "--full-tree", head)
+    entries: list[dict[str, str]] = []
+    seen: set[str] = set()
+    for record in raw.split(b"\0"):
         if not record:
             continue
-        if len(record) < 4 or record[2:3] != b" ":
-            raise GitUnavailable("collected Git status is malformed")
-        dirty.add(_decode_path(record[3:]))
-        if record[:1] in (b"R", b"C") or record[1:2] in (b"R", b"C"):
-            if index >= len(records) or not records[index]:
-                raise GitUnavailable("collected Git status is malformed")
-            dirty.add(_decode_path(records[index]))
-            index += 1
+        try:
+            metadata, encoded_path = record.split(b"\t", 1)
+            mode, kind, object_id = metadata.decode("ascii").split(" ")
+        except (ValueError, UnicodeError) as exc:
+            raise GitUnavailable("collected Git tree is malformed") from exc
+        path = _decode_path(encoded_path)
+        parts = PurePosixPath(path).parts
+        if (
+            mode not in ("100644", "100755")
+            or kind != "blob"
+            or not OBJECT_ID.fullmatch(object_id)
+            or not parts
+            or PurePosixPath(path).is_absolute()
+            or any(part in ("", ".", "..") for part in parts)
+            or path in seen
+        ):
+            raise GitUnavailable("collected Git tree contains an unsafe entry")
+        seen.add(path)
+        entries.append({"path": path, "mode": mode, "object": object_id})
+    return entries
+
+
+def _worktree_files(project: Path) -> dict[str, tuple[Path, os.stat_result]]:
+    files: dict[str, tuple[Path, os.stat_result]] = {}
+    entries = 0
+    total_bytes = 0
+    for root, directories, names in os.walk(project, followlinks=False):
+        if Path(root) == project and ".git" in directories:
+            directories.remove(".git")
+        for name in [*directories, *names]:
+            entries += 1
+            if entries > MAX_GIT_ENTRIES:
+                raise GitUnavailable("collected worktree exceeds its entry limit")
+            path = Path(root) / name
+            info = path.lstat()
+            if stat.S_ISLNK(info.st_mode) or not (
+                stat.S_ISDIR(info.st_mode) or stat.S_ISREG(info.st_mode)
+            ):
+                raise GitUnavailable("collected worktree contains an unsafe path")
+            if stat.S_ISREG(info.st_mode):
+                if info.st_size > MAX_WORKTREE_FILE_BYTES:
+                    raise GitUnavailable("collected worktree contains an oversized file")
+                total_bytes += info.st_size
+                if total_bytes > MAX_WORKTREE_BYTES:
+                    raise GitUnavailable("collected worktree exceeds its byte limit")
+                relative = path.relative_to(project).as_posix()
+                files[relative] = (path, info)
+    return files
+
+
+def _blob_id(path: Path, expected: os.stat_result, object_id: str) -> str:
+    flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0)
+    descriptor = os.open(path, flags)
+    try:
+        actual = os.fstat(descriptor)
+        identity = ("st_dev", "st_ino", "st_size", "st_mtime_ns")
+        if not stat.S_ISREG(actual.st_mode) or any(
+            getattr(actual, field) != getattr(expected, field) for field in identity
+        ):
+            raise GitUnavailable("collected worktree changed during observation")
+        digest = hashlib.sha256() if len(object_id) == 64 else hashlib.sha1(usedforsecurity=False)
+        digest.update(f"blob {actual.st_size}\0".encode())
+        with os.fdopen(descriptor, "rb", closefd=False) as source:
+            while chunk := source.read(65_536):
+                digest.update(chunk)
+        return digest.hexdigest()
+    finally:
+        os.close(descriptor)
+
+
+def _dirty_paths(project: Path, tree: list[dict[str, str]]) -> list[str]:
+    worktree = _worktree_files(project)
+    tracked = {entry["path"] for entry in tree}
+    dirty = set(worktree) - tracked
+    for entry in tree:
+        current = worktree.get(entry["path"])
+        if current is None:
+            dirty.add(entry["path"])
+            continue
+        path, info = current
+        executable = bool(info.st_mode & 0o111)
+        if (
+            executable != (entry["mode"] == "100755")
+            or _blob_id(path, info, entry["object"]) != entry["object"]
+        ):
+            dirty.add(entry["path"])
     return sorted(dirty)
 
 
 def _observe(project: Path, expected_anchor: str | None) -> dict:
-    _preflight(project)
+    git_dir = _preflight(project)
     if expected_anchor is None or not OBJECT_ID.fullmatch(expected_anchor):
         raise GitUnavailable("controller staging anchor is missing or malformed")
-    anchor = _git(project, "rev-parse", "--verify", f"{ANCHOR_REF}^{{commit}}").decode().strip()
+    packed = _packed_refs(git_dir)
+    anchor = _resolve_ref(git_dir, ANCHOR_REF, packed)
     if anchor != expected_anchor:
         raise GitUnavailable("collected staging anchor differs from the controller record")
-    history = _git(
-        project,
-        "rev-list",
-        "--parents",
-        "--topo-order",
-        "--reverse",
-        f"--max-count={MAX_COMMITS + 1}",
-        "HEAD",
-    ).decode()
-    lines = [line.split() for line in history.splitlines() if line]
-    if not lines or len(lines) > MAX_COMMITS:
-        raise GitUnavailable("collected Git history is empty or exceeds its commit limit")
-    if any(not parts or any(not OBJECT_ID.fullmatch(value) for value in parts) for parts in lines):
-        raise GitUnavailable("collected Git history contains malformed object identifiers")
-    hashes = {parts[0] for parts in lines}
-    roots = [parts[0] for parts in lines if len(parts) == 1]
-    if roots != [anchor] or any(parent not in hashes for parts in lines for parent in parts[1:]):
-        raise GitUnavailable("controller staging anchor is not the sole complete history root")
+    head = _resolve_ref(git_dir, "HEAD", packed)
+    if len(head) != len(anchor):
+        raise GitUnavailable("collected Git references use inconsistent object identifiers")
+    with tempfile.TemporaryDirectory(prefix="ai-dlc-git-observer-") as temporary:
+        controller_git_dir = _controller_git_dir(Path(temporary), head)
+        objects = git_dir / "objects"
+        history = _git(
+            objects,
+            controller_git_dir,
+            "rev-list",
+            "--parents",
+            "--topo-order",
+            "--reverse",
+            f"--max-count={MAX_COMMITS + 1}",
+            head,
+        ).decode()
+        lines = [line.split() for line in history.splitlines() if line]
+        if not lines or len(lines) > MAX_COMMITS:
+            raise GitUnavailable("collected Git history is empty or exceeds its commit limit")
+        if any(
+            not parts or any(not OBJECT_ID.fullmatch(value) for value in parts) for parts in lines
+        ):
+            raise GitUnavailable("collected Git history contains malformed object identifiers")
+        hashes = {parts[0] for parts in lines}
+        roots = [parts[0] for parts in lines if len(parts) == 1]
+        if roots != [anchor] or any(
+            parent not in hashes for parts in lines for parent in parts[1:]
+        ):
+            raise GitUnavailable("controller staging anchor is not the sole complete history root")
 
-    commits = [
-        {
-            "hash": parts[0],
-            "parents": parts[1:],
-            "order": order,
-            "anchor": parts[0] == anchor,
-            "paths": _paths(project, parts[0]),
-        }
-        for order, parts in enumerate(lines)
-    ]
-    head = _git(project, "rev-parse", "--verify", "HEAD^{commit}").decode().strip()
-    head_paths = sorted(
-        _decode_path(path)
-        for path in _git(project, "ls-tree", "-r", "-z", "--name-only", head).split(b"\0")
-        if path
-    )
+        commits = [
+            {
+                "hash": parts[0],
+                "parents": parts[1:],
+                "order": order,
+                "anchor": parts[0] == anchor,
+                "paths": _paths(objects, controller_git_dir, parts[0]),
+            }
+            for order, parts in enumerate(lines)
+        ]
+        tree = _tree_entries(objects, controller_git_dir, head)
+    head_paths = sorted(entry["path"] for entry in tree)
     return {
         "schema": 1,
         "status": "available",
@@ -241,7 +372,7 @@ def _observe(project: Path, expected_anchor: str | None) -> dict:
         "head_commit": head,
         "commits": commits,
         "head_paths": head_paths,
-        "dirty_paths": _dirty_paths(project),
+        "dirty_paths": _dirty_paths(project, tree),
     }
 
 

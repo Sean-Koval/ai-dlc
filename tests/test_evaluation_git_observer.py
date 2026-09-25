@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import shlex
 import subprocess
 from pathlib import Path
 
@@ -101,7 +102,7 @@ def test_controller_records_anchor_commits_paths_and_passes_git_assertions(repos
 
     observation = retain(repository)
 
-    assert observation["status"] == "available"
+    assert observation["status"] == "available", observation
     assert observation["anchor_commit"] == observation["commits"][0]["hash"]
     assert [(item["order"], item["anchor"], item["paths"]) for item in observation["commits"]] == [
         (0, True, ["README.md"]),
@@ -219,6 +220,53 @@ def test_repository_config_and_hooks_are_ignored(repository: Path, tmp_path: Pat
 
     assert retain(repository)["status"] == "available"
     assert not marker.exists()
+
+
+@pytest.mark.parametrize("filter_kind", ["clean", "process"])
+def test_collected_attributes_and_named_filters_never_execute_on_the_controller(
+    repository: Path, tmp_path: Path, filter_kind: str
+):
+    work = repository / ".ai-dlc/work/item.toml"
+    work.parent.mkdir(parents=True)
+    work.write_text("safe\n")
+    commit(repository, "docs: record work", ".ai-dlc/work/item.toml")
+    (repository / ".gitattributes").write_text(".ai-dlc/work/item.toml filter=probe\n")
+    commit(repository, "test: configure attributes", ".gitattributes")
+    marker = tmp_path / f"{filter_kind}-executed"
+    if filter_kind == "clean":
+        command = f"touch {shlex.quote(str(marker))}; cat"
+    else:
+        probe = tmp_path / "filter-process"
+        probe.write_text(f"#!/bin/sh\ntouch {shlex.quote(str(marker))}\nexit 1\n")
+        probe.chmod(0o755)
+        command = str(probe)
+    git(repository, "config", f"filter.probe.{filter_kind}", command)
+    git(repository, "config", "filter.probe.required", "true")
+    work.write_text("evil\n")  # same size as the committed bytes
+
+    observation = retain(repository)
+
+    assert not marker.exists()
+    assert observation["status"] == "available", observation
+    assert ".ai-dlc/work/item.toml" in observation["dirty_paths"]
+
+
+@pytest.mark.parametrize("flag", ["--assume-unchanged", "--skip-worktree"])
+def test_collected_index_flags_cannot_hide_worktree_changes(repository: Path, flag: str):
+    work = repository / ".ai-dlc/work/item.toml"
+    work.parent.mkdir(parents=True)
+    work.write_text("safe\n")
+    commit(repository, "docs: record work", ".ai-dlc/work/item.toml")
+    git(repository, "update-index", flag, ".ai-dlc/work/item.toml")
+    work.write_text("evil\n")  # same size as the committed bytes
+
+    observation = retain(repository)
+    result = by_id(
+        grade(repository.parents[1], [assertion("path-committed", path=".ai-dlc/work/*.toml")])
+    )["path-committed"]
+
+    assert ".ai-dlc/work/item.toml" in observation["dirty_paths"]
+    assert result["result"] == "fail"
 
 
 @pytest.mark.parametrize("damage", ["gitfile", "alternates", "replace-ref", "symlink"])
