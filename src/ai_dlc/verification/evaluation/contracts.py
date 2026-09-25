@@ -45,6 +45,7 @@ class Assertion(Strict):
 class Limits(Strict):
     timeout_minutes: Annotated[int, Field(ge=1)] = 30
     max_turns: Annotated[int, Field(ge=1)] = 20
+    max_spend_usd: Annotated[float, Field(ge=0, allow_inf_nan=False)] | None = None
 
 
 class Scenario(Strict):

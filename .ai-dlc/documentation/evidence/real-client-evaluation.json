@@ -11,6 +11,15 @@
     },
     {
       "bound": {
+        "contracts/evaluation/scenario.schema.json": "052e01bd76dcddfce0fd27586bd853ee079cac76e9711cac24f5731d3fe3d784"
+      },
+      "outcome": "updated",
+      "reason": "Regenerated the scenario schema for optional per-attempt max_spend_usd; unchanged deterministic plans omit the unset field.",
+      "reviewer": "Codex task4 implementation review",
+      "target": "contracts/evaluation/scenario.schema.json"
+    },
+    {
+      "bound": {
         "catalog:docs/architecture.md": "1f6e70913f96f235139fc0202ea5c5e9f90e16afd4473e90f500f16994a4ec40",
         "docs/architecture.md": "b8e3626d51380f70f345931419c1cafe541d750b5045ec68f49ed84d58c180cb",
         "pyproject.toml": "296acf5ff015bc4aaf17576c4210e8c69988beb35e11507250a45c0dc534e4d5",
@@ -97,14 +106,14 @@
         "src/ai_dlc/toml_edit.py": "696057b2848ca8b57e5189d1c78441fc6c1e06994f480f6f13f8dd31c050515e",
         "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
         "src/ai_dlc/verification/evaluation/__init__.py": "7cf0a3add5298d2f8d58954210cee24b3fb6a5f81e505ef3b948a7078cbb0eb8",
-        "src/ai_dlc/verification/evaluation/attempt.py": "e8fefb69d710c98aa589e4a39bcdedd155c6d3d2c3a4bd35a45dcff70f85e1c3",
-        "src/ai_dlc/verification/evaluation/contracts.py": "e99d3e0eace1f8061d0d322ff9d7d7f04c36d73c9ff85abcd97aecf55af2cefd",
-        "src/ai_dlc/verification/evaluation/drivers.py": "a05e42d43c79c05e95fd786156b3cedcef032faea9a9609bfb8c69aa68fdc1df",
+        "src/ai_dlc/verification/evaluation/attempt.py": "0657be33b3780aa1f6bce9c15de9eac1335d6e0218528181842419823de2ac80",
+        "src/ai_dlc/verification/evaluation/contracts.py": "d4af5787e6ce3def29276a0e4c26ce91c43698e82205ad2d9326ef5fe40b9550",
+        "src/ai_dlc/verification/evaluation/drivers.py": "33bd734f02d61b0d733e1014d20cac356a17f662f6353dea1217fa1548a0c760",
         "src/ai_dlc/verification/evaluation/evaluate.py": "c83284feaefa2ac7e780660c99b8f6603d10a1cb875d00aeec191ef7298d8be1",
         "src/ai_dlc/verification/evaluation/image.py": "d3f2970ca488c1b7a1ceaf516f0f86c8b602f74b0fffe1ddbd2d35a13b31167b",
-        "src/ai_dlc/verification/evaluation/planning.py": "6e619cd5b3bc7710c4ddc94151e0c265941a0d266dff280b95137a7b0231c912",
-        "src/ai_dlc/verification/evaluation/report.py": "c00f8fe201c88a6b0bbabe1f77cbd6e35a8c7e31d357ddfb1cadbab239421097",
-        "src/ai_dlc/verification/evaluation/run.py": "cfbe671eb1958f3b7042a4f81048dd1f852ab9acd50839772c21362853f9189e",
+        "src/ai_dlc/verification/evaluation/planning.py": "f0a6844c5511db3d4c420f9c7638e47b6d86810968d16a3767de6373c2a971c6",
+        "src/ai_dlc/verification/evaluation/report.py": "ff22efef828685bd032873ff4211f2f5a0fd73be9c2aa57ce8e5321936886fdb",
+        "src/ai_dlc/verification/evaluation/run.py": "f7e9f3143673108d4f352e5d0b8ca70c72b74972792112781f4e935c13528172",
         "src/ai_dlc/verification/sandbox.py": "c017bd12115b8f144d07eba619f4e15ddbd00db323e4d386f569c4bcb08646e0",
         "src/ai_dlc/verification/test_proxy.py": "30ec2d29bf722d48f7341977542feef4a0c5ef9f90c90b158e869c5025d1c8d5",
         "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
@@ -114,62 +123,64 @@
         "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
         "src/ai_dlc/work/workflow.py": "b16ef66b0bea70ece8aaf15003e5e0233dbcff82051b3da24d59b94106da3fca"
       },
-      "outcome": "updated",
-      "reason": "Names the base image recipe beside the candidate one.",
-      "reviewer": "Claude Code, directed by Sean Koval",
+      "outcome": "reviewed-no-change",
+      "reason": "The evaluation driver contract and shared lifecycle remain in the existing verification/evaluation package; the detailed client behavior and qualification limits live in the mapped runbook.",
+      "reviewer": "Codex task4 implementation review",
       "target": "docs/architecture.md"
     },
     {
       "bound": {
-        "docs/catalog.toml": "8909ec47ebddc34ae2a32ff11844a72388af6f03ab0ad85d5046df70285b2226"
+        "docs/catalog.toml": "a2eac31c69640d0a3d0d3fa4c1c62512118bc9a52f657e5e7fe45c708c934aae"
       },
       "outcome": "updated",
-      "reason": "Maps the recipe and its test to the evaluation runbook.",
-      "reviewer": "Claude Code, directed by Sean Koval",
+      "reason": "Maps native-driver regression tests and recorded-stream fixture to the existing evaluation runbook.",
+      "reviewer": "Codex task4 implementation review",
       "target": "docs/catalog.toml"
     },
     {
       "bound": {
-        "catalog:docs/verification/end-to-end-evaluation.md": "2b35fcb0e55ecb9d12c9513e2e2b038512a9767d12cd4604f854b5cec9a76f83",
-        "docs/verification/end-to-end-evaluation.md": "c04780f6b68f52a1ec572ba1c9f82d73cbe0e5011cf68799798bd2f9819f426c",
-        "evaluations/README.md": "175dba8846945a883c0d949565bdb99aa32eff79b9a57cac7eb1ab515d578464",
+        "catalog:docs/verification/end-to-end-evaluation.md": "846dba10fa4a6fc06ebf9c2b6a921e883fdaa1c32df276d77dc38dc36066d4e2",
+        "docs/verification/end-to-end-evaluation.md": "6b6fd2a0a30fdd066867640b0cd3a63107bd1bce28a66ff709f23c5c6556bae0",
+        "evaluations/README.md": "3b4a1c4aa02ded1df343804bb5bf595bf17e74d6b298c6c1a4ec93bc6150a4fb",
         "evaluations/images/claude-code.json": "025911bda6303e83be72ed61ddb912863366b4e7df41d49af00f6dbebb0fa96d",
         "evaluations/profiles/local-deterministic.json": "0e0deb70f592f3ebad0a420daf815c536eab6c74c421ec4e10329614a65d3d6b",
         "evaluations/suites/smoke.json": "4f24319f9c734a2b5fa01cc01b2f831bb79a230800697b160ad29aa87f98a9d7",
         "openspec/specs/end-to-end-evaluation/spec.md": "ae46e6902ba9f869b9e3351b8a2c7f3f538b30db127198c0148e6804af663aae",
         "src/ai_dlc/verification/evaluation/__init__.py": "7cf0a3add5298d2f8d58954210cee24b3fb6a5f81e505ef3b948a7078cbb0eb8",
-        "src/ai_dlc/verification/evaluation/attempt.py": "e8fefb69d710c98aa589e4a39bcdedd155c6d3d2c3a4bd35a45dcff70f85e1c3",
-        "src/ai_dlc/verification/evaluation/contracts.py": "e99d3e0eace1f8061d0d322ff9d7d7f04c36d73c9ff85abcd97aecf55af2cefd",
-        "src/ai_dlc/verification/evaluation/drivers.py": "a05e42d43c79c05e95fd786156b3cedcef032faea9a9609bfb8c69aa68fdc1df",
+        "src/ai_dlc/verification/evaluation/attempt.py": "0657be33b3780aa1f6bce9c15de9eac1335d6e0218528181842419823de2ac80",
+        "src/ai_dlc/verification/evaluation/contracts.py": "d4af5787e6ce3def29276a0e4c26ce91c43698e82205ad2d9326ef5fe40b9550",
+        "src/ai_dlc/verification/evaluation/drivers.py": "33bd734f02d61b0d733e1014d20cac356a17f662f6353dea1217fa1548a0c760",
         "src/ai_dlc/verification/evaluation/evaluate.py": "c83284feaefa2ac7e780660c99b8f6603d10a1cb875d00aeec191ef7298d8be1",
         "src/ai_dlc/verification/evaluation/image.py": "d3f2970ca488c1b7a1ceaf516f0f86c8b602f74b0fffe1ddbd2d35a13b31167b",
-        "src/ai_dlc/verification/evaluation/planning.py": "6e619cd5b3bc7710c4ddc94151e0c265941a0d266dff280b95137a7b0231c912",
-        "src/ai_dlc/verification/evaluation/report.py": "c00f8fe201c88a6b0bbabe1f77cbd6e35a8c7e31d357ddfb1cadbab239421097",
-        "src/ai_dlc/verification/evaluation/run.py": "cfbe671eb1958f3b7042a4f81048dd1f852ab9acd50839772c21362853f9189e",
+        "src/ai_dlc/verification/evaluation/planning.py": "f0a6844c5511db3d4c420f9c7638e47b6d86810968d16a3767de6373c2a971c6",
+        "src/ai_dlc/verification/evaluation/report.py": "ff22efef828685bd032873ff4211f2f5a0fd73be9c2aa57ce8e5321936886fdb",
+        "src/ai_dlc/verification/evaluation/run.py": "f7e9f3143673108d4f352e5d0b8ca70c72b74972792112781f4e935c13528172",
+        "tests/fixtures/evaluation/claude-code-2.1.220.jsonl": "9801333e7ad60c9f64e3c4f7e9e5f74134fc0ad0b572a9e71db4e33326a86d00",
         "tests/test_evaluation_attempt.py": "432739434aa58c1ee2cf2fd392b3d0b1f4078980eb9f69c6e5a07018e1e3ec00",
         "tests/test_evaluation_base_image.py": "ff95e2bab7233fbbf37734231a2892753e48f5669ffbad31c234479e71884400",
+        "tests/test_evaluation_claude.py": "f7d90190f7db78b600da2616c2f03f6cc55c19fd7b5f36bb45f773850ce9b97b",
         "tests/test_evaluation_driver.py": "bae0e72a3dab4c1f6d3f713f3ee54301bf1f6b3632e5f98f56afa1c5bcdbe62e",
-        "tests/test_evaluation_egress.py": "92a0b9629e039da35da0572e3afe2f20ab5e4cefda500f5dae0a1c104a4db810",
+        "tests/test_evaluation_egress.py": "a4ecef4e94839d50cb41cf5423d7ff2bfc5bc0be3954f211b49a0eea3fdb906a",
         "tests/test_evaluation_image.py": "b76a456529ea17dab1476bd7e9e60ab904af1130574fcf6be1404a12d9801ba9",
         "tests/test_evaluation_planning.py": "3745f05df7f260feff6789d8da3747cebb1d6b8c5033c7aec3ca91f5da167d76",
         "tests/test_evaluation_report.py": "95494d689a851b7fa20a0a8a3ddbf30f5a01adbc10cdf0e2b1f4c5f1600c8cd9",
         "tests/test_evaluation_run.py": "edc99627ced20eba905a8d4952b81802a4c6daf63e3577feac77c07972da41db"
       },
-      "outcome": "reviewed-no-change",
-      "reason": "Reviewed the base-image instructions against the test fixture correction. The opt-in live build now uses the shipped recipe's published checksums instead of stand-in bytes; the documented command, checksum verification, opt-in variable and qualification limits remain accurate. No live build was rerun for this test-only fix.",
-      "reviewer": "Codex, directed by Sean Koval",
+      "outcome": "updated",
+      "reason": "Documents native Claude Code invocation, identity and mandatory metering validation, partial-stream retention, environment-only credential forwarding, fixture classification and explicitly pending budget/adoption/live qualification tasks.",
+      "reviewer": "Codex task4 implementation review",
       "target": "docs/verification/end-to-end-evaluation.md"
     },
     {
       "bound": {
         "catalog:docs/workflows/tool-map.md": "f50e0a853e00ab08729f6bd5bdf4cca447b033b23ca5169bb5f6556c0991dc8e",
-        "docs/workflows/tool-map.md": "b2e9ee65c31abd12caa4ae6d61511c159b455aa698b07743bc1f6fa04795d7ef",
+        "docs/workflows/tool-map.md": "91e553c4a841129280c81a9bacac3e4cfc261c789c6fb5190e7fd9b8324078c0",
         "src/ai_dlc/cli.py": "adf101a1ea24b8c9478aba4c408124f45940bfd349f7103c956ca897c22e7b36",
         "src/ai_dlc/mcp_server.py": "f159ac251bd9b65fb4fdeb404380be3a2afb9fbac013e0a0e19315ad738bd612"
       },
       "outcome": "updated",
-      "reason": "Documents ai-dlc eval base.",
-      "reviewer": "Claude Code, directed by Sean Koval",
+      "reason": "Corrects the evaluation network description: deterministic offline execution versus restricted proxy egress for real clients.",
+      "reviewer": "Codex task4 implementation review",
       "target": "docs/workflows/tool-map.md"
     },
     {
@@ -183,20 +194,20 @@
     },
     {
       "bound": {
-        "openspec/changes/real-client-evaluation/tasks.md": "12970d1ee8bdf7dbd6357bbdabb4920e3007b38caf9873d30e08fa5306c1ab3c"
+        "openspec/changes/real-client-evaluation/tasks.md": "bfc2c312a16e3a58406a0815d5537702d5b3e9d290e32d30007edb0d2707d5c1"
       },
       "outcome": "updated",
-      "reason": "Ticks task 2.",
-      "reviewer": "Claude Code, directed by Sean Koval",
+      "reason": "Marks only task 4 complete after native-stream and mocked lifecycle verification; run scheduling, adoption and paid comparison remain pending.",
+      "reviewer": "Codex task4 implementation review",
       "target": "openspec/changes/real-client-evaluation/tasks.md"
     },
     {
       "bound": {
-        "project-templates/project/docs/workflows/tool-map.md": "b7bf01ba4c201d7cd8d0d98943d524fb052f79bb33919987a3b207bb2cb9b2fb"
+        "project-templates/project/docs/workflows/tool-map.md": "2e802429dca934204f0087a21380e518f80b3c368e7063cde0af8922c058b90b"
       },
       "outcome": "updated",
-      "reason": "Mirrors the tool map.",
-      "reviewer": "Claude Code, directed by Sean Koval",
+      "reason": "Keeps the portable tool map aligned with deterministic offline and real-client restricted proxy behavior.",
+      "reviewer": "Codex task4 implementation review",
       "target": "project-templates/project/docs/workflows/tool-map.md"
     }
   ],

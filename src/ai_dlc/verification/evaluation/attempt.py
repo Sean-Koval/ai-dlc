@@ -20,6 +20,8 @@ import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 
+from ai_dlc.verification.evaluation.drivers import Driver
+
 PINNED = re.compile(r"([^\s@]+@)?sha256:[0-9a-f]{64}")
 AGENT = "1000:1000"
 HOST = re.compile(r"[a-z0-9]([a-z0-9.-]*[a-z0-9])?")
@@ -34,9 +36,9 @@ ISOLATION = [
 class Stopped(Exception):
     """A limit or cancellation ended the attempt; `limit` names which."""
 
-    def __init__(self, limit: str):
+    def __init__(self, limit: str, *, stdout: bytes = b"", stderr: bytes = b""):
         super().__init__(limit)
-        self.limit = limit
+        self.limit, self.stdout, self.stderr = limit, stdout, stderr
 
 
 class StageFailed(Exception):
@@ -77,7 +79,7 @@ def _docker(args, *, timeout: float, input: bytes | None = None, cancel=None):
         if limit and reader.is_alive():
             process.kill()
             reader.join(5)
-            raise Stopped(limit)
+            raise Stopped(limit, stdout=result.get("out", b""), stderr=result.get("err", b""))
     return subprocess.CompletedProcess(
         args, process.returncode, result.get("out", b""), result.get("err", b"")
     )
@@ -109,9 +111,21 @@ def _extract(data: bytes, destination: Path) -> dict[str, str]:
 
 class _Attempt:
     def __init__(
-        self, planned, run_dir, fixture, install, steps, timeout, cancel, memory, pids, egress
+        self,
+        planned,
+        run_dir,
+        fixture,
+        install,
+        steps,
+        timeout,
+        cancel,
+        memory,
+        pids,
+        egress,
+        driver,
     ):
         self.planned, self.run_dir, self.egress = planned, run_dir, egress
+        self.driver, self.client = driver, None
         self.fixture, self.install, self.steps = fixture, install, steps
         self.cancel, self.memory, self.pids = cancel, memory, pids
         self.deadline = time.monotonic() + timeout
@@ -264,7 +278,15 @@ class _Attempt:
     def drive(self) -> None:
         (self.run_dir / "steps").mkdir(exist_ok=True)
         for index, command in enumerate(self.steps, start=1):
-            done = self.docker("exec", self.container, *command)
+            environment = self.driver.environment(index) if self.driver else []
+            interrupted = None
+            try:
+                done = self.docker(
+                    "exec", *[f"--env={entry}" for entry in environment], self.container, *command
+                )
+            except Stopped as stop:
+                interrupted = stop
+                done = subprocess.CompletedProcess(command, -1, stop.stdout, stop.stderr)
             record = {
                 "command": command,
                 "exit_code": done.returncode,
@@ -275,6 +297,22 @@ class _Attempt:
                 json.dumps(record, indent=2, sort_keys=True) + "\n"
             )
             self.event("step", index=index, exit_code=done.returncode)
+            problem = None
+            if self.driver:
+                try:
+                    self.client = self.driver.observe(
+                        self.planned, index, done.stdout, self.run_dir
+                    )
+                except ValueError as exc:
+                    problem = str(exc)
+            if interrupted:
+                raise interrupted
+            if problem:
+                raise StageFailed("driver", "incomplete", problem)
+            if self.client and not self.client["complete"]:
+                if self.client["limit"]:
+                    raise Stopped(self.client["limit"])
+                raise StageFailed("driver", "incomplete", "Claude Code returned a terminal error")
             if done.returncode:
                 killed = self.docker(
                     "inspect", "--format", "{{.State.OOMKilled}}", self.container, bounded=False
@@ -350,6 +388,7 @@ def run_attempt(
     memory: str = "1g",
     pids: int = 256,
     egress: dict | None = None,
+    driver: Driver | None = None,
 ) -> dict:
     """Run one planned attempt and return its driver-level outcome with evidence references."""
     if not PINNED.fullmatch(planned.get("image", "")):
@@ -367,7 +406,17 @@ def run_attempt(
     )
     timeout = timeout_seconds or planned["limits"]["timeout_minutes"] * 60
     state = _Attempt(
-        planned, run_dir, fixture, install or [], steps, timeout, cancel, memory, pids, egress
+        planned,
+        run_dir,
+        fixture,
+        install or [],
+        steps,
+        timeout,
+        cancel,
+        memory,
+        pids,
+        egress,
+        driver,
     )
     result: dict = {
         "scenario": planned["scenario"],
@@ -392,6 +441,8 @@ def run_attempt(
         result.update(outcome=failure.outcome, stage=failure.stage, detail=failure.detail)
         if failure.detail == "memory limit reached":
             result["limit"] = "memory"
+    if driver:
+        result["client"] = state.client
     try:
         evidence: dict = state.collect() if state.created else {"tree": {}}
         result["evidence"] = evidence

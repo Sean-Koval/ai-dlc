@@ -181,6 +181,9 @@ def test_the_runner_hands_egress_to_every_attempt_and_the_report_names_refusals(
     profile["image"], profile["engine"]["image"] = IMAGE, candidate
     profile["driver"] = {"kind": "claude-code", "version": "2.1.220"}
     profile["egress"] = EGRESS
+    profile["model"] = "claude-sonnet-4-6"
+    profile["credentials"] = ["ANTHROPIC_API_KEY"]
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "fixture-key-not-real")
     path = tmp_path / "profile.json"
     path.write_text(json.dumps(profile))
 

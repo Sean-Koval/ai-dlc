@@ -10,8 +10,9 @@ the wheel.
 
 As of September 19, 2026 the runner, grader, report and candidate-image recipe
 are delivered and verified on one machine (WSL2 Ubuntu 22.04, Docker 26.1.3). The
-only implemented driver is `deterministic`: a script of fixed steps. A profile
-naming `codex` or `claude-code` is refused before anything starts. The shipped script writes
+original driver was `deterministic`: a script of fixed steps. The Claude Code
+driver is now implemented with recorded-stream and mocked-container tests,
+described below; `codex` remains unsupported. The shipped script writes
 the reference solution in the treatment arm only, so its result exercises the
 machinery and **says nothing about AI-DLC's value**. Every report from it carries
 `evidence_kind = "fixture"` and the claim `none`. A finding needs a real coding
@@ -86,8 +87,11 @@ kinds without an observer (`ordering`, process and MCP observation) are
 `unavailable`. The baseline arm is graded on correctness only.
 
 The comparison gives, per scenario, hidden-test passes, turns and wall seconds
-for each arm and their difference. Token and spend usage is `null` until a driver
-reports it. With one attempt per arm the claim is `none`: a difference, not a
+for each arm and their difference. `metrics.usage` is total tokens and
+`metrics.cost_usd` is client-reported spend; both remain `null` for the
+deterministic driver. Claude Code reports its native turn count, token categories
+and session identity under `metrics.client`. Missing or damaged client metering
+is unknown, including turns; it is never zero usage. With one attempt per arm the claim is `none`: a difference, not a
 conclusion. Check `cleanup_clean` on every arm; `false` names the container or
 volume to remove by hand from `cleanup-ledger.jsonl`.
 
@@ -117,7 +121,60 @@ refuses `egress` with the deterministic driver, which always runs with no networ
 
 Verified September 20, 2026 with real Docker: direct traffic blocked, a listed
 host connects, an unlisted host gets 403 and is logged, nothing left behind. No
-driver uses this yet. The allow-list limits destinations, not what is sent to them.
+paid client run has qualified the driver through this proxy yet. The allow-list
+limits destinations, not what is sent to them.
+
+## Claude Code driver (task 4)
+
+A real-client profile uses `driver = {kind: "claude-code", version: "2.1.220"}`,
+`model = "claude-sonnet-4-6"` (a full identifier, no short alias),
+`credentials = ["ANTHROPIC_API_KEY"]`, and the restricted `egress` declaration
+above. Its baseline image must contain that exact client; its treatment image
+must extend that baseline. Planning records the same version, model and SHA256
+of the scenario goal for both arms without reading credentials. At run time,
+the API key must be set in the controller environment. Only the model-session
+`docker exec` receives the key, by environment-variable name; the value is not
+put in the command, profile or plan. Subscription credentials are unsupported.
+
+The driver checks `claude --version` before starting the session, then uses
+`-p --output-format stream-json --verbose --include-partial-messages` with the
+unchanged goal as one argument. It loads project/local settings and guidance,
+uses `bypassPermissions` inside the existing disposable non-root container,
+and disables session persistence, updates and nonessential traffic. No host
+configuration is mounted and no system-prompt text is added. The driver does
+not perform treatment adoption yet; that is task 7.
+
+Each attempt retains `client-version.txt` and `client-stream.jsonl`, including
+partial bytes on timeout/cancellation. A credential leak is redacted and makes
+the attempt incomplete; this is the deliberate exception to verbatim retention.
+The parser validates the init/result identity and native final usage, including
+cache creation and cache reads. Partial message usage is not summed again.
+Malformed JSON/UTF-8, inconsistent identity, a missing final result or missing
+mandatory usage makes the attempt incomplete and prevents passing assertions.
+Terminal limit errors retain known usage. Reports reparse this evidence offline;
+client prose never grades the collected code.
+
+`limits.max_turns` sets the client turn limit. An optional scenario
+`limits.max_spend_usd` sets its spend cap (default USD 2, capped by the declared
+run spend budget). These are client limits, not a guarantee that an in-flight
+API request cannot exceed the cap. **Run-wide token/spend scheduling is still
+task 5; do not use this slice for a paid comparison yet.** Multi-turn declared
+answers are not delivered. Reports remain labelled `fixture`: a real client
+alone does not qualify the fixture providers or prove AI-DLC's value.
+
+Verified September 24, 2026: both-arm execution, credential isolation, raw
+retention, independent grading/report rebuilds and negative stream cases through
+mocked Docker boundaries. The committed stream was captured from the checksum-
+verified native Darwin arm64 client 2.1.220 against a loopback fake API with a
+dummy key (capture timestamp September 25 UTC). Only machine paths were
+normalized; provenance is in `tests/test_evaluation_claude.py`. No model service
+was called. This confirms native stream shape, not live billing or Docker client
+connectivity. The same day's independent Docker base-image test passed on
+macOS with Docker 20.10.17, Linux arm64; it verifies the Git/client image only.
+
+The implementation follows the vendor's [headless stream documentation](https://code.claude.com/docs/en/headless)
+and [CLI flags](https://code.claude.com/docs/en/cli-reference), checked against
+the pinned client. In particular, it does not use newer flags that 2.1.220 lacks.
 
 ## Known gaps
 

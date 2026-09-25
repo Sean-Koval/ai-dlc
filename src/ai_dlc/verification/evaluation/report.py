@@ -12,6 +12,7 @@ from datetime import datetime
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
+from ai_dlc.verification.evaluation.drivers import retained_client
 from ai_dlc.verification.evaluation.evaluate import evaluate
 
 MANIFEST = "manifest.json"
@@ -54,7 +55,7 @@ def _retained_grader(run_dir: Path) -> dict:
     return json.loads((run_dir / "grading/hidden-tests.json").read_text())
 
 
-def _metrics(events: list[dict]) -> dict:
+def _metrics(events: list[dict], client: dict | None = None) -> dict:
     wall = None
     if len(events) > 1:
         first, last = (datetime.fromisoformat(events[i]["at"]) for i in (0, -1))
@@ -64,7 +65,15 @@ def _metrics(events: list[dict]) -> dict:
     refused = [e.get("refused", []) for e in events if e["kind"] == "egress"]
     if refused:  # present only for attempts that had a network at all
         metrics["egress_refused"] = sorted({host for hosts in refused for host in hosts})
-    return {**metrics, "usage": None}
+    if client:
+        return {
+            **metrics,
+            "turns": client["turns"],
+            "usage": client["usage"]["total_tokens"],
+            "cost_usd": client["usage"]["cost_usd"],
+            "client": client,
+        }
+    return {**metrics, "usage": None, "cost_usd": None}
 
 
 def _arm(out: Path, planned: dict, scenario: dict) -> dict:
@@ -85,6 +94,17 @@ def _arm(out: Path, planned: dict, scenario: dict) -> dict:
     else:
         events, problems = _events(run_dir)
         problems = _integrity(run_dir) + problems
+    trustworthy = not problems
+    client = None
+    if planned.get("client"):
+        try:
+            client = retained_client(run_dir, planned)
+            if not client["complete"]:
+                problems.append("Claude Code did not complete successfully")
+        except ValueError as exc:
+            problems.append(str(exc))
+        if attempt.get("outcome") != "completed":
+            problems.append("client attempt did not complete")
     graded = evaluate(
         attempt,
         assertions=scenario["assertions"],
@@ -99,19 +119,22 @@ def _arm(out: Path, planned: dict, scenario: dict) -> dict:
                 item.update(result="unavailable", observed="evidence not trustworthy", evidence=[])
         graded["outcome"] = "incomplete"
     detail = "; ".join(problems) or attempt.get("detail")
+    metrics = _metrics(events, client if trustworthy else None)
+    if planned.get("client") and (not client or not trustworthy):
+        metrics["turns"] = None
     return {
         **graded,
         "stage": attempt.get("stage"),
         "limit": attempt.get("limit"),
         "detail": detail,
         "cleanup_clean": attempt.get("cleanup", {}).get("clean", False),
-        "metrics": _metrics(events),
+        "metrics": metrics,
     }
 
 
-def _spread(values: dict[str, float | None]) -> dict:
+def _spread(values: dict[str, float | None], precision: int = 3) -> dict:
     both = values["treatment"] is not None and values["baseline"] is not None
-    difference = round(values["treatment"] - values["baseline"], 3) if both else None  # type: ignore[operator]
+    difference = round(values["treatment"] - values["baseline"], precision) if both else None  # type: ignore[operator]
     return {**values, "difference": difference}
 
 
@@ -130,7 +153,9 @@ def _comparison(plan: dict, suite: dict, arms: list[dict]) -> dict:
 
         def mean(name: str, key: str) -> float | None:
             values = [a["metrics"][key] for a in rows[name] if a["metrics"][key] is not None]  # noqa: B023
-            return round(sum(values) / len(values), 3) if values else None
+            return (
+                round(sum(values) / len(values), 9 if key == "cost_usd" else 3) if values else None
+            )
 
         def passed(name: str) -> int:
             return sum(
@@ -143,6 +168,7 @@ def _comparison(plan: dict, suite: dict, arms: list[dict]) -> dict:
             "turns": _spread({n: mean(n, "turns") for n in rows}),
             "wall_seconds": _spread({n: mean(n, "wall_seconds") for n in rows}),
             "usage": _spread({n: mean(n, "usage") for n in rows}),
+            "cost_usd": _spread({n: mean(n, "cost_usd") for n in rows}, precision=9),
         }
     return {**plan["comparison"], "scenarios": scenarios}
 

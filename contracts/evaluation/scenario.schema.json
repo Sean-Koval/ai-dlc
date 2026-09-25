@@ -109,6 +109,19 @@
     "Limits": {
       "additionalProperties": false,
       "properties": {
+        "max_spend_usd": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Spend Usd"
+        },
         "max_turns": {
           "default": 20,
           "minimum": 1,
@@ -181,6 +194,7 @@
     "limits": {
       "$ref": "#/$defs/Limits",
       "default": {
+        "max_spend_usd": null,
         "max_turns": 20,
         "timeout_minutes": 30
       }

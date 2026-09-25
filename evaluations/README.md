@@ -28,3 +28,8 @@ ai-dlc eval report /tmp/eval-run          # rebuilds offline
 next to the script or make `driver.script` absolute. `local-candidate.script.json`
 additionally checks that `ai-dlc` runs in the treatment arm and is absent from the
 baseline arm; it needs a real candidate image.
+
+The Claude Code driver and its current qualification limits are documented in
+[the evaluation runbook](../docs/verification/end-to-end-evaluation.md#claude-code-driver-task-4).
+Run-wide budgets and treatment adoption remain pending; use the deterministic
+profile to exercise this slice without model charges.

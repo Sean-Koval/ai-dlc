@@ -68,6 +68,8 @@ def run_suite(
     if out.exists() and any(out.iterdir()):
         raise ValueError(f"Evaluation output directory is not empty: {out}")
     driver = load_driver(profile, profile_path)
+    if profile["driver"]["kind"] == "claude-code" and not os.environ.get("ANTHROPIC_API_KEY"):
+        raise ValueError("Claude Code requires the ANTHROPIC_API_KEY environment variable")
     scenarios = {s["id"]: s for s in suite["scenarios"]}
     for scenario in scenarios.values():
         fixture = (suite_path.parent / scenario["fixture"]["path"]).resolve()
@@ -91,6 +93,7 @@ def run_suite(
             install=driver.install(item),
             steps=driver.steps(item),
             egress=planned["egress"],
+            driver=driver,
             cancel=cancel,
         )
         hidden = scenario["fixture"].get("hidden")
