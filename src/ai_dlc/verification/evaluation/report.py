@@ -118,7 +118,10 @@ def _arm(out: Path, planned: dict, scenario: dict) -> dict:
             if item["result"] != "pending":
                 item.update(result="unavailable", observed="evidence not trustworthy", evidence=[])
         graded["outcome"] = "incomplete"
-    detail = "; ".join(problems) or attempt.get("detail")
+    # Keep authoritative runtime diagnostics alongside stream-validation problems.
+    details = [attempt["detail"]] if attempt.get("detail") else []
+    details.extend(problem for problem in problems if problem not in details)
+    detail = "; ".join(details) or None
     metrics = _metrics(events, client if trustworthy else None)
     if planned.get("client") and (not client or not trustworthy):
         metrics["turns"] = None

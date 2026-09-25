@@ -147,11 +147,14 @@ not perform treatment adoption yet; that is task 7.
 Each attempt retains `client-version.txt` and `client-stream.jsonl`, including
 partial bytes on timeout/cancellation. A credential leak is redacted and makes
 the attempt incomplete; this is the deliberate exception to verbatim retention.
-The parser validates the init/result identity and native final usage, including
-cache creation and cache reads. Partial message usage is not summed again.
+The parser validates the init/result identity, assistant and message-start
+response models, and final per-model usage identities against the pinned model.
+Native final usage includes cache creation and cache reads. Partial message usage is not summed again.
 Malformed JSON/UTF-8, inconsistent identity, a missing final result or missing
 mandatory usage makes the attempt incomplete and prevents passing assertions.
-Terminal limit errors retain known usage. Reports reparse this evidence offline;
+Terminal limit errors retain known usage. A partial stream cannot hide a
+controller-observed memory failure or nonzero exit: raw evidence and the original
+limit/exit diagnosis are both retained. Reports reparse this evidence offline;
 client prose never grades the collected code.
 
 `limits.max_turns` sets the client turn limit. An optional scenario

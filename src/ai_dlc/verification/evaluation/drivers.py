@@ -117,6 +117,8 @@ def parse_claude_stream(data: bytes, expected: dict) -> dict:
         ):
             raise ValueError
         for event in events:
+            if "model" in event and event["model"] != expected["model"]:
+                raise ValueError
             if event["type"] == "stream_event" and (
                 not isinstance(event.get("event"), dict)
                 or not isinstance(event["event"].get("type"), str)
@@ -126,6 +128,12 @@ def parse_claude_stream(data: bytes, expected: dict) -> dict:
                 event.get("message"), dict
             ):
                 raise ValueError
+            if event["type"] == "assistant" and event["message"].get("model") != expected["model"]:
+                raise ValueError
+            if event["type"] == "stream_event" and event["event"]["type"] == "message_start":
+                message = event["event"].get("message")
+                if not isinstance(message, dict) or message.get("model") != expected["model"]:
+                    raise ValueError
         inits = [e for e in events if e["type"] == "system" and e.get("subtype") == "init"]
         finals = [e for e in events if e["type"] == "result"]
         if len(inits) != 1 or len(finals) != 1 or events[-1] is not finals[0]:
@@ -143,6 +151,15 @@ def parse_claude_stream(data: bytes, expected: dict) -> dict:
             e.get("session_id", session) != session for e in events
         ):
             raise ValueError
+        if "modelUsage" in final:
+            models = final["modelUsage"]
+            if not isinstance(models, dict) or any(model != expected["model"] for model in models):
+                raise ValueError
+            for metering in models.values():
+                if not isinstance(metering, dict) or (
+                    "canonicalModel" in metering and metering["canonicalModel"] != expected["model"]
+                ):
+                    raise ValueError
         usage = final["usage"]
         tokens = {key: usage[key] for key in TOKEN_FIELDS}
         turns, cost = final["num_turns"], final["total_cost_usd"]

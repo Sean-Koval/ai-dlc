@@ -307,19 +307,22 @@ class _Attempt:
                     problem = str(exc)
             if interrupted:
                 raise interrupted
-            if problem:
-                raise StageFailed("driver", "incomplete", problem)
-            if self.client and not self.client["complete"]:
-                if self.client["limit"]:
-                    raise Stopped(self.client["limit"])
-                raise StageFailed("driver", "incomplete", "Claude Code returned a terminal error")
+            # Observation retains raw bytes first, but a broken stream must not
+            # hide a controller-observed process/resource failure.
             if done.returncode:
                 killed = self.docker(
                     "inspect", "--format", "{{.State.OOMKilled}}", self.container, bounded=False
                 )
                 if killed.stdout.decode().strip() == "true" or done.returncode == 137:
                     raise StageFailed("step", "infrastructure", "memory limit reached")
+            if self.client and not self.client["complete"]:
+                if self.client["limit"]:
+                    raise Stopped(self.client["limit"])
+                raise StageFailed("driver", "incomplete", "Claude Code returned a terminal error")
+            if done.returncode:
                 raise StageFailed("step", "incomplete", f"step {index} exited {done.returncode}")
+            if problem:
+                raise StageFailed("driver", "incomplete", problem)
 
     def collect(self) -> dict:
         """Stop the agent, then read its project through a separate read-only collector."""

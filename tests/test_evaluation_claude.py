@@ -145,10 +145,11 @@ def declaration(tmp_path):
 
 
 class NativeDocker(FakeDocker):
-    def __init__(self, stream=None, version="2.1.220", interrupted=False):
+    def __init__(self, stream=None, version="2.1.220", interrupted=False, exit_code=0, oom=False):
         super().__init__()
         self.stream = STREAM.read_bytes() if stream is None else stream
         self.version, self.interrupted = version, interrupted
+        self.exit_code, self.oom = exit_code, oom
 
     def __call__(self, args, **kwargs):
         from ai_dlc.verification.evaluation.attempt import Stopped
@@ -161,7 +162,11 @@ class NativeDocker(FakeDocker):
                 )
             if self.interrupted:
                 raise Stopped("timeout_minutes", stdout=self.stream, stderr=b"interrupted")
-            return SimpleNamespace(returncode=0, stdout=self.stream, stderr=b"")
+            return SimpleNamespace(returncode=self.exit_code, stdout=self.stream, stderr=b"")
+        if args[0] == "inspect" and "{{.State.OOMKilled}}" in args:
+            return SimpleNamespace(
+                returncode=0, stdout=b"true" if self.oom else b"false", stderr=b""
+            )
         return done
 
 
@@ -368,3 +373,79 @@ def test_unrepresentable_native_usage_is_refused_without_crashing(field):
         events[-1]["usage"]["input_tokens"] = 10**400
     with pytest.raises(ValueError, match="Claude Code"):
         parse(encoded(events))
+
+
+@pytest.mark.parametrize(
+    "location", ["assistant", "message-start", "model-usage", "canonical-model"]
+)
+def test_response_model_mismatch_blocks_execution_and_offline_rebuild(
+    tmp_path, monkeypatch, location
+):
+    from ai_dlc.verification.evaluation.report import build_report, manifest_of
+
+    events = native()
+    wrong_model = "claude-opus-4-6"
+    if location == "assistant":
+        next(e for e in events if e["type"] == "assistant")["message"]["model"] = wrong_model
+    elif location == "message-start":
+        next(
+            e
+            for e in events
+            if e["type"] == "stream_event" and e["event"]["type"] == "message_start"
+        )["event"]["message"]["model"] = wrong_model
+    elif location == "model-usage":
+        events[-1]["modelUsage"][wrong_model] = events[-1]["modelUsage"].pop(MODEL)
+    else:
+        events[-1]["modelUsage"][MODEL]["canonicalModel"] = wrong_model
+    changed = encoded(events)
+    with pytest.raises(ValueError, match="Claude Code"):
+        parse(changed)
+    out, report, _ = run_native(tmp_path, monkeypatch, stream=changed)
+    for arm in report["arms"]:
+        assert arm["outcome"] == "incomplete"
+        assert arm["metrics"]["usage"] is None
+        assert not any(a["result"] == "pass" for a in arm["assertions"])
+    # Even a complete attempt record and refreshed manifest must not let a
+    # report rebuilder skip validating the retained response's actual model.
+    for stream in out.rglob("client-stream.jsonl"):
+        assert stream.read_bytes() == changed
+        attempt_path = stream.parent / "attempt.json"
+        attempt = json.loads(attempt_path.read_text())
+        attempt.update(outcome="completed", detail=None)
+        attempt_path.write_text(json.dumps(attempt))
+        (stream.parent / "manifest.json").write_text(json.dumps(manifest_of(stream.parent)))
+    rebuilt = build_report(out)
+    assert all(
+        a["outcome"] == "incomplete" and a["metrics"]["usage"] is None for a in rebuilt["arms"]
+    )
+    assert not any(item["result"] == "pass" for a in rebuilt["arms"] for item in a["assertions"])
+
+
+@pytest.mark.parametrize("exit_code,oom", [(137, False), (1, True)])
+def test_partial_stream_keeps_memory_diagnosis_in_attempt_and_report(
+    tmp_path, monkeypatch, exit_code, oom
+):
+    from ai_dlc.verification.evaluation.report import build_report
+
+    partial = encoded(native()[:-1])
+    out, report, _ = run_native(tmp_path, monkeypatch, stream=partial, exit_code=exit_code, oom=oom)
+    for attempt_path in out.rglob("attempt.json"):
+        attempt = json.loads(attempt_path.read_text())
+        assert attempt["outcome"] == "infrastructure"
+        assert attempt["limit"] == "memory"
+        assert attempt["detail"] == "memory limit reached"
+        assert (attempt_path.parent / "client-stream.jsonl").read_bytes() == partial
+    assert build_report(out) == report
+    for arm in report["arms"]:
+        assert arm["limit"] == "memory"
+        assert "memory limit reached" in arm["detail"]
+        assert not any(a["result"] == "pass" for a in arm["assertions"])
+
+
+def test_nonzero_exit_with_partial_stream_keeps_exit_diagnosis(tmp_path, monkeypatch):
+    out, report, _ = run_native(tmp_path, monkeypatch, stream=encoded(native()[:-1]), exit_code=42)
+    for attempt_path in out.rglob("attempt.json"):
+        attempt = json.loads(attempt_path.read_text())
+        assert attempt["stage"] == "step"
+        assert "exited 42" in attempt["detail"]
+    assert all("exited 42" in arm["detail"] for arm in report["arms"])
