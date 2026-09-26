@@ -24,6 +24,9 @@ verification_paths = [
     "tests/test_consumer_onboarding.py",
     "tests/test_consumer_onboarding_cli.py",
 ]
+requirements = [
+    "openspec/specs/consumer-onboarding/spec.md",
+]
 
 [[documents]]
 id = "documentation-ownership"
@@ -73,7 +76,10 @@ verification_paths = [
     "tests/test_consumer_onboarding.py",
     "tests/test_consumer_onboarding_cli.py",
 ]
-requirements = ["openspec/specs/release-publication/spec.md"]
+requirements = [
+    "openspec/specs/release-publication/spec.md",
+    "openspec/specs/consumer-onboarding/spec.md",
+]
 
 [[documents]]
 id = "roadmap"
@@ -158,6 +164,9 @@ code_paths = [
 verification_paths = [
     "tests/test_consumer_onboarding.py",
     "tests/test_consumer_onboarding_cli.py",
+]
+requirements = [
+    "openspec/specs/consumer-onboarding/spec.md",
 ]
 
 [[documents]]
@@ -759,6 +768,9 @@ verification_paths = [
     "tests/test_consumer_onboarding.py",
     "tests/test_consumer_onboarding_cli.py",
 ]
+requirements = [
+    "openspec/specs/consumer-onboarding/spec.md",
+]
 
 [[documents]]
 id = "repo-verification-backend-contracts"
@@ -795,7 +807,11 @@ verification_paths = [
     "tests/test_consumer_onboarding.py",
     "tests/test_consumer_onboarding_cli.py",
 ]
-requirements = ["openspec/specs/native-work-harnesses/spec.md", "openspec/specs/team-sources/spec.md"]
+requirements = [
+    "openspec/specs/native-work-harnesses/spec.md",
+    "openspec/specs/team-sources/spec.md",
+    "openspec/specs/consumer-onboarding/spec.md",
+]
 
 [[documents]]
 id = "repo-runbooks-document-workspace-qualification"

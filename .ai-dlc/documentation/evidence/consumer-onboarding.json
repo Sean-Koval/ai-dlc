@@ -6,7 +6,7 @@
       },
       "outcome": "updated",
       "reason": "Routes clone-and-harness consumers to an explicit work target before contributor bootstrap; generated project/provider guidance is preserved and native Windows installation is not claimed.",
-      "reviewer": "Codex implementation and independent scoped review",
+      "reviewer": "Codex archival mapping and content review",
       "target": "AGENTS.md"
     },
     {
@@ -15,13 +15,14 @@
       },
       "outcome": "updated",
       "reason": "Separates consumer installation/adoption from engine contribution; requires reviewed source identity and explicit target/client choices, preserves preview/apply, and ends with meaningful target checks.",
-      "reviewer": "Codex implementation and independent scoped review",
+      "reviewer": "Codex archival mapping and content review",
       "target": "README.md"
     },
     {
       "bound": {
-        "catalog:docs/architecture.md": "3526b10e52b38e2c29e9cdb340b34c74663f26d1264469bbb3cdeea81c05367f",
+        "catalog:docs/architecture.md": "538caa4335ee6f54490443bf31471ad2d30ef4de43d9c38566a3d98fae966846",
         "docs/architecture.md": "ecae7babf72af58c38da8b4bec103d9aeb06a1c4ffb2e77b6f152c1bdcb7a66c",
+        "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "pyproject.toml": "296acf5ff015bc4aaf17576c4210e8c69988beb35e11507250a45c0dc534e4d5",
         "scripts/check_generated.py": "00e325b0da860ed329f3fbc40a99cc503d9a6b185f98f5627c1d465591681f98",
         "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
@@ -135,16 +136,16 @@
       },
       "outcome": "updated",
       "reason": "Documents the pure local onboarding service and thin CLI; no new executor, MCP surface or ambient configuration inheritance is introduced.",
-      "reviewer": "Codex implementation and independent scoped review",
+      "reviewer": "Codex archival mapping and content review",
       "target": "docs/architecture.md"
     },
     {
       "bound": {
-        "docs/catalog.toml": "59e786f89a89ef3f0dd9a9b4525a1e1e2377d27941943e0cc738dc3ac2301170"
+        "docs/catalog.toml": "9070ecb063bbdcc99299010daf3750082f297392730a9fc6b758a5cabf98a700"
       },
       "outcome": "updated",
       "reason": "Maps onboarding service and CLI acceptance tests to their canonical explanations without inventing factual review dates.",
-      "reviewer": "Codex implementation and independent scoped review",
+      "reviewer": "Codex archival mapping and content review",
       "target": "docs/catalog.toml"
     },
     {
@@ -164,14 +165,15 @@
       },
       "outcome": "reviewed-no-change",
       "reason": "The additive read-only onboarding command leaves lifecycle stages, project command forms and exact-merge completion gates unchanged. Existing environment preparation links to the updated canonical enrollment guide and tool map.",
-      "reviewer": "Codex implementation and independent scoped review",
+      "reviewer": "Codex archival mapping and content review",
       "target": "docs/development-workflow.md"
     },
     {
       "bound": {
         ".github/workflows/release.yml": "c32926d61ee30cd32aa03fa899c74f395decdb152833f572d4e1ade4c28993b5",
-        "catalog:docs/release-verification.md": "ca311298ecb11e046e9698ddb189e09799f4c205153bebd7b4eda8b9281d6cf3",
+        "catalog:docs/release-verification.md": "899491a2e606e05fcfcb6b6bbabfd0ad68b5f5ff09603b7f5d7b227bb63c617a",
         "docs/release-verification.md": "da474b3254010dee74eeff9df798d027d381f9a19553ac3a7707f6b01e7165f2",
+        "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
         "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
         "src/ai_dlc/cli.py": "d35a8f3a3c8a39ed7b6fc683f87d3cdd5138e344efbef1a2daa079c8ac3182a8",
@@ -183,13 +185,14 @@
       },
       "outcome": "updated",
       "reason": "Records exact clean-source macOS consumer fixture identity, actual pass/fail/restored check results and bounded timings; retains historical release, Windows desktop, native-client and clean-machine limits.",
-      "reviewer": "Codex implementation and independent scoped review",
+      "reviewer": "Codex archival mapping and content review",
       "target": "docs/release-verification.md"
     },
     {
       "bound": {
-        "catalog:docs/runbooks/machine-enrollment.md": "826d98ad4e074e03ed6ef7881724f0af0f29c38cd670fa963301a80df2e4ae09",
+        "catalog:docs/runbooks/machine-enrollment.md": "a4269b9a11749166156221ee6b2a9ef1742c92b0e7eaf9af8bcdf528e96b8220",
         "docs/runbooks/machine-enrollment.md": "0c997aa375f143638642002b17d39954bc38d56505087479611f5ad440b24eb0",
+        "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/native-work-harnesses/spec.md": "09197a91bca7653dd698a1b42e7203c4240e91cd5efa4fe3665f59e778aec909",
         "openspec/specs/team-sources/spec.md": "3dca430922c9b5d8eb7b678b0cf00da813f9be332e76cf59a448bd718f4d4587",
         "profiles/example/ai-dlc-profile.toml": "29b58a995e46b38ac75e5db5756e766e6b130f26e162448fc41fee898e7ff01e",
@@ -217,13 +220,14 @@
       },
       "outcome": "updated",
       "reason": "Distinguishes optional explicit enrollment from self-contained project setup; no implicit machine/profile selection or authentication claim is introduced.",
-      "reviewer": "Codex implementation and independent scoped review",
+      "reviewer": "Codex archival mapping and content review",
       "target": "docs/runbooks/machine-enrollment.md"
     },
     {
       "bound": {
-        "catalog:docs/workflows/tool-map.md": "827a736c6cf1377857c38cb67abf307812dd5456704ff70331cb24b97abf87cd",
+        "catalog:docs/workflows/tool-map.md": "e34a5986016ea90a9d9fbb67f97efa34e2ca9278678cb522942d6080917786a1",
         "docs/workflows/tool-map.md": "9e195dbab6edcca4a2158119718ee0854b2e1cc35b087a06b263fd17657c1f7a",
+        "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "src/ai_dlc/cli.py": "d35a8f3a3c8a39ed7b6fc683f87d3cdd5138e344efbef1a2daa079c8ac3182a8",
         "src/ai_dlc/mcp_server.py": "607eba3e47a8573862d83e5209e824b78ec0af74545fa51727b8d3f7c03db410",
         "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
@@ -232,13 +236,14 @@
       },
       "outcome": "updated",
       "reason": "Adds discovery and contract for project onboard, including explicit root, plan-only states and separate existing mutation owners; other commands and MCP surfaces are unchanged.",
-      "reviewer": "Codex implementation and independent scoped review",
+      "reviewer": "Codex archival mapping and content review",
       "target": "docs/workflows/tool-map.md"
     },
     {
       "bound": {
-        "catalog:docs/workflows/work-computer-setup.md": "2b1cc978be15aa29ac454197619a6822b58f0be248e398c303b7fbf2ec48c39b",
+        "catalog:docs/workflows/work-computer-setup.md": "2395b387f02f74966dd7db935bcd728172071c95bab15b8a93a7a7cc5da117a0",
         "docs/workflows/work-computer-setup.md": "155f42675e120d208cd4f2e612228394731aae7e450f383dee980f28841e0e5c",
+        "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "src/ai_dlc/cli.py": "d35a8f3a3c8a39ed7b6fc683f87d3cdd5138e344efbef1a2daa079c8ac3182a8",
         "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
         "tests/test_consumer_onboarding.py": "1303e2d74c9aaa0d9834133fa37744128c5b027d6f7febdb293e1fe02bf76e37",
@@ -246,34 +251,97 @@
       },
       "outcome": "updated",
       "reason": "Provides consumer target routing, minimal explicit client adoption and team-owned checks while retaining optional provider configuration and source-release limitations.",
-      "reviewer": "Codex implementation and independent scoped review",
+      "reviewer": "Codex archival mapping and content review",
       "target": "docs/workflows/work-computer-setup.md"
     },
     {
       "bound": {
-        "openspec/changes/consumer-onboarding/design.md": "f2afe0ca1f897592c391a147d5a7ef0b7a55eee9c81259959ce36e804a033311"
+        "openspec/changes/archive/2026-09-26-consumer-onboarding/delivery.md": "343c42a353c1ce5b9c6ad952b1422f8717b77506935657ce1ed56d5cd2d2afbb"
       },
       "outcome": "updated",
       "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
-      "reviewer": "Codex implementation and independent scoped review",
+      "reviewer": "Codex archival mapping and content review",
+      "target": "openspec/changes/archive/2026-09-26-consumer-onboarding/delivery.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-26-consumer-onboarding/design.md": "f2afe0ca1f897592c391a147d5a7ef0b7a55eee9c81259959ce36e804a033311"
+      },
+      "outcome": "updated",
+      "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
+      "reviewer": "Codex archival mapping and content review",
+      "target": "openspec/changes/archive/2026-09-26-consumer-onboarding/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-26-consumer-onboarding/proposal.md": "8b02798a69aba99bd221afc1c43c57726129deb24f2c5dd50418d7997809041f"
+      },
+      "outcome": "updated",
+      "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
+      "reviewer": "Codex archival mapping and content review",
+      "target": "openspec/changes/archive/2026-09-26-consumer-onboarding/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-26-consumer-onboarding/specs/consumer-onboarding/spec.md": "9d7d7ea072ad78d8c3799446432f32a27fe4171c83ba7b8b7dfca7ab27d88529"
+      },
+      "outcome": "updated",
+      "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
+      "reviewer": "Codex archival mapping and content review",
+      "target": "openspec/changes/archive/2026-09-26-consumer-onboarding/specs/consumer-onboarding/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-26-consumer-onboarding/tasks.md": "6de603802fcd5ac32883da2050f380dce14750e98b54c676f93f0942cab5bafc"
+      },
+      "outcome": "updated",
+      "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
+      "reviewer": "Codex archival mapping and content review",
+      "target": "openspec/changes/archive/2026-09-26-consumer-onboarding/tasks.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/consumer-onboarding/delivery.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
+      "reviewer": "Codex archival mapping and content review",
+      "target": "openspec/changes/consumer-onboarding/delivery.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/consumer-onboarding/design.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
+      "reviewer": "Codex archival mapping and content review",
       "target": "openspec/changes/consumer-onboarding/design.md"
     },
     {
       "bound": {
-        "openspec/changes/consumer-onboarding/specs/consumer-onboarding/spec.md": "9d7d7ea072ad78d8c3799446432f32a27fe4171c83ba7b8b7dfca7ab27d88529"
+        "openspec/changes/consumer-onboarding/proposal.md": "missing"
       },
       "outcome": "updated",
       "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
-      "reviewer": "Codex implementation and independent scoped review",
+      "reviewer": "Codex archival mapping and content review",
+      "target": "openspec/changes/consumer-onboarding/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/consumer-onboarding/specs/consumer-onboarding/spec.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
+      "reviewer": "Codex archival mapping and content review",
       "target": "openspec/changes/consumer-onboarding/specs/consumer-onboarding/spec.md"
     },
     {
       "bound": {
-        "openspec/changes/consumer-onboarding/tasks.md": "6de603802fcd5ac32883da2050f380dce14750e98b54c676f93f0942cab5bafc"
+        "openspec/changes/consumer-onboarding/tasks.md": "missing"
       },
       "outcome": "updated",
       "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
-      "reviewer": "Codex implementation and independent scoped review",
+      "reviewer": "Codex archival mapping and content review",
       "target": "openspec/changes/consumer-onboarding/tasks.md"
     }
   ],
