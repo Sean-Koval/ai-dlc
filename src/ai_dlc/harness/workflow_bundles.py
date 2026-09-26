@@ -64,6 +64,17 @@ _TreeSnapshot = tuple[_Identity, dict[str, _Identity]]
 _DirectoryRoot = Path | int
 
 
+def _is_native_windows() -> bool:
+    return os.name == "nt"
+
+
+def _require_bundle_platform() -> None:
+    if _is_native_windows():
+        raise RefusedError(
+            "vendored workflow bundle operations are not supported on native Windows"
+        )
+
+
 class MissingBundlePath(RefusedError):
     """A required path is absent from an otherwise inspectable bundle tree."""
 
@@ -227,6 +238,7 @@ def _load_manifest_with_bytes(root: _DirectoryRoot) -> tuple[bytes, dict[str, An
 
 def load_bundle_manifest(root: Path) -> dict[str, Any]:
     """Load a bounded UTF-8 ``bundle.json`` without accepting duplicate keys."""
+    _require_bundle_platform()
     return _load_manifest_with_bytes(root)[1]
 
 
@@ -560,6 +572,7 @@ def _validate_bundle(root: _DirectoryRoot, manifest: dict, *, metadata_paths: se
 
 def validate_bundle(root: Path, manifest: dict) -> dict:
     """Validate and normalize an already parsed schema-1 or schema-2 bundle and its complete tree."""
+    _require_bundle_platform()
     return _validate_bundle(Path(root), manifest, metadata_paths=set())
 
 
@@ -611,6 +624,7 @@ def resolve_bundle(
     environ: Mapping[str, str] | None,
 ) -> BundleCandidate:
     """Resolve and validate one portable Git bundle in temporary storage."""
+    _require_bundle_platform()
     if not source_portability(source):
         raise ValueError("bundle source must be a portable Git source")
     if _SLUG.fullmatch(bundle_id) is None:
@@ -653,6 +667,7 @@ def resolve_bundle(
 
 def validate_bundle_project(root: Path) -> Path:
     """Return a lexical absolute project root after no-follow config validation."""
+    _require_bundle_platform()
     absolute = Path(os.path.abspath(root))
     try:
         metadata = absolute.lstat()
@@ -849,6 +864,7 @@ def _owned_bundle_conflicts(destination: int, bundle_id: str) -> list[str]:
 
 def load_vendored_bundle(root: Path, bundle_id: str) -> dict[str, Any]:
     """Load one exact committed bundle without resolving or contacting its source."""
+    _require_bundle_platform()
     _slug(bundle_id, field="bundle id")
     destination = inside(Path(root), f".ai-dlc/bundles/{bundle_id}")
     try:
@@ -1425,6 +1441,7 @@ def import_bundle(
     expected_commit: str | None = None,
 ) -> dict[str, Any]:
     """Preview or transactionally vendor an unchanged, reviewed bundle candidate."""
+    _require_bundle_platform()
     _check_apply_request(apply, expected_commit, candidate.resolved_commit)
     try:
         with _bound_project_root(root) as (

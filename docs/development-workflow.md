@@ -87,6 +87,21 @@ runbook: [GitHub](github-ticket-setup.md), [Linear](runbooks/linear-setup.md),
 [Plane](runbooks/plane-setup.md), or [Jira](runbooks/jira-cloud-setup.md).
 The lifecycle below stays independent of the selected provider.
 
+### Explicit project commands
+
+Setup steps, their optional `verify` commands, and `[checks.commands]` accept the same three forms:
+
+```toml
+[checks.commands]
+legacy = "python scripts/check_tests.py"
+portable = { argv = ["python", "scripts/check_tests.py"] }
+windows = { shell = "powershell", script = "& python scripts/check_tests.py; exit $LASTEXITCODE" }
+```
+
+Strings keep their POSIX `sh -c` meaning on every OS. An argv record passes each argument literally without shell expansion. Explicit shells are `posix` and `powershell`; the latter selects Windows PowerShell with no profile or interactive prompt. Scripts must propagate native-program exit codes themselves. Windows batch files require an explicit shell record. A missing executable or shell is reported; no shell is substituted or installed. Keep shared examples free of machine-specific paths.
+
+These additive forms require an engine revision containing the native-core change; the historical published v0.4.0 assets predate them even when a source checkout still reports version 0.4.0. Existing authored strings are never translated automatically. Focused checks remain feedback only; configured full checks and exact-merge evidence still control completion. See [release limits](release-verification.md) before inferring installer or desktop support from these command forms.
+
 ## Sources of truth
 
 - The repository owns architecture, product rationale, design context,

@@ -6,6 +6,7 @@ import shutil
 import sys
 import tempfile
 import tomllib
+from contextlib import ExitStack
 from pathlib import Path
 
 import copier
@@ -68,6 +69,8 @@ def _ignore(root: Path):
 
 def checkout_files(root: Path) -> dict[str, bytes]:
     """Snapshot every regular file under root that template staging may replace."""
+    if os.name == "nt":
+        return _checkout_windows(root)
     result = {}
     exclude = _ignore(root)
     for directory, dirs, names in os.walk(root, followlinks=False):
@@ -80,37 +83,68 @@ def checkout_files(root: Path) -> dict[str, bytes]:
     return result
 
 
+def _checkout_windows(root: Path) -> dict[str, bytes]:
+    from ai_dlc import _windows_storage as storage
+
+    root = Path(os.path.abspath(root))
+    result: dict[str, bytes] = {}
+    with ExitStack() as guards:
+        try:
+            guards.enter_context(storage.guarded_path(root))
+        except FileNotFoundError:
+            return result
+        exclude = _ignore(root)
+
+        def visit(directory: Path) -> None:
+            with os.scandir(directory) as entries:
+                children = list(entries)
+            excluded = exclude(directory, [entry.name for entry in children])
+            for entry in children:
+                if entry.name in excluded:
+                    continue
+                path = directory / entry.name
+                if entry.is_dir(follow_symlinks=False):
+                    guards.enter_context(storage.guarded_path(path))
+                    visit(path)
+                else:
+                    result[path.relative_to(root).as_posix()] = storage.safe_read(path)
+
+        visit(root)
+    return result
+
+
 def apply_files(root: Path, before: dict, after: dict) -> list[str]:
-    """Write the staged snapshot, restoring the previous one if any write fails."""
+    """Reuse owned render publication and recovery instead of overwriting late edits."""
+    from ai_dlc.harness.agents import _apply_render_transaction, _RenderState
+    from ai_dlc.harness.windows_render import WindowsRenderState
+    from ai_dlc.locking import project_write_lock
+
     changed = sorted(k for k in before.keys() | after.keys() if before.get(k) != after.get(k))
-    # Recheck the checkout after staging, before writing anything.
-    if checkout_files(root) != before:
-        raise ValueError("Checkout changed during template staging; retry")
-    for name in changed:
-        inside(root, name)
-    try:
-        for name in changed:
-            path = root / name
-            if name in after:
-                path.parent.mkdir(parents=True, exist_ok=True)
-                with tempfile.NamedTemporaryFile(
-                    dir=path.parent, prefix=".ai-dlc-", delete=False
-                ) as stream:
-                    temp = Path(stream.name)
-                    stream.write(after[name])
-                temp.chmod(path.stat().st_mode & 0o777 if path.exists() else 0o644)
-                temp.replace(path)
-            else:
-                path.unlink()
-    except Exception:
-        for name in changed:
-            path = root / name
-            if name in before:
-                path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_bytes(before[name])
-            else:
-                path.unlink(missing_ok=True)
-        raise
+    removed = [name for name in changed if name not in after]
+    with project_write_lock(root):
+        if checkout_files(root) != before:
+            raise ValueError("Checkout changed during template staging; retry")
+        if os.name == "nt":
+            with WindowsRenderState(root) as state:
+                for name in before.keys() | after.keys():
+                    if state.read(name) != before.get(name):
+                        raise ValueError("Checkout changed during template staging; retry")
+                state.apply(after, removed, changed)
+        else:
+            from ai_dlc.harness import workflow_bundles as bundle_fs
+
+            absolute = Path(os.path.abspath(root))
+            with bundle_fs._directory_descriptor(absolute.parent) as parent:
+                descriptor = bundle_fs._open_project_root(parent, absolute.name, absolute.lstat())
+                unix_state = _RenderState(absolute, parent, descriptor)
+                try:
+                    for name in before.keys() | after.keys():
+                        if unix_state.read(name) != before.get(name):
+                            raise ValueError("Checkout changed during template staging; retry")
+                    _apply_render_transaction(unix_state, after, removed, changed)
+                finally:
+                    unix_state.close()
+                    os.close(descriptor)
     return changed
 
 
@@ -221,7 +255,7 @@ def adopt(
         capabilities=capabilities, providers=providers, agent_clients=agent_clients
     )
     tracker = toolset["roles"].get("tracker", "linear")
-    root = Path(root).resolve()
+    root = Path(os.path.abspath(root)) if os.name == "nt" else Path(root).resolve()
     source = template_source or str(assets("project-templates"))
     before = checkout_files(root)
     with tempfile.TemporaryDirectory(prefix="ai-dlc-adopt-") as temporary:
@@ -356,14 +390,22 @@ def _validate_toolset_answers(content: bytes) -> None:
 
 
 def sync(root: Path, apply: bool = False, *, vcs_ref: str | None = None) -> dict:
-    root = Path(root).resolve()
+    root = Path(os.path.abspath(root)) if os.name == "nt" else Path(root).resolve()
     before = checkout_files(root)
     if ".copier-answers.yml" not in before:
         raise ValueError("Adopt a versioned Copier template before sync")
     _validate_toolset_answers(before[".copier-answers.yml"])
     with tempfile.TemporaryDirectory(prefix="ai-dlc-sync-") as temporary:
         stage = Path(temporary).resolve() / "project"
-        shutil.copytree(root, stage, ignore=_ignore(root), symlinks=True)
+        if os.name == "nt":
+            # Stage the guarded snapshot rather than traversing the checkout a second time.
+            stage.mkdir()
+            for name, body in before.items():
+                destination = stage.joinpath(*name.split("/"))
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                destination.write_bytes(body)
+        else:
+            shutil.copytree(root, stage, ignore=_ignore(root), symlinks=True)
         for args in [
             ("init",),
             ("add", "."),

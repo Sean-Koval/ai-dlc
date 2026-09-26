@@ -1,6 +1,5 @@
 """Immutable private Plane intents: one local sender, no reset or deletion API."""
 
-import fcntl
 import json
 import os
 import stat
@@ -28,6 +27,10 @@ class PlaneAttemptStore:
 
     @contextmanager
     def directory(self):
+        if os.name == "nt":
+            raise ValueError("Plane mutation intent storage is not supported on native Windows")
+        import fcntl
+
         descriptors = []
         links = []
         try:

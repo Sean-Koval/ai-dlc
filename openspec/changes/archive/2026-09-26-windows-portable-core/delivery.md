@@ -2,7 +2,7 @@
 
 ## Problem and goal
 
-Windows teammates cannot reach the project workflow because core imports, locking and command execution assume Unix. A PowerShell wrapper alone would hide these barriers. Deliver the existing adoption/render/setup/check service path on Windows 11 x64 local NTFS, with native arguments and unchanged content, credential and evidence protections. Product authority: [product direction](../../../docs/product-direction.md). Status: proposed/specification-ready work; no implementation or Windows qualification is claimed.
+Windows teammates cannot reach the project workflow because core imports, locking and command execution assume Unix. A PowerShell wrapper alone would hide these barriers. Deliver the existing adoption/render/setup/check service path on Windows 11 x64 local NTFS, with native arguments and unchanged content, credential and evidence protections. Product authority: [product direction](../../../../docs/product-direction.md). Status: proposed/specification-ready work; no implementation or Windows qualification is claimed.
 
 Priority: **P0**. Change ID: `windows-portable-core`. Requirements: **WPC-01–WPC-07**, plus amended **PC-01**. Dependencies: **none**. This is a prerequisite of `windows-native-setup` but can be delivered and archived independently. The [task artifact](tasks.md) is the implementation checklist; this issue packet summarizes outcomes rather than duplicating every task.
 

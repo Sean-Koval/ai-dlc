@@ -171,7 +171,7 @@ def check_source_skill_destinations(
             path = prefix + name + "/SKILL.md"
             current = read(path)
             directory = (root / path).parent
-            relative_directory = str(directory.relative_to(root))
+            relative_directory = directory.relative_to(root).as_posix()
             if current is not None:
                 conflict = prior.get(path) != source_id or path not in previous.get("files", {})
             else:

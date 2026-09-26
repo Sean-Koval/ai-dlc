@@ -73,6 +73,20 @@ def inside(root: Path, relative: str) -> Path:
     if path.is_absolute() or ".." in path.parts:
         raise ValueError(f"path escapes root/vault: {relative}")
     candidate = root / path
+    if os.name == "nt":
+        from ai_dlc._windows_storage import guarded_path, opened, validate_relative
+
+        validate_relative(relative)
+
+        # Validate existing ancestors without resolving away reparse evidence.
+        ancestor = candidate.parent
+        while not ancestor.exists():
+            ancestor = ancestor.parent
+        with guarded_path(ancestor) as parent:
+            if candidate.exists() or candidate.is_symlink():
+                with opened(candidate, parent=parent, directory=candidate.is_dir()):
+                    pass
+        return candidate
     if not candidate.resolve().is_relative_to(root.resolve()):
         raise ValueError(f"path escapes root/vault: {relative}")
     for parent in [candidate, *candidate.parents]:
@@ -84,6 +98,11 @@ def inside(root: Path, relative: str) -> Path:
 
 
 def atomic_write(path: Path, data: str, mode: int | None = None) -> None:
+    if os.name == "nt":
+        from ai_dlc._windows_storage import atomic_publish
+
+        atomic_publish(path, data.encode("utf-8"), private=mode is not None and mode & 0o077 == 0)
+        return
     path.parent.mkdir(parents=True, exist_ok=True)
     final_mode = (
         mode if mode is not None else path.stat().st_mode & 0o777 if path.exists() else 0o644
@@ -103,6 +122,12 @@ def atomic_write(path: Path, data: str, mode: int | None = None) -> None:
 
 def atomic_create(path: Path, data: str, mode: int) -> bool:
     """Create a file from a private staging file without replacing an existing path."""
+    if os.name == "nt":
+        from ai_dlc._windows_storage import atomic_publish
+
+        return atomic_publish(
+            path, data.encode("utf-8"), create_only=True, private=mode & 0o077 == 0
+        )
     path.parent.mkdir(parents=True, exist_ok=True)
     descriptor, name = tempfile.mkstemp(dir=path.parent, prefix=".ai-dlc-")
     try:

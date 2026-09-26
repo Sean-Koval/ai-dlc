@@ -2,7 +2,7 @@
 
 ## Authority and observed state
 
-[Product direction](../../../docs/product-direction.md) supplies the outcome and preservation boundaries. Existing [portable-development requirements](../../specs/portable-development/spec.md) own configuration, project checks and trusted completion; [bootstrap publication requirements](../../specs/bootstrap-executable-publication/spec.md) own download/publication safety. This design proposes an extension, not a statement that Windows support already exists.
+[Product direction](../../../../docs/product-direction.md) supplies the outcome and preservation boundaries. Existing [portable-development requirements](../../../specs/portable-development/spec.md) own configuration, project checks and trusted completion; [bootstrap publication requirements](../../../specs/bootstrap-executable-publication/spec.md) own download/publication safety. This design proposes an extension, not a statement that Windows support already exists.
 
 | Observed source | Current behavior | Proposed responsibility |
 | --- | --- | --- |

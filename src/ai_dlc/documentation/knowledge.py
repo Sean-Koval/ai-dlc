@@ -1,11 +1,26 @@
 """Small, file-based knowledge operations; no vault plugins or sync assumptions."""
 
-import fcntl
 import hashlib
+import os
 import re
+from contextlib import contextmanager
 from pathlib import Path
 
 from ai_dlc.files import atomic_write, inside
+from ai_dlc.locking import project_write_lock
+
+
+@contextmanager
+def _note_lock(root: Path):
+    if os.name == "nt":
+        with project_write_lock(root):
+            yield
+        return
+    import fcntl
+
+    with (root / ".ai-dlc.lock").open("a") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        yield
 
 
 class Knowledge:
@@ -70,8 +85,7 @@ class Knowledge:
             raise ValueError("vault notes must use .md")
         marker = f"<!-- ai-dlc:{operation_id}:{hashlib.sha256(body.encode()).hexdigest()} -->"
         # Serialize local writers; atomic replacement preserves original notes on failure.
-        with (self.root / ".ai-dlc.lock").open("a") as lock:
-            fcntl.flock(lock, fcntl.LOCK_EX)
+        with _note_lock(self.root):
             current = target.read_text() if target.exists() else ""
             if f"<!-- ai-dlc:{operation_id}:" in current:
                 if marker not in current:

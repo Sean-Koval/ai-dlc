@@ -107,6 +107,9 @@ does not substitute for these lifecycle contracts. See the
 | `compatibility/` | Supported legacy scaffold behavior |
 | `config.py`, `contracts.py`, `errors.py`, `provider_definitions.py` | Shared configuration, provider contracts, the result envelope and the exception base |
 | `files.py`, `locking.py`, `toml_edit.py` | Shared filesystem boundaries, locking and comment-preserving TOML edits |
+| `_windows_storage/` | Private native NTFS handle, identity, account/ACL and publication primitives behind the shared filesystem APIs |
+
+`setup/commands.py` validates the shared POSIX-string, argv and explicit-shell command forms before setup/check execution. Windows core storage uses guarded native handles and per-user locks; Unix paths retain their existing implementation. `harness/windows_render.py` applies owned render snapshots with retained backups and refuses recovery over an intervening edit. Native bootstrap and desktop/client qualification are separate from this core service boundary.
 
 These are internal Python packages, not separate deployable services. Public
 console entry points remain stable. Internal imports use the responsible package;

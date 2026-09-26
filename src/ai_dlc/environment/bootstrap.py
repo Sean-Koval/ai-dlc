@@ -80,6 +80,8 @@ def _open_parent(path: Path, create: bool) -> int:
 
 
 def _repair_rc(rc: Path, line: str, apply: bool) -> tuple[str, bool]:
+    if os.name == "nt":
+        return _repair_rc_windows(rc, line, apply)
     try:
         parent = _open_parent(rc.parent, apply)
     except FileNotFoundError:
@@ -144,6 +146,72 @@ def _repair_rc(rc: Path, line: str, apply: bool) -> tuple[str, bool]:
         return action, True
     finally:
         os.close(parent)
+
+
+def _repair_rc_windows(rc: Path, line: str, apply: bool) -> tuple[str, bool]:
+    import uuid
+
+    from ai_dlc._windows_storage import (
+        conditional_remove,
+        create_owned,
+        guarded_path,
+        move_owned,
+        safe_snapshot,
+    )
+
+    try:
+        with guarded_path(rc.parent, create_parents=apply):
+            try:
+                original, identity = safe_snapshot(rc)
+            except FileNotFoundError:
+                original, identity = b"", None
+            current = original.decode("utf-8")
+            found = read_managed_section(current, toml=True)
+            if found["state"] not in {"absent", "present"}:
+                raise RefusedError("Owned shell section is modified or malformed; resolve it first")
+            kept = [
+                item
+                for item in found.get("body", "").splitlines(keepends=True)
+                if not item.startswith(("export PATH=", "set -gx PATH "))
+            ]
+            body = line + "\n" + "".join(kept)
+            updated = (
+                current
+                + ("\n" if current and not current.endswith("\n") else "")
+                + managed_section("", body, toml=True)
+                if found["state"] == "absent"
+                else managed_section(current, body, toml=True)
+            )
+            action = (
+                "unchanged"
+                if updated == current
+                else "create"
+                if found["state"] == "absent"
+                else "update"
+            )
+            if not apply or action == "unchanged":
+                return action, False
+            backup = rc.with_name(f".ai-dlc-profile-{uuid.uuid4().hex}")
+            if identity is not None:
+                move_owned(rc, backup, expected=original, expected_identity=identity)
+            try:
+                create_owned(rc, updated.encode("utf-8"), private=True)
+            except BaseException as error:
+                if identity is not None:
+                    try:
+                        move_owned(backup, rc, expected=original, expected_identity=identity)
+                    except (OSError, ValueError):
+                        error.add_note(
+                            f"Original profile retained at {backup}; inspect before recovery"
+                        )
+                raise
+            if identity is not None:
+                conditional_remove(backup, expected=original, expected_identity=identity)
+            return action, True
+    except FileNotFoundError:
+        if not apply:
+            return "create", False
+        raise
 
 
 def plan_shell_activation(

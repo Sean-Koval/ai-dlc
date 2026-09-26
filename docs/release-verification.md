@@ -36,6 +36,14 @@ records missing sandbox inputs and the absent live Jira mutation target.
 adds scoped macOS evidence while retaining unavailable company, Antigravity and
 cross-platform checks. Neither record qualifies Jira or Plane.
 
+## Native Windows core boundary
+
+The native-core Verify job exercises source code on hosted `windows-2025` with locked Python dependencies. Its tests cover core imports, guarded local NTFS storage, explicit command execution and a disposable adoption/render/setup/check journey with POSIX shell paths removed. The existing Unix required-check jobs remain in the same workflow. Native test results are uploaded separately as `windows-core-results`; they are not a substitute for the five configured full-check receipts.
+
+This job does not qualify Windows 11 desktop setup, PowerShell bootstrap, every installation module/provider, ARM64, network shares, corporate policy or Antigravity recognition. Native installer work is [#172](https://github.com/Sean-Koval/ai-dlc/issues/172), and actual client/cross-machine observations remain [#53](https://github.com/Sean-Koval/ai-dlc/issues/53). Plane's private mutation-intent store, vendored workflow-bundle APIs and descriptor-only document inventory traversal explicitly refuse unsupported native operations. Historical v0.4.0 published assets remain unchanged. No Windows support claim can be inferred from local skipped tests.
+
+On September 26, 2026, [native job 108452747319](https://github.com/Sean-Koval/ai-dlc/actions/runs/36259593343/job/108452747319) tested revision `914acb7821bfa1e3938d5f7bdbed0310e4edba64` on Windows Server 2025 build 26100, AMD64, Python 3.12.10 and local fixed NTFS: **103 passed, 5 skipped**. The job command and JUnit artifact identify the exact test selection. Native cases exercised case-alias/process locks, killed-holder recovery, junction and ancestor substitution, sharing violations, staged publication, restricted owner/DACL preservation, and a passing/failing adoption/setup/check journey without a POSIX shell. The five skips are Unix shell/fake-executable compatibility and POSIX transaction-injection cases, retained in Unix jobs; no Windows safety case was skipped. Earlier runs exposed native rename/sharing defects and permission-preservation gaps, which were repaired before this passing observation. This is source-level core evidence only, with the desktop, installer and client limits above unchanged.
+
 ## Published v0.4.0 evidence — September 14, 2026
 
 The original release implementation was delivered in

@@ -1,0 +1,2 @@
+# Hash-bound skills and packaged text must have identical bytes on every checkout.
+* text=auto eol=lf

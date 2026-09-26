@@ -1,12 +1,27 @@
 """Session friction hints, retained only as ignored local counters and hashes."""
 
-import fcntl
 import hashlib
 import json
+import os
 import shlex
+from contextlib import contextmanager
 from pathlib import Path
 
 from ai_dlc.files import atomic_write, inside
+from ai_dlc.locking import project_write_lock
+
+
+@contextmanager
+def _session_lock(root: Path, path: Path):
+    if os.name == "nt":
+        with project_write_lock(root):
+            yield
+        return
+    import fcntl
+
+    with (inside(root, str(path.with_suffix(".lock").relative_to(root)))).open("a") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        yield
 
 
 def _responses(value):
@@ -60,8 +75,7 @@ def track_friction(root: Path, event: str, payload: dict, result: dict) -> dict:
         if event == "stop" and not path.exists():
             return result
         path.parent.mkdir(parents=True, exist_ok=True)
-        with inside(root, str(path.with_suffix(".lock").relative_to(root))).open("a") as lock:
-            fcntl.flock(lock, fcntl.LOCK_EX)
+        with _session_lock(root, path):
             state: dict = json.loads(path.read_text()) if path.exists() else {"count": 0}
             if event == "stop":
                 if state["count"] >= 3 and not payload.get("stop_hook_active"):
