@@ -4,13 +4,16 @@ from __future__ import annotations
 
 import hashlib
 import json
+from types import MappingProxyType
 
 CLIENTS = ("codex", "claude-code", "antigravity")
-MARKERS = {
-    "instruction": "NHV-INSTRUCTION-1",
-    "skill": "NHV-SKILL-1",
-    "mcp": "NHV-MCP-1",
-}
+MARKERS = MappingProxyType(
+    {
+        "instruction": "NHV-INSTRUCTION-1",
+        "skill": "NHV-SKILL-1",
+        "mcp": "NHV-MCP-1",
+    }
+)
 _SOURCES = {
     "codex": [
         "https://learn.chatgpt.com/docs/agent-configuration/agents-md",

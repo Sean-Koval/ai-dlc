@@ -376,3 +376,35 @@ def test_procedure_names_unselected_scope_without_selecting_candidates():
     result = adjudicate(evidence())
     assert "no-selected-skill" not in result["limitations"]
     assert "no-selected-mcp" not in result["limitations"]
+
+
+def test_public_markers_cannot_redefine_fixture_contract():
+    before = native_adapters.adapter_contract("codex")
+    original = native_adapters.MARKERS["instruction"]
+    try:
+        with pytest.raises(TypeError):
+            native_adapters.MARKERS["instruction"] = "NHV-SKILL-1"
+        after = native_adapters.adapter_contract("codex")
+        assert after["fixture"]["markers"]["instruction"] == "NHV-INSTRUCTION-1"
+        assert after["fixture_sha256"] == before["fixture_sha256"]
+        assert after["adapter_contract_sha256"] == before["adapter_contract_sha256"]
+    finally:
+        # Keep the intentional red run from contaminating other tests.
+        if isinstance(native_adapters.MARKERS, dict):
+            native_adapters.MARKERS["instruction"] = original
+
+
+def test_returned_contract_is_json_serializable_and_independently_mutable():
+    before = native_adapters.adapter_contract("codex")
+    edited = native_adapters.adapter_contract("codex")
+    edited["fixture"]["markers"]["instruction"] = "NHV-SKILL-1"
+    edited["fixture"]["steps"]["instruction"] = "changed"
+    edited["sources"].clear()
+    edited["tested_versions"].append("1.0")
+    after = json.loads(json.dumps(native_adapters.adapter_contract("codex")))
+    assert after["fixture"]["markers"]["instruction"] == "NHV-INSTRUCTION-1"
+    assert after["fixture"] == before["fixture"]
+    assert after["sources"] == before["sources"]
+    assert after["tested_versions"] == []
+    assert after["fixture_sha256"] == before["fixture_sha256"]
+    assert after["adapter_contract_sha256"] == before["adapter_contract_sha256"]
