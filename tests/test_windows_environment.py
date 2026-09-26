@@ -79,7 +79,7 @@ def test_native_profile_runs_twice_without_duplicate_path(tmp_path):
     (install / "bin").mkdir(parents=True)
     profile = tmp_path / "profile.ps1"
     bootstrap.plan_shell_activation(
-        environ={"AI_DLC_BOOTSTRAP_HOME": str(install)},
+        environ={**os.environ, "AI_DLC_BOOTSTRAP_HOME": str(install)},
         powershell_profile=profile,
         apply=True,
     )

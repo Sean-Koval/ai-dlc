@@ -186,7 +186,7 @@ Get-CimInstance Win32_OperatingSystem | Select-Object Caption, Version, BuildNum
 $PSVersionTable
 Get-Volume -DriveLetter C | Select-Object DriveLetter, FileSystem, DriveType
 Get-ExecutionPolicy -List
-$env:PATH = "$GitCommandDirectory;$env:SystemRoot\System32;$env:SystemRoot\System32\WindowsPowerShell\v1.0"
+$env:PATH = "$GitCommandDirectory;$env:SystemRoot\System32\WindowsPowerShell\v1.0"
 foreach ($tool in @('python','python3','node','sh','bash','uv','mise')) {
     if (Get-Command $tool -ErrorAction SilentlyContinue) { throw "Cold PATH contains $tool" }
 }

@@ -145,6 +145,21 @@ def test_consumer_child_environment_excludes_credentials_and_existing_runtimes(
     assert not Path(env["AI_DLC_BOOTSTRAP_HOME"]).exists()
 
 
+def test_consumer_does_not_expose_system32_wsl_launchers(tmp_path):
+    system = tmp_path / "windows"
+    system32 = system / "System32"
+    system32.mkdir(parents=True)
+    for name in ("bash", "bash.exe"):
+        launcher = system32 / name
+        launcher.write_bytes(b"not executed")
+        launcher.chmod(0o755)
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
+    env = driver().controlled_environment(workspace, tmp_path / "gitcmd/git.exe", system)
+    assert str(system32) not in env["PATH"].split(os.pathsep)
+    assert env["COMSPEC"] == str(system32 / "cmd.exe")
+
+
 @pytest.mark.skipif(
     os.name != "nt", reason="requires actual native Windows bootstrap and consumers"
 )

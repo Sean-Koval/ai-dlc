@@ -52,6 +52,9 @@ extend-exclude = ["templates", "project-templates"]
 [tool.pyright]
 include = ["src/ai_dlc"]
 typeCheckingMode = "basic"
+# Check both native and Unix implementations on every host. Runtime dispatch and
+# platform tests, rather than host-filtered stubs, enforce API availability.
+pythonPlatform = "All"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

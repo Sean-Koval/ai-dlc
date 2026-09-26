@@ -130,7 +130,9 @@ def native_git(discovered: Path) -> Path:
 def controlled_environment(workspace: Path, git: Path, system: Path) -> dict[str, str]:
     """Pass no tokens, account configuration, source imports, or preinstalled runtimes."""
     powershell = system / "System32/WindowsPowerShell/v1.0"
-    directories = [system / "System32", system, powershell, git.parent]
+    # System32 can contain bash.exe/WSL launchers. Native APIs resolve system DLLs
+    # independently; PowerShell and cmd use their explicit native locations.
+    directories = [powershell, git.parent]
     path = os.pathsep.join(map(str, directories))
     for name in ("python", "python3", "node", "sh", "bash", "uv", "mise"):
         require(

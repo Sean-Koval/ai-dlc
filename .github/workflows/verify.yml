@@ -49,8 +49,8 @@ jobs:
           } | Select-Object -First 1
           if (-not $gitDirectory) { throw 'A native Git command directory without a POSIX shell is required.' }
           "AI_DLC_NATIVE_GIT_DIRECTORY=$gitDirectory" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          $env:PATH = "$gitDirectory;$env:SystemRoot\System32;$env:SystemRoot\System32\WindowsPowerShell\v1.0"
-          foreach ($tool in @('python','python3','node','sh','uv','mise')) {
+          $env:PATH = "$gitDirectory;$env:SystemRoot\System32\WindowsPowerShell\v1.0"
+          foreach ($tool in @('python','python3','node','sh','bash','uv','mise')) {
             if (Get-Command $tool -ErrorAction SilentlyContinue) { throw "Cold path unexpectedly contains $tool" }
           }
           .\scripts\bootstrap.ps1 -Source -Target github-actions
@@ -70,7 +70,7 @@ jobs:
         run: |
           $engineDirectory = Split-Path (Get-Command ai-dlc.exe).Source
           $gitDirectory = $env:AI_DLC_NATIVE_GIT_DIRECTORY
-          $env:PATH = "$engineDirectory;$env:AI_DLC_BOOTSTRAP_HOME\bin;$gitDirectory;$env:SystemRoot\System32;$env:SystemRoot\System32\WindowsPowerShell\v1.0"
+          $env:PATH = "$engineDirectory;$env:AI_DLC_BOOTSTRAP_HOME\bin;$gitDirectory;$env:SystemRoot\System32\WindowsPowerShell\v1.0"
           ai-dlc project check --target github-actions --required --json --receipt "$env:RUNNER_TEMP/ai-dlc-receipt.json"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - uses: actions/upload-artifact@v4

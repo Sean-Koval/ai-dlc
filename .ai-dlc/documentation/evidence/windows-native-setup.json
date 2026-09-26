@@ -31,16 +31,16 @@
       "bound": {
         "catalog:docs/architecture.md": "1f6e70913f96f235139fc0202ea5c5e9f90e16afd4473e90f500f16994a4ec40",
         "docs/architecture.md": "a6845f78cf3f1637dc46e5cce0c0c4ec453503a2596c20ad22eaf26395fadef8",
-        "pyproject.toml": "296acf5ff015bc4aaf17576c4210e8c69988beb35e11507250a45c0dc534e4d5",
+        "pyproject.toml": "36e6eb286b62cb2b258b447a6c57b6e9030ca15d6885aa87c8323cdc41bf51db",
         "scripts/check_generated.py": "82f1ca037db8424c4f93a06c958da090c6eceff891a2743eaaed66bcce160e9b",
         "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
         "scripts/check_tests.py": "b7d10db0780aa851d8ba810796202e638abd79395cbf41071ac2114bb1bab920",
-        "scripts/check_types.py": "f2718dcf31d0c8e01fb1999a3aa6f495d3e55dc759d509b89445dfc52a015a6c",
+        "scripts/check_types.py": "c1ba81333d4b0cf8c765e1dc9146bad7878f5eacf71e7e61bbda80c75dfafa5c",
         "scripts/prepare_release_assets.py": "f54a08057f0a5271dea8165978b8478b9d25638d2c203277d7b1017856f330b3",
         "scripts/qualify_framework.py": "01dd9e6acbe14e740f068662aa539e9a7ed0ba57ab97e9457e0a05d968a25fb6",
         "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
         "scripts/run_skill_evaluation.py": "46a97694bae155b2418d172971480e031f510acc864b9d91fa546f98c754729f",
-        "scripts/verify_windows_consumer.py": "7bf0c78bec60ddcd40a1251ea670b658744cc3d4e7da90f4283e9b7bb12371ff",
+        "scripts/verify_windows_consumer.py": "e1f864e8e0259ada442b027e4cec5eba94fdb02c8445c482ccd99802c446709c",
         "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
         "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
         "src/ai_dlc/_windows_storage/__init__.py": "5715def899453f15265e13d52e5b518844cc9d057421cfa5279172d799d5f506",
@@ -204,18 +204,18 @@
     {
       "bound": {
         ".github/workflows/release.yml": "54077783bb2738431d7ee8f879c0481b679283df631e9a0a53a8f8c6ba19ee60",
-        ".github/workflows/verify.yml": "f7d12057e8c600cb34d0818c97e7747b4e5bd40bf79773346605d79f6536e27f",
+        ".github/workflows/verify.yml": "ba3e901378ae0466f0e9c116e2bbfcc074fde12a75a30d98f0d2028c22ba2ea9",
         "catalog:docs/release-verification.md": "6d7d9665236428f22d18f07fa4bb943f775781287d4325e443b8709b3ae166fb",
         "docs/release-verification.md": "5f22b26febf2b99b8de3f08602cc405590db1eaad3705af0e8b18680b5316d22",
         "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
         "scripts/check_tests.py": "b7d10db0780aa851d8ba810796202e638abd79395cbf41071ac2114bb1bab920",
         "scripts/prepare_release_assets.py": "f54a08057f0a5271dea8165978b8478b9d25638d2c203277d7b1017856f330b3",
         "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
-        "scripts/verify_windows_consumer.py": "7bf0c78bec60ddcd40a1251ea670b658744cc3d4e7da90f4283e9b7bb12371ff",
+        "scripts/verify_windows_consumer.py": "e1f864e8e0259ada442b027e4cec5eba94fdb02c8445c482ccd99802c446709c",
         "tests/test_native_repository_checks.py": "737cc0c02ad1ca090bd0983fc74fe9620edaf94c0a71fd615d57c879b0ed83a5",
         "tests/test_release_manifest.py": "45efed1c504dcb301ccc72bdedfc291dc779721c2f17c1be5094c1445e0d9920",
         "tests/test_release_workflow.py": "38a3cb143d0247ce748267fc72393dd812f7a8b463f21f92c2604983035026e4",
-        "tests/test_windows_consumer.py": "83b25731b9b6d65421f47ee4efdb9eaf41733847a41db187dd4d9ad834c979cb"
+        "tests/test_windows_consumer.py": "a8fc844a9e9a428ae5d5791a43620734bffe523168700f0cd23cc50a1a38b34f"
       },
       "outcome": "updated",
       "reason": "Records the actual121-pass native checkpoint and failing documentation gate; distinguishes proposed full Windows source/consumer checks from pending actual results and Windows11 desktop qualification.",
@@ -225,7 +225,7 @@
     {
       "bound": {
         "catalog:docs/runbooks/machine-enrollment.md": "57efacf540031d6731cfa09fb33452a0a368c5fc06378f76efca74b758f38234",
-        "docs/runbooks/machine-enrollment.md": "e31df22d0fc8bd95a164bab29e57bda6f055a435ba6f1aad601821d18c543297",
+        "docs/runbooks/machine-enrollment.md": "56087e65019850b4472e28c927cf129aaff22f0fee3276803c8ac3b9f7646f73",
         "openspec/specs/native-work-harnesses/spec.md": "09197a91bca7653dd698a1b42e7203c4240e91cd5efa4fe3665f59e778aec909",
         "openspec/specs/team-sources/spec.md": "3dca430922c9b5d8eb7b678b0cf00da813f9be332e76cf59a448bd718f4d4587",
         "profiles/example/ai-dlc-profile.toml": "29b58a995e46b38ac75e5db5756e766e6b130f26e162448fc41fee898e7ff01e",
@@ -272,7 +272,7 @@
         "scripts/bootstrap.sh": "258849a164d84198a1606771d734a8b4d4e59dca882438acb78201561561ce5c",
         "scripts/prepare_release_assets.py": "f54a08057f0a5271dea8165978b8478b9d25638d2c203277d7b1017856f330b3",
         "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
-        "scripts/verify_windows_consumer.py": "7bf0c78bec60ddcd40a1251ea670b658744cc3d4e7da90f4283e9b7bb12371ff",
+        "scripts/verify_windows_consumer.py": "e1f864e8e0259ada442b027e4cec5eba94fdb02c8445c482ccd99802c446709c",
         "src/ai_dlc/setup/templates.py": "1fc9173daa6fe71eebf00eda0f4e2b7263c65f694d3b227dee5421240e0eca62",
         "tests/test_bootstrap.py": "f86a298356da2ccae4e3a84f01bcead4dc87a5e3c64ce214f9418062469551cb",
         "tests/test_release_manifest.py": "45efed1c504dcb301ccc72bdedfc291dc779721c2f17c1be5094c1445e0d9920",
@@ -423,12 +423,21 @@
     },
     {
       "bound": {
-        "tests/test_native_templates.py": "62af2dbac7d493dace8ac8a710c6c22933accf475c9aeb83652656fe2f44be71"
+        "tests/test_native_templates.py": "ad8c6dfc53db8839f42ff6e6142ba366cd8109d30b2c9938e379adab2d328f90"
       },
       "outcome": "no-impact",
       "reason": "Regression coverage for the documented native setup, provisioning, profile or template behavior; tests do not independently establish live platform qualification.",
       "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
       "target": "tests/test_native_templates.py"
+    },
+    {
+      "bound": {
+        "tests/test_portable_commands.py": "eccb6c57422645595c45d9d02e745604ca5c2ee7cdc369b0072c25030289ed4c"
+      },
+      "outcome": "no-impact",
+      "reason": "Corrects test-owned UTF-8/LF configuration fixtures for non-ASCII native interpreter paths and adds a forced legacy-code-page regression; command execution and acceptance requirements are unchanged.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "tests/test_portable_commands.py"
     },
     {
       "bound": {
@@ -450,7 +459,16 @@
     },
     {
       "bound": {
-        "tests/test_windows_environment.py": "ac79ef02b7a64f7f86878833880e69f9816b418a2b54363e600a9aaf2846d0c5"
+        "tests/test_windows_core.py": "08fc5803e39aa3c3deb6fa2ead924714d4d78991c957c3457171c9ec0d550a9d"
+      },
+      "outcome": "no-impact",
+      "reason": "Corrects test-owned UTF-8/LF configuration fixtures for non-ASCII native interpreter paths and adds a forced legacy-code-page regression; command execution and acceptance requirements are unchanged.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "tests/test_windows_core.py"
+    },
+    {
+      "bound": {
+        "tests/test_windows_environment.py": "3ac1db58b2d59d188b2db5d7e640778241f5b49ea45375400386b0b4cc900eb7"
       },
       "outcome": "no-impact",
       "reason": "Regression coverage for the documented native setup, provisioning, profile or template behavior; tests do not independently establish live platform qualification.",

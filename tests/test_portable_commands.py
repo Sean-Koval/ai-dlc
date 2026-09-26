@@ -19,9 +19,28 @@ def configure(root, *, commands=None, required=None, steps=None):
         config["checks"] = {"required": required or [], "commands": commands}
     if steps is not None:
         config["setup"] = {"steps": steps}
-    (root / "ai-dlc.toml").write_text(tomli_w.dumps(config))
-    (root / ".mise.toml").write_text("[tools]\n")
+    (root / "ai-dlc.toml").write_text(tomli_w.dumps(config), encoding="utf-8", newline="\n")
+    (root / ".mise.toml").write_text("[tools]\n", encoding="utf-8", newline="\n")
     return config
+
+
+def test_configuration_fixture_uses_utf8_even_with_legacy_platform_defaults(tmp_path, monkeypatch):
+    original = Path.write_text
+
+    def write_text(path, data, encoding=None, errors=None, newline=None):
+        return original(
+            path,
+            data,
+            encoding=encoding or "cp1252",
+            errors=errors,
+            newline="\r\n" if newline is None else newline,
+        )
+
+    monkeypatch.setattr(Path, "write_text", write_text)
+    command = {"argv": ["C:/source é/python.exe", "--version"]}
+    configure(tmp_path, commands={"behavior": command}, required=["behavior"])
+    assert project.load_project(tmp_path)["checks"]["commands"]["behavior"] == command
+    assert b"\r\n" not in (tmp_path / "ai-dlc.toml").read_bytes()
 
 
 def repository(root, commands, required):
@@ -72,7 +91,10 @@ def test_native_argv_passes_literal_arguments_without_a_shell(tmp_path, monkeypa
         use_mise=False,
     )
     assert result.returncode == 0
-    assert json.loads((tmp_path / "args.json").read_text()) == [tmp_path.name, *arguments]
+    assert json.loads((tmp_path / "args.json").read_text(encoding="utf-8")) == [
+        tmp_path.name,
+        *arguments,
+    ]
     assert not (tmp_path / "injected").exists()
 
 
@@ -133,7 +155,7 @@ def test_all_setup_commands_are_validated_before_any_mutation(tmp_path, monkeypa
         {"id": "later", "command": python("pass"), field: {"argv": []}},
     ]
     configure(tmp_path, steps=steps)
-    (tmp_path / ".mise.toml").write_text("[tools]\n")
+    (tmp_path / ".mise.toml").write_text("[tools]\n", encoding="utf-8", newline="\n")
     monkeypatch.setattr(
         project.subprocess, "run", lambda *a, **k: pytest.fail("child launched before validation")
     )
@@ -234,10 +256,12 @@ def test_native_setup_resumes_and_rechecks_dependencies(tmp_path):
         {"id": "first", "status": "unchanged"},
         {"id": "second", "status": "completed"},
     ]
-    assert (tmp_path / "count").read_text() == "x"
-    (tmp_path / "pyproject.toml").write_text("[project]\nname='changed'\n")
+    assert (tmp_path / "count").read_text(encoding="utf-8") == "x"
+    (tmp_path / "pyproject.toml").write_text(
+        "[project]\nname='changed'\n", encoding="utf-8", newline="\n"
+    )
     project.setup_project(tmp_path, state_path=journal, use_mise=False)
-    assert (tmp_path / "count").read_text() == "xx"
+    assert (tmp_path / "count").read_text(encoding="utf-8") == "xx"
 
 
 def test_native_setup_command_change_invalidates_completed_state(tmp_path):
@@ -263,7 +287,7 @@ def test_native_setup_command_change_invalidates_completed_state(tmp_path):
     )
     result = project.setup_project(tmp_path, state_path=journal, use_mise=False)
     assert result["steps"][0]["status"] == "completed"
-    assert (tmp_path / "value").read_text() == "new"
+    assert (tmp_path / "value").read_text(encoding="utf-8") == "new"
 
 
 @pytest.mark.skipif(
@@ -271,7 +295,7 @@ def test_native_setup_command_change_invalidates_completed_state(tmp_path):
 )
 def test_windows_batch_argv_is_refused_and_explicit_powershell_returns_failure(tmp_path):
     batch = tmp_path / "test.cmd"
-    batch.write_text("@echo off\necho unsafe > invoked\n")
+    batch.write_text("@echo off\necho unsafe > invoked\n", encoding="utf-8", newline="\n")
     with pytest.raises(ValueError, match="explicit.shell"):
         project.run_command(tmp_path, {"argv": [str(batch)]}, use_mise=False)
     assert not (tmp_path / "invoked").exists()
@@ -316,7 +340,7 @@ def test_structured_setup_retries_when_platform_python_marker_disappears(tmp_pat
         if command["argv"][0] in {"uv", "uv.exe"}:
             interpreter.parent.mkdir(parents=True, exist_ok=True)
             interpreter.write_bytes(b"installed fixture")
-            (root / ".venv/pyvenv.cfg").write_text("version=3.12")
+            (root / ".venv/pyvenv.cfg").write_text("version=3.12", encoding="utf-8", newline="\n")
             return subprocess.CompletedProcess(command, 0)
         return actual_runner(root, command, **kwargs)
 
@@ -416,11 +440,13 @@ def test_mise_resolves_native_tool_and_never_installs_during_checks(tmp_path, mo
         "    assert sys.argv[3] == program\n"
         "    raise SystemExit(subprocess.call(sys.argv[3:]))\n"
         "else:\n"
-        "    raise SystemExit(99)\n"
+        "    raise SystemExit(99)\n",
+        encoding="utf-8",
+        newline="\n",
     )
     mise.chmod(0o755)
     monkeypatch.setenv("PATH", str(directory))
-    (tmp_path / ".mise.toml").write_text("[tools]\n")
+    (tmp_path / ".mise.toml").write_text("[tools]\n", encoding="utf-8", newline="\n")
     result = project.run_command(
         tmp_path, {"argv": ["managed-python", "-c", "raise SystemExit(11)"]}, use_mise=True
     )

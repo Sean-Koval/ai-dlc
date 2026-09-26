@@ -1,4 +1,9 @@
-"""Type-check against the prepared interpreter on every supported platform."""
+"""Type-check all platform implementations using the prepared interpreter's imports.
+
+The shared Pyright configuration checks both Unix and Windows code on every host.
+Native runtime tests enforce dispatch and API availability; static success does
+not extend platform qualification.
+"""
 
 import subprocess
 import sys
