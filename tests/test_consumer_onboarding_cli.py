@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 
 import pytest
+from click import unstyle
 from typer.testing import CliRunner
 
 from ai_dlc.cli import app
@@ -42,9 +43,9 @@ def test_onboard_requires_an_explicit_root_and_has_no_apply_option(tmp_path):
     )
 
     assert missing.exit_code == 2
-    assert "--root" in missing.stderr
+    assert "--root" in unstyle(missing.stderr)
     assert applying.exit_code == 2
-    assert "No such option: --apply" in applying.stderr
+    assert "No such option: --apply" in unstyle(applying.stderr)
 
 
 def test_onboard_reports_a_nonexistent_target_as_input_required(tmp_path, supported_environment):

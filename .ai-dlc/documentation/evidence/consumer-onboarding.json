@@ -6,7 +6,7 @@
       },
       "outcome": "updated",
       "reason": "Routes clone-and-harness consumers to an explicit work target before contributor bootstrap; generated project/provider guidance is preserved and native Windows installation is not claimed.",
-      "reviewer": "Codex archival mapping and content review",
+      "reviewer": "Codex CI assertion portability review",
       "target": "AGENTS.md"
     },
     {
@@ -15,7 +15,7 @@
       },
       "outcome": "updated",
       "reason": "Separates consumer installation/adoption from engine contribution; requires reviewed source identity and explicit target/client choices, preserves preview/apply, and ends with meaningful target checks.",
-      "reviewer": "Codex archival mapping and content review",
+      "reviewer": "Codex CI assertion portability review",
       "target": "README.md"
     },
     {
@@ -132,11 +132,11 @@
         "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
         "src/ai_dlc/work/workflow.py": "b16ef66b0bea70ece8aaf15003e5e0233dbcff82051b3da24d59b94106da3fca",
         "tests/test_consumer_onboarding.py": "1303e2d74c9aaa0d9834133fa37744128c5b027d6f7febdb293e1fe02bf76e37",
-        "tests/test_consumer_onboarding_cli.py": "fbdbd6b8043d366714e6b29db469e62a515ecf704ac3bf82e4c3b17d4631ee30"
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076"
       },
       "outcome": "updated",
       "reason": "Documents the pure local onboarding service and thin CLI; no new executor, MCP surface or ambient configuration inheritance is introduced.",
-      "reviewer": "Codex archival mapping and content review",
+      "reviewer": "Codex CI assertion portability review",
       "target": "docs/architecture.md"
     },
     {
@@ -145,7 +145,7 @@
       },
       "outcome": "updated",
       "reason": "Maps onboarding service and CLI acceptance tests to their canonical explanations without inventing factual review dates.",
-      "reviewer": "Codex archival mapping and content review",
+      "reviewer": "Codex CI assertion portability review",
       "target": "docs/catalog.toml"
     },
     {
@@ -165,7 +165,7 @@
       },
       "outcome": "reviewed-no-change",
       "reason": "The additive read-only onboarding command leaves lifecycle stages, project command forms and exact-merge completion gates unchanged. Existing environment preparation links to the updated canonical enrollment guide and tool map.",
-      "reviewer": "Codex archival mapping and content review",
+      "reviewer": "Codex CI assertion portability review",
       "target": "docs/development-workflow.md"
     },
     {
@@ -179,13 +179,13 @@
         "src/ai_dlc/cli.py": "d35a8f3a3c8a39ed7b6fc683f87d3cdd5138e344efbef1a2daa079c8ac3182a8",
         "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
         "tests/test_consumer_onboarding.py": "1303e2d74c9aaa0d9834133fa37744128c5b027d6f7febdb293e1fe02bf76e37",
-        "tests/test_consumer_onboarding_cli.py": "fbdbd6b8043d366714e6b29db469e62a515ecf704ac3bf82e4c3b17d4631ee30",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
         "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
         "tests/test_release_workflow.py": "a50523b5d6dec682188d489780d29a74f2a01c60c310071ce6758898f3d12dc0"
       },
       "outcome": "updated",
       "reason": "Records exact clean-source macOS consumer fixture identity, actual pass/fail/restored check results and bounded timings; retains historical release, Windows desktop, native-client and clean-machine limits.",
-      "reviewer": "Codex archival mapping and content review",
+      "reviewer": "Codex CI assertion portability review",
       "target": "docs/release-verification.md"
     },
     {
@@ -213,14 +213,14 @@
         "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
         "tests/test_agents_phases.py": "b141a47725ffe104d2826da09227fc97615186dad3ab4bf5716ba07544d0afc5",
         "tests/test_consumer_onboarding.py": "1303e2d74c9aaa0d9834133fa37744128c5b027d6f7febdb293e1fe02bf76e37",
-        "tests/test_consumer_onboarding_cli.py": "fbdbd6b8043d366714e6b29db469e62a515ecf704ac3bf82e4c3b17d4631ee30",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
         "tests/test_native_harnesses.py": "e008d4773dccfa2662942561b24df4fdb6c15f637683d5fbdfaf59240e9bb5cc",
         "tests/test_rendering.py": "42b3549792a8e341f2eb424d24da90e19bfa10b482e716ba12b21290c76996e9",
         "tests/test_team_sources.py": "a0e3a25ae8032b650a0c47e0b619677998efde63a90b88b038c37b6de996d0a6"
       },
       "outcome": "updated",
       "reason": "Distinguishes optional explicit enrollment from self-contained project setup; no implicit machine/profile selection or authentication claim is introduced.",
-      "reviewer": "Codex archival mapping and content review",
+      "reviewer": "Codex CI assertion portability review",
       "target": "docs/runbooks/machine-enrollment.md"
     },
     {
@@ -232,11 +232,11 @@
         "src/ai_dlc/mcp_server.py": "607eba3e47a8573862d83e5209e824b78ec0af74545fa51727b8d3f7c03db410",
         "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
         "tests/test_consumer_onboarding.py": "1303e2d74c9aaa0d9834133fa37744128c5b027d6f7febdb293e1fe02bf76e37",
-        "tests/test_consumer_onboarding_cli.py": "fbdbd6b8043d366714e6b29db469e62a515ecf704ac3bf82e4c3b17d4631ee30"
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076"
       },
       "outcome": "updated",
       "reason": "Adds discovery and contract for project onboard, including explicit root, plan-only states and separate existing mutation owners; other commands and MCP surfaces are unchanged.",
-      "reviewer": "Codex archival mapping and content review",
+      "reviewer": "Codex CI assertion portability review",
       "target": "docs/workflows/tool-map.md"
     },
     {
@@ -247,11 +247,11 @@
         "src/ai_dlc/cli.py": "d35a8f3a3c8a39ed7b6fc683f87d3cdd5138e344efbef1a2daa079c8ac3182a8",
         "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
         "tests/test_consumer_onboarding.py": "1303e2d74c9aaa0d9834133fa37744128c5b027d6f7febdb293e1fe02bf76e37",
-        "tests/test_consumer_onboarding_cli.py": "fbdbd6b8043d366714e6b29db469e62a515ecf704ac3bf82e4c3b17d4631ee30"
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076"
       },
       "outcome": "updated",
       "reason": "Provides consumer target routing, minimal explicit client adoption and team-owned checks while retaining optional provider configuration and source-release limitations.",
-      "reviewer": "Codex archival mapping and content review",
+      "reviewer": "Codex CI assertion portability review",
       "target": "docs/workflows/work-computer-setup.md"
     },
     {
@@ -260,7 +260,7 @@
       },
       "outcome": "updated",
       "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
-      "reviewer": "Codex archival mapping and content review",
+      "reviewer": "Codex CI assertion portability review",
       "target": "openspec/changes/archive/2026-09-26-consumer-onboarding/delivery.md"
     },
     {
@@ -269,7 +269,7 @@
       },
       "outcome": "updated",
       "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
-      "reviewer": "Codex archival mapping and content review",
+      "reviewer": "Codex CI assertion portability review",
       "target": "openspec/changes/archive/2026-09-26-consumer-onboarding/design.md"
     },
     {
@@ -278,7 +278,7 @@
       },
       "outcome": "updated",
       "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
-      "reviewer": "Codex archival mapping and content review",
+      "reviewer": "Codex CI assertion portability review",
       "target": "openspec/changes/archive/2026-09-26-consumer-onboarding/proposal.md"
     },
     {
@@ -287,7 +287,7 @@
       },
       "outcome": "updated",
       "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
-      "reviewer": "Codex archival mapping and content review",
+      "reviewer": "Codex CI assertion portability review",
       "target": "openspec/changes/archive/2026-09-26-consumer-onboarding/specs/consumer-onboarding/spec.md"
     },
     {
@@ -296,7 +296,7 @@
       },
       "outcome": "updated",
       "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
-      "reviewer": "Codex archival mapping and content review",
+      "reviewer": "Codex CI assertion portability review",
       "target": "openspec/changes/archive/2026-09-26-consumer-onboarding/tasks.md"
     },
     {
@@ -305,7 +305,7 @@
       },
       "outcome": "updated",
       "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
-      "reviewer": "Codex archival mapping and content review",
+      "reviewer": "Codex CI assertion portability review",
       "target": "openspec/changes/consumer-onboarding/delivery.md"
     },
     {
@@ -314,7 +314,7 @@
       },
       "outcome": "updated",
       "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
-      "reviewer": "Codex archival mapping and content review",
+      "reviewer": "Codex CI assertion portability review",
       "target": "openspec/changes/consumer-onboarding/design.md"
     },
     {
@@ -323,7 +323,7 @@
       },
       "outcome": "updated",
       "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
-      "reviewer": "Codex archival mapping and content review",
+      "reviewer": "Codex CI assertion portability review",
       "target": "openspec/changes/consumer-onboarding/proposal.md"
     },
     {
@@ -332,7 +332,7 @@
       },
       "outcome": "updated",
       "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
-      "reviewer": "Codex archival mapping and content review",
+      "reviewer": "Codex CI assertion portability review",
       "target": "openspec/changes/consumer-onboarding/specs/consumer-onboarding/spec.md"
     },
     {
@@ -341,7 +341,7 @@
       },
       "outcome": "updated",
       "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
-      "reviewer": "Codex archival mapping and content review",
+      "reviewer": "Codex CI assertion portability review",
       "target": "openspec/changes/consumer-onboarding/tasks.md"
     }
   ],
