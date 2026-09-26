@@ -34,3 +34,34 @@ jobs:
           name: ai-dlc-receipt-${{ matrix.os }}
           path: ${{ runner.temp }}/ai-dlc-receipt.json
           if-no-files-found: error
+
+  windows-core:
+    name: Native Windows core (windows-2025)
+    runs-on: windows-2025
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Prepare native test runtime
+        run: |
+          python -m pip install uv==0.9.11
+          uv sync --locked
+      - name: Record platform scope
+        run: |
+          python -c "import platform, sys; print(platform.platform()); print(sys.version)"
+          Write-Output 'Native core integration on hosted Windows Server; this is not Windows 11 desktop, installer or client qualification.'
+      - name: Exercise core without a POSIX shell
+        run: |
+          uv run --locked --no-sync python -m pytest -q tests/test_portable_imports.py tests/test_portable_commands.py tests/test_windows_storage.py tests/test_windows_document_dispatch.py tests/test_windows_core.py tests/test_windows_render.py tests/test_template_recovery.py --junitxml=windows-core-results.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-core-results
+          path: windows-core-results.xml
+          if-no-files-found: error

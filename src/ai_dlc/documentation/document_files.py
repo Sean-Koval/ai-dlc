@@ -10,6 +10,8 @@ from pathlib import Path
 @contextmanager
 def directory(path: Path, *, create: bool = False):
     """Open each component without following links; descriptors pin opened directories."""
+    if os.name == "nt":
+        raise ValueError("Descriptor-based document traversal is not supported on native Windows")
     absolute = Path(os.path.abspath(path))
     fd = os.open(absolute.anchor, os.O_RDONLY | os.O_DIRECTORY)
     try:
@@ -32,6 +34,10 @@ def directory(path: Path, *, create: bool = False):
 
 
 def read_document(path: Path) -> bytes:
+    if os.name == "nt":
+        from ai_dlc._windows_storage import safe_read
+
+        return safe_read(path)
     with directory(path.parent) as parent:
         fd = os.open(path.name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=parent)
         try:
@@ -46,6 +52,11 @@ def read_document(path: Path) -> bytes:
 def read_bounded(root: Path, relative: str, remaining: int) -> dict:
     """Read one complete UTF-8 body within a byte budget; oversized bodies stay unread."""
     path = root / relative
+    if os.name == "nt":
+        from ai_dlc._windows_storage import safe_read
+
+        raw = safe_read(path, max_bytes=remaining)
+        return _bounded_result(relative, raw)
     with directory(path.parent) as parent:
         fd = os.open(path.name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=parent)
         try:
@@ -58,22 +69,30 @@ def read_bounded(root: Path, relative: str, remaining: int) -> dict:
                 raw = stream.read(remaining + 1)
             if len(raw) > remaining:
                 raise ValueError("body budget exceeded")
-            text = raw.decode("utf-8")
-            if any(ord(c) < 32 and c not in "\n\r\t" for c in text):
-                raise ValueError("binary content")
-            return {
-                "path": relative,
-                "content": text,
-                "digest": hashlib.sha256(raw).hexdigest(),
-                "start_line": 1,
-                "end_line": len(text.splitlines()),
-            }
+            return _bounded_result(relative, raw)
         finally:
             os.close(fd)
 
 
+def _bounded_result(relative: str, raw: bytes) -> dict:
+    text = raw.decode("utf-8")
+    if any(ord(c) < 32 and c not in "\n\r\t" for c in text):
+        raise ValueError("binary content")
+    return {
+        "path": relative,
+        "content": text,
+        "digest": hashlib.sha256(raw).hexdigest(),
+        "start_line": 1,
+        "end_line": len(text.splitlines()),
+    }
+
+
 def create_document(path: Path, body: bytes) -> bool:
     """Exclusive create, no replacement or pathname cleanup; safe retry preserves output."""
+    if os.name == "nt":
+        from ai_dlc._windows_storage import atomic_publish
+
+        return atomic_publish(path, body, create_only=True)
     with directory(path.parent, create=True) as parent:
         try:
             fd = os.open(
@@ -94,7 +113,13 @@ def create_document(path: Path, body: bytes) -> bool:
 def validate_parent(path: Path) -> None:
     """Apply publication's no-follow rules to existing parents without creating missing ones."""
     try:
-        with directory(path.parent):
-            pass
+        if os.name == "nt":
+            from ai_dlc._windows_storage import guarded_path
+
+            with guarded_path(path.parent):
+                pass
+        else:
+            with directory(path.parent):
+                pass
     except FileNotFoundError:
         pass

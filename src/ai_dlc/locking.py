@@ -2,15 +2,23 @@
 
 from __future__ import annotations
 
-import fcntl
 import hashlib
+import importlib
 import os
-import pwd
 import stat
 import threading
 from collections.abc import Iterator
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 from pathlib import Path
+
+
+def __getattr__(name):
+    if name in {"fcntl", "pwd"}:
+        module = importlib.import_module(name)
+        globals()[name] = module
+        return module
+    raise AttributeError(name)
+
 
 _PROCESS_LOCK = threading.RLock()
 _LOCAL = threading.local()
@@ -92,6 +100,7 @@ def _open_private_child(parent: int, name: str) -> int:
 
 @contextmanager
 def _lock_namespace() -> Iterator[int]:
+    pwd = globals().get("pwd") or importlib.import_module("pwd")
     try:
         account_home = Path(pwd.getpwuid(os.getuid()).pw_dir)
     except (KeyError, OSError):
@@ -111,6 +120,7 @@ def _lock_namespace() -> Iterator[int]:
 
 @contextmanager
 def _locked_project_file(key: str) -> Iterator[None]:
+    fcntl = globals().get("fcntl") or importlib.import_module("fcntl")
     flags = os.O_RDWR | os.O_CREAT | _NOFOLLOW | _CLOEXEC
     with _lock_namespace() as namespace:
         try:
@@ -141,25 +151,33 @@ def _locked_project_file(key: str) -> Iterator[None]:
 @contextmanager
 def project_write_lock(root: Path) -> Iterator[None]:
     """Serialize AI-DLC writes for one project, with same-thread reentrancy."""
-    resolved = Path(root).resolve()
-    key = hashlib.sha256(str(resolved).encode()).hexdigest()
-    depths = getattr(_LOCAL, "depths", None)
-    if depths is None:
-        depths = {}
-        _LOCAL.depths = depths
+    if os.name == "nt":
+        from ai_dlc._windows_storage import guarded_project_identity, project_lock
 
-    with _PROCESS_LOCK:
-        if depths.get(key, 0):
-            depths[key] += 1
-            try:
-                yield
-            finally:
-                depths[key] -= 1
-            return
+        identity_context = guarded_project_identity(Path(root))
+        lock = project_lock
+    else:
+        identity_context = nullcontext(str(Path(root).resolve()))
+        lock = _locked_project_file
+    with identity_context as identity:
+        key = hashlib.sha256(identity.encode()).hexdigest()
+        depths = getattr(_LOCAL, "depths", None)
+        if depths is None:
+            depths = {}
+            _LOCAL.depths = depths
 
-        with _locked_project_file(key):
-            depths[key] = 1
-            try:
-                yield
-            finally:
-                depths.pop(key, None)
+        with _PROCESS_LOCK:
+            if depths.get(key, 0):
+                depths[key] += 1
+                try:
+                    yield
+                finally:
+                    depths[key] -= 1
+                return
+
+            with lock(key):
+                depths[key] = 1
+                try:
+                    yield
+                finally:
+                    depths.pop(key, None)

@@ -8,19 +8,21 @@ import os
 import re
 import secrets
 import stat
-from collections.abc import Callable
+import tomllib
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import Any
 
 import tomli_w
 
-from ai_dlc.config import load_project
+from ai_dlc.config import load_project, resolve_layers
 from ai_dlc.environment.team_sources import enrolled_sources
 from ai_dlc.files import assets, atomic_write, inside
 from ai_dlc.harness import workflow_bundles as bundle_fs
 from ai_dlc.harness.components import load_component_catalog, resolve_components
 from ai_dlc.harness.team_source_render import check_source_skill_destinations, merge_source_items
+from ai_dlc.harness.windows_render import WindowsRenderState
 from ai_dlc.harness.workflow_bundles import MissingBundlePath, load_vendored_bundle
 from ai_dlc.locking import project_write_lock
 from ai_dlc.providers import provider_kind
@@ -591,7 +593,7 @@ def _plan_bundle_files(
 
 def _apply_render_transaction(
     state: _RenderState,
-    planned: dict[str, str],
+    planned: Mapping[str, str | bytes],
     removed: list[str],
     changed: list[str],
 ) -> list[str]:
@@ -606,8 +608,9 @@ def _apply_render_transaction(
                 raise OSError("render destination parent is unavailable")
             changes.append(_RenderChange(name, parent, state.snapshots[name]))
         for change in changes:
+            content = None if change.path in removed else planned[change.path]
             _publish_render_change(
-                state, change, None if change.path in removed else planned[change.path].encode()
+                state, change, content.encode() if isinstance(content, str) else content
             )
         state.verify_directories()
         for change in changes:
@@ -905,7 +908,9 @@ _Reader = Callable[[str], bytes | None]
 _TextReader = Callable[[str], str]
 
 
-def _render_readers(root: Path, state: _RenderState | None) -> tuple[_Reader, _TextReader]:
+def _render_readers(
+    root: Path, state: _RenderState | WindowsRenderState | None
+) -> tuple[_Reader, _TextReader]:
     """Build byte and normalized-text readers bound to the transaction state or root."""
 
     def read(name: str) -> bytes | None:
@@ -1199,13 +1204,17 @@ def _collect_render_changes(
 
 def _apply_render_plan(
     root: Path,
-    state: _RenderState | None,
+    state: _RenderState | WindowsRenderState | None,
     bundle_participates: bool,
     planned: dict[str, str],
     removed: list[str],
     changed: list[str],
 ) -> list[str]:
     """Write the plan transactionally for bundle renders, otherwise file by file."""
+    if isinstance(state, WindowsRenderState):
+        return state.apply(
+            {name: body.encode() for name, body in planned.items()}, removed, changed
+        )
     if bundle_participates:
         if state is None:
             raise ValueError("bundle render requires a bound project transaction")
@@ -1224,12 +1233,16 @@ def _render_agents(
     apply: bool = False,
     client: str | None = None,
     target: str = "local",
-    state: _RenderState | None = None,
+    state: _RenderState | WindowsRenderState | None = None,
 ) -> dict[str, Any]:
     root = Path(root).resolve()
     read, text = _render_readers(root, state)
 
-    config = load_project(root)
+    config = (
+        resolve_layers([("project", tomllib.loads((read("ai-dlc.toml") or b"").decode()))]).values
+        if isinstance(state, WindowsRenderState)
+        else load_project(root)
+    )
     bundle_ids = _selected_bundle_ids(config)
     bundles = _load_selected_bundles(root, bundle_ids)
     _raise_bundle_collisions(bundles)
@@ -1336,6 +1349,10 @@ def render_agents(
     root: Path, apply: bool = False, client: str | None = None, target: str = "local"
 ) -> dict[str, Any]:
     """Render project guidance, transactionally when bundle outputs participate."""
+    if os.name == "nt":
+        from ai_dlc.harness.windows_render import render_windows
+
+        return render_windows(root, apply=apply, client=client, target=target)
     absolute = Path(root).resolve()
     if not apply:
         return _render_agents(absolute, apply=False, client=client, target=target)

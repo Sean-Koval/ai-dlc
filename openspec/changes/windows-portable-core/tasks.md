@@ -1,6 +1,6 @@
 # Authoritative implementation tasks
 
-All tasks remain unchecked: this change is specification work, not implementation evidence.
+Implementation authorized on September 26, 2026 after publication of the reviewed specification. Checkboxes record verified implementation; actual platform evidence is recorded separately.
 
 ## 1. Baseline and contract
 
@@ -30,3 +30,12 @@ All tasks remain unchecked: this change is specification work, not implementatio
 ## Subsequent delivery gates
 
 After implementation and the checklist above are complete, archive this independently owned change on its bound delivery branch with `ai-dlc work archive`. Repair moved artifact links and any evidence targets actually made stale by archival. Immediately before authorized merge, update from the target branch and refresh required checks/evidence. Finish through `ai-dlc work finish` against the exact merged revision and its configured receipts. These remain mandatory later delivery gates, not checkboxes that must falsely claim post-merge completion before archive. No package publication or paid comparison is authorized by this task list.
+
+## Execution interfaces and focused verification
+
+- Command parsing and execution live in `src/ai_dlc/setup/commands.py` and `project.py`; the existing `run_command` service remains the setup/check entry point. Run `python -m pytest tests/test_portable_commands.py tests/test_checks.py` after the red/green command cases.
+- Native storage lives in private `src/ai_dlc/_windows_storage/`; shared `files.py` and `locking.py` retain their public APIs. `safe_read`, `guarded_path`, `atomic_publish` and handle-bound `move_owned` are the native integration boundary. Run `python -m pytest tests/test_windows_storage.py`; Windows-only cases must execute in the native CI job.
+- Document adoption calls `document_files.create_document`; renderer and template recovery preserve snapshots and intervening edits. Run `python -m pytest tests/test_windows_document_dispatch.py tests/test_windows_render.py tests/test_template_recovery.py tests/test_windows_core.py`.
+- Core imports must not import Unix-only modules eagerly. Run `python -m pytest tests/test_portable_imports.py tests/test_knowledge.py tests/test_hooks.py`.
+
+Review focus: missing or malicious command records before setup effects; literal metacharacter/empty argv; case aliases and killed lock holders; reparse/ancestor substitution and private namespace ownership; failed publication or recovery racing an authored replacement. Pin these cases in the owning tests before implementation. Run the prepared required checks and native CI after integration; a local platform skip is not a passing Windows observation.
