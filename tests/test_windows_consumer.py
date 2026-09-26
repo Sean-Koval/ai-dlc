@@ -145,6 +145,23 @@ def test_consumer_child_environment_excludes_credentials_and_existing_runtimes(
     assert not Path(env["AI_DLC_BOOTSTRAP_HOME"]).exists()
 
 
+def test_consumer_account_appdata_paths_are_isolated_and_reserved_for_native_creation(
+    tmp_path, monkeypatch
+):
+    monkeypatch.setenv("LOCALAPPDATA", "personal-local-data")
+    monkeypatch.setenv("APPDATA", "personal-roaming-data")
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
+    env = driver().controlled_environment(
+        workspace, tmp_path / "gitcmd/git.exe", tmp_path / "windows"
+    )
+    account = workspace / "account"
+    assert env["USERPROFILE"] == env["HOME"] == str(account)
+    assert env["LOCALAPPDATA"] == str(account / "AppData/Local")
+    assert env["APPDATA"] == str(account / "AppData/Roaming")
+    assert not account.exists(), "private account directories must be created by native guards"
+
+
 def test_consumer_does_not_expose_system32_wsl_launchers(tmp_path):
     system = tmp_path / "windows"
     system32 = system / "System32"
@@ -158,6 +175,42 @@ def test_consumer_does_not_expose_system32_wsl_launchers(tmp_path):
     env = driver().controlled_environment(workspace, tmp_path / "gitcmd/git.exe", system)
     assert str(system32) not in env["PATH"].split(os.pathsep)
     assert env["COMSPEC"] == str(system32 / "cmd.exe")
+
+
+@pytest.mark.skipif(os.name != "nt", reason="requires real Windows known folders and private ACLs")
+def test_native_isolated_account_resolves_known_folder_and_accepts_private_lock(tmp_path):
+    module = driver()
+    workspace = tmp_path / "isolated account é"
+    workspace.mkdir()
+    evidence = tmp_path / "evidence"
+    evidence.mkdir()
+    system = Path(os.environ["SystemRoot"])
+    env = module.controlled_environment(workspace, tmp_path / "gitcmd/git.exe", system)
+    journey = module.Journey(evidence, {"commands": []})
+    module.prepare_private_account(
+        journey,
+        ROOT / "bootstrap/windows.ps1",
+        system / "System32/WindowsPowerShell/v1.0/powershell.exe",
+        workspace,
+        env,
+    )
+    for key in ("USERPROFILE", "LOCALAPPDATA", "APPDATA"):
+        assert Path(env[key]).is_dir()
+    journey.run(
+        "native-account-lock",
+        [
+            sys.executable,
+            "-c",
+            (
+                "import os; from pathlib import Path; from ai_dlc import _windows_storage as storage; "
+                "assert storage.local_app_data() == Path(os.environ['LOCALAPPDATA'])\n"
+                "with storage.project_lock('isolated-consumer-account'):\n    pass\n"
+            ),
+        ],
+        cwd=workspace,
+        env=env,
+    )
+    assert (Path(env["LOCALAPPDATA"]) / "ai-dlc/locks").is_dir()
 
 
 @pytest.mark.skipif(

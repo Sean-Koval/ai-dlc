@@ -162,8 +162,6 @@ def controlled_environment(workspace: Path, git: Path, system: Path) -> dict[str
         GIT_TERMINAL_PROMPT="0",
     )
     for key, relative in {
-        "HOME": "account",
-        "USERPROFILE": "account",
         "TEMP": "temp",
         "TMP": "temp",
         "XDG_CONFIG_HOME": "config",
@@ -178,6 +176,14 @@ def controlled_environment(workspace: Path, git: Path, system: Path) -> dict[str
         directory = workspace / relative
         directory.mkdir(exist_ok=True)
         env[key] = str(directory)
+    # Leave these absent until the reviewed native guard creates private directories.
+    account = workspace / "account"
+    env.update(
+        HOME=str(account),
+        USERPROFILE=str(account),
+        LOCALAPPDATA=str(account / "AppData/Local"),
+        APPDATA=str(account / "AppData/Roaming"),
+    )
     global_config = workspace / "gitconfig"
     global_config.write_bytes(b"")
     env["GIT_CONFIG_GLOBAL"] = str(global_config)
@@ -290,6 +296,40 @@ class Journey:
                 "deliberate behavioral failure was not detected",
             )
         return receipt
+
+
+def prepare_private_account(
+    journey: Journey, helper: Path, powershell: Path, workspace: Path, env: dict[str, str]
+) -> None:
+    """Prepare the isolated account through native guards before any engine executes."""
+    script = f"""
+$ErrorActionPreference='Stop'
+[Console]::OutputEncoding=[Text.UTF8Encoding]::new($false)
+. {quote_ps(helper)}
+Initialize-NativeStorage
+$guards=[Collections.Generic.List[IDisposable]]::new()
+try {{
+    foreach($path in @($env:USERPROFILE,$env:LOCALAPPDATA,$env:APPDATA)) {{
+        $guards.Add([AiDlc.Bootstrap.DirectoryGuard]::new($path,$true,$true))
+    }}
+    $local=[Environment]::GetFolderPath('LocalApplicationData')
+    $roaming=[Environment]::GetFolderPath('ApplicationData')
+    if($local -ine $env:LOCALAPPDATA -or $roaming -ine $env:APPDATA) {{
+        throw 'Native known folders do not resolve to the isolated account'
+    }}
+    @{{local=$local;roaming=$roaming}} | ConvertTo-Json -Compress
+}} finally {{
+    for($index=$guards.Count-1;$index -ge 0;$index--) {{ $guards[$index].Dispose() }}
+}}
+"""
+    result = journey.run(
+        "prepare-private-account",
+        [powershell, "-NoProfile", "-NonInteractive", "-Command", script],
+        cwd=workspace,
+        env=env,
+    )
+    journey.report["account_directories"] = json.loads(result.stdout)
+    journey.save()
 
 
 def generated_identity(project: Path, artifacts: Path) -> None:
@@ -592,6 +632,7 @@ def verify(artifacts: Path, workspace: Path, evidence: Path) -> dict:
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(artifact_bytes(artifacts, name))
         (seed / "ai-dlc.toml").write_text("schema = 4\n", encoding="utf-8")
+        prepare_private_account(journey, seed / "bootstrap/windows.ps1", powershell, workspace, env)
         manifest = report["artifacts"]["manifest"]
         home = Path(env["AI_DLC_BOOTSTRAP_HOME"])
         cache = home / "downloads"
