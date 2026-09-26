@@ -53,7 +53,7 @@ Return the schema-1 target/platform/clients/engine/state/findings/actions/qualif
 
 ### Task 2: CLI and canonical consumer guidance
 
-Files: modify `src/ai_dlc/cli.py`, create `tests/test_consumer_onboarding_cli.py`; update `README.md`, `docs/architecture.md`, `docs/runbooks/machine-enrollment.md`, `docs/workflows/work-computer-setup.md`, `docs/workflows/tool-map.md`, `docs/release-verification.md`, and relevant `docs/catalog.toml` source mappings. Update generic packaged guidance only where actual instructions require it.
+Files: modify `src/ai_dlc/cli.py`, create `tests/test_consumer_onboarding_cli.py`; update `AGENTS.md`, `README.md`, `docs/architecture.md`, `docs/runbooks/machine-enrollment.md`, `docs/workflows/work-computer-setup.md`, `docs/workflows/tool-map.md`, `docs/release-verification.md`, and relevant `docs/catalog.toml` source mappings. Update generic packaged guidance only where actual instructions require it.
 Consumes Task 1’s interface. CLI `project onboard` requires `--root`, offers the documented optional source/ref/profile/machine/client/preset selections and no apply mode. It emits the service JSON and exits 0 only for actionable planning, 1 for blocked/unsupported/input-required, and 2 for invalid arguments/configuration.
 
 - [ ] Add failing CLI tests for required root, no apply option, state/exit mapping, repeated client options and malformed config.
@@ -65,4 +65,4 @@ Consumes Task 1’s interface. CLI `project onboard` requires `--root`, offers t
 
 - [ ] Use a disposable Unix target with isolated personal/XDG state; invoke the actual CLI plan, preview/apply adoption with explicit selections, setup, and a target-owned acceptance command. Observe pass, deliberate behavior failure and restored pass; retain roots, revision, elapsed time/manual command count and limits in existing release verification documentation.
 - [ ] Review actual documentation impact, record content-bound dispositions and mapping changes, strictly validate OpenSpec/work records, run required project checks and independent whole-change review.
-- [ ] Follow the existing subsequent delivery gates above. Windows/client observations stay unqualified; do not merge or finish #172 as a side effect.
+Delivery requirement: follow the subsequent delivery gates above after implementation verification. Windows/client observations stay unqualified; do not merge or finish #172 as a side effect.
