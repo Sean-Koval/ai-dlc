@@ -584,7 +584,10 @@ class _Collector:
             path = self.root / relative
             if path.is_symlink():
                 return "mismatch"
-            state = read_managed_section(self.project_text(relative))["state"]
+            # Match the renderer's managed-text contract; owned_state above
+            # deliberately keeps raw bytes for whole-file ownership checksums.
+            text = self.project_text(relative).replace("\r\n", "\n").replace("\r", "\n")
+            state = read_managed_section(text)["state"]
             return {"absent": "missing", "malformed": "mismatch", "modified": "mismatch"}.get(
                 state, "unknown"
             )

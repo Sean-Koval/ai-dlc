@@ -224,6 +224,14 @@ def test_rejects_unsafe_or_inconsistent_payload_without_echo(mutation):
         b'"PRIVATE_SENTINEL"',
         b"\xff",
     ],
+    ids=[
+        "duplicate-key",
+        "nonfinite",
+        "oversized",
+        "deep-nesting",
+        "private-scalar",
+        "invalid-utf8",
+    ],
 )
 def test_parser_rejects_bounded_unsafe_inputs(raw):
     with pytest.raises(ValueError) as error:

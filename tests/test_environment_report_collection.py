@@ -548,3 +548,40 @@ def test_collection_preserves_project_root_alias_and_regular_config_symlink(proj
     result = collect_report(alias, home=home, environ={"PATH": ""})
     assert result["configuration_identity"] == original["configuration_identity"]
     assert result["observation_identity"] == original["observation_identity"]
+
+
+@pytest.mark.parametrize("newline", [b"\r\n", b"\r"], ids=["crlf", "cr"])
+@pytest.mark.parametrize("modified", [False, True], ids=["intact", "modified"])
+def test_managed_guidance_uses_renderer_newline_contract(project, newline, modified):
+    root, _ = project
+    (root / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nagent-client=["codex"]\n[agents]\nskills=[]\n',
+        encoding="utf-8",
+    )
+    body = b"managed instructions\nsecond line\n"
+    digest = hashlib.sha256(body).hexdigest().encode("ascii")
+    observed = body.replace(b"second", b"edited") if modified else body
+    content = b"<!-- ai-dlc:begin " + digest + b" -->\n" + observed + b"<!-- ai-dlc:end -->\n"
+    (root / "AGENTS.md").write_bytes(content.replace(b"\n", newline))
+    result = collect(project)
+    guidance = next(g for g in result["project"]["guidance"] if g["id"] == "agents")
+    assert guidance["state"] == ("mismatch" if modified else "unknown")
+    assert items(result, "clients")["codex"]["rendered"] == ("no" if modified else "unknown")
+
+
+@pytest.mark.parametrize("recorded_raw", [True, False], ids=["raw-digest", "normalized-digest"])
+def test_owned_guidance_integrity_retains_raw_newline_bytes(project, recorded_raw):
+    root, _ = project
+    relative = ".ai-dlc/providers/github.md"
+    content = b"owned provider instructions\r\nsecond line\r\n"
+    path = root / relative
+    path.parent.mkdir(parents=True)
+    path.write_bytes(content)
+    digest_input = content if recorded_raw else content.replace(b"\r\n", b"\n")
+    (root / ".ai-dlc/agent-ownership.json").write_text(
+        json.dumps({"schema": 2, "files": {relative: hashlib.sha256(digest_input).hexdigest()}}),
+        encoding="utf-8",
+    )
+    result = collect(project)
+    guidance = next(g for g in result["project"]["guidance"] if g["id"] == "provider.github")
+    assert guidance["state"] == ("unknown" if recorded_raw else "mismatch")
