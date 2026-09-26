@@ -1,6 +1,8 @@
 """Selected native provisioning reports real limitations instead of upgrading tools."""
 
+import os
 import subprocess
+import sys
 
 import pytest
 
@@ -197,3 +199,35 @@ def test_runtime_plan_does_not_activate_mise_environment_hooks(native, monkeypat
     monkeypatch.setattr(subprocess, "run", run)
     result = provision.machine_plan(profile, home=home, environ=env)
     assert result["ready"] and not result["commands"]
+
+
+@pytest.mark.parametrize("malformed", [False, True])
+def test_mise_path_protocol_decodes_real_bytes_independently_of_locale(
+    tmp_path, monkeypatch, malformed
+):
+    from ai_dlc.setup.windows import _runtime_observation
+
+    executable = str(tmp_path / "runtime é Ω" / "python.exe")
+    payload = (executable + "\r\n").encode("utf-8")
+    if malformed:
+        payload = payload.replace(b"python.exe", b"\xffpython.exe")
+    real_run = subprocess.run
+    probes = []
+    # Match Windows Python's legacy pipe decoding even on UTF-8 developer hosts.
+    monkeypatch.setattr(subprocess, "_text_encoding", lambda: "cp1252")
+
+    def run(argv, **kwargs):
+        if argv[1] == "which":
+            script = f"import sys; sys.stdout.buffer.write(bytes.fromhex('{payload.hex()}'))"
+        else:
+            probes.append(argv)
+            assert not malformed, "Malformed path reached an executable probe"
+            assert argv == [executable, "--version"]
+            script = "import sys; sys.stdout.buffer.write(b'Python 3.12.11\\r\\n')"
+        # Exercise actual pipe bytes and subprocess decoding, not mocked text output.
+        return real_run([sys.executable, "-c", script], **kwargs)
+
+    monkeypatch.setattr(subprocess, "run", run)
+    observed = _runtime_observation("mise.exe", "python", "3.12.11", dict(os.environ), tmp_path)
+    assert observed == ((None, []) if malformed else ("3.12.11", [executable, "--version"]))
+    assert len(probes) == (0 if malformed else 1)

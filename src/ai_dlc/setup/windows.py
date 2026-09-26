@@ -104,10 +104,13 @@ def _runtime_observation(
             env=environment,
             capture_output=True,
             text=True,
+            # mise emits UTF-8 paths even when Windows' pipe locale is CP1252.
+            encoding="utf-8",
+            errors="strict",
             timeout=30,
             check=False,
         )
-    except (OSError, subprocess.TimeoutExpired):
+    except (OSError, subprocess.TimeoutExpired, UnicodeError):
         return None, []
     executable = located.stdout.strip()
     if (

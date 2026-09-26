@@ -4,30 +4,30 @@ Implementation authorized September 26, 2026. Dependency `windows-portable-core`
 
 ## 1. Verified native bootstrap
 
-- [ ] 1.1 Confirm portable-core contract availability and inventory Windows entry/import/package prerequisites; record Windows 11 x64/local NTFS/PowerShell 5.1 boundary (WNS-01).
-- [ ] 1.2 Review official exact Windows uv/mise artifact versions, URLs and hashes plus pinned Python integrity handling; add inert pin data and source/template parity checks without changing supported Unix pins implicitly (WNS-02).
-- [ ] 1.3 Implement plan/source/release PowerShell bootstrap, strict inert release.sh parser, digest/cache/archive validation, destination-local staging and safe entry-point publication (WNS-01/WNS-02; amended BP-01).
+- [x] 1.1 Confirm portable-core contract availability and inventory Windows entry/import/package prerequisites; record Windows 11 x64/local NTFS/PowerShell 5.1 boundary (WNS-01).
+- [x] 1.2 Review official exact Windows uv/mise artifact versions, URLs and hashes plus pinned Python integrity handling; add inert pin data and source/template parity checks without changing supported Unix pins implicitly (WNS-02).
+- [x] 1.3 Implement plan/source/release PowerShell bootstrap, strict inert release.sh parser, digest/cache/archive validation, destination-local staging and safe entry-point publication (WNS-01/WNS-02; amended BP-01).
 - [ ] 1.4 Exercise corrupt asset, wrong architecture, manifest expression/duplicate, interrupted install, concurrently running bootstrap and in-use executable cases; preserve selected working CLI and prove retry (WNS-02).
 
 ## 2. Native environment and selected tools
 
-- [ ] 2.1 Implement user-local native locations, `.exe`/`Scripts` resolution, checkout-bound source provenance and working alias preservation/explicit publication (WNS-03).
+- [x] 2.1 Implement user-local native locations, `.exe`/`Scripts` resolution, checkout-bound source provenance and working alias preservation/explicit publication (WNS-03).
 - [ ] 2.2 Implement previewed PowerShell owned activation with policy diagnostics; test authored/modified profile preservation, duplicate prevention and fresh-terminal/direct-path use (WNS-03).
-- [ ] 2.3 Add core Git/GitHub CLI and pinned Python provisioning plans, exact winget package identity, installed-version readback and no-upgrade behavior; provide absent/blocked-manager recovery (WNS-04).
-- [ ] 2.4 Report selected/implied unsupported modules individually and enforce truthful incomplete readiness without installing unselected tools or authenticating accounts (WNS-04).
+- [x] 2.3 Add core Git/GitHub CLI and pinned Python provisioning plans, exact winget package identity, installed-version readback and no-upgrade behavior; provide absent/blocked-manager recovery (WNS-04).
+- [x] 2.4 Report selected/implied unsupported modules individually and enforce truthful incomplete readiness without installing unselected tools or authenticating accounts (WNS-04).
 
 ## 3. Consumer project journey
 
-- [ ] 3.1 Generate native argv management/Python checks and bounded conditional Python setup; preserve noninitializing adoption, existing locks/tests, authored commands and generic project autonomy (WNS-05).
-- [ ] 3.2 Verify source and packaged scaffold contain native bootstrap assets and the correct manifest propagation; require a compatible engine for argv templates (WNS-02/WNS-05).
-- [ ] 3.3 Run generic team-owned and Python starter behavior with deliberate regressions, missing/all-skipped tests, missing runtime, repeated setup and edited managed-file conflict on Windows and retained Unix targets (WNS-05).
+- [x] 3.1 Generate native argv management/Python checks and bounded conditional Python setup; preserve noninitializing adoption, existing locks/tests, authored commands and generic project autonomy (WNS-05).
+- [x] 3.2 Verify source and packaged scaffold contain native bootstrap assets and the correct manifest propagation; require a compatible engine for argv templates (WNS-02/WNS-05).
+- [x] 3.3 Run generic team-owned and Python starter behavior with deliberate regressions, missing/all-skipped tests, missing runtime, repeated setup and edited managed-file conflict on Windows and retained Unix targets (WNS-05).
 
 ## 4. Platform and release evidence
 
-- [ ] 4.1 Add native Windows CI jobs and explicit required checks/receipt artifact bindings; retain Unix matrix and justify platform-specific skips without reducing Windows acceptance (WNS-06).
+- [x] 4.1 Add native Windows CI jobs and explicit required checks/receipt artifact bindings; retain Unix matrix and justify platform-specific skips without reducing Windows acceptance (WNS-06).
 - [ ] 4.2 Add candidate and read-only published-asset Windows consumer verification for both minimal seed and generated project, exact wheel/constraints/manifest identity and clean required check receipts (WNS-06).
 - [ ] 4.3 Obtain a clean Windows 11 x64 account and run the full PowerShell qualification/recovery matrix; record identity/outcomes and extend existing platform qualification tracking with real evidence (WNS-07).
-- [ ] 4.4 Review/update canonical setup, contributor/consumer routing, selected module limits and release docs; maintain package/template parity and record content-bound documentation dispositions (WNS-08).
+- [x] 4.4 Review/update canonical setup, contributor/consumer routing, selected module limits and release docs; maintain package/template parity and record content-bound documentation dispositions (WNS-08).
 - [ ] 4.5 Complete specification/work-record and affected-document review, record required content-bound dispositions, strictly validate this change, run the prepared required checks, and resolve actionable review findings.
 
 ## Subsequent delivery gates
@@ -41,3 +41,7 @@ After implementation and the checklist above are complete, archive this independ
 - Project templates own portable generic/Python command records and a bounded helper distinguishing initialization from adoption. Checks require a prepared interpreter and cannot create an environment; missing/all-skipped tests remain failures.
 - Contributor command records use native argv. Repository scripts adapt only platform-specific pytest coverage and the type-check interpreter; the engine keeps its existing command contract. Windows CI adds explicit native required receipts, source cold-start, and candidate consumption from exact built wheel/constraints caches without publication.
 - Focused cases live in `test_windows_bootstrap.py`, `test_windows_environment.py`, `test_windows_provision.py`, `test_native_templates.py`, `test_native_repository_checks.py` and `test_windows_consumer.py`. Retain the #171 native safety suite and full Unix suite. Any skipped required native or clean-account case remains unqualified.
+
+## Evidence and remaining acceptance
+
+Implementation checkboxes above bind to the reviewed source and native tests, including cold source bootstrap at `351232d92520a7a6dcd59e892435ef2ebbcccfa4`. They do not claim Windows 11 desktop qualification or a passing installed-wheel consumer journey. Full-bootstrap interruption and concurrent-process recovery (1.4), fresh-terminal profile/runtime resolution (2.2), and clean Windows 11 qualification (4.3) remain unobserved; the machine-enrollment walkthrough provides explicit execution steps. Provisioning readback (2.3) additionally passes real subprocess byte-output regressions under a forced CP1252 default, including safe refusal of malformed UTF-8. Mocked package-plan checks do not establish live winget installation. Candidate consumption (4.2) and final checks/review (4.5) remain pending. The earlier local required-check run overlapped worktree edits and is feedback only, not exact-revision completion evidence.

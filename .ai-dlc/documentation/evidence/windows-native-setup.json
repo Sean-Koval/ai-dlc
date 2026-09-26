@@ -120,7 +120,7 @@
         "src/ai_dlc/setup/rebind.py": "8a7e6e8ca66fc227daf7cbf40f37c3ae1681e984e53206f268c90c8db0a816c6",
         "src/ai_dlc/setup/templates.py": "1fc9173daa6fe71eebf00eda0f4e2b7263c65f694d3b227dee5421240e0eca62",
         "src/ai_dlc/setup/tracker_targets.py": "b04533ac254bde0aa7bddf083097d815153998f15b1042645ac4ffc38f848319",
-        "src/ai_dlc/setup/windows.py": "3ad435e5ba87abdc0a41ccc0897c17a0ccc7147f2c6c8aaa20b2626710698cd9",
+        "src/ai_dlc/setup/windows.py": "47bd33650b8fbda81e8be882cf02d561a99a841e4a53c40055779073f0d100a8",
         "src/ai_dlc/setup/workstation.py": "26ae1ce6f088ae5cf29c16afd09b6fcd2be6ea9e6f606ae3061ccdd025b8a659",
         "src/ai_dlc/toml_edit.py": "696057b2848ca8b57e5189d1c78441fc6c1e06994f480f6f13f8dd31c050515e",
         "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
@@ -225,7 +225,7 @@
     {
       "bound": {
         "catalog:docs/runbooks/machine-enrollment.md": "57efacf540031d6731cfa09fb33452a0a368c5fc06378f76efca74b758f38234",
-        "docs/runbooks/machine-enrollment.md": "56087e65019850b4472e28c927cf129aaff22f0fee3276803c8ac3b9f7646f73",
+        "docs/runbooks/machine-enrollment.md": "4e3c36ce61edd23c83e0eecbd4b4f2a7ce62d61e680b4f7dc0dde6dd0d5406ac",
         "openspec/specs/native-work-harnesses/spec.md": "09197a91bca7653dd698a1b42e7203c4240e91cd5efa4fe3665f59e778aec909",
         "openspec/specs/team-sources/spec.md": "3dca430922c9b5d8eb7b678b0cf00da813f9be332e76cf59a448bd718f4d4587",
         "profiles/example/ai-dlc-profile.toml": "29b58a995e46b38ac75e5db5756e766e6b130f26e162448fc41fee898e7ff01e",
@@ -396,7 +396,7 @@
     },
     {
       "bound": {
-        "openspec/changes/windows-native-setup/tasks.md": "e9adf1dd374b71deb8aee731f55671dcd05993b403921860850a4b2872673711"
+        "openspec/changes/windows-native-setup/tasks.md": "e9bb02e648d85ebafd69b5d81dccbd46e5e9c7a6c4da9db6d9b98151816d8e99"
       },
       "outcome": "updated",
       "reason": "Records completed dependency and implementation interfaces while retaining evidence-bound unchecked implementation/qualification tasks.",
@@ -477,7 +477,7 @@
     },
     {
       "bound": {
-        "tests/test_windows_provision.py": "b35d00ed916c586fb7354f0d507da6c367947dbce9811c0382b2d68234f80564"
+        "tests/test_windows_provision.py": "9769ae9b627d23e42677d76caef240201f09b26ca403f744ae504e8a453e4ee2"
       },
       "outcome": "no-impact",
       "reason": "Regression coverage for the documented native setup, provisioning, profile or template behavior; tests do not independently establish live platform qualification.",
