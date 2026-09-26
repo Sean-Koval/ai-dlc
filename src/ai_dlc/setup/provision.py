@@ -295,24 +295,42 @@ def machine_apply(
 
 def _runtime_drift(root: Path, missing: list[str], environment: Mapping[str, str]) -> list[str]:
     """Ask mise which active project runtimes are not installed; skip when mise is absent."""
-    runtime_drift = []
-    if "mise" not in missing:
+    if "mise" in missing:
+        return []
+    unresolved = ["mise could not resolve this project; run project setup"]
+    try:
         result = subprocess.run(
             ["mise", "ls", "--json"],
             cwd=root,
             capture_output=True,
-            text=True,
             timeout=30,
             check=False,
             env=environment,
         )
         if result.returncode:
-            runtime_drift.append("mise could not resolve this project; run project setup")
-        else:
-            for tool, versions in json.loads(result.stdout).items():
-                for version in versions:
-                    if version.get("active") and not version.get("installed"):
-                        runtime_drift.append(tool + "@" + version.get("version", "unknown"))
+            return unresolved
+        # Parse bytes here; Windows background text readers can lose decode errors.
+        inventory = json.loads(result.stdout)
+    except (OSError, subprocess.TimeoutExpired, UnicodeError, json.JSONDecodeError):
+        return unresolved
+    if not isinstance(inventory, dict):
+        return unresolved
+    runtime_drift = []
+    for tool, versions in inventory.items():
+        if not isinstance(versions, list):
+            return unresolved
+        for version in versions:
+            if not isinstance(version, dict) or not isinstance(
+                version.get("version", "unknown"), str
+            ):
+                return unresolved
+            if any(
+                key in version and not isinstance(version[key], bool)
+                for key in ("active", "installed")
+            ):
+                return unresolved
+            if version.get("active") and not version.get("installed"):
+                runtime_drift.append(tool + "@" + version.get("version", "unknown"))
     return runtime_drift
 
 

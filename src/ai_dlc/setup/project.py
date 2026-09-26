@@ -72,15 +72,16 @@ def runtime_env(root: Path, use_mise: bool, *, notify: bool = True) -> dict[str,
         env["MISE_AUTO_INSTALL"] = "0"
         tools = read_toml(root / ".mise.toml").get("tools", {})
         if "python" in tools:
+            # mise emits UTF-8 protocol paths. Capture bytes so Windows' locale
+            # and subprocess reader threads cannot corrupt executable identity.
             result = subprocess.run(
                 [executable, "which", "python"],
                 cwd=root,
                 env=env,
-                text=True,
                 capture_output=True,
                 check=True,
             )
-            env["UV_PYTHON"] = result.stdout.strip()
+            env["UV_PYTHON"] = result.stdout.decode("utf-8").strip()
     return env
 
 
@@ -99,13 +100,12 @@ def run_command(
             [mise, "which", parsed.argv[0]],
             cwd=root,
             env=env,
-            text=True,
             capture_output=True,
             timeout=timeout,
             check=False,
         )
         if resolved.returncode == 0 and resolved.stdout.strip():
-            parsed = Command((resolved.stdout.strip(), *parsed.argv[1:]))
+            parsed = Command((resolved.stdout.decode("utf-8").strip(), *parsed.argv[1:]))
     executable = require_executable(parsed, root, env)
     argv = [executable, *parsed.argv[1:]]
     if use_mise:

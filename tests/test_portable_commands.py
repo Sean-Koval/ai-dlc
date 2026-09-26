@@ -520,3 +520,53 @@ def test_native_setup_refuses_junction_before_setup_side_effects(tmp_path, junct
     assert {
         path.relative_to(root): path.read_bytes() for path in root.rglob("*") if path.is_file()
     } == before
+
+
+@pytest.mark.parametrize("operation", ["runtime", "command"])
+def test_mise_path_protocol_decodes_real_utf8_bytes_with_legacy_locale(
+    tmp_path, monkeypatch, operation
+):
+    selected = str(tmp_path / "managed é Ω" / "python.exe")
+    (tmp_path / ".mise.toml").write_text(
+        '[tools]\npython = "3.13.7"\n' if operation == "runtime" else "[tools]\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    actual_run = subprocess.run
+    protocol_calls = []
+
+    def run(argv, **kwargs):
+        if argv[:2] == ["mise-fixture", "which"]:
+            protocol_calls.append(kwargs.copy())
+            # Emit real UTF-8 bytes, emulating mise's path protocol. Only text-mode
+            # callers use a legacy decoder; no locale or native APIs are mocked.
+            if kwargs.get("text"):
+                kwargs["encoding"] = "cp1252"
+            return actual_run(
+                [
+                    sys.executable,
+                    "-c",
+                    f"import sys; sys.stdout.buffer.write({(selected + chr(10)).encode()!r})",
+                ],
+                **kwargs,
+            )
+        assert argv[:3] == ["mise-fixture", "exec", "--"]
+        return actual_run(argv[3:], **kwargs)
+
+    monkeypatch.setattr(project, "find_executable", lambda *args: "mise-fixture")
+    monkeypatch.setattr(project.subprocess, "run", run)
+    if operation == "runtime":
+        assert project.runtime_env(tmp_path, True)["UV_PYTHON"] == selected
+    else:
+
+        def require_selected(command, root, env):
+            assert command.argv[0] == selected
+            return sys.executable
+
+        monkeypatch.setattr(project, "require_executable", require_selected)
+        result = project.run_command(
+            tmp_path, {"argv": ["managed-python", "-c", "raise SystemExit(7)"]}, use_mise=True
+        )
+        assert result.returncode == 7
+    assert len(protocol_calls) == 1
+    assert not protocol_calls[0].get("text", False)

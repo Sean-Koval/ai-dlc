@@ -113,14 +113,14 @@
         "src/ai_dlc/setup/github_project_setup.py": "55984de17559ba2d56b3b1c7483dabb8a6f05f1e773e8bd9d40437a2d30ee85e",
         "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
         "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
-        "src/ai_dlc/setup/project.py": "4d2e5e942b5d97a3a975f487f3355d6b32475554400f27e32e7e0b8951f7af84",
+        "src/ai_dlc/setup/project.py": "e59ab63cca9c2a6a9e4564890a36a09d5d5145e821e980d2b5fd79ae1ef3a043",
         "src/ai_dlc/setup/provider_onboarding.py": "3c3a84b8a91e5a6ed5d0a629f230aa06acdbb5cc1d0357209725787bf001fbcc",
-        "src/ai_dlc/setup/provision.py": "f87c710d46a04eb51b72a50b90f9d1a5aa4baabf7627be9416fbfcd3c1749e0c",
+        "src/ai_dlc/setup/provision.py": "9d1a15dfff9741e1c84907b4ef682b84285534cc495675c5b445844f001a0afb",
         "src/ai_dlc/setup/readiness.py": "e0984a1f504ee87f3c4c1939624b34ccfe2fd6b7315df365166e95ff3b975d55",
         "src/ai_dlc/setup/rebind.py": "8a7e6e8ca66fc227daf7cbf40f37c3ae1681e984e53206f268c90c8db0a816c6",
         "src/ai_dlc/setup/templates.py": "1fc9173daa6fe71eebf00eda0f4e2b7263c65f694d3b227dee5421240e0eca62",
         "src/ai_dlc/setup/tracker_targets.py": "b04533ac254bde0aa7bddf083097d815153998f15b1042645ac4ffc38f848319",
-        "src/ai_dlc/setup/windows.py": "47bd33650b8fbda81e8be882cf02d561a99a841e4a53c40055779073f0d100a8",
+        "src/ai_dlc/setup/windows.py": "d4650448c8864c1a452df513a9d68d23f679c09e30c67a767118ebcd783cf809",
         "src/ai_dlc/setup/workstation.py": "26ae1ce6f088ae5cf29c16afd09b6fcd2be6ea9e6f606ae3061ccdd025b8a659",
         "src/ai_dlc/toml_edit.py": "696057b2848ca8b57e5189d1c78441fc6c1e06994f480f6f13f8dd31c050515e",
         "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
@@ -191,7 +191,7 @@
         "project-templates/project/tests/test_main.py": "4e6ac9def60ea5a6aef9e004c465cc439acac4b33e4f70df332939f0cdfae63d",
         "src/ai_dlc/cli.py": "4c77972ef3cdb15e2a173ad869e7eb09c54197926dd51f8674e5a83ed9c11c8c",
         "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
-        "src/ai_dlc/setup/project.py": "4d2e5e942b5d97a3a975f487f3355d6b32475554400f27e32e7e0b8951f7af84",
+        "src/ai_dlc/setup/project.py": "e59ab63cca9c2a6a9e4564890a36a09d5d5145e821e980d2b5fd79ae1ef3a043",
         "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
         "tests/test_project.py": "0863470fa695afffc68bba51602585cd2539174cc9a8599a7cf838773f170b93",
         "tests/test_templates.py": "99196006ef93f12a88bc3811bc052d3c0a00f8c0bbb72e6383badcfc6cb541fa"
@@ -432,7 +432,7 @@
     },
     {
       "bound": {
-        "tests/test_portable_commands.py": "eccb6c57422645595c45d9d02e745604ca5c2ee7cdc369b0072c25030289ed4c"
+        "tests/test_portable_commands.py": "ec9d534168d78051335316eedabcb308ecfa0ef23ef35b94937ee850d89e3248"
       },
       "outcome": "no-impact",
       "reason": "Corrects test-owned UTF-8/LF configuration fixtures for non-ASCII native interpreter paths and adds a forced legacy-code-page regression; command execution and acceptance requirements are unchanged.",
@@ -477,7 +477,7 @@
     },
     {
       "bound": {
-        "tests/test_windows_provision.py": "9769ae9b627d23e42677d76caef240201f09b26ca403f744ae504e8a453e4ee2"
+        "tests/test_windows_provision.py": "1c97e23f23cd66e0029759b47985271c115d17cb9093573f8144b4b577249831"
       },
       "outcome": "no-impact",
       "reason": "Regression coverage for the documented native setup, provisioning, profile or template behavior; tests do not independently establish live platform qualification.",

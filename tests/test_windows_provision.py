@@ -1,5 +1,6 @@
 """Selected native provisioning reports real limitations instead of upgrading tools."""
 
+import json
 import os
 import subprocess
 import sys
@@ -101,9 +102,11 @@ def test_python_apply_verifies_exact_runtime_after_install(native, monkeypatch):
             installed = True
             return subprocess.CompletedProcess(argv, 0, "", "")
         if not installed:
-            return subprocess.CompletedProcess(argv, 1, "", "runtime missing")
+            return subprocess.CompletedProcess(argv, 1, b"", b"runtime missing")
         if "which" in argv:
-            return subprocess.CompletedProcess(argv, 0, str(home / (argv[2] + ".exe")), "")
+            return subprocess.CompletedProcess(
+                argv, 0, str(home / (argv[2] + ".exe")).encode("utf-8"), b""
+            )
         return subprocess.CompletedProcess(
             argv, 0, "Python 3.12.11" if "python.exe" in argv[0] else "uv 0.9.11", ""
         )
@@ -125,7 +128,11 @@ def test_python_failed_install_stays_incomplete(native, monkeypatch):
     monkeypatch.setattr(
         subprocess,
         "run",
-        lambda argv, **kw: subprocess.CompletedProcess(argv, 1, "", "private diagnostic"),
+        lambda argv, **kw: (
+            subprocess.CompletedProcess(argv, 1, b"", b"private diagnostic")
+            if "which" in argv
+            else subprocess.CompletedProcess(argv, 1, "", "private diagnostic")
+        ),
     )
     result = provision.machine_apply(profile, home=home, environ=env)
     assert not result["ready"] and result["failures"]
@@ -144,7 +151,9 @@ def test_python_rerun_reuses_exact_versions_without_reinstall(native, monkeypatc
         assert "install" not in argv
         assert kwargs["env"]["MISE_AUTO_INSTALL"] in {"0", "false"}
         if "which" in argv:
-            return subprocess.CompletedProcess(argv, 0, str(home / (argv[2] + ".exe")), "")
+            return subprocess.CompletedProcess(
+                argv, 0, str(home / (argv[2] + ".exe")).encode("utf-8"), b""
+            )
         return subprocess.CompletedProcess(
             argv, 0, "Python 3.12.11" if "python.exe" in argv[0] else "uv 0.9.11", ""
         )
@@ -191,7 +200,9 @@ def test_runtime_plan_does_not_activate_mise_environment_hooks(native, monkeypat
         assert "exec" not in argv, "planning must not activate user environment hooks"
         if "which" in argv:
             assert "--tool" in argv and "@" in argv[-1]
-            return subprocess.CompletedProcess(argv, 0, str(home / (argv[2] + ".exe")), "")
+            return subprocess.CompletedProcess(
+                argv, 0, str(home / (argv[2] + ".exe")).encode("utf-8"), b""
+            )
         return subprocess.CompletedProcess(
             argv, 0, "Python 3.12.11" if "python.exe" in argv[0] else "uv 0.9.11", ""
         )
@@ -231,3 +242,43 @@ def test_mise_path_protocol_decodes_real_bytes_independently_of_locale(
     observed = _runtime_observation("mise.exe", "python", "3.12.11", dict(os.environ), tmp_path)
     assert observed == ((None, []) if malformed else ("3.12.11", [executable, "--version"]))
     assert len(probes) == (0 if malformed else 1)
+
+
+@pytest.mark.parametrize(
+    "output", ["ready", "missing", "invalid-utf8", "invalid-json", "invalid-shape"]
+)
+def test_runtime_drift_reads_real_json_bytes_without_locale_decoding(tmp_path, monkeypatch, output):
+    payload = json.dumps(
+        {
+            "python": [
+                {
+                    "version": "3.12.11",
+                    "active": True,
+                    "installed": output != "missing",
+                    "install_path": str(tmp_path / "runtime ā"),
+                }
+            ]
+        },
+        ensure_ascii=False,
+    ).encode("utf-8")
+    payload = {
+        "invalid-utf8": b'{"python": "\xff"}',
+        "invalid-json": b'{"python":',
+        "invalid-shape": b'{"python": [null]}',
+    }.get(output, payload)
+    real_run = subprocess.run
+    monkeypatch.setattr(subprocess, "_text_encoding", lambda: "cp1252")
+
+    def run(argv, **kwargs):
+        assert argv == ["mise", "ls", "--json"]
+        script = f"import sys; sys.stdout.buffer.write(bytes.fromhex('{payload.hex()}'))"
+        return real_run([sys.executable, "-c", script], **kwargs)
+
+    monkeypatch.setattr(subprocess, "run", run)
+    drift = provision._runtime_drift(tmp_path, [], dict(os.environ))
+    if output == "ready":
+        assert drift == []
+    elif output == "missing":
+        assert drift == ["python@3.12.11"]
+    else:
+        assert drift == ["mise could not resolve this project; run project setup"]
