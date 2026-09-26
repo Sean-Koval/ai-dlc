@@ -413,3 +413,50 @@ def test_native_alias_cannot_replace_instruction_observation(project):
         g["kind"] == "native-server" and g["native_server"]["alias"] == "agents"
         for g in result["project"]["guidance"]
     )
+
+
+@pytest.mark.parametrize(
+    "failed_client,failed_prefix,other_client,other_prefix",
+    [
+        ("claude-code", ".claude", "codex", ".agents"),
+        ("codex", ".agents", "claude-code", ".claude"),
+    ],
+)
+@pytest.mark.parametrize("failure", ["missing", "mismatch"])
+def test_skill_failures_only_mark_the_owning_client_unrendered(
+    project, failed_client, failed_prefix, other_client, other_prefix, failure
+):
+    root, _ = project
+    (root / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nagent-client=["codex", "claude-code"]\n'
+        '[agents]\nskills=["day-start"]\n',
+        encoding="utf-8",
+    )
+    body = "intact but freshness unknown\n"
+    digest = hashlib.sha256(body.encode()).hexdigest()
+    for name in ("AGENTS.md", "CLAUDE.md"):
+        (root / name).write_text(
+            f"<!-- ai-dlc:begin {digest} -->\n{body}<!-- ai-dlc:end -->",
+            encoding="utf-8",
+        )
+    other_skill = root / other_prefix / "skills/day-start/SKILL.md"
+    other_skill.parent.mkdir(parents=True)
+    other_skill.write_text("present but freshness unknown", encoding="utf-8")
+    if failure == "mismatch":
+        relative = f"{failed_prefix}/skills/day-start/SKILL.md"
+        failed_skill = root / relative
+        failed_skill.parent.mkdir(parents=True)
+        failed_skill.write_text("locally modified skill", encoding="utf-8")
+        (root / ".ai-dlc").mkdir()
+        (root / ".ai-dlc/agent-ownership.json").write_text(
+            json.dumps({"schema": 2, "files": {relative: "a" * 64}}), encoding="utf-8"
+        )
+
+    result = collect(project)
+    clients = items(result, "clients")
+    assert clients[failed_client]["rendered"] == "no"
+    assert clients[other_client]["rendered"] == "unknown"
+    assert clients[other_client]["reasons"]["rendered"] == "not-assessed"
+    skill = next(g for g in result["project"]["guidance"] if g["id"] == "skill.day-start")
+    assert skill["state"] == failure
+    assert completeness(result) == (False, False)

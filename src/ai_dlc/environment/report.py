@@ -391,6 +391,7 @@ class _Collector:
 
     def guidance(self, config: dict, clients: list[dict]) -> list[dict]:
         records = []
+        client_skill_failures: set[str] = set()
         ownership = {}
         try:
             path = self.root / ".ai-dlc/agent-ownership.json"
@@ -440,17 +441,23 @@ class _Collector:
                 prefixes = {"codex": ".agents", "claude-code": ".claude", "antigravity": ".agents"}
                 for skill in skills:
                     identifier = _identifier(skill)
-                    states = (
-                        [
-                            self.owned_state(
+                    client_states = (
+                        {
+                            c["id"]: self.owned_state(
                                 f"{prefixes[c['id']]}/skills/{identifier}/SKILL.md", ownership
                             )
                             for c in clients
                             if c["id"] in prefixes
-                        ]
+                        }
                         if identifier
-                        else []
+                        else {}
                     )
+                    client_skill_failures.update(
+                        client_id
+                        for client_id, skill_state in client_states.items()
+                        if skill_state in {"missing", "mismatch"}
+                    )
+                    states = client_states.values()
                     record_state = (
                         "mismatch"
                         if "mismatch" in states
@@ -483,10 +490,13 @@ class _Collector:
                     self.guidance_record("claude", "instruction", self.managed_state("CLAUDE.md"))
                 )
             for client in clients:
-                if state in {"missing", "mismatch"} or any(
+                # Aggregate skill guidance remains conservative, but an artifact
+                # delivered to another client is not evidence about this client.
+                if client["id"] in client_skill_failures or any(
                     g["state"] in {"missing", "mismatch"}
                     for g in records
-                    if g["id"] != "claude" or client["id"] == "claude-code"
+                    if g["kind"] != "skill"
+                    and (g["id"] != "claude" or client["id"] == "claude-code")
                 ):
                     client["rendered"] = "no"
                     client["reasons"]["rendered"] = None
