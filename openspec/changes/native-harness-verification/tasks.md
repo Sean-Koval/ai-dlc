@@ -1,6 +1,6 @@
 ## 1. Review and dependencies
-- [ ] 1.1 Review NHV-01–NHV-05, selected-client scope, cost/privacy boundary and version-aware activation decisions; record product/engineering disposition.
-- [ ] 1.2 Integrate the effective-environment-report schema-1 identity contract and completeness rules; do not create a competing source identity.
+- [x] 1.1 Review NHV-01–NHV-05, selected-client scope, cost/privacy boundary and version-aware activation decisions; record product/engineering disposition.
+- [x] 1.2 Integrate the effective-environment-report schema-1 identity contract and completeness rules; do not create a competing source identity.
 - [ ] 1.3 Review current official client schema documentation against concrete installed editions/versions and record adapter source/date; leave unobserved recognition pending.
 
 ## 2. Native evidence and rendering
@@ -18,3 +18,27 @@
 ## Subsequent delivery gates
 
 After implementation and the checklist above are complete, archive this independently owned change on its bound delivery branch with `ai-dlc work archive`. Repair moved artifact links and any evidence targets actually made stale by archival. Immediately before authorized merge, update from the target branch and refresh required checks/evidence. Finish through `ai-dlc work finish` against the exact merged revision and its configured receipts. These remain mandatory later delivery gates, not checkboxes that must falsely claim post-merge completion before archive. No package publication or paid comparison is authorized by this task list.
+
+
+## Implementation plan
+
+**Goal:** Give teams a read-only, bounded procedure and evidence check for their selected harness, retaining useful partial observations without inventing qualification.
+
+**Architecture:** Pure adapter/fixture and evidence contracts live under `harness/`; local collection reuses the EER service and safe file boundaries; CLI only parses options and emits the result. Current native compatibility limitations stay explicit. Python/Pydantic/pytest; no new dependency, service, runner or automatic model call.
+
+### Task A — Pure native evidence and procedure contracts
+- [ ] Add small `harness/native_adapters.py` for fixed fixture markers, reviewed source metadata, canonical adapter contract identity and explicit compatibility state. No fabricated version entries.
+- [ ] Add `harness/native_evidence.py` for strict bounded schema parsing and pure adjudication against parsed EER reports. Separate valid-but-limited evidence from malformed input; no filesystem/process/network access in this module.
+- [ ] Cover malformed/oversized/duplicate-key/private sentinel input, wrong markers, missing/duplicate steps, stale identities, known version/platform conflicts, incomplete provenance, independent step results, historical auth and cost boundary. Use descriptive bounded test IDs.
+- [ ] Focused tests, scoped checks, self-review and independent task review before integration.
+
+### Task B — Bounded local service and thin CLI
+- [ ] Add `harness/native_verification.py` using explicit root/client/report inputs, safe bounded evidence reads, offline EER collection and manual procedure generation. Do not infer probed runtime freshness from a default collection.
+- [ ] Add `agents verify --root PATH --client CLIENT --environment REPORT [--evidence FILE]`; require explicit scope and safe errors. Exit0 requires actual complete matching evidence, exit1 covers valid pending/failed/stale/partial context, exit2 malformed/refused input. Unknown versions stay explicit.
+- [ ] Test real CLI/file boundaries, no process/network/write effects, stale local safe configuration, missing/modified guidance, incompatible selections, and valid incomplete output. Do not use unbounded renderer reads to establish freshness.
+- [ ] Focused integration tests, scoped checks, self-review and independent task review.
+
+### Task C — Version activation boundary, documentation and delivery
+- [ ] Record reviewed official contracts and exact installed contexts where available. Positive Antigravity compatibility/render migration remains pending without concrete evidence; preserve all authored files and existing unversioned behavior.
+- [ ] Update canonical runbooks/tool map/release and onboarding evidence; record content-bound dispositions/catalog mappings. Hand off actual native walkthrough to #53 with exact steps and remaining limitations. No paid #138 run.
+- [ ] Run required checks, whole-change review and review any fixes. If NHV-03 remains unimplemented, publish a draft PR with explicit unchecked acceptance instead of archival/merge/finish. Proceed to independently deliverable next issue only after this bounded work is reviewable and pending context is recorded.
