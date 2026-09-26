@@ -23,11 +23,16 @@ def test_backend_contract_catalog_and_pinned_offline_checks(tmp_path, preset):
     manifest = tomllib.loads((root / "ai-dlc.toml").read_text())
     assert "api-contract" in manifest["checks"]["required"]
     check = manifest["checks"]["commands"]["api-contract"]
+    if isinstance(check, dict):
+        check = check["argv"]
     assert "--offline" in check
     assert "latest" not in check
     pin = "@redocly/cli@1.34.16" if preset == "node" else "openapi-spec-validator==0.7.2"
     assert pin in check
-    assert any(pin in step["command"] for step in manifest["setup"]["steps"])
+    assert any(
+        pin in (step["command"]["argv"] if isinstance(step["command"], dict) else step["command"])
+        for step in manifest["setup"]["steps"]
+    )
     if preset == "node":
         assert "--no-install" in check
     assert ("api-contract-drift" in manifest["checks"]["required"]) == (preset == "python")

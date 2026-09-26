@@ -17,17 +17,54 @@ jobs:
           - ubuntu-26.04
           - ubuntu-26.04-arm
           - macos-15
+          - windows-2025
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          path: ${{ runner.os == 'Windows' && 'source é' || '.' }}
       - name: Prepare checked-out implementation
+        if: runner.os != 'Windows'
         run: sh scripts/bootstrap.sh --source --target github-actions
+      - name: Prepare native source from a cold tool path
+        if: runner.os == 'Windows'
+        shell: powershell
+        working-directory: source é
+        env:
+          AI_DLC_BOOTSTRAP_HOME: ${{ runner.temp }}/ai-dlc native é
+        run: |
+          $gitDirectory = Split-Path (Get-Command git.exe).Source
+          $env:PATH = "$gitDirectory;$env:SystemRoot\System32;$env:SystemRoot\System32\WindowsPowerShell\v1.0"
+          foreach ($tool in @('python','python3','node','sh','uv','mise')) {
+            if (Get-Command $tool -ErrorAction SilentlyContinue) { throw "Cold path unexpectedly contains $tool" }
+          }
+          .\scripts\bootstrap.ps1 -Source -Target github-actions
       - name: Run project check definitions
+        if: runner.os != 'Windows'
         env:
           AI_DLC_DOCS_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: ai-dlc project check --target github-actions --required --json --receipt "$RUNNER_TEMP/ai-dlc-receipt.json"
+      - name: Run native required checks
+        if: runner.os == 'Windows'
+        shell: powershell
+        working-directory: source é
+        env:
+          AI_DLC_BOOTSTRAP_HOME: ${{ runner.temp }}/ai-dlc native é
+          AI_DLC_DOCS_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          AI_DLC_WINDOWS_CONSUMER_EVIDENCE: ${{ runner.temp }}/windows-consumer-evidence
+        run: |
+          $engineDirectory = Split-Path (Get-Command ai-dlc.exe).Source
+          $gitDirectory = Split-Path (Get-Command git.exe).Source
+          $env:PATH = "$engineDirectory;$env:AI_DLC_BOOTSTRAP_HOME\bin;$gitDirectory;$env:SystemRoot\System32;$env:SystemRoot\System32\WindowsPowerShell\v1.0"
+          ai-dlc project check --target github-actions --required --json --receipt "$env:RUNNER_TEMP/ai-dlc-receipt.json"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - uses: actions/upload-artifact@v4
+        if: always() && runner.os == 'Windows'
+        with:
+          name: windows-consumer-evidence
+          path: ${{ runner.temp }}/windows-consumer-evidence
+          if-no-files-found: warn
       - uses: actions/upload-artifact@v4
         if: always()
         with:

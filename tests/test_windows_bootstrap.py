@@ -231,3 +231,385 @@ def test_native_root_junction_refused_before_installation(tmp_path, plan):
     assert result.returncode != 0
     assert "reparse" in result.stderr.lower()
     assert not home.exists()
+
+
+@NATIVE
+@pytest.mark.parametrize("replace", [True, False])
+def test_native_cold_publication_rejects_late_stage_changes(tmp_path, replace):
+    mutation = (
+        "$g.Publish('stage.exe', $g, 'retained.exe', $false); $g.WriteNew('stage.exe', [byte[]](1,2,3))"
+        if replace
+        else "[IO.File]::WriteAllBytes((Join-Path $g.PathName 'stage.exe'), [byte[]](9,9,9))"
+    )
+    # Replacement happens outside the guard's creator API, so the invocation cannot adopt it.
+    if replace:
+        mutation = "[IO.File]::Move((Join-Path $g.PathName 'stage.exe'), (Join-Path $g.PathName 'retained.exe')); [IO.File]::WriteAllBytes((Join-Path $g.PathName 'stage.exe'), [byte[]](1,2,3))"
+    result = ps(
+        helpers()
+        + f"""
+Initialize-NativeStorage
+$g=[AiDlc.Bootstrap.DirectoryGuard]::new({quoted(tmp_path / "owned")}, $true, $true)
+try {{
+ $g.WriteNew('stage.exe', [byte[]](1,2,3))
+ {mutation}
+ try {{ $g.Publish('stage.exe', $g, 'selected.exe', $false); throw 'adopted changed stage' }}
+ catch {{ if($_.Exception.Message -like '*adopted changed stage*') {{ throw }} }}
+}} finally {{ $g.Dispose() }}
+"""
+    )
+    assert result.returncode == 0, result.stderr
+    assert not (tmp_path / "owned/selected.exe").exists()
+    assert (tmp_path / "owned/stage.exe").read_bytes() == (
+        b"\x01\x02\x03" if replace else b"\x09\x09\x09"
+    )
+
+
+def selection_module():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "native_bootstrap_selection", ROOT / "bootstrap/windows-select.py"
+    )
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def engine_fixture(tmp_path, name):
+    import sys
+
+    environment = tmp_path / name
+    scripts = environment / "Scripts"
+    scripts.mkdir(parents=True)
+    # Use a real uv-created, runnable console launcher; its interpreter binding stays intact.
+    launcher = Path(sys.prefix) / "Scripts/ai-dlc.exe"
+    assert launcher.is_file(), (
+        "Native bootstrap acceptance requires an installed engine console launcher"
+    )
+    (scripts / "ai-dlc.exe").write_bytes(launcher.read_bytes())
+    (environment / "ai-dlc-source-root").write_text(str(tmp_path / f"checkout-{name}"))
+    (environment / "ai-dlc-source-revision").write_text("fixture-provenance")
+    return environment
+
+
+@NATIVE
+def test_native_selection_preserves_working_source_until_explicit_publication(tmp_path):
+    selection = selection_module()
+    home = tmp_path / "home"
+    (home / "bin").mkdir(parents=True)
+    first = engine_fixture(tmp_path, "one")
+    second = engine_fixture(tmp_path, "two")
+    assert selection.select(home, first, "source", False)["published"]
+    before = (home / "bin/ai-dlc-selection.json").read_bytes()
+    result = selection.select(home, second, "source", False)
+    assert not result["published"]
+    assert (home / "bin/ai-dlc-selection.json").read_bytes() == before
+    result = selection.select(home, second, "source", True)
+    assert result["published"]
+    assert result["selected"]["source_root"] == str(tmp_path / "checkout-two")
+    executed = subprocess.run(
+        [str(home / "bin/ai-dlc.exe"), "--version"], capture_output=True, check=False
+    )
+    assert executed.returncode == 0, executed.stderr
+
+
+@NATIVE
+def test_native_selection_sharing_failure_restores_all_previous_selection(tmp_path):
+    selection = selection_module()
+    home = tmp_path / "home"
+    (home / "bin").mkdir(parents=True)
+    first = engine_fixture(tmp_path, "one")
+    second = engine_fixture(tmp_path, "two")
+    selection.select(home, first, "source", False)
+    names = ("ai-dlc.exe", "ai-dlc-cli.exe", "ai-dlc-selection.json")
+    before = {name: (home / "bin" / name).read_bytes() for name in names}
+    with (home / "bin/ai-dlc.exe").open("rb"), pytest.raises(OSError):
+        selection.select(home, second, "source", True)
+    assert {name: (home / "bin" / name).read_bytes() for name in names} == before
+    assert selection.select(home, second, "source", True)["published"]
+
+
+@NATIVE
+def test_native_selection_refuses_authored_launcher_edits(tmp_path):
+    selection = selection_module()
+    home = tmp_path / "home"
+    (home / "bin").mkdir(parents=True)
+    first = engine_fixture(tmp_path, "one")
+    selection.select(home, first, "source", False)
+    (home / "bin/ai-dlc.exe").write_bytes(b"authored replacement")
+    with pytest.raises(ValueError, match="authored changes"):
+        selection.select(home, first, "source", True)
+    assert (home / "bin/ai-dlc.exe").read_bytes() == b"authored replacement"
+
+
+@NATIVE
+def test_native_valid_cache_is_rehashed_and_reused_without_network(tmp_path):
+    import hashlib
+
+    payload = b"cached reviewed artifact"
+    checksum = hashlib.sha256(payload).hexdigest()
+    result = ps(
+        helpers()
+        + f"""
+Initialize-NativeStorage
+$g=[AiDlc.Bootstrap.DirectoryGuard]::new({quoted(tmp_path / "owned")}, $true, $true)
+try {{
+ $g.WriteNew('asset', [Text.Encoding]::UTF8.GetBytes('cached reviewed artifact'))
+ $bytes=Get-VerifiedArtifact $g 'asset' 'https://example.invalid/no-network' '{checksum}'
+ if([Text.Encoding]::UTF8.GetString($bytes) -ne 'cached reviewed artifact') {{ throw 'wrong cached bytes' }}
+}} finally {{ $g.Dispose() }}
+"""
+    )
+    assert result.returncode == 0, result.stderr
+
+
+@NATIVE
+def test_native_uv_archive_extracts_only_verified_x64_executables(tmp_path):
+    import sys
+    import zipfile
+
+    # Real native PE bytes exercise the parser/extractor, without running fake tool names.
+    executable = Path(sys.executable).read_bytes()
+    archive = tmp_path / "valid.zip"
+    with zipfile.ZipFile(archive, "w") as output:
+        output.writestr("uv.exe", executable)
+        output.writestr("uvx.exe", executable)
+    result = ps(
+        helpers()
+        + f"""
+Initialize-NativeStorage
+$g=[AiDlc.Bootstrap.DirectoryGuard]::new({quoted(tmp_path / "stage")}, $true, $true)
+try {{
+ $digests=Expand-UvArchive ([IO.File]::ReadAllBytes({quoted(archive)})) $g
+ if($digests.Count -ne 2) {{ throw 'incomplete uv toolchain' }}
+}} finally {{ $g.Dispose() }}
+"""
+    )
+    assert result.returncode == 0, result.stderr
+    assert (tmp_path / "stage/uv.exe").read_bytes() == executable
+    assert (tmp_path / "stage/uvx.exe").read_bytes() == executable
+
+
+@NATIVE
+def test_native_wrong_architecture_refused_before_use():
+    result = ps(
+        helpers()
+        + """
+$bytes=New-Object byte[] 128
+$bytes[0]=77; $bytes[1]=90; $bytes[60]=64
+$bytes[64]=80; $bytes[65]=69; $bytes[68]=100; $bytes[69]=170
+Assert-X64Executable $bytes
+"""
+    )
+    assert result.returncode != 0
+    assert "x64" in result.stderr
+
+
+@NATIVE
+def test_native_managed_python_child_junction_is_refused(tmp_path):
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    version = tmp_path / "python/cpython-3.12.11-windows-x86_64-none"
+    version.parent.mkdir()
+    result = ps(
+        helpers()
+        + f"""
+Initialize-NativeStorage
+New-Item -ItemType Junction -Path {quoted(version)} -Target {quoted(outside)} | Out-Null
+$p=Open-ManagedPython {quoted(version.parent)} '3.12.11'
+if($null -ne $p) {{ $p.Reader.Dispose(); $p.Guard.Dispose() }}
+"""
+    )
+    assert result.returncode != 0
+    assert not list(outside.iterdir())
+
+
+@NATIVE
+def test_native_release_stage_refuses_cache_swap_after_verification(tmp_path):
+    import hashlib
+
+    payload = b"reviewed wheel"
+    sha = hashlib.sha256(payload).hexdigest()
+    result = ps(
+        helpers()
+        + f"""
+Initialize-NativeStorage
+$g=[AiDlc.Bootstrap.DirectoryGuard]::new({quoted(tmp_path / "owned")}, $true, $true)
+try {{
+ $g.WriteNew('asset.whl', [Text.Encoding]::UTF8.GetBytes('reviewed wheel'))
+ $verified=Get-VerifiedArtifact $g 'asset.whl' 'https://example.invalid/offline' '{sha}'
+ [IO.File]::WriteAllText((Join-Path $g.PathName 'asset.whl'), 'authored replacement')
+ $reader=Open-VerifiedArtifact $g 'asset.whl' '{sha}'
+ $reader.Dispose()
+}} finally {{ $g.Dispose() }}
+"""
+    )
+    assert result.returncode != 0
+    assert "digest" in result.stderr.lower()
+
+
+@NATIVE
+def test_native_missing_owned_primary_launcher_can_be_repaired(tmp_path):
+    selection = selection_module()
+    home = tmp_path / "home"
+    (home / "bin").mkdir(parents=True)
+    first = engine_fixture(tmp_path, "one")
+    second = engine_fixture(tmp_path, "two")
+    selection.select(home, first, "source", False)
+    (home / "bin/ai-dlc.exe").unlink()
+    result = selection.select(home, second, "source", False)
+    assert result["published"]
+    assert result["selected"]["source_root"] == str(tmp_path / "checkout-two")
+    assert (home / "bin/ai-dlc.exe").is_file()
+
+
+@NATIVE
+def test_native_missing_companion_repairs_without_repointing_working_primary(tmp_path):
+    selection = selection_module()
+    home = tmp_path / "home"
+    (home / "bin").mkdir(parents=True)
+    first = engine_fixture(tmp_path, "one")
+    second = engine_fixture(tmp_path, "two")
+    selection.select(home, first, "source", False)
+    (home / "bin/ai-dlc-cli.exe").unlink()
+    result = selection.select(home, second, "source", False)
+    assert not result["published"]
+    assert result["selected"]["source_root"] == str(tmp_path / "checkout-one")
+    assert (home / "bin/ai-dlc-cli.exe").read_bytes() == (home / "bin/ai-dlc.exe").read_bytes()
+
+
+@NATIVE
+def test_native_source_provenance_changes_for_docs_only_commit(tmp_path):
+    def git(*arguments):
+        return subprocess.run(
+            ["git.exe", "-C", str(tmp_path), *arguments], capture_output=True, text=True, check=True
+        ).stdout.strip()
+
+    git("init", "-q")
+    git("config", "user.name", "Bootstrap fixture")
+    git("config", "user.email", "bootstrap-fixture@example.invalid")
+    (tmp_path / "README.md").write_text("first\n")
+    git("add", "README.md")
+    git("commit", "-qm", "first")
+    first = ps(helpers() + f"Get-SourceProvenance {quoted(tmp_path)}")
+    assert first.returncode == 0, first.stderr
+    assert first.stdout.strip() == git("rev-parse", "HEAD")
+    (tmp_path / "README.md").write_text("docs only update\n")
+    dirty = ps(helpers() + f"Get-SourceProvenance {quoted(tmp_path)}")
+    assert dirty.returncode == 0, dirty.stderr
+    assert "dirty:" in dirty.stdout and dirty.stdout != first.stdout
+    git("add", "README.md")
+    git("commit", "-qm", "docs update")
+    second = ps(helpers() + f"Get-SourceProvenance {quoted(tmp_path)}")
+    assert second.returncode == 0, second.stderr
+    assert second.stdout.strip() == git("rev-parse", "HEAD")
+    assert second.stdout != first.stdout and "dirty:" not in second.stdout
+
+
+@NATIVE
+def test_native_architecture_detection_ignores_process_environment_spoof(tmp_path):
+    env = dict(
+        os.environ,
+        PROCESSOR_ARCHITECTURE="ARM64",
+        PROCESSOR_ARCHITEW6432="ARM64",
+        AI_DLC_BOOTSTRAP_HOME=str(tmp_path / "absent"),
+    )
+    result = ps(
+        f"& {quoted(ROOT / 'scripts/bootstrap.ps1')} -Source -Plan -Root {quoted(ROOT)}", env=env
+    )
+    assert result.returncode == 0, result.stderr
+    assert "Windows-x64" in result.stdout
+    assert not (tmp_path / "absent").exists()
+
+
+@NATIVE
+def test_native_execution_sentinel_blocks_empty_directory_junction_attack(tmp_path):
+    import ctypes as c
+    import struct
+    import sys
+    from ctypes import wintypes as w
+
+    from ai_dlc._windows_storage import opened
+
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    control = tmp_path / "control"
+    control.mkdir()
+    installed = tmp_path / "installed"
+    substitute = ("\\??\\" + str(outside)).encode("utf-16-le")
+    display = str(outside).encode("utf-16-le")
+    paths = substitute + b"\0\0" + display + b"\0\0"
+    data = (
+        struct.pack(
+            "<IHHHHHH",
+            0xA0000003,
+            8 + len(paths),
+            0,
+            0,
+            len(substitute),
+            len(substitute) + 2,
+            len(display),
+        )
+        + paths
+    )
+    ioctl = getattr(c, "WinDLL")("kernel32", use_last_error=True).DeviceIoControl
+    ioctl.argtypes = [
+        w.HANDLE,
+        w.DWORD,
+        c.c_void_p,
+        w.DWORD,
+        c.c_void_p,
+        w.DWORD,
+        c.POINTER(w.DWORD),
+        c.c_void_p,
+    ]
+    ioctl.restype = w.BOOL
+
+    def attack(path):
+        with opened(path, access=0x100, share=7) as handle:
+            count = w.DWORD()
+            applied = bool(ioctl(handle, 0x900A4, data, len(data), None, 0, c.byref(count), None))
+            return applied, getattr(c, "get_last_error")()
+
+    applied, code = attack(control)
+    assert applied, f"Positive-control junction attack did not run: {code}"
+    control.rmdir()
+    script = (
+        helpers()
+        + f"""
+Initialize-NativeStorage
+$g=[AiDlc.Bootstrap.DirectoryGuard]::new({quoted(installed)}, $true, $true)
+$reader=$g.ProtectForExecution()
+try {{
+ [Console]::WriteLine('ready')
+ [Console]::ReadLine() | Out-Null
+ & {quoted(sys.executable)} -c "import pathlib,sys; pathlib.Path(sys.argv[1]).write_text('inside')" (Join-Path $g.PathName 'result')
+ if($LASTEXITCODE -ne 0) {{ throw 'external writer failed' }}
+}} finally {{ $reader.Dispose(); $g.Dispose() }}
+"""
+    )
+    process = subprocess.Popen(
+        ["powershell.exe", "-NoProfile", "-NonInteractive", "-Command", script],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    try:
+        assert process.stdout and process.stdin
+        assert process.stdout.readline().strip() == "ready"
+        applied, code = attack(installed)
+        assert not applied and code == 145, (
+            f"Expected nonempty-directory refusal, got {applied}, {code}"
+        )
+        process.stdin.write("\n")
+        process.stdin.flush()
+        output, error = process.communicate(timeout=30)
+        assert process.returncode == 0, output + error
+        assert (installed / "result").read_text() == "inside"
+        assert not list(outside.iterdir())
+    finally:
+        if process.poll() is None:
+            process.kill()
+            process.wait()

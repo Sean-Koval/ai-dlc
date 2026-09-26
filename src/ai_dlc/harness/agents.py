@@ -1020,7 +1020,16 @@ def _shared_guidance_lines(config: dict[str, Any], index: str, bundle_index: str
         )
     lines.extend(["", "## Verification", ""])
     for name in checks.get("required", []):
-        lines.append(f"- {name}: `{checks.get('commands', {}).get(name, 'MISSING COMMAND')}`")
+        command = checks.get("commands", {}).get(name, "MISSING COMMAND")
+        if isinstance(command, dict):
+            # The service retains literal argv/explicit-shell semantics on each
+            # platform; a Python dict representation is not a runnable command.
+            command = (
+                f"ai-dlc project check --check {name}"
+                if re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", name)
+                else "use the declared command record with ai-dlc project check"
+            )
+        lines.append(f"- {name}: `{command}`")
     lines.extend(
         ["", "Run `ai-dlc project check --required` in the prepared project environment.", ""]
     )

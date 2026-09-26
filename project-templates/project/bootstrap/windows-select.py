@@ -8,7 +8,7 @@ import json
 import subprocess
 from pathlib import Path
 
-from ai_dlc._windows_storage import safe_read
+from ai_dlc._windows_storage import guarded_path, opened, safe_read
 from ai_dlc.harness.windows_render import WindowsRenderState
 from ai_dlc.locking import project_write_lock
 
@@ -20,8 +20,9 @@ def digest(value: bytes) -> str:
 def select(home: Path, environment: Path, mode: str, publish: bool) -> dict:
     directory = home / "bin"
     executable = environment / "Scripts/ai-dlc.exe"
-    launcher = safe_read(executable)
-    subprocess.run([str(executable), "--version"], check=True)
+    with guarded_path(executable.parent) as parent, opened(executable, parent=parent):
+        launcher = safe_read(executable)
+        subprocess.run([str(executable), "--version"], check=True)
     with project_write_lock(directory), WindowsRenderState(directory) as state:
         raw = state.read("ai-dlc-selection.json")
         previous = json.loads(raw) if raw else None
@@ -29,7 +30,7 @@ def select(home: Path, environment: Path, mode: str, publish: bool) -> dict:
         companion = state.read("ai-dlc-cli.exe")
         if previous:
             for name, value in (("ai-dlc.exe", current), ("ai-dlc-cli.exe", companion)):
-                if value is None or digest(value) != previous.get("launcher_sha256"):
+                if value is not None and digest(value) != previous.get("launcher_sha256"):
                     raise ValueError(
                         f"Selected {name} has authored changes or stale ownership metadata"
                     )
@@ -38,16 +39,30 @@ def select(home: Path, environment: Path, mode: str, publish: bool) -> dict:
                 "Existing launcher has no owned selection metadata; preserve it and choose another bootstrap home"
             )
         working = False
-        if current is not None:
-            working = (
-                subprocess.run(
-                    [str(directory / "ai-dlc.exe"), "--version"], capture_output=True, check=False
-                ).returncode
-                == 0
-            )
+        if current is not None and previous is not None:
+            selected_executable = directory / "ai-dlc.exe"
+            with guarded_path(directory) as parent, opened(selected_executable, parent=parent):
+                if digest(safe_read(selected_executable)) != previous["launcher_sha256"]:
+                    raise ValueError("Selected launcher changed before execution")
+                working = (
+                    subprocess.run(
+                        [str(selected_executable), "--version"], capture_output=True, check=False
+                    ).returncode
+                    == 0
+                )
         if mode == "source" and not publish and working:
-            state.verify_files()
-            return {"published": False, "selected": previous, "prepared": str(executable)}
+            repaired = []
+            if companion is None and current is not None:
+                state.apply({"ai-dlc-cli.exe": current}, [], ["ai-dlc-cli.exe"])
+                repaired = ["ai-dlc-cli.exe"]
+            else:
+                state.verify_files()
+            return {
+                "published": False,
+                "selected": previous,
+                "prepared": str(executable),
+                "repaired": repaired,
+            }
         source_root = environment / "ai-dlc-source-root"
         source_revision = environment / "ai-dlc-source-revision"
         selected = {

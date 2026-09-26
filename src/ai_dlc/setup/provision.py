@@ -83,15 +83,21 @@ def machine_plan(
     root: Path | None = None,
 ) -> dict:
     system = system or platform.system()
-    architecture = architecture or platform.machine()
-    if system not in {"Darwin", "Linux"} or architecture not in {
+    architecture = (architecture or platform.machine()).lower()
+    if system not in {"Darwin", "Linux", "Windows"} or architecture not in {
         "arm64",
         "aarch64",
         "x86_64",
         "amd64",
     }:
         raise ValueError(f"unsupported machine: {system}/{architecture}")
-    selected_root = Path(root).resolve() if root is not None else None
+    if system == "Windows" and architecture not in {"x86_64", "amd64"}:
+        raise ValueError(f"unsupported machine: {system}/{architecture}; native setup requires x64")
+    selected_root = (
+        (Path(os.path.abspath(root)) if system == "Windows" else Path(root).resolve())
+        if root is not None
+        else None
+    )
     personal_config = resolve_files(personal=profile, machine=machine).values
     resolved = resolve_files(
         personal=profile,
@@ -120,6 +126,24 @@ def machine_plan(
                 )
         chosen = list(dict.fromkeys([*chosen, *(item["id"] for item in component_modules)]))
     headless = headless or config.get("preferences", {}).get("headless", False)
+    if system == "Windows":
+        from ai_dlc.setup.windows import native_plan
+
+        for name in chosen:
+            if name not in catalog:
+                raise ValueError(f"unknown module: {name}")
+        result = native_plan(
+            chosen,
+            catalog,
+            component_modules,
+            personal_config,
+            home or Path.home(),
+            dict(os.environ if environ is None else environ),
+        )
+        result.update(headless=headless, credentials=credential_status(config, environ))
+        if selected_root is not None:
+            result["component_modules"] = component_modules
+        return result
     commands, omitted, guidance, signins = [], [], [], []
     brew, casks, apt, runtimes = [], [], [], {}
     for name in chosen:
@@ -179,6 +203,12 @@ def machine_apply(
     root: Path | None = None,
 ) -> dict:
     plan = machine_plan(profile, headless, home=home, machine=machine, root=root, environ=environ)
+    if plan["system"] == "Windows":
+        from ai_dlc.setup.windows import native_apply
+
+        return native_apply(
+            plan, home or Path.home(), dict(os.environ if environ is None else environ)
+        )
     if plan["system"] == "Linux":
         release = platform.freedesktop_os_release()
         if release.get("ID") != "ubuntu" or release.get("VERSION_ID") not in {"24.04", "26.04"}:

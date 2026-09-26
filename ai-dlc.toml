@@ -24,6 +24,7 @@ receipt_artifacts = [
   "ai-dlc-receipt-ubuntu-26.04",
   "ai-dlc-receipt-ubuntu-26.04-arm",
   "ai-dlc-receipt-macos-15",
+  "ai-dlc-receipt-windows-2025",
 ]
 
 # Linear sandbox retained for the five finished work records bound to tracker = "linear"
@@ -42,13 +43,13 @@ finish = ["specification-current", "pr-merged", "ci-green"]
 
 [[setup.steps]]
 id = "python-dependencies"
-command = "uv sync --locked"
-verify = "uv sync --locked --check"
+command = {argv = ["uv", "sync", "--locked"]}
+verify = {argv = ["uv", "sync", "--locked", "--check"]}
 
 [[setup.steps]]
 id = "type-checker-runtime"
-command = "uv run --locked --no-sync pyright --version"
-verify = "uv run --locked --no-sync pyright --version"
+command = {argv = ["uv", "run", "--locked", "--no-sync", "pyright", "--version"]}
+verify = {argv = ["uv", "run", "--locked", "--no-sync", "pyright", "--version"]}
 
 [checks]
 required = [
@@ -63,14 +64,14 @@ required = [
 ]
 
 [checks.commands]
-layout = "uv run --locked --no-sync python scripts/check_layout.py"
-generated = "ai-dlc agents render --check && uv run --locked --no-sync python scripts/check_generated.py"
-format = "uv run --locked --no-sync ruff format --check src tests scripts"
-lint = "uv run --locked --no-sync ruff check src tests scripts"
-types = "uv run --locked --no-sync pyright --pythonpath .venv/bin/python"
-test = "uv run --locked --no-sync pytest -q"
-documentation = "ai-dlc docs gate"
-work-records = "ai-dlc work validate --all"
+layout = {argv = ["uv", "run", "--locked", "--no-sync", "python", "scripts/check_layout.py"]}
+generated = {argv = ["uv", "run", "--locked", "--no-sync", "python", "scripts/check_generated.py"]}
+format = {argv = ["uv", "run", "--locked", "--no-sync", "ruff", "format", "--check", "src", "tests", "scripts"]}
+lint = {argv = ["uv", "run", "--locked", "--no-sync", "ruff", "check", "src", "tests", "scripts"]}
+types = {argv = ["uv", "run", "--locked", "--no-sync", "python", "scripts/check_types.py"]}
+test = {argv = ["uv", "run", "--locked", "--no-sync", "python", "scripts/check_tests.py"]}
+documentation = {argv = ["ai-dlc", "docs", "gate"]}
+work-records = {argv = ["ai-dlc", "work", "validate", "--all"]}
 
 [agents]
 servers = []

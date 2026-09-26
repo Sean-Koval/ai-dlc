@@ -33,6 +33,28 @@ def test_manual_release_replay_cannot_build_or_publish_even_from_a_tag():
     assert "${{ github.ref_name }}" not in script
 
 
+def test_native_candidate_is_a_publication_gate_and_replay_keeps_original_assets():
+    jobs = yaml.safe_load((ROOT / ".github/workflows/release.yml").read_text())["jobs"]
+    assert "verify-windows-candidate" in jobs["publish"]["needs"]
+    candidate = jobs["verify-windows-candidate"]
+    assert candidate["needs"] == "package"
+    downloads = [
+        step["with"]
+        for step in candidate["steps"]
+        if step.get("uses", "").startswith("actions/download-artifact")
+    ]
+    assert downloads == [{"name": "release-candidate", "path": "candidate"}]
+    replay = jobs["verify-published-windows"]
+    assert "inputs.verify_published_tag != ''" in replay["if"]
+    script = "\n".join(step.get("run", "") for step in replay["steps"])
+    assert "gh release download" in script
+    assert "--artifacts published" in script
+    assert not any(
+        mutation in script
+        for mutation in ("uv build", "release create", "release upload", "prepare_release_assets")
+    )
+
+
 def bootstrap_target(script):
     commands = [shlex.split(line) for line in script.splitlines() if line.strip()]
     bootstrap = next(

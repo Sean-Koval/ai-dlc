@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 import os
+import platform
 import re
 import shutil
 import stat
@@ -96,6 +99,17 @@ def _installation(environ: Mapping[str, str]) -> dict:
     return result
 
 
+def _selection_bytes(path: Path, limit: int) -> bytes:
+    if os.name == "nt":
+        from ai_dlc._windows_storage import safe_read
+
+        return safe_read(path, max_bytes=limit)
+    content = read_document(path)
+    if len(content) > limit:
+        raise ValueError("Selection data exceeds read budget")
+    return content
+
+
 def _alias_checkout(alias: Path, root: Path) -> dict:
     """Attribute the shared alias to a checkout through the environment it selects."""
     result: dict[str, str | bool | None] = {
@@ -104,6 +118,36 @@ def _alias_checkout(alias: Path, root: Path) -> dict:
         "alias_is_this_checkout": None,
     }
     if not os.path.exists(alias):
+        return result
+    if platform.system() == "Windows":
+        try:
+            selection = json.loads(_selection_bytes(alias.parent / "ai-dlc-selection.json", 65536))
+            environment = Path(selection["environment"])
+            cli = Path(selection["cli"])
+            if (
+                selection["schema"] != 1
+                or not environment.is_absolute()
+                or cli != environment / "Scripts/ai-dlc.exe"
+            ):
+                return result
+            actual = hashlib.sha256(_selection_bytes(alias, 4 * 1024 * 1024)).hexdigest()
+            if (
+                actual != selection["launcher_sha256"]
+                or actual != hashlib.sha256(_selection_bytes(cli, 4 * 1024 * 1024)).hexdigest()
+            ):
+                return result
+            result["alias_environment"] = str(environment)
+            if selection["mode"] != "source":
+                return result
+            recorded = (
+                _selection_bytes(environment / "ai-dlc-source-root", 65536).decode("utf-8").strip()
+            )
+            if recorded != selection["source_root"]:
+                return result
+            result["alias_checkout"] = recorded
+            result["alias_is_this_checkout"] = os.path.realpath(recorded) == os.path.realpath(root)
+        except (OSError, ValueError, KeyError, TypeError, UnicodeError):
+            pass
         return result
     environment = Path(os.path.realpath(alias)).parent.parent
     result["alias_environment"] = str(environment)
@@ -120,7 +164,7 @@ def _alias_checkout(alias: Path, root: Path) -> dict:
 
 def _activation(environ: Mapping[str, str], home: Path, installation: dict, root: Path) -> dict:
     bin_dir = bootstrap_bin(environ, home)
-    alias = bin_dir / "ai-dlc"
+    alias = bin_dir / ("ai-dlc.exe" if platform.system() == "Windows" else "ai-dlc")
     if not os.path.lexists(alias):
         alias_state = "missing"
     elif not os.path.exists(alias):
@@ -138,11 +182,15 @@ def _activation(environ: Mapping[str, str], home: Path, installation: dict, root
         "path_selects_bootstrap_alias": alias_state == "present"
         and installation["resolved_executable"] == os.path.realpath(alias),
     }
-    shell = Path(environ.get("SHELL", "")).name or None
+    shell = (
+        "powershell"
+        if platform.system() == "Windows"
+        else Path(environ.get("SHELL", "")).name or None
+    )
     configured = {
         "shell": shell,
         "rc_file": None,
-        "section": "unsupported-shell",
+        "section": "profile-not-selected" if shell == "powershell" else "unsupported-shell",
         "configured_bin": None,
         "matches_bootstrap_bin": None,
     }

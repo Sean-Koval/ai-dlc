@@ -148,3 +148,42 @@ function Assert-NativeLocation([string] $Path, [bool] $MustExist = $false) {
         if (($attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0 -or ($attributes -band [IO.FileAttributes]::Directory) -eq 0) { throw "Unsafe bootstrap location (reparse point or non-directory): $current" }
     }
 }
+function Open-VerifiedArtifact($Directory, [string] $Name, [string] $Sha256) {
+    $reader = $Directory.OpenRead($Name)
+    try {
+        if ((Get-BytesHash ($Directory.Read($Name))) -cne $Sha256) { throw 'Artifact digest changed before consumption.' }
+        return $reader
+    } catch { $reader.Dispose(); throw }
+}
+function Open-ManagedPython([string] $InstallDirectory, [string] $Version) {
+    # uv 0.9.11 managed.rs: exact patch directory, never the optional minor-version junction.
+    $directory = Join-Path $InstallDirectory "cpython-$Version-windows-x86_64-none"
+    $guard = $null
+    try { $guard = [AiDlc.Bootstrap.DirectoryGuard]::new($directory, $false, $true) }
+    catch {
+        $failure = $_.Exception
+        while ($failure.InnerException) { $failure = $failure.InnerException }
+        if ($failure -is [ComponentModel.Win32Exception] -and $failure.NativeErrorCode -in @(2,3)) { return $null }
+        throw
+    }
+    try {
+        $reader = $guard.OpenRead('python.exe')
+        try {
+            Assert-X64Executable ($guard.Read('python.exe'))
+            return @{ Guard=$guard; Reader=$reader; Executable=(Join-Path $directory 'python.exe') }
+        } catch { $reader.Dispose(); throw }
+    } catch { $guard.Dispose(); throw }
+}
+function Get-SourceProvenance([string] $Root) {
+    if (-not (Test-Path -LiteralPath (Join-Path $Root '.git')) -or -not (Get-Command git.exe -ErrorAction SilentlyContinue)) { return 'unavailable (source archive)' }
+    $revision = (& git.exe -C $Root rev-parse HEAD | Out-String).Trim()
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot identify source checkout revision.' }
+    $dirty = (& git.exe -C $Root status --porcelain | Out-String).Trim()
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot inspect source checkout status.' }
+    if ($dirty) {
+        $difference = (& git.exe -C $Root diff --binary HEAD | Out-String)
+        if ($LASTEXITCODE -ne 0) { throw 'Cannot inspect source checkout changes.' }
+        $revision += ' (dirty:' + (Get-BytesHash ([Text.Encoding]::UTF8.GetBytes($dirty + $difference))) + ')'
+    }
+    return $revision
+}

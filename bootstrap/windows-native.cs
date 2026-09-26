@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
+using System.Security.Cryptography;
 using Microsoft.Win32.SafeHandles;
 
 namespace AiDlc.Bootstrap {
@@ -29,6 +30,7 @@ namespace AiDlc.Bootstrap {
         [DllImport("advapi32.dll")] static extern uint GetSecurityInfo(SafeFileHandle h, uint type, uint information, out IntPtr owner, IntPtr group, out IntPtr dacl, IntPtr sacl, out IntPtr sd);
         [DllImport("advapi32.dll")] static extern uint GetSecurityDescriptorLength(IntPtr sd);
         [DllImport("kernel32.dll")] static extern IntPtr LocalFree(IntPtr p);
+        readonly Dictionary<string, Tuple<string,string>> created = new Dictionary<string, Tuple<string,string>>(StringComparer.OrdinalIgnoreCase);
         readonly List<SafeFileHandle> parents = new List<SafeFileHandle>();
         SafeFileHandle handle;
         public string PathName { get; private set; }
@@ -43,6 +45,17 @@ namespace AiDlc.Bootstrap {
             if (!GetFileInformationByHandle(h, out i)) throw new Win32Exception();
             if ((i.Attributes & 0x400) != 0 || ((i.Attributes & 0x10) != 0) != directory || (!directory && i.Links != 1))
                 throw new IOException("Reparse points, unexpected types, and hard links are refused");
+        }
+        static string Identity(SafeFileHandle h) {
+            FileInformation value;
+            if (!GetFileInformationByHandle(h,out value)) throw new Win32Exception();
+            return value.Volume+":"+value.IndexHigh+":"+value.IndexLow;
+        }
+        static string Hash(byte[] value) { using(var sha=SHA256.Create()) return BitConverter.ToString(sha.ComputeHash(value)); }
+        static string Hash(SafeFileHandle value) {
+            using(var borrowed = new SafeFileHandle(value.DangerousGetHandle(),false))
+            using(var stream = new FileStream(borrowed,FileAccess.Read))
+            using(var sha=SHA256.Create()) return BitConverter.ToString(sha.ComputeHash(stream));
         }
         static void Private(SafeFileHandle h) {
             IntPtr owner, acl, descriptor;
@@ -103,11 +116,26 @@ namespace AiDlc.Bootstrap {
         }
         public FileStream OpenRead(string name) { return new FileStream(Open(handle,name,false,0x80020000,1,1,false),FileAccess.Read); }
         public byte[] Read(string name) { using(var source=OpenRead(name)) using(var target=new MemoryStream()) { source.CopyTo(target); return target.ToArray(); } }
-        public void WriteNew(string name, byte[] bytes) { using(var stream=new FileStream(Open(handle,name,false,0xC0020000,1,2,true),FileAccess.ReadWrite)) { stream.Write(bytes,0,bytes.Length); stream.Flush(true); } }
+        public void WriteNew(string name, byte[] bytes) {
+            using(var stream=new FileStream(Open(handle,name,false,0xC0020000,1,2,true),FileAccess.ReadWrite)) {
+                stream.Write(bytes,0,bytes.Length); stream.Flush(true);
+                created[name]=Tuple.Create(Identity(stream.SafeFileHandle),Hash(bytes));
+            }
+        }
+        public FileStream ProtectForExecution() {
+            // NTFS mount-point mutation requires an empty directory. Keep a private
+            // child open without delete sharing while external tools use lexical paths.
+            string name = ".bootstrap-execution-" + Guid.NewGuid().ToString("N");
+            WriteNew(name,new byte[]{1});
+            return OpenRead(name);
+        }
         public FileStream Lock(string name) { return new FileStream(Open(handle,name,false,0xC0020000,0,3,true),FileAccess.ReadWrite); }
         public void Publish(string source, DirectoryGuard destination, string name, bool replace) {
             ValidName(name);
             using(var file=Open(handle,source,false,0x80030000,1,1,true)) {
+                Tuple<string,string> owned;
+                if (!created.TryGetValue(source,out owned) || Identity(file) != owned.Item1 || Hash(file) != owned.Item2)
+                    throw new IOException("Bootstrap stage identity or digest changed; preserved for inspection");
                 // Native FILE_RENAME_INFORMATION uses a relative target and held directory handle.
                 byte[] text = System.Text.Encoding.Unicode.GetBytes(name);
                 int rootOffset = IntPtr.Size == 8 ? 8 : 4, lengthOffset = rootOffset+IntPtr.Size, nameOffset = lengthOffset+4;
@@ -117,6 +145,7 @@ namespace AiDlc.Bootstrap {
                     Marshal.Copy(new byte[size],0,data,size); Marshal.WriteInt32(data,replace?1:0); Marshal.WriteIntPtr(data,rootOffset,destination.handle.DangerousGetHandle());
                     Marshal.WriteInt32(data,lengthOffset,text.Length); Marshal.Copy(text,0,IntPtr.Add(data,nameOffset),text.Length); IoStatus io;
                     Check(NtSetInformationFile(file,out io,data,(uint)size,10));
+                    created.Remove(source); destination.created[name]=owned;
                 } finally { Marshal.FreeHGlobal(data); }
             }
         }

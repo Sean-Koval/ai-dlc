@@ -52,6 +52,15 @@ def activate_workstation(
     shell: str = "zsh",
 ) -> dict:
     """Preserve authored values and reject changes to owned values before writing."""
+    if shell == "powershell":
+        return {
+            "ready": True,
+            "shell": "powershell",
+            "profile_applied": False,
+            "activation": "explicit-profile-required",
+            "direct_executable": str(bootstrap_bin / "ai-dlc.exe"),
+            "reason": "Runtime preparation is separate from persistent profile activation; preview workspace-init --shell --powershell-profile $PROFILE.",
+        }
     if shell not in {"bash", "zsh"}:
         return {
             "ready": False,
