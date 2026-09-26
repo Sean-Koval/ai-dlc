@@ -793,6 +793,7 @@ kind = "reference"
 owner = "repository-maintainers"
 status = "draft"
 code_paths = [
+    "src/ai_dlc/setup/readiness.py",
     "src/ai_dlc/harness/native_adapters.py",
     "src/ai_dlc/harness/native_evidence.py",
     "src/ai_dlc/harness/native_verification.py",
@@ -831,6 +832,7 @@ kind = "runbook"
 owner = "repository-maintainers"
 status = "active"
 code_paths = [
+    "src/ai_dlc/setup/readiness.py",
     "src/ai_dlc/harness/native_adapters.py",
     "src/ai_dlc/harness/native_evidence.py",
     "src/ai_dlc/harness/native_verification.py",
