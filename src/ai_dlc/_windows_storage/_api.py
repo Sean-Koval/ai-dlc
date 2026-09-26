@@ -112,6 +112,16 @@ class Api:
             w.DWORD,
         )
         self.nt_error = _bind(native, "RtlNtStatusToDosError", w.ULONG, c.c_long)
+        self.nt_set_info = _bind(
+            native,
+            "NtSetInformationFile",
+            c.c_long,
+            w.HANDLE,
+            c.POINTER(IoStatus),
+            c.c_void_p,
+            w.ULONG,
+            c.c_int,
+        )
         self.close = _bind(kernel, "CloseHandle", w.BOOL, w.HANDLE)
         self.open = _bind(
             kernel,

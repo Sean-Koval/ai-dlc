@@ -2,9 +2,9 @@
 
 import json
 import os
-import shutil
 import subprocess
 import sys
+from pathlib import Path
 
 import pytest
 import tomli_w
@@ -159,12 +159,20 @@ def test_invalid_required_command_blocks_an_optional_selection(tmp_path, monkeyp
         project.check_project(tmp_path, selected_checks=["optional"])
 
 
-def test_missing_selected_shell_is_a_failed_check_with_remedy(tmp_path, monkeypatch):
-    repository(tmp_path, {"shell-check": {"shell": "posix", "script": "exit 0"}}, ["shell-check"])
-    original = shutil.which
-    monkeypatch.setattr(
-        shutil, "which", lambda name, *a, **k: None if name == "sh" else original(name, *a, **k)
-    )
+@pytest.mark.parametrize("command", ["exit 0", {"shell": "posix", "script": "exit 0"}])
+def test_missing_selected_shell_is_a_failed_check_with_remedy(tmp_path, monkeypatch, command):
+    repository(tmp_path, {"shell-check": command}, ["shell-check"])
+    original_environment = project.runtime_env
+
+    def without_shell(*args, **kwargs):
+        environment = original_environment(*args, **kwargs)
+        # Keep Git available for receipt metadata, but give the actual command
+        # resolver an empty tool directory on every host, including Git-for-Windows.
+        environment["PATH"] = str(tmp_path / "empty-tools")
+        return environment
+
+    (tmp_path / "empty-tools").mkdir()
+    monkeypatch.setattr(project, "runtime_env", without_shell)
     receipt = project.check_project(tmp_path, use_mise=False)
     row = receipt["outcomes"][0]
     assert row["id"] == "shell-check"
@@ -337,10 +345,24 @@ def test_native_command_timeout_does_not_lose_cancel_classification(tmp_path):
         )
 
 
-def test_relative_native_executable_uses_project_root_not_parent_cwd(tmp_path):
-    relative = os.path.relpath(sys.executable, tmp_path)
+def test_relative_native_executable_uses_project_root_not_parent_cwd(tmp_path, monkeypatch):
+    executable = Path(sys.executable)
+    root = executable.parent.parent
+    relative = "./" + executable.relative_to(root).as_posix()
+    # CI can place Python on D: and pytest's temporary directory on C:. The
+    # executable remains relative to its root; the caller can be on either drive.
+    monkeypatch.chdir(tmp_path)
     result = project.run_command(
-        tmp_path, {"argv": [relative, "-c", "raise SystemExit(9)"]}, use_mise=False
+        root,
+        {
+            "argv": [
+                relative,
+                "-c",
+                "import sys; from pathlib import Path; assert Path.cwd().samefile(sys.argv[1]); raise SystemExit(9)",
+                str(root),
+            ]
+        },
+        use_mise=False,
     )
     assert result.returncode == 9
 

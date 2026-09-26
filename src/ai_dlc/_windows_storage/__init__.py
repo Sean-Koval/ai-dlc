@@ -16,7 +16,7 @@ from contextlib import ExitStack, contextmanager, nullcontext
 from ctypes import wintypes as w
 from pathlib import Path, PureWindowsPath
 
-from ._api import Overlapped, RenameInfo, api, checked, info, open_relative, winerror
+from ._api import IoStatus, Overlapped, RenameInfo, api, checked, info, open_relative, winerror
 from ._security import copied_attributes, local_app_data, private_attributes, validate_private
 
 _READ = 0x80000000
@@ -102,7 +102,11 @@ def guarded_path(
     path = _absolute(path)
     with ExitStack() as stack:
         current = Path(path.anchor)
-        handle = stack.enter_context(opened(current, access=0x80 | _CONTROL, share=1))
+        # FILE_LIST_DIRECTORY engages sharing checks; metadata-only handles do not.
+        # Keep write sharing for the kernel's rename-target directory open, while
+        # denying deletion/rename of every held ancestor. Relative handles, not
+        # write sharing, prevent attribute-only reparse-point redirection.
+        handle = stack.enter_context(opened(current, access=0x81 | _CONTROL, share=3))
         _ntfs(handle, current)
         for part in path.parts[1:]:
             current /= part
@@ -114,8 +118,8 @@ def guarded_path(
                 handle = stack.enter_context(
                     opened(
                         current,
-                        access=0x80 | _CONTROL,
-                        share=1,
+                        access=0x81 | _CONTROL,
+                        share=3,
                         parent=handle,
                         directory=True,
                         creation=4 if create_parents else 3,
@@ -167,15 +171,22 @@ def _rename(handle, destination: Path, *, parent, replace: bool = False) -> None
     if info(parent).attributes & _REPARSE:
         raise ValueError("Native publication parent became a reparse point")
     encoded = destination.name.encode("utf-16-le")
-    buffer = c.create_string_buffer(
-        max(c.sizeof(RenameInfo), RenameInfo.name.offset + len(encoded) + 2)
-    )
+    # Native FILE_RENAME_INFORMATION requires the structure plus filename bytes.
+    buffer = c.create_string_buffer(c.sizeof(RenameInfo) + len(encoded) + 2)
     header = RenameInfo.from_buffer(buffer)
     header.replace = replace
     header.root = parent
     header.length = len(encoded)
     c.memmove(c.addressof(buffer) + RenameInfo.name.offset, encoded, len(encoded))
-    checked(api().set_info(handle, 3, buffer, len(buffer)))
+    status = IoStatus()
+    # The Win32 wrapper rejects relative RootDirectory publication on supported
+    # native runners. NtSetInformationFile accepts the same handle-bound rename
+    # data directly; never fall back to resolving an absolute destination path.
+    result = api().nt_set_info(handle, c.byref(status), buffer, len(buffer), 10)
+    if result < 0:
+        error = winerror(api().nt_error(result))
+        error.add_note(f"Native rename failed with NTSTATUS 0x{result & 0xFFFFFFFF:08X}")
+        raise error
 
 
 def _remove(handle) -> None:

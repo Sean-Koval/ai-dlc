@@ -2,7 +2,16 @@
   "decisions": [
     {
       "bound": {
-        ".github/workflows/verify.yml": "d81b9fd0b56352954e0d8382a30301569d2fd39694288dfe31da9cfe18a9f0c2"
+        ".gitattributes": "4d4f842123f537d1ccfe78c8fe8fb80346de9edf5f0a4af51f3dfc006d57f438"
+      },
+      "outcome": "updated",
+      "reason": "Native bundle operations explicitly refuse before filesystem/network effects; Unix contracts are unchanged. Repository LF checkout rules preserve hash-bound text assets across platforms; no published asset is modified.",
+      "reviewer": "Codex implementation review, 2026-09-26",
+      "target": ".gitattributes"
+    },
+    {
+      "bound": {
+        ".github/workflows/verify.yml": "5e8a77e30f15e2b76122994f98f47948db8dea5e6b5d4600278b2660a85da31e"
       },
       "outcome": "updated",
       "reason": "Reviewed implementation plan, native CI/test coverage or catalog mapping for windows-portable-core; proposed test coverage is distinct from actual platform pass evidence, and unrelated product scope is preserved.",
@@ -21,8 +30,8 @@
         "scripts/run_skill_evaluation.py": "46a97694bae155b2418d172971480e031f510acc864b9d91fa546f98c754729f",
         "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
         "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
-        "src/ai_dlc/_windows_storage/__init__.py": "30edb9a30fbad81f45b2e4c53b9bb87e416978273b3f89079446d73dfeadc3c5",
-        "src/ai_dlc/_windows_storage/_api.py": "c75fea80b1a842477e49f13267dfbadcdac841805225a078be63add3e5f7f1b6",
+        "src/ai_dlc/_windows_storage/__init__.py": "0f28402692e466467932f0e5c83e6274048815e7bed442269741f1413bb96384",
+        "src/ai_dlc/_windows_storage/_api.py": "d5fc4f971db8e706871c06e8119884848e505af6c45f4fbb5c2f7db513faf41b",
         "src/ai_dlc/_windows_storage/_security.py": "62785d4e088cd485816a33f35a7a559d3d1acf166093c413a3f4f79969056314",
         "src/ai_dlc/cli.py": "e2ddda69f6ab41d35340b53ffb40f0d5442d099e5398294e6d02d380b5063462",
         "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
@@ -68,7 +77,7 @@
         "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
         "src/ai_dlc/harness/user_agents.py": "c99f9a52a379feaa0c1721081b95fef91f51c44f0a9e906145de51154616e937",
         "src/ai_dlc/harness/windows_render.py": "caade5e280ba097193ff7b7b3479add6392e071c4d354cf1318fcd7e34ccdc6e",
-        "src/ai_dlc/harness/workflow_bundles.py": "477dc842b3cdfe240a54a96910786693f9f3b75f2fd528753440c29f26330b36",
+        "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
         "src/ai_dlc/locking.py": "e3c5dbe1a98d3402352bc8a3c3a031106e8dd515e060a676803d734d8dee99dd",
         "src/ai_dlc/mcp_server.py": "607eba3e47a8573862d83e5209e824b78ec0af74545fa51727b8d3f7c03db410",
         "src/ai_dlc/provider_definitions.py": "e90c2d41a839bc4a32dcb3989f59fa6c9073bd1233f3db2088bd176e1bc513d3",
@@ -182,7 +191,7 @@
       "bound": {
         ".github/workflows/release.yml": "c32926d61ee30cd32aa03fa899c74f395decdb152833f572d4e1ade4c28993b5",
         "catalog:docs/release-verification.md": "9926c4ebc65f9749c169416b7678ee9aaa7c83204b5101b15f5d4a5b1e7e7f4f",
-        "docs/release-verification.md": "2f6a488e614c46df3f9fbe488a5042dd4e912f71c8fe594b2dc82b84f3a92594",
+        "docs/release-verification.md": "afdc8b96be4fb61ecf8ad9a31c2f9ba9bcb94f12727307e74c6fe8694a23ccc4",
         "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
         "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
         "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
@@ -261,7 +270,7 @@
         "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
         "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
         "src/ai_dlc/harness/agents.py": "e5186f1efb1cd1375c49a427b3edd2760384b918d914f964975181d3ac79071a",
-        "src/ai_dlc/harness/workflow_bundles.py": "477dc842b3cdfe240a54a96910786693f9f3b75f2fd528753440c29f26330b36",
+        "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
         "tests/test_company_guidance.py": "ab39bed3342d9de7d4c68db6c6c54fd66e13c12f2f2167c38e8d345c7dc9736e",
         "tests/test_document_access.py": "bdf96af4afb1ad6f985204ad243a624d4da8b56d527af63cc072908a76beeff4",
         "tests/test_document_evidence.py": "c5263165cc63dd1f2df99491828a97aea167468171348840b29d9f047b63c85d",
@@ -303,7 +312,7 @@
     },
     {
       "bound": {
-        "tests/test_portable_commands.py": "7e37736c2fc7af9c4d0b9282bf4fc5e5c3d8d2d3e3df771a3542a391e0245155"
+        "tests/test_portable_commands.py": "28473b04e6c4585f788a3e20a8db7f7145728e8045d2c5227d8712d7c77a6069"
       },
       "outcome": "updated",
       "reason": "Reviewed implementation plan, native CI/test coverage or catalog mapping for windows-portable-core; proposed test coverage is distinct from actual platform pass evidence, and unrelated product scope is preserved.",
@@ -330,7 +339,16 @@
     },
     {
       "bound": {
-        "tests/test_windows_core.py": "806028f667aa97c6928be9919aa62a5078613639350f30b21ec7d3fe3ead214b"
+        "tests/test_windows_bundle_refusal.py": "6cef006525ea06d8f915765c66f23e26035fd11183c6c34fddcac8b91c0122ae"
+      },
+      "outcome": "updated",
+      "reason": "Native bundle operations explicitly refuse before filesystem/network effects; Unix contracts are unchanged. Repository LF checkout rules preserve hash-bound text assets across platforms; no published asset is modified.",
+      "reviewer": "Codex implementation review, 2026-09-26",
+      "target": "tests/test_windows_bundle_refusal.py"
+    },
+    {
+      "bound": {
+        "tests/test_windows_core.py": "40b9be74864fe87e911e046005dcf1ebe0df3f34c01667d755853eb23bb65037"
       },
       "outcome": "updated",
       "reason": "Reviewed implementation plan, native CI/test coverage or catalog mapping for windows-portable-core; proposed test coverage is distinct from actual platform pass evidence, and unrelated product scope is preserved.",

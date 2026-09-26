@@ -24,9 +24,14 @@ def no_posix_path(monkeypatch):
     git = shutil.which("git")
     assert git
     system = Path(os.environ["SystemRoot"])
+    git_directory = Path(git).parent
+    if (git_directory / "sh.exe").exists():
+        native_git_directory = git_directory.parent / "cmd"
+        assert (native_git_directory / "git.exe").exists()
+        git_directory = native_git_directory
     paths = [
         Path(sys.executable).parent,
-        Path(git).parent,
+        git_directory,
         system / "System32",
         system / "System32/WindowsPowerShell/v1.0",
     ]
