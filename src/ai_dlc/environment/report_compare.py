@@ -101,6 +101,8 @@ def compare_reports(left: dict, right: dict) -> dict:
             "artifact_sha256",
         ):
             # Independent known facts still expose drift in incomplete reports.
+            if key == "installation_kind" and "unknown" in (a[key], b[key]):
+                continue
             if a[key] is not None and b[key] is not None and a[key] != b[key]:
                 if key == "source_dirty":
                     continue
@@ -330,10 +332,14 @@ def compare_reports(left: dict, right: dict) -> dict:
                 )
 
     # Authentication is a separate local/evidence dimension, never shared drift.
-    auth_left = {f"{item['kind']}.{item['id'] or 'redacted'}": item for item in left["auth"]}
-    auth_right = {f"{item['kind']}.{item['id'] or 'redacted'}": item for item in right["auth"]}
-    for identifier in sorted(auth_left.keys() | auth_right.keys()):
-        a, b = auth_left.get(identifier), auth_right.get(identifier)
+    auth_left = {(item["kind"], item["id"]): item for item in left["auth"]}
+    auth_right = {(item["kind"], item["id"]): item for item in right["auth"]}
+    for identity in sorted(
+        auth_left.keys() | auth_right.keys(), key=lambda item: (item[0], item[1] or "")
+    ):
+        a, b = auth_left.get(identity), auth_right.get(identity)
+        # Leading underscores cannot occur in valid IDs, so this marker is unambiguous.
+        identifier = f"{identity[0]}.{identity[1] if identity[1] is not None else '_redacted'}"
         for key in ("credential_presence", "verification", "verified_at", "evidence_identity"):
             av, bv = a[key] if a else None, b[key] if b else None
             if key == "credential_presence" and "unknown" in (av, bv):

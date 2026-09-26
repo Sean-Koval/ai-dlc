@@ -641,3 +641,76 @@ def test_equal_unknown_credential_presence_remains_visible_and_optional():
         for f in result["findings"]
     )
     assert report_compare.comparison_exit_code(result) == 0
+
+
+@pytest.mark.parametrize("installation_kind", ["source", "release"])
+@pytest.mark.parametrize("unknown_side", ["left", "right"])
+def test_unknown_installation_kind_is_not_known_engine_drift(installation_kind, unknown_side):
+    left = payload()
+    current = left["engine"]["current_process"]
+    current["installation_kind"] = installation_kind
+    if installation_kind == "release":
+        current.update(source_revision=None, source_dirty=None, artifact_sha256="d" * 64)
+        current["reasons"].update(
+            source_revision="not-applicable", source_dirty="not-applicable", artifact_sha256=None
+        )
+    for key in ("installation_kind", "source_revision", "source_dirty", "artifact_sha256"):
+        left["engine"][key] = current[key]
+    right = copy.deepcopy(left)
+    unknown = left if unknown_side == "left" else right
+    unknown["engine"]["installation_kind"] = "unknown"
+    unknown["engine"]["current_process"]["installation_kind"] = "unknown"
+    result = compare(left, right)
+    assert not any(f["class"] == "blocking" for f in result["findings"])
+    assert any(
+        f["field"] == "engine.current_process" and f["class"] == "unknown"
+        for f in result["findings"]
+    )
+    assert not result["observation_complete"]
+    assert report_compare.comparison_exit_code(result) == 1
+
+    # Unknown kind must not hide an independent known version difference.
+    unknown["engine"]["package_version"] = "0.4.1"
+    unknown["engine"]["current_process"]["package_version"] = "0.4.1"
+    result = compare(left, right)
+    assert any(
+        f["field"] == "engine.current_process.package_version" and f["class"] == "blocking"
+        for f in result["findings"]
+    )
+    assert not any(
+        f["field"] == "engine.current_process.installation_kind" and f["class"] == "blocking"
+        for f in result["findings"]
+    )
+
+
+def test_null_auth_identifier_never_collides_with_literal_redacted_identifier():
+    left = payload()
+    left["auth"] = [
+        {
+            "kind": "provider",
+            "id": identifier,
+            "credential_presence": presence,
+            "verification": "not-assessed",
+            "verified_at": None,
+            "evidence_identity": None,
+            "reasons": {
+                "id": "identifier-redacted" if identifier is None else None,
+                "verified_at": "not-assessed",
+                "evidence_identity": "not-assessed",
+            },
+        }
+        for identifier, presence in ((None, "present"), ("redacted", "unknown"))
+    ]
+    right = copy.deepcopy(left)
+    right["auth"][0]["credential_presence"] = "missing"
+    result = compare(left, right)
+    findings = [f for f in result["findings"] if f["field"].startswith("auth.")]
+    assert {(f["left"], f["right"], f["class"]) for f in findings} == {
+        ("present", "missing", "informational"),
+        ("unknown", "unknown", "unknown"),
+    }
+    assert {f["field"] for f in findings} == {
+        "auth.provider._redacted.credential_presence",
+        "auth.provider.redacted.credential_presence",
+    }
+    assert report_compare.comparison_exit_code(result) == 0
