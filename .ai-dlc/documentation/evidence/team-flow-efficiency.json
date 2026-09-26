@@ -143,7 +143,7 @@
       "bound": {
         "catalog:docs/development-workflow.md": "c0f5e6e7766a877ab0a7adf1db6db5b40fae6652b247d077569bc59528ba40ce",
         "docs/development-workflow.md": "21075eef3b09ab63737209ad4d937ba7a964f449477a870e379fed8831441da8",
-        "openspec/specs/portable-development/spec.md": "09ce7f444033d3c1fe7681b3982a3145f48e07e720fa503acedfa24220e61028",
+        "openspec/specs/portable-development/spec.md": "2366ebc3f8604d8bc05ad753145d72c527aa9fd35991369703ec4264255e073d",
         "project-templates/project/ai-dlc.toml.jinja": "8cb37c2c92f7998a2c7cec84c2d293f63b1e80f1a4a4f1f330a7e5b1b92aa0cd",
         "project-templates/project/scripts/check_tests.py": "a3dd2021b7911d2ff688142776b7a43af60f76e052d7164086db2434db60102d",
         "project-templates/project/tests/test_main.py": "4e6ac9def60ea5a6aef9e004c465cc439acac4b33e4f70df332939f0cdfae63d",
@@ -172,8 +172,8 @@
       "bound": {
         "catalog:docs/runbooks/machine-enrollment.md": "57efacf540031d6731cfa09fb33452a0a368c5fc06378f76efca74b758f38234",
         "docs/runbooks/machine-enrollment.md": "6a21b8374a56dbdc7cf1108241fecc49bd478a749da654e85b062010c6ddd032",
-        "openspec/specs/native-work-harnesses/spec.md": "ca2957d580f02b783d8bb1cb7d384811421620611063328025ad1fa322dea57f",
-        "openspec/specs/team-sources/spec.md": "5a4f9a8da322cce3cb0d4d6e69e6cea16a4d787154d9ebac12fef0a21de187a3",
+        "openspec/specs/native-work-harnesses/spec.md": "09197a91bca7653dd698a1b42e7203c4240e91cd5efa4fe3665f59e778aec909",
+        "openspec/specs/team-sources/spec.md": "3dca430922c9b5d8eb7b678b0cf00da813f9be332e76cf59a448bd718f4d4587",
         "profiles/example/ai-dlc-profile.toml": "29b58a995e46b38ac75e5db5756e766e6b130f26e162448fc41fee898e7ff01e",
         "src/ai_dlc/config.py": "dd596570054e3f455b90dc5cea2a86c97175b2c4ec4243328755dc1884ececc1",
         "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
@@ -251,7 +251,7 @@
       "bound": {
         "catalog:docs/workflows/design-to-implementation.md": "ee408b745f85bdc4229b75b8dfd6c9074257194e2a65933b4ba31f56522f389d",
         "docs/workflows/design-to-implementation.md": "b57542497f6c3d50e2187139980982800340525616f27d87b9934e156c1881a9",
-        "openspec/specs/frontend-capability-pack/spec.md": "4832235ee58b5277725efcb9aa056b163a8165d968c3c969c6d9383bd6d4a167",
+        "openspec/specs/frontend-capability-pack/spec.md": "a8461cc35ff733d3643f9cb8fbeb691f0cae7ea7d54eae59b756883c7e5a78ea",
         "project-templates/project/ai-dlc.toml.jinja": "8cb37c2c92f7998a2c7cec84c2d293f63b1e80f1a4a4f1f330a7e5b1b92aa0cd",
         "project-templates/project/playwright.config.ts": "d06e3c907f16f5027d6e2f47112b5cca353e68525a528957f6f760eca940fd78",
         "project-templates/project/tests/e2e/smoke.spec.ts": "8139af70f4b8ba2010efc673d4b0c6fb802ea101d2d70f08ec47b3007db78c35",
@@ -293,129 +293,138 @@
     },
     {
       "bound": {
-        "openspec/changes/capability-scoped-guidance/design.md": "55f122fd3c16ebb9b8d6dd1f6dbfb7638df31e60eb316d4058d889cf213d294b"
+        "openspec/changes/archive/2026-09-26-capability-scoped-guidance/design.md": "55f122fd3c16ebb9b8d6dd1f6dbfb7638df31e60eb316d4058d889cf213d294b"
       },
       "outcome": "no-impact",
       "reason": "Formal change artifact records independently reviewed behavior, rationale and implementation steps in the required specification system; affected user guidance is maintained in its existing canonical documents. Archive/finish remain separate delivery gates.",
       "reviewer": "codex",
-      "target": "openspec/changes/capability-scoped-guidance/design.md"
+      "target": "openspec/changes/archive/2026-09-26-capability-scoped-guidance/design.md"
     },
     {
       "bound": {
-        "openspec/changes/capability-scoped-guidance/proposal.md": "9b2b621d3f8f2baf30ec319a365da60f142394be26da50b610090c3bd9d49029"
+        "openspec/changes/archive/2026-09-26-capability-scoped-guidance/proposal.md": "9b2b621d3f8f2baf30ec319a365da60f142394be26da50b610090c3bd9d49029"
       },
       "outcome": "no-impact",
       "reason": "Formal change artifact records independently reviewed behavior, rationale and implementation steps in the required specification system; affected user guidance is maintained in its existing canonical documents. Archive/finish remain separate delivery gates.",
       "reviewer": "codex",
-      "target": "openspec/changes/capability-scoped-guidance/proposal.md"
+      "target": "openspec/changes/archive/2026-09-26-capability-scoped-guidance/proposal.md"
     },
     {
       "bound": {
-        "openspec/changes/capability-scoped-guidance/specs/native-work-harnesses/spec.md": "edfad7078241351a59d0ac90a63fb30587bbf659fe5599f3bd868fe7cbf59367"
+        "openspec/changes/archive/2026-09-26-capability-scoped-guidance/specs/native-work-harnesses/spec.md": "edfad7078241351a59d0ac90a63fb30587bbf659fe5599f3bd868fe7cbf59367"
       },
       "outcome": "no-impact",
       "reason": "Formal change artifact records independently reviewed behavior, rationale and implementation steps in the required specification system; affected user guidance is maintained in its existing canonical documents. Archive/finish remain separate delivery gates.",
       "reviewer": "codex",
-      "target": "openspec/changes/capability-scoped-guidance/specs/native-work-harnesses/spec.md"
+      "target": "openspec/changes/archive/2026-09-26-capability-scoped-guidance/specs/native-work-harnesses/spec.md"
     },
     {
       "bound": {
-        "openspec/changes/capability-scoped-guidance/specs/spec-delivery-traceability/spec.md": "15cdeb6a85ab0dafd4ffe4ce1ef7028d49bfd2d16d9f7e3784bc48bf0ce2d29b"
+        "openspec/changes/archive/2026-09-26-capability-scoped-guidance/specs/spec-delivery-traceability/spec.md": "15cdeb6a85ab0dafd4ffe4ce1ef7028d49bfd2d16d9f7e3784bc48bf0ce2d29b"
       },
       "outcome": "no-impact",
       "reason": "Formal change artifact records independently reviewed behavior, rationale and implementation steps in the required specification system; affected user guidance is maintained in its existing canonical documents. Archive/finish remain separate delivery gates.",
       "reviewer": "codex",
-      "target": "openspec/changes/capability-scoped-guidance/specs/spec-delivery-traceability/spec.md"
+      "target": "openspec/changes/archive/2026-09-26-capability-scoped-guidance/specs/spec-delivery-traceability/spec.md"
     },
     {
       "bound": {
-        "openspec/changes/capability-scoped-guidance/tasks.md": "333abe526070a711812084af4a0b88d9f9dd2adad84faa5ad548b367a95ee3be"
+        "openspec/changes/archive/2026-09-26-capability-scoped-guidance/tasks.md": "73d82ccaedea671abbaf77981aeca4865408bc668ce96b2bccb5b80c2d5ee640"
       },
       "outcome": "no-impact",
       "reason": "Formal change artifact records independently reviewed behavior, rationale and implementation steps in the required specification system; affected user guidance is maintained in its existing canonical documents. Archive/finish remain separate delivery gates.",
       "reviewer": "codex",
-      "target": "openspec/changes/capability-scoped-guidance/tasks.md"
+      "target": "openspec/changes/archive/2026-09-26-capability-scoped-guidance/tasks.md"
     },
     {
       "bound": {
-        "openspec/changes/concise-team-skill-context/design.md": "acd10faae329866555ffe38e446a38d09dc60a00df31221a786ebc96583710c9"
+        "openspec/changes/archive/2026-09-26-concise-team-skill-context/design.md": "acd10faae329866555ffe38e446a38d09dc60a00df31221a786ebc96583710c9"
       },
       "outcome": "no-impact",
       "reason": "Formal change artifact records independently reviewed behavior, rationale and implementation steps in the required specification system; affected user guidance is maintained in its existing canonical documents. Archive/finish remain separate delivery gates.",
       "reviewer": "codex",
-      "target": "openspec/changes/concise-team-skill-context/design.md"
+      "target": "openspec/changes/archive/2026-09-26-concise-team-skill-context/design.md"
     },
     {
       "bound": {
-        "openspec/changes/concise-team-skill-context/proposal.md": "b2891c7fad90ce76ec803da61264ef4f5ed38159c37d4f9a21b6ec85cb69de22"
+        "openspec/changes/archive/2026-09-26-concise-team-skill-context/proposal.md": "caabeccfa0141bd60fd5a0f9bcbf3eaec241a23e2f44b6a22241730234ce2f64"
       },
       "outcome": "no-impact",
       "reason": "Formal change artifact records independently reviewed behavior, rationale and implementation steps in the required specification system; affected user guidance is maintained in its existing canonical documents. Archive/finish remain separate delivery gates.",
       "reviewer": "codex",
-      "target": "openspec/changes/concise-team-skill-context/proposal.md"
+      "target": "openspec/changes/archive/2026-09-26-concise-team-skill-context/proposal.md"
     },
     {
       "bound": {
-        "openspec/changes/concise-team-skill-context/specs/team-sources/spec.md": "376a270d8c1b35c5d6fb2cc5539eadeb8231b2175d9e60a6835d775a61faf9f8"
+        "openspec/changes/archive/2026-09-26-concise-team-skill-context/specs/team-sources/spec.md": "376a270d8c1b35c5d6fb2cc5539eadeb8231b2175d9e60a6835d775a61faf9f8"
       },
       "outcome": "no-impact",
       "reason": "Formal change artifact records independently reviewed behavior, rationale and implementation steps in the required specification system; affected user guidance is maintained in its existing canonical documents. Archive/finish remain separate delivery gates.",
       "reviewer": "codex",
-      "target": "openspec/changes/concise-team-skill-context/specs/team-sources/spec.md"
+      "target": "openspec/changes/archive/2026-09-26-concise-team-skill-context/specs/team-sources/spec.md"
     },
     {
       "bound": {
-        "openspec/changes/concise-team-skill-context/tasks.md": "33d6db5eccb363036c2dcd7369bfb4e92b52c52ffc06e5974fd54484ecfa0bd7"
+        "openspec/changes/archive/2026-09-26-concise-team-skill-context/tasks.md": "fb3593d9722e1670635911061a05ca257d175987abd2ae17ba56c0afc2f1fcd6"
       },
       "outcome": "no-impact",
       "reason": "Formal change artifact records independently reviewed behavior, rationale and implementation steps in the required specification system; affected user guidance is maintained in its existing canonical documents. Archive/finish remain separate delivery gates.",
       "reviewer": "codex",
-      "target": "openspec/changes/concise-team-skill-context/tasks.md"
+      "target": "openspec/changes/archive/2026-09-26-concise-team-skill-context/tasks.md"
     },
     {
       "bound": {
-        "openspec/changes/meaningful-project-checks/design.md": "8f785bd508f8cd3bbd4f4d343bf1664c83196f74a6cbcf1c4fde9b3d194edd76"
+        "openspec/changes/archive/2026-09-26-meaningful-project-checks/design.md": "8f785bd508f8cd3bbd4f4d343bf1664c83196f74a6cbcf1c4fde9b3d194edd76"
       },
       "outcome": "no-impact",
       "reason": "Formal change artifact records independently reviewed behavior, rationale and implementation steps in the required specification system; affected user guidance is maintained in its existing canonical documents. Archive/finish remain separate delivery gates.",
       "reviewer": "codex",
-      "target": "openspec/changes/meaningful-project-checks/design.md"
+      "target": "openspec/changes/archive/2026-09-26-meaningful-project-checks/design.md"
     },
     {
       "bound": {
-        "openspec/changes/meaningful-project-checks/proposal.md": "4eaf543598fd60790b16044acf7d840a6937c06d90eb1e430a7257461a36015c"
+        "openspec/changes/archive/2026-09-26-meaningful-project-checks/proposal.md": "dfb3cfb2f06b7698e60e0ca625917bb3a869bf0bd06c32af80fad07973f1e53e"
       },
       "outcome": "no-impact",
       "reason": "Formal change artifact records independently reviewed behavior, rationale and implementation steps in the required specification system; affected user guidance is maintained in its existing canonical documents. Archive/finish remain separate delivery gates.",
       "reviewer": "codex",
-      "target": "openspec/changes/meaningful-project-checks/proposal.md"
+      "target": "openspec/changes/archive/2026-09-26-meaningful-project-checks/proposal.md"
     },
     {
       "bound": {
-        "openspec/changes/meaningful-project-checks/specs/frontend-capability-pack/spec.md": "6de01d7cab8219952ee795c357b318c5636fc17f9a30f9fd8cebf598725fc5d3"
+        "openspec/changes/archive/2026-09-26-meaningful-project-checks/specs/frontend-capability-pack/spec.md": "6de01d7cab8219952ee795c357b318c5636fc17f9a30f9fd8cebf598725fc5d3"
       },
       "outcome": "no-impact",
       "reason": "Formal change artifact records independently reviewed behavior, rationale and implementation steps in the required specification system; affected user guidance is maintained in its existing canonical documents. Archive/finish remain separate delivery gates.",
       "reviewer": "codex",
-      "target": "openspec/changes/meaningful-project-checks/specs/frontend-capability-pack/spec.md"
+      "target": "openspec/changes/archive/2026-09-26-meaningful-project-checks/specs/frontend-capability-pack/spec.md"
     },
     {
       "bound": {
-        "openspec/changes/meaningful-project-checks/specs/portable-development/spec.md": "0c389874a760b981a85b89939c0d0fe5da5da34aabc878bb10f2bfadc850c9f8"
+        "openspec/changes/archive/2026-09-26-meaningful-project-checks/specs/portable-development/spec.md": "0c389874a760b981a85b89939c0d0fe5da5da34aabc878bb10f2bfadc850c9f8"
       },
       "outcome": "no-impact",
       "reason": "Formal change artifact records independently reviewed behavior, rationale and implementation steps in the required specification system; affected user guidance is maintained in its existing canonical documents. Archive/finish remain separate delivery gates.",
       "reviewer": "codex",
-      "target": "openspec/changes/meaningful-project-checks/specs/portable-development/spec.md"
+      "target": "openspec/changes/archive/2026-09-26-meaningful-project-checks/specs/portable-development/spec.md"
     },
     {
       "bound": {
-        "openspec/changes/meaningful-project-checks/tasks.md": "4bb968ecc42f3bc6c7e37a16e6474ad9fe4746199efa4b1b84760ed3f184e62a"
+        "openspec/changes/archive/2026-09-26-meaningful-project-checks/tasks.md": "a9a88a5bafa85cf13b42eec8584bf06898a5f0e262539ceccbf5ead45026bf28"
       },
       "outcome": "no-impact",
       "reason": "Formal change artifact records independently reviewed behavior, rationale and implementation steps in the required specification system; affected user guidance is maintained in its existing canonical documents. Archive/finish remain separate delivery gates.",
       "reviewer": "codex",
-      "target": "openspec/changes/meaningful-project-checks/tasks.md"
+      "target": "openspec/changes/archive/2026-09-26-meaningful-project-checks/tasks.md"
+    },
+    {
+      "bound": {
+        "openspec/specs/spec-delivery-traceability/spec.md": "bf19856440138dfdb049892fe0ea8aecb9fc0a34eb37aecbbbcb3d6d3b1ad0bc"
+      },
+      "outcome": "no-impact",
+      "reason": "Formal change artifact records independently reviewed behavior, rationale and implementation steps in the required specification system; affected user guidance is maintained in its existing canonical documents. Archive/finish remain separate delivery gates.",
+      "reviewer": "codex",
+      "target": "openspec/specs/spec-delivery-traceability/spec.md"
     },
     {
       "bound": {

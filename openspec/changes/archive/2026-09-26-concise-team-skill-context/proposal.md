@@ -36,10 +36,10 @@ Primary code: `src/ai_dlc/harness/team_source_render.py` and its call site in
 `CLIENT_SKILL_DIRECTORIES`; NH-01 and NH-03 remain in force.
 
 Canonical operator guidance is
-[the enrollment runbook](../../../docs/runbooks/machine-enrollment.md), especially
+[the enrollment runbook](../../../../docs/runbooks/machine-enrollment.md), especially
 its current description of duplicated skill bodies. Review
-[architecture](../../../docs/architecture.md) and
-[release verification](../../../docs/release-verification.md) for affected mappings
+[architecture](../../../../docs/architecture.md) and
+[release verification](../../../../docs/release-verification.md) for affected mappings
 and qualification limits; record content-bound documentation dispositions and
-update [the catalog](../../../docs/catalog.toml) only if mappings change. No new
+update [the catalog](../../../../docs/catalog.toml) only if mappings change. No new
 permanent guide or completion report is needed.

@@ -39,9 +39,9 @@ Existing check service and CLI, generated Python/frontend assets and their tests
 No new MCP surface: MCP does not currently expose project check. No schema,
 workflow DSL, automatic affected-file inference, result cache or finish relaxation.
 
-Canonical documentation owners are [README](../../../README.md) for check usage,
-[portable project guidance](../../../project-templates/project/AI-DLC.md), and
-[frontend workflow](../../../project-templates/project/docs/workflows/design-to-implementation.md)
+Canonical documentation owners are [README](../../../../README.md) for check usage,
+[portable project guidance](../../../../project-templates/project/AI-DLC.md), and
+[frontend workflow](../../../../project-templates/project/docs/workflows/design-to-implementation.md)
 with its repository counterpart. Review existing greenfield/brownfield workflow
 instructions and catalog mappings; update existing explanations and record
 content-bound dispositions instead of introducing another guide.
