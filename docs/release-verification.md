@@ -59,9 +59,9 @@ tests do not change that status.
 
 ### Observed local consumer journey — September 26, 2026
 
-A clean source checkout at `954c6b87ec44d319db60e6569afb82183cfd699b`
+A clean source checkout at `6b320152541cc1c5a0b49816f4abef89132ee41a`
 ran the actual CLI on macOS 15.3.2 arm64. The disposable target was
-`ai-dlc-onboard-9crfxb9o/team repository é`, with a separate temporary HOME/XDG
+`ai-dlc-onboard-1594mboj/team repository é`, with a separate temporary HOME/XDG
 account. No enrollment or provider/account selection was supplied. The target
 selected only the Antigravity client capability and the generic preset; the
 experiment did not launch Antigravity.
@@ -74,11 +74,11 @@ File snapshots before and after both plans were identical. The target check
 passed, failed with exit 1 after changing its expected behavior, and passed after
 restoration. All three target-required checks (`generated`, `work-records`, and
 `team-acceptance`) then passed against clean fixture commit
-`3c3fdcdfd8617b33d03f971912ba427df0d61060`.
+`2c2e0ac8c99bb126d6adc6ba503db49145625549`.
 
 This scripted local baseline used 16 command invocations, one explicit check
 configuration edit, and a deliberate behavior edit/restoration. First target-check
-success occurred after 11.134 seconds; the entire verification took 14.121
+success occurred after 10.296 seconds; the entire verification took 13.671
 seconds. These timings exclude source installation and human review, include only
 a trivial fixture, and are not a human setup-time or savings comparison. Exact
 commands, outputs, roots, timing and receipts are retained in the local

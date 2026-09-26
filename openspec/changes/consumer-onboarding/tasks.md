@@ -16,7 +16,7 @@ Implementation authorized by the user on September 26, 2026: “Start implementi
 ## 3. Acceptance and delivery
 - [x] 3.1 Test fresh/existing projects, missing/conflicting selections, invalid configuration, unknown shell/client, native Windows unsupported routing and preservation/no effects.
 - [x] 3.2 Exercise a disposable supported Unix consumer journey through one target behavior check; record baseline time/manual steps and keep missing native evidence pending under #53.
-- [ ] 3.3 Review README, machine enrollment, work-computer setup, tool map, release limits and affected packaged guidance; record content-bound documentation dispositions and update applicable catalog mappings.
+- [x] 3.3 Review README, machine enrollment, work-computer setup, tool map, release limits and affected packaged guidance; record content-bound documentation dispositions and update applicable catalog mappings.
 - [ ] 3.4 Complete specification/work-record and affected-document review, record required content-bound dispositions, strictly validate this change, run the prepared required checks, and resolve actionable review findings.
 
 ## Subsequent delivery gates

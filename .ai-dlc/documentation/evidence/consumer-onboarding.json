@@ -6,7 +6,7 @@
       },
       "outcome": "updated",
       "reason": "Routes clone-and-harness consumers to an explicit work target before contributor bootstrap; generated project/provider guidance is preserved and native Windows installation is not claimed.",
-      "reviewer": "Codex onboarding implementation and consumer evidence review, 2026-09-26",
+      "reviewer": "Codex onboarding integration and consumer evidence review, 2026-09-26",
       "target": "AGENTS.md"
     },
     {
@@ -15,13 +15,13 @@
       },
       "outcome": "updated",
       "reason": "Separates consumer installation/adoption from engine contribution; requires reviewed source identity and explicit target/client choices, preserves preview/apply, and ends with meaningful target checks.",
-      "reviewer": "Codex onboarding implementation and consumer evidence review, 2026-09-26",
+      "reviewer": "Codex onboarding integration and consumer evidence review, 2026-09-26",
       "target": "README.md"
     },
     {
       "bound": {
         "catalog:docs/architecture.md": "3526b10e52b38e2c29e9cdb340b34c74663f26d1264469bbb3cdeea81c05367f",
-        "docs/architecture.md": "7504978aed71269cb397c78efd2e5056fce62ddee27ebcaeb206f8d0c0e71f03",
+        "docs/architecture.md": "ecae7babf72af58c38da8b4bec103d9aeb06a1c4ffb2e77b6f152c1bdcb7a66c",
         "pyproject.toml": "296acf5ff015bc4aaf17576c4210e8c69988beb35e11507250a45c0dc534e4d5",
         "scripts/check_generated.py": "00e325b0da860ed329f3fbc40a99cc503d9a6b185f98f5627c1d465591681f98",
         "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
@@ -99,7 +99,7 @@
         "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
         "src/ai_dlc/setup/github_project_setup.py": "55984de17559ba2d56b3b1c7483dabb8a6f05f1e773e8bd9d40437a2d30ee85e",
         "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
-        "src/ai_dlc/setup/onboarding.py": "f21c8b19fb97e156ad00ba1a9834c490bf12c8948fc25b9700ddf9c024ffbbbb",
+        "src/ai_dlc/setup/onboarding.py": "80a876ca2820568e408a2edff71b498a581bf7d3dfd3d14d7b5d4aa37f839963",
         "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
         "src/ai_dlc/setup/project.py": "09464c89f569a337aaa77d1604404273808636323635bcd00bb05e0f74c7ad9e",
         "src/ai_dlc/setup/provider_onboarding.py": "be120ad6e93c178f041fd338a45a5df7c75b9a30591725cfbf7800bca531045e",
@@ -130,12 +130,12 @@
         "src/ai_dlc/work/traceability.py": "e9fbca5153cdd710b78872c66651269184ee5f3f1313f313b65df212430e8cc8",
         "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
         "src/ai_dlc/work/workflow.py": "b16ef66b0bea70ece8aaf15003e5e0233dbcff82051b3da24d59b94106da3fca",
-        "tests/test_consumer_onboarding.py": "4407cf06a2405ffa5111593b93a1588aa7677f6f455a212fc9da291dacdb1c0d",
+        "tests/test_consumer_onboarding.py": "ab3c14045ad56fa2b96f0f1b8eab502dc64c28f60478f6809fe139fd8838d2c7",
         "tests/test_consumer_onboarding_cli.py": "fbdbd6b8043d366714e6b29db469e62a515ecf704ac3bf82e4c3b17d4631ee30"
       },
       "outcome": "updated",
       "reason": "Documents the pure local onboarding service and thin CLI; no new executor, MCP surface or ambient configuration inheritance is introduced.",
-      "reviewer": "Codex onboarding implementation and consumer evidence review, 2026-09-26",
+      "reviewer": "Codex onboarding integration and consumer evidence review, 2026-09-26",
       "target": "docs/architecture.md"
     },
     {
@@ -144,7 +144,7 @@
       },
       "outcome": "updated",
       "reason": "Maps onboarding service and CLI acceptance tests to their canonical explanations without inventing factual review dates.",
-      "reviewer": "Codex onboarding implementation and consumer evidence review, 2026-09-26",
+      "reviewer": "Codex onboarding integration and consumer evidence review, 2026-09-26",
       "target": "docs/catalog.toml"
     },
     {
@@ -164,26 +164,26 @@
       },
       "outcome": "reviewed-no-change",
       "reason": "The additive read-only onboarding command leaves lifecycle stages, project command forms and exact-merge completion gates unchanged. Existing environment preparation links to the updated canonical enrollment guide and tool map.",
-      "reviewer": "Codex onboarding implementation and consumer evidence review, 2026-09-26",
+      "reviewer": "Codex onboarding integration and consumer evidence review, 2026-09-26",
       "target": "docs/development-workflow.md"
     },
     {
       "bound": {
         ".github/workflows/release.yml": "c32926d61ee30cd32aa03fa899c74f395decdb152833f572d4e1ade4c28993b5",
         "catalog:docs/release-verification.md": "ca311298ecb11e046e9698ddb189e09799f4c205153bebd7b4eda8b9281d6cf3",
-        "docs/release-verification.md": "fdc4768b72e1736e5dab2bd379b70da4205d720c2dfebd42bc472cabd1df61a4",
+        "docs/release-verification.md": "f8d0ff277a11276282f8a6113236368295f9592f7d20e5d5b163ae016561ebe2",
         "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
         "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
         "src/ai_dlc/cli.py": "d35a8f3a3c8a39ed7b6fc683f87d3cdd5138e344efbef1a2daa079c8ac3182a8",
-        "src/ai_dlc/setup/onboarding.py": "f21c8b19fb97e156ad00ba1a9834c490bf12c8948fc25b9700ddf9c024ffbbbb",
-        "tests/test_consumer_onboarding.py": "4407cf06a2405ffa5111593b93a1588aa7677f6f455a212fc9da291dacdb1c0d",
+        "src/ai_dlc/setup/onboarding.py": "80a876ca2820568e408a2edff71b498a581bf7d3dfd3d14d7b5d4aa37f839963",
+        "tests/test_consumer_onboarding.py": "ab3c14045ad56fa2b96f0f1b8eab502dc64c28f60478f6809fe139fd8838d2c7",
         "tests/test_consumer_onboarding_cli.py": "fbdbd6b8043d366714e6b29db469e62a515ecf704ac3bf82e4c3b17d4631ee30",
         "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
         "tests/test_release_workflow.py": "a50523b5d6dec682188d489780d29a74f2a01c60c310071ce6758898f3d12dc0"
       },
       "outcome": "updated",
       "reason": "Records exact clean-source macOS consumer fixture identity, actual pass/fail/restored check results and bounded timings; retains historical release, Windows desktop, native-client and clean-machine limits.",
-      "reviewer": "Codex onboarding implementation and consumer evidence review, 2026-09-26",
+      "reviewer": "Codex onboarding integration and consumer evidence review, 2026-09-26",
       "target": "docs/release-verification.md"
     },
     {
@@ -207,9 +207,9 @@
         "src/ai_dlc/harness/hooks.py": "4c1d41b1d6294dd97ad5ecf14bc49026d100b387bf8de9867c49ee8c41e8d311",
         "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
         "src/ai_dlc/providers/teamai.py": "ff7a781abcaeeca1c978f9472502156e31a1fc6d192ac50e1e489d333b77a5e6",
-        "src/ai_dlc/setup/onboarding.py": "f21c8b19fb97e156ad00ba1a9834c490bf12c8948fc25b9700ddf9c024ffbbbb",
+        "src/ai_dlc/setup/onboarding.py": "80a876ca2820568e408a2edff71b498a581bf7d3dfd3d14d7b5d4aa37f839963",
         "tests/test_agents_phases.py": "b141a47725ffe104d2826da09227fc97615186dad3ab4bf5716ba07544d0afc5",
-        "tests/test_consumer_onboarding.py": "4407cf06a2405ffa5111593b93a1588aa7677f6f455a212fc9da291dacdb1c0d",
+        "tests/test_consumer_onboarding.py": "ab3c14045ad56fa2b96f0f1b8eab502dc64c28f60478f6809fe139fd8838d2c7",
         "tests/test_consumer_onboarding_cli.py": "fbdbd6b8043d366714e6b29db469e62a515ecf704ac3bf82e4c3b17d4631ee30",
         "tests/test_native_harnesses.py": "e008d4773dccfa2662942561b24df4fdb6c15f637683d5fbdfaf59240e9bb5cc",
         "tests/test_rendering.py": "42b3549792a8e341f2eb424d24da90e19bfa10b482e716ba12b21290c76996e9",
@@ -217,7 +217,7 @@
       },
       "outcome": "updated",
       "reason": "Distinguishes optional explicit enrollment from self-contained project setup; no implicit machine/profile selection or authentication claim is introduced.",
-      "reviewer": "Codex onboarding implementation and consumer evidence review, 2026-09-26",
+      "reviewer": "Codex onboarding integration and consumer evidence review, 2026-09-26",
       "target": "docs/runbooks/machine-enrollment.md"
     },
     {
@@ -226,13 +226,13 @@
         "docs/workflows/tool-map.md": "9e195dbab6edcca4a2158119718ee0854b2e1cc35b087a06b263fd17657c1f7a",
         "src/ai_dlc/cli.py": "d35a8f3a3c8a39ed7b6fc683f87d3cdd5138e344efbef1a2daa079c8ac3182a8",
         "src/ai_dlc/mcp_server.py": "607eba3e47a8573862d83e5209e824b78ec0af74545fa51727b8d3f7c03db410",
-        "src/ai_dlc/setup/onboarding.py": "f21c8b19fb97e156ad00ba1a9834c490bf12c8948fc25b9700ddf9c024ffbbbb",
-        "tests/test_consumer_onboarding.py": "4407cf06a2405ffa5111593b93a1588aa7677f6f455a212fc9da291dacdb1c0d",
+        "src/ai_dlc/setup/onboarding.py": "80a876ca2820568e408a2edff71b498a581bf7d3dfd3d14d7b5d4aa37f839963",
+        "tests/test_consumer_onboarding.py": "ab3c14045ad56fa2b96f0f1b8eab502dc64c28f60478f6809fe139fd8838d2c7",
         "tests/test_consumer_onboarding_cli.py": "fbdbd6b8043d366714e6b29db469e62a515ecf704ac3bf82e4c3b17d4631ee30"
       },
       "outcome": "updated",
       "reason": "Adds discovery and contract for project onboard, including explicit root, plan-only states and separate existing mutation owners; other commands and MCP surfaces are unchanged.",
-      "reviewer": "Codex onboarding implementation and consumer evidence review, 2026-09-26",
+      "reviewer": "Codex onboarding integration and consumer evidence review, 2026-09-26",
       "target": "docs/workflows/tool-map.md"
     },
     {
@@ -240,31 +240,40 @@
         "catalog:docs/workflows/work-computer-setup.md": "2b1cc978be15aa29ac454197619a6822b58f0be248e398c303b7fbf2ec48c39b",
         "docs/workflows/work-computer-setup.md": "155f42675e120d208cd4f2e612228394731aae7e450f383dee980f28841e0e5c",
         "src/ai_dlc/cli.py": "d35a8f3a3c8a39ed7b6fc683f87d3cdd5138e344efbef1a2daa079c8ac3182a8",
-        "src/ai_dlc/setup/onboarding.py": "f21c8b19fb97e156ad00ba1a9834c490bf12c8948fc25b9700ddf9c024ffbbbb",
-        "tests/test_consumer_onboarding.py": "4407cf06a2405ffa5111593b93a1588aa7677f6f455a212fc9da291dacdb1c0d",
+        "src/ai_dlc/setup/onboarding.py": "80a876ca2820568e408a2edff71b498a581bf7d3dfd3d14d7b5d4aa37f839963",
+        "tests/test_consumer_onboarding.py": "ab3c14045ad56fa2b96f0f1b8eab502dc64c28f60478f6809fe139fd8838d2c7",
         "tests/test_consumer_onboarding_cli.py": "fbdbd6b8043d366714e6b29db469e62a515ecf704ac3bf82e4c3b17d4631ee30"
       },
       "outcome": "updated",
       "reason": "Provides consumer target routing, minimal explicit client adoption and team-owned checks while retaining optional provider configuration and source-release limitations.",
-      "reviewer": "Codex onboarding implementation and consumer evidence review, 2026-09-26",
+      "reviewer": "Codex onboarding integration and consumer evidence review, 2026-09-26",
       "target": "docs/workflows/work-computer-setup.md"
     },
     {
       "bound": {
-        "openspec/changes/consumer-onboarding/design.md": "607b0e8650b301cfdff51685df3b437d29d5405350795e25831d79dfa58982fb"
+        "openspec/changes/consumer-onboarding/design.md": "f2afe0ca1f897592c391a147d5a7ef0b7a55eee9c81259959ce36e804a033311"
       },
       "outcome": "updated",
       "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
-      "reviewer": "Codex onboarding implementation and consumer evidence review, 2026-09-26",
+      "reviewer": "Codex onboarding integration and consumer evidence review, 2026-09-26",
       "target": "openspec/changes/consumer-onboarding/design.md"
     },
     {
       "bound": {
-        "openspec/changes/consumer-onboarding/tasks.md": "d946bb3318a9a5e2dff869dbf354b38d926104a1928b966a7c1a436385398d44"
+        "openspec/changes/consumer-onboarding/specs/consumer-onboarding/spec.md": "9d7d7ea072ad78d8c3799446432f32a27fe4171c83ba7b8b7dfca7ab27d88529"
       },
       "outcome": "updated",
       "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
-      "reviewer": "Codex onboarding implementation and consumer evidence review, 2026-09-26",
+      "reviewer": "Codex onboarding integration and consumer evidence review, 2026-09-26",
+      "target": "openspec/changes/consumer-onboarding/specs/consumer-onboarding/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/consumer-onboarding/tasks.md": "c1510877d00b0fdcc3ea57042b28d7dde7a9efadc4fbef92429ff2b0ab0ac347"
+      },
+      "outcome": "updated",
+      "reason": "Records the reviewed CO-01 through CO-05 contract, actual implementation and verification, or promotes that completed contract through the existing archival workflow; future delivery and native qualification remain distinct.",
+      "reviewer": "Codex onboarding integration and consumer evidence review, 2026-09-26",
       "target": "openspec/changes/consumer-onboarding/tasks.md"
     }
   ],
