@@ -248,6 +248,37 @@ def project_readiness(root: Path = Path(".")):
     conclude(result)
 
 
+@project.command("onboard")
+def project_onboard(
+    root: Annotated[Path, typer.Option("--root")],
+    source: Annotated[str | None, typer.Option("--source")] = None,
+    ref: Annotated[str | None, typer.Option("--ref")] = None,
+    profile_id: Annotated[str | None, typer.Option("--profile-id")] = None,
+    machine_id: Annotated[str | None, typer.Option("--machine-id")] = None,
+    agent_client: Annotated[list[str] | None, typer.Option("--agent-client")] = None,
+    preset: Annotated[str | None, typer.Option("--preset")] = None,
+):
+    """Plan explicit consumer onboarding without applying changes."""
+    from ai_dlc.setup.onboarding import plan_onboarding
+
+    try:
+        result = plan_onboarding(
+            root,
+            source=source,
+            ref=ref,
+            profile_id=profile_id,
+            machine_id=machine_id,
+            agent_clients=agent_client,
+            preset=preset,
+        )
+    except ValueError:
+        typer.echo("Error: onboarding input or target configuration is invalid", err=True)
+        raise typer.Exit(2) from None
+    emit(result)
+    if result["state"] != "actionable":
+        raise typer.Exit(1)
+
+
 @project.command("init")
 def project_init(
     path: Path,

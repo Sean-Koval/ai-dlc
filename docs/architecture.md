@@ -53,6 +53,18 @@ The repository stores architecture, design rationale, decisions, runbooks and re
 
 Prefer one application with explicit module responsibilities over speculative service decomposition. CLI, MCP, and agent clients share validation where an MCP service is exposed; the CLI alone owns machine enrollment mutation. The local CLI and local MCP are today's primary control plane; hosted or cloud execution is a later qualification target. External provider failures and uncertain mutations remain visible. Credentials are environment references, never template values.
 
+Consumer onboarding is a read-only composition boundary in `setup/onboarding.py`.
+It resolves one explicit existing target, target-owned configuration, optional
+explicit enrollment identity, host/shell/client support, and existing operation
+owners into an ordered schema-1 plan. It does not run previews or apply operations,
+open a network connection, launch a subprocess, stage adoption, repair caches, or
+persist an orchestration session. The thin `project onboard --root PATH` CLI emits
+that plan and maps its state to an exit code; it has no apply mode or MCP endpoint.
+Existing enrollment, machine provisioning, adoption, setup, rendering, readiness,
+and target-check services retain their own review, mutation, recovery, and evidence
+boundaries. Project configuration wins over conflicting CLI choices, while omitted
+enrollment stays unselected for a self-contained project.
+
 Application services signal outcomes in one of two ways. A failure the service detected
 raises an exception derived from `ai_dlc.errors.AiDlcError` (`RefusedError` for an
 operation refused before any change, `UncertainError` for one whose effect must be
@@ -97,7 +109,7 @@ does not substitute for these lifecycle contracts. See the
 | --- | --- |
 | `cli.py`, `mcp_server.py`, `__main__.py` | Public command and MCP entry points |
 | `conformance.py` | Public conformance runner entry point |
-| `setup/` | Project adoption, provisioning, readiness and provider connection setup |
+| `setup/` | Read-only consumer onboarding plans, project adoption, provisioning, readiness and provider connection setup |
 | `work/` | Work lifecycle, traceability, journals and explicit tracker migration |
 | `environment/` | Shared bootstrap runtime location and owned shell activation; machine enrollment, pinned profile/team sources and credential references |
 | `harness/` | Skills, pinned bundles, client rendering, components, hooks and local design capture |

@@ -20,6 +20,10 @@ code_paths = [
     "scripts/*.py",
     "pyproject.toml",
 ]
+verification_paths = [
+    "tests/test_consumer_onboarding.py",
+    "tests/test_consumer_onboarding_cli.py",
+]
 
 [[documents]]
 id = "documentation-ownership"
@@ -57,8 +61,18 @@ path = "docs/release-verification.md"
 kind = "runbook"
 owner = "repository-maintainers"
 status = "active"
-code_paths = [".github/workflows/release.yml", "scripts/release_manifest.py"]
-verification_paths = ["tests/test_release_manifest.py", "tests/test_release_workflow.py"]
+code_paths = [
+    ".github/workflows/release.yml",
+    "scripts/release_manifest.py",
+    "src/ai_dlc/cli.py",
+    "src/ai_dlc/setup/onboarding.py",
+]
+verification_paths = [
+    "tests/test_release_manifest.py",
+    "tests/test_release_workflow.py",
+    "tests/test_consumer_onboarding.py",
+    "tests/test_consumer_onboarding_cli.py",
+]
 requirements = ["openspec/specs/release-publication/spec.md"]
 
 [[documents]]
@@ -139,6 +153,11 @@ status = "active"
 code_paths = [
     "src/ai_dlc/mcp_server.py",
     "src/ai_dlc/cli.py",
+    "src/ai_dlc/setup/onboarding.py",
+]
+verification_paths = [
+    "tests/test_consumer_onboarding.py",
+    "tests/test_consumer_onboarding_cli.py",
 ]
 
 [[documents]]
@@ -735,6 +754,11 @@ path = "docs/workflows/work-computer-setup.md"
 kind = "reference"
 owner = "repository-maintainers"
 status = "draft"
+code_paths = ["src/ai_dlc/cli.py", "src/ai_dlc/setup/onboarding.py"]
+verification_paths = [
+    "tests/test_consumer_onboarding.py",
+    "tests/test_consumer_onboarding_cli.py",
+]
 
 [[documents]]
 id = "repo-verification-backend-contracts"
@@ -759,10 +783,18 @@ code_paths = [
     "src/ai_dlc/harness/team_source_render.py",
     "src/ai_dlc/harness/hooks.py",
     "src/ai_dlc/providers/teamai.py",
+    "src/ai_dlc/setup/onboarding.py",
     "profiles/example/ai-dlc-profile.toml",
     "tests/test_team_sources.py",
 ]
-verification_paths = ["tests/test_agents_phases.py", "tests/test_rendering.py", "tests/test_team_sources.py", "tests/test_native_harnesses.py"]
+verification_paths = [
+    "tests/test_agents_phases.py",
+    "tests/test_rendering.py",
+    "tests/test_team_sources.py",
+    "tests/test_native_harnesses.py",
+    "tests/test_consumer_onboarding.py",
+    "tests/test_consumer_onboarding_cli.py",
+]
 requirements = ["openspec/specs/native-work-harnesses/spec.md", "openspec/specs/team-sources/spec.md"]
 
 [[documents]]

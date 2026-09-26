@@ -44,6 +44,19 @@ This job does not qualify Windows 11 desktop setup, PowerShell bootstrap, every 
 
 On September 26, 2026, [native job 108452747319](https://github.com/Sean-Koval/ai-dlc/actions/runs/36259593343/job/108452747319) tested revision `914acb7821bfa1e3938d5f7bdbed0310e4edba64` on Windows Server 2025 build 26100, AMD64, Python 3.12.10 and local fixed NTFS: **103 passed, 5 skipped**. The job command and JUnit artifact identify the exact test selection. Native cases exercised case-alias/process locks, killed-holder recovery, junction and ancestor substitution, sharing violations, staged publication, restricted owner/DACL preservation, and a passing/failing adoption/setup/check journey without a POSIX shell. The five skips are Unix shell/fake-executable compatibility and POSIX transaction-injection cases, retained in Unix jobs; no Windows safety case was skipped. Earlier runs exposed native rename/sharing defects and permission-preservation gaps, which were repaired before this passing observation. This is source-level core evidence only, with the desktop, installer and client limits above unchanged.
 
+## Consumer onboarding boundary
+
+`project onboard` is source-only in this revision. The historical v0.4.0 assets
+do not contain the command even though the package version remains 0.4.0, so a
+consumer must use an explicitly reviewed source checkout and its printed
+checkout-specific executable. The planner itself is read-only and reports target,
+platform, shell, clients, enrollment, ordered actions, findings, and qualification;
+an actionable plan is not evidence that any recommended operation ran. Native
+Windows installation and end-to-end client use remain unqualified under
+[#172](https://github.com/Sean-Koval/ai-dlc/issues/172) and
+[#53](https://github.com/Sean-Koval/ai-dlc/issues/53). Unsupported-platform fixture
+tests do not change that status.
+
 ## Published v0.4.0 evidence — September 14, 2026
 
 The original release implementation was delivered in

@@ -58,50 +58,127 @@ for available commands, MCP tools, and skills.
 
 ## Get started
 
-**Choose an installation:** [v0.4.0](https://github.com/Sean-Koval/ai-dlc/releases/tag/v0.4.0)
-is the published release; follow the [verified release installation steps](docs/runbooks/release-publication.md#install-from-a-release).
-The team-source imports and FDE scaffold described here were added after that
-release. Use a source checkout for those features:
+Native Windows consumer installation is unsupported in this revision. The native
+storage core has source-level evidence, but the installer, PowerShell bootstrap,
+desktop clients, and end-to-end onboarding remain open in
+[#172](https://github.com/Sean-Koval/ai-dlc/issues/172) and
+[#53](https://github.com/Sean-Koval/ai-dlc/issues/53). These instructions are for
+supported macOS and Linux hosts with a POSIX shell; they do not prescribe WSL,
+containers, or translated shell commands as a Windows route.
+
+### Install AI-DLC for a work project
+
+The published [v0.4.0](https://github.com/Sean-Koval/ai-dlc/releases/tag/v0.4.0)
+predates `project onboard`, even though the source package version has not changed.
+To use the onboarding planner, install a team-reviewed commit or ref from a source
+checkout:
 
 ```sh
 git clone https://github.com/Sean-Koval/ai-dlc.git
 cd ai-dlc
+git checkout REVIEWED_COMMIT_OR_REF
 sh scripts/bootstrap.sh --source
 ```
 
 Bootstrap needs a POSIX shell, curl, CA certificates, tar, and standard platform
 utilities. It installs pinned uv, Python, and mise, prepares this checkout, and
 prints the directories to add to `PATH`; no preinstalled Python or Node is needed.
-Use the printed checkout-specific path when another AI-DLC installation exists.
+When the global alias belongs to another checkout, use the exact checkout-specific
+executable printed by bootstrap for every command below. The version string alone
+does not prove that another installation includes this command.
 
-After activating those paths, verify the checkout:
+Choose the work repository and client explicitly. For a fresh or unconfigured
+repository, plan with the language-neutral preset and no provider, account,
+tracker, vault, or machine inheritance:
 
 ```sh
-ai-dlc project check --required
-ai-dlc doctor
+AI_DLC=/absolute/path/printed/by/bootstrap/ai-dlc
+WORK_ROOT=/absolute/path/to/work-repository
+"$AI_DLC" project onboard --root "$WORK_ROOT" --preset generic --agent-client codex
 ```
 
-### Create or adopt a project
+The schema-1 JSON is a read-only plan. Exit 0 means its actions are actionable;
+it does not mean setup, rendering, readiness, client recognition, authentication,
+or target checks completed. Review the exact `argv`, effects, dependencies, and
+`requires_review` fields before running an action. `project onboard` does not
+fetch, stage, write, or execute. The existing enrollment preview may populate an
+inactive local cache, and adoption preview may use a temporary stage; their apply
+operations remain separate reviewed commands.
+
+A fresh target's plan recommends the existing adoption service with only the
+selected client capability:
 
 ```sh
-# Create a Python project with the GitHub tracker selected.
-ai-dlc project init my-project --preset python --tracker github-issues
-
-# Or preview adding AI-DLC to an existing repository.
-ai-dlc project adopt --root /path/to/repo --preset generic --tracker github-issues
-# Repeat the adoption command with --apply to write the reviewed changes.
+"$AI_DLC" project adopt --root "$WORK_ROOT" --preset generic \
+  --capability agent-client --agent-client codex
+# Inspect the preview, then repeat that exact command with --apply.
 ```
 
-For a newly generated project, initialize Git, run setup, and commit the generated
-configuration and lockfile before checking. Checks bind their receipt to `HEAD`:
+Use `python`, `node`, or `rust` only when that preset is an explicit target choice.
+Preserve the repository's existing checks and add at least one required check for
+its own acceptance behavior; the generic management checks do not establish that
+behavior. Then rerun onboarding and follow the available operations in order:
 
 ```sh
+"$AI_DLC" project onboard --root "$WORK_ROOT" --preset generic --agent-client codex
+"$AI_DLC" project setup --root "$WORK_ROOT"
+"$AI_DLC" agents render --root "$WORK_ROOT"
+# Review the render preview, then repeat with --apply.
+"$AI_DLC" project readiness --root "$WORK_ROOT"
+git -C "$WORK_ROOT" add .
+git -C "$WORK_ROOT" commit -m "chore: adopt ai-dlc"
+"$AI_DLC" project check --root "$WORK_ROOT" --required
+```
+
+These are target-project checks. Their names do not by themselves prove behavioral
+quality, so review what each command exercises. Source-generated projects do not
+contain a published release manifest; use the reviewed source-installed executable
+for setup and checks rather than treating their release-mode bootstrap as available.
+Checks bind receipts to the target repository's `HEAD`.
+
+An already configured repository can run `project onboard --root "$WORK_ROOT"`
+without repeating its client selection. Its `ai-dlc.toml` remains authoritative;
+conflicting CLI client or preset choices return a blocked plan. Enrollment is
+optional for a self-contained project. Select it only when the user actually needs
+a portable profile and machine binding, supplying all four values together:
+
+```sh
+"$AI_DLC" project onboard --root "$WORK_ROOT" \
+  --source REVIEWED_PROFILE_SOURCE --ref REVIEWED_REF \
+  --profile-id PROFILE --machine-id MACHINE
+```
+
+See [work-computer setup](docs/workflows/work-computer-setup.md) for the full route
+and [machine enrollment](docs/runbooks/machine-enrollment.md) for its separate
+preview/apply boundary.
+
+### Contribute to the AI-DLC engine
+
+Engine contributors use the source checkout itself as their project. After source
+bootstrap, use the checkout-specific executable printed by bootstrap and run the
+repository's full required checks:
+
+```sh
+AI_DLC=/absolute/path/printed/by/bootstrap/ai-dlc
+"$AI_DLC" project check --required
+"$AI_DLC" doctor
+```
+
+Do not use the engine checkout as the consumer work root or copy its tracker,
+vault, provider, or client choices into another project.
+
+### Create a new project directly
+
+Direct creation remains available when that is the reviewed choice:
+
+```sh
+"$AI_DLC" project init my-project --preset python --agent-client codex
 cd my-project
 git init
-ai-dlc project setup
+"$AI_DLC" project setup --root .
 git add .
 git commit -m "chore: initialize project"
-ai-dlc project check --required
+"$AI_DLC" project check --root . --required
 ```
 
 During edits, run only the named commands relevant to the change:

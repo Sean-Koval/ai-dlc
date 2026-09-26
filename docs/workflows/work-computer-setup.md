@@ -5,22 +5,84 @@ repository gives you the engine source; its own GitHub Project and account
 configuration belong to AI-DLC development. Adopt each work repository with its
 own project policy and local credentials.
 
+Native Windows consumer installation is unsupported in this revision. The open
+installer and PowerShell work is tracked by
+[#172](https://github.com/Sean-Koval/ai-dlc/issues/172), and client/cross-machine
+qualification by [#53](https://github.com/Sean-Koval/ai-dlc/issues/53). Use the
+route below on supported macOS or Linux with a POSIX shell. WSL and containers
+are separate choices, not mandatory or qualified native Windows instructions.
+
 ## Install the engine
 
-Clone the reviewed AI-DLC revision and run `sh scripts/bootstrap.sh --source` from
-that clone. Follow the bootstrap's printed PATH instruction, then verify
-`ai-dlc --help`. Source mode is the currently verified installation path; do not
-substitute an unverified package download. The current release evidence remains
-in [release verification](../release-verification.md).
+The published v0.4.0 assets predate `project onboard`, despite the unchanged
+package version. Clone and check out the team's reviewed AI-DLC commit or ref,
+then run `sh scripts/bootstrap.sh --source` from that checkout. Follow its printed
+PATH instructions. If the global alias names another checkout, use the exact
+checkout-specific executable printed by bootstrap. Confirm that executable with
+`/printed/path/ai-dlc project onboard --help`; a version string alone cannot
+establish the feature. Current release evidence remains in
+[release verification](../release-verification.md).
 
 ## Prepare a work repository
 
-For GitHub delivery with optional upstream Jira outcomes, preview from the target
-repository:
-`ai-dlc project adopt --root . --preset python --tracker github-issues --knowledge obsidian --agent-client claude-code --agent-client antigravity`
-(or the applicable language preset and explicitly selected tracker). Inspect proposed files and resolve authored
-conflicts, then repeat with `--apply`. Existing configured repositories use their
-reviewed configuration and `project sync` workflow instead of adoption.
+Set the intended work repository explicitly. A new or unconfigured target also
+needs at least one explicit client; `generic` is the language-neutral preset:
+
+```sh
+AI_DLC=/absolute/path/printed/by/bootstrap/ai-dlc
+WORK_ROOT=/absolute/path/to/work-repository
+"$AI_DLC" project onboard --root "$WORK_ROOT" \
+  --preset generic --agent-client codex
+```
+
+This command only reads local routing metadata and returns an ordered schema-1
+plan. It does not execute actions, write configuration, fetch sources, populate
+caches, or establish client qualification. Exit 0 means that the listed actions
+are available. Review every action's exact argument array, effects, dependencies,
+and review flag before running it. Existing enrollment and adoption previews have
+their own bounded staging effects, and their apply operations remain separate.
+
+For a fresh target, run the recommended adoption preview with only its explicit
+client capability. No tracker, knowledge provider, vault, account, or engine
+repository setting is inherited:
+
+```sh
+"$AI_DLC" project adopt --root "$WORK_ROOT" --preset generic \
+  --capability agent-client --agent-client codex
+# Review the preview, then repeat that exact command with --apply.
+```
+
+Select `python`, `node`, or `rust` only when that preset is an explicit target
+decision. Existing configured repositories keep their `ai-dlc.toml` choices;
+onboarding reports a conflict when an explicit client or preset disagrees. They
+use their reviewed configuration and `project sync` workflow instead of adoption.
+Enrollment and machine configuration are optional for a self-contained project.
+When selected, source, ref, profile ID, and machine ID must all be explicit; follow
+the separate [machine enrollment](../runbooks/machine-enrollment.md) preview/apply
+route.
+
+After adoption, preserve the target's existing checks and add at least one required
+check for its own acceptance behavior. Rerun onboarding, follow its available setup,
+render, and readiness operations in order, commit the target changes, then run the
+target's required checks. Check names alone do not prove quality or native client
+recognition. A source-generated target has no published release manifest, so use
+the reviewed source-installed executable for its setup and checks rather than
+claiming its release-mode bootstrap works.
+
+```sh
+"$AI_DLC" project onboard --root "$WORK_ROOT"
+"$AI_DLC" project setup --root "$WORK_ROOT"
+"$AI_DLC" agents render --root "$WORK_ROOT"
+# Review the render preview, then repeat with --apply.
+"$AI_DLC" project readiness --root "$WORK_ROOT"
+"$AI_DLC" project check --root "$WORK_ROOT" --required
+```
+
+## Optional provider configuration
+
+For GitHub delivery with optional upstream Jira outcomes, the explicit provider
+route remains available after the project-owned choices are reviewed. It is not
+the default consumer path.
 
 Omitting tracker selection preserves the legacy scaffold default. Explicitly choose
 `--tracker github-issues` for this delivery model, for personal or work repositories.
