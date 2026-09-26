@@ -162,6 +162,44 @@ def test_consumer_account_appdata_paths_are_isolated_and_reserved_for_native_cre
     assert not account.exists(), "private account directories must be created by native guards"
 
 
+def test_private_account_is_created_before_any_isolated_profile_process(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+
+    module = driver()
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
+    env = module.controlled_environment(
+        workspace, tmp_path / "gitcmd/git.exe", tmp_path / "windows"
+    )
+    for key in ("HOME", "USERPROFILE", "LOCALAPPDATA", "APPDATA"):
+        monkeypatch.setenv(key, "controller-" + key)
+    monkeypatch.setenv("GH_TOKEN", "must-not-be-inherited")
+    runs = []
+
+    class Recorder:
+        def __init__(self):
+            self.report = {}
+
+        def run(self, label, argv, *, cwd, env):
+            runs.append((label, argv, env))
+            if len(runs) == 1:
+                assert env["USERPROFILE"] == "controller-USERPROFILE"
+                assert env["LOCALAPPDATA"] == "controller-LOCALAPPDATA"
+                assert "GH_TOKEN" not in env
+                assert module.quote_ps(workspace / "account") in argv[-1]
+            else:
+                assert env["USERPROFILE"] == str(workspace / "account")
+            return SimpleNamespace(stdout='{"local":"verified","roaming":"verified"}')
+
+        def save(self):
+            pass
+
+    module.prepare_private_account(
+        Recorder(), tmp_path / "windows.ps1", tmp_path / "powershell.exe", workspace, env
+    )
+    assert [label for label, _, _ in runs] == ["create-private-account", "verify-private-account"]
+
+
 def test_consumer_does_not_expose_system32_wsl_launchers(tmp_path):
     system = tmp_path / "windows"
     system32 = system / "System32"

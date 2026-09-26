@@ -301,8 +301,40 @@ class Journey:
 def prepare_private_account(
     journey: Journey, helper: Path, powershell: Path, workspace: Path, env: dict[str, str]
 ) -> None:
-    """Prepare the isolated account through native guards before any engine executes."""
-    script = f"""
+    """Create private fixture directories before a child can initialize the fake profile."""
+    account = Path(env["USERPROFILE"])
+    require(
+        not account.exists() and not account.is_symlink(),
+        f"isolated account already exists before native preparation: {account}",
+    )
+    creation_env = dict(env)
+    for key in ("USERPROFILE", "LOCALAPPDATA", "APPDATA"):
+        require(bool(os.environ.get(key)), f"controller account variable unavailable: {key}")
+        creation_env[key] = os.environ[key]
+    creation_env["HOME"] = os.environ.get("HOME", creation_env["USERPROFILE"])
+    targets = ",".join(quote_ps(env[key]) for key in ("USERPROFILE", "LOCALAPPDATA", "APPDATA"))
+    creation = f"""
+$ErrorActionPreference='Stop'
+[Console]::OutputEncoding=[Text.UTF8Encoding]::new($false)
+. {quote_ps(helper)}
+Initialize-NativeStorage
+$guards=[Collections.Generic.List[IDisposable]]::new()
+try {{
+    foreach($path in @({targets})) {{
+        try {{ $guards.Add([AiDlc.Bootstrap.DirectoryGuard]::new($path,$true,$true)) }}
+        catch {{ throw "Cannot create private fixture directory '$path': $($_.Exception.Message)" }}
+    }}
+}} finally {{
+    for($index=$guards.Count-1;$index -ge 0;$index--) {{ $guards[$index].Dispose() }}
+}}
+"""
+    journey.run(
+        "create-private-account",
+        [powershell, "-NoProfile", "-NonInteractive", "-Command", creation],
+        cwd=workspace,
+        env=creation_env,
+    )
+    verification = f"""
 $ErrorActionPreference='Stop'
 [Console]::OutputEncoding=[Text.UTF8Encoding]::new($false)
 . {quote_ps(helper)}
@@ -310,12 +342,13 @@ Initialize-NativeStorage
 $guards=[Collections.Generic.List[IDisposable]]::new()
 try {{
     foreach($path in @($env:USERPROFILE,$env:LOCALAPPDATA,$env:APPDATA)) {{
-        $guards.Add([AiDlc.Bootstrap.DirectoryGuard]::new($path,$true,$true))
+        try {{ $guards.Add([AiDlc.Bootstrap.DirectoryGuard]::new($path,$false,$true)) }}
+        catch {{ throw "Private fixture directory changed after process startup '$path': $($_.Exception.Message)" }}
     }}
     $local=[Environment]::GetFolderPath('LocalApplicationData')
     $roaming=[Environment]::GetFolderPath('ApplicationData')
     if($local -ine $env:LOCALAPPDATA -or $roaming -ine $env:APPDATA) {{
-        throw 'Native known folders do not resolve to the isolated account'
+        throw "Native known folders escape the isolated account: local='$local'; roaming='$roaming'"
     }}
     @{{local=$local;roaming=$roaming}} | ConvertTo-Json -Compress
 }} finally {{
@@ -323,8 +356,8 @@ try {{
 }}
 """
     result = journey.run(
-        "prepare-private-account",
-        [powershell, "-NoProfile", "-NonInteractive", "-Command", script],
+        "verify-private-account",
+        [powershell, "-NoProfile", "-NonInteractive", "-Command", verification],
         cwd=workspace,
         env=env,
     )
@@ -602,6 +635,13 @@ def verify(artifacts: Path, workspace: Path, evidence: Path) -> dict:
         require(powershell.is_file(), "inbox Windows PowerShell is unavailable")
         env = controlled_environment(workspace, git, system)
         report["initial_path"] = env["PATH"]
+        seed = workspace / "bare seed é"
+        for name, relative in {**NATIVE_ASSETS, "release.sh": "bootstrap/release.sh"}.items():
+            target = seed / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(artifact_bytes(artifacts, name))
+        (seed / "ai-dlc.toml").write_text("schema = 4\n", encoding="utf-8")
+        prepare_private_account(journey, seed / "bootstrap/windows.ps1", powershell, workspace, env)
         revision = journey.run(
             "controller-revision", [git, "rev-parse", "HEAD"], cwd=ROOT, env=env
         ).stdout.strip()
@@ -626,13 +666,6 @@ def verify(artifacts: Path, workspace: Path, evidence: Path) -> dict:
             env=env,
         )
         report["platform"]["powershell"] = shell.stdout.strip()
-        seed = workspace / "bare seed é"
-        for name, relative in {**NATIVE_ASSETS, "release.sh": "bootstrap/release.sh"}.items():
-            target = seed / relative
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes(artifact_bytes(artifacts, name))
-        (seed / "ai-dlc.toml").write_text("schema = 4\n", encoding="utf-8")
-        prepare_private_account(journey, seed / "bootstrap/windows.ps1", powershell, workspace, env)
         manifest = report["artifacts"]["manifest"]
         home = Path(env["AI_DLC_BOOTSTRAP_HOME"])
         cache = home / "downloads"
