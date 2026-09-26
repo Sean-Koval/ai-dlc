@@ -12,14 +12,14 @@ This change starts from #173's completed merge. The reviewed disposition in
 
 ## 2. Reporting and comparison
 - [x] 2.1 Implement schema validation, positive privacy projection, explicitly opt-in bounded local version probes and stable configuration/observation identity calculation in the existing environment service.
-- [ ] 2.2 Add opt-in status export and offline doctor modes, preserving default contracts and safe output publication.
-- [ ] 2.3 Implement offline two-file comparison with deterministic findings, scoped next actions and exact error/exit semantics.
+- [x] 2.2 Add opt-in status export and offline doctor modes, preserving default contracts and safe output publication.
+- [x] 2.3 Implement offline two-file comparison with deterministic findings, scoped next actions and exact error/exit semantics.
 
 ## 3. Verification and handoff
-- [ ] 3.1 Cover equal/different source at 0.4.0, dirty/unknown provenance, partial state, drift classes, expected platform differences, invalid/oversized payloads and probe limits.
-- [ ] 3.2 Verify no leaks using sentinel secrets/private paths in every input and error channel, including digest inputs; prove no provider probes, remote fetches or native sessions run.
-- [ ] 3.3 Verify repeated export identity stability and native-evidence invalidation boundary; document missing real cross-machine evidence under #53 without claiming fixture qualification.
-- [ ] 3.4 Review machine enrollment, architecture, tool map, work-computer setup and release verification; record content-bound dispositions and applicable catalog mapping updates.
+- [x] 3.1 Cover equal/different source at 0.4.0, dirty/unknown provenance, partial state, drift classes, expected platform differences, invalid/oversized payloads and probe limits.
+- [x] 3.2 Verify no leaks using sentinel secrets/private paths in every input and error channel, including digest inputs; prove no provider probes, remote fetches or native sessions run.
+- [x] 3.3 Verify repeated export identity stability and native-evidence invalidation boundary; document missing real cross-machine evidence under #53 without claiming fixture qualification.
+- [x] 3.4 Review machine enrollment, architecture, tool map, work-computer setup and release verification; record content-bound dispositions and applicable catalog mapping updates.
 - [ ] 3.5 Complete specification/work-record and affected-document review, record required content-bound dispositions, strictly validate this change, run the prepared required checks, and resolve actionable review findings.
 
 ## Subsequent delivery gates
@@ -60,16 +60,16 @@ Own thin additions to `src/ai_dlc/cli.py`, `src/ai_dlc/environment/report_io.py`
 
 Validate serialization completely before exclusive atomic private publication, refusing any existing file/link or unsafe ancestor. Use bounded no-follow two-file reads and safe fixed errors. Keep root/destination values and raw exceptions out of diagnostics. Do not introduce a general filesystem abstraction or weaken existing callers' ownership/recovery semantics.
 
-- [ ] Write failing compatibility, exact 0/1/2 exit, mutually exclusive options, stdout export and invalid-input no-output tests. Include colored CLI errors to avoid presentation-dependent assertions.
-- [ ] Implement thin selection and file boundaries; verify compare performs no local environment inspection and offline doctor performs no health checks.
-- [ ] Test existing destination preservation, symlink/ancestor substitution refusal, bounded reads, private atomic publication and failure cleanup with appropriate platform-scoped cases.
-- [ ] Run affected default/new CLI and filesystem tests plus format/lint/types, then self-review, commit and report.
+- [x] Write failing compatibility, exact 0/1/2 exit, mutually exclusive options, stdout export and invalid-input no-output tests. Include colored CLI errors to avoid presentation-dependent assertions.
+- [x] Implement thin selection and file boundaries; verify compare performs no local environment inspection and offline doctor performs no health checks.
+- [x] Test existing destination preservation, symlink/ancestor substitution refusal, bounded reads, private atomic publication and failure cleanup with appropriate platform-scoped cases.
+- [x] Run affected default/new CLI and filesystem tests plus format/lint/types, then self-review, commit and report.
 
 ### Task 4: Documentation, fixture evidence and delivery
 
 Update existing machine-enrollment runbook, architecture, tool map, work-computer setup, release verification and their catalog mappings. Explain unknowns, unsigned reports, default no-probe behavior, explicit executable trust, scoped identities and unchanged doctor defaults. Include a two-independent-home fixture journey with known useful drift and safe incomplete comparison; do not export real host state without the specified privacy review or claim live qualification. Keep #53 and paid #138 observations pending.
 
-- [ ] Review canonical document impact, record content-bound dispositions and strict specification/work-record validation.
-- [ ] Include applicable new portable report suites in hosted native Windows core CI, retaining its explicit Server/core scope and desktop/client qualification limits.
+- [x] Review canonical document impact, record content-bound dispositions and strict specification/work-record validation.
+- [x] Include applicable new portable report suites in hosted native Windows core CI, retaining its explicit Server/core scope and desktop/client qualification limits.
 - [ ] Run the required project checks in the prepared environment and one independent whole-change review; resolve actionable findings with focused reruns, then fresh final CI.
 - [ ] Complete implementation checklist based on actual evidence and follow the subsequent archive/merge/exact-merge/finish gates above.
