@@ -633,3 +633,112 @@ def test_project_configuration_still_rejects_personal_headless_preference(target
         handle.write("[preferences]\nheadless = true\n")
     with pytest.raises(ValueError, match="configuration-invalid"):
         plan(target, environment)
+
+
+def test_fresh_enrolled_target_reaches_actual_machine_preview_after_adoption(
+    target, environment, monkeypatch
+):
+    from typer.testing import CliRunner
+
+    from ai_dlc.cli import app
+    from ai_dlc.environment.machine import MachineManager
+
+    paths = EnrollmentPaths.from_environment(Path(environment["HOME"]), environment)
+    write_enrollment(paths, content=b'schema = 4\nprofile_id = "personal-profile"\n')
+    result = plan(
+        target,
+        environment,
+        source="https://example.test/profiles.git",
+        ref="main",
+        profile_id="personal-profile",
+        machine_id="workstation-01",
+        agent_clients=["codex"],
+    )
+    assert not (target / "ai-dlc.toml").exists()
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("regression route must not fetch or apply machine changes")
+
+    monkeypatch.setattr(socket, "socket", forbidden)
+    monkeypatch.setattr(MachineManager, "apply", forbidden)
+    monkeypatch.setattr(MachineManager, "enroll", forbidden)
+    manager = MachineManager(home=Path(environment["HOME"]), environ=environment, paths=paths)
+    completed = []
+    for item in result["actions"]:
+        if item["id"] == "machine-preview":
+            assert item["available"]
+            assert item["argv"] == ["ai-dlc", "machine", "plan", "--root", str(target)]
+            before = {
+                str(path): path.read_bytes() for path in target.parent.rglob("*") if path.is_file()
+            }
+            # Execute the actual owner at its recommended position, not a stub of its prerequisites.
+            preview = manager.plan(root=Path(item["argv"][-1]))
+            assert before == {
+                str(path): path.read_bytes() for path in target.parent.rglob("*") if path.is_file()
+            }
+            assert preview["system"] == "Darwin"
+            assert completed == ["adopt-preview", "adopt-apply"]
+            assert item["depends_on"] == ["adopt-apply"]
+            break
+        assert item["id"] in {"adopt-preview", "adopt-apply"}
+        assert item["available"]
+        assert set(item["depends_on"]) <= set(completed)
+        execution = CliRunner().invoke(app, item["argv"][1:])
+        assert execution.exit_code == 0, execution.output
+        assert json.loads(execution.output)["status"] == (
+            "applied" if item["id"] == "adopt-apply" else "planned"
+        )
+        completed.append(item["id"])
+    else:
+        pytest.fail("selected enrollment must recommend its actual machine preview")
+    assert action(result, "adopt-apply")["requires_review"]
+    assert action(result, "machine-apply")["requires_review"]
+    assert action(result, "project-setup")["depends_on"] == ["machine-apply"]
+
+
+def test_new_enrollment_orders_fresh_adoption_before_machine_dependencies(target, environment):
+    result = plan(
+        target,
+        environment,
+        source="https://example.test/profiles.git",
+        ref="main",
+        profile_id="work",
+        machine_id="laptop",
+        agent_clients=["codex"],
+    )
+    assert [item["id"] for item in result["actions"][:7]] == [
+        "enroll-preview",
+        "enroll-apply",
+        "adopt-preview",
+        "adopt-apply",
+        "machine-preview",
+        "machine-apply",
+        "project-setup",
+    ]
+    assert action(result, "adopt-preview")["depends_on"] == ["enroll-apply"]
+    assert action(result, "machine-preview")["depends_on"] == ["adopt-apply"]
+
+
+def test_fresh_adoption_remains_available_when_selected_linux_machine_apply_is_unsupported(
+    target, environment, monkeypatch
+):
+    monkeypatch.setattr("platform.system", lambda: "Linux")
+    monkeypatch.setattr(
+        "platform.freedesktop_os_release", lambda: {"ID": "debian", "VERSION_ID": "12"}
+    )
+    result = plan(
+        target,
+        environment,
+        source="https://example.test/profiles.git",
+        ref="main",
+        profile_id="work",
+        machine_id="laptop",
+        agent_clients=["codex"],
+    )
+    assert result["state"] == "blocked"
+    assert "machine-platform-unsupported" in codes(result)
+    assert action(result, "adopt-preview")["available"]
+    assert action(result, "adopt-apply")["available"]
+    assert action(result, "machine-preview")["available"]
+    assert not action(result, "machine-apply")["available"]
+    assert not action(result, "project-setup")["available"]

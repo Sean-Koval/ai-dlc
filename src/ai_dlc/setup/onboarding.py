@@ -506,50 +506,33 @@ def plan_onboarding(
         return [identifier]
 
     dependency = []
-    if enrollment_selected and all(value is not None for value in values):
-        if not enrolled:
-            enroll_argv = [
-                "ai-dlc",
-                "machine",
-                "enroll",
-                source,
-                "--ref",
-                ref,
-                "--profile-id",
-                profile_id,
-                "--machine-id",
-                machine_id,
-            ]
-            dependency = add(
-                "enroll-preview",
-                "enrollment",
-                enroll_argv,
-                ["May fetch the selected source and populate an inactive local cache."],
-                review=True,
-            )
-            dependency = add(
-                "enroll-apply",
-                "enrollment",
-                [*enroll_argv, "--apply"],
-                ["Activates the reviewed enrollment and local machine bindings."],
-                depends_on=dependency,
-                review=True,
-            )
-        dependency = add(
-            "machine-preview",
+    if enrollment_selected and all(value is not None for value in values) and not enrolled:
+        enroll_argv = [
+            "ai-dlc",
             "machine",
-            ["ai-dlc", "machine", "plan", "--root", str(root)],
-            ["Inspects selected enrollment and previews machine changes."],
-            depends_on=dependency,
+            "enroll",
+            source,
+            "--ref",
+            ref,
+            "--profile-id",
+            profile_id,
+            "--machine-id",
+            machine_id,
+        ]
+        dependency = add(
+            "enroll-preview",
+            "enrollment",
+            enroll_argv,
+            ["May fetch the selected source and populate an inactive local cache."],
+            review=True,
         )
         dependency = add(
-            "machine-apply",
-            "machine",
-            ["ai-dlc", "machine", "apply", "--root", str(root)],
-            ["Installs selected tools and updates user machine/client configuration."],
+            "enroll-apply",
+            "enrollment",
+            [*enroll_argv, "--apply"],
+            ["Activates the reviewed enrollment and local machine bindings."],
             depends_on=dependency,
             review=True,
-            available=machine_supported,
         )
     if not adopted:
         adoption = [
@@ -582,6 +565,23 @@ def plan_onboarding(
             ["Writes reviewed scaffold files only through the adoption service."],
             depends_on=dependency,
             review=True,
+        )
+    if enrollment_selected and all(value is not None for value in values):
+        dependency = add(
+            "machine-preview",
+            "machine",
+            ["ai-dlc", "machine", "plan", "--root", str(root)],
+            ["Inspects selected enrollment and previews machine changes."],
+            depends_on=dependency,
+        )
+        dependency = add(
+            "machine-apply",
+            "machine",
+            ["ai-dlc", "machine", "apply", "--root", str(root)],
+            ["Installs selected tools and updates user machine/client configuration."],
+            depends_on=dependency,
+            review=True,
+            available=machine_supported,
         )
     dependency = add(
         "project-setup",
