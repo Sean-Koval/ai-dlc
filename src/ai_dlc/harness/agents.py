@@ -1243,7 +1243,14 @@ def _render_agents(
     clients = _resolve_render_clients(config, client)
     skill_sources = _skill_sources(config)
     selected_sources = enrolled_sources()
-    team_body, source_skills = merge_source_items(selected_sources, config, skill_sources, bundles)
+    team_body, source_skills = merge_source_items(
+        selected_sources,
+        config,
+        skill_sources,
+        bundles,
+        clients,
+        CLIENT_SKILL_DIRECTORIES,
+    )
     _validate_required_hooks(config, clients)
     try:
         components = resolve_components(config, load_component_catalog(root, config))
