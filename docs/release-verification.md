@@ -105,6 +105,23 @@ require privacy review before they are recorded; the outstanding observation
 work remains [#53](https://github.com/Sean-Koval/ai-dlc/issues/53). Paid comparison
 [#138](https://github.com/Sean-Koval/ai-dlc/issues/138) remains pending.
 
+On September 26, 2026, clean source revision
+`f3a57e5e8b4ee3a3d9f20843a0f7a134dba9360b` completed a ten-command CLI fixture
+journey on macOS using two isolated homes and project paths containing spaces
+and Unicode. Export and both offline doctor modes retained matching identities
+across different dummy credential presence and excluded private commands. Changing
+the declared Python pin changed configuration identity and produced blocking
+drift. Both comparisons correctly exited 1 because required provenance remained
+incomplete; a valid export did not imply equivalent or working native clients.
+
+Existing output was preserved, an unknown report field was rejected, and an extra
+comparison path was refused without echoing its private sentinel. The fixture
+checked unchanged project/home snapshots and installed process/network guards in
+each CLI process; no forbidden attempt occurred. All ten invocations completed
+in 1.660 seconds on that host. This timing describes the small fixture only, not
+a performance guarantee. These observations cover separate fixture homes on one
+machine, not real teammate machines, Windows execution or authenticated tools.
+
 ## Published v0.4.0 evidence — September 14, 2026
 
 The original release implementation was delivered in

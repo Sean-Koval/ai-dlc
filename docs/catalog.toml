@@ -67,6 +67,7 @@ owner = "repository-maintainers"
 status = "active"
 code_paths = [
     ".github/workflows/release.yml",
+    ".github/workflows/verify.yml",
     "scripts/release_manifest.py",
     "src/ai_dlc/cli.py",
     "src/ai_dlc/setup/onboarding.py",
