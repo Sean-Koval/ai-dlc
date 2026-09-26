@@ -33,8 +33,8 @@ deploy = "none"
 
 [artifacts]
 brief = "docs/product-direction.md"
-spec = "openspec/changes/windows-portable-core"
-plan = "openspec/changes/windows-portable-core/tasks.md"
+spec = "openspec/changes/archive/2026-09-26-windows-portable-core"
+plan = "openspec/changes/archive/2026-09-26-windows-portable-core/tasks.md"
 branch = "codex/windows-portable-core"
 tracker = "171"
 pr = "https://github.com/Sean-Koval/ai-dlc/pull/181"
