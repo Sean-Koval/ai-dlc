@@ -60,8 +60,11 @@ owners into an ordered schema-1 plan. It does not run previews or apply operatio
 open a network connection, launch a subprocess, stage adoption, repair caches, or
 persist an orchestration session. The thin `project onboard --root PATH` CLI emits
 that plan and maps its state to an exit code; it has no apply mode or MCP endpoint.
-Existing enrollment, machine provisioning, adoption, setup, rendering, readiness,
-and target-check services retain their own review, mutation, recovery, and evidence
+For a fresh target, adoption precedes root-scoped machine planning because the
+existing machine owner requires the target configuration. Each apply still needs
+its separate review. Existing enrollment, machine provisioning, adoption, setup,
+rendering, readiness, and target-check services retain their own review, mutation,
+recovery, and evidence
 boundaries. Project configuration wins over conflicting CLI choices, while omitted
 enrollment stays unselected for a self-contained project.
 

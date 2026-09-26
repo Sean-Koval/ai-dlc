@@ -33,6 +33,10 @@ The onboarding plan SHALL order exact available existing operations for reviewed
 - **WHEN** prerequisites and explicit target choices are known
 - **THEN** the plan recommends the existing adoption preview followed by a separately reviewed apply operation and keeps native qualification not-assessed
 
+#### Scenario: Fresh target has selected enrollment
+- **WHEN** a fresh target selects a complete reviewed profile and client
+- **THEN** the ordered plan makes target adoption a prerequisite of root-scoped machine planning, so the machine owner receives an existing target configuration rather than falling back to another repository
+
 #### Scenario: Existing owned guidance is edited
 - **WHEN** a read-only inspection identifies an ownership conflict
 - **THEN** the plan reports the existing conflict resolution route and does not overwrite, execute recovery or bypass the owning service

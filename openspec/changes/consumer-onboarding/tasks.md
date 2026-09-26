@@ -9,8 +9,8 @@ Implementation authorized by the user on September 26, 2026: “Start implementi
 - [x] 1.2 Identify pure existing resolvers and any needed read-only extraction; confirm enrollment preview is not called for inspection.
 
 ## 2. Consumer route and implementation
-- [ ] 2.1 Split consumer installation/adoption from contributor setup in canonical entry guidance, including a pre-import native Windows limitation and released/source feature identity.
-- [ ] 2.2 Implement the shared read-only preflight and thin CLI interface with explicit target/selection handling, stable findings, exact argument arrays and ordered dependencies.
+- [x] 2.1 Split consumer installation/adoption from contributor setup in canonical entry guidance, including a pre-import native Windows limitation and released/source feature identity.
+- [x] 2.2 Implement the shared read-only preflight and thin CLI interface with explicit target/selection handling, stable findings, exact argument arrays and ordered dependencies.
 - [x] 2.3 Compose existing service recommendations without an execute-plan facility, automatic apply, implicit fallback or personal configuration inheritance.
 
 ## 3. Acceptance and delivery
@@ -56,10 +56,10 @@ Return the schema-1 target/platform/clients/engine/state/findings/actions/qualif
 Files: modify `src/ai_dlc/cli.py`, create `tests/test_consumer_onboarding_cli.py`; update `AGENTS.md`, `README.md`, `docs/architecture.md`, `docs/runbooks/machine-enrollment.md`, `docs/workflows/work-computer-setup.md`, `docs/workflows/tool-map.md`, `docs/release-verification.md`, and relevant `docs/catalog.toml` source mappings. Update generic packaged guidance only where actual instructions require it.
 Consumes Task 1’s interface. CLI `project onboard` requires `--root`, offers the documented optional source/ref/profile/machine/client/preset selections and no apply mode. It emits the service JSON and exits 0 only for actionable planning, 1 for blocked/unsupported/input-required, and 2 for invalid arguments/configuration.
 
-- [ ] Add failing CLI tests for required root, no apply option, state/exit mapping, repeated client options and malformed config.
-- [ ] Implement the thin command and guide consumers to explicit target installation/adoption/setup/check operations; preserve separate contributor instructions.
-- [ ] Name the native Windows installation limitation before CLI import, with #172’s pending support path and no mandatory WSL advice. Historical v0.4.0 does not have this command; use the exact reviewed source executable for the current journey.
-- [ ] Run CLI/service and affected guidance checks; commit with a conventional prefix and prepare a review report.
+- [x] Add failing CLI tests for required root, no apply option, state/exit mapping, repeated client options and malformed config.
+- [x] Implement the thin command and guide consumers to explicit target installation/adoption/setup/check operations; preserve separate contributor instructions.
+- [x] Name the native Windows installation limitation before CLI import, with #172’s pending support path and no mandatory WSL advice. Historical v0.4.0 does not have this command; use the exact reviewed source executable for the current journey.
+- [x] Run CLI/service and affected guidance checks; commit with a conventional prefix and prepare a review report.
 
 ### Task 3: Real consumer evidence and delivery
 
