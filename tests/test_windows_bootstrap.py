@@ -553,7 +553,7 @@ def test_native_execution_sentinel_blocks_empty_directory_junction_attack(tmp_pa
         )
         + paths
     )
-    ioctl = getattr(c, "WinDLL")("kernel32", use_last_error=True).DeviceIoControl
+    ioctl = c.WinDLL("kernel32", use_last_error=True).DeviceIoControl  # pyright: ignore[reportAttributeAccessIssue]
     ioctl.argtypes = [
         w.HANDLE,
         w.DWORD,
@@ -570,7 +570,7 @@ def test_native_execution_sentinel_blocks_empty_directory_junction_attack(tmp_pa
         with opened(path, access=0x100, share=7) as handle:
             count = w.DWORD()
             applied = bool(ioctl(handle, 0x900A4, data, len(data), None, 0, c.byref(count), None))
-            return applied, getattr(c, "get_last_error")()
+            return applied, c.get_last_error()  # pyright: ignore[reportAttributeAccessIssue]
 
     applied, code = attack(control)
     assert applied, f"Positive-control junction attack did not run: {code}"

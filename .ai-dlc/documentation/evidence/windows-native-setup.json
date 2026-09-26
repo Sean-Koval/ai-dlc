@@ -1,0 +1,461 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "AGENTS.md": "045bd2f5330f6e72fd5237742d3497898a4d37c69a2c703aadab23967548854f"
+      },
+      "outcome": "updated",
+      "reason": "Routes cloned-checkout setup by native OS and clearly separates contributor checks; generated guidance renders structured commands as check invocations.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "AGENTS.md"
+    },
+    {
+      "bound": {
+        "README.md": "27c06bbe188d0b8db34a05e9b2843444ba87ecf23b06becdbb2adc7eb51678d4"
+      },
+      "outcome": "updated",
+      "reason": "Provides native PowerShell contributor instructions without WSL, separates consumer adoption and names published asset and desktop qualification limits.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "README.md"
+    },
+    {
+      "bound": {
+        "ai-dlc.toml": "878eec09c80130c6f6cf466edfd1e0d92236884431e24d4dab279ad566a7715f"
+      },
+      "outcome": "updated",
+      "reason": "Uses direct argv contributor setup/check records and adds the Windows full required-receipt binding while retaining existing Unix platforms.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "ai-dlc.toml"
+    },
+    {
+      "bound": {
+        "catalog:docs/architecture.md": "1f6e70913f96f235139fc0202ea5c5e9f90e16afd4473e90f500f16994a4ec40",
+        "docs/architecture.md": "a6845f78cf3f1637dc46e5cce0c0c4ec453503a2596c20ad22eaf26395fadef8",
+        "pyproject.toml": "296acf5ff015bc4aaf17576c4210e8c69988beb35e11507250a45c0dc534e4d5",
+        "scripts/check_generated.py": "e6cef5839c1c00a99205c417026c6470353ff80877d5471ac7cb0443966f2720",
+        "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
+        "scripts/check_tests.py": "b7d10db0780aa851d8ba810796202e638abd79395cbf41071ac2114bb1bab920",
+        "scripts/check_types.py": "f2718dcf31d0c8e01fb1999a3aa6f495d3e55dc759d509b89445dfc52a015a6c",
+        "scripts/prepare_release_assets.py": "f54a08057f0a5271dea8165978b8478b9d25638d2c203277d7b1017856f330b3",
+        "scripts/qualify_framework.py": "01dd9e6acbe14e740f068662aa539e9a7ed0ba57ab97e9457e0a05d968a25fb6",
+        "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+        "scripts/run_skill_evaluation.py": "46a97694bae155b2418d172971480e031f510acc864b9d91fa546f98c754729f",
+        "scripts/verify_windows_consumer.py": "68b134fb4fc023171a4c90f869830b6dad8c907c11b9199b69becea862505f60",
+        "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
+        "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
+        "src/ai_dlc/_windows_storage/__init__.py": "5715def899453f15265e13d52e5b518844cc9d057421cfa5279172d799d5f506",
+        "src/ai_dlc/_windows_storage/_api.py": "d5fc4f971db8e706871c06e8119884848e505af6c45f4fbb5c2f7db513faf41b",
+        "src/ai_dlc/_windows_storage/_security.py": "62785d4e088cd485816a33f35a7a559d3d1acf166093c413a3f4f79969056314",
+        "src/ai_dlc/cli.py": "4c77972ef3cdb15e2a173ad869e7eb09c54197926dd51f8674e5a83ed9c11c8c",
+        "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
+        "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
+        "src/ai_dlc/config.py": "dd596570054e3f455b90dc5cea2a86c97175b2c4ec4243328755dc1884ececc1",
+        "src/ai_dlc/conformance.py": "9d18cdbf21aa8f9889d880729c368d9567f32f83c066693dceb06ce6549b6082",
+        "src/ai_dlc/contracts.py": "e2202d26b4815674bde05fc1190fbaedfe7cabdf6d8c913a721d1f0b53619d1e",
+        "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
+        "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
+        "src/ai_dlc/documentation/document_files.py": "3174b5773adf54c9a0f586a041c4e67001d136d9ba1016ec1cbb0b54debafd55",
+        "src/ai_dlc/documentation/document_impact.py": "bf3353c2ab99166c4900647ac7a0626bba3ee08a4a4f92ffa9269167f86012ca",
+        "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
+        "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
+        "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
+        "src/ai_dlc/documentation/documents.py": "f42322918de5da6b8caa39e9f18e88aff26501d7f2253fbe2462d242126ea29e",
+        "src/ai_dlc/documentation/fde.py": "3664430ebca9f3ef7ba7c7c431f7e4790176066510904ebe4d43d0a88ecf26e1",
+        "src/ai_dlc/documentation/knowledge.py": "f9f8a0598f0cabc7556e001359e991eac8c4972c2b229826315b441e639ed2b1",
+        "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
+        "src/ai_dlc/documentation/learnings.py": "5ea35f5bcb5d8ae7f0fbf593136822c1faa15fbe003957665cb4dcd4d6db1c3a",
+        "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
+        "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
+        "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
+        "src/ai_dlc/documentation/workspace_diagnostics.py": "0ef3ce986033a15568d4f80420b2f21b1d872ad8b86d6a490e09ec70b5f6897c",
+        "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
+        "src/ai_dlc/environment/bootstrap.py": "c1debaaaa216471009d5d3a2046d78ec819d2cb9671984451bb1b8a2b0e23d75",
+        "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
+        "src/ai_dlc/environment/enrollment.py": "f8e826a9dca7a8e308f9ad52c8f178ad7e6f2c6c536da7459a68c123d51e9c53",
+        "src/ai_dlc/environment/machine.py": "2c3981ab3e8e4e52d2c3f86f02d8714bf92dd3229eaff99c72ac91961fbbd16a",
+        "src/ai_dlc/environment/profile_source.py": "f177cc9336ed7c69e37299bc70107f14a7878ff72abbd1070dc3560340d451cc",
+        "src/ai_dlc/environment/source_content.py": "c11618009a7d4c3dbaa03b49d80df3a6f7cae37338a9fe92166865379d89670a",
+        "src/ai_dlc/environment/source_schema.py": "929944f86aef4a0aa2e257f3fbb4bee26ce07c522ed2eb35c2e1bbba38ec44d0",
+        "src/ai_dlc/environment/team_sources.py": "20d583a9046adfac9f0f5bf6de7aca537654eb29d0ff636c27f5a78c7c5c21a6",
+        "src/ai_dlc/errors.py": "b8c0da78ec0e9ea75ef71b4495b501570625988ba5ae54c4631f1ca20a8362c1",
+        "src/ai_dlc/files.py": "eb0452e50442cdf9da231a56111afec1d45b4bc5b7a41a00931a540e88ad14da",
+        "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
+        "src/ai_dlc/harness/agents.py": "7bb58b2706e64cd717727a9bc746ad4e88c4d6c5da1f9ff22da5f46bddb4a881",
+        "src/ai_dlc/harness/components.py": "b64cd2ae837f83a37ddd1c74dad25fcd16fe8733715c224c7d64673784ebba11",
+        "src/ai_dlc/harness/design_capture.py": "8b872492b88f4a7728bedf0ae8a1edaad2312a918248bf8f5d051c8bd8b42a58",
+        "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
+        "src/ai_dlc/harness/hooks.py": "4c1d41b1d6294dd97ad5ecf14bc49026d100b387bf8de9867c49ee8c41e8d311",
+        "src/ai_dlc/harness/native_composition.py": "1e4c5729ff31cb91820bd8df3d15b60c1067b4a5f2b89381888211470dc79bc8",
+        "src/ai_dlc/harness/skill_evaluation.py": "73ded6785d5d0ff53f5f44ba4d1ede7406f367635676c269d5044358030ebc2e",
+        "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
+        "src/ai_dlc/harness/user_agents.py": "c99f9a52a379feaa0c1721081b95fef91f51c44f0a9e906145de51154616e937",
+        "src/ai_dlc/harness/windows_render.py": "5845e483eba550331f0a6777fcd7a3b9c13c90af071ac6df5962ffc3b090b978",
+        "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
+        "src/ai_dlc/locking.py": "e3c5dbe1a98d3402352bc8a3c3a031106e8dd515e060a676803d734d8dee99dd",
+        "src/ai_dlc/mcp_server.py": "607eba3e47a8573862d83e5209e824b78ec0af74545fa51727b8d3f7c03db410",
+        "src/ai_dlc/provider_definitions.py": "e90c2d41a839bc4a32dcb3989f59fa6c9073bd1233f3db2088bd176e1bc513d3",
+        "src/ai_dlc/providers/__init__.py": "d08be9e5584f3ced5aaac694d1eef6acce42faed3d1c74cf7e65102c6ee7ad35",
+        "src/ai_dlc/providers/evaluation_api.py": "5c3a9b890c88d4633fc553dbe206c415c5ceb1f6679cefdf7d215d8680fcec17",
+        "src/ai_dlc/providers/github_issues.py": "311595febaf40ce8855bde3c3bb8a7c9d2087ae9a0b5ace5e7e8e3347f8696ba",
+        "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
+        "src/ai_dlc/providers/jira_cloud.py": "d9b83ba88fb964816450b1479fc775a526455c023725ecff3c8ca695ac7cd8c8",
+        "src/ai_dlc/providers/linear.py": "fa90bd64765c8e8bee1cbfa54e47e17688e8e6407c7492ae0ed863b4615c2b95",
+        "src/ai_dlc/providers/openspec.py": "aa7343d5910542e31982ae3c24b84cdb6ef2446a57de9d8ed0bdcc88950ae70a",
+        "src/ai_dlc/providers/plane.py": "f05450be6fa35ae10c8ae7531518797be5a3f778ec25d517c88fb49efbe9f9a3",
+        "src/ai_dlc/providers/plane_attempts.py": "da576a7f52dd7860c2340b72c91b39f2c9d84bbb7c983cd8bc2cc1871c56333b",
+        "src/ai_dlc/providers/python_exec.py": "3aaafe9bf74a4a949b59d71ed2079b9c48114462a9c823b3641a1772af5a6ff1",
+        "src/ai_dlc/providers/scm.py": "3213f9c9690d598a9d7024b687044ca3b0844b972909cd96ad14e270081409d9",
+        "src/ai_dlc/providers/teamai.py": "ff7a781abcaeeca1c978f9472502156e31a1fc6d192ac50e1e489d333b77a5e6",
+        "src/ai_dlc/setup/__init__.py": "8eb444a69a67d0c1a59ffc0c80ce59efda159976bea58d40154e97f8bdecf18c",
+        "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
+        "src/ai_dlc/setup/connections.py": "e80cbe0e1e94ae5f9d8f60ae044918e8f9e377e173a25ff7bd91f28180a24d15",
+        "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
+        "src/ai_dlc/setup/github_project_setup.py": "55984de17559ba2d56b3b1c7483dabb8a6f05f1e773e8bd9d40437a2d30ee85e",
+        "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
+        "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
+        "src/ai_dlc/setup/project.py": "09464c89f569a337aaa77d1604404273808636323635bcd00bb05e0f74c7ad9e",
+        "src/ai_dlc/setup/provider_onboarding.py": "be120ad6e93c178f041fd338a45a5df7c75b9a30591725cfbf7800bca531045e",
+        "src/ai_dlc/setup/provision.py": "f87c710d46a04eb51b72a50b90f9d1a5aa4baabf7627be9416fbfcd3c1749e0c",
+        "src/ai_dlc/setup/readiness.py": "e0984a1f504ee87f3c4c1939624b34ccfe2fd6b7315df365166e95ff3b975d55",
+        "src/ai_dlc/setup/rebind.py": "2458691c83e22c613ee3eb7541e103aee7264e7b23a78c17194135bc3d5a35c6",
+        "src/ai_dlc/setup/templates.py": "1fc9173daa6fe71eebf00eda0f4e2b7263c65f694d3b227dee5421240e0eca62",
+        "src/ai_dlc/setup/tracker_targets.py": "b04533ac254bde0aa7bddf083097d815153998f15b1042645ac4ffc38f848319",
+        "src/ai_dlc/setup/windows.py": "3ad435e5ba87abdc0a41ccc0897c17a0ccc7147f2c6c8aaa20b2626710698cd9",
+        "src/ai_dlc/setup/workstation.py": "8864f325569afe3cc881f1843b16151502fe3d3e1ebbf9280df5fbe9852298ca",
+        "src/ai_dlc/toml_edit.py": "696057b2848ca8b57e5189d1c78441fc6c1e06994f480f6f13f8dd31c050515e",
+        "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
+        "src/ai_dlc/verification/evaluation/__init__.py": "7cf0a3add5298d2f8d58954210cee24b3fb6a5f81e505ef3b948a7078cbb0eb8",
+        "src/ai_dlc/verification/evaluation/attempt.py": "a249ad3af90f034cac3774c5406f819afe54209fe88307064c4fd822750a4717",
+        "src/ai_dlc/verification/evaluation/budgets.py": "8069eb9a4f6d24e7fe88774581b47a7d817445ac950a266684aee77fc5378826",
+        "src/ai_dlc/verification/evaluation/contracts.py": "5ab6a604c6a6ab6be54c69f58ba6a11c8db9b800011860ec9775f982908515d3",
+        "src/ai_dlc/verification/evaluation/drivers.py": "f4a81dea2b7f3f4ca793e6f1953fb7e384cc8359eae4a308768b41cccceea47f",
+        "src/ai_dlc/verification/evaluation/evaluate.py": "e8a2405d3f6e9c0e3a121b4936f617ee335abaef54e7688eafb813985e90de3a",
+        "src/ai_dlc/verification/evaluation/git_observer.py": "f6a422a1f989b3056cf82484716f0e0101719caffb54e8e96477845ed75445b3",
+        "src/ai_dlc/verification/evaluation/image.py": "d3f2970ca488c1b7a1ceaf516f0f86c8b602f74b0fffe1ddbd2d35a13b31167b",
+        "src/ai_dlc/verification/evaluation/planning.py": "f0a6844c5511db3d4c420f9c7638e47b6d86810968d16a3767de6373c2a971c6",
+        "src/ai_dlc/verification/evaluation/report.py": "fa025c820f8a1a411ec413a7541d30fdf355955bec1f70bc9da220910993c88b",
+        "src/ai_dlc/verification/evaluation/run.py": "271c2aabb8af62d3629a78c6db6d38e23956a3cb5f0363a6a8ec38e6394d52e4",
+        "src/ai_dlc/verification/sandbox.py": "c017bd12115b8f144d07eba619f4e15ddbd00db323e4d386f569c4bcb08646e0",
+        "src/ai_dlc/verification/test_proxy.py": "30ec2d29bf722d48f7341977542feef4a0c5ef9f90c90b158e869c5025d1c8d5",
+        "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
+        "src/ai_dlc/work/journal.py": "91bf194b430c5d0228a5600444a02d79029121a21079ec4c319e96fdaa68543b",
+        "src/ai_dlc/work/summary.py": "af386fc470b222d5c7b600ea3169ee7f26be7bdfafdcac8b4098b1fff2f0bd8e",
+        "src/ai_dlc/work/traceability.py": "e9fbca5153cdd710b78872c66651269184ee5f3f1313f313b65df212430e8cc8",
+        "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
+        "src/ai_dlc/work/workflow.py": "b16ef66b0bea70ece8aaf15003e5e0233dbcff82051b3da24d59b94106da3fca"
+      },
+      "outcome": "updated",
+      "reason": "Describes the pre-Python native helper boundary, immutable engine paths and shared selection separation; application services remain shared and native provisioning stays in its adapter.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        "docs/catalog.toml": "a630b905d2834d88b5038e329f4124df6c7ccc787491de5455cdbf94221f96ae"
+      },
+      "outcome": "updated",
+      "reason": "Maps native bootstrap assets, assembly/consumer driver and CI evidence to canonical release documentation without manufacturing review dates.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "docs/catalog.toml"
+    },
+    {
+      "bound": {
+        "catalog:docs/design/local-and-shared-knowledge.md": "4ad0c70cf1252fc3cebfd01330863b90906e037c7b77ff67d8acf0925548af2e",
+        "docs/design/local-and-shared-knowledge.md": "c5daa2c9300f8e21597a64f90c46c214f0c4a6f800e011e97dfc29c69e6bada0",
+        "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
+        "openspec/specs/session-learnings/spec.md": "d6d288fc9b8aee72b85b56b30e2cb88dcb4acd2530c3b3b7c0e31854492cc89b",
+        "src/ai_dlc/documentation/knowledge.py": "f9f8a0598f0cabc7556e001359e991eac8c4972c2b229826315b441e639ed2b1",
+        "src/ai_dlc/documentation/learnings.py": "5ea35f5bcb5d8ae7f0fbf593136822c1faa15fbe003957665cb4dcd4d6db1c3a",
+        "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
+        "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
+        "src/ai_dlc/documentation/workspace_diagnostics.py": "0ef3ce986033a15568d4f80420b2f21b1d872ad8b86d6a490e09ec70b5f6897c",
+        "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
+        "tests/test_knowledge.py": "38e5cda9c9dc1fe97d12618a0bd9a86b2725cff059d412232152582af1547af1",
+        "tests/test_session_learnings.py": "32bb7c3143db24ff96fb43ac5081285e77a93bd8d8d825076f3422cbfe194796",
+        "tests/test_vault_link.py": "fd146d4d15041021ac343257c9d91a8c1950878d275420eda85d13747065e110",
+        "tests/test_vault_mount.py": "f6a5dc947af0d68e4688c37d05294c6b4868aa98ead91d26aa0c8ffec8018424",
+        "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Workspace diagnostics adds native executable-selection observations only; private note ownership, mount scope, Confluence publication and learning behavior are unchanged.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "docs/design/local-and-shared-knowledge.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/development-workflow.md": "7339f0d6fe7254332a9df3dc71ef255205b458128881e4a5b9033e9234897604",
+        "docs/development-workflow.md": "9eb06d8052a34be136b15e654de101fb11b30a10cf2b4c1ff34c4f415195544f",
+        "openspec/specs/portable-development/spec.md": "47ad8e0533e59e9ec1bbe884a8cfa392c97d5e2b999c9e29398a86e076f5e596",
+        "project-templates/project/ai-dlc.toml.jinja": "f02135553a194dd9b78fab69d905b8d1ea3b1f3debc602c5c3ac00906e0df4f3",
+        "project-templates/project/scripts/check_tests.py": "a3dd2021b7911d2ff688142776b7a43af60f76e052d7164086db2434db60102d",
+        "project-templates/project/tests/test_main.py": "4e6ac9def60ea5a6aef9e004c465cc439acac4b33e4f70df332939f0cdfae63d",
+        "src/ai_dlc/cli.py": "4c77972ef3cdb15e2a173ad869e7eb09c54197926dd51f8674e5a83ed9c11c8c",
+        "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
+        "src/ai_dlc/setup/project.py": "09464c89f569a337aaa77d1604404273808636323635bcd00bb05e0f74c7ad9e",
+        "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
+        "tests/test_project.py": "0863470fa695afffc68bba51602585cd2539174cc9a8599a7cf838773f170b93",
+        "tests/test_templates.py": "99196006ef93f12a88bc3811bc052d3c0a00f8c0bbb72e6383badcfc6cb541fa"
+      },
+      "outcome": "updated",
+      "reason": "Separates contributor bootstrap from consumer adoption and states native argv, setup/check and authored-lock ownership boundaries.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "docs/development-workflow.md"
+    },
+    {
+      "bound": {
+        ".github/workflows/release.yml": "54077783bb2738431d7ee8f879c0481b679283df631e9a0a53a8f8c6ba19ee60",
+        ".github/workflows/verify.yml": "2776186ada35d591e32fa25943c965f70590a9e4c3c416efcccc97116f9a1bf9",
+        "catalog:docs/release-verification.md": "6d7d9665236428f22d18f07fa4bb943f775781287d4325e443b8709b3ae166fb",
+        "docs/release-verification.md": "5f22b26febf2b99b8de3f08602cc405590db1eaad3705af0e8b18680b5316d22",
+        "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
+        "scripts/check_tests.py": "b7d10db0780aa851d8ba810796202e638abd79395cbf41071ac2114bb1bab920",
+        "scripts/prepare_release_assets.py": "f54a08057f0a5271dea8165978b8478b9d25638d2c203277d7b1017856f330b3",
+        "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+        "scripts/verify_windows_consumer.py": "68b134fb4fc023171a4c90f869830b6dad8c907c11b9199b69becea862505f60",
+        "tests/test_native_repository_checks.py": "3f05484a45edbe07d853548f4207013c3c715341cae237c44407349204851393",
+        "tests/test_release_manifest.py": "45efed1c504dcb301ccc72bdedfc291dc779721c2f17c1be5094c1445e0d9920",
+        "tests/test_release_workflow.py": "38a3cb143d0247ce748267fc72393dd812f7a8b463f21f92c2604983035026e4",
+        "tests/test_windows_consumer.py": "26a1e03fac1048de9f676f03ddc69d896758ea26acc32ce79a7c65e56c21daa9"
+      },
+      "outcome": "updated",
+      "reason": "Records the actual121-pass native checkpoint and failing documentation gate; distinguishes proposed full Windows source/consumer checks from pending actual results and Windows11 desktop qualification.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "docs/release-verification.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/runbooks/machine-enrollment.md": "57efacf540031d6731cfa09fb33452a0a368c5fc06378f76efca74b758f38234",
+        "docs/runbooks/machine-enrollment.md": "a8f62eda330c3f9ba34f6358f225ed1960419f2e75b0b8e2ed57813ff40c8d83",
+        "openspec/specs/native-work-harnesses/spec.md": "09197a91bca7653dd698a1b42e7203c4240e91cd5efa4fe3665f59e778aec909",
+        "openspec/specs/team-sources/spec.md": "3dca430922c9b5d8eb7b678b0cf00da813f9be332e76cf59a448bd718f4d4587",
+        "profiles/example/ai-dlc-profile.toml": "29b58a995e46b38ac75e5db5756e766e6b130f26e162448fc41fee898e7ff01e",
+        "src/ai_dlc/config.py": "dd596570054e3f455b90dc5cea2a86c97175b2c4ec4243328755dc1884ececc1",
+        "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
+        "src/ai_dlc/environment/bootstrap.py": "c1debaaaa216471009d5d3a2046d78ec819d2cb9671984451bb1b8a2b0e23d75",
+        "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
+        "src/ai_dlc/environment/enrollment.py": "f8e826a9dca7a8e308f9ad52c8f178ad7e6f2c6c536da7459a68c123d51e9c53",
+        "src/ai_dlc/environment/machine.py": "2c3981ab3e8e4e52d2c3f86f02d8714bf92dd3229eaff99c72ac91961fbbd16a",
+        "src/ai_dlc/environment/profile_source.py": "f177cc9336ed7c69e37299bc70107f14a7878ff72abbd1070dc3560340d451cc",
+        "src/ai_dlc/environment/source_content.py": "c11618009a7d4c3dbaa03b49d80df3a6f7cae37338a9fe92166865379d89670a",
+        "src/ai_dlc/environment/source_schema.py": "929944f86aef4a0aa2e257f3fbb4bee26ce07c522ed2eb35c2e1bbba38ec44d0",
+        "src/ai_dlc/environment/team_sources.py": "20d583a9046adfac9f0f5bf6de7aca537654eb29d0ff636c27f5a78c7c5c21a6",
+        "src/ai_dlc/harness/agents.py": "7bb58b2706e64cd717727a9bc746ad4e88c4d6c5da1f9ff22da5f46bddb4a881",
+        "src/ai_dlc/harness/hooks.py": "4c1d41b1d6294dd97ad5ecf14bc49026d100b387bf8de9867c49ee8c41e8d311",
+        "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
+        "src/ai_dlc/providers/teamai.py": "ff7a781abcaeeca1c978f9472502156e31a1fc6d192ac50e1e489d333b77a5e6",
+        "tests/test_agents_phases.py": "b141a47725ffe104d2826da09227fc97615186dad3ab4bf5716ba07544d0afc5",
+        "tests/test_native_harnesses.py": "e008d4773dccfa2662942561b24df4fdb6c15f637683d5fbdfaf59240e9bb5cc",
+        "tests/test_rendering.py": "42b3549792a8e341f2eb424d24da90e19bfa10b482e716ba12b21290c76996e9",
+        "tests/test_team_sources.py": "a0e3a25ae8032b650a0c47e0b619677998efde63a90b88b038c37b6de996d0a6"
+      },
+      "outcome": "updated",
+      "reason": "Adds KnownFolder/direct-executable routing, explicit PowerShell profile preview/apply, policy/encoding ownership and manual Git/GH installer limits.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "docs/runbooks/machine-enrollment.md"
+    },
+    {
+      "bound": {
+        ".github/workflows/release.yml": "54077783bb2738431d7ee8f879c0481b679283df631e9a0a53a8f8c6ba19ee60",
+        "bootstrap/windows-native.cs": "6f99e5936b6536c8c158f11768d634b40cf42c0756d93aa70be97b0c6c014d9c",
+        "bootstrap/windows-select.py": "3366c0e029dc0bfbbd8b4576060631e6205a879fe97435362dd1f2558a41d84a",
+        "bootstrap/windows.json": "6c5d3c1d895404e0a0fdbffc2c703926dde670915013295d4f54779b63a51981",
+        "bootstrap/windows.ps1": "2b117ab991c9f11e7971875d17bd5480f577f8acda77cf6dcb764e98c37f888a",
+        "catalog:docs/runbooks/release-publication.md": "89f19422d8dbbf072c44f496c5dad1f4efb6805319645a2ae2c8a99b67d93a28",
+        "docs/runbooks/release-publication.md": "5177ad6b285c8adc36a6750bb4e02d263326eac08608081f924496d5c10c9a57",
+        "project-templates/project/bootstrap/windows-native.cs": "6f99e5936b6536c8c158f11768d634b40cf42c0756d93aa70be97b0c6c014d9c",
+        "project-templates/project/bootstrap/windows-select.py": "3366c0e029dc0bfbbd8b4576060631e6205a879fe97435362dd1f2558a41d84a",
+        "project-templates/project/bootstrap/windows.json": "6c5d3c1d895404e0a0fdbffc2c703926dde670915013295d4f54779b63a51981",
+        "project-templates/project/bootstrap/windows.ps1": "2b117ab991c9f11e7971875d17bd5480f577f8acda77cf6dcb764e98c37f888a",
+        "project-templates/project/scripts/bootstrap.ps1": "5ad401709b636b0c501b3b753031779d8bb74d816be24631fe5530f294db8f91",
+        "project-templates/project/scripts/bootstrap.sh": "258849a164d84198a1606771d734a8b4d4e59dca882438acb78201561561ce5c",
+        "scripts/bootstrap.ps1": "5ad401709b636b0c501b3b753031779d8bb74d816be24631fe5530f294db8f91",
+        "scripts/bootstrap.sh": "258849a164d84198a1606771d734a8b4d4e59dca882438acb78201561561ce5c",
+        "scripts/prepare_release_assets.py": "f54a08057f0a5271dea8165978b8478b9d25638d2c203277d7b1017856f330b3",
+        "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+        "scripts/verify_windows_consumer.py": "68b134fb4fc023171a4c90f869830b6dad8c907c11b9199b69becea862505f60",
+        "src/ai_dlc/setup/templates.py": "1fc9173daa6fe71eebf00eda0f4e2b7263c65f694d3b227dee5421240e0eca62",
+        "tests/test_bootstrap.py": "f86a298356da2ccae4e3a84f01bcead4dc87a5e3c64ce214f9418062469551cb",
+        "tests/test_release_manifest.py": "45efed1c504dcb301ccc72bdedfc291dc779721c2f17c1be5094c1445e0d9920",
+        "tests/test_release_workflow.py": "38a3cb143d0247ce748267fc72393dd812f7a8b463f21f92c2604983035026e4"
+      },
+      "outcome": "updated",
+      "reason": "Documents native assets, exact candidate publication gate/read-only replay and historical v0.4 incompatibility; no package publication or unobserved qualification claimed.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "docs/runbooks/release-publication.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/backend-contracts.md": "310debc30b936d1941bc565fcd6145edc14b1bc6f1ddeca3c703211d9f4cd465",
+        "docs/verification/backend-contracts.md": "8467afbbf49d04d46269aba4e5ff8fe84c3104c5dcf2696026dc92c77aa3e4fa",
+        "openspec/specs/backend-capability-pack/spec.md": "45fc3ca17f9953edf4aa15f24c1a4176e84bceaf179fdb10f35ab58fd85e6a3e",
+        "project-templates/project/ai-dlc.toml.jinja": "f02135553a194dd9b78fab69d905b8d1ea3b1f3debc602c5c3ac00906e0df4f3",
+        "project-templates/project/scripts/check_api_contract_drift.py": "81c6da34445a1329223f2592eb1389aaf35d2e12b73da73d7b9c9ffdb0b55173",
+        "tests/test_backend_capability.py": "d54ccce3861776fdb140962b0dd7f5f6e07fc53bece997c67675982fa1e60f2f"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Python backend command representation becomes argv but validator pins and drift behavior are unchanged; historical validator/frontend evidence remains historical.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "docs/verification/backend-contracts.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/documentation-workflow.md": "6e620e11c354a39b24ec8e47a66bcde387ef4e32ca055e7ac526f50363b0ddfe",
+        "docs/verification/documentation-workflow.md": "838edaa1c9c693a577f8dd704db6f75ad7dfee541b3656c26d73d6d1474cc419",
+        "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
+        "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
+        "openspec/specs/documentation-impact-workflow/spec.md": "80b65bef76266ee1ea22b5cdf9f5a452125569a4b0e9f8d3a0b5cc8dd84ba786",
+        "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
+        "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
+        "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
+        "src/ai_dlc/config.py": "dd596570054e3f455b90dc5cea2a86c97175b2c4ec4243328755dc1884ececc1",
+        "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
+        "src/ai_dlc/documentation/document_files.py": "3174b5773adf54c9a0f586a041c4e67001d136d9ba1016ec1cbb0b54debafd55",
+        "src/ai_dlc/documentation/document_impact.py": "bf3353c2ab99166c4900647ac7a0626bba3ee08a4a4f92ffa9269167f86012ca",
+        "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
+        "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
+        "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
+        "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
+        "src/ai_dlc/harness/agents.py": "7bb58b2706e64cd717727a9bc746ad4e88c4d6c5da1f9ff22da5f46bddb4a881",
+        "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
+        "tests/test_company_guidance.py": "ab39bed3342d9de7d4c68db6c6c54fd66e13c12f2f2167c38e8d345c7dc9736e",
+        "tests/test_document_access.py": "bdf96af4afb1ad6f985204ad243a624d4da8b56d527af63cc072908a76beeff4",
+        "tests/test_document_evidence.py": "c5263165cc63dd1f2df99491828a97aea167468171348840b29d9f047b63c85d",
+        "tests/test_document_impact.py": "a9cccc6fa777d01add578c103adb8efa099541c02fa9132790dd2377fa45c728",
+        "tests/test_document_inventory.py": "927199563751af6b2dd5aa8e93cddb43cc62192adffea49694dada37ef6bf14c",
+        "tests/test_document_review.py": "88f37e6365c7e9b545d668f978993ef7ad9acfa146e7d549728f4ef9cab8008a",
+        "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
+        "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Historical documentation/native Obsidian observations remain at their stated revisions; bootstrap diagnostics adds no Obsidian, Antigravity or external MCP qualification.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "docs/verification/documentation-workflow.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/design-to-implementation.md": "ee408b745f85bdc4229b75b8dfd6c9074257194e2a65933b4ba31f56522f389d",
+        "docs/workflows/design-to-implementation.md": "b57542497f6c3d50e2187139980982800340525616f27d87b9934e156c1881a9",
+        "openspec/specs/frontend-capability-pack/spec.md": "a8461cc35ff733d3643f9cb8fbeb691f0cae7ea7d54eae59b756883c7e5a78ea",
+        "project-templates/project/ai-dlc.toml.jinja": "f02135553a194dd9b78fab69d905b8d1ea3b1f3debc602c5c3ac00906e0df4f3",
+        "project-templates/project/playwright.config.ts": "d06e3c907f16f5027d6e2f47112b5cca353e68525a528957f6f760eca940fd78",
+        "project-templates/project/tests/e2e/smoke.spec.ts": "8139af70f4b8ba2010efc673d4b0c6fb802ea101d2d70f08ec47b3007db78c35",
+        "src/ai_dlc/harness/design_capture.py": "8b872492b88f4a7728bedf0ae8a1edaad2312a918248bf8f5d051c8bd8b42a58",
+        "tests/test_frontend.py": "4deefd2f60011e34cdf8e79bf2d02726ea9fee99e2af43e8fe75ed51352cb0ef"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Frontend browser capture and design workflow are unchanged; native minimal setup does not qualify optional frontend tools.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "docs/workflows/design-to-implementation.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/greenfield.md": "b8bf78cb5032ea2be2d67e770261aca4cca32914a41a987e3caa8f5b6969d50d",
+        "docs/workflows/greenfield.md": "688f9aa6dd018cc7946a0022b382fb513eba4111ff201be6bceee56d8d53edcd",
+        "openspec/specs/backend-capability-pack/spec.md": "45fc3ca17f9953edf4aa15f24c1a4176e84bceaf179fdb10f35ab58fd85e6a3e",
+        "project-templates/project/ai-dlc.toml.jinja": "f02135553a194dd9b78fab69d905b8d1ea3b1f3debc602c5c3ac00906e0df4f3",
+        "project-templates/project/docs/api/openapi.yaml": "744e869692de7df60d4195669a45f8ade009b04c00c203c4853e30f4b9af5b2d",
+        "project-templates/project/scripts/check_api_contract_drift.py": "81c6da34445a1329223f2592eb1389aaf35d2e12b73da73d7b9c9ffdb0b55173",
+        "src/ai_dlc/setup/templates.py": "1fc9173daa6fe71eebf00eda0f4e2b7263c65f694d3b227dee5421240e0eca62",
+        "tests/test_backend_capability.py": "d54ccce3861776fdb140962b0dd7f5f6e07fc53bece997c67675982fa1e60f2f"
+      },
+      "outcome": "updated",
+      "reason": "Clarifies portable generic/Python starter commands, init-only lock creation, adoption preservation and no-install check semantics.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "docs/workflows/greenfield.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/tool-map.md": "f50e0a853e00ab08729f6bd5bdf4cca447b033b23ca5169bb5f6556c0991dc8e",
+        "docs/workflows/tool-map.md": "1f205a735d3265f3e6e231fca0fc55a4ae56a4d425769764edf4c55003dc5ded",
+        "src/ai_dlc/cli.py": "4c77972ef3cdb15e2a173ad869e7eb09c54197926dd51f8674e5a83ed9c11c8c",
+        "src/ai_dlc/mcp_server.py": "607eba3e47a8573862d83e5209e824b78ec0af74545fa51727b8d3f7c03db410"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Provider responsibilities, CLI/MCP exposure and authentication ownership are unchanged; machine-enrollment procedure owns the added native provisioning limits.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "docs/workflows/tool-map.md"
+    },
+    {
+      "bound": {
+        "modules/catalog.toml": "46507e5fedbdaff1929244f5e8d5a61a95a9dcc00c28b751389ffe628221d54f"
+      },
+      "outcome": "updated",
+      "reason": "Records exact Windows core package identities and pinned Python requirements; native adapter refuses automatic elevation-capable installers and diagnoses unsupported selected modules.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "modules/catalog.toml"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-native-setup/tasks.md": "e9adf1dd374b71deb8aee731f55671dcd05993b403921860850a4b2872673711"
+      },
+      "outcome": "updated",
+      "reason": "Records completed dependency and implementation interfaces while retaining evidence-bound unchecked implementation/qualification tasks.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "openspec/changes/windows-native-setup/tasks.md"
+    },
+    {
+      "bound": {
+        "project-templates/copier.yml": "590f411161c128eae87ea55f2e26a17ff5950e4eb11b0e9ab18000b507ce7108"
+      },
+      "outcome": "updated",
+      "reason": "Includes bounded Python setup helper in applicable generated projects; documented init/adoption behavior stays in canonical greenfield workflow.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "project-templates/copier.yml"
+    },
+    {
+      "bound": {
+        "project-templates/project/scripts/setup_python.py": "a71953ba280a31f880db5fe1d8c71bce9c76c44eebd8e3c0181673f2b10b4a59"
+      },
+      "outcome": "updated",
+      "reason": "Implements documented init/adopt/setup/check semantics and requires prepared interpreter for checks, preserving authored lock/test ownership.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "project-templates/project/scripts/setup_python.py"
+    },
+    {
+      "bound": {
+        "tests/test_native_templates.py": "62af2dbac7d493dace8ac8a710c6c22933accf475c9aeb83652656fe2f44be71"
+      },
+      "outcome": "no-impact",
+      "reason": "Regression coverage for the documented native setup, provisioning, profile or template behavior; tests do not independently establish live platform qualification.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "tests/test_native_templates.py"
+    },
+    {
+      "bound": {
+        "tests/test_provision.py": "e3509f75f971eada681f6ea3dbc432485d16b2bd4bb39a549779b940e1b12a29"
+      },
+      "outcome": "no-impact",
+      "reason": "Regression coverage for the documented native setup, provisioning, profile or template behavior; tests do not independently establish live platform qualification.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "tests/test_provision.py"
+    },
+    {
+      "bound": {
+        "tests/test_windows_bootstrap.py": "7f9e5175c1cd92f3afcb1eadf3bd1f901d63c44724cc413b6c6db131e58faeb0"
+      },
+      "outcome": "no-impact",
+      "reason": "Regression coverage for the documented native setup, provisioning, profile or template behavior; tests do not independently establish live platform qualification.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "tests/test_windows_bootstrap.py"
+    },
+    {
+      "bound": {
+        "tests/test_windows_environment.py": "b1447e53ef08c11070c61341615bdfb853d9940d61c0a8e62376f1cab91536ed"
+      },
+      "outcome": "no-impact",
+      "reason": "Regression coverage for the documented native setup, provisioning, profile or template behavior; tests do not independently establish live platform qualification.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "tests/test_windows_environment.py"
+    },
+    {
+      "bound": {
+        "tests/test_windows_provision.py": "b35d00ed916c586fb7354f0d507da6c367947dbce9811c0382b2d68234f80564"
+      },
+      "outcome": "no-impact",
+      "reason": "Regression coverage for the documented native setup, provisioning, profile or template behavior; tests do not independently establish live platform qualification.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "tests/test_windows_provision.py"
+    }
+  ],
+  "schema": 2
+}

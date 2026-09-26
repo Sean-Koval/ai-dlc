@@ -11,8 +11,8 @@ stated revision and environment; plans and fixtures do not establish live readin
 
 A release is a `v<version>` tag whose `Release` workflow passes the required checks,
 builds the wheel and locked constraints, publishes the hash-bound bootstrap assets,
-and installs from the published assets on the Linux x64, Linux ARM64 and macOS
-runners; see the [release runbook](runbooks/release-publication.md). After a
+and installs from the published assets on Linux x64, Linux ARM64, macOS and native
+Windows runners; see the [release runbook](runbooks/release-publication.md). After a
 verification harness failure, a successful read-only replay may establish consumer
 proof for the unchanged published assets; it does not alter the original run. Work
 completion is separate: `ai-dlc work finish` passes only with the specification,
@@ -38,11 +38,36 @@ cross-platform checks. Neither record qualifies Jira or Plane.
 
 ## Native Windows core boundary
 
-The native-core Verify job exercises source code on hosted `windows-2025` with locked Python dependencies. Its tests cover core imports, guarded local NTFS storage, explicit command execution and a disposable adoption/render/setup/check journey with POSIX shell paths removed. The existing Unix required-check jobs remain in the same workflow. Native test results are uploaded separately as `windows-core-results`; they are not a substitute for the five configured full-check receipts.
+The native-core Verify job exercises source code on hosted `windows-2025` with locked Python dependencies. Its tests cover core imports, guarded local NTFS storage, explicit command execution and a disposable adoption/render/setup/check journey with POSIX shell paths removed. The existing Unix required-check jobs remain in the same workflow. Native core results are uploaded separately as `windows-core-results`. The full Windows Verify job additionally bootstraps source from a path without Python, Node, uv, mise or a POSIX shell, then runs the configured required checks. Its `ai-dlc-receipt-windows-2025` is the sixth required platform receipt. The test check selects the explicit supported native suite in `scripts/check_tests.py`; provider/client and descriptor-inventory cases outside that boundary remain in the complete Unix suite.
 
-This job does not qualify Windows 11 desktop setup, PowerShell bootstrap, every installation module/provider, ARM64, network shares, corporate policy or Antigravity recognition. Native installer work is [#172](https://github.com/Sean-Koval/ai-dlc/issues/172), and actual client/cross-machine observations remain [#53](https://github.com/Sean-Koval/ai-dlc/issues/53). Plane's private mutation-intent store, vendored workflow-bundle APIs and descriptor-only document inventory traversal explicitly refuse unsupported native operations. Historical v0.4.0 published assets remain unchanged. No Windows support claim can be inferred from local skipped tests.
+Core tests alone do not qualify PowerShell bootstrap. Neither hosted job qualifies Windows 11 desktop setup, every installation module/provider, ARM64, network shares, corporate policy or Antigravity recognition. Native installer work is [#172](https://github.com/Sean-Koval/ai-dlc/issues/172), and actual client/cross-machine observations remain [#53](https://github.com/Sean-Koval/ai-dlc/issues/53). Plane's private mutation-intent store, vendored workflow-bundle APIs and descriptor-only document inventory traversal explicitly refuse unsupported native operations. Historical v0.4.0 published assets remain unchanged. No Windows support claim can be inferred from local skipped tests.
 
 On September 26, 2026, [native job 108452747319](https://github.com/Sean-Koval/ai-dlc/actions/runs/36259593343/job/108452747319) tested revision `914acb7821bfa1e3938d5f7bdbed0310e4edba64` on Windows Server 2025 build 26100, AMD64, Python 3.12.10 and local fixed NTFS: **103 passed, 5 skipped**. The job command and JUnit artifact identify the exact test selection. Native cases exercised case-alias/process locks, killed-holder recovery, junction and ancestor substitution, sharing violations, staged publication, restricted owner/DACL preservation, and a passing/failing adoption/setup/check journey without a POSIX shell. The five skips are Unix shell/fake-executable compatibility and POSIX transaction-injection cases, retained in Unix jobs; no Windows safety case was skipped. Earlier runs exposed native rename/sharing defects and permission-preservation gaps, which were repaired before this passing observation. This is source-level core evidence only, with the desktop, installer and client limits above unchanged.
+
+## Native installer and consumer qualification in progress
+
+The first #172 checkpoint at `db63ba65e3d1ad26d36ca5724cd53f6f12989152`
+passed **121 tests, with 5 Unix-only skips** on hosted Windows Server 2025 in
+[job 108458704243](https://github.com/Sean-Koval/ai-dlc/actions/runs/36261719497/job/108458704243).
+That checkpoint includes native helper compilation and PowerShell bootstrap unit
+cases. It does not establish full source cold-start or installed consumer success.
+The five Unix jobs passed their code checks but failed the still-pending
+content-bound documentation gate, so the overall checkpoint run failed.
+
+The current release workflow assembles Unix and native bootstrap assets with
+`scripts/prepare_release_assets.py`. A Windows candidate job consumes the exact
+wheel, constraints, manifest and helpers before publication can proceed. The
+read-only published replay downloads original assets and records their hashes
+separately from the verification controller revision. The consumer driver records
+commands, passing/failing behavior and required receipts under its evidence
+output directory. Adding these jobs is not evidence that they have passed.
+Historical published v0.4.0 has no native assets and lacks the required argv
+capability; it cannot qualify this implementation and must not be relabeled.
+
+Clean Windows 11 x64 account qualification remains pending in
+[#172](https://github.com/Sean-Koval/ai-dlc/issues/172), with client recognition and
+cross-machine observations tracked in [#53](https://github.com/Sean-Koval/ai-dlc/issues/53).
+No package publication or desktop support claim follows from this work in progress.
 
 ## Published v0.4.0 evidence — September 14, 2026
 

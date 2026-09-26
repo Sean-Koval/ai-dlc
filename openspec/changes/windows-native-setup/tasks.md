@@ -1,6 +1,6 @@
 # Authoritative implementation tasks
 
-All tasks remain unchecked. Dependency: `windows-portable-core` must be delivered before the native path is accepted.
+Implementation authorized September 26, 2026. Dependency `windows-portable-core` was merged in PR #181 and completed through AI-DLC at revision `3a60d3a4d956a5919357c3f262de740f01d3ecf7`; all six merge-commit CI jobs passed. Checkboxes remain evidence-bound. Clean Windows 11 qualification is pending a suitable host, separately from hosted Windows Server CI.
 
 ## 1. Verified native bootstrap
 
@@ -33,3 +33,11 @@ All tasks remain unchecked. Dependency: `windows-portable-core` must be delivere
 ## Subsequent delivery gates
 
 After implementation and the checklist above are complete, archive this independently owned change on its bound delivery branch with `ai-dlc work archive`. Repair moved artifact links and any evidence targets actually made stale by archival. Immediately before authorized merge, update from the target branch and refresh required checks/evidence. Finish through `ai-dlc work finish` against the exact merged revision and its configured receipts. These remain mandatory later delivery gates, not checkboxes that must falsely claim post-merge completion before archive. No package publication or paid comparison is authorized by this task list.
+
+## Execution interfaces and validation
+
+- Native bootstrap owns `scripts/bootstrap.ps1` and mirrored `bootstrap/windows.json`, `windows.ps1`, `windows-native.cs`, `windows-select.py`. The first stage protects publication before verified Python exists; later selection reuses the existing Python native transaction service. Cache paths always revalidate hashes. Per-checkout environments retain native launcher/interpreter identity; the shared selection manifest binds source provenance and launcher digest.
+- Existing environment/provision/workstation services own native locations, explicit selected PowerShell profile activation, selected core/Python support and honest unavailable-module/manual-install results. No elevation, authentication or execution-policy change is implied.
+- Project templates own portable generic/Python command records and a bounded helper distinguishing initialization from adoption. Checks require a prepared interpreter and cannot create an environment; missing/all-skipped tests remain failures.
+- Contributor command records use native argv. Repository scripts adapt only platform-specific pytest coverage and the type-check interpreter; the engine keeps its existing command contract. Windows CI adds explicit native required receipts, source cold-start, and candidate consumption from exact built wheel/constraints caches without publication.
+- Focused cases live in `test_windows_bootstrap.py`, `test_windows_environment.py`, `test_windows_provision.py`, `test_native_templates.py`, `test_native_repository_checks.py` and `test_windows_consumer.py`. Retain the #171 native safety suite and full Unix suite. Any skipped required native or clean-account case remains unqualified.

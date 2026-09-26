@@ -5,10 +5,16 @@ tools and guides agents; it is not a hosted autonomous development orchestrator.
 CLI and MCP entry points share application services. Provider details belong behind
 contracts; credentials and machine paths never belong in shared configuration.
 
-Prepare this checkout with `sh scripts/bootstrap.sh --source`; run
-`ai-dlc project check --required`. That prepares this checkout's own environment
-and leaves the shared `ai-dlc` alias alone; use the printed environment path, or
-pass `--publish-aliases` to repoint the alias deliberately. Use the Python implementation in `src/ai_dlc/`.
+Prepare this checkout with `sh scripts/bootstrap.sh --source` on Unix or
+`.\scripts\bootstrap.ps1 -Source -Root $PWD.Path` in 64-bit Windows PowerShell 5.1
+on native Windows x64/local NTFS; use `-Plan` to preview the native bootstrap.
+Run `ai-dlc project check --required` through the printed checkout environment.
+Source bootstrap preserves an existing shared `ai-dlc` selection; use
+`--publish-aliases` (Unix) or `-PublishAliases` (PowerShell) to change it deliberately.
+These are contributor checks, not prerequisites for adopting AI-DLC into another
+project. Native Windows 11 and client qualification remain separate from Server
+CI; the historical published v0.4.0 assets do not provide native setup.
+Use the Python implementation in `src/ai_dlc/`.
 The [architecture](docs/architecture.md) maps its packages and entry points.
 The Rust implementation is retired and removed; its plans stay in `docs/archive/`.
 `templates/` still supplies the supported legacy scaffold command. Preserve
@@ -37,7 +43,7 @@ recovery and configuration boundaries. Mocked tests do not prove live platform
 qualification; consult [release gates](docs/release-verification.md). Do not
 publish packages or mutate remote services implicitly.
 
-<!-- ai-dlc:begin 4f502112de19d54b6787c6ccf72414a9dcfa8c33c07aeb7ab02ccf08884c1639 -->
+<!-- ai-dlc:begin af0f7916dae40df273c2d195992dcdbc0ed9bccea490282a24116d3a1deb2164 -->
 # Shared project guidance
 
 Read ai-dlc.toml and the active .ai-dlc/work record, if present, before work.
@@ -53,14 +59,14 @@ Keep personal notes in the selected knowledge provider and follow its instructio
 
 ## Verification
 
-- layout: `uv run --locked --no-sync python scripts/check_layout.py`
-- generated: `ai-dlc agents render --check && uv run --locked --no-sync python scripts/check_generated.py`
-- format: `uv run --locked --no-sync ruff format --check src tests scripts`
-- lint: `uv run --locked --no-sync ruff check src tests scripts`
-- types: `uv run --locked --no-sync pyright --pythonpath .venv/bin/python`
-- test: `uv run --locked --no-sync pytest -q`
-- documentation: `ai-dlc docs gate`
-- work-records: `ai-dlc work validate --all`
+- layout: `ai-dlc project check --check layout`
+- generated: `ai-dlc project check --check generated`
+- format: `ai-dlc project check --check format`
+- lint: `ai-dlc project check --check lint`
+- types: `ai-dlc project check --check types`
+- test: `ai-dlc project check --check test`
+- documentation: `ai-dlc project check --check documentation`
+- work-records: `ai-dlc project check --check work-records`
 
 Run `ai-dlc project check --required` in the prepared project environment.
 

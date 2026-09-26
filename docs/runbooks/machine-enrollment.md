@@ -28,7 +28,8 @@ When `ai-dlc` is missing, reports an unexpected version, or works only in new
 terminals, run `ai-dlc project workspace-check --root PATH`. It separates the
 executable PATH selects from the AI-DLC-owned shell activation. If no `ai-dlc` is on
 PATH, run the same check through the bootstrap's published alias by its full path,
-by default `~/.local/share/ai-dlc/bootstrap/bin/ai-dlc`. `configured-for-next-shell`
+by default `~/.local/share/ai-dlc/bootstrap/bin/ai-dlc` on Unix. Native Windows
+uses the executable and activation procedure below. On Unix, `configured-for-next-shell`
 needs only a new terminal or sourcing the shell file. Missing activation includes a
 copy-pasteable PATH command for bash, zsh or fish. Preview permanent repair with
 `ai-dlc project workspace-init --shell`; add `--apply` to write only the owned
@@ -44,6 +45,7 @@ The shared `ai-dlc` and `ai-dlc-cli` aliases are one machine-wide selection. Sou
 bootstrap prepares a separate environment per checkout and leaves an existing
 working alias alone, so bootstrapping a linked worktree no longer changes the
 `ai-dlc` other shells use; it publishes the aliases only with `--publish-aliases`
+(`-PublishAliases` in PowerShell)
 or when no working alias exists. Bootstrap output names the checkout the alias runs
 and the executable for the current checkout. When the alias belongs to another
 checkout, `project workspace-check` reports that checkout under activation.
@@ -89,6 +91,68 @@ to activate it after validation and reconciliation. To move from one immutable
 tag to another, reenroll with the new ref. Enroll a second machine with the
 same advertised ref under the selected policy and a different machine ID; its
 local binding remains independent.
+
+## Native Windows setup and activation
+
+The native lane targets Windows x64, local NTFS, and 64-bit Windows PowerShell
+5.1. From a reviewed AI-DLC source checkout, preview
+`.\scripts\bootstrap.ps1 -Source -Root $PWD.Path -Plan`, then omit `-Plan` to prepare
+that checkout. Native setup needs neither WSL nor preinstalled Python or Node.
+The original published v0.4.0 assets cannot run this lane; see
+[release compatibility](release-publication.md#native-windows-assets-and-compatibility).
+
+Bootstrap defaults to `ai-dlc/bootstrap` under Windows' Local Application Data
+known folder. `AI_DLC_BOOTSTRAP_HOME` explicitly selects a different local root;
+it is not a shared project setting. Bootstrap prints the direct environment
+`Scripts/ai-dlc.exe` path and PATH directories. The shared bin contains copied
+`ai-dlc.exe` and `ai-dlc-cli.exe` launchers, with selection metadata bound to their
+bytes and source/release identity. Source environments are separate from release
+environments; rerunning an unchanged source selection can reuse its prepared
+environment. A source bootstrap preserves an existing working shared selection
+unless `-PublishAliases` is explicit. Private runtime directories and project
+roots reject reparse points; use a regular local path when this guard refuses.
+
+For persistent activation, choose the actual profile of the PowerShell host you
+intend to use. In that host, pass its absolute `$PROFILE` path explicitly:
+
+```powershell
+ai-dlc project workspace-init --shell --powershell-profile $PROFILE
+# Inspect the proposed owned section before applying it.
+ai-dlc project workspace-init --shell --powershell-profile $PROFILE --apply
+```
+
+This updates only AI-DLC's owned section and preserves authored profile bytes,
+including supported UTF-8/UTF-16 encodings. An edited owned section, reparse path,
+signed profile, or disallowed/unknown execution policy blocks the edit. The
+command neither bypasses policy nor elevates or changes machine PATH. When a
+profile cannot be used, invoke the printed executable directly with PowerShell's
+call operator, for example `& 'C:\path printed by bootstrap\Scripts\ai-dlc.exe' --version`.
+After applying activation, open a new terminal and inspect `Get-Command ai-dlc`
+and `ai-dlc --version`; run `ai-dlc project workspace-check --root PATH` to inspect
+PATH selection and launcher provenance. Native workspace diagnostics report the
+profile as unselected rather than guessing which PowerShell host profile you use.
+
+Setup planning reports native requirements individually. Existing Git and GitHub
+CLI installations are observed and reused when they meet the minimum versions.
+The catalog records exact reviewed winget identities and versions, but current
+Git/GH installation remains manual: the Git installer can elevate itself and the
+reviewed GH installer has machine scope. A manifest's scope label is not evidence
+of an unelevated current-user installation. Follow the reported recovery action
+to install through your organization's approved process, make the executables
+available, and rerun the plan; AI-DLC does not upgrade them implicitly.
+
+Explicitly selected Python provisioning delegates exact pinned Python/uv versions
+to mise and verifies them afterward. Unsupported or unqualified selected and
+implied modules remain individual blockers, so preparing the supported subset
+does not produce complete readiness. Native personal client configuration and
+dotfile application are outside this minimal setup lane. No setup step logs in
+to providers or clients. Offline readiness still locates tools without running
+them; setup's explicit version observations are a separate operation.
+
+Hosted Windows Server CI, clean Windows 11 setup, and native client recognition
+are distinct evidence. A passing Server job does not complete the Windows 11 or
+interactive client walkthrough; see [release verification](../release-verification.md)
+for current qualification status.
 
 ## Project guidance follows selected capabilities
 

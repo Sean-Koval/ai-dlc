@@ -87,6 +87,22 @@ runbook: [GitHub](github-ticket-setup.md), [Linear](runbooks/linear-setup.md),
 [Plane](runbooks/plane-setup.md), or [Jira](runbooks/jira-cloud-setup.md).
 The lifecycle below stays independent of the selected provider.
 
+Preparing the AI-DLC repository is contributor work: use its source bootstrap
+(`sh scripts/bootstrap.sh --source` on Unix, or
+`.\scripts\bootstrap.ps1 -Source -Root $PWD.Path` in 64-bit Windows PowerShell 5.1)
+and then its required checks. A consumer instead installs a compatible engine and
+runs init/adopt, setup, and the checks configured in the target repository. The
+[README](../README.md#get-started) separates these routes; the
+[release runbook](runbooks/release-publication.md#native-windows-assets-and-compatibility)
+records native asset requirements and the historical v0.4.0 limit.
+
+Native setup currently covers Windows x64/local NTFS with selected core tools and
+pinned Python. Generic and Python starter setup/check helpers use direct argv;
+setup owns dependency preparation and checks install nothing. Existing authored
+commands and adopted lockfiles retain their ownership. Missing Git or GitHub CLI
+may require a policy-approved manual install; selecting additional modules does
+not establish native support or provider/client authentication.
+
 ### Explicit project commands
 
 Setup steps, their optional `verify` commands, and `[checks.commands]` accept the same three forms:

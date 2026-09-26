@@ -64,6 +64,13 @@ check. New Python starters additionally run a standard-library test of their
 initial greeting output; missing, empty or entirely skipped suites fail. Extend
 that small suite with acceptance tests for the application's real behavior.
 
+Generic and Python starters use portable argv commands. Python setup may create
+the initial lock for a new project; adoption requires the existing lock and keeps
+authored checks and tests. Checks require a prepared environment and do not
+create one. Native Windows setup is bounded to this starter scope; use the
+[native installation procedure](../runbooks/release-publication.md#native-windows-assets-and-compatibility)
+with compatible assets, and retain separate desktop/client qualification.
+
 Run the reviewed bootstrap, then:
 
 ```sh
