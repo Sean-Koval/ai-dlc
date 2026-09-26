@@ -23,6 +23,7 @@ from ai_dlc.harness.components import load_component_catalog, resolve_components
 from ai_dlc.harness.team_source_render import check_source_skill_destinations, merge_source_items
 from ai_dlc.harness.workflow_bundles import MissingBundlePath, load_vendored_bundle
 from ai_dlc.locking import project_write_lock
+from ai_dlc.providers import provider_kind
 
 _BUNDLE_ID = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
@@ -949,21 +950,70 @@ def _validate_required_hooks(config: dict[str, Any], clients: list[str]) -> None
             )
 
 
-def _shared_guidance_lines(checks: dict[str, Any], index: str, bundle_index: str) -> list[str]:
+def _shared_guidance_lines(config: dict[str, Any], index: str, bundle_index: str) -> list[str]:
     """Compose the shared AGENTS.md guidance body lines."""
+    roles = config.get("roles", {})
+
+    def selected(role: str) -> str | None:
+        provider_id = roles.get(role)
+        return provider_id if provider_id and provider_id != "none" else None
+
+    specification = selected("specs")
+    tracker = selected("tracker")
+    scm = selected("scm")
+    knowledge = selected("knowledge")
+    specification_kind = provider_kind(config, specification)
+    tracker_kind = provider_kind(config, tracker)
+    scm_kind = provider_kind(config, scm)
+    github_scm = scm_kind == "github"
+    builtin_tracker = tracker_kind in {"linear", "github-issues", "jira-cloud", "plane"}
+    openspec = specification_kind == "openspec"
+    finish = github_scm and builtin_tracker
+    checks = config.get("checks", {})
+
     lines = [
         "# Shared project guidance",
         "",
-        "Read ai-dlc.toml and the active .ai-dlc/work record before work.",
-        "Use specification artifacts for implementation tasks and the tracker for priority/status.",
-        "Finalize required specifications before review; archive OpenSpec changes on the delivery branch before merge with ai-dlc work archive. Complete work through ai-dlc work finish.",
-        "Immediately before merge, update from the target branch and rerun required checks; record documentation dispositions again only for targets the gate reports stale.",
-        "Finish from a checkout at the merge commit; when the target branch moved, use a temporary detached worktree.",
-        "Store architecture, design, decisions and runbooks in docs/. Keep personal notes in knowledge.",
-        "",
-        "## Verification",
-        "",
+        "Read ai-dlc.toml and the active .ai-dlc/work record, if present, before work.",
     ]
+    if specification:
+        lines.append(
+            "Use specification artifacts for implementation tasks; finalize required "
+            "specifications before review and follow the selected specification provider's "
+            "instructions."
+        )
+    if tracker:
+        lines.append(
+            "Use the selected tracker for priority and status; follow its provider instructions."
+        )
+    if openspec:
+        archive_timing = " before merge" if github_scm else ""
+        lines.append(
+            f"Archive OpenSpec changes on the bound delivery branch{archive_timing} with "
+            "`ai-dlc work archive`."
+        )
+    if github_scm:
+        lines.append(
+            "Immediately before merge, update from the target branch and rerun required checks."
+        )
+        if "documentation" in checks.get("required", []):
+            lines.append(
+                "Record documentation dispositions again only for targets the required "
+                "documentation gate reports stale."
+            )
+    if finish:
+        lines.append("Complete work through `ai-dlc work finish`.")
+    if finish and openspec:
+        lines.append(
+            "Finish from a checkout at the merge commit; when the target branch has moved, "
+            "prepare a temporary detached worktree at that commit, finish there, then remove it."
+        )
+    lines.append("Store architecture, design, decisions and runbooks in docs/.")
+    if knowledge:
+        lines.append(
+            "Keep personal notes in the selected knowledge provider and follow its instructions."
+        )
+    lines.extend(["", "## Verification", ""])
     for name in checks.get("required", []):
         lines.append(f"- {name}: `{checks.get('commands', {}).get(name, 'MISSING COMMAND')}`")
     lines.extend(
@@ -1203,7 +1253,7 @@ def _render_agents(
     referenced_guidance = {
         guidance for component in components["components"] for guidance in component["guidance"]
     }
-    lines = _shared_guidance_lines(config.get("checks", {}), index, _bundle_index(bundles))
+    lines = _shared_guidance_lines(config, index, _bundle_index(bundles))
     agents_body = "\n".join(lines) + team_body
     planned = _plan_guidance_files(text, agents_body, clients)
     servers, codex, antigravity = _plan_mcp_servers(config, clients)

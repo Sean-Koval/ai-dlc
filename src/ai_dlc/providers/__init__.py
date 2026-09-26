@@ -25,6 +25,15 @@ PROVIDER_KIND_ALIASES = {
 }
 
 
+def provider_kind(config: Mapping[str, Any], provider_id: str | None) -> str | None:
+    """Resolve a selected provider's normalized runtime kind without loading it."""
+    if provider_id is None:
+        return None
+    settings = config.get("providers", {}).get(provider_id, {})
+    kind = settings.get("kind", settings.get("type", provider_id))
+    return PROVIDER_KIND_ALIASES.get(kind, kind)
+
+
 def verify_artifact(path, expected):
     p = Path(path)
     if not expected or hashlib.sha256(p.read_bytes()).hexdigest() != expected:
@@ -159,7 +168,7 @@ class Registry:
         if id in self.registered_operations:
             return operation in self.registered_operations[id]
         cfg = self.config.get("providers", {}).get(id, {})
-        kind = cfg.get("kind", cfg.get("type", id))
+        kind = provider_kind(self.config, id)
         if kind in {"linear", "github-issues", "jira-cloud", "plane"}:
             return operation == "capabilities"
         operations = cfg.get("operations", [])
@@ -173,8 +182,7 @@ class Registry:
         if id in self.cache:
             return self.cache[id]
         cfg = self.config.get("providers", {}).get(id, {})
-        kind = cfg.get("kind", cfg.get("type", id))
-        kind = PROVIDER_KIND_ALIASES.get(kind, kind)
+        kind = provider_kind(self.config, id)
         if kind == "openspec":
             from .openspec import OpenSpecProvider
 
