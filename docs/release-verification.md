@@ -89,6 +89,22 @@ comparison required normalizing macOS's `/var` alias to `/private/var`; no produ
 change was needed. This observation does not establish clean-machine installation,
 Linux execution, Windows desktop setup, or native client recognition.
 
+## Effective environment report boundary
+
+The opt-in status export/compare and offline doctor report are source-only
+additions; historical v0.4.0 assets do not contain these interfaces. Current
+installation metadata does not establish imported engine bytes, source dirty
+state, safe profile/source content identity or native client recognition.
+Reports retain those unknowns. Equality of version 0.4.0, an integrity checksum,
+or incomplete report identities does not qualify equivalent environments.
+
+Fixture verification tests schema, privacy, bounded collection, comparison and
+identity invalidation. It does not qualify real client authentication,
+cross-machine replication or Windows desktop setup. Actual supported-host exports
+require privacy review before they are recorded; the outstanding observation
+work remains [#53](https://github.com/Sean-Koval/ai-dlc/issues/53). Paid comparison
+[#138](https://github.com/Sean-Koval/ai-dlc/issues/138) remains pending.
+
 ## Published v0.4.0 evidence — September 14, 2026
 
 The original release implementation was delivered in

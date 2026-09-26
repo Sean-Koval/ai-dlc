@@ -23,6 +23,7 @@ code_paths = [
 verification_paths = [
     "tests/test_consumer_onboarding.py",
     "tests/test_consumer_onboarding_cli.py",
+    "tests/test_environment_report*.py",
 ]
 requirements = [
     "openspec/specs/consumer-onboarding/spec.md",
@@ -69,12 +70,15 @@ code_paths = [
     "scripts/release_manifest.py",
     "src/ai_dlc/cli.py",
     "src/ai_dlc/setup/onboarding.py",
+    "src/ai_dlc/environment/report*.py",
+    "src/ai_dlc/environment/version_probes.py",
 ]
 verification_paths = [
     "tests/test_release_manifest.py",
     "tests/test_release_workflow.py",
     "tests/test_consumer_onboarding.py",
     "tests/test_consumer_onboarding_cli.py",
+    "tests/test_environment_report*.py",
 ]
 requirements = [
     "openspec/specs/release-publication/spec.md",
@@ -160,10 +164,13 @@ code_paths = [
     "src/ai_dlc/mcp_server.py",
     "src/ai_dlc/cli.py",
     "src/ai_dlc/setup/onboarding.py",
+    "src/ai_dlc/environment/report*.py",
+    "src/ai_dlc/environment/version_probes.py",
 ]
 verification_paths = [
     "tests/test_consumer_onboarding.py",
     "tests/test_consumer_onboarding_cli.py",
+    "tests/test_environment_report*.py",
 ]
 requirements = [
     "openspec/specs/consumer-onboarding/spec.md",
@@ -763,10 +770,16 @@ path = "docs/workflows/work-computer-setup.md"
 kind = "reference"
 owner = "repository-maintainers"
 status = "draft"
-code_paths = ["src/ai_dlc/cli.py", "src/ai_dlc/setup/onboarding.py"]
+code_paths = [
+    "src/ai_dlc/cli.py",
+    "src/ai_dlc/setup/onboarding.py",
+    "src/ai_dlc/environment/report*.py",
+    "src/ai_dlc/environment/version_probes.py",
+]
 verification_paths = [
     "tests/test_consumer_onboarding.py",
     "tests/test_consumer_onboarding_cli.py",
+    "tests/test_environment_report*.py",
 ]
 requirements = [
     "openspec/specs/consumer-onboarding/spec.md",
@@ -806,6 +819,7 @@ verification_paths = [
     "tests/test_native_harnesses.py",
     "tests/test_consumer_onboarding.py",
     "tests/test_consumer_onboarding_cli.py",
+    "tests/test_environment_report*.py",
 ]
 requirements = [
     "openspec/specs/native-work-harnesses/spec.md",
