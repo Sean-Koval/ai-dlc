@@ -57,6 +57,36 @@ Windows installation and end-to-end client use remain unqualified under
 [#53](https://github.com/Sean-Koval/ai-dlc/issues/53). Unsupported-platform fixture
 tests do not change that status.
 
+### Observed local consumer journey — September 26, 2026
+
+A clean source checkout at `954c6b87ec44d319db60e6569afb82183cfd699b`
+ran the actual CLI on macOS 15.3.2 arm64. The disposable target was
+`ai-dlc-onboard-9crfxb9o/team repository é`, with a separate temporary HOME/XDG
+account. No enrollment or provider/account selection was supplied. The target
+selected only the Antigravity client capability and the generic preset; the
+experiment did not launch Antigravity.
+
+The fresh plan exited 1 with a missing target-check finding and exactly matched
+the adoption preview arguments. Explicit preview/apply preserved an authored
+`acceptance.py`; render and setup succeeded. After adding that target-owned
+check, the new plan exited 0 while retaining `qualification: not-assessed`.
+File snapshots before and after both plans were identical. The target check
+passed, failed with exit 1 after changing its expected behavior, and passed after
+restoration. All three target-required checks (`generated`, `work-records`, and
+`team-acceptance`) then passed against clean fixture commit
+`3c3fdcdfd8617b33d03f971912ba427df0d61060`.
+
+This scripted local baseline used 16 command invocations, one explicit check
+configuration edit, and a deliberate behavior edit/restoration. First target-check
+success occurred after 11.134 seconds; the entire verification took 14.121
+seconds. These timings exclude source installation and human review, include only
+a trivial fixture, and are not a human setup-time or savings comparison. Exact
+commands, outputs, roots, timing and receipts are retained in the local
+`.ai-dlc/local/consumer-onboarding/journey-evidence/` record. A preliminary harness
+comparison required normalizing macOS's `/var` alias to `/private/var`; no product
+change was needed. This observation does not establish clean-machine installation,
+Linux execution, Windows desktop setup, or native client recognition.
+
 ## Published v0.4.0 evidence — September 14, 2026
 
 The original release implementation was delivered in
