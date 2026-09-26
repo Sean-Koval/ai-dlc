@@ -64,6 +64,43 @@ output directory. Adding these jobs is not evidence that they have passed.
 Historical published v0.4.0 has no native assets and lacks the required argv
 capability; it cannot qualify this implementation and must not be relabeled.
 
+On September 26, the implementation checkpoint at branch revision
+`8eba405883b7d102023d5b07e95bb7249f456a99` passed all seven jobs in
+[Verify run 36266151124](https://github.com/Sean-Koval/ai-dlc/actions/runs/36266151124).
+The six configured receipts identify clean PR test-merge revision
+`dcc4664d90c8c47c32a3e2ff8210dd96b026aaa2` and all eight required checks passed;
+this test-merge identity does not mean the PR was merged. The native full job
+passed **207 tests, with 5 Unix-only skips**, after source bootstrap from the
+controlled PATH without Python, Node, uv, mise or POSIX shells. Earlier consumer
+attempts exposed isolated-account fixture initialization and UTF-8 runtime-path
+transport failures; those failed attempts are not qualification evidence.
+
+[Candidate run 36266148886](https://github.com/Sean-Koval/ai-dlc/actions/runs/36266148886)
+then passed package creation and native consumption on Windows Server 2025 build
+26100, AMD64, inbox PowerShell 5.1.26100.33438. Publication and published replay
+were skipped. Its `release-candidate` and `windows-candidate-evidence` artifacts
+retain the exact inputs, commands and receipts for the desktop walkthrough.
+The controller reports revision `8eba405883b7d102023d5b07e95bb7249f456a99` with
+`dirty: true`: its status log contains only the downloaded untracked `candidate/`
+directory. Both generated consumer repositories have clean baseline/restored
+receipts: generic commit `db383e77f55a322522ced7bd0aadd82cec9b99b8` and Python
+commit `37b9b1c663af9ff6c6303479328553e0b325f5fc`. Both demonstrated repeat setup,
+a failing behavioral regression, restored passing checks and authored-edit
+preservation. The bare seed installed, and deliberately failed bootstrap retained
+the prior runnable launcher, selection and caller PATH.
+
+| Candidate identity | SHA-256 |
+| --- | --- |
+| Wheel | `fed003d05616d7b4ccce8629299ef74a14a31cea9f1c2e4f999d105c4680d2fe` |
+| Constraints | `226ded0f85ff01f50e749ffaa20c5ac0c3ed4ff2722c1eb085d09a8bc5b9d5ee` |
+| Manifest | `c4b71a4058db2ed6da06072721d784e07ef4ca117fa9c8f52b624aee93eb5207` |
+
+These are unpublished candidate bytes, despite the unchanged `0.4.0` package
+version. They are distinct from the historical published v0.4.0 assets below.
+A full-bootstrap concurrent-process/interruption walkthrough and human
+fresh-terminal activation remain open alongside clean Windows 11 qualification;
+see the [execution checklist](runbooks/machine-enrollment.md#pending-clean-windows-11-teammate-walkthrough).
+
 Clean Windows 11 x64 account qualification remains pending in
 [#172](https://github.com/Sean-Koval/ai-dlc/issues/172), with client recognition and
 cross-machine observations tracked in [#53](https://github.com/Sean-Koval/ai-dlc/issues/53).

@@ -6,7 +6,7 @@
       },
       "outcome": "updated",
       "reason": "Routes cloned-checkout setup by native OS and clearly separates contributor checks; generated guidance renders structured commands as check invocations.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "AGENTS.md"
     },
     {
@@ -15,7 +15,7 @@
       },
       "outcome": "updated",
       "reason": "Provides native PowerShell contributor instructions without WSL, separates consumer adoption and names published asset and desktop qualification limits.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "README.md"
     },
     {
@@ -24,7 +24,7 @@
       },
       "outcome": "updated",
       "reason": "Uses direct argv contributor setup/check records and adds the Windows full required-receipt binding while retaining existing Unix platforms.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "ai-dlc.toml"
     },
     {
@@ -146,7 +146,7 @@
       },
       "outcome": "updated",
       "reason": "Describes the pre-Python native helper boundary, immutable engine paths and shared selection separation; application services remain shared and native provisioning stays in its adapter.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "docs/architecture.md"
     },
     {
@@ -155,7 +155,7 @@
       },
       "outcome": "updated",
       "reason": "Maps native bootstrap assets, assembly/consumer driver and CI evidence to canonical release documentation without manufacturing review dates.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "docs/catalog.toml"
     },
     {
@@ -178,7 +178,7 @@
       },
       "outcome": "reviewed-no-change",
       "reason": "Workspace diagnostics adds native executable-selection observations only; private note ownership, mount scope, Confluence publication and learning behavior are unchanged.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "docs/design/local-and-shared-knowledge.md"
     },
     {
@@ -198,7 +198,7 @@
       },
       "outcome": "updated",
       "reason": "Separates contributor bootstrap from consumer adoption and states native argv, setup/check and authored-lock ownership boundaries.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "docs/development-workflow.md"
     },
     {
@@ -206,7 +206,7 @@
         ".github/workflows/release.yml": "54077783bb2738431d7ee8f879c0481b679283df631e9a0a53a8f8c6ba19ee60",
         ".github/workflows/verify.yml": "ba3e901378ae0466f0e9c116e2bbfcc074fde12a75a30d98f0d2028c22ba2ea9",
         "catalog:docs/release-verification.md": "6d7d9665236428f22d18f07fa4bb943f775781287d4325e443b8709b3ae166fb",
-        "docs/release-verification.md": "5f22b26febf2b99b8de3f08602cc405590db1eaad3705af0e8b18680b5316d22",
+        "docs/release-verification.md": "b640c9b601da811894574d72ff6482b12ec18aa6c4d0dcb432c0b521ee2d125c",
         "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
         "scripts/check_tests.py": "b7d10db0780aa851d8ba810796202e638abd79395cbf41071ac2114bb1bab920",
         "scripts/prepare_release_assets.py": "f54a08057f0a5271dea8165978b8478b9d25638d2c203277d7b1017856f330b3",
@@ -219,7 +219,7 @@
       },
       "outcome": "updated",
       "reason": "Records the actual121-pass native checkpoint and failing documentation gate; distinguishes proposed full Windows source/consumer checks from pending actual results and Windows11 desktop qualification.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "docs/release-verification.md"
     },
     {
@@ -250,7 +250,7 @@
       },
       "outcome": "updated",
       "reason": "Adds KnownFolder/direct-executable routing, explicit PowerShell profile preview/apply, policy/encoding ownership and manual Git/GH installer limits. Includes a pending executable Windows11 teammate checklist, separate human-terminal obligations and refusal preserving download markers.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "docs/runbooks/machine-enrollment.md"
     },
     {
@@ -280,7 +280,7 @@
       },
       "outcome": "updated",
       "reason": "Documents native assets, exact candidate publication gate/read-only replay and historical v0.4 incompatibility; no package publication or unobserved qualification claimed.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "docs/runbooks/release-publication.md"
     },
     {
@@ -294,7 +294,7 @@
       },
       "outcome": "reviewed-no-change",
       "reason": "Python backend command representation becomes argv but validator pins and drift behavior are unchanged; historical validator/frontend evidence remains historical.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "docs/verification/backend-contracts.md"
     },
     {
@@ -328,7 +328,7 @@
       },
       "outcome": "reviewed-no-change",
       "reason": "Historical documentation/native Obsidian observations remain at their stated revisions; bootstrap diagnostics adds no Obsidian, Antigravity or external MCP qualification.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "docs/verification/documentation-workflow.md"
     },
     {
@@ -344,7 +344,7 @@
       },
       "outcome": "reviewed-no-change",
       "reason": "Frontend browser capture and design workflow are unchanged; native minimal setup does not qualify optional frontend tools.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "docs/workflows/design-to-implementation.md"
     },
     {
@@ -360,7 +360,7 @@
       },
       "outcome": "updated",
       "reason": "Clarifies portable generic/Python starter commands, init-only lock creation, adoption preservation and no-install check semantics.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "docs/workflows/greenfield.md"
     },
     {
@@ -372,7 +372,7 @@
       },
       "outcome": "reviewed-no-change",
       "reason": "Provider responsibilities, CLI/MCP exposure and authentication ownership are unchanged; machine-enrollment procedure owns the added native provisioning limits.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "docs/workflows/tool-map.md"
     },
     {
@@ -382,7 +382,7 @@
       },
       "outcome": "updated",
       "reason": "Routes source setup by native OS and links canonical qualification limits so a Windows teammate is not directed to a POSIX-only command.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "docs/workflows/work-computer-setup.md"
     },
     {
@@ -391,16 +391,16 @@
       },
       "outcome": "updated",
       "reason": "Records exact Windows core package identities and pinned Python requirements; native adapter refuses automatic elevation-capable installers and diagnoses unsupported selected modules.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "modules/catalog.toml"
     },
     {
       "bound": {
-        "openspec/changes/windows-native-setup/tasks.md": "e9bb02e648d85ebafd69b5d81dccbd46e5e9c7a6c4da9db6d9b98151816d8e99"
+        "openspec/changes/windows-native-setup/tasks.md": "281bfd1aaf87c0ec07f84578ba219e12154833c307b76e946e37cce607ad68e5"
       },
       "outcome": "updated",
       "reason": "Records completed dependency and implementation interfaces while retaining evidence-bound unchecked implementation/qualification tasks.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "openspec/changes/windows-native-setup/tasks.md"
     },
     {
@@ -409,7 +409,7 @@
       },
       "outcome": "updated",
       "reason": "Includes bounded Python setup helper in applicable generated projects; documented init/adoption behavior stays in canonical greenfield workflow.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "project-templates/copier.yml"
     },
     {
@@ -418,7 +418,7 @@
       },
       "outcome": "updated",
       "reason": "Implements documented init/adopt/setup/check semantics and requires prepared interpreter for checks, preserving authored lock/test ownership.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "project-templates/project/scripts/setup_python.py"
     },
     {
@@ -427,7 +427,7 @@
       },
       "outcome": "no-impact",
       "reason": "Regression coverage for the documented native setup, provisioning, profile or template behavior; tests do not independently establish live platform qualification.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "tests/test_native_templates.py"
     },
     {
@@ -436,7 +436,7 @@
       },
       "outcome": "no-impact",
       "reason": "Corrects test-owned UTF-8/LF configuration fixtures for non-ASCII native interpreter paths and adds a forced legacy-code-page regression; command execution and acceptance requirements are unchanged.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "tests/test_portable_commands.py"
     },
     {
@@ -445,7 +445,7 @@
       },
       "outcome": "no-impact",
       "reason": "Regression coverage for the documented native setup, provisioning, profile or template behavior; tests do not independently establish live platform qualification.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "tests/test_provision.py"
     },
     {
@@ -454,7 +454,7 @@
       },
       "outcome": "no-impact",
       "reason": "Regression coverage for the documented native setup, provisioning, profile or template behavior; tests do not independently establish live platform qualification.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "tests/test_windows_bootstrap.py"
     },
     {
@@ -463,7 +463,7 @@
       },
       "outcome": "no-impact",
       "reason": "Corrects test-owned UTF-8/LF configuration fixtures for non-ASCII native interpreter paths and adds a forced legacy-code-page regression; command execution and acceptance requirements are unchanged.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "tests/test_windows_core.py"
     },
     {
@@ -472,7 +472,7 @@
       },
       "outcome": "no-impact",
       "reason": "Regression coverage for the documented native setup, provisioning, profile or template behavior; tests do not independently establish live platform qualification.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "tests/test_windows_environment.py"
     },
     {
@@ -481,7 +481,7 @@
       },
       "outcome": "no-impact",
       "reason": "Regression coverage for the documented native setup, provisioning, profile or template behavior; tests do not independently establish live platform qualification.",
-      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
       "target": "tests/test_windows_provision.py"
     }
   ],
