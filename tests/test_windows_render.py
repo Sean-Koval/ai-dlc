@@ -248,7 +248,11 @@ def test_replacement_retains_source_permissions_in_transaction_shim(tmp_path, st
 @pytest.mark.skipif(os.name != "nt", reason="requires actual Windows restricted DACLs")
 @pytest.mark.parametrize("operation", ["render", "template"])
 def test_native_replacement_preserves_restricted_acl_and_new_file_inherits(tmp_path, operation):
+    import ctypes as c
+    from ctypes import wintypes as w
+
     from ai_dlc import _windows_storage as storage
+    from ai_dlc._windows_storage._api import api, checked, winerror
     from ai_dlc.harness.windows_render import WindowsRenderState
     from ai_dlc.setup.templates import apply_files
 
@@ -263,19 +267,29 @@ def test_native_replacement_preserves_restricted_acl_and_new_file_inherits(tmp_p
     assert storage.safe_read(target, private=True) == b"before"
 
     def descriptor():
-        return subprocess.run(
-            [
-                "powershell.exe",
-                "-NoProfile",
-                "-NonInteractive",
-                "-Command",
-                "(Get-Acl -LiteralPath $env:AI_DLC_TEST_ACL_PATH).Sddl",
-            ],
-            env={**os.environ, "AI_DLC_TEST_ACL_PATH": str(target)},
-            capture_output=True,
-            text=True,
-            check=True,
-        ).stdout.strip()
+        # Inspect the actual owner/DACL without depending on a PowerShell module
+        # environment or the production descriptor-copy helper under test.
+        convert = c.WinDLL(
+            "advapi32", use_last_error=True
+        ).ConvertSecurityDescriptorToStringSecurityDescriptorW
+        convert.argtypes = [c.c_void_p, w.DWORD, w.DWORD, c.POINTER(w.LPWSTR), c.c_void_p]
+        convert.restype = w.BOOL
+        owner, dacl, security = c.c_void_p(), c.c_void_p(), c.c_void_p()
+        with storage.opened(target) as handle:
+            result = api().security_info(
+                handle, 1, 0x1 | 0x4, c.byref(owner), None, c.byref(dacl), None, c.byref(security)
+            )
+            if result:
+                raise winerror(result)
+            try:
+                text = w.LPWSTR()
+                checked(convert(security, 1, 0x1 | 0x4, c.byref(text), None))
+                try:
+                    return text.value
+                finally:
+                    api().free(c.cast(text, c.c_void_p))
+            finally:
+                api().free(security)
 
     original = descriptor()
     assert original

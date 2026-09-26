@@ -366,7 +366,7 @@
     },
     {
       "bound": {
-        "tests/test_windows_render.py": "4a8440448b0c9cb2918819c32820d1aeefa9d3cf8e9eb03fc85de62a0c78fc4d"
+        "tests/test_windows_render.py": "328da2c5d08f14a2b5dac1b40286dae72b67292e45cacf9cba1db1f327086d46"
       },
       "outcome": "updated",
       "reason": "Reviewed implementation plan, native CI/test coverage or catalog mapping for windows-portable-core; proposed test coverage is distinct from actual platform pass evidence, and unrelated product scope is preserved.",
