@@ -11,7 +11,7 @@ This change starts from #173's completed merge. The reviewed disposition in
 - [x] 1.2 Map pure local collectors from status/readiness/workspace diagnostics and version/provenance adapters; enumerate unsupported provenance rather than infer it.
 
 ## 2. Reporting and comparison
-- [ ] 2.1 Implement schema validation, positive privacy projection, explicitly opt-in bounded local version probes and stable configuration/observation identity calculation in the existing environment service.
+- [x] 2.1 Implement schema validation, positive privacy projection, explicitly opt-in bounded local version probes and stable configuration/observation identity calculation in the existing environment service.
 - [ ] 2.2 Add opt-in status export and offline doctor modes, preserving default contracts and safe output publication.
 - [ ] 2.3 Implement offline two-file comparison with deterministic findings, scoped next actions and exact error/exit semantics.
 
@@ -49,10 +49,10 @@ Own `src/ai_dlc/environment/report.py`, `src/ai_dlc/environment/version_probes.p
 
 Version probes are fixed built-in executable/argument/parser operations with five-second timeout, actual combined 16 KiB capture bound and minimal environment; no shell/configured command execution. Trusted provenance is absent in current source/release installations and stays unknown. Existing raw lock/ownership hashes cannot be exported as safe content identity. Project/client selections, desired pins, declared native aliases and credential-presence booleans use a positive projection; no private path or secret enters output or digest inputs. Do not infer platform/edition compatibility from installation recipes/hook fixtures. For guidance, use only a narrowly justified safe projection when desired owned content can actually be inspected without effects; otherwise honest nulls and observed missing/conflict states.
 
-- [ ] Write failing isolated-home fixtures with secret sentinels in profile URLs, commands, env values, machine paths, client files and raised errors. Block process/network/write entry points in default mode and prove snapshots unchanged.
-- [ ] Implement independent local collection, module/runtime selection and narrow guidance observation. Malformed state produces safe scoped unknowns rather than personal defaults or wholesale failure.
-- [ ] Exercise actual optional subprocess timeout/output caps, missing tools, strict version parsing and discarded secret output/errors; do not run a real provider/native model session.
-- [ ] Run affected collector/schema/comparison tests and format/lint/types; self-review, commit, and report actual evidence/limits.
+- [x] Write failing isolated-home fixtures with secret sentinels in profile URLs, commands, env values, machine paths, client files and raised errors. Block process/network/write entry points in default mode and prove snapshots unchanged.
+- [x] Implement independent local collection, module/runtime selection and narrow guidance observation. Malformed state produces safe scoped unknowns rather than personal defaults or wholesale failure.
+- [x] Exercise actual optional subprocess timeout/output caps, missing tools, strict version parsing and discarded secret output/errors; do not run a real provider/native model session.
+- [x] Run affected collector/schema/comparison tests and format/lint/types; self-review, commit, and report actual evidence/limits.
 
 ### Task 3: Safe report files and compatible CLI options
 
