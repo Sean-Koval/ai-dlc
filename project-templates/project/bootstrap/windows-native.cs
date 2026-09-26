@@ -57,7 +57,7 @@ namespace AiDlc.Bootstrap {
             using(var stream = new FileStream(borrowed,FileAccess.Read))
             using(var sha=SHA256.Create()) return BitConverter.ToString(sha.ComputeHash(stream));
         }
-        static void Private(SafeFileHandle h) {
+        static void Private(SafeFileHandle h, bool trustedRuntimeOwner = false) {
             IntPtr owner, acl, descriptor;
             uint result = GetSecurityInfo(h, 1, 5, out owner, IntPtr.Zero, out acl, IntPtr.Zero, out descriptor);
             if (result != 0) throw new Win32Exception((int)result);
@@ -65,14 +65,17 @@ namespace AiDlc.Bootstrap {
                 byte[] raw = new byte[GetSecurityDescriptorLength(descriptor)];
                 Marshal.Copy(descriptor, raw, 0, raw.Length);
                 RawSecurityDescriptor security = new RawSecurityDescriptor(raw, 0);
-                if (security.Owner.Value != Sid || security.DiscretionaryAcl == null) throw new IOException("Unsafe bootstrap namespace owner or DACL");
+                string ownerSid = security.Owner == null ? "absent" : security.Owner.Value;
+                bool allowedOwner = ownerSid == Sid || (trustedRuntimeOwner && (ownerSid == "S-1-5-18" || ownerSid == "S-1-5-32-544"));
+                if (!allowedOwner) throw new IOException("Unsafe bootstrap namespace owner: " + ownerSid + "; expected " + Sid + (trustedRuntimeOwner ? " or trusted runtime owner" : ""));
+                if (security.DiscretionaryAcl == null) throw new IOException("Unsafe bootstrap namespace: null DACL");
                 foreach (GenericAce ace in security.DiscretionaryAcl) {
                     if ((ace.AceFlags & AceFlags.InheritOnly) != 0) continue;
                     CommonAce common = ace as CommonAce;
                     if (common != null && common.AceQualifier == AceQualifier.AccessDenied) continue;
                     if (common == null || common.AceQualifier != AceQualifier.AccessAllowed ||
                         (common.SecurityIdentifier.Value != Sid && common.SecurityIdentifier.Value != "S-1-5-18" && common.SecurityIdentifier.Value != "S-1-5-32-544"))
-                        throw new IOException("Unsafe bootstrap namespace DACL");
+                        throw new IOException("Unsafe bootstrap namespace DACL: " + (common == null ? "unsupported ACE" : common.SecurityIdentifier.Value));
                 }
             } finally { LocalFree(descriptor); }
         }
@@ -90,7 +93,13 @@ namespace AiDlc.Bootstrap {
                 try { Validate(result,directory); if (privateObject) Private(result); return result; } catch { result.Dispose(); throw; }
             } finally { Marshal.FreeHGlobal(text); if(u != IntPtr.Zero) Marshal.FreeHGlobal(u); if(descriptor != IntPtr.Zero) LocalFree(descriptor); }
         }
-        public DirectoryGuard(string path, bool create, bool privateDirectory) {
+        public DirectoryGuard(string path, bool create, bool privateDirectory) : this(path,create,privateDirectory,false) { }
+        public static DirectoryGuard OpenRuntimeDirectory(string path) {
+            // A verified native installer can inherit an Administrators/SYSTEM owner.
+            // This read-only runtime boundary still requires the same restricted DACL.
+            return new DirectoryGuard(path,false,true,true);
+        }
+        private DirectoryGuard(string path, bool create, bool privateDirectory, bool trustedRuntimeOwner) {
             PathName = System.IO.Path.GetFullPath(path).TrimEnd('\\');
             if (PathName.StartsWith("\\") || PathName.Length < 3) throw new IOException("Bootstrap requires an absolute local NTFS path");
             string root = System.IO.Path.GetPathRoot(PathName);
@@ -104,14 +113,14 @@ namespace AiDlc.Bootstrap {
                 string[] parts = PathName.Substring(root.Length).Split(new char[]{'\\'},StringSplitOptions.RemoveEmptyEntries);
                 for (int index=0; index<parts.Length; index++) {
                     bool final = index == parts.Length-1;
-                    try { handle = Open(handle,parts[index],true,0x20081,3,1,final && privateDirectory); }
+                    try { handle = Open(handle,parts[index],true,0x20081,3,1,final && privateDirectory && !trustedRuntimeOwner); }
                     catch (Win32Exception error) {
                         if (!create || (error.NativeErrorCode != 2 && error.NativeErrorCode != 3)) throw;
                         handle = Open(handle,parts[index],true,0x20081,3,2,true);
                     }
                     parents.Add(handle);
                 }
-                if(privateDirectory) Private(handle);
+                if(privateDirectory) Private(handle,trustedRuntimeOwner);
             } catch { Dispose(); throw; }
         }
         public FileStream OpenRead(string name) { return new FileStream(Open(handle,name,false,0x80020000,1,1,false),FileAccess.Read); }

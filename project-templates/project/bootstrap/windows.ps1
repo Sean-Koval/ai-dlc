@@ -159,7 +159,7 @@ function Open-ManagedPython([string] $InstallDirectory, [string] $Version) {
     # uv 0.9.11 managed.rs: exact patch directory, never the optional minor-version junction.
     $directory = Join-Path $InstallDirectory "cpython-$Version-windows-x86_64-none"
     $guard = $null
-    try { $guard = [AiDlc.Bootstrap.DirectoryGuard]::new($directory, $false, $true) }
+    try { $guard = [AiDlc.Bootstrap.DirectoryGuard]::OpenRuntimeDirectory($directory) }
     catch {
         $failure = $_.Exception
         while ($failure.InnerException) { $failure = $failure.InnerException }

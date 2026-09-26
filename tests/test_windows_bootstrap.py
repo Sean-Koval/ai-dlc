@@ -613,3 +613,40 @@ try {{
         if process.poll() is None:
             process.kill()
             process.wait()
+
+
+@NATIVE
+def test_native_runtime_owner_acceptance_does_not_relax_private_metadata_or_dacl(tmp_path):
+    import ctypes
+
+    shell = ctypes.WinDLL("shell32")  # pyright: ignore[reportAttributeAccessIssue]
+    if not shell.IsUserAnAdmin():
+        pytest.skip("Admin-owned installer-output fixture requires an administrator token")
+    result = ps(
+        helpers()
+        + f"""
+Initialize-NativeStorage
+$path={quoted(tmp_path / "runtime")}
+$original=[AiDlc.Bootstrap.DirectoryGuard]::new($path, $true, $true)
+$original.Dispose()
+$acl=Get-Acl -LiteralPath $path
+$acl.SetOwner([Security.Principal.SecurityIdentifier]::new('S-1-5-32-544'))
+Set-Acl -LiteralPath $path -AclObject $acl
+$runtime=[AiDlc.Bootstrap.DirectoryGuard]::OpenRuntimeDirectory($path)
+$runtime.Dispose()
+try {{
+ $metadata=[AiDlc.Bootstrap.DirectoryGuard]::new($path, $false, $true)
+ $metadata.Dispose()
+ throw 'private metadata accepted a different owner'
+}} catch {{ if($_.Exception.Message -like '*private metadata accepted*') {{ throw }} }}
+$acl=Get-Acl -LiteralPath $path
+$acl.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new('Everyone','Read','ContainerInherit,ObjectInherit','None','Allow'))
+Set-Acl -LiteralPath $path -AclObject $acl
+try {{
+ $unsafe=[AiDlc.Bootstrap.DirectoryGuard]::OpenRuntimeDirectory($path)
+ $unsafe.Dispose()
+ throw 'runtime accepted broad DACL'
+}} catch {{ if($_.Exception.Message -like '*runtime accepted broad*') {{ throw }} }}
+"""
+    )
+    assert result.returncode == 0, result.stderr

@@ -274,6 +274,48 @@ def _repair_rc(rc: Path, line: str, apply: bool) -> tuple[str, bool]:
         os.close(parent)
 
 
+def _refuse_marked_profile(handle: int) -> None:
+    """Inspect the held file's streams without following another pathname."""
+    import ctypes
+    import struct
+    from ctypes import wintypes
+
+    kernel = ctypes.WinDLL("kernel32", use_last_error=True)  # pyright: ignore[reportAttributeAccessIssue]
+    inspect = kernel.GetFileInformationByHandleEx
+    inspect.argtypes = [wintypes.HANDLE, ctypes.c_int, ctypes.c_void_p, wintypes.DWORD]
+    inspect.restype = wintypes.BOOL
+    size = 4096
+    while size <= 1024 * 1024:
+        buffer = ctypes.create_string_buffer(size)
+        if inspect(handle, 7, buffer, size):  # FileStreamInfo
+            break
+        error = ctypes.get_last_error()  # pyright: ignore[reportAttributeAccessIssue]
+        if error not in {122, 234}:  # insufficient buffer / more data
+            raise RefusedError(
+                f"Cannot safely inspect PowerShell profile streams (Windows {error})"
+            )
+        size *= 2
+    else:
+        raise RefusedError("PowerShell profile stream metadata exceeds inspection budget")
+    offset = 0
+    while True:
+        if offset + 24 > size:
+            raise RefusedError("PowerShell profile stream metadata is malformed")
+        next_offset, length = struct.unpack_from("<II", buffer.raw, offset)
+        if length % 2 or offset + 24 + length > size:
+            raise RefusedError("PowerShell profile stream metadata is malformed")
+        name = buffer.raw[offset + 24 : offset + 24 + length].decode("utf-16-le")
+        if name.casefold() == ":zone.identifier:$data":
+            raise RefusedError(
+                "PowerShell profile carries Zone.Identifier; preserve its download marker and use the direct executable or a policy-approved manual profile review"
+            )
+        if not next_offset:
+            return
+        if next_offset < 24 + length or next_offset % 8:
+            raise RefusedError("PowerShell profile stream metadata is malformed")
+        offset += next_offset
+
+
 def _repair_rc_windows(rc: Path, line: str, apply: bool) -> tuple[str, bool]:
     import uuid
 
@@ -282,13 +324,16 @@ def _repair_rc_windows(rc: Path, line: str, apply: bool) -> tuple[str, bool]:
         create_owned,
         guarded_path,
         move_owned,
+        opened,
         safe_snapshot,
     )
 
     try:
-        with guarded_path(rc.parent, create_parents=apply):
+        with guarded_path(rc.parent, create_parents=apply) as parent:
             try:
-                original, identity = safe_snapshot(rc)
+                with opened(rc, parent=parent) as handle:
+                    _refuse_marked_profile(handle)
+                    original, identity = safe_snapshot(rc)
             except FileNotFoundError:
                 original, identity = b"", None
             current, encoding = _profile_text(original)

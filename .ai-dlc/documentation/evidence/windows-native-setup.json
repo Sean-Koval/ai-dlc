@@ -69,7 +69,7 @@
         "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
         "src/ai_dlc/documentation/workspace_diagnostics.py": "0ef3ce986033a15568d4f80420b2f21b1d872ad8b86d6a490e09ec70b5f6897c",
         "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
-        "src/ai_dlc/environment/bootstrap.py": "c1debaaaa216471009d5d3a2046d78ec819d2cb9671984451bb1b8a2b0e23d75",
+        "src/ai_dlc/environment/bootstrap.py": "926632df2596d7f101a1cdabf71cd02884a96d459f5b2301beb968e8770cc7e4",
         "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
         "src/ai_dlc/environment/enrollment.py": "f8e826a9dca7a8e308f9ad52c8f178ad7e6f2c6c536da7459a68c123d51e9c53",
         "src/ai_dlc/environment/machine.py": "2c3981ab3e8e4e52d2c3f86f02d8714bf92dd3229eaff99c72ac91961fbbd16a",
@@ -225,13 +225,13 @@
     {
       "bound": {
         "catalog:docs/runbooks/machine-enrollment.md": "57efacf540031d6731cfa09fb33452a0a368c5fc06378f76efca74b758f38234",
-        "docs/runbooks/machine-enrollment.md": "a8f62eda330c3f9ba34f6358f225ed1960419f2e75b0b8e2ed57813ff40c8d83",
+        "docs/runbooks/machine-enrollment.md": "e31df22d0fc8bd95a164bab29e57bda6f055a435ba6f1aad601821d18c543297",
         "openspec/specs/native-work-harnesses/spec.md": "09197a91bca7653dd698a1b42e7203c4240e91cd5efa4fe3665f59e778aec909",
         "openspec/specs/team-sources/spec.md": "3dca430922c9b5d8eb7b678b0cf00da813f9be332e76cf59a448bd718f4d4587",
         "profiles/example/ai-dlc-profile.toml": "29b58a995e46b38ac75e5db5756e766e6b130f26e162448fc41fee898e7ff01e",
         "src/ai_dlc/config.py": "dd596570054e3f455b90dc5cea2a86c97175b2c4ec4243328755dc1884ececc1",
         "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
-        "src/ai_dlc/environment/bootstrap.py": "c1debaaaa216471009d5d3a2046d78ec819d2cb9671984451bb1b8a2b0e23d75",
+        "src/ai_dlc/environment/bootstrap.py": "926632df2596d7f101a1cdabf71cd02884a96d459f5b2301beb968e8770cc7e4",
         "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
         "src/ai_dlc/environment/enrollment.py": "f8e826a9dca7a8e308f9ad52c8f178ad7e6f2c6c536da7459a68c123d51e9c53",
         "src/ai_dlc/environment/machine.py": "2c3981ab3e8e4e52d2c3f86f02d8714bf92dd3229eaff99c72ac91961fbbd16a",
@@ -249,23 +249,23 @@
         "tests/test_team_sources.py": "a0e3a25ae8032b650a0c47e0b619677998efde63a90b88b038c37b6de996d0a6"
       },
       "outcome": "updated",
-      "reason": "Adds KnownFolder/direct-executable routing, explicit PowerShell profile preview/apply, policy/encoding ownership and manual Git/GH installer limits.",
+      "reason": "Adds KnownFolder/direct-executable routing, explicit PowerShell profile preview/apply, policy/encoding ownership and manual Git/GH installer limits. Includes a pending executable Windows11 teammate checklist, separate human-terminal obligations and refusal preserving download markers.",
       "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
       "target": "docs/runbooks/machine-enrollment.md"
     },
     {
       "bound": {
         ".github/workflows/release.yml": "54077783bb2738431d7ee8f879c0481b679283df631e9a0a53a8f8c6ba19ee60",
-        "bootstrap/windows-native.cs": "6f99e5936b6536c8c158f11768d634b40cf42c0756d93aa70be97b0c6c014d9c",
+        "bootstrap/windows-native.cs": "fd16f4767595386621f1f1847184f809efb0eb7d23f9fef28b2410f048728faf",
         "bootstrap/windows-select.py": "3366c0e029dc0bfbbd8b4576060631e6205a879fe97435362dd1f2558a41d84a",
         "bootstrap/windows.json": "6c5d3c1d895404e0a0fdbffc2c703926dde670915013295d4f54779b63a51981",
-        "bootstrap/windows.ps1": "2b117ab991c9f11e7971875d17bd5480f577f8acda77cf6dcb764e98c37f888a",
+        "bootstrap/windows.ps1": "d48ad039e8edd916a1d645330b48d2251c3ec684a5d89db445381d73cfac8a08",
         "catalog:docs/runbooks/release-publication.md": "89f19422d8dbbf072c44f496c5dad1f4efb6805319645a2ae2c8a99b67d93a28",
         "docs/runbooks/release-publication.md": "5177ad6b285c8adc36a6750bb4e02d263326eac08608081f924496d5c10c9a57",
-        "project-templates/project/bootstrap/windows-native.cs": "6f99e5936b6536c8c158f11768d634b40cf42c0756d93aa70be97b0c6c014d9c",
+        "project-templates/project/bootstrap/windows-native.cs": "fd16f4767595386621f1f1847184f809efb0eb7d23f9fef28b2410f048728faf",
         "project-templates/project/bootstrap/windows-select.py": "3366c0e029dc0bfbbd8b4576060631e6205a879fe97435362dd1f2558a41d84a",
         "project-templates/project/bootstrap/windows.json": "6c5d3c1d895404e0a0fdbffc2c703926dde670915013295d4f54779b63a51981",
-        "project-templates/project/bootstrap/windows.ps1": "2b117ab991c9f11e7971875d17bd5480f577f8acda77cf6dcb764e98c37f888a",
+        "project-templates/project/bootstrap/windows.ps1": "d48ad039e8edd916a1d645330b48d2251c3ec684a5d89db445381d73cfac8a08",
         "project-templates/project/scripts/bootstrap.ps1": "5ad401709b636b0c501b3b753031779d8bb74d816be24631fe5530f294db8f91",
         "project-templates/project/scripts/bootstrap.sh": "258849a164d84198a1606771d734a8b4d4e59dca882438acb78201561561ce5c",
         "scripts/bootstrap.ps1": "5ad401709b636b0c501b3b753031779d8bb74d816be24631fe5530f294db8f91",
@@ -441,7 +441,7 @@
     },
     {
       "bound": {
-        "tests/test_windows_bootstrap.py": "7f9e5175c1cd92f3afcb1eadf3bd1f901d63c44724cc413b6c6db131e58faeb0"
+        "tests/test_windows_bootstrap.py": "414aef991ff0e5f5339c4afb17717d3c69edf4e0f780ee8d91e17c5e4bef3ae2"
       },
       "outcome": "no-impact",
       "reason": "Regression coverage for the documented native setup, provisioning, profile or template behavior; tests do not independently establish live platform qualification.",
@@ -450,7 +450,7 @@
     },
     {
       "bound": {
-        "tests/test_windows_environment.py": "b1447e53ef08c11070c61341615bdfb853d9940d61c0a8e62376f1cab91536ed"
+        "tests/test_windows_environment.py": "ac79ef02b7a64f7f86878833880e69f9816b418a2b54363e600a9aaf2846d0c5"
       },
       "outcome": "no-impact",
       "reason": "Regression coverage for the documented native setup, provisioning, profile or template behavior; tests do not independently establish live platform qualification.",

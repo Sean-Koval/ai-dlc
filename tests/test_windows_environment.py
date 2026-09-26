@@ -196,3 +196,30 @@ def test_native_profile_refuses_junction_parent_without_changing_target(tmp_path
         )
     assert profile.read_bytes() == b"# must remain unchanged\r\n"
     assert list(target.iterdir()) == [profile]
+
+
+@pytest.mark.skipif(os.name != "nt", reason="actual NTFS alternate-stream preservation")
+@pytest.mark.parametrize("apply", [False, True])
+def test_marked_profile_refuses_preview_and_apply_without_removing_zone(
+    tmp_path, monkeypatch, apply
+):
+    from pathlib import Path
+
+    install = tmp_path / "bootstrap"
+    (install / "bin").mkdir(parents=True)
+    profile = tmp_path / "marked-profile.ps1"
+    original = b"# authored downloaded profile\r\n$authored = 'preserved'\r\n"
+    zone = b"[ZoneTransfer]\r\nZoneId=3\r\nHostUrl=https://example.invalid/profile.ps1\r\n"
+    profile.write_bytes(original)
+    marker = Path(str(profile) + ":Zone.Identifier")
+    marker.write_bytes(zone)
+    monkeypatch.setattr(bootstrap, "_powershell_policy", lambda _: "RemoteSigned")
+    with pytest.raises(RefusedError, match="Zone.Identifier"):
+        bootstrap.plan_shell_activation(
+            environ={"AI_DLC_BOOTSTRAP_HOME": str(install)},
+            powershell_profile=profile,
+            apply=apply,
+        )
+    assert profile.read_bytes() == original
+    assert marker.read_bytes() == zone
+    assert not list(tmp_path.glob(".ai-dlc-profile-*"))
