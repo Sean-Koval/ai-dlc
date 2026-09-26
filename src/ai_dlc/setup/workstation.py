@@ -52,6 +52,15 @@ def activate_workstation(
     shell: str = "zsh",
 ) -> dict:
     """Preserve authored values and reject changes to owned values before writing."""
+    if shell == "powershell":
+        return {
+            "ready": True,
+            "shell": "powershell",
+            "profile_applied": False,
+            "activation": "explicit-profile-required",
+            "direct_executable": str(bootstrap_bin / "ai-dlc.exe"),
+            "reason": "Runtime preparation is separate from persistent profile activation; preview workspace-init --shell --powershell-profile $PROFILE.",
+        }
     if shell not in {"bash", "zsh"}:
         return {
             "ready": False,
@@ -60,7 +69,11 @@ def activate_workstation(
     home = home.resolve()
     config_path = home / ".config/mise/config.toml"
     ownership_path = home / ".local/state/ai-dlc/workstation-ownership.json"
-    previous = json.loads(ownership_path.read_text()) if ownership_path.exists() else {"tools": {}}
+    previous = (
+        json.loads(ownership_path.read_text(encoding="utf-8"))
+        if ownership_path.exists()
+        else {"tools": {}}
+    )
     config = read_toml(config_path) if config_path.exists() else {}
     current = config.setdefault("tools", {})
     for name, value in previous["tools"].items():

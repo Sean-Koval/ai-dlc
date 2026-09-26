@@ -69,3 +69,24 @@ signins = ["Select a reviewed, pinned Serena artifact in the MCP registry; do no
 mise = { "npm:wrangler" = "4.20.0" }
 verify = ["wrangler"]
 signins = ["wrangler login; select account and deployment environment explicitly."]
+
+# Exact reviewed manifests; installer scope/elevation limits are reported, not bypassed.
+[[core.windows.packages]]
+command = "git"
+id = "Git.Git"
+version = "2.53.0.2"
+minimum = "2.39.0"
+source = "winget"
+scope = "user"
+manifest = "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/g/Git/Git/2.53.0.2/Git.Git.installer.yaml"
+limitation = "The reviewed Git installer declares elevatesSelf; a non-elevating user-scope launch has not been qualified"
+
+[[core.windows.packages]]
+command = "gh"
+id = "GitHub.cli"
+version = "2.87.3"
+minimum = "2.40.0"
+source = "winget"
+scope = "user"
+manifest = "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/g/GitHub/cli/2.87.3/GitHub.cli.installer.yaml"
+limitation = "The reviewed GitHub CLI installer is machine-scope, not an eligible user-scope installation"

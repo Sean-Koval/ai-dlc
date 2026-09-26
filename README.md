@@ -59,9 +59,16 @@ for available commands, MCP tools, and skills.
 ## Get started
 
 **Choose an installation:** [v0.4.0](https://github.com/Sean-Koval/ai-dlc/releases/tag/v0.4.0)
-is the published release; follow the [verified release installation steps](docs/runbooks/release-publication.md#install-from-a-release).
-The team-source imports and FDE scaffold described here were added after that
-release. Use a source checkout for those features:
+is the published release; follow the [release installation steps](docs/runbooks/release-publication.md#install-from-a-release)
+for its Unix installers. Its original assets do not support native Windows setup
+or structured argv commands. Team-source imports, FDE scaffolding, and native
+Windows setup require a source revision containing those changes, even when its
+version still reads `0.4.0`.
+
+### Prepare an AI-DLC source checkout
+
+For contributors working on AI-DLC itself, obtain a reviewed source checkout.
+On macOS or Linux:
 
 ```sh
 git clone https://github.com/Sean-Koval/ai-dlc.git
@@ -69,17 +76,31 @@ cd ai-dlc
 sh scripts/bootstrap.sh --source
 ```
 
-Bootstrap needs a POSIX shell, curl, CA certificates, tar, and standard platform
-utilities. It installs pinned uv, Python, and mise, prepares this checkout, and
-prints the directories to add to `PATH`; no preinstalled Python or Node is needed.
-Use the printed checkout-specific path when another AI-DLC installation exists.
+The Unix bootstrap needs a POSIX shell, curl, CA certificates, tar, and standard
+platform utilities. It installs pinned uv, Python, and mise; no preinstalled
+Python or Node is needed.
 
-After activating those paths, verify the checkout:
+On Windows x64, use 64-bit Windows PowerShell 5.1 in the source checkout on local
+NTFS. Preview the native bootstrap, then run it:
 
-```sh
-ai-dlc project check --required
-ai-dlc doctor
+```powershell
+.\scripts\bootstrap.ps1 -Source -Root $PWD.Path -Plan
+.\scripts\bootstrap.ps1 -Source -Root $PWD.Path
 ```
+
+Native setup does not require WSL, a POSIX shell, or preinstalled Python or Node.
+It does require the machine's existing PowerShell policy to permit the reviewed
+script. It does not change execution policy, elevate, or edit machine PATH.
+Use the printed checkout-specific executable or PATH directories, especially
+when another AI-DLC installation exists. For persistent activation, see the
+[PowerShell preview and apply procedure](docs/runbooks/machine-enrollment.md#native-windows-setup-and-activation).
+
+After activating this checkout's environment, contributors run
+`ai-dlc project check --required`. These are AI-DLC's own engineering checks;
+projects that use the engine run their own configured checks. Windows Server CI
+and a clean Windows 11 machine are separate qualification targets. The Windows 11
+walkthrough and native client recognition/authentication remain pending; consult
+[release verification](docs/release-verification.md) for recorded evidence.
 
 ### Create or adopt a project
 
@@ -91,6 +112,12 @@ ai-dlc project init my-project --preset python --tracker github-issues
 ai-dlc project adopt --root /path/to/repo --preset generic --tracker github-issues
 # Repeat the adoption command with --apply to write the reviewed changes.
 ```
+
+Use these commands from an installed compatible engine to work on the target
+project; cloning and testing the AI-DLC source repository is not a consumer
+prerequisite. On native Windows, the supported starter scope is `generic` and
+`python`. Other selected or implied modules report their own unsupported or
+unqualified status instead of silently changing the selection.
 
 For a newly generated project, initialize Git, run setup, and commit the generated
 configuration and lockfile before checking. Checks bind their receipt to `HEAD`:
@@ -126,7 +153,9 @@ commit the adoption and setup changes before checking. Choose `generic`, `python
 
 Projects created with the released engine carry its release manifest for their
 own bootstrap and CI. Source-generated projects need a published
-`bootstrap/release.sh` before release-mode bootstrap; see the
+`bootstrap/release.sh` before release-mode bootstrap. Native projects also need
+compatible native release assets, which the historical v0.4.0 release does not
+provide. See the
 [release guide](docs/runbooks/release-publication.md#install-from-a-release).
 
 ### Connect tools and configure the project

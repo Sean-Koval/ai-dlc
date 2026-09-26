@@ -280,7 +280,11 @@ def adopt(
             skip_tasks=True,
         )
         rendered = checkout_files(stage)
-        manifest = _release_manifest() if "bootstrap/download.sh" in rendered else None
+        manifest = (
+            _release_manifest()
+            if {"bootstrap/download.sh", "scripts/bootstrap.ps1"}.intersection(rendered)
+            else None
+        )
         if manifest is not None:
             # Same conflict and authored-file protections as every template file.
             rendered[RELEASE_MANIFEST_NAME] = manifest

@@ -56,10 +56,7 @@ jobs:
           ARTIFACT_BASE_URL: ${{ github.event_name == 'push' && github.ref_type == 'tag' && format('https://github.com/{0}/releases/download/{1}', github.repository, github.ref_name) || inputs.artifact_base_url }}
         run: |
           rm -f dist/.gitignore
-          uv run --locked --no-sync python scripts/release_manifest.py --artifacts dist --base-url "$ARTIFACT_BASE_URL" --version "${{ steps.version.outputs.version }}" --output dist/release.sh
-          cp project-templates/project/scripts/bootstrap.sh dist/bootstrap.sh
-          cp project-templates/project/bootstrap/versions.sh project-templates/project/bootstrap/download.sh dist/
-          (cd dist && sha256sum ai_dlc-*.whl ai_dlc-*.tar.gz requirements.txt release.sh bootstrap.sh versions.sh download.sh > SHA256SUMS)
+          uv run --locked --no-sync python scripts/prepare_release_assets.py --artifacts dist --base-url "$ARTIFACT_BASE_URL" --version "${{ steps.version.outputs.version }}"
           cat dist/release.sh dist/SHA256SUMS
       - uses: actions/upload-artifact@v4
         with:
@@ -67,9 +64,31 @@ jobs:
           path: dist/
           if-no-files-found: error
 
+  verify-windows-candidate:
+    needs: package
+    runs-on: windows-2025
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-candidate
+          path: candidate
+      - name: Consume exact candidate assets without publication
+        shell: powershell
+        run: python scripts/verify_windows_consumer.py --artifacts candidate --workspace "$env:RUNNER_TEMP/candidate journey é" --evidence "$env:RUNNER_TEMP/candidate-evidence"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-candidate-evidence
+          path: ${{ runner.temp }}/candidate-evidence
+          if-no-files-found: error
+
   publish:
     if: github.event_name == 'push' && github.ref_type == 'tag'
-    needs: package
+    needs: [package, verify-windows-candidate]
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -94,6 +113,11 @@ jobs:
             dist/bootstrap.sh \
             dist/versions.sh \
             dist/download.sh \
+            dist/bootstrap.ps1 \
+            dist/windows.json \
+            dist/windows.ps1 \
+            dist/windows-native.cs \
+            dist/windows-select.py \
             dist/SHA256SUMS
 
   verify-published:
@@ -139,3 +163,35 @@ jobs:
           git add .
           git commit -m "Initialize release verification fixture"
           ai-dlc project check --required --target github-actions
+
+  verify-published-windows:
+    if: >-
+      !cancelled() &&
+      ((github.event_name == 'workflow_dispatch' && inputs.verify_published_tag != '') ||
+       (github.event_name == 'push' && github.ref_type == 'tag' &&
+        needs.package.result == 'success' && needs.publish.result == 'success'))
+    needs: [package, publish]
+    runs-on: windows-2025
+    env:
+      RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.verify_published_tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download original release assets read-only
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download "$env:RELEASE_TAG" --repo "${{ github.repository }}" --dir published
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Replay original assets with identified verification controller
+        shell: powershell
+        run: python scripts/verify_windows_consumer.py --artifacts published --workspace "$env:RUNNER_TEMP/published journey é" --evidence "$env:RUNNER_TEMP/published-evidence"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-published-evidence
+          path: ${{ runner.temp }}/published-evidence
+          if-no-files-found: error

@@ -36,14 +36,14 @@ finish = ["specification-current", "pr-merged", "ci-green"]
 required = ["generated", "work-records"{% if 'frontend' in capabilities %}, "frontend-smoke"{% endif %}{% if initialize and preset != 'generic' %}, "language-check"{% endif %}{% if initialize and preset == 'python' %}, "application-tests"{% endif %}{% if 'backend' in capabilities %}, "api-contract"{% if preset == 'python' %}, "api-contract-drift"{% endif %}{% endif %}]
 
 [checks.commands]
-generated = "ai-dlc agents render --check"
-work-records = "ai-dlc work validate --all"
+generated = {argv = ["ai-dlc", "agents", "render", "--check"]}
+work-records = {argv = ["ai-dlc", "work", "validate", "--all"]}
 {% if 'frontend' in capabilities %}
 frontend-smoke = "if [ -z \"${BASE_URL:-}\" ]; then echo 'Frontend smoke requires BASE_URL for a running app; start the app and set BASE_URL.' >&2; exit 2; fi; PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npx --offline --no-install playwright test --reporter=line"
 {% endif %}
 {% if initialize and preset == 'python' %}
-language-check = "uv run --locked --no-sync python -m compileall -f -q src"
-application-tests = "uv run --locked --no-sync python scripts/check_tests.py"
+language-check = {argv = ["python", "scripts/setup_python.py", "--run", "-m", "compileall", "-f", "-q", "src"]}
+application-tests = {argv = ["python", "scripts/setup_python.py", "--run", "scripts/check_tests.py"]}
 {% elif initialize and preset == 'node' %}
 language-check = "node --check src/index.js"
 {% elif initialize and preset == 'rust' %}
@@ -54,17 +54,17 @@ language-check = "cargo check --locked"
 {% if preset == 'node' %}
 api-contract = "REDOCLY_TELEMETRY=off REDOCLY_SUPPRESS_UPDATE_NOTICE=true npx --offline --no-install @redocly/cli@1.34.16 lint docs/api/openapi.yaml --extends minimal"
 {% elif preset == 'python' %}
-api-contract = "uv run --locked --no-sync --offline --with openapi-spec-validator==0.7.2 python -m openapi_spec_validator docs/api/openapi.yaml"
-api-contract-drift = "uv run --locked --no-sync --offline --with openapi-spec-validator==0.7.2 python scripts/check_api_contract_drift.py"
+api-contract = {argv = ["uv", "run", "--locked", "--no-sync", "--offline", "--with", "openapi-spec-validator==0.7.2", "python", "-m", "openapi_spec_validator", "docs/api/openapi.yaml"]}
+api-contract-drift = {argv = ["uv", "run", "--locked", "--no-sync", "--offline", "--with", "openapi-spec-validator==0.7.2", "python", "scripts/check_api_contract_drift.py"]}
 {% else %}
-api-contract = "uvx --offline --from openapi-spec-validator==0.7.2 openapi-spec-validator docs/api/openapi.yaml"
+api-contract = {argv = ["uvx", "--offline", "--from", "openapi-spec-validator==0.7.2", "openapi-spec-validator", "docs/api/openapi.yaml"]}
 {% endif %}
 {% endif %}
 
 [setup]
 steps = [
 {% if preset == 'python' %}
-  {id = "dependencies", command = "{% if initialize %}(test -f uv.lock || uv lock) && {% else %}test -f uv.lock && {% endif %}uv sync --locked", verify = "uv sync --locked --check"},
+  {id = "dependencies", command = {argv = ["python", "scripts/setup_python.py"{% if initialize %}, "--initialize"{% endif %}]}, verify = {argv = ["python", "scripts/setup_python.py", "--verify"]}, inputs = ["scripts/setup_python.py"]},
 {% elif preset == 'node' %}
   {id = "dependencies", command = "{% if initialize %}(test -f package-lock.json || npm install --package-lock-only --ignore-scripts) && {% endif %}{% if 'frontend' in capabilities %}PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 {% endif %}npm ci", verify = "npm ls --all --parseable"},
 {% elif preset == 'rust' %}
@@ -74,9 +74,9 @@ steps = [
 {% if preset == 'node' %}
   {id = "api-contract-tools", command = "REDOCLY_TELEMETRY=off REDOCLY_SUPPRESS_UPDATE_NOTICE=true npx --yes @redocly/cli@1.34.16 --version", verify = "REDOCLY_TELEMETRY=off REDOCLY_SUPPRESS_UPDATE_NOTICE=true npx --offline --no-install @redocly/cli@1.34.16 --version"},
 {% elif preset == 'python' %}
-  {id = "api-contract-tools", command = "uv run --locked --no-sync --with openapi-spec-validator==0.7.2 python -m openapi_spec_validator docs/api/openapi.yaml", verify = "uv run --locked --no-sync --offline --with openapi-spec-validator==0.7.2 python -c 'import openapi_spec_validator'"},
+  {id = "api-contract-tools", command = {argv = ["uv", "run", "--locked", "--no-sync", "--with", "openapi-spec-validator==0.7.2", "python", "-m", "openapi_spec_validator", "docs/api/openapi.yaml"]}, verify = {argv = ["uv", "run", "--locked", "--no-sync", "--offline", "--with", "openapi-spec-validator==0.7.2", "python", "-c", "import openapi_spec_validator"]}},
 {% else %}
-  {id = "api-contract-tools", command = "uvx --from openapi-spec-validator==0.7.2 openapi-spec-validator docs/api/openapi.yaml", verify = "uvx --offline --from openapi-spec-validator==0.7.2 openapi-spec-validator --help"},
+  {id = "api-contract-tools", command = {argv = ["uvx", "--from", "openapi-spec-validator==0.7.2", "openapi-spec-validator", "docs/api/openapi.yaml"]}, verify = {argv = ["uvx", "--offline", "--from", "openapi-spec-validator==0.7.2", "openapi-spec-validator", "--help"]}},
 {% endif %}
 {% endif %}
 ]

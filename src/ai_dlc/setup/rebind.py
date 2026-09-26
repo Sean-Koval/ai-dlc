@@ -36,7 +36,9 @@ def _collect_work_items(root: Path, role: str, config: dict) -> list[tuple[str, 
     """Every work record bound to the role as (relative path, record, current provider)."""
     all_work_items = []
     for path in sorted((root / ".ai-dlc/work").glob("*.toml")):
-        work = Work.model_validate(tomllib.loads(path.read_text())).model_dump(by_alias=True)
+        work = Work.model_validate(tomllib.loads(path.read_text(encoding="utf-8"))).model_dump(
+            by_alias=True
+        )
         if work["id"] != path.stem:
             raise ValueError("Work ID does not match filename")
         old = work["providers"].get(role, config.get("roles", {}).get(role))
@@ -114,7 +116,7 @@ def _stage_and_apply(
             apply_linear_connection(staged_config, saved_connection_plan)
             proposed = load_project(stage)
         else:
-            staged_config.write_text(tomli_w.dumps(proposed))
+            staged_config.write_text(tomli_w.dumps(proposed), encoding="utf-8", newline="\n")
         resolved = resolve_layers(
             [("project", proposed)] + ([("machine", machine_config)] if machine_config else [])
         ).values
@@ -125,7 +127,7 @@ def _stage_and_apply(
             work["artifacts"].update(replacements)
             path = stage / name
             path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(tomli_w.dumps(work))
+            path.write_text(tomli_w.dumps(work), encoding="utf-8", newline="\n")
             service = WorkService(
                 stage,
                 resolved,

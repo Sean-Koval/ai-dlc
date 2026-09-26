@@ -57,8 +57,8 @@ path = "docs/release-verification.md"
 kind = "runbook"
 owner = "repository-maintainers"
 status = "active"
-code_paths = [".github/workflows/release.yml", "scripts/release_manifest.py"]
-verification_paths = ["tests/test_release_manifest.py", "tests/test_release_workflow.py"]
+code_paths = [".github/workflows/release.yml", ".github/workflows/verify.yml", "scripts/release_manifest.py", "scripts/prepare_release_assets.py", "scripts/verify_windows_consumer.py", "scripts/check_tests.py"]
+verification_paths = ["tests/test_release_manifest.py", "tests/test_release_workflow.py", "tests/test_windows_consumer.py", "tests/test_native_repository_checks.py"]
 requirements = ["openspec/specs/release-publication/spec.md"]
 
 [[documents]]
@@ -783,6 +783,12 @@ status = "active"
 code_paths = [
     ".github/workflows/release.yml",
     "scripts/release_manifest.py",
+    "scripts/prepare_release_assets.py",
+    "scripts/verify_windows_consumer.py",
+    "scripts/bootstrap.ps1",
+    "bootstrap/windows*",
+    "project-templates/project/bootstrap/windows*",
+    "project-templates/project/scripts/bootstrap.ps1",
     "scripts/bootstrap.sh",
     "project-templates/project/scripts/bootstrap.sh",
     "src/ai_dlc/setup/templates.py",

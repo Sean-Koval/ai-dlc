@@ -133,7 +133,7 @@ class EnrollmentPaths:
 def read_lock(paths: EnrollmentPaths) -> EnrollmentLock | None:
     if not paths.lock_file.exists():
         return None
-    return EnrollmentLock.model_validate(tomllib.loads(paths.lock_file.read_text()))
+    return EnrollmentLock.model_validate(tomllib.loads(paths.lock_file.read_text(encoding="utf-8")))
 
 
 def write_lock(paths: EnrollmentPaths, lock: EnrollmentLock) -> Path:

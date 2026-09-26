@@ -28,7 +28,8 @@ When `ai-dlc` is missing, reports an unexpected version, or works only in new
 terminals, run `ai-dlc project workspace-check --root PATH`. It separates the
 executable PATH selects from the AI-DLC-owned shell activation. If no `ai-dlc` is on
 PATH, run the same check through the bootstrap's published alias by its full path,
-by default `~/.local/share/ai-dlc/bootstrap/bin/ai-dlc`. `configured-for-next-shell`
+by default `~/.local/share/ai-dlc/bootstrap/bin/ai-dlc` on Unix. Native Windows
+uses the executable and activation procedure below. On Unix, `configured-for-next-shell`
 needs only a new terminal or sourcing the shell file. Missing activation includes a
 copy-pasteable PATH command for bash, zsh or fish. Preview permanent repair with
 `ai-dlc project workspace-init --shell`; add `--apply` to write only the owned
@@ -44,6 +45,7 @@ The shared `ai-dlc` and `ai-dlc-cli` aliases are one machine-wide selection. Sou
 bootstrap prepares a separate environment per checkout and leaves an existing
 working alias alone, so bootstrapping a linked worktree no longer changes the
 `ai-dlc` other shells use; it publishes the aliases only with `--publish-aliases`
+(`-PublishAliases` in PowerShell)
 or when no working alias exists. Bootstrap output names the checkout the alias runs
 and the executable for the current checkout. When the alias belongs to another
 checkout, `project workspace-check` reports that checkout under activation.
@@ -89,6 +91,159 @@ to activate it after validation and reconciliation. To move from one immutable
 tag to another, reenroll with the new ref. Enroll a second machine with the
 same advertised ref under the selected policy and a different machine ID; its
 local binding remains independent.
+
+## Native Windows setup and activation
+
+The native lane targets Windows x64, local NTFS, and 64-bit Windows PowerShell
+5.1. From a reviewed AI-DLC source checkout, preview
+`.\scripts\bootstrap.ps1 -Source -Root $PWD.Path -Plan`, then omit `-Plan` to prepare
+that checkout. Native setup needs neither WSL nor preinstalled Python or Node.
+The original published v0.4.0 assets cannot run this lane; see
+[release compatibility](release-publication.md#native-windows-assets-and-compatibility).
+
+Bootstrap defaults to `ai-dlc/bootstrap` under Windows' Local Application Data
+known folder. `AI_DLC_BOOTSTRAP_HOME` explicitly selects a different local root;
+it is not a shared project setting. Bootstrap prints the direct environment
+`Scripts/ai-dlc.exe` path and PATH directories. The shared bin contains copied
+`ai-dlc.exe` and `ai-dlc-cli.exe` launchers, with selection metadata bound to their
+bytes and source/release identity. Source environments are separate from release
+environments; rerunning an unchanged source selection can reuse its prepared
+environment. A source bootstrap preserves an existing working shared selection
+unless `-PublishAliases` is explicit. Private runtime directories and project
+roots reject reparse points; use a regular local path when this guard refuses.
+
+For persistent activation, choose the actual profile of the PowerShell host you
+intend to use. In that host, pass its absolute `$PROFILE` path explicitly:
+
+```powershell
+ai-dlc project workspace-init --shell --powershell-profile $PROFILE
+# Inspect the proposed owned section before applying it.
+ai-dlc project workspace-init --shell --powershell-profile $PROFILE --apply
+```
+
+This updates only AI-DLC's owned section and preserves authored profile bytes,
+including supported UTF-8/UTF-16 encodings. An edited owned section, reparse path,
+signed or download-marked (`Zone.Identifier`) profile, or disallowed/unknown
+execution policy blocks the edit. The
+command neither bypasses policy nor elevates or changes machine PATH. When a
+profile cannot be used, invoke the printed executable directly with PowerShell's
+call operator, for example `& 'C:\path printed by bootstrap\Scripts\ai-dlc.exe' --version`.
+After applying activation, open a new terminal and inspect `Get-Command ai-dlc`
+and `ai-dlc --version`; run `ai-dlc project workspace-check --root PATH` to inspect
+PATH selection and launcher provenance. Native workspace diagnostics report the
+profile as unselected rather than guessing which PowerShell host profile you use.
+
+Setup planning reports native requirements individually. Existing Git and GitHub
+CLI installations are observed and reused when they meet the minimum versions.
+The catalog records exact reviewed winget identities and versions, but current
+Git/GH installation remains manual: the Git installer can elevate itself and the
+reviewed GH installer has machine scope. A manifest's scope label is not evidence
+of an unelevated current-user installation. Follow the reported recovery action
+to install through your organization's approved process, make the executables
+available, and rerun the plan; AI-DLC does not upgrade them implicitly.
+
+Explicitly selected Python provisioning delegates exact pinned Python/uv versions
+to mise and verifies them afterward. Unsupported or unqualified selected and
+implied modules remain individual blockers, so preparing the supported subset
+does not produce complete readiness. Native personal client configuration and
+dotfile application are outside this minimal setup lane. No setup step logs in
+to providers or clients. Offline readiness still locates tools without running
+them; setup's explicit version observations are a separate operation.
+
+Hosted Windows Server CI, clean Windows 11 setup, and native client recognition
+are distinct evidence. A passing Server job does not complete the Windows 11 or
+interactive client walkthrough; see [release verification](../release-verification.md)
+for current qualification status.
+
+### Pending clean Windows 11 teammate walkthrough
+
+This is an execution checklist, not a passing qualification record. Use a clean
+Windows 11 x64 account on local NTFS, without administrator elevation or execution
+policy changes. Obtain two clean source checkouts at the **same reviewed full
+commit** and the original complete release-candidate artifact directory from an
+identified workflow run. Do not rebuild or replace candidate bytes. A teammate
+may prepare the checkouts with an approved native Git installation; record Git/GH
+versions and any manual installation separately. No Python, Node, uv, mise, or
+POSIX shell should be preinstalled for the clean-machine claim. If they are
+installed but hidden from PATH, record only a cold-PATH result.
+
+In 64-bit Windows PowerShell 5.1, substitute these paths and commit. Both source
+paths must contain spaces and a non-ASCII character. The runtime home, consumer
+journey, and evidence directory must be new, unused paths. Keep raw logs locally;
+share a redacted result with account names/private paths removed.
+
+```powershell
+$SourceRevision = 'REPLACE_WITH_REVIEWED_FULL_COMMIT'
+$QualificationRoot = Join-Path $env:USERPROFILE 'AI-DLC qualification é'
+$SourceA = Join-Path $QualificationRoot 'source one'
+$SourceB = Join-Path $QualificationRoot 'source two'
+$Artifacts = Join-Path $QualificationRoot 'original candidate'
+$Journey = Join-Path $QualificationRoot 'consumer journey'
+$Evidence = Join-Path $QualificationRoot 'consumer evidence'
+$GitCommandDirectory = 'C:\Program Files\Git\cmd' # Approved native Git only.
+$env:AI_DLC_BOOTSTRAP_HOME = Join-Path $QualificationRoot 'runtime one'
+Get-CimInstance Win32_OperatingSystem | Select-Object Caption, Version, BuildNumber, OSArchitecture
+$PSVersionTable
+Get-Volume -DriveLetter C | Select-Object DriveLetter, FileSystem, DriveType
+Get-ExecutionPolicy -List
+$env:PATH = "$GitCommandDirectory;$env:SystemRoot\System32\WindowsPowerShell\v1.0"
+foreach ($tool in @('python','python3','node','sh','bash','uv','mise')) {
+    if (Get-Command $tool -ErrorAction SilentlyContinue) { throw "Cold PATH contains $tool" }
+}
+foreach ($source in @($SourceA, $SourceB)) {
+    if ((git -C $source rev-parse HEAD) -ne $SourceRevision) { throw 'Source revision differs' }
+    if (git -C $source status --porcelain) { throw 'Source checkout is dirty' }
+}
+& "$SourceA\scripts\bootstrap.ps1" -Source -Root $SourceA -Plan
+# Review the plan; then run in this same ordinary-user terminal.
+& "$SourceA\scripts\bootstrap.ps1" -Source -Root $SourceA
+$SourceCli = (Get-Command ai-dlc.exe).Source
+$SourcePython = Join-Path (Split-Path $SourceCli) 'python.exe'
+& $SourceCli --version
+Get-Content -LiteralPath "$env:AI_DLC_BOOTSTRAP_HOME\bin\ai-dlc-selection.json"
+```
+
+Stop on an error or unexpected identity; do not treat later output as recovery.
+A policy refusal is a recorded blocker, not permission to bypass policy. Bootstrap
+may download pinned prerequisites. Network denial or a missing/disallowed Git/GH
+installer is also a blocker with its reported recovery action.
+
+Run the [candidate consumer driver](../../scripts/verify_windows_consumer.py)
+through that exact source environment. It needs native Git but gives the consumer
+an isolated cold PATH; the controller's Python is not a consumer prerequisite.
+
+```powershell
+& $SourcePython "$SourceA\scripts\verify_windows_consumer.py" --artifacts $Artifacts --workspace $Journey --evidence $Evidence
+if ($LASTEXITCODE -ne 0) { throw 'Candidate consumer verification failed; retain evidence' }
+Get-Content -LiteralPath "$Evidence\result.json"
+$SelectionBefore = (Get-FileHash "$env:AI_DLC_BOOTSTRAP_HOME\bin\ai-dlc-selection.json").Hash
+$AliasBefore = (Get-FileHash "$env:AI_DLC_BOOTSTRAP_HOME\bin\ai-dlc.exe").Hash
+& "$SourceB\scripts\bootstrap.ps1" -Source -Root $SourceB
+if ((Get-FileHash "$env:AI_DLC_BOOTSTRAP_HOME\bin\ai-dlc-selection.json").Hash -ne $SelectionBefore) { throw 'Shared selection changed' }
+if ((Get-FileHash "$env:AI_DLC_BOOTSTRAP_HOME\bin\ai-dlc.exe").Hash -ne $AliasBefore) { throw 'Shared launcher changed' }
+Push-Location $SourceA
+try {
+    & $SourcePython -m pytest -q tests/test_windows_bootstrap.py tests/test_windows_storage.py tests/test_windows_environment.py
+    if ($LASTEXITCODE -ne 0) { throw 'Native recovery tests failed' }
+} finally { Pop-Location }
+```
+
+| Step | Required observation and evidence |
+| --- | --- |
+| Source/candidate identity | Record full source commit, clean/dirty state, workflow run and original candidate hashes. Version `0.4.0` alone is insufficient; original published v0.4.0 cannot pass this native journey. |
+| Consumer driver | Exit 0 plus `result.json` status `passed`, original hashes unchanged, generic/Python required receipts, deliberate failure/recovery and authored-edit refusal. A failed or skipped case stays failed or unqualified. |
+| Second checkout | Both selection and shared launcher hashes remain identical; source B prints its own direct executable. Invoke the source A executable retained above when continuing its checks. |
+| Sharing, concurrency, interruption and retry | Native tests must actually run, covering held-file publication refusal, concurrent lock exclusion, killed-holder release, authored launcher/profile conflict, and retry. Record test output and skips. These controlled fixtures do not prove that every timing of a real bootstrap interruption recovers. |
+| Human fresh terminal/profile | Run the explicit `$PROFILE` preview/apply procedure above through `$SourceCli`; inspect the owned section and retained authored content. **Close the terminal and open the intended PowerShell host yourself.** Inspect `Get-Command ai-dlc`, version and workspace-check provenance. Also resolve `uv` and `mise` and record their pinned versions; in the generated Python project, resolve and check the project-selected Python version. Load the profile twice and confirm PATH is not duplicated. A disallowed or signed profile remains a blocker; use the printed direct executable. |
+| Human concurrent bootstrap | In two ordinary PowerShell terminals, start the same full bootstrap command against one disposable bootstrap home while the first process is still running. Record overlapping process IDs, stages and outcomes. Preserve the previous working shared selection, accept either serialized success or an explicit contention refusal, and retry a refused run after the first exits. Verify selected launcher/provenance consistency and both direct executables. If the processes did not overlap, record this case as not exercised. |
+| Human interruption | In a disposable second source checkout/runtime journey, interrupt an in-progress bootstrap with Ctrl+C before publication; record the stage. Verify the previous shared selection/launcher bytes and direct command still work, then rerun the same command. If the run completed before interruption, record the case as not exercised. Do not damage a real user's installation to simulate a failure. |
+
+Record each row as passed, failed, blocked, or not exercised, with exact observed
+outputs and artifact identities. The driver does not open a desktop terminal,
+verify a human's profile experience, authenticate clients, or prove instruction,
+skill, or MCP recognition. This walkthrough publishes no package and changes no
+remote service. Its Windows 11 evidence remains separate from hosted Windows
+Server CI and must be reviewed before updating qualification status.
 
 ## Project guidance follows selected capabilities
 

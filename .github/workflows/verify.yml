@@ -17,17 +17,68 @@ jobs:
           - ubuntu-26.04
           - ubuntu-26.04-arm
           - macos-15
+          - windows-2025
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          path: ${{ runner.os == 'Windows' && 'source é' || '.' }}
       - name: Prepare checked-out implementation
+        if: runner.os != 'Windows'
         run: sh scripts/bootstrap.sh --source --target github-actions
+      - name: Prepare native source from a cold tool path
+        if: runner.os == 'Windows'
+        shell: powershell
+        working-directory: source é
+        env:
+          AI_DLC_BOOTSTRAP_HOME: ${{ runner.temp }}/ai-dlc native é
+        run: |
+          $gitExecutable = (Get-Command git.exe).Source
+          $gitCandidates = @((Split-Path $gitExecutable))
+          $ancestor = Split-Path $gitExecutable
+          for ($level = 0; $level -lt 4; $level++) {
+            $gitCandidates += (Join-Path $ancestor 'cmd')
+            $ancestor = Split-Path $ancestor
+            if (-not $ancestor) { break }
+          }
+          $gitDirectory = $gitCandidates | Where-Object {
+            (Test-Path -LiteralPath (Join-Path $_ 'git.exe')) -and
+            -not (Test-Path -LiteralPath (Join-Path $_ 'sh.exe')) -and
+            -not (Test-Path -LiteralPath (Join-Path $_ 'bash.exe'))
+          } | Select-Object -First 1
+          if (-not $gitDirectory) { throw 'A native Git command directory without a POSIX shell is required.' }
+          "AI_DLC_NATIVE_GIT_DIRECTORY=$gitDirectory" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          $env:PATH = "$gitDirectory;$env:SystemRoot\System32\WindowsPowerShell\v1.0"
+          foreach ($tool in @('python','python3','node','sh','bash','uv','mise')) {
+            if (Get-Command $tool -ErrorAction SilentlyContinue) { throw "Cold path unexpectedly contains $tool" }
+          }
+          .\scripts\bootstrap.ps1 -Source -Target github-actions
       - name: Run project check definitions
+        if: runner.os != 'Windows'
         env:
           AI_DLC_DOCS_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: ai-dlc project check --target github-actions --required --json --receipt "$RUNNER_TEMP/ai-dlc-receipt.json"
+      - name: Run native required checks
+        if: runner.os == 'Windows'
+        shell: powershell
+        working-directory: source é
+        env:
+          AI_DLC_BOOTSTRAP_HOME: ${{ runner.temp }}/ai-dlc native é
+          AI_DLC_DOCS_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          AI_DLC_WINDOWS_CONSUMER_EVIDENCE: ${{ runner.temp }}/windows-consumer-evidence
+        run: |
+          $engineDirectory = Split-Path (Get-Command ai-dlc.exe).Source
+          $gitDirectory = $env:AI_DLC_NATIVE_GIT_DIRECTORY
+          $env:PATH = "$engineDirectory;$env:AI_DLC_BOOTSTRAP_HOME\bin;$gitDirectory;$env:SystemRoot\System32\WindowsPowerShell\v1.0"
+          ai-dlc project check --target github-actions --required --json --receipt "$env:RUNNER_TEMP/ai-dlc-receipt.json"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - uses: actions/upload-artifact@v4
+        if: always() && runner.os == 'Windows'
+        with:
+          name: windows-consumer-evidence
+          path: ${{ runner.temp }}/windows-consumer-evidence
+          if-no-files-found: warn
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -40,7 +91,7 @@ jobs:
     runs-on: windows-2025
     defaults:
       run:
-        shell: pwsh
+        shell: powershell
     steps:
       - uses: actions/checkout@v4
         with:
@@ -58,7 +109,7 @@ jobs:
           Write-Output 'Native core integration on hosted Windows Server; this is not Windows 11 desktop, installer or client qualification.'
       - name: Exercise core without a POSIX shell
         run: |
-          uv run --locked --no-sync python -m pytest -q tests/test_portable_imports.py tests/test_portable_commands.py tests/test_windows_storage.py tests/test_windows_document_dispatch.py tests/test_windows_core.py tests/test_windows_render.py tests/test_template_recovery.py tests/test_windows_bundle_refusal.py --junitxml=windows-core-results.xml
+          uv run --locked --no-sync python -m pytest -q tests/test_portable_imports.py tests/test_portable_commands.py tests/test_windows_storage.py tests/test_windows_document_dispatch.py tests/test_windows_core.py tests/test_windows_render.py tests/test_template_recovery.py tests/test_windows_bundle_refusal.py tests/test_windows_bootstrap.py --junitxml=windows-core-results.xml
       - uses: actions/upload-artifact@v4
         if: always()
         with:

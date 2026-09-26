@@ -77,7 +77,7 @@ def guard_bound_tracker(root, config, alias, patch):
     if all(current.get(key) == value for key, value in patch.items()):
         return
     for path in (root / ".ai-dlc/work").glob("*.toml"):
-        work = tomllib.loads(path.read_text())
+        work = tomllib.loads(path.read_text(encoding="utf-8"))
         selected = work.get("providers", {}).get("tracker", config.get("roles", {}).get("tracker"))
         if selected == alias and (
             work.get("bindings", {}).get("tracker") or work.get("artifacts", {}).get("tracker")
@@ -233,7 +233,7 @@ def _guard_roles(root, runtime, alias, patch, roles):
     if all(current.get(key) == value for key, value in patch.items()):
         return
     for path in (root / ".ai-dlc/work").glob("*.toml"):
-        work = tomllib.loads(path.read_text())
+        work = tomllib.loads(path.read_text(encoding="utf-8"))
         for role in roles:
             selected = work.get("providers", {}).get(role, runtime.get("roles", {}).get(role))
             if selected == alias and (

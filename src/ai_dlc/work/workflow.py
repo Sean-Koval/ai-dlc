@@ -81,7 +81,7 @@ def project_source_digest(root: Path) -> str | None:
     project_file = root / "ai-dlc.toml"
     if not project_file.is_file():
         return None
-    return config_digest(tomllib.loads(project_file.read_text()))
+    return config_digest(tomllib.loads(project_file.read_text(encoding="utf-8")))
 
 
 _BINDING_ROLES = {"specs", "tracker", "scm", "deploy", "knowledge"}
@@ -206,7 +206,7 @@ def read_work_graph(root: Path, config: dict, work_id: str) -> tuple[dict[str, d
         try:
             Work.safe_id(current)
             path = inside(root, f".ai-dlc/work/{current}.toml")
-            record = resolve_work(tomllib.loads(path.read_text()), config, current)
+            record = resolve_work(tomllib.loads(path.read_text(encoding="utf-8")), config, current)
         except (OSError, ValueError) as exc:
             errors.append(f"Work {current}: {exc}")
             continue
@@ -315,7 +315,9 @@ def read_work_records(root: Path) -> tuple[dict[str, dict], list[str]]:
         work_id = path.stem
         try:
             Work.safe_id(work_id)
-            record = Work.model_validate(tomllib.loads(path.read_text())).model_dump(by_alias=True)
+            record = Work.model_validate(
+                tomllib.loads(path.read_text(encoding="utf-8"))
+            ).model_dump(by_alias=True)
             if record["id"] != work_id:
                 raise ValueError("Work ID does not match filename")
         except (OSError, ValueError) as exc:
@@ -462,7 +464,7 @@ class WorkService:
         path = (self.root / ".ai-dlc/work" / f"{work_id}.toml").resolve()
         if not path.is_relative_to(self.root / ".ai-dlc/work"):
             raise ValueError("Unsafe work path")
-        raw = tomllib.loads(path.read_text())
+        raw = tomllib.loads(path.read_text(encoding="utf-8"))
         work = resolve_work(raw, self.config, work_id, require_review=mutation)
         if mutation:
             self.save(work)
@@ -481,7 +483,7 @@ class WorkService:
         with project_write_lock(self.root):
             self._check_source()
             tmp = path.with_suffix(".toml.tmp")
-            tmp.write_text(tomli_w.dumps(work))
+            tmp.write_text(tomli_w.dumps(work), encoding="utf-8", newline="\n")
             tmp.replace(path)
 
     def op_id(self, work, action):

@@ -70,7 +70,7 @@ def render_user_agents(
         {
             str(path.relative_to(home))
             for path, text in planned.items()
-            if not path.exists() or path.read_text() != text
+            if not path.exists() or path.read_text(encoding="utf-8") != text
         }
         | {str(path.relative_to(home)) for path in removed if path.exists()}
     )
@@ -190,7 +190,7 @@ def _plan_claude(
     path = inside(home, ".claude.json")
     existed = path.exists()
     try:
-        document = json.loads(path.read_text()) if existed else {}
+        document = json.loads(path.read_text(encoding="utf-8")) if existed else {}
     except (json.JSONDecodeError, OSError) as exc:
         raise UserAgentOwnershipConflict(
             "Claude user configuration conflict: invalid JSON"
@@ -235,7 +235,7 @@ def _plan_codex(
     desired = _definitions(servers, "codex")
     path = inside(home, ".codex/config.toml")
     existed = path.exists()
-    current_text = path.read_text() if existed else ""
+    current_text = path.read_text(encoding="utf-8") if existed else ""
     section = _existing_codex_section(current_text)
     old = prior.get("servers", {})
     if section is not None and not old:
@@ -349,7 +349,7 @@ def _read_state(path: Path) -> dict[str, Any]:
     if not path.exists():
         return {"clients": {}}
     try:
-        state = json.loads(path.read_text())
+        state = json.loads(path.read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError) as exc:
         raise UserAgentOwnershipConflict("user agent ownership conflict: invalid state") from exc
     if state.get("schema") != 1 or not isinstance(state.get("clients"), dict):

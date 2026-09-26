@@ -328,16 +328,18 @@ def provider_index(resolved: dict) -> tuple[str, dict[str, str]]:
     base = assets("agents")
     builtins = {
         item["id"]
-        for item in json.loads((assets("modules") / "components.json").read_text())["components"]
+        for item in json.loads((assets("modules") / "components.json").read_text(encoding="utf-8"))[
+            "components"
+        ]
     }
-    lines = [(base / "templates/provider-index.md").read_text().rstrip(), ""]
+    lines = [(base / "templates/provider-index.md").read_text(encoding="utf-8").rstrip(), ""]
     copies = {}
     for component in resolved["components"]:
         links = []
         for guidance in component["guidance"]:
             if component["id"] in builtins:
                 destination = ".ai-dlc/" + guidance
-                copies[destination] = inside(base, guidance).read_text()
+                copies[destination] = inside(base, guidance).read_text(encoding="utf-8")
             else:
                 destination = guidance
             links.append(f"[{guidance}](<{destination}>)")
@@ -361,12 +363,14 @@ def provider_guidance_ready(root: Path, index: str, copies: dict[str, str], clie
             if _managed_section_state(inside(root, filename), expected) != "ready":
                 return False
         for name, body in copies.items():
-            if inside(root, name).read_text() != body:
+            if inside(root, name).read_text(encoding="utf-8") != body:
                 return False
         if client == "antigravity":
             name = ".agents/rules/ai-dlc.md"
             rule = inside(root, name).read_bytes()
-            ownership = json.loads(inside(root, ".ai-dlc/agent-ownership.json").read_text())
+            ownership = json.loads(
+                inside(root, ".ai-dlc/agent-ownership.json").read_text(encoding="utf-8")
+            )
             if ownership.get("files", {}).get(name) != hashlib.sha256(rule).hexdigest():
                 return False
             if _rule_links(index) not in rule.decode():
@@ -400,7 +404,7 @@ def _load_selected_bundles(root: Path, bundle_ids: list[str]) -> dict[str, dict[
 
 
 def _shipped_skill_names() -> set[str]:
-    lock = json.loads((assets("agents") / "skills.lock.json").read_text())
+    lock = json.loads((assets("agents") / "skills.lock.json").read_text(encoding="utf-8"))
     return set(lock["skills"])
 
 
@@ -678,7 +682,7 @@ def _managed_section_state(path: Path, required: str) -> str:
             return "missing"
         if not path.is_file():
             return "blocked"
-        current = path.read_text()
+        current = path.read_text(encoding="utf-8")
     except (OSError, UnicodeError):
         return "blocked"
     if path.name == "CLAUDE.md" and current == required == "@AGENTS.md\n":
@@ -734,7 +738,7 @@ def _load_inspected_ownership(
     prior_bundle_files: dict[str, dict[str, str]] = {}
     if ownership_path.exists():
         try:
-            previous = json.loads(ownership_path.read_text())
+            previous = json.loads(ownership_path.read_text(encoding="utf-8"))
             prior_bundle_files = _prior_bundle_files(previous)
         except (OSError, TypeError, ValueError, json.JSONDecodeError) as exc:
             for bundle_id in bundle_ids:
@@ -1020,7 +1024,16 @@ def _shared_guidance_lines(config: dict[str, Any], index: str, bundle_index: str
         )
     lines.extend(["", "## Verification", ""])
     for name in checks.get("required", []):
-        lines.append(f"- {name}: `{checks.get('commands', {}).get(name, 'MISSING COMMAND')}`")
+        command = checks.get("commands", {}).get(name, "MISSING COMMAND")
+        if isinstance(command, dict):
+            # The service retains literal argv/explicit-shell semantics on each
+            # platform; a Python dict representation is not a runnable command.
+            command = (
+                f"ai-dlc project check --check {name}"
+                if re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", name)
+                else "use the declared command record with ai-dlc project check"
+            )
+        lines.append(f"- {name}: `{command}`")
     lines.extend(
         ["", "Run `ai-dlc project check --required` in the prepared project environment.", ""]
     )
@@ -1361,7 +1374,7 @@ def render_agents(
     ownership_path = absolute / ".ai-dlc" / "agent-ownership.json"
     previous: dict[str, Any] = {}
     if ownership_path.exists():
-        previous = json.loads(ownership_path.read_text())
+        previous = json.loads(ownership_path.read_text(encoding="utf-8"))
     participates = selected or previous.get("schema") == 3
     if participates:
         with (
@@ -1424,7 +1437,7 @@ def _plan_json_mcp(
 
 def _skill_sources(config: dict) -> dict[str, str]:
     base = assets("agents")
-    lock = json.loads((base / "skills.lock.json").read_text())
+    lock = json.loads((base / "skills.lock.json").read_text(encoding="utf-8"))
     available = {p.parent.name: p for p in (base / "skills").glob("*/SKILL.md")}
     if set(available) != set(lock["skills"]):
         raise ValueError("skill digest lock does not match shipped collection")
@@ -1452,7 +1465,7 @@ def _skill_sources(config: dict) -> dict[str, str]:
 def hook_readiness(client: str, version: str, target: str, required: list[str]) -> dict:
     import tomllib
 
-    matrix = tomllib.loads((assets("agents") / "capabilities.toml").read_text())
+    matrix = tomllib.loads((assets("agents") / "capabilities.toml").read_text(encoding="utf-8"))
     supported = set()
     for fixture in matrix["fixtures"]:
         if (fixture["client"], fixture["version"], fixture["target"]) == (client, version, target):

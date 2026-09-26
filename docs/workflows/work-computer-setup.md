@@ -7,8 +7,12 @@ own project policy and local credentials.
 
 ## Install the engine
 
-Clone the reviewed AI-DLC revision and run `sh scripts/bootstrap.sh --source` from
-that clone. Follow the bootstrap's printed PATH instruction, then verify
+Clone the reviewed AI-DLC revision and use its native source entry point:
+`sh scripts/bootstrap.sh --source` on Unix, or
+`.\scripts\bootstrap.ps1 -Source -Root $PWD.Path` in 64-bit Windows PowerShell 5.1
+on Windows x64/local NTFS. The native route does not require WSL; see the
+[setup routes](../../README.md#get-started) and
+[qualification limits](../release-verification.md). Follow the bootstrap's printed PATH instruction, then verify
 `ai-dlc --help`. Source mode is the currently verified installation path; do not
 substitute an unverified package download. The current release evidence remains
 in [release verification](../release-verification.md).
