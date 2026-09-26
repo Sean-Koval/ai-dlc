@@ -37,15 +37,19 @@ recovery and configuration boundaries. Mocked tests do not prove live platform
 qualification; consult [release gates](docs/release-verification.md). Do not
 publish packages or mutate remote services implicitly.
 
-<!-- ai-dlc:begin f6c2f4c6f67815f84bb96d3cb454a668b3e9bfc4740e1e96640d6f8fccba07e2 -->
+<!-- ai-dlc:begin 4f502112de19d54b6787c6ccf72414a9dcfa8c33c07aeb7ab02ccf08884c1639 -->
 # Shared project guidance
 
-Read ai-dlc.toml and the active .ai-dlc/work record before work.
-Use specification artifacts for implementation tasks and the tracker for priority/status.
-Finalize required specifications before review; archive OpenSpec changes on the delivery branch before merge with ai-dlc work archive. Complete work through ai-dlc work finish.
-Immediately before merge, update from the target branch and rerun required checks; record documentation dispositions again only for targets the gate reports stale.
-Finish from a checkout at the merge commit; when the target branch moved, use a temporary detached worktree.
-Store architecture, design, decisions and runbooks in docs/. Keep personal notes in knowledge.
+Read ai-dlc.toml and the active .ai-dlc/work record, if present, before work.
+Use specification artifacts for implementation tasks; finalize required specifications before review and follow the selected specification provider's instructions.
+Use the selected tracker for priority and status; follow its provider instructions.
+Archive OpenSpec changes on the bound delivery branch before merge with `ai-dlc work archive`.
+Immediately before merge, update from the target branch and rerun required checks.
+Record documentation dispositions again only for targets the required documentation gate reports stale.
+Complete work through `ai-dlc work finish`.
+Finish from a checkout at the merge commit; when the target branch has moved, prepare a temporary detached worktree at that commit, finish there, then remove it.
+Store architecture, design, decisions and runbooks in docs/.
+Keep personal notes in the selected knowledge provider and follow its instructions.
 
 ## Verification
 
