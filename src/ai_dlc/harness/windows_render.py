@@ -140,7 +140,16 @@ class WindowsRenderState:
                 staged: Snapshot | None = None
                 if name not in removed:
                     change.stage = self._temporary(target)
-                    staged = self.storage.create_owned(change.stage, planned[name])
+                    if change.before is None:
+                        staged = self.storage.create_owned(change.stage, planned[name])
+                    else:
+                        staged = self.storage.create_owned(
+                            change.stage,
+                            planned[name],
+                            security_source=target,
+                            security_identity=change.before[1],
+                            security_expected=change.before[0],
+                        )
                     if self.storage.safe_snapshot(change.stage) != staged:
                         raise ValueError("render stage changed before publication")
                 if change.before is not None:

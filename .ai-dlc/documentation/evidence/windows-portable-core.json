@@ -30,7 +30,7 @@
         "scripts/run_skill_evaluation.py": "46a97694bae155b2418d172971480e031f510acc864b9d91fa546f98c754729f",
         "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
         "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
-        "src/ai_dlc/_windows_storage/__init__.py": "0f28402692e466467932f0e5c83e6274048815e7bed442269741f1413bb96384",
+        "src/ai_dlc/_windows_storage/__init__.py": "5715def899453f15265e13d52e5b518844cc9d057421cfa5279172d799d5f506",
         "src/ai_dlc/_windows_storage/_api.py": "d5fc4f971db8e706871c06e8119884848e505af6c45f4fbb5c2f7db513faf41b",
         "src/ai_dlc/_windows_storage/_security.py": "62785d4e088cd485816a33f35a7a559d3d1acf166093c413a3f4f79969056314",
         "src/ai_dlc/cli.py": "e2ddda69f6ab41d35340b53ffb40f0d5442d099e5398294e6d02d380b5063462",
@@ -76,7 +76,7 @@
         "src/ai_dlc/harness/skill_evaluation.py": "73ded6785d5d0ff53f5f44ba4d1ede7406f367635676c269d5044358030ebc2e",
         "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
         "src/ai_dlc/harness/user_agents.py": "c99f9a52a379feaa0c1721081b95fef91f51c44f0a9e906145de51154616e937",
-        "src/ai_dlc/harness/windows_render.py": "caade5e280ba097193ff7b7b3479add6392e071c4d354cf1318fcd7e34ccdc6e",
+        "src/ai_dlc/harness/windows_render.py": "5845e483eba550331f0a6777fcd7a3b9c13c90af071ac6df5962ffc3b090b978",
         "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
         "src/ai_dlc/locking.py": "e3c5dbe1a98d3402352bc8a3c3a031106e8dd515e060a676803d734d8dee99dd",
         "src/ai_dlc/mcp_server.py": "607eba3e47a8573862d83e5209e824b78ec0af74545fa51727b8d3f7c03db410",
@@ -100,7 +100,7 @@
         "src/ai_dlc/setup/github_project_setup.py": "55984de17559ba2d56b3b1c7483dabb8a6f05f1e773e8bd9d40437a2d30ee85e",
         "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
         "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
-        "src/ai_dlc/setup/project.py": "2d4b0323e6013126625b653a29e125f91f44269e450a4640220d2d9268c6a827",
+        "src/ai_dlc/setup/project.py": "09464c89f569a337aaa77d1604404273808636323635bcd00bb05e0f74c7ad9e",
         "src/ai_dlc/setup/provider_onboarding.py": "be120ad6e93c178f041fd338a45a5df7c75b9a30591725cfbf7800bca531045e",
         "src/ai_dlc/setup/provision.py": "6ec463fb9516aa01de58b482a8f14c3cc8c14585a25fa46e42b144d4c2fe5dfc",
         "src/ai_dlc/setup/readiness.py": "e0984a1f504ee87f3c4c1939624b34ccfe2fd6b7315df365166e95ff3b975d55",
@@ -177,7 +177,7 @@
         "project-templates/project/tests/test_main.py": "4e6ac9def60ea5a6aef9e004c465cc439acac4b33e4f70df332939f0cdfae63d",
         "src/ai_dlc/cli.py": "e2ddda69f6ab41d35340b53ffb40f0d5442d099e5398294e6d02d380b5063462",
         "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
-        "src/ai_dlc/setup/project.py": "2d4b0323e6013126625b653a29e125f91f44269e450a4640220d2d9268c6a827",
+        "src/ai_dlc/setup/project.py": "09464c89f569a337aaa77d1604404273808636323635bcd00bb05e0f74c7ad9e",
         "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
         "tests/test_project.py": "0863470fa695afffc68bba51602585cd2539174cc9a8599a7cf838773f170b93",
         "tests/test_templates.py": "da7d4221a92e5fe65ab65d685522897a23bd04807ef9f62acde6bf160eee8aa5"
@@ -312,7 +312,7 @@
     },
     {
       "bound": {
-        "tests/test_portable_commands.py": "28473b04e6c4585f788a3e20a8db7f7145728e8045d2c5227d8712d7c77a6069"
+        "tests/test_portable_commands.py": "a65a30bfd29ad1c2bf7e28f4dfde91554acf01dcf548a05a3e94593b35c409f6"
       },
       "outcome": "updated",
       "reason": "Reviewed implementation plan, native CI/test coverage or catalog mapping for windows-portable-core; proposed test coverage is distinct from actual platform pass evidence, and unrelated product scope is preserved.",
@@ -366,7 +366,7 @@
     },
     {
       "bound": {
-        "tests/test_windows_render.py": "0cc64d43de5d2cc16a9fed59cabd573a029870e3bf8a6bb1d2af763e001e1b85"
+        "tests/test_windows_render.py": "4a8440448b0c9cb2918819c32820d1aeefa9d3cf8e9eb03fc85de62a0c78fc4d"
       },
       "outcome": "updated",
       "reason": "Reviewed implementation plan, native CI/test coverage or catalog mapping for windows-portable-core; proposed test coverage is distinct from actual platform pass evidence, and unrelated product scope is preserved.",
@@ -375,7 +375,7 @@
     },
     {
       "bound": {
-        "tests/test_windows_storage.py": "296aa56cea50a2a782a0bdc26ded543571e0354018ff3b0e10f2264dde9a2e67"
+        "tests/test_windows_storage.py": "93e83c4c743549b15cd0b4d238a36f789a4c1d05bc382e9c0937b6b07c9d04c8"
       },
       "outcome": "updated",
       "reason": "Reviewed implementation plan, native CI/test coverage or catalog mapping for windows-portable-core; proposed test coverage is distinct from actual platform pass evidence, and unrelated product scope is preserved.",

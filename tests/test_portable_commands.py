@@ -425,3 +425,72 @@ def test_mise_resolves_native_tool_and_never_installs_during_checks(tmp_path, mo
         tmp_path, {"argv": ["managed-python", "-c", "raise SystemExit(11)"]}, use_mise=True
     )
     assert result.returncode == 11
+
+
+def test_native_setup_checks_lexical_root_before_loading_configuration(tmp_path, monkeypatch):
+    """Exercise the entry boundary on every host; native junction proof is separate."""
+    from contextlib import contextmanager
+    from types import SimpleNamespace
+
+    from ai_dlc import _windows_storage
+
+    target = tmp_path / "target"
+    target.mkdir()
+    alias = tmp_path / "alias"
+    # Unix symlinks reproduce resolve() losing the supplied path; Windows uses
+    # the actual junction regression below without requiring symlink privilege.
+    if os.name == "nt":
+        subprocess.run(
+            ["cmd", "/c", "mklink", "/J", str(alias), str(target)],
+            check=True,
+            capture_output=True,
+        )
+    else:
+        alias.symlink_to(target, target_is_directory=True)
+
+    @contextmanager
+    def refuse_alias(path):
+        if path == alias:
+            raise ValueError("native root reparse refusal")
+        yield
+
+    monkeypatch.setattr(project, "os", SimpleNamespace(name="nt", path=os.path))
+    monkeypatch.setattr(_windows_storage, "guarded_path", refuse_alias)
+    monkeypatch.setattr(
+        project,
+        "load_project",
+        lambda root: pytest.fail("configuration read before native root guard"),
+    )
+    with pytest.raises(ValueError, match="root reparse"):
+        project.setup_project(alias, state_path=tmp_path / "journal.db", use_mise=False)
+    assert not (tmp_path / "journal.db").exists()
+
+
+@pytest.mark.skipif(os.name != "nt", reason="requires actual Windows NTFS junction semantics")
+@pytest.mark.parametrize("junction_at_root", [True, False])
+def test_native_setup_refuses_junction_before_setup_side_effects(tmp_path, junction_at_root):
+    target = tmp_path / "target"
+    root = target if junction_at_root else target / "project"
+    root.mkdir(parents=True)
+    configure(
+        root,
+        steps=[
+            {"id": "effect", "command": python("from pathlib import Path; Path('changed').touch()")}
+        ],
+    )
+    alias = tmp_path / "alias"
+    subprocess.run(
+        ["cmd", "/c", "mklink", "/J", str(alias), str(target)],
+        check=True,
+        capture_output=True,
+    )
+    selected = alias if junction_at_root else alias / "project"
+    before = {
+        path.relative_to(root): path.read_bytes() for path in root.rglob("*") if path.is_file()
+    }
+    with pytest.raises(ValueError, match="reparse"):
+        project.setup_project(selected, state_path=tmp_path / "journal.db", use_mise=False)
+    assert not (tmp_path / "journal.db").exists()
+    assert {
+        path.relative_to(root): path.read_bytes() for path in root.rglob("*") if path.is_file()
+    } == before

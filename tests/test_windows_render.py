@@ -2,6 +2,8 @@
 
 import contextlib
 import os
+import shutil
+import subprocess
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -35,8 +37,15 @@ def storage(monkeypatch):
             stream.write(data)
         return True
 
-    def create(path, data):
+    def create(path, data, *, security_source=None, security_identity=None, security_expected=None):
+        if security_source is not None and snapshot(security_source) != (
+            security_expected,
+            security_identity,
+        ):
+            raise ValueError("security source changed")
         publish(path, data, create_only=True)
+        if security_source is not None:
+            shutil.copymode(security_source, path)
         return snapshot(path)
 
     def move(source, destination, *, expected, expected_identity):
@@ -220,3 +229,68 @@ def test_native_stage_replacement_is_not_adopted_as_owned(tmp_path, storage, mon
             state.apply({"guide.md": b"after"}, [], ["guide.md"])
     assert not (tmp_path / "guide.md").exists()
     assert all(p.read_bytes() == b"after" for p in tmp_path.glob(".ai-dlc-*"))
+
+
+@pytest.mark.skipif(os.name == "nt", reason="POSIX transaction shim; native ACL case below")
+def test_replacement_retains_source_permissions_in_transaction_shim(tmp_path, storage):
+    from ai_dlc.harness.windows_render import WindowsRenderState
+
+    target = tmp_path / "guide.md"
+    target.write_bytes(b"before")
+    target.chmod(0o400)
+    with WindowsRenderState(tmp_path) as state:
+        state.read("guide.md")
+        state.apply({"guide.md": b"after"}, [], ["guide.md"])
+    assert target.read_bytes() == b"after"
+    assert target.stat().st_mode & 0o777 == 0o400
+
+
+@pytest.mark.skipif(os.name != "nt", reason="requires actual Windows restricted DACLs")
+@pytest.mark.parametrize("operation", ["render", "template"])
+def test_native_replacement_preserves_restricted_acl_and_new_file_inherits(tmp_path, operation):
+    from ai_dlc import _windows_storage as storage
+    from ai_dlc.harness.windows_render import WindowsRenderState
+    from ai_dlc.setup.templates import apply_files
+
+    # A deliberately broader parent makes accidental inheritance observable.
+    subprocess.run(
+        ["icacls", str(tmp_path), "/grant", "*S-1-1-0:(OI)(CI)(R)"],
+        capture_output=True,
+        check=True,
+    )
+    target = tmp_path / "guide.md"
+    storage.create_owned(target, b"before", private=True)
+    assert storage.safe_read(target, private=True) == b"before"
+
+    def descriptor():
+        return subprocess.run(
+            [
+                "powershell.exe",
+                "-NoProfile",
+                "-NonInteractive",
+                "-Command",
+                "(Get-Acl -LiteralPath $env:AI_DLC_TEST_ACL_PATH).Sddl",
+            ],
+            env={**os.environ, "AI_DLC_TEST_ACL_PATH": str(target)},
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout.strip()
+
+    original = descriptor()
+    assert original
+    after = {"guide.md": b"after", "new.md": b"new"}
+    if operation == "render":
+        with WindowsRenderState(tmp_path) as state:
+            state.read("guide.md")
+            state.apply(after, [], list(after))
+    else:
+        apply_files(tmp_path, {"guide.md": b"before"}, after)
+    assert storage.safe_read(target, private=True) == b"after"
+    assert descriptor() == original
+    assert storage.safe_read(tmp_path / "new.md") == b"new"
+    with pytest.raises(ValueError, match="DACL"):
+        storage.safe_read(tmp_path / "new.md", private=True)
+    assert any(
+        storage.safe_read(path, private=True) == b"before" for path in tmp_path.glob(".ai-dlc-*")
+    )

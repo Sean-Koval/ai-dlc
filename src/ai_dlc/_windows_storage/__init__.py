@@ -207,20 +207,27 @@ def _write_handle(handle, data: bytes) -> None:
 
 
 def _publish(
-    path: Path, data: bytes, *, create_only: bool = False, private: bool = False
+    path: Path,
+    data: bytes,
+    *,
+    create_only: bool = False,
+    private: bool = False,
+    security_attributes=None,
 ) -> tuple[int, int, int] | None:
     """Atomically publish complete bytes. Use move_owned for ownership-aware updates."""
     path = _absolute(path)
     with guarded_path(path.parent, create_parents=True) as parent, ExitStack() as stack:
-        attributes = None
+        attributes = security_attributes
         try:
             with opened(path, parent=parent) as existing:
                 if info(existing).attributes & _DIRECTORY:
                     raise ValueError("Cannot publish over a directory")
+                if create_only:
+                    # Existing content is not ours to modify or reclassify. A
+                    # false creation result makes no claim about its privacy.
+                    return None
                 if private:
                     validate_private(existing)
-                if create_only:
-                    return None
                 if not private:
                     attributes = stack.enter_context(copied_attributes(existing))
         except FileNotFoundError:
@@ -263,9 +270,37 @@ def atomic_publish(
 
 
 def create_owned(
-    path: Path, data: bytes, *, private: bool = False
+    path: Path,
+    data: bytes,
+    *,
+    private: bool = False,
+    security_source: Path | None = None,
+    security_identity: tuple[int, int, int] | None = None,
+    security_expected: bytes | None = None,
 ) -> tuple[bytes, tuple[int, int, int]]:
-    identity = _publish(path, data, create_only=True, private=private)
+    """Create an owned stage, optionally preserving verified source permissions."""
+    copying = security_source is not None
+    if copying != (security_identity is not None) or copying != (security_expected is not None):
+        raise ValueError("Security source requires its expected file identity and bytes")
+    if copying and private:
+        raise ValueError("Choose source permissions or private creation, not both")
+    with ExitStack() as stack:
+        attributes = None
+        if security_source is not None:
+            source = _absolute(security_source)
+            parent = stack.enter_context(guarded_path(source.parent))
+            handle = stack.enter_context(opened(source, parent=parent))
+            if (
+                info(handle).identity != security_identity
+                or _read_handle(handle) != security_expected
+            ):
+                raise ValueError(f"Security source changed before owned stage creation: {source}")
+            # Keep the source handle and captured descriptor alive through creation.
+            # Stage files must not inherit a broader parent DACL on replacement.
+            attributes = stack.enter_context(copied_attributes(handle))
+        identity = _publish(
+            path, data, create_only=True, private=private, security_attributes=attributes
+        )
     if identity is None:
         raise FileExistsError(f"Managed destination already exists: {path}")
     return data, identity

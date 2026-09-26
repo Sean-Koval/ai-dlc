@@ -356,3 +356,73 @@ def test_native_inside_supports_existing_directory_and_rejects_junction(tmp_path
     )
     with pytest.raises((OSError, ValueError)):
         inside(tmp_path, "linked")
+
+
+@NATIVE
+def test_native_owned_stage_preserves_source_acl_and_refuses_replaced_identity(tmp_path):
+    import ctypes as c
+    from ctypes import wintypes as w
+
+    from ai_dlc._windows_storage import create_owned, opened
+    from ai_dlc._windows_storage._api import api, checked
+    from ai_dlc._windows_storage._security import copied_attributes
+
+    def descriptor(path):
+        convert = c.WinDLL(
+            "advapi32", use_last_error=True
+        ).ConvertSecurityDescriptorToStringSecurityDescriptorW
+        convert.argtypes = [c.c_void_p, w.DWORD, w.DWORD, c.POINTER(w.LPWSTR), c.c_void_p]
+        convert.restype = w.BOOL
+        from ai_dlc._windows_storage._api import SecurityAttributes
+
+        with opened(path) as handle, copied_attributes(handle) as attributes:
+            descriptor = c.cast(attributes, c.POINTER(SecurityAttributes)).contents.descriptor
+            text = w.LPWSTR()
+            checked(convert(descriptor, 1, 0x1 | 0x4, c.byref(text), None))
+            try:
+                return text.value
+            finally:
+                api().free(c.cast(text, c.c_void_p))
+
+    source = tmp_path / "restricted"
+    before, identity = create_owned(source, b"before", private=True)
+    acl = descriptor(source)
+    stage = tmp_path / "replacement"
+    create_owned(
+        stage,
+        b"after",
+        security_source=source,
+        security_identity=identity,
+        security_expected=before,
+    )
+    assert descriptor(stage) == acl
+    assert stage.read_bytes() == b"after"
+    source.rename(tmp_path / "original")
+    source.write_bytes(before)
+    with pytest.raises(ValueError, match="changed"):
+        create_owned(
+            tmp_path / "refused",
+            b"after",
+            security_source=source,
+            security_identity=identity,
+            security_expected=before,
+        )
+    assert not (tmp_path / "refused").exists()
+
+
+@NATIVE
+def test_native_create_only_preserves_broad_existing_permissions_without_claiming_private(tmp_path):
+    from ai_dlc._windows_storage import atomic_publish, create_owned, safe_read
+
+    target = tmp_path / "authored"
+    create_owned(target, b"authored", private=True)
+    subprocess.run(
+        ["icacls", str(target), "/grant", "*S-1-1-0:(R)"], capture_output=True, check=True
+    )
+    assert not atomic_publish(target, b"secret", private=True, create_only=True)
+    assert target.read_bytes() == b"authored"
+    with pytest.raises(ValueError, match="DACL"):
+        safe_read(target, private=True)
+    with pytest.raises(ValueError, match="DACL"):
+        atomic_publish(target, b"secret", private=True)
+    assert target.read_bytes() == b"authored"

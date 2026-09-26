@@ -408,7 +408,21 @@ def setup_steps(root: Path, config: dict[str, Any]) -> list[dict[str, Any]]:
 def setup_project(
     root: Path, target: str = "local", state_path: Path | None = None, use_mise: bool = True
 ) -> dict[str, Any]:
-    root = root.resolve()
+    if os.name == "nt":
+        from ai_dlc._windows_storage import guarded_path
+
+        # Resolve neither the root nor its ancestors before the native guard can
+        # reject reparse redirects. Retain their identity through setup and render.
+        with guarded_path(root):
+            # The guard validates raw drive-relative/parent traversal syntax before
+            # absolute normalization, as well as retaining the opened directories.
+            return _setup_project(Path(os.path.abspath(root)), target, state_path, use_mise)
+    return _setup_project(root.resolve(), target, state_path, use_mise)
+
+
+def _setup_project(
+    root: Path, target: str, state_path: Path | None, use_mise: bool
+) -> dict[str, Any]:
     config = load_project(root)
     check_definitions(config)
     steps = setup_steps(root, config)
