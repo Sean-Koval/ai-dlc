@@ -69,7 +69,11 @@ def activate_workstation(
     home = home.resolve()
     config_path = home / ".config/mise/config.toml"
     ownership_path = home / ".local/state/ai-dlc/workstation-ownership.json"
-    previous = json.loads(ownership_path.read_text()) if ownership_path.exists() else {"tools": {}}
+    previous = (
+        json.loads(ownership_path.read_text(encoding="utf-8"))
+        if ownership_path.exists()
+        else {"tools": {}}
+    )
     config = read_toml(config_path) if config_path.exists() else {}
     current = config.setdefault("tools", {})
     for name, value in previous["tools"].items():

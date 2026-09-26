@@ -76,7 +76,9 @@ def track_friction(root: Path, event: str, payload: dict, result: dict) -> dict:
             return result
         path.parent.mkdir(parents=True, exist_ok=True)
         with _session_lock(root, path):
-            state: dict = json.loads(path.read_text()) if path.exists() else {"count": 0}
+            state: dict = (
+                json.loads(path.read_text(encoding="utf-8")) if path.exists() else {"count": 0}
+            )
             if event == "stop":
                 if state["count"] >= 3 and not payload.get("stop_hook_active"):
                     result["friction"] = (

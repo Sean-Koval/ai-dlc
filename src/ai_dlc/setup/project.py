@@ -477,7 +477,10 @@ def _setup_project(
         root, apply=target not in {"github-actions", "codex-cloud", "claude-cloud"}
     )
     if target == "github-actions" and not generated["clean"]:
-        raise ValueError("generated project files are stale; render and commit before CI")
+        raise ValueError(
+            "generated project files are stale; render and commit before CI: "
+            + ", ".join(generated["changed"])
+        )
     return {
         "target": target,
         "steps": completed,

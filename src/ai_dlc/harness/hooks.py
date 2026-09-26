@@ -70,7 +70,7 @@ def _session_recall(root: Path) -> list[dict]:
         config = resolve_runtime(root).values
         registry = Registry(config, root=root)
         for path in sorted((root / ".ai-dlc/work").glob("*.toml")):
-            work = tomllib.loads(path.read_text())
+            work = tomllib.loads(path.read_text(encoding="utf-8"))
             if branch and work.get("artifacts", {}).get("branch") == branch:
                 return recall_work(work, config, registry)
     except Exception:  # noqa: BLE001 -- session context remains optional
@@ -135,7 +135,7 @@ def _handle_hook(root: Path, event: str, payload: dict) -> dict:
         branch = run_git(root, "branch", "--show-current", check=False).stdout.strip()
         bound = False
         for record in (root / ".ai-dlc/work").glob("*.toml"):
-            value = tomllib.loads(record.read_text())
+            value = tomllib.loads(record.read_text(encoding="utf-8"))
             artifacts = value.get("artifacts", {})
             if (
                 branch

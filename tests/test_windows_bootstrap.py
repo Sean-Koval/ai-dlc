@@ -203,7 +203,8 @@ def test_native_cold_namespace_refuses_broad_dacl(tmp_path):
         helpers()
         + f"""
 Initialize-NativeStorage
-New-Item -ItemType Directory -Path {quoted(owned)} | Out-Null
+$original=[AiDlc.Bootstrap.DirectoryGuard]::new({quoted(owned)}, $true, $true)
+$original.Dispose()
 $acl=Get-Acl -LiteralPath {quoted(owned)}
 $acl.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new('Everyone','FullControl','ContainerInherit,ObjectInherit','None','Allow'))
 Set-Acl -LiteralPath {quoted(owned)} -AclObject $acl
@@ -638,7 +639,10 @@ try {{
  $metadata=[AiDlc.Bootstrap.DirectoryGuard]::new($path, $false, $true)
  $metadata.Dispose()
  throw 'private metadata accepted a different owner'
-}} catch {{ if($_.Exception.Message -like '*private metadata accepted*') {{ throw }} }}
+}} catch {{
+ if($_.Exception.Message -notlike '*Unsafe bootstrap namespace owner: S-1-5-32-544*') {{ throw }}
+ Write-Output 'private-metadata-owner-refused'
+}}
 $acl=Get-Acl -LiteralPath $path
 $acl.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new('Everyone','Read','ContainerInherit,ObjectInherit','None','Allow'))
 Set-Acl -LiteralPath $path -AclObject $acl
@@ -646,7 +650,16 @@ try {{
  $unsafe=[AiDlc.Bootstrap.DirectoryGuard]::OpenRuntimeDirectory($path)
  $unsafe.Dispose()
  throw 'runtime accepted broad DACL'
-}} catch {{ if($_.Exception.Message -like '*runtime accepted broad*') {{ throw }} }}
+}} catch {{
+ if($_.Exception.Message -notlike '*Unsafe bootstrap namespace DACL: S-1-1-0*') {{ throw }}
+ Write-Output 'broad-runtime-dacl-refused'
+}}
+Write-Output 'runtime-boundaries-verified'
 """
     )
     assert result.returncode == 0, result.stderr
+    assert result.stdout.splitlines() == [
+        "private-metadata-owner-refused",
+        "broad-runtime-dacl-refused",
+        "runtime-boundaries-verified",
+    ]
