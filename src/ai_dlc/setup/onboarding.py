@@ -16,10 +16,17 @@ from typing import Any
 import yaml
 
 from ai_dlc import __version__
-from ai_dlc.config import load_project
+from ai_dlc.config import load_project, read_toml
 from ai_dlc.environment.enrollment import EnrollmentPaths, read_lock
 from ai_dlc.environment.profile_source import source_lock_value, verify_cached_profile
+from ai_dlc.files import assets
 from ai_dlc.harness.agents import read_managed_section
+from ai_dlc.harness.components import (
+    MissingComponentGuidance,
+    load_component_catalog,
+    resolve_components,
+)
+from ai_dlc.provider_definitions import DEFINITIONS
 from ai_dlc.setup.commands import find_executable, parse_command
 from ai_dlc.setup.project import check_definitions
 from ai_dlc.setup.templates import plan_toolset
@@ -117,6 +124,76 @@ def _engine_checkout(root: Path) -> bool:
         return data.get("project", {}).get("name") == "ai-dlc"
     except (OSError, ValueError, TypeError):
         return False
+
+
+def _headless_preference(profile: Path, machine: Path) -> bool | None:
+    """Read one preference only after the caller verifies the explicit enrollment."""
+    value = False
+    try:
+        for path in (profile, machine):
+            preferences = read_toml(path).get("preferences", {})
+            if not isinstance(preferences, dict):
+                return None
+            if "headless" in preferences:
+                selected = preferences["headless"]
+                if type(selected) is not bool:
+                    return None
+                value = selected
+    except (OSError, ValueError, TypeError):
+        return None
+    return value
+
+
+def _component_limits(root: Path, config: dict, headless: bool | None) -> list[dict]:
+    """Inspect only declared module/optional-viewer support, not general readiness."""
+    try:
+        try:
+            catalog = load_component_catalog(root, config)
+        except MissingComponentGuidance as exc:
+            # Missing guidance does not invalidate authenticated support metadata.
+            catalog = exc.catalog
+        components = resolve_components(config, catalog)["components"]
+        modules = read_toml(assets("modules") / "catalog.toml")
+    except (OSError, ValueError, TypeError):
+        return [
+            {
+                "code": "component-support-unverified",
+                "component": "project",
+                "reason": "Selected component support could not be inspected from local metadata; use the explicit offline readiness operation.",
+                "blocking": False,
+            }
+        ]
+    limitations = []
+    for component in components:
+        definition = DEFINITIONS.get(component["id"])
+        if definition is not None and definition.optional_viewer:
+            unavailable = headless is True
+            limitations.append(
+                {
+                    "code": "optional-viewer-unavailable"
+                    if unavailable
+                    else "optional-viewer-unverified",
+                    "component": component["provider"],
+                    "reason": (
+                        f"Optional {definition.optional_viewer} desktop viewer is unavailable in the explicitly selected headless enrollment; note storage does not require it."
+                        if unavailable
+                        else f"Optional {definition.optional_viewer} desktop viewer support is unverified; note storage does not require it."
+                    ),
+                    "blocking": False,
+                }
+            )
+        if headless is True:
+            for module_id in component["modules"]:
+                if modules[module_id].get("desktop"):
+                    limitations.append(
+                        {
+                            "code": "component-headless-unavailable",
+                            "component": component["provider"],
+                            "reason": f"Selected component requires desktop module {module_id}, which is unavailable in the explicitly selected headless enrollment. Review that selection or use a non-headless environment before target qualification.",
+                            "blocking": True,
+                        }
+                    )
+    return limitations
 
 
 def plan_onboarding(
@@ -293,6 +370,7 @@ def plan_onboarding(
 
     values = (source, ref, profile_id, machine_id)
     enrolled = False
+    headless = None
     enrollment_selected = any(value is not None for value in values)
     if enrollment_selected:
         result["enrollment"] = {"status": "selected"}
@@ -344,10 +422,13 @@ def plan_onboarding(
                         )
                         selection_blocked = True
                     else:
-                        verify_cached_profile(lock, paths)
+                        selected_profile = verify_cached_profile(lock, paths)
                         if not paths.machine_file(lock.machine_id).is_file():
                             raise ValueError("machine binding missing")
                         enrolled = True
+                        headless = _headless_preference(
+                            selected_profile, paths.machine_file(lock.machine_id)
+                        )
                         result["enrollment"].update(
                             {
                                 "status": "verified",
@@ -362,6 +443,42 @@ def plan_onboarding(
                     "The selected local enrollment metadata/cache cannot be verified. Review the existing enrollment preview; no cache was repaired or fetched.",
                     "enroll-preview",
                 )
+
+    machine_supported = True
+    if enrollment_selected and all(value is not None for value in values) and system == "Linux":
+        try:
+            release = platform.freedesktop_os_release()
+        except OSError:
+            release = {}
+        if not release.get("ID") or not release.get("VERSION_ID"):
+            machine_supported = False
+            finding(
+                "machine-platform-unverified",
+                "machine",
+                "Local Linux release metadata is unavailable or incomplete. Selected machine provisioning support is unresolved; project-only Linux onboarding remains supported.",
+                "machine-preview",
+                "blocked",
+            )
+        # This is the bounded native-release contract owned by provision.machine_apply.
+        elif release["ID"] != "ubuntu" or release["VERSION_ID"] not in {"24.04", "26.04"}:
+            machine_supported = False
+            finding(
+                "machine-platform-unsupported",
+                "machine",
+                "Selected native machine provisioning supports Ubuntu 24.04 and 26.04 only. This Linux release is unsupported for machine apply; project-only Linux onboarding remains supported.",
+                "machine-preview",
+                "blocked",
+            )
+    component_blocked = False
+    for limitation in _component_limits(root, config, headless):
+        component_blocked = component_blocked or limitation["blocking"]
+        finding(
+            limitation["code"],
+            limitation["component"],
+            limitation["reason"],
+            "project-readiness",
+            "blocked" if limitation["blocking"] else None,
+        )
 
     usable = supported_host and executable is not None and not selection_blocked
 
@@ -432,6 +549,7 @@ def plan_onboarding(
             ["Installs selected tools and updates user machine/client configuration."],
             depends_on=dependency,
             review=True,
+            available=machine_supported,
         )
     if not adopted:
         adoption = [
@@ -561,6 +679,6 @@ def plan_onboarding(
         ["Executes the target project's declared checks; their commands may have effects."],
         depends_on=dependency,
         review=True,
-        available=check_available,
+        available=check_available and not component_blocked,
     )
     return result

@@ -328,8 +328,13 @@ def test_repeated_plans_never_write_spawn_fetch_or_read_ambient_configuration(
     target, environment, monkeypatch
 ):
     adopted(target, client="antigravity")
+    config = target / "ai-dlc.toml"
+    config.write_text(config.read_text().replace("[roles]\n", '[roles]\nknowledge = "obsidian"\n'))
     paths = EnrollmentPaths.from_environment(Path(environment["HOME"]), environment)
-    write_enrollment(paths, content=b'schema = 4\nprofile_id = "personal-profile"\n')
+    write_enrollment(
+        paths,
+        content=b'schema = 4\nprofile_id = "personal-profile"\n[preferences]\nheadless = true\n',
+    )
     module = importlib.import_module("ai_dlc.setup.onboarding")
     # Warm imports before the guards so the boundary covers planning rather than Python's loader.
     selections = {
@@ -389,6 +394,7 @@ def test_repeated_plans_never_write_spawn_fetch_or_read_ambient_configuration(
     first = module.plan_onboarding(target, environ=environment, **selections)
     second = module.plan_onboarding(target, environ=environment, **selections)
     assert first == second
+    assert "optional-viewer-unavailable" in codes(first)
     unselected = module.plan_onboarding(target, environ=environment)
     assert unselected["enrollment"] == {"status": "unselected"}
     assert before == snapshot()
@@ -463,3 +469,167 @@ def test_planner_does_not_read_credential_environment_values(target, environment
     supplied = MetadataEnvironment({**environment, "PRIVATE_TOKEN": "secret"})
     result = plan(target, supplied)
     assert "secret" not in json.dumps(result)
+
+
+@pytest.mark.parametrize(
+    "release", [{"ID": "ubuntu", "VERSION_ID": "24.04"}, {"ID": "ubuntu", "VERSION_ID": "26.04"}]
+)
+def test_selected_linux_machine_apply_supports_owning_service_releases(
+    target, environment, monkeypatch, release
+):
+    adopted(target)
+    monkeypatch.setattr("platform.system", lambda: "Linux")
+    monkeypatch.setattr("platform.freedesktop_os_release", lambda: release)
+    result = plan(
+        target,
+        environment,
+        source="https://example.test/profiles.git",
+        ref="main",
+        profile_id="work",
+        machine_id="laptop",
+    )
+    assert action(result, "machine-apply")["available"]
+    assert result["state"] == "actionable"
+
+
+@pytest.mark.parametrize(
+    "release", [{"ID": "debian", "VERSION_ID": "12"}, {"ID": "ubuntu", "VERSION_ID": "22.04"}]
+)
+def test_unsupported_linux_machine_release_does_not_disable_project_only_route(
+    target, environment, monkeypatch, release
+):
+    adopted(target)
+    monkeypatch.setattr("platform.system", lambda: "Linux")
+    monkeypatch.setattr("platform.freedesktop_os_release", lambda: release)
+    selected = plan(
+        target,
+        environment,
+        source="https://example.test/profiles.git",
+        ref="main",
+        profile_id="work",
+        machine_id="laptop",
+    )
+    assert selected["state"] == "blocked"
+    assert "machine-platform-unsupported" in codes(selected)
+    assert "unsupported-platform" not in codes(selected)
+    assert action(selected, "machine-preview")["available"]
+    assert not action(selected, "machine-apply")["available"]
+    assert not action(selected, "project-setup")["available"]
+    project_only = plan(target, environment)
+    assert project_only["state"] == "actionable"
+    assert action(project_only, "target-check")["available"]
+    assert "machine-platform-unsupported" not in codes(project_only)
+
+
+@pytest.mark.parametrize("release", [None, {}])
+def test_unknown_linux_release_leaves_selected_machine_apply_unavailable(
+    target, environment, monkeypatch, release
+):
+    adopted(target)
+    monkeypatch.setattr("platform.system", lambda: "Linux")
+
+    def inspect_release():
+        if release is None:
+            raise OSError("release metadata missing")
+        return release
+
+    monkeypatch.setattr("platform.freedesktop_os_release", inspect_release)
+    result = plan(
+        target,
+        environment,
+        source="https://example.test/profiles.git",
+        ref="main",
+        profile_id="work",
+        machine_id="laptop",
+    )
+    assert result["state"] == "blocked"
+    assert "machine-platform-unverified" in codes(result)
+    assert action(result, "machine-preview")["available"]
+    assert not action(result, "machine-apply")["available"]
+
+
+def test_selected_optional_viewer_is_nonblocking_without_ambient_enrollment(target, environment):
+    adopted(target)
+    with (target / "ai-dlc.toml").open("a") as handle:
+        handle.write('[providers.notes]\nkind = "obsidian"\n')
+    config = target / "ai-dlc.toml"
+    config.write_text(config.read_text().replace("[roles]\n", '[roles]\nknowledge = "notes"\n'))
+    paths = EnrollmentPaths.from_environment(Path(environment["HOME"]), environment)
+    paths.lock_file.parent.mkdir(parents=True)
+    paths.lock_file.write_text("invalid ambient enrollment must not be read")
+    result = plan(target, environment)
+    viewer = next(
+        item for item in result["findings"] if item["code"] == "optional-viewer-unverified"
+    )
+    assert viewer["component"] == "notes"
+    assert "obsidian" in viewer["reason"]
+    assert result["state"] == "actionable"
+    assert action(result, "target-check")["available"]
+
+
+@pytest.mark.parametrize(
+    "machine", ["schema = 4\n", "schema = 4\n[preferences]\nheadless = true\n"]
+)
+def test_verified_selected_headless_enrollment_only_disables_optional_viewer(
+    target, environment, machine
+):
+    adopted(target)
+    config = target / "ai-dlc.toml"
+    config.write_text(config.read_text().replace("[roles]\n", '[roles]\nknowledge = "obsidian"\n'))
+    paths = EnrollmentPaths.from_environment(Path(environment["HOME"]), environment)
+    write_enrollment(
+        paths,
+        content=b'schema = 4\nprofile_id = "personal-profile"\n[preferences]\nheadless = true\n',
+        machine=machine,
+    )
+    result = plan(
+        target,
+        environment,
+        source="https://example.test/profiles.git",
+        ref="main",
+        profile_id="personal-profile",
+        machine_id="workstation-01",
+    )
+    viewer = next(
+        item for item in result["findings"] if item["code"] == "optional-viewer-unavailable"
+    )
+    assert viewer["component"] == "obsidian"
+    assert "headless" in viewer["reason"]
+    assert result["state"] == "actionable"
+    assert action(result, "target-check")["available"]
+    assert result["qualification"] == "not-assessed"
+
+
+def test_headless_required_component_is_a_scoped_blocker(target, environment):
+    adopted(target)
+    config = target / "ai-dlc.toml"
+    config.write_text(config.read_text().replace("[roles]\n", '[roles]\ntracker = "linear"\n'))
+    paths = EnrollmentPaths.from_environment(Path(environment["HOME"]), environment)
+    write_enrollment(
+        paths,
+        content=b'schema = 4\nprofile_id = "personal-profile"\n[preferences]\nheadless = true\n',
+    )
+    result = plan(
+        target,
+        environment,
+        source="https://example.test/profiles.git",
+        ref="main",
+        profile_id="personal-profile",
+        machine_id="workstation-01",
+    )
+    limitation = next(
+        item for item in result["findings"] if item["code"] == "component-headless-unavailable"
+    )
+    assert limitation["component"] == "linear"
+    assert result["state"] == "blocked"
+    assert action(result, "project-setup")["available"]
+    assert action(result, "project-readiness")["available"]
+    assert not action(result, "target-check")["available"]
+
+
+def test_project_configuration_still_rejects_personal_headless_preference(target, environment):
+    adopted(target)
+    with (target / "ai-dlc.toml").open("a") as handle:
+        handle.write("[preferences]\nheadless = true\n")
+    with pytest.raises(ValueError, match="configuration-invalid"):
+        plan(target, environment)
