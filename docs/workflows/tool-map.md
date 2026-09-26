@@ -94,6 +94,7 @@ knowledge append`.
 | Area | Interfaces | Effect |
 | --- | --- | --- |
 | Readiness and context | `ai-dlc doctor`, `ai-dlc next`, `ai-dlc context` | Checks the selected environment; `next` and `context --brief` show local next actions without consulting the tracker |
+| Consumer onboarding | `ai-dlc project onboard --root PATH` | Returns a read-only schema-1 plan from the explicit target and selections; exit 0 means actions are available, not completed, and no apply mode or MCP operation exists |
 | Project creation | `ai-dlc project init`, `ai-dlc project adopt` | Initializes a project or previews/applies conflict-safe adoption |
 | Project maintenance | `ai-dlc project sync`, `ai-dlc project rebind` | Performs staged Copier updates or previews/applies reviewed provider rebinding, including reviewed provider connection rebinding |
 | Project execution | `ai-dlc project setup`, `ai-dlc project check --check ID`, `ai-dlc project check --required` | Runs selected edit checks or full required verification and emits receipts that retain every required ID |

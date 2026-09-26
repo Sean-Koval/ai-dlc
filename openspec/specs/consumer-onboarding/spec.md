@@ -1,5 +1,8 @@
-## ADDED Requirements
+# consumer-onboarding Specification
 
+## Purpose
+TBD - created by archiving change consumer-onboarding. Update Purpose after archive.
+## Requirements
 ### Requirement: CO-01 Distinct consumer and contributor routes
 Consumer guidance SHALL distinguish engine installation, explicit profile enrollment and target-project adoption from contribution to AI-DLC itself. It SHALL route consumer checks to the selected target project and SHALL NOT require AI-DLC's contributor full checks or inherit the engine repository's tracker, vault, providers or client selections.
 
@@ -33,6 +36,10 @@ The onboarding plan SHALL order exact available existing operations for reviewed
 - **WHEN** prerequisites and explicit target choices are known
 - **THEN** the plan recommends the existing adoption preview followed by a separately reviewed apply operation and keeps native qualification not-assessed
 
+#### Scenario: Fresh target has selected enrollment
+- **WHEN** a fresh target selects a complete reviewed profile and client
+- **THEN** the ordered plan makes target adoption a prerequisite of root-scoped machine planning, so the machine owner receives an existing target configuration rather than falling back to another repository
+
 #### Scenario: Existing owned guidance is edited
 - **WHEN** a read-only inspection identifies an ownership conflict
 - **THEN** the plan reports the existing conflict resolution route and does not overwrite, execute recovery or bypass the owning service
@@ -58,3 +65,4 @@ Rerunning onboarding SHALL derive its plan from current local state without a pe
 #### Scenario: Target check cannot run
 - **WHEN** target runtime or check configuration is missing
 - **THEN** the route gives the specific next action, reports no passing check and retains native qualification not-assessed
+

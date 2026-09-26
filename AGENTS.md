@@ -5,6 +5,17 @@ tools and guides agents; it is not a hosted autonomous development orchestrator.
 CLI and MCP entry points share application services. Provider details belong behind
 contracts; credentials and machine paths never belong in shared configuration.
 
+Before preparing this checkout, identify the intended repository. A teammate who
+cloned AI-DLC only to install it for another project should follow the consumer
+route in [README.md](README.md#get-started), pass that work repository explicitly
+to `project onboard --root`, and keep this engine checkout's providers and accounts
+out of the target. Native Windows consumer installation is unsupported in this
+revision; [#172](https://github.com/Sean-Koval/ai-dlc/issues/172) tracks installation
+and [#53](https://github.com/Sean-Koval/ai-dlc/issues/53) tracks client/cross-machine
+qualification. Do not present the POSIX bootstrap below as native Windows guidance.
+Only contributors changing AI-DLC itself should prepare this checkout and run its
+full required checks.
+
 Prepare this checkout with `sh scripts/bootstrap.sh --source`; run
 `ai-dlc project check --required`. That prepares this checkout's own environment
 and leaves the shared `ai-dlc` alias alone; use the printed environment path, or

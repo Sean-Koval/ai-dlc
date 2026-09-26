@@ -24,6 +24,24 @@ PATH without execution. Credentials are checked only in that environment; secret
 files are never loaded. Provider health stays informational and unverified, and
 `qualification` is always `not-assessed`.
 
+Machine enrollment is optional for consumer onboarding. A self-contained target
+with project-owned client configuration and checks can start with:
+
+```sh
+ai-dlc project onboard --root /absolute/path/to/target
+```
+
+A fresh target must also supply one or more repeated `--agent-client` selections.
+Only select enrollment when portable profile or machine-owned settings are needed;
+then provide `--source`, `--ref`, `--profile-id`, and `--machine-id` together. The
+planner reads verified local enrollment metadata when it matches, but never calls
+enrollment preview, fetches a source, repairs a cache, or creates a machine file.
+Its recommended enrollment preview can populate an inactive cache; the separate
+`--apply` command activates reviewed state. On Linux, selected native machine
+provisioning is currently bounded to Ubuntu 24.04 and 26.04. An unknown or other
+release blocks those machine actions without making project-only Linux onboarding
+unsupported.
+
 When `ai-dlc` is missing, reports an unexpected version, or works only in new
 terminals, run `ai-dlc project workspace-check --root PATH`. It separates the
 executable PATH selects from the AI-DLC-owned shell activation. If no `ai-dlc` is on
