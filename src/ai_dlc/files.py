@@ -84,7 +84,7 @@ def inside(root: Path, relative: str) -> Path:
             ancestor = ancestor.parent
         with guarded_path(ancestor) as parent:
             if candidate.exists() or candidate.is_symlink():
-                with opened(candidate, parent=parent):
+                with opened(candidate, parent=parent, directory=candidate.is_dir()):
                     pass
         return candidate
     if not candidate.resolve().is_relative_to(root.resolve()):

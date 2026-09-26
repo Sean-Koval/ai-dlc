@@ -56,7 +56,7 @@
         "src/ai_dlc/environment/source_schema.py": "929944f86aef4a0aa2e257f3fbb4bee26ce07c522ed2eb35c2e1bbba38ec44d0",
         "src/ai_dlc/environment/team_sources.py": "20d583a9046adfac9f0f5bf6de7aca537654eb29d0ff636c27f5a78c7c5c21a6",
         "src/ai_dlc/errors.py": "b8c0da78ec0e9ea75ef71b4495b501570625988ba5ae54c4631f1ca20a8362c1",
-        "src/ai_dlc/files.py": "5187176a0455d8c20974b7c1a10a4bec151a08f700697fa88a0dcc99fa026374",
+        "src/ai_dlc/files.py": "eb0452e50442cdf9da231a56111afec1d45b4bc5b7a41a00931a540e88ad14da",
         "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
         "src/ai_dlc/harness/agents.py": "e5186f1efb1cd1375c49a427b3edd2760384b918d914f964975181d3ac79071a",
         "src/ai_dlc/harness/components.py": "b64cd2ae837f83a37ddd1c74dad25fcd16fe8733715c224c7d64673784ebba11",
@@ -357,7 +357,7 @@
     },
     {
       "bound": {
-        "tests/test_windows_storage.py": "273b0cb9926082e5801ec0ccd42e57559d11f2d6b615e4cd522422533bd40fa5"
+        "tests/test_windows_storage.py": "296aa56cea50a2a782a0bdc26ded543571e0354018ff3b0e10f2264dde9a2e67"
       },
       "outcome": "updated",
       "reason": "Reviewed implementation plan, native CI/test coverage or catalog mapping for windows-portable-core; proposed test coverage is distinct from actual platform pass evidence, and unrelated product scope is preserved.",

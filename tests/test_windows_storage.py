@@ -309,6 +309,7 @@ def test_native_parent_attribute_reparse_attack_cannot_redirect_creation(tmp_pat
     device_io.restype = w.BOOL
     original = storage.open_relative
     attacked = []
+    attack_errors = []
 
     def attack_then_open(handle, name, access, share, creation, attributes, directory):
         if name.startswith(".ai-dlc-") and not attacked:
@@ -318,7 +319,12 @@ def test_native_parent_attribute_reparse_attack_cannot_redirect_creation(tmp_pat
                     device_io(attacker, 0x000900A4, data, len(data), None, 0, c.byref(count), None)
                 )
                 attacked.append(applied)
-        return original(handle, name, access, share, creation, attributes, directory)
+                attack_errors.append(c.get_last_error())
+        result = original(handle, name, access, share, creation, attributes, directory)
+        if attacked and attacked[0] and list(outside.iterdir()):
+            storage.api().close(result)
+            pytest.fail("Handle-relative open created a stage through the attacker junction")
+        return result
 
     monkeypatch.setattr(storage, "open_relative", attack_then_open)
     try:
@@ -326,10 +332,27 @@ def test_native_parent_attribute_reparse_attack_cannot_redirect_creation(tmp_pat
             storage.atomic_publish(parent / "file", b"must stay in original directory")
         except (OSError, ValueError):
             pass  # Safe refusal is permitted if a raced parent becomes a reparse point.
-        assert attacked, "The test must reach the actual attribute-only reparse attempt"
+        assert attacked == [True], (
+            f"Native attribute-only attack was not exercised: {attack_errors}"
+        )
         assert not (outside / "file").exists()
         assert not list(outside.iterdir()), "No staging bytes may escape through the junction"
     finally:
         if attacked and attacked[0]:
             # RemoveDirectory removes the junction, not the target directory.
             parent.rmdir()
+
+
+@NATIVE
+def test_native_inside_supports_existing_directory_and_rejects_junction(tmp_path):
+    from ai_dlc.files import inside
+
+    target = tmp_path / "docs"
+    target.mkdir()
+    assert inside(tmp_path, "docs") == target
+    junction = tmp_path / "linked"
+    subprocess.run(
+        ["cmd", "/c", "mklink", "/J", str(junction), str(target)], check=True, capture_output=True
+    )
+    with pytest.raises((OSError, ValueError)):
+        inside(tmp_path, "linked")
