@@ -1205,6 +1205,74 @@ def test_python_test_runner_refuses_an_entirely_skipped_suite(tmp_path):
     assert "Every discovered test was skipped" in result.stdout + result.stderr
 
 
+@pytest.mark.parametrize("setup_scope", ["class", "module"])
+def test_python_test_runner_refuses_suite_skipped_during_setup(tmp_path, setup_scope):
+    root = tmp_path / "python-starter"
+    adopt(root, "python", apply=True, initialize=True)
+    if setup_scope == "class":
+        setup = (
+            "class Behavior(unittest.TestCase):\n"
+            "    @classmethod\n"
+            "    def setUpClass(cls):\n"
+            "        raise unittest.SkipTest('fixture')\n\n"
+        )
+    else:
+        setup = (
+            "def setUpModule():\n"
+            "    raise unittest.SkipTest('fixture')\n\n"
+            "class Behavior(unittest.TestCase):\n"
+        )
+    (root / "tests/test_main.py").write_text(
+        "import unittest\n\n"
+        + setup
+        + "    def test_behavior(self):\n"
+        + "        self.fail('must not run')\n"
+    )
+
+    result = _run_starter_tests(root)
+
+    assert result.returncode != 0
+    assert "Every discovered test was skipped" in result.stdout + result.stderr
+
+
+def test_python_test_runner_accepts_passing_test_mixed_with_setup_skip(tmp_path):
+    root = tmp_path / "python-starter"
+    adopt(root, "python", apply=True, initialize=True)
+    (root / "tests/test_main.py").write_text(
+        "import unittest\n\n"
+        "class Passing(unittest.TestCase):\n"
+        "    def test_behavior(self):\n"
+        "        self.assertTrue(True)\n\n"
+        "class SetupSkipped(unittest.TestCase):\n"
+        "    @classmethod\n"
+        "    def setUpClass(cls):\n"
+        "        raise unittest.SkipTest('fixture')\n\n"
+        "    def test_skipped_by_setup(self):\n"
+        "        self.fail('must not run')\n"
+    )
+
+    result = _run_starter_tests(root)
+
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_python_test_runner_accepts_executed_case_with_skipped_subtests(tmp_path):
+    root = tmp_path / "python-starter"
+    adopt(root, "python", apply=True, initialize=True)
+    (root / "tests/test_main.py").write_text(
+        "import unittest\n\n"
+        "class Subtests(unittest.TestCase):\n"
+        "    def test_cases(self):\n"
+        "        for value in (1, 2):\n"
+        "            with self.subTest(value=value):\n"
+        "                self.skipTest('fixture')\n"
+    )
+
+    result = _run_starter_tests(root)
+
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
 def test_python_adoption_preserves_authored_tests_without_starter_assets(tmp_path):
     root = tmp_path / "existing-python"
     (root / "tests").mkdir(parents=True)
