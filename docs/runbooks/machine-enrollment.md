@@ -149,6 +149,64 @@ is expected only with explicit component support metadata; unavailable metadata
 remains unknown. Follow the reported enrollment/render/check route for each
 finding and review changes through the owning operation's normal preview.
 
+## Observe the selected native harness
+
+An environment report can describe setup drift without proving that a client
+loaded the files. Keep four states separate: selected configuration, rendered
+files, observed instruction/skill recognition, and authentication at the time of
+a particular tool call. A generated file or listed tool is not an invocation.
+
+Use a disposable adopted repository and the intended installed client/account.
+Record edition/version, OS/architecture, engine source/release identity, reviewed
+profile/source pins and the redacted report identities before observing anything.
+If engine, guidance or server recipe identity remains unknown, retain the manual
+result as limited evidence; matching report hashes do not repair that gap.
+
+1. Review a harmless instruction fixture in the selected project's instruction
+   file and give it a distinctive fixed response marker. Start a fresh client
+   session in that project and ask the fixture's question without including its
+   answer in the prompt. Record the observed marker and whether the intended
+   instruction source was loaded. For Antigravity, observe a modular rule
+   separately from root `AGENTS.md`; one does not establish the other's activation.
+2. Select an existing reviewed skill appropriate to the fixture. Invoke it through
+   the client's skill mechanism and observe its distinct prescribed harmless
+   outcome. A filename, skill listing or agent assertion that it knows the skill
+   is only discovery. Leave this step pending if the selected skill has no safe
+   fixture-compatible invocation; do not install another skill to hide the gap.
+3. Inspect tools from one explicitly selected server, then review and perform one
+   harmless read only when its account, scope and cost are approved. Observe the
+   actual result separately from enumeration. If the selected server is confirmed
+   to be AI-DLC, its document search/read tools can inspect a disposable fixture;
+   a server alias alone does not establish that identity. Unknown operation safety
+   or transport identity leaves the scope limited. Do not substitute ticket writes,
+   a health check with side effects, or an arbitrary configured command.
+
+Use normal private account verification when a selected operation requires it.
+Record only whether the intended scope was checked and the observed time; do not
+export account names, tokens, private paths or raw transcripts. Local tools needing
+no account have authentication not-applicable. Credential presence, a login icon,
+and an old successful call cannot certify the present session. Model interactions
+may incur usage even when the tool itself is a free local read; leave cost
+permission pending until explicitly authorized.
+
+Current official inspection references are [Codex instructions](https://learn.chatgpt.com/docs/agent-configuration/agents-md),
+[Codex skills](https://learn.chatgpt.com/docs/build-skills) and
+[Codex MCP](https://learn.chatgpt.com/docs/extend/mcp?surface=cli).
+For Claude Code, inspect loaded instruction sources with the documented context
+view, invoke a selected skill directly, and inspect selected servers with `/mcp`;
+see [memory](https://code.claude.com/docs/en/memory),
+[skills](https://code.claude.com/docs/en/skills) and
+[MCP](https://code.claude.com/docs/en/mcp). Antigravity's
+[rules documentation](https://antigravity.google/docs/rules/) distinguishes root
+instructions from modular activation. These sources were reviewed September 26,
+2026; they do not qualify a particular installed edition or version.
+
+Repeat observations after changes to the client, engine, platform, reviewed pins,
+selected guidance, fixture or adapter contract. Preserve historical results with
+their original context. Actual native/platform evidence belongs under
+[qualification issue #53](https://github.com/Sean-Koval/ai-dlc/issues/53); automated
+fixture tests do not complete that issue, and paid comparison #138 stays deferred.
+
 ## Enroll a private profile
 
 Preview a private profile enrollment can materialize an inactive cache, but it

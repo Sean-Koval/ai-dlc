@@ -39,6 +39,6 @@ After implementation and the checklist above are complete, archive this independ
 - [ ] Focused integration tests, scoped checks, self-review and independent task review.
 
 ### Task C — Version activation boundary, documentation and delivery
-- [ ] Record reviewed official contracts and exact installed contexts where available. Positive Antigravity compatibility/render migration remains pending without concrete evidence; preserve all authored files and existing unversioned behavior.
+- [ ] Record reviewed official contracts and exact installed contexts where available. Positive Antigravity compatibility/render migration remains pending without concrete evidence; preserve all authored files and existing unversioned behavior. Correct the offline readiness next step to request version-specific inspection rather than prescribing historical Always On UI steps universally.
 - [ ] Update canonical runbooks/tool map/release and onboarding evidence; record content-bound dispositions/catalog mappings. Hand off actual native walkthrough to #53 with exact steps and remaining limitations. No paid #138 run.
 - [ ] Run required checks, whole-change review and review any fixes. If NHV-03 remains unimplemented, publish a draft PR with explicit unchecked acceptance instead of archival/merge/finish. Proceed to independently deliverable next issue only after this bounded work is reviewable and pending context is recorded.
