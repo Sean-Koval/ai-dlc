@@ -1,0 +1,37 @@
+schema = 1
+id = "behavioral-check-onboarding"
+title = "Help teams adopt meaningful behavioral acceptance checks with their existing tools"
+scope = "Guide adoption of explicit team-owned behavior checks through existing setup and project-check services, including runtime preflight, disposable failing/passing exercises and honest evidence. Exclude a new test framework, automatic test adequacy certification and paid evaluation execution."
+requires_spec = true
+spec_reason = "Changes observable setup, guidance, policy or delivery behavior; formal scenarios define the compatibility and evidence boundaries."
+acceptance = [
+    "Onboarding inspects the repository's test tools and proposes concrete behavior checks for review instead of replacing the existing framework.",
+    "A disposable fixture demonstrates a failing requirement and its restored passing result through the ordinary AI-DLC check runner without modifying the user's implementation.",
+    "Declared runtime prerequisites including mise are provisioned by setup or reported before qualification; generic projects and the comparison image cannot bypass the normal runner.",
+    "Focused feedback remains distinct from complete required evidence; missing, empty, skipped or failed behavioral coverage is not certified as success.",
+    "Guidance records the behavior actually checked and its limits; no output-quality, productivity or token-savings claim is inferred from framework fixtures.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "BCO-01",
+    "BCO-02",
+    "BCO-03",
+    "BCO-04",
+    "BCO-05",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+brief = "docs/product-direction.md"
+spec = "openspec/changes/behavioral-check-onboarding"
+plan = "openspec/changes/behavioral-check-onboarding/tasks.md"
+branch = "codex/behavioral-check-onboarding"
+
+[bindings]

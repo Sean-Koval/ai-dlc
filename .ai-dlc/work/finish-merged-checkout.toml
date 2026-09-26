@@ -1,0 +1,38 @@
+schema = 1
+id = "finish-merged-checkout"
+title = "Finish delivered work from an isolated checkout of its exact merge commit"
+scope = "Add an explicit finish helper that obtains the bound PR merge revision, uses an owned disposable detached checkout and invokes existing completion gates while preserving the caller checkout. Exclude automatic merging, rebasing, pushing and relaxed CI/specification validation."
+requires_spec = true
+spec_reason = "Changes observable setup, guidance, policy or delivery behavior; formal scenarios define the compatibility and evidence boundaries."
+acceptance = [
+    "An explicit helper can finish a bound merged item after the target branch advances, using its exact merge commit.",
+    "Dirty caller files, current branch, other worktrees and authored configuration are preserved.",
+    "Provider bindings, archived specification identity and every configured exact-merge CI receipt remain mandatory and are evaluated by existing services.",
+    "Only owned temporary resources are cleaned; interruption, uncertain tracker mutations and cleanup failures remain visible and safely retryable.",
+    "Ordinary finish behavior remains compatible and optional handoff/learning results retain existing idempotent semantics.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "TR-04",
+    "FMC-01",
+    "FMC-02",
+    "FMC-03",
+    "FMC-04",
+    "FMC-05",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+brief = "docs/product-direction.md"
+spec = "openspec/changes/finish-merged-checkout"
+plan = "openspec/changes/finish-merged-checkout/tasks.md"
+branch = "codex/finish-merged-checkout"
+
+[bindings]

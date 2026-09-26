@@ -1,0 +1,383 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "openspec/changes/behavioral-check-onboarding/delivery.md": "0c641d0f5eae83aa7a669705c6db6236e0a0301d305c6059c69381d6fd13af8d"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/behavioral-check-onboarding/delivery.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/behavioral-check-onboarding/design.md": "cd1d54b77a5068353e8b6e99ab22fcc9db6243648641a4083ba9f9a3fb1d8487"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/behavioral-check-onboarding/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/behavioral-check-onboarding/proposal.md": "de132a31d36302f5413449c3d5727e609a473a00a3e8728a77e72bb18deb4592"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/behavioral-check-onboarding/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/behavioral-check-onboarding/specs/portable-development/spec.md": "34660deda7723a1eaa17dbcb24609706fa8277ff7e2367c50f9b882e65b8c3a5"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/behavioral-check-onboarding/specs/portable-development/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/behavioral-check-onboarding/tasks.md": "dc5c03417f529e72af013b9f7ea64b19899d03d457c992249cc694373bb07fc0"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/behavioral-check-onboarding/tasks.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/consumer-onboarding/delivery.md": "343c42a353c1ce5b9c6ad952b1422f8717b77506935657ce1ed56d5cd2d2afbb"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/consumer-onboarding/delivery.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/consumer-onboarding/design.md": "e604f85871215b53e35b5d59c96018adcce15f35e05b14cc78f892b4984e0559"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/consumer-onboarding/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/consumer-onboarding/proposal.md": "8b02798a69aba99bd221afc1c43c57726129deb24f2c5dd50418d7997809041f"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/consumer-onboarding/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/consumer-onboarding/specs/consumer-onboarding/spec.md": "461d77aea82382b88c39907cb58424ec96fea792655823073fd638bf7b7cfef9"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/consumer-onboarding/specs/consumer-onboarding/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/consumer-onboarding/tasks.md": "302ef39a16067fa4563b02497f894270b659751b8f1d58e162c2374786fe0f75"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/consumer-onboarding/tasks.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/effective-environment-report/delivery.md": "2c519cfe2b032d264601d51030635a59074eb343d0c2cc8e132c42c92594b057"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/effective-environment-report/delivery.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/effective-environment-report/design.md": "8b257e5ac80e118a0be7b3a57b5242b5a7f1e04a1edb1fbf80ae9d1c66bff60e"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/effective-environment-report/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/effective-environment-report/proposal.md": "b56ad1f22569faf9e75479638a8d1046532a1e3e782d510e7e3c663c2932d3c3"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/effective-environment-report/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/effective-environment-report/specs/effective-environment-report/spec.md": "a3fd6013c929699e634f069b60a4516e9aeeed7699b04c76a286bf2b7dfcda36"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/effective-environment-report/specs/effective-environment-report/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/effective-environment-report/tasks.md": "08a55b87d778f01875dcb034b2845fab6a83b996e5a55087a103b70460073ab7"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/effective-environment-report/tasks.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/finish-merged-checkout/delivery.md": "b312aa1d0b398dab28e92da3d04a46b84c046eda6a45333a068280c1556dabce"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/finish-merged-checkout/delivery.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/finish-merged-checkout/design.md": "a51b0fe82bf8bae964cfe0b4abb60312ed86e0399e8e3c95a79d9058b63d7489"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/finish-merged-checkout/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/finish-merged-checkout/proposal.md": "31efeb09e9111c3a76a3d906c97761aa5d78f9f4e9a0e7f759137d6158ae805b"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/finish-merged-checkout/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/finish-merged-checkout/specs/spec-delivery-traceability/spec.md": "809f58bfe3c8f238dae45c25a73cbe30b8c65ca5be10f26eeb38f15a41101353"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/finish-merged-checkout/specs/spec-delivery-traceability/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/finish-merged-checkout/tasks.md": "36fe81051cdabe110ea5f906dabfa46585ad008580ae4bc577ca92582d1848f1"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/finish-merged-checkout/tasks.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/native-harness-verification/delivery.md": "81c5706617fcbf4ea09339ab4e7296af5cec6e3ee079c41a0a3c5081c62383c9"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/native-harness-verification/delivery.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/native-harness-verification/design.md": "deadc74da390ee8e2788afd0d082c82a84ca2def101989116dd334d5e7a3ee1a"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/native-harness-verification/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/native-harness-verification/proposal.md": "fba234d188b6c19dd1fbe9cce5f8542dbcdbd2df7f882184a0e2b63aa99f206c"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/native-harness-verification/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/native-harness-verification/specs/native-harness-verification/spec.md": "bf3490b59a7192417cdb7bf2acde5a4f2833083cdd47e0afdf82f577de2443ee"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/native-harness-verification/specs/native-harness-verification/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/native-harness-verification/tasks.md": "00d54afb599a6f223a00d2c97bdcdd79e997ecceb5aee09aec04161dc2249b86"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/native-harness-verification/tasks.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/proportionate-push-policy/delivery.md": "76c2fc1b4ac497b60d95ccca10532703d8a61b20e950299d881009b15312e856"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/proportionate-push-policy/delivery.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/proportionate-push-policy/design.md": "ab15bd7b1ac97320675de600cc30e959c435f3603d9a98926e2cd65282ccc3ff"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/proportionate-push-policy/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/proportionate-push-policy/proposal.md": "7567ba520a542393eb6f0c12a8635b64af84f859d593477ff3a1107353c39e98"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/proportionate-push-policy/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/proportionate-push-policy/specs/native-work-harnesses/spec.md": "e7b93159112db95f38a49bacdd18e1b8d272921e5e36d31928ab6ba1d120c21e"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/proportionate-push-policy/specs/native-work-harnesses/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/proportionate-push-policy/tasks.md": "d9535c9046301a385d9d00da1291ee2fe563a505ba4c3fdc2ea3b563101feb77"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/proportionate-push-policy/tasks.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-native-setup/delivery.md": "c952a1ded7d6b298dd4666b7ed85481468fadf74153a37bc659d4f01f03f7195"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/windows-native-setup/delivery.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-native-setup/design.md": "247f62dd3f298acd9bde01f5dca216bc4ef794fb819a7f0f2eb9112f428da20d"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/windows-native-setup/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-native-setup/proposal.md": "0453bb080fb9185998bf3cf85cd83ccb1dab3d69e1407b89efa294a7b3daa862"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/windows-native-setup/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-native-setup/specs/bootstrap-executable-publication/spec.md": "4d4c455122579eaad49ced4f4fd972818b1872ae12237af9726fd8765b3a6862"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/windows-native-setup/specs/bootstrap-executable-publication/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-native-setup/specs/windows-native-setup/spec.md": "59ab141f88a97ed4a179a0d7220e82901850ad4a3c55d3e471f1470f83fcf1de"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/windows-native-setup/specs/windows-native-setup/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-native-setup/tasks.md": "60fc479586d98453f0d207a2b1b39a4f2e0f6eaca155e442bb82666144469a6d"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/windows-native-setup/tasks.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-portable-core/delivery.md": "5e58e0faa08595cc9552d0a4456afd8fae4a16e70bc1be63701135d5f383386d"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/windows-portable-core/delivery.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-portable-core/design.md": "1b2940ab7e2280e4a387c9bafc50269db04fec9c9e118120381b5ca91c191e72"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/windows-portable-core/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-portable-core/proposal.md": "fcf8e3f57d929b4e8ada0b0a08d5a2cf9bf3153474ad45bff0df5034bf8261c6"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/windows-portable-core/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-portable-core/specs/portable-development/spec.md": "defc1931e1347295c2bb04840b44bc7986b487b12c6b2cd60d4d28df45a34663"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/windows-portable-core/specs/portable-development/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-portable-core/specs/windows-portable-core/spec.md": "dad2b5053bbfbdfe611ae960ff097d14a8b6ee88b0834dc07f2a031fad0f0d3e"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/windows-portable-core/specs/windows-portable-core/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-portable-core/tasks.md": "59c12118a4ac63ed7e476cbd5f3bc1c5da747fe61a767eb299c3f4bf3f194875"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed new planning artifact against the current product direction and canonical contracts: records proposed behavior, dependencies and observable acceptance without claiming implementation or live qualification. Durable runtime guidance remains unchanged; each proposal identifies its future documentation owners. OpenSpec owns this proposal, so no duplicate canonical document or catalog entry is introduced.",
+      "reviewer": "Codex planning review, 2026-09-26",
+      "target": "openspec/changes/windows-portable-core/tasks.md"
+    }
+  ],
+  "schema": 2
+}

@@ -1,0 +1,37 @@
+schema = 1
+id = "effective-environment-report"
+title = "Compare effective team environments with redacted reproducibility reports"
+scope = "Extend existing diagnostics with a bounded portable report and comparison of engine/source identity, profile/team pins, intended and observed tools/client versions and project guidance. Exclude secret export, machine-path cloning, telemetry and a hosted dashboard."
+requires_spec = true
+spec_reason = "Changes observable setup, guidance, policy or delivery behavior; formal scenarios define the compatibility and evidence boundaries."
+acceptance = [
+    "A versioned report distinguishes published release identity from source revision and records unavailable observations honestly.",
+    "Two machines using the same reviewed profile/source pins can compare intended state independently of legitimate OS-specific differences.",
+    "Reports explain material tool/client/guidance drift and next actions without exporting secret values, personal absolute paths or authenticated sessions.",
+    "Collection defaults to local read-only inspection; any executable/provider probe is explicit and bounded.",
+    "Existing status/doctor semantics and machine credentials remain compatible; report identity changes when relevant effective configuration changes.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "EER-01",
+    "EER-02",
+    "EER-03",
+    "EER-04",
+    "EER-05",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+brief = "docs/product-direction.md"
+spec = "openspec/changes/effective-environment-report"
+plan = "openspec/changes/effective-environment-report/tasks.md"
+branch = "codex/effective-environment-report"
+
+[bindings]

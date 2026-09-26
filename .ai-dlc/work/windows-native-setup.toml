@@ -1,0 +1,43 @@
+schema = 1
+id = "windows-native-setup"
+title = "Native Windows: install and set up projects from PowerShell"
+scope = "Deliver a verified native Windows 11 x64 bootstrap and selected core/Python project setup from PowerShell, including executable discovery, repeatability and CI/consumer evidence. Exclude mandatory WSL, ARM64 claims and implicit support for every optional desktop tool."
+requires_spec = true
+spec_reason = "Changes observable setup, guidance, policy or delivery behavior; formal scenarios define the compatibility and evidence boundaries."
+acceptance = [
+    "A clean supported Windows machine can prepare the engine and a generic/Python project from the documented PowerShell path without WSL or preinstalled Python/Node.",
+    "Pinned native downloads are checked before installation; corruption preserves the previous working selection.",
+    "Paths with spaces/non-ASCII characters, Scripts/executable conventions and a new terminal resolve the intended checkout; repeat setup preserves other checkouts and authored configuration.",
+    "Selected core/Python requirements are provisioned or diagnosed actionably; unsupported optional components are reported individually.",
+    "Real Windows CI covers source bootstrap and candidate release consumption plus init/adopt/render and deliberately failing/passing checks; publication is a separately authorized action.",
+]
+reviewed = true
+depends_on = [
+    "windows-portable-core",
+]
+requirements = [
+    "BP-01",
+    "WNS-01",
+    "WNS-02",
+    "WNS-03",
+    "WNS-04",
+    "WNS-05",
+    "WNS-06",
+    "WNS-07",
+    "WNS-08",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+brief = "docs/product-direction.md"
+spec = "openspec/changes/windows-native-setup"
+plan = "openspec/changes/windows-native-setup/tasks.md"
+branch = "codex/windows-native-setup"
+
+[bindings]

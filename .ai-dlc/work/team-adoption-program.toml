@@ -1,0 +1,36 @@
+schema = 1
+id = "team-adoption-program"
+title = "Team adoption: native Windows, reproducible harness setup and useful quality checks"
+scope = "Coordinate eight independently deliverable improvements from the September 26 team-offering review. Native Windows is a first-class intended outcome; preserve team tool choices, local credentials, meaningful checks and proportionate process. Existing issue #53 owns real-client/cross-platform qualification, and paid comparison #138 remains deferred."
+requires_spec = false
+spec_reason = "Coordination-only parent; each behavioral child owns an independently archivable OpenSpec change. This parent introduces no runtime behavior."
+acceptance = [
+    "Each of the eight linked child deliveries satisfies its own reviewed acceptance criteria and configured completion gates.",
+    "Existing issue #53 records the scoped Windows/Antigravity journey and second-machine comparison with versions, observed outcomes and explicit limits; unrelated qualification gaps are not silently closed.",
+    "An ordinary downstream adoption records setup time, repeated commands, actual defects caught and false refusals; paid comparison #138 stays deferred unless separately authorized.",
+]
+reviewed = true
+depends_on = [
+    "windows-portable-core",
+    "windows-native-setup",
+    "consumer-onboarding",
+    "effective-environment-report",
+    "native-harness-verification",
+    "behavioral-check-onboarding",
+    "proportionate-push-policy",
+    "finish-merged-checkout",
+]
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+brief = "docs/product-direction.md"
+branch = "codex/team-adoption-program"
+
+[bindings]

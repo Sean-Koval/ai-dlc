@@ -1,0 +1,39 @@
+schema = 1
+id = "native-harness-verification"
+title = "Verify native instruction, skill and MCP recognition for selected harnesses"
+scope = "Add version-bound native readiness evidence for configured/rendered/recognized/authenticated states, and reconcile selected Antigravity rule activation with the supported client contract. Exclude automatic OAuth, paid runs by default and claims that generated files prove native behavior."
+requires_spec = true
+spec_reason = "Changes observable setup, guidance, policy or delivery behavior; formal scenarios define the compatibility and evidence boundaries."
+acceptance = [
+    "All selected clients distinguish generated configuration from observed instruction/skill recognition and authenticated tool availability.",
+    "Evidence records installed edition/version, OS and configuration identity; changed identity makes prior observations stale.",
+    "A bounded harmless walkthrough proves one project instruction, one selected skill and one selected MCP listing/operation; unavailable capabilities remain explicit.",
+    "Fresh Antigravity activation metadata matches the supported version contract while preserving authored metadata and existing ownership/recovery protections.",
+    "Actual native walkthrough results are recorded under existing qualification issue #53; automated fixture checks do not silently satisfy them.",
+]
+reviewed = true
+depends_on = [
+    "effective-environment-report",
+]
+requirements = [
+    "NHV-01",
+    "NHV-02",
+    "NHV-03",
+    "NHV-04",
+    "NHV-05",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+brief = "docs/product-direction.md"
+spec = "openspec/changes/native-harness-verification"
+plan = "openspec/changes/native-harness-verification/tasks.md"
+branch = "codex/native-harness-verification"
+
+[bindings]
