@@ -34,7 +34,7 @@ After implementation and the checklist above are complete, archive this independ
 
 ### Task B — Bounded local service and thin CLI
 - [ ] Add `harness/native_verification.py` using explicit root/client/report inputs, safe bounded evidence reads, offline EER collection and manual procedure generation. Do not infer probed runtime freshness from a default collection.
-- [ ] Add `agents verify --root PATH --client CLIENT --environment REPORT [--evidence FILE]`; require explicit scope and safe errors. Exit0 requires actual complete matching evidence, exit1 covers valid pending/failed/stale/partial context, exit2 malformed/refused input. Unknown versions stay explicit.
+- [ ] Add `agents verify --root PATH --client CLIENT --environment REPORT [--evidence FILE]`; require explicit scope and safe errors. The initial draft uses exit1 for valid pending/failed/stale/partial context and exit2 for malformed/refused input. Exit0 qualification remains unimplemented until reviewed compatibility inputs exist; no fabricated success fixture. Unknown versions stay explicit.
 - [ ] Test real CLI/file boundaries, no process/network/write effects, stale local safe configuration, missing/modified guidance, incompatible selections, and valid incomplete output. Do not use unbounded renderer reads to establish freshness.
 - [ ] Focused integration tests, scoped checks, self-review and independent task review.
 

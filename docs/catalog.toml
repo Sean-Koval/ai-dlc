@@ -15,17 +15,23 @@ kind = "architecture"
 owner = "repository-maintainers"
 status = "active"
 code_paths = [
+    "src/ai_dlc/harness/native_adapters.py",
+    "src/ai_dlc/harness/native_evidence.py",
+    "src/ai_dlc/harness/native_verification.py",
     "src/ai_dlc/*.py",
     "src/ai_dlc/**/*.py",
     "scripts/*.py",
     "pyproject.toml",
 ]
 verification_paths = [
+    "tests/test_native_evidence.py",
+    "tests/test_native_verification*.py",
     "tests/test_consumer_onboarding.py",
     "tests/test_consumer_onboarding_cli.py",
     "tests/test_environment_report*.py",
 ]
 requirements = [
+    "openspec/changes/native-harness-verification/specs/native-harness-verification/spec.md",
     "openspec/specs/consumer-onboarding/spec.md",
     "openspec/specs/effective-environment-report/spec.md",
 ]
@@ -67,6 +73,9 @@ kind = "runbook"
 owner = "repository-maintainers"
 status = "active"
 code_paths = [
+    "src/ai_dlc/harness/native_adapters.py",
+    "src/ai_dlc/harness/native_evidence.py",
+    "src/ai_dlc/harness/native_verification.py",
     ".github/workflows/release.yml",
     ".github/workflows/verify.yml",
     "scripts/release_manifest.py",
@@ -76,6 +85,8 @@ code_paths = [
     "src/ai_dlc/environment/version_probes.py",
 ]
 verification_paths = [
+    "tests/test_native_evidence.py",
+    "tests/test_native_verification*.py",
     "tests/test_release_manifest.py",
     "tests/test_release_workflow.py",
     "tests/test_consumer_onboarding.py",
@@ -83,6 +94,7 @@ verification_paths = [
     "tests/test_environment_report*.py",
 ]
 requirements = [
+    "openspec/changes/native-harness-verification/specs/native-harness-verification/spec.md",
     "openspec/specs/release-publication/spec.md",
     "openspec/specs/consumer-onboarding/spec.md",
     "openspec/specs/effective-environment-report/spec.md",
@@ -164,6 +176,9 @@ kind = "reference"
 owner = "repository-maintainers"
 status = "active"
 code_paths = [
+    "src/ai_dlc/harness/native_adapters.py",
+    "src/ai_dlc/harness/native_evidence.py",
+    "src/ai_dlc/harness/native_verification.py",
     "src/ai_dlc/mcp_server.py",
     "src/ai_dlc/cli.py",
     "src/ai_dlc/setup/onboarding.py",
@@ -171,11 +186,14 @@ code_paths = [
     "src/ai_dlc/environment/version_probes.py",
 ]
 verification_paths = [
+    "tests/test_native_evidence.py",
+    "tests/test_native_verification*.py",
     "tests/test_consumer_onboarding.py",
     "tests/test_consumer_onboarding_cli.py",
     "tests/test_environment_report*.py",
 ]
 requirements = [
+    "openspec/changes/native-harness-verification/specs/native-harness-verification/spec.md",
     "openspec/specs/consumer-onboarding/spec.md",
     "openspec/specs/effective-environment-report/spec.md",
 ]
@@ -775,17 +793,23 @@ kind = "reference"
 owner = "repository-maintainers"
 status = "draft"
 code_paths = [
+    "src/ai_dlc/harness/native_adapters.py",
+    "src/ai_dlc/harness/native_evidence.py",
+    "src/ai_dlc/harness/native_verification.py",
     "src/ai_dlc/cli.py",
     "src/ai_dlc/setup/onboarding.py",
     "src/ai_dlc/environment/report*.py",
     "src/ai_dlc/environment/version_probes.py",
 ]
 verification_paths = [
+    "tests/test_native_evidence.py",
+    "tests/test_native_verification*.py",
     "tests/test_consumer_onboarding.py",
     "tests/test_consumer_onboarding_cli.py",
     "tests/test_environment_report*.py",
 ]
 requirements = [
+    "openspec/changes/native-harness-verification/specs/native-harness-verification/spec.md",
     "openspec/specs/consumer-onboarding/spec.md",
     "openspec/specs/effective-environment-report/spec.md",
 ]
@@ -807,6 +831,9 @@ kind = "runbook"
 owner = "repository-maintainers"
 status = "active"
 code_paths = [
+    "src/ai_dlc/harness/native_adapters.py",
+    "src/ai_dlc/harness/native_evidence.py",
+    "src/ai_dlc/harness/native_verification.py",
     "src/ai_dlc/environment/*.py",
     "src/ai_dlc/config.py",
     "src/ai_dlc/harness/agents.py",
@@ -818,6 +845,8 @@ code_paths = [
     "tests/test_team_sources.py",
 ]
 verification_paths = [
+    "tests/test_native_evidence.py",
+    "tests/test_native_verification*.py",
     "tests/test_agents_phases.py",
     "tests/test_rendering.py",
     "tests/test_team_sources.py",
@@ -827,6 +856,7 @@ verification_paths = [
     "tests/test_environment_report*.py",
 ]
 requirements = [
+    "openspec/changes/native-harness-verification/specs/native-harness-verification/spec.md",
     "openspec/specs/native-work-harnesses/spec.md",
     "openspec/specs/team-sources/spec.md",
     "openspec/specs/consumer-onboarding/spec.md",
