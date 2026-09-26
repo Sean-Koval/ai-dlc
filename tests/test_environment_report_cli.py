@@ -14,11 +14,35 @@ from typer.testing import CliRunner
 from ai_dlc.environment.report_io import write_report
 
 
+@pytest.fixture(autouse=True)
+def isolated_report_host(tmp_path, monkeypatch):
+    """Keep real CLI collection inside fixture-owned home and XDG directories."""
+    home = tmp_path / "report-home"
+    home.mkdir()
+    monkeypatch.setattr(Path, "home", lambda: home)
+    locations = {
+        "HOME": home,
+        "USERPROFILE": home,
+        "XDG_CONFIG_HOME": tmp_path / "xdg-config",
+        "XDG_CACHE_HOME": tmp_path / "xdg-cache",
+        "XDG_STATE_HOME": tmp_path / "xdg-state",
+        "APPDATA": tmp_path / "appdata",
+        "LOCALAPPDATA": tmp_path / "local-appdata",
+    }
+    for name, path in locations.items():
+        path.mkdir(exist_ok=True)
+        monkeypatch.setenv(name, str(path))
+    monkeypatch.delenv("EER_REPORT_TEST_TOKEN", raising=False)
+
+
 @pytest.fixture
 def project(tmp_path):
     root = Path(os.path.realpath(tmp_path)) / "project"
     root.mkdir()
-    (root / "ai-dlc.toml").write_text('schema = 4\n[roles]\nscm = "github"\n')
+    (root / "ai-dlc.toml").write_text(
+        'schema = 4\n[roles]\nscm = "github"\n'
+        '[providers.github]\ntoken_env = "EER_REPORT_TEST_TOKEN"\n'
+    )
     return root
 
 
@@ -226,6 +250,32 @@ def test_doctor_rejects_probe_only_and_explicit_overrides_before_effects(argumen
 
     assert result.exit_code == 2
     assert result.stdout == ""
+
+
+@pytest.mark.parametrize(
+    "arguments",
+    [
+        ["doctor", "--effective-environment", "project", "SECRET-extra-path"],
+        ["machine", "doctor", "--effective-environment", "SECRET-extra-path"],
+    ],
+)
+def test_doctor_report_mode_rejects_extra_paths_without_disclosure_or_effects(
+    arguments, monkeypatch
+):
+    """Would fail if Click quoted a report-mode extra path before safe CLI selection."""
+    from ai_dlc import cli
+    from ai_dlc.environment import report as report_service
+
+    monkeypatch.setattr(cli, "MachineManager", _forbid)
+    monkeypatch.setattr(report_service, "collect_report", _forbid)
+
+    result = CliRunner().invoke(cli.app, arguments)
+
+    assert result.exit_code == 2
+    assert result.stdout == ""
+    error = unstyle(result.stderr)
+    assert "SECRET-extra-path" not in error
+    assert "Unexpected extra arguments" in error
 
 
 def test_invalid_compare_input_has_no_json_and_no_raw_diagnostics(tmp_path):

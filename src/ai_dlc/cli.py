@@ -95,6 +95,14 @@ def _explicit_option(context: typer.Context, name: str) -> bool:
     return source is not None and source.name == "COMMANDLINE"
 
 
+def _reject_doctor_extras(context: typer.Context, *, safe: bool) -> None:
+    if not context.args:
+        return
+    if safe:
+        raise typer.BadParameter("Unexpected extra arguments.")
+    context.fail(f"Got unexpected extra argument(s) ({' '.join(context.args)})")
+
+
 def _collect_effective_report(root: Path, *, probe_versions: bool) -> tuple[dict, bytes]:
     from ai_dlc.environment import report as report_service
     from ai_dlc.environment.report_schema import report_bytes
@@ -1329,7 +1337,7 @@ def machine_status(
             write_report(Path(export), result)
 
 
-@machine.command("doctor")
+@machine.command("doctor", context_settings={"allow_extra_args": True})
 def machine_doctor(
     context: typer.Context,
     root: Annotated[Path, typer.Option("--root")] = Path("."),
@@ -1337,6 +1345,7 @@ def machine_doctor(
     effective_environment: Annotated[bool, typer.Option("--effective-environment")] = False,
     probe_versions: Annotated[bool, typer.Option("--probe-versions")] = False,
 ):
+    _reject_doctor_extras(context, safe=effective_environment)
     if probe_versions and not effective_environment:
         raise typer.BadParameter("--probe-versions requires --effective-environment.")
     if effective_environment:
@@ -1351,7 +1360,7 @@ def machine_doctor(
     conclude(result)
 
 
-@app.command()
+@app.command(context_settings={"allow_extra_args": True})
 def doctor(
     context: typer.Context,
     root: Annotated[Path | None, typer.Argument()] = None,
@@ -1361,6 +1370,7 @@ def doctor(
     effective_environment: Annotated[bool, typer.Option("--effective-environment")] = False,
     probe_versions: Annotated[bool, typer.Option("--probe-versions")] = False,
 ):
+    _reject_doctor_extras(context, safe=effective_environment)
     selected_root = root or root_option
     if probe_versions and not effective_environment:
         raise typer.BadParameter("--probe-versions requires --effective-environment.")

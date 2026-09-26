@@ -8,7 +8,13 @@ from pathlib import Path
 import pytest
 from test_environment_report import report
 
-from ai_dlc.environment.report_io import ReportIOError, read_report, write_report
+from ai_dlc.environment.report_io import (
+    EXISTS_ERROR,
+    WRITE_ERROR,
+    ReportIOError,
+    read_report,
+    write_report,
+)
 from ai_dlc.environment.report_schema import MAX_BYTES, report_bytes
 
 
@@ -46,9 +52,11 @@ def test_publication_refuses_existing_symlink_without_touching_target(canonical_
     except OSError as exc:
         pytest.skip(f"symlink creation unavailable: {exc}")
 
-    with pytest.raises(ReportIOError, match="already exists"):
+    with pytest.raises(ReportIOError) as raised:
         write_report(destination, report())
 
+    assert str(raised.value) == (WRITE_ERROR if os.name == "nt" else EXISTS_ERROR)
+    assert "outside" not in str(raised.value)
     assert destination.is_symlink()
     assert outside.read_bytes() == b"authored"
 
