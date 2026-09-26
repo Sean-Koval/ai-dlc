@@ -44,6 +44,280 @@ def test_failed_required_check_is_recorded_and_not_skipped(tmp_path):
     assert json.loads(json.dumps(receipt))["required"] == ["ok", "bad"]
 
 
+def test_explicit_checks_run_only_selected_commands_in_caller_order(tmp_path):
+    from ai_dlc.setup.project import check_project
+
+    root = repository(tmp_path)
+    (root / "ai-dlc.toml").write_text(
+        'schema=4\n[checks]\nrequired=["lint","test"]\n[checks.commands]\n'
+        'lint="echo lint >> check-order"\n'
+        'test="echo test >> check-order"\n'
+        'smoke="echo smoke >> check-order"\n'
+    )
+
+    receipt = check_project(
+        root,
+        target="local",
+        use_mise=False,
+        selected_checks=["smoke", "lint"],
+    )
+
+    assert (root / "check-order").read_text().splitlines() == ["smoke", "lint"]
+    assert [outcome["id"] for outcome in receipt["outcomes"]] == ["smoke", "lint"]
+    assert receipt["required"] == ["lint", "test"]
+
+
+@pytest.mark.parametrize(
+    "selected,required_only,message",
+    [
+        ([], True, "nonempty"),
+        ([" "], True, "blank"),
+        (["unknown"], True, "unknown"),
+        (["ok", "ok"], True, "duplicate"),
+        (["ok"], False, "all-command"),
+    ],
+)
+def test_invalid_explicit_selection_fails_before_runtime_or_commands(
+    tmp_path, monkeypatch, selected, required_only, message
+):
+    from ai_dlc.setup import project
+
+    root = repository(tmp_path)
+    monkeypatch.setattr(
+        project,
+        "runtime_env",
+        lambda *args, **kwargs: pytest.fail("runtime resolution must follow selection validation"),
+    )
+    with pytest.raises(ValueError, match=message):
+        project.check_project(
+            root,
+            use_mise=True,
+            required_only=required_only,
+            selected_checks=selected,
+        )
+    assert not (root / "check-order").exists()
+
+
+@pytest.mark.parametrize(
+    "command,message",
+    [
+        (None, "unknown check ID"),
+        ("", "selected check"),
+        ("  ", "selected check"),
+        (7, "selected check"),
+    ],
+)
+def test_selected_command_must_be_a_nonempty_string(tmp_path, monkeypatch, command, message):
+    import tomli_w
+
+    from ai_dlc.setup import project
+
+    root = repository(tmp_path)
+    commands = {"ok": "exit 0"}
+    if command is not None:
+        commands["optional"] = command
+    config = {"schema": 4, "checks": {"required": ["ok"], "commands": commands}}
+    (root / "ai-dlc.toml").write_text(tomli_w.dumps(config))
+    monkeypatch.setattr(
+        project,
+        "runtime_env",
+        lambda *args, **kwargs: pytest.fail("runtime resolution must follow selection validation"),
+    )
+
+    with pytest.raises(ValueError, match=message):
+        project.check_project(root, use_mise=True, selected_checks=["optional"])
+
+
+def test_explicit_selection_records_timeout_and_stops(tmp_path, monkeypatch):
+    from ai_dlc.setup import project
+
+    root = repository(tmp_path)
+    (root / "ai-dlc.toml").write_text(
+        'schema=4\n[checks]\nrequired=["ok"]\n'
+        '[checks.commands]\nok="exit 0"\nslow="slow"\nafter="after"\n'
+    )
+    calls = []
+
+    def timeout(root, command, **kwargs):
+        calls.append(command)
+        raise subprocess.TimeoutExpired(command, 3600)
+
+    monkeypatch.setattr(project, "run_command", timeout)
+    receipt = project.check_project(root, use_mise=False, selected_checks=["slow", "after"])
+
+    assert calls == ["slow"]
+    assert [(item["id"], item["status"], item["exit_code"]) for item in receipt["outcomes"]] == [
+        ("slow", "cancelled", 124)
+    ]
+
+
+def test_partial_selected_receipt_is_rejected_as_completion_evidence(tmp_path):
+    from ai_dlc.config import load_project, read_toml
+    from ai_dlc.providers.scm import validate_receipt
+    from ai_dlc.setup.project import check_project
+
+    root = repository(tmp_path)
+    receipt = check_project(
+        root,
+        target="github-actions",
+        use_mise=False,
+        selected_checks=["ok"],
+    )
+
+    with pytest.raises(ValueError, match="outcomes must exactly match required checks"):
+        validate_receipt(
+            receipt, receipt["commit"], load_project(root), read_toml(root / ".mise.toml")
+        )
+
+
+def test_selected_complete_required_set_remains_valid_completion_evidence(tmp_path):
+    from ai_dlc.config import load_project, read_toml
+    from ai_dlc.files import run_git
+    from ai_dlc.providers.scm import validate_receipt
+    from ai_dlc.setup.project import check_project
+
+    root = repository(tmp_path)
+    (root / "ai-dlc.toml").write_text(
+        'schema=4\n[checks]\nrequired=["first","second"]\n'
+        '[checks.commands]\nfirst="exit 0"\nsecond="exit 0"\noptional="exit 0"\n'
+    )
+    run_git(root, "add", "ai-dlc.toml")
+    run_git(
+        root,
+        "-c",
+        "user.name=Test",
+        "-c",
+        "user.email=test@example.test",
+        "commit",
+        "-qm",
+        "checks",
+    )
+    receipt = check_project(
+        root,
+        target="github-actions",
+        use_mise=False,
+        selected_checks=["second", "first"],
+    )
+
+    assert validate_receipt(
+        receipt,
+        receipt["commit"],
+        load_project(root),
+        read_toml(root / ".mise.toml"),
+    )
+
+
+def test_omitted_selection_preserves_required_and_all_command_modes(tmp_path):
+    from ai_dlc.setup.project import check_project
+
+    root = repository(tmp_path)
+    (root / "ai-dlc.toml").write_text(
+        'schema=4\n[checks]\nrequired=["ok"]\n[checks.commands]\nok="exit 0"\noptional="exit 0"\n'
+    )
+
+    required = check_project(root, use_mise=False)
+    all_commands = check_project(root, use_mise=False, required_only=False)
+
+    assert [item["id"] for item in required["outcomes"]] == ["ok"]
+    assert [item["id"] for item in all_commands["outcomes"]] == ["ok", "optional"]
+
+
+@pytest.mark.parametrize("command_exit,expected_exit", [(0, 0), (7, 1)])
+def test_cli_explicit_optional_check_uses_selected_outcomes_for_exit_status(
+    tmp_path, monkeypatch, command_exit, expected_exit
+):
+    from typer.testing import CliRunner
+
+    from ai_dlc.cli import app
+    from ai_dlc.setup import project
+
+    root = repository(tmp_path)
+    (root / "ai-dlc.toml").write_text(
+        'schema=4\n[checks]\nrequired=["bad"]\n[checks.commands]\nbad="exit 3"\noptional="exit 0"\n'
+    )
+    monkeypatch.setattr(project, "runtime_env", lambda *args, **kwargs: dict(os.environ))
+    monkeypatch.setattr(
+        project,
+        "run_command",
+        lambda *args, **kwargs: subprocess.CompletedProcess(args, command_exit),
+    )
+    result = CliRunner().invoke(
+        app,
+        [
+            "project",
+            "check",
+            "--root",
+            str(root),
+            "--required",
+            "--check",
+            "optional",
+            "--json",
+        ],
+    )
+
+    assert result.exit_code == expected_exit, result.output
+    assert [item["id"] for item in json.loads(result.stdout)["outcomes"]] == ["optional"]
+
+
+def test_cli_omitted_selection_retains_all_command_exit_behavior(tmp_path, monkeypatch):
+    from typer.testing import CliRunner
+
+    from ai_dlc.cli import app
+    from ai_dlc.setup import project
+
+    root = repository(tmp_path)
+    (root / "ai-dlc.toml").write_text(
+        'schema=4\n[checks]\nrequired=["ok"]\n'
+        '[checks.commands]\nok="required"\noptional="optional"\n'
+    )
+    monkeypatch.setattr(project, "runtime_env", lambda *args, **kwargs: dict(os.environ))
+    monkeypatch.setattr(
+        project,
+        "run_command",
+        lambda root, command, **kwargs: subprocess.CompletedProcess(
+            command, 0 if command == "required" else 7
+        ),
+    )
+
+    result = CliRunner().invoke(
+        app,
+        ["project", "check", "--root", str(root), "--no-required", "--json"],
+    )
+
+    assert result.exit_code == 0, result.output
+    assert [item["status"] for item in json.loads(result.stdout)["outcomes"]] == [
+        "passed",
+        "failed",
+    ]
+
+
+def test_cli_invalid_explicit_selection_writes_no_receipt(tmp_path):
+    from typer.testing import CliRunner
+
+    from ai_dlc.cli import app
+
+    root = repository(tmp_path)
+    receipt = tmp_path / "receipt.json"
+    result = CliRunner().invoke(
+        app,
+        [
+            "project",
+            "check",
+            "--root",
+            str(root),
+            "--check",
+            "unknown",
+            "--receipt",
+            str(receipt),
+        ],
+    )
+
+    assert result.exit_code == 2
+    assert "unknown" in result.stderr
+    assert "Traceback" not in result.stderr
+    assert not receipt.exists()
+
+
 def test_missing_required_command_rejected_before_execution(tmp_path):
     import pytest
 

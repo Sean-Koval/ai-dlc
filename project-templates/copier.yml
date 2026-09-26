@@ -23,6 +23,8 @@ _exclude:
   - "{% if 'scm' not in capabilities %}.github{% endif %}"
   - "{% if not initialize or preset != 'python' %}pyproject.toml{% endif %}"
   - "{% if not initialize or preset != 'python' %}src/main.py{% endif %}"
+  - "{% if not initialize or preset != 'python' %}scripts/check_tests.py{% endif %}"
+  - "{% if not initialize or preset != 'python' %}tests/test_main.py{% endif %}"
   - "{% if not initialize or preset != 'node' %}package.json{% endif %}"
   - "{% if not initialize or preset != 'node' %}src/index.js{% endif %}"
   - "{% if not initialize or preset != 'rust' %}Cargo.toml{% endif %}"

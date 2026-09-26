@@ -109,12 +109,54 @@ def check_definitions(config: dict[str, Any]) -> tuple[list[str], dict[str, str]
     return required, commands
 
 
+def selected_check_ids(
+    required: list[str],
+    commands: dict[str, str],
+    *,
+    required_only: bool,
+    selected_checks: list[str] | None,
+) -> list[str]:
+    """Validate explicit selection before runtime resolution and preserve its order."""
+    if selected_checks is None:
+        return required if required_only else list(commands)
+    if not required_only:
+        raise ValueError("explicit check selection cannot be combined with all-command mode")
+    if not selected_checks:
+        raise ValueError("explicit check selection must be nonempty")
+    if any(not isinstance(name, str) or not name.strip() for name in selected_checks):
+        raise ValueError("explicit check selection contains a blank ID")
+    if len(set(selected_checks)) != len(selected_checks):
+        raise ValueError("explicit check selection contains duplicate IDs")
+    unknown = [name for name in selected_checks if name not in commands]
+    if unknown:
+        raise ValueError("unknown check ID: " + ", ".join(unknown))
+    invalid = [
+        name
+        for name in selected_checks
+        if not isinstance(commands[name], str) or not commands[name].strip()
+    ]
+    if invalid:
+        raise ValueError("missing or invalid command for selected check: " + ", ".join(invalid))
+    return list(selected_checks)
+
+
 def check_project(
-    root: Path, target: str = "local", use_mise: bool = True, required_only: bool = True
+    root: Path,
+    target: str = "local",
+    use_mise: bool = True,
+    required_only: bool = True,
+    *,
+    selected_checks: list[str] | None = None,
 ) -> dict[str, Any]:
     root = root.resolve()
     config = load_project(root)
     required, commands = check_definitions(config)
+    check_ids = selected_check_ids(
+        required,
+        commands,
+        required_only=required_only,
+        selected_checks=selected_checks,
+    )
     # Resolve the runtime before any check so a missing one cannot be reported as a check failure.
     runtime_env(root, use_mise)
     commit = run_git(root, "rev-parse", "HEAD").stdout.strip()
@@ -130,7 +172,7 @@ def check_project(
         "dirty": bool(status),
         "outcomes": [],
     }
-    for name in required if required_only else commands:
+    for name in check_ids:
         start = time.monotonic()
         try:
             result = run_command(root, commands[name], use_mise=use_mise)

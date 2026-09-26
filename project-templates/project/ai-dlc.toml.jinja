@@ -33,16 +33,17 @@ agent-client = {{ agent_clients | tojson }}
 finish = ["specification-current", "pr-merged", "ci-green"]
 
 [checks]
-required = ["generated", "work-records"{% if 'frontend' in capabilities %}, "frontend-smoke"{% endif %}{% if initialize and preset != 'generic' %}, "language-check"{% endif %}{% if 'backend' in capabilities %}, "api-contract"{% if preset == 'python' %}, "api-contract-drift"{% endif %}{% endif %}]
+required = ["generated", "work-records"{% if 'frontend' in capabilities %}, "frontend-smoke"{% endif %}{% if initialize and preset != 'generic' %}, "language-check"{% endif %}{% if initialize and preset == 'python' %}, "application-tests"{% endif %}{% if 'backend' in capabilities %}, "api-contract"{% if preset == 'python' %}, "api-contract-drift"{% endif %}{% endif %}]
 
 [checks.commands]
 generated = "ai-dlc agents render --check"
 work-records = "ai-dlc work validate --all"
 {% if 'frontend' in capabilities %}
-frontend-smoke = "if [ -z \"${BASE_URL:-}\" ]; then echo 'Skipping frontend smoke: BASE_URL is unset'; else PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npx --offline --no-install playwright test --reporter=line; fi"
+frontend-smoke = "if [ -z \"${BASE_URL:-}\" ]; then echo 'Frontend smoke requires BASE_URL for a running app; start the app and set BASE_URL.' >&2; exit 2; fi; PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npx --offline --no-install playwright test --reporter=line"
 {% endif %}
 {% if initialize and preset == 'python' %}
 language-check = "uv run --locked --no-sync python -m compileall -f -q src"
+application-tests = "uv run --locked --no-sync python scripts/check_tests.py"
 {% elif initialize and preset == 'node' %}
 language-check = "node --check src/index.js"
 {% elif initialize and preset == 'rust' %}
