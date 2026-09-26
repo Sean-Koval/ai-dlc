@@ -444,3 +444,22 @@ def test_path_engine_presence_does_not_claim_its_feature_parity(target, environm
     assert any(
         "conditional" in item["reason"] and "PATH" in item["reason"] for item in result["findings"]
     )
+
+
+def test_planner_does_not_read_credential_environment_values(target, environment):
+    adopted(target)
+
+    class MetadataEnvironment(dict):
+        def keys(self):
+            raise AssertionError("do not enumerate credential-bearing environment")
+
+        def __iter__(self):
+            raise AssertionError("do not enumerate credential-bearing environment")
+
+        def __getitem__(self, key):
+            assert key != "PRIVATE_TOKEN"
+            return super().__getitem__(key)
+
+    supplied = MetadataEnvironment({**environment, "PRIVATE_TOKEN": "secret"})
+    result = plan(target, supplied)
+    assert "secret" not in json.dumps(result)

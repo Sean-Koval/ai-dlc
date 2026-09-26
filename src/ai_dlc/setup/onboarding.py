@@ -137,7 +137,13 @@ def plan_onboarding(
     the feature set of a different installed ``ai-dlc`` executable.
     """
     source, agent_clients = _selection(source, ref, profile_id, machine_id, agent_clients, preset)
-    environment = dict(os.environ if environ is None else environ)
+    supplied_environment = os.environ if environ is None else environ
+    # Only routing metadata is needed; never enumerate credential-bearing values.
+    environment = {
+        key: value
+        for key in ("PATH", "SHELL", "HOME", "XDG_CONFIG_HOME", "XDG_CACHE_HOME", "XDG_STATE_HOME")
+        if (value := supplied_environment.get(key)) is not None
+    }
     # An explicitly empty environment must not silently use the process PATH.
     environment.setdefault("PATH", "")
     system, architecture = platform.system(), platform.machine()
