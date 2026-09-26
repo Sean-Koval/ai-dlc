@@ -17,7 +17,7 @@ Implementation authorized by the user on September 26, 2026: “Start implementi
 - [x] 3.1 Test fresh/existing projects, missing/conflicting selections, invalid configuration, unknown shell/client, native Windows unsupported routing and preservation/no effects.
 - [x] 3.2 Exercise a disposable supported Unix consumer journey through one target behavior check; record baseline time/manual steps and keep missing native evidence pending under #53.
 - [x] 3.3 Review README, machine enrollment, work-computer setup, tool map, release limits and affected packaged guidance; record content-bound documentation dispositions and update applicable catalog mappings.
-- [ ] 3.4 Complete specification/work-record and affected-document review, record required content-bound dispositions, strictly validate this change, run the prepared required checks, and resolve actionable review findings.
+- [x] 3.4 Complete specification/work-record and affected-document review, record required content-bound dispositions, strictly validate this change, run the prepared required checks, and resolve actionable review findings.
 
 ## Subsequent delivery gates
 
@@ -64,5 +64,5 @@ Consumes Task 1’s interface. CLI `project onboard` requires `--root`, offers t
 ### Task 3: Real consumer evidence and delivery
 
 - [x] Use a disposable Unix target with isolated personal/XDG state; invoke the actual CLI plan, preview/apply adoption with explicit selections, setup, and a target-owned acceptance command. Observe pass, deliberate behavior failure and restored pass; retain roots, revision, elapsed time/manual command count and limits in existing release verification documentation.
-- [ ] Review actual documentation impact, record content-bound dispositions and mapping changes, strictly validate OpenSpec/work records, run required project checks and independent whole-change review.
+- [x] Review actual documentation impact, record content-bound dispositions and mapping changes, strictly validate OpenSpec/work records, run required project checks and independent whole-change review.
 Delivery requirement: follow the subsequent delivery gates above after implementation verification. Windows/client observations stay unqualified; do not merge or finish #172 as a side effect.

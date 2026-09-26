@@ -59,9 +59,9 @@ tests do not change that status.
 
 ### Observed local consumer journey — September 26, 2026
 
-A clean source checkout at `6b320152541cc1c5a0b49816f4abef89132ee41a`
+A clean source checkout at `39059e984358a8e74156315ff0d2600826ddfc1c`
 ran the actual CLI on macOS 15.3.2 arm64. The disposable target was
-`ai-dlc-onboard-1594mboj/team repository é`, with a separate temporary HOME/XDG
+`ai-dlc-onboard-nx8xxj95/team repository é`, with a separate temporary HOME/XDG
 account. No enrollment or provider/account selection was supplied. The target
 selected only the Antigravity client capability and the generic preset; the
 experiment did not launch Antigravity.
@@ -70,15 +70,17 @@ The fresh plan exited 1 with a missing target-check finding and exactly matched
 the adoption preview arguments. Explicit preview/apply preserved an authored
 `acceptance.py`; render and setup succeeded. After adding that target-owned
 check, the new plan exited 0 while retaining `qualification: not-assessed`.
-File snapshots before and after both plans were identical. The target check
+Management-only checks retained the missing-acceptance finding in both legacy
+shell and equivalent native argument-array forms. File snapshots before and
+after all plans were identical. The target check
 passed, failed with exit 1 after changing its expected behavior, and passed after
 restoration. All three target-required checks (`generated`, `work-records`, and
 `team-acceptance`) then passed against clean fixture commit
-`2c2e0ac8c99bb126d6adc6ba503db49145625549`.
+`92b86689f427bd638e032e00bf436b087c1a0273`.
 
-This scripted local baseline used 16 command invocations, one explicit check
-configuration edit, and a deliberate behavior edit/restoration. First target-check
-success occurred after 10.296 seconds; the entire verification took 13.671
+This scripted local baseline used 18 command invocations, two explicit check
+configuration edits, and a deliberate behavior edit/restoration. First target-check
+success occurred after 9.537 seconds; the entire verification took 11.921
 seconds. These timings exclude source installation and human review, include only
 a trivial fixture, and are not a human setup-time or savings comparison. Exact
 commands, outputs, roots, timing and receipts are retained in the local
