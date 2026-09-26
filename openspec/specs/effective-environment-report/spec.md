@@ -1,5 +1,8 @@
-## ADDED Requirements
+# effective-environment-report Specification
 
+## Purpose
+TBD - created by archiving change effective-environment-report. Update Purpose after archive.
+## Requirements
 ### Requirement: EER-01 Compatible scoped reporting
 Existing machine status and doctor defaults SHALL retain their contracts. Opt-in `machine status --root PATH --export FILE` and doctor `--effective-environment` SHALL produce the same schema-1 safe local projection, distinguishing desired state, observed state and unknowns without network access, provider-health execution or client model sessions. Executable version probes SHALL require explicit `--probe-versions`; default reporting SHALL use known metadata and mark unavailable observations unknown.
 
@@ -59,6 +62,12 @@ Schema-1 export SHALL use the allowlisted fields, canonical JSON identities, ord
 ### Requirement: EER-05 Evidence identity and limits
 Reports SHALL expose configuration and observation identities suitable for binding native evidence, with explicit completeness limitations. A changed client version/edition, platform, engine provenance, selected source/configuration or managed guidance SHALL change the relevant identity and prevent reuse of exact-context evidence. Fixture success SHALL NOT establish live client/platform qualification.
 
+Identity changes apply to represented safe fields. Changes in excluded or unavailable content SHALL NOT be distinguished through secret-derived hashes; incomplete identity SHALL instead prevent exact-context evidence reuse even when two incomplete digests match.
+
+#### Scenario: Different excluded edits cannot be safely identified
+- **WHEN** two modified guidance bodies have no safe observed digest and the same mismatch state
+- **THEN** their observation identities may match but required incompleteness prevents either from establishing parity or reusing exact-context native evidence
+
 #### Scenario: Client upgrades after smoke observation
 - **WHEN** a later report observes a different selected client version
 - **THEN** observation identity changes and previous exact-context native evidence is stale even if the version difference is declared compatible
@@ -66,3 +75,4 @@ Reports SHALL expose configuration and observation identities suitable for bindi
 #### Scenario: Portable identity matches across independent homes
 - **WHEN** two machines have the same allowlisted portable state and different private bindings
 - **THEN** their configuration identities match without exporting private bindings or claiming copied authentication or global client state
+

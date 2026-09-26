@@ -89,6 +89,41 @@ comparison required normalizing macOS's `/var` alias to `/private/var`; no produ
 change was needed. This observation does not establish clean-machine installation,
 Linux execution, Windows desktop setup, or native client recognition.
 
+## Effective environment report boundary
+
+The opt-in status export/compare and offline doctor report are source-only
+additions; historical v0.4.0 assets do not contain these interfaces. Current
+installation metadata does not establish imported engine bytes, source dirty
+state, safe profile/source content identity or native client recognition.
+Reports retain those unknowns. Equality of version 0.4.0, an integrity checksum,
+or incomplete report identities does not qualify equivalent environments.
+
+Fixture verification tests schema, privacy, bounded collection, comparison and
+identity invalidation. It does not qualify real client authentication,
+cross-machine replication or Windows desktop setup. Actual supported-host exports
+require privacy review before they are recorded; the outstanding observation
+work remains [#53](https://github.com/Sean-Koval/ai-dlc/issues/53). Paid comparison
+[#138](https://github.com/Sean-Koval/ai-dlc/issues/138) remains pending.
+
+On September 26, 2026, clean source revision
+`6155c2c9c8a50fd32cf4b0359912a37cad6d9c32` completed a thirteen-command CLI fixture
+journey on macOS using two isolated homes and project paths containing spaces
+and Unicode. Export and both offline doctor modes retained matching identities
+across different dummy credential presence and excluded private commands. Changing
+the declared Python pin changed configuration identity and produced blocking
+drift. Both comparisons correctly exited 1 because required provenance remained
+incomplete; a valid export did not imply equivalent or working native clients.
+
+Existing output was preserved, an unknown report field was rejected, and an extra
+comparison path and extra arguments to both offline doctors were refused without
+echoing their private sentinels. The fixture checked unchanged project/home
+snapshots and installed process/network guards in each CLI process; no forbidden
+attempt occurred. A named pipe at the instruction-file path produced an unknown
+guidance observation without blocking or losing independent observations. All
+thirteen invocations completed in 5.164 seconds on that host. This timing describes the small fixture only, not
+a performance guarantee. These observations cover separate fixture homes on one
+machine, not real teammate machines, Windows execution or authenticated tools.
+
 ## Published v0.4.0 evidence — September 14, 2026
 
 The original release implementation was delivered in

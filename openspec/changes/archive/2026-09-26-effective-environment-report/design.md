@@ -1,8 +1,151 @@
+## Reviewed implementation disposition — September 26, 2026
+
+The user authorized implementation of the specified issues one by one, including
+push and merge. This independent slice follows completed #173. The product goal
+is a useful, private comparison of selected team setup facts, with honest missing
+evidence. It does not add build provenance infrastructure, a native evidence
+runner, a probe plugin framework, or a new environment manager.
+
+Read-only service review found that compound doctor/workspace diagnostics execute
+commands or inspect unrelated personal state. Reuse their narrow local readers,
+not those entry points. Existing profile/source/ownership hashes cover excluded
+content and are not safe export provenance. They remain null with reasons unless
+a narrowly defined safe projection establishes the field. Known pins, selections,
+missing tools and guidance conflicts remain useful even when overall comparison
+is incomplete. Default exports from current installations will normally be
+incomplete because trusted engine/source identity and native client observations
+are unavailable. Do not relax completeness to make these reports exit 0.
+
+Both CLI doctor entry points receive the opt-in mode; the existing MCP doctor
+contract remains unchanged. `--probe-versions` without report/export mode is an
+input error. Explicit doctor `--target` (even local) or `--machine` is incompatible
+with report mode; use parameter provenance or nullable defaults to preserve
+ordinary invocation behavior. Status comparison is also incompatible with
+`--probe-versions`. Compare accepts exactly two explicit files, never local state.
+
+### Closed record details
+
+All nested records reject extra keys and coercion. Use the existing Pydantic
+dependency or equally small strict validation; no configurable schema framework.
+The top-level fields below remain the complete export allowlist. Where a record
+has `reasons`, it is a fixed-key mapping from its nullable fields to closed reason
+codes, rather than freeform messages. Required unavailable observations cannot be
+made optional by an input flag or limitation. Empty successfully inspected sets
+and an unenrolled profile are distinct from failed collection.
+
+- Engine current-process and PATH-selected observations have package_version,
+  installation_kind, source_revision, source_dirty, artifact_sha256, state and
+  reasons. The engine's existing top-level scalar fields mirror current_process
+  exactly. Known source identity needs revision and dirty=false; a release needs
+  an artifact digest. The source-root marker is attribution, not provenance. No
+  Git probes, source-byte hashing or inferred revisions are introduced.
+- Platform has os, architecture, shell_family and reasons. Use normalized fixed
+  enums. Unknown active shell stays unknown; login-shell configuration alone
+  does not prove the invoking shell.
+- Profile and sources have id, commit, content_sha256, state and reasons. Profile
+  state permits not-applicable for absent enrollment. Missing/corrupt source sets
+  carry a required scoped limitation, never an apparently complete empty list.
+- Runtimes have id, required and version. Version retains intended, observed,
+  state and reason. A null intended version is an unconstrained declaration only
+  in an otherwise successfully resolved scope; malformed declarations also carry
+  a required limitation. IDs denote executable observations, not module names.
+- Clients have id, edition, version, configured, rendered, recognized,
+  authenticated and reasons. All selected clients require edition/version and
+  configured/rendered assessment for complete observation; native recognition
+  and authentication remain independent evidence dimensions.
+- Project has engine_constraint, roles, components, client_ids,
+  configuration_sha256, guidance, state and reasons. Roles contain role, provider
+  and component. Components contain id and platform_support; support contains os,
+  architecture and shell_family, each a bounded enum array or null. Today's
+  component contracts have no support matrix, so collection emits null. Explicit
+  synthetic support fixtures test comparison, not live platform qualification.
+- Guidance contains id, kind, expected_sha256, observed_sha256, state, reasons
+  and native_server. Kinds are instruction, skill, provider or native-server.
+  Only native-server entries contain the latter record: alias, provider,
+  transport, recipe_identity and reasons. Unestablished safe recipe identity
+  remains null. An intact ownership checksum does not prove fresh desired output.
+- Auth contains kind (provider/client), id, credential_presence, verification,
+  verified_at, evidence_identity and reasons. Evidence identity, when present,
+  contains configuration_identity and observation_identity. No evidence store is
+  added here: collection leaves verification not-assessed and evidence null.
+- Limitations contain field, reason_code and required; fields follow a bounded
+  logical-field grammar and reasons a closed enum. Completeness is derived from
+  actual validated fields and collection status, not trusted input declarations.
+
+Bounds: identifiers 64 ASCII characters; versions/constraints 64; logical fields
+256; sources 16; roles 5; clients 16; components/runtimes/auth 128; guidance 512;
+limitations 1024; nesting depth 12; serialized input/output 1 MiB. IDs use a
+portable lowercase alphanumeric/dot/underscore/hyphen grammar, no path syntax.
+Unknown IDs aggregate into at most one null identifier-redacted record per
+collection; do not derive a hash or ordinal identity from excluded values.
+Reject duplicate JSON keys, duplicate logical IDs, nonfinite numbers,
+bool-as-integer schema values, contradictory mirrors and inconsistent identities.
+The schema module owns the closed reason/state vocabularies and safe errors.
+
+### Identity, drift and safe observation decisions
+
+The project configuration digest binds its desired safe fields; overall
+configuration identity adds profile/source pins and desired runtime/client
+context without observation state, timestamps, auth or self-reference. The
+observation identity includes that identity and actual engine/platform/runtime,
+client edition/version/configured/rendered and guidance state/digest. Both are
+recomputed on import. Arrays sort by logical ID before canonical UTF-8 JSON.
+
+Profile/source raw content hashes remain unavailable. For guidance, use a narrow
+semantic projection with a fixed reviewed generator contract and only allowed
+IDs/selections when its actual owned content can be checked against desired
+content without executing a renderer or reading unrelated home state. Otherwise
+retain null digests and an unknown reason. Known missing/modified owned guidance
+still yields missing/mismatch and blocking drift, without exporting a digest of
+the edited bytes. Never turn an intact but unverified marker into a match.
+
+EER-05 invalidation concerns represented safe fields. Different excluded or
+unknowable bytes may have the same incomplete identity; such reports are always
+ineligible for exact-context native evidence reuse. This reconciles invalidation
+with EER-03's prohibition on secret-derived hashes.
+
+Compare each known field even when another is unknown. Check each side's own
+missing required runtime, incompatible constraint, dirty source and guidance
+mismatch before comparing sides; matching broken/unknown states cannot pass.
+Unknown precedes equality. Auth differences are informational and do not change
+configuration identity. Equal known platform values need no compatibility guess;
+different values require explicit support by every selected component on both
+sides or remain unknown. Explicit unsupported metadata is blocking on either side.
+Client version differences remain unknown without a registered compatible
+adapter contract; no current hook fixtures supply such a contract.
+
+Version grammar is bounded numeric dotted versions, exact pins and comma-separated
+numeric comparisons using ==, >=, >, <=, <. No wildcard/caret/prerelease guessing.
+Project .mise.toml pins override module defaults; explicit agents.clients client
+version overrides its default, but conflicting explicit declarations are unknown
+with a conflict reason. Unsupported syntax is never echoed. Runtime differences
+are informational only under the same declared constraint satisfied on both sides.
+
+Comparison returns schema_version, configuration_complete, observation_complete
+and findings with the already specified safe fields. Exit 1 follows blocking
+findings or required incompleteness; optional unknowns remain visible. No parity,
+readiness or qualification claim follows digest equality alone. Next actions are
+closed route identifiers, never input-derived commands.
+
+Optional probes use a fixed built-in executable/argv/parser table, no shell or
+configured recipes, sequential execution, stdin disabled, a minimal child
+environment, a five-second deadline and an actual combined 16 KiB capture bound.
+Discard raw output/errors. Explicit permission to invoke a PATH executable is
+not a sandbox against an arbitrary local wrapper; document that trust boundary.
+Export itself initiates no network/client/provider session.
+
+File comparison uses no-follow bounded reads. File export validates fully before
+publishing a new private file atomically and refuses existing destinations and
+unsafe parent traversal. Reuse Windows guarded publication and descriptor-pinned
+POSIX primitives; strengthen only the small required filesystem operation.
+Real host exports requiring privacy review remain separate from fixture
+verification and are not necessary to claim this feature implemented.
+
 ## Existing implementation and gap
 
 `environment/machine.py:status` reads local enrollment, verifies caches and checks credential presence; it discards its root. `doctor` combines this with project readiness and separately performs existing explicit health inspection. `project workspace-check` distinguishes PATH-selected and current-process versions and source alias attribution. Reuse these local collectors behind a shared report projection; do not serialize their raw output because it contains machine paths and potentially private identifiers. Package version alone is insufficient when release and source identify as 0.4.0. No existing canonical contract promises the proposed export or compare interface.
 
-## Proposed bounded CLI
+## Reviewed bounded CLI
 
 - Existing `ai-dlc machine status` remains unchanged.
 - `ai-dlc machine status --root PATH --export FILE` writes the safe schema-1 report; `--export -` emits it to stdout. Optional `--probe-versions` explicitly enables the bounded executable version probes below; by default only already available trusted metadata is read and unavailable observations are unknown. Existing files are refused, avoiding accidental destruction; atomic new-file publication uses existing filesystem protections. Export implies read-only local inspection except the requested output artifact.
@@ -42,4 +185,4 @@ Evidence covers same portable identity on two independent fixture homes, release
 
 ## Documentation and review
 
-Machine enrollment owns how to export/compare; architecture owns collection/projection boundaries; tool map owns command usage; work-computer setup owns independent credentials; release verification owns remaining provenance/qualification gaps. Record content-bound dispositions during implementation, not hypothetical freshness now. The proposed design awaits review and does not itself alter default diagnostics.
+Machine enrollment owns how to export/compare; architecture owns collection/projection boundaries; tool map owns command usage; work-computer setup owns independent credentials; release verification owns remaining provenance/qualification gaps. Record content-bound dispositions during implementation, not hypothetical freshness now. The reviewed disposition above authorizes the bounded implementation under the user’s request; default diagnostics remain unchanged.

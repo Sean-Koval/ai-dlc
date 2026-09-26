@@ -81,6 +81,21 @@ claiming its release-mode bootstrap works.
 "$AI_DLC" project check --root "$WORK_ROOT" --required
 ```
 
+## Compare setup with a teammate
+
+After each teammate selects their own project and enrolls any intended profile,
+use the [environment report workflow](../runbooks/machine-enrollment.md#compare-selected-environments)
+to compare exported setup facts. Default export does not execute tools; optional
+version probes require an explicit flag. Keep credentials, account selection and
+native sign-in independent on each machine. A credential being present says
+nothing about whether the intended account authenticated successfully.
+
+Resolve known selection, runtime or managed-guidance drift through the existing
+setup/enrollment/render previews. A report with unknown provenance is useful for
+those differences but cannot certify the environments match. Matching reports
+also do not prove identical arbitrary check commands, native harness recognition,
+or software behavior; retain the target-owned acceptance checks above.
+
 ## Optional provider configuration
 
 For GitHub delivery with optional upstream Jira outcomes, the explicit provider

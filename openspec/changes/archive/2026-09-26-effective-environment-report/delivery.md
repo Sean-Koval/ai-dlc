@@ -32,4 +32,4 @@ Review existing machine-enrollment runbook, architecture, tool map, work-compute
 
 ## Authoritative scope
 
-[Product direction](../../../docs/product-direction.md), [proposal](proposal.md), [design](design.md), [EER requirements](specs/effective-environment-report/spec.md) and authoritative unchecked [tasks](tasks.md). These planning artifacts do not establish implementation approval, readiness or release qualification.
+[Product direction](../../../../docs/product-direction.md), [proposal](proposal.md), [design](design.md), [EER requirements](specs/effective-environment-report/spec.md) and authoritative unchecked [tasks](tasks.md). These planning artifacts do not establish implementation approval, readiness or release qualification.
