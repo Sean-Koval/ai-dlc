@@ -1,6 +1,6 @@
 ## Why
 
-Two installations can report `0.4.0` while one runs the published release and another contains later source changes. Existing machine status reports enrollment/cache/credential drift but ignores its root; doctor and workspace diagnostics add useful scoped observations without a shareable parity contract. The [product direction](../../../docs/product-direction.md) promises reproducible selected tools and guidance with independent local bindings, not identical private client state.
+Two installations can report `0.4.0` while one runs the published release and another contains later source changes. Existing machine status reports enrollment/cache/credential drift but ignores its root; doctor and workspace diagnostics add useful scoped observations without a shareable parity contract. The [product direction](../../../../docs/product-direction.md) promises reproducible selected tools and guidance with independent local bindings, not identical private client state.
 
 ## What Changes
 
@@ -19,7 +19,7 @@ None. Existing status/readiness/workspace-diagnostic contracts remain unchanged 
 
 ## Impact
 
-Application ownership remains `environment/` and existing setup/harness services; adapters own provider/client observations, and CLI/MCP remain thin. Canonical authorities: [machine enrollment](../../../docs/runbooks/machine-enrollment.md), [architecture](../../../docs/architecture.md), [tool map](../../../docs/workflows/tool-map.md), [work-computer setup](../../../docs/workflows/work-computer-setup.md), and [release verification](../../../docs/release-verification.md). Update their existing explanations and content-bound dispositions at implementation time; do not create a dashboard or second configuration store.
+Application ownership remains `environment/` and existing setup/harness services; adapters own provider/client observations, and CLI/MCP remain thin. Canonical authorities: [machine enrollment](../../../../docs/runbooks/machine-enrollment.md), [architecture](../../../../docs/architecture.md), [tool map](../../../../docs/workflows/tool-map.md), [work-computer setup](../../../../docs/workflows/work-computer-setup.md), and [release verification](../../../../docs/release-verification.md). Update their existing explanations and content-bound dispositions at implementation time; do not create a dashboard or second configuration store.
 
 ## Authorization and review status
 

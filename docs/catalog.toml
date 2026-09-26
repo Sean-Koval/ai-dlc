@@ -27,6 +27,7 @@ verification_paths = [
 ]
 requirements = [
     "openspec/specs/consumer-onboarding/spec.md",
+    "openspec/specs/effective-environment-report/spec.md",
 ]
 
 [[documents]]
@@ -84,6 +85,7 @@ verification_paths = [
 requirements = [
     "openspec/specs/release-publication/spec.md",
     "openspec/specs/consumer-onboarding/spec.md",
+    "openspec/specs/effective-environment-report/spec.md",
 ]
 
 [[documents]]
@@ -175,6 +177,7 @@ verification_paths = [
 ]
 requirements = [
     "openspec/specs/consumer-onboarding/spec.md",
+    "openspec/specs/effective-environment-report/spec.md",
 ]
 
 [[documents]]
@@ -784,6 +787,7 @@ verification_paths = [
 ]
 requirements = [
     "openspec/specs/consumer-onboarding/spec.md",
+    "openspec/specs/effective-environment-report/spec.md",
 ]
 
 [[documents]]
@@ -826,6 +830,7 @@ requirements = [
     "openspec/specs/native-work-harnesses/spec.md",
     "openspec/specs/team-sources/spec.md",
     "openspec/specs/consumer-onboarding/spec.md",
+    "openspec/specs/effective-environment-report/spec.md",
 ]
 
 [[documents]]

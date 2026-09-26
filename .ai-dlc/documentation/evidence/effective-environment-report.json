@@ -2,9 +2,10 @@
   "decisions": [
     {
       "bound": {
-        "catalog:docs/architecture.md": "bd405b9aee506c11aca1afb080d6a619d55c8dc3af46045c371f791c271e546f",
+        "catalog:docs/architecture.md": "aca122ae724b1a54ca1cdf3f1e23f4f0da8fd1445ead12f34383c84a37c6aa1c",
         "docs/architecture.md": "14fe263b514492f3b464b55cb484088f2327a398d05c387b725d5d7dd824f075",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "pyproject.toml": "296acf5ff015bc4aaf17576c4210e8c69988beb35e11507250a45c0dc534e4d5",
         "scripts/check_generated.py": "00e325b0da860ed329f3fbc40a99cc503d9a6b185f98f5627c1d465591681f98",
         "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
@@ -133,7 +134,7 @@
     },
     {
       "bound": {
-        "docs/catalog.toml": "b38a6f8746f651e1a783df4927423316556161913991c53eafdd896f6bc8e103"
+        "docs/catalog.toml": "bf608d5308523aac3f07488386ba1c588cfd7b5688c889097c8d9647b90adf79"
       },
       "outcome": "updated",
       "reason": "Maps report implementation, focused tests and completed requirements to canonical explanations without inventing factual review dates.",
@@ -164,9 +165,10 @@
       "bound": {
         ".github/workflows/release.yml": "c32926d61ee30cd32aa03fa899c74f395decdb152833f572d4e1ade4c28993b5",
         ".github/workflows/verify.yml": "bd6b744ece4d34eb412647042d7eec837d06043e65b2ac0b2e594960de641415",
-        "catalog:docs/release-verification.md": "7bcb9e10b59b0574224ae4864f540b45d0383c4b48ffc11231ccb501132d40f7",
+        "catalog:docs/release-verification.md": "972bf86b6da5f20b3d01762982880533ba0c99b22933aa95273590923721dad0",
         "docs/release-verification.md": "592f4c5267285fcd0d53b3f42ea66a1c7b784bb94f7d9eb15307196a12ac9947",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
         "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
         "src/ai_dlc/cli.py": "f7af54e1e3ed2203e20a8c1b25525e9ee680a6900eed697173e87246ee9fb612",
@@ -193,9 +195,10 @@
     },
     {
       "bound": {
-        "catalog:docs/runbooks/machine-enrollment.md": "2b34d7f50cb19aeca57182567106eb462fb9e886a1ef15e0f01f4dc59ec034bc",
+        "catalog:docs/runbooks/machine-enrollment.md": "3eb62bfe72d71c18fa9a20aeeebbeffa783585f1086bcda7bc78a133a677ef49",
         "docs/runbooks/machine-enrollment.md": "a806a6711676b857ba9684351db0f5faed3b75fd0ad06a3db956d09a535b9d4c",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/native-work-harnesses/spec.md": "09197a91bca7653dd698a1b42e7203c4240e91cd5efa4fe3665f59e778aec909",
         "openspec/specs/team-sources/spec.md": "3dca430922c9b5d8eb7b678b0cf00da813f9be332e76cf59a448bd718f4d4587",
         "profiles/example/ai-dlc-profile.toml": "29b58a995e46b38ac75e5db5756e766e6b130f26e162448fc41fee898e7ff01e",
@@ -238,9 +241,10 @@
     },
     {
       "bound": {
-        "catalog:docs/workflows/tool-map.md": "f3d50d30b04f5376ce5f1af674db84a8d9c0cb44f86bfa8fc5edd518ac9933a6",
+        "catalog:docs/workflows/tool-map.md": "6eeffe51c8780abfbee38760e0cb1ed3d2c7ff6e4914ff9a2d5dbf490531038f",
         "docs/workflows/tool-map.md": "4b57e4f8d14aa92dd1b4e48edcafc7c7f30d01d8741ac4b02876c18986420894",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "src/ai_dlc/cli.py": "f7af54e1e3ed2203e20a8c1b25525e9ee680a6900eed697173e87246ee9fb612",
         "src/ai_dlc/environment/report.py": "aac30e7ca6a8e6b7a499254cdcd9751a6ca7ac8a01228fd1bc195c26d0f0606f",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
@@ -264,9 +268,10 @@
     },
     {
       "bound": {
-        "catalog:docs/workflows/work-computer-setup.md": "3ef394fcb8e2b9507699cad4b49d6d36584dbd40a8f8b225b40bdc7cc968c1b2",
+        "catalog:docs/workflows/work-computer-setup.md": "62d0a76f141100f0e8d2219cf5e7b398c0530796f3a7fa2ae95348450d0bdbb5",
         "docs/workflows/work-computer-setup.md": "3d4fee69db9046cebc961e945808dd395614fcd98c97931454d0b4b91998ae48",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "src/ai_dlc/cli.py": "f7af54e1e3ed2203e20a8c1b25525e9ee680a6900eed697173e87246ee9fb612",
         "src/ai_dlc/environment/report.py": "aac30e7ca6a8e6b7a499254cdcd9751a6ca7ac8a01228fd1bc195c26d0f0606f",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
@@ -289,7 +294,61 @@
     },
     {
       "bound": {
-        "openspec/changes/effective-environment-report/design.md": "d1557da227cb5c1d637103f93b5313e6d6fff9b7c3b7595a5979836554728468"
+        "openspec/changes/archive/2026-09-26-effective-environment-report/delivery.md": "65348639e5e540cb8b2c90a417244951de16639a8503b6e03bc5049086f7ee29"
+      },
+      "outcome": "updated",
+      "reason": "Records the reviewed EER-01 through EER-05 behavior, privacy and incomplete-identity boundary, actual implementation tasks, or promotes the completed contract through the existing archival workflow; native qualification remains separate.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-26-effective-environment-report/delivery.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-26-effective-environment-report/design.md": "d1557da227cb5c1d637103f93b5313e6d6fff9b7c3b7595a5979836554728468"
+      },
+      "outcome": "updated",
+      "reason": "Records the reviewed EER-01 through EER-05 behavior, privacy and incomplete-identity boundary, actual implementation tasks, or promotes the completed contract through the existing archival workflow; native qualification remains separate.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-26-effective-environment-report/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-26-effective-environment-report/proposal.md": "d55e3d78e59d9b5200cf9ef33df1ae41077083c33bf834814a3c5160a9a27046"
+      },
+      "outcome": "updated",
+      "reason": "Records the reviewed EER-01 through EER-05 behavior, privacy and incomplete-identity boundary, actual implementation tasks, or promotes the completed contract through the existing archival workflow; native qualification remains separate.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-26-effective-environment-report/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-26-effective-environment-report/specs/effective-environment-report/spec.md": "3f6c3aabbdc659e84a6ed97effea3e0945bdbb9b37f1c526fb2ba84883dba8d4"
+      },
+      "outcome": "updated",
+      "reason": "Records the reviewed EER-01 through EER-05 behavior, privacy and incomplete-identity boundary, actual implementation tasks, or promotes the completed contract through the existing archival workflow; native qualification remains separate.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-26-effective-environment-report/specs/effective-environment-report/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-26-effective-environment-report/tasks.md": "f45742b9e465394de89a79b40465c3a6426320d4c10df988f8cd572afae4dcb9"
+      },
+      "outcome": "updated",
+      "reason": "Records the reviewed EER-01 through EER-05 behavior, privacy and incomplete-identity boundary, actual implementation tasks, or promotes the completed contract through the existing archival workflow; native qualification remains separate.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-26-effective-environment-report/tasks.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/effective-environment-report/delivery.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Records the reviewed EER-01 through EER-05 behavior, privacy and incomplete-identity boundary, actual implementation tasks, or promotes the completed contract through the existing archival workflow; native qualification remains separate.",
+      "reviewer": "codex",
+      "target": "openspec/changes/effective-environment-report/delivery.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/effective-environment-report/design.md": "missing"
       },
       "outcome": "updated",
       "reason": "Records the reviewed EER-01 through EER-05 behavior, privacy and incomplete-identity boundary, actual implementation tasks, or promotes the completed contract through the existing archival workflow; native qualification remains separate.",
@@ -298,7 +357,16 @@
     },
     {
       "bound": {
-        "openspec/changes/effective-environment-report/specs/effective-environment-report/spec.md": "3f6c3aabbdc659e84a6ed97effea3e0945bdbb9b37f1c526fb2ba84883dba8d4"
+        "openspec/changes/effective-environment-report/proposal.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Records the reviewed EER-01 through EER-05 behavior, privacy and incomplete-identity boundary, actual implementation tasks, or promotes the completed contract through the existing archival workflow; native qualification remains separate.",
+      "reviewer": "codex",
+      "target": "openspec/changes/effective-environment-report/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/effective-environment-report/specs/effective-environment-report/spec.md": "missing"
       },
       "outcome": "updated",
       "reason": "Records the reviewed EER-01 through EER-05 behavior, privacy and incomplete-identity boundary, actual implementation tasks, or promotes the completed contract through the existing archival workflow; native qualification remains separate.",
@@ -307,7 +375,7 @@
     },
     {
       "bound": {
-        "openspec/changes/effective-environment-report/tasks.md": "f45742b9e465394de89a79b40465c3a6426320d4c10df988f8cd572afae4dcb9"
+        "openspec/changes/effective-environment-report/tasks.md": "missing"
       },
       "outcome": "updated",
       "reason": "Records the reviewed EER-01 through EER-05 behavior, privacy and incomplete-identity boundary, actual implementation tasks, or promotes the completed contract through the existing archival workflow; native qualification remains separate.",
