@@ -24,6 +24,16 @@ validation and a standard-library behavior test of their initial output; extend
 that small suite as real behavior is added. Adoption preserves existing authored
 commands and tests instead of selecting a universal test framework for the team.
 
+With an engine supporting portable command records, declare native commands as
+`{ argv = ["python", "scripts/check_tests.py"] }` to pass arguments literally
+without a shell. Existing string commands retain POSIX `sh -c` semantics on every
+platform and require that shell. For an intentionally shell-based Windows check,
+use `{ shell = "powershell", script = "& python scripts/check_tests.py; exit $LASTEXITCODE" }`;
+PowerShell scripts must propagate native exit codes. Setup and verification steps
+accept the same command forms. Checks install nothing and missing executables or
+shells fail visibly. Historical AI-DLC 0.4.0 release assets do not support these
+new records; use a compatible engine before changing an existing project's commands.
+
 Requirements explain outcomes; formal specifications define behavior; tickets
 organize deliverable slices; tasks describe implementation steps. Keep references
 between these artifacts instead of duplicating their contents.

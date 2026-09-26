@@ -2,7 +2,7 @@
 
 ## Why
 
-A teammate cannot use AI-DLC's existing project services natively on Windows merely by receiving a PowerShell installer. Imports depend on Unix modules, write coordination depends on Unix account and descriptor behavior, and every project command runs through `sh`. The product promise in [product direction](../../../docs/product-direction.md) requires the same selected workflow with explicit capability differences, independent local credentials, and preserved authored content.
+A teammate cannot use AI-DLC's existing project services natively on Windows merely by receiving a PowerShell installer. Imports depend on Unix modules, write coordination depends on Unix account and descriptor behavior, and every project command runs through `sh`. The product promise in [product direction](../../../../docs/product-direction.md) requires the same selected workflow with explicit capability differences, independent local credentials, and preserved authored content.
 
 This is proposed implementation scope derived from the September 26, 2026 PM review of main `3d4ffc194458d5d48aa68dc092e92b00fc443af8`. It does not claim Windows has been tested, and it does not authorize implementation or publication as part of this specification task.
 
@@ -34,7 +34,7 @@ Initial platform contract is Windows 11 x64, local NTFS, and inbox Windows Power
 
 Affected implementation owners: `src/ai_dlc/locking.py`, `src/ai_dlc/files.py`, `src/ai_dlc/environment/bootstrap.py`, `src/ai_dlc/setup/project.py`, and direct filesystem callers in `src/ai_dlc/setup/templates.py` and rendering/source services discovered by the bounded call-site audit. CLI/MCP remain thin callers; platform details do not move into entry points.
 
-Canonical audience/ownership: [architecture](../../../docs/architecture.md) owns package boundaries; [framework delivery design](../../../docs/design/framework-delivery.md) owns project command and safety contracts; [release verification](../../../docs/release-verification.md) owns qualification limits; [project workflow template](../../../project-templates/project/docs/development-workflow.md.jinja) owns downstream command guidance. Update those explanations at implementation, retain documented Unix behavior, enroll any justified new durable document in `docs/catalog.toml`, and record content-bound documentation dispositions. This proposal/design/spec/tasks set owns the planned work; no new completion report is proposed.
+Canonical audience/ownership: [architecture](../../../../docs/architecture.md) owns package boundaries; [framework delivery design](../../../../docs/design/framework-delivery.md) owns project command and safety contracts; [release verification](../../../../docs/release-verification.md) owns qualification limits; [project workflow template](../../../../project-templates/project/docs/development-workflow.md.jinja) owns downstream command guidance. Update those explanations at implementation, retain documented Unix behavior, enroll any justified new durable document in `docs/catalog.toml`, and record content-bound documentation dispositions. This proposal/design/spec/tasks set owns the planned work; no new completion report is proposed.
 
 ## Planning review disposition — September 26, 2026
 

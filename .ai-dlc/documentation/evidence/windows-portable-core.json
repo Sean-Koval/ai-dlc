@@ -6,7 +6,7 @@
       },
       "outcome": "updated",
       "reason": "Native bundle operations explicitly refuse before filesystem/network effects; Unix contracts are unchanged. Repository LF checkout rules preserve hash-bound text assets across platforms; no published asset is modified.",
-      "reviewer": "Codex implementation review, 2026-09-26",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
       "target": ".gitattributes"
     },
     {
@@ -15,7 +15,7 @@
       },
       "outcome": "updated",
       "reason": "Reviewed implementation plan, native CI/test coverage or catalog mapping for windows-portable-core; proposed test coverage is distinct from actual platform pass evidence, and unrelated product scope is preserved.",
-      "reviewer": "Codex implementation review, 2026-09-26",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
       "target": ".github/workflows/verify.yml"
     },
     {
@@ -132,7 +132,7 @@
       },
       "outcome": "updated",
       "reason": "Mapped private native storage and explicit command parsing to existing services; distinguishes core behavior from installation/client qualification.",
-      "reviewer": "Codex implementation review, 2026-09-26",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
       "target": "docs/architecture.md"
     },
     {
@@ -141,7 +141,7 @@
       },
       "outcome": "updated",
       "reason": "Reviewed implementation plan, native CI/test coverage or catalog mapping for windows-portable-core; proposed test coverage is distinct from actual platform pass evidence, and unrelated product scope is preserved.",
-      "reviewer": "Codex implementation review, 2026-09-26",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
       "target": "docs/catalog.toml"
     },
     {
@@ -164,14 +164,14 @@
       },
       "outcome": "reviewed-no-change",
       "reason": "Private/shared ownership and native Obsidian qualification remain unchanged; knowledge lock platform dispatch does not publish, synchronize or broaden note scope.",
-      "reviewer": "Codex implementation review, 2026-09-26",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
       "target": "docs/design/local-and-shared-knowledge.md"
     },
     {
       "bound": {
         "catalog:docs/development-workflow.md": "7339f0d6fe7254332a9df3dc71ef255205b458128881e4a5b9033e9234897604",
         "docs/development-workflow.md": "38c71eec3d3a0631a12cf638ea0b680988be107e9c68765a1a9276420c602376",
-        "openspec/specs/portable-development/spec.md": "2366ebc3f8604d8bc05ad753145d72c527aa9fd35991369703ec4264255e073d",
+        "openspec/specs/portable-development/spec.md": "47ad8e0533e59e9ec1bbe884a8cfa392c97d5e2b999c9e29398a86e076f5e596",
         "project-templates/project/ai-dlc.toml.jinja": "8cb37c2c92f7998a2c7cec84c2d293f63b1e80f1a4a4f1f330a7e5b1b92aa0cd",
         "project-templates/project/scripts/check_tests.py": "a3dd2021b7911d2ff688142776b7a43af60f76e052d7164086db2434db60102d",
         "project-templates/project/tests/test_main.py": "4e6ac9def60ea5a6aef9e004c465cc439acac4b33e4f70df332939f0cdfae63d",
@@ -184,7 +184,7 @@
       },
       "outcome": "updated",
       "reason": "Explains three command forms, literal arguments, explicit shells, exit propagation, historical release incompatibility and unchanged finish evidence.",
-      "reviewer": "Codex implementation review, 2026-09-26",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
       "target": "docs/development-workflow.md"
     },
     {
@@ -199,7 +199,7 @@
       },
       "outcome": "updated",
       "reason": "Scopes native source CI separately from the five full-check receipts and pending installer/Windows11/desktop/provider evidence.",
-      "reviewer": "Codex implementation review, 2026-09-26",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
       "target": "docs/release-verification.md"
     },
     {
@@ -230,7 +230,7 @@
       },
       "outcome": "reviewed-no-change",
       "reason": "Core storage/commands do not add native machine bootstrap/enrollment; existing runbook installation scope is unchanged, with Windows setup tracked separately in172.",
-      "reviewer": "Codex implementation review, 2026-09-26",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
       "target": "docs/runbooks/machine-enrollment.md"
     },
     {
@@ -248,7 +248,7 @@
       },
       "outcome": "reviewed-no-change",
       "reason": "No release publication workflow, assets or installer was changed; existing released Unix consumer proof remains valid only for its stated artifacts.",
-      "reviewer": "Codex implementation review, 2026-09-26",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
       "target": "docs/runbooks/release-publication.md"
     },
     {
@@ -282,7 +282,7 @@
       },
       "outcome": "reviewed-no-change",
       "reason": "Retains dated macOS/native observations without manufacturing freshness; Windows document helper tests do not qualify mounted inventory, Obsidian or external clients.",
-      "reviewer": "Codex implementation review, 2026-09-26",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
       "target": "docs/verification/documentation-workflow.md"
     },
     {
@@ -298,17 +298,134 @@
       },
       "outcome": "reviewed-no-change",
       "reason": "Project adoption still uses the same review/apply/check lifecycle; explicit command examples belong in the linked canonical development workflow and native installer remains pending.",
-      "reviewer": "Codex implementation review, 2026-09-26",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
       "target": "docs/workflows/greenfield.md"
     },
     {
       "bound": {
-        "openspec/changes/windows-portable-core/tasks.md": "57edb7e50ad55bd500cc3995a64aec82d753d972a92b25c3b8cafa72d4686a64"
+        "openspec/changes/archive/2026-09-26-windows-portable-core/delivery.md": "1d96121f6e38f034767c3ad6c1db0267c27ec6ff8c581997847ad01d038a395f"
       },
       "outcome": "updated",
-      "reason": "Reviewed implementation plan, native CI/test coverage or catalog mapping for windows-portable-core; proposed test coverage is distinct from actual platform pass evidence, and unrelated product scope is preserved.",
-      "reviewer": "Codex implementation review, 2026-09-26",
+      "reason": "Archived the completed, reviewed Windows core change and promoted its requirements through AI-DLC; preserved issue history, repaired moved links, and retained distinct source CI versus desktop qualification evidence.",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
+      "target": "openspec/changes/archive/2026-09-26-windows-portable-core/delivery.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-26-windows-portable-core/design.md": "76a5e1efe79dfcfc64534e4ec3aa213caea6b76d02da91911a53eebcb5420731"
+      },
+      "outcome": "updated",
+      "reason": "Archived the completed, reviewed Windows core change and promoted its requirements through AI-DLC; preserved issue history, repaired moved links, and retained distinct source CI versus desktop qualification evidence.",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
+      "target": "openspec/changes/archive/2026-09-26-windows-portable-core/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-26-windows-portable-core/proposal.md": "a5b1540c72def2ada44ff225ebcbe407752d7205f5c8bf5767186f4a70a71701"
+      },
+      "outcome": "updated",
+      "reason": "Archived the completed, reviewed Windows core change and promoted its requirements through AI-DLC; preserved issue history, repaired moved links, and retained distinct source CI versus desktop qualification evidence.",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
+      "target": "openspec/changes/archive/2026-09-26-windows-portable-core/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-26-windows-portable-core/specs/portable-development/spec.md": "defc1931e1347295c2bb04840b44bc7986b487b12c6b2cd60d4d28df45a34663"
+      },
+      "outcome": "updated",
+      "reason": "Archived the completed, reviewed Windows core change and promoted its requirements through AI-DLC; preserved issue history, repaired moved links, and retained distinct source CI versus desktop qualification evidence.",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
+      "target": "openspec/changes/archive/2026-09-26-windows-portable-core/specs/portable-development/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-26-windows-portable-core/specs/windows-portable-core/spec.md": "dad2b5053bbfbdfe611ae960ff097d14a8b6ee88b0834dc07f2a031fad0f0d3e"
+      },
+      "outcome": "updated",
+      "reason": "Archived the completed, reviewed Windows core change and promoted its requirements through AI-DLC; preserved issue history, repaired moved links, and retained distinct source CI versus desktop qualification evidence.",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
+      "target": "openspec/changes/archive/2026-09-26-windows-portable-core/specs/windows-portable-core/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-26-windows-portable-core/tasks.md": "57edb7e50ad55bd500cc3995a64aec82d753d972a92b25c3b8cafa72d4686a64"
+      },
+      "outcome": "updated",
+      "reason": "Archived the completed, reviewed Windows core change and promoted its requirements through AI-DLC; preserved issue history, repaired moved links, and retained distinct source CI versus desktop qualification evidence.",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
+      "target": "openspec/changes/archive/2026-09-26-windows-portable-core/tasks.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-portable-core/delivery.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Archived the completed, reviewed Windows core change and promoted its requirements through AI-DLC; preserved issue history, repaired moved links, and retained distinct source CI versus desktop qualification evidence.",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
+      "target": "openspec/changes/windows-portable-core/delivery.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-portable-core/design.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Archived the completed, reviewed Windows core change and promoted its requirements through AI-DLC; preserved issue history, repaired moved links, and retained distinct source CI versus desktop qualification evidence.",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
+      "target": "openspec/changes/windows-portable-core/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-portable-core/proposal.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Archived the completed, reviewed Windows core change and promoted its requirements through AI-DLC; preserved issue history, repaired moved links, and retained distinct source CI versus desktop qualification evidence.",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
+      "target": "openspec/changes/windows-portable-core/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-portable-core/specs/portable-development/spec.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Archived the completed, reviewed Windows core change and promoted its requirements through AI-DLC; preserved issue history, repaired moved links, and retained distinct source CI versus desktop qualification evidence.",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
+      "target": "openspec/changes/windows-portable-core/specs/portable-development/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-portable-core/specs/windows-portable-core/spec.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Archived the completed, reviewed Windows core change and promoted its requirements through AI-DLC; preserved issue history, repaired moved links, and retained distinct source CI versus desktop qualification evidence.",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
+      "target": "openspec/changes/windows-portable-core/specs/windows-portable-core/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-portable-core/tasks.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Archived the completed, reviewed Windows core change and promoted its requirements through AI-DLC; preserved issue history, repaired moved links, and retained distinct source CI versus desktop qualification evidence.",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
       "target": "openspec/changes/windows-portable-core/tasks.md"
+    },
+    {
+      "bound": {
+        "openspec/specs/windows-portable-core/spec.md": "0fc5468428e59e23447002d604a401a3637f2ec7b62e27026968857cabb3c53e"
+      },
+      "outcome": "updated",
+      "reason": "Archived the completed, reviewed Windows core change and promoted its requirements through AI-DLC; preserved issue history, repaired moved links, and retained distinct source CI versus desktop qualification evidence.",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
+      "target": "openspec/specs/windows-portable-core/spec.md"
+    },
+    {
+      "bound": {
+        "project-templates/project/docs/development-workflow.md.jinja": "f93852923b45f50d0fe08308124b6dcb20b7e0a1dbfddfd66db24c562ab4bcec"
+      },
+      "outcome": "updated",
+      "reason": "Added generic literal argv and explicit PowerShell examples, exit propagation and no-install behavior; historical 0.4.0 assets are explicitly incompatible, without altering authored downstream commands.",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
+      "target": "project-templates/project/docs/development-workflow.md.jinja"
     },
     {
       "bound": {
@@ -316,7 +433,7 @@
       },
       "outcome": "updated",
       "reason": "Reviewed implementation plan, native CI/test coverage or catalog mapping for windows-portable-core; proposed test coverage is distinct from actual platform pass evidence, and unrelated product scope is preserved.",
-      "reviewer": "Codex implementation review, 2026-09-26",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
       "target": "tests/test_portable_commands.py"
     },
     {
@@ -325,7 +442,7 @@
       },
       "outcome": "updated",
       "reason": "Reviewed implementation plan, native CI/test coverage or catalog mapping for windows-portable-core; proposed test coverage is distinct from actual platform pass evidence, and unrelated product scope is preserved.",
-      "reviewer": "Codex implementation review, 2026-09-26",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
       "target": "tests/test_portable_imports.py"
     },
     {
@@ -334,7 +451,7 @@
       },
       "outcome": "updated",
       "reason": "Reviewed implementation plan, native CI/test coverage or catalog mapping for windows-portable-core; proposed test coverage is distinct from actual platform pass evidence, and unrelated product scope is preserved.",
-      "reviewer": "Codex implementation review, 2026-09-26",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
       "target": "tests/test_template_recovery.py"
     },
     {
@@ -343,7 +460,7 @@
       },
       "outcome": "updated",
       "reason": "Native bundle operations explicitly refuse before filesystem/network effects; Unix contracts are unchanged. Repository LF checkout rules preserve hash-bound text assets across platforms; no published asset is modified.",
-      "reviewer": "Codex implementation review, 2026-09-26",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
       "target": "tests/test_windows_bundle_refusal.py"
     },
     {
@@ -352,7 +469,7 @@
       },
       "outcome": "updated",
       "reason": "Reviewed implementation plan, native CI/test coverage or catalog mapping for windows-portable-core; proposed test coverage is distinct from actual platform pass evidence, and unrelated product scope is preserved.",
-      "reviewer": "Codex implementation review, 2026-09-26",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
       "target": "tests/test_windows_core.py"
     },
     {
@@ -361,7 +478,7 @@
       },
       "outcome": "updated",
       "reason": "Reviewed implementation plan, native CI/test coverage or catalog mapping for windows-portable-core; proposed test coverage is distinct from actual platform pass evidence, and unrelated product scope is preserved.",
-      "reviewer": "Codex implementation review, 2026-09-26",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
       "target": "tests/test_windows_document_dispatch.py"
     },
     {
@@ -370,7 +487,7 @@
       },
       "outcome": "updated",
       "reason": "Reviewed implementation plan, native CI/test coverage or catalog mapping for windows-portable-core; proposed test coverage is distinct from actual platform pass evidence, and unrelated product scope is preserved.",
-      "reviewer": "Codex implementation review, 2026-09-26",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
       "target": "tests/test_windows_render.py"
     },
     {
@@ -379,7 +496,7 @@
       },
       "outcome": "updated",
       "reason": "Reviewed implementation plan, native CI/test coverage or catalog mapping for windows-portable-core; proposed test coverage is distinct from actual platform pass evidence, and unrelated product scope is preserved.",
-      "reviewer": "Codex implementation review, 2026-09-26",
+      "reviewer": "Codex final implementation and archival review, 2026-09-26",
       "target": "tests/test_windows_storage.py"
     }
   ],
