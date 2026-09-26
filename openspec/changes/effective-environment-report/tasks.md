@@ -38,10 +38,10 @@ Own `src/ai_dlc/environment/report_schema.py`, `src/ai_dlc/environment/report_co
 
 Public interfaces: `finalize_report(payload: dict) -> dict` validates the safe payload and calculates the three digests; `parse_report(raw: bytes) -> dict` enforces byte/depth/JSON/schema/identity limits; `report_bytes(report: dict) -> bytes` returns validated canonical UTF-8 JSON; `completeness(report: dict) -> tuple[bool, bool]` derives configuration and observation coverage. `compare_reports(left: dict, right: dict) -> dict` validates both, produces deterministic safe findings and completeness booleans; `comparison_exit_code(result: dict) -> int` maps blocking/incomplete to 1, otherwise 0. Validation errors use bounded fixed text, never Pydantic raw input diagnostics. The collector will supply the declared record shape and use finalize_report; it must not need to fabricate known provenance. Document closed reason/state/action constants in the module, keeping vocabularies no larger than required scenarios.
 
-- [ ] Write failing fixtures for complete comparison, missing/dirty/equal-version-different-source identity, profile/source/guidance drift, supported/unknown/unsupported platform differences, exact/range runtime constraints, client editions, optional unknowns and auth differences.
-- [ ] Implement the closed schema and pure functions; test duplicate keys/IDs, bool-as-int, unknown fields, invalid versions, oversized/deep inputs, forged/inconsistent identities and safe bounded errors.
-- [ ] Prove identity stability across time/auth/native evidence, configuration changes and observed version changes. Verify private excluded fields are rejected before digest calculation; incomplete matching values never imply parity.
-- [ ] Run task-focused tests plus format/lint/types; self-review and commit. Record interfaces, reason vocabularies, red/green evidence and concerns in the task report.
+- [x] Write failing fixtures for complete comparison, missing/dirty/equal-version-different-source identity, profile/source/guidance drift, supported/unknown/unsupported platform differences, exact/range runtime constraints, client editions, optional unknowns and auth differences.
+- [x] Implement the closed schema and pure functions; test duplicate keys/IDs, bool-as-int, unknown fields, invalid versions, oversized/deep inputs, forged/inconsistent identities and safe bounded errors.
+- [x] Prove identity stability across time/auth/native evidence, configuration changes and observed version changes. Verify private excluded fields are rejected before digest calculation; incomplete matching values never imply parity.
+- [x] Run task-focused tests plus format/lint/types; self-review and commit. Record interfaces, reason vocabularies, red/green evidence and concerns in the task report.
 
 ### Task 2: Read-only local collection and explicit version probes
 
@@ -70,5 +70,6 @@ Validate serialization completely before exclusive atomic private publication, r
 Update existing machine-enrollment runbook, architecture, tool map, work-computer setup, release verification and their catalog mappings. Explain unknowns, unsigned reports, default no-probe behavior, explicit executable trust, scoped identities and unchanged doctor defaults. Include a two-independent-home fixture journey with known useful drift and safe incomplete comparison; do not export real host state without the specified privacy review or claim live qualification. Keep #53 and paid #138 observations pending.
 
 - [ ] Review canonical document impact, record content-bound dispositions and strict specification/work-record validation.
+- [ ] Include applicable new portable report suites in hosted native Windows core CI, retaining its explicit Server/core scope and desktop/client qualification limits.
 - [ ] Run the required project checks in the prepared environment and one independent whole-change review; resolve actionable findings with focused reruns, then fresh final CI.
 - [ ] Complete implementation checklist based on actual evidence and follow the subsequent archive/merge/exact-merge/finish gates above.
