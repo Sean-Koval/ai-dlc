@@ -79,7 +79,7 @@ The specification gate SHALL continue to require a checkout that is exactly the 
 - **THEN** the gate refuses with a dirty-tree reason naming that revision rather than a revision mismatch
 
 #### Scenario: Guidance describes the procedure
-- **WHEN** a person or agent reads canonical or generated delivery guidance
+- **WHEN** a person or agent reads canonical delivery guidance, or generated guidance for the applicable OpenSpec, SCM and tracker selection
 - **THEN** it explains preparing a temporary detached checkout at the merge commit, finishing there and removing it afterwards
 
 #### Scenario: An active change is reported before merge
