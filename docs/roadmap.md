@@ -19,6 +19,14 @@ journal. Delivery runs through reviewed work records, OpenSpec changes, pull
 requests and a gated `ai-dlc work finish`. Release publication from a tag is
 implemented; the outstanding qualification list is in release verification.
 
+Team-flow improvements are tracked in
+[#167](https://github.com/Sean-Koval/ai-dlc/issues/167) (guidance for selected
+capabilities), [#168](https://github.com/Sean-Koval/ai-dlc/issues/168) (concise team
+skill discovery), and [#169](https://github.com/Sean-Koval/ai-dlc/issues/169)
+(focused checks and meaningful starter verification). They refine existing setup
+and check services; actual time, token savings and failures caught still need
+measurement on adopted repositories and in the deferred comparison.
+
 ## Next three increments
 
 The September delivery-path, diagnostics and release increments are complete

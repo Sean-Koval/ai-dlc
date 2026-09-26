@@ -6,6 +6,10 @@ independent operational ownership.
 
 [Back to the workflow map](../development-workflow.md)
 
+New Python starters include separate syntax and standard-library application
+checks. The initial behavior test checks the greeting output; missing, empty or
+entirely skipped suites fail. Extend that small suite as the application grows.
+
 For an HTTP backend, include `--capability backend` in the selected capability list.
 It creates `docs/api/openapi.yaml` with a health endpoint, catalogs the contract,
 and adds `api-contract`. Setup prepares exact pinned validators; subsequent checks

@@ -365,7 +365,7 @@ kind = "reference"
 owner = "repository-maintainers"
 status = "draft"
 code_paths = ["src/ai_dlc/setup/project.py", "src/ai_dlc/cli.py", "project-templates/project/ai-dlc.toml.jinja", "project-templates/project/scripts/check_tests.py", "project-templates/project/tests/test_main.py"]
-verification_paths = ["tests/test_project.py", "tests/test_templates.py"]
+verification_paths = ["tests/test_checks.py", "tests/test_project.py", "tests/test_templates.py"]
 requirements = ["openspec/specs/portable-development/spec.md"]
 
 [[documents]]

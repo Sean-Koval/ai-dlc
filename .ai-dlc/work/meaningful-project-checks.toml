@@ -31,6 +31,7 @@ spec = "openspec/changes/meaningful-project-checks"
 branch = "codex/team-flow-efficiency"
 brief = "docs/product-direction.md"
 tracker = "169"
+plan = "openspec/changes/meaningful-project-checks/tasks.md"
 
 [bindings]
 specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"

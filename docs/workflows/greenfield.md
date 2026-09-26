@@ -60,7 +60,9 @@ shared agent instructions. Initialized language projects contain a minimal
 dependency-free application. First setup creates the language lockfile; later
 setup uses that lock without updating it. Every preset checks generated agent
 files, and initialized language projects also run a real syntax or compiler
-check.
+check. New Python starters additionally run a standard-library test of their
+initial greeting output; missing, empty or entirely skipped suites fail. Extend
+that small suite with acceptance tests for the application's real behavior.
 
 Run the reviewed bootstrap, then:
 
