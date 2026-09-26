@@ -52,9 +52,12 @@ repository setting is inherited:
 # Review the preview, then repeat that exact command with --apply.
 ```
 
-Select `python`, `node`, or `rust` only when that preset is an explicit target
-decision. Existing configured repositories keep their `ai-dlc.toml` choices;
-onboarding reports a conflict when an explicit client or preset disagrees. They
+An explicit `project onboard --preset` selection accepts `generic` or `python`.
+The underlying `project adopt` command also accepts `node` and `rust`; use that
+reviewed preset directly for either target's adoption, then omit preset and client
+from subsequent onboarding plans so the target configuration remains authoritative.
+Existing configured repositories keep their `ai-dlc.toml` choices; onboarding
+reports a conflict when an explicit client or preset disagrees. They
 use their reviewed configuration and `project sync` workflow instead of adoption.
 Enrollment and machine configuration are optional for a self-contained project.
 When selected, source, ref, profile ID, and machine ID must all be explicit; follow

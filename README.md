@@ -114,13 +114,16 @@ selected client capability:
 # Inspect the preview, then repeat that exact command with --apply.
 ```
 
-Use `python`, `node`, or `rust` only when that preset is an explicit target choice.
+An explicit `project onboard --preset` selection accepts `generic` or `python`.
+The underlying `project adopt` command also accepts `node` and `rust`; for one of
+those targets, use that reviewed preset in the adoption command, then let the
+adopted target configuration supply it to subsequent onboarding plans.
 Preserve the repository's existing checks and add at least one required check for
 its own acceptance behavior; the generic management checks do not establish that
 behavior. Then rerun onboarding and follow the available operations in order:
 
 ```sh
-"$AI_DLC" project onboard --root "$WORK_ROOT" --preset generic --agent-client codex
+"$AI_DLC" project onboard --root "$WORK_ROOT"
 "$AI_DLC" project setup --root "$WORK_ROOT"
 "$AI_DLC" agents render --root "$WORK_ROOT"
 # Review the render preview, then repeat with --apply.
@@ -137,10 +140,11 @@ for setup and checks rather than treating their release-mode bootstrap as availa
 Checks bind receipts to the target repository's `HEAD`.
 
 An already configured repository can run `project onboard --root "$WORK_ROOT"`
-without repeating its client selection. Its `ai-dlc.toml` remains authoritative;
-conflicting CLI client or preset choices return a blocked plan. Enrollment is
-optional for a self-contained project. Select it only when the user actually needs
-a portable profile and machine binding, supplying all four values together:
+without repeating its client or preset selection. Its `ai-dlc.toml` remains
+authoritative; conflicting CLI client or preset choices return a blocked plan.
+Enrollment is optional for a self-contained project. Select it only when the user
+actually needs a portable profile and machine binding, supplying all four values
+together:
 
 ```sh
 "$AI_DLC" project onboard --root "$WORK_ROOT" \
