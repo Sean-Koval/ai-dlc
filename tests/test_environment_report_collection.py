@@ -2,8 +2,10 @@
 
 import hashlib
 import json
+import os
 import socket
 import subprocess
+import sys
 import tomllib
 from pathlib import Path
 
@@ -78,17 +80,24 @@ def test_default_collection_is_read_only_and_excludes_private_values(project, mo
     )
     before = {p: p.read_bytes() for p in root.parent.rglob("*") if p.is_file()}
     original_open = Path.open
+    original_descriptor_open = os.open
 
     def checked_open(path, mode="r", *args, **kwargs):
         assert not set(mode) & set("wax+")
         assert ".codex" not in path.parts
         return original_open(path, mode, *args, **kwargs)
 
+    def checked_descriptor_open(path, flags, *args, **kwargs):
+        assert not flags & (os.O_WRONLY | os.O_RDWR | os.O_CREAT | os.O_TRUNC | os.O_APPEND)
+        assert ".codex" not in Path(path).parts
+        return original_descriptor_open(path, flags, *args, **kwargs)
+
     def forbidden(*args, **kwargs):
         raise AssertionError("default collection caused an effect")
 
     with monkeypatch.context() as patch:
         patch.setattr(Path, "open", checked_open)
+        patch.setattr(os, "open", checked_descriptor_open)
         patch.setattr(subprocess, "Popen", forbidden)
         patch.setattr(socket, "socket", forbidden)
         result = collect_report(root, home=home, environ={"PATH": "", "TOKEN": "SECRET-env"})
@@ -460,3 +469,82 @@ def test_skill_failures_only_mark_the_owning_client_unrendered(
     skill = next(g for g in result["project"]["guidance"] if g["id"] == "skill.day-start")
     assert skill["state"] == failure
     assert completeness(result) == (False, False)
+
+
+@pytest.mark.skipif(not hasattr(os, "mkfifo"), reason="POSIX named pipes required")
+@pytest.mark.parametrize(
+    "location,relative,field",
+    [
+        ("project", "ai-dlc.toml", "project"),
+        ("project", ".mise.toml", "runtimes"),
+        ("home", ".config/ai-dlc/enrollment.toml", "profile"),
+        ("project", "AGENTS.md", "project.guidance"),
+        ("project", ".ai-dlc/agent-ownership.json", "project.guidance"),
+        ("project", ".ai-dlc/providers/github.md", "project.guidance"),
+        ("project", ".agents/skills/day-start/SKILL.md", "project.guidance"),
+    ],
+)
+def test_special_metadata_is_refused_without_hanging_collection(project, location, relative, field):
+    root, home = project
+    target = (root if location == "project" else home) / relative
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.unlink(missing_ok=True)
+    os.mkfifo(target)
+    # subprocess.run kills and waits for its child on TimeoutExpired. A blocking
+    # regression fails promptly without leaving a reader or hanging the suite.
+    script = """
+import json, sys
+from pathlib import Path
+from ai_dlc.environment.report import collect_report
+print(json.dumps(collect_report(Path(sys.argv[1]), home=Path(sys.argv[2]), environ={"PATH": ""})))
+"""
+    completed = subprocess.run(
+        [sys.executable, "-c", script, str(root), str(home)],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        timeout=3,
+        check=True,
+    )
+    result = json.loads(completed.stdout)
+    assert any(item["field"] == field for item in result["limitations"])
+    assert result["engine"]["current_process"]["package_version"] is not None
+    assert str(root) not in completed.stdout and str(home) not in completed.stdout
+    if relative == "ai-dlc.toml":
+        assert result["project"]["state"] == "unknown"
+    else:
+        assert result["project"]["roles"] == [
+            {"role": "scm", "provider": "github", "component": "github"}
+        ]
+    if relative == "AGENTS.md":
+        assert (
+            next(g for g in result["project"]["guidance"] if g["id"] == "agents")["state"]
+            == "unknown"
+        )
+    assert completeness(result) == (False, False)
+
+
+def test_regular_metadata_utf8_and_size_bound_are_preserved(tmp_path):
+    from ai_dlc.environment.report import _read
+
+    path = tmp_path / "metadata"
+    for content in (b"", "caf\u00e9\n".encode("utf-8"), b"x" * (1024 * 1024)):
+        path.write_bytes(content)
+        assert _read(path) == content.decode("utf-8")
+    path.write_bytes(b"x" * (1024 * 1024 + 1))
+    with pytest.raises(ValueError, match="exceeds report inspection bound"):
+        _read(path)
+
+
+@pytest.mark.skipif(os.name != "posix", reason="Unprivileged POSIX symlink fixture")
+def test_collection_preserves_project_root_alias_and_regular_config_symlink(project):
+    root, home = project
+    original = collect(project)
+    target = root / "project-settings.toml"
+    (root / "ai-dlc.toml").rename(target)
+    (root / "ai-dlc.toml").symlink_to(target.name)
+    alias = root.parent / "project-alias"
+    alias.symlink_to(root, target_is_directory=True)
+    result = collect_report(alias, home=home, environ={"PATH": ""})
+    assert result["configuration_identity"] == original["configuration_identity"]
+    assert result["observation_identity"] == original["observation_identity"]

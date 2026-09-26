@@ -7,6 +7,7 @@ import json
 import os
 import platform
 import re
+import stat
 import tomllib
 from collections.abc import Mapping
 from datetime import UTC, datetime
@@ -50,9 +51,17 @@ def _identifier(value: Any) -> str | None:
 
 
 def _read(path: Path) -> str:
-    # Avoid locale-dependent metadata interpretation and unbounded authored files.
-    with path.open("rb") as stream:
-        raw = stream.read(1024 * 1024 + 1)
+    # Follow legitimate project aliases, but inspect the opened object before
+    # reading. Nonblocking open prevents a FIFO with no writer from hanging.
+    flags = os.O_RDONLY | getattr(os, "O_NONBLOCK", 0) | getattr(os, "O_BINARY", 0)
+    descriptor = os.open(path, flags)
+    try:
+        if not stat.S_ISREG(os.fstat(descriptor).st_mode):
+            raise ValueError("Local metadata must be a regular file.")
+        with os.fdopen(descriptor, "rb", closefd=False) as stream:
+            raw = stream.read(1024 * 1024 + 1)
+    finally:
+        os.close(descriptor)
     if len(raw) > 1024 * 1024:
         raise ValueError("Local metadata exceeds report inspection bound.")
     return raw.decode("utf-8")
