@@ -234,11 +234,19 @@ overridden. The tracker has no fallback.
 Start team adoption with the repository's existing development commands. Select
 the capabilities and clients it needs, choose shipped skills through
 `agents.skills`, and put acceptance and regression commands in `checks.commands`
-and `checks.required`. Scaffold checks are a starting point: a generated Python
-project's language check compiles source and does not establish correct behavior.
+and `checks.required`. Scaffold checks are a starting point: a new Python project has separate syntax
+and application tests, initially covering its greeting output. Extend or replace
+that narrow behavior test with the project's real acceptance and regression suite.
 Setup and required checks remain useful without external providers; the tracked
 loop below applies when tracker and SCM are configured. Use the small-change path
 below when there is no tracker item or formal specification to deliver.
+
+For edit feedback, run `ai-dlc project check --check CHECK_ID`, repeating `--check`
+for other required or optional commands. Explicit selections run in the requested
+order; unknown or duplicate IDs are refused before execution. Do not combine this
+selection with `--no-required`. A focused receipt still lists every configured
+required check, so missing required outcomes cannot pass the completion gate.
+Use the full required run after target-branch integration before merge.
 
 ## Daily operating loop
 

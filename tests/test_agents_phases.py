@@ -104,7 +104,7 @@ def test_resolve_render_clients_rejects_unknown_client():
 
 def test_shared_guidance_lines_lists_required_checks_and_indexes():
     checks = {"required": ["lint", "ghost"], "commands": {"lint": "ruff check"}}
-    lines = _shared_guidance_lines(checks, "## Providers", "## Bundles")
+    lines = _shared_guidance_lines({"checks": checks}, "## Providers", "## Bundles")
     assert lines[0] == "# Shared project guidance"
     assert "- lint: `ruff check`" in lines
     assert "- ghost: `MISSING COMMAND`" in lines
@@ -115,6 +115,136 @@ def test_shared_guidance_lines_omits_empty_bundle_index():
     lines = _shared_guidance_lines({}, "## Providers", "")
     assert lines[-1] == "## Providers"
     assert "" not in lines[-1:]
+
+
+_SPECIFICATION = "Use specification artifacts for implementation tasks"
+_TRACKER = "Use the selected tracker for priority and status"
+_ARCHIVE = "ai-dlc work archive"
+_MERGE = "Immediately before merge"
+_FINISH = "ai-dlc work finish"
+_RECOVERY = "temporary detached worktree"
+
+
+def _guidance(config: dict) -> str:
+    return "\n".join(_shared_guidance_lines(config, "## Providers", ""))
+
+
+@pytest.mark.parametrize(
+    ("roles", "providers", "present", "absent"),
+    [
+        ({}, {}, (), (_SPECIFICATION, _TRACKER, _ARCHIVE, _MERGE, _FINISH, _RECOVERY)),
+        (
+            {"specs": "openspec"},
+            {},
+            (_SPECIFICATION, _ARCHIVE),
+            (_TRACKER, _MERGE, _FINISH, _RECOVERY, "before merge with"),
+        ),
+        (
+            {"scm": "github"},
+            {},
+            (_MERGE,),
+            (_SPECIFICATION, _TRACKER, _ARCHIVE, _FINISH, _RECOVERY),
+        ),
+        (
+            {"tracker": "issues", "scm": "hub"},
+            {"issues": {"kind": "github-issues"}, "hub": {"type": "github-scm"}},
+            (_TRACKER, _MERGE, _FINISH),
+            (_SPECIFICATION, _ARCHIVE, _RECOVERY),
+        ),
+        (
+            {"specs": "openspec", "scm": "github"},
+            {},
+            (_SPECIFICATION, _ARCHIVE, _MERGE),
+            (_TRACKER, _FINISH, _RECOVERY),
+        ),
+        (
+            {"specs": "custom", "tracker": "issues", "scm": "hub"},
+            {
+                "custom": {"kind": "executable", "component": "openspec"},
+                "issues": {"kind": "linear"},
+                "hub": {"kind": "github", "component": "github"},
+            },
+            (_SPECIFICATION, _TRACKER, _MERGE, _FINISH),
+            (_ARCHIVE, _RECOVERY),
+        ),
+        (
+            {"specs": "spec-alias", "tracker": "tracker-alias", "scm": "scm-alias"},
+            {
+                "spec-alias": {"kind": "openspec", "type": "executable"},
+                "tracker-alias": {"kind": "plane", "type": "custom"},
+                "scm-alias": {"kind": "github-scm", "type": "custom"},
+            },
+            (_SPECIFICATION, _TRACKER, _ARCHIVE, _MERGE, _FINISH, _RECOVERY),
+            (),
+        ),
+        (
+            {"tracker": "custom-tracker", "scm": "custom-scm"},
+            {
+                "custom-tracker": {"kind": "executable", "component": "linear"},
+                "custom-scm": {"kind": "python", "component": "github"},
+            },
+            (_TRACKER,),
+            (_SPECIFICATION, _ARCHIVE, _MERGE, _FINISH, _RECOVERY),
+        ),
+    ],
+)
+def test_shared_guidance_follows_selected_runtime_capabilities(roles, providers, present, absent):
+    """Each capability sentence must follow runtime identity, never component metadata."""
+    body = _guidance({"roles": roles, "providers": providers})
+    for phrase in present:
+        assert phrase in body
+    for phrase in absent:
+        assert phrase not in body
+
+
+@pytest.mark.parametrize("tracker", ["linear", "github-issues", "jira-cloud", "plane"])
+def test_shared_guidance_supports_each_builtin_tracker_with_and_without_github(tracker):
+    tracker_only = _guidance({"roles": {"tracker": tracker}})
+    assert _TRACKER in tracker_only
+    assert all(phrase not in tracker_only for phrase in (_MERGE, _FINISH, _RECOVERY))
+
+    full = _guidance(
+        {
+            "roles": {"specs": "openspec", "tracker": tracker, "scm": "github"},
+            "gates": {"finish": []},
+        }
+    )
+    assert all(
+        phrase in full
+        for phrase in (_SPECIFICATION, _TRACKER, _ARCHIVE, _MERGE, _FINISH, _RECOVERY)
+    )
+
+
+def test_shared_guidance_scopes_knowledge_and_documentation_gate_advice():
+    selected = _guidance(
+        {
+            "roles": {"knowledge": "obsidian", "scm": "github"},
+            "checks": {
+                "required": ["documentation", "test"],
+                "commands": {"documentation": "ai-dlc docs gate", "test": "pytest"},
+            },
+        }
+    )
+    assert "selected knowledge provider" in selected
+    assert "documentation gate reports stale" in selected
+    assert selected.index("- documentation: `ai-dlc docs gate`") < selected.index(
+        "- test: `pytest`"
+    )
+
+    no_documentation_gate = _guidance(
+        {
+            "roles": {"scm": "github"},
+            "checks": {"required": ["test"], "commands": {"test": "pytest"}},
+            "providers": {
+                "profile-only-knowledge": {"kind": "obsidian"},
+                "profile-only-specs": {"kind": "openspec"},
+            },
+        }
+    )
+    assert "selected knowledge provider" not in no_documentation_gate
+    assert "documentation gate reports stale" not in no_documentation_gate
+    assert _SPECIFICATION not in no_documentation_gate
+    assert _ARCHIVE not in no_documentation_gate
 
 
 def test_plan_guidance_files_wraps_agents_and_writes_claude_reference():

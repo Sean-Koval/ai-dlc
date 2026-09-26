@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 
-def test_frontend_scaffold_is_opt_in_node_and_smoke_skips_without_download(tmp_path):
+def test_frontend_scaffold_fails_before_package_tools_without_a_target_url(tmp_path):
     import tomllib
 
     from ai_dlc.setup.templates import adopt
@@ -23,7 +23,24 @@ def test_frontend_scaffold_is_opt_in_node_and_smoke_skips_without_download(tmp_p
         json.loads((root / "package.json").read_text())["devDependencies"]["@playwright/test"]
         == "1.58.2"
     )
-    env = dict(os.environ, PATH="/usr/bin:/bin")
+    marker = tmp_path / "npx-called"
+    fake_bin = tmp_path / "bin"
+    fake_bin.mkdir()
+    npx = fake_bin / "npx"
+    npx.write_text(
+        "#!/bin/sh\n"
+        ': > "$FAKE_NPX_MARKER"\n'
+        'printf "%s" "$*" > "$FAKE_NPX_ARGS"\n'
+        'exit "${FAKE_NPX_EXIT:-0}"\n'
+    )
+    npx.chmod(0o755)
+    arguments = tmp_path / "npx-args"
+    env = dict(
+        os.environ,
+        PATH=f"{fake_bin}:/usr/bin:/bin",
+        FAKE_NPX_MARKER=str(marker),
+        FAKE_NPX_ARGS=str(arguments),
+    )
     env.pop("BASE_URL", None)
     result = subprocess.run(
         config["checks"]["commands"]["frontend-smoke"],
@@ -34,8 +51,39 @@ def test_frontend_scaffold_is_opt_in_node_and_smoke_skips_without_download(tmp_p
         text=True,
         check=False,
     )
-    assert result.returncode == 0 and "BASE_URL is unset" in result.stdout
+    assert result.returncode != 0
+    assert "BASE_URL" in result.stdout + result.stderr
+    assert "running app" in result.stdout + result.stderr
+    assert not marker.exists()
     assert not (root / "node_modules").exists()
+
+    env["BASE_URL"] = "http://127.0.0.1:1"
+    env["FAKE_NPX_EXIT"] = "7"
+    failed = subprocess.run(
+        config["checks"]["commands"]["frontend-smoke"],
+        shell=True,
+        cwd=root,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert failed.returncode == 7
+    assert marker.is_file()
+    assert arguments.read_text() == "--offline --no-install playwright test --reporter=line"
+    marker.unlink()
+    env["FAKE_NPX_EXIT"] = "0"
+    passed = subprocess.run(
+        config["checks"]["commands"]["frontend-smoke"],
+        shell=True,
+        cwd=root,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert passed.returncode == 0
+    assert marker.is_file()
     with pytest.raises(ValueError, match="node preset"):
         adopt(tmp_path / "wrong", "python", True, capabilities=["frontend"])
 
@@ -110,6 +158,19 @@ def test_frontend_capture_and_smoke_against_real_local_page(tmp_path, monkeypatc
     root = tmp_path / "app"
     adopt(root, "node", True, initialize=True, capabilities=capabilities)
     (root / "node_modules").symlink_to(runtime / "node_modules", target_is_directory=True)
+    missing_env = dict(os.environ)
+    missing_env.pop("BASE_URL", None)
+    direct = subprocess.run(
+        ["npx", "--offline", "--no-install", "playwright", "test", "--reporter=line"],
+        cwd=root,
+        env=missing_env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert direct.returncode != 0
+    assert "BASE_URL" in direct.stdout + direct.stderr
+    assert "running app" in direct.stdout + direct.stderr
     (root / "index.html").write_text(
         '<!doctype html><title>Frontend fixture</title><main id="ready">Ready</main>'
     )

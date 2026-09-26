@@ -183,13 +183,19 @@ def project_check(
     root: Path = Path("."),
     target: str = "local",
     required: bool = True,
+    check: Annotated[list[str] | None, typer.Option("--check")] = None,
     json_output: Annotated[bool, typer.Option("--json")] = False,
     receipt: Path | None = None,
 ):
     from ai_dlc.setup.project import RuntimeUnavailable, check_project
 
     try:
-        result = check_project(root, target, required_only=required)
+        result = check_project(
+            root,
+            target,
+            required_only=required,
+            selected_checks=check,
+        )
     except RuntimeUnavailable as exc:
         # No check ran, so no receipt is written and no outcome may read as passing.
         failure = {
@@ -207,14 +213,19 @@ def project_check(
             for step in exc.remedy:
                 typer.echo(f"  - {step}", err=True)
         raise typer.Exit(1) from None
+    except ValueError as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(2) from None
     if receipt:
         receipt.parent.mkdir(parents=True, exist_ok=True)
         receipt.write_text(json.dumps(result, indent=2) + "\n")
     emit(result)
-    passed = {
+    passed = [
         x["id"] for x in result["outcomes"] if x["status"] == "passed" and x["exit_code"] == 0
-    }
-    if not set(result["required"]).issubset(passed):
+    ]
+    selected_failed = check is not None and (len(passed) != len(check) or set(passed) != set(check))
+    required_failed = check is None and not set(result["required"]).issubset(passed)
+    if selected_failed or required_failed:
         raise typer.Exit(1)
 
 

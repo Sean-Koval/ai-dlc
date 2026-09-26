@@ -364,6 +364,9 @@ path = "docs/development-workflow.md"
 kind = "reference"
 owner = "repository-maintainers"
 status = "draft"
+code_paths = ["src/ai_dlc/setup/project.py", "src/ai_dlc/cli.py", "project-templates/project/ai-dlc.toml.jinja", "project-templates/project/scripts/check_tests.py", "project-templates/project/tests/test_main.py"]
+verification_paths = ["tests/test_checks.py", "tests/test_project.py", "tests/test_templates.py"]
+requirements = ["openspec/specs/portable-development/spec.md"]
 
 [[documents]]
 id = "repo-github-ticket-setup"
@@ -709,6 +712,7 @@ status = "draft"
 
 code_paths = [
     "src/ai_dlc/harness/design_capture.py",
+    "project-templates/project/ai-dlc.toml.jinja",
     "project-templates/project/playwright.config.ts",
     "project-templates/project/tests/e2e/*.ts",
 ]
@@ -758,6 +762,8 @@ code_paths = [
     "profiles/example/ai-dlc-profile.toml",
     "tests/test_team_sources.py",
 ]
+verification_paths = ["tests/test_agents_phases.py", "tests/test_rendering.py", "tests/test_team_sources.py", "tests/test_native_harnesses.py"]
+requirements = ["openspec/specs/native-work-harnesses/spec.md", "openspec/specs/team-sources/spec.md"]
 
 [[documents]]
 id = "repo-runbooks-document-workspace-qualification"

@@ -90,6 +90,20 @@ tag to another, reenroll with the new ref. Enroll a second machine with the
 same advertised ref under the selected policy and a different machine ID; its
 local binding remains independent.
 
+## Project guidance follows selected capabilities
+
+Shared and native guidance follows the project's selected provider roles. Local
+projects keep configuration, durable documentation and required checks without
+instructions to use unavailable trackers or finish commands. OpenSpec archive
+instructions require the OpenSpec runtime provider; a custom specification
+provider retains its own linked instructions. Built-in merge/finish guidance
+applies to supported selected SCM/tracker combinations. Removing prose never
+relaxes configured checks or runtime completion gates.
+
+For one repository, start with its existing tools and a small `agents.skills`
+selection. A separate personal profile or team-source repository is useful when
+sharing practices across projects, but is not needed merely to adopt local checks.
+
 ## Team sources
 
 A personal profile can subscribe to reviewed team repositories without installing
@@ -130,8 +144,18 @@ names cannot collide with any shipped or selected bundled skills, other source s
 or authored client skills; even an identical authored file remains unowned.
 Edited owned outputs are also preserved through refusal. Source rules appear in
 AGENTS.md's owned section, and skills also appear in selected client skill files.
-Keep selected content short: the renderer currently includes both rule and skill
-bodies in shared AGENTS.md guidance, as well as writing native skill files.
+Shared guidance indexes each selected team skill by name, source, bounded
+description and links to its complete native skill files. Rules remain inline.
+Read an applicable skill's linked file before using it; file generation alone
+does not establish native discovery or authentication. Codex and Antigravity
+share `.agents/skills`; Claude uses `.claude/skills`. An explicit client render
+indexes that operation's destinations. When no client is rendered, full skill
+bodies remain inline so the selected instructions are still accessible.
+
+An ordinary render upgrades intact generated sections to this index without
+changing source locks or skill bytes. Edited owned sections and authored conflicts
+still refuse. Narrow role/tag subscriptions and `agents.skills` keep selection
+relevant; measured guidance bytes are not evidence of actual model token savings.
 
 The native layout contains `manifest.toml`, `skills/<name>/SKILL.md`,
 `rules/<name>.md`, and optional `mcp/servers.toml` and `hooks/hooks.toml`.

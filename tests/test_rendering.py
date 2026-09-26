@@ -120,6 +120,146 @@ def test_render_preserves_authored_text_and_detects_stale_generated_section(tmp_
     assert render_agents(tmp_path)["clean"] is False
 
 
+def test_local_only_render_keeps_setup_docs_and_checks_without_delivery_claims(tmp_path):
+    """A project with no delivery roles must not advertise a tracker lifecycle."""
+    from ai_dlc.harness.agents import render_agents
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nagent-client=["codex","claude-code","antigravity"]\n'
+        '[checks]\nrequired=["test"]\n[checks.commands]\ntest="pytest -q"\n'
+    )
+    render_agents(tmp_path, apply=True)
+
+    agents = (tmp_path / "AGENTS.md").read_text()
+    assert "active .ai-dlc/work record, if present" in agents
+    assert "Store architecture, design, decisions and runbooks in docs/." in agents
+    assert "- test: `pytest -q`" in agents
+    assert "ai-dlc project check --required" in agents
+    for unavailable in [
+        "specification artifacts",
+        "selected tracker",
+        "ai-dlc work archive",
+        "Immediately before merge",
+        "ai-dlc work finish",
+        "temporary detached worktree",
+    ]:
+        assert unavailable not in agents
+        assert unavailable not in (tmp_path / ".agents/rules/ai-dlc.md").read_text()
+    assert (tmp_path / "CLAUDE.md").read_text() == "@AGENTS.md\n"
+    assert render_agents(tmp_path)["clean"]
+
+
+def test_full_delivery_rerendered_as_local_only_preserves_authored_text_and_clients(tmp_path):
+    """Removing selections narrows only owned prose and remains byte-stable on rerender."""
+    from ai_dlc.harness.agents import render_agents
+
+    config = tmp_path / "ai-dlc.toml"
+    config.write_text(
+        'schema=4\n[roles]\nspecs="openspec"\ntracker="github-issues"\n'
+        'scm="github"\nknowledge="obsidian"\n'
+        'agent-client=["codex","claude-code","antigravity"]\n'
+        '[checks]\nrequired=["documentation","test"]\n'
+        '[checks.commands]\ndocumentation="ai-dlc docs gate"\ntest="pytest -q"\n'
+    )
+    agents_path = tmp_path / "AGENTS.md"
+    agents_path.write_text("# Authored prefix\nKeep before.\n")
+    render_agents(tmp_path, apply=True)
+    full = agents_path.read_text()
+    for applicable in [
+        "specification artifacts",
+        "selected tracker",
+        "ai-dlc work archive",
+        "Immediately before merge",
+        "documentation gate reports stale",
+        "ai-dlc work finish",
+        "temporary detached worktree",
+        "selected knowledge provider",
+    ]:
+        assert applicable in full
+    agents_path.write_text(full + "\n# Authored suffix\nKeep after.\n")
+
+    config.write_text(
+        'schema=4\n[roles]\nagent-client=["codex","claude-code","antigravity"]\n'
+        '[checks]\nrequired=["documentation","test"]\n'
+        '[checks.commands]\ndocumentation="ai-dlc docs gate"\ntest="pytest -q"\n'
+    )
+    render_agents(tmp_path, apply=True)
+    local = agents_path.read_text()
+    assert local.startswith("# Authored prefix\nKeep before.\n")
+    assert local.endswith("# Authored suffix\nKeep after.\n")
+    assert "- documentation: `ai-dlc docs gate`" in local
+    assert "- test: `pytest -q`" in local
+    for unavailable in [
+        "specification artifacts",
+        "selected tracker",
+        "ai-dlc work archive",
+        "Immediately before merge",
+        "documentation gate reports stale",
+        "ai-dlc work finish",
+        "temporary detached worktree",
+        "selected knowledge provider",
+    ]:
+        assert unavailable not in local
+        assert unavailable not in (tmp_path / ".agents/rules/ai-dlc.md").read_text()
+    assert (tmp_path / "CLAUDE.md").read_text() == "@AGENTS.md\n"
+    before = {path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()}
+    assert render_agents(tmp_path, apply=True)["clean"]
+    assert before == {path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()}
+
+
+def test_runtime_kind_not_component_controls_concrete_lifecycle_guidance(tmp_path):
+    """Extension providers may borrow component instructions without built-in lifecycle prose."""
+    from ai_dlc.harness.agents import render_agents
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nspecs="custom-specs"\ntracker="custom-tracker"\n'
+        'scm="custom-scm"\nagent-client=["codex"]\n'
+        '[providers.custom-specs]\nkind="executable"\ncomponent="openspec"\n'
+        '[providers.custom-tracker]\nkind="executable"\ncomponent="linear"\n'
+        '[providers.custom-scm]\nkind="python"\ncomponent="github"\n'
+    )
+    render_agents(tmp_path, apply=True)
+
+    agents = (tmp_path / "AGENTS.md").read_text()
+    assert "specification artifacts" in agents
+    assert "selected tracker" in agents
+    assert ".ai-dlc/providers/openspec.md" in agents
+    assert ".ai-dlc/providers/linear.md" in agents
+    assert ".ai-dlc/providers/github.md" in agents
+    for unsupported in [
+        "ai-dlc work archive",
+        "Immediately before merge",
+        "ai-dlc work finish",
+        "temporary detached worktree",
+    ]:
+        assert unsupported not in agents
+
+
+def test_runtime_aliases_and_kind_precedence_control_rendered_guidance(tmp_path):
+    """Aliases use Registry precedence while explicit components only select linked guidance."""
+    from ai_dlc.harness.agents import render_agents
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nspecs="spec-alias"\ntracker="tracker-alias"\n'
+        'scm="scm-alias"\nagent-client=["codex"]\n'
+        '[providers.spec-alias]\nkind="openspec"\ntype="executable"\ncomponent="openspec"\n'
+        '[providers.tracker-alias]\ntype="plane"\ncomponent="plane"\n'
+        '[providers.scm-alias]\nkind="github-scm"\ntype="python"\ncomponent="github"\n'
+    )
+    render_agents(tmp_path, apply=True)
+
+    agents = (tmp_path / "AGENTS.md").read_text()
+    for applicable in [
+        "specification artifacts",
+        "selected tracker",
+        "ai-dlc work archive",
+        "Immediately before merge",
+        "ai-dlc work finish",
+        "temporary detached worktree",
+    ]:
+        assert applicable in agents
+
+
 def test_edits_inside_managed_section_are_not_overwritten(tmp_path):
     from ai_dlc.harness.agents import render_agents
 

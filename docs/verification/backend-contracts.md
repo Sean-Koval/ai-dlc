@@ -50,3 +50,11 @@ invocation using pinned Playwright 1.58.2 during local qualification. Generated
 project setup installed dependencies and the API validator, skipped browser
 downloads, and reused that cache for smoke. Screenshots establish the observed
 page and dimensions, not untested application interactions.
+
+The check counts and successful missing-URL skip above describe the September 14
+implementation. [Issue #169](https://github.com/Sean-Koval/ai-dlc/issues/169)
+changes generated frontend smoke to fail without `BASE_URL` and adds a separate
+behavioral check to new Python starters. Follow the current
+[frontend procedure](../workflows/design-to-implementation.md#frontend-smoke-and-capture-evidence)
+and the generated project's configured required list; these historical runs do
+not establish the changed checks' results.

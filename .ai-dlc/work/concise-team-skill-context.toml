@@ -1,0 +1,41 @@
+schema = 1
+id = "concise-team-skill-context"
+title = "Load team skill bodies through concise client references"
+scope = "Replace duplicated always-loaded team skill bodies with concise discoverable references for selected clients, preserving inline team rules, complete owned skill files, selection, provenance and recovery."
+requires_spec = true
+spec_reason = "Changes the selected team-source guidance contract and client discovery references."
+acceptance = [
+    "Selected client guidance indexes team skills with safe concise descriptions and correct paths while native skill bodies remain complete.",
+    "Rules remain inline; explicit no-client rendering retains an access-preserving fallback.",
+    "Role/tag selection, collisions, authored content, edited owned files and repeat renders retain existing protections.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "TS-02",
+    "TS-05",
+    "TS-06",
+    "TS-07",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/archive/2026-09-26-concise-team-skill-context"
+branch = "codex/team-flow-efficiency"
+brief = "docs/product-direction.md"
+tracker = "168"
+plan = "openspec/changes/archive/2026-09-26-concise-team-skill-context/tasks.md"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/170"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"

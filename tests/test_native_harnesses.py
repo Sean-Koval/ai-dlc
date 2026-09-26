@@ -1,6 +1,7 @@
 """Native output contracts exercised through the real project renderer."""
 
 import json
+import re
 
 import pytest
 
@@ -59,7 +60,7 @@ def test_antigravity_emits_native_paths_and_transports(tmp_path):
     assert (tmp_path / ".agents/skills/day-start/SKILL.md").is_file()
     rule = (tmp_path / ".agents/rules/ai-dlc.md").read_text()
     assert "Read ai-dlc.toml" in rule
-    assert "ai-dlc work finish" in rule
+    assert "ai-dlc work finish" not in rule
     assert not (tmp_path / ".mcp.json").exists()
     assert not (tmp_path / ".claude").exists()
     assert not (tmp_path / ".codex").exists()
@@ -78,6 +79,43 @@ def test_codex_antigravity_share_one_owned_skill_set(tmp_path):
     before = (tmp_path / ".agents/skills/day-start/SKILL.md").read_bytes()
     assert render_agents(tmp_path, apply=True, client="antigravity")["clean"] is True
     assert (tmp_path / ".agents/skills/day-start/SKILL.md").read_bytes() == before
+
+
+def test_team_skill_links_resolve_from_root_and_antigravity_rule(tmp_path, monkeypatch):
+    """Every concise link must reach the same exact selected source bytes."""
+    from ai_dlc.environment.source_content import SourceItem
+    from ai_dlc.environment.team_sources import SelectedSources
+
+    skill = (
+        "---\nname: team-review\ndescription: Review team code\n---\n"
+        "Use the complete team review checklist.\n"
+    )
+    monkeypatch.setattr(
+        "ai_dlc.harness.agents.enrolled_sources",
+        lambda: SelectedSources(
+            [("team", SourceItem("skill", "team-review", "skill.md", body=skill))],
+            enrolled=True,
+        ),
+    )
+    _native_project(tmp_path, '["claude-code", "codex", "antigravity"]')
+
+    render_agents(tmp_path, apply=True)
+    rule = tmp_path / ".agents/rules/ai-dlc.md"
+    metadata = "---\ndescription: Authored native activation settings\n---\n"
+    rule.write_text(metadata + rule.read_text())
+    render_agents(tmp_path, apply=True)
+
+    assert rule.read_text().startswith(metadata)
+    for guidance in (tmp_path / "AGENTS.md", rule):
+        targets = [
+            target
+            for target in re.findall(r"\]\(<([^>]+)>\)", guidance.read_text())
+            if target.endswith("/team-review/SKILL.md")
+        ]
+        assert len(targets) == 2
+        assert all((guidance.parent / target).read_text() == skill for target in targets)
+    assert "Use the complete team review checklist." not in (tmp_path / "AGENTS.md").read_text()
+    assert "Use the complete team review checklist." not in rule.read_text()
 
 
 def test_antigravity_preserves_authored_servers_and_rejects_edited_owned_entry(tmp_path):

@@ -2,7 +2,9 @@ import asyncio
 import json
 import os
 import re
+import shutil
 import subprocess
+import sys
 import tarfile
 import tomllib
 import zipfile
@@ -914,7 +916,13 @@ def test_initialized_python_check_does_not_dirty_repository(tmp_path):
 
     receipt = check_project(root, use_mise=False)
 
-    assert [item["status"] for item in receipt["outcomes"]] == ["passed", "passed", "passed"]
+    assert [item["id"] for item in receipt["outcomes"]] == [
+        "generated",
+        "work-records",
+        "language-check",
+        "application-tests",
+    ]
+    assert all(item["status"] == "passed" for item in receipt["outcomes"])
     assert receipt["dirty"] is False
     assert git(root, "status", "--porcelain") == ""
 
@@ -1043,7 +1051,18 @@ def test_initialize_starters_and_adoption_preservation(tmp_path, preset, manifes
     config = tomllib.loads((initialized / "ai-dlc.toml").read_text())
     assert (initialized / manifest).exists()
     assert (initialized / source).exists()
-    assert config["checks"]["required"] == ["generated", "work-records", "language-check"]
+    expected = ["generated", "work-records", "language-check"]
+    if preset == "python":
+        expected.append("application-tests")
+        assert (initialized / "scripts/check_tests.py").is_file()
+        assert (initialized / "tests/test_main.py").is_file()
+        assert config["checks"]["commands"]["application-tests"] == (
+            "uv run --locked --no-sync python scripts/check_tests.py"
+        )
+    else:
+        assert not (initialized / "scripts/check_tests.py").exists()
+        assert not (initialized / "tests/test_main.py").exists()
+    assert config["checks"]["required"] == expected
     assert config["checks"]["commands"]["generated"] == "ai-dlc agents render --check"
     existing = tmp_path / ("existing-" + preset)
     existing.mkdir()
@@ -1055,6 +1074,218 @@ def test_initialize_starters_and_adoption_preservation(tmp_path, preset, manifes
         "generated",
         "work-records",
     ]
+    assert not (existing / "scripts/check_tests.py").exists()
+    assert not (existing / "tests/test_main.py").exists()
+
+
+def _run_starter_tests(root: Path) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        [sys.executable, "scripts/check_tests.py"],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+
+def test_initialized_python_application_check_runs_offline_without_dirtying_git(tmp_path):
+    from ai_dlc.files import run_git
+
+    root = tmp_path / "python-starter"
+    adopt(root, "python", apply=True, initialize=True)
+    config = tomllib.loads((root / "ai-dlc.toml").read_text())
+    env = {
+        **os.environ,
+        "PATH": str(Path(sys.executable).parent) + os.pathsep + os.environ["PATH"],
+        "UV_OFFLINE": "1",
+        "UV_PYTHON": sys.executable,
+        "UV_CACHE_DIR": str(tmp_path / "uv-cache"),
+    }
+    prepared = subprocess.run(
+        config["setup"]["steps"][0]["command"],
+        shell=True,
+        cwd=root,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert prepared.returncode == 0, prepared.stdout + prepared.stderr
+    run_git(root, "init", "-q")
+    run_git(root, "add", ".")
+    run_git(
+        root,
+        "-c",
+        "user.name=Test",
+        "-c",
+        "user.email=test@example.test",
+        "commit",
+        "-qm",
+        "fixture",
+    )
+
+    for check_id in ["language-check", "application-tests"]:
+        result = subprocess.run(
+            config["checks"]["commands"][check_id],
+            shell=True,
+            cwd=root,
+            env=env,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stdout + result.stderr
+    assert run_git(root, "status", "--porcelain").stdout == ""
+
+
+def test_python_application_test_catches_syntax_valid_output_regression(tmp_path):
+    root = tmp_path / "python-starter"
+    adopt(root, "python", apply=True, initialize=True)
+    (root / "src/main.py").write_text('print("Goodbye")\n')
+
+    syntax = subprocess.run(
+        [sys.executable, "-m", "compileall", "-f", "-q", "src"],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    behavior = _run_starter_tests(root)
+
+    assert syntax.returncode == 0
+    assert behavior.returncode != 0
+    assert "Hello, world!" in behavior.stdout + behavior.stderr
+
+
+def test_python_test_runner_discovers_an_added_failure(tmp_path):
+    root = tmp_path / "python-starter"
+    adopt(root, "python", apply=True, initialize=True)
+    (root / "tests/test_added.py").write_text(
+        "import unittest\n\n"
+        "class AddedTest(unittest.TestCase):\n"
+        "    def test_added_behavior(self):\n"
+        "        self.fail('added failure')\n"
+    )
+
+    result = _run_starter_tests(root)
+
+    assert result.returncode != 0
+    assert "test_added_behavior" in result.stdout + result.stderr
+
+
+@pytest.mark.parametrize("missing_directory", [False, True])
+def test_python_test_runner_refuses_missing_or_empty_discovery(tmp_path, missing_directory):
+    root = tmp_path / "python-starter"
+    adopt(root, "python", apply=True, initialize=True)
+    if missing_directory:
+        shutil.rmtree(root / "tests")
+    else:
+        (root / "tests/test_main.py").unlink()
+
+    result = _run_starter_tests(root)
+
+    assert result.returncode != 0
+    assert "No tests were discovered" in result.stdout + result.stderr
+
+
+def test_python_test_runner_refuses_an_entirely_skipped_suite(tmp_path):
+    root = tmp_path / "python-starter"
+    adopt(root, "python", apply=True, initialize=True)
+    (root / "tests/test_main.py").write_text(
+        "import unittest\n\n"
+        "class SkippedTest(unittest.TestCase):\n"
+        "    @unittest.skip('fixture')\n"
+        "    def test_skipped(self):\n"
+        "        pass\n"
+    )
+
+    result = _run_starter_tests(root)
+
+    assert result.returncode != 0
+    assert "Every discovered test was skipped" in result.stdout + result.stderr
+
+
+@pytest.mark.parametrize("setup_scope", ["class", "module"])
+def test_python_test_runner_refuses_suite_skipped_during_setup(tmp_path, setup_scope):
+    root = tmp_path / "python-starter"
+    adopt(root, "python", apply=True, initialize=True)
+    if setup_scope == "class":
+        setup = (
+            "class Behavior(unittest.TestCase):\n"
+            "    @classmethod\n"
+            "    def setUpClass(cls):\n"
+            "        raise unittest.SkipTest('fixture')\n\n"
+        )
+    else:
+        setup = (
+            "def setUpModule():\n"
+            "    raise unittest.SkipTest('fixture')\n\n"
+            "class Behavior(unittest.TestCase):\n"
+        )
+    (root / "tests/test_main.py").write_text(
+        "import unittest\n\n"
+        + setup
+        + "    def test_behavior(self):\n"
+        + "        self.fail('must not run')\n"
+    )
+
+    result = _run_starter_tests(root)
+
+    assert result.returncode != 0
+    assert "Every discovered test was skipped" in result.stdout + result.stderr
+
+
+def test_python_test_runner_accepts_passing_test_mixed_with_setup_skip(tmp_path):
+    root = tmp_path / "python-starter"
+    adopt(root, "python", apply=True, initialize=True)
+    (root / "tests/test_main.py").write_text(
+        "import unittest\n\n"
+        "class Passing(unittest.TestCase):\n"
+        "    def test_behavior(self):\n"
+        "        self.assertTrue(True)\n\n"
+        "class SetupSkipped(unittest.TestCase):\n"
+        "    @classmethod\n"
+        "    def setUpClass(cls):\n"
+        "        raise unittest.SkipTest('fixture')\n\n"
+        "    def test_skipped_by_setup(self):\n"
+        "        self.fail('must not run')\n"
+    )
+
+    result = _run_starter_tests(root)
+
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_python_test_runner_accepts_executed_case_with_skipped_subtests(tmp_path):
+    root = tmp_path / "python-starter"
+    adopt(root, "python", apply=True, initialize=True)
+    (root / "tests/test_main.py").write_text(
+        "import unittest\n\n"
+        "class Subtests(unittest.TestCase):\n"
+        "    def test_cases(self):\n"
+        "        for value in (1, 2):\n"
+        "            with self.subTest(value=value):\n"
+        "                self.skipTest('fixture')\n"
+    )
+
+    result = _run_starter_tests(root)
+
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_python_adoption_preserves_authored_tests_without_starter_assets(tmp_path):
+    root = tmp_path / "existing-python"
+    (root / "tests").mkdir(parents=True)
+    authored = root / "tests/test_main.py"
+    authored.write_text("# team-owned test\n")
+    (root / "pyproject.toml").write_text("# team-owned manifest\n")
+
+    result = adopt(root, "python", apply=True, initialize=False)
+
+    assert result["status"] == "applied"
+    assert authored.read_text() == "# team-owned test\n"
+    assert (root / "pyproject.toml").read_text() == "# team-owned manifest\n"
+    assert not (root / "scripts/check_tests.py").exists()
 
 
 def test_generic_requires_generated_check(tmp_path):

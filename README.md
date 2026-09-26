@@ -104,6 +104,21 @@ git commit -m "chore: initialize project"
 ai-dlc project check --required
 ```
 
+During edits, run only the named commands relevant to the change:
+
+```sh
+ai-dlc project check --check generated
+# Repeat --check to select more configured commands, in the requested order.
+ai-dlc project check --check generated --check work-records
+```
+
+A successful focused run is local feedback. It cannot replace missing required
+outcomes in completion evidence. After integrating the target branch, run
+`ai-dlc project check --required` before merge. Teams own the commands and required
+IDs in `ai-dlc.toml`; keep their existing test tools and add behavioral acceptance
+checks. New Python starters include a standard-library test of their initial
+output as well as a syntax check; extend those tests as the application grows.
+
 For an adopted repository, use its existing Git history; run setup and review and
 commit the adoption and setup changes before checking. Choose `generic`, `python`,
 `node`, or `rust`; optional capabilities include `backend` contract checks and

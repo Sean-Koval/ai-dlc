@@ -248,10 +248,12 @@ projects pin `@playwright/test` to 1.58.2. Adoption preserves your package manif
 add that exact development dependency and update its lockfile during setup.
 Run dependency setup with `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1`, then explicitly
 install the browser with `npx --no-install playwright install chromium`. Checks
-never install packages or browsers. The required frontend-smoke check exits
-successfully with a skip message until `BASE_URL` names your running app; with
-that URL it visits the root, checks a nonempty title and records a screenshot
-under `.ai-dlc/local/design/smoke/`. A skipped check does not verify the app.
+never install packages or browsers. The required frontend-smoke check fails
+when `BASE_URL` is missing or empty. Start the app and set that URL before running
+`ai-dlc project check --check frontend-smoke`. The check visits the root, requires
+a nonempty title and records a screenshot under `.ai-dlc/local/design/smoke/`.
+Direct execution of the generated Playwright smoke also requires the URL. A
+missing app or browser dependency remains a failure, not successful verification.
 
 Run `ai-dlc design capture --url http://localhost:3000 --viewport 1280x800
 --viewport 390x844 --state ready=#ready` from the project after browser setup.

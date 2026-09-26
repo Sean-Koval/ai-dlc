@@ -96,7 +96,7 @@ knowledge append`.
 | Readiness and context | `ai-dlc doctor`, `ai-dlc next`, `ai-dlc context` | Checks the selected environment; `next` and `context --brief` show local next actions without consulting the tracker |
 | Project creation | `ai-dlc project init`, `ai-dlc project adopt` | Initializes a project or previews/applies conflict-safe adoption |
 | Project maintenance | `ai-dlc project sync`, `ai-dlc project rebind` | Performs staged Copier updates or previews/applies reviewed provider rebinding, including reviewed provider connection rebinding |
-| Project execution | `ai-dlc project setup`, `ai-dlc project check --required` | Runs declared setup and checks and emits verification receipts |
+| Project execution | `ai-dlc project setup`, `ai-dlc project check --check ID`, `ai-dlc project check --required` | Runs selected edit checks or full required verification and emits receipts that retain every required ID |
 | Agent configuration | `ai-dlc agents render` | Previews, applies, or verifies owned project/personal client configuration |
 | Local work drafting | `ai-dlc work new WORK_ID [--from-issue REF]` | Creates an unreviewed record from explicit fields or a configured tracker read; does not publish or initialize mutation state |
 | Work lifecycle | `ai-dlc work publish`, `ai-dlc work start`, `ai-dlc work pr`, `ai-dlc work finish` | Reconciles tracker state, binds work to a branch, and enforces completion gates |
