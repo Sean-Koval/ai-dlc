@@ -111,6 +111,22 @@ def quote_ps(path: Path | str) -> str:
     return "'" + str(path).replace("'", "''") + "'"
 
 
+def native_git(discovered: Path) -> Path:
+    """Keep the installed Git, selecting its command-only directory when needed."""
+    forbidden = {
+        name + extension
+        for name in ("sh", "bash", "python", "python3", "node", "uv", "mise")
+        for extension in ("", ".exe", ".com", ".cmd", ".bat")
+    }
+    candidates = [discovered, *(parent / "cmd/git.exe" for parent in discovered.parents[:3])]
+    for candidate in candidates:
+        if candidate.is_file() and not any(
+            entry.name.casefold() in forbidden for entry in candidate.parent.iterdir()
+        ):
+            return candidate
+    raise ValueError("No command-only Git directory is available in the discovered installation")
+
+
 def controlled_environment(workspace: Path, git: Path, system: Path) -> dict[str, str]:
     """Pass no tokens, account configuration, source imports, or preinstalled runtimes."""
     powershell = system / "System32/WindowsPowerShell/v1.0"
@@ -538,7 +554,7 @@ def verify(artifacts: Path, workspace: Path, evidence: Path) -> dict:
         workspace.mkdir(parents=True)
         git_value = shutil.which("git.exe")
         require(git_value is not None, "Git prerequisite is unavailable")
-        git = Path(git_value or "")
+        git = native_git(Path(git_value or ""))
         system = Path(os.environ["SystemRoot"])
         powershell = system / "System32/WindowsPowerShell/v1.0/powershell.exe"
         require(powershell.is_file(), "inbox Windows PowerShell is unavailable")

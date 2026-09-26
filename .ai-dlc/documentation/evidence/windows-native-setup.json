@@ -40,7 +40,7 @@
         "scripts/qualify_framework.py": "01dd9e6acbe14e740f068662aa539e9a7ed0ba57ab97e9457e0a05d968a25fb6",
         "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
         "scripts/run_skill_evaluation.py": "46a97694bae155b2418d172971480e031f510acc864b9d91fa546f98c754729f",
-        "scripts/verify_windows_consumer.py": "68b134fb4fc023171a4c90f869830b6dad8c907c11b9199b69becea862505f60",
+        "scripts/verify_windows_consumer.py": "7bf0c78bec60ddcd40a1251ea670b658744cc3d4e7da90f4283e9b7bb12371ff",
         "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
         "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
         "src/ai_dlc/_windows_storage/__init__.py": "5715def899453f15265e13d52e5b518844cc9d057421cfa5279172d799d5f506",
@@ -204,18 +204,18 @@
     {
       "bound": {
         ".github/workflows/release.yml": "54077783bb2738431d7ee8f879c0481b679283df631e9a0a53a8f8c6ba19ee60",
-        ".github/workflows/verify.yml": "2776186ada35d591e32fa25943c965f70590a9e4c3c416efcccc97116f9a1bf9",
+        ".github/workflows/verify.yml": "f7d12057e8c600cb34d0818c97e7747b4e5bd40bf79773346605d79f6536e27f",
         "catalog:docs/release-verification.md": "6d7d9665236428f22d18f07fa4bb943f775781287d4325e443b8709b3ae166fb",
         "docs/release-verification.md": "5f22b26febf2b99b8de3f08602cc405590db1eaad3705af0e8b18680b5316d22",
         "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
         "scripts/check_tests.py": "b7d10db0780aa851d8ba810796202e638abd79395cbf41071ac2114bb1bab920",
         "scripts/prepare_release_assets.py": "f54a08057f0a5271dea8165978b8478b9d25638d2c203277d7b1017856f330b3",
         "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
-        "scripts/verify_windows_consumer.py": "68b134fb4fc023171a4c90f869830b6dad8c907c11b9199b69becea862505f60",
+        "scripts/verify_windows_consumer.py": "7bf0c78bec60ddcd40a1251ea670b658744cc3d4e7da90f4283e9b7bb12371ff",
         "tests/test_native_repository_checks.py": "3f05484a45edbe07d853548f4207013c3c715341cae237c44407349204851393",
         "tests/test_release_manifest.py": "45efed1c504dcb301ccc72bdedfc291dc779721c2f17c1be5094c1445e0d9920",
         "tests/test_release_workflow.py": "38a3cb143d0247ce748267fc72393dd812f7a8b463f21f92c2604983035026e4",
-        "tests/test_windows_consumer.py": "26a1e03fac1048de9f676f03ddc69d896758ea26acc32ce79a7c65e56c21daa9"
+        "tests/test_windows_consumer.py": "83b25731b9b6d65421f47ee4efdb9eaf41733847a41db187dd4d9ad834c979cb"
       },
       "outcome": "updated",
       "reason": "Records the actual121-pass native checkpoint and failing documentation gate; distinguishes proposed full Windows source/consumer checks from pending actual results and Windows11 desktop qualification.",
@@ -272,7 +272,7 @@
         "scripts/bootstrap.sh": "258849a164d84198a1606771d734a8b4d4e59dca882438acb78201561561ce5c",
         "scripts/prepare_release_assets.py": "f54a08057f0a5271dea8165978b8478b9d25638d2c203277d7b1017856f330b3",
         "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
-        "scripts/verify_windows_consumer.py": "68b134fb4fc023171a4c90f869830b6dad8c907c11b9199b69becea862505f60",
+        "scripts/verify_windows_consumer.py": "7bf0c78bec60ddcd40a1251ea670b658744cc3d4e7da90f4283e9b7bb12371ff",
         "src/ai_dlc/setup/templates.py": "1fc9173daa6fe71eebf00eda0f4e2b7263c65f694d3b227dee5421240e0eca62",
         "tests/test_bootstrap.py": "f86a298356da2ccae4e3a84f01bcead4dc87a5e3c64ce214f9418062469551cb",
         "tests/test_release_manifest.py": "45efed1c504dcb301ccc72bdedfc291dc779721c2f17c1be5094c1445e0d9920",
@@ -374,6 +374,16 @@
       "reason": "Provider responsibilities, CLI/MCP exposure and authentication ownership are unchanged; machine-enrollment procedure owns the added native provisioning limits.",
       "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
       "target": "docs/workflows/tool-map.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/work-computer-setup.md": "c45a5bf42c0e28d94170ecf032af3fb0e71a83296e2e29551fa2b06f4b45ec91",
+        "docs/workflows/work-computer-setup.md": "fb2caaa3c0278cb96cf4fc31dbb91115f29bf8375e0a1813971de399c1e0b86a"
+      },
+      "outcome": "updated",
+      "reason": "Routes source setup by native OS and links canonical qualification limits so a Windows teammate is not directed to a POSIX-only command.",
+      "reviewer": "Codex implementation review, 2026-09-26; desktop qualification pending",
+      "target": "docs/workflows/work-computer-setup.md"
     },
     {
       "bound": {

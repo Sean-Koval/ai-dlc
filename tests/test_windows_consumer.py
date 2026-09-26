@@ -97,6 +97,33 @@ def test_consumer_rejects_artifact_drift_before_bootstrap(artifacts, fault):
         driver().validate_artifacts(artifacts)
 
 
+@pytest.mark.parametrize("layout", ["mingw64/bin", "bin", "cmd"])
+def test_native_git_selects_existing_command_only_directory(tmp_path, layout):
+    installation = tmp_path / "Git installation"
+    selected = installation / layout / "git.exe"
+    selected.parent.mkdir(parents=True)
+    selected.write_bytes(b"existing git")
+    command = installation / "cmd/git.exe"
+    command.parent.mkdir(exist_ok=True)
+    command.write_bytes(b"existing command git")
+    if layout != "cmd":
+        (selected.parent / "sh.exe").write_bytes(b"shell")
+    assert driver().native_git(selected) == command
+    assert command.read_bytes() == b"existing command git"
+
+
+@pytest.mark.parametrize(
+    "tool", ["SH.EXE", "bash.exe", "python.exe", "node.cmd", "uv.exe", "mise.exe"]
+)
+def test_native_git_refuses_runtime_or_shell_directory_without_safe_fallback(tmp_path, tool):
+    selected = tmp_path / "Git/cmd/git.exe"
+    selected.parent.mkdir(parents=True)
+    selected.write_bytes(b"git")
+    (selected.parent / tool).write_bytes(b"forbidden tool")
+    with pytest.raises(ValueError, match="command-only Git"):
+        driver().native_git(selected)
+
+
 def test_consumer_child_environment_excludes_credentials_and_existing_runtimes(
     tmp_path, monkeypatch
 ):
