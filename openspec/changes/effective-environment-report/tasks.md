@@ -20,7 +20,7 @@ This change starts from #173's completed merge. The reviewed disposition in
 - [x] 3.2 Verify no leaks using sentinel secrets/private paths in every input and error channel, including digest inputs; prove no provider probes, remote fetches or native sessions run.
 - [x] 3.3 Verify repeated export identity stability and native-evidence invalidation boundary; document missing real cross-machine evidence under #53 without claiming fixture qualification.
 - [x] 3.4 Review machine enrollment, architecture, tool map, work-computer setup and release verification; record content-bound dispositions and applicable catalog mapping updates.
-- [ ] 3.5 Complete specification/work-record and affected-document review, record required content-bound dispositions, strictly validate this change, run the prepared required checks, and resolve actionable review findings.
+- [x] 3.5 Complete specification/work-record and affected-document review, record required content-bound dispositions, strictly validate this change, run the prepared required checks, and resolve actionable review findings.
 
 ## Subsequent delivery gates
 
@@ -71,5 +71,8 @@ Update existing machine-enrollment runbook, architecture, tool map, work-compute
 
 - [x] Review canonical document impact, record content-bound dispositions and strict specification/work-record validation.
 - [x] Include applicable new portable report suites in hosted native Windows core CI, retaining its explicit Server/core scope and desktop/client qualification limits.
-- [ ] Run the required project checks in the prepared environment and one independent whole-change review; resolve actionable findings with focused reruns, then fresh final CI.
-- [ ] Complete implementation checklist based on actual evidence and follow the subsequent archive/merge/exact-merge/finish gates above.
+- [x] Run the required project checks in the prepared environment and one independent whole-change review; resolve actionable findings with focused reruns.
+
+All implementation checkboxes above record performed work. Fresh final CI, archival, merge and exact-merge finish remain mandatory subsequent delivery gates described above; completing this checklist does not claim they have already occurred.
+
+Verification: all eight local required checks passed on clean `8c8c805`, including 3,156 tests and 40 platform-scoped skips. The independent whole-change review found one special-file collector hang; its isolated fix passed 154 report tests and scoped format/lint/types, then fresh scoped review. After integrating that fix, the thirteen-command real CLI fixture passed on clean `6155c2c`. Final PR and exact-merge CI must validate the complete delivered revision again.

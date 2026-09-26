@@ -106,7 +106,7 @@ work remains [#53](https://github.com/Sean-Koval/ai-dlc/issues/53). Paid compari
 [#138](https://github.com/Sean-Koval/ai-dlc/issues/138) remains pending.
 
 On September 26, 2026, clean source revision
-`ac46730af0cd42bf14bb851119fdcbf325893885` completed a twelve-command CLI fixture
+`6155c2c9c8a50fd32cf4b0359912a37cad6d9c32` completed a thirteen-command CLI fixture
 journey on macOS using two isolated homes and project paths containing spaces
 and Unicode. Export and both offline doctor modes retained matching identities
 across different dummy credential presence and excluded private commands. Changing
@@ -117,8 +117,10 @@ incomplete; a valid export did not imply equivalent or working native clients.
 Existing output was preserved, an unknown report field was rejected, and an extra
 comparison path and extra arguments to both offline doctors were refused without
 echoing their private sentinels. The fixture checked unchanged project/home
-snapshots and installed process/network guards in each CLI process; no forbidden attempt occurred. All twelve invocations completed
-in 2.138 seconds on that host. This timing describes the small fixture only, not
+snapshots and installed process/network guards in each CLI process; no forbidden
+attempt occurred. A named pipe at the instruction-file path produced an unknown
+guidance observation without blocking or losing independent observations. All
+thirteen invocations completed in 5.164 seconds on that host. This timing describes the small fixture only, not
 a performance guarantee. These observations cover separate fixture homes on one
 machine, not real teammate machines, Windows execution or authenticated tools.
 
