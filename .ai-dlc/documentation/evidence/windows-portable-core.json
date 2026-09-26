@@ -191,7 +191,7 @@
       "bound": {
         ".github/workflows/release.yml": "c32926d61ee30cd32aa03fa899c74f395decdb152833f572d4e1ade4c28993b5",
         "catalog:docs/release-verification.md": "9926c4ebc65f9749c169416b7678ee9aaa7c83204b5101b15f5d4a5b1e7e7f4f",
-        "docs/release-verification.md": "afdc8b96be4fb61ecf8ad9a31c2f9ba9bcb94f12727307e74c6fe8694a23ccc4",
+        "docs/release-verification.md": "744ae4207a2ac75b50b8d05a962f0772a654d82f998cb79a460138c5fc39c502",
         "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
         "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
         "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
@@ -303,7 +303,7 @@
     },
     {
       "bound": {
-        "openspec/changes/windows-portable-core/tasks.md": "a2690dcde316e1382be3b08d5b2fe363d2e81aa55f563e1efbe5fbba8fd249f1"
+        "openspec/changes/windows-portable-core/tasks.md": "57edb7e50ad55bd500cc3995a64aec82d753d972a92b25c3b8cafa72d4686a64"
       },
       "outcome": "updated",
       "reason": "Reviewed implementation plan, native CI/test coverage or catalog mapping for windows-portable-core; proposed test coverage is distinct from actual platform pass evidence, and unrelated product scope is preserved.",
