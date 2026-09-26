@@ -1,0 +1,43 @@
+schema = 1
+id = "consumer-onboarding"
+title = "Guide consumers and coding harnesses through the correct setup path"
+scope = "Distinguish installing/using AI-DLC for a team repository from contributing to the engine, with platform/client preflight and explicit target selection that composes existing setup/enrollment/adoption services. Exclude a new orchestrator and implicit adoption of the engine maintainer's accounts."
+requires_spec = true
+spec_reason = "Changes observable setup, guidance, policy or delivery behavior; formal scenarios define the compatibility and evidence boundaries."
+acceptance = [
+    "The consumer journey identifies OS/shell, selected client and intended repository before recommending setup actions.",
+    "A cloned engine installation is not mistaken for the work project and does not select its personal tracker/accounts for downstream work.",
+    "Consumer readiness uses bounded installation and selected-project checks; contributor setup still exposes full engine verification.",
+    "Unsupported native capabilities are named before mutation; the guide does not silently prescribe WSL or claim Windows works before qualification.",
+    "Preview/apply, authored-content preservation and explicit credential/account setup remain delegated to existing services.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "CO-01",
+    "CO-02",
+    "CO-03",
+    "CO-04",
+    "CO-05",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+brief = "docs/product-direction.md"
+spec = "openspec/changes/consumer-onboarding"
+plan = "openspec/changes/consumer-onboarding/tasks.md"
+branch = "codex/consumer-onboarding"
+tracker = "173"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"

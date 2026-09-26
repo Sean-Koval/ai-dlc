@@ -1,0 +1,43 @@
+schema = 1
+id = "effective-environment-report"
+title = "Compare effective team environments with redacted reproducibility reports"
+scope = "Extend existing diagnostics with a bounded portable report and comparison of engine/source identity, profile/team pins, intended and observed tools/client versions and project guidance. Exclude secret export, machine-path cloning, telemetry and a hosted dashboard."
+requires_spec = true
+spec_reason = "Changes observable setup, guidance, policy or delivery behavior; formal scenarios define the compatibility and evidence boundaries."
+acceptance = [
+    "A versioned report distinguishes published release identity from source revision and records unavailable observations honestly.",
+    "Two machines using the same reviewed profile/source pins can compare intended state independently of legitimate OS-specific differences.",
+    "Reports explain material tool/client/guidance drift and next actions without exporting secret values, personal absolute paths or authenticated sessions.",
+    "Collection defaults to local read-only inspection; any executable/provider probe is explicit and bounded.",
+    "Existing status/doctor semantics and machine credentials remain compatible; report identity changes when relevant effective configuration changes.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "EER-01",
+    "EER-02",
+    "EER-03",
+    "EER-04",
+    "EER-05",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+brief = "docs/product-direction.md"
+spec = "openspec/changes/effective-environment-report"
+plan = "openspec/changes/effective-environment-report/tasks.md"
+branch = "codex/effective-environment-report"
+tracker = "174"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"

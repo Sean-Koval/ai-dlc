@@ -1,0 +1,46 @@
+schema = 1
+id = "windows-portable-core"
+title = "Native Windows: make core execution and filesystem services portable"
+scope = "Provide safe native Windows core services for the ordinary project and work paths, preserving Unix behavior, explicit shell semantics, concurrent-write exclusion, authored-content protection and recovery. Exclude installers, full workstation catalog support and native-client qualification."
+requires_spec = true
+spec_reason = "Changes observable setup, guidance, policy or delivery behavior; formal scenarios define the compatibility and evidence boundaries."
+acceptance = [
+    "Core CLI/project services import and execute on Windows 11 x64 without Unix-only module failures or a mandatory POSIX shell.",
+    "Native command execution has explicit, validated semantics; existing string commands retain their documented POSIX meaning and are never silently reinterpreted.",
+    "Windows and existing Unix regression cases preserve concurrent-write locking, containment, edited-file refusal and recovery; unsafe reparse/symlink cases fail without writes.",
+    "Meaningful passing and failing project checks retain exact required IDs, revision/configuration bindings, and truthful failure outcomes.",
+    "A real native Windows CI lane exercises the supported core path; mocks and successful Unix CI are not reported as Windows qualification.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "PC-01",
+    "WPC-01",
+    "WPC-02",
+    "WPC-03",
+    "WPC-04",
+    "WPC-05",
+    "WPC-06",
+    "WPC-07",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+brief = "docs/product-direction.md"
+spec = "openspec/changes/windows-portable-core"
+plan = "openspec/changes/windows-portable-core/tasks.md"
+branch = "codex/windows-portable-core"
+tracker = "171"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"
