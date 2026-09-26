@@ -1,0 +1,40 @@
+schema = 1
+id = "meaningful-project-checks"
+title = "Support focused checks and meaningful scaffold verification"
+scope = "Add explicit named-check selection to the existing service and CLI without weakening required receipts. Give new Python projects a behavior test and make missing frontend smoke prerequisites fail visibly. Preserve existing authored project commands."
+requires_spec = true
+spec_reason = "Changes project-check selection and observable scaffold verification behavior."
+acceptance = [
+    "Named checks run only explicitly selected known IDs; invalid selections fail before commands run.",
+    "Partial receipts retain all configured required IDs and cannot satisfy full completion evidence.",
+    "New Python starter behavior is tested with a dependency-free runner that refuses empty or entirely skipped suites.",
+    "Required frontend smoke with no target URL fails with an actionable diagnostic; existing authored adoption configuration is preserved.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "PC-01",
+    "PC-02",
+    "PC-03",
+    "FE-01",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+spec = "openspec/changes/meaningful-project-checks"
+branch = "codex/team-flow-efficiency"
+brief = "docs/product-direction.md"
+tracker = "169"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"
