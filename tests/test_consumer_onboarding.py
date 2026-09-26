@@ -742,3 +742,45 @@ def test_fresh_adoption_remains_available_when_selected_linux_machine_apply_is_u
     assert action(result, "machine-preview")["available"]
     assert not action(result, "machine-apply")["available"]
     assert not action(result, "project-setup")["available"]
+
+
+@pytest.mark.parametrize(
+    "forms", [("argv", "argv", "argv"), ("legacy", "argv", "legacy"), ("argv", "legacy", "argv")]
+)
+@pytest.mark.parametrize("include_acceptance", [False, True])
+def test_management_command_forms_preserve_target_acceptance_requirement(
+    target, environment, forms, include_acceptance
+):
+    import tomli_w
+
+    declarations = [
+        ("generated", ["ai-dlc", "agents", "render", "--check"]),
+        ("work-records", ["ai-dlc", "work", "validate", "--all"]),
+        ("documentation", ["ai-dlc", "docs", "gate"]),
+    ]
+    commands = {
+        name: {"argv": argv} if form == "argv" else " ".join(argv)
+        for (name, argv), form in zip(declarations, forms, strict=True)
+    }
+    if include_acceptance:
+        commands["acceptance"] = {"argv": ["python", "acceptance.py"]}
+    (target / "ai-dlc.toml").write_text(
+        tomli_w.dumps(
+            {
+                "schema": 4,
+                "roles": {"agent-client": ["codex"]},
+                "checks": {"required": list(commands), "commands": commands},
+            }
+        )
+    )
+    result = plan(target, environment)
+    if include_acceptance:
+        assert result["state"] == "actionable"
+        assert "target-check-required" not in codes(result)
+        assert action(result, "target-check")["available"]
+        assert action(result, "target-check")["argv"][-1] == "--required"
+    else:
+        assert result["state"] == "input-required"
+        assert "target-check-required" in codes(result)
+        assert not action(result, "target-check")["available"]
+        assert action(result, "target-check")["argv"] == []

@@ -639,6 +639,9 @@ def plan_onboarding(
             ("sh", "-c", "ai-dlc agents render --check"),
             ("sh", "-c", "ai-dlc work validate --all"),
             ("sh", "-c", "ai-dlc docs gate"),
+            ("ai-dlc", "agents", "render", "--check"),
+            ("ai-dlc", "work", "validate", "--all"),
+            ("ai-dlc", "docs", "gate"),
         }
         for name in required
     )
