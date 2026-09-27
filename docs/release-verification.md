@@ -124,6 +124,36 @@ thirteen invocations completed in 5.164 seconds on that host. This timing descri
 a performance guarantee. These observations cover separate fixture homes on one
 machine, not real teammate machines, Windows execution or authenticated tools.
 
+## Draft native verification helper boundary
+
+The `agents verify` helper is draft source work under
+[#175](https://github.com/Sean-Koval/ai-dlc/issues/175), not a published release or
+native qualification. It validates bounded operator evidence and current local
+setup facts without launching clients, probing versions, logging in or invoking
+model/provider calls. Its initial compatibility/skill/tool catalogs have no
+qualified entries: valid results remain pending, failed, stale or limited
+(exit 1), while malformed/refused inputs exit 2. Positive qualification and
+version-scoped Antigravity activation remain unimplemented acceptance work.
+
+On September 27, 2026 UTC, clean source
+`2f43ce907e1f4e7162117d88f93f210116004db7` completed a nine-command real CLI fixture
+journey on macOS in 4.040 seconds. The isolated project path contained spaces and
+Unicode; HOME/XDG state was separate from the actual account. The commands exported
+a report, generated a pending procedure, refused the incomplete template, retained
+a simulated instruction observation, failed a wrong marker, detected a changed
+Python pin, and refused an unknown field, extra private-path argument and named
+pipe evidence input. Verification preserved project, home and input snapshots.
+The per-process guards loaded successfully and recorded no subprocess or network
+connection attempt; private sentinels were absent from output/errors.
+
+Those results exercise the real CLI and files with simulated operator evidence.
+No installed client was launched, no skill or MCP invocation was observed, and
+no account was authenticated. The timing describes this small fixture only.
+Current EER provenance remains incomplete and is not repaired by supplied
+observations. Raw fixture output stays in ignored local evidence storage;
+[#53](https://github.com/Sean-Koval/ai-dlc/issues/53) still owns real native,
+Windows desktop and cross-machine observations. Paid #138 remains deferred.
+
 ## Published v0.4.0 evidence — September 14, 2026
 
 The original release implementation was delivered in
