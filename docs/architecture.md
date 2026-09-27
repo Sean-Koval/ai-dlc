@@ -167,3 +167,24 @@ reference them directly.
 the thin `fde` CLI group. It reads only the explicit charter and stage landing
 pages, and has no provider or private-knowledge connection. See the
 [FDE runbook](runbooks/fde-documents.md) for paths, metadata and publication limits.
+
+
+## Native observation helper boundary
+
+The draft native verification helper separates a pure evidence contract in
+`harness/native_evidence.py` and public adapter/fixture definitions in
+`harness/native_adapters.py` from local inspection in `harness/native_verification.py`.
+The CLI consumes explicit project, client and EER report inputs, emits a manual
+procedure/template, and validates optional bounded operator observations. It
+reuses EER identities and completeness rather than creating an environment hash
+or trusting user-supplied provenance to fill unknowns. Local collection performs
+no version probe; unobserved client/runtime freshness remains limited.
+
+Instruction response, skill invocation, tool invocation and historical
+scope/authentication stay separate. The helper never launches a client, invokes a
+model/provider, logs in, writes client settings or uploads a report. Closed input
+fields and fixed errors exclude raw transcripts, accounts and private paths.
+Documentation-source review is separate from tested version compatibility: the
+initial catalogs have no qualified entries, so valid evidence remains pending,
+failed, stale or limited. Positive qualification and version-scoped activation
+are still pending under #175; #53 owns actual native observations.

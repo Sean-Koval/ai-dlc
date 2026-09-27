@@ -323,8 +323,9 @@ def _client_guidance_checks(root: Path, resolved: dict, clients: list[str]) -> l
                     "client-recognition",
                     "unverified",
                     "Offline files do not establish native rule activation, skill recognition or MCP login.",
-                    "Record the installed edition/version; activate the project rule as Always On, "
-                    "verify selected skills and use the native MCP manager to authenticate and inspect tools.",
+                    "Record the installed edition/version and inspect its documented rule activation "
+                    "contract; observe modular rules separately from root instructions, then verify "
+                    "selected skill invocation and harmless MCP access in the intended account.",
                 )
             )
     return checks

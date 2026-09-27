@@ -249,16 +249,22 @@ repository, review its project MCP prompt and use `/mcp` to inspect/authenticate
 selected servers. Remote definitions include Claude's required HTTP type.
 See [Claude MCP documentation](https://code.claude.com/docs/en/mcp).
 
-Antigravity's current documented workspace contract uses `.agents/skills`,
-`.agents/rules` and `.agents/mcp_config.json`; remote entries use `serverUrl`.
-Open the project rule in the native rules UI and activate it as **Always On**.
-Inspect skills and the MCP manager, then authenticate selected remote servers.
-Native metadata outside the managed rule section is preserved on regeneration;
-keep the managed guidance body intact.
-The renderer supplies files; it does not fabricate a rule activation setting or
-claim the client has loaded them. See [skills](https://www.antigravity.google/docs/skills),
-[rules](https://www.antigravity.google/docs/rules-workflows) and
-[MCP](https://www.antigravity.google/docs/mcp).
+Record the installed Antigravity edition and version before following its native
+setup instructions. The [rules documentation](https://antigravity.google/docs/rules/)
+reviewed September 26, 2026 distinguishes plain `AGENTS.md`/`GEMINI.md` from
+modular `.agents/rules/*.md`: modular rules require valid YAML `trigger` metadata.
+Older manual **Always On** UI instructions do not establish the contract for an
+unknown version. The documentation does not supply a tested installed-version
+range, and this source review is not a native observation.
+
+Existing AI-DLC unversioned rendering preserves its managed rule and any authored
+metadata outside it; keep the managed body intact. It does not certify modular
+activation. Check the installed client's official rules, skill and MCP surfaces
+and record each observed result separately. Do not treat successful root
+instruction loading as proof that the modular rule was activated. Positive
+version-scoped activation remains pending under
+[native harness verification](https://github.com/Sean-Koval/ai-dlc/issues/175)
+and [installed-client qualification](https://github.com/Sean-Koval/ai-dlc/issues/53).
 
 Antigravity project rendering supports OAuth URLs and stdio commands without
 generated environment overrides. It refuses environment-name interpolation

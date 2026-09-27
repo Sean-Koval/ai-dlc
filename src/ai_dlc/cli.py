@@ -1129,6 +1129,29 @@ def agents_render(
         raise typer.Exit(1)
 
 
+@agents.command(
+    "verify",
+    context_settings={"allow_extra_args": True, "ignore_unknown_options": True},
+)
+def agents_verify(
+    context: typer.Context,
+    root: Annotated[Path, typer.Option("--root")],
+    client: Annotated[str, typer.Option("--client")],
+    environment: Annotated[Path, typer.Option("--environment")],
+    evidence: Annotated[Path | None, typer.Option("--evidence")] = None,
+):
+    """Generate a bounded manual native check and adjudicate supplied evidence."""
+    if context.args:
+        raise typer.BadParameter("Unexpected extra arguments.")
+    from ai_dlc.harness.native_verification import verify_native
+
+    with service_call():
+        result = verify_native(root, client, environment, evidence)
+        emit(result)
+        if result["exit_code"]:
+            raise typer.Exit(result["exit_code"])
+
+
 @agent_bundle.command("import")
 def agents_bundle_import(
     source: str,
