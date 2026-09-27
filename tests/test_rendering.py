@@ -362,6 +362,68 @@ def test_unsupported_required_hooks_fail_before_writes(tmp_path):
     assert not (tmp_path / "AGENTS.md").exists()
 
 
+@pytest.mark.parametrize(
+    ("policy", "expected"),
+    [
+        (
+            None,
+            (
+                "covered publication still requires reviewed tracker-bound work, "
+                "even when the general workflow permits a record-free pull request"
+            ),
+        ),
+        (
+            "tracked-branches",
+            (
+                "may proceed without a work record only when a complete readable local inventory "
+                "proves the branch is unbound"
+            ),
+        ),
+    ],
+)
+def test_bound_push_guidance_explains_effective_selected_policy(tmp_path, policy, expected):
+    """Would fail if rendered guidance omitted or misstated the selected hook policy."""
+    from ai_dlc.harness.agents import render_agents
+
+    policy_line = f'bound_push_policy="{policy}"\n' if policy is not None else ""
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nagent-client=["codex"]\n[agents]\n'
+        + policy_line
+        + '[agents.clients.codex]\nversion="0.151.0"\nrequired_hooks=["bound-push"]\n'
+    )
+
+    render_agents(tmp_path, apply=True)
+
+    guidance = (tmp_path / "AGENTS.md").read_text()
+    assert "selected bound-push clients (`codex`)" in guidance
+    assert expected in guidance
+    assert "Every associated work record still requires complete local validation" in guidance
+    assert "supported direct Git push and GitHub PR-create payloads" in guidance
+    assert "arbitrary terminal enforcement" in guidance
+    assert "Remote tracker state" in guidance
+    assert "native approval and repository review" in guidance
+    assert "required checks, merge identity, receipts, and finish remain separate" in guidance
+
+
+def test_partial_render_omits_policy_guidance_when_rendered_client_has_no_bound_push(tmp_path):
+    """Would fail if shared guidance claimed enforcement by a client outside this render."""
+    from ai_dlc.harness.agents import render_agents
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nagent-client=["codex","claude-code"]\n'
+        '[agents]\nbound_push_policy="tracked-branches"\n'
+        '[agents.clients.codex]\nversion="0.151.0"\nrequired_hooks=["bound-push"]\n'
+        '[agents.clients.claude-code]\nversion="2.1.0"\nrequired_hooks=[]\n'
+    )
+
+    render_agents(tmp_path, apply=True, client="claude-code")
+
+    guidance = (tmp_path / "AGENTS.md").read_text()
+    assert "bound-push" not in guidance
+    assert "all-branches" not in guidance
+    assert "tracked-branches" not in guidance
+
+
 def test_digest_mismatch_prevents_all_writes(tmp_path, monkeypatch):
 
     from ai_dlc.files import assets
