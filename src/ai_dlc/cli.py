@@ -1557,13 +1557,27 @@ def work_finish(
     machine: Path | None = None,
     handoff: Path | None = None,
     learning: Path | None = None,
+    at_merge: bool = False,
 ):
-    result = service(root, machine).finish(
-        work_id,
-        handoff.read_text() if handoff else None,
-        learning.read_text() if learning else None,
-    )
-    conclude(result)
+    """Finish tracked work, optionally from an owned checkout of its exact merge."""
+    if not at_merge:
+        result = service(root, machine).finish(
+            work_id,
+            handoff.read_text() if handoff else None,
+            learning.read_text() if learning else None,
+        )
+        conclude(result)
+        return
+    with service_call():
+        handoff_text = handoff.read_text() if handoff else None
+        learning_text = learning.read_text() if learning else None
+        try:
+            result = service(root, machine).finish_at_merge(work_id, handoff_text, learning_text)
+        except KeyboardInterrupt as exc:
+            for note in getattr(exc, "__notes__", ()):
+                typer.echo(note, err=True)
+            raise
+        conclude(result)
 
 
 @knowledge.command("find")

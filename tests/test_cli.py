@@ -1155,3 +1155,67 @@ def test_work_new_offline_output_validation_and_refusal(tmp_path, monkeypatch):
     refused = CliRunner().invoke(app, args)
     assert refused.exit_code == 1
     assert "error:" in refused.stderr
+
+
+@pytest.mark.parametrize("at_merge", [False, True])
+def test_work_finish_selects_explicit_path_and_reads_caller_inputs(tmp_path, monkeypatch, at_merge):
+    from ai_dlc import cli
+
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "handoff.md").write_text("Caller handoff")
+    (tmp_path / "learning.md").write_text("Caller learning")
+    calls = []
+
+    class FinishService:
+        def finish(self, *args):
+            calls.append(("plain", args))
+            return {"status": "completed"}
+
+        def finish_at_merge(self, *args):
+            calls.append(("merge", args))
+            return {"status": "completed", "cleanup": {"status": "removed"}}
+
+    monkeypatch.setattr(cli, "service", lambda root, machine: FinishService())
+    args = ["work", "finish", "one", "--handoff", "handoff.md", "--learning", "learning.md"]
+    if at_merge:
+        args.append("--at-merge")
+    result = CliRunner().invoke(cli.app, args)
+    assert result.exit_code == 0, result.output
+    assert calls == [
+        ("merge" if at_merge else "plain", ("one", "Caller handoff", "Caller learning"))
+    ]
+    assert json.loads(result.stdout)["status"] == "completed"
+
+
+def test_work_finish_at_merge_preserves_uncertainty_and_recovery_note(monkeypatch):
+    from ai_dlc import cli
+    from ai_dlc.errors import UncertainError
+
+    class FinishService:
+        def finish_at_merge(self, *args):
+            error = UncertainError("Tracker response lost; reconcile before retry")
+            error.add_note("Owned checkout retained; recovery marker: /safe/state/owner.json")
+            raise error
+
+    monkeypatch.setattr(cli, "service", lambda root, machine: FinishService())
+    result = CliRunner().invoke(cli.app, ["work", "finish", "one", "--at-merge"])
+    assert result.exit_code == UncertainError.exit_code
+    assert "Tracker response lost" in result.output
+    assert "/safe/state/owner.json" in result.output
+    assert '"status": "completed"' not in result.output
+
+
+def test_work_finish_at_merge_interruption_displays_recovery_note(monkeypatch):
+    from ai_dlc import cli
+
+    class FinishService:
+        def finish_at_merge(self, *args):
+            error = KeyboardInterrupt()
+            error.add_note("Owned checkout retained; recovery marker: /safe/state/owner.json")
+            raise error
+
+    monkeypatch.setattr(cli, "service", lambda root, machine: FinishService())
+    result = CliRunner().invoke(cli.app, ["work", "finish", "one", "--at-merge"])
+    assert result.exit_code != 0
+    assert "/safe/state/owner.json" in result.output
+    assert '"status": "completed"' not in result.output

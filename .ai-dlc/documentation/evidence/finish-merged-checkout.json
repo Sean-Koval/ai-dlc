@@ -2,56 +2,34 @@
   "decisions": [
     {
       "bound": {
-        "AGENTS.md": "ec4c8be776c237d2bd14774489b5c9f6ec01112f6cb657b9f48e226dd615e943"
+        "AGENTS.md": "0cbaa8634d42d750abe8ce6427a0e7777b7032a7aad6739a46c903c383b318a9"
       },
       "outcome": "updated",
-      "reason": "Regenerates branch guidance with the merged-revision --at-merge finish path and its manual detached-worktree fallback while retaining the draft native qualification boundary.",
-      "reviewer": "Codex integration review, 2026-09-26; main 41cc2b2 merged; native desktop qualification pending",
+      "reason": "Regenerated selected-capability instructions through agents render, adding explicit at-merge finish while preserving manual detached-worktree recovery.",
+      "reviewer": "codex",
       "target": "AGENTS.md"
     },
     {
       "bound": {
-        "README.md": "e688ef28831295fc3582d4e67c8fb6335a657ee2523d138c5d1000e88c7f0d06"
-      },
-      "outcome": "updated",
-      "reason": "Keeps the current source-installed onboarding planner and target-root flow, labels PowerShell setup as the #172 qualification path, and leaves Windows onboarding blocked pending desktop evidence.",
-      "reviewer": "Codex integration review, 2026-09-26; main 05ab789 merged; native desktop qualification pending",
-      "target": "README.md"
-    },
-    {
-      "bound": {
-        "ai-dlc.toml": "878eec09c80130c6f6cf466edfd1e0d92236884431e24d4dab279ad566a7715f"
-      },
-      "outcome": "updated",
-      "reason": "Uses direct argv contributor setup/check records and adds the Windows full required-receipt binding while retaining existing Unix platforms.",
-      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
-      "target": "ai-dlc.toml"
-    },
-    {
-      "bound": {
         "catalog:docs/architecture.md": "aca122ae724b1a54ca1cdf3f1e23f4f0da8fd1445ead12f34383c84a37c6aa1c",
-        "docs/architecture.md": "22eba5426d4ab4c476b5fd187042988e904b24db9df45da59ec1497ace3b78e7",
+        "docs/architecture.md": "14fe263b514492f3b464b55cb484088f2327a398d05c387b725d5d7dd824f075",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
-        "pyproject.toml": "36e6eb286b62cb2b258b447a6c57b6e9030ca15d6885aa87c8323cdc41bf51db",
-        "scripts/check_generated.py": "82f1ca037db8424c4f93a06c958da090c6eceff891a2743eaaed66bcce160e9b",
+        "pyproject.toml": "296acf5ff015bc4aaf17576c4210e8c69988beb35e11507250a45c0dc534e4d5",
+        "scripts/check_generated.py": "00e325b0da860ed329f3fbc40a99cc503d9a6b185f98f5627c1d465591681f98",
         "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
-        "scripts/check_tests.py": "b7d10db0780aa851d8ba810796202e638abd79395cbf41071ac2114bb1bab920",
-        "scripts/check_types.py": "c1ba81333d4b0cf8c765e1dc9146bad7878f5eacf71e7e61bbda80c75dfafa5c",
-        "scripts/prepare_release_assets.py": "f54a08057f0a5271dea8165978b8478b9d25638d2c203277d7b1017856f330b3",
         "scripts/qualify_framework.py": "01dd9e6acbe14e740f068662aa539e9a7ed0ba57ab97e9457e0a05d968a25fb6",
         "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
         "scripts/run_skill_evaluation.py": "46a97694bae155b2418d172971480e031f510acc864b9d91fa546f98c754729f",
-        "scripts/verify_windows_consumer.py": "00ce005f85d533cf04009f5d93e10805beeee0d7f4f77fe97f1599dcab9c55ab",
         "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
         "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
         "src/ai_dlc/_windows_storage/__init__.py": "5715def899453f15265e13d52e5b518844cc9d057421cfa5279172d799d5f506",
         "src/ai_dlc/_windows_storage/_api.py": "d5fc4f971db8e706871c06e8119884848e505af6c45f4fbb5c2f7db513faf41b",
         "src/ai_dlc/_windows_storage/_security.py": "62785d4e088cd485816a33f35a7a559d3d1acf166093c413a3f4f79969056314",
-        "src/ai_dlc/cli.py": "2c56f6d70e39b8ea51695d1639e81942529d47896ecec079f1a9c3e8dd88fe73",
+        "src/ai_dlc/cli.py": "4b0aa95f15aee585bc0b76555fe0e7e87b2ec0d6885f67bad93189b0767a7b46",
         "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
         "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
-        "src/ai_dlc/config.py": "af59a4d487c311cde2d34cf44fcad2aa6ebae8d48e7ebc77330466111a686eb5",
+        "src/ai_dlc/config.py": "3866ffe631e989d189bd17100dec9123f53f3f17ce77c56ec10decc560483e2c",
         "src/ai_dlc/conformance.py": "9d18cdbf21aa8f9889d880729c368d9567f32f83c066693dceb06ce6549b6082",
         "src/ai_dlc/contracts.py": "e2202d26b4815674bde05fc1190fbaedfe7cabdf6d8c913a721d1f0b53619d1e",
         "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
@@ -69,12 +47,12 @@
         "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
         "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
         "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
-        "src/ai_dlc/documentation/workspace_diagnostics.py": "0ef3ce986033a15568d4f80420b2f21b1d872ad8b86d6a490e09ec70b5f6897c",
+        "src/ai_dlc/documentation/workspace_diagnostics.py": "4a0ec1bf837e4a6a1d59482ebc86557edc2ae41cec843a8528b828b04f27422b",
         "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
-        "src/ai_dlc/environment/bootstrap.py": "926632df2596d7f101a1cdabf71cd02884a96d459f5b2301beb968e8770cc7e4",
+        "src/ai_dlc/environment/bootstrap.py": "7fad9be94cc830cde041e4ad88c4b79b653f8e8d2c558f1d8db33f99a87b088d",
         "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
-        "src/ai_dlc/environment/enrollment.py": "843243bb0a4d39f50d4f1fd452e06b5d18b246f11e154adb3b5c77831ef3cd5a",
-        "src/ai_dlc/environment/machine.py": "392850ad304a8131e1647f9d71cde1758b219c2cba8f3fe249cf912fa1ea7c59",
+        "src/ai_dlc/environment/enrollment.py": "f8e826a9dca7a8e308f9ad52c8f178ad7e6f2c6c536da7459a68c123d51e9c53",
+        "src/ai_dlc/environment/machine.py": "2c3981ab3e8e4e52d2c3f86f02d8714bf92dd3229eaff99c72ac91961fbbd16a",
         "src/ai_dlc/environment/profile_source.py": "f177cc9336ed7c69e37299bc70107f14a7878ff72abbd1070dc3560340d451cc",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
@@ -82,20 +60,20 @@
         "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
         "src/ai_dlc/environment/source_content.py": "c11618009a7d4c3dbaa03b49d80df3a6f7cae37338a9fe92166865379d89670a",
         "src/ai_dlc/environment/source_schema.py": "929944f86aef4a0aa2e257f3fbb4bee26ce07c522ed2eb35c2e1bbba38ec44d0",
-        "src/ai_dlc/environment/team_sources.py": "162d8629b8314c5c6f1135736a73faaf52bb8e9dcc4b9f675d77393ab311a452",
+        "src/ai_dlc/environment/team_sources.py": "20d583a9046adfac9f0f5bf6de7aca537654eb29d0ff636c27f5a78c7c5c21a6",
         "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
         "src/ai_dlc/errors.py": "b8c0da78ec0e9ea75ef71b4495b501570625988ba5ae54c4631f1ca20a8362c1",
         "src/ai_dlc/files.py": "eb0452e50442cdf9da231a56111afec1d45b4bc5b7a41a00931a540e88ad14da",
         "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
-        "src/ai_dlc/harness/agents.py": "03944108d5e0ceb9529f253b62c2073ca829bbde255c865f08b52090a183f7f9",
-        "src/ai_dlc/harness/components.py": "57cf3a9a288dd90c24b4ac31e6a5cef72d04a4229edc4ee08170bf37d0e76747",
+        "src/ai_dlc/harness/agents.py": "83653b94d079444a632b0fd6b8b7af83c09d64593dd5abc85f4520d4ab9a85c8",
+        "src/ai_dlc/harness/components.py": "b64cd2ae837f83a37ddd1c74dad25fcd16fe8733715c224c7d64673784ebba11",
         "src/ai_dlc/harness/design_capture.py": "8b872492b88f4a7728bedf0ae8a1edaad2312a918248bf8f5d051c8bd8b42a58",
-        "src/ai_dlc/harness/friction.py": "b145b3a20353ed4a182519ccc508393d95c5a91cd3b773f41cdaa3386f1130ea",
-        "src/ai_dlc/harness/hooks.py": "39975d08397f60c0c91207bbec222c77d8e0b522c02815ae195ae0bf29fb3e62",
+        "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
+        "src/ai_dlc/harness/hooks.py": "9a4c95d958eef99c71a5cbaf41f53b0f4e8a3288606cb1054457dbc5b0a3f88b",
         "src/ai_dlc/harness/native_composition.py": "1e4c5729ff31cb91820bd8df3d15b60c1067b4a5f2b89381888211470dc79bc8",
         "src/ai_dlc/harness/skill_evaluation.py": "73ded6785d5d0ff53f5f44ba4d1ede7406f367635676c269d5044358030ebc2e",
-        "src/ai_dlc/harness/team_source_render.py": "ff86d07b95bf4bcd69cc48c42a49a430e23db1f1fd7dff7955f43c76fb0833c5",
-        "src/ai_dlc/harness/user_agents.py": "646184985742161d0f617fa9c35bfe4a792444a71642f4c5f91a577697e13923",
+        "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
+        "src/ai_dlc/harness/user_agents.py": "c99f9a52a379feaa0c1721081b95fef91f51c44f0a9e906145de51154616e937",
         "src/ai_dlc/harness/windows_render.py": "5845e483eba550331f0a6777fcd7a3b9c13c90af071ac6df5962ffc3b090b978",
         "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
         "src/ai_dlc/locking.py": "e3c5dbe1a98d3402352bc8a3c3a031106e8dd515e060a676803d734d8dee99dd",
@@ -115,21 +93,20 @@
         "src/ai_dlc/providers/teamai.py": "ff7a781abcaeeca1c978f9472502156e31a1fc6d192ac50e1e489d333b77a5e6",
         "src/ai_dlc/setup/__init__.py": "8eb444a69a67d0c1a59ffc0c80ce59efda159976bea58d40154e97f8bdecf18c",
         "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
-        "src/ai_dlc/setup/connections.py": "c045501290b9cda8f2b5006532d4c2cd633e626aa51122f2bb5baa0b1871b7be",
+        "src/ai_dlc/setup/connections.py": "e80cbe0e1e94ae5f9d8f60ae044918e8f9e377e173a25ff7bd91f28180a24d15",
         "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
         "src/ai_dlc/setup/github_project_setup.py": "55984de17559ba2d56b3b1c7483dabb8a6f05f1e773e8bd9d40437a2d30ee85e",
         "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
         "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
         "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
-        "src/ai_dlc/setup/project.py": "e59ab63cca9c2a6a9e4564890a36a09d5d5145e821e980d2b5fd79ae1ef3a043",
-        "src/ai_dlc/setup/provider_onboarding.py": "3c3a84b8a91e5a6ed5d0a629f230aa06acdbb5cc1d0357209725787bf001fbcc",
-        "src/ai_dlc/setup/provision.py": "9d1a15dfff9741e1c84907b4ef682b84285534cc495675c5b445844f001a0afb",
+        "src/ai_dlc/setup/project.py": "09464c89f569a337aaa77d1604404273808636323635bcd00bb05e0f74c7ad9e",
+        "src/ai_dlc/setup/provider_onboarding.py": "be120ad6e93c178f041fd338a45a5df7c75b9a30591725cfbf7800bca531045e",
+        "src/ai_dlc/setup/provision.py": "6ec463fb9516aa01de58b482a8f14c3cc8c14585a25fa46e42b144d4c2fe5dfc",
         "src/ai_dlc/setup/readiness.py": "e0984a1f504ee87f3c4c1939624b34ccfe2fd6b7315df365166e95ff3b975d55",
-        "src/ai_dlc/setup/rebind.py": "8a7e6e8ca66fc227daf7cbf40f37c3ae1681e984e53206f268c90c8db0a816c6",
-        "src/ai_dlc/setup/templates.py": "1fc9173daa6fe71eebf00eda0f4e2b7263c65f694d3b227dee5421240e0eca62",
+        "src/ai_dlc/setup/rebind.py": "2458691c83e22c613ee3eb7541e103aee7264e7b23a78c17194135bc3d5a35c6",
+        "src/ai_dlc/setup/templates.py": "cc1b891966103368c77051cc892da293eb2df83ea91c1662b86e466bbd44e950",
         "src/ai_dlc/setup/tracker_targets.py": "b04533ac254bde0aa7bddf083097d815153998f15b1042645ac4ffc38f848319",
-        "src/ai_dlc/setup/windows.py": "d4650448c8864c1a452df513a9d68d23f679c09e30c67a767118ebcd783cf809",
-        "src/ai_dlc/setup/workstation.py": "26ae1ce6f088ae5cf29c16afd09b6fcd2be6ea9e6f606ae3061ccdd025b8a659",
+        "src/ai_dlc/setup/workstation.py": "8ac8f2467ee925392f777e15d921ad79da8a10c94267bbd30f5386455db4e8d2",
         "src/ai_dlc/toml_edit.py": "696057b2848ca8b57e5189d1c78441fc6c1e06994f480f6f13f8dd31c050515e",
         "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
         "src/ai_dlc/verification/evaluation/__init__.py": "7cf0a3add5298d2f8d58954210cee24b3fb6a5f81e505ef3b948a7078cbb0eb8",
@@ -151,7 +128,7 @@
         "src/ai_dlc/work/summary.py": "af386fc470b222d5c7b600ea3169ee7f26be7bdfafdcac8b4098b1fff2f0bd8e",
         "src/ai_dlc/work/traceability.py": "e9fbca5153cdd710b78872c66651269184ee5f3f1313f313b65df212430e8cc8",
         "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
-        "src/ai_dlc/work/workflow.py": "4dfab44222a16c0e08942d1274cb2053678231a0c633ecc70d22dd76092080a7",
+        "src/ai_dlc/work/workflow.py": "062a0df156a06eee613dacd88d94e411301cc59eeb74a05748a17ac0a005648e",
         "tests/test_consumer_onboarding.py": "1303e2d74c9aaa0d9834133fa37744128c5b027d6f7febdb293e1fe02bf76e37",
         "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
         "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
@@ -161,41 +138,18 @@
         "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be"
       },
       "outcome": "reviewed-no-change",
-      "reason": "The finish service now reads reviewed work records explicitly as UTF-8, matching the existing work-record and configuration boundary without changing the architecture.",
-      "reviewer": "Codex integration review, 2026-09-27; UTF-8 finish preflight regression fixed; native desktop qualification pending",
+      "reason": "Reviewed the owned merge-checkout lifecycle and WorkService composition against the existing work package, provider contracts and local-control-state architecture. No new orchestrator, provider authority or shared credential storage is introduced.",
+      "reviewer": "codex",
       "target": "docs/architecture.md"
     },
     {
       "bound": {
-        "docs/catalog.toml": "060b4428cbcfc1b0fe12e4cad6c2d6095b9fce1aa1fe0a08d94c91a77748f486"
+        "docs/catalog.toml": "eecfe6de39d4430ff53aacb4a33f12e191481e0e55cbd5954f62958bcf43b3bd"
       },
       "outcome": "updated",
-      "reason": "Current main adds the merge-checkout and finish mappings; the native release and onboarding mappings remain combined and current.",
-      "reviewer": "Codex integration review, 2026-09-26; main 41cc2b2 merged; native desktop qualification pending",
+      "reason": "Maps the owned lifecycle module, shared work service, provider remedy and focused tests to existing canonical workflow owners.",
+      "reviewer": "codex",
       "target": "docs/catalog.toml"
-    },
-    {
-      "bound": {
-        "catalog:docs/design/local-and-shared-knowledge.md": "4ad0c70cf1252fc3cebfd01330863b90906e037c7b77ff67d8acf0925548af2e",
-        "docs/design/local-and-shared-knowledge.md": "c5daa2c9300f8e21597a64f90c46c214f0c4a6f800e011e97dfc29c69e6bada0",
-        "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
-        "openspec/specs/session-learnings/spec.md": "d6d288fc9b8aee72b85b56b30e2cb88dcb4acd2530c3b3b7c0e31854492cc89b",
-        "src/ai_dlc/documentation/knowledge.py": "f9f8a0598f0cabc7556e001359e991eac8c4972c2b229826315b441e639ed2b1",
-        "src/ai_dlc/documentation/learnings.py": "5ea35f5bcb5d8ae7f0fbf593136822c1faa15fbe003957665cb4dcd4d6db1c3a",
-        "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
-        "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
-        "src/ai_dlc/documentation/workspace_diagnostics.py": "0ef3ce986033a15568d4f80420b2f21b1d872ad8b86d6a490e09ec70b5f6897c",
-        "src/ai_dlc/harness/friction.py": "b145b3a20353ed4a182519ccc508393d95c5a91cd3b773f41cdaa3386f1130ea",
-        "tests/test_knowledge.py": "38e5cda9c9dc1fe97d12618a0bd9a86b2725cff059d412232152582af1547af1",
-        "tests/test_session_learnings.py": "32bb7c3143db24ff96fb43ac5081285e77a93bd8d8d825076f3422cbfe194796",
-        "tests/test_vault_link.py": "fd146d4d15041021ac343257c9d91a8c1950878d275420eda85d13747065e110",
-        "tests/test_vault_mount.py": "f6a5dc947af0d68e4688c37d05294c6b4868aa98ead91d26aa0c8ffec8018424",
-        "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
-      },
-      "outcome": "reviewed-no-change",
-      "reason": "Workspace diagnostics adds native executable-selection observations only; private note ownership, mount scope, Confluence publication and learning behavior are unchanged.",
-      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
-      "target": "docs/design/local-and-shared-knowledge.md"
     },
     {
       "bound": {
@@ -206,57 +160,54 @@
         "agents/skills/spec-from-prd/SKILL.md": "9ceeb895bfe68311de31b1a0f5751dd4471be53b3de7aa9441dc69d3f808cf68",
         "agents/templates/delivery-slice.md": "4a7a5d7af2f6a99b4e7eac13491eef751def074451d6899acc36ccf1f536bd6f",
         "catalog:docs/development-workflow.md": "cccff4f2482019fdd41f3c6859a96d8863998deb5fbe8d273053c527be50c281",
-        "docs/development-workflow.md": "97a19f0f2ff3dfa7d6fef8f8910a978089c40fb567e33fc66e25e7fc76e9246f",
+        "docs/development-workflow.md": "759e7a5c32d641ad0fd3923583375e779fb2e858812d9e03bc5670efa7bc8b65",
         "openspec/specs/native-work-harnesses/spec.md": "08e9ac67d0cc7b844d677f9d762f83d90f5627165802a63a1d24964371593efc",
         "openspec/specs/portable-development/spec.md": "2c75caee1dc2f59828c49ba940be6a186580b07032c52b63fc750788b7535a4d",
         "openspec/specs/spec-delivery-traceability/spec.md": "66641acf9c151792cde1914062630ed50cc4199cdc3bdb4b81382e03716f2ea3",
         "project-templates/project/AI-DLC.md": "be8ad8c8c264b994b58edf1832d0aad5edfb1447876448caa9a424a1cfc12caf",
-        "project-templates/project/ai-dlc.toml.jinja": "f02135553a194dd9b78fab69d905b8d1ea3b1f3debc602c5c3ac00906e0df4f3",
+        "project-templates/project/ai-dlc.toml.jinja": "8cb37c2c92f7998a2c7cec84c2d293f63b1e80f1a4a4f1f330a7e5b1b92aa0cd",
         "project-templates/project/docs/development-workflow.md.jinja": "7e4c473a94efe7026d5341cc78d18a409ab1eca2324efed1cc02c57223434164",
         "project-templates/project/docs/templates/delivery-slice.md": "4a7a5d7af2f6a99b4e7eac13491eef751def074451d6899acc36ccf1f536bd6f",
         "project-templates/project/scripts/check_tests.py": "a3dd2021b7911d2ff688142776b7a43af60f76e052d7164086db2434db60102d",
         "project-templates/project/tests/test_main.py": "4e6ac9def60ea5a6aef9e004c465cc439acac4b33e4f70df332939f0cdfae63d",
-        "src/ai_dlc/cli.py": "2c56f6d70e39b8ea51695d1639e81942529d47896ecec079f1a9c3e8dd88fe73",
-        "src/ai_dlc/config.py": "af59a4d487c311cde2d34cf44fcad2aa6ebae8d48e7ebc77330466111a686eb5",
-        "src/ai_dlc/harness/agents.py": "03944108d5e0ceb9529f253b62c2073ca829bbde255c865f08b52090a183f7f9",
-        "src/ai_dlc/harness/hooks.py": "39975d08397f60c0c91207bbec222c77d8e0b522c02815ae195ae0bf29fb3e62",
+        "src/ai_dlc/cli.py": "4b0aa95f15aee585bc0b76555fe0e7e87b2ec0d6885f67bad93189b0767a7b46",
+        "src/ai_dlc/config.py": "3866ffe631e989d189bd17100dec9123f53f3f17ce77c56ec10decc560483e2c",
+        "src/ai_dlc/harness/agents.py": "83653b94d079444a632b0fd6b8b7af83c09d64593dd5abc85f4520d4ab9a85c8",
+        "src/ai_dlc/harness/hooks.py": "9a4c95d958eef99c71a5cbaf41f53b0f4e8a3288606cb1054457dbc5b0a3f88b",
         "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
         "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
-        "src/ai_dlc/setup/project.py": "e59ab63cca9c2a6a9e4564890a36a09d5d5145e821e980d2b5fd79ae1ef3a043",
+        "src/ai_dlc/setup/project.py": "09464c89f569a337aaa77d1604404273808636323635bcd00bb05e0f74c7ad9e",
         "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
-        "src/ai_dlc/work/workflow.py": "4dfab44222a16c0e08942d1274cb2053678231a0c633ecc70d22dd76092080a7",
+        "src/ai_dlc/work/workflow.py": "062a0df156a06eee613dacd88d94e411301cc59eeb74a05748a17ac0a005648e",
         "tests/test_agents_phases.py": "b0ee080814d5bc259c122e3e0067876ed407de9e0ac1afd088f850488b9748ac",
         "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
         "tests/test_cli.py": "8dd3b5e6c99714ca60f64f6db0233e21d8d15628e511c6ca0ac32944e5427af6",
         "tests/test_config.py": "60bd9343da62e760c92083765439452e4a1e924b6f585ef14780af1f7b3349ce",
-        "tests/test_finish_merged_checkout.py": "536ec375930bbc2c67217391aec3e321399b248889e82a2980ffb52e5e225b41",
+        "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
         "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
         "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
         "tests/test_project.py": "0863470fa695afffc68bba51602585cd2539174cc9a8599a7cf838773f170b93",
         "tests/test_rendering.py": "cbc5c9bbc5dceafda37d1f41781f2d86891ba2273b6e32455e6997bcfd7f312c",
         "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2",
-        "tests/test_templates.py": "99196006ef93f12a88bc3811bc052d3c0a00f8c0bbb72e6383badcfc6cb541fa",
+        "tests/test_templates.py": "da7d4221a92e5fe65ab65d685522897a23bd04807ef9f62acde6bf160eee8aa5",
         "tests/test_workflow.py": "38aa9de4fad30227e0348a2054ac7e1043cd6fe260e41dc4df5617de9c482b94"
       },
-      "outcome": "reviewed-no-change",
-      "reason": "The UTF-8 correction preserves the documented read-only finish preflight, merged-revision lifecycle, and recovery behavior.",
-      "reviewer": "Codex integration review, 2026-09-27; UTF-8 finish preflight regression fixed; native desktop qualification pending",
+      "outcome": "updated",
+      "reason": "Explains explicit at-merge finishing, historical policy and identity, preserved caller inputs/files, unchanged gates, distinct cleanup/recovery and retained manual fallback.",
+      "reviewer": "codex",
       "target": "docs/development-workflow.md"
     },
     {
       "bound": {
-        ".github/workflows/release.yml": "54077783bb2738431d7ee8f879c0481b679283df631e9a0a53a8f8c6ba19ee60",
-        ".github/workflows/verify.yml": "6499846b9b9c2af4abbc88d1ea0c6e9a492e587f258543872329ca9a56d4c1ba",
-        "catalog:docs/release-verification.md": "b17258d41010a3af4099178031cde45db13b78113297bd63f025968f7f34ad01",
-        "docs/release-verification.md": "da8274f4260768ece7e001bc5b365b92427b41b9cab26b5f7071db69646cb5d0",
+        ".github/workflows/release.yml": "c32926d61ee30cd32aa03fa899c74f395decdb152833f572d4e1ade4c28993b5",
+        ".github/workflows/verify.yml": "bfdd737db0e582ac9e994acbd29d0c18f414c7492f64701448fbf8b4231c5f9c",
+        "catalog:docs/release-verification.md": "972bf86b6da5f20b3d01762982880533ba0c99b22933aa95273590923721dad0",
+        "docs/release-verification.md": "592f4c5267285fcd0d53b3f42ea66a1c7b784bb94f7d9eb15307196a12ac9947",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
-        "scripts/check_tests.py": "b7d10db0780aa851d8ba810796202e638abd79395cbf41071ac2114bb1bab920",
-        "scripts/prepare_release_assets.py": "f54a08057f0a5271dea8165978b8478b9d25638d2c203277d7b1017856f330b3",
         "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
-        "scripts/verify_windows_consumer.py": "00ce005f85d533cf04009f5d93e10805beeee0d7f4f77fe97f1599dcab9c55ab",
-        "src/ai_dlc/cli.py": "2c56f6d70e39b8ea51695d1639e81942529d47896ecec079f1a9c3e8dd88fe73",
+        "src/ai_dlc/cli.py": "4b0aa95f15aee585bc0b76555fe0e7e87b2ec0d6885f67bad93189b0767a7b46",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
         "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
@@ -270,31 +221,29 @@
         "tests/test_environment_report_collection.py": "2acfade90e9a7137a674adb75547a18e49d5992bbbe42d4e8ba7f072ab81dd41",
         "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
         "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
-        "tests/test_native_repository_checks.py": "737cc0c02ad1ca090bd0983fc74fe9620edaf94c0a71fd615d57c879b0ed83a5",
-        "tests/test_release_manifest.py": "45efed1c504dcb301ccc72bdedfc291dc779721c2f17c1be5094c1445e0d9920",
-        "tests/test_release_workflow.py": "38a3cb143d0247ce748267fc72393dd812f7a8b463f21f92c2604983035026e4",
-        "tests/test_windows_consumer.py": "8566b44b059ba5b2a58c3ded657d8bfd6c044761817dacd79457937f1d1a0849"
+        "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
+        "tests/test_release_workflow.py": "a50523b5d6dec682188d489780d29a74f2a01c60c310071ce6758898f3d12dc0"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Adding portable merge-checkout coverage to the hosted Windows core job does not alter historical receipts or qualify Windows 11, native clients, or package publication.",
-      "reviewer": "Codex integration review, 2026-09-26; main 41cc2b2 merged; native desktop qualification pending",
+      "reason": "Reviewed historical release and native platform limits. The new hosted Windows helper tests are automated server fixtures; no published package, Windows desktop, native harness or historical qualification result is changed.",
+      "reviewer": "codex",
       "target": "docs/release-verification.md"
     },
     {
       "bound": {
         "catalog:docs/runbooks/machine-enrollment.md": "5749f500521eba18b71290a6e63d8abcc82967ef13035e34b90406b7c67b26ee",
-        "docs/runbooks/machine-enrollment.md": "e61854d1060e75be3c3150aff71657a20b01712924c3d63bfb380e8ec3330a60",
+        "docs/runbooks/machine-enrollment.md": "817db5365ce2786515ecce389d4873ad766ea905adc14ad70ea823ceca3197b5",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/native-work-harnesses/spec.md": "08e9ac67d0cc7b844d677f9d762f83d90f5627165802a63a1d24964371593efc",
         "openspec/specs/team-sources/spec.md": "3dca430922c9b5d8eb7b678b0cf00da813f9be332e76cf59a448bd718f4d4587",
         "profiles/example/ai-dlc-profile.toml": "29b58a995e46b38ac75e5db5756e766e6b130f26e162448fc41fee898e7ff01e",
-        "src/ai_dlc/config.py": "af59a4d487c311cde2d34cf44fcad2aa6ebae8d48e7ebc77330466111a686eb5",
+        "src/ai_dlc/config.py": "3866ffe631e989d189bd17100dec9123f53f3f17ce77c56ec10decc560483e2c",
         "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
-        "src/ai_dlc/environment/bootstrap.py": "926632df2596d7f101a1cdabf71cd02884a96d459f5b2301beb968e8770cc7e4",
+        "src/ai_dlc/environment/bootstrap.py": "7fad9be94cc830cde041e4ad88c4b79b653f8e8d2c558f1d8db33f99a87b088d",
         "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
-        "src/ai_dlc/environment/enrollment.py": "843243bb0a4d39f50d4f1fd452e06b5d18b246f11e154adb3b5c77831ef3cd5a",
-        "src/ai_dlc/environment/machine.py": "392850ad304a8131e1647f9d71cde1758b219c2cba8f3fe249cf912fa1ea7c59",
+        "src/ai_dlc/environment/enrollment.py": "f8e826a9dca7a8e308f9ad52c8f178ad7e6f2c6c536da7459a68c123d51e9c53",
+        "src/ai_dlc/environment/machine.py": "2c3981ab3e8e4e52d2c3f86f02d8714bf92dd3229eaff99c72ac91961fbbd16a",
         "src/ai_dlc/environment/profile_source.py": "f177cc9336ed7c69e37299bc70107f14a7878ff72abbd1070dc3560340d451cc",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
@@ -302,11 +251,11 @@
         "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
         "src/ai_dlc/environment/source_content.py": "c11618009a7d4c3dbaa03b49d80df3a6f7cae37338a9fe92166865379d89670a",
         "src/ai_dlc/environment/source_schema.py": "929944f86aef4a0aa2e257f3fbb4bee26ce07c522ed2eb35c2e1bbba38ec44d0",
-        "src/ai_dlc/environment/team_sources.py": "162d8629b8314c5c6f1135736a73faaf52bb8e9dcc4b9f675d77393ab311a452",
+        "src/ai_dlc/environment/team_sources.py": "20d583a9046adfac9f0f5bf6de7aca537654eb29d0ff636c27f5a78c7c5c21a6",
         "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
-        "src/ai_dlc/harness/agents.py": "03944108d5e0ceb9529f253b62c2073ca829bbde255c865f08b52090a183f7f9",
-        "src/ai_dlc/harness/hooks.py": "39975d08397f60c0c91207bbec222c77d8e0b522c02815ae195ae0bf29fb3e62",
-        "src/ai_dlc/harness/team_source_render.py": "ff86d07b95bf4bcd69cc48c42a49a430e23db1f1fd7dff7955f43c76fb0833c5",
+        "src/ai_dlc/harness/agents.py": "83653b94d079444a632b0fd6b8b7af83c09d64593dd5abc85f4520d4ab9a85c8",
+        "src/ai_dlc/harness/hooks.py": "9a4c95d958eef99c71a5cbaf41f53b0f4e8a3288606cb1054457dbc5b0a3f88b",
+        "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
         "src/ai_dlc/providers/teamai.py": "ff7a781abcaeeca1c978f9472502156e31a1fc6d192ac50e1e489d333b77a5e6",
         "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
         "tests/test_agents_phases.py": "b0ee080814d5bc259c122e3e0067876ed407de9e0ac1afd088f850488b9748ac",
@@ -324,53 +273,9 @@
         "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Generated finish guidance changes do not alter the explicit Windows profile, concurrency, interruption, or desktop qualification procedure.",
-      "reviewer": "Codex integration review, 2026-09-26; main 41cc2b2 merged; native desktop qualification pending",
+      "reason": "Reviewed selected local profile/machine resolution against retained caller-relative machine provenance and historical project resolution. Enrollment authority and credential handling are unchanged; no enrollment or native qualification claim is added.",
+      "reviewer": "codex",
       "target": "docs/runbooks/machine-enrollment.md"
-    },
-    {
-      "bound": {
-        ".github/workflows/release.yml": "54077783bb2738431d7ee8f879c0481b679283df631e9a0a53a8f8c6ba19ee60",
-        "bootstrap/windows-native.cs": "fd16f4767595386621f1f1847184f809efb0eb7d23f9fef28b2410f048728faf",
-        "bootstrap/windows-select.py": "3366c0e029dc0bfbbd8b4576060631e6205a879fe97435362dd1f2558a41d84a",
-        "bootstrap/windows.json": "6c5d3c1d895404e0a0fdbffc2c703926dde670915013295d4f54779b63a51981",
-        "bootstrap/windows.ps1": "d48ad039e8edd916a1d645330b48d2251c3ec684a5d89db445381d73cfac8a08",
-        "catalog:docs/runbooks/release-publication.md": "89f19422d8dbbf072c44f496c5dad1f4efb6805319645a2ae2c8a99b67d93a28",
-        "docs/runbooks/release-publication.md": "5177ad6b285c8adc36a6750bb4e02d263326eac08608081f924496d5c10c9a57",
-        "project-templates/project/bootstrap/windows-native.cs": "fd16f4767595386621f1f1847184f809efb0eb7d23f9fef28b2410f048728faf",
-        "project-templates/project/bootstrap/windows-select.py": "3366c0e029dc0bfbbd8b4576060631e6205a879fe97435362dd1f2558a41d84a",
-        "project-templates/project/bootstrap/windows.json": "6c5d3c1d895404e0a0fdbffc2c703926dde670915013295d4f54779b63a51981",
-        "project-templates/project/bootstrap/windows.ps1": "d48ad039e8edd916a1d645330b48d2251c3ec684a5d89db445381d73cfac8a08",
-        "project-templates/project/scripts/bootstrap.ps1": "5ad401709b636b0c501b3b753031779d8bb74d816be24631fe5530f294db8f91",
-        "project-templates/project/scripts/bootstrap.sh": "258849a164d84198a1606771d734a8b4d4e59dca882438acb78201561561ce5c",
-        "scripts/bootstrap.ps1": "5ad401709b636b0c501b3b753031779d8bb74d816be24631fe5530f294db8f91",
-        "scripts/bootstrap.sh": "258849a164d84198a1606771d734a8b4d4e59dca882438acb78201561561ce5c",
-        "scripts/prepare_release_assets.py": "f54a08057f0a5271dea8165978b8478b9d25638d2c203277d7b1017856f330b3",
-        "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
-        "scripts/verify_windows_consumer.py": "00ce005f85d533cf04009f5d93e10805beeee0d7f4f77fe97f1599dcab9c55ab",
-        "src/ai_dlc/setup/templates.py": "1fc9173daa6fe71eebf00eda0f4e2b7263c65f694d3b227dee5421240e0eca62",
-        "tests/test_bootstrap.py": "f86a298356da2ccae4e3a84f01bcead4dc87a5e3c64ce214f9418062469551cb",
-        "tests/test_release_manifest.py": "45efed1c504dcb301ccc72bdedfc291dc779721c2f17c1be5094c1445e0d9920",
-        "tests/test_release_workflow.py": "38a3cb143d0247ce748267fc72393dd812f7a8b463f21f92c2604983035026e4"
-      },
-      "outcome": "updated",
-      "reason": "Documents native assets, exact candidate publication gate/read-only replay and historical v0.4 incompatibility; no package publication or unobserved qualification claimed.",
-      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
-      "target": "docs/runbooks/release-publication.md"
-    },
-    {
-      "bound": {
-        "catalog:docs/verification/backend-contracts.md": "310debc30b936d1941bc565fcd6145edc14b1bc6f1ddeca3c703211d9f4cd465",
-        "docs/verification/backend-contracts.md": "8467afbbf49d04d46269aba4e5ff8fe84c3104c5dcf2696026dc92c77aa3e4fa",
-        "openspec/specs/backend-capability-pack/spec.md": "45fc3ca17f9953edf4aa15f24c1a4176e84bceaf179fdb10f35ab58fd85e6a3e",
-        "project-templates/project/ai-dlc.toml.jinja": "f02135553a194dd9b78fab69d905b8d1ea3b1f3debc602c5c3ac00906e0df4f3",
-        "project-templates/project/scripts/check_api_contract_drift.py": "81c6da34445a1329223f2592eb1389aaf35d2e12b73da73d7b9c9ffdb0b55173",
-        "tests/test_backend_capability.py": "d54ccce3861776fdb140962b0dd7f5f6e07fc53bece997c67675982fa1e60f2f"
-      },
-      "outcome": "reviewed-no-change",
-      "reason": "Python backend command representation becomes argv but validator pins and drift behavior are unchanged; historical validator/frontend evidence remains historical.",
-      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
-      "target": "docs/verification/backend-contracts.md"
     },
     {
       "bound": {
@@ -382,7 +287,7 @@
         "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
         "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
         "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
-        "src/ai_dlc/config.py": "af59a4d487c311cde2d34cf44fcad2aa6ebae8d48e7ebc77330466111a686eb5",
+        "src/ai_dlc/config.py": "3866ffe631e989d189bd17100dec9123f53f3f17ce77c56ec10decc560483e2c",
         "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
         "src/ai_dlc/documentation/document_files.py": "3174b5773adf54c9a0f586a041c4e67001d136d9ba1016ec1cbb0b54debafd55",
         "src/ai_dlc/documentation/document_impact.py": "bf3353c2ab99166c4900647ac7a0626bba3ee08a4a4f92ffa9269167f86012ca",
@@ -390,7 +295,7 @@
         "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
         "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
         "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
-        "src/ai_dlc/harness/agents.py": "03944108d5e0ceb9529f253b62c2073ca829bbde255c865f08b52090a183f7f9",
+        "src/ai_dlc/harness/agents.py": "83653b94d079444a632b0fd6b8b7af83c09d64593dd5abc85f4520d4ab9a85c8",
         "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
         "tests/test_company_guidance.py": "ab39bed3342d9de7d4c68db6c6c54fd66e13c12f2f2167c38e8d345c7dc9736e",
         "tests/test_document_access.py": "bdf96af4afb1ad6f985204ad243a624d4da8b56d527af63cc072908a76beeff4",
@@ -402,57 +307,9 @@
         "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7"
       },
       "outcome": "reviewed-no-change",
-      "reason": "The merged finish service changes no historical documentation, Obsidian, Antigravity, or external MCP observation claim.",
-      "reviewer": "Codex integration review, 2026-09-26; main 41cc2b2 merged; native desktop qualification pending",
+      "reason": "Reviewed dated documentation and native guidance evidence. Generated delivery wording adds the bounded helper and preserves manual fallback; historical observations and review dates remain unchanged.",
+      "reviewer": "codex",
       "target": "docs/verification/documentation-workflow.md"
-    },
-    {
-      "bound": {
-        "agents/skills/spec-from-prd/SKILL.md": "9ceeb895bfe68311de31b1a0f5751dd4471be53b3de7aa9441dc69d3f808cf68",
-        "agents/templates/delivery-slice.md": "4a7a5d7af2f6a99b4e7eac13491eef751def074451d6899acc36ccf1f536bd6f",
-        "catalog:docs/workflows/brownfield.md": "dedbc6f762c6970ac999eb74598adc31dd6dbfe16a6b3ae8842345b9e37838b4",
-        "docs/workflows/brownfield.md": "ba6fea8571f096715f64e0253444f218d307aee61777c47b91d0149efea22e26",
-        "openspec/specs/portable-development/spec.md": "2c75caee1dc2f59828c49ba940be6a186580b07032c52b63fc750788b7535a4d",
-        "project-templates/project/docs/workflows/brownfield.md": "300acec2c3562b8d76178e0de1ec3bd155882f0ce5180879b195657d5eb58c1f",
-        "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
-        "tests/test_templates.py": "99196006ef93f12a88bc3811bc052d3c0a00f8c0bbb72e6383badcfc6cb541fa"
-      },
-      "outcome": "updated",
-      "reason": "Current target-owned acceptance guidance is retained unchanged by the native integration; Windows availability remains governed by the onboarding qualification boundary.",
-      "reviewer": "Codex integration review, 2026-09-26; main 05ab789 merged; native desktop qualification pending",
-      "target": "docs/workflows/brownfield.md"
-    },
-    {
-      "bound": {
-        "catalog:docs/workflows/design-to-implementation.md": "ee408b745f85bdc4229b75b8dfd6c9074257194e2a65933b4ba31f56522f389d",
-        "docs/workflows/design-to-implementation.md": "b57542497f6c3d50e2187139980982800340525616f27d87b9934e156c1881a9",
-        "openspec/specs/frontend-capability-pack/spec.md": "a8461cc35ff733d3643f9cb8fbeb691f0cae7ea7d54eae59b756883c7e5a78ea",
-        "project-templates/project/ai-dlc.toml.jinja": "f02135553a194dd9b78fab69d905b8d1ea3b1f3debc602c5c3ac00906e0df4f3",
-        "project-templates/project/playwright.config.ts": "d06e3c907f16f5027d6e2f47112b5cca353e68525a528957f6f760eca940fd78",
-        "project-templates/project/tests/e2e/smoke.spec.ts": "8139af70f4b8ba2010efc673d4b0c6fb802ea101d2d70f08ec47b3007db78c35",
-        "src/ai_dlc/harness/design_capture.py": "8b872492b88f4a7728bedf0ae8a1edaad2312a918248bf8f5d051c8bd8b42a58",
-        "tests/test_frontend.py": "4deefd2f60011e34cdf8e79bf2d02726ea9fee99e2af43e8fe75ed51352cb0ef"
-      },
-      "outcome": "reviewed-no-change",
-      "reason": "Frontend browser capture and design workflow are unchanged; native minimal setup does not qualify optional frontend tools.",
-      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
-      "target": "docs/workflows/design-to-implementation.md"
-    },
-    {
-      "bound": {
-        "catalog:docs/workflows/greenfield.md": "b8bf78cb5032ea2be2d67e770261aca4cca32914a41a987e3caa8f5b6969d50d",
-        "docs/workflows/greenfield.md": "688f9aa6dd018cc7946a0022b382fb513eba4111ff201be6bceee56d8d53edcd",
-        "openspec/specs/backend-capability-pack/spec.md": "45fc3ca17f9953edf4aa15f24c1a4176e84bceaf179fdb10f35ab58fd85e6a3e",
-        "project-templates/project/ai-dlc.toml.jinja": "f02135553a194dd9b78fab69d905b8d1ea3b1f3debc602c5c3ac00906e0df4f3",
-        "project-templates/project/docs/api/openapi.yaml": "744e869692de7df60d4195669a45f8ade009b04c00c203c4853e30f4b9af5b2d",
-        "project-templates/project/scripts/check_api_contract_drift.py": "81c6da34445a1329223f2592eb1389aaf35d2e12b73da73d7b9c9ffdb0b55173",
-        "src/ai_dlc/setup/templates.py": "1fc9173daa6fe71eebf00eda0f4e2b7263c65f694d3b227dee5421240e0eca62",
-        "tests/test_backend_capability.py": "d54ccce3861776fdb140962b0dd7f5f6e07fc53bece997c67675982fa1e60f2f"
-      },
-      "outcome": "updated",
-      "reason": "Clarifies portable generic/Python starter commands, init-only lock creation, adoption preservation and no-install check semantics.",
-      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
-      "target": "docs/workflows/greenfield.md"
     },
     {
       "bound": {
@@ -462,20 +319,20 @@
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/native-work-harnesses/spec.md": "08e9ac67d0cc7b844d677f9d762f83d90f5627165802a63a1d24964371593efc",
         "openspec/specs/spec-delivery-traceability/spec.md": "66641acf9c151792cde1914062630ed50cc4199cdc3bdb4b81382e03716f2ea3",
-        "src/ai_dlc/cli.py": "2c56f6d70e39b8ea51695d1639e81942529d47896ecec079f1a9c3e8dd88fe73",
-        "src/ai_dlc/config.py": "af59a4d487c311cde2d34cf44fcad2aa6ebae8d48e7ebc77330466111a686eb5",
+        "src/ai_dlc/cli.py": "4b0aa95f15aee585bc0b76555fe0e7e87b2ec0d6885f67bad93189b0767a7b46",
+        "src/ai_dlc/config.py": "3866ffe631e989d189bd17100dec9123f53f3f17ce77c56ec10decc560483e2c",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
         "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
         "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
         "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
-        "src/ai_dlc/harness/agents.py": "03944108d5e0ceb9529f253b62c2073ca829bbde255c865f08b52090a183f7f9",
-        "src/ai_dlc/harness/hooks.py": "39975d08397f60c0c91207bbec222c77d8e0b522c02815ae195ae0bf29fb3e62",
+        "src/ai_dlc/harness/agents.py": "83653b94d079444a632b0fd6b8b7af83c09d64593dd5abc85f4520d4ab9a85c8",
+        "src/ai_dlc/harness/hooks.py": "9a4c95d958eef99c71a5cbaf41f53b0f4e8a3288606cb1054457dbc5b0a3f88b",
         "src/ai_dlc/mcp_server.py": "607eba3e47a8573862d83e5209e824b78ec0af74545fa51727b8d3f7c03db410",
         "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
         "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
         "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
-        "src/ai_dlc/work/workflow.py": "4dfab44222a16c0e08942d1274cb2053678231a0c633ecc70d22dd76092080a7",
+        "src/ai_dlc/work/workflow.py": "062a0df156a06eee613dacd88d94e411301cc59eeb74a05748a17ac0a005648e",
         "tests/test_agents_phases.py": "b0ee080814d5bc259c122e3e0067876ed407de9e0ac1afd088f850488b9748ac",
         "tests/test_cli.py": "8dd3b5e6c99714ca60f64f6db0233e21d8d15628e511c6ca0ac32944e5427af6",
         "tests/test_config.py": "60bd9343da62e760c92083765439452e4a1e924b6f585ef14780af1f7b3349ce",
@@ -486,25 +343,25 @@
         "tests/test_environment_report_collection.py": "2acfade90e9a7137a674adb75547a18e49d5992bbbe42d4e8ba7f072ab81dd41",
         "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
         "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
-        "tests/test_finish_merged_checkout.py": "536ec375930bbc2c67217391aec3e321399b248889e82a2980ffb52e5e225b41",
+        "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
         "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
         "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
         "tests/test_rendering.py": "cbc5c9bbc5dceafda37d1f41781f2d86891ba2273b6e32455e6997bcfd7f312c",
         "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2",
         "tests/test_workflow.py": "38aa9de4fad30227e0348a2054ac7e1043cd6fe260e41dc4df5617de9c482b94"
       },
-      "outcome": "reviewed-no-change",
-      "reason": "Explicit UTF-8 decoding fixes native portability without changing the finish command, MCP surface, or provider responsibilities.",
-      "reviewer": "Codex integration review, 2026-09-27; UTF-8 finish preflight regression fixed; native desktop qualification pending",
+      "outcome": "updated",
+      "reason": "Maps the explicit at-merge option to the existing work lifecycle without presenting checkout preparation as completion authority.",
+      "reviewer": "codex",
       "target": "docs/workflows/tool-map.md"
     },
     {
       "bound": {
         "catalog:docs/workflows/work-computer-setup.md": "62d0a76f141100f0e8d2219cf5e7b398c0530796f3a7fa2ae95348450d0bdbb5",
-        "docs/workflows/work-computer-setup.md": "961cc3f3add708b9fa14afcc6aeaaea0945dee35f1db0616e6f1c497bd28c521",
+        "docs/workflows/work-computer-setup.md": "3d4fee69db9046cebc961e945808dd395614fcd98c97931454d0b4b91998ae48",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
-        "src/ai_dlc/cli.py": "2c56f6d70e39b8ea51695d1639e81942529d47896ecec079f1a9c3e8dd88fe73",
+        "src/ai_dlc/cli.py": "4b0aa95f15aee585bc0b76555fe0e7e87b2ec0d6885f67bad93189b0767a7b46",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
         "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
@@ -520,108 +377,108 @@
         "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be"
       },
       "outcome": "reviewed-no-change",
-      "reason": "The finish CLI addition does not activate Windows onboarding or change the qualified macOS/Linux consumer setup route.",
-      "reviewer": "Codex integration review, 2026-09-26; main 41cc2b2 merged; native desktop qualification pending",
+      "reason": "Reviewed consumer installation, project routing, local bindings and qualification limits. The optional finish helper changes none of these setup steps and does not install or authenticate native tools.",
+      "reviewer": "codex",
       "target": "docs/workflows/work-computer-setup.md"
     },
     {
       "bound": {
-        "modules/catalog.toml": "46507e5fedbdaff1929244f5e8d5a61a95a9dcc00c28b751389ffe628221d54f"
+        "openspec/changes/archive/2026-09-27-finish-merged-checkout/delivery.md": "6714e72ec2114cb9303b76cacccffcf9af7b1bb75858c331783bdc4c2d08d9ff"
       },
       "outcome": "updated",
-      "reason": "Records exact Windows core package identities and pinned Python requirements; native adapter refuses automatic elevation-capable installers and diagnoses unsupported selected modules.",
-      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
-      "target": "modules/catalog.toml"
+      "reason": "Reviewed archived exact-merge helper requirements, task evidence and moved links; archive is distinct from final required checks and gated remote completion.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-finish-merged-checkout/delivery.md"
     },
     {
       "bound": {
-        "openspec/changes/windows-native-setup/tasks.md": "281bfd1aaf87c0ec07f84578ba219e12154833c307b76e946e37cce607ad68e5"
+        "openspec/changes/archive/2026-09-27-finish-merged-checkout/design.md": "ab4ea4832bce18c3c50cb060b061adb23d83f098cd9f6b79149ae1a8e0d93e10"
       },
       "outcome": "updated",
-      "reason": "Records completed dependency and implementation interfaces while retaining evidence-bound unchecked implementation/qualification tasks.",
-      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
-      "target": "openspec/changes/windows-native-setup/tasks.md"
+      "reason": "Reviewed archived exact-merge helper requirements, task evidence and moved links; archive is distinct from final required checks and gated remote completion.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-finish-merged-checkout/design.md"
     },
     {
       "bound": {
-        "project-templates/copier.yml": "590f411161c128eae87ea55f2e26a17ff5950e4eb11b0e9ab18000b507ce7108"
+        "openspec/changes/archive/2026-09-27-finish-merged-checkout/proposal.md": "6f39a53857ed5047aa6641682cbc2d691860c022d0c89061710779cb8e48fe5c"
       },
       "outcome": "updated",
-      "reason": "Includes bounded Python setup helper in applicable generated projects; documented init/adoption behavior stays in canonical greenfield workflow.",
-      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
-      "target": "project-templates/copier.yml"
+      "reason": "Reviewed archived exact-merge helper requirements, task evidence and moved links; archive is distinct from final required checks and gated remote completion.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-finish-merged-checkout/proposal.md"
     },
     {
       "bound": {
-        "project-templates/project/scripts/setup_python.py": "a71953ba280a31f880db5fe1d8c71bce9c76c44eebd8e3c0181673f2b10b4a59"
+        "openspec/changes/archive/2026-09-27-finish-merged-checkout/specs/spec-delivery-traceability/spec.md": "809f58bfe3c8f238dae45c25a73cbe30b8c65ca5be10f26eeb38f15a41101353"
       },
       "outcome": "updated",
-      "reason": "Implements documented init/adopt/setup/check semantics and requires prepared interpreter for checks, preserving authored lock/test ownership.",
-      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
-      "target": "project-templates/project/scripts/setup_python.py"
+      "reason": "Reviewed archived exact-merge helper requirements, task evidence and moved links; archive is distinct from final required checks and gated remote completion.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-finish-merged-checkout/specs/spec-delivery-traceability/spec.md"
     },
     {
       "bound": {
-        "tests/test_native_templates.py": "ad8c6dfc53db8839f42ff6e6142ba366cd8109d30b2c9938e379adab2d328f90"
+        "openspec/changes/archive/2026-09-27-finish-merged-checkout/tasks.md": "5531913ab19b6a7098a34ad74b95f6c57a35e449289fc6729d65181dae25d62b"
       },
-      "outcome": "no-impact",
-      "reason": "Regression coverage for the documented native setup, provisioning, profile or template behavior; tests do not independently establish live platform qualification.",
-      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
-      "target": "tests/test_native_templates.py"
+      "outcome": "updated",
+      "reason": "Reviewed archived exact-merge helper requirements, task evidence and moved links; archive is distinct from final required checks and gated remote completion.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-finish-merged-checkout/tasks.md"
     },
     {
       "bound": {
-        "tests/test_portable_commands.py": "ec9d534168d78051335316eedabcb308ecfa0ef23ef35b94937ee850d89e3248"
+        "openspec/changes/finish-merged-checkout/delivery.md": "missing"
       },
-      "outcome": "no-impact",
-      "reason": "Corrects test-owned UTF-8/LF configuration fixtures for non-ASCII native interpreter paths and adds a forced legacy-code-page regression; command execution and acceptance requirements are unchanged.",
-      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
-      "target": "tests/test_portable_commands.py"
+      "outcome": "updated",
+      "reason": "Archived through ai-dlc work archive with bound record paths updated and formal requirements promoted; no qualification evidence is inferred from archival.",
+      "reviewer": "codex",
+      "target": "openspec/changes/finish-merged-checkout/delivery.md"
     },
     {
       "bound": {
-        "tests/test_provision.py": "e3509f75f971eada681f6ea3dbc432485d16b2bd4bb39a549779b940e1b12a29"
+        "openspec/changes/finish-merged-checkout/design.md": "missing"
       },
-      "outcome": "no-impact",
-      "reason": "Regression coverage for the documented native setup, provisioning, profile or template behavior; tests do not independently establish live platform qualification.",
-      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
-      "target": "tests/test_provision.py"
+      "outcome": "updated",
+      "reason": "Archived through ai-dlc work archive with bound record paths updated and formal requirements promoted; no qualification evidence is inferred from archival.",
+      "reviewer": "codex",
+      "target": "openspec/changes/finish-merged-checkout/design.md"
     },
     {
       "bound": {
-        "tests/test_windows_bootstrap.py": "0fc354cc44e3330354c52972a6fbee52c9def8067008ff3fe3bb57372a0dba91"
+        "openspec/changes/finish-merged-checkout/proposal.md": "missing"
       },
-      "outcome": "no-impact",
-      "reason": "Regression coverage for the documented native setup, provisioning, profile or template behavior; tests do not independently establish live platform qualification.",
-      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
-      "target": "tests/test_windows_bootstrap.py"
+      "outcome": "updated",
+      "reason": "Archived through ai-dlc work archive with bound record paths updated and formal requirements promoted; no qualification evidence is inferred from archival.",
+      "reviewer": "codex",
+      "target": "openspec/changes/finish-merged-checkout/proposal.md"
     },
     {
       "bound": {
-        "tests/test_windows_core.py": "08fc5803e39aa3c3deb6fa2ead924714d4d78991c957c3457171c9ec0d550a9d"
+        "openspec/changes/finish-merged-checkout/specs/spec-delivery-traceability/spec.md": "missing"
       },
-      "outcome": "no-impact",
-      "reason": "Corrects test-owned UTF-8/LF configuration fixtures for non-ASCII native interpreter paths and adds a forced legacy-code-page regression; command execution and acceptance requirements are unchanged.",
-      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
-      "target": "tests/test_windows_core.py"
+      "outcome": "updated",
+      "reason": "Archived through ai-dlc work archive with bound record paths updated and formal requirements promoted; no qualification evidence is inferred from archival.",
+      "reviewer": "codex",
+      "target": "openspec/changes/finish-merged-checkout/specs/spec-delivery-traceability/spec.md"
     },
     {
       "bound": {
-        "tests/test_windows_environment.py": "3ac1db58b2d59d188b2db5d7e640778241f5b49ea45375400386b0b4cc900eb7"
+        "openspec/changes/finish-merged-checkout/tasks.md": "missing"
       },
-      "outcome": "no-impact",
-      "reason": "Regression coverage for the documented native setup, provisioning, profile or template behavior; tests do not independently establish live platform qualification.",
-      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
-      "target": "tests/test_windows_environment.py"
+      "outcome": "updated",
+      "reason": "Archived through ai-dlc work archive with bound record paths updated and formal requirements promoted; no qualification evidence is inferred from archival.",
+      "reviewer": "codex",
+      "target": "openspec/changes/finish-merged-checkout/tasks.md"
     },
     {
       "bound": {
-        "tests/test_windows_provision.py": "1c97e23f23cd66e0029759b47985271c115d17cb9093573f8144b4b577249831"
+        "project-templates/project/docs/workflows/tool-map.md": "de560ca87f5d004a1fa66f744b0ff9be7edce8ce07a0087cd734bf012afe2d9e"
       },
-      "outcome": "no-impact",
-      "reason": "Regression coverage for the documented native setup, provisioning, profile or template behavior; tests do not independently establish live platform qualification.",
-      "reviewer": "Codex implementation review, 2026-09-26; hosted candidate passed; desktop qualification pending",
-      "target": "tests/test_windows_provision.py"
+      "outcome": "updated",
+      "reason": "Documents the explicit helper in the downstream project work lifecycle without personal repository, account or machine details.",
+      "reviewer": "codex",
+      "target": "project-templates/project/docs/workflows/tool-map.md"
     }
   ],
   "schema": 2

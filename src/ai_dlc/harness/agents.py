@@ -1017,7 +1017,8 @@ def _shared_guidance_lines(
     if finish and openspec:
         lines.append(
             "Finish from a checkout at the merge commit; when the target branch has moved, "
-            "prepare a temporary detached worktree at that commit, finish there, then remove it."
+            "run `ai-dlc work finish <work-id> --at-merge`, or prepare a temporary detached worktree "
+            "at that commit, finish there, then remove it."
         )
     lines.append("Store architecture, design, decisions and runbooks in docs/.")
     if knowledge:

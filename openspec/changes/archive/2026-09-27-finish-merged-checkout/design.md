@@ -2,7 +2,7 @@
 
 ## Context and authority
 
-[Product direction](../../../docs/product-direction.md) favors existing tools and smaller delivery overhead. TR-04 requires exact merged-revision specification evidence and documents manual detached-worktree recovery. `WorkService.finish` already checks merged PR identity, CI and specification state before reading and transitioning the tracker; its journal reconciles uncertain completion and pending knowledge writes. `WorkService.from_project` resolves local bindings and an explicit state path. The helper must compose these boundaries, not introduce another completion engine.
+[Product direction](../../../../docs/product-direction.md) favors existing tools and smaller delivery overhead. TR-04 requires exact merged-revision specification evidence and documents manual detached-worktree recovery. `WorkService.finish` already checks merged PR identity, CI and specification state before reading and transitioning the tracker; its journal reconciles uncertain completion and pending knowledge writes. `WorkService.from_project` resolves local bindings and an explicit state path. The helper must compose these boundaries, not introduce another completion engine.
 
 ## Entry point and flow
 
