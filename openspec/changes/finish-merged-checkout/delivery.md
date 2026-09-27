@@ -40,7 +40,9 @@ Native-Windows work owns portability implementation/qualification of core filesy
 | FMC-05 Normal / Changed resource / Foreign path | Owned clean resources removed; unsafe removal retained and reported separately | Real cleanup, refusal and failure-injection cases |
 | TR-04 Recovery guidance | Plain finish still refuses wrong revision and offers explicit helper/manual remedy | CLI/service and generated-guidance regression |
 
-All implementation evidence is pending. Mocked provider outcomes are not live completion qualification; an actual sandbox run must be separately authorized and recorded with its exact revision/environment.
+Local implementation evidence: 28 real-Git owned-checkout tests and six Git-runner checks passed after two cleanup recovery regressions were corrected. The shared finish service passed 26 helper cases, including spawned-process concurrency and a deliberately incorrect lock variant that reproduces duplicate transitions. Existing finish/construction checks passed, including 13 focused identity/reconciliation regressions after the service review fixes; CLI/guidance checks passed 94 cases and rendering/templates passed 418. These counts belong to their focused groups and are not a full-suite total. Whole-project formatting, lint, types, generated files, layout and strict specification validation passed before final review.
+
+Independent task and whole-branch reviews are complete; all findings were reproduced, corrected and accepted in scoped re-review. Full required delivery checks and hosted Windows helper execution remain pending on the finalized archived delivery revision. All remote SCM/tracker outcomes in these tests are mocked. They are not live completion qualification; an actual sandbox run must be separately authorized and recorded with its exact revision/environment. No command/time/token saving has been measured or added to the historical delivery baseline.
 
 ## Implementation sequence
 
@@ -52,6 +54,6 @@ Review `docs/development-workflow.md`, `docs/workflows/tool-map.md`, selected-ca
 
 ## Open inputs and next action
 
-No unresolved merge semantics: the authenticated bound PR merge SHA is authoritative, and missing local objects produce a fetch remedy. Implementation must inspect the current platform-safe worktree/locking primitives and select bounded storage/recovery details that meet ownership requirements; it must not invent remote reconciliation. A future live sandbox host/credentials and implementation owner remain unassigned.
+No unresolved merge semantics: the authenticated bound PR merge SHA is authoritative, and missing local objects produce a fetch remedy. Implementation must inspect the current platform-safe worktree/locking primitives and select bounded storage/recovery details that meet ownership requirements; it must not invent remote reconciliation. A future live sandbox host and credentials remain unassigned; implementation is owned by the reviewed work branch.
 
 Decision: proceed with specification/issue handoff for this bounded helper, without extending it to pre-merge orchestration or executing provider mutations during specification preparation.
