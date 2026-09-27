@@ -52,7 +52,9 @@ Own `agents/skills/spec-from-prd/SKILL.md`, its lock/generated copies, `agents/t
 - [ ] Inspect existing guidance and PC-01/02/03; add source-grounded inspect/propose/review steps, requirement/check/source/prerequisite mapping, required/optional choice and explicit unknowns using those existing surfaces.
 - [ ] Add the bounded external-fixture pass/fail/restored-pass procedure, isolation refusal, missed-regression failure, honest evidence fields and normal-runner mise requirement. Keep the detailed procedure in one canonical workflow and use short task-specific pointers elsewhere.
 - [ ] Update generated/locked copies using repository tools; preserve authored application tests/configuration. Run relevant existing rendering/template/preservation/check/runtime/receipt tests and scoped asset checks; no new scanner, service, skill or redundant textual tests.
-- [ ] Self-review and commit only owned files; record concise affected checks and limitations in ignored task-a-report.md for independent review.
+- [x] Self-review and commit only owned files; record concise affected checks and limitations in ignored task-a-report.md for independent review.
+
+Task A implementation `66a429e` passed independent specification/quality review; the ineffective baseline heading probe in its scratch report was corrected. Generated assets and 18 focused existing cases passed.
 
 ### Task B — Common evaluation runtime and ordinary-runner smoke
 
@@ -61,6 +63,7 @@ Own `verification/evaluation/contracts.py`, `image.py`, generated base-image sch
 - [ ] Add failing contract/build tests for optional strict mise version/platform hashes, absent architecture and checksum mismatch, exact executable bytes/mode in shared base, and offline non-root version check. Preserve recipes without the optional block; state their runtime limitation.
 - [ ] Add checksum-pinned mise to the shipped shared base recipe using the existing bootstrap Linux x64/arm64 pins and existing HTTPS fetch pattern. Verify architecture/digest before build, no extra runtime installed by candidate checks. Record mise identity in build output when declared; no paid model call.
 - [ ] Update the existing no-model candidate attempt smoke to run `project setup` and `project check --required` with a collected receipt under its existing offline isolation, while baseline receives no AI-DLC guidance. Retain direct behavioral test evidence separately; assert actual required outcomes, not just exit/version text.
+- [ ] Repair the observed raw local-image ID handoff using a verified content-derived local alias while preserving the digest-bound input/result and ancestry checks; refuse alias conflicts and retain the underlying baseline image. Cover local/matching/conflicting references and failed identity checks.
 - [ ] Regenerate the schema, run focused image/attempt/schema tests and scoped Ruff/types, self-review and commit owned files. Do not launch real builds: controller runs and records those after the code is clean.
 
 ### Task C — Actual rehearsal, verification and delivery

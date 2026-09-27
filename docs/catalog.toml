@@ -403,7 +403,7 @@ path = "docs/development-workflow.md"
 kind = "reference"
 owner = "repository-maintainers"
 status = "draft"
-code_paths = ["src/ai_dlc/setup/project.py", "src/ai_dlc/setup/commands.py", "src/ai_dlc/cli.py", "project-templates/project/ai-dlc.toml.jinja", "project-templates/project/scripts/check_tests.py", "project-templates/project/tests/test_main.py", "agents/skills/spec-from-prd/SKILL.md", "agents/templates/delivery-slice.md", "project-templates/project/docs/templates/delivery-slice.md", "project-templates/project/AI-DLC.md", "project-templates/project/docs/development-workflow.md.jinja"]
+code_paths = ["src/ai_dlc/setup/project.py", "src/ai_dlc/setup/commands.py", "src/ai_dlc/cli.py", "project-templates/project/ai-dlc.toml.jinja", "project-templates/project/scripts/check_tests.py", "project-templates/project/tests/test_main.py", "agents/skills/spec-from-prd/SKILL.md", "agents/skills.lock.json", ".agents/skills/spec-from-prd/SKILL.md", ".claude/skills/spec-from-prd/SKILL.md", ".ai-dlc/agent-ownership.json", "agents/templates/delivery-slice.md", "project-templates/project/docs/templates/delivery-slice.md", "project-templates/project/AI-DLC.md", "project-templates/project/docs/development-workflow.md.jinja"]
 verification_paths = ["tests/test_checks.py", "tests/test_project.py", "tests/test_templates.py"]
 requirements = ["openspec/specs/portable-development/spec.md", "openspec/changes/behavioral-check-onboarding/specs/portable-development/spec.md"]
 
