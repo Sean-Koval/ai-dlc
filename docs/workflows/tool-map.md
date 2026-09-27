@@ -94,6 +94,8 @@ knowledge append`.
 | Area | Interfaces | Effect |
 | --- | --- | --- |
 | Readiness and context | `ai-dlc doctor`, `ai-dlc next`, `ai-dlc context` | Checks the selected environment; `next` and `context --brief` show local next actions without consulting the tracker |
+| Consumer onboarding | `ai-dlc project onboard --root PATH` | Returns a read-only schema-1 plan from the explicit target and selections; exit 0 means actions are available, not completed, and no apply mode or MCP operation exists |
+| Environment comparison | `ai-dlc machine status --root PATH --export FILE`, `ai-dlc machine status --compare LEFT RIGHT` | Exports permitted local facts and compares only two reports; unknown required identity prevents equivalence, while useful known drift remains visible. See [report modes and exit codes](../runbooks/machine-enrollment.md#compare-selected-environments) |
 | Project creation | `ai-dlc project init`, `ai-dlc project adopt` | Initializes a project or previews/applies conflict-safe adoption |
 | Project maintenance | `ai-dlc project sync`, `ai-dlc project rebind` | Performs staged Copier updates or previews/applies reviewed provider rebinding, including reviewed provider connection rebinding |
 | Project execution | `ai-dlc project setup`, `ai-dlc project check --check ID`, `ai-dlc project check --required` | Runs selected edit checks or full required verification and emits receipts that retain every required ID |
@@ -111,6 +113,22 @@ knowledge append`.
 | Agent-native access | `ai-dlc mcp serve` | Exposes reviewed work, read-only doctor, project documentation, workspace previews and inspection, and selected knowledge services through local MCP; machine enrollment mutation remains CLI-only |
 | Engine evaluation (maintainers) | `ai-dlc eval plan SUITE --profile PROFILE`, `ai-dlc eval run SUITE --profile PROFILE --out DIR`, `ai-dlc eval report DIR`, `ai-dlc eval image --base IMAGE`, `ai-dlc eval base RECIPE` | `plan` validates a suite and execution profile offline and prints the scenario, arm and attempt matrix. `run` executes each attempt in an isolated container (offline for deterministic scripts, with an allow-listing proxy for real clients), grades hidden acceptance tests in a separate container and retains inputs and evidence; it needs Docker and locally present pinned images, and never pulls. `image` builds the treatment arm's candidate image from this checkout's wheel and locked, hash-pinned constraints on top of the baseline image; it needs uv, Docker and a package index. `base` builds the image both arms share from a recipe: a pinned parent, Git and a coding client whose binary it downloads and checks against the recipe's sha256; it needs Docker and network. `report` rebuilds `report.json`, JUnit and a failure timeline from a run directory alone, and marks changed, missing or truncated evidence as incomplete |
 | Legacy compatibility | `ai-dlc scaffold` | Preserves the retired Rust-era provider scaffolding interface |
+
+### Optional publication hook
+
+`bound-push` is selected separately through a supported client's `required_hooks`.
+Its project-only `agents.bound_push_policy` defaults to `all-branches`, requiring
+reviewed tracker-bound work for covered push and PR-create commands. Explicit
+`tracked-branches` also allows a known branch with no associated record after a
+complete readable inventory. Every associated record must still pass local
+validation; malformed or unreadable inventory cannot grant an exemption.
+Selecting a policy alone does not enable a hook or expand supported client/version
+coverage. See [the workflow decision](../development-workflow.md#when-a-work-record-is-needed)
+for the configuration example.
+
+This offline check does not query the remote tracker or enforce arbitrary shell
+commands. Destructive denials, native approval, review, required checks and
+exact-merge completion evidence retain their existing boundaries.
 
 ## Artifact ownership
 

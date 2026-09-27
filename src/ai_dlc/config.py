@@ -233,6 +233,16 @@ def _validate(layer: str, data: dict[str, Any]) -> None:
     agents = data.get("agents")
     if agents is not None and not isinstance(agents, dict):
         raise TypeError(f"{layer}: agents must be a table")
+    if isinstance(agents, dict) and "bound_push_policy" in agents:
+        if layer != "project":
+            raise ValueError(f"{layer}: cannot set agents.bound_push_policy")
+        policy = agents["bound_push_policy"]
+        if not isinstance(policy, str):
+            raise TypeError("project: agents.bound_push_policy must be a string")
+        if policy not in {"all-branches", "tracked-branches"}:
+            raise ValueError(
+                "project: agents.bound_push_policy must be all-branches or tracked-branches"
+            )
     if isinstance(agents, dict) and "sdk_versions" in agents:
         if layer != "project":
             raise ValueError(f"{layer}: cannot set agents.sdk_versions")

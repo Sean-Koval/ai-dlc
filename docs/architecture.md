@@ -63,6 +63,39 @@ The repository stores architecture, design rationale, decisions, runbooks and re
 
 Prefer one application with explicit module responsibilities over speculative service decomposition. CLI, MCP, and agent clients share validation where an MCP service is exposed; the CLI alone owns machine enrollment mutation. The local CLI and local MCP are today's primary control plane; hosted or cloud execution is a later qualification target. External provider failures and uncertain mutations remain visible. Credentials are environment references, never template values.
 
+Consumer onboarding is a read-only composition boundary in `setup/onboarding.py`.
+It resolves one explicit existing target, target-owned configuration, optional
+explicit enrollment identity, host/shell/client support, and existing operation
+owners into an ordered schema-1 plan. It does not run previews or apply operations,
+open a network connection, launch a subprocess, stage adoption, repair caches, or
+persist an orchestration session. The thin `project onboard --root PATH` CLI emits
+that plan and maps its state to an exit code; it has no apply mode or MCP endpoint.
+For a fresh target, adoption precedes root-scoped machine planning because the
+existing machine owner requires the target configuration. Each apply still needs
+its separate review. Existing enrollment, machine provisioning, adoption, setup,
+rendering, readiness, and target-check services retain their own review, mutation,
+recovery, and evidence
+boundaries. Project configuration wins over conflicting CLI choices, while omitted
+enrollment stays unselected for a self-contained project.
+
+Effective-environment reporting is an opt-in boundary under `environment/`.
+The local collector projects selected configuration and observations into a
+closed schema before serialization or hashing. Pure schema/identity and comparison
+functions do not inspect the host; file access and CLI selection remain separate.
+Compound doctor/workspace diagnostics are not collectors because they can execute
+health checks or inspect unrelated personal state. Ordinary diagnostics and MCP
+doctor retain their existing contracts.
+
+Default reporting executes no commands. Fixed version probes require explicit
+permission and have bounded output, time and inherited environment. Unknown
+provenance stays unknown; existing raw profile/source/ownership hashes cannot
+be exported merely because they passed local integrity checks. The configuration
+identity covers only permitted desired fields, and the observation identity adds
+known engine/platform/runtime/client/guidance facts. Excluded bytes cannot be
+distinguished by covert hashes: incomplete reports remain ineligible for native
+evidence reuse even when their digests match. Neither identity authenticates a
+machine or substitutes for behavioral checks and native qualification.
+
 Application services signal outcomes in one of two ways. A failure the service detected
 raises an exception derived from `ai_dlc.errors.AiDlcError` (`RefusedError` for an
 operation refused before any change, `UncertainError` for one whose effect must be
@@ -107,9 +140,9 @@ does not substitute for these lifecycle contracts. See the
 | --- | --- |
 | `cli.py`, `mcp_server.py`, `__main__.py` | Public command and MCP entry points |
 | `conformance.py` | Public conformance runner entry point |
-| `setup/` | Project adoption, provisioning, readiness and provider connection setup |
+| `setup/` | Read-only consumer onboarding plans, project adoption, provisioning, readiness and provider connection setup |
 | `work/` | Work lifecycle, traceability, journals and explicit tracker migration |
-| `environment/` | Shared bootstrap runtime location and owned shell activation; machine enrollment, pinned profile/team sources and credential references |
+| `environment/` | Shared bootstrap runtime location and owned shell activation; machine enrollment, pinned profile/team sources, credential references and safe effective-environment reporting/comparison |
 | `harness/` | Skills, pinned bundles, client rendering, components, hooks and local design capture |
 | `documentation/` | Catalog checks, impact/evidence review, scoped project-document access, workspace diagnostics, knowledge notes and vault links |
 | `providers/` | Contract-backed external service adapters and isolated provider execution |

@@ -106,6 +106,87 @@ Clean Windows 11 x64 account qualification remains pending in
 cross-machine observations tracked in [#53](https://github.com/Sean-Koval/ai-dlc/issues/53).
 No package publication or desktop support claim follows from this work in progress.
 
+## Consumer onboarding boundary
+
+`project onboard` is source-only in this revision. The historical v0.4.0 assets
+do not contain the command even though the package version remains 0.4.0, so a
+consumer must use an explicitly reviewed source checkout and its printed
+checkout-specific executable. The planner itself is read-only and reports target,
+platform, shell, clients, enrollment, ordered actions, findings, and qualification;
+an actionable plan is not evidence that any recommended operation ran. Native
+Windows installation and end-to-end client use remain unqualified under
+[#172](https://github.com/Sean-Koval/ai-dlc/issues/172) and
+[#53](https://github.com/Sean-Koval/ai-dlc/issues/53). Unsupported-platform fixture
+tests do not change that status.
+
+### Observed local consumer journey — September 26, 2026
+
+A clean source checkout at `39059e984358a8e74156315ff0d2600826ddfc1c`
+ran the actual CLI on macOS 15.3.2 arm64. The disposable target was
+`ai-dlc-onboard-nx8xxj95/team repository é`, with a separate temporary HOME/XDG
+account. No enrollment or provider/account selection was supplied. The target
+selected only the Antigravity client capability and the generic preset; the
+experiment did not launch Antigravity.
+
+The fresh plan exited 1 with a missing target-check finding and exactly matched
+the adoption preview arguments. Explicit preview/apply preserved an authored
+`acceptance.py`; render and setup succeeded. After adding that target-owned
+check, the new plan exited 0 while retaining `qualification: not-assessed`.
+Management-only checks retained the missing-acceptance finding in both legacy
+shell and equivalent native argument-array forms. File snapshots before and
+after all plans were identical. The target check
+passed, failed with exit 1 after changing its expected behavior, and passed after
+restoration. All three target-required checks (`generated`, `work-records`, and
+`team-acceptance`) then passed against clean fixture commit
+`92b86689f427bd638e032e00bf436b087c1a0273`.
+
+This scripted local baseline used 18 command invocations, two explicit check
+configuration edits, and a deliberate behavior edit/restoration. First target-check
+success occurred after 9.537 seconds; the entire verification took 11.921
+seconds. These timings exclude source installation and human review, include only
+a trivial fixture, and are not a human setup-time or savings comparison. Exact
+commands, outputs, roots, timing and receipts are retained in the local
+`.ai-dlc/local/consumer-onboarding/journey-evidence/` record. A preliminary harness
+comparison required normalizing macOS's `/var` alias to `/private/var`; no product
+change was needed. This observation does not establish clean-machine installation,
+Linux execution, Windows desktop setup, or native client recognition.
+
+## Effective environment report boundary
+
+The opt-in status export/compare and offline doctor report are source-only
+additions; historical v0.4.0 assets do not contain these interfaces. Current
+installation metadata does not establish imported engine bytes, source dirty
+state, safe profile/source content identity or native client recognition.
+Reports retain those unknowns. Equality of version 0.4.0, an integrity checksum,
+or incomplete report identities does not qualify equivalent environments.
+
+Fixture verification tests schema, privacy, bounded collection, comparison and
+identity invalidation. It does not qualify real client authentication,
+cross-machine replication or Windows desktop setup. Actual supported-host exports
+require privacy review before they are recorded; the outstanding observation
+work remains [#53](https://github.com/Sean-Koval/ai-dlc/issues/53). Paid comparison
+[#138](https://github.com/Sean-Koval/ai-dlc/issues/138) remains pending.
+
+On September 26, 2026, clean source revision
+`6155c2c9c8a50fd32cf4b0359912a37cad6d9c32` completed a thirteen-command CLI fixture
+journey on macOS using two isolated homes and project paths containing spaces
+and Unicode. Export and both offline doctor modes retained matching identities
+across different dummy credential presence and excluded private commands. Changing
+the declared Python pin changed configuration identity and produced blocking
+drift. Both comparisons correctly exited 1 because required provenance remained
+incomplete; a valid export did not imply equivalent or working native clients.
+
+Existing output was preserved, an unknown report field was rejected, and an extra
+comparison path and extra arguments to both offline doctors were refused without
+echoing their private sentinels. The fixture checked unchanged project/home
+snapshots and installed process/network guards in each CLI process; no forbidden
+attempt occurred. A named pipe at the instruction-file path produced an unknown
+guidance observation without blocking or losing independent observations. All
+thirteen invocations completed in 5.164 seconds on that host. This timing describes
+the small fixture only, not a performance guarantee. These observations cover
+separate fixture homes on one machine, not real teammate machines, Windows execution
+or authenticated tools.
+
 ## Published v0.4.0 evidence — September 14, 2026
 
 The original release implementation was delivered in

@@ -5,26 +5,110 @@ repository gives you the engine source; its own GitHub Project and account
 configuration belong to AI-DLC development. Adopt each work repository with its
 own project policy and local credentials.
 
+Native Windows consumer installation is implemented on the #172 draft branch but
+is not yet qualified for general use. Clean Windows 11 installation remains tracked
+by [#172](https://github.com/Sean-Koval/ai-dlc/issues/172), and client/cross-machine
+qualification by [#53](https://github.com/Sean-Koval/ai-dlc/issues/53). Use the
+consumer route below on supported macOS or Linux with a POSIX shell. WSL and
+containers are separate choices, not mandatory or qualified native instructions.
+
 ## Install the engine
 
-Clone the reviewed AI-DLC revision and use its native source entry point:
-`sh scripts/bootstrap.sh --source` on Unix, or
-`.\scripts\bootstrap.ps1 -Source -Root $PWD.Path` in 64-bit Windows PowerShell 5.1
-on Windows x64/local NTFS. The native route does not require WSL; see the
-[setup routes](../../README.md#get-started) and
-[qualification limits](../release-verification.md). Follow the bootstrap's printed PATH instruction, then verify
-`ai-dlc --help`. Source mode is the currently verified installation path; do not
-substitute an unverified package download. The current release evidence remains
-in [release verification](../release-verification.md).
+The published v0.4.0 assets predate `project onboard`, despite the unchanged
+package version. Clone and check out the team's reviewed AI-DLC commit or ref,
+then run `sh scripts/bootstrap.sh --source` from that checkout. Follow its printed
+PATH instructions. If the global alias names another checkout, use the exact
+checkout-specific executable printed by bootstrap. Confirm that executable with
+`/printed/path/ai-dlc project onboard --help`; a version string alone cannot
+establish the feature. Current release evidence remains in
+[release verification](../release-verification.md).
+
+For the reviewed #172 qualification walkthrough only, the draft native source
+entry point is `.\scripts\bootstrap.ps1 -Source -Root $PWD.Path` in 64-bit Windows
+PowerShell 5.1 on Windows x64/local NTFS. Preview it with `-Plan`. It does not
+require WSL, but it is not yet the supported consumer route and `project onboard`
+continues to report Windows unavailable until the clean-host evidence is complete.
+See the [setup routes](../../README.md#get-started) and
+[qualification limits](../release-verification.md).
 
 ## Prepare a work repository
 
-For GitHub delivery with optional upstream Jira outcomes, preview from the target
-repository:
-`ai-dlc project adopt --root . --preset python --tracker github-issues --knowledge obsidian --agent-client claude-code --agent-client antigravity`
-(or the applicable language preset and explicitly selected tracker). Inspect proposed files and resolve authored
-conflicts, then repeat with `--apply`. Existing configured repositories use their
-reviewed configuration and `project sync` workflow instead of adoption.
+Set the intended work repository explicitly. A new or unconfigured target also
+needs at least one explicit client; `generic` is the language-neutral preset:
+
+```sh
+AI_DLC=/absolute/path/printed/by/bootstrap/ai-dlc
+WORK_ROOT=/absolute/path/to/work-repository
+"$AI_DLC" project onboard --root "$WORK_ROOT" \
+  --preset generic --agent-client codex
+```
+
+This command only reads local routing metadata and returns an ordered schema-1
+plan. It does not execute actions, write configuration, fetch sources, populate
+caches, or establish client qualification. Exit 0 means that the listed actions
+are available. Review every action's exact argument array, effects, dependencies,
+and review flag before running it. Existing enrollment and adoption previews have
+their own bounded staging effects, and their apply operations remain separate.
+
+For a fresh target, run the recommended adoption preview with only its explicit
+client capability. No tracker, knowledge provider, vault, account, or engine
+repository setting is inherited:
+
+```sh
+"$AI_DLC" project adopt --root "$WORK_ROOT" --preset generic \
+  --capability agent-client --agent-client codex
+# Review the preview, then repeat that exact command with --apply.
+```
+
+An explicit `project onboard --preset` selection accepts `generic` or `python`.
+The underlying `project adopt` command also accepts `node` and `rust`; use that
+reviewed preset directly for either target's adoption, then omit preset and client
+from subsequent onboarding plans so the target configuration remains authoritative.
+Existing configured repositories keep their `ai-dlc.toml` choices; onboarding
+reports a conflict when an explicit client or preset disagrees. They
+use their reviewed configuration and `project sync` workflow instead of adoption.
+Enrollment and machine configuration are optional for a self-contained project.
+When selected, source, ref, profile ID, and machine ID must all be explicit; follow
+the separate [machine enrollment](../runbooks/machine-enrollment.md) preview/apply
+route.
+
+After adoption, preserve the target's existing checks and add at least one required
+check for its own acceptance behavior. Rerun onboarding, follow its available setup,
+render, and readiness operations in order, commit the target changes, then run the
+target's required checks. Check names alone do not prove quality or native client
+recognition. A source-generated target has no published release manifest, so use
+the reviewed source-installed executable for its setup and checks rather than
+claiming its release-mode bootstrap works.
+
+```sh
+"$AI_DLC" project onboard --root "$WORK_ROOT"
+"$AI_DLC" project setup --root "$WORK_ROOT"
+"$AI_DLC" agents render --root "$WORK_ROOT"
+# Review the render preview, then repeat with --apply.
+"$AI_DLC" project readiness --root "$WORK_ROOT"
+"$AI_DLC" project check --root "$WORK_ROOT" --required
+```
+
+## Compare setup with a teammate
+
+After each teammate selects their own project and enrolls any intended profile,
+use the [environment report workflow](../runbooks/machine-enrollment.md#compare-selected-environments)
+to compare exported setup facts. Default export does not execute tools; optional
+version probes require an explicit flag. Keep credentials, account selection and
+native sign-in independent on each machine. A credential being present says
+nothing about whether the intended account authenticated successfully.
+
+Resolve known selection, runtime or managed-guidance drift through the existing
+setup/enrollment/render previews. A report with unknown provenance is useful for
+those differences but cannot certify the environments match. Matching reports
+also do not prove identical arbitrary check commands, native harness recognition,
+or software behavior; retain the target-owned acceptance checks above.
+
+## Optional provider configuration
+
+For GitHub delivery with optional upstream Jira outcomes, the explicit provider
+route remains available after the project-owned choices are reviewed. It is not
+the default consumer path.
 
 Omitting tracker selection preserves the legacy scaffold default. Explicitly choose
 `--tracker github-issues` for this delivery model, for personal or work repositories.

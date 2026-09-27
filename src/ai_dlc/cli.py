@@ -90,6 +90,35 @@ def conclude(result) -> None:
         raise typer.Exit(1)
 
 
+def _explicit_option(context: typer.Context, name: str) -> bool:
+    source = context.get_parameter_source(name)
+    return source is not None and source.name == "COMMANDLINE"
+
+
+def _reject_doctor_extras(context: typer.Context, *, safe: bool) -> None:
+    if not context.args:
+        return
+    if safe:
+        raise typer.BadParameter("Unexpected extra arguments.")
+    context.fail(f"Got unexpected extra argument(s) ({' '.join(context.args)})")
+
+
+def _collect_effective_report(root: Path, *, probe_versions: bool) -> tuple[dict, bytes]:
+    from ai_dlc.environment import report as report_service
+    from ai_dlc.environment.report_schema import report_bytes
+
+    try:
+        result = report_service.collect_report(root, probe_versions=probe_versions)
+        return result, report_bytes(result)
+    except SERVICE_FAILURES:
+        raise ValueError("Effective environment report could not be produced.") from None
+
+
+def _emit_effective_report(root: Path, *, probe_versions: bool) -> None:
+    _, body = _collect_effective_report(root, probe_versions=probe_versions)
+    typer.echo(body.decode("utf-8"))
+
+
 def config_for(root: Path, machine: Path | None = None) -> dict:
     return resolve_runtime(root, machine=machine).values
 
@@ -246,6 +275,37 @@ def project_readiness(root: Path = Path(".")):
 
     result = inspect(root, readiness_config(root), os.environ)
     conclude(result)
+
+
+@project.command("onboard")
+def project_onboard(
+    root: Annotated[Path, typer.Option("--root")],
+    source: Annotated[str | None, typer.Option("--source")] = None,
+    ref: Annotated[str | None, typer.Option("--ref")] = None,
+    profile_id: Annotated[str | None, typer.Option("--profile-id")] = None,
+    machine_id: Annotated[str | None, typer.Option("--machine-id")] = None,
+    agent_client: Annotated[list[str] | None, typer.Option("--agent-client")] = None,
+    preset: Annotated[str | None, typer.Option("--preset")] = None,
+):
+    """Plan explicit consumer onboarding without applying changes."""
+    from ai_dlc.setup.onboarding import plan_onboarding
+
+    try:
+        result = plan_onboarding(
+            root,
+            source=source,
+            ref=ref,
+            profile_id=profile_id,
+            machine_id=machine_id,
+            agent_clients=agent_client,
+            preset=preset,
+        )
+    except ValueError:
+        typer.echo("Error: onboarding input or target configuration is invalid", err=True)
+        raise typer.Exit(2) from None
+    emit(result)
+    if result["state"] != "actionable":
+        raise typer.Exit(1)
 
 
 @project.command("init")
@@ -1231,27 +1291,100 @@ def machine_sync(apply: bool = False, headless: bool = False):
     emit(MachineManager().sync(apply=apply, headless=headless))
 
 
-@machine.command("status")
-def machine_status():
-    emit(MachineManager().status())
-
-
-@machine.command("doctor")
-def machine_doctor(
-    root: Annotated[Path, typer.Option("--root")] = Path("."), target: str = "local"
+@machine.command("status", context_settings={"allow_extra_args": True})
+def machine_status(
+    context: typer.Context,
+    root: Annotated[Path | None, typer.Option("--root")] = None,
+    export: Annotated[str | None, typer.Option("--export")] = None,
+    compare: Annotated[
+        tuple[Path, Path] | None,
+        typer.Option("--compare", help="Compare exactly two existing report files."),
+    ] = None,
+    probe_versions: Annotated[bool, typer.Option("--probe-versions")] = False,
 ):
+    if context.args:
+        raise typer.BadParameter("Unexpected extra arguments.")
+    if compare is not None:
+        if root is not None or export is not None or probe_versions:
+            raise typer.BadParameter(
+                "--compare cannot be combined with --root, --export, or --probe-versions."
+            )
+        from ai_dlc.environment.report_compare import compare_reports, comparison_exit_code
+        from ai_dlc.environment.report_io import read_report
+
+        with service_call():
+            try:
+                result = compare_reports(read_report(compare[0]), read_report(compare[1]))
+            except SERVICE_FAILURES:
+                raise ValueError(
+                    "Effective environment reports could not be compared safely."
+                ) from None
+            emit(result)
+            if comparison_exit_code(result):
+                raise typer.Exit(1)
+        return
+    if export is None:
+        if root is not None or probe_versions:
+            raise typer.BadParameter("--root and --probe-versions require --export.")
+        emit(MachineManager().status())
+        return
+    if root is None:
+        raise typer.BadParameter("--export requires an explicit --root.")
+    with service_call():
+        result, body = _collect_effective_report(root, probe_versions=probe_versions)
+        if export == "-":
+            typer.echo(body.decode("utf-8"))
+        else:
+            from ai_dlc.environment.report_io import write_report
+
+            write_report(Path(export), result)
+
+
+@machine.command("doctor", context_settings={"allow_extra_args": True})
+def machine_doctor(
+    context: typer.Context,
+    root: Annotated[Path, typer.Option("--root")] = Path("."),
+    target: Annotated[str, typer.Option("--target")] = "local",
+    effective_environment: Annotated[bool, typer.Option("--effective-environment")] = False,
+    probe_versions: Annotated[bool, typer.Option("--probe-versions")] = False,
+):
+    _reject_doctor_extras(context, safe=effective_environment)
+    if probe_versions and not effective_environment:
+        raise typer.BadParameter("--probe-versions requires --effective-environment.")
+    if effective_environment:
+        if _explicit_option(context, "target"):
+            raise typer.BadParameter(
+                "--effective-environment cannot be combined with an explicit --target."
+            )
+        with service_call():
+            _emit_effective_report(root, probe_versions=probe_versions)
+        return
     result = MachineManager().doctor(root, target=target)
     conclude(result)
 
 
-@app.command()
+@app.command(context_settings={"allow_extra_args": True})
 def doctor(
+    context: typer.Context,
     root: Annotated[Path | None, typer.Argument()] = None,
     root_option: Annotated[Path, typer.Option("--root")] = Path("."),
-    target: str = "local",
-    machine: Path | None = None,
+    target: Annotated[str, typer.Option("--target")] = "local",
+    machine: Annotated[Path | None, typer.Option("--machine")] = None,
+    effective_environment: Annotated[bool, typer.Option("--effective-environment")] = False,
+    probe_versions: Annotated[bool, typer.Option("--probe-versions")] = False,
 ):
+    _reject_doctor_extras(context, safe=effective_environment)
     selected_root = root or root_option
+    if probe_versions and not effective_environment:
+        raise typer.BadParameter("--probe-versions requires --effective-environment.")
+    if effective_environment:
+        if _explicit_option(context, "target") or machine is not None:
+            raise typer.BadParameter(
+                "--effective-environment cannot be combined with --target or --machine."
+            )
+        with service_call():
+            _emit_effective_report(selected_root, probe_versions=probe_versions)
+        return
     result = MachineManager().doctor(selected_root, target=target, machine=machine)
     conclude(result)
 

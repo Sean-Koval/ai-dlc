@@ -58,77 +58,153 @@ for available commands, MCP tools, and skills.
 
 ## Get started
 
-**Choose an installation:** [v0.4.0](https://github.com/Sean-Koval/ai-dlc/releases/tag/v0.4.0)
-is the published release; follow the [release installation steps](docs/runbooks/release-publication.md#install-from-a-release)
-for its Unix installers. Its original assets do not support native Windows setup
-or structured argv commands. Team-source imports, FDE scaffolding, and native
-Windows setup require a source revision containing those changes, even when its
-version still reads `0.4.0`.
+Native Windows source bootstrap is implemented on this draft branch, but consumer
+installation and end-to-end onboarding remain unqualified until the clean Windows
+11 work in [#172](https://github.com/Sean-Koval/ai-dlc/issues/172) is complete.
+Native client and cross-machine qualification remain in
+[#53](https://github.com/Sean-Koval/ai-dlc/issues/53). `project onboard` therefore
+continues to block Windows as unsupported. The PowerShell route below is for the
+reviewed qualification walkthrough; it is not a completed support claim and does
+not prescribe WSL, containers, or translated shell commands.
 
-### Prepare an AI-DLC source checkout
+### Install AI-DLC for a work project
 
-For contributors working on AI-DLC itself, obtain a reviewed source checkout.
-On macOS or Linux:
+The published [v0.4.0](https://github.com/Sean-Koval/ai-dlc/releases/tag/v0.4.0)
+predates `project onboard` and the native Windows assets, even though the source
+package version has not changed. To use the onboarding planner on supported macOS
+or Linux, install a team-reviewed commit or ref from a source checkout:
 
 ```sh
 git clone https://github.com/Sean-Koval/ai-dlc.git
 cd ai-dlc
+git checkout REVIEWED_COMMIT_OR_REF
 sh scripts/bootstrap.sh --source
 ```
 
-The Unix bootstrap needs a POSIX shell, curl, CA certificates, tar, and standard
-platform utilities. It installs pinned uv, Python, and mise; no preinstalled
-Python or Node is needed.
+Bootstrap needs a POSIX shell, curl, CA certificates, tar, and standard platform
+utilities. It installs pinned uv, Python, and mise, prepares this checkout, and
+prints the directories to add to `PATH`; no preinstalled Python or Node is needed.
+When the global alias belongs to another checkout, use the exact checkout-specific
+executable printed by bootstrap for every command below. The version string alone
+does not prove that another installation includes this command.
 
-On Windows x64, use 64-bit Windows PowerShell 5.1 in the source checkout on local
-NTFS. Preview the native bootstrap, then run it:
+For the #172 qualification walkthrough on Windows x64/local NTFS, use 64-bit
+Windows PowerShell 5.1. Preview the native bootstrap, then run it:
 
 ```powershell
 .\scripts\bootstrap.ps1 -Source -Root $PWD.Path -Plan
 .\scripts\bootstrap.ps1 -Source -Root $PWD.Path
 ```
 
-Native setup does not require WSL, a POSIX shell, or preinstalled Python or Node.
-It does require the machine's existing PowerShell policy to permit the reviewed
-script. It does not change execution policy, elevate, or edit machine PATH.
-Use the printed checkout-specific executable or PATH directories, especially
-when another AI-DLC installation exists. For persistent activation, see the
+This native path needs neither WSL nor preinstalled Python or Node. It honors the
+machine's existing PowerShell policy and does not change execution policy, elevate,
+or edit machine PATH. Use the printed checkout-specific executable or PATH
+directories. For persistent activation, see the
 [PowerShell preview and apply procedure](docs/runbooks/machine-enrollment.md#native-windows-setup-and-activation).
-
-After activating this checkout's environment, contributors run
-`ai-dlc project check --required`. These are AI-DLC's own engineering checks;
-projects that use the engine run their own configured checks. Windows Server CI
-and a clean Windows 11 machine are separate qualification targets. The Windows 11
-walkthrough and native client recognition/authentication remain pending; consult
-[release verification](docs/release-verification.md) for recorded evidence.
+Windows Server CI and the required clean Windows 11 walkthrough are separate
+evidence; consult [release verification](docs/release-verification.md).
 
 ### Create or adopt a project
 
-```sh
-# Create a Python project with the GitHub tracker selected.
-ai-dlc project init my-project --preset python --tracker github-issues
+Choose the work repository and client explicitly. For a fresh or unconfigured
+repository, plan with the language-neutral preset and no provider, account,
+tracker, vault, or machine inheritance:
 
-# Or preview adding AI-DLC to an existing repository.
-ai-dlc project adopt --root /path/to/repo --preset generic --tracker github-issues
-# Repeat the adoption command with --apply to write the reviewed changes.
+```sh
+AI_DLC=/absolute/path/printed/by/bootstrap/ai-dlc
+WORK_ROOT=/absolute/path/to/work-repository
+"$AI_DLC" project onboard --root "$WORK_ROOT" --preset generic --agent-client codex
 ```
 
-Use these commands from an installed compatible engine to work on the target
-project; cloning and testing the AI-DLC source repository is not a consumer
-prerequisite. On native Windows, the supported starter scope is `generic` and
-`python`. Other selected or implied modules report their own unsupported or
-unqualified status instead of silently changing the selection.
+The schema-1 JSON is a read-only plan. Exit 0 means its actions are actionable;
+it does not mean setup, rendering, readiness, client recognition, authentication,
+or target checks completed. Review the exact `argv`, effects, dependencies, and
+`requires_review` fields before running an action. `project onboard` does not
+fetch, stage, write, or execute. The existing enrollment preview may populate an
+inactive local cache, and adoption preview may use a temporary stage; their apply
+operations remain separate reviewed commands.
 
-For a newly generated project, initialize Git, run setup, and commit the generated
-configuration and lockfile before checking. Checks bind their receipt to `HEAD`:
+A fresh target's plan recommends the existing adoption service with only the
+selected client capability:
 
 ```sh
+"$AI_DLC" project adopt --root "$WORK_ROOT" --preset generic \
+  --capability agent-client --agent-client codex
+# Inspect the preview, then repeat that exact command with --apply.
+```
+
+An explicit `project onboard --preset` selection accepts `generic` or `python`.
+The underlying `project adopt` command also accepts `node` and `rust`; for one of
+those targets, use that reviewed preset in the adoption command, then let the
+adopted target configuration supply it to subsequent onboarding plans.
+The native draft implements only the `generic` and `python` starter paths; Windows
+onboarding remains blocked until qualification rather than silently reducing or
+changing a selection.
+Preserve the repository's existing checks and add at least one required check for
+its own acceptance behavior; the generic management checks do not establish that
+behavior. Then rerun onboarding and follow the available operations in order:
+
+```sh
+"$AI_DLC" project onboard --root "$WORK_ROOT"
+"$AI_DLC" project setup --root "$WORK_ROOT"
+"$AI_DLC" agents render --root "$WORK_ROOT"
+# Review the render preview, then repeat with --apply.
+"$AI_DLC" project readiness --root "$WORK_ROOT"
+git -C "$WORK_ROOT" add .
+git -C "$WORK_ROOT" commit -m "chore: adopt ai-dlc"
+"$AI_DLC" project check --root "$WORK_ROOT" --required
+```
+
+These are target-project checks. Their names do not by themselves prove behavioral
+quality, so review what each command exercises. Source-generated projects do not
+contain a published release manifest; use the reviewed source-installed executable
+for setup and checks rather than treating their release-mode bootstrap as available.
+Checks bind receipts to the target repository's `HEAD`.
+
+An already configured repository can run `project onboard --root "$WORK_ROOT"`
+without repeating its client or preset selection. Its `ai-dlc.toml` remains
+authoritative; conflicting CLI client or preset choices return a blocked plan.
+Enrollment is optional for a self-contained project. Select it only when the user
+actually needs a portable profile and machine binding, supplying all four values
+together:
+
+```sh
+"$AI_DLC" project onboard --root "$WORK_ROOT" \
+  --source REVIEWED_PROFILE_SOURCE --ref REVIEWED_REF \
+  --profile-id PROFILE --machine-id MACHINE
+```
+
+See [work-computer setup](docs/workflows/work-computer-setup.md) for the full route
+and [machine enrollment](docs/runbooks/machine-enrollment.md) for its separate
+preview/apply boundary.
+
+### Contribute to the AI-DLC engine
+
+Engine contributors use the source checkout itself as their project. After source
+bootstrap, use the checkout-specific executable printed by bootstrap and run the
+repository's full required checks:
+
+```sh
+AI_DLC=/absolute/path/printed/by/bootstrap/ai-dlc
+"$AI_DLC" project check --required
+"$AI_DLC" doctor
+```
+
+Do not use the engine checkout as the consumer work root or copy its tracker,
+vault, provider, or client choices into another project.
+
+### Create a new project directly
+
+Direct creation remains available when that is the reviewed choice:
+
+```sh
+"$AI_DLC" project init my-project --preset python --agent-client codex
 cd my-project
 git init
-ai-dlc project setup
+"$AI_DLC" project setup --root .
 git add .
 git commit -m "chore: initialize project"
-ai-dlc project check --required
+"$AI_DLC" project check --root . --required
 ```
 
 During edits, run only the named commands relevant to the change:

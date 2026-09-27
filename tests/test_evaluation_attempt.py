@@ -303,28 +303,23 @@ EGRESS = (
 
 
 @candidate
-def test_real_candidate_adopts_guidance_without_leaking_it_to_baseline(tmp_path):
+def test_real_candidate_runs_required_checks_without_leaking_ai_dlc_to_baseline(tmp_path):
     from ai_dlc.verification.evaluation.drivers import ClaudeCode
 
     planned = dict(REAL_PLANNED, image=CANDIDATE)
     install = ClaudeCode().install(planned)
-    verify = [
-        "sh",
-        "-c",
-        (
-            "test -f CLAUDE.md && test -f .claude/skills/day-start/SKILL.md "
-            "&& ai-dlc agents render --check "
-            "&& python -m unittest discover -s tests"
-        ),
-    ]
+    receipt_path = ".ai-dlc/local/evaluation-required.json"
+    setup = ["ai-dlc", "project", "setup"]
+    required = ["ai-dlc", "project", "check", "--required", "--receipt", receipt_path]
+    behavior = ["python", "-m", "unittest", "discover", "-s", "tests"]
 
     result = attempt().run_attempt(
         planned,
         run_dir=tmp_path / "run",
         fixture=Path(__file__).resolve().parents[1] / "evaluations/fixtures/csv-validator",
         install=install,
-        steps=[verify],
-        timeout_seconds=120,
+        steps=[setup, required, behavior],
+        timeout_seconds=300,
     )
     baseline = attempt().run_attempt(
         dict(REAL_PLANNED, arm="baseline", image=BASE_IMAGE, engine_sha256=None),
@@ -348,9 +343,20 @@ def test_real_candidate_adopts_guidance_without_leaking_it_to_baseline(tmp_path)
     assert not (baseline_project / "CLAUDE.md").exists()
     assert not (baseline_project / "AI-DLC.md").exists()
     assert not (baseline_project / "ai-dlc.toml").exists()
-    step = json.loads((tmp_path / "run/steps/01.json").read_text())
-    assert step["exit_code"] == 0
-    assert "Ran 3 tests" in step["stderr"]
+    setup_step = json.loads((tmp_path / "run/steps/01.json").read_text())
+    check_step = json.loads((tmp_path / "run/steps/02.json").read_text())
+    behavior_step = json.loads((tmp_path / "run/steps/03.json").read_text())
+    assert setup_step["exit_code"] == 0
+    assert check_step["exit_code"] == 0
+    assert behavior_step["exit_code"] == 0
+    assert "Ran 3 tests" in behavior_step["stderr"]
+    receipt = json.loads((project / receipt_path).read_text())
+    assert receipt["required"]
+    assert [outcome["id"] for outcome in receipt["outcomes"]] == receipt["required"]
+    assert all(
+        outcome["status"] == "passed" and outcome["exit_code"] == 0
+        for outcome in receipt["outcomes"]
+    )
 
 
 @docker

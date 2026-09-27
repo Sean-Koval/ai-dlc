@@ -30,10 +30,11 @@ deploy = "none"
 
 [artifacts]
 brief = "docs/product-direction.md"
-spec = "openspec/changes/consumer-onboarding"
-plan = "openspec/changes/consumer-onboarding/tasks.md"
+spec = "openspec/changes/archive/2026-09-26-consumer-onboarding"
+plan = "openspec/changes/archive/2026-09-26-consumer-onboarding/tasks.md"
 branch = "codex/consumer-onboarding"
 tracker = "173"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/183"
 
 [bindings]
 specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"

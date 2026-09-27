@@ -24,6 +24,24 @@ PATH without execution. Credentials are checked only in that environment; secret
 files are never loaded. Provider health stays informational and unverified, and
 `qualification` is always `not-assessed`.
 
+Machine enrollment is optional for consumer onboarding. A self-contained target
+with project-owned client configuration and checks can start with:
+
+```sh
+ai-dlc project onboard --root /absolute/path/to/target
+```
+
+A fresh target must also supply one or more repeated `--agent-client` selections.
+Only select enrollment when portable profile or machine-owned settings are needed;
+then provide `--source`, `--ref`, `--profile-id`, and `--machine-id` together. The
+planner reads verified local enrollment metadata when it matches, but never calls
+enrollment preview, fetches a source, repairs a cache, or creates a machine file.
+Its recommended enrollment preview can populate an inactive cache; the separate
+`--apply` command activates reviewed state. On Linux, selected native machine
+provisioning is currently bounded to Ubuntu 24.04 and 26.04. An unknown or other
+release blocks those machine actions without making project-only Linux onboarding
+unsupported.
+
 When `ai-dlc` is missing, reports an unexpected version, or works only in new
 terminals, run `ai-dlc project workspace-check --root PATH`. It separates the
 executable PATH selects from the AI-DLC-owned shell activation. If no `ai-dlc` is on
@@ -73,6 +91,67 @@ and machine configuration; project server lists remain scoped to the project.
 Root and machine doctor retain their enrollment and readiness decisions and add
 these offline diagnostics under `project_readiness`. Their existing explicit
 provider-health inspection remains separate, as do work finish and release gates.
+
+## Compare selected environments
+
+Use the reviewed source executable for these commands; historical v0.4.0 release
+assets do not include the report interface. Export a selected project's local
+environment facts, then compare two explicitly supplied reports:
+
+```sh
+ai-dlc machine status --root /absolute/path/to/project --export teammate-a.json
+ai-dlc machine status --compare teammate-a.json teammate-b.json
+```
+
+Export requires an existing destination folder and refuses an existing file or
+link. `--export -` writes JSON to stdout.
+Export exit 0 means a valid report was produced, including any unknowns. Compare
+exit 0 means complete required identity coverage with no blocking difference;
+exit 1 means blocking drift or incomplete required evidence; exit 2 means an
+invalid request or report. Comparison reads only the two files and performs no
+local inspection, repair, executable lookup or provider call.
+
+Default collection is local and does not execute tools. Add `--probe-versions`
+to export only when local executable version observations are wanted. This runs
+fixed built-in version commands with bounded time/output and a minimal child
+environment; it does not authorize arbitrary configured recipes, health checks
+or model sessions. A local PATH executable can itself be a wrapper, so this
+explicit option is permission to invoke it, not a sandbox for that executable.
+Version observations remain unavailable for unsupported adapters. On Windows,
+batch wrappers such as `.cmd` and `.bat` are not launched because they can invoke
+a shell implicitly.
+
+Both CLI doctor entry points offer the same offline report projection:
+
+```sh
+ai-dlc doctor --root /absolute/path/to/project --effective-environment
+ai-dlc machine doctor --root /absolute/path/to/project --effective-environment
+```
+
+These modes bypass ordinary health inspection. They reject `--target` and
+`--machine` overrides; version probes require `--probe-versions` explicitly.
+Ordinary status/doctor and the MCP doctor contract remain unchanged. Status
+comparison cannot be combined with root, export or version probes.
+
+Reports compare permitted tool/provider/client selections, version constraints,
+source pins and managed guidance observations. They exclude private paths,
+accounts, environment-variable values, raw commands, URLs and global client
+configuration. Excluded content is not secretly included through a hash.
+Current profile/source checksums and engine version labels alone do not establish
+safe content or exact engine identity, so an otherwise useful report can remain
+incomplete. Known drift is still reported independently of missing evidence.
+
+The configuration identity describes the permitted desired fields; the observation
+identity also binds known engine, platform, version and guidance observations.
+Timestamps, credential presence and evidence-derived authentication/recognition
+do not change those identities. Matching incomplete digests cannot establish
+equivalence or authorize reuse of native evidence. Reports are unsigned facts,
+not authentication of the exporting machine. A compatible platform difference
+is expected only with explicit component support metadata; unavailable metadata
+remains unknown. Follow the reported enrollment/render/check route for each
+finding and review changes through the owning operation's normal preview.
+
+## Enroll a private profile
 
 Preview a private profile enrollment can materialize an inactive cache, but it
 does not change active enrollment, client configuration, or package state.
@@ -349,7 +428,13 @@ credential arguments and machine paths are refused. Hook content is only
 `features = ["session-context"]` or other existing `bound-push` and
 `stop-reminder` features. Arbitrary shell hooks are refused. The selected client's
 configured version must already support those features in AI-DLC's capability
-matrix. All source paths must be regular UTF-8 files without symlinks or execute
+matrix. A source may select `bound-push`, but cannot supply its policy:
+`agents.bound_push_policy` belongs only in the project’s shared `ai-dlc.toml`.
+Personal and machine layers also cannot set it. Omission preserves strict
+`all-branches`; an explicit project choice of `tracked-branches` permits the
+[bounded record-free publication path](../development-workflow.md#when-a-work-record-is-needed).
+
+All source paths must be regular UTF-8 files without symlinks or execute
 bits, up to 2 MiB each and 10 MiB total, with at most 1,024 files and 16 path
 segments. Structured manifests are limited to 1 MiB. `env/` directories are
 refused, and credential diagnostics name the source path without echoing values.

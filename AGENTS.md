@@ -5,16 +5,29 @@ tools and guides agents; it is not a hosted autonomous development orchestrator.
 CLI and MCP entry points share application services. Provider details belong behind
 contracts; credentials and machine paths never belong in shared configuration.
 
-Prepare this checkout with `sh scripts/bootstrap.sh --source` on Unix or
+Before preparing this checkout, identify the intended repository. A teammate who
+cloned AI-DLC only to install it for another project should follow the consumer
+route in [README.md](README.md#get-started), pass that work repository explicitly
+to `project onboard --root`, and keep this engine checkout's providers and accounts
+out of the target. Native Windows consumer installation is implemented on this
+draft branch but remains unqualified; [#172](https://github.com/Sean-Koval/ai-dlc/issues/172)
+tracks the clean Windows 11 installation evidence and
+[#53](https://github.com/Sean-Koval/ai-dlc/issues/53) tracks client/cross-machine
+qualification. Do not present POSIX bootstrap commands as native Windows guidance,
+or the draft PowerShell path as completed qualification. Only contributors changing
+AI-DLC itself and operators running the reviewed #172 walkthrough should prepare
+this checkout and run its full required checks.
+
+Prepare this checkout with `sh scripts/bootstrap.sh --source` on macOS or Linux.
+For the native qualification path, use
 `.\scripts\bootstrap.ps1 -Source -Root $PWD.Path` in 64-bit Windows PowerShell 5.1
-on native Windows x64/local NTFS; use `-Plan` to preview the native bootstrap.
-Run `ai-dlc project check --required` through the printed checkout environment.
-Source bootstrap preserves an existing shared `ai-dlc` selection; use
-`--publish-aliases` (Unix) or `-PublishAliases` (PowerShell) to change it deliberately.
-These are contributor checks, not prerequisites for adopting AI-DLC into another
-project. Native Windows 11 and client qualification remain separate from Server
-CI; the historical published v0.4.0 assets do not provide native setup.
-Use the Python implementation in `src/ai_dlc/`.
+on Windows x64/local NTFS; use `-Plan` to preview it. Run
+`ai-dlc project check --required` through the printed checkout environment. Source
+bootstrap leaves the shared `ai-dlc` alias alone; use `--publish-aliases` (Unix) or
+`-PublishAliases` (PowerShell) to repoint it deliberately. The historical published
+v0.4.0 assets do not provide native setup. Use the Python implementation in
+`src/ai_dlc/`.
+
 The [architecture](docs/architecture.md) maps its packages and entry points.
 The Rust implementation is retired and removed; its plans stay in `docs/archive/`.
 `templates/` still supplies the supported legacy scaffold command. Preserve

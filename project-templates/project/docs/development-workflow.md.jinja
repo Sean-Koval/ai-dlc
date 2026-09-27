@@ -23,6 +23,12 @@ do not satisfy missing required checks. After integrating the target branch, run
 validation and a standard-library behavior test of their initial output; extend
 that small suite as real behavior is added. Adoption preserves existing authored
 commands and tests instead of selecting a universal test framework for the team.
+Inspect declared setup, checks, test configuration, CI and requirement sources,
+retain unknowns and review the exact requirement/check/prerequisite mapping before
+changing shared configuration. The
+[brownfield behavior-check rehearsal](workflows/brownfield.md#rehearse-a-reviewed-behavior-check)
+owns the external disposable pass, regression-failure and restored-pass procedure,
+the normal-runner `mise` prerequisite and bounded evidence fields.
 
 With an engine supporting portable command records, declare native commands as
 `{ argv = ["python", "scripts/check_tests.py"] }` to pass arguments literally

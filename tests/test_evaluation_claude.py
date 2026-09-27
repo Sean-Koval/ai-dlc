@@ -374,21 +374,44 @@ def test_attempt_spend_cap_is_identical_and_bounded_by_run_budget(tmp_path):
 
 def test_process_timeout_preserves_raw_partial_output(tmp_path, monkeypatch):
     import sys
+    import time
 
-    from ai_dlc.verification.evaluation.attempt import Stopped, _docker
+    from ai_dlc.verification.evaluation import attempt
+
+    real_popen = attempt.subprocess.Popen
+    ready = tmp_path / "ready"
+
+    def popen_after_output(*args, **kwargs):
+        process = real_popen(*args, **kwargs)
+        startup_deadline = time.monotonic() + 5
+        try:
+            while not ready.exists():
+                if process.poll() is not None:
+                    raise RuntimeError("test process exited before producing partial output")
+                if time.monotonic() >= startup_deadline:
+                    raise TimeoutError("test process did not produce partial output")
+                time.sleep(0.01)
+        except BaseException:
+            process.kill()
+            process.communicate(timeout=5)
+            raise
+        return process
 
     executable = tmp_path / "docker"
     executable.write_text(
         f"#!{sys.executable}\n"
         "import sys,time\n"
+        "from pathlib import Path\n"
         "sys.stdout.buffer.write(b'partial\\xff\\n');sys.stdout.flush()\n"
         "sys.stderr.write('interrupted');sys.stderr.flush()\n"
+        f"Path({str(ready)!r}).touch()\n"
         "time.sleep(60)\n"
     )
     executable.chmod(0o755)
     monkeypatch.setenv("PATH", str(tmp_path))
-    with pytest.raises(Stopped) as stopped:
-        _docker(["exec", "unused"], timeout=0.5)
+    monkeypatch.setattr(attempt.subprocess, "Popen", popen_after_output)
+    with pytest.raises(attempt.Stopped) as stopped:
+        attempt._docker(["exec", "unused"], timeout=0.5)
     assert stopped.value.stdout == b"partial\xff\n"
     assert stopped.value.stderr == b"interrupted"
 
