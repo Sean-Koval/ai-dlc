@@ -29,8 +29,8 @@ deploy = "none"
 
 [artifacts]
 brief = "docs/product-direction.md"
-spec = "openspec/changes/proportionate-push-policy"
-plan = "openspec/changes/proportionate-push-policy/tasks.md"
+spec = "openspec/changes/archive/2026-09-27-proportionate-push-policy"
+plan = "openspec/changes/archive/2026-09-27-proportionate-push-policy/tasks.md"
 branch = "codex/proportionate-push-policy"
 tracker = "177"
 
