@@ -185,7 +185,7 @@
         "tests/test_config.py": "60bd9343da62e760c92083765439452e4a1e924b6f585ef14780af1f7b3349ce",
         "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
         "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
-        "tests/test_merge_checkout.py": "95810dd4da1aee09342240fc1ef20828cdccb7f861fde6c00ba44df1f0e3e133",
+        "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
         "tests/test_project.py": "0863470fa695afffc68bba51602585cd2539174cc9a8599a7cf838773f170b93",
         "tests/test_rendering.py": "cbc5c9bbc5dceafda37d1f41781f2d86891ba2273b6e32455e6997bcfd7f312c",
         "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2",
@@ -345,7 +345,7 @@
         "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
         "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
         "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
-        "tests/test_merge_checkout.py": "95810dd4da1aee09342240fc1ef20828cdccb7f861fde6c00ba44df1f0e3e133",
+        "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
         "tests/test_rendering.py": "cbc5c9bbc5dceafda37d1f41781f2d86891ba2273b6e32455e6997bcfd7f312c",
         "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2",
         "tests/test_workflow.py": "38aa9de4fad30227e0348a2054ac7e1043cd6fe260e41dc4df5617de9c482b94"
