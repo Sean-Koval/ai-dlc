@@ -263,6 +263,13 @@ selection with `--no-required`. A focused receipt still lists every configured
 required check, so missing required outcomes cannot pass the completion gate.
 Use the full required run after target-branch integration before merge.
 
+For team check adoption, inspect the repository's declared setup, checks, test
+configuration, CI and requirement sources; retain unknowns and review the exact
+requirement/check/prerequisite mapping before changing shared configuration. The
+[brownfield behavior-check rehearsal](workflows/brownfield.md#rehearse-a-reviewed-behavior-check)
+owns the external disposable pass, regression-failure and restored-pass procedure,
+the normal-runner `mise` prerequisite and bounded evidence fields.
+
 ## Daily operating loop
 
 1. Reconcile tracker priority, work bindings, branch state, and fresh evidence.
