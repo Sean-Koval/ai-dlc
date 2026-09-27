@@ -136,8 +136,8 @@ qualified entries: valid results remain pending, failed, stale or limited
 version-scoped Antigravity activation remain unimplemented acceptance work.
 
 On September 27, 2026 UTC, clean source
-`2f43ce907e1f4e7162117d88f93f210116004db7` completed a nine-command real CLI fixture
-journey on macOS in 4.040 seconds. The isolated project path contained spaces and
+`45793fbd5c6dad17118f68e431bc66a91750558b` completed a nine-command real CLI fixture
+journey on macOS in 1.531 seconds. The isolated project path contained spaces and
 Unicode; HOME/XDG state was separate from the actual account. The commands exported
 a report, generated a pending procedure, refused the incomplete template, retained
 a simulated instruction observation, failed a wrong marker, detected a changed
