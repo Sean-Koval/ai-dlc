@@ -54,17 +54,21 @@ def test_native_documents_preserve_utf8_and_exclusive_create(tmp_path, no_posix_
 def test_native_adoption_render_setup_and_behavior_check(tmp_path, no_posix_path):
     root = tmp_path / "project spaces é"
     root.mkdir()
-    (root / "README.md").write_text("authored\n", encoding="utf-8")
+    (root / "README.md").write_text("authored\n", encoding="utf-8", newline="\n")
     subprocess.run(["git", "init", str(root)], check=True, capture_output=True)
     for key, value in [("user.name", "Fixture"), ("user.email", "fixture@example.test")]:
         subprocess.run(["git", "-C", str(root), "config", key, value], check=True)
     adopt(root, apply=True, capabilities=["agent-client"], agent_clients=["antigravity"])
-    assert (root / "README.md").read_text() == "authored\n"
+    assert (root / "README.md").read_text(encoding="utf-8") == "authored\n"
     render_agents(root, apply=True)
     assert render_agents(root)["clean"]
     assert (root / ".agents/rules/ai-dlc.md").is_file()
     check = root / "check.py"
-    check.write_text('from pathlib import Path\nassert Path("value.txt").read_text() == "good"\n')
+    check.write_text(
+        'from pathlib import Path\nassert Path("value.txt").read_text() == "good"\n',
+        encoding="utf-8",
+        newline="\n",
+    )
     config = {
         "schema": 4,
         "setup": {
@@ -86,14 +90,14 @@ def test_native_adoption_render_setup_and_behavior_check(tmp_path, no_posix_path
             "commands": {"behavior": {"argv": [sys.executable, "check.py"]}},
         },
     }
-    (root / "ai-dlc.toml").write_text(tomli_w.dumps(config))
+    (root / "ai-dlc.toml").write_text(tomli_w.dumps(config), encoding="utf-8", newline="\n")
     subprocess.run(["git", "-C", str(root), "add", "."], check=True)
     subprocess.run(
         ["git", "-C", str(root), "commit", "-m", "fixture"], check=True, capture_output=True
     )
     setup_project(root, use_mise=False)
     assert check_project(root, use_mise=False)["outcomes"][0]["status"] == "passed"
-    (root / "value.txt").write_text("regression")
+    (root / "value.txt").write_text("regression", encoding="utf-8", newline="\n")
     assert check_project(root, use_mise=False)["outcomes"][0]["status"] == "failed"
-    (root / "value.txt").write_text("good")
+    (root / "value.txt").write_text("good", encoding="utf-8", newline="\n")
     assert check_project(root, use_mise=False)["outcomes"][0]["status"] == "passed"

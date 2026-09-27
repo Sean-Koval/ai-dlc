@@ -66,6 +66,18 @@ def _executable(path, body):
     path.chmod(0o755)
 
 
+def _fixture_engine_python():
+    import sys
+
+    return (
+        f"#!{sys.executable}\n"
+        "import os, sys\n"
+        "if os.environ.get('AI_DLC_FIXTURE_INCOMPATIBLE_ENGINE'):\n"
+        " raise SystemExit('fixture engine lacks portable argv support')\n"
+        "os.execv(sys.executable, [sys.executable, *sys.argv[1:]])\n"
+    )
+
+
 def _bootstrap_fixture(tmp_path):
     """Real bootstrap with pinned local tool fixtures, no package/network operations."""
     import io
@@ -91,6 +103,8 @@ def _bootstrap_fixture(tmp_path):
         " cli = p / 'ai-dlc'\n"
         " cli.write_text('#!/bin/sh\\nexit 0\\n')\n"
         " cli.chmod(0o755)\n"
+        f" (p / 'python').write_text({_fixture_engine_python()!r})\n"
+        " (p / 'python').chmod(0o755)\n"
     ).encode()
     contents = {"uv": uv, "uvx": b"#!/bin/sh\nexit 0\n", "mise": b"#!/bin/sh\nexit 0\n"}
     archive = downloads / "uv-fixture-fixture.tar.gz"
@@ -467,6 +481,8 @@ def _release_bootstrap_fixture(tmp_path):
         "if sys.argv[1:3] == ['python', 'find']: print(sys.executable)\n"
         "if sys.argv[1:2] == ['venv']:\n"
         " p=pathlib.Path(sys.argv[-1])/'bin'; p.mkdir(parents=True)\n"
+        f" (p / 'python').write_text({_fixture_engine_python()!r})\n"
+        " (p / 'python').chmod(0o755)\n"
         "if sys.argv[1:3] == ['pip', 'install'] and '--no-deps' in sys.argv:\n"
         " p=pathlib.Path(sys.argv[sys.argv.index('--python')+1]).parent/'ai-dlc'\n"
         ' p.write_text(\'#!/bin/sh\\nprintf \\"release-setup:%s\\\\n\\" \\"$*\\"\\n\'); p.chmod(0o755)\n'
@@ -499,6 +515,24 @@ def _release_bootstrap_fixture(tmp_path):
     )
     environment["RELEASE_FIXTURE_ARTIFACTS"] = str(artifacts)
     return command, environment, installed, artifacts
+
+
+@pytest.mark.parametrize("mode", ["source", "release"])
+def test_bootstrap_refuses_incompatible_engine_before_selecting_aliases(tmp_path, mode):
+    if mode == "source":
+        command, environment, installed, _, _ = _bootstrap_fixture(tmp_path)
+    else:
+        command, environment, installed, _ = _release_bootstrap_fixture(tmp_path)
+    environment["AI_DLC_FIXTURE_INCOMPATIBLE_ENGINE"] = "1"
+    for name in ("ai-dlc", "ai-dlc-cli"):
+        _executable(installed / name, "#!/bin/sh\necho previous engine\n")
+    result = subprocess.run(command, env=environment, capture_output=True, text=True, check=False)
+    assert result.returncode != 0
+    assert "incompatible" in result.stderr.lower() and "argv" in result.stderr.lower()
+    assert "Ready." not in result.stdout
+    assert "release-setup:" not in result.stdout
+    for name in ("ai-dlc", "ai-dlc-cli"):
+        assert (installed / name).read_text() == "#!/bin/sh\necho previous engine\n"
 
 
 def test_release_bootstrap_selects_verified_engine_and_runs_project_setup(tmp_path):

@@ -14,7 +14,8 @@ from a laptop.
 | `requirements.txt` | `uv export --locked --no-dev` | Hashed constraints; installed with `--require-hashes` |
 | `release.sh` | `scripts/release_manifest.py` | Shell assignments naming the wheel and constraints URLs and SHA-256 digests |
 | `bootstrap.sh`, `versions.sh`, `download.sh` | `project-templates/project/` | The standalone installer and its pinned uv, Python and mise digests |
-| `SHA256SUMS` | `sha256sum` in the workflow | Digests of every asset above |
+| `bootstrap.ps1`, `windows.ps1`, `windows-native.cs`, `windows-select.py`, `windows.json` | `project-templates/project/` | Native installer, guarded storage helper, selection helper and pinned Windows x64 prerequisites; present in native-capable candidates/releases only |
+| `SHA256SUMS` | `scripts/prepare_release_assets.py` | Digests of every asset above |
 
 `release.sh` cannot live inside the wheel it hashes. Release-mode bootstrap keeps
 a copy beside the installed engine, and `ai-dlc project init` or `adopt` writes
@@ -40,11 +41,14 @@ own bootstrap and CI install the exact assets that generated it.
    from `pyproject.toml`, runs the required checks, builds, verifies the wheel
    against the constraints and scaffolds with it, then writes `release.sh`
    against `https://github.com/<owner>/<repo>/releases/download/<tag>`.
-   `publish` creates the GitHub Release with exactly those files.
+   The Windows candidate consumer job must succeed before `publish` creates the
+   GitHub Release with exactly those files.
    `verify-published` then installs from the published assets on Linux x64,
    Linux ARM64 and macOS, generates a python project with the released engine,
    confirms the generated `bootstrap/release.sh` is byte-identical, bootstraps
-   that project in release mode and runs its required checks.
+   that project in release mode and runs its required checks. A separate Windows
+   Server consumer job exercises the original native assets and generic/Python
+   project journeys; record its outcome independently of the Unix matrix.
 5. If `verify-published` fails, inspect the exact failed step. A verification
    harness or transient download failure does not justify replacing verified
    package bytes. Fix the harness and replay the existing release as below. If
@@ -67,7 +71,10 @@ gh workflow run release.yml --ref main \
 
 `artifact_base_url` remains required for candidate-dispatch compatibility but is
 ignored in replay mode. The nonempty `verify_published_tag` skips `package` and
-`publish` and runs only the three consumer jobs using existing published assets.
+`publish` and runs the configured Unix and native Windows consumer jobs using
+existing published assets. Replaying historical v0.4.0 cannot establish native
+compatibility: its original assets lack the native installer. The native job
+reports that limitation instead of substituting current source assets.
 Manual dispatch cannot publish, including a dispatch whose workflow ref is a tag.
 Normal tag-push consumers still require successful package and publish jobs.
 The selected tag enters quoted download arguments through `RELEASE_TAG`.
@@ -110,6 +117,42 @@ A source-installed engine (`sh scripts/bootstrap.sh --source` in this
 repository) has no manifest. Projects it generates report
 `"release_manifest": "absent"` and need `bootstrap/release.sh` from a published
 release before their CI can bootstrap.
+
+## Native Windows assets and compatibility
+
+Native installation requires the complete assets from a compatible release or
+candidate: `bootstrap.ps1`, `windows.ps1`, `windows-native.cs`, `windows-select.py`,
+`windows.json`, `release.sh`, the named wheel and hashed requirements, and
+`SHA256SUMS`. Keep the entry point at `scripts/bootstrap.ps1` and its helper files
+and `release.sh` under `bootstrap/`, as in a generated project. Verify the original
+asset hashes before running the downloaded installer. The release manifest is
+parsed as inert data by the native installer; it is not executed as a shell script.
+
+On Windows x64/local NTFS, a compatible generated project can preview release-mode
+setup with `.\scripts\bootstrap.ps1 -Root $PWD.Path -Plan` in 64-bit Windows
+PowerShell 5.1, then omit `-Plan` to apply. The installer prints direct executable
+paths and process-local PATH activation. Persistent PowerShell activation is a
+separate [preview/apply action](machine-enrollment.md#native-windows-setup-and-activation).
+It does not need WSL, elevate, or change execution policy or machine PATH.
+
+The historical published **v0.4.0 assets are not native-compatible**. Adding a
+current PowerShell script beside that old wheel does not qualify or upgrade the
+release. The package version alone cannot distinguish a newer source checkout
+from those original assets; retain exact source revision or release asset hashes
+in evidence. Until a compatible release is explicitly published, use a reviewed
+source checkout for native development. Source bootstrap prepares the engine
+checkout; consumer qualification must separately install the original candidate
+or published wheel and use it in target projects.
+
+The native verification driver records the artifact hashes separately from its
+controller revision. It exercises a bare seed, generated generic/Python projects,
+required receipts, deliberate check failure/recovery, and authored-edit refusal.
+Candidate evidence does not qualify an already-published tag, and replay never
+replaces its bytes. Hosted Windows Server runs do not establish the pending clean
+Windows 11, native client instruction/skill/MCP recognition, or authentication
+walkthroughs. Minimal Git/GH installation may still require manual recovery under
+an approved installer policy; no-elevation behavior is not inferred from winget
+manifest labels.
 
 ## What this does not prove
 

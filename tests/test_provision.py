@@ -192,7 +192,7 @@ def test_unsupported_os_fails_before_install(tmp_path):
     profile = tmp_path / "p.toml"
     profile.write_text("schema=4\n")
     with pytest.raises(ValueError, match="unsupported"):
-        machine_plan(profile, system="Windows", architecture="x86_64")
+        machine_plan(profile, system="Windows", architecture="arm64")
 
 
 def test_migration_refuses_unknown_future_version_without_writing(tmp_path):

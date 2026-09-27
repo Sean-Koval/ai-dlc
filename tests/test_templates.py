@@ -16,6 +16,7 @@ import pytest
 from ai_dlc.config import resolve_files
 from ai_dlc.environment.credentials import credential_status
 from ai_dlc.files import assets
+from ai_dlc.setup.commands import parse_command
 from ai_dlc.setup.templates import adopt, sync
 
 _PROHIBITED_PUBLIC_TOKENS = {
@@ -1056,14 +1057,16 @@ def test_initialize_starters_and_adoption_preservation(tmp_path, preset, manifes
         expected.append("application-tests")
         assert (initialized / "scripts/check_tests.py").is_file()
         assert (initialized / "tests/test_main.py").is_file()
-        assert config["checks"]["commands"]["application-tests"] == (
-            "uv run --locked --no-sync python scripts/check_tests.py"
-        )
+        assert config["checks"]["commands"]["application-tests"] == {
+            "argv": ["python", "scripts/setup_python.py", "--run", "scripts/check_tests.py"]
+        }
     else:
         assert not (initialized / "scripts/check_tests.py").exists()
         assert not (initialized / "tests/test_main.py").exists()
     assert config["checks"]["required"] == expected
-    assert config["checks"]["commands"]["generated"] == "ai-dlc agents render --check"
+    assert config["checks"]["commands"]["generated"] == {
+        "argv": ["ai-dlc", "agents", "render", "--check"]
+    }
     existing = tmp_path / ("existing-" + preset)
     existing.mkdir()
     (existing / manifest).write_text("user-authored manifest")
@@ -1102,8 +1105,7 @@ def test_initialized_python_application_check_runs_offline_without_dirtying_git(
         "UV_CACHE_DIR": str(tmp_path / "uv-cache"),
     }
     prepared = subprocess.run(
-        config["setup"]["steps"][0]["command"],
-        shell=True,
+        parse_command(config["setup"]["steps"][0]["command"]).argv,
         cwd=root,
         env=env,
         capture_output=True,
@@ -1126,8 +1128,7 @@ def test_initialized_python_application_check_runs_offline_without_dirtying_git(
 
     for check_id in ["language-check", "application-tests"]:
         result = subprocess.run(
-            config["checks"]["commands"][check_id],
-            shell=True,
+            parse_command(config["checks"]["commands"][check_id]).argv,
             cwd=root,
             env=env,
             capture_output=True,
@@ -1332,8 +1333,7 @@ def test_initialized_setup_and_language_check_offline(tmp_path, preset, tool, so
 
     def run(command):
         return subprocess.run(
-            command,
-            shell=True,
+            parse_command(command).argv,
             cwd=root,
             env=env,
             capture_output=True,
@@ -1521,6 +1521,25 @@ def test_generation_includes_the_engine_retained_release_manifest(tmp_path, monk
     assert "bootstrap/release.sh" in result["files"]
     assert (root / "bootstrap/release.sh").read_bytes() == manifest.read_bytes()
     assert (root / "bootstrap/download.sh").is_file()
+
+
+def test_native_only_template_receives_retained_manifest_without_posix_downloader(
+    tmp_path, template, monkeypatch
+):
+    from ai_dlc.setup import templates
+
+    native = template / "project/scripts/bootstrap.ps1"
+    native.parent.mkdir()
+    native.write_text("# Native fixture bootstrap\n")
+    release(template, "native fixture\n")
+    manifest = tmp_path / "release.sh"
+    manifest.write_bytes(b"AI_DLC_WHEEL_NAME=reviewed.whl\r\n")
+    monkeypatch.setattr(templates, "release_manifest_path", lambda: manifest)
+    root = tmp_path / "consumer"
+    result = adopt(root, apply=True, template_source=str(template), vcs_ref="v2.0.0")
+    assert result["release_manifest"] == "included"
+    assert (root / "bootstrap/release.sh").read_bytes() == manifest.read_bytes()
+    assert not (root / "bootstrap/download.sh").exists()
 
 
 @pytest.mark.parametrize("shape", ["missing", "empty", "symlink"])

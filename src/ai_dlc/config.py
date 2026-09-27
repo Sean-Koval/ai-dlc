@@ -83,7 +83,7 @@ def digest(value: Any) -> str:
 
 
 def read_toml(path: Path) -> dict[str, Any]:
-    return tomllib.loads(path.read_text())
+    return tomllib.loads(path.read_text(encoding="utf-8"))
 
 
 def _field_tokens(field: str) -> tuple[str, ...]:

@@ -9,17 +9,25 @@ Before preparing this checkout, identify the intended repository. A teammate who
 cloned AI-DLC only to install it for another project should follow the consumer
 route in [README.md](README.md#get-started), pass that work repository explicitly
 to `project onboard --root`, and keep this engine checkout's providers and accounts
-out of the target. Native Windows consumer installation is unsupported in this
-revision; [#172](https://github.com/Sean-Koval/ai-dlc/issues/172) tracks installation
-and [#53](https://github.com/Sean-Koval/ai-dlc/issues/53) tracks client/cross-machine
-qualification. Do not present the POSIX bootstrap below as native Windows guidance.
-Only contributors changing AI-DLC itself should prepare this checkout and run its
-full required checks.
+out of the target. Native Windows consumer installation is implemented on this
+draft branch but remains unqualified; [#172](https://github.com/Sean-Koval/ai-dlc/issues/172)
+tracks the clean Windows 11 installation evidence and
+[#53](https://github.com/Sean-Koval/ai-dlc/issues/53) tracks client/cross-machine
+qualification. Do not present POSIX bootstrap commands as native Windows guidance,
+or the draft PowerShell path as completed qualification. Only contributors changing
+AI-DLC itself and operators running the reviewed #172 walkthrough should prepare
+this checkout and run its full required checks.
 
-Prepare this checkout with `sh scripts/bootstrap.sh --source`; run
-`ai-dlc project check --required`. That prepares this checkout's own environment
-and leaves the shared `ai-dlc` alias alone; use the printed environment path, or
-pass `--publish-aliases` to repoint the alias deliberately. Use the Python implementation in `src/ai_dlc/`.
+Prepare this checkout with `sh scripts/bootstrap.sh --source` on macOS or Linux.
+For the native qualification path, use
+`.\scripts\bootstrap.ps1 -Source -Root $PWD.Path` in 64-bit Windows PowerShell 5.1
+on Windows x64/local NTFS; use `-Plan` to preview it. Run
+`ai-dlc project check --required` through the printed checkout environment. Source
+bootstrap leaves the shared `ai-dlc` alias alone; use `--publish-aliases` (Unix) or
+`-PublishAliases` (PowerShell) to repoint it deliberately. The historical published
+v0.4.0 assets do not provide native setup. Use the Python implementation in
+`src/ai_dlc/`.
+
 The [architecture](docs/architecture.md) maps its packages and entry points.
 The Rust implementation is retired and removed; its plans stay in `docs/archive/`.
 `templates/` still supplies the supported legacy scaffold command. Preserve
@@ -48,7 +56,7 @@ recovery and configuration boundaries. Mocked tests do not prove live platform
 qualification; consult [release gates](docs/release-verification.md). Do not
 publish packages or mutate remote services implicitly.
 
-<!-- ai-dlc:begin 75f30be091581ad5ebe1ff0f4a467da4823bf7b623e2abecd5428ee3394bcf96 -->
+<!-- ai-dlc:begin 9a660b19964b5bae4a891f2da839b43bc376ff70e9521b57e17ed52aed7b416a -->
 # Shared project guidance
 
 Read ai-dlc.toml and the active .ai-dlc/work record, if present, before work.
@@ -64,14 +72,14 @@ Keep personal notes in the selected knowledge provider and follow its instructio
 
 ## Verification
 
-- layout: `uv run --locked --no-sync python scripts/check_layout.py`
-- generated: `ai-dlc agents render --check && uv run --locked --no-sync python scripts/check_generated.py`
-- format: `uv run --locked --no-sync ruff format --check src tests scripts`
-- lint: `uv run --locked --no-sync ruff check src tests scripts`
-- types: `uv run --locked --no-sync pyright --pythonpath .venv/bin/python`
-- test: `uv run --locked --no-sync pytest -q`
-- documentation: `ai-dlc docs gate`
-- work-records: `ai-dlc work validate --all`
+- layout: `ai-dlc project check --check layout`
+- generated: `ai-dlc project check --check generated`
+- format: `ai-dlc project check --check format`
+- lint: `ai-dlc project check --check lint`
+- types: `ai-dlc project check --check types`
+- test: `ai-dlc project check --check test`
+- documentation: `ai-dlc project check --check documentation`
+- work-records: `ai-dlc project check --check work-records`
 
 Run `ai-dlc project check --required` in the prepared project environment.
 

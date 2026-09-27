@@ -5,6 +5,7 @@ from __future__ import annotations
 import shutil
 import subprocess
 import threading
+import tomllib
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -308,6 +309,7 @@ def commit_project(
     tmp_path: Path,
     *,
     commented_record: bool = False,
+    crlf_record: bool = False,
     historical_deployed: bool = False,
     merge_has_config: bool = True,
     requires_spec: bool = False,
@@ -317,6 +319,7 @@ def commit_project(
     git(root, "init", "-b", "main")
     git(root, "config", "user.name", "AI-DLC Test")
     git(root, "config", "user.email", "ai-dlc@example.test")
+    git(root, "config", "core.autocrlf", "false")
     if merge_has_config:
         (root / "ai-dlc.toml").write_text(project_source(deployed=historical_deployed))
         config = resolve_runtime(root).values
@@ -326,7 +329,10 @@ def commit_project(
     work_dir.mkdir(parents=True)
     record = authored_record(config, requires_spec=requires_spec)
     prefix = "# historical formatting\n" if commented_record else ""
-    (work_dir / "one.toml").write_text(prefix + tomli_w.dumps(record))
+    record_bytes = (prefix + tomli_w.dumps(record)).encode("utf-8")
+    if crlf_record:
+        record_bytes = record_bytes.replace(b"\n", b"\r\n")
+    (work_dir / "one.toml").write_bytes(record_bytes)
     git(root, "add", ".")
     git(root, "commit", "-m", "merged delivery")
     merge = git(root, "rev-parse", "HEAD")
@@ -831,6 +837,41 @@ def test_finish_at_merge_retains_normalized_historical_checkout(tmp_path, monkey
     assert tracker.transition_calls == 1
 
 
+def test_finish_at_merge_retains_crlf_normalized_historical_checkout(tmp_path, monkeypatch):
+    """Fails if ordinary LF normalization is hidden or its dirty checkout is force-cleaned."""
+    root, merge = commit_project(tmp_path, crlf_record=True)
+    committed = subprocess.run(
+        ["git", "show", f"{merge}:.ai-dlc/work/one.toml"],
+        cwd=root,
+        capture_output=True,
+        check=True,
+        text=False,
+        timeout=10,
+    ).stdout
+    assert b"\r\n" in committed
+    service, _, tracker, _ = configured_service(root, merge, tmp_path / "state", monkeypatch)
+
+    result = service.finish_at_merge("one")
+
+    assert result["status"] == "completed"
+    assert result["cleanup"]["status"] == "recovery-required"
+    marker = Path(result["cleanup"]["locator"])
+    retained_record = marker.parent / "checkout/.ai-dlc/work/one.toml"
+    assert marker.exists()
+    assert retained_record.exists()
+    assert b"\r\n" not in retained_record.read_bytes()
+    dirty = subprocess.run(
+        ["git", "status", "--porcelain=v1", "-z", "--", retained_record.name],
+        cwd=retained_record.parent,
+        capture_output=True,
+        check=True,
+        text=False,
+        timeout=10,
+    ).stdout
+    assert dirty == b" M .ai-dlc/work/one.toml\0"
+    assert tracker.transition_calls == 1
+
+
 @pytest.mark.parametrize("blocked", [False, True])
 def test_finish_at_merge_keeps_finish_outcome_when_cleanup_refuses(tmp_path, monkeypatch, blocked):
     """Fails if retained-resource recovery overwrites completed or blocked finish truth."""
@@ -919,6 +960,28 @@ def test_finish_at_merge_refuses_nonreproducible_direct_configuration(tmp_path):
 
     with pytest.raises(ValueError, match="from_project"):
         service.finish_at_merge("one")
+
+
+def test_reviewed_source_reads_utf8_without_platform_default_or_write(tmp_path, monkeypatch):
+    """Fails if finish preflight decodes a valid work record with the host text default."""
+    root, _ = commit_project(tmp_path)
+    record_path = root / ".ai-dlc/work/one.toml"
+    record = tomllib.loads(record_path.read_text(encoding="utf-8"))
+    record["title"] = "One Ё"
+    record_path.write_text(tomli_w.dumps(record), encoding="utf-8", newline="\n")
+    before = record_path.read_bytes()
+    service = WorkService.from_project(root, state_path=tmp_path / "state", registry=Registry())
+    original = Path.read_text
+
+    def legacy_default(path, encoding=None, errors=None):
+        return original(path, encoding=encoding or "cp1252", errors=errors)
+
+    monkeypatch.setattr(Path, "read_text", legacy_default)
+
+    assert service.load("one")["title"] == "One Ё"
+    raw, reviewed = service._reviewed_source("one")
+    assert raw["title"] == reviewed["title"] == "One Ё"
+    assert record_path.read_bytes() == before
 
 
 def test_merge_service_uses_fresh_registry_at_historical_root(tmp_path, monkeypatch):

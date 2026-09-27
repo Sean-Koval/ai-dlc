@@ -47,6 +47,16 @@ Copier owns template answers, original revisions and three-way updates.
 
 ## Persistence
 
+Native Windows bootstrap starts with inbox PowerShell and an embedded C# handle
+helper because a verified Python runtime does not yet exist. It reads inert pins,
+validates downloaded bytes and architecture, and stages on local NTFS. After
+installation, entry-point selection uses the existing Python ownership transaction
+service. Engine environments stay at their final paths so console launchers retain
+valid interpreter paths. Shared selection and checkout-local setup are separate;
+source bootstrap preserves a working shared selection unless explicitly changed.
+The `setup/windows.py` adapter owns native provisioning details and reports tools
+requiring manual installation; it does not elevate or change execution policy.
+
 The repository stores architecture, design rationale, decisions, runbooks and reviewed work. Formal specifications belong exclusively to the specification provider. Tracker priority/status is authoritative. The personal knowledge provider is not a repository mirror. Local operation journals aid retries; remote reconciliation and fresh evidence remain necessary across machines.
 
 ## Deployment and interfaces

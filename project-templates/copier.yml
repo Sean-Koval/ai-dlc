@@ -24,6 +24,7 @@ _exclude:
   - "{% if not initialize or preset != 'python' %}pyproject.toml{% endif %}"
   - "{% if not initialize or preset != 'python' %}src/main.py{% endif %}"
   - "{% if not initialize or preset != 'python' %}scripts/check_tests.py{% endif %}"
+  - "{% if preset != 'python' %}scripts/setup_python.py{% endif %}"
   - "{% if not initialize or preset != 'python' %}tests/test_main.py{% endif %}"
   - "{% if not initialize or preset != 'node' %}package.json{% endif %}"
   - "{% if not initialize or preset != 'node' %}src/index.js{% endif %}"

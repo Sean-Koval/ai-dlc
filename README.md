@@ -58,20 +58,21 @@ for available commands, MCP tools, and skills.
 
 ## Get started
 
-Native Windows consumer installation is unsupported in this revision. The native
-storage core has source-level evidence, but the installer, PowerShell bootstrap,
-desktop clients, and end-to-end onboarding remain open in
-[#172](https://github.com/Sean-Koval/ai-dlc/issues/172) and
-[#53](https://github.com/Sean-Koval/ai-dlc/issues/53). These instructions are for
-supported macOS and Linux hosts with a POSIX shell; they do not prescribe WSL,
-containers, or translated shell commands as a Windows route.
+Native Windows source bootstrap is implemented on this draft branch, but consumer
+installation and end-to-end onboarding remain unqualified until the clean Windows
+11 work in [#172](https://github.com/Sean-Koval/ai-dlc/issues/172) is complete.
+Native client and cross-machine qualification remain in
+[#53](https://github.com/Sean-Koval/ai-dlc/issues/53). `project onboard` therefore
+continues to block Windows as unsupported. The PowerShell route below is for the
+reviewed qualification walkthrough; it is not a completed support claim and does
+not prescribe WSL, containers, or translated shell commands.
 
 ### Install AI-DLC for a work project
 
 The published [v0.4.0](https://github.com/Sean-Koval/ai-dlc/releases/tag/v0.4.0)
-predates `project onboard`, even though the source package version has not changed.
-To use the onboarding planner, install a team-reviewed commit or ref from a source
-checkout:
+predates `project onboard` and the native Windows assets, even though the source
+package version has not changed. To use the onboarding planner on supported macOS
+or Linux, install a team-reviewed commit or ref from a source checkout:
 
 ```sh
 git clone https://github.com/Sean-Koval/ai-dlc.git
@@ -86,6 +87,24 @@ prints the directories to add to `PATH`; no preinstalled Python or Node is neede
 When the global alias belongs to another checkout, use the exact checkout-specific
 executable printed by bootstrap for every command below. The version string alone
 does not prove that another installation includes this command.
+
+For the #172 qualification walkthrough on Windows x64/local NTFS, use 64-bit
+Windows PowerShell 5.1. Preview the native bootstrap, then run it:
+
+```powershell
+.\scripts\bootstrap.ps1 -Source -Root $PWD.Path -Plan
+.\scripts\bootstrap.ps1 -Source -Root $PWD.Path
+```
+
+This native path needs neither WSL nor preinstalled Python or Node. It honors the
+machine's existing PowerShell policy and does not change execution policy, elevate,
+or edit machine PATH. Use the printed checkout-specific executable or PATH
+directories. For persistent activation, see the
+[PowerShell preview and apply procedure](docs/runbooks/machine-enrollment.md#native-windows-setup-and-activation).
+Windows Server CI and the required clean Windows 11 walkthrough are separate
+evidence; consult [release verification](docs/release-verification.md).
+
+### Create or adopt a project
 
 Choose the work repository and client explicitly. For a fresh or unconfigured
 repository, plan with the language-neutral preset and no provider, account,
@@ -118,6 +137,9 @@ An explicit `project onboard --preset` selection accepts `generic` or `python`.
 The underlying `project adopt` command also accepts `node` and `rust`; for one of
 those targets, use that reviewed preset in the adoption command, then let the
 adopted target configuration supply it to subsequent onboarding plans.
+The native draft implements only the `generic` and `python` starter paths; Windows
+onboarding remains blocked until qualification rather than silently reducing or
+changing a selection.
 Preserve the repository's existing checks and add at least one required check for
 its own acceptance behavior; the generic management checks do not establish that
 behavior. Then rerun onboarding and follow the available operations in order:
@@ -207,7 +229,9 @@ commit the adoption and setup changes before checking. Choose `generic`, `python
 
 Projects created with the released engine carry its release manifest for their
 own bootstrap and CI. Source-generated projects need a published
-`bootstrap/release.sh` before release-mode bootstrap; see the
+`bootstrap/release.sh` before release-mode bootstrap. Native projects also need
+compatible native release assets, which the historical v0.4.0 release does not
+provide. See the
 [release guide](docs/runbooks/release-publication.md#install-from-a-release).
 
 ### Connect tools and configure the project

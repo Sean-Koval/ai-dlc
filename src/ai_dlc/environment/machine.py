@@ -236,7 +236,7 @@ class MachineManager:
                 subdirectory=lock.subdirectory,
                 profile_file=lock.profile_file,
                 allow_legacy_identity=(
-                    "profile_id" not in tomllib.loads(active_profile.read_text())
+                    "profile_id" not in tomllib.loads(active_profile.read_text(encoding="utf-8"))
                 ),
             )
         except Exception as exc:  # noqa: BLE001 -- every failure must preserve the lock
@@ -249,8 +249,8 @@ class MachineManager:
         candidate_profile = candidate.cache_root / candidate.subdirectory / candidate.profile_file
         configuration_diff = "".join(
             difflib.unified_diff(
-                active_profile.read_text().splitlines(True),
-                candidate_profile.read_text().splitlines(True),
+                active_profile.read_text(encoding="utf-8").splitlines(True),
+                candidate_profile.read_text(encoding="utf-8").splitlines(True),
                 fromfile=lock.resolved_commit,
                 tofile=candidate.resolved_commit,
             )
@@ -567,14 +567,14 @@ class MachineManager:
 
     @staticmethod
     def _personal_config(profile_file: Path) -> dict[str, Any]:
-        return tomllib.loads(profile_file.read_text())
+        return tomllib.loads(profile_file.read_text(encoding="utf-8"))
 
     def _resolved_config(self, profile_file: Path, machine_file: Path | None) -> dict[str, Any]:
         layers: list[tuple[str, dict[str, Any]]] = [
             ("personal", self._personal_config(profile_file))
         ]
         if machine_file is not None:
-            layers.append(("machine", tomllib.loads(machine_file.read_text())))
+            layers.append(("machine", tomllib.loads(machine_file.read_text(encoding="utf-8"))))
         return resolve_layers(layers).values
 
     @staticmethod

@@ -5,12 +5,12 @@ repository gives you the engine source; its own GitHub Project and account
 configuration belong to AI-DLC development. Adopt each work repository with its
 own project policy and local credentials.
 
-Native Windows consumer installation is unsupported in this revision. The open
-installer and PowerShell work is tracked by
-[#172](https://github.com/Sean-Koval/ai-dlc/issues/172), and client/cross-machine
+Native Windows consumer installation is implemented on the #172 draft branch but
+is not yet qualified for general use. Clean Windows 11 installation remains tracked
+by [#172](https://github.com/Sean-Koval/ai-dlc/issues/172), and client/cross-machine
 qualification by [#53](https://github.com/Sean-Koval/ai-dlc/issues/53). Use the
-route below on supported macOS or Linux with a POSIX shell. WSL and containers
-are separate choices, not mandatory or qualified native Windows instructions.
+consumer route below on supported macOS or Linux with a POSIX shell. WSL and
+containers are separate choices, not mandatory or qualified native instructions.
 
 ## Install the engine
 
@@ -22,6 +22,14 @@ checkout-specific executable printed by bootstrap. Confirm that executable with
 `/printed/path/ai-dlc project onboard --help`; a version string alone cannot
 establish the feature. Current release evidence remains in
 [release verification](../release-verification.md).
+
+For the reviewed #172 qualification walkthrough only, the draft native source
+entry point is `.\scripts\bootstrap.ps1 -Source -Root $PWD.Path` in 64-bit Windows
+PowerShell 5.1 on Windows x64/local NTFS. Preview it with `-Plan`. It does not
+require WSL, but it is not yet the supported consumer route and `project onboard`
+continues to report Windows unavailable until the clean-host evidence is complete.
+See the [setup routes](../../README.md#get-started) and
+[qualification limits](../release-verification.md).
 
 ## Prepare a work repository
 

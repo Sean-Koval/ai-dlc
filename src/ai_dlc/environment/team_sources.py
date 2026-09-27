@@ -75,7 +75,7 @@ def resolve_sources(
                     for name, body in files.items():
                         path = staged / name
                         path.parent.mkdir(parents=True, exist_ok=True)
-                        path.write_text(body)
+                        path.write_text(body, encoding="utf-8", newline="\n")
                         path.chmod(0o600)
                     if content_digest(read_tree(staged, cached=True)) != lock.content_sha256:
                         raise ValueError("team source cache changed while staging")
@@ -95,7 +95,7 @@ def resolve_sources(
 def load_sources(
     lock: EnrollmentLock, paths: EnrollmentPaths, roles: list[str] | None = None
 ) -> SelectedSources:
-    profile = tomllib.loads(verify_cached_profile(lock, paths).read_text())
+    profile = tomllib.loads(verify_cached_profile(lock, paths).read_text(encoding="utf-8"))
     declared = subscriptions(profile.get("sources", []))
     expected = [{**entry.model_dump(), "git": source_lock_value(entry.git)} for entry in declared]
     actual = [
@@ -132,7 +132,9 @@ def enrolled_sources(*, paths: EnrollmentPaths | None = None) -> SelectedSources
     machine = paths.machine_file(lock.machine_id)
     if not machine.is_file():
         raise ValueError("active machine binding is missing")
-    config = resolve_layers([("machine", tomllib.loads(machine.read_text()))]).values
+    config = resolve_layers(
+        [("machine", tomllib.loads(machine.read_text(encoding="utf-8")))]
+    ).values
     return load_sources(lock, paths, config.get("team_roles", []))
 
 

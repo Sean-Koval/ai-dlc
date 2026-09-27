@@ -92,7 +92,7 @@ def merge_source_items(
     directories: dict[str, str],
 ) -> tuple[str, dict[str, str]]:
     names = set(skills) | set(
-        json.loads((assets("agents") / "skills.lock.json").read_text())["skills"]
+        json.loads((assets("agents") / "skills.lock.json").read_text(encoding="utf-8"))["skills"]
     )
     names.update(name for bundle in bundles.values() for name in bundle["manifest"]["skills"])
     servers = config.setdefault("agents", {}).setdefault("servers", [])

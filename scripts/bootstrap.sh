@@ -71,6 +71,10 @@ else
     # so project generation can hand generated projects the exact assets that built it.
     cp "$AI_DLC_ROOT/bootstrap/release.sh" "$AI_DLC_BOOTSTRAP_HOME/engine-$AI_DLC_ENGINE_VERSION/release.sh"
 fi
+if ! "$(dirname "$AI_DLC_CLI")/python" -c 'from ai_dlc.setup.commands import parse_command; command = parse_command({"argv": ["python", "--version"]}); raise SystemExit(command.shell is not None or command.argv != ("python", "--version"))'; then
+    echo 'Incompatible AI-DLC engine: this project requires portable argv commands. Use a compatible verified release or an explicitly selected current source checkout; the shared CLI selection was not changed.' >&2
+    exit 1
+fi
 AI_DLC_MISE_BINARY="$AI_DLC_DOWNLOADS/mise-$AI_DLC_MISE_VERSION-$AI_DLC_MISE_TARGET"
 if [ ! -f "$AI_DLC_MISE_BINARY" ] || [ "$(ai_dlc_hash "$AI_DLC_MISE_BINARY")" != "$AI_DLC_MISE_SHA256" ]; then
     ai_dlc_download "$AI_DLC_MISE_URL" "$AI_DLC_MISE_SHA256" "$AI_DLC_MISE_BINARY"

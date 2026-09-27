@@ -162,7 +162,7 @@ def load_component_catalog(root: Path, config: dict) -> dict:
     root = Path(root).resolve()
     module_ids = set(read_toml(assets("modules") / "catalog.toml"))
     components = _validate_catalog(
-        json.loads((assets("modules") / "components.json").read_text()),
+        json.loads((assets("modules") / "components.json").read_text(encoding="utf-8")),
         module_ids=module_ids,
         guidance_root=assets("agents"),
         source="packaged component catalog",

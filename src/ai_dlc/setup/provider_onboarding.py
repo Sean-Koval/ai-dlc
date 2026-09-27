@@ -516,7 +516,7 @@ def _bound_linear_work(root: Path, config: dict) -> list[str]:
     bound = []
     for path in sorted(work_root.glob("*.toml")):
         try:
-            raw = tomllib.loads(path.read_text())
+            raw = tomllib.loads(path.read_text(encoding="utf-8"))
             work = Work.model_validate(raw)
         except (OSError, tomllib.TOMLDecodeError, ValueError, TypeError):
             raise ValueError(

@@ -125,3 +125,42 @@ def test_candidate_hashes_the_same_wheel_bytes_whose_identity_was_validated(tmp_
     assert f"AI_DLC_WHEEL_SHA256={original_digest}\n" in content
     assert hashlib.sha256(wheel.read_bytes()).hexdigest() != original_digest
     assert constraints.exists()
+
+
+def test_release_assets_include_exact_native_and_unix_bootstraps(tmp_path):
+    _, wheel, constraints, _ = candidate(tmp_path)
+    command = [
+        sys.executable,
+        str(ROOT / "scripts/prepare_release_assets.py"),
+        "--artifacts",
+        str(tmp_path),
+        "--base-url",
+        "https://candidate.invalid/assets",
+        "--version",
+        "0.4.0",
+    ]
+    subprocess.run(command, check=True, capture_output=True)
+    inventory = dict(
+        line.split("  ")[::-1] for line in (tmp_path / "SHA256SUMS").read_text().splitlines()
+    )
+    assert set(inventory) == {
+        wheel.name,
+        constraints.name,
+        "release.sh",
+        "bootstrap.sh",
+        "versions.sh",
+        "download.sh",
+        "bootstrap.ps1",
+        "windows.json",
+        "windows.ps1",
+        "windows-native.cs",
+        "windows-select.py",
+    }
+    for name, digest in inventory.items():
+        assert hashlib.sha256((tmp_path / name).read_bytes()).hexdigest() == digest
+    assert (tmp_path / "windows-native.cs").read_bytes() == (
+        ROOT / "bootstrap/windows-native.cs"
+    ).read_bytes()
+    before = {name: (tmp_path / name).read_bytes() for name in inventory}
+    assert subprocess.run(command, capture_output=True, check=False).returncode != 0
+    assert before == {name: (tmp_path / name).read_bytes() for name in inventory}

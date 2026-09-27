@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "platform": "Windows-x64",
+  "engine_version": "0.4.0",
+  "python_version": "3.12.11",
+  "python_url": "https://github.com/astral-sh/python-build-standalone/releases/download/20251007/cpython-3.12.11%2B20251007-x86_64-pc-windows-msvc-install_only_stripped.tar.gz",
+  "python_sha256": "d2877f74b01871c82d140a9eefe57b18185c7a84128727cbedcae45dc5c9e54f",
+  "uv_version": "0.9.11",
+  "uv_url": "https://github.com/astral-sh/uv/releases/download/0.9.11/uv-x86_64-pc-windows-msvc.zip",
+  "uv_sha256": "45a3ff2a68c246ed9fd2d9df032496c1beebe480357f356ac25d2cb144884c30",
+  "mise_version": "2026.9.1",
+  "mise_url": "https://github.com/jdx/mise/releases/download/v2026.9.1/mise-v2026.9.1-windows-x64.exe",
+  "mise_sha256": "86690787f22ccd55034039cb85bae27b5cba375aefbba5c09dd994487e0df554"
+}
