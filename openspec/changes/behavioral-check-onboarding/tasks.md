@@ -15,7 +15,7 @@
 
 - [x] 3.1 Execute one real local behavioral rehearsal through the normal runner and record its source/runtime identity, three outcomes and limits; do not execute paid #138 comparisons or infer quality/productivity savings.
 - [x] 3.2 Review the canonical development/adoption guidance and evaluation prerequisite document; update impacted catalog mappings and content-bound dispositions without adding a parallel testing handbook.
-- [ ] 3.3 Complete specification/work-record and affected-document review, record required content-bound dispositions, strictly validate this change, run the prepared required checks, and resolve actionable review findings.
+- [x] 3.3 Complete specification/work-record and affected-document review, record required content-bound dispositions, strictly validate this change, run the prepared required checks, and resolve actionable review findings.
 
 ## Subsequent delivery gates
 
@@ -72,5 +72,7 @@ Controller owns ignored execution/evidence, catalog/dispositions and these speci
 
 - [x] Use an external disposable copy of the committed CSV fixture. Record source/tree/runtime identities, one reviewed column-count requirement and authored unittest command; run focused pass, introduce only the reviewed behavior regression in the copy, require observed failure, restore exact bytes and require pass. Record isolation-refusal and undetected-regression controls; preserve active checkout and user content.
 - [x] Build the common base and candidate on available Linux arm64 Docker, then run the no-model offline ordinary-runner smoke. Record exact image/wheel/source/receipt identities, separate from native or paid comparison evidence.
-- [ ] Record reviewed canonical evidence/catalog mappings and content-bound dispositions; validate specification/work records and run required checks. Obtain task reviews then whole-branch review; resolve findings.
-- [ ] Archive this independently completed specification, push/PR, refresh against target, merge only after required checks, and finish from exact merge with configured receipts. No package publication.
+- [x] Record reviewed canonical evidence/catalog mappings and content-bound dispositions; validate specification/work records and run required checks. Obtain task reviews then whole-branch review; resolve findings.
+After the implementation checklist: archive this independently completed specification, push/PR, refresh against target, merge only after required checks, and finish from exact merge with configured receipts. No package publication.
+
+Final implementation verification at `17988aa`: all eight required checks passed on a clean tree; 3,179 tests passed and 40 skipped. Independent whole-branch review found only a documentation anchor issue, resolved and independently reviewed in `54c6284`. Later archive/link metadata is rechecked separately and hosted checks must cover the final delivery revision.

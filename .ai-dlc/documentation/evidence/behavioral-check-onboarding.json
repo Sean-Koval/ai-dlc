@@ -217,7 +217,7 @@
         "agents/skills/spec-from-prd/SKILL.md": "9ceeb895bfe68311de31b1a0f5751dd4471be53b3de7aa9441dc69d3f808cf68",
         "agents/templates/delivery-slice.md": "4a7a5d7af2f6a99b4e7eac13491eef751def074451d6899acc36ccf1f536bd6f",
         "catalog:docs/workflows/brownfield.md": "220b300208e422314479b088cd841d3d7dbacfb5c5b886529d8e9a70c32a23bc",
-        "docs/workflows/brownfield.md": "56a0fe70ac69503a0d730c5ed44e5926e3fcd045fc10b3f7939c8001078798e6",
+        "docs/workflows/brownfield.md": "ba6fea8571f096715f64e0253444f218d307aee61777c47b91d0149efea22e26",
         "openspec/changes/behavioral-check-onboarding/specs/portable-development/spec.md": "34660deda7723a1eaa17dbcb24609706fa8277ff7e2367c50f9b882e65b8c3a5",
         "project-templates/project/docs/workflows/brownfield.md": "300acec2c3562b8d76178e0de1ec3bd155882f0ce5180879b195657d5eb58c1f",
         "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
@@ -239,7 +239,7 @@
     },
     {
       "bound": {
-        "openspec/changes/behavioral-check-onboarding/tasks.md": "b316734bc635f57e67542132794ac385d281a7eda364813e60a2b6fe77484f04"
+        "openspec/changes/behavioral-check-onboarding/tasks.md": "0a1de2ca2b52802d19a98bd1009227f4f0ac05533dc94d76aeedbce521363172"
       },
       "outcome": "updated",
       "reason": "Tracks implementation, review, actual isolated behavioral/ordinary-runner evidence and remaining delivery gates separately; no paid/native qualification is inferred.",
