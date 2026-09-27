@@ -125,7 +125,7 @@
         "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
         "tests/test_environment_report_collection.py": "2acfade90e9a7137a674adb75547a18e49d5992bbbe42d4e8ba7f072ab81dd41",
         "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
-        "tests/test_environment_report_probes.py": "c19dcbe771d86f3ec2a6dd750642cadf9cbf0be3cd92faee44b68f00b9214717"
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be"
       },
       "outcome": "reviewed-no-change",
       "reason": "Existing project-owned policy, shared configuration and harness/work service boundaries remain accurate; the scalar and offline decision reuse current services without new provider, journal or orchestration authority.",
@@ -181,6 +181,38 @@
     },
     {
       "bound": {
+        ".github/workflows/release.yml": "c32926d61ee30cd32aa03fa899c74f395decdb152833f572d4e1ade4c28993b5",
+        ".github/workflows/verify.yml": "bd6b744ece4d34eb412647042d7eec837d06043e65b2ac0b2e594960de641415",
+        "catalog:docs/release-verification.md": "972bf86b6da5f20b3d01762982880533ba0c99b22933aa95273590923721dad0",
+        "docs/release-verification.md": "592f4c5267285fcd0d53b3f42ea66a1c7b784bb94f7d9eb15307196a12ac9947",
+        "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
+        "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+        "src/ai_dlc/cli.py": "f7af54e1e3ed2203e20a8c1b25525e9ee680a6900eed697173e87246ee9fb612",
+        "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
+        "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
+        "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
+        "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
+        "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
+        "tests/test_consumer_onboarding.py": "1303e2d74c9aaa0d9834133fa37744128c5b027d6f7febdb293e1fe02bf76e37",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
+        "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
+        "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
+        "tests/test_environment_report_collection.py": "2acfade90e9a7137a674adb75547a18e49d5992bbbe42d4e8ba7f072ab81dd41",
+        "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
+        "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
+        "tests/test_release_workflow.py": "a50523b5d6dec682188d489780d29a74f2a01c60c310071ce6758898f3d12dc0"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Reviewed optional environment version-probe guidance and qualification boundaries. The test-only correction separates the artificial timeout case from output classification using the unchanged production deadline; no runtime behavior, published asset, native qualification or historical evidence changes.",
+      "reviewer": "codex",
+      "target": "docs/release-verification.md"
+    },
+    {
+      "bound": {
         "catalog:docs/runbooks/machine-enrollment.md": "5749f500521eba18b71290a6e63d8abcc82967ef13035e34b90406b7c67b26ee",
         "docs/runbooks/machine-enrollment.md": "817db5365ce2786515ecce389d4873ad766ea905adc14ad70ea823ceca3197b5",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
@@ -216,7 +248,7 @@
         "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
         "tests/test_environment_report_collection.py": "2acfade90e9a7137a674adb75547a18e49d5992bbbe42d4e8ba7f072ab81dd41",
         "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
-        "tests/test_environment_report_probes.py": "c19dcbe771d86f3ec2a6dd750642cadf9cbf0be3cd92faee44b68f00b9214717",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
         "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
         "tests/test_native_harnesses.py": "e008d4773dccfa2662942561b24df4fdb6c15f637683d5fbdfaf59240e9bb5cc",
         "tests/test_rendering.py": "cbc5c9bbc5dceafda37d1f41781f2d86891ba2273b6e32455e6997bcfd7f312c",
@@ -328,7 +360,7 @@
         "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
         "tests/test_environment_report_collection.py": "2acfade90e9a7137a674adb75547a18e49d5992bbbe42d4e8ba7f072ab81dd41",
         "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
-        "tests/test_environment_report_probes.py": "c19dcbe771d86f3ec2a6dd750642cadf9cbf0be3cd92faee44b68f00b9214717",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
         "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
         "tests/test_rendering.py": "cbc5c9bbc5dceafda37d1f41781f2d86891ba2273b6e32455e6997bcfd7f312c",
         "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2"
@@ -337,6 +369,32 @@
       "reason": "Names separate hook selection, supported policy modes and offline payload limits without claiming arbitrary-terminal or remote tracker enforcement.",
       "reviewer": "codex",
       "target": "docs/workflows/tool-map.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/work-computer-setup.md": "62d0a76f141100f0e8d2219cf5e7b398c0530796f3a7fa2ae95348450d0bdbb5",
+        "docs/workflows/work-computer-setup.md": "3d4fee69db9046cebc961e945808dd395614fcd98c97931454d0b4b91998ae48",
+        "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "src/ai_dlc/cli.py": "f7af54e1e3ed2203e20a8c1b25525e9ee680a6900eed697173e87246ee9fb612",
+        "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
+        "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
+        "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
+        "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
+        "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
+        "tests/test_consumer_onboarding.py": "1303e2d74c9aaa0d9834133fa37744128c5b027d6f7febdb293e1fe02bf76e37",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
+        "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
+        "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
+        "tests/test_environment_report_collection.py": "2acfade90e9a7137a674adb75547a18e49d5992bbbe42d4e8ba7f072ab81dd41",
+        "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Reviewed optional environment version-probe guidance and qualification boundaries. The test-only correction separates the artificial timeout case from output classification using the unchanged production deadline; no runtime behavior, published asset, native qualification or historical evidence changes.",
+      "reviewer": "codex",
+      "target": "docs/workflows/work-computer-setup.md"
     },
     {
       "bound": {
@@ -376,7 +434,7 @@
     },
     {
       "bound": {
-        "openspec/changes/archive/2026-09-27-proportionate-push-policy/tasks.md": "c0ece6f02f10d2193a39c522e2d1d8894764fca95233a36a46358a1a280ae6e2"
+        "openspec/changes/archive/2026-09-27-proportionate-push-policy/tasks.md": "b322bff2ed8387c3df17527a6fe100684dd59c052c8156db15cf05d39b9a1ad4"
       },
       "outcome": "updated",
       "reason": "Reviewed archived policy requirements and implementation evidence; repaired moved links and preserved pending full verification and exact-merge delivery gates.",
