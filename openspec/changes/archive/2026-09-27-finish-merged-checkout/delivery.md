@@ -1,10 +1,10 @@
 # Delivery slice: finish-merged-checkout
 
 Proposed local work ID: `finish-merged-checkout`. Priority: P2.
-Owner: Sean Koval, product decision; implementation owner unassigned.
-Status: specification and issue preparation authorized; implementation not started.
-Review source: September 26 team-adoption review and the user's request to specify and create issues. No remote tracker completion, implementation or release is authorized by this document.
-Canonical brief authority: [product direction](../../../docs/product-direction.md). Review trace: OUT-001 and RQ-005; formal acceptance resides in this change.
+Owner: Sean Koval, product decision; implementation by the reviewed agent team.
+Status: core implementation reviewed; final Windows correction review, verification and gated delivery pending.
+Review source: September 26 team-adoption review, followed by the user's authorization to implement, push and merge. Package publication and paid comparison remain outside this delivery.
+Canonical brief authority: [product direction](../../../../docs/product-direction.md). Review trace: OUT-001 and RQ-005; formal acceptance resides in this change.
 
 ## Problem and outcome
 
@@ -40,7 +40,9 @@ Native-Windows work owns portability implementation/qualification of core filesy
 | FMC-05 Normal / Changed resource / Foreign path | Owned clean resources removed; unsafe removal retained and reported separately | Real cleanup, refusal and failure-injection cases |
 | TR-04 Recovery guidance | Plain finish still refuses wrong revision and offers explicit helper/manual remedy | CLI/service and generated-guidance regression |
 
-All implementation evidence is pending. Mocked provider outcomes are not live completion qualification; an actual sandbox run must be separately authorized and recorded with its exact revision/environment.
+Local implementation evidence: 28 real-Git owned-checkout tests and six Git-runner checks passed after two cleanup recovery regressions were corrected. The shared finish service passed 26 helper cases, including spawned-process concurrency and a deliberately incorrect lock variant that reproduces duplicate transitions. Existing finish/construction checks passed, including 13 focused identity/reconciliation regressions after the service review fixes; CLI/guidance checks passed 94 cases and rendering/templates passed 418. These counts belong to their focused groups and are not a full-suite total. Whole-project formatting, lint, types, generated files, layout and strict specification validation passed before final review.
+
+Independent task and whole-branch reviews are complete; all findings were reproduced, corrected and accepted in scoped re-review. Full required delivery checks and hosted Windows helper execution remain pending on the finalized archived delivery revision. All remote SCM/tracker outcomes in these tests are mocked. They are not live completion qualification; an actual sandbox run must be separately authorized and recorded with its exact revision/environment. No command/time/token saving has been measured or added to the historical delivery baseline.
 
 ## Implementation sequence
 
@@ -52,6 +54,10 @@ Review `docs/development-workflow.md`, `docs/workflows/tool-map.md`, selected-ca
 
 ## Open inputs and next action
 
-No unresolved merge semantics: the authenticated bound PR merge SHA is authoritative, and missing local objects produce a fetch remedy. Implementation must inspect the current platform-safe worktree/locking primitives and select bounded storage/recovery details that meet ownership requirements; it must not invent remote reconciliation. A future live sandbox host/credentials and implementation owner remain unassigned.
+No unresolved merge semantics: the authenticated bound PR merge SHA is authoritative, and missing local objects produce a fetch remedy. Implementation must inspect the current platform-safe worktree/locking primitives and select bounded storage/recovery details that meet ownership requirements; it must not invent remote reconciliation. A future live sandbox host and credentials remain unassigned; implementation is owned by the reviewed work branch.
 
-Decision: proceed with specification/issue handoff for this bounded helper, without extending it to pre-merge orchestration or executing provider mutations during specification preparation.
+Decision: deliver the reviewed bounded helper after final required checks and exact-merge completion gates. Pre-merge orchestration and release publication remain outside this change.
+
+## Final platform correction
+
+The clean pre-correction delivery revision `0d329e0` passed all eight local required checks with 3,287 tests passed and 40 skipped. Hosted Windows then exposed locale decoding of Unicode Git paths. Commits `5aa18b3` and `a06ec5a` preserve filesystem path bytes and avoid decoding unused Git output, including non-English commit subjects. A legacy-codec regression exercises actual checkout creation and cleanup. The corrected lifecycle, service helper and Git-runner group passed 62 tests; focused formatting, lint and types passed. Final corrected-revision full checks and hosted Windows confirmation remain required. These observations do not qualify a Windows desktop or native coding client.

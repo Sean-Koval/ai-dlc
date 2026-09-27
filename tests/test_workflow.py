@@ -1265,6 +1265,7 @@ def test_revision_mismatch_names_both_revisions_and_the_remedy(tmp_path):
     reason = str(failure.value)
     assert merged in reason and head in reason
     assert "git worktree add --detach" in reason
+    assert "ai-dlc work finish one --at-merge" in reason
 
 
 def test_dirty_tree_at_the_merged_revision_is_a_distinct_reason(tmp_path, monkeypatch):

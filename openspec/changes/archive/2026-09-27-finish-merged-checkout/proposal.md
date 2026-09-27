@@ -2,7 +2,7 @@
 
 ## Why
 
-[Product direction](../../../docs/product-direction.md) prioritizes useful evidence services with measured, modest process cost. Existing finish gates correctly demand the bound PR's exact merged revision, but after the target branch advances the caller must manually create, enter and remove a detached checkout. This is mechanical coordination work and introduces avoidable path, configuration and cleanup errors.
+[Product direction](../../../../docs/product-direction.md) prioritizes useful evidence services with measured, modest process cost. Existing finish gates correctly demand the bound PR's exact merged revision, but after the target branch advances the caller must manually create, enter and remove a detached checkout. This is mechanical coordination work and introduces avoidable path, configuration and cleanup errors.
 
 ## What Changes
 
