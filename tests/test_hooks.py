@@ -185,6 +185,42 @@ def test_any_invalid_matching_record_denies_and_names_the_record(tmp_path, polic
     assert expected[fault] in response["reason"].lower()
 
 
+@pytest.mark.parametrize("policy", ["all-branches", "tracked-branches"])
+def test_malformed_providers_on_matching_record_denies_with_repair(tmp_path, policy):
+    root = tmp_path / "project"
+    initialize_hook_project(root, policy)
+    path = write_work_record(root, "broken-provider")
+    raw = tomllib.loads(path.read_text())
+    raw["providers"] = "invalid"
+    path.write_text(tomli_w.dumps(raw))
+
+    response = invoke_hook(root, "git push origin topic")
+
+    assert response["decision"] == "deny"
+    assert "broken-provider" in response["reason"]
+    assert "providers" in response["reason"]
+    assert "repair" in response["reason"].lower()
+
+
+@pytest.mark.parametrize("policy", ["all-branches", "tracked-branches"])
+def test_malformed_providers_in_dependency_denies_with_repair(tmp_path, policy):
+    root = tmp_path / "project"
+    initialize_hook_project(root, policy)
+    dependency = write_work_record(root, "broken-dependency", artifacts={"tracker": "177"})
+    raw = tomllib.loads(dependency.read_text())
+    raw["providers"] = "invalid"
+    dependency.write_text(tomli_w.dumps(raw))
+    write_work_record(root, "matching", depends_on=["broken-dependency"])
+
+    response = invoke_hook(root, "git push origin topic")
+
+    assert response["decision"] == "deny"
+    assert "matching" in response["reason"]
+    assert "dependency" in response["reason"]
+    assert "providers" in response["reason"]
+    assert "repair" in response["reason"].lower()
+
+
 def test_parseable_record_without_a_branch_is_a_determinate_nonmatch(tmp_path):
     root = tmp_path / "project"
     initialize_hook_project(root, "tracked-branches")

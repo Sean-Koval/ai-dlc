@@ -174,7 +174,29 @@ def _bound_operation_decision(root: Path) -> dict[str, str]:
         matching.append(work_id)
         try:
             work = resolve_work(raw, config, work_id)
+        except AttributeError:
+            return {
+                "decision": "deny",
+                "reason": (
+                    f"Work {work_id} has malformed work data; providers must be a table. "
+                    f"Repair .ai-dlc/work/{work_id}.toml and retry."
+                ),
+            }
+        except (OSError, TypeError, ValueError) as exc:
+            return {
+                "decision": "deny",
+                "reason": f"Work {work_id} is invalid for this branch: {exc}",
+            }
+        try:
             validation = validate_work(root, config, work_id)
+        except AttributeError:
+            return {
+                "decision": "deny",
+                "reason": (
+                    f"Work {work_id} or its dependency closure has malformed work data; "
+                    "providers must be a table. Repair the affected .ai-dlc/work record and retry."
+                ),
+            }
         except (OSError, TypeError, ValueError) as exc:
             return {
                 "decision": "deny",
