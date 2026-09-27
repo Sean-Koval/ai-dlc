@@ -12,5 +12,12 @@
       "linux-x64": "674f61f20ff306f3100cf9200e4c36c4b70278b5bef2884549819b942a89c863",
       "linux-arm64": "159e4a51d796f3bf14677577100f7efb845611b1ceaf0c30cbd8d4650d942185"
     }
+  },
+  "mise": {
+    "version": "2026.9.1",
+    "sha256": {
+      "linux-x64": "c98423c8470d6dc416d9f7036d0646d8ef5ae92ad9186907f8fcc84cbe7db4ea",
+      "linux-arm64": "0ef0a778eaa8599f3e90a8a0979c9fc3f79922cafb5fa6d39f366d974da33bba"
+    }
   }
 }

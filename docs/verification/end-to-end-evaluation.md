@@ -102,11 +102,18 @@ volume to remove by hand from `cleanup-ledger.jsonl`.
 ## Base image for real clients
 
 `ai-dlc eval base evaluations/images/claude-code.json` builds the image both
-arms share: the pinned Python parent, Git, and the Claude Code native binary at
-the recipe's version. The controller downloads the binary, refuses bytes whose
-sha256 differs from the recipe, and copies it in; the build needs no BuildKit.
-Git and the client are then run offline as uid 1000. Pass the printed image ID to
-`eval image --base` to build the candidate on top.
+arms share: the pinned Python parent, Git, the Claude Code native binary and mise
+at the recipe's versions. The controller selects the Linux x64 or arm64 artifacts
+from the Docker daemon architecture, downloads them over HTTPS, refuses bytes
+whose sha256 differs from the recipe, and copies the exact executable bytes into
+the image. The build needs no BuildKit. Git, the client and mise are then run with
+networking disabled as uid 1000. The build result reports the selected client and
+mise version/platform identities. Pass the printed image ID to `eval image
+--base` to build the candidate on top.
+
+The `mise` recipe block is optional so older schema-1 recipes still parse. An
+older recipe without it does not prepare the ordinary check runner and cannot
+support the required-check smoke below.
 
 Verified September 20, 2026: base built with Git 2.47.3 and client 2.1.220; the
 candidate built on it; `ai-dlc project adopt --apply` ran offline inside it.
@@ -280,26 +287,39 @@ host's BuildKit could not use the local content-addressed parent directly.
 - Candidate image: `sha256:5e5f8d56ce0b926e51166ed27ac2bd05575145405248d2a515339681c63b0f85`.
 - Candidate wheel SHA256: `372e62c3d1060e2b3ad7bb9a1fb7a3ef414803b15f1a647c0ae5131082e2e36a`.
 
-## Deferred comparison and runtime prerequisite
+## Deferred comparison and common-runtime preparation
 
 On September 25, 2026 the maintainer explicitly deferred the paid comparison.
 The code slice is tracked by [#166](https://github.com/Sean-Koval/ai-dlc/issues/166);
 [#138](https://github.com/Sean-Koval/ai-dlc/issues/138) remains open for the real
 three-attempt-per-arm run and broader journeys.
 
-The wheel-only candidate image can adopt the project and render Claude guidance,
-but it does not include `mise`. The ordinary `ai-dlc project check --required`
-runner currently requires that runtime even for a generic project with an empty
-`[tools]` table. It refuses before running checks in this image. Directly running
-individual checks would bypass that declared runner and does not qualify it.
-Prepare and verify a suitable check runtime before the paid comparison; otherwise
-setup failure would confound the value measurement. This image smoke is not a
-full bootstrap qualification. No paid API calls or productivity results are
-claimed by this delivery.
+The historical September 25 image identities above predate the common mise
+recipe and remain evidence only for adoption and guidance rendering. Do not reuse
+them as common-runtime evidence. Build a fresh shared base from
+`evaluations/images/claude-code.json`, then build the candidate from that exact
+base. Record both image IDs, the source revision, wheel digest, daemon
+architecture, and the base builder's reported mise identity.
+
+With both local images present, set `AI_DLC_EVAL_BASE_IMAGE` and
+`AI_DLC_EVAL_CANDIDATE_IMAGE` and run only
+`tests/test_evaluation_attempt.py::test_real_candidate_runs_required_checks_without_leaking_ai_dlc_to_baseline`.
+The attempt is isolated with `--network=none` and makes no model call. Treatment
+uses ordinary adoption, runs `ai-dlc project setup`, then runs `ai-dlc project
+check --required --receipt .ai-dlc/local/evaluation-required.json`. The collected
+receipt must contain a nonempty required-ID set and one passing, zero-exit outcome
+for each required ID. The fixture's three unittest cases run as a separate step;
+baseline runs those tests without receiving AI-DLC configuration or guidance.
+
+Retain the actual test result and collected receipt before making a runtime claim.
+This source change and skipped opt-in test are preparation only until that real
+build and attempt succeed. The smoke is not bootstrap, native-platform or paid
+comparison qualification and supports no productivity, quality or billing claim.
 
 ## Known gaps
 
 - Process and MCP observers, Codex, declared multi-turn answers and recovery remain
   outside this slice.
-- Actual model billing, the full check runtime in the comparison image, the paid
-  comparison and human quality review remain unqualified.
+- Actual model billing, the real common-runtime image/ordinary-runner smoke until
+  separately recorded, the paid comparison and human quality review remain
+  unqualified.
