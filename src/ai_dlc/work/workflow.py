@@ -5,6 +5,7 @@ import json
 import os
 import re
 import tomllib
+from dataclasses import asdict
 from pathlib import Path, PurePosixPath
 from urllib.parse import urlsplit
 
@@ -20,6 +21,12 @@ from ai_dlc.providers import Registry
 from ai_dlc.providers.openspec import OpenSpecProvider
 from ai_dlc.providers.scm import GitHubSCM
 from ai_dlc.work.journal import Journal
+from ai_dlc.work.merge_checkout import (
+    CleanupResult,
+    allocate_checkout,
+    repository_common_dir,
+    require_merge_commit,
+)
 from ai_dlc.work.traceability import (
     artifact_is_local,
     draft_issue_fields,
@@ -343,16 +350,32 @@ class WorkService:
         state_path: Path | None = None,
         registry: Registry | None = None,
     ):
+        caller_cwd = Path.cwd()
         root = Path(root).resolve()
+        selected_machine = (
+            Path(os.path.abspath(caller_cwd / machine)) if machine is not None else None
+        )
+        selected_state = (
+            Path(os.path.abspath(caller_cwd / state_path))
+            if state_path is not None
+            else Path(
+                os.path.abspath(
+                    caller_cwd
+                    / Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state"))
+                    / "ai-dlc"
+                )
+            )
+        )
         with project_write_lock(root):
             source_digest = project_source_digest(root)
-            config = resolve_runtime(root, machine=machine).values
+            config = resolve_runtime(root, machine=selected_machine).values
             return cls(
                 root,
                 config,
-                state_path=state_path,
+                state_path=selected_state,
                 registry=registry,
                 _source_digest=source_digest,
+                _machine=selected_machine,
             )
 
     def __init__(
@@ -363,7 +386,9 @@ class WorkService:
         registry: Registry | None = None,
         *,
         _source_digest: str | None | object = _UNSET_SOURCE,
+        _machine: Path | None | object = _UNSET_SOURCE,
     ):
+        caller_cwd = Path.cwd()
         self.root = Path(root).resolve()
         with project_write_lock(self.root):
             current_digest = project_source_digest(self.root)
@@ -374,12 +399,19 @@ class WorkService:
             self.project_source_digest = current_digest
             self.config = config
             state = (
-                Path(state_path)
+                Path(os.path.abspath(caller_cwd / state_path))
                 if state_path
-                else Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "ai-dlc"
+                else Path(
+                    os.path.abspath(
+                        caller_cwd
+                        / Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state"))
+                        / "ai-dlc"
+                    )
+                )
             )
             self._journal_path = state / "operations.sqlite3"
             self._journal: Journal | None = None
+            self._machine = _machine
             self.registry = registry or Registry(config, root=self.root)
 
     @property
@@ -475,6 +507,100 @@ class WorkService:
             raise ValueError("Project configuration changed; retry the work mutation") from None
         if current_digest != self.project_source_digest:
             raise ValueError("Project configuration changed; retry the work mutation")
+
+    def _reviewed_source(self, work_id: str) -> tuple[dict, dict]:
+        """Read a reviewed record without the normalization write performed by mutation-load."""
+        self._check_source()
+        Work.safe_id(work_id)
+        path = inside(self.root, f".ai-dlc/work/{work_id}.toml")
+        raw = tomllib.loads(path.read_text())
+        work = resolve_work(raw, self.config, work_id, require_review=True)
+        self._check_source()
+        return raw, work
+
+    def _require_reproducible_runtime(self) -> None:
+        machine = self._selected_machine()
+        try:
+            current = resolve_runtime(self.root, machine=machine).values
+        except (OSError, ValueError, tomllib.TOMLDecodeError):
+            raise RefusedError(
+                "Runtime configuration changed; recreate the service with "
+                "WorkService.from_project and retry"
+            ) from None
+        if current != self.config:
+            raise RefusedError(
+                "Runtime configuration changed or lacks reproducible source-layer provenance; "
+                "recreate the service with WorkService.from_project and retry"
+            )
+
+    def _selected_machine(self) -> Path | None:
+        return self._machine if isinstance(self._machine, Path) else None
+
+    def _merge_service(self, root: Path) -> "WorkService":
+        project = root / "ai-dlc.toml"
+        if not project.is_file():
+            raise RefusedError("The historical merge checkout has no ai-dlc.toml policy")
+        try:
+            read_toml(project)
+        except (OSError, tomllib.TOMLDecodeError, TypeError, ValueError):
+            raise RefusedError(
+                "The historical merge checkout has unreadable ai-dlc.toml policy"
+            ) from None
+        machine = self._selected_machine()
+        return WorkService.from_project(
+            root,
+            machine=machine,
+            state_path=self._journal_path.parent,
+        )
+
+    @staticmethod
+    def _authored_finish_identity(raw: dict) -> dict:
+        artifacts = raw.get("artifacts")
+        if not isinstance(artifacts, dict):
+            artifacts = {}
+        return {
+            "id": raw.get("id"),
+            "pr": artifacts.get("pr"),
+            "tracker": artifacts.get("tracker"),
+            "providers": raw.get("providers", {}),
+            "bindings": raw.get("bindings", {}),
+        }
+
+    @staticmethod
+    def _cleanup_failure(checkout, error: BaseException) -> CleanupResult:
+        return CleanupResult(
+            status="recovery-required",
+            locator=str(checkout.marker),
+            reason=str(error),
+            remedy=(
+                f"Inspect the retained exact-merge checkout {checkout.root} and recovery marker "
+                f"{checkout.marker}; remove it only with a non-forced Git worktree cleanup."
+            ),
+        )
+
+    @classmethod
+    def _attempt_merge_cleanup(cls, checkout) -> CleanupResult:
+        try:
+            return checkout.cleanup()
+        except BaseException as error:  # noqa: BLE001 -- never mask a known completion outcome
+            return cls._cleanup_failure(checkout, error)
+
+    @staticmethod
+    def _attach_cleanup(error: BaseException, cleanup: CleanupResult) -> None:
+        details = asdict(cleanup)
+        try:
+            error.__dict__["cleanup"] = details
+        except (AttributeError, TypeError):
+            pass
+        if cleanup.status == "recovery-required":
+            error.add_note(
+                "Exact-merge checkout cleanup requires recovery: "
+                + "; ".join(
+                    value for value in (cleanup.reason, cleanup.locator, cleanup.remedy) if value
+                )
+            )
+        else:
+            error.add_note("Exact-merge checkout cleanup completed before the operation stopped.")
 
     def save(self, work):
         path = self.root / ".ai-dlc/work" / f"{work['id']}.toml"
@@ -882,6 +1008,65 @@ class WorkService:
     def role(self, work, role, fallback):
         provider_id = work["providers"].get(role)
         return self.registry.get(provider_id) if provider_id else fallback()
+
+    def finish_at_merge(
+        self,
+        work_id: str,
+        handoff: str | None = None,
+        learning: str | None = None,
+    ) -> dict:
+        """Finish through ordinary gates in an owned checkout at the authenticated merge."""
+        common_dir = repository_common_dir(self.root)
+        with project_write_lock(common_dir):
+            if repository_common_dir(self.root) != common_dir:
+                raise RefusedError("Git common-directory identity changed; retry from the caller")
+            with project_write_lock(self.root):
+                self._require_reproducible_runtime()
+                caller_raw, caller_work = self._reviewed_source(work_id)
+                scm = self.role(
+                    caller_work,
+                    "scm",
+                    lambda: GitHubSCM(self.root, self.config),
+                )
+                merged = scm.merged(caller_work["artifacts"].get("pr", ""))
+                revision = merged.get("sha") if isinstance(merged, dict) else None
+                if not isinstance(revision, str):
+                    raise RefusedError("Merged pull request did not provide an exact revision")
+                repository = self.config.get("scm", {}).get("repository", "")
+                require_merge_commit(self.root, revision, repository)
+                checkout = allocate_checkout(
+                    caller_root=self.root,
+                    common_dir=common_dir,
+                    state_dir=self._journal_path.parent,
+                    work_id=work_id,
+                    revision=revision,
+                )
+                try:
+                    checkout.create()
+                    historical = self._merge_service(checkout.root)
+                except BaseException as error:
+                    cleanup = self._attempt_merge_cleanup(checkout)
+                    self._attach_cleanup(error, cleanup)
+                    raise
+
+                try:
+                    with project_write_lock(historical.root):
+                        historical_raw, _ = historical._reviewed_source(work_id)
+                        if self._authored_finish_identity(
+                            caller_raw
+                        ) != self._authored_finish_identity(historical_raw):
+                            raise RefusedError(
+                                "Current and historical work identity disagree; review the "
+                                "work ID, PR, tracker, providers, and bindings"
+                            )
+                        self._require_reproducible_runtime()
+                        result = historical.finish(work_id, handoff, learning)
+                except BaseException as error:
+                    cleanup = self._attempt_merge_cleanup(checkout)
+                    self._attach_cleanup(error, cleanup)
+                    raise
+                cleanup = self._attempt_merge_cleanup(checkout)
+                return {**result, "cleanup": asdict(cleanup)}
 
     def finish(self, work_id, handoff: str | None = None, learning: str | None = None):
         work = self.load(work_id, True)
