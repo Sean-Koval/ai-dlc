@@ -543,9 +543,17 @@ class WorkService:
         return self._machine if isinstance(self._machine, Path) else None
 
     def _merge_service(self, root: Path) -> "WorkService":
-        project = root / "ai-dlc.toml"
-        if not project.is_file():
-            raise RefusedError("The historical merge checkout has no ai-dlc.toml policy")
+        try:
+            project = inside(root, "ai-dlc.toml")
+        except (OSError, ValueError):
+            raise RefusedError(
+                "The historical merge checkout ai-dlc.toml must be an owned regular file "
+                "inside that checkout; replace the symlinked policy on the delivery branch"
+            ) from None
+        if project.is_symlink() or not project.is_file():
+            raise RefusedError(
+                "The historical merge checkout has no owned regular ai-dlc.toml policy"
+            )
         try:
             read_toml(project)
         except (OSError, tomllib.TOMLDecodeError, TypeError, ValueError):

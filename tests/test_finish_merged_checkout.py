@@ -337,6 +337,34 @@ def commit_project(
     return root, merge
 
 
+def commit_absolute_policy_symlink(tmp_path: Path) -> tuple[Path, Path, str]:
+    external = tmp_path / "external current policy.toml"
+    external.write_text(project_source(deployed=True))
+    root = tmp_path / "symlink policy project"
+    root.mkdir()
+    git(root, "init", "-b", "main")
+    git(root, "config", "user.name", "AI-DLC Test")
+    git(root, "config", "user.email", "ai-dlc@example.test")
+    try:
+        (root / "ai-dlc.toml").symlink_to(external)
+    except OSError as error:
+        pytest.skip(f"file symlinks are unavailable on this host: {error}")
+    if not (root / "ai-dlc.toml").is_symlink():
+        pytest.skip("file symlinks are unavailable on this host")
+    config = resolve_runtime(root).values
+    work_dir = root / ".ai-dlc/work"
+    work_dir.mkdir(parents=True)
+    (work_dir / "one.toml").write_text(tomli_w.dumps(authored_record(config)))
+    git(root, "add", ".")
+    git(root, "commit", "-m", "merged delivery with external policy link")
+    merge = git(root, "rev-parse", "HEAD")
+    (root / "advanced.txt").write_text("target advanced\n")
+    git(root, "add", ".")
+    git(root, "commit", "-m", "advance target")
+    external.write_text(project_source(deployed=False))
+    return root, external, merge
+
+
 def configured_service(
     root: Path,
     merge: str,
@@ -943,6 +971,44 @@ def test_finish_at_merge_requires_historical_project_policy(tmp_path, monkeypatc
 
     assert failure.value.__dict__["cleanup"]["status"] == "removed"
     assert tracker.transition_calls == 0
+
+
+def test_finish_at_merge_refuses_historical_policy_symlink_before_gate_bypass(
+    tmp_path, monkeypatch
+):
+    """Fails if a committed absolute symlink can substitute external current policy."""
+    from ai_dlc.errors import RefusedError
+    from ai_dlc.work import workflow
+
+    root, external, merge = commit_absolute_policy_symlink(tmp_path)
+    external_before = external.read_bytes()
+    scm = RemoteSCM(merge)
+    tracker = RemoteTracker()
+    caller_registry = Registry()
+    caller_registry.register("fixture-scm", scm)
+    caller_registry.register("fixture-tracker", tracker)
+    state = tmp_path / "symlink state"
+    service = WorkService.from_project(root, state_path=state, registry=caller_registry)
+    real_registry = workflow.Registry
+
+    class HistoricalRegistry(real_registry):
+        def __init__(self, config=None, *, root=None, environ=None):
+            super().__init__(config, root=root, environ=environ)
+            self.register("fixture-scm", scm)
+            self.register("fixture-tracker", tracker)
+
+    monkeypatch.setattr(workflow, "Registry", HistoricalRegistry)
+
+    with pytest.raises(RefusedError, match="historical.*ai-dlc.toml.*regular") as failure:
+        service.finish_at_merge("one")
+
+    assert failure.value.__dict__["cleanup"]["status"] == "removed"
+    assert scm.merged_calls == 1
+    assert scm.ci_calls == 0
+    assert scm.deployment_calls == 0
+    assert tracker.transition_calls == 0
+    assert external.read_bytes() == external_before
+    assert not (state / "operations.sqlite3").exists()
 
 
 def test_finish_at_merge_preserves_handoff_pending_status(tmp_path, monkeypatch):
