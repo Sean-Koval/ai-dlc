@@ -364,6 +364,30 @@ scope and verification in the body, and documentation evidence recorded under an
 identifier (`--evidence-id <branch-or-topic>`). A record created for such a change
 has nothing to finish and stays open in the context brief indefinitely.
 
+Projects selecting the optional `bound-push` hook also choose the rules for its
+covered publication commands. Omitted `agents.bound_push_policy`, or explicit
+`"all-branches"`, requires reviewed tracker-bound work even for the record-free
+PR path above. A team may explicitly choose the lighter path in shared
+`ai-dlc.toml`:
+
+```toml
+[agents]
+bound_push_policy = "tracked-branches"
+```
+
+This setting does not enable the hook. When the hook is selected, it allows a
+covered nondestructive push or PR creation only after a complete readable local
+inventory proves the current branch unbound, or every matching work record is
+valid, reviewed, tracker-bound and free of provider-binding drift. Multiple valid
+records may share a branch. An invalid associated record, unreadable inventory or
+unknown branch blocks publication with a repair instruction; it never creates a
+lightweight exemption. Personal, machine and team-source configuration cannot
+set this project policy.
+
+The hook covers supported native tool payloads only. It does not inspect remote
+tracker state or govern arbitrary terminals, and it does not replace native
+approval, SCM review, required checks, exact merge identity, receipts or finish.
+
 ## Merge against the current target branch
 
 Documentation-impact decisions are stored per work item under

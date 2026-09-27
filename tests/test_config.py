@@ -206,6 +206,64 @@ def test_machine_cannot_weaken_project_checks():
         )
 
 
+def test_omitted_bound_push_policy_is_not_materialized():
+    """Would fail if resolution injected a policy default into existing projects."""
+    from ai_dlc.config import resolve_layers
+
+    result = resolve_layers([("project", {"schema": 4, "agents": {}})])
+
+    assert "bound_push_policy" not in result.values["agents"]
+
+
+@pytest.mark.parametrize("policy", ["all-branches", "tracked-branches"])
+def test_project_bound_push_policy_accepts_supported_values(policy):
+    """Would fail if a supported project policy did not survive resolution."""
+    from ai_dlc.config import resolve_layers
+
+    result = resolve_layers([("project", {"schema": 4, "agents": {"bound_push_policy": policy}})])
+
+    assert result.values["agents"]["bound_push_policy"] == policy
+    assert result.sources["agents.bound_push_policy"] == "project"
+
+
+@pytest.mark.parametrize("policy", [None, 1, ["tracked-branches"]])
+def test_project_bound_push_policy_requires_a_string(policy):
+    """Would fail if a non-string policy reached hook or guidance decisions."""
+    from ai_dlc.config import resolve_layers
+
+    with pytest.raises(TypeError, match="agents.bound_push_policy must be a string"):
+        resolve_layers([("project", {"schema": 4, "agents": {"bound_push_policy": policy}})])
+
+
+def test_project_bound_push_policy_rejects_unknown_value():
+    """Would fail if an unknown policy silently changed enforcement behavior."""
+    from ai_dlc.config import resolve_layers
+
+    with pytest.raises(ValueError, match="agents.bound_push_policy"):
+        resolve_layers([("project", {"schema": 4, "agents": {"bound_push_policy": "unbound"}})])
+
+
+@pytest.mark.parametrize("layer", ["base", "personal"])
+def test_bound_push_policy_is_rejected_outside_project_configuration(layer):
+    """Would fail if a non-project layer could weaken the shared project policy."""
+    from ai_dlc.config import resolve_layers
+
+    with pytest.raises(ValueError, match=rf"{layer}: cannot set agents.bound_push_policy"):
+        resolve_layers(
+            [(layer, {"schema": 4, "agents": {"bound_push_policy": "tracked-branches"}})]
+        )
+
+
+def test_machine_bound_push_policy_retains_top_level_agents_rejection():
+    """Would fail if policy support widened the machine layer's agents scope."""
+    from ai_dlc.config import resolve_layers
+
+    with pytest.raises(ValueError, match=r"machine: cannot set agents$"):
+        resolve_layers(
+            [("machine", {"schema": 4, "agents": {"bound_push_policy": "tracked-branches"}})]
+        )
+
+
 @pytest.mark.parametrize("layer", ["base", "personal", "machine"])
 def test_bundle_selection_is_rejected_outside_project_configuration(layer):
     """Would fail if a non-project layer could activate vendored guidance."""

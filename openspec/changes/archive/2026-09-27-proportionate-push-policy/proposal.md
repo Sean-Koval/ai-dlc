@@ -2,7 +2,7 @@
 
 ## Why
 
-[Product direction](../../../docs/product-direction.md) says teams should add tracked delivery when needed and use small artifacts for small work. Current development guidance permits a change without a tracker or formal specification, but the optional bound-push hook denies all direct pushes and PR creation without a reviewed tracker-bound record. Teams selecting the hook cannot express the documented lightweight path without disabling it or inventing a record.
+[Product direction](../../../../docs/product-direction.md) says teams should add tracked delivery when needed and use small artifacts for small work. Current development guidance permits a change without a tracker or formal specification, but the optional bound-push hook denies all direct pushes and PR creation without a reviewed tracker-bound record. Teams selecting the hook cannot express the documented lightweight path without disabling it or inventing a record.
 
 ## What Changes
 

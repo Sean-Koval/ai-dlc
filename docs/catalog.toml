@@ -169,15 +169,24 @@ code_paths = [
     "src/ai_dlc/setup/onboarding.py",
     "src/ai_dlc/environment/report*.py",
     "src/ai_dlc/environment/version_probes.py",
+    "src/ai_dlc/config.py",
+    "src/ai_dlc/harness/hooks.py",
+    "src/ai_dlc/harness/agents.py",
 ]
 verification_paths = [
     "tests/test_consumer_onboarding.py",
     "tests/test_consumer_onboarding_cli.py",
     "tests/test_environment_report*.py",
+    "tests/test_config.py",
+    "tests/test_hooks.py",
+    "tests/test_rendering.py",
+    "tests/test_team_sources.py",
+    "tests/test_agents_phases.py",
 ]
 requirements = [
     "openspec/specs/consumer-onboarding/spec.md",
     "openspec/specs/effective-environment-report/spec.md",
+    "openspec/specs/native-work-harnesses/spec.md",
 ]
 
 [[documents]]
@@ -403,9 +412,9 @@ path = "docs/development-workflow.md"
 kind = "reference"
 owner = "repository-maintainers"
 status = "draft"
-code_paths = ["src/ai_dlc/setup/project.py", "src/ai_dlc/setup/commands.py", "src/ai_dlc/cli.py", "project-templates/project/ai-dlc.toml.jinja", "project-templates/project/scripts/check_tests.py", "project-templates/project/tests/test_main.py", "agents/skills/spec-from-prd/SKILL.md", "agents/skills.lock.json", ".agents/skills/spec-from-prd/SKILL.md", ".claude/skills/spec-from-prd/SKILL.md", ".ai-dlc/agent-ownership.json", "agents/templates/delivery-slice.md", "project-templates/project/docs/templates/delivery-slice.md", "project-templates/project/AI-DLC.md", "project-templates/project/docs/development-workflow.md.jinja"]
-verification_paths = ["tests/test_checks.py", "tests/test_project.py", "tests/test_templates.py"]
-requirements = ["openspec/specs/portable-development/spec.md"]
+code_paths = ["src/ai_dlc/setup/project.py", "src/ai_dlc/setup/commands.py", "src/ai_dlc/cli.py", "project-templates/project/ai-dlc.toml.jinja", "project-templates/project/scripts/check_tests.py", "project-templates/project/tests/test_main.py", "agents/skills/spec-from-prd/SKILL.md", "agents/skills.lock.json", ".agents/skills/spec-from-prd/SKILL.md", ".claude/skills/spec-from-prd/SKILL.md", ".ai-dlc/agent-ownership.json", "agents/templates/delivery-slice.md", "project-templates/project/docs/templates/delivery-slice.md", "project-templates/project/AI-DLC.md", "project-templates/project/docs/development-workflow.md.jinja", "src/ai_dlc/config.py", "src/ai_dlc/harness/hooks.py", "src/ai_dlc/harness/agents.py"]
+verification_paths = ["tests/test_checks.py", "tests/test_project.py", "tests/test_templates.py", "tests/test_config.py", "tests/test_hooks.py", "tests/test_rendering.py", "tests/test_team_sources.py", "tests/test_agents_phases.py"]
+requirements = ["openspec/specs/portable-development/spec.md", "openspec/specs/native-work-harnesses/spec.md"]
 
 [[documents]]
 id = "repo-github-ticket-setup"
@@ -829,6 +838,8 @@ verification_paths = [
     "tests/test_consumer_onboarding.py",
     "tests/test_consumer_onboarding_cli.py",
     "tests/test_environment_report*.py",
+    "tests/test_config.py",
+    "tests/test_hooks.py",
 ]
 requirements = [
     "openspec/specs/native-work-harnesses/spec.md",

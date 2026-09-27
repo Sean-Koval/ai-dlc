@@ -58,23 +58,41 @@ def test_real_probe_uses_fixed_argv_and_minimal_environment(monkeypatch):
 @pytest.mark.parametrize(
     "script,reason",
     [
-        ("import time; time.sleep(30)", "probe-timeout"),
         ("import os; os.write(1, b'x'*12000); os.write(2, b'y'*12000)", "output-limit"),
         ("import sys; print('SECRET'); sys.exit(1)", "probe-failed"),
         ("import os; os.write(1, b'\\xff\\xfeSECRET')", "unsupported-version"),
     ],
 )
-def test_real_timeout_combined_output_cap_and_discarded_errors(monkeypatch, script, reason):
+def test_real_output_cap_and_discarded_errors_survive_delayed_startup(monkeypatch, script, reason):
+    actual = subprocess.Popen
+
+    def start(argv, **kwargs):
+        time.sleep(0.3)
+        return actual([sys.executable, "-c", script], **kwargs)
+
+    monkeypatch.setattr(subprocess, "Popen", start)
+    monkeypatch.setattr(version_probes, "find_executable", lambda *_: sys.executable)
+    start = time.monotonic()
+    result = version_probes.probe_version("python", environ=os.environ)
+    assert time.monotonic() - start < version_probes.TIMEOUT_SECONDS + 1
+    assert result == {"observed": None, "state": "unknown", "reason": reason}
+
+
+def test_real_timeout_is_bounded(monkeypatch):
     actual = subprocess.Popen
     monkeypatch.setattr(
-        subprocess, "Popen", lambda argv, **kwargs: actual([sys.executable, "-c", script], **kwargs)
+        subprocess,
+        "Popen",
+        lambda argv, **kwargs: actual(
+            [sys.executable, "-c", "import time; time.sleep(30)"], **kwargs
+        ),
     )
     monkeypatch.setattr(version_probes, "find_executable", lambda *_: sys.executable)
     monkeypatch.setattr(version_probes, "TIMEOUT_SECONDS", 0.2)
     start = time.monotonic()
     result = version_probes.probe_version("python", environ=os.environ)
     assert time.monotonic() - start < 2
-    assert result == {"observed": None, "state": "unknown", "reason": reason}
+    assert result == {"observed": None, "state": "unknown", "reason": "probe-timeout"}
 
 
 def test_inherited_output_pipe_cannot_extend_deadline(monkeypatch):
