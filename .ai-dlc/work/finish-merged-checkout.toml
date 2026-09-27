@@ -31,8 +31,8 @@ deploy = "none"
 
 [artifacts]
 brief = "docs/product-direction.md"
-spec = "openspec/changes/finish-merged-checkout"
-plan = "openspec/changes/finish-merged-checkout/tasks.md"
+spec = "openspec/changes/archive/2026-09-27-finish-merged-checkout"
+plan = "openspec/changes/archive/2026-09-27-finish-merged-checkout/tasks.md"
 branch = "codex/finish-merged-checkout"
 tracker = "178"
 
