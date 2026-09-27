@@ -263,6 +263,47 @@
     },
     {
       "bound": {
+        "catalog:docs/verification/end-to-end-evaluation.md": "585d6d24c99ebc30a259c93cd0caebe01587617637f4d342f64f75e3e0c644a7",
+        "contracts/evaluation/base-image.schema.json": "9e4d5200cfda72c6c3290e163418d3e624db2cd8c39a10d631bda2babcc958dd",
+        "docs/verification/end-to-end-evaluation.md": "2fbfcd84d75b36b45fd2f3eed7252a65b1381c24c58c0275c1a3e30dccee4b59",
+        "evaluations/README.md": "db873e9a78b20c3bcea7d3e478ceb63b1d57619ddfa704b62b274d7f003ca0c0",
+        "evaluations/images/claude-code.json": "fb64db87f858e86e92ea8ab94b262b537898407235736d73d11d8fb9bc1406af",
+        "evaluations/profiles/local-deterministic.json": "0e0deb70f592f3ebad0a420daf815c536eab6c74c421ec4e10329614a65d3d6b",
+        "evaluations/suites/real-client.json": "a21ef76ccde1adeba48a15e3373839586a38b925acaaed9fed23f666a66e886e",
+        "evaluations/suites/smoke.json": "4f24319f9c734a2b5fa01cc01b2f831bb79a230800697b160ad29aa87f98a9d7",
+        "openspec/specs/end-to-end-evaluation/spec.md": "e6bac03b7eabc83bd62443bd0e05fe668ecb3444a805970367fa2487dab71372",
+        "openspec/specs/portable-development/spec.md": "2c75caee1dc2f59828c49ba940be6a186580b07032c52b63fc750788b7535a4d",
+        "src/ai_dlc/verification/evaluation/__init__.py": "7cf0a3add5298d2f8d58954210cee24b3fb6a5f81e505ef3b948a7078cbb0eb8",
+        "src/ai_dlc/verification/evaluation/attempt.py": "a249ad3af90f034cac3774c5406f819afe54209fe88307064c4fd822750a4717",
+        "src/ai_dlc/verification/evaluation/budgets.py": "8069eb9a4f6d24e7fe88774581b47a7d817445ac950a266684aee77fc5378826",
+        "src/ai_dlc/verification/evaluation/contracts.py": "2e767c52494cad777ade498d1362521f04e8c313c5f230540df7f840cf8a0f64",
+        "src/ai_dlc/verification/evaluation/drivers.py": "f4a81dea2b7f3f4ca793e6f1953fb7e384cc8359eae4a308768b41cccceea47f",
+        "src/ai_dlc/verification/evaluation/evaluate.py": "e8a2405d3f6e9c0e3a121b4936f617ee335abaef54e7688eafb813985e90de3a",
+        "src/ai_dlc/verification/evaluation/git_observer.py": "f6a422a1f989b3056cf82484716f0e0101719caffb54e8e96477845ed75445b3",
+        "src/ai_dlc/verification/evaluation/image.py": "d525326faed75c1e6b686183d2b7ccce43c000e43263dad0e940efe8c69523e4",
+        "src/ai_dlc/verification/evaluation/planning.py": "f0a6844c5511db3d4c420f9c7638e47b6d86810968d16a3767de6373c2a971c6",
+        "src/ai_dlc/verification/evaluation/report.py": "fa025c820f8a1a411ec413a7541d30fdf355955bec1f70bc9da220910993c88b",
+        "src/ai_dlc/verification/evaluation/run.py": "271c2aabb8af62d3629a78c6db6d38e23956a3cb5f0363a6a8ec38e6394d52e4",
+        "tests/fixtures/evaluation/claude-code-2.1.220.jsonl": "9801333e7ad60c9f64e3c4f7e9e5f74134fc0ad0b572a9e71db4e33326a86d00",
+        "tests/test_evaluation_attempt.py": "16976a338b92fd6429e38b5c7627cecb37add655d6a3a0e416a6fb567882235f",
+        "tests/test_evaluation_base_image.py": "b561f359128ad3740e29532aafe540cae43eb8df0d399fc3fb90df8219925e15",
+        "tests/test_evaluation_budgets.py": "649afd1b4482ce257b1f1f166102b049b04203d1a7a60b0721ee66d80726bdef",
+        "tests/test_evaluation_claude.py": "1a78bff41b6422173b5078e68a906f0070e625318e4689a85680dd1a4e124d9a",
+        "tests/test_evaluation_driver.py": "bae0e72a3dab4c1f6d3f713f3ee54301bf1f6b3632e5f98f56afa1c5bcdbe62e",
+        "tests/test_evaluation_egress.py": "8b650b41e20766814bec8cd7747972cc33a95aa58923b33466d2124f35852e50",
+        "tests/test_evaluation_git_observer.py": "06305ee9985cb79e434628bbc08d4b3124742987db390859507ad6c9be5d88b7",
+        "tests/test_evaluation_image.py": "5bdbd18d40c618f4c9e59baccba54abaa67e654055fdca743a29d6053ea23f6c",
+        "tests/test_evaluation_planning.py": "3cc3389999c746b4c7bc20960316fa4b8242121ab5c2a1a2ed06cded8794fc7f",
+        "tests/test_evaluation_report.py": "8671fac524cdfc38b85b4819b4e8e5cde3b610c1295f41d9ede075772e14a94c",
+        "tests/test_evaluation_run.py": "4677004ea79065b86371b23700041e0cb3cbf7b15ef7770d40868fc1bd616b62"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Reviewed timeout/partial-byte preservation and dated qualification claims against the unchanged evaluation runtime. The test now establishes child output readiness before exercising its deadline; no production behavior, model call, qualification observation or historical evidence is changed.",
+      "reviewer": "codex",
+      "target": "docs/verification/end-to-end-evaluation.md"
+    },
+    {
+      "bound": {
         "catalog:docs/workflows/tool-map.md": "1bef832cae8d0d7ee9dea9dfa31adb7fd5c0f6b377d70ddf235a8cd9944e6629",
         "docs/workflows/tool-map.md": "e5b5f224b6b813e20cbb87445ae80a0d7c7cf6fffa7e1b0c569d39e95716dbfa",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
@@ -335,7 +376,7 @@
     },
     {
       "bound": {
-        "openspec/changes/archive/2026-09-27-proportionate-push-policy/tasks.md": "663d744e497c79dbdc7bb4fc5121a585d3d8e9e0beda6c76b1cd7de4d9358997"
+        "openspec/changes/archive/2026-09-27-proportionate-push-policy/tasks.md": "c0ece6f02f10d2193a39c522e2d1d8894764fca95233a36a46358a1a280ae6e2"
       },
       "outcome": "updated",
       "reason": "Reviewed archived policy requirements and implementation evidence; repaired moved links and preserved pending full verification and exact-merge delivery gates.",
