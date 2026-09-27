@@ -127,6 +127,28 @@ def _local_guidance_scope(client_id: str, evidence: dict | None) -> dict[str, st
     return scope
 
 
+def _guidance_change(previous: dict | None, current: dict | None) -> tuple[bool, bool]:
+    """Return changed/unknown without treating absent hashes as observed provenance."""
+    if previous is None:
+        return False, current is not None
+    if current is None:
+        return True, False
+    known_states = {"match", "mismatch", "missing"}
+    if current["state"] in {"mismatch", "missing"} and previous["state"] != current["state"]:
+        return True, False
+    if previous["state"] not in known_states or current["state"] not in known_states:
+        return False, True
+    if previous["state"] != current["state"]:
+        return True, False
+    previous_digest = previous["observed_sha256"]
+    current_digest = current["observed_sha256"]
+    if previous_digest is not None and current_digest is not None:
+        return previous_digest != current_digest, False
+    if (previous_digest is None) != (current_digest is None):
+        return False, True
+    return False, False
+
+
 def _reconcile_local(
     imported: dict,
     current: dict,
@@ -171,11 +193,13 @@ def _reconcile_local(
         local = current_guidance.get(identifier)
         local_state = "missing" if local is None else local["state"]
         previous = imported_guidance.get(identifier)
-        previous_state = "missing" if previous is None else previous["state"]
         if local_state in ("missing", "mismatch"):
             limitations.add("render-missing" if local_state == "missing" else "render-stale")
-            if local_state != previous_state:
-                stale_fields.add(f"local.guidance.{step}")
+        changed, unknown = _guidance_change(previous, local)
+        if changed:
+            stale_fields.add(f"local.guidance.{step}")
+        elif unknown:
+            limitations.add("context-unknown")
 
     if stale_fields:
         result["state"] = "stale"

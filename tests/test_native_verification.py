@@ -10,6 +10,7 @@ import subprocess
 from pathlib import Path
 
 import pytest
+from test_native_evidence import report as native_evidence_report
 
 from ai_dlc.environment import report as report_service
 from ai_dlc.environment import report_schema
@@ -88,6 +89,71 @@ def completed_evidence(output: dict) -> dict:
     value["cost_authorization"] = "authorized"
     value["limitations"] = []
     return value
+
+
+def with_instruction_observation(
+    report: dict,
+    *,
+    state: str,
+    observed_sha256: str | None,
+) -> dict:
+    value = copy.deepcopy(report)
+    guidance = next(item for item in value["project"]["guidance"] if item["id"] == "agents")
+    guidance.update(
+        state=state,
+        expected_sha256="a" * 64,
+        observed_sha256=observed_sha256,
+    )
+    guidance["reasons"].update(
+        expected_sha256=None,
+        observed_sha256=None if observed_sha256 is not None else "safe-digest-unavailable",
+    )
+    client = next(item for item in value["clients"] if item["id"] == "codex")
+    client["rendered"] = "yes" if state == "match" else "no" if state == "mismatch" else "unknown"
+    client["reasons"]["rendered"] = None if state != "unknown" else "not-assessed"
+    return report_schema.finalize_report(value)
+
+
+def verify_selected_instruction_transition(
+    tmp_path: Path,
+    monkeypatch,
+    imported: dict,
+    current: dict,
+) -> dict:
+    from ai_dlc.harness.native_verification import verify_native
+
+    root = tmp_path / "project"
+    home = tmp_path / "home"
+    root.mkdir()
+    home.mkdir()
+    environment = {
+        "PATH": "",
+        "HOME": str(home),
+        "XDG_CONFIG_HOME": str(tmp_path / "xdg-config"),
+        "XDG_CACHE_HOME": str(tmp_path / "xdg-cache"),
+        "XDG_STATE_HOME": str(tmp_path / "xdg-state"),
+    }
+    report_path = tmp_path / "environment.json"
+    write_report(report_path, imported)
+    monkeypatch.setattr(report_service, "collect_report", lambda *args, **kwargs: imported)
+    procedure = verify_native(
+        root,
+        "codex",
+        report_path,
+        home=home,
+        environ=environment,
+    )
+    evidence_path = tmp_path / "evidence.json"
+    evidence_path.write_text(json.dumps(completed_evidence(procedure)))
+    monkeypatch.setattr(report_service, "collect_report", lambda *args, **kwargs: current)
+    return verify_native(
+        root,
+        "codex",
+        report_path,
+        evidence_path,
+        home=home,
+        environ=environment,
+    )
 
 
 @pytest.mark.parametrize("client", CLIENTS)
@@ -369,6 +435,74 @@ def test_current_instruction_guidance_failure_has_a_specific_reason(tmp_path, mo
     assert reason in output["result"]["limitations"]
     assert "local.guidance.instruction" in output["result"]["stale_fields"]
     assert output["result"]["current_local"]["rendered"] == "no"
+
+
+@pytest.mark.parametrize(
+    "current_state,current_digest",
+    [("match", "a" * 64), ("mismatch", "c" * 64)],
+    ids=("repaired", "changed-mismatch"),
+)
+def test_selected_guidance_known_state_or_digest_change_is_stale(
+    tmp_path, monkeypatch, current_state, current_digest
+):
+    """Would fail if a repair or a different mismatching file reused prior evidence."""
+    baseline = native_evidence_report()
+    imported = with_instruction_observation(
+        baseline,
+        state="mismatch",
+        observed_sha256="b" * 64,
+    )
+    current = with_instruction_observation(
+        baseline,
+        state=current_state,
+        observed_sha256=current_digest,
+    )
+    assert current["configuration_identity"] == imported["configuration_identity"]
+
+    output = verify_selected_instruction_transition(
+        tmp_path,
+        monkeypatch,
+        imported,
+        current,
+    )
+
+    assert output["result"]["state"] == "stale"
+    assert "local.guidance.instruction" in output["result"]["stale_fields"]
+    assert "evidence-stale" in output["result"]["limitations"]
+    assert [step["result"] for step in output["result"]["steps"]] == ["passed"] * 3
+
+
+def test_selected_guidance_unknown_import_does_not_claim_freshness_or_copy_digest(
+    tmp_path, monkeypatch
+):
+    """Would fail if current known bytes repaired an unknown imported observation."""
+    baseline = native_evidence_report()
+    imported = with_instruction_observation(
+        baseline,
+        state="unknown",
+        observed_sha256=None,
+    )
+    current = with_instruction_observation(
+        baseline,
+        state="match",
+        observed_sha256="a" * 64,
+    )
+    assert current["configuration_identity"] == imported["configuration_identity"]
+
+    output = verify_selected_instruction_transition(
+        tmp_path,
+        monkeypatch,
+        imported,
+        current,
+    )
+
+    assert output["result"]["state"] == "limited"
+    assert "local.guidance.instruction" not in output["result"]["stale_fields"]
+    assert "context-unknown" in output["result"]["limitations"]
+    imported_instruction = next(
+        item for item in imported["project"]["guidance"] if item["id"] == "agents"
+    )
+    assert imported_instruction["observed_sha256"] is None
 
 
 def test_crlf_managed_instruction_bytes_do_not_create_false_staleness(tmp_path):
