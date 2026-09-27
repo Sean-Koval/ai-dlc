@@ -338,3 +338,57 @@ comparison qualification and supports no productivity, quality or billing claim.
 - Actual model billing, the real common-runtime image/ordinary-runner smoke until
   separately recorded, the paid comparison and human quality review remain
   unqualified.
+
+
+## Behavioral onboarding and ordinary-runner preparation — September 27, 2026 UTC
+
+A real local rehearsal used clean source
+`8e3f78efb9d83a212e9ad884acce1b4d6e5ab315`, AI-DLC 0.4.0, Python 3.12.11 and mise
+2026.9.1 on macOS arm64. An external disposable copy of the committed
+`evaluations/fixtures/csv-validator` retained its authored standard-library tests
+and README command, `python -m unittest discover -s tests`. The reviewed behavior
+was `ValidateTests.test_column_count`: a data row with a different width from its
+header must produce a `column-count` problem.
+
+The normal runner's focused `team-behavior` check passed, failed specifically on
+that requirement after changing the copied conditional to `if False`, then passed
+after restoring the exact bytes. The fixture commit was
+`47ce90d91163509c7f4a345249fa9ff5d7744a46`; its three receipts recorded dirty states
+`false`, `true`, `false`. A separate full run passed `generated`, `work-records`
+and `team-behavior` on the clean fixture. The focused receipt still contained only
+one of three required outcomes. Three unsafe containment controls were refused
+before mutation; an all-pass outcome control was rejected as regression-detection
+evidence. With mise removed from both PATH and the isolated bootstrap location,
+the actual CLI reported `runtime-unavailable`, `ran: false`, no outcomes and no
+receipt despite the empty tools table. Source files and authored fixture tests
+were checked unchanged before/after adoption and restoration. The final rehearsal
+took 3.707 seconds; this is a small-fixture observation, not a performance or
+productivity comparison.
+
+The common image built from the same source on Docker 20.10.17, Linux arm64,
+contains the checksum-verified Claude Code 2.1.220 and mise 2026.9.1, with Git
+2.47.3. Its identity is
+`sha256:8b178a56818a6c6223e09d5aad2f03e4ddfef8f137a5515cf26ea3744dc7fe7a`.
+The first candidate build exposed the raw local-image-ID/BuildKit lookup failure
+recorded in the change design. The fixed candidate built from clean source
+`bb89c5b9ef6528da66a3e6c04cdfedb9fa0f49d1`, preserving that shared base and using its
+verified content-derived local alias. Candidate identity:
+`sha256:63d693dc2517d04755fc113054cb82d727cb2b44520563aef1ecd5f04948c18e`;
+wheel SHA256:
+`8722a3b7bf7b4c08f820a8e1e313cdfd3d872ba6e2f9ff96e485fdf6bdbb89c9`.
+
+The existing no-model candidate/baseline attempt test passed in 6.24 seconds with
+network-disabled attempt containers. Candidate adoption, rendering, project setup,
+`project check --required`, and the fixture's three unit tests completed; the
+baseline ran its authored tests without receiving AI-DLC files. The retained
+required-check receipt records both `generated` and `work-records` as passed,
+commit `3dc71c618f666bc015883f164152bcfce58fa303`, target `local`, and `dirty: true`
+from setup/adoption. It proves the normal runtime path, not behavioral adequacy or
+clean CI completion. Behavioral sensitivity is the separate rehearsal above.
+
+Raw output, source hashes, failed-build diagnosis and full receipts remain in
+ignored local evidence. Image construction downloaded public pinned binaries and
+locked dependencies; the attempt smoke was offline. No model request or paid
+comparison ran. This qualifies the scoped Linux arm64 image preparation and
+single-host rehearsal only, not native Windows/Antigravity, human quality, token
+savings or team productivity. Paid comparison #138 remains pending.
