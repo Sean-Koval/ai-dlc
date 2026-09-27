@@ -13,7 +13,7 @@
 
 - [x] 3.1 Update applicable generated guidance/config examples and canonical small-change instructions to state the selected policy; verify no-hook configurations acquire no new record requirement.
 - [x] 3.2 Run the real hook service against isolated Git fixtures, label native fixture coverage honestly and record the strict/default multi-record regression result.
-- [ ] 3.3 Complete specification/work-record and affected-document review, record required content-bound dispositions, strictly validate this change, run focused implementation checks, and resolve actionable review findings.
+- [x] 3.3 Complete specification/work-record and affected-document review, record required content-bound dispositions, strictly validate this change, run focused implementation checks, and resolve actionable review findings.
 
 ## Subsequent delivery gates
 
@@ -145,7 +145,7 @@ After implementation and the checklist above are complete, archive this independ
 - [x] Run focused regression in owner-scoped groups plus the unchanged finish cases (avoid repeating identical tests):
   `uv run --locked --no-sync pytest -q tests/test_config.py tests/test_hooks.py tests/test_rendering.py tests/test_team_sources.py tests/test_workflow.py::test_github_scm_downloads_each_matrix_receipt tests/test_workflow.py::test_github_scm_rejects_missing_receipt_in_matrix tests/test_workflow.py::test_github_scm_rejects_tampered_receipt_in_matrix tests/test_workflow.py::test_receipt_matches_root_check_manifest tests/test_workflow.py::test_receipt_artifact_policy_does_not_drift_bindings tests/test_workflow.py::test_empty_gates_cannot_bypass_merge_and_ci`
 - [x] Run `openspec validate proportionate-push-policy --strict --no-interactive`, update completed task evidence honestly, run documentation impact/disposition for the three canonical targets, reserve `ai-dlc project check --required` for the finalized archived delivery revision as the mandatory pre-merge gate.
-- [ ] Request whole-branch review and resolve actionable findings. Full required verification runs on the final archived delivery revision before merge. Archive and exact-merge finish remain subsequent delivery gates above.
+- [x] Request whole-branch review and resolve actionable findings. Full required verification runs on the final archived delivery revision before merge. Archive and exact-merge finish remain subsequent delivery gates above.
 - [x] Commit documentation/evidence as `docs: explain proportionate push policy` (and archive bookkeeping separately when the delivery branch is ready).
 
 ## Observed uncertainties to resolve at execution
@@ -158,3 +158,5 @@ After implementation and the checklist above are complete, archive this independ
 Execution grouping: Task A combines configuration and conditional guidance (Tasks 1 and 3) under one owner because their team-source tests overlap. Task B owns the offline hook decision (Task 2). Controller owns canonical docs, mappings and delivery (Task 4). Implementers stage only owned files; controller serializes commits.
 
 Observed integration evidence: Task A `8d292af` passed 207 configuration/rendering/team-source tests and independent review. Task B `ba437d4` passed 34 real-Git hook-service tests and independent review. Six existing finish/receipt regressions passed; generated assets, layout and whole-project type checking passed. These are automated service fixtures, not a native-client qualification. Full required verification remains the subsequent delivery gate on the archived branch.
+
+Whole-branch review at `e903e79` found one malformed-provider exception path. Fix `290207c` passed all 38 hook tests, focused Ruff and scoped independent review with no new findings. Required full verification remains pending on the archived delivery revision; archive does not imply merge or finish.

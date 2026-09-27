@@ -2,7 +2,7 @@
 
 Proposed local work ID: `proportionate-push-policy`. Priority: P1.
 Owner: Sean Koval, product decision; Codex implementation with independent agent review.
-Status: implementation and focused verification complete; whole-branch review, full delivery checks and integration remain pending.
+Status: implementation and focused verification complete; whole-branch review and its scoped fix review passed; full delivery checks and integration remain pending.
 Review source: September 26 team-adoption review and the user's request to specify and create issues, including explicit lightweight policy with strict default preserved.
 Canonical brief authority: [product direction](../../../docs/product-direction.md). Review trace: OUT-001 and RQ-005; formal acceptance resides in this change.
 

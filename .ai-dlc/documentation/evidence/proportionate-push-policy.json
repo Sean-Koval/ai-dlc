@@ -60,7 +60,7 @@
         "src/ai_dlc/harness/components.py": "b64cd2ae837f83a37ddd1c74dad25fcd16fe8733715c224c7d64673784ebba11",
         "src/ai_dlc/harness/design_capture.py": "8b872492b88f4a7728bedf0ae8a1edaad2312a918248bf8f5d051c8bd8b42a58",
         "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
-        "src/ai_dlc/harness/hooks.py": "43eed066758c794bcfeb7451684a695f2fc318d27165220fb69ec42b1c198e88",
+        "src/ai_dlc/harness/hooks.py": "9a4c95d958eef99c71a5cbaf41f53b0f4e8a3288606cb1054457dbc5b0a3f88b",
         "src/ai_dlc/harness/native_composition.py": "1e4c5729ff31cb91820bd8df3d15b60c1067b4a5f2b89381888211470dc79bc8",
         "src/ai_dlc/harness/skill_evaluation.py": "73ded6785d5d0ff53f5f44ba4d1ede7406f367635676c269d5044358030ebc2e",
         "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
@@ -162,12 +162,12 @@
         "src/ai_dlc/cli.py": "f7af54e1e3ed2203e20a8c1b25525e9ee680a6900eed697173e87246ee9fb612",
         "src/ai_dlc/config.py": "3866ffe631e989d189bd17100dec9123f53f3f17ce77c56ec10decc560483e2c",
         "src/ai_dlc/harness/agents.py": "49a6d9432a6a72cf21ef05f899e4ee13ad2292b0a9c0ed8784abfe88038e9125",
-        "src/ai_dlc/harness/hooks.py": "43eed066758c794bcfeb7451684a695f2fc318d27165220fb69ec42b1c198e88",
+        "src/ai_dlc/harness/hooks.py": "9a4c95d958eef99c71a5cbaf41f53b0f4e8a3288606cb1054457dbc5b0a3f88b",
         "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
         "src/ai_dlc/setup/project.py": "09464c89f569a337aaa77d1604404273808636323635bcd00bb05e0f74c7ad9e",
         "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
         "tests/test_config.py": "60bd9343da62e760c92083765439452e4a1e924b6f585ef14780af1f7b3349ce",
-        "tests/test_hooks.py": "60f22825bdefd5bccec1dc722bc966a3b2bbc08f26c3cd6e9deb992b1f029c09",
+        "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
         "tests/test_project.py": "0863470fa695afffc68bba51602585cd2539174cc9a8599a7cf838773f170b93",
         "tests/test_rendering.py": "cbc5c9bbc5dceafda37d1f41781f2d86891ba2273b6e32455e6997bcfd7f312c",
         "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2",
@@ -204,7 +204,7 @@
         "src/ai_dlc/environment/team_sources.py": "20d583a9046adfac9f0f5bf6de7aca537654eb29d0ff636c27f5a78c7c5c21a6",
         "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
         "src/ai_dlc/harness/agents.py": "49a6d9432a6a72cf21ef05f899e4ee13ad2292b0a9c0ed8784abfe88038e9125",
-        "src/ai_dlc/harness/hooks.py": "43eed066758c794bcfeb7451684a695f2fc318d27165220fb69ec42b1c198e88",
+        "src/ai_dlc/harness/hooks.py": "9a4c95d958eef99c71a5cbaf41f53b0f4e8a3288606cb1054457dbc5b0a3f88b",
         "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
         "src/ai_dlc/providers/teamai.py": "ff7a781abcaeeca1c978f9472502156e31a1fc6d192ac50e1e489d333b77a5e6",
         "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
@@ -217,7 +217,7 @@
         "tests/test_environment_report_collection.py": "2acfade90e9a7137a674adb75547a18e49d5992bbbe42d4e8ba7f072ab81dd41",
         "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
         "tests/test_environment_report_probes.py": "c19dcbe771d86f3ec2a6dd750642cadf9cbf0be3cd92faee44b68f00b9214717",
-        "tests/test_hooks.py": "60f22825bdefd5bccec1dc722bc966a3b2bbc08f26c3cd6e9deb992b1f029c09",
+        "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
         "tests/test_native_harnesses.py": "e008d4773dccfa2662942561b24df4fdb6c15f637683d5fbdfaf59240e9bb5cc",
         "tests/test_rendering.py": "cbc5c9bbc5dceafda37d1f41781f2d86891ba2273b6e32455e6997bcfd7f312c",
         "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2"
@@ -276,7 +276,7 @@
         "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
         "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
         "src/ai_dlc/harness/agents.py": "49a6d9432a6a72cf21ef05f899e4ee13ad2292b0a9c0ed8784abfe88038e9125",
-        "src/ai_dlc/harness/hooks.py": "43eed066758c794bcfeb7451684a695f2fc318d27165220fb69ec42b1c198e88",
+        "src/ai_dlc/harness/hooks.py": "9a4c95d958eef99c71a5cbaf41f53b0f4e8a3288606cb1054457dbc5b0a3f88b",
         "src/ai_dlc/mcp_server.py": "607eba3e47a8573862d83e5209e824b78ec0af74545fa51727b8d3f7c03db410",
         "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
         "tests/test_config.py": "60bd9343da62e760c92083765439452e4a1e924b6f585ef14780af1f7b3349ce",
@@ -287,7 +287,7 @@
         "tests/test_environment_report_collection.py": "2acfade90e9a7137a674adb75547a18e49d5992bbbe42d4e8ba7f072ab81dd41",
         "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
         "tests/test_environment_report_probes.py": "c19dcbe771d86f3ec2a6dd750642cadf9cbf0be3cd92faee44b68f00b9214717",
-        "tests/test_hooks.py": "60f22825bdefd5bccec1dc722bc966a3b2bbc08f26c3cd6e9deb992b1f029c09",
+        "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
         "tests/test_rendering.py": "cbc5c9bbc5dceafda37d1f41781f2d86891ba2273b6e32455e6997bcfd7f312c",
         "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2"
       },
@@ -298,7 +298,7 @@
     },
     {
       "bound": {
-        "openspec/changes/proportionate-push-policy/delivery.md": "92133f7e9e57093df1108898db44269a5f0b5340a14d7335eccb8678c2a5a987"
+        "openspec/changes/proportionate-push-policy/delivery.md": "6d0f38455c2a1518f42aad83d9f942aaf872172b01ae5b7f91a897dc4051e2f0"
       },
       "outcome": "updated",
       "reason": "Records implementation ownership and observed automated service evidence while keeping whole-branch review, full required checks, native qualification and remote finish distinct.",
@@ -307,7 +307,7 @@
     },
     {
       "bound": {
-        "openspec/changes/proportionate-push-policy/tasks.md": "1b7fc41cd81ed8f17ad43bba96e48e040448d5da35742c805545573f0e4dd9b6"
+        "openspec/changes/proportionate-push-policy/tasks.md": "6683d3693b8f714db3eb66104e8785e317344e2dd10f2f21afb3b7966ba6888b"
       },
       "outcome": "updated",
       "reason": "Records bounded implementation grouping, real-Git automated verification and independent reviews; full delivery verification and exact-merge finish remain explicit later gates.",
