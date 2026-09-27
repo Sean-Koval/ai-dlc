@@ -104,7 +104,9 @@ def test_resolve_render_clients_rejects_unknown_client():
 
 def test_shared_guidance_lines_lists_required_checks_and_indexes():
     checks = {"required": ["lint", "ghost"], "commands": {"lint": "ruff check"}}
-    lines = _shared_guidance_lines({"checks": checks}, "## Providers", "## Bundles")
+    lines = _shared_guidance_lines(
+        {"checks": checks}, ["claude-code", "codex"], "## Providers", "## Bundles"
+    )
     assert lines[0] == "# Shared project guidance"
     assert "- lint: `ruff check`" in lines
     assert "- ghost: `MISSING COMMAND`" in lines
@@ -112,7 +114,7 @@ def test_shared_guidance_lines_lists_required_checks_and_indexes():
 
 
 def test_shared_guidance_lines_omits_empty_bundle_index():
-    lines = _shared_guidance_lines({}, "## Providers", "")
+    lines = _shared_guidance_lines({}, ["claude-code", "codex"], "## Providers", "")
     assert lines[-1] == "## Providers"
     assert "" not in lines[-1:]
 
@@ -126,7 +128,7 @@ _RECOVERY = "temporary detached worktree"
 
 
 def _guidance(config: dict) -> str:
-    return "\n".join(_shared_guidance_lines(config, "## Providers", ""))
+    return "\n".join(_shared_guidance_lines(config, ["claude-code", "codex"], "## Providers", ""))
 
 
 @pytest.mark.parametrize(
