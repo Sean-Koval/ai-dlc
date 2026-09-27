@@ -73,6 +73,25 @@ def _selection(evidence: dict | None) -> dict[str, str | None]:
     return selected
 
 
+def _current_selection(report: dict, evidence: dict | None, procedure: dict) -> dict:
+    """Retain only still-present scope when evidence belongs to an older EER."""
+    selected = _selection(evidence)
+    if evidence is None or all(
+        evidence[key] == report[key] for key in ("configuration_identity", "observation_identity")
+    ):
+        return selected
+    for step, key in (
+        ("instruction", "instruction_id"),
+        ("skill", "skill_id"),
+        ("mcp", "server_id"),
+    ):
+        if selected[key] not in procedure["candidates"][step]:
+            selected[key] = None
+            if step == "mcp":
+                selected["tool_id"] = None
+    return selected
+
+
 def _evidence_template(report: dict, procedure: dict) -> dict:
     client = next(item for item in report["clients"] if item["id"] == procedure["client_id"])
     contract = procedure["contract"]
@@ -226,7 +245,12 @@ def verify_native(
         evidence = (
             parse_evidence(read_report_bytes(evidence_path)) if evidence_path is not None else None
         )
-        procedure = procedure_contract(imported, client_id, **_selection(evidence))
+        procedure = procedure_contract(imported, client_id)
+        procedure = procedure_contract(
+            imported,
+            client_id,
+            **_current_selection(imported, evidence, procedure),
+        )
         current = report_service.collect_report(
             Path(root), home=home, environ=environ, probe_versions=False
         )

@@ -91,6 +91,38 @@ def completed_evidence(output: dict) -> dict:
     return value
 
 
+def historical_removed_scope(tmp_path: Path) -> tuple[Path, Path, Path, Path, dict[str, str], dict]:
+    root, home, report_path, environment, report = write_context(tmp_path)
+    from ai_dlc.harness.native_verification import verify_native
+
+    procedure = verify_native(
+        root,
+        "codex",
+        report_path,
+        home=home,
+        environ=environment,
+    )
+    evidence_path = tmp_path / "evidence.json"
+    evidence_path.write_text(json.dumps(completed_evidence(procedure)))
+    changed = copy.deepcopy(report)
+    prior_guidance = changed["project"]["guidance"]
+    replacements = []
+    for old_id, new_id in (
+        ("skill.day-start", "skill.replacement"),
+        ("native.local", "native.replacement"),
+    ):
+        replacement = copy.deepcopy(next(item for item in prior_guidance if item["id"] == old_id))
+        replacement["id"] = new_id
+        replacements.append(replacement)
+    changed["project"]["guidance"] = replacements + [
+        item for item in prior_guidance if item["id"] not in {"skill.day-start", "native.local"}
+    ]
+    changed = report_schema.finalize_report(changed)
+    changed_path = tmp_path / "changed-environment.json"
+    write_report(changed_path, changed)
+    return root, home, changed_path, evidence_path, environment, changed
+
+
 def with_instruction_observation(
     report: dict,
     *,
@@ -313,6 +345,49 @@ def test_invalid_explicit_selection_is_rejected_before_local_collection(tmp_path
             home=home,
             environ=environment,
         )
+
+
+def test_historical_removed_skill_and_server_remain_stale_evidence(tmp_path, monkeypatch):
+    """Would fail if removed historical selections were rejected as current input."""
+    from ai_dlc.harness.native_verification import verify_native
+
+    root, home, report_path, evidence_path, environment, changed = historical_removed_scope(
+        tmp_path
+    )
+    monkeypatch.setattr(report_service, "collect_report", lambda *args, **kwargs: changed)
+
+    output = verify_native(
+        root,
+        "codex",
+        report_path,
+        evidence_path,
+        home=home,
+        environ=environment,
+    )
+
+    assert output["exit_code"] == 1
+    assert output["result"]["state"] == "stale"
+    assert {
+        "configuration_identity",
+        "observation_identity",
+        "steps.skill.artifact_id",
+        "steps.mcp.artifact_id",
+    } <= set(output["result"]["stale_fields"])
+    assert [step["result"] for step in output["result"]["steps"]] == ["passed"] * 3
+    assert [step["observed_marker"] for step in output["result"]["steps"]] == [
+        "NHV-INSTRUCTION-1",
+        "NHV-SKILL-1",
+        "NHV-MCP-1",
+    ]
+    selected = {step["id"]: step for step in output["procedure"]["steps"]}
+    assert selected["instruction"]["artifact_id"] == "agents"
+    assert selected["skill"]["artifact_id"] is None
+    assert selected["mcp"]["artifact_id"] is None
+    assert selected["mcp"]["tool_id"] is None
+    assert output["procedure"]["candidates"]["skill"] == ["skill.replacement"]
+    assert output["procedure"]["candidates"]["mcp"] == ["native.replacement"]
+    assert "no-selected-skill" in output["procedure"]["limitations"]
+    assert "no-selected-mcp" in output["procedure"]["limitations"]
 
 
 @pytest.mark.parametrize(

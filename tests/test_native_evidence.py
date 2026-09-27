@@ -138,11 +138,11 @@ def test_documented_adapters_never_invent_tested_versions(client):
 def test_closed_schema_refuses_private_or_inconsistent_payload(case):
     value = evidence()
     if case == "extra":
-        value["transcript"] = "/Users/private/secret"
+        value["transcript"] = "/Users/example/secret"
     elif case == "nested-extra":
         value["auth"]["account"] = "private@example.org"
     elif case == "private-id":
-        value["steps"][0]["artifact_id"] = "/Users/private/secret"
+        value["steps"][0]["artifact_id"] = "/Users/example/secret"
     elif case == "private-marker":
         value["steps"][0]["observed_marker"] = "secret-token-value"
     elif case == "observer":

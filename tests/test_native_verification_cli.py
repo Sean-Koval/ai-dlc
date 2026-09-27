@@ -8,7 +8,11 @@ from pathlib import Path
 
 import pytest
 from click import unstyle
-from test_native_verification import imported_report, isolated_environment
+from test_native_verification import (
+    historical_removed_scope,
+    imported_report,
+    isolated_environment,
+)
 from typer.testing import CliRunner
 
 from ai_dlc.environment.report_io import write_report
@@ -91,6 +95,45 @@ def test_malformed_evidence_cli_exits_two_without_private_input_or_path(verifica
     assert "SECRET" not in error
     assert "PRIVATE" not in error
     assert str(tmp_path) not in error
+
+
+def test_historical_removed_skill_and_server_cli_emits_stale_result(tmp_path, monkeypatch):
+    """Would fail if the CLI treated valid historical scope as malformed current scope."""
+    from ai_dlc.cli import app
+    from ai_dlc.environment import report as report_service
+
+    root, home, report_path, evidence_path, environment, changed = historical_removed_scope(
+        tmp_path
+    )
+    monkeypatch.setattr(Path, "home", lambda: home)
+    for name, value in environment.items():
+        monkeypatch.setenv(name, value)
+    monkeypatch.setattr(report_service, "collect_report", lambda *args, **kwargs: changed)
+
+    result = CliRunner().invoke(
+        app,
+        [
+            "agents",
+            "verify",
+            "--root",
+            str(root),
+            "--client",
+            "codex",
+            "--environment",
+            str(report_path),
+            "--evidence",
+            str(evidence_path),
+        ],
+    )
+
+    assert result.exit_code == 1, result.output
+    output = json.loads(result.stdout)
+    assert output["result"]["state"] == "stale"
+    assert [step["result"] for step in output["result"]["steps"]] == ["passed"] * 3
+    selected = {step["id"]: step for step in output["procedure"]["steps"]}
+    assert selected["skill"]["artifact_id"] is None
+    assert selected["mcp"]["artifact_id"] is None
+    assert selected["mcp"]["tool_id"] is None
 
 
 def test_unknown_cli_arguments_are_rejected_before_any_file_read(verification_cli, monkeypatch):
