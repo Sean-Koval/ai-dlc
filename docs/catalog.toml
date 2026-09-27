@@ -405,7 +405,7 @@ owner = "repository-maintainers"
 status = "draft"
 code_paths = ["src/ai_dlc/setup/project.py", "src/ai_dlc/setup/commands.py", "src/ai_dlc/cli.py", "project-templates/project/ai-dlc.toml.jinja", "project-templates/project/scripts/check_tests.py", "project-templates/project/tests/test_main.py", "agents/skills/spec-from-prd/SKILL.md", "agents/skills.lock.json", ".agents/skills/spec-from-prd/SKILL.md", ".claude/skills/spec-from-prd/SKILL.md", ".ai-dlc/agent-ownership.json", "agents/templates/delivery-slice.md", "project-templates/project/docs/templates/delivery-slice.md", "project-templates/project/AI-DLC.md", "project-templates/project/docs/development-workflow.md.jinja"]
 verification_paths = ["tests/test_checks.py", "tests/test_project.py", "tests/test_templates.py"]
-requirements = ["openspec/specs/portable-development/spec.md", "openspec/changes/behavioral-check-onboarding/specs/portable-development/spec.md"]
+requirements = ["openspec/specs/portable-development/spec.md"]
 
 [[documents]]
 id = "repo-github-ticket-setup"
@@ -744,7 +744,7 @@ status = "draft"
 
 code_paths = ["agents/skills/spec-from-prd/SKILL.md", "agents/templates/delivery-slice.md", "project-templates/project/docs/workflows/brownfield.md"]
 verification_paths = ["tests/test_templates.py", "tests/test_checks.py"]
-requirements = ["openspec/changes/behavioral-check-onboarding/specs/portable-development/spec.md"]
+requirements = ["openspec/specs/portable-development/spec.md"]
 
 [[documents]]
 id = "repo-workflows-design-to-implementation"
@@ -894,7 +894,7 @@ owner = "repository-maintainers"
 status = "active"
 code_paths = ["src/ai_dlc/verification/evaluation/__init__.py", "src/ai_dlc/verification/evaluation/attempt.py", "src/ai_dlc/verification/evaluation/contracts.py", "src/ai_dlc/verification/evaluation/budgets.py", "src/ai_dlc/verification/evaluation/drivers.py", "src/ai_dlc/verification/evaluation/evaluate.py", "src/ai_dlc/verification/evaluation/git_observer.py", "src/ai_dlc/verification/evaluation/image.py", "src/ai_dlc/verification/evaluation/planning.py", "src/ai_dlc/verification/evaluation/report.py", "src/ai_dlc/verification/evaluation/run.py", "evaluations/README.md", "evaluations/images/claude-code.json", "evaluations/suites/smoke.json", "evaluations/suites/real-client.json", "evaluations/profiles/local-deterministic.json", "contracts/evaluation/base-image.schema.json"]
 verification_paths = ["tests/test_evaluation_planning.py", "tests/test_evaluation_attempt.py", "tests/test_evaluation_run.py", "tests/test_evaluation_report.py", "tests/test_evaluation_image.py", "tests/test_evaluation_driver.py", "tests/test_evaluation_claude.py", "tests/test_evaluation_budgets.py", "tests/test_evaluation_git_observer.py", "tests/fixtures/evaluation/claude-code-2.1.220.jsonl", "tests/test_evaluation_egress.py", "tests/test_evaluation_base_image.py"]
-requirements = ["openspec/specs/end-to-end-evaluation/spec.md", "openspec/changes/behavioral-check-onboarding/specs/portable-development/spec.md"]
+requirements = ["openspec/specs/end-to-end-evaluation/spec.md", "openspec/specs/portable-development/spec.md"]
 
 [[documents]]
 id = "fde-documents"

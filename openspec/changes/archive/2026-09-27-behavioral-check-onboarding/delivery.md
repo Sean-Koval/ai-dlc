@@ -1,10 +1,10 @@
 # Delivery slice: behavioral-check-onboarding
 
 Proposed local work ID: `behavioral-check-onboarding`. Priority: P1.
-Owner: Sean Koval, product decision; implementation owner unassigned.
-Status: specification and issue preparation authorized; implementation not started.
-Review source: September 26 team-adoption review and the user's request to specify and create issues. This does not imply implementation approval, live qualification or paid evaluation authorization.
-Canonical brief authority: [product direction](../../../docs/product-direction.md). Review trace: OUT-001, RQ-004 and RQ-005 (team adoption); formal acceptance resides in this change.
+Owner: Sean Koval, product decision; Codex implementation and independent agent review.
+Status: implementation and local verification complete; archived on the delivery branch. Hosted review/merge and exact-merge finish gates remain pending.
+Review source: September 26 team-adoption review and the user's request to specify and create issues. The user subsequently authorized sequential implementation, push and merge. Live qualification and paid evaluation remain separately bounded.
+Canonical brief authority: [product direction](../../../../docs/product-direction.md). Review trace: OUT-001, RQ-004 and RQ-005 (team adoption); formal acceptance resides in this change.
 
 ## Problem and outcome
 
@@ -38,7 +38,7 @@ Consumer onboarding may link this guidance when delivered. Native Windows eviden
 | BCO-04 Regression / Not detected / Isolation refused | Pass/fail/restored pass, or explicit incomplete evidence; active tree unchanged | Real disposable local fixture plus negative containment cases |
 | BCO-05 Focused feedback | Partial receipt never completes missing required outcomes | Existing receipt regressions plus complete required run |
 
-All implementation evidence is pending. A successful fixture or candidate smoke cannot fill the native-Windows, human-quality or paid-comparison columns.
+Implementation evidence and exact source/image identities are recorded in [the canonical evaluation record](../../../../docs/verification/end-to-end-evaluation.md). All eight local required checks passed at `17988aa` (3,179 tests passed, 40 skipped). A successful fixture or candidate smoke cannot fill the native-Windows, human-quality or paid-comparison columns.
 
 ## Implementation sequence
 
@@ -52,4 +52,4 @@ Review `docs/development-workflow.md`, existing brownfield adoption guidance, `d
 
 The adopting maintainer supplies one real requirement, test command and safe representative fixture; those are project inputs, not a reason to add a default framework. Implementation chooses the smallest existing guidance asset after inspecting its current ownership. Available candidate-build resources and native platform hosts must be reported honestly. Paid #138 execution remains explicitly deferred.
 
-Decision: proceed with the reviewed specification/issue handoff; implementation starts only through its assigned delivery task. Validation reported by the author concerns this specification package, not implemented acceptance.
+Decision: proceed through the remaining delivery gates in the task list; local evidence does not establish remote completion.

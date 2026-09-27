@@ -134,7 +134,7 @@
     },
     {
       "bound": {
-        "docs/catalog.toml": "ea2e6587dfa74e9825e8db61ad0a1183df92dbc33d1777d263e58b9e242994aa"
+        "docs/catalog.toml": "64b6b031f3934450d5b6f2ffae74571817fc54cf4d3885aca91ef511a0162da3"
       },
       "outcome": "updated",
       "reason": "Maps existing skill/template/generated copies, evaluation recipe/schema and behavioral requirements to canonical workflow/evaluation owners without manufacturing factual review dates.",
@@ -149,10 +149,9 @@
         "agents/skills.lock.json": "e12e190d0d923b200e182d3fe71a05c22bb0dee19ba75c4b834c4eb1102084a4",
         "agents/skills/spec-from-prd/SKILL.md": "9ceeb895bfe68311de31b1a0f5751dd4471be53b3de7aa9441dc69d3f808cf68",
         "agents/templates/delivery-slice.md": "4a7a5d7af2f6a99b4e7eac13491eef751def074451d6899acc36ccf1f536bd6f",
-        "catalog:docs/development-workflow.md": "0ca65793923a52ca7accccef89aa62bd5e21b0dd2aea5986631f8adc87e32c5b",
+        "catalog:docs/development-workflow.md": "260c52d0176d7ae65b76adba9dc116bb394f2be5353437a6590c1d4f60994d40",
         "docs/development-workflow.md": "02b594672b67ec42a0118bd179738f0f9a3f61f00ee645ec358b9dc1beec50ff",
-        "openspec/changes/behavioral-check-onboarding/specs/portable-development/spec.md": "34660deda7723a1eaa17dbcb24609706fa8277ff7e2367c50f9b882e65b8c3a5",
-        "openspec/specs/portable-development/spec.md": "47ad8e0533e59e9ec1bbe884a8cfa392c97d5e2b999c9e29398a86e076f5e596",
+        "openspec/specs/portable-development/spec.md": "2c75caee1dc2f59828c49ba940be6a186580b07032c52b63fc750788b7535a4d",
         "project-templates/project/AI-DLC.md": "be8ad8c8c264b994b58edf1832d0aad5edfb1447876448caa9a424a1cfc12caf",
         "project-templates/project/ai-dlc.toml.jinja": "8cb37c2c92f7998a2c7cec84c2d293f63b1e80f1a4a4f1f330a7e5b1b92aa0cd",
         "project-templates/project/docs/development-workflow.md.jinja": "edd8cda474ebac1ddd3a78b1c49682893b4a6dae9b95065a618a56f229cd396f",
@@ -173,7 +172,7 @@
     },
     {
       "bound": {
-        "catalog:docs/verification/end-to-end-evaluation.md": "aeb0b0ffe01713e3ff2ba24921bf34df47606dce043b779f022bbe93cdc354cb",
+        "catalog:docs/verification/end-to-end-evaluation.md": "585d6d24c99ebc30a259c93cd0caebe01587617637f4d342f64f75e3e0c644a7",
         "contracts/evaluation/base-image.schema.json": "9e4d5200cfda72c6c3290e163418d3e624db2cd8c39a10d631bda2babcc958dd",
         "docs/verification/end-to-end-evaluation.md": "2fbfcd84d75b36b45fd2f3eed7252a65b1381c24c58c0275c1a3e30dccee4b59",
         "evaluations/README.md": "db873e9a78b20c3bcea7d3e478ceb63b1d57619ddfa704b62b274d7f003ca0c0",
@@ -181,8 +180,8 @@
         "evaluations/profiles/local-deterministic.json": "0e0deb70f592f3ebad0a420daf815c536eab6c74c421ec4e10329614a65d3d6b",
         "evaluations/suites/real-client.json": "a21ef76ccde1adeba48a15e3373839586a38b925acaaed9fed23f666a66e886e",
         "evaluations/suites/smoke.json": "4f24319f9c734a2b5fa01cc01b2f831bb79a230800697b160ad29aa87f98a9d7",
-        "openspec/changes/behavioral-check-onboarding/specs/portable-development/spec.md": "34660deda7723a1eaa17dbcb24609706fa8277ff7e2367c50f9b882e65b8c3a5",
         "openspec/specs/end-to-end-evaluation/spec.md": "e6bac03b7eabc83bd62443bd0e05fe668ecb3444a805970367fa2487dab71372",
+        "openspec/specs/portable-development/spec.md": "2c75caee1dc2f59828c49ba940be6a186580b07032c52b63fc750788b7535a4d",
         "src/ai_dlc/verification/evaluation/__init__.py": "7cf0a3add5298d2f8d58954210cee24b3fb6a5f81e505ef3b948a7078cbb0eb8",
         "src/ai_dlc/verification/evaluation/attempt.py": "a249ad3af90f034cac3774c5406f819afe54209fe88307064c4fd822750a4717",
         "src/ai_dlc/verification/evaluation/budgets.py": "8069eb9a4f6d24e7fe88774581b47a7d817445ac950a266684aee77fc5378826",
@@ -216,9 +215,9 @@
       "bound": {
         "agents/skills/spec-from-prd/SKILL.md": "9ceeb895bfe68311de31b1a0f5751dd4471be53b3de7aa9441dc69d3f808cf68",
         "agents/templates/delivery-slice.md": "4a7a5d7af2f6a99b4e7eac13491eef751def074451d6899acc36ccf1f536bd6f",
-        "catalog:docs/workflows/brownfield.md": "220b300208e422314479b088cd841d3d7dbacfb5c5b886529d8e9a70c32a23bc",
+        "catalog:docs/workflows/brownfield.md": "dedbc6f762c6970ac999eb74598adc31dd6dbfe16a6b3ae8842345b9e37838b4",
         "docs/workflows/brownfield.md": "ba6fea8571f096715f64e0253444f218d307aee61777c47b91d0149efea22e26",
-        "openspec/changes/behavioral-check-onboarding/specs/portable-development/spec.md": "34660deda7723a1eaa17dbcb24609706fa8277ff7e2367c50f9b882e65b8c3a5",
+        "openspec/specs/portable-development/spec.md": "2c75caee1dc2f59828c49ba940be6a186580b07032c52b63fc750788b7535a4d",
         "project-templates/project/docs/workflows/brownfield.md": "300acec2c3562b8d76178e0de1ec3bd155882f0ce5180879b195657d5eb58c1f",
         "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
         "tests/test_templates.py": "da7d4221a92e5fe65ab65d685522897a23bd04807ef9f62acde6bf160eee8aa5"
@@ -230,19 +229,91 @@
     },
     {
       "bound": {
-        "openspec/changes/behavioral-check-onboarding/design.md": "60856b79c33e6ad38ee41187ae65813659664004b85c3c178770caa2cf8d1f31"
+        "openspec/changes/archive/2026-09-27-behavioral-check-onboarding/delivery.md": "7d26565de14d8c67f43983a7d6fddec448e8e5daf255505d08c7beef21191715"
       },
       "outcome": "updated",
-      "reason": "Records the observed raw-image-ID BuildKit handoff failure and bounded content-derived local-reference decision, preserving digest identity, alias conflict refusal and the baseline image.",
+      "reason": "Reviewed archived implementation artifacts, preserved accepted BCO requirements and task evidence, repaired moved links; remaining remote delivery gates and qualification limits are explicit.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-behavioral-check-onboarding/delivery.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-27-behavioral-check-onboarding/design.md": "466edf7a43f11471fcfecd8967f846edf5211baca47bee31b008339f3142e232"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed archived implementation artifacts, preserved accepted BCO requirements and task evidence, repaired moved links; remaining remote delivery gates and qualification limits are explicit.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-behavioral-check-onboarding/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-27-behavioral-check-onboarding/proposal.md": "906431f835b25094d3c0ed52e6db7fea18c5ab6f2c8b6596c5c531578438ac02"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed archived implementation artifacts, preserved accepted BCO requirements and task evidence, repaired moved links; remaining remote delivery gates and qualification limits are explicit.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-behavioral-check-onboarding/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-27-behavioral-check-onboarding/specs/portable-development/spec.md": "34660deda7723a1eaa17dbcb24609706fa8277ff7e2367c50f9b882e65b8c3a5"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed archived implementation artifacts, preserved accepted BCO requirements and task evidence, repaired moved links; remaining remote delivery gates and qualification limits are explicit.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-behavioral-check-onboarding/specs/portable-development/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-27-behavioral-check-onboarding/tasks.md": "0a1de2ca2b52802d19a98bd1009227f4f0ac05533dc94d76aeedbce521363172"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed archived implementation artifacts, preserved accepted BCO requirements and task evidence, repaired moved links; remaining remote delivery gates and qualification limits are explicit.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-behavioral-check-onboarding/tasks.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/behavioral-check-onboarding/delivery.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Active artifact moved through ai-dlc work archive to the dated archive; work bindings follow that path and accepted requirements were promoted to canonical portable-development.",
+      "reviewer": "codex",
+      "target": "openspec/changes/behavioral-check-onboarding/delivery.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/behavioral-check-onboarding/design.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Active artifact moved through ai-dlc work archive to the dated archive; work bindings follow that path and accepted requirements were promoted to canonical portable-development.",
       "reviewer": "codex",
       "target": "openspec/changes/behavioral-check-onboarding/design.md"
     },
     {
       "bound": {
-        "openspec/changes/behavioral-check-onboarding/tasks.md": "0a1de2ca2b52802d19a98bd1009227f4f0ac05533dc94d76aeedbce521363172"
+        "openspec/changes/behavioral-check-onboarding/proposal.md": "missing"
       },
       "outcome": "updated",
-      "reason": "Tracks implementation, review, actual isolated behavioral/ordinary-runner evidence and remaining delivery gates separately; no paid/native qualification is inferred.",
+      "reason": "Active artifact moved through ai-dlc work archive to the dated archive; work bindings follow that path and accepted requirements were promoted to canonical portable-development.",
+      "reviewer": "codex",
+      "target": "openspec/changes/behavioral-check-onboarding/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/behavioral-check-onboarding/specs/portable-development/spec.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Active artifact moved through ai-dlc work archive to the dated archive; work bindings follow that path and accepted requirements were promoted to canonical portable-development.",
+      "reviewer": "codex",
+      "target": "openspec/changes/behavioral-check-onboarding/specs/portable-development/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/behavioral-check-onboarding/tasks.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Active artifact moved through ai-dlc work archive to the dated archive; work bindings follow that path and accepted requirements were promoted to canonical portable-development.",
       "reviewer": "codex",
       "target": "openspec/changes/behavioral-check-onboarding/tasks.md"
     }

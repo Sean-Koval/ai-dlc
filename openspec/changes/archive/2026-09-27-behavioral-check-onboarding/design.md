@@ -2,7 +2,7 @@
 
 ## Context and observed behavior
 
-Authority is [product direction](../../../docs/product-direction.md), particularly useful local checks, small artifacts and measured outcomes. `portable-development` already owns PC-01 focused checks, PC-02 full completion evidence and PC-03 behavioral Python starters. `connected-project-readiness` RD-04 already requires actionable runtime failures. These contracts are retained, not replaced.
+Authority is [product direction](../../../../docs/product-direction.md), particularly useful local checks, small artifacts and measured outcomes. `portable-development` already owns PC-01 focused checks, PC-02 full completion evidence and PC-03 behavioral Python starters. `connected-project-readiness` RD-04 already requires actionable runtime failures. These contracts are retained, not replaced.
 
 `setup/project.py` resolves mise before checks, including an empty tools table. The evaluation runbook records a candidate that adopts and renders successfully but cannot execute the normal runner because mise is absent. Existing adoption preserves authored checks and tests; new Python greeting tests are a starter example rather than a team's acceptance suite. The intended addition is guided selection and observable rehearsal, not an inference that current checks are inadequate.
 
