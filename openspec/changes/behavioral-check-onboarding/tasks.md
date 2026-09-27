@@ -20,3 +20,54 @@
 ## Subsequent delivery gates
 
 After implementation and the checklist above are complete, archive this independently owned change on its bound delivery branch with `ai-dlc work archive`. Repair moved artifact links and any evidence targets actually made stale by archival. Immediately before authorized merge, update from the target branch and refresh required checks/evidence. Finish through `ai-dlc work finish` against the exact merged revision and its configured receipts. These remain mandatory later delivery gates, not checkboxes that must falsely claim post-merge completion before archive. No package publication or paid comparison is authorized by this task list.
+
+
+## Implementation plan
+
+**Goal:** Reuse a team's reviewed behavior check and demonstrate its sensitivity through the ordinary runner, with a shared offline-ready comparison runtime.
+
+**Architecture:** Extend existing task-triggered specification/delivery guidance. Keep onboarding, check execution and receipt services unchanged. Extend the existing evaluation base recipe/build path with a checksum-pinned mise binary shared by both arms; exercise the ordinary candidate runner in the existing no-model attempt smoke.
+
+**Spec:** `specs/portable-development/spec.md`, BCO-01–BCO-05. Python/Pydantic/pytest and existing Markdown/template assets; no new dependency, service, public command, scanner or test framework.
+
+### Global constraints and rulings
+
+- Retain authored tests, commands, required IDs, shell contract and full receipt gates. Configuration review uses the existing authorization context; no redundant approval ritual.
+- Guidance inspects exact existing sources and records unknowns. Filenames, setup success and syntax checks do not prove behavior or test adequacy.
+- Checks never install tools. mise remains necessary even for empty tools; no direct-shell substitute for a failed runner.
+- Rehearsal uses an explicit external disposable copy with no production inputs or remote mutations. Reject active-checkout containment and unobserved expected failure before claiming success.
+- Paid #138 and native qualification remain pending. No token/productivity/quality claim follows from these fixtures.
+- Ruling: extend existing `spec-from-prd` and delivery-slice guidance, rather than add an onboarding source parser or new skill. Existing planning makes no behavioral-adequacy claim; agent judgment is the appropriate source-review boundary.
+- Ruling: keep optional mise metadata backward compatible in schema-1 base recipes; the shipped comparison recipe declares it explicitly. Legacy bases remain unqualified for ordinary checks until the smoke succeeds. Both arms use the same resulting base image.
+- Ruling: #176 has no dependency on draft #175 and starts from completed #173/#174 main. No native-helper code is needed here.
+
+### Review focus
+
+Review unknown/non-Python commands without inventing mappings; focused success versus full receipts; absent mise with empty tools; wrong binary checksum/architecture; and unsafe or insensitive rehearsal. Existing runner/receipt tests and the new actual rehearsal cover these boundaries; do not add prose-string tests merely mirroring instructions.
+
+### Task A — Compact team-check guidance
+
+Own `agents/skills/spec-from-prd/SKILL.md`, its lock/generated copies, `agents/templates/delivery-slice.md` and packaged copy, the short project AI-DLC pointer, canonical and project-template development/brownfield guidance.
+
+- [ ] Inspect existing guidance and PC-01/02/03; add source-grounded inspect/propose/review steps, requirement/check/source/prerequisite mapping, required/optional choice and explicit unknowns using those existing surfaces.
+- [ ] Add the bounded external-fixture pass/fail/restored-pass procedure, isolation refusal, missed-regression failure, honest evidence fields and normal-runner mise requirement. Keep the detailed procedure in one canonical workflow and use short task-specific pointers elsewhere.
+- [ ] Update generated/locked copies using repository tools; preserve authored application tests/configuration. Run relevant existing rendering/template/preservation/check/runtime/receipt tests and scoped asset checks; no new scanner, service, skill or redundant textual tests.
+- [ ] Self-review and commit only owned files; record concise affected checks and limitations in ignored task-a-report.md for independent review.
+
+### Task B — Common evaluation runtime and ordinary-runner smoke
+
+Own `verification/evaluation/contracts.py`, `image.py`, generated base-image schema, shipped `evaluations/images/claude-code.json`, `tests/test_evaluation_base_image.py`, `tests/test_evaluation_attempt.py`, evaluation README and canonical evaluation record (preparation instructions only; controller owns actual evidence later).
+
+- [ ] Add failing contract/build tests for optional strict mise version/platform hashes, absent architecture and checksum mismatch, exact executable bytes/mode in shared base, and offline non-root version check. Preserve recipes without the optional block; state their runtime limitation.
+- [ ] Add checksum-pinned mise to the shipped shared base recipe using the existing bootstrap Linux x64/arm64 pins and existing HTTPS fetch pattern. Verify architecture/digest before build, no extra runtime installed by candidate checks. Record mise identity in build output when declared; no paid model call.
+- [ ] Update the existing no-model candidate attempt smoke to run `project setup` and `project check --required` with a collected receipt under its existing offline isolation, while baseline receives no AI-DLC guidance. Retain direct behavioral test evidence separately; assert actual required outcomes, not just exit/version text.
+- [ ] Regenerate the schema, run focused image/attempt/schema tests and scoped Ruff/types, self-review and commit owned files. Do not launch real builds: controller runs and records those after the code is clean.
+
+### Task C — Actual rehearsal, verification and delivery
+
+Controller owns ignored execution/evidence, catalog/dispositions and these specification tasks.
+
+- [ ] Use an external disposable copy of the committed CSV fixture. Record source/tree/runtime identities, one reviewed column-count requirement and authored unittest command; run focused pass, introduce only the reviewed behavior regression in the copy, require observed failure, restore exact bytes and require pass. Record isolation-refusal and undetected-regression controls; preserve active checkout and user content.
+- [ ] Build the common base and candidate on available Linux arm64 Docker, then run the no-model offline ordinary-runner smoke. Record exact image/wheel/source/receipt identities, separate from native or paid comparison evidence.
+- [ ] Record reviewed canonical evidence/catalog mappings and content-bound dispositions; validate specification/work records and run required checks. Obtain task reviews then whole-branch review; resolve findings.
+- [ ] Archive this independently completed specification, push/PR, refresh against target, merge only after required checks, and finish from exact merge with configured receipts. No package publication.
