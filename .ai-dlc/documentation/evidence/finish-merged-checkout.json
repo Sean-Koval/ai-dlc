@@ -124,7 +124,7 @@
         "src/ai_dlc/verification/test_proxy.py": "30ec2d29bf722d48f7341977542feef4a0c5ef9f90c90b158e869c5025d1c8d5",
         "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
         "src/ai_dlc/work/journal.py": "91bf194b430c5d0228a5600444a02d79029121a21079ec4c319e96fdaa68543b",
-        "src/ai_dlc/work/merge_checkout.py": "be3ceb9b5019abbf0e3f1a9a958eeeba2efc818c1cdebe8c47640dfd29af3b1d",
+        "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
         "src/ai_dlc/work/summary.py": "af386fc470b222d5c7b600ea3169ee7f26be7bdfafdcac8b4098b1fff2f0bd8e",
         "src/ai_dlc/work/traceability.py": "e9fbca5153cdd710b78872c66651269184ee5f3f1313f313b65df212430e8cc8",
         "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
@@ -177,7 +177,7 @@
         "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
         "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
         "src/ai_dlc/setup/project.py": "09464c89f569a337aaa77d1604404273808636323635bcd00bb05e0f74c7ad9e",
-        "src/ai_dlc/work/merge_checkout.py": "be3ceb9b5019abbf0e3f1a9a958eeeba2efc818c1cdebe8c47640dfd29af3b1d",
+        "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
         "src/ai_dlc/work/workflow.py": "062a0df156a06eee613dacd88d94e411301cc59eeb74a05748a17ac0a005648e",
         "tests/test_agents_phases.py": "b0ee080814d5bc259c122e3e0067876ed407de9e0ac1afd088f850488b9748ac",
         "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
@@ -185,7 +185,7 @@
         "tests/test_config.py": "60bd9343da62e760c92083765439452e4a1e924b6f585ef14780af1f7b3349ce",
         "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
         "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
-        "tests/test_merge_checkout.py": "b6f039f3afe774ee0ae93443694b0b54f8987b399d0b40bae924691721f981e5",
+        "tests/test_merge_checkout.py": "95810dd4da1aee09342240fc1ef20828cdccb7f861fde6c00ba44df1f0e3e133",
         "tests/test_project.py": "0863470fa695afffc68bba51602585cd2539174cc9a8599a7cf838773f170b93",
         "tests/test_rendering.py": "cbc5c9bbc5dceafda37d1f41781f2d86891ba2273b6e32455e6997bcfd7f312c",
         "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2",
@@ -331,7 +331,7 @@
         "src/ai_dlc/mcp_server.py": "607eba3e47a8573862d83e5209e824b78ec0af74545fa51727b8d3f7c03db410",
         "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
         "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
-        "src/ai_dlc/work/merge_checkout.py": "be3ceb9b5019abbf0e3f1a9a958eeeba2efc818c1cdebe8c47640dfd29af3b1d",
+        "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
         "src/ai_dlc/work/workflow.py": "062a0df156a06eee613dacd88d94e411301cc59eeb74a05748a17ac0a005648e",
         "tests/test_agents_phases.py": "b0ee080814d5bc259c122e3e0067876ed407de9e0ac1afd088f850488b9748ac",
         "tests/test_cli.py": "8dd3b5e6c99714ca60f64f6db0233e21d8d15628e511c6ca0ac32944e5427af6",
@@ -345,7 +345,7 @@
         "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
         "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
         "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
-        "tests/test_merge_checkout.py": "b6f039f3afe774ee0ae93443694b0b54f8987b399d0b40bae924691721f981e5",
+        "tests/test_merge_checkout.py": "95810dd4da1aee09342240fc1ef20828cdccb7f861fde6c00ba44df1f0e3e133",
         "tests/test_rendering.py": "cbc5c9bbc5dceafda37d1f41781f2d86891ba2273b6e32455e6997bcfd7f312c",
         "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2",
         "tests/test_workflow.py": "38aa9de4fad30227e0348a2054ac7e1043cd6fe260e41dc4df5617de9c482b94"
@@ -383,7 +383,7 @@
     },
     {
       "bound": {
-        "openspec/changes/archive/2026-09-27-finish-merged-checkout/delivery.md": "bdcd0a67ac4f68dcd442d68eb273f3654fada431a8623d56e26135261e8e3324"
+        "openspec/changes/archive/2026-09-27-finish-merged-checkout/delivery.md": "6714e72ec2114cb9303b76cacccffcf9af7b1bb75858c331783bdc4c2d08d9ff"
       },
       "outcome": "updated",
       "reason": "Reviewed archived exact-merge helper requirements, task evidence and moved links; archive is distinct from final required checks and gated remote completion.",

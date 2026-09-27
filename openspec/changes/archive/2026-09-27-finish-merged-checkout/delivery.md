@@ -1,9 +1,9 @@
 # Delivery slice: finish-merged-checkout
 
 Proposed local work ID: `finish-merged-checkout`. Priority: P2.
-Owner: Sean Koval, product decision; implementation owner unassigned.
-Status: specification and issue preparation authorized; implementation not started.
-Review source: September 26 team-adoption review and the user's request to specify and create issues. No remote tracker completion, implementation or release is authorized by this document.
+Owner: Sean Koval, product decision; implementation by the reviewed agent team.
+Status: core implementation reviewed; final Windows correction review, verification and gated delivery pending.
+Review source: September 26 team-adoption review, followed by the user's authorization to implement, push and merge. Package publication and paid comparison remain outside this delivery.
 Canonical brief authority: [product direction](../../../../docs/product-direction.md). Review trace: OUT-001 and RQ-005; formal acceptance resides in this change.
 
 ## Problem and outcome
@@ -56,4 +56,8 @@ Review `docs/development-workflow.md`, `docs/workflows/tool-map.md`, selected-ca
 
 No unresolved merge semantics: the authenticated bound PR merge SHA is authoritative, and missing local objects produce a fetch remedy. Implementation must inspect the current platform-safe worktree/locking primitives and select bounded storage/recovery details that meet ownership requirements; it must not invent remote reconciliation. A future live sandbox host and credentials remain unassigned; implementation is owned by the reviewed work branch.
 
-Decision: proceed with specification/issue handoff for this bounded helper, without extending it to pre-merge orchestration or executing provider mutations during specification preparation.
+Decision: deliver the reviewed bounded helper after final required checks and exact-merge completion gates. Pre-merge orchestration and release publication remain outside this change.
+
+## Final platform correction
+
+The clean pre-correction delivery revision `0d329e0` passed all eight local required checks with 3,287 tests passed and 40 skipped. Hosted Windows then exposed locale decoding of Unicode Git paths. Commits `5aa18b3` and `a06ec5a` preserve filesystem path bytes and avoid decoding unused Git output, including non-English commit subjects. A legacy-codec regression exercises actual checkout creation and cleanup. The corrected lifecycle, service helper and Git-runner group passed 62 tests; focused formatting, lint and types passed. Final corrected-revision full checks and hosted Windows confirmation remain required. These observations do not qualify a Windows desktop or native coding client.
