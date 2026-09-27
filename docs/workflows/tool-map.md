@@ -114,6 +114,22 @@ knowledge append`.
 | Engine evaluation (maintainers) | `ai-dlc eval plan SUITE --profile PROFILE`, `ai-dlc eval run SUITE --profile PROFILE --out DIR`, `ai-dlc eval report DIR`, `ai-dlc eval image --base IMAGE`, `ai-dlc eval base RECIPE` | `plan` validates a suite and execution profile offline and prints the scenario, arm and attempt matrix. `run` executes each attempt in an isolated container (offline for deterministic scripts, with an allow-listing proxy for real clients), grades hidden acceptance tests in a separate container and retains inputs and evidence; it needs Docker and locally present pinned images, and never pulls. `image` builds the treatment arm's candidate image from this checkout's wheel and locked, hash-pinned constraints on top of the baseline image; it needs uv, Docker and a package index. `base` builds the image both arms share from a recipe: a pinned parent, Git and a coding client whose binary it downloads and checks against the recipe's sha256; it needs Docker and network. `report` rebuilds `report.json`, JUnit and a failure timeline from a run directory alone, and marks changed, missing or truncated evidence as incomplete |
 | Legacy compatibility | `ai-dlc scaffold` | Preserves the retired Rust-era provider scaffolding interface |
 
+### Optional publication hook
+
+`bound-push` is selected separately through a supported client's `required_hooks`.
+Its project-only `agents.bound_push_policy` defaults to `all-branches`, requiring
+reviewed tracker-bound work for covered push and PR-create commands. Explicit
+`tracked-branches` also allows a known branch with no associated record after a
+complete readable inventory. Every associated record must still pass local
+validation; malformed or unreadable inventory cannot grant an exemption.
+Selecting a policy alone does not enable a hook or expand supported client/version
+coverage. See [the workflow decision](../development-workflow.md#when-a-work-record-is-needed)
+for the configuration example.
+
+This offline check does not query the remote tracker or enforce arbitrary shell
+commands. Destructive denials, native approval, review, required checks and
+exact-merge completion evidence retain their existing boundaries.
+
 ## Artifact ownership
 
 ```mermaid
