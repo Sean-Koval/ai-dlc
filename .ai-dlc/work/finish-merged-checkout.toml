@@ -35,6 +35,7 @@ spec = "openspec/changes/archive/2026-09-27-finish-merged-checkout"
 plan = "openspec/changes/archive/2026-09-27-finish-merged-checkout/tasks.md"
 branch = "codex/finish-merged-checkout"
 tracker = "178"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/188"
 
 [bindings]
 specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
