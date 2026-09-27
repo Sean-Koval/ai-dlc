@@ -134,7 +134,7 @@
     },
     {
       "bound": {
-        "docs/catalog.toml": "b6fb14896b987d5a2d0ee09774000b28fbc977cea57a89674f5962b9a1460c4e"
+        "docs/catalog.toml": "765f293a9fb50c537283a7ff526d22ae65f4a19d8397ef429d32d4527091257a"
       },
       "outcome": "updated",
       "reason": "Maps the existing configuration/hook/guidance sources and focused tests to canonical owners, preserving behavioral-check onboarding mappings.",
@@ -149,7 +149,7 @@
         "agents/skills.lock.json": "e12e190d0d923b200e182d3fe71a05c22bb0dee19ba75c4b834c4eb1102084a4",
         "agents/skills/spec-from-prd/SKILL.md": "9ceeb895bfe68311de31b1a0f5751dd4471be53b3de7aa9441dc69d3f808cf68",
         "agents/templates/delivery-slice.md": "4a7a5d7af2f6a99b4e7eac13491eef751def074451d6899acc36ccf1f536bd6f",
-        "catalog:docs/development-workflow.md": "85f168ccad83e236a8b0b413c04263ed81774db0ad3aeaa5939a268a4f3956a5",
+        "catalog:docs/development-workflow.md": "16c8a2921d8cbde7497edf114e318dbebb087848d1c66d647228cd930da1e290",
         "docs/development-workflow.md": "47d112d5b084e7a6851a1dfaf2baba987993330939e2a7340c6461a52d034a97",
         "openspec/specs/native-work-harnesses/spec.md": "08e9ac67d0cc7b844d677f9d762f83d90f5627165802a63a1d24964371593efc",
         "openspec/specs/portable-development/spec.md": "2c75caee1dc2f59828c49ba940be6a186580b07032c52b63fc750788b7535a4d",
@@ -165,6 +165,7 @@
         "src/ai_dlc/harness/hooks.py": "9a4c95d958eef99c71a5cbaf41f53b0f4e8a3288606cb1054457dbc5b0a3f88b",
         "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
         "src/ai_dlc/setup/project.py": "09464c89f569a337aaa77d1604404273808636323635bcd00bb05e0f74c7ad9e",
+        "tests/test_agents_phases.py": "1a77be97035b2e7412430097953d1f2beedf1b885d79338c11d6222fd565979b",
         "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
         "tests/test_config.py": "60bd9343da62e760c92083765439452e4a1e924b6f585ef14780af1f7b3349ce",
         "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
@@ -207,7 +208,7 @@
         "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
         "src/ai_dlc/providers/teamai.py": "ff7a781abcaeeca1c978f9472502156e31a1fc6d192ac50e1e489d333b77a5e6",
         "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
-        "tests/test_agents_phases.py": "b141a47725ffe104d2826da09227fc97615186dad3ab4bf5716ba07544d0afc5",
+        "tests/test_agents_phases.py": "1a77be97035b2e7412430097953d1f2beedf1b885d79338c11d6222fd565979b",
         "tests/test_config.py": "60bd9343da62e760c92083765439452e4a1e924b6f585ef14780af1f7b3349ce",
         "tests/test_consumer_onboarding.py": "1303e2d74c9aaa0d9834133fa37744128c5b027d6f7febdb293e1fe02bf76e37",
         "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
@@ -262,7 +263,7 @@
     },
     {
       "bound": {
-        "catalog:docs/workflows/tool-map.md": "5d608cd02f40e3ff678f559ab49d2f59bbeea430710aa6dbab4b1d34b7da2651",
+        "catalog:docs/workflows/tool-map.md": "1bef832cae8d0d7ee9dea9dfa31adb7fd5c0f6b377d70ddf235a8cd9944e6629",
         "docs/workflows/tool-map.md": "e5b5f224b6b813e20cbb87445ae80a0d7c7cf6fffa7e1b0c569d39e95716dbfa",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
@@ -278,6 +279,7 @@
         "src/ai_dlc/harness/hooks.py": "9a4c95d958eef99c71a5cbaf41f53b0f4e8a3288606cb1054457dbc5b0a3f88b",
         "src/ai_dlc/mcp_server.py": "607eba3e47a8573862d83e5209e824b78ec0af74545fa51727b8d3f7c03db410",
         "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
+        "tests/test_agents_phases.py": "1a77be97035b2e7412430097953d1f2beedf1b885d79338c11d6222fd565979b",
         "tests/test_config.py": "60bd9343da62e760c92083765439452e4a1e924b6f585ef14780af1f7b3349ce",
         "tests/test_consumer_onboarding.py": "1303e2d74c9aaa0d9834133fa37744128c5b027d6f7febdb293e1fe02bf76e37",
         "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
@@ -333,7 +335,7 @@
     },
     {
       "bound": {
-        "openspec/changes/archive/2026-09-27-proportionate-push-policy/tasks.md": "9a7c180e1b9e85838c5db898bf663e60593f55e4cc7fb49d1de6ef1650225dc5"
+        "openspec/changes/archive/2026-09-27-proportionate-push-policy/tasks.md": "663d744e497c79dbdc7bb4fc5121a585d3d8e9e0beda6c76b1cd7de4d9358997"
       },
       "outcome": "updated",
       "reason": "Reviewed archived policy requirements and implementation evidence; repaired moved links and preserved pending full verification and exact-merge delivery gates.",
