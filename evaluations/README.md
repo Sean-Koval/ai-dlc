@@ -34,6 +34,11 @@ for Linux x64 and arm64. The controller verifies both downloaded executables
 before building, copies them into the common base used by both arms, and checks
 their versions offline as uid 1000. Schema-1 recipes may omit `mise` for backward
 compatibility, but such a base cannot qualify the ordinary project-check runner.
+When the candidate starts from the raw local ID returned by `eval base`,
+`eval image` verifies and uses a deterministic
+`ai-dlc-eval-base:<image-id-hex>` alias for Dockerfile resolution. It refuses an
+alias owned by a different image and retains a matching alias so the baseline
+image is not removed during evaluation.
 
 The Claude Code driver and its current qualification limits are documented in
 [the evaluation runbook](../docs/verification/end-to-end-evaluation.md#claude-code-driver-task-4).

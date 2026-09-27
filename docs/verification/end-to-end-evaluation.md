@@ -58,8 +58,11 @@ ai-dlc eval report /tmp/eval-run
 
 - `eval image` builds the wheel from the checkout, installs it on the base image,
   checks that the result is the base plus added layers and that `ai-dlc --version`
-  runs offline, and writes a copy of the profile bound to that build. Do not
-  commit the resolved profile; it names a local image.
+  runs offline, and writes a copy of the profile bound to that build. A registry
+  digest remains the Dockerfile base reference. For a raw local image ID, the
+  result retains that ID in `base` and reports the verified local Dockerfile
+  reference separately in `base_build_reference`. Do not commit the resolved
+  profile; it names a local image.
 - `eval plan` starts nothing and reads no secret. It refuses, naming the field,
   an unpinned image, a secret value in the profile, missing budgets, duplicate
   identifiers, or a scenario without both arms.
@@ -114,6 +117,18 @@ mise version/platform identities. Pass the printed image ID to `eval image
 The `mise` recipe block is optional so older schema-1 recipes still parse. An
 older recipe without it does not prepare the ordinary check runner and cannot
 support the required-check smoke below.
+
+The shared-base command returns a raw local image ID. Before building a candidate
+from that ID, the controller verifies the ID and uses a deterministic local alias
+`ai-dlc-eval-base:<image-id-hex>` because Docker 20.10 BuildKit can interpret a
+bare `FROM sha256:...` as a Docker Hub reference. An existing alias is reused only
+when inspection resolves it to the exact requested ID; a conflict stops before
+the wheel or candidate build. The alias is local only and is never published or
+written to global Docker configuration. It is intentionally retained: blindly
+removing its last tag can remove the common base that the baseline arm still
+needs. Operators may clean it up after both arms and all dependent candidates are
+finished, using the reported `base_build_reference` and verifying the target
+first.
 
 Verified September 20, 2026: base built with Git 2.47.3 and client 2.1.220; the
 candidate built on it; `ai-dlc project adopt --apply` ran offline inside it.

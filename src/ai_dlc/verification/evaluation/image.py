@@ -32,6 +32,7 @@ RELEASES = "https://downloads.claude.ai/claude-code-releases"
 MISE_RELEASES = "https://github.com/jdx/mise/releases/download"
 PLATFORMS = {"amd64": "linux-x64", "arm64": "linux-arm64"}
 AGENT_CHECK = ["docker", "run", "--rm", "--network=none", "--cap-drop=ALL", "--user=1000:1000"]
+LOCAL_BASE_REPOSITORY = "ai-dlc-eval-base"
 # The controller downloads and verifies the client; the build itself downloads none.
 # Plain COPY keeps the context file's mode, so this works without BuildKit.
 BASE_DOCKERFILE = """FROM {parent}
@@ -73,10 +74,40 @@ def _layers(image: str) -> list[str]:
     return json.loads(done.stdout)
 
 
+def _image_id(reference: str, *, missing_ok: bool = False) -> str | None:
+    done = _run(["docker", "image", "inspect", "--format", "{{.Id}}", reference], timeout=60)
+    if done.returncode:
+        if missing_ok and "No such image" in done.stderr:
+            return None
+        tail = "\n".join(done.stderr.strip().splitlines()[-5:])
+        raise RuntimeError(f"inspecting {reference} failed: {tail}")
+    identity = done.stdout.strip()
+    if not identity.startswith("sha256:") or not PINNED.fullmatch(identity):
+        raise RuntimeError(f"Docker returned an invalid image ID for {reference}")
+    return identity
+
+
+def _candidate_base_reference(base: str) -> str:
+    """Give Dockerfile FROM a verified local alias when the public input is a local ID."""
+    if not base.startswith("sha256:"):
+        return base
+    if _image_id(base) != base:
+        raise RuntimeError("The local baseline image does not match its requested image ID")
+    alias = f"{LOCAL_BASE_REPOSITORY}:{base.removeprefix('sha256:')}"
+    existing = _image_id(alias, missing_ok=True)
+    if existing is None:
+        _must(["docker", "tag", base, alias], f"tagging local baseline image {base}", timeout=60)
+        existing = _image_id(alias)
+    if existing != base:
+        raise RuntimeError(f"The local base alias {alias} resolves to a different image")
+    return alias
+
+
 def build_candidate(root: Path, base: str) -> dict:
     """Return the built image, the wheel identity and the engine block a profile needs."""
     if not PINNED.fullmatch(base):
         raise ValueError("The baseline image must be pinned by digest")
+    base_build_reference = _candidate_base_reference(base)
     with tempfile.TemporaryDirectory(prefix="ai-dlc-candidate-") as folder:
         context = Path(folder)
         _must(
@@ -97,10 +128,15 @@ def build_candidate(root: Path, base: str) -> dict:
         for stray in context.iterdir():
             if stray not in (wheel, context / "requirements.txt"):
                 stray.unlink()  # uv may leave a .gitignore; the context holds only what is installed
-        (context / "Dockerfile").write_text(DOCKERFILE.format(base=base, wheel=wheel.name))
+        (context / "Dockerfile").write_text(
+            DOCKERFILE.format(base=base_build_reference, wheel=wheel.name)
+        )
         digest = hashlib.sha256(wheel.read_bytes()).hexdigest()
+        build_command = ["docker", "build"]
+        if base_build_reference != base:
+            build_command.append("--pull=false")
         built = _must(
-            ["docker", "build", "-q", str(context)], "building the candidate image", timeout=1800
+            [*build_command, "-q", str(context)], "building the candidate image", timeout=1800
         )
         image = built.stdout.strip().splitlines()[-1]
     if not derived_from(_layers(image), _layers(base)):
@@ -113,6 +149,7 @@ def build_candidate(root: Path, base: str) -> dict:
         raise RuntimeError(f"The installed engine does not run in {image}: {smoke.stderr.strip()}")
     return {
         "base": base,
+        "base_build_reference": base_build_reference,
         "image": image,
         "engine": {"artifact": wheel.name, "sha256": digest, "image": image},
         "version": smoke.stdout.strip(),
