@@ -421,3 +421,12 @@ def test_collect_render_changes_rejects_removing_referenced_guidance():
         _collect_render_changes(
             _reader({}), {}, [".ai-dlc/providers/x.md"], {".ai-dlc/providers/x.md"}
         )
+
+
+def test_selected_finish_recovery_offers_helper_and_manual_fallback():
+    guidance = _guidance(
+        {"roles": {"specs": "openspec", "scm": "github", "tracker": "github-issues"}}
+    )
+    assert "ai-dlc work finish <work-id> --at-merge" in guidance
+    assert "temporary detached worktree" in guidance
+    assert "--at-merge" not in _guidance({"roles": {"scm": "github"}})

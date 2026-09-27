@@ -101,7 +101,7 @@ knowledge append`.
 | Project execution | `ai-dlc project setup`, `ai-dlc project check --check ID`, `ai-dlc project check --required` | Runs selected edit checks or full required verification and emits receipts that retain every required ID |
 | Agent configuration | `ai-dlc agents render` | Previews, applies, or verifies owned project/personal client configuration |
 | Local work drafting | `ai-dlc work new WORK_ID [--from-issue REF]` | Creates an unreviewed record from explicit fields or a configured tracker read; does not publish or initialize mutation state |
-| Work lifecycle | `ai-dlc work publish`, `ai-dlc work start`, `ai-dlc work pr`, `ai-dlc work finish` | Reconciles tracker state, binds work to a branch, and enforces completion gates |
+| Work lifecycle | `ai-dlc work publish`, `ai-dlc work start`, `ai-dlc work pr`, `ai-dlc work finish` | Reconciles tracker state, binds work to a branch, and enforces completion gates; explicit `work finish <id> --at-merge` prepares owned exact-merge evidence when the caller has advanced |
 | Local work inspection | `ai-dlc work status`, MCP `work_status` | Reads the local record, bindings and active/archived specification state without querying tracker status |
 | Specification finalization | `ai-dlc work archive` | Archives this work's OpenSpec change, promotes specifications, repoints the record and commits only affected files before merge |
 | Traceability | `ai-dlc work link` | Links PR, specification, branch, deployment, or tracker evidence and commits only the work record by default |

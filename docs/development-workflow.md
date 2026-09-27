@@ -334,7 +334,31 @@ The specification gate reads the archived change from the working checkout, so
 that checkout must be exactly the pull request's merge commit with a clean
 `openspec/` tree. Finishing immediately after merge satisfies this from the
 updated main checkout. Once the target branch advances, or when several merged
-items are finished later, prepare a temporary detached checkout instead:
+items are finished later, use the explicit helper:
+
+```sh
+ai-dlc work finish <work-id> --at-merge
+```
+
+The helper resolves the bound PR through the selected SCM and requires its exact
+merge commit to be available locally. It creates an owned detached checkout,
+loads that revision's project policy and matching work identity, and runs ordinary
+finish with the caller's selected local configuration and operation journal.
+Caller HEAD, index and files remain untouched. `--handoff FILE` and
+`--learning FILE` are read relative to the caller, as with plain finish.
+It does not fetch missing commits, archive changes, repair CI or change branches;
+an unavailable commit reports the trusted repository and revision to obtain.
+
+The result reports completion and cleanup separately. A blocked gate remains
+blocked; an uncertain tracker response remains uncertain. If changes or an
+ownership mismatch prevent safe removal, the resource is retained and the recovery
+locator identifies it. Inspect that retained checkout before using nonforced
+`git worktree remove <owned-checkout>`; do not delete a foreign or changed path
+merely because a marker names it. Retrying finish reruns its gates and reconciles
+remote state through the same journal. Local helpers in linked worktrees share a
+repository lock; this is not a cross-clone lock or a lock on ordinary finish.
+
+The manual fallback remains available:
 
 ```sh
 git worktree add --detach /tmp/finish-<work-id> <merge-commit>
