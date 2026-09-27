@@ -71,16 +71,24 @@ def _read_posix(path: Path) -> bytes:
             os.close(descriptor)
 
 
-def read_report(path: Path) -> dict:
-    """Read one complete schema-compatible report through a bounded safe path."""
+def read_report_bytes(path: Path) -> bytes:
+    """Read one bounded regular file without following any selected path link."""
     try:
         if os.name == "nt":
             from ai_dlc._windows_storage import safe_read
 
-            raw = safe_read(path, max_bytes=MAX_BYTES)
-        else:
-            raw = _read_posix(path)
-        return parse_report(raw)
+            return safe_read(path, max_bytes=MAX_BYTES)
+        return _read_posix(path)
+    except ReportIOError:
+        raise
+    except (OSError, ValueError, TypeError):
+        raise ReportIOError(READ_ERROR) from None
+
+
+def read_report(path: Path) -> dict:
+    """Read one complete schema-compatible report through a bounded safe path."""
+    try:
+        return parse_report(read_report_bytes(path))
     except ReportIOError:
         raise
     except (OSError, ValueError, TypeError):
