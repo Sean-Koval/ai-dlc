@@ -204,16 +204,22 @@ def finish_process(
         )
 
 
-def project_source(*, deployed: bool = False) -> str:
+def project_source(
+    *,
+    deployed: bool = False,
+    tracker: str = "fixture-tracker",
+    tracker_identity: str | None = None,
+) -> str:
     gates = '["pr-merged", "ci-green", "deployed"]' if deployed else '["pr-merged", "ci-green"]'
+    tracker_setting = f'identity = "{tracker_identity}"\n' if tracker_identity is not None else ""
     return (
         "schema = 4\n"
         '[project]\nname = "fixture"\n'
-        '[roles]\nscm = "fixture-scm"\ntracker = "fixture-tracker"\n'
+        f'[roles]\nscm = "fixture-scm"\ntracker = "{tracker}"\n'
         'specs = "openspec"\ndeploy = "none"\nknowledge = "obsidian"\n'
         '[providers.fixture-scm]\nkind = "github"\n'
-        '[providers.fixture-tracker]\nkind = "github-issues"\n'
-        '[scm]\nrepository = "owner/repo"\ntarget_branch = "main"\n'
+        f'[providers.{tracker}]\nkind = "github-issues"\n'
+        f'{tracker_setting}[scm]\nrepository = "owner/repo"\ntarget_branch = "main"\n'
         "[gates]\nfinish = " + gates + "\n"
     )
 
@@ -242,6 +248,60 @@ def authored_record(config: dict, *, pr: str = "7", requires_spec: bool = False)
         "artifacts": {"pr": pr, "tracker": "ISSUE-1"},
     }
     return resolve_work(raw, config, "one", require_review=True)
+
+
+def legacy_record(*, providers: dict | str | None = None) -> dict:
+    raw = {
+        "schema": 1,
+        "id": "one",
+        "title": "One",
+        "scope": "Finish at its merge",
+        "requires_spec": False,
+        "spec_reason": "No specification required for this fixture",
+        "acceptance": ["Completion is exact"],
+        "reviewed": True,
+        "artifacts": {"pr": "7", "tracker": "ISSUE-1"},
+    }
+    if providers is not None:
+        raw["providers"] = providers
+    return raw
+
+
+def commit_legacy_identity_drift(tmp_path: Path, *, drift: str) -> tuple[Path, str]:
+    root = tmp_path / "legacy identity project"
+    root.mkdir()
+    git(root, "init", "-b", "main")
+    git(root, "config", "user.name", "AI-DLC Test")
+    git(root, "config", "user.email", "ai-dlc@example.test")
+    explicit = {
+        "scm": "fixture-scm",
+        "tracker": "fixture-tracker",
+        "specs": "openspec",
+        "deploy": "none",
+        "knowledge": "obsidian",
+    }
+    historical_source = project_source(
+        tracker_identity="historical" if drift == "binding" else None
+    )
+    (root / "ai-dlc.toml").write_text(historical_source)
+    work_dir = root / ".ai-dlc/work"
+    work_dir.mkdir(parents=True)
+    record = legacy_record(providers=explicit if drift == "binding" else None)
+    (work_dir / "one.toml").write_text(tomli_w.dumps(record))
+    git(root, "add", ".")
+    git(root, "commit", "-m", "merged legacy delivery")
+    merge = git(root, "rev-parse", "HEAD")
+    if drift == "provider":
+        current_source = project_source(tracker="other-tracker")
+    elif drift == "binding":
+        current_source = project_source(tracker_identity="current")
+    else:
+        current_source = historical_source
+    (root / "ai-dlc.toml").write_text(current_source)
+    (root / "advanced.txt").write_text("target advanced\n")
+    git(root, "add", ".")
+    git(root, "commit", "-m", "advance target policy")
+    return root, merge
 
 
 def commit_project(
@@ -314,6 +374,39 @@ def configured_service(
     return service, scm, tracker, historical_roots
 
 
+def configured_legacy_service(
+    root: Path,
+    merge: str,
+    state: Path,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    scm = RemoteSCM(merge)
+    current_tracker = RemoteTracker()
+    historical_tracker = RemoteTracker()
+    current_tracker_id = resolve_runtime(root).values["roles"]["tracker"]
+    caller_registry = Registry()
+    caller_registry.register("fixture-scm", scm)
+    caller_registry.register(current_tracker_id, current_tracker)
+    service = WorkService.from_project(root, state_path=state, registry=caller_registry)
+    historical_roots: list[Path] = []
+
+    def merge_service(historical_root: Path) -> WorkService:
+        historical_roots.append(historical_root)
+        historical = WorkService.from_project(
+            historical_root,
+            machine=service._selected_machine(),
+            state_path=service._journal_path.parent,
+        )
+        fresh = Registry(historical.config, root=historical_root)
+        fresh.register("fixture-scm", scm)
+        fresh.register("fixture-tracker", historical_tracker)
+        historical.registry = fresh
+        return historical
+
+    monkeypatch.setattr(service, "_merge_service", merge_service)
+    return service, scm, current_tracker, historical_tracker, historical_roots
+
+
 def caller_snapshot(root: Path) -> dict:
     return {
         "head": git(root, "rev-parse", "HEAD"),
@@ -370,6 +463,68 @@ def test_finish_at_merge_refuses_raw_historical_identity_conflict_before_complet
     assert failure.value.__dict__["cleanup"]["status"] == "removed"
     assert tracker.transition_calls == 0
     assert record.read_bytes() == before
+
+
+@pytest.mark.parametrize("drift", ["provider", "binding"])
+def test_finish_at_merge_refuses_resolved_legacy_identity_drift_before_completion(
+    tmp_path, monkeypatch, drift
+):
+    """Fails if matching raw legacy records can resolve to different completion identities."""
+    from ai_dlc.errors import RefusedError
+
+    root, merge = commit_legacy_identity_drift(tmp_path, drift=drift)
+    state = tmp_path / "legacy state"
+    service, scm, current_tracker, historical_tracker, historical_roots = configured_legacy_service(
+        root, merge, state, monkeypatch
+    )
+
+    with pytest.raises(RefusedError, match="historical.*identity") as failure:
+        service.finish_at_merge("one")
+
+    assert failure.value.__dict__["cleanup"]["status"] == "removed"
+    assert scm.merged_calls == 1
+    assert current_tracker.transition_calls == 0
+    assert historical_tracker.transition_calls == 0
+    assert not (state / "operations.sqlite3").exists()
+    assert len(historical_roots) == 1
+    assert not historical_roots[0].exists()
+
+
+def test_finish_at_merge_accepts_unchanged_inferred_legacy_identity(tmp_path, monkeypatch):
+    """Fails if comparing effective identities rejects equal default-shaped records."""
+    root, merge = commit_legacy_identity_drift(tmp_path, drift="none")
+    service, _, current_tracker, historical_tracker, _ = configured_legacy_service(
+        root, merge, tmp_path / "legacy state", monkeypatch
+    )
+
+    result = service.finish_at_merge("one")
+
+    assert result["status"] == "completed"
+    assert current_tracker.transition_calls == 0
+    assert historical_tracker.transition_calls == 1
+    assert result["cleanup"]["status"] == "recovery-required"
+    assert Path(result["cleanup"]["locator"]).exists()
+
+
+def test_finish_at_merge_refuses_malformed_provider_shape_before_remote_lookup(
+    tmp_path, monkeypatch
+):
+    """Fails if invalid reviewed TOML escapes as AttributeError or reaches external state."""
+    from ai_dlc.errors import RefusedError
+
+    root, merge = commit_project(tmp_path)
+    record = root / ".ai-dlc/work/one.toml"
+    record.write_text(tomli_w.dumps(legacy_record(providers="broken")))
+    state = tmp_path / "malformed state"
+    service, scm, tracker, historical_roots = configured_service(root, merge, state, monkeypatch)
+
+    with pytest.raises(RefusedError, match=r"Work record.*one\.toml.*correct"):
+        service.finish_at_merge("one")
+
+    assert scm.merged_calls == 0
+    assert tracker.transition_calls == 0
+    assert historical_roots == []
+    assert not (state / "operations.sqlite3").exists()
 
 
 def test_finish_at_merge_refuses_current_binding_drift_before_remote_lookup(tmp_path, monkeypatch):

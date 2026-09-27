@@ -513,8 +513,14 @@ class WorkService:
         self._check_source()
         Work.safe_id(work_id)
         path = inside(self.root, f".ai-dlc/work/{work_id}.toml")
-        raw = tomllib.loads(path.read_text())
-        work = resolve_work(raw, self.config, work_id, require_review=True)
+        try:
+            raw = tomllib.loads(path.read_text())
+            work = resolve_work(raw, self.config, work_id, require_review=True)
+        except (AttributeError, KeyError, OSError, TypeError, ValueError) as error:
+            raise RefusedError(
+                f"Work record .ai-dlc/work/{work_id}.toml is invalid; correct and review it "
+                f"before retrying: {error}"
+            ) from None
         self._check_source()
         return raw, work
 
@@ -564,6 +570,16 @@ class WorkService:
             "tracker": artifacts.get("tracker"),
             "providers": raw.get("providers", {}),
             "bindings": raw.get("bindings", {}),
+        }
+
+    @staticmethod
+    def _resolved_finish_identity(work: dict) -> dict:
+        return {
+            "id": work["id"],
+            "pr": work["artifacts"].get("pr"),
+            "tracker": work["artifacts"].get("tracker"),
+            "providers": work["providers"],
+            "bindings": work["bindings"],
         }
 
     @staticmethod
@@ -1051,10 +1067,14 @@ class WorkService:
 
                 try:
                     with project_write_lock(historical.root):
-                        historical_raw, _ = historical._reviewed_source(work_id)
+                        historical_raw, historical_work = historical._reviewed_source(work_id)
                         if self._authored_finish_identity(
                             caller_raw
-                        ) != self._authored_finish_identity(historical_raw):
+                        ) != self._authored_finish_identity(
+                            historical_raw
+                        ) or self._resolved_finish_identity(
+                            caller_work
+                        ) != self._resolved_finish_identity(historical_work):
                             raise RefusedError(
                                 "Current and historical work identity disagree; review the "
                                 "work ID, PR, tracker, providers, and bindings"
