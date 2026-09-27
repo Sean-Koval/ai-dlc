@@ -134,19 +134,19 @@ def _guidance_change(previous: dict | None, current: dict | None) -> tuple[bool,
     if current is None:
         return True, False
     known_states = {"match", "mismatch", "missing"}
-    if current["state"] in {"mismatch", "missing"} and previous["state"] != current["state"]:
-        return True, False
-    if previous["state"] not in known_states or current["state"] not in known_states:
-        return False, True
-    if previous["state"] != current["state"]:
-        return True, False
+    state_unknown = previous["state"] not in known_states or current["state"] not in known_states
+    state_changed = previous["state"] != current["state"] and (
+        current["state"] in {"mismatch", "missing"} or not state_unknown
+    )
     previous_digest = previous["observed_sha256"]
     current_digest = current["observed_sha256"]
-    if previous_digest is not None and current_digest is not None:
-        return previous_digest != current_digest, False
-    if (previous_digest is None) != (current_digest is None):
-        return False, True
-    return False, False
+    digest_changed = (
+        previous_digest is not None
+        and current_digest is not None
+        and previous_digest != current_digest
+    )
+    digest_unknown = (previous_digest is None) != (current_digest is None)
+    return state_changed or digest_changed, state_unknown or digest_unknown
 
 
 def _reconcile_local(
@@ -198,7 +198,7 @@ def _reconcile_local(
         changed, unknown = _guidance_change(previous, local)
         if changed:
             stale_fields.add(f"local.guidance.{step}")
-        elif unknown:
+        if unknown:
             limitations.add("context-unknown")
 
     if stale_fields:

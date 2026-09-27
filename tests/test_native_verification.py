@@ -505,6 +505,36 @@ def test_selected_guidance_unknown_import_does_not_claim_freshness_or_copy_diges
     assert imported_instruction["observed_sha256"] is None
 
 
+def test_selected_guidance_known_digest_change_is_stale_despite_unknown_state(
+    tmp_path, monkeypatch
+):
+    """Would fail if state uncertainty hid two represented, different file digests."""
+    baseline = native_evidence_report()
+    imported = with_instruction_observation(
+        baseline,
+        state="unknown",
+        observed_sha256="b" * 64,
+    )
+    current = with_instruction_observation(
+        baseline,
+        state="match",
+        observed_sha256="a" * 64,
+    )
+    assert current["configuration_identity"] == imported["configuration_identity"]
+
+    output = verify_selected_instruction_transition(
+        tmp_path,
+        monkeypatch,
+        imported,
+        current,
+    )
+
+    assert output["result"]["state"] == "stale"
+    assert "local.guidance.instruction" in output["result"]["stale_fields"]
+    assert "context-unknown" in output["result"]["limitations"]
+    assert "evidence-stale" in output["result"]["limitations"]
+
+
 def test_crlf_managed_instruction_bytes_do_not_create_false_staleness(tmp_path):
     """Would fail if local freshness treated normalized line endings as edited guidance."""
     from ai_dlc.harness.native_verification import verify_native
