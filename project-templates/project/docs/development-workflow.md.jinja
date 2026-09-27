@@ -23,6 +23,12 @@ do not satisfy missing required checks. After integrating the target branch, run
 validation and a standard-library behavior test of their initial output; extend
 that small suite as real behavior is added. Adoption preserves existing authored
 commands and tests instead of selecting a universal test framework for the team.
+Inspect declared setup, checks, test configuration, CI and requirement sources,
+retain unknowns and review the exact requirement/check/prerequisite mapping before
+changing shared configuration. The
+[brownfield behavior-check rehearsal](workflows/brownfield.md#rehearse-a-reviewed-behavior-check)
+owns the external disposable pass, regression-failure and restored-pass procedure,
+the normal-runner `mise` prerequisite and bounded evidence fields.
 
 With an engine supporting portable command records, declare native commands as
 `{ argv = ["python", "scripts/check_tests.py"] }` to pass arguments literally
@@ -79,9 +85,15 @@ branches to be up to date before merging.
 Finish reads the archived specification from the working checkout, which must be
 exactly the pull request's merge commit with a clean specification tree. Finishing
 right after merge satisfies this from the updated main checkout. When the target
-branch has already moved, add a temporary detached worktree at that merge commit,
-run finish there and remove the worktree afterwards. The blocked reason names the
-expected merge commit and the revision the checkout holds.
+branch has already moved, run `ai-dlc work finish <work-id> --at-merge`. It resolves
+the bound merge, requires that commit locally, and runs ordinary finish in an
+owned detached checkout with the merged project policy and caller's local bindings.
+It preserves caller files and does not fetch or relax completion gates. Cleanup is
+reported separately; inspect retained resources named by recovery instructions
+rather than force-deleting them. Handoff/learning files retain caller-relative
+meaning. As a manual fallback, add a temporary detached worktree at the merge
+commit, run finish there and remove the clean worktree afterwards. Plain finish
+still names the expected merge commit and the revision the checkout holds.
 
 ## Sources of truth
 

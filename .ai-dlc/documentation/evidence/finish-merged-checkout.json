@@ -2,9 +2,17 @@
   "decisions": [
     {
       "bound": {
-        "catalog:docs/architecture.md": "b20caa0b7d8f2e67ffd0fe2524f788f484a9d37bfa7c5a57b401754d6df8b136",
-        "docs/architecture.md": "860f1795202b18a372619bd30119441e7aeeb80e0d7f86f5ae745d4b2b40620e",
-        "openspec/changes/native-harness-verification/specs/native-harness-verification/spec.md": "bf3490b59a7192417cdb7bf2acde5a4f2833083cdd47e0afdf82f577de2443ee",
+        "AGENTS.md": "0cbaa8634d42d750abe8ce6427a0e7777b7032a7aad6739a46c903c383b318a9"
+      },
+      "outcome": "updated",
+      "reason": "Regenerated selected-capability instructions through agents render, adding explicit at-merge finish while preserving manual detached-worktree recovery.",
+      "reviewer": "codex",
+      "target": "AGENTS.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/architecture.md": "aca122ae724b1a54ca1cdf3f1e23f4f0da8fd1445ead12f34383c84a37c6aa1c",
+        "docs/architecture.md": "14fe263b514492f3b464b55cb484088f2327a398d05c387b725d5d7dd824f075",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "pyproject.toml": "296acf5ff015bc4aaf17576c4210e8c69988beb35e11507250a45c0dc534e4d5",
@@ -18,7 +26,7 @@
         "src/ai_dlc/_windows_storage/__init__.py": "5715def899453f15265e13d52e5b518844cc9d057421cfa5279172d799d5f506",
         "src/ai_dlc/_windows_storage/_api.py": "d5fc4f971db8e706871c06e8119884848e505af6c45f4fbb5c2f7db513faf41b",
         "src/ai_dlc/_windows_storage/_security.py": "62785d4e088cd485816a33f35a7a559d3d1acf166093c413a3f4f79969056314",
-        "src/ai_dlc/cli.py": "6fbe9b9966882b5c814d916ba0c912c92f76457af7c891c3af060a0a7a80decc",
+        "src/ai_dlc/cli.py": "4b0aa95f15aee585bc0b76555fe0e7e87b2ec0d6885f67bad93189b0767a7b46",
         "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
         "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
         "src/ai_dlc/config.py": "3866ffe631e989d189bd17100dec9123f53f3f17ce77c56ec10decc560483e2c",
@@ -48,7 +56,7 @@
         "src/ai_dlc/environment/profile_source.py": "f177cc9336ed7c69e37299bc70107f14a7878ff72abbd1070dc3560340d451cc",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
-        "src/ai_dlc/environment/report_io.py": "15fb915a9120404fa3cb93fd7baa60308d389d3dab7c561f90699e8f7423aabd",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
         "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
         "src/ai_dlc/environment/source_content.py": "c11618009a7d4c3dbaa03b49d80df3a6f7cae37338a9fe92166865379d89670a",
         "src/ai_dlc/environment/source_schema.py": "929944f86aef4a0aa2e257f3fbb4bee26ce07c522ed2eb35c2e1bbba38ec44d0",
@@ -62,10 +70,7 @@
         "src/ai_dlc/harness/design_capture.py": "8b872492b88f4a7728bedf0ae8a1edaad2312a918248bf8f5d051c8bd8b42a58",
         "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
         "src/ai_dlc/harness/hooks.py": "9a4c95d958eef99c71a5cbaf41f53b0f4e8a3288606cb1054457dbc5b0a3f88b",
-        "src/ai_dlc/harness/native_adapters.py": "762651cd2be0fc7ea9c8f9e03790dc2d50e42ca915e95b240d94f775ca31c2d4",
         "src/ai_dlc/harness/native_composition.py": "1e4c5729ff31cb91820bd8df3d15b60c1067b4a5f2b89381888211470dc79bc8",
-        "src/ai_dlc/harness/native_evidence.py": "9075cb680c70e2803adf08bff20cf7d5d9f042f537c1dbb3dceb2cc6eb0f6a5b",
-        "src/ai_dlc/harness/native_verification.py": "2a8cdd843bb42cfa48e9d8195ec37735e7354d162f9bec6213274b7b99c0c637",
         "src/ai_dlc/harness/skill_evaluation.py": "73ded6785d5d0ff53f5f44ba4d1ede7406f367635676c269d5044358030ebc2e",
         "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
         "src/ai_dlc/harness/user_agents.py": "c99f9a52a379feaa0c1721081b95fef91f51c44f0a9e906145de51154616e937",
@@ -97,7 +102,7 @@
         "src/ai_dlc/setup/project.py": "09464c89f569a337aaa77d1604404273808636323635bcd00bb05e0f74c7ad9e",
         "src/ai_dlc/setup/provider_onboarding.py": "be120ad6e93c178f041fd338a45a5df7c75b9a30591725cfbf7800bca531045e",
         "src/ai_dlc/setup/provision.py": "6ec463fb9516aa01de58b482a8f14c3cc8c14585a25fa46e42b144d4c2fe5dfc",
-        "src/ai_dlc/setup/readiness.py": "1ddc3c2fd143caa2dd02d48be25707f3488986f621e4b11cdd95c72dfda2c9cf",
+        "src/ai_dlc/setup/readiness.py": "e0984a1f504ee87f3c4c1939624b34ccfe2fd6b7315df365166e95ff3b975d55",
         "src/ai_dlc/setup/rebind.py": "2458691c83e22c613ee3eb7541e103aee7264e7b23a78c17194135bc3d5a35c6",
         "src/ai_dlc/setup/templates.py": "cc1b891966103368c77051cc892da293eb2df83ea91c1662b86e466bbd44e950",
         "src/ai_dlc/setup/tracker_targets.py": "b04533ac254bde0aa7bddf083097d815153998f15b1042645ac4ffc38f848319",
@@ -130,22 +135,19 @@
         "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
         "tests/test_environment_report_collection.py": "2acfade90e9a7137a674adb75547a18e49d5992bbbe42d4e8ba7f072ab81dd41",
         "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
-        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
-        "tests/test_native_evidence.py": "133a42b4a138cfae786decde5f038a9a5b3e951cfc0faaaa8ab4bae5b80f605d",
-        "tests/test_native_verification.py": "b04f04c6d6980a4530b351a66ee1ea94987b0455ee39b817ccc5da3032749ae6",
-        "tests/test_native_verification_cli.py": "fc8097ca93246062e4db1f22fac85ad472006fb04d4aa1df0f08478ab5b7f17b"
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be"
       },
-      "outcome": "updated",
-      "reason": "The existing native-verification architecture text still separates offline evidence parsing and local inspection from native execution; current main's merged-checkout service is integrated without changing that boundary.",
+      "outcome": "reviewed-no-change",
+      "reason": "Reviewed the owned merge-checkout lifecycle and WorkService composition against the existing work package, provider contracts and local-control-state architecture. No new orchestrator, provider authority or shared credential storage is introduced.",
       "reviewer": "codex",
       "target": "docs/architecture.md"
     },
     {
       "bound": {
-        "docs/catalog.toml": "d16c8b3b599b97e7de4465ec1db412f5b3581e1bc3fd6afd333de7fe02bee731"
+        "docs/catalog.toml": "eecfe6de39d4430ff53aacb4a33f12e191481e0e55cbd5954f62958bcf43b3bd"
       },
       "outcome": "updated",
-      "reason": "The tool-map ownership entry now retains both native-verification sources/tests/requirements and current merged-checkout lifecycle mappings.",
+      "reason": "Maps the owned lifecycle module, shared work service, provider remedy and focused tests to existing canonical workflow owners.",
       "reviewer": "codex",
       "target": "docs/catalog.toml"
     },
@@ -168,7 +170,7 @@
         "project-templates/project/docs/templates/delivery-slice.md": "4a7a5d7af2f6a99b4e7eac13491eef751def074451d6899acc36ccf1f536bd6f",
         "project-templates/project/scripts/check_tests.py": "a3dd2021b7911d2ff688142776b7a43af60f76e052d7164086db2434db60102d",
         "project-templates/project/tests/test_main.py": "4e6ac9def60ea5a6aef9e004c465cc439acac4b33e4f70df332939f0cdfae63d",
-        "src/ai_dlc/cli.py": "6fbe9b9966882b5c814d916ba0c912c92f76457af7c891c3af060a0a7a80decc",
+        "src/ai_dlc/cli.py": "4b0aa95f15aee585bc0b76555fe0e7e87b2ec0d6885f67bad93189b0767a7b46",
         "src/ai_dlc/config.py": "3866ffe631e989d189bd17100dec9123f53f3f17ce77c56ec10decc560483e2c",
         "src/ai_dlc/harness/agents.py": "83653b94d079444a632b0fd6b8b7af83c09d64593dd5abc85f4520d4ab9a85c8",
         "src/ai_dlc/harness/hooks.py": "9a4c95d958eef99c71a5cbaf41f53b0f4e8a3288606cb1054457dbc5b0a3f88b",
@@ -190,31 +192,27 @@
         "tests/test_templates.py": "da7d4221a92e5fe65ab65d685522897a23bd04807ef9f62acde6bf160eee8aa5",
         "tests/test_workflow.py": "38aa9de4fad30227e0348a2054ac7e1043cd6fe260e41dc4df5617de9c482b94"
       },
-      "outcome": "reviewed-no-change",
-      "reason": "The native verification CLI remains read-only and does not change work lifecycle or completion gates; current main already documents the integrated exact-merge finish behavior.",
+      "outcome": "updated",
+      "reason": "Explains explicit at-merge finishing, historical policy and identity, preserved caller inputs/files, unchanged gates, distinct cleanup/recovery and retained manual fallback.",
       "reviewer": "codex",
       "target": "docs/development-workflow.md"
     },
     {
       "bound": {
         ".github/workflows/release.yml": "c32926d61ee30cd32aa03fa899c74f395decdb152833f572d4e1ade4c28993b5",
-        ".github/workflows/verify.yml": "e1f4501cc108746ebd14c16dc8ece7e8e474f53a316e333c69166160c826f5b8",
-        "catalog:docs/release-verification.md": "95d53210118dc2958a976dbe24f9dd8f99652d572190adbf002974d5668b7858",
-        "docs/release-verification.md": "381c450211d95a22933a95d7ab3b99b406e1873b37d8e73f05f3889533febd50",
-        "openspec/changes/native-harness-verification/specs/native-harness-verification/spec.md": "bf3490b59a7192417cdb7bf2acde5a4f2833083cdd47e0afdf82f577de2443ee",
+        ".github/workflows/verify.yml": "bfdd737db0e582ac9e994acbd29d0c18f414c7492f64701448fbf8b4231c5f9c",
+        "catalog:docs/release-verification.md": "972bf86b6da5f20b3d01762982880533ba0c99b22933aa95273590923721dad0",
+        "docs/release-verification.md": "592f4c5267285fcd0d53b3f42ea66a1c7b784bb94f7d9eb15307196a12ac9947",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
         "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
-        "src/ai_dlc/cli.py": "6fbe9b9966882b5c814d916ba0c912c92f76457af7c891c3af060a0a7a80decc",
+        "src/ai_dlc/cli.py": "4b0aa95f15aee585bc0b76555fe0e7e87b2ec0d6885f67bad93189b0767a7b46",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
-        "src/ai_dlc/environment/report_io.py": "15fb915a9120404fa3cb93fd7baa60308d389d3dab7c561f90699e8f7423aabd",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
         "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
         "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
-        "src/ai_dlc/harness/native_adapters.py": "762651cd2be0fc7ea9c8f9e03790dc2d50e42ca915e95b240d94f775ca31c2d4",
-        "src/ai_dlc/harness/native_evidence.py": "9075cb680c70e2803adf08bff20cf7d5d9f042f537c1dbb3dceb2cc6eb0f6a5b",
-        "src/ai_dlc/harness/native_verification.py": "2a8cdd843bb42cfa48e9d8195ec37735e7354d162f9bec6213274b7b99c0c637",
         "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
         "tests/test_consumer_onboarding.py": "1303e2d74c9aaa0d9834133fa37744128c5b027d6f7febdb293e1fe02bf76e37",
         "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
@@ -223,22 +221,18 @@
         "tests/test_environment_report_collection.py": "2acfade90e9a7137a674adb75547a18e49d5992bbbe42d4e8ba7f072ab81dd41",
         "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
         "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
-        "tests/test_native_evidence.py": "133a42b4a138cfae786decde5f038a9a5b3e951cfc0faaaa8ab4bae5b80f605d",
-        "tests/test_native_verification.py": "b04f04c6d6980a4530b351a66ee1ea94987b0455ee39b817ccc5da3032749ae6",
-        "tests/test_native_verification_cli.py": "fc8097ca93246062e4db1f22fac85ad472006fb04d4aa1df0f08478ab5b7f17b",
         "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
         "tests/test_release_workflow.py": "a50523b5d6dec682188d489780d29a74f2a01c60c310071ce6758898f3d12dc0"
       },
-      "outcome": "updated",
-      "reason": "Existing evidence continues to label the native procedure as simulated/offline and preserves pending positive client and Windows qualification while hosted coverage gains current merged-checkout tests.",
+      "outcome": "reviewed-no-change",
+      "reason": "Reviewed historical release and native platform limits. The new hosted Windows helper tests are automated server fixtures; no published package, Windows desktop, native harness or historical qualification result is changed.",
       "reviewer": "codex",
       "target": "docs/release-verification.md"
     },
     {
       "bound": {
-        "catalog:docs/runbooks/machine-enrollment.md": "e0c070f5431af6ceb68fda03e0cc7c25c824b3440771c901ed82fcc560f760a8",
-        "docs/runbooks/machine-enrollment.md": "403342677a7f52e4d9d596d168f6e34a3b28bb3d0f82e51e4796162419755bdd",
-        "openspec/changes/native-harness-verification/specs/native-harness-verification/spec.md": "bf3490b59a7192417cdb7bf2acde5a4f2833083cdd47e0afdf82f577de2443ee",
+        "catalog:docs/runbooks/machine-enrollment.md": "5749f500521eba18b71290a6e63d8abcc82967ef13035e34b90406b7c67b26ee",
+        "docs/runbooks/machine-enrollment.md": "817db5365ce2786515ecce389d4873ad766ea905adc14ad70ea823ceca3197b5",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/native-work-harnesses/spec.md": "08e9ac67d0cc7b844d677f9d762f83d90f5627165802a63a1d24964371593efc",
@@ -253,7 +247,7 @@
         "src/ai_dlc/environment/profile_source.py": "f177cc9336ed7c69e37299bc70107f14a7878ff72abbd1070dc3560340d451cc",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
-        "src/ai_dlc/environment/report_io.py": "15fb915a9120404fa3cb93fd7baa60308d389d3dab7c561f90699e8f7423aabd",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
         "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
         "src/ai_dlc/environment/source_content.py": "c11618009a7d4c3dbaa03b49d80df3a6f7cae37338a9fe92166865379d89670a",
         "src/ai_dlc/environment/source_schema.py": "929944f86aef4a0aa2e257f3fbb4bee26ce07c522ed2eb35c2e1bbba38ec44d0",
@@ -261,13 +255,9 @@
         "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
         "src/ai_dlc/harness/agents.py": "83653b94d079444a632b0fd6b8b7af83c09d64593dd5abc85f4520d4ab9a85c8",
         "src/ai_dlc/harness/hooks.py": "9a4c95d958eef99c71a5cbaf41f53b0f4e8a3288606cb1054457dbc5b0a3f88b",
-        "src/ai_dlc/harness/native_adapters.py": "762651cd2be0fc7ea9c8f9e03790dc2d50e42ca915e95b240d94f775ca31c2d4",
-        "src/ai_dlc/harness/native_evidence.py": "9075cb680c70e2803adf08bff20cf7d5d9f042f537c1dbb3dceb2cc6eb0f6a5b",
-        "src/ai_dlc/harness/native_verification.py": "2a8cdd843bb42cfa48e9d8195ec37735e7354d162f9bec6213274b7b99c0c637",
         "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
         "src/ai_dlc/providers/teamai.py": "ff7a781abcaeeca1c978f9472502156e31a1fc6d192ac50e1e489d333b77a5e6",
         "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
-        "src/ai_dlc/setup/readiness.py": "1ddc3c2fd143caa2dd02d48be25707f3488986f621e4b11cdd95c72dfda2c9cf",
         "tests/test_agents_phases.py": "b0ee080814d5bc259c122e3e0067876ed407de9e0ac1afd088f850488b9748ac",
         "tests/test_config.py": "60bd9343da62e760c92083765439452e4a1e924b6f585ef14780af1f7b3349ce",
         "tests/test_consumer_onboarding.py": "1303e2d74c9aaa0d9834133fa37744128c5b027d6f7febdb293e1fe02bf76e37",
@@ -278,39 +268,66 @@
         "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
         "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
         "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
-        "tests/test_native_evidence.py": "133a42b4a138cfae786decde5f038a9a5b3e951cfc0faaaa8ab4bae5b80f605d",
         "tests/test_native_harnesses.py": "e008d4773dccfa2662942561b24df4fdb6c15f637683d5fbdfaf59240e9bb5cc",
-        "tests/test_native_verification.py": "b04f04c6d6980a4530b351a66ee1ea94987b0455ee39b817ccc5da3032749ae6",
-        "tests/test_native_verification_cli.py": "fc8097ca93246062e4db1f22fac85ad472006fb04d4aa1df0f08478ab5b7f17b",
         "tests/test_rendering.py": "cbc5c9bbc5dceafda37d1f41781f2d86891ba2273b6e32455e6997bcfd7f312c",
         "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2"
       },
-      "outcome": "updated",
-      "reason": "The runbook retains explicit verifier inputs, incomplete evidence-template confirmations, privacy/cost limits, and pending native observation; imported policy guidance does not imply client qualification.",
+      "outcome": "reviewed-no-change",
+      "reason": "Reviewed selected local profile/machine resolution against retained caller-relative machine provenance and historical project resolution. Enrollment authority and credential handling are unchanged; no enrollment or native qualification claim is added.",
       "reviewer": "codex",
       "target": "docs/runbooks/machine-enrollment.md"
     },
     {
       "bound": {
-        "catalog:docs/workflows/tool-map.md": "1dab778dfb45f9cf90dbbcd6bc4f074e6c09937ce6865e837765e416d56ad5f0",
-        "docs/workflows/tool-map.md": "97c4462f3084636800073b8f320c83f45be134553942078679fce54538ed8441",
-        "openspec/changes/native-harness-verification/specs/native-harness-verification/spec.md": "bf3490b59a7192417cdb7bf2acde5a4f2833083cdd47e0afdf82f577de2443ee",
+        "catalog:docs/verification/documentation-workflow.md": "6e620e11c354a39b24ec8e47a66bcde387ef4e32ca055e7ac526f50363b0ddfe",
+        "docs/verification/documentation-workflow.md": "838edaa1c9c693a577f8dd704db6f75ad7dfee541b3656c26d73d6d1474cc419",
+        "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
+        "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
+        "openspec/specs/documentation-impact-workflow/spec.md": "80b65bef76266ee1ea22b5cdf9f5a452125569a4b0e9f8d3a0b5cc8dd84ba786",
+        "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
+        "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
+        "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
+        "src/ai_dlc/config.py": "3866ffe631e989d189bd17100dec9123f53f3f17ce77c56ec10decc560483e2c",
+        "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
+        "src/ai_dlc/documentation/document_files.py": "3174b5773adf54c9a0f586a041c4e67001d136d9ba1016ec1cbb0b54debafd55",
+        "src/ai_dlc/documentation/document_impact.py": "bf3353c2ab99166c4900647ac7a0626bba3ee08a4a4f92ffa9269167f86012ca",
+        "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
+        "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
+        "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
+        "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
+        "src/ai_dlc/harness/agents.py": "83653b94d079444a632b0fd6b8b7af83c09d64593dd5abc85f4520d4ab9a85c8",
+        "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
+        "tests/test_company_guidance.py": "ab39bed3342d9de7d4c68db6c6c54fd66e13c12f2f2167c38e8d345c7dc9736e",
+        "tests/test_document_access.py": "bdf96af4afb1ad6f985204ad243a624d4da8b56d527af63cc072908a76beeff4",
+        "tests/test_document_evidence.py": "c5263165cc63dd1f2df99491828a97aea167468171348840b29d9f047b63c85d",
+        "tests/test_document_impact.py": "a9cccc6fa777d01add578c103adb8efa099541c02fa9132790dd2377fa45c728",
+        "tests/test_document_inventory.py": "927199563751af6b2dd5aa8e93cddb43cc62192adffea49694dada37ef6bf14c",
+        "tests/test_document_review.py": "88f37e6365c7e9b545d668f978993ef7ad9acfa146e7d549728f4ef9cab8008a",
+        "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
+        "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Reviewed dated documentation and native guidance evidence. Generated delivery wording adds the bounded helper and preserves manual fallback; historical observations and review dates remain unchanged.",
+      "reviewer": "codex",
+      "target": "docs/verification/documentation-workflow.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/tool-map.md": "d11334cb57c288aab7b01226790b7cc268a28991b3de5f97a98b9818d80be19e",
+        "docs/workflows/tool-map.md": "557980c2ff1be3ab99afa8a695a1f2261f7c302383c55fb8e6fab0bae3df636f",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/native-work-harnesses/spec.md": "08e9ac67d0cc7b844d677f9d762f83d90f5627165802a63a1d24964371593efc",
         "openspec/specs/spec-delivery-traceability/spec.md": "66641acf9c151792cde1914062630ed50cc4199cdc3bdb4b81382e03716f2ea3",
-        "src/ai_dlc/cli.py": "6fbe9b9966882b5c814d916ba0c912c92f76457af7c891c3af060a0a7a80decc",
+        "src/ai_dlc/cli.py": "4b0aa95f15aee585bc0b76555fe0e7e87b2ec0d6885f67bad93189b0767a7b46",
         "src/ai_dlc/config.py": "3866ffe631e989d189bd17100dec9123f53f3f17ce77c56ec10decc560483e2c",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
-        "src/ai_dlc/environment/report_io.py": "15fb915a9120404fa3cb93fd7baa60308d389d3dab7c561f90699e8f7423aabd",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
         "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
         "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
         "src/ai_dlc/harness/agents.py": "83653b94d079444a632b0fd6b8b7af83c09d64593dd5abc85f4520d4ab9a85c8",
         "src/ai_dlc/harness/hooks.py": "9a4c95d958eef99c71a5cbaf41f53b0f4e8a3288606cb1054457dbc5b0a3f88b",
-        "src/ai_dlc/harness/native_adapters.py": "762651cd2be0fc7ea9c8f9e03790dc2d50e42ca915e95b240d94f775ca31c2d4",
-        "src/ai_dlc/harness/native_evidence.py": "9075cb680c70e2803adf08bff20cf7d5d9f042f537c1dbb3dceb2cc6eb0f6a5b",
-        "src/ai_dlc/harness/native_verification.py": "2a8cdd843bb42cfa48e9d8195ec37735e7354d162f9bec6213274b7b99c0c637",
         "src/ai_dlc/mcp_server.py": "607eba3e47a8573862d83e5209e824b78ec0af74545fa51727b8d3f7c03db410",
         "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
         "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
@@ -329,69 +346,139 @@
         "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
         "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
         "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
-        "tests/test_native_evidence.py": "133a42b4a138cfae786decde5f038a9a5b3e951cfc0faaaa8ab4bae5b80f605d",
-        "tests/test_native_verification.py": "b04f04c6d6980a4530b351a66ee1ea94987b0455ee39b817ccc5da3032749ae6",
-        "tests/test_native_verification_cli.py": "fc8097ca93246062e4db1f22fac85ad472006fb04d4aa1df0f08478ab5b7f17b",
         "tests/test_rendering.py": "cbc5c9bbc5dceafda37d1f41781f2d86891ba2273b6e32455e6997bcfd7f312c",
         "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2",
         "tests/test_workflow.py": "38aa9de4fad30227e0348a2054ac7e1043cd6fe260e41dc4df5617de9c482b94"
       },
       "outcome": "updated",
-      "reason": "The command map retains the offline agents verify procedure and adds current exact-merge finish and publication-hook guidance without claiming a positive native compatibility path.",
+      "reason": "Maps the explicit at-merge option to the existing work lifecycle without presenting checkout preparation as completion authority.",
       "reviewer": "codex",
       "target": "docs/workflows/tool-map.md"
     },
     {
       "bound": {
-        "catalog:docs/workflows/work-computer-setup.md": "c217d02a59a9a6a1fbda87cd1caee3e765215a0cd44e348aa1429fa66cd3a2ed",
-        "docs/workflows/work-computer-setup.md": "f089e2975a30717ed57e5c8d95cd26c5450fab920aaa224c17f7507c893e5eb6",
-        "openspec/changes/native-harness-verification/specs/native-harness-verification/spec.md": "bf3490b59a7192417cdb7bf2acde5a4f2833083cdd47e0afdf82f577de2443ee",
+        "catalog:docs/workflows/work-computer-setup.md": "62d0a76f141100f0e8d2219cf5e7b398c0530796f3a7fa2ae95348450d0bdbb5",
+        "docs/workflows/work-computer-setup.md": "3d4fee69db9046cebc961e945808dd395614fcd98c97931454d0b4b91998ae48",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
-        "src/ai_dlc/cli.py": "6fbe9b9966882b5c814d916ba0c912c92f76457af7c891c3af060a0a7a80decc",
+        "src/ai_dlc/cli.py": "4b0aa95f15aee585bc0b76555fe0e7e87b2ec0d6885f67bad93189b0767a7b46",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
-        "src/ai_dlc/environment/report_io.py": "15fb915a9120404fa3cb93fd7baa60308d389d3dab7c561f90699e8f7423aabd",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
         "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
         "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
-        "src/ai_dlc/harness/native_adapters.py": "762651cd2be0fc7ea9c8f9e03790dc2d50e42ca915e95b240d94f775ca31c2d4",
-        "src/ai_dlc/harness/native_evidence.py": "9075cb680c70e2803adf08bff20cf7d5d9f042f537c1dbb3dceb2cc6eb0f6a5b",
-        "src/ai_dlc/harness/native_verification.py": "2a8cdd843bb42cfa48e9d8195ec37735e7354d162f9bec6213274b7b99c0c637",
         "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
-        "src/ai_dlc/setup/readiness.py": "1ddc3c2fd143caa2dd02d48be25707f3488986f621e4b11cdd95c72dfda2c9cf",
         "tests/test_consumer_onboarding.py": "1303e2d74c9aaa0d9834133fa37744128c5b027d6f7febdb293e1fe02bf76e37",
         "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
         "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
         "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
         "tests/test_environment_report_collection.py": "2acfade90e9a7137a674adb75547a18e49d5992bbbe42d4e8ba7f072ab81dd41",
         "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
-        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
-        "tests/test_native_evidence.py": "133a42b4a138cfae786decde5f038a9a5b3e951cfc0faaaa8ab4bae5b80f605d",
-        "tests/test_native_verification.py": "b04f04c6d6980a4530b351a66ee1ea94987b0455ee39b817ccc5da3032749ae6",
-        "tests/test_native_verification_cli.py": "fc8097ca93246062e4db1f22fac85ad472006fb04d4aa1df0f08478ab5b7f17b"
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be"
       },
-      "outcome": "updated",
-      "reason": "The setup workflow continues to distinguish generated configuration, incomplete operator evidence, and actual client/Windows observations; integrated main behavior does not satisfy those missing inputs.",
+      "outcome": "reviewed-no-change",
+      "reason": "Reviewed consumer installation, project routing, local bindings and qualification limits. The optional finish helper changes none of these setup steps and does not install or authenticate native tools.",
       "reviewer": "codex",
       "target": "docs/workflows/work-computer-setup.md"
     },
     {
       "bound": {
-        "openspec/changes/native-harness-verification/design.md": "c46a32c4ce72dbb0292206cbe53340952c8fc3bbe505c34ac5abd1abc112c34e"
+        "openspec/changes/archive/2026-09-27-finish-merged-checkout/delivery.md": "6714e72ec2114cb9303b76cacccffcf9af7b1bb75858c331783bdc4c2d08d9ff"
       },
       "outcome": "updated",
-      "reason": "Records reviewed partial implementation, authoritative EER incompleteness, documented source review versus missing tested-version evidence, explicit operation-safety limits and incomplete fill-in template semantics.",
+      "reason": "Reviewed archived exact-merge helper requirements, task evidence and moved links; archive is distinct from final required checks and gated remote completion.",
       "reviewer": "codex",
-      "target": "openspec/changes/native-harness-verification/design.md"
+      "target": "openspec/changes/archive/2026-09-27-finish-merged-checkout/delivery.md"
     },
     {
       "bound": {
-        "openspec/changes/native-harness-verification/tasks.md": "67dcfb53cf70b3fdaff7d8d217c1a2258ed7d538f5dd1d3aec4f41b66ed91b8b"
+        "openspec/changes/archive/2026-09-27-finish-merged-checkout/design.md": "ab4ea4832bce18c3c50cb060b061adb23d83f098cd9f6b79149ae1a8e0d93e10"
       },
       "outcome": "updated",
-      "reason": "Tracks reviewed implementation pieces separately from pending positive qualification/version activation. Incomplete acceptance prevents archival/merge/finish of issue #175; no fabricated native evidence or paid run.",
+      "reason": "Reviewed archived exact-merge helper requirements, task evidence and moved links; archive is distinct from final required checks and gated remote completion.",
       "reviewer": "codex",
-      "target": "openspec/changes/native-harness-verification/tasks.md"
+      "target": "openspec/changes/archive/2026-09-27-finish-merged-checkout/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-27-finish-merged-checkout/proposal.md": "6f39a53857ed5047aa6641682cbc2d691860c022d0c89061710779cb8e48fe5c"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed archived exact-merge helper requirements, task evidence and moved links; archive is distinct from final required checks and gated remote completion.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-finish-merged-checkout/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-27-finish-merged-checkout/specs/spec-delivery-traceability/spec.md": "809f58bfe3c8f238dae45c25a73cbe30b8c65ca5be10f26eeb38f15a41101353"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed archived exact-merge helper requirements, task evidence and moved links; archive is distinct from final required checks and gated remote completion.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-finish-merged-checkout/specs/spec-delivery-traceability/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-27-finish-merged-checkout/tasks.md": "5531913ab19b6a7098a34ad74b95f6c57a35e449289fc6729d65181dae25d62b"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed archived exact-merge helper requirements, task evidence and moved links; archive is distinct from final required checks and gated remote completion.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-finish-merged-checkout/tasks.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/finish-merged-checkout/delivery.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Archived through ai-dlc work archive with bound record paths updated and formal requirements promoted; no qualification evidence is inferred from archival.",
+      "reviewer": "codex",
+      "target": "openspec/changes/finish-merged-checkout/delivery.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/finish-merged-checkout/design.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Archived through ai-dlc work archive with bound record paths updated and formal requirements promoted; no qualification evidence is inferred from archival.",
+      "reviewer": "codex",
+      "target": "openspec/changes/finish-merged-checkout/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/finish-merged-checkout/proposal.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Archived through ai-dlc work archive with bound record paths updated and formal requirements promoted; no qualification evidence is inferred from archival.",
+      "reviewer": "codex",
+      "target": "openspec/changes/finish-merged-checkout/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/finish-merged-checkout/specs/spec-delivery-traceability/spec.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Archived through ai-dlc work archive with bound record paths updated and formal requirements promoted; no qualification evidence is inferred from archival.",
+      "reviewer": "codex",
+      "target": "openspec/changes/finish-merged-checkout/specs/spec-delivery-traceability/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/finish-merged-checkout/tasks.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Archived through ai-dlc work archive with bound record paths updated and formal requirements promoted; no qualification evidence is inferred from archival.",
+      "reviewer": "codex",
+      "target": "openspec/changes/finish-merged-checkout/tasks.md"
+    },
+    {
+      "bound": {
+        "project-templates/project/docs/workflows/tool-map.md": "de560ca87f5d004a1fa66f744b0ff9be7edce8ce07a0087cd734bf012afe2d9e"
+      },
+      "outcome": "updated",
+      "reason": "Documents the explicit helper in the downstream project work lifecycle without personal repository, account or machine details.",
+      "reviewer": "codex",
+      "target": "project-templates/project/docs/workflows/tool-map.md"
     }
   ],
   "schema": 2

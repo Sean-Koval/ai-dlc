@@ -1,0 +1,322 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "catalog:docs/architecture.md": "aca122ae724b1a54ca1cdf3f1e23f4f0da8fd1445ead12f34383c84a37c6aa1c",
+        "docs/architecture.md": "14fe263b514492f3b464b55cb484088f2327a398d05c387b725d5d7dd824f075",
+        "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "pyproject.toml": "296acf5ff015bc4aaf17576c4210e8c69988beb35e11507250a45c0dc534e4d5",
+        "scripts/check_generated.py": "00e325b0da860ed329f3fbc40a99cc503d9a6b185f98f5627c1d465591681f98",
+        "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
+        "scripts/qualify_framework.py": "01dd9e6acbe14e740f068662aa539e9a7ed0ba57ab97e9457e0a05d968a25fb6",
+        "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+        "scripts/run_skill_evaluation.py": "46a97694bae155b2418d172971480e031f510acc864b9d91fa546f98c754729f",
+        "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
+        "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
+        "src/ai_dlc/_windows_storage/__init__.py": "5715def899453f15265e13d52e5b518844cc9d057421cfa5279172d799d5f506",
+        "src/ai_dlc/_windows_storage/_api.py": "d5fc4f971db8e706871c06e8119884848e505af6c45f4fbb5c2f7db513faf41b",
+        "src/ai_dlc/_windows_storage/_security.py": "62785d4e088cd485816a33f35a7a559d3d1acf166093c413a3f4f79969056314",
+        "src/ai_dlc/cli.py": "f7af54e1e3ed2203e20a8c1b25525e9ee680a6900eed697173e87246ee9fb612",
+        "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
+        "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
+        "src/ai_dlc/config.py": "dd596570054e3f455b90dc5cea2a86c97175b2c4ec4243328755dc1884ececc1",
+        "src/ai_dlc/conformance.py": "9d18cdbf21aa8f9889d880729c368d9567f32f83c066693dceb06ce6549b6082",
+        "src/ai_dlc/contracts.py": "e2202d26b4815674bde05fc1190fbaedfe7cabdf6d8c913a721d1f0b53619d1e",
+        "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
+        "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
+        "src/ai_dlc/documentation/document_files.py": "3174b5773adf54c9a0f586a041c4e67001d136d9ba1016ec1cbb0b54debafd55",
+        "src/ai_dlc/documentation/document_impact.py": "bf3353c2ab99166c4900647ac7a0626bba3ee08a4a4f92ffa9269167f86012ca",
+        "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
+        "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
+        "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
+        "src/ai_dlc/documentation/documents.py": "f42322918de5da6b8caa39e9f18e88aff26501d7f2253fbe2462d242126ea29e",
+        "src/ai_dlc/documentation/fde.py": "3664430ebca9f3ef7ba7c7c431f7e4790176066510904ebe4d43d0a88ecf26e1",
+        "src/ai_dlc/documentation/knowledge.py": "f9f8a0598f0cabc7556e001359e991eac8c4972c2b229826315b441e639ed2b1",
+        "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
+        "src/ai_dlc/documentation/learnings.py": "5ea35f5bcb5d8ae7f0fbf593136822c1faa15fbe003957665cb4dcd4d6db1c3a",
+        "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
+        "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
+        "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
+        "src/ai_dlc/documentation/workspace_diagnostics.py": "4a0ec1bf837e4a6a1d59482ebc86557edc2ae41cec843a8528b828b04f27422b",
+        "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
+        "src/ai_dlc/environment/bootstrap.py": "7fad9be94cc830cde041e4ad88c4b79b653f8e8d2c558f1d8db33f99a87b088d",
+        "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
+        "src/ai_dlc/environment/enrollment.py": "f8e826a9dca7a8e308f9ad52c8f178ad7e6f2c6c536da7459a68c123d51e9c53",
+        "src/ai_dlc/environment/machine.py": "2c3981ab3e8e4e52d2c3f86f02d8714bf92dd3229eaff99c72ac91961fbbd16a",
+        "src/ai_dlc/environment/profile_source.py": "f177cc9336ed7c69e37299bc70107f14a7878ff72abbd1070dc3560340d451cc",
+        "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
+        "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
+        "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
+        "src/ai_dlc/environment/source_content.py": "c11618009a7d4c3dbaa03b49d80df3a6f7cae37338a9fe92166865379d89670a",
+        "src/ai_dlc/environment/source_schema.py": "929944f86aef4a0aa2e257f3fbb4bee26ce07c522ed2eb35c2e1bbba38ec44d0",
+        "src/ai_dlc/environment/team_sources.py": "20d583a9046adfac9f0f5bf6de7aca537654eb29d0ff636c27f5a78c7c5c21a6",
+        "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
+        "src/ai_dlc/errors.py": "b8c0da78ec0e9ea75ef71b4495b501570625988ba5ae54c4631f1ca20a8362c1",
+        "src/ai_dlc/files.py": "eb0452e50442cdf9da231a56111afec1d45b4bc5b7a41a00931a540e88ad14da",
+        "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
+        "src/ai_dlc/harness/agents.py": "e5186f1efb1cd1375c49a427b3edd2760384b918d914f964975181d3ac79071a",
+        "src/ai_dlc/harness/components.py": "b64cd2ae837f83a37ddd1c74dad25fcd16fe8733715c224c7d64673784ebba11",
+        "src/ai_dlc/harness/design_capture.py": "8b872492b88f4a7728bedf0ae8a1edaad2312a918248bf8f5d051c8bd8b42a58",
+        "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
+        "src/ai_dlc/harness/hooks.py": "4c1d41b1d6294dd97ad5ecf14bc49026d100b387bf8de9867c49ee8c41e8d311",
+        "src/ai_dlc/harness/native_composition.py": "1e4c5729ff31cb91820bd8df3d15b60c1067b4a5f2b89381888211470dc79bc8",
+        "src/ai_dlc/harness/skill_evaluation.py": "73ded6785d5d0ff53f5f44ba4d1ede7406f367635676c269d5044358030ebc2e",
+        "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
+        "src/ai_dlc/harness/user_agents.py": "c99f9a52a379feaa0c1721081b95fef91f51c44f0a9e906145de51154616e937",
+        "src/ai_dlc/harness/windows_render.py": "5845e483eba550331f0a6777fcd7a3b9c13c90af071ac6df5962ffc3b090b978",
+        "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
+        "src/ai_dlc/locking.py": "e3c5dbe1a98d3402352bc8a3c3a031106e8dd515e060a676803d734d8dee99dd",
+        "src/ai_dlc/mcp_server.py": "607eba3e47a8573862d83e5209e824b78ec0af74545fa51727b8d3f7c03db410",
+        "src/ai_dlc/provider_definitions.py": "e90c2d41a839bc4a32dcb3989f59fa6c9073bd1233f3db2088bd176e1bc513d3",
+        "src/ai_dlc/providers/__init__.py": "d08be9e5584f3ced5aaac694d1eef6acce42faed3d1c74cf7e65102c6ee7ad35",
+        "src/ai_dlc/providers/evaluation_api.py": "5c3a9b890c88d4633fc553dbe206c415c5ceb1f6679cefdf7d215d8680fcec17",
+        "src/ai_dlc/providers/github_issues.py": "311595febaf40ce8855bde3c3bb8a7c9d2087ae9a0b5ace5e7e8e3347f8696ba",
+        "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
+        "src/ai_dlc/providers/jira_cloud.py": "d9b83ba88fb964816450b1479fc775a526455c023725ecff3c8ca695ac7cd8c8",
+        "src/ai_dlc/providers/linear.py": "fa90bd64765c8e8bee1cbfa54e47e17688e8e6407c7492ae0ed863b4615c2b95",
+        "src/ai_dlc/providers/openspec.py": "aa7343d5910542e31982ae3c24b84cdb6ef2446a57de9d8ed0bdcc88950ae70a",
+        "src/ai_dlc/providers/plane.py": "f05450be6fa35ae10c8ae7531518797be5a3f778ec25d517c88fb49efbe9f9a3",
+        "src/ai_dlc/providers/plane_attempts.py": "da576a7f52dd7860c2340b72c91b39f2c9d84bbb7c983cd8bc2cc1871c56333b",
+        "src/ai_dlc/providers/python_exec.py": "3aaafe9bf74a4a949b59d71ed2079b9c48114462a9c823b3641a1772af5a6ff1",
+        "src/ai_dlc/providers/scm.py": "3213f9c9690d598a9d7024b687044ca3b0844b972909cd96ad14e270081409d9",
+        "src/ai_dlc/providers/teamai.py": "ff7a781abcaeeca1c978f9472502156e31a1fc6d192ac50e1e489d333b77a5e6",
+        "src/ai_dlc/setup/__init__.py": "8eb444a69a67d0c1a59ffc0c80ce59efda159976bea58d40154e97f8bdecf18c",
+        "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
+        "src/ai_dlc/setup/connections.py": "e80cbe0e1e94ae5f9d8f60ae044918e8f9e377e173a25ff7bd91f28180a24d15",
+        "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
+        "src/ai_dlc/setup/github_project_setup.py": "55984de17559ba2d56b3b1c7483dabb8a6f05f1e773e8bd9d40437a2d30ee85e",
+        "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
+        "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
+        "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
+        "src/ai_dlc/setup/project.py": "09464c89f569a337aaa77d1604404273808636323635bcd00bb05e0f74c7ad9e",
+        "src/ai_dlc/setup/provider_onboarding.py": "be120ad6e93c178f041fd338a45a5df7c75b9a30591725cfbf7800bca531045e",
+        "src/ai_dlc/setup/provision.py": "6ec463fb9516aa01de58b482a8f14c3cc8c14585a25fa46e42b144d4c2fe5dfc",
+        "src/ai_dlc/setup/readiness.py": "e0984a1f504ee87f3c4c1939624b34ccfe2fd6b7315df365166e95ff3b975d55",
+        "src/ai_dlc/setup/rebind.py": "2458691c83e22c613ee3eb7541e103aee7264e7b23a78c17194135bc3d5a35c6",
+        "src/ai_dlc/setup/templates.py": "cc1b891966103368c77051cc892da293eb2df83ea91c1662b86e466bbd44e950",
+        "src/ai_dlc/setup/tracker_targets.py": "b04533ac254bde0aa7bddf083097d815153998f15b1042645ac4ffc38f848319",
+        "src/ai_dlc/setup/workstation.py": "8ac8f2467ee925392f777e15d921ad79da8a10c94267bbd30f5386455db4e8d2",
+        "src/ai_dlc/toml_edit.py": "696057b2848ca8b57e5189d1c78441fc6c1e06994f480f6f13f8dd31c050515e",
+        "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
+        "src/ai_dlc/verification/evaluation/__init__.py": "7cf0a3add5298d2f8d58954210cee24b3fb6a5f81e505ef3b948a7078cbb0eb8",
+        "src/ai_dlc/verification/evaluation/attempt.py": "a249ad3af90f034cac3774c5406f819afe54209fe88307064c4fd822750a4717",
+        "src/ai_dlc/verification/evaluation/budgets.py": "8069eb9a4f6d24e7fe88774581b47a7d817445ac950a266684aee77fc5378826",
+        "src/ai_dlc/verification/evaluation/contracts.py": "2e767c52494cad777ade498d1362521f04e8c313c5f230540df7f840cf8a0f64",
+        "src/ai_dlc/verification/evaluation/drivers.py": "f4a81dea2b7f3f4ca793e6f1953fb7e384cc8359eae4a308768b41cccceea47f",
+        "src/ai_dlc/verification/evaluation/evaluate.py": "e8a2405d3f6e9c0e3a121b4936f617ee335abaef54e7688eafb813985e90de3a",
+        "src/ai_dlc/verification/evaluation/git_observer.py": "f6a422a1f989b3056cf82484716f0e0101719caffb54e8e96477845ed75445b3",
+        "src/ai_dlc/verification/evaluation/image.py": "d525326faed75c1e6b686183d2b7ccce43c000e43263dad0e940efe8c69523e4",
+        "src/ai_dlc/verification/evaluation/planning.py": "f0a6844c5511db3d4c420f9c7638e47b6d86810968d16a3767de6373c2a971c6",
+        "src/ai_dlc/verification/evaluation/report.py": "fa025c820f8a1a411ec413a7541d30fdf355955bec1f70bc9da220910993c88b",
+        "src/ai_dlc/verification/evaluation/run.py": "271c2aabb8af62d3629a78c6db6d38e23956a3cb5f0363a6a8ec38e6394d52e4",
+        "src/ai_dlc/verification/sandbox.py": "c017bd12115b8f144d07eba619f4e15ddbd00db323e4d386f569c4bcb08646e0",
+        "src/ai_dlc/verification/test_proxy.py": "30ec2d29bf722d48f7341977542feef4a0c5ef9f90c90b158e869c5025d1c8d5",
+        "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
+        "src/ai_dlc/work/journal.py": "91bf194b430c5d0228a5600444a02d79029121a21079ec4c319e96fdaa68543b",
+        "src/ai_dlc/work/summary.py": "af386fc470b222d5c7b600ea3169ee7f26be7bdfafdcac8b4098b1fff2f0bd8e",
+        "src/ai_dlc/work/traceability.py": "e9fbca5153cdd710b78872c66651269184ee5f3f1313f313b65df212430e8cc8",
+        "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
+        "src/ai_dlc/work/workflow.py": "b16ef66b0bea70ece8aaf15003e5e0233dbcff82051b3da24d59b94106da3fca",
+        "tests/test_consumer_onboarding.py": "1303e2d74c9aaa0d9834133fa37744128c5b027d6f7febdb293e1fe02bf76e37",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
+        "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
+        "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
+        "tests/test_environment_report_collection.py": "2acfade90e9a7137a674adb75547a18e49d5992bbbe42d4e8ba7f072ab81dd41",
+        "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
+        "tests/test_environment_report_probes.py": "c19dcbe771d86f3ec2a6dd750642cadf9cbf0be3cd92faee44b68f00b9214717"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "The existing evaluation contract/image-recipe ownership and setup/check service boundaries remain accurate. This change adds optional pinned common-runtime data and a local build reference, not a new runtime service, onboarding parser, public command or receipt owner.",
+      "reviewer": "codex",
+      "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        "docs/catalog.toml": "64b6b031f3934450d5b6f2ffae74571817fc54cf4d3885aca91ef511a0162da3"
+      },
+      "outcome": "updated",
+      "reason": "Maps existing skill/template/generated copies, evaluation recipe/schema and behavioral requirements to canonical workflow/evaluation owners without manufacturing factual review dates.",
+      "reviewer": "codex",
+      "target": "docs/catalog.toml"
+    },
+    {
+      "bound": {
+        ".agents/skills/spec-from-prd/SKILL.md": "9ceeb895bfe68311de31b1a0f5751dd4471be53b3de7aa9441dc69d3f808cf68",
+        ".ai-dlc/agent-ownership.json": "5ccadd08ccd9d26d92033ff4262e903bad0ac5b8692620acf9d05d6361977ae2",
+        ".claude/skills/spec-from-prd/SKILL.md": "9ceeb895bfe68311de31b1a0f5751dd4471be53b3de7aa9441dc69d3f808cf68",
+        "agents/skills.lock.json": "e12e190d0d923b200e182d3fe71a05c22bb0dee19ba75c4b834c4eb1102084a4",
+        "agents/skills/spec-from-prd/SKILL.md": "9ceeb895bfe68311de31b1a0f5751dd4471be53b3de7aa9441dc69d3f808cf68",
+        "agents/templates/delivery-slice.md": "4a7a5d7af2f6a99b4e7eac13491eef751def074451d6899acc36ccf1f536bd6f",
+        "catalog:docs/development-workflow.md": "260c52d0176d7ae65b76adba9dc116bb394f2be5353437a6590c1d4f60994d40",
+        "docs/development-workflow.md": "02b594672b67ec42a0118bd179738f0f9a3f61f00ee645ec358b9dc1beec50ff",
+        "openspec/specs/portable-development/spec.md": "2c75caee1dc2f59828c49ba940be6a186580b07032c52b63fc750788b7535a4d",
+        "project-templates/project/AI-DLC.md": "be8ad8c8c264b994b58edf1832d0aad5edfb1447876448caa9a424a1cfc12caf",
+        "project-templates/project/ai-dlc.toml.jinja": "8cb37c2c92f7998a2c7cec84c2d293f63b1e80f1a4a4f1f330a7e5b1b92aa0cd",
+        "project-templates/project/docs/development-workflow.md.jinja": "edd8cda474ebac1ddd3a78b1c49682893b4a6dae9b95065a618a56f229cd396f",
+        "project-templates/project/docs/templates/delivery-slice.md": "4a7a5d7af2f6a99b4e7eac13491eef751def074451d6899acc36ccf1f536bd6f",
+        "project-templates/project/scripts/check_tests.py": "a3dd2021b7911d2ff688142776b7a43af60f76e052d7164086db2434db60102d",
+        "project-templates/project/tests/test_main.py": "4e6ac9def60ea5a6aef9e004c465cc439acac4b33e4f70df332939f0cdfae63d",
+        "src/ai_dlc/cli.py": "f7af54e1e3ed2203e20a8c1b25525e9ee680a6900eed697173e87246ee9fb612",
+        "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
+        "src/ai_dlc/setup/project.py": "09464c89f569a337aaa77d1604404273808636323635bcd00bb05e0f74c7ad9e",
+        "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
+        "tests/test_project.py": "0863470fa695afffc68bba51602585cd2539174cc9a8599a7cf838773f170b93",
+        "tests/test_templates.py": "da7d4221a92e5fe65ab65d685522897a23bd04807ef9f62acde6bf160eee8aa5"
+      },
+      "outcome": "updated",
+      "reason": "Points to the reviewed team-owned behavior-check workflow, keeps source-grounded mapping and normal runtime prerequisites explicit, and preserves focused feedback versus full required evidence.",
+      "reviewer": "codex",
+      "target": "docs/development-workflow.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/end-to-end-evaluation.md": "585d6d24c99ebc30a259c93cd0caebe01587617637f4d342f64f75e3e0c644a7",
+        "contracts/evaluation/base-image.schema.json": "9e4d5200cfda72c6c3290e163418d3e624db2cd8c39a10d631bda2babcc958dd",
+        "docs/verification/end-to-end-evaluation.md": "2fbfcd84d75b36b45fd2f3eed7252a65b1381c24c58c0275c1a3e30dccee4b59",
+        "evaluations/README.md": "db873e9a78b20c3bcea7d3e478ceb63b1d57619ddfa704b62b274d7f003ca0c0",
+        "evaluations/images/claude-code.json": "fb64db87f858e86e92ea8ab94b262b537898407235736d73d11d8fb9bc1406af",
+        "evaluations/profiles/local-deterministic.json": "0e0deb70f592f3ebad0a420daf815c536eab6c74c421ec4e10329614a65d3d6b",
+        "evaluations/suites/real-client.json": "a21ef76ccde1adeba48a15e3373839586a38b925acaaed9fed23f666a66e886e",
+        "evaluations/suites/smoke.json": "4f24319f9c734a2b5fa01cc01b2f831bb79a230800697b160ad29aa87f98a9d7",
+        "openspec/specs/end-to-end-evaluation/spec.md": "e6bac03b7eabc83bd62443bd0e05fe668ecb3444a805970367fa2487dab71372",
+        "openspec/specs/portable-development/spec.md": "2c75caee1dc2f59828c49ba940be6a186580b07032c52b63fc750788b7535a4d",
+        "src/ai_dlc/verification/evaluation/__init__.py": "7cf0a3add5298d2f8d58954210cee24b3fb6a5f81e505ef3b948a7078cbb0eb8",
+        "src/ai_dlc/verification/evaluation/attempt.py": "a249ad3af90f034cac3774c5406f819afe54209fe88307064c4fd822750a4717",
+        "src/ai_dlc/verification/evaluation/budgets.py": "8069eb9a4f6d24e7fe88774581b47a7d817445ac950a266684aee77fc5378826",
+        "src/ai_dlc/verification/evaluation/contracts.py": "2e767c52494cad777ade498d1362521f04e8c313c5f230540df7f840cf8a0f64",
+        "src/ai_dlc/verification/evaluation/drivers.py": "f4a81dea2b7f3f4ca793e6f1953fb7e384cc8359eae4a308768b41cccceea47f",
+        "src/ai_dlc/verification/evaluation/evaluate.py": "e8a2405d3f6e9c0e3a121b4936f617ee335abaef54e7688eafb813985e90de3a",
+        "src/ai_dlc/verification/evaluation/git_observer.py": "f6a422a1f989b3056cf82484716f0e0101719caffb54e8e96477845ed75445b3",
+        "src/ai_dlc/verification/evaluation/image.py": "d525326faed75c1e6b686183d2b7ccce43c000e43263dad0e940efe8c69523e4",
+        "src/ai_dlc/verification/evaluation/planning.py": "f0a6844c5511db3d4c420f9c7638e47b6d86810968d16a3767de6373c2a971c6",
+        "src/ai_dlc/verification/evaluation/report.py": "fa025c820f8a1a411ec413a7541d30fdf355955bec1f70bc9da220910993c88b",
+        "src/ai_dlc/verification/evaluation/run.py": "271c2aabb8af62d3629a78c6db6d38e23956a3cb5f0363a6a8ec38e6394d52e4",
+        "tests/fixtures/evaluation/claude-code-2.1.220.jsonl": "9801333e7ad60c9f64e3c4f7e9e5f74134fc0ad0b572a9e71db4e33326a86d00",
+        "tests/test_evaluation_attempt.py": "16976a338b92fd6429e38b5c7627cecb37add655d6a3a0e416a6fb567882235f",
+        "tests/test_evaluation_base_image.py": "b561f359128ad3740e29532aafe540cae43eb8df0d399fc3fb90df8219925e15",
+        "tests/test_evaluation_budgets.py": "649afd1b4482ce257b1f1f166102b049b04203d1a7a60b0721ee66d80726bdef",
+        "tests/test_evaluation_claude.py": "5a44c43c50560abbd0bdab3fc22e84f6e5cd5dba41729048d89f8aaf4ecafa31",
+        "tests/test_evaluation_driver.py": "bae0e72a3dab4c1f6d3f713f3ee54301bf1f6b3632e5f98f56afa1c5bcdbe62e",
+        "tests/test_evaluation_egress.py": "8b650b41e20766814bec8cd7747972cc33a95aa58923b33466d2124f35852e50",
+        "tests/test_evaluation_git_observer.py": "06305ee9985cb79e434628bbc08d4b3124742987db390859507ad6c9be5d88b7",
+        "tests/test_evaluation_image.py": "5bdbd18d40c618f4c9e59baccba54abaa67e654055fdca743a29d6053ea23f6c",
+        "tests/test_evaluation_planning.py": "3cc3389999c746b4c7bc20960316fa4b8242121ab5c2a1a2ed06cded8794fc7f",
+        "tests/test_evaluation_report.py": "8671fac524cdfc38b85b4819b4e8e5cde3b610c1295f41d9ede075772e14a94c",
+        "tests/test_evaluation_run.py": "4677004ea79065b86371b23700041e0cb3cbf7b15ef7770d40868fc1bd616b62"
+      },
+      "outcome": "updated",
+      "reason": "Documents optional compatible common-base mise pins and local image-reference preparation, preserves dated historical limits, and records only observed local rehearsal and offline image/required-check evidence with exact source/image identities; paid comparison and native/human quality remain unassessed.",
+      "reviewer": "codex",
+      "target": "docs/verification/end-to-end-evaluation.md"
+    },
+    {
+      "bound": {
+        "agents/skills/spec-from-prd/SKILL.md": "9ceeb895bfe68311de31b1a0f5751dd4471be53b3de7aa9441dc69d3f808cf68",
+        "agents/templates/delivery-slice.md": "4a7a5d7af2f6a99b4e7eac13491eef751def074451d6899acc36ccf1f536bd6f",
+        "catalog:docs/workflows/brownfield.md": "dedbc6f762c6970ac999eb74598adc31dd6dbfe16a6b3ae8842345b9e37838b4",
+        "docs/workflows/brownfield.md": "ba6fea8571f096715f64e0253444f218d307aee61777c47b91d0149efea22e26",
+        "openspec/specs/portable-development/spec.md": "2c75caee1dc2f59828c49ba940be6a186580b07032c52b63fc750788b7535a4d",
+        "project-templates/project/docs/workflows/brownfield.md": "300acec2c3562b8d76178e0de1ec3bd155882f0ce5180879b195657d5eb58c1f",
+        "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
+        "tests/test_templates.py": "da7d4221a92e5fe65ab65d685522897a23bd04807ef9f62acde6bf160eee8aa5"
+      },
+      "outcome": "updated",
+      "reason": "Owns the compact inspect/propose/review procedure and external disposable pass/fail/restored-pass rehearsal; requires isolation, separate setup decisions, authored command preservation and honest unsuccessful/unknown evidence.",
+      "reviewer": "codex",
+      "target": "docs/workflows/brownfield.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-27-behavioral-check-onboarding/delivery.md": "7d26565de14d8c67f43983a7d6fddec448e8e5daf255505d08c7beef21191715"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed archived implementation artifacts, preserved accepted BCO requirements and task evidence, repaired moved links; remaining remote delivery gates and qualification limits are explicit.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-behavioral-check-onboarding/delivery.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-27-behavioral-check-onboarding/design.md": "466edf7a43f11471fcfecd8967f846edf5211baca47bee31b008339f3142e232"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed archived implementation artifacts, preserved accepted BCO requirements and task evidence, repaired moved links; remaining remote delivery gates and qualification limits are explicit.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-behavioral-check-onboarding/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-27-behavioral-check-onboarding/proposal.md": "906431f835b25094d3c0ed52e6db7fea18c5ab6f2c8b6596c5c531578438ac02"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed archived implementation artifacts, preserved accepted BCO requirements and task evidence, repaired moved links; remaining remote delivery gates and qualification limits are explicit.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-behavioral-check-onboarding/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-27-behavioral-check-onboarding/specs/portable-development/spec.md": "34660deda7723a1eaa17dbcb24609706fa8277ff7e2367c50f9b882e65b8c3a5"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed archived implementation artifacts, preserved accepted BCO requirements and task evidence, repaired moved links; remaining remote delivery gates and qualification limits are explicit.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-behavioral-check-onboarding/specs/portable-development/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-27-behavioral-check-onboarding/tasks.md": "0a1de2ca2b52802d19a98bd1009227f4f0ac05533dc94d76aeedbce521363172"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed archived implementation artifacts, preserved accepted BCO requirements and task evidence, repaired moved links; remaining remote delivery gates and qualification limits are explicit.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-behavioral-check-onboarding/tasks.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/behavioral-check-onboarding/delivery.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Active artifact moved through ai-dlc work archive to the dated archive; work bindings follow that path and accepted requirements were promoted to canonical portable-development.",
+      "reviewer": "codex",
+      "target": "openspec/changes/behavioral-check-onboarding/delivery.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/behavioral-check-onboarding/design.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Active artifact moved through ai-dlc work archive to the dated archive; work bindings follow that path and accepted requirements were promoted to canonical portable-development.",
+      "reviewer": "codex",
+      "target": "openspec/changes/behavioral-check-onboarding/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/behavioral-check-onboarding/proposal.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Active artifact moved through ai-dlc work archive to the dated archive; work bindings follow that path and accepted requirements were promoted to canonical portable-development.",
+      "reviewer": "codex",
+      "target": "openspec/changes/behavioral-check-onboarding/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/behavioral-check-onboarding/specs/portable-development/spec.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Active artifact moved through ai-dlc work archive to the dated archive; work bindings follow that path and accepted requirements were promoted to canonical portable-development.",
+      "reviewer": "codex",
+      "target": "openspec/changes/behavioral-check-onboarding/specs/portable-development/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/behavioral-check-onboarding/tasks.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Active artifact moved through ai-dlc work archive to the dated archive; work bindings follow that path and accepted requirements were promoted to canonical portable-development.",
+      "reviewer": "codex",
+      "target": "openspec/changes/behavioral-check-onboarding/tasks.md"
+    }
+  ],
+  "schema": 2
+}

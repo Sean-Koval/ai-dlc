@@ -179,23 +179,40 @@ code_paths = [
     "src/ai_dlc/harness/native_adapters.py",
     "src/ai_dlc/harness/native_evidence.py",
     "src/ai_dlc/harness/native_verification.py",
+    "src/ai_dlc/work/workflow.py",
+    "src/ai_dlc/work/merge_checkout.py",
+    "src/ai_dlc/providers/openspec.py",
     "src/ai_dlc/mcp_server.py",
     "src/ai_dlc/cli.py",
     "src/ai_dlc/setup/onboarding.py",
     "src/ai_dlc/environment/report*.py",
     "src/ai_dlc/environment/version_probes.py",
+    "src/ai_dlc/config.py",
+    "src/ai_dlc/harness/hooks.py",
+    "src/ai_dlc/harness/agents.py",
 ]
 verification_paths = [
     "tests/test_native_evidence.py",
     "tests/test_native_verification*.py",
+    "tests/test_merge_checkout.py",
+    "tests/test_finish_merged_checkout.py",
+    "tests/test_cli.py",
+    "tests/test_workflow.py",
     "tests/test_consumer_onboarding.py",
     "tests/test_consumer_onboarding_cli.py",
     "tests/test_environment_report*.py",
+    "tests/test_config.py",
+    "tests/test_hooks.py",
+    "tests/test_rendering.py",
+    "tests/test_team_sources.py",
+    "tests/test_agents_phases.py",
 ]
 requirements = [
     "openspec/changes/native-harness-verification/specs/native-harness-verification/spec.md",
+    "openspec/specs/spec-delivery-traceability/spec.md",
     "openspec/specs/consumer-onboarding/spec.md",
     "openspec/specs/effective-environment-report/spec.md",
+    "openspec/specs/native-work-harnesses/spec.md",
 ]
 
 [[documents]]
@@ -421,9 +438,9 @@ path = "docs/development-workflow.md"
 kind = "reference"
 owner = "repository-maintainers"
 status = "draft"
-code_paths = ["src/ai_dlc/setup/project.py", "src/ai_dlc/setup/commands.py", "src/ai_dlc/cli.py", "project-templates/project/ai-dlc.toml.jinja", "project-templates/project/scripts/check_tests.py", "project-templates/project/tests/test_main.py"]
-verification_paths = ["tests/test_checks.py", "tests/test_project.py", "tests/test_templates.py"]
-requirements = ["openspec/specs/portable-development/spec.md"]
+code_paths = ["src/ai_dlc/work/workflow.py", "src/ai_dlc/work/merge_checkout.py", "src/ai_dlc/providers/openspec.py", "src/ai_dlc/setup/project.py", "src/ai_dlc/setup/commands.py", "src/ai_dlc/cli.py", "project-templates/project/ai-dlc.toml.jinja", "project-templates/project/scripts/check_tests.py", "project-templates/project/tests/test_main.py", "agents/skills/spec-from-prd/SKILL.md", "agents/skills.lock.json", ".agents/skills/spec-from-prd/SKILL.md", ".claude/skills/spec-from-prd/SKILL.md", ".ai-dlc/agent-ownership.json", "agents/templates/delivery-slice.md", "project-templates/project/docs/templates/delivery-slice.md", "project-templates/project/AI-DLC.md", "project-templates/project/docs/development-workflow.md.jinja", "src/ai_dlc/config.py", "src/ai_dlc/harness/hooks.py", "src/ai_dlc/harness/agents.py"]
+verification_paths = ["tests/test_merge_checkout.py", "tests/test_finish_merged_checkout.py", "tests/test_cli.py", "tests/test_workflow.py", "tests/test_checks.py", "tests/test_project.py", "tests/test_templates.py", "tests/test_config.py", "tests/test_hooks.py", "tests/test_rendering.py", "tests/test_team_sources.py", "tests/test_agents_phases.py"]
+requirements = ["openspec/specs/spec-delivery-traceability/spec.md", "openspec/specs/portable-development/spec.md", "openspec/specs/native-work-harnesses/spec.md"]
 
 [[documents]]
 id = "repo-github-ticket-setup"
@@ -760,6 +777,10 @@ kind = "reference"
 owner = "repository-maintainers"
 status = "draft"
 
+code_paths = ["agents/skills/spec-from-prd/SKILL.md", "agents/templates/delivery-slice.md", "project-templates/project/docs/workflows/brownfield.md"]
+verification_paths = ["tests/test_templates.py", "tests/test_checks.py"]
+requirements = ["openspec/specs/portable-development/spec.md"]
+
 [[documents]]
 id = "repo-workflows-design-to-implementation"
 path = "docs/workflows/design-to-implementation.md"
@@ -856,6 +877,8 @@ verification_paths = [
     "tests/test_consumer_onboarding.py",
     "tests/test_consumer_onboarding_cli.py",
     "tests/test_environment_report*.py",
+    "tests/test_config.py",
+    "tests/test_hooks.py",
 ]
 requirements = [
     "openspec/changes/native-harness-verification/specs/native-harness-verification/spec.md",
@@ -920,9 +943,9 @@ path = "docs/verification/end-to-end-evaluation.md"
 kind = "reference"
 owner = "repository-maintainers"
 status = "active"
-code_paths = ["src/ai_dlc/verification/evaluation/__init__.py", "src/ai_dlc/verification/evaluation/attempt.py", "src/ai_dlc/verification/evaluation/contracts.py", "src/ai_dlc/verification/evaluation/budgets.py", "src/ai_dlc/verification/evaluation/drivers.py", "src/ai_dlc/verification/evaluation/evaluate.py", "src/ai_dlc/verification/evaluation/git_observer.py", "src/ai_dlc/verification/evaluation/image.py", "src/ai_dlc/verification/evaluation/planning.py", "src/ai_dlc/verification/evaluation/report.py", "src/ai_dlc/verification/evaluation/run.py", "evaluations/README.md", "evaluations/images/claude-code.json", "evaluations/suites/smoke.json", "evaluations/suites/real-client.json", "evaluations/profiles/local-deterministic.json"]
+code_paths = ["src/ai_dlc/verification/evaluation/__init__.py", "src/ai_dlc/verification/evaluation/attempt.py", "src/ai_dlc/verification/evaluation/contracts.py", "src/ai_dlc/verification/evaluation/budgets.py", "src/ai_dlc/verification/evaluation/drivers.py", "src/ai_dlc/verification/evaluation/evaluate.py", "src/ai_dlc/verification/evaluation/git_observer.py", "src/ai_dlc/verification/evaluation/image.py", "src/ai_dlc/verification/evaluation/planning.py", "src/ai_dlc/verification/evaluation/report.py", "src/ai_dlc/verification/evaluation/run.py", "evaluations/README.md", "evaluations/images/claude-code.json", "evaluations/suites/smoke.json", "evaluations/suites/real-client.json", "evaluations/profiles/local-deterministic.json", "contracts/evaluation/base-image.schema.json"]
 verification_paths = ["tests/test_evaluation_planning.py", "tests/test_evaluation_attempt.py", "tests/test_evaluation_run.py", "tests/test_evaluation_report.py", "tests/test_evaluation_image.py", "tests/test_evaluation_driver.py", "tests/test_evaluation_claude.py", "tests/test_evaluation_budgets.py", "tests/test_evaluation_git_observer.py", "tests/fixtures/evaluation/claude-code-2.1.220.jsonl", "tests/test_evaluation_egress.py", "tests/test_evaluation_base_image.py"]
-requirements = ["openspec/specs/end-to-end-evaluation/spec.md"]
+requirements = ["openspec/specs/end-to-end-evaluation/spec.md", "openspec/specs/portable-development/spec.md"]
 
 [[documents]]
 id = "fde-documents"

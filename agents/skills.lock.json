@@ -48,7 +48,7 @@
     },
     "spec-from-prd": {
       "path": "skills/spec-from-prd/SKILL.md",
-      "sha256": "68fa18a6e5fd7fdceaedd74f09c2e26e66ffad8c1d9121525a4d727df8bbb441"
+      "sha256": "9ceeb895bfe68311de31b1a0f5751dd4471be53b3de7aa9441dc69d3f808cf68"
     }
   },
   "version": "0.4.0"

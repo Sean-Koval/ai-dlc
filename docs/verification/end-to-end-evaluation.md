@@ -58,8 +58,11 @@ ai-dlc eval report /tmp/eval-run
 
 - `eval image` builds the wheel from the checkout, installs it on the base image,
   checks that the result is the base plus added layers and that `ai-dlc --version`
-  runs offline, and writes a copy of the profile bound to that build. Do not
-  commit the resolved profile; it names a local image.
+  runs offline, and writes a copy of the profile bound to that build. A registry
+  digest remains the Dockerfile base reference. For a raw local image ID, the
+  result retains that ID in `base` and reports the verified local Dockerfile
+  reference separately in `base_build_reference`. Do not commit the resolved
+  profile; it names a local image.
 - `eval plan` starts nothing and reads no secret. It refuses, naming the field,
   an unpinned image, a secret value in the profile, missing budgets, duplicate
   identifiers, or a scenario without both arms.
@@ -102,11 +105,30 @@ volume to remove by hand from `cleanup-ledger.jsonl`.
 ## Base image for real clients
 
 `ai-dlc eval base evaluations/images/claude-code.json` builds the image both
-arms share: the pinned Python parent, Git, and the Claude Code native binary at
-the recipe's version. The controller downloads the binary, refuses bytes whose
-sha256 differs from the recipe, and copies it in; the build needs no BuildKit.
-Git and the client are then run offline as uid 1000. Pass the printed image ID to
-`eval image --base` to build the candidate on top.
+arms share: the pinned Python parent, Git, the Claude Code native binary and mise
+at the recipe's versions. The controller selects the Linux x64 or arm64 artifacts
+from the Docker daemon architecture, downloads them over HTTPS, refuses bytes
+whose sha256 differs from the recipe, and copies the exact executable bytes into
+the image. The build needs no BuildKit. Git, the client and mise are then run with
+networking disabled as uid 1000. The build result reports the selected client and
+mise version/platform identities. Pass the printed image ID to `eval image
+--base` to build the candidate on top.
+
+The `mise` recipe block is optional so older schema-1 recipes still parse. An
+older recipe without it does not prepare the ordinary check runner and cannot
+support the required-check smoke below.
+
+The shared-base command returns a raw local image ID. Before building a candidate
+from that ID, the controller verifies the ID and uses a deterministic local alias
+`ai-dlc-eval-base:<image-id-hex>` because Docker 20.10 BuildKit can interpret a
+bare `FROM sha256:...` as a Docker Hub reference. An existing alias is reused only
+when inspection resolves it to the exact requested ID; a conflict stops before
+the wheel or candidate build. The alias is local only and is never published or
+written to global Docker configuration. It is intentionally retained: blindly
+removing its last tag can remove the common base that the baseline arm still
+needs. Operators may clean it up after both arms and all dependent candidates are
+finished, using the reported `base_build_reference` and verifying the target
+first.
 
 Verified September 20, 2026: base built with Git 2.47.3 and client 2.1.220; the
 candidate built on it; `ai-dlc project adopt --apply` ran offline inside it.
@@ -280,26 +302,93 @@ host's BuildKit could not use the local content-addressed parent directly.
 - Candidate image: `sha256:5e5f8d56ce0b926e51166ed27ac2bd05575145405248d2a515339681c63b0f85`.
 - Candidate wheel SHA256: `372e62c3d1060e2b3ad7bb9a1fb7a3ef414803b15f1a647c0ae5131082e2e36a`.
 
-## Deferred comparison and runtime prerequisite
+## Deferred comparison and common-runtime preparation
 
 On September 25, 2026 the maintainer explicitly deferred the paid comparison.
 The code slice is tracked by [#166](https://github.com/Sean-Koval/ai-dlc/issues/166);
 [#138](https://github.com/Sean-Koval/ai-dlc/issues/138) remains open for the real
 three-attempt-per-arm run and broader journeys.
 
-The wheel-only candidate image can adopt the project and render Claude guidance,
-but it does not include `mise`. The ordinary `ai-dlc project check --required`
-runner currently requires that runtime even for a generic project with an empty
-`[tools]` table. It refuses before running checks in this image. Directly running
-individual checks would bypass that declared runner and does not qualify it.
-Prepare and verify a suitable check runtime before the paid comparison; otherwise
-setup failure would confound the value measurement. This image smoke is not a
-full bootstrap qualification. No paid API calls or productivity results are
-claimed by this delivery.
+The historical September 25 image identities above predate the common mise
+recipe and remain evidence only for adoption and guidance rendering. Do not reuse
+them as common-runtime evidence. Build a fresh shared base from
+`evaluations/images/claude-code.json`, then build the candidate from that exact
+base. Record both image IDs, the source revision, wheel digest, daemon
+architecture, and the base builder's reported mise identity.
+
+With both local images present, set `AI_DLC_EVAL_BASE_IMAGE` and
+`AI_DLC_EVAL_CANDIDATE_IMAGE` and run only
+`tests/test_evaluation_attempt.py::test_real_candidate_runs_required_checks_without_leaking_ai_dlc_to_baseline`.
+The attempt is isolated with `--network=none` and makes no model call. Treatment
+uses ordinary adoption, runs `ai-dlc project setup`, then runs `ai-dlc project
+check --required --receipt .ai-dlc/local/evaluation-required.json`. The collected
+receipt must contain a nonempty required-ID set and one passing, zero-exit outcome
+for each required ID. The fixture's three unittest cases run as a separate step;
+baseline runs those tests without receiving AI-DLC configuration or guidance.
+
+Retain the actual test result and collected receipt before making a runtime claim.
+This source change and skipped opt-in test are preparation only until that real
+build and attempt succeed. The smoke is not bootstrap, native-platform or paid
+comparison qualification and supports no productivity, quality or billing claim.
 
 ## Known gaps
 
 - Process and MCP observers, Codex, declared multi-turn answers and recovery remain
   outside this slice.
-- Actual model billing, the full check runtime in the comparison image, the paid
-  comparison and human quality review remain unqualified.
+- Actual model billing, the real common-runtime image/ordinary-runner smoke until
+  separately recorded, the paid comparison and human quality review remain
+  unqualified.
+
+
+## Behavioral onboarding and ordinary-runner preparation — September 27, 2026 UTC
+
+A real local rehearsal used clean source
+`8e3f78efb9d83a212e9ad884acce1b4d6e5ab315`, AI-DLC 0.4.0, Python 3.12.11 and mise
+2026.9.1 on macOS arm64. An external disposable copy of the committed
+`evaluations/fixtures/csv-validator` retained its authored standard-library tests
+and README command, `python -m unittest discover -s tests`. The reviewed behavior
+was `ValidateTests.test_column_count`: a data row with a different width from its
+header must produce a `column-count` problem.
+
+The normal runner's focused `team-behavior` check passed, failed specifically on
+that requirement after changing the copied conditional to `if False`, then passed
+after restoring the exact bytes. The fixture commit was
+`47ce90d91163509c7f4a345249fa9ff5d7744a46`; its three receipts recorded dirty states
+`false`, `true`, `false`. A separate full run passed `generated`, `work-records`
+and `team-behavior` on the clean fixture. The focused receipt still contained only
+one of three required outcomes. Three unsafe containment controls were refused
+before mutation; an all-pass outcome control was rejected as regression-detection
+evidence. With mise removed from both PATH and the isolated bootstrap location,
+the actual CLI reported `runtime-unavailable`, `ran: false`, no outcomes and no
+receipt despite the empty tools table. Source files and authored fixture tests
+were checked unchanged before/after adoption and restoration. The final rehearsal
+took 3.707 seconds; this is a small-fixture observation, not a performance or
+productivity comparison.
+
+The common image built from the same source on Docker 20.10.17, Linux arm64,
+contains the checksum-verified Claude Code 2.1.220 and mise 2026.9.1, with Git
+2.47.3. Its identity is
+`sha256:8b178a56818a6c6223e09d5aad2f03e4ddfef8f137a5515cf26ea3744dc7fe7a`.
+The first candidate build exposed the raw local-image-ID/BuildKit lookup failure
+recorded in the change design. The fixed candidate built from clean source
+`bb89c5b9ef6528da66a3e6c04cdfedb9fa0f49d1`, preserving that shared base and using its
+verified content-derived local alias. Candidate identity:
+`sha256:63d693dc2517d04755fc113054cb82d727cb2b44520563aef1ecd5f04948c18e`;
+wheel SHA256:
+`8722a3b7bf7b4c08f820a8e1e313cdfd3d872ba6e2f9ff96e485fdf6bdbb89c9`.
+
+The existing no-model candidate/baseline attempt test passed in 6.24 seconds with
+network-disabled attempt containers. Candidate adoption, rendering, project setup,
+`project check --required`, and the fixture's three unit tests completed; the
+baseline ran its authored tests without receiving AI-DLC files. The retained
+required-check receipt records both `generated` and `work-records` as passed,
+commit `3dc71c618f666bc015883f164152bcfce58fa303`, target `local`, and `dirty: true`
+from setup/adoption. It proves the normal runtime path, not behavioral adequacy or
+clean CI completion. Behavioral sensitivity is the separate rehearsal above.
+
+Raw output, source hashes, failed-build diagnosis and full receipts remain in
+ignored local evidence. Image construction downloaded public pinned binaries and
+locked dependencies; the attempt smoke was offline. No model request or paid
+comparison ran. This qualifies the scoped Linux arm64 image preparation and
+single-host rehearsal only, not native Windows/Antigravity, human quality, token
+savings or team productivity. Paid comparison #138 remains pending.

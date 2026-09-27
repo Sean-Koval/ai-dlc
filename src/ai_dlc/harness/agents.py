@@ -955,7 +955,9 @@ def _validate_required_hooks(config: dict[str, Any], clients: list[str]) -> None
             )
 
 
-def _shared_guidance_lines(config: dict[str, Any], index: str, bundle_index: str) -> list[str]:
+def _shared_guidance_lines(
+    config: dict[str, Any], clients: list[str], index: str, bundle_index: str
+) -> list[str]:
     """Compose the shared AGENTS.md guidance body lines."""
     roles = config.get("roles", {})
 
@@ -1011,12 +1013,43 @@ def _shared_guidance_lines(config: dict[str, Any], index: str, bundle_index: str
     if finish and openspec:
         lines.append(
             "Finish from a checkout at the merge commit; when the target branch has moved, "
-            "prepare a temporary detached worktree at that commit, finish there, then remove it."
+            "run `ai-dlc work finish <work-id> --at-merge`, or prepare a temporary detached worktree "
+            "at that commit, finish there, then remove it."
         )
     lines.append("Store architecture, design, decisions and runbooks in docs/.")
     if knowledge:
         lines.append(
             "Keep personal notes in the selected knowledge provider and follow its instructions."
+        )
+    bound_push_clients = [
+        client
+        for client in clients
+        if "bound-push"
+        in config.get("agents", {}).get("clients", {}).get(client, {}).get("required_hooks", [])
+    ]
+    if bound_push_clients:
+        client_names = ", ".join(f"`{client}`" for client in bound_push_clients)
+        policy = config.get("agents", {}).get("bound_push_policy", "all-branches")
+        if policy == "all-branches":
+            lines.append(
+                f"For the selected bound-push clients ({client_names}), the `all-branches` "
+                "policy applies: covered publication still requires reviewed tracker-bound "
+                "work, even when the general workflow permits a record-free pull request. "
+                "Every associated work record still requires complete local validation."
+            )
+        else:
+            lines.append(
+                f"For the selected bound-push clients ({client_names}), the `tracked-branches` "
+                "policy applies: covered publication may proceed without a work record only "
+                "when a complete readable local inventory proves the branch is unbound. Every "
+                "associated work record still requires complete local validation."
+            )
+        lines.append(
+            "The supported direct Git push and GitHub PR-create payloads for these clients are "
+            "limited to recognized Bash/exec_command coverage; external terminals and arbitrary "
+            "wrappers are excluded. Remote tracker state, arbitrary terminal enforcement, native "
+            "approval and repository review, required checks, merge identity, receipts, and "
+            "finish remain separate."
         )
     lines.extend(["", "## Verification", ""])
     for name in checks.get("required", []):
@@ -1273,7 +1306,7 @@ def _render_agents(
     referenced_guidance = {
         guidance for component in components["components"] for guidance in component["guidance"]
     }
-    lines = _shared_guidance_lines(config, index, _bundle_index(bundles))
+    lines = _shared_guidance_lines(config, clients, index, _bundle_index(bundles))
     agents_body = "\n".join(lines) + team_body
     planned = _plan_guidance_files(text, agents_body, clients)
     servers, codex, antigravity = _plan_mcp_servers(config, clients)

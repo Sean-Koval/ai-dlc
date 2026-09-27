@@ -531,9 +531,11 @@ def test_teamai_unsafe_values_name_path_without_leaking(source_setup, path, body
 def test_native_mcp_and_named_hooks_render(source_setup):
     files = native_files()
     files["mcp/servers.toml"] = '[[servers]]\nid="team-tools"\ncommand="team-mcp"\nargs=["serve"]\n'
-    files["hooks/hooks.toml"] = 'features=["session-context"]\n'
+    files["hooks/hooks.toml"] = 'features=["session-context","bound-push"]\n'
     files["manifest.toml"] += (
-        '\n[[items]]\nkind="mcp"\nname="team-tools"\npath="mcp/servers.toml"\n\n[[items]]\nkind="hook"\nname="session-context"\npath="hooks/hooks.toml"\n'
+        '\n[[items]]\nkind="mcp"\nname="team-tools"\npath="mcp/servers.toml"\n'
+        '\n[[items]]\nkind="hook"\nname="session-context"\npath="hooks/hooks.toml"\n'
+        '\n[[items]]\nkind="hook"\nname="bound-push"\npath="hooks/hooks.toml"\n'
     )
     setup = source_setup(files)
     enroll(setup)
@@ -544,8 +546,27 @@ def test_native_mcp_and_named_hooks_render(source_setup):
         'schema=4\n[roles]\nagent-client=["claude-code"]\n[agents]\nskills=[]\n[agents.clients.claude-code]\nversion="2.1.0"\n',
     )
     render_agents(root, apply=True)
-    assert "SessionStart" in json.loads((root / ".claude/settings.json").read_text())["hooks"]
+    hooks = json.loads((root / ".claude/settings.json").read_text())["hooks"]
+    assert "SessionStart" in hooks
+    assert "PreToolUse" in hooks
     assert "team-tools" in json.loads((root / ".mcp.json").read_text())["mcpServers"]
+    guidance = (root / "AGENTS.md").read_text()
+    assert "selected bound-push clients (`claude-code`)" in guidance
+    assert "`all-branches` policy" in guidance
+
+
+def test_native_hook_source_cannot_supply_bound_push_policy(source_setup):
+    """Would fail if a team source could import a weaker project policy."""
+    files = native_files()
+    files["hooks/hooks.toml"] = 'features=["bound-push"]\nbound_push_policy="tracked-branches"\n'
+    files["manifest.toml"] += (
+        '\n[[items]]\nkind="hook"\nname="bound-push"\npath="hooks/hooks.toml"\n'
+    )
+
+    setup = source_setup(files)
+
+    with pytest.raises(ValueError, match="source hooks must name supported AI-DLC features"):
+        enroll(setup)
 
 
 @pytest.mark.parametrize(

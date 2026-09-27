@@ -33,7 +33,13 @@ these assets, produce the following fields directly for each slice:
 - **Dependencies:** `depends_on` local work IDs, required interfaces, exact source
   references and observed completion status or explicitly unavailable status.
 - **Acceptance and tasks:** measurable results, compatibility checks, and the
-  implementation/test/documentation steps needed for this slice.
+  implementation/test/documentation steps needed for this slice. For a behavior
+  check, inspect the actual setup steps, declared checks, test configuration, CI
+  commands and requirement sources before proposing a mapping. Record the
+  requirement/check IDs, observable behavior, inspected sources, exact command
+  and its source, prerequisites and reviewed setup action, required/optional
+  choice, unknowns and review decision. Syntax, filenames and successful setup
+  are not evidence that a behavior is checked.
 - **Open decisions and next action:** separate approved facts from proposed
   semantics and missing evidence; end with proceed, investigate or stop and why.
 
@@ -47,6 +53,21 @@ identifiers, not copied specification prose; put the canonical document and exac
 specification/evidence paths in `artifacts`. Keep missing formats or error behavior
 as open decisions; incomplete draft scenarios are not accepted executable criteria.
 Resolve material product choices with their owner before dependent implementation.
+
+When a slice adopts a team check, preserve authored tests, required IDs and
+unrelated commands. Present the source-grounded mapping and prerequisite changes
+for review under the existing authorization before changing shared configuration.
+Use the team's command and declared shell/runtime contract; checks do not install
+tools or switch shells to make a command pass. The normal check runner requires
+`mise` even when `.mise.toml` has an empty tools table. A missing runtime leaves
+the check unrun and the evidence incomplete; direct shell execution is not an
+equivalent receipt.
+
+Follow `docs/workflows/brownfield.md#rehearse-a-reviewed-behavior-check` for the
+external disposable-fixture pass, deliberate regression failure and restored-pass
+rehearsal. Record a missed expected failure or failed isolation as incomplete.
+Focused `--check` feedback does not replace the full required run or completion
+receipt.
 
 For a change affecting an HTTP interface, update `docs/api/openapi.yaml` in the same
 PR as the behavior and reference the contract from the work record as

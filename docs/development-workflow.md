@@ -263,6 +263,13 @@ selection with `--no-required`. A focused receipt still lists every configured
 required check, so missing required outcomes cannot pass the completion gate.
 Use the full required run after target-branch integration before merge.
 
+For team check adoption, inspect the repository's declared setup, checks, test
+configuration, CI and requirement sources; retain unknowns and review the exact
+requirement/check/prerequisite mapping before changing shared configuration. The
+[brownfield behavior-check rehearsal](workflows/brownfield.md#rehearse-a-reviewed-behavior-check)
+owns the external disposable pass, regression-failure and restored-pass procedure,
+the normal-runner `mise` prerequisite and bounded evidence fields.
+
 ## Daily operating loop
 
 1. Reconcile tracker priority, work bindings, branch state, and fresh evidence.
@@ -327,7 +334,31 @@ The specification gate reads the archived change from the working checkout, so
 that checkout must be exactly the pull request's merge commit with a clean
 `openspec/` tree. Finishing immediately after merge satisfies this from the
 updated main checkout. Once the target branch advances, or when several merged
-items are finished later, prepare a temporary detached checkout instead:
+items are finished later, use the explicit helper:
+
+```sh
+ai-dlc work finish <work-id> --at-merge
+```
+
+The helper resolves the bound PR through the selected SCM and requires its exact
+merge commit to be available locally. It creates an owned detached checkout,
+loads that revision's project policy and matching work identity, and runs ordinary
+finish with the caller's selected local configuration and operation journal.
+Caller HEAD, index and files remain untouched. `--handoff FILE` and
+`--learning FILE` are read relative to the caller, as with plain finish.
+It does not fetch missing commits, archive changes, repair CI or change branches;
+an unavailable commit reports the trusted repository and revision to obtain.
+
+The result reports completion and cleanup separately. A blocked gate remains
+blocked; an uncertain tracker response remains uncertain. If changes or an
+ownership mismatch prevent safe removal, the resource is retained and the recovery
+locator identifies it. Inspect that retained checkout before using nonforced
+`git worktree remove <owned-checkout>`; do not delete a foreign or changed path
+merely because a marker names it. Retrying finish reruns its gates and reconciles
+remote state through the same journal. Local helpers in linked worktrees share a
+repository lock; this is not a cross-clone lock or a lock on ordinary finish.
+
+The manual fallback remains available:
 
 ```sh
 git worktree add --detach /tmp/finish-<work-id> <merge-commit>
@@ -356,6 +387,30 @@ correction, a roadmap edit, a dependency bump — needs only its pull request, w
 scope and verification in the body, and documentation evidence recorded under any
 identifier (`--evidence-id <branch-or-topic>`). A record created for such a change
 has nothing to finish and stays open in the context brief indefinitely.
+
+Projects selecting the optional `bound-push` hook also choose the rules for its
+covered publication commands. Omitted `agents.bound_push_policy`, or explicit
+`"all-branches"`, requires reviewed tracker-bound work even for the record-free
+PR path above. A team may explicitly choose the lighter path in shared
+`ai-dlc.toml`:
+
+```toml
+[agents]
+bound_push_policy = "tracked-branches"
+```
+
+This setting does not enable the hook. When the hook is selected, it allows a
+covered nondestructive push or PR creation only after a complete readable local
+inventory proves the current branch unbound, or every matching work record is
+valid, reviewed, tracker-bound and free of provider-binding drift. Multiple valid
+records may share a branch. An invalid associated record, unreadable inventory or
+unknown branch blocks publication with a repair instruction; it never creates a
+lightweight exemption. Personal, machine and team-source configuration cannot
+set this project policy.
+
+The hook covers supported native tool payloads only. It does not inspect remote
+tracker state or govern arbitrary terminals, and it does not replace native
+approval, SCM review, required checks, exact merge identity, receipts or finish.
 
 ## Merge against the current target branch
 

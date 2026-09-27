@@ -355,7 +355,13 @@ credential arguments and machine paths are refused. Hook content is only
 `features = ["session-context"]` or other existing `bound-push` and
 `stop-reminder` features. Arbitrary shell hooks are refused. The selected client's
 configured version must already support those features in AI-DLC's capability
-matrix. All source paths must be regular UTF-8 files without symlinks or execute
+matrix. A source may select `bound-push`, but cannot supply its policy:
+`agents.bound_push_policy` belongs only in the project’s shared `ai-dlc.toml`.
+Personal and machine layers also cannot set it. Omission preserves strict
+`all-branches`; an explicit project choice of `tracked-branches` permits the
+[bounded record-free publication path](../development-workflow.md#when-a-work-record-is-needed).
+
+All source paths must be regular UTF-8 files without symlinks or execute
 bits, up to 2 MiB each and 10 MiB total, with at most 1,024 files and 16 path
 segments. Structured manifests are limited to 1 MiB. `env/` directories are
 refused, and credential diagnostics name the source path without echoing values.

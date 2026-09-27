@@ -2,7 +2,7 @@
 
 ## Authority and observed disagreement
 
-The [product direction](../../../docs/product-direction.md) allows selected team workflows and small artifacts. `docs/development-workflow.md` permits a PR-only path without a tracker or specification decision. However `harness/hooks.py` denies recognized direct pushes and `gh pr create` when no reviewed record with a tracker reference matches the branch. This is an optional hook; projects not requesting it are unaffected. Canonical native-harness requirements do not currently define an alternate push policy, so PPP requirements are additive rather than silently rewriting the existing default.
+The [product direction](../../../../docs/product-direction.md) allows selected team workflows and small artifacts. `docs/development-workflow.md` permits a PR-only path without a tracker or specification decision. However `harness/hooks.py` denies recognized direct pushes and `gh pr create` when no reviewed record with a tracker reference matches the branch. This is an optional hook; projects not requesting it are unaffected. Canonical native-harness requirements do not currently define an alternate push policy, so PPP requirements are additive rather than silently rewriting the existing default.
 
 ## Configuration contract
 

@@ -92,7 +92,8 @@ class OpenSpecProvider:
             if current != revision:
                 raise ValueError(
                     f"OpenSpec checkout revision must equal the merged revision {revision}, but "
-                    f"this checkout holds {current}. Prepare a temporary detached checkout at the "
+                    f"this checkout holds {current}. Run ai-dlc work finish {work['id']} --at-merge "
+                    "or prepare a temporary detached checkout at the "
                     "merged revision, run finish from it, then remove it: "
                     f"git worktree add --detach <path> {revision}"
                 )
