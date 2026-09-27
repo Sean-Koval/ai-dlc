@@ -134,7 +134,7 @@
     },
     {
       "bound": {
-        "docs/catalog.toml": "6c6e2aacbfc7570170d2a9414dc6866936d6adffb5bf69f034ba30a28830579d"
+        "docs/catalog.toml": "b6fb14896b987d5a2d0ee09774000b28fbc977cea57a89674f5962b9a1460c4e"
       },
       "outcome": "updated",
       "reason": "Maps the existing configuration/hook/guidance sources and focused tests to canonical owners, preserving behavioral-check onboarding mappings.",
@@ -149,9 +149,9 @@
         "agents/skills.lock.json": "e12e190d0d923b200e182d3fe71a05c22bb0dee19ba75c4b834c4eb1102084a4",
         "agents/skills/spec-from-prd/SKILL.md": "9ceeb895bfe68311de31b1a0f5751dd4471be53b3de7aa9441dc69d3f808cf68",
         "agents/templates/delivery-slice.md": "4a7a5d7af2f6a99b4e7eac13491eef751def074451d6899acc36ccf1f536bd6f",
-        "catalog:docs/development-workflow.md": "1496f9fd268a55dee94648928f90b5e96722f697d990f845d64101bdec8b0b51",
+        "catalog:docs/development-workflow.md": "85f168ccad83e236a8b0b413c04263ed81774db0ad3aeaa5939a268a4f3956a5",
         "docs/development-workflow.md": "47d112d5b084e7a6851a1dfaf2baba987993330939e2a7340c6461a52d034a97",
-        "openspec/changes/proportionate-push-policy/specs/native-work-harnesses/spec.md": "e7b93159112db95f38a49bacdd18e1b8d272921e5e36d31928ab6ba1d120c21e",
+        "openspec/specs/native-work-harnesses/spec.md": "08e9ac67d0cc7b844d677f9d762f83d90f5627165802a63a1d24964371593efc",
         "openspec/specs/portable-development/spec.md": "2c75caee1dc2f59828c49ba940be6a186580b07032c52b63fc750788b7535a4d",
         "project-templates/project/AI-DLC.md": "be8ad8c8c264b994b58edf1832d0aad5edfb1447876448caa9a424a1cfc12caf",
         "project-templates/project/ai-dlc.toml.jinja": "8cb37c2c92f7998a2c7cec84c2d293f63b1e80f1a4a4f1f330a7e5b1b92aa0cd",
@@ -180,12 +180,11 @@
     },
     {
       "bound": {
-        "catalog:docs/runbooks/machine-enrollment.md": "2cfd62a0a3d1020dc701bf842c68043d8bd118434be40dda19ce91e705829903",
+        "catalog:docs/runbooks/machine-enrollment.md": "5749f500521eba18b71290a6e63d8abcc82967ef13035e34b90406b7c67b26ee",
         "docs/runbooks/machine-enrollment.md": "817db5365ce2786515ecce389d4873ad766ea905adc14ad70ea823ceca3197b5",
-        "openspec/changes/proportionate-push-policy/specs/native-work-harnesses/spec.md": "e7b93159112db95f38a49bacdd18e1b8d272921e5e36d31928ab6ba1d120c21e",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
-        "openspec/specs/native-work-harnesses/spec.md": "09197a91bca7653dd698a1b42e7203c4240e91cd5efa4fe3665f59e778aec909",
+        "openspec/specs/native-work-harnesses/spec.md": "08e9ac67d0cc7b844d677f9d762f83d90f5627165802a63a1d24964371593efc",
         "openspec/specs/team-sources/spec.md": "3dca430922c9b5d8eb7b678b0cf00da813f9be332e76cf59a448bd718f4d4587",
         "profiles/example/ai-dlc-profile.toml": "29b58a995e46b38ac75e5db5756e766e6b130f26e162448fc41fee898e7ff01e",
         "src/ai_dlc/config.py": "3866ffe631e989d189bd17100dec9123f53f3f17ce77c56ec10decc560483e2c",
@@ -263,11 +262,11 @@
     },
     {
       "bound": {
-        "catalog:docs/workflows/tool-map.md": "d17f72cb12cd13720918d2ea996ab445a92be59a7e75cc8a51d6188968394bff",
+        "catalog:docs/workflows/tool-map.md": "5d608cd02f40e3ff678f559ab49d2f59bbeea430710aa6dbab4b1d34b7da2651",
         "docs/workflows/tool-map.md": "e5b5f224b6b813e20cbb87445ae80a0d7c7cf6fffa7e1b0c569d39e95716dbfa",
-        "openspec/changes/proportionate-push-policy/specs/native-work-harnesses/spec.md": "e7b93159112db95f38a49bacdd18e1b8d272921e5e36d31928ab6ba1d120c21e",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "openspec/specs/native-work-harnesses/spec.md": "08e9ac67d0cc7b844d677f9d762f83d90f5627165802a63a1d24964371593efc",
         "src/ai_dlc/cli.py": "f7af54e1e3ed2203e20a8c1b25525e9ee680a6900eed697173e87246ee9fb612",
         "src/ai_dlc/config.py": "3866ffe631e989d189bd17100dec9123f53f3f17ce77c56ec10decc560483e2c",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
@@ -298,19 +297,91 @@
     },
     {
       "bound": {
-        "openspec/changes/proportionate-push-policy/delivery.md": "6d0f38455c2a1518f42aad83d9f942aaf872172b01ae5b7f91a897dc4051e2f0"
+        "openspec/changes/archive/2026-09-27-proportionate-push-policy/delivery.md": "16f61d4ebcc3db022b238c3ea29dc6e43c801247efc720ffdbed7f4ab31c8e01"
       },
       "outcome": "updated",
-      "reason": "Records implementation ownership and observed automated service evidence while keeping whole-branch review, full required checks, native qualification and remote finish distinct.",
+      "reason": "Reviewed archived policy requirements and implementation evidence; repaired moved links and preserved pending full verification and exact-merge delivery gates.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-proportionate-push-policy/delivery.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-27-proportionate-push-policy/design.md": "441aaf72117c18fd3e7e596d84f4b3f9f4587e3c496aea2f074064f4e70bf43c"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed archived policy requirements and implementation evidence; repaired moved links and preserved pending full verification and exact-merge delivery gates.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-proportionate-push-policy/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-27-proportionate-push-policy/proposal.md": "4de7eeb6ff7caef829bb491534542331e4c7918e9f563307076a2094e2b32b3f"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed archived policy requirements and implementation evidence; repaired moved links and preserved pending full verification and exact-merge delivery gates.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-proportionate-push-policy/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-27-proportionate-push-policy/specs/native-work-harnesses/spec.md": "e7b93159112db95f38a49bacdd18e1b8d272921e5e36d31928ab6ba1d120c21e"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed archived policy requirements and implementation evidence; repaired moved links and preserved pending full verification and exact-merge delivery gates.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-proportionate-push-policy/specs/native-work-harnesses/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-27-proportionate-push-policy/tasks.md": "9a7c180e1b9e85838c5db898bf663e60593f55e4cc7fb49d1de6ef1650225dc5"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed archived policy requirements and implementation evidence; repaired moved links and preserved pending full verification and exact-merge delivery gates.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-proportionate-push-policy/tasks.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/proportionate-push-policy/delivery.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Moved through ai-dlc work archive; bound record follows dated archive and accepted requirements were promoted unchanged to the canonical specification.",
       "reviewer": "codex",
       "target": "openspec/changes/proportionate-push-policy/delivery.md"
     },
     {
       "bound": {
-        "openspec/changes/proportionate-push-policy/tasks.md": "6683d3693b8f714db3eb66104e8785e317344e2dd10f2f21afb3b7966ba6888b"
+        "openspec/changes/proportionate-push-policy/design.md": "missing"
       },
       "outcome": "updated",
-      "reason": "Records bounded implementation grouping, real-Git automated verification and independent reviews; full delivery verification and exact-merge finish remain explicit later gates.",
+      "reason": "Moved through ai-dlc work archive; bound record follows dated archive and accepted requirements were promoted unchanged to the canonical specification.",
+      "reviewer": "codex",
+      "target": "openspec/changes/proportionate-push-policy/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/proportionate-push-policy/proposal.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Moved through ai-dlc work archive; bound record follows dated archive and accepted requirements were promoted unchanged to the canonical specification.",
+      "reviewer": "codex",
+      "target": "openspec/changes/proportionate-push-policy/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/proportionate-push-policy/specs/native-work-harnesses/spec.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Moved through ai-dlc work archive; bound record follows dated archive and accepted requirements were promoted unchanged to the canonical specification.",
+      "reviewer": "codex",
+      "target": "openspec/changes/proportionate-push-policy/specs/native-work-harnesses/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/proportionate-push-policy/tasks.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Moved through ai-dlc work archive; bound record follows dated archive and accepted requirements were promoted unchanged to the canonical specification.",
       "reviewer": "codex",
       "target": "openspec/changes/proportionate-push-policy/tasks.md"
     }

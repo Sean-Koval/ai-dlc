@@ -30,7 +30,7 @@ After implementation and the checklist above are complete, archive this independ
 
 **Tech Stack:** Python 3.12, pytest, Pydantic/TOML configuration, existing Git runner and work-validation helpers.
 
-**Spec:** `openspec/changes/proportionate-push-policy/specs/native-work-harnesses/spec.md` (PPP-01 through PPP-04), with `design.md` and `tasks.md` in the same change.
+**Spec:** `openspec/changes/archive/2026-09-27-proportionate-push-policy/specs/native-work-harnesses/spec.md` (PPP-01 through PPP-04), with `design.md` and `tasks.md` in the same change.
 
 ## Global Constraints
 
