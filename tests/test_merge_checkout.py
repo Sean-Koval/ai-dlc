@@ -315,6 +315,23 @@ def test_cleanup_refuses_replaced_envelope_identity(tmp_path: Path):
     assert moved.exists()
 
 
+def test_cleanup_does_not_treat_a_missing_renamed_live_envelope_as_removed(
+    tmp_path: Path,
+):
+    root, first, _ = _repository(tmp_path)
+    _, owned = _allocate(tmp_path, root, first)
+    owned.create()
+    moved = owned.marker.parent.with_name(owned.marker.parent.name + "-moved")
+    owned.marker.parent.rename(moved)
+
+    result = owned.cleanup()
+
+    assert result.status == "recovery-required"
+    assert (moved / "checkout").exists()
+    assert (moved / owned.marker.name).exists()
+    assert str(owned.root) in git(root, "worktree", "list", "--porcelain")
+
+
 def test_recovery_retry_removes_checkout_after_user_clears_unexpected_content(
     tmp_path: Path,
 ):
@@ -395,6 +412,33 @@ def test_remove_failure_is_reported_without_force_fetch_or_prune(
     assert "--force" not in flattened
     assert "fetch" not in flattened
     assert "prune" not in flattened
+
+
+def test_envelope_removal_failure_restores_marker_for_recovery_retry(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    root, first, _ = _repository(tmp_path)
+    common, owned = _allocate(tmp_path, root, first)
+    owned.create()
+    envelope = owned.marker.parent
+    real_rmdir = Path.rmdir
+
+    def rmdir(path: Path):
+        if path == envelope:
+            raise OSError("simulated envelope removal failure")
+        return real_rmdir(path)
+
+    monkeypatch.setattr(Path, "rmdir", rmdir)
+    result = owned.cleanup()
+
+    assert result.status == "recovery-required"
+    assert result.locator == str(owned.marker)
+    assert owned.marker.exists()
+    assert not owned.root.exists()
+
+    monkeypatch.undo()
+    assert recover_checkout(marker=owned.marker, common_dir=common).status == "removed"
+    assert not envelope.exists()
 
 
 def test_unexpected_envelope_content_blocks_git_removal(tmp_path: Path):

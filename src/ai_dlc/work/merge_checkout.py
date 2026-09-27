@@ -223,6 +223,7 @@ class OwnedMergeCheckout:
     _common_dir: Path = field(repr=False)
     _common_identity: _Identity = field(repr=False)
     _envelope_identity: _Identity = field(repr=False)
+    _verified_removed: bool = field(default=False, init=False, repr=False, compare=False)
 
     def create(self) -> None:
         document, _, _ = _validated_marker(self.marker, self._common_dir, expected=self)
@@ -256,14 +257,12 @@ class OwnedMergeCheckout:
         _replace_marker(self.marker, document, self._envelope_identity)
 
     def cleanup(self) -> CleanupResult:
-        if (
-            not self.marker.exists()
-            and not self.marker.is_symlink()
-            and not self.marker.parent.exists()
-            and not self.marker.parent.is_symlink()
-        ):
+        if self._verified_removed:
             return CleanupResult(status="removed")
-        return _cleanup(self.marker, self._common_dir, expected=self)
+        result = _cleanup(self.marker, self._common_dir, expected=self)
+        if result.status == "removed":
+            object.__setattr__(self, "_verified_removed", True)
+        return result
 
 
 def allocate_checkout(
@@ -553,6 +552,9 @@ def _delete_empty_envelope(
     entries = list(envelope.iterdir())
     if entries != [marker]:
         raise ValueError("Owned checkout envelope contains unexpected paths")
+    expected_envelope = _identity_value(document["envelope_identity"])
+    if _directory_identity(envelope, private=True) != expected_envelope:
+        raise ValueError("Owned checkout envelope changed before removal")
     if os.name == "nt":
         from ai_dlc._windows_storage import conditional_remove
 
@@ -567,10 +569,24 @@ def _delete_empty_envelope(
         if (linked.st_dev, linked.st_ino) != marker_identity:
             raise ValueError("Owned checkout marker changed before removal")
         marker.unlink()
-    expected_envelope = _identity_value(document["envelope_identity"])
-    if _directory_identity(envelope, private=True) != expected_envelope:
-        raise ValueError("Owned checkout envelope changed before removal")
-    envelope.rmdir()
+    try:
+        if _directory_identity(envelope, private=True) != expected_envelope:
+            raise ValueError("Owned checkout envelope changed before removal")
+        envelope.rmdir()
+    except BaseException as error:
+        try:
+            if _directory_identity(envelope, private=True) != expected_envelope:
+                raise ValueError("Owned checkout envelope was replaced after marker removal")
+            if marker.exists() or marker.is_symlink():
+                raise ValueError("Owned checkout marker path changed after removal")
+            if not atomic_create(marker, marker_data.decode("utf-8"), 0o600):
+                raise ValueError("Owned checkout marker path was occupied during recovery")
+            restored, _ = _marker_snapshot(marker)
+            if restored != marker_data:
+                raise ValueError("Restored ownership marker does not match verified metadata")
+        except Exception as restore_error:  # noqa: BLE001
+            error.add_note(f"Ownership marker could not be restored safely: {restore_error}")
+        raise
 
 
 def _cleanup(
