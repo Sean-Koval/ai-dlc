@@ -267,6 +267,7 @@ class OwnedMergeCheckout:
             "--detach",
             str(self.root),
             self.revision,
+            text=False,
             context="Cannot create the owned merge checkout",
         )
         checkout_identity = _directory_identity(self.root)
@@ -484,20 +485,23 @@ def _registrations(common_dir: Path) -> dict[Path, dict[str, str | bool]]:
         "list",
         "--porcelain",
         "-z",
+        text=False,
         context="Cannot inspect owned worktree registration",
     )
     registrations: dict[Path, dict[str, str | bool]] = {}
-    for block in result.stdout.split("\0\0"):
+    for block in result.stdout.split(b"\0\0"):
         if not block:
             continue
-        fields = [value for value in block.split("\0") if value]
-        if not fields or not fields[0].startswith("worktree "):
+        fields = [value for value in block.split(b"\0") if value]
+        if not fields or not fields[0].startswith(b"worktree "):
             raise ValueError("Git returned an ambiguous worktree registration")
-        path = _absolute(Path(fields[0][len("worktree ") :]))
+        path = _absolute(Path(os.fsdecode(fields[0][len(b"worktree ") :])))
         entry: dict[str, str | bool] = {}
         for value in fields[1:]:
-            key, _, item = value.partition(" ")
-            entry[key] = item if item else True
+            if value.startswith(b"HEAD "):
+                entry["HEAD"] = value[len(b"HEAD ") :].decode("ascii")
+            elif value == b"detached":
+                entry["detached"] = True
         registrations[path] = entry
     return registrations
 
@@ -510,6 +514,7 @@ def _dirty(root: Path) -> bool:
         "-z",
         "--untracked-files=all",
         "--ignored=matching",
+        text=False,
         context="Cannot inspect owned merge checkout cleanliness",
     )
     return bool(result.stdout)
@@ -537,7 +542,7 @@ def _validate_live_checkout(
     head = run_git(root, "rev-parse", "--verify", "HEAD", context="Cannot inspect checkout HEAD")
     if head.stdout.strip().lower() != revision.lower():
         raise ValueError("Owned checkout revision changed; recovery is required")
-    symbolic = run_git(root, "symbolic-ref", "-q", "HEAD", check=False)
+    symbolic = run_git(root, "symbolic-ref", "-q", "HEAD", check=False, text=False)
     if symbolic.returncode == 0 or registration.get("detached") is not True:
         raise ValueError("Owned checkout is no longer detached")
     if str(registration.get("HEAD", "")).lower() != revision.lower():
@@ -652,6 +657,7 @@ def _cleanup(
             "worktree",
             "remove",
             str(checkout),
+            text=False,
             context="Cannot remove the owned merge checkout without force",
         )
         if checkout.exists() or checkout.is_symlink() or checkout in _registrations(common_dir):

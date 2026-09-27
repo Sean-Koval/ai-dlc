@@ -76,6 +76,46 @@ def test_common_directory_reads_git_paths_as_filesystem_bytes(
     assert text_modes == [False, False]
 
 
+def test_unicode_checkout_lifecycle_ignores_an_incompatible_text_output_codec(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    import subprocess
+
+    root, _, _ = _repository(tmp_path)
+    (root / "tracked.txt").write_text("unicode commit\n")
+    subprocess.run(
+        ["git", "-C", str(root), "commit", "-am", "unicode subject Ё"],
+        capture_output=True,
+        check=True,
+        text=False,
+        timeout=10,
+    )
+    revision = git(root, "rev-parse", "HEAD")
+    real_run = subprocess.run
+
+    def run(command, **kwargs):
+        if kwargs.get("text"):
+            binary_kwargs = {**kwargs, "text": False}
+            result = real_run(command, **binary_kwargs)
+            return subprocess.CompletedProcess(
+                result.args,
+                result.returncode,
+                result.stdout.decode("cp1252"),
+                result.stderr.decode("cp1252"),
+            )
+        return real_run(command, **kwargs)
+
+    monkeypatch.setattr(subprocess, "run", run)
+    common, owned = _allocate(tmp_path, root, revision)
+
+    owned.create()
+    result = owned.cleanup()
+
+    assert result.status == "removed"
+    assert not owned.marker.parent.exists()
+    assert repository_common_dir(root) == common
+
+
 def test_common_directory_rejects_a_symlinked_repository_path(tmp_path: Path):
     root, _, _ = _repository(tmp_path)
     alias = tmp_path / "repository alias"
