@@ -81,6 +81,14 @@ execution is a later qualification target. Existing Obsidian vaults support port
 implemented for Linear, GitHub, Jira Cloud and Plane. Jira and Plane live workflow
 qualification and native Antigravity integration remain pending.
 
+The draft `ai-dlc agents verify --root PATH --client CLIENT --environment REPORT`
+helper generates a manual native-check procedure and incomplete evidence template;
+`--evidence FILE` validates recorded observations. It is CLI-only and performs no
+native launch, login or paid call. Current results remain pending/failed/stale/limited
+(exit 1); malformed input exits 2. Positive qualification is pending reviewed
+client/version and fixture-compatible skill/tool contracts. Follow the
+[native observation procedure](../runbooks/machine-enrollment.md#observe-the-selected-native-harness).
+
 Machine enrollment mutations are CLI-only in this cycle. MCP includes
 `work_context`, `work_publish`, `work_start`, `work_status`, `work_link`, `work_finish`,
 `doctor`, `knowledge_find`, `knowledge_append`, and `knowledge_note`, alongside

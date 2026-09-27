@@ -151,6 +151,30 @@ finding and review changes through the owning operation's normal preview.
 
 ## Observe the selected native harness
 
+The draft `agents verify` helper reads an explicit project and an existing
+redacted environment report. Select a client declared by that project:
+
+```sh
+ai-dlc agents verify --root /absolute/path/to/project --client codex --environment setup.json
+ai-dlc agents verify --root /absolute/path/to/project --client codex --environment setup.json --evidence observed.json
+```
+
+The first form lists the manual procedure, selected candidates and a fill-in
+evidence template. Review the fields requiring confirmation, then record only
+actual observed results in a UTF-8 JSON file. Unknown installed context and an
+absent observation time stay empty until the operator supplies them; the initial
+template is deliberately incomplete. The second form validates that file and
+compares current local setup facts without launching the client or running a
+version/provider probe. It does not write or upload either input.
+
+Current valid results use exit 1 for pending, failed, stale or limited evidence;
+invalid/refused input uses exit 2. This draft has no qualified client-version,
+skill or safe-tool catalog and cannot produce a qualified exit 0. Incomplete
+EER identities cannot be repaired by an operator assertion. Positive
+qualification and version-scoped Antigravity activation remain open in #175.
+An exit 1 therefore calls for inspecting the result's specific state and missing
+observations; it does not, by itself, identify a setup defect.
+
 An environment report can describe setup drift without proving that a client
 loaded the files. Keep four states separate: selected configuration, rendered
 files, observed instruction/skill recognition, and authentication at the time of

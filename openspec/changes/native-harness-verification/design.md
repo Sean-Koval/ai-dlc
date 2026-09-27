@@ -58,3 +58,6 @@ EER exposes selected guidance/server identifiers but no reviewed safe-tool catal
 
 
 The initial catalog has no qualified client/version or reviewed fixture-compatible skill/tool entries. Therefore this draft exposes pending/failed/stale/limited adjudication only: all valid current results exit 1, malformed/refused input exits 2. Do not add an unreachable success branch or fabricated entry solely to produce exit 0 in tests. Positive exact-context qualification remains an unimplemented acceptance item alongside version-scoped activation, and this issue must stay open until those behaviors have real reviewed inputs. The helper's useful result is the separate observations and explicit next steps, not a green overall verdict.
+
+
+For practical use, procedure output includes a fill-in evidence template built only from validated report fields and the public fixture/adapter contract. Actual observation time, confirmed installed context, explicit artifact choices and observed results must be supplied by the operator; unknowns stay empty or pending. Clearly label the template incomplete and list the required confirmations. It does not pass the evidence parser before required observations are filled, and it cannot supply missing EER provenance. This is JSON output only, not an automatic file write or native run.
