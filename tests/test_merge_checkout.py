@@ -56,6 +56,26 @@ def test_common_directory_is_absolute_and_shared_by_linked_worktrees(tmp_path: P
     assert repository_common_dir(linked) == common
 
 
+def test_common_directory_reads_git_paths_as_filesystem_bytes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    import ai_dlc.work.merge_checkout as lifecycle
+
+    root, _, _ = _repository(tmp_path)
+    real_run_git = lifecycle.run_git
+    text_modes: list[bool | None] = []
+
+    def run_git(root_arg, *args, **kwargs):
+        if args == ("rev-parse", "--path-format=absolute", "--git-common-dir"):
+            text_modes.append(kwargs.get("text"))
+        return real_run_git(root_arg, *args, **kwargs)
+
+    monkeypatch.setattr(lifecycle, "run_git", run_git)
+
+    assert repository_common_dir(root) == root / ".git"
+    assert text_modes == [False, False]
+
+
 def test_common_directory_rejects_a_symlinked_repository_path(tmp_path: Path):
     root, _, _ = _repository(tmp_path)
     alias = tmp_path / "repository alias"

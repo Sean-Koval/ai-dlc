@@ -148,6 +148,20 @@ def _discard_empty_envelope(envelope: Path, identity: _Identity) -> None:
     envelope.rmdir()
 
 
+def _filesystem_path_output(value: bytes) -> tuple[str, bytes]:
+    raw = value[:-1] if value.endswith(b"\n") else value
+    raw = raw[:-1] if raw.endswith(b"\r") else raw
+    if not raw or any(separator in raw for separator in (b"\0", b"\r", b"\n")):
+        raise ValueError("Git returned an ambiguous common-directory path")
+    return os.fsdecode(raw), raw
+
+
+def _path_diagnostic(value: str | bytes) -> str:
+    bounded = value[:1024]
+    suffix = "" if len(value) <= len(bounded) else f"... ({len(value)} units total)"
+    return f"{bounded!a}{suffix}"
+
+
 def repository_common_dir(root: Path) -> Path:
     """Return the guarded absolute common Git directory for a checkout."""
     root = _absolute(root)
@@ -157,23 +171,34 @@ def repository_common_dir(root: Path) -> Path:
         "rev-parse",
         "--path-format=absolute",
         "--git-common-dir",
+        text=False,
         context="Cannot resolve the repository common Git directory",
     )
-    value = result.stdout.strip()
+    value, raw = _filesystem_path_output(result.stdout)
     common = Path(value)
-    if not value or not common.is_absolute():
+    if not common.is_absolute():
         raise ValueError("Git returned an ambiguous common-directory identity")
     common = _absolute(common)
-    common_before = _directory_identity(common)
+    try:
+        common_before = _directory_identity(common)
+    except (OSError, ValueError) as error:
+        error.add_note(
+            f"Caller root was {_path_diagnostic(str(root))}; Git common-directory bytes were "
+            f"{_path_diagnostic(raw)}; filesystem decoding produced {_path_diagnostic(value)}"
+        )
+        raise
     if _directory_identity(root) != root_before or _directory_identity(common) != common_before:
         raise ValueError("Repository identity changed while resolving its common Git directory")
-    repeated = run_git(
-        root,
-        "rev-parse",
-        "--path-format=absolute",
-        "--git-common-dir",
-        context="Cannot verify the repository common Git directory",
-    ).stdout.strip()
+    repeated, _ = _filesystem_path_output(
+        run_git(
+            root,
+            "rev-parse",
+            "--path-format=absolute",
+            "--git-common-dir",
+            text=False,
+            context="Cannot verify the repository common Git directory",
+        ).stdout
+    )
     if _absolute(Path(repeated)) != common:
         raise ValueError("Repository common-directory identity changed during validation")
     return common
