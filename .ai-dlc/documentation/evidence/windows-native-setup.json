@@ -229,7 +229,7 @@
         "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
         "tests/test_cli.py": "8dd3b5e6c99714ca60f64f6db0233e21d8d15628e511c6ca0ac32944e5427af6",
         "tests/test_config.py": "60bd9343da62e760c92083765439452e4a1e924b6f585ef14780af1f7b3349ce",
-        "tests/test_finish_merged_checkout.py": "536ec375930bbc2c67217391aec3e321399b248889e82a2980ffb52e5e225b41",
+        "tests/test_finish_merged_checkout.py": "8ede50ee9494574455845f41df0ec36c6a59f653fdd3b33cdae8daeaded26d67",
         "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
         "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
         "tests/test_project.py": "0863470fa695afffc68bba51602585cd2539174cc9a8599a7cf838773f170b93",
@@ -239,8 +239,8 @@
         "tests/test_workflow.py": "38aa9de4fad30227e0348a2054ac7e1043cd6fe260e41dc4df5617de9c482b94"
       },
       "outcome": "reviewed-no-change",
-      "reason": "The UTF-8 correction preserves the documented read-only finish preflight, merged-revision lifecycle, and recovery behavior.",
-      "reviewer": "Codex integration review, 2026-09-27; UTF-8 finish preflight regression fixed; native desktop qualification pending",
+      "reason": "Reviewed deterministic UTF-8/LF fixtures and explicit CRLF normalization recovery coverage. Production behavior is unchanged: ordinary finish may normalize historical records, and the owned checkout remains available for recovery whenever that leaves tracked changes. Existing finish and recovery guidance remains accurate.",
+      "reviewer": "codex",
       "target": "docs/development-workflow.md"
     },
     {
@@ -486,7 +486,7 @@
         "tests/test_environment_report_collection.py": "2acfade90e9a7137a674adb75547a18e49d5992bbbe42d4e8ba7f072ab81dd41",
         "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
         "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
-        "tests/test_finish_merged_checkout.py": "536ec375930bbc2c67217391aec3e321399b248889e82a2980ffb52e5e225b41",
+        "tests/test_finish_merged_checkout.py": "8ede50ee9494574455845f41df0ec36c6a59f653fdd3b33cdae8daeaded26d67",
         "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
         "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
         "tests/test_rendering.py": "cbc5c9bbc5dceafda37d1f41781f2d86891ba2273b6e32455e6997bcfd7f312c",
@@ -494,8 +494,8 @@
         "tests/test_workflow.py": "38aa9de4fad30227e0348a2054ac7e1043cd6fe260e41dc4df5617de9c482b94"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Explicit UTF-8 decoding fixes native portability without changing the finish command, MCP surface, or provider responsibilities.",
-      "reviewer": "Codex integration review, 2026-09-27; UTF-8 finish preflight regression fixed; native desktop qualification pending",
+      "reason": "Reviewed deterministic UTF-8/LF fixtures and explicit CRLF normalization recovery coverage. Production behavior is unchanged: ordinary finish may normalize historical records, and the owned checkout remains available for recovery whenever that leaves tracked changes. Existing finish and recovery guidance remains accurate.",
+      "reviewer": "codex",
       "target": "docs/workflows/tool-map.md"
     },
     {
