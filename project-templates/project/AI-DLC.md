@@ -23,6 +23,9 @@ After integrating the target branch, run `ai-dlc project check --required` befor
 merge. Keep the team's existing tools and commands in `checks.commands` and
 select required acceptance checks in `checks.required`; generated tests are a
 starting point, not coverage of the developed application.
+Use the [brownfield behavior-check rehearsal](docs/workflows/brownfield.md#rehearse-a-reviewed-behavior-check)
+to review a source-grounded requirement/check/prerequisite mapping and demonstrate
+pass, regression failure and restored pass in an external disposable fixture.
 
 This project's `scripts/bootstrap.sh` runs in release mode: it installs the AI-DLC engine named by `bootstrap/release.sh`, a hash-bound manifest from a published AI-DLC release. An engine that was itself installed from a release writes that file when it generates a project; an engine running from an AI-DLC source checkout cannot, and reports `"release_manifest": "absent"`. In that case add `bootstrap/release.sh` from a published release before enabling CI, verify it against the release's `SHA256SUMS`, and never download an unpinned latest script.
 

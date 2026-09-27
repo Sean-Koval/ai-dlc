@@ -2,7 +2,7 @@
 
 ## Context and observed behavior
 
-Authority is [product direction](../../../docs/product-direction.md), particularly useful local checks, small artifacts and measured outcomes. `portable-development` already owns PC-01 focused checks, PC-02 full completion evidence and PC-03 behavioral Python starters. `connected-project-readiness` RD-04 already requires actionable runtime failures. These contracts are retained, not replaced.
+Authority is [product direction](../../../../docs/product-direction.md), particularly useful local checks, small artifacts and measured outcomes. `portable-development` already owns PC-01 focused checks, PC-02 full completion evidence and PC-03 behavioral Python starters. `connected-project-readiness` RD-04 already requires actionable runtime failures. These contracts are retained, not replaced.
 
 `setup/project.py` resolves mise before checks, including an empty tools table. The evaluation runbook records a candidate that adopts and renders successfully but cannot execute the normal runner because mise is absent. Existing adoption preserves authored checks and tests; new Python greeting tests are a starter example rather than a team's acceptance suite. The intended addition is guided selection and observable rehearsal, not an inference that current checks are inadequate.
 
@@ -25,3 +25,22 @@ Update current development/adoption guidance and the evaluation prerequisite sec
 ## Inputs and boundaries
 
 The team's concrete requirement and test command must be selected during actual adoption by its maintainer. This is an explicit per-project input, not a missing product decision or license to choose a universal framework. The paid comparison remains deferred. No dependency on other proposed team-adoption changes is required; integration with their platforms is qualified separately.
+
+
+## Observed builder compatibility refinement
+
+The real September 27 UTC Linux arm64 build produced the declared common base,
+including mise 2026.9.1. Docker 20.10.17 with BuildKit then interpreted its raw
+`sha256:<image ID>` in a candidate `FROM` as a registry repository/tag and refused
+the build before installation. A minimal local-reference probe confirmed that a
+content-derived local tag resolves to the same image and builds successfully.
+
+Ruling: adapt only raw local-image IDs inside candidate preparation to a verified
+content-derived local reference. Keep the public base identity and ancestry check
+bound to the original digest; registry-digest inputs retain their existing path.
+Reuse an existing alias only when its image identity matches, and refuse a
+conflicting alias instead of overwriting it. Retain the alias: removing a last tag
+could delete the baseline image still needed by the comparison. This is local
+build metadata, not publication, a mutable replacement for evidence identity or a
+new registry manager. The cost of this choice is one retained local alias per
+base image; the actual source/build evidence records that limitation.

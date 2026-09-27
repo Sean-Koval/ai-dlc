@@ -2,7 +2,7 @@
 
 ## Why
 
-The [product direction](../../../docs/product-direction.md) promises useful local checks and measured outcomes with small recurring context. The existing runner supports team-owned commands and focused feedback, but adoption does not yet guide a team from its actual test tools to demonstrated behavioral acceptance. The evaluation candidate also lacks the mise runtime required by the normal check path. Passing scaffolding or syntax checks cannot establish that a team's requirement is tested.
+The [product direction](../../../../docs/product-direction.md) promises useful local checks and measured outcomes with small recurring context. The existing runner supports team-owned commands and focused feedback, but adoption does not yet guide a team from its actual test tools to demonstrated behavioral acceptance. The evaluation candidate also lacks the mise runtime required by the normal check path. Passing scaffolding or syntax checks cannot establish that a team's requirement is tested.
 
 ## What Changes
 

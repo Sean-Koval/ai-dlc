@@ -45,6 +45,25 @@ unpublished, incomplete or unavailable states block the dependent branch.
 Describe observable success and preserved compatibility. Keep unapproved format
 or error decisions in Open decisions rather than acceptance facts.
 
+### Reviewed behavior check
+
+Complete this mapping when the slice changes observable behavior or adopts a
+behavior check. Cite exact repository sources and retain unknowns; filenames,
+syntax checks and successful setup do not establish behavioral coverage.
+
+| Requirement / check IDs | Observable behavior | Sources inspected | Exact command and command source | Prerequisites and reviewed setup action | Required or optional | Unknowns and review decision |
+| --- | --- | --- | --- | --- | --- | --- |
+| <RQ-001 / check-id> | <observable result> | <requirement, test config, CI, manifest paths> | <team-owned command and source> | <runtime/tool needs, setup action or unresolved> | <required/optional and why> | <accepted facts, unknowns, reviewer/source> |
+
+Preserve authored tests, required IDs and unrelated commands. Apply configuration
+only after the mapping and prerequisite choice are reviewed under the existing
+authorization. Checks use the declared shell/runtime and install nothing. The
+normal runner requires `mise` even with an empty tools table; an unavailable
+runtime produces no passing evidence. Follow the canonical
+[brownfield rehearsal](../workflows/brownfield.md#rehearse-a-reviewed-behavior-check)
+in an external disposable fixture. A missed expected failure or failed isolation
+is incomplete, and a focused passing result does not replace the full required run.
+
 - [ ] Define acceptance/regression cases for this slice.
 - [ ] Implement the scoped behavior, or execute the authorized verification.
 - [ ] Update supporting documentation and collect actual evidence.

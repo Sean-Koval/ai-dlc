@@ -184,6 +184,13 @@ class Client(Strict):
     sha256: Annotated[dict[Literal["linux-x64", "linux-arm64"], Sha256], Field(min_length=1)]
 
 
+class Mise(Strict):
+    """The shared check runner, verified from its published bytes per platform."""
+
+    version: Annotated[str, StringConstraints(pattern=r"^[0-9]+\.[0-9]+\.[0-9]+$")]
+    sha256: Annotated[dict[Literal["linux-x64", "linux-arm64"], Sha256], Field(min_length=1)]
+
+
 class BaseImage(Strict):
     """The image both arms share: a pinned parent, distribution packages and one client."""
 
@@ -191,6 +198,8 @@ class BaseImage(Strict):
     parent: Image = Field(alias="from")
     packages: list[Annotated[str, StringConstraints(pattern=r"^[a-z0-9][a-z0-9+.-]*$")]] = []
     client: Client
+    # Optional for schema-1 compatibility. Recipes without it cannot qualify the normal check runner.
+    mise: Mise | None = None
 
 
 SCHEMAS = {
