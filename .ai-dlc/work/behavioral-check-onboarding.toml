@@ -30,8 +30,8 @@ deploy = "none"
 
 [artifacts]
 brief = "docs/product-direction.md"
-spec = "openspec/changes/behavioral-check-onboarding"
-plan = "openspec/changes/behavioral-check-onboarding/tasks.md"
+spec = "openspec/changes/archive/2026-09-27-behavioral-check-onboarding"
+plan = "openspec/changes/archive/2026-09-27-behavioral-check-onboarding/tasks.md"
 branch = "codex/behavioral-check-onboarding"
 tracker = "176"
 
