@@ -29,7 +29,7 @@ After implementation and the checklist above are complete, archive this independ
 **Goal:** implement #178's explicit `work finish WORK_ID --at-merge` by composing ordinary finish.
 **Architecture:** one local owned-worktree module, one WorkService orchestration method, thin CLI dispatch. The historical project supplies policy; the caller supplies local configuration selection and the ordinary journal.
 **Tech stack:** existing Python, `run_git`, `project_write_lock`, atomic filesystem helpers; no new dependency.
-**Spec:** `openspec/changes/finish-merged-checkout/{design.md,tasks.md,specs/spec-delivery-traceability/spec.md}`.
+**Spec:** `openspec/changes/archive/2026-09-27-finish-merged-checkout/{design.md,tasks.md,specs/spec-delivery-traceability/spec.md}`.
 **Basis:** focused inspection at main `56a5795`; preflight.md remains background, with corrections below. No tests or remote actions performed for this plan.
 
 ## Constraints and rulings

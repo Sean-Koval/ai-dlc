@@ -4,7 +4,7 @@ Proposed local work ID: `finish-merged-checkout`. Priority: P2.
 Owner: Sean Koval, product decision; implementation owner unassigned.
 Status: specification and issue preparation authorized; implementation not started.
 Review source: September 26 team-adoption review and the user's request to specify and create issues. No remote tracker completion, implementation or release is authorized by this document.
-Canonical brief authority: [product direction](../../../docs/product-direction.md). Review trace: OUT-001 and RQ-005; formal acceptance resides in this change.
+Canonical brief authority: [product direction](../../../../docs/product-direction.md). Review trace: OUT-001 and RQ-005; formal acceptance resides in this change.
 
 ## Problem and outcome
 

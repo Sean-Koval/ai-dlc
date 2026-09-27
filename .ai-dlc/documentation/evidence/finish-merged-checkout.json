@@ -163,7 +163,7 @@
         "docs/development-workflow.md": "759e7a5c32d641ad0fd3923583375e779fb2e858812d9e03bc5670efa7bc8b65",
         "openspec/specs/native-work-harnesses/spec.md": "08e9ac67d0cc7b844d677f9d762f83d90f5627165802a63a1d24964371593efc",
         "openspec/specs/portable-development/spec.md": "2c75caee1dc2f59828c49ba940be6a186580b07032c52b63fc750788b7535a4d",
-        "openspec/specs/spec-delivery-traceability/spec.md": "bf19856440138dfdb049892fe0ea8aecb9fc0a34eb37aecbbbcb3d6d3b1ad0bc",
+        "openspec/specs/spec-delivery-traceability/spec.md": "66641acf9c151792cde1914062630ed50cc4199cdc3bdb4b81382e03716f2ea3",
         "project-templates/project/AI-DLC.md": "be8ad8c8c264b994b58edf1832d0aad5edfb1447876448caa9a424a1cfc12caf",
         "project-templates/project/ai-dlc.toml.jinja": "8cb37c2c92f7998a2c7cec84c2d293f63b1e80f1a4a4f1f330a7e5b1b92aa0cd",
         "project-templates/project/docs/development-workflow.md.jinja": "7e4c473a94efe7026d5341cc78d18a409ab1eca2324efed1cc02c57223434164",
@@ -318,7 +318,7 @@
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/native-work-harnesses/spec.md": "08e9ac67d0cc7b844d677f9d762f83d90f5627165802a63a1d24964371593efc",
-        "openspec/specs/spec-delivery-traceability/spec.md": "bf19856440138dfdb049892fe0ea8aecb9fc0a34eb37aecbbbcb3d6d3b1ad0bc",
+        "openspec/specs/spec-delivery-traceability/spec.md": "66641acf9c151792cde1914062630ed50cc4199cdc3bdb4b81382e03716f2ea3",
         "src/ai_dlc/cli.py": "4b0aa95f15aee585bc0b76555fe0e7e87b2ec0d6885f67bad93189b0767a7b46",
         "src/ai_dlc/config.py": "3866ffe631e989d189bd17100dec9123f53f3f17ce77c56ec10decc560483e2c",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
@@ -383,19 +383,91 @@
     },
     {
       "bound": {
-        "openspec/changes/finish-merged-checkout/delivery.md": "10084ab97428665398da9591605dbb81ad88448668da2faef2147fc619daa3d8"
+        "openspec/changes/archive/2026-09-27-finish-merged-checkout/delivery.md": "bdcd0a67ac4f68dcd442d68eb273f3654fada431a8623d56e26135261e8e3324"
       },
       "outcome": "updated",
-      "reason": "Records observed real-Git and mocked-provider test evidence with separate review, full delivery verification and native qualification limits; no measured savings are manufactured.",
+      "reason": "Reviewed archived exact-merge helper requirements, task evidence and moved links; archive is distinct from final required checks and gated remote completion.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-finish-merged-checkout/delivery.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-27-finish-merged-checkout/design.md": "ab4ea4832bce18c3c50cb060b061adb23d83f098cd9f6b79149ae1a8e0d93e10"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed archived exact-merge helper requirements, task evidence and moved links; archive is distinct from final required checks and gated remote completion.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-finish-merged-checkout/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-27-finish-merged-checkout/proposal.md": "6f39a53857ed5047aa6641682cbc2d691860c022d0c89061710779cb8e48fe5c"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed archived exact-merge helper requirements, task evidence and moved links; archive is distinct from final required checks and gated remote completion.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-finish-merged-checkout/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-27-finish-merged-checkout/specs/spec-delivery-traceability/spec.md": "809f58bfe3c8f238dae45c25a73cbe30b8c65ca5be10f26eeb38f15a41101353"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed archived exact-merge helper requirements, task evidence and moved links; archive is distinct from final required checks and gated remote completion.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-finish-merged-checkout/specs/spec-delivery-traceability/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/archive/2026-09-27-finish-merged-checkout/tasks.md": "5531913ab19b6a7098a34ad74b95f6c57a35e449289fc6729d65181dae25d62b"
+      },
+      "outcome": "updated",
+      "reason": "Reviewed archived exact-merge helper requirements, task evidence and moved links; archive is distinct from final required checks and gated remote completion.",
+      "reviewer": "codex",
+      "target": "openspec/changes/archive/2026-09-27-finish-merged-checkout/tasks.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/finish-merged-checkout/delivery.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Archived through ai-dlc work archive with bound record paths updated and formal requirements promoted; no qualification evidence is inferred from archival.",
       "reviewer": "codex",
       "target": "openspec/changes/finish-merged-checkout/delivery.md"
     },
     {
       "bound": {
-        "openspec/changes/finish-merged-checkout/tasks.md": "424050bc295f811678a292800599ddf915ed55772e31c8aa56eeaff200742095"
+        "openspec/changes/finish-merged-checkout/design.md": "missing"
       },
       "outcome": "updated",
-      "reason": "Records bounded implementation ownership, actual fixture checks and reviews; archive, final required verification and exact-merge completion remain distinct delivery gates.",
+      "reason": "Archived through ai-dlc work archive with bound record paths updated and formal requirements promoted; no qualification evidence is inferred from archival.",
+      "reviewer": "codex",
+      "target": "openspec/changes/finish-merged-checkout/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/finish-merged-checkout/proposal.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Archived through ai-dlc work archive with bound record paths updated and formal requirements promoted; no qualification evidence is inferred from archival.",
+      "reviewer": "codex",
+      "target": "openspec/changes/finish-merged-checkout/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/finish-merged-checkout/specs/spec-delivery-traceability/spec.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Archived through ai-dlc work archive with bound record paths updated and formal requirements promoted; no qualification evidence is inferred from archival.",
+      "reviewer": "codex",
+      "target": "openspec/changes/finish-merged-checkout/specs/spec-delivery-traceability/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/finish-merged-checkout/tasks.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Archived through ai-dlc work archive with bound record paths updated and formal requirements promoted; no qualification evidence is inferred from archival.",
       "reviewer": "codex",
       "target": "openspec/changes/finish-merged-checkout/tasks.md"
     },
