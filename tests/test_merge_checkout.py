@@ -378,6 +378,8 @@ def test_cleanup_refuses_replaced_envelope_identity(tmp_path: Path):
 def test_cleanup_does_not_treat_a_missing_renamed_live_envelope_as_removed(
     tmp_path: Path,
 ):
+    import subprocess
+
     root, first, _ = _repository(tmp_path)
     _, owned = _allocate(tmp_path, root, first)
     owned.create()
@@ -389,7 +391,19 @@ def test_cleanup_does_not_treat_a_missing_renamed_live_envelope_as_removed(
     assert result.status == "recovery-required"
     assert (moved / "checkout").exists()
     assert (moved / owned.marker.name).exists()
-    assert str(owned.root) in git(root, "worktree", "list", "--porcelain")
+    registrations = subprocess.run(
+        ["git", "-C", str(root), "worktree", "list", "--porcelain", "-z"],
+        capture_output=True,
+        check=True,
+        text=False,
+        timeout=10,
+    ).stdout.split(b"\0\0")
+    owned_registration = next(
+        fields
+        for fields in (block.split(b"\0") for block in registrations if block)
+        if Path(os.fsdecode(fields[0][len(b"worktree ") :])) == owned.root
+    )
+    assert any(field.startswith(b"prunable ") for field in owned_registration)
 
 
 def test_recovery_retry_removes_checkout_after_user_clears_unexpected_content(
