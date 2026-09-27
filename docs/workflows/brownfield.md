@@ -70,6 +70,7 @@ untouched. If the checkout changes after staging, application aborts and asks
 for a fresh preview instead of applying a stale plan. Copier conflicts leave
 the original checkout untouched.
 
+<a id="rehearse-a-reviewed-behavior-check"></a>
 ## 4. Rehearse a reviewed behavior check
 
 Use the team's existing test tools. This procedure demonstrates that one reviewed
