@@ -469,6 +469,15 @@
     },
     {
       "bound": {
+        "tests/test_git_runner.py": "92482a020ff396e70978b25ee26df1f2051c7905f20eaed532035eac900d4126"
+      },
+      "outcome": "updated",
+      "reason": "Exempts the stdlib-only plugin hook shim, which cannot import ai_dlc.files.run_git, from the shared git runner rule.",
+      "reviewer": "Claude Code, directed by Sean Koval",
+      "target": "tests/test_git_runner.py"
+    },
+    {
+      "bound": {
         "tests/test_hook_shim.py": "e880270c3a0ec2f598b51c53a7ab3648028edc09f61bf6320094d66a1365d779"
       },
       "outcome": "updated",
