@@ -2,7 +2,7 @@
 
 ## Why
 
-[ADR 0001](../../../docs/decisions/0001-refocus-ai-dlc.md) keeps one workflow
+[ADR 0001](../../../../docs/decisions/0001-refocus-ai-dlc.md) keeps one workflow
 plugin in scope. Today AI-DLC's guidance, hooks and skills reach an agent only by
 rendering files into an adopted repository, so none of it reaches a hangar sandbox
 and nobody can measure whether it helps. One opt-in plugin lets a team harness

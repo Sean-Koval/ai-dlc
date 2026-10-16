@@ -29,8 +29,8 @@ deploy = "none"
 
 [artifacts]
 brief = "docs/decisions/0001-refocus-ai-dlc.md"
-spec = "openspec/changes/workflow-plugin"
-plan = "openspec/changes/workflow-plugin/tasks.md"
+spec = "openspec/changes/archive/2026-10-16-workflow-plugin"
+plan = "openspec/changes/archive/2026-10-16-workflow-plugin/tasks.md"
 branch = "issue/191-192-workflow-plugin"
 tracker = "191"
 
