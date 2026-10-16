@@ -1,5 +1,11 @@
 # Selectable provider toolsets
 
+Historical: this PRD records the September 2026 selection. The Linear adapter it
+migrates away from has since been removed and Plane is unsupported; the
+[tracker boundary](../architecture.md#tracker-boundary-with-hangar) and
+[migration guide](../migration.md#tracker-defaults-and-removed-linear-adapter)
+are current.
+
 Current steering (September 7): follow the [current roadmap](../roadmap.md) and GitHub issues.
 GitHub Issues/Projects setup and capability lifecycle are delivered in PR #23.
 Work uses Jira Cloud for new work, not migration; Plane is optional. Explicit

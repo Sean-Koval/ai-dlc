@@ -335,14 +335,36 @@ def _configuration_gaps(config: Mapping) -> list[str]:
         roles["tracker"], {}
     ).get("repository"):
         configuration.append("tracker repository is required")
-    if _provider_kind(roles, providers, "tracker") == "linear":
-        settings = providers.get(roles["tracker"], {})
-        if not settings.get("team_id"):
-            configuration.append("tracker team_id is required for creation")
-        for state in ["in_progress", "closed"]:
-            if not settings.get("statuses", {}).get(state):
-                configuration.append("tracker statuses." + state + " is required")
+    from ai_dlc.providers import REMOVED_PROVIDER_KINDS
+
+    removed = _provider_kind(roles, providers, "tracker")
+    if isinstance(removed, str) and removed in REMOVED_PROVIDER_KINDS:
+        configuration.append(REMOVED_PROVIDER_KINDS[removed])
     return configuration
+
+
+def _provider_support(config: Mapping) -> list[dict]:
+    """Selected role providers whose adapter is shipped but unsupported and unqualified."""
+    from ai_dlc.provider_definitions import DEFINITIONS
+
+    roles = config.get("roles", {})
+    providers = config.get("providers", {})
+    support = []
+    for role in sorted(roles):
+        if not isinstance(roles[role], str):
+            continue
+        kind = _provider_kind(roles, providers, role)
+        definition = DEFINITIONS.get(kind) if isinstance(kind, str) else None
+        if definition is not None and not definition.supported:
+            support.append(
+                {
+                    "role": role,
+                    "provider": roles[role],
+                    "kind": kind,
+                    "status": "unsupported, unqualified",
+                }
+            )
+    return support
 
 
 def _capability_failure_reason(exc: Exception) -> str:
@@ -488,6 +510,7 @@ def doctor(
         "configuration": configuration,
         "provider_health": health,
         "provider_capabilities": provider_capabilities,
+        "provider_support": _provider_support(config),
         "signins": signins,
         "managed_conflicts": conflicts,
         "knowledge": knowledge,

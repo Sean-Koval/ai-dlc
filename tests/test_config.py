@@ -336,8 +336,8 @@ def test_conflicting_collection_edit_and_unknown_version_rejected():
 def test_project_output_excludes_personal_settings(tmp_path: Path):
     from ai_dlc.config import load_project
 
-    (tmp_path / "ai-dlc.toml").write_text('schema = 4\n[roles]\ntracker = "linear"\n')
-    assert load_project(tmp_path)["roles"]["tracker"] == "linear"
+    (tmp_path / "ai-dlc.toml").write_text('schema = 4\n[roles]\ntracker = "jira-cloud"\n')
+    assert load_project(tmp_path)["roles"]["tracker"] == "jira-cloud"
 
 
 def test_misplaced_secret_or_unknown_field_rejected():
@@ -346,7 +346,7 @@ def test_misplaced_secret_or_unknown_field_rejected():
     with pytest.raises(ValueError, match="unknown"):
         resolve_layers([("project", {"schema": 4, "typo": True})])
     with pytest.raises(ValueError, match="credential"):
-        resolve_layers([("project", {"schema": 4, "providers": {"linear": {"token": "secret"}}})])
+        resolve_layers([("project", {"schema": 4, "providers": {"jira": {"token": "secret"}}})])
 
 
 def test_component_provider_metadata_is_additive_and_keeps_layer_provenance():
@@ -515,9 +515,9 @@ def test_personal_credential_requirement_and_machine_binding_merge():
                     "schema": 4,
                     "profile_id": "sean-development",
                     "credentials": {
-                        "linear-sandbox": {
-                            "description": "Linear sandbox access",
-                            "required_by": ["provider.linear-sandbox"],
+                        "jira-sandbox": {
+                            "description": "Jira sandbox access",
+                            "required_by": ["provider.jira-sandbox"],
                         }
                     },
                 },
@@ -527,9 +527,9 @@ def test_personal_credential_requirement_and_machine_binding_merge():
                 {
                     "schema": 4,
                     "credentials": {
-                        "linear-sandbox": {
+                        "jira-sandbox": {
                             "source": "environment",
-                            "variable": "LINEAR_SANDBOX_TOKEN",
+                            "variable": "JIRA_SANDBOX_TOKEN",
                         }
                     },
                 },
@@ -537,14 +537,14 @@ def test_personal_credential_requirement_and_machine_binding_merge():
         ]
     )
 
-    assert result.values["credentials"]["linear-sandbox"] == {
-        "description": "Linear sandbox access",
-        "required_by": ["provider.linear-sandbox"],
+    assert result.values["credentials"]["jira-sandbox"] == {
+        "description": "Jira sandbox access",
+        "required_by": ["provider.jira-sandbox"],
         "source": "environment",
-        "variable": "LINEAR_SANDBOX_TOKEN",
+        "variable": "JIRA_SANDBOX_TOKEN",
     }
-    assert result.sources["credentials.linear-sandbox.description"] == "personal"
-    assert result.sources["credentials.linear-sandbox.variable"] == "machine"
+    assert result.sources["credentials.jira-sandbox.description"] == "personal"
+    assert result.sources["credentials.jira-sandbox.variable"] == "machine"
 
 
 @pytest.mark.parametrize("layer", ["base", "project", "machine"])
@@ -560,27 +560,27 @@ def test_profile_id_is_limited_to_personal_scope(layer: str):
     [
         (
             "personal",
-            {"description": "Linear access", "required_by": [], "source": "environment"},
+            {"description": "Jira access", "required_by": [], "source": "environment"},
             "personal.*source",
         ),
         (
             "personal",
-            {"description": "Linear access", "required_by": [], "variable": "LINEAR_API_KEY"},
+            {"description": "Jira access", "required_by": [], "variable": "JIRA_API_TOKEN"},
             "personal.*variable",
         ),
         (
             "machine",
-            {"source": "environment", "variable": "LINEAR_API_KEY", "description": "Linear access"},
+            {"source": "environment", "variable": "JIRA_API_TOKEN", "description": "Jira access"},
             "machine.*description",
         ),
         (
             "machine",
-            {"source": "environment", "variable": "LINEAR_API_KEY", "required_by": []},
+            {"source": "environment", "variable": "JIRA_API_TOKEN", "required_by": []},
             "machine.*required_by",
         ),
         (
             "machine",
-            {"source": "file", "variable": "LINEAR_API_KEY"},
+            {"source": "file", "variable": "JIRA_API_TOKEN"},
             "machine.*source",
         ),
     ],
@@ -591,7 +591,7 @@ def test_credential_entries_reject_invalid_scope_fields(
     from ai_dlc.config import resolve_layers
 
     with pytest.raises(ValueError, match=message):
-        resolve_layers([(layer, {"schema": 4, "credentials": {"linear-sandbox": entry}})])
+        resolve_layers([(layer, {"schema": 4, "credentials": {"jira-sandbox": entry}})])
 
 
 @pytest.mark.parametrize(
@@ -599,20 +599,20 @@ def test_credential_entries_reject_invalid_scope_fields(
     [
         (
             "personal",
-            "Linear-sandbox",
-            {"description": "Linear access", "required_by": []},
+            "Jira-sandbox",
+            {"description": "Jira access", "required_by": []},
             "credential ID",
         ),
         (
             "machine",
-            "linear_sandbox",
-            {"source": "environment", "variable": "LINEAR_API_KEY"},
+            "jira_sandbox",
+            {"source": "environment", "variable": "JIRA_API_TOKEN"},
             "credential ID",
         ),
         (
             "machine",
-            "linear-sandbox",
-            {"source": "environment", "variable": "linear-api-key"},
+            "jira-sandbox",
+            {"source": "environment", "variable": "jira-api-token"},
             "environment variable",
         ),
     ],
@@ -637,8 +637,8 @@ def test_credential_values_are_rejected_recursively():
                     {
                         "schema": 4,
                         "credentials": {
-                            "linear-sandbox": {
-                                "description": "Linear access",
+                            "jira-sandbox": {
+                                "description": "Jira access",
                                 "required_by": [],
                                 "metadata": {"secret": "not-allowed"},
                             }
@@ -653,34 +653,34 @@ def test_credential_values_are_rejected_recursively():
     "entry",
     [
         {"required_by": []},
-        {"description": "Linear access"},
+        {"description": "Jira access"},
         {"description": 1, "required_by": []},
-        {"description": "Linear access", "required_by": ["provider.linear", 1]},
+        {"description": "Jira access", "required_by": ["provider.jira", 1]},
     ],
 )
 def test_personal_credential_requirements_must_be_complete(entry: dict[str, object]):
     from ai_dlc.config import resolve_layers
 
     with pytest.raises(ValueError, match="personal"):
-        resolve_layers([("personal", {"schema": 4, "credentials": {"linear-sandbox": entry}})])
+        resolve_layers([("personal", {"schema": 4, "credentials": {"jira-sandbox": entry}})])
 
 
 @pytest.mark.parametrize(
     "entry",
     [
         {"source": "environment"},
-        {"variable": "LINEAR_API_KEY"},
-        {"source": "environment", "variable": "LINEAR_API_KEY", "unexpected": True},
+        {"variable": "JIRA_API_TOKEN"},
+        {"source": "environment", "variable": "JIRA_API_TOKEN", "unexpected": True},
     ],
 )
 def test_machine_credential_bindings_must_be_complete_and_exact(entry: dict[str, object]):
     from ai_dlc.config import resolve_layers
 
     with pytest.raises(ValueError, match="machine"):
-        resolve_layers([("machine", {"schema": 4, "credentials": {"linear-sandbox": entry}})])
+        resolve_layers([("machine", {"schema": 4, "credentials": {"jira-sandbox": entry}})])
 
 
-@pytest.mark.parametrize("credentials", [[], {"linear-sandbox": "not-a-table"}])
+@pytest.mark.parametrize("credentials", [[], {"jira-sandbox": "not-a-table"}])
 def test_credential_tables_must_be_mappings(credentials: object):
     from ai_dlc.config import resolve_layers
 

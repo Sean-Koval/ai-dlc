@@ -374,19 +374,19 @@ def test_work_service_from_project_preserves_machine_overlay(tmp_path):
     from ai_dlc.work.workflow import WorkService
 
     (tmp_path / "ai-dlc.toml").write_text(
-        'schema = 4\n[roles]\ntracker = "linear"\n'
-        '[providers.linear]\nteam_id = "team-a"\n'
-        '[providers.linear.statuses]\nin_progress = "doing-a"\nclosed = "done-a"\n'
+        'schema = 4\n[roles]\ntracker = "tickets"\n'
+        '[providers.tickets]\nteam_id = "team-a"\n'
+        '[providers.tickets.statuses]\nin_progress = "doing-a"\nclosed = "done-a"\n'
     )
     directory = tmp_path / ".ai-dlc/work"
     directory.mkdir(parents=True)
     (directory / "one.toml").write_text(
         'schema=1\nid="one"\ntitle="One"\nscope="small"\nrequires_spec=false\n'
         'spec_reason="Regression"\nacceptance=["Bound"]\nreviewed=true\n'
-        '[providers]\ntracker="linear"\n'
+        '[providers]\ntracker="tickets"\n'
     )
     machine = tmp_path / "machine.toml"
-    machine.write_text('schema = 4\n[providers.linear]\ntoken_env = "LINEAR_MACHINE_TOKEN"\n')
+    machine.write_text('schema = 4\n[providers.tickets]\ntoken_env = "TICKETS_MACHINE_TOKEN"\n')
 
     service = WorkService.from_project(
         tmp_path,
@@ -941,7 +941,7 @@ def test_provider_workspace_drift_is_blocked(tmp_path):
 
     work(tmp_path)
     tracker = Tracker()
-    config = {"providers": {"fake": {"kind": "linear", "team_id": "original"}}}
+    config = {"providers": {"fake": {"kind": "jira-cloud", "team_id": "original"}}}
     service = WorkService(
         tmp_path, config, state_path=tmp_path / "state", registry=Registry(tracker)
     )

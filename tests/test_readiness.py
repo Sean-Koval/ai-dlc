@@ -14,17 +14,48 @@ def _checks(result: dict, component: str, dimension: str) -> list[dict]:
     ]
 
 
-def _linear_config(*, headless: bool = False) -> dict:
-    config = {
-        "roles": {"tracker": "linear"},
-        "providers": {
-            "linear": {
-                "team_id": "team",
-                "token_env": "READINESS_TEST_TOKEN",
-                "statuses": {"in_progress": "started", "closed": "completed"},
+def _desktop_tracker_config(
+    root: Path, *, headless: bool = False, settings: dict | None = None
+) -> dict:
+    """A verified repository tracker component that needs a desktop module and settings."""
+    import hashlib
+    import json
+
+    manifest = root / "desktop-tracker.json"
+    manifest.write_text(
+        json.dumps(
+            {
+                "schema": 1,
+                "components": [
+                    {
+                        "id": "desktop-tracker",
+                        "roles": ["tracker"],
+                        "modules": ["docker"],
+                        "guidance": ["guidance/desktop-tracker.md"],
+                        "required_config": ["team_id", "statuses.in_progress", "statuses.closed"],
+                    }
+                ],
             }
-        },
+        )
+    )
+    (root / "guidance").mkdir(exist_ok=True)
+    (root / "guidance/desktop-tracker.md").write_text("# Desktop tracker\n")
+    provider = {
+        "kind": "executable",
+        "component": "desktop-tracker",
+        "component_manifest": "desktop-tracker.json",
+        "component_manifest_sha256": hashlib.sha256(manifest.read_bytes()).hexdigest(),
     }
+    provider.update(
+        {
+            "team_id": "team",
+            "token_env": "READINESS_TEST_TOKEN",
+            "statuses": {"in_progress": "started", "closed": "completed"},
+        }
+        if settings is None
+        else settings
+    )
+    config = {"roles": {"tracker": "desktop-tracker"}, "providers": {"desktop-tracker": provider}}
     if headless:
         config["preferences"] = {"headless": True}
     return config
@@ -55,12 +86,12 @@ def test_reports_missing_component_configuration_separately(tmp_path: Path):
 
     result = inspect_readiness(
         tmp_path,
-        {"roles": {"tracker": "linear"}, "providers": {"linear": {}}},
+        _desktop_tracker_config(tmp_path, settings={}),
         environ={"READINESS_TEST_TOKEN": "present"},
         probe=lambda argv: {"available": True},
     )
 
-    checks = _checks(result, "linear", "configuration")
+    checks = _checks(result, "desktop-tracker", "configuration")
     assert [check["status"] for check in checks] == ["missing", "missing", "missing"]
     assert all(check["next_action"] for check in checks)
     assert result["ready"] is False
@@ -72,12 +103,12 @@ def test_reports_an_absent_environment_credential_without_its_value(tmp_path: Pa
 
     result = inspect_readiness(
         tmp_path,
-        _linear_config(),
+        _desktop_tracker_config(tmp_path),
         environ={},
         probe=lambda argv: {"available": True},
     )
 
-    checks = _checks(result, "linear", "credential")
+    checks = _checks(result, "desktop-tracker", "credential")
     assert checks[0]["status"] == "missing"
     assert checks[0]["next_action"]
     assert result["ready"] is False
@@ -166,12 +197,12 @@ def test_reports_headless_desktop_capability_as_blocked(tmp_path: Path):
 
     result = inspect_readiness(
         tmp_path,
-        _linear_config(headless=True),
+        _desktop_tracker_config(tmp_path, headless=True),
         environ={"READINESS_TEST_TOKEN": "present"},
         probe=lambda argv: {"available": True},
     )
 
-    checks = _checks(result, "linear", "tool")
+    checks = _checks(result, "desktop-tracker", "tool")
     assert checks[0]["status"] == "blocked"
     assert "headless" in checks[0]["reason"]
     assert result["ready"] is False
@@ -185,7 +216,7 @@ def test_never_returns_credential_values(tmp_path: Path):
     credential_value = "readiness-credential-value-that-must-not-escape"
     result = inspect_readiness(
         tmp_path,
-        _linear_config(),
+        _desktop_tracker_config(tmp_path),
         environ={"READINESS_TEST_TOKEN": credential_value},
         probe=lambda argv: {"available": True},
     )

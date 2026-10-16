@@ -46,12 +46,9 @@ class ProviderDefinition:
     environment_requirements: tuple[EnvironmentRequirement, ...] = ()
     runtime_requirements: tuple[RuntimeRequirement, ...] = ()
     inactive: bool = False
-
-
-def _linear(root, *, alias, environ, **options):
-    from ai_dlc.setup.provider_onboarding import connect_linear_provider
-
-    return connect_linear_provider(root, environ=environ, **options)
+    # Unsupported adapters stay importable for existing projects but are not offered by
+    # scaffolding without an explicit opt-in, and doctor reports them as unqualified.
+    supported: bool = True
 
 
 def _github(root, *, alias, environ, **options):
@@ -102,6 +99,7 @@ DEFINITIONS = {
         ("tracker",),
         frozenset({"project", "open", "in_progress", "closed", "cancelled"}),
         handler=ConnectionHandler(_plane_discover, _plane_configure),
+        supported=False,
     ),
     "jira-cloud": ProviderDefinition(
         "jira-cloud",
@@ -123,15 +121,6 @@ DEFINITIONS = {
             EnvironmentRequirement("token_env"),
             EnvironmentRequirement("email_env", when=("auth_mode", "personal_scoped_token_basic")),
         ),
-    ),
-    "linear": ProviderDefinition(
-        "linear",
-        ("tracker",),
-        frozenset({"organization", "team", "in_progress", "closed"}),
-        compatibility_connect=_linear,
-        aliases=False,
-        scaffold_defaults=(("token_env", "LINEAR_API_KEY"),),
-        environment_requirements=(EnvironmentRequirement("token_env", default="LINEAR_API_KEY"),),
     ),
     "github-issues": ProviderDefinition(
         "github-issues",

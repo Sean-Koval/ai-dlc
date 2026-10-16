@@ -163,7 +163,7 @@ def _guidance(config: dict) -> str:
             {"specs": "custom", "tracker": "issues", "scm": "hub"},
             {
                 "custom": {"kind": "executable", "component": "openspec"},
-                "issues": {"kind": "linear"},
+                "issues": {"kind": "jira-cloud"},
                 "hub": {"kind": "github", "component": "github"},
             },
             (_SPECIFICATION, _TRACKER, _MERGE, _FINISH),
@@ -182,7 +182,7 @@ def _guidance(config: dict) -> str:
         (
             {"tracker": "custom-tracker", "scm": "custom-scm"},
             {
-                "custom-tracker": {"kind": "executable", "component": "linear"},
+                "custom-tracker": {"kind": "executable", "component": "jira-cloud"},
                 "custom-scm": {"kind": "python", "component": "github"},
             },
             (_TRACKER,),
@@ -199,7 +199,7 @@ def test_shared_guidance_follows_selected_runtime_capabilities(roles, providers,
         assert phrase not in body
 
 
-@pytest.mark.parametrize("tracker", ["linear", "github-issues", "jira-cloud", "plane"])
+@pytest.mark.parametrize("tracker", ["github-issues", "jira-cloud", "plane"])
 def test_shared_guidance_supports_each_builtin_tracker_with_and_without_github(tracker):
     tracker_only = _guidance({"roles": {"tracker": tracker}})
     assert _TRACKER in tracker_only

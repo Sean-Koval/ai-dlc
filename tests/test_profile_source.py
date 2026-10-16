@@ -21,9 +21,9 @@ profile_id = "test-development"
 [modules]
 include = ["core"]
 
-[credentials.linear-sandbox]
-description = "Linear sandbox access"
-required_by = ["provider.linear-sandbox"]
+[credentials.jira-sandbox]
+description = "Jira sandbox access"
+required_by = ["provider.jira-sandbox"]
 """
 
 
@@ -93,7 +93,7 @@ def test_resolution_pins_exact_commit_and_has_deterministic_bundle_digest(tmp_pa
     assert candidate.resolved_commit == commit
     assert len(candidate.resolved_commit) == 40
     assert candidate.content_sha256 == (
-        "3bc76f2b624ea58774b9980efd8c775f7fe07b597c9e356a766e6b4dbdca5b7c"
+        "40b5655c9fbb10af6e5059ac4b419479132af72c18745398c2d5be2999269331"
     )
     assert len(candidate.content_sha256) == 64
     assert candidate.cache_root == paths.profile_root("test-development", commit)
@@ -229,7 +229,7 @@ def test_legacy_resolution_still_rejects_a_different_declared_identity(tmp_path:
 
 
 def test_secret_shaped_profile_field_is_rejected_before_cache_activation(tmp_path: Path):
-    secret_manifest = NORMAL_MANIFEST + '\n[providers.linear]\ntoken = "must-not-persist"\n'
+    secret_manifest = NORMAL_MANIFEST + '\n[providers.jira]\ntoken = "must-not-persist"\n'
     repository, _ = disposable_git_repository(tmp_path, manifest=secret_manifest)
     paths = enrollment_paths(tmp_path)
 

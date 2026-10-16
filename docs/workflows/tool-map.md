@@ -28,9 +28,14 @@ Projects may omit roles they do not need. Confirm the actual mapping in the
 project's `ai-dlc.toml`; do not infer an account, workspace, repository, or
 environment from these defaults.
 
-GitHub Issues and Projects is the recommended work tracker with recorded live
-evidence. Jira Cloud remains available pending its live workflow qualification;
-Plane is an available, unqualified adapter outside the default toolset. Follow the
+GitHub Issues and Projects is the default and recommended work tracker with
+recorded live evidence. Jira Cloud is kept for the local work lifecycle pending
+its live workflow qualification. Plane is unsupported and unqualified: scaffolding
+refuses it without `--allow-unsupported`, and doctor reports it as unsupported.
+The Linear adapter has been removed. Hangar intake, not AI-DLC, starts agent jobs
+from tickets; see the
+[tracker boundary](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/architecture.md#tracker-boundary-with-hangar)
+and set `[work] tracker_writes = "finish-only"` where both are used. Follow the
 [Jira preparation record](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/jira-cloud-new-work.md)
 for prerequisites and execution limits; adapter availability alone does not
 establish readiness.
@@ -78,7 +83,7 @@ credential values.
 `ai-dlc machine status`, `plan`, `apply`, `sync`, and `doctor` own the local
 enrollment lifecycle. Local CLI and MCP execution are current; hosted or cloud
 execution is a later qualification target. Existing Obsidian vaults support portal linking and explicit local project mounts; vault creation is not provided. Guided discovery/setup is
-implemented for Linear, GitHub, Jira Cloud and Plane. Jira and Plane live workflow
+implemented for GitHub, Jira Cloud and the unsupported Plane adapter. Jira live workflow
 qualification and native Antigravity integration remain pending.
 
 Machine enrollment mutations are CLI-only in this cycle. MCP includes

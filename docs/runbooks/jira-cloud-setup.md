@@ -4,6 +4,12 @@ Run these steps in the intended work repository with its own `ai-dlc.toml`.
 The framework checkout and your personal GitHub backlog are separate. This
 connection creates no Jira issue and migrates no existing ticket.
 
+If hangar intake also starts agent jobs from this Jira project, hangar owns the
+job's status transitions and comments. Add `[work] tracker_writes = "finish-only"`
+to the work repository's `ai-dlc.toml` so `ai-dlc work start` leaves the ticket
+alone and only `work finish` closes it; see the
+[tracker boundary](../architecture.md#tracker-boundary-with-hangar).
+
 ## 1. Choose the approved credential method and site
 
 Obtain the actual site URL and Cloud UUID through your approved account tooling.

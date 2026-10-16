@@ -20,9 +20,9 @@ profile_id = "portable-development"
 [modules]
 include = ["python"]
 
-[credentials.linear-sandbox]
-description = "Linear sandbox access"
-required_by = ["provider.linear-sandbox"]
+[credentials.jira-sandbox]
+description = "Jira sandbox access"
+required_by = ["provider.jira-sandbox"]
 
 [[agents.servers]]
 id = "notes"
@@ -70,10 +70,7 @@ def _machine(
 
 def _bind(paths: EnrollmentPaths, machine_id: str, variable: str) -> None:
     paths.machine_file(machine_id).write_text(
-        "schema = 4\n"
-        "[credentials.linear-sandbox]\n"
-        'source = "environment"\n'
-        f'variable = "{variable}"\n'
+        f'schema = 4\n[credentials.jira-sandbox]\nsource = "environment"\nvariable = "{variable}"\n'
     )
 
 
@@ -135,20 +132,20 @@ def test_two_isolated_machines_share_a_profile_but_not_bindings_or_secrets(
         tmp_path,
         "machine-a",
         source.environment,
-        {"LINEAR_A_TOKEN": SENTINEL_A, "NOTES_ACCESS_TOKEN": SENTINEL_A},
+        {"JIRA_A_TOKEN": SENTINEL_A, "NOTES_ACCESS_TOKEN": SENTINEL_A},
     )
     root_b, machine_b, paths_b = _machine(
         tmp_path,
         "machine-b",
         source.environment,
-        {"LINEAR_B_TOKEN": SENTINEL_B, "NOTES_ACCESS_TOKEN": SENTINEL_B},
+        {"JIRA_B_TOKEN": SENTINEL_B, "NOTES_ACCESS_TOKEN": SENTINEL_B},
     )
     results: list[object] = []
 
     results.append(machine_a.enroll(source.source, "portable-development", "machine-a", apply=True))
     results.append(machine_b.enroll(source.source, "portable-development", "machine-b", apply=True))
-    _bind(paths_a, "machine-a", "LINEAR_A_TOKEN")
-    _bind(paths_b, "machine-b", "LINEAR_B_TOKEN")
+    _bind(paths_a, "machine-a", "JIRA_A_TOKEN")
+    _bind(paths_b, "machine-b", "JIRA_B_TOKEN")
 
     lock_a = read_lock(paths_a)
     lock_b = read_lock(paths_b)
@@ -165,10 +162,10 @@ def test_two_isolated_machines_share_a_profile_but_not_bindings_or_secrets(
         tomllib.loads(profile_b.read_text())
     )
     assert resolved_a.sources["profile_id"] == resolved_b.sources["profile_id"] == "personal"
-    assert resolved_a.sources["credentials.linear-sandbox.variable"] == "machine"
-    assert resolved_b.sources["credentials.linear-sandbox.variable"] == "machine"
-    assert resolved_a.values["credentials"]["linear-sandbox"]["variable"] == "LINEAR_A_TOKEN"
-    assert resolved_b.values["credentials"]["linear-sandbox"]["variable"] == "LINEAR_B_TOKEN"
+    assert resolved_a.sources["credentials.jira-sandbox.variable"] == "machine"
+    assert resolved_b.sources["credentials.jira-sandbox.variable"] == "machine"
+    assert resolved_a.values["credentials"]["jira-sandbox"]["variable"] == "JIRA_A_TOKEN"
+    assert resolved_b.values["credentials"]["jira-sandbox"]["variable"] == "JIRA_B_TOKEN"
 
     before_a = _tree_snapshot(root_a)
     plan_a = machine_a.plan()
@@ -180,7 +177,7 @@ def test_two_isolated_machines_share_a_profile_but_not_bindings_or_secrets(
 
     _replace_external_execution(monkeypatch)
     results.extend([machine_a.apply(), machine_b.apply()])
-    for machine, variable in [(machine_a, "LINEAR_A_TOKEN"), (machine_b, "LINEAR_B_TOKEN")]:
+    for machine, variable in [(machine_a, "JIRA_A_TOKEN"), (machine_b, "JIRA_B_TOKEN")]:
         claude = json.loads((machine.home / ".claude.json").read_text())
         codex = tomllib.loads((machine.home / ".codex/config.toml").read_text())
         assert claude["mcpServers"]["notes"]["env"] == {
@@ -207,10 +204,10 @@ def test_failed_sync_keeps_the_old_lock_and_retry_activates_the_cached_candidate
         tmp_path,
         "transaction-machine",
         source.environment,
-        {"LINEAR_A_TOKEN": SENTINEL_A},
+        {"JIRA_A_TOKEN": SENTINEL_A},
     )
     machine.enroll(source.source, "portable-development", "machine-a", apply=True)
-    _bind(paths, "machine-a", "LINEAR_A_TOKEN")
+    _bind(paths, "machine-a", "JIRA_A_TOKEN")
     old_lock = paths.lock_file.read_bytes()
     new_commit = source.advance(UPDATED_PROFILE)
 
@@ -257,7 +254,7 @@ def test_authored_mcp_collision_blocks_sync_before_lock_change_and_preserves_byt
     source = local_git_profile(PROFILE)
     _, machine, paths = _machine(tmp_path, "ownership-machine", source.environment)
     machine.enroll(source.source, "portable-development", "machine-a", apply=True)
-    _bind(paths, "machine-a", "LINEAR_A_TOKEN")
+    _bind(paths, "machine-a", "JIRA_A_TOKEN")
     authored_path = machine.home / ".claude.json"
     authored_path.write_text(json.dumps({"mcpServers": {"notes": {"command": "authored"}}}))
     authored = authored_path.read_bytes()
@@ -281,10 +278,10 @@ def test_fetch_failure_keeps_offline_status_healthy_and_reports_the_sync_step(
         tmp_path,
         "offline-machine",
         source.environment,
-        {"LINEAR_A_TOKEN": SENTINEL_A},
+        {"JIRA_A_TOKEN": SENTINEL_A},
     )
     machine.enroll(source.source, "portable-development", "machine-a", apply=True)
-    _bind(paths, "machine-a", "LINEAR_A_TOKEN")
+    _bind(paths, "machine-a", "JIRA_A_TOKEN")
     old_lock = paths.lock_file.read_bytes()
     shutil.rmtree(source.repository)
 
@@ -313,7 +310,7 @@ def test_legacy_profile_file_migrates_and_syncs_for_the_compatibility_window(
         "legacy-machine",
         apply=True,
     )
-    _bind(paths, "legacy-machine", "LINEAR_A_TOKEN")
+    _bind(paths, "legacy-machine", "JIRA_A_TOKEN")
     second_commit = source.advance(
         LEGACY_PROFILE.replace('include = ["python"]', 'include = ["node"]')
     )

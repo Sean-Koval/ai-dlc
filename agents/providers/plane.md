@@ -1,7 +1,8 @@
 # Plane tracker
 
 Use the shared AI-DLC work lifecycle with a configured `kind = "plane"` tracker.
-Plane is optional; other trackers do not require a Plane server or token.
+Plane is unsupported and unqualified; other trackers do not require a Plane server
+or token. Do not recommend it for new work.
 
 Select Cloud or self_hosted explicitly. Self-hosted HTTP is supported only for
 localhost or literal loopback IPv4/IPv6 addresses, with valid explicit ports.

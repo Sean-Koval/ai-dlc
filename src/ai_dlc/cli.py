@@ -83,6 +83,16 @@ def service_call():
         raise typer.Exit(getattr(exc, "exit_code", 2)) from None
 
 
+@contextmanager
+def typed_refusals():
+    """Report AI-DLC's own typed failures cleanly; other exceptions keep their behavior."""
+    try:
+        yield
+    except AiDlcError as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(exc.exit_code) from None
+
+
 def conclude(result) -> None:
     """Emit a completed service result and map its envelope to the exit status."""
     emit(result)
@@ -322,27 +332,30 @@ def project_init(
     docs_preset: Annotated[str | None, typer.Option("--docs-preset")] = None,
     link_vault_option: Annotated[bool, typer.Option("--link-vault")] = False,
     vault: Annotated[Path | None, typer.Option("--vault")] = None,
+    allow_unsupported: Annotated[bool, typer.Option("--allow-unsupported")] = False,
 ):
     from ai_dlc.setup.templates import adopt
 
-    result = adopt(
-        path,
-        preset=preset,
-        apply=apply,
-        template_source=template_source,
-        vcs_ref=vcs_ref,
-        capabilities=capability,
-        providers={
-            role: value
-            for role, value in (("tracker", tracker), ("knowledge", knowledge_provider))
-            if value is not None
-        },
-        agent_clients=agent_client,
-        initialize=True,
-        docs_preset=docs_preset,
-        link_vault=link_vault_option,
-        vault=vault,
-    )
+    with service_call():
+        result = adopt(
+            path,
+            preset=preset,
+            apply=apply,
+            template_source=template_source,
+            vcs_ref=vcs_ref,
+            capabilities=capability,
+            providers={
+                role: value
+                for role, value in (("tracker", tracker), ("knowledge", knowledge_provider))
+                if value is not None
+            },
+            agent_clients=agent_client,
+            initialize=True,
+            docs_preset=docs_preset,
+            link_vault=link_vault_option,
+            vault=vault,
+            allow_unsupported=allow_unsupported,
+        )
     emit(result)
 
 
@@ -360,6 +373,7 @@ def project_adopt(
     docs_preset: Annotated[str | None, typer.Option("--docs-preset")] = None,
     link_vault_option: Annotated[bool, typer.Option("--link-vault")] = False,
     vault: Annotated[Path | None, typer.Option("--vault")] = None,
+    allow_unsupported: Annotated[bool, typer.Option("--allow-unsupported")] = False,
 ):
     from ai_dlc.setup.templates import adopt
 
@@ -380,6 +394,7 @@ def project_adopt(
             docs_preset=docs_preset,
             link_vault=link_vault_option,
             vault=vault,
+            allow_unsupported=allow_unsupported,
         )
     emit(result)
 
@@ -939,7 +954,6 @@ def project_rebind(
     plan: bool = True,
     mappings: Path | None = None,
     machine: Path | None = None,
-    connection_plan: Annotated[Path | None, typer.Option("--connection-plan")] = None,
 ):
     from ai_dlc.setup.rebind import rebind
 
@@ -951,8 +965,6 @@ def project_rebind(
             apply=not plan,
             mappings=read_toml(mappings) if mappings else {},
             machine_config=read_toml(machine) if machine else None,
-            connection_plan=connection_plan,
-            environ=os.environ,
         )
     emit(result)
 
@@ -1497,7 +1509,9 @@ def work_new(
 
 @work.command("publish")
 def work_publish(work_id: str, root: Path = Path("."), machine: Path | None = None):
-    emit(service(root, machine).publish(work_id))
+    with typed_refusals():
+        result = service(root, machine).publish(work_id)
+    emit(result)
 
 
 CommitOption = Annotated[
@@ -1525,7 +1539,9 @@ def work_link(
 def work_start(
     work_id: str, root: Path = Path("."), machine: Path | None = None, commit: CommitOption = True
 ):
-    emit(service(root, machine).start(work_id, commit=commit))
+    with typed_refusals():
+        result = service(root, machine).start(work_id, commit=commit)
+    emit(result)
 
 
 @work.command("pr")
@@ -1558,11 +1574,12 @@ def work_finish(
 ):
     """Finish tracked work, optionally from an owned checkout of its exact merge."""
     if not at_merge:
-        result = service(root, machine).finish(
-            work_id,
-            handoff.read_text() if handoff else None,
-            learning.read_text() if learning else None,
-        )
+        with typed_refusals():
+            result = service(root, machine).finish(
+                work_id,
+                handoff.read_text() if handoff else None,
+                learning.read_text() if learning else None,
+            )
         conclude(result)
         return
     with service_call():
@@ -1609,14 +1626,12 @@ def provider_list(root: Path = Path(".")):
 def provider_connect(
     name: str,
     root: Annotated[Path, typer.Option("--root")] = Path("."),
-    organization: Annotated[str | None, typer.Option("--organization")] = None,
     host: Annotated[str | None, typer.Option("--host")] = None,
     repository: Annotated[str | None, typer.Option("--repository")] = None,
     project: Annotated[str | None, typer.Option("--project")] = None,
     issues_only: Annotated[bool, typer.Option("--issues-only")] = False,
     status_field: Annotated[str | None, typer.Option("--status-field")] = None,
     open: Annotated[str | None, typer.Option("--open")] = None,
-    team: Annotated[str | None, typer.Option("--team")] = None,
     in_progress: Annotated[str | None, typer.Option("--in-progress")] = None,
     closed: Annotated[str | None, typer.Option("--closed")] = None,
     plan_file: Annotated[Path | None, typer.Option("--plan-file")] = None,
@@ -1637,8 +1652,6 @@ def provider_connect(
             issues_only=True if issues_only else None,
             status_field=status_field,
             open=open,
-            organization=organization,
-            team=team,
             in_progress=in_progress,
             closed=closed,
             plan_file=plan_file,
