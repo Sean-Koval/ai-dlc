@@ -1,0 +1,42 @@
+schema = 1
+id = "workflow-plugin"
+title = "Package the workflow as one optional Claude Code plugin with CLI-optional hooks"
+scope = "Generate and commit plugins/ai-dlc-workflow (guide skill, ten team skills, exec-form hooks, stdlib hook shim, digest lock) with a drift check in the generated required check; the shim delegates to ai-dlc hook only in adopted repositories with the CLI outside hangar. Exclude Codex packaging, marketplace publication (#193), MCP servers and changes to adopted-repository rendering or bound-push defaults."
+requires_spec = true
+spec_reason = "Adds an observable distributable package and hook behavior whose loading, digest and degradation rules need formal scenarios."
+acceptance = [
+    "The builder is deterministic, refuses skill digest mismatches and its drift check fails the generated required check.",
+    "plugin.lock.json lists the ten team skills, the guide and the hooks with a content digest; day-start and day-end are absent.",
+    "claude plugin validate --strict passes and an enabled --plugin-dir load exposes 11 namespaced skills without hook errors in an unadopted repository.",
+    "Hook shim tests cover every event and mode, the kill switch, malformed payloads, isolated execution, classifier parity and the hangar push regression.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "WP-01",
+    "WP-02",
+    "WP-03",
+    "WP-04",
+    "WP-05",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+brief = "docs/decisions/0001-refocus-ai-dlc.md"
+spec = "openspec/changes/workflow-plugin"
+plan = "openspec/changes/workflow-plugin/tasks.md"
+branch = "issue/191-192-workflow-plugin"
+tracker = "191"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"

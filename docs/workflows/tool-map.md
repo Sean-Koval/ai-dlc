@@ -60,6 +60,15 @@ optional.
 | Session or ownership transfer | `handoff` | Verified state, decisions, evidence, risks, and next action |
 | End of work period | `day-end` | Concise continuity record and reconciled remote state |
 
+The optional [workflow plugin](../../plugins/ai-dlc-workflow/README.md) carries
+`discovery`, `prd-draft`, `needs-spec`, `spec-from-prd`, `review-inbox`, `handoff`,
+`document-review`, `document-organize`, `design-brief` and `design-evaluate`,
+namespaced as `ai-dlc-workflow:<skill>`, plus an `ai-dlc-workflow` guide skill.
+`day-start` and `day-end` stay with personal profiles. Its hooks run without the
+CLI: they deny destructive commands, delegate to `ai-dlc hook` only in adopted
+repositories outside hangar, and never apply the bound-push policy in hangar.
+Repository-rendered hooks below require the CLI.
+
 Skills provide judgment patterns. Provider instructions define vendor
 operations. AI-DLC services own validation and mutation boundaries. A skill
 cannot bypass completion gates or expand the user's authorization.
