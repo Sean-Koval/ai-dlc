@@ -151,4 +151,4 @@ def assets(name: str) -> Path:
     if bundled.is_dir():
         return bundled
     checkout = Path(__file__).resolve().parents[2]
-    return checkout / ("templates" if name == "legacy" else name)
+    return checkout / name
