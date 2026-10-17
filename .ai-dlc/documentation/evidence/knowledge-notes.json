@@ -109,7 +109,7 @@
         "src/ai_dlc/harness/hook_shim.py": "9a22eedf99648975eea67800459a90b4196a06ef0dbe172d17339c586df23c77",
         "src/ai_dlc/harness/hooks.py": "b50bf047573f4735861bb091d97cd8467af16729610ddd63e97d81fffc39e9bc",
         "src/ai_dlc/harness/native_composition.py": "1e4c5729ff31cb91820bd8df3d15b60c1067b4a5f2b89381888211470dc79bc8",
-        "src/ai_dlc/harness/skill_evaluation.py": "73ded6785d5d0ff53f5f44ba4d1ede7406f367635676c269d5044358030ebc2e",
+        "src/ai_dlc/harness/skill_evaluation.py": "33bbd3001d5123004a7767321f1ed5d6e2ad822510165d5caf8df9a947555532",
         "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
         "src/ai_dlc/harness/user_agents.py": "c99f9a52a379feaa0c1721081b95fef91f51c44f0a9e906145de51154616e937",
         "src/ai_dlc/harness/windows_render.py": "8aa76c8aacc44d28a2117b3339ad7b632b91fdbe0a5557af50228dcd2aa0eeb0",
@@ -176,17 +176,17 @@
         "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
-      "outcome": "updated",
-      "reason": "Re-reviewed after merging main (archive pruning #204) into knowledge-notes. Merged text keeps both sides.",
+      "outcome": "reviewed-no-change",
+      "reason": "Re-reviewed after merging main (evaluation hand-off #194) into knowledge-notes. Changed sources come from main; this target needs no edit for them.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
     {
       "bound": {
-        "docs/catalog.toml": "b51233ecdcd8d406fe34099a58d3f96b41f824c13677240298902d6dd15e52a4"
+        "docs/catalog.toml": "e1f58e58de2d8a011c4bf37aa324d6a524096c2e95f614c5a924da040c877ff5"
       },
       "outcome": "updated",
-      "reason": "Re-reviewed after merging main (archive pruning #204) into knowledge-notes. Merged text keeps both sides.",
+      "reason": "Re-reviewed after merging main (evaluation hand-off #194) into knowledge-notes. Merged text keeps both sides.",
       "reviewer": "Claude (agent)",
       "target": "docs/catalog.toml"
     },
