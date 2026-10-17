@@ -1,0 +1,26 @@
+schema = 1
+id = "init-setup-guidance"
+title = "project init points to setup before the generated check"
+scope = "project init/adopt results and a stale agents render --check name project setup as the step that renders agent configuration; init stays a template copy. Excludes rendering during init."
+requires_spec = false
+spec_reason = "Guidance text in command output for existing behavior; no workflow or contract change."
+acceptance = [
+    "project init output names project setup as the next step and a stale generated check says to run it",
+]
+reviewed = true
+depends_on = []
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+brief = "docs/decisions/0001-refocus-ai-dlc.md"
+branch = "issue/226-227-finish-init"
+tracker = "227"
+
+[bindings]

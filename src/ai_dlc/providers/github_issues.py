@@ -11,6 +11,29 @@ from ai_dlc.contracts import Request, validate_request, validate_response
 from ai_dlc.providers.github_projects import GitHubProjects
 
 ISSUE_FIELDS = "id,number,url,state,stateReason,title,body"
+GRAPHQL_UNAVAILABLE = (
+    "GitHub GraphQL is unavailable; GitHub Projects planning status needs it. Rerun "
+    "where GraphQL is reachable to reconcile the configured Project."
+)
+
+
+class GraphQLUnavailable(RuntimeError):
+    """The GraphQL endpoint itself refused the request (proxy, policy or outage)."""
+
+
+def graphql_refused(error):
+    """True when gh reports an HTTP-level refusal of the GraphQL endpoint.
+
+    Scope, rate-limit and query errors are not refusals: REST would fail the same way,
+    or the GraphQL answer is authoritative and must surface unchanged.
+    """
+    lowered = error.lower()
+    return (
+        "graphql" in lowered
+        and re.search(r"\bHTTP (403|404|410)\b", error) is not None
+        and "rate limit" not in lowered
+        and "scope" not in lowered
+    )
 
 
 class GitHubIssuesProvider:
@@ -28,6 +51,9 @@ class GitHubIssuesProvider:
         self.project = (
             GitHubProjects(config["project"], self.graphql) if "project" in config else None
         )
+        # Set once GraphQL is refused; native issue operations then use REST, and
+        # Projects planning (GraphQL-only for node-identified projects) is skipped.
+        self.rest = False
 
     def run(self, args, *, input=None):
         result = subprocess.run(
@@ -40,7 +66,10 @@ class GitHubIssuesProvider:
             check=False,
         )
         if result.returncode:
-            raise RuntimeError(self.explain(result.stderr.strip()))
+            error = result.stderr.strip()
+            if graphql_refused(error):
+                raise GraphQLUnavailable(error)
+            raise RuntimeError(self.explain(error))
         return result.stdout.strip()
 
     def explain(self, error):
@@ -72,10 +101,77 @@ class GitHubIssuesProvider:
             raise RuntimeError("GitHub GraphQL request failed or returned incomplete data")
         return response["data"]
 
+    def rest_api(self, path, *fields, method="GET"):
+        args = ["api", "--hostname", self.host, "--method", method, path]
+        for name, value in fields:
+            args += ["-f", f"{name}={value}"]
+        return json.loads(self.run(args) or "null")
+
+    def issue_path(self, number):
+        return f"repos/{self.config['repository']}/issues/{number}"
+
+    def rest_issue(self, number):
+        data = self.rest_api(self.issue_path(number))
+        if not isinstance(data, dict) or "pull_request" in data:
+            raise ValueError("Issue reference does not name a GitHub issue")
+        reason = data.get("state_reason")
+        return {
+            "id": data.get("node_id"),
+            "number": data.get("number"),
+            "url": data.get("html_url"),
+            "state": str(data.get("state", "")).upper(),
+            "stateReason": reason.upper() if isinstance(reason, str) and reason else None,
+            "title": data.get("title"),
+            "body": data.get("body") or "",
+        }
+
+    def issue_row(self, number):
+        if not self.rest:
+            try:
+                return json.loads(self.gh("issue", "view", number, "--json", ISSUE_FIELDS))
+            except GraphQLUnavailable:
+                self.rest = True
+        return self.rest_issue(number)
+
+    def native(self, number, action, *args, state=None, fields=()):
+        """Close, reopen or edit an issue through gh, or REST once GraphQL is refused."""
+        if not self.rest:
+            try:
+                self.gh("issue", action, number, *args)
+                return
+            except GraphQLUnavailable:
+                self.rest = True
+        self.rest_api(
+            self.issue_path(number),
+            *([("state", state)] if state else []),
+            *fields,
+            method="PATCH",
+        )
+
+    def project_available(self):
+        if self.project and not self.rest:
+            try:
+                self.project.validate()
+            except GraphQLUnavailable:
+                self.rest = True
+        return bool(self.project) and not self.rest
+
+    def require_project(self):
+        if self.project and not self.project_available():
+            raise RuntimeError(GRAPHQL_UNAVAILABLE)
+
     def verify_viewer(self):
         if "viewer_id" in self.config:
             expected = self.config["viewer_id"]
-            viewer = self.graphql("query Viewer { viewer { id } }", {}).get("viewer")
+            viewer = None
+            if not self.rest:
+                try:
+                    viewer = self.graphql("query Viewer { viewer { id } }", {}).get("viewer")
+                except GraphQLUnavailable:
+                    self.rest = True
+            if self.rest:
+                user = self.rest_api("user")
+                viewer = {"id": user.get("node_id")} if isinstance(user, dict) else None
             if (
                 not isinstance(expected, str)
                 or not expected
@@ -129,7 +225,21 @@ class GitHubIssuesProvider:
         if self.project:
             if not isinstance(result["node_id"], str) or not result["node_id"]:
                 raise ValueError("Missing issue node identity")
-            result["project"] = self.project.snapshot(result)
+            if not self.rest:
+                try:
+                    result["project"] = self.project.snapshot(result)
+                except GraphQLUnavailable:
+                    self.rest = True
+            if self.rest:
+                result["project"] = {
+                    "id": self.project.config["id"],
+                    "item_id": None,
+                    "status_field_id": self.project.config["status_field_id"],
+                    "status_option_id": None,
+                    "reconciled": False,
+                    "reason": GRAPHQL_UNAVAILABLE,
+                }
+                return result
             if (
                 native == "open"
                 and result["project"]["status_option_id"]
@@ -141,7 +251,7 @@ class GitHubIssuesProvider:
     def read(self, reference):
         number = self.reference(reference)
         self.verify_viewer()
-        item = self.item(json.loads(self.gh("issue", "view", number, "--json", ISSUE_FIELDS)))
+        item = self.item(self.issue_row(number))
         if item["id"] != number:
             raise ValueError("Issue response identity mismatch")
         return item
@@ -149,13 +259,15 @@ class GitHubIssuesProvider:
     def invoke(self, operation, payload):
         payload = validate_request(operation, payload).payload
         if operation == "capabilities":
-            if self.project:
-                self.project.validate()
+            # Without GraphQL the Project cannot be read or written: reconciliation is
+            # withheld so completion closes the native issue only, while in_progress stays
+            # declared so a start fails visibly instead of silently skipping planning.
+            planning = self.project_available()
             result = {
                 "schema": 1,
                 "lifecycle": {"in_progress": self.project is not None, "closed": True},
                 "optional_operations": ["link", "prepare", "reconcile_closed"]
-                if self.project
+                if planning
                 else ["link"],
             }
         elif operation == "find":
@@ -188,8 +300,7 @@ class GitHubIssuesProvider:
                 raise ValueError("Duplicate correlation conflict")
             if found:
                 return found[0]
-            if self.project:
-                self.project.validate()
+            self.require_project()
             self.verify_viewer()
             url = self.gh(
                 "issue",
@@ -204,6 +315,7 @@ class GitHubIssuesProvider:
             current = self.read(payload["reference"])
             if not self.project:
                 raise ValueError("Project prepare is unsupported")
+            self.require_project()
             if current["issue_state"] != "open":
                 raise ValueError("Cannot prepare a terminal issue")
             self.verify_viewer()
@@ -221,6 +333,8 @@ class GitHubIssuesProvider:
                     "GitHub Issues supports open/closed; intermediate states unsupported"
                 )
             current = self.read(payload["reference"])
+            if (operation == "reconcile_closed" or state == "in_progress") and self.project:
+                self.require_project()
             if operation == "reconcile_closed" and (
                 not self.project or current["state"] != "closed"
             ):
@@ -232,7 +346,7 @@ class GitHubIssuesProvider:
             if state == "closed" and current["state"] in {"cancelled", "unknown"}:
                 raise ValueError("Cannot complete a cancelled or unknown terminal issue")
             self.verify_viewer()
-            if self.project:
+            if self.project and not self.rest:
                 self.project.set_status(current, state)
                 current = self.read(payload["reference"])
                 if state == "in_progress" and current["issue_state"] != "open":
@@ -244,12 +358,20 @@ class GitHubIssuesProvider:
                     "Issue is no longer successfully closed during terminal reconciliation"
                 )
             if state == "closed" and current["issue_state"] != "closed":
-                self.gh("issue", "close", current["id"], "--reason", "completed")
+                self.native(
+                    current["id"],
+                    "close",
+                    "--reason",
+                    "completed",
+                    state="closed",
+                    fields=[("state_reason", "completed")],
+                )
             elif state == "open" and current["issue_state"] != "open":
-                self.gh("issue", "reopen", current["id"])
+                self.native(current["id"], "reopen", state="open")
             result = self.read(payload["reference"])
             if result["state"] != state or (
                 self.project
+                and not self.rest
                 and result["project"]["status_option_id"] != self.project.config["statuses"][state]
             ):
                 raise RuntimeError("Issue or project transition remains uncertain")
@@ -258,7 +380,8 @@ class GitHubIssuesProvider:
             body = current.get("body", "")
             if payload["url"] not in body:
                 self.verify_viewer()
-                self.gh("issue", "edit", current["id"], "--body", body + "\n" + payload["url"])
+                updated = body + "\n" + payload["url"]
+                self.native(current["id"], "edit", "--body", updated, fields=[("body", updated)])
             result = self.read(payload["reference"])
         else:
             raise ValueError(f"Unsupported GitHub operation: {operation}")
