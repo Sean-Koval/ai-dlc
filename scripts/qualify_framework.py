@@ -72,7 +72,7 @@ class Environment(Record):
 
 
 class Provider(Record):
-    kind: Literal["github-issues", "jira-cloud", "plane", "linear"]
+    kind: Literal["github-issues", "jira-cloud", "plane"]
     alias: Text
     site: Text
     project: Text

@@ -43,7 +43,7 @@ Optional destination creation SHALL require a reviewed explicit plan, reconcile 
 ### Requirement: TM-04 Honest unavailable-source migration
 An unavailable source provider SHALL not block local preview, but its missing state or history SHALL remain explicitly unknown and SHALL not be fabricated.
 
-#### Scenario: Linear access is unavailable
+#### Scenario: Source tracker access is unavailable
 - **WHEN** a user reviews migration based on local work records and verified target mappings
 - **THEN** the plan identifies omitted remote-only information and applies only the explicitly reviewed mappings without claiming a complete import
 
@@ -62,7 +62,7 @@ Migration SHALL preserve existing completion policy and refuse stale configurati
 Migration SHALL accept either GitHub Issues or Plane through the same target-verification and recovery service, without assuming Plane as the personal destination or coupling tracker choice to the SCM provider.
 
 #### Scenario: The personal tracker choice changes
-- **WHEN** a reviewed migration selects Linear to GitHub Issues, Linear to Plane, or a switch between GitHub Issues and Plane
+- **WHEN** a reviewed migration moves retained work from another tracker to GitHub Issues or Plane, or switches between GitHub Issues and Plane
 - **THEN** the same selection, provenance, uncertainty and gate-preservation rules apply, unsupported state mappings are reported, and original state evidence is retained
 
 #### Scenario: Existing targets have cancelled or unknown state

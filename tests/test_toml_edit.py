@@ -77,7 +77,7 @@ def test_structural_lines_honour_escaped_basic_delimiters_and_comments():
     "line,expected",
     [
         ("[roles]\n", ("roles",)),
-        ("  [providers.linear.statuses]  # comment\n", ("providers", "linear", "statuses")),
+        ("  [providers.tickets.statuses]  # comment\n", ("providers", "tickets", "statuses")),
         ('["quoted.segment".child]\n', ("quoted.segment", "child")),
         ("[[servers]]\n", ("servers",)),
         ("key = [1, 2]\n", None),
@@ -98,7 +98,7 @@ def test_set_table_value_replaces_in_place_and_keeps_comments_and_layout():
     text = (
         "# heading\n"
         "[roles]\n"
-        "  tracker   =   'linear'   # chosen   \n"
+        "  tracker   =   'tickets'   # chosen   \n"
         '"specs" = "openspec"\n'
         "\n"
         "[other]\n"
@@ -117,7 +117,7 @@ def test_set_table_value_replaces_in_place_and_keeps_comments_and_layout():
     assert tomllib.loads(edited)["roles"]["tracker"] == "github-issues"
     quoted = set_table_value(text, "roles", "specs", "none")
     assert '"specs" = "none"\n' in quoted
-    assert tomllib.loads(quoted)["roles"] == {"tracker": "linear", "specs": "none"}
+    assert tomllib.loads(quoted)["roles"] == {"tracker": "tickets", "specs": "none"}
 
 
 def test_set_table_value_appends_a_missing_key_at_the_end_of_its_table():
@@ -150,23 +150,23 @@ def test_set_table_value_appends_a_missing_table(text, expected):
 
 def test_set_table_value_targets_dotted_tables_and_ignores_decoys():
     text = (
-        "[providers.linear]\n"
+        "[providers.tickets]\n"
         'team_id = "old"\n'
         'note = """\n'
-        "[providers.linear.statuses]\n"
+        "[providers.tickets.statuses]\n"
         'closed = "decoy"\n'
         '"""\n'
-        "[providers.linear.statuses]\n"
+        "[providers.tickets.statuses]\n"
         'closed = "done" # keep\n'
     )
-    edited = set_table_value(text, "providers.linear.statuses", "closed", "released")
+    edited = set_table_value(text, "providers.tickets.statuses", "closed", "released")
     parsed = tomllib.loads(edited)
-    assert parsed["providers"]["linear"]["statuses"] == {"closed": "released"}
-    assert '[providers.linear.statuses]\nclosed = "decoy"' in edited
+    assert parsed["providers"]["tickets"]["statuses"] == {"closed": "released"}
+    assert '[providers.tickets.statuses]\nclosed = "decoy"' in edited
     assert edited.endswith('closed = "released" # keep\n')
     assert (
-        tomllib.loads(set_table_value(edited, "providers.linear", "team_id", "new"))["providers"][
-            "linear"
+        tomllib.loads(set_table_value(edited, "providers.tickets", "team_id", "new"))["providers"][
+            "tickets"
         ]["team_id"]
         == "new"
     )

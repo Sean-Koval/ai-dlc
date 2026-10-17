@@ -6,7 +6,7 @@ include = ["core", "python"]
 
 [roles]
 specs = "openspec"
-tracker = "linear"
+tracker = "github-issues"
 knowledge = "obsidian"
 scm = "github"
 deploy = "none"
@@ -15,9 +15,9 @@ agent-client = ["claude-code", "codex"]
 [agents]
 servers = []
 
-[credentials.linear-sandbox]
-description = "Credential for a sandbox tracker integration"
-required_by = ["provider.linear"]
+[credentials.github]
+description = "Credential for the GitHub Issues tracker"
+required_by = ["provider.github-issues"]
 
 # Subscribe this profile to a reviewed team repository. Enrollment locks its
 # exact commit; machine sync previews updates and --apply activates them.

@@ -148,10 +148,14 @@ def apply_files(root: Path, before: dict, after: dict) -> list[str]:
     return changed
 
 
-def plan_toolset(*, capabilities=None, providers=None, agent_clients=None) -> dict:
+def plan_toolset(
+    *, capabilities=None, providers=None, agent_clients=None, allow_unsupported=False
+) -> dict:
     """Pure declared selection; no account identity, remote access or destination writes."""
+    from ai_dlc.errors import RefusedError
     from ai_dlc.harness.agents import CLIENT_SKILL_DIRECTORIES
     from ai_dlc.provider_definitions import DEFINITIONS
+    from ai_dlc.providers import refuse_removed_kind
 
     capabilities = list(CAPABILITIES if capabilities is None else dict.fromkeys(capabilities))
     if set(capabilities) - set(CAPABILITIES + OPTIONAL_CAPABILITIES):
@@ -162,10 +166,16 @@ def plan_toolset(*, capabilities=None, providers=None, agent_clients=None) -> di
     for role, provider in providers.items():
         if role not in capabilities:
             raise ValueError(f"{role.title()} selection requires the {role} capability")
+        refuse_removed_kind(provider)
         definition = DEFINITIONS.get(provider)
         if definition is None or role not in definition.roles:
             raise ValueError(
                 f"Unsupported {role} scaffold: {provider}; custom providers remain configurable"
+            )
+        if not definition.supported and not allow_unsupported:
+            raise RefusedError(
+                f"The {provider} {role} adapter is unsupported and unqualified; pass "
+                "--allow-unsupported to scaffold it anyway"
             )
     if agent_clients is not None and "agent-client" not in capabilities:
         raise ValueError("Client selection requires the agent-client capability")
@@ -176,7 +186,7 @@ def plan_toolset(*, capabilities=None, providers=None, agent_clients=None) -> di
         raise ValueError("Unsupported agent client")
     defaults = {
         "specs": "openspec",
-        "tracker": "linear",
+        "tracker": "github-issues",
         "knowledge": "obsidian",
         "scm": "github",
         "deploy": "none",
@@ -239,6 +249,7 @@ def adopt(
     docs_preset: str | None = None,
     link_vault: bool = False,
     vault: Path | str | None = None,
+    allow_unsupported: bool = False,
 ) -> dict:
     from ai_dlc.documentation.moc import PRESETS, plan_documents
 
@@ -252,9 +263,12 @@ def adopt(
     if "frontend" in capabilities and preset != "node":
         raise ValueError("The frontend capability requires the node preset")
     toolset = plan_toolset(
-        capabilities=capabilities, providers=providers, agent_clients=agent_clients
+        capabilities=capabilities,
+        providers=providers,
+        agent_clients=agent_clients,
+        allow_unsupported=allow_unsupported,
     )
-    tracker = toolset["roles"].get("tracker", "linear")
+    tracker = toolset["roles"].get("tracker", "github-issues")
     root = Path(os.path.abspath(root)) if os.name == "nt" else Path(root).resolve()
     source = template_source or str(assets("project-templates"))
     before = checkout_files(root)
@@ -377,7 +391,8 @@ def _validate_toolset_answers(content: bytes) -> None:
         raise ValueError("Copier client selections must be a string list")
     # Answers retain defaults even for disabled capabilities; validate the declared
     # choices without treating those retained defaults as new capability requests.
-    selected = plan_toolset(providers=providers, agent_clients=clients)
+    # Recorded answers already chose their adapter; only new scaffolds require opt-in.
+    selected = plan_toolset(providers=providers, agent_clients=clients, allow_unsupported=True)
     if "tracker_settings" in answers:
         settings = answers["tracker_settings"]
         tracker = selected["roles"]["tracker"]

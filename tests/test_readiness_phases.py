@@ -15,8 +15,8 @@ from ai_dlc.setup.readiness import (
 
 def _component(**overrides) -> dict:
     component = {
-        "id": "linear",
-        "provider": "linear",
+        "id": "tickets",
+        "provider": "tickets",
         "role": "tracker",
         "modules": [],
         "required_config": ["team_id", "statuses.closed"],
@@ -56,48 +56,48 @@ def test_agent_clients_normalizes_scalar_and_list_forms():
 
 
 def test_provider_config_checks_report_each_required_path():
-    config = {"providers": {"linear": {"team_id": "team", "statuses": {"closed": " "}}}}
+    config = {"providers": {"tickets": {"team_id": "team", "statuses": {"closed": " "}}}}
     checks = _provider_config_checks(_component(), config)
     assert [(c["status"], c["reason"]) for c in checks] == [
         ("ready", "provider configuration team_id is set"),
         ("missing", "provider configuration statuses.closed is required"),
     ]
-    assert checks[1]["next_action"] == "Configure providers.linear.statuses.closed."
+    assert checks[1]["next_action"] == "Configure providers.tickets.statuses.closed."
     assert all(c["dimension"] == "configuration" for c in checks)
 
 
 def test_credential_checks_only_consider_credentials_required_by_the_provider():
     credentials = [
-        {"id": "present", "required_by": ["provider.linear"], "configured": True, "present": True},
+        {"id": "present", "required_by": ["provider.tickets"], "configured": True, "present": True},
         {
             "id": "unset",
-            "required_by": ["provider.linear"],
+            "required_by": ["provider.tickets"],
             "configured": True,
             "present": False,
-            "variable": "LINEAR_TOKEN",
+            "variable": "TICKETS_TOKEN",
         },
         {
             "id": "unbound",
-            "required_by": ["provider.linear"],
+            "required_by": ["provider.tickets"],
             "configured": False,
             "present": False,
         },
         {"id": "other", "required_by": ["provider.github"], "configured": True, "present": True},
-        {"id": "malformed", "required_by": "provider.linear", "configured": True, "present": True},
+        {"id": "malformed", "required_by": "provider.tickets", "configured": True, "present": True},
     ]
     checks = _credential_checks(_component(), credentials)
     assert [(c["status"], c["next_action"]) for c in checks] == [
         ("ready", "No action required."),
-        ("missing", "Set LINEAR_TOKEN using your credential store."),
+        ("missing", "Set TICKETS_TOKEN using your credential store."),
         ("blocked", "Bind credential unbound in machine configuration."),
     ]
     assert {c["dimension"] for c in checks} == {"credential"}
-    assert {c["component"] for c in checks} == {"linear"}
+    assert {c["component"] for c in checks} == {"tickets"}
 
 
 def test_credential_checks_fall_back_when_no_variable_is_named():
     credentials = [
-        {"id": "unset", "required_by": ["provider.linear"], "configured": True, "present": False}
+        {"id": "unset", "required_by": ["provider.tickets"], "configured": True, "present": False}
     ]
     [check] = _credential_checks(_component(), credentials)
     assert check["reason"] == "credential unset is not present"
@@ -109,7 +109,7 @@ def test_guidance_checks_distinguish_available_from_missing(tmp_path):
     (tmp_path / "docs" / "present.md").write_text("# guidance\n")
     component = _component(guidance=["docs/present.md", "docs/absent.md", "docs/flagged.md"])
     (tmp_path / "docs" / "flagged.md").write_text("# exists but reported missing\n")
-    checks = _guidance_checks(tmp_path, component, {("linear", "docs/flagged.md")})
+    checks = _guidance_checks(tmp_path, component, {("tickets", "docs/flagged.md")})
     assert [(c["status"], c["reason"]) for c in checks] == [
         ("ready", "guidance docs/present.md is available"),
         ("missing", "guidance docs/absent.md is unavailable"),

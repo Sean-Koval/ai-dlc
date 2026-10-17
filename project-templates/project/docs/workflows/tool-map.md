@@ -9,7 +9,7 @@ not configured provider choices.
 | Responsibility | Role or service | Default provider | Durable ownership |
 | --- | --- | --- | --- |
 | Formal behavior | `specs` | OpenSpec | Requirements and scenarios |
-| Priority and lifecycle | `tracker` | Linear | Work identity, priority, and status |
+| Priority and lifecycle | `tracker` | GitHub Issues | Work identity, priority, and status |
 | Personal continuity | `knowledge` | Obsidian | Private notes, reflection, and links |
 | Review and merge | `scm` | GitHub | Branch, PR, merged SHA, CI runs, and artifacts |
 | Deployment evidence | `deploy` | None | Environment evidence when configured |

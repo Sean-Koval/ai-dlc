@@ -39,19 +39,6 @@ Adopting an existing project previews changes and reports path conflicts. Resolv
 
 The existing all-work `project rebind` command remains available for provider-role changes. Existing work retains its old provider until explicitly mapped. An apply refuses affected work without replacement artifact mappings. TOML mappings use work IDs as tables and artifact kinds as keys, for example `[work-123]` with `tracker = "NEW-42"`. PR/branch references must both be mapped when both exist. Local completion claims alone do not prove completion, so the migration treats retained records conservatively. Review old and replacement artifacts before applying.
 
-A reviewed Linear team/status change uses the same boundary. Save the non-secret
-provider connection preview under `.ai-dlc/local`, prepare a mappings TOML entry
-for every affected work ID listed by the refusal, then pass both files to `ai-dlc
-project rebind tracker linear --connection-plan PLAN --mappings MAPPINGS
---no-plan`. For this connection-plan form, affected work means exactly records
-whose effective tracker is Linear and whose tracker binding already exists. The
-transaction freshly revalidates Linear membership, applies the exact saved
-configuration digest, and computes replacement work bindings against that
-configuration. Explicitly pinned alternate-provider records and unbound records
-remain byte-for-byte unchanged. It does not create or mutate Linear issues and
-never supplies artifact mappings automatically. Rebind behavior without a
-connection plan remains the general provider migration described above.
-
 No Jira, Figma, Windows, hosted orchestration, Obsidian create/attach, or
 provider-discovery migration is provided by this release. Local CLI and MCP
 execution remain the current control plane; hosted or cloud execution is a
@@ -224,3 +211,47 @@ see the [source map](architecture.md#source-layout). Custom Python integrations
 that imported internal modules must update those imports, for example
 `ai_dlc.agents` becomes `ai_dlc.harness.agents`. Public console entry points,
 command arguments, MCP tools and provider wire contracts remain unchanged.
+
+## Tracker defaults and removed Linear adapter
+
+New projects default to the `github-issues` tracker. The packaged base profile,
+`project init` and `project adopt` without `--tracker`, the Copier template and the
+example profiles no longer select Linear or reference `LINEAR_API_KEY`. Existing
+projects keep the tracker their own `ai-dlc.toml` selects: project configuration
+wins over the base profile, and `copier update` keeps recorded answers.
+
+The Linear adapter, its guided connection (`provider connect linear`, the
+`--organization` and `--team` flags), `project rebind --connection-plan`, the
+Linear conformance target and the `linear` module are removed. A configuration
+whose tracker resolves to `linear` now receives a typed refusal (exit status 2)
+from `work start`, `work publish`, `work finish`, `provider connect`, `project
+init`/`adopt` and `project sync`, and `doctor` reports it as a configuration gap:
+
+```text
+Error: The Linear tracker adapter was removed after ai-dlc 0.4.0; select github-issues or jira-cloud, or run `ai-dlc project tracker-migrate` from ai-dlc 0.4.0 to move Linear-bound work first
+```
+
+To move off Linear:
+
+1. Configure the destination under its own alias, for example
+   `[providers.github-issues]` with `repository = "OWNER/REPO"`, and select it with
+   `[roles] tracker = "github-issues"`. Remove `[providers.linear]` once no active
+   work needs it.
+2. Map unfinished Linear-bound work to destination tickets. `ai-dlc project rebind
+   tracker github-issues --mappings MAPPINGS --no-plan` rewrites the records without
+   reading Linear. To verify the Linear source while moving, run `ai-dlc project
+   tracker-migrate` from ai-dlc 0.4.0 before upgrading.
+3. Leave finished records alone. `work validate --all` never resolves provider
+   bindings for finished records, so records pinned to `tracker = "linear"` remain
+   valid history after `[providers.linear]` is deleted; only mutating commands on
+   them refuse.
+
+The Plane adapter remains shipped but unsupported and unqualified. `project init`
+and `project adopt` refuse `--tracker plane` unless `--allow-unsupported` is also
+passed; existing Plane projects keep working and `project sync` accepts their
+recorded answers. `doctor` lists the selection under `provider_support` as
+`unsupported, unqualified`.
+
+Repositories whose agent jobs start through hangar intake can set `[work]
+tracker_writes = "finish-only"` so `work start` does not move the ticket; see the
+[tracker boundary](architecture.md#tracker-boundary-with-hangar).

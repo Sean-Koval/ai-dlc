@@ -30,7 +30,6 @@ PROVIDER_FIXTURES = [
     "tests/test_plane_workflow.py",
 ]
 FIXTURE_TARGETS = {
-    "linear": (["tests/test_providers.py"], "linear"),
     "github-issues": (
         ["tests/test_providers.py", "tests/test_github_projects.py"],
         "github_executable or test_github_projects",
@@ -45,7 +44,7 @@ FIXTURE_TARGETS = {
     "all": ([*PROVIDER_FIXTURES, "tests/test_workflow.py"], None),
 }
 UNAVAILABLE_TARGETS = {"github-deployment", "cloudflare", "obsidian", "knowledge"}
-LIVE_TARGETS = {"linear", "github-issues"}
+LIVE_TARGETS = {"github-issues"}
 
 
 def emit(result: dict, code: int) -> int:
@@ -150,11 +149,7 @@ def live_configuration(name: str) -> tuple[dict, str]:
     cfg = data.get("provider", {})
     if cfg.get("kind") != name:
         raise ValueError("Live fixture provider kind must match selected target")
-    allowed = (
-        {"kind", "token_env", "health_reference", "team_id"}
-        if name == "linear"
-        else {"kind", "token_env", "health_reference", "repository"}
-    )
+    allowed = {"kind", "token_env", "health_reference", "repository"}
     if set(cfg) - allowed or set(data) - {"sandbox_workspace", "provider"}:
         raise ValueError("Live fixture contains unsupported configuration fields")
     reference = cfg.get("health_reference")
@@ -167,8 +162,6 @@ def live_configuration(name: str) -> tuple[dict, str]:
         or not os.environ.get(credential)
     ):
         raise ValueError("Explicit live credential environment reference is unavailable")
-    if name == "linear" and cfg.get("team_id") != workspace:
-        raise ValueError("Linear team_id must be the designated sandbox workspace")
     if name == "github-issues":
         if cfg.get("repository") != workspace or not re.fullmatch(
             r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", workspace
@@ -195,26 +188,13 @@ def live_health(name: str) -> int:
     except (ValueError, OSError) as exc:
         return unavailable(name, True, str(exc))
     try:
-        if name == "linear":
-            from ai_dlc.providers.linear import LinearProvider
+        from ai_dlc.providers.github_issues import GitHubIssuesProvider
 
-            provider = LinearProvider(cfg)
-            issue = provider.query(
-                "query($id:String!) { issue(id:$id) { id url team { id } } }",
-                {"id": cfg["health_reference"]},
-            )["issue"]
-            if issue["team"]["id"] != workspace or issue["id"] != cfg["health_reference"]:
-                raise ValueError("Health issue does not belong to the designated sandbox team")
-        else:
-            from ai_dlc.providers.github_issues import GitHubIssuesProvider
-
-            issue = GitHubIssuesProvider(cfg).invoke("read", {"reference": cfg["health_reference"]})
-            if issue["id"] != cfg["health_reference"] or not issue["url"].startswith(
-                f"https://github.com/{workspace}/issues/"
-            ):
-                raise ValueError(
-                    "Health issue does not belong to the designated sandbox repository"
-                )
+        issue = GitHubIssuesProvider(cfg).invoke("read", {"reference": cfg["health_reference"]})
+        if issue["id"] != cfg["health_reference"] or not issue["url"].startswith(
+            f"https://github.com/{workspace}/issues/"
+        ):
+            raise ValueError("Health issue does not belong to the designated sandbox repository")
     except (
         ValueError,
         KeyError,

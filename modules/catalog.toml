@@ -47,12 +47,6 @@ signins = ["claude auth login"]
 mise = { "npm:@fission-ai/openspec" = "1.5.0" }
 verify = ["openspec"]
 
-[linear]
-desktop = true
-cask = ["linear-linear"]
-signins = ["Sign in to Linear; set LINEAR_API_KEY for CLI operations and configure team/status mappings."]
-linux_guidance = "Use https://linear.app in your browser; tracker integration uses its API."
-
 [obsidian]
 desktop = true
 cask = ["obsidian"]

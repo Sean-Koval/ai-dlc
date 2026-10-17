@@ -67,17 +67,17 @@ def test_provider_index_delivers_real_owned_instructions_and_removes_stale_copie
     from ai_dlc.harness.agents import render_agents
 
     config = tmp_path / "ai-dlc.toml"
-    config.write_text('schema=4\n[roles]\nspecs="openspec"\ntracker="linear"\n')
+    config.write_text('schema=4\n[roles]\nspecs="openspec"\ntracker="jira-cloud"\n')
     render_agents(tmp_path, apply=True)
     guide = (tmp_path / "AGENTS.md").read_text()
     assert ".ai-dlc/providers/openspec.md" in guide
-    assert ".ai-dlc/providers/linear.md" in guide
+    assert ".ai-dlc/providers/jira-cloud.md" in guide
     assert "@AGENTS.md" in (tmp_path / "CLAUDE.md").read_text()
     copy = tmp_path / ".ai-dlc/providers/openspec.md"
     assert copy.read_bytes() == (assets("agents") / "providers/openspec.md").read_bytes()
     ownership = json.loads((tmp_path / ".ai-dlc/agent-ownership.json").read_text())
     assert ".ai-dlc/providers/openspec.md" in ownership["files"]
-    config.write_text('schema=4\n[roles]\ntracker="linear"\n')
+    config.write_text('schema=4\n[roles]\ntracker="jira-cloud"\n')
     render_agents(tmp_path, apply=True)
     assert not copy.exists()
     assert ".ai-dlc/providers/openspec.md" not in (tmp_path / "AGENTS.md").read_text()
@@ -106,7 +106,7 @@ def test_render_preserves_authored_text_and_detects_stale_generated_section(tmp_
     from ai_dlc.harness.agents import render_agents
 
     (tmp_path / "ai-dlc.toml").write_text(
-        'schema=4\n[checks]\nrequired=["test"]\n[checks.commands]\ntest="pytest"\n[roles]\ntracker="linear"\n'
+        'schema=4\n[checks]\nrequired=["test"]\n[checks.commands]\ntest="pytest"\n[roles]\ntracker="jira-cloud"\n'
     )
     (tmp_path / "AGENTS.md").write_text("# My instructions\nKeep this.\n")
     render_agents(tmp_path, apply=True)
@@ -215,7 +215,7 @@ def test_runtime_kind_not_component_controls_concrete_lifecycle_guidance(tmp_pat
         'schema=4\n[roles]\nspecs="custom-specs"\ntracker="custom-tracker"\n'
         'scm="custom-scm"\nagent-client=["codex"]\n'
         '[providers.custom-specs]\nkind="executable"\ncomponent="openspec"\n'
-        '[providers.custom-tracker]\nkind="executable"\ncomponent="linear"\n'
+        '[providers.custom-tracker]\nkind="executable"\ncomponent="jira-cloud"\n'
         '[providers.custom-scm]\nkind="python"\ncomponent="github"\n'
     )
     render_agents(tmp_path, apply=True)
@@ -224,7 +224,7 @@ def test_runtime_kind_not_component_controls_concrete_lifecycle_guidance(tmp_pat
     assert "specification artifacts" in agents
     assert "selected tracker" in agents
     assert ".ai-dlc/providers/openspec.md" in agents
-    assert ".ai-dlc/providers/linear.md" in agents
+    assert ".ai-dlc/providers/jira-cloud.md" in agents
     assert ".ai-dlc/providers/github.md" in agents
     for unsupported in [
         "ai-dlc work archive",
@@ -577,7 +577,7 @@ def test_custom_provider_index_links_to_project_instructions_without_copying_or_
 
 
 @pytest.mark.parametrize("client,directory", [("codex", ".agents"), ("claude-code", ".claude")])
-@pytest.mark.parametrize("tracker", ["linear", "github-issues"])
+@pytest.mark.parametrize("tracker", ["jira-cloud", "github-issues"])
 def test_product_shaping_guidance_is_available_to_selected_harness(
     tmp_path, client, directory, tracker
 ):

@@ -1,3 +1,40 @@
+<div class="af-hero" markdown>
+
+<span class="af-eyebrow">Agent factory · Define plane</span>
+
+# Portable development setup and workflows for people and coding agents
+
+<p class="af-lede">AI-DLC owns the local side of delivery: it provisions machines from versioned profiles, authors the shared workflow guidance and skills agents follow, and runs the local work lifecycle from ticket binding to a gated finish. Developers and their coding agents use it in their own repositories.</p>
+
+[Get started](workflows/greenfield.md){ .md-button .md-button--primary } [Suite overview](https://sean-koval.github.io/agent-factory/){ .md-button }
+
+</div>
+
+## What it does
+
+- **Machine provisioning.** Profiles select runtimes, tools and personal agent
+  settings; each machine keeps its own paths and account bindings
+  ([machine enrollment](runbooks/machine-enrollment.md)).
+- **Workflow guidance.** Project instructions, skills, hooks and MCP configuration
+  render for supported clients ([workflow tool map](workflows/tool-map.md)).
+- **Local work lifecycle.** A work record binds a ticket, branch and specification;
+  `ai-dlc work finish` closes the ticket only after merged CI evidence
+  ([development workflow](development-workflow.md)).
+
+## How it fits the suite
+
+AI-DLC is the Define plane of the agent factory: it prepares the environment and
+workflow that agents run in, while other suite tools run sandboxes and evaluate
+harnesses. The [suite architecture](https://sean-koval.github.io/agent-factory/architecture/)
+shows the planes and their boundaries.
+
+## Where to go next
+
+Start a new project with the [greenfield workflow](workflows/greenfield.md) or adopt
+an existing one with the [brownfield workflow](workflows/brownfield.md). The
+[architecture](architecture.md) maps packages and entry points. The documentation
+map below links every canonical document.
+
 # AI-DLC documentation map
 
 Start with [product direction](product-direction.md) for the framework's promise
@@ -65,3 +102,7 @@ stay together in OpenSpec. [The archive](archive/README.md) is historical contex
 Use Git history for removed scratch reports; do not create another document solely
 to report that a change completed. The catalog identifies lifecycle and ownership,
 not an assertion that every document has received a factual review.
+
+The [documentation site](https://sean-koval.github.io/ai-dlc/) publishes these
+pages from `mkdocs.yml`; add a new durable document to its `nav` beside its catalog
+entry. The site excludes `archive/` and raw verification evidence.

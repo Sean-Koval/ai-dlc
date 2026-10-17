@@ -2,14 +2,14 @@ def test_status_reports_presence_without_returning_environment_value(monkeypatch
     from ai_dlc.environment.credentials import credential_status
 
     marker = "fake-value-that-must-not-escape"
-    monkeypatch.setenv("LINEAR_SANDBOX_TOKEN", marker)
+    monkeypatch.setenv("JIRA_SANDBOX_TOKEN", marker)
     config = {
         "credentials": {
-            "linear-sandbox": {
-                "description": "Linear sandbox access",
-                "required_by": ["provider.linear-sandbox"],
+            "jira-sandbox": {
+                "description": "Jira sandbox access",
+                "required_by": ["provider.jira-sandbox"],
                 "source": "environment",
-                "variable": "LINEAR_SANDBOX_TOKEN",
+                "variable": "JIRA_SANDBOX_TOKEN",
             }
         }
     }
@@ -18,11 +18,11 @@ def test_status_reports_presence_without_returning_environment_value(monkeypatch
 
     assert result == [
         {
-            "id": "linear-sandbox",
-            "description": "Linear sandbox access",
-            "required_by": ["provider.linear-sandbox"],
+            "id": "jira-sandbox",
+            "description": "Jira sandbox access",
+            "required_by": ["provider.jira-sandbox"],
             "source": "environment",
-            "variable": "LINEAR_SANDBOX_TOKEN",
+            "variable": "JIRA_SANDBOX_TOKEN",
             "configured": True,
             "present": True,
         }
@@ -36,9 +36,9 @@ def test_status_marks_unbound_requirement_as_not_configured_or_present():
     result = credential_status(
         {
             "credentials": {
-                "linear-sandbox": {
-                    "description": "Linear sandbox access",
-                    "required_by": ["provider.linear-sandbox"],
+                "jira-sandbox": {
+                    "description": "Jira sandbox access",
+                    "required_by": ["provider.jira-sandbox"],
                 }
             }
         },
@@ -55,11 +55,11 @@ def test_status_marks_unset_environment_binding_as_configured_but_not_present():
     result = credential_status(
         {
             "credentials": {
-                "linear-sandbox": {
-                    "description": "Linear sandbox access",
-                    "required_by": ["provider.linear-sandbox"],
+                "jira-sandbox": {
+                    "description": "Jira sandbox access",
+                    "required_by": ["provider.jira-sandbox"],
                     "source": "environment",
-                    "variable": "LINEAR_SANDBOX_TOKEN",
+                    "variable": "JIRA_SANDBOX_TOKEN",
                 }
             }
         },
@@ -74,38 +74,48 @@ def test_status_normalizes_uncovered_legacy_provider_token_environment():
     from ai_dlc.environment.credentials import credential_status
 
     result = credential_status(
-        {"providers": {"linear": {"token_env": "LINEAR_API_KEY"}}},
-        environ={"LINEAR_API_KEY": "present"},
+        {"providers": {"jira": {"token_env": "JIRA_API_TOKEN"}}},
+        environ={"JIRA_API_TOKEN": "present"},
     )
 
-    assert result[0]["id"] == "provider.linear"
-    assert result[0]["required_by"] == ["provider.linear"]
+    assert result[0]["id"] == "provider.jira"
+    assert result[0]["required_by"] == ["provider.jira"]
     assert result[0]["source"] == "environment"
-    assert result[0]["variable"] == "LINEAR_API_KEY"
+    assert result[0]["variable"] == "JIRA_API_TOKEN"
     assert result[0]["configured"] is True
     assert result[0]["present"] is True
 
 
-def test_status_normalizes_the_linear_default_token_environment():
-    """Would fail if default Linear authentication bypassed shared readiness."""
+def test_status_normalizes_a_definition_default_token_environment(monkeypatch):
+    """Would fail if a definition's default authentication bypassed shared readiness."""
+    from ai_dlc import provider_definitions
     from ai_dlc.environment.credentials import credential_status
+    from ai_dlc.provider_definitions import EnvironmentRequirement, ProviderDefinition
 
-    absent = credential_status(
-        {"providers": {"linear": {"kind": "linear"}}},
-        environ={},
+    monkeypatch.setitem(
+        provider_definitions.DEFINITIONS,
+        "defaulted",
+        ProviderDefinition(
+            "defaulted",
+            ("tracker",),
+            environment_requirements=(
+                EnvironmentRequirement("token_env", default="DEFAULTED_TOKEN"),
+            ),
+        ),
     )
+    absent = credential_status({"providers": {"tickets": {"kind": "defaulted"}}}, environ={})
     present = credential_status(
-        {"providers": {"linear": {"kind": "linear"}}},
-        environ={"LINEAR_API_KEY": "present"},
+        {"providers": {"tickets": {"kind": "defaulted"}}},
+        environ={"DEFAULTED_TOKEN": "present"},
     )
 
     assert absent == [
         {
-            "id": "provider.linear",
-            "description": "Credential for provider linear",
-            "required_by": ["provider.linear"],
+            "id": "provider.tickets",
+            "description": "Credential for provider tickets",
+            "required_by": ["provider.tickets"],
             "source": "environment",
-            "variable": "LINEAR_API_KEY",
+            "variable": "DEFAULTED_TOKEN",
             "configured": True,
             "present": False,
         }
@@ -119,22 +129,22 @@ def test_distinct_provider_token_environment_remains_visible_with_logical_requir
     result = credential_status(
         {
             "credentials": {
-                "linear-sandbox": {
-                    "description": "Linear sandbox access",
-                    "required_by": ["provider.linear"],
+                "jira-sandbox": {
+                    "description": "Jira sandbox access",
+                    "required_by": ["provider.jira"],
                     "source": "environment",
-                    "variable": "LINEAR_SANDBOX_TOKEN",
+                    "variable": "JIRA_SANDBOX_TOKEN",
                 }
             },
-            "providers": {"linear": {"token_env": "LINEAR_API_KEY"}},
+            "providers": {"jira": {"token_env": "JIRA_API_TOKEN"}},
         },
-        environ={"LINEAR_API_KEY": "provider", "LINEAR_SANDBOX_TOKEN": "logical"},
+        environ={"JIRA_API_TOKEN": "provider", "JIRA_SANDBOX_TOKEN": "logical"},
     )
 
-    assert [item["id"] for item in result] == ["linear-sandbox", "provider.linear"]
+    assert [item["id"] for item in result] == ["jira-sandbox", "provider.jira"]
     assert [item["variable"] for item in result] == [
-        "LINEAR_SANDBOX_TOKEN",
-        "LINEAR_API_KEY",
+        "JIRA_SANDBOX_TOKEN",
+        "JIRA_API_TOKEN",
     ]
 
 
@@ -145,40 +155,40 @@ def test_matching_provider_token_environment_is_not_reported_twice():
     result = credential_status(
         {
             "credentials": {
-                "linear-sandbox": {
-                    "description": "Linear sandbox access",
-                    "required_by": ["provider.linear"],
+                "jira-sandbox": {
+                    "description": "Jira sandbox access",
+                    "required_by": ["provider.jira"],
                     "source": "environment",
-                    "variable": "LINEAR_API_KEY",
+                    "variable": "JIRA_API_TOKEN",
                 }
             },
-            "providers": {"linear": {"kind": "linear"}},
+            "providers": {"jira": {"kind": "jira-cloud", "token_env": "JIRA_API_TOKEN"}},
         },
-        environ={"LINEAR_API_KEY": "present"},
+        environ={"JIRA_API_TOKEN": "present"},
     )
 
-    assert [item["id"] for item in result] == ["linear-sandbox"]
+    assert [item["id"] for item in result] == ["jira-sandbox"]
 
 
 def test_status_uses_supplied_environment_mapping_without_mutating_process_environment(monkeypatch):
     from ai_dlc.environment.credentials import credential_status
 
-    monkeypatch.delenv("LINEAR_SANDBOX_TOKEN", raising=False)
+    monkeypatch.delenv("JIRA_SANDBOX_TOKEN", raising=False)
     config = {
         "credentials": {
-            "linear-sandbox": {
-                "description": "Linear sandbox access",
-                "required_by": ["provider.linear-sandbox"],
+            "jira-sandbox": {
+                "description": "Jira sandbox access",
+                "required_by": ["provider.jira-sandbox"],
                 "source": "environment",
-                "variable": "LINEAR_SANDBOX_TOKEN",
+                "variable": "JIRA_SANDBOX_TOKEN",
             }
         }
     }
 
-    result = credential_status(config, environ={"LINEAR_SANDBOX_TOKEN": "supplied"})
+    result = credential_status(config, environ={"JIRA_SANDBOX_TOKEN": "supplied"})
 
     assert result[0]["present"] is True
-    assert "LINEAR_SANDBOX_TOKEN" not in __import__("os").environ
+    assert "JIRA_SANDBOX_TOKEN" not in __import__("os").environ
 
 
 def test_status_is_sorted_by_logical_credential_id():
@@ -190,9 +200,9 @@ def test_status_is_sorted_by_logical_credential_id():
                 "zebra": {"description": "Zebra access", "required_by": []},
                 "alpha": {"description": "Alpha access", "required_by": []},
             },
-            "providers": {"linear": {"token_env": "LINEAR_API_KEY"}},
+            "providers": {"jira": {"token_env": "JIRA_API_TOKEN"}},
         },
         environ={},
     )
 
-    assert [item["id"] for item in result] == ["alpha", "provider.linear", "zebra"]
+    assert [item["id"] for item in result] == ["alpha", "provider.jira", "zebra"]

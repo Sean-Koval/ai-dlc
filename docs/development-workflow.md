@@ -83,8 +83,8 @@ hook includes the first ten summary lines. Plain `context` remains JSON.
 
 Use the [machine enrollment runbook](runbooks/machine-enrollment.md) for private
 profiles, readiness and client setup. Provider setup belongs in the relevant
-runbook: [GitHub](github-ticket-setup.md), [Linear](runbooks/linear-setup.md),
-[Plane](runbooks/plane-setup.md), or [Jira](runbooks/jira-cloud-setup.md).
+runbook: [GitHub](github-ticket-setup.md) or [Jira](runbooks/jira-cloud-setup.md);
+the [Plane](runbooks/plane-setup.md) adapter is unsupported and unqualified.
 The lifecycle below stays independent of the selected provider.
 
 ### Explicit project commands
@@ -116,7 +116,7 @@ These additive forms require an engine revision containing the native-core chang
 - Personal knowledge stores continuity, reflection, and private notes. It links
   durable repository material and is not a repository mirror.
 - Portable configuration may name required environment variables, such as
-  `token_env = "LINEAR_API_KEY"`, but never contains their secret values.
+  `token_env = "JIRA_API_TOKEN"`, but never contains their secret values.
   Machine configuration owns account choices and local paths. `.ai-dlc/local/`
   may hold ignored non-secret control-plane IDs and local metadata. Actual
   credential values stay in an OS keychain, password manager, or secret

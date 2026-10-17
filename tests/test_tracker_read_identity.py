@@ -5,71 +5,44 @@ import re
 import tomllib
 from types import SimpleNamespace
 
-import httpx
 import pytest
 import tomli_w
 
 from ai_dlc.providers import Registry
 from ai_dlc.providers.github_issues import GitHubIssuesProvider
-from ai_dlc.providers.linear import LinearProvider
 from ai_dlc.work.tracker_migration import apply_tracker_migration, plan_tracker_migration
 from ai_dlc.work.workflow import WorkService
 
 
-@pytest.fixture(params=["github-issues", "linear"])
+@pytest.fixture(params=["github-issues"])
 def destination(request, monkeypatch):
     kind = request.param
     remote = {"identity": "expected", "closed": False, "requests": []}
-    if kind == "github-issues":
-        config = {"kind": kind, "repository": "org/repo", "viewer_id": "expected"}
+    config = {"kind": kind, "repository": "org/repo", "viewer_id": "expected"}
 
-        def run(args, **kwargs):
-            remote["requests"].append(args)
-            if args[1:3] == ["api", "graphql"]:
-                query = json.loads(kwargs["input"])["query"]
-                assert re.search(r"viewer\s*\{\s*id\s*\}", query)
-                body = {"data": {"viewer": {"id": remote["identity"]}}}
-            else:
-                assert args[1:4] == ["issue", "view", "42"]
-                row = {
-                    "id": "ISSUE_42",
-                    "title": "Fixture issue",
-                    "number": 42,
-                    "url": "https://github.com/org/repo/issues/42",
-                    "state": "CLOSED" if remote["closed"] else "OPEN",
-                    "stateReason": "COMPLETED" if remote["closed"] else None,
-                    "body": "fixture",
-                }
-                body = {key: row[key] for key in args[args.index("--json") + 1].split(",")}
-            return SimpleNamespace(returncode=0, stdout=json.dumps(body), stderr="")
-
-        monkeypatch.setattr("ai_dlc.providers.github_issues.subprocess.run", run)
-        adapter = GitHubIssuesProvider(config)
-    else:
-        config = {"kind": kind, "team_id": "expected"}
-
-        def handle(request):
-            payload = json.loads(request.content)
-            remote["requests"].append(payload)
-            assert payload["variables"] == {"id": "42"}
-            assert payload["query"].startswith("query")
-            issue = {
-                "id": "42",
-                "url": "https://linear.app/org/issue/TEAM-42",
-                "description": "fixture",
-                "state": {"id": "todo", "name": "Todo", "type": "unstarted"},
+    def run(args, **kwargs):
+        remote["requests"].append(args)
+        if args[1:3] == ["api", "graphql"]:
+            query = json.loads(kwargs["input"])["query"]
+            assert re.search(r"viewer\s*\{\s*id\s*\}", query)
+            body = {"data": {"viewer": {"id": remote["identity"]}}}
+        else:
+            assert args[1:4] == ["issue", "view", "42"]
+            row = {
+                "id": "ISSUE_42",
+                "title": "Fixture issue",
+                "number": 42,
+                "url": "https://github.com/org/repo/issues/42",
+                "state": "CLOSED" if remote["closed"] else "OPEN",
+                "stateReason": "COMPLETED" if remote["closed"] else None,
+                "body": "fixture",
             }
-            # GraphQL returns only selected fields: an unrequested team cannot
-            # accidentally make this fixture establish the identity guarantee.
-            if re.search(r"team\s*\{\s*id\s*\}", payload["query"]):
-                issue["team"] = {"id": remote["identity"]}
-            return httpx.Response(200, json={"data": {"issue": issue}})
+            body = {key: row[key] for key in args[args.index("--json") + 1].split(",")}
+        return SimpleNamespace(returncode=0, stdout=json.dumps(body), stderr="")
 
-        client = httpx.Client(transport=httpx.MockTransport(handle))
-        adapter = LinearProvider(config, client=client, environ={"LINEAR_API_KEY": "fixture"})
+    monkeypatch.setattr("ai_dlc.providers.github_issues.subprocess.run", run)
+    adapter = GitHubIssuesProvider(config)
     yield config, adapter, remote
-    if kind == "linear":
-        adapter.client.close()
 
 
 def test_read_rejects_wrong_configured_identity(destination):
@@ -90,7 +63,7 @@ def test_read_refuses_missing_or_invalid_identity_evidence(destination, identity
 def test_read_verifies_correct_identity_and_preserves_unconfigured_legacy_read(destination):
     config, adapter, remote = destination
     assert adapter.invoke("read", {"reference": "42"})["id"] == "42"
-    config.pop("viewer_id" if config["kind"] == "github-issues" else "team_id")
+    config.pop("viewer_id")
     remote["identity"] = "foreign"
     remote["requests"].clear()
     assert adapter.invoke("read", {"reference": "42"})["state"] == "open"
@@ -109,7 +82,7 @@ def project(tmp_path, destination):
                 "schema": 4,
                 "roles": {"tracker": "old", "scm": "github"},
                 "providers": {
-                    "old": {"kind": "linear", "team_id": "source"},
+                    "old": {"kind": "jira-cloud", "project": "SOURCE"},
                     "destination": config,
                 },
             }

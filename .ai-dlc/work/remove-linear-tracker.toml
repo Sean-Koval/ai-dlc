@@ -1,0 +1,44 @@
+schema = 1
+id = "remove-linear-tracker"
+title = "Remove Linear, mark Plane unsupported and document the tracker boundary with hangar"
+scope = "Default every new project to GitHub Issues, remove the Linear adapter, onboarding and conformance target with a typed refusal for existing selections, require an explicit opt-in for the unsupported Plane adapter, and add a finish-only tracker-write setting for repositories that also use hangar intake. Exclude Plane deletion, Jira changes, intake features and work-record synchronization with hangar."
+requires_spec = true
+spec_reason = "Changes observable defaults, removes a provider and its commands, and adds a configuration setting; formal scenarios define the refusal and write boundaries."
+acceptance = [
+    "project init with no provider flags produces tracker = github-issues, and Copier defaults render no LINEAR_API_KEY.",
+    "No profile, template, module catalog, repository configuration or scaffold default selects Linear.",
+    "A configuration whose tracker resolves to linear gets a typed refusal with exit status 2 on work start that names github-issues and jira-cloud.",
+    "work validate --all passes on this repository with the historical Linear-bound records and no [providers.linear].",
+    "project init --tracker plane refuses without --allow-unsupported and works with it; doctor reports Plane as unsupported, unqualified.",
+    "[work] tracker_writes = finish-only is accepted only on the project and base layers, and work start makes no tracker mutation under it.",
+    "docs/architecture.md documents the tracker boundary with hangar and the collision rule; README, tool map, roadmap and migration notes reflect kept, unsupported and removed adapters.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "TB-01",
+    "TB-02",
+    "TB-03",
+    "TB-04",
+    "NH-06",
+    "PC-03",
+    "PT-01",
+    "TM-04",
+    "TM-06",
+    "TC-01",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+brief = "docs/product-direction.md"
+spec = "openspec/changes/archive/2026-10-16-remove-linear-tracker"
+plan = "openspec/changes/archive/2026-10-16-remove-linear-tracker/tasks.md"
+branch = "issue/199-remove-linear"
+tracker = "199"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/211"

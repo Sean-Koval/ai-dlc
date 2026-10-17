@@ -109,7 +109,6 @@ def test_generic_adoption_does_not_infer_python_or_personal_providers(target, en
     assert result["qualification"] == "not-assessed"
     assert "target-check-required" in codes(result)
     assert action(result, "target-check")["argv"] == []
-    assert "linear" not in json.dumps(result)
 
 
 def test_adopted_project_uses_target_checks_and_ignores_ambient_profile(target, environment):
@@ -602,8 +601,32 @@ def test_verified_selected_headless_enrollment_only_disables_optional_viewer(
 
 def test_headless_required_component_is_a_scoped_blocker(target, environment):
     adopted(target)
+    manifest = target / ".ai-dlc/components/desktop-tracker.json"
+    manifest.parent.mkdir(parents=True, exist_ok=True)
+    manifest.write_text(
+        json.dumps(
+            {
+                "schema": 1,
+                "components": [
+                    {
+                        "id": "desktop-tracker",
+                        "roles": ["tracker"],
+                        "modules": ["docker"],
+                        "guidance": [],
+                        "required_config": [],
+                    }
+                ],
+            }
+        )
+    )
+    digest = hashlib.sha256(manifest.read_bytes()).hexdigest()
     config = target / "ai-dlc.toml"
-    config.write_text(config.read_text().replace("[roles]\n", '[roles]\ntracker = "linear"\n'))
+    config.write_text(
+        config.read_text().replace("[roles]\n", '[roles]\ntracker = "desktop-tracker"\n')
+        + '\n[providers.desktop-tracker]\nkind = "executable"\ncomponent = "desktop-tracker"\n'
+        + 'component_manifest = ".ai-dlc/components/desktop-tracker.json"\n'
+        + f'component_manifest_sha256 = "{digest}"\n'
+    )
     paths = EnrollmentPaths.from_environment(Path(environment["HOME"]), environment)
     write_enrollment(
         paths,
@@ -620,7 +643,7 @@ def test_headless_required_component_is_a_scoped_blocker(target, environment):
     limitation = next(
         item for item in result["findings"] if item["code"] == "component-headless-unavailable"
     )
-    assert limitation["component"] == "linear"
+    assert limitation["component"] == "desktop-tracker"
     assert result["state"] == "blocked"
     assert action(result, "project-setup")["available"]
     assert action(result, "project-readiness")["available"]

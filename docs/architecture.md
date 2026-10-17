@@ -102,8 +102,9 @@ validation and is caught by the same CLI handler while services move to typed er
 
 Knowledge ownership stays provider-neutral: private knowledge links durable
 repository material but does not mirror it. Linked Obsidian portals, additive personal workspaces and explicit local directory mounts are implemented;
-native application qualification remains separately recorded. Guided tracker discovery supports Linear and GitHub Issues with
-optional Projects; live qualification is recorded separately.
+native application qualification remains separately recorded. Guided tracker discovery supports GitHub Issues with
+optional Projects and Jira Cloud; live qualification is recorded separately. Plane is
+shipped but unsupported, and the Linear adapter has been removed.
 
 ## Tracker capabilities and connection
 
@@ -123,6 +124,43 @@ does not substitute for these lifecycle contracts. See the
 [provider contract](../contracts/README.md),
 [GitHub setup guide](github-ticket-setup.md), and
 [later adapter boundaries](archive/planning/tracker-adapter-follow-through.md).
+
+## Tracker boundary with hangar
+
+Hangar owns tracker intake for agent jobs; AI-DLC keeps its tracker adapters for
+the local work lifecycle only. Both may touch the same ticket, so each concern has
+one owner:
+
+| Concern | Owner |
+| --- | --- |
+| Starting agent work from a ticket (Jira status or label, GitHub label or Projects column, Slack, schedules) | hangar intake |
+| Ticket write-back during an agent job (queued, started, needs_input, delivered, failed) | hangar |
+| Trust and approval of who may start work | hangar, then the governed workspace |
+| A developer's local work record, branch binding and specification artifacts | AI-DLC |
+| Closing a ticket after merge with CI-receipt evidence (`work finish`) | AI-DLC, run locally by a person |
+| Creating tickets from reviewed local work (`work publish`) | AI-DLC |
+| Bulk and planning workflows (Projects board setup, tracker migration) | AI-DLC, frozen to bug fixes |
+
+**Collision rule.** While a hangar job works a ticket, AI-DLC must not move that
+ticket to in-progress. A repository that also uses hangar intake sets
+
+```toml
+[work]
+tracker_writes = "finish-only"
+```
+
+in `ai-dlc.toml` (project or base layer only). `work start` then binds the branch
+and reads, but never writes, the ticket; `work finish` still closes it after the
+merged-CI gates. The default, `lifecycle`, keeps the existing start transition.
+Both tools may still comment on a ticket. A finish for a ticket that hangar's
+delivery already closed reconciles the closed state instead of failing.
+
+Kept adapters: GitHub Issues, GitHub Projects and Jira Cloud. Plane stays shipped
+with `supported = false`: scaffolding refuses it without `--allow-unsupported` and
+doctor reports it as unsupported and unqualified. The Plane adapter is scheduled
+for deletion in the next cleanup unless someone objects by the end of P2. The
+Linear adapter has been removed; a configuration that still selects it receives
+a typed refusal that names the supported trackers.
 
 ## Source layout
 
