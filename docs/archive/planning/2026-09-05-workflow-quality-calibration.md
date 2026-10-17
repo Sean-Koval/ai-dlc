@@ -29,9 +29,9 @@ No runner, production CLI, tracker mutation or release-gate completion is added.
 Root owns global release/roadmap edits and final delivery. Existing
 `agents/evaluation.toml` remains a separate pending experiment.
 
-Prepared artifacts: [protocol](../../../agents/evaluations/product-delivery/protocol.md),
-[cases](../../../agents/evaluations/product-delivery/cases.json), and
-[preparation evidence](../../verification/product-delivery-evaluation.md).
+Prepared artifacts: [protocol](https://github.com/Sean-Koval/ai-dlc/blob/f5be4f4206a8469f17d4b54296e41e06a2d1a41e/agents/evaluations/product-delivery/protocol.md),
+[cases](https://github.com/Sean-Koval/ai-dlc/blob/f5be4f4206a8469f17d4b54296e41e06a2d1a41e/agents/evaluations/product-delivery/cases.json), and
+[preparation evidence](https://github.com/Sean-Koval/ai-dlc/blob/f5be4f4206a8469f17d4b54296e41e06a2d1a41e/docs/verification/product-delivery-evaluation.md).
 Tasks 1–2 below include future human review/freeze work and are not wholly completed
 by drafting their files. Task 3 remains unstarted. Preparation format/identity and
 calibration-projection checks are in `tests/test_product_delivery_evaluation.py`;

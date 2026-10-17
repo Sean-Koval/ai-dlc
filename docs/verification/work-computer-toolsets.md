@@ -18,7 +18,7 @@ Linear priorities. No company, Plane or Confluence service has been mutated.
 | Bootstrap executable publication (#14 child) | `63d6ec5` | [Bootstrap](bootstrap-executable-publication.md) |
 | Qualification-record validator (#14 preparation) | `e39202b` | [Qualification](framework-qualification.md) |
 | Optional Design PM (#13) | `eb04ca1` | [Design source/development review](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/design-pm/review.md) |
-| Product evaluation preparation (#15) | `6a95a49`, `ed5f2ee` | [Preparation](product-delivery-evaluation.md) |
+| Product evaluation preparation (#15) | `6a95a49`, `ed5f2ee` | Moved to flightdeck; last version at tag `eval-handoff-2026-10` |
 
 The credential repair closes the integrated Jira Basic false-ready finding through
 trusted conditional environment requirements. Root inspected the full diff and

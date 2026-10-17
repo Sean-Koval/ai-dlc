@@ -1191,6 +1191,20 @@ def test_work_finish_at_merge_interruption_displays_recovery_note(monkeypatch):
     assert '"status": "completed"' not in result.output
 
 
+@pytest.mark.parametrize(
+    "args", [["eval"], ["eval", "run", "x"], ["eval", "plan", "s", "--profile", "p"]]
+)
+def test_removed_eval_points_to_flightdeck(args):
+    """Would fail if the removed evaluation group ran anything or exited successfully."""
+    from ai_dlc.cli import app
+
+    result = CliRunner().invoke(app, args)
+    assert result.exit_code == 2
+    assert "ai-dlc eval moved to flightdeck" in result.output
+    assert "eval-handoff-2026-10" in result.output
+    assert " eval " not in CliRunner().invoke(app, ["--help"]).stdout
+
+
 def test_project_init_points_to_setup_until_generated_files_render(tmp_path):
     from ai_dlc.cli import app
 

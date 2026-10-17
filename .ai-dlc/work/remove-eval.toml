@@ -1,0 +1,26 @@
+schema = 1
+id = "remove-eval"
+title = "Remove the evaluation runner and skill evaluation; stub ai-dlc eval with a pointer to flightdeck"
+scope = "Delete the end-to-end evaluation runner, contracts, assets and tests and the prompt-only skill evaluation after the flightdeck handoff (#194), keep verification/test_proxy.py for provider conformance, replace ai-dlc eval with a hidden stub that exits 2, retire the two OpenSpec capabilities into an archived change and remove the four verification documents and catalog entries."
+requires_spec = false
+spec_reason = "Removes moved capabilities; their last requirement text is retired unchanged in openspec/changes/archive/2026-10-17-evaluation-moved-to-flightdeck, and no new behavior is specified beyond the documented stub."
+acceptance = [
+    "ai-dlc eval run x prints the flightdeck pointer to stderr and exits 2; ai-dlc --help does not list eval.",
+    "git grep for verification.evaluation, skill_evaluation, evaluation_api and run_skill_evaluation returns only historical evidence, work records, migration notes and archived changes.",
+    "The built wheel contains no evaluation paths and provider conformance tests still pass with test_proxy.py kept.",
+    "docs/migration.md has an ai-dlc eval removed section.",
+]
+reviewed = true
+depends_on = ["eval-handoff"]
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+branch = "issue/195-remove-eval"
+tracker = "195"

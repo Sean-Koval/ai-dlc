@@ -13,6 +13,7 @@ Docs site: <https://sean-koval.github.io/ai-dlc/> · Part of the
 > **Scope freeze (2026-10).** AI-DLC is a local workflow, machine-provisioning and
 > work-lifecycle tool. Features outside the in-scope list in
 > [ADR 0001](docs/decisions/0001-refocus-ai-dlc.md) are frozen; bug fixes are welcome.
+> `ai-dlc eval` moved to flightdeck.
 
 ## See it work
 

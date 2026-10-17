@@ -172,9 +172,9 @@ and hide condition labels from human raters where practical. Repeat runs; do not
 claim general improvement from one favorable example. Keep human review pending
 until a human supplies it.
 
-`agents/evaluation.toml` currently describes evaluations of AI-DLC's judgment
-skills, not this UI workflow. Preserve its existing protocol and budget; the
-Design PM experiment needs its own declared cases and budget.
+The Design PM experiment needs its own declared cases and budget. AI-DLC's own
+skill and harness evaluation moved to flightdeck, which received the design-pm
+case corpus as seed material.
 
 ## Constraints, risks, and open questions
 
