@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import runpy
 import shutil
@@ -154,3 +155,55 @@ def test_files_digest_matches_hangars_definition():
     for rel in ["a", "a.b/c", "b/x"]:
         expected.update(rel.encode() + b"\0" + hashlib.sha256(files[rel]).digest())
     assert PUBLISH["files_digest"](files) == "sha256:" + expected.hexdigest()
+
+
+def test_marketplace_layout_publishes_under_the_marketplace_directory(tmp_path, capsys):
+    harness = tmp_path / "harness"
+    entries = harness / "plugins/team/.claude-plugin/marketplace.json"
+    entries.parent.mkdir(parents=True)
+    entry = {
+        "name": "ai-dlc-workflow",
+        "source": "./ai-dlc-workflow",
+        "defaultEnabled": False,
+        "x": 1,
+    }
+    entries.write_text(json.dumps({"name": "team", "plugins": [entry]}))
+    before = entries.read_bytes()
+    code = PUBLISH["main"](["--harness-repo", str(harness), "--marketplace", "team", "--apply"])
+    report = json.loads(capsys.readouterr().out)
+    assert code == 0 and report["status"] == "applied"
+    target = harness / "plugins/team/ai-dlc-workflow"
+    assert (target / ".claude-plugin/plugin.json").is_file()
+    assert not (harness / "plugins/ai-dlc-workflow").exists()
+    assert entries.read_bytes() == before  # the harness owns its marketplace.json
+    assert report["plugin_path"] == "plugins/team/ai-dlc-workflow"
+    assert report["marketplace_entry"] == entry
+    plugin = report["components"][0]
+    assert plugin["lock_id"] == "plugin:ai-dlc-workflow@team"
+    files = {
+        p.relative_to(target).as_posix(): p.read_bytes()
+        for p in sorted(target.rglob("*"))
+        if p.is_file()
+    }
+    canonical = json.dumps(entry, sort_keys=True, separators=(",", ":"))
+    expected = hashlib.sha256(f"{canonical}\n{PUBLISH['files_digest'](files)}".encode()).hexdigest()
+    assert plugin["hangar_plugin_digest"] == "sha256:" + expected
+    code = PUBLISH["main"](["--harness-repo", str(harness), "--marketplace", "team", "--apply"])
+    assert code == 0 and json.loads(capsys.readouterr().out)["status"] == "unchanged"
+
+
+def test_marketplace_without_entry_suggests_a_relative_source(tmp_path, capsys):
+    code = PUBLISH["main"](
+        ["--harness-repo", str(tmp_path / "h"), "--marketplace", "team", "--dry-run"]
+    )
+    report = json.loads(capsys.readouterr().out)
+    assert code == 0
+    assert report["marketplace_entry"] == {
+        "name": "ai-dlc-workflow",
+        "source": "./ai-dlc-workflow",
+        "defaultEnabled": False,
+    }
+    assert (
+        PUBLISH["main"](["--harness-repo", str(tmp_path), "--marketplace", "../x", "--dry-run"])
+        == 1
+    )

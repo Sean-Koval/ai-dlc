@@ -6,7 +6,8 @@
 PATH is the harness directory, the one that holds (or will hold) ``harness.lock``,
 for example ``examples/team-harness/harnesses/team-default`` in agent-factory. The
 script copies ``plugins/ai-dlc-workflow/`` without ``native/`` to
-``PATH/plugins/ai-dlc-workflow/`` and ``plugins/ai-dlc-workflow/native/codex/`` to
+``PATH/plugins/<marketplace>/ai-dlc-workflow/`` with ``--marketplace`` (hangar's
+directory-marketplace layout, hangar#221) or ``PATH/plugins/ai-dlc-workflow/`` without it, and ``plugins/ai-dlc-workflow/native/codex/`` to
 ``PATH/native/codex/ai-dlc-workflow/``, then prints the component ids and digests to
 pin. It never edits ``harness.lock``, ``marketplace.json`` or any file it did not
 publish: a target directory must be empty or exactly an earlier publication (its
@@ -30,7 +31,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = "ai-dlc-workflow"
 SOURCE = Path("plugins") / PLUGIN
 NATIVE = "native/codex"
-PLUGIN_TARGET = Path("plugins") / PLUGIN
+PLUGIN_TARGET = Path("plugins") / PLUGIN  # without --marketplace (layout before hangar#221)
 NATIVE_TARGET = Path("native/codex") / PLUGIN
 LOCK = "plugin.lock.json"
 REPOSITORY = "https://github.com/Sean-Koval/ai-dlc"
@@ -98,36 +99,36 @@ def source_files(root: Path) -> tuple[dict[str, bytes], dict[str, bytes]]:
     return plugin, native
 
 
-def _previous_lock(plugin_target: dict[str, bytes]) -> dict:
+def _previous_lock(plugin_target: dict[str, bytes], where: Path) -> dict:
     try:
         lock = json.loads(plugin_target[LOCK])
     except (KeyError, ValueError) as exc:
-        raise Refused(f"{PLUGIN_TARGET}/{LOCK} is missing or unreadable") from exc
+        raise Refused(f"{where}/{LOCK} is missing or unreadable") from exc
     if not isinstance(lock, dict) or lock.get("plugin") != PLUGIN:
-        raise Refused(f"{PLUGIN_TARGET}/{LOCK} does not describe {PLUGIN}")
+        raise Refused(f"{where}/{LOCK} does not describe {PLUGIN}")
     return lock
 
 
-def _legacy_publication(target: dict[str, bytes], lock: dict) -> set[str]:
+def _legacy_publication(target: dict[str, bytes], lock: dict, where: Path) -> set[str]:
     """Paths of a publication whose lock predates per-file digests (proved by components)."""
     builder = _builder()
     try:
         parts = builder.components(target)
     except KeyError as exc:
-        raise Refused(f"{PLUGIN_TARGET} lacks a published file: {exc}") from exc
+        raise Refused(f"{where} lacks a published file: {exc}") from exc
     manifest = json.loads(target.get(".claude-plugin/plugin.json", b"{}"))
     if (
         parts != lock.get("components")
         or builder.sha256(builder.canonical(parts)) != lock.get("content_digest")
         or manifest.get("metadata", {}).get("content_digest") != lock.get("content_digest")
     ):
-        raise Refused(f"{PLUGIN_TARGET} was edited after publication; refusing to overwrite")
+        raise Refused(f"{where} was edited after publication; refusing to overwrite")
     owned = {f"skills/{name}/SKILL.md" for name in builder.TEAM_SKILLS}
     owned |= {f"skills/{builder.GUIDE}/SKILL.md", "hooks/hooks.json", "hooks/aidlc_hook.py"}
     owned |= {".claude-plugin/plugin.json", "README.md", LOCK}
     unknown = sorted(set(target) - owned)
     if unknown:
-        raise Refused(f"{PLUGIN_TARGET} holds files it did not publish: {', '.join(unknown)}")
+        raise Refused(f"{where} holds files it did not publish: {', '.join(unknown)}")
     return owned
 
 
@@ -140,32 +141,70 @@ def _verify(name: Path, target: dict[str, bytes], recorded: dict[str, str]) -> N
         raise Refused(f"{name} was edited after publication: {', '.join(edited)}")
 
 
-def owned_paths(harness: Path) -> tuple[set[str], set[str]]:
+def target_for(marketplace: str | None) -> Path:
+    """Where the Claude plugin goes: ``plugins/<marketplace>/ai-dlc-workflow`` (hangar#221's directory
+    marketplace) or, without a marketplace, ``plugins/ai-dlc-workflow``."""
+    if marketplace is None:
+        return PLUGIN_TARGET
+    if not marketplace or "/" in marketplace or marketplace.startswith("."):
+        raise Refused(f"invalid marketplace name: {marketplace!r}")
+    return Path("plugins") / marketplace / PLUGIN
+
+
+def marketplace_entry(harness: Path, marketplace: str | None) -> dict:
+    """The entry to list the plugin under; the harness's own entry when it already has one."""
+    suggested = {
+        "name": PLUGIN,
+        "source": f"./{PLUGIN}" if marketplace else f"./{PLUGIN_TARGET.as_posix()}",
+        "defaultEnabled": False,
+    }
+    if marketplace is None:
+        return suggested
+    try:
+        data = json.loads(
+            (harness / "plugins" / marketplace / ".claude-plugin/marketplace.json").read_text()
+        )
+        entries = [e for e in data.get("plugins", []) if isinstance(e, dict)]
+    except (OSError, ValueError, AttributeError):
+        return suggested
+    return next((e for e in entries if e.get("name") == PLUGIN), suggested)
+
+
+def plugin_digest(entry: dict, files: dict[str, bytes]) -> str:
+    """hangar's plugin digest (``plugins.content_digest``): the entry as canonical JSON, a newline,
+    and the directory's ``files_digest``."""
+    canonical = json.dumps(entry, sort_keys=True, separators=(",", ":"))
+    return sha256(f"{canonical}\n{files_digest(files)}".encode())
+
+
+def owned_paths(harness: Path, target: Path = PLUGIN_TARGET) -> tuple[set[str], set[str]]:
     """Files an earlier publication created (and may replace), or refuse."""
-    plugin_target = read_tree(harness / PLUGIN_TARGET)
+    plugin_target = read_tree(harness / target)
     native_target = read_tree(harness / NATIVE_TARGET)
     if not plugin_target:
         if native_target:
-            raise Refused(f"{NATIVE_TARGET} exists without {PLUGIN_TARGET}; refusing")
+            raise Refused(f"{NATIVE_TARGET} exists without {target}; refusing")
         return set(), set()
-    lock = _previous_lock(plugin_target)
+    lock = _previous_lock(plugin_target, target)
     if "files" not in lock:
         if native_target:
             raise Refused(f"{NATIVE_TARGET} predates per-file digests; refusing")
-        return _legacy_publication(plugin_target, lock), set()
+        return _legacy_publication(plugin_target, lock, target), set()
     published = {path: data for path, data in plugin_target.items() if path != LOCK}
-    _verify(PLUGIN_TARGET, published, lock["files"])
+    _verify(target, published, lock["files"])
     native_recorded = lock.get("native", {}).get("codex", {}).get("files", {})
     _verify(NATIVE_TARGET, native_target, native_recorded)
     return set(plugin_target), set(native_target)
 
 
-def plan(root: Path, harness: Path) -> dict:
+def plan(root: Path, harness: Path, marketplace: str | None = None) -> dict:
     plugin, native = source_files(root)
-    plugin_owned, native_owned = owned_paths(harness)
+    target = target_for(marketplace)
+    plugin_owned, native_owned = owned_paths(harness, target)
+    entry = marketplace_entry(harness, marketplace)
     changes = []
     for base, files, owned in [
-        (PLUGIN_TARGET, plugin, plugin_owned),
+        (target, plugin, plugin_owned),
         (NATIVE_TARGET, native, native_owned),
     ]:
         current = read_tree(harness / base)
@@ -183,9 +222,17 @@ def plan(root: Path, harness: Path) -> dict:
     components = [
         {
             "id": f"plugin:{PLUGIN}@{lock['content_digest']}",
-            "path": PLUGIN_TARGET.as_posix(),
+            "path": target.as_posix(),
             "content_digest": lock["content_digest"],
             "hangar_files_digest": files_digest(plugin),
+            **(
+                {
+                    "lock_id": f"plugin:{PLUGIN}@{marketplace}",
+                    "hangar_plugin_digest": plugin_digest(entry, plugin),
+                }
+                if marketplace
+                else {}
+            ),
         },
         *(
             {
@@ -209,11 +256,8 @@ def plan(root: Path, harness: Path) -> dict:
         "source": source_reference(root),
         "changes": changes,
         "components": components,
-        "marketplace_entry": {
-            "name": PLUGIN,
-            "source": f"./{PLUGIN_TARGET.as_posix()}",
-            "defaultEnabled": False,
-        },
+        "plugin_path": target.as_posix(),
+        "marketplace_entry": entry,
         "notes": [
             "plugin.json `version` overrides a marketplace entry's version.",
             "Keep `plugins.autoUpdate: false` in the harness lock for experiment sandboxes.",
@@ -248,7 +292,7 @@ def source_reference(root: Path) -> str:
     return f"git:{REPOSITORY}#{SOURCE.as_posix()}@{commit}{suffix}"
 
 
-def apply(harness: Path, changes: list[dict]) -> None:
+def apply(harness: Path, changes: list[dict], target: Path = PLUGIN_TARGET) -> None:
     for change in changes:
         target = harness / change["path"]
         if change["action"] == "remove":
@@ -256,7 +300,7 @@ def apply(harness: Path, changes: list[dict]) -> None:
             continue
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(change["data"])
-    for base in (PLUGIN_TARGET, NATIVE_TARGET):
+    for base in (target, NATIVE_TARGET):
         directory = harness / base
         for folder in sorted(directory.rglob("*"), reverse=True) if directory.is_dir() else []:
             if folder.is_dir() and not any(folder.iterdir()):
@@ -278,6 +322,10 @@ def main(argv: list[str] | None = None) -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--dry-run", action="store_true")
     mode.add_argument("--apply", action="store_true")
+    parser.add_argument(
+        "--marketplace",
+        help="publish into plugins/<marketplace>/ai-dlc-workflow (hangar#221's directory marketplace)",
+    )
     parser.add_argument("--root", type=Path, default=ROOT, help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
     harness = args.harness_repo.resolve()
@@ -285,9 +333,9 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Publish refused: {harness} is not a directory", file=sys.stderr)
         return 1
     try:
-        result = plan(args.root, harness)
+        result = plan(args.root, harness, args.marketplace)
         if args.apply:
-            apply(harness, result["changes"])
+            apply(harness, result["changes"], target_for(args.marketplace))
     except (Refused, OSError, ValueError) as exc:
         print(f"Publish refused: {exc}", file=sys.stderr)
         return 1
