@@ -52,19 +52,14 @@ before adding surface area.
    targets; unchanged decisions survive unrelated edits and target-branch movement.
    Use observed adoption friction to prioritize the remaining reductions, including
    the baseline's proposal for one pre-merge command.
-3. **Evaluation that measures value.** The runner, grader, report and
-   [baseline specification](../openspec/specs/end-to-end-evaluation/spec.md) from
-   [#137](https://github.com/Sean-Koval/ai-dlc/issues/137) are delivered. Their
-   deterministic fixture runs verify the machinery, not AI-DLC's value; see the
-   [evaluation evidence](verification/end-to-end-evaluation.md). Complete the first
-   comparison in [#138](https://github.com/Sean-Koval/ai-dlc/issues/138), using the
-   code slice tracked in [#166](https://github.com/Sean-Koval/ai-dlc/issues/166): one real coding
-   client, with the same version, model and goal in both arms, taking the same
-   seeded task through hidden acceptance tests with AI-DLC and with the bare
-   client. Report correctness, turns, time and spend for both. That comparison
-   remains explicitly deferred. Prepare the candidate check runtime first, as
-   described in the evaluation runbook; use results to decide broader client, recovery and
-   observer work in #138–#140.
+3. **Evaluation moves to flightdeck.** The runner, grader, report and skill
+   evaluation are frozen (bug fixes only) and handed to
+   [flightdeck](https://github.com/Sean-Koval/flightdeck) under ADR 0001; the
+   [handoff inventory and port notes](verification/end-to-end-evaluation.md#handoff-to-flightdeck)
+   list every moving file. The paired comparison planned in
+   [#138](https://github.com/Sean-Koval/ai-dlc/issues/138)–#140 happens in flightdeck,
+   and [#195](https://github.com/Sean-Koval/ai-dlc/issues/195) removes the AI-DLC copy
+   once flightdeck's ported runner has run.
 
 Waiting on environments or decisions, not scheduled:
 [#53](https://github.com/Sean-Koval/ai-dlc/issues/53) native client, company and
