@@ -172,7 +172,7 @@ a typed refusal that names the supported trackers.
 | `work/` | Work lifecycle, traceability, journals and explicit tracker migration |
 | `environment/` | Shared bootstrap runtime location and owned shell activation; machine enrollment, pinned profile/team sources, credential references and safe effective-environment reporting/comparison |
 | `harness/` | Skills, pinned bundles, client rendering, components, hooks and local design capture |
-| `documentation/` | Catalog checks, impact/evidence review, scoped project-document access, workspace diagnostics, knowledge notes and vault links |
+| `documentation/` | Catalog checks, impact/evidence review, decision-record checks, scoped project-document access, workspace diagnostics, knowledge notes and their shared frontmatter schema (`knowledge_notes.py`), and vault links |
 | `providers/` | Contract-backed external service adapters and isolated provider execution |
 | `verification/` | Sandbox orchestration and its conformance network proxy; `evaluation/` holds the end-to-end evaluation contracts (generated into `contracts/evaluation/`) the offline planner behind the `eval` CLI group, the isolated Docker attempt lifecycle, the independent evaluator, the suite runner, the driver contract that decides what an attempt runs, the offline report builder and the base and candidate image recipes; its inputs live in top-level `evaluations/`, outside the wheel |
 | `compatibility/` | Supported legacy scaffold behavior |
