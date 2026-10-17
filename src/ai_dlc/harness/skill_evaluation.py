@@ -1,4 +1,8 @@
-"""Declared control/treatment evaluations; outputs await human review."""
+"""Declared control/treatment evaluations; outputs await human review.
+
+Frozen 2026-10; moving to Sean-Koval/flightdeck (Sean-Koval/flightdeck#17). Bug fixes only.
+See docs/verification/end-to-end-evaluation.md#handoff-to-flightdeck.
+"""
 
 import json
 import os
