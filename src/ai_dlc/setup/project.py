@@ -426,12 +426,10 @@ def _setup_project(
     config = load_project(root)
     check_definitions(config)
     steps = setup_steps(root, config)
-    from ai_dlc.files import assets
     from ai_dlc.harness.agents import render_agents, target_hooks
+    from ai_dlc.setup.targets import execution_target
 
-    targets = read_toml(assets("targets") / "capabilities.toml")
-    if target not in targets:
-        raise ValueError(f"unsupported execution target: {target}")
+    execution_target(target)
     hook_policy = target_hooks(config, target)
     if not hook_policy["ready"]:
         raise ValueError(f"required target hooks unavailable: {hook_policy['unavailable']}")
@@ -473,9 +471,7 @@ def _setup_project(
             db.execute("INSERT OR REPLACE INTO setup_state VALUES (?,?)", (identity, post_key))
             db.commit()
             completed.append({"id": step["id"], "status": "completed"})
-    generated = render_agents(
-        root, apply=target not in {"github-actions", "codex-cloud", "claude-cloud"}
-    )
+    generated = render_agents(root, apply=target != "github-actions")
     if target == "github-actions" and not generated["clean"]:
         raise ValueError("generated project files are stale; render and commit before CI")
     return {
