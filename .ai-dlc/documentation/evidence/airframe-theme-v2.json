@@ -78,13 +78,13 @@
         "docs/assets/front/build.py": "46fff487d111a55cf245da3a90f8951b59bc79268a611d33c70d56dc0a01df8d",
         "docs/assets/front/demo_provider.py": "4f29e7499ad628903260043bb8ecc0a086f3fe0b581e24c73ab8a9a1851e98da",
         "docs/workflows/get-started.md": "d7329847104954c57141cbf8b675e904141e38ef350a3e9a9873a34bc0ad0e92",
-        "mkdocs.yml": "12b2bdb48d6cf4f2ade2228f7c584f4f69444755b189fdc7df190fc3c3005cd5",
+        "mkdocs.yml": "d820ff7f0d980344b011524166b3c18ae1e2824d7e11722c688e879d660db36b",
         "scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
         "scripts/docs_site_links.py": "241e49f26314def72dd2ee4fdc8545c5b9092fbaf6736952381cc939632f3ec9",
         "tests/test_front_page.py": "659ae911b1745fd032677fd1237db3e96fe38c58ef9022454e62efe06e8d7b12"
       },
       "outcome": "reviewed-no-change",
-      "reason": "build.py now reads the diagram's token values from the vendored airframe-tokens.json and tests/test_front_page.py gained a site-stylesheet token check; the get-started procedure and its commands are unchanged.",
+      "reason": "Re-recorded after merging main (mkdocs.yml changed there). This branch only changes how build.py reads the diagram's token values (vendored airframe-tokens.json) and adds a site-stylesheet token check to tests/test_front_page.py; the get-started procedure and its commands are unchanged.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/get-started.md"
     },
