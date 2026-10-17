@@ -158,7 +158,8 @@ def test_unexpected_files_are_stale_and_removed_but_readme_is_authored(root):
     (plugin / "README.md").write_text("authored\n")
     (plugin / "skills/day-start").mkdir()
     (plugin / "skills/day-start/SKILL.md").write_text("stale\n")
-    assert BUILDER["drift"](root) == ["skills/day-start/SKILL.md"]
+    # The README is authored, but its digest is published in the lock.
+    assert BUILDER["drift"](root) == ["plugin.lock.json", "skills/day-start/SKILL.md"]
     BUILDER["write"](root)
     assert not (plugin / "skills/day-start").exists()
     assert (plugin / "README.md").read_text() == "authored\n"
@@ -188,3 +189,82 @@ def test_guide_keeps_only_provider_neutral_guidance():
         if "`ai-dlc " in line and line.startswith("- "):
             assert line.startswith(f"- {BUILDER['ADOPTED']}")
     assert "prefer the repository copies" in guide
+
+
+def test_codex_skills_are_byte_identical_to_the_claude_skills():
+    lock = json.loads((PLUGIN / "plugin.lock.json").read_text())
+    native = lock["native"]["codex"]
+    claude_skills = sorted((PLUGIN / "skills").glob("*/SKILL.md"))
+    assert len(claude_skills) == len(TEAM_SKILLS) + 1
+    for skill in claude_skills:
+        relative = skill.relative_to(PLUGIN).as_posix()
+        digest = "sha256:" + hashlib.sha256(skill.read_bytes()).hexdigest()
+        assert (PLUGIN / "native/codex" / relative).read_bytes() == skill.read_bytes()
+        assert native["files"][relative] == digest
+        assert lock["files"][relative] == digest
+    codex_skills = {p.parent.name for p in (PLUGIN / "native/codex/skills").glob("*/SKILL.md")}
+    assert codex_skills == {p.parent.name for p in claude_skills}
+
+
+def test_codex_form_has_hooks_fragment_manifest_and_agents_fragment():
+    codex = PLUGIN / "native/codex"
+    lock = json.loads((PLUGIN / "plugin.lock.json").read_text())
+    hooks = json.loads((codex / "hooks.json").read_text())
+    actions = {"SessionStart": "session-start", "PreToolUse": "pre-tool", "Stop": "stop"}
+    assert set(hooks["hooks"]) == set(actions)
+    for event, (entry,) in hooks["hooks"].items():
+        (hook,) = entry["hooks"]
+        assert hook["type"] == "command" and hook["timeout"] == 10
+        assert hook["command"] == (
+            'python3 "${PLUGIN_ROOT:-${CODEX_HOME:-$HOME/.codex}/ai-dlc-workflow}'
+            f'/hooks/aidlc_hook.py" {actions[event]}'
+        )
+        assert entry.get("matcher") == ("Bash|exec_command" if event == "PreToolUse" else None)
+    assert (codex / "hooks/aidlc_hook.py").read_bytes() == (
+        ROOT / "src/ai_dlc/harness/hook_shim.py"
+    ).read_bytes()
+    fragment = (codex / "AGENTS.fragment.md").read_text()
+    guide = (PLUGIN / "skills/ai-dlc-workflow/SKILL.md").read_text()
+    assert "name: ai-dlc-workflow" not in fragment
+    assert fragment.split("\n", 2)[2] == guide.split("\n---\n", 1)[1].lstrip("\n")
+    manifest = json.loads((codex / ".codex-plugin/plugin.json").read_text())
+    assert manifest["name"] == "ai-dlc-workflow"
+    assert manifest["skills"] == "./skills/" and manifest["hooks"] == "./hooks.json"
+    assert manifest["version"].endswith(f"-r{lock['revision']}")
+    files = {
+        p.relative_to(codex).as_posix(): "sha256:" + hashlib.sha256(p.read_bytes()).hexdigest()
+        for p in sorted(codex.rglob("*"))
+        if p.is_file()
+    }
+    assert lock["native"]["codex"]["files"] == files
+    canonical_parts = {k: v for k, v in files.items() if k != ".codex-plugin/plugin.json"}
+    canonical = json.dumps(canonical_parts, sort_keys=True, separators=(",", ":")).encode()
+    assert lock["native"]["codex"]["content_digest"] == (
+        "sha256:" + hashlib.sha256(canonical).hexdigest()
+    )
+
+
+def test_lock_records_every_published_claude_file():
+    lock = json.loads((PLUGIN / "plugin.lock.json").read_text())
+    published = {
+        p.relative_to(PLUGIN).as_posix(): "sha256:" + hashlib.sha256(p.read_bytes()).hexdigest()
+        for p in sorted(PLUGIN.rglob("*"))
+        if p.is_file() and "native" not in p.relative_to(PLUGIN).parts
+    }
+    published.pop("plugin.lock.json")
+    assert lock["files"] == published
+
+
+def test_codex_change_alone_bumps_the_revision(root):
+    BUILDER["write"](root)
+    first = json.loads((root / "plugins/ai-dlc-workflow/plugin.lock.json").read_text())
+    original = BUILDER["codex_hooks_document"]
+    BUILDER["codex_files"].__globals__["codex_hooks_document"] = lambda: original() + " "
+    try:
+        BUILDER["write"](root)
+    finally:
+        BUILDER["codex_files"].__globals__["codex_hooks_document"] = original
+    second = json.loads((root / "plugins/ai-dlc-workflow/plugin.lock.json").read_text())
+    assert second["content_digest"] == first["content_digest"]
+    assert second["native"]["codex"]["content_digest"] != first["native"]["codex"]["content_digest"]
+    assert second["revision"] == first["revision"] + 1

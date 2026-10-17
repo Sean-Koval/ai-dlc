@@ -14,7 +14,46 @@
     "skill:spec-from-prd": "sha256:f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce"
   },
   "content_digest": "sha256:90ab99615f8348a5c04f002f67dcce15c27b4ef38e8e9dc4c59190948f668cac",
+  "files": {
+    ".claude-plugin/plugin.json": "sha256:29dc5b61c4f1cb27efd7474ffdf626d4a8e97fe87df4f586311073c8ccb530f8",
+    "README.md": "sha256:6ef8489872583cfcb0b6c6d52c7a2009119b9e932f32b56bfa44c7d99ad0f591",
+    "hooks/aidlc_hook.py": "sha256:9a22eedf99648975eea67800459a90b4196a06ef0dbe172d17339c586df23c77",
+    "hooks/hooks.json": "sha256:8ddf9b2fc137326ad81a99bb6b1cd4d1dca507cb2e266cd30045b3d0d3f3d4e1",
+    "skills/ai-dlc-workflow/SKILL.md": "sha256:84e2fb91e01896de4d28aa45badb41be994f8f4c1d7f07fa2b1d07636d2d64d1",
+    "skills/design-brief/SKILL.md": "sha256:5b9cc5c5d40378b273369c62b51b4ba10475a65c0dd91d799cd29df2a7c8ec58",
+    "skills/design-evaluate/SKILL.md": "sha256:a7e3f68082ff474fd09adefb623a20bc34a2f3f83c6e97055a55008f4681d9af",
+    "skills/discovery/SKILL.md": "sha256:74d0a76012649f919770e37fa464d436a0ce8c7501ec011182a29d4ae14d2904",
+    "skills/document-organize/SKILL.md": "sha256:446d1e9023f9c118e69966b2eced0460c702b79b828c0559f44b6ba95db018c6",
+    "skills/document-review/SKILL.md": "sha256:5e2f71219b98cd53dd6a3a73b3bbccc1873b796a14ec1347875a39c911db9ad3",
+    "skills/handoff/SKILL.md": "sha256:8037ad8c8abb7048f5009e60221ac9b0df9a875b2d1da673054fa12904a494d1",
+    "skills/needs-spec/SKILL.md": "sha256:573d9e79cbc1b15e911a5dffdd61bcf2eaf1d089f491b2445d45b77d53bbb2f2",
+    "skills/prd-draft/SKILL.md": "sha256:e6d457ee65f4d7dd184bef4fc8285253951098484fba9bb3cedbe1512729dc0e",
+    "skills/review-inbox/SKILL.md": "sha256:8b58913b870212b4b04b14d921efb72ed92007cec043513eb3baef36e907c846",
+    "skills/spec-from-prd/SKILL.md": "sha256:f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce"
+  },
+  "native": {
+    "codex": {
+      "content_digest": "sha256:14467938145e8cf7dd3cb1b332f2be87a406f6e52eafcc19979566c7bfb6a02f",
+      "files": {
+        ".codex-plugin/plugin.json": "sha256:65e138d58b57b5cabcb6405baaae8d4229046e8e0f92195f5d39485146d55aa5",
+        "AGENTS.fragment.md": "sha256:d0c5df0008fbceea10aeb1504a6256cf0077aea1b4df1e0fd3108035205c0862",
+        "hooks.json": "sha256:4d2c2097f9c3004dca11d040acf3353eb6af9d0b96a63910f508a36a8d284f63",
+        "hooks/aidlc_hook.py": "sha256:9a22eedf99648975eea67800459a90b4196a06ef0dbe172d17339c586df23c77",
+        "skills/ai-dlc-workflow/SKILL.md": "sha256:84e2fb91e01896de4d28aa45badb41be994f8f4c1d7f07fa2b1d07636d2d64d1",
+        "skills/design-brief/SKILL.md": "sha256:5b9cc5c5d40378b273369c62b51b4ba10475a65c0dd91d799cd29df2a7c8ec58",
+        "skills/design-evaluate/SKILL.md": "sha256:a7e3f68082ff474fd09adefb623a20bc34a2f3f83c6e97055a55008f4681d9af",
+        "skills/discovery/SKILL.md": "sha256:74d0a76012649f919770e37fa464d436a0ce8c7501ec011182a29d4ae14d2904",
+        "skills/document-organize/SKILL.md": "sha256:446d1e9023f9c118e69966b2eced0460c702b79b828c0559f44b6ba95db018c6",
+        "skills/document-review/SKILL.md": "sha256:5e2f71219b98cd53dd6a3a73b3bbccc1873b796a14ec1347875a39c911db9ad3",
+        "skills/handoff/SKILL.md": "sha256:8037ad8c8abb7048f5009e60221ac9b0df9a875b2d1da673054fa12904a494d1",
+        "skills/needs-spec/SKILL.md": "sha256:573d9e79cbc1b15e911a5dffdd61bcf2eaf1d089f491b2445d45b77d53bbb2f2",
+        "skills/prd-draft/SKILL.md": "sha256:e6d457ee65f4d7dd184bef4fc8285253951098484fba9bb3cedbe1512729dc0e",
+        "skills/review-inbox/SKILL.md": "sha256:8b58913b870212b4b04b14d921efb72ed92007cec043513eb3baef36e907c846",
+        "skills/spec-from-prd/SKILL.md": "sha256:f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce"
+      }
+    }
+  },
   "plugin": "ai-dlc-workflow",
-  "revision": 1,
+  "revision": 2,
   "schema": 1
 }
