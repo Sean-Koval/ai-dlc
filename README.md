@@ -2,6 +2,8 @@
 
 # AI-DLC
 
+Documentation site: [sean-koval.github.io/ai-dlc](https://sean-koval.github.io/ai-dlc/)
+
 **Portable development setup and workflows for people and coding agents.**
 
 > **Scope freeze (2026-10).** AI-DLC is a local workflow, machine-provisioning and
