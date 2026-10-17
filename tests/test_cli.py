@@ -1189,3 +1189,22 @@ def test_work_finish_at_merge_interruption_displays_recovery_note(monkeypatch):
     assert result.exit_code != 0
     assert "/safe/state/owner.json" in result.output
     assert '"status": "completed"' not in result.output
+
+
+def test_project_init_points_to_setup_until_generated_files_render(tmp_path):
+    from ai_dlc.cli import app
+
+    root = tmp_path / "fresh"
+    initialized = CliRunner().invoke(app, ["project", "init", str(root)])
+    assert initialized.exit_code == 0, initialized.output
+    assert "ai-dlc project setup --root" in json.loads(initialized.stdout)["next"]
+
+    stale = CliRunner().invoke(app, ["agents", "render", "--root", str(root), "--check"])
+    assert stale.exit_code == 1
+    assert "run `ai-dlc project setup --root" in stale.stderr
+
+    rendered = CliRunner().invoke(app, ["agents", "render", "--root", str(root), "--apply"])
+    assert rendered.exit_code == 0, rendered.output
+    clean = CliRunner().invoke(app, ["agents", "render", "--root", str(root), "--check"])
+    assert clean.exit_code == 0, clean.output
+    assert "stale" not in clean.stderr

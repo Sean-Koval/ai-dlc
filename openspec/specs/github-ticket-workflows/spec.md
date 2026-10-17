@@ -15,7 +15,7 @@ Work start SHALL consume declared tracker lifecycle capabilities without provide
 - **THEN** work does not substitute legacy transition behavior
 
 ### Requirement: GT-02 Optional project planning states
-GitHub Issues SHALL work without Projects. A configured Project SHALL use explicitly mapped single-select status options, preserving issue identity and distinguishing native issue state from planning state. Start SHALL not reopen or overwrite a terminal issue as a side effect.
+GitHub Issues SHALL work without Projects. A configured Project SHALL use explicitly mapped single-select status options, preserving issue identity and distinguishing native issue state from planning state. Start SHALL not reopen or overwrite a terminal issue as a side effect. When the GitHub GraphQL endpoint itself refuses the request, native issue reads, closes, reopens, links and viewer checks SHALL use REST; completion SHALL then close the native issue only, report the Project as unreconciled with the reason and withhold reconciliation, while planning operations SHALL fail. Scope, rate-limit and other GraphQL failures SHALL NOT fall back.
 
 #### Scenario: Work uses a configured Project
 - **WHEN** an open issue starts with a valid in-progress mapping
@@ -24,6 +24,10 @@ GitHub Issues SHALL work without Projects. A configured Project SHALL use explic
 #### Scenario: Configuration is incomplete or stale
 - **WHEN** a selected project, field or mapped option cannot be verified
 - **THEN** the operation fails rather than silently falling back to issue-only behavior or guessing a status by name
+
+#### Scenario: The GraphQL endpoint is refused
+- **WHEN** work finish runs where the GraphQL endpoint returns an HTTP refusal
+- **THEN** the issue is read and closed through REST, the result reports the Project as unreconciled, and a start or prepare fails instead of skipping planning
 
 ### Requirement: GT-03 Identity and uncertain recovery
 Issue and project operations SHALL verify configured identity, refuse incomplete or ambiguous reconciliation, and preserve uncertainty across partial issue/project writes. A Project Done status SHALL NOT independently establish work completion or bypass finish gates. When an attachment returns an item identity that the membership readback does not yet show, the readback SHALL be retried within a bounded number of attempts with backoff without repeating the attachment request. Absence that persists past the bound, a different visible item identity and ambiguous membership SHALL remain terminal and uncertain.

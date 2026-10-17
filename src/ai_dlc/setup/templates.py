@@ -364,6 +364,18 @@ def adopt(
             "template_source": source,
             "local_source": "://" not in source,
             "release_manifest": "included" if manifest is not None else "absent",
+            # Rendering depends on the machine's enrolled sources and execution target, so
+            # setup renders; until then the scaffold's `generated` check reports stale files.
+            **(
+                {
+                    "next": f"Run `ai-dlc project setup --root {root}` to run setup steps "
+                    "and render agent configuration, commit the result, then run "
+                    "`ai-dlc project check --required`; the generated check fails until "
+                    "setup renders."
+                }
+                if apply
+                else {}
+            ),
         }
 
 

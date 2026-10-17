@@ -290,3 +290,16 @@ and writes no record. Fixture tests replay the captured refusal text and confirm
 unrelated `gh` failures keep their message. The repaired token path, write scopes
 and GitHub Enterprise hosts were not exercised. Drafting a record without Project
 fields was not delivered; the read contract is shared and stays fail-closed.
+
+## Refused GraphQL endpoint — October 17, 2026
+
+Issue #226. In a Claude Code cloud session whose proxy answers every
+`api.github.com/graphql` request with HTTP 403, the adapter with this repository's
+configured Project read issues #206, #193, #213 and #226 through REST, verified the
+configured viewer through `GET /user`, and reported each Project as unreconciled;
+capabilities withheld `reconcile_closed` and `prepare`. Fixture tests cover REST
+close, reopen and link, refused start and prepare, a cancelled issue and viewer
+mismatch under the fallback, a service-level finish, and the scope, rate-limit and
+502 failures that must not fall back. Live finish runs are recorded in the work
+records they completed; a live REST close of an open issue and Project
+reconciliation on a later GraphQL-enabled rerun were not exercised.

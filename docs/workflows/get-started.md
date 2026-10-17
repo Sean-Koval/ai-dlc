@@ -132,6 +132,10 @@ git commit -m "chore: initialize project"
 "$AI_DLC" project check --root . --required
 ```
 
+`project init` copies the template only. `project setup` runs the setup steps and
+renders the agent configuration, so the `generated` check fails until setup has run;
+init's output and the failing check both name it.
+
 During edits, run only the named commands relevant to the change:
 
 ```sh

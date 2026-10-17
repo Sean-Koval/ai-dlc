@@ -1147,6 +1147,12 @@ def agents_render(
         result = render_agents(root, apply=apply, client=client)
     emit(result)
     if check and not succeeded(result):
+        if personal is None:
+            typer.echo(
+                "Generated agent configuration is stale; run `ai-dlc project setup --root "
+                f"{root}` (or `ai-dlc agents render --apply`) and commit the result.",
+                err=True,
+            )
         raise typer.Exit(1)
 
 
