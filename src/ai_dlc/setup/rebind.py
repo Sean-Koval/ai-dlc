@@ -1,7 +1,6 @@
 """Explicit migration of pinned provider identities and their artifact references."""
 
 import copy
-import os
 import tempfile
 import tomllib
 from pathlib import Path
@@ -20,16 +19,6 @@ ARTIFACTS = {
     "deploy": {"deployment"},
     "knowledge": {"knowledge"},
 }
-
-
-def _validate_connection_plan_request(
-    role: str, provider_id: str, config: dict, connection_plan: Path | None
-) -> None:
-    """A Linear connection plan only accompanies a tracker rebind to the selected linear."""
-    if connection_plan is not None and (role != "tracker" or provider_id != "linear"):
-        raise ValueError("A Linear connection plan requires rebind tracker linear")
-    if connection_plan is not None and config.get("roles", {}).get("tracker") != "linear":
-        raise ValueError("A Linear connection migration requires the selected tracker to be linear")
 
 
 def _collect_work_items(root: Path, role: str, config: dict) -> list[tuple[str, dict, str]]:
@@ -100,21 +89,13 @@ def _stage_and_apply(
     work_items: list,
     validated_mappings: dict,
     machine_config: dict | None,
-    saved_connection_plan,
 ) -> None:
     """Rewrite configuration and work records in a staging directory, then apply atomically."""
     after = dict(before)
     with tempfile.TemporaryDirectory(prefix="ai-dlc-rebind-") as temporary:
         stage = Path(temporary).resolve()
         staged_config = stage / "ai-dlc.toml"
-        staged_config.write_bytes(before["ai-dlc.toml"])
-        if saved_connection_plan is not None:
-            from ai_dlc.setup.provider_onboarding import apply_linear_connection
-
-            apply_linear_connection(staged_config, saved_connection_plan)
-            proposed = load_project(stage)
-        else:
-            staged_config.write_text(tomli_w.dumps(proposed))
+        staged_config.write_text(tomli_w.dumps(proposed))
         resolved = resolve_layers(
             [("project", proposed)] + ([("machine", machine_config)] if machine_config else [])
         ).values
@@ -146,9 +127,6 @@ def _rebind(
     mappings: dict | None = None,
     *,
     machine_config: dict | None = None,
-    connection_plan: Path | None = None,
-    environ=None,
-    client=None,
 ) -> dict:
     root = Path(root).resolve()
     if role not in ARTIFACTS:
@@ -156,37 +134,18 @@ def _rebind(
     if not provider_id.strip():
         raise ValueError("Provider ID is required")
     mappings = mappings or {}
+    from ai_dlc.providers import provider_kind, refuse_removed_kind
+
     config = load_project(root)
-    _validate_connection_plan_request(role, provider_id, config, connection_plan)
+    refuse_removed_kind(provider_kind(config, provider_id))
     proposed = copy.deepcopy(config)
     proposed.setdefault("roles", {})[role] = provider_id
     before = checkout_files(root)
-    all_work_items = _collect_work_items(root, role, config)
-    saved_connection_plan = None
-    if connection_plan is not None:
-        from ai_dlc.setup.provider_onboarding import _bound_linear_work, _load_connection_plan
-
-        connection_path, saved_connection_plan = _load_connection_plan(root, connection_plan)
-        affected_ids = set(_bound_linear_work(root, config))
-        work_items = [item for item in all_work_items if item[1]["id"] in affected_ids]
-    else:
-        work_items = all_work_items
+    work_items = _collect_work_items(root, role, config)
     plan = _plan_rebind(role, provider_id, work_items)
-    if connection_plan is not None:
-        plan["connection_plan"] = connection_path.relative_to(root).as_posix()
     if not apply:
         return plan
     validated_mappings = _validate_mappings(role, mappings, work_items)
-
-    if connection_plan is not None:
-        from ai_dlc.setup.provider_onboarding import revalidate_saved_linear_connection
-
-        config, saved_connection_plan = revalidate_saved_linear_connection(
-            root,
-            connection_plan,
-            environ=os.environ if environ is None else environ,
-            client=client,
-        )
     _stage_and_apply(
         root,
         role,
@@ -196,13 +155,8 @@ def _rebind(
         work_items,
         validated_mappings,
         machine_config,
-        saved_connection_plan,
     )
-    return {
-        **plan,
-        "status": "applied",
-        **({"connection": "applied"} if saved_connection_plan is not None else {}),
-    }
+    return {**plan, "status": "applied"}
 
 
 def rebind(
@@ -213,9 +167,6 @@ def rebind(
     mappings: dict | None = None,
     *,
     machine_config: dict | None = None,
-    connection_plan: Path | None = None,
-    environ=None,
-    client=None,
 ) -> dict:
     """Plan or apply an explicit provider rebind under the project write lock."""
     if not apply:
@@ -226,9 +177,6 @@ def rebind(
             apply,
             mappings,
             machine_config=machine_config,
-            connection_plan=connection_plan,
-            environ=environ,
-            client=client,
         )
     with project_write_lock(root):
         return _rebind(
@@ -238,7 +186,4 @@ def rebind(
             apply,
             mappings,
             machine_config=machine_config,
-            connection_plan=connection_plan,
-            environ=environ,
-            client=client,
         )

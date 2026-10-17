@@ -288,7 +288,7 @@ def test_real_enrollment_preserves_inherited_alias_and_detects_account_drift(che
     paths = EnrollmentPaths.from_environment(environ=env)
     write_enrollment(
         paths,
-        content=b'schema=4\nprofile_id="personal-profile"\n[roles]\ntracker="inherited"\n[providers.inherited]\nkind="linear"\nteam_id="original-team"\n',
+        content=b'schema=4\nprofile_id="personal-profile"\n[roles]\ntracker="inherited"\n[providers.inherited]\nkind="jira-cloud"\nteam_id="original-team"\n',
         machine='schema=4\n[providers.inherited]\naccount="primary"\n[accounts.primary]\nidentity="first"\n',
     )
     source = root / "ai-dlc.toml"

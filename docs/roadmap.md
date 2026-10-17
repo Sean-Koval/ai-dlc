@@ -14,8 +14,10 @@ prepares tools, integrations, guidance and evidence; the harness performs the wo
 Installing the engine from this repository is distinct from adopting a work
 repository, which has its own tracker and independent local credentials. Personal
 projects use GitHub Issues with repository-associated Projects; work uses Jira Cloud
-for new work, with Plane as an optional alternative; Obsidian remains the private
-journal. Delivery runs through reviewed work records, OpenSpec changes, pull
+for new work (Plane is shipped but unsupported, and Linear has been removed);
+Obsidian remains the private journal. Hangar intake starts agent jobs from tickets;
+AI-DLC keeps its tracker adapters for the local work lifecycle (see the
+[tracker boundary](architecture.md#tracker-boundary-with-hangar)). Delivery runs through reviewed work records, OpenSpec changes, pull
 requests and a gated `ai-dlc work finish`. Release publication from a tag is
 implemented; the outstanding qualification list is in release verification.
 
@@ -37,9 +39,10 @@ before adding surface area.
    one personal repository with GitHub Issues, deliver ordinary work through them
    for two weeks, and keep a friction log of every refusal, repeated step and
    workaround. The work-repository run supplies the live lifecycle record that
-   [#85](https://github.com/Sean-Koval/ai-dlc/issues/85) requires; on success,
-   present one qualified work tracker and mark Plane and Linear as available but
-   unqualified. Friction-log entries become issues; nothing else enters the queue
+   [#85](https://github.com/Sean-Koval/ai-dlc/issues/85) requires for the local
+   lifecycle steps hangar does not perform (`work publish`, a blocked `work finish`
+   before merge and a closing `work finish` after merge); on success, present one
+   qualified work tracker. Plane already reads as unsupported. Friction-log entries become issues; nothing else enters the queue
    until they are triaged.
 2. **A shorter delivery path.** Count the manual commands between a tracker item
    and `work finish` on the adopted repositories, then remove or fold steps until

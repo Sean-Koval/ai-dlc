@@ -361,32 +361,32 @@ def test_portable_profile_examples_and_rendered_handbook_are_safe(tmp_path):
     assert resolved_profile["agents"]["servers"] == []
     assert profile["roles"] == {
         "specs": "openspec",
-        "tracker": "linear",
+        "tracker": "github-issues",
         "knowledge": "obsidian",
         "scm": "github",
         "deploy": "none",
         "agent-client": ["claude-code", "codex"],
     }
     assert profile["credentials"] == {
-        "linear-sandbox": {
-            "description": "Credential for a sandbox tracker integration",
-            "required_by": ["provider.linear"],
+        "github": {
+            "description": "Credential for the GitHub Issues tracker",
+            "required_by": ["provider.github-issues"],
         }
     }
 
     machine = tomllib.loads(machine_path.read_text())
     resolved = resolve_files(personal=profile_path, machine=machine_path).values
-    assert machine["credentials"]["linear-sandbox"] == {
+    assert machine["credentials"]["github"] == {
         "source": "environment",
-        "variable": "LINEAR_SANDBOX_TOKEN",
+        "variable": "GH_TOKEN",
     }
     assert credential_status(resolved, environ={}) == [
         {
-            "id": "linear-sandbox",
-            "description": "Credential for a sandbox tracker integration",
-            "required_by": ["provider.linear"],
+            "id": "github",
+            "description": "Credential for the GitHub Issues tracker",
+            "required_by": ["provider.github-issues"],
             "source": "environment",
-            "variable": "LINEAR_SANDBOX_TOKEN",
+            "variable": "GH_TOKEN",
             "configured": True,
             "present": False,
         }
@@ -497,13 +497,13 @@ def test_public_example_helper_allows_schema_and_environment_bindings():
             "profile_id": "example-development",
             "roles": {"specs": "openspec"},
             "paths": {},
-            "providers": {"linear": {"token_env": "LINEAR_SANDBOX_TOKEN"}},
+            "providers": {"jira-cloud": {"token_env": "JIRA_SANDBOX_TOKEN"}},
             "credentials": {
-                "linear-sandbox": {
+                "jira-sandbox": {
                     "description": "Ordinary path and key prose",
-                    "required_by": ["provider.linear"],
+                    "required_by": ["provider.jira-cloud"],
                     "source": "environment",
-                    "variable": "LINEAR_SANDBOX_TOKEN",
+                    "variable": "JIRA_SANDBOX_TOKEN",
                 }
             },
         }
@@ -549,9 +549,9 @@ def test_public_example_helper_rejects_sensitive_value_shapes(value):
     "value",
     [
         "Ordinary prose can discuss a path or key without containing either value.",
-        "provider.linear",
+        "provider.jira-cloud",
         "example-development",
-        "LINEAR_SANDBOX_TOKEN",
+        "JIRA_SANDBOX_TOKEN",
     ],
 )
 def test_public_example_helper_allows_benign_content_values(value):
@@ -621,9 +621,9 @@ def test_public_raw_helper_rejects_sensitive_value_shapes(raw):
         "# Explain which path or key label a reader should choose.",
         'description = "The path and key words are ordinary prose."',
         '# Path and key are prose, not fields.\ndescription = "Neutral guidance"',
-        'variable = "LINEAR_SANDBOX_TOKEN"',
-        'token_env = "LINEAR_SANDBOX_TOKEN"',
-        'description = "provider.linear"',
+        'variable = "JIRA_SANDBOX_TOKEN"',
+        'token_env = "JIRA_SANDBOX_TOKEN"',
+        'description = "provider.jira-cloud"',
         'profile_id = "example-development"',
     ],
 )
@@ -647,9 +647,9 @@ def test_public_raw_helper_rejects_sensitive_comment_payloads(payload):
     "comment",
     [
         "# Explain which path or key label a reader should choose.",
-        "# provider.linear is a provider identifier.",
+        "# provider.jira-cloud is a provider identifier.",
         "# example-development is a profile identifier.",
-        "# LINEAR_SANDBOX_TOKEN is an environment-variable name.",
+        "# JIRA_SANDBOX_TOKEN is an environment-variable name.",
     ],
 )
 def test_public_raw_helper_allows_benign_comment_payloads(comment):
@@ -892,7 +892,7 @@ def test_portable_examples_are_the_only_profiles_in_built_distributions(
     machine_path.write_bytes(machine_bytes)
     resolved = resolve_files(personal=profile_path, machine=machine_path).values
     assert resolved["profile_id"] == "example-development"
-    assert credential_status(resolved, environ={})[0]["variable"] == "LINEAR_SANDBOX_TOKEN"
+    assert credential_status(resolved, environ={})[0]["variable"] == "GH_TOKEN"
 
 
 def test_initialized_python_check_does_not_dirty_repository(tmp_path):
@@ -1016,7 +1016,7 @@ def test_select_role_capabilities(tmp_path):
     adopt(root, apply=True, capabilities=["specs", "scm"])
     config = tomllib.loads((root / "ai-dlc.toml").read_text())
     assert config["roles"] == {"specs": "openspec", "scm": "github"}
-    assert not config.get("providers", {}).get("linear")
+    assert "github-issues" not in config.get("providers", {})
 
 
 def test_unselected_scm_omits_github_workflow(tmp_path):
@@ -1357,7 +1357,7 @@ def test_initialized_setup_and_language_check_offline(tmp_path, preset, tool, so
     assert run(config["checks"]["commands"]["language-check"]).returncode != 0
 
 
-@pytest.mark.parametrize("tracker", ["linear", "github-issues"])
+@pytest.mark.parametrize("tracker", ["jira-cloud", "github-issues"])
 def test_explicit_tracker_is_persisted_in_answers(tmp_path, tracker):
     import tomllib
 
@@ -1367,8 +1367,7 @@ def test_explicit_tracker_is_persisted_in_answers(tmp_path, tracker):
     config = tomllib.loads((tmp_path / "ai-dlc.toml").read_text())
     assert config["roles"]["tracker"] == tracker
     assert yaml.safe_load((tmp_path / ".copier-answers.yml").read_text())["tracker"] == tracker
-    if tracker == "github-issues":
-        assert "linear" not in config.get("providers", {})
+    assert set(config.get("providers", {})) == {tracker}
 
 
 def test_unsupported_scaffold_tracker_is_explicit(tmp_path):

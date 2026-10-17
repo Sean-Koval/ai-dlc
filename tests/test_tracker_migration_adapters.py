@@ -19,8 +19,8 @@ from ai_dlc.work.workflow import WorkService
 
 @pytest.fixture(
     params=[
-        ("linear", "github-issues"),
-        ("linear", "plane"),
+        ("jira-cloud", "github-issues"),
+        ("jira-cloud", "plane"),
         ("github-issues", "plane"),
         ("plane", "github-issues"),
     ]

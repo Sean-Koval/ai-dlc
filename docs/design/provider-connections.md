@@ -22,8 +22,9 @@ preserve. Undeclared selections, duplicate legacy/generic selections and incompl
 resource sets fail before any plan is saved. `--select KEY=VALUE` is repeatable;
 hyphens in keys normalize to underscores. Values are case-sensitive.
 
-For example, Linear can use `--select organization=Sandbox --select team=AID
---select 'in-progress=In Progress' --select closed=Done`. GitHub accepts its existing
+For example, Jira Cloud can use `--select project=OPS --select issue-type=Task
+--select 'in-progress=In Progress' --select closed=Done` alongside its other
+declared status selections. GitHub accepts its existing
 repository, Project and status names through the same option, including
 `--select issues-only=true`. Existing named flags remain accepted. To apply, pass
 only the provider, root, `--plan-file` and `--apply`; selections come from that file.
@@ -40,7 +41,6 @@ preview and journaled apply stay in its existing application service.
 | New declarative handler | Common service: exclusive confined plan creation, exact source bytes, effective runtime/work snapshots, complete rediscovery, locked authored-safe apply |
 | GitHub existing selection | Existing codec/revalidation plus extracted common exact snapshot/render/save/apply primitives |
 | GitHub default Project | Existing schema and Project journal orchestration, retaining its existing local helper calls |
-| Linear | Existing canonical-digest codec, replaceable saved plans, comment-only source allowance and bound-work recovery; names resolve to canonical IDs before that codec |
 
 Common exact plans bind provider kind/alias, account/resource identity, canonical
 selections, patch and source/runtime/work digests. Apply recomputes the complete
@@ -51,8 +51,8 @@ by mutable pathname. These are the inherited bounded same-user race protections,
 not a claim of new crash-atomic or adversarial concurrency guarantees.
 
 This child supplies shared write ownership for new handlers and useful extraction
-for GitHub. Linear's persistence/recovery and GitHub's remote Project journal
-remain compatibility boundaries; the parent PT-02 extraction is not wholly
+for GitHub. GitHub's remote Project journal remains a compatibility boundary
+(the Linear codec that also stood outside the common service has been removed); the parent PT-02 extraction is not wholly
 complete. This does not implement Jira lifecycle support, native client login,
 Confluence or tenant qualification. See the bounded
 [specification](../../openspec/changes/archive/2026-09-07-provider-connection-service/specs/provider-connection-service/spec.md).

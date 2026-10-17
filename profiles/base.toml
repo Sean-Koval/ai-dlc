@@ -2,7 +2,7 @@ schema = 4
 
 [roles]
 specs = "openspec"
-tracker = "linear"
+tracker = "github-issues"
 knowledge = "obsidian"
 scm = "github"
 deploy = "none"

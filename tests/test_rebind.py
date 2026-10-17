@@ -10,7 +10,7 @@ from ai_dlc.setup.rebind import rebind
 @pytest.fixture
 def project(tmp_path):
     (tmp_path / "ai-dlc.toml").write_text(
-        'schema = 4\n[roles]\ntracker = "linear"\n[providers.github-issues]\nkind = "github-issues"\n'
+        'schema = 4\n[roles]\ntracker = "jira-cloud"\n[providers.github-issues]\nkind = "github-issues"\n'
     )
     work = {
         "schema": 1,
@@ -21,7 +21,7 @@ def project(tmp_path):
         "spec_reason": "No behavior change",
         "acceptance": ["Verified"],
         "reviewed": True,
-        "providers": {"tracker": "linear"},
+        "providers": {"tracker": "jira-cloud"},
         "artifacts": {"tracker": "OLD-1"},
         "bindings": {},
     }
@@ -35,14 +35,14 @@ def test_plan_retains_binding(project):
     before = (project / "ai-dlc.toml").read_bytes()
     result = rebind(project, "tracker", "github-issues")
     assert result["active_work"][0]["id"] == "one"
-    assert result["active_work"][0]["provider"] == "linear"
+    assert result["active_work"][0]["provider"] == "jira-cloud"
     assert (project / "ai-dlc.toml").read_bytes() == before
 
 
 def test_apply_requires_mapping(project):
     with pytest.raises(ValueError, match="mapping"):
         rebind(project, "tracker", "github-issues", apply=True)
-    assert tomllib.loads((project / "ai-dlc.toml").read_text())["roles"]["tracker"] == "linear"
+    assert tomllib.loads((project / "ai-dlc.toml").read_text())["roles"]["tracker"] == "jira-cloud"
 
 
 def test_mapping_updates_all_binding_parts(project):
@@ -63,11 +63,11 @@ def test_empty_mapping_refused(project):
 
 def test_rebind_same_provider_requires_explicit_artifact_mapping(project):
     with pytest.raises(ValueError, match="mapping"):
-        rebind(project, "tracker", "linear", apply=True)
+        rebind(project, "tracker", "jira-cloud", apply=True)
     assert (
-        rebind(project, "tracker", "linear", apply=True, mappings={"one": {"tracker": "LINEAR-2"}})[
-            "status"
-        ]
+        rebind(
+            project, "tracker", "jira-cloud", apply=True, mappings={"one": {"tracker": "JIRA-2"}}
+        )["status"]
         == "applied"
     )
 
@@ -104,7 +104,7 @@ def test_rebind_preview_supports_the_provider_connect_refusal_guidance(project):
 
     result = CliRunner().invoke(
         app,
-        ["project", "rebind", "tracker", "linear", "--root", str(project)],
+        ["project", "rebind", "tracker", "jira-cloud", "--root", str(project)],
     )
 
     assert result.exit_code == 0, result.output

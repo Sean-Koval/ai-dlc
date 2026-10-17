@@ -53,13 +53,6 @@ def test_loads_the_packaged_component_catalog_and_its_guidance(tmp_path: Path):
                 ],
             },
             {
-                "id": "linear",
-                "roles": ["tracker"],
-                "modules": ["linear"],
-                "guidance": ["providers/linear.md"],
-                "required_config": ["team_id", "statuses.in_progress", "statuses.closed"],
-            },
-            {
                 "id": "none",
                 "roles": ["deploy"],
                 "modules": [],
@@ -170,7 +163,6 @@ def test_loads_digest_verified_synthetic_component_fixtures(tmp_path: Path):
         "github",
         "github-issues",
         "jira-cloud",
-        "linear",
         "none",
         "obsidian",
         "openspec",
@@ -285,7 +277,6 @@ def test_parses_the_verified_manifest_bytes_when_the_file_changes_after_read(
         "github",
         "github-issues",
         "jira-cloud",
-        "linear",
         "none",
         "obsidian",
         "openspec",
@@ -459,7 +450,7 @@ def test_resolves_only_personal_or_project_roles_from_a_layered_configuration():
         [
             ("base", {"schema": 4, "roles": {"knowledge": "obsidian"}}),
             ("personal", {"schema": 4, "roles": {"specs": "openspec"}}),
-            ("project", {"schema": 4, "roles": {"tracker": "linear"}}),
+            ("project", {"schema": 4, "roles": {"tracker": "jira-cloud"}}),
         ]
     )
 
@@ -476,10 +467,10 @@ def test_resolves_only_personal_or_project_roles_from_a_layered_configuration():
                     "required_config": [],
                 },
                 {
-                    "id": "linear",
+                    "id": "jira-cloud",
                     "roles": ["tracker"],
-                    "modules": ["linear"],
-                    "guidance": ["providers/linear.md"],
+                    "modules": ["docker"],
+                    "guidance": ["providers/jira-cloud.md"],
                     "required_config": ["team_id"],
                 },
             ],
@@ -488,11 +479,11 @@ def test_resolves_only_personal_or_project_roles_from_a_layered_configuration():
 
     assert result["components"] == [
         {
-            "id": "linear",
-            "provider": "linear",
+            "id": "jira-cloud",
+            "provider": "jira-cloud",
             "role": "tracker",
-            "modules": ["linear"],
-            "guidance": ["providers/linear.md"],
+            "modules": ["docker"],
+            "guidance": ["providers/jira-cloud.md"],
             "required_config": ["team_id"],
         },
         {
@@ -507,7 +498,7 @@ def test_resolves_only_personal_or_project_roles_from_a_layered_configuration():
     assert result["unresolved"] == []
 
 
-@pytest.mark.parametrize("tracker", ["linear", "github-issues"])
+@pytest.mark.parametrize("tracker", ["jira-cloud", "github-issues"])
 def test_ignores_normal_schema_4_agent_clients_when_resolving_raw_roles(tmp_path: Path, tracker):
     """Would fail if a list-valued client role were treated as a component provider."""
     from ai_dlc.harness.components import load_component_catalog, resolve_components
@@ -544,7 +535,7 @@ def test_ignores_empty_explicit_agent_clients_in_a_layered_configuration():
                 "personal",
                 {
                     "schema": 4,
-                    "roles": {"tracker": "linear", "agent-client": []},
+                    "roles": {"tracker": "jira-cloud", "agent-client": []},
                 },
             ),
         ]
@@ -555,10 +546,10 @@ def test_ignores_empty_explicit_agent_clients_in_a_layered_configuration():
             "schema": 1,
             "components": [
                 {
-                    "id": "linear",
+                    "id": "jira-cloud",
                     "roles": ["tracker"],
-                    "modules": ["linear"],
-                    "guidance": ["providers/linear.md"],
+                    "modules": ["docker"],
+                    "guidance": ["providers/jira-cloud.md"],
                     "required_config": ["team_id"],
                 }
             ],
@@ -568,7 +559,7 @@ def test_ignores_empty_explicit_agent_clients_in_a_layered_configuration():
     assert [
         (component["id"], component["provider"], component["role"])
         for component in result["components"]
-    ] == [("linear", "linear", "tracker")]
+    ] == [("jira-cloud", "jira-cloud", "tracker")]
     assert result["unresolved"] == []
 
 
@@ -635,7 +626,7 @@ def test_resolves_a_provider_component_override_before_its_kind():
                 {
                     "id": "project-tracker",
                     "roles": ["tracker"],
-                    "modules": ["linear"],
+                    "modules": ["docker"],
                     "guidance": ["guidance/project-tracker.md"],
                     "required_config": ["team_id"],
                 },
@@ -650,7 +641,7 @@ def test_resolves_a_provider_component_override_before_its_kind():
                 "id": "project-tracker",
                 "provider": "project-issues",
                 "role": "tracker",
-                "modules": ["linear"],
+                "modules": ["docker"],
                 "guidance": ["guidance/project-tracker.md"],
                 "required_config": ["team_id"],
             }
@@ -735,15 +726,15 @@ def test_reports_a_component_that_is_incompatible_with_the_selected_role():
     from ai_dlc.harness.components import resolve_components
 
     result = resolve_components(
-        {"roles": {"specs": "linear"}},
+        {"roles": {"specs": "jira-cloud"}},
         {
             "schema": 1,
             "components": [
                 {
-                    "id": "linear",
+                    "id": "jira-cloud",
                     "roles": ["tracker"],
-                    "modules": ["linear"],
-                    "guidance": ["providers/linear.md"],
+                    "modules": ["docker"],
+                    "guidance": ["providers/jira-cloud.md"],
                     "required_config": ["team_id"],
                 }
             ],
@@ -755,9 +746,9 @@ def test_reports_a_component_that_is_incompatible_with_the_selected_role():
         "components": [],
         "unresolved": [
             {
-                "provider": "linear",
+                "provider": "jira-cloud",
                 "role": "specs",
-                "reason": "component linear is incompatible with role: specs",
+                "reason": "component jira-cloud is incompatible with role: specs",
             }
         ],
     }
@@ -768,7 +759,7 @@ def test_sorts_resolved_components_and_their_requirement_lists():
     from ai_dlc.harness.components import resolve_components
 
     result = resolve_components(
-        {"roles": {"specs": "openspec", "tracker": "linear"}},
+        {"roles": {"specs": "openspec", "tracker": "jira-cloud"}},
         {
             "schema": 1,
             "components": [
@@ -776,14 +767,14 @@ def test_sorts_resolved_components_and_their_requirement_lists():
                     "id": "openspec",
                     "roles": ["specs"],
                     "modules": ["python", "openspec"],
-                    "guidance": ["providers/openspec.md", "providers/linear.md"],
+                    "guidance": ["providers/openspec.md", "providers/jira-cloud.md"],
                     "required_config": ["zeta", "alpha"],
                 },
                 {
-                    "id": "linear",
+                    "id": "jira-cloud",
                     "roles": ["tracker"],
-                    "modules": ["python", "linear", "core"],
-                    "guidance": ["providers/linear.md", "providers/openspec.md"],
+                    "modules": ["python", "docker", "core"],
+                    "guidance": ["providers/jira-cloud.md", "providers/openspec.md"],
                     "required_config": ["team_id", "statuses.closed"],
                 },
             ],
@@ -794,11 +785,11 @@ def test_sorts_resolved_components_and_their_requirement_lists():
         "schema": 1,
         "components": [
             {
-                "id": "linear",
-                "provider": "linear",
+                "id": "jira-cloud",
+                "provider": "jira-cloud",
                 "role": "tracker",
-                "modules": ["core", "linear", "python"],
-                "guidance": ["providers/linear.md", "providers/openspec.md"],
+                "modules": ["core", "docker", "python"],
+                "guidance": ["providers/jira-cloud.md", "providers/openspec.md"],
                 "required_config": ["statuses.closed", "team_id"],
             },
             {
@@ -806,7 +797,7 @@ def test_sorts_resolved_components_and_their_requirement_lists():
                 "provider": "openspec",
                 "role": "specs",
                 "modules": ["openspec", "python"],
-                "guidance": ["providers/linear.md", "providers/openspec.md"],
+                "guidance": ["providers/jira-cloud.md", "providers/openspec.md"],
                 "required_config": ["alpha", "zeta"],
             },
         ],
@@ -819,22 +810,22 @@ def test_deduplicates_module_requirements_for_a_resolved_component():
     from ai_dlc.harness.components import resolve_components
 
     result = resolve_components(
-        {"roles": {"tracker": "linear"}},
+        {"roles": {"tracker": "jira-cloud"}},
         {
             "schema": 1,
             "components": [
                 {
-                    "id": "linear",
+                    "id": "jira-cloud",
                     "roles": ["tracker"],
-                    "modules": ["python", "linear", "python"],
-                    "guidance": ["providers/linear.md"],
+                    "modules": ["python", "docker", "python"],
+                    "guidance": ["providers/jira-cloud.md"],
                     "required_config": ["team_id"],
                 }
             ],
         },
     )
 
-    assert result["components"][0]["modules"] == ["linear", "python"]
+    assert result["components"][0]["modules"] == ["docker", "python"]
 
 
 def test_sorts_unresolved_selections_by_provider_and_role():

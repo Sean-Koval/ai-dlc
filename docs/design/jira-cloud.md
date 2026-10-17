@@ -4,6 +4,13 @@ This optional tracker kind implements create/find/read/transition/link and
 capabilities behind the existing Registry and WorkService. GitHub remains the
 personal tracker; this adapter does not migrate tickets or install Plane.
 
+The adapter serves the local developer lifecycle only. Hangar intake starts agent
+jobs from Jira statuses or labels and writes job progress back; AI-DLC publishes
+reviewed work, binds branches and closes tickets after merged CI evidence. Use
+`[work] tracker_writes = "finish-only"` where hangar works the same project so
+`work start` does not race hangar's status transitions; see the
+[tracker boundary](../architecture.md#tracker-boundary-with-hangar).
+
 The implementation accepts a bare HTTPS `*.atlassian.net` site and canonical
 Cloud UUID, and sends requests only to
 `https://api.atlassian.com/ex/jira/{cloud_id}/rest/api/3/`. Before lifecycle

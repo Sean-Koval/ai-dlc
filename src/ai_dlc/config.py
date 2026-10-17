@@ -35,6 +35,7 @@ SCOPES = {
     "target": {"machine"},
     "project": {"base", "project"},
     "contracts": {"base", "project"},
+    "work": {"base", "project"},
     "profile_id": {"personal"},
     "sources": {"personal"},
     "credentials": {"personal", "machine"},
@@ -68,6 +69,10 @@ _COMPONENT_PROVIDER_FIELDS = {
     "component_manifest_sha256",
 }
 _BUNDLE_ID = re.compile(r"^[a-z0-9][a-z0-9-]*$")
+# "lifecycle": work start transitions the ticket to in-progress and finish closes it.
+# "finish-only": only finish closes the ticket, for repositories whose agent jobs are
+# started and tracked by hangar intake (docs/architecture.md#tracker-boundary-with-hangar).
+TRACKER_WRITES = ("lifecycle", "finish-only")
 
 
 @dataclass
@@ -271,6 +276,15 @@ def _validate(layer: str, data: dict[str, Any]) -> None:
             raise ValueError("project: agents.bundles must be a list of bundle-ID slugs")
         if len(set(bundles)) != len(bundles):
             raise ValueError("project: agents.bundles must not contain duplicate IDs")
+    if "work" in data:
+        work = data["work"]
+        if not isinstance(work, dict):
+            raise TypeError(f"{layer}: work must be a table")
+        unknown = set(work) - {"tracker_writes"}
+        if unknown:
+            raise ValueError(f"{layer}: unknown field work.{min(unknown)}")
+        if "tracker_writes" in work and work["tracker_writes"] not in TRACKER_WRITES:
+            raise ValueError(f"{layer}: work.tracker_writes must be lifecycle or finish-only")
     if "credentials" in data:
         _validate_credentials(layer, data["credentials"])
     if "providers" in data:

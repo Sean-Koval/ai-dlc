@@ -95,7 +95,7 @@ new alias and migrate explicitly when replacing an existing connection.
 ## Existing work and qualification
 
 Choose separately between changing the default for future work and mapping
-selected existing work to verified target tickets. Preserve the old Linear alias
+selected existing work to verified target tickets. Preserve the old tracker alias
 and source references. Local records do not necessarily contain the complete
 remote active/planned backlog; reconcile source inventory before migration.
 Remote target creation is a separate reviewed action, never an implicit rebind.

@@ -15,23 +15,6 @@
       "required_config": []
     },
     {
-      "id": "linear",
-      "roles": [
-        "tracker"
-      ],
-      "modules": [
-        "linear"
-      ],
-      "guidance": [
-        "providers/linear.md"
-      ],
-      "required_config": [
-        "team_id",
-        "statuses.in_progress",
-        "statuses.closed"
-      ]
-    },
-    {
       "id": "github-issues",
       "roles": [
         "tracker"

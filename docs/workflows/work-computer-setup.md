@@ -296,7 +296,7 @@ account, workspace/project and state configuration. Follow the
 qualified by the adapter fixtures. Plane is not a prerequisite for GitHub or Jira projects. Selective Confluence work remains deferred.
 
 Copier answers retain selected clients and tracker configuration across updates.
-Omitted options preserve the historical Linear and Claude Code/Codex defaults;
+Omitted options select the GitHub Issues tracker and Claude Code/Codex clients;
 this compatibility behavior does not choose a work account. Preview output includes
 the selected toolset and known limitations. Review conflicts before applying.
 

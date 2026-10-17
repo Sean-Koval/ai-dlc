@@ -16,15 +16,15 @@ profile_id = "portable-development"
 [modules]
 include = ["core", "codex"]
 
-[credentials.linear-sandbox]
-description = "Linear sandbox access"
-required_by = ["provider.linear-sandbox"]
+[credentials.jira-sandbox]
+description = "Jira sandbox access"
+required_by = ["provider.jira-sandbox"]
 
 [[agents.servers]]
 id = "notes"
 command = "notes-mcp"
 args = ["serve"]
-env = ["LINEAR_SANDBOX_TOKEN"]
+env = ["JIRA_SANDBOX_TOKEN"]
 """
 
 LEGACY_PROFILE = PROFILE.replace('profile_id = "portable-development"\n', "")
@@ -134,7 +134,7 @@ def fake_git_environment(
 def test_enroll_preview_reports_the_candidate_without_activating_it(tmp_path: Path):
     """Would fail if preview wrote a lock, machine file, or omitted plan facts."""
     source, commit = disposable_profile(tmp_path)
-    service, paths = manager(tmp_path, {"LINEAR_SANDBOX_TOKEN": "test-value-never-returned"})
+    service, paths = manager(tmp_path, {"JIRA_SANDBOX_TOKEN": "test-value-never-returned"})
 
     preview = service.enroll(str(source), "portable-development", "laptop")
 
@@ -144,7 +144,7 @@ def test_enroll_preview_reports_the_candidate_without_activating_it(tmp_path: Pa
         "source": str(source),
         "requested_ref": "main",
         "resolved_commit": commit,
-        "content_sha256": "624a0af6afbff788318d5f9d2ae4bc7d3259aa6dda98fa4a84b962fb1b2d045a",
+        "content_sha256": "cea7593f00460c262c995ec838f67add8ee17ec3a8f93cc19fdf7a1b1ad54fbc",
         "portable": False,
         "profile_file": "ai-dlc-profile.toml",
     }
@@ -152,9 +152,9 @@ def test_enroll_preview_reports_the_candidate_without_activating_it(tmp_path: Pa
     assert preview["modules"] == ["core", "codex"]
     assert preview["credentials"] == [
         {
-            "id": "linear-sandbox",
-            "description": "Linear sandbox access",
-            "required_by": ["provider.linear-sandbox"],
+            "id": "jira-sandbox",
+            "description": "Jira sandbox access",
+            "required_by": ["provider.jira-sandbox"],
             "configured": False,
             "present": False,
         }
@@ -338,10 +338,10 @@ def test_status_reports_cached_identity_readiness_and_drift_without_environment_
     """Would fail if status omitted enrollment health or leaked a credential value."""
     source, commit = disposable_profile(tmp_path)
     marker = "credential-value-that-must-not-escape"
-    service, paths = manager(tmp_path, {"LINEAR_SANDBOX_TOKEN": marker})
+    service, paths = manager(tmp_path, {"JIRA_SANDBOX_TOKEN": marker})
     service.enroll(str(source), "portable-development", "laptop", apply=True)
     paths.machine_file("laptop").write_text(
-        'schema = 4\n[credentials.linear-sandbox]\nsource = "environment"\nvariable = "LINEAR_SANDBOX_TOKEN"\n'
+        'schema = 4\n[credentials.jira-sandbox]\nsource = "environment"\nvariable = "JIRA_SANDBOX_TOKEN"\n'
     )
 
     status = service.status()
@@ -361,8 +361,8 @@ def test_status_reports_cached_identity_readiness_and_drift_without_environment_
         "path": str(paths.machine_file("laptop")),
         "exists": True,
     }
-    assert status["credentials"][0]["id"] == "linear-sandbox"
-    assert status["credentials"][0]["variable"] == "LINEAR_SANDBOX_TOKEN"
+    assert status["credentials"][0]["id"] == "jira-sandbox"
+    assert status["credentials"][0]["variable"] == "JIRA_SANDBOX_TOKEN"
     assert status["credentials"][0]["present"] is True
     assert status["drift"] == []
     assert marker not in repr(status)
@@ -378,14 +378,14 @@ def test_status_reports_missing_machine_and_credential_bindings_as_drift(tmp_pat
     missing_machine = service.status()
     paths.machine_file("laptop").parent.mkdir(parents=True, exist_ok=True)
     paths.machine_file("laptop").write_text(
-        'schema = 4\n[credentials.linear-sandbox]\nsource = "environment"\nvariable = "LINEAR_SANDBOX_TOKEN"\n'
+        'schema = 4\n[credentials.jira-sandbox]\nsource = "environment"\nvariable = "JIRA_SANDBOX_TOKEN"\n'
     )
     missing_credential = service.status()
 
     assert missing_machine["ready"] is False
     assert missing_machine["drift"] == ["machine binding is missing"]
-    assert missing_credential["credentials"][0]["id"] == "linear-sandbox"
-    assert missing_credential["credentials"][0]["variable"] == "LINEAR_SANDBOX_TOKEN"
+    assert missing_credential["credentials"][0]["id"] == "jira-sandbox"
+    assert missing_credential["credentials"][0]["variable"] == "JIRA_SANDBOX_TOKEN"
     assert missing_credential["credentials"][0]["present"] is False
     assert missing_credential["ready"] is False
 
@@ -685,7 +685,7 @@ def test_enroll_rejects_invalid_agent_configuration_without_activating_it(tmp_pa
     active_source, _ = disposable_profile(tmp_path / "active")
     invalid_source, _ = disposable_profile(
         tmp_path / "invalid",
-        manifest=PROFILE.replace('env = ["LINEAR_SANDBOX_TOKEN"]', 'env = ["literal-value"]'),
+        manifest=PROFILE.replace('env = ["JIRA_SANDBOX_TOKEN"]', 'env = ["literal-value"]'),
     )
     service, paths = manager(tmp_path)
     service.enroll(str(active_source), "portable-development", "laptop", apply=True)
@@ -754,7 +754,7 @@ def configure_active_machine(paths: EnrollmentPaths) -> Path:
     active = read_lock(paths)
     machine_file = paths.machine_file(active.machine_id)
     machine_file.write_text(
-        'schema = 4\n[credentials.linear-sandbox]\nsource = "environment"\nvariable = "LINEAR_SANDBOX_TOKEN"\n'
+        'schema = 4\n[credentials.jira-sandbox]\nsource = "environment"\nvariable = "JIRA_SANDBOX_TOKEN"\n'
     )
     return machine_file
 
@@ -814,7 +814,7 @@ def test_explicit_machine_replaces_only_the_machine_scope_for_doctor(
     from ai_dlc.setup import provision
 
     source, _ = disposable_profile(tmp_path)
-    service, paths = manager(tmp_path, {"LINEAR_SANDBOX_TOKEN": "present"})
+    service, paths = manager(tmp_path, {"JIRA_SANDBOX_TOKEN": "present"})
     service.enroll(str(source), "portable-development", "laptop", apply=True)
     configure_active_machine(paths)
     active = read_lock(paths)
@@ -894,7 +894,7 @@ def test_explicit_machine_replaces_degraded_enrolled_machine_readiness(
     from ai_dlc.setup import provision
 
     source, _ = disposable_profile(tmp_path)
-    service, paths = manager(tmp_path, {"LINEAR_SANDBOX_TOKEN": "present"})
+    service, paths = manager(tmp_path, {"JIRA_SANDBOX_TOKEN": "present"})
     service.enroll(str(source), "portable-development", "laptop", apply=True)
     paths.machine_file("laptop").unlink()
     machine = tmp_path / "replacement-machine.toml"
@@ -1084,7 +1084,7 @@ def test_sync_preview_fetches_a_moved_ref_and_preserves_lock_and_clients(
     from ai_dlc.setup import provision
 
     source, old_commit = disposable_profile(tmp_path)
-    service, paths = manager(tmp_path, {"LINEAR_SANDBOX_TOKEN": "present"})
+    service, paths = manager(tmp_path, {"JIRA_SANDBOX_TOKEN": "present"})
     service.enroll(str(source), "portable-development", "laptop", apply=True)
     machine_file = configure_active_machine(paths)
     old_lock = paths.lock_file.read_bytes()
@@ -1102,7 +1102,7 @@ def test_sync_preview_fetches_a_moved_ref_and_preserves_lock_and_clients(
     ) -> dict[str, object]:
         del headless, system, architecture, home
         calls.append((profile, machine, environ))
-        return {"credentials": [{"id": "linear-sandbox", "present": True}]}
+        return {"credentials": [{"id": "jira-sandbox", "present": True}]}
 
     monkeypatch.setattr(provision, "machine_plan", plan_boundary)
 
@@ -1133,7 +1133,7 @@ def test_sync_apply_reconciles_candidate_before_activating_its_lock(
     from ai_dlc.setup import provision
 
     source, _ = disposable_profile(tmp_path)
-    service, paths = manager(tmp_path, {"LINEAR_SANDBOX_TOKEN": "present"})
+    service, paths = manager(tmp_path, {"JIRA_SANDBOX_TOKEN": "present"})
     service.enroll(str(source), "portable-development", "laptop", apply=True)
     machine_file = configure_active_machine(paths)
     old_lock = paths.lock_file.read_bytes()
@@ -1144,7 +1144,7 @@ def test_sync_apply_reconciles_candidate_before_activating_its_lock(
         del args, kwargs
         assert paths.lock_file.read_bytes() == old_lock
         events.append("plan")
-        return {"credentials": [{"id": "linear-sandbox", "present": True}]}
+        return {"credentials": [{"id": "jira-sandbox", "present": True}]}
 
     def apply_boundary(
         profile: Path,
@@ -1267,7 +1267,7 @@ def test_machine_doctor_combines_status_and_shared_checks_without_environment_va
 
     marker = "credential-value-that-must-not-escape-doctor"
     source, _ = disposable_profile(tmp_path)
-    service, paths = manager(tmp_path, {"LINEAR_SANDBOX_TOKEN": marker})
+    service, paths = manager(tmp_path, {"JIRA_SANDBOX_TOKEN": marker})
     service.enroll(str(source), "portable-development", "laptop", apply=True)
     machine_file = configure_active_machine(paths)
     active = read_lock(paths)
@@ -1301,8 +1301,8 @@ def test_machine_doctor_combines_status_and_shared_checks_without_environment_va
             "runtime_drift": [],
             "user_agents": {"clean": True, "changed": [], "applied": False},
             "signins": [],
-            "credentials": [{"id": "linear-sandbox", "present": True}],
-            "provider_health": [{"provider": "linear-sandbox", "ready": True}],
+            "credentials": [{"id": "jira-sandbox", "present": True}],
+            "provider_health": [{"provider": "jira-sandbox", "ready": True}],
         }
 
     monkeypatch.setattr(provision, "doctor", doctor_boundary)
@@ -1395,9 +1395,9 @@ def test_manager_injected_environment_flows_through_status_plan_apply_and_doctor
     from ai_dlc.setup import provision
 
     marker = "injected-machine-credential"
-    monkeypatch.delenv("LINEAR_SANDBOX_TOKEN", raising=False)
+    monkeypatch.delenv("JIRA_SANDBOX_TOKEN", raising=False)
     source, _ = disposable_profile(tmp_path)
-    service, paths = manager(tmp_path, {"LINEAR_SANDBOX_TOKEN": marker})
+    service, paths = manager(tmp_path, {"JIRA_SANDBOX_TOKEN": marker})
     service.enroll(str(source), "portable-development", "laptop", apply=True)
     configure_active_machine(paths)
     received_environments: list[object] = []
@@ -1443,7 +1443,7 @@ def test_manager_injected_environment_flows_through_status_plan_apply_and_doctor
         return {
             "ready": True,
             "credentials": readiness(personal, machine, environ),
-            "provider_health": [{"provider": "linear-sandbox", "ready": True}],
+            "provider_health": [{"provider": "jira-sandbox", "ready": True}],
         }
 
     monkeypatch.setattr(provision, "machine_plan", plan_boundary)

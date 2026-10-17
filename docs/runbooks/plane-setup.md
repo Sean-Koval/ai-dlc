@@ -4,6 +4,12 @@ This runbook assumes you already have an authorized Plane deployment and token.
 It does not install or deploy Plane or migrate GitHub/Jira tickets. GitHub/Jira
 projects can keep using their selected tracker without Plane.
 
+The Plane adapter is unsupported and unqualified. `project init` and `project
+adopt` require `--allow-unsupported` with `--tracker plane`, doctor lists it as
+`unsupported, unqualified`, and the adapter is scheduled for deletion in the next
+cleanup unless someone objects (see the
+[tracker boundary](../architecture.md#tracker-boundary-with-hangar)).
+
 Use the current `/api/v1/.../work-items/` contract. The adapter was developed from
 public API documentation and upstream source revision
 `1fec307f91003df96351557af32ce87891a3678a`; no installed Plane edition/version or
