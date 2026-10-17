@@ -30,9 +30,9 @@ and successful replay below satisfy asset availability, integrity and hosted
 consumer evidence for v0.4.0. They do not satisfy those remaining walkthroughs or
 provider and human-evaluation obligations.
 
-The [September 14 Jira preparation](verification/jira-cloud-new-work.md#walkthrough-preparation--september-14-2026)
+The [September 14 Jira preparation](verification/jira-cloud-new-work.md#walkthrough-preparation-september-14-2026)
 records missing sandbox inputs and the absent live Jira mutation target.
-[Native workspace and external MCP follow-up](verification/documentation-workflow.md#native-workspace-and-external-mcp-follow-up--september-14-2026)
+[Native workspace and external MCP follow-up](verification/documentation-workflow.md#native-workspace-and-external-mcp-follow-up-september-14-2026)
 adds scoped macOS evidence while retaining unavailable company, Antigravity and
 cross-platform checks. Neither record qualifies Jira or Plane.
 
@@ -309,4 +309,4 @@ specifications were archived on 2026-09-08 as `jira-cloud-new-work` and `plane-n
 
 Dated records from September 4 through September 8, 2026 and the candidate manifest
 preparation notes are in the
-[release verification history](archive/verification/release-history.md).
+[release verification history](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/verification/release-history.md).

@@ -1,7 +1,7 @@
 # Project knowledge repair verification
 
 Scope: repair PR #28's document organization and vault boundary behavior. The
-[formal change](../../openspec/changes/archive/2026-09-10-obsidian-vault-linking/) owns requirements
+[formal change](https://github.com/Sean-Koval/ai-dlc/tree/main/openspec/changes/archive/2026-09-10-obsidian-vault-linking) owns requirements
 and the execution checklist. The source guide lives in the project template and
 is linked from the design record rather than copied into another maintained guide.
 
@@ -77,7 +77,7 @@ recorded. They have since moved: `src/ai_dlc/moc.py`, `document_files.py`,
 
 `openspec archive obsidian-vault-linking --yes` validated and archived the delivered
 change as `2026-09-10-obsidian-vault-linking`, creating the canonical
-[DK specification](../../openspec/specs/obsidian-vault-linking/spec.md).
+[DK specification](https://github.com/Sean-Koval/ai-dlc/blob/main/openspec/specs/obsidian-vault-linking/spec.md).
 The work record now points to that archive. Earlier pre-merge statements above
 remain historical evidence. Source inspection and these regressions do not add
 live Obsidian, Confluence, native-client, or platform qualification.

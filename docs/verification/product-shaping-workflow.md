@@ -6,12 +6,12 @@ or platform qualification. No remote publication or completion is claimed here.
 
 ## Decision cases
 
-[Inputs and expected rubric](product-shaping/cases.md) were fixed before editing
+[Inputs and expected rubric](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/product-shaping/cases.md) were fixed before editing
 the three skill bodies. Root ran a fresh, read-only Codex CLI session with
 `gpt-5.6-sol`, high reasoning, supplying only the original discovery, prd-draft and
 review-inbox bodies and four synthetic inputs. The session was instructed not to
 use tools, read plans/specifications or publish work. The evaluator rubric was
-withheld. [Baseline output](product-shaping/baseline.md) is retained verbatim.
+withheld. [Baseline output](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/product-shaping/baseline.md) is retained verbatim.
 
 | Case | Expected decision | Baseline observation |
 | --- | --- | --- |
@@ -36,13 +36,13 @@ availability; it is a small synthetic application check, not a statistically
 powered comparison or human quality calibration. G/B deliberately overlap the
 worked examples, so this does not establish generalization to unseen products.
 
-[Baseline with assets](product-shaping/baseline-with-assets.md) retained the correct
+[Baseline with assets](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/product-shaping/baseline-with-assets.md) retained the correct
 G/B/S refusal judgments. Unlike the initial skills-only run, it avoided assuming
 renamed columns in P; template availability already helped that case. It still
 omitted stable IDs and comparative briefs, and its P next action moved from
 confirming details to implementation without an explicit needs-spec handoff.
 
-[First post-change output](product-shaping/first-post-change.md) produced the
+[First post-change output](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/product-shaping/first-post-change.md) produced the
 expected investigate/investigate/proceed/stop decisions. It compared alternatives,
 kept approval and missing details distinct, retained default compatibility and
 live-evidence limits, mapped RQ IDs to outcomes, and sent P to needs-spec and the
@@ -53,7 +53,7 @@ The first post-change run was **not a complete pass**: G/B did not explicitly
 name their canonical brief owner, and B omitted recovery planning. Following the
 skill-authoring guidance for omitted output elements, the final skill adds
 required Canonical brief/Owner/Status metadata and explicit Compatibility and
-Migration/recovery fields. The [targeted fresh G/B rerun](product-shaping/final-targeted.md) used the final
+Migration/recovery fields. The [targeted fresh G/B rerun](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/product-shaping/final-targeted.md) used the final
 skill wording and prior supplied assets; the matching explicit fields were then
 aligned in the templates/examples as well. Both outputs now name unique chat
 briefs, decision owners and draft/source status, retain source-scoped OUT/RQ IDs,
@@ -66,8 +66,8 @@ above. Wider harness behavior and user value remain unmeasured.
 
 The displayed Markdown snapshots normalize trailing hard-break spaces. Exact
 original response strings are retained for the two affected outputs in
-[baseline raw JSON](product-shaping/baseline-with-assets.raw.json) and
-[final targeted raw JSON](product-shaping/final-targeted.raw.json); the other
+[baseline raw JSON](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/product-shaping/baseline-with-assets.raw.json) and
+[final targeted raw JSON](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/product-shaping/final-targeted.raw.json); the other
 snapshots are unchanged.
 
 ## Automated delivery checks
@@ -99,7 +99,7 @@ run; the failure is retained here rather than presented as a passing result.
 
 Final local verification: `ai-dlc project check --required` passed generated,
 format, lint, types and test, with **1,145 tests passed** on the frozen assets.
-[Local receipt](product-shaping/local-checks.json) correctly records the base
+[Local receipt](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/product-shaping/local-checks.json) correctly records the base
 revision and dirty candidate; it is not clean merged-revision completion evidence.
 Strict `openspec validate product-shaping-workflow --strict --no-interactive` and
 `git diff --check` also passed. The work record validates with its verification link.

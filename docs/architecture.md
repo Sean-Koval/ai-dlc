@@ -92,7 +92,7 @@ operation refused before any change, `UncertainError` for one whose effect must 
 reconciled); the CLI reports every such failure through one handler as `Error: <message>`
 on stderr with the exception's exit code, and MCP lets it propagate as a tool error.
 A completed service call returns a JSON object that satisfies the
-[service result envelope](../contracts/service-result.schema.json): `status` is the
+[service result envelope](https://github.com/Sean-Koval/ai-dlc/blob/main/contracts/service-result.schema.json): `status` is the
 canonical outcome string, and the values in `ai_dlc.contracts.FAILURE_STATUSES` are the
 failures. Results that still carry a boolean verdict key (`valid`, `ready`, `passed`,
 `clean`) are authoritative through that key until they migrate to `status`.
@@ -121,9 +121,9 @@ authored project/work snapshots, with secrets represented only by local
 authentication references. Configuration changes and retained-work migration
 are separate actions. Native MCP access supplies broader service context; it
 does not substitute for these lifecycle contracts. See the
-[provider contract](../contracts/README.md),
+[provider contract](https://github.com/Sean-Koval/ai-dlc/blob/main/contracts/README.md),
 [GitHub setup guide](github-ticket-setup.md), and
-[later adapter boundaries](archive/planning/tracker-adapter-follow-through.md).
+[later adapter boundaries](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/planning/tracker-adapter-follow-through.md).
 
 ## Tracker boundary with hangar
 
@@ -172,7 +172,7 @@ a typed refusal that names the supported trackers.
 | `work/` | Work lifecycle, traceability, journals and explicit tracker migration |
 | `environment/` | Shared bootstrap runtime location and owned shell activation; machine enrollment, pinned profile/team sources, credential references and safe effective-environment reporting/comparison |
 | `harness/` | Skills, pinned bundles, client rendering, components, hooks and local design capture |
-| `documentation/` | Catalog checks, impact/evidence review, scoped project-document access, workspace diagnostics, knowledge notes and vault links |
+| `documentation/` | Catalog checks, impact/evidence review, decision-record checks, scoped project-document access, workspace diagnostics, knowledge notes and their shared frontmatter schema (`knowledge_notes.py`), and vault links |
 | `providers/` | Contract-backed external service adapters and isolated provider execution |
 | `verification/` | Sandbox orchestration and its conformance network proxy (`test_proxy.py`); harness evaluation moved to flightdeck |
 | `config.py`, `contracts.py`, `errors.py`, `provider_definitions.py` | Shared configuration, provider contracts, the result envelope and the exception base |
@@ -207,13 +207,17 @@ copies. `scripts/build_workflow_plugin.py` packages the same sources as the
 optional Claude Code plugin committed at `plugins/ai-dlc-workflow/`, the
 distribution path for team harnesses and sandboxes. It reuses the skill lock and
 shared guidance, writes per-component digests to `plugin.lock.json`, and runs as a
-drift check inside `scripts/check_generated.py`. The plugin hooks run
+drift check inside `scripts/check_generated.py`. The same build writes the Codex
+form under `plugins/ai-dlc-workflow/native/codex/` (identical skill bytes, a Codex
+`hooks.json`, an AGENTS.md fragment and a `.codex-plugin` manifest) and records
+per-file digests, which `scripts/publish_workflow_plugin.py` uses to copy both forms
+into a team harness directory without overwriting anything it did not publish. The plugin hooks run
 `harness/hook_shim.py`, a standard-library copy that delegates to `ai-dlc hook`
 only in adopted repositories with the CLI outside hangar, and otherwise denies
 only destructive commands; `harness/hooks.py` imports its classifier. This
 repository dogfoods the plugin rather than rendered skill copies (`[agents] skills
 = []`); adopted repositories keep rendering both skill trees by default. See the
-[plugin README](../plugins/ai-dlc-workflow/README.md).
+[plugin README](https://github.com/Sean-Koval/ai-dlc/blob/main/plugins/ai-dlc-workflow/README.md).
 
 ### FDE engagement documents
 

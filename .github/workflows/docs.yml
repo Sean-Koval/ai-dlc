@@ -4,6 +4,7 @@ on:
     paths:
       - "docs/**"
       - "mkdocs.yml"
+      - "scripts/docs_site_links.py"
       - ".github/workflows/docs.yml"
   push:
     branches: [main]
@@ -21,8 +22,10 @@ jobs:
           python-version: '3.12'
       - name: Install Zensical
         run: python -m pip install zensical==0.0.71
+      - name: Links stay on the site or point at GitHub
+        run: python scripts/docs_site_links.py --check
       - name: Build
-        run: zensical build
+        run: zensical build --strict
       - uses: actions/upload-pages-artifact@v3
         if: github.event_name != 'pull_request'
         with:

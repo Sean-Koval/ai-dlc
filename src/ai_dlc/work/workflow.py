@@ -1060,6 +1060,7 @@ class WorkService:
         work_id: str,
         handoff: str | None = None,
         learning: str | None = None,
+        learning_author: str | None = None,
     ) -> dict:
         """Finish through ordinary gates in an owned checkout at the authenticated merge."""
         common_dir = repository_common_dir(self.root)
@@ -1110,7 +1111,7 @@ class WorkService:
                                 "work ID, PR, tracker, providers, and bindings"
                             )
                         self._require_reproducible_runtime()
-                        result = historical.finish(work_id, handoff, learning)
+                        result = historical.finish(work_id, handoff, learning, learning_author)
                 except BaseException as error:
                     cleanup = self._attempt_merge_cleanup(checkout)
                     self._attach_cleanup(error, cleanup)
@@ -1118,7 +1119,13 @@ class WorkService:
                 cleanup = self._attempt_merge_cleanup(checkout)
                 return {**result, "cleanup": asdict(cleanup)}
 
-    def finish(self, work_id, handoff: str | None = None, learning: str | None = None):
+    def finish(
+        self,
+        work_id,
+        handoff: str | None = None,
+        learning: str | None = None,
+        learning_author: str | None = None,
+    ):
         work = self.load(work_id, True)
         gates = list(
             dict.fromkeys(
@@ -1215,9 +1222,11 @@ class WorkService:
             )
         result = {"status": "completed", "work_id": work_id, "tracker": item, "evidence": evidence}
         if learning is not None:
-            from ai_dlc.documentation.learnings import store_learning
+            from ai_dlc.documentation.learnings import resolve_author, store_learning
 
-            store_learning(self, work, learning, result)
+            store_learning(
+                self, work, learning, result, learning_author or resolve_author(interactive=False)
+            )
         else:
             result["learning_reminder"] = (
                 "Consider recording a learning with work finish --learning FILE."

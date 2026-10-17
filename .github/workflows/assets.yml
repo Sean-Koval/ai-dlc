@@ -1,0 +1,38 @@
+name: Front-page assets
+# The README and docs home page show recordings and screens that docs/assets/front/build.py
+# generates by running the real CLI. This job re-runs it and fails when a committed asset is
+# stale; regenerate with `uv run --locked --no-sync python docs/assets/front/build.py`.
+on:
+  pull_request:
+    paths:
+      - "docs/assets/front/**"
+      - "plugins/ai-dlc-workflow/**"
+      - "profiles/example/**"
+      - "src/ai_dlc/**"
+      - "project-templates/**"
+      - "docs/stylesheets/airframe.css"
+      - ".github/workflows/assets.yml"
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+env:
+  CLAUDE_CODE_VERSION: "2.1.302"   # keep equal to CLAUDE_CODE_VERSION in docs/assets/front/build.py
+jobs:
+  assets:
+    name: Front-page assets are current
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare checked-out implementation
+        run: sh scripts/bootstrap.sh --source --target github-actions
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install the Claude Code CLI (plugin screen only; no login needed)
+        run: npm install -g "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}"
+      - name: Check the generated assets
+        run: |
+          uv sync --locked
+          uv run --locked --no-sync python docs/assets/front/build.py --check

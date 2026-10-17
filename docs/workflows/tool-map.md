@@ -65,7 +65,7 @@ optional.
 | Session or ownership transfer | `handoff` | Verified state, decisions, evidence, risks, and next action |
 | End of work period | `day-end` | Concise continuity record and reconciled remote state |
 
-The optional [workflow plugin](../../plugins/ai-dlc-workflow/README.md) carries
+The optional [workflow plugin](https://github.com/Sean-Koval/ai-dlc/blob/main/plugins/ai-dlc-workflow/README.md) carries
 `discovery`, `prd-draft`, `needs-spec`, `spec-from-prd`, `review-inbox`, `handoff`,
 `document-review`, `document-organize`, `design-brief` and `design-evaluate`,
 namespaced as `ai-dlc-workflow:<skill>`, plus an `ai-dlc-workflow` guide skill.
@@ -121,7 +121,7 @@ knowledge append`.
 | Traceability | `ai-dlc work link` | Links PR, specification, branch, deployment, or tracker evidence and commits only the work record by default |
 | Provider inspection and connection | `ai-dlc provider list`, `ai-dlc provider test`, `ai-dlc provider connect` | Discovers adapters, runs isolated contract or authorized live checks, and previews/applies an explicitly reviewed provider connection |
 | Tracker migration | `ai-dlc project tracker-migrate` | Reviews a default-only switch or selected existing-ticket mappings with local recovery evidence |
-| Personal knowledge | `ai-dlc knowledge find`, `ai-dlc knowledge note`, `ai-dlc knowledge append` | Reads or writes explicitly selected vault material |
+| Personal knowledge | `ai-dlc knowledge find`, `ai-dlc knowledge note`, `ai-dlc knowledge append`, `ai-dlc knowledge check` | Reads or writes explicitly selected vault material; `check` validates learning frontmatter read-only |
 | Configuration profiles | `ai-dlc profile show`, `ai-dlc profile migrate`, `ai-dlc profile capture` | Resolves provenance, previews schema migration, or captures supported preferences |
 | Machine provisioning | `ai-dlc setup plan`, `ai-dlc setup apply` | Previews or applies selected workstation modules and personal agent configuration |
 | Agent-native access | `ai-dlc mcp serve` | Exposes reviewed work, read-only doctor, project documentation, workspace previews and inspection, and selected knowledge services through local MCP; machine enrollment mutation remains CLI-only |
@@ -248,7 +248,7 @@ nothing is persisted. Edit returned repository paths with ordinary file and Git
 tools and run project checks. The `knowledge_*` tools remain for private notes,
 and a vault portal, mounted folder or Markdown link does not grant access.
 
-The [documentation guide](../../project-templates/project/docs/documentation-guide.md#search-and-read-project-documents) explains ownership, packet
+The [documentation guide](https://github.com/Sean-Koval/ai-dlc/blob/main/project-templates/project/docs/documentation-guide.md#search-and-read-project-documents) explains ownership, packet
 review, project-document access, baselines and workspace use. The optional CLI `docs check --style` invokes
 configured Vale; it does not install a tool or establish factual correctness.
 
@@ -265,8 +265,9 @@ executable, shell activation, bindings and navigation without changing them.
 ### Session continuity
 
 `ai-dlc work finish <id> --learning FILE` optionally stores an authored learning
-through the knowledge provider after completion gates pass. MCP `work_finish`
-accepts `learning` text alongside its existing `handoff`. Missing knowledge leaves
+through the knowledge provider after completion gates pass, adding provenance
+frontmatter (merged PR, merge commit, author) that `ai-dlc knowledge check --vault PATH`
+validates. MCP `work_finish` accepts `learning` text alongside its existing `handoff`. Missing knowledge leaves
 the note pending and preserves completion. `work start` returns up to five
 matching learning paths and first lines; read relevant notes before implementing.
 The session-start hook recalls notes for the branch's bound work record. Stop

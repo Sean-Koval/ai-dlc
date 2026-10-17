@@ -1,7 +1,7 @@
 # Repository organization verification
 
 Base: `baa8629343e47f245e9a7f0b225935ac49aea446` (unmerged PR35).
-Change: [repository organization](../../openspec/changes/archive/2026-09-12-repository-organization/).
+Change: [repository organization](https://github.com/Sean-Koval/ai-dlc/tree/main/openspec/changes/archive/2026-09-12-repository-organization).
 This record describes local cleanup; it does not establish merged or live-platform qualification.
 
 ## Scope and provenance

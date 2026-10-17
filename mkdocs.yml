@@ -65,6 +65,7 @@ exclude_docs: |
 nav:
   - Home: index.md
   - Get started:
+      - Get started: workflows/get-started.md
       - Product direction: product-direction.md
       - Greenfield workflow: workflows/greenfield.md
       - Brownfield workflow: workflows/brownfield.md

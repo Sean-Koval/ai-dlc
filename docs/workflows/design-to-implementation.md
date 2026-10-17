@@ -8,8 +8,8 @@ implementation diff.
 Begin with a shaped outcome: evidence, assumptions, alternatives, and the next
 worthwhile increment. UI/UX exploration applies when the increment changes an
 interface; API, infrastructure, and migration work use suitable design methods.
-Use the [product brief](../../agents/templates/product-brief.md) and
-[delivery slice](../../agents/templates/delivery-slice.md) to carry that intent
+Use the [product brief](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/templates/product-brief.md) and
+[delivery slice](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/templates/delivery-slice.md) to carry that intent
 forward without introducing a second specification system.
 
 [Back to the workflow map](../development-workflow.md)
@@ -71,8 +71,8 @@ docs and refactoring checkboxes are steps, not automatic extra tickets. A
 verification-only item records `requires_spec=false` and its reviewed reason,
 references existing behavior and retains all applicable completion gates.
 
-See [localized export](../../agents/examples/delivery-slices/localized-export.md)
-and [compatibility rehearsal](../../agents/examples/delivery-slices/compatibility-rehearsal.md).
+See [localized export](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/examples/delivery-slices/localized-export.md)
+and [compatibility rehearsal](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/examples/delivery-slices/compatibility-rehearsal.md).
 These synthetic examples propose local IDs and document destinations; they do
 not install records, create remote work or establish actual approval/live results.
 
@@ -213,11 +213,11 @@ versioned rubric before generation; keep proposed defaults and task-specific
 budget approval distinct. Small brand-constrained fixes may use one concise
 combined record and the existing component system.
 
-Use the [design brief](../../agents/templates/design-brief.md),
-[rubric](../../agents/templates/design-rubric.md),
-[evaluation](../../agents/templates/design-evaluation.md) and
-[selection](../../agents/templates/design-selection.md). The
-[original library-room examples](../../agents/examples/design-evaluation/library-rooms.md)
+Use the [design brief](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/templates/design-brief.md),
+[rubric](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/templates/design-rubric.md),
+[evaluation](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/templates/design-evaluation.md) and
+[selection](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/templates/design-selection.md). The
+[original library-room examples](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/examples/design-evaluation/library-rooms.md)
 show failed journeys, brand fit, static limitations and earlier-candidate selection.
 They contain synthetic observations, not executed UI or human preference evidence.
 
@@ -235,7 +235,7 @@ without inferring success or more authorized rounds. Select an earlier revision
 when its matching evidence qualifies. Hand the selected design, remaining findings
 and behavior requirements to needs-spec and the existing delivery workflow.
 
-The [calibration protocol](../../agents/examples/design-evaluation/calibration.md)
+The [calibration protocol](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/examples/design-evaluation/calibration.md)
 requires a separately approved experiment and human participation. It remains
 unrun; readable Markdown and packaging checks establish no client capability or
 design-quality gain. This optional route adds no service, model, CLI or finish gate.

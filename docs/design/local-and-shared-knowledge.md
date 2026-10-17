@@ -91,7 +91,7 @@ Portal linking remains the default. Mount identities are ignored machine-local
 bindings; existing matching links need explicit adoption before AI-DLC owns the
 binding. Setup refuses overlapping targets and nested traversal, and preserves
 partial output for inspection. This does not broaden the private knowledge API's
-filesystem boundary. See the [portable documentation guide](../../project-templates/project/docs/documentation-guide.md#opt-in-to-native-project-folders)
+filesystem boundary. See the [portable documentation guide](https://github.com/Sean-Koval/ai-dlc/blob/main/project-templates/project/docs/documentation-guide.md#opt-in-to-native-project-folders)
 for preview/apply and recovery. Filesystem verification alone does not qualify
 Obsidian indexing, file watching or synchronization.
 
@@ -100,7 +100,7 @@ with `docs search` and `docs read`. These operations are scoped to
 the selected repository's `docs/`, `openspec/` and per-call declared Markdown, and
 return canonical repository paths for ordinary Git edits. They never read vault
 notes; the knowledge tools remain the only private-note interface. See the
-[documentation guide](../../project-templates/project/docs/documentation-guide.md#search-and-read-project-documents).
+[documentation guide](https://github.com/Sean-Koval/ai-dlc/blob/main/project-templates/project/docs/documentation-guide.md#search-and-read-project-documents).
 
 `project workspace-check` explains why a mounted workspace does not behave as
 expected without changing it. It reports the PATH-selected executable, owned shell
@@ -108,20 +108,36 @@ activation, the checkout the shared bootstrap alias runs, each machine-local mou
 binding and link reachability as separate results. Links to repository files outside `docs/` and `openspec/` remain
 repository-only; the diagnostic never widens mounts or the private-note boundary,
 and it cannot qualify Obsidian. See the
-[documentation guide](../../project-templates/project/docs/documentation-guide.md#diagnose-the-local-workspace).
+[documentation guide](https://github.com/Sean-Koval/ai-dlc/blob/main/project-templates/project/docs/documentation-guide.md#diagnose-the-local-workspace).
 
 ## Session learnings
 
 An agent may select one short lesson for the knowledge provider at
-`learnings/<YYYY-MM-DD>-<work-id>.md`. The tool stores the supplied text; it does
-not summarize logs or publish notes. Use this format:
+`learnings/<YYYY-MM-DD>-<work-id>.md`. The tool stores the supplied text with
+provenance frontmatter; it does not summarize logs or publish notes.
+
+Every note carries the knowledge-note frontmatter that learnings and decision
+records share. The JSON Schema is
+[`contracts/knowledge-note.schema.json`](https://github.com/Sean-Koval/ai-dlc/blob/main/contracts/knowledge-note.schema.json),
+generated from `ai_dlc.documentation.knowledge_notes`:
 
 ```markdown
 ---
-work: example-work
+id: learning/2026-10-20-fix-receipts       # kind/<date>-<work-id>
+kind: learning                              # learning | decision | runbook | note
+scope: personal                             # personal | project | team
+label: internal                             # internal | confidential (free text is recorded)
+sources:                                    # at least one for a learning
+  - uri: https://github.com/owner/project/pull/123
+    hash: git:<merge commit SHA>
+author: human:github-login                  # or agent:<client>@<plugin digest>
+confidence: medium                          # low | medium | high
+valid_from: 2026-10-20
+valid_to: null
+review_by: 2027-01-18                       # valid_from + 90 days by default
+supersedes: []
+work: fix-receipts                          # kept for older learnings
 repository: owner/project
-pr: https://github.com/owner/project/pull/123
-tags: [retry, testing]
 ---
 ## What happened
 A concise observation, including its limits.
@@ -133,24 +149,50 @@ A concrete practice to try next time.
 - Link the authoritative work, specification, or evidence.
 ```
 
+Decision records add `status` and an optional `checks:` block (see
+[project documentation](project-documentation.md)); `status` and `checks` are
+refused on other kinds. Keys outside the schema are kept, so neighbouring tools
+can extend notes additively.
+
 After the normal completion gates pass, `ai-dlc work finish <id> --learning FILE`
 stores the file through the existing knowledge provider's idempotent `note`
 operation. MCP `work_finish` accepts the equivalent `learning` text; its existing
-`handoff` text remains a separate append operation. The first attempt records the
-UTC date and note path locally so retries on later days use the same path and
-operation identity. Reusing the operation with different text reports a conflict;
+`handoff` text remains a separate append operation. A body without frontmatter
+gets frontmatter generated from the work record. A body with frontmatter is
+validated and only missing fields are added; supplied values, including a wider
+`scope`, are never changed, and AI-DLC never widens `scope` itself. Generated
+fields are `id`, `kind`, `scope: personal`, `label: internal`, `sources` (the
+merged PR URL and merge commit the finish gate verified, plus the CI run URL),
+`author`, `confidence: medium`, `valid_from` (UTC date), `valid_to: null`,
+`review_by` (+90 days), `supersedes`, `work` and `repository`. `author` is
+`AI_DLC_AUTHOR` when set (the workflow plugin's guide skill tells agents to set it
+to `agent:<client>@<plugin content digest>`), otherwise `human:<gh login>` for the
+CLI and `agent:unknown` for MCP; it is never inferred from another session. The only
+personal data is the GitHub login. Invalid frontmatter or a note over 64 KB leaves
+the learning pending with the reason.
+
+The first attempt records the UTC date, note path and final note locally so
+retries on later days write byte-identical content under the same operation
+identity. Reusing the operation with different input text reports a conflict;
 it never overwrites the stored note. A failed or unavailable vault leaves a
 `learning_pending` result without reversing tracker completion. Finish without a
 learning completes and returns a one-line reminder. Day-end may instead call
 `ai-dlc knowledge note learnings/<date>-<work-id>.md --body FILE --operation-id ID --vault PATH`
 using the configured vault and a stable operation ID.
+`ai-dlc knowledge check --vault PATH` reads the notes under `learnings/` and exits 1
+when any frontmatter fails the schema; notes without frontmatter, or with the
+older `work/repository/pr/tags` frontmatter, are listed as legacy and do not fail.
 
 `work start` and the session-start hook recall at most five matching learning
 paths and first content lines. Recall uses title words
 and the specification change name; the session hook selects the record bound to
 the current branch. It reads only `learnings/`, never writes, and stays quiet when
-the vault is missing or has no matches. Read relevant recalled notes as personal
-context and reconcile them against current repository authority.
+the vault is missing or has no matches. For notes with frontmatter it skips those
+whose `valid_to` has passed and also returns `kind`, `author`, `review_by` and
+`stale` (`review_by` has passed); the session hook prefixes stale notes with
+`(stale)`. Notes without frontmatter recall as before. Matching and ranking are
+unchanged. Read relevant recalled notes as personal context and reconcile them
+against current repository authority.
 
 The hook skips payloads without a usable session ID. It recognizes direct results,
 shell stdout JSON, and MCP text/structured results. The hook records friction counts and a hash of the preceding command beneath

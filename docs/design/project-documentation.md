@@ -3,7 +3,7 @@
 AI-DLC organizes references to canonical documents. It does not own a second copy
 of specifications, a private-note mirror, or a Confluence synchronization engine.
 The maintained reusable instructions are the
-[project documentation guide](../../project-templates/project/docs/documentation-guide.md),
+[project documentation guide](https://github.com/Sean-Koval/ai-dlc/blob/main/project-templates/project/docs/documentation-guide.md),
 which ships into adopted repositories. This design record explains the boundary;
 the guide owns setup, catalog examples and the upkeep workflow.
 
@@ -20,6 +20,18 @@ content duplicates. It does not certify accuracy or automatically consolidate
 content. Review dates represent an actual review, not filesystem timestamps.
 OpenSpec remains responsible for its own artifact lifecycle.
 
+Decision records in `docs/decisions/` carry the knowledge-note frontmatter of
+[`contracts/knowledge-note.schema.json`](https://github.com/Sean-Koval/ai-dlc/blob/main/contracts/knowledge-note.schema.json)
+(`kind: decision`, `status`, optional `checks:`). `docs check` validates that
+frontmatter when present, reports records without it as information, and fails
+when an accepted record's body differs from the committed version unless the
+record moves to `superseded`. `checks:` entries use flightdeck's `flightdeck.spec/v1`
+grammar; AI-DLC checks their shape (unique `id`, one `assert` operator, `scope` and
+`severity` values) and never evaluates them. The two-person rule for loosening a
+check is branch protection and CODEOWNERS, not AI-DLC code. The adopted-project
+convention is the template's
+[decisions README](https://github.com/Sean-Koval/ai-dlc/blob/main/project-templates/project/docs/decisions/README.md).
+
 An Obsidian portal is a machine-local Markdown note linking to canonical repository
 files. It copies no document body and does not mount repository files as editable
 notes inside the main vault. Personal note operations retain their original vault
@@ -34,7 +46,7 @@ Confluence MCP after inspecting its interface. See
 [local and shared knowledge](local-and-shared-knowledge.md) for that workflow.
 
 The formal requirements and repair rationale are in the
-[OpenSpec change](../../openspec/changes/archive/2026-09-10-obsidian-vault-linking/).
+[OpenSpec change](https://github.com/Sean-Koval/ai-dlc/tree/main/openspec/changes/archive/2026-09-10-obsidian-vault-linking).
 
 ## Evidence and private-workspace extensions
 

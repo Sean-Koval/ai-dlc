@@ -7,7 +7,7 @@ connection primitives and native rendering dependency. Subsequent toolset review
 repairs and parent archive moves are integrated separately by the root coordinator.
 
 The input/plan format and behavior are specified in
-[the child spec](../../openspec/changes/archive/2026-09-08-native-tool-composition/specs/native-tool-composition/spec.md).
+[the child spec](https://github.com/Sean-Koval/ai-dlc/blob/main/openspec/changes/archive/2026-09-08-native-tool-composition/specs/native-tool-composition/spec.md).
 [The runbook](../design/native-tool-composition.md) includes an actual local
 AI-DLC MCP-service binding and the separate native rendering step. No provider
 MCP defaults, endpoint URLs, authentication or lifecycle adapter are fabricated.
@@ -49,7 +49,7 @@ rewritten without proven equivalence.
 
 All five required checks passed: generated assets, format, lint, types, and the
 full **1,239-test** suite. Strict OpenSpec validation also passed. The
-[receipt](native-tool-composition/local-checks.json) records the dirty candidate
+[receipt](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/native-tool-composition/local-checks.json) records the dirty candidate
 based on `1904e9c`; source, tests and assets stayed frozen during this passing run.
 Evidence prose and task checkmarks were finalized afterward. No remote service
 state changed and no review, archive or merged-revision result is implied.

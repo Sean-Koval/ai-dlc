@@ -48,12 +48,12 @@ publish/start entry points consume the same guarded WorkService implementation.
 
 ## Consumer pressure cases
 
-[Inputs](spec-delivery-traceability/cases.md) were fixed before skill edits. Root
+[Inputs](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/spec-delivery-traceability/cases.md) were fixed before skill edits. Root
 ran a fresh read-only Codex CLI session using gpt-5.6-sol/high, supplying only the
 original spec-from-prd skill and those synthetic cases. No tools, implementation,
 plans, rubric or formal specification were available. The
-[baseline](spec-delivery-traceability/baseline.md) preserves the response; its
-[raw JSON](spec-delivery-traceability/baseline.raw.json) retains exact whitespace.
+[baseline](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/spec-delivery-traceability/baseline.md) preserves the response; its
+[raw JSON](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/spec-delivery-traceability/baseline.raw.json) retains exact whitespace.
 
 The baseline already resisted ticket-per-checkbox and shared-epic-spec pressure,
 kept unavailable sandbox evidence honest, and blocked cancelled prerequisites.
@@ -69,8 +69,8 @@ published work or invented live observations. Post-change exercise results are
 recorded separately from automated tests; they do not establish general quality
 calibration or consume the repository's human-rated experiment budgets.
 
-The [post-change consumer output](spec-delivery-traceability/post.md), with
-[exact raw response](spec-delivery-traceability/post.raw.json), used the same
+The [post-change consumer output](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/spec-delivery-traceability/post.md), with
+[exact raw response](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/spec-delivery-traceability/post.raw.json), used the same
 synthetic inputs in a fresh equivalent session with the new skill and its
 referenced assets supplied. A1/A2 each own an independently finishable change,
 proposed local Work IDs, mapped RQ references, dependencies and tasks. Unknown
@@ -91,7 +91,7 @@ dependency or branch effects. The workflow/CLI/pure/MCP suite then passed 118 te
 
 All five required manifest checks passed: generated assets, formatting, lint,
 types and the full test suite. The suite contains 1,183 collected tests; the
-required test command exited 0. The [receipt](spec-delivery-traceability/local-checks.json)
+required test command exited 0. The [receipt](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/spec-delivery-traceability/local-checks.json)
 records the dirty candidate based on `0b8abb8`, before its final guidance/evidence
 commit; it is not an exact merged-revision receipt. Strict OpenSpec validation
 also passed. Offline validation of the actual `spec-delivery-traceability` record
@@ -118,13 +118,13 @@ locality cases and four explicit-local refusal cases accompany mapped repeat
 publication tests; authored bodies and identities remain unchanged.
 
 The focused workflow/CLI/pure/MCP suite passed 138 tests. The existing
-[work-record corpus](spec-delivery-traceability/work-corpus.json) contains 16 records;
+[work-record corpus](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/spec-delivery-traceability/work-corpus.json) contains 16 records;
 all validated, including `github-ticket-workflows` and `github-project-defaults`
 with their original native spec IDs. Finish/archive gates remain unchanged.
 
 The review correction subsequently passed all five required checks with **1,203
 tests** and strict OpenSpec validation. Its
-[receipt](spec-delivery-traceability/review-local-checks.json) records the dirty
+[receipt](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/spec-delivery-traceability/review-local-checks.json) records the dirty
 repair candidate based on `11b7edd`; this is local evidence, not merged-revision
 completion. One initial invocation lacked mise on PATH and stopped before checks;
 using the prepared task-local tools resolved that environment issue. Source,
@@ -144,7 +144,7 @@ authored issue body, binding identity or finish gate changed.
 
 The locality follow-up passed all five required checks with **1,210 tests** and
 strict OpenSpec validation. Its
-[receipt](spec-delivery-traceability/locality-review-checks.json) records the dirty
+[receipt](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/spec-delivery-traceability/locality-review-checks.json) records the dirty
 candidate based on `d713f2e`; source and tests remained frozen through the passing
 run. It is local verification, not merged-revision completion or native-provider
 qualification.

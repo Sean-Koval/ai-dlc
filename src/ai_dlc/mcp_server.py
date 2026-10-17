@@ -42,7 +42,10 @@ def _register_work_tools(server: FastMCP, root: Path, machine: Path | None) -> N
     @server.tool()
     def work_finish(work_id: str, handoff: str | None = None, learning: str | None = None) -> dict:
         """Verify completion gates, then complete work and optionally record handoff."""
-        return work().finish(work_id, handoff, learning)
+        from ai_dlc.documentation.learnings import resolve_author
+
+        author = resolve_author(interactive=False) if learning is not None else None
+        return work().finish(work_id, handoff, learning, author)
 
     @server.tool()
     def doctor(target: str = "local") -> dict:

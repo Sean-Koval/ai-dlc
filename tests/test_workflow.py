@@ -12,7 +12,10 @@ def trusted_scm(monkeypatch):
             pass
 
         def merged(self, reference):
-            return {"sha": "trusted-merge", "pr": {"merged": True}}
+            return {
+                "sha": "trusted-merge",
+                "pr": {"merged": True, "html_url": "https://github.com/o/r/pull/1"},
+            }
 
         def ci(self, sha):
             return {"sha": sha, "run_id": 7, "receipt": {"trusted_fixture": True}}

@@ -27,7 +27,7 @@ copies updated together. Guidance remains readable without a new tool service.
 
 ## Scenario-first checks
 
-[Pressure inputs and evaluator-only checks](design-pm/cases.md) were fixed before
+[Pressure inputs and evaluator-only checks](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/design-pm/cases.md) were fixed before
 new skill bodies. They cover draft rubric/budget decisions, an attractive required
 failure, static/self-review limits, and earlier candidate/rubric/budget decisions.
 All observations in that packet are synthetic supplied inputs. At the implementer checkpoint, agent pressure
@@ -93,4 +93,4 @@ was performed from this branch.
 
 ## Coordinator source and development review
 
-Source candidate `eb04ca1` was independently accepted. See the [review](design-pm/review.md) for preserved synthetic input/output and limitations. Formal human calibration remains unrun; final integrated delivery checks and finish are separate.
+Source candidate `eb04ca1` was independently accepted. See the [review](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/design-pm/review.md) for preserved synthetic input/output and limitations. Formal human calibration remains unrun; final integrated delivery checks and finish are separate.

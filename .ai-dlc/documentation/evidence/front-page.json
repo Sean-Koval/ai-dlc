@@ -1,0 +1,850 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        ".github/workflows/assets.yml": "5652b4a5856ae70adcd293fcd84dd7d6349ea05d365398d64061a5e397646c2c"
+      },
+      "outcome": "updated",
+      "reason": "New CI job that re-runs docs/assets/front/build.py and fails on stale front-page assets.",
+      "reviewer": "Claude (agent)",
+      "target": ".github/workflows/assets.yml"
+    },
+    {
+      "bound": {
+        ".github/workflows/docs.yml": "11bf7ed52244133dac576a6480b69071fa3f91cc79c3b09c201ee5c752d8c3b8"
+      },
+      "outcome": "updated",
+      "reason": "Docs build now checks site links with scripts/docs_site_links.py and builds with --strict.",
+      "reviewer": "Claude (agent)",
+      "target": ".github/workflows/docs.yml"
+    },
+    {
+      "bound": {
+        "AGENTS.md": "3123e74bb1a8f0db331057c81d7119ded59bb077504d3cabef499b5b19ee1bd4"
+      },
+      "outcome": "updated",
+      "reason": "Consumer-route link now points at docs/workflows/get-started.md, where the README's install section moved.",
+      "reviewer": "Claude (agent)",
+      "target": "AGENTS.md"
+    },
+    {
+      "bound": {
+        "README.md": "4efb8b36421b5cd13fa919a5c3a27251b9a632ddc9beaf4a1764028ee2471d84"
+      },
+      "outcome": "updated",
+      "reason": "Rewritten to the suite front-page structure (102 lines); setup routes, configuration and examples moved to docs/workflows/get-started.md.",
+      "reviewer": "Claude (agent)",
+      "target": "README.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/architecture.md": "e957dcf74f6dcbe53ce40caf58a8cd486ee04461b47279540cdccaa4680c445a",
+        "docs/architecture.md": "f5213841d8bb9651241c1e5d9f64fa311de9a15f88a8c603e3a91e995c7826c2",
+        "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "openspec/specs/tracker-adapter-boundary/spec.md": "dd8886e122156c514768387930c3534d882b4672552eeb2aca62507fa6ab2a58",
+        "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "5cca4c515026d52f448cd387e1d4c4f92a981863e72749b77346d9cfb20dec3d",
+        "plugins/ai-dlc-workflow/README.md": "6ef8489872583cfcb0b6c6d52c7a2009119b9e932f32b56bfa44c7d99ad0f591",
+        "plugins/ai-dlc-workflow/hooks/aidlc_hook.py": "9a22eedf99648975eea67800459a90b4196a06ef0dbe172d17339c586df23c77",
+        "plugins/ai-dlc-workflow/hooks/hooks.json": "8ddf9b2fc137326ad81a99bb6b1cd4d1dca507cb2e266cd30045b3d0d3f3d4e1",
+        "plugins/ai-dlc-workflow/native/codex/.codex-plugin/plugin.json": "7b1f23b6f43e78c4759bb35e5d529d4e8d7a779dec33a1aeb5203a313af2853a",
+        "plugins/ai-dlc-workflow/native/codex/AGENTS.fragment.md": "532e7f5dbc8100bfa2f39f04bed82a9a8cc79254225bbd97a282f70e4f4d972e",
+        "plugins/ai-dlc-workflow/native/codex/hooks.json": "4d2c2097f9c3004dca11d040acf3353eb6af9d0b96a63910f508a36a8d284f63",
+        "plugins/ai-dlc-workflow/native/codex/hooks/aidlc_hook.py": "9a22eedf99648975eea67800459a90b4196a06ef0dbe172d17339c586df23c77",
+        "plugins/ai-dlc-workflow/native/codex/skills/ai-dlc-workflow/SKILL.md": "53b536563bc8423334075af06fd90e43e98c018337360c34f34b7ec39577845c",
+        "plugins/ai-dlc-workflow/native/codex/skills/design-brief/SKILL.md": "5b9cc5c5d40378b273369c62b51b4ba10475a65c0dd91d799cd29df2a7c8ec58",
+        "plugins/ai-dlc-workflow/native/codex/skills/design-evaluate/SKILL.md": "a7e3f68082ff474fd09adefb623a20bc34a2f3f83c6e97055a55008f4681d9af",
+        "plugins/ai-dlc-workflow/native/codex/skills/discovery/SKILL.md": "74d0a76012649f919770e37fa464d436a0ce8c7501ec011182a29d4ae14d2904",
+        "plugins/ai-dlc-workflow/native/codex/skills/document-organize/SKILL.md": "446d1e9023f9c118e69966b2eced0460c702b79b828c0559f44b6ba95db018c6",
+        "plugins/ai-dlc-workflow/native/codex/skills/document-review/SKILL.md": "5e2f71219b98cd53dd6a3a73b3bbccc1873b796a14ec1347875a39c911db9ad3",
+        "plugins/ai-dlc-workflow/native/codex/skills/handoff/SKILL.md": "63c564874228d8e249fde83cb3bbf2cedd73a2fc24a0bfbab91b99003d672127",
+        "plugins/ai-dlc-workflow/native/codex/skills/needs-spec/SKILL.md": "573d9e79cbc1b15e911a5dffdd61bcf2eaf1d089f491b2445d45b77d53bbb2f2",
+        "plugins/ai-dlc-workflow/native/codex/skills/prd-draft/SKILL.md": "e6d457ee65f4d7dd184bef4fc8285253951098484fba9bb3cedbe1512729dc0e",
+        "plugins/ai-dlc-workflow/native/codex/skills/review-inbox/SKILL.md": "8b58913b870212b4b04b14d921efb72ed92007cec043513eb3baef36e907c846",
+        "plugins/ai-dlc-workflow/native/codex/skills/spec-from-prd/SKILL.md": "f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce",
+        "plugins/ai-dlc-workflow/plugin.lock.json": "539268bd5335e0cd484c5954ae0338b89dd7f6deba9e96caa84d737f31fdbb6f",
+        "plugins/ai-dlc-workflow/skills/ai-dlc-workflow/SKILL.md": "53b536563bc8423334075af06fd90e43e98c018337360c34f34b7ec39577845c",
+        "plugins/ai-dlc-workflow/skills/design-brief/SKILL.md": "5b9cc5c5d40378b273369c62b51b4ba10475a65c0dd91d799cd29df2a7c8ec58",
+        "plugins/ai-dlc-workflow/skills/design-evaluate/SKILL.md": "a7e3f68082ff474fd09adefb623a20bc34a2f3f83c6e97055a55008f4681d9af",
+        "plugins/ai-dlc-workflow/skills/discovery/SKILL.md": "74d0a76012649f919770e37fa464d436a0ce8c7501ec011182a29d4ae14d2904",
+        "plugins/ai-dlc-workflow/skills/document-organize/SKILL.md": "446d1e9023f9c118e69966b2eced0460c702b79b828c0559f44b6ba95db018c6",
+        "plugins/ai-dlc-workflow/skills/document-review/SKILL.md": "5e2f71219b98cd53dd6a3a73b3bbccc1873b796a14ec1347875a39c911db9ad3",
+        "plugins/ai-dlc-workflow/skills/handoff/SKILL.md": "63c564874228d8e249fde83cb3bbf2cedd73a2fc24a0bfbab91b99003d672127",
+        "plugins/ai-dlc-workflow/skills/needs-spec/SKILL.md": "573d9e79cbc1b15e911a5dffdd61bcf2eaf1d089f491b2445d45b77d53bbb2f2",
+        "plugins/ai-dlc-workflow/skills/prd-draft/SKILL.md": "e6d457ee65f4d7dd184bef4fc8285253951098484fba9bb3cedbe1512729dc0e",
+        "plugins/ai-dlc-workflow/skills/review-inbox/SKILL.md": "8b58913b870212b4b04b14d921efb72ed92007cec043513eb3baef36e907c846",
+        "plugins/ai-dlc-workflow/skills/spec-from-prd/SKILL.md": "f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce",
+        "pyproject.toml": "ea73fd835255de7bddab5ef23ff7189e2d19c29ec7e6d49ffc97aee14559f4bd",
+        "scripts/build_workflow_plugin.py": "fbda35107229b271412ad196458ce6b9bbd39b584098fb011c5640f2bc81033d",
+        "scripts/check_client_pins.py": "c0b4030b6767aee44975556f11a2c0dcf2b5aa67e232ec6182c1247630f53c8c",
+        "scripts/check_generated.py": "4a140903555cb50fa83227fda763f2f0dcac66eecdd89165626c88c7ee240a61",
+        "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
+        "scripts/docs_site_links.py": "241e49f26314def72dd2ee4fdc8545c5b9092fbaf6736952381cc939632f3ec9",
+        "scripts/publish_workflow_plugin.py": "04e92b3177c3badf1dd64994c03806ef48deb40cbf48aa4355025c640d22edf9",
+        "scripts/qualify_framework.py": "8068bb2709bbf6b3a020e9c22d62b993cc0e8a3e3c9ee5c00dc4b8963c31054e",
+        "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+        "scripts/run_skill_evaluation.py": "46a97694bae155b2418d172971480e031f510acc864b9d91fa546f98c754729f",
+        "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
+        "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
+        "src/ai_dlc/_windows_storage/__init__.py": "5715def899453f15265e13d52e5b518844cc9d057421cfa5279172d799d5f506",
+        "src/ai_dlc/_windows_storage/_api.py": "d5fc4f971db8e706871c06e8119884848e505af6c45f4fbb5c2f7db513faf41b",
+        "src/ai_dlc/_windows_storage/_security.py": "62785d4e088cd485816a33f35a7a559d3d1acf166093c413a3f4f79969056314",
+        "src/ai_dlc/cli.py": "febed4fb7b7fe74c63434267e5d3d19699907cac3d0c4c3ac60459ca3c5f8f4e",
+        "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
+        "src/ai_dlc/conformance.py": "0ff247c065e89d4c5b43d844601dc809558c65a779c1600371953c0e2c44737b",
+        "src/ai_dlc/contracts.py": "e2202d26b4815674bde05fc1190fbaedfe7cabdf6d8c913a721d1f0b53619d1e",
+        "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
+        "src/ai_dlc/documentation/decisions.py": "30c52c68b82bca8c899887617385adac25f9b0bb2e9aa81936b91b877c626d6c",
+        "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
+        "src/ai_dlc/documentation/document_files.py": "3174b5773adf54c9a0f586a041c4e67001d136d9ba1016ec1cbb0b54debafd55",
+        "src/ai_dlc/documentation/document_impact.py": "bf3353c2ab99166c4900647ac7a0626bba3ee08a4a4f92ffa9269167f86012ca",
+        "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
+        "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
+        "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
+        "src/ai_dlc/documentation/documents.py": "763c9c2ff76c62e99eb6de4706f85edcaf57287f8c9bc8335c433d0163ba1812",
+        "src/ai_dlc/documentation/fde.py": "3664430ebca9f3ef7ba7c7c431f7e4790176066510904ebe4d43d0a88ecf26e1",
+        "src/ai_dlc/documentation/knowledge.py": "c02c49bcc24f8e2c418ace24a72db604b1bc9a4f8d1511fa42235aeb9b122bc7",
+        "src/ai_dlc/documentation/knowledge_notes.py": "007632d8bce9b02c8a52eb98ec23dc7f9f9fd8681dc41784e192eb5c22fc43b6",
+        "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
+        "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
+        "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
+        "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
+        "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
+        "src/ai_dlc/documentation/workspace_diagnostics.py": "4a0ec1bf837e4a6a1d59482ebc86557edc2ae41cec843a8528b828b04f27422b",
+        "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
+        "src/ai_dlc/environment/bootstrap.py": "7fad9be94cc830cde041e4ad88c4b79b653f8e8d2c558f1d8db33f99a87b088d",
+        "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
+        "src/ai_dlc/environment/enrollment.py": "f8e826a9dca7a8e308f9ad52c8f178ad7e6f2c6c536da7459a68c123d51e9c53",
+        "src/ai_dlc/environment/machine.py": "2c3981ab3e8e4e52d2c3f86f02d8714bf92dd3229eaff99c72ac91961fbbd16a",
+        "src/ai_dlc/environment/profile_source.py": "f177cc9336ed7c69e37299bc70107f14a7878ff72abbd1070dc3560340d451cc",
+        "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
+        "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
+        "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
+        "src/ai_dlc/environment/source_content.py": "c11618009a7d4c3dbaa03b49d80df3a6f7cae37338a9fe92166865379d89670a",
+        "src/ai_dlc/environment/source_schema.py": "929944f86aef4a0aa2e257f3fbb4bee26ce07c522ed2eb35c2e1bbba38ec44d0",
+        "src/ai_dlc/environment/team_sources.py": "20d583a9046adfac9f0f5bf6de7aca537654eb29d0ff636c27f5a78c7c5c21a6",
+        "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
+        "src/ai_dlc/errors.py": "b8c0da78ec0e9ea75ef71b4495b501570625988ba5ae54c4631f1ca20a8362c1",
+        "src/ai_dlc/files.py": "cf094c2d7e6dbbe93f253ec4b3c4219902b323e927855541688eaca3f812354b",
+        "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
+        "src/ai_dlc/harness/agents.py": "0757ce327050807470193a93e66fc1b28bd1ea5e0b8b41c0bc61166f8465bc07",
+        "src/ai_dlc/harness/components.py": "b64cd2ae837f83a37ddd1c74dad25fcd16fe8733715c224c7d64673784ebba11",
+        "src/ai_dlc/harness/design_capture.py": "8b872492b88f4a7728bedf0ae8a1edaad2312a918248bf8f5d051c8bd8b42a58",
+        "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
+        "src/ai_dlc/harness/hook_shim.py": "9a22eedf99648975eea67800459a90b4196a06ef0dbe172d17339c586df23c77",
+        "src/ai_dlc/harness/hooks.py": "b50bf047573f4735861bb091d97cd8467af16729610ddd63e97d81fffc39e9bc",
+        "src/ai_dlc/harness/native_composition.py": "1e4c5729ff31cb91820bd8df3d15b60c1067b4a5f2b89381888211470dc79bc8",
+        "src/ai_dlc/harness/skill_evaluation.py": "33bbd3001d5123004a7767321f1ed5d6e2ad822510165d5caf8df9a947555532",
+        "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
+        "src/ai_dlc/harness/user_agents.py": "c99f9a52a379feaa0c1721081b95fef91f51c44f0a9e906145de51154616e937",
+        "src/ai_dlc/harness/windows_render.py": "8aa76c8aacc44d28a2117b3339ad7b632b91fdbe0a5557af50228dcd2aa0eeb0",
+        "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
+        "src/ai_dlc/locking.py": "e3c5dbe1a98d3402352bc8a3c3a031106e8dd515e060a676803d734d8dee99dd",
+        "src/ai_dlc/mcp_server.py": "1d4fb076add151ee1161fbffe518c0764b08940055a86f6db2204ab3910cb2d5",
+        "src/ai_dlc/provider_definitions.py": "32142376b6cc25e0aa8122528bfd7b1eec2299c13622364fb38de29d4555e43a",
+        "src/ai_dlc/providers/__init__.py": "dfdaf13ef2091582c0fd9c001f91ba2240c2a7ea7b3f8e709b14ce5448e19a2b",
+        "src/ai_dlc/providers/evaluation_api.py": "5c3a9b890c88d4633fc553dbe206c415c5ceb1f6679cefdf7d215d8680fcec17",
+        "src/ai_dlc/providers/github_issues.py": "311595febaf40ce8855bde3c3bb8a7c9d2087ae9a0b5ace5e7e8e3347f8696ba",
+        "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
+        "src/ai_dlc/providers/jira_cloud.py": "d9b83ba88fb964816450b1479fc775a526455c023725ecff3c8ca695ac7cd8c8",
+        "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
+        "src/ai_dlc/providers/plane.py": "f05450be6fa35ae10c8ae7531518797be5a3f778ec25d517c88fb49efbe9f9a3",
+        "src/ai_dlc/providers/plane_attempts.py": "da576a7f52dd7860c2340b72c91b39f2c9d84bbb7c983cd8bc2cc1871c56333b",
+        "src/ai_dlc/providers/python_exec.py": "3aaafe9bf74a4a949b59d71ed2079b9c48114462a9c823b3641a1772af5a6ff1",
+        "src/ai_dlc/providers/scm.py": "3213f9c9690d598a9d7024b687044ca3b0844b972909cd96ad14e270081409d9",
+        "src/ai_dlc/providers/teamai.py": "ff7a781abcaeeca1c978f9472502156e31a1fc6d192ac50e1e489d333b77a5e6",
+        "src/ai_dlc/setup/__init__.py": "8eb444a69a67d0c1a59ffc0c80ce59efda159976bea58d40154e97f8bdecf18c",
+        "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
+        "src/ai_dlc/setup/connections.py": "a35e5e45d87fed0d79a6e034283a055ba9426dc2621ef28aaee4d76997ac4773",
+        "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
+        "src/ai_dlc/setup/github_project_setup.py": "55984de17559ba2d56b3b1c7483dabb8a6f05f1e773e8bd9d40437a2d30ee85e",
+        "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
+        "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
+        "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
+        "src/ai_dlc/setup/project.py": "d36f7b1bcfda5176ffda62de03dfcdd61226f7c973609030665815245f258b00",
+        "src/ai_dlc/setup/provider_onboarding.py": "1041a3ef5127239945d3ae386705acc7814f12a6c05205bc345edf7ab973bbb4",
+        "src/ai_dlc/setup/provision.py": "1e29f9b9927fd187a28a90e962ad966599a64f45e5c22b45b945dee25731d03b",
+        "src/ai_dlc/setup/readiness.py": "e0984a1f504ee87f3c4c1939624b34ccfe2fd6b7315df365166e95ff3b975d55",
+        "src/ai_dlc/setup/rebind.py": "812aa473b3cb92d81eb98c288ab1124f1fe0a62039559ecbd2eeb2349698ef15",
+        "src/ai_dlc/setup/targets.py": "11979b487ab5604eb05f49ab7c7eca1bfda796f25acc1dc489cdc9e7ccc4a9aa",
+        "src/ai_dlc/setup/templates.py": "258154a7eeec73d8207bbb082e7f06be8ab649811a91b9a462555724dd664e58",
+        "src/ai_dlc/setup/tracker_targets.py": "b04533ac254bde0aa7bddf083097d815153998f15b1042645ac4ffc38f848319",
+        "src/ai_dlc/setup/workstation.py": "8ac8f2467ee925392f777e15d921ad79da8a10c94267bbd30f5386455db4e8d2",
+        "src/ai_dlc/toml_edit.py": "696057b2848ca8b57e5189d1c78441fc6c1e06994f480f6f13f8dd31c050515e",
+        "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
+        "src/ai_dlc/verification/evaluation/__init__.py": "7cf0a3add5298d2f8d58954210cee24b3fb6a5f81e505ef3b948a7078cbb0eb8",
+        "src/ai_dlc/verification/evaluation/attempt.py": "a249ad3af90f034cac3774c5406f819afe54209fe88307064c4fd822750a4717",
+        "src/ai_dlc/verification/evaluation/budgets.py": "8069eb9a4f6d24e7fe88774581b47a7d817445ac950a266684aee77fc5378826",
+        "src/ai_dlc/verification/evaluation/contracts.py": "2e767c52494cad777ade498d1362521f04e8c313c5f230540df7f840cf8a0f64",
+        "src/ai_dlc/verification/evaluation/drivers.py": "f4a81dea2b7f3f4ca793e6f1953fb7e384cc8359eae4a308768b41cccceea47f",
+        "src/ai_dlc/verification/evaluation/evaluate.py": "e8a2405d3f6e9c0e3a121b4936f617ee335abaef54e7688eafb813985e90de3a",
+        "src/ai_dlc/verification/evaluation/git_observer.py": "f6a422a1f989b3056cf82484716f0e0101719caffb54e8e96477845ed75445b3",
+        "src/ai_dlc/verification/evaluation/image.py": "d525326faed75c1e6b686183d2b7ccce43c000e43263dad0e940efe8c69523e4",
+        "src/ai_dlc/verification/evaluation/planning.py": "f0a6844c5511db3d4c420f9c7638e47b6d86810968d16a3767de6373c2a971c6",
+        "src/ai_dlc/verification/evaluation/report.py": "fa025c820f8a1a411ec413a7541d30fdf355955bec1f70bc9da220910993c88b",
+        "src/ai_dlc/verification/evaluation/run.py": "271c2aabb8af62d3629a78c6db6d38e23956a3cb5f0363a6a8ec38e6394d52e4",
+        "src/ai_dlc/verification/sandbox.py": "c017bd12115b8f144d07eba619f4e15ddbd00db323e4d386f569c4bcb08646e0",
+        "src/ai_dlc/verification/test_proxy.py": "30ec2d29bf722d48f7341977542feef4a0c5ef9f90c90b158e869c5025d1c8d5",
+        "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
+        "src/ai_dlc/work/journal.py": "91bf194b430c5d0228a5600444a02d79029121a21079ec4c319e96fdaa68543b",
+        "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
+        "src/ai_dlc/work/summary.py": "af386fc470b222d5c7b600ea3169ee7f26be7bdfafdcac8b4098b1fff2f0bd8e",
+        "src/ai_dlc/work/traceability.py": "e9fbca5153cdd710b78872c66651269184ee5f3f1313f313b65df212430e8cc8",
+        "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
+        "src/ai_dlc/work/workflow.py": "5e9e38621e3062351ca81d54982f481a4fb37110d247fd82c51a927ed8c9b17b",
+        "tests/test_consumer_onboarding.py": "3b412d49dce7f0ddf1011f44637ffee4e9de101e4f15b72c7198439884cdf727",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
+        "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
+        "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
+        "tests/test_environment_report_collection.py": "0f63d55719e0ec6b167fe28187c3473586204350716f6388fef6ab49c25c365f",
+        "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
+        "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
+      },
+      "outcome": "updated",
+      "reason": "Re-reviewed after merging main (Codex form #222) into front-page; the plugin paragraph moved to Get started and the plugin screen was regenerated. Merged text keeps both sides.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        "docs/assets/front/enroll.cast": "c14cb53b8505593f866fd42ef14a82dbc5dc269eea81ca882537415e2e3d7ac7"
+      },
+      "outcome": "updated",
+      "reason": "Generated by docs/assets/front/build.py from the real CLI; byte-reproducible and checked in CI.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/enroll.cast"
+    },
+    {
+      "bound": {
+        "docs/assets/front/enroll.svg": "f4715e372eab2c7d559fec32a377fdbc4c9bf984167c2e5c2d6e3b0ba7eef5e7"
+      },
+      "outcome": "updated",
+      "reason": "Generated by docs/assets/front/build.py from the real CLI; byte-reproducible and checked in CI.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/enroll.svg"
+    },
+    {
+      "bound": {
+        "docs/assets/front/plugin-skills.svg": "91cdd23698f897c505d9008211cc806bad6f1a0ef0cfa200ca20c0cb21b9efb8"
+      },
+      "outcome": "updated",
+      "reason": "Re-reviewed after merging main (Codex form #222) into front-page; the plugin paragraph moved to Get started and the plugin screen was regenerated. Merged text keeps both sides.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/plugin-skills.svg"
+    },
+    {
+      "bound": {
+        "docs/assets/front/project-check.svg": "1d2c3b86e5ef82b9ddca1ff6a624fe26ab6a4297ffd0535a14440d9e9ea486a1"
+      },
+      "outcome": "updated",
+      "reason": "Generated by docs/assets/front/build.py from the real CLI; byte-reproducible and checked in CI.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/project-check.svg"
+    },
+    {
+      "bound": {
+        "docs/assets/front/suite-dark.svg": "50bb50769563d1f1cbd52b8efc3ea27f90d444c8de7ddfdb90f306f55ef579ba"
+      },
+      "outcome": "updated",
+      "reason": "Generated by docs/assets/front/build.py from the real CLI; byte-reproducible and checked in CI.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/suite-dark.svg"
+    },
+    {
+      "bound": {
+        "docs/assets/front/suite-light.svg": "711174384474d267476986257a482045f9b57100f3b8ebe9b7fb12d604707eec"
+      },
+      "outcome": "updated",
+      "reason": "Generated by docs/assets/front/build.py from the real CLI; byte-reproducible and checked in CI.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/suite-light.svg"
+    },
+    {
+      "bound": {
+        "docs/assets/front/suite.svg": "ba9641a8bd8189e417fc4d7accf591e360ae94a4afb51849ae63065cfd5a1533"
+      },
+      "outcome": "updated",
+      "reason": "Generated by docs/assets/front/build.py from the real CLI; byte-reproducible and checked in CI.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/suite.svg"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.cast": "16c6c76667b439ec675fca2a57ccc5aa1843e90644b8f1c6ee5f5434dad1c27e"
+      },
+      "outcome": "updated",
+      "reason": "Generated by docs/assets/front/build.py from the real CLI; byte-reproducible and checked in CI.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.cast"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.svg": "f21fc8bcb6d927e0d2c40810578c69a39c80110fc60276e867bc34d715d0a357"
+      },
+      "outcome": "updated",
+      "reason": "Generated by docs/assets/front/build.py from the real CLI; byte-reproducible and checked in CI.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.svg"
+    },
+    {
+      "bound": {
+        "docs/catalog.toml": "e3210efbd8071470e9a82de74e5f03eafa74a8d1aca282a6a7e5722e1d7d64a9"
+      },
+      "outcome": "updated",
+      "reason": "Enrolls docs/workflows/get-started.md with its build and link-tool code paths.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/catalog.toml"
+    },
+    {
+      "bound": {
+        "catalog:docs/decisions/0001-refocus-ai-dlc.md": "d0bc4af5a1f28e54c15f94e41119aef22ff31702e8648dd3968f24256834cbc7",
+        "docs/decisions/0001-refocus-ai-dlc.md": "740704d9402666c83d05c990833acc1ad5cac7d25e992ac7da2dbfe37d9976f3"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/decisions/0001-refocus-ai-dlc.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/design/design-pm.md": "b222f6fc117b69c4a7b9a21ae4ab85d77db23922fc039223f517588cc7ae3c51",
+        "docs/design/design-pm.md": "167a4bfe9c6d576cfecec98b9e6e2cd78af895fa4adaf712f2413c03eb733e93"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/design-pm.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/design/framework-delivery.md": "9bee2b7807f0ad8777374c1fc2e64b83b09121fdcd83b84fc6266e0ff31cdc19",
+        "docs/design/framework-delivery.md": "0e39f14ef34b27d2989e98c0caeaa242c357ca1b16f94788f0c87af3666bce89"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/framework-delivery.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/design/local-and-shared-knowledge.md": "50d00f0074cafc5604eefa084a89fa98a64f68ae533d2d04ee103ca450f9716a",
+        "contracts/knowledge-note.schema.json": "0a973fee3afef0117bfdcd829499746b5693cfbcb156d3a4a86a94cfe3996686",
+        "docs/design/local-and-shared-knowledge.md": "bc47c6212ccd9b38d48137e8cfe97a4c8267c15eb3f5f1d6afe9c04d813870d1",
+        "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
+        "openspec/specs/session-learnings/spec.md": "dcd490cd54f2f6cb3fadaa90afade85d5e1d64b19fbe2accb70bfb06897e97b4",
+        "src/ai_dlc/documentation/knowledge.py": "c02c49bcc24f8e2c418ace24a72db604b1bc9a4f8d1511fa42235aeb9b122bc7",
+        "src/ai_dlc/documentation/knowledge_notes.py": "007632d8bce9b02c8a52eb98ec23dc7f9f9fd8681dc41784e192eb5c22fc43b6",
+        "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
+        "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
+        "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
+        "src/ai_dlc/documentation/workspace_diagnostics.py": "4a0ec1bf837e4a6a1d59482ebc86557edc2ae41cec843a8528b828b04f27422b",
+        "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
+        "tests/test_knowledge.py": "38e5cda9c9dc1fe97d12618a0bd9a86b2725cff059d412232152582af1547af1",
+        "tests/test_knowledge_notes.py": "0af8b4f84c5b8d974833eef49d5efd662a9d6d5b22eac6ff6f4a604fd492f6f7",
+        "tests/test_session_learnings.py": "32bb7c3143db24ff96fb43ac5081285e77a93bd8d8d825076f3422cbfe194796",
+        "tests/test_vault_link.py": "fd146d4d15041021ac343257c9d91a8c1950878d275420eda85d13747065e110",
+        "tests/test_vault_mount.py": "f6a5dc947af0d68e4688c37d05294c6b4868aa98ead91d26aa0c8ffec8018424",
+        "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/local-and-shared-knowledge.md"
+    },
+    {
+      "bound": {
+        "agents/templates/adr.md": "155206159d407a8720d5d0af8cb9552828c9dcbfa049db70a9816536dd29f01a",
+        "catalog:docs/design/project-documentation.md": "673bbd060693b1f73bda80eaa35578edbf2bf393bc0c610a61796e05a1755356",
+        "docs/design/project-documentation.md": "d0481b8b13407a73b43712b47a424abc8b87d806e70f0c9898a6930b1953db83",
+        "openspec/specs/decision-records/spec.md": "035d91c4d079fe3b26fc66f0c6ef6085205c7afc7cb13d25d5d67758728d034c",
+        "project-templates/project/docs/decisions/README.md": "01b44005b465b37feef5dd2bcaa6dda1acaf7977b8cf5d10e3a1bb5d0d552e60",
+        "src/ai_dlc/documentation/decisions.py": "30c52c68b82bca8c899887617385adac25f9b0bb2e9aa81936b91b877c626d6c",
+        "tests/test_decisions.py": "b34ac7e960b042d4064d8c45660c3f4f71f02f63955057a2bc377adc0178a064"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/project-documentation.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/design/provider-connections.md": "9128aae2177747013b85dc5443fd88a76df3ef0a5a09e13095acebd0d97e961c",
+        "docs/design/provider-connections.md": "ccb31f6007cc6821d055ddf8daf3dbfdd645f5be4be957dcda94e2265b3ec3d4"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/provider-connections.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/design/provider-toolsets-prd.md": "b385d5437ff833ddd7e0303b6bc4d4058592caeb0ad459fa5aa3d46f111509f3",
+        "docs/design/provider-toolsets-prd.md": "8c6f4874ad7899a7fb404a0a9570172a0a9bd56ee66eede8eb8ab54c5a2bb9ef"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/provider-toolsets-prd.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/github-ticket-setup.md": "c0ec66d7826b165ac63adf8669a686f50208a01d1965b5bc5bfbe10d4d8689a6",
+        "docs/github-ticket-setup.md": "5466c963f8dbd69a0f892aad1feeb911ab86374850be88d938e56882d9c5876a"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/github-ticket-setup.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/index.md": "65c0b0508964e9cb9cc7d68cef118ffcaf83bd6b4524054d54306e09f8a57810",
+        "docs/index.md": "07c977c528688ca13b8b9c8aefcbf580cb36725b2e0f4126b10eef351aa730c9"
+      },
+      "outcome": "updated",
+      "reason": "Home page shows the same front page as the README above the unchanged documentation map; README-setup row points at Get started.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/index.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/product-direction.md": "51c77801463e07f0a30be18f575c2a7142670fc4b6138c842213a0767c5a21fa",
+        "docs/product-direction.md": "da79c2e8dd1cfe3f96292b1fa6a677dbd97f152b78f434ceeddd0fc7f26fb678"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/product-direction.md"
+    },
+    {
+      "bound": {
+        ".github/workflows/release.yml": "f52ce0facc2eff2bd150994ecee3c3f046a53bc6175230e391220b53f342f83e",
+        ".github/workflows/verify.yml": "bfdd737db0e582ac9e994acbd29d0c18f414c7492f64701448fbf8b4231c5f9c",
+        "catalog:docs/release-verification.md": "972bf86b6da5f20b3d01762982880533ba0c99b22933aa95273590923721dad0",
+        "docs/release-verification.md": "b572e8c5cbcca8e7413ccf89919e6aa5357387f55b08f49b8e178eab394d21de",
+        "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
+        "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+        "src/ai_dlc/cli.py": "febed4fb7b7fe74c63434267e5d3d19699907cac3d0c4c3ac60459ca3c5f8f4e",
+        "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
+        "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
+        "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
+        "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
+        "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
+        "tests/test_consumer_onboarding.py": "3b412d49dce7f0ddf1011f44637ffee4e9de101e4f15b72c7198439884cdf727",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
+        "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
+        "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
+        "tests/test_environment_report_collection.py": "0f63d55719e0ec6b167fe28187c3473586204350716f6388fef6ab49c25c365f",
+        "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
+        "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
+        "tests/test_release_workflow.py": "a50523b5d6dec682188d489780d29a74f2a01c60c310071ce6758898f3d12dc0"
+      },
+      "outcome": "updated",
+      "reason": "Links leaving the site rewritten to GitHub URLs; two em-dash anchors updated to the renamed headings.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/release-verification.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/reviews/2026-09-03-portable-profile-enrollment.md": "096c6b89ca300b3adc2ff9da5b413f73e776e1cfd1820b02ea066739a3f73108",
+        "docs/reviews/2026-09-03-portable-profile-enrollment.md": "f73e6c5a498381a416141fb33ab879924673f8afb710b28807a283126f14cd2a"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/reviews/2026-09-03-portable-profile-enrollment.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/roadmap.md": "3bf3afbf1117b7747e4c261c4a0ac1781559085c96abed00632a9804166918b8",
+        "docs/roadmap.md": "bb7c9da5ccf547715cc25659c587001305b59477256375e13d1edb7e221af66f"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/roadmap.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/runbooks/fde-documents.md": "3886e22dcc9edb0280d9c655787ad64f116bf74c3acdca5069631ce99eada9cb",
+        "docs/runbooks/fde-documents.md": "bf61dc47288d152be9574c9550b6b93104f9c9acce5ebba4c4b1d488091a9046",
+        "openspec/specs/fde-document-scaffold/spec.md": "076ec7b45fa9ac45ed01716fce486ef740842aabfb9f72e7557cb4ed0eb93ee3",
+        "src/ai_dlc/documentation/fde.py": "3664430ebca9f3ef7ba7c7c431f7e4790176066510904ebe4d43d0a88ecf26e1",
+        "tests/test_fde.py": "49ba121125e95cc694259217e840570ee186247e748845cc6a0d75a1e158aaca"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/runbooks/fde-documents.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/backend-contracts.md": "310debc30b936d1941bc565fcd6145edc14b1bc6f1ddeca3c703211d9f4cd465",
+        "docs/verification/backend-contracts.md": "3bbddca6f8eddea40950463836ddbf28abfafd2fb897c7e953e49551db127065",
+        "openspec/specs/backend-capability-pack/spec.md": "45fc3ca17f9953edf4aa15f24c1a4176e84bceaf179fdb10f35ab58fd85e6a3e",
+        "project-templates/project/ai-dlc.toml.jinja": "8cb37c2c92f7998a2c7cec84c2d293f63b1e80f1a4a4f1f330a7e5b1b92aa0cd",
+        "project-templates/project/scripts/check_api_contract_drift.py": "81c6da34445a1329223f2592eb1389aaf35d2e12b73da73d7b9c9ffdb0b55173",
+        "tests/test_backend_capability.py": "aedd591caa61c646bcc13812728f9990e235dfa4f84f021ebf629f10d3f6d2e2"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/backend-contracts.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/design-pm-evaluation.md": "e5eea1824becafc5a61803c6783780d52d4d6d98ede3e6040641a01ac14d1197",
+        "docs/verification/design-pm-evaluation.md": "6795a6d31ddba6866827885f3c3866f851bc956e0ee03712c267f251e3949732"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/design-pm-evaluation.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/design-pm-workflow.md": "a45b75bc52d13f9d4798be6bd5e49ecf014731aa6b190155c13a4a61e560de8c",
+        "docs/verification/design-pm-workflow.md": "109941e066b8b3beb6dd47cd5eff0f189b56aa33ddba3106b571a58a35447021"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/design-pm-workflow.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/documentation-workflow.md": "6e620e11c354a39b24ec8e47a66bcde387ef4e32ca055e7ac526f50363b0ddfe",
+        "docs/verification/documentation-workflow.md": "c4cde7e9db10163499cc60ad84cef788a1a843ecc9a1b00257025f6b7208ab43",
+        "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
+        "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
+        "openspec/specs/documentation-impact-workflow/spec.md": "80b65bef76266ee1ea22b5cdf9f5a452125569a4b0e9f8d3a0b5cc8dd84ba786",
+        "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
+        "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
+        "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
+        "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
+        "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
+        "src/ai_dlc/documentation/document_files.py": "3174b5773adf54c9a0f586a041c4e67001d136d9ba1016ec1cbb0b54debafd55",
+        "src/ai_dlc/documentation/document_impact.py": "bf3353c2ab99166c4900647ac7a0626bba3ee08a4a4f92ffa9269167f86012ca",
+        "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
+        "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
+        "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
+        "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
+        "src/ai_dlc/harness/agents.py": "0757ce327050807470193a93e66fc1b28bd1ea5e0b8b41c0bc61166f8465bc07",
+        "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
+        "tests/test_company_guidance.py": "ab39bed3342d9de7d4c68db6c6c54fd66e13c12f2f2167c38e8d345c7dc9736e",
+        "tests/test_document_access.py": "bdf96af4afb1ad6f985204ad243a624d4da8b56d527af63cc072908a76beeff4",
+        "tests/test_document_evidence.py": "c5263165cc63dd1f2df99491828a97aea167468171348840b29d9f047b63c85d",
+        "tests/test_document_impact.py": "a9cccc6fa777d01add578c103adb8efa099541c02fa9132790dd2377fa45c728",
+        "tests/test_document_inventory.py": "927199563751af6b2dd5aa8e93cddb43cc62192adffea49694dada37ef6bf14c",
+        "tests/test_document_review.py": "88f37e6365c7e9b545d668f978993ef7ad9acfa146e7d549728f4ef9cab8008a",
+        "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
+        "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7"
+      },
+      "outcome": "updated",
+      "reason": "Heading renamed without an em dash so the site and GitHub share one anchor; links leaving the site rewritten.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/documentation-workflow.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/end-to-end-evaluation.md": "e5b40d8abe667d39b5de131c608ab9862263575c039d517f095d42e12528fce3",
+        "contracts/evaluation/base-image.schema.json": "9e4d5200cfda72c6c3290e163418d3e624db2cd8c39a10d631bda2babcc958dd",
+        "docs/verification/end-to-end-evaluation.md": "da7772dac0c197e826d1c38057f40243bd7b141c0643774589e08ae62d359c75",
+        "evaluations/README.md": "db873e9a78b20c3bcea7d3e478ceb63b1d57619ddfa704b62b274d7f003ca0c0",
+        "evaluations/images/claude-code.json": "fb64db87f858e86e92ea8ab94b262b537898407235736d73d11d8fb9bc1406af",
+        "evaluations/profiles/local-deterministic.json": "0e0deb70f592f3ebad0a420daf815c536eab6c74c421ec4e10329614a65d3d6b",
+        "evaluations/suites/real-client.json": "a21ef76ccde1adeba48a15e3373839586a38b925acaaed9fed23f666a66e886e",
+        "evaluations/suites/smoke.json": "4f24319f9c734a2b5fa01cc01b2f831bb79a230800697b160ad29aa87f98a9d7",
+        "openspec/specs/end-to-end-evaluation/spec.md": "e6bac03b7eabc83bd62443bd0e05fe668ecb3444a805970367fa2487dab71372",
+        "openspec/specs/portable-development/spec.md": "2c75caee1dc2f59828c49ba940be6a186580b07032c52b63fc750788b7535a4d",
+        "src/ai_dlc/verification/evaluation/FROZEN.md": "b4555827bcf250b517331ea4474e179663fb13e62732de5f038e0ae2f569b3c3",
+        "src/ai_dlc/verification/evaluation/__init__.py": "7cf0a3add5298d2f8d58954210cee24b3fb6a5f81e505ef3b948a7078cbb0eb8",
+        "src/ai_dlc/verification/evaluation/attempt.py": "a249ad3af90f034cac3774c5406f819afe54209fe88307064c4fd822750a4717",
+        "src/ai_dlc/verification/evaluation/budgets.py": "8069eb9a4f6d24e7fe88774581b47a7d817445ac950a266684aee77fc5378826",
+        "src/ai_dlc/verification/evaluation/contracts.py": "2e767c52494cad777ade498d1362521f04e8c313c5f230540df7f840cf8a0f64",
+        "src/ai_dlc/verification/evaluation/drivers.py": "f4a81dea2b7f3f4ca793e6f1953fb7e384cc8359eae4a308768b41cccceea47f",
+        "src/ai_dlc/verification/evaluation/evaluate.py": "e8a2405d3f6e9c0e3a121b4936f617ee335abaef54e7688eafb813985e90de3a",
+        "src/ai_dlc/verification/evaluation/git_observer.py": "f6a422a1f989b3056cf82484716f0e0101719caffb54e8e96477845ed75445b3",
+        "src/ai_dlc/verification/evaluation/image.py": "d525326faed75c1e6b686183d2b7ccce43c000e43263dad0e940efe8c69523e4",
+        "src/ai_dlc/verification/evaluation/planning.py": "f0a6844c5511db3d4c420f9c7638e47b6d86810968d16a3767de6373c2a971c6",
+        "src/ai_dlc/verification/evaluation/report.py": "fa025c820f8a1a411ec413a7541d30fdf355955bec1f70bc9da220910993c88b",
+        "src/ai_dlc/verification/evaluation/run.py": "271c2aabb8af62d3629a78c6db6d38e23956a3cb5f0363a6a8ec38e6394d52e4",
+        "tests/fixtures/evaluation/claude-code-2.1.220.jsonl": "9801333e7ad60c9f64e3c4f7e9e5f74134fc0ad0b572a9e71db4e33326a86d00",
+        "tests/test_eval_handoff.py": "4bdc48b2e0e29299d6168b9eda630cf2f8de7690399c773404ff139d131d31ec",
+        "tests/test_evaluation_attempt.py": "16976a338b92fd6429e38b5c7627cecb37add655d6a3a0e416a6fb567882235f",
+        "tests/test_evaluation_base_image.py": "b561f359128ad3740e29532aafe540cae43eb8df0d399fc3fb90df8219925e15",
+        "tests/test_evaluation_budgets.py": "649afd1b4482ce257b1f1f166102b049b04203d1a7a60b0721ee66d80726bdef",
+        "tests/test_evaluation_claude.py": "1a78bff41b6422173b5078e68a906f0070e625318e4689a85680dd1a4e124d9a",
+        "tests/test_evaluation_driver.py": "bae0e72a3dab4c1f6d3f713f3ee54301bf1f6b3632e5f98f56afa1c5bcdbe62e",
+        "tests/test_evaluation_egress.py": "8b650b41e20766814bec8cd7747972cc33a95aa58923b33466d2124f35852e50",
+        "tests/test_evaluation_git_observer.py": "06305ee9985cb79e434628bbc08d4b3124742987db390859507ad6c9be5d88b7",
+        "tests/test_evaluation_image.py": "5bdbd18d40c618f4c9e59baccba54abaa67e654055fdca743a29d6053ea23f6c",
+        "tests/test_evaluation_planning.py": "3cc3389999c746b4c7bc20960316fa4b8242121ab5c2a1a2ed06cded8794fc7f",
+        "tests/test_evaluation_report.py": "8671fac524cdfc38b85b4819b4e8e5cde3b610c1295f41d9ede075772e14a94c",
+        "tests/test_evaluation_run.py": "4677004ea79065b86371b23700041e0cb3cbf7b15ef7770d40868fc1bd616b62"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/end-to-end-evaluation.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/github-ticket-workflows.md": "6dff31b8146cf66fedd4f32f2da5c87c0c046af76bd086e6febc32fbb44947cb",
+        "docs/verification/github-ticket-workflows.md": "748641dd543d43a6a476cfe84370bc10ac09fd631e0c6cbdf6af3b8557eb53f3",
+        "openspec/specs/github-project-defaults/spec.md": "e4e0f1dd53c3cf852b85a882987dd8306bdb042637df63e916bfe6c30de5abc5",
+        "openspec/specs/github-ticket-workflows/spec.md": "a64561ef8cff11fc3909cca93f9690786a9d71c133a18c5b3d78857c4cea6379",
+        "src/ai_dlc/providers/github_issues.py": "311595febaf40ce8855bde3c3bb8a7c9d2087ae9a0b5ace5e7e8e3347f8696ba",
+        "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
+        "tests/test_github_projects.py": "e7932bffcdb0acb894587e5364a828391e9ac7368b3886823674959330a21fa9"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/github-ticket-workflows.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/jira-cloud-new-work.md": "e9b8e7125d44f3d45f69d3d5447433366249e6ab0a096aa598a619ca6e9a3273",
+        "docs/verification/jira-cloud-new-work.md": "34b9035181ac42cc0d7160471748036a6ab07fd808c6fbc41996d268c54bb53c"
+      },
+      "outcome": "updated",
+      "reason": "Heading renamed without an em dash so the site and GitHub share one anchor; links leaving the site rewritten.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/jira-cloud-new-work.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/native-tool-composition.md": "04ebd83835120667bd1d15b5389c397926792c247b176845403b620a948bdcd6",
+        "docs/verification/native-tool-composition.md": "d5e332ee4e8e0076392c03e749928cd650ac74955d852d9bc52da4766548575d"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/native-tool-composition.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/portable-workflow-bundle-cleanup.md": "6c8749073f34f92de2671d46a4b624c9355c46dcc81414fbc3901a5819844ba4",
+        "docs/verification/portable-workflow-bundle-cleanup.md": "745bc05d2abd70bd0120c9c86ba76d0573965c68f610bfa88ec4979e11ce2d48"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/portable-workflow-bundle-cleanup.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/product-delivery-evaluation.md": "9319a3254d2e065d9b48120f2020f2233d4aee85ba8d2bfdd98542e6716238e3",
+        "docs/verification/product-delivery-evaluation.md": "205cb8fb11f10c67781a4df20af11fb2e34a1d492f76b38fb1051fdd26039bb0"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/product-delivery-evaluation.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/product-shaping-workflow.md": "a899a2d7c495b6756399aee723bb9e8d6ad241bbf31cade2d3b73114dfe448bc",
+        "docs/verification/product-shaping-workflow.md": "79c982aa5ce2ff31876fcdd333c6b79574a7a1c1450693602716c98b8a24e865"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/product-shaping-workflow.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/project-knowledge-repair.md": "8ba2f8d710054cf29299222b8016cc5948bd010433d28098f4f4f0d536fffd7b",
+        "docs/verification/project-knowledge-repair.md": "67d1bcbf24a46a7d23b11ec0e5afe34e6d163a68fb9af869767bb426c16fce71"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/project-knowledge-repair.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/provider-connections.md": "db00a7b2cf91adf1395615fe11209001823c8d54710ff0055f6b9ab1aa450462",
+        "docs/verification/provider-connections.md": "3bc0bdc134214dc07c33bc4142ef91e07cb8aab321c540e3d811d594c7b505fe"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/provider-connections.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/repository-organization.md": "4efbbad14953f05104abc30f90fbf4c9353a61d29364fcd59e0b46a744653c16",
+        "docs/verification/repository-organization.md": "63a1d9f23d86410a1061540666d8be96d74aefb1e05c9c98a9be9e718de688e2",
+        "openspec/specs/repository-organization/spec.md": "f908091bebe8bc8a46b821c1c873fecc70415a0be697a8187fbd0eae9fd6334f"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/repository-organization.md"
+    },
+    {
+      "bound": {
+        "agents/evaluation-scenarios.json": "bf523609610234800a9b2356fbcf4ecbf86f840e5ad7c3d1f71cde7409672fb0",
+        "agents/evaluation.toml": "712f6d68be0ce1c53a190717e70971d379775ec2812a0ed2e76abf63067541df",
+        "catalog:docs/verification/skill-evaluation.md": "da7a8e704691c2e4a1227a95f531a853997b87aa17c3fde8f15603266cac9f30",
+        "docs/verification/skill-evaluation.md": "31d859e2fd93db9867cc0d73865f86a290926b4368c79adbdd27400d72a6a484",
+        "openspec/specs/skill-evaluation/spec.md": "36d643a82dc7d5a556d77cf10e11c7a8fb961cd4548c9c62ec4b50f45ece99de",
+        "scripts/run_skill_evaluation.py": "46a97694bae155b2418d172971480e031f510acc864b9d91fa546f98c754729f",
+        "src/ai_dlc/harness/skill_evaluation.py": "33bbd3001d5123004a7767321f1ed5d6e2ad822510165d5caf8df9a947555532",
+        "src/ai_dlc/providers/evaluation_api.py": "5c3a9b890c88d4633fc553dbe206c415c5ceb1f6679cefdf7d215d8680fcec17",
+        "tests/test_skill_evaluation.py": "dc4df05fcfcd50846e4e9bafcf8364b004b6f4f38ec6490ccb9b4bd6488f7e7b"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/skill-evaluation.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/spec-delivery-traceability.md": "7147e1d45cfc742ad36c308b93bdf3cd811c2271eed95fc7a3c7f29aacd5ffa3",
+        "docs/verification/spec-delivery-traceability.md": "fcc423d817a0eb145a158f5c808858b4b894e34d6fc15fe496409a58e293ce07"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/spec-delivery-traceability.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/toolset-composition.md": "45c1e59342894d4f4d73e3366408236f3061e87d878da235b0f286664e022231",
+        "docs/verification/toolset-composition.md": "6c9957d5db43a153423ac28bf80b06a933d8a29ebbe7e51abe20dc2a2934b5cb"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/toolset-composition.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/work-computer-toolsets.md": "20d65d93b1241b60b0ae9eee16368bc4d7a8bd0f02837c4cb7c875bdcf5ab86d",
+        "docs/verification/work-computer-toolsets.md": "6f7bf6c56d4b58181acd8c65bf2906fa15bf9f9ac59cc93024626637d68f6224"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/work-computer-toolsets.md"
+    },
+    {
+      "bound": {
+        "agents/skills/spec-from-prd/SKILL.md": "f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce",
+        "agents/templates/delivery-slice.md": "4a7a5d7af2f6a99b4e7eac13491eef751def074451d6899acc36ccf1f536bd6f",
+        "catalog:docs/workflows/brownfield.md": "dedbc6f762c6970ac999eb74598adc31dd6dbfe16a6b3ae8842345b9e37838b4",
+        "docs/workflows/brownfield.md": "29351f2583d363e85d828528ea3ccdf85596488903c9810c6cdf978309ededa8",
+        "openspec/specs/portable-development/spec.md": "2c75caee1dc2f59828c49ba940be6a186580b07032c52b63fc750788b7535a4d",
+        "project-templates/project/docs/workflows/brownfield.md": "300acec2c3562b8d76178e0de1ec3bd155882f0ce5180879b195657d5eb58c1f",
+        "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
+        "tests/test_templates.py": "30a614989be79d9aa054634f16d325ef00500f3c7d9503ffc00d77878ac9355c"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/brownfield.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/design-to-implementation.md": "ee408b745f85bdc4229b75b8dfd6c9074257194e2a65933b4ba31f56522f389d",
+        "docs/workflows/design-to-implementation.md": "27564271f4b652e8c083f704f83df363700bd88829bf213bbc4b1f69678a98af",
+        "openspec/specs/frontend-capability-pack/spec.md": "a8461cc35ff733d3643f9cb8fbeb691f0cae7ea7d54eae59b756883c7e5a78ea",
+        "project-templates/project/ai-dlc.toml.jinja": "8cb37c2c92f7998a2c7cec84c2d293f63b1e80f1a4a4f1f330a7e5b1b92aa0cd",
+        "project-templates/project/playwright.config.ts": "d06e3c907f16f5027d6e2f47112b5cca353e68525a528957f6f760eca940fd78",
+        "project-templates/project/tests/e2e/smoke.spec.ts": "8139af70f4b8ba2010efc673d4b0c6fb802ea101d2d70f08ec47b3007db78c35",
+        "src/ai_dlc/harness/design_capture.py": "8b872492b88f4a7728bedf0ae8a1edaad2312a918248bf8f5d051c8bd8b42a58",
+        "tests/test_frontend.py": "4deefd2f60011e34cdf8e79bf2d02726ea9fee99e2af43e8fe75ed51352cb0ef"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/design-to-implementation.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/get-started.md": "b3cdcadc535e0e825dfe2837433f1b4ef45551430ab207c485ef7dd601bf992e",
+        "docs/assets/front/build.py": "cc9968e8bcd14e1947c164595c46e0ce79eb7b597eaa5182806136db1837803e",
+        "docs/assets/front/demo_provider.py": "4f29e7499ad628903260043bb8ecc0a086f3fe0b581e24c73ab8a9a1851e98da",
+        "docs/workflows/get-started.md": "c0ab23749499da7bd49bcbfb92e5932e44cfd5742499f32516548767510c1300",
+        "mkdocs.yml": "12b2bdb48d6cf4f2ade2228f7c584f4f69444755b189fdc7df190fc3c3005cd5",
+        "scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
+        "scripts/docs_site_links.py": "241e49f26314def72dd2ee4fdc8545c5b9092fbaf6736952381cc939632f3ec9",
+        "tests/test_front_page.py": "2c9ee24bdad07072394a63f540de75d5ac673f4f77914b24016f72aa21beccd3"
+      },
+      "outcome": "updated",
+      "reason": "Re-reviewed after merging main (Codex form #222) into front-page; the plugin paragraph moved to Get started and the plugin screen was regenerated. Merged text keeps both sides.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/get-started.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/greenfield.md": "b8bf78cb5032ea2be2d67e770261aca4cca32914a41a987e3caa8f5b6969d50d",
+        "docs/workflows/greenfield.md": "6b1c4af0fa9f9add00e8288524ef0e6cf7504745a350109d1253a00c1931e265",
+        "openspec/specs/backend-capability-pack/spec.md": "45fc3ca17f9953edf4aa15f24c1a4176e84bceaf179fdb10f35ab58fd85e6a3e",
+        "project-templates/project/ai-dlc.toml.jinja": "8cb37c2c92f7998a2c7cec84c2d293f63b1e80f1a4a4f1f330a7e5b1b92aa0cd",
+        "project-templates/project/docs/api/openapi.yaml": "744e869692de7df60d4195669a45f8ade009b04c00c203c4853e30f4b9af5b2d",
+        "project-templates/project/scripts/check_api_contract_drift.py": "81c6da34445a1329223f2592eb1389aaf35d2e12b73da73d7b9c9ffdb0b55173",
+        "src/ai_dlc/setup/templates.py": "258154a7eeec73d8207bbb082e7f06be8ab649811a91b9a462555724dd664e58",
+        "tests/test_backend_capability.py": "aedd591caa61c646bcc13812728f9990e235dfa4f84f021ebf629f10d3f6d2e2"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/greenfield.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/tool-map.md": "d11334cb57c288aab7b01226790b7cc268a28991b3de5f97a98b9818d80be19e",
+        "docs/workflows/tool-map.md": "3c343f874274d806fc5242b4418429dc64b62690d61dede27fde7d52b3559046",
+        "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
+        "openspec/specs/spec-delivery-traceability/spec.md": "66641acf9c151792cde1914062630ed50cc4199cdc3bdb4b81382e03716f2ea3",
+        "src/ai_dlc/cli.py": "febed4fb7b7fe74c63434267e5d3d19699907cac3d0c4c3ac60459ca3c5f8f4e",
+        "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
+        "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
+        "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
+        "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
+        "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
+        "src/ai_dlc/harness/agents.py": "0757ce327050807470193a93e66fc1b28bd1ea5e0b8b41c0bc61166f8465bc07",
+        "src/ai_dlc/harness/hooks.py": "b50bf047573f4735861bb091d97cd8467af16729610ddd63e97d81fffc39e9bc",
+        "src/ai_dlc/mcp_server.py": "1d4fb076add151ee1161fbffe518c0764b08940055a86f6db2204ab3910cb2d5",
+        "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
+        "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
+        "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
+        "src/ai_dlc/work/workflow.py": "5e9e38621e3062351ca81d54982f481a4fb37110d247fd82c51a927ed8c9b17b",
+        "tests/test_agents_phases.py": "e5325bdc3c072a10e27bbf019ce51f586b0b7b9d76aa95ff8652dd09bc3c8570",
+        "tests/test_cli.py": "92708f9dd98971eb8e57a95ea9a6a73853a1eb4ca7d77afda8597862b33da71d",
+        "tests/test_config.py": "788bf2715bfc3fbc3da495b68fa250985f4430d424fa9802340dec16b7a35cdf",
+        "tests/test_consumer_onboarding.py": "3b412d49dce7f0ddf1011f44637ffee4e9de101e4f15b72c7198439884cdf727",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
+        "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
+        "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
+        "tests/test_environment_report_collection.py": "0f63d55719e0ec6b167fe28187c3473586204350716f6388fef6ab49c25c365f",
+        "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
+        "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
+        "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
+        "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
+        "tests/test_rendering.py": "e93897333125cff68ce69e9e8fc23f401d9e0740427b8c995975240350cea0ef",
+        "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2",
+        "tests/test_workflow.py": "c60af46adb6cceb3160b1c34945d3b579e4ce42be7e24cad65fa24bd215d80a1"
+      },
+      "outcome": "updated",
+      "reason": "Links that leave the docs site rewritten to GitHub URLs by scripts/docs_site_links.py; content unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/tool-map.md"
+    }
+  ],
+  "schema": 2
+}

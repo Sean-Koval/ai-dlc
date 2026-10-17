@@ -28,7 +28,7 @@ A connected GitHub MCP app can expose issue tools, but installed tool names and
 account repository permissions do not prove its write grants or Projects access.
 The official GitHub MCP server supports a Projects toolset and local OAuth login.
 The current AI-DLC lifecycle adapter uses `gh`; its authentication is separate.
-See the [actual adoption/access findings](archive/planning/github-backlog-migration.md).
+See the [actual adoption/access findings](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/planning/github-backlog-migration.md).
 
 ## Connect a repository and optional Project
 
@@ -118,3 +118,12 @@ perform several reads and may legitimately take longer than one request. An
 explicit provider `timeout` overrides both defaults. A timeout still leaves an
 uncertain mutation for normal reconciliation; retry through `ai-dlc work finish`
 so merge, CI, issue state and Project readback are verified again.
+
+Where a proxy or policy refuses the GraphQL endpoint itself (an HTTP 403, 404 or
+410 from `api.github.com/graphql`), the adapter reads, closes, reopens and links
+the issue and verifies the viewer through REST, so `ai-dlc work finish` still
+completes. Projects v2 has no repository-scoped REST route, so the Project stays
+as it was and the finish result reports `project.reconciled = false` with the
+reason; rerun `ai-dlc work finish` where GraphQL is reachable to move it to Done.
+Start and Project attachment still fail there, and scope, rate-limit and server
+errors never fall back.

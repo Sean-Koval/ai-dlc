@@ -21,7 +21,7 @@ cases use a bounded substitute for its schema-export surface. They establish
 drift-script behavior, not qualification of a live application or deployment.
 
 The [greenfield workflow](../workflows/greenfield.md) describes project use;
-[BE-01 and BE-02](../../openspec/specs/backend-capability-pack/spec.md) define the
+[BE-01 and BE-02](https://github.com/Sean-Koval/ai-dlc/blob/main/openspec/specs/backend-capability-pack/spec.md) define the
 contract. Local execution receipts are disposable evidence and are not packaged
 with generated projects.
 

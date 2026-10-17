@@ -1,0 +1,38 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "python3 \"${PLUGIN_ROOT:-${CODEX_HOME:-$HOME/.codex}/ai-dlc-workflow}/hooks/aidlc_hook.py\" pre-tool",
+            "timeout": 10,
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash|exec_command"
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "python3 \"${PLUGIN_ROOT:-${CODEX_HOME:-$HOME/.codex}/ai-dlc-workflow}/hooks/aidlc_hook.py\" session-start",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "python3 \"${PLUGIN_ROOT:-${CODEX_HOME:-$HOME/.codex}/ai-dlc-workflow}/hooks/aidlc_hook.py\" stop",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
+      }
+    ]
+  }
+}

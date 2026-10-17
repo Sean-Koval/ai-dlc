@@ -35,7 +35,7 @@ adapter close/reopen/close/reconcile checks passed on the disposable issue, whic
 was closed and removed from the board afterward. This is not evidence of a gated
 finish, infrastructure crash recovery, or the default-create path against GitHub.
 The initial transient attachment mismatch's remote cause remains unproven.
-Detailed scope and receipts are in the [adoption record](../archive/planning/github-backlog-migration.md).
+Detailed scope and receipts are in the [adoption record](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/planning/github-backlog-migration.md).
 
 PR candidate `270e957` passed all five platform jobs in run `34159101762`.
 This is PR candidate CI, not target-branch merged-revision evidence. Configuration,
@@ -69,7 +69,7 @@ Platform checks are pending; no archive, merge or finish has occurred.
 The maintainer selected the GitHub backlog as the work queue and deferred Linear
 reconciliation. Thirteen issues are now in [AI-DLC Project #2](https://github.com/users/Sean-Koval/projects/2),
 with verified status mappings and All work / Delivery board views. The
-[adoption record](../archive/planning/github-backlog-migration.md) separates actual MCP
+[adoption record](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/planning/github-backlog-migration.md) separates actual MCP
 Project operations from pending CLI permission, repository linking, and local
 tracker activation. Earlier no-mutation/source-inventory notes below describe
 prior checkpoints and are superseded by that record.
@@ -290,3 +290,16 @@ and writes no record. Fixture tests replay the captured refusal text and confirm
 unrelated `gh` failures keep their message. The repaired token path, write scopes
 and GitHub Enterprise hosts were not exercised. Drafting a record without Project
 fields was not delivered; the read contract is shared and stays fail-closed.
+
+## Refused GraphQL endpoint — October 17, 2026
+
+Issue #226. In a Claude Code cloud session whose proxy answers every
+`api.github.com/graphql` request with HTTP 403, the adapter with this repository's
+configured Project read issues #206, #193, #213 and #226 through REST, verified the
+configured viewer through `GET /user`, and reported each Project as unreconciled;
+capabilities withheld `reconcile_closed` and `prepare`. Fixture tests cover REST
+close, reopen and link, refused start and prepare, a cancelled issue and viewer
+mismatch under the fallback, a service-level finish, and the scope, rate-limit and
+502 failures that must not fall back. Live finish runs are recorded in the work
+records they completed; a live REST close of an open issue and Project
+reconciliation on a later GraphQL-enabled rerun were not exercised.

@@ -52,6 +52,8 @@ class GitHubWire:
         self.paginate = False
         # Number of item reads that omit an attached item, simulating replication lag.
         self.delay_visibility = 0
+        # Simulates a proxy or policy that refuses the GraphQL endpoint outright.
+        self.graphql_blocked = False
 
     def mutate(self, event):
         self.events.append(event)
@@ -65,8 +67,45 @@ class GitHubWire:
             return {"nodes": [], "pageInfo": {"hasNextPage": True, "endCursor": "next"}}
         return {"nodes": rows, "pageInfo": {"hasNextPage": False, "endCursor": None}}
 
+    def rest(self, args):
+        path = next(a for a in args[2:] if a.startswith(("repos/", "user")))
+        method = args[args.index("--method") + 1]
+        fields = dict(args[i + 1].split("=", 1) for i, a in enumerate(args) if a == "-f")
+        if path == "user":
+            return {"node_id": self.viewer}
+        assert path == "repos/org/repo/issues/1", path
+        if method == "PATCH":
+            if fields.get("state") == "closed":
+                self.issue.update(state="CLOSED", stateReason=fields["state_reason"].upper())
+                self.mutate("rest:close")
+            elif fields.get("state") == "open":
+                self.issue.update(state="OPEN", stateReason="REOPENED")
+                self.mutate("rest:reopen")
+            if "body" in fields:
+                self.issue["body"] = fields["body"]
+                self.mutate("rest:edit")
+        reason = self.issue["stateReason"]
+        return {
+            "node_id": self.issue["id"],
+            "number": self.issue["number"],
+            "html_url": self.issue["url"],
+            "state": self.issue["state"].lower(),
+            "state_reason": reason.lower() if reason else None,
+            "title": "One",
+            "body": self.issue["body"],
+        }
+
     def run(self, args, **kwargs):
         self.commands.append((args, kwargs))
+        if args[1] == "api" and args[2] != "graphql":
+            return SimpleNamespace(returncode=0, stdout=json.dumps(self.rest(args)), stderr="")
+        if self.graphql_blocked:
+            return SimpleNamespace(
+                returncode=1,
+                stdout="",
+                stderr="HTTP 403: GitHub GraphQL is not available from this session; use the "
+                "REST API (https://api.github.com/graphql)",
+            )
         if args[1:3] == ["api", "graphql"]:
             assert "--repo" not in args
             request = json.loads(kwargs["input"])
@@ -295,6 +334,105 @@ def test_host_is_pinned_for_issue_and_graphql_transport(wire, monkeypatch):
             assert args[args.index("--hostname") + 1] == "github.com"
         else:
             assert args[args.index("--repo") + 1] == "github.com/org/repo"
+
+
+def test_graphql_refusal_reads_issue_through_rest_without_planning(wire):
+    wire.graphql_blocked = True
+    wire.issue.update(state="CLOSED", stateReason="COMPLETED")
+    adapter = provider()
+    capabilities = adapter.invoke("capabilities", {})
+    assert capabilities["lifecycle"]["in_progress"] is True
+    assert capabilities["optional_operations"] == ["link"]
+    item = adapter.invoke("read", {"reference": "1"})
+    assert (item["state"], item["state_reason"], item["node_id"]) == (
+        "closed",
+        "COMPLETED",
+        "ISSUE_1",
+    )
+    assert item["project"]["reconciled"] is False
+    assert "GraphQL is unavailable" in item["project"]["reason"]
+
+
+def test_graphql_refusal_closes_issue_through_rest(wire):
+    wire.graphql_blocked = True
+    wire.member = True
+    item = transition(provider(), "closed")
+    assert item["state"] == "closed" and item["issue_state"] == "closed"
+    # The Project cannot be written without GraphQL; only the native issue changes.
+    assert wire.events == ["rest:close"] and wire.status is None
+
+
+def test_graphql_refusal_still_verifies_viewer_identity(wire):
+    wire.graphql_blocked = True
+    wire.viewer = "wrong"
+    with pytest.raises(ValueError, match="viewer"):
+        transition(provider(), "closed")
+    assert wire.events == []
+
+
+def test_graphql_refusal_keeps_cancelled_issue_terminal(wire):
+    wire.graphql_blocked = True
+    wire.issue.update(state="CLOSED", stateReason="NOT_PLANNED")
+    with pytest.raises(ValueError, match="cancel"):
+        transition(provider(), "closed")
+    assert wire.events == []
+
+
+def test_graphql_refusal_reopens_and_links_through_rest(wire):
+    wire.graphql_blocked = True
+    wire.issue.update(state="CLOSED", stateReason="COMPLETED")
+    assert transition(provider(), "open")["state"] == "open"
+    linked = provider().invoke(
+        "link", {"reference": "1", "url": "https://example.com/pr", "operation_id": "link"}
+    )
+    assert linked["body"].endswith("https://example.com/pr")
+    assert wire.events == ["rest:reopen", "rest:edit"]
+
+
+@pytest.mark.parametrize("operation", ["in_progress", "prepare"])
+def test_graphql_refusal_refuses_planning_operations(wire, operation):
+    wire.graphql_blocked = True
+    adapter = provider()
+    with pytest.raises(RuntimeError, match="GraphQL is unavailable"):
+        if operation == "prepare":
+            adapter.invoke("prepare", {"reference": "1", "operation_id": "prepare"})
+        else:
+            transition(adapter, "in_progress")
+    assert wire.events == []
+
+
+@pytest.mark.parametrize(
+    "error",
+    [
+        "HTTP 403: API rate limit exceeded (https://api.github.com/graphql)",
+        "GraphQL: Your token has not been granted the required scopes (HTTP 403)",
+        "HTTP 502: Bad Gateway (https://api.github.com/graphql)",
+    ],
+)
+def test_other_graphql_failures_do_not_fall_back(wire, monkeypatch, error):
+    def failing(args, **kwargs):
+        if args[1:3] == ["api", "graphql"]:
+            return SimpleNamespace(returncode=1, stdout="", stderr=error)
+        return wire.run(args, **kwargs)
+
+    monkeypatch.setattr("ai_dlc.providers.github_issues.subprocess.run", failing)
+    with pytest.raises(RuntimeError) as raised:
+        transition(provider(), "closed")
+    assert "rest" not in " ".join(wire.events)
+    assert type(raised.value).__name__ == "RuntimeError"
+
+
+def test_finish_completes_through_rest_when_graphql_is_refused(tmp_path, wire):
+    wire.graphql_blocked = True
+    app = service(tmp_path, wire)
+    work = app.load("one")
+    work["artifacts"]["tracker"] = "1"
+    app.save(work)
+    result = app.finish("one")
+    assert result["status"] == "completed"
+    assert result["tracker"]["state"] == "closed"
+    assert result["tracker"]["project"]["reconciled"] is False
+    assert wire.events == ["rest:close"]
 
 
 def service(tmp_path, wire, *, blocked=False):

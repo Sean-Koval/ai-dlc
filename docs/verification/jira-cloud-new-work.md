@@ -2,7 +2,7 @@
 
 This is the bounded Jira child of [issue20](https://github.com/Sean-Koval/ai-dlc/issues/20),
 not completion of its optional Plane/live-qualification scope. The formal
-[JC01–06 specification](../../openspec/changes/archive/2026-09-08-jira-cloud-new-work/specs/jira-cloud-new-work/spec.md),
+[JC01–06 specification](https://github.com/Sean-Koval/ai-dlc/blob/main/openspec/changes/archive/2026-09-08-jira-cloud-new-work/specs/jira-cloud-new-work/spec.md),
 [adapter design](../design/jira-cloud.md) and [setup runbook](../runbooks/jira-cloud-setup.md)
 state the supported contract and remaining inputs. No company API was contacted.
 
@@ -100,7 +100,7 @@ This evidence paragraph was added afterwards; source and tests stayed unchanged.
 Narrow independent re-review of the repair remains pending. The live company,
 platform, merged-CI and delivery limits above remain unchanged.
 
-## Walkthrough preparation — September 14, 2026
+## Walkthrough preparation, September 14, 2026
 
 Tracked by [issue #85](https://github.com/Sean-Koval/ai-dlc/issues/85).
 The inspected engine revision is `dd05f1f1ba919d2647e46049b7cd48fbb21be1fb` (the merge of PR #131), on macOS

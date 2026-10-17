@@ -1128,6 +1128,7 @@ def test_work_finish_selects_explicit_path_and_reads_caller_inputs(tmp_path, mon
     from ai_dlc import cli
 
     monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("AI_DLC_AUTHOR", "agent:test@sha256:1")
     (tmp_path / "handoff.md").write_text("Caller handoff")
     (tmp_path / "learning.md").write_text("Caller learning")
     calls = []
@@ -1148,7 +1149,10 @@ def test_work_finish_selects_explicit_path_and_reads_caller_inputs(tmp_path, mon
     result = CliRunner().invoke(cli.app, args)
     assert result.exit_code == 0, result.output
     assert calls == [
-        ("merge" if at_merge else "plain", ("one", "Caller handoff", "Caller learning"))
+        (
+            "merge" if at_merge else "plain",
+            ("one", "Caller handoff", "Caller learning", "agent:test@sha256:1"),
+        )
     ]
     assert json.loads(result.stdout)["status"] == "completed"
 
@@ -1199,3 +1203,22 @@ def test_removed_eval_points_to_flightdeck(args):
     assert "ai-dlc eval moved to flightdeck" in result.output
     assert "eval-handoff-2026-10" in result.output
     assert " eval " not in CliRunner().invoke(app, ["--help"]).stdout
+
+
+def test_project_init_points_to_setup_until_generated_files_render(tmp_path):
+    from ai_dlc.cli import app
+
+    root = tmp_path / "fresh"
+    initialized = CliRunner().invoke(app, ["project", "init", str(root)])
+    assert initialized.exit_code == 0, initialized.output
+    assert "ai-dlc project setup --root" in json.loads(initialized.stdout)["next"]
+
+    stale = CliRunner().invoke(app, ["agents", "render", "--root", str(root), "--check"])
+    assert stale.exit_code == 1
+    assert "run `ai-dlc project setup --root" in stale.stderr
+
+    rendered = CliRunner().invoke(app, ["agents", "render", "--root", str(root), "--apply"])
+    assert rendered.exit_code == 0, rendered.output
+    clean = CliRunner().invoke(app, ["agents", "render", "--root", str(root), "--check"])
+    assert clean.exit_code == 0, clean.output
+    assert "stale" not in clean.stderr
