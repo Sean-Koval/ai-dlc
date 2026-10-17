@@ -112,7 +112,7 @@ knowledge append`.
 | Environment comparison | `ai-dlc machine status --root PATH --export FILE`, `ai-dlc machine status --compare LEFT RIGHT` | Exports permitted local facts and compares only two reports; unknown required identity prevents equivalence, while useful known drift remains visible. See [report modes and exit codes](../runbooks/machine-enrollment.md#compare-selected-environments) |
 | Project creation | `ai-dlc project init`, `ai-dlc project adopt` | Initializes a project or previews/applies conflict-safe adoption |
 | Project maintenance | `ai-dlc project sync`, `ai-dlc project rebind` | Performs staged Copier updates or previews/applies reviewed provider rebinding, including reviewed provider connection rebinding |
-| Project execution | `ai-dlc project setup`, `ai-dlc project check --check ID`, `ai-dlc project check --required` | Runs selected edit checks or full required verification and emits receipts that retain every required ID |
+| Project execution | `ai-dlc project setup`, `ai-dlc project check --check ID`, `ai-dlc project check --required` | Runs selected edit checks or full required verification and emits receipts that retain every required ID; `--target` accepts `local` (default) or `github-actions`, and cloud sandboxes are hangar's |
 | Agent configuration | `ai-dlc agents render` | Previews, applies, or verifies owned project/personal client configuration |
 | Local work drafting | `ai-dlc work new WORK_ID [--from-issue REF]` | Creates an unreviewed record from explicit fields or a configured tracker read; does not publish or initialize mutation state |
 | Work lifecycle | `ai-dlc work publish`, `ai-dlc work start`, `ai-dlc work pr`, `ai-dlc work finish` | Reconciles tracker state, binds work to a branch, and enforces completion gates; explicit `work finish <id> --at-merge` prepares owned exact-merge evidence when the caller has advanced |
@@ -136,7 +136,10 @@ reviewed tracker-bound work for covered push and PR-create commands. Explicit
 complete readable inventory. Every associated record must still pass local
 validation; malformed or unreadable inventory cannot grant an exemption.
 Selecting a policy alone does not enable a hook or expand supported client/version
-coverage. See [the workflow decision](../development-workflow.md#when-a-work-record-is-needed)
+coverage. Hook coverage is a minimum client version per client (`claude-code`
+2.1.0, `codex` 0.151.0 in `agents/capabilities.toml`): a configured version below it
+refuses, a newer one is accepted and an unset version is accepted with a warning.
+The floor is not a qualification record. See [the workflow decision](../development-workflow.md#when-a-work-record-is-needed)
 for the configuration example.
 
 This offline check does not query the remote tracker or enforce arbitrary shell

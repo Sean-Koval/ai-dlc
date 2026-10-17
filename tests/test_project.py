@@ -122,3 +122,32 @@ def test_reverting_lock_does_not_reuse_an_obsolete_environment(tmp_path, setup_f
     lock.write_text("first")
     assert setup() == "completed"
     assert len(runs) == 3
+
+
+@pytest.mark.parametrize("target", ["codex-cloud", "claude-cloud", "devcontainer", "elsewhere"])
+def test_removed_and_unknown_targets_refuse_before_setup(tmp_path, target):
+    """Would fail if project setup or doctor still accepted a cloud rendering target."""
+    from ai_dlc.setup import project
+    from ai_dlc.setup.provision import doctor
+
+    (tmp_path / "ai-dlc.toml").write_text("schema = 4\n")
+    with pytest.raises(ValueError, match="supported targets: github-actions, local") as setup:
+        project.setup_project(tmp_path, target, state_path=tmp_path / "journal.db", use_mise=False)
+    with pytest.raises(ValueError, match="unsupported execution target") as checked:
+        doctor(tmp_path, target)
+    message = str(setup.value)
+    assert str(checked.value) == message
+    if target == "devcontainer":
+        assert "use --target local inside the dev container" in message
+    else:
+        assert "rendered by hangar" in message
+    assert not (tmp_path / "journal.db").exists()
+
+
+def test_cloud_setup_scripts_and_devcontainer_use_the_local_target():
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    for script in (root / "scripts/cloud").glob("*.sh"):
+        assert "--target" not in script.read_text(), script
+    assert "--target local" in (root / ".devcontainer/devcontainer.json").read_text()
