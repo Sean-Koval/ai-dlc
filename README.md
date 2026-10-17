@@ -299,6 +299,24 @@ AI-DLC preserves unrelated client settings and refuses collisions or edits to
 owned outputs. See [machine enrollment](docs/runbooks/machine-enrollment.md) for
 profile setup, role/tag selection, personal MCP servers, and source restrictions.
 
+## Workflow plugin
+
+`plugins/ai-dlc-workflow/` is one optional Claude Code plugin with the workflow
+guidance as a skill, ten team skills and hooks that work without the `ai-dlc` CLI.
+A team harness can pin it as a single component and run with or without it. It is
+off by default (`defaultEnabled: false`). Try it locally:
+
+```sh
+claude --plugin-dir plugins/ai-dlc-workflow \
+  --settings '{"enabledPlugins": {"ai-dlc-workflow@inline": true}}'
+```
+
+`scripts/build_workflow_plugin.py` generates the directory from `agents/skills/`
+and the shared guidance and records component digests in `plugin.lock.json`; the
+`generated` check fails when it is stale. The hooks need `python3`. See the
+[plugin README](plugins/ai-dlc-workflow/README.md) for contents, hangar limits and
+how to turn it off.
+
 ## Example workflows
 
 ### Take a ticket through delivery

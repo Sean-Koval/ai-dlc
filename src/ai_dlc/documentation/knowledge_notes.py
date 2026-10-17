@@ -13,7 +13,7 @@ import yaml
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator, model_validator
 
 MAX_NOTE_BYTES = 64 * 1024
-FRONT_MATTER = re.compile(r"\A---\n(.*?)\n---[ \t]*(?:\n|\Z)", re.S)
+FRONT_MATTER = re.compile(r"\A---\n(.*?)\n---[ \t]*(?:\n|\Z)", re.DOTALL)
 KINDS = ("learning", "decision", "runbook", "note")
 ID_PATTERN = r"^(learning|decision|runbook|note)/[a-z0-9][a-z0-9._-]*$"
 AUTHOR_PATTERN = r"^(human|agent):\S+$"
@@ -131,7 +131,7 @@ def split(text: str) -> tuple[dict | None, str, str]:
     except yaml.YAMLError as exc:
         raise ValueError(f"frontmatter is not valid YAML: {exc}") from exc
     if not isinstance(data, dict):
-        raise ValueError("frontmatter must be a YAML mapping")
+        raise ValueError("frontmatter must be a YAML mapping")  # noqa: TRY004 -- callers catch ValueError
     return data, match.group(1), text[match.end() :]
 
 

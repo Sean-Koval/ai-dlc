@@ -52,7 +52,8 @@ The original library-room examples are synthetic. Follow
 explicitly budgeted calibration exercise; absent human review and quality gains
 remain unmeasured. This skill requires no new service, model or paid experiment.
 
-For a running frontend with Playwright/browser setup, use `ai-dlc design capture
+For a running frontend with Playwright/browser setup in an adopted repository
+(has `ai-dlc.toml`) with `ai-dlc` on PATH, use `ai-dlc design capture
 --url URL --viewport WIDTHxHEIGHT --state NAME=SELECTOR` and cite its manifest
 and PNG files for observed states and viewports. A named selector waits for
 visible content; capture does not perform clicks or verify interaction journeys.

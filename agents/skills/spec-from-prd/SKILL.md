@@ -76,7 +76,7 @@ for supported FastAPI projects, also review any `api-contract-drift` diff.
 
 ## Validate and hand off
 
-Create the local draft with `ai-dlc work new WORK_ID --from-issue REF` when a tracker item exists, or explicit `--title`, `--scope` and repeated `--acceptance` flags for offline work. Drafts remain unreviewed; replace TODOs, record the specification decision, add artifact/requirement/dependency references and review before mutation. Existing records are never overwritten. Run
+When the repository is adopted (has `ai-dlc.toml` at its root) and `ai-dlc` is on PATH, create the local draft with `ai-dlc work new WORK_ID --from-issue REF` when a tracker item exists, or explicit `--title`, `--scope` and repeated `--acceptance` flags for offline work. Drafts remain unreviewed; replace TODOs, record the specification decision, add artifact/requirement/dependency references and review before mutation. Existing records are never overwritten. Run
 `ai-dlc work validate WORK_ID --root PATH` before publication. This read-only check
 validates the selected dependency graph and local artifacts, not remote completion
 or specification meaning. Do not invent successful validation when it was not run.

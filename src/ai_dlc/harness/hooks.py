@@ -2,42 +2,11 @@
 
 import hashlib
 import os
-import shlex
 import stat
 import tomllib
 from pathlib import Path
 
-
-def classify_command(command: str) -> str:
-    try:
-        words = shlex.split(command)
-    except ValueError:
-        return "unsupported"
-    if any(x in command for x in [";", "&&", "||", "|", "\n", "$(", "`"]):
-        return "unsupported"
-    if words[:1] == ["rm"]:
-        return "destructive"
-    if words[:2] == ["git", "reset"] and "--hard" in words[2:]:
-        return "destructive"
-    if words[:2] == ["git", "clean"] and any(
-        flag == "--force" or (flag.startswith("-") and not flag.startswith("--") and "f" in flag)
-        for flag in words[2:]
-    ):
-        return "destructive"
-    if words[:2] == ["git", "push"] and any(
-        flag in {"-f", "--force", "--delete", "-d", "--mirror"}
-        or flag.startswith(("--force-with-lease", ":"))
-        for flag in words[2:]
-    ):
-        return "destructive"
-    if words[:2] == ["git", "push"] or words[:3] == ["gh", "pr", "create"]:
-        return "bound-operation"
-    if words[:1] == ["git"] and "push" in words:
-        return "unsupported"
-    if words[:1] == ["rm"] or words[:3] in [["git", "reset", "--hard"], ["git", "clean", "-fd"]]:
-        return "destructive"
-    return "ordinary"
-
+from ai_dlc.harness.hook_shim import classify_command  # one classifier for CLI and plugin
 
 SESSION_INSTRUCTION = "Read AGENTS.md and .ai-dlc/work; run ai-dlc next for the full summary."
 SESSION_SUMMARY_LINES = 10

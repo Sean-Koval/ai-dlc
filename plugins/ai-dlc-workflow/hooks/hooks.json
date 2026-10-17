@@ -1,0 +1,50 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/hooks/aidlc_hook.py",
+              "pre-tool"
+            ],
+            "command": "python3",
+            "timeout": 10,
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash|exec_command"
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/hooks/aidlc_hook.py",
+              "session-start"
+            ],
+            "command": "python3",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/hooks/aidlc_hook.py",
+              "stop"
+            ],
+            "command": "python3",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
+      }
+    ]
+  }
+}

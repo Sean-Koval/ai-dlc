@@ -18,10 +18,10 @@ Keep it short and link source evidence. Frontmatter follows the knowledge-note s
 as `confidence`. Never widen `scope` beyond `personal` for someone else. Set
 `AI_DLC_AUTHOR` to `agent:<client>@<plugin digest>` when an agent records the lesson.
 The format is documented in AI-DLC's `docs/design/local-and-shared-knowledge.md`.
-Pass the authored file to `ai-dlc work finish <id> --learning FILE` (MCP
+When the repository is adopted (has `ai-dlc.toml` at its root) and `ai-dlc` is on PATH, pass the authored file to `ai-dlc work finish <id> --learning FILE` (MCP
 `work_finish` accepts `learning` text), or use the knowledge provider's `note`
 operation with a stable operation ID. A pending learning does not undo verified
 completion; retry the same body instead of duplicating it. Never copy raw logs.
 
 
-For delivery, use `ai-dlc work start <id>` and, after checks and an explicit branch push, `ai-dlc work pr <id>`. Start and link commit only the work record by default (`--no-commit` opts out). Push the PR-link commit before review. Include the linked PR URL; repeated PR creation returns that link. Report an uncertain creation and recover by inspecting the SCM and linking its existing PR.
+When the repository is adopted (has `ai-dlc.toml` at its root) and `ai-dlc` is on PATH, for delivery use `ai-dlc work start <id>` and, after checks and an explicit branch push, `ai-dlc work pr <id>`. Start and link commit only the work record by default (`--no-commit` opts out). Push the PR-link commit before review. Include the linked PR URL; repeated PR creation returns that link. Report an uncertain creation and recover by inspecting the SCM and linking its existing PR.
