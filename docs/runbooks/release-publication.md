@@ -38,7 +38,7 @@ own bootstrap and CI install the exact assets that generated it.
 
 4. Watch the `Release` workflow. `package` refuses a tag whose version differs
    from `pyproject.toml`, runs the required checks, builds, verifies the wheel
-   against the constraints and scaffolds with it, then writes `release.sh`
+   against the constraints and initializes a project with it, then writes `release.sh`
    against `https://github.com/<owner>/<repo>/releases/download/<tag>`.
    `publish` creates the GitHub Release with exactly those files.
    `verify-published` then installs from the published assets on Linux x64,

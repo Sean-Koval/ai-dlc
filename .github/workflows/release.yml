@@ -48,9 +48,8 @@ jobs:
           uv pip install --python /tmp/ai-dlc-wheel/bin/python --require-hashes -r dist/requirements.txt
           uv pip install --python /tmp/ai-dlc-wheel/bin/python --no-deps dist/*.whl
           /tmp/ai-dlc-wheel/bin/ai-dlc --help
-          mkdir /tmp/ai-dlc-scaffold
-          cd /tmp/ai-dlc-scaffold
-          /tmp/ai-dlc-wheel/bin/ai-dlc-cli scaffold --all
+          /tmp/ai-dlc-wheel/bin/ai-dlc-cli project init /tmp/ai-dlc-init
+          test -f /tmp/ai-dlc-init/ai-dlc.toml
       - name: Prepare the hash-bound bootstrap manifest
         env:
           ARTIFACT_BASE_URL: ${{ github.event_name == 'push' && github.ref_type == 'tag' && format('https://github.com/{0}/releases/download/{1}', github.repository, github.ref_name) || inputs.artifact_base_url }}

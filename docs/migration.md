@@ -276,3 +276,17 @@ The module catalog now pins `claude-code` 2.1.296 and `codex` 0.162.1, matching
 hangar's `harnesses.lock.yaml`. `machine provision` installs these on new machines;
 existing installs are not upgraded implicitly. Compare the pins locally with
 `python scripts/check_client_pins.py --hangar-lock PATH`.
+
+## ai-dlc scaffold removed
+
+The legacy `ai-dlc scaffold` command, its `templates/` assets (packaged as
+`ai_dlc/assets/legacy/`) and the stale root `copier.yml` are removed. `ai-dlc
+scaffold` now prints a pointer and exits with status 2 for one release.
+
+| Before | After |
+| --- | --- |
+| `ai-dlc scaffold --all` or `--provider claude` | `ai-dlc project init PATH` for a new repository, `ai-dlc project adopt PATH` for an existing one |
+| `copier copy gh:Sean-Koval/ai-dlc DEST` | `ai-dlc project init DEST`, which copies the packaged `project-templates/` |
+
+Repositories already scaffolded keep their copied files, including the
+`quality-gate.sh` and `security-check.sh` hooks; nothing in them is changed.

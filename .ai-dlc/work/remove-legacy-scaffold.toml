@@ -1,0 +1,27 @@
+schema = 1
+id = "remove-legacy-scaffold"
+title = "Remove the stale root copier.yml, the legacy templates scaffold and the hard-coded playbook skill count"
+scope = "Delete the root copier.yml, templates/, compatibility/legacy.py and the ai-dlc scaffold command (kept one release as a hidden stub that exits 2 with a pointer to project init), drop the wheel force-include and ruff exclusion, replace the release smoke step with project init and make the playbook skill sentence count-free. Project template contents are unchanged."
+requires_spec = false
+spec_reason = "Removes a frozen legacy command and unused assets under ADR 0001; no specification requirement covers them, and the refusal and replacement are documented in the migration notes."
+acceptance = [
+    "copier.yml at the repository root and templates/ are deleted, and the wheel has no ai_dlc/assets/legacy/ entries.",
+    "ai-dlc scaffold prints a pointer to ai-dlc project init and exits 2 without writing files, and ai-dlc --help does not list it.",
+    "playbook/README.md has no hard-coded skill count and no evaluation fixture sentence.",
+    "AGENTS.md, CONTRIBUTING.md, architecture, tool map, release runbook and migration notes no longer describe the legacy scaffold as supported.",
+    "ai-dlc project check --required passes.",
+]
+reviewed = true
+depends_on = []
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+branch = "issue/201-remove-legacy-scaffold"
+tracker = "201"

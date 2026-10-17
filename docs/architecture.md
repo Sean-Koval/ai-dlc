@@ -175,7 +175,6 @@ a typed refusal that names the supported trackers.
 | `documentation/` | Catalog checks, impact/evidence review, decision-record checks, scoped project-document access, workspace diagnostics, knowledge notes and their shared frontmatter schema (`knowledge_notes.py`), and vault links |
 | `providers/` | Contract-backed external service adapters and isolated provider execution |
 | `verification/` | Sandbox orchestration and its conformance network proxy; `evaluation/` holds the end-to-end evaluation contracts (generated into `contracts/evaluation/`) the offline planner behind the `eval` CLI group, the isolated Docker attempt lifecycle, the independent evaluator, the suite runner, the driver contract that decides what an attempt runs, the offline report builder and the base and candidate image recipes; its inputs live in top-level `evaluations/`, outside the wheel |
-| `compatibility/` | Supported legacy scaffold behavior |
 | `config.py`, `contracts.py`, `errors.py`, `provider_definitions.py` | Shared configuration, provider contracts, the result envelope and the exception base |
 | `files.py`, `locking.py`, `toml_edit.py` | Shared filesystem boundaries, locking and comment-preserving TOML edits |
 | `_windows_storage/` | Private native NTFS handle, identity, account/ACL and publication primitives behind the shared filesystem APIs |
@@ -192,10 +191,10 @@ utility entry points. `scripts/cloud/` holds hosted-agent setup shims that boots
 installer, the historical Rust crate with its embedded template mirror, and the
 script that synchronised them have been removed; the retired Rust plans remain in
 `docs/archive/legacy/`.
-`templates/` remains packaged because the legacy scaffold command still uses it.
-It carries only this repository's own commands, hooks and workflows: the
-third-party agent and command collections once copied into it were removed, and
-packaged assets must not contain vendored trees or personal machine paths.
+The legacy `templates/` scaffold, its `ai-dlc scaffold` command and the stale root
+`copier.yml` were removed; `project init` and `project adopt` copy the packaged
+`project-templates/`. Packaged assets must not contain vendored trees or personal
+machine paths.
 Do not delete subprocess entry points or assets merely because imports do not
 reference them directly.
 
