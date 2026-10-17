@@ -361,6 +361,9 @@ def check_documents(root: Path | str = ".", *, today: date | None = None) -> dic
         "findings": findings,
         "freshness": "Review metadata only; semantic accuracy is not verified.",
     }
+    from ai_dlc.documentation.decisions import decision_findings
+
+    findings.extend(decision_findings(root))
     try:
         entries = _read_catalog_entries(root)
     except FileNotFoundError:

@@ -236,7 +236,8 @@ def _handle_hook(root: Path, event: str, payload: dict) -> dict:
         recalled = _session_recall(root)
         if recalled:
             context += "\nRelevant learnings (read these notes):\n" + "\n".join(
-                f"{note['path']}: {note['first_line']}" for note in recalled
+                f"{'(stale) ' if note.get('stale') else ''}{note['path']}: {note['first_line']}"
+                for note in recalled
             )
         return {"context": context}
     tool = payload.get("tool_name")
