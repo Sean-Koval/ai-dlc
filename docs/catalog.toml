@@ -207,27 +207,6 @@ owner = "repository-maintainers"
 status = "archived"
 
 [[documents]]
-id = "repo-archive-legacy-phase-1-rust"
-path = "docs/archive/legacy/phase-1-rust.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-legacy-restructure-plan"
-path = "docs/archive/legacy/restructure-plan.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-legacy-rust-evolution-plan"
-path = "docs/archive/legacy/rust-evolution-plan.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
 id = "repo-archive-planning-2026-09-03-portable-profile-enrollment-design"
 path = "openspec/changes/archive/2026-09-03-portable-profile-enrollment/historical-design.md"
 kind = "reference"
@@ -321,48 +300,6 @@ status = "archived"
 [[documents]]
 id = "repo-archive-planning-tracker-adapter-follow-through"
 path = "docs/archive/planning/tracker-adapter-follow-through.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-research-awesome_claude_framework"
-path = "docs/archive/research/awesome_claude_framework.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-research-claude_architecture"
-path = "docs/archive/research/claude_architecture.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-research-claude_components_workflow_analysis"
-path = "docs/archive/research/claude_components_workflow_analysis.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-research-jinja2_template_generation"
-path = "docs/archive/research/jinja2_template_generation.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-research-repository_command_workflow_analysis"
-path = "docs/archive/research/repository_command_workflow_analysis.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-research-super_claude_framework"
-path = "docs/archive/research/super_claude_framework.md"
 kind = "reference"
 owner = "repository-maintainers"
 status = "archived"
