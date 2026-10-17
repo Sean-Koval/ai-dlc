@@ -80,6 +80,7 @@ nav:
       - Roadmap: roadmap.md
       - Release verification: release-verification.md
   - Design:
+      - "ADR 0001: Refocus AI-DLC": decisions/0001-refocus-ai-dlc.md
       - Framework delivery: design/framework-delivery.md
       - Project documentation: design/project-documentation.md
       - Local and shared knowledge: design/local-and-shared-knowledge.md
