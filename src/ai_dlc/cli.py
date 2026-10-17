@@ -148,14 +148,18 @@ def main(
     """Portable development for people and agents."""
 
 
-@app.command()
-def scaffold(
-    provider: Annotated[list[str] | None, typer.Option("--provider", "-p")] = None,
-    all: bool = False,
-):
-    from ai_dlc.compatibility.legacy import scaffold as run
-
-    emit(run(Path.cwd(), provider or [], all))
+@app.command(
+    hidden=True,
+    context_settings={"allow_extra_args": True, "ignore_unknown_options": True},
+)
+def scaffold():
+    """Removed legacy scaffold; kept one release as a pointer."""
+    typer.echo(
+        "ai-dlc scaffold was removed; run `ai-dlc project init PATH` "
+        "(see docs/migration.md#ai-dlc-scaffold-removed).",
+        err=True,
+    )
+    raise typer.Exit(2)
 
 
 @fde.command("scaffold")

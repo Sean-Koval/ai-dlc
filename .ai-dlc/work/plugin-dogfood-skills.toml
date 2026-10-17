@@ -1,0 +1,26 @@
+schema = 1
+id = "plugin-dogfood-skills"
+title = "Stop committing duplicate rendered skill trees in the AI-DLC repository"
+scope = "Deselect rendered skills for this repository with [agents] skills = [], let the renderer retire the owned .claude/skills and .agents/skills copies, and document loading the workflow plugin for contributors. Downstream rendering defaults are unchanged and covered by a scratch adopted-repository test."
+requires_spec = false
+spec_reason = "Repository configuration only; uses the existing agents.skills selection and owned-file retirement, and downstream rendering behavior is unchanged."
+acceptance = [
+    "git ls-files .agents/skills .claude/skills is empty and .ai-dlc/agent-ownership.json has no skill entries.",
+    "ai-dlc agents render --check is clean on this repository.",
+    "A test renders a scratch adopted repository with default agents.skills and asserts both skill trees are written.",
+    "CONTRIBUTING.md and the authored part of AGENTS.md explain how to load the workflow plugin.",
+]
+reviewed = true
+depends_on = []
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+branch = "issue/202-no-rendered-skills"
+tracker = "202"

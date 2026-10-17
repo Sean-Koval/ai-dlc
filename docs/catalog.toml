@@ -207,27 +207,6 @@ owner = "repository-maintainers"
 status = "archived"
 
 [[documents]]
-id = "repo-archive-legacy-phase-1-rust"
-path = "docs/archive/legacy/phase-1-rust.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-legacy-restructure-plan"
-path = "docs/archive/legacy/restructure-plan.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-legacy-rust-evolution-plan"
-path = "docs/archive/legacy/rust-evolution-plan.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
 id = "repo-archive-planning-2026-09-03-portable-profile-enrollment-design"
 path = "openspec/changes/archive/2026-09-03-portable-profile-enrollment/historical-design.md"
 kind = "reference"
@@ -326,48 +305,6 @@ owner = "repository-maintainers"
 status = "archived"
 
 [[documents]]
-id = "repo-archive-research-awesome_claude_framework"
-path = "docs/archive/research/awesome_claude_framework.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-research-claude_architecture"
-path = "docs/archive/research/claude_architecture.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-research-claude_components_workflow_analysis"
-path = "docs/archive/research/claude_components_workflow_analysis.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-research-jinja2_template_generation"
-path = "docs/archive/research/jinja2_template_generation.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-research-repository_command_workflow_analysis"
-path = "docs/archive/research/repository_command_workflow_analysis.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-research-super_claude_framework"
-path = "docs/archive/research/super_claude_framework.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
 id = "repo-design-design-pm"
 path = "docs/design/design-pm.md"
 kind = "reference"
@@ -422,7 +359,7 @@ path = "docs/development-workflow.md"
 kind = "reference"
 owner = "repository-maintainers"
 status = "draft"
-code_paths = ["src/ai_dlc/work/workflow.py", "src/ai_dlc/work/merge_checkout.py", "src/ai_dlc/providers/openspec.py", "src/ai_dlc/setup/project.py", "src/ai_dlc/setup/commands.py", "src/ai_dlc/cli.py", "project-templates/project/ai-dlc.toml.jinja", "project-templates/project/scripts/check_tests.py", "project-templates/project/tests/test_main.py", "agents/skills/spec-from-prd/SKILL.md", "agents/skills.lock.json", ".agents/skills/spec-from-prd/SKILL.md", ".claude/skills/spec-from-prd/SKILL.md", ".ai-dlc/agent-ownership.json", "agents/templates/delivery-slice.md", "project-templates/project/docs/templates/delivery-slice.md", "project-templates/project/AI-DLC.md", "project-templates/project/docs/development-workflow.md.jinja", "src/ai_dlc/config.py", "src/ai_dlc/harness/hooks.py", "src/ai_dlc/harness/agents.py"]
+code_paths = ["src/ai_dlc/work/workflow.py", "src/ai_dlc/work/merge_checkout.py", "src/ai_dlc/providers/openspec.py", "src/ai_dlc/setup/project.py", "src/ai_dlc/setup/commands.py", "src/ai_dlc/cli.py", "project-templates/project/ai-dlc.toml.jinja", "project-templates/project/scripts/check_tests.py", "project-templates/project/tests/test_main.py", "agents/skills/spec-from-prd/SKILL.md", "agents/skills.lock.json", ".ai-dlc/agent-ownership.json", "agents/templates/delivery-slice.md", "project-templates/project/docs/templates/delivery-slice.md", "project-templates/project/AI-DLC.md", "project-templates/project/docs/development-workflow.md.jinja", "src/ai_dlc/config.py", "src/ai_dlc/harness/hooks.py", "src/ai_dlc/harness/agents.py"]
 verification_paths = ["tests/test_merge_checkout.py", "tests/test_finish_merged_checkout.py", "tests/test_cli.py", "tests/test_workflow.py", "tests/test_checks.py", "tests/test_project.py", "tests/test_templates.py", "tests/test_config.py", "tests/test_hooks.py", "tests/test_rendering.py", "tests/test_team_sources.py", "tests/test_agents_phases.py"]
 requirements = ["openspec/specs/spec-delivery-traceability/spec.md", "openspec/specs/portable-development/spec.md", "openspec/specs/native-work-harnesses/spec.md"]
 

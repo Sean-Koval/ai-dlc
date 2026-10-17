@@ -1,14 +1,10 @@
-schema = 1
-coverage = "Local fixture coverage only, not full client walkthrough. Bash/exec_command direct git push and gh pr create; external terminals and arbitrary wrappers excluded. Hooks require trusted repositories; native approval request unsupported. Repository-rendered hooks require the ai-dlc CLI; the optional workflow plugin hooks run a stdlib shim instead and need python3."
+schema = 2
+coverage = "Hook event names supported per client with a minimum client version. Not a qualification record. Bash/exec_command direct git push and gh pr create; external terminals and arbitrary wrappers excluded. Hooks require trusted repositories; native approval request unsupported. Repository-rendered hooks require the ai-dlc CLI; the optional workflow plugin hooks run a stdlib shim instead and need python3."
 
-[[fixtures]]
-client = "codex"
-version = "0.151.0"
-target = "local"
+[clients.claude-code]
 hooks = ["session-context", "bound-push", "stop-reminder"]
+min_version = "2.1.0"
 
-[[fixtures]]
-client = "claude-code"
-version = "2.1.0"
-target = "local"
+[clients.codex]
 hooks = ["session-context", "bound-push", "stop-reminder"]
+min_version = "0.151.0"

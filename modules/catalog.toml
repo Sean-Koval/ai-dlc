@@ -33,13 +33,15 @@ cask = ["visual-studio-code"]
 verify = ["code"]
 linux_guidance = "Install the signed VS Code package from https://code.visualstudio.com/docs/setup/linux"
 
+# Client pins copied from hangar's src/hangar/harnesses.lock.yaml (verified 2026-10-14);
+# compare with `python scripts/check_client_pins.py --hangar-lock PATH`.
 [codex]
-mise = { "npm:@openai/codex" = "0.151.0" }
+mise = { "npm:@openai/codex" = "0.162.1" }
 verify = ["codex"]
 signins = ["codex login"]
 
 [claude-code]
-mise = { "npm:@anthropic-ai/claude-code" = "2.1.0" }
+mise = { "npm:@anthropic-ai/claude-code" = "2.1.296" }
 verify = ["claude"]
 signins = ["claude auth login"]
 

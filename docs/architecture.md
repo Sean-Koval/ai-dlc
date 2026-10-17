@@ -51,7 +51,7 @@ The repository stores architecture, design rationale, decisions, runbooks and re
 
 ## Deployment and interfaces
 
-Prefer one application with explicit module responsibilities over speculative service decomposition. CLI, MCP, and agent clients share validation where an MCP service is exposed; the CLI alone owns machine enrollment mutation. The local CLI and local MCP are today's primary control plane; hosted or cloud execution is a later qualification target. External provider failures and uncertain mutations remain visible. Credentials are environment references, never template values.
+Prefer one application with explicit module responsibilities over speculative service decomposition. CLI, MCP, and agent clients share validation where an MCP service is exposed; the CLI alone owns machine enrollment mutation. The local CLI and local MCP are the control plane; cloud execution is hangar's. Client rendering is frozen to the existing clients for local repositories and CI (`project setup --target local|github-actions`); hangar renders cloud sandboxes at claim time. Hook support is a per-client minimum version (`agents/capabilities.toml`), not qualification. External provider failures and uncertain mutations remain visible. Credentials are environment references, never template values.
 
 Consumer onboarding is a read-only composition boundary in `setup/onboarding.py`.
 It resolves one explicit existing target, target-owned configuration, optional
@@ -175,7 +175,6 @@ a typed refusal that names the supported trackers.
 | `documentation/` | Catalog checks, impact/evidence review, scoped project-document access, workspace diagnostics, knowledge notes and vault links |
 | `providers/` | Contract-backed external service adapters and isolated provider execution |
 | `verification/` | Sandbox orchestration and its conformance network proxy (`test_proxy.py`); harness evaluation moved to flightdeck |
-| `compatibility/` | Supported legacy scaffold behavior |
 | `config.py`, `contracts.py`, `errors.py`, `provider_definitions.py` | Shared configuration, provider contracts, the result envelope and the exception base |
 | `files.py`, `locking.py`, `toml_edit.py` | Shared filesystem boundaries, locking and comment-preserving TOML edits |
 | `_windows_storage/` | Private native NTFS handle, identity, account/ACL and publication primitives behind the shared filesystem APIs |
@@ -188,14 +187,14 @@ there is no duplicate tree of compatibility forwarding modules. Application
 services share contracts; provider details stay inside adapters.
 
 `scripts/` holds source bootstrap, repository checks and qualification/release
-utility entry points. `scripts/cloud/` holds hosted-harness setup. The obsolete unlocked `check_env.sh`
+utility entry points. `scripts/cloud/` holds hosted-agent setup shims that bootstrap the checkout with the local target; `scripts/check_client_pins.py` compares the module catalog's client pins with hangar's harness lock. The obsolete unlocked `check_env.sh`
 installer, the historical Rust crate with its embedded template mirror, and the
 script that synchronised them have been removed; the retired Rust plans remain in
-`docs/archive/legacy/`.
-`templates/` remains packaged because the legacy scaffold command still uses it.
-It carries only this repository's own commands, hooks and workflows: the
-third-party agent and command collections once copied into it were removed, and
-packaged assets must not contain vendored trees or personal machine paths.
+git history before tag `docs-prune-2026-10`.
+The legacy `templates/` scaffold, its `ai-dlc scaffold` command and the stale root
+`copier.yml` were removed; `project init` and `project adopt` copy the packaged
+`project-templates/`. Packaged assets must not contain vendored trees or personal
+machine paths.
 Do not delete subprocess entry points or assets merely because imports do not
 reference them directly.
 
@@ -211,7 +210,9 @@ shared guidance, writes per-component digests to `plugin.lock.json`, and runs as
 drift check inside `scripts/check_generated.py`. The plugin hooks run
 `harness/hook_shim.py`, a standard-library copy that delegates to `ai-dlc hook`
 only in adopted repositories with the CLI outside hangar, and otherwise denies
-only destructive commands; `harness/hooks.py` imports its classifier. See the
+only destructive commands; `harness/hooks.py` imports its classifier. This
+repository dogfoods the plugin rather than rendered skill copies (`[agents] skills
+= []`); adopted repositories keep rendering both skill trees by default. See the
 [plugin README](../plugins/ai-dlc-workflow/README.md).
 
 ### FDE engagement documents
