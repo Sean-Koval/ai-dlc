@@ -4,6 +4,12 @@
 
 **Portable development setup and workflows for people and coding agents.**
 
+> **Scope freeze (2026-10).** AI-DLC is a local workflow, machine-provisioning and
+> work-lifecycle tool. Features outside the in-scope list in
+> [ADR 0001](docs/decisions/0001-refocus-ai-dlc.md) are frozen; bug fixes are
+> welcome. Harness evaluation moves to flightdeck and sandbox runtime rendering to
+> hangar; see the [plan](https://claude.ai/code/artifact/ddea4e99-7068-4c36-8bac-d9cda53c0f4c).
+
 AI-DLC brings project setup, agent guidance, specifications, tickets, documentation,
 and verification into one repository-owned workflow. Work in Claude Code or Codex,
 keep your preferred tools, and carry the same configuration across machines.

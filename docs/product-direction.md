@@ -1,12 +1,14 @@
 # AI-DLC product direction
 
-Status: approved product promise; delivery references reconciled September 10, 2026. The roadmap distinguishes implemented, proposed, cancelled and unverified scope.
+Status: feature-frozen as of 2026-10 by [ADR 0001](decisions/0001-refocus-ai-dlc.md), which owns the in-scope list; changes outside it are closed with a pointer and bug fixes in frozen areas are welcome. The roadmap distinguishes implemented, proposed, cancelled and unverified scope.
 
 ## Product promise
 
-AI-DLC prepares a development environment, connects the user's preferred tools,
-and equips the chosen harness with a consistent way to take a new product or an
-existing product through a verified improvement.
+AI-DLC is a local workflow, machine-provisioning and work-lifecycle tool. It
+prepares a developer machine, authors one optional workflow plugin of guidance,
+hooks and team skills, and finishes reviewed work only against the merged revision
+and its CI receipts. It does not evaluate harnesses (flightdeck does) or define
+what runs in cloud sandboxes (hangar's claim-time renderer does).
 
 Its durable value is the relationship between tools, artifacts, decisions, and
 workflows. OpenSpec currently provides formal specification; personal projects use GitHub Issues and Projects, while Jira Cloud is the selected work target. Codex and Claude Code have implemented client adapters; Antigravity project guidance is implemented; installed-client qualification remains unverified. These choices are replaceable. Stable responsibilities survive provider changes.
@@ -41,7 +43,8 @@ publication until the existing custom MCP can be reviewed.
 4. Translate outcomes into behavioral specifications, deliverable tickets, and
    verification without repeatedly copying the same information.
 5. Add or replace components with clear compatibility, ownership, and update rules.
-6. Evaluate delivered products and the guidance used to produce them.
+6. Hand the workflow plugin to a team harness that can switch it on or off; flightdeck
+   measures whether it helps.
 
 ## Responsibilities and replaceability
 
@@ -49,9 +52,11 @@ publication until the existing custom MCP can be reviewed.
 | --- | --- | --- | --- |
 | Environment | Reproduce tools and local bindings | Bootstrap, enrollment, project setup and connected readiness | Qualify selected machine and installed clients |
 | Integrations | Connect capabilities to selected systems | Provider metadata, contracts and scoped onboarding | Qualify actual selected provider deployments |
-| Harness support | Expose tools, guidance, and context | Managed Codex/Claude/Antigravity guidance and pinned bundles | Qualify native recognition and authentication |
-| Workflows | Guide decisions and handoffs | Product shaping, traceability and optional Design PM guidance | Measure outcomes using approved human evaluations |
-| Evaluation | Establish achieved outcomes | Checks, gates, pending skill experiments | Target walkthroughs and product/design comparisons |
+| Harness support | Author one optional workflow plugin; render managed sections into developer repos | Managed Codex/Claude/Antigravity guidance and pinned bundles | Package the workflow plugin ([#191](https://github.com/Sean-Koval/ai-dlc/issues/191)) |
+| Workflows | Guide decisions and handoffs | Product shaping, traceability and optional Design PM guidance | Bug fixes only while frozen |
+
+Evaluation of harnesses and guidance is not an AI-DLC responsibility: flightdeck
+owns it. Required checks and finish gates still establish delivery evidence.
 
 ## Product development workflow
 
@@ -96,7 +101,7 @@ contracts, or operational evidence. Small work uses small artifacts.
 
 Initial qualification targets: native macOS arm64 and an Ubuntu 24.04 arm64
 devcontainer. Each remains unverified until its actual walkthrough succeeds.
-Hosted platforms, executable workflow packages, knowledge onboarding and release publication remain separately scoped follow-ons. Antigravity project adapters are implemented; qualify the actual installed version before claiming successful client adoption.
+Further scope is governed by the [scope freeze](decisions/0001-refocus-ai-dlc.md). Antigravity project adapters are implemented; qualify the actual installed version before claiming successful client adoption.
 
 The code remains a v4 implementation candidate. Missing v4 qualification and release evidence remains missing. The former
 tracking issue #17 was cancelled as NOT_PLANNED, not completed; any renewed
