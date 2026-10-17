@@ -20,8 +20,7 @@ bug fixes in frozen areas are welcome.
 5. Describe the behavior, verification and remaining limits in the pull request.
    After merge and exact-revision CI, complete tracked work with `ai-dlc work finish`.
 
-Portable skills live in `agents/`, current project scaffolding in
-`project-templates/`, and supported legacy scaffold assets in `templates/`.
+Portable skills live in `agents/` and project scaffolding in `project-templates/`.
 Generated client copies are not independent sources of truth.
 
 This repository does not commit rendered skill copies (`[agents] skills = []` in

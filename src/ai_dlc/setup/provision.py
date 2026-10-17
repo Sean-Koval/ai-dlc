@@ -472,9 +472,9 @@ def doctor(
     home: Path | None = None,
     environ: Mapping[str, str] | None = None,
 ) -> dict:
-    capabilities = read_toml(assets("targets") / "capabilities.toml")
-    if target not in capabilities:
-        raise ValueError(f"unsupported execution target: {target}")
+    from ai_dlc.setup.targets import execution_target
+
+    capabilities = execution_target(target)
     environment = os.environ if environ is None else environ
     config = resolve_files(personal=personal, project=root / "ai-dlc.toml", machine=machine).values
     credentials = credential_status(config, environment)
@@ -504,7 +504,7 @@ def doctor(
         and all(item["ready"] for item in provider_capabilities)
         and bool(user_agents["clean"]),
         "target": target,
-        "capabilities": capabilities[target],
+        "capabilities": capabilities,
         "missing": missing,
         "runtime_drift": runtime_drift,
         "configuration": configuration,

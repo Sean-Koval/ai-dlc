@@ -53,7 +53,7 @@ Approval of planning is not approval of account mutations, hosting, or live migr
 | 3 | Plane native connection plus thin lifecycle adapter | [Tracker adapters, Task 2](../../../openspec/changes/archive/2026-09-12-portable-tracker-adapters/2026-09-06-portable-tracker-adapters.md) | Setup interfaces; local deployment for live qualification |
 | 4 | Rehearse default-only and selected migration; switch personal work to GitHub only after reviewing mappings | [Migration](../../../openspec/changes/archive/2026-09-12-selective-tracker-migration/2026-09-06-selective-tracker-migration.md) | Qualified selected target; GitHub path does not wait for Plane |
 | 5 | Jira adapter and work-project toolset; same lifecycle without another workflow branch | [Tracker adapters, Task 3](../../../openspec/changes/archive/2026-09-12-portable-tracker-adapters/2026-09-06-portable-tracker-adapters.md) | Work deployment/authentication decision; can run alongside migration |
-| Deferred | Optional deterministic Confluence publication with Obsidian retained | [Publication](../../../openspec/changes/team-document-publication/2026-09-06-team-document-publication.md) | Review existing custom server when shared later; no dependency for ticket delivery |
+| Deferred | Optional deterministic Confluence publication with Obsidian retained | [Publication](../../../openspec/changes/archive/2026-10-17-team-document-publication-cancelled/2026-09-06-team-document-publication.md) | Review existing custom server when shared later; no dependency for ticket delivery |
 
 Do not wait for all four changes to configure useful native access. Report that
 access as such until the corresponding lifecycle adapter is delivered. Finish
