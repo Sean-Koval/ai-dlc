@@ -22,5 +22,17 @@ bug fixes in frozen areas are welcome.
 
 Portable skills live in `agents/`, current project scaffolding in
 `project-templates/`, and supported legacy scaffold assets in `templates/`.
-Generated client copies are not independent sources of truth. Repository layout checks apply to AI-DLC itself; downstream projects
+Generated client copies are not independent sources of truth.
+
+This repository does not commit rendered skill copies (`[agents] skills = []` in
+`ai-dlc.toml`), so `.claude/skills/` and `.agents/skills/` stay empty here. Load the
+team skills from the workflow plugin while working on AI-DLC:
+
+```sh
+claude --plugin-dir plugins/ai-dlc-workflow
+```
+
+Codex contributors read the same skills from `plugins/ai-dlc-workflow/skills/`.
+Edit skills only under `agents/skills/`, then run
+`python scripts/build_workflow_plugin.py` to refresh the plugin. Repository layout checks apply to AI-DLC itself; downstream projects
 retain their chosen structure.
