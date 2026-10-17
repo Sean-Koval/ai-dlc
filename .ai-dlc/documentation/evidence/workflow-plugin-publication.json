@@ -12,7 +12,7 @@
     {
       "bound": {
         "catalog:docs/architecture.md": "e957dcf74f6dcbe53ce40caf58a8cd486ee04461b47279540cdccaa4680c445a",
-        "docs/architecture.md": "36b09892d50c7bd4537d422625bbe93b2199489f27bbbab4cdf5287edd2480ba",
+        "docs/architecture.md": "e3a48db0764fd38d909ae5e0526a972a15a08a1161c5d42d74fc49da502069ad",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/tracker-adapter-boundary/spec.md": "dd8886e122156c514768387930c3534d882b4672552eeb2aca62507fa6ab2a58",
@@ -47,7 +47,7 @@
         "plugins/ai-dlc-workflow/skills/prd-draft/SKILL.md": "e6d457ee65f4d7dd184bef4fc8285253951098484fba9bb3cedbe1512729dc0e",
         "plugins/ai-dlc-workflow/skills/review-inbox/SKILL.md": "8b58913b870212b4b04b14d921efb72ed92007cec043513eb3baef36e907c846",
         "plugins/ai-dlc-workflow/skills/spec-from-prd/SKILL.md": "f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce",
-        "pyproject.toml": "296acf5ff015bc4aaf17576c4210e8c69988beb35e11507250a45c0dc534e4d5",
+        "pyproject.toml": "ea73fd835255de7bddab5ef23ff7189e2d19c29ec7e6d49ffc97aee14559f4bd",
         "scripts/build_workflow_plugin.py": "2e07e1ba9af7da5bf5dcb4d9fc9906c5b48342e9835b64896ac62aa4e7b413ec",
         "scripts/check_client_pins.py": "c0b4030b6767aee44975556f11a2c0dcf2b5aa67e232ec6182c1247630f53c8c",
         "scripts/check_generated.py": "a42907ebeb4da2669db70ab5c71ed790db416eed2dc5fc8fa11e5e68eb97c955",
@@ -61,9 +61,7 @@
         "src/ai_dlc/_windows_storage/__init__.py": "5715def899453f15265e13d52e5b518844cc9d057421cfa5279172d799d5f506",
         "src/ai_dlc/_windows_storage/_api.py": "d5fc4f971db8e706871c06e8119884848e505af6c45f4fbb5c2f7db513faf41b",
         "src/ai_dlc/_windows_storage/_security.py": "62785d4e088cd485816a33f35a7a559d3d1acf166093c413a3f4f79969056314",
-        "src/ai_dlc/cli.py": "54915884b1f07f2bbe7da2d1222627a2797b3cac559e628ef3a1af168a0431d0",
-        "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
-        "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
+        "src/ai_dlc/cli.py": "fd5a69942b36faa5ca0e40e6764208427d5330cda65305a2913486c538ebf87e",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
         "src/ai_dlc/conformance.py": "0ff247c065e89d4c5b43d844601dc809558c65a779c1600371953c0e2c44737b",
         "src/ai_dlc/contracts.py": "e2202d26b4815674bde05fc1190fbaedfe7cabdf6d8c913a721d1f0b53619d1e",
@@ -98,7 +96,7 @@
         "src/ai_dlc/environment/team_sources.py": "20d583a9046adfac9f0f5bf6de7aca537654eb29d0ff636c27f5a78c7c5c21a6",
         "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
         "src/ai_dlc/errors.py": "b8c0da78ec0e9ea75ef71b4495b501570625988ba5ae54c4631f1ca20a8362c1",
-        "src/ai_dlc/files.py": "eb0452e50442cdf9da231a56111afec1d45b4bc5b7a41a00931a540e88ad14da",
+        "src/ai_dlc/files.py": "cf094c2d7e6dbbe93f253ec4b3c4219902b323e927855541688eaca3f812354b",
         "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
         "src/ai_dlc/harness/agents.py": "0757ce327050807470193a93e66fc1b28bd1ea5e0b8b41c0bc61166f8465bc07",
         "src/ai_dlc/harness/components.py": "b64cd2ae837f83a37ddd1c74dad25fcd16fe8733715c224c7d64673784ebba11",
@@ -175,7 +173,7 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "updated",
-      "reason": "Merged main render-target changes with this change: workflow plugin section describes the Codex form, per-file digests and the publisher.",
+      "reason": "Re-reviewed after merging main (legacy scaffold removal #201) into workflow-plugin-publication. Merged text keeps both sides.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
