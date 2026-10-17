@@ -242,9 +242,13 @@ claude --plugin-dir plugins/ai-dlc-workflow \
 
 `scripts/build_workflow_plugin.py` generates the directory from `agents/skills/`
 and the shared guidance and records component digests in `plugin.lock.json`; the
-`generated` check fails when it is stale. The hooks need `python3`. See the
-[plugin README](https://github.com/Sean-Koval/ai-dlc/blob/main/plugins/ai-dlc-workflow/README.md) for contents, hangar limits and
-how to turn it off.
+`generated` check fails when it is stale. The hooks need `python3`. The same build
+emits a Codex form in `native/codex/` (identical skills, a Codex `hooks.json`, an
+`AGENTS.fragment.md` and a `.codex-plugin` manifest), and
+`scripts/publish_workflow_plugin.py --harness-repo PATH --dry-run|--apply` copies
+both into a team harness for a with/without comparison. See the
+[plugin README](https://github.com/Sean-Koval/ai-dlc/blob/main/plugins/ai-dlc-workflow/README.md) for contents, the Codex spike,
+the A/B arms, hangar limits and how to turn it off.
 
 ## Example workflows
 

@@ -1,0 +1,41 @@
+schema = 1
+id = "workflow-plugin-publication"
+title = "Codex form of the workflow plugin and publication into a team harness"
+scope = "Emit plugins/ai-dlc-workflow/native/codex (identical skills, Codex hooks.json, shim, AGENTS fragment, .codex-plugin manifest) after a Codex 0.162.1 spike; add per-file digests; add scripts/publish_workflow_plugin.py; publish into agent-factory examples/team-harness by PR. Excludes running the A/B, hangar seed mounting and the harness lock format."
+requires_spec = true
+spec_reason = "Adds an observable Codex package and a publishing tool with refusal rules that need formal scenarios."
+acceptance = [
+    "Codex skills are byte-identical to the Claude plugin skills (digest test)",
+    "The spike result is recorded in the plugin README",
+    "publish dry-run lists files and ids; apply writes; re-apply is a no-op; hand edits are refused",
+    "A harness PR adds the component at a recorded digest",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "WP-02",
+    "WP-06",
+    "WP-07",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+brief = "docs/decisions/0001-refocus-ai-dlc.md"
+spec = "openspec/changes/archive/2026-10-17-workflow-plugin-publication"
+plan = "openspec/changes/archive/2026-10-17-workflow-plugin-publication/tasks.md"
+branch = "issue/193-codex-publish"
+tracker = "193"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/222"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"

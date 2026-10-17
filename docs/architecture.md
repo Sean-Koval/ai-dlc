@@ -207,7 +207,11 @@ copies. `scripts/build_workflow_plugin.py` packages the same sources as the
 optional Claude Code plugin committed at `plugins/ai-dlc-workflow/`, the
 distribution path for team harnesses and sandboxes. It reuses the skill lock and
 shared guidance, writes per-component digests to `plugin.lock.json`, and runs as a
-drift check inside `scripts/check_generated.py`. The plugin hooks run
+drift check inside `scripts/check_generated.py`. The same build writes the Codex
+form under `plugins/ai-dlc-workflow/native/codex/` (identical skill bytes, a Codex
+`hooks.json`, an AGENTS.md fragment and a `.codex-plugin` manifest) and records
+per-file digests, which `scripts/publish_workflow_plugin.py` uses to copy both forms
+into a team harness directory without overwriting anything it did not publish. The plugin hooks run
 `harness/hook_shim.py`, a standard-library copy that delegates to `ai-dlc hook`
 only in adopted repositories with the CLI outside hangar, and otherwise denies
 only destructive commands; `harness/hooks.py` imports its classifier. This
