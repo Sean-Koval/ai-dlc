@@ -24,8 +24,9 @@ and leaves the shared `ai-dlc` alias alone; use the printed environment path, or
 pass `--publish-aliases` to repoint the alias deliberately. Use the Python implementation in `src/ai_dlc/`.
 The [architecture](docs/architecture.md) maps its packages and entry points.
 The Rust implementation is retired and removed; its plans stay in `docs/archive/`.
-`templates/` still supplies the supported legacy scaffold command. Preserve
-compatibility tests and packaged assets.
+`ai-dlc project init` and `project adopt` copy the packaged `project-templates/`;
+the legacy `templates/` scaffold and the root `copier.yml` are removed. Preserve
+packaged assets.
 
 ## Scope freeze
 

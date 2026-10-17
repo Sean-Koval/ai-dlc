@@ -837,10 +837,11 @@ def test_portable_examples_are_the_only_profiles_in_built_distributions(
     assert "pyproject.toml" in members
     assert "src/ai_dlc/cli.py" in members
     assert not [name for name in members if is_forbidden_member(name)]
-    # Third-party agent collections were removed from the legacy template; none may return.
-    vendored = re.compile(r"/\.claude/(?:agents/|modes/|commands/(?:ot|sc)_commands/)")
-    assert not [name for name in members if vendored.search(name)]
-    assert "ai_dlc/assets/legacy/claude/.claude/settings.json" in members
+    # The legacy scaffold template was removed; neither it nor the stale root Copier file ships.
+    assert not [
+        name for name in members if name.startswith(("ai_dlc/assets/legacy/", "templates/"))
+    ]
+    assert "copier.yml" not in members
     # Unread directories stay in the checkout and sdist but must not be packaged into the wheel.
     with zipfile.ZipFile(wheel) as archive:
         wheel_asset_dirs = {

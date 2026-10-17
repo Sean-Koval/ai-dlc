@@ -255,3 +255,17 @@ recorded answers. `doctor` lists the selection under `provider_support` as
 Repositories whose agent jobs start through hangar intake can set `[work]
 tracker_writes = "finish-only"` so `work start` does not move the ticket; see the
 [tracker boundary](architecture.md#tracker-boundary-with-hangar).
+
+## ai-dlc scaffold removed
+
+The legacy `ai-dlc scaffold` command, its `templates/` assets (packaged as
+`ai_dlc/assets/legacy/`) and the stale root `copier.yml` are removed. `ai-dlc
+scaffold` now prints a pointer and exits with status 2 for one release.
+
+| Before | After |
+| --- | --- |
+| `ai-dlc scaffold --all` or `--provider claude` | `ai-dlc project init PATH` for a new repository, `ai-dlc project adopt PATH` for an existing one |
+| `copier copy gh:Sean-Koval/ai-dlc DEST` | `ai-dlc project init DEST`, which copies the packaged `project-templates/` |
+
+Repositories already scaffolded keep their copied files, including the
+`quality-gate.sh` and `security-check.sh` hooks; nothing in them is changed.
