@@ -25,5 +25,6 @@ deploy = "none"
 brief = "docs/decisions/0001-refocus-ai-dlc.md"
 branch = "issue/213-front-page"
 tracker = "213"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/224"
 
 [bindings]
