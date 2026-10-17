@@ -27,8 +27,9 @@ This checkout commits no rendered skill copies; load the team skills from the
 workflow plugin (`claude --plugin-dir plugins/ai-dlc-workflow`, or read
 `plugins/ai-dlc-workflow/skills/` from Codex) and edit them under `agents/skills/`.
 The Rust implementation is retired and removed; its plans are in git history before tag `docs-prune-2026-10`.
-`templates/` still supplies the supported legacy scaffold command. Preserve
-compatibility tests and packaged assets.
+`ai-dlc project init` and `project adopt` copy the packaged `project-templates/`;
+the legacy `templates/` scaffold and the root `copier.yml` are removed. Preserve
+packaged assets.
 
 ## Scope freeze
 
