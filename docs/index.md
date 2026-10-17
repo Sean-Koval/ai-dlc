@@ -90,7 +90,7 @@ than reproducing them.
 | Question | Canonical entry point |
 | --- | --- |
 | What is the system? | [Architecture](architecture.md) and [proposed delivery design](design/framework-delivery.md) |
-| What is in scope? | [Decisions](https://github.com/Sean-Koval/ai-dlc/tree/main/docs/decisions), starting with the [scope freeze](decisions/0001-refocus-ai-dlc.md) |
+| What is in scope? | [Decisions](https://github.com/Sean-Koval/ai-dlc/tree/main/docs/decisions), starting with the [scope freeze](decisions/0001-refocus-ai-dlc.md); records follow the [decision convention](https://github.com/Sean-Koval/ai-dlc/blob/main/project-templates/project/docs/decisions/README.md) |
 | Why is it this way? | Decisions in the relevant [design documents](https://github.com/Sean-Koval/ai-dlc/tree/main/docs/design) and [formal change designs](https://github.com/Sean-Koval/ai-dlc/tree/main/openspec/changes) |
 | What must it do? | [OpenSpec](https://github.com/Sean-Koval/ai-dlc/tree/main/openspec) owns formal specifications and change artifacts |
 | How do we operate and verify it? | [Get started](workflows/get-started.md), [release verification](release-verification.md) and [verification records](https://github.com/Sean-Koval/ai-dlc/tree/main/docs/verification) |
