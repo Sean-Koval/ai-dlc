@@ -120,7 +120,7 @@ def guide_skill() -> str:
         "Adopted repositories carry fuller guidance in their AGENTS.md managed section.",
         "",
         *(f"- {ADOPTED}{line[0].lower()}{line[1:]}" for line in adopted),
-        "- When recording a learning with `ai-dlc work finish --learning`, set",
+        f"- {ADOPTED}when recording a learning with `ai-dlc work finish --learning`, set",
         "  `AI_DLC_AUTHOR=agent:<client>@<content_digest>`, using the `content_digest` in",
         "  this plugin's `plugin.lock.json`, so the note records who wrote it.",
         "",

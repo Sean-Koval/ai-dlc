@@ -91,11 +91,12 @@ class Knowledge:
                 if line.strip() and not line.strip().startswith("<!-- ai-dlc:")
             ]
             meta = _note_metadata(body)
-            if meta and _as_date(meta.get("valid_to")) and _as_date(meta["valid_to"]) < today:
+            valid_to = _as_date(meta.get("valid_to")) if meta else None
+            if valid_to and valid_to < today:
                 continue
             if lines[:1] == ["---"] and "---" in lines[1:]:
                 lines = lines[lines.index("---", 1) + 1 :]
-            found = {
+            found: dict[str, object] = {
                 "path": str(path.relative_to(self.root)),
                 "first_line": lines[0] if lines else "",
             }

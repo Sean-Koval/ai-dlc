@@ -7,7 +7,7 @@ AI-DLC validates shape only: a decision's ``checks:`` entries use flightdeck's
 
 import re
 from datetime import date
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator, model_validator
@@ -72,7 +72,7 @@ class KnowledgeNote(BaseModel):
     model_config = ConfigDict(
         extra="allow",
         title="Knowledge note frontmatter",
-        json_schema_extra={"allOf": _CONDITIONS},
+        json_schema_extra=cast("dict[str, Any]", {"allOf": _CONDITIONS}),
     )
     id: str = Field(pattern=ID_PATTERN)
     kind: Literal["learning", "decision", "runbook", "note"]

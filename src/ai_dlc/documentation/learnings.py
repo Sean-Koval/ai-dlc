@@ -60,8 +60,8 @@ def resolve_author(interactive: bool) -> str:
 def _sources(work, config, evidence) -> list[dict]:
     repository = config.get("scm", {}).get("repository", "")
     merged = evidence.get("pr-merged") or {}
-    pr = merged.get("pr") if isinstance(merged.get("pr"), dict) else {}
-    url = pr.get("html_url") or ""
+    pr = merged.get("pr")
+    url = (pr.get("html_url") if isinstance(pr, dict) else None) or ""
     reference = str(work.get("artifacts", {}).get("pr", ""))
     if not url and reference.startswith("https://"):
         url = reference

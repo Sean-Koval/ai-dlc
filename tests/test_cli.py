@@ -1162,6 +1162,7 @@ def test_work_finish_selects_explicit_path_and_reads_caller_inputs(tmp_path, mon
     from ai_dlc import cli
 
     monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("AI_DLC_AUTHOR", "agent:test@sha256:1")
     (tmp_path / "handoff.md").write_text("Caller handoff")
     (tmp_path / "learning.md").write_text("Caller learning")
     calls = []
@@ -1182,7 +1183,10 @@ def test_work_finish_selects_explicit_path_and_reads_caller_inputs(tmp_path, mon
     result = CliRunner().invoke(cli.app, args)
     assert result.exit_code == 0, result.output
     assert calls == [
-        ("merge" if at_merge else "plain", ("one", "Caller handoff", "Caller learning"))
+        (
+            "merge" if at_merge else "plain",
+            ("one", "Caller handoff", "Caller learning", "agent:test@sha256:1"),
+        )
     ]
     assert json.loads(result.stdout)["status"] == "completed"
 
