@@ -1,4 +1,7 @@
 schema: spec-driven
+# Growth freeze (ADR 0001, docs/decisions/0001-refocus-ai-dlc.md): open new changes
+# only for in-scope areas -- work lifecycle, enrollment and provisioning, managed
+# sections and the workflow plugin. Out-of-scope changes are archived as cancelled.
 context: |
   AI-DLC is a portable development environment and playbook, implemented in Python
   with uv. Machine provisioning delegates to native package managers and mise.

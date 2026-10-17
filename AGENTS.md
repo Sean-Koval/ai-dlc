@@ -26,7 +26,7 @@ The [architecture](docs/architecture.md) maps its packages and entry points.
 This checkout commits no rendered skill copies; load the team skills from the
 workflow plugin (`claude --plugin-dir plugins/ai-dlc-workflow`, or read
 `plugins/ai-dlc-workflow/skills/` from Codex) and edit them under `agents/skills/`.
-The Rust implementation is retired and removed; its plans stay in `docs/archive/`.
+The Rust implementation is retired and removed; its plans are in git history before tag `docs-prune-2026-10`.
 `ai-dlc project init` and `project adopt` copy the packaged `project-templates/`;
 the legacy `templates/` scaffold and the root `copier.yml` are removed. Preserve
 packaged assets.
@@ -49,6 +49,10 @@ list before starting work, and do not grow moved or cut areas.
   `docs/workflows/`, and actual qualification evidence in `docs/verification/`.
 - `docs/archive/` preserves explicitly historical material. Its old commands and
   tool instructions are not current guidance. Never manufacture review freshness.
+- Growth is frozen (ADR 0001): open new OpenSpec changes only for in-scope areas
+  (work lifecycle, enrollment and provisioning, managed sections, the workflow
+  plugin). Update canonical documents instead of adding new ones, and do not add to
+  `docs/archive/`; older material lives in git history.
 - Keep disposable execution logs in ignored `.ai-dlc/local/`; do not create root
   planning files, `.superpowers/`, or tool-specific planning hierarchies.
 - Enroll durable documents in `docs/catalog.toml`; update code mappings and links
