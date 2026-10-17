@@ -1,0 +1,23 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "docs/stylesheets/airframe-docs.css": "5eac0f93fa8f06910ad152a05c1c397013041a917c33de241dfcd9b71b54058d"
+      },
+      "outcome": "updated",
+      "reason": "Vendored Airframe docs mapping synced unmodified to agent-factory theme-v1 (footer on the canvas, full-width figures); see agent-factory theme/CHANGELOG.md.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/stylesheets/airframe-docs.css"
+    },
+    {
+      "bound": {
+        "docs/stylesheets/airframe.css": "bd3eafdb0310f2129902a1fdd21de1bb3745f22a440cf7f936c4a42fda504451"
+      },
+      "outcome": "updated",
+      "reason": "Vendored Airframe tokens synced unmodified to agent-factory theme-v1 (three light-theme surface values); see agent-factory theme/CHANGELOG.md.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/stylesheets/airframe.css"
+    }
+  ],
+  "schema": 2
+}
