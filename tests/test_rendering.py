@@ -1566,3 +1566,46 @@ def test_document_organization_is_distributed_to_both_native_harnesses(tmp_path)
     for native in (".agents", ".claude"):
         skill = tmp_path / native / "skills/document-organize/SKILL.md"
         assert skill.is_file()
+
+
+def test_default_adopted_repo_renders_both_skill_trees(tmp_path):
+    """Would fail if deselecting skills in this repository changed consumer rendering defaults."""
+    import json
+
+    from ai_dlc.files import assets
+    from ai_dlc.harness.agents import render_agents
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nagent-client=["claude-code","codex"]\n'
+    )
+    render_agents(tmp_path, apply=True)
+    names = sorted(path.name for path in (assets("agents") / "skills").iterdir() if path.is_dir())
+    assert names
+    owned = json.loads((tmp_path / ".ai-dlc/agent-ownership.json").read_text())["files"]
+    for name in names:
+        for tree in (".claude/skills", ".agents/skills"):
+            relative = f"{tree}/{name}/SKILL.md"
+            assert (tmp_path / relative).is_file(), relative
+            assert relative in owned
+    assert render_agents(tmp_path)["clean"]
+
+
+def test_this_repository_commits_no_rendered_skill_copies():
+    """Contributors load skills from the workflow plugin instead of rendered copies."""
+    import json
+    import subprocess
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    tracked = subprocess.run(
+        ["git", "ls-files", ".agents/skills", ".claude/skills"],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if tracked.returncode:
+        pytest.skip("not a git checkout")
+    assert tracked.stdout == ""
+    owned = json.loads((root / ".ai-dlc/agent-ownership.json").read_text())
+    assert not [name for name in owned.get("files", {}) if "/skills/" in name]
