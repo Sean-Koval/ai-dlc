@@ -255,3 +255,20 @@ recorded answers. `doctor` lists the selection under `provider_support` as
 Repositories whose agent jobs start through hangar intake can set `[work]
 tracker_writes = "finish-only"` so `work start` does not move the ticket; see the
 [tracker boundary](architecture.md#tracker-boundary-with-hangar).
+
+## ai-dlc eval removed
+
+The end-to-end evaluation runner, its contracts and assets, and the prompt-only
+skill evaluation moved to [flightdeck](https://github.com/Sean-Koval/flightdeck)
+(ADR 0001). `ai-dlc eval` is now a hidden stub that prints a pointer and exits
+with status 2 for one release.
+
+| Before | After |
+| --- | --- |
+| `ai-dlc eval plan`, `run`, `report`, `image`, `base` | flightdeck's local runner (`runner=local`) and task format |
+| `python scripts/run_skill_evaluation.py` | `claude plugin eval` for skill smoke tests; flightdeck suites for behavior |
+| `evaluations/`, `contracts/evaluation/`, `agents/evaluation*.{toml,json}`, `agents/evaluations/` | ported or archived in flightdeck |
+
+The last AI-DLC version of all of it is tag `eval-handoff-2026-10`, whose
+`docs/verification/end-to-end-evaluation.md#handoff-to-flightdeck` lists every
+moved file. Provider conformance keeps `verification/test_proxy.py`.

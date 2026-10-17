@@ -22,8 +22,7 @@ never stand in for live platform, provider or human-evaluation evidence.
 ## Outstanding
 
 Clean-machine, container and cloud walkthroughs; full live provider mutation
-conformance with enforced egress; [behavioral skill evaluations](verification/skill-evaluation.md)
-at the declared model and budget, including human review; and live Jira workflow
+conformance with enforced egress; and live Jira workflow
 qualification for the local lifecycle steps (`work publish`, a blocked `work finish` before
 merge and a closing `work finish` after merge, per #85) remain outstanding. Plane is
 unsupported, so its live qualification is no longer planned; the Linear adapter was removed. Package index publication is not planned. The publication

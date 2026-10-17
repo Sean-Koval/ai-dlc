@@ -9,7 +9,7 @@ Documentation site: [sean-koval.github.io/ai-dlc](https://sean-koval.github.io/a
 > **Scope freeze (2026-10).** AI-DLC is a local workflow, machine-provisioning and
 > work-lifecycle tool. Features outside the in-scope list in
 > [ADR 0001](docs/decisions/0001-refocus-ai-dlc.md) are frozen; bug fixes are
-> welcome. Harness evaluation moves to flightdeck and sandbox runtime rendering to
+> welcome. Harness evaluation moved to flightdeck (`ai-dlc eval` is removed) and sandbox runtime rendering to
 > hangar; see the [plan](https://claude.ai/code/artifact/ddea4e99-7068-4c36-8bac-d9cda53c0f4c).
 
 AI-DLC brings project setup, agent guidance, specifications, tickets, documentation,

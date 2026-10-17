@@ -101,7 +101,6 @@ nav:
       - Verification records:
           - Framework qualification: verification/framework-qualification.md
           - Delivery path baseline: verification/delivery-path-baseline.md
-          - End-to-end evaluation: verification/end-to-end-evaluation.md
           - Release candidate preparation: verification/release-candidate-preparation.md
           - Onboarding readiness: verification/onboarding-readiness.md
           - Setup continuity: verification/setup-continuity.md
@@ -127,10 +126,7 @@ nav:
           - Source fetch cleanup: verification/source-fetch-cleanup.md
           - Portable workflow bundle cleanup: verification/portable-workflow-bundle-cleanup.md
           - Portable workflow bundle import repair: verification/portable-workflow-bundle-import-repair.md
-          - Skill evaluation: verification/skill-evaluation.md
-          - Product delivery evaluation: verification/product-delivery-evaluation.md
           - Product shaping workflow: verification/product-shaping-workflow.md
-          - Design PM evaluation: verification/design-pm-evaluation.md
           - Design PM workflow: verification/design-pm-workflow.md
       - Reviews:
           - Portable profile enrollment: reviews/2026-09-03-portable-profile-enrollment.md

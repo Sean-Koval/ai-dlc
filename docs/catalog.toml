@@ -518,13 +518,6 @@ owner = "repository-maintainers"
 status = "archived"
 
 [[documents]]
-id = "repo-verification-design-pm-evaluation"
-path = "docs/verification/design-pm-evaluation.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
 id = "repo-verification-design-pm-workflow"
 path = "docs/verification/design-pm-workflow.md"
 kind = "reference"
@@ -617,13 +610,6 @@ status = "archived"
 [[documents]]
 id = "repo-verification-portable-workflow-bundle-import-repair"
 path = "docs/verification/portable-workflow-bundle-import-repair.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-verification-product-delivery-evaluation"
-path = "docs/verification/product-delivery-evaluation.md"
 kind = "reference"
 owner = "repository-maintainers"
 status = "archived"
@@ -889,26 +875,6 @@ kind = "reference"
 owner = "repository-maintainers"
 status = "active"
 requirements = ["openspec/specs/repository-organization/spec.md"]
-
-[[documents]]
-id = "repo-verification-skill-evaluation"
-path = "docs/verification/skill-evaluation.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "active"
-code_paths = ["scripts/run_skill_evaluation.py", "src/ai_dlc/harness/skill_evaluation.py", "src/ai_dlc/providers/evaluation_api.py", "agents/evaluation.toml", "agents/evaluation-scenarios.json"]
-verification_paths = ["tests/test_skill_evaluation.py"]
-requirements = ["openspec/specs/skill-evaluation/spec.md"]
-
-[[documents]]
-id = "repo-verification-end-to-end-evaluation"
-path = "docs/verification/end-to-end-evaluation.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "active"
-code_paths = ["src/ai_dlc/verification/evaluation/__init__.py", "src/ai_dlc/verification/evaluation/attempt.py", "src/ai_dlc/verification/evaluation/contracts.py", "src/ai_dlc/verification/evaluation/budgets.py", "src/ai_dlc/verification/evaluation/drivers.py", "src/ai_dlc/verification/evaluation/evaluate.py", "src/ai_dlc/verification/evaluation/git_observer.py", "src/ai_dlc/verification/evaluation/image.py", "src/ai_dlc/verification/evaluation/planning.py", "src/ai_dlc/verification/evaluation/report.py", "src/ai_dlc/verification/evaluation/run.py", "evaluations/README.md", "evaluations/images/claude-code.json", "evaluations/suites/smoke.json", "evaluations/suites/real-client.json", "evaluations/profiles/local-deterministic.json", "contracts/evaluation/base-image.schema.json", "src/ai_dlc/verification/evaluation/FROZEN.md"]
-verification_paths = ["tests/test_eval_handoff.py", "tests/test_evaluation_planning.py", "tests/test_evaluation_attempt.py", "tests/test_evaluation_run.py", "tests/test_evaluation_report.py", "tests/test_evaluation_image.py", "tests/test_evaluation_driver.py", "tests/test_evaluation_claude.py", "tests/test_evaluation_budgets.py", "tests/test_evaluation_git_observer.py", "tests/fixtures/evaluation/claude-code-2.1.220.jsonl", "tests/test_evaluation_egress.py", "tests/test_evaluation_base_image.py"]
-requirements = ["openspec/specs/end-to-end-evaluation/spec.md", "openspec/specs/portable-development/spec.md"]
 
 [[documents]]
 id = "fde-documents"

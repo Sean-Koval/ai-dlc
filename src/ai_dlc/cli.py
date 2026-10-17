@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 import os
 import sys
-import tomllib
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Annotated
@@ -40,9 +39,6 @@ knowledge = typer.Typer(no_args_is_help=True)
 provider = typer.Typer(no_args_is_help=True)
 mcp = typer.Typer(no_args_is_help=True)
 design = typer.Typer(no_args_is_help=True)
-evaluation = typer.Typer(
-    no_args_is_help=True, help="Maintainer end-to-end evaluation: plan, run and report."
-)
 for name, group in [
     ("project", project),
     ("docs", docs),
@@ -56,7 +52,6 @@ for name, group in [
     ("provider", provider),
     ("mcp", mcp),
     ("design", design),
-    ("eval", evaluation),
 ]:
     app.add_typer(group, name=name)
 agents.add_typer(agent_bundle, name="bundle")
@@ -549,74 +544,19 @@ def _review_mode(values: dict) -> str:
     return mode
 
 
-def _read_declaration(path: Path) -> object:
-    from ai_dlc.documentation.document_files import read_document
-
-    raw = read_document(path.absolute()).decode()
-    return tomllib.loads(raw) if path.suffix == ".toml" else json.loads(raw)
-
-
-@evaluation.command("plan")
-def eval_plan(
-    suite: Path,
-    profile: Annotated[Path, typer.Option(help="Execution profile (JSON or TOML).")],
-):
-    """Validate a suite and profile and print the attempt matrix; starts nothing, reads no secret."""
-    from ai_dlc.verification.evaluation.planning import plan
-
-    emit(plan(_read_declaration(suite), _read_declaration(profile)))
-
-
-@evaluation.command("run")
-def eval_run(
-    suite: Path,
-    profile: Annotated[Path, typer.Option(help="Execution profile (JSON or TOML).")],
-    out: Annotated[Path, typer.Option(help="Empty directory that receives the run.")],
-):
-    """Run every planned attempt in isolated containers and grade it independently."""
-    from ai_dlc.verification.evaluation.run import run_suite
-
-    emit(run_suite(suite.absolute(), profile.absolute(), out.absolute()))
-
-
-@evaluation.command("image")
-def eval_image(
-    base: Annotated[str, typer.Option(help="Digest-pinned baseline image.")],
-    root: Path = Path("."),
-    profile: Annotated[Path | None, typer.Option(help="Profile to bind to the build.")] = None,
-    write: Annotated[Path | None, typer.Option(help="Where to write the bound profile.")] = None,
-):
-    """Build the candidate image from this checkout's wheel on top of the baseline image."""
-    from ai_dlc.verification.evaluation.image import build_candidate, resolve_profile
-
-    if (profile is None) != (write is None):
-        raise typer.BadParameter("--profile and --write go together")
-    built = build_candidate(root.absolute(), base)
-    if profile is not None and write is not None:
-        declared = _read_declaration(profile)
-        if not isinstance(declared, dict):
-            raise typer.BadParameter("the profile must be a table", param_hint="--profile")
-        resolved = resolve_profile(declared, built)
-        write.write_text(json.dumps(resolved, indent=2, sort_keys=True) + "\n")
-    emit(built)
-
-
-@evaluation.command("base")
-def eval_base(recipe: Path):
-    """Build the image both arms share from a recipe: pinned parent, Git and a pinned client."""
-    from ai_dlc.verification.evaluation.image import build_base
-
-    with service_call():
-        built = build_base(_read_declaration(recipe))
-    emit(built)
-
-
-@evaluation.command("report")
-def eval_report(run_directory: Path):
-    """Rebuild JSON, JUnit and a failure timeline from a run directory; starts nothing."""
-    from ai_dlc.verification.evaluation.report import write_report
-
-    emit(write_report(run_directory.absolute()))
+@app.command(
+    "eval",
+    hidden=True,
+    context_settings={"allow_extra_args": True, "ignore_unknown_options": True},
+)
+def eval_moved():
+    """Removed: evaluation moved to flightdeck; kept one release as a pointer."""
+    typer.echo(
+        "ai-dlc eval moved to flightdeck (https://github.com/Sean-Koval/flightdeck). "
+        "Last version: tag eval-handoff-2026-10. See docs/migration.md#ai-dlc-eval-removed.",
+        err=True,
+    )
+    raise typer.Exit(2)
 
 
 @docs.command("init")
