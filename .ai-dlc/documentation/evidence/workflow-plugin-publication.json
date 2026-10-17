@@ -12,7 +12,7 @@
     {
       "bound": {
         "catalog:docs/architecture.md": "e957dcf74f6dcbe53ce40caf58a8cd486ee04461b47279540cdccaa4680c445a",
-        "docs/architecture.md": "e3a48db0764fd38d909ae5e0526a972a15a08a1161c5d42d74fc49da502069ad",
+        "docs/architecture.md": "de9fef4c88a18c49352a36773d22922c385de0333daab7f925d70052d149917b",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/tracker-adapter-boundary/spec.md": "dd8886e122156c514768387930c3534d882b4672552eeb2aca62507fa6ab2a58",
@@ -173,7 +173,7 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "updated",
-      "reason": "Re-reviewed after merging main (legacy scaffold removal #201) into workflow-plugin-publication. Merged text keeps both sides.",
+      "reason": "Re-reviewed after merging main (archive pruning #204) into workflow-plugin-publication. Merged text keeps both sides.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
