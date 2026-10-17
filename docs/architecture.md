@@ -211,7 +211,9 @@ shared guidance, writes per-component digests to `plugin.lock.json`, and runs as
 drift check inside `scripts/check_generated.py`. The plugin hooks run
 `harness/hook_shim.py`, a standard-library copy that delegates to `ai-dlc hook`
 only in adopted repositories with the CLI outside hangar, and otherwise denies
-only destructive commands; `harness/hooks.py` imports its classifier. See the
+only destructive commands; `harness/hooks.py` imports its classifier. This
+repository dogfoods the plugin rather than rendered skill copies (`[agents] skills
+= []`); adopted repositories keep rendering both skill trees by default. See the
 [plugin README](../plugins/ai-dlc-workflow/README.md).
 
 ### FDE engagement documents
