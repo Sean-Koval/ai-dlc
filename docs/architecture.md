@@ -92,7 +92,7 @@ operation refused before any change, `UncertainError` for one whose effect must 
 reconciled); the CLI reports every such failure through one handler as `Error: <message>`
 on stderr with the exception's exit code, and MCP lets it propagate as a tool error.
 A completed service call returns a JSON object that satisfies the
-[service result envelope](../contracts/service-result.schema.json): `status` is the
+[service result envelope](https://github.com/Sean-Koval/ai-dlc/blob/main/contracts/service-result.schema.json): `status` is the
 canonical outcome string, and the values in `ai_dlc.contracts.FAILURE_STATUSES` are the
 failures. Results that still carry a boolean verdict key (`valid`, `ready`, `passed`,
 `clean`) are authoritative through that key until they migrate to `status`.
@@ -121,9 +121,9 @@ authored project/work snapshots, with secrets represented only by local
 authentication references. Configuration changes and retained-work migration
 are separate actions. Native MCP access supplies broader service context; it
 does not substitute for these lifecycle contracts. See the
-[provider contract](../contracts/README.md),
+[provider contract](https://github.com/Sean-Koval/ai-dlc/blob/main/contracts/README.md),
 [GitHub setup guide](github-ticket-setup.md), and
-[later adapter boundaries](archive/planning/tracker-adapter-follow-through.md).
+[later adapter boundaries](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/planning/tracker-adapter-follow-through.md).
 
 ## Tracker boundary with hangar
 
@@ -213,7 +213,7 @@ only in adopted repositories with the CLI outside hangar, and otherwise denies
 only destructive commands; `harness/hooks.py` imports its classifier. This
 repository dogfoods the plugin rather than rendered skill copies (`[agents] skills
 = []`); adopted repositories keep rendering both skill trees by default. See the
-[plugin README](../plugins/ai-dlc-workflow/README.md).
+[plugin README](https://github.com/Sean-Koval/ai-dlc/blob/main/plugins/ai-dlc-workflow/README.md).
 
 ### FDE engagement documents
 

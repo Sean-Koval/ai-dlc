@@ -3,7 +3,7 @@
 `ai-dlc eval` runs the same task twice in isolated containers, once with the
 engine installed (`treatment`) and once without it (`baseline`), grades both with
 tests the attempt can never read, and reports the difference. It is a maintainer
-tool. Its inputs live in [`evaluations/`](../../evaluations/README.md), outside
+tool. Its inputs live in [`evaluations/`](https://github.com/Sean-Koval/ai-dlc/blob/main/evaluations/README.md), outside
 the wheel.
 
 ## Current evidence and its limit

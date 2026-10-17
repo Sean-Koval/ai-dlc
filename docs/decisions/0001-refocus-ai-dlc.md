@@ -115,5 +115,5 @@ this decision; bug fixes in frozen areas are welcome.
 
 - [Product direction](../product-direction.md)
 - [Roadmap](../roadmap.md)
-- [Repository guidance](../../AGENTS.md)
-- [Contributing](../../CONTRIBUTING.md)
+- [Repository guidance](https://github.com/Sean-Koval/ai-dlc/blob/main/AGENTS.md)
+- [Contributing](https://github.com/Sean-Koval/ai-dlc/blob/main/CONTRIBUTING.md)

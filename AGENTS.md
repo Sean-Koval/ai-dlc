@@ -9,7 +9,7 @@ contracts; credentials and machine paths never belong in shared configuration.
 
 Before preparing this checkout, identify the intended repository. A teammate who
 cloned AI-DLC only to install it for another project should follow the consumer
-route in [README.md](README.md#get-started), pass that work repository explicitly
+route in [Get started](docs/workflows/get-started.md#install-ai-dlc-for-a-work-project), pass that work repository explicitly
 to `project onboard --root`, and keep this engine checkout's providers and accounts
 out of the target. Native Windows consumer installation is unsupported in this
 revision; [#172](https://github.com/Sean-Koval/ai-dlc/issues/172) tracks installation

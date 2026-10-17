@@ -76,7 +76,7 @@ baseline checks pass.
 
 ## 3. Establish product and design context
 
-Use discovery and the [product brief](../../agents/templates/product-brief.md)
+Use discovery and the [product brief](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/templates/product-brief.md)
 to establish audience, problem, observed evidence, actual user decisions and
 hypotheses. A requested dashboard or feature is a candidate solution, not proof
 of value. Compare at least two feasible approaches and doing nothing when
@@ -84,7 +84,7 @@ meaningful, considering impact, evidence confidence, effort and dependencies.
 Select the smallest useful outcome; use a bounded investigation when the value
 or material constraints remain unknown.
 
-Follow the [greenfield example](../../agents/examples/product-shaping/greenfield.md).
+Follow the [greenfield example](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/examples/product-shaping/greenfield.md).
 Keep one canonical brief with stable OUT-001 and RQ-001 identifiers. Record scope,
 exclusions, success evidence and unresolved decisions. End with proceed,
 investigate or stop and reasons; the recommendation does not invent approval.

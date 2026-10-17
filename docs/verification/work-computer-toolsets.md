@@ -17,7 +17,7 @@ Linear priorities. No company, Plane or Confluence service has been mutated.
 | Conditional credential readiness (#19) | `213da0e` | [Credential readiness](credential-readiness.md) |
 | Bootstrap executable publication (#14 child) | `63d6ec5` | [Bootstrap](bootstrap-executable-publication.md) |
 | Qualification-record validator (#14 preparation) | `e39202b` | [Qualification](framework-qualification.md) |
-| Optional Design PM (#13) | `eb04ca1` | [Design source/development review](design-pm/review.md) |
+| Optional Design PM (#13) | `eb04ca1` | [Design source/development review](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/design-pm/review.md) |
 | Product evaluation preparation (#15) | `6a95a49`, `ed5f2ee` | [Preparation](product-delivery-evaluation.md) |
 
 The credential repair closes the integrated Jira Basic false-ready finding through
@@ -76,7 +76,7 @@ preserves its refusal scenario. The archived Jira specification was retained.
 
 At clean `4064bd9a5ca34efc4b35d9fecde7d58c194e744f`, all five required checks
 passed locally: **1,772 tests, 476.71 seconds**. The
-[local receipt](work-computer-toolsets/local-checks-4064bd9.json) identifies the
+[local receipt](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/work-computer-toolsets/local-checks-4064bd9.json) identifies the
 exact source. An earlier attempt found one import-order error in the merged
 unavailable-lifecycle regression; its test phase was intentionally interrupted,
 the import was corrected and all five checks were rerun. The failed/interrupted
@@ -85,7 +85,7 @@ attempt remains in the ignored execution evidence, not counted as passing.
 The existing isolated Ubuntu24.04 ARM64 container was updated to the same clean
 revision through Git bundles. Source bootstrap completed with target devcontainer;
 all five required checks passed: **1,771 tests and one platform skip,120.43seconds**.
-The [container receipt](work-computer-toolsets/container-checks-4064bd9.json)
+The [container receipt](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/work-computer-toolsets/container-checks-4064bd9.json)
 records that exact clean revision and target. The earlier container and its
 isolated virtual-environment volume were reused. This is current-source container
 verification, not factory-clean setup, an actual hosted cloud session or native
@@ -117,7 +117,7 @@ continues to identify its earlier revision.
 The existing isolated Ubuntu24.04 ARM64 container was updated to clean 822a5fb
 and source bootstrap completed again. All five required checks passed, including
 **1,802 tests and one platform skip in 108.89 seconds**. The
-[final container receipt](work-computer-toolsets/container-checks-822a5fb.json)
+[final container receipt](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/work-computer-toolsets/container-checks-822a5fb.json)
 identifies exact source, clean state and devcontainer target. The same container
 and isolated environment volume were reused; no native client or live provider
 qualification is implied. Subsequent documentation-only evidence commits are

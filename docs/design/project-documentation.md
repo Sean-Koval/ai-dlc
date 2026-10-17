@@ -3,7 +3,7 @@
 AI-DLC organizes references to canonical documents. It does not own a second copy
 of specifications, a private-note mirror, or a Confluence synchronization engine.
 The maintained reusable instructions are the
-[project documentation guide](../../project-templates/project/docs/documentation-guide.md),
+[project documentation guide](https://github.com/Sean-Koval/ai-dlc/blob/main/project-templates/project/docs/documentation-guide.md),
 which ships into adopted repositories. This design record explains the boundary;
 the guide owns setup, catalog examples and the upkeep workflow.
 
@@ -34,7 +34,7 @@ Confluence MCP after inspecting its interface. See
 [local and shared knowledge](local-and-shared-knowledge.md) for that workflow.
 
 The formal requirements and repair rationale are in the
-[OpenSpec change](../../openspec/changes/archive/2026-09-10-obsidian-vault-linking/).
+[OpenSpec change](https://github.com/Sean-Koval/ai-dlc/tree/main/openspec/changes/archive/2026-09-10-obsidian-vault-linking).
 
 ## Evidence and private-workspace extensions
 

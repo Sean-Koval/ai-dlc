@@ -103,7 +103,7 @@ preserves personal annotations and reports inaccessible or stale sources honestl
 
 This scaffold has no XHTML dry-run, lint-conversion or sync command. `fde check`
 checks local structure and metadata only. The existing
-[publication proposal](../../openspec/changes/team-document-publication/proposal.md)
+[publication proposal](https://github.com/Sean-Koval/ai-dlc/blob/main/openspec/changes/team-document-publication/proposal.md)
 retains converter fidelity, selected-source preview/apply, conflict refusal,
 uncertain-operation recovery and live qualification requirements. The production
 source was not available in this checkout environment; a different converter or

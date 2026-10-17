@@ -53,7 +53,7 @@ before adding surface area.
    Use observed adoption friction to prioritize the remaining reductions, including
    the baseline's proposal for one pre-merge command.
 3. **Evaluation that measures value.** The runner, grader, report and
-   [baseline specification](../openspec/specs/end-to-end-evaluation/spec.md) from
+   [baseline specification](https://github.com/Sean-Koval/ai-dlc/blob/main/openspec/specs/end-to-end-evaluation/spec.md) from
    [#137](https://github.com/Sean-Koval/ai-dlc/issues/137) are delivered. Their
    deterministic fixture runs verify the machinery, not AI-DLC's value; see the
    [evaluation evidence](verification/end-to-end-evaluation.md). Complete the first
@@ -93,7 +93,7 @@ Cancelled or deferred scope stays cancelled; nothing here reopens it.
 - Selective Confluence publication (#22), pending review of the custom server.
 - Package index publication.
 
-The [September 2026 roadmap ledger](archive/planning/2026-09-roadmap-ledger.md)
+The [September 2026 roadmap ledger](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/planning/2026-09-roadmap-ledger.md)
 preserves the delivered-and-cancelled table and the reconciliation narrative; the
-[historical executor handoff](archive/handoffs/framework-delivery.md) preserves the
+[historical executor handoff](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/handoffs/framework-delivery.md) preserves the
 earlier execution checkpoints.
