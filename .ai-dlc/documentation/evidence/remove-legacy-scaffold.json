@@ -2,19 +2,19 @@
   "decisions": [
     {
       "bound": {
-        "AGENTS.md": "cb6bbc17e757a8033494f5aabe00d136609eef48eafbe652cfc787117adbacdd"
+        "AGENTS.md": "635674338af94960ba6113deae4618bfe35ee749b8dcf619f0e9454af288c38e"
       },
       "outcome": "updated",
-      "reason": "Authored guidance now says project init/adopt copy project-templates and that the legacy templates scaffold and root copier.yml are removed.",
+      "reason": "Authored guidance now says project init/adopt copy project-templates and that the legacy templates scaffold and root copier.yml are removed. Re-reviewed after merging main (rendering freeze #196/#197 and rendered skill removal #202).",
       "reviewer": "Claude (agent)",
       "target": "AGENTS.md"
     },
     {
       "bound": {
-        "CONTRIBUTING.md": "e255dcd747075481134e0b96e70d84d6af053364d65226d2d1af20da42eae0ca"
+        "CONTRIBUTING.md": "cd531c4ccd38b20bbfb50312e235e6957f665e7c0dd94cc36bd2de77f02f016c"
       },
       "outcome": "updated",
-      "reason": "Drops the legacy scaffold assets from the source layout sentence.",
+      "reason": "Drops the legacy scaffold assets from the source layout sentence. Re-reviewed after merging main (rendering freeze #196/#197 and rendered skill removal #202).",
       "reviewer": "Claude (agent)",
       "target": "CONTRIBUTING.md"
     },
@@ -30,7 +30,7 @@
     {
       "bound": {
         "catalog:docs/architecture.md": "e957dcf74f6dcbe53ce40caf58a8cd486ee04461b47279540cdccaa4680c445a",
-        "docs/architecture.md": "486b599fc111d2064570833889ff6a808f2c7280058961ba5d04d000d265afc2",
+        "docs/architecture.md": "b45e2017fb306dd5feafb2f4bff834def836022cdb2f5eb3161f5d1541a6794d",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/tracker-adapter-boundary/spec.md": "dd8886e122156c514768387930c3534d882b4672552eeb2aca62507fa6ab2a58",
@@ -52,6 +52,7 @@
         "plugins/ai-dlc-workflow/skills/spec-from-prd/SKILL.md": "f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce",
         "pyproject.toml": "ea73fd835255de7bddab5ef23ff7189e2d19c29ec7e6d49ffc97aee14559f4bd",
         "scripts/build_workflow_plugin.py": "32f03093b1e5bb3f496f395de1ddc9575587023ad4909a663cded0c01b2a241f",
+        "scripts/check_client_pins.py": "c0b4030b6767aee44975556f11a2c0dcf2b5aa67e232ec6182c1247630f53c8c",
         "scripts/check_generated.py": "a42907ebeb4da2669db70ab5c71ed790db416eed2dc5fc8fa11e5e68eb97c955",
         "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
         "scripts/qualify_framework.py": "8068bb2709bbf6b3a020e9c22d62b993cc0e8a3e3c9ee5c00dc4b8963c31054e",
@@ -101,7 +102,7 @@
         "src/ai_dlc/errors.py": "b8c0da78ec0e9ea75ef71b4495b501570625988ba5ae54c4631f1ca20a8362c1",
         "src/ai_dlc/files.py": "cf094c2d7e6dbbe93f253ec4b3c4219902b323e927855541688eaca3f812354b",
         "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
-        "src/ai_dlc/harness/agents.py": "a0f21d41d2f31ee08968086dff6a0b8c1bde27093714c0f0c46d6a35afd81c86",
+        "src/ai_dlc/harness/agents.py": "0757ce327050807470193a93e66fc1b28bd1ea5e0b8b41c0bc61166f8465bc07",
         "src/ai_dlc/harness/components.py": "b64cd2ae837f83a37ddd1c74dad25fcd16fe8733715c224c7d64673784ebba11",
         "src/ai_dlc/harness/design_capture.py": "8b872492b88f4a7728bedf0ae8a1edaad2312a918248bf8f5d051c8bd8b42a58",
         "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
@@ -111,7 +112,7 @@
         "src/ai_dlc/harness/skill_evaluation.py": "73ded6785d5d0ff53f5f44ba4d1ede7406f367635676c269d5044358030ebc2e",
         "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
         "src/ai_dlc/harness/user_agents.py": "c99f9a52a379feaa0c1721081b95fef91f51c44f0a9e906145de51154616e937",
-        "src/ai_dlc/harness/windows_render.py": "5845e483eba550331f0a6777fcd7a3b9c13c90af071ac6df5962ffc3b090b978",
+        "src/ai_dlc/harness/windows_render.py": "8aa76c8aacc44d28a2117b3339ad7b632b91fdbe0a5557af50228dcd2aa0eeb0",
         "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
         "src/ai_dlc/locking.py": "e3c5dbe1a98d3402352bc8a3c3a031106e8dd515e060a676803d734d8dee99dd",
         "src/ai_dlc/mcp_server.py": "607eba3e47a8573862d83e5209e824b78ec0af74545fa51727b8d3f7c03db410",
@@ -135,11 +136,12 @@
         "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
         "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
         "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
-        "src/ai_dlc/setup/project.py": "09464c89f569a337aaa77d1604404273808636323635bcd00bb05e0f74c7ad9e",
+        "src/ai_dlc/setup/project.py": "d36f7b1bcfda5176ffda62de03dfcdd61226f7c973609030665815245f258b00",
         "src/ai_dlc/setup/provider_onboarding.py": "1041a3ef5127239945d3ae386705acc7814f12a6c05205bc345edf7ab973bbb4",
-        "src/ai_dlc/setup/provision.py": "97c513f4ab21c66b064ceb6bfb6f34683e9340246208525ba109fe36bc9a1ff7",
+        "src/ai_dlc/setup/provision.py": "1e29f9b9927fd187a28a90e962ad966599a64f45e5c22b45b945dee25731d03b",
         "src/ai_dlc/setup/readiness.py": "e0984a1f504ee87f3c4c1939624b34ccfe2fd6b7315df365166e95ff3b975d55",
         "src/ai_dlc/setup/rebind.py": "812aa473b3cb92d81eb98c288ab1124f1fe0a62039559ecbd2eeb2349698ef15",
+        "src/ai_dlc/setup/targets.py": "11979b487ab5604eb05f49ab7c7eca1bfda796f25acc1dc489cdc9e7ccc4a9aa",
         "src/ai_dlc/setup/templates.py": "258154a7eeec73d8207bbb082e7f06be8ab649811a91b9a462555724dd664e58",
         "src/ai_dlc/setup/tracker_targets.py": "b04533ac254bde0aa7bddf083097d815153998f15b1042645ac4ffc38f848319",
         "src/ai_dlc/setup/workstation.py": "8ac8f2467ee925392f777e15d921ad79da8a10c94267bbd30f5386455db4e8d2",
@@ -175,19 +177,17 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "updated",
-      "reason": "Removes the compatibility package row and replaces the templates paragraph with the removal and the project-templates path.",
+      "reason": "Removes the compatibility package row and replaces the templates paragraph with the removal and the project-templates path. Re-reviewed after merging main (rendering freeze #196/#197 and rendered skill removal #202).",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
     {
       "bound": {
-        ".agents/skills/spec-from-prd/SKILL.md": "f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce",
-        ".ai-dlc/agent-ownership.json": "80bfb224808d5d394c9f2a36b9f214ec6cccfd1f5a1ddad7b8faff9dbdba6008",
-        ".claude/skills/spec-from-prd/SKILL.md": "f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce",
+        ".ai-dlc/agent-ownership.json": "1918f88f770e5982ef79666646536c560c8cdc883fdb7d59f2e9cb6b600fe6a1",
         "agents/skills.lock.json": "1add4a59dc27836e8f2d98b962cc1527187b72e020bbdaab365e0e86214007cf",
         "agents/skills/spec-from-prd/SKILL.md": "f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce",
         "agents/templates/delivery-slice.md": "4a7a5d7af2f6a99b4e7eac13491eef751def074451d6899acc36ccf1f536bd6f",
-        "catalog:docs/development-workflow.md": "cccff4f2482019fdd41f3c6859a96d8863998deb5fbe8d273053c527be50c281",
+        "catalog:docs/development-workflow.md": "0fba88526a61571ce49e91b2159325061a7c54ba5466e651565eabb2f910e7c6",
         "docs/development-workflow.md": "2c96f369b09fdb9be83639c77222351e7bbae8ede58931dc54b8d8521211f3a5",
         "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
         "openspec/specs/portable-development/spec.md": "2c75caee1dc2f59828c49ba940be6a186580b07032c52b63fc750788b7535a4d",
@@ -200,11 +200,11 @@
         "project-templates/project/tests/test_main.py": "4e6ac9def60ea5a6aef9e004c465cc439acac4b33e4f70df332939f0cdfae63d",
         "src/ai_dlc/cli.py": "fd5a69942b36faa5ca0e40e6764208427d5330cda65305a2913486c538ebf87e",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
-        "src/ai_dlc/harness/agents.py": "a0f21d41d2f31ee08968086dff6a0b8c1bde27093714c0f0c46d6a35afd81c86",
+        "src/ai_dlc/harness/agents.py": "0757ce327050807470193a93e66fc1b28bd1ea5e0b8b41c0bc61166f8465bc07",
         "src/ai_dlc/harness/hooks.py": "3c7bf5b3faf26faa8eb568bba62ae887c4617be914041753d19200b88640adcb",
         "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
         "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
-        "src/ai_dlc/setup/project.py": "09464c89f569a337aaa77d1604404273808636323635bcd00bb05e0f74c7ad9e",
+        "src/ai_dlc/setup/project.py": "d36f7b1bcfda5176ffda62de03dfcdd61226f7c973609030665815245f258b00",
         "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
         "src/ai_dlc/work/workflow.py": "7f5cec326bb73e5d20350dd11c9a705004c6b5d8b95c1134ece9db682db7b03e",
         "tests/test_agents_phases.py": "e5325bdc3c072a10e27bbf019ce51f586b0b7b9d76aa95ff8652dd09bc3c8570",
@@ -214,24 +214,24 @@
         "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
         "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
         "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
-        "tests/test_project.py": "0863470fa695afffc68bba51602585cd2539174cc9a8599a7cf838773f170b93",
-        "tests/test_rendering.py": "60114c219ed5a402486ff9d087bb0b5be27e9203c8899eafb9fda6ba56e1b941",
+        "tests/test_project.py": "2ebeb723433cfb53bf8e20b337d5016058e75a181b9ed0035203a14759a162ba",
+        "tests/test_rendering.py": "e93897333125cff68ce69e9e8fc23f401d9e0740427b8c995975240350cea0ef",
         "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2",
         "tests/test_templates.py": "30a614989be79d9aa054634f16d325ef00500f3c7d9503ffc00d77878ac9355c",
         "tests/test_workflow.py": "eb987b1bf2ceadefd721ff04946069ea2e31bde253d58cb742cc2032534e5a8c"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Reviewed against the scaffold removal: the workflow handbook never described the legacy scaffold command.",
+      "reason": "Reviewed against the scaffold removal: the workflow handbook never described the legacy scaffold command. Re-reviewed after merging main (rendering freeze #196/#197 and rendered skill removal #202).",
       "reviewer": "Claude (agent)",
       "target": "docs/development-workflow.md"
     },
     {
       "bound": {
         "catalog:docs/migration.md": "c1b9caa801f3290374b6a0d8129a008100852b2a665f2dea55ed3e17b5f4ff39",
-        "docs/migration.md": "c3b7f06e52118712c9e407ebaa2dbac360cdeb4e29827d545d0bb39f594280ba"
+        "docs/migration.md": "c2ef189a1edd56660fac1338c61ca946cd5e83865f9ce294cced3a027af89156"
       },
       "outcome": "updated",
-      "reason": "Adds the ai-dlc scaffold removed section with old command to replacement mapping and the note that scaffolded repositories are untouched.",
+      "reason": "Adds the ai-dlc scaffold removed section with old command to replacement mapping and the note that scaffolded repositories are untouched. Re-reviewed after merging main (rendering freeze #196/#197 and rendered skill removal #202).",
       "reviewer": "Claude (agent)",
       "target": "docs/migration.md"
     },
@@ -304,7 +304,7 @@
     {
       "bound": {
         "catalog:docs/workflows/tool-map.md": "d11334cb57c288aab7b01226790b7cc268a28991b3de5f97a98b9818d80be19e",
-        "docs/workflows/tool-map.md": "1fa724530b1353ed297ff19ab2587a9c49208325944a907d0d65354736c571be",
+        "docs/workflows/tool-map.md": "bfa403c4e8f7907ec081bb191b3cb23ace8c58249b265c8e90591f32e7fcc0cb",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
@@ -316,7 +316,7 @@
         "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
         "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
         "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
-        "src/ai_dlc/harness/agents.py": "a0f21d41d2f31ee08968086dff6a0b8c1bde27093714c0f0c46d6a35afd81c86",
+        "src/ai_dlc/harness/agents.py": "0757ce327050807470193a93e66fc1b28bd1ea5e0b8b41c0bc61166f8465bc07",
         "src/ai_dlc/harness/hooks.py": "3c7bf5b3faf26faa8eb568bba62ae887c4617be914041753d19200b88640adcb",
         "src/ai_dlc/mcp_server.py": "607eba3e47a8573862d83e5209e824b78ec0af74545fa51727b8d3f7c03db410",
         "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
@@ -336,12 +336,12 @@
         "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
         "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
         "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
-        "tests/test_rendering.py": "60114c219ed5a402486ff9d087bb0b5be27e9203c8899eafb9fda6ba56e1b941",
+        "tests/test_rendering.py": "e93897333125cff68ce69e9e8fc23f401d9e0740427b8c995975240350cea0ef",
         "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2",
         "tests/test_workflow.py": "eb987b1bf2ceadefd721ff04946069ea2e31bde253d58cb742cc2032534e5a8c"
       },
       "outcome": "updated",
-      "reason": "Removes the Legacy compatibility row for ai-dlc scaffold.",
+      "reason": "Removes the Legacy compatibility row for ai-dlc scaffold. Re-reviewed after merging main (rendering freeze #196/#197 and rendered skill removal #202).",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/tool-map.md"
     },
