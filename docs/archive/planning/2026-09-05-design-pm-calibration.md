@@ -21,9 +21,9 @@ contract at `189913b`; it does not change workflow behavior or require a new for
 specification. No actual experimental calls, paid runs or human ratings are
 included. Root owns global roadmap/release edits, integration and final delivery.
 
-Prepared: [six original case specifications](../../../agents/evaluations/design-pm/cases.json),
-[three-condition protocol](../../../agents/evaluations/design-pm/protocol.md), and
-[preparation evidence](../../verification/design-pm-evaluation.md). Four calibration
+Prepared: [six original case specifications](https://github.com/Sean-Koval/ai-dlc/blob/f5be4f4206a8469f17d4b54296e41e06a2d1a41e/agents/evaluations/design-pm/cases.json),
+[three-condition protocol](https://github.com/Sean-Koval/ai-dlc/blob/f5be4f4206a8469f17d4b54296e41e06a2d1a41e/agents/evaluations/design-pm/protocol.md), and
+[preparation evidence](https://github.com/Sean-Koval/ai-dlc/blob/f5be4f4206a8469f17d4b54296e41e06a2d1a41e/docs/verification/design-pm-evaluation.md). Four calibration
 and two held-out cases retain model-authored proposals and null human labels.
 Candidate stimuli/captures are specified but unbuilt; authoring them is additional
 local work before case freeze. They must not be represented as observed evidence.
@@ -48,7 +48,7 @@ to avoid concurrent disk-heavy suite runs. Record this partial scope honestly.
 
 After frozen preparation 995a39b, a separate local follow-up builds the six
 specified HTML inputs, original council kit and three actual screenshot-only
-captures. [Manifest and access rules](../../../agents/evaluations/design-pm/stimuli/README.md)
+captures. [Manifest and access rules](https://github.com/Sean-Koval/ai-dlc/blob/f5be4f4206a8469f17d4b54296e41e06a2d1a41e/agents/evaluations/design-pm/stimuli/README.md)
 record hashes and author browser observations. These are deliberately constructed
 inputs, not compared-model outputs. The case corpus retains the original proposal
 snapshot; the follow-up manifest owns construction status. Human labels, taste

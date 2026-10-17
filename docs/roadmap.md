@@ -52,14 +52,12 @@ before adding surface area.
    targets; unchanged decisions survive unrelated edits and target-branch movement.
    Use observed adoption friction to prioritize the remaining reductions, including
    the baseline's proposal for one pre-merge command.
-3. **Evaluation moves to flightdeck.** The runner, grader, report and skill
-   evaluation are frozen (bug fixes only) and handed to
-   [flightdeck](https://github.com/Sean-Koval/flightdeck) under ADR 0001; the
-   [handoff inventory and port notes](verification/end-to-end-evaluation.md#handoff-to-flightdeck)
-   list every moving file. The paired comparison planned in
-   [#138](https://github.com/Sean-Koval/ai-dlc/issues/138)–#140 happens in flightdeck,
-   and [#195](https://github.com/Sean-Koval/ai-dlc/issues/195) removes the AI-DLC copy
-   once flightdeck's ported runner has run.
+3. **Evaluation moved to flightdeck.** The runner, grader, report and skill
+   evaluation now live in [flightdeck](https://github.com/Sean-Koval/flightdeck)
+   under ADR 0001; AI-DLC's copy was removed in
+   [#195](https://github.com/Sean-Koval/ai-dlc/issues/195) and its last version is
+   tag `eval-handoff-2026-10`. The paired comparison planned in
+   [#138](https://github.com/Sean-Koval/ai-dlc/issues/138)–#140 happens there.
 
 Waiting on environments or decisions, not scheduled:
 [#53](https://github.com/Sean-Koval/ai-dlc/issues/53) native client, company and

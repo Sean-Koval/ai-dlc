@@ -191,15 +191,11 @@ Onboarding SHALL present explicit proposed setup prerequisites, check IDs, comma
 
 ### Requirement: BCO-03 Normal check runtime is a visible prerequisite
 
-Behavioral onboarding SHALL identify and verify the normal runner's mise prerequisite even for generic projects with an empty tools table, using existing runtime resolution and actionable unavailable-runtime behavior. It SHALL NOT replace a failed normal-runner invocation with direct shell execution as equivalent evidence. Evaluation preparation SHALL provide the required common check runtime in both comparison arms before a candidate ordinary required-check smoke, without invoking a model service or claiming completion of the deferred paid comparison.
+Behavioral onboarding SHALL identify and verify the normal runner's mise prerequisite even for generic projects with an empty tools table, using existing runtime resolution and actionable unavailable-runtime behavior. It SHALL NOT replace a failed normal-runner invocation with direct shell execution as equivalent evidence.
 
 #### Scenario: Generic project lacks mise
 - **WHEN** the selected runtime is absent from PATH and the bootstrap runtime location
 - **THEN** no check runs, the existing structured runtime-unavailable result names the remedy, and no passing receipt or successful onboarding claim is produced
-
-#### Scenario: Candidate preparation verifies the declared runner
-- **WHEN** a comparison base and candidate are prepared with their declared common runtime
-- **THEN** an offline candidate smoke executes `ai-dlc project check --required` and retains its actual result, while paid comparison, live billing and human quality findings remain pending
 
 ### Requirement: BCO-04 Demonstrate a behavioral regression only in isolated evidence
 

@@ -25,12 +25,6 @@ if json.loads((root / "contracts/knowledge-note.schema.json").read_text()) != (
     knowledge_note_schema()
 ):
     raise SystemExit("Generated schema is stale: knowledge-note.schema.json")
-from ai_dlc.verification.evaluation.contracts import SCHEMAS
-
-for name, model in SCHEMAS.items():
-    path = root / "contracts/evaluation" / f"{name}.schema.json"
-    if not path.is_file() or json.loads(path.read_text()) != model.model_json_schema():
-        raise SystemExit(f"Generated schema is stale: evaluation/{path.name}")
 for relative in ["scripts/bootstrap.sh", "bootstrap/versions.sh", "bootstrap/download.sh"]:
     if (root / relative).read_bytes() != (
         root / "project-templates/project" / relative
