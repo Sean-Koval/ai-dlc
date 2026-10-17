@@ -1,7 +1,7 @@
 # client-rendering-freeze Specification
 
 ## Purpose
-TBD - created by archiving change freeze-client-rendering. Update Purpose after archive.
+Keep AI-DLC client rendering to local repositories and CI, leave cloud sandbox rendering to hangar, gate required hooks on a client version floor rather than exact fixtures, and keep client pins aligned with hangar's harness lock.
 ## Requirements
 ### Requirement: CR-01 Execution targets are local and CI only
 `project setup --target` and `doctor --target` SHALL accept only the `local` and `github-actions` execution targets. Any other target, including the removed `devcontainer`, `codex-cloud` and `claude-cloud`, SHALL be refused before any setup step, journal write or render, with a message that names the supported targets and, for cloud targets, that hangar renders cloud sandboxes at claim time.
