@@ -272,8 +272,10 @@ configuration without executing the command. URLs, headers, environment values,
 credential arguments and machine paths are refused. Hook content is only
 `features = ["session-context"]` or other existing `bound-push` and
 `stop-reminder` features. Arbitrary shell hooks are refused. The selected client's
-configured version must already support those features in AI-DLC's capability
-matrix. A source may select `bound-push`, but cannot supply its policy:
+configured version must be at least the client's hook floor in AI-DLC's capability
+matrix (`claude-code` 2.1.0, `codex` 0.151.0); an unset version is accepted with a
+warning. Machine provisioning pins `claude-code` 2.1.296 and `codex` 0.162.1, copied
+from hangar's harness lock; provisioning does not upgrade an existing install. A source may select `bound-push`, but cannot supply its policy:
 `agents.bound_push_policy` belongs only in the project’s shared `ai-dlc.toml`.
 Personal and machine layers also cannot set it. Omission preserves strict
 `all-branches`; an explicit project choice of `tracked-branches` permits the

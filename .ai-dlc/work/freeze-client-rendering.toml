@@ -1,0 +1,42 @@
+schema = 1
+id = "freeze-client-rendering"
+title = "Freeze client rendering targets and replace exact hook version gating with a floor"
+scope = "Remove the unused render target parameter and the devcontainer, codex-cloud and claude-cloud execution targets, refuse them with a hangar pointer, replace exact client-version hook fixtures with a per-client minimum version and align client pins with hangar's harness lock. Exclude managed-section extraction, a shared adapter library, the capabilities file rename and automatic lock synchronization."
+requires_spec = true
+spec_reason = "Removes accepted execution targets and changes when required hooks render; formal scenarios define the refusal and floor semantics."
+acceptance = [
+    "render_agents, _render_agents and render_windows accept no target parameter, and agents render --check stays clean on this repository.",
+    "project setup --target codex-cloud refuses with a message naming hangar and the supported targets.",
+    "A claude-code version of 2.1.296 with required stop-reminder renders; 1.9.0 refuses with requires claude-code >= 2.1.0; an unset version renders with a warning.",
+    "modules/catalog.toml pins claude-code 2.1.296 and codex 0.162.1 with a source comment, and scripts/check_client_pins.py diffs them against a given lock.",
+    "The freeze comment and the ADR 0001 line exist; migration notes cover removed targets, the hook floor and the pins.",
+]
+reviewed = true
+depends_on = []
+requirements = [
+    "CR-01",
+    "CR-02",
+    "CR-03",
+    "CR-04",
+]
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+brief = "docs/decisions/0001-refocus-ai-dlc.md"
+spec = "openspec/changes/archive/2026-10-17-freeze-client-rendering"
+plan = "openspec/changes/archive/2026-10-17-freeze-client-rendering/tasks.md"
+branch = "issue/196-render-target"
+tracker = "196"
+
+[bindings]
+specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
+scm = "2bd3db7c9bf390039ca6ad39d0d227d92339372aaf837a8b2a06250c5c12503d"
+deploy = "f5f42b95ae065ca5c0c7c3b9a6bc2ceee0d34e42b505a711d3cbb66b44d0cf2d"
+knowledge = "28ca66580437daadd63929abd63c2bedd34b5e0212f2d94a9c8fcd653e711852"
+tracker = "d5d6f3842ab3093be5c24d87bfb69956d742a766fde59ec7a1918bc36aee8b8b"

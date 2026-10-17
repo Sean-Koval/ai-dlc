@@ -191,9 +191,7 @@ class WindowsRenderState:
         )
 
 
-def render_windows(
-    root: Path, apply: bool = False, client: str | None = None, target: str = "local"
-) -> dict[str, Any]:
+def render_windows(root: Path, apply: bool = False, client: str | None = None) -> dict[str, Any]:
     from ai_dlc.harness.agents import _render_agents, _selected_bundle_ids
     from ai_dlc.locking import project_write_lock
 
@@ -204,7 +202,7 @@ def render_windows(
         ownership = json.loads(state.read(".ai-dlc/agent-ownership.json") or b"{}")
         if _selected_bundle_ids(config) or ownership.get("bundle_files"):
             raise ValueError("vendored workflow bundles are not supported on native Windows")
-        result = _render_agents(state.root, apply=apply, client=client, target=target, state=state)
+        result = _render_agents(state.root, apply=apply, client=client, state=state)
         if not apply:
             state.verify_files()
         return result
