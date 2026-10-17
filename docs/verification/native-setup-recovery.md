@@ -6,9 +6,9 @@ repeat source bootstrap and one controlled bundle publication failure followed b
 recovery. They do not complete Q01–03, account or vault readiness, container
 coverage, or fresh native model-client qualification.
 
-The [report](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/verification/native-setup-recovery-189913b/report.json) references redacted
-[bootstrap captures](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/verification/native-setup-recovery-189913b/bootstrap.json) and
-[recovery captures](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/verification/native-setup-recovery-189913b/recovery.json). Each artifact
+The [report](https://github.com/Sean-Koval/ai-dlc/blob/fa867cc21eb5b435b2dd5102245d217b89eccf85/docs/archive/verification/native-setup-recovery-189913b/report.json) references redacted
+[bootstrap captures](https://github.com/Sean-Koval/ai-dlc/blob/fa867cc21eb5b435b2dd5102245d217b89eccf85/docs/archive/verification/native-setup-recovery-189913b/bootstrap.json) and
+[recovery captures](https://github.com/Sean-Koval/ai-dlc/blob/fa867cc21eb5b435b2dd5102245d217b89eccf85/docs/archive/verification/native-setup-recovery-189913b/recovery.json). Each artifact
 includes the exact historical probe text after disclosed path redaction, raw
 capture hashes, commands, outcomes and filesystem hash snapshots. The probes are
 historical evidence, not a supported execution interface. No production source or

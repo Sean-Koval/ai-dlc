@@ -207,27 +207,6 @@ owner = "repository-maintainers"
 status = "archived"
 
 [[documents]]
-id = "repo-archive-legacy-phase-1-rust"
-path = "docs/archive/legacy/phase-1-rust.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-legacy-restructure-plan"
-path = "docs/archive/legacy/restructure-plan.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-legacy-rust-evolution-plan"
-path = "docs/archive/legacy/rust-evolution-plan.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
 id = "repo-archive-planning-2026-09-03-portable-profile-enrollment-design"
 path = "openspec/changes/archive/2026-09-03-portable-profile-enrollment/historical-design.md"
 kind = "reference"
@@ -321,48 +300,6 @@ status = "archived"
 [[documents]]
 id = "repo-archive-planning-tracker-adapter-follow-through"
 path = "docs/archive/planning/tracker-adapter-follow-through.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-research-awesome_claude_framework"
-path = "docs/archive/research/awesome_claude_framework.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-research-claude_architecture"
-path = "docs/archive/research/claude_architecture.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-research-claude_components_workflow_analysis"
-path = "docs/archive/research/claude_components_workflow_analysis.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-research-jinja2_template_generation"
-path = "docs/archive/research/jinja2_template_generation.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-research-repository_command_workflow_analysis"
-path = "docs/archive/research/repository_command_workflow_analysis.md"
-kind = "reference"
-owner = "repository-maintainers"
-status = "archived"
-
-[[documents]]
-id = "repo-archive-research-super_claude_framework"
-path = "docs/archive/research/super_claude_framework.md"
 kind = "reference"
 owner = "repository-maintainers"
 status = "archived"
@@ -915,8 +852,8 @@ path = "docs/verification/end-to-end-evaluation.md"
 kind = "reference"
 owner = "repository-maintainers"
 status = "active"
-code_paths = ["src/ai_dlc/verification/evaluation/__init__.py", "src/ai_dlc/verification/evaluation/attempt.py", "src/ai_dlc/verification/evaluation/contracts.py", "src/ai_dlc/verification/evaluation/budgets.py", "src/ai_dlc/verification/evaluation/drivers.py", "src/ai_dlc/verification/evaluation/evaluate.py", "src/ai_dlc/verification/evaluation/git_observer.py", "src/ai_dlc/verification/evaluation/image.py", "src/ai_dlc/verification/evaluation/planning.py", "src/ai_dlc/verification/evaluation/report.py", "src/ai_dlc/verification/evaluation/run.py", "evaluations/README.md", "evaluations/images/claude-code.json", "evaluations/suites/smoke.json", "evaluations/suites/real-client.json", "evaluations/profiles/local-deterministic.json", "contracts/evaluation/base-image.schema.json"]
-verification_paths = ["tests/test_evaluation_planning.py", "tests/test_evaluation_attempt.py", "tests/test_evaluation_run.py", "tests/test_evaluation_report.py", "tests/test_evaluation_image.py", "tests/test_evaluation_driver.py", "tests/test_evaluation_claude.py", "tests/test_evaluation_budgets.py", "tests/test_evaluation_git_observer.py", "tests/fixtures/evaluation/claude-code-2.1.220.jsonl", "tests/test_evaluation_egress.py", "tests/test_evaluation_base_image.py"]
+code_paths = ["src/ai_dlc/verification/evaluation/__init__.py", "src/ai_dlc/verification/evaluation/attempt.py", "src/ai_dlc/verification/evaluation/contracts.py", "src/ai_dlc/verification/evaluation/budgets.py", "src/ai_dlc/verification/evaluation/drivers.py", "src/ai_dlc/verification/evaluation/evaluate.py", "src/ai_dlc/verification/evaluation/git_observer.py", "src/ai_dlc/verification/evaluation/image.py", "src/ai_dlc/verification/evaluation/planning.py", "src/ai_dlc/verification/evaluation/report.py", "src/ai_dlc/verification/evaluation/run.py", "evaluations/README.md", "evaluations/images/claude-code.json", "evaluations/suites/smoke.json", "evaluations/suites/real-client.json", "evaluations/profiles/local-deterministic.json", "contracts/evaluation/base-image.schema.json", "src/ai_dlc/verification/evaluation/FROZEN.md"]
+verification_paths = ["tests/test_eval_handoff.py", "tests/test_evaluation_planning.py", "tests/test_evaluation_attempt.py", "tests/test_evaluation_run.py", "tests/test_evaluation_report.py", "tests/test_evaluation_image.py", "tests/test_evaluation_driver.py", "tests/test_evaluation_claude.py", "tests/test_evaluation_budgets.py", "tests/test_evaluation_git_observer.py", "tests/fixtures/evaluation/claude-code-2.1.220.jsonl", "tests/test_evaluation_egress.py", "tests/test_evaluation_base_image.py"]
 requirements = ["openspec/specs/end-to-end-evaluation/spec.md", "openspec/specs/portable-development/spec.md"]
 
 [[documents]]

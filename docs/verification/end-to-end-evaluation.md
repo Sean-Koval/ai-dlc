@@ -6,6 +6,130 @@ tests the attempt can never read, and reports the difference. It is a maintainer
 tool. Its inputs live in [`evaluations/`](https://github.com/Sean-Koval/ai-dlc/blob/main/evaluations/README.md), outside
 the wheel.
 
+## Handoff to flightdeck
+
+Frozen 2026-10; moving to Sean-Koval/flightdeck
+([flightdeck#17](https://github.com/Sean-Koval/flightdeck/issues/17) ports the
+contracts, [flightdeck#18](https://github.com/Sean-Koval/flightdeck/issues/18) the
+local Docker runner). Bug fixes only. Tag `eval-handoff-2026-10` marks the last
+version to copy or `git subtree split` from;
+[#195](https://github.com/Sean-Koval/ai-dlc/issues/195) removes everything below once
+flightdeck's ported runner has run on the csv-validator fixture.
+`tests/test_eval_handoff.py` checks that every path in the inventory exists.
+
+### Inventory
+
+Code:
+
+- `src/ai_dlc/verification/evaluation/__init__.py`
+- `src/ai_dlc/verification/evaluation/attempt.py`
+- `src/ai_dlc/verification/evaluation/budgets.py`
+- `src/ai_dlc/verification/evaluation/contracts.py`
+- `src/ai_dlc/verification/evaluation/drivers.py`
+- `src/ai_dlc/verification/evaluation/evaluate.py`
+- `src/ai_dlc/verification/evaluation/git_observer.py`
+- `src/ai_dlc/verification/evaluation/image.py`
+- `src/ai_dlc/verification/evaluation/planning.py`
+- `src/ai_dlc/verification/evaluation/report.py`
+- `src/ai_dlc/verification/evaluation/run.py`
+- `src/ai_dlc/verification/evaluation/FROZEN.md`
+- `src/ai_dlc/harness/skill_evaluation.py`
+- `src/ai_dlc/providers/evaluation_api.py`
+- `scripts/run_skill_evaluation.py`
+
+Shared helper, copied rather than moved because provider conformance
+(`verification/sandbox.py`) also runs it:
+
+- `src/ai_dlc/verification/test_proxy.py`
+
+Contracts, generated from `contracts.py` `SCHEMAS` and checked by
+`scripts/check_generated.py`:
+
+- `contracts/evaluation/base-image.schema.json`
+- `contracts/evaluation/event.schema.json`
+- `contracts/evaluation/profile.schema.json`
+- `contracts/evaluation/report.schema.json`
+- `contracts/evaluation/scenario.schema.json`
+
+Assets:
+
+- `evaluations/` (suites, profiles, images, `fixtures/csv-validator`,
+  `hidden/csv-validator`)
+- `agents/evaluation.toml`
+- `agents/evaluation-scenarios.json`
+- `agents/evaluations/design-pm/`
+- `agents/evaluations/product-delivery/`
+
+Tests:
+
+- `tests/test_evaluation_attempt.py`
+- `tests/test_evaluation_base_image.py`
+- `tests/test_evaluation_budgets.py`
+- `tests/test_evaluation_claude.py`
+- `tests/test_evaluation_driver.py`
+- `tests/test_evaluation_egress.py`
+- `tests/test_evaluation_git_observer.py`
+- `tests/test_evaluation_image.py`
+- `tests/test_evaluation_planning.py`
+- `tests/test_evaluation_report.py`
+- `tests/test_evaluation_run.py`
+- `tests/test_skill_evaluation.py`
+- `tests/test_design_pm_evaluation.py`
+- `tests/test_design_pm_stimuli.py`
+- `tests/test_product_delivery_evaluation.py`
+- `tests/fixtures/evaluation/claude-code-2.1.220.jsonl`
+
+Specifications and documents:
+
+- `openspec/specs/end-to-end-evaluation/spec.md`
+- `openspec/specs/skill-evaluation/spec.md`
+- `docs/verification/end-to-end-evaluation.md`
+- `docs/verification/skill-evaluation.md`
+- `docs/verification/design-pm-evaluation.md`
+- `docs/verification/product-delivery-evaluation.md`
+- `evaluations/README.md`
+- the `ai-dlc eval` row in `docs/workflows/tool-map.md`
+
+### Port notes
+
+- **Contract mapping.** A `Scenario` (`goal`, `fixture{path, digest, hidden}`,
+  `answers`, `assertions`, `limits`, `arms`) becomes a Harbor-compatible task
+  directory: the hidden fixture becomes `tests/`, the fixture becomes the
+  environment, `answers` become bounded replies (an unmatched question is
+  needs-input), and `arms` become variants. Assertion kinds map to trace predicates
+  over `hangar.trace/v1`: `commit-present`, `path-committed` and `ordering` (from
+  `git_observer.py`) to predicates over git commit events and changed files;
+  `artifact-present` to a path predicate over the collected tree; `hidden-tests` to
+  the task grader; and the `quality` dimension (kind `human-review`) stays `pending`
+  and human-recorded. `ArmReport.outcome` keeps `infrastructure` (infra error),
+  `product` (unresolved) and `workflow-violation` (spec failure) separate;
+  `unavailable` means unknown. Absent mandatory evidence never passes, and
+  transcripts are never evidence (`evaluate.py`).
+- **Keep.** Per-attempt volumes and networks; `--cap-drop=ALL`; digest-pinned
+  images that are never pulled; egress only through the allow-list proxy (port 443,
+  names resolved once, non-global addresses refused); the deterministic git anchor
+  in `git_observer.py`; hidden tests graded in a separate container the attempt
+  never sees; and the evidence manifest with redaction in `report.py`.
+- **Drop.** The OpenAI Responses-API prompt evaluation (`evaluation_api.py`,
+  `agents/evaluation.toml` `api_url` and `model = "gpt-5.6-sol"`,
+  `scripts/run_skill_evaluation.py`, `skill_evaluation.py`). It evaluates a prompt,
+  not a harness; `claude plugin eval` is the skill unit-test layer instead. The
+  `agents/evaluations/` case corpora are seed material, not code to port.
+- **Internal coupling.** The runner imports only `ai_dlc.verification.evaluation.*`.
+  It reads `verification/test_proxy.py` as a file (`attempt.py` `PROXY_SOURCE`) and
+  runs it inside the proxy container; it does not import it.
+  `skill_evaluation.py` imports only `providers.evaluation_api`. The port needs no
+  other AI-DLC module.
+- **Sealed partitions.** The design-pm and product-delivery corpora carry HTML
+  stimuli and calibration/held-out partitions (`tests/test_design_pm_evaluation.py`
+  checks they are disjoint). Flightdeck must keep held-out ids sealed, and must
+  treat this copy as already exposed: it has been in a public repository.
+- **Stale fixture.** `tests/fixtures/evaluation/claude-code-2.1.220.jsonl` predates
+  hangar's pinned Claude Code 2.1.296; re-record it in flightdeck.
+- **Secrets.** None of these assets holds a credential: profiles name environment
+  variables only (`Profile.credentials`), and `evaluations/profiles/*` contain no
+  keys.
+
 ## Current evidence and its limit
 
 As of September 19, 2026 the runner, grader, report and candidate-image recipe

@@ -163,4 +163,4 @@ is a machine-level setup step, not something repeated by project bootstrap.
 - [Toolset setup spec](https://github.com/Sean-Koval/ai-dlc/blob/main/openspec/changes/archive/2026-09-08-provider-toolset-onboarding/specs/provider-toolset-onboarding/spec.md)
 - [Tracker adapter spec](https://github.com/Sean-Koval/ai-dlc/blob/main/openspec/specs/portable-tracker-adapters/spec.md)
 - [Migration spec](https://github.com/Sean-Koval/ai-dlc/blob/main/openspec/specs/selective-tracker-migration/spec.md)
-- [Publication spec](https://github.com/Sean-Koval/ai-dlc/blob/main/openspec/changes/team-document-publication/specs/team-document-publication/spec.md)
+- [Publication spec](https://github.com/Sean-Koval/ai-dlc/blob/main/openspec/changes/archive/2026-10-17-team-document-publication-cancelled/specs/team-document-publication/spec.md)

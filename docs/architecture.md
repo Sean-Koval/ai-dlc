@@ -190,7 +190,7 @@ services share contracts; provider details stay inside adapters.
 utility entry points. `scripts/cloud/` holds hosted-agent setup shims that bootstrap the checkout with the local target; `scripts/check_client_pins.py` compares the module catalog's client pins with hangar's harness lock. The obsolete unlocked `check_env.sh`
 installer, the historical Rust crate with its embedded template mirror, and the
 script that synchronised them have been removed; the retired Rust plans remain in
-`docs/archive/legacy/`.
+git history before tag `docs-prune-2026-10`.
 The legacy `templates/` scaffold, its `ai-dlc scaffold` command and the stale root
 `copier.yml` were removed; `project init` and `project adopt` copy the packaged
 `project-templates/`. Packaged assets must not contain vendored trees or personal

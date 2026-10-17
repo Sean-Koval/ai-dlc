@@ -32,8 +32,8 @@ deploy = "none"
 
 [artifacts]
 brief = "docs/product-direction.md"
-spec = "openspec/changes/native-harness-verification"
-plan = "openspec/changes/native-harness-verification/tasks.md"
+spec = "openspec/changes/archive/2026-10-17-native-harness-verification-cancelled"
+plan = "openspec/changes/archive/2026-10-17-native-harness-verification-cancelled/tasks.md"
 branch = "codex/native-harness-verification"
 tracker = "175"
 

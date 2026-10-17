@@ -1,0 +1,26 @@
+schema = 1
+id = "docs-openspec-prune"
+title = "Prune docs/archive and out-of-scope OpenSpec changes and freeze documentation growth"
+scope = "Delete the Rust-era plans, template research and two byte-for-byte evidence captures from docs/archive, repoint their links at the pre-prune commit, archive the team-document-publication and native-harness-verification changes as cancelled, add the OpenSpec and documentation growth freeze to AGENTS.md and openspec/config.yaml, and remove evidence files no current target uses. Evaluation docs and specs are left for #195."
+requires_spec = false
+spec_reason = "Documentation and specification housekeeping only; no runtime behavior or requirement changes, and cancelled changes keep their text in the archive."
+acceptance = [
+    "du -sh docs/archive is at most 400 KB and the archive README points older material at tag docs-prune-2026-10.",
+    "No current document links to a deleted path; evidence links point at the pre-prune commit.",
+    "openspec list shows only windows-native-setup active; both cancelled changes carry CANCELLED.md.",
+    "ai-dlc docs gate and ai-dlc work validate --all pass, with the native-harness-verification record pointing at the archived change.",
+]
+reviewed = true
+depends_on = []
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+branch = "issue/204-prune-archive"
+tracker = "204"
