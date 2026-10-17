@@ -30,3 +30,10 @@ for relative in ["scripts/bootstrap.sh", "bootstrap/versions.sh", "bootstrap/dow
         root / "project-templates/project" / relative
     ).read_bytes():
         raise SystemExit(f"Packaged bootstrap is stale: {relative}")
+import runpy
+
+stale_plugin = runpy.run_path(str(root / "scripts/build_workflow_plugin.py"))["drift"](root)
+if stale_plugin:
+    raise SystemExit(
+        "Workflow plugin is stale; run scripts/build_workflow_plugin.py: " + ", ".join(stale_plugin)
+    )

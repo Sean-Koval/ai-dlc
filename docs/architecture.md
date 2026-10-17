@@ -161,6 +161,21 @@ packaged assets must not contain vendored trees or personal machine paths.
 Do not delete subprocess entry points or assets merely because imports do not
 reference them directly.
 
+### Workflow plugin
+
+Guidance, hooks and skills reach agents through two paths. `ai-dlc agents render`
+writes them into adopted repositories: the AGENTS.md managed section, hooks that
+run the hidden CLI-only `ai-dlc hook` command (so they require the CLI) and skill
+copies. `scripts/build_workflow_plugin.py` packages the same sources as the
+optional Claude Code plugin committed at `plugins/ai-dlc-workflow/`, the
+distribution path for team harnesses and sandboxes. It reuses the skill lock and
+shared guidance, writes per-component digests to `plugin.lock.json`, and runs as a
+drift check inside `scripts/check_generated.py`. The plugin hooks run
+`harness/hook_shim.py`, a standard-library copy that delegates to `ai-dlc hook`
+only in adopted repositories with the CLI outside hangar, and otherwise denies
+only destructive commands; `harness/hooks.py` imports its classifier. See the
+[plugin README](../plugins/ai-dlc-workflow/README.md).
+
 ### FDE engagement documents
 
 `documentation/fde.py` owns local engagement generation and stage checks behind

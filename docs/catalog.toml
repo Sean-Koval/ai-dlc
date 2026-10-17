@@ -26,6 +26,7 @@ code_paths = [
     "src/ai_dlc/**/*.py",
     "scripts/*.py",
     "pyproject.toml",
+    "plugins/ai-dlc-workflow/**",
 ]
 verification_paths = [
     "tests/test_consumer_onboarding.py",
