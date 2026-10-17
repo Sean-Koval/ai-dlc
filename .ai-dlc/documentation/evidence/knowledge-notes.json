@@ -30,7 +30,7 @@
     {
       "bound": {
         "catalog:docs/architecture.md": "e957dcf74f6dcbe53ce40caf58a8cd486ee04461b47279540cdccaa4680c445a",
-        "docs/architecture.md": "3969d7817be16909256a1e18f9c6c69f320358fbbc923ba30d805b74cf5c44f6",
+        "docs/architecture.md": "c4644fe15108e496836c1f8dfbfd59e44bdaf632d309294af24c353437e56466",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/tracker-adapter-boundary/spec.md": "dd8886e122156c514768387930c3534d882b4672552eeb2aca62507fa6ab2a58",
@@ -52,6 +52,7 @@
         "plugins/ai-dlc-workflow/skills/spec-from-prd/SKILL.md": "f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce",
         "pyproject.toml": "296acf5ff015bc4aaf17576c4210e8c69988beb35e11507250a45c0dc534e4d5",
         "scripts/build_workflow_plugin.py": "97636e8c0b1ef5d8f25083e9c8badecceddd061763b84011e1ec1ab987a1c5e0",
+        "scripts/check_client_pins.py": "c0b4030b6767aee44975556f11a2c0dcf2b5aa67e232ec6182c1247630f53c8c",
         "scripts/check_generated.py": "4a140903555cb50fa83227fda763f2f0dcac66eecdd89165626c88c7ee240a61",
         "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
         "scripts/qualify_framework.py": "8068bb2709bbf6b3a020e9c22d62b993cc0e8a3e3c9ee5c00dc4b8963c31054e",
@@ -103,7 +104,7 @@
         "src/ai_dlc/errors.py": "b8c0da78ec0e9ea75ef71b4495b501570625988ba5ae54c4631f1ca20a8362c1",
         "src/ai_dlc/files.py": "eb0452e50442cdf9da231a56111afec1d45b4bc5b7a41a00931a540e88ad14da",
         "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
-        "src/ai_dlc/harness/agents.py": "a0f21d41d2f31ee08968086dff6a0b8c1bde27093714c0f0c46d6a35afd81c86",
+        "src/ai_dlc/harness/agents.py": "0757ce327050807470193a93e66fc1b28bd1ea5e0b8b41c0bc61166f8465bc07",
         "src/ai_dlc/harness/components.py": "b64cd2ae837f83a37ddd1c74dad25fcd16fe8733715c224c7d64673784ebba11",
         "src/ai_dlc/harness/design_capture.py": "8b872492b88f4a7728bedf0ae8a1edaad2312a918248bf8f5d051c8bd8b42a58",
         "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
@@ -113,7 +114,7 @@
         "src/ai_dlc/harness/skill_evaluation.py": "73ded6785d5d0ff53f5f44ba4d1ede7406f367635676c269d5044358030ebc2e",
         "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
         "src/ai_dlc/harness/user_agents.py": "c99f9a52a379feaa0c1721081b95fef91f51c44f0a9e906145de51154616e937",
-        "src/ai_dlc/harness/windows_render.py": "5845e483eba550331f0a6777fcd7a3b9c13c90af071ac6df5962ffc3b090b978",
+        "src/ai_dlc/harness/windows_render.py": "8aa76c8aacc44d28a2117b3339ad7b632b91fdbe0a5557af50228dcd2aa0eeb0",
         "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
         "src/ai_dlc/locking.py": "e3c5dbe1a98d3402352bc8a3c3a031106e8dd515e060a676803d734d8dee99dd",
         "src/ai_dlc/mcp_server.py": "1d4fb076add151ee1161fbffe518c0764b08940055a86f6db2204ab3910cb2d5",
@@ -137,11 +138,12 @@
         "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
         "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
         "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
-        "src/ai_dlc/setup/project.py": "09464c89f569a337aaa77d1604404273808636323635bcd00bb05e0f74c7ad9e",
+        "src/ai_dlc/setup/project.py": "d36f7b1bcfda5176ffda62de03dfcdd61226f7c973609030665815245f258b00",
         "src/ai_dlc/setup/provider_onboarding.py": "1041a3ef5127239945d3ae386705acc7814f12a6c05205bc345edf7ab973bbb4",
-        "src/ai_dlc/setup/provision.py": "97c513f4ab21c66b064ceb6bfb6f34683e9340246208525ba109fe36bc9a1ff7",
+        "src/ai_dlc/setup/provision.py": "1e29f9b9927fd187a28a90e962ad966599a64f45e5c22b45b945dee25731d03b",
         "src/ai_dlc/setup/readiness.py": "e0984a1f504ee87f3c4c1939624b34ccfe2fd6b7315df365166e95ff3b975d55",
         "src/ai_dlc/setup/rebind.py": "812aa473b3cb92d81eb98c288ab1124f1fe0a62039559ecbd2eeb2349698ef15",
+        "src/ai_dlc/setup/targets.py": "11979b487ab5604eb05f49ab7c7eca1bfda796f25acc1dc489cdc9e7ccc4a9aa",
         "src/ai_dlc/setup/templates.py": "258154a7eeec73d8207bbb082e7f06be8ab649811a91b9a462555724dd664e58",
         "src/ai_dlc/setup/tracker_targets.py": "b04533ac254bde0aa7bddf083097d815153998f15b1042645ac4ffc38f848319",
         "src/ai_dlc/setup/workstation.py": "8ac8f2467ee925392f777e15d921ad79da8a10c94267bbd30f5386455db4e8d2",
@@ -177,7 +179,7 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "updated",
-      "reason": "Merged main's architecture text with this change's documentation/ row (decision checks, knowledge-note schema module).",
+      "reason": "Merged main's render-target changes with this change's documentation/ row (decision checks, knowledge-note schema module).",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
@@ -193,10 +195,10 @@
     {
       "bound": {
         "catalog:docs/decisions/0001-refocus-ai-dlc.md": "d0bc4af5a1f28e54c15f94e41119aef22ff31702e8648dd3968f24256834cbc7",
-        "docs/decisions/0001-refocus-ai-dlc.md": "6bd53ef52bf97c11e5164d1ff45af1aa09a74725a42202cfcff85514952e7030"
+        "docs/decisions/0001-refocus-ai-dlc.md": "2a0ca02412c827b1bc76df4426513441f13f96804540ba4b4b0e46239ca0d3a7"
       },
       "outcome": "updated",
-      "reason": "Back-filled knowledge-note frontmatter (status accepted, PR #209 source) in place of the plain-text header; decision text unchanged.",
+      "reason": "Main's #196 wording merged with this change's back-filled knowledge-note frontmatter; decision content unchanged here.",
       "reviewer": "Claude (agent)",
       "target": "docs/decisions/0001-refocus-ai-dlc.md"
     },
@@ -260,11 +262,11 @@
         "project-templates/project/tests/test_main.py": "4e6ac9def60ea5a6aef9e004c465cc439acac4b33e4f70df332939f0cdfae63d",
         "src/ai_dlc/cli.py": "25e4304917374c3fcd3ff559b391c3cdf6bfcb36e0345e0f3194f78583838c1e",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
-        "src/ai_dlc/harness/agents.py": "a0f21d41d2f31ee08968086dff6a0b8c1bde27093714c0f0c46d6a35afd81c86",
+        "src/ai_dlc/harness/agents.py": "0757ce327050807470193a93e66fc1b28bd1ea5e0b8b41c0bc61166f8465bc07",
         "src/ai_dlc/harness/hooks.py": "b50bf047573f4735861bb091d97cd8467af16729610ddd63e97d81fffc39e9bc",
         "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
         "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
-        "src/ai_dlc/setup/project.py": "09464c89f569a337aaa77d1604404273808636323635bcd00bb05e0f74c7ad9e",
+        "src/ai_dlc/setup/project.py": "d36f7b1bcfda5176ffda62de03dfcdd61226f7c973609030665815245f258b00",
         "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
         "src/ai_dlc/work/workflow.py": "5e9e38621e3062351ca81d54982f481a4fb37110d247fd82c51a927ed8c9b17b",
         "tests/test_agents_phases.py": "e5325bdc3c072a10e27bbf019ce51f586b0b7b9d76aa95ff8652dd09bc3c8570",
@@ -274,14 +276,14 @@
         "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
         "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
         "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
-        "tests/test_project.py": "0863470fa695afffc68bba51602585cd2539174cc9a8599a7cf838773f170b93",
-        "tests/test_rendering.py": "f65984f261a446da8af4ecae03034d60487149b764775547e3b3d8da83831459",
+        "tests/test_project.py": "2ebeb723433cfb53bf8e20b337d5016058e75a181b9ed0035203a14759a162ba",
+        "tests/test_rendering.py": "e93897333125cff68ce69e9e8fc23f401d9e0740427b8c995975240350cea0ef",
         "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2",
         "tests/test_templates.py": "0b50552b08ecb4ff3ba8a37aac2b331f9d25ec200b5104a594d8f6e430ec7ece",
         "tests/test_workflow.py": "c60af46adb6cceb3160b1c34945d3b579e4ce42be7e24cad65fa24bd215d80a1"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Rendered skill copies were removed on main; this change's finish/hook/learning edits do not alter the delivery workflow.",
+      "reason": "Changes come from main's render-target work and this change's learning provenance; the delivery workflow text still holds.",
       "reviewer": "Claude (agent)",
       "target": "docs/development-workflow.md"
     },
@@ -330,7 +332,7 @@
     {
       "bound": {
         "catalog:docs/runbooks/machine-enrollment.md": "5749f500521eba18b71290a6e63d8abcc82967ef13035e34b90406b7c67b26ee",
-        "docs/runbooks/machine-enrollment.md": "817db5365ce2786515ecce389d4873ad766ea905adc14ad70ea823ceca3197b5",
+        "docs/runbooks/machine-enrollment.md": "78b8e7d343005080aafaf047c19fdb0e2ed3dfe860b079481897cacc91e5c019",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
@@ -351,7 +353,7 @@
         "src/ai_dlc/environment/source_schema.py": "929944f86aef4a0aa2e257f3fbb4bee26ce07c522ed2eb35c2e1bbba38ec44d0",
         "src/ai_dlc/environment/team_sources.py": "20d583a9046adfac9f0f5bf6de7aca537654eb29d0ff636c27f5a78c7c5c21a6",
         "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
-        "src/ai_dlc/harness/agents.py": "a0f21d41d2f31ee08968086dff6a0b8c1bde27093714c0f0c46d6a35afd81c86",
+        "src/ai_dlc/harness/agents.py": "0757ce327050807470193a93e66fc1b28bd1ea5e0b8b41c0bc61166f8465bc07",
         "src/ai_dlc/harness/hooks.py": "b50bf047573f4735861bb091d97cd8467af16729610ddd63e97d81fffc39e9bc",
         "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
         "src/ai_dlc/providers/teamai.py": "ff7a781abcaeeca1c978f9472502156e31a1fc6d192ac50e1e489d333b77a5e6",
@@ -367,7 +369,7 @@
         "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
         "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
         "tests/test_native_harnesses.py": "e008d4773dccfa2662942561b24df4fdb6c15f637683d5fbdfaf59240e9bb5cc",
-        "tests/test_rendering.py": "f65984f261a446da8af4ecae03034d60487149b764775547e3b3d8da83831459",
+        "tests/test_rendering.py": "e93897333125cff68ce69e9e8fc23f401d9e0740427b8c995975240350cea0ef",
         "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2"
       },
       "outcome": "reviewed-no-change",
@@ -378,7 +380,7 @@
     {
       "bound": {
         "catalog:docs/workflows/tool-map.md": "d11334cb57c288aab7b01226790b7cc268a28991b3de5f97a98b9818d80be19e",
-        "docs/workflows/tool-map.md": "ef1dd7c4a776eca64cca07c2a387b26d15da68e81873173288c383109395c5e5",
+        "docs/workflows/tool-map.md": "f208d5af4eb00cc247e9d283747f98bae011ec08c8fc71a5ece433654f8531d9",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
@@ -390,7 +392,7 @@
         "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
         "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
         "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
-        "src/ai_dlc/harness/agents.py": "a0f21d41d2f31ee08968086dff6a0b8c1bde27093714c0f0c46d6a35afd81c86",
+        "src/ai_dlc/harness/agents.py": "0757ce327050807470193a93e66fc1b28bd1ea5e0b8b41c0bc61166f8465bc07",
         "src/ai_dlc/harness/hooks.py": "b50bf047573f4735861bb091d97cd8467af16729610ddd63e97d81fffc39e9bc",
         "src/ai_dlc/mcp_server.py": "1d4fb076add151ee1161fbffe518c0764b08940055a86f6db2204ab3910cb2d5",
         "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
@@ -410,12 +412,12 @@
         "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
         "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
         "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
-        "tests/test_rendering.py": "f65984f261a446da8af4ecae03034d60487149b764775547e3b3d8da83831459",
+        "tests/test_rendering.py": "e93897333125cff68ce69e9e8fc23f401d9e0740427b8c995975240350cea0ef",
         "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2",
         "tests/test_workflow.py": "c60af46adb6cceb3160b1c34945d3b579e4ce42be7e24cad65fa24bd215d80a1"
       },
       "outcome": "updated",
-      "reason": "Lists knowledge check and learning provenance; main's rendering test changes need no further edit.",
+      "reason": "Merged main's render-target edits with this change's knowledge check and provenance lines.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/tool-map.md"
     },
