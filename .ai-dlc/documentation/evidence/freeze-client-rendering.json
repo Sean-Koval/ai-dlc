@@ -21,7 +21,7 @@
     {
       "bound": {
         "catalog:docs/architecture.md": "e957dcf74f6dcbe53ce40caf58a8cd486ee04461b47279540cdccaa4680c445a",
-        "docs/architecture.md": "40250ca9f5ac9e58ae447ce69f3c5cd29877f0c9db94e0dbb6130a49ab3a7ef5",
+        "docs/architecture.md": "09d83951bb8c4ad21f1537d00b572a308058370e88bf2af5d4a2ec7ec9a2b577",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/tracker-adapter-boundary/spec.md": "dd8886e122156c514768387930c3534d882b4672552eeb2aca62507fa6ab2a58",
@@ -168,7 +168,7 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "updated",
-      "reason": "Control-plane sentence now says cloud execution is hangar's, rendering is frozen to local and CI targets and hook support is a floor; scripts paragraph names the pin check and local-target shims. Re-reviewed after merging main with the workflow plugin; both changes read consistently.",
+      "reason": "Control-plane sentence now says cloud execution is hangar's, rendering is frozen to local and CI targets and hook support is a floor; scripts paragraph names the pin check and local-target shims. Re-reviewed after merging main (rendered skill removal, #202).",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
@@ -184,13 +184,11 @@
     },
     {
       "bound": {
-        ".agents/skills/spec-from-prd/SKILL.md": "f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce",
-        ".ai-dlc/agent-ownership.json": "80bfb224808d5d394c9f2a36b9f214ec6cccfd1f5a1ddad7b8faff9dbdba6008",
-        ".claude/skills/spec-from-prd/SKILL.md": "f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce",
+        ".ai-dlc/agent-ownership.json": "1918f88f770e5982ef79666646536c560c8cdc883fdb7d59f2e9cb6b600fe6a1",
         "agents/skills.lock.json": "1add4a59dc27836e8f2d98b962cc1527187b72e020bbdaab365e0e86214007cf",
         "agents/skills/spec-from-prd/SKILL.md": "f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce",
         "agents/templates/delivery-slice.md": "4a7a5d7af2f6a99b4e7eac13491eef751def074451d6899acc36ccf1f536bd6f",
-        "catalog:docs/development-workflow.md": "cccff4f2482019fdd41f3c6859a96d8863998deb5fbe8d273053c527be50c281",
+        "catalog:docs/development-workflow.md": "0fba88526a61571ce49e91b2159325061a7c54ba5466e651565eabb2f910e7c6",
         "docs/development-workflow.md": "2c96f369b09fdb9be83639c77222351e7bbae8ede58931dc54b8d8521211f3a5",
         "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
         "openspec/specs/portable-development/spec.md": "2c75caee1dc2f59828c49ba940be6a186580b07032c52b63fc750788b7535a4d",
@@ -218,13 +216,13 @@
         "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
         "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
         "tests/test_project.py": "2ebeb723433cfb53bf8e20b337d5016058e75a181b9ed0035203a14759a162ba",
-        "tests/test_rendering.py": "7ec934f67f0190f24bd4e1795217be5df609c078f117397a19c4fc0b4b7f8db6",
+        "tests/test_rendering.py": "e93897333125cff68ce69e9e8fc23f401d9e0740427b8c995975240350cea0ef",
         "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2",
         "tests/test_templates.py": "0b50552b08ecb4ff3ba8a37aac2b331f9d25ec200b5104a594d8f6e430ec7ece",
         "tests/test_workflow.py": "eb987b1bf2ceadefd721ff04946069ea2e31bde253d58cb742cc2032534e5a8c"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Reviewed against the target and hook-floor changes: the workflow doc does not describe execution targets or client hook versions. Re-reviewed after merging main with the workflow plugin; both changes read consistently.",
+      "reason": "Reviewed against the target and hook-floor changes: the workflow doc does not describe execution targets or client hook versions. Re-reviewed after merging main (rendered skill removal, #202).",
       "reviewer": "Claude (agent)",
       "target": "docs/development-workflow.md"
     },
@@ -278,11 +276,11 @@
         "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
         "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
         "tests/test_native_harnesses.py": "e008d4773dccfa2662942561b24df4fdb6c15f637683d5fbdfaf59240e9bb5cc",
-        "tests/test_rendering.py": "7ec934f67f0190f24bd4e1795217be5df609c078f117397a19c4fc0b4b7f8db6",
+        "tests/test_rendering.py": "e93897333125cff68ce69e9e8fc23f401d9e0740427b8c995975240350cea0ef",
         "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2"
       },
       "outcome": "updated",
-      "reason": "Team-source hook paragraph now states the client version floor, the unset-version warning and the hangar-aligned provisioning pins. Re-reviewed after merging main with the workflow plugin; both changes read consistently.",
+      "reason": "Team-source hook paragraph now states the client version floor, the unset-version warning and the hangar-aligned provisioning pins. Re-reviewed after merging main (rendered skill removal, #202).",
       "reviewer": "Claude (agent)",
       "target": "docs/runbooks/machine-enrollment.md"
     },
@@ -355,12 +353,12 @@
         "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
         "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
         "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
-        "tests/test_rendering.py": "7ec934f67f0190f24bd4e1795217be5df609c078f117397a19c4fc0b4b7f8db6",
+        "tests/test_rendering.py": "e93897333125cff68ce69e9e8fc23f401d9e0740427b8c995975240350cea0ef",
         "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2",
         "tests/test_workflow.py": "eb987b1bf2ceadefd721ff04946069ea2e31bde253d58cb742cc2032534e5a8c"
       },
       "outcome": "updated",
-      "reason": "Project execution row lists the accepted --target values; the publication hook note explains the client version floor. Re-reviewed after merging main with the workflow plugin; both changes read consistently.",
+      "reason": "Project execution row lists the accepted --target values; the publication hook note explains the client version floor. Re-reviewed after merging main (rendered skill removal, #202).",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/tool-map.md"
     },
