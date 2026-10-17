@@ -2,10 +2,10 @@
   "decisions": [
     {
       "bound": {
-        "README.md": "51e4d0f5beeb99356532f0361ea03f8fa18d3b15ce2469b22a412d9fde9ee2a8"
+        "README.md": "53587040875378999785de7a5c7acab38c2b3bc328e4d3ac691a44db8d9ba915"
       },
       "outcome": "updated",
-      "reason": "Updated: provider paragraph and hangar intake versus local developer loop.",
+      "reason": "Re-reviewed after merging main (the feature freeze and workflow plugin): the provider paragraph and the hangar intake versus local developer loop still hold alongside the new freeze statement.",
       "reviewer": "Claude (agent)",
       "target": "README.md"
     },
@@ -173,10 +173,10 @@
     },
     {
       "bound": {
-        "docs/catalog.toml": "8087a90de7c73a0e4fe7dde80fa3447d608317d3bbd753e19bff1958b45b0cfe"
+        "docs/catalog.toml": "5a4b2c43a15900966e4f15168242fb8cf71069cf690302a2b0c1d90f973b440c"
       },
-      "outcome": "no-impact",
-      "reason": "Catalog: removed linear-setup and enrolled the new spec and test.",
+      "outcome": "updated",
+      "reason": "Re-reviewed after merging main: the catalog keeps the Linear runbook removal and the new decision and plugin entries from main.",
       "reviewer": "Claude (agent)",
       "target": "docs/catalog.toml"
     },
