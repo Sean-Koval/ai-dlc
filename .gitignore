@@ -12,3 +12,4 @@ build/
 .superpowers/
 .worktrees/
 *.egg-info/
+site/

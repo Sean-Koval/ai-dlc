@@ -2,6 +2,8 @@
 
 # AI-DLC
 
+Documentation site: [sean-koval.github.io/ai-dlc](https://sean-koval.github.io/ai-dlc/)
+
 **Portable development setup and workflows for people and coding agents.**
 
 AI-DLC brings project setup, agent guidance, specifications, tickets, documentation,
