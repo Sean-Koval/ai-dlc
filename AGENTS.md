@@ -59,6 +59,9 @@ list before starting work, and do not grow moved or cut areas.
   when moving sources. Record a documentation-impact disposition for changes.
 - Put new Python modules in the responsible subpackage; keep CLI/MCP thin and
   provider-specific logic inside adapters. Do not infer dead code from filenames.
+- The docs site's look is Airframe, the suite design system owned by Sean-Koval/agent-factory.
+  `docs/stylesheets/airframe*` are vendored unmodified (refresh with
+  `sh scripts/sync-airframe.sh theme-vN`); other site CSS uses `var(--af-*)` tokens, never colors.
 - Project templates and portable skills serve downstream projects. Keep their
   setup guidance generic; never embed this repository's personal account choices.
 

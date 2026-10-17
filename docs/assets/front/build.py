@@ -283,20 +283,13 @@ def still(command: str, output: str, title: str) -> str:
 
 # ------------------------------------------------------------------------------------------ the diagram
 TOKENS = ("canvas", "surface", "raised", "line", "line-strong", "rule", "fg", "fg-muted", "fg-subtle",
-          "brand-line", "p-aidlc", "p-hangar", "p-flightdeck", "p-workspace")
+          "brand-line", "product-aidlc", "product-hangar", "product-flightdeck", "product-tower")
 
 
 def flavors() -> dict[str, dict[str, str]]:
-    """Token values for the dark and light flavors, read from the vendored Airframe stylesheet."""
-    css = (ROOT / "docs/stylesheets/airframe.css").read_text()
-    dark_block = css.split("{", 1)[1].split("}", 1)[0]
-    light_block = css.split(':root[data-theme="light"]', 1)[1].split("{", 1)[1].split("}", 1)[0]
-
-    def values(block: str) -> dict[str, str]:
-        return dict(re.findall(r"--af-([a-z0-9-]+):\s*([^;]+);", block))
-
-    dark, light = values(dark_block), values(light_block)
-    return {"dark": {t: dark[t] for t in TOKENS}, "light": {t: light.get(t, dark[t]) for t in TOKENS}}
+    """Token values for the dark and light flavors, from the vendored Airframe tokens (theme-v2 and later)."""
+    themes = json.loads((ROOT / "docs/stylesheets/airframe-tokens.json").read_text())["themes"]
+    return {flavor: {t: themes[flavor][t] for t in TOKENS} for flavor in ("dark", "light")}
 
 
 def diagram(colors: dict[str, str] | None) -> str:
@@ -342,7 +335,7 @@ def diagram(colors: dict[str, str] | None) -> str:
     w, h = 1200, 620
     out.append(f'<rect width="{w}" height="{h}" fill="{v("canvas")}"/>')
     out.append('<text class="l" x="40" y="44">WHERE AI-DLC SITS · THE DEVELOPER SIDE OF THE AGENT FACTORY</text>')
-    box(30, 80, 380, 400, "DEVELOPER MACHINE · LOCAL", "ai-dlc", (), "p-aidlc", "hub")
+    box(30, 80, 380, 400, "DEVELOPER MACHINE · LOCAL", "ai-dlc", (), "product-aidlc", "hub")
     for i, (name, sub) in enumerate((("machine enroll", "a pinned profile: tools, clients, credentials"),
                                      ("work new → start", "reviewed record, tracker issue, branch"),
                                      ("work pr → project check", "one PR; checks write a receipt"),
@@ -354,9 +347,9 @@ def diagram(colors: dict[str, str] | None) -> str:
     box(500, 80, 300, 170, "TEAM HARNESS REPO", "harness.lock", ("pins the ai-dlc workflow plugin", "(skills, guide, safe hooks)",
                                                                   "off in stable, on in candidate"), None)
     box(890, 80, 280, 170, "RUN", "hangar", ("runs coding agents in sandboxes", "renders the harness at claim",
-                                              "time; owns verify and landing"), "p-hangar")
+                                              "time; owns verify and landing"), "product-hangar")
     box(890, 310, 280, 170, "JUDGE", "flightdeck", ("A/B: with and without the", "plugin, same tasks; a verdict",
-                                                     "on the pull request"), "p-flightdeck")
+                                                     "on the pull request"), "product-flightdeck")
     box(500, 310, 300, 170, "SOURCE OF TRUTH", "GitHub", ("issues, pull requests,", "CI receipts per merge commit",
                                                          "decisions in docs/decisions/"), None)
     edge("M410 180 H496", "publish|plugin", 453, 160)
@@ -365,7 +358,7 @@ def diagram(colors: dict[str, str] | None) -> str:
     edge("M410 400 H496", "issue, PR,|receipt", 453, 380)
     edge("M800 395 H886", "report", 843, 385)
     box(30, 520, 1140, 70, "GOVERN · PLANNED", "governed workspace: policy decisions, approvals, receipts", (),
-        "p-workspace", "plan")
+        "product-tower", "plan")
     defs = (f'<defs><marker id="ad-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
             f'markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="{v("fg-subtle")}"/>'
             "</marker></defs>")

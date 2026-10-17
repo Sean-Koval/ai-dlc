@@ -100,3 +100,13 @@ def test_link_rewriter_rewrites_only_links_that_leave_the_site(tmp_path):
     assert "![img](../../src/tool.py)" in text
     assert len(found["docs/design/page.md"]) == 3
     assert LINKS["main"](["--check", "--root", str(tmp_path)]) == 0
+
+
+def test_site_styles_are_airframe_tokens_only():
+    """Airframe (Sean-Koval/agent-factory) is vendored unmodified; our own CSS uses its tokens, never a color."""
+    styles = ROOT / "docs/stylesheets"
+    assert re.search(r"Airframe theme-v\d+ tokens", (styles / "airframe.css").read_text()[:300])
+    for css in sorted(styles.glob("*.css")):
+        if not css.name.startswith("airframe"):
+            text = re.sub(r"/\*.*?\*/", "", css.read_text(), flags=re.DOTALL)
+            assert not re.search(r"#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?)\(", text), css.name
