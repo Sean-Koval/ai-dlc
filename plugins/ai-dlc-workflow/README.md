@@ -67,15 +67,18 @@ ships them has to arrange trust, or the hooks are silently inactive.
 
 ## A/B in a team harness
 
-`scripts/publish_workflow_plugin.py --harness-repo <harness dir> --dry-run|--apply`
-copies this directory without `native/` to `<harness>/plugins/ai-dlc-workflow/`
-and `native/codex/` to `<harness>/native/codex/ai-dlc-workflow/`. It refuses a
-target that is not empty or an unmodified earlier publication, never touches other
-files, and prints the component ids, digests (this lock's and hangar's directory
-`files_digest`), the source commit and the marketplace entry
-(`{"name": "ai-dlc-workflow", "source": "./plugins/ai-dlc-workflow", "defaultEnabled": false}`;
-`version` in `plugin.json` overrides an entry's version). The change reaches the
-harness repository by pull request; re-pin with its own tooling.
+`scripts/publish_workflow_plugin.py --harness-repo <harness dir> --marketplace <name> --dry-run|--apply`
+copies this directory without `native/` to `<harness>/plugins/<name>/ai-dlc-workflow/`,
+hangar's directory-marketplace layout (hangar#221; without `--marketplace` it uses
+`<harness>/plugins/ai-dlc-workflow/`), and `native/codex/` to
+`<harness>/native/codex/ai-dlc-workflow/`. It refuses a target that is not empty or an
+unmodified earlier publication, never touches other files (the harness owns
+`plugins/<name>/.claude-plugin/marketplace.json` and `harness.lock`), and prints the
+component ids, digests (this lock's, hangar's directory `files_digest` and, with a
+marketplace, hangar's plugin digest over the marketplace entry), the source commit and
+the marketplace entry (`{"name": "ai-dlc-workflow", "source": "./ai-dlc-workflow",
+"defaultEnabled": false}`; `version` in `plugin.json` overrides an entry's version). The
+change reaches the harness repository by pull request; re-pin with its own tooling.
 
 The experiment, owned by flightdeck:
 
