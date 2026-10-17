@@ -5,6 +5,10 @@
 MCP; it is generated from `ai_dlc.contracts.ServiceResult` and explained in
 `docs/architecture.md`.
 They describe tracker, specs, SCM, deploy, and knowledge role capabilities.
+`knowledge-note.schema.json` is the frontmatter of learnings and decision records,
+generated from `ai_dlc.documentation.knowledge_notes.KnowledgeNote`; it is explained
+in `docs/design/local-and-shared-knowledge.md`. Decision `checks:` entries use
+flightdeck's `flightdeck.spec/v1` grammar and are validated for shape only.
 Completion is a service operation: callers must use `WorkService.finish`.
 The public `Registry.invoke` refuses terminal tracker transitions and the optional
 terminal planning reconciliation operation `reconcile_closed`.

@@ -422,7 +422,12 @@ def _docs_check(root: Path, strict: bool) -> None:
 
     result = check_documents(root)
     emit(result)
-    if strict and result["findings"]:
+    decision_errors = [
+        f
+        for f in result["findings"]
+        if f["code"].startswith("decision-") and f["severity"] == "error"
+    ]
+    if decision_errors or (strict and result["findings"]):
         raise typer.Exit(2)
 
 
@@ -1573,12 +1578,16 @@ def work_finish(
     at_merge: bool = False,
 ):
     """Finish tracked work, optionally from an owned checkout of its exact merge."""
+    from ai_dlc.documentation.learnings import resolve_author
+
+    author = resolve_author(interactive=True) if learning else None
     if not at_merge:
         with typed_refusals():
             result = service(root, machine).finish(
                 work_id,
                 handoff.read_text() if handoff else None,
                 learning.read_text() if learning else None,
+                author,
             )
         conclude(result)
         return
@@ -1586,7 +1595,9 @@ def work_finish(
         handoff_text = handoff.read_text() if handoff else None
         learning_text = learning.read_text() if learning else None
         try:
-            result = service(root, machine).finish_at_merge(work_id, handoff_text, learning_text)
+            result = service(root, machine).finish_at_merge(
+                work_id, handoff_text, learning_text, author
+            )
         except KeyboardInterrupt as exc:
             for note in getattr(exc, "__notes__", ()):
                 typer.echo(note, err=True)
@@ -1613,6 +1624,17 @@ def knowledge_append(path: str, body: Path, operation_id: str, vault: Path):
     from ai_dlc.documentation.knowledge import Knowledge
 
     emit(Knowledge(vault).append(path, body.read_text(), operation_id))
+
+
+@knowledge.command("check")
+def knowledge_check(vault: Annotated[Path, typer.Option("--vault")]):
+    """Report learnings whose knowledge-note frontmatter fails the schema; read-only."""
+    from ai_dlc.documentation.knowledge_notes import check_vault
+
+    result = check_vault(vault)
+    emit(result)
+    if result["invalid"]:
+        raise typer.Exit(1)
 
 
 @provider.command("list")

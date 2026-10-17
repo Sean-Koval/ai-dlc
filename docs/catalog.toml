@@ -45,6 +45,13 @@ path = "docs/design/project-documentation.md"
 kind = "reference"
 owner = "repository-maintainers"
 status = "draft"
+code_paths = [
+    "src/ai_dlc/documentation/decisions.py",
+    "agents/templates/adr.md",
+    "project-templates/project/docs/decisions/README.md",
+]
+verification_paths = ["tests/test_decisions.py"]
+requirements = ["openspec/specs/decision-records/spec.md"]
 
 [[documents]]
 id = "local-shared-knowledge"
@@ -57,6 +64,8 @@ code_paths = [
     "src/ai_dlc/documentation/vault_mount.py",
     "src/ai_dlc/documentation/knowledge.py",
     "src/ai_dlc/documentation/learnings.py",
+    "src/ai_dlc/documentation/knowledge_notes.py",
+    "contracts/knowledge-note.schema.json",
     "src/ai_dlc/harness/friction.py",
     "src/ai_dlc/documentation/workspace_diagnostics.py",
 ]
@@ -65,6 +74,7 @@ verification_paths = [
     "tests/test_vault_mount.py",
     "tests/test_knowledge.py",
     "tests/test_session_learnings.py",
+    "tests/test_knowledge_notes.py",
     "tests/test_workspace_diagnostics.py",
 ]
 requirements = ["openspec/specs/obsidian-vault-linking/spec.md", "openspec/specs/session-learnings/spec.md"]

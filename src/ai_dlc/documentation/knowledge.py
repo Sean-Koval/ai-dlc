@@ -4,6 +4,7 @@ import hashlib
 import os
 import re
 from contextlib import contextmanager
+from datetime import UTC, date, datetime
 from pathlib import Path
 
 from ai_dlc.files import atomic_write, inside
@@ -21,6 +22,28 @@ def _note_lock(root: Path):
     with (root / ".ai-dlc.lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
         yield
+
+
+def _note_metadata(body: str) -> dict | None:
+    """Knowledge-note frontmatter (marker lines skipped), or ``None`` for older notes."""
+    from ai_dlc.documentation.knowledge_notes import split, strip_markers
+
+    try:
+        data, _raw, _rest = split(strip_markers(body))
+    except ValueError:
+        return None
+    return data if data and "kind" in data else None
+
+
+def _as_date(value) -> date | None:
+    if isinstance(value, datetime):
+        return value.date()
+    if isinstance(value, date):
+        return value
+    try:
+        return date.fromisoformat(str(value)) if value else None
+    except ValueError:
+        return None
 
 
 class Knowledge:
@@ -41,8 +64,13 @@ class Knowledge:
                     break
         return results
 
-    def recall(self, terms: list[str], limit: int = 5) -> list[dict]:
-        """Return only learning paths and a first content line, without writing."""
+    def recall(self, terms: list[str], limit: int = 5, today: date | None = None) -> list[dict]:
+        """Return learning paths, a first content line and provenance, without writing.
+
+        Notes with knowledge-note frontmatter whose ``valid_to`` has passed are skipped;
+        ``stale`` marks a passed ``review_by``. Notes without frontmatter recall as before.
+        """
+        today = today or datetime.now(UTC).date()
         limit = min(5, max(0, limit))
         terms = [term.casefold() for term in terms if term.strip()]
         if not limit or not terms:
@@ -62,11 +90,24 @@ class Knowledge:
                 for line in body.splitlines()
                 if line.strip() and not line.strip().startswith("<!-- ai-dlc:")
             ]
+            meta = _note_metadata(body)
+            if meta and _as_date(meta.get("valid_to")) and _as_date(meta["valid_to"]) < today:
+                continue
             if lines[:1] == ["---"] and "---" in lines[1:]:
                 lines = lines[lines.index("---", 1) + 1 :]
-            results.append(
-                {"path": str(path.relative_to(self.root)), "first_line": lines[0] if lines else ""}
-            )
+            found = {
+                "path": str(path.relative_to(self.root)),
+                "first_line": lines[0] if lines else "",
+            }
+            if meta:
+                review_by = _as_date(meta.get("review_by"))
+                found.update(
+                    kind=meta.get("kind"),
+                    author=meta.get("author"),
+                    review_by=review_by.isoformat() if review_by else None,
+                    stale=bool(review_by and review_by < today),
+                )
+            results.append(found)
             if len(results) >= limit:
                 break
         return results
