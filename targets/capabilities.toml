@@ -1,19 +1,15 @@
+# Execution targets accepted by `project setup --target` and `doctor --target`.
+# Frozen (ADR 0001): AI-DLC sets up local checkouts and CI only. Cloud sandboxes are
+# rendered by hangar at claim time, so devcontainer, codex-cloud and claude-cloud were
+# removed; the dev container bootstraps with `local`. No target here is qualified.
+
 [local]
 filesystem = true
 network = true
 authentication = "native-or-environment"
 persistence = "machine"
-hooks = "client-version-specific"
+hooks = "client-hook-floor"
 knowledge = "explicit-existing-vault"
-verified = false
-
-[devcontainer]
-filesystem = true
-network = true
-authentication = "explicit-mounts-or-environment"
-persistence = "declared-volumes"
-hooks = "client-version-specific"
-knowledge = "explicit-mount-only"
 verified = false
 
 [github-actions]
@@ -22,23 +18,5 @@ network = true
 authentication = "declared-workflow-permissions"
 persistence = "artifacts-and-cache"
 hooks = "unavailable"
-knowledge = "unavailable"
-verified = false
-
-[codex-cloud]
-filesystem = true
-network = "setup-only-unless-enabled"
-authentication = "platform-secrets-lifecycle"
-persistence = "platform-cache"
-hooks = "not-verified"
-knowledge = "unavailable"
-verified = false
-
-[claude-cloud]
-filesystem = true
-network = "platform-policy"
-authentication = "platform-secrets"
-persistence = "platform-policy"
-hooks = "not-verified"
 knowledge = "unavailable"
 verified = false

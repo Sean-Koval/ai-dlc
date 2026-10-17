@@ -87,7 +87,10 @@ this decision; bug fixes in frozen areas are welcome.
 - `ai-dlc eval` and skill evaluation, to flightdeck
   ([#194](https://github.com/Sean-Koval/ai-dlc/issues/194)).
 - Per-runtime rendering growth, to hangar
-  ([#196](https://github.com/Sean-Koval/ai-dlc/issues/196)).
+  ([#196](https://github.com/Sean-Koval/ai-dlc/issues/196)). No new clients, client
+  formats or per-runtime translation in AI-DLC's renderer; cloud sandboxes are
+  rendered by hangar at claim time. The `devcontainer`, `codex-cloud` and
+  `claude-cloud` execution targets are removed.
 
 *Cut*:
 

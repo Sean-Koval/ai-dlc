@@ -255,3 +255,24 @@ recorded answers. `doctor` lists the selection under `provider_support` as
 Repositories whose agent jobs start through hangar intake can set `[work]
 tracker_writes = "finish-only"` so `work start` does not move the ticket; see the
 [tracker boundary](architecture.md#tracker-boundary-with-hangar).
+
+## Execution targets and client hook versions
+
+`project setup --target` and `doctor --target` accept `local` and `github-actions`
+only. The `devcontainer`, `codex-cloud` and `claude-cloud` targets were removed under
+[ADR 0001](decisions/0001-refocus-ai-dlc.md): they refuse with a message that names
+the supported targets, because cloud sandboxes are rendered by hangar at claim time.
+The dev container and the `scripts/cloud/` setup shims now bootstrap with the local
+target. Python callers of `render_agents` or `render_windows` must drop the unused
+`target=` argument; there is no published API contract for it.
+
+Required hooks now check a minimum client version instead of an exact fixture
+version. Set `[agents.clients.<client>] version` to the installed CLI version; any
+version at or above the floor (`claude-code` 2.1.0, `codex` 0.151.0) renders, a lower
+one refuses with `requires <client> >= <floor>`, and an unset version renders with a
+warning. `agents/capabilities.toml` is schema 2 and has no `target` key.
+
+The module catalog now pins `claude-code` 2.1.296 and `codex` 0.162.1, matching
+hangar's `harnesses.lock.yaml`. `machine provision` installs these on new machines;
+existing installs are not upgraded implicitly. Compare the pins locally with
+`python scripts/check_client_pins.py --hangar-lock PATH`.

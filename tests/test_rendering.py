@@ -288,7 +288,7 @@ def test_mcp_conflicting_server_preserved(tmp_path):
 def test_unsupported_required_hook_fails_readiness():
     from ai_dlc.harness.agents import hook_readiness
 
-    result = hook_readiness("codex", "0.151.0", "local", ["request-approval"])
+    result = hook_readiness("codex", "0.151.0", ["request-approval"])
     assert result["ready"] is False
     assert "request-approval" in result["unavailable"]
 
@@ -347,8 +347,11 @@ def test_required_hooks_preserve_unmanaged_and_target_independent(tmp_path):
     content = path.read_text()
     assert "git rev-parse --show-toplevel" in content
     assert "user-hook" in content and json.loads(content)["custom"]
-    assert render_agents(tmp_path, target="ci")["clean"]
-    assert not target_hooks(load_project(tmp_path), "ci")["ready"]
+    assert render_agents(tmp_path)["clean"]
+    assert target_hooks(load_project(tmp_path), "local")["ready"]
+    actions = target_hooks(load_project(tmp_path), "github-actions")
+    assert not actions["ready"]
+    assert "codex:bound-push" in actions["unavailable"]
 
 
 def test_unsupported_required_hooks_fail_before_writes(tmp_path):
@@ -516,13 +519,78 @@ def test_hook_edit_conflict_and_removal_preserve_user_hook(tmp_path):
     assert json.loads(path.read_text())["hooks"]["Stop"] == [user_hook]
 
 
-def test_unknown_client_version_has_no_claimed_hook_support():
+def test_hook_floor_allows_newer_client_versions():
+    """Would fail if hook readiness still required an exact fixture version."""
     from ai_dlc.harness.agents import hook_readiness
 
-    result = hook_readiness("codex", "999.0.0", "local", ["bound-push"])
+    for version in ("0.151.0", "0.162.1", "1.0", "999.0.0"):
+        result = hook_readiness("codex", version, ["bound-push"])
+        assert result["ready"], version
+        assert result["warnings"] == []
+    assert "Not a qualification record" in hook_readiness("codex", "1.0", [])["coverage"]
+
+
+@pytest.mark.parametrize("version", ["0.150.9", "0.9", "not-a-version"])
+def test_hook_floor_refuses_older_or_unparseable_versions(version):
+    from ai_dlc.harness.agents import hook_readiness
+
+    result = hook_readiness("codex", version, ["bound-push"])
     assert not result["ready"]
-    assert result["supported"] == []
-    assert "fixture" in result["coverage"]
+    assert result["unavailable"] == ["bound-push"]
+    assert "requires codex >= 0.151.0" in result["reason"]
+
+
+def test_unset_client_version_allows_required_hooks_with_warning(tmp_path):
+    from ai_dlc.harness.agents import hook_readiness, render_agents
+
+    result = hook_readiness("claude-code", "", ["stop-reminder"])
+    assert result["ready"]
+    assert result["warnings"] == [
+        "claude-code version is unset; required hooks assume claude-code >= 2.1.0"
+    ]
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nagent-client=["claude-code"]\n'
+        '[agents.clients.claude-code]\nrequired_hooks=["stop-reminder"]\n'
+    )
+    rendered = render_agents(tmp_path, apply=True)
+    assert rendered["warnings"] == result["warnings"]
+    assert "ai-dlc hook stop" in (tmp_path / ".claude/settings.json").read_text()
+
+
+def test_current_claude_code_renders_required_hooks(tmp_path):
+    """Would fail if the hangar-locked client version were refused by an exact fixture."""
+    from ai_dlc.harness.agents import render_agents
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nagent-client=["claude-code"]\n'
+        '[agents.clients.claude-code]\nversion="2.1.296"\nrequired_hooks=["stop-reminder"]\n'
+    )
+    render_agents(tmp_path, apply=True)
+    checked = render_agents(tmp_path)
+    assert checked["clean"]
+    assert "warnings" not in checked
+
+
+def test_old_claude_code_refuses_required_hooks_before_writes(tmp_path):
+    from ai_dlc.harness.agents import render_agents
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\nagent-client=["claude-code"]\n'
+        '[agents.clients.claude-code]\nversion="1.9.0"\nrequired_hooks=["stop-reminder"]\n'
+    )
+    with pytest.raises(ValueError, match=r"requires claude-code >= 2\.1\.0"):
+        render_agents(tmp_path, apply=True)
+    assert not (tmp_path / "AGENTS.md").exists()
+
+
+def test_render_agents_has_no_target_parameter():
+    """Would fail if the unused per-runtime target argument came back."""
+    import inspect
+
+    from ai_dlc.harness import agents, windows_render
+
+    for function in (agents.render_agents, agents._render_agents, windows_render.render_windows):
+        assert "target" not in inspect.signature(function).parameters
 
 
 def test_custom_provider_index_links_to_project_instructions_without_copying_or_replacing_them(
