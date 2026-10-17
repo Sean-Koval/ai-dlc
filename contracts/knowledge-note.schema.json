@@ -1,0 +1,326 @@
+{
+  "$defs": {
+    "Check": {
+      "additionalProperties": true,
+      "description": "One ADR check: a ``flightdeck.spec/v1`` spec without its header.\n\nOnly the shape is checked. Unknown keys are kept because the grammar is additive.",
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "assert": {
+          "additionalProperties": true,
+          "maxProperties": 1,
+          "minProperties": 1,
+          "title": "Assert",
+          "type": "object"
+        },
+        "scope": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "job",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scope"
+        },
+        "harness": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Harness"
+        },
+        "applies_when": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Applies When"
+        },
+        "severity": {
+          "anyOf": [
+            {
+              "enum": [
+                "warn",
+                "fail"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Severity"
+        }
+      },
+      "required": [
+        "id",
+        "assert"
+      ],
+      "title": "Check",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "properties": {
+        "uri": {
+          "minLength": 1,
+          "title": "Uri",
+          "type": "string"
+        },
+        "hash": {
+          "pattern": "^[a-z0-9-]+:\\S+$",
+          "title": "Hash",
+          "type": "string"
+        }
+      },
+      "required": [
+        "uri",
+        "hash"
+      ],
+      "title": "Source",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "learning"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "sources": {
+            "minItems": 1
+          }
+        },
+        "required": [
+          "sources"
+        ]
+      }
+    },
+    {
+      "else": {
+        "not": {
+          "anyOf": [
+            {
+              "required": [
+                "status"
+              ]
+            },
+            {
+              "required": [
+                "checks"
+              ]
+            }
+          ]
+        }
+      },
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "decision"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "required": [
+          "status"
+        ]
+      }
+    }
+  ],
+  "description": "Frontmatter of a learning, decision, runbook or note.\n\n``work`` and ``repository`` are kept for learnings written before this schema.\nExtra keys are allowed and preserved so neighbouring tools can extend notes additively.",
+  "properties": {
+    "id": {
+      "pattern": "^(learning|decision|runbook|note)/[a-z0-9][a-z0-9._-]*$",
+      "title": "Id",
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "learning",
+        "decision",
+        "runbook",
+        "note"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "scope": {
+      "enum": [
+        "personal",
+        "project",
+        "team"
+      ],
+      "title": "Scope",
+      "type": "string"
+    },
+    "label": {
+      "description": "internal | confidential; free text is recorded",
+      "minLength": 1,
+      "title": "Label",
+      "type": "string"
+    },
+    "sources": {
+      "items": {
+        "$ref": "#/$defs/Source"
+      },
+      "title": "Sources",
+      "type": "array"
+    },
+    "author": {
+      "pattern": "^(human|agent):\\S+$",
+      "title": "Author",
+      "type": "string"
+    },
+    "confidence": {
+      "default": "medium",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "title": "Confidence",
+      "type": "string"
+    },
+    "valid_from": {
+      "format": "date",
+      "title": "Valid From",
+      "type": "string"
+    },
+    "valid_to": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Valid To"
+    },
+    "review_by": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Review By"
+    },
+    "supersedes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Supersedes",
+      "type": "array"
+    },
+    "status": {
+      "anyOf": [
+        {
+          "enum": [
+            "proposed",
+            "accepted",
+            "superseded",
+            "rejected"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Status"
+    },
+    "checks": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/Check"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Checks"
+    },
+    "work": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Work"
+    },
+    "repository": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Repository"
+    }
+  },
+  "required": [
+    "id",
+    "kind",
+    "scope",
+    "label",
+    "author",
+    "valid_from"
+  ],
+  "title": "Knowledge note frontmatter",
+  "type": "object"
+}

@@ -4,7 +4,7 @@
   "skills": {
     "day-end": {
       "path": "skills/day-end/SKILL.md",
-      "sha256": "1580b5be8ecfdeb4a3f52e3d73bbf747dc10b3bf0ca57a81727934096431f0ab"
+      "sha256": "8f59e33af0c6c6769911f8f3d6267aec1f50bcfc6c9d4e8b18d795f609909f81"
     },
     "day-start": {
       "path": "skills/day-start/SKILL.md",
@@ -32,7 +32,7 @@
     },
     "handoff": {
       "path": "skills/handoff/SKILL.md",
-      "sha256": "8037ad8c8abb7048f5009e60221ac9b0df9a875b2d1da673054fa12904a494d1"
+      "sha256": "63c564874228d8e249fde83cb3bbf2cedd73a2fc24a0bfbab91b99003d672127"
     },
     "needs-spec": {
       "path": "skills/needs-spec/SKILL.md",

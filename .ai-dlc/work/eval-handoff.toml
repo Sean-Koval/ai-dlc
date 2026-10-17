@@ -1,0 +1,26 @@
+schema = 1
+id = "eval-handoff"
+title = "Freeze the evaluation runner and skill evaluation and hand them off to flightdeck"
+scope = "Add frozen notices to the evaluation package and skill evaluation, write the flightdeck handoff inventory and port notes in the end-to-end evaluation document with a test that every listed path exists, and point the roadmap at flightdeck. Nothing is deleted; removal is #195 and the port is flightdeck#17 and #18."
+requires_spec = false
+spec_reason = "Documentation, notices and an inventory test only; evaluation behavior and its specifications are unchanged until removal in #195."
+acceptance = [
+    "src/ai_dlc/verification/evaluation/FROZEN.md and the skill_evaluation.py notice say the code is frozen and moving to flightdeck.",
+    "The Handoff to flightdeck section lists every moving code, contract, asset, test, specification and document path, and a test confirms each exists.",
+    "The port notes cover contract mapping, kept isolation properties, the dropped prompt evaluation, internal coupling, sealed partitions and the stale stream fixture.",
+    "The roadmap evaluation item points at flightdeck; tag eval-handoff-2026-10 is created on the merge commit by the owner.",
+]
+reviewed = true
+depends_on = []
+requirements = []
+
+[providers]
+specs = "openspec"
+tracker = "github-issues"
+knowledge = "obsidian"
+scm = "github"
+deploy = "none"
+
+[artifacts]
+branch = "issue/194-eval-handoff"
+tracker = "194"

@@ -25,6 +25,9 @@ Adopted repositories carry fuller guidance in their AGENTS.md managed section.
 - If `ai-dlc.toml` exists at the repo root and `ai-dlc` is on PATH: read ai-dlc.toml and the active .ai-dlc/work record, if present, before work.
 - If `ai-dlc.toml` exists at the repo root and `ai-dlc` is on PATH: complete work through `ai-dlc work finish`.
 - If `ai-dlc.toml` exists at the repo root and `ai-dlc` is on PATH: finish from a checkout at the merge commit; when the target branch has moved, run `ai-dlc work finish <work-id> --at-merge`, or prepare a temporary detached worktree at that commit, finish there, then remove it.
+- If `ai-dlc.toml` exists at the repo root and `ai-dlc` is on PATH: when recording a learning with `ai-dlc work finish --learning`, set
+  `AI_DLC_AUTHOR=agent:<client>@<content_digest>`, using the `content_digest` in
+  this plugin's `plugin.lock.json`, so the note records who wrote it.
 
 ## Hooks
 
