@@ -8,7 +8,7 @@
 
 - [x] 2.1 Add `scripts/publish_workflow_plugin.py` with dry-run, apply, no-op re-apply and refusal of edited, unknown or foreign targets.
 - [x] 2.2 Test against an empty directory, a repeat, hand edits, unknown files, a foreign directory, a legacy publication and a stale build.
-- [x] 2.3 Open the harness repository pull request with the component pinned and the source commit recorded.
+- [x] 2.3 Open the harness repository pull request with the component pinned and the source commit recorded ([agent-factory#9](https://github.com/Sean-Koval/agent-factory/pull/9)).
 
 ## 3. Documentation and delivery
 
