@@ -51,7 +51,7 @@ The repository stores architecture, design rationale, decisions, runbooks and re
 
 ## Deployment and interfaces
 
-Prefer one application with explicit module responsibilities over speculative service decomposition. CLI, MCP, and agent clients share validation where an MCP service is exposed; the CLI alone owns machine enrollment mutation. The local CLI and local MCP are today's primary control plane; hosted or cloud execution is a later qualification target. External provider failures and uncertain mutations remain visible. Credentials are environment references, never template values.
+Prefer one application with explicit module responsibilities over speculative service decomposition. CLI, MCP, and agent clients share validation where an MCP service is exposed; the CLI alone owns machine enrollment mutation. The local CLI and local MCP are the control plane; cloud execution is hangar's. Client rendering is frozen to the existing clients for local repositories and CI (`project setup --target local|github-actions`); hangar renders cloud sandboxes at claim time. Hook support is a per-client minimum version (`agents/capabilities.toml`), not qualification. External provider failures and uncertain mutations remain visible. Credentials are environment references, never template values.
 
 Consumer onboarding is a read-only composition boundary in `setup/onboarding.py`.
 It resolves one explicit existing target, target-owned configuration, optional
@@ -188,7 +188,7 @@ there is no duplicate tree of compatibility forwarding modules. Application
 services share contracts; provider details stay inside adapters.
 
 `scripts/` holds source bootstrap, repository checks and qualification/release
-utility entry points. `scripts/cloud/` holds hosted-harness setup. The obsolete unlocked `check_env.sh`
+utility entry points. `scripts/cloud/` holds hosted-agent setup shims that bootstrap the checkout with the local target; `scripts/check_client_pins.py` compares the module catalog's client pins with hangar's harness lock. The obsolete unlocked `check_env.sh`
 installer, the historical Rust crate with its embedded template mirror, and the
 script that synchronised them have been removed; the retired Rust plans remain in
 `docs/archive/legacy/`.

@@ -274,6 +274,9 @@ def _restore_render_change(change: _RenderChange) -> None:
     # their identity then unlinking the name can delete a late authored file.
 
 
+# Freeze (ADR 0001): no new clients, client formats or per-runtime translation here.
+# Cloud sandboxes are rendered by hangar at claim time. The existing clients stay
+# supported for local repositories.
 CLIENT_SKILL_DIRECTORIES = {
     "claude-code": ".claude",
     "codex": ".agents",
@@ -939,20 +942,21 @@ def _resolve_render_clients(config: dict[str, Any], client: str | None) -> list[
     return clients
 
 
-def _validate_required_hooks(config: dict[str, Any], clients: list[str]) -> None:
-    """Reject required hooks that the selected client versions cannot provide locally."""
+def _validate_required_hooks(config: dict[str, Any], clients: list[str]) -> list[str]:
+    """Reject required hooks below a client's hook floor; return warnings for unknown versions."""
+    warnings: list[str] = []
     for selected_client in clients:
         settings = config.get("agents", {}).get("clients", {}).get(selected_client, {})
         readiness = hook_readiness(
             selected_client,
             settings.get("version", ""),
-            "local",
             settings.get("required_hooks", []),
         )
         if not readiness["ready"]:
-            raise ValueError(
-                f"unsupported required hooks for {selected_client}: {readiness['unavailable']}"
-            )
+            reason = readiness.get("reason") or f"unsupported hooks {readiness['unavailable']}"
+            raise ValueError(f"unsupported required hooks for {selected_client}: {reason}")
+        warnings.extend(readiness["warnings"])
+    return warnings
 
 
 def _shared_guidance_lines(
@@ -1265,7 +1269,6 @@ def _render_agents(
     root: Path,
     apply: bool = False,
     client: str | None = None,
-    target: str = "local",
     state: _RenderState | WindowsRenderState | None = None,
 ) -> dict[str, Any]:
     root = Path(root).resolve()
@@ -1297,7 +1300,7 @@ def _render_agents(
         clients,
         CLIENT_SKILL_DIRECTORIES,
     )
-    _validate_required_hooks(config, clients)
+    hook_warnings = _validate_required_hooks(config, clients)
     try:
         components = resolve_components(config, load_component_catalog(root, config))
     except TypeError as exc:
@@ -1375,20 +1378,20 @@ def _render_agents(
         result["source_notes"] = selected_sources.notes
     if retained_backups:
         result["retained_backups"] = retained_backups
+    if hook_warnings:
+        result["warnings"] = hook_warnings
     return result
 
 
-def render_agents(
-    root: Path, apply: bool = False, client: str | None = None, target: str = "local"
-) -> dict[str, Any]:
+def render_agents(root: Path, apply: bool = False, client: str | None = None) -> dict[str, Any]:
     """Render project guidance, transactionally when bundle outputs participate."""
     if os.name == "nt":
         from ai_dlc.harness.windows_render import render_windows
 
-        return render_windows(root, apply=apply, client=client, target=target)
+        return render_windows(root, apply=apply, client=client)
     absolute = Path(root).resolve()
     if not apply:
-        return _render_agents(absolute, apply=False, client=client, target=target)
+        return _render_agents(absolute, apply=False, client=client)
     config = load_project(absolute)
     selected = bool(_selected_bundle_ids(config)) or enrolled_sources().enrolled
     ownership_path = absolute / ".ai-dlc" / "agent-ownership.json"
@@ -1403,10 +1406,10 @@ def render_agents(
         ):
             state = _RenderState(bound, parent, descriptor)
             try:
-                return _render_agents(bound, apply=True, client=client, target=target, state=state)
+                return _render_agents(bound, apply=True, client=client, state=state)
             finally:
                 state.close()
-    return _render_agents(absolute, apply=True, client=client, target=target)
+    return _render_agents(absolute, apply=True, client=client)
 
 
 def _rule_links(body: str) -> str:
@@ -1482,37 +1485,78 @@ def _skill_sources(config: dict) -> dict[str, str]:
     return {name: content[name] for name in sorted(set(selected))}
 
 
-def hook_readiness(client: str, version: str, target: str, required: list[str]) -> dict:
+def _version_tuple(version: str) -> tuple[int, ...] | None:
+    """Parse a dotted-integer version; anything else is unknown."""
+    match = re.match(r"\d+(?:\.\d+)*", version.strip())
+    if match is None:
+        return None
+    return tuple(int(part) for part in match.group(0).split("."))
+
+
+def hook_readiness(client: str, version: str, required: list[str]) -> dict:
+    """Compare required hooks with the client's hook floor.
+
+    The floor is a coverage statement, not qualification. An unset version is
+    allowed with a warning; a version below the floor is refused.
+    """
     import tomllib
 
     matrix = tomllib.loads((assets("agents") / "capabilities.toml").read_text())
-    supported = set()
-    for fixture in matrix["fixtures"]:
-        if (fixture["client"], fixture["version"], fixture["target"]) == (client, version, target):
-            supported.update(fixture["hooks"])
-    unavailable = sorted(set(required) - supported)
-    return {
-        "ready": not unavailable,
-        "unavailable": unavailable,
+    entry = matrix.get("clients", {}).get(client, {})
+    supported = set(entry.get("hooks", []))
+    floor = entry.get("min_version", "")
+    result: dict[str, Any] = {
+        "ready": True,
+        "unavailable": sorted(set(required) - supported),
         "supported": sorted(supported),
+        "min_version": floor,
         "coverage": matrix["coverage"],
+        "warnings": [],
     }
+    if result["unavailable"]:
+        result["ready"] = False
+        return result
+    if not required:
+        return result
+    if not version:
+        result["warnings"].append(
+            f"{client} version is unset; required hooks assume {client} >= {floor}"
+        )
+        return result
+    current, minimum = _version_tuple(version), _version_tuple(floor)
+    if current is None or minimum is None or current < minimum:
+        result["ready"] = False
+        result["unavailable"] = sorted(set(required))
+        result["reason"] = f"requires {client} >= {floor} (configured {version})"
+    return result
 
 
 def target_hooks(config: dict, target: str) -> dict:
+    """Hook readiness for an execution target; targets without hooks provide none."""
+    from ai_dlc.setup.targets import execution_target
+
+    hooks_available = execution_target(target).get("hooks") != "unavailable"
     clients = config.get("agents", {}).get("clients", {})
-    results = {
-        name: hook_readiness(
-            name, settings.get("version", ""), target, settings.get("required_hooks", [])
-        )
-        for name, settings in clients.items()
-    }
+    results = {}
+    for name, settings in clients.items():
+        required = settings.get("required_hooks", [])
+        if hooks_available:
+            results[name] = hook_readiness(name, settings.get("version", ""), required)
+        else:
+            results[name] = {
+                "ready": not required,
+                "unavailable": sorted(required),
+                "supported": [],
+                "warnings": [],
+                "reason": f"execution target {target} provides no hooks",
+            }
     return {
         "ready": all(result["ready"] for result in results.values()),
         "clients": results,
         "unavailable": [
             f"{name}:{hook}" for name, result in results.items() for hook in result["unavailable"]
         ],
+        "warnings": [warning for result in results.values() for warning in result["warnings"]],
     }
 
 
