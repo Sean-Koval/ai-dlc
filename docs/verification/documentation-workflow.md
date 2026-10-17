@@ -9,7 +9,7 @@ The change reconciles existing documentation, adds content-bound impact review,
 prepares bounded evidence for existing harnesses, validates citations, creates
 additive private workspaces, and extends pinned SDK skills with references.
 Formal scenarios live in the six named OpenSpec changes. The
-[historical baseline](../archive/verification/documentation-baseline.json) owns the initial inventory and
+[historical baseline](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/verification/documentation-baseline.json) owns the initial inventory and
 its dated dispositions; later changes do not silently refresh that record.
 
 ## Required local checks
@@ -212,7 +212,7 @@ Evidence for workspace diagnostics comes from three separate sources:
 Work-computer projects and skills, Antigravity, other desktop platforms and
 synchronization remain unverified.
 
-## Native workspace and external MCP follow-up — September 14, 2026
+## Native workspace and external MCP follow-up, September 14, 2026
 
 [Issue #53](https://github.com/Sean-Koval/ai-dlc/issues/53) tracks the remaining
 qualification. Engine revision `dd05f1f1ba919d2647e46049b7cd48fbb21be1fb` (PR #131 merge), AI-DLC 0.4.0, Python

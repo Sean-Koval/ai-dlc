@@ -121,13 +121,13 @@ run `ai-dlc project check --required` for complete required evidence.
 
 ## 5. Design the incremental change
 
-Use discovery and the [product brief](../../agents/templates/product-brief.md)
+Use discovery and the [product brief](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/templates/product-brief.md)
 to inspect the existing journey, implementation, tests, consumers and public
 interfaces. Separate observed behavior, actual user decisions and hypotheses.
 Record sources and their limits: characterization fixtures do not prove live
 integration or product value.
 
-Follow the [brownfield example](../../agents/examples/product-shaping/brownfield.md).
+Follow the [brownfield example](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/examples/product-shaping/brownfield.md).
 State affected users, integrations, compatibility boundaries, migration and
 recovery needs. Compare feasible options by impact, confidence, effort and
 dependencies, including keeping current behavior when meaningful. Preserve

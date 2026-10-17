@@ -2,7 +2,7 @@
 
 ## Declared protocol and current evidence
 
-The declaration in [`agents/evaluation.toml`](../../agents/evaluation.toml) remains
+The declaration in [`agents/evaluation.toml`](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/evaluation.toml) remains
 `status = "pending"`. The September 14, 2026 delivery verified the runner and its
 dry run; no live model transcripts or human scores were produced. `OPENAI_API_KEY`
 was unavailable in the delivering environment. The live run and human review

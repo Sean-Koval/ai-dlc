@@ -2,8 +2,8 @@
 
 Status: **local preparation only; human-grounded evaluation remains pending**.
 
-The subsequent [constructed stimulus manifest](../../agents/evaluations/design-pm/stimuli/manifest.json)
-and [browser construction checks](../../agents/evaluations/design-pm/stimuli/README.md)
+The subsequent [constructed stimulus manifest](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/evaluations/design-pm/stimuli/manifest.json)
+and [browser construction checks](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/evaluations/design-pm/stimuli/README.md)
 now supply six local inputs, including three real static captures. They are
 deliberately authored inputs, not experiment outputs or human ratings. The initial
 preparation evidence below describes frozen revision 995a39b; construction follow-up
@@ -14,10 +14,10 @@ Six original synthetic case specifications and a proposed three-condition protoc
 are prepared. No UI seeds, captures, experiment calls, human labels, preferences,
 approved resource limits or quality measurements are supplied by this change.
 
-- [Case specifications](../../agents/evaluations/design-pm/cases.json)
-- [Protocol and future record templates](../../agents/evaluations/design-pm/protocol.md)
-- [Scoped plan](../archive/planning/2026-09-05-design-pm-calibration.md)
-- [Predecessor contract](../../openspec/specs/design-pm/spec.md)
+- [Case specifications](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/evaluations/design-pm/cases.json)
+- [Protocol and future record templates](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/evaluations/design-pm/protocol.md)
+- [Scoped plan](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/planning/2026-09-05-design-pm-calibration.md)
+- [Predecessor contract](https://github.com/Sean-Koval/ai-dlc/blob/main/openspec/specs/design-pm/spec.md)
 
 ## Prepared scope
 

@@ -89,7 +89,7 @@ Cancelled or deferred scope stays cancelled; nothing here reopens it.
 - Selective Confluence publication (#22), pending review of the custom server.
 - Package index publication.
 
-The [September 2026 roadmap ledger](archive/planning/2026-09-roadmap-ledger.md)
+The [September 2026 roadmap ledger](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/planning/2026-09-roadmap-ledger.md)
 preserves the delivered-and-cancelled table and the reconciliation narrative; the
-[historical executor handoff](archive/handoffs/framework-delivery.md) preserves the
+[historical executor handoff](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/handoffs/framework-delivery.md) preserves the
 earlier execution checkpoints.

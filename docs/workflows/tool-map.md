@@ -65,7 +65,7 @@ optional.
 | Session or ownership transfer | `handoff` | Verified state, decisions, evidence, risks, and next action |
 | End of work period | `day-end` | Concise continuity record and reconciled remote state |
 
-The optional [workflow plugin](../../plugins/ai-dlc-workflow/README.md) carries
+The optional [workflow plugin](https://github.com/Sean-Koval/ai-dlc/blob/main/plugins/ai-dlc-workflow/README.md) carries
 `discovery`, `prd-draft`, `needs-spec`, `spec-from-prd`, `review-inbox`, `handoff`,
 `document-review`, `document-organize`, `design-brief` and `design-evaluate`,
 namespaced as `ai-dlc-workflow:<skill>`, plus an `ai-dlc-workflow` guide skill.
@@ -249,7 +249,7 @@ nothing is persisted. Edit returned repository paths with ordinary file and Git
 tools and run project checks. The `knowledge_*` tools remain for private notes,
 and a vault portal, mounted folder or Markdown link does not grant access.
 
-The [documentation guide](../../project-templates/project/docs/documentation-guide.md#search-and-read-project-documents) explains ownership, packet
+The [documentation guide](https://github.com/Sean-Koval/ai-dlc/blob/main/project-templates/project/docs/documentation-guide.md#search-and-read-project-documents) explains ownership, packet
 review, project-document access, baselines and workspace use. The optional CLI `docs check --style` invokes
 configured Vale; it does not install a tool or establish factual correctness.
 

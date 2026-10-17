@@ -729,6 +729,15 @@ verification_paths = ["tests/test_frontend.py"]
 requirements = ["openspec/specs/frontend-capability-pack/spec.md"]
 
 [[documents]]
+id = "repo-workflows-get-started"
+path = "docs/workflows/get-started.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+code_paths = ["scripts/bootstrap.sh", "docs/assets/front/build.py", "docs/assets/front/demo_provider.py", "scripts/docs_site_links.py", "mkdocs.yml"]
+verification_paths = ["tests/test_front_page.py"]
+
+[[documents]]
 id = "repo-workflows-greenfield"
 path = "docs/workflows/greenfield.md"
 kind = "reference"

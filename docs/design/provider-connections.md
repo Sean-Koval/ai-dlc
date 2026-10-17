@@ -55,4 +55,4 @@ for GitHub. GitHub's remote Project journal remains a compatibility boundary
 (the Linear codec that also stood outside the common service has been removed); the parent PT-02 extraction is not wholly
 complete. This does not implement Jira lifecycle support, native client login,
 Confluence or tenant qualification. See the bounded
-[specification](../../openspec/changes/archive/2026-09-07-provider-connection-service/specs/provider-connection-service/spec.md).
+[specification](https://github.com/Sean-Koval/ai-dlc/blob/main/openspec/changes/archive/2026-09-07-provider-connection-service/specs/provider-connection-service/spec.md).

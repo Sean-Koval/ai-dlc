@@ -44,7 +44,7 @@ explicitly blocked. GitHub/Jira selections do not acquire a Plane prerequisite.
   the distribution guard was retained unchanged.
 
 All five required checks then passed, including **1,209 tests**. Strict OpenSpec
-validation passed. The [local receipt](toolset-composition/local-checks.json)
+validation passed. The [local receipt](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/toolset-composition/local-checks.json)
 identifies the dirty candidate based on `dbd8f83` before the final evidence commit;
 it is not an exact merged-revision receipt. Source, tests and assets stayed frozen
 through the passing run. Bootstrap used a task-specific supported home and local
@@ -77,7 +77,7 @@ Copier's existing required PyYAML dependency; no package or lockfile changed.
 The update-boundary repair passed **1,214 tests**, four required checks and
 strict OpenSpec validation; lint failed on the saved-answer parsing exception
 contract. An earlier prose summary incorrectly described all five as passing. Its
-[receipt](toolset-composition/review-local-checks.json) records the dirty repair
+[receipt](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/toolset-composition/review-local-checks.json) records the dirty repair
 candidate based on `1904e9c`; source/tests/assets were frozen during that
 run. The later combined repair below corrects the lint failure. Independent
 re-review and merged-revision delivery remain pending.
@@ -98,8 +98,8 @@ input. That boundary intentionally uses the existing CLI validation error contra
 so the rule is locally suppressed rather than changing the exception contract.
 
 The corrected frozen source passed **all five required checks with 1,217 tests**.
-The [complete passing receipt](toolset-composition/scope-review-checks.json) records
-the dirty candidate based on `11f61f6`; the [first staged-validation run](toolset-composition/scope-review-first-checks.json)
+The [complete passing receipt](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/toolset-composition/scope-review-checks.json) records
+the dirty candidate based on `11f61f6`; the [first staged-validation run](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/toolset-composition/scope-review-first-checks.json)
 and earlier update-boundary receipt remain available with their actual lint failures.
 Strict OpenSpec validation also passed. Root's independent source review found no
 additional issues in the combined repair; integration and exact merged-revision

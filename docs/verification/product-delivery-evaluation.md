@@ -5,9 +5,9 @@ synthetic cases and a proposed controlled-comparison protocol are available.
 There are no human labels, approved experimental budget, model/harness selection,
 experimental transcripts, scores or improvement findings from this work.
 
-- [Protocol](../../agents/evaluations/product-delivery/protocol.md)
-- [Case corpus](../../agents/evaluations/product-delivery/cases.json)
-- [Scoped plan steering](../archive/planning/2026-09-05-workflow-quality-calibration.md)
+- [Protocol](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/evaluations/product-delivery/protocol.md)
+- [Case corpus](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/evaluations/product-delivery/cases.json)
+- [Scoped plan steering](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/planning/2026-09-05-workflow-quality-calibration.md)
 
 ## Delivered preparation
 
@@ -79,7 +79,7 @@ replaced by the cherry-pick.
 
 One full required-check retry passed **all five checks and 1,212 tests** at clean
 revision `bbcaf39d670538b72ad80460a6516f6ff85d8c91`. The
-[receipt](product-delivery-evaluation/local-checks.json) records that exact source
+[receipt](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/product-delivery-evaluation/local-checks.json) records that exact source
 revision. This evidence note and receipt were finalized afterward; the preparation
 source, tests and assets were frozen throughout the passing run. Both JSON future
 record templates in the protocol also parse, with their approval/budget/human

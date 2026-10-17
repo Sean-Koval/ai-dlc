@@ -91,7 +91,7 @@ Portal linking remains the default. Mount identities are ignored machine-local
 bindings; existing matching links need explicit adoption before AI-DLC owns the
 binding. Setup refuses overlapping targets and nested traversal, and preserves
 partial output for inspection. This does not broaden the private knowledge API's
-filesystem boundary. See the [portable documentation guide](../../project-templates/project/docs/documentation-guide.md#opt-in-to-native-project-folders)
+filesystem boundary. See the [portable documentation guide](https://github.com/Sean-Koval/ai-dlc/blob/main/project-templates/project/docs/documentation-guide.md#opt-in-to-native-project-folders)
 for preview/apply and recovery. Filesystem verification alone does not qualify
 Obsidian indexing, file watching or synchronization.
 
@@ -100,7 +100,7 @@ with `docs search` and `docs read`. These operations are scoped to
 the selected repository's `docs/`, `openspec/` and per-call declared Markdown, and
 return canonical repository paths for ordinary Git edits. They never read vault
 notes; the knowledge tools remain the only private-note interface. See the
-[documentation guide](../../project-templates/project/docs/documentation-guide.md#search-and-read-project-documents).
+[documentation guide](https://github.com/Sean-Koval/ai-dlc/blob/main/project-templates/project/docs/documentation-guide.md#search-and-read-project-documents).
 
 `project workspace-check` explains why a mounted workspace does not behave as
 expected without changing it. It reports the PATH-selected executable, owned shell
@@ -108,7 +108,7 @@ activation, the checkout the shared bootstrap alias runs, each machine-local mou
 binding and link reachability as separate results. Links to repository files outside `docs/` and `openspec/` remain
 repository-only; the diagnostic never widens mounts or the private-note boundary,
 and it cannot qualify Obsidian. See the
-[documentation guide](../../project-templates/project/docs/documentation-guide.md#diagnose-the-local-workspace).
+[documentation guide](https://github.com/Sean-Koval/ai-dlc/blob/main/project-templates/project/docs/documentation-guide.md#diagnose-the-local-workspace).
 
 ## Session learnings
 
@@ -118,7 +118,7 @@ provenance frontmatter; it does not summarize logs or publish notes.
 
 Every note carries the knowledge-note frontmatter that learnings and decision
 records share. The JSON Schema is
-[`contracts/knowledge-note.schema.json`](../../contracts/knowledge-note.schema.json),
+[`contracts/knowledge-note.schema.json`](https://github.com/Sean-Koval/ai-dlc/blob/main/contracts/knowledge-note.schema.json),
 generated from `ai_dlc.documentation.knowledge_notes`:
 
 ```markdown
