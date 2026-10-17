@@ -1,1 +1,1 @@
-:root { --af-product: var(--af-p-aidlc); }
+:root, [data-md-color-scheme] { --af-product: var(--af-product-aidlc); }
