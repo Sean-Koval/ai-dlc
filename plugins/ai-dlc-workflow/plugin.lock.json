@@ -1,0 +1,20 @@
+{
+  "components": {
+    "guide:ai-dlc-workflow": "sha256:84e2fb91e01896de4d28aa45badb41be994f8f4c1d7f07fa2b1d07636d2d64d1",
+    "hooks:ai-dlc": "sha256:ced3e7d48cd18c387444407977203e68d28757f89113014babdd1e34b09d002a",
+    "skill:design-brief": "sha256:5b9cc5c5d40378b273369c62b51b4ba10475a65c0dd91d799cd29df2a7c8ec58",
+    "skill:design-evaluate": "sha256:a7e3f68082ff474fd09adefb623a20bc34a2f3f83c6e97055a55008f4681d9af",
+    "skill:discovery": "sha256:74d0a76012649f919770e37fa464d436a0ce8c7501ec011182a29d4ae14d2904",
+    "skill:document-organize": "sha256:446d1e9023f9c118e69966b2eced0460c702b79b828c0559f44b6ba95db018c6",
+    "skill:document-review": "sha256:5e2f71219b98cd53dd6a3a73b3bbccc1873b796a14ec1347875a39c911db9ad3",
+    "skill:handoff": "sha256:8037ad8c8abb7048f5009e60221ac9b0df9a875b2d1da673054fa12904a494d1",
+    "skill:needs-spec": "sha256:573d9e79cbc1b15e911a5dffdd61bcf2eaf1d089f491b2445d45b77d53bbb2f2",
+    "skill:prd-draft": "sha256:e6d457ee65f4d7dd184bef4fc8285253951098484fba9bb3cedbe1512729dc0e",
+    "skill:review-inbox": "sha256:8b58913b870212b4b04b14d921efb72ed92007cec043513eb3baef36e907c846",
+    "skill:spec-from-prd": "sha256:f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce"
+  },
+  "content_digest": "sha256:90ab99615f8348a5c04f002f67dcce15c27b4ef38e8e9dc4c59190948f668cac",
+  "plugin": "ai-dlc-workflow",
+  "revision": 1,
+  "schema": 1
+}

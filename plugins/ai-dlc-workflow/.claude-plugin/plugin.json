@@ -1,0 +1,22 @@
+{
+  "author": {
+    "name": "AI-DLC contributors"
+  },
+  "defaultEnabled": false,
+  "description": "AI-DLC workflow guidance, team skills and CLI-optional safety hooks; opt in per session or settings scope.",
+  "displayName": "AI-DLC workflow",
+  "keywords": [
+    "workflow",
+    "skills",
+    "hooks",
+    "ai-dlc"
+  ],
+  "license": "MIT",
+  "metadata": {
+    "content_digest": "sha256:90ab99615f8348a5c04f002f67dcce15c27b4ef38e8e9dc4c59190948f668cac",
+    "source": "Sean-Koval/ai-dlc/plugins/ai-dlc-workflow"
+  },
+  "name": "ai-dlc-workflow",
+  "repository": "https://github.com/Sean-Koval/ai-dlc",
+  "version": "0.4.0-r1"
+}

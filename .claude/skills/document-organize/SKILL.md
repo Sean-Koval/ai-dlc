@@ -13,7 +13,10 @@ bounded review, not an autonomous move engine.
 ## Discover and review
 
 Read repository guidance, the documentation map/catalog if present, and relevant
-OpenSpec records. Inspect Git status and protect unrelated authored edits. Use
+OpenSpec records. Inspect Git status and protect unrelated authored edits. The
+`ai-dlc` commands below apply when the repository is adopted (has `ai-dlc.toml`
+at its root) and `ai-dlc` is on PATH; otherwise use ordinary file, search and Git
+tools for the same steps. Use
 `ai-dlc docs check --inventory` (MCP `project_docs_inventory`) to discover tracked
 and nonignored Markdown throughout root, docs and legacy directories. Report
 excluded, inaccessible and symlinked paths; never follow them into another store.

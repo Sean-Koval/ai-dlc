@@ -1,5 +1,5 @@
 schema = 1
-coverage = "Local fixture coverage only, not full client walkthrough. Bash/exec_command direct git push and gh pr create; external terminals and arbitrary wrappers excluded. Hooks require trusted repositories; native approval request unsupported."
+coverage = "Local fixture coverage only, not full client walkthrough. Bash/exec_command direct git push and gh pr create; external terminals and arbitrary wrappers excluded. Hooks require trusted repositories; native approval request unsupported. Repository-rendered hooks require the ai-dlc CLI; the optional workflow plugin hooks run a stdlib shim instead and need python3."
 
 [[fixtures]]
 client = "codex"
