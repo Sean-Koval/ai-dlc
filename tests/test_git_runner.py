@@ -15,7 +15,8 @@ def test_only_the_shared_runner_spawns_git():
     """Would fail if a module reintroduced its own subprocess call with a git argv."""
     offenders = []
     for path in SOURCE.rglob("*.py"):
-        if path == SOURCE / "files.py":
+        # The plugin hook shim must stay standard-library only, so it cannot use run_git.
+        if path in {SOURCE / "files.py", SOURCE / "harness/hook_shim.py"}:
             continue
         text = path.read_text()
         if re.search(r'subprocess\.\w+\(\s*\[\s*"git"', text) or re.search(
