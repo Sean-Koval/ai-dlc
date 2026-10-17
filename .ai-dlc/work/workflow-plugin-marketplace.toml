@@ -26,6 +26,7 @@ spec = "openspec/changes/archive/2026-10-17-workflow-plugin-marketplace"
 plan = "openspec/changes/archive/2026-10-17-workflow-plugin-marketplace/tasks.md"
 branch = "issue/193-marketplace-layout"
 tracker = "193"
+pr = "https://github.com/Sean-Koval/ai-dlc/pull/225"
 
 [bindings]
 specs = "a8f8f91947ed105b68ab6c04da0b24fa96e4c95b3d0b07f7292fa0e13c6e20e0"
