@@ -23,6 +23,9 @@ Prepare this checkout with `sh scripts/bootstrap.sh --source`; run
 and leaves the shared `ai-dlc` alias alone; use the printed environment path, or
 pass `--publish-aliases` to repoint the alias deliberately. Use the Python implementation in `src/ai_dlc/`.
 The [architecture](docs/architecture.md) maps its packages and entry points.
+This checkout commits no rendered skill copies; load the team skills from the
+workflow plugin (`claude --plugin-dir plugins/ai-dlc-workflow`, or read
+`plugins/ai-dlc-workflow/skills/` from Codex) and edit them under `agents/skills/`.
 The Rust implementation is retired and removed; its plans stay in `docs/archive/`.
 `ai-dlc project init` and `project adopt` copy the packaged `project-templates/`;
 the legacy `templates/` scaffold and the root `copier.yml` are removed. Preserve

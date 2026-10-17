@@ -63,6 +63,9 @@ work-records = "ai-dlc work validate --all"
 
 [agents]
 servers = []
+# Contributors load the skills from the workflow plugin (plugins/ai-dlc-workflow);
+# this repository does not commit rendered skill copies.
+skills = []
 
 [providers.github-issues]
 host = "github.com"
