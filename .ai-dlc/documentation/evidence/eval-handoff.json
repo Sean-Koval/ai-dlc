@@ -3,7 +3,7 @@
     {
       "bound": {
         "catalog:docs/architecture.md": "e957dcf74f6dcbe53ce40caf58a8cd486ee04461b47279540cdccaa4680c445a",
-        "docs/architecture.md": "d50d9c3dd185d78a2c119376c9d2204a5472fa7dfd04ea63d07bbbbbda712e4a",
+        "docs/architecture.md": "fa64772e1334fefad23d1548cd061abd46ce85588c8034fcc59abeb95890cd24",
         "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/tracker-adapter-boundary/spec.md": "dd8886e122156c514768387930c3534d882b4672552eeb2aca62507fa6ab2a58",
@@ -23,8 +23,9 @@
         "plugins/ai-dlc-workflow/skills/prd-draft/SKILL.md": "e6d457ee65f4d7dd184bef4fc8285253951098484fba9bb3cedbe1512729dc0e",
         "plugins/ai-dlc-workflow/skills/review-inbox/SKILL.md": "8b58913b870212b4b04b14d921efb72ed92007cec043513eb3baef36e907c846",
         "plugins/ai-dlc-workflow/skills/spec-from-prd/SKILL.md": "f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce",
-        "pyproject.toml": "296acf5ff015bc4aaf17576c4210e8c69988beb35e11507250a45c0dc534e4d5",
+        "pyproject.toml": "ea73fd835255de7bddab5ef23ff7189e2d19c29ec7e6d49ffc97aee14559f4bd",
         "scripts/build_workflow_plugin.py": "32f03093b1e5bb3f496f395de1ddc9575587023ad4909a663cded0c01b2a241f",
+        "scripts/check_client_pins.py": "c0b4030b6767aee44975556f11a2c0dcf2b5aa67e232ec6182c1247630f53c8c",
         "scripts/check_generated.py": "a42907ebeb4da2669db70ab5c71ed790db416eed2dc5fc8fa11e5e68eb97c955",
         "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
         "scripts/qualify_framework.py": "8068bb2709bbf6b3a020e9c22d62b993cc0e8a3e3c9ee5c00dc4b8963c31054e",
@@ -35,9 +36,7 @@
         "src/ai_dlc/_windows_storage/__init__.py": "5715def899453f15265e13d52e5b518844cc9d057421cfa5279172d799d5f506",
         "src/ai_dlc/_windows_storage/_api.py": "d5fc4f971db8e706871c06e8119884848e505af6c45f4fbb5c2f7db513faf41b",
         "src/ai_dlc/_windows_storage/_security.py": "62785d4e088cd485816a33f35a7a559d3d1acf166093c413a3f4f79969056314",
-        "src/ai_dlc/cli.py": "54915884b1f07f2bbe7da2d1222627a2797b3cac559e628ef3a1af168a0431d0",
-        "src/ai_dlc/compatibility/__init__.py": "f2fe8ce6bac5e62ecdc03de317ede4212d1d40c2ab1ddab9fcf4f9708cd436a4",
-        "src/ai_dlc/compatibility/legacy.py": "6a8021b2507ad7a9b4ff40a39cd40137d3d849bfcb0907ef46e79919af0fb040",
+        "src/ai_dlc/cli.py": "fd5a69942b36faa5ca0e40e6764208427d5330cda65305a2913486c538ebf87e",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
         "src/ai_dlc/conformance.py": "0ff247c065e89d4c5b43d844601dc809558c65a779c1600371953c0e2c44737b",
         "src/ai_dlc/contracts.py": "e2202d26b4815674bde05fc1190fbaedfe7cabdf6d8c913a721d1f0b53619d1e",
@@ -72,9 +71,9 @@
         "src/ai_dlc/environment/team_sources.py": "20d583a9046adfac9f0f5bf6de7aca537654eb29d0ff636c27f5a78c7c5c21a6",
         "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
         "src/ai_dlc/errors.py": "b8c0da78ec0e9ea75ef71b4495b501570625988ba5ae54c4631f1ca20a8362c1",
-        "src/ai_dlc/files.py": "eb0452e50442cdf9da231a56111afec1d45b4bc5b7a41a00931a540e88ad14da",
+        "src/ai_dlc/files.py": "cf094c2d7e6dbbe93f253ec4b3c4219902b323e927855541688eaca3f812354b",
         "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
-        "src/ai_dlc/harness/agents.py": "a0f21d41d2f31ee08968086dff6a0b8c1bde27093714c0f0c46d6a35afd81c86",
+        "src/ai_dlc/harness/agents.py": "0757ce327050807470193a93e66fc1b28bd1ea5e0b8b41c0bc61166f8465bc07",
         "src/ai_dlc/harness/components.py": "b64cd2ae837f83a37ddd1c74dad25fcd16fe8733715c224c7d64673784ebba11",
         "src/ai_dlc/harness/design_capture.py": "8b872492b88f4a7728bedf0ae8a1edaad2312a918248bf8f5d051c8bd8b42a58",
         "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
@@ -84,7 +83,7 @@
         "src/ai_dlc/harness/skill_evaluation.py": "33bbd3001d5123004a7767321f1ed5d6e2ad822510165d5caf8df9a947555532",
         "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
         "src/ai_dlc/harness/user_agents.py": "c99f9a52a379feaa0c1721081b95fef91f51c44f0a9e906145de51154616e937",
-        "src/ai_dlc/harness/windows_render.py": "5845e483eba550331f0a6777fcd7a3b9c13c90af071ac6df5962ffc3b090b978",
+        "src/ai_dlc/harness/windows_render.py": "8aa76c8aacc44d28a2117b3339ad7b632b91fdbe0a5557af50228dcd2aa0eeb0",
         "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
         "src/ai_dlc/locking.py": "e3c5dbe1a98d3402352bc8a3c3a031106e8dd515e060a676803d734d8dee99dd",
         "src/ai_dlc/mcp_server.py": "607eba3e47a8573862d83e5209e824b78ec0af74545fa51727b8d3f7c03db410",
@@ -108,11 +107,12 @@
         "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
         "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
         "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
-        "src/ai_dlc/setup/project.py": "09464c89f569a337aaa77d1604404273808636323635bcd00bb05e0f74c7ad9e",
+        "src/ai_dlc/setup/project.py": "d36f7b1bcfda5176ffda62de03dfcdd61226f7c973609030665815245f258b00",
         "src/ai_dlc/setup/provider_onboarding.py": "1041a3ef5127239945d3ae386705acc7814f12a6c05205bc345edf7ab973bbb4",
-        "src/ai_dlc/setup/provision.py": "97c513f4ab21c66b064ceb6bfb6f34683e9340246208525ba109fe36bc9a1ff7",
+        "src/ai_dlc/setup/provision.py": "1e29f9b9927fd187a28a90e962ad966599a64f45e5c22b45b945dee25731d03b",
         "src/ai_dlc/setup/readiness.py": "e0984a1f504ee87f3c4c1939624b34ccfe2fd6b7315df365166e95ff3b975d55",
         "src/ai_dlc/setup/rebind.py": "812aa473b3cb92d81eb98c288ab1124f1fe0a62039559ecbd2eeb2349698ef15",
+        "src/ai_dlc/setup/targets.py": "11979b487ab5604eb05f49ab7c7eca1bfda796f25acc1dc489cdc9e7ccc4a9aa",
         "src/ai_dlc/setup/templates.py": "258154a7eeec73d8207bbb082e7f06be8ab649811a91b9a462555724dd664e58",
         "src/ai_dlc/setup/tracker_targets.py": "b04533ac254bde0aa7bddf083097d815153998f15b1042645ac4ffc38f848319",
         "src/ai_dlc/setup/workstation.py": "8ac8f2467ee925392f777e15d921ad79da8a10c94267bbd30f5386455db4e8d2",
@@ -148,26 +148,26 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Reviewed against the frozen notices: the verification package description stays accurate until #195 removes the code; the handoff lives in the evaluation document.",
+      "reason": "Reviewed against the frozen notices: the verification package description stays accurate until #195 removes the code; the handoff lives in the evaluation document. Re-reviewed after merging main.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
     {
       "bound": {
-        "docs/catalog.toml": "7675bc020a9ecdab5ceca6f11b0a4b74a504ff149dc9c1e55920690c0fbef999"
+        "docs/catalog.toml": "55bbeaccd4ec4f8ff326ef6bd736c614502cbddf53e8647070c471a679305650"
       },
       "outcome": "updated",
-      "reason": "Maps FROZEN.md and the handoff inventory test to the end-to-end evaluation document.",
+      "reason": "Maps FROZEN.md and the handoff inventory test to the end-to-end evaluation document. Re-reviewed after merging main.",
       "reviewer": "Claude (agent)",
       "target": "docs/catalog.toml"
     },
     {
       "bound": {
         "catalog:docs/roadmap.md": "3bf3afbf1117b7747e4c261c4a0ac1781559085c96abed00632a9804166918b8",
-        "docs/roadmap.md": "598e1a2294de36fdd4e05eeb3dcfe1c8ac059bacea2a9ee790bc665d758c696b"
+        "docs/roadmap.md": "7f14ba467c2945b1d251e7c8e4e1010b26c5355224784ccd3cbf8f7dc655392e"
       },
       "outcome": "updated",
-      "reason": "Evaluation item now says the runner and skill evaluation are frozen and move to flightdeck, linking the handoff section and #195.",
+      "reason": "Evaluation item now says the runner and skill evaluation are frozen and move to flightdeck, linking the handoff section and #195. Re-reviewed after merging main.",
       "reviewer": "Claude (agent)",
       "target": "docs/roadmap.md"
     },
