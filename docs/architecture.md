@@ -191,7 +191,7 @@ services share contracts; provider details stay inside adapters.
 utility entry points. `scripts/cloud/` holds hosted-harness setup. The obsolete unlocked `check_env.sh`
 installer, the historical Rust crate with its embedded template mirror, and the
 script that synchronised them have been removed; the retired Rust plans remain in
-`docs/archive/legacy/`.
+git history before tag `docs-prune-2026-10`.
 `templates/` remains packaged because the legacy scaffold command still uses it.
 It carries only this repository's own commands, hooks and workflows: the
 third-party agent and command collections once copied into it were removed, and

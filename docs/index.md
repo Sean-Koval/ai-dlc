@@ -68,10 +68,10 @@ rationale. A merged specification does not establish live platform qualification
 The [historical executor handoff](archive/handoffs/framework-delivery.md) preserves
 earlier checkpoints; the roadmap owns current status. The [provider planning handoff](archive/planning/provider-toolset-handoff.md),
 [historical planning records](archive/planning/),
-[v4 ledger](archive/planning/implementation-v4.md) and [Rust Phase 1 plan](archive/legacy/phase-1-rust.md) preserve
-history; their old instructions are not current task assignments. Template research
-in [template research](archive/research/) and the [historical generation prompt](archive/research/jinja2_template_generation.md)
-are supporting material, not current Python implementation contracts.
+and [v4 ledger](archive/planning/implementation-v4.md) preserve history; their old
+instructions are not current task assignments. The Rust plans, template research and
+dated evidence captures pruned in October 2026 remain in git history at tag
+`docs-prune-2026-10` (commit `fa867cc`).
 
 The original [September 10 baseline and dispositions](archive/verification/documentation-baseline.json)
 accounts for every initial docs check finding, including retained historical material,

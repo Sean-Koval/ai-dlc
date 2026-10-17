@@ -23,7 +23,7 @@ Prepare this checkout with `sh scripts/bootstrap.sh --source`; run
 and leaves the shared `ai-dlc` alias alone; use the printed environment path, or
 pass `--publish-aliases` to repoint the alias deliberately. Use the Python implementation in `src/ai_dlc/`.
 The [architecture](docs/architecture.md) maps its packages and entry points.
-The Rust implementation is retired and removed; its plans stay in `docs/archive/`.
+The Rust implementation is retired and removed; its plans are in git history before tag `docs-prune-2026-10`.
 `templates/` still supplies the supported legacy scaffold command. Preserve
 compatibility tests and packaged assets.
 
@@ -45,6 +45,10 @@ list before starting work, and do not grow moved or cut areas.
   `docs/workflows/`, and actual qualification evidence in `docs/verification/`.
 - `docs/archive/` preserves explicitly historical material. Its old commands and
   tool instructions are not current guidance. Never manufacture review freshness.
+- Growth is frozen (ADR 0001): open new OpenSpec changes only for in-scope areas
+  (work lifecycle, enrollment and provisioning, managed sections, the workflow
+  plugin). Update canonical documents instead of adding new ones, and do not add to
+  `docs/archive/`; older material lives in git history.
 - Keep disposable execution logs in ignored `.ai-dlc/local/`; do not create root
   planning files, `.superpowers/`, or tool-specific planning hierarchies.
 - Enroll durable documents in `docs/catalog.toml`; update code mappings and links
