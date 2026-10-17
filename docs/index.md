@@ -45,6 +45,7 @@ than reproducing them.
 | Question | Canonical entry point |
 | --- | --- |
 | What is the system? | [Architecture](architecture.md) and [proposed delivery design](design/framework-delivery.md) |
+| What is in scope? | [Decisions](decisions/), starting with the [scope freeze](decisions/0001-refocus-ai-dlc.md) |
 | Why is it this way? | Decisions in the relevant [design documents](design/) and [formal change designs](../openspec/changes/) |
 | What must it do? | [OpenSpec](../openspec/) owns formal specifications and change artifacts |
 | How do we operate and verify it? | [README setup](../README.md), [release verification](release-verification.md) and [verification records](verification/) |

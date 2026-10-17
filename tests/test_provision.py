@@ -211,7 +211,7 @@ def test_doctor_checks_alias_provider_requirements(tmp_path, monkeypatch):
     from ai_dlc.setup import provision
 
     (tmp_path / "ai-dlc.toml").write_text(
-        'schema=4\n[roles]\ntracker="team-tracker"\n[providers.team-tracker]\nkind="linear"\ntoken_env="AI_DLC_TEST_MISSING_TOKEN"\n'
+        'schema=4\n[roles]\ntracker="team-tracker"\n[providers.team-tracker]\nkind="github-issues"\ntoken_env="AI_DLC_TEST_MISSING_TOKEN"\n'
     )
     monkeypatch.delenv("AI_DLC_TEST_MISSING_TOKEN", raising=False)
     monkeypatch.setattr(provision.shutil, "which", lambda name, path=None: None)
@@ -219,8 +219,7 @@ def test_doctor_checks_alias_provider_requirements(tmp_path, monkeypatch):
     result = provision.doctor(tmp_path)
     assert not result["ready"]
     assert any("AI_DLC_TEST_MISSING_TOKEN" in s for s in result["signins"])
-    assert any("team_id" in s for s in result["configuration"])
-    assert any("closed" in s for s in result["configuration"])
+    assert "tracker repository is required" in result["configuration"]
 
 
 def test_doctor_uses_merged_bindings_and_shared_redacted_credential_readiness(
@@ -244,22 +243,22 @@ def test_doctor_uses_merged_bindings_and_shared_redacted_credential_readiness(
         """schema = 4
 profile_id = "portable-development"
 [roles]
-tracker = "linear-sandbox"
-[providers.linear-sandbox]
-kind = "linear"
-token_env = "LINEAR_SANDBOX_TOKEN"
+tracker = "jira-sandbox"
+[providers.jira-sandbox]
+kind = "jira-cloud"
+token_env = "JIRA_SANDBOX_TOKEN"
 team_id = "portable-team"
 health_reference = "portable-health"
-[providers.linear-sandbox.statuses]
+[providers.jira-sandbox.statuses]
 in_progress = "started"
 closed = "completed"
-[credentials.linear-sandbox]
-description = "Linear sandbox access"
-required_by = ["provider.linear-sandbox"]
+[credentials.jira-sandbox]
+description = "Jira sandbox access"
+required_by = ["provider.jira-sandbox"]
 [[agents.servers]]
 id = "notes"
 command = "notes-mcp"
-env = ["LINEAR_SANDBOX_TOKEN"]
+env = ["JIRA_SANDBOX_TOKEN"]
 """
     )
     machine = tmp_path / "machine.toml"
@@ -268,12 +267,12 @@ env = ["LINEAR_SANDBOX_TOKEN"]
 [paths]
 vault = "{vault}"
 [accounts]
-linear = "sandbox"
-[providers.linear-sandbox]
+jira = "sandbox"
+[providers.jira-sandbox]
 account = "sandbox"
-[credentials.linear-sandbox]
+[credentials.jira-sandbox]
 source = "environment"
-variable = "LINEAR_SANDBOX_TOKEN"
+variable = "JIRA_SANDBOX_TOKEN"
 """
     )
     provider_configs: list[dict] = []
@@ -292,16 +291,16 @@ variable = "LINEAR_SANDBOX_TOKEN"
         personal=profile,
         machine=machine,
         home=home,
-        environ={"LINEAR_SANDBOX_TOKEN": marker},
+        environ={"JIRA_SANDBOX_TOKEN": marker},
     )
 
     assert result["credentials"] == [
         {
-            "id": "linear-sandbox",
-            "description": "Linear sandbox access",
-            "required_by": ["provider.linear-sandbox"],
+            "id": "jira-sandbox",
+            "description": "Jira sandbox access",
+            "required_by": ["provider.jira-sandbox"],
             "source": "environment",
-            "variable": "LINEAR_SANDBOX_TOKEN",
+            "variable": "JIRA_SANDBOX_TOKEN",
             "configured": True,
             "present": True,
         }
@@ -310,10 +309,10 @@ variable = "LINEAR_SANDBOX_TOKEN"
     assert result["user_agents"]["applied"] is False
     assert result["user_agents"]["changed"]
     assert result["provider_health"] == [
-        {"provider": "linear-sandbox", "ready": False, "reason": "provider health check failed"}
+        {"provider": "jira-sandbox", "ready": False, "reason": "provider health check failed"}
     ]
-    assert provider_configs[0]["providers"]["linear-sandbox"]["kind"] == "linear"
-    assert provider_configs[0]["providers"]["linear-sandbox"]["account"] == "sandbox"
+    assert provider_configs[0]["providers"]["jira-sandbox"]["kind"] == "jira-cloud"
+    assert provider_configs[0]["providers"]["jira-sandbox"]["account"] == "sandbox"
     assert marker not in repr(result)
     assert not list(home.iterdir())
 
@@ -335,21 +334,21 @@ def test_doctor_redacts_logical_and_distinct_provider_compatibility_credentials(
     profile.write_text(
         """schema = 4
 profile_id = "portable-development"
-[providers.linear-sandbox]
-kind = "linear"
-token_env = "LINEAR_COMPAT_TOKEN"
+[providers.jira-sandbox]
+kind = "jira-cloud"
+token_env = "JIRA_COMPAT_TOKEN"
 health_reference = "portable-health"
-[credentials.linear-sandbox]
-description = "Linear sandbox access"
-required_by = ["provider.linear-sandbox"]
+[credentials.jira-sandbox]
+description = "Jira sandbox access"
+required_by = ["provider.jira-sandbox"]
 """
     )
     machine = tmp_path / "machine.toml"
     machine.write_text(
         """schema = 4
-[credentials.linear-sandbox]
+[credentials.jira-sandbox]
 source = "environment"
-variable = "LINEAR_LOGICAL_TOKEN"
+variable = "JIRA_LOGICAL_TOKEN"
 """
     )
 
@@ -367,42 +366,52 @@ variable = "LINEAR_LOGICAL_TOKEN"
         machine=machine,
         home=tmp_path / "home",
         environ={
-            "LINEAR_LOGICAL_TOKEN": logical_value,
-            "LINEAR_COMPAT_TOKEN": compatibility_value,
+            "JIRA_LOGICAL_TOKEN": logical_value,
+            "JIRA_COMPAT_TOKEN": compatibility_value,
         },
     )
 
     assert logical_value not in repr(result)
     assert compatibility_value not in repr(result)
     assert result["provider_health"] == [
-        {"provider": "linear-sandbox", "ready": False, "reason": "provider health check failed"}
+        {"provider": "jira-sandbox", "ready": False, "reason": "provider health check failed"}
     ]
 
 
-def test_doctor_reports_the_injected_default_linear_credential_as_absent_or_present(
+def test_doctor_reports_an_injected_definition_default_credential_as_absent_or_present(
     tmp_path, monkeypatch
 ):
-    """Would fail if the Linear default used ambient state or bypassed readiness."""
+    """Would fail if a definition default used ambient state or bypassed readiness."""
     from types import SimpleNamespace
 
+    from ai_dlc import provider_definitions
     from ai_dlc.harness import agents
+    from ai_dlc.provider_definitions import EnvironmentRequirement, ProviderDefinition
     from ai_dlc.setup import provision
+
+    monkeypatch.setitem(
+        provider_definitions.DEFINITIONS,
+        "defaulted",
+        ProviderDefinition(
+            "defaulted",
+            ("tracker",),
+            environment_requirements=(
+                EnvironmentRequirement("token_env", default="DEFAULTED_TOKEN"),
+            ),
+        ),
+    )
 
     root = tmp_path / "project"
     root.mkdir()
     (root / "ai-dlc.toml").write_text(
         """schema = 4
 [roles]
-tracker = "linear-sandbox"
-[providers.linear-sandbox]
-kind = "linear"
-team_id = "portable-team"
-[providers.linear-sandbox.statuses]
-in_progress = "started"
-closed = "completed"
+tracker = "tickets"
+[providers.tickets]
+kind = "defaulted"
 """
     )
-    monkeypatch.delenv("LINEAR_API_KEY", raising=False)
+    monkeypatch.delenv("DEFAULTED_TOKEN", raising=False)
     monkeypatch.setattr(provision.shutil, "which", lambda name, path=None: f"/bin/{name}")
     monkeypatch.setattr(
         provision.subprocess,
@@ -412,11 +421,11 @@ closed = "completed"
     monkeypatch.setattr(agents, "render_agents", lambda selected_root: {"changed": []})
 
     absent = provision.doctor(root, environ={})
-    present = provision.doctor(root, environ={"LINEAR_API_KEY": "injected-only"})
+    present = provision.doctor(root, environ={"DEFAULTED_TOKEN": "injected-only"})
 
-    assert absent["credentials"][0]["variable"] == "LINEAR_API_KEY"
+    assert absent["credentials"][0]["variable"] == "DEFAULTED_TOKEN"
     assert absent["credentials"][0]["present"] is False
-    assert absent["signins"] == ["Set LINEAR_API_KEY using your credential store"]
+    assert absent["signins"] == ["Set DEFAULTED_TOKEN using your credential store"]
     assert absent["ready"] is False
     assert present["credentials"][0]["present"] is True
     assert present["signins"] == []
@@ -614,12 +623,12 @@ def test_machine_plan_merges_machine_readiness_without_exposing_environment_valu
 profile_id = "portable-development"
 [preferences]
 headless = false
-[providers.linear-sandbox]
-kind = "linear"
-token_env = "LINEAR_SANDBOX_TOKEN"
-[credentials.linear-sandbox]
-description = "Linear sandbox access"
-required_by = ["provider.linear-sandbox"]
+[providers.jira-sandbox]
+kind = "jira-cloud"
+token_env = "JIRA_SANDBOX_TOKEN"
+[credentials.jira-sandbox]
+description = "Jira sandbox access"
+required_by = ["provider.jira-sandbox"]
 """
     )
     machine = tmp_path / "machine.toml"
@@ -630,15 +639,15 @@ headless = true
 [paths]
 vault = "/machine/vault"
 [accounts]
-linear = "sandbox"
-[providers.linear-sandbox]
+jira = "sandbox"
+[providers.jira-sandbox]
 account = "sandbox"
-[credentials.linear-sandbox]
+[credentials.jira-sandbox]
 source = "environment"
-variable = "LINEAR_SANDBOX_TOKEN"
+variable = "JIRA_SANDBOX_TOKEN"
 """
     )
-    monkeypatch.delenv("LINEAR_SANDBOX_TOKEN", raising=False)
+    monkeypatch.delenv("JIRA_SANDBOX_TOKEN", raising=False)
 
     result = machine_plan(
         profile,
@@ -646,17 +655,17 @@ variable = "LINEAR_SANDBOX_TOKEN"
         system="Darwin",
         architecture="arm64",
         home=tmp_path / "home",
-        environ={"LINEAR_SANDBOX_TOKEN": marker},
+        environ={"JIRA_SANDBOX_TOKEN": marker},
     )
 
     assert result["headless"] is True
     assert result["credentials"] == [
         {
-            "id": "linear-sandbox",
-            "description": "Linear sandbox access",
-            "required_by": ["provider.linear-sandbox"],
+            "id": "jira-sandbox",
+            "description": "Jira sandbox access",
+            "required_by": ["provider.jira-sandbox"],
             "source": "environment",
-            "variable": "LINEAR_SANDBOX_TOKEN",
+            "variable": "JIRA_SANDBOX_TOKEN",
             "configured": True,
             "present": True,
         }

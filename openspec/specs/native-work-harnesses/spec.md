@@ -101,7 +101,7 @@ instructions SHALL apply only to their selected roles. Concrete OpenSpec archive
 instructions SHALL apply only to the OpenSpec runtime provider. Built-in merge
 instructions SHALL apply only to supported selected GitHub SCM. Built-in finish
 instructions SHALL apply only with both supported selected GitHub SCM and a
-selected built-in Linear, GitHub Issues, Jira Cloud or Plane tracker; OpenSpec
+selected built-in GitHub Issues, Jira Cloud or Plane tracker; OpenSpec
 merged-checkout recovery SHALL additionally require OpenSpec. Required
 documentation-gate follow-up instructions SHALL apply only when that gate is
 configured as required and merge guidance applies.
@@ -128,7 +128,7 @@ equivalent conditional shared guidance.
 - **THEN** specification, archive and merge guidance is present without a finish command or finish checkout instruction
 
 #### Scenario: Full supported delivery retains its safeguards
-- **WHEN** OpenSpec, GitHub SCM and any of Linear, GitHub Issues, Jira Cloud or Plane are selected
+- **WHEN** OpenSpec, GitHub SCM and any of GitHub Issues, Jira Cloud or Plane are selected
 - **THEN** generated guidance includes specification finalization, tracker authority, archive before merge, pre-merge required checks, work finish and the merge-checkout recovery instruction
 - **AND** an empty configured finish-gate list does not suppress the existing mandatory runtime gates or advertise weaker completion
 

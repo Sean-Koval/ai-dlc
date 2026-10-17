@@ -13,7 +13,7 @@ from ai_dlc.providers.github_issues import GitHubIssuesProvider
 @pytest.fixture
 def checkout(tmp_path):
     (tmp_path / "ai-dlc.toml").write_text(
-        'schema=4\n# authored\n[roles]\ntracker="linear"\n[providers.linear]\ntoken_env="KEY"\n'
+        'schema=4\n# authored\n[roles]\ntracker="jira"\n[providers.jira]\nkind="jira-cloud"\ntoken_env="KEY"\n'
     )
     return tmp_path
 
@@ -127,8 +127,8 @@ def test_named_project_plan_and_apply_preserve_authored_config(checkout, remote)
     text = (checkout / "ai-dlc.toml").read_text()
     assert text.startswith(before)
     config = tomllib.loads(text)
-    assert config["roles"]["tracker"] == "linear"
-    assert config["providers"]["linear"] == {"token_env": "KEY"}
+    assert config["roles"]["tracker"] == "jira"
+    assert config["providers"]["jira"] == {"kind": "jira-cloud", "token_env": "KEY"}
     assert config["providers"]["tickets"]["repository"] == "acme/app"
 
 
@@ -220,7 +220,7 @@ def test_plan_path_symlink_refused(checkout, remote, tmp_path):
         connect(checkout, repository="acme/app", plan_file=Path(".ai-dlc/local/link/plan.json"))
 
 
-def test_cli_alias_and_linear_alias_guard(checkout, remote):
+def test_cli_alias_and_removed_linear_alias_guard(checkout, remote):
     with (checkout / "ai-dlc.toml").open("a") as stream:
         stream.write(
             '\n[providers.tickets]\nkind="github-issues"\n[providers.other]\nkind="linear"\n'
@@ -243,7 +243,7 @@ def test_cli_alias_and_linear_alias_guard(checkout, remote):
     before = (checkout / "ai-dlc.toml").read_bytes()
     result = CliRunner().invoke(app, ["provider", "connect", "other", "--root", str(checkout)])
     assert result.exit_code == 2
-    assert "alias" in result.output
+    assert "Linear tracker adapter was removed" in result.output
     assert (checkout / "ai-dlc.toml").read_bytes() == before
 
 
@@ -513,17 +513,12 @@ def test_effective_runtime_rechecked_during_apply(checkout, remote, enrolled, mo
     assert (checkout / "ai-dlc.toml").read_bytes() == before
 
 
-def test_reserved_linear_name_refuses_inherited_github_kind_before_transport(
-    checkout, enrolled, monkeypatch
-):
+def test_removed_linear_name_is_refused_before_transport(checkout, enrolled):
+    from ai_dlc.providers import RemovedProviderError
     from ai_dlc.setup import provider_onboarding
 
     environment, _, install = enrolled
     install(alias="linear")
 
-    def forbid_client():
-        pytest.fail("Reserved name mismatch must be refused before constructing a Linear client")
-
-    monkeypatch.setattr(provider_onboarding.httpx, "Client", forbid_client)
-    with pytest.raises(ValueError, match="does not use the Linear adapter"):
+    with pytest.raises(RemovedProviderError, match="Linear tracker adapter was removed"):
         provider_onboarding.connect_provider(checkout, name="linear", environ=environment)

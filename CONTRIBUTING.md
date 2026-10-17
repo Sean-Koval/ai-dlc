@@ -4,6 +4,10 @@ Read [AGENTS.md](AGENTS.md) for repository boundaries and [the documentation
 index](docs/index.md) for authoritative sources. AI-DLC ships Python; the
 retired Rust implementation survives only as archived plans and git history.
 
+AI-DLC is feature-frozen; [ADR 0001](docs/decisions/0001-refocus-ai-dlc.md) lists
+what stays active. Changes outside the in-scope list are closed with a pointer;
+bug fixes in frozen areas are welcome.
+
 1. Start from the current roadmap and the linked GitHub issue. Read the relevant
    OpenSpec requirements before changing behavior. Keep formal change artifacts
    together in OpenSpec.

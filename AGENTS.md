@@ -1,7 +1,9 @@
 # Repository guidance
 
-AI-DLC is a Python scaffolding and harness-configuration framework. It prepares
-tools and guides agents; it is not a hosted autonomous development orchestrator.
+AI-DLC is a local workflow, machine-provisioning and work-lifecycle tool. It
+prepares developer machines, authors one optional workflow plugin and gates work
+completion on CI receipts; it is not a hosted autonomous development orchestrator,
+a harness evaluator or the definition of what runs in cloud sandboxes.
 CLI and MCP entry points share application services. Provider details belong behind
 contracts; credentials and machine paths never belong in shared configuration.
 
@@ -24,6 +26,15 @@ The [architecture](docs/architecture.md) maps its packages and entry points.
 The Rust implementation is retired and removed; its plans stay in `docs/archive/`.
 `templates/` still supplies the supported legacy scaffold command. Preserve
 compatibility tests and packaged assets.
+
+## Scope freeze
+
+AI-DLC is feature-frozen as of 2026-10. New features, documentation growth and new
+OpenSpec capabilities outside the in-scope list in
+[ADR 0001](docs/decisions/0001-refocus-ai-dlc.md) stop; changes outside that list
+are closed with a pointer to it, and bug fixes in frozen areas are welcome. Harness
+evaluation belongs to flightdeck and sandbox runtime rendering to hangar. Check the
+list before starting work, and do not grow moved or cut areas.
 
 ## Placement and upkeep
 

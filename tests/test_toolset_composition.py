@@ -44,6 +44,7 @@ def test_selected_toolset_preview_and_real_adoption(tmp_path, preset):
         "preset": preset,
         "providers": {"tracker": "plane", "knowledge": "obsidian"},
         "agent_clients": ["claude-code", "antigravity"],
+        "allow_unsupported": True,
     }
     preview = adopt(root, **options)
     assert preview["status"] == "planned"
@@ -56,7 +57,7 @@ def test_selected_toolset_preview_and_real_adoption(tmp_path, preset):
     assert config["roles"]["knowledge"] == "obsidian"
     assert config["roles"]["agent-client"] == ["claude-code", "antigravity"]
     assert config["providers"]["plane"] == {"kind": "plane"}
-    assert "linear" not in config["providers"]
+    assert set(config["providers"]) == {"plane"}
     answers = yaml.safe_load((root / ".copier-answers.yml").read_text())
     assert answers["tracker"] == "plane"
     assert answers["agent_clients"] == ["claude-code", "antigravity"]
@@ -142,7 +143,13 @@ def test_real_copier_sync_preserves_selections_and_authored_content(tmp_path, le
     version_template(template, "v1.0.0")
     root = tmp_path / "project"
     options = (
-        {} if legacy else {"providers": {"tracker": "plane"}, "agent_clients": ["antigravity"]}
+        {}
+        if legacy
+        else {
+            "providers": {"tracker": "plane"},
+            "agent_clients": ["antigravity"],
+            "allow_unsupported": True,
+        }
     )
     adopt(root, apply=True, template_source=str(template), vcs_ref="v1.0.0", **options)
     if legacy:
@@ -161,7 +168,7 @@ def test_real_copier_sync_preserves_selections_and_authored_content(tmp_path, le
     assert sync(root, apply=True)["status"] == "applied"
     assert "# authored project context" in config_path.read_text()
     config = tomllib.loads(config_path.read_text())
-    assert config["roles"]["tracker"] == ("linear" if legacy else "plane")
+    assert config["roles"]["tracker"] == ("github-issues" if legacy else "plane")
     assert config["roles"]["agent-client"] == (
         ["claude-code", "codex"] if legacy else ["antigravity"]
     )
@@ -172,7 +179,11 @@ def test_selected_adoption_preserves_authored_conflict(tmp_path):
     (tmp_path / "ai-dlc.toml").write_text("# mine\n")
     before = snapshot(tmp_path)
     result = adopt(
-        tmp_path, apply=True, providers={"tracker": "plane"}, agent_clients=["antigravity"]
+        tmp_path,
+        apply=True,
+        providers={"tracker": "plane"},
+        agent_clients=["antigravity"],
+        allow_unsupported=True,
     )
     assert result["status"] == "conflict"
     assert snapshot(tmp_path) == before
@@ -237,6 +248,7 @@ def test_guidance_cannot_mask_explicitly_unavailable_lifecycle_adapter(tmp_path,
         capabilities=["tracker", "agent-client"],
         providers={"tracker": "plane"},
         agent_clients=["claude-code"],
+        allow_unsupported=True,
     )
     render_agents(tmp_path, apply=True)
     result = inspect_readiness(
@@ -256,10 +268,11 @@ def test_guidance_cannot_mask_explicitly_unavailable_lifecycle_adapter(tmp_path,
     assert (tmp_path / ".ai-dlc/providers/plane.md").is_file()
 
 
-def test_omitted_selection_preserves_legacy_provider_defaults(tmp_path):
+def test_omitted_selection_defaults_to_github_issues(tmp_path):
     adopt(tmp_path, apply=True)
     config = tomllib.loads((tmp_path / "ai-dlc.toml").read_text())
-    assert config["providers"] == {"linear": {"token_env": "LINEAR_API_KEY"}}
+    assert config["roles"]["tracker"] == "github-issues"
+    assert config["providers"] == {"github-issues": {"kind": "github-issues"}}
 
 
 @pytest.mark.parametrize(

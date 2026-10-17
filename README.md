@@ -6,6 +6,12 @@ Documentation site: [sean-koval.github.io/ai-dlc](https://sean-koval.github.io/a
 
 **Portable development setup and workflows for people and coding agents.**
 
+> **Scope freeze (2026-10).** AI-DLC is a local workflow, machine-provisioning and
+> work-lifecycle tool. Features outside the in-scope list in
+> [ADR 0001](docs/decisions/0001-refocus-ai-dlc.md) are frozen; bug fixes are
+> welcome. Harness evaluation moves to flightdeck and sandbox runtime rendering to
+> hangar; see the [plan](https://claude.ai/code/artifact/ddea4e99-7068-4c36-8bac-d9cda53c0f4c).
+
 AI-DLC brings project setup, agent guidance, specifications, tickets, documentation,
 and verification into one repository-owned workflow. Work in Claude Code or Codex,
 keep your preferred tools, and carry the same configuration across machines.
@@ -51,9 +57,19 @@ flowchart LR
 | **GitHub Issues + Projects / GitHub Actions** | Ticket identity and planning, PR review and merge, and CI evidence. |
 | **Obsidian** | Private continuity notes and navigation to canonical repository documents. |
 
-Provider roles are configurable. GitHub Issues + Projects is the recommended
-tracker with recorded live evidence; Linear is also supported. Jira Cloud and
-Plane adapters are available, with live workflow qualification still pending.
+Provider roles are configurable. GitHub Issues + Projects is the default and
+recommended tracker with recorded live evidence. The Jira Cloud adapter is
+available, with live workflow qualification still pending; the Plane adapter is
+unsupported and unqualified. The Linear adapter has been removed (see the
+[migration guide](docs/migration.md#tracker-defaults-and-removed-linear-adapter)).
+
+Agent jobs enter through hangar intake: moving a ticket to a status, label or
+Projects column starts a hangar job, and hangar writes job progress back to the
+ticket. AI-DLC is the local developer loop around that ticket: a work record,
+branch binding and specification artifacts, then a gated `work finish` that
+closes the ticket only after merged CI evidence. The
+[tracker boundary](docs/architecture.md#tracker-boundary-with-hangar) says which
+tool writes what.
 For agent access, register `ai-dlc mcp serve --root /absolute/path/to/project`
 as a stdio MCP server in your client. See the [tool map](docs/workflows/tool-map.md)
 for available commands, MCP tools, and skills.

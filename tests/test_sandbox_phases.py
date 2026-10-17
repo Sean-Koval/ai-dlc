@@ -57,7 +57,7 @@ def test_egress_probe_targets_proxy_and_refuses_undeclared_host():
 )
 def test_summarize_run_reports_outcome_and_isolation(returncode, live, passed, isolation):
     result = SimpleNamespace(returncode=returncode, stdout="out", stderr="err")
-    summary = _summarize_run("linear", result, live)
+    summary = _summarize_run("tickets", result, live)
     assert list(summary) == [
         "provider",
         "passed",
@@ -67,7 +67,7 @@ def test_summarize_run_reports_outcome_and_isolation(returncode, live, passed, i
         "live",
         "isolation",
     ]
-    assert summary["provider"] == "linear"
+    assert summary["provider"] == "tickets"
     assert summary["passed"] is passed
     assert summary["exit_code"] == returncode
     assert summary["stdout"] == "out"

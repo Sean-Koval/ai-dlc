@@ -846,6 +846,8 @@ class WorkService:
         declared = getattr(self.registry, "declares", lambda _id, _operation: False)(
             provider_id, "capabilities"
         )
+        if self.config.get("work", {}).get("tracker_writes") == "finish-only":
+            return self._start_finish_only(work)
         capabilities = self.registry.invoke(provider_id, "capabilities", {}) if declared else None
         branch = self.branch(work)
         if not work["artifacts"].get("tracker"):
@@ -877,6 +879,26 @@ class WorkService:
             "tracker": item,
             "branch": branch,
             "tracker_transition": transition,
+        }
+
+    def _start_finish_only(self, work):
+        """Bind the branch without tracker writes; another system owns the in-progress state."""
+        branch = self.branch(work)
+        reference = work["artifacts"].get("tracker")
+        item = self.tracker(work).invoke("read", {"reference": reference}) if reference else None
+        from ai_dlc.documentation.learnings import recall_work
+
+        recalled = recall_work(work, self.config, self.registry)
+        return {
+            **({"learnings": recalled} if recalled else {}),
+            "status": "started",
+            "tracker": item,
+            "branch": branch,
+            "tracker_transition": {
+                "supported": False,
+                "skipped": True,
+                "reason": "work.tracker_writes = finish-only; work finish still closes the ticket",
+            },
         }
 
     def pr(self, work_id):

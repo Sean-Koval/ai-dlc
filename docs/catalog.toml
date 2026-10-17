@@ -9,6 +9,13 @@ owner = "repository-maintainers"
 status = "active"
 
 [[documents]]
+id = "decision-0001-refocus"
+path = "docs/decisions/0001-refocus-ai-dlc.md"
+kind = "decision"
+owner = "repository-maintainers"
+status = "active"
+
+[[documents]]
 id = "architecture"
 path = "docs/architecture.md"
 kind = "architecture"
@@ -24,10 +31,12 @@ verification_paths = [
     "tests/test_consumer_onboarding.py",
     "tests/test_consumer_onboarding_cli.py",
     "tests/test_environment_report*.py",
+    "tests/test_tracker_boundary.py",
 ]
 requirements = [
     "openspec/specs/consumer-onboarding/spec.md",
     "openspec/specs/effective-environment-report/spec.md",
+    "openspec/specs/tracker-adapter-boundary/spec.md",
 ]
 
 [[documents]]
@@ -871,13 +880,6 @@ code_paths = [
     "src/ai_dlc/setup/templates.py",
 ]
 verification_paths = ["tests/test_release_manifest.py", "tests/test_bootstrap.py", "tests/test_release_workflow.py"]
-
-[[documents]]
-id = "repo-runbooks-linear-setup"
-path = "docs/runbooks/linear-setup.md"
-kind = "runbook"
-owner = "repository-maintainers"
-status = "active"
 
 [[documents]]
 id = "repo-verification-repository-organization"

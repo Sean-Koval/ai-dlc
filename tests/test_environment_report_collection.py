@@ -229,19 +229,19 @@ def test_native_alias_projection_excludes_recipe_and_credentials(project):
     (root / "ai-dlc.toml").write_text(
         """schema=4
 [roles]
-tracker="linear"
+tracker="tickets"
 agent-client=["codex"]
-[providers.linear]
+[providers.tickets]
 token_env="PRIVATE_TOKEN"
 [agents]
-servers=[{id="tracker", provider="linear", transport="http", url="https://SECRET-endpoint", env={PRIVATE="SECRET-value"}}]
+servers=[{id="tracker", provider="tickets", transport="http", url="https://SECRET-endpoint", env={PRIVATE="SECRET-value"}}]
 """,
         encoding="utf-8",
     )
     result = collect_report(root, home=home, environ={"PATH": "", "PRIVATE_TOKEN": "SECRET-token"})
     assert "SECRET" not in json.dumps(result) and "PRIVATE_TOKEN" not in json.dumps(result)
     assert (
-        next(a for a in result["auth"] if a["id"] == "linear")["credential_presence"] == "present"
+        next(a for a in result["auth"] if a["id"] == "tickets")["credential_presence"] == "present"
     )
     native = next(g for g in result["project"]["guidance"] if g["kind"] == "native-server")[
         "native_server"
@@ -365,7 +365,7 @@ def test_unavailable_profile_does_not_claim_base_clients_effectively_configured(
 
 def test_auth_presence_and_excluded_project_commands_do_not_change_identity(project):
     root, home = project
-    template = 'schema=4\n[roles]\ntracker="linear"\nagent-client=[]\n[providers.linear]\ntoken_env="PRIVATE_TOKEN"\n[checks.commands]\ncheck="{command}"\n'
+    template = 'schema=4\n[roles]\ntracker="tickets"\nagent-client=[]\n[providers.tickets]\ntoken_env="PRIVATE_TOKEN"\n[checks.commands]\ncheck="{command}"\n'
     (root / "ai-dlc.toml").write_text(template.format(command="SECRET-one"), encoding="utf-8")
     first = collect_report(root, home=home, environ={"PATH": "", "PRIVATE_TOKEN": "secret"})
     (root / "ai-dlc.toml").write_text(template.format(command="SECRET-two"), encoding="utf-8")

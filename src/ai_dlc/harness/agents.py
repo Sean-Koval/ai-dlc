@@ -973,7 +973,7 @@ def _shared_guidance_lines(
     tracker_kind = provider_kind(config, tracker)
     scm_kind = provider_kind(config, scm)
     github_scm = scm_kind == "github"
-    builtin_tracker = tracker_kind in {"linear", "github-issues", "jira-cloud", "plane"}
+    builtin_tracker = tracker_kind in {"github-issues", "jira-cloud", "plane"}
     openspec = specification_kind == "openspec"
     finish = github_scm and builtin_tracker
     checks = config.get("checks", {})

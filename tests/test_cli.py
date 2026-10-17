@@ -409,7 +409,7 @@ def test_provider_conformance_failure_is_nonzero(tmp_path, monkeypatch):
     monkeypatch.setattr(
         ai_dlc.verification.sandbox, "test_provider", lambda *args, **kwargs: {"passed": False}
     )
-    result = CliRunner().invoke(app, ["provider", "test", "linear", str(manifest)])
+    result = CliRunner().invoke(app, ["provider", "test", "github-issues", str(manifest)])
     assert result.exit_code == 1
 
 

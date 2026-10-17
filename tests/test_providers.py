@@ -1,6 +1,5 @@
 import hashlib
 
-import httpx
 import pytest
 
 
@@ -107,72 +106,27 @@ def test_executable_digest_and_protocol(tmp_path):
         p.invoke("complete", {"reference": "1"})
 
 
-def test_linear_transport():
-    from ai_dlc.providers.linear import LinearProvider
+@pytest.mark.parametrize(
+    "config, provider_id",
+    [
+        ({"roles": {"tracker": "linear"}}, "linear"),
+        ({"providers": {"tickets": {"kind": "linear", "token_env": "KEY"}}}, "tickets"),
+    ],
+)
+def test_registry_refuses_removed_linear_kind_with_typed_guidance(config, provider_id):
+    from ai_dlc.errors import RefusedError
+    from ai_dlc.providers import Registry, RemovedProviderError
 
-    def handle(request):
-        assert request.headers["Authorization"] == "secret"
-        return httpx.Response(
-            200,
-            json={
-                "data": {
-                    "issue": {"id": "id", "url": "https://linear.app/i", "state": {"name": "Todo"}}
-                }
-            },
-        )
-
-    p = LinearProvider(
-        {"token_env": "TEST_TOKEN"},
-        client=httpx.Client(transport=httpx.MockTransport(handle)),
-        environ={"TEST_TOKEN": "secret"},
-    )
-    assert p.invoke("read", {"reference": "id"})["state"] == "open"
-
-
-def test_linear_completed_native_state_is_normalized_for_reconciliation():
-    from ai_dlc.providers.linear import LinearProvider
-
-    p = LinearProvider({}, environ={"LINEAR_API_KEY": "fake"})
-    assert (
-        p.item(
-            {
-                "id": "id",
-                "url": "https://linear.app/i",
-                "state": {"id": "done-id", "name": "Shipped", "type": "completed"},
-            }
-        )["state"]
-        == "closed"
-    )
-
-
-def test_registry_passes_its_injected_environment_to_linear_provider(monkeypatch):
-    """Would fail if provider health silently fell back to ambient credentials."""
-    from ai_dlc.providers import Registry
-
-    monkeypatch.setenv("LINEAR_API_KEY", "ambient-value")
-
-    provider = Registry(
-        {"providers": {"linear": {"kind": "linear"}}},
-        environ={"LINEAR_API_KEY": "injected-value"},
-    ).get("linear")
-
-    assert provider.token == "injected-value"
-
-
-def test_linear_graphql_error():
-    from ai_dlc.providers.linear import LinearProvider
-
-    p = LinearProvider(
-        {"token_env": "TEST_TOKEN"},
-        client=httpx.Client(
-            transport=httpx.MockTransport(
-                lambda r: httpx.Response(200, json={"errors": [{"message": "denied"}]})
-            )
-        ),
-        environ={"TEST_TOKEN": "secret"},
-    )
-    with pytest.raises(RuntimeError, match="denied"):
-        p.invoke("read", {"reference": "id"})
+    registry = Registry(config)
+    for call in (
+        lambda: registry.get(provider_id),
+        lambda: registry.declares(provider_id, "capabilities"),
+    ):
+        with pytest.raises(RemovedProviderError, match="github-issues or jira-cloud") as error:
+            call()
+        assert isinstance(error.value, RefusedError)
+        assert "tracker-migrate" in str(error.value)
+        assert error.value.exit_code == 2
 
 
 def test_public_registry_blocks_terminal_transitions():
@@ -314,7 +268,7 @@ def test_registry_declares_builtin_and_explicit_registered_capabilities():
     from ai_dlc.providers import Registry
 
     registry = Registry()
-    assert registry.declares("linear", "capabilities") is True
+    assert registry.declares("jira-cloud", "capabilities") is True
     assert registry.declares("github-issues", "capabilities") is True
     registry.register("legacy", object())
     registry.register("modern", object(), operations=["capabilities"])

@@ -98,7 +98,7 @@ def checkout(tmp_path):
     root.mkdir()
     (root / "ai-dlc.toml").write_text(
         '# authored project\nschema = 4\n[roles]\ntracker = "old" # retain alias\n'
-        'specs = "openspec"\nscm = "github"\n[providers.old]\nkind = "linear"\n'
+        'specs = "openspec"\nscm = "github"\n[providers.old]\nkind = "jira-cloud"\n'
         'team_id = "old-team"\n[providers.destination]\nkind = "fixture-plane"\n'
         '[scm]\nrepository = "org/repo"\n[gates]\nfinish = ["pr-merged", "ci-green"]\n'
     )

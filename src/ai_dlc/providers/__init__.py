@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from ai_dlc.contracts import manifest, validate_request, validate_response
+from ai_dlc.errors import RefusedError
 
 # Explicit extension transports implemented by Registry.get; not vendor aliases.
 EXTENSION_PROVIDER_KINDS = frozenset({"executable", "python"})
@@ -23,6 +24,25 @@ PROVIDER_KIND_ALIASES = {
     "cloudflare": "github",
     "knowledge": "obsidian",
 }
+
+
+REMOVED_PROVIDER_KINDS = {
+    "linear": (
+        "The Linear tracker adapter was removed after ai-dlc 0.4.0; select github-issues "
+        "or jira-cloud, or run `ai-dlc project tracker-migrate` from ai-dlc 0.4.0 to move "
+        "Linear-bound work first"
+    ),
+}
+
+
+class RemovedProviderError(RefusedError):
+    """A configuration selects a provider kind whose adapter AI-DLC no longer ships."""
+
+
+def refuse_removed_kind(kind: object) -> None:
+    """Raise the typed removal refusal when ``kind`` names a removed adapter."""
+    if isinstance(kind, str) and kind in REMOVED_PROVIDER_KINDS:
+        raise RemovedProviderError(REMOVED_PROVIDER_KINDS[kind])
 
 
 def provider_kind(config: Mapping[str, Any], provider_id: str | None) -> str | None:
@@ -169,7 +189,8 @@ class Registry:
             return operation in self.registered_operations[id]
         cfg = self.config.get("providers", {}).get(id, {})
         kind = provider_kind(self.config, id)
-        if kind in {"linear", "github-issues", "jira-cloud", "plane"}:
+        refuse_removed_kind(kind)
+        if kind in {"github-issues", "jira-cloud", "plane"}:
             return operation == "capabilities"
         operations = cfg.get("operations", [])
         if not isinstance(operations, list) or not all(
@@ -183,6 +204,7 @@ class Registry:
             return self.cache[id]
         cfg = self.config.get("providers", {}).get(id, {})
         kind = provider_kind(self.config, id)
+        refuse_removed_kind(kind)
         if kind == "openspec":
             from .openspec import OpenSpecProvider
 
@@ -198,10 +220,6 @@ class Registry:
             if not vault:
                 raise ValueError("Configure paths.vault for knowledge provider")
             provider = Knowledge(Path(vault))
-        elif kind == "linear":
-            from .linear import LinearProvider
-
-            provider = LinearProvider(cfg, environ=self.environ)
         elif kind == "plane":
             context = {
                 "root": str(self.root.resolve()),
@@ -357,7 +375,6 @@ class Registry:
             "builtins": [
                 "jira-cloud",
                 "plane",
-                "linear",
                 "github-issues",
                 "openspec",
                 "github",

@@ -1,7 +1,7 @@
 """Common connection dispatch and exact-plan file boundaries.
 
-Linear retains its canonical-digest codec; GitHub and declarative handlers share
-these exact-byte primitives without changing GitHub's saved formats or journal.
+GitHub and declarative handlers share these exact-byte primitives without changing
+GitHub's saved formats or journal.
 """
 
 import copy
@@ -184,10 +184,10 @@ def _definition(root, name, environ):
     runtime = resolve_runtime(root, environ=environ).values
     settings = runtime.get("providers", {}).get(name, {})
     kind = settings.get("kind", settings.get("type", name))
-    if name == "linear":
-        from ai_dlc.setup.provider_onboarding import _validate_linear_settings
+    from ai_dlc.providers import refuse_removed_kind
 
-        _validate_linear_settings(settings)
+    refuse_removed_kind(kind)
+    refuse_removed_kind(name)
     if name in DEFINITIONS and kind != name:
         raise ValueError(f"Configured provider {name} does not use its named adapter")
     definition = DEFINITIONS.get(kind)
@@ -198,7 +198,9 @@ def _definition(root, name, environ):
             f"Provider connection is not supported: {name}; lifecycle support is unchanged"
         )
     if not definition.aliases and name != kind:
-        raise ValueError("Linear alias guided setup is unsupported; configure the alias explicitly")
+        raise ValueError(
+            f"{definition.kind} alias guided setup is unsupported; configure the alias explicitly"
+        )
     return runtime, definition
 
 

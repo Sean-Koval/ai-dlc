@@ -11,9 +11,9 @@ from ai_dlc.setup.provision import (
 
 def test_provider_kind_prefers_kind_then_type_then_provider_name():
     roles = {"scm": "hub", "tracker": "issues", "deploy": "none"}
-    providers = {"hub": {"kind": "github", "type": "ignored"}, "issues": {"type": "linear"}}
+    providers = {"hub": {"kind": "github", "type": "ignored"}, "issues": {"type": "jira-cloud"}}
     assert _provider_kind(roles, providers, "scm") == "github"
-    assert _provider_kind(roles, providers, "tracker") == "linear"
+    assert _provider_kind(roles, providers, "tracker") == "jira-cloud"
     assert _provider_kind(roles, providers, "deploy") == "none"
     assert _provider_kind(roles, providers, "knowledge") is None
 
@@ -31,24 +31,14 @@ def test_configuration_gaps_for_github_scm_and_issues():
     ]
 
 
-def test_configuration_gaps_for_linear_tracker_and_clean_configuration():
-    config = {
-        "roles": {"tracker": "linear"},
-        "providers": {"linear": {"kind": "linear", "statuses": {"closed": "Done"}}},
-    }
-    assert _configuration_gaps(config) == [
-        "tracker team_id is required for creation",
-        "tracker statuses.in_progress is required",
-    ]
+def test_configuration_gaps_for_a_removed_tracker_and_clean_configuration():
+    from ai_dlc.providers import REMOVED_PROVIDER_KINDS
+
+    removed = {"roles": {"tracker": "issues"}, "providers": {"issues": {"type": "linear"}}}
+    assert _configuration_gaps(removed) == [REMOVED_PROVIDER_KINDS["linear"]]
     complete = {
-        "roles": {"tracker": "linear"},
-        "providers": {
-            "linear": {
-                "kind": "linear",
-                "team_id": "team",
-                "statuses": {"in_progress": "Doing", "closed": "Done"},
-            }
-        },
+        "roles": {"tracker": "jira-cloud"},
+        "providers": {"jira-cloud": {"kind": "jira-cloud", "project": "OPS"}},
     }
     assert _configuration_gaps(complete) == []
     assert _configuration_gaps({}) == []
@@ -64,7 +54,7 @@ def test_capability_failure_reason_calls_out_project_access():
 
 def test_credential_signins_only_for_absent_credentials():
     credentials = [
-        {"id": "linear", "present": True, "variable": "LINEAR_API_KEY"},
+        {"id": "jira", "present": True, "variable": "JIRA_API_TOKEN"},
         {"id": "github", "present": False, "variable": "GH_TOKEN"},
         {"id": "vault", "present": False},
     ]

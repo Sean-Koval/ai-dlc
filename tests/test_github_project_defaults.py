@@ -16,7 +16,7 @@ from ai_dlc.setup.github_onboarding import connect_github_provider
 @pytest.fixture
 def setup(tmp_path, monkeypatch):
     (tmp_path / "ai-dlc.toml").write_text(
-        'schema=4\n[project]\nname="App"\n[scm]\nrepository="acme/app"\n[roles]\ntracker="linear"\n'
+        'schema=4\n[project]\nname="App"\n[scm]\nrepository="acme/app"\n[roles]\ntracker="jira"\n'
     )
     env = {f"XDG_{name}_HOME": str(tmp_path / name) for name in ("CONFIG", "STATE", "CACHE")}
     data = {
@@ -136,7 +136,7 @@ def test_default_apply_creates_links_and_configures_project(setup):
         "status_field_id": "F1",
         "statuses": {"open": "todo", "in_progress": "doing", "closed": "done"},
     }
-    assert settings["roles"]["tracker"] == "linear"
+    assert settings["roles"]["tracker"] == "jira"
     assert remote["creates"] == 1 and remote["links"] == {"P1"}
     connect(plan_file=Path(".ai-dlc/local/repeat.json"))
     connect(apply=True, plan_file=Path(".ai-dlc/local/repeat.json"))
