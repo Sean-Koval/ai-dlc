@@ -9,6 +9,13 @@ owner = "repository-maintainers"
 status = "active"
 
 [[documents]]
+id = "decision-0001-refocus"
+path = "docs/decisions/0001-refocus-ai-dlc.md"
+kind = "decision"
+owner = "repository-maintainers"
+status = "active"
+
+[[documents]]
 id = "architecture"
 path = "docs/architecture.md"
 kind = "architecture"
