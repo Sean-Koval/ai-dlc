@@ -357,7 +357,7 @@ def diagram(colors: dict[str, str] | None) -> str:
     edge("M1030 250 V306", "trials,|traces", 1040, 276, anchor="start")
     edge("M410 400 H496", "issue, PR,|receipt", 453, 380)
     edge("M800 395 H886", "report", 843, 385)
-    box(30, 520, 1140, 70, "GOVERN · PLANNED", "governed workspace: policy decisions, approvals, receipts", (),
+    box(30, 520, 1140, 70, "GOVERN · PLANNED", "Tower: policy decisions, approvals, receipts", (),
         "product-tower", "plan")
     defs = (f'<defs><marker id="ad-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
             f'markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="{v("fg-subtle")}"/>'
