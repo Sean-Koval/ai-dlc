@@ -1,4 +1,7 @@
-![AI-DLC — A consistent workflow. Your tools.](docs/assets/ai-dlc-banner.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/brand/banner-dark.svg">
+  <img alt="ai-dlc: one pinned machine profile, one workflow for people and agents, and a finish that needs merged evidence. Part of the agent factory (define plane)." src="docs/assets/brand/banner-light.svg" width="960" height="320">
+</picture>
 
 # AI-DLC
 
