@@ -16,6 +16,10 @@ Writes, next to this script:
 - ``suite.svg`` (Airframe tokens, theme-aware when inlined) and ``suite-dark.svg`` /
   ``suite-light.svg`` (the same drawing with each flavor's colors resolved, for ``<picture>``).
 
+The terminals follow Airframe's Terminal component and the diagram's fallbacks are Airframe's Night
+values, both read from the vendored ``docs/stylesheets/airframe-tokens.json``, since an SVG shown as
+an image cannot load the site's stylesheet.
+
 Everything is byte-reproducible for a given checkout: the demo runs in a fixed directory with
 fixed Git identities and dates, and machine paths are shown as ``~``. CI re-runs this and fails on
 a diff (.github/workflows/assets.yml).
@@ -232,25 +236,38 @@ def cast(steps: list[tuple[str, str]], title: str, gap: float) -> str:
 
 
 CW, LH, PAD, BAR = 7.8, 17.0, 18, 34  # char width (0.6em at 13px), line height, padding, title bar
+MONO = "'DM Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace"
+LIT = re.compile(r'"(failed|denied)"')  # the lines a terminal may color: the failed role, never green for good
+TERM_ICON = ('<g fill="none" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter" '
+             'transform="translate({x},{y}) scale(.7)"><rect x="2.5" y="3.5" width="15" height="13"/>'
+             '<path d="M6 8l2.5 2L6 12M10.5 12.5H14"/></g>')  # Airframe's `terminal` icon, 20px grid drawn at 14px
 
 
 def terminal(lines: list[tuple[float, str, str, float]], total: float | None, title: str) -> str:
-    """A terminal window in the Airframe dark flavor. With `total`, lines appear at their times and
-    commands type out, looping every `total` seconds; without it, a still of every line."""
+    """A terminal window on Airframe's Terminal contract: always dark, DM Mono on `terminal-bg`, a bar
+    with the product and scope in mono capitals, output in `terminal-fg`, the prompt and cursor in
+    `brand`, and color on one kind of line only (`terminal-err` for the failed role). The bar reads
+    `title` as `product|scope|scope`. With `total`, lines appear at their times and commands type out,
+    looping every `total` seconds; without it, a still of every line."""
+    t = night()
     w, h = round((COLS + 4) * CW + 2 * PAD), round(BAR + PAD + len(lines) * LH + PAD / 2)
-    css = [".t{font:13px 'DM Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;fill:#D9D9D9;"
-           "white-space:pre}.p{fill:#FFC400}.c{fill:#FFFFFF}.g{fill:#69C27E}.d{fill:#8A8A8A}"]
-    body = [f'<rect width="{w}" height="{h}" rx="8" fill="#0A0A0A" stroke="#262626"/>',
-            f'<rect width="{w}" height="{BAR}" rx="8" fill="#141414"/>'
-            f'<rect y="{BAR - 8}" width="{w}" height="8" fill="#141414"/>',
-            *(f'<circle cx="{20 + 18 * i}" cy="{BAR / 2}" r="5.5" fill="#3A3A3A"/>' for i in range(3)),
-            f'<text class="t d" x="{w / 2}" y="{BAR / 2 + 4.5}" text-anchor="middle">{esc(title)}</text>']
+    css = [f".t{{font:13px {MONO};fill:{t['terminal-fg']};white-space:pre}}.p{{fill:{t['brand']}}}"
+           f".c{{fill:{t['code-keyword']}}}.x{{fill:{t['terminal-err']}}}"
+           f".b{{font:500 10.5px {MONO};letter-spacing:.08em;fill:{t['terminal-dim']}}}.b1{{fill:{t['terminal-fg']}}}"]
+    body = [f'<rect width="{w}" height="{h}" rx="4" fill="{t["terminal-bg"]}"/>',
+            f'<rect x=".5" y=".5" width="{w - 1}" height="{h - 1}" rx="4" fill="none" stroke="{t["terminal-fg"]}" '
+            f'stroke-opacity=".08"/><path d="M0 {BAR + .5}H{w}" stroke="{t["terminal-fg"]}" stroke-opacity=".09"/>',
+            TERM_ICON.format(x=14, y=BAR / 2 - 7).replace("<g ", f'<g stroke="{t["terminal-dim"]}" ', 1)]
+    x = 14 + 14 + 14  # icon, gap
+    for i, part in enumerate(title.split("|")):
+        body.append(f'<text class="b{" b1" if i == 0 else ""}" x="{x}" y="{BAR / 2 + 3.75}">{esc(part.upper())}</text>')
+        x += round(len(part) * (10.5 * 0.6 + 0.84)) + 14
     for i, (at, kind, text, per) in enumerate(lines):
         y = BAR + PAD + (i + 0.75) * LH
         if kind in ("cmd", "cont"):
             prompt = "$ " if kind == "cmd" else "> "
-            shown = text if text else "▌"
-            inner = f'<tspan class="p">{prompt}</tspan><tspan class="c">{esc(shown)}</tspan>'
+            inner = (f'<tspan class="p">{prompt}</tspan><tspan class="c">{esc(text)}</tspan>' if text
+                     else f'<tspan class="p">{prompt}▌</tspan>')
             n = len(text)
             attrs = f' textLength="{(n + 2) * CW:.1f}" lengthAdjust="spacingAndGlyphs"' if text else ""
             el = f'<text class="t" x="{PAD}" y="{y:.1f}"{attrs}>{inner}</text>'
@@ -260,18 +277,18 @@ def terminal(lines: list[tuple[float, str, str, float]], total: float | None, ti
                            f"{100 * (at + d) / total:.3f}%,100%{{transform:translateX({n * CW:.1f}px)}}}}"
                            f".y{i}{{animation:y{i} {total:.2f}s steps({n},end) infinite}}")
                 el += (f'<rect class="y{i}" x="{x0:.1f}" y="{y - LH * 0.8:.1f}" width="{n * CW + 4:.1f}" '
-                       f'height="{LH:.1f}" fill="#0A0A0A"/>')
-        else:
-            good = re.search(r'"(completed|published|started|created|ready|passed)"|: passed"|true,?$', text)
-            el = f'<text class="t{" g" if good else ""}" x="{PAD}" y="{y:.1f}">{esc(text)}</text>'
+                       f'height="{LH:.1f}" fill="{t["terminal-bg"]}"/>')
+        else:  # normal stays quiet; a failed or denied status is the only red
+            el = f'<text class="t{" x" if LIT.search(text) else ""}" x="{PAD}" y="{y:.1f}">{esc(text)}</text>'
         if total:
             css.append(f"@keyframes s{i}{{0%,{100 * at / total:.3f}%{{opacity:0}}"
                        f"{100 * at / total + 0.001:.3f}%,100%{{opacity:1}}}}"
                        f".s{i}{{animation:s{i} {total:.2f}s step-end infinite}}")
             el = f'<g class="s{i}">{el}</g>'
         body.append(el)
+    label = title.replace("|", ", ")
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" '
-            f'role="img" aria-label="{esc(title)}"><style>{"".join(css)}</style>{"".join(body)}</svg>\n')
+            f'role="img" aria-label="{esc(label)}"><style>{"".join(css)}</style>{"".join(body)}</svg>\n')
 
 
 def still(command: str, output: str, title: str) -> str:
@@ -284,6 +301,11 @@ def still(command: str, output: str, title: str) -> str:
 # ------------------------------------------------------------------------------------------ the diagram
 TOKENS = ("canvas", "surface", "raised", "line", "line-strong", "rule", "fg", "fg-muted", "fg-subtle",
           "brand-line", "product-aidlc", "product-hangar", "product-flightdeck", "product-tower")
+
+
+def night() -> dict[str, str]:
+    """Every Night token value, from the vendored Airframe tokens (`scripts/sync-airframe.sh`)."""
+    return json.loads((ROOT / "docs/stylesheets/airframe-tokens.json").read_text())["themes"]["dark"]
 
 
 def flavors() -> dict[str, dict[str, str]]:
@@ -383,15 +405,16 @@ def build(skip_claude: bool) -> dict[str, str]:
     finally:
         shutil.rmtree(DEMO, ignore_errors=True)
     files: dict[str, str] = {}
-    for name, steps, title, gap in (
-        ("enroll", enroll, "ai-dlc machine enroll", 4.4),
-        ("work", work, "ai-dlc work: new → start → pr → finish (GitHub stood in locally)", 1.7),
+    for name, steps, title, bar, gap in (  # the cast's title, and the terminal bar as product|scope
+        ("enroll", enroll, "ai-dlc machine enroll", "ai-dlc|machine enroll|preview, apply, status", 4.4),
+        ("work", work, "ai-dlc work: new → start → pr → finish (GitHub stood in locally)",
+         "ai-dlc|work: new → start → pr → finish|GitHub stood in locally", 1.7),
     ):
         lines, total = timeline(steps, gap)
         files[f"{name}.cast"] = cast(steps, title, gap)
-        files[f"{name}.svg"] = terminal(lines, total, title)
-    titles = {"project-check.svg": "ai-dlc project check --required",
-              "plugin-skills.svg": "Claude Code · the ai-dlc workflow plugin"}
+        files[f"{name}.svg"] = terminal(lines, total, bar)
+    titles = {"project-check.svg": "ai-dlc|project check --required",
+              "plugin-skills.svg": "Claude Code|the ai-dlc workflow plugin"}
     for name, (cmd, text) in shots.items():
         files[name] = still(cmd, text, titles[name])
     files["suite.svg"] = diagram(None)
