@@ -63,73 +63,48 @@ exclude_docs: |
   verification/*/
   catalog.toml
 
-# Curated from docs/index.md. Documents stay where docs/catalog.toml records them.
+# Curated from the documentation map (docs/design/documentation-map.md). Documents stay where
+# docs/catalog.toml records them. Verification records under docs/verification/ are built but
+# not listed here; release-verification.md links them from one table.
 nav:
   - Home: index.md
   - Get started:
       - Get started: workflows/get-started.md
-      - Product direction: product-direction.md
-      - Greenfield workflow: workflows/greenfield.md
-      - Brownfield workflow: workflows/brownfield.md
       - Work-computer setup: workflows/work-computer-setup.md
-      - Migration: migration.md
+      - Machine enrollment: runbooks/machine-enrollment.md
+      - GitHub ticket setup: github-ticket-setup.md
+      - Jira Cloud setup: runbooks/jira-cloud-setup.md
+  - Workflow plugin:
+      - Overview: workflows/workflow-plugin.md
+      - Pin it in a team harness: workflows/workflow-plugin-harness.md
   - Guides:
       - Development workflow: development-workflow.md
       - Workflow tool map: workflows/tool-map.md
-      - Design to implementation: workflows/design-to-implementation.md
-      - GitHub ticket setup: github-ticket-setup.md
   - Reference:
       - Architecture: architecture.md
-      - Roadmap: roadmap.md
+      - Migration: migration.md
+      - Changelog: https://github.com/Sean-Koval/ai-dlc/blob/main/CHANGELOG.md
       - Release verification: release-verification.md
+      - Release publication: runbooks/release-publication.md
+      - Documentation map: design/documentation-map.md
   - Design:
       - "ADR 0001: Refocus AI-DLC": decisions/0001-refocus-ai-dlc.md
-      - Framework delivery: design/framework-delivery.md
-      - Project documentation: design/project-documentation.md
+      - Product direction: product-direction.md
+      - Roadmap: roadmap.md
       - Local and shared knowledge: design/local-and-shared-knowledge.md
       - Native tool composition: design/native-tool-composition.md
       - Provider connections: design/provider-connections.md
-      - Provider toolsets PRD: design/provider-toolsets-prd.md
-      - Design PM: design/design-pm.md
       - Jira Cloud: design/jira-cloud.md
+      - Framework delivery (September 2026 plan): design/framework-delivery.md
+      - Provider toolsets PRD (historical): design/provider-toolsets-prd.md
+      - "Review: portable profile enrollment": reviews/2026-09-03-portable-profile-enrollment.md
+  - Frozen (bug fixes only):
+      - Greenfield workflow: workflows/greenfield.md
+      - Brownfield workflow: workflows/brownfield.md
+      - Design to implementation: workflows/design-to-implementation.md
+      - Design PM: design/design-pm.md
+      - FDE documents: runbooks/fde-documents.md
       - Plane new work: design/plane-new-work.md
-  - Operations:
-      - Runbooks:
-          - Machine enrollment: runbooks/machine-enrollment.md
-          - Release publication: runbooks/release-publication.md
-          - FDE documents: runbooks/fde-documents.md
-          - Document workspace qualification: runbooks/document-workspace-qualification.md
-          - Jira Cloud setup: runbooks/jira-cloud-setup.md
-          - Plane setup: runbooks/plane-setup.md
-      - Verification records:
-          - Framework qualification: verification/framework-qualification.md
-          - Delivery path baseline: verification/delivery-path-baseline.md
-          - Release candidate preparation: verification/release-candidate-preparation.md
-          - Onboarding readiness: verification/onboarding-readiness.md
-          - Setup continuity: verification/setup-continuity.md
-          - Native setup recovery: verification/native-setup-recovery.md
-          - Credential readiness: verification/credential-readiness.md
-          - Bootstrap executable publication: verification/bootstrap-executable-publication.md
-          - Offline conformance packaging: verification/offline-conformance-packaging.md
-          - Backend contracts: verification/backend-contracts.md
-          - Provider connections: verification/provider-connections.md
-          - Provider mutation protocol: verification/provider-mutation-protocol.md
-          - GitHub ticket workflows: verification/github-ticket-workflows.md
-          - Jira Cloud new work: verification/jira-cloud-new-work.md
-          - Plane new work: verification/plane-new-work.md
-          - Selective tracker migration: verification/selective-tracker-migration.md
-          - Native work harnesses: verification/native-work-harnesses.md
-          - Native tool composition: verification/native-tool-composition.md
-          - Toolset composition: verification/toolset-composition.md
-          - Work-computer toolsets: verification/work-computer-toolsets.md
-          - Spec delivery traceability: verification/spec-delivery-traceability.md
-          - Documentation workflow: verification/documentation-workflow.md
-          - Project knowledge repair: verification/project-knowledge-repair.md
-          - Repository organization: verification/repository-organization.md
-          - Source fetch cleanup: verification/source-fetch-cleanup.md
-          - Portable workflow bundle cleanup: verification/portable-workflow-bundle-cleanup.md
-          - Portable workflow bundle import repair: verification/portable-workflow-bundle-import-repair.md
-          - Product shaping workflow: verification/product-shaping-workflow.md
-          - Design PM workflow: verification/design-pm-workflow.md
-      - Reviews:
-          - Portable profile enrollment: reviews/2026-09-03-portable-profile-enrollment.md
+      - Plane setup: runbooks/plane-setup.md
+      - Project documentation: design/project-documentation.md
+      - Document workspace qualification: runbooks/document-workspace-qualification.md

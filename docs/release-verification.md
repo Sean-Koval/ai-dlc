@@ -45,6 +45,19 @@ records missing sandbox inputs and the absent live Jira mutation target.
 adds scoped macOS evidence while retaining unavailable company, Antigravity and
 cross-platform checks. Neither record qualifies Jira or Plane.
 
+## Verification records
+
+Each record holds dated evidence for one change: what ran, where, at which revision,
+and what it does not prove. They are kept for provenance and are not current
+guidance; the site lists them only here.
+
+| Area | Records |
+| --- | --- |
+| Setup, enrollment and release | [Framework qualification](verification/framework-qualification.md), [Delivery path baseline](verification/delivery-path-baseline.md), [Release candidate preparation](verification/release-candidate-preparation.md), [Bootstrap executable publication](verification/bootstrap-executable-publication.md), [Onboarding readiness](verification/onboarding-readiness.md), [Setup continuity](verification/setup-continuity.md), [Native setup recovery](verification/native-setup-recovery.md), [Credential readiness](verification/credential-readiness.md), [Source fetch cleanup](verification/source-fetch-cleanup.md) |
+| Providers and trackers | [Offline conformance packaging](verification/offline-conformance-packaging.md), [Provider connections](verification/provider-connections.md), [Provider mutation protocol](verification/provider-mutation-protocol.md), [GitHub ticket workflows](verification/github-ticket-workflows.md), [Jira Cloud new work](verification/jira-cloud-new-work.md), [Plane new work](verification/plane-new-work.md), [Selective tracker migration](verification/selective-tracker-migration.md) |
+| Agent clients and toolsets | [Native work harnesses](verification/native-work-harnesses.md), [Native tool composition](verification/native-tool-composition.md), [Toolset composition](verification/toolset-composition.md), [Work-computer toolsets](verification/work-computer-toolsets.md), [Portable workflow bundle cleanup](verification/portable-workflow-bundle-cleanup.md), [Portable workflow bundle import repair](verification/portable-workflow-bundle-import-repair.md) |
+| Workflows and documents | [Spec delivery traceability](verification/spec-delivery-traceability.md), [Product shaping workflow](verification/product-shaping-workflow.md), [Design PM workflow](verification/design-pm-workflow.md), [Backend contracts](verification/backend-contracts.md), [Documentation workflow](verification/documentation-workflow.md), [Project knowledge repair](verification/project-knowledge-repair.md), [Repository organization](verification/repository-organization.md) |
+
 ## Native Windows core boundary
 
 The native-core Verify job exercises source code on hosted `windows-2025` with locked Python dependencies. Its tests cover core imports, guarded local NTFS storage, explicit command execution and a disposable adoption/render/setup/check journey with POSIX shell paths removed. The existing Unix required-check jobs remain in the same workflow. Native test results are uploaded separately as `windows-core-results`; they are not a substitute for the five configured full-check receipts.

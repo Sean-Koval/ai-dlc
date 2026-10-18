@@ -388,6 +388,30 @@ owner = "repository-maintainers"
 status = "draft"
 
 [[documents]]
+id = "documentation-map"
+path = "docs/design/documentation-map.md"
+kind = "navigation"
+owner = "repository-maintainers"
+status = "active"
+code_paths = ["mkdocs.yml"]
+
+[[documents]]
+id = "workflow-plugin-site"
+path = "docs/workflows/workflow-plugin.md"
+kind = "navigation"
+owner = "repository-maintainers"
+status = "active"
+code_paths = ["plugins/ai-dlc-workflow/README.md"]
+
+[[documents]]
+id = "workflow-plugin-harness-site"
+path = "docs/workflows/workflow-plugin-harness.md"
+kind = "navigation"
+owner = "repository-maintainers"
+status = "active"
+code_paths = ["plugins/ai-dlc-workflow/README.md", "scripts/publish_workflow_plugin.py"]
+
+[[documents]]
 id = "repo-migration"
 path = "docs/migration.md"
 kind = "reference"

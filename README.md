@@ -109,4 +109,4 @@ fails when they are stale.
 - [Architecture](docs/architecture.md): services, configuration layers and extension points.
 - [Development workflow](docs/development-workflow.md): discovery, greenfield, brownfield and design review.
 - [Verification status](docs/release-verification.md): platform and provider evidence and the remaining qualification gaps.
-- [Documentation map](docs/index.md): every canonical document.
+- [Documentation map](docs/design/documentation-map.md): every canonical document.

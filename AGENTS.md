@@ -44,8 +44,9 @@ list before starting work, and do not grow moved or cut areas.
 
 ## Placement and upkeep
 
-- Read [docs/index.md](docs/index.md) before creating documentation. Update the
-  canonical explanation instead of adding another summary or completion report.
+- Read the [documentation map](docs/design/documentation-map.md) before creating
+  documentation. Update the canonical explanation instead of adding another summary
+  or completion report.
 - Keep proposal, design, requirements and tasks together in `openspec/changes/`.
   Keep durable explanations in `docs/design/`, procedures in `docs/runbooks/` or
   `docs/workflows/`, and actual qualification evidence in `docs/verification/`.
