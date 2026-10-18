@@ -33,7 +33,12 @@ team skills from the workflow plugin while working on AI-DLC. The plugin is off 
 claude --plugin-dir plugins/ai-dlc-workflow --settings '{"enabledPlugins":{"ai-dlc-workflow@inline":true}}'
 ```
 
-`claude plugin list` with the same two flags should show the plugin as loaded:
+To check it loaded, put the same flags before `plugin list` (after it, Claude Code
+rejects `--plugin-dir`):
+
+```sh
+claude --plugin-dir plugins/ai-dlc-workflow --settings '{"enabledPlugins":{"ai-dlc-workflow@inline":true}}' plugin list
+```
 
 ```text
   > ai-dlc-workflow@inline

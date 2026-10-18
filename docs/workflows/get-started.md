@@ -243,7 +243,12 @@ off by default (`defaultEnabled: false`). Try it locally:
 claude --plugin-dir plugins/ai-dlc-workflow --settings '{"enabledPlugins":{"ai-dlc-workflow@inline":true}}'
 ```
 
-To check it loaded, run `claude plugin list` with the same two flags:
+To check it loaded, put the same flags before `plugin list` (after it, Claude Code
+rejects `--plugin-dir` as an unknown option):
+
+```sh
+claude --plugin-dir plugins/ai-dlc-workflow --settings '{"enabledPlugins":{"ai-dlc-workflow@inline":true}}' plugin list
+```
 
 ```text
 Session-only plugins (--plugin-dir / --plugin-url):

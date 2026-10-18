@@ -26,7 +26,7 @@ The [architecture](docs/architecture.md) maps its packages and entry points.
 This checkout commits no rendered skill copies; load the team skills from the
 workflow plugin, enabled for the session because it is off by default
 (`claude --plugin-dir plugins/ai-dlc-workflow --settings '{"enabledPlugins":{"ai-dlc-workflow@inline":true}}'`;
-`claude plugin list` with the same flags shows `√ loaded`), or read
+`claude <the same flags> plugin list` shows `√ loaded`), or read
 `plugins/ai-dlc-workflow/skills/` from Codex, and edit them under `agents/skills/`.
 The Rust implementation is retired and removed; its plans are in git history before tag `docs-prune-2026-10`.
 `ai-dlc project init` and `project adopt` copy the packaged `project-templates/`;

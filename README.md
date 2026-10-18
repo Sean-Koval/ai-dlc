@@ -83,10 +83,11 @@ To use AI-DLC in an existing work repository, connect GitHub, enroll a profile o
 contribute to the engine, follow [Get started](docs/workflows/get-started.md) on the docs site.
 
 Try the workflow plugin in Claude Code from this checkout. It is off by default, so enable it
-for the session; `claude plugin list` with the same flags should report `Status: √ loaded`:
+for the session; adding `plugin list` after the same flags should report `Status: √ loaded`:
 
 ```sh
 claude --plugin-dir plugins/ai-dlc-workflow --settings '{"enabledPlugins":{"ai-dlc-workflow@inline":true}}'
+claude --plugin-dir plugins/ai-dlc-workflow --settings '{"enabledPlugins":{"ai-dlc-workflow@inline":true}}' plugin list
 ```
 
 ## Features
