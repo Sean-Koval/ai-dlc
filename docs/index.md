@@ -1,6 +1,6 @@
 <div class="af-hero" markdown>
 
-<span class="af-eyebrow">Agent factory · Define plane</span>
+<span class="af-eyebrow">Agent factory · Supports the Define plane</span>
 
 # One pinned setup, one workflow, and a finish that needs merged evidence
 
