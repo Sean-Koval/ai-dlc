@@ -62,7 +62,7 @@
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/tracker-adapter-boundary/spec.md": "dd8886e122156c514768387930c3534d882b4672552eeb2aca62507fa6ab2a58",
         "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "5cca4c515026d52f448cd387e1d4c4f92a981863e72749b77346d9cfb20dec3d",
-        "plugins/ai-dlc-workflow/README.md": "7a945306b908724fa8e61f463166408e370b000f725777ec42792bf4a5e9b42a",
+        "plugins/ai-dlc-workflow/README.md": "f17fba1214b5b21bc40811ba7297e10dc8aaa8b05b6d3f863096bab00d3580f8",
         "plugins/ai-dlc-workflow/hooks/aidlc_hook.py": "9a22eedf99648975eea67800459a90b4196a06ef0dbe172d17339c586df23c77",
         "plugins/ai-dlc-workflow/hooks/hooks.json": "8ddf9b2fc137326ad81a99bb6b1cd4d1dca507cb2e266cd30045b3d0d3f3d4e1",
         "plugins/ai-dlc-workflow/native/codex/.codex-plugin/plugin.json": "7b1f23b6f43e78c4759bb35e5d529d4e8d7a779dec33a1aeb5203a313af2853a",
@@ -80,7 +80,7 @@
         "plugins/ai-dlc-workflow/native/codex/skills/prd-draft/SKILL.md": "e6d457ee65f4d7dd184bef4fc8285253951098484fba9bb3cedbe1512729dc0e",
         "plugins/ai-dlc-workflow/native/codex/skills/review-inbox/SKILL.md": "8b58913b870212b4b04b14d921efb72ed92007cec043513eb3baef36e907c846",
         "plugins/ai-dlc-workflow/native/codex/skills/spec-from-prd/SKILL.md": "f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce",
-        "plugins/ai-dlc-workflow/plugin.lock.json": "147a0d343d3959b97bbac2aee4fc98352b40e0a88e2b9642b17fe4fb7b3dc2a0",
+        "plugins/ai-dlc-workflow/plugin.lock.json": "f273ede32fedd96019f66fac3a7399185041f0addff2a7eb9a718bf84e39a4ce",
         "plugins/ai-dlc-workflow/skills/ai-dlc-workflow/SKILL.md": "53b536563bc8423334075af06fd90e43e98c018337360c34f34b7ec39577845c",
         "plugins/ai-dlc-workflow/skills/design-brief/SKILL.md": "5b9cc5c5d40378b273369c62b51b4ba10475a65c0dd91d799cd29df2a7c8ec58",
         "plugins/ai-dlc-workflow/skills/design-evaluate/SKILL.md": "a7e3f68082ff474fd09adefb623a20bc34a2f3f83c6e97055a55008f4681d9af",
@@ -207,7 +207,7 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "updated",
-      "reason": "Opening states ADR 0001's three jobs instead of the framework/v4 framing; Terms glossary with the eight meanings of capabilities (#203, glossary only); tracker-boundary table names Tower. Mapped sources changed only in docs (plugin README pin how-to, layout check allows CHANGELOG.md).",
+      "reason": "Opening states ADR 0001's three jobs instead of the framework/v4 framing; Terms glossary with the eight meanings of capabilities (#203, glossary only); tracker-boundary table names Tower. Mapped plugin README changed only in documentation (pin how-to, list indentation).",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
@@ -496,11 +496,11 @@
       "bound": {
         "catalog:docs/workflows/workflow-plugin-harness.md": "9223014c97587c69f43fa80bd04a9acb54c1ffb34784aa85c2cde42c3e6744c3",
         "docs/workflows/workflow-plugin-harness.md": "3a46a3ec131540678bb07b8f34d985aaff079ed25bfcdea709084a5a1e7b1b99",
-        "plugins/ai-dlc-workflow/README.md": "7a945306b908724fa8e61f463166408e370b000f725777ec42792bf4a5e9b42a",
+        "plugins/ai-dlc-workflow/README.md": "f17fba1214b5b21bc40811ba7297e10dc8aaa8b05b6d3f863096bab00d3580f8",
         "scripts/publish_workflow_plugin.py": "96d95c413671a55a0e42d690f1c6d64528c11203e0a44359e3422d082ca34b9d"
       },
       "outcome": "updated",
-      "reason": "New one-line page including the plugin README's Pin it in a team harness section by snippet.",
+      "reason": "One-line page including the plugin README's Pin it in a team harness section by snippet; the section now renders as a numbered list.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/workflow-plugin-harness.md"
     },
@@ -508,10 +508,10 @@
       "bound": {
         "catalog:docs/workflows/workflow-plugin.md": "f4cb44c326c7325400264154ff0ca84b16cd014d8077abfee3557326e4906544",
         "docs/workflows/workflow-plugin.md": "e4d1925cb6a5fe615416ec028dc554e51dc23bfd9612811f226751b719ec1cb8",
-        "plugins/ai-dlc-workflow/README.md": "7a945306b908724fa8e61f463166408e370b000f725777ec42792bf4a5e9b42a"
+        "plugins/ai-dlc-workflow/README.md": "f17fba1214b5b21bc40811ba7297e10dc8aaa8b05b6d3f863096bab00d3580f8"
       },
       "outcome": "updated",
-      "reason": "New one-line page including the plugin README overview by snippet.",
+      "reason": "One-line page including the plugin README overview by snippet; the enabled local-testing command renders as a code block.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/workflow-plugin.md"
     },
