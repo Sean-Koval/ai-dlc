@@ -404,9 +404,9 @@ status = "active"
 code_paths = ["plugins/ai-dlc-workflow/README.md"]
 
 [[documents]]
-id = "workflow-plugin-harness-site"
+id = "workflow-plugin-harness"
 path = "docs/workflows/workflow-plugin-harness.md"
-kind = "navigation"
+kind = "runbook"
 owner = "repository-maintainers"
 status = "active"
 code_paths = ["plugins/ai-dlc-workflow/README.md", "scripts/publish_workflow_plugin.py"]

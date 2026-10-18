@@ -1,1 +1,1 @@
---8<-- "plugins/ai-dlc-workflow/README.md:overview"
+--8<-- "plugins/ai-dlc-workflow/README.md"
