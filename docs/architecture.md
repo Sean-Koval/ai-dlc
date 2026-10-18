@@ -135,7 +135,7 @@ one owner:
 | --- | --- |
 | Starting agent work from a ticket (Jira status or label, GitHub label or Projects column, Slack, schedules) | hangar intake |
 | Ticket write-back during an agent job (queued, started, needs_input, delivered, failed) | hangar |
-| Trust and approval of who may start work | hangar, then Tower (formerly the governed workspace) |
+| Trust and approval of who may start work | hangar, then Tower |
 | A developer's local work record, branch binding and specification artifacts | AI-DLC |
 | Closing a ticket after merge with CI-receipt evidence (`work finish`) | AI-DLC, run locally by a person |
 | Creating tickets from reviewed local work (`work publish`) | AI-DLC |

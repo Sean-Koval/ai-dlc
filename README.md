@@ -43,7 +43,7 @@ The workflow plugin's skills, as Claude Code lists them, and the checks a projec
 
 <picture>
   <source media="(prefers-color-scheme: light)" srcset="docs/assets/front/suite-light.svg">
-  <img alt="ai-dlc runs on the developer machine: machine enroll, then work new, start, pr and finish against GitHub issues, pull requests and CI receipts. It publishes the workflow plugin that the team harness pins; hangar runs agents from that harness and flightdeck compares runs with and without the plugin. Tower is planned." src="docs/assets/front/suite-dark.svg">
+  <img alt="ai-dlc runs on the developer machine: machine enroll, then work new, start, pr and finish against GitHub issues, pull requests and CI receipts. It publishes the workflow plugin that the team harness pins; hangar runs agents from that harness and flightdeck compares runs with and without the plugin. Tower, the governance plane for policy decisions, approvals and receipts, is drawn as planned." src="docs/assets/front/suite-dark.svg">
 </picture>
 
 AI-DLC does not run agents in the cloud or judge harnesses: hangar renders and runs
