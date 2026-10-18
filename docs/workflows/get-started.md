@@ -240,9 +240,21 @@ A team harness can pin it as a single component and run with or without it. It i
 off by default (`defaultEnabled: false`). Try it locally:
 
 ```sh
-claude --plugin-dir plugins/ai-dlc-workflow \
-  --settings '{"enabledPlugins": {"ai-dlc-workflow@inline": true}}'
+claude --plugin-dir plugins/ai-dlc-workflow --settings '{"enabledPlugins":{"ai-dlc-workflow@inline":true}}'
 ```
+
+To check it loaded, run `claude plugin list` with the same two flags:
+
+```text
+Session-only plugins (--plugin-dir / --plugin-url):
+
+  > ai-dlc-workflow@inline
+    Version: 0.4.0-r3
+    Path: /path/to/ai-dlc/plugins/ai-dlc-workflow
+    Status: √ loaded
+```
+
+Without `--settings` the same list shows `Status: × disabled`, and the skills don't load.
 
 `scripts/build_workflow_plugin.py` generates the directory from `agents/skills/`
 and the shared guidance and records component digests in `plugin.lock.json`; the

@@ -77,8 +77,14 @@ git add -A && git commit -qm "chore: initialize with ai-dlc" && ai-dlc project c
 
 Bootstrap installs pinned uv, Python and mise; no preinstalled Python or Node is needed.
 To use AI-DLC in an existing work repository, connect GitHub, enroll a profile or
-contribute to the engine, follow [Get started](docs/workflows/get-started.md) on the docs site. Try
-the plugin in Claude Code with `claude --plugin-dir plugins/ai-dlc-workflow`.
+contribute to the engine, follow [Get started](docs/workflows/get-started.md) on the docs site.
+
+Try the workflow plugin in Claude Code from this checkout. It is off by default, so enable it
+for the session; `claude plugin list` with the same flags should report `Status: √ loaded`:
+
+```sh
+claude --plugin-dir plugins/ai-dlc-workflow --settings '{"enabledPlugins":{"ai-dlc-workflow@inline":true}}'
+```
 
 ## Features
 

@@ -129,8 +129,14 @@ never wedges a session.
 
 `defaultEnabled` is `false`, so the plugin loads only where it is enabled.
 
-- Local testing: `claude --plugin-dir plugins/ai-dlc-workflow` together with
-  `--settings '{"enabledPlugins": {"ai-dlc-workflow@inline": true}}'`.
+- Local testing, from an AI-DLC checkout:
+
+  ```sh
+  claude --plugin-dir plugins/ai-dlc-workflow --settings '{"enabledPlugins":{"ai-dlc-workflow@inline":true}}'
+  ```
+
+  `claude plugin list` with the same two flags shows `ai-dlc-workflow@inline` with
+  `Status: √ loaded`; without `--settings` it shows `Status: × disabled`.
 - Marketplace install: set `"ai-dlc-workflow@<marketplace>": true` under
   `enabledPlugins` in the scope you want, or run
   `claude plugin enable ai-dlc-workflow@<marketplace>`.

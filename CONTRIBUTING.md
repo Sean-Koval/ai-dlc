@@ -25,11 +25,21 @@ Generated client copies are not independent sources of truth.
 
 This repository does not commit rendered skill copies (`[agents] skills = []` in
 `ai-dlc.toml`), so `.claude/skills/` and `.agents/skills/` stay empty here. Load the
-team skills from the workflow plugin while working on AI-DLC:
+team skills from the workflow plugin while working on AI-DLC. The plugin is off by default
+(`defaultEnabled: false`), so enable it for the session:
 
 ```sh
-claude --plugin-dir plugins/ai-dlc-workflow
+claude --plugin-dir plugins/ai-dlc-workflow --settings '{"enabledPlugins":{"ai-dlc-workflow@inline":true}}'
 ```
+
+`claude plugin list` with the same two flags should show the plugin as loaded:
+
+```text
+  > ai-dlc-workflow@inline
+    Status: √ loaded
+```
+
+Without `--settings` it reports `Status: × disabled` and no skills load.
 
 Codex contributors read the same skills from `plugins/ai-dlc-workflow/skills/`.
 Edit skills only under `agents/skills/`, then run
