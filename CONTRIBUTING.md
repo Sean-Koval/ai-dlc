@@ -2,7 +2,8 @@
 
 Read [AGENTS.md](AGENTS.md) for repository boundaries and [the documentation
 map](docs/design/documentation-map.md) for authoritative sources. AI-DLC ships Python; the
-retired Rust implementation survives only as archived plans and git history.
+retired Rust implementation and its plans survive only in git history (before tag
+`docs-prune-2026-10`).
 
 AI-DLC is feature-frozen; [ADR 0001](docs/decisions/0001-refocus-ai-dlc.md) lists
 what stays active. Changes outside the in-scope list are closed with a pointer;
@@ -45,3 +46,21 @@ Codex contributors read the same skills from `plugins/ai-dlc-workflow/skills/`.
 Edit skills only under `agents/skills/`, then run
 `python scripts/build_workflow_plugin.py` to refresh the plugin. Repository layout checks apply to AI-DLC itself; downstream projects
 retain their chosen structure.
+
+## Build the docs site
+
+The site at <https://sean-koval.github.io/ai-dlc/> is built from `docs/` and
+`mkdocs.yml` with Zensical, as `.github/workflows/docs.yml` does. To preview a
+change locally:
+
+```sh
+pip install zensical==0.0.71
+python scripts/docs_site_links.py --check   # links that would leave the site
+zensical serve                              # or: zensical build --strict
+```
+
+CI runs the link check and `zensical build --strict`; a broken link or anchor fails
+the build. `python scripts/docs_site_links.py --write` turns links to files the site
+doesn't publish into GitHub URLs. The theme files in `docs/stylesheets/airframe*` and
+the brand files in `docs/assets/brand/` are vendored from agent-factory; refresh them
+with `sh scripts/sync-airframe.sh theme-vN` and `sh scripts/sync-brand.sh theme-vN`.

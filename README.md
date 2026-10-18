@@ -48,6 +48,10 @@ The workflow plugin's skills, as Claude Code lists them, and the checks a projec
 
 AI-DLC does not run agents in the cloud or judge harnesses: hangar renders and runs
 sandboxes, flightdeck evaluates, and AI-DLC authors the one optional plugin they pin.
+Read more in the [hangar docs](https://sean-koval.github.io/hangar/), the
+[flightdeck docs](https://sean-koval.github.io/flightdeck/) and agent-factory's
+[example team harness](https://github.com/Sean-Koval/agent-factory/blob/main/examples/team-harness/README.md),
+which pins this plugin.
 
 ## Use cases
 
@@ -92,7 +96,7 @@ claude --plugin-dir plugins/ai-dlc-workflow --settings '{"enabledPlugins":{"ai-d
 | --- | --- | --- |
 | Machine enrollment | Versioned profiles pin runtimes, tools, agent clients and named credentials; each machine keeps its own paths and accounts | [Machine enrollment](docs/runbooks/machine-enrollment.md) |
 | Project scaffolding | `project init` / `project adopt` for generic, Python, Node or Rust repositories, with setup steps and required checks | [Get started](docs/workflows/get-started.md) |
-| Workflow plugin | Guidance, ten team skills and CLI-optional safety hooks for Claude Code, with a Codex form; off by default | [Plugin README](plugins/ai-dlc-workflow/README.md) |
+| Workflow plugin | Guidance, ten team skills and CLI-optional safety hooks for Claude Code, with a Codex form; off by default | [Plugin README](plugins/ai-dlc-workflow/README.md), including how to pin it in a team harness |
 | Work lifecycle | Reviewed work records bind an issue, branch, specification and PR; `work finish` gates on the merge and its CI receipt | [Development workflow](docs/development-workflow.md) |
 | Receipts | `project check --required` runs the team's checks and writes a receipt bound to the commit | [Release verification](docs/release-verification.md) |
 | Documentation upkeep | Catalog, impact review, dispositions and a docs gate; decision records with knowledge-note frontmatter | [Project documentation](docs/design/project-documentation.md) |

@@ -263,8 +263,10 @@ emits a Codex form in `native/codex/` (identical skills, a Codex `hooks.json`, a
 `AGENTS.fragment.md` and a `.codex-plugin` manifest), and
 `scripts/publish_workflow_plugin.py --harness-repo PATH --marketplace NAME --dry-run|--apply` copies
 both into a team harness for a with/without comparison. See the
-[plugin README](https://github.com/Sean-Koval/ai-dlc/blob/main/plugins/ai-dlc-workflow/README.md) for contents, the Codex spike,
-the A/B arms, hangar limits and how to turn it off.
+[workflow plugin](workflow-plugin.md) page for contents, the Codex spike, the A/B
+arms, hangar limits and how to turn it off, and
+[pin it in a team harness](workflow-plugin-harness.md) for the publish, lock and
+channel steps.
 
 ## Example workflows
 
@@ -342,6 +344,8 @@ flowchart LR
 | **OpenSpec** | Formal requirements, scenarios, and archived changes when the work needs a specification. |
 | **GitHub Issues + Projects / GitHub Actions** | Ticket identity and planning, PR review and merge, and CI evidence. |
 | **Obsidian** | Private continuity notes and navigation to canonical repository documents. |
+| **[hangar](https://sean-koval.github.io/hangar/)** (separate tool) | Runs coding agents in cloud sandboxes and starts agent jobs from tickets (intake); renders the team harness, which can pin the workflow plugin, at claim time. |
+| **[flightdeck](https://sean-koval.github.io/flightdeck/)** (separate tool) | Evaluates harness changes, such as running with and without the workflow plugin, on runs hangar recorded; `ai-dlc eval` moved there. |
 
 Provider roles are configurable. GitHub Issues + Projects is the default and
 recommended tracker with recorded live evidence. The Jira Cloud adapter is
