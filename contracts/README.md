@@ -42,9 +42,7 @@ so mutation outcomes remain uncertain until reconciled with the remote provider.
 
 Bundled adapters use the installed ai-dlc 0.4.0 release identity. GitHub Issues is invoked
 through the installed Python module (the `ai-dlc-github-issues` console entry is also
-provided) and wraps authenticated `gh`. Linear uses HTTPS GraphQL and a `token_env`
-reference. Its `statuses` map canonical `open`, `in_progress`, and `closed` to native
-state IDs. GitHub Issues without Projects reports unsupported in_progress while
+provided) and wraps authenticated `gh`. GitHub Issues without Projects reports unsupported in_progress while
 work start creates/reuses its branch and reads the issue. With a configured Project,
 its explicitly mapped in-progress option represents planning while the issue stays open.
 

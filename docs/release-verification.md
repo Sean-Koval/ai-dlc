@@ -21,14 +21,23 @@ never stand in for live platform, provider or human-evaluation evidence.
 
 ## Outstanding
 
-Clean-machine, container and cloud walkthroughs; full live provider mutation
-conformance with enforced egress; and live Jira workflow
-qualification for the local lifecycle steps (`work publish`, a blocked `work finish` before
-merge and a closing `work finish` after merge, per #85) remain outstanding. Plane is
-unsupported, so its live qualification is no longer planned; the Linear adapter was removed. Package index publication is not planned. The publication
-and successful replay below satisfy asset availability, integrity and hosted
-consumer evidence for v0.4.0. They do not satisfy those remaining walkthroughs or
-provider and human-evaluation obligations.
+Clean-machine and clean-container walkthroughs of machine bootstrap and the workflow
+plugin ([#53](https://github.com/Sean-Koval/ai-dlc/issues/53)); full live provider
+mutation conformance with enforced egress; and live Jira workflow qualification for
+the local lifecycle steps (`work publish`, a blocked `work finish` before merge and a
+closing `work finish` after merge, per
+[#85](https://github.com/Sean-Koval/ai-dlc/issues/85)) remain outstanding. Plane is
+unsupported, so its live qualification is no longer planned. Package index
+publication is not planned. The publication and successful replay below satisfy
+asset availability, integrity and hosted consumer evidence for v0.4.0. They do not
+satisfy those remaining walkthroughs or the provider obligations.
+
+Two former obligations left AI-DLC under
+[ADR 0001](decisions/0001-refocus-ai-dlc.md) and are no longer release evidence
+here: behavioral skill and harness evaluation belongs to
+[flightdeck](https://sean-koval.github.io/flightdeck/), and cloud execution, with its
+walkthroughs, belongs to [hangar](https://sean-koval.github.io/hangar/). Older dated
+records below still list them as they stood then.
 
 The [September 14 Jira preparation](verification/jira-cloud-new-work.md#walkthrough-preparation-september-14-2026)
 records missing sandbox inputs and the absent live Jira mutation target.
@@ -224,9 +233,10 @@ This satisfies verified release asset publication, published-asset installation
 on the three named hosted platforms, manifest propagation, and generated Python
 project bootstrap/check evidence. The original publication workflow and first
 replay remain failed historical runs. A hosted runner with preinstalled tools is
-not a factory-clean machine or clean container; cloud-client walkthroughs, live
-provider mutation and deployment qualification, and declared-model skill results
-with human review remain outstanding. No package-index publication is claimed.
+not a factory-clean machine or clean container; live provider mutation and
+deployment qualification remain outstanding (cloud-client walkthroughs and skill
+results moved to hangar and flightdeck, see [Outstanding](#outstanding)). No
+package-index publication is claimed.
 
 ## Release publication path — September 13, 2026
 
@@ -269,10 +279,11 @@ supplied through `CURL_CA_BUNDLE`):
 This is on-host proof of the release-mode path against a local stand-in, not a
 published release, not a factory-clean machine and not a hosted-client session.
 The September 14 publication, failed attempts, and successful read-only replay
-above are separate evidence against the real release. Outstanding and unchanged: clean-machine,
-container and cloud walkthroughs; full live provider mutation conformance;
-behavioral skill evaluations; live Plane and Jira qualification. Package index
-publication is not planned.
+above are separate evidence against the real release. Outstanding and unchanged at
+that date: clean-machine and container walkthroughs; full live provider mutation
+conformance; live Jira qualification. Package index publication is not planned.
+Cloud walkthroughs, behavioral skill evaluation and Plane qualification have since
+left AI-DLC's obligations (see [Outstanding](#outstanding)).
 
 ## Cancelled change reconciliation — September 12, 2026
 
@@ -296,7 +307,9 @@ At the September 12 checkpoint, outstanding obligations were: clean-machine, con
 walkthroughs; full live provider mutation conformance with enforced egress; behavioral
 skill evaluations at the declared model and budget; publication of verified release assets;
 live Plane deployment qualification with a substitution and interruption rehearsal; and
-live Jira deployment and workflow qualification.
+live Jira deployment and workflow qualification. Under ADR 0001, cloud walkthroughs now
+belong to hangar and skill evaluation to flightdeck, Plane is unsupported, and release
+assets were published on September 14; see [Outstanding](#outstanding) for what remains.
 
 `portable-tracker-adapters` had no work record and no tracker item, so it could not be
 completed through `ai-dlc work finish`. It was reconciled as a documentation-only archive

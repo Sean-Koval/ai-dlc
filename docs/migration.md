@@ -40,9 +40,9 @@ Adopting an existing project previews changes and reports path conflicts. Resolv
 The existing all-work `project rebind` command remains available for provider-role changes. Existing work retains its old provider until explicitly mapped. An apply refuses affected work without replacement artifact mappings. TOML mappings use work IDs as tables and artifact kinds as keys, for example `[work-123]` with `tracker = "NEW-42"`. PR/branch references must both be mapped when both exist. Local completion claims alone do not prove completion, so the migration treats retained records conservatively. Review old and replacement artifacts before applying.
 
 No Jira, Figma, Windows, hosted orchestration, Obsidian create/attach, or
-provider-discovery migration is provided by this release. Local CLI and MCP
-execution remain the current control plane; hosted or cloud execution is a
-later qualification target.
+provider-discovery migration is provided by this release. The local CLI and MCP
+are AI-DLC's control plane; cloud execution belongs to hangar
+([ADR 0001](decisions/0001-refocus-ai-dlc.md)).
 
 
 ## Tracker default and selected-work migration
@@ -273,8 +273,9 @@ one refuses with `requires <client> >= <floor>`, and an unset version renders wi
 warning. `agents/capabilities.toml` is schema 2 and has no `target` key.
 
 The module catalog now pins `claude-code` 2.1.296 and `codex` 0.162.1, matching
-hangar's `harnesses.lock.yaml`. `machine provision` installs these on new machines;
-existing installs are not upgraded implicitly. Compare the pins locally with
+hangar's `harnesses.lock.yaml`. `ai-dlc setup plan` previews and `ai-dlc setup apply`
+installs the profile's modules, these pins included; existing installs are not upgraded
+implicitly. Compare the pins locally with
 `python scripts/check_client_pins.py --hangar-lock PATH`.
 
 ## ai-dlc scaffold removed
