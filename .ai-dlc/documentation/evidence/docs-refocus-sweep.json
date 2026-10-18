@@ -2,10 +2,10 @@
   "decisions": [
     {
       "bound": {
-        "AGENTS.md": "7ad85345fd85a182d32d2e9bcbbf35d0a0f723ab2e03fa41c1e8abaa0e055c06"
+        "AGENTS.md": "d43a4cbd8a17fe76e66b3a7e915558251381720025ddb45bdf93e67760e11734"
       },
       "outcome": "updated",
-      "reason": "Authored part only: enabled plugin try command, documentation map path, vendored brand files rule. Managed section untouched.",
+      "reason": "Authored part only: enabled plugin try command with the flags before plugin list, documentation map path, vendored brand files rule. Managed section untouched.",
       "reviewer": "Claude (agent)",
       "target": "AGENTS.md"
     },
@@ -20,19 +20,19 @@
     },
     {
       "bound": {
-        "CONTRIBUTING.md": "a28a9c4017d72f22e4b31fddef3e25d0ffb96412e7ec9e4ed6d931fe0c3bfd7e"
+        "CONTRIBUTING.md": "d4960ba36c1d473003142f2535aded27558ae8b187513fad9fbe09208ccea1d8"
       },
       "outcome": "updated",
-      "reason": "Enabled plugin try command with expected output; Build the docs site section; archived plans wording replaced with the docs-prune-2026-10 tag.",
+      "reason": "Enabled plugin try command and the exact plugin list check; Build the docs site section; archived plans wording replaced with the docs-prune-2026-10 tag.",
       "reviewer": "Claude (agent)",
       "target": "CONTRIBUTING.md"
     },
     {
       "bound": {
-        "README.md": "6ce582e2ae797675984eeb8175aaf332648f80029f49897bd3d5a9f697adb218"
+        "README.md": "751f4ff6d9fbfb3c691a66008f163c57938f25fefe330bc0eb87b38278bec2c2"
       },
       "outcome": "updated",
-      "reason": "Airframe banner; enabled plugin try command; Tower in the diagram alt text; suite links in Where it sits; documentation map path.",
+      "reason": "Enabled plugin try command and exact plugin list check; Tower alt text kept over #233's; suite links in Where it sits, with the example harness at Sean-Koval/team-harness; documentation map path.",
       "reviewer": "Claude (agent)",
       "target": "README.md"
     },
@@ -62,7 +62,7 @@
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/tracker-adapter-boundary/spec.md": "dd8886e122156c514768387930c3534d882b4672552eeb2aca62507fa6ab2a58",
         "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "5cca4c515026d52f448cd387e1d4c4f92a981863e72749b77346d9cfb20dec3d",
-        "plugins/ai-dlc-workflow/README.md": "f17fba1214b5b21bc40811ba7297e10dc8aaa8b05b6d3f863096bab00d3580f8",
+        "plugins/ai-dlc-workflow/README.md": "3decc49827f20e46cd3d0231fdeaaccbd069e0d84ec45ef3cd998a4f6404e1dc",
         "plugins/ai-dlc-workflow/hooks/aidlc_hook.py": "9a22eedf99648975eea67800459a90b4196a06ef0dbe172d17339c586df23c77",
         "plugins/ai-dlc-workflow/hooks/hooks.json": "8ddf9b2fc137326ad81a99bb6b1cd4d1dca507cb2e266cd30045b3d0d3f3d4e1",
         "plugins/ai-dlc-workflow/native/codex/.codex-plugin/plugin.json": "7b1f23b6f43e78c4759bb35e5d529d4e8d7a779dec33a1aeb5203a313af2853a",
@@ -80,7 +80,7 @@
         "plugins/ai-dlc-workflow/native/codex/skills/prd-draft/SKILL.md": "e6d457ee65f4d7dd184bef4fc8285253951098484fba9bb3cedbe1512729dc0e",
         "plugins/ai-dlc-workflow/native/codex/skills/review-inbox/SKILL.md": "8b58913b870212b4b04b14d921efb72ed92007cec043513eb3baef36e907c846",
         "plugins/ai-dlc-workflow/native/codex/skills/spec-from-prd/SKILL.md": "f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce",
-        "plugins/ai-dlc-workflow/plugin.lock.json": "f273ede32fedd96019f66fac3a7399185041f0addff2a7eb9a718bf84e39a4ce",
+        "plugins/ai-dlc-workflow/plugin.lock.json": "d4a3b23dd294fab009c6710848fbc03b52faf0dc171822b53230351b59e8658a",
         "plugins/ai-dlc-workflow/skills/ai-dlc-workflow/SKILL.md": "53b536563bc8423334075af06fd90e43e98c018337360c34f34b7ec39577845c",
         "plugins/ai-dlc-workflow/skills/design-brief/SKILL.md": "5b9cc5c5d40378b273369c62b51b4ba10475a65c0dd91d799cd29df2a7c8ec58",
         "plugins/ai-dlc-workflow/skills/design-evaluate/SKILL.md": "a7e3f68082ff474fd09adefb623a20bc34a2f3f83c6e97055a55008f4681d9af",
@@ -207,43 +207,16 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "updated",
-      "reason": "Opening states ADR 0001's three jobs instead of the framework/v4 framing; Terms glossary with the eight meanings of capabilities (#203, glossary only); tracker-boundary table names Tower. Mapped plugin README changed only in documentation (pin how-to, list indentation).",
+      "reason": "Opening states ADR 0001's three jobs; Terms glossary with the eight meanings of capabilities (#203, glossary only); tracker-boundary row says hangar, then Tower. Rebased over #233. Mapped scripts/check_layout.py only allows CHANGELOG.md at the root.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
     {
       "bound": {
-        "docs/assets/front/suite-dark.svg": "cee6bbb4589defb14532fd3ab6fb53e6b939ab3835d5567c67e174451b087819"
+        "docs/catalog.toml": "5fcb0ca7c8adc6ea91695830342e28d641a1c39e9260c3413fe6b76e1ba6c1d2"
       },
       "outcome": "updated",
-      "reason": "Regenerated by build.py: the Govern box says Tower.",
-      "reviewer": "Claude (agent)",
-      "target": "docs/assets/front/suite-dark.svg"
-    },
-    {
-      "bound": {
-        "docs/assets/front/suite-light.svg": "f61999fabb0f6d8bf22da287ad0c8c8644460bead92efc5025243ab224e054a3"
-      },
-      "outcome": "updated",
-      "reason": "Regenerated by build.py: the Govern box says Tower.",
-      "reviewer": "Claude (agent)",
-      "target": "docs/assets/front/suite-light.svg"
-    },
-    {
-      "bound": {
-        "docs/assets/front/suite.svg": "1aacec79929949eaa04f6dd94113b336c7b21ffc24eb0d98def023a3d6644f9d"
-      },
-      "outcome": "updated",
-      "reason": "Regenerated by build.py: the Govern box says Tower.",
-      "reviewer": "Claude (agent)",
-      "target": "docs/assets/front/suite.svg"
-    },
-    {
-      "bound": {
-        "docs/catalog.toml": "ca9828f91942b094b4cffca96497f4751c05525876020c39b30a0b56014091a2"
-      },
-      "outcome": "updated",
-      "reason": "Catalogues the documentation map and the two workflow plugin site pages.",
+      "reason": "Catalogues the documentation map, the workflow plugin page and the pin how-to (a runbook).",
       "reviewer": "Claude (agent)",
       "target": "docs/catalog.toml"
     },
@@ -261,10 +234,10 @@
     {
       "bound": {
         "catalog:docs/index.md": "65c0b0508964e9cb9cc7d68cef118ffcaf83bd6b4524054d54306e09f8a57810",
-        "docs/index.md": "a30df45c9de950a5ec479030a00276d84a540c1ff9d18768c43652cbe210ba80"
+        "docs/index.md": "3ff0dd6380772849f7a6ae2e7b778b7a34b8b2a56265c9e7278cae185479c4f2"
       },
       "outcome": "updated",
-      "reason": "Documentation map moved to Reference; Where it sits links the hangar and flightdeck docs and the example team harness; Features links the workflow plugin site page.",
+      "reason": "Documentation map moved to Reference; Where it sits links the hangar and flightdeck docs and the example team harness at Sean-Koval/team-harness; Features links the workflow plugin page.",
       "reviewer": "Claude (agent)",
       "target": "docs/index.md"
     },
@@ -383,14 +356,14 @@
         "catalog:docs/workflows/get-started.md": "b3cdcadc535e0e825dfe2837433f1b4ef45551430ab207c485ef7dd601bf992e",
         "docs/assets/front/build.py": "f787428adecdc49665a071002e7e5f664bade3053304cc8a41f5a95b8e72a35a",
         "docs/assets/front/demo_provider.py": "4f29e7499ad628903260043bb8ecc0a086f3fe0b581e24c73ab8a9a1851e98da",
-        "docs/workflows/get-started.md": "1b4006350b9c7f7d639cc3c7be20421b3699f3a7e9d5a236598f33a1ea4dc873",
+        "docs/workflows/get-started.md": "4a2cc2d6e3ce4470ead4a4fdd95b3370c8de271d91e3c54da858f7ecf16e2433",
         "mkdocs.yml": "bcb3869392db181c6ea354ab2bb89665299e693aece0855e518d1a4cef5549b5",
         "scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
         "scripts/docs_site_links.py": "241e49f26314def72dd2ee4fdc8545c5b9092fbaf6736952381cc939632f3ec9",
         "tests/test_front_page.py": "659ae911b1745fd032677fd1237db3e96fe38c58ef9022454e62efe06e8d7b12"
       },
       "outcome": "updated",
-      "reason": "Enabled plugin try command with the expected plugin list output; hangar and flightdeck rows in the tools table; links to the workflow plugin site pages. front/build.py changed only the Tower label.",
+      "reason": "Enabled plugin try command and exact plugin list check with expected output; hangar and flightdeck rows in the tools table; links to the workflow plugin pages.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/get-started.md"
     },
@@ -440,24 +413,24 @@
     },
     {
       "bound": {
-        "catalog:docs/workflows/workflow-plugin-harness.md": "9223014c97587c69f43fa80bd04a9acb54c1ffb34784aa85c2cde42c3e6744c3",
-        "docs/workflows/workflow-plugin-harness.md": "3a46a3ec131540678bb07b8f34d985aaff079ed25bfcdea709084a5a1e7b1b99",
-        "plugins/ai-dlc-workflow/README.md": "f17fba1214b5b21bc40811ba7297e10dc8aaa8b05b6d3f863096bab00d3580f8",
+        "catalog:docs/workflows/workflow-plugin-harness.md": "4384ef72e8938151681c2e34243f41a606aca921220d8bbaed30019c61e27a90",
+        "docs/workflows/workflow-plugin-harness.md": "1c5c8aaec18fa55d9100f91a4597c71bed1f35e8e0ff8dafc9efa82c38ec7f9a",
+        "plugins/ai-dlc-workflow/README.md": "3decc49827f20e46cd3d0231fdeaaccbd069e0d84ec45ef3cd998a4f6404e1dc",
         "scripts/publish_workflow_plugin.py": "96d95c413671a55a0e42d690f1c6d64528c11203e0a44359e3422d082ca34b9d"
       },
       "outcome": "updated",
-      "reason": "One-line page including the plugin README's Pin it in a team harness section by snippet; the section now renders as a numbered list.",
+      "reason": "Pin it in a team harness how-to written here (publish dry run, PR, lock entry, candidate channel) so the shipped plugin README stays byte-identical to main; links Sean-Koval/team-harness and hangar#139/#221.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/workflow-plugin-harness.md"
     },
     {
       "bound": {
         "catalog:docs/workflows/workflow-plugin.md": "f4cb44c326c7325400264154ff0ca84b16cd014d8077abfee3557326e4906544",
-        "docs/workflows/workflow-plugin.md": "e4d1925cb6a5fe615416ec028dc554e51dc23bfd9612811f226751b719ec1cb8",
-        "plugins/ai-dlc-workflow/README.md": "f17fba1214b5b21bc40811ba7297e10dc8aaa8b05b6d3f863096bab00d3580f8"
+        "docs/workflows/workflow-plugin.md": "26ef2d4124e5688486b569125c788f4f307ccff6d10c7ad4f0c780d5e6a1762a",
+        "plugins/ai-dlc-workflow/README.md": "3decc49827f20e46cd3d0231fdeaaccbd069e0d84ec45ef3cd998a4f6404e1dc"
       },
       "outcome": "updated",
-      "reason": "One-line page including the plugin README overview by snippet; the enabled local-testing command renders as a code block.",
+      "reason": "One-line page including the unchanged plugin README by snippet.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/workflow-plugin.md"
     },
