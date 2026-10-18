@@ -135,12 +135,13 @@ never wedges a session.
 
 - Local testing, from an AI-DLC checkout:
 
-  ```sh
-  claude --plugin-dir plugins/ai-dlc-workflow --settings '{"enabledPlugins":{"ai-dlc-workflow@inline":true}}'
-  ```
+    ```sh
+    claude --plugin-dir plugins/ai-dlc-workflow --settings '{"enabledPlugins":{"ai-dlc-workflow@inline":true}}'
+    ```
 
-  `claude plugin list` with the same two flags shows `ai-dlc-workflow@inline` with
-  `Status: √ loaded`; without `--settings` it shows `Status: × disabled`.
+    `claude plugin list` with the same two flags shows `ai-dlc-workflow@inline` with
+    `Status: √ loaded`; without `--settings` it shows `Status: × disabled`.
+
 - Marketplace install: set `"ai-dlc-workflow@<marketplace>": true` under
   `enabledPlugins` in the scope you want, or run
   `claude plugin enable ai-dlc-workflow@<marketplace>`.
@@ -161,41 +162,44 @@ decides where it is on. These steps use the example's names (`harnesses/team-def
 marketplace `team-harness`).
 
 1. **Publish, dry run first.** From a prepared AI-DLC checkout
-   (`sh scripts/bootstrap.sh --source`), with the harness repository checked out
-   beside it:
+    (`sh scripts/bootstrap.sh --source`), with the harness repository checked out
+    beside it:
 
-   ```sh
-   uv run --locked --no-sync python scripts/publish_workflow_plugin.py \
-     --harness-repo ../team-harness/harnesses/team-default \
-     --marketplace team-harness --dry-run
-   ```
+    ```sh
+    uv run --locked --no-sync python scripts/publish_workflow_plugin.py \
+      --harness-repo ../team-harness/harnesses/team-default \
+      --marketplace team-harness --dry-run
+    ```
 
-   The dry run changes nothing. It lists the files it would copy and prints the
-   component ids and digests, the source commit and the marketplace entry. Repeat
-   with `--apply` to write `plugins/team-harness/ai-dlc-workflow/` and
-   `native/codex/ai-dlc-workflow/`. The script refuses a target that holds anything
-   other than an unmodified earlier publication.
+    The dry run changes nothing. It lists the files it would copy and prints the
+    component ids and digests, the source commit and the marketplace entry. Repeat
+    with `--apply` to write `plugins/team-harness/ai-dlc-workflow/` and
+    `native/codex/ai-dlc-workflow/`. The script refuses a target that holds anything
+    other than an unmodified earlier publication.
+
 2. **Open a pull request in the harness repository** with those files. The first
-   time, add the printed marketplace entry to
-   `plugins/team-harness/.claude-plugin/marketplace.json`; the script never edits it.
+    time, add the printed marketplace entry to
+    `plugins/team-harness/.claude-plugin/marketplace.json`; the script never edits it.
+
 3. **Pin it in the lock.** Re-pin with the harness repository's tooling:
-   `hangar harness freeze` from a good run, or the example's
-   `python scripts/relock.py harnesses/team-default --write` for a hand edit. The lock
-   gains one component, with the printed source commit as its `source`:
+    `hangar harness freeze` from a good run, or the example's
+    `python scripts/relock.py harnesses/team-default --write` for a hand edit. The lock
+    gains one component, with the printed source commit as its `source`:
 
-   ```yaml
-   - id: plugin:ai-dlc-workflow@team-harness
-     digest: sha256:…   # hangar's plugin digest, printed as hangar_plugin_digest
-     path: plugins/team-harness/ai-dlc-workflow
-     enabled: true
-     source: git:https://github.com/Sean-Koval/ai-dlc#plugins/ai-dlc-workflow@<commit>
-   ```
+    ```yaml
+    - id: plugin:ai-dlc-workflow@team-harness
+      digest: sha256:…   # hangar's plugin digest, printed as hangar_plugin_digest
+      path: plugins/team-harness/ai-dlc-workflow
+      enabled: true
+      source: git:https://github.com/Sean-Koval/ai-dlc#plugins/ai-dlc-workflow@<commit>
+    ```
 
-   Keep `plugins: {autoUpdate: false}` in the lock, so the treatment can't change
-   mid-experiment.
+    Keep `plugins: {autoUpdate: false}` in the lock, so the treatment can't change
+    mid-experiment.
+
 4. **Point `candidate` at it.** In `channels.yaml`, set the harness's `candidate` to
-   the new `harness_digest` that `hangar harness check` prints. `stable` stays where it
-   is: only a promotion after flightdeck's with/without comparison moves it.
+    the new `harness_digest` that `hangar harness check` prints. `stable` stays where it
+    is: only a promotion after flightdeck's with/without comparison moves it.
 
 Hangar pins and mounts `plugin:` components since
 [hangar#221](https://github.com/Sean-Koval/hangar/issues/221); consuming this plugin
