@@ -49,9 +49,8 @@ The workflow plugin's skills, as Claude Code lists them, and the checks a projec
 AI-DLC does not run agents in the cloud or judge harnesses: hangar renders and runs
 sandboxes, flightdeck evaluates, and AI-DLC authors the one optional plugin they pin.
 Read more in the [hangar docs](https://sean-koval.github.io/hangar/), the
-[flightdeck docs](https://sean-koval.github.io/flightdeck/) and agent-factory's
-[example team harness](https://github.com/Sean-Koval/agent-factory/blob/main/examples/team-harness/README.md),
-which pins this plugin.
+[flightdeck docs](https://sean-koval.github.io/flightdeck/) and the
+[example team harness](https://github.com/Sean-Koval/team-harness), which pins this plugin.
 
 ## Use cases
 
