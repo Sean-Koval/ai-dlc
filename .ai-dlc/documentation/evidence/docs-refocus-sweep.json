@@ -213,60 +213,6 @@
     },
     {
       "bound": {
-        "docs/assets/ai-dlc-banner.svg": "missing"
-      },
-      "outcome": "updated",
-      "reason": "Removed: replaced by the Airframe banner generated in agent-factory.",
-      "reviewer": "Claude (agent)",
-      "target": "docs/assets/ai-dlc-banner.svg"
-    },
-    {
-      "bound": {
-        "docs/assets/brand/banner-dark.svg": "ddd984fa5c261d33817340709d342409dfb1b08081264de9dd465d6b560c9f95"
-      },
-      "outcome": "updated",
-      "reason": "Vendored unmodified from agent-factory theme-v5 brand/ai-dlc by scripts/sync-brand.sh.",
-      "reviewer": "Claude (agent)",
-      "target": "docs/assets/brand/banner-dark.svg"
-    },
-    {
-      "bound": {
-        "docs/assets/brand/banner-light.svg": "a137ceb345c3e23f632db9e628c9ea41b4e7f3a13d3a518f3a141598cb9a3b56"
-      },
-      "outcome": "updated",
-      "reason": "Vendored unmodified from agent-factory theme-v5 brand/ai-dlc by scripts/sync-brand.sh.",
-      "reviewer": "Claude (agent)",
-      "target": "docs/assets/brand/banner-light.svg"
-    },
-    {
-      "bound": {
-        "docs/assets/brand/favicon.svg": "90203176dc49b494b9446d45907bcd73cd7ba4d86db82226dade36147ed66f4e"
-      },
-      "outcome": "updated",
-      "reason": "Vendored unmodified from agent-factory theme-v5; used as the docs favicon.",
-      "reviewer": "Claude (agent)",
-      "target": "docs/assets/brand/favicon.svg"
-    },
-    {
-      "bound": {
-        "docs/assets/brand/mark.svg": "d05a2ccece8720ef1fef55eb17880c47bda68e6d6a5228376d2d5706e58bec08"
-      },
-      "outcome": "updated",
-      "reason": "Vendored unmodified from agent-factory theme-v5; used as the docs logo.",
-      "reviewer": "Claude (agent)",
-      "target": "docs/assets/brand/mark.svg"
-    },
-    {
-      "bound": {
-        "docs/assets/brand/social.png": "b9af3c932179fbed347666d96ed2b8e43ec1e543460827aa2e42a294b63fc7b3"
-      },
-      "outcome": "updated",
-      "reason": "Vendored unmodified from agent-factory theme-v5 for the repository social preview.",
-      "reviewer": "Claude (agent)",
-      "target": "docs/assets/brand/social.png"
-    },
-    {
-      "bound": {
         "docs/assets/front/suite-dark.svg": "cee6bbb4589defb14532fd3ab6fb53e6b939ab3835d5567c67e174451b087819"
       },
       "outcome": "updated",
@@ -514,15 +460,6 @@
       "reason": "One-line page including the plugin README overview by snippet; the enabled local-testing command renders as a code block.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/workflow-plugin.md"
-    },
-    {
-      "bound": {
-        "scripts/sync-brand.sh": "305c3f55f670aad0417eaec21323537d6437e857c9b0ab44cb05406651ff1f8a"
-      },
-      "outcome": "updated",
-      "reason": "Copy of agent-factory's brand/sync-brand.sh template with PRODUCT=ai-dlc, as in hangar and flightdeck.",
-      "reviewer": "Claude (agent)",
-      "target": "scripts/sync-brand.sh"
     },
     {
       "bound": {
