@@ -5,6 +5,7 @@ from pathlib import Path
 
 ROOT_MARKDOWN = {
     "README.md",
+    "CHANGELOG.md",
     "CONTRIBUTING.md",
     "AGENTS.md",
     "CLAUDE.md",
