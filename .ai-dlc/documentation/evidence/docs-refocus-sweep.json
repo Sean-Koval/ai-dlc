@@ -2,10 +2,10 @@
   "decisions": [
     {
       "bound": {
-        "AGENTS.md": "d43a4cbd8a17fe76e66b3a7e915558251381720025ddb45bdf93e67760e11734"
+        "AGENTS.md": "7eb3919d7a837c57c1b80289780f5e64a2f4b09c450e9e22ba281eec1953ace0"
       },
       "outcome": "updated",
-      "reason": "Authored part only: enabled plugin try command with the flags before plugin list, documentation map path, vendored brand files rule. Managed section untouched.",
+      "reason": "Re-recorded after merging main, which added the hand-written Tracking section (#235, recorded in jira-tracking.json); it merged cleanly beside this branch's edits and needs no change here. This branch's authored edits are unchanged: the plugin try command with --settings enabling ai-dlc-workflow@inline before plugin list, the documentation map link (docs/design/documentation-map.md exists), and the vendored brand files rule (docs/assets/brand/ and scripts/sync-brand.sh exist). Managed section untouched.",
       "reviewer": "Claude (agent)",
       "target": "AGENTS.md"
     },
@@ -354,7 +354,7 @@
     {
       "bound": {
         "catalog:docs/workflows/get-started.md": "b3cdcadc535e0e825dfe2837433f1b4ef45551430ab207c485ef7dd601bf992e",
-        "docs/assets/front/build.py": "f787428adecdc49665a071002e7e5f664bade3053304cc8a41f5a95b8e72a35a",
+        "docs/assets/front/build.py": "25d9513a41657c70c7e58b58fd13662ca8ae5832a79cfa7815868defc0fbded9",
         "docs/assets/front/demo_provider.py": "4f29e7499ad628903260043bb8ecc0a086f3fe0b581e24c73ab8a9a1851e98da",
         "docs/workflows/get-started.md": "4a2cc2d6e3ce4470ead4a4fdd95b3370c8de271d91e3c54da858f7ecf16e2433",
         "mkdocs.yml": "bcb3869392db181c6ea354ab2bb89665299e693aece0855e518d1a4cef5549b5",
@@ -363,7 +363,7 @@
         "tests/test_front_page.py": "659ae911b1745fd032677fd1237db3e96fe38c58ef9022454e62efe06e8d7b12"
       },
       "outcome": "updated",
-      "reason": "Enabled plugin try command and exact plugin list check with expected output; hangar and flightdeck rows in the tools table; links to the workflow plugin pages.",
+      "reason": "Re-recorded after merging main, where docs/assets/front/build.py changed (#234, theme-v6: the front-page terminals drawn on Airframe's Terminal contract; commands, demo and procedure unchanged, recorded in airframe-theme-v6.json). This branch does not touch build.py or the front-page assets. Its get-started edits are unchanged: the enabled plugin try command, the plugin list check with its expected output, the hangar and flightdeck rows in the tools table, and links to workflow-plugin.md and workflow-plugin-harness.md (both exist).",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/get-started.md"
     },
