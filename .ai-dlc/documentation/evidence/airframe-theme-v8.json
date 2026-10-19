@@ -40,7 +40,7 @@
     {
       "bound": {
         "catalog:docs/workflows/get-started.md": "b3cdcadc535e0e825dfe2837433f1b4ef45551430ab207c485ef7dd601bf992e",
-        "docs/assets/front/build.py": "d76ee0069d90bcdd8c7f61a2b11c09b4114d84436ba148a7ae7456349df77a56",
+        "docs/assets/front/build.py": "541aa7b76474725982624dca23ce791af147759e675a42b54668cc275098d10f",
         "docs/assets/front/demo_provider.py": "a266086be5cd247643a3157617f7f56e57c9200f77f885252ddf31a72d8c4f1d",
         "docs/workflows/get-started.md": "d7329847104954c57141cbf8b675e904141e38ef350a3e9a9873a34bc0ad0e92",
         "mkdocs.yml": "3b16c39b75cee40102116028fd27dd0e4b434d6d093b68dfd1c2cc8d884d9e02",
@@ -49,7 +49,7 @@
         "tests/test_front_page.py": "da99dbadd7791b0cbd9a8dca553bfe74663e305e8519cb3bf2a1e1ab1cf52a66"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Mapped through mkdocs.yml; the config change adds theme.custom_dir and extra.airframe.product and touches no page.",
+      "reason": "Mapped through mkdocs.yml and docs/assets/front/build.py; the config change adds theme.custom_dir and extra.airframe.product and the build script change pins the demo copier source path; neither touches this page.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/get-started.md"
     },
