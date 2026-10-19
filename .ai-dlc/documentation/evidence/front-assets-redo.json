@@ -74,7 +74,7 @@
     },
     {
       "bound": {
-        "docs/assets/front/work.cast": "fe32735393e7055142f58e28fb4533b2c1bea925ca7b7d7a8c6b75633981eea4"
+        "docs/assets/front/work.cast": "bc4a628f219e48faff7eca808425d558774ec174eae2dabc939203f426ffffd8"
       },
       "outcome": "updated",
       "reason": "Re-recorded by docs/assets/front/build.py: 80 columns, output as the CLI prints it (no jq), a 22-line window that scrolls, plays once in under 20 s and holds its last frame (also the frame shown when animations do not run). work: start, pr, finish refused ('PR #43 is not merged into main'), merge, finish closes issue 42; the demo provider now refuses before the merge and plays CI.",
@@ -83,7 +83,7 @@
     },
     {
       "bound": {
-        "docs/assets/front/work.svg": "6f86509fcf24b0aa6daf194c3b529225242920b7297936b756408edb849d21e3"
+        "docs/assets/front/work.svg": "630d854d9e8413f277766e0ea3407afc0758a349649381aeb071c1e1e321ba20"
       },
       "outcome": "updated",
       "reason": "Re-recorded by docs/assets/front/build.py: 80 columns, output as the CLI prints it (no jq), a 22-line window that scrolls, plays once in under 20 s and holds its last frame (also the frame shown when animations do not run). work: start, pr, finish refused ('PR #43 is not merged into main'), merge, finish closes issue 42; a blocked status is the only red.",
@@ -147,7 +147,7 @@
     {
       "bound": {
         "catalog:docs/workflows/get-started.md": "b3cdcadc535e0e825dfe2837433f1b4ef45551430ab207c485ef7dd601bf992e",
-        "docs/assets/front/build.py": "d76ee0069d90bcdd8c7f61a2b11c09b4114d84436ba148a7ae7456349df77a56",
+        "docs/assets/front/build.py": "541aa7b76474725982624dca23ce791af147759e675a42b54668cc275098d10f",
         "docs/assets/front/demo_provider.py": "a266086be5cd247643a3157617f7f56e57c9200f77f885252ddf31a72d8c4f1d",
         "docs/workflows/get-started.md": "d7329847104954c57141cbf8b675e904141e38ef350a3e9a9873a34bc0ad0e92",
         "mkdocs.yml": "2681dd4aef8001e871f83f84b2d4f13bd3b81dde3ae16b4fd3c5ea6fd6bd0af8",

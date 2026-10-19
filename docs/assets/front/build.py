@@ -148,6 +148,12 @@ def prepare(env: dict[str, str]) -> None:
     (app / "ai-dlc.toml").write_text(config)
     (app / "src").mkdir()
     (app / "src/receipts.py").write_text("RETRIES = 0\n")
+    # The answers file records where the engine's templates were read from. That is this
+    # checkout's absolute path, which would make every commit sha in the recording depend on
+    # where the engine was cloned; the demo names the canonical repository instead.
+    answers = app / ".copier-answers.yml"
+    answers.write_text(re.sub(r"^_src_path: .*$", "_src_path: https://github.com/Sean-Koval/ai-dlc.git",
+                              answers.read_text(), count=1, flags=re.MULTILINE))
     sh("ai-dlc agents render --apply > /dev/null && git init -q -b main && git add -A "
        "&& git commit -qm 'Initialize with ai-dlc project init'", app, env)
     # One piece of work, reviewed by a person and published as issue 42, so the recording can
