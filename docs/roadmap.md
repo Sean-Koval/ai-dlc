@@ -1,25 +1,32 @@
-# AI-DLC roadmap
+# ai-dlc roadmap
 
-The [AI-DLC Project](https://github.com/users/Sean-Koval/projects/2) and
+Know what ai-dlc does today, which three increments come next, and what is
+not planned.
+
+The [ai-dlc Project](https://github.com/users/Sean-Koval/projects/2) and
 [GitHub issues](https://github.com/Sean-Koval/ai-dlc/issues) own ticket priority
-and status. This page states the current outcome and the next increments;
-[product direction](product-direction.md) owns the durable product promise, and
-[release verification](release-verification.md) owns what a release must prove.
+and status. [Product direction](product-direction.md) owns the durable product
+promise, and [release verification](release-verification.md) owns what a
+release must prove.
 
 ## Current outcome
 
-AI-DLC is usable from a cloned installation on the work computer, with Claude Code,
-Codex and Antigravity providing an organized, consistent development workflow. It
-prepares tools, integrations, guidance and evidence; the harness performs the work.
+- **Works today.** ai-dlc runs from a cloned installation on the work computer
+  and gives Claude Code, Codex and Antigravity one consistent development
+  workflow. Delivery runs through reviewed work records, OpenSpec changes, pull
+  requests and a gated `ai-dlc work finish`; release publication from a tag is
+  implemented.
+- **Default providers.** Personal projects use GitHub Issues with
+  repository-associated Projects; work repositories use Jira Cloud; Obsidian is
+  the private journal. hangar intake starts agent jobs from tickets, and ai-dlc
+  keeps its tracker adapters for the local lifecycle (see the
+  [tracker boundary](architecture.md#tracker-boundary-with-hangar)).
+- **Unsupported.** Plane is shipped but unsupported and unqualified; the
+  outstanding qualification list is in release verification.
+- **Removed.** The Linear adapter, `ai-dlc eval` and `ai-dlc scaffold`.
+
 Installing the engine from this repository is distinct from adopting a work
-repository, which has its own tracker and independent local credentials. Personal
-projects use GitHub Issues with repository-associated Projects; work uses Jira Cloud
-for new work (Plane is shipped but unsupported, and Linear has been removed);
-Obsidian remains the private journal. Hangar intake starts agent jobs from tickets;
-AI-DLC keeps its tracker adapters for the local work lifecycle (see the
-[tracker boundary](architecture.md#tracker-boundary-with-hangar)). Delivery runs through reviewed work records, OpenSpec changes, pull
-requests and a gated `ai-dlc work finish`. Release publication from a tag is
-implemented; the outstanding qualification list is in release verification.
+repository, which has its own tracker and independent local credentials.
 
 Team-flow improvements are tracked in
 [#167](https://github.com/Sean-Koval/ai-dlc/issues/167) (guidance for selected
@@ -54,7 +61,7 @@ before adding surface area.
    the baseline's proposal for one pre-merge command.
 3. **Evaluation moved to flightdeck.** The runner, grader, report and skill
    evaluation now live in [flightdeck](https://github.com/Sean-Koval/flightdeck)
-   under ADR 0001; AI-DLC's copy was removed in
+   under ADR 0001; ai-dlc's copy was removed in
    [#195](https://github.com/Sean-Koval/ai-dlc/issues/195) and its last version is
    tag `eval-handoff-2026-10`. The paired comparison planned in
    [#138](https://github.com/Sean-Koval/ai-dlc/issues/138)–#140 happens there.

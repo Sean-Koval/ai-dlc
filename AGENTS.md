@@ -1,6 +1,6 @@
 # Repository guidance
 
-AI-DLC is a local workflow, machine-provisioning and work-lifecycle tool. It
+ai-dlc is a local workflow, machine-provisioning and work-lifecycle tool. It
 prepares developer machines, authors one optional workflow plugin and gates work
 completion on CI receipts; it is not a hosted autonomous development orchestrator,
 a harness evaluator or the definition of what runs in cloud sandboxes.
@@ -8,14 +8,14 @@ CLI and MCP entry points share application services. Provider details belong beh
 contracts; credentials and machine paths never belong in shared configuration.
 
 Before preparing this checkout, identify the intended repository. A teammate who
-cloned AI-DLC only to install it for another project should follow the consumer
+cloned ai-dlc only to install it for another project should follow the consumer
 route in [Get started](docs/workflows/get-started.md#add-it-to-an-existing-repository), pass that work repository explicitly
 to `project onboard --root`, and keep this engine checkout's providers and accounts
 out of the target. Native Windows consumer installation is unsupported in this
 revision; [#172](https://github.com/Sean-Koval/ai-dlc/issues/172) tracks installation
 and [#53](https://github.com/Sean-Koval/ai-dlc/issues/53) tracks client/cross-machine
 qualification. Do not present the POSIX bootstrap below as native Windows guidance.
-Only contributors changing AI-DLC itself should prepare this checkout and run its
+Only contributors changing ai-dlc itself should prepare this checkout and run its
 full required checks.
 
 Prepare this checkout with `sh scripts/bootstrap.sh --source`; run
@@ -33,7 +33,7 @@ packaged assets.
 
 ## Scope freeze
 
-AI-DLC is feature-frozen as of 2026-10. New features, documentation growth and new
+ai-dlc is feature-frozen as of 2026-10. New features, documentation growth and new
 OpenSpec capabilities outside the in-scope list in
 [ADR 0001](docs/decisions/0001-refocus-ai-dlc.md) stop; changes outside that list
 are closed with a pointer to it, and bug fixes in frozen areas are welcome. Harness

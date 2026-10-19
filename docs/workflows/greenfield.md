@@ -1,10 +1,7 @@
 # Greenfield workflow
 
-Use this path when creating a new deployable application rather than adopting
-an existing repository. The goal is a small, working vertical slice with clear
-ownership and repeatable checks—not a speculative platform.
-
-[Back to the workflow map](../development-workflow.md)
+Start a new deployable application with ai-dlc and reach a small, working
+vertical slice with clear ownership and repeatable checks.
 
 ## Flow
 
@@ -39,13 +36,13 @@ values.
 For an HTTP backend, include `--capability backend` in the selected capability list.
 It creates `docs/api/openapi.yaml` with a health endpoint, catalogs the contract,
 and adds `api-contract`. Setup prepares exact pinned validators; subsequent checks
-use offline execution. Python uses openapi-spec-validator 0.7.2 and Node uses
-Redocly CLI 1.34.16; generic and Rust use the pinned Python validator through uvx.
-Python also adds `api-contract-drift`, which skips absent/non-FastAPI apps and
-compares one `src/<pkg>/app.py` FastAPI app against the committed contract with a
-readable diff. It imports the supported application modules, including re-exports
-and factory-created apps, using the project environment. Update the contract with HTTP behavior changes and record its path
-as `artifacts.contract`; the check never rewrites it.
+run offline. Python uses openapi-spec-validator 0.7.2 and Node uses Redocly CLI
+1.34.16; generic and Rust use the pinned Python validator through uvx.
+
+Python also adds `api-contract-drift`, which compares one `src/<pkg>/app.py`
+FastAPI app against the committed contract with a readable diff; it skips
+absent or non-FastAPI apps. Update the contract with HTTP behavior changes and
+record its path as `artifacts.contract`; the check never rewrites it.
 
 ## 2. Initialize and bootstrap
 
@@ -58,11 +55,13 @@ ai-dlc project init my-project --preset python --apply
 Generic, Python/uv, Node, and Rust presets include durable documentation and
 shared agent instructions. Initialized language projects contain a minimal
 dependency-free application. First setup creates the language lockfile; later
-setup uses that lock without updating it. Every preset checks generated agent
-files, and initialized language projects also run a real syntax or compiler
-check. New Python starters additionally run a standard-library test of their
-initial greeting output; missing, empty or entirely skipped suites fail. Extend
-that small suite with acceptance tests for the application's real behavior.
+setup uses that lock without updating it.
+
+Every preset checks generated agent files, and initialized language projects
+also run a real syntax or compiler check. New Python starters additionally run
+a standard-library test of their initial greeting output; missing, empty or
+entirely skipped suites fail. Extend that small suite with acceptance tests for
+the application's real behavior.
 
 Run the reviewed bootstrap, then:
 
@@ -79,10 +78,10 @@ baseline checks pass.
 Use discovery and the [product brief](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/templates/product-brief.md)
 to establish audience, problem, observed evidence, actual user decisions and
 hypotheses. A requested dashboard or feature is a candidate solution, not proof
-of value. Compare at least two feasible approaches and doing nothing when
-meaningful, considering impact, evidence confidence, effort and dependencies.
-Select the smallest useful outcome; use a bounded investigation when the value
-or material constraints remain unknown.
+of value. Compare at least two feasible approaches, and doing nothing, by
+impact, evidence confidence, effort and dependencies. Select the smallest
+useful outcome; use a bounded investigation when the value or material
+constraints remain unknown.
 
 Follow the [greenfield example](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/examples/product-shaping/greenfield.md).
 Keep one canonical brief with stable OUT-001 and RQ-001 identifiers. Record scope,
@@ -125,16 +124,16 @@ the same change when the code makes them stale.
 
 Always run required checks locally and review the change against the design and
 any required formal specification. When tracker and SCM roles are configured,
-merge through SCM and use `ai-dlc work finish <work-id>`; it authenticates the
+merge through SCM and use `ai-dlc work finish <work-id>`. It authenticates the
 merged revision and validates configured CI and deployment evidence before
 completing the tracker item. Otherwise, close the project's manual lifecycle
-without claiming AI-DLC remote completion.
+without claiming ai-dlc remote completion.
 
 ## Ready and done
 
 The first implementation is ready when its user, outcome, scope, design,
-specification decision, and test strategy are explicit; a work record is also
+specification decision, and test strategy are explicit. A work record is also
 required for the configured remote lifecycle. Local work is done when the
 vertical slice works, required checks pass, and durable documents match the
 implementation. With tracker and SCM roles configured, done additionally means
-the reviewed PR is merged and AI-DLC accepts the finish gates.
+the reviewed PR is merged and ai-dlc accepts the finish gates.

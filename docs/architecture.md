@@ -1,30 +1,31 @@
 # Architecture
 
-This page describes the current implementation. The [product direction](product-direction.md)
-and [planned delivery architecture](design/framework-delivery.md) describe the next
-increments. UI/UX is one optional workflow; portable setup, replaceable integrations,
-and effective greenfield/brownfield development remain the framework's core.
+See how ai-dlc is built: its ownership layers, services, provider boundaries
+and source packages.
 
-AI-DLC v4 runs as a local Python CLI and library. The CLI owns machine
-enrollment mutation; the MCP facade exposes shared work, doctor, knowledge and documentation services. Project adoption uses Copier; provider adapters isolate
-vendor-specific operations; agent skills provide judgment. There is no hosted
-orchestration service.
+ai-dlc v4 runs as a local Python CLI and library. The CLI owns machine
+enrollment mutation; the MCP facade exposes shared work, doctor, knowledge and
+documentation services. Project adoption uses Copier, provider adapters isolate
+vendor-specific operations, and agent skills provide judgment. There is no
+hosted orchestration service. The [product direction](product-direction.md)
+and [planned delivery architecture](design/framework-delivery.md) describe the
+next increments.
 
 ## Boundaries
 
 Configuration resolves five ownership layers with provenance:
 
 1. A private Git profile owns portable modules, MCP preferences, workflow
-   choices, logical credential requirements and pinned team-source subscriptions. Pin an exact revision before
-   enrolling it on every machine.
+   choices, logical credential requirements and pinned team-source
+   subscriptions. Pin an exact revision before enrolling it on every machine.
 2. The project repository owns shared project configuration, policy, durable
    architecture, decisions, and runbooks.
 3. Each machine binding owns local paths, account selections, and mappings from
    logical credentials to environment-variable names, plus the person's team roles.
 4. A password manager, keychain, or process environment owns credential values.
-   AI-DLC never records, prints, or synchronizes those values.
+   ai-dlc never records, prints, or synchronizes those values.
 5. Codex and Claude user/project configuration owns generated client files;
-   AI-DLC re-renders only entries it owns.
+   ai-dlc re-renders only entries it owns.
 
 Team-source content is selected from verified local caches and rendered through
 project ownership checks. Source commits advance only through explicit machine
@@ -32,40 +33,56 @@ sync activation; session-start remote-ref notices never update content. The
 teamai adapter reads a supported subset without executing upstream tooling.
 
 Enrollment locks, profile/source caches, and operation journals are local control
-state, not portable authority. The profile is synchronized by its private Git
-repository; the project is synchronized by its repository; machine bindings,
-credential stores, and local journals stay on their respective machines.
+state, not portable authority. The profile and the project are each synchronized by their own Git
+repository. Machine bindings, credential stores, and local journals stay on
+their respective machines.
 
 Portable project data selects role providers and checks and may name required
 credential environment variables; it never contains their values. Machine data
 supplies account choices and local paths, while the process environment or
-native sign-in supplies secrets. Workflow services manage reviewed work,
-immutable provider bindings, operation reconciliation and evidence-gated
-completion. Check services produce receipts. Provider adapters implement
-versioned contracts. Renderers generate deterministic client configuration.
-Copier owns template answers, original revisions and three-way updates.
+native sign-in supplies secrets.
+
+Workflow services manage reviewed work, immutable provider bindings, operation
+reconciliation and evidence-gated completion. Check services produce receipts.
+Provider adapters implement versioned contracts. Renderers generate
+deterministic client configuration. Copier owns template answers, original
+revisions and three-way updates.
 
 ## Persistence
 
-The repository stores architecture, design rationale, decisions, runbooks and reviewed work. Formal specifications belong exclusively to the specification provider. Tracker priority/status is authoritative. The personal knowledge provider is not a repository mirror. Local operation journals aid retries; remote reconciliation and fresh evidence remain necessary across machines.
+The repository stores architecture, design rationale, decisions, runbooks and
+reviewed work. Formal specifications belong exclusively to the specification
+provider. Tracker priority and status are authoritative. The personal knowledge
+provider is not a repository mirror. Local operation journals aid retries;
+remote reconciliation and fresh evidence remain necessary across machines.
 
 ## Deployment and interfaces
 
-Prefer one application with explicit module responsibilities over speculative service decomposition. CLI, MCP, and agent clients share validation where an MCP service is exposed; the CLI alone owns machine enrollment mutation. The local CLI and local MCP are the control plane; cloud execution is hangar's. Client rendering is frozen to the existing clients for local repositories and CI (`project setup --target local|github-actions`); hangar renders cloud sandboxes at claim time. Hook support is a per-client minimum version (`agents/capabilities.toml`), not qualification. External provider failures and uncertain mutations remain visible. Credentials are environment references, never template values.
+Prefer one application with explicit module responsibilities over speculative
+service decomposition. CLI, MCP, and agent clients share validation where an MCP
+service is exposed; the CLI alone owns machine enrollment mutation. The local
+CLI and local MCP are the control plane; cloud execution is hangar's.
+
+Client rendering is frozen to the existing clients for local repositories and
+CI (`project setup --target local|github-actions`); hangar renders cloud
+sandboxes at claim time. Hook support is a per-client minimum version
+(`agents/capabilities.toml`), not qualification. External provider failures and
+uncertain mutations remain visible. Credentials are environment references,
+never template values.
 
 Consumer onboarding is a read-only composition boundary in `setup/onboarding.py`.
 It resolves one explicit existing target, target-owned configuration, optional
-explicit enrollment identity, host/shell/client support, and existing operation
-owners into an ordered schema-1 plan. It does not run previews or apply operations,
-open a network connection, launch a subprocess, stage adoption, repair caches, or
-persist an orchestration session. The thin `project onboard --root PATH` CLI emits
-that plan and maps its state to an exit code; it has no apply mode or MCP endpoint.
+explicit enrollment identity, host, shell and client support, and existing
+operation owners into an ordered plan. It does not run previews or apply
+operations, open a network connection, launch a subprocess, stage adoption or
+repair caches. The thin `project onboard --root PATH` CLI emits that plan and
+maps its state to an exit code; it has no apply mode or MCP endpoint.
+
 For a fresh target, adoption precedes root-scoped machine planning because the
 existing machine owner requires the target configuration. Each apply still needs
-its separate review. Existing enrollment, machine provisioning, adoption, setup,
-rendering, readiness, and target-check services retain their own review, mutation,
-recovery, and evidence
-boundaries. Project configuration wins over conflicting CLI choices, while omitted
+its separate review, and the existing enrollment, adoption, setup, rendering,
+readiness and check services retain their own review and evidence boundaries.
+Project configuration wins over conflicting CLI choices, while omitted
 enrollment stays unselected for a self-contained project.
 
 Effective-environment reporting is an opt-in boundary under `environment/`.
@@ -78,33 +95,41 @@ doctor retain their existing contracts.
 
 Default reporting executes no commands. Fixed version probes require explicit
 permission and have bounded output, time and inherited environment. Unknown
-provenance stays unknown; existing raw profile/source/ownership hashes cannot
-be exported merely because they passed local integrity checks. The configuration
-identity covers only permitted desired fields, and the observation identity adds
-known engine/platform/runtime/client/guidance facts. Excluded bytes cannot be
-distinguished by covert hashes: incomplete reports remain ineligible for native
-evidence reuse even when their digests match. Neither identity authenticates a
-machine or substitutes for behavioral checks and native qualification.
+provenance stays unknown; raw profile, source and ownership hashes cannot be
+exported merely because they passed local integrity checks.
 
-Application services signal outcomes in one of two ways. A failure the service detected
-raises an exception derived from `ai_dlc.errors.AiDlcError` (`RefusedError` for an
-operation refused before any change, `UncertainError` for one whose effect must be
-reconciled); the CLI reports every such failure through one handler as `Error: <message>`
-on stderr with the exception's exit code, and MCP lets it propagate as a tool error.
+The configuration identity covers only permitted desired fields, and the
+observation identity adds known engine, platform, runtime, client and guidance
+facts. Excluded bytes cannot be distinguished by covert hashes, so incomplete
+reports remain ineligible for native evidence reuse even when their digests
+match. Neither identity authenticates a machine or substitutes for behavioral
+checks and native qualification.
+
+Application services signal outcomes in one of two ways. A failure the service
+detected raises an exception derived from `ai_dlc.errors.AiDlcError`:
+`RefusedError` for an operation refused before any change, `UncertainError` for
+one whose effect must be reconciled. The CLI reports every such failure through
+one handler as `Error: <message>` on stderr with the exception's exit code. MCP
+lets it propagate as a tool error.
+
 A completed service call returns a JSON object that satisfies the
-[service result envelope](https://github.com/Sean-Koval/ai-dlc/blob/main/contracts/service-result.schema.json): `status` is the
-canonical outcome string, and the values in `ai_dlc.contracts.FAILURE_STATUSES` are the
-failures. Results that still carry a boolean verdict key (`valid`, `ready`, `passed`,
-`clean`) are authoritative through that key until they migrate to `status`.
-`ai_dlc.contracts.succeeded` is the one reader of that envelope; commands that map a
-returned result to exit status 1 use it. Bare `ValueError` remains for argument
-validation and is caught by the same CLI handler while services move to typed errors.
+[service result envelope](https://github.com/Sean-Koval/ai-dlc/blob/main/contracts/service-result.schema.json).
+Its `status` is the canonical outcome string, and the values in
+`ai_dlc.contracts.FAILURE_STATUSES` are the failures. Results that still carry a
+boolean verdict key (`valid`, `ready`, `passed`, `clean`) are authoritative
+through that key until they migrate to `status`.
+
+`ai_dlc.contracts.succeeded` is the one reader of that envelope; commands that
+map a returned result to exit status 1 use it. Bare `ValueError` remains for
+argument validation and is caught by the same CLI handler.
 
 Knowledge ownership stays provider-neutral: private knowledge links durable
-repository material but does not mirror it. Linked Obsidian portals, additive personal workspaces and explicit local directory mounts are implemented;
-native application qualification remains separately recorded. Guided tracker discovery supports GitHub Issues with
-optional Projects and Jira Cloud; live qualification is recorded separately. Plane is
-shipped but unsupported, and the Linear adapter has been removed.
+repository material but does not mirror it. Linked Obsidian portals, additive
+personal workspaces and explicit local directory mounts are implemented; native
+application qualification remains separately recorded. Guided tracker discovery
+supports GitHub Issues with optional Projects and Jira Cloud; live qualification
+is recorded separately. Plane is shipped but unsupported, and the Linear adapter
+has been removed.
 
 ## Tracker capabilities and connection
 
@@ -127,7 +152,7 @@ does not substitute for these lifecycle contracts. See the
 
 ## Tracker boundary with hangar
 
-Hangar owns tracker intake for agent jobs; AI-DLC keeps its tracker adapters for
+hangar owns tracker intake for agent jobs; ai-dlc keeps its tracker adapters for
 the local work lifecycle only. Both may touch the same ticket, so each concern has
 one owner:
 
@@ -136,12 +161,12 @@ one owner:
 | Starting agent work from a ticket (Jira status or label, GitHub label or Projects column, Slack, schedules) | hangar intake |
 | Ticket write-back during an agent job (queued, started, needs_input, delivered, failed) | hangar |
 | Trust and approval of who may start work | hangar, then Tower (formerly the governed workspace) |
-| A developer's local work record, branch binding and specification artifacts | AI-DLC |
-| Closing a ticket after merge with CI-receipt evidence (`work finish`) | AI-DLC, run locally by a person |
-| Creating tickets from reviewed local work (`work publish`) | AI-DLC |
-| Bulk and planning workflows (Projects board setup, tracker migration) | AI-DLC, frozen to bug fixes |
+| A developer's local work record, branch binding and specification artifacts | ai-dlc |
+| Closing a ticket after merge with CI-receipt evidence (`work finish`) | ai-dlc, run locally by a person |
+| Creating tickets from reviewed local work (`work publish`) | ai-dlc |
+| Bulk and planning workflows (Projects board setup, tracker migration) | ai-dlc, frozen to bug fixes |
 
-**Collision rule.** While a hangar job works a ticket, AI-DLC must not move that
+**Collision rule.** While a hangar job works a ticket, ai-dlc must not move that
 ticket to in-progress. A repository that also uses hangar intake sets
 
 ```toml
@@ -179,24 +204,32 @@ a typed refusal that names the supported trackers.
 | `files.py`, `locking.py`, `toml_edit.py` | Shared filesystem boundaries, locking and comment-preserving TOML edits |
 | `_windows_storage/` | Private native NTFS handle, identity, account/ACL and publication primitives behind the shared filesystem APIs |
 
-`setup/commands.py` validates the shared POSIX-string, argv and explicit-shell command forms before setup/check execution. Windows core storage uses guarded native handles and per-user locks; Unix paths retain their existing implementation. `harness/windows_render.py` applies owned render snapshots with retained backups and refuses recovery over an intervening edit. Native bootstrap and desktop/client qualification are separate from this core service boundary.
+`setup/commands.py` validates the shared POSIX-string, argv and explicit-shell
+command forms before setup and check execution. Windows core storage uses
+guarded native handles and per-user locks; Unix paths retain their existing
+implementation. `harness/windows_render.py` applies owned render snapshots with
+retained backups and refuses recovery over an intervening edit. Native bootstrap
+and desktop or client qualification are separate from this core boundary.
 
 These are internal Python packages, not separate deployable services. Public
 console entry points remain stable. Internal imports use the responsible package;
 there is no duplicate tree of compatibility forwarding modules. Application
 services share contracts; provider details stay inside adapters.
 
-`scripts/` holds source bootstrap, repository checks and qualification/release
-utility entry points. `scripts/cloud/` holds hosted-agent setup shims that bootstrap the checkout with the local target; `scripts/check_client_pins.py` compares the module catalog's client pins with hangar's harness lock. The obsolete unlocked `check_env.sh`
-installer, the historical Rust crate with its embedded template mirror, and the
-script that synchronised them have been removed; the retired Rust plans remain in
-git history before tag `docs-prune-2026-10`.
-The legacy `templates/` scaffold, its `ai-dlc scaffold` command and the stale root
-`copier.yml` were removed; `project init` and `project adopt` copy the packaged
-`project-templates/`. Packaged assets must not contain vendored trees or personal
-machine paths.
-Do not delete subprocess entry points or assets merely because imports do not
-reference them directly.
+`scripts/` holds source bootstrap, repository checks and qualification and
+release utilities. `scripts/cloud/` holds hosted-agent setup shims that
+bootstrap the checkout with the local target; `scripts/check_client_pins.py`
+compares the module catalog's client pins with hangar's harness lock.
+
+The unlocked `check_env.sh` installer, the Rust crate, the legacy `templates/`
+scaffold, its `ai-dlc scaffold` command and the root `copier.yml` have all been
+removed. The retired Rust plans remain in git history before tag
+`docs-prune-2026-10`.
+
+`project init` and `project adopt` copy the packaged `project-templates/`,
+which must not contain vendored trees or personal machine paths. Do not delete
+subprocess entry points or assets merely because imports do not reference them
+directly.
 
 ### Workflow plugin
 
@@ -205,18 +238,23 @@ writes them into adopted repositories: the AGENTS.md managed section, hooks that
 run the hidden CLI-only `ai-dlc hook` command (so they require the CLI) and skill
 copies. `scripts/build_workflow_plugin.py` packages the same sources as the
 optional Claude Code plugin committed at `plugins/ai-dlc-workflow/`, the
-distribution path for team harnesses and sandboxes. It reuses the skill lock and
-shared guidance, writes per-component digests to `plugin.lock.json`, and runs as a
-drift check inside `scripts/check_generated.py`. The same build writes the Codex
-form under `plugins/ai-dlc-workflow/native/codex/` (identical skill bytes, a Codex
+distribution path for team harnesses and sandboxes.
+
+The build reuses the skill lock and shared guidance, writes per-component
+digests to `plugin.lock.json`, and runs as a drift check inside
+`scripts/check_generated.py`. It also writes the Codex form under
+`plugins/ai-dlc-workflow/native/codex/` (identical skill bytes, a Codex
 `hooks.json`, an AGENTS.md fragment and a `.codex-plugin` manifest) and records
-per-file digests, which `scripts/publish_workflow_plugin.py` uses to copy both forms
-into a team harness directory without overwriting anything it did not publish. The plugin hooks run
-`harness/hook_shim.py`, a standard-library copy that delegates to `ai-dlc hook`
-only in adopted repositories with the CLI outside hangar, and otherwise denies
-only destructive commands; `harness/hooks.py` imports its classifier. This
-repository dogfoods the plugin rather than rendered skill copies (`[agents] skills
-= []`); adopted repositories keep rendering both skill trees by default. See the
+per-file digests. `scripts/publish_workflow_plugin.py` uses those digests to
+copy both forms into a team harness directory without overwriting anything it
+did not publish.
+
+The plugin hooks run `harness/hook_shim.py`, a standard-library copy.
+It delegates to `ai-dlc hook` only in adopted repositories with the CLI outside
+hangar, and otherwise denies only destructive commands; `harness/hooks.py`
+imports its classifier. This repository dogfoods the plugin rather than
+rendered skill copies (`[agents] skills = []`); adopted repositories keep
+rendering both skill trees by default. See the
 [plugin README](https://github.com/Sean-Koval/ai-dlc/blob/main/plugins/ai-dlc-workflow/README.md).
 
 ### FDE engagement documents

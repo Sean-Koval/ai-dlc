@@ -1,7 +1,9 @@
 # GitHub Issues and Projects setup
 
-Use GitHub Issues for ticket identity and optionally Projects v2 for planning
-status. AI-DLC keeps specification, review and CI completion gates. A board item
+Connect a project to GitHub Issues for ticket identity and, optionally, a
+Projects v2 board for planning status.
+
+ai-dlc keeps the specification, review and CI completion gates. A board item
 in Done does not establish that the issue or work is completed.
 
 ## New projects
@@ -12,32 +14,40 @@ Choose the tracker while creating the scaffold:
 ai-dlc project init ./my-project --tracker github-issues
 ```
 
-For an existing repository without AI-DLC, preview adoption with
+For an existing repository without ai-dlc, preview adoption with
 `ai-dlc project adopt --root . --tracker github-issues`, then apply the reviewed
 scaffold. Omitting the tracker option preserves the existing default behavior.
-Do not use scaffold adoption to migrate retained AI-DLC work.
+Do not use scaffold adoption to migrate retained ai-dlc work.
 
 ## Native tools and repository selection
 
-For AI-DLC itself, the repository is `Sean-Koval/ai-dlc`. For other projects, use
+For ai-dlc itself, the repository is `Sean-Koval/ai-dlc`. For other projects, use
 their configured SCM repository/verified Git remote as the proposed default; ask
 only when it is ambiguous or an override is intended. A GitHub Project is a
 separate planning resource whose name/number is discovered under its owner.
 
-A connected GitHub MCP app can expose issue tools, but installed tool names and
+A connected GitHub MCP app can expose issue tools. Installed tool names and
 account repository permissions do not prove its write grants or Projects access.
 The official GitHub MCP server supports a Projects toolset and local OAuth login.
-The current AI-DLC lifecycle adapter uses `gh`; its authentication is separate.
+The current ai-dlc lifecycle adapter uses `gh`; its authentication is separate.
 See the [actual adoption/access findings](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/planning/github-backlog-migration.md).
 
 ## Connect a repository and optional Project
 
-Install and authenticate the GitHub CLI locally. The selected account needs
-repository access and, when using Projects, appropriate Project read/write access.
-A default `gh auth login` token carries `repo` but no Project scope: with a Project
-configured, every tracker read needs `read:project`, and status changes need
-`project`. Add them with `gh auth refresh --hostname github.com --scopes project`.
-A read without the scope refuses and names the missing scope and this command.
+1. Install and authenticate the GitHub CLI locally. The selected account needs
+   repository access and, when using Projects, Project read/write access.
+2. Add the Project scopes. A default `gh auth login` token carries `repo` but no
+   Project scope: tracker reads need `read:project`, and status changes need
+   `project`. Run `gh auth refresh --hostname github.com --scopes project`. A
+   read without the scope refuses and names the missing scope and this command.
+3. Preview the connection, inspect it, then apply the saved plan:
+   ```sh
+   ai-dlc provider connect github-issues --root . \
+     --plan-file .ai-dlc/local/github-project.json
+   ai-dlc provider connect github-issues --root . \
+     --plan-file .ai-dlc/local/github-project.json --apply
+   ```
+
 Never paste tokens into project configuration or chat. Machine authentication and
 shared non-secret connection choices have separate lifetimes.
 
@@ -45,21 +55,16 @@ Default onboarding proposes a Project using the configured project name (or the
 repository name). It uses the provider's repository or the project SCM repository
 when available, so most projects do not need another repository selection.
 
-```sh
-ai-dlc provider connect github-issues --root . \
-  --plan-file .ai-dlc/local/github-project.json
-ai-dlc provider connect github-issues --root . \
-  --plan-file .ai-dlc/local/github-project.json --apply
-```
-
 The preview lists the verified owner/repository and either the exact existing
-Project or a proposed create. Apply creates/reuses it, links it to the repository,
-verifies Status/Todo/In Progress/Done, and saves actual field/option IDs. Repeated
-setup reuses the configured Project. Preview and offline scaffold generation do
-not create remote resources. Missing Project permission is an actionable error,
-not an automatic downgrade. A newly created Project is retained if later setup
-fails; retry uses the recorded identity. An uncertain create is never blindly
-repeated: inspect the remote result, then select its verified URL explicitly.
+Project or a proposed create. Apply creates or reuses it, links it to the
+repository, verifies Status/Todo/In Progress/Done, and saves the actual field and
+option IDs. Repeated setup reuses the configured Project; preview and offline
+scaffold generation never create remote resources.
+
+Missing Project permission is an actionable error, not an automatic downgrade. A
+newly created Project is retained if later setup fails; retry uses the recorded
+identity. An uncertain create is never blindly repeated: inspect the remote
+result, then select its verified URL explicitly.
 
 For an existing Project with custom states, discover then select its actual names:
 
@@ -112,18 +117,18 @@ current fixture results and remaining live gates. Plane installation and the
 custom Confluence MCP server are not prerequisites for this setup. Obsidian and
 other non-tracker provider choices remain independent.
 
-The bundled GitHub Issues adapter allows 120 seconds for a complete operation,
-with a separate 30-second default for each GitHub CLI request. Project operations
-perform several reads and may legitimately take longer than one request. An
-explicit provider `timeout` overrides both defaults. A timeout still leaves an
-uncertain mutation for normal reconciliation; retry through `ai-dlc work finish`
-so merge, CI, issue state and Project readback are verified again.
+The bundled GitHub Issues adapter allows 120 seconds for a complete operation
+and 30 seconds for each GitHub CLI request. An explicit provider `timeout`
+overrides both. A timeout still leaves an uncertain mutation
+for normal reconciliation. Retry through `ai-dlc work finish` so merge, CI,
+issue state and Project readback are verified again.
 
-Where a proxy or policy refuses the GraphQL endpoint itself (an HTTP 403, 404 or
-410 from `api.github.com/graphql`), the adapter reads, closes, reopens and links
-the issue and verifies the viewer through REST, so `ai-dlc work finish` still
-completes. Projects v2 has no repository-scoped REST route, so the Project stays
-as it was and the finish result reports `project.reconciled = false` with the
-reason; rerun `ai-dlc work finish` where GraphQL is reachable to move it to Done.
-Start and Project attachment still fail there, and scope, rate-limit and server
-errors never fall back.
+A proxy or policy may refuse the GraphQL endpoint itself (an HTTP 403, 404 or
+410 from `api.github.com/graphql`). The adapter then falls back to REST for
+issue reads, closes, reopens and links, so `ai-dlc work finish` still completes.
+
+Projects v2 has no repository-scoped REST route, so the Project stays as it was
+and the finish result reports `project.reconciled = false` with the reason.
+Rerun `ai-dlc work finish` where GraphQL is reachable to move it to Done. Start
+and Project attachment still fail there; scope, rate-limit and server errors
+never fall back.

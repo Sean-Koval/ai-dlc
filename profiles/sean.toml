@@ -14,7 +14,7 @@ specs = "openspec"
 # one Jira outcome can link to several GitHub delivery issues; engineering work
 # can also begin in GitHub. Links and summaries are manual; automated sync is planned.
 # This is workflow guidance, not an enabled Jira connection or sync setting.
-# See docs/development-workflow.md#github-delivery-with-jira-outcomes.
+# See docs/design/jira-cloud.md#github-delivery-with-jira-outcomes.
 tracker = "github-issues"
 knowledge = "obsidian"
 scm = "github"

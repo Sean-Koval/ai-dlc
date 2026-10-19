@@ -1,0 +1,680 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "AGENTS.md": "8ea384fb5bd8cd70133795dc06c50e728681a4dc4fe68285248bb1870bd62519"
+      },
+      "outcome": "updated",
+      "reason": "Prose now says ai-dlc (lowercase brand); no guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "AGENTS.md"
+    },
+    {
+      "bound": {
+        "CONTRIBUTING.md": "465258cbd67912dc7ea1542169d1f870e0d0b8bb0ec02d0023bdd0902a72c19f"
+      },
+      "outcome": "updated",
+      "reason": "Gains the 'Maintaining the workflow handbook' rules moved out of docs/development-workflow.md; prose says ai-dlc.",
+      "reviewer": "Claude (agent)",
+      "target": "CONTRIBUTING.md"
+    },
+    {
+      "bound": {
+        "README.md": "d595c3aedcc37f639702e15172844e9fb9c4e02778660d702a4565bbba0964a6"
+      },
+      "outcome": "updated",
+      "reason": "Doubled '# AI-DLC' H1 removed (the banner carries the name); bold opener shortened to the new lede; feature and 'Go deeper' links point at docs-site pages; alt texts cut to one sentence each; 'ten team skills' corrected to eleven.",
+      "reviewer": "Claude (agent)",
+      "target": "README.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/architecture.md": "e957dcf74f6dcbe53ce40caf58a8cd486ee04461b47279540cdccaa4680c445a",
+        "docs/architecture.md": "9e8266afd11c9173e8235cd7bee19e23adab32a8697fb5ecbc0b6fabe3acc19c",
+        "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "openspec/specs/tracker-adapter-boundary/spec.md": "dd8886e122156c514768387930c3534d882b4672552eeb2aca62507fa6ab2a58",
+        "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "5cca4c515026d52f448cd387e1d4c4f92a981863e72749b77346d9cfb20dec3d",
+        "plugins/ai-dlc-workflow/README.md": "3decc49827f20e46cd3d0231fdeaaccbd069e0d84ec45ef3cd998a4f6404e1dc",
+        "plugins/ai-dlc-workflow/hooks/aidlc_hook.py": "9a22eedf99648975eea67800459a90b4196a06ef0dbe172d17339c586df23c77",
+        "plugins/ai-dlc-workflow/hooks/hooks.json": "8ddf9b2fc137326ad81a99bb6b1cd4d1dca507cb2e266cd30045b3d0d3f3d4e1",
+        "plugins/ai-dlc-workflow/native/codex/.codex-plugin/plugin.json": "7b1f23b6f43e78c4759bb35e5d529d4e8d7a779dec33a1aeb5203a313af2853a",
+        "plugins/ai-dlc-workflow/native/codex/AGENTS.fragment.md": "532e7f5dbc8100bfa2f39f04bed82a9a8cc79254225bbd97a282f70e4f4d972e",
+        "plugins/ai-dlc-workflow/native/codex/hooks.json": "4d2c2097f9c3004dca11d040acf3353eb6af9d0b96a63910f508a36a8d284f63",
+        "plugins/ai-dlc-workflow/native/codex/hooks/aidlc_hook.py": "9a22eedf99648975eea67800459a90b4196a06ef0dbe172d17339c586df23c77",
+        "plugins/ai-dlc-workflow/native/codex/skills/ai-dlc-workflow/SKILL.md": "53b536563bc8423334075af06fd90e43e98c018337360c34f34b7ec39577845c",
+        "plugins/ai-dlc-workflow/native/codex/skills/design-brief/SKILL.md": "5b9cc5c5d40378b273369c62b51b4ba10475a65c0dd91d799cd29df2a7c8ec58",
+        "plugins/ai-dlc-workflow/native/codex/skills/design-evaluate/SKILL.md": "a7e3f68082ff474fd09adefb623a20bc34a2f3f83c6e97055a55008f4681d9af",
+        "plugins/ai-dlc-workflow/native/codex/skills/discovery/SKILL.md": "74d0a76012649f919770e37fa464d436a0ce8c7501ec011182a29d4ae14d2904",
+        "plugins/ai-dlc-workflow/native/codex/skills/document-organize/SKILL.md": "446d1e9023f9c118e69966b2eced0460c702b79b828c0559f44b6ba95db018c6",
+        "plugins/ai-dlc-workflow/native/codex/skills/document-review/SKILL.md": "5e2f71219b98cd53dd6a3a73b3bbccc1873b796a14ec1347875a39c911db9ad3",
+        "plugins/ai-dlc-workflow/native/codex/skills/handoff/SKILL.md": "63c564874228d8e249fde83cb3bbf2cedd73a2fc24a0bfbab91b99003d672127",
+        "plugins/ai-dlc-workflow/native/codex/skills/needs-spec/SKILL.md": "573d9e79cbc1b15e911a5dffdd61bcf2eaf1d089f491b2445d45b77d53bbb2f2",
+        "plugins/ai-dlc-workflow/native/codex/skills/prd-draft/SKILL.md": "e6d457ee65f4d7dd184bef4fc8285253951098484fba9bb3cedbe1512729dc0e",
+        "plugins/ai-dlc-workflow/native/codex/skills/review-inbox/SKILL.md": "8b58913b870212b4b04b14d921efb72ed92007cec043513eb3baef36e907c846",
+        "plugins/ai-dlc-workflow/native/codex/skills/spec-from-prd/SKILL.md": "f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce",
+        "plugins/ai-dlc-workflow/plugin.lock.json": "d4a3b23dd294fab009c6710848fbc03b52faf0dc171822b53230351b59e8658a",
+        "plugins/ai-dlc-workflow/skills/ai-dlc-workflow/SKILL.md": "53b536563bc8423334075af06fd90e43e98c018337360c34f34b7ec39577845c",
+        "plugins/ai-dlc-workflow/skills/design-brief/SKILL.md": "5b9cc5c5d40378b273369c62b51b4ba10475a65c0dd91d799cd29df2a7c8ec58",
+        "plugins/ai-dlc-workflow/skills/design-evaluate/SKILL.md": "a7e3f68082ff474fd09adefb623a20bc34a2f3f83c6e97055a55008f4681d9af",
+        "plugins/ai-dlc-workflow/skills/discovery/SKILL.md": "74d0a76012649f919770e37fa464d436a0ce8c7501ec011182a29d4ae14d2904",
+        "plugins/ai-dlc-workflow/skills/document-organize/SKILL.md": "446d1e9023f9c118e69966b2eced0460c702b79b828c0559f44b6ba95db018c6",
+        "plugins/ai-dlc-workflow/skills/document-review/SKILL.md": "5e2f71219b98cd53dd6a3a73b3bbccc1873b796a14ec1347875a39c911db9ad3",
+        "plugins/ai-dlc-workflow/skills/handoff/SKILL.md": "63c564874228d8e249fde83cb3bbf2cedd73a2fc24a0bfbab91b99003d672127",
+        "plugins/ai-dlc-workflow/skills/needs-spec/SKILL.md": "573d9e79cbc1b15e911a5dffdd61bcf2eaf1d089f491b2445d45b77d53bbb2f2",
+        "plugins/ai-dlc-workflow/skills/prd-draft/SKILL.md": "e6d457ee65f4d7dd184bef4fc8285253951098484fba9bb3cedbe1512729dc0e",
+        "plugins/ai-dlc-workflow/skills/review-inbox/SKILL.md": "8b58913b870212b4b04b14d921efb72ed92007cec043513eb3baef36e907c846",
+        "plugins/ai-dlc-workflow/skills/spec-from-prd/SKILL.md": "f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce",
+        "pyproject.toml": "ea73fd835255de7bddab5ef23ff7189e2d19c29ec7e6d49ffc97aee14559f4bd",
+        "scripts/build_workflow_plugin.py": "fbda35107229b271412ad196458ce6b9bbd39b584098fb011c5640f2bc81033d",
+        "scripts/check_client_pins.py": "c0b4030b6767aee44975556f11a2c0dcf2b5aa67e232ec6182c1247630f53c8c",
+        "scripts/check_generated.py": "40f2cc62eee8d1d73a36f7903f2ffed87d1e4cf5cf8bf680abf113bcce028103",
+        "scripts/check_layout.py": "197394b1fe46bb9ad8bfc0a36d5e999484fe3338fcfb6fd948f0fd9832d5d942",
+        "scripts/docs_site_links.py": "e4f61570d3b4272d0e33fb733862105f4854906cba5e4f601c8a3d6dd3a519e8",
+        "scripts/publish_workflow_plugin.py": "96d95c413671a55a0e42d690f1c6d64528c11203e0a44359e3422d082ca34b9d",
+        "scripts/qualify_framework.py": "8068bb2709bbf6b3a020e9c22d62b993cc0e8a3e3c9ee5c00dc4b8963c31054e",
+        "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+        "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
+        "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
+        "src/ai_dlc/_windows_storage/__init__.py": "5715def899453f15265e13d52e5b518844cc9d057421cfa5279172d799d5f506",
+        "src/ai_dlc/_windows_storage/_api.py": "d5fc4f971db8e706871c06e8119884848e505af6c45f4fbb5c2f7db513faf41b",
+        "src/ai_dlc/_windows_storage/_security.py": "62785d4e088cd485816a33f35a7a559d3d1acf166093c413a3f4f79969056314",
+        "src/ai_dlc/cli.py": "41e91cdc3de44227e7e9ab770b09e511ab25092ce6c19c4540a38853e749897f",
+        "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
+        "src/ai_dlc/conformance.py": "0ff247c065e89d4c5b43d844601dc809558c65a779c1600371953c0e2c44737b",
+        "src/ai_dlc/contracts.py": "e2202d26b4815674bde05fc1190fbaedfe7cabdf6d8c913a721d1f0b53619d1e",
+        "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
+        "src/ai_dlc/documentation/decisions.py": "30c52c68b82bca8c899887617385adac25f9b0bb2e9aa81936b91b877c626d6c",
+        "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
+        "src/ai_dlc/documentation/document_files.py": "3174b5773adf54c9a0f586a041c4e67001d136d9ba1016ec1cbb0b54debafd55",
+        "src/ai_dlc/documentation/document_impact.py": "bf3353c2ab99166c4900647ac7a0626bba3ee08a4a4f92ffa9269167f86012ca",
+        "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
+        "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
+        "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
+        "src/ai_dlc/documentation/documents.py": "763c9c2ff76c62e99eb6de4706f85edcaf57287f8c9bc8335c433d0163ba1812",
+        "src/ai_dlc/documentation/fde.py": "3664430ebca9f3ef7ba7c7c431f7e4790176066510904ebe4d43d0a88ecf26e1",
+        "src/ai_dlc/documentation/knowledge.py": "c02c49bcc24f8e2c418ace24a72db604b1bc9a4f8d1511fa42235aeb9b122bc7",
+        "src/ai_dlc/documentation/knowledge_notes.py": "007632d8bce9b02c8a52eb98ec23dc7f9f9fd8681dc41784e192eb5c22fc43b6",
+        "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
+        "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
+        "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
+        "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
+        "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
+        "src/ai_dlc/documentation/workspace_diagnostics.py": "4a0ec1bf837e4a6a1d59482ebc86557edc2ae41cec843a8528b828b04f27422b",
+        "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
+        "src/ai_dlc/environment/bootstrap.py": "7fad9be94cc830cde041e4ad88c4b79b653f8e8d2c558f1d8db33f99a87b088d",
+        "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
+        "src/ai_dlc/environment/enrollment.py": "f8e826a9dca7a8e308f9ad52c8f178ad7e6f2c6c536da7459a68c123d51e9c53",
+        "src/ai_dlc/environment/machine.py": "2c3981ab3e8e4e52d2c3f86f02d8714bf92dd3229eaff99c72ac91961fbbd16a",
+        "src/ai_dlc/environment/profile_source.py": "f177cc9336ed7c69e37299bc70107f14a7878ff72abbd1070dc3560340d451cc",
+        "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
+        "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
+        "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
+        "src/ai_dlc/environment/source_content.py": "c11618009a7d4c3dbaa03b49d80df3a6f7cae37338a9fe92166865379d89670a",
+        "src/ai_dlc/environment/source_schema.py": "929944f86aef4a0aa2e257f3fbb4bee26ce07c522ed2eb35c2e1bbba38ec44d0",
+        "src/ai_dlc/environment/team_sources.py": "20d583a9046adfac9f0f5bf6de7aca537654eb29d0ff636c27f5a78c7c5c21a6",
+        "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
+        "src/ai_dlc/errors.py": "b8c0da78ec0e9ea75ef71b4495b501570625988ba5ae54c4631f1ca20a8362c1",
+        "src/ai_dlc/files.py": "cf094c2d7e6dbbe93f253ec4b3c4219902b323e927855541688eaca3f812354b",
+        "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
+        "src/ai_dlc/harness/agents.py": "0757ce327050807470193a93e66fc1b28bd1ea5e0b8b41c0bc61166f8465bc07",
+        "src/ai_dlc/harness/components.py": "b64cd2ae837f83a37ddd1c74dad25fcd16fe8733715c224c7d64673784ebba11",
+        "src/ai_dlc/harness/design_capture.py": "8b872492b88f4a7728bedf0ae8a1edaad2312a918248bf8f5d051c8bd8b42a58",
+        "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
+        "src/ai_dlc/harness/hook_shim.py": "9a22eedf99648975eea67800459a90b4196a06ef0dbe172d17339c586df23c77",
+        "src/ai_dlc/harness/hooks.py": "b50bf047573f4735861bb091d97cd8467af16729610ddd63e97d81fffc39e9bc",
+        "src/ai_dlc/harness/native_composition.py": "1e4c5729ff31cb91820bd8df3d15b60c1067b4a5f2b89381888211470dc79bc8",
+        "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
+        "src/ai_dlc/harness/user_agents.py": "c99f9a52a379feaa0c1721081b95fef91f51c44f0a9e906145de51154616e937",
+        "src/ai_dlc/harness/windows_render.py": "8aa76c8aacc44d28a2117b3339ad7b632b91fdbe0a5557af50228dcd2aa0eeb0",
+        "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
+        "src/ai_dlc/locking.py": "e3c5dbe1a98d3402352bc8a3c3a031106e8dd515e060a676803d734d8dee99dd",
+        "src/ai_dlc/mcp_server.py": "1d4fb076add151ee1161fbffe518c0764b08940055a86f6db2204ab3910cb2d5",
+        "src/ai_dlc/provider_definitions.py": "32142376b6cc25e0aa8122528bfd7b1eec2299c13622364fb38de29d4555e43a",
+        "src/ai_dlc/providers/__init__.py": "dfdaf13ef2091582c0fd9c001f91ba2240c2a7ea7b3f8e709b14ce5448e19a2b",
+        "src/ai_dlc/providers/github_issues.py": "8945d5b0049d7f7940c8c478e13bf576a897295e463a69b3510d6e2982ed1f08",
+        "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
+        "src/ai_dlc/providers/jira_cloud.py": "d9b83ba88fb964816450b1479fc775a526455c023725ecff3c8ca695ac7cd8c8",
+        "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
+        "src/ai_dlc/providers/plane.py": "f05450be6fa35ae10c8ae7531518797be5a3f778ec25d517c88fb49efbe9f9a3",
+        "src/ai_dlc/providers/plane_attempts.py": "da576a7f52dd7860c2340b72c91b39f2c9d84bbb7c983cd8bc2cc1871c56333b",
+        "src/ai_dlc/providers/python_exec.py": "3aaafe9bf74a4a949b59d71ed2079b9c48114462a9c823b3641a1772af5a6ff1",
+        "src/ai_dlc/providers/scm.py": "3213f9c9690d598a9d7024b687044ca3b0844b972909cd96ad14e270081409d9",
+        "src/ai_dlc/providers/teamai.py": "ff7a781abcaeeca1c978f9472502156e31a1fc6d192ac50e1e489d333b77a5e6",
+        "src/ai_dlc/setup/__init__.py": "8eb444a69a67d0c1a59ffc0c80ce59efda159976bea58d40154e97f8bdecf18c",
+        "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
+        "src/ai_dlc/setup/connections.py": "a35e5e45d87fed0d79a6e034283a055ba9426dc2621ef28aaee4d76997ac4773",
+        "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
+        "src/ai_dlc/setup/github_project_setup.py": "55984de17559ba2d56b3b1c7483dabb8a6f05f1e773e8bd9d40437a2d30ee85e",
+        "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
+        "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
+        "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
+        "src/ai_dlc/setup/project.py": "d36f7b1bcfda5176ffda62de03dfcdd61226f7c973609030665815245f258b00",
+        "src/ai_dlc/setup/provider_onboarding.py": "1041a3ef5127239945d3ae386705acc7814f12a6c05205bc345edf7ab973bbb4",
+        "src/ai_dlc/setup/provision.py": "1e29f9b9927fd187a28a90e962ad966599a64f45e5c22b45b945dee25731d03b",
+        "src/ai_dlc/setup/readiness.py": "e0984a1f504ee87f3c4c1939624b34ccfe2fd6b7315df365166e95ff3b975d55",
+        "src/ai_dlc/setup/rebind.py": "812aa473b3cb92d81eb98c288ab1124f1fe0a62039559ecbd2eeb2349698ef15",
+        "src/ai_dlc/setup/targets.py": "11979b487ab5604eb05f49ab7c7eca1bfda796f25acc1dc489cdc9e7ccc4a9aa",
+        "src/ai_dlc/setup/templates.py": "ed2076070c14a87df8e36c78b3e51a12e47e759dc6bde9ef3841462cc71aa376",
+        "src/ai_dlc/setup/tracker_targets.py": "b04533ac254bde0aa7bddf083097d815153998f15b1042645ac4ffc38f848319",
+        "src/ai_dlc/setup/workstation.py": "8ac8f2467ee925392f777e15d921ad79da8a10c94267bbd30f5386455db4e8d2",
+        "src/ai_dlc/toml_edit.py": "696057b2848ca8b57e5189d1c78441fc6c1e06994f480f6f13f8dd31c050515e",
+        "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
+        "src/ai_dlc/verification/sandbox.py": "c017bd12115b8f144d07eba619f4e15ddbd00db323e4d386f569c4bcb08646e0",
+        "src/ai_dlc/verification/test_proxy.py": "30ec2d29bf722d48f7341977542feef4a0c5ef9f90c90b158e869c5025d1c8d5",
+        "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
+        "src/ai_dlc/work/journal.py": "91bf194b430c5d0228a5600444a02d79029121a21079ec4c319e96fdaa68543b",
+        "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
+        "src/ai_dlc/work/summary.py": "af386fc470b222d5c7b600ea3169ee7f26be7bdfafdcac8b4098b1fff2f0bd8e",
+        "src/ai_dlc/work/traceability.py": "e9fbca5153cdd710b78872c66651269184ee5f3f1313f313b65df212430e8cc8",
+        "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
+        "src/ai_dlc/work/workflow.py": "5e9e38621e3062351ca81d54982f481a4fb37110d247fd82c51a927ed8c9b17b",
+        "tests/test_consumer_onboarding.py": "3b412d49dce7f0ddf1011f44637ffee4e9de101e4f15b72c7198439884cdf727",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
+        "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
+        "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
+        "tests/test_environment_report_collection.py": "0f63d55719e0ec6b167fe28187c3473586204350716f6388fef6ab49c25c365f",
+        "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
+        "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass: one-sentence lede saying what the reader can do; paragraphs over ~70 words split at their second idea; sentences over 25 words split; brand case (ai-dlc, hangar). No command, option or claim changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/design/design-pm.md": "b222f6fc117b69c4a7b9a21ae4ab85d77db23922fc039223f517588cc7ae3c51",
+        "docs/design/design-pm.md": "8ef6b306bef460958c103c8790eec53a8856885c1a6ddc13a487a3804f0bf41c"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass: one-sentence lede saying what the reader can do; paragraphs over ~70 words split at their second idea; sentences over 25 words split; brand case (ai-dlc, hangar). No command, option or claim changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/design-pm.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/design/framework-delivery.md": "9bee2b7807f0ad8777374c1fc2e64b83b09121fdcd83b84fc6266e0ff31cdc19",
+        "docs/design/framework-delivery.md": "00140d843dee481b347acda3a22f2ca3c069ba8143525512435d4f7a07d60d56"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass: one-sentence lede saying what the reader can do; paragraphs over ~70 words split at their second idea; sentences over 25 words split; brand case (ai-dlc, hangar). No command, option or claim changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/framework-delivery.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/design/jira-cloud.md": "23b4ecb64d03a3c140f6b69764d80a51a20734e949bf17caaed42fede2c66d89",
+        "docs/design/jira-cloud.md": "e937aaec50f142a4e8ea7d7e224f299fe09894e2f2bc9a34511a35f875ecc85b"
+      },
+      "outcome": "updated",
+      "reason": "Lede added; sections added; takes over 'GitHub delivery with Jira outcomes' (three H3s) from docs/development-workflow.md; long paragraphs split.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/jira-cloud.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/design/local-and-shared-knowledge.md": "50d00f0074cafc5604eefa084a89fa98a64f68ae533d2d04ee103ca450f9716a",
+        "contracts/knowledge-note.schema.json": "0a973fee3afef0117bfdcd829499746b5693cfbcb156d3a4a86a94cfe3996686",
+        "docs/design/local-and-shared-knowledge.md": "28c27630f2adfa72c1685adce8a4eb9d119c501dbcdc0fa0e50803ec34a8a52b",
+        "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
+        "openspec/specs/session-learnings/spec.md": "dcd490cd54f2f6cb3fadaa90afade85d5e1d64b19fbe2accb70bfb06897e97b4",
+        "src/ai_dlc/documentation/knowledge.py": "c02c49bcc24f8e2c418ace24a72db604b1bc9a4f8d1511fa42235aeb9b122bc7",
+        "src/ai_dlc/documentation/knowledge_notes.py": "007632d8bce9b02c8a52eb98ec23dc7f9f9fd8681dc41784e192eb5c22fc43b6",
+        "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
+        "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
+        "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
+        "src/ai_dlc/documentation/workspace_diagnostics.py": "4a0ec1bf837e4a6a1d59482ebc86557edc2ae41cec843a8528b828b04f27422b",
+        "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
+        "tests/test_knowledge.py": "38e5cda9c9dc1fe97d12618a0bd9a86b2725cff059d412232152582af1547af1",
+        "tests/test_knowledge_notes.py": "0af8b4f84c5b8d974833eef49d5efd662a9d6d5b22eac6ff6f4a604fd492f6f7",
+        "tests/test_session_learnings.py": "32bb7c3143db24ff96fb43ac5081285e77a93bd8d8d825076f3422cbfe194796",
+        "tests/test_vault_link.py": "fd146d4d15041021ac343257c9d91a8c1950878d275420eda85d13747065e110",
+        "tests/test_vault_mount.py": "f6a5dc947af0d68e4688c37d05294c6b4868aa98ead91d26aa0c8ffec8018424",
+        "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass: one-sentence lede saying what the reader can do; paragraphs over ~70 words split at their second idea; sentences over 25 words split; brand case (ai-dlc, hangar). No command, option or claim changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/local-and-shared-knowledge.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/design/native-tool-composition.md": "18a92608cc11a6f589cdb49f8c52d5abbad6f2551a9641f3871b8c908261ab8a",
+        "docs/design/native-tool-composition.md": "ed6c1d490bcfaa0e334cbb954932961539526ba1ca6235e6f4a924d1f6777ba5"
+      },
+      "outcome": "updated",
+      "reason": "Lede added; two long paragraphs split; brand case.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/native-tool-composition.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/design/plane-new-work.md": "4c52d28f370a9dd440128b1f4d5f2b6239e89d5965762629f23500482b856050",
+        "docs/design/plane-new-work.md": "d2e44fb8b64f63f906d817af1dfb016bff54d50f22ee46ad1532a6cc6c323c79"
+      },
+      "outcome": "updated",
+      "reason": "Brand case only (AI-DLC -> ai-dlc in prose).",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/plane-new-work.md"
+    },
+    {
+      "bound": {
+        "agents/templates/adr.md": "155206159d407a8720d5d0af8cb9552828c9dcbfa049db70a9816536dd29f01a",
+        "catalog:docs/design/project-documentation.md": "673bbd060693b1f73bda80eaa35578edbf2bf393bc0c610a61796e05a1755356",
+        "docs/design/project-documentation.md": "964ee7db9a58aa17185694419b2bc2d6ff146565c3c5028db2ea68cc069918ab",
+        "openspec/specs/decision-records/spec.md": "035d91c4d079fe3b26fc66f0c6ef6085205c7afc7cb13d25d5d67758728d034c",
+        "project-templates/project/docs/decisions/README.md": "01b44005b465b37feef5dd2bcaa6dda1acaf7977b8cf5d10e3a1bb5d0d552e60",
+        "src/ai_dlc/documentation/decisions.py": "30c52c68b82bca8c899887617385adac25f9b0bb2e9aa81936b91b877c626d6c",
+        "tests/test_decisions.py": "b34ac7e960b042d4064d8c45660c3f4f71f02f63955057a2bc377adc0178a064"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass: one-sentence lede saying what the reader can do; paragraphs over ~70 words split at their second idea; sentences over 25 words split; brand case (ai-dlc, hangar). No command, option or claim changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/project-documentation.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/design/provider-connections.md": "9128aae2177747013b85dc5443fd88a76df3ef0a5a09e13095acebd0d97e961c",
+        "docs/design/provider-connections.md": "fb89dd3d51aa126f8da579e86c3dfa352633db03aec9768747133a78964c473b"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass: one-sentence lede saying what the reader can do; paragraphs over ~70 words split at their second idea; sentences over 25 words split; brand case (ai-dlc, hangar). No command, option or claim changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/provider-connections.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/design/provider-toolsets-prd.md": "b385d5437ff833ddd7e0303b6bc4d4058592caeb0ad459fa5aa3d46f111509f3",
+        "docs/design/provider-toolsets-prd.md": "1692bf0484486aeab55ed811f918fdfbe91fbf93b18a910a04d9ae8add7c5ee7"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass: one-sentence lede saying what the reader can do; paragraphs over ~70 words split at their second idea; sentences over 25 words split; brand case (ai-dlc, hangar). No command, option or claim changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/provider-toolsets-prd.md"
+    },
+    {
+      "bound": {
+        ".ai-dlc/agent-ownership.json": "1918f88f770e5982ef79666646536c560c8cdc883fdb7d59f2e9cb6b600fe6a1",
+        "agents/skills.lock.json": "2f3ce88b5b0763af985ff2ce578cb9e02151272ac7f9971a3d7089fabadf3739",
+        "agents/skills/spec-from-prd/SKILL.md": "f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce",
+        "agents/templates/delivery-slice.md": "4a7a5d7af2f6a99b4e7eac13491eef751def074451d6899acc36ccf1f536bd6f",
+        "catalog:docs/development-workflow.md": "0fba88526a61571ce49e91b2159325061a7c54ba5466e651565eabb2f910e7c6",
+        "docs/development-workflow.md": "d09325db5e1f8a689bff619aee87ca6bfcce81a1c99584e310bc41f209487bf5",
+        "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
+        "openspec/specs/portable-development/spec.md": "7710dba93e53f973d947723117687d263b6296ad31e1ed8232da7b2f0e7ff89e",
+        "openspec/specs/spec-delivery-traceability/spec.md": "66641acf9c151792cde1914062630ed50cc4199cdc3bdb4b81382e03716f2ea3",
+        "project-templates/project/AI-DLC.md": "be8ad8c8c264b994b58edf1832d0aad5edfb1447876448caa9a424a1cfc12caf",
+        "project-templates/project/ai-dlc.toml.jinja": "8cb37c2c92f7998a2c7cec84c2d293f63b1e80f1a4a4f1f330a7e5b1b92aa0cd",
+        "project-templates/project/docs/development-workflow.md.jinja": "7e4c473a94efe7026d5341cc78d18a409ab1eca2324efed1cc02c57223434164",
+        "project-templates/project/docs/templates/delivery-slice.md": "4a7a5d7af2f6a99b4e7eac13491eef751def074451d6899acc36ccf1f536bd6f",
+        "project-templates/project/scripts/check_tests.py": "a3dd2021b7911d2ff688142776b7a43af60f76e052d7164086db2434db60102d",
+        "project-templates/project/tests/test_main.py": "4e6ac9def60ea5a6aef9e004c465cc439acac4b33e4f70df332939f0cdfae63d",
+        "src/ai_dlc/cli.py": "41e91cdc3de44227e7e9ab770b09e511ab25092ce6c19c4540a38853e749897f",
+        "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
+        "src/ai_dlc/harness/agents.py": "0757ce327050807470193a93e66fc1b28bd1ea5e0b8b41c0bc61166f8465bc07",
+        "src/ai_dlc/harness/hooks.py": "b50bf047573f4735861bb091d97cd8467af16729610ddd63e97d81fffc39e9bc",
+        "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
+        "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
+        "src/ai_dlc/setup/project.py": "d36f7b1bcfda5176ffda62de03dfcdd61226f7c973609030665815245f258b00",
+        "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
+        "src/ai_dlc/work/workflow.py": "5e9e38621e3062351ca81d54982f481a4fb37110d247fd82c51a927ed8c9b17b",
+        "tests/test_agents_phases.py": "e5325bdc3c072a10e27bbf019ce51f586b0b7b9d76aa95ff8652dd09bc3c8570",
+        "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
+        "tests/test_cli.py": "f61c1ce03b1b3d1a6134365277c18655450ba08c06cb1f51ba44010b3e1b7e36",
+        "tests/test_config.py": "788bf2715bfc3fbc3da495b68fa250985f4430d424fa9802340dec16b7a35cdf",
+        "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
+        "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
+        "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
+        "tests/test_project.py": "2ebeb723433cfb53bf8e20b337d5016058e75a181b9ed0035203a14759a162ba",
+        "tests/test_rendering.py": "e93897333125cff68ce69e9e8fc23f401d9e0740427b8c995975240350cea0ef",
+        "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2",
+        "tests/test_templates.py": "30a614989be79d9aa054634f16d325ef00500f3c7d9503ffc00d77878ac9355c",
+        "tests/test_workflow.py": "c60af46adb6cceb3160b1c34945d3b579e4ce42be7e24cad65fa24bd215d80a1"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass: one-sentence lede replaces the 'canonical, compact map' paragraph; 'GitHub delivery with Jira outcomes' moved to design/jira-cloud.md and 'Maintaining this handbook' to CONTRIBUTING.md; stage table narrowed; long paragraphs and sentences split; manual finish fallback as numbered steps. 3,566 -> 1,996 words. No command or gate changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/development-workflow.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/github-ticket-setup.md": "c0ec66d7826b165ac63adf8669a686f50208a01d1965b5bc5bfbe10d4d8689a6",
+        "docs/github-ticket-setup.md": "fb1c8590d8a887fdb3c8d678a99688e3938df0a56551913e7341525bb48f87d0"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass: one-sentence lede saying what the reader can do; paragraphs over ~70 words split at their second idea; sentences over 25 words split; brand case (ai-dlc, hangar). No command, option or claim changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/github-ticket-setup.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/index.md": "65c0b0508964e9cb9cc7d68cef118ffcaf83bd6b4524054d54306e09f8a57810",
+        "docs/index.md": "2e99eff8cb4bcd64a62c68fab8f87d4cfa77e24cb1bcbe7c3aef45a9900a58f1"
+      },
+      "outcome": "updated",
+      "reason": "Phone hero: 8-word headline and 27-word lede; alt texts cut to one sentence; 'ten team skills' -> eleven; Workflow plugin row links to Get started instead of the GitHub plugin README.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/index.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/migration.md": "c1b9caa801f3290374b6a0d8129a008100852b2a665f2dea55ed3e17b5f4ff39",
+        "docs/migration.md": "a571282f3b736d1015de149e590d529e62b3d856d1123321ad9083340eb5aade"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass: lede, sections, numbered steps for the profile, tracker-migrate, recovery and target-creation command sequences; verbose reconciliation prose condensed. 2,584 -> 1,999 words. No command changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/migration.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/product-direction.md": "51c77801463e07f0a30be18f575c2a7142670fc4b6138c842213a0767c5a21fa",
+        "docs/product-direction.md": "00d40144329d14fa82ce0afdd9df26dc877dbc910c28c9414379ff15f11d30c6"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass: one-sentence lede saying what the reader can do; paragraphs over ~70 words split at their second idea; sentences over 25 words split; brand case (ai-dlc, hangar). No command, option or claim changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/product-direction.md"
+    },
+    {
+      "bound": {
+        ".github/workflows/release.yml": "f52ce0facc2eff2bd150994ecee3c3f046a53bc6175230e391220b53f342f83e",
+        ".github/workflows/verify.yml": "bfdd737db0e582ac9e994acbd29d0c18f414c7492f64701448fbf8b4231c5f9c",
+        "catalog:docs/release-verification.md": "972bf86b6da5f20b3d01762982880533ba0c99b22933aa95273590923721dad0",
+        "docs/release-verification.md": "1b6cdc94dff4d191015a7a7ae0ee89bc6d6b124241f35884d10a3dacf76af176",
+        "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
+        "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+        "src/ai_dlc/cli.py": "41e91cdc3de44227e7e9ab770b09e511ab25092ce6c19c4540a38853e749897f",
+        "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
+        "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
+        "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
+        "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
+        "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
+        "tests/test_consumer_onboarding.py": "3b412d49dce7f0ddf1011f44637ffee4e9de101e4f15b72c7198439884cdf727",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
+        "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
+        "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
+        "tests/test_environment_report_collection.py": "0f63d55719e0ec6b167fe28187c3473586204350716f6388fef6ab49c25c365f",
+        "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
+        "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
+        "tests/test_release_workflow.py": "a50523b5d6dec682188d489780d29a74f2a01c60c310071ce6758898f3d12dc0"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass: lede; dated evidence condensed without dropping any run, commit or digest; long paragraphs split. 2,502 -> 1,850 words.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/release-verification.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/roadmap.md": "3bf3afbf1117b7747e4c261c4a0ac1781559085c96abed00632a9804166918b8",
+        "docs/roadmap.md": "631460b1d42290aaffa38884c7d9a52b436941ea88452e8977fcd64eed1b2b8e"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass: one-sentence lede saying what the reader can do; paragraphs over ~70 words split at their second idea; sentences over 25 words split; brand case (ai-dlc, hangar). No command, option or claim changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/roadmap.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/runbooks/document-workspace-qualification.md": "82c2001e67daf557d8a18136df62825c036fa56ae835d4388656434887cdb071",
+        "docs/runbooks/document-workspace-qualification.md": "eb78aa4dbe92e1206a63f7a5b48229baaf52672f8abdb5b42a31b5081db91457",
+        "tests/fixtures/messy_project.py": "719e8bd5da992f35efb3b39ae87bb9bff955b362f77eaf05fa0554a7e6cf1422",
+        "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass: one-sentence lede saying what the reader can do; paragraphs over ~70 words split at their second idea; sentences over 25 words split; brand case (ai-dlc, hangar). No command, option or claim changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/runbooks/document-workspace-qualification.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/runbooks/fde-documents.md": "3886e22dcc9edb0280d9c655787ad64f116bf74c3acdca5069631ce99eada9cb",
+        "docs/runbooks/fde-documents.md": "6f97e5a76431b24a465bc8f3a4439ea54c1123cb0e0a2f37be3c7fc82229b04e",
+        "openspec/specs/fde-document-scaffold/spec.md": "076ec7b45fa9ac45ed01716fce486ef740842aabfb9f72e7557cb4ed0eb93ee3",
+        "src/ai_dlc/documentation/fde.py": "3664430ebca9f3ef7ba7c7c431f7e4790176066510904ebe4d43d0a88ecf26e1",
+        "tests/test_fde.py": "49ba121125e95cc694259217e840570ee186247e748845cc6a0d75a1e158aaca"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass: one-sentence lede saying what the reader can do; paragraphs over ~70 words split at their second idea; sentences over 25 words split; brand case (ai-dlc, hangar). No command, option or claim changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/runbooks/fde-documents.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/runbooks/jira-cloud-setup.md": "02f4012e9da6b6c6da4bd3e3c47883244fb893bcf76b865b13c987383559bab0",
+        "docs/runbooks/jira-cloud-setup.md": "e016f076ce86bfb04e4cb729a5161c1e6ef8d1012d1eb43721e6d120e1366f8b"
+      },
+      "outcome": "updated",
+      "reason": "Lede added; three long paragraphs split; brand case.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/runbooks/jira-cloud-setup.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/runbooks/machine-enrollment.md": "5749f500521eba18b71290a6e63d8abcc82967ef13035e34b90406b7c67b26ee",
+        "docs/runbooks/machine-enrollment.md": "ee6473c9b13e2568022beef63021585b561491e92669a6c920013c73f6c01620",
+        "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
+        "openspec/specs/team-sources/spec.md": "3dca430922c9b5d8eb7b678b0cf00da813f9be332e76cf59a448bd718f4d4587",
+        "profiles/example/ai-dlc-profile.toml": "047265f1a87e90b5ecc8e9a652ab3ae37c051ffd7ce9795fbb5b6020fa8e96ab",
+        "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
+        "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
+        "src/ai_dlc/environment/bootstrap.py": "7fad9be94cc830cde041e4ad88c4b79b653f8e8d2c558f1d8db33f99a87b088d",
+        "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
+        "src/ai_dlc/environment/enrollment.py": "f8e826a9dca7a8e308f9ad52c8f178ad7e6f2c6c536da7459a68c123d51e9c53",
+        "src/ai_dlc/environment/machine.py": "2c3981ab3e8e4e52d2c3f86f02d8714bf92dd3229eaff99c72ac91961fbbd16a",
+        "src/ai_dlc/environment/profile_source.py": "f177cc9336ed7c69e37299bc70107f14a7878ff72abbd1070dc3560340d451cc",
+        "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
+        "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
+        "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
+        "src/ai_dlc/environment/source_content.py": "c11618009a7d4c3dbaa03b49d80df3a6f7cae37338a9fe92166865379d89670a",
+        "src/ai_dlc/environment/source_schema.py": "929944f86aef4a0aa2e257f3fbb4bee26ce07c522ed2eb35c2e1bbba38ec44d0",
+        "src/ai_dlc/environment/team_sources.py": "20d583a9046adfac9f0f5bf6de7aca537654eb29d0ff636c27f5a78c7c5c21a6",
+        "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
+        "src/ai_dlc/harness/agents.py": "0757ce327050807470193a93e66fc1b28bd1ea5e0b8b41c0bc61166f8465bc07",
+        "src/ai_dlc/harness/hooks.py": "b50bf047573f4735861bb091d97cd8467af16729610ddd63e97d81fffc39e9bc",
+        "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
+        "src/ai_dlc/providers/teamai.py": "ff7a781abcaeeca1c978f9472502156e31a1fc6d192ac50e1e489d333b77a5e6",
+        "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
+        "tests/test_agents_phases.py": "e5325bdc3c072a10e27bbf019ce51f586b0b7b9d76aa95ff8652dd09bc3c8570",
+        "tests/test_config.py": "788bf2715bfc3fbc3da495b68fa250985f4430d424fa9802340dec16b7a35cdf",
+        "tests/test_consumer_onboarding.py": "3b412d49dce7f0ddf1011f44637ffee4e9de101e4f15b72c7198439884cdf727",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
+        "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
+        "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
+        "tests/test_environment_report_collection.py": "0f63d55719e0ec6b167fe28187c3473586204350716f6388fef6ab49c25c365f",
+        "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
+        "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
+        "tests/test_native_harnesses.py": "e008d4773dccfa2662942561b24df4fdb6c15f637683d5fbdfaf59240e9bb5cc",
+        "tests/test_rendering.py": "e93897333125cff68ce69e9e8fc23f401d9e0740427b8c995975240350cea0ef",
+        "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass: lede; sections added; the 226-word and other long paragraphs split; 2,153 -> 1,984 words. No command changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/runbooks/machine-enrollment.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/runbooks/plane-setup.md": "1b5068b93c306f8be7a38825270a73b748826d8a3d8cd51f0d214732126de97d",
+        "docs/runbooks/plane-setup.md": "763363e809d96cc6476a60bc50e0e51ce11dfd7fca9dbf81d451864c215f1b2a"
+      },
+      "outcome": "updated",
+      "reason": "Brand case only (AI-DLC -> ai-dlc in prose).",
+      "reviewer": "Claude (agent)",
+      "target": "docs/runbooks/plane-setup.md"
+    },
+    {
+      "bound": {
+        ".github/workflows/release.yml": "f52ce0facc2eff2bd150994ecee3c3f046a53bc6175230e391220b53f342f83e",
+        "catalog:docs/runbooks/release-publication.md": "3580fe6b0df68db7dd7dd55e520bb50b4dcb9ee9132e4e345396d68a4e7d72f8",
+        "docs/runbooks/release-publication.md": "2020db563c9399cfc2e26d587e2b51eb2d3ec29d34e6fa5e4b5e47b142e08a6d",
+        "project-templates/project/scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
+        "scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
+        "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+        "src/ai_dlc/setup/templates.py": "ed2076070c14a87df8e36c78b3e51a12e47e759dc6bde9ef3841462cc71aa376",
+        "tests/test_bootstrap.py": "20c1c5d49181b22b969a19063ff108554be7eb492711bcec95c9a52599cf1bf2",
+        "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
+        "tests/test_release_workflow.py": "a50523b5d6dec682188d489780d29a74f2a01c60c310071ce6758898f3d12dc0"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass: one-sentence lede saying what the reader can do; paragraphs over ~70 words split at their second idea; sentences over 25 words split; brand case (ai-dlc, hangar). No command, option or claim changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/runbooks/release-publication.md"
+    },
+    {
+      "bound": {
+        "agents/skills/spec-from-prd/SKILL.md": "f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce",
+        "agents/templates/delivery-slice.md": "4a7a5d7af2f6a99b4e7eac13491eef751def074451d6899acc36ccf1f536bd6f",
+        "catalog:docs/workflows/brownfield.md": "dedbc6f762c6970ac999eb74598adc31dd6dbfe16a6b3ae8842345b9e37838b4",
+        "docs/workflows/brownfield.md": "ac9226b1c85c326f2561725c1a32dd34ef33ea802f3c3cdd9b103247c8317ac5",
+        "openspec/specs/portable-development/spec.md": "7710dba93e53f973d947723117687d263b6296ad31e1ed8232da7b2f0e7ff89e",
+        "project-templates/project/docs/workflows/brownfield.md": "300acec2c3562b8d76178e0de1ec3bd155882f0ce5180879b195657d5eb58c1f",
+        "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
+        "tests/test_templates.py": "30a614989be79d9aa054634f16d325ef00500f3c7d9503ffc00d77878ac9355c"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass: one-sentence lede saying what the reader can do; paragraphs over ~70 words split at their second idea; sentences over 25 words split; brand case (ai-dlc, hangar). No command, option or claim changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/brownfield.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/design-to-implementation.md": "ee408b745f85bdc4229b75b8dfd6c9074257194e2a65933b4ba31f56522f389d",
+        "docs/workflows/design-to-implementation.md": "51956d740aaa2b8cbfb677dc6cb4a1c81398bfa6c8f82deb12f257fe15f2fe66",
+        "openspec/specs/frontend-capability-pack/spec.md": "a8461cc35ff733d3643f9cb8fbeb691f0cae7ea7d54eae59b756883c7e5a78ea",
+        "project-templates/project/ai-dlc.toml.jinja": "8cb37c2c92f7998a2c7cec84c2d293f63b1e80f1a4a4f1f330a7e5b1b92aa0cd",
+        "project-templates/project/playwright.config.ts": "d06e3c907f16f5027d6e2f47112b5cca353e68525a528957f6f760eca940fd78",
+        "project-templates/project/tests/e2e/smoke.spec.ts": "8139af70f4b8ba2010efc673d4b0c6fb802ea101d2d70f08ec47b3007db78c35",
+        "src/ai_dlc/harness/design_capture.py": "8b872492b88f4a7728bedf0ae8a1edaad2312a918248bf8f5d051c8bd8b42a58",
+        "tests/test_frontend.py": "4deefd2f60011e34cdf8e79bf2d02726ea9fee99e2af43e8fe75ed51352cb0ef"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass: one-sentence lede saying what the reader can do; paragraphs over ~70 words split at their second idea; sentences over 25 words split; brand case (ai-dlc, hangar). No command, option or claim changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/design-to-implementation.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/get-started.md": "b3cdcadc535e0e825dfe2837433f1b4ef45551430ab207c485ef7dd601bf992e",
+        "docs/assets/front/build.py": "541aa7b76474725982624dca23ce791af147759e675a42b54668cc275098d10f",
+        "docs/assets/front/demo_provider.py": "a266086be5cd247643a3157617f7f56e57c9200f77f885252ddf31a72d8c4f1d",
+        "docs/workflows/get-started.md": "764df9f3cdb24b892c7344e2f78d5694255404b4529a6f3667eba217d5223659",
+        "mkdocs.yml": "7299bbd403e345890cdeda2d4168030e85237e53950dc706d17189ef9527a853",
+        "scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
+        "scripts/docs_site_links.py": "e4f61570d3b4272d0e33fb733862105f4854906cba5e4f601c8a3d6dd3a519e8",
+        "tests/test_front_page.py": "f92bf40fdeaddc9abd6d8e8d5620689e31301a48221e11415f02f4bee82d8375"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass on the KAN-117 page: adopt and ticket routes as numbered steps; long paragraphs and the platform note split; 'ten team skills' corrected to eleven (guide skill + ten).",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/get-started.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/greenfield.md": "b8bf78cb5032ea2be2d67e770261aca4cca32914a41a987e3caa8f5b6969d50d",
+        "docs/workflows/greenfield.md": "80bccb627975fe028b4757cca59500ada13e7269aed5859eb16df8afd9a1f631",
+        "openspec/specs/backend-capability-pack/spec.md": "45fc3ca17f9953edf4aa15f24c1a4176e84bceaf179fdb10f35ab58fd85e6a3e",
+        "project-templates/project/ai-dlc.toml.jinja": "8cb37c2c92f7998a2c7cec84c2d293f63b1e80f1a4a4f1f330a7e5b1b92aa0cd",
+        "project-templates/project/docs/api/openapi.yaml": "744e869692de7df60d4195669a45f8ade009b04c00c203c4853e30f4b9af5b2d",
+        "project-templates/project/scripts/check_api_contract_drift.py": "81c6da34445a1329223f2592eb1389aaf35d2e12b73da73d7b9c9ffdb0b55173",
+        "src/ai_dlc/setup/templates.py": "ed2076070c14a87df8e36c78b3e51a12e47e759dc6bde9ef3841462cc71aa376",
+        "tests/test_backend_capability.py": "aedd591caa61c646bcc13812728f9990e235dfa4f84f021ebf629f10d3f6d2e2"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass: one-sentence lede saying what the reader can do; paragraphs over ~70 words split at their second idea; sentences over 25 words split; brand case (ai-dlc, hangar). No command, option or claim changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/greenfield.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/tool-map.md": "d11334cb57c288aab7b01226790b7cc268a28991b3de5f97a98b9818d80be19e",
+        "docs/workflows/tool-map.md": "07114d020769418847634d9feed2b7582e391e986344b44a5ad8329ebdb59ca2",
+        "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
+        "openspec/specs/spec-delivery-traceability/spec.md": "66641acf9c151792cde1914062630ed50cc4199cdc3bdb4b81382e03716f2ea3",
+        "src/ai_dlc/cli.py": "41e91cdc3de44227e7e9ab770b09e511ab25092ce6c19c4540a38853e749897f",
+        "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
+        "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
+        "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
+        "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
+        "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
+        "src/ai_dlc/harness/agents.py": "0757ce327050807470193a93e66fc1b28bd1ea5e0b8b41c0bc61166f8465bc07",
+        "src/ai_dlc/harness/hooks.py": "b50bf047573f4735861bb091d97cd8467af16729610ddd63e97d81fffc39e9bc",
+        "src/ai_dlc/mcp_server.py": "1d4fb076add151ee1161fbffe518c0764b08940055a86f6db2204ab3910cb2d5",
+        "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
+        "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
+        "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
+        "src/ai_dlc/work/workflow.py": "5e9e38621e3062351ca81d54982f481a4fb37110d247fd82c51a927ed8c9b17b",
+        "tests/test_agents_phases.py": "e5325bdc3c072a10e27bbf019ce51f586b0b7b9d76aa95ff8652dd09bc3c8570",
+        "tests/test_cli.py": "f61c1ce03b1b3d1a6134365277c18655450ba08c06cb1f51ba44010b3e1b7e36",
+        "tests/test_config.py": "788bf2715bfc3fbc3da495b68fa250985f4430d424fa9802340dec16b7a35cdf",
+        "tests/test_consumer_onboarding.py": "3b412d49dce7f0ddf1011f44637ffee4e9de101e4f15b72c7198439884cdf727",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
+        "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
+        "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
+        "tests/test_environment_report_collection.py": "0f63d55719e0ec6b167fe28187c3473586204350716f6388fef6ab49c25c365f",
+        "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
+        "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
+        "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
+        "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
+        "tests/test_rendering.py": "e93897333125cff68ce69e9e8fc23f401d9e0740427b8c995975240350cea0ef",
+        "tests/test_team_sources.py": "19538adc7bbf21821adcde604189f03cbf604687bac9a9b14e1479bf488c3db2",
+        "tests/test_workflow.py": "c60af46adb6cceb3160b1c34945d3b579e4ce42be7e24cad65fa24bd215d80a1"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass: lede replaces the 'Back to the workflow map' line; MCP documentation table under a collapsible note; long cells and paragraphs shortened; plugin link now points at Get started. 2,322 -> 1,998 words.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/tool-map.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/work-computer-setup.md": "62d0a76f141100f0e8d2219cf5e7b398c0530796f3a7fa2ae95348450d0bdbb5",
+        "docs/workflows/work-computer-setup.md": "6a6b849511affc491b227896981914c1b8f021c6e3541250c1dad554d75a5444",
+        "openspec/specs/consumer-onboarding/spec.md": "96308e95e08f17a10477788569666eb2224f093eb9a6714eac5b9e2fa81fa140",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "src/ai_dlc/cli.py": "41e91cdc3de44227e7e9ab770b09e511ab25092ce6c19c4540a38853e749897f",
+        "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
+        "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
+        "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
+        "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
+        "src/ai_dlc/setup/onboarding.py": "068ffd7703f892ad30e2a47181d0f6da1fd120aa9e369c6afd3ce32a43b1286a",
+        "tests/test_consumer_onboarding.py": "3b412d49dce7f0ddf1011f44637ffee4e9de101e4f15b72c7198439884cdf727",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
+        "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
+        "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
+        "tests/test_environment_report_collection.py": "0f63d55719e0ec6b167fe28187c3473586204350716f6388fef6ab49c25c365f",
+        "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be"
+      },
+      "outcome": "updated",
+      "reason": "Readability pass: one-sentence lede saying what the reader can do; paragraphs over ~70 words split at their second idea; sentences over 25 words split; brand case (ai-dlc, hangar). No command, option or claim changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/work-computer-setup.md"
+    },
+    {
+      "bound": {
+        "profiles/sean.toml": "f5c7e02999dfc7e133f0739e0f3a71c691ff15d2d912e43aa58717db8fd6e355"
+      },
+      "outcome": "updated",
+      "reason": "Comment now points at docs/design/jira-cloud.md#github-delivery-with-jira-outcomes, where that section moved.",
+      "reviewer": "Claude (agent)",
+      "target": "profiles/sean.toml"
+    }
+  ],
+  "schema": 2
+}

@@ -4,8 +4,8 @@ Install ai-dlc, set up a project and run its required checks.
 
 ## Five commands
 
-Needs git and curl on macOS or Linux. From a fresh machine to a project whose
-required checks pass:
+Needs git and curl on macOS or Linux. These take a fresh machine to a project
+whose required checks pass.
 
 ```sh
 git clone https://github.com/Sean-Koval/ai-dlc.git && cd ai-dlc
@@ -16,30 +16,36 @@ git add -A && git commit -qm "chore: initialize with ai-dlc" && ai-dlc project c
 ```
 
 Bootstrap installs pinned uv, Python and mise, prepares the checkout and prints
-the directories to add to `PATH`; no preinstalled Python or Node is needed. When
+the directories to add to `PATH`. No preinstalled Python or Node is needed. When
 the global `ai-dlc` alias belongs to another checkout, use the checkout-specific
 executable that bootstrap prints instead.
 
 `project init` copies the template only (`--preset generic|python|node|rust`,
 `--agent-client claude-code|codex`). `project setup` runs the setup steps and
-renders the agent configuration, so the `generated` check fails until setup has
+renders the agent configuration. The `generated` check fails until setup has
 run; init's output and the failing check both name it.
 
 ## Add it to an existing repository
 
 Adopt the repository with the preset that matches it and only the capability you
-need. Every command previews first; repeat it with `--apply` to write:
+need. Every command previews first; repeat it with `--apply` to write.
 
-```sh
-ai-dlc project adopt --root /path/to/work-repository --preset generic \
-  --capability agent-client --agent-client codex
-# Inspect the preview, then repeat that exact command with --apply.
-ai-dlc project setup --root /path/to/work-repository
-ai-dlc agents render --root /path/to/work-repository --apply
-ai-dlc project readiness --root /path/to/work-repository
-git -C /path/to/work-repository add . && git -C /path/to/work-repository commit -m "chore: adopt ai-dlc"
-ai-dlc project check --root /path/to/work-repository --required
-```
+1. Preview the adoption, inspect it, then repeat the exact command with `--apply`:
+   ```sh
+   ai-dlc project adopt --root /path/to/work-repository --preset generic \
+     --capability agent-client --agent-client codex
+   ```
+2. Run the setup steps and render the agent configuration:
+   ```sh
+   ai-dlc project setup --root /path/to/work-repository
+   ai-dlc agents render --root /path/to/work-repository --apply
+   ```
+3. Check local requirements: `ai-dlc project readiness --root /path/to/work-repository`
+4. Commit the adopted files:
+   ```sh
+   git -C /path/to/work-repository add . && git -C /path/to/work-repository commit -m "chore: adopt ai-dlc"
+   ```
+5. Run the required checks: `ai-dlc project check --root /path/to/work-repository --required`
 
 Preserve the repository's existing checks and add at least one required check for
 its own acceptance behavior; the generic management checks do not establish that
@@ -47,12 +53,13 @@ behavior. Optional capabilities include `backend` contract checks and `frontend`
 browser smoke tests. Checks bind receipts to the repository's `HEAD`.
 
 `ai-dlc project onboard --root PATH --preset generic --agent-client codex` prints
-the same route as a read-only JSON plan: review each action's `argv`, effects and
+the same route as a read-only JSON plan. Review each action's `argv`, effects and
 `requires_review` before running it. An already configured repository can run
 `project onboard --root PATH` alone; its `ai-dlc.toml` stays authoritative and a
-conflicting client or preset choice returns a blocked plan. Enrollment is
-optional for a self-contained project; select it only when the user needs a
-portable profile and machine binding, supplying `--source`, `--ref`,
+conflicting client or preset choice returns a blocked plan.
+
+Enrollment is optional for a self-contained project. Select it only when the
+user needs a portable profile and machine binding, supplying `--source`, `--ref`,
 `--profile-id` and `--machine-id` together. See
 [work-computer setup](work-computer-setup.md) for the full route and
 [machine enrollment](../runbooks/machine-enrollment.md) for its separate
@@ -61,8 +68,8 @@ preview/apply boundary.
 ## Contribute to the engine
 
 Engine contributors use the source checkout itself as their project. After
-`sh scripts/bootstrap.sh --source`, run the repository's full required checks with
-the checkout-specific executable it printed:
+`sh scripts/bootstrap.sh --source`, run the repository's full required checks.
+Use the checkout-specific executable it printed:
 
 ```sh
 AI_DLC=/absolute/path/printed/by/bootstrap/ai-dlc
@@ -85,15 +92,17 @@ ai-dlc project check --check generated --check work-records
 
 A successful focused run is local feedback. It cannot replace missing required
 outcomes in completion evidence. After integrating the target branch, run
-`ai-dlc project check --required` before merge. Teams own the commands and required
-IDs in `ai-dlc.toml`; keep their existing test tools and add behavioral acceptance
-checks. New Python starters include a standard-library test of their initial
-output as well as a syntax check; extend those tests as the application grows.
+`ai-dlc project check --required` before merge.
+
+Teams own the commands and required IDs in `ai-dlc.toml`; keep their existing
+test tools and add behavioral acceptance checks. New Python starters include a
+standard-library test of their initial output as well as a syntax check; extend
+those tests as the application grows.
 
 ## Connect tools and configure the project
 
-The generated `ai-dlc.toml` owns shared policy. For example, these sections select
-providers and the repository whose merge/CI evidence must be checked:
+The generated `ai-dlc.toml` owns shared policy. These sections select providers
+and the repository whose merge/CI evidence must be checked.
 
 ```toml
 [roles]
@@ -111,7 +120,7 @@ target_branch = "main"
 ```
 
 Authenticate the GitHub CLI with access to your repository and Project. Then
-preview the connection and apply its saved choices from the project root:
+preview the connection and apply its saved choices from the project root.
 
 ```sh
 ai-dlc provider connect github-issues --plan-file .ai-dlc/local/github-project.json
@@ -135,7 +144,7 @@ custom statuses, and issues-only mode.
 ## Carry preferences and team guidance across machines
 
 Enroll a private profile repository at a reviewed tag or advertised Git ref.
-Use the same revision on another machine with its own machine ID:
+Use the same revision on another machine with its own machine ID.
 
 ```sh
 ai-dlc machine enroll SOURCE --profile-id my-development --machine-id laptop --ref v1
@@ -163,8 +172,8 @@ profile setup, role/tag selection, personal MCP servers, and source restrictions
 
 ## Workflow plugin
 
-`plugins/ai-dlc-workflow/` is one optional Claude Code plugin with the workflow
-guidance as a skill, ten team skills and hooks that work without the `ai-dlc` CLI.
+`plugins/ai-dlc-workflow/` is one optional Claude Code plugin: the workflow
+guidance as a skill, ten more skills and hooks that work without the `ai-dlc` CLI.
 A team harness can pin it as a single component and run with or without it. It is
 off by default (`defaultEnabled: false`). Try it locally:
 
@@ -174,44 +183,42 @@ claude --plugin-dir plugins/ai-dlc-workflow \
 ```
 
 `scripts/build_workflow_plugin.py` generates the directory from `agents/skills/`
-and the shared guidance and records component digests in `plugin.lock.json`; the
-`generated` check fails when it is stale. The hooks need `python3`. The same build
-emits a Codex form in `native/codex/` (identical skills, a Codex `hooks.json`, an
-`AGENTS.fragment.md` and a `.codex-plugin` manifest), and
-`scripts/publish_workflow_plugin.py --harness-repo PATH --marketplace NAME --dry-run|--apply` copies
-both into a team harness for a with/without comparison. See the
-[plugin README](https://github.com/Sean-Koval/ai-dlc/blob/main/plugins/ai-dlc-workflow/README.md) for contents, the Codex spike,
-the A/B arms, hangar limits and how to turn it off.
+and the shared guidance, and records component digests in `plugin.lock.json`. The
+`generated` check fails when it is stale. The hooks need `python3`.
+
+The same build emits a Codex form in `native/codex/`: identical skills, a Codex
+`hooks.json`, an `AGENTS.fragment.md` and a `.codex-plugin` manifest.
+`scripts/publish_workflow_plugin.py --harness-repo PATH --marketplace NAME --dry-run|--apply`
+copies both into a team harness for a with/without comparison. See the
+[plugin README](https://github.com/Sean-Koval/ai-dlc/blob/main/plugins/ai-dlc-workflow/README.md)
+for contents, the Codex spike, the A/B arms, hangar limits and how to turn it off.
 
 ## Example workflows
 
 ### Take a ticket through delivery
 
-With tracker and SCM connections configured, draft work from an existing issue:
+With tracker and SCM connections configured:
 
-```sh
-ai-dlc work new improve-setup --from-issue 42
-```
+1. Draft work from an existing issue: `ai-dlc work new improve-setup --from-issue 42`
+2. Review `.ai-dlc/work/improve-setup.toml`: set scope and acceptance criteria,
+   decide whether a specification is required, link it when needed, and set
+   `reviewed = true`.
+3. Publish and start it:
+   ```sh
+   ai-dlc work publish improve-setup
+   ai-dlc work start improve-setup
+   ```
+4. Implement, commit, and update the affected documentation. Then run
+   `ai-dlc project check --required`. If this work requires OpenSpec, finalize it
+   with `ai-dlc work archive` before review.
+5. Push the bound branch, then open its PR: `ai-dlc work pr improve-setup`
+6. Push the work-record link commit that `work pr` created, then review and merge.
+7. From a checkout at the merge commit, after CI succeeds, run
+   `ai-dlc work finish improve-setup`.
 
-Review `.ai-dlc/work/improve-setup.toml`: set scope and acceptance criteria,
-decide whether a specification is required, link it when needed, and set
-`reviewed = true`. Then:
-
-```sh
-ai-dlc work publish improve-setup
-ai-dlc work start improve-setup
-# Implement, commit, and update the affected documentation.
-ai-dlc project check --required
-# If this work requires OpenSpec, finalize it with work archive before review.
-# Push the bound branch before opening its PR.
-ai-dlc work pr improve-setup
-# Push the work-record link commit created by work pr, then review and merge.
-```
-
-From a checkout at the merge commit, after CI succeeds, run
-`ai-dlc work finish improve-setup`. This validates the required specification,
-PR merge, and exact merged-revision CI evidence, plus configured deployment gates.
-`work status` is a local inspection, not a fresh tracker read.
+Finish validates the required specification, PR merge and exact merged-revision
+CI evidence, plus configured deployment gates. `work status` is a local
+inspection, not a fresh tracker read.
 
 ### Keep project documents useful
 
@@ -266,13 +273,13 @@ available, with live workflow qualification still pending; the Plane adapter is
 unsupported and unqualified. The Linear adapter has been removed (see the
 [migration guide](../migration.md#tracker-defaults-and-removed-linear-adapter)).
 
-Agent jobs enter through hangar intake: moving a ticket to a status, label or
+Agent jobs enter through hangar intake. Moving a ticket to a status, label or
 Projects column starts a hangar job, and hangar writes job progress back to the
 ticket. ai-dlc is the local developer loop around that ticket: a work record,
-branch binding and specification artifacts, then a gated `work finish` that
-closes the ticket only after merged CI evidence. The
+branch binding and specification artifacts, then a gated `work finish`. The
 [tracker boundary](../architecture.md#tracker-boundary-with-hangar) says which
 tool writes what.
+
 For agent access, register `ai-dlc mcp serve --root /absolute/path/to/project`
 as a stdio MCP server in your client. See the [tool map](tool-map.md)
 for available commands, MCP tools, and skills.
@@ -298,18 +305,19 @@ for available commands, MCP tools, and skills.
   for design review.
 
 !!! note "Platform and release limits"
-    Native Windows is unsupported in this revision: the native storage core has
+    Native Windows is unsupported in this revision. The native storage core has
     source-level evidence, but the installer, PowerShell bootstrap, desktop clients
     and end-to-end onboarding remain open in
     [#172](https://github.com/Sean-Koval/ai-dlc/issues/172) and
     [#53](https://github.com/Sean-Koval/ai-dlc/issues/53). These instructions are
     for macOS and Linux hosts with a POSIX shell; WSL, containers and translated
-    shell commands are not a Windows route. The published
-    [v0.4.0](https://github.com/Sean-Koval/ai-dlc/releases/tag/v0.4.0) predates
-    `project onboard`, even though the package version has not changed; to use the
-    onboarding planner, bootstrap a team-reviewed commit or ref from a source
-    checkout (`git checkout REVIEWED_COMMIT_OR_REF` before `sh scripts/bootstrap.sh
-    --source`). Projects created with the released engine carry its release
-    manifest for their own bootstrap and CI; source-generated projects need a
-    published `bootstrap/release.sh` first, see the
+    shell commands are not a Windows route.
+
+    The published [v0.4.0](https://github.com/Sean-Koval/ai-dlc/releases/tag/v0.4.0)
+    predates `project onboard`, even though the package version has not changed.
+    To use the onboarding planner, bootstrap a team-reviewed commit or ref from a
+    source checkout (`git checkout REVIEWED_COMMIT_OR_REF` before
+    `sh scripts/bootstrap.sh --source`). Projects created with the released engine
+    carry its release manifest for their own bootstrap and CI. Source-generated
+    projects need a published `bootstrap/release.sh` first; see the
     [release guide](../runbooks/release-publication.md#install-from-a-release).

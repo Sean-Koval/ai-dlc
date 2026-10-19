@@ -1,10 +1,11 @@
 # FDE engagement documents
 
-`ai-dlc fde scaffold` creates a local engagement charter and seven stage landing
-pages. It implements the local portion of issue #50. Confluence conversion,
-publication, synchronization, remote hierarchy registration and native harness
-qualification remain unavailable pending review of the referenced production
-ai-docs implementation. Destination hints do not create or bind remote pages.
+Scaffold a forward-deployed engineering engagement as a local charter and
+seven gated stage pages, and check its stage exits.
+
+`ai-dlc fde scaffold` implements the local portion of issue #50. Confluence
+conversion, publication, synchronization and remote hierarchy registration
+remain unavailable; destination hints do not create or bind remote pages.
 
 ## Create an engagement
 
@@ -40,7 +41,7 @@ and engagement-parent ID as charter frontmatter. Supply both or neither. The
 values are non-secret hints supplied explicitly by the caller, not verified
 access or publication receipts. Stage pages intentionally have no invented
 remote page IDs or parent IDs. Company-specific taxonomy belongs in the actual
-project's reviewed documents, not AI-DLC's portable defaults.
+project's reviewed documents, not ai-dlc's portable defaults.
 
 ## Work through the stages
 
@@ -74,13 +75,15 @@ Then change the next stage's `status` to `ACTIVE` and run `ai-dlc fde check SLUG
 All earlier stages must have `exit_criteria_met: true` and nonempty review
 evidence before a downstream stage becomes ACTIVE or records completed exits.
 There is no separate DONE status: exit completion and lifecycle status describe
-different facts. Check prints current stages and evidence, reports all available
-findings and exits nonzero on invalid structure or gates. It reads only the eight
-known landing pages, each at most 256000 bytes; it does not traverse deliverable
-links. Invalid YAML (including duplicate fields), missing pages and symlinks refuse
-validation.
+different facts.
 
-A review-evidence string records the team's assertion; AI-DLC does not prove that
+Check prints current stages and evidence, reports all available findings and
+exits nonzero on invalid structure or gates. It reads only the eight known
+landing pages, each at most 256000 bytes, and does not traverse deliverable
+links. Invalid YAML (including duplicate fields), missing pages and symlinks
+refuse validation.
+
+A review-evidence string records the team's assertion; ai-dlc does not prove that
 a linked approval occurred or that prose exit criteria were satisfied. To make
 this check a project gate, add the actual engagement command to that project's
 required checks. It does not become a work-finish gate automatically. When new
@@ -96,15 +99,13 @@ files alone does not establish native harness behavior or qualification.
 
 Only explicitly selected, reviewed team documents may be published through a
 separately reviewed existing connection. Never scan or mirror private Obsidian
-vaults, infer publication from tags, or follow private source links into outgoing
-payloads. Relevant team pages can be read on request. A requested local summary
-records the source URL, available version and retrieval date; explicit refresh
-preserves personal annotations and reports inaccessible or stale sources honestly.
+vaults, infer publication from tags, or follow private source links into
+outgoing payloads. A requested local summary records the source URL, available
+version and retrieval date; explicit refresh preserves personal annotations and
+reports inaccessible or stale sources honestly.
 
-This scaffold has no XHTML dry-run, lint-conversion or sync command. `fde check`
-checks local structure and metadata only. The existing
+This scaffold has no XHTML dry-run, lint-conversion or sync command; `fde check`
+checks local structure and metadata only. The cancelled
 [publication proposal](https://github.com/Sean-Koval/ai-dlc/blob/main/openspec/changes/archive/2026-10-17-team-document-publication-cancelled/proposal.md)
-retains converter fidelity, selected-source preview/apply, conflict refusal,
-uncertain-operation recovery and live qualification requirements. The production
-source was not available in this checkout environment; a different converter or
-an unverified Cloud adapter has not been substituted for its requested port.
+retains the converter fidelity, preview/apply, conflict refusal and live
+qualification requirements for any future port.
