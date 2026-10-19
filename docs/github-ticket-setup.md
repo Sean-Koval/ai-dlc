@@ -107,7 +107,7 @@ inspection contacts configured providers; successful health reads do not prove
 ticket creation, status mutation or recovery. Qualify those in designated
 disposable data before production migration.
 
-The [verification record](verification/github-ticket-workflows.md) identifies
+The [verification record](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/github-ticket-workflows.md) identifies
 current fixture results and remaining live gates. Plane installation and the
 custom Confluence MCP server are not prerequisites for this setup. Obsidian and
 other non-tracker provider choices remain independent.

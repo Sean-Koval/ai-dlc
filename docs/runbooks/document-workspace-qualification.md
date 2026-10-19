@@ -2,7 +2,7 @@
 
 Repeat document organization and native workspace qualification on a disposable
 copy of the controlled messy project. Record what you observe in the
-[documentation workflow verification record](../verification/documentation-workflow.md).
+[documentation workflow verification record](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/documentation-workflow.md).
 Automated fixture tests do not replace this walkthrough, and this walkthrough does
 not qualify another host, client or platform.
 

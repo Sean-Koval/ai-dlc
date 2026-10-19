@@ -46,7 +46,7 @@ before adding surface area.
    until they are triaged.
 2. **A shorter delivery path.** Count the manual commands between a tracker item
    and `work finish` on the adopted repositories, then remove or fold steps until
-   the count is halved. The [delivery path baseline](verification/delivery-path-baseline.md)
+   the count is halved. The [delivery path baseline](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/delivery-path-baseline.md)
    records the starting counts, candidate reductions and the delivered per-work,
    content-bound documentation evidence (#146). Re-record only new or stale
    targets; unchanged decisions survive unrelated edits and target-branch movement.

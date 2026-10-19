@@ -62,4 +62,4 @@ version applicability, preserving pinned ownership and independent company autho
 The reusable documentation guide linked above owns commands and editorial process.
 Formal behavior remains in the corresponding OpenSpec changes; verified execution
 and remaining live qualification are recorded in
-[documentation workflow verification](../verification/documentation-workflow.md).
+[documentation workflow verification](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/documentation-workflow.md).
