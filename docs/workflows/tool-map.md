@@ -147,20 +147,10 @@ exact-merge completion evidence retain their existing boundaries.
 
 ## Artifact ownership
 
-```mermaid
-flowchart TD
-    H[Human and agent judgment] --> R[Repository rationale and design]
-    H --> SP[Specification provider]
-    H --> TR[Tracker]
-    H --> PK[Personal knowledge]
-    R --> WR[AI-DLC work record]
-    SP --> WR
-    TR --> WR
-    WR --> SCM[Branch, PR, merge, and CI]
-    SCM --> FIN[AI-DLC finish gates]
-    SP --> FIN
-    FIN --> TR
-```
+Human and agent judgment feeds the repository, the specification provider, the
+tracker and personal knowledge; the reviewed work record binds the first three;
+the branch, PR, merge and CI evidence it produces are what the finish gates
+check before the tracker item closes.
 
 - Repository: architecture, PRDs, design context, ADRs, runbooks, code, tests.
 - Specification provider: formal behavior and scenarios.

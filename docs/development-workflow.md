@@ -23,24 +23,20 @@ the handoff between an approved design and code.
 
 ## Workflow at a glance
 
-```mermaid
-flowchart TD
-    I[Intake and priority] --> D[Discovery]
-    D --> P[Product requirements]
-    P --> G[Product and technical design]
-    G --> S{Formal specification needed?}
-    S -->|Yes| O[Formal specification]
-    S -->|No| W[Reviewed work record]
-    O --> W
-    W --> B[Branch and implementation]
-    B --> T[Tests and required checks]
-    T --> R[Review and merge]
-    R --> C[Merged-revision CI evidence]
-    C --> F[Evidence-gated finish]
-    F --> H[Tracker completion and handoff]
-```
+1. Intake and priority
+2. Discovery
+3. Product requirements
+4. Product and technical design
+5. Formal specification, when the design decides one is needed
+6. Reviewed work record
+7. Branch and implementation
+8. Tests and required checks
+9. Review and merge
+10. Merged-revision CI evidence
+11. Evidence-gated finish
+12. Tracker completion and handoff
 
-AI-DLC does not host an autonomous orchestrator. The human and agent decide
+ai-dlc does not host an autonomous orchestrator. The human and agent decide
 what work is useful. Skills provide judgment; the CLI validates, stores, links,
 reconciles, and gates the resulting work. MCP exposes shared work, doctor, knowledge and documentation services.
 

@@ -45,12 +45,15 @@ def test_front_page_assets_exist_and_both_pages_use_them():
     assert (FRONT / "build.py").is_file() and (FRONT / "demo_provider.py").is_file()
 
 
-def test_recordings_are_twenty_to_forty_seconds_and_free_of_machine_paths():
+def test_recordings_play_once_within_twenty_seconds_and_free_of_machine_paths():
     import json
 
     for name in ["enroll.cast", "work.cast"]:
         events = [json.loads(line) for line in (FRONT / name).read_text().splitlines()]
-        assert 15 <= events[-1][0] <= 40, (name, events[-1][0])
+        assert 5 <= events[-1][0] <= 20, (name, events[-1][0])
+        svg = (FRONT / name.replace(".cast", ".svg")).read_text()
+        assert "infinite" not in svg and " forwards" in svg
+        assert "work finish" not in svg or "&quot;status&quot;: &quot;blocked&quot;" in svg
     for path in FRONT.glob("*"):
         if path.suffix in {".svg", ".cast"}:
             text = path.read_text()

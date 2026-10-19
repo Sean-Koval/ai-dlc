@@ -12,16 +12,15 @@
 
 ## See it work
 
-Enroll a machine from a pinned profile (preview, apply, status):
+<figure class="af-figure" markdown>
+![machine enroll previews and applies the example profile; machine status reports the pinned commit and one unbound credential](assets/front/enroll.svg)
+<figcaption>Enroll a machine from a pinned profile: preview, apply, status</figcaption>
+</figure>
 
-![A terminal session: ai-dlc machine enroll previews the example profile's modules and credentials, applies it to a machine binding, and machine status reports the pinned profile commit and one unbound credential](assets/front/enroll.svg)
-
-Take one piece of work from a reviewed record to a closed ticket. GitHub is played by a
-local stand-in ([`demo_provider.py`](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/assets/front/demo_provider.py))
-that speaks the provider contract, so the gates check a real local merge and the receipt
-`project check` wrote:
-
-![A terminal session: work new creates a record, a person marks it reviewed, work publish opens issue 42, work start creates the branch, work pr opens pull request 43, the branch merges, project check passes and writes a receipt, and work finish verifies the merge and CI receipt and closes the issue](assets/front/work.svg)
+<figure class="af-figure" markdown>
+![work finish refuses while the PR is not merged, then, after the merge, verifies the CI receipt and closes issue 42](assets/front/work.svg)
+<figcaption>work finish refuses until the PR is merged with a passing receipt; GitHub and its CI are a <a href="https://github.com/Sean-Koval/ai-dlc/blob/main/docs/assets/front/demo_provider.py">local stand-in</a></figcaption>
+</figure>
 
 ## What it looks like
 
