@@ -2,10 +2,10 @@
   "decisions": [
     {
       "bound": {
-        "AGENTS.md": "8ea384fb5bd8cd70133795dc06c50e728681a4dc4fe68285248bb1870bd62519"
+        "AGENTS.md": "934328c217957f6442ea9d3b92f7a20c59929e529675f3b387b9227f75b072a1"
       },
       "outcome": "updated",
-      "reason": "Prose now says ai-dlc (lowercase brand); no guidance changed.",
+      "reason": "Re-recorded after merging main, which added the hand-written Tracking section (#235, recorded in jira-tracking.json); it merged cleanly and contains no AI-DLC brand-case prose to change. This branch's AGENTS.md edits are unchanged: prose says ai-dlc (lowercase brand; no 'AI-DLC' left in the merged file) and the Get started link from KAN-117 points at #add-it-to-an-existing-repository, which exists in the merged docs/workflows/get-started.md. No guidance changed.",
       "reviewer": "Claude (agent)",
       "target": "AGENTS.md"
     },
