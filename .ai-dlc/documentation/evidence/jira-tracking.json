@@ -1,0 +1,14 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "AGENTS.md": "4ad75718ba91b893a41d5d0955b22674998871b7f85996761ecc26d07484537d"
+      },
+      "outcome": "updated",
+      "reason": "Added a hand-written Tracking section (outside the ai-dlc managed block): work is tracked in Jira project KAN, ticketed branches, PR titles and PR bodies carry the key for the GitHub for Jira app, and the lane:agent / lane:pair / lane:human lanes. A process note for contributors; no other canonical document describes tracking for this repository.",
+      "reviewer": "Claude (agent)",
+      "target": "AGENTS.md"
+    }
+  ],
+  "schema": 2
+}
