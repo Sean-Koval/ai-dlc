@@ -1,13 +1,23 @@
-<div class="af-hero" markdown>
+---
+hide:
+  - navigation
+  - toc
+---
 
+<div class="af-hero af-hero--visual" markdown>
+<div markdown>
 <span class="af-eyebrow">Agent factory · Define plane</span>
 
 # One pinned setup, one workflow, and a finish that needs merged evidence
 
-<p class="af-lede">Every developer's machine is set up differently, and every coding agent closes tickets on its own idea of "done". AI-DLC gives a team one pinned machine profile, one workflow its agents follow in Claude Code or Codex, and a <code>work finish</code> that closes a ticket only when the merged commit has a passing CI receipt.</p>
+<p class="af-lede">Every developer's machine is set up differently, and every coding agent closes tickets on its own idea of "done". ai-dlc gives a team one pinned machine profile, one workflow its agents follow in Claude Code or Codex, and a <code>work finish</code> that closes a ticket only when the merged commit has a passing CI receipt.</p>
 
 [Get started](workflows/get-started.md){ .md-button .md-button--primary } [Suite overview](https://sean-koval.github.io/agent-factory/){ .md-button }
-
+</div>
+<figure class="af-hero__visual">
+<img src="assets/front/work.svg" alt="work finish refuses while the PR is not merged, then, after the merge, verifies the CI receipt and closes issue 42" width="691" height="435">
+<figcaption>work finish refuses until the PR is merged with a passing receipt; recorded by docs/assets/front/build.py</figcaption>
+</figure>
 </div>
 
 ## See it work
@@ -17,10 +27,11 @@
 <figcaption>Enroll a machine from a pinned profile: preview, apply, status</figcaption>
 </figure>
 
-<figure class="af-figure" markdown>
-![work finish refuses while the PR is not merged, then, after the merge, verifies the CI receipt and closes issue 42](assets/front/work.svg)
-<figcaption>work finish refuses until the PR is merged with a passing receipt; GitHub and its CI are a <a href="https://github.com/Sean-Koval/ai-dlc/blob/main/docs/assets/front/demo_provider.py">local stand-in</a></figcaption>
-</figure>
+The work recording in the hero takes one reviewed record from `work start` to a closed ticket.
+GitHub and its CI are a
+[local stand-in](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/assets/front/demo_provider.py)
+that speaks the provider contract, so the gates check a real local merge and the receipt
+`project check` wrote.
 
 ## What it looks like
 
