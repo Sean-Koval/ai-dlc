@@ -43,11 +43,14 @@ The workflow plugin's skills, as Claude Code lists them, and the checks a projec
 
 <picture>
   <source media="(prefers-color-scheme: light)" srcset="docs/assets/front/suite-light.svg">
-  <img alt="ai-dlc runs on the developer machine: machine enroll, then work new, start, pr and finish against GitHub issues, pull requests and CI receipts. It publishes the workflow plugin that the team harness pins; hangar runs agents from that harness and flightdeck compares runs with and without the plugin. Tower is planned." src="docs/assets/front/suite-dark.svg">
+  <img alt="ai-dlc runs on the developer machine: machine enroll, then work new, start, pr and finish against GitHub issues, pull requests and CI receipts. It publishes the workflow plugin that the team harness pins; hangar runs agents from that harness and flightdeck compares runs with and without the plugin. Tower, the governance plane for policy decisions, approvals and receipts, is drawn as planned." src="docs/assets/front/suite-dark.svg">
 </picture>
 
 AI-DLC does not run agents in the cloud or judge harnesses: hangar renders and runs
 sandboxes, flightdeck evaluates, and AI-DLC authors the one optional plugin they pin.
+Read more in the [hangar docs](https://sean-koval.github.io/hangar/), the
+[flightdeck docs](https://sean-koval.github.io/flightdeck/) and the
+[example team harness](https://github.com/Sean-Koval/team-harness), which pins this plugin.
 
 ## Use cases
 
@@ -77,8 +80,15 @@ git add -A && git commit -qm "chore: initialize with ai-dlc" && ai-dlc project c
 
 Bootstrap installs pinned uv, Python and mise; no preinstalled Python or Node is needed.
 To use AI-DLC in an existing work repository, connect GitHub, enroll a profile or
-contribute to the engine, follow [Get started](docs/workflows/get-started.md) on the docs site. Try
-the plugin in Claude Code with `claude --plugin-dir plugins/ai-dlc-workflow`.
+contribute to the engine, follow [Get started](docs/workflows/get-started.md) on the docs site.
+
+Try the workflow plugin in Claude Code from this checkout. It is off by default, so enable it
+for the session; adding `plugin list` after the same flags should report `Status: √ loaded`:
+
+```sh
+claude --plugin-dir plugins/ai-dlc-workflow --settings '{"enabledPlugins":{"ai-dlc-workflow@inline":true}}'
+claude --plugin-dir plugins/ai-dlc-workflow --settings '{"enabledPlugins":{"ai-dlc-workflow@inline":true}}' plugin list
+```
 
 ## Features
 
@@ -86,7 +96,7 @@ the plugin in Claude Code with `claude --plugin-dir plugins/ai-dlc-workflow`.
 | --- | --- | --- |
 | Machine enrollment | Versioned profiles pin runtimes, tools, agent clients and named credentials; each machine keeps its own paths and accounts | [Machine enrollment](docs/runbooks/machine-enrollment.md) |
 | Project scaffolding | `project init` / `project adopt` for generic, Python, Node or Rust repositories, with setup steps and required checks | [Get started](docs/workflows/get-started.md) |
-| Workflow plugin | Guidance, ten team skills and CLI-optional safety hooks for Claude Code, with a Codex form; off by default | [Plugin README](plugins/ai-dlc-workflow/README.md) |
+| Workflow plugin | Guidance, ten team skills and CLI-optional safety hooks for Claude Code, with a Codex form; off by default | [Plugin README](plugins/ai-dlc-workflow/README.md), including how to pin it in a team harness |
 | Work lifecycle | Reviewed work records bind an issue, branch, specification and PR; `work finish` gates on the merge and its CI receipt | [Development workflow](docs/development-workflow.md) |
 | Receipts | `project check --required` runs the team's checks and writes a receipt bound to the commit | [Release verification](docs/release-verification.md) |
 | Documentation upkeep | Catalog, impact review, dispositions and a docs gate; decision records with knowledge-note frontmatter | [Project documentation](docs/design/project-documentation.md) |
@@ -103,4 +113,4 @@ fails when they are stale.
 - [Architecture](docs/architecture.md): services, configuration layers and extension points.
 - [Development workflow](docs/development-workflow.md): discovery, greenfield, brownfield and design review.
 - [Verification status](docs/release-verification.md): platform and provider evidence and the remaining qualification gaps.
-- [Documentation map](docs/index.md): every canonical document.
+- [Documentation map](docs/design/documentation-map.md): every canonical document.

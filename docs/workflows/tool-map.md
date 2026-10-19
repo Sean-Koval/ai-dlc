@@ -90,8 +90,8 @@ own their generated client configuration. Never commit `.env` files or
 credential values.
 
 `ai-dlc machine status`, `plan`, `apply`, `sync`, and `doctor` own the local
-enrollment lifecycle. Local CLI and MCP execution are current; hosted or cloud
-execution is a later qualification target. Existing Obsidian vaults support portal linking and explicit local project mounts; vault creation is not provided. Guided discovery/setup is
+enrollment lifecycle. The local CLI and MCP are AI-DLC's control plane; cloud
+execution belongs to hangar ([ADR 0001](../decisions/0001-refocus-ai-dlc.md)). Existing Obsidian vaults support portal linking and explicit local project mounts; vault creation is not provided. Guided discovery/setup is
 implemented for GitHub, Jira Cloud and the unsupported Plane adapter. Jira live workflow
 qualification and native Antigravity integration remain pending.
 

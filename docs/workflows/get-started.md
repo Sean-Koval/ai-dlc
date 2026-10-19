@@ -240,9 +240,26 @@ A team harness can pin it as a single component and run with or without it. It i
 off by default (`defaultEnabled: false`). Try it locally:
 
 ```sh
-claude --plugin-dir plugins/ai-dlc-workflow \
-  --settings '{"enabledPlugins": {"ai-dlc-workflow@inline": true}}'
+claude --plugin-dir plugins/ai-dlc-workflow --settings '{"enabledPlugins":{"ai-dlc-workflow@inline":true}}'
 ```
+
+To check it loaded, put the same flags before `plugin list` (after it, Claude Code
+rejects `--plugin-dir` as an unknown option):
+
+```sh
+claude --plugin-dir plugins/ai-dlc-workflow --settings '{"enabledPlugins":{"ai-dlc-workflow@inline":true}}' plugin list
+```
+
+```text
+Session-only plugins (--plugin-dir / --plugin-url):
+
+  > ai-dlc-workflow@inline
+    Version: 0.4.0-r3
+    Path: /path/to/ai-dlc/plugins/ai-dlc-workflow
+    Status: √ loaded
+```
+
+Without `--settings` the same list shows `Status: × disabled`, and the skills don't load.
 
 `scripts/build_workflow_plugin.py` generates the directory from `agents/skills/`
 and the shared guidance and records component digests in `plugin.lock.json`; the
@@ -251,8 +268,10 @@ emits a Codex form in `native/codex/` (identical skills, a Codex `hooks.json`, a
 `AGENTS.fragment.md` and a `.codex-plugin` manifest), and
 `scripts/publish_workflow_plugin.py --harness-repo PATH --marketplace NAME --dry-run|--apply` copies
 both into a team harness for a with/without comparison. See the
-[plugin README](https://github.com/Sean-Koval/ai-dlc/blob/main/plugins/ai-dlc-workflow/README.md) for contents, the Codex spike,
-the A/B arms, hangar limits and how to turn it off.
+[workflow plugin](workflow-plugin.md) page for contents, the Codex spike, the A/B
+arms, hangar limits and how to turn it off, and
+[pin it in a team harness](workflow-plugin-harness.md) for the publish, lock and
+channel steps.
 
 ## Example workflows
 
@@ -330,6 +349,8 @@ flowchart LR
 | **OpenSpec** | Formal requirements, scenarios, and archived changes when the work needs a specification. |
 | **GitHub Issues + Projects / GitHub Actions** | Ticket identity and planning, PR review and merge, and CI evidence. |
 | **Obsidian** | Private continuity notes and navigation to canonical repository documents. |
+| **[hangar](https://sean-koval.github.io/hangar/)** (separate tool) | Runs coding agents in cloud sandboxes and starts agent jobs from tickets (intake); renders the team harness, which can pin the workflow plugin, at claim time. |
+| **[flightdeck](https://sean-koval.github.io/flightdeck/)** (separate tool) | Evaluates harness changes, such as running with and without the workflow plugin, on runs hangar recorded; AI-DLC's evaluation runner moved there. |
 
 Provider roles are configurable. GitHub Issues + Projects is the default and
 recommended tracker with recorded live evidence. The Jira Cloud adapter is

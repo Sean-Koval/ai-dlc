@@ -1,6 +1,6 @@
 <div class="af-hero" markdown>
 
-<span class="af-eyebrow">Agent factory · Define plane</span>
+<span class="af-eyebrow">Agent factory · Supports the Define plane</span>
 
 # One pinned setup, one workflow, and a finish that needs merged evidence
 
@@ -37,6 +37,9 @@ The workflow plugin's skills, as Claude Code lists them, and the checks a projec
 
 AI-DLC does not run agents in the cloud or judge harnesses: hangar renders and runs
 sandboxes, flightdeck evaluates, and AI-DLC authors the one optional plugin they pin.
+Read more in the [hangar docs](https://sean-koval.github.io/hangar/), the
+[flightdeck docs](https://sean-koval.github.io/flightdeck/) and the
+[example team harness](https://github.com/Sean-Koval/team-harness), which pins this plugin ([how to pin it](workflows/workflow-plugin-harness.md)).
 
 ## Use cases
 
@@ -73,81 +76,11 @@ contributing to the engine.
 | --- | --- | --- |
 | Machine enrollment | Versioned profiles pin runtimes, tools, agent clients and named credentials; each machine keeps its own paths and accounts | [Machine enrollment](runbooks/machine-enrollment.md) |
 | Project scaffolding | `project init` / `project adopt` for generic, Python, Node or Rust repositories, with setup steps and required checks | [Get started](workflows/get-started.md) |
-| Workflow plugin | Guidance, ten team skills and CLI-optional safety hooks for Claude Code, with a Codex form; off by default | [Plugin README](https://github.com/Sean-Koval/ai-dlc/blob/main/plugins/ai-dlc-workflow/README.md) |
+| Workflow plugin | Guidance, ten team skills and CLI-optional safety hooks for Claude Code, with a Codex form; off by default | [Workflow plugin](workflows/workflow-plugin.md) |
 | Work lifecycle | Reviewed work records bind an issue, branch, specification and PR; `work finish` gates on the merge and its CI receipt | [Development workflow](development-workflow.md) |
 | Receipts | `project check --required` runs the team's checks and writes a receipt bound to the commit | [Release verification](release-verification.md) |
 | Documentation upkeep | Catalog, impact review, dispositions and a docs gate; decision records with knowledge-note frontmatter | [Project documentation](design/project-documentation.md) |
 | Agent access | `ai-dlc mcp serve` exposes reviewed work, documentation and knowledge tools to agents | [Workflow tool map](workflows/tool-map.md) |
 | Providers | GitHub Issues + Projects (default), Jira Cloud, OpenSpec, Obsidian | [Architecture](architecture.md) |
 
-# AI-DLC documentation map
-
-Start with [product direction](product-direction.md) for the framework's promise
-and [roadmap](roadmap.md) for delivery dependencies. GitHub Issues and the linked
-Project own current work status. This index links authoritative documents rather
-than reproducing them.
-
-| Question | Canonical entry point |
-| --- | --- |
-| What is the system? | [Architecture](architecture.md) and [proposed delivery design](design/framework-delivery.md) |
-| What is in scope? | [Decisions](https://github.com/Sean-Koval/ai-dlc/tree/main/docs/decisions), starting with the [scope freeze](decisions/0001-refocus-ai-dlc.md); records follow the [decision convention](https://github.com/Sean-Koval/ai-dlc/blob/main/project-templates/project/docs/decisions/README.md) |
-| Why is it this way? | Decisions in the relevant [design documents](https://github.com/Sean-Koval/ai-dlc/tree/main/docs/design) and [formal change designs](https://github.com/Sean-Koval/ai-dlc/tree/main/openspec/changes) |
-| What must it do? | [OpenSpec](https://github.com/Sean-Koval/ai-dlc/tree/main/openspec) owns formal specifications and change artifacts |
-| How do we operate and verify it? | [Get started](workflows/get-started.md), [release verification](release-verification.md) and [verification records](https://github.com/Sean-Koval/ai-dlc/tree/main/docs/verification) |
-| Where are the details? | [Document ownership](design/project-documentation.md), [local/shared knowledge](design/local-and-shared-knowledge.md), and [contracts](https://github.com/Sean-Koval/ai-dlc/tree/main/contracts) |
-
-[Catalog](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/catalog.toml) records selected canonical documents. It is an incremental
-inventory, not a claim that every historical plan or verification record has been
-reviewed. Run `ai-dlc docs check` to inspect gaps; findings require review,
-not automatic deletion. Historical execution plans supply context but do not
-supersede current product direction, formal requirements or tracker status.
-
-## Current authority and historical material
-
-Current implementation is Python in `src/ai_dlc/`. Read the architecture together
-with canonical [requirements](https://github.com/Sean-Koval/ai-dlc/tree/main/openspec/specs), the [reconciled roadmap](roadmap.md)
-and [release limits](release-verification.md). Active OpenSpec changes are proposals
-or work in progress; [archived changes](https://github.com/Sean-Koval/ai-dlc/tree/main/openspec/changes/archive) retain delivery
-rationale. A merged specification does not establish live platform qualification.
-
-The [historical executor handoff](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/handoffs/framework-delivery.md) preserves
-earlier checkpoints; the roadmap owns current status. The [provider planning handoff](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/planning/provider-toolset-handoff.md),
-[historical planning records](https://github.com/Sean-Koval/ai-dlc/tree/main/docs/archive/planning),
-and [v4 ledger](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/planning/implementation-v4.md) preserve history; their old
-instructions are not current task assignments. The Rust plans, template research and
-dated evidence captures pruned in October 2026 remain in git history at tag
-`docs-prune-2026-10` (commit `fa867cc`).
-
-The original [September 10 baseline and dispositions](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/verification/documentation-baseline.json)
-accounts for every initial docs check finding, including retained historical material,
-unknown factual review and illustrative missing paths. It records source hashes,
-responsible roles and reasons without copying document bodies. That dated inventory retains the pre-cleanup paths and hashes; it is not a live
-inventory. The current catalog and docs check output describe the reorganized tree.
-Unknown factual reviews remain visible.
-
-## Documentation workflow delivery
-
-[Verification and qualification limits](verification/documentation-workflow.md)
-tracks the new impact/review, personal workspace and SDK guidance behavior.
-[The reusable guide](https://github.com/Sean-Koval/ai-dlc/blob/main/project-templates/project/docs/documentation-guide.md) owns
-setup and ongoing practice; OpenSpec changes own the delivery requirements.
-[The workspace qualification walkthrough](runbooks/document-workspace-qualification.md)
-repeats the messy-project organization and native Obsidian checks.
-
-## FDE engagement documents
-
-[The FDE runbook](runbooks/fde-documents.md) describes the local seven-stage
-scaffold, explicit stage checks and the outstanding Confluence publication boundary.
-
-## Placement rules
-
-Current explanations belong in design/, procedures in runbooks/ or workflows/,
-and actual verification records in verification/. Formal plans and requirements
-stay together in OpenSpec. [The archive](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/README.md) is historical context.
-Use Git history for removed scratch reports; do not create another document solely
-to report that a change completed. The catalog identifies lifecycle and ownership,
-not an assertion that every document has received a factual review.
-
-The [documentation site](https://sean-koval.github.io/ai-dlc/) publishes these
-pages from `mkdocs.yml`; add a new durable document to its `nav` beside its catalog
-entry. The site excludes `archive/` and raw verification evidence.
+The [documentation map](design/documentation-map.md) lists every canonical document.

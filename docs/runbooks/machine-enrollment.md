@@ -10,9 +10,9 @@ environment. Generated Codex and Claude client files remain owned by their
 client configuration, which AI-DLC updates through its ownership rules.
 
 Use `ai-dlc machine status`, `plan`, `apply`, `sync`, and `doctor` to inspect,
-preview, reconcile, update, and diagnose local enrollment. Local CLI and MCP
-execution are the current control plane; hosted or cloud execution is a later
-qualification target. Obsidian portals link an explicitly selected existing vault. Provider discovery
+preview, reconcile, update, and diagnose local enrollment. The local CLI and MCP
+are AI-DLC's control plane; cloud execution belongs to hangar
+([ADR 0001](../decisions/0001-refocus-ai-dlc.md)). Obsidian portals link an explicitly selected existing vault. Provider discovery
 and onboarding use the selected adapter; offline readiness is not live qualification.
 
 Use `ai-dlc project readiness --root PATH` to inspect the selected component

@@ -8,26 +8,32 @@ and status. This page states the current outcome and the next increments;
 
 ## Current outcome
 
-AI-DLC is usable from a cloned installation on the work computer, with Claude Code,
-Codex and Antigravity providing an organized, consistent development workflow. It
-prepares tools, integrations, guidance and evidence; the harness performs the work.
-Installing the engine from this repository is distinct from adopting a work
-repository, which has its own tracker and independent local credentials. Personal
-projects use GitHub Issues with repository-associated Projects; work uses Jira Cloud
-for new work (Plane is shipped but unsupported, and Linear has been removed);
-Obsidian remains the private journal. Hangar intake starts agent jobs from tickets;
-AI-DLC keeps its tracker adapters for the local work lifecycle (see the
-[tracker boundary](architecture.md#tracker-boundary-with-hangar)). Delivery runs through reviewed work records, OpenSpec changes, pull
-requests and a gated `ai-dlc work finish`. Release publication from a tag is
-implemented; the outstanding qualification list is in release verification.
+AI-DLC is feature-frozen to three jobs ([ADR 0001](decisions/0001-refocus-ai-dlc.md),
+epic [#189](https://github.com/Sean-Koval/ai-dlc/issues/189)): it authors one optional
+workflow plugin for Claude Code and Codex, provisions developer machines from pinned
+profiles, and finishes reviewed work only against the merged revision and its CI
+receipts. The plugin ships at `plugins/ai-dlc-workflow/` and is published into a
+team harness for a with/without comparison
+([#191](https://github.com/Sean-Koval/ai-dlc/issues/191)–[#193](https://github.com/Sean-Koval/ai-dlc/issues/193));
+evaluation moved to flightdeck, and cloud sandboxes are rendered and run by hangar.
 
-Team-flow improvements are tracked in
+Installing the engine from this repository is distinct from adopting a work
+repository, which has its own tracker and independent local credentials. GitHub
+Issues with Projects is the default tracker and Jira Cloud is kept; Plane is shipped
+but unsupported, and Linear has been removed. Obsidian remains the private journal.
+Hangar intake starts agent jobs from tickets; AI-DLC keeps its tracker adapters for
+the local work lifecycle (see the
+[tracker boundary](architecture.md#tracker-boundary-with-hangar)). Delivery runs
+through reviewed work records, OpenSpec changes, pull requests and a gated
+`ai-dlc work finish`. The outstanding qualification list is in release verification.
+
+The September team-flow improvements are delivered and closed:
 [#167](https://github.com/Sean-Koval/ai-dlc/issues/167) (guidance for selected
-capabilities), [#168](https://github.com/Sean-Koval/ai-dlc/issues/168) (concise team
-skill discovery), and [#169](https://github.com/Sean-Koval/ai-dlc/issues/169)
-(focused checks and meaningful starter verification). They refine existing setup
-and check services; actual time, token savings and failures caught still need
-measurement on adopted repositories and in the deferred comparison.
+project features), [#168](https://github.com/Sean-Koval/ai-dlc/issues/168) (concise
+team skill discovery) and [#169](https://github.com/Sean-Koval/ai-dlc/issues/169)
+(focused checks and meaningful starter verification). Their effect on time, tokens
+and failures caught has not been measured; a with/without comparison of the
+workflow plugin is flightdeck's.
 
 ## Next three increments
 
@@ -84,7 +90,7 @@ Cancelled or deferred scope stays cancelled; nothing here reopens it.
 
 - Qualification of clean machines, hosted clients, live providers and human
   calibration that was closed as not planned (#14, #15, #16, #17, #20, #21).
-- Selective Confluence publication (#22), pending review of the custom server.
+- Selective Confluence publication (#22, #50), cut under ADR 0001.
 - Package index publication.
 
 The [September 2026 roadmap ledger](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/planning/2026-09-roadmap-ledger.md)
