@@ -2,10 +2,10 @@
   "decisions": [
     {
       "bound": {
-        "AGENTS.md": "1cca7d60c6472876736a0f18660831f05793ab5cfab5fa78ea699d130cd38a8f"
+        "AGENTS.md": "2f2875bf6432f87a9e45ad30699aa3adce2ffed8358639936e5b52109d32f1f4"
       },
       "outcome": "updated",
-      "reason": "Its link into Get started now points at the renamed heading #add-it-to-an-existing-repository (was #install-ai-dlc-for-a-work-project).",
+      "reason": "Re-recorded after merging main, which added the Tracking section (#235, recorded in jira-tracking.json). This branch's only AGENTS.md change is still the Get started link, now #add-it-to-an-existing-repository (was #install-ai-dlc-for-a-work-project); checked that heading exists in docs/workflows/get-started.md as merged, and that the merged Tracking section names no Get started heading or command this branch changes.",
       "reviewer": "Claude (agent)",
       "target": "AGENTS.md"
     },
