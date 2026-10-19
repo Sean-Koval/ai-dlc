@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "AGENTS.md": "1cca7d60c6472876736a0f18660831f05793ab5cfab5fa78ea699d130cd38a8f"
+      },
+      "outcome": "updated",
+      "reason": "Its link into Get started now points at the renamed heading #add-it-to-an-existing-repository (was #install-ai-dlc-for-a-work-project).",
+      "reviewer": "Claude (agent)",
+      "target": "AGENTS.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/get-started.md": "b3cdcadc535e0e825dfe2837433f1b4ef45551430ab207c485ef7dd601bf992e",
+        "docs/assets/front/build.py": "25d9513a41657c70c7e58b58fd13662ca8ae5832a79cfa7815868defc0fbded9",
+        "docs/assets/front/demo_provider.py": "4f29e7499ad628903260043bb8ecc0a086f3fe0b581e24c73ab8a9a1851e98da",
+        "docs/workflows/get-started.md": "70e1bdb5d2c5b7529552233a5fb8fb3313360a92daa351c34732c6b876161d9f",
+        "mkdocs.yml": "2681dd4aef8001e871f83f84b2d4f13bd3b81dde3ae16b4fd3c5ea6fd6bd0af8",
+        "scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
+        "scripts/docs_site_links.py": "241e49f26314def72dd2ee4fdc8545c5b9092fbaf6736952381cc939632f3ec9",
+        "tests/test_front_page.py": "659ae911b1745fd032677fd1237db3e96fe38c58ef9022454e62efe06e8d7b12"
+      },
+      "outcome": "updated",
+      "reason": "The page now opens with a one-sentence lede and the README's five-command block, then 'Add it to an existing repository' (one project adopt block, with project onboard as the read-only plan of the same route), 'Contribute to the engine' and 'Run checks while you work'. The Windows disclaimer and the v0.4.0 / project onboard caveat moved into one admonition at the end; the 'used to live in the README' sentence is gone; prose says ai-dlc. No command or option changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/get-started.md"
+    }
+  ],
+  "schema": 2
+}
