@@ -35,3 +35,26 @@ Codex contributors read the same skills from `plugins/ai-dlc-workflow/skills/`.
 Edit skills only under `agents/skills/`, then run
 `python scripts/build_workflow_plugin.py` to refresh the plugin. Repository layout checks apply to AI-DLC itself; downstream projects
 retain their chosen structure.
+
+## Documentation placement
+
+Current explanations belong in `docs/design/`, procedures in `docs/runbooks/` or
+`docs/workflows/`, and verification records in `docs/verification/`. Formal plans
+and requirements stay together in OpenSpec. Do not create a document solely to
+report that a change completed; use git history for removed scratch reports.
+
+[`docs/catalog.toml`](docs/catalog.toml) records the canonical documents with
+their lifecycle and owner. It is an incremental inventory, not a claim that every
+historical plan or verification record has been reviewed; run `ai-dlc docs check`
+to inspect gaps, and review findings rather than deleting documents automatically.
+[`docs/archive/`](docs/archive/README.md) is historical context whose old
+instructions are not current guidance; the Rust plans, template research and dated
+evidence captures pruned in October 2026 remain in git history at tag
+`docs-prune-2026-10` (commit `fa867cc`), and the
+[September 10 documentation baseline](docs/archive/verification/documentation-baseline.json)
+keeps the pre-cleanup paths and hashes.
+
+The documentation site publishes the pages listed in `mkdocs.yml`'s `nav`; it leaves
+out `docs/archive/`, the dated verification records and reviews, and raw evidence,
+all of which stay in the repository. Add a durable page to the `nav` beside its
+catalog entry.
