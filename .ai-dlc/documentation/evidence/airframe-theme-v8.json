@@ -1,0 +1,85 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "catalog:docs/index.md": "65c0b0508964e9cb9cc7d68cef118ffcaf83bd6b4524054d54306e09f8a57810",
+        "docs/index.md": "2d6ad54409dceeaa8ccbfdb27bb9b8bc04cd421b508fefa349aaea5544898d23"
+      },
+      "outcome": "updated",
+      "reason": "The hero is af-hero--visual with the re-recorded work.svg as its visual and a mono caption; the page hides the left nav and TOC like the sibling home pages; the enroll recording stays under See it work with a sentence pointing at the hero recording. Copy unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/index.md"
+    },
+    {
+      "bound": {
+        "docs/stylesheets/airframe-docs.css": "27097e6a7667cb53e0f900242fa794e38de93922735e9ef34dd6607015879901"
+      },
+      "outcome": "updated",
+      "reason": "Vendored unmodified from theme-v8: the suite strip, h1 + p lede, af-hero--visual, the phone dot field, full-width tables, code blocks that clear the copy button, the hairline secondary button (v7) and a forced-colors block.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/stylesheets/airframe-docs.css"
+    },
+    {
+      "bound": {
+        "docs/stylesheets/airframe-tokens.json": "202857cf498fcb57e7ad09bf45549dec02ced6eff6a9c3f4f1c673ff9a8013ba"
+      },
+      "outcome": "updated",
+      "reason": "Vendored unmodified from theme-v8; release stamp only.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/stylesheets/airframe-tokens.json"
+    },
+    {
+      "bound": {
+        "docs/stylesheets/airframe.css": "85670f2bb02f7314c2967f0e5c40420972f97713103b32a6ccb35d7f65c780d3"
+      },
+      "outcome": "updated",
+      "reason": "Vendored unmodified from agent-factory theme-v8 by scripts/sync-airframe.sh; the release stamp only, no token value changed between v6 and v8.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/stylesheets/airframe.css"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/get-started.md": "b3cdcadc535e0e825dfe2837433f1b4ef45551430ab207c485ef7dd601bf992e",
+        "docs/assets/front/build.py": "541aa7b76474725982624dca23ce791af147759e675a42b54668cc275098d10f",
+        "docs/assets/front/demo_provider.py": "a266086be5cd247643a3157617f7f56e57c9200f77f885252ddf31a72d8c4f1d",
+        "docs/workflows/get-started.md": "d7329847104954c57141cbf8b675e904141e38ef350a3e9a9873a34bc0ad0e92",
+        "mkdocs.yml": "3b16c39b75cee40102116028fd27dd0e4b434d6d093b68dfd1c2cc8d884d9e02",
+        "scripts/bootstrap.sh": "d81c26f7502d160c6ee3214da414cdc9d184e77129230f61d933e2e199b001bf",
+        "scripts/docs_site_links.py": "241e49f26314def72dd2ee4fdc8545c5b9092fbaf6736952381cc939632f3ec9",
+        "tests/test_front_page.py": "da99dbadd7791b0cbd9a8dca553bfe74663e305e8519cb3bf2a1e1ab1cf52a66"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Mapped through mkdocs.yml and docs/assets/front/build.py; the config change adds theme.custom_dir and extra.airframe.product and the build script change pins the demo copier source path; neither touches this page.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/get-started.md"
+    },
+    {
+      "bound": {
+        "overrides/main.html": "aa30b58dc331948e2f80e0d12b9e634294edecca6d2badec912fe20b9d56160e"
+      },
+      "outcome": "updated",
+      "reason": "Two lines: extends base.html and includes the vendored suite-strip partial in the announce block, per the theme-v8 changelog.",
+      "reviewer": "Claude (agent)",
+      "target": "overrides/main.html"
+    },
+    {
+      "bound": {
+        "overrides/partials/airframe-suite.html": "b9d0582e9bb4c1cf3cc156bba019757e9b3adc3bcd821e813fd1cfae946e4654"
+      },
+      "outcome": "updated",
+      "reason": "Vendored unmodified from theme-v8 by scripts/sync-airframe.sh; never edited here.",
+      "reviewer": "Claude (agent)",
+      "target": "overrides/partials/airframe-suite.html"
+    },
+    {
+      "bound": {
+        "scripts/sync-airframe.sh": "582f34957a7386eeea5a53c4946410cab8478dea285b8359ba87a4c0faae53ac"
+      },
+      "outcome": "updated",
+      "reason": "Vendors airframe-suite.html as well; its default ref is CURRENT=theme-v8 (was main, and the comment said theme-v2) so a bare run refreshes the release this repo vendors.",
+      "reviewer": "Claude (agent)",
+      "target": "scripts/sync-airframe.sh"
+    }
+  ],
+  "schema": 2
+}

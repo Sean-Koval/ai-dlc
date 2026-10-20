@@ -1,8 +1,11 @@
 # Framework delivery architecture
 
-Status: planned implementation contracts, September 5, 2026.
-Authority: [product direction](../product-direction.md). Formal behavior belongs
-to the linked OpenSpec changes.
+See the ticket boundaries and frozen cross-ticket contracts that the September
+2026 framework delivery was built against.
+
+Status: planned implementation contracts, September 5, 2026. Authority:
+[product direction](../product-direction.md). Formal behavior belongs to the
+linked OpenSpec changes.
 
 ## Baseline and intended change
 
@@ -135,11 +138,14 @@ installers, or provider mutations.
 Component loading verifies the manifest's path and digest, parses its schema,
 confirms the `core` recipe and guidance file exist, and never executes manifest
 content.
+
+### Other clarifications
+
 - Linear plan `config` is the parsed shared ai-dlc.toml, not merged machine state.
   `before_digest` uses the existing canonical `config.digest` on that dictionary.
-  Apply re-reads/parses the current file and compares the same digest. Comment-only
-  changes survive because editing starts from the current file text, never from a
-  reserialization of the old dictionary. Invalid plans write nothing.
+  Apply re-reads the current file and compares the same digest. Comment-only
+  changes survive because editing starts from the current file text, never from
+  a reserialization of the old dictionary. Invalid plans write nothing.
 - A bundle candidate is a context-managed `BundleCandidate` dataclass in
   workflow_bundles.py with `source: str`, `ref: str`, `bundle_id: str`,
   `resolved_commit: str`, `root: Path`, `manifest: dict`,

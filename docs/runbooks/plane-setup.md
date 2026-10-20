@@ -86,7 +86,7 @@ The adapter supports ordinary work items, not custom property/type workflows,
 imports, attachments, Jira migration, Plane installation or automatic integration
 configuration. A server that rejects the bounded request needs manual inspection.
 
-Before any mutation, AI-DLC persists immutable intent under the local state home:
+Before any mutation, ai-dlc persists immutable intent under the local state home:
 `ai-dlc/provider-attempts/plane/<root digest>/<operation digest>.json`. State home is
 `XDG_STATE_HOME`, or the account home `.local/state`; it is supplied as trusted
 local runtime context, never shared provider configuration. Preserve these files.

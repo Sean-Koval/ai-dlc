@@ -1,19 +1,17 @@
 # Workflow tool map
 
-The lifecycle uses stable roles; `ai-dlc.toml` selects their current providers.
-This page records how the default AI-DLC toolset participates without making a
-vendor part of the lifecycle definition.
+Find the command, MCP tool or skill that each stage of the
+[development workflow](../development-workflow.md) uses, and which provider
+fills each role by default.
 
-Installed tool use, harness guidance, and provider adapters are complementary.
+The lifecycle uses stable roles; `ai-dlc.toml` selects their current providers.
 Agents can use native tools directly; the configured services provide specific
 validation and completion boundaries. The [roadmap](../roadmap.md) distinguishes
-planned component/workflow support from the current interfaces listed here.
-
-[Back to the workflow map](../development-workflow.md)
+planned support from the current interfaces listed here.
 
 ## Role to provider mapping
 
-| Stable responsibility | AI-DLC role or service | Current default | Owns |
+| Stable responsibility | ai-dlc role or service | Current default | Owns |
 | --- | --- | --- | --- |
 | Formal behavior | `specs` | OpenSpec | Requirements and scenarios |
 | Priority and lifecycle | `tracker` | GitHub Issues and Projects | Work identity, priority, and status |
@@ -21,7 +19,7 @@ planned component/workflow support from the current interfaces listed here.
 | Review, merge, and CI identity | `scm` | GitHub | Branches, pull requests, merged SHA, workflow runs, and artifacts |
 | Deployment evidence | `deploy` | None by default | Environment-specific release evidence when configured |
 | Interactive agent | `agent-client` | Claude Code and Codex | Analysis, judgment, authoring, and tool use under user authorization |
-| Deterministic workflow | AI-DLC CLI and selected MCP services | Local Python implementation | CLI: validation, rendering, machine bindings, reconciliation, receipts, and gates; MCP: reviewed work, doctor, project documentation, workspace inspection, and knowledge |
+| Deterministic workflow | ai-dlc CLI and selected MCP services | Local Python implementation | Validation, rendering, machine bindings, reconciliation, receipts and gates; MCP exposes reviewed work, doctor, documentation and knowledge |
 | Project generation and updates | Template service | Copier | Template answers, source revision, preview, and three-way updates |
 
 Projects may omit roles they do not need. Confirm the actual mapping in the
@@ -32,24 +30,21 @@ GitHub Issues and Projects is the default and recommended work tracker with
 recorded live evidence. Jira Cloud is kept for the local work lifecycle pending
 its live workflow qualification. Plane is unsupported and unqualified: scaffolding
 refuses it without `--allow-unsupported`, and doctor reports it as unsupported.
-The Linear adapter has been removed. Hangar intake, not AI-DLC, starts agent jobs
-from tickets; see the
-[tracker boundary](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/architecture.md#tracker-boundary-with-hangar)
-and set `[work] tracker_writes = "finish-only"` where both are used. Follow the
-[Jira preparation record](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/jira-cloud-new-work.md)
-for prerequisites and execution limits; adapter availability alone does not
-establish readiness.
+The Linear adapter has been removed.
 
-The complete evidence-gated work cycle currently requires configured tracker
-and SCM roles. The runtime retains compatibility fallbacks for local OpenSpec
-and GitHub, but they do not choose account, repository, or authorization.
-GitHub uses conventional `verify.yml` and `main` defaults unless overridden;
-the tracker has no fallback. Without a configured tracker or SCM role, project
-initialization, adoption, setup, checks, design, and documentation remain
-available, but publish/start/finish is not a usable end-to-end lifecycle.
-A missing specification role may deliberately use local OpenSpec when its
-artifacts exist; otherwise the work must be reviewed with
-`requires_spec = false`. Knowledge, deployment, and agent clients remain
+hangar intake, not ai-dlc, starts agent jobs from tickets; see the
+[tracker boundary](../architecture.md#tracker-boundary-with-hangar)
+and set `[work] tracker_writes = "finish-only"` where both are used. The
+[Jira preparation record](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/jira-cloud-new-work.md)
+lists prerequisites and limits; adapter availability alone does not establish
+readiness.
+
+The evidence-gated work cycle requires configured tracker and SCM roles. The
+runtime retains compatibility fallbacks for local OpenSpec and GitHub, but they
+do not choose an account, repository or authorization. GitHub assumes
+`verify.yml` and `main` unless overridden; the tracker has no fallback. Without
+those roles, setup, checks, design and documentation still work, but
+publish/start/finish does not. Knowledge, deployment and agent clients remain
 optional.
 
 ## Skill map
@@ -65,17 +60,18 @@ optional.
 | Session or ownership transfer | `handoff` | Verified state, decisions, evidence, risks, and next action |
 | End of work period | `day-end` | Concise continuity record and reconciled remote state |
 
-The optional [workflow plugin](https://github.com/Sean-Koval/ai-dlc/blob/main/plugins/ai-dlc-workflow/README.md) carries
+The optional [workflow plugin](get-started.md#workflow-plugin) carries
 `discovery`, `prd-draft`, `needs-spec`, `spec-from-prd`, `review-inbox`, `handoff`,
 `document-review`, `document-organize`, `design-brief` and `design-evaluate`,
 namespaced as `ai-dlc-workflow:<skill>`, plus an `ai-dlc-workflow` guide skill.
-`day-start` and `day-end` stay with personal profiles. Its hooks run without the
-CLI: they deny destructive commands, delegate to `ai-dlc hook` only in adopted
-repositories outside hangar, and never apply the bound-push policy in hangar.
-Repository-rendered hooks below require the CLI.
+`day-start` and `day-end` stay with personal profiles.
 
-Skills provide judgment patterns. Provider instructions define vendor
-operations. AI-DLC services own validation and mutation boundaries. A skill
+The plugin's hooks run without the CLI. They deny destructive commands, delegate
+to `ai-dlc hook` only in adopted repositories outside hangar, and never apply
+the bound-push policy in hangar. Repository-rendered hooks below require the CLI.
+
+Skills provide judgment patterns; provider instructions define vendor
+operations; ai-dlc services own validation and mutation boundaries. A skill
 cannot bypass completion gates or expand the user's authorization.
 
 ## Portable enrollment boundary
@@ -83,39 +79,38 @@ cannot bypass completion gates or expand the user's authorization.
 A private profile repository owns the portable `ai-dlc-profile.toml` and is
 enrolled by pinned revision. A second machine enrolls that same revision but
 maintains its own machine binding for paths, account selection, and
-environment-variable names. The project repository owns shared policy; an
-external password manager, keychain, or secret injector owns credential values
-and supplies them transiently through the process environment. Codex and Claude
-own their generated client configuration. Never commit `.env` files or
-credential values.
+environment-variable names.
+
+The project repository owns shared policy. An external password manager,
+keychain, or secret injector owns credential values and supplies them
+transiently through the process environment. Codex and Claude own their
+generated client configuration. Never commit `.env` files or credential values.
 
 `ai-dlc machine status`, `plan`, `apply`, `sync`, and `doctor` own the local
-enrollment lifecycle. Local CLI and MCP execution are current; hosted or cloud
-execution is a later qualification target. Existing Obsidian vaults support portal linking and explicit local project mounts; vault creation is not provided. Guided discovery/setup is
-implemented for GitHub, Jira Cloud and the unsupported Plane adapter. Jira live workflow
-qualification and native Antigravity integration remain pending.
+enrollment lifecycle; machine enrollment mutations are CLI-only. Existing
+Obsidian vaults support portal linking and explicit local project mounts; vault
+creation is not provided. Guided setup exists for GitHub, Jira Cloud and the
+unsupported Plane adapter.
 
-Machine enrollment mutations are CLI-only in this cycle. MCP includes
-`work_context`, `work_publish`, `work_start`, `work_status`, `work_link`, `work_finish`,
-`doctor`, `knowledge_find`, `knowledge_append`, and `knowledge_note`, alongside
-project-document tools and workspace previews and inspection. It does not expose
-machine enrollment mutation. These MCP identifiers differ from the
-space-separated CLI commands, such as `ai-dlc work publish` and `ai-dlc
-knowledge append`.
+MCP includes `work_context`, `work_publish`, `work_start`, `work_status`,
+`work_link`, `work_finish`, `doctor`, `knowledge_find`, `knowledge_append` and
+`knowledge_note`, alongside project-document and workspace tools. These
+identifiers differ from the space-separated CLI commands, such as
+`ai-dlc work publish`.
 
 ## Command and service map
 
 | Area | Interfaces | Effect |
 | --- | --- | --- |
 | Readiness and context | `ai-dlc doctor`, `ai-dlc next`, `ai-dlc context` | Checks the selected environment; `next` and `context --brief` show local next actions without consulting the tracker |
-| Consumer onboarding | `ai-dlc project onboard --root PATH` | Returns a read-only schema-1 plan from the explicit target and selections; exit 0 means actions are available, not completed, and no apply mode or MCP operation exists |
-| Environment comparison | `ai-dlc machine status --root PATH --export FILE`, `ai-dlc machine status --compare LEFT RIGHT` | Exports permitted local facts and compares only two reports; unknown required identity prevents equivalence, while useful known drift remains visible. See [report modes and exit codes](../runbooks/machine-enrollment.md#compare-selected-environments) |
+| Consumer onboarding | `ai-dlc project onboard --root PATH` | Returns a read-only plan; exit 0 means actions are available, not completed |
+| Environment comparison | `ai-dlc machine status --root PATH --export FILE`, `ai-dlc machine status --compare LEFT RIGHT` | Exports permitted local facts and compares two reports; see [report modes and exit codes](../runbooks/machine-enrollment.md#compare-selected-environments) |
 | Project creation | `ai-dlc project init`, `ai-dlc project adopt` | Initializes a project or previews/applies conflict-safe adoption |
-| Project maintenance | `ai-dlc project sync`, `ai-dlc project rebind` | Performs staged Copier updates or previews/applies reviewed provider rebinding, including reviewed provider connection rebinding |
-| Project execution | `ai-dlc project setup`, `ai-dlc project check --check ID`, `ai-dlc project check --required` | Runs selected edit checks or full required verification and emits receipts that retain every required ID; `--target` accepts `local` (default) or `github-actions`, and cloud sandboxes are hangar's |
+| Project maintenance | `ai-dlc project sync`, `ai-dlc project rebind` | Staged Copier updates; previews/applies reviewed provider rebinding |
+| Project execution | `ai-dlc project setup`, `ai-dlc project check --check ID`, `ai-dlc project check --required` | Runs selected checks or the full required set and emits receipts that list every required ID; `--target` is `local` or `github-actions` |
 | Agent configuration | `ai-dlc agents render` | Previews, applies, or verifies owned project/personal client configuration |
 | Local work drafting | `ai-dlc work new WORK_ID [--from-issue REF]` | Creates an unreviewed record from explicit fields or a configured tracker read; does not publish or initialize mutation state |
-| Work lifecycle | `ai-dlc work publish`, `ai-dlc work start`, `ai-dlc work pr`, `ai-dlc work finish` | Reconciles tracker state, binds work to a branch, and enforces completion gates; explicit `work finish <id> --at-merge` prepares owned exact-merge evidence when the caller has advanced |
+| Work lifecycle | `ai-dlc work publish`, `ai-dlc work start`, `ai-dlc work pr`, `ai-dlc work finish` | Reconciles tracker state, binds work to a branch and enforces completion gates; `work finish <id> --at-merge` finishes from the exact merge commit |
 | Local work inspection | `ai-dlc work status`, MCP `work_status` | Reads the local record, bindings and active/archived specification state without querying tracker status |
 | Specification finalization | `ai-dlc work archive` | Archives this work's OpenSpec change, promotes specifications, repoints the record and commits only affected files before merge |
 | Traceability | `ai-dlc work link` | Links PR, specification, branch, deployment, or tracker evidence and commits only the work record by default |
@@ -124,7 +119,7 @@ knowledge append`.
 | Personal knowledge | `ai-dlc knowledge find`, `ai-dlc knowledge note`, `ai-dlc knowledge append`, `ai-dlc knowledge check` | Reads or writes explicitly selected vault material; `check` validates learning frontmatter read-only |
 | Configuration profiles | `ai-dlc profile show`, `ai-dlc profile migrate`, `ai-dlc profile capture` | Resolves provenance, previews schema migration, or captures supported preferences |
 | Machine provisioning | `ai-dlc setup plan`, `ai-dlc setup apply` | Previews or applies selected workstation modules and personal agent configuration |
-| Agent-native access | `ai-dlc mcp serve` | Exposes reviewed work, read-only doctor, project documentation, workspace previews and inspection, and selected knowledge services through local MCP; machine enrollment mutation remains CLI-only |
+| Agent-native access | `ai-dlc mcp serve` | Exposes reviewed work, read-only doctor, documentation, workspace and knowledge services through local MCP |
 
 ### Optional publication hook
 
@@ -134,11 +129,13 @@ reviewed tracker-bound work for covered push and PR-create commands. Explicit
 `tracked-branches` also allows a known branch with no associated record after a
 complete readable inventory. Every associated record must still pass local
 validation; malformed or unreadable inventory cannot grant an exemption.
-Selecting a policy alone does not enable a hook or expand supported client/version
+
+Selecting a policy alone does not enable a hook or expand supported client
 coverage. Hook coverage is a minimum client version per client (`claude-code`
-2.1.0, `codex` 0.151.0 in `agents/capabilities.toml`): a configured version below it
-refuses, a newer one is accepted and an unset version is accepted with a warning.
-The floor is not a qualification record. See [the workflow decision](../development-workflow.md#when-a-work-record-is-needed)
+2.1.0, `codex` 0.151.0 in `agents/capabilities.toml`). A configured version
+below it refuses, a newer one is accepted and an unset version is accepted with
+a warning. The floor is not a qualification record. See
+[the workflow decision](../development-workflow.md#when-a-work-record-is-needed)
 for the configuration example.
 
 This offline check does not query the remote tracker or enforce arbitrary shell
@@ -147,32 +144,18 @@ exact-merge completion evidence retain their existing boundaries.
 
 ## Artifact ownership
 
-```mermaid
-flowchart TD
-    H[Human and agent judgment] --> R[Repository rationale and design]
-    H --> SP[Specification provider]
-    H --> TR[Tracker]
-    H --> PK[Personal knowledge]
-    R --> WR[AI-DLC work record]
-    SP --> WR
-    TR --> WR
-    WR --> SCM[Branch, PR, merge, and CI]
-    SCM --> FIN[AI-DLC finish gates]
-    SP --> FIN
-    FIN --> TR
-```
+The reviewed work record binds the repository, the specification provider and
+the tracker. The branch, PR, merge and CI evidence it produces are what the
+finish gates check before the tracker item closes.
 
 - Repository: architecture, PRDs, design context, ADRs, runbooks, code, tests.
 - Specification provider: formal behavior and scenarios.
 - Tracker: priority, work identity, lifecycle state.
 - SCM/CI: review, merge identity, test artifacts, and receipts.
 - Knowledge provider: private continuity and links to durable artifacts.
-- Portable project configuration: provider roles and names of required
-  environment variables, never their values.
-- Local machine scope: account choices, paths, caches, journals, and ignored
-  non-secret control-plane IDs and metadata.
-- External password manager, keychain, or secret injector: actual credential
-  values, supplied transiently through the process environment.
+- Portable project configuration: provider roles and the names of required
+  environment variables; the machine binding holds account choices and paths;
+  a password manager, keychain or secret injector holds the values.
 
 ## CI and release evidence
 
@@ -182,15 +165,11 @@ Matrix repositories list every exact expected artifact in
 `scm.receipt_artifacts`; finish reads this declaration from the authenticated
 merged revision and validates every receipt.
 
-Until a signed and pinned AI-DLC release exists, projects must supply the
-published `bootstrap/release.sh` and corresponding artifact manifest instead
-of inventing an unpinned download URL. Release gates must cover clean-machine
-bootstrap and artifact integrity.
-
-Packaging a skill is not evidence that it changes agent behavior correctly.
-Behavioral skill and harness evaluation moved to
-[flightdeck](https://github.com/Sean-Koval/flightdeck); see the
-[migration note](../migration.md#ai-dlc-eval-removed).
+Projects supply the published `bootstrap/release.sh` and its artifact manifest
+rather than an unpinned download URL. Packaging a skill is not evidence that it
+changes agent behavior; behavioral evaluation moved to
+[flightdeck](https://github.com/Sean-Koval/flightdeck) (see the
+[migration note](../migration.md#ai-dlc-eval-removed)).
 
 ## Evolving the toolset
 
@@ -202,76 +181,69 @@ When replacing or adding a tool:
 4. Update relevant skills only when the judgment pattern changes.
 5. Rebind existing work through reviewed mappings; provider changes apply to
    new work by default.
-6. Add deterministic contract and integration tests plus an explicit live
-   walkthrough for externally mutating providers.
-7. Update diagrams and project templates in the same reviewed change.
+6. Add contract and integration tests plus a live walkthrough for externally
+   mutating providers, and update diagrams and templates in the same change.
 
 Never place secret values, account identifiers, or machine-local paths in this
-map. Naming a required environment variable in portable configuration is safe;
-storing its value there is not.
+map; name a required environment variable, never its value.
 
 ## Optional Design PM route
 
-For interface work, design-brief links the shaped outcome and RQ IDs to a draft
-brief, reviewed task rubric and explicit budget. The user's existing visual tool
-performs generation. Design-evaluate records candidate-specific observations,
-required failures, ratings and unverified checks, with separate-session or human
-review where available and explicit self-review otherwise. No extra installed
-service, fixed model or mandatory paid tool is required.
-
-Follow [design to implementation](design-to-implementation.md#optional-interface-evaluation)
-for the four portable templates and original examples. Formal behavior remains
-with the selected specification provider; the tracker owns delivery status, and
-existing finish gates remain authoritative. The separate human calibration
-protocol is unrun and does not spend the existing generic skill-evaluation budget.
+For interface work, `design-brief` links the shaped outcome and RQ IDs to a
+draft brief, reviewed task rubric and explicit budget. The user's existing
+visual tool performs generation. `design-evaluate` records candidate-specific
+observations, required failures, ratings and unverified checks. No extra
+service, fixed model or paid tool is required. Follow
+[design to implementation](design-to-implementation.md#optional-interface-evaluation)
+for the four portable templates; the tracker and finish gates stay authoritative.
 
 ## Documentation and private workspace tools
 
-| MCP tool | CLI counterpart | Purpose |
-|---|---|---|
-| `project_docs_impact` | `docs review` | Find mapped documents and unmapped changes for an explicit Git comparison |
-| `project_docs_disposition` | `docs review --disposition` | Emit content-bound reviewed decisions without writing evidence |
-| `project_docs_record` | `docs review --disposition --evidence-id` | Merge reviewed decisions into one work item's evidence file, keeping decisions whose bound content is unchanged |
-| `project_docs_gate` | `docs gate` | Check current dispositions and new objective debt |
-| `project_docs_inventory` | `docs check --inventory` | Discover repository Markdown paths, exclusions and unavailable paths without reading bodies |
-| `project_docs_search` | `docs search` | Search `docs/`, `openspec/` and per-call declared Markdown under one body budget; returns canonical paths, digests and explicit omissions |
-| `project_docs_read` | `docs read` | Read one complete eligible project document within a byte budget; undeclared root or legacy files are refused |
-| `project_docs_review` | `docs review --report` | Prepare bounded selected-document context; explicit `source=inventory` permits uncatalogued documents |
-| `project_docs_review_check` | `docs review --check` | Check citations, scope and source bytes; does not certify semantic truth |
-| `project_workspace_preview` | `project workspace-init` | Preview additive private project navigation; CLI apply explicitly creates files |
-| CLI only | `project workspace-init --shell` | Preview the owned bash, zsh or fish PATH section; `--apply` writes after ownership checks |
-| `project_workspace_check` | `project workspace-check` | Report installation, shell activation, each mount binding and link navigation separately; read-only, native client not assessed |
+??? note "MCP documentation and workspace tools"
 
-Project-document search and read cover repository files, never private notes.
-Declare additional Markdown per call with repeated `--source` (MCP `sources`);
-nothing is persisted. Edit returned repository paths with ordinary file and Git
-tools and run project checks. The `knowledge_*` tools remain for private notes,
-and a vault portal, mounted folder or Markdown link does not grant access.
+    | MCP tool | CLI counterpart | Purpose |
+    |---|---|---|
+    | `project_docs_impact` | `docs review` | Find mapped documents and unmapped changes for an explicit Git comparison |
+    | `project_docs_disposition` | `docs review --disposition` | Emit content-bound reviewed decisions without writing evidence |
+    | `project_docs_record` | `docs review --disposition --evidence-id` | Merge reviewed decisions into one work item's evidence file, keeping decisions whose bound content is unchanged |
+    | `project_docs_gate` | `docs gate` | Check current dispositions and new objective debt |
+    | `project_docs_inventory` | `docs check --inventory` | Discover repository Markdown paths, exclusions and unavailable paths without reading bodies |
+    | `project_docs_search` | `docs search` | Search `docs/`, `openspec/` and per-call declared Markdown under one body budget; returns canonical paths, digests and explicit omissions |
+    | `project_docs_read` | `docs read` | Read one complete eligible project document within a byte budget; undeclared root or legacy files are refused |
+    | `project_docs_review` | `docs review --report` | Prepare bounded selected-document context; explicit `source=inventory` permits uncatalogued documents |
+    | `project_docs_review_check` | `docs review --check` | Check citations, scope and source bytes; does not certify semantic truth |
+    | `project_workspace_preview` | `project workspace-init` | Preview additive private project navigation; CLI apply explicitly creates files |
+    | CLI only | `project workspace-init --shell` | Preview the owned bash, zsh or fish PATH section; `--apply` writes after ownership checks |
+    | `project_workspace_check` | `project workspace-check` | Report installation, shell activation, each mount binding and link navigation separately; read-only, native client not assessed |
 
-The [documentation guide](https://github.com/Sean-Koval/ai-dlc/blob/main/project-templates/project/docs/documentation-guide.md#search-and-read-project-documents) explains ownership, packet
-review, project-document access, baselines and workspace use. The optional CLI `docs check --style` invokes
-configured Vale; it does not install a tool or establish factual correctness.
+Project-document search and read cover repository files, never private notes;
+the `knowledge_*` tools remain for those. Declare additional Markdown per call
+with repeated `--source` (MCP `sources`); nothing is persisted. The
+[documentation guide](https://github.com/Sean-Koval/ai-dlc/blob/main/project-templates/project/docs/documentation-guide.md#search-and-read-project-documents)
+explains ownership, packet review, baselines and workspace use.
 
 ### Native project mounts
 
 `ai-dlc project link-vault --mode mount --preview` previews canonical `docs/` and
 existing `openspec/` directory mounts; omit `--preview` to apply. The MCP
 `project_vault_mount_preview` tool uses the same read-only plan. Portal mode
-remains the default. Mounting does not expand private knowledge read/write access.
-See the documentation guide for stable-checkout, adoption and conflict handling.
+remains the default, and mounting does not expand private knowledge access.
 `ai-dlc project workspace-check` (MCP `project_workspace_check`) diagnoses the
 executable, shell activation, bindings and navigation without changing them.
 
 ### Session continuity
 
 `ai-dlc work finish <id> --learning FILE` optionally stores an authored learning
-through the knowledge provider after completion gates pass, adding provenance
-frontmatter (merged PR, merge commit, author) that `ai-dlc knowledge check --vault PATH`
-validates. MCP `work_finish` accepts `learning` text alongside its existing `handoff`. Missing knowledge leaves
-the note pending and preserves completion. `work start` returns up to five
-matching learning paths and first lines; read relevant notes before implementing.
-The session-start hook recalls notes for the branch's bound work record. Stop
-reminders use only ignored local friction counts and never transmit them.
+through the knowledge provider after completion gates pass. It adds provenance
+frontmatter (merged PR, merge commit, author) that
+`ai-dlc knowledge check --vault PATH` validates. MCP `work_finish` accepts
+`learning` text alongside its existing `handoff`. Missing knowledge leaves the
+note pending and preserves completion.
+
+`work start` returns up to five matching learning paths and first lines; read
+relevant notes before implementing. The session-start hook recalls notes for the
+branch's bound work record. Stop reminders use only ignored local friction
+counts and never transmit them.
 
 ### Local frontend evidence
 
@@ -284,9 +256,8 @@ See [frontend smoke and capture](design-to-implementation.md#frontend-smoke-and-
 ## Local FDE engagement documents
 
 `ai-dlc fde scaffold SLUG --title TITLE` creates an engagement charter, seven
-stage landing pages and portable guidance beneath repository docs. `--dry-run`
-returns exact proposed content without writing. `ai-dlc fde check SLUG` validates
-structure, lifecycle states and preceding exit evidence. These CLI operations
-share the documentation application service and have no provider connection or
-MCP facade. See the [FDE runbook](../runbooks/fde-documents.md) for configuration
-and the explicitly outstanding Confluence publication capability.
+stage landing pages and portable guidance beneath repository docs; `--dry-run`
+returns the proposed content without writing. `ai-dlc fde check SLUG` validates
+structure, lifecycle states and preceding exit evidence. See the
+[FDE runbook](../runbooks/fde-documents.md); Confluence publication is not
+implemented.

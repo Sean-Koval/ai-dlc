@@ -1,35 +1,47 @@
-# AI-DLC product direction
+# ai-dlc product direction
 
-Status: feature-frozen as of 2026-10 by [ADR 0001](decisions/0001-refocus-ai-dlc.md), which owns the in-scope list; changes outside it are closed with a pointer and bug fixes in frozen areas are welcome. The roadmap distinguishes implemented, proposed, cancelled and unverified scope.
+Understand what ai-dlc promises to do, what it leaves to its neighbours, and
+the user outcomes it is measured against.
+
+Status: feature-frozen as of 2026-10 by
+[ADR 0001](decisions/0001-refocus-ai-dlc.md), which owns the in-scope list.
+Changes outside it are closed with a pointer; bug fixes in frozen areas are
+welcome. The roadmap distinguishes implemented, proposed, cancelled and
+unverified scope.
 
 ## Product promise
 
-AI-DLC is a local workflow, machine-provisioning and work-lifecycle tool. It
-prepares a developer machine, authors one optional workflow plugin of guidance,
-hooks and team skills, and finishes reviewed work only against the merged revision
-and its CI receipts. It does not evaluate harnesses (flightdeck does) or define
-what runs in cloud sandboxes (hangar's claim-time renderer does).
+ai-dlc is a local workflow, machine-provisioning and work-lifecycle tool. It
+prepares a developer machine and authors one optional workflow plugin of
+guidance, hooks and team skills. It finishes reviewed work only against the
+merged revision and its CI receipts. It does not evaluate harnesses (flightdeck
+does) or define what runs in cloud sandboxes (hangar's claim-time renderer does).
 
 Its durable value is the relationship between tools, artifacts, decisions, and
-workflows. OpenSpec currently provides formal specification; personal projects use GitHub Issues and Projects, while Jira Cloud is the selected work target. Codex and Claude Code have implemented client adapters; Antigravity project guidance is implemented; installed-client qualification remains unverified. These choices are replaceable. Stable responsibilities survive provider changes.
+workflows. OpenSpec currently provides formal specification; personal projects
+use GitHub Issues and Projects, while Jira Cloud is the selected work target.
+Codex and Claude Code have implemented client adapters and Antigravity project
+guidance is implemented; installed-client qualification remains unverified.
+These choices are replaceable. Stable responsibilities survive provider changes.
 
-The harness performs development and can use installed tools directly. AI-DLC
+The harness performs development and can use installed tools directly. ai-dlc
 provides setup, guidance, integration, validation, and evidence services where
 useful. Existing project policies still determine required checks and completion.
 
-Teams should be able to scaffold their own development flow: choose supported
-tools and clients, keep repository policy and acceptance commands in the project,
-and share only the guidance they need. Start with setup, selected guidance and
-useful local checks. Add tracked delivery, formal specifications and other stages
-when the team's work needs them. Profiles and team sources carry selected
-practices; they do not make this repository's own process mandatory downstream.
+Teams should be able to scaffold their own development flow. They choose
+supported tools and clients, keep repository policy and acceptance commands in
+the project, and share only the guidance they need. Start with setup, selected
+guidance and useful local checks; add tracked delivery, formal specifications
+and other stages when the team's work needs them. Profiles and team sources
+carry selected practices without making this repository's own process mandatory
+downstream.
 
 ## Immediate adoption outcome
 
-Install AI-DLC on the work computer and adopt work repositories with their own
+Install ai-dlc on the work computer and adopt work repositories with their own
 Jira configuration and local credentials, exposing consistent guidance to Claude
 and Antigravity. A clone of the engine repository must not implicitly enroll work
-projects into AI-DLC's personal tracker. Keep Obsidian private; defer Confluence
+projects into ai-dlc's personal tracker. Keep Obsidian private; defer Confluence
 publication until the existing custom MCP can be reviewed.
 
 ## User outcomes
@@ -55,7 +67,7 @@ publication until the existing custom MCP can be reviewed.
 | Harness support | Author one optional workflow plugin; render managed sections into developer repos | Managed Codex/Claude/Antigravity guidance and pinned bundles | Package the workflow plugin ([#191](https://github.com/Sean-Koval/ai-dlc/issues/191)) |
 | Workflows | Guide decisions and handoffs | Product shaping, traceability and optional Design PM guidance | Bug fixes only while frozen |
 
-Evaluation of harnesses and guidance is not an AI-DLC responsibility: flightdeck
+Evaluation of harnesses and guidance is not an ai-dlc responsibility: flightdeck
 owns it. Required checks and finish gates still establish delivery evidence.
 
 ## Product development workflow
@@ -83,7 +95,7 @@ contracts, or operational evidence. Small work uses small artifacts.
   adequacy and design quality remain review judgments.
 - Prefer existing tools; build integration where it removes coordination work.
   Tencent teamai repositories are a supported team-source format, not a runtime
-  dependency; AI-DLC reads their safe, pinned subset through profile subscriptions.
+  dependency; ai-dlc reads their safe, pinned subset through profile subscriptions.
   Prove a small component contract with real adapters before expanding it.
 - Make installation, configuration, instructions, and readiness understandable
   together while preserving their separate data ownership.

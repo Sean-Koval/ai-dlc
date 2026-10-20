@@ -1,5 +1,8 @@
 # Local and shared knowledge relationship
 
+Know where private notes, team pages and learnings live, and how an agent
+reads, recalls and publishes each without mixing them.
+
 Status: proposed workflow, September 7, 2026, based on maintainer clarification.
 Parent: [provider toolsets PRD](provider-toolsets-prd.md).
 
@@ -13,32 +16,37 @@ Parent: [provider toolsets PRD](provider-toolsets-prd.md).
 
 Confluence is authoritative for existing team pages. A local summary is a dated
 derivative, not a synchronized replacement. For an explicitly enrolled local
-publication source, retain its page binding and expected version; a teammate edit
-requires reconciliation instead of overwriting or silently choosing a winner.
+publication source, retain its page binding and expected version. A teammate
+edit requires reconciliation instead of overwriting or silently choosing a winner.
 
-An example workflow: link a relevant team guide in a daily note, ask an agent to
-read it for the current task, and optionally save a short summary with source URL,
-version when available and retrieval date. Keep personal observations separate.
+An example workflow: link a relevant team guide in a daily note and ask an agent
+to read it for the current task. Optionally save a short summary with source
+URL, version when available and retrieval date, keeping personal observations
+separate.
+
 Later, select useful learnings to draft a team guide in an eligible shared-doc
 location. Review the entire outgoing document and destination before publishing.
 Private note inclusion is never inferred from a link, tag or neighboring file.
 
 ## Existing integration
 
-The maintainer uses a custom Confluence MCP server exposing a graph of documents,
-page descriptions and LLM-derived semantic information, and quality grading for
-documents, spaces and pages. Claude and Antigravity help write and push documents.
+The maintainer uses a custom Confluence MCP server. It exposes a graph of
+documents, page descriptions and LLM-derived semantic information, and quality
+grading for documents, spaces and pages. Claude and Antigravity help write and
+push documents.
 These are user-reported capabilities; code, tool schemas, auth and live behavior
 have not been inspected. The repository path or documentation is the next input.
 
-Use the existing graph and quality functions instead of rebuilding them in AI-DLC.
+Use the existing graph and quality functions instead of rebuilding them in ai-dlc.
 Check whether graph queries can return a relevant subset without exporting the
 whole graph into local notes. Treat LLM descriptions and quality grades as derived
-aids with source links, not authoritative page content. Reuse existing writes
-where their preview, conflict and recovery behavior meets the chosen guarantee.
-If an existing tool cannot supply those guarantees, expose that limitation and
-choose between improving the custom server or a narrow AI-DLC bridge after review.
-Do not automatically install a second Atlassian connection for Confluence.
+aids with source links, not authoritative page content.
+
+Reuse existing writes where their preview, conflict and recovery behavior meets
+the chosen guarantee. If an existing tool cannot supply those guarantees, expose
+that limitation and choose between improving the custom server or a narrow
+ai-dlc bridge after review. Do not automatically install a second Atlassian
+connection for Confluence.
 
 ## Smallest useful integration
 
@@ -60,7 +68,7 @@ Do not create another connector, automatic site crawler, shared search index,
 vault mirror or two-way sync engine. Private local context stays out of outgoing
 page payloads unless the user explicitly selects and reviews a derived shared
 draft. This is a workflow and publication-source boundary, not a promise that
-model processing is on-device or that native tools enforce AI-DLC guidance.
+model processing is on-device or that native tools enforce ai-dlc guidance.
 
 ## Qualification examples
 
@@ -70,7 +78,7 @@ model processing is on-device or that native tools enforce AI-DLC guidance.
 - Drafting from private notes produces a separate candidate shared document; only
   its reviewed body is published, without linked daily notes or vault attachments.
 - Editing a team page after a publication preview produces a conflict in any
-  workflow claiming AI-DLC's deterministic publication guarantee.
+  workflow claiming ai-dlc's deterministic publication guarantee.
 
 Generated-guidance fixtures verify that these instructions are present and scoped.
 Actual behavior of the selected tools requires separate live qualification.
@@ -88,9 +96,11 @@ The [project documentation model](project-documentation.md) defines canonical na
 Explicit `link-vault --mode mount` can additionally expose a stable Git checkout's
 existing `docs/` and `openspec/` as sibling folders beneath `Projects/<name>/`.
 Portal linking remains the default. Mount identities are ignored machine-local
-bindings; existing matching links need explicit adoption before AI-DLC owns the
-binding. Setup refuses overlapping targets and nested traversal, and preserves
-partial output for inspection. This does not broaden the private knowledge API's
+bindings; existing matching links need explicit adoption before ai-dlc owns the
+binding.
+
+Setup refuses overlapping targets and nested traversal, and preserves partial
+output for inspection. This does not broaden the private knowledge API's
 filesystem boundary. See the [portable documentation guide](https://github.com/Sean-Koval/ai-dlc/blob/main/project-templates/project/docs/documentation-guide.md#opt-in-to-native-project-folders)
 for preview/apply and recovery. Filesystem verification alone does not qualify
 Obsidian indexing, file watching or synchronization.
@@ -157,48 +167,60 @@ can extend notes additively.
 After the normal completion gates pass, `ai-dlc work finish <id> --learning FILE`
 stores the file through the existing knowledge provider's idempotent `note`
 operation. MCP `work_finish` accepts the equivalent `learning` text; its existing
-`handoff` text remains a separate append operation. A body without frontmatter
-gets frontmatter generated from the work record. A body with frontmatter is
-validated and only missing fields are added; supplied values, including a wider
-`scope`, are never changed, and AI-DLC never widens `scope` itself. Generated
-fields are `id`, `kind`, `scope: personal`, `label: internal`, `sources` (the
-merged PR URL and merge commit the finish gate verified, plus the CI run URL),
-`author`, `confidence: medium`, `valid_from` (UTC date), `valid_to: null`,
-`review_by` (+90 days), `supersedes`, `work` and `repository`. `author` is
-`AI_DLC_AUTHOR` when set (the workflow plugin's guide skill tells agents to set it
-to `agent:<client>@<plugin content digest>`), otherwise `human:<gh login>` for the
-CLI and `agent:unknown` for MCP; it is never inferred from another session. The only
-personal data is the GitHub login. Invalid frontmatter or a note over 64 KB leaves
-the learning pending with the reason.
+`handoff` text remains a separate append operation.
 
-The first attempt records the UTC date, note path and final note locally so
-retries on later days write byte-identical content under the same operation
+A body without frontmatter gets frontmatter generated from the work record. A
+body with frontmatter is validated and only missing fields are added. Supplied
+values, including a wider `scope`, are never changed, and ai-dlc never widens
+`scope` itself.
+
+Generated fields are `id`, `kind`, `scope: personal`, `label: internal`,
+`sources`, `author`, `confidence: medium`, `valid_from` (UTC date),
+`valid_to: null`, `review_by` (+90 days), `supersedes`, `work` and
+`repository`. `sources` holds the merged PR URL, the merge commit the finish
+gate verified, and the CI run URL.
+
+`author` is `AI_DLC_AUTHOR` when set; the workflow plugin's guide skill tells
+agents to set it to `agent:<client>@<plugin content digest>`. Otherwise it is
+`human:<gh login>` for the CLI and `agent:unknown` for MCP, never inferred from
+another session. The only personal data is the GitHub login. Invalid
+frontmatter or a note over 64 KB leaves the learning pending with the reason.
+
+The first attempt records the UTC date, note path and final note locally. Retries
+on later days therefore write byte-identical content under the same operation
 identity. Reusing the operation with different input text reports a conflict;
 it never overwrites the stored note. A failed or unavailable vault leaves a
 `learning_pending` result without reversing tracker completion. Finish without a
-learning completes and returns a one-line reminder. Day-end may instead call
+learning completes and returns a one-line reminder.
+
+Day-end may instead call
 `ai-dlc knowledge note learnings/<date>-<work-id>.md --body FILE --operation-id ID --vault PATH`
 using the configured vault and a stable operation ID.
-`ai-dlc knowledge check --vault PATH` reads the notes under `learnings/` and exits 1
-when any frontmatter fails the schema; notes without frontmatter, or with the
-older `work/repository/pr/tags` frontmatter, are listed as legacy and do not fail.
+`ai-dlc knowledge check --vault PATH` reads the notes under `learnings/` and
+exits 1 when any frontmatter fails the schema. Notes without frontmatter, or
+with the older `work/repository/pr/tags` frontmatter, are listed as legacy and
+do not fail.
 
 `work start` and the session-start hook recall at most five matching learning
-paths and first content lines. Recall uses title words
-and the specification change name; the session hook selects the record bound to
-the current branch. It reads only `learnings/`, never writes, and stays quiet when
-the vault is missing or has no matches. For notes with frontmatter it skips those
-whose `valid_to` has passed and also returns `kind`, `author`, `review_by` and
-`stale` (`review_by` has passed); the session hook prefixes stale notes with
-`(stale)`. Notes without frontmatter recall as before. Matching and ranking are
-unchanged. Read relevant recalled notes as personal context and reconcile them
-against current repository authority.
+paths and first content lines. Recall uses title words and the specification
+change name; the session hook selects the record bound to the current branch.
+It reads only `learnings/`, never writes, and stays quiet when the vault is
+missing or has no matches.
 
-The hook skips payloads without a usable session ID. It recognizes direct results,
-shell stdout JSON, and MCP text/structured results. The hook records friction counts and a hash of the preceding command beneath
-`.ai-dlc/local/session/`. It counts hook denials, repeated commands, and failed or
-blocked work results when a tool response is provided. At three events the stop
-hook suggests a learning note. Tool-response coverage depends on the harness;
-this does not install a new post-tool hook or claim to observe every failure.
-Counters and command hashes are local and are never transmitted or copied into
-learning notes. This is a reminder, not a completion gate.
+For notes with frontmatter, recall skips those whose `valid_to` has passed. It
+also returns `kind`, `author`, `review_by` and `stale` (`review_by` has
+passed); the session hook prefixes stale notes with `(stale)`. Notes without
+frontmatter recall as before. Read relevant recalled notes as personal context
+and reconcile them against current repository authority.
+
+The stop hook skips payloads without a usable session ID. It recognizes direct
+results, shell stdout JSON, and MCP text or structured results. It records
+friction counts and a hash of the preceding command beneath
+`.ai-dlc/local/session/`. It counts hook denials, repeated commands, and failed
+or blocked work results when a tool response is provided. At three events it
+suggests a learning note.
+
+Tool-response coverage depends on the harness; this does not install a new
+post-tool hook or claim to observe every failure. Counters and command hashes
+are local and are never transmitted or copied into learning notes. This is a
+reminder, not a completion gate.

@@ -2,22 +2,26 @@
 # Refresh this repo's vendored Airframe files from Sean-Koval/agent-factory, which owns them.
 # Take the files unmodified and never edit them here; change Airframe in agent-factory instead.
 #
-#   sh scripts/sync-airframe.sh theme-v2     # a release tag (what the sync PRs use)
-#   sh scripts/sync-airframe.sh              # main
+#   sh scripts/sync-airframe.sh theme-v8     # a release tag (what the sync PRs use)
+#   sh scripts/sync-airframe.sh              # the current release tag (CURRENT below)
 #
 # Template: agent-factory airframe/sync-airframe.sh. Each tool repo keeps a copy as
 # scripts/sync-airframe.sh and lists what it vendors in FILES, one "<theme file> <destination>"
 # pair per line. Published theme files: airframe.css (tokens), airframe-components.css (the af-
-# classes), airframe-docs.css (docs-site mapping), airframe-icons.svg (sprite), airframe-tokens.json.
+# classes), airframe-docs.css (docs-site mapping), airframe-suite.html (the suite strip partial for the
+# docs header; overrides/main.html includes it), airframe-icons.svg (sprite), airframe-tokens.json.
 set -eu
+
+CURRENT=theme-v8   # the release this repo vendors; the sync PR that moves it updates this line
 
 FILES="
 airframe.css            docs/stylesheets/airframe.css
 airframe-docs.css       docs/stylesheets/airframe-docs.css
+airframe-suite.html     overrides/partials/airframe-suite.html
 airframe-tokens.json    docs/stylesheets/airframe-tokens.json
 "
 
-ref="${1:-main}"
+ref="${1:-$CURRENT}"
 base="https://raw.githubusercontent.com/Sean-Koval/agent-factory/${ref}/theme"
 root="$(cd "$(dirname "$0")/.." && pwd)"
 tmp="$(mktemp -d)"

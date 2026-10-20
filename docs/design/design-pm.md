@@ -1,8 +1,11 @@
 # Design PM: portable briefs, evaluation, and iteration
 
-Owner: AI-DLC project maintainer
-Status: optional UI/UX artifact implementation candidate; independent review and live calibration pending
-Updated: 2026-09-07
+Run an optional, budgeted UI/UX loop of brief, rubric, candidate and
+evaluation without adding a service, model or finish gate to ai-dlc.
+
+Owner: ai-dlc project maintainer. Status: optional UI/UX artifact
+implementation candidate; independent review and live calibration pending.
+Updated: 2026-09-07.
 
 This proposal consumes the broader [product-shaping workflow](https://github.com/Sean-Koval/ai-dlc/blob/main/openspec/specs/product-shaping-workflow/spec.md)
 and [delivery traceability](https://github.com/Sean-Koval/ai-dlc/blob/main/openspec/changes/archive/2026-09-08-spec-delivery-traceability/proposal.md).
@@ -12,16 +15,15 @@ Execution details are in the [implementation plan](https://github.com/Sean-Koval
 
 ## Problem and audience
 
-AI-DLC equips development harnesses with reproducible tools, repository structure,
+ai-dlc equips development harnesses with reproducible tools, repository structure,
 Markdown guidance, and consistent workflows across machines. The harness runs the
 development process. CLI services support setup, validation, traceability, and
 evidence gates where applicable; every development action need not pass through
 the CLI. Existing project completion policies remain in effect.
 
 The intended audience is a developer using a harness such as Codex, Claude Code,
-Antigravity, or Pi to turn a product idea into a usable interface. Current client
-fixtures cover Codex and Claude Code only; this proposal does not establish support
-for the other clients.
+Antigravity, or Pi to turn a product idea into a usable interface. Current
+client fixtures cover Codex and Claude Code only.
 
 Today the repository has discovery, PRD, specification-decision, and handoff
 guidance, plus a design template. It does not supply a complete way to turn a
@@ -38,7 +40,7 @@ that places only endpoint tiles. Later experiments simplify orchestration as mod
 capability changes. These are experimental findings, not a universal recipe.
 
 The artifact layout, example rubric, thresholds, budgets, and delivery plan below
-are proposed AI-DLC choices. They are not measurements or prescriptions from the
+are proposed ai-dlc choices. They are not measurements or prescriptions from the
 article.
 
 ## Outcomes and acceptance
@@ -70,9 +72,10 @@ three-agent process is required. One harness can sequence separate sessions or
 use its native delegation if available. A human can perform independent review.
 When independence is unavailable, record self-review explicitly.
 
-This change does not add UI code to AI-DLC, change its finish gates, install new
-client integrations, introduce a credential loader, or require a new CLI command.
-Automation is a later option if the manual artifact workflow proves useful.
+This change does not add UI code to ai-dlc or change its finish gates. It
+installs no client integration, introduces no credential loader and requires no
+new CLI command. Automation is a later option if the manual artifact workflow
+proves useful.
 
 ## Proposed workflow
 
@@ -95,7 +98,7 @@ completion policy.
 ## Starter rubric: an onboarding interface example
 
 These examples describe a hypothetical interface for a developer tool, not an
-existing AI-DLC UI. Projects adapt them before running an evaluation.
+existing ai-dlc UI. Projects adapt them before running an evaluation.
 
 | Axis | Concrete example criterion | Evidence |
 | --- | --- | --- |
@@ -104,11 +107,11 @@ existing AI-DLC UI. Projects adapt them before running an evaluation.
 | Craft | At the agreed mobile and desktop widths, long workspace names do not obscure the primary action; visible keyboard focus is not clipped or covered. | Browser inspection with long-name fixtures and keyboard traversal. |
 | Functionality | Starting disconnected, a user selects the intended workspace, reviews the selection, and reaches a working connected state. A rejected credential permits correction without silently switching workspaces. | Reproducible interaction trace and observed application state. |
 
-Every subjective criterion uses a proposed 0–4 scale: 0 contradicts the criterion;
-1 has major shortcomings; 2 partly meets it; 3 meets it with evidence; 4 exceeds
-it in a way that serves the brief. Each criterion needs its own examples of 1,
-3, and 4; the generic scale alone is insufficient calibration. Missing observation
-is `unverified`, not a zero or a passing score.
+Every subjective criterion uses a proposed 0–4 scale. 0 contradicts the
+criterion, 1 has major shortcomings, 2 partly meets it, 3 meets it with
+evidence, and 4 exceeds it in a way that serves the brief. Each criterion needs
+its own examples of 1, 3, and 4; the generic scale alone is insufficient
+calibration. Missing observation is `unverified`, not a zero or a passing score.
 
 Starter selection rule: all required behavioral checks pass, each required rated
 criterion reaches 3, and no required evidence is missing. These are unvalidated
@@ -154,14 +157,16 @@ Proposed starter budget: one initial candidate plus at most two revision rounds,
 with a project-selected time or token ceiling recorded before execution. Stop on
 meeting the contract, exhausting the budget, a material product decision, or two
 consecutive evaluations with no criterion improvement and no required defect
-resolved. Plateau can end the run without success. Preserve the best candidate
-that meets the contract; record `needs-work` when none does. Human overrides are
-recorded and cannot relabel a failed test or supply absent evidence.
+resolved. Plateau can end the run without success.
 
-Evaluate the evaluator as well as the UI. Build original calibration cases that
-include a polished but broken journey, a plain usable interface, a deliberate
-brand constraint, an inaccessible interaction, and a screenshot-only mockup.
-Have humans label defects and explain taste preferences before tuning prompts.
+Preserve the best candidate that meets the contract; record `needs-work` when
+none does. Human overrides are recorded and cannot relabel a failed test or
+supply absent evidence.
+
+Evaluate the evaluator as well as the UI. Build original calibration cases: a
+polished but broken journey, a plain usable interface, a deliberate brand
+constraint, an inaccessible interaction, and a screenshot-only mockup. Have
+humans label defects and explain taste preferences before tuning prompts.
 Reserve held-out cases to detect overfitting.
 
 Compare (a) current guidance, (b) rubric-only generation, and (c) rubric plus
@@ -172,7 +177,7 @@ and hide condition labels from human raters where practical. Repeat runs; do not
 claim general improvement from one favorable example. Keep human review pending
 until a human supplies it.
 
-The Design PM experiment needs its own declared cases and budget. AI-DLC's own
+The Design PM experiment needs its own declared cases and budget. ai-dlc's own
 skill and harness evaluation moved to flightdeck, which received the design-pm
 case corpus as seed material.
 

@@ -1,28 +1,32 @@
 # Portable profile and machine enrollment
 
+Enroll a machine from a private, pinned profile, subscribe it to team sources,
+and compare its setup with a teammate's.
+
 Keep a personal `ai-dlc-profile.toml` in a separate private Git repository and
 pin the revision enrolled on each machine. The profile owns portable modules,
-logical credential requirements, and agent preferences; the project repository
+logical credential requirements and agent preferences; the project repository
 owns shared policy and durable docs. Each machine independently owns its
-binding, including paths, account selection, and environment-variable names.
-Credential values belong only to a password manager, keychain, or process
-environment. Generated Codex and Claude client files remain owned by their
-client configuration, which AI-DLC updates through its ownership rules.
+binding: paths, account selection and environment-variable names. Credential
+values belong only to a password manager, keychain or process environment.
 
 Use `ai-dlc machine status`, `plan`, `apply`, `sync`, and `doctor` to inspect,
-preview, reconcile, update, and diagnose local enrollment. Local CLI and MCP
-execution are the current control plane; hosted or cloud execution is a later
-qualification target. Obsidian portals link an explicitly selected existing vault. Provider discovery
-and onboarding use the selected adapter; offline readiness is not live qualification.
+preview, reconcile, update, and diagnose local enrollment. Obsidian portals link
+an explicitly selected existing vault. Provider discovery and onboarding use the
+selected adapter; offline readiness is not live qualification.
+
+## Readiness and onboarding
 
 Use `ai-dlc project readiness --root PATH` to inspect the selected component
-requirements offline. Its JSON separates tool availability, provider configuration,
-credential presence, harness guidance, and provider health, with a next action for
-each gap. Exit 0 means all required offline checks are ready; missing, blocked, or
-unverified required checks return 1. Tools are located on the current environment's
-PATH without execution. Credentials are checked only in that environment; secret
-files are never loaded. Provider health stays informational and unverified, and
-`qualification` is always `not-assessed`.
+requirements offline. Its JSON separates tool availability, provider
+configuration, credential presence, harness guidance and provider health, with a
+next action for each gap. Exit 0 means all required offline checks are ready;
+missing, blocked or unverified required checks return 1.
+
+Tools are located on the current environment's PATH without execution.
+Credentials are checked only in that environment; secret files are never
+loaded. Provider health stays informational and unverified, and `qualification`
+is always `not-assessed`.
 
 Machine enrollment is optional for consumer onboarding. A self-contained target
 with project-owned client configuration and checks can start with:
@@ -31,64 +35,70 @@ with project-owned client configuration and checks can start with:
 ai-dlc project onboard --root /absolute/path/to/target
 ```
 
-A fresh target must also supply one or more repeated `--agent-client` selections.
-Only select enrollment when portable profile or machine-owned settings are needed;
-then provide `--source`, `--ref`, `--profile-id`, and `--machine-id` together. The
-planner reads verified local enrollment metadata when it matches, but never calls
-enrollment preview, fetches a source, repairs a cache, or creates a machine file.
-Its recommended enrollment preview can populate an inactive cache; the separate
-`--apply` command activates reviewed state. On Linux, selected native machine
-provisioning is currently bounded to Ubuntu 24.04 and 26.04. An unknown or other
-release blocks those machine actions without making project-only Linux onboarding
-unsupported.
+A fresh target must also supply one or more repeated `--agent-client`
+selections. Select enrollment only when portable profile or machine-owned
+settings are needed; then provide `--source`, `--ref`, `--profile-id` and
+`--machine-id` together.
+
+The planner reads verified local enrollment metadata when it matches. It never
+calls enrollment preview, fetches a source, repairs a cache or creates a machine
+file. Its recommended enrollment preview can populate an inactive cache; the
+separate `--apply` command activates reviewed state. On Linux, native machine
+provisioning is bounded to Ubuntu 24.04 and 26.04; another release blocks those
+machine actions without making project-only Linux onboarding unsupported.
+
+## Repair the shell and the alias
 
 When `ai-dlc` is missing, reports an unexpected version, or works only in new
 terminals, run `ai-dlc project workspace-check --root PATH`. It separates the
-executable PATH selects from the AI-DLC-owned shell activation. If no `ai-dlc` is on
-PATH, run the same check through the bootstrap's published alias by its full path,
-by default `~/.local/share/ai-dlc/bootstrap/bin/ai-dlc`. `configured-for-next-shell`
-needs only a new terminal or sourcing the shell file. Missing activation includes a
-copy-pasteable PATH command for bash, zsh or fish. Preview permanent repair with
-`ai-dlc project workspace-init --shell`; add `--apply` to write only the owned
-section. Authored content and other owned lines are preserved; symlinked,
-unreadable, non-regular files and edited owned sections are refused.
-When mise is missing from PATH, project checks use the executable in the bootstrap
-bin directory and emit one stderr note. Checks never install tools, and the
-receipt's environment digest is independent of this fallback. When neither
-location supplies mise, the command refuses before running checks or writing a
-receipt. Rerun the bootstrap if its bin directory is absent.
+executable PATH selects from the ai-dlc-owned shell activation. If no `ai-dlc`
+is on PATH, run the same check through the bootstrap's published alias by its
+full path, by default `~/.local/share/ai-dlc/bootstrap/bin/ai-dlc`.
 
-The shared `ai-dlc` and `ai-dlc-cli` aliases are one machine-wide selection. Source
-bootstrap prepares a separate environment per checkout and leaves an existing
-working alias alone, so bootstrapping a linked worktree no longer changes the
-`ai-dlc` other shells use; it publishes the aliases only with `--publish-aliases`
-or when no working alias exists. Bootstrap output names the checkout the alias runs
-and the executable for the current checkout. When the alias belongs to another
-checkout, `project workspace-check` reports that checkout under activation.
-Missing custom Markdown instructions produce a component-specific guidance gap
-and a restoration action while independent checks continue. Manifest digest,
-schema, path, and symlink violations still block catalog inspection.
+`configured-for-next-shell` needs only a new terminal or sourcing the shell
+file. Missing activation includes a copy-pasteable PATH command for bash, zsh
+or fish. Preview permanent repair with `ai-dlc project workspace-init --shell`;
+add `--apply` to write only the owned section. Authored content and other owned
+lines are preserved; symlinked, unreadable, non-regular files and edited owned
+sections are refused.
 
-`ai-dlc agents render --apply --root PATH` delivers the project-owned provider/tool
-index in `AGENTS.md`, which Claude Code receives through its managed `CLAUDE.md`
-import. Packaged instructions are owned copies in `.ai-dlc/providers/`; custom
-component instructions remain linked project files. Edited or authored copies
-are preserved through the existing conflict rules. A provider selected only in a
-personal profile can have a missing-delivery gap: declare the intended shared
-provider in `ai-dlc.toml` before rendering. Rendering does not promote private
-configuration automatically. Missing component metadata is reported explicitly;
-the index does not establish new provider or client support.
-Rendering refuses any managed removal that would leave selected instructions
-with a dangling link, including deselected skills in either client directory.
-Move those instructions to a project-owned path and update the manifest first.
+When mise is missing from PATH, project checks use the executable in the
+bootstrap bin directory and emit one stderr note. Checks never install tools,
+and the receipt's environment digest is independent of this fallback. When
+neither location supplies mise, the command refuses before running checks or
+writing a receipt. Rerun the bootstrap if its bin directory is absent.
+
+The shared `ai-dlc` and `ai-dlc-cli` aliases are one machine-wide selection.
+Source bootstrap prepares a separate environment per checkout and leaves an
+existing working alias alone. Bootstrapping a linked worktree therefore does not
+change the `ai-dlc` other shells use; the aliases are published only with
+`--publish-aliases` or when no working alias exists.
+
+Bootstrap output names the checkout the alias runs and the executable for the
+current checkout. When the alias belongs to another checkout,
+`project workspace-check` reports that checkout under activation.
+
+## Render project guidance
+
+`ai-dlc agents render --apply --root PATH` delivers the project-owned provider
+and tool index in `AGENTS.md`, which Claude Code receives through its managed
+`CLAUDE.md` import. Packaged instructions are owned copies in
+`.ai-dlc/providers/`; custom component instructions remain linked project files.
+Edited or authored copies are preserved through the existing conflict rules.
+
+A provider selected only in a personal profile can have a missing-delivery gap:
+declare the intended shared provider in `ai-dlc.toml` before rendering.
+Rendering does not promote private configuration automatically, and the index
+does not establish new provider or client support. Rendering refuses any
+managed removal that would leave selected instructions with a dangling link,
+including deselected skills in either client directory. Move those instructions
+to a project-owned path and update the manifest first.
 
 Setup plan/apply with `--root` adds selected project component requirements to
 machine provisioning. Global MCP settings continue to use the personal profile
 and machine configuration; project server lists remain scoped to the project.
-
-Root and machine doctor retain their enrollment and readiness decisions and add
-these offline diagnostics under `project_readiness`. Their existing explicit
-provider-health inspection remains separate, as do work finish and release gates.
+Root and machine doctor keep their enrollment and readiness decisions and add
+these offline diagnostics under `project_readiness`.
 
 ## Compare selected environments
 
@@ -102,22 +112,23 @@ ai-dlc machine status --compare teammate-a.json teammate-b.json
 ```
 
 Export requires an existing destination folder and refuses an existing file or
-link. `--export -` writes JSON to stdout.
-Export exit 0 means a valid report was produced, including any unknowns. Compare
-exit 0 means complete required identity coverage with no blocking difference;
-exit 1 means blocking drift or incomplete required evidence; exit 2 means an
-invalid request or report. Comparison reads only the two files and performs no
-local inspection, repair, executable lookup or provider call.
+link; `--export -` writes JSON to stdout. Export exit 0 means a valid report was
+produced, including any unknowns.
+
+Compare exit 0 means complete required identity coverage with no blocking
+difference. Exit 1 means blocking drift or incomplete required evidence, and
+exit 2 an invalid request or report. Comparison reads only the two files and
+performs no local inspection, repair or provider call.
 
 Default collection is local and does not execute tools. Add `--probe-versions`
 to export only when local executable version observations are wanted. This runs
-fixed built-in version commands with bounded time/output and a minimal child
-environment; it does not authorize arbitrary configured recipes, health checks
-or model sessions. A local PATH executable can itself be a wrapper, so this
-explicit option is permission to invoke it, not a sandbox for that executable.
-Version observations remain unavailable for unsupported adapters. On Windows,
-batch wrappers such as `.cmd` and `.bat` are not launched because they can invoke
-a shell implicitly.
+fixed built-in version commands with bounded time and output and a minimal child
+environment. It does not authorize arbitrary configured recipes, health checks
+or model sessions.
+
+A local PATH executable can itself be a wrapper, so this option is permission
+to invoke it, not a sandbox. On Windows, batch wrappers such as `.cmd` and
+`.bat` are not launched.
 
 Both CLI doctor entry points offer the same offline report projection:
 
@@ -127,33 +138,32 @@ ai-dlc machine doctor --root /absolute/path/to/project --effective-environment
 ```
 
 These modes bypass ordinary health inspection. They reject `--target` and
-`--machine` overrides; version probes require `--probe-versions` explicitly.
-Ordinary status/doctor and the MCP doctor contract remain unchanged. Status
-comparison cannot be combined with root, export or version probes.
+`--machine` overrides, and version probes require `--probe-versions` explicitly.
+Status comparison cannot be combined with root, export or version probes.
 
-Reports compare permitted tool/provider/client selections, version constraints,
-source pins and managed guidance observations. They exclude private paths,
-accounts, environment-variable values, raw commands, URLs and global client
-configuration. Excluded content is not secretly included through a hash.
-Current profile/source checksums and engine version labels alone do not establish
-safe content or exact engine identity, so an otherwise useful report can remain
-incomplete. Known drift is still reported independently of missing evidence.
+Reports compare permitted tool, provider and client selections, version
+constraints, source pins and managed guidance observations. They exclude private
+paths, accounts, environment-variable values, raw commands, URLs and global
+client configuration; excluded content is not secretly included through a hash.
 
-The configuration identity describes the permitted desired fields; the observation
-identity also binds known engine, platform, version and guidance observations.
-Timestamps, credential presence and evidence-derived authentication/recognition
-do not change those identities. Matching incomplete digests cannot establish
-equivalence or authorize reuse of native evidence. Reports are unsigned facts,
-not authentication of the exporting machine. A compatible platform difference
-is expected only with explicit component support metadata; unavailable metadata
-remains unknown. Follow the reported enrollment/render/check route for each
-finding and review changes through the owning operation's normal preview.
+Profile and source checksums and engine version labels alone do not establish
+safe content or exact engine identity. An otherwise useful report can therefore
+remain incomplete. Known drift is still reported independently of missing
+evidence.
+
+The configuration identity describes the permitted desired fields; the
+observation identity also binds known engine, platform, version and guidance
+observations. Timestamps, credential presence and evidence-derived
+authentication do not change those identities. Matching incomplete digests
+cannot establish equivalence. Reports are unsigned facts, not authentication of
+the exporting machine. Follow the reported enrollment, render or check route for
+each finding and review changes through the owning operation's normal preview.
 
 ## Enroll a private profile
 
-Preview a private profile enrollment can materialize an inactive cache, but it
-does not change active enrollment, client configuration, or package state.
-Repeat the same command with `--apply` to activate it:
+A preview can materialize an inactive cache, but it does not change active
+enrollment, client configuration or package state. Repeat the same command with
+`--apply` to activate it:
 
 ```sh
 ai-dlc machine enroll SOURCE --profile-id example-development --machine-id MACHINE_A --ref IMMUTABLE_REF_OR_TAG
@@ -162,12 +172,11 @@ ai-dlc machine enroll SOURCE --profile-id example-development --machine-id MACHI
 
 The lock always records the exact resolved commit. An immutable advertised tag
 or ref gives cross-machine reproducibility, and `ai-dlc machine sync` is
-idempotent for it. An intentionally movable advertised branch instead enables
-`ai-dlc machine sync` to preview a candidate and `ai-dlc machine sync --apply`
-to activate it after validation and reconciliation. To move from one immutable
-tag to another, reenroll with the new ref. Enroll a second machine with the
-same advertised ref under the selected policy and a different machine ID; its
-local binding remains independent.
+idempotent for it. A movable advertised branch instead lets `ai-dlc machine
+sync` preview a candidate and `ai-dlc machine sync --apply` activate it after
+validation. To move from one immutable tag to another, reenroll with the new
+ref. Enroll a second machine with the same advertised ref and a different
+machine ID; its local binding remains independent.
 
 ## Project guidance follows selected capabilities
 
@@ -175,9 +184,8 @@ Shared and native guidance follows the project's selected provider roles. Local
 projects keep configuration, durable documentation and required checks without
 instructions to use unavailable trackers or finish commands. OpenSpec archive
 instructions require the OpenSpec runtime provider; a custom specification
-provider retains its own linked instructions. Built-in merge/finish guidance
-applies to supported selected SCM/tracker combinations. Removing prose never
-relaxes configured checks or runtime completion gates.
+provider retains its own linked instructions. Removing prose never relaxes
+configured checks or runtime completion gates.
 
 For one repository, start with its existing tools and a small `agents.skills`
 selection. A separate personal profile or team-source repository is useful when
@@ -200,41 +208,49 @@ tags = ["review"]
 ```
 
 Each source has an exact commit and content digest in the machine enrollment
-lock. Rendering verifies this cache offline. `ai-dlc machine sync` fetches and
-validates candidates but only previews them; `ai-dlc machine sync --apply`
+lock. Rendering verifies this cache offline. `ai-dlc machine sync` fetches
+and validates candidates but only previews them; `ai-dlc machine sync --apply`
 activates them after machine reconciliation succeeds. Run
-`ai-dlc agents render --apply --root PATH` to deliver the selected source revision
-to a project. Session-start checks advertised refs within a three-second total
-budget and only reports `team source <id> has a newer revision; run
-\`ai-dlc machine sync\``. It never fetches source contents, changes locks or writes
-client configuration. Offline status and rendering do not inspect remote refs.
+`ai-dlc agents render --apply --root PATH` to deliver the selected source
+revision to a project.
+
+Session-start checks advertised refs within a three-second total budget and only
+reports `team source <id> has a newer revision; run \`ai-dlc machine sync\``. It
+never fetches source contents, changes locks or writes client configuration.
+Offline status and rendering do not inspect remote refs.
+
+### Roles, tags and selection
 
 A machine binding may add the person's roles with a top-level
-`roles = ["developer"]` string list. This is distinct from the profile/project
-`[roles]` table selecting providers; machine roles never replace that table.
-Role, namespace and tag identifiers may contain lowercase letters, digits,
-hyphens and underscores (for example `hai_dev`). Source `roles` and machine roles
-are combined, while source `tags` select tag
+`roles = ["developer"]` string list. This is distinct from the profile and
+project `[roles]` table selecting providers; machine roles never replace that
+table. Role, namespace and tag identifiers may contain lowercase letters,
+digits, hyphens and underscores (for example `hai_dev`).
+
+Source `roles` and machine roles are combined, while source `tags` select tag
 subscriptions. Items without selectors are universal; other items require any
 matching role or tag. Validation applies to every item before filtering, so an
 unselected item cannot hide unsafe content. Unenrollment or role deselection
-removes only previously owned source outputs on the next render. Source skill
-names cannot collide with any shipped or selected bundled skills, other source skills,
-or authored client skills; even an identical authored file remains unowned.
-Edited owned outputs are also preserved through refusal. Source rules appear in
-AGENTS.md's owned section, and skills also appear in selected client skill files.
-Shared guidance indexes each selected team skill by name, source, bounded
-description and links to its complete native skill files. Rules remain inline.
-Read an applicable skill's linked file before using it; file generation alone
-does not establish native discovery or authentication. Codex and Antigravity
-share `.agents/skills`; Claude uses `.claude/skills`. An explicit client render
-indexes that operation's destinations. When no client is rendered, full skill
-bodies remain inline so the selected instructions are still accessible.
+removes only previously owned source outputs on the next render.
+
+Source skill names cannot collide with shipped or selected bundled skills,
+other source skills, or authored client skills. Even an identical authored file
+remains unowned, and edited owned outputs are preserved through refusal.
+
+Source rules appear in AGENTS.md's owned section, and skills also appear in
+selected client skill files. Shared guidance indexes each selected team skill by
+name, source, bounded description and links to its complete native skill files;
+rules remain inline. Read an applicable skill's linked file before using it.
+Codex and Antigravity share `.agents/skills`; Claude uses `.claude/skills`. When
+no client is rendered, full skill bodies remain inline.
 
 An ordinary render upgrades intact generated sections to this index without
-changing source locks or skill bytes. Edited owned sections and authored conflicts
-still refuse. Narrow role/tag subscriptions and `agents.skills` keep selection
-relevant; measured guidance bytes are not evidence of actual model token savings.
+changing source locks or skill bytes. Edited owned sections and authored
+conflicts still refuse. Narrow role and tag subscriptions and `agents.skills`
+keep selection relevant; measured guidance bytes are not evidence of model
+token savings.
+
+### Native source layout
 
 The native layout contains `manifest.toml`, `skills/<name>/SKILL.md`,
 `rules/<name>.md`, and optional `mcp/servers.toml` and `hooks/hooks.toml`.
@@ -266,35 +282,42 @@ name = "session-context"
 path = "hooks/hooks.toml"
 ```
 
-`mcp/servers.toml` declares `[[servers]]` entries with `id`, `command` and optional
-`args = ["serve"]`. Commands are portable executable names; AI-DLC imports the
-configuration without executing the command. URLs, headers, environment values,
-credential arguments and machine paths are refused. Hook content is only
-`features = ["session-context"]` or other existing `bound-push` and
-`stop-reminder` features. Arbitrary shell hooks are refused. The selected client's
-configured version must be at least the client's hook floor in AI-DLC's capability
-matrix (`claude-code` 2.1.0, `codex` 0.151.0); an unset version is accepted with a
-warning. Machine provisioning pins `claude-code` 2.1.296 and `codex` 0.162.1, copied
-from hangar's harness lock; provisioning does not upgrade an existing install. A source may select `bound-push`, but cannot supply its policy:
-`agents.bound_push_policy` belongs only in the project’s shared `ai-dlc.toml`.
-Personal and machine layers also cannot set it. Omission preserves strict
-`all-branches`; an explicit project choice of `tracked-branches` permits the
+`mcp/servers.toml` declares `[[servers]]` entries with `id`, `command` and
+optional `args = ["serve"]`. Commands are portable executable names; ai-dlc
+imports the configuration without executing the command. URLs, headers,
+environment values, credential arguments and machine paths are refused.
+
+Hook content is only `features = ["session-context"]` or the existing
+`bound-push` and `stop-reminder` features; arbitrary shell hooks are refused.
+The selected client's configured version must be at least the client's hook
+floor (`claude-code` 2.1.0, `codex` 0.151.0); an unset version is accepted with
+a warning. Machine provisioning pins `claude-code` 2.1.296 and `codex` 0.162.1,
+copied from hangar's harness lock, and does not upgrade an existing install.
+
+A source may select `bound-push`, but cannot supply its policy:
+`agents.bound_push_policy` belongs only in the project's shared `ai-dlc.toml`.
+Omission preserves strict `all-branches`; an explicit project choice of
+`tracked-branches` permits the
 [bounded record-free publication path](../development-workflow.md#when-a-work-record-is-needed).
 
-All source paths must be regular UTF-8 files without symlinks or execute
-bits, up to 2 MiB each and 10 MiB total, with at most 1,024 files and 16 path
-segments. Structured manifests are limited to 1 MiB. `env/` directories are
+All source paths must be regular UTF-8 files without symlinks or execute bits.
+Limits are 2 MiB per file, 10 MiB in total, 1,024 files, 16 path segments and
+1 MiB per structured manifest. `env/` directories are
 refused, and credential diagnostics name the source path without echoing values.
 
+### teamai layout
+
 Set `layout = "teamai"` to read an existing
-[Tencent teamai repository](https://github.com/Tencent/teamai-cli). AI-DLC imports
-flat or namespaced skills, flat rules, `culture.md` as the `culture` rule, and
-`mcp/mcp.yaml`'s `servers` list with `name`, optional `transport: stdio`, `command`
-and `args`. It reads role/tag metadata from `teamai.yaml` when present, Markdown
-frontmatter, and the current upstream `manifest/roles.yaml` role-to-skill-namespace
-mapping and `tags.yaml` skill/rule tag maps. AI-DLC applies the selection rule
-above rather than upstream's permissive no-subscription fallback. Hooks, agents
-and docs are ignored with notes after safety validation; `env/` and embedded
-MCP token/environment values are refused. YAML aliases and duplicate keys are
-refused. This is a deliberately limited source reader: it does not install
-teamai, execute its hooks, import packages, write back, or access its dashboards.
+[Tencent teamai repository](https://github.com/Tencent/teamai-cli). ai-dlc
+imports flat or namespaced skills, flat rules, `culture.md` as the `culture`
+rule, and `mcp/mcp.yaml`'s `servers` list with `name`, optional
+`transport: stdio`, `command` and `args`. It reads role and tag metadata from
+`teamai.yaml` when present, Markdown frontmatter, and the upstream
+`manifest/roles.yaml` and `tags.yaml` maps.
+
+ai-dlc applies the selection rule above rather than upstream's permissive
+no-subscription fallback. Hooks, agents and docs are ignored with notes after
+safety validation; `env/`, embedded MCP token or environment values, YAML
+aliases and duplicate keys are refused. This is a deliberately limited source
+reader: it does not install teamai, execute its hooks, import packages, write
+back, or access its dashboards.

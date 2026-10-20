@@ -1,10 +1,10 @@
 # Contributing
 
 Read [AGENTS.md](AGENTS.md) for repository boundaries and [the documentation
-index](docs/index.md) for authoritative sources. AI-DLC ships Python; the
+index](docs/index.md) for authoritative sources. ai-dlc ships Python; the
 retired Rust implementation survives only as archived plans and git history.
 
-AI-DLC is feature-frozen; [ADR 0001](docs/decisions/0001-refocus-ai-dlc.md) lists
+ai-dlc is feature-frozen; [ADR 0001](docs/decisions/0001-refocus-ai-dlc.md) lists
 what stays active. Changes outside the in-scope list are closed with a pointer;
 bug fixes in frozen areas are welcome.
 
@@ -25,7 +25,7 @@ Generated client copies are not independent sources of truth.
 
 This repository does not commit rendered skill copies (`[agents] skills = []` in
 `ai-dlc.toml`), so `.claude/skills/` and `.agents/skills/` stay empty here. Load the
-team skills from the workflow plugin while working on AI-DLC:
+team skills from the workflow plugin while working on ai-dlc:
 
 ```sh
 claude --plugin-dir plugins/ai-dlc-workflow
@@ -33,7 +33,7 @@ claude --plugin-dir plugins/ai-dlc-workflow
 
 Codex contributors read the same skills from `plugins/ai-dlc-workflow/skills/`.
 Edit skills only under `agents/skills/`, then run
-`python scripts/build_workflow_plugin.py` to refresh the plugin. Repository layout checks apply to AI-DLC itself; downstream projects
+`python scripts/build_workflow_plugin.py` to refresh the plugin. Repository layout checks apply to ai-dlc itself; downstream projects
 retain their chosen structure.
 
 ## Documentation placement
@@ -58,3 +58,21 @@ The documentation site publishes the pages listed in `mkdocs.yml`'s `nav`; it le
 out `docs/archive/`, the dated verification records and reviews, and raw evidence,
 all of which stay in the repository. Add a durable page to the `nav` beside its
 catalog entry.
+
+## Maintaining the workflow handbook
+
+[docs/development-workflow.md](docs/development-workflow.md) and its guides form
+one contract with the project template, the skills and the behavior they describe.
+
+- Keep lifecycle stages and role names provider-neutral.
+- Update [the tool map](docs/workflows/tool-map.md) when a configured provider,
+  command, or skill changes.
+- Update the greenfield or brownfield guide when initialization or adoption
+  behavior changes.
+- Update the design handoff when required design evidence changes.
+- Store diagrams as Mermaid beside the text they explain. Exported images are
+  optional views, never the editable source.
+- Change the handbook, project template, relevant skills, and behavior in the
+  same pull request when they form one contract.
+- Use Git history for evolution; do not maintain a parallel changelog inside
+  every guide.

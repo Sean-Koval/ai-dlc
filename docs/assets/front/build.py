@@ -5,20 +5,24 @@ Writes, next to this script:
 
 - ``enroll.cast`` / ``enroll.svg``: ``ai-dlc machine enroll`` (preview, apply, status) against a
   throwaway profile repository, as an asciicast v2 recording and an animated terminal (CSS
-  keyframes, loops; no player needed on GitHub or the docs site);
-- ``work.cast`` / ``work.svg``: ``work new -> publish -> start -> pr -> project check -> finish`` in
-  a fresh ``ai-dlc project init`` repository. GitHub is replaced by ``demo_provider.py``, a local
-  stand-in that speaks the executable provider contract, so the finish gates evaluate a real
-  local merge and the receipt ``project check`` wrote;
+  keyframes; plays once in under 20 seconds and holds its last frame, which is also what shows
+  when animations do not run; no player needed on GitHub or the docs site);
+- ``work.cast`` / ``work.svg``: ``work start -> pr -> finish (refused: the PR is not merged) ->
+  merge -> finish (closes the issue)`` in a fresh ``ai-dlc project init`` repository whose work
+  record was reviewed and published off camera. GitHub and its CI are replaced by
+  ``demo_provider.py``, a local stand-in that speaks the executable provider contract, so the
+  finish gates evaluate a real local merge and the receipt ``project check`` wrote;
 - ``plugin-skills.svg``: the workflow plugin's skills as Claude Code lists them
   (``claude --plugin-dir plugins/ai-dlc-workflow plugin details ai-dlc-workflow``);
 - ``project-check.svg``: ``ai-dlc project check --required`` in the demo repository;
 - ``suite.svg`` (Airframe tokens, theme-aware when inlined) and ``suite-dark.svg`` /
-  ``suite-light.svg`` (the same drawing with each flavor's colors resolved, for ``<picture>``).
+  ``suite-light.svg`` (the same drawing with each flavor's colors resolved, for ``<picture>``),
+  800 by 520 so its text stays readable in the docs column.
 
 The terminals follow Airframe's Terminal component and the diagram's fallbacks are Airframe's Night
 values, both read from the vendored ``docs/stylesheets/airframe-tokens.json``, since an SVG shown as
-an image cannot load the site's stylesheet.
+an image cannot load the site's stylesheet. Output is shown as the CLI prints it, 80 columns wide,
+in a window of ROWS lines that scrolls like a terminal.
 
 Everything is byte-reproducible for a given checkout: the demo runs in a fixed directory with
 fixed Git identities and dates, and machine paths are shown as ``~``. CI re-runs this and fails on
@@ -26,7 +30,7 @@ a diff (.github/workflows/assets.yml).
 
     uv run --locked --no-sync python docs/assets/front/build.py [--check]
 
-Needs git, jq, mise (the bootstrap provides it) and, for the plugin screen, the Claude Code CLI
+Needs git, jq (the project-check still drops its timings), mise (the bootstrap provides it) and, for the plugin screen, the Claude Code CLI
 at CLAUDE_CODE_VERSION; ``--skip-claude`` keeps the committed plugin screen.
 """
 
@@ -46,7 +50,9 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 DEMO = Path("/tmp/ai-dlc-front-demo")
 CLAUDE_CODE_VERSION = "2.1.302"
-COLS = 92
+COLS = 80
+ROWS = 22  # the terminal window's height in lines; longer sessions scroll
+MAX_SECONDS = 20.0  # a recording plays once, within this, then holds its last frame
 GIT_ENV = {
     "GIT_AUTHOR_NAME": "Dev A",
     "GIT_AUTHOR_EMAIL": "dev-a@example.com",
@@ -56,29 +62,21 @@ GIT_ENV = {
     "GIT_COMMITTER_DATE": "2026-10-20T09:00:00+00:00",
     "GIT_CONFIG_GLOBAL": "/dev/null",
     "GIT_CONFIG_NOSYSTEM": "1",
+    "GIT_MERGE_AUTOEDIT": "no",
 }
 
 ENROLL = [
-    "ai-dlc machine enroll ~/profile --profile-id example-development --machine-id laptop \\\n"
-    "  | jq -c '{applied, modules, credentials: [.credentials[].id]}'",
-    "ai-dlc machine enroll ~/profile --profile-id example-development --machine-id laptop --apply \\\n"
-    "  | jq -c '{applied, machine: .machine.path}'",
-    "ai-dlc machine status \\\n  | jq -c '{enrolled, profile: .profile.id, commit: .profile.resolved_commit[:12], drift}'",
+    "ai-dlc machine enroll ~/profile --profile-id example-development \\\n  --machine-id laptop",
+    "ai-dlc machine enroll ~/profile --profile-id example-development \\\n  --machine-id laptop --apply",
+    "ai-dlc machine status",
 ]
-WORK = [
-    'ai-dlc work new fix-receipts --title "Retry receipt downloads" \\\n'
-    '  --scope "Retry one failed receipt download" --no-requires-spec \\\n'
-    '  --spec-reason "Bug fix with a regression test" \\\n'
-    '  --acceptance "A transient download failure retries once" | jq -c \'{id, reviewed}\'',
-    "sed -i 's/^reviewed = false/reviewed = true/' .ai-dlc/work/fix-receipts.toml  # reviewed",
-    "ai-dlc work publish fix-receipts | jq -c '{status, issue: .tracker.url}'",
-    "ai-dlc work start fix-receipts | jq -c '{status, branch, issue: .tracker.state}'",
+WORK = [  # the record was reviewed and published off camera (issue 42); see prepare()
+    "ai-dlc work start fix-receipts",
     "echo 'RETRIES = 1' > src/receipts.py && git commit -qam 'fix: retry receipt downloads'",
-    "ai-dlc work pr fix-receipts | jq -c '{status, pr: .pr.url}'",
-    "git checkout -q main && git merge -q --no-ff work/fix-receipts -m 'Merge #43'  # PR merged",
-    "ai-dlc project check --required --receipt .ai-dlc/local/receipt.json \\\n"
-    "  | jq -c '[.outcomes[] | \"\\(.id): \\(.status)\"]'",
-    "ai-dlc work finish fix-receipts \\\n  | jq -c '{status, issue: .tracker.state, gates: (.evidence | keys | join(\", \"))}'",
+    "ai-dlc work pr fix-receipts",
+    "ai-dlc work finish fix-receipts  # refused: the PR is not merged",
+    "git switch -q main && git merge -q --no-ff work/fix-receipts  # the PR merges",
+    "ai-dlc work finish fix-receipts",
 ]
 
 
@@ -150,18 +148,33 @@ def prepare(env: dict[str, str]) -> None:
     (app / "ai-dlc.toml").write_text(config)
     (app / "src").mkdir()
     (app / "src/receipts.py").write_text("RETRIES = 0\n")
+    # The answers file records where the engine's templates were read from. That is this
+    # checkout's absolute path, which would make every commit sha in the recording depend on
+    # where the engine was cloned; the demo names the canonical repository instead.
+    answers = app / ".copier-answers.yml"
+    answers.write_text(re.sub(r"^_src_path: .*$", "_src_path: https://github.com/Sean-Koval/ai-dlc.git",
+                              answers.read_text(), count=1, flags=re.MULTILINE))
     sh("ai-dlc agents render --apply > /dev/null && git init -q -b main && git add -A "
        "&& git commit -qm 'Initialize with ai-dlc project init'", app, env)
+    # One piece of work, reviewed by a person and published as issue 42, so the recording can
+    # start at `work start`.
+    sh('ai-dlc work new fix-receipts --title "Retry receipt downloads" '
+       '--scope "Retry one failed receipt download" --no-requires-spec '
+       '--spec-reason "Bug fix with a regression test" '
+       '--acceptance "A transient download failure retries once" > /dev/null', app, env)
+    sh("sed -i 's/^reviewed = false/reviewed = true/' .ai-dlc/work/fix-receipts.toml "
+       "&& ai-dlc work publish fix-receipts > /dev/null", app, env)
 
 
 def session(commands: list[str], cwd: Path, env: dict[str, str]) -> list[tuple[str, str]]:
-    return [(cmd, tidy(sh(cmd, cwd, env))) for cmd in commands]
+    """Run each command and keep what it printed; a refusal (non-zero exit) is part of the story."""
+    return [(cmd, tidy(sh(cmd, cwd, env, check=False))) for cmd in commands]
 
 
 def screens(env: dict[str, str], skip_claude: bool) -> dict[str, tuple[str, str]]:
     app = Path(env["HOME"]) / "app"
     check = ("ai-dlc project check --required \\\n"
-             "  | jq '{required, dirty, outcomes: [.outcomes[] | {id, status, exit_code}]}'")
+             "  | jq '{required, dirty, outcomes: [.outcomes[] | {id, status, exit_code}]}'  # no timings")
     out = {"project-check.svg": (check, tidy(sh(check, app, env)))}
     if not skip_claude:
         claude = shutil.which("claude", path=env["PATH"])
@@ -179,18 +192,20 @@ def screens(env: dict[str, str], skip_claude: bool) -> dict[str, tuple[str, str]
 
 # ------------------------------------------------------------------------------------------ recordings
 def wrap(text: str) -> list[str]:
+    """Lines at most COLS wide, broken at a space (never inside a word or a hash) and indented."""
     lines = []
     for line in text.splitlines() or [""]:
         while len(line) > COLS:
-            cut = line.rfind(" ", 0, COLS)
-            cut = cut if cut > COLS // 2 else COLS
-            lines.append(line[:cut])
-            line = "    " + line[cut:].lstrip()
+            indent = len(line) - len(line.lstrip())
+            cut = line.rfind(" ", indent, COLS + 1)
+            cut = cut if cut > indent else COLS
+            lines.append(line[:cut].rstrip())
+            line = " " * (indent + 4) + line[cut:].lstrip()
         lines.append(line)
     return lines
 
 
-TYPE, TYPE_MAX, PAUSE, LINE = 0.03, 1.8, 0.6, 0.08  # seconds; long commands type faster
+TYPE, TYPE_MAX, PAUSE, LINE, HOLD = 0.03, 1.0, 0.4, 0.04, 2.0  # seconds; long commands type faster
 
 
 def speed(cmd: str) -> float:
@@ -201,8 +216,9 @@ def speed(cmd: str) -> float:
 def timeline(
     steps: list[tuple[str, str]], gap: float
 ) -> tuple[list[tuple[float, str, str, float]], float]:
-    """Screen lines as (time shown, kind, text): `cmd` lines type out from that time; `out` lines appear."""
-    t, lines = 0.5, []
+    """Screen lines as (time shown, kind, text, seconds per character): `cmd` lines type out from
+    that time; `out` lines appear. The total is the play time, within MAX_SECONDS."""
+    t, lines = 0.3, []
     for cmd, output in steps:
         per = speed(cmd)
         for i, part in enumerate(cmd.split("\n")):
@@ -214,14 +230,17 @@ def timeline(
             t += LINE
         t += gap
     lines.append((t, "cmd", "", 0.0))
-    return lines, t + 3.0
+    total = t + HOLD
+    if total > MAX_SECONDS:
+        sys.exit(f"build: a recording of {len(lines)} lines plays for {total:.1f}s, over {MAX_SECONDS:.0f}s")
+    return lines, total
 
 
 def cast(steps: list[tuple[str, str]], title: str, gap: float) -> str:
-    """asciicast v2 (https://docs.asciinema.org/manual/asciicast/v2/) with fixed timings."""
-    head = {"version": 2, "width": COLS + 4, "height": 40, "title": title,
+    """asciicast v2 (https://docs.asciinema.org/manual/asciicast/v2/) with the SVG's timings."""
+    head = {"version": 2, "width": COLS + 4, "height": ROWS, "title": title,
             "env": {"SHELL": "/bin/bash", "TERM": "xterm-256color"}}
-    events, t = [], 0.5
+    events, t = [], 0.3
     for cmd, output in steps:
         events.append([round(t, 3), "o", "$ "])
         per = speed(cmd)
@@ -229,7 +248,10 @@ def cast(steps: list[tuple[str, str]], title: str, gap: float) -> str:
             t += per
             events.append([round(t, 3), "o", "\r\n> " if ch == "\n" else ch])
         t += PAUSE
-        events.append([round(t, 3), "o", "\r\n" + (output.replace("\n", "\r\n") + "\r\n" if output else "")])
+        events.append([round(t, 3), "o", "\r\n"])
+        for line in wrap(output) if output else []:
+            events.append([round(t, 3), "o", line + "\r\n"])
+            t += LINE
         t += gap
     events.append([round(t, 3), "o", "$ "])
     return "\n".join(json.dumps(x, ensure_ascii=False) for x in [head, *events]) + "\n"
@@ -237,23 +259,31 @@ def cast(steps: list[tuple[str, str]], title: str, gap: float) -> str:
 
 CW, LH, PAD, BAR = 7.8, 17.0, 18, 34  # char width (0.6em at 13px), line height, padding, title bar
 MONO = "'DM Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace"
-LIT = re.compile(r'"(failed|denied)"')  # the lines a terminal may color: the failed role, never green for good
+LIT = re.compile(r':\s*"(failed|denied|blocked)"')  # the lines a terminal may color: a failed status, never green for good
 TERM_ICON = ('<g fill="none" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter" '
              'transform="translate({x},{y}) scale(.7)"><rect x="2.5" y="3.5" width="15" height="13"/>'
              '<path d="M6 8l2.5 2L6 12M10.5 12.5H14"/></g>')  # Airframe's `terminal` icon, 20px grid drawn at 14px
+
+
+def pct(at: float, total: float) -> str:
+    return f"{100 * at / total:.3f}%"
 
 
 def terminal(lines: list[tuple[float, str, str, float]], total: float | None, title: str) -> str:
     """A terminal window on Airframe's Terminal contract: always dark, DM Mono on `terminal-bg`, a bar
     with the product and scope in mono capitals, output in `terminal-fg`, the prompt and cursor in
     `brand`, and color on one kind of line only (`terminal-err` for the failed role). The bar reads
-    `title` as `product|scope|scope`. With `total`, lines appear at their times and commands type out,
-    looping every `total` seconds; without it, a still of every line."""
+    `title` as `product|scope|scope`. With `total`, the window is ROWS lines high, lines appear at
+    their times, commands type out and the window scrolls like a terminal; it plays once and holds
+    its last frame, which is also the frame shown when animations do not run (the markup's resting
+    state is the end of the session). Without `total`, a still of every line."""
     t = night()
-    w, h = round((COLS + 4) * CW + 2 * PAD), round(BAR + PAD + len(lines) * LH + PAD / 2)
+    rows = min(len(lines), ROWS) if total else len(lines)
+    w, h = round((COLS + 4) * CW + 2 * PAD), round(BAR + PAD + rows * LH + PAD / 2)
     css = [f".t{{font:13px {MONO};fill:{t['terminal-fg']};white-space:pre}}.p{{fill:{t['brand']}}}"
            f".c{{fill:{t['code-keyword']}}}.x{{fill:{t['terminal-err']}}}"
-           f".b{{font:500 10.5px {MONO};letter-spacing:.08em;fill:{t['terminal-dim']}}}.b1{{fill:{t['terminal-fg']}}}"]
+           f".b{{font:500 10.5px {MONO};letter-spacing:.08em;fill:{t['terminal-dim']}}}.b1{{fill:{t['terminal-fg']}}}"
+           "@media(prefers-reduced-motion:reduce){.v,.v *{animation:none!important}}"]
     body = [f'<rect width="{w}" height="{h}" rx="4" fill="{t["terminal-bg"]}"/>',
             f'<rect x=".5" y=".5" width="{w - 1}" height="{h - 1}" rx="4" fill="none" stroke="{t["terminal-fg"]}" '
             f'stroke-opacity=".08"/><path d="M0 {BAR + .5}H{w}" stroke="{t["terminal-fg"]}" stroke-opacity=".09"/>',
@@ -262,6 +292,7 @@ def terminal(lines: list[tuple[float, str, str, float]], total: float | None, ti
     for i, part in enumerate(title.split("|")):
         body.append(f'<text class="b{" b1" if i == 0 else ""}" x="{x}" y="{BAR / 2 + 3.75}">{esc(part.upper())}</text>')
         x += round(len(part) * (10.5 * 0.6 + 0.84)) + 14
+    screen: list[str] = []
     for i, (at, kind, text, per) in enumerate(lines):
         y = BAR + PAD + (i + 0.75) * LH
         if kind in ("cmd", "cont"):
@@ -272,20 +303,28 @@ def terminal(lines: list[tuple[float, str, str, float]], total: float | None, ti
             attrs = f' textLength="{(n + 2) * CW:.1f}" lengthAdjust="spacingAndGlyphs"' if text else ""
             el = f'<text class="t" x="{PAD}" y="{y:.1f}"{attrs}>{inner}</text>'
             if total and text:  # a cover over the command that steps right one character at a time
-                x0, d = PAD + 2 * CW, n * per
-                css.append(f"@keyframes y{i}{{0%,{100 * at / total:.3f}%{{transform:translateX(0)}}"
-                           f"{100 * (at + d) / total:.3f}%,100%{{transform:translateX({n * CW:.1f}px)}}}}"
-                           f".y{i}{{animation:y{i} {total:.2f}s steps({n},end) infinite}}")
+                x0, d, dx = PAD + 2 * CW, n * per, f"{n * CW:.1f}px"
+                css.append(f"@keyframes y{i}{{0%,{pct(at, total)}{{transform:translateX(0)}}"
+                           f"{pct(at + d, total)},100%{{transform:translateX({dx})}}}}"
+                           f".y{i}{{transform:translateX({dx});animation:y{i} {total:.2f}s steps({n},end) forwards}}")
                 el += (f'<rect class="y{i}" x="{x0:.1f}" y="{y - LH * 0.8:.1f}" width="{n * CW + 4:.1f}" '
                        f'height="{LH:.1f}" fill="{t["terminal-bg"]}"/>')
-        else:  # normal stays quiet; a failed or denied status is the only red
+        else:  # normal stays quiet; a failed, denied or blocked status is the only red
             el = f'<text class="t{" x" if LIT.search(text) else ""}" x="{PAD}" y="{y:.1f}">{esc(text)}</text>'
         if total:
-            css.append(f"@keyframes s{i}{{0%,{100 * at / total:.3f}%{{opacity:0}}"
+            css.append(f"@keyframes s{i}{{0%,{pct(at, total)}{{opacity:0}}"
                        f"{100 * at / total + 0.001:.3f}%,100%{{opacity:1}}}}"
-                       f".s{i}{{animation:s{i} {total:.2f}s step-end infinite}}")
+                       f".s{i}{{animation:s{i} {total:.2f}s step-end forwards}}")
             el = f'<g class="s{i}">{el}</g>'
-        body.append(el)
+        screen.append(el)
+    if total and len(lines) > ROWS:  # scroll one line each time a line appears below the window
+        end = (len(lines) - ROWS) * LH
+        frames = "".join(f"{pct(at, total)}{{transform:translateY(-{(i - ROWS + 1) * LH:.1f}px)}}"
+                         for i, (at, _, _, _) in enumerate(lines) if i >= ROWS)
+        css.append(f"@keyframes v{{0%{{transform:translateY(0)}}{frames}100%{{transform:translateY(-{end:.1f}px)}}}}"
+                   f".v{{transform:translateY(-{end:.1f}px);animation:v {total:.2f}s step-end forwards}}")
+    clip = f'<clipPath id="win"><rect x="0" y="{BAR + 1}" width="{w}" height="{h - BAR - 1}"/></clipPath>'
+    body.append(f'{clip}<g clip-path="url(#win)"><g class="v">{"".join(screen)}</g></g>')
     label = title.replace("|", ", ")
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" '
             f'role="img" aria-label="{esc(label)}"><style>{"".join(css)}</style>{"".join(body)}</svg>\n')
@@ -316,78 +355,76 @@ def flavors() -> dict[str, dict[str, str]]:
 
 def diagram(colors: dict[str, str] | None) -> str:
     """Where ai-dlc sits in the suite (agent-factory's diagram conventions: Airframe tokens with dark
-    fallbacks; with `colors`, every token resolved to that flavor)."""
+    fallbacks; with `colors`, every token resolved to that flavor). Drawn at 800 by 520 so that in
+    the docs column (686px) body text is still 13px and labels 11px."""
     dark = flavors()["dark"]
 
     def v(token: str) -> str:
         return colors[token] if colors else f"var(--af-{token}, {dark[token]})"
 
-    style = (f".ad .n{{font:700 17px Archivo,'Helvetica Neue',Arial,sans-serif;font-stretch:125%;fill:{v('fg')}}}"
-             f".ad .s{{font:700 13px Archivo,'Helvetica Neue',Arial,sans-serif;font-stretch:125%;fill:{v('fg')}}}"
-             f".ad .b{{font:400 12.5px 'Red Hat Text','Helvetica Neue',Arial,sans-serif;fill:{v('fg-muted')}}}"
-             f".ad .e{{font:400 12.5px 'Red Hat Text','Helvetica Neue',Arial,sans-serif;fill:{v('fg-subtle')}}}"
-             f".ad .l{{font:500 10.5px 'DM Mono',ui-monospace,Menlo,monospace;letter-spacing:.08em;"
-             f"fill:{v('fg-subtle')}}}.ad .edge{{fill:none;stroke:{v('fg-subtle')};stroke-width:1.25}}"
-             f".ad .plan{{fill:none;stroke:{v('fg-subtle')};stroke-width:1.25;stroke-dasharray:5 4}}")
+    sans, text = "Archivo,'Helvetica Neue',Arial,sans-serif", "'Red Hat Text','Helvetica Neue',Arial,sans-serif"
+    style = (f".ad .n{{font:700 20px {sans};font-stretch:125%;fill:{v('fg')}}}"
+             f".ad .s{{font:700 15px {sans};font-stretch:125%;fill:{v('fg')}}}"
+             f".ad .b{{font:400 15.5px {text};fill:{v('fg-muted')}}}"
+             f".ad .e{{font:400 13.5px {text};fill:{v('fg-subtle')}}}"
+             f".ad .l{{font:500 13px 'DM Mono',ui-monospace,Menlo,monospace;letter-spacing:.08em;"
+             f"fill:{v('fg-subtle')}}}.ad .edge{{fill:none;stroke:{v('fg-subtle')};stroke-width:1.25}}")
     out: list[str] = []
 
     def box(x: int, y: int, w: int, h: int, eyebrow: str, name: str, lines: tuple[str, ...],
             hue: str | None, kind: str = "raised") -> None:
-        stroke = {"hub": f' stroke="{v("brand-line")}" stroke-width="1.5"',
-                  "plan": f' stroke="{v("line-strong")}" stroke-dasharray="4 4" fill-opacity="0"'}.get(
-            kind, f' stroke="{v("rule")}"')
+        stroke = (f' stroke="{v("brand-line")}" stroke-width="1.5"' if kind == "hub" else f' stroke="{v("rule")}"')
         out.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="3" fill="{v("raised")}"{stroke}/>')
         if hue:
             out.append(f'<rect x="{x}" y="{y}" width="{w}" height="2" fill="{v(hue)}"/>')
-        out.append(f'<text class="l" x="{x + 18}" y="{y + 26}">{esc(eyebrow)}</text>'
-                   f'<text class="n" x="{x + 18}" y="{y + 50}">{esc(name)}</text>')
-        out.extend(f'<text class="b" x="{x + 18}" y="{y + 74 + 19 * i}">{esc(t)}</text>'
+        out.append(f'<text class="l" x="{x + 16}" y="{y + 28}">{esc(eyebrow)}</text>'
+                   f'<text class="n" x="{x + 16}" y="{y + 56}">{esc(name)}</text>')
+        out.extend(f'<text class="b" x="{x + 16}" y="{y + 84 + 22 * i}">{esc(t)}</text>'
                    for i, t in enumerate(lines))
 
     def step(x: int, y: int, name: str, sub: str) -> None:
-        out.append(f'<rect x="{x}" y="{y}" width="320" height="52" rx="3" fill="{v("surface")}" '
-                   f'stroke="{v("line-strong")}"/><text class="s" x="{x + 14}" y="{y + 21}">{esc(name)}</text>'
-                   f'<text class="b" x="{x + 14}" y="{y + 40}">{esc(sub)}</text>')
+        out.append(f'<rect x="{x}" y="{y}" width="216" height="58" rx="3" fill="{v("surface")}" '
+                   f'stroke="{v("line-strong")}"/><text class="s" x="{x + 14}" y="{y + 24}">{esc(name)}</text>'
+                   f'<text class="b" x="{x + 14}" y="{y + 46}">{esc(sub)}</text>')
 
-    def edge(d: str, label: str, lx: int, ly: int, cls: str = "edge", anchor: str = "middle") -> None:
-        out.append(f'<path class="{cls}" d="{d}" marker-end="url(#ad-arrow)"/>')
-        out.extend(f'<text class="e" x="{lx}" y="{ly + 16 * i}" text-anchor="{anchor}">{esc(t)}</text>'
+    def edge(d: str, label: str, lx: int, ly: int, anchor: str = "middle") -> None:
+        out.append(f'<path class="edge" d="{d}" marker-end="url(#ad-arrow)"/>')
+        out.extend(f'<text class="e" x="{lx}" y="{ly + 17 * i}" text-anchor="{anchor}">{esc(t)}</text>'
                    for i, t in enumerate(label.split("|")))
 
-    w, h = 1200, 620
+    w, h = 800, 520
     out.append(f'<rect width="{w}" height="{h}" fill="{v("canvas")}"/>')
-    out.append('<text class="l" x="40" y="44">WHERE AI-DLC SITS · THE DEVELOPER SIDE OF THE AGENT FACTORY</text>')
-    box(30, 80, 380, 400, "DEVELOPER MACHINE · LOCAL", "ai-dlc", (), "product-aidlc", "hub")
-    for i, (name, sub) in enumerate((("machine enroll", "a pinned profile: tools, clients, credentials"),
-                                     ("work new → start", "reviewed record, tracker issue, branch"),
-                                     ("work pr → project check", "one PR; checks write a receipt"),
-                                     ("work finish", "merged PR + CI receipt, then close"))):
-        step(60, 140 + 78 * i, name, sub)
+    out.append('<text class="l" x="24" y="34">WHERE AI-DLC SITS · THE DEVELOPER SIDE OF THE AGENT FACTORY</text>')
+    box(24, 56, 248, 390, "DEVELOPER MACHINE · LOCAL", "ai-dlc", (), "product-aidlc", "hub")
+    for i, (name, sub) in enumerate((("machine enroll", "a pinned profile"),
+                                     ("work new → start", "record, issue, branch"),
+                                     ("work pr → project check", "a PR and a check receipt"),
+                                     ("work finish", "merged, CI green, closed"))):
+        step(40, 128 + 78 * i, name, sub)
         if i:
-            out.append(f'<path class="edge" d="M220 {140 + 78 * i - 26} V{140 + 78 * i - 2}" '
+            out.append(f'<path class="edge" d="M148 {128 + 78 * i - 20} V{128 + 78 * i - 3}" '
                        'marker-end="url(#ad-arrow)"/>')
-    box(500, 80, 300, 170, "TEAM HARNESS REPO", "harness.lock", ("pins the ai-dlc workflow plugin", "(skills, guide, safe hooks)",
-                                                                  "off in stable, on in candidate"), None)
-    box(890, 80, 280, 170, "RUN", "hangar", ("runs coding agents in sandboxes", "renders the harness at claim",
-                                              "time; owns verify and landing"), "product-hangar")
-    box(890, 310, 280, 170, "JUDGE", "flightdeck", ("A/B: with and without the", "plugin, same tasks; a verdict",
-                                                     "on the pull request"), "product-flightdeck")
-    box(500, 310, 300, 170, "SOURCE OF TRUTH", "GitHub", ("issues, pull requests,", "CI receipts per merge commit",
-                                                         "decisions in docs/decisions/"), None)
-    edge("M410 180 H496", "publish|plugin", 453, 160)
-    edge("M800 165 H886", "pinned|plugin", 843, 145)
-    edge("M1030 250 V306", "trials,|traces", 1040, 276, anchor="start")
-    edge("M410 400 H496", "issue, PR,|receipt", 453, 380)
-    edge("M800 395 H886", "report", 843, 385)
-    box(30, 520, 1140, 70, "GOVERN · PLANNED", "Tower: policy decisions, approvals, receipts", (),
-        "product-tower", "plan")
+    box(336, 56, 196, 170, "TEAM HARNESS REPO", "harness.lock",
+        ("pins the workflow", "plugin (skills, guide,", "hooks): off in stable,", "on in candidate"), None)
+    box(336, 276, 196, 170, "SOURCE OF TRUTH", "GitHub",
+        ("issues, pull requests,", "a CI receipt per merge", "commit, decisions in", "docs/decisions/"), None)
+    box(596, 56, 180, 170, "RUN", "hangar",
+        ("runs coding agents", "in sandboxes with", "the pinned harness"), "product-hangar")
+    box(596, 276, 180, 170, "JUDGE", "flightdeck",
+        ("compares runs with", "and without the", "plugin; posts the", "verdict on the PR"), "product-flightdeck")
+    edge("M272 132 H332", "publish|plugin", 302, 112)
+    edge("M532 132 H592", "pinned|plugin", 562, 112)
+    edge("M686 226 V272", "trials,|traces", 696, 245, anchor="start")
+    edge("M272 372 H332", "issue,|PR,|receipt", 302, 336)
+    edge("M596 372 H536", "verdict|on PR", 566, 352)
+    out.append('<text class="l" x="24" y="488">GOVERN · TOWER IS PLANNED: POLICY DECISIONS, APPROVALS, RECEIPTS</text>')
     defs = (f'<defs><marker id="ad-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
             f'markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="{v("fg-subtle")}"/>'
             "</marker></defs>")
     return (f'<svg class="ad" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" '
             'role="img" aria-label="Where ai-dlc sits: it prepares developer machines and gates work on '
             'merged evidence; it publishes the workflow plugin that a team harness pins, hangar runs and '
-            f'flightdeck compares">'
+            f'flightdeck compares; Tower is planned">'
             f"<style>{style}</style>{defs}{''.join(out)}</svg>\n")
 
 
@@ -406,9 +443,10 @@ def build(skip_claude: bool) -> dict[str, str]:
         shutil.rmtree(DEMO, ignore_errors=True)
     files: dict[str, str] = {}
     for name, steps, title, bar, gap in (  # the cast's title, and the terminal bar as product|scope
-        ("enroll", enroll, "ai-dlc machine enroll", "ai-dlc|machine enroll|preview, apply, status", 4.4),
-        ("work", work, "ai-dlc work: new → start → pr → finish (GitHub stood in locally)",
-         "ai-dlc|work: new → start → pr → finish|GitHub stood in locally", 1.7),
+        ("enroll", enroll, "ai-dlc machine enroll: preview, apply, status",
+         "ai-dlc|machine enroll|preview, apply, status", 1.0),
+        ("work", work, "ai-dlc work: start → pr → finish refused → merge → finish (GitHub is a local stand-in)",
+         "ai-dlc|work: start → pr → finish|GitHub is a local stand-in", 0.7),
     ):
         lines, total = timeline(steps, gap)
         files[f"{name}.cast"] = cast(steps, title, gap)
