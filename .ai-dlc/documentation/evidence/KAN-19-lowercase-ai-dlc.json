@@ -303,37 +303,28 @@
     },
     {
       "bound": {
-        "docs/assets/front/enroll.svg": "9d517ded5842a274702541dbdc8da1a0f6dec9e72b88b4aa4f2bc2b74f176e5a"
+        "docs/assets/front/plugin-skills.svg": "1aa9f7800cc66706c88155b7fd6bf8fbdae5a1973c4f6bdfc1e9a2e9177c692e"
       },
       "outcome": "updated",
-      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
-      "reviewer": "Claude (agent)",
-      "target": "docs/assets/front/enroll.svg"
-    },
-    {
-      "bound": {
-        "docs/assets/front/plugin-skills.svg": "848c8f3d12c041868ae6aef5bb731c14342a5cf6cec84434e26241e176aed26d"
-      },
-      "outcome": "updated",
-      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reason": "KAN-19: regenerated with build.py (pinned Claude Code 2.1.302). The plugin screen shows the lowercase ai-dlc plugin description; the work recording's commit ids changed because the templates it scaffolds changed. Title bars stay capitals, as build.py sets every bar.",
       "reviewer": "Claude (agent)",
       "target": "docs/assets/front/plugin-skills.svg"
     },
     {
       "bound": {
-        "docs/assets/front/project-check.svg": "0d047f256e8bcc129a5e041ed82c5124124fd833365e8ac01529d8d237928d79"
+        "docs/assets/front/work.cast": "a7eb7f4b48b270a674db1157067071d4a62697cbf855caa36f7bb0913cbc3e5b"
       },
       "outcome": "updated",
-      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reason": "KAN-19: regenerated with build.py; only the demo repository's commit ids changed, because the project templates it scaffolds now say ai-dlc.",
       "reviewer": "Claude (agent)",
-      "target": "docs/assets/front/project-check.svg"
+      "target": "docs/assets/front/work.cast"
     },
     {
       "bound": {
-        "docs/assets/front/work.svg": "3c176c9c9bf67547fe34fdc5ec6a501f3a1487a5246cc17fd878e61413f2bcec"
+        "docs/assets/front/work.svg": "48666de17958c76bfe190526f0dada19b0378c89c75b13317dafb40b2f729101"
       },
       "outcome": "updated",
-      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reason": "KAN-19: regenerated with build.py (pinned Claude Code 2.1.302). The plugin screen shows the lowercase ai-dlc plugin description; the work recording's commit ids changed because the templates it scaffolds changed. Title bars stay capitals, as build.py sets every bar.",
       "reviewer": "Claude (agent)",
       "target": "docs/assets/front/work.svg"
     },
