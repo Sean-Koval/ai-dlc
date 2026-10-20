@@ -284,8 +284,9 @@ def terminal(lines: list[tuple[float, str, str, float]], total: float | None, ti
            f".c{{fill:{t['code-keyword']}}}.x{{fill:{t['terminal-err']}}}"
            f".b{{font:500 10.5px {MONO};letter-spacing:.08em;fill:{t['terminal-dim']}}}.b1{{fill:{t['terminal-fg']}}}"
            "@media(prefers-reduced-motion:reduce){.v,.v *{animation:none!important}}"]
-    body = [f'<rect width="{w}" height="{h}" rx="4" fill="{t["terminal-bg"]}"/>',
-            f'<rect x=".5" y=".5" width="{w - 1}" height="{h - 1}" rx="4" fill="none" stroke="{t["terminal-fg"]}" '
+    r = px(t["radius-card"])  # Terminal takes the card radius
+    body = [f'<rect width="{w}" height="{h}" rx="{r}" fill="{t["terminal-bg"]}"/>',
+            f'<rect x=".5" y=".5" width="{w - 1}" height="{h - 1}" rx="{r - .5}" fill="none" stroke="{t["terminal-fg"]}" '
             f'stroke-opacity=".08"/><path d="M0 {BAR + .5}H{w}" stroke="{t["terminal-fg"]}" stroke-opacity=".09"/>',
             TERM_ICON.format(x=14, y=BAR / 2 - 7).replace("<g ", f'<g stroke="{t["terminal-dim"]}" ', 1)]
     x = 14 + 14 + 14  # icon, gap
@@ -339,7 +340,12 @@ def still(command: str, output: str, title: str) -> str:
 
 # ------------------------------------------------------------------------------------------ the diagram
 TOKENS = ("canvas", "surface", "raised", "line", "line-strong", "rule", "fg", "fg-muted", "fg-subtle",
-          "brand-line", "product-aidlc", "product-hangar", "product-flightdeck", "product-tower")
+          "product-aidlc", "product-hangar", "product-flightdeck", "product-tower")
+
+
+def px(value: str) -> int:
+    """A length token such as `12px` as a number, for SVG attributes that cannot take var()."""
+    return int(value.removesuffix("px"))
 
 
 def night() -> dict[str, str]:
@@ -356,8 +362,11 @@ def flavors() -> dict[str, dict[str, str]]:
 def diagram(colors: dict[str, str] | None) -> str:
     """Where ai-dlc sits in the suite (agent-factory's diagram conventions: Airframe tokens with dark
     fallbacks; with `colors`, every token resolved to that flavor). Drawn at 800 by 520 so that in
-    the docs column (686px) body text is still 13px and labels 11px."""
+    the docs column (686px) body text is still 13px and labels 11px. Airframe theme-v12: labels are
+    sentence-case sans, cards take `radius-card` and the steps `radius-control`, the product hue is a
+    2px marker inset from the corners, and ai-dlc's box is set apart by a `line-strong` edge, never the brand yellow."""
     dark = flavors()["dark"]
+    card, control = px(night()["radius-card"]), px(night()["radius-control"])
 
     def v(token: str) -> str:
         return colors[token] if colors else f"var(--af-{token}, {dark[token]})"
@@ -367,23 +376,23 @@ def diagram(colors: dict[str, str] | None) -> str:
              f".ad .s{{font:700 15px {sans};font-stretch:125%;fill:{v('fg')}}}"
              f".ad .b{{font:400 15.5px {text};fill:{v('fg-muted')}}}"
              f".ad .e{{font:400 13.5px {text};fill:{v('fg-subtle')}}}"
-             f".ad .l{{font:500 13px 'DM Mono',ui-monospace,Menlo,monospace;letter-spacing:.08em;"
-             f"fill:{v('fg-subtle')}}}.ad .edge{{fill:none;stroke:{v('fg-subtle')};stroke-width:1.25}}")
+             f".ad .l{{font:500 14px {text};fill:{v('fg-subtle')}}}"
+             f".ad .edge{{fill:none;stroke:{v('fg-subtle')};stroke-width:1.25}}")
     out: list[str] = []
 
     def box(x: int, y: int, w: int, h: int, eyebrow: str, name: str, lines: tuple[str, ...],
             hue: str | None, kind: str = "raised") -> None:
-        stroke = (f' stroke="{v("brand-line")}" stroke-width="1.5"' if kind == "hub" else f' stroke="{v("rule")}"')
-        out.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="3" fill="{v("raised")}"{stroke}/>')
+        stroke = f' stroke="{v("line-strong")}"' if kind == "hub" else f' stroke="{v("rule")}"'
+        out.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{card}" fill="{v("raised")}"{stroke}/>')
         if hue:
-            out.append(f'<rect x="{x}" y="{y}" width="{w}" height="2" fill="{v(hue)}"/>')
+            out.append(f'<rect x="{x + card}" y="{y}" width="{w - 2 * card}" height="2" fill="{v(hue)}"/>')
         out.append(f'<text class="l" x="{x + 16}" y="{y + 28}">{esc(eyebrow)}</text>'
                    f'<text class="n" x="{x + 16}" y="{y + 56}">{esc(name)}</text>')
         out.extend(f'<text class="b" x="{x + 16}" y="{y + 84 + 22 * i}">{esc(t)}</text>'
                    for i, t in enumerate(lines))
 
     def step(x: int, y: int, name: str, sub: str) -> None:
-        out.append(f'<rect x="{x}" y="{y}" width="216" height="58" rx="3" fill="{v("surface")}" '
+        out.append(f'<rect x="{x}" y="{y}" width="216" height="58" rx="{control}" fill="{v("surface")}" '
                    f'stroke="{v("line-strong")}"/><text class="s" x="{x + 14}" y="{y + 24}">{esc(name)}</text>'
                    f'<text class="b" x="{x + 14}" y="{y + 46}">{esc(sub)}</text>')
 
@@ -394,8 +403,8 @@ def diagram(colors: dict[str, str] | None) -> str:
 
     w, h = 800, 520
     out.append(f'<rect width="{w}" height="{h}" fill="{v("canvas")}"/>')
-    out.append('<text class="l" x="24" y="34">WHERE AI-DLC SITS · THE DEVELOPER SIDE OF THE AGENT FACTORY</text>')
-    box(24, 56, 248, 390, "DEVELOPER MACHINE · LOCAL", "ai-dlc", (), "product-aidlc", "hub")
+    out.append('<text class="l" x="24" y="34">Where ai-dlc sits: the developer side of the agent factory</text>')
+    box(24, 56, 248, 390, "Developer machine, local", "ai-dlc", (), "product-aidlc", "hub")
     for i, (name, sub) in enumerate((("machine enroll", "a pinned profile"),
                                      ("work new → start", "record, issue, branch"),
                                      ("work pr → project check", "a PR and a check receipt"),
@@ -404,20 +413,20 @@ def diagram(colors: dict[str, str] | None) -> str:
         if i:
             out.append(f'<path class="edge" d="M148 {128 + 78 * i - 20} V{128 + 78 * i - 3}" '
                        'marker-end="url(#ad-arrow)"/>')
-    box(336, 56, 196, 170, "TEAM HARNESS REPO", "harness.lock",
+    box(336, 56, 196, 170, "Team harness repository", "harness.lock",
         ("pins the workflow", "plugin (skills, guide,", "hooks): off in stable,", "on in candidate"), None)
-    box(336, 276, 196, 170, "SOURCE OF TRUTH", "GitHub",
+    box(336, 276, 196, 170, "Source of truth", "GitHub",
         ("issues, pull requests,", "a CI receipt per merge", "commit, decisions in", "docs/decisions/"), None)
-    box(596, 56, 180, 170, "RUN", "hangar",
+    box(596, 56, 180, 170, "Run", "hangar",
         ("runs coding agents", "in sandboxes with", "the pinned harness"), "product-hangar")
-    box(596, 276, 180, 170, "JUDGE", "flightdeck",
+    box(596, 276, 180, 170, "Judge", "flightdeck",
         ("compares runs with", "and without the", "plugin; posts the", "verdict on the PR"), "product-flightdeck")
     edge("M272 132 H332", "publish|plugin", 302, 112)
     edge("M532 132 H592", "pinned|plugin", 562, 112)
     edge("M686 226 V272", "trials,|traces", 696, 245, anchor="start")
     edge("M272 372 H332", "issue,|PR,|receipt", 302, 336)
     edge("M596 372 H536", "verdict|on PR", 566, 352)
-    out.append('<text class="l" x="24" y="488">GOVERN · TOWER IS PLANNED: POLICY DECISIONS, APPROVALS, RECEIPTS</text>')
+    out.append('<text class="l" x="24" y="488">Govern: Tower is planned for policy decisions, approvals and receipts</text>')
     defs = (f'<defs><marker id="ad-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
             f'markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="{v("fg-subtle")}"/>'
             "</marker></defs>")
