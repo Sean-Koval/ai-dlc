@@ -6,7 +6,7 @@ hide:
 
 <div class="af-hero af-hero--visual" markdown>
 <div markdown>
-<span class="af-eyebrow">Agent factory · Define plane</span>
+<span class="af-eyebrow">Agent factory · Setup</span>
 
 # One setup, one workflow, one evidence-gated finish
 

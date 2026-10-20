@@ -12,7 +12,7 @@
 # docs header; overrides/main.html includes it), airframe-icons.svg (sprite), airframe-tokens.json.
 set -eu
 
-CURRENT=theme-v8   # the release this repo vendors; the sync PR that moves it updates this line
+CURRENT=theme-v12  # the release this repo vendors; the sync PR that moves it updates this line
 
 FILES="
 airframe.css            docs/stylesheets/airframe.css
