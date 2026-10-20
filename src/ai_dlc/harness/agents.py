@@ -1419,7 +1419,7 @@ def _rule_links(body: str) -> str:
 
 def _antigravity_rule(body: str) -> str:
     return (
-        "# AI-DLC native project rule\n\n"
+        "# ai-dlc native project rule\n\n"
         "Activate this rule as Always On in the native client. Read AGENTS.md at the "
         "repository root before work. Commands and artifact paths below are repository-root "
         "relative. Client recognition and login require a separate native walkthrough.\n\n"

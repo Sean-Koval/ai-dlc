@@ -1,6 +1,6 @@
 """The application's own exception base.
 
-Every exception class AI-DLC defines derives from ``AiDlcError`` so entry points can
+Every exception class ai-dlc defines derives from ``AiDlcError`` so entry points can
 recognise framework failures with one handler. Existing classes keep their historical
 ``ValueError`` or ``RuntimeError`` base as well, so callers that catch those keep working
 while bare ``ValueError`` raises are migrated to typed errors.
@@ -10,7 +10,7 @@ from __future__ import annotations
 
 
 class AiDlcError(Exception):
-    """A failure AI-DLC itself detected and can describe to the user.
+    """A failure ai-dlc itself detected and can describe to the user.
 
     ``exit_code`` is the process exit status a command reports for the failure.
     """

@@ -220,7 +220,7 @@ def _trusted_definition_checks(definition, component, config, *, headless, compa
                 component["id"],
                 "lifecycle-adapter",
                 "blocked",
-                f"AI-DLC {component['role']} lifecycle adapter is unavailable; native tools and guidance do not enable tracked-work operations.",
+                f"ai-dlc {component['role']} lifecycle adapter is unavailable; native tools and guidance do not enable tracked-work operations.",
                 "Select an implemented lifecycle provider or retain this explicit unsupported capability.",
             )
         )

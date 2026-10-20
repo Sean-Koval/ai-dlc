@@ -22,7 +22,7 @@ module. Bounded trusted requirements inspect only the runtime `paths.vault`
 directory. Missing paths, non-directories and provider-local substitutes cannot
 claim readiness. Optional desktop viewing is separate, including headless mode;
 inspection reads no note content, creates nothing and does not test write access.
-Plane guidance can be delivered, but its absent AI-DLC lifecycle adapter remains
+Plane guidance can be delivered, but its absent ai-dlc lifecycle adapter remains
 explicitly blocked. GitHub/Jira selections do not acquire a Plane prerequisite.
 
 ## Test-first evidence

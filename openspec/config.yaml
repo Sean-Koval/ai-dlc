@@ -3,7 +3,7 @@ schema: spec-driven
 # only for in-scope areas -- work lifecycle, enrollment and provisioning, managed
 # sections and the workflow plugin. Out-of-scope changes are archived as cancelled.
 context: |
-  AI-DLC is a portable development environment and playbook, implemented in Python
+  ai-dlc is a portable development environment and playbook, implemented in Python
   with uv. Machine provisioning delegates to native package managers and mise.
   CLI and MCP share workflow services. Tracker completion requires evidence for
   the merged revision. Preserve existing project content, credentials and vault notes.

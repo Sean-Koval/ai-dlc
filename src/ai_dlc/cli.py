@@ -80,7 +80,7 @@ def service_call():
 
 @contextmanager
 def typed_refusals():
-    """Report AI-DLC's own typed failures cleanly; other exceptions keep their behavior."""
+    """Report ai-dlc's own typed failures cleanly; other exceptions keep their behavior."""
     try:
         yield
     except AiDlcError as exc:

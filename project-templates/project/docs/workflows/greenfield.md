@@ -57,14 +57,14 @@ flowchart TD
    compatibility fallback; otherwise record `requires_spec = false` and its
    reviewed reason.
 6. With tracker and SCM configured, review the work record, then publish and
-   start it through AI-DLC. Otherwise use local checks and manual tracking until
+   start it through ai-dlc. Otherwise use local checks and manual tracking until
    those roles are configured.
 7. Implement the smallest coherent slice, add acceptance tests, and extend
    required checks as behavior grows.
 8. Always run required local checks. With tracker and SCM configured, review
    and merge through SCM and use `ai-dlc work finish <work-id>` to validate the
    merged revision before tracker completion. Otherwise close the manual
-   lifecycle without claiming AI-DLC remote completion.
+   lifecycle without claiming ai-dlc remote completion.
 
 The slice is ready when its user, outcome, design, specification decision, and
 test strategy are explicit; configured remote work also requires a reviewed

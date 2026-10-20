@@ -72,7 +72,7 @@ is incomplete, and a focused passing result does not replace the full required r
 ## Work record draft
 
 Fill only supported fields in `.ai-dlc/work/<id>.toml`; existing configured
-providers/bindings are resolved through AI-DLC, not fabricated here. Put exclusions
+providers/bindings are resolved through ai-dlc, not fabricated here. Put exclusions
 in scope and detailed rationale/tasks in the linked delivery document.
 
 ```toml

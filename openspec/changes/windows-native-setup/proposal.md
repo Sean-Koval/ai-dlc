@@ -2,7 +2,7 @@
 
 ## Why
 
-The current source bootstrap supports Darwin/Linux, machine planning rejects Windows, and generated Python setup requires POSIX syntax. Teammates who clone AI-DLC and ask their harness to set it up therefore cannot complete the intended native Windows journey. [Product direction](../../../docs/product-direction.md) calls for reproducible selected tools and guidance with independent local credentials; a mandatory WSL detour does not deliver that outcome.
+The current source bootstrap supports Darwin/Linux, machine planning rejects Windows, and generated Python setup requires POSIX syntax. Teammates who clone ai-dlc and ask their harness to set it up therefore cannot complete the intended native Windows journey. [Product direction](../../../docs/product-direction.md) calls for reproducible selected tools and guidance with independent local credentials; a mandatory WSL detour does not deliver that outcome.
 
 This proposal follows the September 26, 2026 PM review of main `3d4ffc194458d5d48aa68dc092e92b00fc443af8`. It is planned work, not proof of a specific terminal failure, shipped support or live platform qualification.
 

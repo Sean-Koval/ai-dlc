@@ -1,11 +1,11 @@
-# AI-DLC development workflow
+# ai-dlc development workflow
 
-This is the project entry point for the AI-DLC lifecycle. It describes stable
+This is the project entry point for the ai-dlc lifecycle. It describes stable
 stages; the [tool map](workflows/tool-map.md) shows which configured provider or
 service currently performs each role. The CLI owns lifecycle mutation; MCP
 exposes only its reviewed work, doctor, and knowledge services.
 
-The selected harness can use installed tools directly. AI-DLC equips it with
+The selected harness can use installed tools directly. ai-dlc equips it with
 environment setup, project structure, guidance, and integration; the services own
 specific validation and completion boundaries. UI/UX is an optional workflow
 within product development, alongside other design and verification methods.
@@ -37,7 +37,7 @@ platform and require that shell. For an intentionally shell-based Windows check,
 use `{ shell = "powershell", script = "& python scripts/check_tests.py; exit $LASTEXITCODE" }`;
 PowerShell scripts must propagate native exit codes. Setup and verification steps
 accept the same command forms. Checks install nothing and missing executables or
-shells fail visibly. Historical AI-DLC 0.4.0 release assets do not support these
+shells fail visibly. Historical ai-dlc 0.4.0 release assets do not support these
 new records; use a compatible engine before changing an existing project's commands.
 
 Requirements explain outcomes; formal specifications define behavior; tickets
@@ -130,7 +130,7 @@ owns shared policy and durable docs. Each machine independently owns its
 binding, including paths, account selection, and environment-variable names.
 Credential values belong only to a password manager, keychain, or process
 environment. Generated Codex and Claude client files remain owned by their
-client configuration, which AI-DLC updates through its ownership rules.
+client configuration, which ai-dlc updates through its ownership rules.
 
 Use `ai-dlc machine status`, `plan`, `apply`, `sync`, and `doctor` to inspect,
 preview, reconcile, update, and diagnose local enrollment. Local CLI and MCP

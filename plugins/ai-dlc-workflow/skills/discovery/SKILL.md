@@ -5,7 +5,7 @@ description: Use when a product request has unclear users, outcomes, constraints
 
 # Discovery
 
-Shape the smallest worthwhile increment before specifications or code. AI-DLC
+Shape the smallest worthwhile increment before specifications or code. ai-dlc
 supplies guidance; the harness applies judgment using the project's chosen tools.
 Read repository product context, architecture and relevant provider instructions.
 
@@ -23,7 +23,7 @@ Read repository product context, architecture and relevant provider instructions
 
 Use `docs/templates/product-brief.md` when present. Worked examples:
 `docs/examples/product-shaping/greenfield.md` and
-`docs/examples/product-shaping/brownfield.md`. In the AI-DLC source repository,
+`docs/examples/product-shaping/brownfield.md`. In the ai-dlc source repository,
 these assets live under `agents/templates/` and `agents/examples/`. In older
 projects without them, use these sections directly; do not require adoption.
 

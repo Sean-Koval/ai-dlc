@@ -72,7 +72,7 @@ candidates compared under that version.
 
 ### Requirement: DP-05 Guidance travels through existing project distribution
 
-AI-DLC SHALL distribute Design PM instructions, templates, and examples through
+ai-dlc SHALL distribute Design PM instructions, templates, and examples through
 its existing managed-asset and project-template mechanisms. The workflow SHALL
 be usable through readable project artifacts and installed tools without a new
 mandatory service. Updates SHALL preserve authored content and report conflicts.

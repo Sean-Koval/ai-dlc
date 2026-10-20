@@ -14,7 +14,7 @@ Read `docs/templates/design-brief.md` and `docs/templates/design-rubric.md`.
 Use `docs/examples/design-evaluation/library-rooms.md` for original anchored
 examples, not evidence about the current product.
 
-In the AI-DLC source repository, these templates/examples live under
+In the ai-dlc source repository, these templates/examples live under
 `agents/templates/` and `agents/examples/`. In older projects without copied
 assets, use the record contract below directly; do not require adoption.
 

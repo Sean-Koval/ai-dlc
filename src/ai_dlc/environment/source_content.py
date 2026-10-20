@@ -221,7 +221,7 @@ def native_items(files: dict[str, str]) -> tuple[list[SourceItem], list[str]]:
                 )
                 or name not in document["features"]
             ):
-                raise ValueError(f"source hooks must name supported AI-DLC features: {path}")
+                raise ValueError(f"source hooks must name supported ai-dlc features: {path}")
         if kind in {"skill", "rule"} and not files[path].strip():
             raise ValueError(f"source Markdown must not be empty: {path}")
         items.append(

@@ -1,4 +1,4 @@
-"""AI-DLC workflow plugin hook shim: degrade cleanly without the ai-dlc CLI.
+"""ai-dlc workflow plugin hook shim: degrade cleanly without the ai-dlc CLI.
 
 This file is the single source of ``plugins/ai-dlc-workflow/hooks/aidlc_hook.py``;
 ``scripts/build_workflow_plugin.py`` copies it byte for byte. It must stay

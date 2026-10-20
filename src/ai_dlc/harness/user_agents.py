@@ -26,7 +26,7 @@ _CODEX_SECTION = re.compile(
 
 
 class UserAgentOwnershipConflict(RefusedError):
-    """A persisted client configuration prevents AI-DLC from safely changing it."""
+    """A persisted client configuration prevents ai-dlc from safely changing it."""
 
 
 def render_user_agents(

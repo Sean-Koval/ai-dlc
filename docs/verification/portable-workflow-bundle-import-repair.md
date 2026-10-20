@@ -172,4 +172,4 @@ filesystem execution results above remain coordinator evidence.
 - [x] Required checks and strict specifications pass for the integrated implementation.
 - [x] Archive the finalized behavior and verify current references.
 - [ ] Link the reviewed PR and authenticate exact merged-revision CI receipts.
-- [ ] Complete GitHub #10 through AI-DLC work finish after those gates pass.
+- [ ] Complete GitHub #10 through ai-dlc work finish after those gates pass.

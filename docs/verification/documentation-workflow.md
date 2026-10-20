@@ -67,7 +67,7 @@ attempt revealed underspecified allowed enum values in the skill; validation
 rejected them. The skill now declares the exact allowed categories/dispositions;
 its fresh structured rerun is recorded separately below.
 
-AI-DLC now opts into the documentation manifest check. Historical exemptions and
+ai-dlc now opts into the documentation manifest check. Historical exemptions and
 current dispositions are explicit reviewed JSON under `.ai-dlc/documentation/`.
 Those records bind source bytes and the selected base; they do not prove the
 reviewer's semantic judgment. Fresh project adoption does not enable this gate
@@ -105,7 +105,7 @@ validated, and repeat workspace setup created no files or replaced annotations.
 
 The six implementation changes have been archived with canonical purpose text and
 work references updated. Their GitHub issues remain open until integration and
-AI-DLC completion gates pass. Archival does not certify the pending native or
+ai-dlc completion gates pass. Archival does not certify the pending native or
 company-specific walkthroughs.
 
 ## Native directory mount qualification — September 11, 2026
@@ -215,7 +215,7 @@ synchronization remain unverified.
 ## Native workspace and external MCP follow-up, September 14, 2026
 
 [Issue #53](https://github.com/Sean-Koval/ai-dlc/issues/53) tracks the remaining
-qualification. Engine revision `dd05f1f1ba919d2647e46049b7cd48fbb21be1fb` (PR #131 merge), AI-DLC 0.4.0, Python
+qualification. Engine revision `dd05f1f1ba919d2647e46049b7cd48fbb21be1fb` (PR #131 merge), ai-dlc 0.4.0, Python
 3.12.11, macOS 15.3.2 (24D81), ARM64. A new disposable copy of the controlled
 messy project was built with `tests/fixtures/messy_project.py`; its committed
 revision was `3fc1c15a7c48d0fc823238d9b42bf8a58811c158`. A separate new vault

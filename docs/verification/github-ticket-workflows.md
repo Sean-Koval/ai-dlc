@@ -20,7 +20,7 @@ silicon host; it is not factory-clean or work-laptop/client qualification. Paren
 
 ## Live activation after CLI authorization
 
-AI-DLC's saved default setup reused Project #2 and verified its repository link.
+ai-dlc's saved default setup reused Project #2 and verified its repository link.
 The default-only and eight selected-work migrations applied with durable before/
 after receipts; their outcomes are `applied` with no uncertain paths. Read-back
 of `github-ticket-workflows` resolves issue #18, native open, Project In Progress.
