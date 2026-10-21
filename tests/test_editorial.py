@@ -42,7 +42,7 @@ SKIP_LINE = re.compile(
 )
 TABLE_RULE = re.compile(r"^\s*\|?\s*:?-{3,}")
 ITEM = re.compile(r"^\s*(?:[-*+]|\d+[.)])\s+")
-FENCE = re.compile(r"^(\s*)(`{3,}|~{3,}).*?^\1\2[ \t]*$", re.DOTALL | re.MULTILINE)
+FENCE = re.compile(r"^([ \t]*)(`{3,}|~{3,}).*?^\1\2[ \t]*$", re.DOTALL | re.MULTILINE)
 
 
 def pages() -> list[Path]:
@@ -189,6 +189,10 @@ def test_every_long_page_has_a_reason():
         assert reason.strip(), key
         hits = [p for p in pages() if long_page_reason(rel(p)) == reason]
         assert hits, f"{key} matches no page; remove it from LONG_PAGES"
+        if not key.endswith("/"):
+            assert measure(ROOT / key)["words"] > PAGE, (
+                f"{key} is short now; remove it from LONG_PAGES"
+            )
 
 
 def report() -> None:

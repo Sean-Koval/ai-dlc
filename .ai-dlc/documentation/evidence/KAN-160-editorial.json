@@ -277,7 +277,7 @@
     },
     {
       "bound": {
-        "tests/test_editorial.py": "f457d582eac76c57f8306e6f4c0f10afad43ddf7b5c5ed9ae47715e6401f0f93"
+        "tests/test_editorial.py": "5be99c8024034b58fab021348542144bd8283b44573beff62798bdd74e27c7ac"
       },
       "outcome": "updated",
       "reason": "KAN-160: the editorial check is documented in AGENTS.md, updated in this change.",
