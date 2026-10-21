@@ -1,6 +1,6 @@
 # Workflow tool map
 
-AI-DLC defines stable responsibilities and maps them to providers through
+ai-dlc defines stable responsibilities and maps them to providers through
 `ai-dlc.toml`. Confirm this project's selected roles; omitted capabilities are
 not configured provider choices.
 
@@ -14,7 +14,7 @@ not configured provider choices.
 | Review and merge | `scm` | GitHub | Branch, PR, merged SHA, CI runs, and artifacts |
 | Deployment evidence | `deploy` | None | Environment evidence when configured |
 | Interactive agent | `agent-client` | Claude Code and Codex | Analysis, authoring, and authorized tool use |
-| Workflow enforcement | AI-DLC CLI and selected MCP services | Local services | CLI: validation, machine bindings, reconciliation, receipts, and gates; MCP: reviewed work, doctor, document inspection, and knowledge |
+| Workflow enforcement | ai-dlc CLI and selected MCP services | Local services | CLI: validation, machine bindings, reconciliation, receipts, and gates; MCP: reviewed work, doctor, document inspection, and knowledge |
 | Project lifecycle | Copier | Template service | Answers, source revision, preview, and three-way updates |
 
 The complete publish/start/finish lifecycle requires configured tracker
@@ -49,7 +49,7 @@ establish readiness.
 | Close a work period | `day-end` |
 
 Skills provide judgment. Provider instructions define vendor operations.
-AI-DLC services own validation and mutation boundaries; no skill bypasses finish
+ai-dlc services own validation and mutation boundaries; no skill bypasses finish
 gates or extends user authorization.
 
 ## Portable enrollment boundary

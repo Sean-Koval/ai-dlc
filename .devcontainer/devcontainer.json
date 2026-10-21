@@ -1,5 +1,5 @@
 {
-  "name": "AI-DLC development",
+  "name": "ai-dlc development",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
   "mounts": [
     "source=${devcontainerId}-venv,target=${containerWorkspaceFolder}/.venv,type=volume"

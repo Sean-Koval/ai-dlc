@@ -83,7 +83,7 @@ jobs:
         run: |
           gh release create "${{ github.ref_name }}" \
             --repo "${{ github.repository }}" \
-            --title "AI-DLC ${{ github.ref_name }}" \
+            --title "ai-dlc ${{ github.ref_name }}" \
             --notes "Hash-bound bootstrap release. Install with the runbook in docs/runbooks/release-publication.md; verify assets against SHA256SUMS." \
             --verify-tag \
             dist/ai_dlc-${{ needs.package.outputs.version }}-py3-none-any.whl \

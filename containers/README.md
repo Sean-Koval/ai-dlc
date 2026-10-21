@@ -1,6 +1,6 @@
 # Provider conformance container
 
-This image supplies `ai-dlc-conformance`, its installed AI-DLC package, and the real
+This image supplies `ai-dlc-conformance`, its installed ai-dlc package, and the real
 provider/workflow fixture tests under `/kit`. Default targets run those tests with fake
 credentials and no live API calls. The sandbox runner supplies a digest-pinned image,
 `--network=none`, a read-only root filesystem, an unprivileged UID, resource limits,

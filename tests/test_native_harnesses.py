@@ -136,7 +136,7 @@ def test_antigravity_preserves_authored_servers_and_rejects_edited_owned_entry(t
 
 
 def test_antigravity_authored_rule_conflict_refuses_all_writes(tmp_path):
-    """A rule filename is not proof AI-DLC owns its authored contents."""
+    """A rule filename is not proof ai-dlc owns its authored contents."""
     _native_project(tmp_path)
     rule = tmp_path / ".agents/rules/ai-dlc.md"
     rule.parent.mkdir(parents=True)

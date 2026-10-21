@@ -11,7 +11,7 @@ The system SHALL render a new or exact plain CLAUDE.md as only @AGENTS.md and a 
 - **THEN** CLAUDE.md remains the plain reference and readiness accepts it
 
 ### Requirement: Repository organization
-AI-DLC SHALL keep formal changes in OpenSpec, clearly separate historical documents from current guidance, group internal Python modules by responsibility, and retain public command behavior.
+ai-dlc SHALL keep formal changes in OpenSpec, clearly separate historical documents from current guidance, group internal Python modules by responsibility, and retain public command behavior.
 
 #### Scenario: Cleanup does not change supported interfaces
 - **WHEN** internal modules and historical documents are relocated

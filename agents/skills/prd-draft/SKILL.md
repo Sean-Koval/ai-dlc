@@ -10,7 +10,7 @@ can keep its canonical discovery brief; do not mandate a PRD, UI exercise or tic
 copy. If audience, value or material constraints are unresolved, use discovery
 and retain an investigate decision with a bounded evidence goal.
 
-Use `docs/templates/prd.md` when present (`agents/templates/prd.md` in AI-DLC's
+Use `docs/templates/prd.md` when present (`agents/templates/prd.md` in ai-dlc's
 source repository). Without that asset, use these exact sections:
 
 - **Problem and audience** — link the canonical brief and supporting sources.

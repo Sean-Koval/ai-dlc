@@ -2,7 +2,7 @@
   "author": {
     "name": "AI-DLC contributors"
   },
-  "description": "AI-DLC workflow guidance, team skills and CLI-optional safety hooks; opt in per session or settings scope.",
+  "description": "ai-dlc workflow guidance, team skills and CLI-optional safety hooks; opt in per session or settings scope.",
   "hooks": "./hooks.json",
   "keywords": [
     "workflow",
@@ -14,5 +14,5 @@
   "name": "ai-dlc-workflow",
   "repository": "https://github.com/Sean-Koval/ai-dlc",
   "skills": "./skills/",
-  "version": "0.4.0-r3"
+  "version": "0.4.0-r4"
 }

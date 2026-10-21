@@ -251,7 +251,7 @@ a code and the next action:
   resolved location, and the version and project commands it reports through
   bounded `--version` and `project --help` probes, beside this process's package
   version. A version the executable does not report stays `unverified`.
-- `activation` separates the current PATH from the AI-DLC-owned section of
+- `activation` separates the current PATH from the ai-dlc-owned section of
   `~/.zshrc` or `~/.bashrc`. `configured-for-next-shell` means setup exists but this
   terminal predates it: open a new terminal or source that file. For `stale` or
   `missing`, rerun the existing bootstrap and `ai-dlc setup apply`; do not add another
@@ -436,7 +436,7 @@ pages, or choose a winner when company guidance conflicts with project policy.
 
 The existing Markdown link/metadata checks remain objective diagnostics. Optionally
 configure Vale and run `ai-dlc docs check --style --path docs/reference/api.md`.
-AI-DLC invokes only the explicit check, never installs styles or runs Vale sync.
+ai-dlc invokes only the explicit check, never installs styles or runs Vale sync.
 The default reports unavailable tools and alerts without a mandatory failure;
 `--strict` requires the configured style check to pass. Keep local vocabulary and
 style policy reviewed. A prose linter cannot verify implementation claims.

@@ -11,7 +11,7 @@ valid_from: YYYY-MM-DD
 valid_to: null
 review_by: YYYY-MM-DD
 supersedes: []               # [decision/NNNN-older-slug]
-# checks:                    # optional; flightdeck.spec/v1 grammar, evaluated by flightdeck, not AI-DLC
+# checks:                    # optional; flightdeck.spec/v1 grammar, evaluated by flightdeck, not ai-dlc
 #   - id: landing-stays-in-hangar
 #     scope: job             # turn | job | session
 #     assert: {never: {event: pr.merge, where: {hangar.pr.merged_by: {not: "hangar-landing[bot]"}}}}

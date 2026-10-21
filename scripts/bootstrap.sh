@@ -1,5 +1,5 @@
 #!/bin/sh
-# Standalone entry: no preinstalled AI-DLC, Python, mise, Node, or Rust.
+# Standalone entry: no preinstalled ai-dlc, Python, mise, Node, or Rust.
 set -eu
 AI_DLC_ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 AI_DLC_TARGET=local
@@ -31,7 +31,7 @@ if [ "$AI_DLC_PLAN" = true ]; then
     exit 0
 fi
 if [ "$AI_DLC_MODE" = release ]; then
-    [ -f "$AI_DLC_ROOT/bootstrap/release.sh" ] || { echo 'Release wheel manifest is not available. For AI-DLC development use --source; publish a verified release before distributing project bootstrap.' >&2; exit 1; }
+    [ -f "$AI_DLC_ROOT/bootstrap/release.sh" ] || { echo 'Release wheel manifest is not available. For ai-dlc development use --source; publish a verified release before distributing project bootstrap.' >&2; exit 1; }
     . "$AI_DLC_ROOT/bootstrap/release.sh"
 fi
 command -v curl >/dev/null || { echo 'curl and CA certificates are required.' >&2; exit 1; }

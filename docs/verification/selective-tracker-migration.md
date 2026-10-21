@@ -2,7 +2,7 @@
 
 Phase1 is based on merged main189913b. PR23's actual GitHub default-only and selected mapping delivery remains credited; this change does not repeat that migration. Parent issue21 still requires a specifically chosen real Plane deployment and substitution rehearsal.
 
-An isolated source bootstrap completed using a task-specific bootstrap directory and explicit source-specific CLI path, with Python3.12.11/AI-DLC0.4.0 on the current macOS host. This reused installed setup tools; it is not a clean-machine or native-client qualification.
+An isolated source bootstrap completed using a task-specific bootstrap directory and explicit source-specific CLI path, with Python3.12.11/ai-dlc0.4.0 on the current macOS host. This reused installed setup tools; it is not a clean-machine or native-client qualification.
 
 ## Phase1 local evidence
 

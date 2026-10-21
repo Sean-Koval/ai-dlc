@@ -1,7 +1,7 @@
 # workflow-plugin Specification
 
 ## Purpose
-Package AI-DLC's workflow guidance, team skills and CLI-optional hooks as one opt-in,
+Package ai-dlc's workflow guidance, team skills and CLI-optional hooks as one opt-in,
 digest-locked Claude Code plugin that a team harness can pin and switch on or off.
 ## Requirements
 ### Requirement: WP-01 Deterministic plugin build

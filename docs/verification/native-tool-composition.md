@@ -9,7 +9,7 @@ repairs and parent archive moves are integrated separately by the root coordinat
 The input/plan format and behavior are specified in
 [the child spec](https://github.com/Sean-Koval/ai-dlc/blob/main/openspec/changes/archive/2026-09-08-native-tool-composition/specs/native-tool-composition/spec.md).
 [The runbook](../design/native-tool-composition.md) includes an actual local
-AI-DLC MCP-service binding and the separate native rendering step. No provider
+ai-dlc MCP-service binding and the separate native rendering step. No provider
 MCP defaults, endpoint URLs, authentication or lifecycle adapter are fabricated.
 
 ## Test-driven evidence

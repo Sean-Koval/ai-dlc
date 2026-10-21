@@ -41,7 +41,7 @@ Adapters SHALL resolve valid native lifecycle transitions and verify the resulti
 
 #### Scenario: A generic tool requests a terminal transition
 - **WHEN** an invocation would bypass WorkService finish gates
-- **THEN** AI-DLC's generic invocation boundary rejects it under the existing completion policy
+- **THEN** ai-dlc's generic invocation boundary rejects it under the existing completion policy
 
 ### Requirement: TA-05 Scoped credentials and evidence
 Adapters SHALL bind requests to explicit configured service identities, keep credential values outside tracked files and output, and distinguish fixture, health and live workflow evidence.

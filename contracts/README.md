@@ -1,4 +1,4 @@
-# AI-DLC provider contract v1
+# ai-dlc provider contract v1
 
 `manifest.json` and operation schemas are generated from `ai_dlc.contracts` Pydantic models.
 `service-result.schema.json` is the envelope application services return to the CLI and

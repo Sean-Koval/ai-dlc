@@ -1,6 +1,6 @@
-# AI-DLC playbook
+# ai-dlc playbook
 
-AI-DLC is a local CLI/library plus project templates and agent skills. It does not host orchestration. The human and agent decide what work is useful; deterministic services validate, store, and link that work.
+ai-dlc is a local CLI/library plus project templates and agent skills. It does not host orchestration. The human and agent decide what work is useful; deterministic services validate, store, and link that work.
 
 Use the [development workflow handbook](../docs/development-workflow.md) for the compact lifecycle, greenfield and brownfield paths, design handoff, diagrams, and current tool map.
 

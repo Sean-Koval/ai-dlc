@@ -2,7 +2,7 @@
 
 ## Problem and goal
 
-Teammates cloning AI-DLC on Windows are routed toward Unix/WSL because the installer, provisioner, runtime paths and generated project steps assume Unix. Deliver a native Windows 11 x64 PowerShell journey from verified installation through selected core/Python preparation, project guidance and a meaningful acceptance check, with truthful unsupported-tool and qualification status. Authority: [product direction](../../../docs/product-direction.md). This packet is proposed implementation scope, not delivery or Windows qualification evidence.
+Teammates cloning ai-dlc on Windows are routed toward Unix/WSL because the installer, provisioner, runtime paths and generated project steps assume Unix. Deliver a native Windows 11 x64 PowerShell journey from verified installation through selected core/Python preparation, project guidance and a meaningful acceptance check, with truthful unsupported-tool and qualification status. Authority: [product direction](../../../docs/product-direction.md). This packet is proposed implementation scope, not delivery or Windows qualification evidence.
 
 Priority: **P0**. Change ID: `windows-native-setup`. Requirements: **WNS-01–WNS-08**, plus amended **BP-01**. `depends_on: [windows-portable-core]`. Consumer-onboarding guidance consumes this path; installed-client smoke qualification remains separately owned. Archive this change independently after its dependency is delivered. The [task artifact](tasks.md) remains the authoritative implementation checklist.
 

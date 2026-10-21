@@ -26,11 +26,11 @@ PROBE_TIMEOUT = 5.0
 PROBE_BYTES = 65536
 NAVIGATION_BYTES = 262144
 MAX_LINKS = 200
-REPAIR = "Rerun the existing AI-DLC bootstrap and `ai-dlc setup apply` to reconcile activation."
+REPAIR = "Rerun the existing ai-dlc bootstrap and `ai-dlc setup apply` to reconcile activation."
 MOUNT_PREVIEW = "Preview `ai-dlc project link-vault --mode mount` from the stable checkout root."
 LIMITATIONS = [
     "Read-only: no alias, shell entry, binding or mount is created or repaired.",
-    "Only the AI-DLC-owned shell section is parsed; authored shell content is never returned.",
+    "Only the ai-dlc-owned shell section is parsed; authored shell content is never returned.",
     "Filesystem links cannot establish Obsidian indexing, search, backlinks or refresh behavior.",
     "Link classification checks local reachability, not semantic correctness.",
 ]

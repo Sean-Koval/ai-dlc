@@ -279,7 +279,7 @@ def plan_onboarding(
         finding(
             "engine-checkout-target",
             "target",
-            "This is the AI-DLC engine checkout. Select the downstream work repository; engine contribution has its own verification route.",
+            "This is the ai-dlc engine checkout. Select the downstream work repository; engine contribution has its own verification route.",
             state="blocked",
         )
         return result

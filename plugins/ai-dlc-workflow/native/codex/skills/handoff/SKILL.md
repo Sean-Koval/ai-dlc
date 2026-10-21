@@ -17,7 +17,7 @@ Keep it short and link source evidence. Frontmatter follows the knowledge-note s
 `work finish` generate it from the merged PR, or supply only the fields you know, such
 as `confidence`. Never widen `scope` beyond `personal` for someone else. Set
 `AI_DLC_AUTHOR` to `agent:<client>@<plugin digest>` when an agent records the lesson.
-The format is documented in AI-DLC's `docs/design/local-and-shared-knowledge.md`.
+The format is documented in ai-dlc's `docs/design/local-and-shared-knowledge.md`.
 When the repository is adopted (has `ai-dlc.toml` at its root) and `ai-dlc` is on PATH, pass the authored file to `ai-dlc work finish <id> --learning FILE` (MCP
 `work_finish` accepts `learning` text), or use the knowledge provider's `note`
 operation with a stable operation ID. A pending learning does not undo verified

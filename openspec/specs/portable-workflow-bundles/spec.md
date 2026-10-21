@@ -89,7 +89,7 @@ Bundle validation SHALL reject unsafe, undeclared, tampered, or colliding assets
 
 ### Requirement: WB-03 Direct use and offline continuation
 
-Selected vendored guidance SHALL be discoverable in supported harnesses and usable offline; instructions SHALL NOT depend on an AI-DLC daemon or prior chat.
+Selected vendored guidance SHALL be discoverable in supported harnesses and usable offline; instructions SHALL NOT depend on an ai-dlc daemon or prior chat.
 
 #### Scenario: A fresh checkout has no network
 - **WHEN** the committed bundle and lock are valid

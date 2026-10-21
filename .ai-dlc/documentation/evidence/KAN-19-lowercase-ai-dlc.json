@@ -1,0 +1,965 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        ".ai-dlc/providers/obsidian.md": "4ee50298c543d22ee1fe28c972967dbd54902074aca79a059b92b0611f8e1dd6"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": ".ai-dlc/providers/obsidian.md"
+    },
+    {
+      "bound": {
+        ".devcontainer/devcontainer.json": "190e673557bb7e095474b76c7fa311b03954a98927954cb8f18b9f876d871503"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": ".devcontainer/devcontainer.json"
+    },
+    {
+      "bound": {
+        ".github/ISSUE_TEMPLATE/config.yml": "c0df2301f49b89f76184433f7ea2195c80fb310e3e6894b664cadd9532b01fe7"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": ".github/ISSUE_TEMPLATE/config.yml"
+    },
+    {
+      "bound": {
+        "agents/examples/product-shaping/greenfield.md": "20799390ae87ced7afb3b2d0ad233d3d7d23b5bd8a9dacb570fd03f72048c9d2"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/examples/product-shaping/greenfield.md"
+    },
+    {
+      "bound": {
+        "agents/providers/obsidian.md": "4ee50298c543d22ee1fe28c972967dbd54902074aca79a059b92b0611f8e1dd6"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/providers/obsidian.md"
+    },
+    {
+      "bound": {
+        "agents/providers/plane.md": "7add419f170ce08bd354282c08d0edc90c223d634260f9b386f5fdeb033617ea"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/providers/plane.md"
+    },
+    {
+      "bound": {
+        "agents/skills/day-end/SKILL.md": "612e5c51963bf3fe35cd8c216116746f1b2e9a59c6c23a1021f6a5e2925f9a17"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/skills/day-end/SKILL.md"
+    },
+    {
+      "bound": {
+        "agents/skills/design-brief/SKILL.md": "e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/skills/design-brief/SKILL.md"
+    },
+    {
+      "bound": {
+        "agents/skills/design-evaluate/SKILL.md": "d6892ed5e426f8bbf0df4bba1bff09bbc602e2136d21a9369957eb47dbdaa26a"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/skills/design-evaluate/SKILL.md"
+    },
+    {
+      "bound": {
+        "agents/skills/discovery/SKILL.md": "b23c85e52d83f3e4a819f410c88b7de074c65abf88ef82a531047633da38e319"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/skills/discovery/SKILL.md"
+    },
+    {
+      "bound": {
+        "agents/skills/document-organize/SKILL.md": "85353fd4bf2dc1f2ba4f3f7b6896093f38cc4b09d8ed2dacf950b10e568c7ead"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/skills/document-organize/SKILL.md"
+    },
+    {
+      "bound": {
+        "agents/skills/handoff/SKILL.md": "6532b976c9c1a76e48b7ac46ff80d9ab510917d90e73274363af8a649f83a538"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/skills/handoff/SKILL.md"
+    },
+    {
+      "bound": {
+        "agents/skills/prd-draft/SKILL.md": "69df873e0ac8c258596697e3efac2b2745bf51400b80a4cde14f31e0c165dc51"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/skills/prd-draft/SKILL.md"
+    },
+    {
+      "bound": {
+        "ai-dlc.toml": "78d3eb393b36420a25d531de563f26d629d20565f7aea0e49d7a877ff186d03c"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "ai-dlc.toml"
+    },
+    {
+      "bound": {
+        "containers/README.md": "06dd30dc018ab032f797a467e3b2afe22e47c15a74e4fd35b3d76ebe4333f8ba"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "containers/README.md"
+    },
+    {
+      "bound": {
+        "contracts/README.md": "9a902c286048769f360bb453143fbe3ddf80c83294e7a38e0fd926d8221b8581"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "contracts/README.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/architecture.md": "e957dcf74f6dcbe53ce40caf58a8cd486ee04461b47279540cdccaa4680c445a",
+        "docs/architecture.md": "9e8266afd11c9173e8235cd7bee19e23adab32a8697fb5ecbc0b6fabe3acc19c",
+        "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "openspec/specs/tracker-adapter-boundary/spec.md": "f47d11b47618751d7bbf2950dc74442f766a94f36f2379d1f4f343942ff112eb",
+        "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "d87f55f322564ea16a629064ed08100dcdd446cff6d66feeaf490fc4fcb2ff55",
+        "plugins/ai-dlc-workflow/README.md": "81652875168099e96bd4c7c95ca84baf0fac62cd0acb5f9b743ced64ec9ec497",
+        "plugins/ai-dlc-workflow/hooks/aidlc_hook.py": "b8ca52e641bef5c0f4b81420bd1ad74e4018f074ad5c2cf1cab963f1cf667284",
+        "plugins/ai-dlc-workflow/hooks/hooks.json": "8ddf9b2fc137326ad81a99bb6b1cd4d1dca507cb2e266cd30045b3d0d3f3d4e1",
+        "plugins/ai-dlc-workflow/native/codex/.codex-plugin/plugin.json": "e787c6a27d3c72d540945ba381ccb8272182a5139b980245a105f93c3b243df8",
+        "plugins/ai-dlc-workflow/native/codex/AGENTS.fragment.md": "b8f579b63df48aabf9499cd4306989b43a133b89379fe18f2b999e8351145b02",
+        "plugins/ai-dlc-workflow/native/codex/hooks.json": "4d2c2097f9c3004dca11d040acf3353eb6af9d0b96a63910f508a36a8d284f63",
+        "plugins/ai-dlc-workflow/native/codex/hooks/aidlc_hook.py": "b8ca52e641bef5c0f4b81420bd1ad74e4018f074ad5c2cf1cab963f1cf667284",
+        "plugins/ai-dlc-workflow/native/codex/skills/ai-dlc-workflow/SKILL.md": "46de5425af9916df61d842be837bef18e10572a46b627865171e095e13fbb6c0",
+        "plugins/ai-dlc-workflow/native/codex/skills/design-brief/SKILL.md": "e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5",
+        "plugins/ai-dlc-workflow/native/codex/skills/design-evaluate/SKILL.md": "d6892ed5e426f8bbf0df4bba1bff09bbc602e2136d21a9369957eb47dbdaa26a",
+        "plugins/ai-dlc-workflow/native/codex/skills/discovery/SKILL.md": "b23c85e52d83f3e4a819f410c88b7de074c65abf88ef82a531047633da38e319",
+        "plugins/ai-dlc-workflow/native/codex/skills/document-organize/SKILL.md": "85353fd4bf2dc1f2ba4f3f7b6896093f38cc4b09d8ed2dacf950b10e568c7ead",
+        "plugins/ai-dlc-workflow/native/codex/skills/document-review/SKILL.md": "5e2f71219b98cd53dd6a3a73b3bbccc1873b796a14ec1347875a39c911db9ad3",
+        "plugins/ai-dlc-workflow/native/codex/skills/handoff/SKILL.md": "6532b976c9c1a76e48b7ac46ff80d9ab510917d90e73274363af8a649f83a538",
+        "plugins/ai-dlc-workflow/native/codex/skills/needs-spec/SKILL.md": "573d9e79cbc1b15e911a5dffdd61bcf2eaf1d089f491b2445d45b77d53bbb2f2",
+        "plugins/ai-dlc-workflow/native/codex/skills/prd-draft/SKILL.md": "69df873e0ac8c258596697e3efac2b2745bf51400b80a4cde14f31e0c165dc51",
+        "plugins/ai-dlc-workflow/native/codex/skills/review-inbox/SKILL.md": "8b58913b870212b4b04b14d921efb72ed92007cec043513eb3baef36e907c846",
+        "plugins/ai-dlc-workflow/native/codex/skills/spec-from-prd/SKILL.md": "b12dac8c0dc495136bc0d2009e1d6077a8f9b4e63db3deb339beb6bce2e36efe",
+        "plugins/ai-dlc-workflow/plugin.lock.json": "a1d2bf8aacdc2310453e47f1890c5326fb0f4725d34916dcda521a840b5141bd",
+        "plugins/ai-dlc-workflow/skills/ai-dlc-workflow/SKILL.md": "46de5425af9916df61d842be837bef18e10572a46b627865171e095e13fbb6c0",
+        "plugins/ai-dlc-workflow/skills/design-brief/SKILL.md": "e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5",
+        "plugins/ai-dlc-workflow/skills/design-evaluate/SKILL.md": "d6892ed5e426f8bbf0df4bba1bff09bbc602e2136d21a9369957eb47dbdaa26a",
+        "plugins/ai-dlc-workflow/skills/discovery/SKILL.md": "b23c85e52d83f3e4a819f410c88b7de074c65abf88ef82a531047633da38e319",
+        "plugins/ai-dlc-workflow/skills/document-organize/SKILL.md": "85353fd4bf2dc1f2ba4f3f7b6896093f38cc4b09d8ed2dacf950b10e568c7ead",
+        "plugins/ai-dlc-workflow/skills/document-review/SKILL.md": "5e2f71219b98cd53dd6a3a73b3bbccc1873b796a14ec1347875a39c911db9ad3",
+        "plugins/ai-dlc-workflow/skills/handoff/SKILL.md": "6532b976c9c1a76e48b7ac46ff80d9ab510917d90e73274363af8a649f83a538",
+        "plugins/ai-dlc-workflow/skills/needs-spec/SKILL.md": "573d9e79cbc1b15e911a5dffdd61bcf2eaf1d089f491b2445d45b77d53bbb2f2",
+        "plugins/ai-dlc-workflow/skills/prd-draft/SKILL.md": "69df873e0ac8c258596697e3efac2b2745bf51400b80a4cde14f31e0c165dc51",
+        "plugins/ai-dlc-workflow/skills/review-inbox/SKILL.md": "8b58913b870212b4b04b14d921efb72ed92007cec043513eb3baef36e907c846",
+        "plugins/ai-dlc-workflow/skills/spec-from-prd/SKILL.md": "b12dac8c0dc495136bc0d2009e1d6077a8f9b4e63db3deb339beb6bce2e36efe",
+        "pyproject.toml": "ea73fd835255de7bddab5ef23ff7189e2d19c29ec7e6d49ffc97aee14559f4bd",
+        "scripts/build_workflow_plugin.py": "9a1d4a6ea3b7c89ed90cbd49b6f8d55de823e333a7e01e0f5f9492da90a07dad",
+        "scripts/check_client_pins.py": "c0b4030b6767aee44975556f11a2c0dcf2b5aa67e232ec6182c1247630f53c8c",
+        "scripts/check_generated.py": "40f2cc62eee8d1d73a36f7903f2ffed87d1e4cf5cf8bf680abf113bcce028103",
+        "scripts/check_layout.py": "7680a56201a4915b6d9dd46e036e254dd0e4cc37e00050354825a6c75401dd18",
+        "scripts/docs_site_links.py": "e4f61570d3b4272d0e33fb733862105f4854906cba5e4f601c8a3d6dd3a519e8",
+        "scripts/publish_workflow_plugin.py": "96d95c413671a55a0e42d690f1c6d64528c11203e0a44359e3422d082ca34b9d",
+        "scripts/qualify_framework.py": "8068bb2709bbf6b3a020e9c22d62b993cc0e8a3e3c9ee5c00dc4b8963c31054e",
+        "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+        "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
+        "src/ai_dlc/__main__.py": "abb21848450b1c3d8903183f8445f2af5d045f75bacccfe22af7d1f54fe5cb55",
+        "src/ai_dlc/_windows_storage/__init__.py": "5715def899453f15265e13d52e5b518844cc9d057421cfa5279172d799d5f506",
+        "src/ai_dlc/_windows_storage/_api.py": "d5fc4f971db8e706871c06e8119884848e505af6c45f4fbb5c2f7db513faf41b",
+        "src/ai_dlc/_windows_storage/_security.py": "62785d4e088cd485816a33f35a7a559d3d1acf166093c413a3f4f79969056314",
+        "src/ai_dlc/cli.py": "dde2f51f92e6162007b70f7a9e84069be0f3c9aacabbcb4e34fc58f49d92ccb2",
+        "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
+        "src/ai_dlc/conformance.py": "0ff247c065e89d4c5b43d844601dc809558c65a779c1600371953c0e2c44737b",
+        "src/ai_dlc/contracts.py": "e2202d26b4815674bde05fc1190fbaedfe7cabdf6d8c913a721d1f0b53619d1e",
+        "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
+        "src/ai_dlc/documentation/decisions.py": "30c52c68b82bca8c899887617385adac25f9b0bb2e9aa81936b91b877c626d6c",
+        "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
+        "src/ai_dlc/documentation/document_files.py": "3174b5773adf54c9a0f586a041c4e67001d136d9ba1016ec1cbb0b54debafd55",
+        "src/ai_dlc/documentation/document_impact.py": "bf3353c2ab99166c4900647ac7a0626bba3ee08a4a4f92ffa9269167f86012ca",
+        "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
+        "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
+        "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
+        "src/ai_dlc/documentation/documents.py": "763c9c2ff76c62e99eb6de4706f85edcaf57287f8c9bc8335c433d0163ba1812",
+        "src/ai_dlc/documentation/fde.py": "3664430ebca9f3ef7ba7c7c431f7e4790176066510904ebe4d43d0a88ecf26e1",
+        "src/ai_dlc/documentation/knowledge.py": "c02c49bcc24f8e2c418ace24a72db604b1bc9a4f8d1511fa42235aeb9b122bc7",
+        "src/ai_dlc/documentation/knowledge_notes.py": "a608b93458f20b1bcc11b88e8f9062e686770128f9315ac715cbea0eb4c30377",
+        "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
+        "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
+        "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
+        "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
+        "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
+        "src/ai_dlc/documentation/workspace_diagnostics.py": "8c8dc695fa95e5f9e8fc4017e5fd66efcab4c0cec4d3ae9272d3c5f368f93aef",
+        "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
+        "src/ai_dlc/environment/bootstrap.py": "7fad9be94cc830cde041e4ad88c4b79b653f8e8d2c558f1d8db33f99a87b088d",
+        "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
+        "src/ai_dlc/environment/enrollment.py": "f8e826a9dca7a8e308f9ad52c8f178ad7e6f2c6c536da7459a68c123d51e9c53",
+        "src/ai_dlc/environment/machine.py": "2c3981ab3e8e4e52d2c3f86f02d8714bf92dd3229eaff99c72ac91961fbbd16a",
+        "src/ai_dlc/environment/profile_source.py": "f177cc9336ed7c69e37299bc70107f14a7878ff72abbd1070dc3560340d451cc",
+        "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
+        "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
+        "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
+        "src/ai_dlc/environment/source_content.py": "924cda57f74d9986eeb8c85a5e8f33b6a339fadb8e58c8abcd514b0263f559f9",
+        "src/ai_dlc/environment/source_schema.py": "929944f86aef4a0aa2e257f3fbb4bee26ce07c522ed2eb35c2e1bbba38ec44d0",
+        "src/ai_dlc/environment/team_sources.py": "20d583a9046adfac9f0f5bf6de7aca537654eb29d0ff636c27f5a78c7c5c21a6",
+        "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
+        "src/ai_dlc/errors.py": "da439bc429697c26b44716e5b80b6b42cfeec011da9055f238d802937c62661e",
+        "src/ai_dlc/files.py": "cf094c2d7e6dbbe93f253ec4b3c4219902b323e927855541688eaca3f812354b",
+        "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
+        "src/ai_dlc/harness/agents.py": "c1911d89c663c140532333f225b8a803a3944bcd446e7fe226b99e0620aa68f7",
+        "src/ai_dlc/harness/components.py": "b64cd2ae837f83a37ddd1c74dad25fcd16fe8733715c224c7d64673784ebba11",
+        "src/ai_dlc/harness/design_capture.py": "8b872492b88f4a7728bedf0ae8a1edaad2312a918248bf8f5d051c8bd8b42a58",
+        "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
+        "src/ai_dlc/harness/hook_shim.py": "b8ca52e641bef5c0f4b81420bd1ad74e4018f074ad5c2cf1cab963f1cf667284",
+        "src/ai_dlc/harness/hooks.py": "b50bf047573f4735861bb091d97cd8467af16729610ddd63e97d81fffc39e9bc",
+        "src/ai_dlc/harness/native_composition.py": "1e4c5729ff31cb91820bd8df3d15b60c1067b4a5f2b89381888211470dc79bc8",
+        "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
+        "src/ai_dlc/harness/user_agents.py": "1150e14440ac1da06a492d5b039bf408408b5b4327d786d5f697949952f694ad",
+        "src/ai_dlc/harness/windows_render.py": "8aa76c8aacc44d28a2117b3339ad7b632b91fdbe0a5557af50228dcd2aa0eeb0",
+        "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
+        "src/ai_dlc/locking.py": "d39ea1ba783e72aae903f9d69c114745ee0b83d02197bbc9572568836e4e7fa3",
+        "src/ai_dlc/mcp_server.py": "b68c7fe133e351a29a8bccf1ff09612e1865d1826714a76e447183e4c7c680cf",
+        "src/ai_dlc/provider_definitions.py": "32142376b6cc25e0aa8122528bfd7b1eec2299c13622364fb38de29d4555e43a",
+        "src/ai_dlc/providers/__init__.py": "b6718f98c513bfd22ba8897410d675273f0f2229647d981dfe32e0be9a513a65",
+        "src/ai_dlc/providers/github_issues.py": "8945d5b0049d7f7940c8c478e13bf576a897295e463a69b3510d6e2982ed1f08",
+        "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
+        "src/ai_dlc/providers/jira_cloud.py": "5b2058a5586839a75a5a11234702e64a0a18c79e53e075004373be59c5e4c6ce",
+        "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
+        "src/ai_dlc/providers/plane.py": "eebff96a72615706f56234a3fdbdbec6e5ac49785259bc8e068ff50e89381572",
+        "src/ai_dlc/providers/plane_attempts.py": "da576a7f52dd7860c2340b72c91b39f2c9d84bbb7c983cd8bc2cc1871c56333b",
+        "src/ai_dlc/providers/python_exec.py": "3aaafe9bf74a4a949b59d71ed2079b9c48114462a9c823b3641a1772af5a6ff1",
+        "src/ai_dlc/providers/scm.py": "3213f9c9690d598a9d7024b687044ca3b0844b972909cd96ad14e270081409d9",
+        "src/ai_dlc/providers/teamai.py": "ff7a781abcaeeca1c978f9472502156e31a1fc6d192ac50e1e489d333b77a5e6",
+        "src/ai_dlc/setup/__init__.py": "8eb444a69a67d0c1a59ffc0c80ce59efda159976bea58d40154e97f8bdecf18c",
+        "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
+        "src/ai_dlc/setup/connections.py": "a35e5e45d87fed0d79a6e034283a055ba9426dc2621ef28aaee4d76997ac4773",
+        "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
+        "src/ai_dlc/setup/github_project_setup.py": "55984de17559ba2d56b3b1c7483dabb8a6f05f1e773e8bd9d40437a2d30ee85e",
+        "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
+        "src/ai_dlc/setup/onboarding.py": "a955988850f1dbe1bd50b2e06da61913701b504ed1a11eabe08bed387d0cc552",
+        "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
+        "src/ai_dlc/setup/project.py": "92bc0979e4007c05514d6c194efdbb3a5b475576fd86e2ddac24d4c79312d0d1",
+        "src/ai_dlc/setup/provider_onboarding.py": "1041a3ef5127239945d3ae386705acc7814f12a6c05205bc345edf7ab973bbb4",
+        "src/ai_dlc/setup/provision.py": "1e29f9b9927fd187a28a90e962ad966599a64f45e5c22b45b945dee25731d03b",
+        "src/ai_dlc/setup/readiness.py": "f227423524b583e6b9e13a7230272e74e93e8a5b4f4834d2e2bd94ef4f98891b",
+        "src/ai_dlc/setup/rebind.py": "812aa473b3cb92d81eb98c288ab1124f1fe0a62039559ecbd2eeb2349698ef15",
+        "src/ai_dlc/setup/targets.py": "11979b487ab5604eb05f49ab7c7eca1bfda796f25acc1dc489cdc9e7ccc4a9aa",
+        "src/ai_dlc/setup/templates.py": "47d50ea64b08b07dbb8fec7e19c7bc2555ce2b30d99aab3e27d4d152b7f6689e",
+        "src/ai_dlc/setup/tracker_targets.py": "b04533ac254bde0aa7bddf083097d815153998f15b1042645ac4ffc38f848319",
+        "src/ai_dlc/setup/workstation.py": "8ac8f2467ee925392f777e15d921ad79da8a10c94267bbd30f5386455db4e8d2",
+        "src/ai_dlc/toml_edit.py": "696057b2848ca8b57e5189d1c78441fc6c1e06994f480f6f13f8dd31c050515e",
+        "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
+        "src/ai_dlc/verification/sandbox.py": "c017bd12115b8f144d07eba619f4e15ddbd00db323e4d386f569c4bcb08646e0",
+        "src/ai_dlc/verification/test_proxy.py": "30ec2d29bf722d48f7341977542feef4a0c5ef9f90c90b158e869c5025d1c8d5",
+        "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
+        "src/ai_dlc/work/journal.py": "91bf194b430c5d0228a5600444a02d79029121a21079ec4c319e96fdaa68543b",
+        "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
+        "src/ai_dlc/work/summary.py": "af386fc470b222d5c7b600ea3169ee7f26be7bdfafdcac8b4098b1fff2f0bd8e",
+        "src/ai_dlc/work/traceability.py": "e9fbca5153cdd710b78872c66651269184ee5f3f1313f313b65df212430e8cc8",
+        "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
+        "src/ai_dlc/work/workflow.py": "5e9e38621e3062351ca81d54982f481a4fb37110d247fd82c51a927ed8c9b17b",
+        "tests/test_consumer_onboarding.py": "3b412d49dce7f0ddf1011f44637ffee4e9de101e4f15b72c7198439884cdf727",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
+        "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
+        "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
+        "tests/test_environment_report_collection.py": "0f63d55719e0ec6b167fe28187c3473586204350716f6388fef6ab49c25c365f",
+        "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
+        "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-19 brand case touched mapped code or sibling files only (strings and docstrings now say ai-dlc); this document already writes ai-dlc or quotes only identifiers, and its guidance is unaffected.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        "docs/assets/front/plugin-skills.svg": "1aa9f7800cc66706c88155b7fd6bf8fbdae5a1973c4f6bdfc1e9a2e9177c692e"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19: regenerated with build.py (pinned Claude Code 2.1.302). The plugin screen shows the lowercase ai-dlc plugin description; the work recording's commit ids changed because the templates it scaffolds changed. Title bars stay capitals, as build.py sets every bar.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/plugin-skills.svg"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.cast": "a7eb7f4b48b270a674db1157067071d4a62697cbf855caa36f7bb0913cbc3e5b"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19: regenerated with build.py; only the demo repository's commit ids changed, because the project templates it scaffolds now say ai-dlc.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.cast"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.svg": "48666de17958c76bfe190526f0dada19b0378c89c75b13317dafb40b2f729101"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19: regenerated with build.py (pinned Claude Code 2.1.302). The plugin screen shows the lowercase ai-dlc plugin description; the work recording's commit ids changed because the templates it scaffolds changed. Title bars stay capitals, as build.py sets every bar.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.svg"
+    },
+    {
+      "bound": {
+        "catalog:docs/design/local-and-shared-knowledge.md": "50d00f0074cafc5604eefa084a89fa98a64f68ae533d2d04ee103ca450f9716a",
+        "contracts/knowledge-note.schema.json": "0a973fee3afef0117bfdcd829499746b5693cfbcb156d3a4a86a94cfe3996686",
+        "docs/design/local-and-shared-knowledge.md": "28c27630f2adfa72c1685adce8a4eb9d119c501dbcdc0fa0e50803ec34a8a52b",
+        "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
+        "openspec/specs/session-learnings/spec.md": "dcd490cd54f2f6cb3fadaa90afade85d5e1d64b19fbe2accb70bfb06897e97b4",
+        "src/ai_dlc/documentation/knowledge.py": "c02c49bcc24f8e2c418ace24a72db604b1bc9a4f8d1511fa42235aeb9b122bc7",
+        "src/ai_dlc/documentation/knowledge_notes.py": "a608b93458f20b1bcc11b88e8f9062e686770128f9315ac715cbea0eb4c30377",
+        "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
+        "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
+        "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
+        "src/ai_dlc/documentation/workspace_diagnostics.py": "8c8dc695fa95e5f9e8fc4017e5fd66efcab4c0cec4d3ae9272d3c5f368f93aef",
+        "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
+        "tests/test_knowledge.py": "38e5cda9c9dc1fe97d12618a0bd9a86b2725cff059d412232152582af1547af1",
+        "tests/test_knowledge_notes.py": "0af8b4f84c5b8d974833eef49d5efd662a9d6d5b22eac6ff6f4a604fd492f6f7",
+        "tests/test_session_learnings.py": "32bb7c3143db24ff96fb43ac5081285e77a93bd8d8d825076f3422cbfe194796",
+        "tests/test_vault_link.py": "fd146d4d15041021ac343257c9d91a8c1950878d275420eda85d13747065e110",
+        "tests/test_vault_mount.py": "f6a5dc947af0d68e4688c37d05294c6b4868aa98ead91d26aa0c8ffec8018424",
+        "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-19 brand case touched mapped code or sibling files only (strings and docstrings now say ai-dlc); this document already writes ai-dlc or quotes only identifiers, and its guidance is unaffected.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/local-and-shared-knowledge.md"
+    },
+    {
+      "bound": {
+        "agents/templates/adr.md": "44aba57ec8e0e584854e22cda72369e6f3dfeb275bfe204557a8328acf5a52cb",
+        "catalog:docs/design/project-documentation.md": "673bbd060693b1f73bda80eaa35578edbf2bf393bc0c610a61796e05a1755356",
+        "docs/design/project-documentation.md": "964ee7db9a58aa17185694419b2bc2d6ff146565c3c5028db2ea68cc069918ab",
+        "openspec/specs/decision-records/spec.md": "035d91c4d079fe3b26fc66f0c6ef6085205c7afc7cb13d25d5d67758728d034c",
+        "project-templates/project/docs/decisions/README.md": "39e69860b5e83b48cfab1764941c4ce427f2d5d71faca6d5ed3867cc8e408524",
+        "src/ai_dlc/documentation/decisions.py": "30c52c68b82bca8c899887617385adac25f9b0bb2e9aa81936b91b877c626d6c",
+        "tests/test_decisions.py": "b34ac7e960b042d4064d8c45660c3f4f71f02f63955057a2bc377adc0178a064"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-19 brand case touched mapped code or sibling files only (strings and docstrings now say ai-dlc); this document already writes ai-dlc or quotes only identifiers, and its guidance is unaffected.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/project-documentation.md"
+    },
+    {
+      "bound": {
+        ".ai-dlc/agent-ownership.json": "2c193eced262ce82ed624d508de5ca29dec09da87d2eb78551143622803c4a51",
+        "agents/skills.lock.json": "b4fcb3d12ca8d998156fc0d1fdfc4cef8d421aa15b357ce1c1c9c110e8c40c65",
+        "agents/skills/spec-from-prd/SKILL.md": "b12dac8c0dc495136bc0d2009e1d6077a8f9b4e63db3deb339beb6bce2e36efe",
+        "agents/templates/delivery-slice.md": "44d1e55bdd17e5fe0cf4c1d35d99ffad8f6060575ecb97496515b48a0e304429",
+        "catalog:docs/development-workflow.md": "0fba88526a61571ce49e91b2159325061a7c54ba5466e651565eabb2f910e7c6",
+        "docs/development-workflow.md": "d09325db5e1f8a689bff619aee87ca6bfcce81a1c99584e310bc41f209487bf5",
+        "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
+        "openspec/specs/portable-development/spec.md": "7710dba93e53f973d947723117687d263b6296ad31e1ed8232da7b2f0e7ff89e",
+        "openspec/specs/spec-delivery-traceability/spec.md": "66641acf9c151792cde1914062630ed50cc4199cdc3bdb4b81382e03716f2ea3",
+        "project-templates/project/AI-DLC.md": "91e7df09e8c8fd8f5bea1d087d11aa7bcc3d7316238c61045e98dc5cfb039c44",
+        "project-templates/project/ai-dlc.toml.jinja": "8cb37c2c92f7998a2c7cec84c2d293f63b1e80f1a4a4f1f330a7e5b1b92aa0cd",
+        "project-templates/project/docs/development-workflow.md.jinja": "8cc85f0e3949013f31ffc540edfb53aff445a97061048d537a9a7c5d7785cebd",
+        "project-templates/project/docs/templates/delivery-slice.md": "44d1e55bdd17e5fe0cf4c1d35d99ffad8f6060575ecb97496515b48a0e304429",
+        "project-templates/project/scripts/check_tests.py": "a3dd2021b7911d2ff688142776b7a43af60f76e052d7164086db2434db60102d",
+        "project-templates/project/tests/test_main.py": "4e6ac9def60ea5a6aef9e004c465cc439acac4b33e4f70df332939f0cdfae63d",
+        "src/ai_dlc/cli.py": "dde2f51f92e6162007b70f7a9e84069be0f3c9aacabbcb4e34fc58f49d92ccb2",
+        "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
+        "src/ai_dlc/harness/agents.py": "c1911d89c663c140532333f225b8a803a3944bcd446e7fe226b99e0620aa68f7",
+        "src/ai_dlc/harness/hooks.py": "b50bf047573f4735861bb091d97cd8467af16729610ddd63e97d81fffc39e9bc",
+        "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
+        "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
+        "src/ai_dlc/setup/project.py": "92bc0979e4007c05514d6c194efdbb3a5b475576fd86e2ddac24d4c79312d0d1",
+        "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
+        "src/ai_dlc/work/workflow.py": "5e9e38621e3062351ca81d54982f481a4fb37110d247fd82c51a927ed8c9b17b",
+        "tests/test_agents_phases.py": "e5325bdc3c072a10e27bbf019ce51f586b0b7b9d76aa95ff8652dd09bc3c8570",
+        "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
+        "tests/test_cli.py": "f61c1ce03b1b3d1a6134365277c18655450ba08c06cb1f51ba44010b3e1b7e36",
+        "tests/test_config.py": "788bf2715bfc3fbc3da495b68fa250985f4430d424fa9802340dec16b7a35cdf",
+        "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
+        "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
+        "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
+        "tests/test_project.py": "2ebeb723433cfb53bf8e20b337d5016058e75a181b9ed0035203a14759a162ba",
+        "tests/test_rendering.py": "e93897333125cff68ce69e9e8fc23f401d9e0740427b8c995975240350cea0ef",
+        "tests/test_team_sources.py": "f1724954cdd0970bc1912debff50d95c7dee7bc7c17c6f9ab7514bf806d2b77c",
+        "tests/test_templates.py": "30a614989be79d9aa054634f16d325ef00500f3c7d9503ffc00d77878ac9355c",
+        "tests/test_workflow.py": "c60af46adb6cceb3160b1c34945d3b579e4ce42be7e24cad65fa24bd215d80a1"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-19 brand case touched mapped code or sibling files only (strings and docstrings now say ai-dlc); this document already writes ai-dlc or quotes only identifiers, and its guidance is unaffected.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/development-workflow.md"
+    },
+    {
+      "bound": {
+        ".github/workflows/release.yml": "f960af13f3657dca437561a8acd2555ec2b2d648c04202964ef349b0952bf590",
+        ".github/workflows/verify.yml": "bfdd737db0e582ac9e994acbd29d0c18f414c7492f64701448fbf8b4231c5f9c",
+        "catalog:docs/release-verification.md": "972bf86b6da5f20b3d01762982880533ba0c99b22933aa95273590923721dad0",
+        "docs/release-verification.md": "1b6cdc94dff4d191015a7a7ae0ee89bc6d6b124241f35884d10a3dacf76af176",
+        "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
+        "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+        "src/ai_dlc/cli.py": "dde2f51f92e6162007b70f7a9e84069be0f3c9aacabbcb4e34fc58f49d92ccb2",
+        "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
+        "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
+        "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
+        "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
+        "src/ai_dlc/setup/onboarding.py": "a955988850f1dbe1bd50b2e06da61913701b504ed1a11eabe08bed387d0cc552",
+        "tests/test_consumer_onboarding.py": "3b412d49dce7f0ddf1011f44637ffee4e9de101e4f15b72c7198439884cdf727",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
+        "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
+        "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
+        "tests/test_environment_report_collection.py": "0f63d55719e0ec6b167fe28187c3473586204350716f6388fef6ab49c25c365f",
+        "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
+        "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
+        "tests/test_release_workflow.py": "a50523b5d6dec682188d489780d29a74f2a01c60c310071ce6758898f3d12dc0"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-19 brand case touched mapped code or sibling files only (strings and docstrings now say ai-dlc); this document already writes ai-dlc or quotes only identifiers, and its guidance is unaffected.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/release-verification.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/reviews/2026-09-03-portable-profile-enrollment.md": "096c6b89ca300b3adc2ff9da5b413f73e776e1cfd1820b02ea066739a3f73108",
+        "docs/reviews/2026-09-03-portable-profile-enrollment.md": "58aec6b69ea59f43af41176d9f6c03e9c4eb26efc38e8f1ec514fd53913490aa"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/reviews/2026-09-03-portable-profile-enrollment.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/runbooks/machine-enrollment.md": "5749f500521eba18b71290a6e63d8abcc82967ef13035e34b90406b7c67b26ee",
+        "docs/runbooks/machine-enrollment.md": "ee6473c9b13e2568022beef63021585b561491e92669a6c920013c73f6c01620",
+        "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
+        "openspec/specs/team-sources/spec.md": "3dca430922c9b5d8eb7b678b0cf00da813f9be332e76cf59a448bd718f4d4587",
+        "profiles/example/ai-dlc-profile.toml": "047265f1a87e90b5ecc8e9a652ab3ae37c051ffd7ce9795fbb5b6020fa8e96ab",
+        "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
+        "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
+        "src/ai_dlc/environment/bootstrap.py": "7fad9be94cc830cde041e4ad88c4b79b653f8e8d2c558f1d8db33f99a87b088d",
+        "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
+        "src/ai_dlc/environment/enrollment.py": "f8e826a9dca7a8e308f9ad52c8f178ad7e6f2c6c536da7459a68c123d51e9c53",
+        "src/ai_dlc/environment/machine.py": "2c3981ab3e8e4e52d2c3f86f02d8714bf92dd3229eaff99c72ac91961fbbd16a",
+        "src/ai_dlc/environment/profile_source.py": "f177cc9336ed7c69e37299bc70107f14a7878ff72abbd1070dc3560340d451cc",
+        "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
+        "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
+        "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
+        "src/ai_dlc/environment/source_content.py": "924cda57f74d9986eeb8c85a5e8f33b6a339fadb8e58c8abcd514b0263f559f9",
+        "src/ai_dlc/environment/source_schema.py": "929944f86aef4a0aa2e257f3fbb4bee26ce07c522ed2eb35c2e1bbba38ec44d0",
+        "src/ai_dlc/environment/team_sources.py": "20d583a9046adfac9f0f5bf6de7aca537654eb29d0ff636c27f5a78c7c5c21a6",
+        "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
+        "src/ai_dlc/harness/agents.py": "c1911d89c663c140532333f225b8a803a3944bcd446e7fe226b99e0620aa68f7",
+        "src/ai_dlc/harness/hooks.py": "b50bf047573f4735861bb091d97cd8467af16729610ddd63e97d81fffc39e9bc",
+        "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
+        "src/ai_dlc/providers/teamai.py": "ff7a781abcaeeca1c978f9472502156e31a1fc6d192ac50e1e489d333b77a5e6",
+        "src/ai_dlc/setup/onboarding.py": "a955988850f1dbe1bd50b2e06da61913701b504ed1a11eabe08bed387d0cc552",
+        "tests/test_agents_phases.py": "e5325bdc3c072a10e27bbf019ce51f586b0b7b9d76aa95ff8652dd09bc3c8570",
+        "tests/test_config.py": "788bf2715bfc3fbc3da495b68fa250985f4430d424fa9802340dec16b7a35cdf",
+        "tests/test_consumer_onboarding.py": "3b412d49dce7f0ddf1011f44637ffee4e9de101e4f15b72c7198439884cdf727",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
+        "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
+        "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
+        "tests/test_environment_report_collection.py": "0f63d55719e0ec6b167fe28187c3473586204350716f6388fef6ab49c25c365f",
+        "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
+        "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
+        "tests/test_native_harnesses.py": "6d3a5b3e184d50618e283fe7f044da329d00bd70984f39027fa78e101be9d3eb",
+        "tests/test_rendering.py": "e93897333125cff68ce69e9e8fc23f401d9e0740427b8c995975240350cea0ef",
+        "tests/test_team_sources.py": "f1724954cdd0970bc1912debff50d95c7dee7bc7c17c6f9ab7514bf806d2b77c"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-19 brand case touched mapped code or sibling files only (strings and docstrings now say ai-dlc); this document already writes ai-dlc or quotes only identifiers, and its guidance is unaffected.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/runbooks/machine-enrollment.md"
+    },
+    {
+      "bound": {
+        ".github/workflows/release.yml": "f960af13f3657dca437561a8acd2555ec2b2d648c04202964ef349b0952bf590",
+        "catalog:docs/runbooks/release-publication.md": "3580fe6b0df68db7dd7dd55e520bb50b4dcb9ee9132e4e345396d68a4e7d72f8",
+        "docs/runbooks/release-publication.md": "2020db563c9399cfc2e26d587e2b51eb2d3ec29d34e6fa5e4b5e47b142e08a6d",
+        "project-templates/project/scripts/bootstrap.sh": "dff64e5be94a72bcfbb5dec30a34a808fb2e0a1e0b9612146086af183de8acee",
+        "scripts/bootstrap.sh": "dff64e5be94a72bcfbb5dec30a34a808fb2e0a1e0b9612146086af183de8acee",
+        "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+        "src/ai_dlc/setup/templates.py": "47d50ea64b08b07dbb8fec7e19c7bc2555ce2b30d99aab3e27d4d152b7f6689e",
+        "tests/test_bootstrap.py": "20c1c5d49181b22b969a19063ff108554be7eb492711bcec95c9a52599cf1bf2",
+        "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
+        "tests/test_release_workflow.py": "a50523b5d6dec682188d489780d29a74f2a01c60c310071ce6758898f3d12dc0"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-19 brand case touched mapped code or sibling files only (strings and docstrings now say ai-dlc); this document already writes ai-dlc or quotes only identifiers, and its guidance is unaffected.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/runbooks/release-publication.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/delivery-path-baseline.md": "d3002373e4382ffae72b3fcc382ef6a86b0cd5bded5f3791f00edfdd5e4170dd",
+        "docs/verification/delivery-path-baseline.md": "de87e49741bbfd19d29862871353ea832e2aeff334608e9440eaa451e16b7862"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/delivery-path-baseline.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/design-pm/with-assets-input.md": "801a740a5ebbbed9f193139eb2bad5c4ce6e63e5f121cbeb9363c4eafe64d81e",
+        "docs/verification/design-pm/with-assets-input.md": "4508bda6f09a0107a62e5e14a84bd679eb1138a5781bce1d004d9f34697b09ee"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/design-pm/with-assets-input.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/documentation-workflow.md": "6e620e11c354a39b24ec8e47a66bcde387ef4e32ca055e7ac526f50363b0ddfe",
+        "docs/verification/documentation-workflow.md": "eef16654f8fb24b5c5e9d9f2f3e8812fea2ae00adc129e41e032986fd29da2fd",
+        "openspec/specs/company-guidance-bundles/spec.md": "5e87a63f1eb68f5adb8782742c6d8902bd5eef2c5850e2f8507d4124aaf47d4a",
+        "openspec/specs/document-evidence-review/spec.md": "419436d57366d3546f00ba6468bf766f49a6475d3e6e1be94788d4ba302fca02",
+        "openspec/specs/documentation-impact-workflow/spec.md": "717db53d93725244f4b5e6c7b6756239ab801a123b6901a0a47df1ed4caf7f11",
+        "openspec/specs/documentation-lifecycle-reconciliation/spec.md": "fb6290b441d6fde6d04292ea49621fe471135d168658a43fbaf64f8a1c236947",
+        "openspec/specs/documentation-workflow-qualification/spec.md": "ee01ed0177b3901bc7abce74f44be051c87dacdb792b1a03e61e751c48e7afdf",
+        "openspec/specs/obsidian-project-workspace/spec.md": "e964bc522cf5472290cf85b19ada7b264820348e69ffbbf74227234c3012f8c7",
+        "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
+        "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
+        "src/ai_dlc/documentation/document_files.py": "3174b5773adf54c9a0f586a041c4e67001d136d9ba1016ec1cbb0b54debafd55",
+        "src/ai_dlc/documentation/document_impact.py": "bf3353c2ab99166c4900647ac7a0626bba3ee08a4a4f92ffa9269167f86012ca",
+        "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
+        "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
+        "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
+        "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
+        "src/ai_dlc/harness/agents.py": "c1911d89c663c140532333f225b8a803a3944bcd446e7fe226b99e0620aa68f7",
+        "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
+        "tests/test_company_guidance.py": "ab39bed3342d9de7d4c68db6c6c54fd66e13c12f2f2167c38e8d345c7dc9736e",
+        "tests/test_document_access.py": "bdf96af4afb1ad6f985204ad243a624d4da8b56d527af63cc072908a76beeff4",
+        "tests/test_document_evidence.py": "c5263165cc63dd1f2df99491828a97aea167468171348840b29d9f047b63c85d",
+        "tests/test_document_impact.py": "a9cccc6fa777d01add578c103adb8efa099541c02fa9132790dd2377fa45c728",
+        "tests/test_document_inventory.py": "927199563751af6b2dd5aa8e93cddb43cc62192adffea49694dada37ef6bf14c",
+        "tests/test_document_review.py": "88f37e6365c7e9b545d668f978993ef7ad9acfa146e7d549728f4ef9cab8008a",
+        "tests/test_document_style.py": "c67de850c8b2b8b2cf86fb84e1f72cb3eb74e5d5b1beda997abf975b3b0dfd2e",
+        "tests/test_knowledge_workspace.py": "6a112c4af0b0c6ca2887e8ae55fc3521826d244c3e11e6b44b73ad332c8e14e7"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/documentation-workflow.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/github-ticket-workflows.md": "6dff31b8146cf66fedd4f32f2da5c87c0c046af76bd086e6febc32fbb44947cb",
+        "docs/verification/github-ticket-workflows.md": "1bcd1e52e89018082cc876a9acbe7290db33c60a492f1a41ffe5655a39d5b741",
+        "openspec/specs/github-project-defaults/spec.md": "e4e0f1dd53c3cf852b85a882987dd8306bdb042637df63e916bfe6c30de5abc5",
+        "openspec/specs/github-ticket-workflows/spec.md": "fc76f800b15a3a5345f82bfbf9538d5563d8dc20a51ff05641732a391295aa79",
+        "src/ai_dlc/providers/github_issues.py": "8945d5b0049d7f7940c8c478e13bf576a897295e463a69b3510d6e2982ed1f08",
+        "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
+        "tests/test_github_projects.py": "547817acb3d2fc8843da6d72923ac16cf88f3c6a147830a23251a707a15e3e79"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/github-ticket-workflows.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/jira-cloud-new-work.md": "e9b8e7125d44f3d45f69d3d5447433366249e6ab0a096aa598a619ca6e9a3273",
+        "docs/verification/jira-cloud-new-work.md": "a94293df986656cfa05830c720fa4826cf93c60cd7dda44f83d5fd8b0c0df5d7"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/jira-cloud-new-work.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/native-tool-composition.md": "04ebd83835120667bd1d15b5389c397926792c247b176845403b620a948bdcd6",
+        "docs/verification/native-tool-composition.md": "ec8bfdc24b89ebb65782c7438a7ff7da951ade8ee1035a555314cc076f9b1c64"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/native-tool-composition.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/onboarding-readiness.md": "f124ee9a003cb1e079ddf1753478d26d0c2c3bb02b4988218ded2d023bfb162a",
+        "docs/verification/onboarding-readiness.md": "9177ef4d91b4a042eb79cfa249ea1afe38fa456a558d4a16f243eca4a0bdf0ce"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/onboarding-readiness.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/portable-workflow-bundle-import-repair.md": "a713df0d4ce21cee0df692605a20c675c69d4bf180befa60881521d0ad86188b",
+        "docs/verification/portable-workflow-bundle-import-repair.md": "0932f53ca569f8aeaac8886c3e77128d64019e04f2b06ca0e43a66f0f4122d53"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/portable-workflow-bundle-import-repair.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/provider-mutation-protocol.md": "ef10224828f9e5bc068a7491f885a1636d7aade92a17f5a776c8f0ba5d539c07",
+        "docs/verification/provider-mutation-protocol.md": "c9ce4271de331981fe0270f202d411afed0d1a2719cca75046d7a71b5d9134af"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/provider-mutation-protocol.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/repository-organization.md": "4efbbad14953f05104abc30f90fbf4c9353a61d29364fcd59e0b46a744653c16",
+        "docs/verification/repository-organization.md": "63a1d9f23d86410a1061540666d8be96d74aefb1e05c9c98a9be9e718de688e2",
+        "openspec/specs/repository-organization/spec.md": "3b202fd64ee1d1e6988ee0ad74b3aebd0c8047784bc82a2312879200fe547b2e"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-19 brand case touched mapped code or sibling files only (strings and docstrings now say ai-dlc); this document already writes ai-dlc or quotes only identifiers, and its guidance is unaffected.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/repository-organization.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/selective-tracker-migration.md": "1772e231999811208aaa0361db24a8e87f6d09248f3e233ce4d80a5d0cb32c34",
+        "docs/verification/selective-tracker-migration.md": "7b10f9670b71c2291c9fd0e30e6b3efc9f0e18f1dc32eb1b30936f6da40f7575"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/selective-tracker-migration.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/toolset-composition.md": "45c1e59342894d4f4d73e3366408236f3061e87d878da235b0f286664e022231",
+        "docs/verification/toolset-composition.md": "355d0e6004a0341c38881f578ec22244b2c421f6adc86677453318579f3a21fe"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/toolset-composition.md"
+    },
+    {
+      "bound": {
+        "agents/skills/spec-from-prd/SKILL.md": "b12dac8c0dc495136bc0d2009e1d6077a8f9b4e63db3deb339beb6bce2e36efe",
+        "agents/templates/delivery-slice.md": "44d1e55bdd17e5fe0cf4c1d35d99ffad8f6060575ecb97496515b48a0e304429",
+        "catalog:docs/workflows/brownfield.md": "dedbc6f762c6970ac999eb74598adc31dd6dbfe16a6b3ae8842345b9e37838b4",
+        "docs/workflows/brownfield.md": "ac9226b1c85c326f2561725c1a32dd34ef33ea802f3c3cdd9b103247c8317ac5",
+        "openspec/specs/portable-development/spec.md": "7710dba93e53f973d947723117687d263b6296ad31e1ed8232da7b2f0e7ff89e",
+        "project-templates/project/docs/workflows/brownfield.md": "3a582e31ada1400b26d298d3f70ca72a4cb45100db4fd97de6f241845d0c2a8f",
+        "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
+        "tests/test_templates.py": "30a614989be79d9aa054634f16d325ef00500f3c7d9503ffc00d77878ac9355c"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-19 brand case touched mapped code or sibling files only (strings and docstrings now say ai-dlc); this document already writes ai-dlc or quotes only identifiers, and its guidance is unaffected.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/brownfield.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/get-started.md": "b3cdcadc535e0e825dfe2837433f1b4ef45551430ab207c485ef7dd601bf992e",
+        "docs/assets/front/build.py": "facd568b0acedf4f3777a2bc73fb68c2420dc04e50eb4ad5ad88eff0d83b0983",
+        "docs/assets/front/demo_provider.py": "a266086be5cd247643a3157617f7f56e57c9200f77f885252ddf31a72d8c4f1d",
+        "docs/workflows/get-started.md": "764df9f3cdb24b892c7344e2f78d5694255404b4529a6f3667eba217d5223659",
+        "mkdocs.yml": "7299bbd403e345890cdeda2d4168030e85237e53950dc706d17189ef9527a853",
+        "scripts/bootstrap.sh": "dff64e5be94a72bcfbb5dec30a34a808fb2e0a1e0b9612146086af183de8acee",
+        "scripts/docs_site_links.py": "e4f61570d3b4272d0e33fb733862105f4854906cba5e4f601c8a3d6dd3a519e8",
+        "tests/test_front_page.py": "f92bf40fdeaddc9abd6d8e8d5620689e31301a48221e11415f02f4bee82d8375"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-19 brand case touched mapped code or sibling files only (strings and docstrings now say ai-dlc); this document already writes ai-dlc or quotes only identifiers, and its guidance is unaffected.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/get-started.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/greenfield.md": "b8bf78cb5032ea2be2d67e770261aca4cca32914a41a987e3caa8f5b6969d50d",
+        "docs/workflows/greenfield.md": "80bccb627975fe028b4757cca59500ada13e7269aed5859eb16df8afd9a1f631",
+        "openspec/specs/backend-capability-pack/spec.md": "45fc3ca17f9953edf4aa15f24c1a4176e84bceaf179fdb10f35ab58fd85e6a3e",
+        "project-templates/project/ai-dlc.toml.jinja": "8cb37c2c92f7998a2c7cec84c2d293f63b1e80f1a4a4f1f330a7e5b1b92aa0cd",
+        "project-templates/project/docs/api/openapi.yaml": "744e869692de7df60d4195669a45f8ade009b04c00c203c4853e30f4b9af5b2d",
+        "project-templates/project/scripts/check_api_contract_drift.py": "81c6da34445a1329223f2592eb1389aaf35d2e12b73da73d7b9c9ffdb0b55173",
+        "src/ai_dlc/setup/templates.py": "47d50ea64b08b07dbb8fec7e19c7bc2555ce2b30d99aab3e27d4d152b7f6689e",
+        "tests/test_backend_capability.py": "aedd591caa61c646bcc13812728f9990e235dfa4f84f021ebf629f10d3f6d2e2"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-19 brand case touched mapped code or sibling files only (strings and docstrings now say ai-dlc); this document already writes ai-dlc or quotes only identifiers, and its guidance is unaffected.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/greenfield.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/tool-map.md": "d11334cb57c288aab7b01226790b7cc268a28991b3de5f97a98b9818d80be19e",
+        "docs/workflows/tool-map.md": "07114d020769418847634d9feed2b7582e391e986344b44a5ad8329ebdb59ca2",
+        "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
+        "openspec/specs/spec-delivery-traceability/spec.md": "66641acf9c151792cde1914062630ed50cc4199cdc3bdb4b81382e03716f2ea3",
+        "src/ai_dlc/cli.py": "dde2f51f92e6162007b70f7a9e84069be0f3c9aacabbcb4e34fc58f49d92ccb2",
+        "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
+        "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
+        "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
+        "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
+        "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
+        "src/ai_dlc/harness/agents.py": "c1911d89c663c140532333f225b8a803a3944bcd446e7fe226b99e0620aa68f7",
+        "src/ai_dlc/harness/hooks.py": "b50bf047573f4735861bb091d97cd8467af16729610ddd63e97d81fffc39e9bc",
+        "src/ai_dlc/mcp_server.py": "b68c7fe133e351a29a8bccf1ff09612e1865d1826714a76e447183e4c7c680cf",
+        "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
+        "src/ai_dlc/setup/onboarding.py": "a955988850f1dbe1bd50b2e06da61913701b504ed1a11eabe08bed387d0cc552",
+        "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
+        "src/ai_dlc/work/workflow.py": "5e9e38621e3062351ca81d54982f481a4fb37110d247fd82c51a927ed8c9b17b",
+        "tests/test_agents_phases.py": "e5325bdc3c072a10e27bbf019ce51f586b0b7b9d76aa95ff8652dd09bc3c8570",
+        "tests/test_cli.py": "f61c1ce03b1b3d1a6134365277c18655450ba08c06cb1f51ba44010b3e1b7e36",
+        "tests/test_config.py": "788bf2715bfc3fbc3da495b68fa250985f4430d424fa9802340dec16b7a35cdf",
+        "tests/test_consumer_onboarding.py": "3b412d49dce7f0ddf1011f44637ffee4e9de101e4f15b72c7198439884cdf727",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
+        "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
+        "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
+        "tests/test_environment_report_collection.py": "0f63d55719e0ec6b167fe28187c3473586204350716f6388fef6ab49c25c365f",
+        "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
+        "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
+        "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
+        "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
+        "tests/test_rendering.py": "e93897333125cff68ce69e9e8fc23f401d9e0740427b8c995975240350cea0ef",
+        "tests/test_team_sources.py": "f1724954cdd0970bc1912debff50d95c7dee7bc7c17c6f9ab7514bf806d2b77c",
+        "tests/test_workflow.py": "c60af46adb6cceb3160b1c34945d3b579e4ce42be7e24cad65fa24bd215d80a1"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-19 brand case touched mapped code or sibling files only (strings and docstrings now say ai-dlc); this document already writes ai-dlc or quotes only identifiers, and its guidance is unaffected.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/tool-map.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/work-computer-setup.md": "62d0a76f141100f0e8d2219cf5e7b398c0530796f3a7fa2ae95348450d0bdbb5",
+        "docs/workflows/work-computer-setup.md": "6a6b849511affc491b227896981914c1b8f021c6e3541250c1dad554d75a5444",
+        "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "src/ai_dlc/cli.py": "dde2f51f92e6162007b70f7a9e84069be0f3c9aacabbcb4e34fc58f49d92ccb2",
+        "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
+        "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
+        "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
+        "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
+        "src/ai_dlc/setup/onboarding.py": "a955988850f1dbe1bd50b2e06da61913701b504ed1a11eabe08bed387d0cc552",
+        "tests/test_consumer_onboarding.py": "3b412d49dce7f0ddf1011f44637ffee4e9de101e4f15b72c7198439884cdf727",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
+        "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
+        "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
+        "tests/test_environment_report_collection.py": "0f63d55719e0ec6b167fe28187c3473586204350716f6388fef6ab49c25c365f",
+        "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-19 brand case touched mapped code or sibling files only (strings and docstrings now say ai-dlc); this document already writes ai-dlc or quotes only identifiers, and its guidance is unaffected.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/work-computer-setup.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-native-setup/delivery.md": "1073564dd56b39344e3c9643eb7a3f4f6a5812816753df05b6478cc2c98cabf3"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "openspec/changes/windows-native-setup/delivery.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-native-setup/design.md": "b0592b11e13725f953dd62e4747780f7e19dabfc2f69ddd20e3f9f2de98faee6"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "openspec/changes/windows-native-setup/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-native-setup/proposal.md": "5fc026e80924f4e8dd49ba4714206dfa19e8c43516992dfb55565f26e11a162b"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "openspec/changes/windows-native-setup/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/windows-native-setup/specs/windows-native-setup/spec.md": "262f2c1827e104dd1b2b2d523b8c358b102a3def7ada425fdcfc8a9149cdbf11"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "openspec/changes/windows-native-setup/specs/windows-native-setup/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/config.yaml": "ff79f4c0577b74186e294bbdf2a22b49f504c05859e1c81754eb47db519c801e"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "openspec/config.yaml"
+    },
+    {
+      "bound": {
+        "openspec/specs/client-rendering-freeze/spec.md": "af2dbe1e2c5e5b2802a3cfb5bf138afd0b6b4a10ca0f10e1d851d11c45b78e19"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "openspec/specs/client-rendering-freeze/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/specs/design-pm/spec.md": "669278c33195b395cb1b5cf3bfbf22460fa818a67b608891d0fe5181db89fe01"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "openspec/specs/design-pm/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/specs/portable-tracker-adapters/spec.md": "dcdfa02b632f32324ad9bf1ed69ffc6535083f3118eac75af290b1c14508f7a6"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "openspec/specs/portable-tracker-adapters/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/specs/portable-workflow-bundles/spec.md": "f8a22056e61d8a6a6462bc98fe6128f6bb407c4e8d5ccbb3caabe422f90719f7"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "openspec/specs/portable-workflow-bundles/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/specs/project-workspace-diagnostics/spec.md": "d353e91af1a508a1746f025305823c512c6d28c31755c94d4c5b52e83bd53f46"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "openspec/specs/project-workspace-diagnostics/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/specs/provider-toolset-onboarding/spec.md": "3b4dad15a340d6598fe5292cae93ed3500d863b4b6edd13d62cea0214ab2dfb3"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "openspec/specs/provider-toolset-onboarding/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/specs/workflow-plugin/spec.md": "1cf112d8745c9bf91ecde24d4b24be05ec6a237ec5437573b6dbf204486676cb"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "openspec/specs/workflow-plugin/spec.md"
+    },
+    {
+      "bound": {
+        "playbook/README.md": "5e0bc3a99cad7743b45231fe4a3a7a38e845c7b5a1282b10cfaed8443a1f824a"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "playbook/README.md"
+    },
+    {
+      "bound": {
+        "project-templates/project/docs/documentation-guide.md": "8254e62597aa97e1bfa8306baa0d54d2b5b1a3b4fe0b898108b4a338ad7c420e"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "project-templates/project/docs/documentation-guide.md"
+    },
+    {
+      "bound": {
+        "project-templates/project/docs/examples/product-shaping/greenfield.md": "20799390ae87ced7afb3b2d0ad233d3d7d23b5bd8a9dacb570fd03f72048c9d2"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "project-templates/project/docs/examples/product-shaping/greenfield.md"
+    },
+    {
+      "bound": {
+        "project-templates/project/docs/templates/adr.md": "44aba57ec8e0e584854e22cda72369e6f3dfeb275bfe204557a8328acf5a52cb"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "project-templates/project/docs/templates/adr.md"
+    },
+    {
+      "bound": {
+        "project-templates/project/docs/workflows/greenfield.md": "27922d9b1f63893b22572987ae80fb14ded1426cd7409071acb19cef2de441bf"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "project-templates/project/docs/workflows/greenfield.md"
+    },
+    {
+      "bound": {
+        "project-templates/project/docs/workflows/tool-map.md": "39b2afc6dddc1b57ec4229c0b0ced372e47f558258a56f6fd106121f18990184"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "project-templates/project/docs/workflows/tool-map.md"
+    },
+    {
+      "bound": {
+        "targets/capabilities.toml": "2d6188b136d9d8de2122a16213561e9b4c45aa3a1c30988da2a8871cd1f58cca"
+      },
+      "outcome": "updated",
+      "reason": "KAN-19 brand case: prose and user-facing strings write the name as lowercase ai-dlc. Identifiers, paths (AI-DLC.md, AI-DLC/Templates), env vars and quoted names are unchanged. No guidance changed.",
+      "reviewer": "Claude (agent)",
+      "target": "targets/capabilities.toml"
+    }
+  ],
+  "schema": 2
+}

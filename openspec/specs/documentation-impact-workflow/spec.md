@@ -25,7 +25,7 @@ A shared CLI and MCP service SHALL inspect a Git comparison plus current working
 - **THEN** the CLI reports a usage error and runs no service
 
 ### Requirement: DI-03 Prevent new objective debt
-Documentation checks SHALL be project-selectable, compare current objective findings against an explicit historical baseline, and refuse new defects without blocking solely on unchanged accepted historical findings. AI-DLC SHALL enroll after recording its baseline.
+Documentation checks SHALL be project-selectable, compare current objective findings against an explicit historical baseline, and refuse new defects without blocking solely on unchanged accepted historical findings. ai-dlc SHALL enroll after recording its baseline.
 
 #### Scenario: Prevent new objective debt
 - **WHEN** an unrelated historical finding remains while a new broken link is introduced

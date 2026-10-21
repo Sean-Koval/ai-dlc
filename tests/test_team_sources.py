@@ -565,7 +565,7 @@ def test_native_hook_source_cannot_supply_bound_push_policy(source_setup):
 
     setup = source_setup(files)
 
-    with pytest.raises(ValueError, match="source hooks must name supported AI-DLC features"):
+    with pytest.raises(ValueError, match="source hooks must name supported ai-dlc features"):
         enroll(setup)
 
 

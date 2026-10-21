@@ -13,7 +13,7 @@ process cost only; it says nothing about whether the gates caught real defects.
 - Command counts follow the [tool map](../workflows/tool-map.md) and the behavior of
   `src/ai_dlc/work/workflow.py` and `documentation/document_impact.py` at this
   revision, for a change that needs a specification. They count commands a person
-  or agent must issue, not commands AI-DLC runs itself. The checklist embedded in
+  or agent must issue, not commands ai-dlc runs itself. The checklist embedded in
   issues filed before September 14 (for example #85) predates #72–#75 and
   overstates the path: `work new --from-issue` now records the tracker artifact,
   `work pr` links the pull request, and work-record edits no longer invalidate

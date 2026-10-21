@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: WNS-01 A bounded native PowerShell entry point
-AI-DLC SHALL provide a native PowerShell bootstrap for Windows 11 x64/local NTFS, usable from inbox Windows PowerShell 5.1 without preinstalled Python, uv, mise, AI-DLC, WSL, Git Bash or a POSIX shell. It SHALL expose plan/source/release, root, target and explicit alias-publication choices equivalent to existing Unix semantics. Plan SHALL be nonmutating. Unsupported architecture, filesystem or policy constraints SHALL be named rather than causing a mandatory WSL route or silent policy change.
+ai-dlc SHALL provide a native PowerShell bootstrap for Windows 11 x64/local NTFS, usable from inbox Windows PowerShell 5.1 without preinstalled Python, uv, mise, ai-dlc, WSL, Git Bash or a POSIX shell. It SHALL expose plan/source/release, root, target and explicit alias-publication choices equivalent to existing Unix semantics. Plan SHALL be nonmutating. Unsupported architecture, filesystem or policy constraints SHALL be named rather than causing a mandatory WSL route or silent policy change.
 
 #### Scenario: A fresh native account requests a plan
 - **WHEN** a Windows 11 x64 account runs the supplied PowerShell entry with plan mode and no toolchain installed
@@ -106,7 +106,7 @@ Windows 11 x64 support claims SHALL require a recorded clean-account native Powe
 - **THEN** the record states exactly which obligations remain open and does not claim successful Windows 11 desktop-client adoption
 
 ### Requirement: WNS-08 Native documentation and packaged assets stay aligned
-Canonical setup/release guidance and packaged/source project bootstrap assets SHALL agree on supported platforms, native commands, consumer versus contributor purpose, optional WSL status and qualification limits. Documentation dispositions SHALL be content-bound to reviewed targets. Downstream guidance SHALL remain generic and SHALL NOT embed the AI-DLC repository's personal tracker, accounts or machine paths.
+Canonical setup/release guidance and packaged/source project bootstrap assets SHALL agree on supported platforms, native commands, consumer versus contributor purpose, optional WSL status and qualification limits. Documentation dispositions SHALL be content-bound to reviewed targets. Downstream guidance SHALL remain generic and SHALL NOT embed the ai-dlc repository's personal tracker, accounts or machine paths.
 
 #### Scenario: A consumer follows native setup guidance
 - **WHEN** a teammate follows README and generated-project instructions for Windows

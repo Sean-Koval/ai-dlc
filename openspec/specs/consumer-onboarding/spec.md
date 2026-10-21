@@ -4,7 +4,7 @@
 TBD - created by archiving change consumer-onboarding. Update Purpose after archive.
 ## Requirements
 ### Requirement: CO-01 Distinct consumer and contributor routes
-Consumer guidance SHALL distinguish engine installation, explicit profile enrollment and target-project adoption from contribution to AI-DLC itself. It SHALL route consumer checks to the selected target project and SHALL NOT require AI-DLC's contributor full checks or inherit the engine repository's tracker, vault, providers or client selections.
+Consumer guidance SHALL distinguish engine installation, explicit profile enrollment and target-project adoption from contribution to ai-dlc itself. It SHALL route consumer checks to the selected target project and SHALL NOT require ai-dlc's contributor full checks or inherit the engine repository's tracker, vault, providers or client selections.
 
 #### Scenario: Consumer cloned the engine for installation
 - **WHEN** a teammate uses a source checkout to install the engine for a different repository
