@@ -11,6 +11,33 @@
     },
     {
       "bound": {
+        "docs/assets/brand/banner-dark.svg": "855120b881c529efdfb909ef83304a908c115419cd2d069fc1baa1e7ccfafd9c"
+      },
+      "outcome": "updated",
+      "reason": "Re-synced from agent-factory brand/ai-dlc at theme-v14 by scripts/sync-brand.sh.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/brand/banner-dark.svg"
+    },
+    {
+      "bound": {
+        "docs/assets/brand/banner-light.svg": "8c897a9ffd7ca59f5aa7ba4215f1ae23e785fdcebec3a9ced3425f123f4e6133"
+      },
+      "outcome": "updated",
+      "reason": "Re-synced from agent-factory brand/ai-dlc at theme-v14 by scripts/sync-brand.sh.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/brand/banner-light.svg"
+    },
+    {
+      "bound": {
+        "docs/assets/brand/social.png": "ae77489e7e49d0877ee3d6c1e3a4515f48625d62ec02173f392666c2ba9109ff"
+      },
+      "outcome": "updated",
+      "reason": "Re-synced from agent-factory brand/ai-dlc at theme-v14 by scripts/sync-brand.sh.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/brand/social.png"
+    },
+    {
+      "bound": {
         "docs/assets/front/enroll-phone.svg": "7a431fc05876df85da7a2b443a4edaf8cd573509b4fb95158dfd1a7994d6aa9d"
       },
       "outcome": "updated",
@@ -38,28 +65,28 @@
     },
     {
       "bound": {
-        "docs/assets/front/suite-dark.svg": "73cfe38070549529dec8849bd802180d9ed00f2716f76747086bf25c5c673537"
+        "docs/assets/front/suite-dark.svg": "c55c9e544497b2d3c897a1e1a4e1141d30650c6cbe930b60d9907878cc361d00"
       },
       "outcome": "updated",
-      "reason": "KAN-158: Tower is built, not planned (the dark flavor of suite.svg).",
+      "reason": "KAN-158: the dark flavor of suite.svg, with theme-v14 hues; Tower is built.",
       "reviewer": "Claude (agent)",
       "target": "docs/assets/front/suite-dark.svg"
     },
     {
       "bound": {
-        "docs/assets/front/suite-light.svg": "b86d2eb6ed525b55dddefbcbc4162a332bc032faa9413cab50b3dece119c5725"
+        "docs/assets/front/suite-light.svg": "77fa35c24ee238aa89a75e4ea26ad44f3fcf2bbf58ee9e462880260e68c0efd0"
       },
       "outcome": "updated",
-      "reason": "KAN-158: Tower is built, not planned (the light flavor of suite.svg).",
+      "reason": "KAN-158: the light flavor of suite.svg, with theme-v14 hues; Tower is built.",
       "reviewer": "Claude (agent)",
       "target": "docs/assets/front/suite-light.svg"
     },
     {
       "bound": {
-        "docs/assets/front/suite.svg": "ece76507e2c2d297f1c996ca18531d05fbdf94b45658b6f74716767d7bc02a15"
+        "docs/assets/front/suite.svg": "4c6ddce19dcbd3c3c78294e0f38887c20d41297776158bafb5fa70a5a108d008"
       },
       "outcome": "updated",
-      "reason": "KAN-158: Tower is built, not planned: the Govern line says Tower clears risky agent actions with policy decisions, approvals and signed receipts, matching Tower's README.",
+      "reason": "KAN-158: Tower is built, not planned; regenerated with theme-v14's hangar teal and Tower azure.",
       "reviewer": "Claude (agent)",
       "target": "docs/assets/front/suite.svg"
     },
@@ -93,6 +120,33 @@
     },
     {
       "bound": {
+        "docs/stylesheets/airframe-docs.css": "e6cfbbc7202a940bacaf71d7c33c7f502272a5399512aafed6853c19081da1c3"
+      },
+      "outcome": "updated",
+      "reason": "Vendored unmodified from agent-factory at the theme-v14 tag by scripts/sync-airframe.sh: the shared footer's styles, no far-left header marker, a neutral default --af-product, phone fixes for the suite strip and the contents button.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/stylesheets/airframe-docs.css"
+    },
+    {
+      "bound": {
+        "docs/stylesheets/airframe-tokens.json": "47d03232fe3569fad502a430fd08dc22bb393e737b1a299d4272a1c5c306fdc3"
+      },
+      "outcome": "updated",
+      "reason": "Vendored unmodified from agent-factory at the theme-v14 tag by scripts/sync-airframe.sh: the hangar and Tower hue values change.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/stylesheets/airframe-tokens.json"
+    },
+    {
+      "bound": {
+        "docs/stylesheets/airframe.css": "18f6ab2cd3c42046bb229a03ab23cd41fcccdb93b22857656438e10483f3d621"
+      },
+      "outcome": "updated",
+      "reason": "Vendored unmodified from agent-factory at the theme-v14 tag by scripts/sync-airframe.sh: product-hangar moves to teal and product-tower to azure; no token added, renamed or removed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/stylesheets/airframe.css"
+    },
+    {
+      "bound": {
         "docs/stylesheets/product.css": "b76ea47b33c8b905d83e232b44c3c9cec4724ceac8ab7118081752a83bcf6b4b"
       },
       "outcome": "updated",
@@ -109,12 +163,48 @@
         "mkdocs.yml": "7299bbd403e345890cdeda2d4168030e85237e53950dc706d17189ef9527a853",
         "scripts/bootstrap.sh": "dff64e5be94a72bcfbb5dec30a34a808fb2e0a1e0b9612146086af183de8acee",
         "scripts/docs_site_links.py": "e4f61570d3b4272d0e33fb733862105f4854906cba5e4f601c8a3d6dd3a519e8",
-        "tests/test_front_page.py": "2c3ac7233f2691aa590eb8e906b40d5ac64f9998ebcb77c02b46e080c6cea7db"
+        "tests/test_front_page.py": "4b61f3b76dbe33fd562eea3f9cbdd6aec8d78f3b3e057da2fc4f4e2ea6b56f59"
       },
       "outcome": "updated",
       "reason": "KAN-158: the v0.4.0 caveat moves next to project onboard, where it is first introduced; one command per line so no line overflows a code block. No guidance changed.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/get-started.md"
+    },
+    {
+      "bound": {
+        "overrides/main.html": "f46735b416ce4e42ba3e67b720b31f9e4a74d5869f6163ca2872cf8afd73d10d"
+      },
+      "outcome": "updated",
+      "reason": "Includes the Airframe footer partial, as theme-v14 asks.",
+      "reviewer": "Claude (agent)",
+      "target": "overrides/main.html"
+    },
+    {
+      "bound": {
+        "overrides/partials/airframe-footer.html": "70cde17e4376008d3a3f8532a9db5615e7bafae40ed6f6fcfd3fd4b7b6910cc0"
+      },
+      "outcome": "updated",
+      "reason": "Vendored unmodified from agent-factory at the theme-v14 tag by scripts/sync-airframe.sh: new; the one footer every suite docs site shows.",
+      "reviewer": "Claude (agent)",
+      "target": "overrides/partials/airframe-footer.html"
+    },
+    {
+      "bound": {
+        "overrides/partials/airframe-suite.html": "8e6e2a7097cdaaee193fe1c89319b25af457f3a6d7f22062bb3de0a7eef84531"
+      },
+      "outcome": "updated",
+      "reason": "Vendored unmodified from agent-factory at the theme-v14 tag by scripts/sync-airframe.sh: the suite strip scrolls the current item into view on phones.",
+      "reviewer": "Claude (agent)",
+      "target": "overrides/partials/airframe-suite.html"
+    },
+    {
+      "bound": {
+        "scripts/sync-airframe.sh": "81795c7a5c9132ff915ea8926cf93295c9d699da9f97d0656863c68d4c73ba6e"
+      },
+      "outcome": "updated",
+      "reason": "CURRENT moves to theme-v14 and FILES vendors airframe-footer.html; the fetch logic is unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "scripts/sync-airframe.sh"
     }
   ],
   "schema": 2
