@@ -1,1 +1,13 @@
 :root, [data-md-color-scheme] { --af-product: var(--af-product-aidlc); }
+
+/* A <picture> swaps in a phone still under 600 px (the recording's key lines, 40 columns) so terminal text stays
+   13 px; it takes the hero's and the figure's image rules. */
+.af-hero__visual > picture, .md-typeset figure.af-figure > picture { display: block; }
+.af-hero__visual > picture > img { display: block; width: 100%; height: auto; border-radius: var(--af-radius-card); box-shadow: 0 0 0 1px var(--af-line); }
+.md-typeset figure.af-figure > picture > img { width: 100%; height: auto; }
+/* A recording shown at its native size, never scaled up: the figure is as wide as the recording (`--dlc-native`, set
+   on the figure; the terminals are 691 px) and the column, whichever is narrower. */
+.md-typeset figure.af-figure.dlc-native { max-width: min(100%, var(--dlc-native, 100%)); }
+@media (forced-colors: active) {
+  .af-hero__visual > picture > img { box-shadow: none; outline: 1px solid CanvasText; }
+}

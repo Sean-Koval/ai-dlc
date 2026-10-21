@@ -5,8 +5,9 @@ Writes, next to this script:
 
 - ``enroll.cast`` / ``enroll.svg``: ``ai-dlc machine enroll`` (preview, apply, status) against a
   throwaway profile repository, as an asciicast v2 recording and an animated terminal (CSS
-  keyframes; plays once in under 20 seconds and holds its last frame, which is also what shows
-  when animations do not run; no player needed on GitHub or the docs site);
+  keyframes; opens on the finished session for OPEN seconds, as flightdeck's recording does, then
+  replays once in under 20 seconds and holds its last frame, which is also what shows when
+  animations do not run; no player needed on GitHub or the docs site);
 - ``work.cast`` / ``work.svg``: ``work start -> pr -> finish (refused: the PR is not merged) ->
   merge -> finish (closes the issue)`` in a fresh ``ai-dlc project init`` repository whose work
   record was reviewed and published off camera. GitHub and its CI are replaced by
@@ -52,7 +53,9 @@ DEMO = Path("/tmp/ai-dlc-front-demo")
 CLAUDE_CODE_VERSION = "2.1.302"
 COLS = 80
 ROWS = 22  # the terminal window's height in lines; longer sessions scroll
-MAX_SECONDS = 20.0  # a recording plays once, within this, then holds its last frame
+MAX_SECONDS = 20.0  # a recording replays once, within this, then holds its last frame
+PHONE_COLS = 40  # a phone still: 44 columns with the window's margin, 13 px text in a 360 px column
+OPEN = 4.0  # seconds the finished session shows first, so a reader sees the outcome before the replay
 GIT_ENV = {
     "GIT_AUTHOR_NAME": "Dev A",
     "GIT_AUTHOR_EMAIL": "dev-a@example.com",
@@ -191,14 +194,14 @@ def screens(env: dict[str, str], skip_claude: bool) -> dict[str, tuple[str, str]
 
 
 # ------------------------------------------------------------------------------------------ recordings
-def wrap(text: str) -> list[str]:
-    """Lines at most COLS wide, broken at a space (never inside a word or a hash) and indented."""
+def wrap(text: str, cols: int = COLS) -> list[str]:
+    """Lines at most `cols` wide, broken at a space (never inside a word or a hash) and indented."""
     lines = []
     for line in text.splitlines() or [""]:
-        while len(line) > COLS:
+        while len(line) > cols:
             indent = len(line) - len(line.lstrip())
-            cut = line.rfind(" ", indent, COLS + 1)
-            cut = cut if cut > indent else COLS
+            cut = line.rfind(" ", indent, cols + 1)
+            cut = cut if cut > indent else cols
             lines.append(line[:cut].rstrip())
             line = " " * (indent + 4) + line[cut:].lstrip()
         lines.append(line)
@@ -269,17 +272,23 @@ def pct(at: float, total: float) -> str:
     return f"{100 * at / total:.3f}%"
 
 
-def terminal(lines: list[tuple[float, str, str, float]], total: float | None, title: str) -> str:
+def terminal(lines: list[tuple[float, str, str, float]], total: float | None, title: str, cols: int = COLS) -> str:
     """A terminal window on Airframe's Terminal contract: always dark, DM Mono on `terminal-bg`, a bar
     with the product and scope in mono capitals, output in `terminal-fg`, the prompt and cursor in
     `brand`, and color on one kind of line only (`terminal-err` for the failed role). The bar reads
-    `title` as `product|scope|scope`. With `total`, the window is ROWS lines high, lines appear at
-    their times, commands type out and the window scrolls like a terminal; it plays once and holds
-    its last frame, which is also the frame shown when animations do not run (the markup's resting
-    state is the end of the session). Without `total`, a still of every line."""
+    `title` as `product|scope|scope`. With `total`, the window is ROWS lines high and opens on the
+    finished session for OPEN seconds; then lines appear at their times, commands type out and the
+    window scrolls like a terminal; it replays once and holds its last frame, which is also the frame
+    shown when animations do not run (the markup's resting state is the end of the session). Without
+    `total`, a still of every line. `cols` sets the width (a phone still is PHONE_COLS)."""
     t = night()
     rows = min(len(lines), ROWS) if total else len(lines)
-    w, h = round((COLS + 4) * CW + 2 * PAD), round(BAR + PAD + rows * LH + PAD / 2)
+    start = ""
+    if total:  # every moment moves OPEN seconds later; until then the finished session shows
+        lines = [(at + OPEN, kind, text, per) for at, kind, text, per in lines]
+        total += OPEN
+        start = pct(OPEN, total)
+    w, h = round((cols + 4) * CW + 2 * PAD), round(BAR + PAD + rows * LH + PAD / 2)
     css = [f".t{{font:13px {MONO};fill:{t['terminal-fg']};white-space:pre}}.p{{fill:{t['brand']}}}"
            f".c{{fill:{t['code-keyword']}}}.x{{fill:{t['terminal-err']}}}"
            f".b{{font:500 10.5px {MONO};letter-spacing:.08em;fill:{t['terminal-dim']}}}.b1{{fill:{t['terminal-fg']}}}"
@@ -305,7 +314,8 @@ def terminal(lines: list[tuple[float, str, str, float]], total: float | None, ti
             el = f'<text class="t" x="{PAD}" y="{y:.1f}"{attrs}>{inner}</text>'
             if total and text:  # a cover over the command that steps right one character at a time
                 x0, d, dx = PAD + 2 * CW, n * per, f"{n * CW:.1f}px"
-                css.append(f"@keyframes y{i}{{0%,{pct(at, total)}{{transform:translateX(0)}}"
+                css.append(f"@keyframes y{i}{{0%,{start}{{transform:translateX({dx})}}"
+                           f"{100 * OPEN / total + 0.001:.3f}%,{pct(at, total)}{{transform:translateX(0)}}"
                            f"{pct(at + d, total)},100%{{transform:translateX({dx})}}}}"
                            f".y{i}{{transform:translateX({dx});animation:y{i} {total:.2f}s steps({n},end) forwards}}")
                 el += (f'<rect class="y{i}" x="{x0:.1f}" y="{y - LH * 0.8:.1f}" width="{n * CW + 4:.1f}" '
@@ -313,8 +323,8 @@ def terminal(lines: list[tuple[float, str, str, float]], total: float | None, ti
         else:  # normal stays quiet; a failed, denied or blocked status is the only red
             el = f'<text class="t{" x" if LIT.search(text) else ""}" x="{PAD}" y="{y:.1f}">{esc(text)}</text>'
         if total:
-            css.append(f"@keyframes s{i}{{0%,{pct(at, total)}{{opacity:0}}"
-                       f"{100 * at / total + 0.001:.3f}%,100%{{opacity:1}}}}"
+            css.append(f"@keyframes s{i}{{0%,{start}{{opacity:1}}{100 * OPEN / total + 0.001:.3f}%,"
+                       f"{pct(at, total)}{{opacity:0}}{100 * at / total + 0.001:.3f}%,100%{{opacity:1}}}}"
                        f".s{i}{{animation:s{i} {total:.2f}s step-end forwards}}")
             el = f'<g class="s{i}">{el}</g>'
         screen.append(el)
@@ -322,13 +332,36 @@ def terminal(lines: list[tuple[float, str, str, float]], total: float | None, ti
         end = (len(lines) - ROWS) * LH
         frames = "".join(f"{pct(at, total)}{{transform:translateY(-{(i - ROWS + 1) * LH:.1f}px)}}"
                          for i, (at, _, _, _) in enumerate(lines) if i >= ROWS)
-        css.append(f"@keyframes v{{0%{{transform:translateY(0)}}{frames}100%{{transform:translateY(-{end:.1f}px)}}}}"
+        css.append(f"@keyframes v{{0%,{start}{{transform:translateY(-{end:.1f}px)}}"
+                   f"{100 * OPEN / total + 0.001:.3f}%{{transform:translateY(0)}}"
+                   f"{frames}100%{{transform:translateY(-{end:.1f}px)}}}}"
                    f".v{{transform:translateY(-{end:.1f}px);animation:v {total:.2f}s step-end forwards}}")
     clip = f'<clipPath id="win"><rect x="0" y="{BAR + 1}" width="{w}" height="{h - BAR - 1}"/></clipPath>'
     body.append(f'{clip}<g clip-path="url(#win)"><g class="v">{"".join(screen)}</g></g>')
     label = title.replace("|", ", ")
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" '
             f'role="img" aria-label="{esc(label)}"><style>{"".join(css)}</style>{"".join(body)}</svg>\n')
+
+
+def phone(steps: list[tuple[str, str]], keep: dict[int, str], title: str) -> str:
+    """A still of a recording's key lines for screens under 600 px, PHONE_COLS wide so its text stays
+    13 px in a phone's column: the commands of the steps in `keep`, each with only the output lines
+    that match its pattern, and `…` where lines are left out."""
+    lines: list[tuple[float, str, str, float]] = []
+    for i, pattern in keep.items():
+        cmd, output = steps[i]
+        cmd = cmd.split("  #")[0]  # the recording's comments explain the step; the caption does here
+        parts = [x for part in cmd.split(" \\\n") for x in wrap(part.strip(), PHONE_COLS - 2)]
+        lines += [(0.0, "cmd" if j == 0 else "cont", x.strip() + (" \\" if j < len(parts) - 1 else ""), 0.0)
+                  for j, x in enumerate(parts)]
+        shown = [x for x in output.splitlines() if re.search(pattern, x)] if pattern else []
+        cut = len(shown) < len(output.splitlines())  # lines left out: drop the commas they leave dangling
+        for x in shown:
+            lines += [(0.0, "out", y, 0.0) for y in wrap(x.rstrip(",") if cut else x, PHONE_COLS)]
+        if shown and cut:
+            lines.append((0.0, "out", "  …", 0.0))
+    lines.append((0.0, "cmd", "", 0.0))
+    return terminal(lines, None, title, PHONE_COLS)
 
 
 def still(command: str, output: str, title: str) -> str:
@@ -426,14 +459,15 @@ def diagram(colors: dict[str, str] | None) -> str:
     edge("M686 226 V272", "trials,|traces", 696, 245, anchor="start")
     edge("M272 372 H332", "issue,|PR,|receipt", 302, 336)
     edge("M596 372 H536", "verdict|on PR", 566, 352)
-    out.append('<text class="l" x="24" y="488">Govern: Tower is planned for policy decisions, approvals and receipts</text>')
+    out.append('<text class="l" x="24" y="488">Govern: Tower clears risky agent actions with policy decisions, approvals '
+               'and signed receipts</text>')
     defs = (f'<defs><marker id="ad-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
             f'markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="{v("fg-subtle")}"/>'
             "</marker></defs>")
     return (f'<svg class="ad" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" '
             'role="img" aria-label="Where ai-dlc sits: it prepares developer machines and gates work on '
             'merged evidence; it publishes the workflow plugin that a team harness pins, hangar runs and '
-            f'flightdeck compares; Tower is planned">'
+            f'flightdeck compares; Tower governs risky actions">'
             f"<style>{style}</style>{defs}{''.join(out)}</svg>\n")
 
 
@@ -460,10 +494,16 @@ def build(skip_claude: bool) -> dict[str, str]:
         lines, total = timeline(steps, gap)
         files[f"{name}.cast"] = cast(steps, title, gap)
         files[f"{name}.svg"] = terminal(lines, total, bar)
+    files["enroll-phone.svg"] = phone(enroll, {1: r'"applied": true', 2: r'"(drift|enrolled|ready)"|not bound'},
+                                      "ai-dlc|machine enroll")
+    files["work-phone.svg"] = phone(work, {3: r'"(gate|status)"|not merged', 4: "",
+                                           5: r'"(ci-green|pr-merged|merged|status|state)"'}, "ai-dlc|work finish")
     titles = {"project-check.svg": "ai-dlc|project check --required",
               "plugin-skills.svg": "Claude Code|the ai-dlc workflow plugin"}
     for name, (cmd, text) in shots.items():
         files[name] = still(cmd, text, titles[name])
+    check = ("ai-dlc project check --required \\\n  | jq '…'", shots["project-check.svg"][1])  # the filter is on the wide one
+    files["project-check-phone.svg"] = phone([check], {0: "."}, titles["project-check.svg"])
     files["suite.svg"] = diagram(None)
     for flavor, colors in flavors().items():
         files[f"suite-{flavor}.svg"] = diagram(colors)

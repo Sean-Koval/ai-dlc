@@ -24,12 +24,15 @@ def test_readme_follows_the_front_page_structure():
         "Use cases",
         "Get started",
         "Features",
-        "Go deeper",
+        "Read next",
     ]
     use_cases = readme.split("## Use cases", 1)[1].split("## ", 1)[0]
     assert len(re.findall(r"^- \*\*", use_cases, re.MULTILINE)) == 3
     quickstart = readme.split("## Get started", 1)[1].split("```sh\n", 1)[1].split("```", 1)[0]
-    assert len(quickstart.strip().splitlines()) == 5
+    commands = quickstart.strip().splitlines()
+    # one command per line
+    assert len(commands) == 11 and not any("&&" in line for line in commands)
+    assert readme.startswith("<picture>") and "\n# ai-dlc\n" in readme  # the banner, then the H1
 
 
 def test_front_page_assets_exist_and_both_pages_use_them():
@@ -46,6 +49,7 @@ def test_front_page_assets_exist_and_both_pages_use_them():
 
 
 def test_recordings_play_once_within_twenty_seconds_and_free_of_machine_paths():
+    """Each recording opens on its finished session, replays once and holds its last frame."""
     import json
 
     for name in ["enroll.cast", "work.cast"]:
@@ -53,6 +57,9 @@ def test_recordings_play_once_within_twenty_seconds_and_free_of_machine_paths():
         assert 5 <= events[-1][0] <= 20, (name, events[-1][0])
         svg = (FRONT / name.replace(".cast", ".svg")).read_text()
         assert "infinite" not in svg and " forwards" in svg
+        # the first frame is the last one
+        assert re.search(r"@keyframes s0\{0%,[\d.]+%\{opacity:1\}", svg)
+        assert (FRONT / name.replace(".cast", "-phone.svg")).is_file()  # the key lines, for phones
         assert "work finish" not in svg or "&quot;status&quot;: &quot;blocked&quot;" in svg
     for path in FRONT.glob("*"):
         if path.suffix in {".svg", ".cast"}:

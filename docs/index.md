@@ -15,16 +15,22 @@ hide:
 [Get started](workflows/get-started.md){ .md-button .md-button--primary } [Suite overview](https://sean-koval.github.io/agent-factory/){ .md-button }
 </div>
 <figure class="af-hero__visual">
-<img src="assets/front/work.svg" alt="work finish refuses until the PR is merged, then verifies the CI receipt and closes issue 42" width="691" height="435">
-<figcaption>work finish refuses until the PR is merged with a passing receipt; recorded by docs/assets/front/build.py</figcaption>
+<picture>
+<source media="(max-width: 600px)" srcset="assets/front/work-phone.svg" width="379" height="418">
+<img src="assets/front/work.svg" alt="work finish refuses until the PR is merged, then verifies the CI receipt and closes issue 42. It opens on the finished session and then replays the typing." width="691" height="435">
+</picture>
+<figcaption>work finish refused while the PR is open, then completed: the CI receipt passed and issue 42 closed</figcaption>
 </figure>
 </div>
 
 ## See it work
 
-<figure class="af-figure" markdown>
-![machine enroll previews and applies a profile; machine status reports the pinned commit and one unbound credential](assets/front/enroll.svg)
-<figcaption>Enroll a machine from a pinned profile: preview, apply, status</figcaption>
+<figure class="af-figure dlc-native" style="--dlc-native: 691px">
+<picture>
+<source media="(max-width: 600px)" srcset="assets/front/enroll-phone.svg" width="379" height="265">
+<img src="assets/front/enroll.svg" alt="machine enroll previews and applies a profile; machine status reports the pinned commit and one unbound credential. It opens on the finished session and then replays the typing." width="691" height="435">
+</picture>
+<figcaption>machine enroll applied the pinned profile; machine status shows one credential not yet bound</figcaption>
 </figure>
 
 The work recording in the hero takes one reviewed record from `work start` to a closed ticket.
@@ -39,7 +45,10 @@ The workflow plugin's skills, as Claude Code lists them, and the checks a projec
 
 ![Claude Code lists the ai-dlc-workflow plugin: eleven skills and three hooks](assets/front/plugin-skills.svg)
 
-![ai-dlc project check --required in the demo project: a clean tree and every required check passing](assets/front/project-check.svg)
+<picture>
+<source media="(max-width: 600px)" srcset="assets/front/project-check-phone.svg" width="379" height="435">
+<img src="assets/front/project-check.svg" alt="ai-dlc project check --required in the demo project: a clean tree and every required check passing" width="691" height="418">
+</picture>
 
 ## Where it sits
 
@@ -63,15 +72,21 @@ sandboxes, flightdeck evaluates, and ai-dlc authors the one optional plugin they
 
 ## Quickstart
 
-Needs git and curl on macOS or Linux (native Windows is not supported yet). Five commands
+Needs git and curl on macOS or Linux (native Windows is not supported yet). These commands
 take a fresh machine to a project whose required checks pass.
 
 ```sh
-git clone https://github.com/Sean-Koval/ai-dlc.git && cd ai-dlc
+git clone https://github.com/Sean-Koval/ai-dlc.git
+cd ai-dlc
 sh scripts/bootstrap.sh --source
 export PATH="$HOME/.local/share/ai-dlc/bootstrap/bin:$PATH"
-ai-dlc project init ~/demo-app && cd ~/demo-app && git init -q && ai-dlc project setup --root .
-git add -A && git commit -qm "chore: initialize with ai-dlc" && ai-dlc project check --required
+ai-dlc project init ~/demo-app
+cd ~/demo-app
+git init -q
+ai-dlc project setup --root .
+git add -A
+git commit -qm "chore: initialize with ai-dlc"
+ai-dlc project check --required
 ```
 
 [Get started](workflows/get-started.md) covers existing work repositories, GitHub, profiles and
@@ -90,7 +105,7 @@ contributing to the engine.
 | Agent access | `ai-dlc mcp serve` exposes reviewed work, documentation and knowledge tools to agents | [Workflow tool map](workflows/tool-map.md) |
 | Providers | GitHub Issues + Projects (default), Jira Cloud, OpenSpec, Obsidian | [Architecture](architecture.md) |
 
-## Where to read next
+## Read next
 
 | Question | Page |
 | --- | --- |

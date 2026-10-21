@@ -2,17 +2,23 @@
 
 Install ai-dlc, set up a project and run its required checks.
 
-## Five commands
+## From a fresh machine
 
-Needs git and curl on macOS or Linux. These take a fresh machine to a project
-whose required checks pass.
+Needs git and curl on macOS or Linux. These commands take a fresh machine to a
+project whose required checks pass.
 
 ```sh
-git clone https://github.com/Sean-Koval/ai-dlc.git && cd ai-dlc
+git clone https://github.com/Sean-Koval/ai-dlc.git
+cd ai-dlc
 sh scripts/bootstrap.sh --source
 export PATH="$HOME/.local/share/ai-dlc/bootstrap/bin:$PATH"
-ai-dlc project init ~/demo-app && cd ~/demo-app && git init -q && ai-dlc project setup --root .
-git add -A && git commit -qm "chore: initialize with ai-dlc" && ai-dlc project check --required
+ai-dlc project init ~/demo-app
+cd ~/demo-app
+git init -q
+ai-dlc project setup --root .
+git add -A
+git commit -qm "chore: initialize with ai-dlc"
+ai-dlc project check --required
 ```
 
 Bootstrap installs pinned uv, Python and mise, prepares the checkout and prints
@@ -43,7 +49,8 @@ need. Every command previews first; repeat it with `--apply` to write.
 3. Check local requirements: `ai-dlc project readiness --root /path/to/work-repository`
 4. Commit the adopted files:
    ```sh
-   git -C /path/to/work-repository add . && git -C /path/to/work-repository commit -m "chore: adopt ai-dlc"
+   git -C /path/to/work-repository add .
+   git -C /path/to/work-repository commit -m "chore: adopt ai-dlc"
    ```
 5. Run the required checks: `ai-dlc project check --root /path/to/work-repository --required`
 
@@ -57,6 +64,16 @@ the same route as a read-only JSON plan. Review each action's `argv`, effects an
 `requires_review` before running it. An already configured repository can run
 `project onboard --root PATH` alone; its `ai-dlc.toml` stays authoritative and a
 conflicting client or preset choice returns a blocked plan.
+
+!!! note "The onboarding planner needs a source checkout"
+    The published [v0.4.0](https://github.com/Sean-Koval/ai-dlc/releases/tag/v0.4.0)
+    predates `project onboard`, even though the package version has not changed.
+    To use the onboarding planner, bootstrap a team-reviewed commit or ref from a
+    source checkout (`git checkout REVIEWED_COMMIT_OR_REF` before
+    `sh scripts/bootstrap.sh --source`). Projects created with the released engine
+    carry its release manifest for their own bootstrap and CI. Source-generated
+    projects need a published `bootstrap/release.sh` first; see the
+    [release guide](../runbooks/release-publication.md#install-from-a-release).
 
 Enrollment is optional for a self-contained project. Select it only when the
 user needs a portable profile and machine binding, supplying `--source`, `--ref`,
@@ -123,8 +140,10 @@ Authenticate the GitHub CLI with access to your repository and Project. Then
 preview the connection and apply its saved choices from the project root.
 
 ```sh
-ai-dlc provider connect github-issues --plan-file .ai-dlc/local/github-project.json
-ai-dlc provider connect github-issues --plan-file .ai-dlc/local/github-project.json --apply
+ai-dlc provider connect github-issues \
+  --plan-file .ai-dlc/local/github-project.json
+ai-dlc provider connect github-issues \
+  --plan-file .ai-dlc/local/github-project.json --apply
 ai-dlc agents render --apply
 ai-dlc project readiness
 ```
@@ -304,7 +323,7 @@ for available commands, MCP tools, and skills.
   engineering (FDE) engagement docs with local stage checks. Optional frontend tooling captures Playwright evidence
   for design review.
 
-!!! note "Platform and release limits"
+!!! note "Platform limits"
     Native Windows is unsupported in this revision. The native storage core has
     source-level evidence, but the installer, PowerShell bootstrap, desktop clients
     and end-to-end onboarding remain open in
@@ -313,11 +332,3 @@ for available commands, MCP tools, and skills.
     for macOS and Linux hosts with a POSIX shell; WSL, containers and translated
     shell commands are not a Windows route.
 
-    The published [v0.4.0](https://github.com/Sean-Koval/ai-dlc/releases/tag/v0.4.0)
-    predates `project onboard`, even though the package version has not changed.
-    To use the onboarding planner, bootstrap a team-reviewed commit or ref from a
-    source checkout (`git checkout REVIEWED_COMMIT_OR_REF` before
-    `sh scripts/bootstrap.sh --source`). Projects created with the released engine
-    carry its release manifest for their own bootstrap and CI. Source-generated
-    projects need a published `bootstrap/release.sh` first; see the
-    [release guide](../runbooks/release-publication.md#install-from-a-release).
