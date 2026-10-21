@@ -7,9 +7,9 @@ Tool names are kept in the [tool map](workflows/tool-map.md) so providers can
 change without redefining the lifecycle. ai-dlc prepares tools, structure and
 guidance for the chosen harness; agents invoke installed provider tools directly.
 
-Use the [greenfield guide](workflows/greenfield.md) for a new application, the
-[brownfield guide](workflows/brownfield.md) for an existing repository and the
-[design-to-implementation guide](workflows/design-to-implementation.md) for the
+Use the [greenfield guide](workflows/greenfield.md) for a new application and the
+[brownfield guide](workflows/brownfield.md) for an existing repository. The
+[design-to-implementation guide](workflows/design-to-implementation.md) covers the
 handoff from an approved design to code.
 
 ## Workflow at a glance
@@ -82,7 +82,9 @@ windows = { shell = "powershell", script = "& python scripts/check_tests.py; exi
 Strings keep their POSIX `sh -c` meaning on every OS. An argv record passes each
 argument literally without shell expansion. Explicit shells are `posix` and
 `powershell`; scripts must propagate native exit codes themselves. A missing
-executable or shell is reported, never substituted. The argv and shell forms
+executable or shell is reported, never substituted.
+
+The argv and shell forms
 need an engine built after v0.4.0, and they do not make Windows a supported
 host; see [release limits](release-verification.md).
 
@@ -140,7 +142,7 @@ For edit feedback, run `ai-dlc project check --check CHECK_ID`, repeating
 still lists every configured required check, so missing required outcomes cannot
 pass the completion gate. Run the full required check after target-branch
 integration, before merge. The
-[brownfield behavior-check rehearsal](workflows/brownfield.md#rehearse-a-reviewed-behavior-check)
+[brownfield behavior-check rehearsal](workflows/behavior-check.md)
 covers adopting a team's existing checks.
 
 ## Daily operating loop
@@ -181,7 +183,9 @@ retryable instead of being converted into success.
 A work record pins a fingerprint per provider role, so reviewed work cannot be
 retargeted at a different service without an explicit review. The SCM
 fingerprint covers the `[scm]` settings that decide which service is trusted:
-`repository`, `target_branch` and `workflow`. Changing any of them drifts the
+`repository`, `target_branch` and `workflow`.
+
+Changing any of them drifts the
 bindings on every existing record, and `ai-dlc work finish` refuses with
 `Provider binding drift` until each affected record is reviewed again.
 
@@ -237,7 +241,9 @@ No required check demands a record for every change. A change with no tracker
 item and no specification decision needs only its pull request: a documentation
 correction, a roadmap edit, a dependency bump. Put scope and verification in the
 PR body and record documentation evidence under any identifier
-(`--evidence-id <branch-or-topic>`). A record created for such a change has
+(`--evidence-id <branch-or-topic>`).
+
+A record created for such a change has
 nothing to finish and stays open in the context brief indefinitely.
 
 Projects selecting the optional `bound-push` hook also choose the rules for its
@@ -282,7 +288,9 @@ in either order with no evidence rewrite. Immediately before merging, do this.
 
 Pull request checks do not rerun when the target branch moves. A green check
 can therefore predate a target change that touched bound content; the
-target-branch run after merge then fails and names it. To catch that before merge, enable the
+target-branch run after merge then fails and names it.
+
+To catch that before merge, enable the
 branch protection option that requires branches to be up to date, with the
 Verify jobs as required checks. ai-dlc does not change that setting.
 

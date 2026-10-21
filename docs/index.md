@@ -10,7 +10,7 @@ hide:
 
 # One setup, one workflow, one evidence-gated finish
 
-<p class="af-lede">ai-dlc pins every machine to one profile, gives agents one workflow in Claude Code or Codex, and closes a ticket only when the merged commit has a passing CI receipt.</p>
+<p class="af-lede">ai-dlc pins every machine to one profile and gives agents one workflow in Claude Code or Codex. It closes a ticket only when the merged commit has a passing CI receipt.</p>
 
 [Get started](workflows/get-started.md){ .md-button .md-button--primary } [Suite overview](https://sean-koval.github.io/agent-factory/){ .md-button }
 </div>
@@ -54,21 +54,21 @@ The workflow plugin's skills, as Claude Code lists them, and the checks a projec
 
 --8<-- "docs/assets/front/suite.svg"
 
-ai-dlc does not run agents in the cloud or judge harnesses: hangar renders and runs
+ai-dlc does not run agents in the cloud or judge harnesses. hangar renders and runs
 sandboxes, flightdeck evaluates, and ai-dlc authors the one optional plugin they pin.
 
 ## Use cases
 
 - **A new engineer is productive on day one.** They enroll their laptop from the team's
-  profile at a reviewed tag: the same runtimes, Claude Code and Codex settings and named
-  credentials as everyone else, with their own paths and accounts. `machine status` shows
+  profile at a reviewed tag. They get everyone's runtimes, Claude Code and Codex settings and
+  named credentials, with their own paths and accounts. `machine status` shows
   what drifted later.
 - **An agent cannot declare victory early.** A developer and their agent take an issue
   through `work start` and `work pr`; `work finish` refuses until the PR is merged into the
   target branch and that merge commit has a passing CI receipt, then closes the issue.
 - **A team measures whether its workflow helps.** The maintainer publishes the workflow
-  plugin into the team harness, off in `stable` and on in `candidate`, and flightdeck
-  compares agent runs with and without it.
+  plugin into the team harness, off in `stable` and on in `candidate`. flightdeck compares
+  agent runs with and without it.
 
 ## Quickstart
 
@@ -89,8 +89,8 @@ git commit -qm "chore: initialize with ai-dlc"
 ai-dlc project check --required
 ```
 
-[Get started](workflows/get-started.md) covers existing work repositories, GitHub, profiles and
-contributing to the engine.
+[Get started](workflows/get-started.md) covers existing work repositories and contributing;
+[Configure a project](workflows/configure.md) covers GitHub and profiles.
 
 ## Features
 
@@ -98,7 +98,7 @@ contributing to the engine.
 | --- | --- | --- |
 | Machine enrollment | Versioned profiles pin runtimes, tools, agent clients and named credentials; each machine keeps its own paths and accounts | [Machine enrollment](runbooks/machine-enrollment.md) |
 | Project scaffolding | `project init` / `project adopt` for generic, Python, Node or Rust repositories, with setup steps and required checks | [Get started](workflows/get-started.md) |
-| Workflow plugin | Guidance, eleven skills and CLI-optional safety hooks for Claude Code, with a Codex form; off by default | [Workflow plugin](workflows/get-started.md#workflow-plugin) |
+| Workflow plugin | Guidance, eleven skills and CLI-optional safety hooks for Claude Code, with a Codex form; off by default | [Workflow plugin](workflows/workflow-plugin.md) |
 | Work lifecycle | Reviewed work records bind an issue, branch, specification and PR; `work finish` gates on the merge and its CI receipt | [Development workflow](development-workflow.md) |
 | Receipts | `project check --required` runs the team's checks and writes a receipt bound to the commit | [Release verification](release-verification.md) |
 | Documentation upkeep | Catalog, impact review, dispositions and a docs gate; decision records with knowledge-note frontmatter | [Project documentation](design/project-documentation.md) |

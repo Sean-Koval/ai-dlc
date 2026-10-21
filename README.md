@@ -6,8 +6,8 @@
 # ai-dlc
 
 **Every developer's machine is set up differently, and every coding agent closes tickets on
-its own idea of "done".** ai-dlc pins every machine to one profile, gives agents one workflow
-in Claude Code or Codex, and closes a ticket only when the merged commit has a passing CI receipt.
+its own idea of "done".** ai-dlc pins every machine to one profile and gives agents one workflow
+in Claude Code or Codex. It closes a ticket only when the merged commit has a passing CI receipt.
 
 Docs site: <https://sean-koval.github.io/ai-dlc/> · Part of the
 [agent factory](https://sean-koval.github.io/agent-factory/) (Define / Run / Judge / Govern, and ai-dlc
@@ -56,21 +56,21 @@ The workflow plugin's skills, as Claude Code lists them, and the checks a projec
   <img alt="ai-dlc on the developer machine, GitHub as tracker and CI, and the workflow plugin pinned by the team harness." src="docs/assets/front/suite-dark.svg">
 </picture>
 
-ai-dlc does not run agents in the cloud or judge harnesses: hangar renders and runs
+ai-dlc does not run agents in the cloud or judge harnesses. hangar renders and runs
 sandboxes, flightdeck evaluates, and ai-dlc authors the one optional plugin they pin.
 
 ## Use cases
 
 - **A new engineer is productive on day one.** They enroll their laptop from the team's
-  profile at a reviewed tag: the same runtimes, Claude Code and Codex settings and named
-  credentials as everyone else, with their own paths and accounts. `machine status` shows
+  profile at a reviewed tag. They get everyone's runtimes, Claude Code and Codex settings and
+  named credentials, with their own paths and accounts. `machine status` shows
   what drifted later.
 - **An agent cannot declare victory early.** A developer and their agent take an issue
   through `work start` and `work pr`; `work finish` refuses until the PR is merged into the
   target branch and that merge commit has a passing CI receipt, then closes the issue.
 - **A team measures whether its workflow helps.** The maintainer publishes the workflow
   plugin into the team harness (`scripts/publish_workflow_plugin.py`), off in `stable` and on
-  in `candidate`, and flightdeck compares agent runs with and without it.
+  in `candidate`. flightdeck compares agent runs with and without it.
 
 ## Get started
 
@@ -93,7 +93,7 @@ ai-dlc project check --required
 
 Bootstrap installs pinned uv, Python and mise; no preinstalled Python or Node is needed.
 [Get started](https://sean-koval.github.io/ai-dlc/workflows/get-started/) covers existing work
-repositories, GitHub, profiles and contributing to the engine. Try the plugin in Claude Code
+repositories and contributing; [Configure a project](https://sean-koval.github.io/ai-dlc/workflows/configure/) covers GitHub and profiles. Try the plugin in Claude Code
 with `claude --plugin-dir plugins/ai-dlc-workflow`.
 
 ## Features
@@ -102,7 +102,7 @@ with `claude --plugin-dir plugins/ai-dlc-workflow`.
 | --- | --- | --- |
 | Machine enrollment | Versioned profiles pin runtimes, tools, agent clients and named credentials; each machine keeps its own paths and accounts | [Machine enrollment](https://sean-koval.github.io/ai-dlc/runbooks/machine-enrollment/) |
 | Project scaffolding | `project init` / `project adopt` for generic, Python, Node or Rust repositories, with setup steps and required checks | [Get started](https://sean-koval.github.io/ai-dlc/workflows/get-started/) |
-| Workflow plugin | Guidance, eleven skills and CLI-optional safety hooks for Claude Code, with a Codex form; off by default | [Workflow plugin](https://sean-koval.github.io/ai-dlc/workflows/get-started/#workflow-plugin) |
+| Workflow plugin | Guidance, eleven skills and CLI-optional safety hooks for Claude Code, with a Codex form; off by default | [Workflow plugin](https://sean-koval.github.io/ai-dlc/workflows/workflow-plugin/) |
 | Work lifecycle | Reviewed work records bind an issue, branch, specification and PR; `work finish` gates on the merge and its CI receipt | [Development workflow](https://sean-koval.github.io/ai-dlc/development-workflow/) |
 | Receipts | `project check --required` runs the team's checks and writes a receipt bound to the commit | [Release verification](https://sean-koval.github.io/ai-dlc/release-verification/) |
 | Documentation upkeep | Catalog, impact review, dispositions and a docs gate; decision records with knowledge-note frontmatter | [Project documentation](https://sean-koval.github.io/ai-dlc/design/project-documentation/) |
@@ -115,7 +115,7 @@ fails when they are stale.
 
 ## Read next
 
-- [Get started](https://sean-koval.github.io/ai-dlc/workflows/get-started/): setup routes, configuration, team guidance across machines and example workflows.
+- [Get started](https://sean-koval.github.io/ai-dlc/workflows/get-started/): setup routes, then configuration, the plugin and example workflows.
 - [Architecture](https://sean-koval.github.io/ai-dlc/architecture/): services, configuration layers and extension points.
 - [Development workflow](https://sean-koval.github.io/ai-dlc/development-workflow/): discovery, greenfield, brownfield and design review.
 - [Release verification](https://sean-koval.github.io/ai-dlc/release-verification/): platform and provider evidence and the remaining qualification gaps.

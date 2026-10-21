@@ -73,8 +73,13 @@ nav:
   - Home: index.md
   - Start:
       - Get started: workflows/get-started.md
+      - Configure a project: workflows/configure.md
+      - Workflow plugin: workflows/workflow-plugin.md
+      - Example workflows: workflows/examples.md
+      - How the tools fit together: workflows/how-it-fits.md
       - Greenfield workflow: workflows/greenfield.md
       - Brownfield workflow: workflows/brownfield.md
+      - Behavior-check rehearsal: workflows/behavior-check.md
       - Work-computer setup: workflows/work-computer-setup.md
   - Guides:
       - Development workflow: development-workflow.md
