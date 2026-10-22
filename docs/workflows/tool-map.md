@@ -40,12 +40,13 @@ lists prerequisites and limits; adapter availability alone does not establish
 readiness.
 
 The evidence-gated work cycle requires configured tracker and SCM roles. The
-runtime retains compatibility fallbacks for local OpenSpec and GitHub, but they
-do not choose an account, repository or authorization. GitHub assumes
+runtime keeps compatibility fallbacks for local OpenSpec and GitHub, which choose
+no account, repository or authorization. GitHub assumes
 `verify.yml` and `main` unless overridden; the tracker has no fallback. Without
 those roles, setup, checks, design and documentation still work, but
-publish/start/finish does not. Knowledge, deployment and agent clients remain
-optional.
+publish/start/finish does not.
+
+Knowledge, deployment and agent clients remain optional.
 
 ## Skill map
 
@@ -60,7 +61,7 @@ optional.
 | Session or ownership transfer | `handoff` | Verified state, decisions, evidence, risks, and next action |
 | End of work period | `day-end` | Concise continuity record and reconciled remote state |
 
-The optional [workflow plugin](get-started.md#workflow-plugin) carries
+The optional [workflow plugin](workflow-plugin.md) carries
 `discovery`, `prd-draft`, `needs-spec`, `spec-from-prd`, `review-inbox`, `handoff`,
 `document-review`, `document-organize`, `design-brief` and `design-evaluate`,
 namespaced as `ai-dlc-workflow:<skill>`, plus an `ai-dlc-workflow` guide skill.

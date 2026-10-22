@@ -724,6 +724,47 @@ code_paths = ["scripts/bootstrap.sh", "docs/assets/front/build.py", "docs/assets
 verification_paths = ["tests/test_front_page.py"]
 
 [[documents]]
+id = "repo-workflows-configure"
+path = "docs/workflows/configure.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+code_paths = ["project-templates/project/ai-dlc.toml.jinja", "src/ai_dlc/providers/github_projects.py", "src/ai_dlc/environment/enrollment.py", "src/ai_dlc/environment/team_sources.py"]
+
+[[documents]]
+id = "repo-workflows-workflow-plugin"
+path = "docs/workflows/workflow-plugin.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+code_paths = ["plugins/ai-dlc-workflow/**", "scripts/build_workflow_plugin.py", "scripts/publish_workflow_plugin.py"]
+
+[[documents]]
+id = "repo-workflows-examples"
+path = "docs/workflows/examples.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+code_paths = ["src/ai_dlc/work/**", "src/ai_dlc/documentation/fde.py"]
+
+[[documents]]
+id = "repo-workflows-how-it-fits"
+path = "docs/workflows/how-it-fits.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+code_paths = ["src/ai_dlc/mcp_server.py", "src/ai_dlc/providers/**"]
+
+[[documents]]
+id = "repo-workflows-behavior-check"
+path = "docs/workflows/behavior-check.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+code_paths = ["agents/skills/spec-from-prd/SKILL.md", "agents/templates/delivery-slice.md"]
+verification_paths = ["tests/test_checks.py"]
+
+[[documents]]
 id = "repo-workflows-greenfield"
 path = "docs/workflows/greenfield.md"
 kind = "reference"

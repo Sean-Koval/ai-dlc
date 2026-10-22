@@ -42,6 +42,9 @@ list before starting work, and do not grow moved or cut areas.
 
 ## Placement and upkeep
 
+- Docs follow the suite's editorial rule: paragraphs of at most 60 words, sentences of at most
+  25 and pages of at most 700. `tests/test_editorial.py` ratchets it against
+  `tests/editorial_baseline.json`; no page may get longer, and no new page may go over.
 - Read [docs/index.md](docs/index.md) before creating documentation. Update the
   canonical explanation instead of adding another summary or completion report.
 - Keep proposal, design, requirements and tasks together in `openspec/changes/`.
