@@ -30,6 +30,11 @@ fixed Git identities and dates, and machine paths are shown as ``~``. CI re-runs
 a diff (.github/workflows/assets.yml).
 
     uv run --locked --no-sync python docs/assets/front/build.py [--check]
+    uv run --locked --no-sync --with playwright==1.56.0 python docs/assets/front/build.py --clip
+
+``--clip`` records only ``clip.mp4`` and ``clip-poster.png``: the quickstart's five steps in a fresh
+project, ending on ``project check --required`` passing, at 2x and 680 px (Playwright's Chromium and
+ffmpeg). An MP4 is not byte-reproducible, so ``--check`` does not compare it.
 
 Needs git, jq (the project-check still drops its timings), mise (the bootstrap provides it) and, for the plugin screen, the Claude Code CLI
 at CLAUDE_CODE_VERSION; ``--skip-claude`` keeps the committed plugin screen.
@@ -471,6 +476,140 @@ def diagram(colors: dict[str, str] | None) -> str:
             f"<style>{style}</style>{defs}{''.join(out)}</svg>\n")
 
 
+# ------------------------------------------------------------------------------------------ the clip
+# The demo clip (KAN-75): the quickstart's five steps in a fresh project, ending on
+# `project check --required` passing, as an MP4 for the suite's pages. A terminal page at 680 px plays
+# the session (real output, filtered with jq as the still is) and Playwright screenshots it at 2x;
+# each frame is encoded for as long as it was on screen. The terminal is always dark, so the clip is
+# Night only. Not byte-reproducible, so `--check` leaves it alone; `--clip` makes it.
+CLIP = [  # (command, caption): `~` is the demo's home; jq keeps what each step says
+    ("ai-dlc project init ~/demo-app \\\n  | jq -c '{status, files: (.files | length)}'",
+     "project init writes the team's templates into a new project"),
+    ("cd ~/demo-app && git init -q", ""),
+    ("ai-dlc project setup --root . \\\n  | jq -c '{ready, rendered: (.agent_configuration.changed | length)}'",
+     "project setup renders the agents' configuration"),
+    ("git add -A && git commit -qm 'chore: initialize with ai-dlc'", "Commit the result"),
+    ("ai-dlc project check --required \\\n  | jq -c '{dirty}, (.outcomes[] | {id, status})'",
+     "project check --required: every required check passes"),
+]
+CLIP_SIZE = (680, 460)
+CLIP_CSS = """
+html,body{margin:0;height:100%;background:var(--af-canvas);overflow:hidden}
+.wrap{padding:20px 20px 84px;box-sizing:border-box;height:100vh}
+.term{background:var(--af-terminal-bg);color:var(--af-terminal-fg);border-radius:var(--af-radius-card);
+border:1px solid color-mix(in srgb,var(--af-terminal-fg) 8%,transparent);font:14px/20px var(--af-font-mono);overflow:hidden}
+.bar{display:flex;gap:14px;align-items:center;padding:0 14px;height:34px;font:500 10.5px var(--af-font-mono);
+border-bottom:1px solid color-mix(in srgb,var(--af-terminal-fg) 9%,transparent);letter-spacing:.08em;
+text-transform:uppercase;color:var(--af-terminal-dim)}.bar b{color:var(--af-terminal-fg);font-weight:500}
+pre{margin:0;padding:16px 18px;font:inherit;white-space:pre}.p{color:var(--af-brand)}
+.c,.v{color:var(--af-code-keyword)}.hide{display:none}
+.cap{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);display:flex;gap:10px;align-items:baseline;
+width:max-content;max-width:calc(100vw - 48px);box-sizing:border-box;padding:9px 14px;background:var(--af-raised);
+color:var(--af-fg);border:1px solid var(--af-line-strong);border-left:3px solid var(--af-brand);
+border-radius:var(--af-radius-control);box-shadow:var(--af-shadow-overlay);font:500 15px/1.35 var(--af-font-sans)}
+.cap b{font:500 12px var(--af-font-mono);color:var(--af-brand-text);letter-spacing:.08em}
+"""
+CLIP_JS = """
+const lines = [...document.querySelectorAll('pre .l')], cap = document.querySelector('.cap');
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+let step = 0, first = true;  // the first step is on screen, typed and answered, in the first frame (the poster)
+async function play() {
+  for (const l of lines) {
+    if (l.dataset.cap) { step += 1; cap.querySelector('b').textContent = step; cap.querySelector('span').textContent = l.dataset.cap; }
+    l.classList.remove('hide');
+    const c = l.querySelector('.c');
+    if (first) { if (c) c.textContent = c.dataset.t; if (l.dataset.end) { first = false; window.clipStarted = true; await wait(3000); } continue; }
+    if (c && c.dataset.t) {
+      const t = c.dataset.t;
+      for (let k = 0; k <= t.length; k++) { c.textContent = t.slice(0, k); await wait(26); }
+      await wait(l.nextElementSibling && l.nextElementSibling.dataset.k === 'cont' ? 0 : 450);
+    } else await wait(l.dataset.k === 'out' ? 60 : 0);
+    if (l.dataset.end) await wait(1500);
+  }
+  await wait(3800);
+  window.clipDone = true;
+}
+document.fonts.ready.then(play);
+"""
+
+
+def clip_page(steps: list[tuple[str, str]]) -> str:
+    """The clip's page: Airframe (the vendored stylesheet, Night) around a terminal; `steps` as run."""
+    rows: list[str] = []
+    for (cmd, caption), (_, output) in zip(CLIP, steps, strict=True):
+        for i, part in enumerate(cmd.split("\n")):
+            kind, prompt = ("cmd", "$ ") if i == 0 else ("cont", "> ")
+            mark = f' data-cap="{esc(caption)}"' if i == 0 and caption else ""
+            rows.append(f'<span class="l hide" data-k="{kind}"{mark}><span class="p">{prompt}</span>'
+                        f'<span class="c" data-t="{esc(part)}"></span>\n</span>')
+        out = wrap(output) if output else []
+        for j, line in enumerate(out):
+            last = ' data-end="1"' if j == len(out) - 1 else ""
+            cls = " v" if '"passed"' in line else ""
+            rows.append(f'<span class="l hide{cls}" data-k="out"{last}>{esc(line)}\n</span>')
+    rows.append('<span class="l hide" data-k="cmd"><span class="p">$ ▌</span></span>')
+    css = (ROOT / "docs/stylesheets/airframe.css").read_text()
+    fonts = ("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500"
+             "&family=Red+Hat+Text:wght@400..700&display=swap")
+    return (f'<!doctype html><html data-theme="dark"><head><meta charset="utf-8"><link rel="stylesheet" '
+            f'href="{fonts}"><style>{css}{CLIP_CSS}</style></head><body><div class="wrap"><div class="term">'
+            '<div class="bar"><b>ai-dlc</b><span>a new project, five steps</span></div>'
+            f'<pre>{"".join(rows)}</pre></div></div><div class="cap"><b></b><span></span></div>'
+            f"<script>{CLIP_JS}</script></body></html>\n")
+
+
+def record_clip(page: str, out: Path) -> float:
+    """`out` (MP4, H.264) and its poster (the first frame) from the clip page; returns its length."""
+    import tempfile
+
+    from playwright.sync_api import sync_playwright
+
+    ffmpeg = shutil.which("ffmpeg") or sys.exit("build: the clip needs ffmpeg on PATH")
+    with sync_playwright() as pw, tempfile.TemporaryDirectory() as d:
+        browser = pw.chromium.launch()
+        w, h = CLIP_SIZE
+        tab = browser.new_context(device_scale_factor=2, viewport={"width": w, "height": h}).new_page()
+        tab.set_content(page, wait_until="networkidle")
+        tab.wait_for_function("window.clipStarted === true", timeout=30000)
+        shots: list[tuple[Path, float]] = []
+        while not tab.evaluate("window.clipDone === true"):
+            path = Path(d) / f"{len(shots):05d}.png"
+            tab.screenshot(path=str(path))
+            shots.append((path, tab.evaluate("performance.now()") / 1000))
+        browser.close()
+        rows = []
+        for (path, t), (_, nxt) in zip(shots, [*shots[1:], (None, shots[-1][1] + 0.1)], strict=True):
+            rows += [f"file '{path}'", f"duration {max(nxt - t, 0.01):.3f}"]
+        listing = Path(d) / "frames.txt"
+        listing.write_text("\n".join([*rows, f"file '{shots[-1][0]}'"]) + "\n")
+        subprocess.run([ffmpeg, "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", str(listing),
+                        "-vf", "fps=15,format=yuv420p", "-c:v", "libx264", "-preset", "slow", "-crf", "28",
+                        "-movflags", "+faststart", str(out)], check=True)
+        shutil.copyfile(shots[0][0], out.with_name(out.stem + "-poster.png"))
+    return shots[-1][1] - shots[0][1]
+
+
+def clip() -> None:
+    """clip.mp4 and clip-poster.png: the five steps run for real in a fresh demo home."""
+    if DEMO.exists():
+        shutil.rmtree(DEMO)
+    env = environment()
+    try:
+        home = Path(env["HOME"])
+        (home / "demo-app").mkdir(parents=True)
+        steps = [(cmd, tidy(sh(cmd.replace("~", str(home)), home / "demo-app", env)))
+                 for cmd, _ in CLIP]
+    finally:
+        shutil.rmtree(DEMO, ignore_errors=True)
+    if not all('"passed"' in line for line in steps[-1][1].splitlines()[1:]):
+        sys.exit(f"build: project check --required did not pass:\n{steps[-1][1]}")
+    seconds = record_clip(clip_page(steps), HERE / "clip.mp4")
+    size = (HERE / "clip.mp4").stat().st_size
+    if not 15 <= seconds <= 25 or size > 3_000_000:
+        sys.exit(f"build: clip.mp4 runs {seconds:.1f} s and is {size} bytes; a clip runs 15 to 25 s, under 3 MB")
+    print(f"build: wrote clip.mp4 ({seconds:.1f} s, {size // 1024} KB) and clip-poster.png")
+
+
 # ------------------------------------------------------------------------------------------ main
 def build(skip_claude: bool) -> dict[str, str]:
     if DEMO.exists():
@@ -514,7 +653,11 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--check", action="store_true", help="Fail when a committed asset differs.")
     ap.add_argument("--skip-claude", action="store_true", help="Keep the committed plugin screen.")
+    ap.add_argument("--clip", action="store_true", help="Only record clip.mp4 (needs Playwright and ffmpeg).")
     args = ap.parse_args(argv)
+    if args.clip:
+        clip()
+        return 0
     files = build(args.skip_claude)
     stale = [n for n, text in files.items() if not (HERE / n).is_file() or (HERE / n).read_text() != text]
     if args.check:
