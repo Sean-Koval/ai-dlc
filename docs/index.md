@@ -19,7 +19,7 @@ hide:
 <source media="(max-width: 600px)" srcset="assets/front/work-phone.svg" width="379" height="418">
 <img src="assets/front/work.svg" alt="work finish refuses until the PR is merged, then verifies the CI receipt and closes issue 42. It opens on the finished session and then replays the typing." width="691" height="435">
 </picture>
-<figcaption>work finish refused while the PR is open, then completed: the CI receipt passed and issue 42 closed. <a href="assets/front/clip.mp4">Watch a new project pass its required checks (18 s)</a>.</figcaption>
+<figcaption>work finish refused while the PR is open, then completed: the CI receipt passed and issue 42 closed. <a href="assets/front/clip.mp4">Watch a new project pass its required checks (20 s)</a>.</figcaption>
 </figure>
 </div>
 

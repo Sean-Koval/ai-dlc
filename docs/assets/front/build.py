@@ -33,7 +33,7 @@ a diff (.github/workflows/assets.yml).
     uv run --locked --no-sync --with playwright==1.56.0 python docs/assets/front/build.py --clip
 
 ``--clip`` records only ``clip.mp4`` and ``clip-poster.png``: the quickstart's five steps in a fresh
-project, ending on ``project check --required`` passing, at 2x and 680 px (Playwright's Chromium and
+project, ending on ``project check --required`` passing, at 2x and 680 px, as tall as its content (Playwright's Chromium and
 ffmpeg). An MP4 is not byte-reproducible, so ``--check`` does not compare it.
 
 Needs git, jq (the project-check still drops its timings), mise (the bootstrap provides it) and, for the plugin screen, the Claude Code CLI
@@ -482,31 +482,29 @@ def diagram(colors: dict[str, str] | None) -> str:
 # the session (real output, filtered with jq as the still is) and Playwright screenshots it at 2x;
 # each frame is encoded for as long as it was on screen. The terminal is always dark, so the clip is
 # Night only. Not byte-reproducible, so `--check` leaves it alone; `--clip` makes it.
-CLIP = [  # (command, caption): `~` is the demo's home; jq keeps what each step says
-    ("ai-dlc project init ~/demo-app \\\n  | jq -c '{status, files: (.files | length)}'",
+CLIP = [  # (command, caption): `~` is the demo's home; jq prints what each step says in plain words
+    ("ai-dlc project init ~/demo-app \\\n  | jq -r '\"\\(.status), \\(.files | length) files\"'",
      "project init writes the team's templates into a new project"),
     ("cd ~/demo-app && git init -q", ""),
-    ("ai-dlc project setup --root . \\\n  | jq -c '{ready, rendered: (.agent_configuration.changed | length)}'",
+    ("ai-dlc project setup --root . \\\n  | jq -r 'select(.ready)\n    | \"ready, \\(.agent_configuration.changed | length) rendered\"'",
      "project setup renders the agents' configuration"),
     ("git add -A && git commit -qm 'chore: initialize with ai-dlc'", "Commit the result"),
-    ("ai-dlc project check --required \\\n  | jq -c '{dirty}, (.outcomes[] | {id, status})'",
+    ("ai-dlc project check --required \\\n  | jq -r '.outcomes[] | \"\\(.id)  \\(.status)\"'",
      "project check --required: every required check passes"),
 ]
-CLIP_SIZE = (680, 460)
+CLIP_W = 680  # the height fits the finished session and its caption
 CLIP_CSS = """
-html,body{margin:0;height:100%;background:var(--af-canvas);overflow:hidden}
-.wrap{padding:20px 20px 84px;box-sizing:border-box;height:100vh}
+html,body{margin:0;background:var(--af-canvas);overflow:hidden}
+.wrap{padding:20px 20px 0}
 .term{background:var(--af-terminal-bg);color:var(--af-terminal-fg);border-radius:var(--af-radius-card);
 border:1px solid color-mix(in srgb,var(--af-terminal-fg) 8%,transparent);font:14px/20px var(--af-font-mono);overflow:hidden}
-.bar{display:flex;gap:14px;align-items:center;padding:0 14px;height:34px;font:500 10.5px var(--af-font-mono);
-border-bottom:1px solid color-mix(in srgb,var(--af-terminal-fg) 9%,transparent);letter-spacing:.08em;
-text-transform:uppercase;color:var(--af-terminal-dim)}.bar b{color:var(--af-terminal-fg);font-weight:500}
+.bar{display:flex;gap:6px;align-items:center;padding:0 14px;height:34px;font:500 12.5px var(--af-font-sans);
+border-bottom:1px solid color-mix(in srgb,var(--af-terminal-fg) 9%,transparent);color:var(--af-terminal-dim)}
+.bar b{color:var(--af-terminal-fg);font-weight:500}
 pre{margin:0;padding:16px 18px;font:inherit;white-space:pre}.p{color:var(--af-brand)}
-.c,.v{color:var(--af-code-keyword)}.hide{display:none}
-.cap{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);display:flex;gap:10px;align-items:baseline;
-width:max-content;max-width:calc(100vw - 48px);box-sizing:border-box;padding:9px 14px;background:var(--af-raised);
-color:var(--af-fg);border:1px solid var(--af-line-strong);border-left:3px solid var(--af-brand);
-border-radius:var(--af-radius-control);box-shadow:var(--af-shadow-overlay);font:500 15px/1.35 var(--af-font-sans)}
+.c,.v{color:var(--af-code-keyword)}.hide{visibility:hidden}
+.cap{display:flex;gap:10px;align-items:baseline;padding:14px 20px 18px;color:var(--af-fg);
+font:500 15px/1.35 var(--af-font-sans)}
 .cap b{font:500 12px var(--af-font-mono);color:var(--af-brand-text);letter-spacing:.08em}
 """
 CLIP_JS = """
@@ -529,7 +527,12 @@ async function play() {
   await wait(3800);
   window.clipDone = true;
 }
-document.fonts.ready.then(play);
+function prepare() {  // the window is as tall as the finished session (hidden lines keep their place) and a caption
+  const c = lines.find((l) => l.dataset.cap);
+  cap.querySelector('b').textContent = '1'; cap.querySelector('span').textContent = c.dataset.cap;
+  window.clipHeight = Math.ceil(cap.getBoundingClientRect().bottom);
+}
+document.fonts.ready.then(prepare);  // the recorder sizes the window to clipHeight, then calls play()
 """
 
 
@@ -545,7 +548,7 @@ def clip_page(steps: list[tuple[str, str]]) -> str:
         out = wrap(output) if output else []
         for j, line in enumerate(out):
             last = ' data-end="1"' if j == len(out) - 1 else ""
-            cls = " v" if '"passed"' in line else ""
+            cls = " v" if line.endswith("passed") else ""
             rows.append(f'<span class="l hide{cls}" data-k="out"{last}>{esc(line)}\n</span>')
     rows.append('<span class="l hide" data-k="cmd"><span class="p">$ ▌</span></span>')
     css = (ROOT / "docs/stylesheets/airframe.css").read_text()
@@ -553,7 +556,7 @@ def clip_page(steps: list[tuple[str, str]]) -> str:
              "&family=Red+Hat+Text:wght@400..700&display=swap")
     return (f'<!doctype html><html data-theme="dark"><head><meta charset="utf-8"><link rel="stylesheet" '
             f'href="{fonts}"><style>{css}{CLIP_CSS}</style></head><body><div class="wrap"><div class="term">'
-            '<div class="bar"><b>ai-dlc</b><span>a new project, five steps</span></div>'
+            '<div class="bar"><b>ai-dlc</b><span>·</span><span>A new project, five steps</span></div>'
             f'<pre>{"".join(rows)}</pre></div></div><div class="cap"><b></b><span></span></div>'
             f"<script>{CLIP_JS}</script></body></html>\n")
 
@@ -567,9 +570,11 @@ def record_clip(page: str, out: Path) -> float:
     ffmpeg = shutil.which("ffmpeg") or sys.exit("build: the clip needs ffmpeg on PATH")
     with sync_playwright() as pw, tempfile.TemporaryDirectory() as d:
         browser = pw.chromium.launch()
-        w, h = CLIP_SIZE
-        tab = browser.new_context(device_scale_factor=2, viewport={"width": w, "height": h}).new_page()
+        tab = browser.new_context(device_scale_factor=2, viewport={"width": CLIP_W, "height": 900}).new_page()
         tab.set_content(page, wait_until="networkidle")
+        tab.wait_for_function("window.clipHeight > 0", timeout=30000)
+        tab.set_viewport_size({"width": CLIP_W, "height": tab.evaluate("window.clipHeight")})
+        tab.evaluate("() => { play(); }")  # not awaited: the frames are taken while it plays
         tab.wait_for_function("window.clipStarted === true", timeout=30000)
         shots: list[tuple[Path, float]] = []
         while not tab.evaluate("window.clipDone === true"):
@@ -601,7 +606,8 @@ def clip() -> None:
                  for cmd, _ in CLIP]
     finally:
         shutil.rmtree(DEMO, ignore_errors=True)
-    if not all('"passed"' in line for line in steps[-1][1].splitlines()[1:]):
+    if not steps[2][1].startswith("ready, ") or not all(
+            line.endswith("  passed") for line in steps[-1][1].splitlines()):
         sys.exit(f"build: project check --required did not pass:\n{steps[-1][1]}")
     seconds = record_clip(clip_page(steps), HERE / "clip.mp4")
     size = (HERE / "clip.mp4").stat().st_size
