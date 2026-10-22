@@ -1,0 +1,32 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "docs/stylesheets/airframe-docs.css": "afa5f0020318d17df3b217380b7c45a67813fe956dbf3cdc93eefad3e1f4fa64"
+      },
+      "outcome": "updated",
+      "reason": "Vendored unmodified from agent-factory theme-v15 by scripts/sync-airframe.sh (KAN-162): the docs nav's active section is one pill with one marker. Allowed theme-refresh maintenance under the ADR 0001 freeze.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/stylesheets/airframe-docs.css"
+    },
+    {
+      "bound": {
+        "docs/stylesheets/airframe-tokens.json": "5ce1387d92e6672754cb2ecbc9d4c466d461af01ac8aafe3f812ed6e41c4d9ed"
+      },
+      "outcome": "updated",
+      "reason": "Vendored unmodified from agent-factory theme-v15 by scripts/sync-airframe.sh (KAN-162): the docs nav's active section is one pill with one marker. Allowed theme-refresh maintenance under the ADR 0001 freeze.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/stylesheets/airframe-tokens.json"
+    },
+    {
+      "bound": {
+        "docs/stylesheets/airframe.css": "52082313739ea6ccf2af0cc333b7bc5cc06ede741952d586ee923e80df0f93a5"
+      },
+      "outcome": "updated",
+      "reason": "Vendored unmodified from agent-factory theme-v15 by scripts/sync-airframe.sh (KAN-162): the docs nav's active section is one pill with one marker. Allowed theme-refresh maintenance under the ADR 0001 freeze.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/stylesheets/airframe.css"
+    }
+  ],
+  "schema": 2
+}
