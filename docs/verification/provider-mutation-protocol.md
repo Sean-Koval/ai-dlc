@@ -49,8 +49,8 @@ is not a runnable mutation-conformance implementation.
 4. Exercise declared supported updates/transitions with read-back. Preserve the
    distinction between completed, cancelled, open and in-progress. Record unsupported
    transitions as unsupported; they do not become successful remote mutations.
-5. Verify AI-DLC completion rejects missing or mismatched specification/PR/CI
-   evidence. An adapter lifecycle observation is not a completed AI-DLC work cycle.
+5. Verify ai-dlc completion rejects missing or mismatched specification/PR/CI
+   evidence. An adapter lifecycle observation is not a completed ai-dlc work cycle.
    Qualify a full work cycle separately with real matching finish evidence.
 6. Verify close/reopen behavior only for the declared disposable item and permitted
    transitions. Retain final item identities and states. No source migration or

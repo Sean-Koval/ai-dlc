@@ -7,7 +7,7 @@ description: Use when an existing project's documentation is scattered, overlapp
 
 An organization request calls for reviewed changes to the actual repository.
 Inventory, recommendations and additive navigation alone do not complete it.
-Use the existing harness's file and Git tools; AI-DLC supplies discovery and
+Use the existing harness's file and Git tools; ai-dlc supplies discovery and
 bounded review, not an autonomous move engine.
 
 ## Discover and review

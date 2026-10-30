@@ -1,15 +1,18 @@
 # Project documentation ownership and navigation
 
-AI-DLC organizes references to canonical documents. It does not own a second copy
+Understand what ai-dlc's documentation tools own, what they check, and where
+specifications, private notes and team pages stay.
+
+ai-dlc organizes references to canonical documents. It does not own a second copy
 of specifications, a private-note mirror, or a Confluence synchronization engine.
 The maintained reusable instructions are the
 [project documentation guide](https://github.com/Sean-Koval/ai-dlc/blob/main/project-templates/project/docs/documentation-guide.md),
-which ships into adopted repositories. This design record explains the boundary;
-the guide owns setup, catalog examples and the upkeep workflow.
+which ships into adopted repositories and owns setup, catalog examples and the
+upkeep workflow.
 
-The five pillars are navigation questions: what is the system, why were decisions
-made, what behavior is required, how is it operated, and where are the reference
-details? Existing project layouts answer those questions without relocation.
+The five pillars are navigation questions. What is the system, why were
+decisions made, what behavior is required, how is it operated, and where are
+the reference details? Existing project layouts answer them without relocation.
 OpenSpec owns formal behavior and change artifacts. Repository `docs/` owns durable
 architecture, decisions and operational material. A project index and optional
 catalog identify canonical paths, ownership, lifecycle and source provenance.
@@ -23,13 +26,15 @@ OpenSpec remains responsible for its own artifact lifecycle.
 Decision records in `docs/decisions/` carry the knowledge-note frontmatter of
 [`contracts/knowledge-note.schema.json`](https://github.com/Sean-Koval/ai-dlc/blob/main/contracts/knowledge-note.schema.json)
 (`kind: decision`, `status`, optional `checks:`). `docs check` validates that
-frontmatter when present, reports records without it as information, and fails
-when an accepted record's body differs from the committed version unless the
-record moves to `superseded`. `checks:` entries use flightdeck's `flightdeck.spec/v1`
-grammar; AI-DLC checks their shape (unique `id`, one `assert` operator, `scope` and
-`severity` values) and never evaluates them. The two-person rule for loosening a
-check is branch protection and CODEOWNERS, not AI-DLC code. The adopted-project
-convention is the template's
+frontmatter when present and reports records without it as information. It
+fails when an accepted record's body differs from the committed version unless
+the record moves to `superseded`.
+
+`checks:` entries use flightdeck's `flightdeck.spec/v1` grammar; ai-dlc checks
+their shape (unique `id`, one `assert` operator, `scope` and `severity` values)
+and never evaluates them. The two-person rule for loosening a check is branch
+protection and CODEOWNERS, not ai-dlc code. The adopted-project convention is
+the template's
 [decisions README](https://github.com/Sean-Koval/ai-dlc/blob/main/project-templates/project/docs/decisions/README.md).
 
 An Obsidian portal is a machine-local Markdown note linking to canonical repository
@@ -53,13 +58,15 @@ The formal requirements and repair rationale are in the
 The approved documentation program adds Git impact inspection, explicit
 content-bound dispositions, scoped harness review packets and citation validation.
 Work records are validated by the `work-records` check and are not documentation
-evidence unless explicitly mapped in the catalog.
-These services coordinate review; they cannot infer semantic accuracy. A linked
-Obsidian workspace adds personal navigation and templates while canonical document
-bodies remain in Git. SDK workflow bundles may carry declared references and exact
-version applicability, preserving pinned ownership and independent company authority.
+evidence unless explicitly mapped in the catalog. These services coordinate
+review; they cannot infer semantic accuracy.
+
+A linked Obsidian workspace adds personal navigation and templates while
+canonical document bodies remain in Git. SDK workflow bundles may carry declared
+references and exact version applicability, preserving pinned ownership and
+independent company authority.
 
 The reusable documentation guide linked above owns commands and editorial process.
 Formal behavior remains in the corresponding OpenSpec changes; verified execution
 and remaining live qualification are recorded in
-[documentation workflow verification](../verification/documentation-workflow.md).
+[documentation workflow verification](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/documentation-workflow.md).

@@ -8,7 +8,7 @@ Portable personal profiles belong in a separate private Git repository and are
 enrolled at a pinned revision. Each machine maintains its own binding for local
 paths, account selection, and credential environment-variable names. Keep
 credential values in a password manager, keychain, or process environment;
-never commit `.env` files or values to AI-DLC Git files. Local CLI and MCP
+never commit `.env` files or values to ai-dlc Git files. Local CLI and MCP
 execution are current; hosted or cloud execution remains a later qualification
 target. MCP exposes reviewed work, doctor, and selected knowledge services;
 machine enrollment mutation remains CLI-only.
@@ -27,7 +27,7 @@ Use the [brownfield behavior-check rehearsal](docs/workflows/brownfield.md#rehea
 to review a source-grounded requirement/check/prerequisite mapping and demonstrate
 pass, regression failure and restored pass in an external disposable fixture.
 
-This project's `scripts/bootstrap.sh` runs in release mode: it installs the AI-DLC engine named by `bootstrap/release.sh`, a hash-bound manifest from a published AI-DLC release. An engine that was itself installed from a release writes that file when it generates a project; an engine running from an AI-DLC source checkout cannot, and reports `"release_manifest": "absent"`. In that case add `bootstrap/release.sh` from a published release before enabling CI, verify it against the release's `SHA256SUMS`, and never download an unpinned latest script.
+This project's `scripts/bootstrap.sh` runs in release mode: it installs the ai-dlc engine named by `bootstrap/release.sh`, a hash-bound manifest from a published ai-dlc release. An engine that was itself installed from a release writes that file when it generates a project; an engine running from an ai-dlc source checkout cannot, and reports `"release_manifest": "absent"`. In that case add `bootstrap/release.sh` from a published release before enabling CI, verify it against the release's `SHA256SUMS`, and never download an unpinned latest script.
 
 ## Documentation upkeep
 

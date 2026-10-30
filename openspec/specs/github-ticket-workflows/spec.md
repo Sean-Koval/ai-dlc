@@ -53,7 +53,7 @@ Scaffold/adopt SHALL accept an explicit tracker selection while preserving omitt
 
 #### Scenario: A user selects GitHub Issues with a Project
 - **WHEN** they provide or choose the authorized repository and Project and review discovered status mappings
-- **THEN** AI-DLC prepares that configuration without manual ID lookup, source edits or installation of Plane
+- **THEN** ai-dlc prepares that configuration without manual ID lookup, source edits or installation of Plane
 
 #### Scenario: Enrollment changes after connection preview
 - **WHEN** the effective personal or machine provider/account configuration changes after preview

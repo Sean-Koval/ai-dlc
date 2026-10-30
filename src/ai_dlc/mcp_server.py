@@ -204,7 +204,7 @@ def _register_knowledge_tools(server: FastMCP, config: dict) -> None:
 
 def make_server(root: Path, machine: Path | None = None) -> FastMCP:
     config = config_for(root, machine)
-    server = FastMCP("AI-DLC")
+    server = FastMCP("ai-dlc")
     _register_work_tools(server, root, machine)
     _register_docs_tools(server, root)
     _register_workspace_tools(server, root, config)

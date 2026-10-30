@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "docs/stylesheets/airframe-docs.css": "c88d1c24636795071412ed711857603c37a5cc7dc3021724a32282ab449a6ce7"
+      },
+      "outcome": "updated",
+      "reason": "Vendored unmodified from agent-factory at the theme-v13 tag by scripts/sync-airframe.sh: tabs, nav titles, table headers, admonition titles and buttons are sentence-case sans, and the deprecated brand-wash gives way to the neutral selected surface.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/stylesheets/airframe-docs.css"
+    },
+    {
+      "bound": {
+        "docs/stylesheets/airframe-tokens.json": "37607b1336d7240147b0e76cef2cfa60b29909588ed15276f69008e1674457f8"
+      },
+      "outcome": "updated",
+      "reason": "Vendored unmodified from agent-factory at the theme-v13 tag by scripts/sync-airframe.sh: only the release name changes; no token value changes.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/stylesheets/airframe-tokens.json"
+    },
+    {
+      "bound": {
+        "docs/stylesheets/airframe.css": "83c6d526a79fc15a562fddb99f41f01338a70965760eee2f69299d76409c9df1"
+      },
+      "outcome": "updated",
+      "reason": "Vendored unmodified from agent-factory at the theme-v13 tag by scripts/sync-airframe.sh: only the release name in the header comment changes; no token value changes.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/stylesheets/airframe.css"
+    },
+    {
+      "bound": {
+        "scripts/sync-airframe.sh": "f5509ee8eb92b54e1215a187c199c2e5e7a10dda8ca10e8d7061d8109028c1bf"
+      },
+      "outcome": "updated",
+      "reason": "CURRENT moves from theme-v12 to theme-v13, the release this repo now vendors; the fetch logic is unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "scripts/sync-airframe.sh"
+    }
+  ],
+  "schema": 2
+}

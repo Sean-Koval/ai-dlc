@@ -693,7 +693,7 @@ class JiraCloudProvider:
                     path,
                     body={
                         "globalId": global_id,
-                        "object": {"url": payload["url"], "title": "AI-DLC work evidence"},
+                        "object": {"url": payload["url"], "title": "ai-dlc work evidence"},
                     },
                 )
             except RuntimeError:

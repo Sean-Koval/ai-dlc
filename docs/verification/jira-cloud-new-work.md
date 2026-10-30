@@ -104,7 +104,7 @@ platform, merged-CI and delivery limits above remain unchanged.
 
 Tracked by [issue #85](https://github.com/Sean-Koval/ai-dlc/issues/85).
 The inspected engine revision is `dd05f1f1ba919d2647e46049b7cd48fbb21be1fb` (the merge of PR #131), on macOS
-15.3.2 (24D81), ARM64, Python 3.12.11, AI-DLC 0.4.0. This is preparation evidence,
+15.3.2 (24D81), ARM64, Python 3.12.11, ai-dlc 0.4.0. This is preparation evidence,
 not a live Jira qualification. No Jira host was contacted and no Jira request,
 issue, transition, PR or completion response was produced by this walkthrough.
 

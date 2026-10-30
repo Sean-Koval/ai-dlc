@@ -45,7 +45,7 @@ class RuntimeUnavailable(UncertainError):
         self.executable = executable
         self.remedy = [
             "Inspect installation and shell activation with `ai-dlc project workspace-check`.",
-            "Open a new terminal or source the AI-DLC shell file to activate the bootstrap bin directory.",
+            "Open a new terminal or source the ai-dlc shell file to activate the bootstrap bin directory.",
             "Rerun the repository bootstrap if the bootstrap bin directory is absent.",
         ]
         super().__init__(f"{executable} is not on PATH; no check can run reproducibly")

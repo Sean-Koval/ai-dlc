@@ -1,7 +1,7 @@
 # tracker-adapter-boundary Specification
 
 ## Purpose
-Keep tracker defaults on supported adapters, refuse removed adapters with migration guidance, gate unsupported adapters behind an explicit opt-in, and let repositories that use hangar intake limit AI-DLC tracker writes to finish.
+Keep tracker defaults on supported adapters, refuse removed adapters with migration guidance, gate unsupported adapters behind an explicit opt-in, and let repositories that use hangar intake limit ai-dlc tracker writes to finish.
 ## Requirements
 ### Requirement: TB-01 GitHub Issues is the default tracker
 The packaged base profile, `project init`, `project adopt` and the Copier template SHALL select the `github-issues` tracker when no tracker is chosen, and SHALL NOT render a Linear provider, module or `LINEAR_API_KEY` reference. A project's own tracker selection and recorded Copier answers SHALL continue to win over these defaults.

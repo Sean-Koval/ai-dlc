@@ -1,5 +1,5 @@
 # Execution targets accepted by `project setup --target` and `doctor --target`.
-# Frozen (ADR 0001): AI-DLC sets up local checkouts and CI only. Cloud sandboxes are
+# Frozen (ADR 0001): ai-dlc sets up local checkouts and CI only. Cloud sandboxes are
 # rendered by hangar at claim time, so devcontainer, codex-cloud and claude-cloud were
 # removed; the dev container bootstraps with `local`. No target here is qualified.
 

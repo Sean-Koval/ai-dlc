@@ -1,18 +1,16 @@
 # Design to implementation
 
-This guide defines the evidence passed from product and technical design into
-implementation. A design explains intent, journeys, constraints, boundaries,
-and decisions. It does not duplicate a PRD, formal specification, tracker, or
-implementation diff.
+Hand an approved design to implementation with the evidence, work record and
+checks that let the implementer proceed without inventing behavior.
 
+A design explains intent, journeys, constraints, boundaries and decisions. It
+does not duplicate a PRD, formal specification, tracker or implementation diff.
 Begin with a shaped outcome: evidence, assumptions, alternatives, and the next
 worthwhile increment. UI/UX exploration applies when the increment changes an
-interface; API, infrastructure, and migration work use suitable design methods.
+interface; API, infrastructure and migration work use suitable design methods.
 Use the [product brief](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/templates/product-brief.md) and
-[delivery slice](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/templates/delivery-slice.md) to carry that intent
-forward without introducing a second specification system.
-
-[Back to the workflow map](../development-workflow.md)
+[delivery slice](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/templates/delivery-slice.md)
+to carry that intent forward without a second specification system.
 
 ## The handoff contract
 
@@ -45,7 +43,7 @@ flowchart TD
     A --> N{Material behavior needs formal specification?}
     N -->|Yes| S[Current formal specification and scenarios]
     N -->|No| E[Recorded no-spec decision]
-    S --> W[Reviewed AI-DLC work record]
+    S --> W[Reviewed ai-dlc work record]
     E --> W
     W --> P[Implementation slices and test plan]
     P --> B[Bound work branch]
@@ -60,10 +58,10 @@ It should link durable sources rather than paste their contents.
 ## From requirements to finishable work
 
 Use spec-from-prd with a reviewed canonical brief or PRD. Keep OUT/RQ IDs owned
-by that source; link requirement → formal scenario (when required) → deliverable
+by that source. Link requirement → formal scenario (when required) → deliverable
 work ID → implementation step → observed verification. Product rationale belongs
-in the brief/design, behavior with the selected specification provider, delivery
-status in work/tracker, and implementation steps inside the work item.
+in the brief or design, behavior with the specification provider, delivery
+status in the tracker, and implementation steps inside the work item.
 
 One behavior ticket owns one independently finishable OpenSpec change. A parent
 epic coordinates children without one shared specification gate. Tests, parser,
@@ -77,13 +75,15 @@ These synthetic examples propose local IDs and document destinations; they do
 not install records, create remote work or establish actual approval/live results.
 
 Create a draft with `ai-dlc work new WORK_ID --from-issue REF`, or use explicit
-`--title`, `--scope` and repeated `--acceptance` values for offline work. The command
-copies the configured binding roles and issue acceptance bullets when present;
-missing source content and the default specification decision remain explicit
-TODOs. Explicit flags override derived fields. New records are always unreviewed:
-replace TODOs, link the formal artifacts and review the scope before setting
-`reviewed = true` and publishing or starting. Existing records and unsafe IDs
-are refused without being overwritten; offline drafting creates no mutation state.
+`--title`, `--scope` and repeated `--acceptance` values for offline work. The
+command copies the configured binding roles and issue acceptance bullets when
+present; missing source content and the default specification decision remain
+explicit TODOs. Explicit flags override derived fields.
+
+New records are always unreviewed: replace TODOs, link the formal artifacts and
+review the scope before setting `reviewed = true` and publishing or starting.
+Existing records and unsafe IDs are refused without being overwritten; offline
+drafting creates no mutation state.
 
 Work records accept optional `requirements` and `depends_on` lists, defaulting to
 empty for older work. Requirements are nonblank single-token IDs, not copied spec
@@ -93,28 +93,32 @@ work IDs in `.ai-dlc/work/`; preserve their pinned providers and binding identit
 
 Run `ai-dlc work validate WORK_ID --root .` before publication. It returns valid
 (exit 0) or invalid (exit 1), reads only the selected dependency closure, and
-initializes no mutation journal. Missing/unsafe IDs, self/cycles, invalid records,
-binding drift and missing local artifact files/directories fail before publish
-or start effects. Unrelated drafts do not block the selected work. Local artifact
-paths must remain in the repository without symlinks. Fragments are retained as
-references without interpreting specification text. HTTP(S) references are not
-probed, and tracker/PR/branch/deployment/knowledge references remain provider-owned.
+initializes no mutation journal. Missing or unsafe IDs, cycles, invalid records,
+binding drift and missing local artifact files fail before publish or start
+effects. Unrelated drafts do not block the selected work.
 
-A suffix-less specification path whose first segment is a repository directory,
-such as an OpenSpec change directory, stays a local artifact after the directory
-is moved and is reported as absent; an opaque slash ID or provider URI that is
-not anchored in the repository stays provider-owned. `ai-dlc work validate --all
---root .` validates every record's shape, local artifacts and dependency graph
-together, offline and without resolving provider bindings, so finished records
-with historical fingerprints do not fail it. Run it as a required project check
-so archiving cannot leave a dangling reference undetected.
+Local artifact paths must remain in the repository without symlinks. Fragments
+are retained as references without interpreting specification text. HTTP(S)
+references are not probed, and tracker, PR, branch, deployment and knowledge
+references remain provider-owned.
 
-Binding drift is a mutation-time refusal, also surfaced by single-record validation.
-For active work, review the record against current provider configuration, remove
-only the drifted binding under `[bindings]`, and run `ai-dlc work validate WORK_ID`;
-the next normal work mutation persists the reviewed binding. Preserve finished
-records' historical bindings and check them with `ai-dlc work validate --all`.
-`project rebind` migrates a provider role and is not a binding-drift repair command.
+A suffix-less specification path whose first segment is a repository directory
+(such as an OpenSpec change directory) stays a local artifact. After the
+directory is moved it is reported as absent. An opaque slash ID or provider URI that is
+not anchored in the repository stays provider-owned.
+
+`ai-dlc work validate --all --root .` validates every record's shape, local
+artifacts and dependency graph together, offline. It does not resolve provider
+bindings, so finished records with historical fingerprints do not fail it. Run
+it as a required project check so archiving cannot leave a dangling reference
+undetected.
+
+Binding drift is a mutation-time refusal, also surfaced by single-record
+validation. For active work, review the record against current provider
+configuration, remove only the drifted binding under `[bindings]`, and run
+`ai-dlc work validate WORK_ID`. The next work mutation persists the reviewed
+binding. Preserve finished records' historical bindings. `project rebind`
+migrates a provider role and is not a binding-drift repair command.
 
 Validation does not approve scope or prove completion. `work start` freshly reads
 every reachable dependency through its pinned tracker and requires canonical
@@ -166,22 +170,24 @@ implementation:
 - make uncertainty visible instead of inventing product behavior;
 - run required project checks before review.
 
-Start delivery with `ai-dlc work start <work-id>`. It commits only the bound
-work record; `work link` also commits its record by default. Use `--no-commit`
-when deliberately batching record edits. Neither command stages unrelated files.
-Archive the required OpenSpec change on its delivery branch before merge with
-`ai-dlc work archive <work-id>`. It promotes the specifications, repoints the
-record and any plan inside that change, and commits only affected specification
-files and the record. Commit or preserve any dirty shared canonical specification
-before archiving. `work status` reports local specification state without a network
-call; an active change is also warned about by `work pr`. If the archive command
-fails, inspect its local changes before retrying.
-After implementation, specification finalization and required checks, push the
-branch explicitly and run `ai-dlc work pr <work-id>`. This creates the pull request,
-links its URL and commits the record; push that new link commit before review.
-Repeating `work pr` returns the linked URL without opening another pull request.
-If creation was interrupted before its result was recorded, inspect the provider
-and recover with `work link <work-id> pr <url>`; an uncertain create is never repeated.
+1. Start delivery with `ai-dlc work start <work-id>`. It commits only the bound
+   work record; `work link` also commits its record by default. Use
+   `--no-commit` when deliberately batching record edits. Neither command
+   stages unrelated files.
+2. Archive the required OpenSpec change on its delivery branch before merge with
+   `ai-dlc work archive <work-id>`. It promotes the specifications, repoints
+   the record and any plan inside that change, and commits only affected
+   specification files and the record. Commit or preserve any dirty shared
+   specification before archiving; if the archive command fails, inspect its
+   local changes before retrying. `work status` reports local specification
+   state without a network call, and `work pr` warns about an active change.
+3. After implementation, specification finalization and required checks, push
+   the branch explicitly and run `ai-dlc work pr <work-id>`. This creates the
+   pull request, links its URL and commits the record; push that new link
+   commit before review. Repeating `work pr` returns the linked URL without
+   opening another pull request. If creation was interrupted before its result
+   was recorded, inspect the provider and recover with
+   `work link <work-id> pr <url>`; an uncertain create is never repeated.
 
 The pull request should explain the outcome, design decisions, compatibility
 or migration effects, and evidence. Review compares implementation with the
@@ -221,12 +227,13 @@ Use the [design brief](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/tem
 show failed journeys, brand fit, static limitations and earlier-candidate selection.
 They contain synthetic observations, not executed UI or human preference evidence.
 
-The chosen existing visual tool generates an identified candidate. Design-evaluate
-receives its revision/digest, brief, rubric and access instructions; a separate
-session or human is an available review route. Same-session generator review is
-self-review. A required failure blocks design acceptance, and absent interaction
-evidence stays unverified regardless of visual scores. Keep reports and findings
-with their exact candidate and rubric; a new rubric requires reevaluation.
+The chosen existing visual tool generates an identified candidate.
+Design-evaluate receives its revision or digest, brief, rubric and access
+instructions. A separate session or human is an available review route;
+same-session generator review is self-review. A required failure blocks design
+acceptance, and absent interaction evidence stays unverified regardless of
+visual scores. Keep reports and findings with their exact candidate and rubric;
+a new rubric requires reevaluation.
 
 Retain `docs/design/<work-id>/brief.md`, `rubric.md`,
 `iterations/<candidate-id>/evaluation.md` and `decision.md`, or equivalent stable
@@ -244,28 +251,34 @@ design-quality gain. This optional route adds no service, model, CLI or finish g
 
 Select `--preset node --capability frontend` when initializing or adopting a
 frontend project; repeat the other desired role capabilities explicitly. New
-projects pin `@playwright/test` to 1.58.2. Adoption preserves your package manifest;
-add that exact development dependency and update its lockfile during setup.
-Run dependency setup with `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1`, then explicitly
-install the browser with `npx --no-install playwright install chromium`. Checks
-never install packages or browsers. The required frontend-smoke check fails
-when `BASE_URL` is missing or empty. Start the app and set that URL before running
-`ai-dlc project check --check frontend-smoke`. The check visits the root, requires
-a nonempty title and records a screenshot under `.ai-dlc/local/design/smoke/`.
-Direct execution of the generated Playwright smoke also requires the URL. A
-missing app or browser dependency remains a failure, not successful verification.
+projects pin `@playwright/test` to 1.58.2. Adoption preserves your package
+manifest; add that exact development dependency and update its lockfile during
+setup.
 
-Run `ai-dlc design capture --url http://localhost:3000 --viewport 1280x800
---viewport 390x844 --state ready=#ready` from the project after browser setup.
-The default destination is a new timestamped `.ai-dlc/local/design/` directory;
-`--out` selects another new or empty directory inside the repository. Output
-paths must not escape or traverse symlinks. Capture records PNGs and a
-`manifest.json` with URL, timestamp, dimensions, named states and file references.
-A state selector waits for visible page content before taking a viewport
-screenshot; it does not click controls or prove an interaction journey. Cite the
-manifest and its images in the evaluation and keep uncaptured states or untested
-interactions unverified. On failure, inspect the partial capture directory;
-a complete manifest is written only after every screenshot succeeds.
+1. Run dependency setup with `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1`.
+2. Install the browser explicitly: `npx --no-install playwright install chromium`.
+   Checks never install packages or browsers.
+3. Start the app and set `BASE_URL`; the required frontend-smoke check fails
+   when it is missing or empty.
+4. Run `ai-dlc project check --check frontend-smoke`. The check visits the
+   root, requires a nonempty title and records a screenshot under
+   `.ai-dlc/local/design/smoke/`. A missing app or browser dependency remains a
+   failure, not successful verification.
+
+After browser setup, run
+`ai-dlc design capture --url http://localhost:3000 --viewport 1280x800 --viewport 390x844 --state ready=#ready`
+from the project. The default destination is a new timestamped
+`.ai-dlc/local/design/` directory; `--out` selects another new or empty
+directory inside the repository. Output paths must not escape or traverse
+symlinks.
+
+Capture records PNGs and a `manifest.json` with URL, timestamp, dimensions,
+named states and file references. A state selector waits for visible page
+content before taking a viewport screenshot; it does not click controls or
+prove an interaction journey. Cite the manifest and its images in the
+evaluation and keep uncaptured states unverified. On failure, inspect the
+partial capture directory; a complete manifest is written only after every
+screenshot succeeds.
 
 Select both `--capability backend --capability frontend` for a node project that
 needs API contract validation and browser smoke. Both required checks remain

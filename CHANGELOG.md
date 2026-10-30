@@ -1,7 +1,7 @@
 # Changelog
 
-Notable changes to AI-DLC, newest first, in the
-[Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format. AI-DLC has one
+Notable changes to ai-dlc, newest first, in the
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format. ai-dlc has one
 published release, [v0.4.0](https://github.com/Sean-Koval/ai-dlc/releases/tag/v0.4.0);
 everything since is unreleased on `main`, where the package version is still 0.4.0.
 Two tags mark points in that history: `eval-handoff-2026-10` (the last commit with
@@ -12,7 +12,7 @@ change for each removal.
 ## Unreleased
 
 The refocus ([ADR 0001](docs/decisions/0001-refocus-ai-dlc.md), epic
-[#189](https://github.com/Sean-Koval/ai-dlc/issues/189), October 2026): AI-DLC is a
+[#189](https://github.com/Sean-Koval/ai-dlc/issues/189), October 2026): ai-dlc is a
 workflow-plugin author, machine provisioner and CI-receipt-gated work lifecycle.
 Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 
@@ -49,6 +49,12 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
   workflow plugin instead (#202; PR #218).
 - `work finish` falls back to REST when GitHub GraphQL is refused, and
   `project init` points to `project setup` (#226, #227; PR #228).
+- The tool name is written `ai-dlc`, lowercase, in prose and user-facing strings
+  (KAN-19; PR #243).
+- The documentation site is split into one page per question and held to the
+  suite's editorial rule by `tests/test_editorial.py`; its theme follows Airframe
+  through theme-v15, and the front page adds a demo clip (PRs #231, #234, #236,
+  #240–#242, #244–#247).
 
 ### Deprecated
 

@@ -1,9 +1,11 @@
 # Reviewed native connections
 
-`ai-dlc agents connect` composes explicitly reviewed role bindings into the
-project's existing `agents.servers`. It provides an inspectable local setup path
-for selected providers without installing tools, logging in or changing a service.
-It reuses the common exclusive saved-plan and guarded configuration writer.
+Compose reviewed role bindings into a project's native MCP server list with
+`ai-dlc agents connect`, without installing tools or logging in.
+
+The command provides an inspectable local setup path for selected providers
+without changing a service. It reuses the common exclusive saved-plan and
+guarded configuration writer.
 
 The scaffold selects providers and native clients. It does not invent a provider's
 upstream MCP endpoint or authentication settings. This initial connection workflow
@@ -39,9 +41,11 @@ args = ["mcp", "serve"]
 Use the actual provider aliases selected in `ai-dlc.toml`. If an effective provider
 has an `account` reference, including a machine override, the binding must match
 that reference. If it has none, `work` is only your declared native expectation;
-this operation does not set the provider's runtime account. This example shares
-the installed AI-DLC MCP service between roles; it does not demonstrate access to
-a live tracker or vault. Configure those providers and qualify them separately.
+this operation does not set the provider's runtime account.
+
+This example shares the installed ai-dlc MCP service between roles; it does not
+demonstrate access to a live tracker or vault. Configure those providers and
+qualify them separately. Then preview, apply and render:
 
 ```sh
 ai-dlc agents connect --root . --bindings docs/setup/native-bindings.toml \
@@ -63,13 +67,14 @@ The separate renderer enforces its existing authored-file protections.
 
 One alias deduplicates only when declared account and transport match exactly:
 URL, or command plus ordered arguments and environment variable names. Omitted
-empty arguments/environment names equal empty lists. Both role selections and
-provider guidance remain present. A conflicting alias refuses before writes,
+empty arguments and environment names equal empty lists. Both role selections
+and provider guidance remain present. A conflicting alias refuses before writes,
 including an old manual entry lacking the newly requested account identity.
+
 Unrequested manual entries remain unchanged. Personal server defaults are never
-copied into shared project configuration. Existing inline arrays (single or
-multiline) and array tables retain their authored entries and comments; unfamiliar
-representations that cannot be proven equivalent are refused.
+copied into shared project configuration. Existing inline arrays and array
+tables retain their authored entries and comments; unfamiliar representations
+that cannot be proven equivalent are refused.
 
 Remote bindings accept an explicit HTTP(S) URL without user info, query or fragment.
 Command bindings accept explicit arguments and environment variable names, never

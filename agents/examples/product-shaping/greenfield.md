@@ -1,7 +1,7 @@
 # Product brief: Repair cafe arrivals
 
 Synthetic worked example; all inputs below are fictional task fixtures, not
-interviews, verified customer evidence or AI-DLC platform qualification.
+interviews, verified customer evidence or ai-dlc platform qualification.
 
 Input: “Build a beautiful real-time dashboard for our new community repair cafe
 next Saturday. We have no product or task observations. I suspect volunteers lose

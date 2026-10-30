@@ -1,11 +1,11 @@
 ---
 name: ai-dlc-workflow
-description: Use at the start of development work in any repository to follow the AI-DLC workflow: shape scope, specify when needed, deliver through a reviewed pull request and finish against merged evidence.
+description: Use at the start of development work in any repository to follow the ai-dlc workflow: shape scope, specify when needed, deliver through a reviewed pull request and finish against merged evidence.
 ---
 
-# AI-DLC workflow
+# ai-dlc workflow
 
-This optional plugin carries the AI-DLC workflow guidance, team skills and safe hooks.
+This optional plugin carries the ai-dlc workflow guidance, team skills and safe hooks.
 It works in any repository; lifecycle commands apply only to adopted repositories.
 
 ## Always

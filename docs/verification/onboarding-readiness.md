@@ -64,7 +64,7 @@ review session; portable documentation contains no personal machine path.
 
 ## Verification boundary
 
-Prepared source Python3.12.11 and AI-DLC0.4.0 on existing macOS15.3.2 arm64 were
+Prepared source Python3.12.11 and ai-dlc0.4.0 on existing macOS15.3.2 arm64 were
 reused. No source bootstrap, download, package build, full suite, company call,
 service mutation or native login was performed. Prior coordinator all-five results
 apply to 4064bd9, not this repair. Independent review, final integrated required

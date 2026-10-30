@@ -1,0 +1,314 @@
+{
+  "docs/architecture.md": {
+    "long_paragraphs": 6,
+    "long_sentences": 2,
+    "words": 1955
+  },
+  "docs/archive/README.md": {
+    "long_sentences": 1
+  },
+  "docs/archive/handoffs/framework-delivery.md": {
+    "long_paragraphs": 3,
+    "long_sentences": 3
+  },
+  "docs/archive/planning/2026-09-05-design-pm-calibration.md": {
+    "long_paragraphs": 3,
+    "long_sentences": 1
+  },
+  "docs/archive/planning/2026-09-05-framework-qualification.md": {
+    "long_paragraphs": 2,
+    "long_sentences": 2
+  },
+  "docs/archive/planning/2026-09-05-workflow-quality-calibration.md": {
+    "long_paragraphs": 2,
+    "long_sentences": 1
+  },
+  "docs/archive/planning/2026-09-06-provider-toolsets.md": {
+    "long_paragraphs": 5,
+    "long_sentences": 1
+  },
+  "docs/archive/planning/2026-09-07-work-computer-readiness.md": {
+    "long_paragraphs": 1,
+    "long_sentences": 3
+  },
+  "docs/archive/planning/2026-09-roadmap-ledger.md": {
+    "long_paragraphs": 1
+  },
+  "docs/archive/planning/github-backlog-migration.md": {
+    "long_paragraphs": 7,
+    "long_sentences": 4
+  },
+  "docs/archive/planning/implementation-v4.md": {
+    "long_paragraphs": 1
+  },
+  "docs/archive/planning/provider-substitution-2026-09-06.md": {
+    "long_paragraphs": 2
+  },
+  "docs/archive/planning/provider-toolset-code-audit.md": {
+    "long_paragraphs": 2
+  },
+  "docs/archive/planning/provider-toolset-handoff.md": {
+    "long_paragraphs": 6,
+    "long_sentences": 1
+  },
+  "docs/archive/planning/stage-cleanup-review-2026-09-06.md": {
+    "long_paragraphs": 1,
+    "long_sentences": 1
+  },
+  "docs/archive/planning/tracker-adapter-follow-through.md": {
+    "long_paragraphs": 1
+  },
+  "docs/archive/verification/release-history.md": {
+    "long_paragraphs": 11,
+    "long_sentences": 8
+  },
+  "docs/decisions/0001-refocus-ai-dlc.md": {
+    "long_paragraphs": 1,
+    "long_sentences": 1
+  },
+  "docs/design/design-pm.md": {
+    "long_paragraphs": 3,
+    "long_sentences": 2,
+    "words": 1542
+  },
+  "docs/design/framework-delivery.md": {
+    "words": 839
+  },
+  "docs/design/jira-cloud.md": {
+    "long_paragraphs": 2,
+    "long_sentences": 2,
+    "words": 1383
+  },
+  "docs/design/local-and-shared-knowledge.md": {
+    "long_paragraphs": 4,
+    "words": 1515
+  },
+  "docs/design/native-tool-composition.md": {
+    "long_paragraphs": 2
+  },
+  "docs/design/plane-new-work.md": {
+    "long_paragraphs": 12,
+    "long_sentences": 5,
+    "words": 1938
+  },
+  "docs/design/project-documentation.md": {
+    "long_paragraphs": 1
+  },
+  "docs/design/provider-connections.md": {
+    "long_paragraphs": 3
+  },
+  "docs/design/provider-toolsets-prd.md": {
+    "long_paragraphs": 4,
+    "long_sentences": 2,
+    "words": 1366
+  },
+  "docs/development-workflow.md": {
+    "words": 1938
+  },
+  "docs/github-ticket-setup.md": {
+    "long_paragraphs": 1,
+    "words": 784
+  },
+  "docs/migration.md": {
+    "long_paragraphs": 6,
+    "words": 1964
+  },
+  "docs/product-direction.md": {
+    "long_paragraphs": 1,
+    "words": 942
+  },
+  "docs/release-verification.md": {
+    "long_paragraphs": 5,
+    "long_sentences": 1,
+    "words": 1834
+  },
+  "docs/reviews/2026-09-03-portable-profile-enrollment.md": {
+    "long_paragraphs": 2,
+    "long_sentences": 8
+  },
+  "docs/roadmap.md": {
+    "long_paragraphs": 2,
+    "long_sentences": 2
+  },
+  "docs/runbooks/document-workspace-qualification.md": {
+    "long_sentences": 2
+  },
+  "docs/runbooks/fde-documents.md": {
+    "long_paragraphs": 1
+  },
+  "docs/runbooks/jira-cloud-setup.md": {
+    "long_paragraphs": 1
+  },
+  "docs/runbooks/machine-enrollment.md": {
+    "long_paragraphs": 7,
+    "words": 1958
+  },
+  "docs/runbooks/plane-setup.md": {
+    "long_paragraphs": 2,
+    "long_sentences": 1
+  },
+  "docs/runbooks/release-publication.md": {
+    "long_paragraphs": 4,
+    "long_sentences": 1
+  },
+  "docs/verification/backend-contracts.md": {
+    "long_paragraphs": 3,
+    "long_sentences": 4
+  },
+  "docs/verification/bootstrap-executable-publication.md": {
+    "long_paragraphs": 6,
+    "long_sentences": 2
+  },
+  "docs/verification/credential-readiness.md": {
+    "long_paragraphs": 4,
+    "long_sentences": 1
+  },
+  "docs/verification/delivery-path-baseline.md": {
+    "long_paragraphs": 4,
+    "long_sentences": 4
+  },
+  "docs/verification/design-pm-workflow.md": {
+    "long_paragraphs": 3,
+    "long_sentences": 1
+  },
+  "docs/verification/design-pm/baseline.md": {
+    "long_paragraphs": 5
+  },
+  "docs/verification/design-pm/cases.md": {
+    "long_paragraphs": 6,
+    "long_sentences": 1
+  },
+  "docs/verification/design-pm/review.md": {
+    "long_paragraphs": 1,
+    "long_sentences": 1
+  },
+  "docs/verification/design-pm/with-assets-input.md": {
+    "long_paragraphs": 7,
+    "long_sentences": 2
+  },
+  "docs/verification/design-pm/with-assets-output.md": {
+    "long_paragraphs": 1,
+    "long_sentences": 1
+  },
+  "docs/verification/documentation-workflow.md": {
+    "long_paragraphs": 12,
+    "long_sentences": 8
+  },
+  "docs/verification/framework-qualification.md": {
+    "long_paragraphs": 9
+  },
+  "docs/verification/github-ticket-workflows.md": {
+    "long_paragraphs": 16,
+    "long_sentences": 7
+  },
+  "docs/verification/jira-cloud-new-work.md": {
+    "long_paragraphs": 9,
+    "long_sentences": 3
+  },
+  "docs/verification/native-setup-recovery.md": {
+    "long_paragraphs": 7,
+    "long_sentences": 1
+  },
+  "docs/verification/native-tool-composition.md": {
+    "long_paragraphs": 2
+  },
+  "docs/verification/native-work-harnesses.md": {
+    "long_paragraphs": 1,
+    "long_sentences": 2
+  },
+  "docs/verification/offline-conformance-packaging.md": {
+    "long_paragraphs": 1,
+    "long_sentences": 2
+  },
+  "docs/verification/onboarding-readiness.md": {
+    "long_paragraphs": 8,
+    "long_sentences": 2
+  },
+  "docs/verification/plane-new-work.md": {
+    "long_paragraphs": 8,
+    "long_sentences": 6
+  },
+  "docs/verification/portable-workflow-bundle-cleanup.md": {
+    "long_paragraphs": 4
+  },
+  "docs/verification/portable-workflow-bundle-import-repair.md": {
+    "long_paragraphs": 9,
+    "long_sentences": 5
+  },
+  "docs/verification/product-shaping-workflow.md": {
+    "long_paragraphs": 3,
+    "long_sentences": 3
+  },
+  "docs/verification/product-shaping/baseline-with-assets.md": {
+    "long_sentences": 1
+  },
+  "docs/verification/product-shaping/baseline.md": {
+    "long_sentences": 2
+  },
+  "docs/verification/product-shaping/cases.md": {
+    "long_paragraphs": 4
+  },
+  "docs/verification/project-knowledge-repair.md": {
+    "long_paragraphs": 1
+  },
+  "docs/verification/provider-connections.md": {
+    "long_paragraphs": 2,
+    "long_sentences": 2
+  },
+  "docs/verification/provider-mutation-protocol.md": {
+    "long_paragraphs": 3,
+    "long_sentences": 1
+  },
+  "docs/verification/release-candidate-preparation.md": {
+    "long_paragraphs": 4,
+    "long_sentences": 2
+  },
+  "docs/verification/repository-organization.md": {
+    "long_paragraphs": 2,
+    "long_sentences": 1
+  },
+  "docs/verification/selective-tracker-migration.md": {
+    "long_paragraphs": 9,
+    "long_sentences": 2
+  },
+  "docs/verification/setup-continuity.md": {
+    "long_paragraphs": 4,
+    "long_sentences": 1
+  },
+  "docs/verification/source-fetch-cleanup.md": {
+    "long_paragraphs": 3,
+    "long_sentences": 1
+  },
+  "docs/verification/spec-delivery-traceability.md": {
+    "long_paragraphs": 6,
+    "long_sentences": 3
+  },
+  "docs/verification/spec-delivery-traceability/cases.md": {
+    "long_paragraphs": 3
+  },
+  "docs/verification/toolset-composition.md": {
+    "long_paragraphs": 8,
+    "long_sentences": 1
+  },
+  "docs/verification/work-computer-toolsets.md": {
+    "long_paragraphs": 4,
+    "long_sentences": 1
+  },
+  "docs/workflows/design-to-implementation.md": {
+    "long_paragraphs": 4,
+    "long_sentences": 1,
+    "words": 1898
+  },
+  "docs/workflows/greenfield.md": {
+    "long_paragraphs": 2,
+    "words": 747
+  },
+  "docs/workflows/tool-map.md": {
+    "words": 1922
+  },
+  "docs/workflows/work-computer-setup.md": {
+    "long_paragraphs": 4,
+    "long_sentences": 1,
+    "words": 1726
+  }
+}

@@ -210,7 +210,7 @@ def plan_toolset(
             }
         if not definition.lifecycle_available:
             limitations.append(
-                f"{definition.kind}: AI-DLC {role} lifecycle adapter is unavailable; native tools do not enable tracked-work operations."
+                f"{definition.kind}: ai-dlc {role} lifecycle adapter is unavailable; native tools do not enable tracked-work operations."
             )
     return {"roles": roles, "providers": settings, "limitations": limitations}
 

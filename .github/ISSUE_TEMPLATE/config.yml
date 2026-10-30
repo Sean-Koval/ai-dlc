@@ -2,4 +2,4 @@ blank_issues_enabled: true
 contact_links:
   - name: Scope freeze (ADR 0001)
     url: https://github.com/Sean-Koval/ai-dlc/blob/main/docs/decisions/0001-refocus-ai-dlc.md
-    about: AI-DLC is feature-frozen. Check the in-scope list before requesting a feature; requests outside it are closed with a pointer, and bug reports in frozen areas are welcome.
+    about: ai-dlc is feature-frozen. Check the in-scope list before requesting a feature; requests outside it are closed with a pointer, and bug reports in frozen areas are welcome.

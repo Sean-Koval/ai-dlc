@@ -27,7 +27,7 @@ _CLOEXEC = getattr(os, "O_CLOEXEC", 0)
 
 
 def _invalid_namespace() -> ValueError:
-    return ValueError("AI-DLC project lock namespace must be private and symlink-free")
+    return ValueError("ai-dlc project lock namespace must be private and symlink-free")
 
 
 def _validate_directory(metadata: os.stat_result) -> None:
@@ -150,7 +150,7 @@ def _locked_project_file(key: str) -> Iterator[None]:
 
 @contextmanager
 def project_write_lock(root: Path) -> Iterator[None]:
-    """Serialize AI-DLC writes for one project, with same-thread reentrancy."""
+    """Serialize ai-dlc writes for one project, with same-thread reentrancy."""
     if os.name == "nt":
         from ai_dlc._windows_storage import guarded_project_identity, project_lock
 

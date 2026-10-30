@@ -1,9 +1,10 @@
 # Release publication
 
-This runbook publishes a hash-bound AI-DLC release and describes how a machine
-installs from it. Publishing is the maintainer's action: pushing a version tag.
-The workflow does the building, verification and upload; nothing is published
-from a laptop.
+Publish a hash-bound ai-dlc release by pushing a version tag, replay its
+verification, and install from the published assets.
+
+Publishing is the maintainer's action: pushing a version tag. The workflow does
+the building, verification and upload; nothing is published from a laptop.
 
 ## What a release contains
 
@@ -18,8 +19,8 @@ from a laptop.
 
 `release.sh` cannot live inside the wheel it hashes. Release-mode bootstrap keeps
 a copy beside the installed engine, and `ai-dlc project init` or `adopt` writes
-that copy into new projects as `bootstrap/release.sh`, so a generated project's
-own bootstrap and CI install the exact assets that generated it.
+that copy into new projects as `bootstrap/release.sh`. A generated project's own
+bootstrap and CI therefore install the exact assets that generated it.
 
 ## Publish
 
@@ -32,25 +33,25 @@ own bootstrap and CI install the exact assets that generated it.
 3. Tag the commit and push the tag:
 
    ```sh
-   git tag -a v0.4.0 -m "AI-DLC 0.4.0" <commit>
+   git tag -a v0.4.0 -m "ai-dlc 0.4.0" <commit>
    git push origin v0.4.0
    ```
 
 4. Watch the `Release` workflow. `package` refuses a tag whose version differs
-   from `pyproject.toml`, runs the required checks, builds, verifies the wheel
-   against the constraints and initializes a project with it, then writes `release.sh`
-   against `https://github.com/<owner>/<repo>/releases/download/<tag>`.
+   from `pyproject.toml`. It runs the required checks, builds, verifies the
+   wheel against the constraints and initializes a project with it, then writes
+   `release.sh` against `https://github.com/<owner>/<repo>/releases/download/<tag>`.
    `publish` creates the GitHub Release with exactly those files.
    `verify-published` then installs from the published assets on Linux x64,
-   Linux ARM64 and macOS, generates a python project with the released engine,
-   confirms the generated `bootstrap/release.sh` is byte-identical, bootstraps
-   that project in release mode and runs its required checks.
+   Linux ARM64 and macOS. It generates a python project with the released
+   engine, confirms the generated `bootstrap/release.sh` is byte-identical,
+   bootstraps that project in release mode and runs its required checks.
 5. If `verify-published` fails, inspect the exact failed step. A verification
    harness or transient download failure does not justify replacing verified
-   package bytes. Fix the harness and replay the existing release as below. If
+   package bytes; fix the harness and replay the existing release as below. If
    the artifacts themselves are defective, a maintainer must explicitly withdraw
-   the affected release and tag before repairing and publishing a replacement.
-   Consumers pin digests; never silently replace bytes under the same name.
+   the affected release and tag before publishing a replacement. Consumers pin
+   digests; never silently replace bytes under the same name.
 6. Record the outcome in [release verification](../release-verification.md):
    tag, commit, which workflow jobs passed on which runners, and which
    outstanding obligations the release satisfies or leaves open.
@@ -75,15 +76,15 @@ The selected tag enters quoted download arguments through `RELEASE_TAG`.
 The consumer seed uses local first-use setup so generated files can be created.
 The released engine generates a Python demo; its included manifest is compared
 byte for byte with the seed's manifest. The demo then runs its own release-mode
-bootstrap with local first-use setup, initializes and commits its own Git
-repository with repository-local fixture identity, then runs explicit
-`github-actions` required checks. This preserves the production CI freshness policy for initialized
-projects. `GITHUB_PATH` still carries the installed tools to subsequent steps.
+bootstrap, initializes and commits its own Git repository, and runs explicit
+`github-actions` required checks. This preserves the production CI freshness
+policy for initialized projects.
 
-Record both the original publication tag/commit/run and the replay workflow
-commit/run/platforms. A successful replay qualifies those unchanged published
-assets with the corrected harness; it does not turn the failed original run green
-or prove factory-clean, container, cloud-client, provider or human evaluation.
+Record both the original publication tag, commit and run and the replay
+workflow commit, run and platforms. A successful replay qualifies those
+unchanged published assets with the corrected harness. It does not turn the
+failed original run green or prove factory-clean, container, cloud-client,
+provider or human evaluation.
 
 ## Install from a release
 
@@ -101,8 +102,8 @@ sh scripts/bootstrap.sh
 ```
 
 Use `shasum -a 256 -c -` on macOS. The bootstrap downloads uv, a managed
-Python and mise at the pinned digests, installs the wheel with hashed
-constraints, and prints the two directories to add to `PATH`. From there
+Python and mise at the pinned digests and installs the wheel with hashed
+constraints. It then prints the two directories to add to `PATH`. From there
 `ai-dlc project init <path> --preset python` creates a project whose
 `bootstrap/release.sh` is included automatically.
 

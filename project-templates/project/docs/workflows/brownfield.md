@@ -1,6 +1,6 @@
 # Brownfield workflow
 
-Use this path when adopting AI-DLC into an existing repository or changing an
+Use this path when adopting ai-dlc into an existing repository or changing an
 existing product. Preserve application files and observed behavior while
 introducing workflow controls deliberately.
 
@@ -47,7 +47,7 @@ flowchart TD
    record `requires_spec = false` and its reviewed reason.
 8. With tracker and SCM configured, publish and start reviewed work, merge
    through SCM, and use `ai-dlc work finish <work-id>` after review. Otherwise,
-   use local checks and manual tracking without claiming AI-DLC remote
+   use local checks and manual tracking without claiming ai-dlc remote
    completion. In either path, protect the change with regression and
    acceptance tests.
 
@@ -106,5 +106,5 @@ staging area.
 
 Local work is done when required old and new behavior is verified and
 migrations and runbooks are current. With tracker and SCM configured, done
-additionally means the reviewed PR is merged and AI-DLC accepts every finish
+additionally means the reviewed PR is merged and ai-dlc accepts every finish
 gate.

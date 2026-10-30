@@ -48,7 +48,7 @@ was accepted.
   exercise HTTPS, SSH, SCP, file, and local classifications; the original granular
   cache-entry suggestions were not separately promoted to release blockers.
 - External package managers can leave partial side effects when reconciliation fails;
-  AI-DLC reports that boundary while preserving its own active lock and cache metadata.
+  ai-dlc reports that boundary while preserving its own active lock and cache metadata.
 - The Task 10 real-wheel audit found a legacy user-named profile still packaged by a
   directory-wide asset rule. A real-wheel regression failed first, the package rule was
   narrowed to the three approved public profile assets, and the rebuilt wheel passed.

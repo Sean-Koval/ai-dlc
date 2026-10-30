@@ -1,39 +1,47 @@
-# AI-DLC roadmap
+# ai-dlc roadmap
 
-The [AI-DLC Project](https://github.com/users/Sean-Koval/projects/2) and
+Know what ai-dlc does today, which three increments come next, and what is
+not planned.
+
+The [ai-dlc Project](https://github.com/users/Sean-Koval/projects/2) and
 [GitHub issues](https://github.com/Sean-Koval/ai-dlc/issues) own ticket priority
-and status. This page states the current outcome and the next increments;
-[product direction](product-direction.md) owns the durable product promise, and
-[release verification](release-verification.md) owns what a release must prove.
+and status. [Product direction](product-direction.md) owns the durable product
+promise, and [release verification](release-verification.md) owns what a
+release must prove.
 
 ## Current outcome
 
-AI-DLC is feature-frozen to three jobs ([ADR 0001](decisions/0001-refocus-ai-dlc.md),
-epic [#189](https://github.com/Sean-Koval/ai-dlc/issues/189)): it authors one optional
-workflow plugin for Claude Code and Codex, provisions developer machines from pinned
-profiles, and finishes reviewed work only against the merged revision and its CI
-receipts. The plugin ships at `plugins/ai-dlc-workflow/` and is published into a
-team harness for a with/without comparison
-([#191](https://github.com/Sean-Koval/ai-dlc/issues/191)–[#193](https://github.com/Sean-Koval/ai-dlc/issues/193));
-evaluation moved to flightdeck, and cloud sandboxes are rendered and run by hangar.
+- **Frozen to three jobs.** ai-dlc is feature-frozen ([ADR 0001](decisions/0001-refocus-ai-dlc.md),
+  epic [#189](https://github.com/Sean-Koval/ai-dlc/issues/189)). It authors the
+  workflow plugin, provisions machines from pinned profiles and finishes work only
+  against the merged revision's CI receipts.
+- **The plugin ships.** `plugins/ai-dlc-workflow/` is published into a team harness
+  for a with/without comparison
+  ([#191](https://github.com/Sean-Koval/ai-dlc/issues/191)–[#193](https://github.com/Sean-Koval/ai-dlc/issues/193)).
+- **Works today.** ai-dlc runs from a cloned installation on the work computer
+  and gives Claude Code, Codex and Antigravity one consistent development
+  workflow. Delivery runs through reviewed work records, OpenSpec changes, pull
+  requests and a gated `ai-dlc work finish`; release publication from a tag is
+  implemented.
+- **Default providers.** Personal projects use GitHub Issues with
+  repository-associated Projects; work repositories use Jira Cloud; Obsidian is
+  the private journal. hangar intake starts agent jobs from tickets, and ai-dlc
+  keeps its tracker adapters for the local lifecycle (see the
+  [tracker boundary](architecture.md#tracker-boundary-with-hangar)).
+- **Unsupported.** Plane is shipped but unsupported and unqualified; the
+  outstanding qualification list is in release verification.
+- **Moved or removed.** Evaluation moved to flightdeck, and hangar renders and runs
+  cloud sandboxes. The Linear adapter, `ai-dlc eval` and `ai-dlc scaffold` are removed.
 
 Installing the engine from this repository is distinct from adopting a work
-repository, which has its own tracker and independent local credentials. GitHub
-Issues with Projects is the default tracker and Jira Cloud is kept; Plane is shipped
-but unsupported, and Linear has been removed. Obsidian remains the private journal.
-Hangar intake starts agent jobs from tickets; AI-DLC keeps its tracker adapters for
-the local work lifecycle (see the
-[tracker boundary](architecture.md#tracker-boundary-with-hangar)). Delivery runs
-through reviewed work records, OpenSpec changes, pull requests and a gated
-`ai-dlc work finish`. The outstanding qualification list is in release verification.
+repository, which has its own tracker and independent local credentials.
 
-The September team-flow improvements are delivered and closed:
+Three September team-flow improvements are closed:
 [#167](https://github.com/Sean-Koval/ai-dlc/issues/167) (guidance for selected
 project features), [#168](https://github.com/Sean-Koval/ai-dlc/issues/168) (concise
 team skill discovery) and [#169](https://github.com/Sean-Koval/ai-dlc/issues/169)
 (focused checks and meaningful starter verification). Their effect on time, tokens
-and failures caught has not been measured; a with/without comparison of the
-workflow plugin is flightdeck's.
+and failures caught is unmeasured; flightdeck owns the with/without comparison.
 
 ## Next three increments
 
@@ -52,7 +60,7 @@ before adding surface area.
    until they are triaged.
 2. **A shorter delivery path.** Count the manual commands between a tracker item
    and `work finish` on the adopted repositories, then remove or fold steps until
-   the count is halved. The [delivery path baseline](verification/delivery-path-baseline.md)
+   the count is halved. The [delivery path baseline](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/delivery-path-baseline.md)
    records the starting counts, candidate reductions and the delivered per-work,
    content-bound documentation evidence (#146). Re-record only new or stale
    targets; unchanged decisions survive unrelated edits and target-branch movement.
@@ -60,7 +68,7 @@ before adding surface area.
    the baseline's proposal for one pre-merge command.
 3. **Evaluation moved to flightdeck.** The runner, grader, report and skill
    evaluation now live in [flightdeck](https://github.com/Sean-Koval/flightdeck)
-   under ADR 0001; AI-DLC's copy was removed in
+   under ADR 0001; ai-dlc's copy was removed in
    [#195](https://github.com/Sean-Koval/ai-dlc/issues/195) and its last version is
    tag `eval-handoff-2026-10`. The paired comparison planned in
    [#138](https://github.com/Sean-Koval/ai-dlc/issues/138)–#140 happens there.

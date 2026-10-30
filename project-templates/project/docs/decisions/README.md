@@ -14,7 +14,7 @@ Options considered, Decision, Consequences and Links.
 ## Frontmatter
 
 Each record starts with knowledge-note frontmatter, the same schema learnings use
-(`knowledge-note.schema.json` in the AI-DLC contracts):
+(`knowledge-note.schema.json` in the ai-dlc contracts):
 
 | Field | Meaning |
 | --- | --- |
@@ -48,7 +48,7 @@ A record may carry `checks:`, trace predicates that flightdeck evaluates every
 night against recorded agent runs. Each entry uses flightdeck's behavior-spec
 grammar (`flightdeck.spec/v1`): an `id` unique within the record, an `assert` with
 one operator and optional `scope` (`turn`, `job` or `session`), `harness`,
-`applies_when` and `severity` (`warn` or `fail`). AI-DLC checks only that shape;
+`applies_when` and `severity` (`warn` or `fail`). ai-dlc checks only that shape;
 it never evaluates a predicate.
 
 ```yaml

@@ -13,7 +13,7 @@ require a second PRD. Apply the configured specification provider's instructions
 
 Use `docs/templates/delivery-slice.md` and the examples at
 `docs/examples/delivery-slices/localized-export.md` and
-`docs/examples/delivery-slices/compatibility-rehearsal.md` when present. AI-DLC
+`docs/examples/delivery-slices/compatibility-rehearsal.md` when present. ai-dlc
 source copies live under `agents/templates/` and `agents/examples/`. Without
 these assets, produce the following fields directly for each slice:
 

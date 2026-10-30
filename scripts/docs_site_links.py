@@ -1,7 +1,7 @@
 """Keep docs-site links resolvable: links that leave the built site become GitHub URLs.
 
 The documentation site builds ``docs/`` without ``mkdocs.yml``'s ``exclude_docs``
-(``archive/``, ``verification/*/``, ``catalog.toml``). A relative Markdown link from
+(``archive/``, ``verification/``, ``reviews/``, ``catalog.toml``). A relative Markdown link from
 a built page to a file outside that set (``../src/...``, ``../../AGENTS.md``, an
 archived note, a directory without an index) renders as a 404 on the site while it
 works on GitHub. This script rewrites such links to
@@ -26,7 +26,7 @@ DOCS = "docs"
 GITHUB = "https://github.com/Sean-Koval/ai-dlc"
 BRANCH = "main"
 # Mirrors mkdocs.yml exclude_docs; tests keep the two in step.
-EXCLUDED = ("archive/*", "verification/*/*", "catalog.toml")
+EXCLUDED = ("archive/*", "verification/*", "reviews/*", "catalog.toml")
 LINK = re.compile(
     r"(?<!!)\[(?P<text>[^\]\n]*)\]\((?P<target><[^>\n]+>|[^)\s]+)(?P<title>\s+\"[^\"\n]*\")?\)"
 )

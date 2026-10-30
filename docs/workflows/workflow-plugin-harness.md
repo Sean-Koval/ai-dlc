@@ -5,11 +5,11 @@ hangar `harness.lock` that pins them; the
 [example team harness](https://github.com/Sean-Koval/team-harness) is a copyable
 one, and its
 [ai-dlc workflow plugin section](https://github.com/Sean-Koval/team-harness#the-ai-dlc-workflow-plugin)
-shows the result. AI-DLC publishes the [workflow plugin](workflow-plugin.md) into
+shows the result. ai-dlc publishes the [workflow plugin](workflow-plugin.md) into
 it; the harness repository decides where the plugin is on. These steps use the
 example's names (`harnesses/team-default`, marketplace `team-harness`).
 
-1. **Publish, dry run first.** From a prepared AI-DLC checkout
+1. **Publish, dry run first.** From a prepared ai-dlc checkout
     (`sh scripts/bootstrap.sh --source`), with the harness repository checked out
     beside it:
 
@@ -51,10 +51,10 @@ example's names (`harnesses/team-default`, marketplace `team-harness`).
     is: only a promotion after flightdeck's with/without comparison moves it.
 
 Every file the script publishes, the plugin README included, is in the plugin's
-`plugin.lock.json` and in hangar's plugin digest, so any change to
-`plugins/ai-dlc-workflow/` gives the harness a new candidate when it is republished.
+`plugin.lock.json` and in hangar's plugin digest. Any change to
+`plugins/ai-dlc-workflow/` therefore gives the harness a new candidate when it is republished.
 
-Hangar pins and mounts `plugin:` components since
+hangar pins and mounts `plugin:` components since
 [hangar#221](https://github.com/Sean-Koval/hangar/issues/221); consuming this plugin
 from the team harness repository is tracked in
 [hangar#139](https://github.com/Sean-Koval/hangar/issues/139).

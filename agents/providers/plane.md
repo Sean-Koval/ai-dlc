@@ -1,6 +1,6 @@
 # Plane tracker
 
-Use the shared AI-DLC work lifecycle with a configured `kind = "plane"` tracker.
+Use the shared ai-dlc work lifecycle with a configured `kind = "plane"` tracker.
 Plane is unsupported and unqualified; other trackers do not require a Plane server
 or token. Do not recommend it for new work.
 

@@ -4,7 +4,7 @@
   "skills": {
     "day-end": {
       "path": "skills/day-end/SKILL.md",
-      "sha256": "8f59e33af0c6c6769911f8f3d6267aec1f50bcfc6c9d4e8b18d795f609909f81"
+      "sha256": "612e5c51963bf3fe35cd8c216116746f1b2e9a59c6c23a1021f6a5e2925f9a17"
     },
     "day-start": {
       "path": "skills/day-start/SKILL.md",
@@ -12,19 +12,19 @@
     },
     "design-brief": {
       "path": "skills/design-brief/SKILL.md",
-      "sha256": "5b9cc5c5d40378b273369c62b51b4ba10475a65c0dd91d799cd29df2a7c8ec58"
+      "sha256": "e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5"
     },
     "design-evaluate": {
       "path": "skills/design-evaluate/SKILL.md",
-      "sha256": "a7e3f68082ff474fd09adefb623a20bc34a2f3f83c6e97055a55008f4681d9af"
+      "sha256": "d6892ed5e426f8bbf0df4bba1bff09bbc602e2136d21a9369957eb47dbdaa26a"
     },
     "discovery": {
       "path": "skills/discovery/SKILL.md",
-      "sha256": "74d0a76012649f919770e37fa464d436a0ce8c7501ec011182a29d4ae14d2904"
+      "sha256": "b23c85e52d83f3e4a819f410c88b7de074c65abf88ef82a531047633da38e319"
     },
     "document-organize": {
       "path": "skills/document-organize/SKILL.md",
-      "sha256": "446d1e9023f9c118e69966b2eced0460c702b79b828c0559f44b6ba95db018c6"
+      "sha256": "85353fd4bf2dc1f2ba4f3f7b6896093f38cc4b09d8ed2dacf950b10e568c7ead"
     },
     "document-review": {
       "path": "skills/document-review/SKILL.md",
@@ -32,7 +32,7 @@
     },
     "handoff": {
       "path": "skills/handoff/SKILL.md",
-      "sha256": "63c564874228d8e249fde83cb3bbf2cedd73a2fc24a0bfbab91b99003d672127"
+      "sha256": "6532b976c9c1a76e48b7ac46ff80d9ab510917d90e73274363af8a649f83a538"
     },
     "needs-spec": {
       "path": "skills/needs-spec/SKILL.md",
@@ -40,7 +40,7 @@
     },
     "prd-draft": {
       "path": "skills/prd-draft/SKILL.md",
-      "sha256": "e6d457ee65f4d7dd184bef4fc8285253951098484fba9bb3cedbe1512729dc0e"
+      "sha256": "69df873e0ac8c258596697e3efac2b2745bf51400b80a4cde14f31e0c165dc51"
     },
     "review-inbox": {
       "path": "skills/review-inbox/SKILL.md",
@@ -48,7 +48,7 @@
     },
     "spec-from-prd": {
       "path": "skills/spec-from-prd/SKILL.md",
-      "sha256": "f2da0714b155584db2736ed71c9eaeb132204af8a94af020124ded9342fe9fce"
+      "sha256": "b12dac8c0dc495136bc0d2009e1d6077a8f9b4e63db3deb339beb6bce2e36efe"
     }
   },
   "version": "0.4.0"

@@ -1,5 +1,5 @@
-site_name: AI-DLC
-site_description: One pinned machine profile, one workflow for people and agents, and a finish that needs merged evidence.
+site_name: ai-dlc
+site_description: One setup, one workflow and one evidence-gated finish for people and coding agents.
 site_url: https://sean-koval.github.io/ai-dlc/
 repo_url: https://github.com/Sean-Koval/ai-dlc
 repo_name: Sean-Koval/ai-dlc
@@ -7,6 +7,7 @@ edit_uri: edit/main/docs/
 
 theme:
   name: material
+  custom_dir: overrides   # overrides/main.html adds the Airframe suite strip (vendored partial)
   font: false
   logo: assets/brand/mark.svg
   favicon: assets/brand/favicon.svg
@@ -34,6 +35,8 @@ extra_css:
   - stylesheets/product.css
 
 extra:
+  airframe:
+    product: ai-dlc   # the current item in the suite strip
   social:
     - icon: material/factory
       link: https://sean-koval.github.io/agent-factory/
@@ -55,56 +58,55 @@ markdown_extensions:
   - pymdownx.details
   - pymdownx.snippets
 
-# docs/archive/ is historical material, not current guidance. Verification
-# subdirectories hold raw evidence (JSON receipts, evaluation transcripts) that
-# the verification records link to; they stay in the repository, not the site.
+# docs/archive/ is historical material, not current guidance. Dated verification
+# records and reviews (and the raw evidence their subdirectories hold) stay in the
+# repository for the release-verification summary to link to; the site leaves them
+# out so its nav lists the pages a reader has a task for.
 exclude_docs: |
   archive/
-  verification/*/
+  verification/
+  reviews/
   catalog.toml
 
-# Curated from the documentation map (docs/design/documentation-map.md). Documents stay where
-# docs/catalog.toml records them. Verification records under docs/verification/ are built but
-# not listed here; release-verification.md links them from one table.
+# One question per tab. Documents stay where docs/catalog.toml records them.
 nav:
   - Home: index.md
-  - Get started:
+  - Start:
       - Get started: workflows/get-started.md
+      - Configure a project: workflows/configure.md
+      - Workflow plugin: workflows/workflow-plugin.md
+      - Pin the plugin in a team harness: workflows/workflow-plugin-harness.md
+      - Example workflows: workflows/examples.md
+      - How the tools fit together: workflows/how-it-fits.md
+      - Greenfield workflow: workflows/greenfield.md
+      - Brownfield workflow: workflows/brownfield.md
+      - Behavior-check rehearsal: workflows/behavior-check.md
       - Work-computer setup: workflows/work-computer-setup.md
-      - Machine enrollment: runbooks/machine-enrollment.md
-      - GitHub ticket setup: github-ticket-setup.md
-      - Jira Cloud setup: runbooks/jira-cloud-setup.md
-  - Workflow plugin:
-      - Overview: workflows/workflow-plugin.md
-      - Pin it in a team harness: workflows/workflow-plugin-harness.md
   - Guides:
       - Development workflow: development-workflow.md
       - Workflow tool map: workflows/tool-map.md
+      - Design to implementation: workflows/design-to-implementation.md
+      - GitHub ticket setup: github-ticket-setup.md
+      - Machine enrollment: runbooks/machine-enrollment.md
+      - Release publication: runbooks/release-publication.md
+      - FDE documents: runbooks/fde-documents.md
+      - Document workspace qualification: runbooks/document-workspace-qualification.md
+      - Jira Cloud setup: runbooks/jira-cloud-setup.md
   - Reference:
       - Architecture: architecture.md
+      - Terms: design/terms.md
+      - Release verification: release-verification.md
       - Migration: migration.md
       - Changelog: https://github.com/Sean-Koval/ai-dlc/blob/main/CHANGELOG.md
-      - Release verification: release-verification.md
-      - Release publication: runbooks/release-publication.md
-      - Documentation map: design/documentation-map.md
-  - Design:
-      - "ADR 0001: Refocus AI-DLC": decisions/0001-refocus-ai-dlc.md
-      - Product direction: product-direction.md
       - Roadmap: roadmap.md
+  - Decisions:
+      - "ADR 0001: Refocus ai-dlc": decisions/0001-refocus-ai-dlc.md
+      - Product direction: product-direction.md
+      - Framework delivery: design/framework-delivery.md
+      - Project documentation: design/project-documentation.md
       - Local and shared knowledge: design/local-and-shared-knowledge.md
       - Native tool composition: design/native-tool-composition.md
       - Provider connections: design/provider-connections.md
-      - Jira Cloud: design/jira-cloud.md
-      - Framework delivery (September 2026 plan): design/framework-delivery.md
-      - Provider toolsets PRD (historical): design/provider-toolsets-prd.md
-      - "Review: portable profile enrollment": reviews/2026-09-03-portable-profile-enrollment.md
-  - Frozen (bug fixes only):
-      - Greenfield workflow: workflows/greenfield.md
-      - Brownfield workflow: workflows/brownfield.md
-      - Design to implementation: workflows/design-to-implementation.md
+      - Provider toolsets PRD: design/provider-toolsets-prd.md
       - Design PM: design/design-pm.md
-      - FDE documents: runbooks/fde-documents.md
-      - Plane new work: design/plane-new-work.md
-      - Plane setup: runbooks/plane-setup.md
-      - Project documentation: design/project-documentation.md
-      - Document workspace qualification: runbooks/document-workspace-qualification.md
+      - Jira Cloud: design/jira-cloud.md

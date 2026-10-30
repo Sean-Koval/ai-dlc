@@ -28,7 +28,7 @@ Connection discovery SHALL offer named authorized resources, and apply SHALL con
 - **THEN** the result reports unsupported guided setup without invalidating otherwise supported provider operations or inventing IDs
 
 ### Requirement: PT-03 Native harness connections
-AI-DLC SHALL reuse upstream native connections and existing owned rendering to expose selected tools, preserving authored configuration and keeping credentials local.
+ai-dlc SHALL reuse upstream native connections and existing owned rendering to expose selected tools, preserving authored configuration and keeping credentials local.
 
 #### Scenario: Two selected roles share a native connection
 - **WHEN** two configured tool roles use identical server alias, account and endpoint bindings
@@ -39,7 +39,7 @@ AI-DLC SHALL reuse upstream native connections and existing owned rendering to e
 - **THEN** each project retains its own connection identity and no credentials or tickets are redirected across projects
 
 ### Requirement: PT-04 Honest capability readiness
-Readiness SHALL distinguish native harness availability, AI-DLC lifecycle adapter availability, required configuration, local credential presence, and separately observed live qualification.
+Readiness SHALL distinguish native harness availability, ai-dlc lifecycle adapter availability, required configuration, local credential presence, and separately observed live qualification.
 
 #### Scenario: A connector works but a lifecycle adapter is absent
 - **WHEN** native tracker tools are available but the selected trusted lifecycle definition explicitly reports unavailable

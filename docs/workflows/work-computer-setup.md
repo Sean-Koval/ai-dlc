@@ -1,9 +1,11 @@
 # Work-computer setup
 
-AI-DLC installs the engine and prepares individual repositories. Cloning this
-repository gives you the engine source; its own GitHub Project and account
-configuration belong to AI-DLC development. Adopt each work repository with its
-own project policy and local credentials.
+Install ai-dlc on a work computer, adopt a work repository with its own policy
+and credentials, and bind your private vault through machine enrollment.
+
+Cloning the ai-dlc repository gives you the engine source; its own GitHub
+Project and account configuration belong to ai-dlc development, not to your
+work repository.
 
 Native Windows consumer installation is unsupported in this revision. The open
 installer and PowerShell work is tracked by
@@ -15,12 +17,16 @@ are separate choices, not mandatory or qualified native Windows instructions.
 ## Install the engine
 
 The published v0.4.0 assets predate `project onboard`, despite the unchanged
-package version. Clone and check out the team's reviewed AI-DLC commit or ref,
-then run `sh scripts/bootstrap.sh --source` from that checkout. Follow its printed
-PATH instructions. If the global alias names another checkout, use the exact
-checkout-specific executable printed by bootstrap. Confirm that executable with
-`/printed/path/ai-dlc project onboard --help`; a version string alone cannot
-establish the feature. Current release evidence remains in
+package version, so install from source:
+
+1. Clone and check out the team's reviewed ai-dlc commit or ref.
+2. Run `sh scripts/bootstrap.sh --source` from that checkout and follow its
+   printed PATH instructions. If the global alias names another checkout, use
+   the exact checkout-specific executable that bootstrap printed.
+3. Confirm that executable with `/printed/path/ai-dlc project onboard --help`;
+   a version string alone cannot establish the feature.
+
+Current release evidence remains in
 [release verification](../release-verification.md).
 
 ## Prepare a work repository
@@ -35,12 +41,11 @@ WORK_ROOT=/absolute/path/to/work-repository
   --preset generic --agent-client codex
 ```
 
-This command only reads local routing metadata and returns an ordered schema-1
-plan. It does not execute actions, write configuration, fetch sources, populate
-caches, or establish client qualification. Exit 0 means that the listed actions
-are available. Review every action's exact argument array, effects, dependencies,
-and review flag before running it. Existing enrollment and adoption previews have
-their own bounded staging effects, and their apply operations remain separate.
+This command only reads local routing metadata and returns an ordered plan. It
+does not execute actions, write configuration, fetch sources or establish
+client qualification. Exit 0 means that the listed actions are available.
+Review every action's exact argument array, effects, dependencies and review
+flag before running it.
 
 For a fresh target, run the recommended adoption preview with only its explicit
 client capability. No tracker, knowledge provider, vault, account, or engine
@@ -53,33 +58,32 @@ repository setting is inherited:
 ```
 
 An explicit `project onboard --preset` selection accepts `generic` or `python`.
-The underlying `project adopt` command also accepts `node` and `rust`; use that
-reviewed preset directly for either target's adoption, then omit preset and client
-from subsequent onboarding plans so the target configuration remains authoritative.
+The underlying `project adopt` command also accepts `node` and `rust`. Use that
+reviewed preset directly for either target's adoption, then omit preset and
+client from later onboarding plans so the target configuration stays
+authoritative.
+
 Existing configured repositories keep their `ai-dlc.toml` choices; onboarding
-reports a conflict when an explicit client or preset disagrees. They
-use their reviewed configuration and `project sync` workflow instead of adoption.
-Enrollment and machine configuration are optional for a self-contained project.
-When selected, source, ref, profile ID, and machine ID must all be explicit; follow
-the separate [machine enrollment](../runbooks/machine-enrollment.md) preview/apply
-route.
+reports a conflict when an explicit client or preset disagrees. They use their
+reviewed configuration and `project sync` workflow instead of adoption.
+Enrollment is optional for a self-contained project. When selected, source,
+ref, profile ID and machine ID must all be explicit; follow the separate
+[machine enrollment](../runbooks/machine-enrollment.md) preview/apply route.
 
-After adoption, preserve the target's existing checks and add at least one required
-check for its own acceptance behavior. Rerun onboarding, follow its available setup,
-render, and readiness operations in order, commit the target changes, then run the
-target's required checks. Check names alone do not prove quality or native client
-recognition. A source-generated target has no published release manifest, so use
-the reviewed source-installed executable for its setup and checks rather than
-claiming its release-mode bootstrap works.
+After adoption, preserve the target's existing checks and add at least one
+required check for its own acceptance behavior. Then:
 
-```sh
-"$AI_DLC" project onboard --root "$WORK_ROOT"
-"$AI_DLC" project setup --root "$WORK_ROOT"
-"$AI_DLC" agents render --root "$WORK_ROOT"
-# Review the render preview, then repeat with --apply.
-"$AI_DLC" project readiness --root "$WORK_ROOT"
-"$AI_DLC" project check --root "$WORK_ROOT" --required
-```
+1. Rerun onboarding: `"$AI_DLC" project onboard --root "$WORK_ROOT"`
+2. Run setup: `"$AI_DLC" project setup --root "$WORK_ROOT"`
+3. Preview the render, then repeat it with `--apply`:
+   `"$AI_DLC" agents render --root "$WORK_ROOT"`
+4. Check readiness: `"$AI_DLC" project readiness --root "$WORK_ROOT"`
+5. Commit the target changes and run its required checks:
+   `"$AI_DLC" project check --root "$WORK_ROOT" --required`
+
+Check names alone do not prove quality or native client recognition. A
+source-generated target has no published release manifest, so use the reviewed
+source-installed executable for its setup and checks.
 
 ## Compare setup with a teammate
 
@@ -87,8 +91,8 @@ After each teammate selects their own project and enrolls any intended profile,
 use the [environment report workflow](../runbooks/machine-enrollment.md#compare-selected-environments)
 to compare exported setup facts. Default export does not execute tools; optional
 version probes require an explicit flag. Keep credentials, account selection and
-native sign-in independent on each machine. A credential being present says
-nothing about whether the intended account authenticated successfully.
+native sign-in independent on each machine. A present credential says nothing
+about whether the intended account authenticated.
 
 Resolve known selection, runtime or managed-guidance drift through the existing
 setup/enrollment/render previews. A report with unknown provenance is useful for
@@ -104,16 +108,15 @@ the default consumer path.
 
 Omitting tracker selection preserves the legacy scaffold default. Explicitly choose
 `--tracker github-issues` for this delivery model, for personal or work repositories.
-Its guided connection proposes a repository-associated Project. Run
-`ai-dlc provider connect github-issues`
-to preview it; `--issues-only` is an option of that connection command. Follow the
-[GitHub saved-plan setup instructions](../github-ticket-setup.md) for exact
-preview, saved-plan apply, permissions and recovery steps. Keep repository, account
-and board mappings specific to the target project; do not copy AI-DLC's own IDs.
+Its guided connection proposes a repository-associated Project; run
+`ai-dlc provider connect github-issues` to preview it (`--issues-only` opts out
+of the Project). Follow the [GitHub setup](../github-ticket-setup.md) for the
+preview, saved-plan apply, permissions and recovery steps. Keep repository,
+account and board mappings specific to the target project.
 
 Jira can own business outcomes while GitHub owns the delivery issues. Use manual
 `artifacts.jira_parent` URL references and reciprocal links as described in
-[GitHub delivery with Jira outcomes](../development-workflow.md#github-delivery-with-jira-outcomes).
+[GitHub delivery with Jira outcomes](../design/jira-cloud.md#github-delivery-with-jira-outcomes).
 Jira intake and progress synchronization are planned, not enabled by the personal
 profile. This arrangement does not require selecting or connecting `jira-cloud`.
 
@@ -121,10 +124,9 @@ If a repository should use **Jira as its delivery tracker**, explicitly substitu
 `--tracker jira-cloud` in the adoption command. Follow the
 [Jira Cloud setup](../runbooks/jira-cloud-setup.md) to select the actual site,
 account, project, issue type and workflow through reviewed discovery. This is an
-alternative single-tracker lifecycle, not Jira/GitHub synchronization. Actual
-company permissions and workflow compatibility still need verification on the
-work computer. Do not publish work to an incomplete scaffold merely because its
-tracker appears in a preview.
+alternative single-tracker lifecycle, not Jira/GitHub synchronization. Company
+permissions and workflow compatibility still need verification on the work
+computer.
 
 The repeated `--agent-client` options persist this shared selection during
 `project adopt` or `project init`. Existing configured repositories can review the
@@ -139,9 +141,10 @@ Keep the rest of its selected roles and repository-specific settings. For review
 role/account connections, follow [native connection setup](../design/native-tool-composition.md):
 preview explicit bindings, save and apply the exact configuration plan, then
 render the native files separately. Identical shared connections deduplicate;
-conflicting account or transport identities refuse. The existing manual format
-also remains supported. To expose AI-DLC's local MCP service manually, add this
-definition if it is not already configured:
+conflicting account or transport identities refuse.
+
+To expose ai-dlc's local MCP service manually, add this definition if it is not
+already configured:
 
 ```toml
 [[agents.servers]]
@@ -152,7 +155,7 @@ args = ["mcp", "serve"]
 
 The client must launch it in the target repository with the prepared executable
 on PATH. OAuth-capable remote tools use an explicit `url` server definition;
-login takes place in each native client. AI-DLC lifecycle transport credentials
+login takes place in each native client. ai-dlc lifecycle transport credentials
 and native MCP OAuth are separate connections. Configure each for the intended
 account; neither is evidence of the other's access.
 
@@ -170,8 +173,8 @@ advertised ref. This does not install tools or authenticate accounts.
 
 If you already have a reviewed portable profile, use its source, `profile_id` and
 ref. For a first local-only setup, create a new Git repository **outside the work
-repository** with `git init /path/to/reviewed-profile`, then add this minimal
-`ai-dlc-profile.toml` there:
+repository** with `git init /path/to/reviewed-profile`. Add this minimal
+`ai-dlc-profile.toml` there.
 
 ```toml
 schema = 4
@@ -186,13 +189,12 @@ git -C /path/to/reviewed-profile commit -m "chore: declare work profile"
 git -C /path/to/reviewed-profile tag reviewed-v1
 ```
 
-This minimal profile supplies no tracker/account/client override. A local source
-is reported `portable=false`; use an approved accessible Git source when you need
-the same profile on another machine. Do not copy credentials or vault contents into
-that profile repository.
+This minimal profile supplies no tracker, account or client override. A local
+source is reported `portable=false`; use an approved accessible Git source when
+you need the same profile on another machine. Do not copy credentials or vault
+contents into that profile repository.
 
-Replace `/path/to/reviewed-profile` with that actual Git source. From the intended
-work repository, run:
+From the intended work repository, preview the enrollment, then apply it:
 
 ```sh
 ai-dlc machine enroll /path/to/reviewed-profile \
@@ -221,13 +223,13 @@ ai-dlc project readiness --root .
 
 The first result should show `sources.paths.vault = "machine"`; the second should
 report that Obsidian's directory exists. Other missing requirements still block
-readiness. Project tracker/client choices remain authoritative. No `--machine`
-option is needed on project readiness after enrollment, and no native login,
-vault write-access test or service qualification follows from directory presence.
+readiness, and project tracker and client choices remain authoritative. No
+`--machine` option is needed after enrollment. Directory presence proves no
+native login, vault write access or service qualification.
 
 The default GitHub SCM role separately requires `git` and `gh` on PATH. Add or
-update the existing shared SCM table, replacing `OWNER/REPO` with the actual target
-code repository (not AI-DLC's engine repository or the Jira project):
+update the shared SCM table. Replace `OWNER/REPO` with the actual target code
+repository, not ai-dlc's engine repository or the Jira project.
 
 ```toml
 [scm]
@@ -235,12 +237,11 @@ repository = "OWNER/REPO"
 ```
 
 Preserve any existing SCM workflow, target branch and receipt settings. A missing
-CLI, missing/malformed repository configuration, and an unauthenticated account
-are different conditions. Readiness checks the first two offline; use the approved
-local `gh` authentication for the intended account separately. Credentials stay in
-that local mechanism, never in this table. Offline readiness does not verify
-account access, PR merge or exact merged-CI evidence. The `none` deployment selection
-is explicitly inactive and requires no deployment tool or service qualification.
+CLI, a missing or malformed repository setting, and an unauthenticated account
+are different conditions. Readiness checks the first two offline; authenticate
+`gh` for the intended account separately, and keep credentials in that local
+mechanism, never in this table. The `none` deployment selection is inactive and
+needs no deployment tool.
 
 ## Recognize the project in each client
 
@@ -249,14 +250,15 @@ repository, review its project MCP prompt and use `/mcp` to inspect/authenticate
 selected servers. Remote definitions include Claude's required HTTP type.
 See [Claude MCP documentation](https://code.claude.com/docs/en/mcp).
 
-Antigravity's current documented workspace contract uses `.agents/skills`,
+Antigravity's documented workspace contract uses `.agents/skills`,
 `.agents/rules` and `.agents/mcp_config.json`; remote entries use `serverUrl`.
 Open the project rule in the native rules UI and activate it as **Always On**.
 Inspect skills and the MCP manager, then authenticate selected remote servers.
+
 Native metadata outside the managed rule section is preserved on regeneration;
-keep the managed guidance body intact.
-The renderer supplies files; it does not fabricate a rule activation setting or
-claim the client has loaded them. See [skills](https://www.antigravity.google/docs/skills),
+keep the managed guidance body intact. The renderer supplies files; it does not
+set rule activation or claim the client has loaded them. See
+[skills](https://www.antigravity.google/docs/skills),
 [rules](https://www.antigravity.google/docs/rules-workflows) and
 [MCP](https://www.antigravity.google/docs/mcp).
 
@@ -269,16 +271,17 @@ rendering and new hook support are not implemented by this project-only slice.
 
 ## Record an actual fresh-session check
 
-Record OS/architecture, exact AI-DLC revision and installed client edition/version.
-Start a new session in a disposable adopted repository and verify that the agent
-can identify its selected tracker/spec provider, read its shared policy, find a
-shipped skill and list the intended MCP service's tools. First inspect harmless
-context/status; ticket publication or transitions require their own reviewed work
+Record OS and architecture, the exact ai-dlc revision and the installed client
+version. Start a new session in a disposable adopted repository. Verify that the
+agent can identify its selected tracker and spec provider, read its shared
+policy, find a shipped skill and list the intended MCP service's tools.
+
+Inspect harmless context first; ticket publication needs its own reviewed work
 and destination. Confirm another project's account or tracker is not substituted.
 
 Capture native recognition, OAuth status and observed tool results separately
 from offline rendering/check results. An absent or failed native check stays
-unverified. Unsupported required hooks refuse rendering; AI-DLC's actual workflow
+unverified. Unsupported required hooks refuse rendering; ai-dlc's actual workflow
 service still enforces completion gates independently of native hook support.
 
 Keep Obsidian as the selected private notes/knowledge location with the machine's
@@ -288,12 +291,11 @@ separate and deferred; this setup does not copy the vault or team spaces.
 ## Toolset choices and local notes
 
 Scaffold provider choices come from trusted definitions, independently of the
-language preset. Jira Cloud is selectable in this integrated candidate;
-scaffolding alone supplies no account identity or credentials. Use its explicit
-connection setup for the intended work site and project. Plane is an optional implemented lifecycle adapter with explicit deployment,
-account, workspace/project and state configuration. Follow the
-[Plane setup runbook](../runbooks/plane-setup.md); no installed deployment is
-qualified by the adapter fixtures. Plane is not a prerequisite for GitHub or Jira projects. Selective Confluence work remains deferred.
+language preset. Jira Cloud is selectable; scaffolding alone supplies no account
+identity or credentials, so use its explicit connection setup for the intended
+work site and project. Plane is an unsupported adapter with its own
+[setup runbook](../runbooks/plane-setup.md) and is not a prerequisite for
+GitHub or Jira projects. Selective Confluence work remains deferred.
 
 Copier answers retain selected clients and tracker configuration across updates.
 Omitted options select the GitHub Issues tracker and Claude Code/Codex clients;

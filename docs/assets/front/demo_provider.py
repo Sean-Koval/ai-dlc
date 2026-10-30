@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""A local stand-in for GitHub (tracker and SCM) used only to record the front-page demo.
+"""A local stand-in for GitHub (tracker, SCM and CI) used only to record the front-page demo.
 
-It speaks AI-DLC's executable provider contract (one JSON request on stdin, one JSON
+It speaks ai-dlc's executable provider contract (one JSON request on stdin, one JSON
 response on stdout; contracts/README.md) and keeps its state in ``demo-github.json``
-next to itself. ``merged`` reports the demo repository's current HEAD as the merge
-commit, and ``ci`` returns the receipt that ``ai-dlc project check --required`` wrote
-at that commit, so the finish gates evaluate real local evidence. Nothing here talks
-to a network.
+next to itself. ``merged`` answers from the demo repository's Git history: it refuses
+while the pull request's branch is not in ``main``, and reports ``main`` as the merge
+commit once it is. ``ci`` plays GitHub Actions: it runs ``ai-dlc project check
+--required`` at that commit and returns the receipt it wrote, so the finish gates
+evaluate real local evidence. Nothing here talks to a network.
 """
 
 import json
@@ -26,10 +27,8 @@ def save(state: dict) -> None:
     STATE.write_text(json.dumps(state, indent=2, sort_keys=True) + "\n")
 
 
-def head() -> str:
-    return subprocess.run(
-        ["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True
-    ).stdout.strip()
+def git(*args: str) -> subprocess.CompletedProcess:
+    return subprocess.run(["git", *args], capture_output=True, text=True, check=False)
 
 
 def main() -> int:
@@ -73,15 +72,26 @@ def main() -> int:
         result = {"url": f"{REPO}/pull/{number}", "number": number}
     elif op == "merged":
         number = str(payload["reference"]).rsplit("/", 1)[-1]
+        if git("merge-base", "--is-ancestor", state["pulls"][number]["head"], "main").returncode:
+            print(f"PR #{number} is not merged into main", file=sys.stderr)
+            return 1
         result = {
-            "sha": head(),
+            "sha": git("rev-parse", "main").stdout.strip(),
             "pr": {"number": int(number), "merged": True, "html_url": f"{REPO}/pull/{number}"},
         }
     elif op == "ci":
-        receipt = json.loads(Path(".ai-dlc/local/receipt.json").read_text())
-        if receipt.get("commit") != payload["sha"]:
-            print("no receipt for that commit", file=sys.stderr)
+        # CI stand-in: the required checks run at the merge commit and write the receipt.
+        receipt_path = Path(".ai-dlc/local/receipt.json")
+        run = subprocess.run(
+            ["ai-dlc", "project", "check", "--required", "--receipt", str(receipt_path)],
+            capture_output=True, text=True, check=False,
+        )
+        receipt = json.loads(receipt_path.read_text()) if receipt_path.exists() else {}
+        if run.returncode or receipt.get("commit") != payload["sha"]:
+            print(f"no passing CI run for {payload['sha'][:12]}", file=sys.stderr)
             return 1
+        for outcome in receipt["outcomes"]:  # whole seconds, so the recording is reproducible
+            outcome["duration_seconds"] = round(outcome["duration_seconds"])
         result = {"sha": payload["sha"], "run_id": 1001, "receipt": receipt}
     else:
         print(f"unsupported operation {op}", file=sys.stderr)

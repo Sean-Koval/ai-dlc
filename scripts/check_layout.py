@@ -1,4 +1,4 @@
-"""Check AI-DLC's own layout; does not impose this source tree on adopted projects."""
+"""Check ai-dlc's own layout; does not impose this source tree on adopted projects."""
 
 import argparse
 from pathlib import Path

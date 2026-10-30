@@ -1,7 +1,7 @@
 """The knowledge-note frontmatter shared by learnings and decision records.
 
 One schema covers authored and derived notes (``contracts/knowledge-note.schema.json``).
-AI-DLC validates shape only: a decision's ``checks:`` entries use flightdeck's
+ai-dlc validates shape only: a decision's ``checks:`` entries use flightdeck's
 ``flightdeck.spec/v1`` grammar and are evaluated by flightdeck, never here.
 """
 

@@ -36,7 +36,7 @@ REMOVED_PROVIDER_KINDS = {
 
 
 class RemovedProviderError(RefusedError):
-    """A configuration selects a provider kind whose adapter AI-DLC no longer ships."""
+    """A configuration selects a provider kind whose adapter ai-dlc no longer ships."""
 
 
 def refuse_removed_kind(kind: object) -> None:

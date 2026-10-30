@@ -426,7 +426,7 @@ class PlaneProvider:
                 raise ValueError("Plane exact URL is duplicated; inspect the operation")
             return current if matches else None
 
-        method, body = "POST", {"url": payload["url"], "title": "AI-DLC work evidence"}
+        method, body = "POST", {"url": payload["url"], "title": "ai-dlc work evidence"}
         return reconcile, path, method, body
 
     def _mutation_intent(self, operation, payload):

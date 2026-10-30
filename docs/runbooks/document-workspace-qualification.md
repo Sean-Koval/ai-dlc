@@ -1,14 +1,16 @@
 # Document workspace qualification walkthrough
 
-Repeat document organization and native workspace qualification on a disposable
-copy of the controlled messy project. Record what you observe in the
-[documentation workflow verification record](../verification/documentation-workflow.md).
+Qualify the document-organize skill and the native Obsidian workspace by hand
+on a disposable copy of the controlled messy project.
+
+Record what you observe in the
+[documentation workflow verification record](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/documentation-workflow.md).
 Automated fixture tests do not replace this walkthrough, and this walkthrough does
 not qualify another host, client or platform.
 
 ## Prepare disposable inputs
 
-From an AI-DLC source checkout:
+From an ai-dlc source checkout:
 
 ```sh
 uv run --locked --no-sync python tests/fixtures/messy_project.py /tmp/ai-dlc-qualification/project

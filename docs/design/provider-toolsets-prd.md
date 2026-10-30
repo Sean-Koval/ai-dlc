@@ -1,5 +1,8 @@
 # Selectable provider toolsets
 
+Read the September 2026 rationale for the selectable tracker, knowledge and
+publication providers, and which of those choices have since changed.
+
 Historical: this PRD records the September 2026 selection. The Linear adapter it
 migrates away from has since been removed and Plane is unsupported; the
 [tracker boundary](../architecture.md#tracker-boundary-with-hangar) and
@@ -20,7 +23,7 @@ is needed to use GitHub. Earlier undecided-destination and Projects-exclusion
 notes below are historical and superseded by this selection.
 See [the executing child](https://github.com/Sean-Koval/ai-dlc/blob/main/openspec/changes/archive/2026-09-07-github-ticket-workflows/2026-09-07-github-ticket-workflows.md).
 
-Owner: AI-DLC maintainer.
+Owner: ai-dlc maintainer.
 Status: draft updated with maintainer context, September 7, 2026. Planning requested;
 implementation, hosting, account changes, and ticket migration are not performed.
 Current priority: task/ticket management with GitHub Issues, Plane and Jira.
@@ -30,19 +33,21 @@ implementation prerequisite.
 
 ## Problem and audience
 
-AI-DLC prepares a development environment, scaffolds or adopts repositories, and
+ai-dlc prepares a development environment, scaffolds or adopts repositories, and
 equips the selected harness to work consistently with the user's tools. A user
 should select integrations and authenticate, not edit adapter code or look up
 opaque IDs to use a supported toolset. Adding a supported integration is an
 implementation task once; selecting it in another repository is configuration.
 
-The immediate user has reached Linear's free limit. Personal projects are choosing between GitHub Issues and
-locally self-hosted Plane, which is not installed yet; work projects use Jira
-Cloud and Confluence Cloud. Obsidian holds the private journal, daily work log,
-scratch notes and accumulated knowledge used by personal assistant agents, as
-well as local document viewing. Confluence holds existing product knowledge,
-team documents and guides; only a relevant subset belongs in local context. OpenSpec and
-repository-owned architecture/runbooks remain as currently configured.
+The immediate user has reached Linear's free limit. Personal projects are
+choosing between GitHub Issues and locally self-hosted Plane, which is not
+installed yet; work projects use Jira Cloud and Confluence Cloud.
+
+Obsidian holds the private journal, daily work log, scratch notes and
+accumulated knowledge used by personal assistant agents, as well as local
+document viewing. Confluence holds existing product knowledge, team documents
+and guides; only a relevant subset belongs in local context. OpenSpec and
+repository-owned architecture and runbooks remain as currently configured.
 
 Obsidian can view or edit those repository documents directly. Eligibility for
 explicit publication follows the selected document roots and private-note
@@ -51,16 +56,16 @@ exclusions, not which editor opens the file.
 The [source audit](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/planning/provider-toolset-code-audit.md) distinguishes
 shipped support from SAN-12's unmerged bundle work. It identifies real gaps in
 scaffolding, onboarding, capability handling, and migration UX. Existing upstream
-MCP tools, including the maintainer's existing custom Confluence server, should
-supply general-purpose service access; AI-DLC only needs narrow
-adapters for its own deterministic lifecycle and publication contracts.
+MCP tools, including the maintainer's custom Confluence server, should supply
+general-purpose service access. ai-dlc only needs narrow adapters for its own
+deterministic lifecycle and publication contracts.
 
 ## Outcomes and acceptance
 
 1. A prepared user can choose a supported tracker and optional team publishing
    provider while scaffolding or adopting, sign in locally, select named remote
    resources, preview the resulting configuration, and render usable harness
-   guidance. No manual UUID lookup or changes to AI-DLC source are required.
+   guidance. No manual UUID lookup or changes to ai-dlc source are required.
 2. Personal and work projects coexist on one machine with explicit, separate
    account/provider aliases. Opening a work project does not redirect personal
    tickets or publish private notes. A second machine repeats authentication and
@@ -81,7 +86,7 @@ adapters for its own deterministic lifecycle and publication contracts.
 Three active planning areas are toolset setup/onboarding, tracker adapters and
 selective tracker migration. The fourth draft, document publication, is deferred.
 Document-only setup tasks may also remain deferred; they do not gate ticket work. Native MCP access
-can be useful before the AI-DLC lifecycle adapter is available; that distinction
+can be useful before the ai-dlc lifecycle adapter is available; that distinction
 must be explicit in guidance/readiness. A connector login never proves that the
 separate CLI/API credential works.
 
@@ -95,8 +100,8 @@ attachment migration, or bidirectional document sync in the first delivery.
 Native Confluence tools already cover ordinary page access and editing. The
 separate publication service is an optional stronger guarantee, not a prerequisite
 for adding Confluence to the toolset. Implement it only if the maintainer wants
-AI-DLC to own repeatable, version-aware publication; native tool use plus guidance
-may satisfy the immediate team-document need without that service.
+ai-dlc to own repeatable, version-aware publication. Native tool use plus
+guidance may satisfy the immediate team-document need without that service.
 
 ## Constraints and risks
 
@@ -104,7 +109,7 @@ Existing schemas and installed clients remain compatible. New options are
 additive and explicit. Unselected providers add no installation or login burden.
 Secrets and vault paths stay local; shared files contain references and portable
 choices only. A provider change preserves work/spec/PR references and configured
-completion gates. Native service tools remain available; AI-DLC cannot prevent
+completion gates. Native service tools remain available; ai-dlc cannot prevent
 independent edits in the external service and must reconcile them honestly.
 
 Readiness must separate API integration from optional desktop viewing. Missing
@@ -115,11 +120,13 @@ The maintainer prefers local drafting with the ability to publish selected share
 documents. Existing Confluence pages remain team-owned sources; this does not
 make every page repository-authored. The publication spec proposes explicit
 repository Markdown sources and remote edits as conflicts, not consent to
-overwrite pages. The maintainer already uses a custom MCP server with a document graph, page
-descriptions, LLM-derived semantics and document/space/page quality grading, plus
-Claude and Antigravity for writing and pushing pages. Review and reuse that server
-before proposing a separate Confluence implementation; its API and update safety
-have not yet been inspected.
+overwrite pages.
+
+The maintainer already uses a custom MCP server with a document graph, page
+descriptions, LLM-derived semantics and quality grading, plus Claude and
+Antigravity for writing and pushing pages. Review and reuse that server before
+proposing a separate Confluence implementation; its API and update safety have
+not yet been inspected.
 
 ## Selective relationship between local and shared knowledge
 
@@ -137,7 +144,7 @@ not a security boundary around independently connected tools.
 
 ## Open questions and user inputs
 
-| Needed when | User supplies | AI-DLC/integration discovers or handles |
+| Needed when | User supplies | ai-dlc/integration discovers or handles |
 | --- | --- | --- |
 | Before local Plane deployment | Confirm local runtime availability and storage/backup location; local hosting is selected, not installed | Review upstream deployment, startup/recovery instructions and actual supported version |
 | Before live Plane connection | Workspace/project URL or friendly name | IDs, states, available projects, account identity |
@@ -149,11 +156,13 @@ not a security boundary around independently connected tools.
 
 No password, token, arbitrary project UUID, or status UUID is needed in chat.
 The user signs in through the chosen native client or configures a local
-environment reference at connection time. Plane hosting is the local computer;
-persistence/backups, startup behavior and maintenance still need an operational
-runbook. Propose local-only exposure initially; remote access is a separate choice.
-The computer must be running for other clients to reach this instance. Deployment
-is a machine-level setup step, not something repeated by project bootstrap.
+environment reference at connection time.
+
+Plane hosting is the local computer; persistence, backups, startup behavior and
+maintenance still need an operational runbook. Propose local-only exposure
+initially; remote access is a separate choice. The computer must be running for
+other clients to reach this instance. Deployment is a machine-level setup step,
+not something repeated by project bootstrap.
 
 ## Links
 
