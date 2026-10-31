@@ -47,7 +47,6 @@ is performed automatically.
 
 `ai-dlc-conformance --list` prints implemented scopes. Default fixture targets:
 
-- `linear`: HTTP transport read/error fixtures.
 - `github-issues`: production executable adapter wrapping a fake GitHub CLI, plus
   GitHub Projects identity, lifecycle and recovery transport fixtures.
 - `jira-cloud`: Jira HTTP transport and shared WorkService lifecycle/recovery fixtures.
@@ -55,8 +54,8 @@ is performed automatically.
   fixtures, including explicitly selected HTTP loopback origins.
 - `openspec`: native archive/provenance fixtures.
 - `github` or `scm`: receipt and authenticated workflow-evidence fixtures.
-- `providers`: complete packaged adapter suites for Linear, GitHub Issues/Projects,
-  Jira Cloud and Plane (including the Jira/Plane shared-workflow fixtures).
+- `providers`: complete packaged adapter suites for GitHub Issues/Projects, Jira Cloud
+  and Plane (including the Jira/Plane shared-workflow fixtures).
 - `workflow`: the legacy shared workflow suite; `all`: the union of both aggregates.
 
 Sibling fixture helpers are imported from the trusted packaged tests directory; pytest
@@ -69,24 +68,14 @@ reported as passing without tests.
 
 ## Explicit live read-only health scope
 
-Only `linear --live` and `github-issues --live` exist. Neither performs mutation
-conformance. Both require a read-only mounted `/fixtures/provider.toml`, an exact
+Only `github-issues --live` exists, and it performs no mutation conformance. It
+requires a read-only mounted `/fixtures/provider.toml`, an exact
 `AI_DLC_SANDBOX_WORKSPACE` match, an explicit credential environment reference, and an
 existing `health_reference`. Successful results say `scope=read-only-health`, with
-`mutation_conformance=unavailable` and `full_conformance=unavailable`.
+`mutation_conformance=unavailable` and `full_conformance=unavailable`. Every other
+`--live` target reports unavailable.
 
-Linear fixture example (use real sandbox IDs, never credential values):
-
-```toml
-sandbox_workspace = "sandbox-team-id"
-[provider]
-kind = "linear"
-team_id = "sandbox-team-id"
-token_env = "LINEAR_SANDBOX_TOKEN"
-health_reference = "existing-issue-uuid"
-```
-
-Linear reads the selected issue and verifies its returned team ID. GitHub example:
+Fixture example (use a real sandbox repository, never credential values):
 
 ```toml
 sandbox_workspace = "sandbox-owner/sandbox-repository"
@@ -111,7 +100,8 @@ image pinned at `sha256:4ffead4f5157cc458bbd7722122f2424c17f45eb4491fe4b34529942
 The digest-addressed result passed the production runner's offline path and all 56
 packaged provider/workflow checks with networking disabled. A live-path probe also
 passed the namespace firewall's direct-egress and undeclared-host rejection before its
-intentionally invalid credential failed Linear health verification. A successful live
+intentionally invalid credential failed live health verification against the since-removed
+Linear adapter. A successful live
 health call still requires an explicit sandbox workspace, reference, and credential.
 Host unit tests continue to cover command selection and error behavior with transport
 fixtures; do not treat the probe as live provider compatibility or mutation conformance.

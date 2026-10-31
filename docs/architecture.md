@@ -1,15 +1,15 @@
 # Architecture
 
 See how ai-dlc is built: its ownership layers, services, provider boundaries
-and source packages.
+and source packages. Under [ADR 0001](decisions/0001-refocus-ai-dlc.md) it does three
+jobs: the workflow plugin, machine provisioning and the CI-receipt-gated work
+lifecycle. [Terms](design/terms.md) defines key words.
 
-ai-dlc v4 runs as a local Python CLI and library. The CLI owns machine
+ai-dlc runs as a local Python CLI and library. The CLI owns machine
 enrollment mutation; the MCP facade exposes shared work, doctor, knowledge and
 documentation services. Project adoption uses Copier, provider adapters isolate
 vendor-specific operations, and agent skills provide judgment. There is no
-hosted orchestration service. The [product direction](product-direction.md)
-and [planned delivery architecture](design/framework-delivery.md) describe the
-next increments.
+hosted orchestration service; hangar runs cloud sandboxes.
 
 ## Boundaries
 
@@ -146,9 +146,8 @@ authored project/work snapshots, with secrets represented only by local
 authentication references. Configuration changes and retained-work migration
 are separate actions. Native MCP access supplies broader service context; it
 does not substitute for these lifecycle contracts. See the
-[provider contract](https://github.com/Sean-Koval/ai-dlc/blob/main/contracts/README.md),
-[GitHub setup guide](github-ticket-setup.md), and
-[later adapter boundaries](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/planning/tracker-adapter-follow-through.md).
+[provider contract](https://github.com/Sean-Koval/ai-dlc/blob/main/contracts/README.md)
+and [GitHub setup guide](github-ticket-setup.md).
 
 ## Tracker boundary with hangar
 
@@ -160,7 +159,7 @@ one owner:
 | --- | --- |
 | Starting agent work from a ticket (Jira status or label, GitHub label or Projects column, Slack, schedules) | hangar intake |
 | Ticket write-back during an agent job (queued, started, needs_input, delivered, failed) | hangar |
-| Trust and approval of who may start work | hangar, then Tower (formerly the governed workspace) |
+| Trust and approval of who may start work | hangar, then Tower |
 | A developer's local work record, branch binding and specification artifacts | ai-dlc |
 | Closing a ticket after merge with CI-receipt evidence (`work finish`) | ai-dlc, run locally by a person |
 | Creating tickets from reviewed local work (`work publish`) | ai-dlc |
@@ -184,8 +183,8 @@ Kept adapters: GitHub Issues, GitHub Projects and Jira Cloud. Plane stays shippe
 with `supported = false`: scaffolding refuses it without `--allow-unsupported` and
 doctor reports it as unsupported and unqualified. The Plane adapter is scheduled
 for deletion in the next cleanup unless someone objects by the end of P2. The
-Linear adapter has been removed; a configuration that still selects it receives
-a typed refusal that names the supported trackers.
+Linear adapter is removed; a configuration still selecting it gets a typed refusal
+naming supported trackers.
 
 ## Source layout
 

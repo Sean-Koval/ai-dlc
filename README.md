@@ -58,6 +58,9 @@ The workflow plugin's skills, as Claude Code lists them, and the checks a projec
 
 ai-dlc does not run agents in the cloud or judge harnesses. hangar renders and runs
 sandboxes, flightdeck evaluates, and ai-dlc authors the one optional plugin they pin.
+Read more in the [hangar docs](https://sean-koval.github.io/hangar/), the
+[flightdeck docs](https://sean-koval.github.io/flightdeck/) and the
+[example team harness](https://github.com/Sean-Koval/team-harness), which pins this plugin.
 
 ## Use cases
 
@@ -93,8 +96,15 @@ ai-dlc project check --required
 
 Bootstrap installs pinned uv, Python and mise; no preinstalled Python or Node is needed.
 [Get started](https://sean-koval.github.io/ai-dlc/workflows/get-started/) covers existing work
-repositories and contributing; [Configure a project](https://sean-koval.github.io/ai-dlc/workflows/configure/) covers GitHub and profiles. Try the plugin in Claude Code
-with `claude --plugin-dir plugins/ai-dlc-workflow`.
+repositories and contributing; [Configure a project](https://sean-koval.github.io/ai-dlc/workflows/configure/) covers GitHub and profiles.
+
+Try the workflow plugin in Claude Code from this checkout. It is off by default, so enable it
+for the session; adding `plugin list` after the same flags should report `Status: √ loaded`:
+
+```sh
+claude --plugin-dir plugins/ai-dlc-workflow --settings '{"enabledPlugins":{"ai-dlc-workflow@inline":true}}'
+claude --plugin-dir plugins/ai-dlc-workflow --settings '{"enabledPlugins":{"ai-dlc-workflow@inline":true}}' plugin list
+```
 
 ## Features
 

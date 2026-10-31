@@ -1,4 +1,4 @@
-# Migration to v4
+# Migration notes
 
 Move an older installation, profile or project to schema 4, change its tracker,
 and know which commands and adapters this release removed.
@@ -290,8 +290,8 @@ one refuses with `requires <client> >= <floor>`; an unset version renders with a
 warning. `agents/capabilities.toml` is schema 2 and has no `target` key.
 
 The module catalog now pins `claude-code` 2.1.296 and `codex` 0.162.1, matching
-hangar's `harnesses.lock.yaml`. `machine provision` installs these on new machines;
-existing installs are not upgraded implicitly. Compare the pins locally with
+hangar's `harnesses.lock.yaml`. `ai-dlc setup plan` previews and `ai-dlc setup apply`
+installs them; existing installs are not upgraded implicitly. Compare the pins locally with
 `python scripts/check_client_pins.py --hangar-lock PATH`.
 
 ## ai-dlc scaffold removed

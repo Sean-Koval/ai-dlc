@@ -26,15 +26,19 @@ evidence.
 
 ## Outstanding
 
-Still outstanding: clean-machine, container and cloud walkthroughs; full live
-provider mutation conformance with enforced egress; and live Jira workflow
-qualification per #85. That Jira record needs `work publish`, a blocked
-`work finish` before merge and a closing `work finish` after merge. Plane is
-unsupported, so its live qualification is no longer planned; the Linear adapter
-was removed. Package index publication is not planned.
+Outstanding: clean-machine and container walkthroughs of bootstrap and the
+workflow plugin ([#53](https://github.com/Sean-Koval/ai-dlc/issues/53)); live provider
+mutation conformance with enforced egress; and live Jira workflow qualification per #85.
+That Jira record needs `work publish`, a blocked `work finish` before merge and a
+closing `work finish` after merge.
+
+Plane is unsupported, so its live qualification is not planned. Package index publication is not planned. Under
+[ADR 0001](decisions/0001-refocus-ai-dlc.md), skill and harness evaluation is
+[flightdeck](https://sean-koval.github.io/flightdeck/)'s and cloud walkthroughs are
+[hangar](https://sean-koval.github.io/hangar/)'s.
 
 The publication and replay below satisfy asset availability, integrity and
-hosted consumer evidence for v0.4.0, and nothing else on that list.
+hosted consumer evidence for v0.4.0 only.
 
 The [September 14 Jira preparation](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/verification/jira-cloud-new-work.md#walkthrough-preparation-september-14-2026)
 records missing sandbox inputs and the absent live Jira mutation target.
@@ -210,9 +214,8 @@ release-mode bootstrap completed, its Git fixture was committed, and
 This satisfies verified asset publication, published-asset installation on the
 three hosted platforms, manifest propagation, and generated Python project
 bootstrap and check evidence. A hosted runner with preinstalled tools is not a
-factory-clean machine or container. Cloud-client walkthroughs, live provider
-mutation and deployment qualification, and declared-model skill results with
-human review remain outstanding.
+factory-clean machine or container. Live provider mutation and deployment
+qualification remain [outstanding](#outstanding).
 
 ## Release publication path — September 13, 2026
 

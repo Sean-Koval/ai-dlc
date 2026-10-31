@@ -20,9 +20,9 @@ does) or define what runs in cloud sandboxes (hangar's claim-time renderer does)
 Its durable value is the relationship between tools, artifacts, decisions, and
 workflows. OpenSpec currently provides formal specification; personal projects
 use GitHub Issues and Projects, while Jira Cloud is the selected work target.
-Codex and Claude Code have implemented client adapters and Antigravity project
-guidance is implemented; installed-client qualification remains unverified.
-These choices are replaceable. Stable responsibilities survive provider changes.
+The workflow plugin and managed sections target Claude Code and Codex; client
+rendering is frozen (ADR 0001) and installed clients are unqualified. These choices
+are replaceable.
 
 The harness performs development and can use installed tools directly. ai-dlc
 provides setup, guidance, integration, validation, and evidence services where
@@ -39,10 +39,9 @@ downstream.
 ## Immediate adoption outcome
 
 Install ai-dlc on the work computer and adopt work repositories with their own
-Jira configuration and local credentials, exposing consistent guidance to Claude
-and Antigravity. A clone of the engine repository must not implicitly enroll work
-projects into ai-dlc's personal tracker. Keep Obsidian private; defer Confluence
-publication until the existing custom MCP can be reviewed.
+Jira configuration and local credentials. Claude Code and Codex get the same guidance
+from the plugin or managed sections. An engine clone must not enroll work projects
+into ai-dlc's personal tracker. Keep Obsidian private; Confluence publication is cut.
 
 ## User outcomes
 
@@ -64,7 +63,7 @@ publication until the existing custom MCP can be reviewed.
 | --- | --- | --- | --- |
 | Environment | Reproduce tools and local bindings | Bootstrap, enrollment, project setup and connected readiness | Qualify selected machine and installed clients |
 | Integrations | Connect capabilities to selected systems | Provider metadata, contracts and scoped onboarding | Qualify actual selected provider deployments |
-| Harness support | Author one optional workflow plugin; render managed sections into developer repos | Managed Codex/Claude/Antigravity guidance and pinned bundles | Package the workflow plugin ([#191](https://github.com/Sean-Koval/ai-dlc/issues/191)) |
+| Harness support | Author one optional workflow plugin; render managed sections into developer repos | The workflow plugin and its Codex form ([#191](https://github.com/Sean-Koval/ai-dlc/issues/191)–[#193](https://github.com/Sean-Koval/ai-dlc/issues/193), shipped); managed client guidance and pinned bundles | The team harness pins the plugin ([hangar#139](https://github.com/Sean-Koval/hangar/issues/139)); flightdeck compares runs with and without it |
 | Workflows | Guide decisions and handoffs | Product shaping, traceability and optional Design PM guidance | Bug fixes only while frozen |
 
 Evaluation of harnesses and guidance is not an ai-dlc responsibility: flightdeck
@@ -111,25 +110,23 @@ contracts, or operational evidence. Small work uses small artifacts.
 
 ## Delivery boundaries
 
-Initial qualification targets: native macOS arm64 and an Ubuntu 24.04 arm64
-devcontainer. Each remains unverified until its actual walkthrough succeeds.
-Further scope is governed by the [scope freeze](decisions/0001-refocus-ai-dlc.md). Antigravity project adapters are implemented; qualify the actual installed version before claiming successful client adoption.
+Still to qualify: machine bootstrap on macOS and Linux, the workflow plugin in
+Claude Code ([#53](https://github.com/Sean-Koval/ai-dlc/issues/53)), and the local
+lifecycle against Jira Cloud ([#85](https://github.com/Sean-Koval/ai-dlc/issues/85)).
+Each stays unverified until its walkthrough succeeds. Cloud execution is hangar's and
+evaluation flightdeck's; the [scope freeze](decisions/0001-refocus-ai-dlc.md) governs
+the rest.
 
-The code remains a v4 implementation candidate. Missing v4 qualification and release evidence remains missing. The former
-tracking issue #17 was cancelled as NOT_PLANNED, not completed; any renewed
-release work requires separately approved scope.
+The last release is v0.4.0 (September 14, 2026); the
+[changelog](https://github.com/Sean-Koval/ai-dlc/blob/main/CHANGELOG.md) lists later
+changes. Release-tracking issue #17 was cancelled as not planned.
 
 ## Navigation
 
-- [Draft provider toolset requirements](design/provider-toolsets-prd.md) and
-  [implementation sequence](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/planning/2026-09-06-provider-toolsets.md):
-  requested Plane/Jira/Confluence integration with Obsidian retained; proposed
-  scope, not shipping capability.
-
+- [ADR 0001: the scope freeze and in-scope list](decisions/0001-refocus-ai-dlc.md)
 - [Roadmap](roadmap.md)
-- [Delivery architecture](design/framework-delivery.md)
-- [Executor handoff](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/handoffs/framework-delivery.md)
-- [V4 proposal](https://github.com/Sean-Koval/ai-dlc/blob/main/openspec/changes/archive/2026-09-12-portable-development-v4/proposal.md)
-- [Enrollment design and follow-on cycles](https://github.com/Sean-Koval/ai-dlc/blob/main/openspec/changes/archive/2026-09-03-portable-profile-enrollment/historical-design.md)
 - [Current architecture](architecture.md)
+- [Migration notes](migration.md)
 - [Actual release evidence](release-verification.md)
+
+Earlier plans are in git history and `openspec/changes/archive/`.

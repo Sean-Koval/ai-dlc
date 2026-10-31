@@ -16,6 +16,8 @@ flowchart LR
 | **OpenSpec** | Formal requirements, scenarios, and archived changes when the work needs a specification. |
 | **GitHub Issues + Projects / GitHub Actions** | Ticket identity and planning, PR review and merge, and CI evidence. |
 | **Obsidian** | Private continuity notes and navigation to canonical repository documents. |
+| **[hangar](https://sean-koval.github.io/hangar/)** (separate tool) | Runs coding agents in cloud sandboxes and starts agent jobs from tickets (intake); renders the team harness, which can pin the workflow plugin, at claim time. |
+| **[flightdeck](https://sean-koval.github.io/flightdeck/)** (separate tool) | Evaluates harness changes, such as running with and without the workflow plugin, on runs hangar recorded; ai-dlc's evaluation runner moved there. |
 
 ## Providers and hangar
 

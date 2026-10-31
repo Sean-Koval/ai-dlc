@@ -1,5 +1,5 @@
 site_name: ai-dlc
-site_description: Portable development setup and workflows for people and coding agents.
+site_description: One setup, one workflow and one evidence-gated finish for people and coding agents.
 site_url: https://sean-koval.github.io/ai-dlc/
 repo_url: https://github.com/Sean-Koval/ai-dlc
 repo_name: Sean-Koval/ai-dlc
@@ -75,6 +75,7 @@ nav:
       - Get started: workflows/get-started.md
       - Configure a project: workflows/configure.md
       - Workflow plugin: workflows/workflow-plugin.md
+      - Pin the plugin in a team harness: workflows/workflow-plugin-harness.md
       - Example workflows: workflows/examples.md
       - How the tools fit together: workflows/how-it-fits.md
       - Greenfield workflow: workflows/greenfield.md
@@ -93,8 +94,10 @@ nav:
       - Jira Cloud setup: runbooks/jira-cloud-setup.md
   - Reference:
       - Architecture: architecture.md
+      - Terms: design/terms.md
       - Release verification: release-verification.md
       - Migration: migration.md
+      - Changelog: https://github.com/Sean-Koval/ai-dlc/blob/main/CHANGELOG.md
       - Roadmap: roadmap.md
   - Decisions:
       - "ADR 0001: Refocus ai-dlc": decisions/0001-refocus-ai-dlc.md

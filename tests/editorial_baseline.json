@@ -1,6 +1,6 @@
 {
   "docs/architecture.md": {
-    "long_paragraphs": 7,
+    "long_paragraphs": 6,
     "long_sentences": 2,
     "words": 1955
   },
@@ -115,12 +115,12 @@
   },
   "docs/product-direction.md": {
     "long_paragraphs": 1,
-    "words": 952
+    "words": 942
   },
   "docs/release-verification.md": {
     "long_paragraphs": 5,
     "long_sentences": 1,
-    "words": 1836
+    "words": 1834
   },
   "docs/reviews/2026-09-03-portable-profile-enrollment.md": {
     "long_paragraphs": 2,

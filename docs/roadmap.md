@@ -11,6 +11,13 @@ release must prove.
 
 ## Current outcome
 
+- **Frozen to three jobs.** ai-dlc is feature-frozen ([ADR 0001](decisions/0001-refocus-ai-dlc.md),
+  epic [#189](https://github.com/Sean-Koval/ai-dlc/issues/189)). It authors the
+  workflow plugin, provisions machines from pinned profiles and finishes work only
+  against the merged revision's CI receipts.
+- **The plugin ships.** `plugins/ai-dlc-workflow/` is published into a team harness
+  for a with/without comparison
+  ([#191](https://github.com/Sean-Koval/ai-dlc/issues/191)–[#193](https://github.com/Sean-Koval/ai-dlc/issues/193)).
 - **Works today.** ai-dlc runs from a cloned installation on the work computer
   and gives Claude Code, Codex and Antigravity one consistent development
   workflow. Delivery runs through reviewed work records, OpenSpec changes, pull
@@ -23,18 +30,18 @@ release must prove.
   [tracker boundary](architecture.md#tracker-boundary-with-hangar)).
 - **Unsupported.** Plane is shipped but unsupported and unqualified; the
   outstanding qualification list is in release verification.
-- **Removed.** The Linear adapter, `ai-dlc eval` and `ai-dlc scaffold`.
+- **Moved or removed.** Evaluation moved to flightdeck, and hangar renders and runs
+  cloud sandboxes. The Linear adapter, `ai-dlc eval` and `ai-dlc scaffold` are removed.
 
 Installing the engine from this repository is distinct from adopting a work
 repository, which has its own tracker and independent local credentials.
 
-Team-flow improvements are tracked in
+Three September team-flow improvements are closed:
 [#167](https://github.com/Sean-Koval/ai-dlc/issues/167) (guidance for selected
-capabilities), [#168](https://github.com/Sean-Koval/ai-dlc/issues/168) (concise team
-skill discovery), and [#169](https://github.com/Sean-Koval/ai-dlc/issues/169)
-(focused checks and meaningful starter verification). They refine existing setup
-and check services; actual time, token savings and failures caught still need
-measurement on adopted repositories and in the deferred comparison.
+project features), [#168](https://github.com/Sean-Koval/ai-dlc/issues/168) (concise
+team skill discovery) and [#169](https://github.com/Sean-Koval/ai-dlc/issues/169)
+(focused checks and meaningful starter verification). Their effect on time, tokens
+and failures caught is unmeasured; flightdeck owns the with/without comparison.
 
 ## Next three increments
 
@@ -91,7 +98,7 @@ Cancelled or deferred scope stays cancelled; nothing here reopens it.
 
 - Qualification of clean machines, hosted clients, live providers and human
   calibration that was closed as not planned (#14, #15, #16, #17, #20, #21).
-- Selective Confluence publication (#22), pending review of the custom server.
+- Selective Confluence publication (#22, #50), cut under ADR 0001.
 - Package index publication.
 
 The [September 2026 roadmap ledger](https://github.com/Sean-Koval/ai-dlc/blob/main/docs/archive/planning/2026-09-roadmap-ledger.md)

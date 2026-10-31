@@ -33,6 +33,13 @@ def test_layout_accepts_grouped_code_and_formal_change(tmp_path):
     assert check(tmp_path).returncode == 0
 
 
+def test_layout_accepts_the_conventional_root_documents(tmp_path):
+    for name in ["README.md", "CHANGELOG.md", "CONTRIBUTING.md", "AGENTS.md"]:
+        (tmp_path / name).write_text(f"# {name}\n")
+    (tmp_path / "CLAUDE.md").write_text("@AGENTS.md\n")
+    assert check(tmp_path).returncode == 0
+
+
 def test_layout_rejects_tool_scratch_and_duplicate_claude_context(tmp_path):
     (tmp_path / ".superpowers").mkdir()
     (tmp_path / "CLAUDE.md").write_text("# Stale instructions\n@AGENTS.md\n")

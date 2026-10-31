@@ -388,6 +388,21 @@ owner = "repository-maintainers"
 status = "draft"
 
 [[documents]]
+id = "repo-terms"
+path = "docs/design/terms.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "active"
+
+[[documents]]
+id = "workflow-plugin-harness"
+path = "docs/workflows/workflow-plugin-harness.md"
+kind = "runbook"
+owner = "repository-maintainers"
+status = "active"
+code_paths = ["plugins/ai-dlc-workflow/README.md", "scripts/publish_workflow_plugin.py"]
+
+[[documents]]
 id = "repo-migration"
 path = "docs/migration.md"
 kind = "reference"
