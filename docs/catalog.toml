@@ -29,6 +29,7 @@ code_paths = [
     "plugins/ai-dlc-workflow/**",
 ]
 verification_paths = [
+    "tests/test_cli_entrypoint.py",
     "tests/test_consumer_onboarding.py",
     "tests/test_consumer_onboarding_cli.py",
     "tests/test_environment_report*.py",
