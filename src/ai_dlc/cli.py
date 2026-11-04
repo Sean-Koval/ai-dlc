@@ -7,6 +7,7 @@ import os
 import sys
 from contextlib import contextmanager
 from pathlib import Path
+from subprocess import CalledProcessError
 from typing import Annotated
 
 import typer
@@ -76,6 +77,47 @@ def service_call():
         for note in getattr(exc, "__notes__", ()):
             typer.echo(note, err=True)
         raise typer.Exit(getattr(exc, "exit_code", 2)) from None
+
+
+# Failures the console entry point reports in one line instead of a traceback. Other
+# exception types are bugs and keep their traceback.
+REPORTED_FAILURES = (AiDlcError, OSError, RuntimeError, ValueError, CalledProcessError)
+TRACEBACK_ENV = "AI_DLC_TRACEBACK"
+
+
+def describe_failure(exc: BaseException) -> str:
+    """One line for an expected failure, naming the next step where ai-dlc knows it."""
+    if isinstance(exc, FileNotFoundError) and Path(str(exc.filename or "")).name == "ai-dlc.toml":
+        root = Path(str(exc.filename)).parent
+        return (
+            f"no ai-dlc.toml in {root.resolve()}; run this inside an ai-dlc project "
+            "or pass --root PATH"
+        )
+    if isinstance(exc, CalledProcessError):
+        command = exc.cmd if isinstance(exc.cmd, str) else " ".join(map(str, exc.cmd))
+        return f"command failed with exit status {exc.returncode}: {command}"
+    return str(exc) or type(exc).__name__
+
+
+def run() -> None:
+    """Console entry point: report expected failures on one line.
+
+    The exit status stays 1, as for any uncaught exception, so scripts and the hook
+    contract (2 means deny) see no change. Set AI_DLC_TRACEBACK=1 for the traceback.
+    """
+    try:
+        app()
+    except (typer.Exit, typer.Abort):
+        # Click's own exits derive from RuntimeError; they already carry their status.
+        raise
+    except REPORTED_FAILURES as exc:
+        if os.environ.get(TRACEBACK_ENV):
+            raise
+        typer.echo(f"Error: {describe_failure(exc)}", err=True)
+        for note in getattr(exc, "__notes__", ()):
+            typer.echo(note, err=True)
+        typer.echo(f"Set {TRACEBACK_ENV}=1 to see the traceback.", err=True)
+        raise SystemExit(1) from None
 
 
 @contextmanager
@@ -1667,4 +1709,4 @@ def hook(event: str, root: Path = Path(".")):
 
 
 if __name__ == "__main__":
-    app()
+    run()

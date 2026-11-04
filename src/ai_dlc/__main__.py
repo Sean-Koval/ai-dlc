@@ -1,3 +1,3 @@
-from ai_dlc.cli import app
+from ai_dlc.cli import run
 
-app()
+run()

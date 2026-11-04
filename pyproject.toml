@@ -20,8 +20,8 @@ dependencies = [
 ]
 
 [project.scripts]
-ai-dlc = "ai_dlc.cli:app"
-ai-dlc-cli = "ai_dlc.cli:app"
+ai-dlc = "ai_dlc.cli:run"
+ai-dlc-cli = "ai_dlc.cli:run"
 ai-dlc-conformance = "ai_dlc.conformance:main"
 ai-dlc-github-issues = "ai_dlc.providers.github_issues:main"
 

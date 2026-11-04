@@ -55,6 +55,10 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
   suite's editorial rule by `tests/test_editorial.py`; its theme follows Airframe
   through theme-v15, and the front page adds a demo clip (PRs #231, #234, #236,
   #240–#242, #244–#247).
+- The `ai-dlc` command reports expected failures (a missing `ai-dlc.toml`, an
+  unreviewed work record, an unconnected provider, a failed `mise install`) as one
+  `Error:` line instead of a traceback, with the same exit status 1;
+  `AI_DLC_TRACEBACK=1` restores the traceback (KAN-251).
 
 ### Deprecated
 

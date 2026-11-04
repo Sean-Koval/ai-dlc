@@ -437,7 +437,16 @@ def _setup_project(
     # no tools; activating mise there would fail on the absent file, not on a real problem.
     if use_mise and (root / ".mise.toml").is_file():
         subprocess.run(["mise", "trust", str(root / ".mise.toml")], cwd=root, check=True)
-        subprocess.run(["mise", "install"], cwd=root, check=True)
+        try:
+            subprocess.run(["mise", "install"], cwd=root, check=True)
+        except subprocess.CalledProcessError as exc:
+            # Name the failure as setup steps do; mise has already printed which tool
+            # and download failed, and nothing was journaled, so a rerun resumes.
+            raise RuntimeError(
+                f"mise could not install the tools in .mise.toml (exit {exc.returncode}); "
+                "check access to the tool downloads mise printed above, then rerun "
+                "`ai-dlc project setup` to resume"
+            ) from exc
     db_path = state_path or state_file()
     db_path.parent.mkdir(parents=True, exist_ok=True)
     completed = []
