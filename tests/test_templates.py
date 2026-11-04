@@ -297,6 +297,38 @@ def test_presets(tmp_path, preset):
     assert not list((root / ".ai-dlc/work").glob("*.toml"))
 
 
+_TOML_CAPABILITIES = {
+    "default": None,
+    "none": [],
+    "backend": ["specs", "tracker", "knowledge", "scm", "deploy", "agent-client", "backend"],
+    "frontend": ["specs", "tracker", "scm", "agent-client", "backend", "frontend"],
+}
+
+
+@pytest.mark.parametrize("initialize", [False, True])
+@pytest.mark.parametrize("capabilities", sorted(_TOML_CAPABILITIES))
+@pytest.mark.parametrize("preset", ["generic", "python", "node", "rust"])
+def test_generated_project_file_has_no_runs_of_blank_lines(
+    tmp_path, preset, capabilities, initialize
+):
+    if capabilities == "frontend" and preset != "node":
+        pytest.skip("the frontend capability requires the node preset")
+    root = tmp_path / "project"
+    adopt(
+        root,
+        preset,
+        apply=True,
+        capabilities=_TOML_CAPABILITIES[capabilities],
+        initialize=initialize,
+    )
+
+    text = (root / "ai-dlc.toml").read_text()
+
+    assert "\n\n\n" not in text
+    assert not text.startswith("\n")
+    tomllib.loads(text)
+
+
 @pytest.mark.parametrize("capabilities", [None, ["specs", "scm"], []])
 def test_project_template_includes_workflow_handbook(tmp_path, capabilities):
     root = tmp_path / "project"
