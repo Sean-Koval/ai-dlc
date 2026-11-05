@@ -1,0 +1,134 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "CHANGELOG.md": "5dfe14006f329d354c806573bc2069d4ab81b8f9031f7e5b79a525fea2feaa2d"
+      },
+      "outcome": "updated",
+      "reason": "Unreleased > Changed records the tidier generated ai-dlc.toml and the one-time sync conflict for projects that edited roles or provider lines.",
+      "reviewer": "Claude (agent)",
+      "target": "CHANGELOG.md"
+    },
+    {
+      "bound": {
+        ".ai-dlc/agent-ownership.json": "2c193eced262ce82ed624d508de5ca29dec09da87d2eb78551143622803c4a51",
+        "agents/skills.lock.json": "b4fcb3d12ca8d998156fc0d1fdfc4cef8d421aa15b357ce1c1c9c110e8c40c65",
+        "agents/skills/spec-from-prd/SKILL.md": "b12dac8c0dc495136bc0d2009e1d6077a8f9b4e63db3deb339beb6bce2e36efe",
+        "agents/templates/delivery-slice.md": "44d1e55bdd17e5fe0cf4c1d35d99ffad8f6060575ecb97496515b48a0e304429",
+        "catalog:docs/development-workflow.md": "0fba88526a61571ce49e91b2159325061a7c54ba5466e651565eabb2f910e7c6",
+        "docs/development-workflow.md": "e1351af42ccf1cf28e744345171ad9c71b2321936d1edfe73f7e4b4cf508f04c",
+        "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
+        "openspec/specs/portable-development/spec.md": "7710dba93e53f973d947723117687d263b6296ad31e1ed8232da7b2f0e7ff89e",
+        "openspec/specs/spec-delivery-traceability/spec.md": "66641acf9c151792cde1914062630ed50cc4199cdc3bdb4b81382e03716f2ea3",
+        "project-templates/project/AI-DLC.md": "91e7df09e8c8fd8f5bea1d087d11aa7bcc3d7316238c61045e98dc5cfb039c44",
+        "project-templates/project/ai-dlc.toml.jinja": "d965a516a3b62011283b560a732edaacdf9c2a8bf84ff660fd8c65b03f626f54",
+        "project-templates/project/docs/development-workflow.md.jinja": "8cc85f0e3949013f31ffc540edfb53aff445a97061048d537a9a7c5d7785cebd",
+        "project-templates/project/docs/templates/delivery-slice.md": "44d1e55bdd17e5fe0cf4c1d35d99ffad8f6060575ecb97496515b48a0e304429",
+        "project-templates/project/scripts/check_tests.py": "a3dd2021b7911d2ff688142776b7a43af60f76e052d7164086db2434db60102d",
+        "project-templates/project/tests/test_main.py": "4e6ac9def60ea5a6aef9e004c465cc439acac4b33e4f70df332939f0cdfae63d",
+        "src/ai_dlc/cli.py": "03811fcd1efa98835638fa5d1ef96f30e60c0e386290756189dd27723b8bed2e",
+        "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
+        "src/ai_dlc/harness/agents.py": "c1911d89c663c140532333f225b8a803a3944bcd446e7fe226b99e0620aa68f7",
+        "src/ai_dlc/harness/hooks.py": "b50bf047573f4735861bb091d97cd8467af16729610ddd63e97d81fffc39e9bc",
+        "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
+        "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
+        "src/ai_dlc/setup/project.py": "1636ad031d877790d380ce72d99b8753fffc94305ce03150dda6fd05ec51c43d",
+        "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
+        "src/ai_dlc/work/workflow.py": "5e9e38621e3062351ca81d54982f481a4fb37110d247fd82c51a927ed8c9b17b",
+        "tests/test_agents_phases.py": "e5325bdc3c072a10e27bbf019ce51f586b0b7b9d76aa95ff8652dd09bc3c8570",
+        "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
+        "tests/test_cli.py": "f61c1ce03b1b3d1a6134365277c18655450ba08c06cb1f51ba44010b3e1b7e36",
+        "tests/test_config.py": "788bf2715bfc3fbc3da495b68fa250985f4430d424fa9802340dec16b7a35cdf",
+        "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
+        "tests/test_hooks.py": "658b8cc5f6c4c08ca92a89bdd5617fb2c3404e5cf945df027313dc5dd332ff1c",
+        "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
+        "tests/test_project.py": "2ebeb723433cfb53bf8e20b337d5016058e75a181b9ed0035203a14759a162ba",
+        "tests/test_rendering.py": "e93897333125cff68ce69e9e8fc23f401d9e0740427b8c995975240350cea0ef",
+        "tests/test_team_sources.py": "f1724954cdd0970bc1912debff50d95c7dee7bc7c17c6f9ab7514bf806d2b77c",
+        "tests/test_templates.py": "669d1d85586dea32ec5118361dc96f862a77b528be38d83611a89fc2ff9427af",
+        "tests/test_workflow.py": "c60af46adb6cceb3160b1c34945d3b579e4ce42be7e24cad65fa24bd215d80a1"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Describes the checks and gates a project runs; the generated keys and values are unchanged, only blank lines.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/development-workflow.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/backend-contracts.md": "310debc30b936d1941bc565fcd6145edc14b1bc6f1ddeca3c703211d9f4cd465",
+        "docs/verification/backend-contracts.md": "3bbddca6f8eddea40950463836ddbf28abfafd2fb897c7e953e49551db127065",
+        "openspec/specs/backend-capability-pack/spec.md": "45fc3ca17f9953edf4aa15f24c1a4176e84bceaf179fdb10f35ab58fd85e6a3e",
+        "project-templates/project/ai-dlc.toml.jinja": "d965a516a3b62011283b560a732edaacdf9c2a8bf84ff660fd8c65b03f626f54",
+        "project-templates/project/scripts/check_api_contract_drift.py": "81c6da34445a1329223f2592eb1389aaf35d2e12b73da73d7b9c9ffdb0b55173",
+        "tests/test_backend_capability.py": "aedd591caa61c646bcc13812728f9990e235dfa4f84f021ebf629f10d3f6d2e2"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "The api-contract and api-contract-drift commands render with the same values; whitespace only.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/backend-contracts.md"
+    },
+    {
+      "bound": {
+        "agents/skills/spec-from-prd/SKILL.md": "b12dac8c0dc495136bc0d2009e1d6077a8f9b4e63db3deb339beb6bce2e36efe",
+        "agents/templates/delivery-slice.md": "44d1e55bdd17e5fe0cf4c1d35d99ffad8f6060575ecb97496515b48a0e304429",
+        "catalog:docs/workflows/brownfield.md": "dedbc6f762c6970ac999eb74598adc31dd6dbfe16a6b3ae8842345b9e37838b4",
+        "docs/workflows/brownfield.md": "f44e9557225fdd2650fcba7f3eb6bf6ad837aaab4b2ad7610787776ecddcec35",
+        "openspec/specs/portable-development/spec.md": "7710dba93e53f973d947723117687d263b6296ad31e1ed8232da7b2f0e7ff89e",
+        "project-templates/project/docs/workflows/brownfield.md": "3a582e31ada1400b26d298d3f70ca72a4cb45100db4fd97de6f241845d0c2a8f",
+        "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
+        "tests/test_templates.py": "669d1d85586dea32ec5118361dc96f862a77b528be38d83611a89fc2ff9427af"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Already says sync conflicts leave the destination untouched for review; the one-time conflict is recorded in the changelog.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/brownfield.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/configure.md": "f4078ad05ba312983a82bd24daf5b24297631310c3bcb2d90d8f6028b492677d",
+        "docs/workflows/configure.md": "1e5d852e96349c92f3bc1920d828a7e52b09192de1133b17a70eb9d54ffa5fe1",
+        "project-templates/project/ai-dlc.toml.jinja": "d965a516a3b62011283b560a732edaacdf9c2a8bf84ff660fd8c65b03f626f54",
+        "src/ai_dlc/environment/enrollment.py": "f8e826a9dca7a8e308f9ad52c8f178ad7e6f2c6c536da7459a68c123d51e9c53",
+        "src/ai_dlc/environment/team_sources.py": "20d583a9046adfac9f0f5bf6de7aca537654eb29d0ff636c27f5a78c7c5c21a6",
+        "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Its ai-dlc.toml example already uses single blank lines and the same keys.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/configure.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/design-to-implementation.md": "ee408b745f85bdc4229b75b8dfd6c9074257194e2a65933b4ba31f56522f389d",
+        "docs/workflows/design-to-implementation.md": "51956d740aaa2b8cbfb677dc6cb4a1c81398bfa6c8f82deb12f257fe15f2fe66",
+        "openspec/specs/frontend-capability-pack/spec.md": "a8461cc35ff733d3643f9cb8fbeb691f0cae7ea7d54eae59b756883c7e5a78ea",
+        "project-templates/project/ai-dlc.toml.jinja": "d965a516a3b62011283b560a732edaacdf9c2a8bf84ff660fd8c65b03f626f54",
+        "project-templates/project/playwright.config.ts": "d06e3c907f16f5027d6e2f47112b5cca353e68525a528957f6f760eca940fd78",
+        "project-templates/project/tests/e2e/smoke.spec.ts": "8139af70f4b8ba2010efc673d4b0c6fb802ea101d2d70f08ec47b3007db78c35",
+        "src/ai_dlc/harness/design_capture.py": "8b872492b88f4a7728bedf0ae8a1edaad2312a918248bf8f5d051c8bd8b42a58",
+        "tests/test_frontend.py": "4deefd2f60011e34cdf8e79bf2d02726ea9fee99e2af43e8fe75ed51352cb0ef"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Refers to the generated configuration's gates and checks, which are unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/design-to-implementation.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/greenfield.md": "b8bf78cb5032ea2be2d67e770261aca4cca32914a41a987e3caa8f5b6969d50d",
+        "docs/workflows/greenfield.md": "80bccb627975fe028b4757cca59500ada13e7269aed5859eb16df8afd9a1f631",
+        "openspec/specs/backend-capability-pack/spec.md": "45fc3ca17f9953edf4aa15f24c1a4176e84bceaf179fdb10f35ab58fd85e6a3e",
+        "project-templates/project/ai-dlc.toml.jinja": "d965a516a3b62011283b560a732edaacdf9c2a8bf84ff660fd8c65b03f626f54",
+        "project-templates/project/docs/api/openapi.yaml": "744e869692de7df60d4195669a45f8ade009b04c00c203c4853e30f4b9af5b2d",
+        "project-templates/project/scripts/check_api_contract_drift.py": "81c6da34445a1329223f2592eb1389aaf35d2e12b73da73d7b9c9ffdb0b55173",
+        "src/ai_dlc/setup/templates.py": "47d50ea64b08b07dbb8fec7e19c7bc2555ce2b30d99aab3e27d4d152b7f6689e",
+        "tests/test_backend_capability.py": "aedd591caa61c646bcc13812728f9990e235dfa4f84f021ebf629f10d3f6d2e2"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Describes project init output by section; the sections and values are unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/greenfield.md"
+    }
+  ],
+  "schema": 2
+}

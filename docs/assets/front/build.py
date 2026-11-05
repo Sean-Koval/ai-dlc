@@ -146,13 +146,15 @@ def prepare(env: dict[str, str]) -> None:
     config = (app / "ai-dlc.toml").read_text()
     config = config.replace('tracker = "github-issues"', 'tracker = "demo-github"')
     config = config.replace('scm = "github"', 'scm = "demo-github"')
-    config = re.sub(
-        r'\[providers\.github-issues\]\n\nkind = "github-issues"\n',
+    config, replaced = re.subn(
+        r'\[providers\.github-issues\]\n+kind = "github-issues"\n',
         '[providers.demo-github]  # local stand-in for GitHub (docs/assets/front/demo_provider.py)\n'
         f'kind = "executable"\ncommand = "{provider}"\nsha256 = "{digest}"\n'
         'operations = ["capabilities"]\n',
         config,
     )
+    if replaced != 1:
+        sys.exit("build: the generated ai-dlc.toml has no [providers.github-issues] block to replace")
     (app / "ai-dlc.toml").write_text(config)
     (app / "src").mkdir()
     (app / "src/receipts.py").write_text("RETRIES = 0\n")

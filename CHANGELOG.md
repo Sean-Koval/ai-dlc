@@ -59,6 +59,10 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
   unreviewed work record, an unconnected provider, a failed `mise install`) as one
   `Error:` line instead of a traceback, with the same exit status 1;
   `AI_DLC_TRACEBACK=1` restores the traceback (KAN-251).
+- `project init` and `project adopt` write an `ai-dlc.toml` with single blank lines
+  between sections instead of runs of two to four; the settings are unchanged.
+  A project that edited its `[roles]` or `[providers.*]` lines gets one
+  `project sync` conflict on that file, to resolve by hand (KAN-263).
 
 ### Deprecated
 
