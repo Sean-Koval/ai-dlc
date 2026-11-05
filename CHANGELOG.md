@@ -18,6 +18,9 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 
 ### Added
 
+- [ADR 0002](docs/decisions/0002-jira-work-tracker-and-trace-correlation.md): the Jira
+  Cloud adapter moves from frozen to active, and the workflow plugin will give
+  sessions a work-ID join key while ai-dlc still emits no traces (KAN-284).
 - The workflow plugin: `plugins/ai-dlc-workflow/`, one optional Claude Code plugin
   with the workflow guidance, ten team skills and three hooks that run without the
   `ai-dlc` CLI and stay out of the way in hangar sandboxes, off by default

@@ -16,6 +16,13 @@ owner = "repository-maintainers"
 status = "active"
 
 [[documents]]
+id = "decision-0002-jira-tracker-traces"
+path = "docs/decisions/0002-jira-work-tracker-and-trace-correlation.md"
+kind = "decision"
+owner = "repository-maintainers"
+status = "active"
+
+[[documents]]
 id = "architecture"
 path = "docs/architecture.md"
 kind = "architecture"

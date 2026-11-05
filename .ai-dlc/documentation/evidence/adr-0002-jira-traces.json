@@ -1,0 +1,68 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "AGENTS.md": "012a8825dce2918e8516d609555ec9639f7e5618a3820b42b1612e425b22b9fc"
+      },
+      "outcome": "updated",
+      "reason": "The scope-freeze paragraph now points to ADR 0002 as amending ADR 0001's in-scope list.",
+      "reviewer": "Claude (agent)",
+      "target": "AGENTS.md"
+    },
+    {
+      "bound": {
+        "CHANGELOG.md": "f83d42a82d8f7c6a775314176b837e1686fd2e553aad559fe633cb99531c4db8"
+      },
+      "outcome": "updated",
+      "reason": "Unreleased > Added records ADR 0002.",
+      "reviewer": "Claude (agent)",
+      "target": "CHANGELOG.md"
+    },
+    {
+      "bound": {
+        "docs/catalog.toml": "1dcaca1278de087730b08a5482a956606a0e874ecd5907e9b4608fc1d832357f"
+      },
+      "outcome": "updated",
+      "reason": "Enrols ADR 0002 as an active decision document.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/catalog.toml"
+    },
+    {
+      "bound": {
+        "catalog:docs/decisions/0002-jira-work-tracker-and-trace-correlation.md": "664056836c97cd75a44bcfab6cf45f438e4ad1532afa878d1401224724c94cbc",
+        "docs/decisions/0002-jira-work-tracker-and-trace-correlation.md": "50354e4b8abaea1c4c1c541812c53063a4e4a4c98e9c97d9475430c8a0f5459e"
+      },
+      "outcome": "updated",
+      "reason": "New decision record for KAN-267 and KAN-268, accepted by Sean on 2026-11-04; ADR 0001 is left unedited, as accepted decisions are superseded, not edited.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/decisions/0002-jira-work-tracker-and-trace-correlation.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/index.md": "65c0b0508964e9cb9cc7d68cef118ffcaf83bd6b4524054d54306e09f8a57810",
+        "docs/index.md": "4da62d8898873f69f7fd6d64caa42cf8ebed421985dcdf25004b4db4026b0fc5"
+      },
+      "outcome": "updated",
+      "reason": "The scope question now links ADR 0002 beside ADR 0001.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/index.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/get-started.md": "b3cdcadc535e0e825dfe2837433f1b4ef45551430ab207c485ef7dd601bf992e",
+        "docs/assets/front/build.py": "a6ed773f33ca4175aa7b3e85a11571b22901eb791f4628402a9812487843e9d0",
+        "docs/assets/front/demo_provider.py": "a266086be5cd247643a3157617f7f56e57c9200f77f885252ddf31a72d8c4f1d",
+        "docs/workflows/get-started.md": "7052c4b9b7e1bd297f54a9f0ec133e9393f765099a358c4eef2f5f382677ab11",
+        "mkdocs.yml": "4af58b85e5683f7e748beef08e5a92d0532613ee7245490f7d87fa846d1ab49f",
+        "scripts/bootstrap.sh": "dff64e5be94a72bcfbb5dec30a34a808fb2e0a1e0b9612146086af183de8acee",
+        "scripts/docs_site_links.py": "e4f61570d3b4272d0e33fb733862105f4854906cba5e4f601c8a3d6dd3a519e8",
+        "tests/test_front_page.py": "4b61f3b76dbe33fd562eea3f9cbdd6aec8d78f3b3e057da2fc4f4e2ea6b56f59"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Setup steps are unchanged; the tracker guidance changes only after live qualification (KAN-286).",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/get-started.md"
+    }
+  ],
+  "schema": 2
+}

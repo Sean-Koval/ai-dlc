@@ -37,7 +37,8 @@ packaged assets.
 
 ai-dlc is feature-frozen as of 2026-10. New features, documentation growth and new
 OpenSpec capabilities outside the in-scope list in
-[ADR 0001](docs/decisions/0001-refocus-ai-dlc.md) stop; changes outside that list
+[ADR 0001](docs/decisions/0001-refocus-ai-dlc.md), as amended by
+[ADR 0002](docs/decisions/0002-jira-work-tracker-and-trace-correlation.md), stop; changes outside that list
 are closed with a pointer to it, and bug fixes in frozen areas are welcome. Harness
 evaluation belongs to flightdeck and sandbox runtime rendering to hangar. Check the
 list before starting work, and do not grow moved or cut areas.

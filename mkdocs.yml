@@ -101,6 +101,7 @@ nav:
       - Roadmap: roadmap.md
   - Decisions:
       - "ADR 0001: Refocus ai-dlc": decisions/0001-refocus-ai-dlc.md
+      - "ADR 0002: Jira tracker, trace correlation": decisions/0002-jira-work-tracker-and-trace-correlation.md
       - Product direction: product-direction.md
       - Framework delivery: design/framework-delivery.md
       - Project documentation: design/project-documentation.md
