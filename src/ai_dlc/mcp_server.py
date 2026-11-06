@@ -20,6 +20,14 @@ def _register_work_tools(server: FastMCP, root: Path, machine: Path | None) -> N
         return build_context(root, brief=brief)
 
     @server.tool()
+    def work_review(work_id: str, reviewer: str | None = None) -> dict:
+        """Mark an unstarted draft reviewed after validation; records the reviewer and time."""
+        from ai_dlc.documentation.learnings import resolve_author
+
+        name = reviewer if reviewer is not None else resolve_author(interactive=False)
+        return work().review(work_id, name)
+
+    @server.tool()
     def work_publish(work_id: str) -> dict:
         """Publish a reviewed work record to its bound tracker."""
         return work().publish(work_id)

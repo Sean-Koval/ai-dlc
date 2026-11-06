@@ -1504,6 +1504,26 @@ def work_new(
     typer.echo(str(root.resolve() / ".ai-dlc/work" / f"{work_id}.toml"), err=True)
 
 
+@work.command("review")
+def work_review(
+    work_id: str,
+    reviewer: Annotated[
+        str | None,
+        typer.Option(
+            help="Who reviewed the record; defaults to AI_DLC_AUTHOR or your GitHub login."
+        ),
+    ] = None,
+    root: Path = Path("."),
+    machine: Path | None = None,
+):
+    """Mark a draft reviewed after validating it and its dependencies; records who and when."""
+    from ai_dlc.documentation.learnings import resolve_author
+
+    with service_call():
+        name = reviewer if reviewer is not None else resolve_author(interactive=True)
+        conclude(service(root, machine).review(work_id, name))
+
+
 @work.command("publish")
 def work_publish(work_id: str, root: Path = Path("."), machine: Path | None = None):
     with typed_refusals():
