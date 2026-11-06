@@ -18,6 +18,10 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 
 ### Added
 
+- `ai-dlc work review WORK_ID [--reviewer NAME]` and MCP `work_review` mark a draft
+  reviewed after validating it and its dependencies. They refuse leftover TODOs and
+  started work, and record `reviewed_by` and `reviewed_at`, so the review is no longer
+  a hand edit of `reviewed = true` (KAN-262).
 - [ADR 0002](docs/decisions/0002-jira-work-tracker-and-trace-correlation.md): the Jira
   Cloud adapter moves from frozen to active, and the workflow plugin will give
   sessions a work-ID join key while ai-dlc still emits no traces (KAN-284).

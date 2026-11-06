@@ -68,7 +68,7 @@ enrollment lifecycle. Local CLI and MCP execution are current; hosted or cloud
 execution is a later qualification target. Obsidian project portals are the default machine-local canonical file links; explicit mount mode exposes existing canonical directories from a stable checkout. Neither mode synchronizes document bodies. Provider discovery remains separately scoped.
 
 Machine enrollment mutations are CLI-only in this cycle. MCP exposes
-`work_context`, `work_publish`, `work_start`, `work_status`, `work_link`, `work_finish`,
+`work_context`, `work_review`, `work_publish`, `work_start`, `work_status`, `work_link`, `work_finish`,
 `doctor`, `project_docs_check`, `knowledge_find`, `knowledge_append`, and `knowledge_note`,
 plus the documentation and workspace tools below; it does
 not expose machine enrollment mutation. These MCP identifiers differ from the
@@ -82,7 +82,7 @@ knowledge append`.
 | Readiness and context | `ai-dlc doctor`, `ai-dlc next`, `ai-dlc context` |
 | Project lifecycle | `ai-dlc project init`, `ai-dlc project adopt`, `ai-dlc project sync`, `ai-dlc project setup`, `ai-dlc project check --check ID`, `ai-dlc project check --required`, `ai-dlc project rebind` |
 | Agent configuration | `ai-dlc agents render` |
-| Local work drafting | `ai-dlc work new WORK_ID [--from-issue REF]` creates an unreviewed record without publication or mutation state |
+| Local work drafting | `ai-dlc work new WORK_ID [--from-issue REF]` creates an unreviewed record without publication or mutation state; `ai-dlc work review WORK_ID` validates it and records the reviewer |
 | Work and traceability | `ai-dlc work publish`, `ai-dlc work link`, `ai-dlc work start`, `ai-dlc work finish` (explicit `--at-merge` for owned exact-merge checkout) |
 | Local work inspection | `ai-dlc work status` reads the local record and specification state without querying the tracker |
 | Specification finalization | `ai-dlc work archive` finalizes the owned OpenSpec change, repoints the record and commits affected files before merge |

@@ -80,8 +80,8 @@ command copies the configured binding roles and issue acceptance bullets when
 present; missing source content and the default specification decision remain
 explicit TODOs. Explicit flags override derived fields.
 
-New records are always unreviewed: replace TODOs, link the formal artifacts and
-review the scope before setting `reviewed = true` and publishing or starting.
+New records are always unreviewed: replace TODOs and link the formal artifacts,
+then run `ai-dlc work review WORK_ID` before publishing or starting.
 Existing records and unsafe IDs are refused without being overwritten; offline
 drafting creates no mutation state.
 

@@ -93,7 +93,7 @@ Obsidian vaults support portal linking and explicit local project mounts; vault
 creation is not provided. Guided setup exists for GitHub, Jira Cloud and the
 unsupported Plane adapter.
 
-MCP includes `work_context`, `work_publish`, `work_start`, `work_status`,
+MCP includes `work_context`, `work_review`, `work_publish`, `work_start`, `work_status`,
 `work_link`, `work_finish`, `doctor`, `knowledge_find`, `knowledge_append` and
 `knowledge_note`, alongside project-document and workspace tools. These
 identifiers differ from the space-separated CLI commands, such as
@@ -110,7 +110,7 @@ identifiers differ from the space-separated CLI commands, such as
 | Project maintenance | `ai-dlc project sync`, `ai-dlc project rebind` | Staged Copier updates; previews/applies reviewed provider rebinding |
 | Project execution | `ai-dlc project setup`, `ai-dlc project check --check ID`, `ai-dlc project check --required` | Runs selected checks or the full required set and emits receipts that list every required ID; `--target` is `local` or `github-actions` |
 | Agent configuration | `ai-dlc agents render` | Previews, applies, or verifies owned project/personal client configuration |
-| Local work drafting | `ai-dlc work new WORK_ID [--from-issue REF]` | Creates an unreviewed record from explicit fields or a configured tracker read; does not publish or initialize mutation state |
+| Local work drafting | `ai-dlc work new WORK_ID [--from-issue REF]`, `ai-dlc work review WORK_ID` | Creates an unreviewed record from fields or a tracker read, then validates it and records the reviewer |
 | Work lifecycle | `ai-dlc work publish`, `ai-dlc work start`, `ai-dlc work pr`, `ai-dlc work finish` | Reconciles tracker state, binds work to a branch and enforces completion gates; `work finish <id> --at-merge` finishes from the exact merge commit |
 | Local work inspection | `ai-dlc work status`, MCP `work_status` | Reads the local record, bindings and active/archived specification state without querying tracker status |
 | Specification finalization | `ai-dlc work archive` | Archives this work's OpenSpec change, promotes specifications, repoints the record and commits only affected files before merge |
