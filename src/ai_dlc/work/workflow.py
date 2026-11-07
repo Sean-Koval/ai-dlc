@@ -6,11 +6,12 @@ import os
 import re
 import tomllib
 from dataclasses import asdict
+from datetime import UTC, datetime
 from pathlib import Path, PurePosixPath
 from urllib.parse import urlsplit
 
 import tomli_w
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_serializer
 
 from ai_dlc.config import digest as config_digest
 from ai_dlc.config import load_project, read_toml, resolve_layers, resolve_runtime
@@ -46,6 +47,8 @@ class Work(BaseModel):
     spec_reason: str = Field(min_length=1)
     acceptance: list[str] = Field(min_length=1)
     reviewed: bool = False
+    reviewed_by: str | None = None
+    reviewed_at: str | None = None
     depends_on: list[str] = Field(default_factory=list)
     requirements: list[str] = Field(default_factory=list)
     providers: dict[str, str] = Field(default_factory=dict)
@@ -81,6 +84,45 @@ class Work(BaseModel):
         if any(not s.strip() for s in value):
             raise ValueError("Acceptance criteria cannot be empty")
         return value
+
+    @field_validator("reviewed_by")
+    @classmethod
+    def reviewer_name(cls, value):
+        if value is not None and (not value.strip() or not value.isprintable()):
+            raise ValueError("Reviewer must be a nonempty single-line name")
+        return value
+
+    @field_validator("reviewed_at")
+    @classmethod
+    def review_time(cls, value):
+        if value is not None and not re.fullmatch(REVIEW_TIME_PATTERN, value):
+            raise ValueError("reviewed_at must be a UTC time such as 2026-11-06T14:30:00Z")
+        return value
+
+    @model_serializer(mode="wrap")
+    def _omit_unrecorded_review(self, handler):
+        # TOML has no null, and records reviewed by hand carry no reviewer or time.
+        data = handler(self)
+        for key in ("reviewed_by", "reviewed_at"):
+            if data.get(key) is None:
+                data.pop(key, None)
+        return data
+
+
+REVIEW_TIME_PATTERN = r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z"
+# Placeholders `work new` writes when the source has no value; a review must replace them.
+DRAFT_PLACEHOLDER = "TODO:"
+
+
+def draft_placeholders(work: dict) -> list[str]:
+    """Fields that still hold a `work new` placeholder, in record order."""
+    fields = []
+    for field in ("title", "scope", "spec_reason"):
+        if work[field].strip().startswith(DRAFT_PLACEHOLDER):
+            fields.append(field)
+    if any(item.strip().startswith(DRAFT_PLACEHOLDER) for item in work["acceptance"]):
+        fields.append("acceptance")
+    return fields
 
 
 def project_source_digest(root: Path) -> str | None:
@@ -482,6 +524,72 @@ class WorkService:
             with path.open("x") as handle:
                 handle.write(tomli_w.dumps(record))
             return record
+
+    def review(self, work_id, reviewer, *, now=None):
+        """Mark an unstarted record reviewed after validating it and its dependency closure.
+
+        Records who reviewed it and when. The file keeps its authored content: no
+        provider binding is resolved or written, so publishing still pins bindings.
+        """
+        try:
+            Work.safe_id(work_id)
+        except ValueError as error:
+            raise RefusedError(f"{error}: {work_id!r}") from None
+        if not isinstance(reviewer, str) or not reviewer.strip() or not reviewer.isprintable():
+            raise RefusedError("Reviewer must be a nonempty single-line name")
+        reviewer = reviewer.strip()
+        with project_write_lock(self.root):
+            self._check_source()
+            path = inside(self.root, f".ai-dlc/work/{work_id}.toml")
+            if not path.is_file():
+                raise RefusedError(
+                    f"No work record .ai-dlc/work/{work_id}.toml; create it with work new"
+                )
+            raw = tomllib.loads(path.read_text())
+            records, errors = read_work_graph(self.root, self.config, work_id)
+            if errors:
+                raise RefusedError("Work validation failed: " + "; ".join(errors))
+            work = records[work_id]
+            branch = work["artifacts"].get("branch")
+            if branch:
+                raise RefusedError(
+                    f"Work {work_id} is already started on {branch}; its review cannot change"
+                )
+            placeholders = draft_placeholders(work)
+            if placeholders:
+                raise RefusedError(
+                    f"Work {work_id} still has TODO placeholders in {', '.join(placeholders)}; "
+                    "replace them before review"
+                )
+            result = {
+                "work_id": work_id,
+                "path": f".ai-dlc/work/{work_id}.toml",
+                "dependencies": sorted(set(records) - {work_id}),
+            }
+            if raw.get("reviewed") is True:
+                return {
+                    **result,
+                    "status": "already reviewed",
+                    "reviewed_by": raw.get("reviewed_by"),
+                    "reviewed_at": raw.get("reviewed_at"),
+                }
+            stamp = (now or datetime.now(UTC)).astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+            review = {"reviewed": True, "reviewed_by": reviewer, "reviewed_at": stamp}
+            # Keep the review beside the flag it explains; other keys stay as authored.
+            updated = {}
+            for key, value in raw.items():
+                if key in review:
+                    continue
+                updated[key] = value
+                if key == "acceptance":
+                    updated.update(review)
+            raw = {**updated, **review} if "reviewed" not in updated else updated
+            Work.model_validate(raw)
+            self._check_source()
+            tmp = path.with_suffix(".toml.tmp")
+            tmp.write_text(tomli_w.dumps(raw))
+            tmp.replace(path)
+            return {**result, "status": "reviewed", "reviewed_by": reviewer, "reviewed_at": stamp}
 
     def load(self, work_id, mutation=False):
         if mutation:

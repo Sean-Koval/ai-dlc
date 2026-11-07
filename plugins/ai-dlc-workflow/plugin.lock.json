@@ -11,11 +11,11 @@
     "skill:needs-spec": "sha256:573d9e79cbc1b15e911a5dffdd61bcf2eaf1d089f491b2445d45b77d53bbb2f2",
     "skill:prd-draft": "sha256:69df873e0ac8c258596697e3efac2b2745bf51400b80a4cde14f31e0c165dc51",
     "skill:review-inbox": "sha256:8b58913b870212b4b04b14d921efb72ed92007cec043513eb3baef36e907c846",
-    "skill:spec-from-prd": "sha256:b12dac8c0dc495136bc0d2009e1d6077a8f9b4e63db3deb339beb6bce2e36efe"
+    "skill:spec-from-prd": "sha256:b280cb4d07935ed631450f7260e608aafe4177a059d83f79b17da3c0e9bb71ad"
   },
-  "content_digest": "sha256:d4e51aa8e89f5e91c2ad69005bf040c516a91df3433bfb47213a12b47ad6bf49",
+  "content_digest": "sha256:6dd56c28f72fa2ab8f8c3211d02dd4ffb0d22f06b45ba254d5f01fa779f69c4e",
   "files": {
-    ".claude-plugin/plugin.json": "sha256:d87f55f322564ea16a629064ed08100dcdd446cff6d66feeaf490fc4fcb2ff55",
+    ".claude-plugin/plugin.json": "sha256:42f40f13d6801cfb765afaf0ba5620833f984a15b871b6c9470a211a8f218875",
     "README.md": "sha256:81652875168099e96bd4c7c95ca84baf0fac62cd0acb5f9b743ced64ec9ec497",
     "hooks/aidlc_hook.py": "sha256:b8ca52e641bef5c0f4b81420bd1ad74e4018f074ad5c2cf1cab963f1cf667284",
     "hooks/hooks.json": "sha256:8ddf9b2fc137326ad81a99bb6b1cd4d1dca507cb2e266cd30045b3d0d3f3d4e1",
@@ -29,13 +29,13 @@
     "skills/needs-spec/SKILL.md": "sha256:573d9e79cbc1b15e911a5dffdd61bcf2eaf1d089f491b2445d45b77d53bbb2f2",
     "skills/prd-draft/SKILL.md": "sha256:69df873e0ac8c258596697e3efac2b2745bf51400b80a4cde14f31e0c165dc51",
     "skills/review-inbox/SKILL.md": "sha256:8b58913b870212b4b04b14d921efb72ed92007cec043513eb3baef36e907c846",
-    "skills/spec-from-prd/SKILL.md": "sha256:b12dac8c0dc495136bc0d2009e1d6077a8f9b4e63db3deb339beb6bce2e36efe"
+    "skills/spec-from-prd/SKILL.md": "sha256:b280cb4d07935ed631450f7260e608aafe4177a059d83f79b17da3c0e9bb71ad"
   },
   "native": {
     "codex": {
-      "content_digest": "sha256:3b11d693df6a5814312074c77f5b4718981d0b1f77708692ff1f9c4bd0985111",
+      "content_digest": "sha256:efbdf26d1b149a13a2e355220048a5fad6b472d1f686ae46a31137489ec800a8",
       "files": {
-        ".codex-plugin/plugin.json": "sha256:e787c6a27d3c72d540945ba381ccb8272182a5139b980245a105f93c3b243df8",
+        ".codex-plugin/plugin.json": "sha256:ba1cbab7458bab9a9460a32769047d760adeb4f96195d079a9dd0f017de1f854",
         "AGENTS.fragment.md": "sha256:b8f579b63df48aabf9499cd4306989b43a133b89379fe18f2b999e8351145b02",
         "hooks.json": "sha256:4d2c2097f9c3004dca11d040acf3353eb6af9d0b96a63910f508a36a8d284f63",
         "hooks/aidlc_hook.py": "sha256:b8ca52e641bef5c0f4b81420bd1ad74e4018f074ad5c2cf1cab963f1cf667284",
@@ -49,11 +49,11 @@
         "skills/needs-spec/SKILL.md": "sha256:573d9e79cbc1b15e911a5dffdd61bcf2eaf1d089f491b2445d45b77d53bbb2f2",
         "skills/prd-draft/SKILL.md": "sha256:69df873e0ac8c258596697e3efac2b2745bf51400b80a4cde14f31e0c165dc51",
         "skills/review-inbox/SKILL.md": "sha256:8b58913b870212b4b04b14d921efb72ed92007cec043513eb3baef36e907c846",
-        "skills/spec-from-prd/SKILL.md": "sha256:b12dac8c0dc495136bc0d2009e1d6077a8f9b4e63db3deb339beb6bce2e36efe"
+        "skills/spec-from-prd/SKILL.md": "sha256:b280cb4d07935ed631450f7260e608aafe4177a059d83f79b17da3c0e9bb71ad"
       }
     }
   },
   "plugin": "ai-dlc-workflow",
-  "revision": 4,
+  "revision": 5,
   "schema": 1
 }

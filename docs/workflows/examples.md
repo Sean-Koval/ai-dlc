@@ -5,9 +5,10 @@
 With tracker and SCM connections configured:
 
 1. Draft work from an existing issue: `ai-dlc work new improve-setup --from-issue 42`
-2. Review `.ai-dlc/work/improve-setup.toml`: set scope and acceptance criteria,
-   decide whether a specification is required, link it when needed, and set
-   `reviewed = true`.
+2. Edit `.ai-dlc/work/improve-setup.toml`: set scope and acceptance criteria,
+   decide whether a specification is required and link it when needed. Then
+   record the review: `ai-dlc work review improve-setup`. It refuses leftover
+   TODOs and records who reviewed it and when.
 3. Publish and start it:
    ```sh
    ai-dlc work publish improve-setup
