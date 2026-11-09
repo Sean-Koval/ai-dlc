@@ -1,0 +1,32 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "docs/stylesheets/airframe-docs.css": "9f9085f311227707797cd29f0d54aa61b1d75275880eeec453e93af9bc3f4d8c"
+      },
+      "outcome": "updated",
+      "reason": "Vendored unmodified from agent-factory theme-v16 by scripts/sync-airframe.sh (KAN-75): the Terminal bar is a sentence-case sans label with the product name bright. Allowed theme-refresh maintenance under the ADR 0001 freeze.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/stylesheets/airframe-docs.css"
+    },
+    {
+      "bound": {
+        "docs/stylesheets/airframe-tokens.json": "f4307b9d4e6f41db04c8bee25fff364327b1746867badd798b23512ab8fae8c0"
+      },
+      "outcome": "updated",
+      "reason": "Vendored unmodified from agent-factory theme-v16 by scripts/sync-airframe.sh (KAN-75): the Terminal bar is a sentence-case sans label with the product name bright. Allowed theme-refresh maintenance under the ADR 0001 freeze.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/stylesheets/airframe-tokens.json"
+    },
+    {
+      "bound": {
+        "docs/stylesheets/airframe.css": "3545e278f91dfd8655c11c412cab3ae56d9f9f30839d66639f30a7076fb91f2f"
+      },
+      "outcome": "updated",
+      "reason": "Vendored unmodified from agent-factory theme-v16 by scripts/sync-airframe.sh (KAN-75): the Terminal bar is a sentence-case sans label with the product name bright. Allowed theme-refresh maintenance under the ADR 0001 freeze.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/stylesheets/airframe.css"
+    }
+  ],
+  "schema": 2
+}
