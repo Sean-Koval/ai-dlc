@@ -32,20 +32,21 @@ ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = "ai-dlc-workflow"
 PLUGIN_DIRECTORY = Path("plugins") / PLUGIN
 GUIDE = "ai-dlc-workflow"
-# day-start and day-end journal over a personal vault; they stay in the personal profile.
+# daily-note, capture and kb-publish are the second-brain skills (ADR 0003). They work
+# against whichever vault and site the machine declares, so they ship to every harness.
 TEAM_SKILLS = (
+    "capture",
+    "daily-note",
     "design-brief",
     "design-evaluate",
     "discovery",
     "document-organize",
     "document-review",
     "handoff",
-    "needs-spec",
+    "kb-publish",
     "prd-draft",
-    "review-inbox",
     "spec-from-prd",
 )
-EXCLUDED_SKILLS = ("day-end", "day-start")
 AUTHORED = frozenset({"README.md"})
 NATIVE = "native/codex"
 CODEX_HOOK_ROOT = "${PLUGIN_ROOT:-${CODEX_HOME:-$HOME/.codex}/" + PLUGIN + "}"
@@ -123,9 +124,11 @@ def guide_skill() -> str:
         "",
         "## Always",
         "",
-        "- Use the team skills in this plugin for judgment: discovery, prd-draft, needs-spec,",
-        "  spec-from-prd, review-inbox, handoff, document-review, document-organize and the",
-        "  optional design-brief and design-evaluate.",
+        "- Use the team skills in this plugin for judgment: discovery, prd-draft,",
+        "  spec-from-prd, handoff, document-review, document-organize and the optional",
+        "  design-brief and design-evaluate.",
+        "- Use daily-note, capture and kb-publish for the personal second brain: daily",
+        "  notes and captures stay in the vault, and only a reviewed note is published.",
         "- When the repository renders its own copies of these skills (unprefixed, under",
         "  `.claude/skills`), prefer the repository copies and its AGENTS.md guidance.",
         *(f"- {line}" for line in portable),

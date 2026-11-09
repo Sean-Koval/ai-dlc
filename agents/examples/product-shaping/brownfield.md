@@ -81,7 +81,7 @@ mandatory UI, tracker publication and a broader export platform.
 Ask the maintainer whether localization should be separate and opt-in, and obtain
 a reporting-task example. Inspect and run baseline characterization. Exit when
 RQ-001 and RQ-002 resolve a bounded outcome and RQ-003 records reproducible
-compatibility evidence. Then use needs-spec and the configured formal provider
+compatibility evidence. Then use spec-from-prd and the configured formal provider
 before implementing changed behavior. Reuse this canonical brief's IDs in that
 handoff; a PRD can elaborate rationale if needed without renumbering requirements.
 

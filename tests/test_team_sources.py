@@ -652,13 +652,13 @@ def test_actual_teamai_role_and_tag_files_select_namespaced_skill(source_setup):
 
 def test_disabled_shipped_skill_names_remain_reserved(source_setup):
     files = native_files()
-    files["skills/day-start/SKILL.md"] = files.pop("skills/team-review/SKILL.md").replace(
-        "team-review", "day-start"
+    files["skills/daily-note/SKILL.md"] = files.pop("skills/team-review/SKILL.md").replace(
+        "team-review", "daily-note"
     )
-    files["manifest.toml"] = files["manifest.toml"].replace("team-review", "day-start")
+    files["manifest.toml"] = files["manifest.toml"].replace("team-review", "daily-note")
     setup = source_setup(files, roles=["developer"])
     enroll(setup)
-    with pytest.raises(ValueError, match="skill collision: day-start"):
+    with pytest.raises(ValueError, match="skill collision: daily-note"):
         render_agents(setup[-1], apply=True)
     assert not (setup[-1] / "AGENTS.md").exists()
 

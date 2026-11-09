@@ -1,59 +1,62 @@
 {
   "components": {
-    "guide:ai-dlc-workflow": "sha256:edfb5aec39eb1a5d74fe8ef098e392f4ccaff5c3e1a76275fef82b884a04363b",
+    "guide:ai-dlc-workflow": "sha256:fc81cb2b4f4fdf3f5b4ad107e19cdd0fee08a78b622f60c7664a5ee6484d542e",
     "hooks:ai-dlc": "sha256:ededd73cd221e68f5cef14837055e29c145e7433228f47dd84f5de0fdb62704f",
+    "skill:capture": "sha256:c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
+    "skill:daily-note": "sha256:c7fe91f4efa30e6e2080919d8379cc5407582130fe1cc5068f10e79e4258d8c4",
     "skill:design-brief": "sha256:e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5",
     "skill:design-evaluate": "sha256:d6892ed5e426f8bbf0df4bba1bff09bbc602e2136d21a9369957eb47dbdaa26a",
     "skill:discovery": "sha256:7460a3fa47474f28f2224eaea675438ba7cef08463d53bcf55d1a911e59ee2a2",
     "skill:document-organize": "sha256:85353fd4bf2dc1f2ba4f3f7b6896093f38cc4b09d8ed2dacf950b10e568c7ead",
     "skill:document-review": "sha256:5e2f71219b98cd53dd6a3a73b3bbccc1873b796a14ec1347875a39c911db9ad3",
     "skill:handoff": "sha256:47813221a030ff1d19642b9e6ebf234ded18fd128fef857badd4b77612529ecd",
-    "skill:needs-spec": "sha256:573d9e79cbc1b15e911a5dffdd61bcf2eaf1d089f491b2445d45b77d53bbb2f2",
+    "skill:kb-publish": "sha256:1a4d85383b6a5258a4e617e2f2d6ad5fcd907dd861aa50eb33d833d5f9624c2b",
     "skill:prd-draft": "sha256:046b82e994b36b2202f7772aafc93557b903d2b541e69a62414d9b5a0b5d75fc",
-    "skill:review-inbox": "sha256:7aa21f4eca0bd4f507046bc481f92f4f4b2acea8ee0b927c93b7f53103b3ec15",
-    "skill:spec-from-prd": "sha256:b280cb4d07935ed631450f7260e608aafe4177a059d83f79b17da3c0e9bb71ad"
+    "skill:spec-from-prd": "sha256:8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64"
   },
-  "content_digest": "sha256:b3f7f564fead9545648a2c7515856bbf5a5f5207e3f70e83d6d76c5f02ead0ad",
+  "content_digest": "sha256:208068fdcdbc6afa0a6504625aea63540ddbd3f2348394dcc00c06b65f64419d",
   "files": {
-    ".claude-plugin/plugin.json": "sha256:e02b72202b8a716f84567b7c7ad8e9d9a632299e6ce7b872fb8e1708bb05b1c2",
-    "README.md": "sha256:7f9294bff99ba622a7bd230c9f87a07ee7ca45051401e472a8a3d22a79bd96f3",
+    ".claude-plugin/plugin.json": "sha256:6cfd743841b0c8862c751502ab494f0867a3a418ac878ea8cab389d8b03bc499",
+    "README.md": "sha256:1c90defa77384652be8af275592048ff89a31d6e63ce58b1fd7dfde6d2b06b88",
     "hooks/aidlc_hook.py": "sha256:621dec6fb8e24d199568d85ab36e36ff0931081393bb475f28e4b4f306a3d376",
     "hooks/hooks.json": "sha256:ccba13e96d1b53ea5926fb9af2a3dd6c02817c182acbd8d002a54a1ba665cdad",
-    "skills/ai-dlc-workflow/SKILL.md": "sha256:edfb5aec39eb1a5d74fe8ef098e392f4ccaff5c3e1a76275fef82b884a04363b",
+    "skills/ai-dlc-workflow/SKILL.md": "sha256:fc81cb2b4f4fdf3f5b4ad107e19cdd0fee08a78b622f60c7664a5ee6484d542e",
+    "skills/capture/SKILL.md": "sha256:c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
+    "skills/daily-note/SKILL.md": "sha256:c7fe91f4efa30e6e2080919d8379cc5407582130fe1cc5068f10e79e4258d8c4",
     "skills/design-brief/SKILL.md": "sha256:e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5",
     "skills/design-evaluate/SKILL.md": "sha256:d6892ed5e426f8bbf0df4bba1bff09bbc602e2136d21a9369957eb47dbdaa26a",
     "skills/discovery/SKILL.md": "sha256:7460a3fa47474f28f2224eaea675438ba7cef08463d53bcf55d1a911e59ee2a2",
     "skills/document-organize/SKILL.md": "sha256:85353fd4bf2dc1f2ba4f3f7b6896093f38cc4b09d8ed2dacf950b10e568c7ead",
     "skills/document-review/SKILL.md": "sha256:5e2f71219b98cd53dd6a3a73b3bbccc1873b796a14ec1347875a39c911db9ad3",
     "skills/handoff/SKILL.md": "sha256:47813221a030ff1d19642b9e6ebf234ded18fd128fef857badd4b77612529ecd",
-    "skills/needs-spec/SKILL.md": "sha256:573d9e79cbc1b15e911a5dffdd61bcf2eaf1d089f491b2445d45b77d53bbb2f2",
+    "skills/kb-publish/SKILL.md": "sha256:1a4d85383b6a5258a4e617e2f2d6ad5fcd907dd861aa50eb33d833d5f9624c2b",
     "skills/prd-draft/SKILL.md": "sha256:046b82e994b36b2202f7772aafc93557b903d2b541e69a62414d9b5a0b5d75fc",
-    "skills/review-inbox/SKILL.md": "sha256:7aa21f4eca0bd4f507046bc481f92f4f4b2acea8ee0b927c93b7f53103b3ec15",
-    "skills/spec-from-prd/SKILL.md": "sha256:b280cb4d07935ed631450f7260e608aafe4177a059d83f79b17da3c0e9bb71ad"
+    "skills/spec-from-prd/SKILL.md": "sha256:8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64"
   },
   "native": {
     "codex": {
-      "content_digest": "sha256:031b7684af0f93ca8d73ff4275f150e4ac4d348309d12b9e1a324c6e063419f3",
+      "content_digest": "sha256:985c9b9047b108c4824bfe4ad015b4984c29cb0802d712da4161b14e7f405e44",
       "files": {
-        ".codex-plugin/plugin.json": "sha256:f7509cd958594d8bf5d2c6507e0cab218f98a71c68552a32f6bbfb81e5ed65c4",
-        "AGENTS.fragment.md": "sha256:025825940a54b5e9dc5e3cf351d1e3fd88e61215a5cf96155aaaf24ce28dfd62",
+        ".codex-plugin/plugin.json": "sha256:ccc9052ac9ab5c2a47b79443edb122016b9f637080e636c57c3b62b243789ad9",
+        "AGENTS.fragment.md": "sha256:abaabe2b4b31574d3d38c0b1f9fca4db358a3d038b798d820f5eaf571af3724e",
         "hooks.json": "sha256:4d2c2097f9c3004dca11d040acf3353eb6af9d0b96a63910f508a36a8d284f63",
         "hooks/aidlc_hook.py": "sha256:621dec6fb8e24d199568d85ab36e36ff0931081393bb475f28e4b4f306a3d376",
-        "skills/ai-dlc-workflow/SKILL.md": "sha256:edfb5aec39eb1a5d74fe8ef098e392f4ccaff5c3e1a76275fef82b884a04363b",
+        "skills/ai-dlc-workflow/SKILL.md": "sha256:fc81cb2b4f4fdf3f5b4ad107e19cdd0fee08a78b622f60c7664a5ee6484d542e",
+        "skills/capture/SKILL.md": "sha256:c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
+        "skills/daily-note/SKILL.md": "sha256:c7fe91f4efa30e6e2080919d8379cc5407582130fe1cc5068f10e79e4258d8c4",
         "skills/design-brief/SKILL.md": "sha256:e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5",
         "skills/design-evaluate/SKILL.md": "sha256:d6892ed5e426f8bbf0df4bba1bff09bbc602e2136d21a9369957eb47dbdaa26a",
         "skills/discovery/SKILL.md": "sha256:7460a3fa47474f28f2224eaea675438ba7cef08463d53bcf55d1a911e59ee2a2",
         "skills/document-organize/SKILL.md": "sha256:85353fd4bf2dc1f2ba4f3f7b6896093f38cc4b09d8ed2dacf950b10e568c7ead",
         "skills/document-review/SKILL.md": "sha256:5e2f71219b98cd53dd6a3a73b3bbccc1873b796a14ec1347875a39c911db9ad3",
         "skills/handoff/SKILL.md": "sha256:47813221a030ff1d19642b9e6ebf234ded18fd128fef857badd4b77612529ecd",
-        "skills/needs-spec/SKILL.md": "sha256:573d9e79cbc1b15e911a5dffdd61bcf2eaf1d089f491b2445d45b77d53bbb2f2",
+        "skills/kb-publish/SKILL.md": "sha256:1a4d85383b6a5258a4e617e2f2d6ad5fcd907dd861aa50eb33d833d5f9624c2b",
         "skills/prd-draft/SKILL.md": "sha256:046b82e994b36b2202f7772aafc93557b903d2b541e69a62414d9b5a0b5d75fc",
-        "skills/review-inbox/SKILL.md": "sha256:7aa21f4eca0bd4f507046bc481f92f4f4b2acea8ee0b927c93b7f53103b3ec15",
-        "skills/spec-from-prd/SKILL.md": "sha256:b280cb4d07935ed631450f7260e608aafe4177a059d83f79b17da3c0e9bb71ad"
+        "skills/spec-from-prd/SKILL.md": "sha256:8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64"
       }
     }
   },
   "plugin": "ai-dlc-workflow",
-  "revision": 6,
+  "revision": 7,
   "schema": 1
 }

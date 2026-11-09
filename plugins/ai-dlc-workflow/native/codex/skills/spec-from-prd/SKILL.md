@@ -1,6 +1,6 @@
 ---
 name: spec-from-prd
-description: Use when translating a reviewed product brief or PRD into behavioral specifications and deliverable work.
+description: Use when translating a reviewed product brief or PRD into behavioral specifications and deliverable work, or when deciding whether proposed work needs a formal specification at all.
 ---
 
 # Spec From PRD
@@ -22,8 +22,10 @@ these assets, produce the following fields directly for each slice:
   local slug does not create a remote ticket or imply approval.
 - **Scope and exclusions:** one independently reviewable, finishable outcome,
   preserved contracts and excluded work.
-- **Specification decision:** explicit `requires_spec` and `spec_reason`. Changed
-  observable behavior normally requires a formal specification. A no-code
+- **Specification decision:** explicit `requires_spec` and `spec_reason`. A
+  user-visible behavior change, contract change or cross-module invariant needs a
+  formal specification; a mechanical refactor that preserves observable behavior
+  may not. Judge the actual scope, not the ticket size. A no-code
   verification item references existing behavior and records `requires_spec=false`
   with its reason; it does not create another behavior spec.
 - **Traceability:** requirement → formal scenario (when needed) → work ID →

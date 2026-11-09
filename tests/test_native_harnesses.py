@@ -36,7 +36,7 @@ def test_claude_remote_definition_upgrades_owned_url_only_entry(tmp_path):
 
 def _native_project(root, clients='["antigravity"]', extra=""):
     (root / "ai-dlc.toml").write_text(
-        f'schema=4\n[roles]\nagent-client={clients}\n[agents]\nskills=["day-start"]\n'
+        f'schema=4\n[roles]\nagent-client={clients}\n[agents]\nskills=["daily-note"]\n'
         '[[agents.servers]]\nid="remote"\nurl="https://example.com/mcp"\n'
         '[[agents.servers]]\nid="local"\ncommand="ai-dlc"\nargs=["mcp", "serve"]\n' + extra
     )
@@ -57,7 +57,7 @@ def test_antigravity_emits_native_paths_and_transports(tmp_path):
             "local": {"command": "ai-dlc", "args": ["mcp", "serve"]},
         }
     }
-    assert (tmp_path / ".agents/skills/day-start/SKILL.md").is_file()
+    assert (tmp_path / ".agents/skills/daily-note/SKILL.md").is_file()
     rule = (tmp_path / ".agents/rules/ai-dlc.md").read_text()
     assert "Read ai-dlc.toml" in rule
     assert "ai-dlc work finish" not in rule
@@ -74,11 +74,11 @@ def test_codex_antigravity_share_one_owned_skill_set(tmp_path):
     _native_project(tmp_path, '["codex", "antigravity"]')
     render_agents(tmp_path, apply=True)
     owned = json.loads((tmp_path / ".ai-dlc/agent-ownership.json").read_text())
-    assert ".agents/skills/day-start/SKILL.md" in owned["files"]
+    assert ".agents/skills/daily-note/SKILL.md" in owned["files"]
     assert render_agents(tmp_path, apply=True)["clean"] is True
-    before = (tmp_path / ".agents/skills/day-start/SKILL.md").read_bytes()
+    before = (tmp_path / ".agents/skills/daily-note/SKILL.md").read_bytes()
     assert render_agents(tmp_path, apply=True, client="antigravity")["clean"] is True
-    assert (tmp_path / ".agents/skills/day-start/SKILL.md").read_bytes() == before
+    assert (tmp_path / ".agents/skills/daily-note/SKILL.md").read_bytes() == before
 
 
 def test_team_skill_links_resolve_from_root_and_antigravity_rule(tmp_path, monkeypatch):
@@ -236,7 +236,7 @@ def test_native_rule_custom_provider_links_resolve_to_project_files(tmp_path):
 
 
 @pytest.mark.parametrize(
-    "missing", [".agents/skills/day-start/SKILL.md", ".agents/mcp_config.json"]
+    "missing", [".agents/skills/daily-note/SKILL.md", ".agents/mcp_config.json"]
 )
 def test_native_readiness_refuses_missing_selected_assets(tmp_path, missing):
     """The delivered row must not remain ready when a selected native asset disappears."""

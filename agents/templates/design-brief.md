@@ -46,5 +46,5 @@ these before generation. Missing task inputs leave a draft; do not infer approva
 ## Next handoff
 
 State what is ready, which decisions remain unresolved, the exact candidate access
-instructions when available, and the next action. Use discovery/needs-spec for a
+instructions when available, and the next action. Use discovery/spec-from-prd for a
 material unresolved outcome or behavior. Keep existing project completion gates.
