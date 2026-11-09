@@ -329,12 +329,30 @@
     },
     {
       "bound": {
-        "docs/assets/front/plugin-skills.svg": "e2229a010b557f910d2f147d7669bf1f205b04b207dcb30c3fab89b9a56e69a4"
+        "docs/assets/front/plugin-skills.svg": "f81ed9ca0bc536cf685836ff2a445c644a99a2886bca9c51351e542bb2964529"
       },
       "outcome": "updated",
-      "reason": "Plugin capture shows r7 and the twelve skills.",
+      "reason": "Regenerated with docs/assets/front/build.py at Claude Code 2.1.302: r7 and twelve skills.",
       "reviewer": "Claude (agent)",
       "target": "docs/assets/front/plugin-skills.svg"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.cast": "138707e72eddf1186f3068a0e082f81cf56d1eeae4ae913f0fa9b838768ae73e"
+      },
+      "outcome": "updated",
+      "reason": "Regenerated: the recorded project init commits the changed project templates, so its commit ids moved.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.cast"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.svg": "9f21d092ecc9d729fc2644aa9e244ef4671b0c19255ccc362e7647955bb7a695"
+      },
+      "outcome": "updated",
+      "reason": "Regenerated with work.cast; only the recorded commit ids changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.svg"
     },
     {
       "bound": {
