@@ -242,9 +242,9 @@ frontmatter (merged PR, merge commit, author) that
 note pending and preserves completion.
 
 `work start` returns up to five matching learning paths and first lines; read
-relevant notes before implementing. The session-start hook recalls notes for the
-branch's bound work record. Stop reminders use only ignored local friction
-counts and never transmit them.
+relevant notes before implementing. Session start recalls notes for the branch's
+bound work. Stop reminds the agent once per session for bound work, using only
+local counts.
 
 ### Local frontend evidence
 

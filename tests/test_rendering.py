@@ -120,6 +120,23 @@ def test_render_preserves_authored_text_and_detects_stale_generated_section(tmp_
     assert render_agents(tmp_path)["clean"] is False
 
 
+def test_tracker_render_sends_decisions_to_the_tracker_not_chat(tmp_path):
+    """KAN-318: a question for a person becomes a tracker decision work item."""
+    from ai_dlc.harness.agents import render_agents
+
+    (tmp_path / "ai-dlc.toml").write_text(
+        'schema=4\n[roles]\ntracker="github-issues"\nagent-client=["codex"]\n'
+        '[providers.github-issues]\nkind="github-issues"\nrepository="example/project"\n'
+    )
+    render_agents(tmp_path, apply=True)
+
+    agents = (tmp_path / "AGENTS.md").read_text()
+    assert "decision work item in the tracker that blocks the work" in agents
+    assert "do not ask it in chat" in agents
+    assert "as an ADR in docs/decisions" in agents
+    assert "Store architecture, design, decisions and runbooks" not in agents
+
+
 def test_local_only_render_keeps_setup_docs_and_checks_without_delivery_claims(tmp_path):
     """A project with no delivery roles must not advertise a tracker lifecycle."""
     from ai_dlc.harness.agents import render_agents
@@ -132,7 +149,7 @@ def test_local_only_render_keeps_setup_docs_and_checks_without_delivery_claims(t
 
     agents = (tmp_path / "AGENTS.md").read_text()
     assert "active .ai-dlc/work record, if present" in agents
-    assert "Store architecture, design, decisions and runbooks in docs/." in agents
+    assert "Store architecture, design and runbooks in docs/; record a decision" in agents
     assert "- test: `pytest -q`" in agents
     assert "ai-dlc project check --required" in agents
     for unavailable in [
@@ -142,6 +159,7 @@ def test_local_only_render_keeps_setup_docs_and_checks_without_delivery_claims(t
         "Immediately before merge",
         "ai-dlc work finish",
         "temporary detached worktree",
+        "decision work item",
     ]:
         assert unavailable not in agents
         assert unavailable not in (tmp_path / ".agents/rules/ai-dlc.md").read_text()

@@ -8,13 +8,12 @@ headless = false
 
 [roles]
 specs = "openspec"
-# GitHub Issues owns delivery tasks; GitHub Projects organizes their progress.
-# Keep repository, account and Project board mappings in each project's ai-dlc.toml.
-# Jira is the planned upstream owner of business outcomes and acceptance:
-# one Jira outcome can link to several GitHub delivery issues; engineering work
-# can also begin in GitHub. Links and summaries are manual; automated sync is planned.
-# This is workflow guidance, not an enabled Jira connection or sync setting.
-# See docs/design/jira-cloud.md#github-delivery-with-jira-outcomes.
+# Jira Cloud project KAN is the work tracker, decisions included
+# (docs/decisions/0002-jira-work-tracker-and-trace-correlation.md); GitHub holds
+# code, pull requests and CI as evidence. This profile still selects GitHub Issues:
+# existing work records are bound to it, and the switch to jira-cloud waits for the
+# live qualification in KAN-51 (KAN-286). Track new work in KAN.
+# Keep repository and account mappings in each project's ai-dlc.toml.
 tracker = "github-issues"
 knowledge = "obsidian"
 scm = "github"

@@ -321,11 +321,103 @@ def test_destructive_denial_precedes_tracked_branches_policy(tmp_path):
 def test_ordinary_hook_operation_and_stop_reminder_do_not_loop(tmp_path):
     from ai_dlc.harness.hooks import handle_hook
 
+    root = tmp_path / "project"
+    initialize_hook_project(root, None)
+    write_work_record(root, "bound")
     payload = hook_payload("git status")
-    assert handle_hook(tmp_path, "pre-tool", payload)["decision"] == "allow"
+    assert handle_hook(root, "pre-tool", payload)["decision"] == "allow"
     payload["session_id"] = "s1"
-    assert handle_hook(tmp_path, "stop", payload)["reminder"]
-    assert not handle_hook(tmp_path, "stop", payload)["reminder"]
+    first = handle_hook(root, "stop", payload)
+    assert first["reminder"] and "work bound" in first["message"]
+    assert not handle_hook(root, "stop", payload)["reminder"]
+    assert not handle_hook(root, "stop", {**payload, "session_id": "s2", "stop_hook_active": True})[
+        "reminder"
+    ]
+
+
+def test_stop_reminder_skips_a_session_with_no_bound_work(tmp_path):
+    from ai_dlc.harness.hooks import handle_hook
+
+    root = tmp_path / "project"
+    initialize_hook_project(root, None)
+    assert not handle_hook(root, "stop", {"session_id": "s1"})["reminder"]
+    assert not handle_hook(tmp_path, "stop", {"session_id": "s1"})["reminder"]
+
+
+def test_stop_reminder_reaches_the_agent_through_exit_two(tmp_path):
+    """KAN-318: a Stop hook's stdout is not shown to the agent; stderr with exit 2 is."""
+    import json
+
+    from typer.testing import CliRunner
+
+    from ai_dlc.cli import app
+
+    root = tmp_path / "project"
+    initialize_hook_project(root, None)
+    write_work_record(root, "bound")
+    runner = CliRunner()
+    arguments = ["hook", "stop", "--root", str(root)]
+    first = runner.invoke(app, arguments, input=json.dumps({"session_id": "cli"}))
+    assert first.exit_code == 2
+    assert "record outcomes and next steps for work bound" in first.stderr
+    assert "decision work item" in first.stderr
+    assert first.stdout == ""
+    again = runner.invoke(app, arguments, input=json.dumps({"session_id": "cli"}))
+    assert again.exit_code == 0 and again.output == ""
+
+
+@pytest.mark.parametrize(
+    "command",
+    [
+        "ls -la && rm -rf build",
+        "cd src; rm notes.txt",
+        "true || git reset --hard HEAD~1",
+        "echo start\ngit clean -fd",
+        "echo $(rm -rf build)",
+        "(cd sub && git push --force origin topic)",
+    ],
+)
+def test_chained_destructive_commands_are_denied(tmp_path, command):
+    """KAN-318: chaining used to classify the whole line as unsupported, then allow it."""
+    from ai_dlc.harness.hooks import classify_command
+
+    root = tmp_path / "project"
+    initialize_hook_project(root, "tracked-branches")
+    assert classify_command(command) == "destructive"
+    response = invoke_hook(root, command)
+    assert response["decision"] == "deny"
+    assert "Destructive operation denied" in response["reason"]
+
+
+@pytest.mark.parametrize(
+    "command",
+    ["git add -A && git push origin topic", "git status; gh pr create --title change"],
+)
+def test_chained_bound_operations_get_the_push_policy(tmp_path, command):
+    from ai_dlc.harness.hooks import classify_command
+
+    root = tmp_path / "project"
+    initialize_hook_project(root, "all-branches")
+    assert classify_command(command) == "bound-operation"
+    response = invoke_hook(root, command)
+    assert response["decision"] == "deny"
+    assert "Run work start first" in response["reason"]
+
+
+@pytest.mark.parametrize(
+    "command, category",
+    [
+        ("cat file | grep x", "ordinary"),
+        ("echo 'a && rm -rf b'", "ordinary"),
+        ('echo "git push; rm x"', "ordinary"),
+        ("git -C elsewhere push && ls", "unsupported"),
+        ("unterminated 'quote && rm x", "unsupported"),
+    ],
+)
+def test_quoted_separators_do_not_split_commands(command, category):
+    from ai_dlc.harness.hooks import classify_command
+
+    assert classify_command(command) == category
 
 
 def test_required_unsupported_path_is_reported():

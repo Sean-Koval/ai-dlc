@@ -82,21 +82,24 @@ publish packages or mutate remote services implicitly.
 ## Tracking
 
 - Work is tracked in Jira project KAN (<https://seanmkoval.atlassian.net>). GitHub Projects is retired; GitHub Issues are for outside reports only.
+- The managed section below still lists `github-issues` as the tracker: that is the binding of the existing `.ai-dlc/work` records, not where new work goes. `ai-dlc.toml` switches to `jira-cloud` only after the live qualification in KAN-51 ([ADR 0002](docs/decisions/0002-jira-work-tracker-and-trace-correlation.md), KAN-286). File and track new work in KAN.
 - Work tied to a ticket carries its key, so the GitHub for Jira app links it: the branch starts with it (`KAN-35-apply-atomic`), the PR title starts with it (`KAN-35: make hangar apply all or nothing`) and the PR body has a `Jira: KAN-35` line. Commits may mention it. Work without a ticket (typo fixes, outside contributions) needs no key.
 - Lanes: only `lane:agent` tickets (job-sized: one repo or one change-set profile, acceptance criteria, a verify command) start a hangar job, when moved to "Ready for agent". `lane:pair` is Sean with Claude Code; `lane:human` is Sean only.
+- Decisions: a question only Sean can answer becomes a KAN work item of type Decision, never a question in chat. Its summary is the question; fill Options, Recommendation, Default if unanswered, Scope and Due. Label it `decision`, `needs-sean`, `lane:human` and `repo:ai-dlc`, and link it as blocking the work, which waits in Needs Decision. Only a decision that binds code or architecture also becomes an ADR in `docs/decisions/`, written in the PR that implements it.
 
-<!-- ai-dlc:begin 75f30be091581ad5ebe1ff0f4a467da4823bf7b623e2abecd5428ee3394bcf96 -->
+<!-- ai-dlc:begin c141fd56ee2b6bf88f29644de750b0c9e27c13ffbc8a35d9c72b305ea993ab7e -->
 # Shared project guidance
 
 Read ai-dlc.toml and the active .ai-dlc/work record, if present, before work.
 Use specification artifacts for implementation tasks; finalize required specifications before review and follow the selected specification provider's instructions.
 Use the selected tracker for priority and status; follow its provider instructions.
+Raise a question only a person can answer as a decision work item in the tracker that blocks the work, with options, a recommendation, the default if unanswered, scope and a due date; do not ask it in chat.
 Archive OpenSpec changes on the bound delivery branch before merge with `ai-dlc work archive`.
 Immediately before merge, update from the target branch and rerun required checks.
 Record documentation dispositions again only for targets the required documentation gate reports stale.
 Complete work through `ai-dlc work finish`.
 Finish from a checkout at the merge commit; when the target branch has moved, run `ai-dlc work finish <work-id> --at-merge`, or prepare a temporary detached worktree at that commit, finish there, then remove it.
-Store architecture, design, decisions and runbooks in docs/.
+Store architecture, design and runbooks in docs/; record a decision that binds code or architecture as an ADR in docs/decisions.
 Keep personal notes in the selected knowledge provider and follow its instructions.
 
 ## Verification

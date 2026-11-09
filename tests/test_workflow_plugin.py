@@ -125,7 +125,9 @@ def test_hooks_use_exec_form_and_the_shim():
             "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/aidlc_hook.py", actions[event]],
             "timeout": 10,
         }
-        assert entry.get("matcher") == ("Bash|exec_command" if event == "PreToolUse" else None)
+        # Edit and Write reach the shim so the docs/specs warning can fire (KAN-318).
+        expected = "Bash|exec_command|Edit|Write" if event == "PreToolUse" else None
+        assert entry.get("matcher") == expected
 
 
 def test_skill_digest_mismatch_is_refused(root, capsys):
