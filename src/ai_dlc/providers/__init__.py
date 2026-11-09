@@ -331,8 +331,13 @@ class Registry:
         # calls providers internally only after fresh evidence checks.
         cfg = self.config.get("providers", {}).get(provider_id, {})
         terminal = {"closed", "done", "completed", "complete", "canceled", "cancelled"}
+        # A status mapping is one native value or a list of them (Jira maps several
+        # statuses to one state); every terminal value is refused.
         terminal.update(
-            str(v).lower() for k, v in cfg.get("statuses", {}).items() if k.lower() in terminal
+            str(item).lower()
+            for k, v in cfg.get("statuses", {}).items()
+            if k.lower() in terminal
+            for item in (v if isinstance(v, list) else [v])
         )
         if operation in {"complete", "reconcile_closed"}:
             raise ValueError("Terminal transitions require work.finish and its gates")

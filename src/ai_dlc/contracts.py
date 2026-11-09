@@ -57,8 +57,19 @@ class Link(Read):
     operation_id: str = Field(min_length=1)
 
 
+# The normalized lifecycle vocabulary trackers share. A provider supports a subset;
+# in_review and needs_decision exist only where a tracker maps statuses to them.
+TRANSITION_STATE = (
+    "Normalized target state: in_progress, in_review, needs_decision or closed. "
+    "A provider refuses a state it does not map."
+)
+ITEM_STATE = (
+    "Normalized state: open, in_progress, in_review, needs_decision, closed, cancelled or unknown."
+)
+
+
 class Transition(Read):
-    state: str = Field(min_length=1)
+    state: str = Field(min_length=1, description=TRANSITION_STATE)
     operation_id: str = Field(min_length=1)
 
 
@@ -102,7 +113,7 @@ class Item(BaseModel):
     model_config = ConfigDict(extra="allow")
     id: str = Field(min_length=1)
     url: str = Field(min_length=1)
-    state: str = Field(min_length=1)
+    state: str = Field(min_length=1, description=ITEM_STATE)
 
 
 class Found(BaseModel):

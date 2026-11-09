@@ -95,6 +95,12 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 
 ### Fixed
 
+- The Jira Cloud adapter works on a project's own tickets. It reads, transitions and
+  links issues filed outside ai-dlc, which carry no `ai-dlc` property; `find` and
+  `create` still require it. `issue_type_ids` widens the types it reads. A state in
+  `statuses` may take a list of IDs, and optional `in_review` and `needs_decision`
+  states are transition targets. Before, a ticket in Ready for Agent, In Review or
+  Needs Decision read as unknown and refused start and finish (KAN-317).
 - Hooks: a chained shell line (`&&`, `;`, `||`, a pipe, a newline or a substitution)
   is classified by its strictest command, so `ls && rm -rf x` is denied and
   `git add -A && git push` gets the bound-push policy; before, any chain was allowed

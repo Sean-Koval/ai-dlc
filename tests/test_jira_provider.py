@@ -446,3 +446,179 @@ def test_optional_null_adf_keeps_clear_semantics(jira):
     jira.config["create_fields"] = {"customfield_1": None}
     jira.provider().invoke("create", PAYLOAD)
     assert jira.issues[0]["fields"]["customfield_1"] is None
+
+
+# KAN-317: a project's real tickets, statuses and types (Jira project KAN's shape).
+
+
+def filed_by_person(jira, *, status="1", category="new", issue_type="10", key="WORK-7"):
+    """An issue ai-dlc did not create: no ai-dlc property and no correlation marker."""
+    jira.issues.append(
+        {
+            "id": "501",
+            "key": key,
+            "fields": {
+                "project": {"id": "100"},
+                "issuetype": {"id": issue_type},
+                "summary": "Filed by a person",
+                "description": None,
+                "status": {"id": status, "statusCategory": {"key": category}},
+                "resolution": None,
+            },
+            "properties": {},
+        }
+    )
+
+
+KAN_STATUSES = {
+    "open": ["1", "5"],
+    "in_progress": ["2", "6", "7"],
+    "closed": ["3"],
+    "cancelled": ["4"],
+}
+
+
+def test_read_transition_and_link_accept_an_issue_without_the_ai_dlc_property(jira):
+    filed_by_person(jira)
+    provider = jira.provider()
+    assert provider.invoke("read", {"reference": "WORK-7"})["state"] == "open"
+    started = provider.invoke(
+        "transition", {"reference": "WORK-7", "state": "in_progress", "operation_id": "start"}
+    )
+    assert started["state"] == "in_progress"
+    linked = provider.invoke(
+        "link",
+        {"reference": "WORK-7", "url": "https://example.test/pr/1", "operation_id": "link"},
+    )
+    assert linked["id"] == "501"
+    # find still matches only issues that carry the property, so it never adopts this one.
+    assert provider.invoke("find", {"correlation": PAYLOAD["correlation"]})["items"] == []
+
+
+def test_read_still_refuses_a_present_but_foreign_property(jira):
+    filed_by_person(jira)
+    jira.issues[0]["properties"] = {"ai-dlc": {"schema": 1, "project_id": "foreign"}}
+    with pytest.raises(ValueError, match="scope conflict"):
+        jira.provider().invoke("read", {"reference": "WORK-7"})
+
+
+def test_issue_type_ids_widen_the_types_read_but_not_the_type_created(jira):
+    filed_by_person(jira, issue_type="11")
+    with pytest.raises(ValueError, match="project/type identity mismatch"):
+        jira.provider().invoke("read", {"reference": "WORK-7"})
+    jira.config["issue_type_ids"] = ["11", "12"]
+    assert jira.provider().invoke("read", {"reference": "WORK-7"})["state"] == "open"
+    jira.issues.clear()
+    jira.provider().invoke("create", PAYLOAD)
+    assert jira.issues[0]["fields"]["issuetype"] == {"id": "10"}
+
+
+@pytest.mark.parametrize(
+    "status, category, state",
+    [
+        ("1", "new", "open"),
+        ("5", "new", "open"),
+        ("2", "indeterminate", "in_progress"),
+        ("6", "indeterminate", "in_progress"),
+        ("7", "indeterminate", "in_progress"),
+    ],
+)
+def test_several_statuses_share_one_normalized_state(jira, status, category, state):
+    jira.config["statuses"] = KAN_STATUSES
+    filed_by_person(jira, status=status, category=category)
+    assert jira.provider().invoke("read", {"reference": "WORK-7"})["state"] == state
+
+
+def test_completion_moves_from_a_folded_review_status_to_the_first_closed_id(jira):
+    jira.config["statuses"] = KAN_STATUSES
+    filed_by_person(jira, status="7", category="indeterminate")
+    closed = jira.provider().invoke(
+        "transition", {"reference": "WORK-7", "state": "closed", "operation_id": "finish"}
+    )
+    assert closed["state"] == "closed"
+    # Starting an issue already in a status that reads as in_progress writes nothing.
+    jira.issues[0]["fields"].update(
+        status={"id": "7", "statusCategory": {"key": "indeterminate"}}, resolution=None
+    )
+    before = len(jira.writes("/transitions"))
+    jira.provider().invoke(
+        "transition", {"reference": "WORK-7", "state": "in_progress", "operation_id": "start"}
+    )
+    assert len(jira.writes("/transitions")) == before
+
+
+def test_in_review_and_needs_decision_are_states_and_transition_targets(jira):
+    jira.config["statuses"] = {
+        "open": ["1", "5"],
+        "in_progress": ["2"],
+        "in_review": ["7"],
+        "needs_decision": ["6"],
+        "closed": ["3"],
+        "cancelled": ["4"],
+    }
+    jira.transitions += [
+        {"id": "41", "name": "Review", "to": {"id": "7"}, "fields": {}},
+        {"id": "51", "name": "Wait", "to": {"id": "6"}, "fields": {}},
+    ]
+    filed_by_person(jira, status="5")
+    provider = jira.provider()
+    for state, status in [("needs_decision", "6"), ("in_progress", "2"), ("in_review", "7")]:
+        result = provider.invoke(
+            "transition", {"reference": "WORK-7", "state": state, "operation_id": state}
+        )
+        assert result["state"] == state
+        assert jira.issues[0]["fields"]["status"]["id"] == status
+    assert (
+        provider.invoke(
+            "transition", {"reference": "WORK-7", "state": "closed", "operation_id": "finish"}
+        )["state"]
+        == "closed"
+    )
+
+
+def test_unmapped_optional_state_refuses_before_any_request(jira):
+    filed_by_person(jira)
+    provider = jira.provider()
+    with pytest.raises(ValueError, match="supported normalized lifecycle state"):
+        provider.invoke(
+            "transition", {"reference": "WORK-7", "state": "in_review", "operation_id": "review"}
+        )
+    assert jira.writes() == []
+
+
+@pytest.mark.parametrize(
+    "statuses",
+    [
+        {**KAN_STATUSES, "closed": ["3", "5"]},
+        {**KAN_STATUSES, "open": []},
+        {**KAN_STATUSES, "open": ["To Do"]},
+        {**KAN_STATUSES, "in_review": ["2"]},
+        {**KAN_STATUSES, "ready_for_agent": ["8"]},
+        {key: value for key, value in KAN_STATUSES.items() if key != "cancelled"},
+    ],
+)
+def test_status_list_mappings_refuse_ambiguity_before_requests(jira, statuses):
+    jira.config["statuses"] = statuses
+    with pytest.raises(ValueError):
+        jira.provider()
+    assert jira.requests == []
+
+
+def test_transition_settings_for_an_unmapped_optional_state_refuse(jira):
+    jira.config["transitions"] = {"in_review": {"id": "41"}}
+    with pytest.raises(ValueError, match="no status mapping"):
+        jira.provider()
+
+
+def test_public_invocation_refuses_every_mapped_terminal_status():
+    from ai_dlc.providers import Registry
+
+    config = {"providers": {"jira-cloud": {"kind": "jira-cloud", "statuses": KAN_STATUSES}}}
+    registry = Registry(config, environ={})
+    for state in ["3", "4", "closed"]:
+        with pytest.raises(ValueError, match="Terminal transitions"):
+            registry.invoke(
+                "jira-cloud",
+                "transition",
+                {"reference": "WORK-7", "state": state, "operation_id": "x"},
+            )

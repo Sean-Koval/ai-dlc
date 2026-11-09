@@ -11,10 +11,10 @@
     },
     {
       "bound": {
-        "CHANGELOG.md": "2c61f359f24526360f6bc63c97af52fb15b44df51869ab0d0234ca9cf46a91f1"
+        "CHANGELOG.md": "e7b2b973171c2b0b3be586fac491087f70713348ff0662272814f050f8faad44"
       },
       "outcome": "updated",
-      "reason": "Unreleased > Fixed records the hook fixes, the decision guidance and the tracker wording (KAN-318).",
+      "reason": "Unreleased > Fixed holds both the KAN-317 adapter entry (merged first) and the KAN-318 entries after merging main.",
       "reviewer": "Claude (agent)",
       "target": "CHANGELOG.md"
     },
@@ -109,7 +109,7 @@
         "src/ai_dlc/cli.py": "1b37bdb51f6f7bf565fa400e6abb38d4d8e82aa205a12977b2be5f6a26c8d9ec",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
         "src/ai_dlc/conformance.py": "0ff247c065e89d4c5b43d844601dc809558c65a779c1600371953c0e2c44737b",
-        "src/ai_dlc/contracts.py": "e2202d26b4815674bde05fc1190fbaedfe7cabdf6d8c913a721d1f0b53619d1e",
+        "src/ai_dlc/contracts.py": "d18d3e117794ef342c487afbb1be2df4c23e2cbbbd42a9bc9d04fc3d70a04d5f",
         "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
         "src/ai_dlc/documentation/decisions.py": "30c52c68b82bca8c899887617385adac25f9b0bb2e9aa81936b91b877c626d6c",
         "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
@@ -159,10 +159,10 @@
         "src/ai_dlc/locking.py": "d39ea1ba783e72aae903f9d69c114745ee0b83d02197bbc9572568836e4e7fa3",
         "src/ai_dlc/mcp_server.py": "849873d559b8b0aa5b7b84c178f3284365777d1208dbc1ad9b8e74cea06458a3",
         "src/ai_dlc/provider_definitions.py": "32142376b6cc25e0aa8122528bfd7b1eec2299c13622364fb38de29d4555e43a",
-        "src/ai_dlc/providers/__init__.py": "b6718f98c513bfd22ba8897410d675273f0f2229647d981dfe32e0be9a513a65",
+        "src/ai_dlc/providers/__init__.py": "e8be867e91d7217f692b45e3c8cb822020db111ddfdc461e650a5fbe11cafb24",
         "src/ai_dlc/providers/github_issues.py": "8945d5b0049d7f7940c8c478e13bf576a897295e463a69b3510d6e2982ed1f08",
         "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
-        "src/ai_dlc/providers/jira_cloud.py": "5b2058a5586839a75a5a11234702e64a0a18c79e53e075004373be59c5e4c6ce",
+        "src/ai_dlc/providers/jira_cloud.py": "7764ba85afc99926394aac1a778d3d0bceb223db62abbd5b5fe570d48d06e0f1",
         "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
         "src/ai_dlc/providers/plane.py": "eebff96a72615706f56234a3fdbdbec6e5ac49785259bc8e068ff50e89381572",
         "src/ai_dlc/providers/plane_attempts.py": "da576a7f52dd7860c2340b72c91b39f2c9d84bbb7c983cd8bc2cc1871c56333b",
@@ -208,7 +208,7 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "It describes the two guidance paths and the harness package at a level the hook fixes and wording do not change.",
+      "reason": "KAN-317's adapter, registry and contract changes (now on main) keep the package map and entry points this page describes.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
@@ -242,10 +242,10 @@
     {
       "bound": {
         "catalog:docs/design/jira-cloud.md": "23b4ecb64d03a3c140f6b69764d80a51a20734e949bf17caaed42fede2c66d89",
-        "docs/design/jira-cloud.md": "acde416cde1775c17e703c02effa27a390c99e0b4a1dfad44312675b31d5e399"
+        "docs/design/jira-cloud.md": "209fb21c1d15c433e2b19ad01948a2a191fe296935392cc3154065934281ed94"
       },
       "outcome": "updated",
-      "reason": "Intro and the GitHub-delivery section say Jira KAN is Sean's tracker under ADR 0002 and keep the split pattern only for teams that use it.",
+      "reason": "Combines KAN-317's state-mapping text with KAN-318's wording that Jira KAN is the work tracker; both merged cleanly.",
       "reviewer": "Claude (agent)",
       "target": "docs/design/jira-cloud.md"
     },
@@ -543,10 +543,10 @@
     },
     {
       "bound": {
-        "tests/editorial_baseline.json": "f38630ddfba6f6807c5ec9534d9f4aad373d47b48da40fd8269ca6be74489d46"
+        "tests/editorial_baseline.json": "4e4c92fe77d3638ff4c9892cfbe40b6bde0acbf073bd615288d068ab8601adfe"
       },
       "outcome": "updated",
-      "reason": "The Jira design page got shorter and lost a long paragraph, so its baseline follows it down.",
+      "reason": "Rebuilt with tests/test_editorial.py --update after merging main, for the combined Jira design page.",
       "reviewer": "Claude (agent)",
       "target": "tests/editorial_baseline.json"
     },
