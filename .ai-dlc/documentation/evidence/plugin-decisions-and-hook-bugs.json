@@ -223,6 +223,24 @@
     },
     {
       "bound": {
+        "docs/assets/front/work.cast": "3a170fc5893af055a18d228238cbd5c7f67e048463c15ab054561169d10fd87d"
+      },
+      "outcome": "updated",
+      "reason": "Regenerated with docs/assets/front/build.py: the demo's project init writes the new managed AGENTS.md text, so only the demo repository's commit hashes changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.cast"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.svg": "d5d58a0e2937fe431cd302d6fb0d861a25289ed29764e36b1f2457bb2ca680ea"
+      },
+      "outcome": "updated",
+      "reason": "Rendered from the regenerated work.cast; only the demo repository's commit hashes changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.svg"
+    },
+    {
+      "bound": {
         "catalog:docs/design/jira-cloud.md": "23b4ecb64d03a3c140f6b69764d80a51a20734e949bf17caaed42fede2c66d89",
         "docs/design/jira-cloud.md": "acde416cde1775c17e703c02effa27a390c99e0b4a1dfad44312675b31d5e399"
       },
