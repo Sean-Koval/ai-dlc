@@ -48,7 +48,8 @@ their authored configuration instead of being guessed or rewritten by onboarding
 Publication writes the exact WorkService correlation as ADF text and an `ai-dlc`
 issue property in the same create request. The property stores schema, correlation,
 operation ID and Cloud/account/project/type identity. A fresh issue read validates
-that evidence before success. Property values are not presumed JQL indexed.
+that evidence; issues filed elsewhere skip it. Property values are not presumed
+JQL indexed.
 [Create, metadata and transitions](https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issues/),
 [ADF](https://developer.atlassian.com/cloud/jira/platform/apis/document/structure/)
 and [issue properties](https://developer.atlassian.com/cloud/jira/platform/jira-entity-properties/).
@@ -80,12 +81,11 @@ finite numbers/integers, booleans, simple ID objects, arrays and ADF textarea da
 unsupported required schemas are a visible limitation. Remote validators can still
 refuse.
 
-Transitions discover current routes with `expand=transitions.fields` and
-require one route to the configured status or a selected route ID. Cancellation
-status/resolution takes precedence; completion requires both the configured
-successful status and a successful resolution. Current issue read-back confirms
-actual state, including after an uncertain mutation response. No transition retry
-is sent during that reconciliation.
+Transitions discover current routes with `expand=transitions.fields` and need
+one route to the target state's first mapped status, or a selected route ID. A
+state may map several statuses, including optional `in_review` and
+`needs_decision`. Cancellation takes precedence; completion needs the successful
+status and resolution. Read-back confirms actual state without a retry.
 
 Link uses a scoped globalId derived from Cloud/account/project/type, numeric issue
 ID and URL. Exact existing matches are preserved; conflicts refuse. The remote

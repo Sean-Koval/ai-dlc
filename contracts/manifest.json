@@ -412,6 +412,7 @@
             "type": "string"
           },
           "state": {
+            "description": "Normalized state: open, in_progress, in_review, needs_decision, closed, cancelled or unknown.",
             "minLength": 1,
             "title": "State",
             "type": "string"
@@ -732,6 +733,7 @@
                 "type": "string"
               },
               "state": {
+                "description": "Normalized state: open, in_progress, in_review, needs_decision, closed, cancelled or unknown.",
                 "minLength": 1,
                 "title": "State",
                 "type": "string"
@@ -859,6 +861,7 @@
             "type": "string"
           },
           "state": {
+            "description": "Normalized state: open, in_progress, in_review, needs_decision, closed, cancelled or unknown.",
             "minLength": 1,
             "title": "State",
             "type": "string"
@@ -1056,6 +1059,7 @@
             "type": "string"
           },
           "state": {
+            "description": "Normalized state: open, in_progress, in_review, needs_decision, closed, cancelled or unknown.",
             "minLength": 1,
             "title": "State",
             "type": "string"
@@ -1265,6 +1269,7 @@
             "type": "string"
           },
           "state": {
+            "description": "Normalized state: open, in_progress, in_review, needs_decision, closed, cancelled or unknown.",
             "minLength": 1,
             "title": "State",
             "type": "string"
@@ -1370,6 +1375,7 @@
             "type": "string"
           },
           "state": {
+            "description": "Normalized state: open, in_progress, in_review, needs_decision, closed, cancelled or unknown.",
             "minLength": 1,
             "title": "State",
             "type": "string"
@@ -1404,6 +1410,7 @@
             "type": "string"
           },
           "state": {
+            "description": "Normalized target state: in_progress, in_review, needs_decision or closed. A provider refuses a state it does not map.",
             "minLength": 1,
             "title": "State",
             "type": "string"
@@ -1481,6 +1488,7 @@
             "type": "string"
           },
           "state": {
+            "description": "Normalized state: open, in_progress, in_review, needs_decision, closed, cancelled or unknown.",
             "minLength": 1,
             "title": "State",
             "type": "string"

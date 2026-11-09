@@ -7,6 +7,7 @@
       "type": "string"
     },
     "state": {
+      "description": "Normalized state: open, in_progress, in_review, needs_decision, closed, cancelled or unknown.",
       "minLength": 1,
       "title": "State",
       "type": "string"

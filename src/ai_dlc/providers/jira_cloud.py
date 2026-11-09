@@ -22,6 +22,14 @@ MAX_BYTES = 8 * 1024 * 1024
 MAX_REQUESTS = 300
 MISSING_PROPERTY = object()
 STATES = ("open", "in_progress", "closed", "cancelled")
+# Optional normalized states for workflows with a review or decision-wait status (KAN's
+# In Review and Needs Decision). Unmapped, those statuses read as unknown.
+OPTIONAL_STATES = ("in_review", "needs_decision")
+# Normalized states a transition may target; the first status ID mapped to the state is
+# where the transition lands.
+TRANSITION_STATES = ("in_progress", "in_review", "needs_decision", "closed")
+# Normalized states a transition may start from; terminal and unknown states never move.
+MOVABLE_STATES = ("open", "in_progress", "in_review", "needs_decision")
 RESERVED = {"project", "issuetype", "summary", "description", "properties", "ai-dlc"}
 
 
@@ -78,15 +86,40 @@ def cloud_settings(config, *, selected=True):
         identity(config.get("account_id"), "account ID")
         for key in ("project_id", "issue_type_id"):
             identity(config.get(key), key, numeric=True)
+        # issue_type_id is the type ai-dlc creates; issue_type_ids widens what it reads,
+        # transitions and links (a project's stories, tasks and bugs).
+        extra_types = config.get("issue_type_ids", [])
+        if not isinstance(extra_types, list):
+            raise JiraRefusal("Jira issue_type_ids must be a list of issue type IDs")
+        for value in extra_types:
+            identity(value, "issue type ID", numeric=True)
+        config["issue_type_ids"] = list(dict.fromkeys([config["issue_type_id"], *extra_types]))
         if not re.fullmatch(r"[A-Z][A-Z0-9_]*", str(config.get("project_key", ""))):
             raise JiraRefusal("Jira requires the reviewed project key")
         statuses = config.get("statuses", {})
-        if not isinstance(statuses, dict) or set(statuses) != set(STATES):
-            raise JiraRefusal("Jira requires explicit open/in_progress/closed/cancelled status IDs")
-        for value in statuses.values():
-            identity(value, "status ID", numeric=True)
-        if len(set(statuses.values())) != len(STATES):
+        if (
+            not isinstance(statuses, dict)
+            or not set(STATES) <= set(statuses)
+            or set(statuses) - set(STATES) - set(OPTIONAL_STATES)
+        ):
+            raise JiraRefusal(
+                "Jira requires explicit open/in_progress/closed/cancelled status IDs; "
+                "in_review and needs_decision are optional"
+            )
+        # A state maps to one status ID or to a nonempty list of them, so several native
+        # statuses can share one normalized state (To Do and Ready for Agent are both open).
+        normalized = {}
+        for state, value in statuses.items():
+            values = value if isinstance(value, list) else [value]
+            if not values:
+                raise JiraRefusal(f"Jira status mapping for {state} requires a status ID")
+            for item in values:
+                identity(item, "status ID", numeric=True)
+            normalized[state] = values
+        mapped = [item for values in normalized.values() for item in values]
+        if len(set(mapped)) != len(mapped):
             raise JiraRefusal("Jira status mappings must be distinct")
+        config["statuses"] = normalized
         resolutions = config.get("resolutions", {})
         if not isinstance(resolutions, dict) or set(resolutions) != {"closed", "cancelled"}:
             raise JiraRefusal("Jira requires successful and cancelled resolution IDs")
@@ -105,8 +138,13 @@ def cloud_settings(config, *, selected=True):
         ):
             raise JiraRefusal("Jira create_fields cannot override reserved generated fields")
         transitions = config.get("transitions", {})
-        if not isinstance(transitions, dict) or set(transitions) - {"in_progress", "closed"}:
-            raise JiraRefusal("Jira transition settings support in_progress and closed only")
+        if not isinstance(transitions, dict) or set(transitions) - set(TRANSITION_STATES):
+            raise JiraRefusal(
+                "Jira transition settings support in_progress, in_review, needs_decision "
+                "and closed only"
+            )
+        if set(transitions) & set(OPTIONAL_STATES) - set(normalized):
+            raise JiraRefusal("Jira transition settings name a state with no status mapping")
         for entry in transitions.values():
             if (
                 not isinstance(entry, dict)
@@ -439,6 +477,11 @@ class JiraCloudProvider:
                 raise JiraRefusal("Jira issue property response is incomplete")
         if not isinstance(row["properties"], dict):
             raise TypeError("Jira issue property evidence is incomplete")
+        if correlation is None and "ai-dlc" not in row["properties"]:
+            # An issue ai-dlc did not create (filed by a person, an agent through another
+            # tool, or hangar) has no property to check. Read, transition and link still
+            # apply to it; find and create match only issues that carry the property.
+            return True
         fields = row["fields"]
         prop = row["properties"].get("ai-dlc")
         texts = adf_text(fields.get("description"))
@@ -472,10 +515,10 @@ class JiraCloudProvider:
         if "resolution" not in fields:
             raise JiraRefusal("Jira resolution evidence is incomplete")
         for key, expected in [
-            ("project", self.config["project_id"]),
-            ("issuetype", self.config["issue_type_id"]),
+            ("project", [self.config["project_id"]]),
+            ("issuetype", self.config["issue_type_ids"]),
         ]:
-            if not isinstance(fields.get(key), dict) or fields[key].get("id") != expected:
+            if not isinstance(fields.get(key), dict) or fields[key].get("id") not in expected:
                 raise JiraRefusal("Jira issue project/type identity mismatch")
         issue_id = identity(row.get("id"), "numeric issue ID", numeric=True)
         key = self.reference(identity(row.get("key"), "issue key"))
@@ -494,16 +537,17 @@ class JiraCloudProvider:
         if resolution is not None and not isinstance(resolution, dict):
             raise JiraRefusal("Jira resolution identity is incomplete")
         states, resolutions = self.config["statuses"], self.config["resolutions"]
-        if status_id == states["cancelled"] or resolution_id in resolutions["cancelled"]:
+        active = next((name for name in MOVABLE_STATES if status_id in states.get(name, [])), None)
+        if status_id in states["cancelled"] or resolution_id in resolutions["cancelled"]:
             state = "cancelled"
-        elif status_id == states["closed"] and resolution_id in resolutions["closed"]:
+        elif status_id in states["closed"] and resolution_id in resolutions["closed"]:
             state = "closed"
         elif (
-            resolution_id is None
-            and status_id in {states["open"], states["in_progress"]}
+            active is not None
+            and resolution_id is None
             and status.get("statusCategory", {}).get("key") != "done"
         ):
-            state = "open" if status_id == states["open"] else "in_progress"
+            state = active
         else:
             state = "unknown"
         return {
@@ -599,12 +643,14 @@ class JiraCloudProvider:
 
     def transition(self, payload):
         state = payload["state"]
-        if state not in {"in_progress", "closed"}:
+        if state not in TRANSITION_STATES or state not in self.config["statuses"]:
             raise JiraRefusal("Jira transition requires a supported normalized lifecycle state")
+        # The first status ID mapped to a state is where a transition to it lands.
+        target = self.config["statuses"][state][0]
         current = self.read(payload["reference"])
         if current["state"] == state:
             return current
-        if current["state"] not in {"open", "in_progress"}:
+        if current["state"] not in MOVABLE_STATES:
             raise JiraRefusal("Jira terminal or unknown state requires explicit reconciliation")
         response = self.request(
             "GET",
@@ -628,7 +674,7 @@ class JiraCloudProvider:
                 raise JiraRefusal("Jira transition identity is duplicated")
             ids.add(transition_id)
             if (
-                row["to"].get("id") == self.config["statuses"][state]
+                row["to"].get("id") == target
                 and row.get("isAvailable") is not False
                 and ("id" not in selected or transition_id == selected["id"])
             ):

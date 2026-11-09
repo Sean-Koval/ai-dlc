@@ -93,6 +93,15 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 - Archived plans, cancelled OpenSpec changes and dated evidence captures, kept in
   git history at tag `docs-prune-2026-10` (#204; PR #219).
 
+### Fixed
+
+- The Jira Cloud adapter works on a project's own tickets. It reads, transitions and
+  links issues filed outside ai-dlc, which carry no `ai-dlc` property; `find` and
+  `create` still require it. `issue_type_ids` widens the types it reads. A state in
+  `statuses` may take a list of IDs, and optional `in_review` and `needs_decision`
+  states are transition targets. Before, a ticket in Ready for Agent, In Review or
+  Needs Decision read as unknown and refused start and finish (KAN-317).
+
 ### September 2026, after v0.4.0
 
 Merged between the v0.4.0 tag and the refocus. Several of these areas are now

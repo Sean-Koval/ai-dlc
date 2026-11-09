@@ -120,3 +120,39 @@ def test_cancelled_result_never_completes_or_repeats_transition(lifecycle):
     with pytest.raises(ValueError, match="terminal"):
         service.finish("one")
     assert len(jira.writes("/transitions")) == 1
+
+
+def test_ticket_filed_in_jira_starts_and_finishes_from_a_review_status(lifecycle):
+    """KAN-317: a person-filed ticket in a review status reads as in progress and closes."""
+    service, jira, scm = lifecycle
+    jira.config["statuses"] = {
+        "open": ["1", "5"],
+        "in_progress": ["2", "6", "7"],
+        "closed": ["3"],
+        "cancelled": ["4"],
+    }
+    service.registry.register("work", jira.provider(), operations=["capabilities"])
+    jira.issues.append(
+        {
+            "id": "501",
+            "key": "WORK-7",
+            "fields": {
+                "project": {"id": "100"},
+                "issuetype": {"id": "10"},
+                "summary": "Filed by a person",
+                "description": None,
+                "status": {"id": "7", "statusCategory": {"key": "indeterminate"}},
+                "resolution": None,
+            },
+            "properties": {},
+        }
+    )
+    record = service.root / ".ai-dlc/work/one.toml"
+    record.write_text(record.read_text() + '\n[artifacts]\ntracker = "WORK-7"\n')
+    assert service.start("one")["tracker"]["state"] == "in_progress"
+    assert jira.writes() == []
+    service.link("one", "pr", "https://github.com/fixture/repo/pull/7")
+    scm.allowed = True
+    assert service.finish("one")["tracker"]["state"] == "closed"
+    assert jira.issues[0]["fields"]["status"]["id"] == "3"
+    assert len(jira.writes("/transitions")) == 1
