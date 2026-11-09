@@ -271,3 +271,46 @@ def test_hangar_allows_push_in_adopted_repo_without_work_record(tmp_path, hangar
     )
     assert result.returncode == 0, result.stderr
     assert result.stderr == ""
+
+
+@pytest.mark.parametrize(
+    "file_path, delegated",
+    [
+        ("docs/specs/feature.md", True),
+        ("src/module.py", False),
+        ("../outside/docs/specs/x.md", False),
+    ],
+)
+@pytest.mark.parametrize("tool", ["Edit", "Write"])
+def test_edit_payloads_reach_the_cli_only_for_specification_files(
+    tmp_path, tool, file_path, delegated
+):
+    """KAN-318: the matcher routes Edit and Write here; only docs/specs edits start the CLI."""
+    root, env, log = project(tmp_path, "delegate")
+    payload = {
+        "cwd": str(root),
+        "session_id": "s-1",
+        "tool_name": tool,
+        "tool_input": {"file_path": str(root / file_path)},
+    }
+    code, out, err = invoke("pre-tool", payload, env)
+    calls = log.read_text().splitlines() if log.exists() else []
+    assert code == 0 and err == ""
+    assert len(calls) == (1 if delegated else 0)
+    assert out == ("delegated context\n" if delegated else "")
+
+
+def test_cli_warns_on_a_specification_edit_routed_by_the_plugin(tmp_path):
+    from typer.testing import CliRunner
+
+    from ai_dlc.cli import app
+
+    payload = {
+        "tool_name": "Edit",
+        "tool_input": {"file_path": str(tmp_path / "docs/specs/feature.md")},
+    }
+    result = CliRunner().invoke(
+        app, ["hook", "pre-tool", "--root", str(tmp_path)], input=json.dumps(payload)
+    )
+    assert result.exit_code == 0
+    assert "Specification edit" in result.stdout

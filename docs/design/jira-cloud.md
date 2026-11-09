@@ -4,8 +4,8 @@ Understand what the Jira Cloud tracker adapter does and refuses, and how GitHub
 delivery links to Jira outcomes by hand today.
 
 This optional tracker kind implements create/find/read/transition/link and
-capabilities behind the existing Registry and WorkService. GitHub remains the
-personal tracker; this adapter does not migrate tickets or install Plane.
+capabilities behind the existing Registry and WorkService. Jira project KAN is
+Sean's work tracker; this adapter does not migrate tickets or install Plane.
 
 The adapter serves the local developer lifecycle only. hangar intake starts agent
 jobs from Jira statuses or labels and writes job progress back; ai-dlc publishes
@@ -105,16 +105,16 @@ for a disposable new-work probe. Native Claude/Antigravity login remains separat
 
 ## GitHub delivery with Jira outcomes
 
-Sean's personal profile selects GitHub Issues for delivery, with a GitHub Project
-configured per repository for planning. Jira is the upstream owner of business
-outcomes when work needs it. One Jira story or epic can link to several GitHub
-delivery issues. Small fixes and maintenance may start in GitHub without a Jira
-parent; link them upstream when they affect a business commitment.
+Sean's projects no longer split work this way. Under
+[ADR 0002](../decisions/0002-jira-work-tracker-and-trace-correlation.md), Jira
+project KAN tracks their work and decisions, and GitHub holds code, pull requests
+and CI as evidence. `ai-dlc.toml` and the personal profile still select GitHub
+Issues until the live qualification in KAN-51.
 
-This is a manual workflow today. The profile comments express intent, not an
-enabled Jira connection or synchronization service. Each work record still has
-one selected tracker. Selecting `jira-cloud` instead makes Jira that delivery
-tracker; it does not connect Jira outcomes to GitHub issues.
+The pattern below remains for a team whose Jira owns business outcomes while
+GitHub Issues holds delivery tasks. It is manual. Each work record has one
+selected tracker; selecting `jira-cloud` makes Jira that tracker and does not
+connect Jira outcomes to GitHub issues.
 
 | Location | Owns |
 | --- | --- |

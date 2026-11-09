@@ -28,7 +28,9 @@ Choose the next action explicitly:
 End each item with `Decision: proceed|investigate|stop — <reason>`. This is triage,
 not invented approval or automatic ticket publication. Publication or external
 replies require the user's authorization; use services to validate and link
-reviewed work. Separate personal notes from durable design/decisions. Do not
+reviewed work. Separate personal notes from durable design/decisions. A question only a person
+can answer goes to the tracker as a decision work item that blocks the work, not
+into chat; the repository's AGENTS.md names its type, fields and labels. Do not
 silently turn every idea into a ticket or force a stopped item through a PRD.
 
 Resolve provider-specific commands from the configured role provider’s instructions.

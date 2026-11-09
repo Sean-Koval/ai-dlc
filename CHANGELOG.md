@@ -101,6 +101,22 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
   `statuses` may take a list of IDs, and optional `in_review` and `needs_decision`
   states are transition targets. Before, a ticket in Ready for Agent, In Review or
   Needs Decision read as unknown and refused start and finish (KAN-317).
+- Hooks: a chained shell line (`&&`, `;`, `||`, a pipe, a newline or a substitution)
+  is classified by its strictest command, so `ls && rm -rf x` is denied and
+  `git add -A && git push` gets the bound-push policy; before, any chain was allowed
+  as unsupported. The plugin's Claude Code PreToolUse matcher now includes Edit and
+  Write, so the `docs/specs` edit warning can fire; other edits skip the CLI. The
+  Stop reminder, which went to stdout where the agent never saw it, now reaches the
+  agent once per session through exit 2, and only on a branch bound to a work
+  record. Plugin revision r6 (KAN-318).
+- Guidance: the managed AGENTS.md section, the workflow guide and the discovery,
+  review-inbox, prd-draft and handoff skills send a question only a person can
+  answer to a tracker decision work item that blocks the work, not to chat. Only a
+  decision that binds code or architecture also becomes an ADR in `docs/decisions`
+  (KAN-318).
+- ai-dlc's AGENTS.md Tracking block, the personal profile and the Jira design page
+  say Jira project KAN is the work tracker; `ai-dlc.toml` still selects GitHub Issues
+  until KAN-51 (KAN-318).
 
 ### September 2026, after v0.4.0
 

@@ -5,7 +5,8 @@ This file is the single source of ``plugins/ai-dlc-workflow/hooks/aidlc_hook.py`
 standard-library only (Python 3.10+) and must not import ``ai_dlc``.
 
 Usage: ``python3 aidlc_hook.py {session-start|pre-tool|stop}`` with the client's
-JSON hook payload on stdin.
+JSON hook payload on stdin. A pre-tool Edit or Write payload is delegated only when
+it targets ``docs/specs``; every other edit is allowed at once.
 
 The shim delegates to ``ai-dlc hook <event>`` only when ``ai-dlc`` is on PATH,
 ``ai-dlc.toml`` exists at the repository root and the session is not inside a
@@ -29,6 +30,11 @@ from pathlib import Path
 from typing import IO, Any
 
 EVENTS = ("session-start", "pre-tool", "stop")
+# File-edit tools the PreToolUse matcher also routes here. Only an edit under
+# docs/specs has guidance (ai-dlc hook warns to reconcile the reviewed work record);
+# every other edit is allowed without starting the CLI.
+EDIT_TOOLS = ("Edit", "Write")
+SPECIFICATION_DIRECTORY = ("docs", "specs")
 HANGAR_VARIABLES = ("HANGAR_WORKSPACE", "HANGAR_JOB_ID")
 DELEGATE_TIMEOUT_SECONDS = 8
 DESTRUCTIVE_REASON = (
@@ -49,14 +55,47 @@ HANGAR_LINE = (
 )
 
 
-def classify_command(command: str) -> str:
-    """Classify one shell command; shared by ``ai_dlc.harness.hooks`` and the plugin."""
+# Characters that end one simple command inside a shell line: lists (; & && ||), pipes,
+# newlines, subshells and command substitution ($( ) and backticks).
+SEPARATORS = ";&|()`\n"
+# When segments disagree, the strictest category wins.
+SEVERITY = ("ordinary", "unsupported", "bound-operation", "destructive")
+
+
+def command_segments(command: str) -> list[list[str]] | None:
+    """Split a shell line into the words of each simple command, or None if unparseable."""
+    lexer = shlex.shlex(command, posix=True, punctuation_chars=SEPARATORS)
+    lexer.whitespace = " \t\r"  # a newline separates commands, so it is punctuation here
+    lexer.whitespace_split = True
+    segments: list[list[str]] = [[]]
     try:
-        words = shlex.split(command)
+        for token in lexer:
+            if token and all(character in SEPARATORS for character in token):
+                segments.append([])
+            else:
+                segments[-1].append(token)
     except ValueError:
+        return None
+    return [segment for segment in segments if segment]
+
+
+def classify_command(command: str) -> str:
+    """Classify a shell line; shared by ``ai_dlc.harness.hooks`` and the plugin.
+
+    A compound line (``a && b``, ``a; b``, a pipe, a newline or a substitution) is
+    classified by its strictest simple command, so chaining cannot hide a destructive
+    or bound operation. Commands reached through wrappers such as ``sh -c`` or
+    ``env`` are not inspected.
+    """
+    segments = command_segments(command)
+    if segments is None:
         return "unsupported"
-    if any(x in command for x in [";", "&&", "||", "|", "\n", "$(", "`"]):
-        return "unsupported"
+    categories = [_classify_words(words) for words in segments] or ["ordinary"]
+    return max(categories, key=SEVERITY.index)
+
+
+def _classify_words(words: list[str]) -> str:
+    """Classify the words of one simple command."""
     if words[:1] == ["rm"]:
         return "destructive"
     if words[:2] == ["git", "reset"] and "--hard" in words[2:]:
@@ -100,6 +139,19 @@ def repository_root(payload: Mapping[str, Any], env: Mapping[str, str]) -> Path:
         return start
     top = result.stdout.strip()
     return Path(top) if result.returncode == 0 and top else start
+
+
+def specification_edit(payload: Mapping[str, Any], root: Path) -> bool:
+    """Whether an Edit or Write payload targets a file under the repository's docs/specs."""
+    tool_input = payload.get("tool_input")
+    file_path = tool_input.get("file_path") if isinstance(tool_input, dict) else None
+    if not isinstance(file_path, str) or not file_path:
+        return False
+    try:
+        relative = (root / file_path).resolve().relative_to(root.resolve())
+    except (OSError, ValueError):
+        return False
+    return relative.parts[:2] == SPECIFICATION_DIRECTORY
 
 
 def delegate_mode(
@@ -174,6 +226,9 @@ def run(
             return 0
         payload = {}
     root = repository_root(payload, env)
+    tool = payload.get("tool_name")
+    if event == "pre-tool" and tool in EDIT_TOOLS and not specification_edit(payload, root):
+        return 0
     executable, line = delegate_mode(root, env, which)
     if executable:
         return _delegate(executable, event, root, payload, stdout, stderr)

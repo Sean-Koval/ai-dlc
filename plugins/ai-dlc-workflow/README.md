@@ -17,7 +17,7 @@ with `--check`.
 | --- | --- |
 | `skills/ai-dlc-workflow/` | Provider-neutral workflow guidance as a skill; plugin `CLAUDE.md` files are not loaded |
 | `skills/<team-skill>/` | discovery, prd-draft, needs-spec, spec-from-prd, review-inbox, handoff, document-review, document-organize, design-brief, design-evaluate |
-| `hooks/hooks.json` | SessionStart, PreToolUse (`Bash\|exec_command`) and Stop hooks, exec form, 10 s timeout |
+| `hooks/hooks.json` | SessionStart, PreToolUse (`Bash\|exec_command\|Edit\|Write`) and Stop hooks, exec form, 10 s timeout |
 | `hooks/aidlc_hook.py` | Standard-library hook shim |
 | `plugin.lock.json` | One digest per component, a `content_digest` over them, the digest of every published file, and the Codex form's digests |
 | `native/codex/` | The Codex form (below); not part of the Claude plugin a harness publishes |
@@ -103,9 +103,16 @@ sandbox (`HANGAR_WORKSPACE` or `HANGAR_JOB_ID` set). Otherwise:
   nothing with `AI_DLC_HOOKS=quiet`.
 - PreToolUse denies destructive shell commands (such as `rm`, `git reset --hard`,
   `git clean -f`, force or delete pushes) with exit 2 and allows everything else.
-  It never applies the bound-push policy, so `git push` and `gh pr create` are
-  not blocked.
+  A chained line (`&&`, `;`, a pipe, a newline or a substitution) is judged by its
+  strictest command. It never applies the bound-push policy, so `git push` and
+  `gh pr create` are not blocked.
 - Stop does nothing.
+
+Edit and Write payloads reach the shim so that, when it delegates, `ai-dlc hook`
+can warn about an edit under `docs/specs`; any other edit is allowed without
+starting the CLI. Codex has no such tools, so its matcher stays shell-only. When
+it delegates, Stop reminds the agent once per session, through exit 2, to record
+outcomes for the work bound to the current branch.
 
 The shim reads only the command text, never runs it, and writes nothing to disk.
 A failing or slow delegate is treated as allow with a one-line note, so a hook

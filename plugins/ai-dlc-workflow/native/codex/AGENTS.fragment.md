@@ -12,8 +12,9 @@ It works in any repository; lifecycle commands apply only to adopted repositorie
   optional design-brief and design-evaluate.
 - When the repository renders its own copies of these skills (unprefixed, under
   `.claude/skills`), prefer the repository copies and its AGENTS.md guidance.
+- Raise a question only a person can answer as a decision work item in the tracker that blocks the work, with options, a recommendation, the default if unanswered, scope and a due date; do not ask it in chat.
 - Immediately before merge, update from the target branch and rerun required checks.
-- Store architecture, design, decisions and runbooks in docs/.
+- Store architecture, design and runbooks in docs/; record a decision that binds code or architecture as an ADR in docs/decisions.
 
 ## In adopted repositories
 

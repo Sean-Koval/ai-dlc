@@ -1718,11 +1718,16 @@ def hook(event: str, root: Path = Path(".")):
     if result.get("decision") == "deny":
         typer.echo(result["reason"], err=True)
         raise typer.Exit(2)
+    if event == "stop" and result.get("reminder"):
+        # A Stop hook's stdout never reaches the agent; exit 2 with stderr does, and
+        # the client then sets stop_hook_active so the reminder cannot loop.
+        if result.get("friction"):
+            typer.echo(result["friction"], err=True)
+        typer.echo(result["message"], err=True)
+        raise typer.Exit(2)
     if result.get("friction"):
         typer.echo(result["friction"])
-    if result.get("reminder"):
-        typer.echo(result["message"])
-    elif result.get("context"):
+    if result.get("context"):
         typer.echo(result["context"])
     elif result.get("warning"):
         typer.echo(result["warning"])

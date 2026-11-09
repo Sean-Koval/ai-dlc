@@ -23,7 +23,8 @@ source repository). Without that asset, use these exact sections:
   the canonical owner. Mark unconfirmed criteria as proposals.
 - **Scope and exclusions** — bounded increment and explicit compatibility.
 - **Constraints and risks** — consumers, migration/recovery and verification needs.
-- **Open questions** — material unknowns, contradictions and decision owners.
+- **Open questions** — material unknowns, contradictions and decision owners. Raise
+  each question only a person can answer as a tracker decision work item.
 - **Links** — canonical brief, applicable design, formal specification and work.
 
 Keep draft status and owner explicit. Record a proceed, investigate or stop decision

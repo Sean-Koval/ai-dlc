@@ -997,6 +997,11 @@ def _shared_guidance_lines(
         lines.append(
             "Use the selected tracker for priority and status; follow its provider instructions."
         )
+        lines.append(
+            "Raise a question only a person can answer as a decision work item in the tracker "
+            "that blocks the work, with options, a recommendation, the default if unanswered, "
+            "scope and a due date; do not ask it in chat."
+        )
     if openspec:
         archive_timing = " before merge" if github_scm else ""
         lines.append(
@@ -1020,7 +1025,10 @@ def _shared_guidance_lines(
             "run `ai-dlc work finish <work-id> --at-merge`, or prepare a temporary detached worktree "
             "at that commit, finish there, then remove it."
         )
-    lines.append("Store architecture, design, decisions and runbooks in docs/.")
+    lines.append(
+        "Store architecture, design and runbooks in docs/; record a decision that binds "
+        "code or architecture as an ADR in docs/decisions."
+    )
     if knowledge:
         lines.append(
             "Keep personal notes in the selected knowledge provider and follow its instructions."

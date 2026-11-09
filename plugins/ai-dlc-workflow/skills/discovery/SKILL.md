@@ -46,6 +46,8 @@ with its source. IDs are scoped to that named brief. Use these exact sections:
    evidence or a planned check. Keep missing facts explicitly unresolved.
 8. **Next slice** — smallest action, evidence goal, dependencies and exit condition.
 9. **Unresolved decisions** — unknowns, contradictions, owner and resolution method.
+   A question only a person can answer becomes one decision work item in the
+   selected tracker, blocking the work, instead of a question in chat.
 
 Reuse existing IDs and name their canonical owner; downstream PRDs/specifications
 reference them rather than renumbering or duplicating authority. Separate proposed

@@ -10,6 +10,12 @@ from ai_dlc.harness.hook_shim import classify_command  # one classifier for CLI 
 
 SESSION_INSTRUCTION = "Read AGENTS.md and .ai-dlc/work; run ai-dlc next for the full summary."
 SESSION_SUMMARY_LINES = 10
+STOP_REMINDER = (
+    "Before you stop, record outcomes and next steps for work {work_id}: a handoff, or a "
+    "learning with `ai-dlc work finish --learning`. Raise a decision work item in the "
+    "tracker for any question that needs a person instead of asking in chat. Unavailable "
+    "knowledge can remain pending."
+)
 
 
 def session_context(root: Path) -> str:
@@ -28,6 +34,23 @@ def handle_hook(root: Path, event: str, payload: dict) -> dict:
     from ai_dlc.harness.friction import track_friction
 
     return track_friction(root, event, payload, _handle_hook(root, event, payload))
+
+
+def _branch_work_id(root: Path) -> str | None:
+    """The work record bound to the current branch, or None; never raises."""
+    from ai_dlc.files import run_git
+
+    try:
+        branch = run_git(root, "branch", "--show-current", check=False).stdout.strip()
+        if not branch:
+            return None
+        for path in sorted((root / ".ai-dlc/work").glob("*.toml")):
+            artifacts = tomllib.loads(path.read_text()).get("artifacts", {})
+            if isinstance(artifacts, dict) and artifacts.get("branch") == branch:
+                return path.stem
+    except Exception:  # noqa: BLE001 -- the reminder remains optional
+        return None
+    return None
 
 
 def _session_recall(root: Path) -> list[dict]:
@@ -213,6 +236,11 @@ def _handle_hook(root: Path, event: str, payload: dict) -> dict:
     if event == "stop":
         if payload.get("stop_hook_active"):
             return {"reminder": False}
+        # Only work in flight has outcomes to record; a session on an unbound branch is
+        # never held back. The client shows the reminder to the agent once per session.
+        work_id = _branch_work_id(root)
+        if work_id is None:
+            return {"reminder": False}
         session = str(payload.get("session_id", "unknown"))
         marker = root / ".ai-dlc/local/reminders" / hashlib.sha256(session.encode()).hexdigest()
         if marker.exists():
@@ -222,10 +250,7 @@ def _handle_hook(root: Path, event: str, payload: dict) -> dict:
             marker.touch(exist_ok=False)
         except OSError:
             return {"reminder": False}
-        return {
-            "reminder": True,
-            "message": "Record outcomes and next steps when convenient; unavailable knowledge can remain pending.",
-        }
+        return {"reminder": True, "message": STOP_REMINDER.format(work_id=work_id)}
     if event == "session-start":
         from ai_dlc.environment.team_sources import source_update_notices
 
