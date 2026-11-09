@@ -196,7 +196,7 @@ naming supported trackers.
 | `work/` | Work lifecycle, traceability, journals and explicit tracker migration |
 | `environment/` | Shared bootstrap runtime location and owned shell activation; machine enrollment, pinned profile/team sources, credential references and safe effective-environment reporting/comparison |
 | `harness/` | Skills, pinned bundles, client rendering, components, hooks and local design capture |
-| `documentation/` | Catalog checks, impact/evidence review, decision-record checks, scoped project-document access, workspace diagnostics, knowledge notes and their shared frontmatter schema (`knowledge_notes.py`), capture dedupe and the guarded publish plan (`knowledge_publish.py`), and vault links |
+| `documentation/` | Catalog and decision-record checks, impact review, document access, workspace diagnostics, vault links; the note schema (`knowledge_notes.py`); capture and publish guards (`knowledge_publish.py`) |
 | `providers/` | Contract-backed external service adapters and isolated provider execution |
 | `verification/` | Sandbox orchestration and its conformance network proxy (`test_proxy.py`); harness evaluation moved to flightdeck |
 | `config.py`, `contracts.py`, `errors.py`, `provider_definitions.py` | Shared configuration, provider contracts, the result envelope and the exception base |
