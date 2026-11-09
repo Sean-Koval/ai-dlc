@@ -71,9 +71,18 @@ Select four distinct status IDs for open, in-progress, successful completion and
 cancellation, plus distinct successful and cancelled resolution IDs. A Done
 category alone is insufficient.
 
+A state may take a list of status IDs, such as `open = ["10004", "10043"]`;
+transitions land on the first. Optional `in_review` and `needs_decision` states
+map review and decision-wait statuses, which otherwise read as unknown.
+
+`issue_type_ids` lists further types to read, transition and link; ai-dlc creates
+only the selected type. Issues filed outside ai-dlc lack the `ai-dlc` property;
+reads accept them and `find` ignores them.
+
 Add any supported required create values under `providers.work.create_fields`;
 configure a needed transition ID and field values under
-`providers.work.transitions.in_progress` or `.closed`. Use returned field IDs
+`providers.work.transitions.in_progress`, `.in_review`, `.needs_decision` or
+`.closed`. Use returned field IDs
 and explicit values; do not guess user objects, cascading fields or workflow
 validators. Required unsupported fields prevent this adapter from qualifying for
 that selected issue type.
