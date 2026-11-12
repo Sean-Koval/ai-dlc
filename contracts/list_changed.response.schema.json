@@ -1,0 +1,68 @@
+{
+  "$defs": {
+    "ChangedFile": {
+      "additionalProperties": false,
+      "properties": {
+        "change": {
+          "enum": [
+            "added",
+            "modified",
+            "deleted"
+          ],
+          "title": "Change",
+          "type": "string"
+        },
+        "id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Id"
+        },
+        "path": {
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "change"
+      ],
+      "title": "ChangedFile",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "changed": {
+      "items": {
+        "$ref": "#/$defs/ChangedFile"
+      },
+      "title": "Changed",
+      "type": "array"
+    },
+    "head": {
+      "minLength": 1,
+      "title": "Head",
+      "type": "string"
+    },
+    "since": {
+      "minLength": 1,
+      "title": "Since",
+      "type": "string"
+    }
+  },
+  "required": [
+    "since",
+    "head",
+    "changed"
+  ],
+  "title": "RecordsChangedResult",
+  "type": "object"
+}

@@ -18,6 +18,13 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 
 ### Added
 
+- A `git` provider for the `knowledge` role (KAN-455): `get`, `search`, `list_changed`
+  and `propose` over a repository of knowledge records named by `KNOWLEDGE_REPO` or
+  the provider's `location`, through `ai-dlc knowledge records`. `propose` checks the
+  records, pushes a new branch and opens a draft pull request through the `scm` role;
+  it never writes the base branch. The knowledge role now requires `get` and `search`
+  (the Obsidian provider answers both) and `append` is optional. The SCM
+  `pull_request_create` payload gains `draft`.
 - The knowledge-record contract: `KnowledgeRecord` in
   `ai_dlc.documentation.knowledge_records`, its generated
   `contracts/knowledge-record.schema.json`, format version 1 for knowledge repositories

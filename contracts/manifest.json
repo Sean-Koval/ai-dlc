@@ -48,7 +48,11 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish"
+              "publish",
+              "get",
+              "search",
+              "list_changed",
+              "propose"
             ],
             "title": "Operation",
             "type": "string"
@@ -127,7 +131,11 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish"
+              "publish",
+              "get",
+              "search",
+              "list_changed",
+              "propose"
             ],
             "title": "Operation",
             "type": "string"
@@ -248,7 +256,11 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish"
+              "publish",
+              "get",
+              "search",
+              "list_changed",
+              "propose"
             ],
             "title": "Operation",
             "type": "string"
@@ -370,7 +382,11 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish"
+              "publish",
+              "get",
+              "search",
+              "list_changed",
+              "propose"
             ],
             "title": "Operation",
             "type": "string"
@@ -483,7 +499,11 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish"
+              "publish",
+              "get",
+              "search",
+              "list_changed",
+              "propose"
             ],
             "title": "Operation",
             "type": "string"
@@ -587,7 +607,11 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish"
+              "publish",
+              "get",
+              "search",
+              "list_changed",
+              "propose"
             ],
             "title": "Operation",
             "type": "string"
@@ -692,7 +716,11 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish"
+              "publish",
+              "get",
+              "search",
+              "list_changed",
+              "propose"
             ],
             "title": "Operation",
             "type": "string"
@@ -776,6 +804,116 @@
         "type": "object"
       }
     },
+    "get": {
+      "payload": {
+        "additionalProperties": false,
+        "description": "One knowledge record by id or alias.",
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "RecordGet",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "capabilities",
+              "prepare",
+              "reconcile_closed",
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append",
+              "pull_request_create",
+              "publish",
+              "get",
+              "search",
+              "list_changed",
+              "propose"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "additionalProperties": true,
+        "properties": {
+          "body": {
+            "title": "Body",
+            "type": "string"
+          },
+          "header": {
+            "additionalProperties": true,
+            "title": "Header",
+            "type": "object"
+          },
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "path": {
+            "minLength": 1,
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "path",
+          "header",
+          "body"
+        ],
+        "title": "RecordResult",
+        "type": "object"
+      }
+    },
     "link": {
       "payload": {
         "additionalProperties": false,
@@ -823,7 +961,11 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish"
+              "publish",
+              "get",
+              "search",
+              "list_changed",
+              "propose"
             ],
             "title": "Operation",
             "type": "string"
@@ -889,6 +1031,152 @@
         "type": "object"
       }
     },
+    "list_changed": {
+      "payload": {
+        "additionalProperties": false,
+        "description": "Record files changed since a revision of the knowledge store.",
+        "properties": {
+          "since": {
+            "minLength": 1,
+            "title": "Since",
+            "type": "string"
+          }
+        },
+        "required": [
+          "since"
+        ],
+        "title": "RecordsChanged",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "capabilities",
+              "prepare",
+              "reconcile_closed",
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append",
+              "pull_request_create",
+              "publish",
+              "get",
+              "search",
+              "list_changed",
+              "propose"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "$defs": {
+          "ChangedFile": {
+            "additionalProperties": false,
+            "properties": {
+              "change": {
+                "enum": [
+                  "added",
+                  "modified",
+                  "deleted"
+                ],
+                "title": "Change",
+                "type": "string"
+              },
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Id"
+              },
+              "path": {
+                "minLength": 1,
+                "title": "Path",
+                "type": "string"
+              }
+            },
+            "required": [
+              "path",
+              "change"
+            ],
+            "title": "ChangedFile",
+            "type": "object"
+          }
+        },
+        "additionalProperties": true,
+        "properties": {
+          "changed": {
+            "items": {
+              "$ref": "#/$defs/ChangedFile"
+            },
+            "title": "Changed",
+            "type": "array"
+          },
+          "head": {
+            "minLength": 1,
+            "title": "Head",
+            "type": "string"
+          },
+          "since": {
+            "minLength": 1,
+            "title": "Since",
+            "type": "string"
+          }
+        },
+        "required": [
+          "since",
+          "head",
+          "changed"
+        ],
+        "title": "RecordsChangedResult",
+        "type": "object"
+      }
+    },
     "merged": {
       "payload": {
         "additionalProperties": false,
@@ -924,7 +1212,11 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish"
+              "publish",
+              "get",
+              "search",
+              "list_changed",
+              "propose"
             ],
             "title": "Operation",
             "type": "string"
@@ -1023,7 +1315,11 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish"
+              "publish",
+              "get",
+              "search",
+              "list_changed",
+              "propose"
             ],
             "title": "Operation",
             "type": "string"
@@ -1086,6 +1382,164 @@
           "state"
         ],
         "title": "Item",
+        "type": "object"
+      }
+    },
+    "propose": {
+      "payload": {
+        "$defs": {
+          "ProposedRecord": {
+            "additionalProperties": false,
+            "properties": {
+              "path": {
+                "description": "repository-relative .md path",
+                "minLength": 1,
+                "title": "Path",
+                "type": "string"
+              },
+              "text": {
+                "description": "the whole record file",
+                "minLength": 1,
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "path",
+              "text"
+            ],
+            "title": "ProposedRecord",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Write records on a new branch and open a draft pull request; never main.",
+        "properties": {
+          "body": {
+            "default": "",
+            "title": "Body",
+            "type": "string"
+          },
+          "branch": {
+            "minLength": 1,
+            "title": "Branch",
+            "type": "string"
+          },
+          "records": {
+            "items": {
+              "$ref": "#/$defs/ProposedRecord"
+            },
+            "minItems": 1,
+            "title": "Records",
+            "type": "array"
+          },
+          "title": {
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "records",
+          "branch",
+          "title"
+        ],
+        "title": "Propose",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "capabilities",
+              "prepare",
+              "reconcile_closed",
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append",
+              "pull_request_create",
+              "publish",
+              "get",
+              "search",
+              "list_changed",
+              "propose"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "additionalProperties": true,
+        "properties": {
+          "branch": {
+            "minLength": 1,
+            "title": "Branch",
+            "type": "string"
+          },
+          "commit": {
+            "minLength": 1,
+            "title": "Commit",
+            "type": "string"
+          },
+          "files": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Files",
+            "type": "array"
+          },
+          "pull_request": {
+            "additionalProperties": true,
+            "title": "Pull Request",
+            "type": "object"
+          }
+        },
+        "required": [
+          "branch",
+          "commit",
+          "files",
+          "pull_request"
+        ],
+        "title": "ProposeResult",
         "type": "object"
       }
     },
@@ -1186,7 +1640,11 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish"
+              "publish",
+              "get",
+              "search",
+              "list_changed",
+              "propose"
             ],
             "title": "Operation",
             "type": "string"
@@ -1265,6 +1723,11 @@
             "title": "Body",
             "type": "string"
           },
+          "draft": {
+            "default": false,
+            "title": "Draft",
+            "type": "boolean"
+          },
           "head": {
             "minLength": 1,
             "title": "Head",
@@ -1303,7 +1766,11 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish"
+              "publish",
+              "get",
+              "search",
+              "list_changed",
+              "propose"
             ],
             "title": "Operation",
             "type": "string"
@@ -1397,7 +1864,11 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish"
+              "publish",
+              "get",
+              "search",
+              "list_changed",
+              "propose"
             ],
             "title": "Operation",
             "type": "string"
@@ -1504,7 +1975,11 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish"
+              "publish",
+              "get",
+              "search",
+              "list_changed",
+              "propose"
             ],
             "title": "Operation",
             "type": "string"
@@ -1570,6 +2045,185 @@
         "type": "object"
       }
     },
+    "search": {
+      "payload": {
+        "additionalProperties": false,
+        "description": "Filter records; every given filter must match. ``text`` also reads bodies.",
+        "properties": {
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "scope": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Scope"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Text"
+          },
+          "type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Type"
+          }
+        },
+        "title": "RecordSearch",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "capabilities",
+              "prepare",
+              "reconcile_closed",
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append",
+              "pull_request_create",
+              "publish",
+              "get",
+              "search",
+              "list_changed",
+              "propose"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "$defs": {
+          "RecordItem": {
+            "additionalProperties": true,
+            "properties": {
+              "header": {
+                "additionalProperties": true,
+                "title": "Header",
+                "type": "object"
+              },
+              "id": {
+                "minLength": 1,
+                "title": "Id",
+                "type": "string"
+              },
+              "path": {
+                "minLength": 1,
+                "title": "Path",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "path",
+              "header"
+            ],
+            "title": "RecordItem",
+            "type": "object"
+          }
+        },
+        "additionalProperties": true,
+        "properties": {
+          "invalid": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Invalid",
+            "type": "array"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/RecordItem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "RecordsFound",
+        "type": "object"
+      }
+    },
     "transition": {
       "payload": {
         "additionalProperties": false,
@@ -1618,7 +2272,11 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish"
+              "publish",
+              "get",
+              "search",
+              "list_changed",
+              "propose"
             ],
             "title": "Operation",
             "type": "string"
@@ -1694,9 +2352,13 @@
     },
     "knowledge": {
       "mandatory": [
-        "append"
+        "get",
+        "search"
       ],
       "optional": [
+        "append",
+        "list_changed",
+        "propose",
         "publish"
       ]
     },

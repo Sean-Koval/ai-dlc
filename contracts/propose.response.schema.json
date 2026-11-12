@@ -1,0 +1,35 @@
+{
+  "additionalProperties": true,
+  "properties": {
+    "branch": {
+      "minLength": 1,
+      "title": "Branch",
+      "type": "string"
+    },
+    "commit": {
+      "minLength": 1,
+      "title": "Commit",
+      "type": "string"
+    },
+    "files": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Files",
+      "type": "array"
+    },
+    "pull_request": {
+      "additionalProperties": true,
+      "title": "Pull Request",
+      "type": "object"
+    }
+  },
+  "required": [
+    "branch",
+    "commit",
+    "files",
+    "pull_request"
+  ],
+  "title": "ProposeResult",
+  "type": "object"
+}

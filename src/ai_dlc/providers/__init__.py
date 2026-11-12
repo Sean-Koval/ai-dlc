@@ -105,9 +105,24 @@ class ExecutableProvider:
     def append(self, path, body, operation_id):
         return self.invoke("append", {"path": path, "body": body, "operation_id": operation_id})
 
-    def pull_request_create(self, title, body, base, head):
+    def pull_request_create(self, title, body, base, head, draft=False):
         return self.invoke(
-            "pull_request_create", {"title": title, "body": body, "base": base, "head": head}
+            "pull_request_create",
+            {"title": title, "body": body, "base": base, "head": head, "draft": draft},
+        )
+
+    def get(self, id):
+        return self.invoke("get", {"id": id})
+
+    def search(self, **filters):
+        return self.invoke("search", filters)
+
+    def list_changed(self, since):
+        return self.invoke("list_changed", {"since": since})
+
+    def propose(self, records, branch, title, body=""):
+        return self.invoke(
+            "propose", {"records": records, "branch": branch, "title": title, "body": body}
         )
 
 
@@ -220,6 +235,14 @@ class Registry:
             if not vault:
                 raise ValueError("Configure paths.vault for knowledge provider")
             provider = Knowledge(Path(vault))
+        elif kind == "git":
+            from .git_knowledge import GitKnowledge
+
+            provider = GitKnowledge(
+                cfg,
+                environ=self.environ,
+                scm=lambda root, repository, base: self.scm_for(root, repository, base),
+            )
         elif kind == "plane":
             context = {
                 "root": str(self.root.resolve()),
@@ -326,6 +349,18 @@ class Registry:
         self.cache[id] = provider
         return provider
 
+    def scm_for(self, root, repository, base):
+        """The project's ``scm`` provider, bound to another repository and checkout.
+
+        The git knowledge provider opens its pull requests only through this role.
+        """
+        scm_id = self.config.get("roles", {}).get("scm") or "github"
+        config = {
+            **self.config,
+            "scm": {"repository": repository, "target_branch": base},
+        }
+        return Registry(config, root=root, environ=self.environ).get(scm_id)
+
     def invoke(self, provider_id, operation, payload):
         # Public generic invocation cannot authorize completion. The workflow service
         # calls providers internally only after fresh evidence checks.
@@ -355,6 +390,10 @@ class Registry:
             "deployment",
             "append",
             "pull_request_create",
+            "get",
+            "search",
+            "list_changed",
+            "propose",
         }:
             result = getattr(provider, operation)(**request.payload)
         else:
@@ -385,6 +424,7 @@ class Registry:
                 "github",
                 "github-deployment",
                 "obsidian",
+                "git",
             ],
             "release": "ai-dlc/0.4.0",
         }

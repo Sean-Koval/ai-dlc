@@ -125,7 +125,7 @@ class GitHubSCM:
             raise ValueError("Merged PR has no merge SHA")
         return {"sha": sha, "pr": pr}
 
-    def pull_request_create(self, title, body, base, head):
+    def pull_request_create(self, title, body, base, head, draft=False):
         """Open a pull request for a pushed branch; never push on the caller's behalf."""
         upstream = run_git(
             self.root,
@@ -168,6 +168,7 @@ class GitHubSCM:
                 title,
                 "--body-file",
                 body_file,
+                *(["--draft"] if draft else []),
             )
         finally:
             os.unlink(body_file)

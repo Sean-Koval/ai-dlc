@@ -19,13 +19,11 @@ derivative, not a synchronized replacement. For an explicitly enrolled local
 publication source, retain its page binding and expected version. A teammate
 edit requires reconciliation instead of overwriting or silently choosing a winner.
 
-An example workflow: link a relevant team guide in a daily note and ask an agent
-to read it for the current task. Optionally save a short summary with source
-URL, version when available and retrieval date, keeping personal observations
-separate.
+For example, link a team guide in a daily note for an agent to read. An
+optional summary records source URL, version and retrieval date, apart from
+personal observations.
 
-Later, select useful learnings to draft a team guide in an eligible shared-doc
-location. Review the entire outgoing document and destination before publishing.
+Later, draft a team guide from selected learnings in a shared-doc location. Review the entire outgoing document and destination before publishing.
 Private note inclusion is never inferred from a link, tag or neighboring file.
 
 ## Second brain
@@ -55,6 +53,27 @@ The agent then publishes through the client's existing Atlassian connection, aft
 the user confirms. `ai-dlc knowledge publish-record` writes the binding back. ai-dlc
 itself never calls Confluence. The provider contract's optional knowledge
 operation `publish` describes the same payload for a future adapter.
+
+## Knowledge repository
+
+The `git` provider serves `knowledge` from a record repository
+([ADR 0004](../decisions/0004-knowledge-system-scope.md)); `contracts/README.md`
+lists operations.
+
+```toml
+[providers.team-knowledge]   # or set KNOWLEDGE_REPO to a clone or URL
+kind = "git"
+location = "https://github.com/<owner>/<repo>.git"
+repository = "<owner>/<repo>"  # where draft pull requests open, through scm
+```
+
+```sh
+ai-dlc knowledge records get DEC-0001
+ai-dlc knowledge records search --type decision --label harness   # --text reads bodies
+ai-dlc knowledge records changed <revision>
+ai-dlc knowledge records captured transcript.vtt                  # exit 1 when seen
+ai-dlc knowledge records propose draft.md --path decisions/x.md --branch k/x --title T
+```
 
 ## Qualification examples
 

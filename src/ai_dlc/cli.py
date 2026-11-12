@@ -37,6 +37,9 @@ profile = typer.Typer(no_args_is_help=True)
 setup = typer.Typer(no_args_is_help=True)
 machine = typer.Typer(no_args_is_help=True)
 knowledge = typer.Typer(no_args_is_help=True)
+knowledge_records = typer.Typer(
+    no_args_is_help=True, help="Knowledge records through the knowledge role's provider."
+)
 provider = typer.Typer(no_args_is_help=True)
 mcp = typer.Typer(no_args_is_help=True)
 design = typer.Typer(no_args_is_help=True)
@@ -56,6 +59,7 @@ for name, group in [
 ]:
     app.add_typer(group, name=name)
 agents.add_typer(agent_bundle, name="bundle")
+knowledge.add_typer(knowledge_records, name="records")
 
 
 def emit(value):
@@ -1688,6 +1692,91 @@ def knowledge_publish_record(
     result = record(vault, note, page_id, version)
     emit(result)
     if result["status"] == "refused":
+        raise typer.Exit(1)
+
+
+RecordsRoot = Annotated[Path, typer.Option("--root")]
+RecordsProvider = Annotated[str | None, typer.Option("--provider")]
+
+
+def _records(root: Path, provider_id: str | None):
+    from ai_dlc.documentation.knowledge_service import KnowledgeRecords
+
+    return KnowledgeRecords(root, config_for(root), provider=provider_id)
+
+
+@knowledge_records.command("get")
+def knowledge_records_get(
+    id: str, root: RecordsRoot = Path("."), provider_id: RecordsProvider = None
+):
+    """Show one record, by id or alias, with its body."""
+    with service_call():
+        result = _records(root, provider_id).get(id)
+    conclude(result)
+
+
+@knowledge_records.command("search")
+def knowledge_records_search(
+    type: Annotated[str | None, typer.Option("--type")] = None,
+    scope: Annotated[str | None, typer.Option("--scope")] = None,
+    label: Annotated[list[str] | None, typer.Option("--label")] = None,
+    status: Annotated[str | None, typer.Option("--status")] = None,
+    text: Annotated[str | None, typer.Option("--text")] = None,
+    root: RecordsRoot = Path("."),
+    provider_id: RecordsProvider = None,
+):
+    """Find records by header; --text also reads bodies."""
+    with service_call():
+        result = _records(root, provider_id).search(type, scope, label, status, text)
+    conclude(result)
+
+
+@knowledge_records.command("changed")
+def knowledge_records_changed(
+    since: str, root: RecordsRoot = Path("."), provider_id: RecordsProvider = None
+):
+    """List record files changed since a revision of the knowledge store."""
+    with service_call():
+        result = _records(root, provider_id).list_changed(since)
+    conclude(result)
+
+
+@knowledge_records.command("propose")
+def knowledge_records_propose(
+    files: Annotated[list[Path], typer.Argument(help="record files to propose")],
+    branch: Annotated[str, typer.Option("--branch")],
+    title: Annotated[str, typer.Option("--title")],
+    into: Annotated[
+        list[str] | None,
+        typer.Option("--path", help="repository path for each file, in order"),
+    ] = None,
+    body: Annotated[Path | None, typer.Option("--body-file")] = None,
+    root: RecordsRoot = Path("."),
+    provider_id: RecordsProvider = None,
+):
+    """Check records, push them on a new branch and open a draft pull request."""
+    targets = list(into or [])
+    if targets and len(targets) != len(files):
+        raise typer.BadParameter("give one --path per file, or none", param_hint="--path")
+    records = [
+        {"path": targets[index] if targets else file.name, "text": file.read_text()}
+        for index, file in enumerate(files)
+    ]
+    text = body.read_text() if body else ""
+    with service_call():
+        result = _records(root, provider_id).propose(records, branch, title, text)
+    conclude(result)
+
+
+@knowledge_records.command("captured")
+def knowledge_records_captured(
+    source: Path, root: RecordsRoot = Path("."), provider_id: RecordsProvider = None
+):
+    """Report the source's sha256 and any record already carrying it; exit 1 if one does."""
+    with service_call():
+        result = _records(root, provider_id).captured(source)
+    emit(result)
+    if result["status"] != "new":
         raise typer.Exit(1)
 
 

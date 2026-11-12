@@ -11,6 +11,11 @@
       "title": "Body",
       "type": "string"
     },
+    "draft": {
+      "default": false,
+      "title": "Draft",
+      "type": "boolean"
+    },
     "head": {
       "minLength": 1,
       "title": "Head",
