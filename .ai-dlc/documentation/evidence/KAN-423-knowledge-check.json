@@ -29,10 +29,10 @@
     },
     {
       "bound": {
-        "contracts/README.md": "d29eee0e8b6196fbf50d465155a3cd94d153b7395412e987c9553fbc93ab8361"
+        "contracts/README.md": "b5322b1939226954bd3b9d31521b168e9d42c40ee8d3efab911d9e674446e340"
       },
       "outcome": "updated",
-      "reason": "Explains knowledge check beside the record contract it enforces (KAN-423).",
+      "reason": "Describes [check] roots, the README skip and the source-record rule (KAN-423).",
       "reviewer": "Claude (agent)",
       "target": "contracts/README.md"
     },
@@ -103,7 +103,7 @@
         "src/ai_dlc/documentation/documents.py": "763c9c2ff76c62e99eb6de4706f85edcaf57287f8c9bc8335c433d0163ba1812",
         "src/ai_dlc/documentation/fde.py": "3664430ebca9f3ef7ba7c7c431f7e4790176066510904ebe4d43d0a88ecf26e1",
         "src/ai_dlc/documentation/knowledge.py": "c02c49bcc24f8e2c418ace24a72db604b1bc9a4f8d1511fa42235aeb9b122bc7",
-        "src/ai_dlc/documentation/knowledge_check.py": "b37ff92eb12c9fb2f05cb7b01b93c504fe241a5aa1fb966da8bb8ccdf74fa732",
+        "src/ai_dlc/documentation/knowledge_check.py": "cc55051fcf467c2b326c856f2825d6e03acccdda357cc44287e1ab8bad38355a",
         "src/ai_dlc/documentation/knowledge_notes.py": "a608b93458f20b1bcc11b88e8f9062e686770128f9315ac715cbea0eb4c30377",
         "src/ai_dlc/documentation/knowledge_records.py": "affe51f4ece4bdf4560d0923318c0ef47be1cd6d11510277dde83d45c1b6f697",
         "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
@@ -192,7 +192,7 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "The documentation/ row already covers knowledge records; the page is at its editorial word cap and knowledge_check.py follows the existing CLI/MCP shared-service pattern.",
+      "reason": "knowledge_check.py still follows the shared CLI/MCP service pattern; the page is at its editorial word cap.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
@@ -214,7 +214,7 @@
         "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
         "openspec/specs/session-learnings/spec.md": "dcd490cd54f2f6cb3fadaa90afade85d5e1d64b19fbe2accb70bfb06897e97b4",
         "src/ai_dlc/documentation/knowledge.py": "c02c49bcc24f8e2c418ace24a72db604b1bc9a4f8d1511fa42235aeb9b122bc7",
-        "src/ai_dlc/documentation/knowledge_check.py": "b37ff92eb12c9fb2f05cb7b01b93c504fe241a5aa1fb966da8bb8ccdf74fa732",
+        "src/ai_dlc/documentation/knowledge_check.py": "cc55051fcf467c2b326c856f2825d6e03acccdda357cc44287e1ab8bad38355a",
         "src/ai_dlc/documentation/knowledge_notes.py": "a608b93458f20b1bcc11b88e8f9062e686770128f9315ac715cbea0eb4c30377",
         "src/ai_dlc/documentation/knowledge_records.py": "affe51f4ece4bdf4560d0923318c0ef47be1cd6d11510277dde83d45c1b6f697",
         "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
@@ -223,7 +223,7 @@
         "src/ai_dlc/documentation/workspace_diagnostics.py": "8c8dc695fa95e5f9e8fc4017e5fd66efcab4c0cec4d3ae9272d3c5f368f93aef",
         "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
         "tests/test_knowledge.py": "38e5cda9c9dc1fe97d12618a0bd9a86b2725cff059d412232152582af1547af1",
-        "tests/test_knowledge_check.py": "15736a7fb37a2f16dc7da9f9f0f415b5947768b846bf1d631cb51253c56ba78d",
+        "tests/test_knowledge_check.py": "3538b1f64daf84debfde713ee9409803ed9eb782adc6a9755a44e5bffae4824d",
         "tests/test_knowledge_notes.py": "0af8b4f84c5b8d974833eef49d5efd662a9d6d5b22eac6ff6f4a604fd492f6f7",
         "tests/test_knowledge_records.py": "7595bea9e21e3b24740ee409e1b5fe864d76a0d0728cbbda95c7855bc9cbe5b1",
         "tests/test_session_learnings.py": "32bb7c3143db24ff96fb43ac5081285e77a93bd8d8d825076f3422cbfe194796",
@@ -232,7 +232,7 @@
         "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Its --vault check text stays true; the records check is described in contracts/README.md beside the record contract, as KAN-421 did, because this page is at its editorial word cap.",
+      "reason": "The records check is described in contracts/README.md; this page's --vault text stays true.",
       "reviewer": "Claude (agent)",
       "target": "docs/design/local-and-shared-knowledge.md"
     },
@@ -540,6 +540,51 @@
     },
     {
       "bound": {
+        "tests/fixtures/records_invalid/derived-from-decision/a.md": "9b38dd57365e59e7d6362fcb59a9e558c88e8440bb40f25b967c87bdcd22ff82"
+      },
+      "outcome": "no-impact",
+      "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/fixtures/records_invalid/derived-from-decision/a.md"
+    },
+    {
+      "bound": {
+        "tests/fixtures/records_invalid/derived-from-decision/b.md": "82c2dda4b91432e4d061bf1a936b8b2129e79cb7bf972787f86a538af815fdcf"
+      },
+      "outcome": "no-impact",
+      "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/fixtures/records_invalid/derived-from-decision/b.md"
+    },
+    {
+      "bound": {
+        "tests/fixtures/records_invalid/derived-from-decision/knowledge.toml": "d63e9f2066f86399f1eae73add3408cb337132711a41f17ea5085b039b9a8401"
+      },
+      "outcome": "no-impact",
+      "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/fixtures/records_invalid/derived-from-decision/knowledge.toml"
+    },
+    {
+      "bound": {
+        "tests/fixtures/records_invalid/derived-from-payload/a.md": "9a712db1986a47f5e68190eef34192eeb3c96d55191db023e4ef0178be4332ce"
+      },
+      "outcome": "no-impact",
+      "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/fixtures/records_invalid/derived-from-payload/a.md"
+    },
+    {
+      "bound": {
+        "tests/fixtures/records_invalid/derived-from-payload/knowledge.toml": "d63e9f2066f86399f1eae73add3408cb337132711a41f17ea5085b039b9a8401"
+      },
+      "outcome": "no-impact",
+      "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/fixtures/records_invalid/derived-from-payload/knowledge.toml"
+    },
+    {
+      "bound": {
         "tests/fixtures/records_invalid/derived-without-hash/a.md": "cff12c6120478a7dc6e9bc1798df10eb113e01b394eb5889b89532fc6d28b9c7"
       },
       "outcome": "no-impact",
@@ -708,6 +753,15 @@
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
       "reviewer": "Claude (agent)",
       "target": "tests/fixtures/records_invalid/pin-missing/a.md"
+    },
+    {
+      "bound": {
+        "tests/fixtures/records_invalid/roots-missing/knowledge.toml": "096d14517ef3551f3000ad19153fadf678654c752b2394251c0c1edabcf50e9f"
+      },
+      "outcome": "no-impact",
+      "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/fixtures/records_invalid/roots-missing/knowledge.toml"
     },
     {
       "bound": {
