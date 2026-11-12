@@ -1,0 +1,10 @@
+# pre-commit hook for knowledge repositories. Pass the records directory in args;
+# the hook runs on the whole directory because links and supersession span files.
+- id: knowledge-check
+  name: knowledge check
+  description: Validate knowledge records against the ai-dlc record contract.
+  entry: ai-dlc knowledge check
+  language: python
+  pass_filenames: false
+  files: (\.md|knowledge\.toml)$
+  args: ["."]

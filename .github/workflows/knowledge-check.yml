@@ -1,0 +1,46 @@
+# Reusable workflow for knowledge repositories:
+#   jobs:
+#     knowledge:
+#       uses: Sean-Koval/ai-dlc/.github/workflows/knowledge-check.yml@main
+#       with:
+#         records: records
+# On pull requests it also refuses in-place edits of decisions accepted on the base branch.
+name: Knowledge check
+on:
+  workflow_call:
+    inputs:
+      records:
+        description: Records directory, relative to the repository root.
+        type: string
+        default: "."
+      ai-dlc-ref:
+        description: ai-dlc git ref to install; pin a tag or commit for repeatable checks.
+        type: string
+        default: main
+permissions:
+  contents: read
+jobs:
+  check:
+    name: Knowledge check
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install ai-dlc
+        env:
+          AI_DLC_REF: ${{ inputs.ai-dlc-ref }}
+        run: python -m pip install "ai-dlc @ git+https://github.com/Sean-Koval/ai-dlc@${AI_DLC_REF}"
+      - name: Check records
+        env:
+          RECORDS: ${{ inputs.records }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          if [ -n "$BASE_REF" ]; then
+            ai-dlc knowledge check "$RECORDS" --base "origin/$BASE_REF"
+          else
+            ai-dlc knowledge check "$RECORDS"
+          fi

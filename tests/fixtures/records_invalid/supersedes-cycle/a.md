@@ -1,0 +1,13 @@
+---
+id: DEC-0001
+type: decision
+scope: team
+status: superseded
+date: 2026-11-10
+owner: sean
+source: SRC-0001
+links: 
+  - {type: supersedes, target: DEC-0002}
+valid_to: 2026-11-11
+---
+# DEC-0001
