@@ -26,6 +26,7 @@ from pathlib import Path
 from typing import Any
 
 from ai_dlc.documentation import knowledge_records, record_index
+from ai_dlc.documentation.knowledge_check import check_records
 from ai_dlc.errors import RefusedError
 from ai_dlc.files import inside, run_git
 
@@ -151,7 +152,7 @@ class GitKnowledge:
         return match.group(1)
 
     def _check(self, tree: Path, proposed: list[dict]) -> list[str]:
-        """The record check run before anything is pushed."""
+        """Checks of the proposed files alone, before they are committed."""
         problems = record_index.pin(tree)
         for entry in proposed:
             try:
@@ -230,6 +231,17 @@ class GitKnowledge:
         environ = {**self.environ, **{k: v for k, v in _IDENTITY.items() if k not in self.environ}}
         run_git(tree, "commit", "--quiet", "-m", title, environ=environ, context="Knowledge commit")
         commit = self._git(tree, "rev-parse", "HEAD").stdout.strip()
+        # The whole tree must pass `knowledge check` against the base before any push.
+        checked = check_records(tree, base=f"origin/{self.base}")
+        if checked["failures"]:
+            raise RefusedError(
+                "knowledge check failed: "
+                + "; ".join(
+                    f"{item['path']}{'#' + item['pointer'] if item['pointer'] else ''}: "
+                    f"{item['message']}"
+                    for item in checked["failures"]
+                )
+            )
         # An explicit refspec: the push can only create refs/heads/<branch>.
         self._git(tree, "push", "--quiet", "-u", "origin", f"HEAD:refs/heads/{branch}")
         self._git(tree, "branch", "--set-upstream-to", f"origin/{branch}", branch)

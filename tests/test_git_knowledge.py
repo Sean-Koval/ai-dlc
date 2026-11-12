@@ -71,6 +71,7 @@ def store(tmp_path, monkeypatch):
     for path in sorted((FIXTURES / "1-meeting").glob("*.md")):
         (seed / "records").mkdir(exist_ok=True)
         (seed / "records" / path.name).write_text(path.read_text())
+    (seed / "records/accepted.md").write_text(record("keep-main-green", status="accepted"))
     git(seed, "add", ".")
     git(seed, "commit", "-m", "seed")
     git(seed, "push", "--quiet", "origin", "main")
@@ -149,7 +150,9 @@ def test_both_providers_meet_the_read_contract(kind, store):
     assert found["header"]["type"] == "source"
     assert "Speaker 1" in found["body"]
     decisions = reg.invoke(provider_id, "search", {"type": "decision"})
+    seeded = ["keep-main-green"] if kind == "git" else []
     assert sorted(item["id"] for item in decisions["items"]) == [
+        *seeded,
         "pin-harness-by-digest",
         "releases-ship-on-thursdays",
     ]
@@ -179,7 +182,7 @@ def test_search_filters_on_header_and_reads_bodies_only_for_text(store, monkeypa
         raise AssertionError(f"read a whole file: {self}")
 
     monkeypatch.setattr(Path, "read_text", no_bodies)
-    assert len(provider.search()["items"]) == 5
+    assert len(provider.search()["items"]) == 6
     with pytest.raises(AssertionError, match="whole file"):
         provider.search(text="harness")
     monkeypatch.undo()
@@ -279,6 +282,56 @@ def test_a_record_that_fails_the_check_is_refused_before_any_push(store, records
     assert git(store["remote"], "branch", "--list") == "* main"
     assert git(store["remote"], "rev-parse", "main") == main_before
     assert not store["log"].exists()
+
+
+def accepted_edit():
+    text = record("keep-main-green", status="accepted").replace("# keep-main-green", "# edited")
+    return [{"path": "records/accepted.md", "text": text}]
+
+
+@pytest.mark.parametrize(
+    ("records", "reason"),
+    [
+        (
+            [
+                {
+                    "path": "records/linked.md",
+                    "text": record(
+                        "linked", links=[{"type": "implements", "target": "no-such-record"}]
+                    ),
+                }
+            ],
+            "no-such-record",
+        ),
+        (
+            [
+                {
+                    "path": "records/replaces.md",
+                    "text": record(
+                        "replaces",
+                        status="accepted",
+                        links=[{"type": "supersedes", "target": "keep-main-green"}],
+                    ),
+                }
+            ],
+            "supersed",
+        ),
+        (accepted_edit(), "accepted"),
+    ],
+    ids=["broken-link", "bad-supersession", "edited-accepted-decision"],
+)
+def test_propose_runs_knowledge_check_against_the_base_before_pushing(store, records, reason):
+    main_before = git(store["remote"], "rev-parse", "main")
+    result = service(store).propose(records, "k/checked", "Title")
+    assert result["status"] == "refused", result
+    assert result["reason"].startswith("knowledge check failed")
+    assert reason in result["reason"]
+    assert git(store["remote"], "branch", "--list") == "* main"
+    assert git(store["remote"], "rev-parse", "main") == main_before
+    assert not store["log"].exists()
+    clone = store["clone"]
+    assert "k/checked" not in git(clone, "branch", "--list")
+    assert git(clone, "worktree", "list").count("\n") == 0
 
 
 def test_raised_refusals_reach_the_cli_as_failures(store):
