@@ -31,8 +31,8 @@ EXPECTED = {
     "superseded-by-proposal": ("a.md", "/status", "which is proposed, not accepted"),
     "supersedes-unmarked": ("b.md", "/links/0/target", "which is still accepted"),
     "supersedes-cycle": ("a.md", "/links", "supersedes cycle: DEC-0001 -> DEC-0002 -> DEC-0001"),
-    "derived-without-hash": ("a.md", "/source_hash", "required on a record with a derived_from"),
-    "duplicate-source": ("b.md", "/source_hash", "duplicate of a.md"),
+    "derived-without-hash": ("a.md", "/sources", "needs a sources entry"),
+    "duplicate-source": ("b.md", "/sources/1/hash", "duplicate of a.md"),
     "duplicate-id": ("b.md", "/aliases/0", "LES-0001 is already the id or alias of a.md"),
     "pin-mismatch": ("knowledge.toml", "/format/version", "2 is not supported"),
     "pin-missing": ("knowledge.toml", "/format/version", "no knowledge.toml found"),
@@ -42,10 +42,22 @@ EXPECTED = {
 }
 
 
-def record(name="a-slug", kind="decision", status="accepted", links="[]", extra="", body="Body"):
+HASH = "sha256:" + "0" * 64
+CITED = f"\n  - {{id: SRC-0001, resource: SRC-0001, hash: '{HASH}'}}"
+
+
+def record(
+    name="a-slug",
+    kind="decision",
+    status="accepted",
+    links="[]",
+    extra="",
+    body="Body",
+    sources="\n  - {resource: SRC-0001}",
+):
     return (
         f"---\nid: {name}\ntype: {kind}\nscope: team\nstatus: {status}\ndate: 2026-11-10\n"
-        f"owner: sean\nsource: SRC-0001\nlinks: {links}\n{extra}---\n{body}\n"
+        f"owner: sean\nsources: {sources}\nlinks: {links}\n{extra}---\n{body}\n"
     )
 
 
@@ -157,7 +169,7 @@ def test_check_roots_limit_what_is_read_and_skip_readme(tmp_path):
             kind="lesson",
             status="open",
             links="\n  - {type: derived_from, target: SRC-0001}",
-            extra="source_hash: sha256:3f1c9a\n",
+            sources=CITED,
         )
     )
     result = check_records(tmp_path)
@@ -256,9 +268,8 @@ def test_a_thousand_records_check_in_under_five_seconds(tmp_path):
         links = (
             "[]" if number == 1 else f"\n  - {{type: codified_as, target: LES-{number - 1:04d}}}"
         )
-        extra = "" if number == 1 else f"source_hash: sha256:{number}\n"
         (tmp_path / f"LES-{number:04d}.md").write_text(
-            record(f"LES-{number:04d}", kind="lesson", status="open", links=links, extra=extra)
+            record(f"LES-{number:04d}", kind="lesson", status="open", links=links)
         )
     started = time.perf_counter()
     result = check_records(tmp_path)

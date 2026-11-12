@@ -386,19 +386,22 @@ def _check_cycles(bundle: _Bundle, edges: dict[str, list[tuple[int, str]]]) -> N
 
 
 def _check_duplicate_sources(bundle: _Bundle) -> None:
+    """Two records of one type and title citing the same hashed source are duplicates."""
     seen: dict[tuple[str, str, str], str] = {}
     for path, record in bundle.records.items():
-        if not record.source_hash or not record.title:
+        if not record.title:
             continue
-        key = (record.type, record.source_hash, record.title)
-        first = seen.setdefault(key, path)
-        if first != path:
-            bundle.fail(
-                path,
-                "/source_hash",
-                f"duplicate of {first}: same type, source_hash and title; "
-                "link it with derived_from instead",
-            )
+        for number, entry in enumerate(record.sources):
+            if not entry.hash:
+                continue
+            first = seen.setdefault((record.type, entry.hash, record.title), path)
+            if first != path:
+                bundle.fail(
+                    path,
+                    f"/sources/{number}/hash",
+                    f"duplicate of {first}: same type, title and source hash; "
+                    "link it with derived_from instead",
+                )
 
 
 # --- CI mode: accepted decisions are never edited in place ---------------------------
