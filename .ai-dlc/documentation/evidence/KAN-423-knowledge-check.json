@@ -20,7 +20,7 @@
     },
     {
       "bound": {
-        "CHANGELOG.md": "3f9ad435ad24101f91a30db5dba43b2005db412eecf45954b35e18ae610afb45"
+        "CHANGELOG.md": "92ab006b2160ebbf30fe7fca4edc7276cc135eeb1af89541221cc430242f6590"
       },
       "outcome": "updated",
       "reason": "Unreleased entry for knowledge check, its hook and reusable workflow (KAN-423).",
@@ -29,7 +29,7 @@
     },
     {
       "bound": {
-        "contracts/README.md": "b5322b1939226954bd3b9d31521b168e9d42c40ee8d3efab911d9e674446e340"
+        "contracts/README.md": "13c5b4b0f5a90f11fa1906488f586df315e42513dd4e5c45b285fefd76fd3f25"
       },
       "outcome": "updated",
       "reason": "Describes [check] roots, the README skip and the source-record rule (KAN-423).",
@@ -39,43 +39,45 @@
     {
       "bound": {
         "catalog:docs/architecture.md": "788b593066fcd5d1c9eb9ebbc3869971131d3ddb3ea3396bc8b9a6ea48ca8b55",
-        "docs/architecture.md": "04d7df5a37bcccc2a72f7a7ec401607b1253d7a496949733ea6922f17720a305",
+        "docs/architecture.md": "abfbd4c86ee59a46c24738c19f0c5240a2bb1e88878cd60b8b78a6a291613390",
         "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/tracker-adapter-boundary/spec.md": "f47d11b47618751d7bbf2950dc74442f766a94f36f2379d1f4f343942ff112eb",
-        "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "e02b72202b8a716f84567b7c7ad8e9d9a632299e6ce7b872fb8e1708bb05b1c2",
-        "plugins/ai-dlc-workflow/README.md": "7f9294bff99ba622a7bd230c9f87a07ee7ca45051401e472a8a3d22a79bd96f3",
+        "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "6cfd743841b0c8862c751502ab494f0867a3a418ac878ea8cab389d8b03bc499",
+        "plugins/ai-dlc-workflow/README.md": "1c90defa77384652be8af275592048ff89a31d6e63ce58b1fd7dfde6d2b06b88",
         "plugins/ai-dlc-workflow/hooks/aidlc_hook.py": "621dec6fb8e24d199568d85ab36e36ff0931081393bb475f28e4b4f306a3d376",
         "plugins/ai-dlc-workflow/hooks/hooks.json": "ccba13e96d1b53ea5926fb9af2a3dd6c02817c182acbd8d002a54a1ba665cdad",
-        "plugins/ai-dlc-workflow/native/codex/.codex-plugin/plugin.json": "f7509cd958594d8bf5d2c6507e0cab218f98a71c68552a32f6bbfb81e5ed65c4",
-        "plugins/ai-dlc-workflow/native/codex/AGENTS.fragment.md": "025825940a54b5e9dc5e3cf351d1e3fd88e61215a5cf96155aaaf24ce28dfd62",
+        "plugins/ai-dlc-workflow/native/codex/.codex-plugin/plugin.json": "ccc9052ac9ab5c2a47b79443edb122016b9f637080e636c57c3b62b243789ad9",
+        "plugins/ai-dlc-workflow/native/codex/AGENTS.fragment.md": "abaabe2b4b31574d3d38c0b1f9fca4db358a3d038b798d820f5eaf571af3724e",
         "plugins/ai-dlc-workflow/native/codex/hooks.json": "4d2c2097f9c3004dca11d040acf3353eb6af9d0b96a63910f508a36a8d284f63",
         "plugins/ai-dlc-workflow/native/codex/hooks/aidlc_hook.py": "621dec6fb8e24d199568d85ab36e36ff0931081393bb475f28e4b4f306a3d376",
-        "plugins/ai-dlc-workflow/native/codex/skills/ai-dlc-workflow/SKILL.md": "edfb5aec39eb1a5d74fe8ef098e392f4ccaff5c3e1a76275fef82b884a04363b",
+        "plugins/ai-dlc-workflow/native/codex/skills/ai-dlc-workflow/SKILL.md": "fc81cb2b4f4fdf3f5b4ad107e19cdd0fee08a78b622f60c7664a5ee6484d542e",
+        "plugins/ai-dlc-workflow/native/codex/skills/capture/SKILL.md": "c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
+        "plugins/ai-dlc-workflow/native/codex/skills/daily-note/SKILL.md": "c7fe91f4efa30e6e2080919d8379cc5407582130fe1cc5068f10e79e4258d8c4",
         "plugins/ai-dlc-workflow/native/codex/skills/design-brief/SKILL.md": "e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5",
         "plugins/ai-dlc-workflow/native/codex/skills/design-evaluate/SKILL.md": "d6892ed5e426f8bbf0df4bba1bff09bbc602e2136d21a9369957eb47dbdaa26a",
         "plugins/ai-dlc-workflow/native/codex/skills/discovery/SKILL.md": "7460a3fa47474f28f2224eaea675438ba7cef08463d53bcf55d1a911e59ee2a2",
         "plugins/ai-dlc-workflow/native/codex/skills/document-organize/SKILL.md": "85353fd4bf2dc1f2ba4f3f7b6896093f38cc4b09d8ed2dacf950b10e568c7ead",
         "plugins/ai-dlc-workflow/native/codex/skills/document-review/SKILL.md": "5e2f71219b98cd53dd6a3a73b3bbccc1873b796a14ec1347875a39c911db9ad3",
         "plugins/ai-dlc-workflow/native/codex/skills/handoff/SKILL.md": "47813221a030ff1d19642b9e6ebf234ded18fd128fef857badd4b77612529ecd",
-        "plugins/ai-dlc-workflow/native/codex/skills/needs-spec/SKILL.md": "573d9e79cbc1b15e911a5dffdd61bcf2eaf1d089f491b2445d45b77d53bbb2f2",
+        "plugins/ai-dlc-workflow/native/codex/skills/kb-publish/SKILL.md": "1a4d85383b6a5258a4e617e2f2d6ad5fcd907dd861aa50eb33d833d5f9624c2b",
         "plugins/ai-dlc-workflow/native/codex/skills/prd-draft/SKILL.md": "046b82e994b36b2202f7772aafc93557b903d2b541e69a62414d9b5a0b5d75fc",
-        "plugins/ai-dlc-workflow/native/codex/skills/review-inbox/SKILL.md": "7aa21f4eca0bd4f507046bc481f92f4f4b2acea8ee0b927c93b7f53103b3ec15",
-        "plugins/ai-dlc-workflow/native/codex/skills/spec-from-prd/SKILL.md": "b280cb4d07935ed631450f7260e608aafe4177a059d83f79b17da3c0e9bb71ad",
-        "plugins/ai-dlc-workflow/plugin.lock.json": "b7e48457f05244329800898795e008b89b1a973fc90291042a4c2f47339cd66a",
-        "plugins/ai-dlc-workflow/skills/ai-dlc-workflow/SKILL.md": "edfb5aec39eb1a5d74fe8ef098e392f4ccaff5c3e1a76275fef82b884a04363b",
+        "plugins/ai-dlc-workflow/native/codex/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
+        "plugins/ai-dlc-workflow/plugin.lock.json": "788c90817e9b3fb875049d268cb8be7b45135a529ef573ebc6180e4a520c5af7",
+        "plugins/ai-dlc-workflow/skills/ai-dlc-workflow/SKILL.md": "fc81cb2b4f4fdf3f5b4ad107e19cdd0fee08a78b622f60c7664a5ee6484d542e",
+        "plugins/ai-dlc-workflow/skills/capture/SKILL.md": "c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
+        "plugins/ai-dlc-workflow/skills/daily-note/SKILL.md": "c7fe91f4efa30e6e2080919d8379cc5407582130fe1cc5068f10e79e4258d8c4",
         "plugins/ai-dlc-workflow/skills/design-brief/SKILL.md": "e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5",
         "plugins/ai-dlc-workflow/skills/design-evaluate/SKILL.md": "d6892ed5e426f8bbf0df4bba1bff09bbc602e2136d21a9369957eb47dbdaa26a",
         "plugins/ai-dlc-workflow/skills/discovery/SKILL.md": "7460a3fa47474f28f2224eaea675438ba7cef08463d53bcf55d1a911e59ee2a2",
         "plugins/ai-dlc-workflow/skills/document-organize/SKILL.md": "85353fd4bf2dc1f2ba4f3f7b6896093f38cc4b09d8ed2dacf950b10e568c7ead",
         "plugins/ai-dlc-workflow/skills/document-review/SKILL.md": "5e2f71219b98cd53dd6a3a73b3bbccc1873b796a14ec1347875a39c911db9ad3",
         "plugins/ai-dlc-workflow/skills/handoff/SKILL.md": "47813221a030ff1d19642b9e6ebf234ded18fd128fef857badd4b77612529ecd",
-        "plugins/ai-dlc-workflow/skills/needs-spec/SKILL.md": "573d9e79cbc1b15e911a5dffdd61bcf2eaf1d089f491b2445d45b77d53bbb2f2",
+        "plugins/ai-dlc-workflow/skills/kb-publish/SKILL.md": "1a4d85383b6a5258a4e617e2f2d6ad5fcd907dd861aa50eb33d833d5f9624c2b",
         "plugins/ai-dlc-workflow/skills/prd-draft/SKILL.md": "046b82e994b36b2202f7772aafc93557b903d2b541e69a62414d9b5a0b5d75fc",
-        "plugins/ai-dlc-workflow/skills/review-inbox/SKILL.md": "7aa21f4eca0bd4f507046bc481f92f4f4b2acea8ee0b927c93b7f53103b3ec15",
-        "plugins/ai-dlc-workflow/skills/spec-from-prd/SKILL.md": "b280cb4d07935ed631450f7260e608aafe4177a059d83f79b17da3c0e9bb71ad",
-        "pyproject.toml": "cb78de40ce91805acb3b66d955655ae535665d2010d768a3fa71b3d213039a63",
-        "scripts/build_workflow_plugin.py": "4f89695be840a2287630e8d11003a719663205156af1cf0b69bacb2f1d95d752",
+        "plugins/ai-dlc-workflow/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
+        "pyproject.toml": "41ded8f89ba4f707f0fb7d8c940d78092636fa69c6aca27f9d636da0eaf60be3",
+        "scripts/build_workflow_plugin.py": "c5ba7b795eced373d60dee9d6154a7867655ba892be427012f88ceb79138bddb",
         "scripts/check_client_pins.py": "c0b4030b6767aee44975556f11a2c0dcf2b5aa67e232ec6182c1247630f53c8c",
         "scripts/check_generated.py": "80ff1f71cc3d6864b0d2b7555d42661b1fb2ef7f68544ca3e593ee14d9f4c4c2",
         "scripts/check_layout.py": "942ed109d998ed8d8004b8dbe6608b33df98876cdd8db6d004677dbcce1933a6",
@@ -88,10 +90,10 @@
         "src/ai_dlc/_windows_storage/__init__.py": "5715def899453f15265e13d52e5b518844cc9d057421cfa5279172d799d5f506",
         "src/ai_dlc/_windows_storage/_api.py": "d5fc4f971db8e706871c06e8119884848e505af6c45f4fbb5c2f7db513faf41b",
         "src/ai_dlc/_windows_storage/_security.py": "62785d4e088cd485816a33f35a7a559d3d1acf166093c413a3f4f79969056314",
-        "src/ai_dlc/cli.py": "0053cb7d52847e32f9726a3d6c9803f6c39c9c344596c35295c1c44a98d8c47e",
+        "src/ai_dlc/cli.py": "b015e2ae56be78bc1388a5504fb3ba8271b2c41946acc7d7a2a590b6c4d0999d",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
         "src/ai_dlc/conformance.py": "0ff247c065e89d4c5b43d844601dc809558c65a779c1600371953c0e2c44737b",
-        "src/ai_dlc/contracts.py": "d18d3e117794ef342c487afbb1be2df4c23e2cbbbd42a9bc9d04fc3d70a04d5f",
+        "src/ai_dlc/contracts.py": "0101fd74193bc8332c161a3f69a0a1ef080f0cf559d07cbedefdeb09167d6fc2",
         "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
         "src/ai_dlc/documentation/decisions.py": "30c52c68b82bca8c899887617385adac25f9b0bb2e9aa81936b91b877c626d6c",
         "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
@@ -103,9 +105,10 @@
         "src/ai_dlc/documentation/documents.py": "763c9c2ff76c62e99eb6de4706f85edcaf57287f8c9bc8335c433d0163ba1812",
         "src/ai_dlc/documentation/fde.py": "3664430ebca9f3ef7ba7c7c431f7e4790176066510904ebe4d43d0a88ecf26e1",
         "src/ai_dlc/documentation/knowledge.py": "c02c49bcc24f8e2c418ace24a72db604b1bc9a4f8d1511fa42235aeb9b122bc7",
-        "src/ai_dlc/documentation/knowledge_check.py": "cc55051fcf467c2b326c856f2825d6e03acccdda357cc44287e1ab8bad38355a",
-        "src/ai_dlc/documentation/knowledge_notes.py": "a608b93458f20b1bcc11b88e8f9062e686770128f9315ac715cbea0eb4c30377",
-        "src/ai_dlc/documentation/knowledge_records.py": "affe51f4ece4bdf4560d0923318c0ef47be1cd6d11510277dde83d45c1b6f697",
+        "src/ai_dlc/documentation/knowledge_check.py": "20304c23d88a6b320fa63a4e105a0cddb0cec01a20ad7c793bc70d9414a0e61b",
+        "src/ai_dlc/documentation/knowledge_notes.py": "df022b2e330c5140f6948ec25a33c7888704e8686ea5411c770764a449b3b1b6",
+        "src/ai_dlc/documentation/knowledge_publish.py": "a796d6d760789edb3f1723fd79f3d02125901c699fa51fe9f8d7cfbb666920a8",
+        "src/ai_dlc/documentation/knowledge_records.py": "eeb502fd218412c3f2e8085b2c8bab1b74683daa8701bc8416155a29f9437c60",
         "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
         "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
         "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
@@ -186,7 +189,7 @@
         "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
         "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
         "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
-        "tests/test_environment_report_collection.py": "0f63d55719e0ec6b167fe28187c3473586204350716f6388fef6ab49c25c365f",
+        "tests/test_environment_report_collection.py": "fa8c834f2e80dcba2b7788eb818fd1392977eb75cadd48ceb4ea38eacde2ef81",
         "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
         "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
@@ -198,7 +201,7 @@
     },
     {
       "bound": {
-        "docs/catalog.toml": "b5cb561605dd267338fc728a0b864cc41b507fd3010b1a7b7c07cf5c92ae62e6"
+        "docs/catalog.toml": "e13c9e88ed89853fc47801a80975a0f7675bd38652232baf26ffc74864776517"
       },
       "outcome": "updated",
       "reason": "Maps knowledge_check.py and its test to the knowledge design document.",
@@ -208,24 +211,24 @@
     {
       "bound": {
         "catalog:docs/design/local-and-shared-knowledge.md": "92c841e843895124bf802cc6da8be57e525d7af9371c452c112f97873d7e525a",
-        "contracts/knowledge-note.schema.json": "0a973fee3afef0117bfdcd829499746b5693cfbcb156d3a4a86a94cfe3996686",
-        "contracts/knowledge-record.schema.json": "8b603b2c4a79b43b3f9d62c0ba062e37f340dcd13f4b1a1b978d2bb992f5535c",
-        "docs/design/local-and-shared-knowledge.md": "28c27630f2adfa72c1685adce8a4eb9d119c501dbcdc0fa0e50803ec34a8a52b",
+        "contracts/knowledge-note.schema.json": "f3cbc791e2caae2223bf223e8b27b5b7ce553405b76f32cf5689fa7fe68bb1a5",
+        "contracts/knowledge-record.schema.json": "0a7633d88024a668140a6d658f09f5d11bf7e26b8ff09368abd82d17ddcd9bd7",
+        "docs/design/local-and-shared-knowledge.md": "53fb6b2372742c6a475c57bdd2ab490364f8dc84832a49bd873a0cc7f43f5a7e",
         "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
         "openspec/specs/session-learnings/spec.md": "dcd490cd54f2f6cb3fadaa90afade85d5e1d64b19fbe2accb70bfb06897e97b4",
         "src/ai_dlc/documentation/knowledge.py": "c02c49bcc24f8e2c418ace24a72db604b1bc9a4f8d1511fa42235aeb9b122bc7",
-        "src/ai_dlc/documentation/knowledge_check.py": "cc55051fcf467c2b326c856f2825d6e03acccdda357cc44287e1ab8bad38355a",
-        "src/ai_dlc/documentation/knowledge_notes.py": "a608b93458f20b1bcc11b88e8f9062e686770128f9315ac715cbea0eb4c30377",
-        "src/ai_dlc/documentation/knowledge_records.py": "affe51f4ece4bdf4560d0923318c0ef47be1cd6d11510277dde83d45c1b6f697",
+        "src/ai_dlc/documentation/knowledge_check.py": "20304c23d88a6b320fa63a4e105a0cddb0cec01a20ad7c793bc70d9414a0e61b",
+        "src/ai_dlc/documentation/knowledge_notes.py": "df022b2e330c5140f6948ec25a33c7888704e8686ea5411c770764a449b3b1b6",
+        "src/ai_dlc/documentation/knowledge_records.py": "eeb502fd218412c3f2e8085b2c8bab1b74683daa8701bc8416155a29f9437c60",
         "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
         "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
         "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
         "src/ai_dlc/documentation/workspace_diagnostics.py": "8c8dc695fa95e5f9e8fc4017e5fd66efcab4c0cec4d3ae9272d3c5f368f93aef",
         "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
         "tests/test_knowledge.py": "38e5cda9c9dc1fe97d12618a0bd9a86b2725cff059d412232152582af1547af1",
-        "tests/test_knowledge_check.py": "3538b1f64daf84debfde713ee9409803ed9eb782adc6a9755a44e5bffae4824d",
+        "tests/test_knowledge_check.py": "c1c987bcf35de5a6962401e586d420d57cede287007159e7bb0fd2652a45edc8",
         "tests/test_knowledge_notes.py": "0af8b4f84c5b8d974833eef49d5efd662a9d6d5b22eac6ff6f4a604fd492f6f7",
-        "tests/test_knowledge_records.py": "7595bea9e21e3b24740ee409e1b5fe864d76a0d0728cbbda95c7855bc9cbe5b1",
+        "tests/test_knowledge_records.py": "dda1cc3543fc0f9cbcf999a4f72041d9143696328785827e9a4362b6fd083cfa",
         "tests/test_session_learnings.py": "32bb7c3143db24ff96fb43ac5081285e77a93bd8d8d825076f3422cbfe194796",
         "tests/test_vault_link.py": "fd146d4d15041021ac343257c9d91a8c1950878d275420eda85d13747065e110",
         "tests/test_vault_mount.py": "f6a5dc947af0d68e4688c37d05294c6b4868aa98ead91d26aa0c8ffec8018424",
@@ -239,8 +242,8 @@
     {
       "bound": {
         ".ai-dlc/agent-ownership.json": "2c193eced262ce82ed624d508de5ca29dec09da87d2eb78551143622803c4a51",
-        "agents/skills.lock.json": "1cd68ed56e905d29ab9a8cfb91bb1c32dbd7f8a9e554cf034df1703e9c8a556e",
-        "agents/skills/spec-from-prd/SKILL.md": "b280cb4d07935ed631450f7260e608aafe4177a059d83f79b17da3c0e9bb71ad",
+        "agents/skills.lock.json": "fce6587c26e072bd4d5623cd545558fc41f36e73c5787251373f7c7618692d48",
+        "agents/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
         "agents/templates/delivery-slice.md": "44d1e55bdd17e5fe0cf4c1d35d99ffad8f6060575ecb97496515b48a0e304429",
         "catalog:docs/development-workflow.md": "0fba88526a61571ce49e91b2159325061a7c54ba5466e651565eabb2f910e7c6",
         "docs/development-workflow.md": "e1351af42ccf1cf28e744345171ad9c71b2321936d1edfe73f7e4b4cf508f04c",
@@ -253,7 +256,7 @@
         "project-templates/project/docs/templates/delivery-slice.md": "44d1e55bdd17e5fe0cf4c1d35d99ffad8f6060575ecb97496515b48a0e304429",
         "project-templates/project/scripts/check_tests.py": "a3dd2021b7911d2ff688142776b7a43af60f76e052d7164086db2434db60102d",
         "project-templates/project/tests/test_main.py": "4e6ac9def60ea5a6aef9e004c465cc439acac4b33e4f70df332939f0cdfae63d",
-        "src/ai_dlc/cli.py": "0053cb7d52847e32f9726a3d6c9803f6c39c9c344596c35295c1c44a98d8c47e",
+        "src/ai_dlc/cli.py": "b015e2ae56be78bc1388a5504fb3ba8271b2c41946acc7d7a2a590b6c4d0999d",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
         "src/ai_dlc/harness/agents.py": "72f38f1f69147e4216fe6752636f26e6218c5c6ef85845ffb89828d431effa53",
         "src/ai_dlc/harness/hooks.py": "d8903d3c59ce52c3b3b26cdd9f322370eb2344404e235b2cecca61f5749b943f",
@@ -270,8 +273,8 @@
         "tests/test_hooks.py": "e62d1268716dcacf7c04f1b4505e06ea6ac30f7dc6800017e22c83bb5fa7b51e",
         "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
         "tests/test_project.py": "2ebeb723433cfb53bf8e20b337d5016058e75a181b9ed0035203a14759a162ba",
-        "tests/test_rendering.py": "9f96ebf87ff6df307da6e1cfcd46bd13b95e9870e3aea4ac0c590587f8029c9e",
-        "tests/test_team_sources.py": "f1724954cdd0970bc1912debff50d95c7dee7bc7c17c6f9ab7514bf806d2b77c",
+        "tests/test_rendering.py": "46e3927140876b6ccbecd7230fedf68d2806da7828fee7293bf61df76c36ce69",
+        "tests/test_team_sources.py": "3ab4eaa043c888b35eae7f92c8e8b20d20986d42d0ec8cdc936be472e48040e3",
         "tests/test_templates.py": "669d1d85586dea32ec5118361dc96f862a77b528be38d83611a89fc2ff9427af",
         "tests/test_workflow.py": "c60af46adb6cceb3160b1c34945d3b579e4ce42be7e24cad65fa24bd215d80a1"
       },
@@ -290,7 +293,7 @@
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
         "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
-        "src/ai_dlc/cli.py": "0053cb7d52847e32f9726a3d6c9803f6c39c9c344596c35295c1c44a98d8c47e",
+        "src/ai_dlc/cli.py": "b015e2ae56be78bc1388a5504fb3ba8271b2c41946acc7d7a2a590b6c4d0999d",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
         "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
@@ -301,7 +304,7 @@
         "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
         "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
         "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
-        "tests/test_environment_report_collection.py": "0f63d55719e0ec6b167fe28187c3473586204350716f6388fef6ab49c25c365f",
+        "tests/test_environment_report_collection.py": "fa8c834f2e80dcba2b7788eb818fd1392977eb75cadd48ceb4ea38eacde2ef81",
         "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
         "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
         "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
@@ -336,12 +339,12 @@
     {
       "bound": {
         "catalog:docs/workflows/tool-map.md": "d11334cb57c288aab7b01226790b7cc268a28991b3de5f97a98b9818d80be19e",
-        "docs/workflows/tool-map.md": "18ece2829510469c6b45c053cc5d113837eacabb5b1e8751789dd2a8031cb32e",
+        "docs/workflows/tool-map.md": "1c5ac0ed08e66a0de97079fdbc0593be53f391d824e7d83653ae4b968de0fa39",
         "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
         "openspec/specs/spec-delivery-traceability/spec.md": "66641acf9c151792cde1914062630ed50cc4199cdc3bdb4b81382e03716f2ea3",
-        "src/ai_dlc/cli.py": "0053cb7d52847e32f9726a3d6c9803f6c39c9c344596c35295c1c44a98d8c47e",
+        "src/ai_dlc/cli.py": "b015e2ae56be78bc1388a5504fb3ba8271b2c41946acc7d7a2a590b6c4d0999d",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
@@ -362,14 +365,14 @@
         "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
         "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
         "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
-        "tests/test_environment_report_collection.py": "0f63d55719e0ec6b167fe28187c3473586204350716f6388fef6ab49c25c365f",
+        "tests/test_environment_report_collection.py": "fa8c834f2e80dcba2b7788eb818fd1392977eb75cadd48ceb4ea38eacde2ef81",
         "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
         "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
         "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
         "tests/test_hooks.py": "e62d1268716dcacf7c04f1b4505e06ea6ac30f7dc6800017e22c83bb5fa7b51e",
         "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
-        "tests/test_rendering.py": "9f96ebf87ff6df307da6e1cfcd46bd13b95e9870e3aea4ac0c590587f8029c9e",
-        "tests/test_team_sources.py": "f1724954cdd0970bc1912debff50d95c7dee7bc7c17c6f9ab7514bf806d2b77c",
+        "tests/test_rendering.py": "46e3927140876b6ccbecd7230fedf68d2806da7828fee7293bf61df76c36ce69",
+        "tests/test_team_sources.py": "3ab4eaa043c888b35eae7f92c8e8b20d20986d42d0ec8cdc936be472e48040e3",
         "tests/test_workflow.py": "c60af46adb6cceb3160b1c34945d3b579e4ce42be7e24cad65fa24bd215d80a1"
       },
       "outcome": "updated",
@@ -383,7 +386,7 @@
         "docs/workflows/work-computer-setup.md": "6a6b849511affc491b227896981914c1b8f021c6e3541250c1dad554d75a5444",
         "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
-        "src/ai_dlc/cli.py": "0053cb7d52847e32f9726a3d6c9803f6c39c9c344596c35295c1c44a98d8c47e",
+        "src/ai_dlc/cli.py": "b015e2ae56be78bc1388a5504fb3ba8271b2c41946acc7d7a2a590b6c4d0999d",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
         "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
@@ -394,7 +397,7 @@
         "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
         "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
         "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
-        "tests/test_environment_report_collection.py": "0f63d55719e0ec6b167fe28187c3473586204350716f6388fef6ab49c25c365f",
+        "tests/test_environment_report_collection.py": "fa8c834f2e80dcba2b7788eb818fd1392977eb75cadd48ceb4ea38eacde2ef81",
         "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
         "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be"
       },
@@ -405,7 +408,7 @@
     },
     {
       "bound": {
-        "project-templates/project/docs/workflows/tool-map.md": "1e8f25c9a5df9ab86d5559200075a34567117902a046215c60e5766ae8c625f0"
+        "project-templates/project/docs/workflows/tool-map.md": "4a31205a2f8dd97bb595c55fe6ec3e65e540b0eed66b3ed8237e3f79b6be5fe7"
       },
       "outcome": "updated",
       "reason": "Lists the knowledge_check MCP tool for downstream projects.",
@@ -414,7 +417,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records/actions/ACT-0001.md": "0b93b9d7e073cca75a7760dd14e197c8b2822735ae6c59d6429612ce2e53ff55"
+        "tests/fixtures/records/actions/ACT-0001.md": "264fc32c8ec364236398f8e23c3c6a82e299fd2aef6985ce75a526b04725fffe"
       },
       "outcome": "no-impact",
       "reason": "Valid record bundle for the ticket's verify command; exercised by tests/test_knowledge_check.py.",
@@ -423,7 +426,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records/conventions/CONV-0001.md": "b9e9bf67e31e4090f5b7df1c4a35fceed8d06f3baa9fca13d4dabc7a8b5517a4"
+        "tests/fixtures/records/conventions/CONV-0001.md": "5c266c12b9c5654bdeb962969199cdd6b8f0bbfcff9cd38164b29ba9e20697c8"
       },
       "outcome": "no-impact",
       "reason": "Valid record bundle for the ticket's verify command; exercised by tests/test_knowledge_check.py.",
@@ -432,7 +435,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records/decisions/DEC-0001.md": "5b18438da3495a3716526fdf31606fcdd29f91cbcdcd0420f4598f3f95b17922"
+        "tests/fixtures/records/decisions/DEC-0001.md": "7b7d1c6d5a967fef0b8a66a7c8e7e7e60fe72dacef15b51881e53dd79ba2dec4"
       },
       "outcome": "no-impact",
       "reason": "Valid record bundle for the ticket's verify command; exercised by tests/test_knowledge_check.py.",
@@ -441,7 +444,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records/decisions/DEC-0002.md": "93704c92d1abdeaf53576a04cf578cc4f7142d24027550a5a8ff32f3c96341c5"
+        "tests/fixtures/records/decisions/DEC-0002.md": "ac87cb46bb630b13320f0583ce45cb731e87770799a975d6c7c3f44dbe29d26b"
       },
       "outcome": "no-impact",
       "reason": "Valid record bundle for the ticket's verify command; exercised by tests/test_knowledge_check.py.",
@@ -486,7 +489,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records/lessons/LES-0001.md": "fe28f991b5262959b35ef1ffd2844cbfb9ae63023aed1671f3692b834a398122"
+        "tests/fixtures/records/lessons/LES-0001.md": "19bac6cab6670103869b6e09628cf3b6164866208c17217515617ef5c22d4413"
       },
       "outcome": "no-impact",
       "reason": "Valid record bundle for the ticket's verify command; exercised by tests/test_knowledge_check.py.",
@@ -504,7 +507,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records/questions/Q-0001.md": "103ac1fad12b0b86bac0ba7f3adfd39e14b76ca392e4b33d3039f5eef0629f9d"
+        "tests/fixtures/records/questions/Q-0001.md": "18252e5effa1ee3f927e3a4943c3aceabfad3f32337a989bb8b3031bec678c02"
       },
       "outcome": "no-impact",
       "reason": "Valid record bundle for the ticket's verify command; exercised by tests/test_knowledge_check.py.",
@@ -513,7 +516,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records/sources/SRC-0001.md": "91aeadc61b50a69100918133aaef217c5f3ba19d700a9e495e08406e69b96614"
+        "tests/fixtures/records/sources/SRC-0001.md": "c2c1432e7cc5a0e7439064affd95f1b289a6dafaf1f4599601fc1cf8c0a0128b"
       },
       "outcome": "no-impact",
       "reason": "Valid record bundle for the ticket's verify command; exercised by tests/test_knowledge_check.py.",
@@ -522,7 +525,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records_invalid/dangling-link/a.md": "3e18150914f694649d713c59ba86de880b2792267e86be575224b57cb6fb1473"
+        "tests/fixtures/records_invalid/dangling-link/a.md": "841f65d19c69853adb52b49003cae89877f2ea35c72f566a9fcef957a9e10f71"
       },
       "outcome": "no-impact",
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
@@ -540,7 +543,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records_invalid/derived-from-decision/a.md": "9b38dd57365e59e7d6362fcb59a9e558c88e8440bb40f25b967c87bdcd22ff82"
+        "tests/fixtures/records_invalid/derived-from-decision/a.md": "b9b526db53fc7dfb8204b30430104a6316b8418cb223ebc3b61d8c8ccf0a438e"
       },
       "outcome": "no-impact",
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
@@ -549,7 +552,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records_invalid/derived-from-decision/b.md": "82c2dda4b91432e4d061bf1a936b8b2129e79cb7bf972787f86a538af815fdcf"
+        "tests/fixtures/records_invalid/derived-from-decision/b.md": "1bab8781662eac08e9b2a6e1483144a169b215f58dd0316329616db388dc7a98"
       },
       "outcome": "no-impact",
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
@@ -567,7 +570,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records_invalid/derived-from-payload/a.md": "9a712db1986a47f5e68190eef34192eeb3c96d55191db023e4ef0178be4332ce"
+        "tests/fixtures/records_invalid/derived-from-payload/a.md": "c73745a14c11bb0460ade3dda78db04477e09a97c303e7ba2800f712846a6941"
       },
       "outcome": "no-impact",
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
@@ -585,7 +588,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records_invalid/derived-without-hash/a.md": "cff12c6120478a7dc6e9bc1798df10eb113e01b394eb5889b89532fc6d28b9c7"
+        "tests/fixtures/records_invalid/derived-without-hash/a.md": "da572cdde12c6456b4963845f5af87fa92e77d11ee82828e7c639627aac23d75"
       },
       "outcome": "no-impact",
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
@@ -603,7 +606,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records_invalid/duplicate-id/a.md": "7b0b2061ef63cbd9e41e2e0f690a850130ec4118125cea9370d85c8a5e51fc0d"
+        "tests/fixtures/records_invalid/duplicate-id/a.md": "a8ba1143c9db1bcbfb5c1c3cb804e8b4ab7fe2579ed5774442bc37311ca9f162"
       },
       "outcome": "no-impact",
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
@@ -612,7 +615,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records_invalid/duplicate-id/b.md": "6d2a738fb9b5a92a6d548658e0e901fe4ca898aeded77c695bcc326ad39fc0a6"
+        "tests/fixtures/records_invalid/duplicate-id/b.md": "df1ba8a3c4a177ee4eb55551e8f00227b757d475bb7ddee2b80b32c53723485e"
       },
       "outcome": "no-impact",
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
@@ -630,7 +633,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records_invalid/duplicate-source/a.md": "f082bda02cd13dd821dd2d7574f7807e39ce1c07740b7390adca590f1de5593c"
+        "tests/fixtures/records_invalid/duplicate-source/a.md": "8573a5100aab25f64cc5864ec79dd4cd3c5781ef575360328588e3bf1b8397b2"
       },
       "outcome": "no-impact",
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
@@ -639,7 +642,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records_invalid/duplicate-source/b.md": "03051edbedac5b9319e0bbaaf8d50713d70af9995688bc6e4cb8cbb64ffdcd35"
+        "tests/fixtures/records_invalid/duplicate-source/b.md": "dc6cad024e64be985a94d6ff2fee80b7cdf2021b10841af929445e637924bb78"
       },
       "outcome": "no-impact",
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
@@ -729,7 +732,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records_invalid/pin-mismatch/a.md": "584955e09f3f74ab5a903236245114bfe55b6e8849c09c67f4ee803f5bb0357d"
+        "tests/fixtures/records_invalid/pin-mismatch/a.md": "329fa41d211c48e5ec8a492577c3c6b15b86fb6e3fb182e05d378bfe04ec579f"
       },
       "outcome": "no-impact",
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
@@ -747,7 +750,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records_invalid/pin-missing/a.md": "584955e09f3f74ab5a903236245114bfe55b6e8849c09c67f4ee803f5bb0357d"
+        "tests/fixtures/records_invalid/pin-missing/a.md": "329fa41d211c48e5ec8a492577c3c6b15b86fb6e3fb182e05d378bfe04ec579f"
       },
       "outcome": "no-impact",
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
@@ -765,7 +768,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records_invalid/schema/a.md": "b89ad8f43a613b5c326b6e7b2fb39bb2698fda0bfcbe2fe6c76b1c74810d9604"
+        "tests/fixtures/records_invalid/schema/a.md": "cc7f24d82924a06271ec96fb6a322e428b9c17d991dd15b4fa4fd26804677788"
       },
       "outcome": "no-impact",
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
@@ -783,7 +786,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records_invalid/superseded-by-proposal/a.md": "1ec7c194b733211156248e8692b9653a2fac1ae2a21139e6380c48bb440e9482"
+        "tests/fixtures/records_invalid/superseded-by-proposal/a.md": "a883114040d70a6e69f297cfcadec672d531c6e41c71aab6c4b209bd685828e3"
       },
       "outcome": "no-impact",
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
@@ -792,7 +795,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records_invalid/superseded-by-proposal/b.md": "b7819ef14e030eb17cc5d60c164755ea62ad982cbd93989f5827a66fbe44b19b"
+        "tests/fixtures/records_invalid/superseded-by-proposal/b.md": "a6df077015a6bda6dae53988fd7b23514afab2479723005343bda51c429c506f"
       },
       "outcome": "no-impact",
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
@@ -810,7 +813,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records_invalid/superseded-orphan/a.md": "1ec7c194b733211156248e8692b9653a2fac1ae2a21139e6380c48bb440e9482"
+        "tests/fixtures/records_invalid/superseded-orphan/a.md": "a883114040d70a6e69f297cfcadec672d531c6e41c71aab6c4b209bd685828e3"
       },
       "outcome": "no-impact",
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
@@ -828,7 +831,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records_invalid/superseded-twice/a.md": "1ec7c194b733211156248e8692b9653a2fac1ae2a21139e6380c48bb440e9482"
+        "tests/fixtures/records_invalid/superseded-twice/a.md": "a883114040d70a6e69f297cfcadec672d531c6e41c71aab6c4b209bd685828e3"
       },
       "outcome": "no-impact",
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
@@ -837,7 +840,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records_invalid/superseded-twice/b.md": "ed2a30cd7dde89580c93ff5632a9b6bd35747a36578e81f083b4ea0a121698bc"
+        "tests/fixtures/records_invalid/superseded-twice/b.md": "d1f120dde56e6d260eeec180252c0165c6b7d9267c15e74afd06e0795687768c"
       },
       "outcome": "no-impact",
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
@@ -846,7 +849,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records_invalid/superseded-twice/c.md": "408970e6d86d24535e1cb9519333ed0dc707e89201ef352b67443e85b7c23941"
+        "tests/fixtures/records_invalid/superseded-twice/c.md": "26963f7144bb0bb46d5da56d007e9fb473d675c8213036a3e74eb5763f5147d3"
       },
       "outcome": "no-impact",
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
@@ -864,7 +867,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records_invalid/supersedes-cycle/a.md": "3c08ebd7f50f29469b21948eb42ee0ccfdb55cbcbe328569401117765d445a60"
+        "tests/fixtures/records_invalid/supersedes-cycle/a.md": "740b7ed97b6d0ee3296c322e3db0b13905ad9dad1c04394eb49ff285cb27136d"
       },
       "outcome": "no-impact",
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
@@ -873,7 +876,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records_invalid/supersedes-cycle/b.md": "e09c2790814511b3d1cb8428aa2704a1b5c6dad1957fbe4101506f39466b8f5c"
+        "tests/fixtures/records_invalid/supersedes-cycle/b.md": "d7795068edfaa215af75339fd93e0f093a142b02a758ede187ca1b145d8004a6"
       },
       "outcome": "no-impact",
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
@@ -891,7 +894,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records_invalid/supersedes-unmarked/a.md": "5fae2c341f5649fcbeb6e97990538e99af19e3b45b0f03f40644295868ef5e8e"
+        "tests/fixtures/records_invalid/supersedes-unmarked/a.md": "26ab53b62487596e044b024194ce8d6476601da19a34c9b71a3a11d29095474c"
       },
       "outcome": "no-impact",
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
@@ -900,7 +903,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/records_invalid/supersedes-unmarked/b.md": "ed2a30cd7dde89580c93ff5632a9b6bd35747a36578e81f083b4ea0a121698bc"
+        "tests/fixtures/records_invalid/supersedes-unmarked/b.md": "d1f120dde56e6d260eeec180252c0165c6b7d9267c15e74afd06e0795687768c"
       },
       "outcome": "no-impact",
       "reason": "Failing fixture for one knowledge check rule; exercised by tests/test_knowledge_check.py.",
