@@ -1,0 +1,206 @@
+"""The knowledge-record contract: header rules, generated schema, templates and scenarios."""
+
+import json
+from pathlib import Path
+
+import pytest
+
+from ai_dlc.documentation import knowledge_records as records
+from ai_dlc.documentation.knowledge_notes import split
+from ai_dlc.files import assets
+
+ROOT = Path(__file__).resolve().parents[1]
+FIXTURES = ROOT / "tests/fixtures/knowledge_records"
+SCHEMA = ROOT / "contracts/knowledge-record.schema.json"
+REQUIRED = set(records.REQUIRED_FIELDS)
+# JSON Schema cannot compare dates or demand a UTC offset; Python enforces these.
+PYTHON_ONLY = {"valid_to first", "naive observed_at"}
+STATUS = {
+    "decision": "accepted",
+    "convention": "active",
+    "lesson": "open",
+    "action": "In Progress",
+    "question": "answered",
+    "source": "raw",
+}
+SOURCE = {
+    "schema_version": 1,
+    "revision": "1",
+    "provider": "zoom",
+    "title": "Call",
+    "observed_at": "2026-11-10T15:00:00-05:00",
+}
+
+
+def header(kind="decision", **changes):
+    data = {
+        "id": "a-slug",
+        "type": kind,
+        "scope": "team",
+        "status": STATUS[kind],
+        "date": "2026-11-10",
+        "owner": "sean",
+        "source": "SRC-0001",
+        "links": [],
+        **(SOURCE if kind == "source" else {}),
+    }
+    data.update(changes)
+    return {key: value for key, value in data.items() if value is not ...}
+
+
+def validator():
+    # jsonschema arrives through the mcp dependency; it checks the published conditions.
+    jsonschema = pytest.importorskip("jsonschema")
+    return jsonschema.Draft202012Validator(json.loads(SCHEMA.read_text()))
+
+
+def fixtures():
+    return sorted(FIXTURES.rglob("*.md"))
+
+
+def test_published_schema_is_generated():
+    published = json.loads(SCHEMA.read_text())
+    assert published == records.schema()
+    assert published["x-format-version"] == records.FORMAT_VERSION
+    assert set(published["required"]) == REQUIRED
+    assert "{" * 2 not in SCHEMA.read_text()
+
+
+@pytest.mark.parametrize("path", fixtures(), ids=lambda path: path.relative_to(FIXTURES).as_posix())
+def test_scenario_fixtures_validate(path):
+    data, _raw, _body = split(path.read_text())
+    assert data is not None
+    assert REQUIRED <= set(data)
+    assert records.errors(data) == []
+    assert list(validator().iter_errors(json.loads(json.dumps(data, default=str)))) == []
+
+
+def test_every_spec_scenario_and_type_is_covered():
+    scenarios = {path.parent.name for path in fixtures()}
+    assert len(scenarios) == 5
+    kinds = {split(path.read_text())[0]["type"] for path in fixtures()}  # type: ignore[index]
+    assert kinds == set(records.TYPES) - {"question"}
+
+
+@pytest.mark.parametrize("kind", records.TYPES)
+def test_one_valid_record_per_type(kind):
+    data = header(kind)
+    assert records.errors(data) == []
+    assert list(validator().iter_errors(data)) == []
+
+
+INVALID = [
+    ("missing owner", header(owner=...), "owner: Field required"),
+    ("unknown type", header(type="runbook"), "type: Input should be"),
+    ("unknown scope", header(scope="engagement"), "scope: Input should be"),
+    ("decision status", header(status="draft"), "status: a decision status is one of"),
+    ("convention status", header("convention", status="accepted"), "a convention status"),
+    ("lesson status", header("lesson", status="active"), "a lesson status"),
+    ("question status", header("question", status="closed"), "a question status"),
+    ("source status", header("source", status="open"), "a source status"),
+    ("bad link type", header(links=[{"type": "relates", "target": "x"}]), "links.0.type"),
+    (
+        "derived without hash",
+        header(links=[{"type": "derived_from", "target": "SRC-0001"}]),
+        "source_hash: required on a record with a derived_from link",
+    ),
+    ("phase without boundary", header(scope="project", phase="build"), "phase: allowed only"),
+    ("boundary outside project", header(boundary="customer"), "boundary: only a project"),
+    ("domain outside team", header(scope="personal", domain="sdlc"), "domain: allowed only"),
+    (
+        "checks on a lesson",
+        header("lesson", checks=[{"id": "c", "assert": {"never": {}}}]),
+        "checks: only decisions",
+    ),
+    ("superseded without valid_to", header(status="superseded"), "a superseded decision needs"),
+    (
+        "valid_to first",
+        header(valid_from="2026-11-10", valid_to="2026-11-01"),
+        "valid_to: precedes",
+    ),
+    ("wrong numbered prefix", header(id="LES-0001"), "id: a numbered decision id starts with DEC-"),
+    ("bad id", header(id="Not A Slug"), "id: String should match"),
+    ("source missing envelope", header("source", provider=...), "a source record needs provider"),
+    ("envelope on a decision", header(provider="zoom"), "provider: only source records"),
+    ("source without title", header("source", title=...), "a source record needs title"),
+    ("naive observed_at", header("source", observed_at="2026-11-10T15:00:00"), "observed_at"),
+    (
+        "obligation without intent",
+        header("source", obligations=[{"title": "x"}]),
+        "obligations.0.intent_key",
+    ),
+    ("unknown key", header(kind_of="x"), "kind_of: Extra inputs are not permitted"),
+    ("bad author", header(author="sean"), "author: String should match"),
+]
+
+
+@pytest.mark.parametrize(("name", "data", "message"), INVALID, ids=[c[0] for c in INVALID])
+def test_each_rule_fails_with_a_clear_message(name, data, message):
+    found = records.errors(data)
+    assert any(message in line for line in found), found
+    if name not in PYTHON_ONLY:
+        assert list(validator().iter_errors(json.loads(json.dumps(data)))), "schema accepted it"
+
+
+def test_field_names_live_in_one_place():
+    envelope = {"schema_version", "revision", "provider", "observed_at", "obligations", "url"}
+    names = set(records.REQUIRED_FIELDS) | set(records.OPTIONAL_FIELDS) | envelope
+    assert names == set(records.KnowledgeRecord.model_fields)
+
+
+@pytest.mark.parametrize(
+    "path",
+    [*fixtures(), *(assets("agents") / "templates/knowledge").glob("*.md")],
+    ids=lambda path: path.name,
+)
+def test_records_are_okf_documents(path):
+    """OKF v0.2 section 11: YAML frontmatter, a non-empty string type, no reserved name."""
+    data, _raw, _body = split(path.read_text())
+    assert data is not None
+    assert isinstance(data["type"], str) and data["type"]
+    assert path.name not in {"index.md", "log.md"}
+
+
+def test_title_and_description_are_optional_on_every_type():
+    data = header(title="Releases ship on Thursdays", description="Weekly release day.")
+    assert records.errors(data) == []
+    assert records.errors(header(description="")) == [
+        "description: String should have at least 1 character"
+    ]
+
+
+@pytest.mark.parametrize("kind", records.TYPES)
+def test_templates_have_the_header_and_validate_once_filled(kind):
+    template = assets("agents") / "templates/knowledge" / f"{kind}.md"
+    text = template.read_text()
+    assert "{" * 2 not in text
+    filled = text.replace("YYYY-MM-DDTHH:MM:SS", "2026-11-10T09:00:00").replace(
+        "YYYY-MM-DD", "2026-11-10"
+    )
+    data, _raw, body = split(filled)
+    assert data is not None and data["type"] == kind
+    assert REQUIRED <= set(data)
+    assert records.errors(data) == []
+    assert body.strip()
+
+
+def test_parse_render_round_trip_and_envelope():
+    text = (FIXTURES / "1-meeting/source.md").read_text()
+    record, body = records.parse(text)
+    again, again_body = records.parse(records.render(record, body))
+    assert again == record and again_body == body
+    envelope = records.envelope(record, body)
+    assert envelope.schema_version == records.ENVELOPE_VERSION
+    assert envelope.model_dump(mode="json")["obligations"][0]["intent_key"] == (
+        "share-release-notes"
+    )
+    with pytest.raises(ValueError, match="only source records"):
+        records.envelope(records.parse((FIXTURES / "1-meeting/action.md").read_text())[0], "")
+    with pytest.raises(ValueError, match="no frontmatter"):
+        records.parse("just text")
+
+
+def test_format_pin():
+    assert records.pin_errors({"format": {"version": records.FORMAT_VERSION}}) == []
+    assert "pin the record format" in records.pin_errors({})[0]
+    assert "is not supported" in records.pin_errors({"format": {"version": 99}})[0]

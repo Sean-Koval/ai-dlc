@@ -9,6 +9,10 @@ They describe tracker, specs, SCM, deploy, and knowledge role capabilities.
 generated from `ai_dlc.documentation.knowledge_notes.KnowledgeNote`; it is explained
 in `docs/design/local-and-shared-knowledge.md`. Decision `checks:` entries use
 flightdeck's `flightdeck.spec/v1` grammar and are validated for shape only.
+`knowledge-record.schema.json` is the record format knowledge repositories pin
+(`[format] version` in `knowledge.toml`), generated from
+`ai_dlc.documentation.knowledge_records.KnowledgeRecord`. It will replace the
+knowledge-note format ([ADR 0004](../docs/decisions/0004-knowledge-system-scope.md)).
 Completion is a service operation: callers must use `WorkService.finish`.
 The public `Registry.invoke` refuses terminal tracker transitions and the optional
 terminal planning reconciliation operation `reconcile_closed`.

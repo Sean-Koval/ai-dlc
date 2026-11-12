@@ -1,0 +1,928 @@
+{
+  "$defs": {
+    "Check": {
+      "additionalProperties": true,
+      "description": "One ADR check: a ``flightdeck.spec/v1`` spec without its header.\n\nOnly the shape is checked. Unknown keys are kept because the grammar is additive.",
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "assert": {
+          "additionalProperties": true,
+          "maxProperties": 1,
+          "minProperties": 1,
+          "title": "Assert",
+          "type": "object"
+        },
+        "scope": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "job",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scope"
+        },
+        "harness": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Harness"
+        },
+        "applies_when": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Applies When"
+        },
+        "severity": {
+          "anyOf": [
+            {
+              "enum": [
+                "warn",
+                "fail"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Severity"
+        }
+      },
+      "required": [
+        "id",
+        "assert"
+      ],
+      "title": "Check",
+      "type": "object"
+    },
+    "Link": {
+      "additionalProperties": false,
+      "description": "A typed edge to another record, ticket, document or URL.",
+      "properties": {
+        "type": {
+          "enum": [
+            "belongs_to",
+            "derived_from",
+            "supersedes",
+            "implements",
+            "codified_as"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "target": {
+          "description": "record id, alias, ticket key, path or URL",
+          "minLength": 1,
+          "title": "Target",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "target"
+      ],
+      "title": "Link",
+      "type": "object"
+    },
+    "Obligation": {
+      "additionalProperties": false,
+      "description": "An obligation candidate in a source envelope, as work-copilot ingests it.",
+      "properties": {
+        "intent_key": {
+          "minLength": 1,
+          "title": "Intent Key",
+          "type": "string"
+        },
+        "title": {
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "enum": [
+                "candidate",
+                "open",
+                "waiting",
+                "resolved",
+                "dismissed"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Status"
+        }
+      },
+      "required": [
+        "intent_key",
+        "title"
+      ],
+      "title": "Obligation",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "decision"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "enum": [
+              "proposed",
+              "accepted",
+              "rejected",
+              "superseded"
+            ]
+          },
+          "id": {
+            "pattern": "^(?:[a-z0-9][a-z0-9-]*|DEC-[0-9][0-9][0-9][0-9]+)$"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "convention"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "enum": [
+              "draft",
+              "active",
+              "retired"
+            ]
+          },
+          "id": {
+            "pattern": "^(?:[a-z0-9][a-z0-9-]*|CONV-[0-9][0-9][0-9][0-9]+)$"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "lesson"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "enum": [
+              "open",
+              "codified"
+            ]
+          },
+          "id": {
+            "pattern": "^(?:[a-z0-9][a-z0-9-]*|LES-[0-9][0-9][0-9][0-9]+)$"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "action"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "id": {
+            "pattern": "^(?:[a-z0-9][a-z0-9-]*|ACT-[0-9][0-9][0-9][0-9]+)$"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "question"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "enum": [
+              "open",
+              "answered"
+            ]
+          },
+          "id": {
+            "pattern": "^(?:[a-z0-9][a-z0-9-]*|Q-[0-9][0-9][0-9][0-9]+)$"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "source"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "enum": [
+              "raw",
+              "processed",
+              "expired"
+            ]
+          },
+          "id": {
+            "pattern": "^(?:[a-z0-9][a-z0-9-]*|SRC-[0-9][0-9][0-9][0-9]+)$"
+          }
+        }
+      }
+    },
+    {
+      "else": {
+        "not": {
+          "properties": {
+            "checks": {
+              "not": {
+                "type": "null"
+              }
+            }
+          },
+          "required": [
+            "checks"
+          ]
+        }
+      },
+      "if": {
+        "properties": {
+          "type": {
+            "const": "decision"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {}
+    },
+    {
+      "else": {
+        "not": {
+          "anyOf": [
+            {
+              "properties": {
+                "schema_version": {
+                  "not": {
+                    "type": "null"
+                  }
+                }
+              },
+              "required": [
+                "schema_version"
+              ]
+            },
+            {
+              "properties": {
+                "revision": {
+                  "not": {
+                    "type": "null"
+                  }
+                }
+              },
+              "required": [
+                "revision"
+              ]
+            },
+            {
+              "properties": {
+                "provider": {
+                  "not": {
+                    "type": "null"
+                  }
+                }
+              },
+              "required": [
+                "provider"
+              ]
+            },
+            {
+              "properties": {
+                "observed_at": {
+                  "not": {
+                    "type": "null"
+                  }
+                }
+              },
+              "required": [
+                "observed_at"
+              ]
+            },
+            {
+              "properties": {
+                "obligations": {
+                  "not": {
+                    "type": "null"
+                  }
+                }
+              },
+              "required": [
+                "obligations"
+              ]
+            },
+            {
+              "properties": {
+                "url": {
+                  "not": {
+                    "type": "null"
+                  }
+                }
+              },
+              "required": [
+                "url"
+              ]
+            }
+          ]
+        }
+      },
+      "if": {
+        "properties": {
+          "type": {
+            "const": "source"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "required": [
+          "schema_version",
+          "revision",
+          "provider",
+          "title",
+          "observed_at"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "decision"
+          },
+          "status": {
+            "const": "superseded"
+          }
+        },
+        "required": [
+          "type",
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "valid_to": {
+            "not": {
+              "type": "null"
+            }
+          }
+        },
+        "required": [
+          "valid_to"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "links": {
+            "contains": {
+              "properties": {
+                "type": {
+                  "const": "derived_from"
+                }
+              },
+              "required": [
+                "type"
+              ]
+            }
+          }
+        },
+        "required": [
+          "links"
+        ]
+      },
+      "then": {
+        "properties": {
+          "source_hash": {
+            "not": {
+              "type": "null"
+            }
+          }
+        },
+        "required": [
+          "source_hash"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "boundary": {
+            "not": {
+              "type": "null"
+            }
+          }
+        },
+        "required": [
+          "boundary"
+        ]
+      },
+      "then": {
+        "properties": {
+          "scope": {
+            "const": "project"
+          }
+        },
+        "required": [
+          "scope"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "phase": {
+            "not": {
+              "type": "null"
+            }
+          }
+        },
+        "required": [
+          "phase"
+        ]
+      },
+      "then": {
+        "properties": {
+          "boundary": {
+            "const": "customer"
+          }
+        },
+        "required": [
+          "boundary"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "domain": {
+            "not": {
+              "type": "null"
+            }
+          }
+        },
+        "required": [
+          "domain"
+        ]
+      },
+      "then": {
+        "properties": {
+          "scope": {
+            "const": "team"
+          }
+        },
+        "required": [
+          "scope"
+        ]
+      }
+    }
+  ],
+  "description": "Frontmatter of one knowledge record.\n\nRequired: ``id``, ``type``, ``scope``, ``status``, ``date``, ``owner``, ``source`` and\n``links``; :data:`REQUIRED_FIELDS` and :data:`OPTIONAL_FIELDS` list every name. A draft's ``id`` is a slug; the numbered id (``DEC-0001`` and so on) is\nassigned at merge, and the slug is then kept in ``aliases``. Source records also\ncarry the work-copilot envelope fields. Unknown keys are refused.",
+  "properties": {
+    "id": {
+      "description": "draft slug, or PREFIX-NNNN after merge",
+      "pattern": "^(?:[a-z0-9][a-z0-9-]*|(?:DEC|CONV|LES|ACT|Q|SRC)-[0-9][0-9][0-9][0-9]+)$",
+      "title": "Id",
+      "type": "string"
+    },
+    "type": {
+      "enum": [
+        "decision",
+        "convention",
+        "lesson",
+        "action",
+        "question",
+        "source"
+      ],
+      "title": "Type",
+      "type": "string"
+    },
+    "scope": {
+      "enum": [
+        "personal",
+        "project",
+        "team"
+      ],
+      "title": "Scope",
+      "type": "string"
+    },
+    "status": {
+      "description": "allowed values depend on type",
+      "minLength": 1,
+      "title": "Status",
+      "type": "string"
+    },
+    "date": {
+      "format": "date",
+      "title": "Date",
+      "type": "string"
+    },
+    "owner": {
+      "minLength": 1,
+      "title": "Owner",
+      "type": "string"
+    },
+    "source": {
+      "description": "where it came from: record id, path or URL",
+      "minLength": 1,
+      "title": "Source",
+      "type": "string"
+    },
+    "links": {
+      "items": {
+        "$ref": "#/$defs/Link"
+      },
+      "title": "Links",
+      "type": "array"
+    },
+    "title": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "index title",
+      "title": "Title"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "one index line",
+      "title": "Description"
+    },
+    "boundary": {
+      "anyOf": [
+        {
+          "const": "customer",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Boundary"
+    },
+    "phase": {
+      "anyOf": [
+        {
+          "enum": [
+            "discovery",
+            "scoping",
+            "design",
+            "build",
+            "handoff"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Phase"
+    },
+    "domain": {
+      "anyOf": [
+        {
+          "enum": [
+            "sdlc",
+            "tooling",
+            "integration",
+            "harness"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Domain"
+    },
+    "labels": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Labels"
+    },
+    "source_hash": {
+      "anyOf": [
+        {
+          "pattern": "^[a-z0-9-]+:\\S+$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Hash"
+    },
+    "valid_from": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Valid From"
+    },
+    "valid_to": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Valid To"
+    },
+    "review_by": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Review By"
+    },
+    "confidence": {
+      "anyOf": [
+        {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Confidence"
+    },
+    "checks": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/Check"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Checks"
+    },
+    "author": {
+      "anyOf": [
+        {
+          "pattern": "^(human|agent):\\S+$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Author"
+    },
+    "aliases": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Aliases"
+    },
+    "schema_version": {
+      "anyOf": [
+        {
+          "const": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "source envelope version",
+      "title": "Schema Version"
+    },
+    "revision": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Revision"
+    },
+    "provider": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Provider"
+    },
+    "observed_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Observed At"
+    },
+    "obligations": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/Obligation"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Obligations"
+    },
+    "url": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Url"
+    }
+  },
+  "required": [
+    "id",
+    "type",
+    "scope",
+    "status",
+    "date",
+    "owner",
+    "source",
+    "links"
+  ],
+  "title": "Knowledge record frontmatter",
+  "type": "object",
+  "x-format-version": 1
+}

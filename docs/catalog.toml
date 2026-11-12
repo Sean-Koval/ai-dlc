@@ -23,6 +23,13 @@ owner = "repository-maintainers"
 status = "active"
 
 [[documents]]
+id = "decision-0004-knowledge-system"
+path = "docs/decisions/0004-knowledge-system-scope.md"
+kind = "decision"
+owner = "repository-maintainers"
+status = "active"
+
+[[documents]]
 id = "architecture"
 path = "docs/architecture.md"
 kind = "architecture"
@@ -75,6 +82,8 @@ code_paths = [
     "src/ai_dlc/documentation/learnings.py",
     "src/ai_dlc/documentation/knowledge_notes.py",
     "contracts/knowledge-note.schema.json",
+    "src/ai_dlc/documentation/knowledge_records.py",
+    "contracts/knowledge-record.schema.json",
     "src/ai_dlc/harness/friction.py",
     "src/ai_dlc/documentation/workspace_diagnostics.py",
 ]
@@ -84,6 +93,7 @@ verification_paths = [
     "tests/test_knowledge.py",
     "tests/test_session_learnings.py",
     "tests/test_knowledge_notes.py",
+    "tests/test_knowledge_records.py",
     "tests/test_workspace_diagnostics.py",
 ]
 requirements = ["openspec/specs/obsidian-vault-linking/spec.md", "openspec/specs/session-learnings/spec.md"]

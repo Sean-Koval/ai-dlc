@@ -18,6 +18,13 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 
 ### Added
 
+- The knowledge-record contract: `KnowledgeRecord` in
+  `ai_dlc.documentation.knowledge_records`, its generated
+  `contracts/knowledge-record.schema.json`, format version 1 for knowledge repositories
+  to pin, and six templates under `agents/templates/knowledge/`. It sits beside the
+  knowledge-note format, which is unchanged;
+  [ADR 0004](docs/decisions/0004-knowledge-system-scope.md) puts the knowledge system
+  in scope (KAN-421, KAN-454).
 - `ai-dlc work review WORK_ID [--reviewer NAME]` and MCP `work_review` mark a draft
   reviewed after validating it and its dependencies. They refuse leftover TODOs and
   started work, and record `reviewed_by` and `reviewed_at`, so the review is no longer
