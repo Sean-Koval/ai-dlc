@@ -184,6 +184,24 @@
     },
     {
       "bound": {
+        "docs/assets/front/work.cast": "44eb9b9b33f642e1da5def78484a40b0d3614de5d26c6feea712c886dc95623f"
+      },
+      "outcome": "updated",
+      "reason": "Rebuilt by docs/assets/front/build.py; the demo's commit hashes follow the packaged tool-map template.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.cast"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.svg": "76363ed3d2ebfe8133b2d7cce0ee3fd0697f3d5a7bdb6050d90e0b699a311303"
+      },
+      "outcome": "updated",
+      "reason": "Rebuilt by docs/assets/front/build.py; the demo's commit hashes follow the packaged tool-map template.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.svg"
+    },
+    {
+      "bound": {
         "docs/catalog.toml": "35b5a0877d861c9c7fa8a6bb35117623d9aae9be5144b9051d570164788cbe56"
       },
       "outcome": "updated",
