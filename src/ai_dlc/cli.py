@@ -1643,13 +1643,47 @@ def knowledge_append(path: str, body: Path, operation_id: str, vault: Path):
 
 
 @knowledge.command("check")
-def knowledge_check(vault: Annotated[Path, typer.Option("--vault")]):
-    """Report learnings whose knowledge-note frontmatter fails the schema; read-only."""
-    from ai_dlc.documentation.knowledge_notes import check_vault
+def knowledge_check(
+    records: Annotated[Path | None, typer.Argument(help="records directory")] = None,
+    vault: Annotated[Path | None, typer.Option("--vault")] = None,
+    base: Annotated[str | None, typer.Option("--base", help="git ref for CI mode")] = None,
+    config: Annotated[Path | None, typer.Option("--config", help="knowledge.toml")] = None,
+    json_output: Annotated[bool, typer.Option("--json")] = False,
+):
+    """Check a records directory against the record contract, or a vault's learnings; read-only.
 
-    result = check_vault(vault)
-    emit(result)
-    if result["invalid"]:
+    For records: one line per failure, exit 1 on any. ``--base`` also refuses edits to
+    decisions accepted at the merge base.
+    """
+    if (records is None) == (vault is None):
+        typer.echo("Error: pass a records directory or --vault, not both", err=True)
+        raise typer.Exit(2)
+    if records is None:
+        from ai_dlc.documentation.knowledge_notes import check_vault
+
+        result = check_vault(vault)
+        emit(result)
+        if result["invalid"]:
+            raise typer.Exit(1)
+        return
+    from ai_dlc.documentation.knowledge_check import check_records, failure_lines, legacy_lines
+
+    with service_call():
+        result = check_records(records, base=base, config=config)
+    if json_output:
+        emit(result)
+    else:
+        prefix = records.as_posix()
+        for line in failure_lines(result, prefix):
+            typer.echo(line)
+        for line in legacy_lines(result, prefix):
+            typer.echo(line, err=True)
+        typer.echo(
+            f"knowledge check: {result['records']} records, {len(result['failures'])} "
+            f"failures, {len(result['legacy'])} legacy",
+            err=True,
+        )
+    if result["failures"]:
         raise typer.Exit(1)
 
 
