@@ -11,20 +11,31 @@ A knowledge repository pins :data:`FORMAT_VERSION` in its ``knowledge.toml``::
     [format]
     version = 1
 
-Records are also Open Knowledge Format v0.2 documents: parseable YAML frontmatter
-with a non-empty ``type`` (OKF types are open). ``links`` is an OKF extension key, and
-``title`` and ``description`` feed an OKF ``index.md``.
+Records are Open Knowledge Format v0.2 documents (ADR 0004, KAN-471): parseable YAML
+frontmatter with a non-empty ``type`` (OKF types are open). ``title``, ``description``,
+``tags``, ``sources``, ``verified``, ``stale_after`` and ``status`` use OKF's names;
+``status`` keeps the record values and :func:`okf_status` maps them to OKF's. ``links``
+and the other keys are OKF extension keys.
 
 A Source record carries work-copilot's source envelope in its frontmatter, with the
 markdown body as the envelope ``body``; :func:`envelope` returns that envelope.
 """
 
+import re
 from datetime import date as Day
 from datetime import datetime
 from typing import Any, Literal, cast
 
 import yaml
-from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, ValidationError, model_validator
+from pydantic import (
+    AwareDatetime,
+    BaseModel,
+    ConfigDict,
+    Field,
+    ValidationError,
+    field_validator,
+    model_validator,
+)
 
 from ai_dlc.documentation.knowledge_notes import AUTHOR_PATTERN, Check, split
 
@@ -53,31 +64,49 @@ STATUSES: dict[str, tuple[str, ...] | None] = {
     "source": ("raw", "processed", "expired"),
 }
 LINK_TYPES = ("belongs_to", "derived_from", "supersedes", "implements", "codified_as")
-# Every header field name, in one place, in serialization order. KAN-471 may rename some
-# for Open Knowledge Format v0.2 (review_by, source, source_hash, labels); change them here.
-REQUIRED_FIELDS = ("id", "type", "scope", "status", "date", "owner", "source", "links")
+# Every header field name, in one place, in serialization order (KAN-471: OKF v0.2 names).
+REQUIRED_FIELDS = ("id", "type", "scope", "status", "date", "owner", "sources", "links")
 OPTIONAL_FIELDS = (
     "title",
     "description",
+    "tags",
+    "label",
     "boundary",
     "phase",
     "domain",
-    "labels",
-    "source_hash",
     "valid_from",
     "valid_to",
-    "review_by",
+    "stale_after",
+    "verified",
     "confidence",
     "checks",
     "author",
     "aliases",
 )
+# Fixed export of each record status to OKF's draft | stable | deprecated (OKF section 5.4).
+# Actions carry the tracker's status, which exports as stable (OKF's default).
+OKF_STATUS: dict[str, dict[str, str]] = {
+    "decision": {
+        "proposed": "draft",
+        "accepted": "stable",
+        "rejected": "deprecated",
+        "superseded": "deprecated",
+    },
+    "convention": {"draft": "draft", "active": "stable", "retired": "deprecated"},
+    "lesson": {"open": "stable", "codified": "stable"},
+    "action": {},
+    "question": {"open": "draft", "answered": "stable"},
+    "source": {"raw": "draft", "processed": "stable", "expired": "deprecated"},
+}
 SOURCE_FIELDS = ("schema_version", "revision", "provider", "title", "observed_at")
 SOURCE_ONLY = ("schema_version", "revision", "provider", "observed_at", "obligations", "url")
 SLUG = r"[a-z0-9][a-z0-9-]*"
 NUMBER = "[0-9][0-9][0-9][0-9]+"
 ID_PATTERN = rf"^(?:{SLUG}|(?:DEC|CONV|LES|ACT|Q|SRC)-{NUMBER})$"
 HASH_PATTERN = r"^[a-z0-9-]+:\S+$"
+# A sha256 hash is 64 lowercase hex characters, so duplicate sources can be found.
+SHA256_PATTERN = r"^sha256:[0-9a-f]{64}$"
+ACTOR_PATTERN = r"^(?:(?:human|process):\S+|[^\s:/]+/\S+)$"
 
 
 def _present(field: str) -> dict[str, Any]:
@@ -120,11 +149,13 @@ def _conditions() -> list[dict[str, Any]]:
             "then": _present("valid_to"),
         }
     )
+    # Python also checks the hashed entry matches the link target; JSON Schema cannot.
     derived = {"properties": {"type": {"const": "derived_from"}}, "required": ["type"]}
+    hashed = {"required": ["hash"], "properties": {"hash": {"type": "string"}}}
     rules.append(
         {
             "if": {"properties": {"links": {"contains": derived}}, "required": ["links"]},
-            "then": _present("source_hash"),
+            "then": {"properties": {"sources": {"contains": hashed}}},
         }
     )
     project = {"properties": {"scope": {"const": "project"}}, "required": ["scope"]}
@@ -144,6 +175,42 @@ class Link(BaseModel):
     target: str = Field(min_length=1, description="record id, alias, ticket key, path or URL")
 
 
+class SourceRef(BaseModel):
+    """One OKF ``sources`` entry (OKF section 5.1) with an optional content hash."""
+
+    model_config = ConfigDict(
+        extra="forbid",
+        json_schema_extra={
+            "if": {
+                "properties": {"hash": {"type": "string", "pattern": "^sha256:"}},
+                "required": ["hash"],
+            },
+            "then": {"properties": {"hash": {"pattern": SHA256_PATTERN}}},
+        },
+    )
+    id: str | None = Field(default=None, min_length=1, description="record id or citation key")
+    resource: str = Field(min_length=1, description="URL, path or record id it came from")
+    hash: str | None = Field(default=None, pattern=HASH_PATTERN)
+    title: str | None = Field(default=None, min_length=1)
+    author: str | None = Field(default=None, min_length=1)
+    last_modified: AwareDatetime | None = None
+
+    @field_validator("hash")
+    @classmethod
+    def _sha256(cls, value: str | None) -> str | None:
+        if value and value.startswith("sha256:") and not re.match(SHA256_PATTERN, value):
+            raise ValueError("a sha256 hash is 64 lowercase hex characters")
+        return value
+
+
+class Verification(BaseModel):
+    """One OKF ``verified`` event (OKF section 5.2)."""
+
+    model_config = ConfigDict(extra="forbid")
+    by: str = Field(pattern=ACTOR_PATTERN, description="human:<id>, process:<id> or tool/version")
+    at: AwareDatetime
+
+
 class Obligation(BaseModel):
     """An obligation candidate in a source envelope, as work-copilot ingests it."""
 
@@ -156,10 +223,10 @@ class Obligation(BaseModel):
 class KnowledgeRecord(BaseModel):
     """Frontmatter of one knowledge record.
 
-    Required: ``id``, ``type``, ``scope``, ``status``, ``date``, ``owner``, ``source`` and
-    ``links``; :data:`REQUIRED_FIELDS` and :data:`OPTIONAL_FIELDS` list every name. A draft's ``id`` is a slug; the numbered id (``DEC-0001`` and so on) is
-    assigned at merge, and the slug is then kept in ``aliases``. Source records also
-    carry the work-copilot envelope fields. Unknown keys are refused.
+    :data:`REQUIRED_FIELDS` and :data:`OPTIONAL_FIELDS` list every name. A draft's ``id``
+    is a slug; the numbered id (``DEC-0001`` and so on) is assigned at merge, and the
+    slug is then kept in ``aliases``. Source records also carry the work-copilot
+    envelope fields. Unknown keys are refused.
     """
 
     model_config = ConfigDict(
@@ -176,18 +243,21 @@ class KnowledgeRecord(BaseModel):
     status: str = Field(min_length=1, description="allowed values depend on type")
     date: Day
     owner: str = Field(min_length=1)
-    source: str = Field(min_length=1, description="where it came from: record id, path or URL")
+    sources: list[SourceRef] = Field(min_length=1, description="what it came from (OKF 5.1)")
     links: list[Link]
     title: str | None = Field(default=None, min_length=1, description="index title")
     description: str | None = Field(default=None, min_length=1, description="one index line")
+    tags: list[str] | None = None
+    label: str | None = Field(default=None, min_length=1, description="internal | confidential")
     boundary: Literal["customer"] | None = None
     phase: Literal["discovery", "scoping", "design", "build", "handoff"] | None = None
     domain: Literal["sdlc", "tooling", "integration", "harness"] | None = None
-    labels: list[str] | None = None
-    source_hash: str | None = Field(default=None, pattern=HASH_PATTERN)
     valid_from: Day | None = None
     valid_to: Day | None = None
-    review_by: Day | None = None
+    stale_after: AwareDatetime | None = None
+    verified: list[Verification] | None = Field(
+        default=None, description="a bare mapping is read as a one-element list (OKF 5.2)"
+    )
     confidence: Literal["low", "medium", "high"] | None = None
     checks: list[Check] | None = None
     author: str | None = Field(default=None, pattern=AUTHOR_PATTERN)
@@ -198,6 +268,12 @@ class KnowledgeRecord(BaseModel):
     observed_at: AwareDatetime | None = None
     obligations: list[Obligation] | None = None
     url: str | None = None
+
+    @field_validator("verified", mode="before")
+    @classmethod
+    def _one_verifier(cls, value: object) -> object:
+        # OKF 5.2: a bare mapping is a one-element list.
+        return [value] if isinstance(value, dict) else value
 
     @model_validator(mode="after")
     def _rules(self) -> "KnowledgeRecord":
@@ -221,8 +297,15 @@ def record_rule_errors(record: KnowledgeRecord) -> list[str]:
         found.append("checks: only decisions carry checks")
     if kind == "decision" and record.status == "superseded" and record.valid_to is None:
         found.append("valid_to: a superseded decision needs valid_to")
-    if any(link.type == "derived_from" for link in record.links) and not record.source_hash:
-        found.append("source_hash: required on a record with a derived_from link")
+    for link in record.links:
+        if link.type != "derived_from":
+            continue
+        entries = [e for e in record.sources if link.target in (e.id, e.resource)]
+        if not any(entry.hash for entry in entries):
+            found.append(
+                f"sources: a derived_from link to {link.target} needs a sources entry "
+                "with that id or resource and a hash"
+            )
     if record.boundary is not None and record.scope != "project":
         found.append("boundary: only a project-scoped record has a boundary")
     if record.phase is not None and record.boundary != "customer":
@@ -262,7 +345,10 @@ class SourceEnvelope(BaseModel):
 
 
 def schema() -> dict:
-    return KnowledgeRecord.model_json_schema()
+    published = KnowledgeRecord.model_json_schema()
+    # OKF 5.2 also allows one bare verification mapping; Python wraps it in a list.
+    published["properties"]["verified"]["anyOf"].insert(1, {"$ref": "#/$defs/Verification"})
+    return published
 
 
 def errors(data: dict) -> list[str]:
@@ -316,6 +402,11 @@ def envelope(record: KnowledgeRecord, body: str) -> SourceEnvelope:
         obligations=record.obligations or [],
         url=record.url,
     )
+
+
+def okf_status(record: KnowledgeRecord) -> str:
+    """The OKF v0.2 lifecycle status (draft | stable | deprecated) for a record."""
+    return OKF_STATUS[record.type].get(record.status, "stable")
 
 
 def pin_errors(knowledge_toml: dict) -> list[str]:

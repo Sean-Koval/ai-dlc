@@ -7,7 +7,8 @@ phase: build
 status: open
 date: 2026-10-21
 owner: sean
-source: notes/2026-10-21.md
+sources:
+  - {resource: notes/2026-10-21.md}
 links:
   - {type: belongs_to, target: project-alpha}
 confidence: high

@@ -26,7 +26,13 @@ ai-dlc-conformance = "ai_dlc.conformance:main"
 ai-dlc-github-issues = "ai_dlc.providers.github_issues:main"
 
 [dependency-groups]
-dev = ["pytest>=8.4,<9", "ruff>=0.12,<1", "pyright>=1.1.400,<2", "build>=1.2,<2"]
+dev = [
+    "pytest>=8.4,<9",
+    "ruff>=0.12,<1",
+    "pyright>=1.1.400,<2",
+    "build>=1.2,<2",
+    "jsonschema>=4.26,<5",
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/ai_dlc"]

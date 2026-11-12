@@ -3,6 +3,7 @@
 import json
 from pathlib import Path
 
+import jsonschema
 import pytest
 
 from ai_dlc.documentation import knowledge_records as records
@@ -14,7 +15,9 @@ FIXTURES = ROOT / "tests/fixtures/knowledge_records"
 SCHEMA = ROOT / "contracts/knowledge-record.schema.json"
 REQUIRED = set(records.REQUIRED_FIELDS)
 # JSON Schema cannot compare dates or demand a UTC offset; Python enforces these.
-PYTHON_ONLY = {"valid_to first", "naive observed_at"}
+PYTHON_ONLY = {"valid_to first", "naive observed_at", "naive stale_after", "hash on another source"}
+HASH = "sha256:" + "0" * 64
+DERIVED = [{"type": "derived_from", "target": "SRC-0001"}]
 STATUS = {
     "decision": "accepted",
     "convention": "active",
@@ -40,7 +43,7 @@ def header(kind="decision", **changes):
         "status": STATUS[kind],
         "date": "2026-11-10",
         "owner": "sean",
-        "source": "SRC-0001",
+        "sources": [{"resource": "https://example.invalid/pr/1"}],
         "links": [],
         **(SOURCE if kind == "source" else {}),
     }
@@ -49,8 +52,6 @@ def header(kind="decision", **changes):
 
 
 def validator():
-    # jsonschema arrives through the mcp dependency; it checks the published conditions.
-    jsonschema = pytest.importorskip("jsonschema")
     return jsonschema.Draft202012Validator(json.loads(SCHEMA.read_text()))
 
 
@@ -91,6 +92,7 @@ def test_one_valid_record_per_type(kind):
 
 INVALID = [
     ("missing owner", header(owner=...), "owner: Field required"),
+    ("missing sources", header(sources=...), "sources: Field required"),
     ("unknown type", header(type="runbook"), "type: Input should be"),
     ("unknown scope", header(scope="engagement"), "scope: Input should be"),
     ("decision status", header(status="draft"), "status: a decision status is one of"),
@@ -101,9 +103,30 @@ INVALID = [
     ("bad link type", header(links=[{"type": "relates", "target": "x"}]), "links.0.type"),
     (
         "derived without hash",
-        header(links=[{"type": "derived_from", "target": "SRC-0001"}]),
-        "source_hash: required on a record with a derived_from link",
+        header(links=DERIVED, sources=[{"id": "SRC-0001", "resource": "s.md"}]),
+        "sources: a derived_from link to SRC-0001 needs a sources entry",
     ),
+    (
+        "hash on another source",
+        header(links=DERIVED, sources=[{"id": "SRC-0002", "resource": "s.md", "hash": HASH}]),
+        "a derived_from link to SRC-0001 needs",
+    ),
+    ("no sources", header(sources=[]), "sources: List should have at least 1 item"),
+    ("source without resource", header(sources=[{"id": "x"}]), "sources.0.resource"),
+    (
+        "short sha256",
+        header(sources=[{"resource": "s.md", "hash": "sha256:3f1c9a"}]),
+        "sources.0.hash: a sha256 hash is 64 lowercase hex characters",
+    ),
+    (
+        "bad verifier",
+        header(verified=[{"by": "sean", "at": "2026-11-10T09:00:00Z"}]),
+        "verified.0.by: String should match",
+    ),
+    ("naive stale_after", header(stale_after="2027-01-01T00:00:00"), "stale_after"),
+    ("old review_by", header(review_by="2027-01-01"), "review_by: Extra inputs"),
+    ("old source", header(source="SRC-0001"), "source: Extra inputs"),
+    ("old labels", header(labels=["internal"]), "labels: Extra inputs"),
     ("phase without boundary", header(scope="project", phase="build"), "phase: allowed only"),
     ("boundary outside project", header(boundary="customer"), "boundary: only a project"),
     ("domain outside team", header(scope="personal", domain="sdlc"), "domain: allowed only"),
@@ -159,6 +182,39 @@ def test_records_are_okf_documents(path):
     assert data is not None
     assert isinstance(data["type"], str) and data["type"]
     assert path.name not in {"index.md", "log.md"}
+
+
+def test_okf_fields_and_status_export():
+    data = header(
+        "lesson",
+        title="T",
+        description="D",
+        tags=["ci"],
+        label="confidential",
+        stale_after="2027-01-01T00:00:00Z",
+        verified={"by": "human:sean", "at": "2026-11-10T09:00:00Z"},
+    )
+    assert records.errors(data) == []
+    record = records.KnowledgeRecord.model_validate(data)
+    assert record.verified is not None and len(record.verified) == 1
+    assert list(validator().iter_errors(data)) == []
+    assert {"title", "description", "tags", "sources", "verified", "stale_after"} <= set(
+        records.OPTIONAL_FIELDS + records.REQUIRED_FIELDS
+    )
+    for kind, statuses in records.STATUSES.items():
+        assert set(records.OKF_STATUS[kind]) == set(statuses or ())
+    exported = {
+        (kind, status): records.okf_status(
+            records.KnowledgeRecord.model_validate(header(kind, status=status))
+        )
+        for kind in records.TYPES
+        for status in (records.STATUSES[kind] or ("In Progress",))
+        if not (kind == "decision" and status == "superseded")
+    }
+    assert set(exported.values()) <= {"draft", "stable", "deprecated"}
+    assert exported["decision", "rejected"] == "deprecated"
+    assert exported["convention", "draft"] == "draft"
+    assert exported["action", "In Progress"] == "stable"
 
 
 def test_title_and_description_are_optional_on_every_type():

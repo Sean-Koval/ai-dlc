@@ -5,7 +5,8 @@ scope: team
 status: processed
 date: 2026-11-10
 owner: sean
-source: transcripts/2026-11-10-planning.vtt
+sources:
+  - {resource: transcripts/2026-11-10-planning.vtt}
 links: []
 schema_version: 1
 revision: "1"

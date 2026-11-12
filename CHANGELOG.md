@@ -21,7 +21,8 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 - The knowledge-record contract: `KnowledgeRecord` in
   `ai_dlc.documentation.knowledge_records`, its generated
   `contracts/knowledge-record.schema.json`, format version 1 for knowledge repositories
-  to pin, and six templates under `agents/templates/knowledge/`. It sits beside the
+  to pin, and six templates under `agents/templates/knowledge/`. Records are Open
+  Knowledge Format v0.2 documents with OKF field names (KAN-471). It sits beside the
   knowledge-note format, which is unchanged;
   [ADR 0004](docs/decisions/0004-knowledge-system-scope.md) puts the knowledge system
   in scope (KAN-421, KAN-454).

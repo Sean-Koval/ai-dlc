@@ -2,25 +2,25 @@
   "decisions": [
     {
       "bound": {
-        "AGENTS.md": "ab62d910db8365603e04b75c537fc6e784af73ee6ded735474244446a7472f69"
+        "AGENTS.md": "7bcae92dae9220d70c5f315c0f04d5a374afabe6cf6f407112f4ffc358681503"
       },
       "outcome": "updated",
-      "reason": "Scope-freeze paragraph points at ADR 0004, which puts the knowledge system in scope (KAN-454).",
+      "reason": "Scope-freeze paragraph points at ADR 0003, which puts the knowledge system in scope (KAN-454, KAN-471).",
       "reviewer": "Claude (agent)",
       "target": "AGENTS.md"
     },
     {
       "bound": {
-        "CHANGELOG.md": "a1426ff0d1d73f7fce40a900ff2e47e4421794413abf5f1214e88a4eb2550ec6"
+        "CHANGELOG.md": "2ba3ba6ffbd82273c0e685eafee803fcb258d1ec9caa941009303e87a90e6e71"
       },
       "outcome": "updated",
-      "reason": "Unreleased entry for the knowledge-record contract (KAN-421).",
+      "reason": "Unreleased entry for the knowledge-record contract with OKF field names (KAN-421, KAN-471).",
       "reviewer": "Claude (agent)",
       "target": "CHANGELOG.md"
     },
     {
       "bound": {
-        "agents/templates/knowledge/action.md": "9dc101e155bdc02093c6c7ad0d5f6b298064cf96352ba5f9b2bb4ec9206b218e"
+        "agents/templates/knowledge/action.md": "79b462b9f2ac99c2c81ac9bc9d734662c9d4724088f8dc96f16275ccc6110ca2"
       },
       "outcome": "updated",
       "reason": "New knowledge-record template (KAN-421); validated by tests/test_knowledge_records.py.",
@@ -29,7 +29,7 @@
     },
     {
       "bound": {
-        "agents/templates/knowledge/convention.md": "d151c94347f19e8561309bf7820aff539fdb0f8fc93c8167cd6368064404e2ba"
+        "agents/templates/knowledge/convention.md": "19e84359b33e54401932add95c11963eda64f71172af190e107197a32fe2fb80"
       },
       "outcome": "updated",
       "reason": "New knowledge-record template (KAN-421); validated by tests/test_knowledge_records.py.",
@@ -38,7 +38,7 @@
     },
     {
       "bound": {
-        "agents/templates/knowledge/decision.md": "8599cb979ea18805c6e8ec4229381cc0bdf4e9bb20e9f0a96d72a2b0ec206f24"
+        "agents/templates/knowledge/decision.md": "d7966fffa020fffa85fac6abb90b779b036fcc88e8f1a74c9fcce0c84c9f0dc6"
       },
       "outcome": "updated",
       "reason": "New knowledge-record template (KAN-421); validated by tests/test_knowledge_records.py.",
@@ -47,7 +47,7 @@
     },
     {
       "bound": {
-        "agents/templates/knowledge/lesson.md": "5ae59e465e83582af65c915cc2f39a8bbf7411f15339d2c5c3234c5c3c69a2ab"
+        "agents/templates/knowledge/lesson.md": "a152f2b5dd421e68e373b28ff4ff64bad6031e8cb690e57d5711d2b53787cd15"
       },
       "outcome": "updated",
       "reason": "New knowledge-record template (KAN-421); validated by tests/test_knowledge_records.py.",
@@ -56,7 +56,7 @@
     },
     {
       "bound": {
-        "agents/templates/knowledge/question.md": "0b9fd0dca436392922e4cd03e61c3d0b5ae697f18aa14aea44ef064d0147ff18"
+        "agents/templates/knowledge/question.md": "0d5d5f8eb231c851f32c4a323abfba14f1322786431f7184ab921132920e6e1c"
       },
       "outcome": "updated",
       "reason": "New knowledge-record template (KAN-421); validated by tests/test_knowledge_records.py.",
@@ -65,7 +65,7 @@
     },
     {
       "bound": {
-        "agents/templates/knowledge/source.md": "a07a246fe24e3eae596b7312cbc74fe2e8a44e7368f5a663335372cf70fdca7d"
+        "agents/templates/knowledge/source.md": "68c2a906909df678032252c71ea0915ef5bb6fcdd4a86db0f344d7fe3d68fdcd"
       },
       "outcome": "updated",
       "reason": "New knowledge-record template (KAN-421); validated by tests/test_knowledge_records.py.",
@@ -74,10 +74,10 @@
     },
     {
       "bound": {
-        "contracts/README.md": "6444be28d6dadc181127714a0582375e8c984fa01896a4da03a5add33d04084f"
+        "contracts/README.md": "a986676feb4bb29a7015bc6dc462cc96354f3e65bc7f9ae1cdc71c1f3ecf0f3c"
       },
       "outcome": "updated",
-      "reason": "Describes the new generated knowledge-record schema and the format pin.",
+      "reason": "Describes the knowledge-record schema, its OKF v0.2 field names, the format pin and that schema-only consumers need a format checker.",
       "reviewer": "Claude (agent)",
       "target": "contracts/README.md"
     },
@@ -119,7 +119,7 @@
         "plugins/ai-dlc-workflow/skills/prd-draft/SKILL.md": "046b82e994b36b2202f7772aafc93557b903d2b541e69a62414d9b5a0b5d75fc",
         "plugins/ai-dlc-workflow/skills/review-inbox/SKILL.md": "7aa21f4eca0bd4f507046bc481f92f4f4b2acea8ee0b927c93b7f53103b3ec15",
         "plugins/ai-dlc-workflow/skills/spec-from-prd/SKILL.md": "b280cb4d07935ed631450f7260e608aafe4177a059d83f79b17da3c0e9bb71ad",
-        "pyproject.toml": "cb78de40ce91805acb3b66d955655ae535665d2010d768a3fa71b3d213039a63",
+        "pyproject.toml": "41ded8f89ba4f707f0fb7d8c940d78092636fa69c6aca27f9d636da0eaf60be3",
         "scripts/build_workflow_plugin.py": "4f89695be840a2287630e8d11003a719663205156af1cf0b69bacb2f1d95d752",
         "scripts/check_client_pins.py": "c0b4030b6767aee44975556f11a2c0dcf2b5aa67e232ec6182c1247630f53c8c",
         "scripts/check_generated.py": "80ff1f71cc3d6864b0d2b7555d42661b1fb2ef7f68544ca3e593ee14d9f4c4c2",
@@ -149,7 +149,7 @@
         "src/ai_dlc/documentation/fde.py": "3664430ebca9f3ef7ba7c7c431f7e4790176066510904ebe4d43d0a88ecf26e1",
         "src/ai_dlc/documentation/knowledge.py": "c02c49bcc24f8e2c418ace24a72db604b1bc9a4f8d1511fa42235aeb9b122bc7",
         "src/ai_dlc/documentation/knowledge_notes.py": "a608b93458f20b1bcc11b88e8f9062e686770128f9315ac715cbea0eb4c30377",
-        "src/ai_dlc/documentation/knowledge_records.py": "affe51f4ece4bdf4560d0923318c0ef47be1cd6d11510277dde83d45c1b6f697",
+        "src/ai_dlc/documentation/knowledge_records.py": "36fc1a4316a946ed912fb76f0ea2b3c992cae2ec9492c19dbe9089130edaba89",
         "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
         "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
         "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
@@ -242,34 +242,34 @@
     },
     {
       "bound": {
-        "docs/catalog.toml": "698d08f29fad6bbdcd5c31ad22009b0a45837db88577b1ca186b7142e44b741a"
+        "docs/catalog.toml": "cb64a6f3d959c48c2e254ff835befbf45a45c6b91464e85f30d97ce388e8dde0"
       },
       "outcome": "updated",
-      "reason": "Enrolls ADR 0004 and maps the record module, schema and tests to the knowledge design page.",
+      "reason": "Enrolls ADR 0003 and maps the record module, schema and tests to the knowledge design page.",
       "reviewer": "Claude (agent)",
       "target": "docs/catalog.toml"
     },
     {
       "bound": {
-        "catalog:docs/decisions/0004-knowledge-system-scope.md": "ed0af62f042336fe40b293fce0ba1d91411836cca10a14035f2033e41229939e",
-        "docs/decisions/0004-knowledge-system-scope.md": "830c03818162cc1f7af876edb86de5fb87b08d5be8d6c21699c30ae206475269"
+        "catalog:docs/decisions/0003-knowledge-system-scope.md": "c3b970f1cd1a44a64d704ed7c2d828022ab21b7e5b824ff18aaac73fcddafc83",
+        "docs/decisions/0003-knowledge-system-scope.md": "6206d7c07a7a9c036dd1117a8430905cfad74c72eb901eedc17780a23a5fbcff"
       },
       "outcome": "updated",
-      "reason": "New ADR amending ADR 0001 for the knowledge system (KAN-454).",
+      "reason": "ADR 0003 (renumbered from 0004 after #254 closed) amends ADR 0001 for the knowledge system (KAN-454) and records the OKF v0.2 adoption (KAN-471).",
       "reviewer": "Claude (agent)",
-      "target": "docs/decisions/0004-knowledge-system-scope.md"
+      "target": "docs/decisions/0003-knowledge-system-scope.md"
     },
     {
       "bound": {
         "catalog:docs/design/local-and-shared-knowledge.md": "586d0a29a47ebd184e1536445197c64bc4c1d928ecbb67a259dd551be8cbf958",
         "contracts/knowledge-note.schema.json": "0a973fee3afef0117bfdcd829499746b5693cfbcb156d3a4a86a94cfe3996686",
-        "contracts/knowledge-record.schema.json": "8b603b2c4a79b43b3f9d62c0ba062e37f340dcd13f4b1a1b978d2bb992f5535c",
+        "contracts/knowledge-record.schema.json": "0a7633d88024a668140a6d658f09f5d11bf7e26b8ff09368abd82d17ddcd9bd7",
         "docs/design/local-and-shared-knowledge.md": "28c27630f2adfa72c1685adce8a4eb9d119c501dbcdc0fa0e50803ec34a8a52b",
         "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
         "openspec/specs/session-learnings/spec.md": "dcd490cd54f2f6cb3fadaa90afade85d5e1d64b19fbe2accb70bfb06897e97b4",
         "src/ai_dlc/documentation/knowledge.py": "c02c49bcc24f8e2c418ace24a72db604b1bc9a4f8d1511fa42235aeb9b122bc7",
         "src/ai_dlc/documentation/knowledge_notes.py": "a608b93458f20b1bcc11b88e8f9062e686770128f9315ac715cbea0eb4c30377",
-        "src/ai_dlc/documentation/knowledge_records.py": "affe51f4ece4bdf4560d0923318c0ef47be1cd6d11510277dde83d45c1b6f697",
+        "src/ai_dlc/documentation/knowledge_records.py": "36fc1a4316a946ed912fb76f0ea2b3c992cae2ec9492c19dbe9089130edaba89",
         "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
         "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
         "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
@@ -277,24 +277,24 @@
         "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
         "tests/test_knowledge.py": "38e5cda9c9dc1fe97d12618a0bd9a86b2725cff059d412232152582af1547af1",
         "tests/test_knowledge_notes.py": "0af8b4f84c5b8d974833eef49d5efd662a9d6d5b22eac6ff6f4a604fd492f6f7",
-        "tests/test_knowledge_records.py": "7595bea9e21e3b24740ee409e1b5fe864d76a0d0728cbbda95c7855bc9cbe5b1",
+        "tests/test_knowledge_records.py": "dda1cc3543fc0f9cbcf999a4f72041d9143696328785827e9a4362b6fd083cfa",
         "tests/test_session_learnings.py": "32bb7c3143db24ff96fb43ac5081285e77a93bd8d8d825076f3422cbfe194796",
         "tests/test_vault_link.py": "fd146d4d15041021ac343257c9d91a8c1950878d275420eda85d13747065e110",
         "tests/test_vault_mount.py": "f6a5dc947af0d68e4688c37d05294c6b4868aa98ead91d26aa0c8ffec8018424",
         "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Expand step only: the knowledge-note format this page explains is unchanged until the migration (KAN-452) rewrites it; the page is over its editorial budget and may not grow. The contract is described in contracts/README.md and ADR 0004.",
+      "reason": "Expand step only: the knowledge-note format this page explains is unchanged until the migration (KAN-452) rewrites it; the page is over its editorial budget and may not grow. The record contract and its OKF field names are described in contracts/README.md and ADR 0003.",
       "reviewer": "Claude (agent)",
       "target": "docs/design/local-and-shared-knowledge.md"
     },
     {
       "bound": {
         "catalog:docs/index.md": "65c0b0508964e9cb9cc7d68cef118ffcaf83bd6b4524054d54306e09f8a57810",
-        "docs/index.md": "14a6f97613873aa5fdc36a03dd04d1fc8b91f8190d0167d59ed88ab5af990607"
+        "docs/index.md": "e5ec469ab4c53f84d94cc7ebce759a6cf1dded3ea8ff1c1c55654c6bd236ca3b"
       },
       "outcome": "updated",
-      "reason": "Scope question now links ADR 0004.",
+      "reason": "Scope question now links ADR 0003.",
       "reviewer": "Claude (agent)",
       "target": "docs/index.md"
     },
@@ -304,19 +304,19 @@
         "docs/assets/front/build.py": "a6ed773f33ca4175aa7b3e85a11571b22901eb791f4628402a9812487843e9d0",
         "docs/assets/front/demo_provider.py": "a266086be5cd247643a3157617f7f56e57c9200f77f885252ddf31a72d8c4f1d",
         "docs/workflows/get-started.md": "7052c4b9b7e1bd297f54a9f0ec133e9393f765099a358c4eef2f5f382677ab11",
-        "mkdocs.yml": "3f600d3ab2742068586318d1c484cce85ff6894bff0bf5eb4250fa5d002239ee",
+        "mkdocs.yml": "9124839c7d88999308a2ffbf472940c400ce6face9e3c633de4c3dbe60dfeebf",
         "scripts/bootstrap.sh": "dff64e5be94a72bcfbb5dec30a34a808fb2e0a1e0b9612146086af183de8acee",
         "scripts/docs_site_links.py": "e4f61570d3b4272d0e33fb733862105f4854906cba5e4f601c8a3d6dd3a519e8",
         "tests/test_front_page.py": "4b61f3b76dbe33fd562eea3f9cbdd6aec8d78f3b3e057da2fc4f4e2ea6b56f59"
       },
       "outcome": "reviewed-no-change",
-      "reason": "mkdocs nav gained the ADR 0004 entry; getting started is unaffected.",
+      "reason": "mkdocs nav gained the ADR 0003 entry; getting started is unaffected.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/get-started.md"
     },
     {
       "bound": {
-        "tests/fixtures/knowledge_records/1-meeting/action.md": "ac85b0fd7d871c944e340a06067a6d5da5b69a1e03e3858155977420b471f06c"
+        "tests/fixtures/knowledge_records/1-meeting/action.md": "68fdfb998d38a93384f39ac8e2f4c0238df3b6f68c9448a9e85eee640c50daa9"
       },
       "outcome": "no-impact",
       "reason": "Test fixture for a spec section 8 scenario; not user documentation.",
@@ -325,7 +325,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/knowledge_records/1-meeting/decision-pin-harness.md": "3c545d8f6b36a01629047fc7084d63ecd7bf9f45688df6ce0bb5adae8affb497"
+        "tests/fixtures/knowledge_records/1-meeting/decision-pin-harness.md": "0062f3da8966b1c2a2df0bcdb83806a1b62bda3cab0ae2da3a51f8349ac7bc21"
       },
       "outcome": "no-impact",
       "reason": "Test fixture for a spec section 8 scenario; not user documentation.",
@@ -334,7 +334,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/knowledge_records/1-meeting/decision-release-day.md": "14477ba6eef7fadd9de018db7e6017bda72183ebd807876f6ccc3c2294149bda"
+        "tests/fixtures/knowledge_records/1-meeting/decision-release-day.md": "4cc2b84765f701a1e5bfefcbd1ca4ec9c52bcac5218c7131f68c678fb85277ab"
       },
       "outcome": "no-impact",
       "reason": "Test fixture for a spec section 8 scenario; not user documentation.",
@@ -343,7 +343,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/knowledge_records/1-meeting/source.md": "967ad661549986caab470220fc71db5fcddf8704c79fcdf1f2902479c3f434a8"
+        "tests/fixtures/knowledge_records/1-meeting/source.md": "24ba4d02aa53c9aa597be8b61c97d6e593a978b7bdb6442cf809cf5162a0e706"
       },
       "outcome": "no-impact",
       "reason": "Test fixture for a spec section 8 scenario; not user documentation.",
@@ -352,7 +352,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/knowledge_records/2-chat-naming/convention.md": "102f893aaa0827f6b40e671e6cd85055a77f3d69463f25587558fd5d54e6b4ff"
+        "tests/fixtures/knowledge_records/2-chat-naming/convention.md": "be06229acdb7861e7dda5fbb3a3ef8e105b2f4f18653c536424bec092cc3ddde"
       },
       "outcome": "no-impact",
       "reason": "Test fixture for a spec section 8 scenario; not user documentation.",
@@ -361,7 +361,16 @@
     },
     {
       "bound": {
-        "tests/fixtures/knowledge_records/2-chat-naming/source.md": "4f7edc560575521c9ca03bc8ee48bc3589c2c63910ffde55289351b4543f5bd2"
+        "tests/fixtures/knowledge_records/2-chat-naming/decision.md": "ae6dc42ca470066fc8fa759be3d4a81db81b34b9892ebebaa7764f6d404979a0"
+      },
+      "outcome": "no-impact",
+      "reason": "Test fixture: the decision the scenario-2 convention implements (spec section 5).",
+      "reviewer": "Claude (agent)",
+      "target": "tests/fixtures/knowledge_records/2-chat-naming/decision.md"
+    },
+    {
+      "bound": {
+        "tests/fixtures/knowledge_records/2-chat-naming/source.md": "e0a6f5f6c4517993334785e2585abe557f811f8aed11873a4752d73ca26d7c77"
       },
       "outcome": "no-impact",
       "reason": "Test fixture for a spec section 8 scenario; not user documentation.",
@@ -370,7 +379,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/knowledge_records/3-customer-gotcha/lesson.md": "225551f4905c9264745275afbd40cb775705976cf1974816ea3523b67203dc43"
+        "tests/fixtures/knowledge_records/3-customer-gotcha/lesson.md": "784b1f44b6877d34425a45a72f8dc93507c6b04c6c6d8d54cd4c4796a2471b3a"
       },
       "outcome": "no-impact",
       "reason": "Test fixture for a spec section 8 scenario; not user documentation.",
@@ -379,7 +388,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/knowledge_records/4-harness-finding/lesson.md": "77b2e67353eb705fe0a8d5ed4da12e3e1d3818890ba40001b8507b7ff7dae21f"
+        "tests/fixtures/knowledge_records/4-harness-finding/lesson.md": "dbd6b6f7ed9f6ac463b56057c40d8ea6af1440ad9265eea1c320817aee2f4c1c"
       },
       "outcome": "no-impact",
       "reason": "Test fixture for a spec section 8 scenario; not user documentation.",
@@ -388,7 +397,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/knowledge_records/5-reversed-decision/march.md": "86fcced7b7209843f7431fdb8f4fc2d2530f2be063104671e8e731b03aa6e6c0"
+        "tests/fixtures/knowledge_records/5-reversed-decision/march.md": "5649934461b780de2b633246bf70b0b2fb01fce4238d585a71ba2d069bfec22f"
       },
       "outcome": "no-impact",
       "reason": "Test fixture for a spec section 8 scenario; not user documentation.",
@@ -397,12 +406,21 @@
     },
     {
       "bound": {
-        "tests/fixtures/knowledge_records/5-reversed-decision/september.md": "d7d93edaea539b1e7b67a5b3be72eca5e39b5bc7fab31cd7155b6ace55cc3618"
+        "tests/fixtures/knowledge_records/5-reversed-decision/september.md": "b3c344364d0d944cc47f876dbbb248afa918619120a3d6dd83b2d2212c4eec62"
       },
       "outcome": "no-impact",
       "reason": "Test fixture for a spec section 8 scenario; not user documentation.",
       "reviewer": "Claude (agent)",
       "target": "tests/fixtures/knowledge_records/5-reversed-decision/september.md"
+    },
+    {
+      "bound": {
+        "uv.lock": "29df8fff07569b19b71681115a1fe4f9db6bc0bbbb87bfd90762fa2a7541ee66"
+      },
+      "outcome": "no-impact",
+      "reason": "Lock gains jsonschema in the dev group for the schema tests; no user-facing change.",
+      "reviewer": "Claude (agent)",
+      "target": "uv.lock"
     }
   ],
   "schema": 2

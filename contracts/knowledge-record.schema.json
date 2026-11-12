@@ -152,6 +152,130 @@
       ],
       "title": "Obligation",
       "type": "object"
+    },
+    "SourceRef": {
+      "additionalProperties": false,
+      "description": "One OKF ``sources`` entry (OKF section 5.1) with an optional content hash.",
+      "if": {
+        "properties": {
+          "hash": {
+            "pattern": "^sha256:",
+            "type": "string"
+          }
+        },
+        "required": [
+          "hash"
+        ]
+      },
+      "properties": {
+        "id": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "record id or citation key",
+          "title": "Id"
+        },
+        "resource": {
+          "description": "URL, path or record id it came from",
+          "minLength": 1,
+          "title": "Resource",
+          "type": "string"
+        },
+        "hash": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z0-9-]+:\\S+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Hash"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "author": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Author"
+        },
+        "last_modified": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Modified"
+        }
+      },
+      "required": [
+        "resource"
+      ],
+      "then": {
+        "properties": {
+          "hash": {
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          }
+        }
+      },
+      "title": "SourceRef",
+      "type": "object"
+    },
+    "Verification": {
+      "additionalProperties": false,
+      "description": "One OKF ``verified`` event (OKF section 5.2).",
+      "properties": {
+        "by": {
+          "description": "human:<id>, process:<id> or tool/version",
+          "pattern": "^(?:(?:human|process):\\S+|[^\\s:/]+/\\S+)$",
+          "title": "By",
+          "type": "string"
+        },
+        "at": {
+          "format": "date-time",
+          "title": "At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "by",
+        "at"
+      ],
+      "title": "Verification",
+      "type": "object"
     }
   },
   "additionalProperties": false,
@@ -484,15 +608,19 @@
       },
       "then": {
         "properties": {
-          "source_hash": {
-            "not": {
-              "type": "null"
+          "sources": {
+            "contains": {
+              "properties": {
+                "hash": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "hash"
+              ]
             }
           }
-        },
-        "required": [
-          "source_hash"
-        ]
+        }
       }
     },
     {
@@ -568,7 +696,7 @@
       }
     }
   ],
-  "description": "Frontmatter of one knowledge record.\n\nRequired: ``id``, ``type``, ``scope``, ``status``, ``date``, ``owner``, ``source`` and\n``links``; :data:`REQUIRED_FIELDS` and :data:`OPTIONAL_FIELDS` list every name. A draft's ``id`` is a slug; the numbered id (``DEC-0001`` and so on) is\nassigned at merge, and the slug is then kept in ``aliases``. Source records also\ncarry the work-copilot envelope fields. Unknown keys are refused.",
+  "description": "Frontmatter of one knowledge record.\n\n:data:`REQUIRED_FIELDS` and :data:`OPTIONAL_FIELDS` list every name. A draft's ``id``\nis a slug; the numbered id (``DEC-0001`` and so on) is assigned at merge, and the\nslug is then kept in ``aliases``. Source records also carry the work-copilot\nenvelope fields. Unknown keys are refused.",
   "properties": {
     "id": {
       "description": "draft slug, or PREFIX-NNNN after merge",
@@ -613,11 +741,14 @@
       "title": "Owner",
       "type": "string"
     },
-    "source": {
-      "description": "where it came from: record id, path or URL",
-      "minLength": 1,
-      "title": "Source",
-      "type": "string"
+    "sources": {
+      "description": "what it came from (OKF 5.1)",
+      "items": {
+        "$ref": "#/$defs/SourceRef"
+      },
+      "minItems": 1,
+      "title": "Sources",
+      "type": "array"
     },
     "links": {
       "items": {
@@ -653,6 +784,35 @@
       "default": null,
       "description": "one index line",
       "title": "Description"
+    },
+    "tags": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Tags"
+    },
+    "label": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "internal | confidential",
+      "title": "Label"
     },
     "boundary": {
       "anyOf": [
@@ -704,34 +864,6 @@
       "default": null,
       "title": "Domain"
     },
-    "labels": {
-      "anyOf": [
-        {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Labels"
-    },
-    "source_hash": {
-      "anyOf": [
-        {
-          "pattern": "^[a-z0-9-]+:\\S+$",
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Source Hash"
-    },
     "valid_from": {
       "anyOf": [
         {
@@ -758,10 +890,10 @@
       "default": null,
       "title": "Valid To"
     },
-    "review_by": {
+    "stale_after": {
       "anyOf": [
         {
-          "format": "date",
+          "format": "date-time",
           "type": "string"
         },
         {
@@ -769,7 +901,26 @@
         }
       ],
       "default": null,
-      "title": "Review By"
+      "title": "Stale After"
+    },
+    "verified": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/Verification"
+          },
+          "type": "array"
+        },
+        {
+          "$ref": "#/$defs/Verification"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "a bare mapping is read as a one-element list (OKF 5.2)",
+      "title": "Verified"
     },
     "confidence": {
       "anyOf": [
@@ -919,7 +1070,7 @@
     "status",
     "date",
     "owner",
-    "source",
+    "sources",
     "links"
   ],
   "title": "Knowledge record frontmatter",
