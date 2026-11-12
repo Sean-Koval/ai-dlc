@@ -1,6 +1,7 @@
 import os
 import shutil
 import subprocess
+import sys
 from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
@@ -11,6 +12,59 @@ from fixtures.git import git
 from fixtures.tracker import Tickets
 
 from ai_dlc.providers import Registry
+
+_SOURCE = (Path(__file__).resolve().parents[1] / "src" / "ai_dlc").resolve()
+
+
+def _test_environment_problems() -> list[str]:
+    """Report why child processes would not run this checkout's code.
+
+    Many tests launch ``sys.executable -c 'import ai_dlc ...'`` or the ``ai-dlc``
+    console script. ``pythonpath = ["src"]`` only covers the pytest process, so a
+    child relies on the environment's editable install. A stale or relocated
+    environment makes those children import other code, or nothing, and the
+    failures look like defects.
+    """
+    problems: list[str] = []
+    probe = subprocess.run(
+        [sys.executable, "-c", "import ai_dlc; print(ai_dlc.__file__)"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    imported = probe.stdout.strip()
+    if probe.returncode != 0 or imported in {"", "None"}:
+        problems.append(
+            f"{sys.executable} cannot import ai_dlc: {probe.stderr.strip()[-300:] or 'no ai_dlc package'}"
+        )
+    elif Path(imported).resolve().parent != _SOURCE:
+        problems.append(f"{sys.executable} imports ai_dlc from {imported}, not {_SOURCE}")
+    command = shutil.which("ai-dlc")
+    if command is None:
+        problems.append("the ai-dlc console script is not on PATH")
+    else:
+        run = subprocess.run([command, "--version"], capture_output=True, text=True, check=False)
+        if run.returncode != 0:
+            problems.append(f"{command} --version failed: {run.stderr.strip()[-300:]}")
+    return problems
+
+
+def pytest_configure(config):
+    # Behave like `uv run` or an activated environment: the console scripts that
+    # belong to the interpreter running pytest come first.
+    scripts = str(Path(sys.executable).parent)
+    path = os.environ.get("PATH", "")
+    if path.split(os.pathsep)[0] != scripts:
+        os.environ["PATH"] = scripts + os.pathsep + path
+    problems = _test_environment_problems()
+    if problems:
+        pytest.exit(
+            "The test environment does not run this checkout:\n  - "
+            + "\n  - ".join(problems)
+            + "\nRecreate it from this checkout with `sh scripts/bootstrap.sh --source` "
+            "or `uv sync --locked`, then run `uv run --locked --no-sync pytest`.",
+            returncode=4,
+        )
 
 
 @pytest.fixture(autouse=True)
