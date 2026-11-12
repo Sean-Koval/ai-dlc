@@ -105,7 +105,7 @@
         "src/ai_dlc/documentation/documents.py": "763c9c2ff76c62e99eb6de4706f85edcaf57287f8c9bc8335c433d0163ba1812",
         "src/ai_dlc/documentation/fde.py": "3664430ebca9f3ef7ba7c7c431f7e4790176066510904ebe4d43d0a88ecf26e1",
         "src/ai_dlc/documentation/knowledge.py": "c02c49bcc24f8e2c418ace24a72db604b1bc9a4f8d1511fa42235aeb9b122bc7",
-        "src/ai_dlc/documentation/knowledge_check.py": "20304c23d88a6b320fa63a4e105a0cddb0cec01a20ad7c793bc70d9414a0e61b",
+        "src/ai_dlc/documentation/knowledge_check.py": "dabf9b5e62f9fc80761cda451769df700e172f4a6f6b60a64685f61ce9707e89",
         "src/ai_dlc/documentation/knowledge_notes.py": "df022b2e330c5140f6948ec25a33c7888704e8686ea5411c770764a449b3b1b6",
         "src/ai_dlc/documentation/knowledge_publish.py": "a796d6d760789edb3f1723fd79f3d02125901c699fa51fe9f8d7cfbb666920a8",
         "src/ai_dlc/documentation/knowledge_records.py": "eeb502fd218412c3f2e8085b2c8bab1b74683daa8701bc8416155a29f9437c60",
@@ -195,9 +195,27 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "knowledge_check.py still follows the shared CLI/MCP service pattern; the page is at its editorial word cap.",
+      "reason": "CI-mode base-roots fix stays inside knowledge_check.py; the shared CLI/MCP service pattern is unchanged.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.cast": "2f4288a526693bd27349a7271b567270e5df94bb1528b98178d7d63bb58ecf4b"
+      },
+      "outcome": "updated",
+      "reason": "Regenerated with docs/assets/front/build.py; only recorded commit hashes changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.cast"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.svg": "bb6f868e3ae5ca47e7874f4507f85b1781b55a8fbaedc00ada38fb1c38257989"
+      },
+      "outcome": "updated",
+      "reason": "Regenerated with docs/assets/front/build.py alongside work.cast.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.svg"
     },
     {
       "bound": {
@@ -217,7 +235,7 @@
         "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
         "openspec/specs/session-learnings/spec.md": "dcd490cd54f2f6cb3fadaa90afade85d5e1d64b19fbe2accb70bfb06897e97b4",
         "src/ai_dlc/documentation/knowledge.py": "c02c49bcc24f8e2c418ace24a72db604b1bc9a4f8d1511fa42235aeb9b122bc7",
-        "src/ai_dlc/documentation/knowledge_check.py": "20304c23d88a6b320fa63a4e105a0cddb0cec01a20ad7c793bc70d9414a0e61b",
+        "src/ai_dlc/documentation/knowledge_check.py": "dabf9b5e62f9fc80761cda451769df700e172f4a6f6b60a64685f61ce9707e89",
         "src/ai_dlc/documentation/knowledge_notes.py": "df022b2e330c5140f6948ec25a33c7888704e8686ea5411c770764a449b3b1b6",
         "src/ai_dlc/documentation/knowledge_records.py": "eeb502fd218412c3f2e8085b2c8bab1b74683daa8701bc8416155a29f9437c60",
         "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
@@ -226,7 +244,7 @@
         "src/ai_dlc/documentation/workspace_diagnostics.py": "8c8dc695fa95e5f9e8fc4017e5fd66efcab4c0cec4d3ae9272d3c5f368f93aef",
         "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
         "tests/test_knowledge.py": "38e5cda9c9dc1fe97d12618a0bd9a86b2725cff059d412232152582af1547af1",
-        "tests/test_knowledge_check.py": "c1c987bcf35de5a6962401e586d420d57cede287007159e7bb0fd2652a45edc8",
+        "tests/test_knowledge_check.py": "2e2b901db7ba520386e491537874d87494c718d5d1f2ea42ddd600fb2f921446",
         "tests/test_knowledge_notes.py": "0af8b4f84c5b8d974833eef49d5efd662a9d6d5b22eac6ff6f4a604fd492f6f7",
         "tests/test_knowledge_records.py": "dda1cc3543fc0f9cbcf999a4f72041d9143696328785827e9a4362b6fd083cfa",
         "tests/test_session_learnings.py": "32bb7c3143db24ff96fb43ac5081285e77a93bd8d8d825076f3422cbfe194796",
