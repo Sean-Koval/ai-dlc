@@ -84,7 +84,7 @@ def check_records(
     _check_supersession(bundle, index)
     _check_duplicate_sources(bundle)
     if base:
-        _check_accepted_unchanged(bundle, folder, scopes, base)
+        _check_against_base(bundle, folder, settings, scopes, base)
     bundle.failures.sort(key=lambda item: (item["path"], item["pointer"], item["message"]))
     return {
         "status": "invalid" if bundle.failures else "valid",
@@ -411,7 +411,18 @@ def _git(top: Path, *args: str) -> str:
     return run_git(top, *args, context="knowledge check").stdout
 
 
-def _check_accepted_unchanged(bundle: _Bundle, folder: Path, scopes: list[Path], base: str) -> None:
+def _check_against_base(
+    bundle: _Bundle,
+    folder: Path,
+    settings: tuple[Path, str, dict] | None,
+    scopes: list[Path],
+    base: str,
+) -> None:
+    """CI mode. The base's own roots decide what is protected, never the change's.
+
+    Every accepted decision and source record of the merge base is compared wherever
+    it now lives, and a change to ``[check] roots`` may not drop a base record.
+    """
     try:
         top = Path(_git(folder, "rev-parse", "--show-toplevel").strip()).resolve()
         merge_base = _git(top, "merge-base", base, "HEAD").strip()
@@ -419,10 +430,66 @@ def _check_accepted_unchanged(bundle: _Bundle, folder: Path, scopes: list[Path],
         raise ValueError(
             f"cannot compare with base {base!r}: {exc}; fetch it (fetch-depth: 0)"
         ) from exc
-    paths = [scope.relative_to(top).as_posix() or "." for scope in scopes]
-    if not paths:
+    _check_dropped_roots(bundle, folder, top, merge_base, settings, scopes)
+    _check_accepted_unchanged(bundle, folder, top, merge_base)
+
+
+def _base_roots(
+    folder: Path, top: Path, merge_base: str, settings: tuple[Path, str, dict] | None
+) -> list[str]:
+    """Record directories at the merge base, relative to the git root."""
+    whole = [folder.relative_to(top).as_posix() or "."]
+    config = settings[0] if settings else _find_config(folder)
+    if config is None or not config.is_relative_to(top):
+        return whole
+    try:
+        text = _git(top, "show", f"{merge_base}:{config.relative_to(top).as_posix()}")
+        table = tomllib.loads(text).get("check")
+    except (GitError, tomllib.TOMLDecodeError):
+        return whole
+    roots = table.get("roots") if isinstance(table, dict) else None
+    if not isinstance(roots, list) or not all(isinstance(item, str) for item in roots):
+        return whole
+    found = []
+    for name in roots:
+        directory = (config.parent / name).resolve()
+        if directory.is_relative_to(folder):
+            found.append(directory.relative_to(top).as_posix() or ".")
+    return found
+
+
+def _check_dropped_roots(
+    bundle: _Bundle,
+    folder: Path,
+    top: Path,
+    merge_base: str,
+    settings: tuple[Path, str, dict] | None,
+    scopes: list[Path],
+) -> None:
+    roots = _base_roots(folder, top, merge_base, settings)
+    if not roots:
         return
-    output = _git(top, "diff", "--name-status", "-M", "-z", merge_base, "--", *paths)
+    listed = _git(top, "ls-tree", "-r", "-z", "--name-only", merge_base, "--", *roots)
+    dropped = []
+    for name in sorted(item for item in listed.split("\0") if item.endswith(".md")):
+        path = top / name
+        if path.name in SKIPPED or path.name in RESERVED or not path.is_file():
+            continue
+        if not any(path.resolve().is_relative_to(scope) for scope in scopes):
+            dropped.append(name)
+    if dropped:
+        shown = settings[1] if settings else CONFIG
+        bundle.fail(
+            shown,
+            "/check/roots",
+            f"drops {len(dropped)} record file(s) checked at the base, e.g. {dropped[0]}; "
+            "keep their directory in [check] roots",
+        )
+
+
+def _check_accepted_unchanged(bundle: _Bundle, folder: Path, top: Path, merge_base: str) -> None:
+    scope = folder.relative_to(top).as_posix() or "."
+    output = _git(top, "diff", "--name-status", "-M", "-z", merge_base, "--", scope)
     fields = output.split("\0")
     position = 0
     while position < len(fields) and fields[position]:
@@ -448,7 +515,8 @@ def _compare_accepted(
     if not before:
         return
     name = before.get("id")
-    shown = (top / (new or old)).relative_to(folder).as_posix()
+    moved = (top / (new or old)).resolve()
+    shown = moved.relative_to(folder).as_posix() if moved.is_relative_to(folder) else new or old
     deleted = new is None or not (top / new).is_file()
     if before.get("type") == "source" and deleted:
         bundle.fail(shown, "", f"source record {name} was deleted; source records are permanent")

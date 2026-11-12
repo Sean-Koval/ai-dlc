@@ -257,6 +257,55 @@ def test_ci_mode_refuses_deleting_a_source_record(repo):
     assert failures(repo) == [("src.md", "")]
 
 
+@pytest.fixture
+def rooted(tmp_path):
+    """A knowledge repo whose base checks team/ and projects/; one accepted decision."""
+    git(tmp_path, "init", "-q", "-b", "main")
+    git(tmp_path, "config", "user.email", "test@example.invalid")
+    git(tmp_path, "config", "user.name", "test")
+    (tmp_path / "knowledge.toml").write_text(PIN + '\n[check]\nroots = ["team", "projects"]\n')
+    (tmp_path / "README.md").write_text("# Knowledge\n")
+    (tmp_path / "team").mkdir()
+    (tmp_path / "team/.gitkeep").write_text("")
+    (tmp_path / "projects/alpha").mkdir(parents=True)
+    (tmp_path / "projects/alpha/keep.md").write_text(record("keep-it"))
+    (tmp_path / "inbox").mkdir()
+    (tmp_path / "inbox/.gitkeep").write_text("")
+    git(tmp_path, "add", ".")
+    git(tmp_path, "commit", "-q", "-m", "base")
+    git(tmp_path, "checkout", "-q", "-b", "change")
+    return tmp_path
+
+
+def rooted_failures(root):
+    return sorted(
+        (item["path"], item["pointer"]) for item in check_records(root, base="main")["failures"]
+    )
+
+
+def test_ci_mode_narrowed_roots_cannot_hide_an_edit(rooted):
+    (rooted / "knowledge.toml").write_text(PIN + '\n[check]\nroots = ["team"]\n')
+    (rooted / "projects/alpha/keep.md").write_text(record("keep-it", body="Edited"))
+    assert check_records(rooted)["failures"] == []
+    assert rooted_failures(rooted) == [
+        ("knowledge.toml", "/check/roots"),
+        ("projects/alpha/keep.md", ""),
+    ]
+
+
+def test_ci_mode_follows_an_accepted_decision_moved_out_of_the_roots(rooted):
+    git(rooted, "mv", "projects/alpha/keep.md", "inbox/keep.md")
+    (rooted / "inbox/keep.md").write_text(record("keep-it", body="Edited"))
+    assert rooted_failures(rooted) == [("inbox/keep.md", "")]
+
+
+def test_ci_mode_dropping_an_empty_root_is_allowed(rooted):
+    (rooted / "knowledge.toml").write_text(PIN + '\n[check]\nroots = ["projects"]\n')
+    assert rooted_failures(rooted) == []
+    (rooted / "knowledge.toml").write_text(PIN)
+    assert rooted_failures(rooted) == []
+
+
 def test_ci_mode_needs_a_known_base(repo):
     with pytest.raises(ValueError, match="cannot compare with base"):
         check_records(repo, base="no-such-ref")
