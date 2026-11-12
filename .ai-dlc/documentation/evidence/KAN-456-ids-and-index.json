@@ -2,19 +2,19 @@
   "decisions": [
     {
       "bound": {
-        "CHANGELOG.md": "255a46eafeb374b35d4d5efced150b3bc58ae58de30c56732872f86f29d4fcd1"
+        "CHANGELOG.md": "e4225de0f292541b705523382cf81461ca78c2ba8ccb850882516696a12e91df"
       },
       "outcome": "updated",
-      "reason": "Adds the knowledge number and index entry (KAN-456).",
+      "reason": "Keeps the knowledge check entry (KAN-423) and adds knowledge number and index (KAN-456).",
       "reviewer": "Claude (agent)",
       "target": "CHANGELOG.md"
     },
     {
       "bound": {
-        "contracts/README.md": "078c48a6328d34d0b57de92754bd44bc84d24f40b140ce35cf8b6bc121dabba1"
+        "contracts/README.md": "b803b05f3bb338c9f4a20221eba8bc15b4727ed8d64848fed81b9547fa474108"
       },
       "outcome": "updated",
-      "reason": "Explains slug ids, merge-time numbering, generated OKF indexes and the reusable workflow beside the record contract.",
+      "reason": "Keeps the knowledge check paragraph (KAN-423) and explains merge-time numbering, OKF indexes, the numbering pull request and the repository settings it needs.",
       "reviewer": "Claude (agent)",
       "target": "contracts/README.md"
     },
@@ -72,7 +72,7 @@
         "src/ai_dlc/_windows_storage/__init__.py": "5715def899453f15265e13d52e5b518844cc9d057421cfa5279172d799d5f506",
         "src/ai_dlc/_windows_storage/_api.py": "d5fc4f971db8e706871c06e8119884848e505af6c45f4fbb5c2f7db513faf41b",
         "src/ai_dlc/_windows_storage/_security.py": "62785d4e088cd485816a33f35a7a559d3d1acf166093c413a3f4f79969056314",
-        "src/ai_dlc/cli.py": "fdadfa5c55ca3098e335538fae3fcc3e067ff86d2b06a90eed5e626a2bdaee17",
+        "src/ai_dlc/cli.py": "41c9c61dc5668c4f477349ec1210e74f4e0ea0592cab5e0fa1f96eba2f367f17",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
         "src/ai_dlc/conformance.py": "0ff247c065e89d4c5b43d844601dc809558c65a779c1600371953c0e2c44737b",
         "src/ai_dlc/contracts.py": "0101fd74193bc8332c161a3f69a0a1ef080f0cf559d07cbedefdeb09167d6fc2",
@@ -88,6 +88,7 @@
         "src/ai_dlc/documentation/fde.py": "3664430ebca9f3ef7ba7c7c431f7e4790176066510904ebe4d43d0a88ecf26e1",
         "src/ai_dlc/documentation/knowledge.py": "c02c49bcc24f8e2c418ace24a72db604b1bc9a4f8d1511fa42235aeb9b122bc7",
         "src/ai_dlc/documentation/knowledge_bundle.py": "9bd34913ba68b77a9c77799ffaefe9e6aebbb4eac36ed684fc6cf5bade14fd74",
+        "src/ai_dlc/documentation/knowledge_check.py": "dabf9b5e62f9fc80761cda451769df700e172f4a6f6b60a64685f61ce9707e89",
         "src/ai_dlc/documentation/knowledge_notes.py": "df022b2e330c5140f6948ec25a33c7888704e8686ea5411c770764a449b3b1b6",
         "src/ai_dlc/documentation/knowledge_publish.py": "a796d6d760789edb3f1723fd79f3d02125901c699fa51fe9f8d7cfbb666920a8",
         "src/ai_dlc/documentation/knowledge_records.py": "eeb502fd218412c3f2e8085b2c8bab1b74683daa8701bc8416155a29f9437c60",
@@ -126,7 +127,7 @@
         "src/ai_dlc/harness/windows_render.py": "8aa76c8aacc44d28a2117b3339ad7b632b91fdbe0a5557af50228dcd2aa0eeb0",
         "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
         "src/ai_dlc/locking.py": "d39ea1ba783e72aae903f9d69c114745ee0b83d02197bbc9572568836e4e7fa3",
-        "src/ai_dlc/mcp_server.py": "7bdf1d88774e5f1dab41ed02aaf262affd823172c4306101299cc0df0380accb",
+        "src/ai_dlc/mcp_server.py": "bb54ba8084a785d29901462d3c5b65fdb60b67be8e64b3604ac415d91273dd98",
         "src/ai_dlc/provider_definitions.py": "32142376b6cc25e0aa8122528bfd7b1eec2299c13622364fb38de29d4555e43a",
         "src/ai_dlc/providers/__init__.py": "e8be867e91d7217f692b45e3c8cb822020db111ddfdc461e650a5fbe11cafb24",
         "src/ai_dlc/providers/github_issues.py": "8945d5b0049d7f7940c8c478e13bf576a897295e463a69b3510d6e2982ed1f08",
@@ -183,7 +184,7 @@
     },
     {
       "bound": {
-        "docs/catalog.toml": "8d06f9c42498a6f14cc8c133a144ff7d3c2cc1ae37ea809a641c8069fdba6fa1"
+        "docs/catalog.toml": "35b5a0877d861c9c7fa8a6bb35117623d9aae9be5144b9051d570164788cbe56"
       },
       "outcome": "updated",
       "reason": "Maps knowledge_bundle.py, the knowledge-merge workflow and its test to the knowledge design page.",
@@ -192,8 +193,8 @@
     },
     {
       "bound": {
-        ".github/workflows/knowledge-merge.yml": "e5a984d02c9e61935ada792b6d21cd161333d3b0912430366bcb97185971700e",
-        "catalog:docs/design/local-and-shared-knowledge.md": "3663b223fb6c84f2ce7733793c15bf7fcd6e1a958caa65723a18adc190d5a68e",
+        ".github/workflows/knowledge-merge.yml": "a02758aadd3445eb4e95ef071a678deb22f88ed3a68a42b520687356829b74a8",
+        "catalog:docs/design/local-and-shared-knowledge.md": "3792ce6463f181e5d2345e4ae2c724561e1750d6e76a62324dc801da767260a5",
         "contracts/knowledge-note.schema.json": "f3cbc791e2caae2223bf223e8b27b5b7ce553405b76f32cf5689fa7fe68bb1a5",
         "contracts/knowledge-record.schema.json": "0a7633d88024a668140a6d658f09f5d11bf7e26b8ff09368abd82d17ddcd9bd7",
         "docs/design/local-and-shared-knowledge.md": "53fb6b2372742c6a475c57bdd2ab490364f8dc84832a49bd873a0cc7f43f5a7e",
@@ -201,6 +202,7 @@
         "openspec/specs/session-learnings/spec.md": "dcd490cd54f2f6cb3fadaa90afade85d5e1d64b19fbe2accb70bfb06897e97b4",
         "src/ai_dlc/documentation/knowledge.py": "c02c49bcc24f8e2c418ace24a72db604b1bc9a4f8d1511fa42235aeb9b122bc7",
         "src/ai_dlc/documentation/knowledge_bundle.py": "9bd34913ba68b77a9c77799ffaefe9e6aebbb4eac36ed684fc6cf5bade14fd74",
+        "src/ai_dlc/documentation/knowledge_check.py": "dabf9b5e62f9fc80761cda451769df700e172f4a6f6b60a64685f61ce9707e89",
         "src/ai_dlc/documentation/knowledge_notes.py": "df022b2e330c5140f6948ec25a33c7888704e8686ea5411c770764a449b3b1b6",
         "src/ai_dlc/documentation/knowledge_records.py": "eeb502fd218412c3f2e8085b2c8bab1b74683daa8701bc8416155a29f9437c60",
         "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
@@ -209,7 +211,8 @@
         "src/ai_dlc/documentation/workspace_diagnostics.py": "8c8dc695fa95e5f9e8fc4017e5fd66efcab4c0cec4d3ae9272d3c5f368f93aef",
         "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
         "tests/test_knowledge.py": "38e5cda9c9dc1fe97d12618a0bd9a86b2725cff059d412232152582af1547af1",
-        "tests/test_knowledge_bundle.py": "d45a199768c900cb50ba317815f48f5e4b6f71df07ad7a1a8c4080a07fd64dc2",
+        "tests/test_knowledge_bundle.py": "00b4153617e47223ab3395d9b4656d40f68480eedc7e5e844dd0959bb2ac2801",
+        "tests/test_knowledge_check.py": "2e2b901db7ba520386e491537874d87494c718d5d1f2ea42ddd600fb2f921446",
         "tests/test_knowledge_notes.py": "0af8b4f84c5b8d974833eef49d5efd662a9d6d5b22eac6ff6f4a604fd492f6f7",
         "tests/test_knowledge_records.py": "dda1cc3543fc0f9cbcf999a4f72041d9143696328785827e9a4362b6fd083cfa",
         "tests/test_session_learnings.py": "32bb7c3143db24ff96fb43ac5081285e77a93bd8d8d825076f3422cbfe194796",
@@ -239,7 +242,7 @@
         "project-templates/project/docs/templates/delivery-slice.md": "44d1e55bdd17e5fe0cf4c1d35d99ffad8f6060575ecb97496515b48a0e304429",
         "project-templates/project/scripts/check_tests.py": "a3dd2021b7911d2ff688142776b7a43af60f76e052d7164086db2434db60102d",
         "project-templates/project/tests/test_main.py": "4e6ac9def60ea5a6aef9e004c465cc439acac4b33e4f70df332939f0cdfae63d",
-        "src/ai_dlc/cli.py": "fdadfa5c55ca3098e335538fae3fcc3e067ff86d2b06a90eed5e626a2bdaee17",
+        "src/ai_dlc/cli.py": "41c9c61dc5668c4f477349ec1210e74f4e0ea0592cab5e0fa1f96eba2f367f17",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
         "src/ai_dlc/harness/agents.py": "72f38f1f69147e4216fe6752636f26e6218c5c6ef85845ffb89828d431effa53",
         "src/ai_dlc/harness/hooks.py": "d8903d3c59ce52c3b3b26cdd9f322370eb2344404e235b2cecca61f5749b943f",
@@ -276,7 +279,7 @@
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
         "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
-        "src/ai_dlc/cli.py": "fdadfa5c55ca3098e335538fae3fcc3e067ff86d2b06a90eed5e626a2bdaee17",
+        "src/ai_dlc/cli.py": "41c9c61dc5668c4f477349ec1210e74f4e0ea0592cab5e0fa1f96eba2f367f17",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
         "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
@@ -302,7 +305,7 @@
       "bound": {
         "catalog:docs/workflows/how-it-fits.md": "0032744a2746dd1b4e47f09fc1cc9c4d6f8c8cfe90990b464f56a0abc1d1ac10",
         "docs/workflows/how-it-fits.md": "b255cf07402264f5dfee93b81856cdc9c7e05763a1024c231a7fa6d11cad6be7",
-        "src/ai_dlc/mcp_server.py": "7bdf1d88774e5f1dab41ed02aaf262affd823172c4306101299cc0df0380accb",
+        "src/ai_dlc/mcp_server.py": "bb54ba8084a785d29901462d3c5b65fdb60b67be8e64b3604ac415d91273dd98",
         "src/ai_dlc/providers/__init__.py": "e8be867e91d7217f692b45e3c8cb822020db111ddfdc461e650a5fbe11cafb24",
         "src/ai_dlc/providers/github_issues.py": "8945d5b0049d7f7940c8c478e13bf576a897295e463a69b3510d6e2982ed1f08",
         "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
@@ -322,12 +325,12 @@
     {
       "bound": {
         "catalog:docs/workflows/tool-map.md": "d11334cb57c288aab7b01226790b7cc268a28991b3de5f97a98b9818d80be19e",
-        "docs/workflows/tool-map.md": "b204014c4ac6692ab69fdef6511b8a1635325780dbbc0a364ae84487e87793a7",
+        "docs/workflows/tool-map.md": "ccb7d0d784a9a3cfaeae243d5d16e214dbc0bb7baa6b4a3896950b8423335bbb",
         "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
         "openspec/specs/spec-delivery-traceability/spec.md": "66641acf9c151792cde1914062630ed50cc4199cdc3bdb4b81382e03716f2ea3",
-        "src/ai_dlc/cli.py": "fdadfa5c55ca3098e335538fae3fcc3e067ff86d2b06a90eed5e626a2bdaee17",
+        "src/ai_dlc/cli.py": "41c9c61dc5668c4f477349ec1210e74f4e0ea0592cab5e0fa1f96eba2f367f17",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
@@ -336,7 +339,7 @@
         "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
         "src/ai_dlc/harness/agents.py": "72f38f1f69147e4216fe6752636f26e6218c5c6ef85845ffb89828d431effa53",
         "src/ai_dlc/harness/hooks.py": "d8903d3c59ce52c3b3b26cdd9f322370eb2344404e235b2cecca61f5749b943f",
-        "src/ai_dlc/mcp_server.py": "7bdf1d88774e5f1dab41ed02aaf262affd823172c4306101299cc0df0380accb",
+        "src/ai_dlc/mcp_server.py": "bb54ba8084a785d29901462d3c5b65fdb60b67be8e64b3604ac415d91273dd98",
         "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
         "src/ai_dlc/setup/onboarding.py": "a955988850f1dbe1bd50b2e06da61913701b504ed1a11eabe08bed387d0cc552",
         "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
@@ -359,7 +362,7 @@
         "tests/test_workflow.py": "c60af46adb6cceb3160b1c34945d3b579e4ce42be7e24cad65fa24bd215d80a1"
       },
       "outcome": "updated",
-      "reason": "Lists the knowledge_index and knowledge_number_plan MCP tools without growing the page.",
+      "reason": "Lists knowledge_check, knowledge_index and knowledge_number_plan without growing the page.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/tool-map.md"
     },
@@ -369,7 +372,7 @@
         "docs/workflows/work-computer-setup.md": "6a6b849511affc491b227896981914c1b8f021c6e3541250c1dad554d75a5444",
         "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
-        "src/ai_dlc/cli.py": "fdadfa5c55ca3098e335538fae3fcc3e067ff86d2b06a90eed5e626a2bdaee17",
+        "src/ai_dlc/cli.py": "41c9c61dc5668c4f477349ec1210e74f4e0ea0592cab5e0fa1f96eba2f367f17",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
         "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
@@ -391,10 +394,10 @@
     },
     {
       "bound": {
-        "project-templates/project/docs/workflows/tool-map.md": "342265e500d2b13609bdc41c476b27f3734b4107364a89009bc75d52af006996"
+        "project-templates/project/docs/workflows/tool-map.md": "69a4033409fe159dc0996ee32c6396384036d412ba03b70b8e989576013a1fdd"
       },
       "outcome": "updated",
-      "reason": "The packaged tool map lists every MCP tool, now including knowledge_index and knowledge_number_plan.",
+      "reason": "The packaged tool map lists every MCP tool, now knowledge_check, knowledge_index and knowledge_number_plan.",
       "reviewer": "Claude (agent)",
       "target": "project-templates/project/docs/workflows/tool-map.md"
     },
