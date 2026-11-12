@@ -3,7 +3,7 @@
 Know where private notes, team pages and learnings live, and how an agent
 reads, recalls and publishes each without mixing them.
 
-Status: proposed workflow, September 7, 2026, based on maintainer clarification.
+Status: second brain built by ADR 0003, November 8, 2026; the rest proposed September 7, 2026.
 Parent: [provider toolsets PRD](provider-toolsets-prd.md).
 
 ## Ownership and movement
@@ -28,47 +28,33 @@ Later, select useful learnings to draft a team guide in an eligible shared-doc
 location. Review the entire outgoing document and destination before publishing.
 Private note inclusion is never inferred from a link, tag or neighboring file.
 
-## Existing integration
+## Second brain
 
-The maintainer uses a custom Confluence MCP server. It exposes a graph of
-documents, page descriptions and LLM-derived semantic information, and quality
-grading for documents, spaces and pages. Claude and Antigravity help write and
-push documents.
-These are user-reported capabilities; code, tool schemas, auth and live behavior
-have not been inspected. The repository path or documentation is the next input.
+[ADR 0003](../decisions/0003-second-brain-capture-and-publish.md) builds the
+reviewed publication this page proposed. Daily notes, meeting notes and pasted
+threads are written in the vault. Confluence holds the durable pages.
 
-Use the existing graph and quality functions instead of rebuilding them in ai-dlc.
-Check whether graph queries can return a relevant subset without exporting the
-whole graph into local notes. Treat LLM descriptions and quality grades as derived
-aids with source links, not authoritative page content.
+| Skill | Writes | Never |
+| --- | --- | --- |
+| `daily-note` | `Daily/YYYY-MM-DD.md`, a read-only lane summary, then what moved | Touches a ticket |
+| `capture` | `Meetings/` or `Threads/` notes: decisions, actions, knowledge, questions | Stores a raw transcript or files a ticket |
+| `kb-publish` | One confirmed page, then `publish.page_id` and `version` in the note | Publishes a daily note |
 
-Reuse existing writes where their preview, conflict and recovery behavior meets
-the chosen guarantee. If an existing tool cannot supply those guarantees, expose
-that limitation and choose between improving the custom server or a narrow
-ai-dlc bridge after review. Do not automatically install a second Atlassian
-connection for Confluence.
+Capture notes add `origin` (`work` or `home`), `lane` (an epic key) and
+`source: {file | room, sha256}` to the frontmatter below.
+`ai-dlc knowledge captured FILE --vault PATH` exits 1 for a digest already in the
+vault, so the same transcript is never captured twice.
 
-## Smallest useful integration
+Each vault declares `origin`, `site`, `space` and an optional `parent` in
+`<vault>/.ai-dlc/publish.toml`. There is no default.
+`ai-dlc knowledge publish-plan NOTE --vault PATH` returns the exact page payload or
+refuses. It refuses a note whose origin or site differs from the vault's, and a
+bound page whose current version (`--remote-version`) is not the recorded one.
 
-1. Inventory existing Confluence tools: client/connector/scripts, authentication,
-   search/read support, output formats, page links/version metadata, conversion,
-   preview/update behavior and how teammate edits are handled. Ask for names and
-   workflow descriptions first, not credentials or bulk workspace content.
-2. Attach the appropriate existing connection and generate project guidance for
-   the current task's relevant spaces/pages. A relevance scope is not an access
-   control mechanism; the upstream account still determines actual permissions.
-3. Start with page links and reads on request. Let the user explicitly save a
-   summary or extract to their selected local location, subject to work policy.
-   Refresh selected derived content explicitly, keeping personal annotations and
-   identifying stale, unavailable or inaccessible sources honestly.
-4. Reuse existing publication tools if they meet the chosen workflow. Implement
-   the optional publication service only for a demonstrated unmet guarantee.
-
-Do not create another connector, automatic site crawler, shared search index,
-vault mirror or two-way sync engine. Private local context stays out of outgoing
-page payloads unless the user explicitly selects and reviews a derived shared
-draft. This is a workflow and publication-source boundary, not a promise that
-model processing is on-device or that native tools enforce ai-dlc guidance.
+The agent then publishes through the client's existing Atlassian connection, after
+the user confirms. `ai-dlc knowledge publish-record` writes the binding back. ai-dlc
+itself never calls Confluence. The provider contract's optional knowledge
+operation `publish` describes the same payload for a future adapter.
 
 ## Qualification examples
 
@@ -80,13 +66,8 @@ model processing is on-device or that native tools enforce ai-dlc guidance.
 - Editing a team page after a publication preview produces a conflict in any
   workflow claiming ai-dlc's deterministic publication guarantee.
 
-Generated-guidance fixtures verify that these instructions are present and scoped.
-Actual behavior of the selected tools requires separate live qualification.
-The custom server repository/interface is still pending; no existing integration
-was inspected or replaced. Issue #50 identified a production ai-docs source, but
-it was unavailable in the September 14 implementation environment. The local
-[FDE scaffold](../runbooks/fde-documents.md) is independently usable; conversion,
-publication and actual Confluence qualification remain outstanding.
+Fixture tests cover the guard and the write-back. Publishing through a live
+Atlassian connection still needs its own qualification.
 
 ## Project navigation
 
@@ -193,7 +174,7 @@ it never overwrites the stored note. A failed or unavailable vault leaves a
 `learning_pending` result without reversing tracker completion. Finish without a
 learning completes and returns a one-line reminder.
 
-Day-end may instead call
+An agent may instead call
 `ai-dlc knowledge note learnings/<date>-<work-id>.md --body FILE --operation-id ID --vault PATH`
 using the configured vault and a stable operation ID.
 `ai-dlc knowledge check --vault PATH` reads the notes under `learnings/` and

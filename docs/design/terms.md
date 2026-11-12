@@ -5,7 +5,7 @@ What the recurring words in these docs mean, for a reader new to ai-dlc. The
 
 | Term | Meaning here |
 | --- | --- |
-| Workflow plugin | `plugins/ai-dlc-workflow/`: the optional Claude Code plugin (with a Codex form) carrying the workflow guidance as a skill, ten more skills and three hooks. Off by default; a team harness decides where it is on. See [Workflow plugin](../workflows/workflow-plugin.md). |
+| Workflow plugin | `plugins/ai-dlc-workflow/`: the optional Claude Code plugin (with a Codex form) carrying the workflow guidance as a skill, eleven more skills and three hooks. Off by default; a team harness decides where it is on. See [Workflow plugin](../workflows/workflow-plugin.md). |
 | Team harness | A git repository of the native files a team's agents run with, pinned by hangar's `harness.lock`. It pins the workflow plugin as `plugin:ai-dlc-workflow@<marketplace>`. ai-dlc publishes into it but does not define it. |
 | Managed section | The block between `<!-- ai-dlc:begin <digest> -->` and `<!-- ai-dlc:end -->` in an adopted repository's AGENTS.md, rendered by `ai-dlc agents render` and guarded by `.ai-dlc/agent-ownership.json`. |
 | Profile | A versioned `ai-dlc-profile.toml` in a private Git repository: portable modules, client settings and named credentials. |

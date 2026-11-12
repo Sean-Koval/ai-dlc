@@ -1,8 +1,10 @@
-"""The knowledge-note frontmatter shared by learnings and decision records.
+"""The knowledge-note frontmatter shared by learnings, decision records and captures.
 
 One schema covers authored and derived notes (``contracts/knowledge-note.schema.json``).
 ai-dlc validates shape only: a decision's ``checks:`` entries use flightdeck's
 ``flightdeck.spec/v1`` grammar and are evaluated by flightdeck, never here.
+Capture kinds (``daily``, ``meeting``, ``thread``) come from ADR 0003: they must name
+their ``origin`` vault, and a published note records its page binding in ``publish``.
 """
 
 import re
@@ -14,9 +16,15 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_valida
 
 MAX_NOTE_BYTES = 64 * 1024
 FRONT_MATTER = re.compile(r"\A---\n(.*?)\n---[ \t]*(?:\n|\Z)", re.DOTALL)
-KINDS = ("learning", "decision", "runbook", "note")
-ID_PATTERN = r"^(learning|decision|runbook|note)/[a-z0-9][a-z0-9._-]*$"
+KINDS = ("learning", "decision", "runbook", "note", "daily", "meeting", "thread")
+CAPTURE_KINDS = ("daily", "meeting", "thread")
+ID_PATTERN = r"^(learning|decision|runbook|note|daily|meeting|thread)/[a-z0-9][a-z0-9._-]*$"
 AUTHOR_PATTERN = r"^(human|agent):\S+$"
+# A lane is a project, which is a tracker epic: its key, such as KAN-8.
+LANE_PATTERN = r"^[A-Z][A-Z0-9_]*-[1-9][0-9]*$"
+# An Atlassian site is a bare host name, compared exactly; never a URL or a default.
+SITE_PATTERN = r"^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$"
+SHA256_PATTERN = r"^[0-9a-f]{64}$"
 
 # Learnings and decisions need these conditional rules in the published JSON schema too.
 _CONDITIONS: list[dict[str, Any]] = [
@@ -29,6 +37,15 @@ _CONDITIONS: list[dict[str, Any]] = [
         "then": {"required": ["status"]},
         "else": {"not": {"anyOf": [{"required": ["status"]}, {"required": ["checks"]}]}},
     },
+    {
+        "if": {"properties": {"kind": {"enum": list(CAPTURE_KINDS)}}, "required": ["kind"]},
+        "then": {"required": ["origin"]},
+    },
+    {
+        "if": {"properties": {"kind": {"enum": ["meeting", "thread"]}}, "required": ["kind"]},
+        "then": {"required": ["source"]},
+    },
+    {"if": {"required": ["publish"]}, "then": {"required": ["origin"]}},
 ]
 
 
@@ -36,6 +53,54 @@ class Source(BaseModel):
     model_config = ConfigDict(extra="forbid")
     uri: str = Field(min_length=1)
     hash: str = Field(pattern=r"^[a-z0-9-]+:\S+$")
+
+
+class CaptureSource(BaseModel):
+    """Where a captured note came from: one exported ``file`` or a chat ``room``.
+
+    ``sha256`` is the digest of the captured text; a capture refuses a digest it has
+    already seen. The raw transcript itself is never stored in the note.
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+        json_schema_extra=cast(
+            "dict[str, Any]",
+            {"oneOf": [{"required": ["file"]}, {"required": ["room"]}]},
+        ),
+    )
+    file: str | None = Field(default=None, min_length=1)
+    room: str | None = Field(default=None, min_length=1)
+    sha256: str = Field(pattern=SHA256_PATTERN)
+
+    @model_validator(mode="after")
+    def _one_origin(self) -> "CaptureSource":
+        if (self.file is None) == (self.room is None):
+            raise ValueError("source needs exactly one of file or room")
+        return self
+
+
+class Publish(BaseModel):
+    """The Confluence page a note is published to; ``page_id`` and ``version`` once done."""
+
+    model_config = ConfigDict(
+        extra="forbid",
+        json_schema_extra=cast(
+            "dict[str, Any]",
+            {"dependentRequired": {"page_id": ["version"], "version": ["page_id"]}},
+        ),
+    )
+    site: str = Field(pattern=SITE_PATTERN)
+    space: str = Field(min_length=1)
+    parent: str | None = Field(default=None, min_length=1)
+    page_id: str | None = Field(default=None, pattern=r"^[0-9]+$")
+    version: int | None = Field(default=None, ge=1)
+
+    @model_validator(mode="after")
+    def _bound_together(self) -> "Publish":
+        if (self.page_id is None) != (self.version is None):
+            raise ValueError("page_id and version are recorded together")
+        return self
 
 
 class Check(BaseModel):
@@ -63,7 +128,7 @@ class Check(BaseModel):
 
 
 class KnowledgeNote(BaseModel):
-    """Frontmatter of a learning, decision, runbook or note.
+    """Frontmatter of a learning, decision, runbook, note or capture.
 
     ``work`` and ``repository`` are kept for learnings written before this schema.
     Extra keys are allowed and preserved so neighbouring tools can extend notes additively.
@@ -75,7 +140,7 @@ class KnowledgeNote(BaseModel):
         json_schema_extra=cast("dict[str, Any]", {"allOf": _CONDITIONS}),
     )
     id: str = Field(pattern=ID_PATTERN)
-    kind: Literal["learning", "decision", "runbook", "note"]
+    kind: Literal["learning", "decision", "runbook", "note", "daily", "meeting", "thread"]
     scope: Literal["personal", "project", "team"]
     label: str = Field(min_length=1, description="internal | confidential; free text is recorded")
     sources: list[Source] = Field(default_factory=list)
@@ -89,11 +154,23 @@ class KnowledgeNote(BaseModel):
     checks: list[Check] | None = None
     work: str | None = None
     repository: str | None = None
+    origin: Literal["work", "home"] | None = Field(
+        default=None, description="The vault a note was captured in; required on captures"
+    )
+    lane: str | None = Field(default=None, pattern=LANE_PATTERN, description="Epic key")
+    source: CaptureSource | None = None
+    publish: Publish | None = None
 
     @model_validator(mode="after")
     def _kind_rules(self) -> "KnowledgeNote":
         if not self.id.startswith(self.kind + "/"):
             raise ValueError(f"id must start with {self.kind}/")
+        if self.kind in CAPTURE_KINDS and self.origin is None:
+            raise ValueError(f"a {self.kind} note needs origin: work or home")
+        if self.kind in {"meeting", "thread"} and self.source is None:
+            raise ValueError(f"a {self.kind} note needs a source with its sha256")
+        if self.publish is not None and self.origin is None:
+            raise ValueError("a published note needs origin")
         if self.kind == "learning" and not self.sources:
             raise ValueError("a learning needs at least one source")
         if self.kind == "decision":

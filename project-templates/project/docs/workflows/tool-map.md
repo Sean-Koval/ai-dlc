@@ -39,14 +39,13 @@ establish readiness.
 
 | Stage | Skill |
 | --- | --- |
-| Reconcile current state | `day-start` |
+| Open or close the day | `daily-note` |
 | Clarify an uncertain problem | `discovery` |
 | Preserve product rationale | `prd-draft` |
-| Decide on formal behavior | `needs-spec` |
-| Translate approved behavior | `spec-from-prd` |
-| Triage incoming ideas | `review-inbox` |
+| Decide on and translate behavior | `spec-from-prd` |
+| Capture a meeting or thread | `capture` |
 | Transfer verified context | `handoff` |
-| Close a work period | `day-end` |
+| Publish a reviewed note | `kb-publish` |
 
 Skills provide judgment. Provider instructions define vendor operations.
 ai-dlc services own validation and mutation boundaries; no skill bypasses finish
