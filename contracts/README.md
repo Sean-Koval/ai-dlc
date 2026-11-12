@@ -16,6 +16,10 @@ knowledge-note format ([ADR 0004](../docs/decisions/0004-knowledge-system-scope.
 Records are Open Knowledge Format v0.2 documents, and their field names follow OKF's.
 The schema does not assert `format`. Consumers that use only the schema must stringify
 YAML dates and enable a format checker. `ai-dlc knowledge check` is the authority.
+A draft record's `id` is a slug. After a merge, `ai-dlc knowledge number` gives it the
+next number for its type, keeps the slug in `aliases` and rewrites links to it.
+`ai-dlc knowledge index` then writes OKF `index.md` files and derives `superseded_by`.
+Knowledge repositories run both through `.github/workflows/knowledge-merge.yml`.
 Completion is a service operation: callers must use `WorkService.finish`.
 The public `Registry.invoke` refuses terminal tracker transitions and the optional
 terminal planning reconciliation operation `reconcile_closed`.

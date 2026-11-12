@@ -210,6 +210,22 @@ def _register_knowledge_tools(server: FastMCP, config: dict) -> None:
         return knowledge().note(path, body, operation_id)
 
 
+def _register_knowledge_record_tools(server: FastMCP, root: Path) -> None:
+    @server.tool()
+    def knowledge_number_plan(records: str = ".") -> dict:
+        """Preview the numbers merge-time CI would give slug-id records; writes nothing."""
+        from ai_dlc.documentation.knowledge_bundle import number_records
+
+        return number_records(root / records, write=False)
+
+    @server.tool()
+    def knowledge_index(records: str = ".", write: bool = False) -> dict:
+        """Report, or with ``write`` regenerate, the OKF index.md files of a records directory."""
+        from ai_dlc.documentation.knowledge_bundle import index_records
+
+        return index_records(root / records, write=write)
+
+
 def make_server(root: Path, machine: Path | None = None) -> FastMCP:
     config = config_for(root, machine)
     server = FastMCP("ai-dlc")
@@ -217,6 +233,7 @@ def make_server(root: Path, machine: Path | None = None) -> FastMCP:
     _register_docs_tools(server, root)
     _register_workspace_tools(server, root, config)
     _register_knowledge_tools(server, config)
+    _register_knowledge_record_tools(server, root)
     return server
 
 

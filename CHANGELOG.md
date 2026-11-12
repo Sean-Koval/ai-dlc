@@ -18,6 +18,11 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 
 ### Added
 
+- `ai-dlc knowledge number` and `ai-dlc knowledge index`, with MCP `knowledge_number_plan`
+  and `knowledge_index`. After a merge, CI gives slug-id records the next number for
+  their type, keeps the slug in `aliases` and rewrites links to it. It then writes one
+  OKF v0.2 `index.md` per directory, deriving `superseded_by`. Knowledge repositories
+  call `.github/workflows/knowledge-merge.yml` on push to main (KAN-456).
 - The knowledge-record contract: `KnowledgeRecord` in
   `ai_dlc.documentation.knowledge_records`, its generated
   `contracts/knowledge-record.schema.json`, format version 1 for knowledge repositories

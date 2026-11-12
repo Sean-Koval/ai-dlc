@@ -68,7 +68,8 @@ execution is a later qualification target. Obsidian project portals are the defa
 
 Machine enrollment mutations are CLI-only in this cycle. MCP exposes
 `work_context`, `work_review`, `work_publish`, `work_start`, `work_status`, `work_link`, `work_finish`,
-`doctor`, `project_docs_check`, `knowledge_find`, `knowledge_append`, and `knowledge_note`,
+`doctor`, `project_docs_check`, `knowledge_find`, `knowledge_append`, `knowledge_note`,
+`knowledge_index`, and `knowledge_number_plan`,
 plus the documentation and workspace tools below; it does
 not expose machine enrollment mutation. These MCP identifiers differ from the
 space-separated CLI commands, such as `ai-dlc work publish` and `ai-dlc

@@ -92,9 +92,9 @@ creation is not provided. Guided setup exists for GitHub, Jira Cloud and the
 unsupported Plane adapter.
 
 MCP includes `work_context`, `work_review`, `work_publish`, `work_start`, `work_status`,
-`work_link`, `work_finish`, `doctor`, `knowledge_find`, `knowledge_append` and
-`knowledge_note`, alongside project-document and workspace tools. These
-identifiers differ from the space-separated CLI commands, such as
+`work_link`, `work_finish`, `doctor`, `knowledge_find`, `knowledge_append`,
+`knowledge_note`, `knowledge_index` and `knowledge_number_plan`, plus
+project-document and workspace tools. CLI commands are space-separated, as in
 `ai-dlc work publish`.
 
 ## Command and service map
