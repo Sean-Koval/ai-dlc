@@ -27,10 +27,18 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 - The knowledge-record contract: `KnowledgeRecord` in
   `ai_dlc.documentation.knowledge_records`, its generated
   `contracts/knowledge-record.schema.json`, format version 1 for knowledge repositories
-  to pin, and six templates under `agents/templates/knowledge/`. It sits beside the
+  to pin, and six templates under `agents/templates/knowledge/`. Records are Open
+  Knowledge Format v0.2 documents with OKF field names (KAN-471). It sits beside the
   knowledge-note format, which is unchanged;
   [ADR 0004](docs/decisions/0004-knowledge-system-scope.md) puts the knowledge system
   in scope (KAN-421, KAN-454).
+- The second brain, phase A ([ADR 0003](docs/decisions/0003-second-brain-capture-and-publish.md),
+  KAN-323). The knowledge-note schema gains `daily`, `meeting` and `thread` notes with
+  `origin`, `lane`, `source` and `publish`. `ai-dlc knowledge captured`, `publish-plan`
+  and `publish-record` refuse a seen transcript, a note across the work/home wall and
+  a page changed since publication. The provider contract gains an optional
+  knowledge `publish` operation. The workflow plugin (`0.4.0-r7`) ships the
+  `daily-note`, `capture` and `kb-publish` skills.
 - `ai-dlc work review WORK_ID [--reviewer NAME]` and MCP `work_review` mark a draft
   reviewed after validating it and its dependencies. They refuse leftover TODOs and
   started work, and record `reviewed_by` and `reviewed_at`, so the review is no longer
@@ -92,6 +100,9 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 
 ### Removed
 
+- The `day-start`, `day-end`, `review-inbox` and `needs-spec` skills, replaced by
+  `daily-note` and `capture`; `spec-from-prd` now makes the specification decision.
+  Remove them from any `[agents] skills` list (KAN-323).
 - `ai-dlc eval`, the evaluation runner and skill evaluation, now flightdeck's. The
   command is a hidden stub that exits 2 with a pointer for one release (#194, #195;
   PRs #221, #223).

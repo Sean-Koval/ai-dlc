@@ -102,6 +102,7 @@ nav:
   - Decisions:
       - "ADR 0001: Refocus ai-dlc": decisions/0001-refocus-ai-dlc.md
       - "ADR 0002: Jira tracker, trace correlation": decisions/0002-jira-work-tracker-and-trace-correlation.md
+      - "ADR 0003: Second brain capture and publish": decisions/0003-second-brain-capture-and-publish.md
       - "ADR 0004: Knowledge system in scope": decisions/0004-knowledge-system-scope.md
       - Product direction: product-direction.md
       - Framework delivery: design/framework-delivery.md

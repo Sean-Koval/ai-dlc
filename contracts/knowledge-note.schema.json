@@ -1,5 +1,59 @@
 {
   "$defs": {
+    "CaptureSource": {
+      "additionalProperties": false,
+      "description": "Where a captured note came from: one exported ``file`` or a chat ``room``.\n\n``sha256`` is the digest of the captured text; a capture refuses a digest it has\nalready seen. The raw transcript itself is never stored in the note.",
+      "oneOf": [
+        {
+          "required": [
+            "file"
+          ]
+        },
+        {
+          "required": [
+            "room"
+          ]
+        }
+      ],
+      "properties": {
+        "file": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "File"
+        },
+        "room": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Room"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sha256"
+      ],
+      "title": "CaptureSource",
+      "type": "object"
+    },
     "Check": {
       "additionalProperties": true,
       "description": "One ADR check: a ``flightdeck.spec/v1`` spec without its header.\n\nOnly the shape is checked. Unknown keys are kept because the grammar is additive.",
@@ -83,6 +137,75 @@
       "title": "Check",
       "type": "object"
     },
+    "Publish": {
+      "additionalProperties": false,
+      "dependentRequired": {
+        "page_id": [
+          "version"
+        ],
+        "version": [
+          "page_id"
+        ]
+      },
+      "description": "The Confluence page a note is published to; ``page_id`` and ``version`` once done.",
+      "properties": {
+        "site": {
+          "pattern": "^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$",
+          "title": "Site",
+          "type": "string"
+        },
+        "space": {
+          "minLength": 1,
+          "title": "Space",
+          "type": "string"
+        },
+        "parent": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent"
+        },
+        "page_id": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Page Id"
+        },
+        "version": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Version"
+        }
+      },
+      "required": [
+        "site",
+        "space"
+      ],
+      "title": "Publish",
+      "type": "object"
+    },
     "Source": {
       "additionalProperties": false,
       "properties": {
@@ -161,12 +284,65 @@
           "status"
         ]
       }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "daily",
+              "meeting",
+              "thread"
+            ]
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "required": [
+          "origin"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "meeting",
+              "thread"
+            ]
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "required": [
+          "source"
+        ]
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "publish"
+        ]
+      },
+      "then": {
+        "required": [
+          "origin"
+        ]
+      }
     }
   ],
-  "description": "Frontmatter of a learning, decision, runbook or note.\n\n``work`` and ``repository`` are kept for learnings written before this schema.\nExtra keys are allowed and preserved so neighbouring tools can extend notes additively.",
+  "description": "Frontmatter of a learning, decision, runbook, note or capture.\n\n``work`` and ``repository`` are kept for learnings written before this schema.\nExtra keys are allowed and preserved so neighbouring tools can extend notes additively.",
   "properties": {
     "id": {
-      "pattern": "^(learning|decision|runbook|note)/[a-z0-9][a-z0-9._-]*$",
+      "pattern": "^(learning|decision|runbook|note|daily|meeting|thread)/[a-z0-9][a-z0-9._-]*$",
       "title": "Id",
       "type": "string"
     },
@@ -175,7 +351,10 @@
         "learning",
         "decision",
         "runbook",
-        "note"
+        "note",
+        "daily",
+        "meeting",
+        "thread"
       ],
       "title": "Kind",
       "type": "string"
@@ -311,6 +490,59 @@
       ],
       "default": null,
       "title": "Repository"
+    },
+    "origin": {
+      "anyOf": [
+        {
+          "enum": [
+            "work",
+            "home"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The vault a note was captured in; required on captures",
+      "title": "Origin"
+    },
+    "lane": {
+      "anyOf": [
+        {
+          "pattern": "^[A-Z][A-Z0-9_]*-[1-9][0-9]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Epic key",
+      "title": "Lane"
+    },
+    "source": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/CaptureSource"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "publish": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Publish"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     }
   },
   "required": [

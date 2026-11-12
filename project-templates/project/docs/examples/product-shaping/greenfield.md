@@ -73,7 +73,7 @@ that any solution meets an invented speed or satisfaction target.
 
 Prepare a short walkthrough checklist and ask the organizer to identify a willing
 participant and current process. Exit when RQ-001/RQ-002 evidence supports a
-bounded outcome or shows no worthwhile change. Then revisit scope and needs-spec;
+bounded outcome or shows no worthwhile change. Then revisit scope and spec-from-prd;
 no product implementation or tracker publication follows from this brief alone.
 
 ## Unresolved decisions

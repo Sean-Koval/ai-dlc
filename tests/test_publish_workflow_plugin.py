@@ -31,12 +31,12 @@ def test_dry_run_lists_files_and_component_ids_without_writing(tmp_path, capsys)
     assert "plugins/ai-dlc-workflow/.claude-plugin/plugin.json" in paths
     assert "plugins/ai-dlc-workflow/README.md" in paths
     assert "native/codex/ai-dlc-workflow/hooks.json" in paths
-    assert "native/codex/ai-dlc-workflow/skills/needs-spec/SKILL.md" in paths
+    assert "native/codex/ai-dlc-workflow/skills/kb-publish/SKILL.md" in paths
     assert not any(p.startswith("plugins/ai-dlc-workflow/native/") for p in paths)
     lock = json.loads((PLUGIN / "plugin.lock.json").read_text())
     ids = [c["id"] for c in report["components"]]
     assert f"plugin:ai-dlc-workflow@{lock['content_digest']}" in ids
-    assert f"skill:needs-spec@{lock['components']['skill:needs-spec']}" in ids
+    assert f"skill:kb-publish@{lock['components']['skill:kb-publish']}" in ids
     assert "native:codex/ai-dlc-workflow/hooks.json" in ids
     assert report["marketplace_entry"] == {
         "name": "ai-dlc-workflow",
@@ -78,7 +78,7 @@ def test_apply_writes_then_second_apply_is_a_no_op(tmp_path, capsys):
 @pytest.mark.parametrize(
     "edit",
     [
-        "plugins/ai-dlc-workflow/skills/needs-spec/SKILL.md",
+        "plugins/ai-dlc-workflow/skills/kb-publish/SKILL.md",
         "plugins/ai-dlc-workflow/README.md",
         "native/codex/ai-dlc-workflow/hooks.json",
     ],

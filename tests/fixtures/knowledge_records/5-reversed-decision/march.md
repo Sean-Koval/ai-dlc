@@ -5,7 +5,8 @@ scope: team
 status: superseded
 date: 2026-03-04
 owner: sean
-source: https://example.invalid/pr/12
+sources:
+  - {resource: https://example.invalid/pr/12}
 links: []
 valid_from: 2026-03-04
 valid_to: 2026-09-15

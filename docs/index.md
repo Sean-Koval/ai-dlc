@@ -116,5 +116,5 @@ ai-dlc project check --required
 | How does a piece of work go from ticket to finish? | [Development workflow](development-workflow.md) |
 | Which command or skill does each stage use? | [Workflow tool map](workflows/tool-map.md) |
 | How is the system built, and what are its parts? | [Architecture](architecture.md) |
-| What is in scope, and what is frozen? | [ADR 0001](decisions/0001-refocus-ai-dlc.md), [ADR 0002](decisions/0002-jira-work-tracker-and-trace-correlation.md), [ADR 0004](decisions/0004-knowledge-system-scope.md) and [Roadmap](roadmap.md) |
+| What is in scope, and what is frozen? | [ADR 0001](decisions/0001-refocus-ai-dlc.md), [ADR 0002](decisions/0002-jira-work-tracker-and-trace-correlation.md), [ADR 0003](decisions/0003-second-brain-capture-and-publish.md), [ADR 0004](decisions/0004-knowledge-system-scope.md) and [Roadmap](roadmap.md) |
 | What was verified in the current release? | [Release verification](release-verification.md) |

@@ -13,6 +13,9 @@ flightdeck's `flightdeck.spec/v1` grammar and are validated for shape only.
 (`[format] version` in `knowledge.toml`), generated from
 `ai_dlc.documentation.knowledge_records.KnowledgeRecord`. It will replace the
 knowledge-note format ([ADR 0004](../docs/decisions/0004-knowledge-system-scope.md)).
+Records are Open Knowledge Format v0.2 documents, and their field names follow OKF's.
+The schema does not assert `format`. Consumers that use only the schema must stringify
+YAML dates and enable a format checker. `ai-dlc knowledge check` is the authority.
 `ai-dlc knowledge check DIR` (MCP `knowledge_check`) validates a records directory:
 each header against the model, Open Knowledge Format v0.2 section 11, the format pin,
 typed links that name records, duplicate sources and supersession (one accepted

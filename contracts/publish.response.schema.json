@@ -1,0 +1,27 @@
+{
+  "additionalProperties": true,
+  "properties": {
+    "page_id": {
+      "minLength": 1,
+      "title": "Page Id",
+      "type": "string"
+    },
+    "url": {
+      "minLength": 1,
+      "title": "Url",
+      "type": "string"
+    },
+    "version": {
+      "minimum": 1,
+      "title": "Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "page_id",
+    "version",
+    "url"
+  ],
+  "title": "PublishResult",
+  "type": "object"
+}

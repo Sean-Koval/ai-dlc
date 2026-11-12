@@ -259,7 +259,7 @@ def test_shell_environment_is_not_active_shell_evidence(project):
 def test_selected_skills_and_provider_guidance_preserve_missing_or_edited_state(project):
     root, _ = project
     (root / "ai-dlc.toml").write_text(
-        'schema=4\n[roles]\nscm="github"\nagent-client=["codex"]\n[agents]\nskills=["day-start"]\n',
+        'schema=4\n[roles]\nscm="github"\nagent-client=["codex"]\n[agents]\nskills=["daily-note"]\n',
         encoding="utf-8",
     )
     provider = root / ".ai-dlc/providers/github.md"
@@ -272,7 +272,7 @@ def test_selected_skills_and_provider_guidance_preserve_missing_or_edited_state(
     result = collect(project)
     guidance = {item["id"]: item for item in result["project"]["guidance"]}
     assert guidance["provider.github"]["state"] == "mismatch"
-    assert guidance["skill.day-start"]["state"] == "missing"
+    assert guidance["skill.daily-note"]["state"] == "missing"
     assert "SECRET" not in json.dumps(result)
 
 
@@ -438,7 +438,7 @@ def test_skill_failures_only_mark_the_owning_client_unrendered(
     root, _ = project
     (root / "ai-dlc.toml").write_text(
         'schema=4\n[roles]\nagent-client=["codex", "claude-code"]\n'
-        '[agents]\nskills=["day-start"]\n',
+        '[agents]\nskills=["daily-note"]\n',
         encoding="utf-8",
     )
     body = "intact but freshness unknown\n"
@@ -448,11 +448,11 @@ def test_skill_failures_only_mark_the_owning_client_unrendered(
             f"<!-- ai-dlc:begin {digest} -->\n{body}<!-- ai-dlc:end -->",
             encoding="utf-8",
         )
-    other_skill = root / other_prefix / "skills/day-start/SKILL.md"
+    other_skill = root / other_prefix / "skills/daily-note/SKILL.md"
     other_skill.parent.mkdir(parents=True)
     other_skill.write_text("present but freshness unknown", encoding="utf-8")
     if failure == "mismatch":
-        relative = f"{failed_prefix}/skills/day-start/SKILL.md"
+        relative = f"{failed_prefix}/skills/daily-note/SKILL.md"
         failed_skill = root / relative
         failed_skill.parent.mkdir(parents=True)
         failed_skill.write_text("locally modified skill", encoding="utf-8")
@@ -466,7 +466,7 @@ def test_skill_failures_only_mark_the_owning_client_unrendered(
     assert clients[failed_client]["rendered"] == "no"
     assert clients[other_client]["rendered"] == "unknown"
     assert clients[other_client]["reasons"]["rendered"] == "not-assessed"
-    skill = next(g for g in result["project"]["guidance"] if g["id"] == "skill.day-start")
+    skill = next(g for g in result["project"]["guidance"] if g["id"] == "skill.daily-note")
     assert skill["state"] == failure
     assert completeness(result) == (False, False)
 
@@ -481,7 +481,7 @@ def test_skill_failures_only_mark_the_owning_client_unrendered(
         ("project", "AGENTS.md", "project.guidance"),
         ("project", ".ai-dlc/agent-ownership.json", "project.guidance"),
         ("project", ".ai-dlc/providers/github.md", "project.guidance"),
-        ("project", ".agents/skills/day-start/SKILL.md", "project.guidance"),
+        ("project", ".agents/skills/daily-note/SKILL.md", "project.guidance"),
     ],
 )
 def test_special_metadata_is_refused_without_hanging_collection(project, location, relative, field):

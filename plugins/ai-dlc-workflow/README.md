@@ -16,15 +16,14 @@ with `--check`.
 | Path | Content |
 | --- | --- |
 | `skills/ai-dlc-workflow/` | Provider-neutral workflow guidance as a skill; plugin `CLAUDE.md` files are not loaded |
-| `skills/<team-skill>/` | discovery, prd-draft, needs-spec, spec-from-prd, review-inbox, handoff, document-review, document-organize, design-brief, design-evaluate |
+| `skills/<team-skill>/` | discovery, prd-draft, spec-from-prd, handoff, document-review, document-organize, design-brief, design-evaluate, and the second-brain daily-note, capture and kb-publish |
 | `hooks/hooks.json` | SessionStart, PreToolUse (`Bash\|exec_command\|Edit\|Write`) and Stop hooks, exec form, 10 s timeout |
 | `hooks/aidlc_hook.py` | Standard-library hook shim |
 | `plugin.lock.json` | One digest per component, a `content_digest` over them, the digest of every published file, and the Codex form's digests |
 | `native/codex/` | The Codex form (below); not part of the Claude plugin a harness publishes |
 
-Skills appear namespaced, for example `ai-dlc-workflow:needs-spec`. The personal
-`day-start` and `day-end` skills are not included. When a repository also renders
-its own unprefixed copies, the guide skill tells the agent to prefer those.
+Skills appear namespaced, for example `ai-dlc-workflow:capture`. When a repository
+also renders its own unprefixed copies, the guide skill tells the agent to prefer those.
 
 `plugin.json` sets `version` to `<engine>-r<revision>`. The builder increases the
 revision whenever the content digest changes, so installed copies update only when

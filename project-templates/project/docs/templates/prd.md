@@ -48,7 +48,7 @@ Keep actual approval separate from a recommended next step.
 ## Links
 
 Canonical brief and evidence, applicable design, formal specification, tracker work.
-Use needs-spec and the configured formal provider before implementation where
+Use spec-from-prd and the configured formal provider before implementation where
 required. Formal specifications own behavior; this PRD owns product rationale.
 
 Decision: <proceed|investigate|stop> — <reason and smallest next action; proceed

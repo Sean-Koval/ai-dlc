@@ -3,7 +3,7 @@
 from collections.abc import Mapping
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 class Request(BaseModel):
@@ -24,6 +24,7 @@ class Request(BaseModel):
         "deployment",
         "append",
         "pull_request_create",
+        "publish",
     ]
     payload: dict
     operation_id: str | None = None
@@ -170,6 +171,36 @@ class PullRequestCreate(Payload):
     head: str = Field(min_length=1)
 
 
+class Publish(Payload):
+    """One reviewed note to one page (ADR 0003): create without ``page_id``, else update.
+
+    ``expected_version`` is the version the note recorded; a provider refuses when the
+    page's current version differs instead of overwriting a teammate's edit.
+    """
+
+    site: str = Field(min_length=1)
+    space: str = Field(min_length=1)
+    parent: str | None = None
+    title: str = Field(min_length=1)
+    body: str = Field(min_length=1)
+    page_id: str | None = None
+    expected_version: int | None = Field(default=None, ge=1)
+    operation_id: str = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def _update_needs_version(self) -> "Publish":
+        if (self.page_id is None) != (self.expected_version is None):
+            raise ValueError("an update names page_id and expected_version together")
+        return self
+
+
+class PublishResult(BaseModel):
+    model_config = ConfigDict(extra="allow")
+    page_id: str = Field(min_length=1)
+    version: int = Field(ge=1)
+    url: str = Field(min_length=1)
+
+
 class PullRequestResult(BaseModel):
     model_config = ConfigDict(extra="allow")
     url: str = Field(min_length=1)
@@ -184,6 +215,7 @@ PAYLOADS.update(
         "deployment": Revision,
         "append": Append,
         "pull_request_create": PullRequestCreate,
+        "publish": Publish,
     }
 )
 RESPONSES = {
@@ -201,6 +233,7 @@ RESPONSES = {
     "deployment": DeploymentResult,
     "append": AppendResult,
     "pull_request_create": PullRequestResult,
+    "publish": PublishResult,
 }
 
 
@@ -275,7 +308,7 @@ def manifest():
             "specs": {"mandatory": ["current"], "optional": []},
             "scm": {"mandatory": ["merged", "ci"], "optional": ["pull_request_create"]},
             "deploy": {"mandatory": ["deployment"], "optional": []},
-            "knowledge": {"mandatory": ["append"], "optional": []},
+            "knowledge": {"mandatory": ["append"], "optional": ["publish"]},
         },
         "operations": {
             op: {

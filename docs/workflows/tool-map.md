@@ -52,20 +52,18 @@ Knowledge, deployment and agent clients remain optional.
 
 | Moment | Skill | Expected judgment output |
 | --- | --- | --- |
-| Start of work | `day-start` | Reconciled priority, bindings, branch, and evidence |
+| Start or end of day | `daily-note` | Read-only lane summary in the vault, then what moved |
 | Unclear problem | `discovery` | Bounded problem, evidence, assumptions, questions, and next investigation |
 | Durable product rationale | `prd-draft` | Reviewed problem, outcomes, scope, constraints, risks, and acceptance |
-| Specification decision | `needs-spec` | Explicit decision based on behavior and risk |
-| Approved behavior | `spec-from-prd` | Provider-owned requirements and scenarios linked to rationale |
-| Incoming idea or note | `review-inbox` | Classification and next action without automatic publication |
+| Approved behavior | `spec-from-prd` | Specification decision, then provider-owned requirements and scenarios |
+| Meeting transcript or thread | `capture` | Decisions, actions and questions; proposed tickets, never filed |
 | Session or ownership transfer | `handoff` | Verified state, decisions, evidence, risks, and next action |
-| End of work period | `day-end` | Concise continuity record and reconciled remote state |
+| Share a reviewed note | `kb-publish` | One confirmed page, its id written back to the note |
 
 The optional [workflow plugin](workflow-plugin.md) carries
-`discovery`, `prd-draft`, `needs-spec`, `spec-from-prd`, `review-inbox`, `handoff`,
-`document-review`, `document-organize`, `design-brief` and `design-evaluate`,
-namespaced as `ai-dlc-workflow:<skill>`, plus an `ai-dlc-workflow` guide skill.
-`day-start` and `day-end` stay with personal profiles.
+every skill above plus `document-review`, `document-organize`, `design-brief` and
+`design-evaluate`, namespaced as `ai-dlc-workflow:<skill>`, with an
+`ai-dlc-workflow` guide skill.
 
 The plugin's hooks run without the CLI. They deny destructive commands, delegate
 to `ai-dlc hook` only in adopted repositories outside hangar, and never apply

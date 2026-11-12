@@ -88,8 +88,9 @@ def test_lock_lists_team_skills_guide_and_hooks_only():
         "guide:ai-dlc-workflow",
         "hooks:ai-dlc",
     }
-    assert len(TEAM_SKILLS) == 10
-    for excluded in ("day-start", "day-end"):
+    assert len(TEAM_SKILLS) == 11
+    assert {"daily-note", "capture", "kb-publish"} <= set(TEAM_SKILLS)
+    for excluded in ("day-start", "day-end", "needs-spec", "review-inbox"):
         assert f"skill:{excluded}" not in lock["components"]
         assert not (PLUGIN / "skills" / excluded).exists()
     canonical = json.dumps(lock["components"], sort_keys=True, separators=(",", ":")).encode()
@@ -131,9 +132,9 @@ def test_hooks_use_exec_form_and_the_shim():
 
 
 def test_skill_digest_mismatch_is_refused(root, capsys):
-    skill = root / "agents/skills/needs-spec/SKILL.md"
+    skill = root / "agents/skills/kb-publish/SKILL.md"
     skill.write_bytes(skill.read_bytes() + b" ")
-    with pytest.raises(ValueError, match="skill digest mismatch: needs-spec"):
+    with pytest.raises(ValueError, match="skill digest mismatch: kb-publish"):
         BUILDER["plan"](root)
     assert BUILDER["main"](["--root", str(root)]) == 1
     assert "skill digest mismatch" in capsys.readouterr().err
@@ -141,11 +142,11 @@ def test_skill_digest_mismatch_is_refused(root, capsys):
 
 def test_relocked_skill_edit_without_rebuild_is_stale(root, capsys):
     BUILDER["write"](root)
-    skill = root / "agents/skills/needs-spec/SKILL.md"
+    skill = root / "agents/skills/kb-publish/SKILL.md"
     skill.write_bytes(skill.read_bytes() + b"\n")
     relock(root)
     stale = BUILDER["drift"](root)
-    assert "skills/needs-spec/SKILL.md" in stale and "plugin.lock.json" in stale
+    assert "skills/kb-publish/SKILL.md" in stale and "plugin.lock.json" in stale
     assert BUILDER["main"](["--check", "--root", str(root)]) == 1
     assert "Workflow plugin is stale" in capsys.readouterr().err
     BUILDER["write"](root)
