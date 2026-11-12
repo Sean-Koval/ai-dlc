@@ -18,6 +18,12 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 
 ### Added
 
+- `ai-dlc knowledge check DIR` (and MCP `knowledge_check`) validates a records
+  directory against `KnowledgeRecord`, Open Knowledge Format v0.2 section 11, the
+  `knowledge.toml` pin, typed-link integrity, duplicate sources and supersession;
+  `--base REF` refuses in-place edits of accepted decisions. Knowledge repositories
+  call it through `.pre-commit-hooks.yaml` or the reusable
+  `.github/workflows/knowledge-check.yml`. `--vault` keeps checking learnings.
 - `ai-dlc knowledge number` and `ai-dlc knowledge index`, with MCP `knowledge_number_plan`
   and `knowledge_index`. After a merge, CI gives slug-id records the next number for
   their type, keeps the slug in `aliases` and rewrites links to it. It then writes one

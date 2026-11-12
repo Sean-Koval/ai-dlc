@@ -1,8 +1,6 @@
 """Merge-time numbering and OKF index generation for knowledge records (KAN-456)."""
 
 import asyncio
-import importlib
-import importlib.util
 import json
 import re
 import subprocess
@@ -15,12 +13,12 @@ from typer.testing import CliRunner
 from ai_dlc.cli import app
 from ai_dlc.documentation import knowledge_records as records
 from ai_dlc.documentation.knowledge_bundle import index_records, number_records
+from ai_dlc.documentation.knowledge_check import check_records
 from ai_dlc.documentation.knowledge_notes import split
 
 HASH = "sha256:" + "0" * 64
 STATUS = {"decision": "accepted", "lesson": "open", "source": "processed", "convention": "active"}
 LINK = re.compile(r"\]\(([^)#\s]+)")
-HAS_CHECK = importlib.util.find_spec("ai_dlc.documentation.knowledge_check") is not None
 
 
 def write(folder: Path, name: str, kind: str, rid: str, *, extra: str = "", body: str = ""):
@@ -123,6 +121,7 @@ def test_two_branches_merge_in_either_order_with_distinct_numbers(tmp_path, orde
     assert found["decisions/DEC-0002.md"].aliases == [first]
     assert sorted(r.id for r in found.values() if r.type == "lesson") == ["LES-0001", "LES-0002"]
     assert_links_resolve(folder)
+    assert check_records(folder)["failures"] == []
     lesson = next(p for p in (folder / "lessons").glob("*.md") if "DEC-0002" in p.read_text())
     assert "../decisions/DEC-0002.md#context" in lesson.read_text()
 
@@ -248,11 +247,29 @@ def test_index_follows_okf_section_8_and_derives_superseded_by(tmp_path):
     ) in decisions
     assert "DEC-0001; decision; superseded" not in old.read_text()
     assert not (tmp_path / "raw/index.md").exists()
+    assert check_records(tmp_path)["failures"] == []
 
 
-@pytest.mark.skipif(not HAS_CHECK, reason="knowledge check lands with KAN-423 (#257)")
+def test_numbering_an_accepted_decision_passes_check_against_the_base(tmp_path):
+    folder = tmp_path / "kb"
+    folder.mkdir()
+    git(folder, "init", "-q", "-b", "main")
+    (folder / "knowledge.toml").write_text("[format]\nversion = 1\n")
+    write(folder, "decisions/accepted-one.md", "decision", "accepted-one")
+    write(
+        folder,
+        "lessons/l.md",
+        "lesson",
+        "l",
+        extra="links:\n  - {type: implements, target: accepted-one}",
+    )
+    git(folder, "add", "-A")
+    git(folder, "commit", "-qm", "base")
+    merge_step(folder)
+    assert check_records(folder, base="HEAD~1")["failures"] == []
+
+
 def test_generated_indexes_pass_knowledge_check(tmp_path):
-    check_records = importlib.import_module("ai_dlc.documentation.knowledge_check").check_records
 
     (tmp_path / "knowledge.toml").write_text("[format]\nversion = 1\n")
     write(tmp_path, "decisions/a-slug.md", "decision", "a-slug")
@@ -305,9 +322,14 @@ def test_reusable_workflow_serializes_numbering():
     path = Path(__file__).resolve().parents[1] / ".github/workflows/knowledge-merge.yml"
     workflow = yaml.safe_load(path.read_text())
     called = workflow[True]["workflow_call"]
-    assert set(called["inputs"]) == {"records", "branch", "ai-dlc-ref", "attempts"}
+    assert set(called["inputs"]) == {"records", "branch", "numbering-branch", "ai-dlc-ref"}
+    assert called["secrets"]["token"]["required"] is True
+    assert workflow["permissions"] == {"contents": "read"}
     job = workflow["jobs"]["number"]
     assert job["concurrency"]["cancel-in-progress"] is False
     script = "\n".join(step.get("run", "") for step in job["steps"])
     assert script.index("knowledge number") < script.index("knowledge index")
     assert "--check" in script
+    assert 'push --force origin "HEAD:refs/heads/$NUMBERING"' in script
+    assert "gh pr merge" in script and "--auto --squash" in script
+    assert "HEAD:$BRANCH" not in script

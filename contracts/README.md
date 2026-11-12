@@ -16,10 +16,31 @@ knowledge-note format ([ADR 0004](../docs/decisions/0004-knowledge-system-scope.
 Records are Open Knowledge Format v0.2 documents, and their field names follow OKF's.
 The schema does not assert `format`. Consumers that use only the schema must stringify
 YAML dates and enable a format checker. `ai-dlc knowledge check` is the authority.
+`ai-dlc knowledge check DIR` (MCP `knowledge_check`) validates a records directory:
+each header against the model, Open Knowledge Format v0.2 section 11, the format pin,
+typed links that name records, duplicate sources and supersession (one accepted
+successor, no cycles). It reads only `[check] roots` from `knowledge.toml` and never
+`README.md`. `derived_from` must name a source record, since raw payloads expire.
+`--base REF` also refuses in-place edits to decisions accepted at the merge base and
+deletion of source records. Knowledge repositories run it through `.pre-commit-hooks.yaml` and
+the reusable `.github/workflows/knowledge-check.yml`.
 A draft record's `id` is a slug. After a merge, `ai-dlc knowledge number` gives it the
 next number for its type, keeps the slug in `aliases` and rewrites links to it.
 `ai-dlc knowledge index` then writes OKF `index.md` files and derives `superseded_by`.
-Knowledge repositories run both through `.github/workflows/knowledge-merge.yml`.
+Knowledge repositories run both through `.github/workflows/knowledge-merge.yml` on
+push to main. Main stays protected: the workflow opens or updates one pull request
+from `knowledge-number` and turns on squash auto-merge, so it lands once the required
+checks pass. Each run recomputes from the tip of main, so numbers never collide.
+The knowledge repository needs these settings:
+
+- Settings > General > Pull Requests: "Allow auto-merge" on, and "Allow squash
+  merging" on (linear history needs squash or rebase).
+- Branch protection or ruleset on main: require a pull request and the
+  `knowledge check` status check. Required approvals must be 0, or the token's app
+  must be a bypass actor; otherwise auto-merge waits for a review.
+- A secret passed as `token`: a GitHub App installation token or fine-grained token
+  with Contents and Pull requests write. A pull request opened with `GITHUB_TOKEN`
+  starts no checks, so it would never auto-merge.
 Completion is a service operation: callers must use `WorkService.finish`.
 The public `Registry.invoke` refuses terminal tracker transitions and the optional
 terminal planning reconciliation operation `reconcile_closed`.

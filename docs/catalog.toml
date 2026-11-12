@@ -93,6 +93,7 @@ code_paths = [
     "src/ai_dlc/documentation/knowledge_bundle.py",
     ".github/workflows/knowledge-merge.yml",
     "contracts/knowledge-record.schema.json",
+    "src/ai_dlc/documentation/knowledge_check.py",
     "src/ai_dlc/harness/friction.py",
     "src/ai_dlc/documentation/workspace_diagnostics.py",
 ]
@@ -104,6 +105,7 @@ verification_paths = [
     "tests/test_knowledge_notes.py",
     "tests/test_knowledge_records.py",
     "tests/test_knowledge_bundle.py",
+    "tests/test_knowledge_check.py",
     "tests/test_workspace_diagnostics.py",
 ]
 requirements = ["openspec/specs/obsidian-vault-linking/spec.md", "openspec/specs/session-learnings/spec.md"]
