@@ -1,0 +1,903 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "AGENTS.md": "95e4cad9a3cf0a5c35f580b0f24b6379459f4453fb88dbad985b7cbe87427e91"
+      },
+      "outcome": "updated",
+      "reason": "Scope freeze cites ADR 0003 and lists the second-brain module among in-scope areas; tracker binding untouched.",
+      "reviewer": "Claude (agent)",
+      "target": "AGENTS.md"
+    },
+    {
+      "bound": {
+        "CHANGELOG.md": "0a41673be25c5ed54ba86eefcde8373d24cf2aa96fe2608ce7b9de4c9111ad42"
+      },
+      "outcome": "updated",
+      "reason": "Unreleased Added (second brain phase A) and Removed (the four replaced skills).",
+      "reviewer": "Claude (agent)",
+      "target": "CHANGELOG.md"
+    },
+    {
+      "bound": {
+        "README.md": "964bd67b2b1bc0ce47f06aaee2a386ddaeb4609e9391488f6c47d7a45684ee8c"
+      },
+      "outcome": "updated",
+      "reason": "Plugin capture alt text and feature table say twelve skills.",
+      "reviewer": "Claude (agent)",
+      "target": "README.md"
+    },
+    {
+      "bound": {
+        "agents/examples/product-shaping/brownfield.md": "6f635cccdf01fd69bd55e30371392599622a9953e375eb86a5351d716fb94149"
+      },
+      "outcome": "updated",
+      "reason": "Points to spec-from-prd for the specification decision.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/examples/product-shaping/brownfield.md"
+    },
+    {
+      "bound": {
+        "agents/examples/product-shaping/greenfield.md": "467816899b6478c2820dd4f3258c062c1b4dfb062a747e9e56907485b617dc26"
+      },
+      "outcome": "updated",
+      "reason": "Points to spec-from-prd for the specification decision.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/examples/product-shaping/greenfield.md"
+    },
+    {
+      "bound": {
+        "agents/skills/capture/SKILL.md": "c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac"
+      },
+      "outcome": "updated",
+      "reason": "New capture skill.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/skills/capture/SKILL.md"
+    },
+    {
+      "bound": {
+        "agents/skills/daily-note/SKILL.md": "c7fe91f4efa30e6e2080919d8379cc5407582130fe1cc5068f10e79e4258d8c4"
+      },
+      "outcome": "updated",
+      "reason": "New daily-note skill.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/skills/daily-note/SKILL.md"
+    },
+    {
+      "bound": {
+        "agents/skills/day-end/SKILL.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Removed; replaced by daily-note.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/skills/day-end/SKILL.md"
+    },
+    {
+      "bound": {
+        "agents/skills/day-start/SKILL.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Removed; replaced by daily-note.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/skills/day-start/SKILL.md"
+    },
+    {
+      "bound": {
+        "agents/skills/kb-publish/SKILL.md": "1a4d85383b6a5258a4e617e2f2d6ad5fcd907dd861aa50eb33d833d5f9624c2b"
+      },
+      "outcome": "updated",
+      "reason": "New kb-publish skill.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/skills/kb-publish/SKILL.md"
+    },
+    {
+      "bound": {
+        "agents/skills/needs-spec/SKILL.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Removed; its rule moved into spec-from-prd.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/skills/needs-spec/SKILL.md"
+    },
+    {
+      "bound": {
+        "agents/skills/review-inbox/SKILL.md": "missing"
+      },
+      "outcome": "updated",
+      "reason": "Removed; replaced by capture.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/skills/review-inbox/SKILL.md"
+    },
+    {
+      "bound": {
+        "agents/templates/design-brief.md": "89bb52d14727734908421bd0f449279afe80cd51a11f7ee381d8996cb4eab216"
+      },
+      "outcome": "updated",
+      "reason": "Points to spec-from-prd instead of needs-spec.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/templates/design-brief.md"
+    },
+    {
+      "bound": {
+        "agents/templates/prd.md": "4ccdc6cd7a5547e50dd59663b22135467d7736d48e3015fcc5ac2abb6136efc9"
+      },
+      "outcome": "updated",
+      "reason": "Points to spec-from-prd instead of needs-spec.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/templates/prd.md"
+    },
+    {
+      "bound": {
+        "agents/templates/product-brief.md": "5e5e13df1edfcb8908441b61f1a2ae1a109186e1b5bcee24fcc43530ba86bb50"
+      },
+      "outcome": "updated",
+      "reason": "Points to spec-from-prd instead of needs-spec.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/templates/product-brief.md"
+    },
+    {
+      "bound": {
+        "contracts/manifest.json": "7c6747c573f67ee5b44ab83d41f3bff4c81033d773c6fbf89c59d78621d7d932"
+      },
+      "outcome": "updated",
+      "reason": "Regenerated: optional knowledge operation publish.",
+      "reviewer": "Claude (agent)",
+      "target": "contracts/manifest.json"
+    },
+    {
+      "bound": {
+        "contracts/publish.request.schema.json": "c59403b6bbaa22beb1cfa2e4d2e1de86e86eadf6eea49d538765668697c27c18"
+      },
+      "outcome": "updated",
+      "reason": "Generated schema for the publish payload.",
+      "reviewer": "Claude (agent)",
+      "target": "contracts/publish.request.schema.json"
+    },
+    {
+      "bound": {
+        "contracts/publish.response.schema.json": "3f4563659794284b5f47bad7721fe5551b945dc358c402f7ca273bcb14f3c1cd"
+      },
+      "outcome": "updated",
+      "reason": "Generated schema for the publish result.",
+      "reviewer": "Claude (agent)",
+      "target": "contracts/publish.response.schema.json"
+    },
+    {
+      "bound": {
+        "catalog:docs/architecture.md": "788b593066fcd5d1c9eb9ebbc3869971131d3ddb3ea3396bc8b9a6ea48ca8b55",
+        "docs/architecture.md": "abfbd4c86ee59a46c24738c19f0c5240a2bb1e88878cd60b8b78a6a291613390",
+        "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "openspec/specs/tracker-adapter-boundary/spec.md": "f47d11b47618751d7bbf2950dc74442f766a94f36f2379d1f4f343942ff112eb",
+        "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "6cfd743841b0c8862c751502ab494f0867a3a418ac878ea8cab389d8b03bc499",
+        "plugins/ai-dlc-workflow/README.md": "1c90defa77384652be8af275592048ff89a31d6e63ce58b1fd7dfde6d2b06b88",
+        "plugins/ai-dlc-workflow/hooks/aidlc_hook.py": "621dec6fb8e24d199568d85ab36e36ff0931081393bb475f28e4b4f306a3d376",
+        "plugins/ai-dlc-workflow/hooks/hooks.json": "ccba13e96d1b53ea5926fb9af2a3dd6c02817c182acbd8d002a54a1ba665cdad",
+        "plugins/ai-dlc-workflow/native/codex/.codex-plugin/plugin.json": "ccc9052ac9ab5c2a47b79443edb122016b9f637080e636c57c3b62b243789ad9",
+        "plugins/ai-dlc-workflow/native/codex/AGENTS.fragment.md": "abaabe2b4b31574d3d38c0b1f9fca4db358a3d038b798d820f5eaf571af3724e",
+        "plugins/ai-dlc-workflow/native/codex/hooks.json": "4d2c2097f9c3004dca11d040acf3353eb6af9d0b96a63910f508a36a8d284f63",
+        "plugins/ai-dlc-workflow/native/codex/hooks/aidlc_hook.py": "621dec6fb8e24d199568d85ab36e36ff0931081393bb475f28e4b4f306a3d376",
+        "plugins/ai-dlc-workflow/native/codex/skills/ai-dlc-workflow/SKILL.md": "fc81cb2b4f4fdf3f5b4ad107e19cdd0fee08a78b622f60c7664a5ee6484d542e",
+        "plugins/ai-dlc-workflow/native/codex/skills/capture/SKILL.md": "c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
+        "plugins/ai-dlc-workflow/native/codex/skills/daily-note/SKILL.md": "c7fe91f4efa30e6e2080919d8379cc5407582130fe1cc5068f10e79e4258d8c4",
+        "plugins/ai-dlc-workflow/native/codex/skills/design-brief/SKILL.md": "e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5",
+        "plugins/ai-dlc-workflow/native/codex/skills/design-evaluate/SKILL.md": "d6892ed5e426f8bbf0df4bba1bff09bbc602e2136d21a9369957eb47dbdaa26a",
+        "plugins/ai-dlc-workflow/native/codex/skills/discovery/SKILL.md": "7460a3fa47474f28f2224eaea675438ba7cef08463d53bcf55d1a911e59ee2a2",
+        "plugins/ai-dlc-workflow/native/codex/skills/document-organize/SKILL.md": "85353fd4bf2dc1f2ba4f3f7b6896093f38cc4b09d8ed2dacf950b10e568c7ead",
+        "plugins/ai-dlc-workflow/native/codex/skills/document-review/SKILL.md": "5e2f71219b98cd53dd6a3a73b3bbccc1873b796a14ec1347875a39c911db9ad3",
+        "plugins/ai-dlc-workflow/native/codex/skills/handoff/SKILL.md": "47813221a030ff1d19642b9e6ebf234ded18fd128fef857badd4b77612529ecd",
+        "plugins/ai-dlc-workflow/native/codex/skills/kb-publish/SKILL.md": "1a4d85383b6a5258a4e617e2f2d6ad5fcd907dd861aa50eb33d833d5f9624c2b",
+        "plugins/ai-dlc-workflow/native/codex/skills/needs-spec/SKILL.md": "missing",
+        "plugins/ai-dlc-workflow/native/codex/skills/prd-draft/SKILL.md": "046b82e994b36b2202f7772aafc93557b903d2b541e69a62414d9b5a0b5d75fc",
+        "plugins/ai-dlc-workflow/native/codex/skills/review-inbox/SKILL.md": "missing",
+        "plugins/ai-dlc-workflow/native/codex/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
+        "plugins/ai-dlc-workflow/plugin.lock.json": "788c90817e9b3fb875049d268cb8be7b45135a529ef573ebc6180e4a520c5af7",
+        "plugins/ai-dlc-workflow/skills/ai-dlc-workflow/SKILL.md": "fc81cb2b4f4fdf3f5b4ad107e19cdd0fee08a78b622f60c7664a5ee6484d542e",
+        "plugins/ai-dlc-workflow/skills/capture/SKILL.md": "c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
+        "plugins/ai-dlc-workflow/skills/daily-note/SKILL.md": "c7fe91f4efa30e6e2080919d8379cc5407582130fe1cc5068f10e79e4258d8c4",
+        "plugins/ai-dlc-workflow/skills/design-brief/SKILL.md": "e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5",
+        "plugins/ai-dlc-workflow/skills/design-evaluate/SKILL.md": "d6892ed5e426f8bbf0df4bba1bff09bbc602e2136d21a9369957eb47dbdaa26a",
+        "plugins/ai-dlc-workflow/skills/discovery/SKILL.md": "7460a3fa47474f28f2224eaea675438ba7cef08463d53bcf55d1a911e59ee2a2",
+        "plugins/ai-dlc-workflow/skills/document-organize/SKILL.md": "85353fd4bf2dc1f2ba4f3f7b6896093f38cc4b09d8ed2dacf950b10e568c7ead",
+        "plugins/ai-dlc-workflow/skills/document-review/SKILL.md": "5e2f71219b98cd53dd6a3a73b3bbccc1873b796a14ec1347875a39c911db9ad3",
+        "plugins/ai-dlc-workflow/skills/handoff/SKILL.md": "47813221a030ff1d19642b9e6ebf234ded18fd128fef857badd4b77612529ecd",
+        "plugins/ai-dlc-workflow/skills/kb-publish/SKILL.md": "1a4d85383b6a5258a4e617e2f2d6ad5fcd907dd861aa50eb33d833d5f9624c2b",
+        "plugins/ai-dlc-workflow/skills/needs-spec/SKILL.md": "missing",
+        "plugins/ai-dlc-workflow/skills/prd-draft/SKILL.md": "046b82e994b36b2202f7772aafc93557b903d2b541e69a62414d9b5a0b5d75fc",
+        "plugins/ai-dlc-workflow/skills/review-inbox/SKILL.md": "missing",
+        "plugins/ai-dlc-workflow/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
+        "pyproject.toml": "cb78de40ce91805acb3b66d955655ae535665d2010d768a3fa71b3d213039a63",
+        "scripts/build_workflow_plugin.py": "c5ba7b795eced373d60dee9d6154a7867655ba892be427012f88ceb79138bddb",
+        "scripts/check_client_pins.py": "c0b4030b6767aee44975556f11a2c0dcf2b5aa67e232ec6182c1247630f53c8c",
+        "scripts/check_generated.py": "40f2cc62eee8d1d73a36f7903f2ffed87d1e4cf5cf8bf680abf113bcce028103",
+        "scripts/check_layout.py": "942ed109d998ed8d8004b8dbe6608b33df98876cdd8db6d004677dbcce1933a6",
+        "scripts/docs_site_links.py": "e4f61570d3b4272d0e33fb733862105f4854906cba5e4f601c8a3d6dd3a519e8",
+        "scripts/publish_workflow_plugin.py": "96d95c413671a55a0e42d690f1c6d64528c11203e0a44359e3422d082ca34b9d",
+        "scripts/qualify_framework.py": "8068bb2709bbf6b3a020e9c22d62b993cc0e8a3e3c9ee5c00dc4b8963c31054e",
+        "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+        "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
+        "src/ai_dlc/__main__.py": "aff4dacb51b993d7acdfe1f7ab7a54c1c159dd23a3a848b961a0a2e545809f07",
+        "src/ai_dlc/_windows_storage/__init__.py": "5715def899453f15265e13d52e5b518844cc9d057421cfa5279172d799d5f506",
+        "src/ai_dlc/_windows_storage/_api.py": "d5fc4f971db8e706871c06e8119884848e505af6c45f4fbb5c2f7db513faf41b",
+        "src/ai_dlc/_windows_storage/_security.py": "62785d4e088cd485816a33f35a7a559d3d1acf166093c413a3f4f79969056314",
+        "src/ai_dlc/cli.py": "7abc11322c238b55103d857c6663084ed8e1a72cd8e94c296bc54ad4dca4bdea",
+        "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
+        "src/ai_dlc/conformance.py": "0ff247c065e89d4c5b43d844601dc809558c65a779c1600371953c0e2c44737b",
+        "src/ai_dlc/contracts.py": "0101fd74193bc8332c161a3f69a0a1ef080f0cf559d07cbedefdeb09167d6fc2",
+        "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
+        "src/ai_dlc/documentation/decisions.py": "30c52c68b82bca8c899887617385adac25f9b0bb2e9aa81936b91b877c626d6c",
+        "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
+        "src/ai_dlc/documentation/document_files.py": "3174b5773adf54c9a0f586a041c4e67001d136d9ba1016ec1cbb0b54debafd55",
+        "src/ai_dlc/documentation/document_impact.py": "bf3353c2ab99166c4900647ac7a0626bba3ee08a4a4f92ffa9269167f86012ca",
+        "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
+        "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
+        "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
+        "src/ai_dlc/documentation/documents.py": "763c9c2ff76c62e99eb6de4706f85edcaf57287f8c9bc8335c433d0163ba1812",
+        "src/ai_dlc/documentation/fde.py": "3664430ebca9f3ef7ba7c7c431f7e4790176066510904ebe4d43d0a88ecf26e1",
+        "src/ai_dlc/documentation/knowledge.py": "c02c49bcc24f8e2c418ace24a72db604b1bc9a4f8d1511fa42235aeb9b122bc7",
+        "src/ai_dlc/documentation/knowledge_notes.py": "df022b2e330c5140f6948ec25a33c7888704e8686ea5411c770764a449b3b1b6",
+        "src/ai_dlc/documentation/knowledge_publish.py": "a796d6d760789edb3f1723fd79f3d02125901c699fa51fe9f8d7cfbb666920a8",
+        "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
+        "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
+        "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
+        "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
+        "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
+        "src/ai_dlc/documentation/workspace_diagnostics.py": "8c8dc695fa95e5f9e8fc4017e5fd66efcab4c0cec4d3ae9272d3c5f368f93aef",
+        "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
+        "src/ai_dlc/environment/bootstrap.py": "7fad9be94cc830cde041e4ad88c4b79b653f8e8d2c558f1d8db33f99a87b088d",
+        "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
+        "src/ai_dlc/environment/enrollment.py": "f8e826a9dca7a8e308f9ad52c8f178ad7e6f2c6c536da7459a68c123d51e9c53",
+        "src/ai_dlc/environment/machine.py": "2c3981ab3e8e4e52d2c3f86f02d8714bf92dd3229eaff99c72ac91961fbbd16a",
+        "src/ai_dlc/environment/profile_source.py": "f177cc9336ed7c69e37299bc70107f14a7878ff72abbd1070dc3560340d451cc",
+        "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
+        "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
+        "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
+        "src/ai_dlc/environment/source_content.py": "924cda57f74d9986eeb8c85a5e8f33b6a339fadb8e58c8abcd514b0263f559f9",
+        "src/ai_dlc/environment/source_schema.py": "929944f86aef4a0aa2e257f3fbb4bee26ce07c522ed2eb35c2e1bbba38ec44d0",
+        "src/ai_dlc/environment/team_sources.py": "20d583a9046adfac9f0f5bf6de7aca537654eb29d0ff636c27f5a78c7c5c21a6",
+        "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
+        "src/ai_dlc/errors.py": "da439bc429697c26b44716e5b80b6b42cfeec011da9055f238d802937c62661e",
+        "src/ai_dlc/files.py": "cf094c2d7e6dbbe93f253ec4b3c4219902b323e927855541688eaca3f812354b",
+        "src/ai_dlc/harness/__init__.py": "05220170303b2b0bcdf7b559ac88f8a54652eb8e8e7bbf182de8f4e05a998dc7",
+        "src/ai_dlc/harness/agents.py": "72f38f1f69147e4216fe6752636f26e6218c5c6ef85845ffb89828d431effa53",
+        "src/ai_dlc/harness/components.py": "b64cd2ae837f83a37ddd1c74dad25fcd16fe8733715c224c7d64673784ebba11",
+        "src/ai_dlc/harness/design_capture.py": "8b872492b88f4a7728bedf0ae8a1edaad2312a918248bf8f5d051c8bd8b42a58",
+        "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
+        "src/ai_dlc/harness/hook_shim.py": "621dec6fb8e24d199568d85ab36e36ff0931081393bb475f28e4b4f306a3d376",
+        "src/ai_dlc/harness/hooks.py": "d8903d3c59ce52c3b3b26cdd9f322370eb2344404e235b2cecca61f5749b943f",
+        "src/ai_dlc/harness/native_composition.py": "1e4c5729ff31cb91820bd8df3d15b60c1067b4a5f2b89381888211470dc79bc8",
+        "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
+        "src/ai_dlc/harness/user_agents.py": "1150e14440ac1da06a492d5b039bf408408b5b4327d786d5f697949952f694ad",
+        "src/ai_dlc/harness/windows_render.py": "8aa76c8aacc44d28a2117b3339ad7b632b91fdbe0a5557af50228dcd2aa0eeb0",
+        "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
+        "src/ai_dlc/locking.py": "d39ea1ba783e72aae903f9d69c114745ee0b83d02197bbc9572568836e4e7fa3",
+        "src/ai_dlc/mcp_server.py": "849873d559b8b0aa5b7b84c178f3284365777d1208dbc1ad9b8e74cea06458a3",
+        "src/ai_dlc/provider_definitions.py": "32142376b6cc25e0aa8122528bfd7b1eec2299c13622364fb38de29d4555e43a",
+        "src/ai_dlc/providers/__init__.py": "e8be867e91d7217f692b45e3c8cb822020db111ddfdc461e650a5fbe11cafb24",
+        "src/ai_dlc/providers/github_issues.py": "8945d5b0049d7f7940c8c478e13bf576a897295e463a69b3510d6e2982ed1f08",
+        "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
+        "src/ai_dlc/providers/jira_cloud.py": "7764ba85afc99926394aac1a778d3d0bceb223db62abbd5b5fe570d48d06e0f1",
+        "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
+        "src/ai_dlc/providers/plane.py": "eebff96a72615706f56234a3fdbdbec6e5ac49785259bc8e068ff50e89381572",
+        "src/ai_dlc/providers/plane_attempts.py": "da576a7f52dd7860c2340b72c91b39f2c9d84bbb7c983cd8bc2cc1871c56333b",
+        "src/ai_dlc/providers/python_exec.py": "3aaafe9bf74a4a949b59d71ed2079b9c48114462a9c823b3641a1772af5a6ff1",
+        "src/ai_dlc/providers/scm.py": "3213f9c9690d598a9d7024b687044ca3b0844b972909cd96ad14e270081409d9",
+        "src/ai_dlc/providers/teamai.py": "ff7a781abcaeeca1c978f9472502156e31a1fc6d192ac50e1e489d333b77a5e6",
+        "src/ai_dlc/setup/__init__.py": "8eb444a69a67d0c1a59ffc0c80ce59efda159976bea58d40154e97f8bdecf18c",
+        "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
+        "src/ai_dlc/setup/connections.py": "a35e5e45d87fed0d79a6e034283a055ba9426dc2621ef28aaee4d76997ac4773",
+        "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
+        "src/ai_dlc/setup/github_project_setup.py": "55984de17559ba2d56b3b1c7483dabb8a6f05f1e773e8bd9d40437a2d30ee85e",
+        "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
+        "src/ai_dlc/setup/onboarding.py": "a955988850f1dbe1bd50b2e06da61913701b504ed1a11eabe08bed387d0cc552",
+        "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
+        "src/ai_dlc/setup/project.py": "1636ad031d877790d380ce72d99b8753fffc94305ce03150dda6fd05ec51c43d",
+        "src/ai_dlc/setup/provider_onboarding.py": "1041a3ef5127239945d3ae386705acc7814f12a6c05205bc345edf7ab973bbb4",
+        "src/ai_dlc/setup/provision.py": "1e29f9b9927fd187a28a90e962ad966599a64f45e5c22b45b945dee25731d03b",
+        "src/ai_dlc/setup/readiness.py": "f227423524b583e6b9e13a7230272e74e93e8a5b4f4834d2e2bd94ef4f98891b",
+        "src/ai_dlc/setup/rebind.py": "812aa473b3cb92d81eb98c288ab1124f1fe0a62039559ecbd2eeb2349698ef15",
+        "src/ai_dlc/setup/targets.py": "11979b487ab5604eb05f49ab7c7eca1bfda796f25acc1dc489cdc9e7ccc4a9aa",
+        "src/ai_dlc/setup/templates.py": "47d50ea64b08b07dbb8fec7e19c7bc2555ce2b30d99aab3e27d4d152b7f6689e",
+        "src/ai_dlc/setup/tracker_targets.py": "b04533ac254bde0aa7bddf083097d815153998f15b1042645ac4ffc38f848319",
+        "src/ai_dlc/setup/workstation.py": "8ac8f2467ee925392f777e15d921ad79da8a10c94267bbd30f5386455db4e8d2",
+        "src/ai_dlc/toml_edit.py": "696057b2848ca8b57e5189d1c78441fc6c1e06994f480f6f13f8dd31c050515e",
+        "src/ai_dlc/verification/__init__.py": "68283f6ef4428739eef7dcc3d84ca1024dc107e8e5aac22e7b0b53d1c113efc1",
+        "src/ai_dlc/verification/sandbox.py": "c017bd12115b8f144d07eba619f4e15ddbd00db323e4d386f569c4bcb08646e0",
+        "src/ai_dlc/verification/test_proxy.py": "30ec2d29bf722d48f7341977542feef4a0c5ef9f90c90b158e869c5025d1c8d5",
+        "src/ai_dlc/work/__init__.py": "8c756ae41357aa51c2423685fd6a8b4ba0d2bdafcd86417abcc6fe54ccf50f57",
+        "src/ai_dlc/work/journal.py": "91bf194b430c5d0228a5600444a02d79029121a21079ec4c319e96fdaa68543b",
+        "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
+        "src/ai_dlc/work/summary.py": "af386fc470b222d5c7b600ea3169ee7f26be7bdfafdcac8b4098b1fff2f0bd8e",
+        "src/ai_dlc/work/traceability.py": "e9fbca5153cdd710b78872c66651269184ee5f3f1313f313b65df212430e8cc8",
+        "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
+        "src/ai_dlc/work/workflow.py": "d05f5cfe6414176a9baa5b304a570371ca436cadd12648fe8147769ff1f9588b",
+        "tests/test_cli_entrypoint.py": "f8fd60f45e1976016237d8cc2ba47e77d67e8f8d5bfc180a619d9219e05a8cad",
+        "tests/test_consumer_onboarding.py": "3b412d49dce7f0ddf1011f44637ffee4e9de101e4f15b72c7198439884cdf727",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
+        "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
+        "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
+        "tests/test_environment_report_collection.py": "fa8c834f2e80dcba2b7788eb818fd1392977eb75cadd48ceb4ea38eacde2ef81",
+        "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
+        "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
+      },
+      "outcome": "updated",
+      "reason": "The documentation package row names knowledge_publish.py (capture dedupe and the publish guard).",
+      "reviewer": "Claude (agent)",
+      "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        "docs/assets/front/plugin-skills.svg": "f81ed9ca0bc536cf685836ff2a445c644a99a2886bca9c51351e542bb2964529"
+      },
+      "outcome": "updated",
+      "reason": "Regenerated with docs/assets/front/build.py at Claude Code 2.1.302: r7 and twelve skills.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/plugin-skills.svg"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.cast": "138707e72eddf1186f3068a0e082f81cf56d1eeae4ae913f0fa9b838768ae73e"
+      },
+      "outcome": "updated",
+      "reason": "Regenerated: the recorded project init commits the changed project templates, so its commit ids moved.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.cast"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.svg": "9f21d092ecc9d729fc2644aa9e244ef4671b0c19255ccc362e7647955bb7a695"
+      },
+      "outcome": "updated",
+      "reason": "Regenerated with work.cast; only the recorded commit ids changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.svg"
+    },
+    {
+      "bound": {
+        "docs/catalog.toml": "ff44b79c579e94fc555a64c289231fdef7ef489e13cd16413bd0112e63383fba"
+      },
+      "outcome": "updated",
+      "reason": "Enrolls ADR 0003.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/catalog.toml"
+    },
+    {
+      "bound": {
+        "catalog:docs/decisions/0003-second-brain-capture-and-publish.md": "f76050897a18d2b470b259ed99ddbcd412b4fcfddbbdf9a912cee4039c4db84f",
+        "docs/decisions/0003-second-brain-capture-and-publish.md": "bb8282f86a1f0560c56633592efbd9df4de1e0762903ee002aab8667d3ab7e5d"
+      },
+      "outcome": "updated",
+      "reason": "New ADR amending ADR 0001's freeze for the second-brain module, recording Sean's 2026-11-08 approval.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/decisions/0003-second-brain-capture-and-publish.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/design/design-pm.md": "b222f6fc117b69c4a7b9a21ae4ab85d77db23922fc039223f517588cc7ae3c51",
+        "docs/design/design-pm.md": "6e75d724bd48a8b8d02472b7b7ee5a6d6d15e919e53a7c0bbee993331d5b870f"
+      },
+      "outcome": "updated",
+      "reason": "The specification decision now lives in spec-from-prd; needs-spec is removed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/design-pm.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/design/local-and-shared-knowledge.md": "50d00f0074cafc5604eefa084a89fa98a64f68ae533d2d04ee103ca450f9716a",
+        "contracts/knowledge-note.schema.json": "f3cbc791e2caae2223bf223e8b27b5b7ce553405b76f32cf5689fa7fe68bb1a5",
+        "docs/design/local-and-shared-knowledge.md": "53fb6b2372742c6a475c57bdd2ab490364f8dc84832a49bd873a0cc7f43f5a7e",
+        "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
+        "openspec/specs/session-learnings/spec.md": "dcd490cd54f2f6cb3fadaa90afade85d5e1d64b19fbe2accb70bfb06897e97b4",
+        "src/ai_dlc/documentation/knowledge.py": "c02c49bcc24f8e2c418ace24a72db604b1bc9a4f8d1511fa42235aeb9b122bc7",
+        "src/ai_dlc/documentation/knowledge_notes.py": "df022b2e330c5140f6948ec25a33c7888704e8686ea5411c770764a449b3b1b6",
+        "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
+        "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
+        "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
+        "src/ai_dlc/documentation/workspace_diagnostics.py": "8c8dc695fa95e5f9e8fc4017e5fd66efcab4c0cec4d3ae9272d3c5f368f93aef",
+        "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
+        "tests/test_knowledge.py": "38e5cda9c9dc1fe97d12618a0bd9a86b2725cff059d412232152582af1547af1",
+        "tests/test_knowledge_notes.py": "0af8b4f84c5b8d974833eef49d5efd662a9d6d5b22eac6ff6f4a604fd492f6f7",
+        "tests/test_session_learnings.py": "32bb7c3143db24ff96fb43ac5081285e77a93bd8d8d825076f3422cbfe194796",
+        "tests/test_vault_link.py": "fd146d4d15041021ac343257c9d91a8c1950878d275420eda85d13747065e110",
+        "tests/test_vault_mount.py": "f6a5dc947af0d68e4688c37d05294c6b4868aa98ead91d26aa0c8ffec8018424",
+        "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
+      },
+      "outcome": "updated",
+      "reason": "The unbuilt custom-MCP sections are replaced by the second-brain section: capture kinds, vault target, origin/site wall, version guard and the CLI commands.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/local-and-shared-knowledge.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/design/terms.md": "c73d330992c018a1155e4402335d152088f754bacfb4f0ae20dcf8caddbf2c67",
+        "docs/design/terms.md": "4a8204c3994216393d0db2b5f9c42d65a9b9d615c112128884f8c7473df6b230"
+      },
+      "outcome": "updated",
+      "reason": "Workflow plugin term: eleven skills besides the guide.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/terms.md"
+    },
+    {
+      "bound": {
+        ".ai-dlc/agent-ownership.json": "2c193eced262ce82ed624d508de5ca29dec09da87d2eb78551143622803c4a51",
+        "agents/skills.lock.json": "fce6587c26e072bd4d5623cd545558fc41f36e73c5787251373f7c7618692d48",
+        "agents/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
+        "agents/templates/delivery-slice.md": "44d1e55bdd17e5fe0cf4c1d35d99ffad8f6060575ecb97496515b48a0e304429",
+        "catalog:docs/development-workflow.md": "0fba88526a61571ce49e91b2159325061a7c54ba5466e651565eabb2f910e7c6",
+        "docs/development-workflow.md": "e1351af42ccf1cf28e744345171ad9c71b2321936d1edfe73f7e4b4cf508f04c",
+        "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
+        "openspec/specs/portable-development/spec.md": "7710dba93e53f973d947723117687d263b6296ad31e1ed8232da7b2f0e7ff89e",
+        "openspec/specs/spec-delivery-traceability/spec.md": "66641acf9c151792cde1914062630ed50cc4199cdc3bdb4b81382e03716f2ea3",
+        "project-templates/project/AI-DLC.md": "91e7df09e8c8fd8f5bea1d087d11aa7bcc3d7316238c61045e98dc5cfb039c44",
+        "project-templates/project/ai-dlc.toml.jinja": "d965a516a3b62011283b560a732edaacdf9c2a8bf84ff660fd8c65b03f626f54",
+        "project-templates/project/docs/development-workflow.md.jinja": "8cc85f0e3949013f31ffc540edfb53aff445a97061048d537a9a7c5d7785cebd",
+        "project-templates/project/docs/templates/delivery-slice.md": "44d1e55bdd17e5fe0cf4c1d35d99ffad8f6060575ecb97496515b48a0e304429",
+        "project-templates/project/scripts/check_tests.py": "a3dd2021b7911d2ff688142776b7a43af60f76e052d7164086db2434db60102d",
+        "project-templates/project/tests/test_main.py": "4e6ac9def60ea5a6aef9e004c465cc439acac4b33e4f70df332939f0cdfae63d",
+        "src/ai_dlc/cli.py": "7abc11322c238b55103d857c6663084ed8e1a72cd8e94c296bc54ad4dca4bdea",
+        "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
+        "src/ai_dlc/harness/agents.py": "72f38f1f69147e4216fe6752636f26e6218c5c6ef85845ffb89828d431effa53",
+        "src/ai_dlc/harness/hooks.py": "d8903d3c59ce52c3b3b26cdd9f322370eb2344404e235b2cecca61f5749b943f",
+        "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
+        "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
+        "src/ai_dlc/setup/project.py": "1636ad031d877790d380ce72d99b8753fffc94305ce03150dda6fd05ec51c43d",
+        "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
+        "src/ai_dlc/work/workflow.py": "d05f5cfe6414176a9baa5b304a570371ca436cadd12648fe8147769ff1f9588b",
+        "tests/test_agents_phases.py": "e5325bdc3c072a10e27bbf019ce51f586b0b7b9d76aa95ff8652dd09bc3c8570",
+        "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
+        "tests/test_cli.py": "f61c1ce03b1b3d1a6134365277c18655450ba08c06cb1f51ba44010b3e1b7e36",
+        "tests/test_config.py": "788bf2715bfc3fbc3da495b68fa250985f4430d424fa9802340dec16b7a35cdf",
+        "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
+        "tests/test_hooks.py": "e62d1268716dcacf7c04f1b4505e06ea6ac30f7dc6800017e22c83bb5fa7b51e",
+        "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
+        "tests/test_project.py": "2ebeb723433cfb53bf8e20b337d5016058e75a181b9ed0035203a14759a162ba",
+        "tests/test_rendering.py": "46e3927140876b6ccbecd7230fedf68d2806da7828fee7293bf61df76c36ce69",
+        "tests/test_team_sources.py": "3ab4eaa043c888b35eae7f92c8e8b20d20986d42d0ec8cdc936be472e48040e3",
+        "tests/test_templates.py": "669d1d85586dea32ec5118361dc96f862a77b528be38d83611a89fc2ff9427af",
+        "tests/test_workflow.py": "c60af46adb6cceb3160b1c34945d3b579e4ce42be7e24cad65fa24bd215d80a1"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Describes the lifecycle without naming the removed skills; nothing changes.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/development-workflow.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/index.md": "65c0b0508964e9cb9cc7d68cef118ffcaf83bd6b4524054d54306e09f8a57810",
+        "docs/index.md": "2e000060c08bf7e9fecb0897b368d6738bade2fd830584e0cd31f4e978203adf"
+      },
+      "outcome": "updated",
+      "reason": "The scope question links ADR 0003.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/index.md"
+    },
+    {
+      "bound": {
+        ".github/workflows/release.yml": "f960af13f3657dca437561a8acd2555ec2b2d648c04202964ef349b0952bf590",
+        ".github/workflows/verify.yml": "bfdd737db0e582ac9e994acbd29d0c18f414c7492f64701448fbf8b4231c5f9c",
+        "catalog:docs/release-verification.md": "972bf86b6da5f20b3d01762982880533ba0c99b22933aa95273590923721dad0",
+        "docs/release-verification.md": "a18e7b0bef6dc55ebc544ac304a01c8ca7d59c9dde46127f2acc44802e8b9751",
+        "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
+        "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
+        "src/ai_dlc/cli.py": "7abc11322c238b55103d857c6663084ed8e1a72cd8e94c296bc54ad4dca4bdea",
+        "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
+        "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
+        "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
+        "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
+        "src/ai_dlc/setup/onboarding.py": "a955988850f1dbe1bd50b2e06da61913701b504ed1a11eabe08bed387d0cc552",
+        "tests/test_consumer_onboarding.py": "3b412d49dce7f0ddf1011f44637ffee4e9de101e4f15b72c7198439884cdf727",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
+        "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
+        "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
+        "tests/test_environment_report_collection.py": "fa8c834f2e80dcba2b7788eb818fd1392977eb75cadd48ceb4ea38eacde2ef81",
+        "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
+        "tests/test_release_manifest.py": "941b71be0d0c1b6936987ef34c9a3384f1b2c423ba52f973b02f4098fb7aeae8",
+        "tests/test_release_workflow.py": "a50523b5d6dec682188d489780d29a74f2a01c60c310071ce6758898f3d12dc0"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Release gates are unchanged; live Atlassian qualification is listed as not done in the knowledge design page.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/release-verification.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/runbooks/machine-enrollment.md": "5749f500521eba18b71290a6e63d8abcc82967ef13035e34b90406b7c67b26ee",
+        "docs/runbooks/machine-enrollment.md": "ee6473c9b13e2568022beef63021585b561491e92669a6c920013c73f6c01620",
+        "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
+        "openspec/specs/team-sources/spec.md": "3dca430922c9b5d8eb7b678b0cf00da813f9be332e76cf59a448bd718f4d4587",
+        "profiles/example/ai-dlc-profile.toml": "047265f1a87e90b5ecc8e9a652ab3ae37c051ffd7ce9795fbb5b6020fa8e96ab",
+        "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
+        "src/ai_dlc/environment/__init__.py": "52cdf427a47fd83e5a0723e2519ab3d9c66b06522076a0f94502b362819262c2",
+        "src/ai_dlc/environment/bootstrap.py": "7fad9be94cc830cde041e4ad88c4b79b653f8e8d2c558f1d8db33f99a87b088d",
+        "src/ai_dlc/environment/credentials.py": "686921054494f89e6e2127a86887858e8cf9fa0eb5972e88c7200c8bfea6a331",
+        "src/ai_dlc/environment/enrollment.py": "f8e826a9dca7a8e308f9ad52c8f178ad7e6f2c6c536da7459a68c123d51e9c53",
+        "src/ai_dlc/environment/machine.py": "2c3981ab3e8e4e52d2c3f86f02d8714bf92dd3229eaff99c72ac91961fbbd16a",
+        "src/ai_dlc/environment/profile_source.py": "f177cc9336ed7c69e37299bc70107f14a7878ff72abbd1070dc3560340d451cc",
+        "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
+        "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
+        "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
+        "src/ai_dlc/environment/source_content.py": "924cda57f74d9986eeb8c85a5e8f33b6a339fadb8e58c8abcd514b0263f559f9",
+        "src/ai_dlc/environment/source_schema.py": "929944f86aef4a0aa2e257f3fbb4bee26ce07c522ed2eb35c2e1bbba38ec44d0",
+        "src/ai_dlc/environment/team_sources.py": "20d583a9046adfac9f0f5bf6de7aca537654eb29d0ff636c27f5a78c7c5c21a6",
+        "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
+        "src/ai_dlc/harness/agents.py": "72f38f1f69147e4216fe6752636f26e6218c5c6ef85845ffb89828d431effa53",
+        "src/ai_dlc/harness/hooks.py": "d8903d3c59ce52c3b3b26cdd9f322370eb2344404e235b2cecca61f5749b943f",
+        "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
+        "src/ai_dlc/providers/teamai.py": "ff7a781abcaeeca1c978f9472502156e31a1fc6d192ac50e1e489d333b77a5e6",
+        "src/ai_dlc/setup/onboarding.py": "a955988850f1dbe1bd50b2e06da61913701b504ed1a11eabe08bed387d0cc552",
+        "tests/test_agents_phases.py": "e5325bdc3c072a10e27bbf019ce51f586b0b7b9d76aa95ff8652dd09bc3c8570",
+        "tests/test_config.py": "788bf2715bfc3fbc3da495b68fa250985f4430d424fa9802340dec16b7a35cdf",
+        "tests/test_consumer_onboarding.py": "3b412d49dce7f0ddf1011f44637ffee4e9de101e4f15b72c7198439884cdf727",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
+        "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
+        "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
+        "tests/test_environment_report_collection.py": "fa8c834f2e80dcba2b7788eb818fd1392977eb75cadd48ceb4ea38eacde2ef81",
+        "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
+        "tests/test_hooks.py": "e62d1268716dcacf7c04f1b4505e06ea6ac30f7dc6800017e22c83bb5fa7b51e",
+        "tests/test_native_harnesses.py": "132a8efa7755741a0121509a88451f3b71bf9ad117ec55a4335100585245a8d0",
+        "tests/test_rendering.py": "46e3927140876b6ccbecd7230fedf68d2806da7828fee7293bf61df76c36ce69",
+        "tests/test_team_sources.py": "3ab4eaa043c888b35eae7f92c8e8b20d20986d42d0ec8cdc936be472e48040e3"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Enrollment does not select skills or vault targets; unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/runbooks/machine-enrollment.md"
+    },
+    {
+      "bound": {
+        "agents/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
+        "agents/templates/delivery-slice.md": "44d1e55bdd17e5fe0cf4c1d35d99ffad8f6060575ecb97496515b48a0e304429",
+        "catalog:docs/workflows/behavior-check.md": "a9fdd322629b5f68b4fc42285f07bce046e245036378e13c30d6cb54a04a4b54",
+        "docs/workflows/behavior-check.md": "7abeee815d28a98e50fec08c55d31463158b45a60f100af3d66af70fbba7e03a",
+        "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Behavior checks do not use the changed skills; unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/behavior-check.md"
+    },
+    {
+      "bound": {
+        "agents/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
+        "agents/templates/delivery-slice.md": "44d1e55bdd17e5fe0cf4c1d35d99ffad8f6060575ecb97496515b48a0e304429",
+        "catalog:docs/workflows/brownfield.md": "dedbc6f762c6970ac999eb74598adc31dd6dbfe16a6b3ae8842345b9e37838b4",
+        "docs/workflows/brownfield.md": "f44e9557225fdd2650fcba7f3eb6bf6ad837aaab4b2ad7610787776ecddcec35",
+        "openspec/specs/portable-development/spec.md": "7710dba93e53f973d947723117687d263b6296ad31e1ed8232da7b2f0e7ff89e",
+        "project-templates/project/docs/workflows/brownfield.md": "3a582e31ada1400b26d298d3f70ca72a4cb45100db4fd97de6f241845d0c2a8f",
+        "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
+        "tests/test_templates.py": "669d1d85586dea32ec5118361dc96f862a77b528be38d83611a89fc2ff9427af"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Brownfield path refers to discovery and spec-from-prd, which remain; unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/brownfield.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/design-to-implementation.md": "ee408b745f85bdc4229b75b8dfd6c9074257194e2a65933b4ba31f56522f389d",
+        "docs/workflows/design-to-implementation.md": "8336e6c601ac78683a620b01c37cfab7eea78ad6131b2abf2213ccd521d2f924",
+        "openspec/specs/frontend-capability-pack/spec.md": "a8461cc35ff733d3643f9cb8fbeb691f0cae7ea7d54eae59b756883c7e5a78ea",
+        "project-templates/project/ai-dlc.toml.jinja": "d965a516a3b62011283b560a732edaacdf9c2a8bf84ff660fd8c65b03f626f54",
+        "project-templates/project/playwright.config.ts": "d06e3c907f16f5027d6e2f47112b5cca353e68525a528957f6f760eca940fd78",
+        "project-templates/project/tests/e2e/smoke.spec.ts": "8139af70f4b8ba2010efc673d4b0c6fb802ea101d2d70f08ec47b3007db78c35",
+        "src/ai_dlc/harness/design_capture.py": "8b872492b88f4a7728bedf0ae8a1edaad2312a918248bf8f5d051c8bd8b42a58",
+        "tests/test_frontend.py": "4deefd2f60011e34cdf8e79bf2d02726ea9fee99e2af43e8fe75ed51352cb0ef"
+      },
+      "outcome": "updated",
+      "reason": "Behavior requirements go to spec-from-prd instead of the removed needs-spec.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/design-to-implementation.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/get-started.md": "b3cdcadc535e0e825dfe2837433f1b4ef45551430ab207c485ef7dd601bf992e",
+        "docs/assets/front/build.py": "a6ed773f33ca4175aa7b3e85a11571b22901eb791f4628402a9812487843e9d0",
+        "docs/assets/front/demo_provider.py": "a266086be5cd247643a3157617f7f56e57c9200f77f885252ddf31a72d8c4f1d",
+        "docs/workflows/get-started.md": "7052c4b9b7e1bd297f54a9f0ec133e9393f765099a358c4eef2f5f382677ab11",
+        "mkdocs.yml": "1019504be04c7750cbff9e205b90a39f41ab2eadc12637d469058665be4f9125",
+        "scripts/bootstrap.sh": "dff64e5be94a72bcfbb5dec30a34a808fb2e0a1e0b9612146086af183de8acee",
+        "scripts/docs_site_links.py": "e4f61570d3b4272d0e33fb733862105f4854906cba5e4f601c8a3d6dd3a519e8",
+        "tests/test_front_page.py": "4b61f3b76dbe33fd562eea3f9cbdd6aec8d78f3b3e057da2fc4f4e2ea6b56f59"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Setup steps do not name the removed skills; unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/get-started.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/tool-map.md": "d11334cb57c288aab7b01226790b7cc268a28991b3de5f97a98b9818d80be19e",
+        "docs/workflows/tool-map.md": "dfe343269725b67fc691932e2cc675093aec8a3205d987d242d962f218bcbdc6",
+        "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
+        "openspec/specs/spec-delivery-traceability/spec.md": "66641acf9c151792cde1914062630ed50cc4199cdc3bdb4b81382e03716f2ea3",
+        "src/ai_dlc/cli.py": "7abc11322c238b55103d857c6663084ed8e1a72cd8e94c296bc54ad4dca4bdea",
+        "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
+        "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
+        "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
+        "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
+        "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
+        "src/ai_dlc/harness/agents.py": "72f38f1f69147e4216fe6752636f26e6218c5c6ef85845ffb89828d431effa53",
+        "src/ai_dlc/harness/hooks.py": "d8903d3c59ce52c3b3b26cdd9f322370eb2344404e235b2cecca61f5749b943f",
+        "src/ai_dlc/mcp_server.py": "849873d559b8b0aa5b7b84c178f3284365777d1208dbc1ad9b8e74cea06458a3",
+        "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
+        "src/ai_dlc/setup/onboarding.py": "a955988850f1dbe1bd50b2e06da61913701b504ed1a11eabe08bed387d0cc552",
+        "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
+        "src/ai_dlc/work/workflow.py": "d05f5cfe6414176a9baa5b304a570371ca436cadd12648fe8147769ff1f9588b",
+        "tests/test_agents_phases.py": "e5325bdc3c072a10e27bbf019ce51f586b0b7b9d76aa95ff8652dd09bc3c8570",
+        "tests/test_cli.py": "f61c1ce03b1b3d1a6134365277c18655450ba08c06cb1f51ba44010b3e1b7e36",
+        "tests/test_config.py": "788bf2715bfc3fbc3da495b68fa250985f4430d424fa9802340dec16b7a35cdf",
+        "tests/test_consumer_onboarding.py": "3b412d49dce7f0ddf1011f44637ffee4e9de101e4f15b72c7198439884cdf727",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
+        "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
+        "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
+        "tests/test_environment_report_collection.py": "fa8c834f2e80dcba2b7788eb818fd1392977eb75cadd48ceb4ea38eacde2ef81",
+        "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
+        "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
+        "tests/test_hooks.py": "e62d1268716dcacf7c04f1b4505e06ea6ac30f7dc6800017e22c83bb5fa7b51e",
+        "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
+        "tests/test_rendering.py": "46e3927140876b6ccbecd7230fedf68d2806da7828fee7293bf61df76c36ce69",
+        "tests/test_team_sources.py": "3ab4eaa043c888b35eae7f92c8e8b20d20986d42d0ec8cdc936be472e48040e3",
+        "tests/test_workflow.py": "c60af46adb6cceb3160b1c34945d3b579e4ce42be7e24cad65fa24bd215d80a1"
+      },
+      "outcome": "updated",
+      "reason": "Skill map lists daily-note, capture and kb-publish; needs-spec, review-inbox, day-start and day-end rows are gone.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/tool-map.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/work-computer-setup.md": "62d0a76f141100f0e8d2219cf5e7b398c0530796f3a7fa2ae95348450d0bdbb5",
+        "docs/workflows/work-computer-setup.md": "6a6b849511affc491b227896981914c1b8f021c6e3541250c1dad554d75a5444",
+        "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "src/ai_dlc/cli.py": "7abc11322c238b55103d857c6663084ed8e1a72cd8e94c296bc54ad4dca4bdea",
+        "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
+        "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
+        "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
+        "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
+        "src/ai_dlc/setup/onboarding.py": "a955988850f1dbe1bd50b2e06da61913701b504ed1a11eabe08bed387d0cc552",
+        "tests/test_consumer_onboarding.py": "3b412d49dce7f0ddf1011f44637ffee4e9de101e4f15b72c7198439884cdf727",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
+        "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
+        "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
+        "tests/test_environment_report_collection.py": "fa8c834f2e80dcba2b7788eb818fd1392977eb75cadd48ceb4ea38eacde2ef81",
+        "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Work-computer setup does not configure the vault publish target; the knowledge design page documents it. Unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/work-computer-setup.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/workflow-plugin-harness.md": "4384ef72e8938151681c2e34243f41a606aca921220d8bbaed30019c61e27a90",
+        "docs/workflows/workflow-plugin-harness.md": "b1ac284f80ac05a935ef2223610609a186e219a6c8bf509de24fabd906dd4258",
+        "plugins/ai-dlc-workflow/README.md": "1c90defa77384652be8af275592048ff89a31d6e63ce58b1fd7dfde6d2b06b88",
+        "scripts/publish_workflow_plugin.py": "96d95c413671a55a0e42d690f1c6d64528c11203e0a44359e3422d082ca34b9d"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Pinning procedure is unchanged; harnesses republish r7 through the existing publisher.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/workflow-plugin-harness.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/workflow-plugin.md": "9e03b3ce099c0f527c8f02590717bb6021621b582d36ef7c3591815025088794",
+        "docs/workflows/workflow-plugin.md": "824e0d601adaa7804ce31820fdb7840adcbd492f96661084c2e9e19ab33a3678",
+        "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "6cfd743841b0c8862c751502ab494f0867a3a418ac878ea8cab389d8b03bc499",
+        "plugins/ai-dlc-workflow/README.md": "1c90defa77384652be8af275592048ff89a31d6e63ce58b1fd7dfde6d2b06b88",
+        "plugins/ai-dlc-workflow/hooks/aidlc_hook.py": "621dec6fb8e24d199568d85ab36e36ff0931081393bb475f28e4b4f306a3d376",
+        "plugins/ai-dlc-workflow/hooks/hooks.json": "ccba13e96d1b53ea5926fb9af2a3dd6c02817c182acbd8d002a54a1ba665cdad",
+        "plugins/ai-dlc-workflow/native/codex/.codex-plugin/plugin.json": "ccc9052ac9ab5c2a47b79443edb122016b9f637080e636c57c3b62b243789ad9",
+        "plugins/ai-dlc-workflow/native/codex/AGENTS.fragment.md": "abaabe2b4b31574d3d38c0b1f9fca4db358a3d038b798d820f5eaf571af3724e",
+        "plugins/ai-dlc-workflow/native/codex/hooks.json": "4d2c2097f9c3004dca11d040acf3353eb6af9d0b96a63910f508a36a8d284f63",
+        "plugins/ai-dlc-workflow/native/codex/hooks/aidlc_hook.py": "621dec6fb8e24d199568d85ab36e36ff0931081393bb475f28e4b4f306a3d376",
+        "plugins/ai-dlc-workflow/native/codex/skills/ai-dlc-workflow/SKILL.md": "fc81cb2b4f4fdf3f5b4ad107e19cdd0fee08a78b622f60c7664a5ee6484d542e",
+        "plugins/ai-dlc-workflow/native/codex/skills/capture/SKILL.md": "c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
+        "plugins/ai-dlc-workflow/native/codex/skills/daily-note/SKILL.md": "c7fe91f4efa30e6e2080919d8379cc5407582130fe1cc5068f10e79e4258d8c4",
+        "plugins/ai-dlc-workflow/native/codex/skills/design-brief/SKILL.md": "e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5",
+        "plugins/ai-dlc-workflow/native/codex/skills/design-evaluate/SKILL.md": "d6892ed5e426f8bbf0df4bba1bff09bbc602e2136d21a9369957eb47dbdaa26a",
+        "plugins/ai-dlc-workflow/native/codex/skills/discovery/SKILL.md": "7460a3fa47474f28f2224eaea675438ba7cef08463d53bcf55d1a911e59ee2a2",
+        "plugins/ai-dlc-workflow/native/codex/skills/document-organize/SKILL.md": "85353fd4bf2dc1f2ba4f3f7b6896093f38cc4b09d8ed2dacf950b10e568c7ead",
+        "plugins/ai-dlc-workflow/native/codex/skills/document-review/SKILL.md": "5e2f71219b98cd53dd6a3a73b3bbccc1873b796a14ec1347875a39c911db9ad3",
+        "plugins/ai-dlc-workflow/native/codex/skills/handoff/SKILL.md": "47813221a030ff1d19642b9e6ebf234ded18fd128fef857badd4b77612529ecd",
+        "plugins/ai-dlc-workflow/native/codex/skills/kb-publish/SKILL.md": "1a4d85383b6a5258a4e617e2f2d6ad5fcd907dd861aa50eb33d833d5f9624c2b",
+        "plugins/ai-dlc-workflow/native/codex/skills/needs-spec/SKILL.md": "missing",
+        "plugins/ai-dlc-workflow/native/codex/skills/prd-draft/SKILL.md": "046b82e994b36b2202f7772aafc93557b903d2b541e69a62414d9b5a0b5d75fc",
+        "plugins/ai-dlc-workflow/native/codex/skills/review-inbox/SKILL.md": "missing",
+        "plugins/ai-dlc-workflow/native/codex/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
+        "plugins/ai-dlc-workflow/plugin.lock.json": "788c90817e9b3fb875049d268cb8be7b45135a529ef573ebc6180e4a520c5af7",
+        "plugins/ai-dlc-workflow/skills/ai-dlc-workflow/SKILL.md": "fc81cb2b4f4fdf3f5b4ad107e19cdd0fee08a78b622f60c7664a5ee6484d542e",
+        "plugins/ai-dlc-workflow/skills/capture/SKILL.md": "c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
+        "plugins/ai-dlc-workflow/skills/daily-note/SKILL.md": "c7fe91f4efa30e6e2080919d8379cc5407582130fe1cc5068f10e79e4258d8c4",
+        "plugins/ai-dlc-workflow/skills/design-brief/SKILL.md": "e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5",
+        "plugins/ai-dlc-workflow/skills/design-evaluate/SKILL.md": "d6892ed5e426f8bbf0df4bba1bff09bbc602e2136d21a9369957eb47dbdaa26a",
+        "plugins/ai-dlc-workflow/skills/discovery/SKILL.md": "7460a3fa47474f28f2224eaea675438ba7cef08463d53bcf55d1a911e59ee2a2",
+        "plugins/ai-dlc-workflow/skills/document-organize/SKILL.md": "85353fd4bf2dc1f2ba4f3f7b6896093f38cc4b09d8ed2dacf950b10e568c7ead",
+        "plugins/ai-dlc-workflow/skills/document-review/SKILL.md": "5e2f71219b98cd53dd6a3a73b3bbccc1873b796a14ec1347875a39c911db9ad3",
+        "plugins/ai-dlc-workflow/skills/handoff/SKILL.md": "47813221a030ff1d19642b9e6ebf234ded18fd128fef857badd4b77612529ecd",
+        "plugins/ai-dlc-workflow/skills/kb-publish/SKILL.md": "1a4d85383b6a5258a4e617e2f2d6ad5fcd907dd861aa50eb33d833d5f9624c2b",
+        "plugins/ai-dlc-workflow/skills/needs-spec/SKILL.md": "missing",
+        "plugins/ai-dlc-workflow/skills/prd-draft/SKILL.md": "046b82e994b36b2202f7772aafc93557b903d2b541e69a62414d9b5a0b5d75fc",
+        "plugins/ai-dlc-workflow/skills/review-inbox/SKILL.md": "missing",
+        "plugins/ai-dlc-workflow/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
+        "scripts/build_workflow_plugin.py": "c5ba7b795eced373d60dee9d6154a7867655ba892be427012f88ceb79138bddb",
+        "scripts/publish_workflow_plugin.py": "96d95c413671a55a0e42d690f1c6d64528c11203e0a44359e3422d082ca34b9d"
+      },
+      "outcome": "updated",
+      "reason": "Skill count is eleven besides the guide.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/workflow-plugin.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/second-brain-capture/design.md": "db606182f3bdb09c66c6a9ae6dcc0d974f315e967f5ee0f3fb1c7b725cbb2fb5"
+      },
+      "outcome": "updated",
+      "reason": "New change design.",
+      "reviewer": "Claude (agent)",
+      "target": "openspec/changes/second-brain-capture/design.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/second-brain-capture/proposal.md": "d6f03796b3e29f30838ad03283fac10496c624bdd7ad5de261827bb557d41834"
+      },
+      "outcome": "updated",
+      "reason": "New change proposal.",
+      "reviewer": "Claude (agent)",
+      "target": "openspec/changes/second-brain-capture/proposal.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/second-brain-capture/specs/knowledge-capture/spec.md": "9b3879490bc3523fdc5b47d83c8d0cf87d3fe75cfe24b534facdd0cad6042485"
+      },
+      "outcome": "updated",
+      "reason": "New knowledge-capture requirements KC-01 to KC-04.",
+      "reviewer": "Claude (agent)",
+      "target": "openspec/changes/second-brain-capture/specs/knowledge-capture/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/second-brain-capture/specs/workflow-plugin/spec.md": "382ca5c28644f12b2b167f07acea1aebc4533f043545c246dc34252a0918a80e"
+      },
+      "outcome": "updated",
+      "reason": "WP-02 includes the second-brain skills instead of excluding personal ones.",
+      "reviewer": "Claude (agent)",
+      "target": "openspec/changes/second-brain-capture/specs/workflow-plugin/spec.md"
+    },
+    {
+      "bound": {
+        "openspec/changes/second-brain-capture/tasks.md": "7c2bb95f1adc9dd7644b9e3f62cd34172bef6c90961c44974ca60ce91434c889"
+      },
+      "outcome": "updated",
+      "reason": "Tasks; the two-week use and live qualification stay open for Sean.",
+      "reviewer": "Claude (agent)",
+      "target": "openspec/changes/second-brain-capture/tasks.md"
+    },
+    {
+      "bound": {
+        "playbook/README.md": "9b1e5f57c17159799d1cc216f9c9192c35eec395216ba638f419c0230d0f6b36"
+      },
+      "outcome": "updated",
+      "reason": "The plugin packages every skill now.",
+      "reviewer": "Claude (agent)",
+      "target": "playbook/README.md"
+    },
+    {
+      "bound": {
+        "project-templates/project/docs/examples/product-shaping/brownfield.md": "6f635cccdf01fd69bd55e30371392599622a9953e375eb86a5351d716fb94149"
+      },
+      "outcome": "updated",
+      "reason": "Template copy follows the agents/examples change.",
+      "reviewer": "Claude (agent)",
+      "target": "project-templates/project/docs/examples/product-shaping/brownfield.md"
+    },
+    {
+      "bound": {
+        "project-templates/project/docs/examples/product-shaping/greenfield.md": "467816899b6478c2820dd4f3258c062c1b4dfb062a747e9e56907485b617dc26"
+      },
+      "outcome": "updated",
+      "reason": "Template copy follows the agents/examples change.",
+      "reviewer": "Claude (agent)",
+      "target": "project-templates/project/docs/examples/product-shaping/greenfield.md"
+    },
+    {
+      "bound": {
+        "project-templates/project/docs/templates/design-brief.md": "89bb52d14727734908421bd0f449279afe80cd51a11f7ee381d8996cb4eab216"
+      },
+      "outcome": "updated",
+      "reason": "Template copy follows the agents/templates change.",
+      "reviewer": "Claude (agent)",
+      "target": "project-templates/project/docs/templates/design-brief.md"
+    },
+    {
+      "bound": {
+        "project-templates/project/docs/templates/prd.md": "4ccdc6cd7a5547e50dd59663b22135467d7736d48e3015fcc5ac2abb6136efc9"
+      },
+      "outcome": "updated",
+      "reason": "Template copy follows the agents/templates change.",
+      "reviewer": "Claude (agent)",
+      "target": "project-templates/project/docs/templates/prd.md"
+    },
+    {
+      "bound": {
+        "project-templates/project/docs/templates/product-brief.md": "5e5e13df1edfcb8908441b61f1a2ae1a109186e1b5bcee24fcc43530ba86bb50"
+      },
+      "outcome": "updated",
+      "reason": "Template copy follows the agents/templates change.",
+      "reviewer": "Claude (agent)",
+      "target": "project-templates/project/docs/templates/product-brief.md"
+    },
+    {
+      "bound": {
+        "project-templates/project/docs/workflows/design-to-implementation.md": "956be27b7f87b62108b75be538214ce259fcd2d48b472783b7314cafe74b3442"
+      },
+      "outcome": "updated",
+      "reason": "Points to spec-from-prd instead of needs-spec.",
+      "reviewer": "Claude (agent)",
+      "target": "project-templates/project/docs/workflows/design-to-implementation.md"
+    },
+    {
+      "bound": {
+        "project-templates/project/docs/workflows/tool-map.md": "0de05733f84bd543a8cb0edbe628ec18a6fa4d5b872e739660c3313d3015e725"
+      },
+      "outcome": "updated",
+      "reason": "Skill stages list daily-note, capture and kb-publish.",
+      "reviewer": "Claude (agent)",
+      "target": "project-templates/project/docs/workflows/tool-map.md"
+    },
+    {
+      "bound": {
+        "tests/editorial_baseline.json": "2408d72e643f7ffa65f71256eb7173393a215ef198f806c78f31af8efc19b15a"
+      },
+      "outcome": "updated",
+      "reason": "Lowered: the knowledge design page, tool map and architecture map got shorter.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/editorial_baseline.json"
+    },
+    {
+      "bound": {
+        "tests/test_knowledge_publish.py": "17d4a0dba0f2aae86bd369b26cd6107c162fba0e2ea3b69e8b35da529a1ccc58"
+      },
+      "outcome": "updated",
+      "reason": "New tests: schema, dedupe, wall, version guard, contract.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/test_knowledge_publish.py"
+    },
+    {
+      "bound": {
+        "tests/test_publish_workflow_plugin.py": "70f62404f24bf72c1cf43341407949f630d5a4923b074e3394471ac1eb3923eb"
+      },
+      "outcome": "updated",
+      "reason": "Uses kb-publish as the shipped skill fixture.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/test_publish_workflow_plugin.py"
+    },
+    {
+      "bound": {
+        "tests/test_workflow_plugin.py": "731c76328922609fa8b89e9edab69ae94f44c191731a578069ffdd0026a2bbb9"
+      },
+      "outcome": "updated",
+      "reason": "Plugin ships eleven team skills including the second-brain ones; removed skills absent.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/test_workflow_plugin.py"
+    }
+  ],
+  "schema": 2
+}

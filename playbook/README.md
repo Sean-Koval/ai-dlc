@@ -12,4 +12,4 @@ Daily practice: review priorities and current evidence; discover unclear problem
 
 Agent skills supply judgment patterns. Provider instructions supply vendor operations. Services own validation, receipts, idempotency and external state reconciliation. No skill bypasses completion gates or extends the user’s authorization.
 
-The skills under `agents/skills` (listed in `agents/skills.lock.json`) are draft release assets; the optional workflow plugin (`plugins/ai-dlc-workflow/`) packages all but the personal `day-start` and `day-end`, with a guide skill and CLI-optional hooks. Static packaging validation is not behavioral evaluation.
+The skills under `agents/skills` (listed in `agents/skills.lock.json`) are draft release assets; the optional workflow plugin (`plugins/ai-dlc-workflow/`) packages all of them, with a guide skill and CLI-optional hooks. Static packaging validation is not behavioral evaluation.

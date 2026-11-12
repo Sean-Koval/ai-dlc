@@ -53,7 +53,7 @@ reuse them. Business baselines, user preference and live results require evidenc
 ## Next slice
 
 State the smallest action, its evidence goal, dependencies, and exit condition.
-If proceeding, use needs-spec and the configured specification provider before
+If proceeding, use spec-from-prd and the configured specification provider before
 implementation where required. A small change may use this brief alone; expand
 with a PRD only when useful. Publication requires separate user authorization.
 

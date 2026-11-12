@@ -240,7 +240,7 @@ Retain `docs/design/<work-id>/brief.md`, `rubric.md`,
 sections in a concise record. Stop on the declared budget/plateau/decision boundary
 without inferring success or more authorized rounds. Select an earlier revision
 when its matching evidence qualifies. Hand the selected design, remaining findings
-and behavior requirements to needs-spec and the existing delivery workflow.
+and behavior requirements to spec-from-prd and the existing delivery workflow.
 
 The [calibration protocol](https://github.com/Sean-Koval/ai-dlc/blob/main/agents/examples/design-evaluation/calibration.md)
 requires a separately approved experiment and human participation. It remains

@@ -38,7 +38,8 @@ packaged assets.
 ai-dlc is feature-frozen as of 2026-10. New features, documentation growth and new
 OpenSpec capabilities outside the in-scope list in
 [ADR 0001](docs/decisions/0001-refocus-ai-dlc.md), as amended by
-[ADR 0002](docs/decisions/0002-jira-work-tracker-and-trace-correlation.md), stop; changes outside that list
+[ADR 0002](docs/decisions/0002-jira-work-tracker-and-trace-correlation.md) and
+[ADR 0003](docs/decisions/0003-second-brain-capture-and-publish.md) (the second-brain module), stop; changes outside that list
 are closed with a pointer to it, and bug fixes in frozen areas are welcome. Harness
 evaluation belongs to flightdeck and sandbox runtime rendering to hangar. Check the
 list before starting work, and do not grow moved or cut areas.
@@ -57,7 +58,7 @@ list before starting work, and do not grow moved or cut areas.
   tool instructions are not current guidance. Never manufacture review freshness.
 - Growth is frozen (ADR 0001): open new OpenSpec changes only for in-scope areas
   (work lifecycle, enrollment and provisioning, managed sections, the workflow
-  plugin). Update canonical documents instead of adding new ones, and do not add to
+  plugin, the second-brain module of ADR 0003). Update canonical documents instead of adding new ones, and do not add to
   `docs/archive/`; older material lives in git history.
 - Keep disposable execution logs in ignored `.ai-dlc/local/`; do not create root
   planning files, `.superpowers/`, or tool-specific planning hierarchies.

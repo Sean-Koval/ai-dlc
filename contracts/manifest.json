@@ -47,7 +47,8 @@
               "ci",
               "deployment",
               "append",
-              "pull_request_create"
+              "pull_request_create",
+              "publish"
             ],
             "title": "Operation",
             "type": "string"
@@ -125,7 +126,8 @@
               "ci",
               "deployment",
               "append",
-              "pull_request_create"
+              "pull_request_create",
+              "publish"
             ],
             "title": "Operation",
             "type": "string"
@@ -245,7 +247,8 @@
               "ci",
               "deployment",
               "append",
-              "pull_request_create"
+              "pull_request_create",
+              "publish"
             ],
             "title": "Operation",
             "type": "string"
@@ -366,7 +369,8 @@
               "ci",
               "deployment",
               "append",
-              "pull_request_create"
+              "pull_request_create",
+              "publish"
             ],
             "title": "Operation",
             "type": "string"
@@ -478,7 +482,8 @@
               "ci",
               "deployment",
               "append",
-              "pull_request_create"
+              "pull_request_create",
+              "publish"
             ],
             "title": "Operation",
             "type": "string"
@@ -581,7 +586,8 @@
               "ci",
               "deployment",
               "append",
-              "pull_request_create"
+              "pull_request_create",
+              "publish"
             ],
             "title": "Operation",
             "type": "string"
@@ -685,7 +691,8 @@
               "ci",
               "deployment",
               "append",
-              "pull_request_create"
+              "pull_request_create",
+              "publish"
             ],
             "title": "Operation",
             "type": "string"
@@ -815,7 +822,8 @@
               "ci",
               "deployment",
               "append",
-              "pull_request_create"
+              "pull_request_create",
+              "publish"
             ],
             "title": "Operation",
             "type": "string"
@@ -915,7 +923,8 @@
               "ci",
               "deployment",
               "append",
-              "pull_request_create"
+              "pull_request_create",
+              "publish"
             ],
             "title": "Operation",
             "type": "string"
@@ -1013,7 +1022,8 @@
               "ci",
               "deployment",
               "append",
-              "pull_request_create"
+              "pull_request_create",
+              "publish"
             ],
             "title": "Operation",
             "type": "string"
@@ -1079,6 +1089,168 @@
         "type": "object"
       }
     },
+    "publish": {
+      "payload": {
+        "additionalProperties": false,
+        "description": "One reviewed note to one page (ADR 0003): create without ``page_id``, else update.\n\n``expected_version`` is the version the note recorded; a provider refuses when the\npage's current version differs instead of overwriting a teammate's edit.",
+        "properties": {
+          "body": {
+            "minLength": 1,
+            "title": "Body",
+            "type": "string"
+          },
+          "expected_version": {
+            "anyOf": [
+              {
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Expected Version"
+          },
+          "operation_id": {
+            "minLength": 1,
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "page_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Page Id"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Parent"
+          },
+          "site": {
+            "minLength": 1,
+            "title": "Site",
+            "type": "string"
+          },
+          "space": {
+            "minLength": 1,
+            "title": "Space",
+            "type": "string"
+          },
+          "title": {
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "site",
+          "space",
+          "title",
+          "body",
+          "operation_id"
+        ],
+        "title": "Publish",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "capabilities",
+              "prepare",
+              "reconcile_closed",
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append",
+              "pull_request_create",
+              "publish"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "additionalProperties": true,
+        "properties": {
+          "page_id": {
+            "minLength": 1,
+            "title": "Page Id",
+            "type": "string"
+          },
+          "url": {
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          },
+          "version": {
+            "minimum": 1,
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "page_id",
+          "version",
+          "url"
+        ],
+        "title": "PublishResult",
+        "type": "object"
+      }
+    },
     "pull_request_create": {
       "payload": {
         "additionalProperties": false,
@@ -1130,7 +1302,8 @@
               "ci",
               "deployment",
               "append",
-              "pull_request_create"
+              "pull_request_create",
+              "publish"
             ],
             "title": "Operation",
             "type": "string"
@@ -1223,7 +1396,8 @@
               "ci",
               "deployment",
               "append",
-              "pull_request_create"
+              "pull_request_create",
+              "publish"
             ],
             "title": "Operation",
             "type": "string"
@@ -1329,7 +1503,8 @@
               "ci",
               "deployment",
               "append",
-              "pull_request_create"
+              "pull_request_create",
+              "publish"
             ],
             "title": "Operation",
             "type": "string"
@@ -1442,7 +1617,8 @@
               "ci",
               "deployment",
               "append",
-              "pull_request_create"
+              "pull_request_create",
+              "publish"
             ],
             "title": "Operation",
             "type": "string"
@@ -1520,7 +1696,9 @@
       "mandatory": [
         "append"
       ],
-      "optional": []
+      "optional": [
+        "publish"
+      ]
     },
     "scm": {
       "mandatory": [

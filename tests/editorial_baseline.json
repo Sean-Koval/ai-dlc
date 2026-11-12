@@ -2,7 +2,7 @@
   "docs/architecture.md": {
     "long_paragraphs": 6,
     "long_sentences": 2,
-    "words": 1955
+    "words": 1954
   },
   "docs/archive/README.md": {
     "long_sentences": 1
@@ -80,8 +80,8 @@
     "words": 1365
   },
   "docs/design/local-and-shared-knowledge.md": {
-    "long_paragraphs": 4,
-    "words": 1515
+    "long_paragraphs": 3,
+    "words": 1328
   },
   "docs/design/native-tool-composition.md": {
     "long_paragraphs": 2
@@ -304,7 +304,7 @@
     "words": 747
   },
   "docs/workflows/tool-map.md": {
-    "words": 1922
+    "words": 1912
   },
   "docs/workflows/work-computer-setup.md": {
     "long_paragraphs": 4,

@@ -42,7 +42,7 @@ wrote:
 
 The workflow plugin's skills, as Claude Code lists them, and the checks a project requires:
 
-![Claude Code lists the ai-dlc-workflow plugin: eleven skills and three hooks](docs/assets/front/plugin-skills.svg)
+![Claude Code lists the ai-dlc-workflow plugin: twelve skills and three hooks](docs/assets/front/plugin-skills.svg)
 
 <picture>
   <source media="(max-width: 600px)" srcset="docs/assets/front/project-check-phone.svg" width="379" height="435">
@@ -112,7 +112,7 @@ claude --plugin-dir plugins/ai-dlc-workflow --settings '{"enabledPlugins":{"ai-d
 | --- | --- | --- |
 | Machine enrollment | Versioned profiles pin runtimes, tools, agent clients and named credentials; each machine keeps its own paths and accounts | [Machine enrollment](https://sean-koval.github.io/ai-dlc/runbooks/machine-enrollment/) |
 | Project scaffolding | `project init` / `project adopt` for generic, Python, Node or Rust repositories, with setup steps and required checks | [Get started](https://sean-koval.github.io/ai-dlc/workflows/get-started/) |
-| Workflow plugin | Guidance, eleven skills and CLI-optional safety hooks for Claude Code, with a Codex form; off by default | [Workflow plugin](https://sean-koval.github.io/ai-dlc/workflows/workflow-plugin/) |
+| Workflow plugin | Guidance, twelve skills and CLI-optional safety hooks for Claude Code, with a Codex form; off by default | [Workflow plugin](https://sean-koval.github.io/ai-dlc/workflows/workflow-plugin/) |
 | Work lifecycle | Reviewed work records bind an issue, branch, specification and PR; `work finish` gates on the merge and its CI receipt | [Development workflow](https://sean-koval.github.io/ai-dlc/development-workflow/) |
 | Receipts | `project check --required` runs the team's checks and writes a receipt bound to the commit | [Release verification](https://sean-koval.github.io/ai-dlc/release-verification/) |
 | Documentation upkeep | Catalog, impact review, dispositions and a docs gate; decision records with knowledge-note frontmatter | [Project documentation](https://sean-koval.github.io/ai-dlc/design/project-documentation/) |

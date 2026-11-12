@@ -89,7 +89,7 @@ proves useful.
 5. **Iterate:** address prioritized findings, retest affected behavior, and retain
    the previous candidate so selection can favor an earlier revision.
 6. **Select and hand off:** record the chosen candidate, residual findings, and
-   human decisions; use `needs-spec` and OpenSpec for implementation behavior.
+   human decisions; use `spec-from-prd` and OpenSpec for implementation behavior.
 
 Design iteration can overlap implementation. The selected artifact and evaluation
 contract travel with the work; they do not replace regression tests or repository

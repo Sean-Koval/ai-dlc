@@ -11,8 +11,8 @@ from fixtures.bundles import skill_document, write_vendored_bundle
     "guidance",
     [
         ".ai-dlc/providers/openspec.md",
-        ".agents/skills/day-start/SKILL.md",
-        ".claude/skills/day-start/SKILL.md",
+        ".agents/skills/daily-note/SKILL.md",
+        ".claude/skills/daily-note/SKILL.md",
     ],
 )
 def test_provider_switch_refuses_to_delete_still_referenced_owned_guidance(
@@ -318,27 +318,27 @@ def test_skills_selection_partial_ownership_and_removal(tmp_path):
     from ai_dlc.harness.agents import render_agents
 
     config = tmp_path / "ai-dlc.toml"
-    config.write_text('schema=4\n[agents]\nskills=["day-start"]\n')
+    config.write_text('schema=4\n[agents]\nskills=["daily-note"]\n')
     render_agents(tmp_path, apply=True)
     for directory in [".agents", ".claude"]:
-        assert (tmp_path / directory / "skills/day-start/SKILL.md").read_bytes() == (
-            assets("agents") / "skills/day-start/SKILL.md"
+        assert (tmp_path / directory / "skills/daily-note/SKILL.md").read_bytes() == (
+            assets("agents") / "skills/daily-note/SKILL.md"
         ).read_bytes()
     config.write_text("schema=4\n[agents]\nskills=[]\n")
     render_agents(tmp_path, apply=True, client="codex")
-    assert not (tmp_path / ".agents/skills/day-start/SKILL.md").exists()
-    assert (tmp_path / ".claude/skills/day-start/SKILL.md").exists()
+    assert not (tmp_path / ".agents/skills/daily-note/SKILL.md").exists()
+    assert (tmp_path / ".claude/skills/daily-note/SKILL.md").exists()
     manifest = json.loads((tmp_path / ".ai-dlc/agent-ownership.json").read_text())
-    assert ".claude/skills/day-start/SKILL.md" in manifest["files"]
+    assert ".claude/skills/daily-note/SKILL.md" in manifest["files"]
     render_agents(tmp_path, apply=True, client="claude-code")
-    assert not (tmp_path / ".claude/skills/day-start/SKILL.md").exists()
+    assert not (tmp_path / ".claude/skills/daily-note/SKILL.md").exists()
 
 
 def test_skill_conflict_has_no_partial_writes(tmp_path):
     from ai_dlc.harness.agents import render_agents
 
     (tmp_path / "ai-dlc.toml").write_text("schema=4\n")
-    skill = tmp_path / ".agents/skills/day-start/SKILL.md"
+    skill = tmp_path / ".agents/skills/daily-note/SKILL.md"
     skill.parent.mkdir(parents=True)
     skill.write_text("authored")
     with pytest.raises(ValueError, match="conflict"):
@@ -452,7 +452,7 @@ def test_digest_mismatch_prevents_all_writes(tmp_path, monkeypatch):
 
     package = tmp_path / "package"
     shutil.copytree(assets("agents"), package)
-    (package / "skills/day-start/SKILL.md").write_text("tampered")
+    (package / "skills/daily-note/SKILL.md").write_text("tampered")
     monkeypatch.setattr(
         agents, "assets", lambda name: package if name == "agents" else assets(name)
     )
@@ -479,23 +479,23 @@ def test_unchanged_owned_skill_updates_and_edited_removal_conflicts(tmp_path, mo
     project = tmp_path / "project"
     project.mkdir()
     config = project / "ai-dlc.toml"
-    config.write_text('schema=4\n[agents]\nskills=["day-start"]\n')
+    config.write_text('schema=4\n[agents]\nskills=["daily-note"]\n')
     agents.render_agents(project, apply=True)
-    source = package / "skills/day-start/SKILL.md"
+    source = package / "skills/daily-note/SKILL.md"
     source.write_text(source.read_text() + "\nNew package guidance\n")
     lock_path = package / "skills.lock.json"
     lock = json.loads(lock_path.read_text())
-    lock["skills"]["day-start"]["sha256"] = hashlib.sha256(source.read_bytes()).hexdigest()
+    lock["skills"]["daily-note"]["sha256"] = hashlib.sha256(source.read_bytes()).hexdigest()
     lock_path.write_text(json.dumps(lock))
     agents.render_agents(project, apply=True)
-    destination = project / ".agents/skills/day-start/SKILL.md"
+    destination = project / ".agents/skills/daily-note/SKILL.md"
     assert destination.read_bytes() == source.read_bytes()
     destination.write_text("user edit")
     config.write_text("schema=4\n[agents]\nskills=[]\n")
     with pytest.raises(ValueError, match="conflict"):
         agents.render_agents(project, apply=True)
     assert destination.read_text() == "user edit"
-    assert (project / ".claude/skills/day-start/SKILL.md").exists()
+    assert (project / ".claude/skills/daily-note/SKILL.md").exists()
 
 
 def test_codex_partial_keeps_claude_mcp_ownership_for_later_removal(tmp_path):
@@ -673,7 +673,7 @@ def test_product_shaping_guidance_is_available_to_selected_harness(
 
     adopt(tmp_path, apply=True, providers={"tracker": tracker})
     render_agents(tmp_path, apply=True, client=client)
-    for name in ["discovery", "prd-draft", "review-inbox"]:
+    for name in ["discovery", "prd-draft", "capture"]:
         body = (tmp_path / directory / "skills" / name / "SKILL.md").read_text()
         assert body == (assets("agents") / "skills" / name / "SKILL.md").read_text()
     discovery = (tmp_path / directory / "skills/discovery/SKILL.md").read_text()
@@ -785,7 +785,7 @@ def test_bundle_collisions_block_the_whole_render_without_writes(tmp_path, colli
         write_vendored_bundle(
             tmp_path,
             "one",
-            skills={"day-start": ("skills/day/SKILL.md", skill_document("day-start"))},
+            skills={"daily-note": ("skills/day/SKILL.md", skill_document("daily-note"))},
         )
         authored = None
         bundles = ["one"]
