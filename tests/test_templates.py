@@ -930,6 +930,7 @@ def test_portable_examples_are_the_only_profiles_in_built_distributions(
 
 def test_initialized_python_check_does_not_dirty_repository(tmp_path):
     from ai_dlc.setup.project import check_project, setup_project
+
     if not shutil.which("uv"):
         pytest.skip("uv unavailable: the Python template's setup and check run uv")
 
@@ -1125,6 +1126,7 @@ def _run_starter_tests(root: Path) -> subprocess.CompletedProcess:
 
 def test_initialized_python_application_check_runs_offline_without_dirtying_git(tmp_path):
     from ai_dlc.files import run_git
+
     if not shutil.which("uv"):
         pytest.skip("uv unavailable: the Python template's setup and check run uv")
 
