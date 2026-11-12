@@ -36,6 +36,9 @@ EXPECTED = {
     "duplicate-id": ("b.md", "/aliases/0", "LES-0001 is already the id or alias of a.md"),
     "pin-mismatch": ("knowledge.toml", "/format/version", "2 is not supported"),
     "pin-missing": ("knowledge.toml", "/format/version", "no knowledge.toml found"),
+    "derived-from-payload": ("a.md", "/links/0/target", "inbox/2026-11-10-call.vtt is not"),
+    "derived-from-decision": ("a.md", "/links/0/target", "is a decision; it must be a source"),
+    "roots-missing": ("knowledge.toml", "/check/roots/0", "record directory team not found"),
 }
 
 
@@ -121,12 +124,9 @@ def test_external_link_targets_and_markdown_links_are_not_resolved(tmp_path):
         "\n  - {type: implements, target: KAN-423}"
         "\n  - {type: codified_as, target: docs/runbook.md}"
         "\n  - {type: belongs_to, target: project-alpha}"
-        "\n  - {type: derived_from, target: https://example.invalid/x}"
     )
     (tmp_path / "knowledge.toml").write_text(PIN)
-    (tmp_path / "a.md").write_text(
-        record(links=links, extra="source_hash: sha256:1\n", body="[gone](missing.md)")
-    )
+    (tmp_path / "a.md").write_text(record(links=links, body="[gone](missing.md)"))
     assert check_records(tmp_path)["failures"] == []
     (tmp_path / "b.md").write_text(record("b", links="\n  - {type: belongs_to, target: LES-0009}"))
     assert [item["path"] for item in check_records(tmp_path)["failures"]] == ["b.md"]
@@ -140,6 +140,33 @@ def test_config_option_and_root_index(tmp_path):
     assert [(item["path"], item["pointer"]) for item in result["failures"]] == [
         ("index.md", "/title")
     ]
+
+
+def test_check_roots_limit_what_is_read_and_skip_readme(tmp_path):
+    (tmp_path / "knowledge.toml").write_text(PIN + '\n[check]\nroots = ["team", "projects"]\n')
+    (tmp_path / "README.md").write_text("# Knowledge\n")
+    (tmp_path / "inbox").mkdir()
+    (tmp_path / "inbox/call.md").write_text("raw transcript, no frontmatter\n")
+    (tmp_path / "team").mkdir()
+    (tmp_path / "team/README.md").write_text("# Team records\n")
+    (tmp_path / "team/source.md").write_text((VALID / "sources/SRC-0001.md").read_text())
+    (tmp_path / "projects/alpha").mkdir(parents=True)
+    (tmp_path / "projects/alpha/lesson.md").write_text(
+        record(
+            "alpha-lesson",
+            kind="lesson",
+            status="open",
+            links="\n  - {type: derived_from, target: SRC-0001}",
+            extra="source_hash: sha256:3f1c9a\n",
+        )
+    )
+    result = check_records(tmp_path)
+    assert result["failures"] == [] and result["records"] == 2
+    (tmp_path / "knowledge.toml").write_text(PIN + '\n[check]\nroots = ["../elsewhere"]\n')
+    assert check_records(tmp_path)["failures"][0]["pointer"] == "/check/roots/0"
+    (tmp_path / "knowledge.toml").write_text(PIN + '\n[check]\nroots = "team"\n')
+    found = check_records(tmp_path)["failures"]
+    assert ("knowledge.toml", "/check/roots") in [(i["path"], i["pointer"]) for i in found]
 
 
 # --- CI mode -------------------------------------------------------------------------
@@ -209,6 +236,15 @@ def test_ci_mode_refuses_deleting_and_renamed_edits(repo):
     assert failures(repo) == [("keep.md", "")]
 
 
+def test_ci_mode_refuses_deleting_a_source_record(repo):
+    (repo / "src.md").write_text((VALID / "sources/SRC-0001.md").read_text())
+    git(repo.parent, "add", ".")
+    git(repo.parent, "commit", "-q", "-m", "source")
+    git(repo.parent, "branch", "-f", "main")
+    (repo / "src.md").unlink()
+    assert failures(repo) == [("src.md", "")]
+
+
 def test_ci_mode_needs_a_known_base(repo):
     with pytest.raises(ValueError, match="cannot compare with base"):
         check_records(repo, base="no-such-ref")
@@ -218,7 +254,7 @@ def test_a_thousand_records_check_in_under_five_seconds(tmp_path):
     (tmp_path / "knowledge.toml").write_text(PIN)
     for number in range(1, 1001):
         links = (
-            "[]" if number == 1 else f"\n  - {{type: derived_from, target: LES-{number - 1:04d}}}"
+            "[]" if number == 1 else f"\n  - {{type: codified_as, target: LES-{number - 1:04d}}}"
         )
         extra = "" if number == 1 else f"source_hash: sha256:{number}\n"
         (tmp_path / f"LES-{number:04d}.md").write_text(

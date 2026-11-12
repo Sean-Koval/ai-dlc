@@ -16,8 +16,10 @@ knowledge-note format ([ADR 0004](../docs/decisions/0004-knowledge-system-scope.
 `ai-dlc knowledge check DIR` (MCP `knowledge_check`) validates a records directory:
 each header against the model, Open Knowledge Format v0.2 section 11, the format pin,
 typed links that name records, duplicate sources and supersession (one accepted
-successor, no cycles). `--base REF` also refuses in-place edits to decisions accepted
-at the merge base. Knowledge repositories run it through `.pre-commit-hooks.yaml` and
+successor, no cycles). It reads only `[check] roots` from `knowledge.toml` and never
+`README.md`. `derived_from` must name a source record, since raw payloads expire.
+`--base REF` also refuses in-place edits to decisions accepted at the merge base and
+deletion of source records. Knowledge repositories run it through `.pre-commit-hooks.yaml` and
 the reusable `.github/workflows/knowledge-check.yml`.
 Completion is a service operation: callers must use `WorkService.finish`.
 The public `Registry.invoke` refuses terminal tracker transitions and the optional

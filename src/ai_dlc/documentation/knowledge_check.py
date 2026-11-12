@@ -7,6 +7,10 @@ section 11 checks: every non-reserved ``.md`` file has parseable YAML frontmatte
 non-empty ``type``, and the reserved ``index.md`` and ``log.md`` follow sections 8 and 9.
 OKF tolerates broken markdown links, so only our typed ``links`` must resolve.
 
+Only the directories in ``[check] roots`` of ``knowledge.toml`` are read (all of
+``root`` when unset), and ``README.md`` is never a record. Source records are
+permanent and raw payloads expire, so ``derived_from`` must name a source record.
+
 With ``base`` (CI mode) it also refuses in-place edits of decisions that were accepted
 at the merge base. The CLI and the MCP tool both call :func:`check_records`.
 """
@@ -23,6 +27,8 @@ from ai_dlc.documentation.knowledge_notes import split
 from ai_dlc.files import GitError, run_git
 
 RESERVED = ("index.md", "log.md")
+# Not records and not OKF documents: repository prose that may sit beside the records.
+SKIPPED = ("README.md",)
 LEGACY_KINDS = ("runbook", "note")
 CONFIG = "knowledge.toml"
 NUMBERED = re.compile(r"^(?:DEC|CONV|LES|ACT|Q|SRC)-[0-9]{4,}$")
@@ -61,20 +67,24 @@ def check_records(
     if not folder.is_dir():
         raise ValueError(f"records directory not found: {root}")
     bundle = _Bundle()
-    for path in _markdown(folder):
-        relative = path.relative_to(folder).as_posix()
-        text = path.read_text(encoding="utf-8", errors="replace")
-        if path.name in RESERVED:
-            _check_reserved(bundle, relative, text)
-            continue
-        _check_record(bundle, relative, text)
-    _check_pin(bundle, folder, config)
+    settings = _check_pin(bundle, folder, config)
+    scopes = _roots(bundle, folder, settings)
+    for scope in scopes:
+        for path in _markdown(scope):
+            relative = path.relative_to(folder).as_posix()
+            if path.name in SKIPPED:
+                continue
+            text = path.read_text(encoding="utf-8", errors="replace")
+            if path.name in RESERVED:
+                _check_reserved(bundle, relative, text)
+                continue
+            _check_record(bundle, relative, text)
     index = _index(bundle)
     _check_links(bundle, index)
     _check_supersession(bundle, index)
     _check_duplicate_sources(bundle)
     if base:
-        _check_accepted_unchanged(bundle, folder, base)
+        _check_accepted_unchanged(bundle, folder, scopes, base)
     bundle.failures.sort(key=lambda item: (item["path"], item["pointer"], item["message"]))
     return {
         "status": "invalid" if bundle.failures else "valid",
@@ -198,7 +208,10 @@ def _find_config(folder: Path) -> Path | None:
     return None
 
 
-def _check_pin(bundle: _Bundle, folder: Path, config: Path | str | None) -> None:
+def _check_pin(
+    bundle: _Bundle, folder: Path, config: Path | str | None
+) -> tuple[Path, str, dict] | None:
+    """Check the format pin; return ``(knowledge.toml, shown path, parsed)`` when readable."""
     path = Path(config).expanduser().resolve() if config else _find_config(folder)
     if path is None or not path.is_file():
         bundle.fail(
@@ -207,16 +220,45 @@ def _check_pin(bundle: _Bundle, folder: Path, config: Path | str | None) -> None
             f"no {CONFIG} found; pin the record format: [format] version = "
             f"{records.FORMAT_VERSION}",
         )
-        return
+        return None
     shown = path.relative_to(folder).as_posix() if path.is_relative_to(folder) else str(path)
     try:
         parsed = tomllib.loads(path.read_text(encoding="utf-8"))
     except (tomllib.TOMLDecodeError, UnicodeDecodeError) as exc:
         bundle.fail(shown, "", f"not valid TOML: {exc}")
-        return
+        return None
     for problem in records.pin_errors(parsed):
         location, _, message = problem.partition(": ")
         bundle.fail(shown, _pointer(location), message)
+    return path, shown, parsed
+
+
+def _roots(bundle: _Bundle, folder: Path, settings: tuple[Path, str, dict] | None) -> list[Path]:
+    """The directories read as records: ``[check] roots`` of knowledge.toml, else ``folder``.
+
+    Roots are relative to the directory holding knowledge.toml and must lie inside
+    ``folder``. Everything outside them (raw payloads, README.md) is not read.
+    """
+    if settings is None:
+        return [folder]
+    path, shown, parsed = settings
+    table = parsed.get("check")
+    roots = table.get("roots") if isinstance(table, dict) else None
+    if roots is None:
+        return [folder]
+    if not isinstance(roots, list) or not all(isinstance(item, str) for item in roots):
+        bundle.fail(shown, "/check/roots", "a list of record directories is required")
+        return [folder]
+    found = []
+    for number, name in enumerate(roots):
+        directory = (path.parent / name).resolve()
+        if not directory.is_relative_to(folder):
+            bundle.fail(shown, f"/check/roots/{number}", f"{name} is outside {folder.name or '.'}")
+        elif not directory.is_dir():
+            bundle.fail(shown, f"/check/roots/{number}", f"record directory {name} not found")
+        else:
+            found.append(directory)
+    return found
 
 
 def _index(bundle: _Bundle) -> dict[str, str]:
@@ -237,9 +279,10 @@ def _must_resolve(link: records.Link) -> bool:
 
     ``belongs_to`` names a container (a project, epic or ticket), so only a numbered
     record id there is held to resolve; any other link type also checks slugs.
+    ``derived_from`` always names a source record: raw payloads expire, records do not.
     """
     target = link.target
-    if NUMBERED.match(target):
+    if link.type == "derived_from" or NUMBERED.match(target):
         return True
     return link.type != "belongs_to" and SLUG.match(target) is not None
 
@@ -252,6 +295,15 @@ def _check_links(bundle: _Bundle, index: dict[str, str]) -> None:
                     path,
                     f"/links/{number}/target",
                     f"{link.type} target {link.target} is not the id or alias of any record",
+                )
+            elif (
+                link.type == "derived_from" and bundle.records[index[link.target]].type != "source"
+            ):
+                bundle.fail(
+                    path,
+                    f"/links/{number}/target",
+                    f"derived_from target {link.target} is a "
+                    f"{bundle.records[index[link.target]].type}; it must be a source record",
                 )
 
 
@@ -356,7 +408,7 @@ def _git(top: Path, *args: str) -> str:
     return run_git(top, *args, context="knowledge check").stdout
 
 
-def _check_accepted_unchanged(bundle: _Bundle, folder: Path, base: str) -> None:
+def _check_accepted_unchanged(bundle: _Bundle, folder: Path, scopes: list[Path], base: str) -> None:
     try:
         top = Path(_git(folder, "rev-parse", "--show-toplevel").strip()).resolve()
         merge_base = _git(top, "merge-base", base, "HEAD").strip()
@@ -364,8 +416,10 @@ def _check_accepted_unchanged(bundle: _Bundle, folder: Path, base: str) -> None:
         raise ValueError(
             f"cannot compare with base {base!r}: {exc}; fetch it (fetch-depth: 0)"
         ) from exc
-    scope = folder.relative_to(top).as_posix() or "."
-    output = _git(top, "diff", "--name-status", "-M", "-z", merge_base, "--", scope)
+    paths = [scope.relative_to(top).as_posix() or "." for scope in scopes]
+    if not paths:
+        return
+    output = _git(top, "diff", "--name-status", "-M", "-z", merge_base, "--", *paths)
     fields = output.split("\0")
     position = 0
     while position < len(fields) and fields[position]:
@@ -388,11 +442,17 @@ def _compare_accepted(
         before, _raw, old_body = split(_git(top, "show", f"{merge_base}:{old}"))
     except (GitError, ValueError):
         return
-    if not before or before.get("type") != "decision" or before.get("status") != "accepted":
+    if not before:
         return
     name = before.get("id")
     shown = (top / (new or old)).relative_to(folder).as_posix()
-    if new is None or not (top / new).is_file():
+    deleted = new is None or not (top / new).is_file()
+    if before.get("type") == "source" and deleted:
+        bundle.fail(shown, "", f"source record {name} was deleted; source records are permanent")
+        return
+    if before.get("type") != "decision" or before.get("status") != "accepted":
+        return
+    if new is None or deleted:
         bundle.fail(shown, "", f"accepted decision {name} was deleted; supersede it instead")
         return
     try:
