@@ -100,8 +100,8 @@ A page whose content hash and version match the last render is skipped, so a
 rerun writes nothing. A page edited by hand is
 restored. An upsert names the version it read; a concurrent change is refused.
 
-A record with `boundary: customer` renders only where `[wiki] boundary` is
-`customer`. The Confluence provider follows the `jira-cloud` credential rules:
+Customer records render only to their project's wiki (`[wiki] project`).
+The Confluence provider follows the `jira-cloud` credential rules:
 a scoped token through the Atlassian gateway, and fixed error messages.
 Knowledge repositories run render on merge with the reusable
 `.github/workflows/knowledge-render.yml`.

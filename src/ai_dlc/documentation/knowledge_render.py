@@ -14,9 +14,11 @@ default, and a wiki provider bound to any other site is refused before anything 
     [wiki]
     site = "example.atlassian.net"
     source = "https://github.com/<owner>/<repo>/blob/main/"  # banner link prefix
-    # boundary = "customer"  # only in a customer's repository rendering to its own space
+    # project = "<name>"  # a customer project's own wiki: only projects/<name>/ records
 
-A record with ``boundary: customer`` is rendered only where ``[wiki] boundary`` says so.
+Render filters its inputs with :func:`~ai_dlc.documentation.knowledge_check.team_inputs`
+(KAN-465). A wiki that declares no ``project`` gets no ``boundary: customer`` record.
+A wiki declared for a customer project gets only the records under ``projects/<name>/``.
 """
 
 import hashlib
@@ -29,6 +31,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit
 
+from ai_dlc.documentation.knowledge_check import SLUG, project_of, team_inputs
 from ai_dlc.errors import RefusedError
 
 HASH_PROPERTY = "ai-dlc-hash"
@@ -52,13 +55,18 @@ def wiki_target(root: Path) -> dict:
     source = wiki.get("source")
     if not isinstance(source, str) or not source.startswith("https://"):
         raise RefusedError("knowledge.toml [wiki] source must be an https link prefix")
-    boundary = wiki.get("boundary")
-    if boundary not in {None, "customer"}:
-        raise RefusedError("knowledge.toml [wiki] boundary may only be customer")
+    if "boundary" in wiki:
+        raise RefusedError(
+            "knowledge.toml [wiki] boundary is retired: declare [wiki] project for a "
+            "customer project's wiki"
+        )
+    project = wiki.get("project")
+    if project is not None and (not isinstance(project, str) or not SLUG.fullmatch(project)):
+        raise RefusedError("knowledge.toml [wiki] project must be a project directory name")
     return {
         "site": site,
         "source": source if source.endswith("/") else source + "/",
-        "boundary": boundary,
+        "project": project,
     }
 
 
@@ -254,20 +262,29 @@ class KnowledgeRender:
     def _render(self, since: str, dry_run: bool) -> dict:
         target = self._target()
         changed = self._call(self.knowledge, "list_changed", {"since": since})
+        project = target["project"]
         found = self._call(
             self.knowledge,
             "search",
-            {"type": None, "scope": None, "labels": [], "status": None, "text": None},
+            {
+                "type": None,
+                "scope": None,
+                "labels": [],
+                "status": None,
+                "text": None,
+                "project": project,
+            },
         )
-        skipped: list[dict] = []
-
-        def allowed(header: Mapping[str, Any]) -> bool:
-            if header.get("boundary") == "customer" and target["boundary"] != "customer":
-                skipped.append({"key": header.get("id"), "reason": "boundary: customer"})
-                return False
-            return True
-
-        everything = [item for item in found["items"] if allowed(item["header"])]
+        # The provider already filters; render filters again so no provider can leak.
+        everything = team_inputs(found["items"], project)
+        if project is not None:
+            everything = [item for item in everything if project_of(item["path"]) == project]
+        kept = {id(item) for item in everything}
+        skipped = [
+            {"key": item["id"], "reason": "outside this wiki's project"}
+            for item in found["items"]
+            if id(item) not in kept
+        ]
         by_scope: dict[str, list[dict]] = {}
         for item in everything:
             by_scope.setdefault(str(item["header"].get("scope")), []).append(item)
@@ -281,7 +298,7 @@ class KnowledgeRender:
                 continue
             if entry["id"] not in visible:
                 continue
-            record = self._call(self.knowledge, "get", {"id": entry["id"]})
+            record = self._call(self.knowledge, "get", {"id": entry["id"], "project": project})
             pages.append(record_page(record, target))
         live = visible | {f"index-{scope}" for scope in by_scope}
         rendered = self._rendered()
