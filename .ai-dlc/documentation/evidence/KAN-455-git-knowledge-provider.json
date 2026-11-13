@@ -344,8 +344,8 @@
         "tests/test_templates.py": "d50958472da6eac84069d3063db72aa0de558c33e77b9d477abf800ef6c3cd32",
         "tests/test_workflow.py": "c60af46adb6cceb3160b1c34945d3b579e4ce42be7e24cad65fa24bd215d80a1"
       },
-      "outcome": "no-impact",
-      "reason": "Contributor workflow is unchanged; the CLI only gains a knowledge records group.",
+      "outcome": "reviewed-no-change",
+      "reason": "Merging KAN-421 (with main and KAN-423) leaves the work lifecycle this page explains unchanged; cli.py gains only knowledge commands.",
       "reviewer": "Claude (agent)",
       "target": "docs/development-workflow.md"
     },
