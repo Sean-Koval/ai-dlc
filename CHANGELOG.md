@@ -36,6 +36,8 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
   it never writes the base branch. The knowledge role now requires `get` and `search`
   (the Obsidian provider answers both) and `append` is optional. The SCM
   `pull_request_create` payload gains `draft`.
+  `ai-dlc knowledge records template TYPE` prints a packaged record template;
+  `--list` names the types.
 - `ai-dlc knowledge number` and `ai-dlc knowledge index`, with MCP `knowledge_number_plan`
   and `knowledge_index`. After a merge, CI gives slug-id records the next number for
   their type, keeps the slug in `aliases` and rewrites links to it. It then writes one
