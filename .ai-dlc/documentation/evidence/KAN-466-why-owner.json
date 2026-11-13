@@ -85,7 +85,7 @@
         "src/ai_dlc/documentation/knowledge_render.py": "b02c1de41522bfb0bd0ed1dd663fcc2f662b28c11796bd956d3572cedccd91d3",
         "src/ai_dlc/documentation/knowledge_service.py": "786336917e717b12353ec4143339ce3141a9c1d8110192e24288294eb17371a9",
         "src/ai_dlc/documentation/knowledge_transcripts.py": "37f2a62e16e943e100176d0e8a27087c0e0ad9d95f639b053c6b3a84df5af3ec",
-        "src/ai_dlc/documentation/knowledge_why.py": "a90994a3b52ae4db700644df408081dcb2c2b8f90f04dbac8955e6d84adbe158",
+        "src/ai_dlc/documentation/knowledge_why.py": "e5dc46b6399333285b9909c6685b7ef3a96d717f5795dd64e9334a4120aa4ae2",
         "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
         "src/ai_dlc/documentation/learnings.py": "5a11c64592e1c7b93bfa3543339ea0766f42050a7843bb8354cd56166b0f3ae6",
         "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
@@ -275,10 +275,10 @@
     },
     {
       "bound": {
-        "tests/test_knowledge_why.py": "ecd09794b0fb2f6e96618f54952adbb4f3b6f95f2b9b2a4e3844a80cc043c989"
+        "tests/test_knowledge_why.py": "ccd457b2957018b70eac0e0a42980c347e3dad6a5afa60979a39cc8efe4019ec"
       },
       "outcome": "updated",
-      "reason": "Covers owner, author and verification on the record, chain and linked conventions, in JSON and text.",
+      "reason": "Covers owner, author and verification on the record, chain and linked conventions, in JSON and text. Adds a check that a person is named once by bare name.",
       "reviewer": "Claude (agent)",
       "target": "tests/test_knowledge_why.py"
     }

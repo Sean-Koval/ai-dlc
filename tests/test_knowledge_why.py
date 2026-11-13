@@ -83,7 +83,7 @@ def test_each_end_of_the_reversal_says_who_owns_wrote_and_verified_it():
     assert successor["verified"] == []
     text = "\n".join(lines(march))
     # sean wrote his own record, so he is named once.
-    assert "owner sean, verified by human:dana on 2026-03-05" in lines(march)[1]
+    assert "owner sean, verified by dana on 2026-03-05" in lines(march)[1]
     assert "written by human:sean" not in text
     assert "date 2026-09-15, owner priya, written by agent:capture" in text
 
@@ -93,10 +93,19 @@ def test_each_end_of_the_reversal_says_who_owns_wrote_and_verified_it():
     assert "owner priya, written by agent:capture" in lines(september)[1]
     shown = "\n".join(lines(september))
     supersedes = shown.split("Supersedes:", 1)[1].splitlines()[1]
-    assert "owner sean, verified by human:dana" in supersedes and "written by" not in supersedes
+    assert "owner sean, verified by dana" in supersedes and "written by" not in supersedes
     (convention,) = [link for link in september["linked"] if link["id"] == "CONV-0001"]
     assert convention["owner"] == "sean"
     assert any(line.startswith("  CONV-0001") and "owner sean" in line for line in lines(september))
+
+
+def test_a_person_is_named_once_by_bare_name_whichever_side_carries_the_prefix():
+    from ai_dlc.documentation.knowledge_why import _by
+
+    entry = {"owner": "human:sean", "author": "human:sean", "verified": []}
+    assert _by(entry) == ["owner sean"]
+    entry = {"owner": "sean", "author": "agent:capture", "verified": []}
+    assert _by(entry) == ["owner sean", "written by agent:capture"]
 
 
 def test_linked_conventions_lessons_tickets_and_source_metadata():

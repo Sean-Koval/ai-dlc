@@ -356,15 +356,23 @@ def _facts(entry: dict[str, Any]) -> str:
 def _by(entry: dict[str, Any]) -> list[str]:
     """``owner``, then ``written by`` when someone else wrote it, then each verification.
 
-    ``author`` is an actor (``human:sean``); ``owner`` is the bare name, so a person
-    writing their own record is shown once.
+    ``author`` and verifiers are actors (``human:sean``); a person is shown by bare name,
+    as ``owner`` is, and someone writing their own record is shown once. Agents keep
+    their ``agent:`` prefix.
     """
-    facts = [f"owner {entry['owner']}"]
+    owner = _person(entry["owner"])
+    facts = [f"owner {owner}"]
     author = entry["author"]
-    if author and author.removeprefix("human:") != entry["owner"]:
-        facts.append(f"written by {author}")
-    facts += [f"verified by {event['by']} on {event['at'][:10]}" for event in entry["verified"]]
+    if author and _person(author) != owner:
+        facts.append(f"written by {_person(author)}")
+    facts += [
+        f"verified by {_person(event['by'])} on {event['at'][:10]}" for event in entry["verified"]
+    ]
     return facts
+
+
+def _person(actor: str) -> str:
+    return actor.removeprefix("human:")
 
 
 def _source(evidence: dict[str, Any]) -> list[str]:
