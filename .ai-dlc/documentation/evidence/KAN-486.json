@@ -29,10 +29,10 @@
     },
     {
       "bound": {
-        "CONTRIBUTING.md": "0fc74e80aedcb6069158e5df3761b5d269cf0ef86c4ab8ccc2413a4a809de1e9"
+        "CONTRIBUTING.md": "795b1a13d795b5f852b3c3559e5082ef7c3843f79d7b298fabe8053a094442e6"
       },
       "outcome": "updated",
-      "reason": "Parallel pull requests says how to add a page and how to resolve a manifest conflict; the local build uses site.yml.",
+      "reason": "Parallel pull requests says how to add a page, to rerun site_config.py after a change, and how to resolve a manifest conflict.",
       "reviewer": "Claude (agent)",
       "target": "CONTRIBUTING.md"
     },
@@ -94,7 +94,7 @@
         "scripts/publish_workflow_plugin.py": "96d95c413671a55a0e42d690f1c6d64528c11203e0a44359e3422d082ca34b9d",
         "scripts/qualify_framework.py": "8068bb2709bbf6b3a020e9c22d62b993cc0e8a3e3c9ee5c00dc4b8963c31054e",
         "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
-        "scripts/site_config.py": "a8e40e5bf5d9ded7d89a1cb68f1e9a3f6f718183ed63314ed09a5a0c7b8c9e84",
+        "scripts/site_config.py": "b24b3bfe7dadadc91d0cf0fcd51ace9ad38e6456203caf39724b64fab3a07325",
         "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
         "src/ai_dlc/__main__.py": "aff4dacb51b993d7acdfe1f7ab7a54c1c159dd23a3a848b961a0a2e545809f07",
         "src/ai_dlc/_windows_storage/__init__.py": "5715def899453f15265e13d52e5b518844cc9d057421cfa5279172d799d5f506",
@@ -105,7 +105,7 @@
         "src/ai_dlc/conformance.py": "0ff247c065e89d4c5b43d844601dc809558c65a779c1600371953c0e2c44737b",
         "src/ai_dlc/contracts.py": "01328e3f9cd731e11532abb8b247cecef8a622473fdf93df2094f15036e2f17e",
         "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
-        "src/ai_dlc/documentation/catalog.py": "2237ed443da953240667f68e7f54fffbc9d4413276cfe4e260448615ff3a858f",
+        "src/ai_dlc/documentation/catalog.py": "7760064e27e0c2293210c21f2e3017ae9833d7f51f14513a845f38b94ceadb27",
         "src/ai_dlc/documentation/decisions.py": "ab81ad8426665668da3fb18dce2eba3020fbed9476d964ea277352a2092a286c",
         "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
         "src/ai_dlc/documentation/document_files.py": "3174b5773adf54c9a0f586a041c4e67001d136d9ba1016ec1cbb0b54debafd55",
@@ -113,7 +113,7 @@
         "src/ai_dlc/documentation/document_inventory.py": "c600ba3633047b8e979106f4a5318d2fd8235c64a1737e61deae67f018c03e77",
         "src/ai_dlc/documentation/document_review.py": "0c988d1821ae60135403098e8125ce7b4d8f35bc1cb071f7ad14b441a39eba40",
         "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
-        "src/ai_dlc/documentation/documents.py": "d3c825c731562f1ea81afa4b0464e854a0a1ca1465b6b7328817a72709fce6dd",
+        "src/ai_dlc/documentation/documents.py": "97aad377a504b9a469a4ad348c8a072d5a2df22c2f7689b4dd870c15cf286d7c",
         "src/ai_dlc/documentation/fde.py": "3664430ebca9f3ef7ba7c7c431f7e4790176066510904ebe4d43d0a88ecf26e1",
         "src/ai_dlc/documentation/knowledge.py": "ec96182b6eb15a396dbcb62235de1ea9c218844132153bd9e0297717839c52b4",
         "src/ai_dlc/documentation/knowledge_bundle.py": "349cdc879cca3e56a0fb78c52809fee661041aeb620001b0922a4eeda6809cde",
@@ -221,9 +221,35 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "The documentation package row already covers catalog checks; catalog.py is part of it.",
+      "reason": "The documentation package row already covers catalog checks; catalog.py and site_config.py's stricter checks are part of it.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        "docs/catalog.toml": "74f855558029f910449388b7c7347ca1e2ce7ad6f05be95d90fbd0f15f2d3aa9"
+      },
+      "outcome": "updated",
+      "reason": "The documentation-ownership entry now maps catalog.py and site_config.py.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/catalog.toml"
+    },
+    {
+      "bound": {
+        "agents/templates/adr.md": "89fba3089d5bf0e452cfe16d0315495dbdac8310eaedc2f202260b9910854c53",
+        "catalog:docs/design/project-documentation.md": "7bc33b53adb70cdd3f379d954ff9be0195cc9990b8f8a586f5d46a4e68332c92",
+        "docs/design/project-documentation.md": "5d6d936bda24db37a2fbeb8d3f4b73284316283b26f91885402442e79fc5b8f3",
+        "openspec/specs/decision-records/spec.md": "ae948a29a5a3dcdd3011b6a4ab174181a5f236eff659af944209dd1b23576260",
+        "project-templates/project/docs/decisions/README.md": "c19b4be797e9c7ac9cfffeaa6f30efa8e3547f5b0d467ff8019e02a533344c07",
+        "scripts/site_config.py": "b24b3bfe7dadadc91d0cf0fcd51ace9ad38e6456203caf39724b64fab3a07325",
+        "src/ai_dlc/documentation/catalog.py": "7760064e27e0c2293210c21f2e3017ae9833d7f51f14513a845f38b94ceadb27",
+        "src/ai_dlc/documentation/decisions.py": "ab81ad8426665668da3fb18dce2eba3020fbed9476d964ea277352a2092a286c",
+        "tests/test_decisions.py": "1c222097bd94d3a899974116eb816b0e8fa1c1f2d696227b9b35174eac6b819e"
+      },
+      "outcome": "updated",
+      "reason": "Explains catalog.d fragments and their nav and title fields.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/project-documentation.md"
     },
     {
       "bound": {
@@ -277,7 +303,7 @@
     },
     {
       "bound": {
-        "tests/test_catalog_fragments.py": "8059588b2b35193f2c81d43ece3337d390a806d23e343bc135a9e41547cf3e5c"
+        "tests/test_catalog_fragments.py": "60aee3c9aad2f80e6d4171f5c1af3b5b5fe48efe1debd7bc58204da9a170e75c"
       },
       "outcome": "no-impact",
       "reason": "Tests only.",

@@ -17,7 +17,8 @@ Two pull requests that each add a page used to conflict on the ``nav`` in ``mkdo
 
 This script copies ``mkdocs.yml`` to ``site.yml`` and appends each such page to the end
 of its section, unless the nav already lists it. The site is built from ``site.yml``.
-It reads only TOML and YAML, so the docs workflow needs nothing but Zensical.
+It reads only TOML and YAML, so the docs workflow needs nothing but Zensical. It mirrors
+the catalog checks the site needs; ``ai-dlc docs gate`` remains the authority on entries.
 
     python scripts/site_config.py           # write site.yml
     python scripts/site_config.py --check   # report problems, write nothing
@@ -27,6 +28,7 @@ It reads only TOML and YAML, so the docs workflow needs nothing but Zensical.
 from __future__ import annotations
 
 import argparse
+import fnmatch
 import re
 import sys
 import tomllib
@@ -39,23 +41,33 @@ CATALOG = "docs/catalog.toml"
 FRAGMENTS = "docs/catalog.d"
 OUTPUT = "site.yml"
 NAV = re.compile(r"^nav:[ \t]*(#.*)?$", re.MULTILINE)
+# The pages exclude_docs leaves out of the site; scripts/docs_site_links.py keeps the same list.
+EXCLUDED = ("archive/*", "verification/*", "reviews/*", "catalog.toml", "catalog.d/*")
 
 
 def catalog_entries(root: Path) -> list[tuple[str, dict]]:
     """``(file, entry)`` for every catalog entry: the catalog, then fragments by name."""
     files = [root / CATALOG]
     fragments = root / FRAGMENTS
+    if fragments.is_symlink():
+        raise ValueError(f"{FRAGMENTS} cannot be a symlink")
     if fragments.is_dir():
-        files += sorted(fragments.glob("*.toml"))
+        files += sorted(p for p in fragments.glob("*.toml") if not p.name.startswith("."))
     found = []
     for path in files:
         if path.is_symlink() or not path.is_file():
             raise ValueError(f"{path.relative_to(root).as_posix()}: not a regular file")
         raw = tomllib.loads(path.read_text(encoding="utf-8"))
         documents = raw.get("documents", [])
-        if raw.get("schema") != 1 or not isinstance(documents, list):
-            raise ValueError(f"{path.relative_to(root).as_posix()}: expected schema = 1")
-        found += [(path.relative_to(root).as_posix(), d) for d in documents if isinstance(d, dict)]
+        if (
+            raw.get("schema") != 1
+            or not isinstance(documents, list)
+            or not all(isinstance(d, dict) for d in documents)
+        ):
+            raise ValueError(
+                f"{path.relative_to(root).as_posix()}: expected schema = 1 and a documents array"
+            )
+        found += [(path.relative_to(root).as_posix(), d) for d in documents]
     return found
 
 
@@ -102,10 +114,20 @@ def compose(root: Path) -> tuple[str, list[str]]:
         if title is not None and (not isinstance(title, str) or not title.strip()):
             problems.append(f"{where}: title must be nonempty text")
             continue
-        if not isinstance(path, str) or not path.startswith("docs/") or not path.endswith(".md"):
+        if (
+            not isinstance(path, str)
+            or not path.startswith("docs/")
+            or not path.endswith(".md")
+            or ".." in path.split("/")
+        ):
             problems.append(f"{where}: only a docs/ Markdown page can be in the nav")
             continue
         page = path.removeprefix("docs/")
+        if any(fnmatch.fnmatch(page, pattern) for pattern in EXCLUDED):
+            problems.append(
+                f"{where}: the page is excluded from the site, so it can't be in the nav"
+            )
+            continue
         if not (root / path).is_file():
             problems.append(f"{where}: the page does not exist")
             continue

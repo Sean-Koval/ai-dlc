@@ -85,13 +85,13 @@ Many PRs are open at once, so a PR changes nothing that every other PR also chan
   `python tests/test_editorial.py --update`. A PR may still not raise a page's debt.
 - **Front-page assets** (`docs/assets/front/`): unchanged. A PR that changes what they
   show rebuilds them, and `assets.yml` checks that they are current.
-
 - **A new page** (KAN-486): add `docs/catalog.d/<id>.toml` with `schema = 1` and the
   page's `[[documents]]` entry; never edit `docs/catalog.toml` or the `nav` in
   `mkdocs.yml`. Give the entry `nav = "<section>"` (a top-level `nav` section, such as
   `Decisions`) and, optionally, `title`. `scripts/site_config.py` adds the page to the
   end of that section in `site.yml`, which the site is built from. A page without
-  `nav` is catalogued but not in the nav.
+  `nav` is catalogued but not in the nav. Rerun `scripts/site_config.py` after changing
+  a fragment or `mkdocs.yml`; `zensical serve -f site.yml` doesn't see those changes.
 - **Contract manifest** (`contracts/manifest.json`): it is generated. On a conflict,
   keep either side and run `uv run --locked --no-sync python scripts/build_contracts.py`.
   `scripts/check_generated.py` checks it.

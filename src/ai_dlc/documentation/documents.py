@@ -365,7 +365,10 @@ def check_documents(root: Path | str = ".", *, today: date | None = None) -> dic
         )
         return result
     except (OSError, ValueError, UnicodeError) as exc:
-        findings.append(_finding("invalid-catalog", "docs/catalog.toml", str(exc), "error"))
+        message = str(exc)
+        source = message.split(":", 1)[0]
+        where = source if source.startswith("docs/catalog") else "docs/catalog.toml"
+        findings.append(_finding("invalid-catalog", where, message, "error"))
         return result
     entry_findings, _ids, paths = _validate_entries(entries, root, today)
     findings.extend(entry_findings)

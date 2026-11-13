@@ -25,7 +25,9 @@ def catalog_files(root: Path) -> list[str]:
     directory = inside(root, FRAGMENTS)
     if directory.is_symlink():
         raise ValueError(f"{FRAGMENTS} cannot be a symlink")
-    fragments = sorted(p.name for p in directory.glob("*.toml")) if directory.is_dir() else []
+    names = [p.name for p in directory.glob("*.toml")] if directory.is_dir() else []
+    # Editors leave hidden lock and backup files (``.#x.toml``) beside the one being edited.
+    fragments = sorted(name for name in names if not name.startswith("."))
     return [CATALOG, *(f"{FRAGMENTS}/{name}" for name in fragments)]
 
 

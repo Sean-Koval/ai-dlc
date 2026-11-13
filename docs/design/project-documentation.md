@@ -17,6 +17,11 @@ OpenSpec owns formal behavior and change artifacts. Repository `docs/` owns dura
 architecture, decisions and operational material. A project index and optional
 catalog identify canonical paths, ownership, lifecycle and source provenance.
 
+The catalog is `docs/catalog.toml` plus one fragment per later document in
+`docs/catalog.d/`, so two pull requests that each add a page don't conflict. A
+fragment entry may name its `nav` section and `title`. `scripts/site_config.py`
+then adds the page to the site's navigation in `site.yml`.
+
 `docs check` exposes deterministic gaps for review: unknown ownership/review,
 missing paths, limited local Markdown-link checks, uncatalogued files and exact
 content duplicates. It does not certify accuracy or automatically consolidate

@@ -139,6 +139,53 @@ def test_a_bad_nav_entry_is_reported_and_nothing_is_written(site, fields, page, 
     assert not (site / "site.yml").exists()
 
 
+def test_a_page_excluded_from_the_site_cannot_join_the_nav(site):
+    _add(site, "check", "verification/check.md", nav="Reference")
+    assert "excluded from the site" in SITE["compose"](site)[1][0]
+
+
+def test_a_path_that_leaves_docs_cannot_join_the_nav(site):
+    _add(site, "terms-up", "decisions/../terms.md", nav="Reference")
+    assert "docs/ Markdown page" in SITE["compose"](site)[1][0]
+
+
+def test_the_site_list_of_excluded_pages_matches_the_link_checker():
+    links = runpy.run_path(str(ROOT / "scripts/docs_site_links.py"))
+    assert SITE["EXCLUDED"] == links["EXCLUDED"]
+
+
+def test_hidden_editor_files_in_catalog_d_are_ignored(site):
+    _add(site, "decision-0002", "decisions/0002.md")
+    (site / "docs/catalog.d/.#decision-0002.toml").write_text("not toml", encoding="utf-8")
+    assert catalog_files(site)[1:] == ["docs/catalog.d/decision-0002.toml"]
+    assert SITE["compose"](site)[1] == []
+
+
+def test_a_symlinked_fragment_or_directory_is_refused(site, tmp_path_factory):
+    elsewhere = tmp_path_factory.mktemp("elsewhere")
+    (elsewhere / "x.toml").write_text(_fragment("x", "decisions/0001.md"), encoding="utf-8")
+    (site / "docs/catalog.d").mkdir()
+    (site / "docs/catalog.d/x.toml").symlink_to(elsewhere / "x.toml")
+    with pytest.raises(ValueError):
+        load_catalog(site)
+    with pytest.raises(ValueError):
+        SITE["catalog_entries"](site)
+    (site / "docs/catalog.d/x.toml").unlink()
+    (site / "docs/catalog.d").rmdir()
+    (site / "docs/catalog.d").symlink_to(elsewhere, target_is_directory=True)
+    with pytest.raises(ValueError):
+        load_catalog(site)
+    with pytest.raises(ValueError):
+        SITE["catalog_entries"](site)
+
+
+def test_a_broken_fragment_is_reported_at_its_own_path(site):
+    (site / "docs/catalog.d").mkdir()
+    (site / "docs/catalog.d/bad.toml").write_text("schema = 2\n", encoding="utf-8")
+    finding = next(f for f in check_documents(site)["findings"] if f["code"] == "invalid-catalog")
+    assert finding["path"] == "docs/catalog.d/bad.toml"
+
+
 def test_a_missing_page_is_reported(site):
     (site / "docs/catalog.d").mkdir()
     (site / "docs/catalog.d/ghost.toml").write_text(
