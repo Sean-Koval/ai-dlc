@@ -123,7 +123,7 @@
         "src/ai_dlc/harness/windows_render.py": "8aa76c8aacc44d28a2117b3339ad7b632b91fdbe0a5557af50228dcd2aa0eeb0",
         "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
         "src/ai_dlc/locking.py": "d39ea1ba783e72aae903f9d69c114745ee0b83d02197bbc9572568836e4e7fa3",
-        "src/ai_dlc/mcp_server.py": "552a3e5fbba5c22738391306aa7b7f8f42c6ad86fa10ed2705a1b7b6ee772caf",
+        "src/ai_dlc/mcp_server.py": "c1e9948424e1e902f2ceeb04fc67a3ca123c24e78ac0bd88bc5b2c477c24d0c5",
         "src/ai_dlc/provider_definitions.py": "467bec9146a1379a2f17ac07faaf1e6807729d362609d711545ff632ff3f9da7",
         "src/ai_dlc/providers/__init__.py": "d930764e2cc89cd86eeb88b817b9f79c1a9bf991fea68764cf279c0f9e028390",
         "src/ai_dlc/providers/confluence_cloud.py": "d7f7c890569142753e8f97f7dec7dea08ac61c5fd897d691c7ccfbf44a6b13ef",
@@ -190,7 +190,7 @@
       "bound": {
         "catalog:docs/workflows/how-it-fits.md": "0032744a2746dd1b4e47f09fc1cc9c4d6f8c8cfe90990b464f56a0abc1d1ac10",
         "docs/workflows/how-it-fits.md": "b865dfd0d040309db43d27b58cb93a69d0e94a72bcf9b6ff760bcb0ed39ea473",
-        "src/ai_dlc/mcp_server.py": "552a3e5fbba5c22738391306aa7b7f8f42c6ad86fa10ed2705a1b7b6ee772caf",
+        "src/ai_dlc/mcp_server.py": "c1e9948424e1e902f2ceeb04fc67a3ca123c24e78ac0bd88bc5b2c477c24d0c5",
         "src/ai_dlc/providers/__init__.py": "d930764e2cc89cd86eeb88b817b9f79c1a9bf991fea68764cf279c0f9e028390",
         "src/ai_dlc/providers/confluence_cloud.py": "d7f7c890569142753e8f97f7dec7dea08ac61c5fd897d691c7ccfbf44a6b13ef",
         "src/ai_dlc/providers/git_knowledge.py": "c07d548015aa3e8a3c7ca567ee4511a79ec5af33f1d84d3c7f155d08c683f591",
@@ -229,7 +229,7 @@
         "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
         "src/ai_dlc/harness/agents.py": "72f38f1f69147e4216fe6752636f26e6218c5c6ef85845ffb89828d431effa53",
         "src/ai_dlc/harness/hooks.py": "39ddc55bf902b3374d5d272ec301fa03b7a43e09868f686fea1d101068ffd77f",
-        "src/ai_dlc/mcp_server.py": "552a3e5fbba5c22738391306aa7b7f8f42c6ad86fa10ed2705a1b7b6ee772caf",
+        "src/ai_dlc/mcp_server.py": "c1e9948424e1e902f2ceeb04fc67a3ca123c24e78ac0bd88bc5b2c477c24d0c5",
         "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
         "src/ai_dlc/setup/onboarding.py": "a955988850f1dbe1bd50b2e06da61913701b504ed1a11eabe08bed387d0cc552",
         "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
@@ -258,10 +258,10 @@
     },
     {
       "bound": {
-        "tests/test_knowledge_stats.py": "57fcd3708e0c8283eb226b0dd6f1992e6dc78fe13cc4998d9a0c14031d31b265"
+        "tests/test_knowledge_stats.py": "83392cc265f92f127d6179b7bd0d716a6b7c79aed8adb9c769ccb9d1fa273b1b"
       },
       "outcome": "updated",
-      "reason": "Drives knowledge_stats through a real MCP client session with faked scm and tracker roles and checks it returns the command's numbers, keeps customers hidden, and reports a wrong-shaped log as an error.",
+      "reason": "Drives knowledge_stats through a real MCP client session with faked scm and tracker roles: it returns the command's numbers, keeps customers hidden, reads records relative to the project, uses no roles without ai-dlc.toml, and reports a wrong-shaped log as an error.",
       "reviewer": "Claude (agent)",
       "target": "tests/test_knowledge_stats.py"
     },
