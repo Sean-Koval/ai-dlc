@@ -261,6 +261,24 @@
     },
     {
       "bound": {
+        "docs/assets/front/work.cast": "01cd95bf840e111ddfef457e0a8da590fb5060cbfd0a8cc41264ef1e5b5fa7a2"
+      },
+      "outcome": "updated",
+      "reason": "Rebuilt with docs/assets/front/build.py after merging main; only commit hashes changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.cast"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.svg": "be9f4992a36bfb3337631938458fd81ffdd6eaac4f8383446abd25b36c730546"
+      },
+      "outcome": "updated",
+      "reason": "Rebuilt with docs/assets/front/build.py alongside work.cast.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.svg"
+    },
+    {
+      "bound": {
         ".github/workflows/knowledge-merge.yml": "7f67aa54775bb4e0e71c6793b9c6c62ac2fe03343678117a432513a465efeaca",
         "catalog:docs/design/local-and-shared-knowledge.md": "07f5768759a08b2a425954beae4109ab59f515e126fa644a99c91fcaebb6fff9",
         "contracts/knowledge-note.schema.json": "f3cbc791e2caae2223bf223e8b27b5b7ce553405b76f32cf5689fa7fe68bb1a5",
