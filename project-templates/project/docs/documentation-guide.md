@@ -19,7 +19,7 @@ claims about the implemented system.
 ## Decisions
 
 Decision records live in `docs/decisions/` as `NNNN-slug.md`, start from
-`docs/templates/adr.md` and carry knowledge-note frontmatter with an optional
+`docs/templates/adr.md` and carry knowledge-record frontmatter with an optional
 `checks:` block for flightdeck. Accepted records are superseded, never edited.
 [decisions/README.md](decisions/README.md) describes the convention;
 `ai-dlc docs check` validates its shape.

@@ -1,18 +1,23 @@
 ---
-id: decision/0006-customer-boundary-and-promotion
-kind: decision
+id: DEC-0006
+type: decision
 scope: team
-label: internal
 status: accepted
+date: 2026-11-13
+owner: agent:claude-code
 sources:
-  - uri: https://seanmkoval.atlassian.net/browse/KAN-465
-    hash: jira-issue:KAN-465
-author: agent:claude-code
-confidence: high
+- resource: https://seanmkoval.atlassian.net/browse/KAN-465
+  hash: jira-issue:KAN-465
+links: []
+title: 0006 Customer records stay in their project; promotion goes through a team
+  source
+label: internal
 valid_from: 2026-11-13
-valid_to: null
-review_by: 2027-05-13
-supersedes: []
+stale_after: '2027-05-13T00:00:00Z'
+confidence: high
+author: agent:claude-code
+aliases:
+- decision/0006-customer-boundary-and-promotion
 ---
 # 0006 Customer records stay in their project; promotion goes through a team source
 
