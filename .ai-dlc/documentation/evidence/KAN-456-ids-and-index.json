@@ -187,7 +187,7 @@
     },
     {
       "bound": {
-        "docs/assets/front/work.cast": "f05d610f73be555dfda3c24de3f88861116c5f90e13e1fee725368319688a0cb"
+        "docs/assets/front/work.cast": "44eb9b9b33f642e1da5def78484a40b0d3614de5d26c6feea712c886dc95623f"
       },
       "outcome": "updated",
       "reason": "Rebuilt by docs/assets/front/build.py after merging main; demo commit hashes follow the packaged templates.",
@@ -196,7 +196,7 @@
     },
     {
       "bound": {
-        "docs/assets/front/work.svg": "78dd589ab3decab8ca043e6f81d5b592b031bf23b758121795be2174f972eb3e"
+        "docs/assets/front/work.svg": "76363ed3d2ebfe8133b2d7cce0ee3fd0697f3d5a7bdb6050d90e0b699a311303"
       },
       "outcome": "updated",
       "reason": "Rebuilt by docs/assets/front/build.py after merging main; demo commit hashes follow the packaged templates.",
