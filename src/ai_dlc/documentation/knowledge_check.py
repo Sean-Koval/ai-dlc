@@ -41,7 +41,8 @@ NUMBERED = re.compile(r"^(?:DEC|CONV|LES|ACT|Q|SRC)-[0-9]{4,}$")
 SLUG = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 HEADING = re.compile(r"^##[ \t]+(.+?)[ \t]*#*[ \t]*$")
 # Header changes that do not count as editing an accepted decision: superseding it,
-# and numbering at merge (slug id becomes PREFIX-NNNN and the slug moves to aliases).
+# and numbering at merge (slug id becomes PREFIX-NNNN and the slug moves to aliases;
+# links and sources that named the slug name the number).
 SUPERSEDE_KEYS = ("status", "valid_to")
 # Customer records live in projects/<name>/; a quote is this many words in a row.
 PROJECTS = "projects"
@@ -677,8 +678,9 @@ def _compare_accepted(
         return
     if after is None:
         return
+    aliases = _aliases(bundle)
     for key in sorted(set(before) | set(after)):
-        if before.get(key) != after.get(key) and not _allowed_change(key, before, after):
+        if before.get(key) != after.get(key) and not _allowed_change(key, before, after, aliases):
             bundle.fail(
                 shown,
                 f"/{key}",
@@ -694,7 +696,51 @@ def _compare_accepted(
         )
 
 
-def _allowed_change(key: str, before: dict, after: dict) -> bool:
+def _aliases(bundle: _Bundle) -> dict[str, set[str]]:
+    """The aliases of every numbered record at ``HEAD``, keyed by its id."""
+    return {
+        record.id: set(record.aliases or [])
+        for record in bundle.records.values()
+        if NUMBERED.match(record.id)
+    }
+
+
+def _renumbered(old: object, new: object, aliases: dict[str, set[str]]) -> bool:
+    """``old`` is a slug that numbering replaced with ``new``, which keeps it as an alias."""
+    return (
+        isinstance(old, str)
+        and isinstance(new, str)
+        and not NUMBERED.match(old)
+        and bool(NUMBERED.match(new))
+        and old in aliases.get(new, set())
+    )
+
+
+def _only_renumbered(
+    before: object, after: object, fields: tuple[str, ...], aliases: dict[str, set[str]]
+) -> bool:
+    """Lists equal entry by entry, except ``fields`` that numbering moved slug to number."""
+    if not isinstance(before, list) or not isinstance(after, list) or len(before) != len(after):
+        return False
+    for old, new in zip(before, after, strict=True):
+        if not isinstance(old, dict) or not isinstance(new, dict) or set(old) != set(new):
+            return False
+        for name in old:
+            if old[name] != new[name] and not (
+                name in fields and _renumbered(old[name], new[name], aliases)
+            ):
+                return False
+    return True
+
+
+def _allowed_change(
+    key: str, before: dict, after: dict, aliases: dict[str, set[str]] | None = None
+) -> bool:
+    known = aliases or {}
+    if key == "links":
+        return _only_renumbered(before.get(key), after.get(key), ("target",), known)
+    if key == "sources":
+        return _only_renumbered(before.get(key), after.get(key), ("id", "resource"), known)
     if key == "status":
         return after.get(key) == "superseded"
     if key == "valid_to":
