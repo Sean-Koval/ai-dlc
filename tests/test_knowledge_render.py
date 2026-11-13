@@ -348,20 +348,41 @@ def test_a_changed_record_updates_its_page_and_index(store):
 
 
 def test_a_customer_record_stays_out_of_a_wiki_not_declared_for_it(store):
-    commit(
-        store["repo"],
-        "lessons/customer.md",
-        record("client-gotcha", kind="lesson", scope="project", boundary="customer"),
-    )
-    fake = FakeConfluence()
-    result = renderer(store, fake).render(store["base"])
-    assert {"key": "client-gotcha", "reason": "boundary: customer"} in result["skipped"]
-    assert "client-gotcha" not in json.dumps([p["body"] for p in fake.pages.values()])
+    repo = store["repo"]
+    for project in ("acme", "beta"):
+        (repo / f"projects/{project}").mkdir(parents=True, exist_ok=True)
+    customer = {"kind": "lesson", "scope": "project", "boundary": "customer"}
+    commit(repo, "projects/acme/gotcha.md", record("acme-gotcha", **customer))
+    commit(repo, "projects/beta/gotcha.md", record("beta-gotcha", **customer))
+    commit(repo, "projects/acme/stray.md", record("acme-stray", kind="lesson", scope="project"))
 
+    def bodies(fake):
+        return json.dumps([[p["title"], p["body"]] for p in fake.pages.values()])
+
+    team = FakeConfluence()
+    result = renderer(store, team).render(store["base"])
+    assert result["status"] == "rendered", result
+    assert "acme-gotcha" not in bodies(team) and "beta-gotcha" not in bodies(team)
+    assert team.by_key("acme-stray")  # not a customer record: a team wiki may show it
+
+    toml = repo / "knowledge.toml"
+    commit(repo, "knowledge.toml", toml.read_text() + 'project = "acme"\n')
+    acme = FakeConfluence()
+    result = renderer(store, acme).render(store["base"])
+    assert acme.by_key("acme-gotcha") and acme.by_key("acme-stray")
+    assert "beta-gotcha" not in bodies(acme)
+    assert "ship-on-thursdays" not in {page["key"] for page in result["pages"]}
+    skipped = {"key": "ship-on-thursdays", "reason": "outside this wiki's project"}
+    assert skipped in result["skipped"]
+
+
+def test_a_retired_wiki_boundary_is_refused(store):
     toml = store["repo"] / "knowledge.toml"
     commit(store["repo"], "knowledge.toml", toml.read_text() + 'boundary = "customer"\n')
-    renderer(store, fake).render(store["base"])
-    assert fake.by_key("client-gotcha")
+    fake = FakeConfluence()
+    result = renderer(store, fake).render(store["base"])
+    assert result["status"] == "refused" and "declare [wiki] project" in result["reason"]
+    assert fake.requests == []
 
 
 @pytest.mark.parametrize(

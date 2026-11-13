@@ -11,12 +11,18 @@ import pytest
 from typer.testing import CliRunner
 
 from ai_dlc.cli import app
-from ai_dlc.documentation.knowledge_check import check_records
+from ai_dlc.documentation.knowledge_check import (
+    check_records,
+    project_of,
+    team_inputs,
+    visible_in,
+)
 from ai_dlc.files import assets
 
 ROOT = Path(__file__).resolve().parents[1]
 VALID = ROOT / "tests/fixtures/records"
 INVALID = ROOT / "tests/fixtures/records_invalid"
+BOUNDARY = ROOT / "tests/fixtures/boundary"
 PIN = "[format]\nversion = 1\n"
 # Fixture directory -> (failing path, pointer, part of the message). One rule each.
 EXPECTED = {
@@ -39,6 +45,16 @@ EXPECTED = {
     "derived-from-payload": ("a.md", "/links/0/target", "inbox/2026-11-10-call.vtt is not"),
     "derived-from-decision": ("a.md", "/links/0/target", "is a decision; it must be a source"),
     "roots-missing": ("knowledge.toml", "/check/roots/0", "record directory team not found"),
+    "customer-outside-project": ("lessons/a.md", "/boundary", "must sit under projects/<name>/"),
+    "customer-inbound-link": ("a.md", "/links/0/target", "b-slug is a customer record of"),
+    "customer-cross-project": (
+        "projects/beta/a.md",
+        "/links/0/target",
+        "links never cross customer projects",
+    ),
+    "customer-quoted": ("a.md", "", "from customer record b-slug (project alpha)"),
+    "customer-source-path": ("a.md", "/sources/0", "cites customer project alpha"),
+    "customer-body-link": ("a.md", "", "links into customer project acme from its body"),
 }
 
 
@@ -336,3 +352,125 @@ def test_pre_commit_hook_and_reusable_workflow_run_the_check():
     steps = workflow["jobs"]["check"]["steps"]
     assert steps[0]["with"]["fetch-depth"] == 0
     assert '--base "origin/$BASE_REF"' in steps[-1]["run"]
+
+
+# Customer boundary (KAN-465)
+
+
+def test_mixed_boundary_bundle_passes():
+    result = check_records(BOUNDARY)
+    assert result["failures"] == [], result["failures"]
+    assert result["records"] == 8
+
+
+def test_customer_failures_do_not_echo_customer_text():
+    result = check_records(INVALID / "customer-quoted")
+    assert all("jump host" not in item["message"] for item in result["failures"])
+
+
+def test_a_customer_record_links_out_but_nothing_links_in(tmp_path):
+    shutil.copytree(BOUNDARY, tmp_path / "kb")
+    lesson = tmp_path / "kb/projects/alpha/lessons/LES-0001.md"
+    assert "target: SRC-0001" in lesson.read_text()  # out to a team source: allowed
+    internal = tmp_path / "kb/projects/internal/decisions/DEC-0001.md"
+    internal.write_text(
+        internal.read_text().replace(
+            "links: []", "links:\n  - {type: implements, target: LES-0002}"
+        )
+    )
+    failures = check_records(tmp_path / "kb")["failures"]
+    assert [(item["path"], item["pointer"]) for item in failures] == [
+        ("projects/internal/decisions/DEC-0001.md", "/links/0/target")
+    ]
+    assert "project beta" in failures[0]["message"]
+
+
+def test_a_project_subfolder_is_placed_by_the_knowledge_toml_root(tmp_path):
+    shutil.copytree(BOUNDARY, tmp_path / "kb")
+    assert check_records(tmp_path / "kb/projects/beta")["failures"] == []
+    moved = tmp_path / "kb/team/LES-0002.md"
+    (tmp_path / "kb/projects/beta/lessons/LES-0002.md").rename(moved)
+    failures = check_records(tmp_path / "kb/team")["failures"]
+    assert [(item["path"], item["pointer"]) for item in failures] == [("LES-0002.md", "/boundary")]
+
+
+@pytest.mark.parametrize(
+    ("path", "project"),
+    [
+        ("projects/alpha/lessons/a.md", "alpha"),
+        ("projects/alpha/a.md", "alpha"),
+        ("projects/a.md", None),
+        ("team/projects/alpha/a.md", None),
+        ("projects/Alpha/a.md", None),
+        ("a.md", None),
+    ],
+)
+def test_project_of(path, project):
+    assert project_of(path) == project
+
+
+def test_visibility_for_index_render_and_search():
+    customer = {"boundary": "customer", "scope": "project"}
+    plain = {"scope": "project"}
+    assert visible_in(plain, "projects/alpha/a.md")
+    assert not visible_in(customer, "projects/alpha/a.md")
+    assert visible_in(customer, "projects/alpha/a.md", "alpha")
+    assert not visible_in(customer, "projects/alpha/a.md", "beta")
+    assert not visible_in(customer, "lessons/a.md", "alpha")
+    entries = [
+        {"path": "team/a.md", "header": {"scope": "team"}},
+        {"path": "projects/alpha/b.md", "header": customer},
+        {"path": "projects/beta/c.md", "header": customer},
+        {"path": "projects/alpha/d.md", "header": plain},
+    ]
+    assert [e["path"] for e in team_inputs(entries)] == ["team/a.md", "projects/alpha/d.md"]
+    assert [e["path"] for e in team_inputs(entries, "alpha")] == [
+        "team/a.md",
+        "projects/alpha/b.md",
+        "projects/alpha/d.md",
+    ]
+
+
+@pytest.mark.parametrize(
+    "entry",
+    [
+        "{id: b-slug, resource: b-slug}",
+        "{resource: 'https://github.com/o/knowledge/blob/main/projects/alpha/x.vtt'}",
+        "{resource: 'projects\\\\alpha\\\\x.vtt'}",
+    ],
+)
+def test_a_team_record_cites_no_customer_record_or_path(tmp_path, entry):
+    shutil.copytree(INVALID / "customer-source-path", tmp_path / "kb")
+    lesson = record(kind="lesson", status="open", sources="\n  - " + entry)
+    (tmp_path / "kb/a.md").write_text(lesson)
+    failures = check_records(tmp_path / "kb")["failures"]
+    assert [(item["path"], item["pointer"]) for item in failures] == [("a.md", "/sources/0")]
+
+
+def test_a_path_under_a_project_without_customer_records_may_be_cited(tmp_path):
+    (tmp_path / "knowledge.toml").write_text(PIN)
+    lesson = record(kind="lesson", status="open", sources="\n  - {resource: projects/ours/x.md}")
+    (tmp_path / "a.md").write_text(lesson)
+    assert check_records(tmp_path)["failures"] == []
+
+
+@pytest.mark.parametrize(
+    ("located", "body", "fails"),
+    [
+        ("team/a.md", "[x](../projects/acme/missing.md)", True),
+        ("team/a.md", "[x]: <projects/acme/b.md>", True),
+        ("team/a.md", "[x](https://github.com/o/k/blob/main/projects/acme/b.md)", True),
+        ("team/a.md", "[x](projects/acme/b.md)", True),  # names the customer anyway
+        ("team/a.md", "[x](../projects/ours/b.md)", False),
+        ("projects/acme/a.md", "[x](b.md)", False),
+        ("projects/other/a.md", "[x](../acme/b.md)", True),
+    ],
+)
+def test_a_body_link_into_a_customer_project_fails(tmp_path, located, body, fails):
+    shutil.copytree(INVALID / "customer-body-link", tmp_path / "kb")
+    (tmp_path / "kb/a.md").unlink()
+    target = tmp_path / "kb" / located
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(record(kind="convention", status="active", body=body))
+    failures = check_records(tmp_path / "kb")["failures"]
+    assert bool(failures) is fails, failures

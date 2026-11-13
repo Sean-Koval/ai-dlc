@@ -182,6 +182,11 @@ class RecordGet(Payload):
     """One knowledge record by id or alias."""
 
     id: str = Field(min_length=1)
+    project: str | None = Field(
+        default=None,
+        description="customer project the caller works in; boundary: customer records "
+        "of other projects are never returned",
+    )
 
 
 class RecordSearch(Payload):
@@ -192,6 +197,11 @@ class RecordSearch(Payload):
     labels: list[str] = Field(default_factory=list)
     status: str | None = None
     text: str | None = None
+    project: str | None = Field(
+        default=None,
+        description="customer project the caller works in; boundary: customer records "
+        "of other projects are never returned",
+    )
 
 
 class RecordsChanged(Payload):

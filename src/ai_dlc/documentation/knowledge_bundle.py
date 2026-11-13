@@ -6,7 +6,9 @@ moves to ``aliases``, a file named after the slug is renamed, and every typed li
 ``sources`` entry and relative markdown link that pointed at the slug or its file is
 rewritten. ``index_records`` writes one Open Knowledge Format v0.2 section 8
 ``index.md`` per directory; the root one carries ``okf_version: "0.2"``. Each index
-also derives ``superseded_by``, so records are never edited to carry it.
+also derives ``superseded_by``, so records are never edited to carry it. A
+``boundary: customer`` record is listed and counted only by the indexes inside its
+own ``projects/<name>/``; no other index lists it or links into that project.
 
 Both are deterministic, use no model and change nothing on a second run. Both read
 the directories in ``[check] roots`` of ``knowledge.toml`` (all of ``root`` when
@@ -26,6 +28,7 @@ from typing import Any
 import yaml
 
 from ai_dlc.documentation import knowledge_records as records
+from ai_dlc.documentation.knowledge_check import is_customer, project_of, visible_in
 from ai_dlc.documentation.knowledge_notes import split
 
 CONFIG = "knowledge.toml"
@@ -387,23 +390,42 @@ def _pages(scan: _Scan, successors: dict[str, list[str]]) -> dict[Path, str]:
     for directory in directories:
         if directory != scan.folder:
             children[directory.parent].append(directory)
-    totals: dict[Path, int] = defaultdict(int)
-    for directory, items in by_directory.items():
-        for ancestor in (directory, *directory.parents):
-            totals[ancestor] += len(items)
-            if ancestor == scan.folder:
-                break
-    return {
-        directory: _page(
+    # A customer project's tree is listed only from inside it (KAN-465).
+    customer = {
+        scan.folder / "projects" / name
+        for item in scan.records
+        if is_customer(item.record) and (name := project_of(item.relative))
+    }
+    pages = {}
+    for directory in sorted(directories):
+        view = project_of(f"{directory.relative_to(scan.folder).as_posix()}/{INDEX}")
+        visible = [item for item in scan.records if visible_in(item.record, item.relative, view)]
+        listed = {id(item) for item in visible}
+        totals: dict[Path, int] = defaultdict(int)
+        for item in visible:
+            for ancestor in item.path.parents:
+                totals[ancestor] += 1
+                if ancestor == scan.folder:
+                    break
+        shown = [
+            child
+            for child in sorted(children[directory])
+            if totals[child]
+            and (child not in customer or project_of(f"{_rel(scan, child)}/x") == view)
+        ]
+        pages[directory] = _page(
             scan.folder,
             directory,
-            sorted(children[directory]),
-            by_directory.get(directory, []),
+            shown,
+            [item for item in by_directory.get(directory, []) if id(item) in listed],
             totals,
             successors,
         )
-        for directory in sorted(directories)
-    }
+    return pages
+
+
+def _rel(scan: _Scan, directory: Path) -> str:
+    return directory.relative_to(scan.folder).as_posix()
 
 
 def _page(
