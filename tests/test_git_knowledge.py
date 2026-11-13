@@ -190,6 +190,27 @@ def test_search_filters_on_header_and_reads_bodies_only_for_text(store, monkeypa
     assert sorted(i["id"] for i in found) == ["SRC-0001", "pin-harness-by-digest"]
 
 
+def test_search_returns_customer_records_only_to_their_project(store):
+    clone = store["clone"]
+    alpha = clone / "projects/alpha"
+    alpha.mkdir(parents=True)
+    customer = {"scope": "project", "boundary": "customer", "tags": ["splunk"]}
+    (alpha / "gotcha.md").write_text(record("alpha-gotcha", "lesson", **customer))
+    (clone / "projects/beta").mkdir()
+    (clone / "projects/beta/broken.md").write_text("---\nid: x\ntype: lesson\n---\n")
+    (clone / "records/tagged.md").write_text(record("team-lesson", "lesson", tags=["splunk"]))
+    provider = registry(store).get("team")
+
+    def found(**filters):
+        result = provider.search(labels=["splunk"], **filters)
+        return [item["id"] for item in result["items"]], [i["path"] for i in result["invalid"]]
+
+    assert found() == (["team-lesson"], [])
+    assert found(text="alpha-gotcha") == ([], [])
+    assert found(project="beta") == (["team-lesson"], ["projects/beta/broken.md"])
+    assert found(project="alpha") == (["alpha-gotcha", "team-lesson"], [])
+
+
 def test_invalid_records_are_reported_not_returned(store):
     (store["clone"] / "records/broken.md").write_text("---\nid: x\ntype: decision\n---\n")
     result = registry(store).get("team").search()
