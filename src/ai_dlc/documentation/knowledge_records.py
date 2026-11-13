@@ -417,6 +417,22 @@ def envelope(record: KnowledgeRecord, body: str) -> SourceEnvelope:
     )
 
 
+def okf_status(record: KnowledgeRecord) -> str:
+    """The OKF v0.2 lifecycle status (draft | stable | deprecated) for a record."""
+    return OKF_STATUS[record.type].get(record.status, "stable")
+
+
+def pin_errors(knowledge_toml: dict) -> list[str]:
+    """Check a parsed ``knowledge.toml`` pins a record format this ai-dlc reads."""
+    table = knowledge_toml.get("format")
+    version = table.get("version") if isinstance(table, dict) else None
+    if version is None:
+        return [f"format.version: pin the record format, e.g. version = {FORMAT_VERSION}"]
+    if isinstance(version, bool) or version != FORMAT_VERSION:
+        return [f"format.version: {version!r} is not supported; this ai-dlc reads {FORMAT_VERSION}"]
+    return []
+
+
 def retracted_by(items: Iterable[KnowledgeRecord]) -> dict[str, list[str]]:
     """For each retracted record id, the ids of the accepted decisions retracting it.
 
@@ -443,19 +459,3 @@ def retracted_by(items: Iterable[KnowledgeRecord]) -> dict[str, list[str]]:
 def effective_status(record: KnowledgeRecord, retractions: dict[str, list[str]]) -> str:
     """The status readers show: ``retracted`` for a retracted record, else its own."""
     return RETRACTED if record.id in retractions else record.status
-
-
-def okf_status(record: KnowledgeRecord) -> str:
-    """The OKF v0.2 lifecycle status (draft | stable | deprecated) for a record."""
-    return OKF_STATUS[record.type].get(record.status, "stable")
-
-
-def pin_errors(knowledge_toml: dict) -> list[str]:
-    """Check a parsed ``knowledge.toml`` pins a record format this ai-dlc reads."""
-    table = knowledge_toml.get("format")
-    version = table.get("version") if isinstance(table, dict) else None
-    if version is None:
-        return [f"format.version: pin the record format, e.g. version = {FORMAT_VERSION}"]
-    if isinstance(version, bool) or version != FORMAT_VERSION:
-        return [f"format.version: {version!r} is not supported; this ai-dlc reads {FORMAT_VERSION}"]
-    return []
