@@ -130,6 +130,17 @@ def test_init_customer_refuses_a_bad_name_or_a_used_directory(tmp_path):
         customer_files("acme", codeowners=["not a handle"])
 
 
+def test_init_customer_refuses_a_directory_inside_another_repository(team):
+    with pytest.raises(RefusedError, match="inside"):
+        init_customer(team / "acme-knowledge", "acme")
+    assert not (team / "acme-knowledge").exists()
+
+
+def test_init_customer_makes_its_own_git_repository(tmp_path):
+    init_customer(tmp_path / "acme-knowledge", "acme")
+    assert (tmp_path / "acme-knowledge" / ".git").is_dir()
+
+
 def test_cli_init_dry_run_writes_nothing(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     result = CliRunner().invoke(app, ["knowledge", "init", "--customer", "acme", "--dry-run"])
@@ -167,6 +178,21 @@ def test_customer_repository_check_passes_its_own_records(acme):
         ),
         (lesson("x-body", body="See [it](../../../../team/lessons/a.md)."), "outside"),
         (lesson("x-file", body="See [it](file:///etc/hosts)."), "outside"),
+        (lesson("x-drive", body="See [it](C:\\Data\\notes.md)."), "outside"),
+        (lesson("x-drive2", body="See [it](C:/Data/notes.md)."), "outside"),
+        (lesson("x-unc", body="See [it](//server/share/notes.md)."), "outside"),
+        (lesson("x-auto", body="See <file:///etc/hosts>."), "outside"),
+        (lesson("x-href", body='See <a href="../../../../x.md">it</a>.'), "outside"),
+        (
+            lesson("x-team-id").replace("{resource: KAN-1}", "{id: LES-0099, resource: KAN-1}"),
+            "outside",
+        ),
+        (
+            lesson("x-team-link", extra="").replace(
+                "links: []", "links:\n  - {type: belongs_to, target: LES-0099}"
+            ),
+            "outside",
+        ),
     ],
 )
 def test_customer_repository_check_fails_anything_that_leaves_it(acme, record, message):
@@ -186,6 +212,32 @@ def test_customer_repository_allows_a_work_item_and_web_links_in_the_body(acme):
         ),
     )
     assert check_records(acme)["status"] == "valid", failures(acme)
+
+
+def test_customer_repository_link_through_a_symlink_that_leaves_it_fails(acme, tmp_path):
+    outside = tmp_path / "elsewhere"
+    outside.mkdir()
+    (outside / "notes.md").write_text("private\n")
+    (acme / "projects/acme/shared").symlink_to(outside, target_is_directory=True)
+    write(
+        acme, "projects/acme/lessons/bad.md", lesson("x-link", body="See [n](../shared/notes.md).")
+    )
+    assert any(p.endswith("bad.md") and "outside" in m for p, _q, m in failures(acme))
+
+
+def test_a_repo_table_without_a_valid_declaration_fails_closed(acme):
+    toml = acme / "knowledge.toml"
+    toml.write_text(
+        toml.read_text().replace(
+            'boundary = "customer"\nproject = "acme"\n', 'boundry = "customer"\n'
+        )
+    )
+    write(
+        acme, "projects/acme/lessons/bad.md", lesson("x-esc", body="[x](../../../../../etc/passwd)")
+    )
+    found = failures(acme)
+    assert any(p == "/repo/boundary" for _path, p, _m in found), found
+    assert any(path.endswith("bad.md") for path, _p, _m in found)
 
 
 def test_customer_repository_record_outside_its_project_folder_fails(acme):
@@ -277,6 +329,9 @@ def test_promote_with_a_deny_list_term_exits_non_zero_and_writes_nothing(acme, t
         {"summary": SUMMARY + "Host acme_prod_01 was down.\n"},
         {"title": "Wile E Coyote's window"},
         {"slug": "acme-window"},
+        {"summary": SUMMARY + "Seen at \uff21\uff23\uff2d\uff25.\n"},  # full width
+        {"summary": SUMMARY + "Seen at Ac\u200bme.\n"},  # zero-width space
+        {"summary": SUMMARY + "Both ACMEs agreed.\n"},
     ):
         with pytest.raises(RefusedError, match="deny-list"):
             run_promote(acme, team, **change)
@@ -335,6 +390,28 @@ def test_promote_refuses_a_payload_quote(acme, team):
         )
 
 
+def test_promote_refuses_a_quote_from_any_customer_file(acme, team):
+    # A Source cited only through sources[].id, and a file that is not a valid record,
+    # are still customer words (fail closed).
+    words = "the replica lag alarm fires whenever the nightly export job overlaps backups"
+    write(
+        acme,
+        "projects/acme/sources/SRC-0001.md",
+        lesson("SRC-0001", body=words).replace("type: lesson", "type: source"),
+    )
+    record = acme / "projects/acme/lessons/LES-0001.md"
+    record.write_text(
+        record.read_text().replace("{resource: KAN-1}", "{id: SRC-0001, resource: KAN-1}")
+    )
+    with pytest.raises(RefusedError, match="quotes"):
+        run_promote(acme, team, summary=SUMMARY + words.capitalize() + ".\n")
+    other = "our staging cluster rotates its certificates every ninety days without warning"
+    write(acme, "projects/acme/notes/scratch.md", "not a record at all\n" + other + "\n")
+    with pytest.raises(RefusedError, match="quotes"):
+        run_promote(acme, team, summary=SUMMARY + other.capitalize() + ".\n")
+    assert branches(team) == ["main"]
+
+
 def test_promote_only_from_a_numbered_customer_record_into_a_team_repository(acme, team, tmp_path):
     write(acme, "projects/acme/lessons/draft.md", lesson("acme-draft-lesson"))
     with pytest.raises(RefusedError, match="draft slug"):
@@ -377,3 +454,16 @@ def test_promote_inside_a_team_repository_projects_folder(tmp_path):
     git(repo, "worktree", "add", "-q", str(tree), result["branch"])
     assert result["paths"][1].startswith("team/lessons/")
     assert check_records(tree)["status"] == "valid", check_records(tree)["failures"]
+
+
+def test_promote_into_a_team_repository_inside_a_larger_checkout(acme, team, tmp_path):
+    mono = tmp_path / "mono"
+    write(mono, "README.md", "monorepo\n")
+    shutil.copytree(team, mono / "kb", ignore=shutil.ignore_patterns(".git"))
+    commit_all(mono)
+    result = promote(
+        acme, "LES-0001", summary=SUMMARY, title=TITLE, owner="sean", to=mono / "kb", today=DAY
+    )
+    files = git(mono, "show", "--name-only", "--format=", result["branch"]).split()
+    assert files and all(name.startswith("kb/") for name in files)
+    assert git(mono, "status", "--porcelain") == ""

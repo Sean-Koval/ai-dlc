@@ -75,7 +75,7 @@ read is unavailable, not an error. The `zoom` and `google-meet` providers implem
 The keys a knowledge repository's `knowledge.toml` may carry are `[format] version`
 (required), `[repo] boundary, project, deny_list` (a customer repository),
 `[check] roots`, `[wiki] site, source, project`, and `[transcripts] owner`
-(required to pull transcripts), `scope` and `[[transcripts.customers]] project, titles,
+(required to pull transcripts), `scope`, `internal` and `[[transcripts.customers]] project, titles,
 participants, repo_env`. A customer transcript lands in the customer's own repository,
 whose Source records carry `boundary: customer` and the optional record field `project`.
 That repository must declare `[repo] boundary = "customer"` and the same `project`.

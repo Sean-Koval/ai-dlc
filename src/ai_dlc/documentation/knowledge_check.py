@@ -859,14 +859,17 @@ def passages(text: str) -> set[tuple[str, ...]]:
 
 REPO = "repo"
 _SCHEME = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
+_DRIVE = re.compile(r"^[A-Za-z]:")  # a one-letter scheme is a drive
+_AUTOLINK = re.compile(r"<([A-Za-z][A-Za-z0-9+.-]*:[^>\s]*)>")
+_HTML_LINK = re.compile(r"""\b(?:href|src)\s*=\s*["']?([^"'\s>]+)""", re.IGNORECASE)
 
 
 def repo_boundary(parsed: Mapping[str, Any]) -> tuple[str | None, list[str]]:
     """``(project, problems)`` of a parsed ``knowledge.toml`` ``[repo]`` declaration.
 
-    ``project`` is set only for a valid customer repository declaration. A ``[repo]``
-    table that is malformed yields problems; callers treat it as a customer repository
-    of no project, which nothing may enter or leave.
+    ``project`` is set only for a valid customer repository declaration. Any other
+    ``[repo]`` table, a typo or a missing key included, yields problems; callers treat it
+    as a customer repository of no project, which nothing may enter or leave.
     """
     table = parsed.get(REPO)
     if table is None:
@@ -876,8 +879,6 @@ def repo_boundary(parsed: Mapping[str, Any]) -> tuple[str | None, list[str]]:
     boundary = table.get("boundary")
     project = table.get("project")
     problems = []
-    if boundary is None and project is None:
-        return None, []
     if boundary != "customer":
         problems.append(f'{REPO}/boundary: the only repository boundary is "customer"')
     if not isinstance(project, str) or not SLUG.fullmatch(project):
@@ -902,7 +903,8 @@ def _check_customer_repo(
     """In a declared customer repository nothing points outside it (KAN-475)."""
     if settings is None:
         return
-    _path, shown, parsed = settings
+    config_path, shown, parsed = settings
+    root = config_path.parent.resolve()
     declared = parsed.get(REPO) is not None
     project, problems = repo_boundary(parsed)
     for problem in problems:
@@ -937,7 +939,9 @@ def _check_customer_repo(
             target = link.target
             if target in index:
                 continue
-            if link.type == "belongs_to" and (target == project or WORK_ITEM.match(target)):
+            if link.type == "belongs_to" and (
+                target == project or (WORK_ITEM.match(target) and not NUMBERED.match(target))
+            ):
                 continue
             bundle.fail(
                 path,
@@ -949,8 +953,10 @@ def _check_customer_repo(
                 if not value or value in index:
                     continue
                 relative = _repo_path(value)
-                outside = value.casefold().startswith("file:") or (
-                    relative is not None and _escapes(relative)
+                outside = (
+                    value.casefold().startswith("file:")
+                    or (relative is not None and _escapes(relative))
+                    or (value == entry.id and _names_a_record(value))
                 )
                 if outside:
                     bundle.fail(
@@ -959,25 +965,45 @@ def _check_customer_repo(
                         f"{value} resolves outside this customer repository",
                     )
                     break
-        for match in _MARKDOWN_LINK.finditer(bundle.bodies.get(path, "")):
-            target = (match.group(1) or match.group(2)).replace("\\", "/")
-            if _leaves_repo(located, target):
+        body = bundle.bodies.get(path, "")
+        for target in _body_links(body):
+            if _leaves_repo(root, located, target):
                 bundle.fail(path, "", f"links to {target}, outside this customer repository")
                 break
 
 
-def _leaves_repo(located: str, target: str) -> bool:
+def _names_a_record(value: str) -> bool:
+    """A ``sources`` id shaped like a record id or a draft slug, not a work item or key."""
+    return bool(NUMBERED.match(value)) or (
+        bool(SLUG.fullmatch(value)) and not WORK_ITEM.match(value)
+    )
+
+
+def _body_links(body: str) -> list[str]:
+    """Link targets in a body: Markdown links and references, autolinks and HTML."""
+    targets = [m.group(1) or m.group(2) for m in _MARKDOWN_LINK.finditer(body)]
+    targets += [m.group(1) for m in _AUTOLINK.finditer(body)]
+    targets += [m.group(1) for m in _HTML_LINK.finditer(body)]
+    return [target.replace("\\", "/") for target in targets]
+
+
+def _leaves_repo(root: Path, located: str, target: str) -> bool:
     """A body link target that names a local file outside the repository.
 
-    Web links stay allowed; ``file:`` links and relative paths that climb out are not.
+    Web links stay allowed; ``file:`` links, drive and network paths, and relative paths
+    that climb out, lexically or through a symlink, are not.
     """
-    if target.casefold().startswith("file:"):
+    if target.casefold().startswith("file:") or _DRIVE.match(target):
         return True
     if _SCHEME.match(target) or target.startswith("#"):
         return False
-    if target.startswith("/"):
+    if target.startswith(("/", "~")):
         return True
-    return _escapes(posixpath.normpath(posixpath.join(posixpath.dirname(located), target)))
+    plain = target.split("#", 1)[0].split("?", 1)[0]
+    joined = posixpath.normpath(posixpath.join(posixpath.dirname(located), plain))
+    if _escapes(joined):
+        return True
+    return not (root / joined).resolve().is_relative_to(root)
 
 
 # --- CI mode: accepted decisions are never edited in place ---------------------------

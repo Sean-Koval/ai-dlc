@@ -11,7 +11,8 @@ ai-dlc knowledge init --customer acme --codeowner @your-org/fde --deny "Acme Cor
 ai-dlc knowledge init --customer acme --codeowner @your-org/fde --deny "Acme Corp"
 ```
 
-This writes `acme-knowledge/` with a declared `knowledge.toml`, `deny-terms.txt`,
+Run it outside any checkout. It makes `acme-knowledge/` its own git repository, with
+a declared `knowledge.toml`, `deny-terms.txt`,
 CODEOWNERS, a README, the check workflow, `projects/acme/` and `inbox/`. It sets no
 `[wiki]`, so nothing renders to Confluence.
 
@@ -20,7 +21,9 @@ the customer's own systems. Add every customer name, host and identifier you kno
 to `deny-terms.txt`, one per line.
 
 Point the transcript route at the checkout with `KNOWLEDGE_REPO_ACME`. A checkout
-that does not declare `project = "acme"` receives nothing.
+that does not declare `project = "acme"` receives nothing. List your own people in
+the team repository's `[transcripts] internal`. A meeting that matches no customer
+and has anyone else in it goes nowhere.
 
 ## Promote a lesson
 

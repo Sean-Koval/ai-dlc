@@ -30,6 +30,10 @@ caller cannot read is skipped and its id logged. Routing lives in the team check
     titles = ["Alpha"]                 # case-insensitive substrings of the meeting title
     participants = ["@alpha.example"]  # substrings of a participant name or email
     repo_env = "KNOWLEDGE_REPO_ALPHA"  # default; names the variable holding the local path
+
+Once customer rules exist, a transcript that matches none goes to the team repository
+only when every participant matches ``[transcripts] internal`` (substrings of internal
+emails, or names when the provider gives no emails); otherwise it is skipped and logged.
 """
 
 import hashlib
@@ -124,16 +128,33 @@ def routing(root: Path) -> dict:
         if not isinstance(variable, str) or not _ENV_NAME.fullmatch(variable):
             raise RefusedError(f"{where}: repo_env must name an environment variable")
         customers.append({"project": entry["project"], "repo_env": variable, **patterns})
-    return {"owner": owner.strip(), "scope": scope, "customers": customers}
+    internal = table.get("internal") or []
+    if not isinstance(internal, list) or not all(
+        isinstance(v, str) and v.strip() for v in internal
+    ):
+        raise RefusedError("knowledge.toml [transcripts] internal must be a list of strings")
+    return {
+        "owner": owner.strip(),
+        "scope": scope,
+        "customers": customers,
+        "internal": [v.strip().casefold() for v in internal],
+    }
 
 
-def route(item: Mapping[str, Any], customers: list[dict]) -> dict | None | str:
+def route(
+    item: Mapping[str, Any], customers: list[dict], internal: list[str] | None = None
+) -> dict | None | str:
     """The customer a transcript belongs to, None for the team repository, or a skip reason.
 
-    A transcript that matches two customers is skipped rather than guessed.
+    A transcript that matches two customers is skipped rather than guessed. Once customer
+    rules exist, a transcript that matches none goes to the team repository only when
+    every participant is internal (KAN-475); otherwise it may be an unmapped customer
+    meeting, so it goes nowhere and is reported.
     """
     title = str(item.get("title", "")).casefold()
-    people = [p.casefold() for p in [*item.get("participants", []), *item.get("emails", [])]]
+    names = [str(p).strip().casefold() for p in item.get("participants") or [] if str(p).strip()]
+    emails = [str(e).strip().casefold() for e in item.get("emails") or [] if str(e).strip()]
+    people = [*names, *emails]
     matched = {
         customer["project"]: customer
         for customer in customers
@@ -142,10 +163,33 @@ def route(item: Mapping[str, Any], customers: list[dict]) -> dict | None | str:
     }
     if len(matched) > 1:
         return "matches several customers: " + ", ".join(sorted(matched))
-    return next(iter(matched.values()), None)
+    if matched:
+        return next(iter(matched.values()))
+    if customers and not all_internal(names, emails, internal or []):
+        return (
+            "matches no customer rule and not every participant is internal; add a "
+            "customer rule or list internal participants in [transcripts] internal"
+        )
+    return None
 
 
-def customer_repo(customer: Mapping[str, Any], environ: Mapping[str, str]) -> Path | str:
+def all_internal(names: list[str], emails: list[str], internal: list[str]) -> bool:
+    """Whether every participant is positively internal.
+
+    With emails, each one must match an ``internal`` pattern and no participant may be
+    without one. Without emails, each name must match.
+    """
+    if not internal or not names and not emails:
+        return False
+    known = emails if emails else names
+    if emails and len(emails) < len(names):
+        return False
+    return all(any(pattern in person for pattern in internal) for person in known)
+
+
+def customer_repo(
+    customer: Mapping[str, Any], environ: Mapping[str, str], team: Path | None = None
+) -> Path | str:
     """The customer repository's local checkout, or the reason it is unusable."""
     location = environ.get(customer["repo_env"], "").strip()
     if not location:
@@ -154,6 +198,10 @@ def customer_repo(customer: Mapping[str, Any], environ: Mapping[str, str]) -> Pa
             f"set {customer['repo_env']} to its local checkout"
         )
     root = Path(location).expanduser().resolve()
+    if team is not None:
+        team = team.resolve()
+        if root == team or root.is_relative_to(team) or team.is_relative_to(root):
+            return f"{customer['repo_env']} names the team checkout or a folder that overlaps it"
     config = root / "knowledge.toml"
     if not config.is_file():
         return f"{customer['repo_env']} does not name a knowledge repository checkout"
@@ -309,12 +357,12 @@ class TranscriptPull:
         }
 
         def target(item: Mapping[str, Any]) -> tuple[Path, dict | None] | str:
-            customer = route(item, settings["customers"])
+            customer = route(item, settings["customers"], settings["internal"])
             if customer is None:
                 return root, None
             if isinstance(customer, str):
                 return customer
-            found = customer_repo(customer, self.environ)
+            found = customer_repo(customer, self.environ, root)
             if isinstance(found, str):
                 return found  # never fall back to the team repository
             if found not in seen:

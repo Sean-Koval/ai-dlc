@@ -60,7 +60,11 @@ The checkout must declare `[repo] boundary = "customer"` and this `project`
 ([ADR 0007](../decisions/0007-customer-knowledge-repositories.md)).
 
 If the variable is unset or the checkout does not declare it, the transcript is
-skipped and logged, with no fallback to the team repository. A transcript that
+skipped and logged, with no fallback to the team repository.
+
+Once customer rules exist, a transcript that matches none goes to the team
+repository only when every participant matches `internal`. Otherwise it may be an
+unmapped customer meeting, so it is skipped and logged. A transcript that
 matches two customers is skipped too.
 
 ```toml
@@ -68,6 +72,7 @@ matches two customers is skipped too.
 [transcripts]
 owner = "<record owner>"   # required: owner of the Source records
 scope = "personal"         # team-repository transcripts: personal (default) or team
+internal = ["@example.com"]  # emails, or names when a provider gives none
 
 [[transcripts.customers]]
 project = "alpha"

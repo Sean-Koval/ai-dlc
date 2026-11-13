@@ -128,7 +128,7 @@ def knowledge_repo(tmp_path: Path, routes: str = ALPHA, name: str = "knowledge")
         (root / folder).mkdir(parents=True)
     (root / "knowledge.toml").write_text(
         '[format]\nversion = 1\n[check]\nroots = ["team", "projects"]\n'
-        f'[transcripts]\nowner = "ana"\nscope = "team"\n{routes}'
+        f'[transcripts]\nowner = "ana"\nscope = "team"\ninternal = ["@example.com", "Ana Ruiz", "Priya Rao", "Dana Lee"]\n{routes}'
     )
     return root
 
@@ -389,7 +389,8 @@ def test_customer_variable_must_name_that_customers_declared_repository(tmp_path
             "2026-11-01"
         )
         skipped = {entry["id"]: entry["reason"] for entry in result["skipped"]}
-        assert 'project = "alpha"' in skipped["Qx9YzZalpha=="]
+        reason = skipped["Qx9YzZalpha=="]
+        assert 'project = "alpha"' in reason or "team checkout" in reason
         for repo in (root, beta):
             assert not any("Qx9YzZalpha" in p.read_text() for p in repo.rglob("*") if p.is_file())
 
@@ -410,7 +411,8 @@ def test_dry_run_writes_nothing(tmp_path):
     reg = registry(FakeZoom(), FakeDrive())
     pull = TranscriptPull(tmp_path, CONFIG, into=root, registry=reg, environ=environ)
     result = pull.pull("2026-11-01T00:00:00+00:00", dry_run=True)
-    assert result["written"] == [] and len(result["planned"]) == 5
+    # The two meetings with no readable participants cannot be proven internal (KAN-475).
+    assert result["written"] == [] and len(result["planned"]) == 3
     assert [e["project"] for e in result["planned"]].count("alpha") == 1
     assert not md_files(root) and not md_files(alpha)
 
@@ -437,7 +439,51 @@ def test_route_matches_title_or_participant_email():
     item = {"title": "Sync", "participants": ["Bob"], "emails": ["bob@alpha.example"]}
     assert route(item, customers)["project"] == "alpha"
     assert route({"title": "Beta sync"}, customers)["project"] == "beta"
-    assert route({"title": "other"}, customers) is None
+    internal = ["@example.com", "dana lee"]
+    team = {"title": "other", "participants": ["Ana"], "emails": ["ana@example.com"]}
+    assert route(team, customers, internal) is None
+    assert route({"title": "other", "participants": ["Dana Lee"]}, customers, internal) is None
+    # KAN-475: an unmapped meeting goes to the team only when everyone is internal.
+    unmapped = (
+        {"title": "Weekly sync", "participants": ["Ana", "Zed"], "emails": ["ana@example.com"]},
+        {"title": "Weekly sync", "emails": ["ana@example.com", "zed@client.example"]},
+        {"title": "Weekly sync", "participants": ["Zed Client"]},
+        {"title": "Weekly sync"},
+    )
+    for item in unmapped:
+        assert "not every participant is internal" in route(item, customers, internal)
+    assert "not every participant" in route(team, customers)  # no internal list: deny
+    assert route({"title": "other"}, []) is None  # no customer rules: team only
+
+
+def test_a_customer_transcript_reaches_only_its_own_repository(tmp_path):
+    beta_rule = '[[transcripts.customers]]\nproject = "beta"\nparticipants = ["@beta.example"]\n'
+    root = knowledge_repo(tmp_path, ALPHA + beta_rule)
+    alpha, environ = customer_env(tmp_path)
+    beta = customer_repo_dir(tmp_path, project="beta")
+    environ = {**environ, "KNOWLEDGE_REPO_BETA": str(beta)}
+    reg = registry(FakeZoom(), FakeDrive())
+    result = TranscriptPull(
+        tmp_path, CONFIG, providers=["zoom"], into=root, registry=reg, environ=environ
+    ).pull("2026-11-01")
+    written = {entry["id"]: entry for entry in result["written"]}
+    assert written["Qx9YzZalpha=="]["repository"] == str(alpha)
+    for repo in (root, beta):
+        assert not any("Qx9YzZalpha" in p.read_text() for p in repo.rglob("*") if p.is_file())
+
+
+def test_unmapped_customer_meeting_goes_to_no_repository(tmp_path):
+    routes = ALPHA.replace('"@alpha.example"', '"@nobody.example"')
+    root = knowledge_repo(tmp_path, routes)
+    alpha, environ = customer_env(tmp_path)
+    reg = registry(FakeZoom(), FakeDrive())
+    result = TranscriptPull(
+        tmp_path, CONFIG, providers=["zoom"], into=root, registry=reg, environ=environ
+    ).pull("2026-11-01")
+    skipped = {entry["id"]: entry["reason"] for entry in result["skipped"]}
+    assert "not every participant is internal" in skipped["Qx9YzZalpha=="]
+    for repo in (root, alpha):
+        assert not any("Qx9YzZalpha" in p.read_text() for p in repo.rglob("*") if p.is_file())
 
 
 def test_since_needs_an_offset_and_config_needs_an_owner(tmp_path):

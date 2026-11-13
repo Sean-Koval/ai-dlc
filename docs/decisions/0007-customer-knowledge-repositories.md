@@ -49,6 +49,8 @@ to anything outside the repository, and a source or body link that leaves it.
 
 Render refuses a declared repository unless its `[wiki]` names the same project.
 Transcript routing refuses a repository that does not declare the route's project.
+A meeting that matches no customer goes to the team only when every participant
+matches `[transcripts] internal`; otherwise it goes nowhere and is reported.
 
 `knowledge promote` writes the team Source and the derived team record on a new
 branch of the team repository, through a temporary worktree. Nothing is pushed.

@@ -22,6 +22,7 @@ import re
 import shutil
 import tempfile
 import tomllib
+import unicodedata
 from collections.abc import Iterable, Mapping
 from datetime import UTC, date, datetime
 from pathlib import Path, PurePosixPath
@@ -64,7 +65,7 @@ _IDENTITY = {
     "GIT_COMMITTER_NAME": "ai-dlc",
     "GIT_COMMITTER_EMAIL": "ai-dlc@localhost",
 }
-# A payload larger than this is not read for quotes; the record and Sources still are.
+# Quotes are looked for in the first this-many bytes of each customer file.
 _PAYLOAD_LIMIT = 5_000_000
 
 
@@ -133,7 +134,8 @@ def customer_files(
             "- No link, source or path points outside this repository.\n"
             "- Nothing renders to a wiki until a wiki parent the customer approved is set\n"
             "  in `knowledge.toml`.\n"
-            "- Raw payloads under `inbox/` expire after 30 days, as in the team repository.\n"
+            "- Raw payloads under `inbox/` follow the team repository's 30-day retention\n"
+            "  rule; nothing here deletes them automatically yet.\n"
             "- To share a lesson with the team, write a summary without customer names,\n"
             "  quotes or system identifiers and run\n"
             "  `ai-dlc knowledge promote <ID> --to <team repository> --summary <file>`.\n"
@@ -186,6 +188,12 @@ def init_customer(
     files = customer_files(name, codeowners=codeowners, deny=deny, ai_dlc_ref=ai_dlc_ref)
     if target.exists() and (not target.is_dir() or any(target.iterdir())):
         raise RefusedError(f"{target} exists and is not empty; choose a new directory")
+    enclosing = _enclosing_repository(target)
+    if enclosing is not None:
+        raise RefusedError(
+            f"{target} is inside {enclosing}; a customer repository is its own git "
+            "repository, so choose a directory outside any checkout"
+        )
     result: dict[str, Any] = {
         "status": "ok",
         "path": str(target),
@@ -203,7 +211,17 @@ def init_customer(
         file = inside(target, relative)
         file.parent.mkdir(parents=True, exist_ok=True)
         file.write_text(text, encoding="utf-8")
+    run_git(target, "init", "--quiet")
     return result
+
+
+def _enclosing_repository(target: Path) -> Path | None:
+    """The git checkout or knowledge repository ``target`` would sit inside, if any."""
+    here = target.resolve()
+    for folder in (here, *here.parents):
+        if (folder / ".git").exists() or (folder / CONFIG).is_file():
+            return folder
+    return None
 
 
 # --- knowledge promote --------------------------------------------------------------
@@ -224,6 +242,9 @@ def _settings(root: Path) -> dict:
 
 
 def _normal(text: str) -> str:
+    """Casefolded, NFKC-normalised words with invisible format characters removed."""
+    text = unicodedata.normalize("NFKC", text)
+    text = "".join(char for char in text if unicodedata.category(char) != "Cf")
     return " " + " ".join(_SEPARATORS.sub(" ", text.casefold()).split()) + " "
 
 
@@ -257,9 +278,15 @@ def deny_terms(root: Path, parsed: Mapping[str, Any], project: str) -> list[str]
 
 
 def denied(text: str, terms: Iterable[str]) -> list[str]:
-    """The deny-list terms in ``text``, ignoring case and punctuation, as whole words."""
+    """The deny-list terms in ``text`` as whole words, ignoring case, width, punctuation
+    and invisible characters; a plural or possessive of a term counts too."""
     haystack = _normal(text)
-    return sorted({term for term in terms if _normal(term) in haystack})
+    found = set()
+    for term in terms:
+        words = _normal(term).strip()
+        if words and re.search(rf" {re.escape(words)}(?:e?s)? ", haystack):
+            found.add(term)
+    return sorted(found)
 
 
 def _walk(root: Path) -> dict[str, tuple[records.KnowledgeRecord, str]]:
@@ -282,36 +309,35 @@ def _walk(root: Path) -> dict[str, tuple[records.KnowledgeRecord, str]]:
 
 
 def _customer_texts(
-    root: Path,
-    every: Mapping[str, tuple[records.KnowledgeRecord, str]],
-    path: str,
+    root: Path, area: Path, every: Mapping[str, tuple[records.KnowledgeRecord, str]]
 ) -> list[str]:
-    """The customer words a summary may not quote: the record, its Sources, payloads."""
-    record, body = every[path]
-    names = {
-        name: key for key, (item, _b) in every.items() for name in (item.id, *(item.aliases or ()))
-    }
-    texts = [body, record.title or "", record.description or ""]
-    cited = [path]
-    for link in record.links:
-        target = names.get(link.target)
-        if link.type == "derived_from" and target:
-            cited.append(target)
-            texts.append(every[target][1])
-    for key in cited:
-        for entry in every[key][0].sources:
-            texts.append(entry.quote or "")
+    """Every customer word a summary may not quote, read fail-closed.
+
+    That is the raw text of every file in the customer area (the whole customer
+    repository, or ``projects/<name>/`` of a team one), parsed or not, plus every
+    in-repository file a record there cites. A large file is read up to a limit.
+    """
+    files: set[Path] = set()
+    for file in area.rglob("*"):
+        relative = file.relative_to(root)
+        if any(part == ".git" for part in relative.parts) or file.is_symlink():
+            continue
+        if file.is_file():
+            files.add(file)
+    for key, (item, _body) in every.items():
+        if not (root / key).resolve().is_relative_to(area):
+            continue
+        for entry in item.sources:
             relative = PurePosixPath(entry.resource.replace("\\", "/"))
             if "://" in entry.resource or relative.is_absolute() or ".." in relative.parts:
                 continue
             file = root / relative
-            if (
-                file.is_file()
-                and not file.is_symlink()
-                and file.resolve().is_relative_to(root)
-                and file.stat().st_size <= _PAYLOAD_LIMIT
-            ):
-                texts.append(file.read_text(encoding="utf-8", errors="replace"))
+            if file.is_file() and not file.is_symlink() and file.resolve().is_relative_to(root):
+                files.add(file)
+    texts = []
+    for file in sorted(files):
+        with file.open("rb") as handle:
+            texts.append(handle.read(_PAYLOAD_LIMIT).decode("utf-8", errors="replace"))
     return texts
 
 
@@ -375,6 +401,7 @@ def promote(
     if project is None or (declared is not None and project != declared):
         raise RefusedError(f"{record.id} sits outside {PROJECTS}/<name>/; fix it first")
 
+    area = source_root if declared is not None else source_root / PROJECTS / project
     if to is None and declared is not None:
         raise RefusedError("pass --to: promotion leaves a customer repository for a team one")
     target = Path(to).expanduser().resolve() if to is not None else source_root
@@ -410,7 +437,7 @@ def promote(
     if _CUSTOMER_PATH.search(written) or f"{PROJECTS}/{project}" in written:
         raise RefusedError("a promoted summary names no customer path")
     quoted = passages(f"{title}\n{summary}") & set().union(
-        *(passages(text) for text in _customer_texts(source_root, every, path))
+        *(passages(text) for text in _customer_texts(source_root, area, every))
     )
     if quoted:
         raise RefusedError(
@@ -496,7 +523,7 @@ def promote(
 
 
 def _commit(target: Path, branch: str, files: Mapping[str, str]) -> dict[str, Any]:
-    """Commit ``files`` on a new branch from ``HEAD`` in a temporary worktree."""
+    """Commit ``files`` on a new branch in a temporary worktree; the checkout is untouched."""
     try:
         top = Path(_git(target, "rev-parse", "--show-toplevel").strip()).resolve()
     except GitError as exc:
@@ -511,7 +538,16 @@ def _commit(target: Path, branch: str, files: Mapping[str, str]) -> dict[str, An
         == 0
     ):
         raise RefusedError(f"branch {branch} already exists in {top}")
-    base = _git(top, "rev-parse", "HEAD").strip()
+    # Branch from the remote default branch when there is one, so a promotion never
+    # carries the checkout's unrelated local commits.
+    default = run_git(
+        top, "rev-parse", "--verify", "--quiet", "refs/remotes/origin/HEAD", check=False
+    )
+    base = (
+        default.stdout.strip()
+        if default.returncode == 0
+        else _git(top, "rev-parse", "HEAD").strip()
+    )
     workspace = Path(tempfile.mkdtemp(prefix="ai-dlc-promote-"))
     tree = workspace / "tree"
     created = False
@@ -532,7 +568,7 @@ def _commit(target: Path, branch: str, files: Mapping[str, str]) -> dict[str, An
                 "knowledge check refused the promotion: "
                 + "; ".join(f"{i['path']}{i['pointer']}: {i['message']}" for i in ours)
             )
-        _git(tree, "add", "--", *files)
+        _git(repo, "add", "--", *files)
         environ = dict(os.environ)
         if run_git(tree, "config", "user.email", check=False).returncode:
             environ.update({k: v for k, v in _IDENTITY.items() if k not in environ})
