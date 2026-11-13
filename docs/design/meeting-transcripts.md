@@ -68,14 +68,18 @@ unmapped customer meeting, so it is skipped and logged. A transcript that
 matches two customers is skipped too.
 
 A customer's `titles` match whole words, ignoring case and Unicode compatibility
-forms such as full-width letters. "Alpha" matches "alpha: weekly" but not
-"Alphabet". In Japanese, Chinese or Thai, which have no spaces, a title rule
-matches inside words.
+forms such as full-width letters. "Alpha" matches "alpha: weekly" and
+"Alpha社定例". Japanese, Chinese and Thai have no spaces, so their characters
+count as word edges.
+
+A title with the term only inside a longer word, such as "AlphaCorp renewal
+prep", may still be about that customer. It is skipped and logged, never sent
+to the team repository, until a rule covers it.
 
 A customer's `participants`, like `internal`, match an exact address, or a
-domain and its subdomains. A bare word is a name and matches exactly, so write
-a domain as `@alpha.example`. A one-label domain such as `@io` is refused.
-Names count only when the provider gives no emails.
+domain and its subdomains. Names count only when the provider gives no emails.
+A one-word entry is a name, and the pull warns about it: write a domain as
+`@alpha.example`. A domain such as `@io` or `@co.uk` is refused.
 
 A team meeting with an outside guest is skipped until a customer rule covers
 it. The pull output names a customer meeting by provider and id only, never by

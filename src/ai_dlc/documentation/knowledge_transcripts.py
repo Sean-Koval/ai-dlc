@@ -111,7 +111,7 @@ def routing(root: Path) -> dict:
             "knowledge.toml [[transcripts.projects]] is retired: customer transcripts go to "
             "the customer's own repository through [[transcripts.customers]]"
         )
-    customers = []
+    customers, warnings = [], []
     for number, entry in enumerate(table.get("customers") or []):
         where = f"knowledge.toml [[transcripts.customers]] entry {number + 1}"
         if not isinstance(entry, dict) or not SLUG.fullmatch(str(entry.get("project", ""))):
@@ -127,6 +127,10 @@ def routing(root: Path) -> dict:
         patterns["titles"] = [_folded(v) for v in patterns["titles"]]
         if bare := _bare_domains(patterns["participants"]):
             raise RefusedError(f"{where}: participants {bare[0]!r} {_BARE}")
+        warnings += [
+            f"{where}: participants {word!r} {_BARE_WORD.format(word)}"
+            for word in _bare_words(patterns["participants"])
+        ]
         if not patterns["titles"] and not patterns["participants"]:
             raise RefusedError(f"{where}: give titles or participants to match")
         variable = entry.get("repo_env", repo_env(entry["project"]))
@@ -145,6 +149,7 @@ def routing(root: Path) -> dict:
         "scope": scope,
         "customers": customers,
         "internal": [v.strip().casefold() for v in internal],
+        "warnings": warnings,
     }
 
 
@@ -153,7 +158,8 @@ def route(
 ) -> dict | None | str:
     """The customer a transcript belongs to, None for the team repository, or a skip reason.
 
-    A transcript that matches two customers is skipped rather than guessed. Once customer
+    A transcript that matches two customers is skipped rather than guessed, as is one
+    whose title holds a customer's title term only inside a longer word. Once customer
     rules exist, a transcript that matches none goes to the team repository only when
     every participant is internal (KAN-475); otherwise it may be an unmapped customer
     meeting, so it goes nowhere and is reported.
@@ -161,14 +167,19 @@ def route(
     title = _folded(str(item.get("title", "")))
     names = [str(p).strip().casefold() for p in item.get("participants") or [] if str(p).strip()]
     emails = [str(e).strip().casefold() for e in item.get("emails") or [] if str(e).strip()]
-    matched = {
-        customer["project"]: customer
-        for customer in customers
-        if any(_has_words(title, _folded(pattern)) for pattern in customer["titles"])
-        or _any_matches(names, emails, customer["participants"])
-    }
+    matched, inside = {}, []
+    for customer in customers:
+        found = {_title_match(title, _folded(pattern)) for pattern in customer["titles"]}
+        if "word" in found or _any_matches(names, emails, customer["participants"]):
+            matched[customer["project"]] = customer
+        elif "inside" in found:
+            inside.append(customer["project"])
     if len(matched) > 1:
         return "matches several customers: " + ", ".join(sorted(matched))
+    if inside:
+        # It may be about that customer ("AlphaCorp renewal prep"), so it goes to
+        # neither repository until a rule says which (KAN-490).
+        return _INSIDE.format(", ".join(sorted(inside)))
     if matched:
         return next(iter(matched.values()))
     if customers and not all_internal(names, emails, internal or []):
@@ -251,14 +262,47 @@ class _People:
         return " ".join(name.casefold().split()) in self.names
 
 
-_BARE = "is a whole top-level domain; give a domain such as @alpha.example"
+_BARE = "is a whole top-level or public domain; give a domain such as @alpha.example"
+_BARE_WORD = (
+    "is one word, so it matches only a participant with that exact name; write a "
+    "domain as @{0}.example"
+)
+_INSIDE = (
+    "title contains customer {0}'s title term inside a longer word; add a customer rule "
+    "or rename the meeting"
+)
 # Scripts written without spaces between words: no word boundary can be found there.
 _UNSPACED = ("CJK ", "HIRAGANA", "KATAKANA", "THAI", "LAO", "KHMER", "MYANMAR", "TIBETAN")
+# Registrable under these, so a rule naming one would match unrelated organisations.
+_PUBLIC = frozenset(
+    f"{label}.{country}"
+    for labels, countries in (
+        (("co", "org", "ac", "gov", "net", "ltd", "plc", "me", "nhs"), ("uk",)),
+        (
+            ("com", "net", "org", "edu", "gov"),
+            ("au", "br", "cn", "mx", "sg", "hk", "tw", "tr", "ar"),
+        ),
+        (("co", "or", "ne", "ac", "go"), ("jp", "kr")),
+        (("co", "org", "net", "ac", "gov"), ("nz", "za", "in", "il", "id", "th")),
+    )
+    for label in labels
+    for country in countries
+)
 
 
 def _bare_domains(entries: list[str]) -> list[str]:
-    """``@io`` and the like: a domain entry with one label would match a whole TLD."""
-    return [e for e in entries if e.startswith("@") and "." not in e.strip().strip("@.")]
+    """``@io`` or ``@co.uk``: a domain entry that would match a whole TLD or public suffix."""
+    found = []
+    for entry in entries:
+        domain = entry.strip().strip("@.") if entry.startswith("@") else ""
+        if entry.startswith("@") and ("." not in domain or domain in _PUBLIC):
+            found.append(entry)
+    return found
+
+
+def _bare_words(entries: list[str]) -> list[str]:
+    """Participant entries that are one word with no ``@``: names, not domains (KAN-490)."""
+    return [e for e in entries if "@" not in e and len(e.split()) == 1]
 
 
 def _folded(text: str) -> str:
@@ -269,20 +313,34 @@ def _folded(text: str) -> str:
     return " ".join(text.casefold().split())
 
 
-def _has_words(title: str, pattern: str) -> bool:
-    """Whether ``pattern`` appears in ``title`` as whole words (both already folded).
+def _title_match(title: str, pattern: str) -> str | None:
+    """``"word"`` when ``pattern`` is in ``title`` as whole words, ``"inside"`` when it is
+    there only inside a longer word, else None (both already folded).
 
-    A letter or digit next to the pattern makes it part of a longer word, so "alpha"
-    is not in "alphabet"; an underscore separates. At an edge in a script written
-    without spaces (Chinese, Japanese, Thai and the like) there is no boundary to
-    find, so that edge matches as it is.
+    A letter, digit or combining mark next to the pattern makes it part of a longer
+    word, so "alpha" is only inside "alphabet"; punctuation and underscores separate.
+    A neighbour or pattern edge in a script written without spaces (Chinese, Japanese,
+    Thai and the like) is a boundary, as such scripts have none to find.
     """
     words = r"\s+".join(re.escape(word) for word in pattern.split())
     if not words:
-        return False
-    before = "" if _unspaced(pattern[0]) else r"(?<![^\W_])"
-    after = "" if _unspaced(pattern[-1]) else r"(?![^\W_])"
-    return re.search(before + words + after, title) is not None
+        return None
+    found = None
+    for match in re.finditer(f"(?=({words}))", title):
+        start, end = match.start(1), match.end(1)
+        if _edge(title, start - 1, pattern[0]) and _edge(title, end, pattern[-1]):
+            return "word"
+        found = "inside"
+    return found
+
+
+def _edge(title: str, at: int, inner: str) -> bool:
+    """Whether the character at ``at`` ends a word next to the pattern's ``inner`` edge."""
+    if at < 0 or at >= len(title):
+        return True
+    neighbour = title[at]
+    joins = neighbour.isalnum() or unicodedata.category(neighbour).startswith("M")
+    return not joins or _unspaced(inner) or _unspaced(neighbour)
 
 
 def _unspaced(char: str) -> bool:
@@ -456,6 +514,7 @@ class TranscriptPull:
             "existing": [],
             "skipped": [],
             "errors": [],
+            "warnings": settings["warnings"],
         }
 
         def target(item: Mapping[str, Any]) -> tuple[Path, dict | None] | str:

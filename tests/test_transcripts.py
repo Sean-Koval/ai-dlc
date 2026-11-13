@@ -515,10 +515,55 @@ def test_a_title_rule_in_a_script_without_spaces_matches_inside_words():
         assert isinstance(found, dict) and found["project"] == "alpha", title
 
 
+def test_a_customer_term_inside_a_longer_word_is_skipped_not_sent_to_the_team():
+    # KAN-490 review: an internal prep meeting about a customer stays out of the team
+    # repository until a rule says where it goes.
+    customers = [
+        {"project": "alpha", "titles": ["alpha"], "participants": []},
+        {"project": "beta", "titles": ["beta"], "participants": []},
+    ]
+    internal = ["@corp.com"]
+    for title in (
+        "AlphaCorp renewal prep",
+        "Alphas QBR prep",
+        "Alpha2026 planning",
+        "Alphabet sync",
+    ):
+        found = route({"title": title, "emails": ["sean@corp.com"]}, customers, internal)
+        assert isinstance(found, str) and "inside a longer word" in found, title
+        assert "alpha" in found and title.casefold() not in found.casefold()
+    # A whole-word match for one customer and a near miss for another: skipped too.
+    both = route({"title": "Alpha and Betamax", "emails": ["sean@corp.com"]}, customers, internal)
+    assert isinstance(both, str) and "beta" in both
+    # The term also as a whole word still routes.
+    found = route(
+        {"title": "Alpha: AlphaCorp renewal", "emails": ["sean@corp.com"]}, customers, internal
+    )
+    assert isinstance(found, dict) and found["project"] == "alpha"
+    assert route({"title": "Team sync", "emails": ["sean@corp.com"]}, customers, internal) is None
+
+
+def test_a_latin_title_term_next_to_chinese_or_japanese_text_matches():
+    customers = [{"project": "alpha", "titles": ["alpha"], "participants": []}]
+    for title in ("Alpha社定例", "定例Alpha", "週次アルファAlpha会議"):
+        found = route({"title": title, "emails": ["ana@example.com"]}, customers, [])
+        assert isinstance(found, dict) and found["project"] == "alpha", title
+
+
+def test_a_one_word_participant_rule_warns_that_it_is_a_name(tmp_path):
+    rule = '[[transcripts.customers]]\nproject = "alpha"\nparticipants = ["alpha", "Dana Lee"]\n'
+    warnings = routing(knowledge_repo(tmp_path, rule))["warnings"]
+    assert len(warnings) == 1 and "'alpha'" in warnings[0] and "@alpha.example" in warnings[0]
+    assert routing(knowledge_repo(tmp_path, ALPHA, name="k2"))["warnings"] == []
+
+
 def test_a_rule_naming_a_whole_top_level_domain_is_refused(tmp_path):
-    bare = '[[transcripts.customers]]\nproject = "alpha"\nparticipants = ["@io"]\n'
-    with pytest.raises(RefusedError, match="participants '@io'"):
-        routing(knowledge_repo(tmp_path, bare))
+    for number, domain in enumerate(("@io", "@co.uk", "@com.au", "@co.jp")):
+        bare = f'[[transcripts.customers]]\nproject = "alpha"\nparticipants = ["{domain}"]\n'
+        with pytest.raises(RefusedError, match=f"participants '{domain}'"):
+            routing(knowledge_repo(tmp_path, bare, name=f"k{number}"))
+    allowed = '[[transcripts.customers]]\nproject = "alpha"\nparticipants = ["@alpha.co.uk"]\n'
+    assert routing(knowledge_repo(tmp_path, allowed, name="ok"))["customers"]
     root = tmp_path / "bare-internal"
     root.mkdir()
     (root / "knowledge.toml").write_text(
@@ -548,6 +593,7 @@ def test_a_customer_transcript_reaches_only_its_own_repository(tmp_path):
     ).pull("2026-11-01")
     written = {entry["id"]: entry for entry in result["written"]}
     assert (alpha / written["Qx9YzZalpha=="]["record"]).is_file()
+    assert result["warnings"] == []
     for repo in (root, beta):
         assert not any("Qx9YzZalpha" in p.read_text() for p in repo.rglob("*") if p.is_file())
 
