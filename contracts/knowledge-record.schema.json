@@ -93,7 +93,8 @@
             "derived_from",
             "supersedes",
             "implements",
-            "codified_as"
+            "codified_as",
+            "retracts"
           ],
           "title": "Type",
           "type": "string"

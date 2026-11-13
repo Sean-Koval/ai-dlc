@@ -574,3 +574,25 @@ def test_the_retired_publish_path_is_gone():
     root = Path(__file__).resolve().parents[1]
     assert not (root / "agents/skills/kb-publish").exists()
     assert not (root / "contracts/publish.request.schema.json").exists()
+
+
+def test_a_new_retraction_rerenders_the_retracted_record(store):
+    fake = FakeConfluence()
+    render = renderer(store, fake)
+    render.render(store["base"])
+    head = git(store["repo"], "rev-parse", "HEAD")
+    retraction = record(
+        "retract-thursdays", links=[{"type": "retracts", "target": "ship-on-thursdays"}]
+    )
+    commit(store["repo"], "decisions/retract.md", retraction)
+    result = render.render(head)
+    actions = {page["key"]: page["action"] for page in result["pages"]}
+    assert actions["ship-on-thursdays"] == "update"
+    assert actions["retract-thursdays"] == "create"
+    page = fake.by_key("ship-on-thursdays")
+    # The provider only adds labels, so an earlier status label stays (as on supersession).
+    assert "retracted" in page["labels"]
+    value = page["props"]["ai-dlc"]["value"]["properties"]
+    assert value["status"] == "retracted" and value["retracted_by"] == "retract-thursdays"
+    row = "<td>ship-on-thursdays</td><td>decision</td><td>retracted</td>"
+    assert row in fake.by_key("index-team")["body"]

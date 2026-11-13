@@ -7,7 +7,7 @@ date: YYYY-MM-DD
 owner: github-login
 sources:                      # what it came from (OKF sources)
   - {id: SRC-NNNN, resource: path/or/url}  # add hash: sha256:<64 hex> for a derived_from target
-links: []                     # [{type: derived_from, target: SRC-NNNN}]; types: belongs_to, derived_from, supersedes, implements, codified_as
+links: []                     # [{type: derived_from, target: SRC-NNNN}]; types: belongs_to, derived_from, supersedes, implements, codified_as, retracts
 title: Short title            # shown in the OKF index
 description: One line for the index
 # boundary: customer          # project scope only; then phase: discovery | scoping | design | build | handoff
