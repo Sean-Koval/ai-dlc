@@ -267,6 +267,13 @@ POWERSHELL_DESTRUCTIVE = [
     "GIT.EXE push -f origin main",
     '& "C:\\Program Files\\Git\\cmd\\git.exe" push --force origin main',
     "C:\\Git\\cmd\\git.exe clean -fdx",
+    "C:\\Program` Files\\Git\\cmd\\git.exe push --force",
+    ". git.exe push --force",
+    "git.cmd push --force",
+    # The usual recursive delete is inside a script block.
+    "Get-ChildItem build | ForEach-Object { Remove-Item $_ -Recurse -Force }",
+    "gci build | % {ri $_ -r -fo}",
+    "try { Remove-Item src -Recurse } catch {}",
 ]
 
 
@@ -292,6 +299,9 @@ def test_powershell_destructive_command_is_denied(tmp_path, mode, command):
         "git.exe status",
         '& "C:\\Program Files\\Git\\cmd\\git.exe" log -1',
         "Get-Item src | Select-Object FullName",
+        "Get-ChildItem | Where-Object { $_.Length -gt 1kb }",
+        "$h = @{a = 1}; Write-Host ${env:PATH}",
+        "Write-Host 'Remove-Item { x }'",
     ],
 )
 def test_ordinary_powershell_command_is_allowed(tmp_path, command):

@@ -104,9 +104,10 @@ sandbox (`HANGAR_WORKSPACE` or `HANGAR_JOB_ID` set). Otherwise:
   `git clean -f`, force or delete pushes) with exit 2 and allows everything else.
   It judges Bash, PowerShell (Claude Code's shell tool on native Windows) and
   Codex `exec_command` calls alike. In PowerShell, `Remove-Item` and its aliases
-  (`ri`, `del`, `erase`, `rd`, `rmdir`) count as `rm`. A program is known by its
-  name, so `git.exe` and `/usr/bin/git` are `git`. Wrappers such as `cmd /c` or
-  `Invoke-Expression` are not inspected.
+  (`ri`, `rm`, `del`, `erase`, `rd`, `rmdir`) count as `rm`, and a script block's
+  commands are judged too. A program is known by its name, so `git.exe`,
+  `/usr/bin/git` and, in PowerShell, `C:\Git\cmd\git.exe` are `git`. Wrappers
+  such as `cmd /c` or `Invoke-Expression` are not inspected.
   A chained line (`&&`, `;`, a pipe, a newline or a substitution) is judged by its
   strictest command. It never applies the bound-push policy, so `git push` and
   `gh pr create` are not blocked.

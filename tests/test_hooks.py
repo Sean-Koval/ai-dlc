@@ -453,6 +453,9 @@ def test_specification_edit_warning(tmp_path):
         "del /s /q src",
         "git.exe reset --hard",
         '& "C:\\Program Files\\Git\\cmd\\git.exe" push --force origin main',
+        ".\\git.exe reset --hard",
+        "Microsoft.PowerShell.Management\\Remove-Item src -Recurse",
+        "Get-ChildItem build | ForEach-Object { Remove-Item $_ -Recurse -Force }",
     ],
 )
 def test_powershell_destructive_commands_are_denied(tmp_path, command):

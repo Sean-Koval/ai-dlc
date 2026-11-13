@@ -11,12 +11,14 @@ for `/usr/bin/git` in Bash too. Tracks
 
 ## What Changes
 
-- The classifier knows a program by its name alone: no directory and no `.exe`.
-  So `/usr/bin/git`, `git.exe` and `C:\Program Files\Git\cmd\git.exe` are `git`,
-  and `/bin/rm` is `rm`.
+- The classifier knows a program by its name alone: no directory and no `.exe`,
+  `.cmd`, `.bat` or `.com`. So `/usr/bin/git`, `git.exe` and, in PowerShell,
+  `C:\Program Files\Git\cmd\git.exe` are `git`, and `/bin/rm` is `rm`.
 - In a `PowerShell` line, `Remove-Item` and its aliases `ri`, `rm`, `del`, `erase`,
   `rd` and `rmdir` count as `rm`, so any call is destructive, as a plain `rm` is in
-  Bash. A backslash is read as a path separator there, never as an escape.
+  Bash. A backslash is read as a path separator there, never as an escape, and a
+  backtick-escaped space stays inside its word. The commands inside a script block
+  (`ForEach-Object { ... }`, `try { ... }`) and a dot-sourced program are judged too.
 - `ai-dlc hook pre-tool` and the shim share one entry point, `classify_shell`.
 
 ## Capabilities
@@ -28,5 +30,6 @@ for `/usr/bin/git` in Bash too. Tracks
 ## Impact
 
 `Remove-Item one-file.txt` is now denied in PowerShell, as `rm one-file.txt` is in
-Bash. Wrappers (`cmd /c`, `Invoke-Expression`, `Start-Process`) and `git -C dir`
-are still not inspected.
+Bash. Wrappers (`cmd /c`, `Invoke-Expression`, `Start-Process`), `git -C dir`, a
+Windows path with backslashes outside PowerShell, and Bash's own `{ ...; }` and
+`if ...; then` bodies are still not inspected.

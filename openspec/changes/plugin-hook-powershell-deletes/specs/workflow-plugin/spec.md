@@ -18,9 +18,10 @@ SHALL apply the shim's destructive check before delegating, so the CLI's version
 or failure cannot allow a destructive command, and SHALL judge a `PowerShell` line
 case-insensitively with its backtick escapes and continuations resolved and a
 backslash read as a path separator. The classifier SHALL know a program by its name
-alone, without a directory or an `.exe` suffix, and in a `PowerShell` line SHALL
-judge `Remove-Item` and its aliases `ri`, `rm`, `del`, `erase`, `rd` and `rmdir` as
-it judges `rm`. A
+alone, without a directory or an `.exe`, `.cmd`, `.bat` or `.com` suffix. In a
+`PowerShell` line it SHALL also judge the commands inside a script block and a
+dot-sourced program, and SHALL judge `Remove-Item` and its aliases `ri`, `rm`,
+`del`, `erase`, `rd` and `rmdir` as it judges `rm`. A
 delegate exit other than 0 or 2, or a delegate timeout, SHALL then allow.
 PreToolUse SHALL fail closed: an unreadable, empty or non-object payload, a call
 that names no tool and carries no command string, a shell call without a command
@@ -43,7 +44,7 @@ create `.ai-dlc/` in a repository.
 - **THEN** the hook exits 2 with a reason
 
 #### Scenario: PowerShell delete or git by its path
-- **WHEN** a `PowerShell` call runs `Remove-Item -Recurse src`, `del /s /q src` or `& "C:\Program Files\Git\cmd\git.exe" push --force`, or a `Bash` call runs `/usr/bin/git reset --hard`
+- **WHEN** a `PowerShell` call runs `Remove-Item -Recurse src`, `del /s /q src`, `gci build | % { ri $_ -r }` or `& "C:\Program Files\Git\cmd\git.exe" push --force`, or a `Bash` call runs `/usr/bin/git reset --hard`
 - **THEN** the hook exits 2 with a reason, while `Get-ChildItem` and `git.exe status` are allowed
 
 #### Scenario: Unreadable pre-tool payload

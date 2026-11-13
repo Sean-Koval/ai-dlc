@@ -74,6 +74,10 @@ HANGAR_LINE = (
 # Characters that end one simple command inside a shell line: lists (; & && ||), pipes,
 # newlines, subshells and command substitution ($( ) and backticks).
 SEPARATORS = ";&|()`\n"
+# A PowerShell script block ({ ... } after ForEach-Object, try, if) holds commands too.
+POWERSHELL_SEPARATORS = SEPARATORS + "{}"
+# Windows runs a program named without these extensions too (PATHEXT).
+PROGRAM_EXTENSIONS = (".exe", ".cmd", ".bat", ".com")
 # When segments disagree, the strictest category wins.
 SEVERITY = ("ordinary", "unsupported", "bound-operation", "destructive")
 # PowerShell's own ways to delete: Remove-Item and its built-in aliases. A POSIX shell has
@@ -81,15 +85,15 @@ SEVERITY = ("ordinary", "unsupported", "bound-operation", "destructive")
 POWERSHELL_DELETES = frozenset({"remove-item", "ri", "rm", "del", "erase", "rd", "rmdir"})
 
 
-def command_segments(command: str) -> list[list[str]] | None:
+def command_segments(command: str, separators: str = SEPARATORS) -> list[list[str]] | None:
     """Split a shell line into the words of each simple command, or None if unparseable."""
-    lexer = shlex.shlex(command, posix=True, punctuation_chars=SEPARATORS)
+    lexer = shlex.shlex(command, posix=True, punctuation_chars=separators)
     lexer.whitespace = " \t\r"  # a newline separates commands, so it is punctuation here
     lexer.whitespace_split = True
     segments: list[list[str]] = [[]]
     try:
         for token in lexer:
-            if token and all(character in SEPARATORS for character in token):
+            if token and all(character in separators for character in token):
                 segments.append([])
             else:
                 segments[-1].append(token)
@@ -110,6 +114,7 @@ def shell_text(tool: object, command: str) -> str:
         return command
     text = re.sub(r"`\r?\n", " ", command.lower())
     text = re.sub("`[\"']", "", text)  # an escaped quote neither opens nor closes a string
+    text = text.replace("` ", "\u00a0")  # an escaped space stays inside its word
     text = re.sub(r"`(.)", r"\1", text, flags=re.DOTALL)
     # A backslash is a path separator in PowerShell, never an escape, so the POSIX
     # tokenizer must not swallow it: C:\Git\cmd\git.exe is read as C:/Git/cmd/git.exe.
@@ -127,11 +132,11 @@ def classify_command(command: str, *, powershell: bool = False) -> str:
     A compound line (``a && b``, ``a; b``, a pipe, a newline or a substitution) is
     classified by its strictest simple command, so chaining cannot hide a destructive
     or bound operation. A program is known by its name alone, so ``/usr/bin/git`` and
-    ``git.exe`` are ``git``. With ``powershell``, the line is one ``shell_text`` prepared
-    and PowerShell's own deletes count as ``rm``. Commands reached through wrappers such
+    ``git.exe`` are ``git``. With ``powershell``, the line is one ``shell_text`` prepared,
+    a script block's commands are judged too and PowerShell's own deletes count as ``rm``. Commands reached through wrappers such
     as ``sh -c``, ``env``, ``cmd /c`` or ``Invoke-Expression`` are not inspected.
     """
-    segments = command_segments(command)
+    segments = command_segments(command, POWERSHELL_SEPARATORS if powershell else SEPARATORS)
     if segments is None:
         return "unsupported"
     categories = [_classify_words(words, powershell) for words in segments] or ["ordinary"]
@@ -139,13 +144,18 @@ def classify_command(command: str, *, powershell: bool = False) -> str:
 
 
 def program_name(word: str) -> str:
-    """A program as its name alone: no directory and, as Windows resolves it, no .exe."""
+    """A program as its name alone: no directory and, as Windows resolves it, no extension."""
     name = word.rsplit("/", 1)[-1]
-    return name[: -len(".exe")] if name.lower().endswith(".exe") else name
+    for extension in PROGRAM_EXTENSIONS:
+        if name.lower().endswith(extension):
+            return name[: -len(extension)]
+    return name
 
 
 def _classify_words(words: list[str], powershell: bool = False) -> str:
     """Classify the words of one simple command."""
+    if powershell and words[0] == "." and len(words) > 1:
+        words = words[1:]  # dot-sourcing runs the program like a call
     words = [program_name(words[0]), *words[1:]]
     if words[0] == "rm" or (powershell and words[0] in POWERSHELL_DELETES):
         return "destructive"
