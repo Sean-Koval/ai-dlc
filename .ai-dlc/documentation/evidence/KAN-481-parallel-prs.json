@@ -215,10 +215,10 @@
     },
     {
       "bound": {
-        "tests/test_changes.py": "7ffcd52cadbd5f09e6ef464a081daaec0291f1af0402a1601e1b04a6543252c6"
+        "tests/test_changes.py": "1aae5ae079a55a616b19ee35f33711ecc8d26fbbeaab709ae18fa136625b8fc4"
       },
       "outcome": "no-impact",
-      "reason": "Tests for fragments and the CHANGELOG.md edit check; no documentation describes them.",
+      "reason": "Tests for fragments and the CHANGELOG.md edit check (a direct edit passes only when every pending fragment was folded); no documentation describes them.",
       "reviewer": "Claude (agent)",
       "target": "tests/test_changes.py"
     },

@@ -114,15 +114,20 @@ def test_this_repository_fragments_are_valid() -> None:
 
 
 def changelog_edit_problems(root: Path, base: str) -> list[str]:
-    """CHANGELOG.md modified since `base` without folding fragments (deleting changes/ files)."""
+    """CHANGELOG.md modified since `base` other than by the release fold, which removes every
+    fragment that was pending at `base`."""
     names = git(root, "diff", "--name-status", base, "HEAD").stdout.splitlines()
-    edited = any(x.startswith("M") and x.split("\t")[-1] == "CHANGELOG.md" for x in names)
-    folded = any(x.startswith("D") and x.split("\t")[-1].startswith("changes/") for x in names)
-    return (
-        ["CHANGELOG.md: add changes/<KEY>.md instead; only the release fold edits it"]
-        if (edited and not folded)
-        else []
-    )
+    if not any(x.startswith("M") and x.split("\t")[-1] == "CHANGELOG.md" for x in names):
+        return []
+
+    def pending(rev: str) -> set[str]:
+        listed = git(root, "ls-tree", "-r", "--name-only", rev, "--", "changes/").stdout.split()
+        return {p for p in listed if Path(p).name not in {"README.md", ".gitkeep"}}
+
+    at_base = pending(base)
+    if at_base and not at_base & pending("HEAD"):
+        return []
+    return ["CHANGELOG.md: add changes/<KEY>.md instead; only the release fold edits it"]
 
 
 def test_changelog_is_edited_only_by_the_fold() -> None:
@@ -141,6 +146,17 @@ def test_the_changelog_check_tells_an_edit_from_a_fold(repo: Path) -> None:
     assert changelog_edit_problems(repo, "main")
     git(repo, "checkout", "-q", "fold")
     assert changelog_edit_problems(repo, "main") == []
+    # deleting one unrelated fragment doesn't make a direct edit a fold
+    write(repo, "changes/KAN-2.md", "- two (KAN-2).\n")
+    git(repo, "add", "-A")
+    git(repo, "commit", "-qm", "two")
+    git(repo, "tag", "two-pending")  # KAN-1 and KAN-2 pending
+    git(repo, "checkout", "-qb", "sneak")
+    git(repo, "rm", "-q", "changes/KAN-2.md")
+    write(repo, "CHANGELOG.md", log + "- straight in.\n")
+    git(repo, "commit", "-qam", "sneak")
+    assert changelog_edit_problems(repo, "two-pending")
+    git(repo, "checkout", "-q", "fold")
     git(repo, "tag", "with-fragment")
     assert changes["main"](["--root", str(repo), "--write"]) == 0
     git(repo, "add", "-A")
