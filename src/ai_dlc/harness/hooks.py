@@ -53,6 +53,18 @@ def _branch_work_id(root: Path) -> str | None:
     return None
 
 
+def _session_join(root: Path, payload: dict) -> str:
+    """Derive, export and record the session join key; optional, never raises."""
+    from ai_dlc.files import run_git
+    from ai_dlc.work.session_key import start_session
+
+    try:
+        branch = run_git(root, "branch", "--show-current", check=False).stdout.strip()
+        return start_session(root, branch, payload, os.environ)
+    except Exception:  # noqa: BLE001 -- the join key never fails a session
+        return ""
+
+
 def _session_recall(root: Path) -> list[dict]:
     from ai_dlc.config import resolve_runtime
     from ai_dlc.documentation.learnings import recall_work
@@ -255,6 +267,9 @@ def _handle_hook(root: Path, event: str, payload: dict) -> dict:
         from ai_dlc.environment.team_sources import source_update_notices
 
         context = session_context(root)
+        join_line = _session_join(root, payload)
+        if join_line:
+            context += "\n" + join_line
         notices = source_update_notices()
         if notices:
             context += "\n" + "\n".join(notices)

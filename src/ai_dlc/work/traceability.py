@@ -123,17 +123,22 @@ def render_ticket_body(work: dict) -> str:
     return "\n".join(sections).rstrip() + "\n"
 
 
-def render_pull_request_body(work: dict, *, closes: str | None = None) -> str:
+def render_pull_request_body(
+    work: dict, *, closes: str | None = None, session_keys: list[str] | None = None
+) -> str:
     """Render a pull request body from the record's own scope and acceptance.
 
     ``closes`` is the bare tracker number to close through GitHub's keyword; the caller
     decides whether the tracker is GitHub Issues, since only then does the keyword act.
+    ``session_keys`` become ``Work-Session:`` lines, one per session join key.
     """
     sections = ["## Scope", "", work["scope"], "", "## Acceptance", ""]
     sections.extend(f"- {item}" for item in work.get("acceptance", []))
     body = "\n".join(sections).rstrip() + "\n"
     if closes:
         body += f"\nCloses #{closes}\n"
+    if session_keys:
+        body += "\n" + "".join(f"Work-Session: {key}\n" for key in session_keys)
     return body
 
 

@@ -115,3 +115,4 @@ nav:
       - Provider toolsets PRD: design/provider-toolsets-prd.md
       - Design PM: design/design-pm.md
       - Jira Cloud: design/jira-cloud.md
+      - Session join key: design/session-join-key.md

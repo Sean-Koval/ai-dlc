@@ -167,12 +167,14 @@ def test_session_start_hook_includes_the_first_ten_lines(tmp_path, monkeypatch):
     root = project(tmp_path)
     for index in range(12):
         write_record(root, f"extra-{index:02d}", tracker=str(index))
-    context = handle_hook(root, "session-start", {})["context"]
+    context = handle_hook(root, "session-start", {"session_id": "s1"})["context"]
     lines = context.splitlines()
     assert lines[0] == "Read AGENTS.md and .ai-dlc/work; run ai-dlc next for the full summary."
     assert lines[1] == "Active work (16 of 17 records; tracker not consulted)"
-    assert len(lines) == 11
+    assert len(lines) == 13
     assert all("in progress" in line for line in lines[2:11])
+    assert lines[11].startswith("Session join key: aidlc1:::s1.")
+    assert lines[12] == "Work-Session: aidlc1:::s1"
 
     fallback = handle_hook(tmp_path / "absent", "session-start", {})["context"]
     assert fallback == "Read AGENTS.md and .ai-dlc/work; run ai-dlc next for the full summary."
@@ -181,7 +183,7 @@ def test_session_start_hook_includes_the_first_ten_lines(tmp_path, monkeypatch):
         "ai_dlc.harness.hooks._session_recall",
         lambda root: [{"path": "learnings/retry.md", "first_line": "Retry lessons"}],
     )
-    combined = handle_hook(root, "session-start", {})["context"]
+    combined = handle_hook(root, "session-start", {"session_id": "s1"})["context"]
     assert combined == context + (
         "\nRelevant learnings (read these notes):\nlearnings/retry.md: Retry lessons"
     )
