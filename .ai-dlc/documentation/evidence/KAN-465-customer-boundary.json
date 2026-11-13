@@ -2,46 +2,71 @@
   "decisions": [
     {
       "bound": {
+        "contracts/get.request.schema.json": "931613c14ab71647ac6beed593b19a0b19686441d46b9c5a604662b93034a240"
+      },
+      "outcome": "updated",
+      "reason": "Generated: get takes an optional project (KAN-465).",
+      "reviewer": "Claude (agent)",
+      "target": "contracts/get.request.schema.json"
+    },
+    {
+      "bound": {
+        "contracts/manifest.json": "e2cf9b850696c24c3e9163efdb9ed7bc534881de8cbbc6fcf3a3d2882a0de094"
+      },
+      "outcome": "updated",
+      "reason": "Generated manifest with project on get and search (KAN-465).",
+      "reviewer": "Claude (agent)",
+      "target": "contracts/manifest.json"
+    },
+    {
+      "bound": {
+        "contracts/search.request.schema.json": "a8bf23e6e5ed3e4f7162487cac7ca4d0c204fd7743c14f6d47da2e227bd21aaa"
+      },
+      "outcome": "updated",
+      "reason": "Generated: search takes an optional project (KAN-465).",
+      "reviewer": "Claude (agent)",
+      "target": "contracts/search.request.schema.json"
+    },
+    {
+      "bound": {
         "catalog:docs/architecture.md": "788b593066fcd5d1c9eb9ebbc3869971131d3ddb3ea3396bc8b9a6ea48ca8b55",
-        "docs/architecture.md": "abfbd4c86ee59a46c24738c19f0c5240a2bb1e88878cd60b8b78a6a291613390",
+        "docs/architecture.md": "099e45e56378bb4ea78edb3eec9e6a8ce7e7d60edd08d0b17aeeca9810351b82",
         "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/tracker-adapter-boundary/spec.md": "f47d11b47618751d7bbf2950dc74442f766a94f36f2379d1f4f343942ff112eb",
-        "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "6cfd743841b0c8862c751502ab494f0867a3a418ac878ea8cab389d8b03bc499",
-        "plugins/ai-dlc-workflow/README.md": "1c90defa77384652be8af275592048ff89a31d6e63ce58b1fd7dfde6d2b06b88",
+        "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "0f1c8aa313e9a3fde045156ab0918a2c00d770b3a8398d2b4f7df2db21f07b16",
+        "plugins/ai-dlc-workflow/README.md": "e016087aaa13f804660cc6dd08d3a2cd219f820e8c70a2c59ae4e4d74bd0288a",
         "plugins/ai-dlc-workflow/hooks/aidlc_hook.py": "621dec6fb8e24d199568d85ab36e36ff0931081393bb475f28e4b4f306a3d376",
         "plugins/ai-dlc-workflow/hooks/hooks.json": "ccba13e96d1b53ea5926fb9af2a3dd6c02817c182acbd8d002a54a1ba665cdad",
-        "plugins/ai-dlc-workflow/native/codex/.codex-plugin/plugin.json": "ccc9052ac9ab5c2a47b79443edb122016b9f637080e636c57c3b62b243789ad9",
-        "plugins/ai-dlc-workflow/native/codex/AGENTS.fragment.md": "abaabe2b4b31574d3d38c0b1f9fca4db358a3d038b798d820f5eaf571af3724e",
+        "plugins/ai-dlc-workflow/native/codex/.codex-plugin/plugin.json": "0ef457d6f1262875abd3448bc558004a8c923931a65bcef1bca43ffea0780ae1",
+        "plugins/ai-dlc-workflow/native/codex/AGENTS.fragment.md": "af43937c1adbe2ded3247675791fe94ecc0cce19a8fdbade2469319769b66ec6",
         "plugins/ai-dlc-workflow/native/codex/hooks.json": "4d2c2097f9c3004dca11d040acf3353eb6af9d0b96a63910f508a36a8d284f63",
         "plugins/ai-dlc-workflow/native/codex/hooks/aidlc_hook.py": "621dec6fb8e24d199568d85ab36e36ff0931081393bb475f28e4b4f306a3d376",
-        "plugins/ai-dlc-workflow/native/codex/skills/ai-dlc-workflow/SKILL.md": "fc81cb2b4f4fdf3f5b4ad107e19cdd0fee08a78b622f60c7664a5ee6484d542e",
+        "plugins/ai-dlc-workflow/native/codex/skills/ai-dlc-workflow/SKILL.md": "199a64bdf62a1de0027a6c87f53070cf89c56de33f10e125aeb35bf432c2a3aa",
         "plugins/ai-dlc-workflow/native/codex/skills/capture/SKILL.md": "c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
-        "plugins/ai-dlc-workflow/native/codex/skills/daily-note/SKILL.md": "c7fe91f4efa30e6e2080919d8379cc5407582130fe1cc5068f10e79e4258d8c4",
+        "plugins/ai-dlc-workflow/native/codex/skills/daily-note/SKILL.md": "7e6d34c7bbb6ffe054b347e4fc19857b91b6d3791273fdc708f5ce6f92cc6209",
         "plugins/ai-dlc-workflow/native/codex/skills/design-brief/SKILL.md": "e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5",
         "plugins/ai-dlc-workflow/native/codex/skills/design-evaluate/SKILL.md": "d6892ed5e426f8bbf0df4bba1bff09bbc602e2136d21a9369957eb47dbdaa26a",
         "plugins/ai-dlc-workflow/native/codex/skills/discovery/SKILL.md": "7460a3fa47474f28f2224eaea675438ba7cef08463d53bcf55d1a911e59ee2a2",
         "plugins/ai-dlc-workflow/native/codex/skills/document-organize/SKILL.md": "85353fd4bf2dc1f2ba4f3f7b6896093f38cc4b09d8ed2dacf950b10e568c7ead",
         "plugins/ai-dlc-workflow/native/codex/skills/document-review/SKILL.md": "5e2f71219b98cd53dd6a3a73b3bbccc1873b796a14ec1347875a39c911db9ad3",
         "plugins/ai-dlc-workflow/native/codex/skills/handoff/SKILL.md": "47813221a030ff1d19642b9e6ebf234ded18fd128fef857badd4b77612529ecd",
-        "plugins/ai-dlc-workflow/native/codex/skills/kb-publish/SKILL.md": "1a4d85383b6a5258a4e617e2f2d6ad5fcd907dd861aa50eb33d833d5f9624c2b",
         "plugins/ai-dlc-workflow/native/codex/skills/prd-draft/SKILL.md": "046b82e994b36b2202f7772aafc93557b903d2b541e69a62414d9b5a0b5d75fc",
         "plugins/ai-dlc-workflow/native/codex/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
-        "plugins/ai-dlc-workflow/plugin.lock.json": "788c90817e9b3fb875049d268cb8be7b45135a529ef573ebc6180e4a520c5af7",
-        "plugins/ai-dlc-workflow/skills/ai-dlc-workflow/SKILL.md": "fc81cb2b4f4fdf3f5b4ad107e19cdd0fee08a78b622f60c7664a5ee6484d542e",
+        "plugins/ai-dlc-workflow/plugin.lock.json": "5adca4f300f16e09ef5fc061bed3eb082918c10f7443b0b81473828b232b3632",
+        "plugins/ai-dlc-workflow/skills/ai-dlc-workflow/SKILL.md": "199a64bdf62a1de0027a6c87f53070cf89c56de33f10e125aeb35bf432c2a3aa",
         "plugins/ai-dlc-workflow/skills/capture/SKILL.md": "c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
-        "plugins/ai-dlc-workflow/skills/daily-note/SKILL.md": "c7fe91f4efa30e6e2080919d8379cc5407582130fe1cc5068f10e79e4258d8c4",
+        "plugins/ai-dlc-workflow/skills/daily-note/SKILL.md": "7e6d34c7bbb6ffe054b347e4fc19857b91b6d3791273fdc708f5ce6f92cc6209",
         "plugins/ai-dlc-workflow/skills/design-brief/SKILL.md": "e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5",
         "plugins/ai-dlc-workflow/skills/design-evaluate/SKILL.md": "d6892ed5e426f8bbf0df4bba1bff09bbc602e2136d21a9369957eb47dbdaa26a",
         "plugins/ai-dlc-workflow/skills/discovery/SKILL.md": "7460a3fa47474f28f2224eaea675438ba7cef08463d53bcf55d1a911e59ee2a2",
         "plugins/ai-dlc-workflow/skills/document-organize/SKILL.md": "85353fd4bf2dc1f2ba4f3f7b6896093f38cc4b09d8ed2dacf950b10e568c7ead",
         "plugins/ai-dlc-workflow/skills/document-review/SKILL.md": "5e2f71219b98cd53dd6a3a73b3bbccc1873b796a14ec1347875a39c911db9ad3",
         "plugins/ai-dlc-workflow/skills/handoff/SKILL.md": "47813221a030ff1d19642b9e6ebf234ded18fd128fef857badd4b77612529ecd",
-        "plugins/ai-dlc-workflow/skills/kb-publish/SKILL.md": "1a4d85383b6a5258a4e617e2f2d6ad5fcd907dd861aa50eb33d833d5f9624c2b",
         "plugins/ai-dlc-workflow/skills/prd-draft/SKILL.md": "046b82e994b36b2202f7772aafc93557b903d2b541e69a62414d9b5a0b5d75fc",
         "plugins/ai-dlc-workflow/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
         "pyproject.toml": "41ded8f89ba4f707f0fb7d8c940d78092636fa69c6aca27f9d636da0eaf60be3",
-        "scripts/build_workflow_plugin.py": "c5ba7b795eced373d60dee9d6154a7867655ba892be427012f88ceb79138bddb",
+        "scripts/build_workflow_plugin.py": "a5773663a08b9a776415be87b7163bb1aa3cabf1426ea9cc99fda4dce98521d7",
         "scripts/check_client_pins.py": "c0b4030b6767aee44975556f11a2c0dcf2b5aa67e232ec6182c1247630f53c8c",
         "scripts/check_generated.py": "80ff1f71cc3d6864b0d2b7555d42661b1fb2ef7f68544ca3e593ee14d9f4c4c2",
         "scripts/check_layout.py": "942ed109d998ed8d8004b8dbe6608b33df98876cdd8db6d004677dbcce1933a6",
@@ -54,10 +79,10 @@
         "src/ai_dlc/_windows_storage/__init__.py": "5715def899453f15265e13d52e5b518844cc9d057421cfa5279172d799d5f506",
         "src/ai_dlc/_windows_storage/_api.py": "d5fc4f971db8e706871c06e8119884848e505af6c45f4fbb5c2f7db513faf41b",
         "src/ai_dlc/_windows_storage/_security.py": "62785d4e088cd485816a33f35a7a559d3d1acf166093c413a3f4f79969056314",
-        "src/ai_dlc/cli.py": "04b575c292a9faf4c2a6cf1dc8f37fcf3cb06a56bc94b2d6acf0578c6eff928d",
+        "src/ai_dlc/cli.py": "80a7550ae98f9d81f16c353eb63e2c71c9e977d2bc697219a5bc0a9571d1693f",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
         "src/ai_dlc/conformance.py": "0ff247c065e89d4c5b43d844601dc809558c65a779c1600371953c0e2c44737b",
-        "src/ai_dlc/contracts.py": "46003a7439c7f6354dcdf3edd4ca7bd005b945ed409d47b63eb264d59202f11c",
+        "src/ai_dlc/contracts.py": "59b43b50b310903804cda0057166d1f1ab990c578fa1a847d33b99b20a67a923",
         "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
         "src/ai_dlc/documentation/decisions.py": "30c52c68b82bca8c899887617385adac25f9b0bb2e9aa81936b91b877c626d6c",
         "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
@@ -68,13 +93,14 @@
         "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
         "src/ai_dlc/documentation/documents.py": "763c9c2ff76c62e99eb6de4706f85edcaf57287f8c9bc8335c433d0163ba1812",
         "src/ai_dlc/documentation/fde.py": "3664430ebca9f3ef7ba7c7c431f7e4790176066510904ebe4d43d0a88ecf26e1",
-        "src/ai_dlc/documentation/knowledge.py": "64379be5f820df72056e992d50d91a099b6029b913804586208b80c73490887a",
+        "src/ai_dlc/documentation/knowledge.py": "8d60dfa7213b3121f106fabbf13c2ab5a52b7f5b43555a9ac91be04a9d6d9be0",
         "src/ai_dlc/documentation/knowledge_bundle.py": "a614f08dfcdb5b3700b05d86be482f239d8b34096a1117ceee336b4de2be14b1",
-        "src/ai_dlc/documentation/knowledge_check.py": "e56c3ddf3f256c94176e5c74b3bfba2ecd1a919db78ac3efdbe8e96bafb858ee",
+        "src/ai_dlc/documentation/knowledge_check.py": "0879d989a18f3e86ea91955aaffca5a5108bc36381c4877b7f5b23e251881881",
         "src/ai_dlc/documentation/knowledge_notes.py": "df022b2e330c5140f6948ec25a33c7888704e8686ea5411c770764a449b3b1b6",
-        "src/ai_dlc/documentation/knowledge_publish.py": "a796d6d760789edb3f1723fd79f3d02125901c699fa51fe9f8d7cfbb666920a8",
+        "src/ai_dlc/documentation/knowledge_publish.py": "cd4773e07de3b49bd828441a26dd15292ae2b55b25738e2339f91c7a3ad08438",
         "src/ai_dlc/documentation/knowledge_records.py": "eeb502fd218412c3f2e8085b2c8bab1b74683daa8701bc8416155a29f9437c60",
-        "src/ai_dlc/documentation/knowledge_service.py": "39cd54f46809329daf7c65304236b9a23bc5c0e31074ecaeaaef2a90d9761b0a",
+        "src/ai_dlc/documentation/knowledge_render.py": "0517924a31ee89fb6d918c56683269734aa18f8b5597e02ab73bb7e6252ffa96",
+        "src/ai_dlc/documentation/knowledge_service.py": "94a90956363bc8d5e8b11cd3d39e6f86d0c7f551e14766f25c242ca0246f3ddd",
         "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
         "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
         "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
@@ -111,9 +137,10 @@
         "src/ai_dlc/harness/windows_render.py": "8aa76c8aacc44d28a2117b3339ad7b632b91fdbe0a5557af50228dcd2aa0eeb0",
         "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
         "src/ai_dlc/locking.py": "d39ea1ba783e72aae903f9d69c114745ee0b83d02197bbc9572568836e4e7fa3",
-        "src/ai_dlc/mcp_server.py": "bb54ba8084a785d29901462d3c5b65fdb60b67be8e64b3604ac415d91273dd98",
+        "src/ai_dlc/mcp_server.py": "77e5790cbdfc5210970fbaad67e64953a3cea64e4223c9ecc5ea247382059bcf",
         "src/ai_dlc/provider_definitions.py": "467bec9146a1379a2f17ac07faaf1e6807729d362609d711545ff632ff3f9da7",
-        "src/ai_dlc/providers/__init__.py": "42f2ca16c36251859ce589c7cd79dc2ced000e2cbf8aae2f33640b02ccdafe05",
+        "src/ai_dlc/providers/__init__.py": "33aca80a36d5f1b351a827b9f94da5d34340567f814c6c5b3256763890799cfc",
+        "src/ai_dlc/providers/confluence_cloud.py": "83daca8f5b83121697b79671b0a9279834104d64de7978cd731a1e83f20f4eae",
         "src/ai_dlc/providers/git_knowledge.py": "c07d548015aa3e8a3c7ca567ee4511a79ec5af33f1d84d3c7f155d08c683f591",
         "src/ai_dlc/providers/github_issues.py": "8945d5b0049d7f7940c8c478e13bf576a897295e463a69b3510d6e2982ed1f08",
         "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
@@ -163,16 +190,16 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Package map unchanged: boundary rules live in knowledge_check, used by knowledge_bundle and the git provider (KAN-465).",
+      "reason": "Package map unchanged after merging main with KAN-430 render: boundary rules stay in knowledge_check, used by render, index and both knowledge providers (KAN-465).",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
     {
       "bound": {
-        "docs/catalog.toml": "5440ae821f25e5b9bbb5a89c94768e91ad1f63e1fd703453516d86c728c51aad"
+        "docs/catalog.toml": "f9bcacb0c6653d9e79f756573c2a1213489630ec8cc5b1063ca0242e39a3f7e4"
       },
-      "outcome": "updated",
-      "reason": "Enrolls ADR 0006, renumbered from 0005 (KAN-465).",
+      "outcome": "reviewed-no-change",
+      "reason": "ADR 0006 entry unchanged after merging main (KAN-465).",
       "reviewer": "Claude (agent)",
       "target": "docs/catalog.toml"
     },
@@ -189,34 +216,37 @@
     {
       "bound": {
         ".github/workflows/knowledge-merge.yml": "7f67aa54775bb4e0e71c6793b9c6c62ac2fe03343678117a432513a465efeaca",
-        "catalog:docs/design/local-and-shared-knowledge.md": "3792ce6463f181e5d2345e4ae2c724561e1750d6e76a62324dc801da767260a5",
+        "catalog:docs/design/local-and-shared-knowledge.md": "07f5768759a08b2a425954beae4109ab59f515e126fa644a99c91fcaebb6fff9",
         "contracts/knowledge-note.schema.json": "f3cbc791e2caae2223bf223e8b27b5b7ce553405b76f32cf5689fa7fe68bb1a5",
         "contracts/knowledge-record.schema.json": "0a7633d88024a668140a6d658f09f5d11bf7e26b8ff09368abd82d17ddcd9bd7",
-        "docs/design/local-and-shared-knowledge.md": "46f191713f8569ea0a6666e8e1ab5206ccb918ffe07f24face4d210cb858c414",
+        "docs/design/local-and-shared-knowledge.md": "5ce7db29b52943eafee3b0124d5f07201fd6c6f3958bdae6b7e90e62f84785b0",
         "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
         "openspec/specs/session-learnings/spec.md": "dcd490cd54f2f6cb3fadaa90afade85d5e1d64b19fbe2accb70bfb06897e97b4",
-        "src/ai_dlc/documentation/knowledge.py": "64379be5f820df72056e992d50d91a099b6029b913804586208b80c73490887a",
+        "src/ai_dlc/documentation/knowledge.py": "8d60dfa7213b3121f106fabbf13c2ab5a52b7f5b43555a9ac91be04a9d6d9be0",
         "src/ai_dlc/documentation/knowledge_bundle.py": "a614f08dfcdb5b3700b05d86be482f239d8b34096a1117ceee336b4de2be14b1",
-        "src/ai_dlc/documentation/knowledge_check.py": "e56c3ddf3f256c94176e5c74b3bfba2ecd1a919db78ac3efdbe8e96bafb858ee",
+        "src/ai_dlc/documentation/knowledge_check.py": "0879d989a18f3e86ea91955aaffca5a5108bc36381c4877b7f5b23e251881881",
         "src/ai_dlc/documentation/knowledge_notes.py": "df022b2e330c5140f6948ec25a33c7888704e8686ea5411c770764a449b3b1b6",
         "src/ai_dlc/documentation/knowledge_records.py": "eeb502fd218412c3f2e8085b2c8bab1b74683daa8701bc8416155a29f9437c60",
+        "src/ai_dlc/documentation/knowledge_render.py": "0517924a31ee89fb6d918c56683269734aa18f8b5597e02ab73bb7e6252ffa96",
         "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
         "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
         "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
         "src/ai_dlc/documentation/workspace_diagnostics.py": "8c8dc695fa95e5f9e8fc4017e5fd66efcab4c0cec4d3ae9272d3c5f368f93aef",
         "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
+        "src/ai_dlc/providers/confluence_cloud.py": "83daca8f5b83121697b79671b0a9279834104d64de7978cd731a1e83f20f4eae",
         "tests/test_knowledge.py": "38e5cda9c9dc1fe97d12618a0bd9a86b2725cff059d412232152582af1547af1",
         "tests/test_knowledge_bundle.py": "e91bcd38241872ad616d9b468fb95ca15ceffadabb1f5fb4c7504ee35d777e13",
-        "tests/test_knowledge_check.py": "32e3a85a7a52dbd05b7ab21268fcc762a50fca8acb38ef44316b54e903e1407c",
+        "tests/test_knowledge_check.py": "6ca89cb53dfc3e5077c31359c1e3ad746aa44874c6cd89cfa5aafa82fa9d4011",
         "tests/test_knowledge_notes.py": "0af8b4f84c5b8d974833eef49d5efd662a9d6d5b22eac6ff6f4a604fd492f6f7",
         "tests/test_knowledge_records.py": "dda1cc3543fc0f9cbcf999a4f72041d9143696328785827e9a4362b6fd083cfa",
+        "tests/test_knowledge_render.py": "8b8d47e406dbdf68f9d98bfef24f295e690717f3bd212392c63a37626ace6ba8",
         "tests/test_session_learnings.py": "32bb7c3143db24ff96fb43ac5081285e77a93bd8d8d825076f3422cbfe194796",
         "tests/test_vault_link.py": "fd146d4d15041021ac343257c9d91a8c1950878d275420eda85d13747065e110",
         "tests/test_vault_mount.py": "f6a5dc947af0d68e4688c37d05294c6b4868aa98ead91d26aa0c8ffec8018424",
         "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
       },
-      "outcome": "reviewed-no-change",
-      "reason": "Page is at its editorial word ceiling; ADR 0005 holds the boundary and promotion design (KAN-465).",
+      "outcome": "updated",
+      "reason": "Render section: customer records render only to their project's wiki ([wiki] project), replacing [wiki] boundary (KAN-465).",
       "reviewer": "Claude (agent)",
       "target": "docs/design/local-and-shared-knowledge.md"
     },
@@ -240,8 +270,9 @@
       "bound": {
         "catalog:docs/workflows/how-it-fits.md": "0032744a2746dd1b4e47f09fc1cc9c4d6f8c8cfe90990b464f56a0abc1d1ac10",
         "docs/workflows/how-it-fits.md": "b865dfd0d040309db43d27b58cb93a69d0e94a72bcf9b6ff760bcb0ed39ea473",
-        "src/ai_dlc/mcp_server.py": "bb54ba8084a785d29901462d3c5b65fdb60b67be8e64b3604ac415d91273dd98",
-        "src/ai_dlc/providers/__init__.py": "42f2ca16c36251859ce589c7cd79dc2ced000e2cbf8aae2f33640b02ccdafe05",
+        "src/ai_dlc/mcp_server.py": "77e5790cbdfc5210970fbaad67e64953a3cea64e4223c9ecc5ea247382059bcf",
+        "src/ai_dlc/providers/__init__.py": "33aca80a36d5f1b351a827b9f94da5d34340567f814c6c5b3256763890799cfc",
+        "src/ai_dlc/providers/confluence_cloud.py": "83daca8f5b83121697b79671b0a9279834104d64de7978cd731a1e83f20f4eae",
         "src/ai_dlc/providers/git_knowledge.py": "c07d548015aa3e8a3c7ca567ee4511a79ec5af33f1d84d3c7f155d08c683f591",
         "src/ai_dlc/providers/github_issues.py": "8945d5b0049d7f7940c8c478e13bf576a897295e463a69b3510d6e2982ed1f08",
         "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
@@ -254,9 +285,18 @@
         "src/ai_dlc/providers/teamai.py": "ff7a781abcaeeca1c978f9472502156e31a1fc6d192ac50e1e489d333b77a5e6"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Its customer-boundary sentence still holds with get and index enforcement added (KAN-465).",
+      "reason": "Its customer-boundary sentence still holds after merging main (KAN-465).",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/how-it-fits.md"
+    },
+    {
+      "bound": {
+        "tests/editorial_baseline.json": "7398bd97785fbb9fa3f6e0800cb691a36ab6f3394b021bf105aae69b17a6cf66"
+      },
+      "outcome": "updated",
+      "reason": "Lowers the local-and-shared-knowledge word ceiling by one after its render edit (KAN-465).",
+      "reviewer": "Claude (agent)",
+      "target": "tests/editorial_baseline.json"
     },
     {
       "bound": {
@@ -338,6 +378,33 @@
       "reason": "Sanitised team Source in the valid boundary bundle; exercised by tests/test_knowledge_check.py (KAN-465).",
       "reviewer": "Claude (agent)",
       "target": "tests/fixtures/boundary/team/sources/SRC-0003.md"
+    },
+    {
+      "bound": {
+        "tests/fixtures/records_invalid/customer-body-link/a.md": "184c5cc4fdf91a9089f9192d569290858d74842d15bf16a3660d04d44322c494"
+      },
+      "outcome": "no-impact",
+      "reason": "Failing fixture: team record body links into a customer project; exercised by tests/test_knowledge_check.py (KAN-465).",
+      "reviewer": "Claude (agent)",
+      "target": "tests/fixtures/records_invalid/customer-body-link/a.md"
+    },
+    {
+      "bound": {
+        "tests/fixtures/records_invalid/customer-body-link/knowledge.toml": "d63e9f2066f86399f1eae73add3408cb337132711a41f17ea5085b039b9a8401"
+      },
+      "outcome": "no-impact",
+      "reason": "Format pin of a failing boundary fixture (KAN-465).",
+      "reviewer": "Claude (agent)",
+      "target": "tests/fixtures/records_invalid/customer-body-link/knowledge.toml"
+    },
+    {
+      "bound": {
+        "tests/fixtures/records_invalid/customer-body-link/projects/acme/b.md": "99a81b863db1a78f9de3dea8288704df2a070993105c8fa7f3ff285b6b9bd3ee"
+      },
+      "outcome": "no-impact",
+      "reason": "Customer record of a failing boundary fixture (KAN-465).",
+      "reviewer": "Claude (agent)",
+      "target": "tests/fixtures/records_invalid/customer-body-link/projects/acme/b.md"
     },
     {
       "bound": {
@@ -467,10 +534,10 @@
     },
     {
       "bound": {
-        "tests/test_git_knowledge.py": "ff4ea68f514a61f39f5073fdad9f7e4097fcbfded6c6389c576c06d41685ff69"
+        "tests/test_git_knowledge.py": "b067891d89bac87bf51a76e8c6e7b7c5e63874bf9112ec8bb5bea719118c1e7c"
       },
-      "outcome": "updated",
-      "reason": "Adds the customer-boundary get and search tests (KAN-465).",
+      "outcome": "reviewed-no-change",
+      "reason": "Customer-boundary get and search tests unchanged after merging main (KAN-465).",
       "reviewer": "Claude (agent)",
       "target": "tests/test_git_knowledge.py"
     }
