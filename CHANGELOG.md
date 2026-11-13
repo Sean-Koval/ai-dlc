@@ -34,6 +34,12 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
   `--base REF` refuses in-place edits of accepted decisions. Knowledge repositories
   call it through `.pre-commit-hooks.yaml` or the reusable
   `.github/workflows/knowledge-check.yml`. `--vault` keeps checking learnings.
+  It also fails a `sources` path in the repository that is missing or whose sha256
+  `hash` matches neither the file nor its record body, a record whose `scope` differs
+  from its `team/` or `projects/<p>/` folder, and a `belongs_to` that is not a
+  work-item key, URL, record id or project under `projects/` (KAN-478). A missing
+  `inbox/` or `processed/` payload and an external hash are reported as warnings.
+  `--base` also refuses a new record whose slug is already an id or alias on the base.
 - A `git` provider for the `knowledge` role (KAN-455): `get`, `search`, `list_changed`
   and `propose` over a repository of knowledge records named by `KNOWLEDGE_REPO` or
   the provider's `location`, through `ai-dlc knowledge records`. `propose` checks the

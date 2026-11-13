@@ -1666,7 +1666,12 @@ def knowledge_check(
         if result["invalid"]:
             raise typer.Exit(1)
         return
-    from ai_dlc.documentation.knowledge_check import check_records, failure_lines, legacy_lines
+    from ai_dlc.documentation.knowledge_check import (
+        check_records,
+        failure_lines,
+        legacy_lines,
+        warning_lines,
+    )
 
     with service_call():
         result = check_records(records, base=base, config=config)
@@ -1676,11 +1681,11 @@ def knowledge_check(
         prefix = records.as_posix()
         for line in failure_lines(result, prefix):
             typer.echo(line)
-        for line in legacy_lines(result, prefix):
+        for line in legacy_lines(result, prefix) + warning_lines(result, prefix):
             typer.echo(line, err=True)
         typer.echo(
             f"knowledge check: {result['records']} records, {len(result['failures'])} "
-            f"failures, {len(result['legacy'])} legacy",
+            f"failures, {len(result['legacy'])} legacy, {len(result['warnings'])} warnings",
             err=True,
         )
     if result["failures"]:
