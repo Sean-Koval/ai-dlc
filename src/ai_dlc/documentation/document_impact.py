@@ -9,6 +9,7 @@ import tomllib
 from pathlib import Path
 
 from ai_dlc.config import digest
+from ai_dlc.documentation.catalog import catalog_files, load_catalog
 from ai_dlc.documentation.document_files import read_document
 from ai_dlc.documentation.documents import check_documents
 from ai_dlc.files import inside, run_git
@@ -44,11 +45,9 @@ def content_digest(root: Path, relative: str) -> str:
 
 
 def read_catalog(root: Path) -> list[dict]:
-    raw = tomllib.loads(read_document(inside(root, "docs/catalog.toml")).decode())
-    if raw.get("schema") != 1 or not isinstance(raw.get("documents"), list):
-        raise ValueError("Invalid documentation catalog")
+    documents = load_catalog(root)
     seen = set()
-    for entry in raw["documents"]:
+    for entry in documents:
         if not isinstance(entry, dict):
             raise ValueError("Invalid catalog entry")  # noqa: TRY004 -- user-authored data validation
         path = _path(entry.get("path", ""))
@@ -67,7 +66,7 @@ def read_catalog(root: Path) -> list[dict]:
                     raise ValueError(
                         "Documentation mappings cannot target reserved evidence storage"
                     )
-    return raw["documents"]
+    return documents
 
 
 def inspect_impact(root: Path | str, *, base: str) -> dict:
@@ -102,7 +101,7 @@ def inspect_impact(root: Path | str, *, base: str) -> dict:
         .split("\0")
     ) - {""}
     files = {p for p in files if not p.startswith(EVIDENCE_PREFIX) and included(p)}
-    impacted, mapped, evidence = set(), set(), {"docs/catalog.toml"} | changed
+    impacted, mapped, evidence = set(), set(), set(catalog_files(root)) | changed
     for entry in entries:
         patterns = [entry["path"]] + [p for f in MAPPINGS for p in entry.get(f, [])]
         matches = {p for p in changed if any(fnmatch.fnmatchcase(p, pat) for pat in patterns)}

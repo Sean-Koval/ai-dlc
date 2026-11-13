@@ -99,7 +99,9 @@ kind = "reference"
 owner = "repository-maintainers"
 status = "draft"
 code_paths = [
+    "src/ai_dlc/documentation/catalog.py",
     "src/ai_dlc/documentation/decisions.py",
+    "scripts/site_config.py",
     "agents/templates/adr.md",
     "project-templates/project/docs/decisions/README.md",
 ]
