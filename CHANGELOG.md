@@ -40,6 +40,12 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
   work-item key, URL, record id or project under `projects/` (KAN-478). A missing
   `inbox/` or `processed/` payload and an external hash are reported as warnings.
   `--base` also refuses a new record whose slug is already an id or alias on the base.
+- A `retracts` link (KAN-479) corrects a decision accepted by mistake without editing
+  it. A later accepted decision names it and says why. Index, search and render derive
+  `retracted_by` and show the original as `retracted`, not accepted, and
+  `search --status accepted` leaves it out. `knowledge check` requires the link to go
+  from a decision to an accepted decision, and `--base` allows the new record while it
+  still refuses edits to the retracted one.
 - A `git` provider for the `knowledge` role (KAN-455): `get`, `search`, `list_changed`
   and `propose` over a repository of knowledge records named by `KNOWLEDGE_REPO` or
   the provider's `location`, through `ai-dlc knowledge records`. `propose` checks the

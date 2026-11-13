@@ -18,6 +18,9 @@ A record under ``team/`` has scope team and one under ``projects/<p>/`` scope pr
 and ``belongs_to`` names a work-item key, a URL, a record or, when the repository
 has ``projects/``, a project there.
 
+A decision accepted by mistake is never edited: a later decision ``retracts`` it and
+says why (KAN-479). The link must come from a decision and name an accepted decision.
+
 With ``base`` (CI mode) it also refuses in-place edits of decisions that were accepted
 at the merge base. The CLI and the MCP tool both call :func:`check_records`.
 
@@ -127,6 +130,7 @@ def check_records(
     index = _index(bundle)
     _check_links(bundle, index)
     _check_supersession(bundle, index)
+    _check_retractions(bundle, index)
     _check_duplicate_sources(bundle)
     _check_resources(bundle, index)
     _check_folders(bundle, index)
@@ -342,7 +346,7 @@ def _must_resolve(link: records.Link) -> bool:
     ``derived_from`` always names a source record: raw payloads expire, records do not.
     """
     target = link.target
-    if link.type == "derived_from" or NUMBERED.match(target):
+    if link.type in ("derived_from", "retracts") or NUMBERED.match(target):
         return True
     return link.type != "belongs_to" and SLUG.match(target) is not None
 
@@ -415,6 +419,27 @@ def _check_supersession(bundle: _Bundle, index: dict[str, str]) -> None:
                     "and set valid_to",
                 )
     _check_cycles(bundle, edges)
+
+
+def _check_retractions(bundle: _Bundle, index: dict[str, str]) -> None:
+    """``retracts`` goes from a decision to another, accepted, decision (KAN-479)."""
+    for path, record in bundle.records.items():
+        for number, link in enumerate(record.links):
+            if link.type != "retracts" or link.target not in index:
+                continue
+            pointer = f"/links/{number}"
+            target = bundle.records[index[link.target]]
+            if record.type != "decision":
+                bundle.fail(path, pointer, f"a {record.type} cannot retract; only a decision can")
+            elif index[link.target] == path:
+                bundle.fail(path, pointer, "a decision cannot retract itself")
+            elif target.type != "decision" or target.status != "accepted":
+                bundle.fail(
+                    path,
+                    pointer,
+                    f"retracts {target.id}, a {target.status} {target.type}; only an "
+                    "accepted decision is retracted (edit or reject a proposal instead)",
+                )
 
 
 def _check_cycles(bundle: _Bundle, edges: dict[str, list[tuple[int, str]]]) -> None:

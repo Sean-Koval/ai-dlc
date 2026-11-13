@@ -69,6 +69,7 @@ EXPECTED = {
         "belongs_to project flightdeck, but the record sits under projects/hangar/",
     ),
     "belongs-to-malformed": ("a.md", "/links/0/target", "belongs_to KAN 26 is malformed"),
+    "retracts-proposal": ("b.md", "/links/0", "retracts DEC-0001, a proposed decision"),
 }
 
 
@@ -640,3 +641,49 @@ def test_ci_mode_allows_a_slug_the_branch_already_had(repo):
     git(root, "commit", "-q", "-am", "numbered")
     git(root, "checkout", "-q", "change")
     assert check_records(repo, base="main")["failures"] == []
+
+
+# --- Retractions (KAN-479) -----------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    ("kind", "status", "links", "message"),
+    [
+        ("lesson", "open", "{type: retracts, target: keep-it}", "a lesson cannot retract"),
+        ("decision", "accepted", "{type: retracts, target: a-slug}", "cannot retract itself"),
+        ("decision", "accepted", "{type: retracts, target: gone}", "is not the id or alias"),
+        ("decision", "accepted", "{type: retracts, target: draft}", "a proposed decision"),
+    ],
+)
+def test_a_retraction_comes_from_a_decision_and_names_an_accepted_one(
+    tmp_path, kind, status, links, message
+):
+    (tmp_path / "knowledge.toml").write_text(PIN)
+    (tmp_path / "keep.md").write_text(record("keep-it"))
+    (tmp_path / "draft.md").write_text(record("draft", status="proposed"))
+    (tmp_path / "a.md").write_text(record(kind=kind, status=status, links="\n  - " + links))
+    found = check_records(tmp_path)["failures"]
+    assert [item["path"] for item in found] == ["a.md"]
+    assert message in found[0]["message"]
+
+
+def test_ci_mode_allows_a_new_record_that_retracts_an_accepted_one(repo):
+    retraction = record(
+        "retract-keep-it",
+        links="\n  - {type: retracts, target: old-name}",
+        body="Accepted by mistake: the ticket was never decided.",
+    )
+    (repo / "retract.md").write_text(retraction)
+    assert failures(repo) == []
+    assert check_records(repo, base="main")["failures"] == []
+
+
+def test_ci_mode_still_refuses_editing_the_retracted_record(repo):
+    (repo / "retract.md").write_text(
+        record("retract-keep-it", links="\n  - {type: retracts, target: keep-it}")
+    )
+    keep = repo / "keep.md"
+    keep.write_text(keep.read_text().replace("Body", "Retracted: accepted by mistake"))
+    found = check_records(repo, base="main")["failures"]
+    assert [(item["path"], item["pointer"]) for item in found] == [("keep.md", "")]
+    assert "has its body edited" in found[0]["message"]

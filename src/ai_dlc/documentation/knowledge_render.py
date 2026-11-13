@@ -31,6 +31,7 @@ from typing import Any
 from urllib.parse import urlsplit
 
 from ai_dlc.documentation.knowledge_check import SLUG, project_of, team_inputs
+from ai_dlc.documentation.knowledge_records import RETRACTED
 from ai_dlc.errors import RefusedError
 
 HASH_PROPERTY = "ai-dlc-hash"
@@ -107,13 +108,23 @@ def _title(header: Mapping[str, Any], path: str) -> str:
     return f"{header['id']} · {_text(name)}"
 
 
+def _shown(item: Mapping[str, Any]) -> dict:
+    """The header readers see: a retracted record (KAN-479) shows status ``retracted``."""
+    header = dict(item["header"])
+    if item.get("retracted_by"):
+        header["status"] = RETRACTED
+    return header
+
+
 def record_page(record: Mapping[str, Any], target: Mapping[str, str]) -> dict:
-    header, path = record["header"], record["path"]
+    header, path = _shown(record), record["path"]
     properties = {
         str(key): _text(value)
         for key, value in header.items()
         if key not in {"title", "description", "links", "sources"} and value is not None
     }
+    if record.get("retracted_by"):
+        properties["retracted_by"] = _text(record["retracted_by"])
     properties["path"] = path
     rows = "\n".join(f"| {key} | {_cell(value)} |" for key, value in sorted(properties.items()))
     links = "\n".join(
@@ -149,7 +160,7 @@ def index_page(scope: str, records: list[dict], target: Mapping[str, str]) -> di
         "| {id} | {type} | {status} | {title} |".format(
             id=item["header"]["id"],
             type=_cell(_text(item["header"].get("type"))),
-            status=_cell(_text(item["header"].get("status"))),
+            status=_cell(_text(_shown(item).get("status"))),
             title=_cell(_title(item["header"], item["path"]).split(" · ", 1)[1]),
         )
         for item in sorted(records, key=lambda item: item["header"]["id"])
@@ -262,15 +273,25 @@ class KnowledgeRender:
             by_scope.setdefault(str(item["header"].get("scope")), []).append(item)
         pages = [index_page(scope, by_scope[scope], target) for scope in sorted(by_scope)]
         visible = {item["id"] for item in everything}
+        retracted = {
+            item["id"]: item["retracted_by"] for item in everything if item.get("retracted_by")
+        }
         orphaned = []
+        wanted: list[str] = []
         for entry in changed["changed"]:
             if entry["change"] == "deleted" or not entry.get("id"):
                 if entry["change"] == "deleted":
                     orphaned.append(entry["path"])
                 continue
-            if entry["id"] not in visible:
+            wanted.append(entry["id"])
+        # A new retraction changes the page of the record it retracts (KAN-479).
+        wanted += sorted(name for name, by in retracted.items() if set(by) & set(wanted))
+        for name in dict.fromkeys(wanted):
+            if name not in visible:
                 continue
-            record = self._call(self.knowledge, "get", {"id": entry["id"], "project": project})
+            record = self._call(self.knowledge, "get", {"id": name, "project": project})
+            if name in retracted:
+                record = {**record, "retracted_by": retracted[name]}
             pages.append(record_page(record, target))
         stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
         planned = []

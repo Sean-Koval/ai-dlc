@@ -106,10 +106,15 @@ def search(
     status: str | None = None,
     text: str | None = None,
 ) -> dict:
-    """Records matching every given filter; ``labels`` match ``tags`` or ``label``."""
+    """Records matching every given filter; ``labels`` match ``tags`` or ``label``.
+
+    ``status`` matches what readers show: a retracted record (KAN-479) is ``retracted``,
+    not ``accepted``, and its item carries ``retracted_by``.
+    """
     wanted = set(labels)
     needle = text.casefold() if text else None
     records, invalid = scan(root)
+    retractions = knowledge_records.retracted_by(entry["record"] for entry in records)
     found = []
     for entry in records:
         record: KnowledgeRecord = entry["record"]
@@ -117,7 +122,7 @@ def search(
             continue
         if scope and record.scope != scope:
             continue
-        if status and record.status != status:
+        if status and knowledge_records.effective_status(record, retractions) != status:
             continue
         if wanted - {*(record.tags or ()), *([record.label] if record.label else [])}:
             continue
@@ -125,7 +130,10 @@ def search(
             content = (root / entry["path"]).read_text(errors="replace")
             if needle not in content.casefold():
                 continue
-        found.append(_item(entry))
+        item = _item(entry)
+        if record.id in retractions:
+            item["retracted_by"] = retractions[record.id]
+        found.append(item)
     return {"items": found, "invalid": invalid}
 
 
