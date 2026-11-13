@@ -449,7 +449,7 @@ def test_portable_profile_examples_and_rendered_handbook_are_safe(tmp_path):
     mcp_tools = {tool.name for tool in asyncio.run(make_server(root).list_tools())}
     tool_map = pages[Path("docs/workflows/tool-map.md")].lower()
     documented_mcp_tools = set(
-        re.findall(r"`((?:work|knowledge|project)_[a-z_]+|doctor)`", tool_map)
+        re.findall(r"`((?:work|knowledge|project|tracker)_[a-z_]+|doctor)`", tool_map)
     )
     assert documented_mcp_tools == mcp_tools
     assert not {name for name in mcp_tools if name.startswith("machine_")}

@@ -4,7 +4,7 @@
 `service-result.schema.json` is the envelope application services return to the CLI and
 MCP; it is generated from `ai_dlc.contracts.ServiceResult` and explained in
 `docs/architecture.md`.
-They describe tracker, specs, SCM, deploy, knowledge and wiki role capabilities.
+They describe tracker, specs, SCM, deploy, knowledge, wiki and transcripts role capabilities.
 `knowledge-note.schema.json` is the frontmatter of learnings and decision records,
 generated from `ai_dlc.documentation.knowledge_notes.KnowledgeNote`; it is explained
 in `docs/design/local-and-shared-knowledge.md`. Decision `checks:` entries use
@@ -67,6 +67,16 @@ by `key`; `parent` is another page's key, or null for the configured root. No op
 returns a page body. A page reports `version` and `rendered_version`, the version the last
 upsert wrote; they differ after a hand edit. An upsert whose `expected_version` is not the
 page's current version is refused. The `confluence-cloud` provider implements it.
+The `transcripts` role must answer `list_since {since}` (an aware time; items with `id`,
+`title`, `start`, `participants` and routing-only `emails`) and `fetch {id}` (the same plus
+`segments: [{speaker, at, text}]`, `at` as `HH:MM:SS`). A transcript the caller cannot
+read is unavailable, not an error. The `zoom` and `google-meet` providers implement it;
+`ai-dlc knowledge pull-transcripts` is its caller.
+The keys a knowledge repository's `knowledge.toml` may carry are `[format] version`
+(required), `[check] roots`, `[wiki] site, source, project`, and `[transcripts] owner`
+(required to pull transcripts), `scope` and `[[transcripts.customers]] project, titles,
+participants, repo_env`. A customer transcript lands in the customer's own repository,
+whose Source records carry `boundary: customer` and the optional record field `project`.
 Completion is a service operation: callers must use `WorkService.finish`.
 The public `Registry.invoke` refuses terminal tracker transitions and the optional
 terminal planning reconciliation operation `reconcile_closed`.
@@ -118,6 +128,14 @@ Only absence of a declaration selects the legacy unverified transition path.
 Declared transport or response errors never trigger fallback. Adding configuration
 metadata to a retained external binding is subject to the existing fingerprint
 and explicit-rebind rules.
+
+Optional `update` accepts `{reference, operation_id, title, body, labels}` and returns
+an Item. Omitted fields stay as they are, and `labels` replaces the whole set. It never
+changes status. `create` accepts optional `labels`. A provider that writes labels lists
+`update` in `optional_operations`; the tracker service refuses labels otherwise.
+Optional `query` accepts `{text, labels, state, limit}` and returns `{items}`; it is
+read-only. Optional `comment` accepts `{reference, body, operation_id}` and returns
+`{id, url}`; the body is plain text. `jira-cloud` implements all four.
 
 Optional `prepare` and `reconcile_closed` accept `{reference, operation_id}` and
 return an Item. Providers declare them in capability `optional_operations`;

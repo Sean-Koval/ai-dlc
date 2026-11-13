@@ -93,7 +93,8 @@
             "derived_from",
             "supersedes",
             "implements",
-            "codified_as"
+            "codified_as",
+            "retracts"
           ],
           "title": "Type",
           "type": "string"
@@ -743,6 +744,30 @@
     {
       "if": {
         "properties": {
+          "project": {
+            "not": {
+              "type": "null"
+            }
+          }
+        },
+        "required": [
+          "project"
+        ]
+      },
+      "then": {
+        "properties": {
+          "boundary": {
+            "const": "customer"
+          }
+        },
+        "required": [
+          "boundary"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
           "domain": {
             "not": {
               "type": "null"
@@ -895,6 +920,20 @@
       ],
       "default": null,
       "title": "Boundary"
+    },
+    "project": {
+      "anyOf": [
+        {
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "customer project (boundary: customer)",
+      "title": "Project"
     },
     "phase": {
       "anyOf": [

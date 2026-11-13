@@ -1,0 +1,72 @@
+{
+  "recordings": [
+    {
+      "next_page_token": "page-2",
+      "meetings": [
+        {
+          "uuid": "/aB+c//dE==",
+          "id": 81234567890,
+          "topic": "Harness weekly",
+          "start_time": "2026-11-10T15:00:00Z",
+          "share_url": "https://zoom.us/rec/share/harness-weekly",
+          "recording_files": [
+            {"id": "f1", "file_type": "MP4", "status": "completed", "download_url": "https://zoom.us/rec/download/f1"},
+            {"id": "f2", "file_type": "TRANSCRIPT", "file_extension": "VTT", "status": "completed", "download_url": "https://zoom.us/rec/download/harness.vtt"}
+          ]
+        },
+        {
+          "uuid": "noTranscript==",
+          "topic": "Video only",
+          "start_time": "2026-11-10T17:00:00Z",
+          "recording_files": [
+            {"id": "f3", "file_type": "MP4", "status": "completed", "download_url": "https://zoom.us/rec/download/f3"}
+          ]
+        }
+      ]
+    },
+    {
+      "next_page_token": "",
+      "meetings": [
+        {
+          "uuid": "Qx9YzZalpha==",
+          "topic": "Sync",
+          "start_time": "2026-11-11T14:00:00Z",
+          "share_url": "https://zoom.us/rec/share/sync",
+          "recording_files": [
+            {"id": "f4", "file_type": "TRANSCRIPT", "status": "completed", "download_url": "https://zoom.us/rec/download/alpha.vtt"}
+          ]
+        },
+        {
+          "uuid": "lockedMeeting==",
+          "topic": "Board prep",
+          "start_time": "2026-11-12T13:00:00Z",
+          "recording_files": [
+            {"id": "f5", "file_type": "TRANSCRIPT", "status": "completed", "download_url": "https://zoom.us/rec/download/locked.vtt"}
+          ]
+        },
+        {
+          "uuid": "tooOld==",
+          "topic": "Before the window",
+          "start_time": "2026-10-30T13:00:00Z",
+          "recording_files": [
+            {"id": "f6", "file_type": "TRANSCRIPT", "status": "completed", "download_url": "https://zoom.us/rec/download/old.vtt"}
+          ]
+        }
+      ]
+    }
+  ],
+  "participants": {
+    "/aB+c//dE==": [
+      {"name": "Ana", "user_email": "ana@example.com"},
+      {"name": "Priya", "user_email": "priya@example.com"}
+    ],
+    "Qx9YzZalpha==": [
+      {"name": "Ana", "user_email": "ana@example.com"},
+      {"name": "Bob", "user_email": "bob@alpha.example"}
+    ]
+  },
+  "downloads": {
+    "/rec/download/harness.vtt": "harness.vtt",
+    "/rec/download/alpha.vtt": "alpha.vtt"
+  }
+}

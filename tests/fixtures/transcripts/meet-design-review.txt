@@ -1,0 +1,16 @@
+﻿Design review - 2026/11/10 10:00 EST - Transcript
+Attendees
+Ana Ruiz, Priya Rao, Dana Lee
+Transcript
+00:00:00
+ 
+Ana Ruiz: We decided to name tickets with the KAN key first.
+Priya Rao: Fine by me.
+It matches the GitHub app.
+00:05:12
+ 
+Dana Lee: Who owns the migration?
+Ana Ruiz: I will, by Friday.
+Meeting ended after 00:07:40 👋
+
+This editable transcript was computer generated and might contain errors. People can also change the text after it was created.

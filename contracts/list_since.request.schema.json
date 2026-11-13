@@ -1,0 +1,16 @@
+{
+  "additionalProperties": false,
+  "description": "Transcripts of meetings that started at or after ``since`` (the transcripts role).",
+  "properties": {
+    "since": {
+      "format": "date-time",
+      "title": "Since",
+      "type": "string"
+    }
+  },
+  "required": [
+    "since"
+  ],
+  "title": "TranscriptsSince",
+  "type": "object"
+}

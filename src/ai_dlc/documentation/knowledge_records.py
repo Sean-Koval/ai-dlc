@@ -22,6 +22,7 @@ markdown body as the envelope ``body``; :func:`envelope` returns that envelope.
 """
 
 import re
+from collections.abc import Iterable
 from datetime import date as Day
 from datetime import datetime
 from typing import Any, Literal, cast
@@ -63,7 +64,17 @@ STATUSES: dict[str, tuple[str, ...] | None] = {
     "question": ("open", "answered"),
     "source": ("raw", "processed", "expired"),
 }
-LINK_TYPES = ("belongs_to", "derived_from", "supersedes", "implements", "codified_as")
+LINK_TYPES = (
+    "belongs_to",
+    "derived_from",
+    "supersedes",
+    "implements",
+    "codified_as",
+    "retracts",
+)
+# A decision accepted by mistake is retracted, never edited (KAN-479): a later accepted
+# decision carries a ``retracts`` link to it, and readers derive ``retracted_by``.
+RETRACTED = "retracted"
 # Every header field name, in one place, in serialization order (KAN-471: OKF v0.2 names).
 REQUIRED_FIELDS = ("id", "type", "scope", "status", "date", "owner", "sources", "links")
 OPTIONAL_FIELDS = (
@@ -72,6 +83,7 @@ OPTIONAL_FIELDS = (
     "tags",
     "label",
     "boundary",
+    "project",
     "phase",
     "domain",
     "valid_from",
@@ -175,6 +187,7 @@ def _conditions() -> list[dict[str, Any]]:
     team = {"properties": {"scope": {"const": "team"}}, "required": ["scope"]}
     rules.append({"if": _present("boundary"), "then": project})
     rules.append({"if": _present("phase"), "then": customer})
+    rules.append({"if": _present("project"), "then": customer})
     rules.append({"if": _present("domain"), "then": team})
     return rules
 
@@ -183,7 +196,9 @@ class Link(BaseModel):
     """A typed edge to another record, ticket, document or URL."""
 
     model_config = ConfigDict(extra="forbid")
-    type: Literal["belongs_to", "derived_from", "supersedes", "implements", "codified_as"]
+    type: Literal[
+        "belongs_to", "derived_from", "supersedes", "implements", "codified_as", "retracts"
+    ]
     target: str = Field(min_length=1, description="record id, alias, ticket key, path or URL")
 
 
@@ -271,6 +286,9 @@ class KnowledgeRecord(BaseModel):
     tags: list[str] | None = None
     label: str | None = Field(default=None, min_length=1, description="internal | confidential")
     boundary: Literal["customer"] | None = None
+    project: str | None = Field(
+        default=None, pattern=rf"^{SLUG}$", description="customer project (boundary: customer)"
+    )
     phase: Literal["discovery", "scoping", "design", "build", "handoff"] | None = None
     domain: Literal["sdlc", "tooling", "integration", "harness"] | None = None
     valid_from: Day | None = None
@@ -330,6 +348,8 @@ def record_rule_errors(record: KnowledgeRecord) -> list[str]:
             )
     if record.boundary is not None and record.scope != "project":
         found.append("boundary: only a project-scoped record has a boundary")
+    if record.project is not None and record.boundary != "customer":
+        found.append("project: allowed only with boundary: customer")
     if record.phase is not None and record.boundary != "customer":
         found.append("phase: allowed only with boundary: customer")
     if record.domain is not None and record.scope != "team":
@@ -462,3 +482,31 @@ def pin_errors(knowledge_toml: dict) -> list[str]:
     if isinstance(version, bool) or version != FORMAT_VERSION:
         return [f"format.version: {version!r} is not supported; this ai-dlc reads {FORMAT_VERSION}"]
     return []
+
+
+def retracted_by(items: Iterable[KnowledgeRecord]) -> dict[str, list[str]]:
+    """For each retracted record id, the ids of the accepted decisions retracting it.
+
+    A ``retracts`` link counts only from a decision that is accepted (or superseded
+    since); a proposed or rejected retraction changes nothing. Targets resolve by id
+    or alias, and the result is keyed by the retracted record's id.
+    """
+    every = list(items)
+    names: dict[str, str] = {}
+    for record in every:
+        for name in (record.id, *(record.aliases or ())):
+            names.setdefault(name, record.id)
+    found: dict[str, set[str]] = {}
+    for record in every:
+        if record.type != "decision" or record.status not in ("accepted", "superseded"):
+            continue
+        for link in record.links:
+            target = names.get(link.target) if link.type == "retracts" else None
+            if target and target != record.id:
+                found.setdefault(target, set()).add(record.id)
+    return {name: sorted(ids) for name, ids in sorted(found.items())}
+
+
+def effective_status(record: KnowledgeRecord, retractions: dict[str, list[str]]) -> str:
+    """The status readers show: ``retracted`` for a retracted record, else its own."""
+    return RETRACTED if record.id in retractions else record.status

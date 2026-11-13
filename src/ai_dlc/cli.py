@@ -40,6 +40,9 @@ knowledge = typer.Typer(no_args_is_help=True)
 knowledge_records = typer.Typer(
     no_args_is_help=True, help="Knowledge records through the knowledge role's provider."
 )
+work_hooks = typer.Typer(
+    no_args_is_help=True, help="Opt-in Git hooks for work: the Work-Session commit trailer."
+)
 provider = typer.Typer(no_args_is_help=True)
 mcp = typer.Typer(no_args_is_help=True)
 design = typer.Typer(no_args_is_help=True)
@@ -60,6 +63,7 @@ for name, group in [
     app.add_typer(group, name=name)
 agents.add_typer(agent_bundle, name="bundle")
 knowledge.add_typer(knowledge_records, name="records")
+work.add_typer(work_hooks, name="hooks")
 
 
 def emit(value):
@@ -1584,6 +1588,23 @@ def work_status(work_id: str, root: Path = Path("."), machine: Path | None = Non
     emit(service(root, machine).status(work_id))
 
 
+@work.command("show")
+def work_show(key: str, root: Path = Path(".")):
+    """List the work records and sessions a session key, session ID, ticket or work ID names."""
+    from ai_dlc.work.session_key import find_sessions
+
+    emit({"query": key, "work": find_sessions(root, key)})
+
+
+@work_hooks.command("install")
+def work_hooks_install(root: Path = Path(".")):
+    """Install a commit-msg hook that appends `Work-Session: $AI_DLC_SESSION_KEY`."""
+    from ai_dlc.work.commit_hook import install_commit_msg_hook
+
+    with service_call():
+        emit(install_commit_msg_hook(root))
+
+
 @work.command("finish")
 def work_finish(
     work_id: str,
@@ -1666,7 +1687,12 @@ def knowledge_check(
         if result["invalid"]:
             raise typer.Exit(1)
         return
-    from ai_dlc.documentation.knowledge_check import check_records, failure_lines, legacy_lines
+    from ai_dlc.documentation.knowledge_check import (
+        check_records,
+        failure_lines,
+        legacy_lines,
+        warning_lines,
+    )
 
     with service_call():
         result = check_records(records, base=base, config=config)
@@ -1676,11 +1702,11 @@ def knowledge_check(
         prefix = records.as_posix()
         for line in failure_lines(result, prefix):
             typer.echo(line)
-        for line in legacy_lines(result, prefix):
+        for line in legacy_lines(result, prefix) + warning_lines(result, prefix):
             typer.echo(line, err=True)
         typer.echo(
             f"knowledge check: {result['records']} records, {len(result['failures'])} "
-            f"failures, {len(result['legacy'])} legacy",
+            f"failures, {len(result['legacy'])} legacy, {len(result['warnings'])} warnings",
             err=True,
         )
     if result["failures"]:
@@ -1729,7 +1755,7 @@ def knowledge_why(
     project: Annotated[str | None, typer.Option("--project")] = None,
     json_output: Annotated[bool, typer.Option("--json")] = False,
 ):
-    """Reconstruct a decision: status, supersession both ways, links and quoted evidence.
+    """Reconstruct a decision: status, supersession and retraction, links and quoted evidence.
 
     Reads local records only. Exit 1, with suggestions, when no record has the id.
     """
@@ -1792,6 +1818,30 @@ def knowledge_render(
 
     with service_call():
         result = KnowledgeRender(root, config_for(root)).render(changed_since, dry_run=dry_run)
+    conclude(result)
+
+
+@knowledge.command("pull-transcripts")
+def knowledge_pull_transcripts(
+    since: Annotated[str, typer.Option("--since", help="ISO date, or time with offset")],
+    into: Annotated[Path | None, typer.Option("--into", help="local knowledge checkout")] = None,
+    provider_ids: Annotated[
+        list[str] | None, typer.Option("--provider", help="default: the transcripts role")
+    ] = None,
+    dry_run: Annotated[bool, typer.Option("--dry-run")] = False,
+    root: Annotated[Path, typer.Option("--root")] = Path("."),
+):
+    """Write one Source record and raw payload per new transcript into the knowledge inbox.
+
+    Idempotent by transcript id. A transcript the token cannot read is skipped and logged.
+    """
+    from ai_dlc.documentation.knowledge_transcripts import TranscriptPull
+
+    with service_call():
+        pull = TranscriptPull(root, config_for(root), providers=provider_ids, into=into)
+        result = pull.pull(since, dry_run=dry_run)
+    for entry in result.get("skipped", []):
+        typer.echo(f"skipped {entry['provider']} {entry['id']}: {entry['reason']}", err=True)
     conclude(result)
 
 
@@ -1866,6 +1916,26 @@ def knowledge_records_propose(
     with service_call():
         result = _records(root, provider_id).propose(records, branch, title, text)
     conclude(result)
+
+
+@knowledge_records.command("template")
+def knowledge_records_template(
+    kind: Annotated[str | None, typer.Argument(metavar="TYPE")] = None,
+    list_types: Annotated[bool, typer.Option("--list", help="list the template types")] = False,
+):
+    """Print the packaged record template for one type; --list names the types."""
+    from ai_dlc.documentation.knowledge_service import template, templates
+
+    if list_types == (kind is not None):
+        raise typer.BadParameter("give a record type or --list, not both or neither")
+    if list_types:
+        typer.echo("\n".join(templates()["types"]))
+        return
+    result = template(str(kind))
+    if result["status"] != "ok":
+        typer.echo(f"Error: {result['reason']}", err=True)
+        raise typer.Exit(1)
+    typer.echo(result["text"], nl=False)
 
 
 @knowledge_records.command("captured")

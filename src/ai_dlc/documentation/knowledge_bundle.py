@@ -6,7 +6,8 @@ moves to ``aliases``, a file named after the slug is renamed, and every typed li
 ``sources`` entry and relative markdown link that pointed at the slug or its file is
 rewritten. ``index_records`` writes one Open Knowledge Format v0.2 section 8
 ``index.md`` per directory; the root one carries ``okf_version: "0.2"``. Each index
-also derives ``superseded_by``, so records are never edited to carry it. A
+also derives ``superseded_by`` and ``retracted_by`` (KAN-479), so records are never
+edited to carry them; a retracted record is listed as retracted, not accepted. A
 ``boundary: customer`` record is listed and counted only by the indexes inside its
 own ``projects/<name>/``; no other index lists it or links into that project.
 
@@ -37,7 +38,7 @@ RESERVED = ("index.md", "log.md")
 SKIPPED = ("README.md",)
 OKF_VERSION = "0.2"
 NUMBERED = re.compile(r"^(?:DEC|CONV|LES|ACT|Q|SRC)-([0-9]{4,})$")
-INACTIVE = ("superseded", "rejected")
+INACTIVE = ("superseded", "rejected", records.RETRACTED)
 HEADINGS = {
     "decision": "Decisions",
     "convention": "Conventions",
@@ -342,14 +343,16 @@ def index_records(root: Path | str, *, write: bool = True) -> dict[str, Any]:
 
     Returns ``status`` (``written``, ``unchanged``, ``stale`` when ``write`` is false
     and an index differs, or ``invalid``), the ``indexes`` it owns, the ``changed``
-    ones, ``superseded_by`` per record id and any ``failures``. Invalid records stop
+    ones, ``superseded_by`` and ``retracted_by`` per record id and any ``failures``.
+    Invalid records stop
     it before any write.
     """
     scan = _scan(root)
     if scan.failures:
-        return _result("invalid", scan, indexes=[], changed=[], superseded_by={})
+        return _result("invalid", scan, indexes=[], changed=[], superseded_by={}, retracted_by={})
     successors = superseded_by(scan)
-    pages = _pages(scan, successors)
+    retractions = records.retracted_by(item.record for item in scan.records)
+    pages = _pages(scan, successors, retractions)
     changed = []
     for directory, text in pages.items():
         path = directory / INDEX
@@ -360,7 +363,14 @@ def index_records(root: Path | str, *, write: bool = True) -> dict[str, Any]:
                 path.write_text(text, encoding="utf-8")
     indexes = sorted((d / INDEX).relative_to(scan.folder).as_posix() for d in pages)
     status = "unchanged" if not changed else "written" if write else "stale"
-    return _result(status, scan, indexes=indexes, changed=sorted(changed), superseded_by=successors)
+    return _result(
+        status,
+        scan,
+        indexes=indexes,
+        changed=sorted(changed),
+        superseded_by=successors,
+        retracted_by=retractions,
+    )
 
 
 def superseded_by(scan: _Scan) -> dict[str, list[str]]:
@@ -377,7 +387,9 @@ def superseded_by(scan: _Scan) -> dict[str, list[str]]:
     return {name: sorted(ids) for name, ids in sorted(found.items())}
 
 
-def _pages(scan: _Scan, successors: dict[str, list[str]]) -> dict[Path, str]:
+def _pages(
+    scan: _Scan, successors: dict[str, list[str]], retractions: dict[str, list[str]]
+) -> dict[Path, str]:
     by_directory: dict[Path, list[_Record]] = defaultdict(list)
     for item in scan.records:
         by_directory[item.path.parent].append(item)
@@ -420,6 +432,7 @@ def _pages(scan: _Scan, successors: dict[str, list[str]]) -> dict[Path, str]:
             [item for item in by_directory.get(directory, []) if id(item) in listed],
             totals,
             successors,
+            retractions,
         )
     return pages
 
@@ -435,6 +448,7 @@ def _page(
     items: list[_Record],
     totals: dict[Path, int],
     successors: dict[str, list[str]],
+    retractions: dict[str, list[str]],
 ) -> str:
     lines: list[str] = []
     if directory == folder:
@@ -449,16 +463,19 @@ def _page(
             count = totals[child]
             noun = "record" if count == 1 else "records"
             lines.append(f"* [{child.name}/]({child.name}/) - {count} {noun}")
-    active = [item for item in items if item.record.status not in INACTIVE]
-    inactive = [item for item in items if item.record.status in INACTIVE]
+    status = {id(item): records.effective_status(item.record, retractions) for item in items}
+    active = [item for item in items if status[id(item)] not in INACTIVE]
+    inactive = [item for item in items if status[id(item)] in INACTIVE]
     for kind in records.TYPES:
         group = [item for item in active if item.record.type == kind]
         if group:
             lines += ["", f"## {HEADINGS[kind]}", ""]
-            lines += [_entry(item, successors) for item in _ordered(group)]
+            lines += [_entry(item, successors, retractions) for item in _ordered(group)]
     if inactive:
-        lines += ["", "## Superseded and rejected", ""]
-        lines += [_entry(item, successors) for item in _ordered(inactive)]
+        retracted = any(status[id(item)] == records.RETRACTED for item in inactive)
+        heading = "Superseded, retracted and rejected" if retracted else "Superseded and rejected"
+        lines += ["", f"## {heading}", ""]
+        lines += [_entry(item, successors, retractions) for item in _ordered(inactive)]
     return "\n".join(lines) + "\n"
 
 
@@ -466,11 +483,15 @@ def _ordered(items: list[_Record]) -> list[_Record]:
     return sorted(items, key=lambda item: (item.record.id, item.relative))
 
 
-def _entry(item: _Record, successors: dict[str, list[str]]) -> str:
+def _entry(
+    item: _Record, successors: dict[str, list[str]], retractions: dict[str, list[str]]
+) -> str:
     record = item.record
-    facts = [record.id, record.type, record.status]
+    facts = [record.id, record.type, records.effective_status(record, retractions)]
     if record.id in successors:
         facts.append("superseded_by: " + ", ".join(successors[record.id]))
+    if record.id in retractions:
+        facts.append("retracted_by: " + ", ".join(retractions[record.id]))
     if record.tags:
         facts.append("tags: " + ", ".join(record.tags))
     if record.stale_after:

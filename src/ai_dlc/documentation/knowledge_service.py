@@ -7,9 +7,42 @@ and results are validated against the provider contract. Results carry ``status`
 
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Any
+from typing import Any, TypedDict
 
 from ai_dlc.errors import RefusedError
+
+
+class ProposedRecord(TypedDict):
+    """One record file to propose: its repository path and its full text."""
+
+    path: str
+    text: str
+
+
+def _template_dir() -> Path:
+    from ai_dlc.files import assets
+
+    return assets("agents") / "templates" / "knowledge"
+
+
+def templates() -> dict:
+    """The record types that have a packaged template, in contract order."""
+    from ai_dlc.documentation.knowledge_records import TYPES
+
+    folder = _template_dir()
+    return {"status": "ok", "types": [kind for kind in TYPES if (folder / f"{kind}.md").is_file()]}
+
+
+def template(kind: str) -> dict:
+    """The packaged record template for one type, as text; refuses an unknown type."""
+    from ai_dlc.documentation.knowledge_records import TYPES
+
+    if kind not in TYPES:
+        return {"status": "refused", "reason": f"no record type {kind}; one of {', '.join(TYPES)}"}
+    path = _template_dir() / f"{kind}.md"
+    if not path.is_file():
+        return {"status": "unavailable", "reason": f"the {kind} template is not packaged"}
+    return {"status": "ok", "type": kind, "text": path.read_text(encoding="utf-8")}
 
 
 class KnowledgeRecords:

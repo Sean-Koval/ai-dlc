@@ -66,10 +66,15 @@ enrollment lifecycle. Local CLI and MCP execution are current; hosted or cloud
 execution is a later qualification target. Obsidian project portals are the default machine-local canonical file links; explicit mount mode exposes existing canonical directories from a stable checkout. Neither mode synchronizes document bodies. Provider discovery remains separately scoped.
 
 Machine enrollment mutations are CLI-only in this cycle. MCP exposes
-`work_context`, `work_review`, `work_publish`, `work_start`, `work_status`, `work_link`, `work_finish`,
+`work_context`, `work_new`, `work_review`, `work_publish`, `work_start`, `work_status`,
+`work_link`, `work_pr`, `work_archive`, `work_finish`,
 `doctor`, `project_docs_check`, `knowledge_find`, `knowledge_append`, `knowledge_note`,
 `knowledge_check` (validates a knowledge-records directory), `knowledge_index`,
-`knowledge_number_plan`, `knowledge_render` (the wiki's only writer) and `knowledge_why`,
+`knowledge_number_plan`, `knowledge_render` (the wiki's only writer), `knowledge_why`,
+`knowledge_pull_transcripts` (the transcripts role's caller),
+`knowledge_search`, `knowledge_get`, `knowledge_propose`, `knowledge_template`,
+`tracker_get`, `tracker_search`, `tracker_create`, `tracker_update` and
+`tracker_comment` (role-level; they refuse `exec:agent` and never change status),
 plus the documentation and workspace tools below; it does
 not expose machine enrollment mutation. These MCP identifiers differ from the
 space-separated CLI commands, such as `ai-dlc work publish` and `ai-dlc

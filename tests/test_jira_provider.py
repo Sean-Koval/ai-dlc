@@ -5,7 +5,7 @@ import json
 
 import httpx
 import pytest
-from fixtures.jira import CLOUD, PAYLOAD, Jira, field
+from fixtures.jira import CLOUD, PAYLOAD, Jira, field, labels_field
 
 
 @pytest.fixture
@@ -328,7 +328,7 @@ def test_declared_builtin_capabilities_cross_executable_boundary_without_network
     assert registry.invoke("tickets", "capabilities", {}) == {
         "schema": 1,
         "lifecycle": {"in_progress": True, "closed": True},
-        "optional_operations": ["link"],
+        "optional_operations": ["comment", "link", "query", "update"],
     }
 
 
@@ -622,3 +622,112 @@ def test_public_invocation_refuses_every_mapped_terminal_status():
                 "transition",
                 {"reference": "WORK-7", "state": state, "operation_id": "x"},
             )
+
+
+# Labels and update (KAN-441): the tracker tools of the MCP surface write through these.
+
+
+def test_create_sets_labels_and_reads_them_back(jira):
+    jira.fields.append(labels_field())
+
+    result = jira.provider().invoke("create", {**PAYLOAD, "labels": ["exec:pair", "repo:x"]})
+
+    assert result["labels"] == ["exec:pair", "repo:x"]
+    assert jira.issues[0]["fields"]["labels"] == ["exec:pair", "repo:x"]
+    assert "update" in jira.provider().invoke("capabilities", {})["optional_operations"]
+
+
+def test_create_with_labels_refuses_when_the_project_has_no_labels_field(jira):
+    with pytest.raises(ValueError, match="not available"):
+        jira.provider().invoke("create", {**PAYLOAD, "labels": ["exec:pair"]})
+    assert jira.writes() == []
+
+
+def test_update_sets_fields_keeps_the_correlation_marker_and_reads_back(jira):
+    jira.fields.append(labels_field())
+    jira.provider().invoke("create", PAYLOAD)
+    payload = {
+        "reference": "WORK-1",
+        "operation_id": "edit",
+        "title": "Renamed",
+        "body": "New body",
+        "labels": ["exec:human"],
+    }
+
+    result = jira.provider().invoke("update", payload)
+
+    assert result["labels"] == ["exec:human"]
+    fields = jira.issues[0]["fields"]
+    assert fields["summary"] == "Renamed"
+    texts = [part["content"][0]["text"] for part in fields["description"]["content"]]
+    assert texts == ["New body", PAYLOAD["correlation"]]
+    assert jira.provider().invoke("find", {"correlation": PAYLOAD["correlation"]})["items"]
+    assert [r.method for r in jira.requests if r.url.path.endswith("/issue/101")][-2:] == [
+        "PUT",
+        "GET",
+    ]
+
+
+@pytest.mark.parametrize("damage", ["closed", "empty", "not-editable", "lost"])
+def test_update_refuses_or_reports_uncertain(jira, damage):
+    jira.provider().invoke("create", PAYLOAD)
+    payload = {"reference": "101", "operation_id": "edit", "labels": ["x"]}
+    if damage == "closed":
+        jira.fields.append(labels_field())
+        jira.provider().invoke(
+            "transition", {"reference": "101", "state": "closed", "operation_id": "finish"}
+        )
+    elif damage == "empty":
+        payload = {"reference": "101", "operation_id": "edit"}
+    elif damage == "lost":
+        jira.fields.append(labels_field())
+        original = jira.handle
+
+        def drop_put(request):
+            if request.method == "PUT":
+                jira.requests.append(request)
+                return httpx.Response(204)
+            return original(request)
+
+        jira.client = httpx.Client(transport=httpx.MockTransport(drop_put))
+    with pytest.raises((ValueError, RuntimeError)):
+        jira.provider().invoke("update", payload)
+    assert "labels" not in jira.issues[0]["fields"]
+
+
+def test_query_builds_quoted_jql_and_filters_state_without_writing(jira):
+    jira.fields.append(labels_field())
+    jira.provider().invoke("create", {**PAYLOAD, "labels": ["exec:pair"]})
+    writes = len(jira.writes())
+
+    found = jira.provider().invoke(
+        "query", {"text": 'say "hi"', "labels": ["exec:pair"], "state": "open", "limit": 5}
+    )
+
+    assert [(i["id"], i["title"], i["labels"]) for i in found["items"]] == [
+        ("101", "New work", ["exec:pair"])
+    ]
+    jql = json.loads(jira.requests[-1].content)["jql"]
+    assert jql == (
+        'project = 100 AND text ~ "say \\"hi\\"" AND labels = "exec:pair" ORDER BY updated DESC'
+    )
+    assert len(jira.writes()) == writes
+    closed = jira.provider().invoke("query", {"state": "closed", "limit": 5})
+    assert closed["items"] == []
+    with pytest.raises(ValueError):
+        jira.provider().invoke("query", {"text": "a\nb", "limit": 5})
+
+
+def test_comment_posts_plain_paragraphs_once(jira):
+    jira.provider().invoke("create", PAYLOAD)
+    payload = {"reference": "WORK-1", "body": "First line\n\nSecond", "operation_id": "c"}
+
+    first = jira.provider().invoke("comment", payload)
+    again = jira.provider().invoke("comment", payload)
+
+    assert first == again
+    assert first["url"].endswith("/browse/WORK-1?focusedCommentId=9000")
+    comments = jira.issues[0]["comments"]
+    assert len(comments) == 1
+    texts = [part["content"][0]["text"] for part in comments[0]["body"]["content"]]
+    assert texts == ["First line", "Second"]

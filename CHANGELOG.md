@@ -18,6 +18,30 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 
 ### Added
 
+- A session join key, `aidlc1:<tracker>:<work>:<session>` (KAN-463,
+  [format](docs/design/session-join-key.md)). The session-start hook derives it from
+  the branch and its work record, exports `AI_DLC_SESSION_KEY` and logs it in the
+  ignored `.ai-dlc/local/sessions/`. `work pr` writes `Work-Session:` lines, `work
+  finish` copies the keys into the record once, and `work show` resolves a key,
+  session ID or ticket back to its record. `work hooks install` adds an opt-in
+  `commit-msg` hook for the trailer.
+- The MCP surface an agent with only `ai-dlc mcp serve` needs (KAN-441): `work_new`,
+  `work_pr`, `work_archive`; `knowledge_search` and `knowledge_get` (with `project`, so
+  customer records stay in their project), `knowledge_propose` and `knowledge_template`;
+  and `tracker_get`, `tracker_search`, `tracker_create`, `tracker_update` and
+  `tracker_comment` through the tracker role. They refuse `exec:agent` (and
+  `lane:agent`) in any letter case, after NFKC normalisation with zero-width and other
+  format characters removed; a comment that names one is refused too. Results carry
+  the item's `exec:` labels. There is still no transition tool. The tracker contract
+  gains optional `labels` on `create` and optional `update`, `query` and `comment`
+  operations, implemented by `jira-cloud` and not yet live-qualified.
+- A `transcripts` role (`list_since`, `fetch`) with `zoom` and `google-meet`
+  providers, and `ai-dlc knowledge pull-transcripts --since TIME [--into DIR]
+  [--dry-run]` (MCP `knowledge_pull_transcripts`) (KAN-457). Each new transcript lands
+  in the knowledge inbox as a raw payload and a Source record, once per transcript id.
+  A customer's transcripts land in that customer's own knowledge repository, with
+  `boundary: customer` and the new optional record field `project`; an unconfigured
+  customer repository skips the transcript. Unreadable transcripts are skipped and logged. Fixture-tested; live OAuth qualification pending.
 - `ai-dlc knowledge migrate` (KAN-452, [ADR 0005](docs/decisions/0005-migrate-knowledge-notes-to-records.md))
   rewrites knowledge-note frontmatter as knowledge records. It is a dry run unless
   `--write`, idempotent, and reversible with `--revert JOURNAL`. This repository's
@@ -36,6 +60,20 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
   `--base REF` refuses in-place edits of accepted decisions. Knowledge repositories
   call it through `.pre-commit-hooks.yaml` or the reusable
   `.github/workflows/knowledge-check.yml`. `--vault` keeps checking learnings.
+  It also fails a `sources` path in the repository that is missing or whose sha256
+  `hash` matches neither the file nor its record body, a record whose `scope` differs
+  from its `team/` or `projects/<p>/` folder, and a `belongs_to` that is not a
+  work-item key, URL, record id or project under `projects/` (KAN-478). A missing
+  `inbox/` or `processed/` payload and an external hash are reported as warnings.
+  `--base` also refuses a new record whose slug is already an id or alias on the base.
+- A `retracts` link (KAN-479) corrects a decision accepted by mistake without editing
+  it. A later accepted decision names it and says why. Index, search and render derive
+  `retracted_by` and show the original as `retracted`, not accepted, and
+  `search --status accepted` leaves it out. `knowledge check` requires the link to go
+  from a decision to an accepted decision, and `--base` allows the new record while it
+  still refuses edits to the retracted one. `knowledge why` shows a retracted record as
+  `retracted`, with the decisions that retract it, and a retracting decision with what
+  it retracts.
 - A `git` provider for the `knowledge` role (KAN-455): `get`, `search`, `list_changed`
   and `propose` over a repository of knowledge records named by `KNOWLEDGE_REPO` or
   the provider's `location`, through `ai-dlc knowledge records`. `propose` checks the
@@ -43,6 +81,8 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
   it never writes the base branch. The knowledge role now requires `get` and `search`
   (the Obsidian provider answers both) and `append` is optional. The SCM
   `pull_request_create` payload gains `draft`.
+  `ai-dlc knowledge records template TYPE` prints a packaged record template;
+  `--list` names the types.
 - `ai-dlc knowledge number` and `ai-dlc knowledge index`, with MCP `knowledge_number_plan`
   and `knowledge_index`. After a merge, CI gives slug-id records the next number for
   their type, keeps the slug in `aliases` and rewrites links to it. It then writes one

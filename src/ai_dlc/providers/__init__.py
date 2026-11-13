@@ -125,6 +125,12 @@ class ExecutableProvider:
             "propose", {"records": records, "branch": branch, "title": title, "body": body}
         )
 
+    def list_since(self, since):
+        return self.invoke("list_since", {"since": since})
+
+    def fetch(self, id):
+        return self.invoke("fetch", {"id": id})
+
 
 def module_manifest(distribution, files, hashes):
     modules = {}
@@ -247,6 +253,14 @@ class Registry:
             from .confluence_cloud import ConfluenceCloud
 
             provider = ConfluenceCloud(cfg, environ=self.environ)
+        elif kind == "zoom":
+            from .zoom import Zoom
+
+            provider = Zoom(cfg, environ=self.environ)
+        elif kind == "google-meet":
+            from .google_meet import GoogleMeet
+
+            provider = GoogleMeet(cfg, environ=self.environ)
         elif kind == "plane":
             context = {
                 "root": str(self.root.resolve()),
@@ -401,6 +415,8 @@ class Registry:
             "upsert_page",
             "get_page_by_key",
             "list_children",
+            "list_since",
+            "fetch",
         }:
             result = getattr(provider, operation)(**request.payload)
         else:
@@ -433,6 +449,8 @@ class Registry:
                 "obsidian",
                 "git",
                 "confluence-cloud",
+                "zoom",
+                "google-meet",
             ],
             "release": "ai-dlc/0.4.0",
         }

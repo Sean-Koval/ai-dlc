@@ -55,6 +55,21 @@ EXPECTED = {
     "customer-quoted": ("a.md", "", "from customer record b-slug (project alpha)"),
     "customer-source-path": ("a.md", "/sources/0", "cites customer project alpha"),
     "customer-body-link": ("a.md", "", "links into customer project acme from its body"),
+    "resource-hash-mismatch": ("a.md", "/sources/0/hash", "does not match payload/call.txt"),
+    "resource-missing": ("team/a.md", "/sources/0/resource", "does not exist in the repository"),
+    "scope-folder": ("team/a.md", "/scope", "a record under team/ has scope team, not project"),
+    "belongs-to-unknown": (
+        "projects/hangar/a.md",
+        "/links/0/target",
+        "belongs_to hangr is not a work-item key",
+    ),
+    "belongs-to-other-project": (
+        "projects/hangar/a.md",
+        "/links/0/target",
+        "belongs_to project flightdeck, but the record sits under projects/hangar/",
+    ),
+    "belongs-to-malformed": ("a.md", "/links/0/target", "belongs_to KAN 26 is malformed"),
+    "retracts-proposal": ("b.md", "/links/0", "retracts DEC-0001, a proposed decision"),
 }
 
 
@@ -73,9 +88,10 @@ def record(
     extra="",
     body="Body",
     sources="\n  - {resource: SRC-0001}",
+    scope="team",
 ):
     return (
-        f"---\nid: {name}\ntype: {kind}\nscope: team\nstatus: {status}\ndate: 2026-11-10\n"
+        f"---\nid: {name}\ntype: {kind}\nscope: {scope}\nstatus: {status}\ndate: 2026-11-10\n"
         f"owner: sean\nsources: {sources}\nlinks: {links}\n{extra}---\n{body}\n"
     )
 
@@ -157,6 +173,7 @@ def test_external_link_targets_and_markdown_links_are_not_resolved(tmp_path):
         "\n  - {type: belongs_to, target: project-alpha}"
     )
     (tmp_path / "knowledge.toml").write_text(PIN)
+    (tmp_path / "projects/project-alpha").mkdir(parents=True)
     (tmp_path / "a.md").write_text(record(links=links, body="[gone](missing.md)"))
     assert check_records(tmp_path)["failures"] == []
     (tmp_path / "b.md").write_text(record("b", links="\n  - {type: belongs_to, target: LES-0009}"))
@@ -189,6 +206,7 @@ def test_check_roots_limit_what_is_read_and_skip_readme(tmp_path):
             status="open",
             links="\n  - {type: derived_from, target: SRC-0001}",
             sources=CITED,
+            scope="project",
         )
     )
     result = check_records(tmp_path)
@@ -287,7 +305,7 @@ def rooted(tmp_path):
     (tmp_path / "team").mkdir()
     (tmp_path / "team/.gitkeep").write_text("")
     (tmp_path / "projects/alpha").mkdir(parents=True)
-    (tmp_path / "projects/alpha/keep.md").write_text(record("keep-it"))
+    (tmp_path / "projects/alpha/keep.md").write_text(record("keep-it", scope="project"))
     (tmp_path / "inbox").mkdir()
     (tmp_path / "inbox/.gitkeep").write_text("")
     git(tmp_path, "add", ".")
@@ -304,7 +322,9 @@ def rooted_failures(root):
 
 def test_ci_mode_narrowed_roots_cannot_hide_an_edit(rooted):
     (rooted / "knowledge.toml").write_text(PIN + '\n[check]\nroots = ["team"]\n')
-    (rooted / "projects/alpha/keep.md").write_text(record("keep-it", body="Edited"))
+    (rooted / "projects/alpha/keep.md").write_text(
+        record("keep-it", body="Edited", scope="project")
+    )
     assert check_records(rooted)["failures"] == []
     assert rooted_failures(rooted) == [
         ("knowledge.toml", "/check/roots"),
@@ -314,7 +334,7 @@ def test_ci_mode_narrowed_roots_cannot_hide_an_edit(rooted):
 
 def test_ci_mode_follows_an_accepted_decision_moved_out_of_the_roots(rooted):
     git(rooted, "mv", "projects/alpha/keep.md", "inbox/keep.md")
-    (rooted / "inbox/keep.md").write_text(record("keep-it", body="Edited"))
+    (rooted / "inbox/keep.md").write_text(record("keep-it", body="Edited", scope="project"))
     assert rooted_failures(rooted) == [("inbox/keep.md", "")]
 
 
@@ -394,7 +414,10 @@ def test_a_project_subfolder_is_placed_by_the_knowledge_toml_root(tmp_path):
     moved = tmp_path / "kb/team/LES-0002.md"
     (tmp_path / "kb/projects/beta/lessons/LES-0002.md").rename(moved)
     failures = check_records(tmp_path / "kb/team")["failures"]
-    assert [(item["path"], item["pointer"]) for item in failures] == [("LES-0002.md", "/boundary")]
+    assert [(item["path"], item["pointer"]) for item in failures] == [
+        ("LES-0002.md", "/boundary"),
+        ("LES-0002.md", "/scope"),
+    ]
 
 
 @pytest.mark.parametrize(
@@ -446,6 +469,7 @@ def test_a_team_record_cites_no_customer_record_or_path(tmp_path, entry):
     shutil.copytree(INVALID / "customer-source-path", tmp_path / "kb")
     lesson = record(kind="lesson", status="open", sources="\n  - " + entry)
     (tmp_path / "kb/a.md").write_text(lesson)
+    (tmp_path / "kb/projects/alpha/x.vtt").write_text("cited, so it exists\n")
     failures = check_records(tmp_path / "kb")["failures"]
     assert [(item["path"], item["pointer"]) for item in failures] == [("a.md", "/sources/0")]
 
@@ -474,6 +498,208 @@ def test_a_body_link_into_a_customer_project_fails(tmp_path, located, body, fail
     (tmp_path / "kb/a.md").unlink()
     target = tmp_path / "kb" / located
     target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(record(kind="convention", status="active", body=body))
+    scope = "project" if located.startswith("projects/") else "team"
+    target.write_text(record(kind="convention", status="active", body=body, scope=scope))
     failures = check_records(tmp_path / "kb")["failures"]
     assert bool(failures) is fails, failures
+
+
+# --- Resources, folders and belongs_to (KAN-478) -------------------------------------
+
+
+def _sha(data: bytes) -> str:
+    import hashlib
+
+    return "sha256:" + hashlib.sha256(data).hexdigest()
+
+
+def test_a_resource_hash_matches_the_file_or_the_record_body(tmp_path):
+    (tmp_path / "knowledge.toml").write_text(PIN)
+    (tmp_path / "team").mkdir()
+    payload = b"What was said.\r\n"
+    (tmp_path / "team/call.txt").write_bytes(payload)
+    source = (VALID / "sources/SRC-0001.md").read_text()
+    (tmp_path / "team/source.md").write_text(source)
+    body = source.split("---\n", 2)[2].encode()
+    sources = (
+        f"\n  - {{resource: team/call.txt, hash: '{_sha(payload.replace(b'\r\n', b'\n'))}'}}"
+        f"\n  - {{resource: team/source.md, hash: '{_sha(body)}'}}"
+    )
+    (tmp_path / "team/a.md").write_text(record(sources=sources))
+    assert check_records(tmp_path)["failures"] == []
+    (tmp_path / "team/call.txt").write_text("Edited after capture.\n")
+    failures = check_records(tmp_path)["failures"]
+    assert [(item["path"], item["pointer"]) for item in failures] == [
+        ("team/a.md", "/sources/0/hash")
+    ]
+
+
+def test_expired_payloads_and_external_hashes_only_warn(tmp_path):
+    (tmp_path / "knowledge.toml").write_text(PIN)
+    sources = (
+        "\n  - {resource: inbox/2026-10-01-call.vtt}"
+        "\n  - {resource: processed/2026-10-01-thread.md}"
+        f"\n  - {{resource: 'https://example.invalid/KAN-1', hash: '{HASH}'}}"
+        f"\n  - {{resource: vault/notes/2026-10-01.md, hash: '{HASH}'}}"
+    )
+    (tmp_path / "a.md").write_text(record(sources=sources))
+    result = check_records(tmp_path)
+    assert result["failures"] == []
+    assert [(item["pointer"], item["message"].split(" ")[-1]) for item in result["warnings"]] == [
+        ("/sources/0/resource", "days"),
+        ("/sources/1/resource", "days"),
+        ("/sources/2/hash", "unverified"),
+        ("/sources/3/hash", "unverified"),
+    ]
+    runner = CliRunner()
+    shown = runner.invoke(app, ["knowledge", "check", str(tmp_path)])
+    assert shown.exit_code == 0, shown.output
+    assert "warning: inbox/2026-10-01-call.vtt not found" in shown.output
+    assert "1 records, 0 failures, 0 legacy, 4 warnings" in shown.output
+
+
+def test_a_path_outside_the_repository_is_not_a_repository_resource(tmp_path):
+    (tmp_path / "knowledge.toml").write_text(PIN)
+    sources = "\n  - {resource: ../elsewhere/x.md}\n  - {resource: team-notes/x.md}"
+    (tmp_path / "a.md").write_text(record(sources=sources))
+    assert check_records(tmp_path)["failures"] == []
+
+
+@pytest.mark.parametrize(
+    ("target", "fails"),
+    [
+        ("KAN-478", False),
+        ("ABC_1-2", False),
+        ("https://example.invalid/epic/7", False),
+        ("hangar", False),
+        ("a-slug", False),  # its own id: a record
+        ("hangr", True),
+        ("kan-478x", True),
+        ("KAN-", True),
+        ("kan 478", True),
+    ],
+)
+def test_belongs_to_names_a_key_a_record_or_a_project(tmp_path, target, fails):
+    (tmp_path / "knowledge.toml").write_text(PIN)
+    (tmp_path / "projects/hangar").mkdir(parents=True)
+    links = f"\n  - {{type: belongs_to, target: '{target}'}}"
+    (tmp_path / "projects/hangar/a.md").write_text(record(links=links, scope="project"))
+    failures = check_records(tmp_path)["failures"]
+    assert bool(failures) is fails, failures
+
+
+def test_a_slug_belongs_to_is_not_resolved_without_a_projects_folder(tmp_path):
+    (tmp_path / "knowledge.toml").write_text(PIN)
+    links = "\n  - {type: belongs_to, target: fix-receipts}"
+    (tmp_path / "a.md").write_text(record(links=links, scope="personal"))
+    assert check_records(tmp_path)["failures"] == []
+
+
+def test_a_project_record_in_team_and_a_team_record_in_a_project_fail(tmp_path):
+    (tmp_path / "knowledge.toml").write_text(PIN)
+    (tmp_path / "team").mkdir()
+    (tmp_path / "projects/alpha").mkdir(parents=True)
+    (tmp_path / "team/a.md").write_text(record("a", scope="team"))
+    (tmp_path / "projects/alpha/b.md").write_text(record("b", scope="project"))
+    assert check_records(tmp_path)["failures"] == []
+    (tmp_path / "projects/alpha/b.md").write_text(record("b", scope="personal"))
+    failures = check_records(tmp_path)["failures"]
+    assert [(item["path"], item["pointer"]) for item in failures] == [
+        ("projects/alpha/b.md", "/scope")
+    ]
+
+
+def test_ci_mode_refuses_a_new_slug_already_taken_on_the_base(repo):
+    """A record merged since the fork owns its slug, as an id or as an alias."""
+    root = repo.parent
+    git(root, "checkout", "-q", "main")
+    (repo / "DEC-0001.md").write_text(
+        record("DEC-0001", status="proposed", extra="aliases: [ship-it]\n")
+    )
+    (repo / "pin-it.md").write_text(record("pin-it", status="proposed"))
+    git(root, "add", ".")
+    git(root, "commit", "-q", "-m", "merged and numbered elsewhere")
+    git(root, "checkout", "-q", "change")
+    assert failures(repo) == []
+    (repo / "ship.md").write_text(record("ship-it", status="proposed"))
+    (repo / "pin.md").write_text(record("pin-it", status="proposed"))
+    git(root, "add", ".")
+    git(root, "commit", "-q", "-m", "teammate's practice records")
+    found = check_records(repo, base="main")["failures"]
+    assert [(item["path"], item["pointer"]) for item in found] == [
+        ("pin.md", "/id"),
+        ("ship.md", "/id"),
+    ]
+    assert "ship-it is already the id or alias of records/DEC-0001.md on main" in str(found)
+
+
+def test_ci_mode_allows_a_slug_the_branch_already_had(repo):
+    """Numbering this branch's own record on the base is not a collision."""
+    root = repo.parent
+    git(root, "checkout", "-q", "main")
+    git(root, "mv", "records/draft.md", "records/DEC-0002.md")
+    (repo / "DEC-0002.md").write_text(
+        record("DEC-0002", status="proposed", extra="aliases: [draft]\n")
+    )
+    git(root, "commit", "-q", "-am", "numbered")
+    git(root, "checkout", "-q", "change")
+    assert check_records(repo, base="main")["failures"] == []
+
+
+# --- Retractions (KAN-479) -----------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    ("kind", "status", "links", "message"),
+    [
+        ("lesson", "open", "{type: retracts, target: keep-it}", "a lesson cannot retract"),
+        ("decision", "accepted", "{type: retracts, target: a-slug}", "cannot retract itself"),
+        ("decision", "accepted", "{type: retracts, target: gone}", "is not the id or alias"),
+        ("decision", "accepted", "{type: retracts, target: draft}", "a proposed decision"),
+    ],
+)
+def test_a_retraction_comes_from_a_decision_and_names_an_accepted_one(
+    tmp_path, kind, status, links, message
+):
+    (tmp_path / "knowledge.toml").write_text(PIN)
+    (tmp_path / "keep.md").write_text(record("keep-it"))
+    (tmp_path / "draft.md").write_text(record("draft", status="proposed"))
+    (tmp_path / "a.md").write_text(record(kind=kind, status=status, links="\n  - " + links))
+    found = check_records(tmp_path)["failures"]
+    assert [item["path"] for item in found] == ["a.md"]
+    assert message in found[0]["message"]
+
+
+def test_ci_mode_allows_a_new_record_that_retracts_an_accepted_one(repo):
+    retraction = record(
+        "retract-keep-it",
+        links="\n  - {type: retracts, target: old-name}",
+        body="Accepted by mistake: the ticket was never decided.",
+    )
+    (repo / "retract.md").write_text(retraction)
+    assert failures(repo) == []
+    assert check_records(repo, base="main")["failures"] == []
+
+
+def test_ci_mode_still_refuses_editing_the_retracted_record(repo):
+    (repo / "retract.md").write_text(
+        record("retract-keep-it", links="\n  - {type: retracts, target: keep-it}")
+    )
+    keep = repo / "keep.md"
+    keep.write_text(keep.read_text().replace("Body", "Retracted: accepted by mistake"))
+    found = check_records(repo, base="main")["failures"]
+    assert [(item["path"], item["pointer"]) for item in found] == [("keep.md", "")]
+    assert "has its body edited" in found[0]["message"]
+
+
+def test_a_retraction_cannot_itself_be_retracted(tmp_path):
+    """A wrong correction is superseded by a new decision, never retracted."""
+    (tmp_path / "knowledge.toml").write_text(PIN)
+    (tmp_path / "keep.md").write_text(record("keep-it"))
+    retract = "\n  - {type: retracts, target: keep-it}"
+    (tmp_path / "b.md").write_text(record("b-slug", links=retract))
+    assert check_records(tmp_path)["failures"] == []
+    (tmp_path / "c.md").write_text(record("c-slug", links="\n  - {type: retracts, target: b-slug}"))
+    found = check_records(tmp_path)["failures"]
+    assert [(item["path"], item["pointer"]) for item in found] == [("c.md", "/links/0")]
+    assert "is itself a retraction; supersede it" in found[0]["message"]

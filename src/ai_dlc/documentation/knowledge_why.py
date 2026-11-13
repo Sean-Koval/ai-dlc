@@ -9,7 +9,9 @@ re-fetchable source (Jira, Confluence, an ADR) without a quote says where to fet
 
 It reads a records directory on disk and nothing else: no provider, no network
 (outcome O1). ``superseded_by`` is derived the way ``knowledge index`` derives it
-(KAN-456). The CLI and the MCP tool both call :func:`why`.
+(KAN-456), and ``retracted_by`` the way it derives retractions (KAN-479): a retracted
+record shows status ``retracted`` and the decisions that retract it. The CLI and the
+MCP tool both call :func:`why`.
 """
 
 import difflib
@@ -20,7 +22,13 @@ from typing import Any
 
 from ai_dlc.documentation import knowledge_bundle, record_index
 from ai_dlc.documentation.knowledge_check import team_inputs, visible_in
-from ai_dlc.documentation.knowledge_records import KnowledgeRecord, SourceRef, payload_expires
+from ai_dlc.documentation.knowledge_records import (
+    KnowledgeRecord,
+    SourceRef,
+    effective_status,
+    payload_expires,
+    retracted_by,
+)
 
 BODY_LIMIT = 1200
 """Most characters of the asked record's body; a longer body points at its file."""
@@ -47,6 +55,8 @@ class _Store:
             name: [s for s in after if s in visible]
             for name, after in knowledge_bundle.superseded_by(scan).items()
         }
+        # Only visible records retract: a customer record never changes a team status.
+        self.retractions = retracted_by(item.record for item in self.items)
 
     def find(self, name: str):
         return self.names.get(name)
@@ -79,9 +89,11 @@ def why(root: Path | str, id: str, project: str | None = None) -> dict[str, Any]
     body, truncated = _clip(item.body, BODY_LIMIT)
     return {
         "status": "ok",
-        "record": {**_summary(item), "body": body, "truncated": truncated},
+        "record": {**_summary(store, item), "body": body, "truncated": truncated},
         "supersedes": _chain(store, item, older=True),
         "superseded_by": _chain(store, item, older=False),
+        "retracts": _retractions(store, item, retracting=True),
+        "retracted_by": _retractions(store, item, retracting=False),
         "linked": _linked(store, item),
         "tickets": _tickets(store, item),
         "evidence": [_evidence(store, entry) for entry in record.sources],
@@ -106,13 +118,14 @@ def _get(store: _Store, folder: Path, id: str, project: str | None) -> Any:
     return store.find(matches[0]["record"].id) if matches else None
 
 
-def _summary(item: Any) -> dict[str, Any]:
+def _summary(store: _Store, item: Any) -> dict[str, Any]:
+    """``status`` is the one readers see: ``retracted`` once an accepted decision retracts it."""
     record: KnowledgeRecord = item.record
     return {
         "id": record.id,
         "type": record.type,
         "title": record.title,
-        "status": record.status,
+        "status": effective_status(record, store.retractions),
         "date": record.date.isoformat(),
         "valid_from": record.valid_from.isoformat() if record.valid_from else None,
         "valid_to": record.valid_to.isoformat() if record.valid_to else None,
@@ -144,20 +157,30 @@ def _chain(store: _Store, start: Any, *, older: bool) -> list[dict[str, Any]]:
             if item is None or item.record.id in seen:
                 continue
             seen.add(item.record.id)
-            prose = "\n".join(line for line in item.body.splitlines() if not line.startswith("#"))
-            reason, _cut = _clip(prose, REASON_LIMIT)
-            found.append(
-                {
-                    **_summary(item),
-                    "via": current.record.id,
-                    "reason": reason,
-                    "evidence": [
-                        _evidence(store, entry) for entry in item.record.sources if entry.quote
-                    ],
-                }
-            )
+            found.append({**_entry(store, item), "via": current.record.id})
             queue.append(item)
     return found
+
+
+def _entry(store: _Store, item: Any) -> dict[str, Any]:
+    """A related record: its summary, the reason its body gives and its quoted evidence."""
+    prose = "\n".join(line for line in item.body.splitlines() if not line.startswith("#"))
+    reason, _cut = _clip(prose, REASON_LIMIT)
+    return {
+        **_summary(store, item),
+        "reason": reason,
+        "evidence": [_evidence(store, entry) for entry in item.record.sources if entry.quote],
+    }
+
+
+def _retractions(store: _Store, item: Any, *, retracting: bool) -> list[dict[str, Any]]:
+    """The records ``item`` retracts, or the accepted decisions retracting it (KAN-479)."""
+    me = item.record.id
+    if retracting:
+        names = [name for name, by in store.retractions.items() if me in by]
+    else:
+        names = store.retractions.get(me, [])
+    return [_entry(store, store.find(name)) for name in names if store.find(name) is not None]
 
 
 def _names(record: KnowledgeRecord) -> set[str]:
@@ -172,22 +195,22 @@ def _linked(store: _Store, item: Any) -> list[dict[str, Any]]:
         if other is item or other.record.type == "source":
             continue
         for link in other.record.links:
-            if link.type != "supersedes" and link.target in mine:
-                found.append(_link(other, link.type, "in"))
+            if link.type not in ("supersedes", "retracts") and link.target in mine:
+                found.append(_link(store, other, link.type, "in"))
     for link in item.record.links:
         target = store.find(link.target)
         if link.type in ("implements", "codified_as") and target is not None:
-            found.append(_link(target, link.type, "out"))
+            found.append(_link(store, target, link.type, "out"))
     return found
 
 
-def _link(item: Any, kind: str, direction: str) -> dict[str, Any]:
+def _link(store: _Store, item: Any, kind: str, direction: str) -> dict[str, Any]:
     record = item.record
     return {
         "id": record.id,
         "type": record.type,
         "title": record.title,
-        "status": record.status,
+        "status": effective_status(record, store.retractions),
         "link": kind,
         "direction": direction,
         "path": item.relative,
@@ -274,7 +297,14 @@ def lines(result: dict[str, Any]) -> list[str]:
         out += ["", *record["body"].splitlines()]
         if record["truncated"]:
             out.append(f"(truncated; read {record['path']})")
-    for heading, key in (("Supersedes", "supersedes"), ("Superseded by", "superseded_by")):
+    for heading, key in (
+        ("Supersedes", "supersedes"),
+        ("Superseded by", "superseded_by"),
+        ("Retracts", "retracts"),
+        ("Retracted by", "retracted_by"),
+    ):
+        if key.startswith("retract") and not result[key]:
+            continue  # shown only when there is a retraction, so other answers stay as they were
         out += ["", f"{heading}:"]
         if not result[key]:
             out.append("  (none)")

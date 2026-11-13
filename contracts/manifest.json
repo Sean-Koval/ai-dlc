@@ -42,6 +42,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -54,7 +57,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -127,6 +132,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -139,7 +147,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -254,6 +264,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -266,7 +279,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -336,6 +351,124 @@
         "type": "object"
       }
     },
+    "comment": {
+      "payload": {
+        "additionalProperties": false,
+        "properties": {
+          "body": {
+            "description": "Plain text; each non-blank line is one paragraph.",
+            "minLength": 1,
+            "title": "Body",
+            "type": "string"
+          },
+          "operation_id": {
+            "minLength": 1,
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "reference": {
+            "minLength": 1,
+            "title": "Reference",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reference",
+          "body",
+          "operation_id"
+        ],
+        "title": "Comment",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "capabilities",
+              "prepare",
+              "reconcile_closed",
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "update",
+              "query",
+              "comment",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append",
+              "pull_request_create",
+              "get",
+              "search",
+              "list_changed",
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children",
+              "list_since",
+              "fetch"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "url": {
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "url"
+        ],
+        "title": "CommentResult",
+        "type": "object"
+      }
+    },
     "create": {
       "payload": {
         "additionalProperties": false,
@@ -349,6 +482,14 @@
             "minLength": 1,
             "title": "Correlation",
             "type": "string"
+          },
+          "labels": {
+            "description": "Native tracker labels to set. A provider that cannot write labels does not list update among its optional operations, and callers refuse labels before writing.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Labels",
+            "type": "array"
           },
           "operation_id": {
             "minLength": 1,
@@ -382,6 +523,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -394,7 +538,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -501,6 +647,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -513,7 +662,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -611,6 +762,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -623,7 +777,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -693,6 +849,186 @@
         "type": "object"
       }
     },
+    "fetch": {
+      "payload": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "description": "the provider's transcript id",
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "TranscriptRef",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "capabilities",
+              "prepare",
+              "reconcile_closed",
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "update",
+              "query",
+              "comment",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append",
+              "pull_request_create",
+              "get",
+              "search",
+              "list_changed",
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children",
+              "list_since",
+              "fetch"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "$defs": {
+          "Utterance": {
+            "additionalProperties": false,
+            "properties": {
+              "at": {
+                "description": "HH:MM:SS offset",
+                "pattern": "^[0-9]{1,3}:[0-5][0-9]:[0-5][0-9]$",
+                "title": "At",
+                "type": "string"
+              },
+              "speaker": {
+                "minLength": 1,
+                "title": "Speaker",
+                "type": "string"
+              },
+              "text": {
+                "minLength": 1,
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "speaker",
+              "at",
+              "text"
+            ],
+            "title": "Utterance",
+            "type": "object"
+          }
+        },
+        "additionalProperties": true,
+        "properties": {
+          "emails": {
+            "description": "routing only; never stored",
+            "items": {
+              "type": "string"
+            },
+            "title": "Emails",
+            "type": "array"
+          },
+          "id": {
+            "description": "stable per provider; capture is idempotent by it",
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "participants": {
+            "description": "display names",
+            "items": {
+              "type": "string"
+            },
+            "title": "Participants",
+            "type": "array"
+          },
+          "segments": {
+            "items": {
+              "$ref": "#/$defs/Utterance"
+            },
+            "minItems": 1,
+            "title": "Segments",
+            "type": "array"
+          },
+          "start": {
+            "format": "date-time",
+            "title": "Start",
+            "type": "string"
+          },
+          "title": {
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "start",
+          "segments"
+        ],
+        "title": "Transcript",
+        "type": "object"
+      }
+    },
     "find": {
       "payload": {
         "additionalProperties": false,
@@ -722,6 +1058,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -734,7 +1073,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -861,6 +1202,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -873,7 +1217,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -972,6 +1318,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -984,7 +1333,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -1152,6 +1503,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -1164,7 +1518,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -1260,6 +1616,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -1272,7 +1631,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -1412,6 +1773,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -1424,7 +1788,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -1548,6 +1914,166 @@
         "type": "object"
       }
     },
+    "list_since": {
+      "payload": {
+        "additionalProperties": false,
+        "description": "Transcripts of meetings that started at or after ``since`` (the transcripts role).",
+        "properties": {
+          "since": {
+            "format": "date-time",
+            "title": "Since",
+            "type": "string"
+          }
+        },
+        "required": [
+          "since"
+        ],
+        "title": "TranscriptsSince",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "capabilities",
+              "prepare",
+              "reconcile_closed",
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "update",
+              "query",
+              "comment",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append",
+              "pull_request_create",
+              "get",
+              "search",
+              "list_changed",
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children",
+              "list_since",
+              "fetch"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "$defs": {
+          "TranscriptSummary": {
+            "additionalProperties": true,
+            "properties": {
+              "emails": {
+                "description": "routing only; never stored",
+                "items": {
+                  "type": "string"
+                },
+                "title": "Emails",
+                "type": "array"
+              },
+              "id": {
+                "description": "stable per provider; capture is idempotent by it",
+                "minLength": 1,
+                "title": "Id",
+                "type": "string"
+              },
+              "participants": {
+                "description": "display names",
+                "items": {
+                  "type": "string"
+                },
+                "title": "Participants",
+                "type": "array"
+              },
+              "start": {
+                "format": "date-time",
+                "title": "Start",
+                "type": "string"
+              },
+              "title": {
+                "minLength": 1,
+                "title": "Title",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "start"
+            ],
+            "title": "TranscriptSummary",
+            "type": "object"
+          }
+        },
+        "additionalProperties": true,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/$defs/TranscriptSummary"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "TranscriptList",
+        "type": "object"
+      }
+    },
     "merged": {
       "payload": {
         "additionalProperties": false,
@@ -1577,6 +2103,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -1589,7 +2118,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -1682,6 +2213,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -1694,7 +2228,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -1835,6 +2371,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -1847,7 +2386,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -1971,6 +2512,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -1983,7 +2527,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -2042,6 +2588,169 @@
         "type": "object"
       }
     },
+    "query": {
+      "payload": {
+        "additionalProperties": false,
+        "description": "Read-only item search; every filter given must match.",
+        "properties": {
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "limit": {
+            "default": 20,
+            "maximum": 50,
+            "minimum": 1,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "state": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Normalized state: open, in_progress, in_review, needs_decision, closed, cancelled or unknown.",
+            "title": "State"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Text"
+          }
+        },
+        "title": "Query",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "capabilities",
+              "prepare",
+              "reconcile_closed",
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "update",
+              "query",
+              "comment",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append",
+              "pull_request_create",
+              "get",
+              "search",
+              "list_changed",
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children",
+              "list_since",
+              "fetch"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "$defs": {
+          "Item": {
+            "additionalProperties": true,
+            "properties": {
+              "id": {
+                "minLength": 1,
+                "title": "Id",
+                "type": "string"
+              },
+              "state": {
+                "description": "Normalized state: open, in_progress, in_review, needs_decision, closed, cancelled or unknown.",
+                "minLength": 1,
+                "title": "State",
+                "type": "string"
+              },
+              "url": {
+                "minLength": 1,
+                "title": "Url",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "url",
+              "state"
+            ],
+            "title": "Item",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/$defs/Item"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "Found",
+        "type": "object"
+      }
+    },
     "read": {
       "payload": {
         "additionalProperties": false,
@@ -2071,6 +2780,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -2083,7 +2795,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -2184,6 +2898,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -2196,7 +2913,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -2352,6 +3071,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -2364,7 +3086,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -2498,6 +3222,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -2510,7 +3237,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -2547,6 +3276,166 @@
         "type": "object"
       },
       "required": true,
+      "response": {
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "state": {
+            "description": "Normalized state: open, in_progress, in_review, needs_decision, closed, cancelled or unknown.",
+            "minLength": 1,
+            "title": "State",
+            "type": "string"
+          },
+          "url": {
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "state"
+        ],
+        "title": "Item",
+        "type": "object"
+      }
+    },
+    "update": {
+      "payload": {
+        "additionalProperties": false,
+        "description": "Replace the given fields of an open item; omitted fields stay as they are.",
+        "properties": {
+          "body": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Body"
+          },
+          "labels": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Native tracker labels to set. A provider that cannot write labels does not list update among its optional operations, and callers refuse labels before writing.",
+            "title": "Labels"
+          },
+          "operation_id": {
+            "minLength": 1,
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "reference": {
+            "minLength": 1,
+            "title": "Reference",
+            "type": "string"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Title"
+          }
+        },
+        "required": [
+          "reference",
+          "operation_id"
+        ],
+        "title": "Update",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "capabilities",
+              "prepare",
+              "reconcile_closed",
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "update",
+              "query",
+              "comment",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append",
+              "pull_request_create",
+              "get",
+              "search",
+              "list_changed",
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children",
+              "list_since",
+              "fetch"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
       "response": {
         "additionalProperties": true,
         "properties": {
@@ -2666,6 +3555,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -2678,7 +3570,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -2826,10 +3720,20 @@
       ],
       "optional": [
         "capabilities",
+        "comment",
         "link",
         "prepare",
-        "reconcile_closed"
+        "query",
+        "reconcile_closed",
+        "update"
       ]
+    },
+    "transcripts": {
+      "mandatory": [
+        "list_since",
+        "fetch"
+      ],
+      "optional": []
     },
     "wiki": {
       "mandatory": [

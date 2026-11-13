@@ -110,8 +110,10 @@ nav:
       - Framework delivery: design/framework-delivery.md
       - Project documentation: design/project-documentation.md
       - Local and shared knowledge: design/local-and-shared-knowledge.md
+      - Meeting transcripts: design/meeting-transcripts.md
       - Native tool composition: design/native-tool-composition.md
       - Provider connections: design/provider-connections.md
       - Provider toolsets PRD: design/provider-toolsets-prd.md
       - Design PM: design/design-pm.md
       - Jira Cloud: design/jira-cloud.md
+      - Session join key: design/session-join-key.md

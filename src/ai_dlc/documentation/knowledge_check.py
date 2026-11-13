@@ -12,6 +12,16 @@ Only the directories in ``[check] roots`` of ``knowledge.toml`` are read (all of
 permanent and raw payloads expire, so ``derived_from`` must name a source record, and
 a record citing an expiring Source must quote its evidence in ``sources``.
 
+Path resources in ``sources`` must exist in the repository and match their sha256
+``hash`` (KAN-478); a missing raw payload under ``inbox/`` or ``processed/`` only
+warns, because payloads expire, and an external URL's hash is reported as unverified.
+A record under ``team/`` has scope team and one under ``projects/<p>/`` scope project,
+and ``belongs_to`` names a work-item key, a URL, a record or, when the repository
+has ``projects/``, a project there.
+
+A decision accepted by mistake is never edited: a later decision ``retracts`` it and
+says why (KAN-479). The link must come from a decision and name an accepted decision.
+
 With ``base`` (CI mode) it also refuses in-place edits of decisions that were accepted
 at the merge base. The CLI and the MCP tool both call :func:`check_records`.
 
@@ -33,6 +43,7 @@ from typing import Any
 
 from ai_dlc.documentation import knowledge_records as records
 from ai_dlc.documentation.knowledge_notes import split
+from ai_dlc.documentation.knowledge_publish import source_sha256
 from ai_dlc.files import GitError, run_git
 
 RESERVED = ("index.md", "log.md")
@@ -56,20 +67,31 @@ _MARKDOWN_LINK = re.compile(
     r"\]\(\s*<?([^)\s>]+)|^\s*\[[^\]]+\]:\s*<?(\S+?)>?(?:\s|$)", re.MULTILINE
 )
 _PROJECT_PATH = re.compile(r"(?:^|/)projects/([a-z0-9][a-z0-9-]*)(?:/|$)")
+# Raw payloads expire after 30 days, so a missing one is a warning, not a failure.
+EXPIRING = ("inbox/", "processed/")
+# A work-item key: an upper-case project key, a hyphen and a number (KAN-478).
+WORK_ITEM = re.compile(r"^[A-Z][A-Z0-9_]*-[0-9]+$")
+TEAM = "team"
 
 
 class _Bundle:
     def __init__(self) -> None:
         self.failures: list[dict[str, str]] = []
+        self.warnings: list[dict[str, str]] = []
         self.legacy: list[dict[str, str]] = []
         self.records: dict[str, records.KnowledgeRecord] = {}
         self.bodies: dict[str, str] = {}
         # Prefix that turns a path relative to the checked folder into one relative to
         # the knowledge repository (the directory holding knowledge.toml).
         self.prefix = ""
+        # The knowledge repository: path resources in ``sources`` are relative to it.
+        self.repo = Path()
 
     def fail(self, path: str, pointer: str, message: str) -> None:
         self.failures.append({"path": path, "pointer": pointer, "message": message})
+
+    def warn(self, path: str, pointer: str, message: str) -> None:
+        self.warnings.append({"path": path, "pointer": pointer, "message": message})
 
 
 def check_records(
@@ -90,9 +112,11 @@ def check_records(
     if not folder.is_dir():
         raise ValueError(f"records directory not found: {root}")
     bundle = _Bundle()
+    bundle.repo = folder
     settings = _check_pin(bundle, folder, config)
     if settings and folder.is_relative_to(settings[0].parent):
         bundle.prefix = folder.relative_to(settings[0].parent).as_posix()
+        bundle.repo = settings[0].parent
     scopes = _roots(bundle, folder, settings)
     for scope in scopes:
         for path in _markdown(scope):
@@ -108,16 +132,21 @@ def check_records(
     _check_links(bundle, index)
     _check_evidence(bundle, index)
     _check_supersession(bundle, index)
+    _check_retractions(bundle, index)
     _check_duplicate_sources(bundle)
+    _check_resources(bundle, index)
+    _check_folders(bundle, index)
     _check_boundary(bundle, index)
     if base:
         _check_against_base(bundle, folder, settings, scopes, base)
-    bundle.failures.sort(key=lambda item: (item["path"], item["pointer"], item["message"]))
+    for found in (bundle.failures, bundle.warnings):
+        found.sort(key=lambda item: (item["path"], item["pointer"], item["message"]))
     return {
         "status": "invalid" if bundle.failures else "valid",
         "records": len(bundle.records),
         "failures": bundle.failures,
         "legacy": bundle.legacy,
+        "warnings": bundle.warnings,
     }
 
 
@@ -128,6 +157,15 @@ def failure_lines(result: dict[str, Any], prefix: str = "") -> list[str]:
         path = _join(prefix, item["path"])
         pointer = f" {item['pointer']}:" if item["pointer"] else ""
         lines.append(f"{path}:{pointer} {item['message']}")
+    return lines
+
+
+def warning_lines(result: dict[str, Any], prefix: str = "") -> list[str]:
+    """One ``path: pointer: warning: message`` line per warning."""
+    lines = []
+    for item in result.get("warnings", []):
+        pointer = f" {item['pointer']}:" if item["pointer"] else ""
+        lines.append(f"{_join(prefix, item['path'])}:{pointer} warning: {item['message']}")
     return lines
 
 
@@ -310,7 +348,7 @@ def _must_resolve(link: records.Link) -> bool:
     ``derived_from`` always names a source record: raw payloads expire, records do not.
     """
     target = link.target
-    if link.type == "derived_from" or NUMBERED.match(target):
+    if link.type in ("derived_from", "retracts") or NUMBERED.match(target):
         return True
     return link.type != "belongs_to" and SLUG.match(target) is not None
 
@@ -407,6 +445,34 @@ def _check_supersession(bundle: _Bundle, index: dict[str, str]) -> None:
     _check_cycles(bundle, edges)
 
 
+def _check_retractions(bundle: _Bundle, index: dict[str, str]) -> None:
+    """``retracts`` goes from a decision to another, accepted, decision (KAN-479)."""
+    for path, record in bundle.records.items():
+        for number, link in enumerate(record.links):
+            if link.type != "retracts" or link.target not in index:
+                continue
+            pointer = f"/links/{number}"
+            target = bundle.records[index[link.target]]
+            if record.type != "decision":
+                bundle.fail(path, pointer, f"a {record.type} cannot retract; only a decision can")
+            elif index[link.target] == path:
+                bundle.fail(path, pointer, "a decision cannot retract itself")
+            elif any(item.type == "retracts" for item in target.links):
+                bundle.fail(
+                    path,
+                    pointer,
+                    f"retracts {target.id}, which is itself a retraction; supersede it with "
+                    "a new decision instead",
+                )
+            elif target.type != "decision" or target.status != "accepted":
+                bundle.fail(
+                    path,
+                    pointer,
+                    f"retracts {target.id}, a {target.status} {target.type}; only an "
+                    "accepted decision is retracted (edit or reject a proposal instead)",
+                )
+
+
 def _check_cycles(bundle: _Bundle, edges: dict[str, list[tuple[int, str]]]) -> None:
     state: dict[str, int] = {}
     reported: set[frozenset[str]] = set()
@@ -451,6 +517,143 @@ def _check_duplicate_sources(bundle: _Bundle) -> None:
                     f"/sources/{number}/hash",
                     f"duplicate of {first}: same type, title and source hash; "
                     "link it with derived_from instead",
+                )
+
+
+# --- Resources, folders and belongs_to (KAN-478) -------------------------------------
+
+
+def _repo_path(value: str) -> str | None:
+    """``value`` as a path relative to the repository, or ``None`` if it is not a path.
+
+    URLs, record ids and work-item keys are not paths; a path holds a ``/`` or a ``.``.
+    """
+    if "://" in value or not ("/" in value or "." in value):
+        return None
+    return posixpath.normpath(value.replace("\\", "/"))
+
+
+def _in_repo(repo: Path, relative: str) -> bool:
+    """A path names a file of the repository when its first part is there, or expires.
+
+    Other paths (a vault note, a transcript store) live elsewhere and are not checked.
+    """
+    if relative.startswith(("../", "/")) or relative == "..":
+        return False
+    return relative.startswith(EXPIRING) or (repo / relative.split("/")[0]).exists()
+
+
+def _digests(data: bytes) -> set[str]:
+    """Accepted hashes of a file: the whole file, or the body of a record file."""
+    found = {"sha256:" + source_sha256(data)}
+    try:
+        front, _raw, body = split(data.decode("utf-8"))
+    except (UnicodeDecodeError, ValueError):
+        return found
+    if front is not None:
+        found.add("sha256:" + source_sha256(body.encode("utf-8")))
+    return found
+
+
+def _check_resources(bundle: _Bundle, index: dict[str, str]) -> None:
+    """Path resources exist and match their hash; external hashes are unverified."""
+    for path, record in bundle.records.items():
+        for number, entry in enumerate(record.sources):
+            pointer = f"/sources/{number}"
+            value = entry.resource
+            relative = None if value in index else _repo_path(value)
+            if relative is not None and not _in_repo(bundle.repo, relative):
+                relative = None
+                if entry.hash:
+                    bundle.warn(
+                        path, f"{pointer}/hash", f"{value} is not in the repository; unverified"
+                    )
+            elif "://" in value and entry.hash:
+                bundle.warn(path, f"{pointer}/hash", f"{value} is external; hash unverified")
+            if relative is None:
+                continue
+            file = bundle.repo / relative
+            if not file.is_file():
+                if relative.startswith(EXPIRING):
+                    bundle.warn(
+                        path,
+                        f"{pointer}/resource",
+                        f"{value} not found; raw payloads expire after 30 days",
+                    )
+                else:
+                    bundle.fail(
+                        path, f"{pointer}/resource", f"{value} does not exist in the repository"
+                    )
+                continue
+            if not entry.hash:
+                continue
+            if not entry.hash.startswith("sha256:"):
+                bundle.warn(path, f"{pointer}/hash", "only sha256 hashes are verified")
+            elif entry.hash not in _digests(file.read_bytes()):
+                bundle.fail(
+                    path,
+                    f"{pointer}/hash",
+                    f"does not match {value}: neither the sha256 of the file nor of its body",
+                )
+
+
+def _projects(bundle: _Bundle) -> set[str] | None:
+    """Project names: the directories under ``projects/`` of the repository.
+
+    ``None`` when there is no ``projects/``: without that registry (a vault, where a
+    learning belongs to an ai-dlc work id) a slug target cannot be resolved.
+    """
+    folder = bundle.repo / PROJECTS
+    if not folder.is_dir():
+        return None
+    return {item.name for item in folder.iterdir() if item.is_dir() and SLUG.match(item.name)}
+
+
+def _check_folders(bundle: _Bundle, index: dict[str, str]) -> None:
+    """Scope matches the folder, and ``belongs_to`` names a key, a record or a project."""
+    projects = _projects(bundle)
+    for path, record in bundle.records.items():
+        located = _join(bundle.prefix, path)
+        mine = project_of(located)
+        top = PurePosixPath(located).parts[0]
+        if top == TEAM and record.scope != "team":
+            bundle.fail(
+                path, "/scope", f"a record under {TEAM}/ has scope team, not {record.scope}"
+            )
+        elif mine and record.scope != "project":
+            bundle.fail(
+                path,
+                "/scope",
+                f"a record under {PROJECTS}/{mine}/ has scope project, not {record.scope}",
+            )
+        for number, link in enumerate(record.links):
+            target = link.target
+            if link.type != "belongs_to" or NUMBERED.match(target) or target in index:
+                continue
+            if WORK_ITEM.match(target) or "://" in target:
+                continue
+            pointer = f"/links/{number}/target"
+            if not SLUG.match(target):
+                bundle.fail(
+                    path,
+                    pointer,
+                    f"belongs_to {target} is malformed: not a work-item key (KEY-123), a URL, "
+                    "a record id or a project slug",
+                )
+            elif projects is None:
+                continue
+            elif target not in projects:
+                bundle.fail(
+                    path,
+                    pointer,
+                    f"belongs_to {target} is not a work-item key (KEY-123), the id of a record "
+                    f"or a project under {PROJECTS}/",
+                )
+            elif mine and target != mine:
+                bundle.fail(
+                    path,
+                    pointer,
+                    f"belongs_to project {target}, but the record sits under {PROJECTS}/{mine}/",
                 )
 
 
@@ -668,6 +871,7 @@ def _check_against_base(
         ) from exc
     _check_dropped_roots(bundle, folder, top, merge_base, settings, scopes)
     _check_accepted_unchanged(bundle, folder, top, merge_base)
+    _check_reused_slugs(bundle, folder, top, merge_base, base, settings)
 
 
 def _base_roots(
@@ -720,6 +924,65 @@ def _check_dropped_roots(
             "/check/roots",
             f"drops {len(dropped)} record file(s) checked at the base, e.g. {dropped[0]}; "
             "keep their directory in [check] roots",
+        )
+
+
+def _claimed(
+    top: Path, folder: Path, revision: str, settings: tuple[Path, str, dict] | None, slugs: set[str]
+) -> dict[str, str]:
+    """Which of ``slugs`` are an id or alias of a record at ``revision``, and where."""
+    roots = _base_roots(folder, top, revision, settings)
+    if not roots or not slugs:
+        return {}
+    patterns = [item for slug in sorted(slugs) for item in ("-e", slug)]
+    listed = run_git(
+        top, "grep", "-l", "-z", "-F", "-w", *patterns, revision, "--", *roots, check=False
+    ).stdout
+    found: dict[str, str] = {}
+    for hit in sorted(item for item in listed.split("\0") if item):
+        name = hit.removeprefix(f"{revision}:")
+        if not name.endswith(".md"):
+            continue
+        try:
+            data, _raw, _body = split(_git(top, "show", f"{revision}:{name}"))
+        except (GitError, ValueError):
+            continue
+        if not data:
+            continue
+        names = {data.get("id"), *(data.get("aliases") or [])}
+        for slug in slugs & {item for item in names if isinstance(item, str)}:
+            found.setdefault(slug, name)
+    return found
+
+
+def _check_reused_slugs(
+    bundle: _Bundle,
+    folder: Path,
+    top: Path,
+    merge_base: str,
+    base: str,
+    settings: tuple[Path, str, dict] | None,
+) -> None:
+    """A new record's slug id is not already an id or alias on the base branch.
+
+    The base tip is read, not the merge base: a record merged since this branch
+    forked, and perhaps numbered with the slug moved to ``aliases``, still owns it.
+    A slug the merge base already held belongs to this record, not a new one.
+    """
+    slugs = {
+        record.id: path for path, record in bundle.records.items() if not NUMBERED.match(record.id)
+    }
+    taken = _claimed(top, folder, base, settings, set(slugs))
+    if not taken:
+        return
+    held = _claimed(top, folder, merge_base, settings, set(taken))
+    for slug, name in sorted(taken.items()):
+        if slug in held:
+            continue
+        bundle.fail(
+            slugs[slug],
+            "/id",
+            f"{slug} is already the id or alias of {name} on {base}; choose another slug",
         )
 
 
