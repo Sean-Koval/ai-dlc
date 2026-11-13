@@ -64,7 +64,7 @@
         "src/ai_dlc/cli.py": "7419fcb58a0faa03ceafc07ca01da71054d26649ae842fb0ea735646dcbc6685",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
         "src/ai_dlc/conformance.py": "0ff247c065e89d4c5b43d844601dc809558c65a779c1600371953c0e2c44737b",
-        "src/ai_dlc/contracts.py": "52b507dc7cf4e32b94edee6b9e74b7ae00bb811c938390868c34b37c4f9fc5c1",
+        "src/ai_dlc/contracts.py": "59b43b50b310903804cda0057166d1f1ab990c578fa1a847d33b99b20a67a923",
         "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
         "src/ai_dlc/documentation/decisions.py": "ab81ad8426665668da3fb18dce2eba3020fbed9476d964ea277352a2092a286c",
         "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
@@ -75,15 +75,15 @@
         "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
         "src/ai_dlc/documentation/documents.py": "763c9c2ff76c62e99eb6de4706f85edcaf57287f8c9bc8335c433d0163ba1812",
         "src/ai_dlc/documentation/fde.py": "3664430ebca9f3ef7ba7c7c431f7e4790176066510904ebe4d43d0a88ecf26e1",
-        "src/ai_dlc/documentation/knowledge.py": "856dd1db28c0de4dfe8c95dc054a12a2b570fe388ddda5253a484635fe3eddae",
-        "src/ai_dlc/documentation/knowledge_bundle.py": "9bd34913ba68b77a9c77799ffaefe9e6aebbb4eac36ed684fc6cf5bade14fd74",
-        "src/ai_dlc/documentation/knowledge_check.py": "5d909c480c94108c0257f53ac96311d586b908c557238c2a021dfc30c5b0e6e0",
+        "src/ai_dlc/documentation/knowledge.py": "ec96182b6eb15a396dbcb62235de1ea9c218844132153bd9e0297717839c52b4",
+        "src/ai_dlc/documentation/knowledge_bundle.py": "a614f08dfcdb5b3700b05d86be482f239d8b34096a1117ceee336b4de2be14b1",
+        "src/ai_dlc/documentation/knowledge_check.py": "0879d989a18f3e86ea91955aaffca5a5108bc36381c4877b7f5b23e251881881",
         "src/ai_dlc/documentation/knowledge_migrate.py": "d175c93f3bb4ec677cbf5c9c87af6a0fff1c125b52fa6c2c7f9ebb5d7ed44c38",
         "src/ai_dlc/documentation/knowledge_notes.py": "543b6fb0fa395321c55cb616c29d2f4a2bb218aca5576a3b8993353fb16e840d",
         "src/ai_dlc/documentation/knowledge_publish.py": "f0c5a34ac2793c4abea951e8404f4cf4e4e64886afc2492c46d36632dfc52619",
         "src/ai_dlc/documentation/knowledge_records.py": "7375dc057809c2ca3fbc75239ca53fb3484d2459ec59d194c7ad2d6090918bf6",
-        "src/ai_dlc/documentation/knowledge_render.py": "3e5ba59684b979e7a7439673251badf0208ac8a5cd68fbaecc60c0d4162016e5",
-        "src/ai_dlc/documentation/knowledge_service.py": "39cd54f46809329daf7c65304236b9a23bc5c0e31074ecaeaaef2a90d9761b0a",
+        "src/ai_dlc/documentation/knowledge_render.py": "0517924a31ee89fb6d918c56683269734aa18f8b5597e02ab73bb7e6252ffa96",
+        "src/ai_dlc/documentation/knowledge_service.py": "94a90956363bc8d5e8b11cd3d39e6f86d0c7f551e14766f25c242ca0246f3ddd",
         "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
         "src/ai_dlc/documentation/learnings.py": "5a11c64592e1c7b93bfa3543339ea0766f42050a7843bb8354cd56166b0f3ae6",
         "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
@@ -124,7 +124,7 @@
         "src/ai_dlc/provider_definitions.py": "467bec9146a1379a2f17ac07faaf1e6807729d362609d711545ff632ff3f9da7",
         "src/ai_dlc/providers/__init__.py": "33aca80a36d5f1b351a827b9f94da5d34340567f814c6c5b3256763890799cfc",
         "src/ai_dlc/providers/confluence_cloud.py": "83daca8f5b83121697b79671b0a9279834104d64de7978cd731a1e83f20f4eae",
-        "src/ai_dlc/providers/git_knowledge.py": "ead6584584e1835a4b6a83818c9be002def3009aac9355a9bae5417a000d1882",
+        "src/ai_dlc/providers/git_knowledge.py": "c07d548015aa3e8a3c7ca567ee4511a79ec5af33f1d84d3c7f155d08c683f591",
         "src/ai_dlc/providers/github_issues.py": "8945d5b0049d7f7940c8c478e13bf576a897295e463a69b3510d6e2982ed1f08",
         "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
         "src/ai_dlc/providers/jira_cloud.py": "7764ba85afc99926394aac1a778d3d0bceb223db62abbd5b5fe570d48d06e0f1",
@@ -173,7 +173,7 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Module table names documentation/ at package level; the new migration module needs no new row. Re-reviewed after merging main (KAN-430).",
+      "reason": "Module table names documentation/ at package level; the new migration module needs no new row. Re-reviewed after merging main (KAN-465).",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
@@ -197,10 +197,10 @@
     },
     {
       "bound": {
-        "docs/catalog.toml": "dc69042d4d6c8167fc049edd9d31ae5616a55885c1d01fc630b4d03eee685b3f"
+        "docs/catalog.toml": "5a5433e60a6056c91ddf959b9c6dad9e16e4ecdf7ec3e8c2116594f4c2081a7f"
       },
       "outcome": "updated",
-      "reason": "Enrolled ADR 0005. Re-reviewed after merging main (KAN-430).",
+      "reason": "Enrolled ADR 0005. Re-reviewed after merging main (KAN-465).",
       "reviewer": "Claude (agent)",
       "target": "docs/catalog.toml"
     },
@@ -256,19 +256,29 @@
     },
     {
       "bound": {
+        "catalog:docs/decisions/0006-customer-boundary-and-promotion.md": "98df1ad7dddee9cf52bc6db5fc2a03d998dd71845cae279eb3b94ceedffc861c",
+        "docs/decisions/0006-customer-boundary-and-promotion.md": "c8144fe8586f55b819c89a2c4f175b1588bfcf1207ce661e0b083bf9459f1bb2"
+      },
+      "outcome": "updated",
+      "reason": "ADR 0006 (from #261) frontmatter migrated to a record with ai-dlc knowledge migrate; body unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/decisions/0006-customer-boundary-and-promotion.md"
+    },
+    {
+      "bound": {
         ".github/workflows/knowledge-merge.yml": "7f67aa54775bb4e0e71c6793b9c6c62ac2fe03343678117a432513a465efeaca",
         "catalog:docs/design/local-and-shared-knowledge.md": "07f5768759a08b2a425954beae4109ab59f515e126fa644a99c91fcaebb6fff9",
         "contracts/knowledge-note.schema.json": "f3cbc791e2caae2223bf223e8b27b5b7ce553405b76f32cf5689fa7fe68bb1a5",
         "contracts/knowledge-record.schema.json": "0a7633d88024a668140a6d658f09f5d11bf7e26b8ff09368abd82d17ddcd9bd7",
-        "docs/design/local-and-shared-knowledge.md": "5190b88d5156552713dba3c1795e97707f5389885affc0ee4fdd9db338313fca",
+        "docs/design/local-and-shared-knowledge.md": "e72db6d800b6d9dc64a32905fd1a7bba71619f432efecd2799f7b66c1f9d38f2",
         "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
         "openspec/specs/session-learnings/spec.md": "6320178e67f7957b25c11850773a631258bc13e5812cbcdb88c126434ba3aaf4",
-        "src/ai_dlc/documentation/knowledge.py": "856dd1db28c0de4dfe8c95dc054a12a2b570fe388ddda5253a484635fe3eddae",
-        "src/ai_dlc/documentation/knowledge_bundle.py": "9bd34913ba68b77a9c77799ffaefe9e6aebbb4eac36ed684fc6cf5bade14fd74",
-        "src/ai_dlc/documentation/knowledge_check.py": "5d909c480c94108c0257f53ac96311d586b908c557238c2a021dfc30c5b0e6e0",
+        "src/ai_dlc/documentation/knowledge.py": "ec96182b6eb15a396dbcb62235de1ea9c218844132153bd9e0297717839c52b4",
+        "src/ai_dlc/documentation/knowledge_bundle.py": "a614f08dfcdb5b3700b05d86be482f239d8b34096a1117ceee336b4de2be14b1",
+        "src/ai_dlc/documentation/knowledge_check.py": "0879d989a18f3e86ea91955aaffca5a5108bc36381c4877b7f5b23e251881881",
         "src/ai_dlc/documentation/knowledge_notes.py": "543b6fb0fa395321c55cb616c29d2f4a2bb218aca5576a3b8993353fb16e840d",
         "src/ai_dlc/documentation/knowledge_records.py": "7375dc057809c2ca3fbc75239ca53fb3484d2459ec59d194c7ad2d6090918bf6",
-        "src/ai_dlc/documentation/knowledge_render.py": "3e5ba59684b979e7a7439673251badf0208ac8a5cd68fbaecc60c0d4162016e5",
+        "src/ai_dlc/documentation/knowledge_render.py": "0517924a31ee89fb6d918c56683269734aa18f8b5597e02ab73bb7e6252ffa96",
         "src/ai_dlc/documentation/learnings.py": "5a11c64592e1c7b93bfa3543339ea0766f42050a7843bb8354cd56166b0f3ae6",
         "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
         "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
@@ -276,18 +286,18 @@
         "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
         "src/ai_dlc/providers/confluence_cloud.py": "83daca8f5b83121697b79671b0a9279834104d64de7978cd731a1e83f20f4eae",
         "tests/test_knowledge.py": "38e5cda9c9dc1fe97d12618a0bd9a86b2725cff059d412232152582af1547af1",
-        "tests/test_knowledge_bundle.py": "d504eeb10283df1d16a387bfa6f0ebda3955422d3a0c9772778cf498cbe41289",
-        "tests/test_knowledge_check.py": "2e2b901db7ba520386e491537874d87494c718d5d1f2ea42ddd600fb2f921446",
+        "tests/test_knowledge_bundle.py": "e91bcd38241872ad616d9b468fb95ca15ceffadabb1f5fb4c7504ee35d777e13",
+        "tests/test_knowledge_check.py": "6ca89cb53dfc3e5077c31359c1e3ad746aa44874c6cd89cfa5aafa82fa9d4011",
         "tests/test_knowledge_notes.py": "9d0aee8e40b2d5886c747c0f48d3017421348c8f86dd45684fc6f833064d32c6",
         "tests/test_knowledge_records.py": "dda1cc3543fc0f9cbcf999a4f72041d9143696328785827e9a4362b6fd083cfa",
-        "tests/test_knowledge_render.py": "93d58b2036d8b1a045bb73dbbfb769e7443ec60f3dd2a021c94a15af0c265af7",
+        "tests/test_knowledge_render.py": "8b8d47e406dbdf68f9d98bfef24f295e690717f3bd212392c63a37626ace6ba8",
         "tests/test_session_learnings.py": "32bb7c3143db24ff96fb43ac5081285e77a93bd8d8d825076f3422cbfe194796",
         "tests/test_vault_link.py": "fd146d4d15041021ac343257c9d91a8c1950878d275420eda85d13747065e110",
         "tests/test_vault_mount.py": "f6a5dc947af0d68e4688c37d05294c6b4868aa98ead91d26aa0c8ffec8018424",
         "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
       },
       "outcome": "updated",
-      "reason": "Learning example, generated fields, check --vault and recall output now describe lesson records. Re-reviewed after merging main (KAN-430).",
+      "reason": "Learning example, generated fields, check --vault and recall output now describe lesson records. Re-reviewed after merging main (KAN-465).",
       "reviewer": "Claude (agent)",
       "target": "docs/design/local-and-shared-knowledge.md"
     },
@@ -408,13 +418,13 @@
         "docs/assets/front/build.py": "a6ed773f33ca4175aa7b3e85a11571b22901eb791f4628402a9812487843e9d0",
         "docs/assets/front/demo_provider.py": "a266086be5cd247643a3157617f7f56e57c9200f77f885252ddf31a72d8c4f1d",
         "docs/workflows/get-started.md": "7052c4b9b7e1bd297f54a9f0ec133e9393f765099a358c4eef2f5f382677ab11",
-        "mkdocs.yml": "21199f4907c7332c103b17dd41c1692a7fa8e12182780ac463fa13447057a025",
+        "mkdocs.yml": "724e39d0bb125d835da7b8158b25d8308258db98d0f0da7801d615c76607ecc7",
         "scripts/bootstrap.sh": "dff64e5be94a72bcfbb5dec30a34a808fb2e0a1e0b9612146086af183de8acee",
         "scripts/docs_site_links.py": "e4f61570d3b4272d0e33fb733862105f4854906cba5e4f601c8a3d6dd3a519e8",
         "tests/test_front_page.py": "4b61f3b76dbe33fd562eea3f9cbdd6aec8d78f3b3e057da2fc4f4e2ea6b56f59"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Setup steps are unchanged by the migration.",
+      "reason": "Setup steps are unchanged by the migration; re-reviewed after merging main.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/get-started.md"
     },
@@ -508,10 +518,10 @@
     },
     {
       "bound": {
-        "tests/editorial_baseline.json": "e238b5d96d3446378805053c90091e6aa683e8d9a2e2ff13fbf75f94543bec33"
+        "tests/editorial_baseline.json": "2814abdbdc793adb3ef8039c0e029a4878a3ed8aba972604d0861582aa6042ef"
       },
       "outcome": "updated",
-      "reason": "Re-measured local-and-shared-knowledge.md after merging main (1268 words).",
+      "reason": "Re-measured local-and-shared-knowledge.md after merging main (1267 words).",
       "reviewer": "Claude (agent)",
       "target": "tests/editorial_baseline.json"
     },
