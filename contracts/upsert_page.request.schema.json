@@ -1,0 +1,76 @@
+{
+  "additionalProperties": false,
+  "description": "Write one rendered page, found by ``key`` (KAN-430). Only ``knowledge render`` calls it.\n\n``expected_version`` is the page's version as ``get_page_by_key`` read it, or null when\nno page has the key. A provider refuses when the page's current version differs, so a\nconcurrent write is never overwritten.",
+  "properties": {
+    "body": {
+      "description": "markdown",
+      "minLength": 1,
+      "title": "Body",
+      "type": "string"
+    },
+    "expected_version": {
+      "anyOf": [
+        {
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Expected Version"
+    },
+    "key": {
+      "description": "stable page key, such as a record id",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+      "title": "Key",
+      "type": "string"
+    },
+    "labels": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Labels",
+      "type": "array"
+    },
+    "operation_id": {
+      "minLength": 1,
+      "title": "Operation Id",
+      "type": "string"
+    },
+    "parent": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "parent page key; null is the root",
+      "title": "Parent"
+    },
+    "properties": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Properties",
+      "type": "object"
+    },
+    "title": {
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    }
+  },
+  "required": [
+    "key",
+    "title",
+    "body",
+    "operation_id"
+  ],
+  "title": "UpsertPage",
+  "type": "object"
+}

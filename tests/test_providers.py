@@ -169,6 +169,7 @@ def test_contract_includes_role_capabilities():
         "scm",
         "deploy",
         "knowledge",
+        "wiki",
     }
 
 

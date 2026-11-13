@@ -21,4 +21,4 @@
 - [x] 4.1 Update the knowledge design, tool maps, plugin README and playbook
 - [x] 4.2 Add tests for the schema, dedupe, the wall, the version guard and the contract
 - [ ] 4.3 Use phase A for two weeks on both machines before any phase B work (Sean)
-- [ ] 4.4 Qualify one publish through a live Atlassian connection on each site (Sean)
+- [x] 4.4 Superseded: KAN-430 retires note publishing; `knowledge render` writes the wiki, and its live qualification is tracked there

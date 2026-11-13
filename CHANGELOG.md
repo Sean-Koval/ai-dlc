@@ -18,6 +18,11 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 
 ### Added
 
+- A `wiki` role (`upsert_page`, `get_page_by_key`, `list_children`) with a
+  `confluence-cloud` provider, and `ai-dlc knowledge render --changed-since SHA
+  [--dry-run]` (MCP `knowledge_render`), the wiki's only writer (KAN-430). It renders
+  each changed record and one index page per scope, with a do-not-edit banner, and
+  skips pages whose content hash and version are unchanged. A hand edit is restored.
 - `ai-dlc knowledge check DIR` (and MCP `knowledge_check`) validates a records
   directory against `KnowledgeRecord`, Open Knowledge Format v0.2 section 11, the
   `knowledge.toml` pin, typed-link integrity, duplicate sources and supersession;
@@ -114,6 +119,11 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 
 ### Removed
 
+- `publish` on the `knowledge` role, `ai-dlc knowledge publish-plan`,
+  `publish-record` and the `kb-publish` skill. The git knowledge repository is
+  canonical and `knowledge render` writes the wiki (KAN-430, ADR 0004). Vault
+  `.ai-dlc/publish.toml` files are no longer read; declare `[wiki] site` in the
+  knowledge repository's `knowledge.toml` instead.
 - The `day-start`, `day-end`, `review-inbox` and `needs-spec` skills, replaced by
   `daily-note` and `capture`; `spec-from-prd` now makes the specification decision.
   Remove them from any `[agents] skills` list (KAN-323).

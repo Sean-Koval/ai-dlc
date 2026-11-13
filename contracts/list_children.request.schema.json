@@ -1,0 +1,20 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "parent": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "parent page key; null is the root",
+      "title": "Parent"
+    }
+  },
+  "title": "Children",
+  "type": "object"
+}

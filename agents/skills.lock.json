@@ -8,7 +8,7 @@
     },
     "daily-note": {
       "path": "skills/daily-note/SKILL.md",
-      "sha256": "c7fe91f4efa30e6e2080919d8379cc5407582130fe1cc5068f10e79e4258d8c4"
+      "sha256": "7e6d34c7bbb6ffe054b347e4fc19857b91b6d3791273fdc708f5ce6f92cc6209"
     },
     "design-brief": {
       "path": "skills/design-brief/SKILL.md",
@@ -33,10 +33,6 @@
     "handoff": {
       "path": "skills/handoff/SKILL.md",
       "sha256": "47813221a030ff1d19642b9e6ebf234ded18fd128fef857badd4b77612529ecd"
-    },
-    "kb-publish": {
-      "path": "skills/kb-publish/SKILL.md",
-      "sha256": "1a4d85383b6a5258a4e617e2f2d6ad5fcd907dd861aa50eb33d833d5f9624c2b"
     },
     "prd-draft": {
       "path": "skills/prd-draft/SKILL.md",

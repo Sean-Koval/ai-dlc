@@ -1,0 +1,86 @@
+{
+  "$defs": {
+    "Page": {
+      "additionalProperties": true,
+      "description": "A page's metadata. The wiki role never returns a page body.",
+      "properties": {
+        "key": {
+          "minLength": 1,
+          "title": "Key",
+          "type": "string"
+        },
+        "labels": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Labels",
+          "type": "array"
+        },
+        "page_id": {
+          "minLength": 1,
+          "title": "Page Id",
+          "type": "string"
+        },
+        "properties": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Properties",
+          "type": "object"
+        },
+        "rendered_version": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the version the last upsert wrote; differs after a hand edit",
+          "title": "Rendered Version"
+        },
+        "title": {
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "url": {
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 1,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "key",
+        "page_id",
+        "title",
+        "version",
+        "url"
+      ],
+      "title": "Page",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "pages": {
+      "items": {
+        "$ref": "#/$defs/Page"
+      },
+      "title": "Pages",
+      "type": "array"
+    }
+  },
+  "required": [
+    "pages"
+  ],
+  "title": "PageList",
+  "type": "object"
+}

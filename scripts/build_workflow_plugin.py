@@ -32,8 +32,9 @@ ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = "ai-dlc-workflow"
 PLUGIN_DIRECTORY = Path("plugins") / PLUGIN
 GUIDE = "ai-dlc-workflow"
-# daily-note, capture and kb-publish are the second-brain skills (ADR 0003). They work
-# against whichever vault and site the machine declares, so they ship to every harness.
+# daily-note and capture are the second-brain skills (ADR 0003). They work against
+# whichever vault the machine declares, so they ship to every harness. kb-publish is
+# retired: `ai-dlc knowledge render` is the wiki's only writer (KAN-430, ADR 0004).
 TEAM_SKILLS = (
     "capture",
     "daily-note",
@@ -43,7 +44,6 @@ TEAM_SKILLS = (
     "document-organize",
     "document-review",
     "handoff",
-    "kb-publish",
     "prd-draft",
     "spec-from-prd",
 )
@@ -127,8 +127,8 @@ def guide_skill() -> str:
         "- Use the team skills in this plugin for judgment: discovery, prd-draft,",
         "  spec-from-prd, handoff, document-review, document-organize and the optional",
         "  design-brief and design-evaluate.",
-        "- Use daily-note, capture and kb-publish for the personal second brain: daily",
-        "  notes and captures stay in the vault, and only a reviewed note is published.",
+        "- Use daily-note and capture for the personal second brain: daily notes and",
+        "  captures stay in the vault. Never write the wiki; `knowledge render` does.",
         "- When the repository renders its own copies of these skills (unprefixed, under",
         "  `.claude/skills`), prefer the repository copies and its AGENTS.md guidance.",
         *(f"- {line}" for line in portable),

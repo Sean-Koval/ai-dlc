@@ -8,7 +8,7 @@ with one `skill:<name>` digest per included skill plus `guide:ai-dlc-workflow` a
 of `components`. It SHALL also record `files`, the digest of every file a harness
 receives from the Claude plugin other than the lock itself, and `native.codex` with
 the Codex form's `content_digest` and `files`. The plugin SHALL include the
-second-brain skills `daily-note`, `capture` and `kb-publish`. The revision SHALL increase exactly when either
+second-brain skills `daily-note` and `capture`, and SHALL NOT include the retired `kb-publish`. The revision SHALL increase exactly when either
 content digest changes. `plugin.json` SHALL carry `name: ai-dlc-workflow`,
 `version: <engine>-r<revision>` and `metadata.content_digest` equal to the lock's digest.
 
@@ -22,4 +22,4 @@ content digest changes. `plugin.json` SHALL carry `name: ai-dlc-workflow`,
 
 #### Scenario: Second-brain skills ship
 - **WHEN** the plugin is built
-- **THEN** `capture`, `daily-note` and `kb-publish` have components and the removed `day-start`, `day-end`, `needs-spec` and `review-inbox` have none
+- **THEN** `capture` and `daily-note` have components and the removed `day-start`, `day-end`, `needs-spec`, `review-inbox` and `kb-publish` have none
