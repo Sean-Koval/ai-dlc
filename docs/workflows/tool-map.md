@@ -92,10 +92,9 @@ creation is not provided. Guided setup exists for GitHub, Jira Cloud and the
 unsupported Plane adapter.
 
 MCP includes `work_context`, `work_review`, `work_publish`, `work_start`, `work_status`,
-`work_link`, `work_finish`, `doctor`, `knowledge_find`, `knowledge_append` and
-`knowledge_note`, alongside project-document and workspace tools. These
-identifiers differ from the space-separated CLI commands, such as
-`ai-dlc work publish`.
+`work_link`, `work_finish`, `doctor`, `knowledge_find`, `knowledge_append`,
+`knowledge_note` and `knowledge_check`, alongside project-document and workspace
+tools. These identifiers differ from CLI commands, such as `ai-dlc work publish`.
 
 ## Command and service map
 
@@ -115,7 +114,7 @@ identifiers differ from the space-separated CLI commands, such as
 | Traceability | `ai-dlc work link` | Links PR, specification, branch, deployment, or tracker evidence and commits only the work record by default |
 | Provider inspection and connection | `ai-dlc provider list`, `ai-dlc provider test`, `ai-dlc provider connect` | Discovers adapters, runs isolated contract or authorized live checks, and previews/applies an explicitly reviewed provider connection |
 | Tracker migration | `ai-dlc project tracker-migrate` | Reviews a default-only switch or selected existing-ticket mappings with local recovery evidence |
-| Personal knowledge | `ai-dlc knowledge find`, `ai-dlc knowledge note`, `ai-dlc knowledge append`, `ai-dlc knowledge check` | Reads or writes explicitly selected vault material; `check` validates learning frontmatter read-only |
+| Personal knowledge | `ai-dlc knowledge find`, `ai-dlc knowledge note`, `ai-dlc knowledge append`, `ai-dlc knowledge check` | Reads or writes explicitly selected vault material; `check` validates records or learnings read-only |
 | Configuration profiles | `ai-dlc profile show`, `ai-dlc profile migrate`, `ai-dlc profile capture` | Resolves provenance, previews schema migration, or captures supported preferences |
 | Machine provisioning | `ai-dlc setup plan`, `ai-dlc setup apply` | Previews or applies selected workstation modules and personal agent configuration |
 | Agent-native access | `ai-dlc mcp serve` | Exposes reviewed work, read-only doctor, documentation, workspace and knowledge services through local MCP |

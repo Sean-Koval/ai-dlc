@@ -18,6 +18,12 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 
 ### Added
 
+- `ai-dlc knowledge check DIR` (and MCP `knowledge_check`) validates a records
+  directory against `KnowledgeRecord`, Open Knowledge Format v0.2 section 11, the
+  `knowledge.toml` pin, typed-link integrity, duplicate sources and supersession;
+  `--base REF` refuses in-place edits of accepted decisions. Knowledge repositories
+  call it through `.pre-commit-hooks.yaml` or the reusable
+  `.github/workflows/knowledge-check.yml`. `--vault` keeps checking learnings.
 - The knowledge-record contract: `KnowledgeRecord` in
   `ai_dlc.documentation.knowledge_records`, its generated
   `contracts/knowledge-record.schema.json`, format version 1 for knowledge repositories
