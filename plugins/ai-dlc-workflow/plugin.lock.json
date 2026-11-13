@@ -1,7 +1,7 @@
 {
   "components": {
     "guide:ai-dlc-workflow": "sha256:199a64bdf62a1de0027a6c87f53070cf89c56de33f10e125aeb35bf432c2a3aa",
-    "hooks:ai-dlc": "sha256:fcf08d53405bdf871edca97e14b8c97ce6edcdf6b3e714e69441f408d1c6bfa4",
+    "hooks:ai-dlc": "sha256:611015aa768892e2a37f1a4cfb57fd527891125934245d8f86418c78cc2cafd2",
     "skill:capture": "sha256:c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
     "skill:daily-note": "sha256:7e6d34c7bbb6ffe054b347e4fc19857b91b6d3791273fdc708f5ce6f92cc6209",
     "skill:design-brief": "sha256:e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5",
@@ -13,11 +13,11 @@
     "skill:prd-draft": "sha256:046b82e994b36b2202f7772aafc93557b903d2b541e69a62414d9b5a0b5d75fc",
     "skill:spec-from-prd": "sha256:8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64"
   },
-  "content_digest": "sha256:047a785ae3163e8d82c5b2c9d0aa6fd1f34170079e4fdecb6e906e5981680d56",
+  "content_digest": "sha256:f859ded659218801e33649a03bb26e7b1b031a71a45d54a65eefef045639c2cf",
   "files": {
-    ".claude-plugin/plugin.json": "sha256:76a103d91d072df3e246f49f3628f342fde7be85b4f3cd6bd85d207fa6e8a50b",
-    "README.md": "sha256:6e0c43933fdd4d9f2c8d858a5affc0bd32e64a7a073ce91d2096efb574ce603a",
-    "hooks/aidlc_hook.py": "sha256:bebfefc15598a28f28e4ed9904857dcba803b116649d81dc292f935d9afd96e3",
+    ".claude-plugin/plugin.json": "sha256:68e804462b013b082582ca53df0bffd2be451977c64802418751649d5e2b0231",
+    "README.md": "sha256:65cf268b2c5e81a874eefe50a0d7fdad6793f7eba14699b516b52ad73108c745",
+    "hooks/aidlc_hook.py": "sha256:b9d90818bfacc91d8e9d9705e4e83130dd2ae072d00a440187e7bc74f6f5192d",
     "hooks/hooks.json": "sha256:6832b0f038d5b95069922ce99a3eb8ec473d61cf92aa5d09ec35925332ad80b4",
     "skills/ai-dlc-workflow/SKILL.md": "sha256:199a64bdf62a1de0027a6c87f53070cf89c56de33f10e125aeb35bf432c2a3aa",
     "skills/capture/SKILL.md": "sha256:c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
@@ -33,12 +33,12 @@
   },
   "native": {
     "codex": {
-      "content_digest": "sha256:8bdcd567161be9e01d1043d60b3e2f43e2a002f64a753aa88373738b539dfcb0",
+      "content_digest": "sha256:18654bd6717b8bbd8d167695797383b30e1eb8f238b3c78ab546c76d3874f0bc",
       "files": {
-        ".codex-plugin/plugin.json": "sha256:dac17481a41741e96f6236e6f0af3b41212657920fc43211e7f3bff6a5eb19e0",
+        ".codex-plugin/plugin.json": "sha256:121b299e98f93557c7f14adf494a03ead3f3803806e0ceb96a96d6759db7e209",
         "AGENTS.fragment.md": "sha256:af43937c1adbe2ded3247675791fe94ecc0cce19a8fdbade2469319769b66ec6",
         "hooks.json": "sha256:4d2c2097f9c3004dca11d040acf3353eb6af9d0b96a63910f508a36a8d284f63",
-        "hooks/aidlc_hook.py": "sha256:bebfefc15598a28f28e4ed9904857dcba803b116649d81dc292f935d9afd96e3",
+        "hooks/aidlc_hook.py": "sha256:b9d90818bfacc91d8e9d9705e4e83130dd2ae072d00a440187e7bc74f6f5192d",
         "skills/ai-dlc-workflow/SKILL.md": "sha256:199a64bdf62a1de0027a6c87f53070cf89c56de33f10e125aeb35bf432c2a3aa",
         "skills/capture/SKILL.md": "sha256:c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
         "skills/daily-note/SKILL.md": "sha256:7e6d34c7bbb6ffe054b347e4fc19857b91b6d3791273fdc708f5ce6f92cc6209",
@@ -54,6 +54,6 @@
     }
   },
   "plugin": "ai-dlc-workflow",
-  "revision": 9,
+  "revision": 10,
   "schema": 1
 }

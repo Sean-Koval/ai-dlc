@@ -8,8 +8,7 @@ from pathlib import Path
 
 from ai_dlc.harness.hook_shim import (  # one classifier for CLI and plugin
     SHELL_TOOLS,
-    classify_command,
-    shell_text,
+    classify_shell,
 )
 
 SESSION_INSTRUCTION = "Read AGENTS.md and .ai-dlc/work; run ai-dlc next for the full summary."
@@ -305,7 +304,7 @@ def _handle_hook(root: Path, event: str, payload: dict) -> dict:
             "decision": "deny",
             "reason": f"No command to check in this {tool} call; denied.",
         }
-    category = classify_command(shell_text(tool, command))
+    category = classify_shell(tool, command)
     if category == "destructive":
         return {
             "decision": "deny",

@@ -103,7 +103,14 @@ sandbox (`HANGAR_WORKSPACE` or `HANGAR_JOB_ID` set). Otherwise:
 - PreToolUse denies destructive shell commands (such as `rm`, `git reset --hard`,
   `git clean -f`, force or delete pushes) with exit 2 and allows everything else.
   It judges Bash, PowerShell (Claude Code's shell tool on native Windows) and
-  Codex `exec_command` calls alike.
+  Codex `exec_command` calls alike. In PowerShell, `Remove-Item` and its aliases
+  (`ri`, `rm`, `del`, `erase`, `rd`, `rmdir`) count as `rm`, and a script block's
+  commands are judged too. A program is known by its name, so `git.exe`,
+  `/usr/bin/git` and, in PowerShell, `C:\Git\cmd\git.exe` are `git`. git's global
+  options are passed over, so `git -C repo reset --hard` is denied. The line after
+  `cmd /c` is judged as cmd.exe reads it, where `del`, `erase`, `rd` and `rmdir`
+  count as `rm`. Other wrappers, such as `sh -c` or `Invoke-Expression`, are not
+  inspected.
   A chained line (`&&`, `;`, a pipe, a newline or a substitution) is judged by its
   strictest command. It never applies the bound-push policy, so `git push` and
   `gh pr create` are not blocked.

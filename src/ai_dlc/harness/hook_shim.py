@@ -74,19 +74,46 @@ HANGAR_LINE = (
 # Characters that end one simple command inside a shell line: lists (; & && ||), pipes,
 # newlines, subshells and command substitution ($( ) and backticks).
 SEPARATORS = ";&|()`\n"
+# A PowerShell script block ({ ... } after ForEach-Object, try, if) holds commands too.
+POWERSHELL_SEPARATORS = SEPARATORS + "{}"
+# Windows runs a program named without these extensions too (PATHEXT).
+PROGRAM_EXTENSIONS = (".exe", ".cmd", ".bat", ".com")
 # When segments disagree, the strictest category wins.
 SEVERITY = ("ordinary", "unsupported", "bound-operation", "destructive")
+# PowerShell's own ways to delete: Remove-Item and its built-in aliases. A POSIX shell has
+# only rm; in PowerShell rm is one more alias of Remove-Item. Like rm, any call is denied.
+POWERSHELL_DELETES = frozenset({"remove-item", "ri", "rm", "del", "erase", "rd", "rmdir"})
+# cmd.exe's own deletes; rm is denied there too, as anywhere.
+CMD_DELETES = frozenset({"rm", "del", "erase", "rd", "rmdir"})
+# cmd.exe ends a command at these; ^ is its escape and only the double quote quotes.
+CMD_SEPARATORS = ";&|()\n"
+# git's global options that take the next word as their value: git -C <path> reset.
+GIT_OPTIONS_WITH_VALUE = frozenset(
+    {
+        "-c",
+        "-C",
+        "--git-dir",
+        "--work-tree",
+        "--namespace",
+        "--super-prefix",
+        "--config-env",
+        "--attr-source",
+    }
+)
 
 
-def command_segments(command: str) -> list[list[str]] | None:
+def command_segments(
+    command: str, separators: str = SEPARATORS, quotes: str = "'\""
+) -> list[list[str]] | None:
     """Split a shell line into the words of each simple command, or None if unparseable."""
-    lexer = shlex.shlex(command, posix=True, punctuation_chars=SEPARATORS)
+    lexer = shlex.shlex(command, posix=True, punctuation_chars=separators)
+    lexer.quotes = quotes
     lexer.whitespace = " \t\r"  # a newline separates commands, so it is punctuation here
     lexer.whitespace_split = True
     segments: list[list[str]] = [[]]
     try:
         for token in lexer:
-            if token and all(character in SEPARATORS for character in token):
+            if token and all(character in separators for character in token):
                 segments.append([])
             else:
                 segments[-1].append(token)
@@ -107,28 +134,109 @@ def shell_text(tool: object, command: str) -> str:
         return command
     text = re.sub(r"`\r?\n", " ", command.lower())
     text = re.sub("`[\"']", "", text)  # an escaped quote neither opens nor closes a string
-    return re.sub(r"`(.)", r"\1", text, flags=re.DOTALL)
+    text = text.replace("` ", "\u00a0")  # an escaped space stays inside its word
+    text = re.sub(r"`(.)", r"\1", text, flags=re.DOTALL)
+    # A backslash is a path separator in PowerShell, never an escape, so the POSIX
+    # tokenizer must not swallow it: C:\Git\cmd\git.exe is read as C:/Git/cmd/git.exe.
+    return text.replace("\\", "/")
 
 
-def classify_command(command: str) -> str:
+def classify_shell(tool: object, command: str) -> str:
+    """Classify the command of one shell tool call, in that shell's own terms."""
+    return classify_command(shell_text(tool, command), powershell=tool == "PowerShell")
+
+
+def classify_command(command: str, *, powershell: bool = False) -> str:
     """Classify a shell line; shared by ``ai_dlc.harness.hooks`` and the plugin.
 
     A compound line (``a && b``, ``a; b``, a pipe, a newline or a substitution) is
     classified by its strictest simple command, so chaining cannot hide a destructive
-    or bound operation. Commands reached through wrappers such as ``sh -c`` or
-    ``env`` are not inspected.
+    or bound operation. A program is known by its name alone, so ``/usr/bin/git`` and
+    ``git.exe`` are ``git``, and git's global options (``git -C repo reset``) are passed
+    over to find its subcommand. The line ``cmd /c`` runs is judged as cmd.exe reads it,
+    with its own deletes. With ``powershell``, the line is one ``shell_text`` prepared,
+    a script block's commands are judged too and PowerShell's own deletes count as
+    ``rm``. Commands reached through other wrappers, such as ``sh -c``, ``env``,
+    ``powershell -command`` or ``Invoke-Expression``, are not inspected.
     """
-    segments = command_segments(command)
+    shell = "powershell" if powershell else "posix"
+    return _classify_line(command, POWERSHELL_SEPARATORS if powershell else SEPARATORS, shell)
+
+
+def _classify_line(command: str, separators: str, shell: str) -> str:
+    """Classify a line in one shell by its strictest simple command."""
+    quotes = '"' if shell == "cmd" else "'\""
+    segments = command_segments(command, separators, quotes)
     if segments is None:
         return "unsupported"
-    categories = [_classify_words(words) for words in segments] or ["ordinary"]
+    categories = [_classify_words(words, shell) for words in segments] or ["ordinary"]
     return max(categories, key=SEVERITY.index)
 
 
-def _classify_words(words: list[str]) -> str:
-    """Classify the words of one simple command."""
-    if words[:1] == ["rm"]:
+def cmd_line(arguments: list[str]) -> str | None:
+    """The line ``cmd /c`` (or ``/k``, ``/r``) runs, as cmd.exe reads it, or None.
+
+    Options before the switch (``/q``, ``/d``, ``/s``, ``/v:on``) are passed over; Git
+    Bash's ``//c`` is the same switch. cmd.exe is case-insensitive, takes a backslash as
+    a path separator and ``^`` as its escape, so the line is lowercased, its backslashes
+    read as ``/`` and its carets dropped: ``d^el`` is ``del``.
+    """
+    for index, argument in enumerate(arguments):
+        if not argument.startswith("/"):
+            return None
+        switch = argument.lstrip("/").lower()
+        if switch[:1] in {"c", "k", "r"}:
+            line = " ".join([switch[1:], *arguments[index + 1 :]])
+            return line.lower().replace("\\", "/").replace("^", "")
+    return None
+
+
+def git_words(words: list[str]) -> tuple[list[str], bool]:
+    """``git`` and its subcommand onward, with git's global options passed over.
+
+    The flag says an option points git at another repository (``-C``, ``--git-dir``,
+    ``--work-tree``), whose push policy this hook cannot read. PowerShell's lowered
+    ``-C`` reads as ``-c``, so a ``-c`` value with no ``=`` counts as a path.
+    """
+    index, elsewhere = 1, False
+    while index < len(words) and words[index].startswith("-"):
+        option = words[index]
+        value = words[index + 1] if index + 1 < len(words) else ""
+        elsewhere = elsewhere or (
+            option in {"-C", "--git-dir", "--work-tree"}
+            or option.startswith(("--git-dir=", "--work-tree="))
+            or (option == "-c" and "=" not in value)
+        )
+        index += 2 if option in GIT_OPTIONS_WITH_VALUE else 1
+    return ["git", *words[index:]], elsewhere
+
+
+def program_name(word: str) -> str:
+    """A program as its name alone: no directory and, as Windows resolves it, no extension."""
+    name = word.rsplit("/", 1)[-1]
+    for extension in PROGRAM_EXTENSIONS:
+        if name.lower().endswith(extension):
+            return name[: -len(extension)]
+    return name
+
+
+def _classify_words(words: list[str], shell: str = "posix") -> str:
+    """Classify the words of one simple command in one shell."""
+    if shell == "powershell" and words[0] == "." and len(words) > 1:
+        words = words[1:]  # dot-sourcing runs the program like a call
+    head, slash, switches = words[0].partition("/")
+    if shell == "cmd" and slash and (head in CMD_DELETES or head == "cmd"):
+        words = [head, slash + switches, *words[1:]]  # cmd.exe reads rd/s/q as rd /s/q
+    words = [program_name(words[0]), *words[1:]]
+    if words[0].lower() == "cmd":
+        line = cmd_line(words[1:])
+        return "ordinary" if line is None else _classify_line(line, CMD_SEPARATORS, "cmd")
+    deletes = {"powershell": POWERSHELL_DELETES, "cmd": CMD_DELETES}.get(shell, {"rm"})
+    if words[0] in deletes:
         return "destructive"
+    elsewhere = False
+    if words[0] == "git":
+        words, elsewhere = git_words(words)
     if words[:2] == ["git", "reset"] and "--hard" in words[2:]:
         return "destructive"
     if words[:2] == ["git", "clean"] and any(
@@ -142,6 +250,8 @@ def _classify_words(words: list[str]) -> str:
         for flag in words[2:]
     ):
         return "destructive"
+    if words[:2] == ["git", "push"] and elsewhere:
+        return "unsupported"  # another repository's push; its policy isn't readable here
     if words[:2] == ["git", "push"] or words[:3] == ["gh", "pr", "create"]:
         return "bound-operation"
     if words[:1] == ["git"] and "push" in words:
@@ -246,7 +356,7 @@ def local_pre_tool(payload: Mapping[str, Any], stderr: IO[str]) -> int:
     if not isinstance(command, str):
         stderr.write(UNJUDGED_REASON + "\n")
         return 2
-    if classify_command(shell_text(tool, command)) == "destructive":
+    if classify_shell(tool, command) == "destructive":
         stderr.write(DESTRUCTIVE_REASON + "\n")
         return 2
     # The bound-push policy belongs to adopted local repositories; hangar's verify
