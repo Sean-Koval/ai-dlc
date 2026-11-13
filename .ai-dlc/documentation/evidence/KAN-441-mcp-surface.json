@@ -2,7 +2,7 @@
   "decisions": [
     {
       "bound": {
-        "CHANGELOG.md": "a7e3eeb4fb2f96fe84f1dbe359bd56e930ba2a57b09a81304cb4d60baaae57d4"
+        "CHANGELOG.md": "4e55815438d6b03313c248f4b855f00faf87d835ddc3de562c3186406c780eb0"
       },
       "outcome": "updated",
       "reason": "Adds the KAN-441 MCP surface entry: work, knowledge records and tracker tools.",
@@ -11,12 +11,30 @@
     },
     {
       "bound": {
-        "contracts/README.md": "94e55d7120c3f30af4ae434b4d8760865abba43856a4991230f9b760f18e1c26"
+        "contracts/README.md": "00741fb59785bf85c4adcdf5b1d03e72681a3bad293827e00f08bf169477da13"
       },
       "outcome": "updated",
-      "reason": "Documents optional create labels and the optional tracker update operation.",
+      "reason": "Documents optional create labels and the optional tracker update, query and comment operations.",
       "reviewer": "Claude (agent)",
       "target": "contracts/README.md"
+    },
+    {
+      "bound": {
+        "contracts/comment.request.schema.json": "9208158bc984a962f4f6622598450b834023ee1845348881558080817107b406"
+      },
+      "outcome": "updated",
+      "reason": "Generated schema for the optional tracker comment operation.",
+      "reviewer": "Claude (agent)",
+      "target": "contracts/comment.request.schema.json"
+    },
+    {
+      "bound": {
+        "contracts/comment.response.schema.json": "78376a5e773d0c97aa2cc17f6edaee33326d7029e2a58d59bd17a4e3bc52bf51"
+      },
+      "outcome": "updated",
+      "reason": "Generated schema for the comment result.",
+      "reviewer": "Claude (agent)",
+      "target": "contracts/comment.response.schema.json"
     },
     {
       "bound": {
@@ -29,12 +47,30 @@
     },
     {
       "bound": {
-        "contracts/manifest.json": "91299939f282c9d5190c641aa4b05c35a3f203765aae64617dac5a2daa73bfae"
+        "contracts/manifest.json": "8d3fd318434254c7bd5667d3ebadc8538e7d07f1635c0776b5dcbc47c2566429"
       },
       "outcome": "updated",
       "reason": "Regenerated for the optional tracker update operation and create labels.",
       "reviewer": "Claude (agent)",
       "target": "contracts/manifest.json"
+    },
+    {
+      "bound": {
+        "contracts/query.request.schema.json": "3b71ae61d1f5f04e5318b4ea979dcd6e287643044aaf46eea7a7f6129769a232"
+      },
+      "outcome": "updated",
+      "reason": "Generated schema for the optional read-only tracker query operation.",
+      "reviewer": "Claude (agent)",
+      "target": "contracts/query.request.schema.json"
+    },
+    {
+      "bound": {
+        "contracts/query.response.schema.json": "e28ffae7647adbebb1bb6f4dbf4c4992dec2b1b8dd5a75cd34b12cfd77e612a4"
+      },
+      "outcome": "updated",
+      "reason": "Generated schema for the query result.",
+      "reviewer": "Claude (agent)",
+      "target": "contracts/query.response.schema.json"
     },
     {
       "bound": {
@@ -109,7 +145,7 @@
         "src/ai_dlc/cli.py": "e947b1e8f4f9fc4466b16f93f79e8fd53f2d7196fe9b536b8812f332d7db1723",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
         "src/ai_dlc/conformance.py": "0ff247c065e89d4c5b43d844601dc809558c65a779c1600371953c0e2c44737b",
-        "src/ai_dlc/contracts.py": "f7502df6fe3745ae051e159563569c1c223736fb62033302c749a6a4098a5e1d",
+        "src/ai_dlc/contracts.py": "32691022527550e59cb1b72195bbc2bcaedac57aa62f9ea1c315d88fc430c8cc",
         "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
         "src/ai_dlc/documentation/decisions.py": "30c52c68b82bca8c899887617385adac25f9b0bb2e9aa81936b91b877c626d6c",
         "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
@@ -164,14 +200,14 @@
         "src/ai_dlc/harness/windows_render.py": "8aa76c8aacc44d28a2117b3339ad7b632b91fdbe0a5557af50228dcd2aa0eeb0",
         "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
         "src/ai_dlc/locking.py": "d39ea1ba783e72aae903f9d69c114745ee0b83d02197bbc9572568836e4e7fa3",
-        "src/ai_dlc/mcp_server.py": "a0b321498bc13f01b09c9c4cc07634715739c197701366370b544970f53a3af9",
+        "src/ai_dlc/mcp_server.py": "b581e9ac90819c842369a47d020bdb7f12ff5ba515312e60c9d38bbe7d309db7",
         "src/ai_dlc/provider_definitions.py": "467bec9146a1379a2f17ac07faaf1e6807729d362609d711545ff632ff3f9da7",
         "src/ai_dlc/providers/__init__.py": "33aca80a36d5f1b351a827b9f94da5d34340567f814c6c5b3256763890799cfc",
         "src/ai_dlc/providers/confluence_cloud.py": "83daca8f5b83121697b79671b0a9279834104d64de7978cd731a1e83f20f4eae",
         "src/ai_dlc/providers/git_knowledge.py": "c07d548015aa3e8a3c7ca567ee4511a79ec5af33f1d84d3c7f155d08c683f591",
         "src/ai_dlc/providers/github_issues.py": "8945d5b0049d7f7940c8c478e13bf576a897295e463a69b3510d6e2982ed1f08",
         "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
-        "src/ai_dlc/providers/jira_cloud.py": "796c89741e7a5abec69012f3233d3e5ac2f5539edf9e2afa6e9d45215c64b0c8",
+        "src/ai_dlc/providers/jira_cloud.py": "2bdd63d076937893a0212ecda219b226e2f6b6c943f3c8b72aeed33ae26bc8d0",
         "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
         "src/ai_dlc/providers/plane.py": "eebff96a72615706f56234a3fdbdbec6e5ac49785259bc8e068ff50e89381572",
         "src/ai_dlc/providers/plane_attempts.py": "da576a7f52dd7860c2340b72c91b39f2c9d84bbb7c983cd8bc2cc1871c56333b",
@@ -204,7 +240,7 @@
         "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
         "src/ai_dlc/work/summary.py": "af386fc470b222d5c7b600ea3169ee7f26be7bdfafdcac8b4098b1fff2f0bd8e",
         "src/ai_dlc/work/traceability.py": "e9fbca5153cdd710b78872c66651269184ee5f3f1313f313b65df212430e8cc8",
-        "src/ai_dlc/work/tracker_items.py": "e471f59af75247f57d8c263a271227d8e43ce4941bf0a47addf9d9f85cc83d2c",
+        "src/ai_dlc/work/tracker_items.py": "b8c7f1d85eb7f228253a97113bbeb0c771ef17e4ad0f265007d7c8b24f2737a3",
         "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
         "src/ai_dlc/work/workflow.py": "d05f5cfe6414176a9baa5b304a570371ca436cadd12648fe8147769ff1f9588b",
         "tests/test_cli_entrypoint.py": "f8fd60f45e1976016237d8cc2ba47e77d67e8f8d5bfc180a619d9219e05a8cad",
@@ -361,7 +397,7 @@
         "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
         "src/ai_dlc/work/summary.py": "af386fc470b222d5c7b600ea3169ee7f26be7bdfafdcac8b4098b1fff2f0bd8e",
         "src/ai_dlc/work/traceability.py": "e9fbca5153cdd710b78872c66651269184ee5f3f1313f313b65df212430e8cc8",
-        "src/ai_dlc/work/tracker_items.py": "e471f59af75247f57d8c263a271227d8e43ce4941bf0a47addf9d9f85cc83d2c",
+        "src/ai_dlc/work/tracker_items.py": "b8c7f1d85eb7f228253a97113bbeb0c771ef17e4ad0f265007d7c8b24f2737a3",
         "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
         "src/ai_dlc/work/workflow.py": "d05f5cfe6414176a9baa5b304a570371ca436cadd12648fe8147769ff1f9588b"
       },
@@ -374,13 +410,13 @@
       "bound": {
         "catalog:docs/workflows/how-it-fits.md": "0032744a2746dd1b4e47f09fc1cc9c4d6f8c8cfe90990b464f56a0abc1d1ac10",
         "docs/workflows/how-it-fits.md": "b865dfd0d040309db43d27b58cb93a69d0e94a72bcf9b6ff760bcb0ed39ea473",
-        "src/ai_dlc/mcp_server.py": "a0b321498bc13f01b09c9c4cc07634715739c197701366370b544970f53a3af9",
+        "src/ai_dlc/mcp_server.py": "b581e9ac90819c842369a47d020bdb7f12ff5ba515312e60c9d38bbe7d309db7",
         "src/ai_dlc/providers/__init__.py": "33aca80a36d5f1b351a827b9f94da5d34340567f814c6c5b3256763890799cfc",
         "src/ai_dlc/providers/confluence_cloud.py": "83daca8f5b83121697b79671b0a9279834104d64de7978cd731a1e83f20f4eae",
         "src/ai_dlc/providers/git_knowledge.py": "c07d548015aa3e8a3c7ca567ee4511a79ec5af33f1d84d3c7f155d08c683f591",
         "src/ai_dlc/providers/github_issues.py": "8945d5b0049d7f7940c8c478e13bf576a897295e463a69b3510d6e2982ed1f08",
         "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
-        "src/ai_dlc/providers/jira_cloud.py": "796c89741e7a5abec69012f3233d3e5ac2f5539edf9e2afa6e9d45215c64b0c8",
+        "src/ai_dlc/providers/jira_cloud.py": "2bdd63d076937893a0212ecda219b226e2f6b6c943f3c8b72aeed33ae26bc8d0",
         "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
         "src/ai_dlc/providers/plane.py": "eebff96a72615706f56234a3fdbdbec6e5ac49785259bc8e068ff50e89381572",
         "src/ai_dlc/providers/plane_attempts.py": "da576a7f52dd7860c2340b72c91b39f2c9d84bbb7c983cd8bc2cc1871c56333b",
@@ -410,7 +446,7 @@
         "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
         "src/ai_dlc/harness/agents.py": "72f38f1f69147e4216fe6752636f26e6218c5c6ef85845ffb89828d431effa53",
         "src/ai_dlc/harness/hooks.py": "d8903d3c59ce52c3b3b26cdd9f322370eb2344404e235b2cecca61f5749b943f",
-        "src/ai_dlc/mcp_server.py": "a0b321498bc13f01b09c9c4cc07634715739c197701366370b544970f53a3af9",
+        "src/ai_dlc/mcp_server.py": "b581e9ac90819c842369a47d020bdb7f12ff5ba515312e60c9d38bbe7d309db7",
         "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
         "src/ai_dlc/setup/onboarding.py": "a955988850f1dbe1bd50b2e06da61913701b504ed1a11eabe08bed387d0cc552",
         "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
@@ -465,7 +501,7 @@
     },
     {
       "bound": {
-        "project-templates/project/docs/workflows/tool-map.md": "b7d4367b7821eced45413eeae2aa1a2464fdcebfe9640b52591cad337ed81472"
+        "project-templates/project/docs/workflows/tool-map.md": "2828bae6ef19cc6132416ee531afe75650ff2e6a42d430ac5fb3aa918fc7d03d"
       },
       "outcome": "updated",
       "reason": "Lists the new MCP tools so the rendered handbook names every served tool.",
@@ -483,7 +519,7 @@
     },
     {
       "bound": {
-        "tests/fixtures/jira.py": "2d2d51090ed7968a74ca491d1327062c10e3467a6e6f85fe42cdaba39769f00e"
+        "tests/fixtures/jira.py": "d819819b6805547cd8f1732993ba894117d6216f1bbc7730524a93f063080c8f"
       },
       "outcome": "updated",
       "reason": "The Jira stand-in serves editmeta and PUT issue for the update operation.",
@@ -501,7 +537,7 @@
     },
     {
       "bound": {
-        "tests/test_jira_provider.py": "df0febf6877ad7e9ba056618b9e2cf4631d6c0853a7f260a95bc0861b2ed26ce"
+        "tests/test_jira_provider.py": "b980526a3434fb3ab3b748cccaa011a4a98166e42c1b8165f79e85d13caf07f1"
       },
       "outcome": "updated",
       "reason": "Covers Jira create labels and the update operation with read-back.",
@@ -510,7 +546,7 @@
     },
     {
       "bound": {
-        "tests/test_mcp_surface.py": "0c4d25c1b6babd5378500808f41e73c80a860955c9f019346a4a8f03126c951f"
+        "tests/test_mcp_surface.py": "62427f5d0e716ade88581c8bce67dd3a62f9a59b69172f88bda8d1eb4419073c"
       },
       "outcome": "updated",
       "reason": "Drives the new tools through a real MCP client session with fakes.",
