@@ -977,3 +977,80 @@ def test_weekly_workflow_keeps_the_write_token_to_its_last_step_and_off_the_defa
     guard = steps[0]["run"]
     assert '"$default"' in guard and "repos/$GITHUB_REPOSITORY" in guard
     assert "knowledge-stats[bot]" in steps[-1]["run"]
+
+
+class _Roles:
+    """The project's scm and tracker roles, faked behind the provider registry."""
+
+    def __init__(self, fixture):
+        self.fixture = fixture
+
+    def _lister(self, prs):
+        class Listing:
+            def pull_requests(self, since, limit):
+                moment = datetime.fromisoformat(since)
+                found = [pr for pr in prs if datetime.fromisoformat(pr["created_at"]) >= moment]
+                return {"pull_requests": found[:limit]}
+
+        return Listing()
+
+    def get(self, id):
+        return self._lister(self.fixture["prs"])
+
+    def scm_for(self, root, repository, base):
+        return self._lister(self.fixture["agent_prs"])
+
+    def invoke(self, provider, operation, payload):
+        mine = payload["labels"] == ["exec:agent"]
+        return {"items": self.fixture["tickets"] if mine else [], "complete": True}
+
+
+def test_mcp_serves_the_same_numbers_as_the_command(fixture, tmp_path):
+    from test_mcp_surface import call
+
+    from ai_dlc.mcp_server import make_server
+
+    root = tmp_path / "project"
+    root.mkdir()
+    (root / "ai-dlc.toml").write_text('schema = 4\n[roles]\nscm = "github"\ntracker = "jira"\n')
+    roles = _Roles(fixture)
+    server = make_server(root, registry=roles)
+    arguments = {
+        "since": "2026-11-01",
+        "records": str(fixture["records"]),
+        "log": str(fixture["log"]),
+        "agent_repositories": ["o/agents"],
+    }
+    team, alpha = call(
+        server,
+        ("knowledge_stats", arguments),
+        ("knowledge_stats", {**arguments, "project": "alpha"}),
+    )
+    config = {"roles": {"scm": "github", "tracker": "jira"}}
+    wired = knowledge_stats.from_roles(
+        config, root, agent_repositories=["o/agents"], registry=roles
+    )
+    direct = stats(fixture["records"], SINCE, log=fixture["log"], **wired)
+
+    assert team["status"] == "ok" and team["review"]["available"] is True
+    for section in ("capture", "agent_loop"):
+        assert team[section] == direct[section]
+    numbers = ("pull_requests", "hidden_customer", "records_extracted", "records_edited")
+    assert {key: team["review"][key] for key in numbers} == {
+        key: direct["review"][key] for key in numbers
+    }
+    assert team["agent_loop"]["tickets"] == 3
+    assert "Alpha Corp" not in json.dumps(team)
+    assert alpha["review"]["hidden_customer"] == 1  # a view of alpha still hides #9
+
+
+def test_mcp_stats_reports_a_wrong_shaped_log_as_an_error(fixture, tmp_path):
+    from test_mcp_surface import call
+
+    from ai_dlc.mcp_server import make_server
+
+    (tmp_path / "ai-dlc.toml").write_text("schema=4\n")
+    (tmp_path / "runs.jsonl").write_text("{}\n")
+    arguments = {"since": "2026-11-01", "records": str(fixture["records"]), "log": "runs.jsonl"}
+    [error] = call(make_server(tmp_path), ("knowledge_stats", arguments))
+    assert "runs.jsonl:1 is not a capture run" in error
