@@ -341,11 +341,11 @@
         "tests/test_project.py": "2ebeb723433cfb53bf8e20b337d5016058e75a181b9ed0035203a14759a162ba",
         "tests/test_rendering.py": "46e3927140876b6ccbecd7230fedf68d2806da7828fee7293bf61df76c36ce69",
         "tests/test_team_sources.py": "3ab4eaa043c888b35eae7f92c8e8b20d20986d42d0ec8cdc936be472e48040e3",
-        "tests/test_templates.py": "669d1d85586dea32ec5118361dc96f862a77b528be38d83611a89fc2ff9427af",
+        "tests/test_templates.py": "d50958472da6eac84069d3063db72aa0de558c33e77b9d477abf800ef6c3cd32",
         "tests/test_workflow.py": "c60af46adb6cceb3160b1c34945d3b579e4ce42be7e24cad65fa24bd215d80a1"
       },
-      "outcome": "no-impact",
-      "reason": "Contributor workflow is unchanged; the CLI only gains a knowledge records group.",
+      "outcome": "reviewed-no-change",
+      "reason": "Merging KAN-421 (with main and KAN-423) leaves the work lifecycle this page explains unchanged; cli.py gains only knowledge commands.",
       "reviewer": "Claude (agent)",
       "target": "docs/development-workflow.md"
     },
