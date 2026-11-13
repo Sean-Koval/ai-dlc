@@ -16,6 +16,9 @@ a declared `knowledge.toml`, `deny-terms.txt`,
 CODEOWNERS, a README, the check workflow, `projects/acme/` and `inbox/`. It sets no
 `[wiki]`, so nothing renders to Confluence.
 
+Its CI pins ai-dlc's workflows to the installed release tag. Pass `--ai-dlc-ref`
+with a later tag or a commit to change it; never a branch.
+
 Host it where the contract says: a private repository on the company's GitHub, or
 the customer's own systems. Add every customer name, host and identifier you know
 to `deny-terms.txt`, one per line.
@@ -41,4 +44,5 @@ branch do not change, and nothing is pushed. Review the branch, push it and open
 a pull request as usual.
 
 A refusal names its reason. It may be a deny-list term, a web address, a customer
-path, or eight words in a row from the customer record. Reword and run again.
+path, or eight words in a row from the customer record. Look-alike letters, a word
+mixing two alphabets, `A.C.M.E.` and `AcmeCorp` count. Reword and run again.

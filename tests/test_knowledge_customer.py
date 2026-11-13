@@ -15,7 +15,9 @@ from ai_dlc.documentation.knowledge_customer import (
     customer_files,
     denied,
     init_customer,
+    mixed_script,
     promote,
+    release_ref,
 )
 from ai_dlc.documentation.knowledge_render import wiki_target
 from ai_dlc.errors import RefusedError
@@ -332,6 +334,10 @@ def test_promote_with_a_deny_list_term_exits_non_zero_and_writes_nothing(acme, t
         {"summary": SUMMARY + "Seen at \uff21\uff23\uff2d\uff25.\n"},  # full width
         {"summary": SUMMARY + "Seen at Ac\u200bme.\n"},  # zero-width space
         {"summary": SUMMARY + "Both ACMEs agreed.\n"},
+        {"summary": SUMMARY + "Seen at \u0410\u0421\u041c\u0415.\n"},  # Cyrillic look-alikes
+        {"summary": SUMMARY + "Seen at A.C.M.E. last week.\n"},
+        {"summary": SUMMARY + "Ask WileECoyote first.\n"},
+        {"summary": SUMMARY + "Ask wile-e-coyote first.\n"},
     ):
         with pytest.raises(RefusedError, match="deny-list"):
             run_promote(acme, team, **change)
@@ -359,6 +365,29 @@ def test_promote_with_a_deny_list_term_exits_non_zero_and_writes_nothing(acme, t
     )
     assert result.exit_code != 0 and "deny-list" in result.output
     assert branches(team) == before[1]
+
+
+def test_promote_refuses_a_word_that_mixes_alphabets(acme, team):
+    # A Greek omicron inside a Latin word: no deny term, but it hides a spelling.
+    with pytest.raises(RefusedError, match="alphabet"):
+        run_promote(acme, team, summary=SUMMARY + "Ask the Ini\u03bftech team.\n")
+    assert not mixed_script("Ask the \u0391\u03b8\u03ae\u03bd\u03b1 office and the Initech team.")
+
+
+def test_customer_workflow_is_pinned_and_read_only(tmp_path):
+    files = customer_files("acme")
+    workflow = files[".github/workflows/knowledge.yml"]
+    assert f"@{release_ref()}" in workflow and "@main" not in workflow
+    assert workflow.count("contents: read") == 3 and ": write" not in workflow
+    assert release_ref() in files["README.md"]
+    sha = "0123456789abcdef0123456789abcdef01234567"
+    assert (
+        f"knowledge-check.yml@{sha}"
+        in customer_files("acme", ai_dlc_ref=sha)[".github/workflows/knowledge.yml"]
+    )
+    for ref in ("main", "x y", "$(id)"):
+        with pytest.raises(RefusedError, match="ai-dlc-ref"):
+            customer_files("acme", ai_dlc_ref=ref)
 
 
 def test_promote_refuses_quotes_addresses_and_customer_paths(acme, team):

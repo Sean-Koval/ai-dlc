@@ -1829,7 +1829,12 @@ def knowledge_init(
         list[str] | None, typer.Option("--codeowner", help="@user or @org/team reviewer")
     ] = None,
     deny: Annotated[list[str] | None, typer.Option("--deny", help="extra deny-list term")] = None,
-    ai_dlc_ref: Annotated[str, typer.Option("--ai-dlc-ref", help="ref CI installs")] = "main",
+    ai_dlc_ref: Annotated[
+        str | None,
+        typer.Option(
+            "--ai-dlc-ref", help="release tag or commit CI pins (default: installed release)"
+        ),
+    ] = None,
     dry_run: Annotated[bool, typer.Option("--dry-run")] = False,
 ):
     """Write a separate customer knowledge repository: boundary customer, no wiki target.

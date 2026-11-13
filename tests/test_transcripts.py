@@ -332,7 +332,10 @@ def test_pull_writes_source_records_once_and_skips_unreadable(tmp_path):
 
     # The customer transcript lands in the customer's own repository, top-level inbox.
     customer = written["Qx9YzZalpha=="]
-    assert customer["repository"] == str(alpha) and customer["project"] == "alpha"
+    assert customer["project"] == "alpha"
+    # Nothing in the result names the customer: no title, no local path (KAN-475).
+    assert set(customer) == {"provider", "id", "project", "record"}
+    assert str(alpha) not in json.dumps(first) and "Sync" not in json.dumps(first["written"])
     assert customer["record"].startswith("inbox/transcripts/")
     customer_record, _ = records.parse((alpha / customer["record"]).read_text())
     assert customer_record.boundary == "customer" and customer_record.project == "alpha"
@@ -439,7 +442,7 @@ def test_route_matches_title_or_participant_email():
     item = {"title": "Sync", "participants": ["Bob"], "emails": ["bob@alpha.example"]}
     assert route(item, customers)["project"] == "alpha"
     assert route({"title": "Beta sync"}, customers)["project"] == "beta"
-    internal = ["@example.com", "dana lee"]
+    internal = ["@example.com", "Dana Lee"]
     team = {"title": "other", "participants": ["Ana"], "emails": ["ana@example.com"]}
     assert route(team, customers, internal) is None
     assert route({"title": "other", "participants": ["Dana Lee"]}, customers, internal) is None
@@ -453,6 +456,18 @@ def test_route_matches_title_or_participant_email():
     for item in unmapped:
         assert "not every participant is internal" in route(item, customers, internal)
     assert "not every participant" in route(team, customers)  # no internal list: deny
+    # Look-alikes are not internal: exact domain or a subdomain, exact names.
+    for domain in (["@corp.com"], ["corp.com"]):
+        for email in ("bob@corp.com.attacker.io", "bob@notcorp.com", "bob@corp.co"):
+            item = {"title": "x", "participants": ["Bob"], "emails": [email]}
+            assert isinstance(route(item, customers, domain), str), (domain, email)
+        ok = {"title": "x", "participants": ["Bob"], "emails": ["bob@eu.corp.com"]}
+        assert route(ok, customers, domain) is None
+    named = {"title": "x", "participants": ["Seana Smith"]}
+    assert isinstance(route(named, customers, ["sean"]), str)
+    assert route({"title": "x", "participants": ["Sean"]}, customers, ["Sean"]) is None
+    exact = {"title": "x", "participants": ["A"], "emails": ["a@partner.io"]}
+    assert route(exact, customers, ["a@partner.io"]) is None
     assert route({"title": "other"}, []) is None  # no customer rules: team only
 
 
@@ -467,7 +482,7 @@ def test_a_customer_transcript_reaches_only_its_own_repository(tmp_path):
         tmp_path, CONFIG, providers=["zoom"], into=root, registry=reg, environ=environ
     ).pull("2026-11-01")
     written = {entry["id"]: entry for entry in result["written"]}
-    assert written["Qx9YzZalpha=="]["repository"] == str(alpha)
+    assert (alpha / written["Qx9YzZalpha=="]["record"]).is_file()
     for repo in (root, beta):
         assert not any("Qx9YzZalpha" in p.read_text() for p in repo.rglob("*") if p.is_file())
 

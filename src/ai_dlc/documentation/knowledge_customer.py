@@ -81,9 +81,13 @@ def customer_files(
     *,
     codeowners: Iterable[str] = (),
     deny: Iterable[str] = (),
-    ai_dlc_ref: str = "main",
+    ai_dlc_ref: str | None = None,
 ) -> dict[str, str]:
-    """The files of a new customer knowledge repository, by path."""
+    """The files of a new customer knowledge repository, by path.
+
+    The workflow pins ai-dlc's reusable workflows to ``ai_dlc_ref``: by default the
+    release tag of the installed version, never a moving branch."""
+    ai_dlc_ref = ai_dlc_ref or release_ref()
     owners = [owner.strip() for owner in codeowners if owner.strip()]
     for owner in owners:
         if not re.fullmatch(r"@[A-Za-z0-9][A-Za-z0-9-]*(?:/[A-Za-z0-9._-]+)?", owner):
@@ -92,8 +96,8 @@ def customer_files(
     for term in terms:
         if "\n" in term or term.startswith("#"):
             raise RefusedError(f"a deny-list term is one line and not a comment: {term!r}")
-    if not re.fullmatch(r"[A-Za-z0-9._/-]+", ai_dlc_ref):
-        raise RefusedError(f"--ai-dlc-ref must be a git ref: {ai_dlc_ref!r}")
+    if not re.fullmatch(r"[A-Za-z0-9._/-]+", ai_dlc_ref) or ai_dlc_ref in {"main", "master"}:
+        raise RefusedError(f"--ai-dlc-ref must be a release tag or commit: {ai_dlc_ref!r}")
     workflow = "Sean-Koval/ai-dlc/.github/workflows"
     return {
         CONFIG: (
@@ -132,6 +136,9 @@ def customer_files(
             f"- Records live under `{PROJECTS}/{name}/` and carry `boundary: customer` and\n"
             f"  `project: {name}`. `ai-dlc knowledge check .` enforces this in CI.\n"
             "- No link, source or path points outside this repository.\n"
+            f"- CI runs ai-dlc's workflows pinned to `{ai_dlc_ref}`. Keep them pinned to a\n"
+            "  release tag or commit; a branch would let anyone who can push there run\n"
+            "  code against this repository.\n"
             "- Nothing renders to a wiki until a wiki parent the customer approved is set\n"
             "  in `knowledge.toml`.\n"
             "- Raw payloads under `inbox/` follow the team repository's 30-day retention\n"
@@ -152,6 +159,8 @@ def customer_files(
             "  contents: read\n"
             "jobs:\n"
             "  check:\n"
+            "    permissions:\n"
+            "      contents: read\n"
             f"    uses: {workflow}/knowledge-check.yml@{ai_dlc_ref}\n"
             "    with:\n"
             '      records: "."\n'
@@ -159,7 +168,10 @@ def customer_files(
             "  number:\n"
             "    # Numbers records and writes indexes through a reviewed pull request.\n"
             "    # Needs a GitHub App token in KNOWLEDGE_APP_TOKEN (contracts/README.md).\n"
+            "    # The App token does the writing; GITHUB_TOKEN stays read-only.\n"
             "    if: github.event_name == 'push'\n"
+            "    permissions:\n"
+            "      contents: read\n"
             f"    uses: {workflow}/knowledge-merge.yml@{ai_dlc_ref}\n"
             "    with:\n"
             '      records: "."\n'
@@ -172,6 +184,13 @@ def customer_files(
     }
 
 
+def release_ref() -> str:
+    """The release tag of the installed ai-dlc, which customer CI pins to."""
+    from ai_dlc import __version__
+
+    return f"v{__version__}"
+
+
 def init_customer(
     path: Path | str,
     name: str,
@@ -179,7 +198,7 @@ def init_customer(
     dry_run: bool = False,
     codeowners: Iterable[str] = (),
     deny: Iterable[str] = (),
-    ai_dlc_ref: str = "main",
+    ai_dlc_ref: str | None = None,
 ) -> dict[str, Any]:
     """Write a customer knowledge repository skeleton into an empty or new directory."""
     if not SLUG.fullmatch(name):
@@ -241,11 +260,50 @@ def _settings(root: Path) -> dict:
     return parsed
 
 
+# Letters that look like Latin ones, folded to them so "Аcme" (Cyrillic А) still matches.
+_CONFUSABLES = str.maketrans(
+    {
+        **dict(zip("АВЕКМНОРСТУХаеорсухіјѕԁԛԝӏ", "ABEKMHOPCTYXaeopcyxijsdqwl", strict=True)),
+        **dict(zip("ΑΒΕΖΗΙΚΜΝΟΡΤΥΧαικνορτυχ", "ABEZHIKMNOPTYXaiknoptux", strict=True)),
+    }
+)
+
+
 def _normal(text: str) -> str:
-    """Casefolded, NFKC-normalised words with invisible format characters removed."""
-    text = unicodedata.normalize("NFKC", text)
+    """Casefolded words: NFKC, look-alike letters folded to Latin, invisible format
+    characters removed, punctuation as spaces, and runs of single letters joined
+    (``A.C.M.E.`` reads ``acme``)."""
+    text = unicodedata.normalize("NFKC", text).translate(_CONFUSABLES)
     text = "".join(char for char in text if unicodedata.category(char) != "Cf")
-    return " " + " ".join(_SEPARATORS.sub(" ", text.casefold()).split()) + " "
+    words = _SEPARATORS.sub(" ", text.casefold()).split()
+    joined: list[str] = []
+    run = ""
+    for word in words:
+        if len(word) == 1 and word.isalpha():
+            run += word
+            continue
+        if run:
+            joined.append(run)
+            run = ""
+        joined.append(word)
+    if run:
+        joined.append(run)
+    return " " + " ".join(joined) + " "
+
+
+def _script(char: str) -> str:
+    return unicodedata.name(char, "").split(" ", 1)[0]
+
+
+def mixed_script(text: str) -> list[str]:
+    """Words that mix Latin letters with another alphabet's, which hide a name from
+    a reader as well as from the deny list."""
+    mixed = []
+    for word in unicodedata.normalize("NFKC", text).split():
+        scripts = {_script(char) for char in word if char.isalpha()}
+        if "LATIN" in scripts and len(scripts) > 1:
+            mixed.append(word)
+    return mixed
 
 
 def deny_terms(root: Path, parsed: Mapping[str, Any], project: str) -> list[str]:
@@ -284,7 +342,9 @@ def denied(text: str, terms: Iterable[str]) -> list[str]:
     found = set()
     for term in terms:
         words = _normal(term).strip()
-        if words and re.search(rf" {re.escape(words)}(?:e?s)? ", haystack):
+        # A multi-word term also matches written as one word ("AcmeCorp").
+        forms = {words, words.replace(" ", "")} - {""}
+        if any(re.search(rf" {re.escape(form)}(?:e?s)? ", haystack) for form in forms):
             found.add(term)
     return sorted(found)
 
@@ -431,6 +491,11 @@ def promote(
         raise RefusedError(
             f"the promotion contains {len(found)} deny-list term(s); remove customer "
             "names and identifiers from the title, summary, slug and branch"
+        )
+    if mixed_script(written):
+        raise RefusedError(
+            "the promotion mixes Latin letters with another alphabet in one word; "
+            "retype it in one alphabet"
         )
     if _URL.search(written):
         raise RefusedError("a promoted summary carries no web address; cite it after review")

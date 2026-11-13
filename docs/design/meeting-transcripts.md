@@ -67,12 +67,17 @@ repository only when every participant matches `internal`. Otherwise it may be a
 unmapped customer meeting, so it is skipped and logged. A transcript that
 matches two customers is skipped too.
 
+An `internal` email matches an exact address, or a domain and its subdomains.
+A name matches exactly. A team meeting with an outside guest is skipped until a
+customer rule covers it. The pull output names a customer meeting by provider
+and id only, never by its title or path.
+
 ```toml
 # knowledge.toml of the team repository
 [transcripts]
 owner = "<record owner>"   # required: owner of the Source records
 scope = "personal"         # team-repository transcripts: personal (default) or team
-internal = ["@example.com"]  # emails, or names when a provider gives none
+internal = ["@example.com"]  # domains, addresses, or exact names when a provider gives none
 
 [[transcripts.customers]]
 project = "alpha"

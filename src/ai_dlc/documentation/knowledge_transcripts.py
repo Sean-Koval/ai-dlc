@@ -32,8 +32,9 @@ caller cannot read is skipped and its id logged. Routing lives in the team check
     repo_env = "KNOWLEDGE_REPO_ALPHA"  # default; names the variable holding the local path
 
 Once customer rules exist, a transcript that matches none goes to the team repository
-only when every participant matches ``[transcripts] internal`` (substrings of internal
-emails, or names when the provider gives no emails); otherwise it is skipped and logged.
+only when every participant matches ``[transcripts] internal`` (internal email domains or
+addresses, or exact names when the provider gives no emails); otherwise it is skipped and
+logged. A customer transcript is reported by id and project only.
 """
 
 import hashlib
@@ -176,15 +177,40 @@ def route(
 def all_internal(names: list[str], emails: list[str], internal: list[str]) -> bool:
     """Whether every participant is positively internal.
 
-    With emails, each one must match an ``internal`` pattern and no participant may be
-    without one. Without emails, each name must match.
+    An ``internal`` entry is a domain (``@corp.com`` or ``corp.com``), an exact email,
+    or an exact name. An email matches its exact domain or a subdomain of it, never a
+    look-alike such as ``corp.com.example`` or ``notcorp.com``. With emails, each one
+    must match and no participant may be without one; without emails, each name must
+    match exactly.
     """
     if not internal or not names and not emails:
         return False
-    known = emails if emails else names
     if emails and len(emails) < len(names):
         return False
-    return all(any(pattern in person for pattern in internal) for person in known)
+    domains, addresses, people = set(), set(), set()
+    for entry in internal:
+        value = " ".join(entry.casefold().split())
+        if value.startswith("@"):
+            domains.add(value[1:].strip("."))
+        elif "@" in value:
+            addresses.add(value)
+        elif "." in value and " " not in value:
+            domains.add(value.strip("."))
+        else:
+            people.add(value)
+
+    def internal_email(email: str) -> bool:
+        if email in addresses:
+            return True
+        _local, at, domain = email.rpartition("@")
+        domain = domain.strip(".")
+        return bool(at) and any(
+            domain == known or domain.endswith("." + known) for known in domains if known
+        )
+
+    if emails:
+        return all(internal_email(email) for email in emails)
+    return all(" ".join(name.split()) in people for name in names)
 
 
 def customer_repo(
@@ -378,13 +404,18 @@ class TranscriptPull:
                 continue
             for item in listed:
                 key = f"{kind}:{item['id']}"
-                entry = {"provider": provider, "id": item["id"], "title": item["title"]}
+                # The result leaves the customer repository (logs, the batch), so a
+                # transcript that is, or may be, a customer's is reported by id and
+                # project only: no title, no local path (KAN-475).
+                entry = {"provider": provider, "id": item["id"]}
                 routed = target(item)
                 if isinstance(routed, str):
                     result["skipped"].append({**entry, "reason": routed})
                     continue
                 where, customer = routed
                 project = customer["project"] if customer else None
+                if customer is None:
+                    entry["title"] = item["title"]
                 if key in seen[where]:
                     result["existing"].append({**entry, "project": project})
                     continue
@@ -407,6 +438,8 @@ class TranscriptPull:
                     continue
                 written = self._write(where, transcript, kind, key, settings, customer)
                 seen[where].add(key)
+                if customer is not None:
+                    written = {"project": customer["project"], "record": written["record"]}
                 result["written"].append({**entry, **written})
         if result["errors"]:
             result["status"] = "failed"
