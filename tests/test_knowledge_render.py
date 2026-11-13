@@ -100,6 +100,10 @@ class FakeConfluence:
             }
             return httpx.Response(200, json={"id": page_id, "version": {"number": 1}})
         match = re.fullmatch(r"rest/api/content/(\d+)/label", path)
+        if match and request.method == "DELETE":
+            self.writes += 1
+            self.pages[match.group(1)]["labels"].discard(query["name"][0])
+            return httpx.Response(204)
         if match:
             self.pages[match.group(1)]["labels"].update(item["name"] for item in body)
             return httpx.Response(200, json={"results": []})
@@ -345,6 +349,64 @@ def test_a_changed_record_updates_its_page_and_index(store):
         "ship-on-thursdays": "update",
     }
     assert fake.by_key("ship-on-thursdays")["title"] == "ship-on-thursdays · Ship Thursdays"
+
+
+def test_a_status_change_drops_the_old_status_label(store):
+    fake = FakeConfluence()
+    render = renderer(store, fake)
+    render.render(store["base"])
+    page = fake.by_key("splunk-proxy")
+    assert "open" in page["labels"]
+    page["labels"].add("added-by-hand")
+    head = git(store["repo"], "rev-parse", "HEAD")
+    lesson = record(
+        "splunk-proxy", kind="lesson", scope="project", tags=["splunk"], status="codified"
+    )
+    commit(store["repo"], "lessons/splunk.md", lesson)
+    render.render(head)
+    labels = fake.by_key("splunk-proxy")["labels"]
+    assert "codified" in labels and "open" not in labels
+    assert {"splunk", "added-by-hand", "ai-dlc-key-splunk-proxy"} <= labels
+    assert render.render(head)["writes"] == 0
+
+
+def test_a_deleted_record_is_marked_removed_never_left_live(store):
+    fake = FakeConfluence()
+    render = renderer(store, fake)
+    render.render(store["base"])
+    head = git(store["repo"], "rev-parse", "HEAD")
+    git(store["repo"], "rm", "-q", "decisions/thursday.md")
+    git(store["repo"], "commit", "-qm", "retract")
+    writes = fake.writes
+    planned = render.render(head, dry_run=True)
+    assert fake.writes == writes
+    actions = {page["key"]: page["action"] for page in planned["pages"]}
+    assert actions == {
+        "index-project": "unchanged",
+        "ship-on-thursdays": "remove",
+        "index-team": "remove",
+    }
+    result = render.render(head)
+    assert result["removed"] == ["index-team", "ship-on-thursdays"]
+    assert result["orphaned"] == ["decisions/thursday.md"]
+    page = fake.by_key("ship-on-thursdays")
+    assert page["title"] == "Removed: ship-on-thursdays · Ship on thursdays"
+    assert "Removed." in page["body"] and "Why we chose it" not in page["body"]
+    assert "decisions/thursday.md" not in page["body"]
+    assert page["labels"] == {"ai-dlc-removed", "ai-dlc-key-ship-on-thursdays"}
+    assert page["props"]["ai-dlc"]["value"]["properties"]["removed"] == "true"
+    assert fake.by_key("index-team")["title"].startswith("Removed: ")
+    # Removal is idempotent, and only gone records are removed.
+    again = render.render(head)
+    assert again["writes"] == 0
+    assert not fake.by_key("splunk-proxy")["title"].startswith("Removed")
+    # A record that comes back is live again.
+    (store["repo"] / "decisions").mkdir(exist_ok=True)
+    commit(store["repo"], "decisions/thursday.md", record("ship-on-thursdays"))
+    render.render(head)
+    back = fake.by_key("ship-on-thursdays")
+    assert back["title"] == "ship-on-thursdays · Ship on thursdays"
+    assert "ai-dlc-removed" not in back["labels"]
 
 
 def test_a_customer_record_stays_out_of_a_wiki_not_declared_for_it(store):
