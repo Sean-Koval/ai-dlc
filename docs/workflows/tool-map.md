@@ -58,7 +58,6 @@ Knowledge, deployment and agent clients remain optional.
 | Approved behavior | `spec-from-prd` | Specification decision, then provider-owned requirements and scenarios |
 | Meeting transcript or thread | `capture` | Decisions, actions and questions; proposed tickets, never filed |
 | Session or ownership transfer | `handoff` | Verified state, decisions, evidence, risks, and next action |
-| Share a reviewed note | `kb-publish` | One confirmed page, its id written back to the note |
 
 The optional [workflow plugin](workflow-plugin.md) carries
 every skill above plus `document-review`, `document-organize`, `design-brief` and
@@ -93,7 +92,7 @@ unsupported Plane adapter.
 
 MCP includes `work_context`, `work_review`, `work_publish`, `work_start`, `work_status`,
 `work_link`, `work_finish`, `doctor`, `knowledge_find`, `knowledge_append`,
-`knowledge_note` and `knowledge_check`, alongside project-document and workspace
+`knowledge_note`, `knowledge_check` and `knowledge_render`, alongside project-document and workspace
 tools. These identifiers differ from CLI commands, such as `ai-dlc work publish`.
 
 ## Command and service map

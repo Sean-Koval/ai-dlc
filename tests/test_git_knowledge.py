@@ -121,7 +121,7 @@ def test_knowledge_role_reads_records_and_proposes_optionally():
     roles = manifest()["roles"]
     assert roles["knowledge"] == {
         "mandatory": ["get", "search"],
-        "optional": ["append", "list_changed", "propose", "publish"],
+        "optional": ["append", "list_changed", "propose"],
     }
     with pytest.raises(ValueError):
         validate_request("propose", {"records": [], "branch": "b", "title": "t"})

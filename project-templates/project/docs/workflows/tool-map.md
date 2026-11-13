@@ -45,7 +45,6 @@ establish readiness.
 | Decide on and translate behavior | `spec-from-prd` |
 | Capture a meeting or thread | `capture` |
 | Transfer verified context | `handoff` |
-| Publish a reviewed note | `kb-publish` |
 
 Skills provide judgment. Provider instructions define vendor operations.
 ai-dlc services own validation and mutation boundaries; no skill bypasses finish
@@ -69,7 +68,8 @@ execution is a later qualification target. Obsidian project portals are the defa
 Machine enrollment mutations are CLI-only in this cycle. MCP exposes
 `work_context`, `work_review`, `work_publish`, `work_start`, `work_status`, `work_link`, `work_finish`,
 `doctor`, `project_docs_check`, `knowledge_find`, `knowledge_append`, `knowledge_note`, and
-`knowledge_check` (validates a knowledge-records directory),
+`knowledge_check` (validates a knowledge-records directory), `knowledge_render`
+(the wiki's only writer; a dry run by default),
 plus the documentation and workspace tools below; it does
 not expose machine enrollment mutation. These MCP identifiers differ from the
 space-separated CLI commands, such as `ai-dlc work publish` and `ai-dlc

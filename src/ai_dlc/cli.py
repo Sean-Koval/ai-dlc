@@ -1698,35 +1698,21 @@ def knowledge_captured(source: Path, vault: Annotated[Path, typer.Option("--vaul
         raise typer.Exit(1)
 
 
-@knowledge.command("publish-plan")
-def knowledge_publish_plan(
-    note: str,
-    vault: Annotated[Path, typer.Option("--vault")],
-    remote_version: Annotated[int | None, typer.Option("--remote-version")] = None,
+@knowledge.command("render")
+def knowledge_render(
+    changed_since: Annotated[str, typer.Option("--changed-since")],
+    dry_run: Annotated[bool, typer.Option("--dry-run")] = False,
+    root: Annotated[Path, typer.Option("--root")] = Path("."),
 ):
-    """Show the exact page a note would publish, or refuse; writes nothing."""
-    from ai_dlc.documentation.knowledge_publish import plan
+    """Render records changed since a revision, and one index per scope, to the wiki role.
 
-    result = plan(vault, note, remote_version)
-    emit(result)
-    if result["status"] == "refused":
-        raise typer.Exit(1)
+    The only writer to the wiki. ``--dry-run`` prints every planned upsert and writes nothing.
+    """
+    from ai_dlc.documentation.knowledge_render import KnowledgeRender
 
-
-@knowledge.command("publish-record")
-def knowledge_publish_record(
-    note: str,
-    vault: Annotated[Path, typer.Option("--vault")],
-    page_id: Annotated[str, typer.Option("--page-id")],
-    version: Annotated[int, typer.Option("--version")],
-):
-    """Write a published page's id and version back into the note's frontmatter."""
-    from ai_dlc.documentation.knowledge_publish import record
-
-    result = record(vault, note, page_id, version)
-    emit(result)
-    if result["status"] == "refused":
-        raise typer.Exit(1)
+    with service_call():
+        result = KnowledgeRender(root, config_for(root)).render(changed_since, dry_run=dry_run)
+    conclude(result)
 
 
 RecordsRoot = Annotated[Path, typer.Option("--root")]

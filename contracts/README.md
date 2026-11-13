@@ -4,7 +4,7 @@
 `service-result.schema.json` is the envelope application services return to the CLI and
 MCP; it is generated from `ai_dlc.contracts.ServiceResult` and explained in
 `docs/architecture.md`.
-They describe tracker, specs, SCM, deploy, and knowledge role capabilities.
+They describe tracker, specs, SCM, deploy, knowledge and wiki role capabilities.
 `knowledge-note.schema.json` is the frontmatter of learnings and decision records,
 generated from `ai_dlc.documentation.knowledge_notes.KnowledgeNote`; it is explained
 in `docs/design/local-and-shared-knowledge.md`. Decision `checks:` entries use
@@ -31,6 +31,13 @@ changed since a revision. Optional `propose {records: [{path, text}], branch, ti
 body}` checks the records, pushes a new branch and opens a draft pull request through
 the `scm` role; it never writes the base branch. The `git` and `obsidian` providers
 answer `get` and `search`; only `git` lists changes and proposes.
+The `wiki` role is a read view of the records, and `ai-dlc knowledge render` is its only
+writer. It must answer `upsert_page {key, title, body, properties, labels, parent,
+expected_version}`, `get_page_by_key {key}` and `list_children {parent}`. Pages are found
+by `key`; `parent` is another page's key, or null for the configured root. No operation
+returns a page body. A page reports `version` and `rendered_version`, the version the last
+upsert wrote; they differ after a hand edit. An upsert whose `expected_version` is not the
+page's current version is refused. The `confluence-cloud` provider implements it.
 Completion is a service operation: callers must use `WorkService.finish`.
 The public `Registry.invoke` refuses terminal tracker transitions and the optional
 terminal planning reconciliation operation `reconcile_closed`.
