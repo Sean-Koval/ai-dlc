@@ -6,6 +6,19 @@
       "minLength": 1,
       "title": "Id",
       "type": "string"
+    },
+    "project": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "customer project the caller works in; boundary: customer records of other projects are never returned",
+      "title": "Project"
     }
   },
   "required": [

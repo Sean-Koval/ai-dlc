@@ -3,7 +3,7 @@
 from collections.abc import Mapping
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class Request(BaseModel):
@@ -24,11 +24,13 @@ class Request(BaseModel):
         "deployment",
         "append",
         "pull_request_create",
-        "publish",
         "get",
         "search",
         "list_changed",
         "propose",
+        "upsert_page",
+        "get_page_by_key",
+        "list_children",
     ]
     payload: dict
     operation_id: str | None = None
@@ -176,40 +178,15 @@ class PullRequestCreate(Payload):
     draft: bool = False
 
 
-class Publish(Payload):
-    """One reviewed note to one page (ADR 0003): create without ``page_id``, else update.
-
-    ``expected_version`` is the version the note recorded; a provider refuses when the
-    page's current version differs instead of overwriting a teammate's edit.
-    """
-
-    site: str = Field(min_length=1)
-    space: str = Field(min_length=1)
-    parent: str | None = None
-    title: str = Field(min_length=1)
-    body: str = Field(min_length=1)
-    page_id: str | None = None
-    expected_version: int | None = Field(default=None, ge=1)
-    operation_id: str = Field(min_length=1)
-
-    @model_validator(mode="after")
-    def _update_needs_version(self) -> "Publish":
-        if (self.page_id is None) != (self.expected_version is None):
-            raise ValueError("an update names page_id and expected_version together")
-        return self
-
-
-class PublishResult(BaseModel):
-    model_config = ConfigDict(extra="allow")
-    page_id: str = Field(min_length=1)
-    version: int = Field(ge=1)
-    url: str = Field(min_length=1)
-
-
 class RecordGet(Payload):
     """One knowledge record by id or alias."""
 
     id: str = Field(min_length=1)
+    project: str | None = Field(
+        default=None,
+        description="customer project the caller works in; boundary: customer records "
+        "of other projects are never returned",
+    )
 
 
 class RecordSearch(Payload):
@@ -220,6 +197,11 @@ class RecordSearch(Payload):
     labels: list[str] = Field(default_factory=list)
     status: str | None = None
     text: str | None = None
+    project: str | None = Field(
+        default=None,
+        description="customer project the caller works in; boundary: customer records "
+        "of other projects are never returned",
+    )
 
 
 class RecordsChanged(Payload):
@@ -287,6 +269,61 @@ class PullRequestResult(BaseModel):
     number: int = Field(ge=1)
 
 
+WIKI_KEY = r"^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+
+
+class UpsertPage(Payload):
+    """Write one rendered page, found by ``key`` (KAN-430). Only ``knowledge render`` calls it.
+
+    ``expected_version`` is the page's version as ``get_page_by_key`` read it, or null when
+    no page has the key. A provider refuses when the page's current version differs, so a
+    concurrent write is never overwritten.
+    """
+
+    key: str = Field(pattern=WIKI_KEY, description="stable page key, such as a record id")
+    title: str = Field(min_length=1)
+    body: str = Field(min_length=1, description="markdown")
+    properties: dict[str, str] = Field(default_factory=dict)
+    labels: list[str] = Field(default_factory=list)
+    parent: str | None = Field(default=None, description="parent page key; null is the root")
+    expected_version: int | None = Field(default=None, ge=1)
+    operation_id: str = Field(min_length=1)
+
+
+class PageKey(Payload):
+    key: str = Field(pattern=WIKI_KEY)
+
+
+class Children(Payload):
+    parent: str | None = Field(default=None, description="parent page key; null is the root")
+
+
+class Page(BaseModel):
+    """A page's metadata. The wiki role never returns a page body."""
+
+    model_config = ConfigDict(extra="allow")
+    key: str = Field(min_length=1)
+    page_id: str = Field(min_length=1)
+    title: str = Field(min_length=1)
+    version: int = Field(ge=1)
+    rendered_version: int | None = Field(
+        default=None, description="the version the last upsert wrote; differs after a hand edit"
+    )
+    properties: dict[str, str] = Field(default_factory=dict)
+    labels: list[str] = Field(default_factory=list)
+    url: str = Field(min_length=1)
+
+
+class PageFound(BaseModel):
+    model_config = ConfigDict(extra="allow")
+    page: Page | None
+
+
+class PageList(BaseModel):
+    model_config = ConfigDict(extra="allow")
+    pages: list[Page]
+
+
 PAYLOADS.update(
     {
         "current": Current,
@@ -295,11 +332,13 @@ PAYLOADS.update(
         "deployment": Revision,
         "append": Append,
         "pull_request_create": PullRequestCreate,
-        "publish": Publish,
         "get": RecordGet,
         "search": RecordSearch,
         "list_changed": RecordsChanged,
         "propose": Propose,
+        "upsert_page": UpsertPage,
+        "get_page_by_key": PageKey,
+        "list_children": Children,
     }
 )
 RESPONSES = {
@@ -317,11 +356,13 @@ RESPONSES = {
     "deployment": DeploymentResult,
     "append": AppendResult,
     "pull_request_create": PullRequestResult,
-    "publish": PublishResult,
     "get": RecordResult,
     "search": RecordsFound,
     "list_changed": RecordsChangedResult,
     "propose": ProposeResult,
+    "upsert_page": Page,
+    "get_page_by_key": PageFound,
+    "list_children": PageList,
 }
 
 
@@ -398,7 +439,11 @@ def manifest():
             "deploy": {"mandatory": ["deployment"], "optional": []},
             "knowledge": {
                 "mandatory": ["get", "search"],
-                "optional": ["append", "list_changed", "propose", "publish"],
+                "optional": ["append", "list_changed", "propose"],
+            },
+            "wiki": {
+                "mandatory": ["upsert_page", "get_page_by_key", "list_children"],
+                "optional": [],
             },
         },
         "operations": {

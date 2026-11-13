@@ -1,0 +1,15 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "key": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+      "title": "Key",
+      "type": "string"
+    }
+  },
+  "required": [
+    "key"
+  ],
+  "title": "PageKey",
+  "type": "object"
+}

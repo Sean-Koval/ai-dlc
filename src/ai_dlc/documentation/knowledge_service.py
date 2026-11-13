@@ -65,8 +65,8 @@ class KnowledgeRecords:
             return {"status": "refused", "reason": str(exc)}
         return {"status": "ok", **result}
 
-    def get(self, id: str) -> dict:
-        return self._call("get", {"id": id})
+    def get(self, id: str, project: str | None = None) -> dict:
+        return self._call("get", {"id": id, "project": project})
 
     def search(
         self,
@@ -75,6 +75,7 @@ class KnowledgeRecords:
         labels: list[str] | None = None,
         status: str | None = None,
         text: str | None = None,
+        project: str | None = None,
     ) -> dict:
         payload = {
             "type": type,
@@ -82,6 +83,7 @@ class KnowledgeRecords:
             "labels": list(labels or []),
             "status": status,
             "text": text,
+            "project": project,
         }
         return self._call("search", payload)
 

@@ -3,6 +3,7 @@
 import asyncio
 import json
 import re
+import shutil
 import subprocess
 import time
 from pathlib import Path
@@ -391,3 +392,23 @@ def test_check_still_refuses_other_link_edits_to_an_accepted_decision(tmp_path):
     assert path.exists()
     failures = check_records(folder, base="HEAD")["failures"]
     assert [f["pointer"] for f in failures] == ["/links"]
+
+
+def test_indexes_list_customer_records_only_inside_their_project(tmp_path):
+    boundary = Path(__file__).resolve().parent / "fixtures/boundary"
+    shutil.copytree(boundary, tmp_path / "kb")
+    result = index_records(tmp_path / "kb")
+    assert result["status"] == "written", result
+    pages = {path: (tmp_path / "kb" / path).read_text() for path in result["indexes"]}
+    customer = {"alpha": ("LES-0001", "SRC-0002"), "beta": ("LES-0002",)}
+    for path, text in pages.items():
+        inside = next((p for p in customer if path.startswith(f"projects/{p}/")), None)
+        for project, ids in customer.items():
+            if project == inside:
+                continue
+            assert f"{project}/" not in text, (path, text)
+            assert not any(name in text for name in ids), (path, text)
+    assert "LES-0001" in pages["projects/alpha/lessons/index.md"]
+    assert "[lessons/](lessons/)" in pages["projects/alpha/index.md"]
+    assert "[internal/](internal/) - 1 record" in pages["projects/index.md"]
+    assert "[projects/](projects/) - 1 record" in pages["index.md"]

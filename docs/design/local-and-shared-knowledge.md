@@ -1,63 +1,46 @@
 # Local and shared knowledge relationship
 
-Know where private notes, team pages and learnings live, and how an agent
-reads, recalls and publishes each without mixing them.
+Know where private notes, records and wiki pages live, and which one is the
+source of truth when they disagree.
 
-Status: second brain built by ADR 0003, November 8, 2026; the rest proposed September 7, 2026.
+Status: git canonical per [ADR 0004](../decisions/0004-knowledge-system-scope.md),
+November 12, 2026; vault capture per ADR 0003.
 Parent: [provider toolsets PRD](provider-toolsets-prd.md).
 
 ## Ownership and movement
 
-| Material | Home | How it is used elsewhere |
+| Material | Home | How it reaches others |
 | --- | --- | --- |
-| Journal, scratch notes, daily work log and personal learnings | Local Obsidian vault | Selected local context for personal assistant agents; no automatic publication |
-| Existing product knowledge, team guides and shared documents | Confluence Cloud | Relevant page links and on-demand reads; optional deliberate local summaries |
-| A new document intended for teammates | Explicit local shared-draft location, initially repository `docs/` | Reviewed publication to a selected Confluence destination |
+| Journal, daily notes, captures and personal learnings | Local Obsidian vault | Never automatically; a capture becomes a record only by a reviewed pull request |
+| Decisions, conventions, lessons, questions and sources | A git knowledge repository | Merged records; `knowledge render` shows them in the wiki |
+| The team wiki | Confluence Cloud | A rendered, read-only view of the records |
 
-Confluence is authoritative for existing team pages. A local summary is a dated
-derivative, not a synchronized replacement. For an explicitly enrolled local
-publication source, retain its page binding and expected version. A teammate
-edit requires reconciliation instead of overwriting or silently choosing a winner.
+Git is canonical. The wiki is a rendered view, never a source. Only
+`ai-dlc knowledge render` writes it, through the `wiki` role. Render never reads
+a page body, so a hand edit on a rendered page is overwritten by the next render.
+Change the record in git instead.
 
-For example, link a team guide in a daily note for an agent to read. An
-optional summary records source URL, version and retrieval date, apart from
-personal observations.
-
-Later, draft a team guide from selected learnings in a shared-doc location. Review the entire outgoing document and destination before publishing.
 Private note inclusion is never inferred from a link, tag or neighboring file.
 
 ## Second brain
 
-[ADR 0003](../decisions/0003-second-brain-capture-and-publish.md) builds the
-reviewed publication this page proposed. Daily notes, meeting notes and pasted
-threads are written in the vault. Confluence holds the durable pages.
+[ADR 0003](../decisions/0003-second-brain-capture-and-publish.md) added capture
+to the vault. Its reviewed publish of a note and the `kb-publish` skill are
+retired (KAN-430).
 
 | Skill | Writes | Never |
 | --- | --- | --- |
-| `daily-note` | `Daily/YYYY-MM-DD.md`, a read-only lane summary, then what moved | Touches a ticket |
+| `daily-note` | `Daily/YYYY-MM-DD.md`, a read-only lane summary, then what moved | Touches a ticket or the wiki |
 | `capture` | `Meetings/` or `Threads/` notes: decisions, actions, knowledge, questions | Stores a raw transcript or files a ticket |
-| `kb-publish` | One confirmed page, then `publish.page_id` and `version` in the note | Publishes a daily note |
 
 Capture notes add `origin` (`work` or `home`), `lane` (an epic key) and
 `source: {file | room, sha256}` to the frontmatter below.
 `ai-dlc knowledge captured FILE --vault PATH` exits 1 for a digest already in the
 vault, so the same transcript is never captured twice.
 
-Each vault declares `origin`, `site`, `space` and an optional `parent` in
-`<vault>/.ai-dlc/publish.toml`. There is no default.
-`ai-dlc knowledge publish-plan NOTE --vault PATH` returns the exact page payload or
-refuses. It refuses a note whose origin or site differs from the vault's, and a
-bound page whose current version (`--remote-version`) is not the recorded one.
-
-The agent then publishes through the client's existing Atlassian connection, after
-the user confirms. `ai-dlc knowledge publish-record` writes the binding back. ai-dlc
-itself never calls Confluence. The provider contract's optional knowledge
-operation `publish` describes the same payload for a future adapter.
-
 ## Knowledge repository
 
-The `git` provider serves `knowledge` from a record repository
-([ADR 0004](../decisions/0004-knowledge-system-scope.md)); `contracts/README.md`
+The `git` provider serves `knowledge` from a record repository; `contracts/README.md`
 lists operations.
 
 ```toml
@@ -76,18 +59,61 @@ ai-dlc knowledge records captured transcript.vtt                  # exit 1 when 
 ai-dlc knowledge records propose draft.md --path decisions/x.md --branch k/x --title T
 ```
 
+## Rendering the wiki
+
+Each knowledge repository declares its one wiki site in `knowledge.toml`. There
+is no default. Render refuses, before any request, when the `wiki` provider is
+bound to another site. This keeps work records off a home site and the reverse.
+
+```toml
+[wiki]
+site = "example.atlassian.net"
+source = "https://github.com/<owner>/<repo>/blob/main/"  # banner link prefix
+```
+
+```toml
+[roles]
+knowledge = "team-knowledge"
+wiki = "team-wiki"
+
+[providers.team-wiki]
+kind = "confluence-cloud"
+site_url = "https://example.atlassian.net"
+cloud_id = "<cloud UUID>"
+space = "ENG"
+parent_id = "<root page id>"
+auth_mode = "oauth_bearer"        # or personal_scoped_token_basic with email_env
+token_env = "CONFLUENCE_TOKEN"    # a variable name, never a value
+```
+
+```sh
+ai-dlc knowledge render --changed-since <sha> --dry-run   # every planned upsert
+ai-dlc knowledge render --changed-since <sha>
+```
+
+Render upserts one page per changed record, keyed and titled by its id. It also
+regenerates one index page per scope. Frontmatter becomes page properties and
+labels. Every page opens with a do-not-edit banner that links its source file.
+
+Each page carries a content hash. A page whose hash and version match the last
+render is skipped, so a second run writes nothing. A page edited by hand is
+restored. An upsert names the version it read, and a page that changed in
+between is refused, not overwritten.
+
+Customer records render only to their project's wiki (`[wiki] project`).
+The Confluence provider follows the `jira-cloud` credential rules:
+a scoped token through the Atlassian gateway, and fixed error messages.
+Knowledge repositories run render on merge with the reusable
+`.github/workflows/knowledge-render.yml`.
+
 ## Qualification examples
 
 - Reading one selected page does not create any vault files or bulk read its space.
-- Saving a requested summary records provenance and keeps personal annotations
-  distinct. Refresh does not erase them or misrepresent inaccessible content as fresh.
-- Drafting from private notes produces a separate candidate shared document; only
-  its reviewed body is published, without linked daily notes or vault attachments.
-- Editing a team page after a publication preview produces a conflict in any
-  workflow claiming ai-dlc's deterministic publication guarantee.
+- A dry run lists every planned upsert and writes nothing.
+- Rendering twice writes nothing the second time; a hand edit is restored.
 
-Fixture tests cover the guard and the write-back. Publishing through a live
-Atlassian connection still needs its own qualification.
+Fixture tests use a fake Confluence. Rendering to a live Confluence site still
+needs its own qualification.
 
 ## Project navigation
 

@@ -48,11 +48,13 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish",
               "get",
               "search",
               "list_changed",
-              "propose"
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
             ],
             "title": "Operation",
             "type": "string"
@@ -131,11 +133,13 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish",
               "get",
               "search",
               "list_changed",
-              "propose"
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
             ],
             "title": "Operation",
             "type": "string"
@@ -256,11 +260,13 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish",
               "get",
               "search",
               "list_changed",
-              "propose"
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
             ],
             "title": "Operation",
             "type": "string"
@@ -382,11 +388,13 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish",
               "get",
               "search",
               "list_changed",
-              "propose"
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
             ],
             "title": "Operation",
             "type": "string"
@@ -499,11 +507,13 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish",
               "get",
               "search",
               "list_changed",
-              "propose"
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
             ],
             "title": "Operation",
             "type": "string"
@@ -607,11 +617,13 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish",
               "get",
               "search",
               "list_changed",
-              "propose"
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
             ],
             "title": "Operation",
             "type": "string"
@@ -716,11 +728,13 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish",
               "get",
               "search",
               "list_changed",
-              "propose"
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
             ],
             "title": "Operation",
             "type": "string"
@@ -813,6 +827,19 @@
             "minLength": 1,
             "title": "Id",
             "type": "string"
+          },
+          "project": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "customer project the caller works in; boundary: customer records of other projects are never returned",
+            "title": "Project"
           }
         },
         "required": [
@@ -840,11 +867,13 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish",
               "get",
               "search",
               "list_changed",
-              "propose"
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
             ],
             "title": "Operation",
             "type": "string"
@@ -914,6 +943,174 @@
         "type": "object"
       }
     },
+    "get_page_by_key": {
+      "payload": {
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "title": "Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "title": "PageKey",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "capabilities",
+              "prepare",
+              "reconcile_closed",
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append",
+              "pull_request_create",
+              "get",
+              "search",
+              "list_changed",
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "$defs": {
+          "Page": {
+            "additionalProperties": true,
+            "description": "A page's metadata. The wiki role never returns a page body.",
+            "properties": {
+              "key": {
+                "minLength": 1,
+                "title": "Key",
+                "type": "string"
+              },
+              "labels": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Labels",
+                "type": "array"
+              },
+              "page_id": {
+                "minLength": 1,
+                "title": "Page Id",
+                "type": "string"
+              },
+              "properties": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "title": "Properties",
+                "type": "object"
+              },
+              "rendered_version": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "the version the last upsert wrote; differs after a hand edit",
+                "title": "Rendered Version"
+              },
+              "title": {
+                "minLength": 1,
+                "title": "Title",
+                "type": "string"
+              },
+              "url": {
+                "minLength": 1,
+                "title": "Url",
+                "type": "string"
+              },
+              "version": {
+                "minimum": 1,
+                "title": "Version",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "key",
+              "page_id",
+              "title",
+              "version",
+              "url"
+            ],
+            "title": "Page",
+            "type": "object"
+          }
+        },
+        "additionalProperties": true,
+        "properties": {
+          "page": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Page"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "page"
+        ],
+        "title": "PageFound",
+        "type": "object"
+      }
+    },
     "link": {
       "payload": {
         "additionalProperties": false,
@@ -961,11 +1158,13 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish",
               "get",
               "search",
               "list_changed",
-              "propose"
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
             ],
             "title": "Operation",
             "type": "string"
@@ -1067,11 +1266,13 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish",
               "get",
               "search",
               "list_changed",
-              "propose"
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
             ],
             "title": "Operation",
             "type": "string"
@@ -1177,6 +1378,176 @@
         "type": "object"
       }
     },
+    "list_children": {
+      "payload": {
+        "additionalProperties": false,
+        "properties": {
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "parent page key; null is the root",
+            "title": "Parent"
+          }
+        },
+        "title": "Children",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "capabilities",
+              "prepare",
+              "reconcile_closed",
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append",
+              "pull_request_create",
+              "get",
+              "search",
+              "list_changed",
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "$defs": {
+          "Page": {
+            "additionalProperties": true,
+            "description": "A page's metadata. The wiki role never returns a page body.",
+            "properties": {
+              "key": {
+                "minLength": 1,
+                "title": "Key",
+                "type": "string"
+              },
+              "labels": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Labels",
+                "type": "array"
+              },
+              "page_id": {
+                "minLength": 1,
+                "title": "Page Id",
+                "type": "string"
+              },
+              "properties": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "title": "Properties",
+                "type": "object"
+              },
+              "rendered_version": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "the version the last upsert wrote; differs after a hand edit",
+                "title": "Rendered Version"
+              },
+              "title": {
+                "minLength": 1,
+                "title": "Title",
+                "type": "string"
+              },
+              "url": {
+                "minLength": 1,
+                "title": "Url",
+                "type": "string"
+              },
+              "version": {
+                "minimum": 1,
+                "title": "Version",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "key",
+              "page_id",
+              "title",
+              "version",
+              "url"
+            ],
+            "title": "Page",
+            "type": "object"
+          }
+        },
+        "additionalProperties": true,
+        "properties": {
+          "pages": {
+            "items": {
+              "$ref": "#/$defs/Page"
+            },
+            "title": "Pages",
+            "type": "array"
+          }
+        },
+        "required": [
+          "pages"
+        ],
+        "title": "PageList",
+        "type": "object"
+      }
+    },
     "merged": {
       "payload": {
         "additionalProperties": false,
@@ -1212,11 +1583,13 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish",
               "get",
               "search",
               "list_changed",
-              "propose"
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
             ],
             "title": "Operation",
             "type": "string"
@@ -1315,11 +1688,13 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish",
               "get",
               "search",
               "list_changed",
-              "propose"
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
             ],
             "title": "Operation",
             "type": "string"
@@ -1466,11 +1841,13 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish",
               "get",
               "search",
               "list_changed",
-              "propose"
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
             ],
             "title": "Operation",
             "type": "string"
@@ -1543,172 +1920,6 @@
         "type": "object"
       }
     },
-    "publish": {
-      "payload": {
-        "additionalProperties": false,
-        "description": "One reviewed note to one page (ADR 0003): create without ``page_id``, else update.\n\n``expected_version`` is the version the note recorded; a provider refuses when the\npage's current version differs instead of overwriting a teammate's edit.",
-        "properties": {
-          "body": {
-            "minLength": 1,
-            "title": "Body",
-            "type": "string"
-          },
-          "expected_version": {
-            "anyOf": [
-              {
-                "minimum": 1,
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Expected Version"
-          },
-          "operation_id": {
-            "minLength": 1,
-            "title": "Operation Id",
-            "type": "string"
-          },
-          "page_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Page Id"
-          },
-          "parent": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Parent"
-          },
-          "site": {
-            "minLength": 1,
-            "title": "Site",
-            "type": "string"
-          },
-          "space": {
-            "minLength": 1,
-            "title": "Space",
-            "type": "string"
-          },
-          "title": {
-            "minLength": 1,
-            "title": "Title",
-            "type": "string"
-          }
-        },
-        "required": [
-          "site",
-          "space",
-          "title",
-          "body",
-          "operation_id"
-        ],
-        "title": "Publish",
-        "type": "object"
-      },
-      "request": {
-        "additionalProperties": false,
-        "properties": {
-          "operation": {
-            "enum": [
-              "capabilities",
-              "prepare",
-              "reconcile_closed",
-              "create",
-              "find",
-              "read",
-              "link",
-              "transition",
-              "current",
-              "merged",
-              "ci",
-              "deployment",
-              "append",
-              "pull_request_create",
-              "publish",
-              "get",
-              "search",
-              "list_changed",
-              "propose"
-            ],
-            "title": "Operation",
-            "type": "string"
-          },
-          "operation_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Operation Id"
-          },
-          "payload": {
-            "additionalProperties": true,
-            "title": "Payload",
-            "type": "object"
-          },
-          "schema_version": {
-            "const": 1,
-            "default": 1,
-            "title": "Schema Version",
-            "type": "integer"
-          }
-        },
-        "required": [
-          "operation",
-          "payload"
-        ],
-        "title": "Request",
-        "type": "object"
-      },
-      "required": false,
-      "response": {
-        "additionalProperties": true,
-        "properties": {
-          "page_id": {
-            "minLength": 1,
-            "title": "Page Id",
-            "type": "string"
-          },
-          "url": {
-            "minLength": 1,
-            "title": "Url",
-            "type": "string"
-          },
-          "version": {
-            "minimum": 1,
-            "title": "Version",
-            "type": "integer"
-          }
-        },
-        "required": [
-          "page_id",
-          "version",
-          "url"
-        ],
-        "title": "PublishResult",
-        "type": "object"
-      }
-    },
     "pull_request_create": {
       "payload": {
         "additionalProperties": false,
@@ -1766,11 +1977,13 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish",
               "get",
               "search",
               "list_changed",
-              "propose"
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
             ],
             "title": "Operation",
             "type": "string"
@@ -1864,11 +2077,13 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish",
               "get",
               "search",
               "list_changed",
-              "propose"
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
             ],
             "title": "Operation",
             "type": "string"
@@ -1975,11 +2190,13 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish",
               "get",
               "search",
               "list_changed",
-              "propose"
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
             ],
             "title": "Operation",
             "type": "string"
@@ -2057,6 +2274,19 @@
             "title": "Labels",
             "type": "array"
           },
+          "project": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "customer project the caller works in; boundary: customer records of other projects are never returned",
+            "title": "Project"
+          },
           "scope": {
             "anyOf": [
               {
@@ -2128,11 +2358,13 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish",
               "get",
               "search",
               "list_changed",
-              "propose"
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
             ],
             "title": "Operation",
             "type": "string"
@@ -2272,11 +2504,13 @@
               "deployment",
               "append",
               "pull_request_create",
-              "publish",
               "get",
               "search",
               "list_changed",
-              "propose"
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
             ],
             "title": "Operation",
             "type": "string"
@@ -2341,6 +2575,213 @@
         "title": "Item",
         "type": "object"
       }
+    },
+    "upsert_page": {
+      "payload": {
+        "additionalProperties": false,
+        "description": "Write one rendered page, found by ``key`` (KAN-430). Only ``knowledge render`` calls it.\n\n``expected_version`` is the page's version as ``get_page_by_key`` read it, or null when\nno page has the key. A provider refuses when the page's current version differs, so a\nconcurrent write is never overwritten.",
+        "properties": {
+          "body": {
+            "description": "markdown",
+            "minLength": 1,
+            "title": "Body",
+            "type": "string"
+          },
+          "expected_version": {
+            "anyOf": [
+              {
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Expected Version"
+          },
+          "key": {
+            "description": "stable page key, such as a record id",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "title": "Key",
+            "type": "string"
+          },
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "operation_id": {
+            "minLength": 1,
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "parent page key; null is the root",
+            "title": "Parent"
+          },
+          "properties": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Properties",
+            "type": "object"
+          },
+          "title": {
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "title",
+          "body",
+          "operation_id"
+        ],
+        "title": "UpsertPage",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "capabilities",
+              "prepare",
+              "reconcile_closed",
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append",
+              "pull_request_create",
+              "get",
+              "search",
+              "list_changed",
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "additionalProperties": true,
+        "description": "A page's metadata. The wiki role never returns a page body.",
+        "properties": {
+          "key": {
+            "minLength": 1,
+            "title": "Key",
+            "type": "string"
+          },
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "page_id": {
+            "minLength": 1,
+            "title": "Page Id",
+            "type": "string"
+          },
+          "properties": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Properties",
+            "type": "object"
+          },
+          "rendered_version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "the version the last upsert wrote; differs after a hand edit",
+            "title": "Rendered Version"
+          },
+          "title": {
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          },
+          "url": {
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          },
+          "version": {
+            "minimum": 1,
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "key",
+          "page_id",
+          "title",
+          "version",
+          "url"
+        ],
+        "title": "Page",
+        "type": "object"
+      }
     }
   },
   "roles": {
@@ -2358,8 +2799,7 @@
       "optional": [
         "append",
         "list_changed",
-        "propose",
-        "publish"
+        "propose"
       ]
     },
     "scm": {
@@ -2390,6 +2830,14 @@
         "prepare",
         "reconcile_closed"
       ]
+    },
+    "wiki": {
+      "mandatory": [
+        "upsert_page",
+        "get_page_by_key",
+        "list_children"
+      ],
+      "optional": []
     }
   },
   "schema": 1
