@@ -2,19 +2,19 @@
   "decisions": [
     {
       "bound": {
-        "CHANGELOG.md": "e4225de0f292541b705523382cf81461ca78c2ba8ccb850882516696a12e91df"
+        "CHANGELOG.md": "c1eb5998c96b2813df50c1175f6c3c234f6e88afb54a75b9d59f009d239ac403"
       },
       "outcome": "updated",
-      "reason": "Keeps the knowledge check entry (KAN-423) and adds knowledge number and index (KAN-456).",
+      "reason": "The KAN-456 entry says the numbering PR waits for a person, auto-merge is opt-in, and knowledge check accepts slug-to-number link and source changes.",
       "reviewer": "Claude (agent)",
       "target": "CHANGELOG.md"
     },
     {
       "bound": {
-        "contracts/README.md": "b803b05f3bb338c9f4a20221eba8bc15b4727ed8d64848fed81b9547fa474108"
+        "contracts/README.md": "c402b6ba4a150b47e4d7fbb28717edf10cac82c96ef521b607f995c8c6411537"
       },
       "outcome": "updated",
-      "reason": "Keeps the knowledge check paragraph (KAN-423) and explains merge-time numbering, OKF indexes, the numbering pull request and the repository settings it needs.",
+      "reason": "Documents only a GitHub App token as bypass actor, requires an approving review, recommends up-to-date branches, and states auto-merge is an owner's exception (spec section 10).",
       "reviewer": "Claude (agent)",
       "target": "contracts/README.md"
     },
@@ -88,7 +88,7 @@
         "src/ai_dlc/documentation/fde.py": "3664430ebca9f3ef7ba7c7c431f7e4790176066510904ebe4d43d0a88ecf26e1",
         "src/ai_dlc/documentation/knowledge.py": "c02c49bcc24f8e2c418ace24a72db604b1bc9a4f8d1511fa42235aeb9b122bc7",
         "src/ai_dlc/documentation/knowledge_bundle.py": "9bd34913ba68b77a9c77799ffaefe9e6aebbb4eac36ed684fc6cf5bade14fd74",
-        "src/ai_dlc/documentation/knowledge_check.py": "dabf9b5e62f9fc80761cda451769df700e172f4a6f6b60a64685f61ce9707e89",
+        "src/ai_dlc/documentation/knowledge_check.py": "5d909c480c94108c0257f53ac96311d586b908c557238c2a021dfc30c5b0e6e0",
         "src/ai_dlc/documentation/knowledge_notes.py": "df022b2e330c5140f6948ec25a33c7888704e8686ea5411c770764a449b3b1b6",
         "src/ai_dlc/documentation/knowledge_publish.py": "a796d6d760789edb3f1723fd79f3d02125901c699fa51fe9f8d7cfbb666920a8",
         "src/ai_dlc/documentation/knowledge_records.py": "eeb502fd218412c3f2e8085b2c8bab1b74683daa8701bc8416155a29f9437c60",
@@ -178,7 +178,7 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "knowledge_bundle sits in the documentation package beside knowledge_records; the package map and entry points are unchanged.",
+      "reason": "knowledge_check gains a rule for numbering renames; the package map is unchanged.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
@@ -211,7 +211,7 @@
     },
     {
       "bound": {
-        ".github/workflows/knowledge-merge.yml": "a02758aadd3445eb4e95ef071a678deb22f88ed3a68a42b520687356829b74a8",
+        ".github/workflows/knowledge-merge.yml": "7f67aa54775bb4e0e71c6793b9c6c62ac2fe03343678117a432513a465efeaca",
         "catalog:docs/design/local-and-shared-knowledge.md": "3792ce6463f181e5d2345e4ae2c724561e1750d6e76a62324dc801da767260a5",
         "contracts/knowledge-note.schema.json": "f3cbc791e2caae2223bf223e8b27b5b7ce553405b76f32cf5689fa7fe68bb1a5",
         "contracts/knowledge-record.schema.json": "0a7633d88024a668140a6d658f09f5d11bf7e26b8ff09368abd82d17ddcd9bd7",
@@ -220,7 +220,7 @@
         "openspec/specs/session-learnings/spec.md": "dcd490cd54f2f6cb3fadaa90afade85d5e1d64b19fbe2accb70bfb06897e97b4",
         "src/ai_dlc/documentation/knowledge.py": "c02c49bcc24f8e2c418ace24a72db604b1bc9a4f8d1511fa42235aeb9b122bc7",
         "src/ai_dlc/documentation/knowledge_bundle.py": "9bd34913ba68b77a9c77799ffaefe9e6aebbb4eac36ed684fc6cf5bade14fd74",
-        "src/ai_dlc/documentation/knowledge_check.py": "dabf9b5e62f9fc80761cda451769df700e172f4a6f6b60a64685f61ce9707e89",
+        "src/ai_dlc/documentation/knowledge_check.py": "5d909c480c94108c0257f53ac96311d586b908c557238c2a021dfc30c5b0e6e0",
         "src/ai_dlc/documentation/knowledge_notes.py": "df022b2e330c5140f6948ec25a33c7888704e8686ea5411c770764a449b3b1b6",
         "src/ai_dlc/documentation/knowledge_records.py": "eeb502fd218412c3f2e8085b2c8bab1b74683daa8701bc8416155a29f9437c60",
         "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
@@ -229,7 +229,7 @@
         "src/ai_dlc/documentation/workspace_diagnostics.py": "8c8dc695fa95e5f9e8fc4017e5fd66efcab4c0cec4d3ae9272d3c5f368f93aef",
         "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
         "tests/test_knowledge.py": "38e5cda9c9dc1fe97d12618a0bd9a86b2725cff059d412232152582af1547af1",
-        "tests/test_knowledge_bundle.py": "00b4153617e47223ab3395d9b4656d40f68480eedc7e5e844dd0959bb2ac2801",
+        "tests/test_knowledge_bundle.py": "d504eeb10283df1d16a387bfa6f0ebda3955422d3a0c9772778cf498cbe41289",
         "tests/test_knowledge_check.py": "2e2b901db7ba520386e491537874d87494c718d5d1f2ea42ddd600fb2f921446",
         "tests/test_knowledge_notes.py": "0af8b4f84c5b8d974833eef49d5efd662a9d6d5b22eac6ff6f4a604fd492f6f7",
         "tests/test_knowledge_records.py": "dda1cc3543fc0f9cbcf999a4f72041d9143696328785827e9a4362b6fd083cfa",
@@ -239,7 +239,7 @@
         "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
       },
       "outcome": "reviewed-no-change",
-      "reason": "The page explains knowledge notes, unchanged here. Record numbering and indexes are described in contracts/README.md; the page is rewritten with the migration (KAN-452).",
+      "reason": "The page explains knowledge notes, unchanged here; record numbering and the workflow are described in contracts/README.md until the migration (KAN-452).",
       "reviewer": "Claude (agent)",
       "target": "docs/design/local-and-shared-knowledge.md"
     },
@@ -279,11 +279,11 @@
         "tests/test_project.py": "2ebeb723433cfb53bf8e20b337d5016058e75a181b9ed0035203a14759a162ba",
         "tests/test_rendering.py": "46e3927140876b6ccbecd7230fedf68d2806da7828fee7293bf61df76c36ce69",
         "tests/test_team_sources.py": "3ab4eaa043c888b35eae7f92c8e8b20d20986d42d0ec8cdc936be472e48040e3",
-        "tests/test_templates.py": "669d1d85586dea32ec5118361dc96f862a77b528be38d83611a89fc2ff9427af",
+        "tests/test_templates.py": "d50958472da6eac84069d3063db72aa0de558c33e77b9d477abf800ef6c3cd32",
         "tests/test_workflow.py": "c60af46adb6cceb3160b1c34945d3b579e4ce42be7e24cad65fa24bd215d80a1"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Two knowledge-repository commands were added; the work lifecycle is unchanged.",
+      "reason": "Merging KAN-421 and main leaves the work lifecycle unchanged; cli.py gains only knowledge commands.",
       "reviewer": "Claude (agent)",
       "target": "docs/development-workflow.md"
     },
