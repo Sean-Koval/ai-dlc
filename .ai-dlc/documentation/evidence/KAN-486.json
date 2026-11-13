@@ -83,7 +83,7 @@
         "plugins/ai-dlc-workflow/skills/handoff/SKILL.md": "47813221a030ff1d19642b9e6ebf234ded18fd128fef857badd4b77612529ecd",
         "plugins/ai-dlc-workflow/skills/prd-draft/SKILL.md": "046b82e994b36b2202f7772aafc93557b903d2b541e69a62414d9b5a0b5d75fc",
         "plugins/ai-dlc-workflow/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
-        "pyproject.toml": "41ded8f89ba4f707f0fb7d8c940d78092636fa69c6aca27f9d636da0eaf60be3",
+        "pyproject.toml": "40064c44ba63d195159f74ac9657401f2a76a4a291232c8bb53f29baab81cffe",
         "scripts/build_contracts.py": "00b94ae7f417099dfe1c89a28cc85411097b586671c2dc8a83cd3ac3e43e46b2",
         "scripts/build_workflow_plugin.py": "a5773663a08b9a776415be87b7163bb1aa3cabf1426ea9cc99fda4dce98521d7",
         "scripts/check_client_pins.py": "c0b4030b6767aee44975556f11a2c0dcf2b5aa67e232ec6182c1247630f53c8c",
@@ -221,7 +221,7 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "The scripts now read exclude_docs from mkdocs.yml as gitignore-style patterns; the architecture map is unaffected.",
+      "reason": "pathspec joins the dev dependency group for the docs scripts and tests; runtime dependencies are unchanged.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
@@ -309,6 +309,15 @@
       "reason": "Tests only.",
       "reviewer": "Claude (agent)",
       "target": "tests/test_catalog_fragments.py"
+    },
+    {
+      "bound": {
+        "uv.lock": "9eac6c3630dc7abdab4d90b3790c33ea9b4a45ea7fc724d91ba526c465706322"
+      },
+      "outcome": "no-impact",
+      "reason": "Lock entry for the dev group's pathspec, already resolved at 1.1.1.",
+      "reviewer": "Claude (agent)",
+      "target": "uv.lock"
     }
   ],
   "schema": 2
