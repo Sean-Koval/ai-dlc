@@ -169,12 +169,22 @@
     },
     {
       "bound": {
-        "docs/catalog.toml": "4f2dc420c16cfc47553eecd60fa1664912b78a7455209efd38b4e7d9f1bea72c"
+        "docs/catalog.toml": "5440ae821f25e5b9bbb5a89c94768e91ad1f63e1fd703453516d86c728c51aad"
       },
       "outcome": "updated",
-      "reason": "Enrolls ADR 0005 (KAN-465).",
+      "reason": "Enrolls ADR 0006, renumbered from 0005 (KAN-465).",
       "reviewer": "Claude (agent)",
       "target": "docs/catalog.toml"
+    },
+    {
+      "bound": {
+        "catalog:docs/decisions/0006-customer-boundary-and-promotion.md": "98df1ad7dddee9cf52bc6db5fc2a03d998dd71845cae279eb3b94ceedffc861c",
+        "docs/decisions/0006-customer-boundary-and-promotion.md": "cf3c858c5a961f9bf43d21a72f01a5f52eaf1d251701754c0d5de5b579b61ef4"
+      },
+      "outcome": "updated",
+      "reason": "New ADR 0006 (renumbered from 0005, taken by KAN-452): customer records stay in their project; promotion goes through a sanitised team Source (KAN-465).",
+      "reviewer": "Claude (agent)",
+      "target": "docs/decisions/0006-customer-boundary-and-promotion.md"
     },
     {
       "bound": {
@@ -216,13 +226,13 @@
         "docs/assets/front/build.py": "a6ed773f33ca4175aa7b3e85a11571b22901eb791f4628402a9812487843e9d0",
         "docs/assets/front/demo_provider.py": "a266086be5cd247643a3157617f7f56e57c9200f77f885252ddf31a72d8c4f1d",
         "docs/workflows/get-started.md": "7052c4b9b7e1bd297f54a9f0ec133e9393f765099a358c4eef2f5f382677ab11",
-        "mkdocs.yml": "e21bb4d1a9618f6f453a7fc709cc850dd6efa9195c015670b6460b03c77a3074",
+        "mkdocs.yml": "ee85fa1074f6ce87859ecddffa642244ad98ff9bf76e0247835f497b23149273",
         "scripts/bootstrap.sh": "dff64e5be94a72bcfbb5dec30a34a808fb2e0a1e0b9612146086af183de8acee",
         "scripts/docs_site_links.py": "e4f61570d3b4272d0e33fb733862105f4854906cba5e4f601c8a3d6dd3a519e8",
         "tests/test_front_page.py": "4b61f3b76dbe33fd562eea3f9cbdd6aec8d78f3b3e057da2fc4f4e2ea6b56f59"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Setup steps unchanged; only mkdocs navigation gained ADR 0005 (KAN-465).",
+      "reason": "Setup steps unchanged; only mkdocs navigation renamed the ADR to 0006 (KAN-465).",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/get-started.md"
     },
