@@ -71,6 +71,7 @@ Machine enrollment mutations are CLI-only in this cycle. MCP exposes
 `doctor`, `project_docs_check`, `knowledge_find`, `knowledge_append`, `knowledge_note`,
 `knowledge_check` (validates a knowledge-records directory), `knowledge_index`,
 `knowledge_number_plan`, `knowledge_render` (the wiki's only writer), `knowledge_why`,
+`knowledge_stats` (read-only outcome numbers),
 `knowledge_pull_transcripts` (the transcripts role's caller),
 `knowledge_search`, `knowledge_get`, `knowledge_propose`, `knowledge_template`,
 `tracker_get`, `tracker_search`, `tracker_create`, `tracker_update` and

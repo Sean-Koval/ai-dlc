@@ -258,6 +258,15 @@
     },
     {
       "bound": {
+        "project-templates/project/docs/workflows/tool-map.md": "7741d5b18d43f0452cfb95bd499590e762003b1c48afeca7bc353f255ca732b7"
+      },
+      "outcome": "updated",
+      "reason": "The packaged handbook's MCP tool list gains knowledge_stats; tests/test_templates.py checks it against the server's tools.",
+      "reviewer": "Claude (agent)",
+      "target": "project-templates/project/docs/workflows/tool-map.md"
+    },
+    {
+      "bound": {
         "tests/test_knowledge_stats.py": "83392cc265f92f127d6179b7bd0d716a6b7c79aed8adb9c769ccb9d1fa273b1b"
       },
       "outcome": "updated",
