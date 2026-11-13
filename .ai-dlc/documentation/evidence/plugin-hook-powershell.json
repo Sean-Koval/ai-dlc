@@ -2,6 +2,15 @@
   "decisions": [
     {
       "bound": {
+        "changes/KAN-487.fixed.md": "b1d19a0426fe2da78f4074621f6227e5e6d8736354048320404634a7130245fd"
+      },
+      "outcome": "updated",
+      "reason": "KAN-487: changelog fragment for the PowerShell guard and the fail-closed pre-tool hook.",
+      "reviewer": "Claude (agent)",
+      "target": "changes/KAN-487.fixed.md"
+    },
+    {
+      "bound": {
         "catalog:docs/architecture.md": "788b593066fcd5d1c9eb9ebbc3869971131d3ddb3ea3396bc8b9a6ea48ca8b55",
         "docs/architecture.md": "099e45e56378bb4ea78edb3eec9e6a8ce7e7d60edd08d0b17aeeca9810351b82",
         "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
@@ -43,6 +52,7 @@
         "scripts/check_client_pins.py": "c0b4030b6767aee44975556f11a2c0dcf2b5aa67e232ec6182c1247630f53c8c",
         "scripts/check_generated.py": "80ff1f71cc3d6864b0d2b7555d42661b1fb2ef7f68544ca3e593ee14d9f4c4c2",
         "scripts/check_layout.py": "942ed109d998ed8d8004b8dbe6608b33df98876cdd8db6d004677dbcce1933a6",
+        "scripts/collect_changes.py": "f60694b4494bfa638a0559ef13d6398f4064a766731479aa8d65fc2e176bca7c",
         "scripts/docs_site_links.py": "e4f61570d3b4272d0e33fb733862105f4854906cba5e4f601c8a3d6dd3a519e8",
         "scripts/publish_workflow_plugin.py": "96d95c413671a55a0e42d690f1c6d64528c11203e0a44359e3422d082ca34b9d",
         "scripts/qualify_framework.py": "8068bb2709bbf6b3a020e9c22d62b993cc0e8a3e3c9ee5c00dc4b8963c31054e",
@@ -172,7 +182,7 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "KAN-487: still accurate; it says the shim delegates in adopted repositories and otherwise denies destructive commands, and hooks.py imports its classifier. Matcher and failure details live in the plugin README.",
+      "reason": "KAN-487: still accurate; it says the shim delegates in adopted repositories and otherwise denies destructive commands, and hooks.py imports its classifier. Matcher and failure details live in the plugin README. Re-recorded after rebasing onto KAN-481.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
