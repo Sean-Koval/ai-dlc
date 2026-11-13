@@ -282,11 +282,15 @@ def test_work_show_resolves_a_session_key_through_the_mcp_client(tmp_path, monke
         ("work_show", {"key": "sess-1"}),
         ("work_show", {"key": "sess-unknown"}),
     )
+    blank, spaces = call(
+        server_for(root, Tracker()), ("work_show", {"key": ""}), ("work_show", {"key": "  "})
+    )
 
     assert shown["status"] == "ok"
     assert [item["work_id"] for item in shown["work"]] == ["kan-7-join"]
     assert shown["work"][0]["sessions"][0]["key"] == "aidlc1:KAN-7:kan-7-join:sess-1"
     assert missing == {"status": "ok", "query": "sess-unknown", "work": []}
+    assert blank["work"] == spaces["work"] == []
 
 
 def test_work_archive_refuses_without_an_active_change(tmp_path, monkeypatch):

@@ -200,7 +200,8 @@ def _register_docs_tools(server: FastMCP, root: Path) -> None:
     def project_docs_review_check(packet: ReviewPacket, review: Review) -> dict:
         """Validate a harness review's citations and scope against current local sources.
 
-        ``packet`` is ``project_docs_review``'s result, passed back unchanged.
+        ``packet`` is ``project_docs_review``'s result, passed back unchanged. A review that
+        does not match the typed schema is refused as a tool error before any check runs.
         """
         from ai_dlc.documentation.document_review import validate_review
 
