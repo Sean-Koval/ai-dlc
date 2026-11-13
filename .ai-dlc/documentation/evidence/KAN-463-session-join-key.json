@@ -205,7 +205,7 @@
         "agents/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
         "agents/templates/delivery-slice.md": "44d1e55bdd17e5fe0cf4c1d35d99ffad8f6060575ecb97496515b48a0e304429",
         "catalog:docs/development-workflow.md": "0fba88526a61571ce49e91b2159325061a7c54ba5466e651565eabb2f910e7c6",
-        "docs/development-workflow.md": "f1cbbf1530f15d38dd971adc220cadd3408fe696fc9faf9ae94614c98bfbac94",
+        "docs/development-workflow.md": "e1351af42ccf1cf28e744345171ad9c71b2321936d1edfe73f7e4b4cf508f04c",
         "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
         "openspec/specs/portable-development/spec.md": "7710dba93e53f973d947723117687d263b6296ad31e1ed8232da7b2f0e7ff89e",
         "openspec/specs/spec-delivery-traceability/spec.md": "66641acf9c151792cde1914062630ed50cc4199cdc3bdb4b81382e03716f2ea3",
@@ -237,8 +237,8 @@
         "tests/test_templates.py": "d50958472da6eac84069d3063db72aa0de558c33e77b9d477abf800ef6c3cd32",
         "tests/test_workflow.py": "8bee7cf90accce51a7d777916bb2dfef899f45c29686303b8e51e0bc80d63bbb"
       },
-      "outcome": "updated",
-      "reason": "Lists work show beside work status (KAN-463).",
+      "outcome": "reviewed-no-change",
+      "reason": "The page is at its word ceiling; work show is documented in docs/design/session-join-key.md (KAN-463).",
       "reviewer": "Claude (agent)",
       "target": "docs/development-workflow.md"
     },
@@ -360,7 +360,7 @@
     {
       "bound": {
         "catalog:docs/workflows/tool-map.md": "d11334cb57c288aab7b01226790b7cc268a28991b3de5f97a98b9818d80be19e",
-        "docs/workflows/tool-map.md": "ffded435d959f6748e95c96d40e1df85dc2910b74fedb4ba0cecd2f05ab312cf",
+        "docs/workflows/tool-map.md": "ef8346347732b812b7e206583ca65e4bc99605d9bdd78f420ce8b1b92ccd0747",
         "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
@@ -396,8 +396,8 @@
         "tests/test_team_sources.py": "3ab4eaa043c888b35eae7f92c8e8b20d20986d42d0ec8cdc936be472e48040e3",
         "tests/test_workflow.py": "8bee7cf90accce51a7d777916bb2dfef899f45c29686303b8e51e0bc80d63bbb"
       },
-      "outcome": "updated",
-      "reason": "Adds the Session lookup row for work show (KAN-463).",
+      "outcome": "reviewed-no-change",
+      "reason": "The page is at its word ceiling; work show is documented in docs/design/session-join-key.md (KAN-463).",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/tool-map.md"
     },
@@ -426,15 +426,6 @@
       "reason": "Work-computer setup unchanged by work show (KAN-463).",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/work-computer-setup.md"
-    },
-    {
-      "bound": {
-        "project-templates/project/docs/workflows/tool-map.md": "6fe097ac3c4a95018073c8160bf58709b0d410c4bff946bac64349abb6480003"
-      },
-      "outcome": "updated",
-      "reason": "Adds the Session lookup row for work show to the downstream template (KAN-463).",
-      "reviewer": "Claude (agent)",
-      "target": "project-templates/project/docs/workflows/tool-map.md"
     },
     {
       "bound": {

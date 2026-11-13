@@ -85,7 +85,6 @@ knowledge append`.
 | Local work drafting | `ai-dlc work new WORK_ID [--from-issue REF]` creates an unreviewed record without publication or mutation state; `ai-dlc work review WORK_ID` validates it and records the reviewer |
 | Work and traceability | `ai-dlc work publish`, `ai-dlc work link`, `ai-dlc work start`, `ai-dlc work finish` (explicit `--at-merge` for owned exact-merge checkout) |
 | Local work inspection | `ai-dlc work status` reads the local record and specification state without querying the tracker |
-| Session lookup | `ai-dlc work show` resolves a session join key, session ID or ticket to its work record and sessions |
 | Specification finalization | `ai-dlc work archive` finalizes the owned OpenSpec change, repoints the record and commits affected files before merge |
 | Provider verification | `ai-dlc provider list`, `ai-dlc provider test` |
 | Project documentation | `ai-dlc docs init`, `ai-dlc docs check`, `ai-dlc project link-vault` |
