@@ -2,7 +2,7 @@
   "decisions": [
     {
       "bound": {
-        "CHANGELOG.md": "f02d93228b529962664496ef40ea1ca3a04535777100ca807276fa5fa227fc6e"
+        "CHANGELOG.md": "28993c4ecd90b25e2ba7f50178a58aef1f53e3f19b258015129a02ed0d51ffff"
       },
       "outcome": "updated",
       "reason": "Entry covers the local session log, finish copy and opt-in commit-msg hook (KAN-463).",
@@ -82,7 +82,7 @@
         "src/ai_dlc/documentation/knowledge_notes.py": "543b6fb0fa395321c55cb616c29d2f4a2bb218aca5576a3b8993353fb16e840d",
         "src/ai_dlc/documentation/knowledge_publish.py": "f0c5a34ac2793c4abea951e8404f4cf4e4e64886afc2492c46d36632dfc52619",
         "src/ai_dlc/documentation/knowledge_records.py": "7375dc057809c2ca3fbc75239ca53fb3484d2459ec59d194c7ad2d6090918bf6",
-        "src/ai_dlc/documentation/knowledge_render.py": "0517924a31ee89fb6d918c56683269734aa18f8b5597e02ab73bb7e6252ffa96",
+        "src/ai_dlc/documentation/knowledge_render.py": "3cbd0de36b2ea89d89fc9a8a176580e3e0fa6857ecef57b799502c62d7d99260",
         "src/ai_dlc/documentation/knowledge_service.py": "94a90956363bc8d5e8b11cd3d39e6f86d0c7f551e14766f25c242ca0246f3ddd",
         "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
         "src/ai_dlc/documentation/learnings.py": "5a11c64592e1c7b93bfa3543339ea0766f42050a7843bb8354cd56166b0f3ae6",
@@ -123,7 +123,7 @@
         "src/ai_dlc/mcp_server.py": "77e5790cbdfc5210970fbaad67e64953a3cea64e4223c9ecc5ea247382059bcf",
         "src/ai_dlc/provider_definitions.py": "467bec9146a1379a2f17ac07faaf1e6807729d362609d711545ff632ff3f9da7",
         "src/ai_dlc/providers/__init__.py": "33aca80a36d5f1b351a827b9f94da5d34340567f814c6c5b3256763890799cfc",
-        "src/ai_dlc/providers/confluence_cloud.py": "83daca8f5b83121697b79671b0a9279834104d64de7978cd731a1e83f20f4eae",
+        "src/ai_dlc/providers/confluence_cloud.py": "d7f7c890569142753e8f97f7dec7dea08ac61c5fd897d691c7ccfbf44a6b13ef",
         "src/ai_dlc/providers/git_knowledge.py": "c07d548015aa3e8a3c7ca567ee4511a79ec5af33f1d84d3c7f155d08c683f591",
         "src/ai_dlc/providers/github_issues.py": "8945d5b0049d7f7940c8c478e13bf576a897295e463a69b3510d6e2982ed1f08",
         "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
