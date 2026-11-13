@@ -2,7 +2,7 @@
   "decisions": [
     {
       "bound": {
-        "changes/KAN-490.fixed.md": "4955940a8bcde020140bde81a26af289473460eb5a02b3ce993fcc8ddc548a43"
+        "changes/KAN-490.fixed.md": "05aa6bccecaedd05309035aaec3f99bebe43e0f61a48990b97fe6ca917b29540"
       },
       "outcome": "updated",
       "reason": "Changelog fragment for KAN-490.",
@@ -86,7 +86,7 @@
         "src/ai_dlc/documentation/knowledge_records.py": "8b1d3c83c2ace754e5ef2de8aa53f06edd76fdbbacfa1d47a28df1ba788449e1",
         "src/ai_dlc/documentation/knowledge_render.py": "222aaf70d097b8403588788e0f7ce6c4ac92288a8a407d2d4baaa998a9fa76e2",
         "src/ai_dlc/documentation/knowledge_service.py": "786336917e717b12353ec4143339ce3141a9c1d8110192e24288294eb17371a9",
-        "src/ai_dlc/documentation/knowledge_transcripts.py": "c7e1698242c1ce9df07a96739f73fd462534a02767c9dabe70b913031b82efd0",
+        "src/ai_dlc/documentation/knowledge_transcripts.py": "47acab58d1afcdaaf49e054e50f19a7f8d36c18372eb53cea35ecc18fe2646a8",
         "src/ai_dlc/documentation/knowledge_why.py": "0b54e31d7727eda9e20b2f08115bc221712673a7b541791afbaacfe4cd592ea0",
         "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
         "src/ai_dlc/documentation/learnings.py": "5a11c64592e1c7b93bfa3543339ea0766f42050a7843bb8354cd56166b0f3ae6",
@@ -190,12 +190,12 @@
     {
       "bound": {
         "catalog:docs/design/meeting-transcripts.md": "eff04c1c5871ccddf3577bc8c21ca296fcb00ab96b35aab90e54af5ecbbe1665",
-        "docs/design/meeting-transcripts.md": "5821a38e36418669fff8459bf58161dabc7e7e142c19f07d75079978b1701eaf",
-        "src/ai_dlc/documentation/knowledge_transcripts.py": "c7e1698242c1ce9df07a96739f73fd462534a02767c9dabe70b913031b82efd0",
+        "docs/design/meeting-transcripts.md": "91dd01a88138596986b38c67c30caad60931322746683ace0bc3fd35f22819a0",
+        "src/ai_dlc/documentation/knowledge_transcripts.py": "47acab58d1afcdaaf49e054e50f19a7f8d36c18372eb53cea35ecc18fe2646a8",
         "src/ai_dlc/providers/google_meet.py": "5139524a2272fe768eabb40cf8e5a063db6e843e12640a02aa14b0d743ee4579",
         "src/ai_dlc/providers/transcripts_common.py": "9903072a350e27535ebae16f2ca7592c7399beddc6087538ba251aefd04c8de3",
         "src/ai_dlc/providers/zoom.py": "21cd47dc3650e5156d07c6cd9a7b010c53a1aa9dc5e61d9d808b324d9da1efee",
-        "tests/test_transcripts.py": "a42a2d10e3b0c1110af83307c752c9c14c726bac49262336426bb07187d5ec01"
+        "tests/test_transcripts.py": "225ddd87b7590b31cd56b5d0e2877244d171b06f011822978bdf06cebf497ee4"
       },
       "outcome": "updated",
       "reason": "States that customer titles match whole words after NFKC and case folding, and participants match an exact address, a domain and its subdomains, or an exact name (KAN-490).",

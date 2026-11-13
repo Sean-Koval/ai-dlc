@@ -67,14 +67,15 @@ repository only when every participant matches `internal`. Otherwise it may be a
 unmapped customer meeting, so it is skipped and logged. A transcript that
 matches two customers is skipped too.
 
-A customer's `titles` match whole words, ignoring case and Unicode compatibility
-forms such as full-width letters. "Alpha" matches "alpha: weekly" and
+A customer's `titles` match whole words, ignoring case, accents and Unicode
+compatibility forms such as full-width letters. "Alpha" matches "alpha: weekly" and
 "Alpha社定例". Japanese, Chinese and Thai have no spaces, so their characters
 count as word edges.
 
-A title with the term only inside a longer word, such as "AlphaCorp renewal
-prep", may still be about that customer. It is skipped and logged, never sent
-to the team repository, until a rule covers it.
+A title may hold the term only inside a longer word, as in "AlphaCorp renewal
+prep", or a two-word term written as one. Such a meeting may still be about that
+customer, so it is skipped and logged until a rule covers it. It never goes to
+the team repository.
 
 A customer's `participants`, like `internal`, match an exact address, or a
 domain and its subdomains. Names count only when the provider gives no emails.

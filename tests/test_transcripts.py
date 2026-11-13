@@ -550,11 +550,40 @@ def test_a_latin_title_term_next_to_chinese_or_japanese_text_matches():
         assert isinstance(found, dict) and found["project"] == "alpha", title
 
 
+def test_accents_and_a_joined_multi_word_term_never_send_a_meeting_to_the_team():
+    # KAN-490 re-review: accents fold away on both sides, however they are encoded.
+    customers = [
+        {"project": "alpha", "titles": ["alpha"], "participants": []},
+        {"project": "beta", "titles": ["beta corp"], "participants": []},
+        {"project": "gamma", "titles": ["Gämma"], "participants": []},
+    ]
+    internal = ["@corp.com"]
+
+    def routed(title):
+        return route({"title": title, "emails": ["sean@corp.com"]}, customers, internal)
+
+    for title, project in (
+        ("Alpha\u0301 weekly", "alpha"),
+        ("Alphá weekly", "alpha"),
+        ("gamma sync", "gamma"),
+        ("Ga\u0308mma sync", "gamma"),
+    ):
+        found = routed(title)
+        assert isinstance(found, dict) and found["project"] == project, title
+    joined = routed("BetaCorp renewal")
+    assert isinstance(joined, str) and "inside a longer word" in joined and "beta" in joined
+    # Thai vowels and Japanese voicing marks stay part of the word.
+    kana = [{"project": "ga", "titles": ["ガ"], "participants": []}]
+    assert route({"title": "カ定例", "emails": ["sean@corp.com"]}, kana, internal) is None
+
+
 def test_a_one_word_participant_rule_warns_that_it_is_a_name(tmp_path):
     rule = '[[transcripts.customers]]\nproject = "alpha"\nparticipants = ["alpha", "Dana Lee"]\n'
     warnings = routing(knowledge_repo(tmp_path, rule))["warnings"]
     assert len(warnings) == 1 and "'alpha'" in warnings[0] and "@alpha.example" in warnings[0]
     assert routing(knowledge_repo(tmp_path, ALPHA, name="k2"))["warnings"] == []
+    dotted = '[[transcripts.customers]]\nproject = "alpha"\nparticipants = ["alpha.example"]\n'
+    assert routing(knowledge_repo(tmp_path, dotted, name="k3"))["warnings"] == []
 
 
 def test_a_rule_naming_a_whole_top_level_domain_is_refused(tmp_path):
@@ -570,6 +599,11 @@ def test_a_rule_naming_a_whole_top_level_domain_is_refused(tmp_path):
         '[format]\nversion = 1\n[transcripts]\nowner = "ana"\ninternal = ["@example"]\n'
     )
     with pytest.raises(RefusedError, match="internal '@example'"):
+        routing(root)
+    (root / "knowledge.toml").write_text(
+        '[format]\nversion = 1\n[transcripts]\nowner = "ana"\ninternal = ["@CO.UK"]\n'
+    )
+    with pytest.raises(RefusedError, match="internal '@co.uk'"):
         routing(root)
 
 

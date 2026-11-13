@@ -142,7 +142,7 @@ def routing(root: Path) -> dict:
         isinstance(v, str) and v.strip() for v in internal
     ):
         raise RefusedError("knowledge.toml [transcripts] internal must be a list of strings")
-    if bare := _bare_domains(internal):
+    if bare := _bare_domains([v.strip().casefold() for v in internal]):
         raise RefusedError(f"knowledge.toml [transcripts] internal {bare[0]!r} {_BARE}")
     return {
         "owner": owner.strip(),
@@ -302,15 +302,22 @@ def _bare_domains(entries: list[str]) -> list[str]:
 
 def _bare_words(entries: list[str]) -> list[str]:
     """Participant entries that are one word with no ``@``: names, not domains (KAN-490)."""
-    return [e for e in entries if "@" not in e and len(e.split()) == 1]
+    return [e for e in entries if "@" not in e and "." not in e and len(e.split()) == 1]
 
 
 def _folded(text: str) -> str:
-    """Text compared case-blind after NFKC, without invisible format characters
-    (soft hyphens, zero-width spaces), with whitespace collapsed."""
-    text = unicodedata.normalize("NFKC", text)
-    text = "".join(ch for ch in text if unicodedata.category(ch) != "Cf")
-    return " ".join(text.casefold().split())
+    """Text compared case-blind after NFKC, without Latin accents or invisible format
+    characters (soft hyphens, zero-width spaces), with whitespace collapsed.
+
+    Accents are dropped on both sides, so "alpha" matches "Alphá" however it is
+    encoded. Only the Latin combining marks go: Thai vowels and Japanese voicing marks
+    are part of the word.
+    """
+    text = unicodedata.normalize("NFKD", text)
+    text = "".join(
+        ch for ch in text if not "\u0300" <= ch <= "\u036f" and unicodedata.category(ch) != "Cf"
+    )
+    return " ".join(unicodedata.normalize("NFKC", text).casefold().split())
 
 
 def _title_match(title: str, pattern: str) -> str | None:
@@ -331,6 +338,8 @@ def _title_match(title: str, pattern: str) -> str | None:
         if _edge(title, start - 1, pattern[0]) and _edge(title, end, pattern[-1]):
             return "word"
         found = "inside"
+    if found is None and len(pattern.split()) > 1 and "".join(pattern.split()) in title:
+        found = "inside"  # "BetaCorp" for "beta corp": maybe theirs, so not the team's
     return found
 
 
