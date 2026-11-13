@@ -167,6 +167,7 @@ def test_each_rule_fails_with_a_clear_message(name, data, message):
 
 def test_field_names_live_in_one_place():
     envelope = {"schema_version", "revision", "provider", "observed_at", "obligations", "url"}
+    envelope |= {"participants"}
     names = set(records.REQUIRED_FIELDS) | set(records.OPTIONAL_FIELDS) | envelope
     assert names == set(records.KnowledgeRecord.model_fields)
 

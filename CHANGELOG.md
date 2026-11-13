@@ -50,6 +50,13 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
   call `.github/workflows/knowledge-merge.yml` on push to main. It opens a numbering
   pull request that a person merges; `auto-merge` is off by default. `knowledge check
   --base` accepts the slug-to-number changes it makes to links and sources (KAN-456).
+- `ai-dlc knowledge why <id>` (`--json`; MCP `knowledge_why`) reconstructs a decision
+  from local records: status and dates, the supersession chain both ways, linked
+  conventions and lessons, ticket keys and quoted evidence. Each quote sits beside its
+  Source record's metadata, and the payload shows `present` or `expired`. `sources`
+  entries gain `quote`, `speaker`, `at` and `permalink`, and Source records gain
+  `participants`. `knowledge check` fails a `derived_from` link with no quote when the
+  Source's payload expires; re-fetchable sources show where to fetch them (KAN-466).
 - The knowledge-record contract: `KnowledgeRecord` in
   `ai_dlc.documentation.knowledge_records`, its generated
   `contracts/knowledge-record.schema.json`, format version 1 for knowledge repositories

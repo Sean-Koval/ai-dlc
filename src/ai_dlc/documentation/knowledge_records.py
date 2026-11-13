@@ -99,7 +99,15 @@ OKF_STATUS: dict[str, dict[str, str]] = {
     "source": {"raw": "draft", "processed": "stable", "expired": "deprecated"},
 }
 SOURCE_FIELDS = ("schema_version", "revision", "provider", "title", "observed_at")
-SOURCE_ONLY = ("schema_version", "revision", "provider", "observed_at", "obligations", "url")
+SOURCE_ONLY = (
+    "schema_version",
+    "revision",
+    "provider",
+    "observed_at",
+    "obligations",
+    "url",
+    "participants",
+)
 SLUG = r"[a-z0-9][a-z0-9-]*"
 NUMBER = "[0-9][0-9][0-9][0-9]+"
 ID_PATTERN = rf"^(?:{SLUG}|(?:DEC|CONV|LES|ACT|Q|SRC)-{NUMBER})$"
@@ -107,6 +115,10 @@ HASH_PATTERN = r"^[a-z0-9-]+:\S+$"
 # A sha256 hash is 64 lowercase hex characters, so duplicate sources can be found.
 SHA256_PATTERN = r"^sha256:[0-9a-f]{64}$"
 ACTOR_PATTERN = r"^(?:(?:human|process):\S+|[^\s:/]+/\S+)$"
+# Where in its source a quote was said: an offset (HH:MM:SS) or a time with an offset.
+AT_PATTERN = r"^(?:[0-9]{1,3}:[0-5][0-9]:[0-5][0-9]|[0-9]{4}-[0-9]{2}-[0-9]{2}T\S+)$"
+QUOTE_LIMIT = 500
+"""Most characters of one evidence quote; a longer passage is cited in pieces."""
 
 
 def _present(field: str) -> dict[str, Any]:
@@ -194,6 +206,15 @@ class SourceRef(BaseModel):
     title: str | None = Field(default=None, min_length=1)
     author: str | None = Field(default=None, min_length=1)
     last_modified: AwareDatetime | None = None
+    # Evidence (KAN-466): source payloads expire, so the words stay in the record.
+    quote: str | None = Field(
+        default=None, min_length=1, max_length=QUOTE_LIMIT, description="verbatim evidence"
+    )
+    speaker: str | None = Field(default=None, min_length=1, description="who said the quote")
+    at: str | None = Field(
+        default=None, pattern=AT_PATTERN, description="HH:MM:SS offset or time in the source"
+    )
+    permalink: str | None = Field(default=None, min_length=1, description="link to the quote")
 
     @field_validator("hash")
     @classmethod
@@ -268,6 +289,7 @@ class KnowledgeRecord(BaseModel):
     observed_at: AwareDatetime | None = None
     obligations: list[Obligation] | None = None
     url: str | None = None
+    participants: list[str] | None = Field(default=None, description="who took part (sources)")
 
     @field_validator("verified", mode="before")
     @classmethod
@@ -402,6 +424,28 @@ def envelope(record: KnowledgeRecord, body: str) -> SourceEnvelope:
         obligations=record.obligations or [],
         url=record.url,
     )
+
+
+# Sources whose raw payload expires (KAN-458): captured into the inbox, or a
+# transcript, chat or meeting. Jira, Confluence and ADR sources stay re-fetchable.
+EXPIRING_DIRECTORIES = ("inbox/", "processed/")
+EXPIRING_KINDS = frozenset(
+    {"transcript", "chat", "meeting", "thread", "zoom", "google-meet", "meet", "symphony"}
+)
+
+
+def payload_expires(record: KnowledgeRecord) -> bool:
+    """Whether a Source record's payload expires, so citing records must quote it.
+
+    It does when a ``sources`` resource lies under ``inbox/`` or ``processed/``, or
+    when its provider or a tag names a transcript, chat or meeting kind.
+    """
+    if record.type != "source":
+        return False
+    if any(entry.resource.startswith(EXPIRING_DIRECTORIES) for entry in record.sources):
+        return True
+    kinds = {*(record.tags or ()), *([record.provider] if record.provider else [])}
+    return bool({kind.casefold() for kind in kinds} & EXPIRING_KINDS)
 
 
 def okf_status(record: KnowledgeRecord) -> str:
