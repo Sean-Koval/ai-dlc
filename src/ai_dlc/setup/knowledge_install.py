@@ -53,6 +53,7 @@ HOOK = (
 )
 _URL = re.compile(r"^[a-z][a-z0-9+.-]*://", re.IGNORECASE)
 _USERINFO = re.compile(r"^[a-z][a-z0-9+.-]*://([^/@]*)@", re.IGNORECASE)
+_SCP_USER = re.compile(r"^([^/:@]+)@[^/:]+:")  # scp form: user@host:path
 _HARNESS = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]*")
 
 Prompt = Callable[[str, str], str]
@@ -67,7 +68,7 @@ def is_url(value: str) -> bool:
 
 def carries_credentials(url: str) -> bool:
     """A URL with a password, or a user other than ssh's usual ``git``, in it."""
-    found = _USERINFO.match(url)
+    found = _USERINFO.match(url) or _SCP_USER.match(url)
     return bool(found) and (":" in found.group(1) or found.group(1) != "git")
 
 

@@ -51,9 +51,12 @@ def check_harness(target: setup.Install, stored: Mapping[str, Any] | None, envir
         manifest = json.loads(target.manifest_path.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return _line("harness", "fail", "no harness manifest; run `ai-dlc knowledge install`"), None
+    unchecked = ""
     if stored:
         checkout = setup.known_harness_checkout(target, str(stored.get("TEAM_HARNESS_REPO", "")))
-        if checkout is not None:
+        if checkout is None:
+            unchecked = " (drift not checked: the team-harness checkout is gone)"
+        else:
             command = setup.harness_command(
                 checkout, str(manifest.get("harness", "")), "", target.home, "--check"
             )
@@ -64,7 +67,7 @@ def check_harness(target: setup.Install, stored: Mapping[str, Any] | None, envir
                 detail = "drifted or the channel moved; rerun `ai-dlc knowledge install`"
                 return _line("harness", "fail", detail), manifest
     name = f"{manifest.get('harness')}@{manifest.get('channel')} r{manifest.get('revision')}"
-    return _line("harness", "pass", name + " installed"), manifest
+    return _line("harness", "pass", name + " installed" + unchecked), manifest
 
 
 def check_tracker(root: Path, config: Mapping[str, Any] | None, environ: Mapping[str, str]) -> Line:

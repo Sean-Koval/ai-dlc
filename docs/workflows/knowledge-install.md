@@ -58,7 +58,7 @@ line names the variable or step to fix, never a value.
 | --- | --- |
 | `prerequisites` | The four tools are on `PATH` |
 | `settings` | An install is recorded |
-| `harness` | The manifest exists and `install_local.py --check` finds no drift |
+| `harness` | The manifest exists and `install_local.py --check` finds no drift; without the team-harness checkout, the line says drift was not checked |
 | `tracker` | The `tracker` role fetches one item |
 | `wiki` | The `wiki` role finds one page |
 | `knowledge check` | The clone passes `ai-dlc knowledge check` |

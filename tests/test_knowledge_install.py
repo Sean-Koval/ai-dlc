@@ -246,6 +246,17 @@ def test_doctor_lines_and_skips(world):
     assert "inbox/transcripts/call.md" in inbox["detail"]
 
 
+def test_doctor_says_when_drift_was_not_checked(world):
+    home, environ = world
+    knowledge_install.install(home, environ)
+    harness = Path(environ["TEAM_HARNESS_REPO"])
+    harness.rename(harness.with_name("moved"))
+    result = knowledge_doctor.doctor(home, {}, home, environ)
+    line = next(line for line in result["lines"] if line["check"] == "harness")
+    assert line["status"] == "pass"
+    assert "drift not checked" in line["detail"]
+
+
 TRACKER = {
     "roles": {"tracker": "jira"},
     "providers": {
@@ -377,6 +388,8 @@ def test_a_reinstall_that_fails_keeps_the_hook_record(world, tmp_path):
         ("https://github.com/team/knowledge.git", False),
         ("https://someone@example.test/knowledge.git", True),
         ("https://x-token:abc@example.test/knowledge.git", True),
+        ("ghp-token@github.com:team/knowledge.git", True),
+        ("C:\\Users\\me\\knowledge", False),
     ],
 )
 def test_which_urls_carry_credentials(url, refused):

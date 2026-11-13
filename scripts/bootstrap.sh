@@ -95,7 +95,8 @@ export PATH="$(dirname "$AI_DLC_CLI"):$PATH"
 "$AI_DLC_CLI" project setup --root "$AI_DLC_ROOT" --target "$AI_DLC_TARGET"
 if [ "$AI_DLC_KNOWLEDGE" = true ]; then
     "$AI_DLC_CLI" knowledge install
-    "$AI_DLC_CLI" knowledge doctor --root "$AI_DLC_ROOT"
+    "$AI_DLC_CLI" knowledge doctor --root "$AI_DLC_ROOT" ||
+        printf 'Knowledge install done; the doctor lines marked fail above name what to fix.\n' >&2
 fi
 if [ -n "${GITHUB_PATH:-}" ]; then
     printf '%s\n%s\n' "$(dirname "$AI_DLC_CLI")" "$AI_DLC_BOOTSTRAP_HOME/bin" >> "$GITHUB_PATH"

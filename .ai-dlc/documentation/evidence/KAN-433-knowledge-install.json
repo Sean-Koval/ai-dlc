@@ -145,8 +145,8 @@
         "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
         "src/ai_dlc/setup/github_project_setup.py": "55984de17559ba2d56b3b1c7483dabb8a6f05f1e773e8bd9d40437a2d30ee85e",
         "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
-        "src/ai_dlc/setup/knowledge_doctor.py": "8d06631c7d0e38da4b6f641a1dc826bce0fe83a9836fdb80f3e1d28def9e1c8f",
-        "src/ai_dlc/setup/knowledge_install.py": "d94e757fc6b024e8c58205604dadfef1268c6b591a7d6f103496a01b1fb7edcb",
+        "src/ai_dlc/setup/knowledge_doctor.py": "a29fc77881b684b228c6df5ef8d8f028be39f800adb8188c88cb599297a5d431",
+        "src/ai_dlc/setup/knowledge_install.py": "3ab770a0a12eee52ec52363c981e809d2c1767357a8d0c1f3f24dcc3fb21da50",
         "src/ai_dlc/setup/onboarding.py": "a955988850f1dbe1bd50b2e06da61913701b504ed1a11eabe08bed387d0cc552",
         "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
         "src/ai_dlc/setup/project.py": "1636ad031d877790d380ce72d99b8753fffc94305ce03150dda6fd05ec51c43d",
@@ -183,22 +183,22 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Two modules join the existing setup package; the package map still holds and the page is at its word ceiling.",
+      "reason": "Review fixes inside the existing setup modules (scp-form credential check, drift-not-checked wording); the package map is unchanged.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
     {
       "bound": {
-        "docs/assets/front/work.cast": "e62d40214d4179962e75246d6b628f261ae7e8a31dcc43cccb089943a285f9eb"
+        "docs/assets/front/work.cast": "ec0b7f53bbdb20192008dc0810479cf265a4739794dcb5ccfd7634a22c6e7b9b"
       },
       "outcome": "updated",
-      "reason": "Rebuilt with build.py: the packaged bootstrap template changed, so the demo's deterministic commit hashes changed. Nothing else differs.",
+      "reason": "Rebuilt with build.py: the packaged bootstrap template changed again, so the demo's commit hashes changed. Nothing else differs.",
       "reviewer": "Claude (agent)",
       "target": "docs/assets/front/work.cast"
     },
     {
       "bound": {
-        "docs/assets/front/work.svg": "c937adee672f9f1678dbeb98c4c19bc9652f029b4f179832f8551d13b5e64f18"
+        "docs/assets/front/work.svg": "bb2ab6897e5b5eb0cd60a56605069a6947890bcf2667f2b7336f9da385267ea5"
       },
       "outcome": "updated",
       "reason": "Rebuilt with build.py alongside work.cast; only the demo commit hashes differ.",
@@ -261,7 +261,7 @@
     {
       "bound": {
         ".github/workflows/release.yml": "f960af13f3657dca437561a8acd2555ec2b2d648c04202964ef349b0952bf590",
-        ".github/workflows/verify.yml": "5322f5b3812bb906b491731b4bbb3ccf3f42bdeeadda10df98e406523e682f7e",
+        ".github/workflows/verify.yml": "18f5ee588f0343de6fd317ee2d2caaf7b3161be9b83dcf4ddc32291964ef02c4",
         "catalog:docs/release-verification.md": "972bf86b6da5f20b3d01762982880533ba0c99b22933aa95273590923721dad0",
         "docs/release-verification.md": "a18e7b0bef6dc55ebc544ac304a01c8ca7d59c9dde46127f2acc44802e8b9751",
         "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
@@ -286,7 +286,7 @@
         "tests/test_release_workflow.py": "a50523b5d6dec682188d489780d29a74f2a01c60c310071ce6758898f3d12dc0"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Release gates are unchanged; the new commands add no release step.",
+      "reason": "The new Verify job checks the knowledge install against a pinned team-harness commit; it is a PR check, not a release gate.",
       "reviewer": "Claude (agent)",
       "target": "docs/release-verification.md"
     },
@@ -295,8 +295,8 @@
         ".github/workflows/release.yml": "f960af13f3657dca437561a8acd2555ec2b2d648c04202964ef349b0952bf590",
         "catalog:docs/runbooks/release-publication.md": "3580fe6b0df68db7dd7dd55e520bb50b4dcb9ee9132e4e345396d68a4e7d72f8",
         "docs/runbooks/release-publication.md": "2020db563c9399cfc2e26d587e2b51eb2d3ec29d34e6fa5e4b5e47b142e08a6d",
-        "project-templates/project/scripts/bootstrap.sh": "0d60d4c408639b1a3f3ba684d9bbc7716999eac5ee8fb196c9819a473152f749",
-        "scripts/bootstrap.sh": "0d60d4c408639b1a3f3ba684d9bbc7716999eac5ee8fb196c9819a473152f749",
+        "project-templates/project/scripts/bootstrap.sh": "9fb9842121914ab0311bcd1be72eec2e496225bcf6c049ae34fa6ac79dd9df6a",
+        "scripts/bootstrap.sh": "9fb9842121914ab0311bcd1be72eec2e496225bcf6c049ae34fa6ac79dd9df6a",
         "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
         "src/ai_dlc/setup/templates.py": "47d50ea64b08b07dbb8fec7e19c7bc2555ce2b30d99aab3e27d4d152b7f6689e",
         "tests/test_bootstrap.py": "20c1c5d49181b22b969a19063ff108554be7eb492711bcec95c9a52599cf1bf2",
@@ -304,7 +304,7 @@
         "tests/test_release_workflow.py": "a50523b5d6dec682188d489780d29a74f2a01c60c310071ce6758898f3d12dc0"
       },
       "outcome": "reviewed-no-change",
-      "reason": "bootstrap.sh gains an opt-in --knowledge flag; release publication is unchanged.",
+      "reason": "bootstrap --knowledge now reports a doctor failure without failing the bootstrap; publication steps are unchanged.",
       "reviewer": "Claude (agent)",
       "target": "docs/runbooks/release-publication.md"
     },
@@ -315,26 +315,26 @@
         "docs/assets/front/demo_provider.py": "a266086be5cd247643a3157617f7f56e57c9200f77f885252ddf31a72d8c4f1d",
         "docs/workflows/get-started.md": "1d43e6d423dbcada948d661495262998832e712eebe45fedeaad0645f5d75185",
         "mkdocs.yml": "905226b9e8d4476dfa5492386797d87e047ca43dc99d3d4c397a84ff0b13eaf6",
-        "scripts/bootstrap.sh": "0d60d4c408639b1a3f3ba684d9bbc7716999eac5ee8fb196c9819a473152f749",
+        "scripts/bootstrap.sh": "9fb9842121914ab0311bcd1be72eec2e496225bcf6c049ae34fa6ac79dd9df6a",
         "scripts/docs_site_links.py": "e4f61570d3b4272d0e33fb733862105f4854906cba5e4f601c8a3d6dd3a519e8",
         "tests/test_front_page.py": "4b61f3b76dbe33fd562eea3f9cbdd6aec8d78f3b3e057da2fc4f4e2ea6b56f59"
       },
-      "outcome": "updated",
-      "reason": "Next links the knowledge install page and bootstrap --knowledge.",
+      "outcome": "reviewed-no-change",
+      "reason": "The knowledge install link and flag are unchanged; only the bootstrap's exit after a doctor failure changed.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/get-started.md"
     },
     {
       "bound": {
         "catalog:docs/workflows/knowledge-install.md": "f3a8f3e29501f8a105044751be6374d0667609d57b2e65bff0df3a6a2334094d",
-        "docs/workflows/knowledge-install.md": "72f3293fc4bf18b50b5fb9c350a6b02afce0100382b8e53750a1db77619d860a",
-        "scripts/bootstrap.sh": "0d60d4c408639b1a3f3ba684d9bbc7716999eac5ee8fb196c9819a473152f749",
-        "src/ai_dlc/setup/knowledge_doctor.py": "8d06631c7d0e38da4b6f641a1dc826bce0fe83a9836fdb80f3e1d28def9e1c8f",
-        "src/ai_dlc/setup/knowledge_install.py": "d94e757fc6b024e8c58205604dadfef1268c6b591a7d6f103496a01b1fb7edcb",
-        "tests/test_knowledge_install.py": "bc57bb379ba162baf1a38e2bd870c273dc97cedcefd1f16a699221970553528a"
+        "docs/workflows/knowledge-install.md": "6ddf701aac3ec9d04727a026959a9d9ded3e60b4caf4670cb04f6fe428a85d85",
+        "scripts/bootstrap.sh": "9fb9842121914ab0311bcd1be72eec2e496225bcf6c049ae34fa6ac79dd9df6a",
+        "src/ai_dlc/setup/knowledge_doctor.py": "a29fc77881b684b228c6df5ef8d8f028be39f800adb8188c88cb599297a5d431",
+        "src/ai_dlc/setup/knowledge_install.py": "3ab770a0a12eee52ec52363c981e809d2c1767357a8d0c1f3f24dcc3fb21da50",
+        "tests/test_knowledge_install.py": "a30f6d74843d515244f200be9d9c5d25e62f37d9af8e8c46db339268fece79c4"
       },
       "outcome": "updated",
-      "reason": "New page: the one-step knowledge install, its settings, uninstall and the doctor checks.",
+      "reason": "The harness check row says the doctor reports when drift could not be checked.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/knowledge-install.md"
     },
