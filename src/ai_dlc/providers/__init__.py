@@ -111,6 +111,9 @@ class ExecutableProvider:
             {"title": title, "body": body, "base": base, "head": head, "draft": draft},
         )
 
+    def pull_requests(self, since, limit=200):
+        return self.invoke("pull_requests", {"since": since, "limit": limit})
+
     def get(self, id):
         return self.invoke("get", {"id": id})
 
@@ -408,6 +411,7 @@ class Registry:
             "deployment",
             "append",
             "pull_request_create",
+            "pull_requests",
             "get",
             "search",
             "list_changed",
