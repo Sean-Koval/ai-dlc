@@ -57,6 +57,7 @@ TOOLS = {
     "work_pr",
     "work_publish",
     "work_review",
+    "work_show",
     "work_start",
     "work_status",
 }
@@ -196,18 +197,32 @@ def test_the_tool_list_is_complete_and_has_no_generic_provider_mutation(tmp_path
     assert not names & {"provider_invoke", "tracker_transition", "tracker_complete"}
 
 
+def untyped(schema, definitions, seen=()):
+    """Paths inside ``schema`` that accept an object with no declared properties."""
+    if "$ref" in schema:
+        name = schema["$ref"].rsplit("/", 1)[-1]
+        return [] if name in seen else untyped(definitions[name], definitions, (*seen, name))
+    kinds = schema.get("anyOf", [schema])
+    if len(kinds) > 1:
+        return [p for kind in kinds for p in untyped(kind, definitions, seen)]
+    if not ("type" in schema or "enum" in schema or "const" in schema):
+        return ["(no type)"]
+    if schema.get("type") == "object":
+        properties = schema.get("properties")
+        if not properties or schema.get("additionalProperties") not in (None, False):
+            return ["(open object)"]
+        return [f"{k}.{p}" for k, v in properties.items() for p in untyped(v, definitions, seen)]
+    if schema.get("type") == "array":
+        return [f"[].{p}" for p in untyped(schema.get("items", {}), definitions, seen)]
+    return []
+
+
 def test_every_tool_argument_is_typed(tmp_path):
     (tmp_path / "ai-dlc.toml").write_text("schema=4\n")
-    new = {"work_new", "work_pr", "work_archive", "tracker_create", "tracker_update"}
-    new |= {"tracker_get", "knowledge_get", "knowledge_search", "knowledge_propose"}
-    new |= {"tracker_search", "tracker_comment"}
     for tool in asyncio.run(make_server(tmp_path).list_tools()):
-        if tool.name not in new | {"knowledge_template"}:
-            continue
+        definitions = tool.inputSchema.get("$defs", {})
         for name, schema in tool.inputSchema["properties"].items():
-            kinds = [schema, *schema.get("anyOf", [])]
-            assert any("type" in kind or "$ref" in kind for kind in kinds), (tool.name, name)
-            assert not any(kind.get("type") == "object" for kind in kinds), (tool.name, name)
+            assert not untyped(schema, definitions), (tool.name, name, untyped(schema, definitions))
 
 
 # Work
@@ -251,6 +266,27 @@ def test_work_new_then_work_pr_through_the_mcp_client(tmp_path, monkeypatch):
     assert git(root, "log", "-1", "--format=%s") == "chore(work): link pr for one"
     (again,) = call(server, ("work_pr", {"work_id": "one"}))
     assert again["status"] == "linked"
+
+
+def test_work_show_resolves_a_session_key_through_the_mcp_client(tmp_path, monkeypatch):
+    root, _ = project(tmp_path, monkeypatch)
+    record = {"work_id": "kan-7-join", "title": "Join", "scope": "small"}
+    record |= {"requires_spec": False, "spec_reason": "None", "acceptance": ["Tests pass"]}
+    call(server_for(root, Tracker()), ("work_new", record))
+    log = root / ".ai-dlc/local/sessions/kan-7-join.jsonl"
+    log.parent.mkdir(parents=True)
+    log.write_text(json.dumps({"key": "aidlc1:KAN-7:kan-7-join:sess-1"}) + "\n")
+
+    shown, missing = call(
+        server_for(root, Tracker()),
+        ("work_show", {"key": "sess-1"}),
+        ("work_show", {"key": "sess-unknown"}),
+    )
+
+    assert shown["status"] == "ok"
+    assert [item["work_id"] for item in shown["work"]] == ["kan-7-join"]
+    assert shown["work"][0]["sessions"][0]["key"] == "aidlc1:KAN-7:kan-7-join:sess-1"
+    assert missing == {"status": "ok", "query": "sess-unknown", "work": []}
 
 
 def test_work_archive_refuses_without_an_active_change(tmp_path, monkeypatch):
