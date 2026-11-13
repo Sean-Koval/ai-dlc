@@ -25,6 +25,12 @@ if json.loads((root / "contracts/knowledge-note.schema.json").read_text()) != (
     knowledge_note_schema()
 ):
     raise SystemExit("Generated schema is stale: knowledge-note.schema.json")
+from ai_dlc.documentation.knowledge_records import schema as knowledge_record_schema
+
+if json.loads((root / "contracts/knowledge-record.schema.json").read_text()) != (
+    knowledge_record_schema()
+):
+    raise SystemExit("Generated schema is stale: knowledge-record.schema.json")
 for relative in ["scripts/bootstrap.sh", "bootstrap/versions.sh", "bootstrap/download.sh"]:
     if (root / relative).read_bytes() != (
         root / "project-templates/project" / relative

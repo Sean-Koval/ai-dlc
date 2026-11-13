@@ -1,0 +1,256 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "AGENTS.md": "3f7e0b4985c85bfa2280b201d8af1b8e1cac2ac9131e4504a52a7864dea996d7"
+      },
+      "outcome": "updated",
+      "reason": "Scope-freeze paragraph lists ADR 0003 (second brain, from main) and ADR 0004 (knowledge system).",
+      "reviewer": "Claude (agent)",
+      "target": "AGENTS.md"
+    },
+    {
+      "bound": {
+        "agents/templates/knowledge/action.md": "79b462b9f2ac99c2c81ac9bc9d734662c9d4724088f8dc96f16275ccc6110ca2"
+      },
+      "outcome": "updated",
+      "reason": "New knowledge-record template (KAN-421); validated by tests/test_knowledge_records.py.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/templates/knowledge/action.md"
+    },
+    {
+      "bound": {
+        "agents/templates/knowledge/convention.md": "19e84359b33e54401932add95c11963eda64f71172af190e107197a32fe2fb80"
+      },
+      "outcome": "updated",
+      "reason": "New knowledge-record template (KAN-421); validated by tests/test_knowledge_records.py.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/templates/knowledge/convention.md"
+    },
+    {
+      "bound": {
+        "agents/templates/knowledge/decision.md": "d7966fffa020fffa85fac6abb90b779b036fcc88e8f1a74c9fcce0c84c9f0dc6"
+      },
+      "outcome": "updated",
+      "reason": "New knowledge-record template (KAN-421); validated by tests/test_knowledge_records.py.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/templates/knowledge/decision.md"
+    },
+    {
+      "bound": {
+        "agents/templates/knowledge/lesson.md": "a152f2b5dd421e68e373b28ff4ff64bad6031e8cb690e57d5711d2b53787cd15"
+      },
+      "outcome": "updated",
+      "reason": "New knowledge-record template (KAN-421); validated by tests/test_knowledge_records.py.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/templates/knowledge/lesson.md"
+    },
+    {
+      "bound": {
+        "agents/templates/knowledge/question.md": "0d5d5f8eb231c851f32c4a323abfba14f1322786431f7184ab921132920e6e1c"
+      },
+      "outcome": "updated",
+      "reason": "New knowledge-record template (KAN-421); validated by tests/test_knowledge_records.py.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/templates/knowledge/question.md"
+    },
+    {
+      "bound": {
+        "agents/templates/knowledge/source.md": "68c2a906909df678032252c71ea0915ef5bb6fcdd4a86db0f344d7fe3d68fdcd"
+      },
+      "outcome": "updated",
+      "reason": "New knowledge-record template (KAN-421); validated by tests/test_knowledge_records.py.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/templates/knowledge/source.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/decisions/0004-knowledge-system-scope.md": "ed0af62f042336fe40b293fce0ba1d91411836cca10a14035f2033e41229939e",
+        "docs/decisions/0004-knowledge-system-scope.md": "37226b7a925edc55d364eb304bb04a8a986bfb3e5a1933aa69b0de17b9edffb4"
+      },
+      "outcome": "updated",
+      "reason": "ADR 0004 amends ADR 0001 for the knowledge system (KAN-454), records the OKF v0.2 adoption (KAN-471) and partly supersedes ADR 0003: the git repo is canonical and only knowledge render writes the wiki (KAN-430).",
+      "reviewer": "Claude (agent)",
+      "target": "docs/decisions/0004-knowledge-system-scope.md"
+    },
+    {
+      "bound": {
+        ".ai-dlc/agent-ownership.json": "2c193eced262ce82ed624d508de5ca29dec09da87d2eb78551143622803c4a51",
+        "agents/skills.lock.json": "fce6587c26e072bd4d5623cd545558fc41f36e73c5787251373f7c7618692d48",
+        "agents/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
+        "agents/templates/delivery-slice.md": "44d1e55bdd17e5fe0cf4c1d35d99ffad8f6060575ecb97496515b48a0e304429",
+        "catalog:docs/development-workflow.md": "0fba88526a61571ce49e91b2159325061a7c54ba5466e651565eabb2f910e7c6",
+        "docs/development-workflow.md": "e1351af42ccf1cf28e744345171ad9c71b2321936d1edfe73f7e4b4cf508f04c",
+        "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
+        "openspec/specs/portable-development/spec.md": "7710dba93e53f973d947723117687d263b6296ad31e1ed8232da7b2f0e7ff89e",
+        "openspec/specs/spec-delivery-traceability/spec.md": "66641acf9c151792cde1914062630ed50cc4199cdc3bdb4b81382e03716f2ea3",
+        "project-templates/project/AI-DLC.md": "91e7df09e8c8fd8f5bea1d087d11aa7bcc3d7316238c61045e98dc5cfb039c44",
+        "project-templates/project/ai-dlc.toml.jinja": "d965a516a3b62011283b560a732edaacdf9c2a8bf84ff660fd8c65b03f626f54",
+        "project-templates/project/docs/development-workflow.md.jinja": "8cc85f0e3949013f31ffc540edfb53aff445a97061048d537a9a7c5d7785cebd",
+        "project-templates/project/docs/templates/delivery-slice.md": "44d1e55bdd17e5fe0cf4c1d35d99ffad8f6060575ecb97496515b48a0e304429",
+        "project-templates/project/scripts/check_tests.py": "a3dd2021b7911d2ff688142776b7a43af60f76e052d7164086db2434db60102d",
+        "project-templates/project/tests/test_main.py": "4e6ac9def60ea5a6aef9e004c465cc439acac4b33e4f70df332939f0cdfae63d",
+        "src/ai_dlc/cli.py": "b015e2ae56be78bc1388a5504fb3ba8271b2c41946acc7d7a2a590b6c4d0999d",
+        "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
+        "src/ai_dlc/harness/agents.py": "72f38f1f69147e4216fe6752636f26e6218c5c6ef85845ffb89828d431effa53",
+        "src/ai_dlc/harness/hooks.py": "d8903d3c59ce52c3b3b26cdd9f322370eb2344404e235b2cecca61f5749b943f",
+        "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
+        "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
+        "src/ai_dlc/setup/project.py": "1636ad031d877790d380ce72d99b8753fffc94305ce03150dda6fd05ec51c43d",
+        "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
+        "src/ai_dlc/work/workflow.py": "d05f5cfe6414176a9baa5b304a570371ca436cadd12648fe8147769ff1f9588b",
+        "tests/test_agents_phases.py": "e5325bdc3c072a10e27bbf019ce51f586b0b7b9d76aa95ff8652dd09bc3c8570",
+        "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
+        "tests/test_cli.py": "f61c1ce03b1b3d1a6134365277c18655450ba08c06cb1f51ba44010b3e1b7e36",
+        "tests/test_config.py": "788bf2715bfc3fbc3da495b68fa250985f4430d424fa9802340dec16b7a35cdf",
+        "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
+        "tests/test_hooks.py": "e62d1268716dcacf7c04f1b4505e06ea6ac30f7dc6800017e22c83bb5fa7b51e",
+        "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
+        "tests/test_project.py": "2ebeb723433cfb53bf8e20b337d5016058e75a181b9ed0035203a14759a162ba",
+        "tests/test_rendering.py": "46e3927140876b6ccbecd7230fedf68d2806da7828fee7293bf61df76c36ce69",
+        "tests/test_team_sources.py": "3ab4eaa043c888b35eae7f92c8e8b20d20986d42d0ec8cdc936be472e48040e3",
+        "tests/test_templates.py": "d50958472da6eac84069d3063db72aa0de558c33e77b9d477abf800ef6c3cd32",
+        "tests/test_workflow.py": "c60af46adb6cceb3160b1c34945d3b579e4ce42be7e24cad65fa24bd215d80a1"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Merging main (KAN-440 test baseline) leaves the knowledge check commands in cli.py unchanged; the work lifecycle this page explains is unaffected.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/development-workflow.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/index.md": "65c0b0508964e9cb9cc7d68cef118ffcaf83bd6b4524054d54306e09f8a57810",
+        "docs/index.md": "006da9a69ba46bef7a1afcccc61e0d1eec7505e7336527e823fdbca26f73ff81"
+      },
+      "outcome": "updated",
+      "reason": "Scope question links ADR 0003 and ADR 0004.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/index.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/get-started.md": "b3cdcadc535e0e825dfe2837433f1b4ef45551430ab207c485ef7dd601bf992e",
+        "docs/assets/front/build.py": "a6ed773f33ca4175aa7b3e85a11571b22901eb791f4628402a9812487843e9d0",
+        "docs/assets/front/demo_provider.py": "a266086be5cd247643a3157617f7f56e57c9200f77f885252ddf31a72d8c4f1d",
+        "docs/workflows/get-started.md": "7052c4b9b7e1bd297f54a9f0ec133e9393f765099a358c4eef2f5f382677ab11",
+        "mkdocs.yml": "43b41845e59cb9e6ecef72e93160f3f5308dd03e2e91a4d8dbdce0f5b5aa9ad3",
+        "scripts/bootstrap.sh": "dff64e5be94a72bcfbb5dec30a34a808fb2e0a1e0b9612146086af183de8acee",
+        "scripts/docs_site_links.py": "e4f61570d3b4272d0e33fb733862105f4854906cba5e4f601c8a3d6dd3a519e8",
+        "tests/test_front_page.py": "4b61f3b76dbe33fd562eea3f9cbdd6aec8d78f3b3e057da2fc4f4e2ea6b56f59"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "mkdocs nav lists ADR 0003 and ADR 0004; getting started is unaffected.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/get-started.md"
+    },
+    {
+      "bound": {
+        "tests/fixtures/knowledge_records/1-meeting/action.md": "68fdfb998d38a93384f39ac8e2f4c0238df3b6f68c9448a9e85eee640c50daa9"
+      },
+      "outcome": "no-impact",
+      "reason": "Test fixture for a spec section 8 scenario; not user documentation.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/fixtures/knowledge_records/1-meeting/action.md"
+    },
+    {
+      "bound": {
+        "tests/fixtures/knowledge_records/1-meeting/decision-pin-harness.md": "0062f3da8966b1c2a2df0bcdb83806a1b62bda3cab0ae2da3a51f8349ac7bc21"
+      },
+      "outcome": "no-impact",
+      "reason": "Test fixture for a spec section 8 scenario; not user documentation.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/fixtures/knowledge_records/1-meeting/decision-pin-harness.md"
+    },
+    {
+      "bound": {
+        "tests/fixtures/knowledge_records/1-meeting/decision-release-day.md": "4cc2b84765f701a1e5bfefcbd1ca4ec9c52bcac5218c7131f68c678fb85277ab"
+      },
+      "outcome": "no-impact",
+      "reason": "Test fixture for a spec section 8 scenario; not user documentation.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/fixtures/knowledge_records/1-meeting/decision-release-day.md"
+    },
+    {
+      "bound": {
+        "tests/fixtures/knowledge_records/1-meeting/source.md": "24ba4d02aa53c9aa597be8b61c97d6e593a978b7bdb6442cf809cf5162a0e706"
+      },
+      "outcome": "no-impact",
+      "reason": "Test fixture for a spec section 8 scenario; not user documentation.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/fixtures/knowledge_records/1-meeting/source.md"
+    },
+    {
+      "bound": {
+        "tests/fixtures/knowledge_records/2-chat-naming/convention.md": "be06229acdb7861e7dda5fbb3a3ef8e105b2f4f18653c536424bec092cc3ddde"
+      },
+      "outcome": "no-impact",
+      "reason": "Test fixture for a spec section 8 scenario; not user documentation.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/fixtures/knowledge_records/2-chat-naming/convention.md"
+    },
+    {
+      "bound": {
+        "tests/fixtures/knowledge_records/2-chat-naming/decision.md": "ae6dc42ca470066fc8fa759be3d4a81db81b34b9892ebebaa7764f6d404979a0"
+      },
+      "outcome": "no-impact",
+      "reason": "Test fixture: the decision the scenario-2 convention implements (spec section 5).",
+      "reviewer": "Claude (agent)",
+      "target": "tests/fixtures/knowledge_records/2-chat-naming/decision.md"
+    },
+    {
+      "bound": {
+        "tests/fixtures/knowledge_records/2-chat-naming/source.md": "e0a6f5f6c4517993334785e2585abe557f811f8aed11873a4752d73ca26d7c77"
+      },
+      "outcome": "no-impact",
+      "reason": "Test fixture for a spec section 8 scenario; not user documentation.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/fixtures/knowledge_records/2-chat-naming/source.md"
+    },
+    {
+      "bound": {
+        "tests/fixtures/knowledge_records/3-customer-gotcha/lesson.md": "784b1f44b6877d34425a45a72f8dc93507c6b04c6c6d8d54cd4c4796a2471b3a"
+      },
+      "outcome": "no-impact",
+      "reason": "Test fixture for a spec section 8 scenario; not user documentation.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/fixtures/knowledge_records/3-customer-gotcha/lesson.md"
+    },
+    {
+      "bound": {
+        "tests/fixtures/knowledge_records/4-harness-finding/lesson.md": "dbd6b6f7ed9f6ac463b56057c40d8ea6af1440ad9265eea1c320817aee2f4c1c"
+      },
+      "outcome": "no-impact",
+      "reason": "Test fixture for a spec section 8 scenario; not user documentation.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/fixtures/knowledge_records/4-harness-finding/lesson.md"
+    },
+    {
+      "bound": {
+        "tests/fixtures/knowledge_records/5-reversed-decision/march.md": "5649934461b780de2b633246bf70b0b2fb01fce4238d585a71ba2d069bfec22f"
+      },
+      "outcome": "no-impact",
+      "reason": "Test fixture for a spec section 8 scenario; not user documentation.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/fixtures/knowledge_records/5-reversed-decision/march.md"
+    },
+    {
+      "bound": {
+        "tests/fixtures/knowledge_records/5-reversed-decision/september.md": "b3c344364d0d944cc47f876dbbb248afa918619120a3d6dd83b2d2212c4eec62"
+      },
+      "outcome": "no-impact",
+      "reason": "Test fixture for a spec section 8 scenario; not user documentation.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/fixtures/knowledge_records/5-reversed-decision/september.md"
+    },
+    {
+      "bound": {
+        "uv.lock": "29df8fff07569b19b71681115a1fe4f9db6bc0bbbb87bfd90762fa2a7541ee66"
+      },
+      "outcome": "no-impact",
+      "reason": "Lock gains jsonschema in the dev group for the schema tests; no user-facing change.",
+      "reviewer": "Claude (agent)",
+      "target": "uv.lock"
+    }
+  ],
+  "schema": 2
+}

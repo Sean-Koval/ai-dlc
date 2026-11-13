@@ -18,6 +18,20 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 
 ### Added
 
+- `ai-dlc knowledge check DIR` (and MCP `knowledge_check`) validates a records
+  directory against `KnowledgeRecord`, Open Knowledge Format v0.2 section 11, the
+  `knowledge.toml` pin, typed-link integrity, duplicate sources and supersession;
+  `--base REF` refuses in-place edits of accepted decisions. Knowledge repositories
+  call it through `.pre-commit-hooks.yaml` or the reusable
+  `.github/workflows/knowledge-check.yml`. `--vault` keeps checking learnings.
+- The knowledge-record contract: `KnowledgeRecord` in
+  `ai_dlc.documentation.knowledge_records`, its generated
+  `contracts/knowledge-record.schema.json`, format version 1 for knowledge repositories
+  to pin, and six templates under `agents/templates/knowledge/`. Records are Open
+  Knowledge Format v0.2 documents with OKF field names (KAN-471). It sits beside the
+  knowledge-note format, which is unchanged;
+  [ADR 0004](docs/decisions/0004-knowledge-system-scope.md) puts the knowledge system
+  in scope (KAN-421, KAN-454).
 - The second brain, phase A ([ADR 0003](docs/decisions/0003-second-brain-capture-and-publish.md),
   KAN-323). The knowledge-note schema gains `daily`, `meeting` and `thread` notes with
   `origin`, `lane`, `source` and `publish`. `ai-dlc knowledge captured`, `publish-plan`

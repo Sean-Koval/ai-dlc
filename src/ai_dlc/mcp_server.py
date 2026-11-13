@@ -185,7 +185,7 @@ def _register_workspace_tools(server: FastMCP, root: Path, config: dict) -> None
         return inspect_project_workspace(root, vault=config.get("paths", {}).get("vault"))
 
 
-def _register_knowledge_tools(server: FastMCP, config: dict) -> None:
+def _register_knowledge_tools(server: FastMCP, root: Path, config: dict) -> None:
     def knowledge():
         from ai_dlc.documentation.knowledge import Knowledge
 
@@ -209,6 +209,16 @@ def _register_knowledge_tools(server: FastMCP, config: dict) -> None:
         """Create a vault note without replacing existing content."""
         return knowledge().note(path, body, operation_id)
 
+    @server.tool()
+    def knowledge_check(records: str = ".", base: str | None = None) -> dict:
+        """Check a records directory (relative to the project) against the record contract.
+
+        Read-only. ``base`` is a git ref: decisions accepted there must not be edited.
+        """
+        from ai_dlc.documentation.knowledge_check import check_records
+
+        return check_records(root / records, base=base)
+
 
 def make_server(root: Path, machine: Path | None = None) -> FastMCP:
     config = config_for(root, machine)
@@ -216,7 +226,7 @@ def make_server(root: Path, machine: Path | None = None) -> FastMCP:
     _register_work_tools(server, root, machine)
     _register_docs_tools(server, root)
     _register_workspace_tools(server, root, config)
-    _register_knowledge_tools(server, config)
+    _register_knowledge_tools(server, root, config)
     return server
 
 
