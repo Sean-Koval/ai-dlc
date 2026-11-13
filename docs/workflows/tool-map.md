@@ -107,7 +107,7 @@ Their names join CLI words with underscores: `work_pr` is `ai-dlc work pr`.
 | Agent configuration | `ai-dlc agents render` | Previews, applies, or verifies owned project/personal client configuration |
 | Local work drafting | `ai-dlc work new WORK_ID [--from-issue REF]`, `ai-dlc work review WORK_ID` | Creates an unreviewed record from fields or a tracker read, then validates it and records the reviewer |
 | Work lifecycle | `ai-dlc work publish`, `ai-dlc work start`, `ai-dlc work pr`, `ai-dlc work finish` | Reconciles tracker state, binds work to a branch and enforces completion gates; `work finish <id> --at-merge` finishes from the exact merge commit |
-| Local work inspection | `ai-dlc work status`, `ai-dlc work show`, MCP `work_status`, `work_show` | Reads the local record, bindings and active/archived specification state without querying tracker status; `show` resolves a session join key to its work |
+| Local work inspection | `ai-dlc work status`, `work show`, MCP `work_status`, `work_show` | Reads records, bindings and specifications, not the tracker; `show` finds sessions |
 | Specification finalization | `ai-dlc work archive` | Archives this work's OpenSpec change, promotes specifications, repoints the record and commits only affected files before merge |
 | Traceability | `ai-dlc work link` | Links PR, specification, branch, deployment, or tracker evidence and commits only the work record by default |
 | Provider inspection and connection | `ai-dlc provider list`, `ai-dlc provider test`, `ai-dlc provider connect` | Discovers adapters, runs isolated contract or authorized live checks, and previews/applies an explicitly reviewed provider connection |
