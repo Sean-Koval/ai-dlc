@@ -383,6 +383,14 @@ owner = "repository-maintainers"
 status = "draft"
 
 [[documents]]
+id = "repo-design-session-join-key"
+path = "docs/design/session-join-key.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "active"
+code_paths = ["src/ai_dlc/work/session_key.py"]
+
+[[documents]]
 id = "repo-design-native-tool-composition"
 path = "docs/design/native-tool-composition.md"
 kind = "reference"

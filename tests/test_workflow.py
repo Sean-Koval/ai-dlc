@@ -2250,7 +2250,10 @@ def test_pr_opens_once_links_the_url_and_commits_the_record(tmp_path):
     assert scm.pull_requests == [
         {
             "title": "One",
-            "body": "## Scope\n\nsmall\n\n## Acceptance\n\n- Tests pass\n",
+            "body": (
+                "## Scope\n\nsmall\n\n## Acceptance\n\n- Tests pass\n"
+                "\nWork-Session: aidlc1:1:one:\n"
+            ),
             "base": "main",
             "head": "work/one",
         }
@@ -2280,7 +2283,9 @@ def test_pr_closes_the_issue_only_for_a_bare_github_issue_number(tmp_path):
     service.pr("one")
 
     assert scm.pull_requests[0]["base"] == "trunk"
-    assert scm.pull_requests[0]["body"].endswith("- Tests pass\n\nCloses #1\n")
+    assert scm.pull_requests[0]["body"].endswith(
+        "- Tests pass\n\nCloses #1\n\nWork-Session: aidlc1:1:one:\n"
+    )
 
 
 def test_pr_retry_after_a_lost_response_reuses_the_journaled_pull_request(tmp_path):

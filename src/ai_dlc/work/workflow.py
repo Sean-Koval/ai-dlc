@@ -28,6 +28,7 @@ from ai_dlc.work.merge_checkout import (
     repository_common_dir,
     require_merge_commit,
 )
+from ai_dlc.work.session_key import SessionKey, pull_request_session_keys
 from ai_dlc.work.traceability import (
     artifact_is_local,
     draft_issue_fields,
@@ -54,6 +55,17 @@ class Work(BaseModel):
     providers: dict[str, str] = Field(default_factory=dict)
     artifacts: dict[str, str] = Field(default_factory=dict)
     bindings: dict[str, str] = Field(default_factory=dict)
+    # Session join keys (ai_dlc.work.session_key), added by the session-start hook.
+    sessions: list[str] = Field(default_factory=list)
+
+    @field_validator("sessions")
+    @classmethod
+    def session_keys(cls, value):
+        if any(SessionKey.parse(item) is None for item in value):
+            raise ValueError(
+                "Sessions must be session join keys (aidlc1:<tracker>:<work>:<session>)"
+            )
+        return value
 
     @field_validator("id")
     @classmethod
@@ -106,6 +118,8 @@ class Work(BaseModel):
         for key in ("reviewed_by", "reviewed_at"):
             if data.get(key) is None:
                 data.pop(key, None)
+        if not data.get("sessions"):
+            data.pop("sessions", None)
         return data
 
 
@@ -1049,7 +1063,10 @@ class WorkService:
             and tracker_cfg.get("host", "github.com") == "github.com"
             else None
         )
-        payload = {"title": work["title"], "body": render_pull_request_body(work, closes=closes)}
+        body = render_pull_request_body(
+            work, closes=closes, session_keys=pull_request_session_keys(work)
+        )
+        payload = {"title": work["title"], "body": body}
         operation_id = self.op_id(work, "pr")
         record = self.journal.lookup(operation_id)
         if record and record["status"] in {"pending", "uncertain"}:

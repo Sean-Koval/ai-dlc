@@ -1584,6 +1584,14 @@ def work_status(work_id: str, root: Path = Path("."), machine: Path | None = Non
     emit(service(root, machine).status(work_id))
 
 
+@work.command("show")
+def work_show(key: str, root: Path = Path(".")):
+    """List the work records and sessions a session key, session ID, ticket or work ID names."""
+    from ai_dlc.work.session_key import find_sessions
+
+    emit({"query": key, "work": find_sessions(root, key)})
+
+
 @work.command("finish")
 def work_finish(
     work_id: str,
