@@ -17,7 +17,7 @@
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/tracker-adapter-boundary/spec.md": "f47d11b47618751d7bbf2950dc74442f766a94f36f2379d1f4f343942ff112eb",
         "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "76a103d91d072df3e246f49f3628f342fde7be85b4f3cd6bd85d207fa6e8a50b",
-        "plugins/ai-dlc-workflow/README.md": "2f9da72201cabfe5543a591e9a1cb377a02bcaf04ef19ca993735e70e950d8c8",
+        "plugins/ai-dlc-workflow/README.md": "6e0c43933fdd4d9f2c8d858a5affc0bd32e64a7a073ce91d2096efb574ce603a",
         "plugins/ai-dlc-workflow/hooks/aidlc_hook.py": "bebfefc15598a28f28e4ed9904857dcba803b116649d81dc292f935d9afd96e3",
         "plugins/ai-dlc-workflow/hooks/hooks.json": "6832b0f038d5b95069922ce99a3eb8ec473d61cf92aa5d09ec35925332ad80b4",
         "plugins/ai-dlc-workflow/native/codex/.codex-plugin/plugin.json": "dac17481a41741e96f6236e6f0af3b41212657920fc43211e7f3bff6a5eb19e0",
@@ -35,7 +35,7 @@
         "plugins/ai-dlc-workflow/native/codex/skills/handoff/SKILL.md": "47813221a030ff1d19642b9e6ebf234ded18fd128fef857badd4b77612529ecd",
         "plugins/ai-dlc-workflow/native/codex/skills/prd-draft/SKILL.md": "046b82e994b36b2202f7772aafc93557b903d2b541e69a62414d9b5a0b5d75fc",
         "plugins/ai-dlc-workflow/native/codex/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
-        "plugins/ai-dlc-workflow/plugin.lock.json": "b44c2153e9efba49eba9e0e52719e3411c933cacc798c08c9a8d01f7f8bb5e85",
+        "plugins/ai-dlc-workflow/plugin.lock.json": "f14ba81c74cf03ad3004e3d7f2139c74d461ee0ca8b4bd6269709873c28753ce",
         "plugins/ai-dlc-workflow/skills/ai-dlc-workflow/SKILL.md": "199a64bdf62a1de0027a6c87f53070cf89c56de33f10e125aeb35bf432c2a3aa",
         "plugins/ai-dlc-workflow/skills/capture/SKILL.md": "c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
         "plugins/ai-dlc-workflow/skills/daily-note/SKILL.md": "7e6d34c7bbb6ffe054b347e4fc19857b91b6d3791273fdc708f5ce6f92cc6209",
@@ -182,7 +182,7 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "KAN-487: still accurate; it says the shim delegates in adopted repositories and otherwise denies destructive commands, and hooks.py imports its classifier. Matcher and failure details live in the plugin README. Re-recorded after rebasing onto KAN-481.",
+      "reason": "KAN-487 review fix: only the plugin README's Windows wording changed; architecture says nothing about hook failure on Windows.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
@@ -363,11 +363,11 @@
       "bound": {
         "catalog:docs/workflows/workflow-plugin-harness.md": "4384ef72e8938151681c2e34243f41a606aca921220d8bbaed30019c61e27a90",
         "docs/workflows/workflow-plugin-harness.md": "b1ac284f80ac05a935ef2223610609a186e219a6c8bf509de24fabd906dd4258",
-        "plugins/ai-dlc-workflow/README.md": "2f9da72201cabfe5543a591e9a1cb377a02bcaf04ef19ca993735e70e950d8c8",
+        "plugins/ai-dlc-workflow/README.md": "6e0c43933fdd4d9f2c8d858a5affc0bd32e64a7a073ce91d2096efb574ce603a",
         "scripts/publish_workflow_plugin.py": "96d95c413671a55a0e42d690f1c6d64528c11203e0a44359e3422d082ca34b9d"
       },
       "outcome": "reviewed-no-change",
-      "reason": "KAN-487: publication into a harness is unchanged; the README edits are about hook behaviour, not publication.",
+      "reason": "KAN-487 review fix: the README now says a hook that cannot start does not block; this page makes no claim about Windows hook failure.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/workflow-plugin-harness.md"
     },
@@ -376,7 +376,7 @@
         "catalog:docs/workflows/workflow-plugin.md": "9e03b3ce099c0f527c8f02590717bb6021621b582d36ef7c3591815025088794",
         "docs/workflows/workflow-plugin.md": "817faef1c788d019d09396aabf82022505c54cc37f4d9686b95d6d753da26d76",
         "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "76a103d91d072df3e246f49f3628f342fde7be85b4f3cd6bd85d207fa6e8a50b",
-        "plugins/ai-dlc-workflow/README.md": "2f9da72201cabfe5543a591e9a1cb377a02bcaf04ef19ca993735e70e950d8c8",
+        "plugins/ai-dlc-workflow/README.md": "6e0c43933fdd4d9f2c8d858a5affc0bd32e64a7a073ce91d2096efb574ce603a",
         "plugins/ai-dlc-workflow/hooks/aidlc_hook.py": "bebfefc15598a28f28e4ed9904857dcba803b116649d81dc292f935d9afd96e3",
         "plugins/ai-dlc-workflow/hooks/hooks.json": "6832b0f038d5b95069922ce99a3eb8ec473d61cf92aa5d09ec35925332ad80b4",
         "plugins/ai-dlc-workflow/native/codex/.codex-plugin/plugin.json": "dac17481a41741e96f6236e6f0af3b41212657920fc43211e7f3bff6a5eb19e0",
@@ -394,7 +394,7 @@
         "plugins/ai-dlc-workflow/native/codex/skills/handoff/SKILL.md": "47813221a030ff1d19642b9e6ebf234ded18fd128fef857badd4b77612529ecd",
         "plugins/ai-dlc-workflow/native/codex/skills/prd-draft/SKILL.md": "046b82e994b36b2202f7772aafc93557b903d2b541e69a62414d9b5a0b5d75fc",
         "plugins/ai-dlc-workflow/native/codex/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
-        "plugins/ai-dlc-workflow/plugin.lock.json": "b44c2153e9efba49eba9e0e52719e3411c933cacc798c08c9a8d01f7f8bb5e85",
+        "plugins/ai-dlc-workflow/plugin.lock.json": "f14ba81c74cf03ad3004e3d7f2139c74d461ee0ca8b4bd6269709873c28753ce",
         "plugins/ai-dlc-workflow/skills/ai-dlc-workflow/SKILL.md": "199a64bdf62a1de0027a6c87f53070cf89c56de33f10e125aeb35bf432c2a3aa",
         "plugins/ai-dlc-workflow/skills/capture/SKILL.md": "c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
         "plugins/ai-dlc-workflow/skills/daily-note/SKILL.md": "7e6d34c7bbb6ffe054b347e4fc19857b91b6d3791273fdc708f5ce6f92cc6209",
@@ -410,16 +410,16 @@
         "scripts/publish_workflow_plugin.py": "96d95c413671a55a0e42d690f1c6d64528c11203e0a44359e3422d082ca34b9d"
       },
       "outcome": "reviewed-no-change",
-      "reason": "KAN-487: still accurate (the hooks need python3); the plugin README owns the matcher and the fail-closed rules and was updated.",
+      "reason": "KAN-487 review fix: the README's Windows wording changed; this page makes no claim about Windows hook failure.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/workflow-plugin.md"
     },
     {
       "bound": {
-        "openspec/changes/plugin-hook-powershell/proposal.md": "666d5535735b6a9c3403502bf0df1f0e4c696bcaefac42c6eefb3a72d00739fb"
+        "openspec/changes/plugin-hook-powershell/proposal.md": "b246734d8458bd9b7456b7801977af069728fbe6ff81ce4b73e9d4c5ad262c53"
       },
       "outcome": "updated",
-      "reason": "KAN-487: new OpenSpec change proposing PowerShell coverage and a fail-closed PreToolUse for the workflow plugin hook.",
+      "reason": "KAN-487 review fix: a hook that cannot start is a non-blocking error in Claude Code, so PowerShell calls run unguarded without python3.",
       "reviewer": "Claude (agent)",
       "target": "openspec/changes/plugin-hook-powershell/proposal.md"
     },

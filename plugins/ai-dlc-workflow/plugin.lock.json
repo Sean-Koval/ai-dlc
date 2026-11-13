@@ -16,7 +16,7 @@
   "content_digest": "sha256:047a785ae3163e8d82c5b2c9d0aa6fd1f34170079e4fdecb6e906e5981680d56",
   "files": {
     ".claude-plugin/plugin.json": "sha256:76a103d91d072df3e246f49f3628f342fde7be85b4f3cd6bd85d207fa6e8a50b",
-    "README.md": "sha256:2f9da72201cabfe5543a591e9a1cb377a02bcaf04ef19ca993735e70e950d8c8",
+    "README.md": "sha256:6e0c43933fdd4d9f2c8d858a5affc0bd32e64a7a073ce91d2096efb574ce603a",
     "hooks/aidlc_hook.py": "sha256:bebfefc15598a28f28e4ed9904857dcba803b116649d81dc292f935d9afd96e3",
     "hooks/hooks.json": "sha256:6832b0f038d5b95069922ce99a3eb8ec473d61cf92aa5d09ec35925332ad80b4",
     "skills/ai-dlc-workflow/SKILL.md": "sha256:199a64bdf62a1de0027a6c87f53070cf89c56de33f10e125aeb35bf432c2a3aa",

@@ -116,8 +116,8 @@ it delegates, Stop reminds the agent once per session, through exit 2, to record
 outcomes for the work bound to the current branch.
 
 The shim reads only the command text, never runs it, and writes nothing to disk.
-PreToolUse fails closed. A payload it cannot read, a shell call with no command
-string, or an error inside the shim exits 2. The shim's destructive check runs
+Once it runs, PreToolUse fails closed. A payload it cannot read, a shell call with
+no command string, or an error inside the shim exits 2. The shim's destructive check runs
 before it delegates, so an older or broken CLI cannot turn it off. A failing or
 slow delegate is then allowed with a one-line note. SessionStart and Stop never
 block on a failure.
@@ -126,9 +126,10 @@ block on a failure.
 
 - `python3` (3.10 or later) must be on PATH. There is no shell fallback. Native
   Windows plugin hooks are unsupported because exec form cannot substitute another
-  interpreter name. Claude Code blocks a PowerShell call whose PreToolUse hook
-  cannot start, so on native Windows without a working `python3`, disable the
-  plugin rather than run it.
+  interpreter name. A hook that cannot start is a non-blocking error in Claude
+  Code: the call goes ahead. So on native Windows without a working `python3`,
+  PowerShell calls run unguarded. The hooks do not set `onFailure: "block"`,
+  which would stop every call there. Disable the plugin on such a machine instead.
 - Hangar's hardened `ask` and `deny-risky` turns drop `enabledPlugins` and
   `extraKnownMarketplaces`, so the plugin does not load in those turns. Compare
   arms in turn modes where plugins load, or have hangar mount the plugin through

@@ -34,5 +34,7 @@ it delegates, so a broken or older CLI turns the check off. Tracks
 ## Impact
 
 A destructive command sent through Claude Code's PowerShell tool is now denied. On
-native Windows without a working `python3`, PowerShell calls are blocked rather
-than unguarded; native Windows plugin hooks remain unsupported.
+native Windows without a working `python3`, the hook cannot start, which Claude
+Code treats as a non-blocking error, so PowerShell calls run unguarded. The hooks
+do not set `onFailure: "block"`, which would stop every call there. Native Windows
+plugin hooks remain unsupported.
