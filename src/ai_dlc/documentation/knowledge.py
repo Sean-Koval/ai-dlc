@@ -58,11 +58,18 @@ class Knowledge:
         if not self.root.is_dir():
             raise ValueError("knowledge unavailable: existing vault path is required")
 
-    def get(self, id: str) -> dict:
-        """The knowledge record in this vault whose id or alias is ``id``."""
-        from ai_dlc.documentation import record_index
+    def get(self, id: str, project: str | None = None) -> dict:
+        """The knowledge record in this vault whose id or alias is ``id``.
 
-        return record_index.get(self.root, id)
+        A ``boundary: customer`` record is found only for its own ``project``.
+        """
+        from ai_dlc.documentation import record_index
+        from ai_dlc.documentation.knowledge_check import visible_in
+
+        found = record_index.get(self.root, id)
+        if not visible_in(found["header"], found["path"], project):
+            raise LookupError(f"no knowledge record has id or alias {id}")
+        return found
 
     def search(
         self,
@@ -71,11 +78,17 @@ class Knowledge:
         labels: list[str] | None = None,
         status: str | None = None,
         text: str | None = None,
+        project: str | None = None,
     ) -> dict:
-        """Knowledge records in this vault matching every given filter."""
-        from ai_dlc.documentation import record_index
+        """Knowledge records in this vault matching every given filter.
 
-        return record_index.search(self.root, type, scope, labels or (), status, text)
+        A ``boundary: customer`` record is returned only for its own ``project``.
+        """
+        from ai_dlc.documentation import record_index
+        from ai_dlc.documentation.knowledge_check import team_inputs
+
+        found = record_index.search(self.root, type, scope, labels or (), status, text)
+        return {**found, "items": team_inputs(found["items"], project)}
 
     def find(self, query: str, limit: int = 20) -> list[dict]:
         results = []

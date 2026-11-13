@@ -13,13 +13,21 @@ permanent and raw payloads expire, so ``derived_from`` must name a source record
 
 With ``base`` (CI mode) it also refuses in-place edits of decisions that were accepted
 at the merge base. The CLI and the MCP tool both call :func:`check_records`.
+
+Records with ``boundary: customer`` never leave their project (KAN-465). They must sit
+under ``projects/<name>/``, only customer records of that project may link to them,
+and no other record may quote their body, cite them or their paths in ``sources`` or
+link into their project from its body. Index, render and search keep them out of
+team-scope views with :func:`visible_in` and :func:`team_inputs`.
 """
 
+import posixpath
 import re
 import tomllib
 from collections import defaultdict
+from collections.abc import Iterable, Mapping
 from datetime import date
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 from ai_dlc.documentation import knowledge_records as records
@@ -38,6 +46,15 @@ HEADING = re.compile(r"^##[ \t]+(.+?)[ \t]*#*[ \t]*$")
 # and numbering at merge (slug id becomes PREFIX-NNNN and the slug moves to aliases;
 # links and sources that named the slug name the number).
 SUPERSEDE_KEYS = ("status", "valid_to")
+# Customer records live in projects/<name>/; a quote is this many words in a row.
+PROJECTS = "projects"
+QUOTE_WORDS = 8
+_WORD = re.compile(r"[^\W_]+")
+# Markdown link targets: inline [text](target) and reference [label]: target.
+_MARKDOWN_LINK = re.compile(
+    r"\]\(\s*<?([^)\s>]+)|^\s*\[[^\]]+\]:\s*<?(\S+?)>?(?:\s|$)", re.MULTILINE
+)
+_PROJECT_PATH = re.compile(r"(?:^|/)projects/([a-z0-9][a-z0-9-]*)(?:/|$)")
 
 
 class _Bundle:
@@ -45,6 +62,10 @@ class _Bundle:
         self.failures: list[dict[str, str]] = []
         self.legacy: list[dict[str, str]] = []
         self.records: dict[str, records.KnowledgeRecord] = {}
+        self.bodies: dict[str, str] = {}
+        # Prefix that turns a path relative to the checked folder into one relative to
+        # the knowledge repository (the directory holding knowledge.toml).
+        self.prefix = ""
 
     def fail(self, path: str, pointer: str, message: str) -> None:
         self.failures.append({"path": path, "pointer": pointer, "message": message})
@@ -69,6 +90,8 @@ def check_records(
         raise ValueError(f"records directory not found: {root}")
     bundle = _Bundle()
     settings = _check_pin(bundle, folder, config)
+    if settings and folder.is_relative_to(settings[0].parent):
+        bundle.prefix = folder.relative_to(settings[0].parent).as_posix()
     scopes = _roots(bundle, folder, settings)
     for scope in scopes:
         for path in _markdown(scope):
@@ -84,6 +107,7 @@ def check_records(
     _check_links(bundle, index)
     _check_supersession(bundle, index)
     _check_duplicate_sources(bundle)
+    _check_boundary(bundle, index)
     if base:
         _check_against_base(bundle, folder, settings, scopes, base)
     bundle.failures.sort(key=lambda item: (item["path"], item["pointer"], item["message"]))
@@ -133,7 +157,7 @@ def _pointer(location: str) -> str:
 
 def _check_record(bundle: _Bundle, relative: str, text: str) -> None:
     try:
-        data, _raw, _body = split(text)
+        data, _raw, body = split(text)
     except ValueError as exc:
         bundle.fail(relative, "", f"{exc} (OKF v0.2 section 11)")
         return
@@ -150,6 +174,7 @@ def _check_record(bundle: _Bundle, relative: str, text: str) -> None:
         bundle.fail(relative, "/type", "a non-empty type is required (OKF v0.2 section 11)")
         return
     problems = records.errors(data)
+    bundle.bodies[relative] = body
     for problem in problems:
         location, _, message = problem.partition(": ")
         if not message:
@@ -403,6 +428,192 @@ def _check_duplicate_sources(bundle: _Bundle) -> None:
                     f"duplicate of {first}: same type, title and source hash; "
                     "link it with derived_from instead",
                 )
+
+
+# --- Customer boundary: customer records never leave their project (KAN-465) -------
+
+
+def project_of(path: str | PurePosixPath) -> str | None:
+    """The project of a record path relative to the knowledge repository root.
+
+    ``projects/<name>/...`` belongs to ``<name>``; any other path to no project.
+    """
+    parts = PurePosixPath(path).parts
+    if len(parts) > 2 and parts[0] == PROJECTS and SLUG.match(parts[1]):
+        return parts[1]
+    return None
+
+
+def _boundary(record: records.KnowledgeRecord | Mapping[str, Any]) -> object:
+    if isinstance(record, Mapping):
+        return record.get("boundary")
+    return record.boundary
+
+
+def is_customer(record: records.KnowledgeRecord | Mapping[str, Any]) -> bool:
+    """Whether a record (a model or a header mapping) carries ``boundary: customer``."""
+    return _boundary(record) == "customer"
+
+
+def visible_in(
+    record: records.KnowledgeRecord | Mapping[str, Any],
+    path: str | PurePosixPath,
+    project: str | None = None,
+) -> bool:
+    """Whether a record may appear in a view of ``project`` (``None``: a team-scope view).
+
+    ``path`` is relative to the knowledge repository root. A customer record is
+    visible only in a view of the project it sits under; a customer record outside
+    ``projects/<name>/`` is visible nowhere. Every other record is visible.
+    """
+    if not is_customer(record):
+        return True
+    owner = project_of(path)
+    return owner is not None and owner == project
+
+
+def team_inputs[Entry: Mapping[str, Any]](
+    entries: Iterable[Entry], project: str | None = None
+) -> list[Entry]:
+    """The entries an index, render or search of ``project`` may use, in order.
+
+    Each entry is a mapping with ``path`` (relative to the knowledge repository root)
+    and ``record`` (a model) or ``header`` (a mapping), the shapes
+    :func:`ai_dlc.documentation.record_index.scan` and ``search`` return. With
+    ``project`` unset, the result is safe for the top-level index and the team tree.
+    """
+    kept = []
+    for entry in entries:
+        record = entry.get("record", entry.get("header"))
+        if record is None or visible_in(record, entry["path"], project):
+            kept.append(entry)
+    return kept
+
+
+def _passages(body: str) -> set[tuple[str, ...]]:
+    words = [word.casefold() for word in _WORD.findall(body)]
+    return {tuple(words[n : n + QUOTE_WORDS]) for n in range(len(words) - QUOTE_WORDS + 1)}
+
+
+def _check_boundary(bundle: _Bundle, index: dict[str, str]) -> None:
+    owners: dict[str, str | None] = {}
+    for path, record in bundle.records.items():
+        if not is_customer(record):
+            continue
+        owner = owners[path] = project_of(_join(bundle.prefix, path))
+        if owner is None:
+            bundle.fail(
+                path,
+                "/boundary",
+                f"a customer record must sit under {PROJECTS}/<name>/; it never leaves its project",
+            )
+    for path, record in bundle.records.items():
+        mine = owners.get(path) if is_customer(record) else None
+        for number, link in enumerate(record.links):
+            target = index.get(link.target)
+            if target is None or target not in owners:
+                continue
+            theirs = owners[target]
+            if not is_customer(record):
+                bundle.fail(
+                    path,
+                    f"/links/{number}/target",
+                    f"{link.target} is a customer record of project {theirs or '(none)'}; "
+                    "only customer records of that project may link to it",
+                )
+            elif mine != theirs:
+                bundle.fail(
+                    path,
+                    f"/links/{number}/target",
+                    f"{link.target} is a customer record of project {theirs or '(none)'}, "
+                    f"not {mine or '(none)'}; links never cross customer projects",
+                )
+    _check_sources(bundle, index, owners)
+    _check_markdown_links(bundle, owners)
+    _check_quotes(bundle, owners)
+
+
+def _check_markdown_links(bundle: _Bundle, owners: dict[str, str | None]) -> None:
+    """No record outside a customer project links into it from its body.
+
+    The link path alone names the customer, so even a broken link fails.
+    """
+    projects = {owner for owner in owners.values() if owner}
+    if not projects:
+        return
+    for path in bundle.records:
+        located = _join(bundle.prefix, path)
+        mine = project_of(located)
+        for match in _MARKDOWN_LINK.finditer(bundle.bodies.get(path, "")):
+            target = re.sub(r"[\\/]+", "/", match.group(1) or match.group(2))
+            if "://" not in target and not target.startswith("/"):
+                target = posixpath.normpath(posixpath.join(posixpath.dirname(located), target))
+            found = _PROJECT_PATH.search(target)
+            if found and found.group(1) in projects and found.group(1) != mine:
+                bundle.fail(
+                    path,
+                    "",
+                    f"links into customer project {found.group(1)} from its body; the "
+                    "path names the customer",
+                )
+                break
+
+
+def _check_sources(bundle: _Bundle, index: dict[str, str], owners: dict[str, str | None]) -> None:
+    """A record outside the boundary cites no customer record and no customer path.
+
+    Promotion writes a team Source holding a summary a person sanitised; its
+    ``sources`` name no customer path, and the team record derives from it.
+    """
+    projects = {owner for owner in owners.values() if owner}
+    for path, record in bundle.records.items():
+        if is_customer(record):
+            continue
+        for number, entry in enumerate(record.sources):
+            for value in (entry.id, entry.resource):
+                if not value:
+                    continue
+                target = index.get(value)
+                match = _PROJECT_PATH.search(re.sub(r"[\\/]+", "/", value))
+                if target in owners:
+                    project = owners[target] or "(none)"
+                elif match and match.group(1) in projects:
+                    project = match.group(1)
+                else:
+                    continue
+                bundle.fail(
+                    path,
+                    f"/sources/{number}",
+                    f"cites customer project {project}; promote through a team source "
+                    "whose sources name no customer path",
+                )
+                break
+
+
+def _check_quotes(bundle: _Bundle, owners: dict[str, str | None]) -> None:
+    """No record outside a customer project repeats a passage of its records' bodies."""
+    quoted: dict[tuple[str, ...], str] = {}
+    for path in sorted(owners):
+        for passage in _passages(bundle.bodies.get(path, "")):
+            quoted.setdefault(passage, path)
+    if not quoted:
+        return
+    for path, record in bundle.records.items():
+        mine = owners.get(path) if is_customer(record) else None
+        for passage in sorted(_passages(bundle.bodies.get(path, ""))):
+            source = quoted.get(passage)
+            if source is None or source == path:
+                continue
+            if mine is not None and mine == owners[source]:
+                continue
+            bundle.fail(
+                path,
+                "",
+                f"quotes {QUOTE_WORDS} or more words in a row from customer record "
+                f"{bundle.records[source].id} (project {owners[source] or '(none)'}); "
+                "promote it without customer content instead",
+            )
+            break
 
 
 # --- CI mode: accepted decisions are never edited in place ---------------------------
