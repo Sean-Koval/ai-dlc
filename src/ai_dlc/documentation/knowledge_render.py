@@ -19,6 +19,8 @@ default, and a wiki provider bound to any other site is refused before anything 
 Render filters its inputs with :func:`~ai_dlc.documentation.knowledge_check.team_inputs`
 (KAN-465). A wiki that declares no ``project`` gets no ``boundary: customer`` record.
 A wiki declared for a customer project gets only the records under ``projects/<name>/``.
+A customer repository (``[repo] boundary = "customer"``, KAN-475) renders only to a wiki
+declared for its own project.
 """
 
 import hashlib
@@ -31,7 +33,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit
 
-from ai_dlc.documentation.knowledge_check import SLUG, project_of, team_inputs
+from ai_dlc.documentation.knowledge_check import SLUG, project_of, repo_boundary, team_inputs
 from ai_dlc.documentation.knowledge_records import RETRACTED
 from ai_dlc.errors import RefusedError
 
@@ -64,6 +66,13 @@ def wiki_target(root: Path) -> dict:
     project = wiki.get("project")
     if project is not None and (not isinstance(project, str) or not SLUG.fullmatch(project)):
         raise RefusedError("knowledge.toml [wiki] project must be a project directory name")
+    # A customer repository (KAN-475) renders only to a wiki declared for its project.
+    declared, problems = repo_boundary(data)
+    if problems or ("repo" in data and declared is None) or (declared and project != declared):
+        raise RefusedError(
+            "a customer knowledge repository renders only to a wiki whose [wiki] project "
+            "is its own [repo] project"
+        )
     return {
         "site": site,
         "source": source if source.endswith("/") else source + "/",

@@ -12,7 +12,8 @@ files into a local checkout of the knowledge repository:
 ``<inbox>`` is the top-level ``inbox`` of the team checkout. A transcript routed to a
 customer lands in the top-level ``inbox`` of that customer's own knowledge repository
 instead, with ``boundary: customer`` and ``project: <name>``; customer knowledge never
-enters the team repository. When that repository's local path is not configured, the
+enters the team repository. When that repository's local path is not configured, or it
+does not declare ``[repo] boundary = "customer"`` and that ``project`` (KAN-475), the
 transcript is skipped and logged; there is no fallback to the team repository.
 
 The pull is idempotent by transcript id: a transcript is skipped when any record in
@@ -29,6 +30,11 @@ caller cannot read is skipped and its id logged. Routing lives in the team check
     titles = ["Alpha"]                 # case-insensitive substrings of the meeting title
     participants = ["@alpha.example"]  # substrings of a participant name or email
     repo_env = "KNOWLEDGE_REPO_ALPHA"  # default; names the variable holding the local path
+
+Once customer rules exist, a transcript that matches none goes to the team repository
+only when every participant matches ``[transcripts] internal`` (internal email domains or
+addresses, or exact names when the provider gives no emails); otherwise it is skipped and
+logged. A customer transcript is reported by id and project only.
 """
 
 import hashlib
@@ -43,7 +49,7 @@ from typing import Any
 from pydantic import TypeAdapter, ValidationError
 
 from ai_dlc.documentation import knowledge_records as records
-from ai_dlc.documentation.knowledge_check import SLUG
+from ai_dlc.documentation.knowledge_check import SLUG, repo_boundary
 from ai_dlc.documentation.record_index import read_header
 from ai_dlc.errors import RefusedError, UncertainError
 from ai_dlc.files import atomic_create, atomic_write, inside
@@ -123,16 +129,33 @@ def routing(root: Path) -> dict:
         if not isinstance(variable, str) or not _ENV_NAME.fullmatch(variable):
             raise RefusedError(f"{where}: repo_env must name an environment variable")
         customers.append({"project": entry["project"], "repo_env": variable, **patterns})
-    return {"owner": owner.strip(), "scope": scope, "customers": customers}
+    internal = table.get("internal") or []
+    if not isinstance(internal, list) or not all(
+        isinstance(v, str) and v.strip() for v in internal
+    ):
+        raise RefusedError("knowledge.toml [transcripts] internal must be a list of strings")
+    return {
+        "owner": owner.strip(),
+        "scope": scope,
+        "customers": customers,
+        "internal": [v.strip().casefold() for v in internal],
+    }
 
 
-def route(item: Mapping[str, Any], customers: list[dict]) -> dict | None | str:
+def route(
+    item: Mapping[str, Any], customers: list[dict], internal: list[str] | None = None
+) -> dict | None | str:
     """The customer a transcript belongs to, None for the team repository, or a skip reason.
 
-    A transcript that matches two customers is skipped rather than guessed.
+    A transcript that matches two customers is skipped rather than guessed. Once customer
+    rules exist, a transcript that matches none goes to the team repository only when
+    every participant is internal (KAN-475); otherwise it may be an unmapped customer
+    meeting, so it goes nowhere and is reported.
     """
     title = str(item.get("title", "")).casefold()
-    people = [p.casefold() for p in [*item.get("participants", []), *item.get("emails", [])]]
+    names = [str(p).strip().casefold() for p in item.get("participants") or [] if str(p).strip()]
+    emails = [str(e).strip().casefold() for e in item.get("emails") or [] if str(e).strip()]
+    people = [*names, *emails]
     matched = {
         customer["project"]: customer
         for customer in customers
@@ -141,10 +164,58 @@ def route(item: Mapping[str, Any], customers: list[dict]) -> dict | None | str:
     }
     if len(matched) > 1:
         return "matches several customers: " + ", ".join(sorted(matched))
-    return next(iter(matched.values()), None)
+    if matched:
+        return next(iter(matched.values()))
+    if customers and not all_internal(names, emails, internal or []):
+        return (
+            "matches no customer rule and not every participant is internal; add a "
+            "customer rule or list internal participants in [transcripts] internal"
+        )
+    return None
 
 
-def customer_repo(customer: Mapping[str, Any], environ: Mapping[str, str]) -> Path | str:
+def all_internal(names: list[str], emails: list[str], internal: list[str]) -> bool:
+    """Whether every participant is positively internal.
+
+    An ``internal`` entry is a domain (``@corp.com`` or ``corp.com``), an exact email,
+    or an exact name. An email matches its exact domain or a subdomain of it, never a
+    look-alike such as ``corp.com.example`` or ``notcorp.com``. With emails, each one
+    must match and no participant may be without one; without emails, each name must
+    match exactly.
+    """
+    if not internal or not names and not emails:
+        return False
+    if emails and len(emails) < len(names):
+        return False
+    domains, addresses, people = set(), set(), set()
+    for entry in internal:
+        value = " ".join(entry.casefold().split())
+        if value.startswith("@"):
+            domains.add(value[1:].strip("."))
+        elif "@" in value:
+            addresses.add(value)
+        elif "." in value and " " not in value:
+            domains.add(value.strip("."))
+        else:
+            people.add(value)
+
+    def internal_email(email: str) -> bool:
+        if email in addresses:
+            return True
+        _local, at, domain = email.rpartition("@")
+        domain = domain.strip(".")
+        return bool(at) and any(
+            domain == known or domain.endswith("." + known) for known in domains if known
+        )
+
+    if emails:
+        return all(internal_email(email) for email in emails)
+    return all(" ".join(name.split()) in people for name in names)
+
+
+def customer_repo(
+    customer: Mapping[str, Any], environ: Mapping[str, str], team: Path | None = None
+) -> Path | str:
     """The customer repository's local checkout, or the reason it is unusable."""
     location = environ.get(customer["repo_env"], "").strip()
     if not location:
@@ -153,15 +224,28 @@ def customer_repo(customer: Mapping[str, Any], environ: Mapping[str, str]) -> Pa
             f"set {customer['repo_env']} to its local checkout"
         )
     root = Path(location).expanduser().resolve()
+    if team is not None:
+        team = team.resolve()
+        if root == team or root.is_relative_to(team) or team.is_relative_to(root):
+            return f"{customer['repo_env']} names the team checkout or a folder that overlaps it"
     config = root / "knowledge.toml"
     if not config.is_file():
         return f"{customer['repo_env']} does not name a knowledge repository checkout"
     try:
-        problems = records.pin_errors(tomllib.loads(config.read_text(encoding="utf-8")))
+        parsed = tomllib.loads(config.read_text(encoding="utf-8"))
+        problems = records.pin_errors(parsed)
     except (tomllib.TOMLDecodeError, UnicodeDecodeError):
-        problems = ["knowledge.toml is not valid TOML"]
+        parsed, problems = {}, ["knowledge.toml is not valid TOML"]
     if problems:
         return f"customer repository for {customer['project']}: {problems[0]}"
+    # The repository must declare itself this customer's (KAN-475), so a variable that
+    # points at the team repository or another customer's never receives a transcript.
+    declared, _problems = repo_boundary(parsed)
+    if declared != customer["project"]:
+        return (
+            f"{customer['repo_env']} names a repository that does not declare "
+            f'[repo] boundary = "customer" and project = "{customer["project"]}"'
+        )
     return root
 
 
@@ -299,12 +383,12 @@ class TranscriptPull:
         }
 
         def target(item: Mapping[str, Any]) -> tuple[Path, dict | None] | str:
-            customer = route(item, settings["customers"])
+            customer = route(item, settings["customers"], settings["internal"])
             if customer is None:
                 return root, None
             if isinstance(customer, str):
                 return customer
-            found = customer_repo(customer, self.environ)
+            found = customer_repo(customer, self.environ, root)
             if isinstance(found, str):
                 return found  # never fall back to the team repository
             if found not in seen:
@@ -320,13 +404,18 @@ class TranscriptPull:
                 continue
             for item in listed:
                 key = f"{kind}:{item['id']}"
-                entry = {"provider": provider, "id": item["id"], "title": item["title"]}
+                # The result leaves the customer repository (logs, the batch), so a
+                # transcript that is, or may be, a customer's is reported by id and
+                # project only: no title, no local path (KAN-475).
+                entry = {"provider": provider, "id": item["id"]}
                 routed = target(item)
                 if isinstance(routed, str):
                     result["skipped"].append({**entry, "reason": routed})
                     continue
                 where, customer = routed
                 project = customer["project"] if customer else None
+                if customer is None:
+                    entry["title"] = item["title"]
                 if key in seen[where]:
                     result["existing"].append({**entry, "project": project})
                     continue
@@ -335,11 +424,16 @@ class TranscriptPull:
                     continue
                 try:
                     transcript = self.registry.invoke(provider, "fetch", {"id": item["id"]})
+                # A provider's message may quote the meeting; a customer's never leaves.
                 except TranscriptUnavailable as exc:
-                    result["skipped"].append({**entry, "reason": str(exc)})
+                    reason = "the provider has no transcript for it" if customer else str(exc)
+                    result["skipped"].append({**entry, "reason": reason})
                     continue
                 except UncertainError as exc:
-                    result["errors"].append({**entry, "reason": str(exc)})
+                    reason = (
+                        "the provider fetch failed; run the pull again" if customer else str(exc)
+                    )
+                    result["errors"].append({**entry, "reason": reason})
                     continue
                 # The fetched participants may add speakers; the route must not change.
                 if target({**item, **transcript}) != routed:
@@ -349,6 +443,8 @@ class TranscriptPull:
                     continue
                 written = self._write(where, transcript, kind, key, settings, customer)
                 seen[where].add(key)
+                if customer is not None:
+                    written = {"project": customer["project"], "record": written["record"]}
                 result["written"].append({**entry, **written})
         if result["errors"]:
             result["status"] = "failed"

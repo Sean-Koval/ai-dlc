@@ -1821,6 +1821,79 @@ def knowledge_render(
     conclude(result)
 
 
+@knowledge.command("init")
+def knowledge_init(
+    customer: Annotated[str, typer.Option("--customer", help="customer project name (slug)")],
+    path: Annotated[Path | None, typer.Option("--path", help="new or empty directory")] = None,
+    codeowner: Annotated[
+        list[str] | None, typer.Option("--codeowner", help="@user or @org/team reviewer")
+    ] = None,
+    deny: Annotated[list[str] | None, typer.Option("--deny", help="extra deny-list term")] = None,
+    ai_dlc_ref: Annotated[
+        str | None,
+        typer.Option(
+            "--ai-dlc-ref", help="release tag or commit CI pins (default: installed release)"
+        ),
+    ] = None,
+    dry_run: Annotated[bool, typer.Option("--dry-run")] = False,
+):
+    """Write a separate customer knowledge repository: boundary customer, no wiki target.
+
+    Default directory: ``<customer>-knowledge``. ``--dry-run`` lists the files and writes nothing.
+    """
+    from ai_dlc.documentation.knowledge_customer import init_customer
+
+    with service_call():
+        result = init_customer(
+            path or Path(f"{customer}-knowledge"),
+            customer,
+            dry_run=dry_run,
+            codeowners=codeowner or [],
+            deny=deny or [],
+            ai_dlc_ref=ai_dlc_ref,
+        )
+    for warning in result["warnings"]:
+        typer.echo(f"Warning: {warning}", err=True)
+    emit(result)
+
+
+@knowledge.command("promote")
+def knowledge_promote(
+    id: Annotated[str, typer.Argument(help="customer record id")],
+    summary: Annotated[Path, typer.Option("--summary", help="sanitised summary a person wrote")],
+    title: Annotated[str, typer.Option("--title")],
+    owner: Annotated[str, typer.Option("--owner")],
+    to: Annotated[Path | None, typer.Option("--to", help="team knowledge repository")] = None,
+    root: Annotated[Path, typer.Option("--root", help="repository holding the record")] = Path("."),
+    kind: Annotated[str | None, typer.Option("--type", help="lesson, convention, ...")] = None,
+    slug: Annotated[str | None, typer.Option("--slug")] = None,
+    branch: Annotated[str | None, typer.Option("--branch", help="default promote/<slug>")] = None,
+    dry_run: Annotated[bool, typer.Option("--dry-run")] = False,
+):
+    """Promote a customer record to the team repository through a sanitised summary.
+
+    Refuses deny-list terms, web addresses, customer paths and quotes, and writes
+    nothing then. Otherwise commits a team Source and record on a new local branch of
+    the team repository for a person to review; nothing is pushed.
+    """
+    from ai_dlc.documentation.knowledge_customer import promote
+
+    with service_call():
+        result = promote(
+            root,
+            id,
+            summary=summary.read_text(encoding="utf-8"),
+            title=title,
+            owner=owner,
+            to=to,
+            kind=kind,
+            slug=slug,
+            branch=branch,
+            dry_run=dry_run,
+        )
+    emit(result)
+
+
 @knowledge.command("pull-transcripts")
 def knowledge_pull_transcripts(
     since: Annotated[str, typer.Option("--since", help="ISO date, or time with offset")],
