@@ -2,10 +2,10 @@
   "decisions": [
     {
       "bound": {
-        "CHANGELOG.md": "53f273b5e3d21ffd308c531aaaac36648d43be0cf984648f01ac9a2aed3c0adb"
+        "CHANGELOG.md": "1f85caa096b6fa3440b76129c06028497b937670ea34aacd323dd7373ce2f148"
       },
       "outcome": "updated",
-      "reason": "Added entry for stale label removal and removed-record pages.",
+      "reason": "After merging #262: this branch's render entry sits beside the migration entries.",
       "reviewer": "Claude (agent)",
       "target": "CHANGELOG.md"
     },
@@ -61,12 +61,12 @@
         "src/ai_dlc/_windows_storage/__init__.py": "5715def899453f15265e13d52e5b518844cc9d057421cfa5279172d799d5f506",
         "src/ai_dlc/_windows_storage/_api.py": "d5fc4f971db8e706871c06e8119884848e505af6c45f4fbb5c2f7db513faf41b",
         "src/ai_dlc/_windows_storage/_security.py": "62785d4e088cd485816a33f35a7a559d3d1acf166093c413a3f4f79969056314",
-        "src/ai_dlc/cli.py": "80a7550ae98f9d81f16c353eb63e2c71c9e977d2bc697219a5bc0a9571d1693f",
+        "src/ai_dlc/cli.py": "7419fcb58a0faa03ceafc07ca01da71054d26649ae842fb0ea735646dcbc6685",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
         "src/ai_dlc/conformance.py": "0ff247c065e89d4c5b43d844601dc809558c65a779c1600371953c0e2c44737b",
         "src/ai_dlc/contracts.py": "59b43b50b310903804cda0057166d1f1ab990c578fa1a847d33b99b20a67a923",
         "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
-        "src/ai_dlc/documentation/decisions.py": "30c52c68b82bca8c899887617385adac25f9b0bb2e9aa81936b91b877c626d6c",
+        "src/ai_dlc/documentation/decisions.py": "ab81ad8426665668da3fb18dce2eba3020fbed9476d964ea277352a2092a286c",
         "src/ai_dlc/documentation/document_access.py": "fc3e2f18c64cbcca2975ba4519a4cb141f510da1039704c21bb0aa971e815fb5",
         "src/ai_dlc/documentation/document_files.py": "3174b5773adf54c9a0f586a041c4e67001d136d9ba1016ec1cbb0b54debafd55",
         "src/ai_dlc/documentation/document_impact.py": "bf3353c2ab99166c4900647ac7a0626bba3ee08a4a4f92ffa9269167f86012ca",
@@ -75,16 +75,17 @@
         "src/ai_dlc/documentation/document_style.py": "3d54060ebce114b9075b24292c1f2dcd49e2cd8293a078eaa51eb09bc513dd9d",
         "src/ai_dlc/documentation/documents.py": "763c9c2ff76c62e99eb6de4706f85edcaf57287f8c9bc8335c433d0163ba1812",
         "src/ai_dlc/documentation/fde.py": "3664430ebca9f3ef7ba7c7c431f7e4790176066510904ebe4d43d0a88ecf26e1",
-        "src/ai_dlc/documentation/knowledge.py": "8d60dfa7213b3121f106fabbf13c2ab5a52b7f5b43555a9ac91be04a9d6d9be0",
+        "src/ai_dlc/documentation/knowledge.py": "ec96182b6eb15a396dbcb62235de1ea9c218844132153bd9e0297717839c52b4",
         "src/ai_dlc/documentation/knowledge_bundle.py": "a614f08dfcdb5b3700b05d86be482f239d8b34096a1117ceee336b4de2be14b1",
         "src/ai_dlc/documentation/knowledge_check.py": "0879d989a18f3e86ea91955aaffca5a5108bc36381c4877b7f5b23e251881881",
-        "src/ai_dlc/documentation/knowledge_notes.py": "df022b2e330c5140f6948ec25a33c7888704e8686ea5411c770764a449b3b1b6",
-        "src/ai_dlc/documentation/knowledge_publish.py": "cd4773e07de3b49bd828441a26dd15292ae2b55b25738e2339f91c7a3ad08438",
-        "src/ai_dlc/documentation/knowledge_records.py": "eeb502fd218412c3f2e8085b2c8bab1b74683daa8701bc8416155a29f9437c60",
+        "src/ai_dlc/documentation/knowledge_migrate.py": "d175c93f3bb4ec677cbf5c9c87af6a0fff1c125b52fa6c2c7f9ebb5d7ed44c38",
+        "src/ai_dlc/documentation/knowledge_notes.py": "543b6fb0fa395321c55cb616c29d2f4a2bb218aca5576a3b8993353fb16e840d",
+        "src/ai_dlc/documentation/knowledge_publish.py": "f0c5a34ac2793c4abea951e8404f4cf4e4e64886afc2492c46d36632dfc52619",
+        "src/ai_dlc/documentation/knowledge_records.py": "7375dc057809c2ca3fbc75239ca53fb3484d2459ec59d194c7ad2d6090918bf6",
         "src/ai_dlc/documentation/knowledge_render.py": "3cbd0de36b2ea89d89fc9a8a176580e3e0fa6857ecef57b799502c62d7d99260",
         "src/ai_dlc/documentation/knowledge_service.py": "94a90956363bc8d5e8b11cd3d39e6f86d0c7f551e14766f25c242ca0246f3ddd",
         "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
-        "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
+        "src/ai_dlc/documentation/learnings.py": "5a11c64592e1c7b93bfa3543339ea0766f42050a7843bb8354cd56166b0f3ae6",
         "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
         "src/ai_dlc/documentation/record_index.py": "75df28b72d1cd4c0de13093bc17e78f512949c23386b843f252e5f89d4c6184c",
         "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
@@ -172,7 +173,7 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "After merging #261: the documentation/ row still names knowledge_render.py; nothing to change.",
+      "reason": "After merging #262: the documentation/ row still names knowledge_render.py.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
@@ -182,16 +183,16 @@
         "catalog:docs/design/local-and-shared-knowledge.md": "07f5768759a08b2a425954beae4109ab59f515e126fa644a99c91fcaebb6fff9",
         "contracts/knowledge-note.schema.json": "f3cbc791e2caae2223bf223e8b27b5b7ce553405b76f32cf5689fa7fe68bb1a5",
         "contracts/knowledge-record.schema.json": "0a7633d88024a668140a6d658f09f5d11bf7e26b8ff09368abd82d17ddcd9bd7",
-        "docs/design/local-and-shared-knowledge.md": "487883b5e42332f716e50d34bb807688fc7e23c0d75c6acfe1ac43c2af48ba03",
+        "docs/design/local-and-shared-knowledge.md": "1267e8eb3a65a54efb35cce0708ba81bf560835e17668efe83855b42a9e0178a",
         "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
-        "openspec/specs/session-learnings/spec.md": "dcd490cd54f2f6cb3fadaa90afade85d5e1d64b19fbe2accb70bfb06897e97b4",
-        "src/ai_dlc/documentation/knowledge.py": "8d60dfa7213b3121f106fabbf13c2ab5a52b7f5b43555a9ac91be04a9d6d9be0",
+        "openspec/specs/session-learnings/spec.md": "6320178e67f7957b25c11850773a631258bc13e5812cbcdb88c126434ba3aaf4",
+        "src/ai_dlc/documentation/knowledge.py": "ec96182b6eb15a396dbcb62235de1ea9c218844132153bd9e0297717839c52b4",
         "src/ai_dlc/documentation/knowledge_bundle.py": "a614f08dfcdb5b3700b05d86be482f239d8b34096a1117ceee336b4de2be14b1",
         "src/ai_dlc/documentation/knowledge_check.py": "0879d989a18f3e86ea91955aaffca5a5108bc36381c4877b7f5b23e251881881",
-        "src/ai_dlc/documentation/knowledge_notes.py": "df022b2e330c5140f6948ec25a33c7888704e8686ea5411c770764a449b3b1b6",
-        "src/ai_dlc/documentation/knowledge_records.py": "eeb502fd218412c3f2e8085b2c8bab1b74683daa8701bc8416155a29f9437c60",
+        "src/ai_dlc/documentation/knowledge_notes.py": "543b6fb0fa395321c55cb616c29d2f4a2bb218aca5576a3b8993353fb16e840d",
+        "src/ai_dlc/documentation/knowledge_records.py": "7375dc057809c2ca3fbc75239ca53fb3484d2459ec59d194c7ad2d6090918bf6",
         "src/ai_dlc/documentation/knowledge_render.py": "3cbd0de36b2ea89d89fc9a8a176580e3e0fa6857ecef57b799502c62d7d99260",
-        "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
+        "src/ai_dlc/documentation/learnings.py": "5a11c64592e1c7b93bfa3543339ea0766f42050a7843bb8354cd56166b0f3ae6",
         "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
         "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
         "src/ai_dlc/documentation/workspace_diagnostics.py": "8c8dc695fa95e5f9e8fc4017e5fd66efcab4c0cec4d3ae9272d3c5f368f93aef",
@@ -200,7 +201,7 @@
         "tests/test_knowledge.py": "38e5cda9c9dc1fe97d12618a0bd9a86b2725cff059d412232152582af1547af1",
         "tests/test_knowledge_bundle.py": "e91bcd38241872ad616d9b468fb95ca15ceffadabb1f5fb4c7504ee35d777e13",
         "tests/test_knowledge_check.py": "6ca89cb53dfc3e5077c31359c1e3ad746aa44874c6cd89cfa5aafa82fa9d4011",
-        "tests/test_knowledge_notes.py": "0af8b4f84c5b8d974833eef49d5efd662a9d6d5b22eac6ff6f4a604fd492f6f7",
+        "tests/test_knowledge_notes.py": "9d0aee8e40b2d5886c747c0f48d3017421348c8f86dd45684fc6f833064d32c6",
         "tests/test_knowledge_records.py": "dda1cc3543fc0f9cbcf999a4f72041d9143696328785827e9a4362b6fd083cfa",
         "tests/test_knowledge_render.py": "9d778537801f5f97402d1476c7abf0c0990ad6cedba819b53b4a7db22ff4ae7b",
         "tests/test_session_learnings.py": "32bb7c3143db24ff96fb43ac5081285e77a93bd8d8d825076f3422cbfe194796",
@@ -209,7 +210,7 @@
         "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
       },
       "outcome": "updated",
-      "reason": "Merged #261's customer-render wording with this branch's status-label and removed-page sentences.",
+      "reason": "Merged #262's migration edits with this branch's status-label and removed-page sentences.",
       "reviewer": "Claude (agent)",
       "target": "docs/design/local-and-shared-knowledge.md"
     },
@@ -238,7 +239,7 @@
     },
     {
       "bound": {
-        "tests/editorial_baseline.json": "8d42a8f35cd0757cbeed9a4cc8be72326fdb98cf9dc71d96856d666a91fb4f77"
+        "tests/editorial_baseline.json": "1b84100c9f6a1509befe4d50fe067ed2b25da1fac812d1f93aa345fee28c336d"
       },
       "outcome": "updated",
       "reason": "Lowered for the knowledge design page after the merge.",
