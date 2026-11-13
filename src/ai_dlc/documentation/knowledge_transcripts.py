@@ -12,7 +12,8 @@ files into a local checkout of the knowledge repository:
 ``<inbox>`` is the top-level ``inbox`` of the team checkout. A transcript routed to a
 customer lands in the top-level ``inbox`` of that customer's own knowledge repository
 instead, with ``boundary: customer`` and ``project: <name>``; customer knowledge never
-enters the team repository. When that repository's local path is not configured, the
+enters the team repository. When that repository's local path is not configured, or it
+does not declare ``[repo] boundary = "customer"`` and that ``project`` (KAN-475), the
 transcript is skipped and logged; there is no fallback to the team repository.
 
 The pull is idempotent by transcript id: a transcript is skipped when any record in
@@ -43,7 +44,7 @@ from typing import Any
 from pydantic import TypeAdapter, ValidationError
 
 from ai_dlc.documentation import knowledge_records as records
-from ai_dlc.documentation.knowledge_check import SLUG
+from ai_dlc.documentation.knowledge_check import SLUG, repo_boundary
 from ai_dlc.documentation.record_index import read_header
 from ai_dlc.errors import RefusedError, UncertainError
 from ai_dlc.files import atomic_create, atomic_write, inside
@@ -157,11 +158,20 @@ def customer_repo(customer: Mapping[str, Any], environ: Mapping[str, str]) -> Pa
     if not config.is_file():
         return f"{customer['repo_env']} does not name a knowledge repository checkout"
     try:
-        problems = records.pin_errors(tomllib.loads(config.read_text(encoding="utf-8")))
+        parsed = tomllib.loads(config.read_text(encoding="utf-8"))
+        problems = records.pin_errors(parsed)
     except (tomllib.TOMLDecodeError, UnicodeDecodeError):
-        problems = ["knowledge.toml is not valid TOML"]
+        parsed, problems = {}, ["knowledge.toml is not valid TOML"]
     if problems:
         return f"customer repository for {customer['project']}: {problems[0]}"
+    # The repository must declare itself this customer's (KAN-475), so a variable that
+    # points at the team repository or another customer's never receives a transcript.
+    declared, _problems = repo_boundary(parsed)
+    if declared != customer["project"]:
+        return (
+            f"{customer['repo_env']} names a repository that does not declare "
+            f'[repo] boundary = "customer" and project = "{customer["project"]}"'
+        )
     return root
 
 

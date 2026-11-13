@@ -56,7 +56,10 @@ so the team repository's retention, numbering and index never see it.
 
 The rules live in the team repository's `knowledge.toml`. A customer
 repository's local path is a machine path, so an environment variable holds it.
-If the variable is unset or names no knowledge checkout, the transcript is
+The checkout must declare `[repo] boundary = "customer"` and this `project`
+([ADR 0007](../decisions/0007-customer-knowledge-repositories.md)).
+
+If the variable is unset or the checkout does not declare it, the transcript is
 skipped and logged, with no fallback to the team repository. A transcript that
 matches two customers is skipped too.
 

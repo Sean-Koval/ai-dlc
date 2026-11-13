@@ -133,8 +133,20 @@ def knowledge_repo(tmp_path: Path, routes: str = ALPHA, name: str = "knowledge")
     return root
 
 
+def customer_repo_dir(tmp_path: Path, project: str = "alpha") -> Path:
+    """A customer repository as ``knowledge init --customer`` writes it (KAN-475)."""
+    root = tmp_path / f"knowledge-{project}"
+    for folder in (f"projects/{project}", "inbox"):
+        (root / folder).mkdir(parents=True)
+    (root / "knowledge.toml").write_text(
+        f'[format]\nversion = 1\n[repo]\nboundary = "customer"\nproject = "{project}"\n'
+        f'[check]\nroots = ["projects/{project}"]\n'
+    )
+    return root
+
+
 def customer_env(tmp_path: Path) -> tuple[Path, dict]:
-    alpha = knowledge_repo(tmp_path, "", name="knowledge-alpha")
+    alpha = customer_repo_dir(tmp_path)
     return alpha, {**ENV, "KNOWLEDGE_REPO_ALPHA": str(alpha)}
 
 
@@ -363,6 +375,23 @@ def test_unconfigured_customer_repository_skips_and_never_falls_back(tmp_path):
         "2026-11-01"
     )
     assert any("not name a knowledge repository" in e["reason"] for e in again["skipped"])
+
+
+def test_customer_variable_must_name_that_customers_declared_repository(tmp_path):
+    # KAN-475: a variable pointing at the team repository, or at another customer's,
+    # skips the transcript; it never lands there.
+    root = knowledge_repo(tmp_path)
+    beta = customer_repo_dir(tmp_path, project="beta")
+    for wrong in (root, beta):
+        environ = {**ENV, "KNOWLEDGE_REPO_ALPHA": str(wrong)}
+        reg = registry(FakeZoom(), FakeDrive())
+        result = TranscriptPull(tmp_path, CONFIG, into=root, registry=reg, environ=environ).pull(
+            "2026-11-01"
+        )
+        skipped = {entry["id"]: entry["reason"] for entry in result["skipped"]}
+        assert 'project = "alpha"' in skipped["Qx9YzZalpha=="]
+        for repo in (root, beta):
+            assert not any("Qx9YzZalpha" in p.read_text() for p in repo.rglob("*") if p.is_file())
 
 
 def test_retired_project_routes_are_refused(tmp_path):

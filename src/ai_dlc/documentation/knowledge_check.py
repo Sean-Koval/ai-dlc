@@ -30,6 +30,12 @@ under ``projects/<name>/``, only customer records of that project may link to th
 and no other record may quote their body, cite them or their paths in ``sources`` or
 link into their project from its body. Index, render and search keep them out of
 team-scope views with :func:`visible_in` and :func:`team_inputs`.
+
+A customer knowledge repository (KAN-475) declares ``[repo] boundary = "customer"`` and
+``project = "<name>"`` in ``knowledge.toml``. There every record is a customer record of
+that project under ``projects/<name>/``, every typed link resolves to a record of the
+repository, no path in ``sources`` or the body leaves it, and a ``[wiki]`` names the
+same project. :func:`repo_boundary` reads the declaration.
 """
 
 import posixpath
@@ -137,6 +143,7 @@ def check_records(
     _check_resources(bundle, index)
     _check_folders(bundle, index)
     _check_boundary(bundle, index)
+    _check_customer_repo(bundle, index, settings)
     if base:
         _check_against_base(bundle, folder, settings, scopes, base)
     for found in (bundle.failures, bundle.warnings):
@@ -841,6 +848,136 @@ def _check_quotes(bundle: _Bundle, owners: dict[str, str | None]) -> None:
                 "promote it without customer content instead",
             )
             break
+
+
+def passages(text: str) -> set[tuple[str, ...]]:
+    """Every run of :data:`QUOTE_WORDS` words in ``text``, casefolded: what counts as a quote."""
+    return _passages(text)
+
+
+# --- Customer repository: the whole repository is one customer project (KAN-475) -----
+
+REPO = "repo"
+_SCHEME = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
+
+
+def repo_boundary(parsed: Mapping[str, Any]) -> tuple[str | None, list[str]]:
+    """``(project, problems)`` of a parsed ``knowledge.toml`` ``[repo]`` declaration.
+
+    ``project`` is set only for a valid customer repository declaration. A ``[repo]``
+    table that is malformed yields problems; callers treat it as a customer repository
+    of no project, which nothing may enter or leave.
+    """
+    table = parsed.get(REPO)
+    if table is None:
+        return None, []
+    if not isinstance(table, Mapping):
+        return None, [f"{REPO}: a table is required"]
+    boundary = table.get("boundary")
+    project = table.get("project")
+    problems = []
+    if boundary is None and project is None:
+        return None, []
+    if boundary != "customer":
+        problems.append(f'{REPO}/boundary: the only repository boundary is "customer"')
+    if not isinstance(project, str) or not SLUG.fullmatch(project):
+        problems.append(f"{REPO}/project: name the customer project (a slug)")
+    if problems:
+        return None, problems
+    return project, []
+
+
+def _escapes(relative: str) -> bool:
+    """A normalized path that climbs out of the repository or is absolute."""
+    return (
+        relative in ("..", "")
+        or relative.startswith(("../", "/", "~"))
+        or re.match(r"^[A-Za-z]:/", relative) is not None
+    )
+
+
+def _check_customer_repo(
+    bundle: _Bundle, index: dict[str, str], settings: tuple[Path, str, dict] | None
+) -> None:
+    """In a declared customer repository nothing points outside it (KAN-475)."""
+    if settings is None:
+        return
+    _path, shown, parsed = settings
+    declared = parsed.get(REPO) is not None
+    project, problems = repo_boundary(parsed)
+    for problem in problems:
+        location, _, message = problem.partition(": ")
+        bundle.fail(shown, _pointer(location.replace("/", ".")), message)
+    if project is None and not (declared and problems):
+        return
+    wiki = parsed.get("wiki")
+    if wiki is not None and (not isinstance(wiki, Mapping) or wiki.get("project") != project):
+        bundle.fail(
+            shown,
+            "/wiki/project",
+            f"a customer repository renders only to a wiki declared for project {project}; "
+            "leave [wiki] unset until the customer approves one",
+        )
+    for path, record in bundle.records.items():
+        located = _join(bundle.prefix, path)
+        if not is_customer(record) or record.project != project:
+            bundle.fail(
+                path,
+                "/boundary",
+                f"every record of this customer repository carries boundary: customer and "
+                f"project: {project}",
+            )
+        elif project_of(located) != project:
+            bundle.fail(
+                path,
+                "",
+                f"a record of this customer repository sits under {PROJECTS}/{project}/",
+            )
+        for number, link in enumerate(record.links):
+            target = link.target
+            if target in index:
+                continue
+            if link.type == "belongs_to" and (target == project or WORK_ITEM.match(target)):
+                continue
+            bundle.fail(
+                path,
+                f"/links/{number}/target",
+                f"{link.type} target {target} resolves outside this customer repository",
+            )
+        for number, entry in enumerate(record.sources):
+            for value in (entry.id, entry.resource):
+                if not value or value in index:
+                    continue
+                relative = _repo_path(value)
+                outside = value.casefold().startswith("file:") or (
+                    relative is not None and _escapes(relative)
+                )
+                if outside:
+                    bundle.fail(
+                        path,
+                        f"/sources/{number}",
+                        f"{value} resolves outside this customer repository",
+                    )
+                    break
+        for match in _MARKDOWN_LINK.finditer(bundle.bodies.get(path, "")):
+            target = (match.group(1) or match.group(2)).replace("\\", "/")
+            if _leaves_repo(located, target):
+                bundle.fail(path, "", f"links to {target}, outside this customer repository")
+                break
+
+
+def _leaves_repo(located: str, target: str) -> bool:
+    """A body link target that names a local file outside the repository.
+
+    Web links stay allowed; ``file:`` links and relative paths that climb out are not.
+    """
+    if target.casefold().startswith("file:"):
+        return True
+    if _SCHEME.match(target) or target.startswith("#"):
+        return False
+    if target.startswith("/"):
+        return True
+    return _escapes(posixpath.normpath(posixpath.join(posixpath.dirname(located), target)))
 
 
 # --- CI mode: accepted decisions are never edited in place ---------------------------

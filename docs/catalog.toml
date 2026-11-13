@@ -51,6 +51,22 @@ owner = "repository-maintainers"
 status = "active"
 
 [[documents]]
+id = "decision-0007-customer-repositories"
+path = "docs/decisions/0007-customer-knowledge-repositories.md"
+kind = "decision"
+owner = "repository-maintainers"
+status = "active"
+
+[[documents]]
+id = "runbook-customer-knowledge"
+path = "docs/runbooks/customer-knowledge.md"
+kind = "runbook"
+owner = "repository-maintainers"
+status = "active"
+code_paths = ["src/ai_dlc/documentation/knowledge_customer.py"]
+verification_paths = ["tests/test_knowledge_customer.py"]
+
+[[documents]]
 id = "architecture"
 path = "docs/architecture.md"
 kind = "architecture"
