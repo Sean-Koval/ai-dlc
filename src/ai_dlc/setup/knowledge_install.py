@@ -43,13 +43,16 @@ SETTINGS = (
     ("KNOWLEDGE_CHECKOUT", "", "where to clone the knowledge repository"),
 )
 SETTINGS_FILE = "knowledge-install.toml"
+# A hook that blocked every commit when ai-dlc is not on git's PATH (a GUI client, a
+# Windows shell) would be worse than none; CI runs the same check.
 HOOK = (
     "#!/bin/sh\n"
     "# Installed by `ai-dlc knowledge install`; `--uninstall` removes it while unchanged.\n"
-    "exec ai-dlc knowledge check .\n"
+    "if command -v ai-dlc >/dev/null 2>&1; then exec ai-dlc knowledge check .; fi\n"
+    'echo "ai-dlc is not on PATH: knowledge check skipped; run it before you push" >&2\n'
 )
 _URL = re.compile(r"^[a-z][a-z0-9+.-]*://", re.IGNORECASE)
-_USERINFO = re.compile(r"^[a-z][a-z0-9+.-]*://[^/@]*@", re.IGNORECASE)
+_USERINFO = re.compile(r"^[a-z][a-z0-9+.-]*://([^/@]*)@", re.IGNORECASE)
 _HARNESS = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]*")
 
 Prompt = Callable[[str, str], str]
@@ -60,6 +63,12 @@ def is_url(value: str) -> bool:
     return bool(_URL.match(value)) or (
         "@" in value and ":" in value.split("@", 1)[1] and not Path(value).exists()
     )
+
+
+def carries_credentials(url: str) -> bool:
+    """A URL with a password, or a user other than ssh's usual ``git``, in it."""
+    found = _USERINFO.match(url)
+    return bool(found) and (":" in found.group(1) or found.group(1) != "git")
 
 
 def digest(text: str) -> str:
@@ -106,7 +115,7 @@ def resolve_settings(
                 raise RefusedError(f"{name} is required ({about}); nothing was installed")
         values[name] = value or (default or "")
     for name in ("KNOWLEDGE_REPO", "TEAM_HARNESS_REPO"):
-        if _USERINFO.match(values[name]):
+        if carries_credentials(values[name]):
             raise RefusedError(
                 f"{name} carries a user name or password; give a URL without credentials "
                 "and let git's credential helper sign in"
@@ -175,11 +184,33 @@ def team_harness_checkout(install: Install, source: str, environ: Mapping[str, s
     return checkout
 
 
-def hook_path(checkout: Path, environ: Mapping[str, str]) -> Path:
-    """The pre-commit hook git runs, honouring ``core.hooksPath``."""
+def known_harness_checkout(install: Install, source: str) -> Path | None:
+    """The team-harness checkout an install used, if it is still there; no network."""
+    if not source:
+        return None
+    if is_url(source):
+        path = install.cache_root / "team-harness" / digest(source.strip().rstrip("/"))[:16]
+    else:
+        path = Path(source).expanduser()
+    return path if (path / "scripts" / "install_local.py").is_file() else None
+
+
+def hook_path(checkout: Path, environ: Mapping[str, str]) -> Path | None:
+    """The clone's own pre-commit hook, or None when git would run one from elsewhere.
+
+    With ``core.hooksPath`` set (often a global directory of shared hooks), a hook
+    written there would run in every repository, so none is installed.
+    """
+    configured = run_git(
+        checkout, "config", "--get", "core.hooksPath", environ=environ, check=False
+    )
+    if configured.returncode == 0 and configured.stdout.strip():
+        return None
     found = run_git(checkout, "rev-parse", "--git-path", "hooks/pre-commit", environ=environ)
     path = Path(found.stdout.strip())
-    return path if path.is_absolute() else checkout / path
+    path = path if path.is_absolute() else checkout / path
+    git_dir = run_git(checkout, "rev-parse", "--absolute-git-dir", environ=environ).stdout.strip()
+    return path if path.resolve().is_relative_to(Path(git_dir).resolve()) else None
 
 
 def harness_command(checkout: Path, harness: str, channel: str, home: Path, mode: str) -> list[str]:
@@ -205,12 +236,16 @@ def _run(runner: Runner, command: list[str], cwd: Path, environ: Mapping[str, st
     return result
 
 
-def _write_settings(install: Install, values: Mapping[str, str], hook: str | None) -> None:
+def _write_settings(
+    install: Install, values: Mapping[str, str], hook: str | None, preinstalled: bool
+) -> None:
     lines = ["# Written by `ai-dlc knowledge install`. Names, paths and URLs only.\n"]
     for name, _default, _about in SETTINGS:
         lines.append(f"{name} = {_toml(values[name])}\n")
     if hook:
         lines.append(f"hook_sha256 = {_toml(hook)}\n")
+    # A harness the person installed before this is theirs: uninstall leaves it.
+    lines.append(f"harness_preinstalled = {'true' if preinstalled else 'false'}\n")
     atomic_write(install.settings_path, "".join(lines), mode=0o600)
 
 
@@ -244,8 +279,18 @@ def install(
     steps: list[str] = []
     if dry_run:
         return {"status": "planned", "settings": values, "steps": steps}
-    # Recorded first, so an install that stops part way can still be uninstalled.
-    _write_settings(target, values, None)
+    # Recorded first, so an install that stops part way can still be uninstalled. A
+    # re-install keeps the earlier record until it succeeds, then keeps what that
+    # record says about the hook and about a harness installed before ai-dlc's.
+    earlier = read_settings(target) or {}
+    kept_hook = earlier.get("hook_sha256") if isinstance(earlier.get("hook_sha256"), str) else None
+    preinstalled = (
+        bool(earlier["harness_preinstalled"])
+        if "harness_preinstalled" in earlier
+        else target.manifest_path.exists()
+    )
+    if not earlier:
+        _write_settings(target, values, None, preinstalled)
     harness = team_harness_checkout(target, values["TEAM_HARNESS_REPO"], environ)
     command = harness_command(
         harness, values["TEAM_HARNESS"], values["TEAM_HARNESS_CHANNEL"], home, "--apply"
@@ -256,8 +301,13 @@ def install(
     values = {**values, "KNOWLEDGE_CHECKOUT": str(checkout)}
     steps.append(f"knowledge repository at {checkout}")
     hook = hook_path(checkout, environ)
-    written: str | None = None
-    if hook.exists():
+    written: str | None = kept_hook
+    if hook is None:
+        steps.append(
+            "pre-commit hook not installed: core.hooksPath is set; add "
+            "`ai-dlc knowledge check .` to your hooks there"
+        )
+    elif hook.exists():
         current = hook.read_text(encoding="utf-8", errors="replace")
         if current == HOOK:
             written = digest(HOOK)
@@ -268,7 +318,7 @@ def install(
         atomic_write(hook, HOOK, mode=0o755)
         written = digest(HOOK)
         steps.append(f"pre-commit hook installed at {hook}")
-    _write_settings(target, values, written)
+    _write_settings(target, values, written, preinstalled)
     steps.append(f"settings written to {target.settings_path}")
     return {"status": "installed", "settings": values, "steps": steps}
 
@@ -280,15 +330,23 @@ def uninstall(home: Path, environ: Mapping[str, str], *, runner: Runner = subpro
     if stored is None:
         raise RefusedError(f"no install recorded at {target.settings_path}; nothing was removed")
     steps: list[str] = []
-    source = str(stored["TEAM_HARNESS_REPO"])
-    harness = team_harness_checkout(target, source, environ)
-    if target.manifest_path.exists():
+    if stored.get("harness_preinstalled"):
+        steps.append("harness kept: it was installed before `ai-dlc knowledge install`")
+    elif target.manifest_path.exists():
+        harness = known_harness_checkout(target, str(stored.get("TEAM_HARNESS_REPO", "")))
+        if harness is None:
+            raise RefusedError(
+                "the team-harness checkout is gone; run its scripts/install_local.py "
+                "--scope user --uninstall, then rerun this"
+            )
         command = harness_command(harness, str(stored["TEAM_HARNESS"]), "", home, "--uninstall")
         _run(runner, command, harness, environ, "the team harness uninstall")
         steps.append("harness removed")
-    checkout = Path(str(stored["KNOWLEDGE_CHECKOUT"]))
+    checkout = Path(str(stored.get("KNOWLEDGE_CHECKOUT") or ""))
+    hook = None
     if stored.get("hook_sha256") and (checkout / ".git").exists():
         hook = hook_path(checkout, environ)
+    if hook is not None:
         if hook.exists() and digest(hook.read_text(encoding="utf-8")) == stored["hook_sha256"]:
             hook.unlink()
             steps.append("pre-commit hook removed")

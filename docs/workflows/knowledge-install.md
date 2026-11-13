@@ -14,7 +14,8 @@ knowledge repository in one step, without losing their own setup?
    `~/.claude` and never overwrites a file it did not install.
 3. It clones `KNOWLEDGE_REPO`, or reuses a clone of the same repository.
 4. It adds a pre-commit hook that runs `ai-dlc knowledge check .`, but only when
-   the clone has no pre-commit hook of its own.
+   the clone has no pre-commit hook of its own and `core.hooksPath` is unset.
+   Where `ai-dlc` is not on git's `PATH`, the hook warns and lets the commit through.
 
 From a fresh machine, `sh scripts/bootstrap.sh --knowledge` runs the install and
 the doctor after project setup.
@@ -33,8 +34,8 @@ that is unset; with `--no-input`, or without a terminal, it stops and names it.
 | `KNOWLEDGE_CHECKOUT` | `~/knowledge/<name>` | Where the clone goes |
 
 The values are written to `knowledge-install.toml` in the ai-dlc configuration
-directory. Only names, paths and URLs are stored. A URL with a user name or
-password in it is refused; git's credential helper signs in instead.
+directory. Only names, paths and URLs are stored. A URL with a password, or a user
+other than ssh's `git`, is refused; git's credential helper signs in instead.
 
 A team-harness URL is cloned in full into the ai-dlc cache. The installer finds a
 channel's pinned harness in git history, so a shallow clone would not work.
@@ -44,7 +45,8 @@ channel's pinned harness in git history, so a shallow clone would not work.
 Your `settings.json`, skills and hooks are kept byte for byte. The harness
 installer merges its entries into `settings.json` and records what it added.
 `ai-dlc knowledge install --uninstall` removes exactly those entries, the hook
-while it is unchanged, and the stored settings. It never deletes the clone.
+while it is unchanged, and the stored settings. It never deletes the clone. A
+harness you installed before running the install is left in place.
 
 ## Check the result
 

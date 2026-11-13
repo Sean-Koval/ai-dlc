@@ -52,7 +52,7 @@ def check_harness(target: setup.Install, stored: Mapping[str, Any] | None, envir
     except (OSError, ValueError):
         return _line("harness", "fail", "no harness manifest; run `ai-dlc knowledge install`"), None
     if stored:
-        checkout = _harness_checkout(target, str(stored.get("TEAM_HARNESS_REPO", "")))
+        checkout = setup.known_harness_checkout(target, str(stored.get("TEAM_HARNESS_REPO", "")))
         if checkout is not None:
             command = setup.harness_command(
                 checkout, str(manifest.get("harness", "")), "", target.home, "--check"
@@ -65,16 +65,6 @@ def check_harness(target: setup.Install, stored: Mapping[str, Any] | None, envir
                 return _line("harness", "fail", detail), manifest
     name = f"{manifest.get('harness')}@{manifest.get('channel')} r{manifest.get('revision')}"
     return _line("harness", "pass", name + " installed"), manifest
-
-
-def _harness_checkout(target: setup.Install, source: str) -> Path | None:
-    if not source:
-        return None
-    if not setup.is_url(source):
-        path = Path(source).expanduser()
-    else:
-        path = target.cache_root / "team-harness" / setup.digest(source.strip().rstrip("/"))[:16]
-    return path if (path / "scripts" / "install_local.py").is_file() else None
 
 
 def check_tracker(root: Path, config: Mapping[str, Any] | None, environ: Mapping[str, str]) -> Line:

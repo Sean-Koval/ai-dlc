@@ -29,7 +29,8 @@ claude = home / ".claude"
 manifest = claude / "team-harness.json"
 if "--apply" in args:
     skill = claude / "skills" / "team-recall" / "SKILL.md"
-    if skill.exists():
+    ours = json.loads(manifest.read_text()).get("files", []) if manifest.exists() else []
+    if skill.exists() and "skills/team-recall/SKILL.md" not in ours:
         sys.exit("refusing: skills/team-recall/SKILL.md is not ours")
     skill.parent.mkdir(parents=True, exist_ok=True)
     skill.write_text("---\\nname: team-recall\\n---\\nRecall.\\n")
@@ -322,3 +323,61 @@ def test_python_is_the_running_interpreter():
         Path("th"), "suite-default", "stable", Path("h"), "--apply"
     )
     assert command[0] == sys.executable and command[-3:] == ["--channel", "stable", "--apply"]
+
+
+def test_a_global_hooks_path_gets_no_hook(world, tmp_path):
+    """A hook written to a shared core.hooksPath would run in every repository."""
+    home, environ = world
+    shared = tmp_path / "shared-hooks"
+    shared.mkdir()
+    config = tmp_path / "gitconfig"
+    config.write_text(f"[core]\n\thooksPath = {shared.as_posix()}\n")
+    environ["GIT_CONFIG_GLOBAL"] = str(config)
+    result = knowledge_install.install(home, environ)
+    assert not (shared / "pre-commit").exists()
+    assert any("core.hooksPath is set" in step for step in result["steps"])
+    knowledge_install.uninstall(home, environ)
+
+
+def test_a_harness_installed_before_is_left_on_uninstall(world):
+    home, environ = world
+    manifest = home / ".claude" / "team-harness.json"
+    manifest.write_text('{"harness": "suite-default", "files": []}')
+    knowledge_install.install(home, environ)
+    knowledge_install.install(home, environ)  # a re-install keeps the first record
+    result = knowledge_install.uninstall(home, environ)
+    assert manifest.exists() and any("harness kept" in step for step in result["steps"])
+
+
+def test_an_install_that_stops_early_can_still_be_uninstalled(world, tmp_path):
+    home, environ = world
+    environ["TEAM_HARNESS_REPO"] = (tmp_path / "nowhere").as_uri()
+    with pytest.raises(Exception):  # noqa: B017 - the clone fails however git words it
+        knowledge_install.install(home, environ)
+    assert knowledge_install.uninstall(home, environ)["status"] == "uninstalled"
+    assert not (home / ".config" / "ai-dlc" / knowledge_install.SETTINGS_FILE).exists()
+
+
+def test_a_reinstall_that_fails_keeps_the_hook_record(world, tmp_path):
+    home, environ = world
+    first = knowledge_install.install(home, environ)
+    hook = Path(first["settings"]["KNOWLEDGE_CHECKOUT"]) / ".git" / "hooks" / "pre-commit"
+    broken = {**environ, "TEAM_HARNESS_REPO": (tmp_path / "nowhere").as_uri()}
+    with pytest.raises(Exception):  # noqa: B017
+        knowledge_install.install(home, broken)
+    knowledge_install.uninstall(home, environ)
+    assert not hook.exists()
+
+
+@pytest.mark.parametrize(
+    ("url", "refused"),
+    [
+        ("ssh://git@github.com/team/knowledge.git", False),
+        ("git@github.com:team/knowledge.git", False),
+        ("https://github.com/team/knowledge.git", False),
+        ("https://someone@example.test/knowledge.git", True),
+        ("https://x-token:abc@example.test/knowledge.git", True),
+    ],
+)
+def test_which_urls_carry_credentials(url, refused):
+    assert knowledge_install.carries_credentials(url) is refused
