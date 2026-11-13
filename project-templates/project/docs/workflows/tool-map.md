@@ -69,7 +69,7 @@ Machine enrollment mutations are CLI-only in this cycle. MCP exposes
 `work_context`, `work_review`, `work_publish`, `work_start`, `work_status`, `work_link`, `work_finish`,
 `doctor`, `project_docs_check`, `knowledge_find`, `knowledge_append`, `knowledge_note`,
 `knowledge_check` (validates a knowledge-records directory), `knowledge_index`,
-`knowledge_number_plan`, and `knowledge_render` (the wiki's only writer),
+`knowledge_number_plan`, `knowledge_render` (the wiki's only writer) and `knowledge_why`,
 plus the documentation and workspace tools below; it does
 not expose machine enrollment mutation. These MCP identifiers differ from the
 space-separated CLI commands, such as `ai-dlc work publish` and `ai-dlc

@@ -2,6 +2,15 @@
   "decisions": [
     {
       "bound": {
+        "CHANGELOG.md": "8bc05b56765b88f0875ee4a71309f3fb27b9f8189c0a6df28a318b134d71f316"
+      },
+      "outcome": "updated",
+      "reason": "Adds the knowledge why command, its MCP tool and the evidence fields.",
+      "reviewer": "Claude (agent)",
+      "target": "CHANGELOG.md"
+    },
+    {
+      "bound": {
         "contracts/README.md": "1b861dcd7a01d34571624e060d154a394d92f1f0be19c2ff83cdb92fe5a3c882"
       },
       "outcome": "updated",
@@ -382,6 +391,15 @@
       "reason": "Reviewed: the new knowledge why command and evidence fields change no package map, workflow, release gate or setup step described here.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/work-computer-setup.md"
+    },
+    {
+      "bound": {
+        "project-templates/project/docs/workflows/tool-map.md": "a0f49212b50c2cc7d28b1445a80fe3fea91ac6d5961a89223222b809afb3fda1"
+      },
+      "outcome": "updated",
+      "reason": "Lists the knowledge_why MCP tool in the packaged tool map.",
+      "reviewer": "Claude (agent)",
+      "target": "project-templates/project/docs/workflows/tool-map.md"
     },
     {
       "bound": {
