@@ -1386,9 +1386,15 @@ def doctor(
     machine: Annotated[Path | None, typer.Option("--machine")] = None,
     effective_environment: Annotated[bool, typer.Option("--effective-environment")] = False,
     probe_versions: Annotated[bool, typer.Option("--probe-versions")] = False,
+    knowledge_checks: Annotated[
+        bool, typer.Option("--knowledge", help="run the knowledge install checks instead")
+    ] = False,
 ):
     _reject_doctor_extras(context, safe=effective_environment)
     selected_root = root or root_option
+    if knowledge_checks:
+        _knowledge_doctor(selected_root, None, False)
+        return
     if probe_versions and not effective_environment:
         raise typer.BadParameter("--probe-versions requires --effective-environment.")
     if effective_environment:
@@ -1640,6 +1646,66 @@ def work_finish(
                 typer.echo(note, err=True)
             raise
         conclude(result)
+
+
+def _knowledge_doctor(root: Path, home: Path | None, json_output: bool) -> None:
+    from ai_dlc.setup import knowledge_doctor
+
+    config = None
+    if (root / "ai-dlc.toml").is_file():
+        with service_call():
+            config = config_for(root)
+    result = knowledge_doctor.doctor(root, config, home or Path.home(), os.environ)
+    if json_output:
+        emit(result)
+    else:
+        typer.echo(knowledge_doctor.text(result), nl=False)
+    if result["failed"]:
+        raise typer.Exit(1)
+
+
+@knowledge.command("install")
+def knowledge_install(
+    home: Annotated[Path | None, typer.Option("--home", help="whose ~/.claude to write")] = None,
+    dry_run: Annotated[bool, typer.Option("--dry-run")] = False,
+    uninstall: Annotated[bool, typer.Option("--uninstall")] = False,
+    no_input: Annotated[bool, typer.Option("--no-input", help="never prompt")] = False,
+):
+    """Install the team harness channel, the knowledge repository and its pre-commit hook.
+
+    Reads KNOWLEDGE_REPO, TEAM_HARNESS_REPO, TEAM_HARNESS, TEAM_HARNESS_CHANNEL and
+    KNOWLEDGE_CHECKOUT; asks for a missing one only on a terminal. Your own skills,
+    hooks and settings are never overwritten; --uninstall puts them back as they were.
+    """
+    from ai_dlc.setup import knowledge_install as setup
+
+    target = home or Path.home()
+
+    def ask(name: str, about: str) -> str:
+        return typer.prompt(f"{name} ({about})")
+
+    interactive = not no_input and sys.stdin.isatty()
+    with service_call():
+        if uninstall:
+            result = setup.uninstall(target, os.environ)
+        else:
+            prompt = ask if interactive else None
+            result = setup.install(target, os.environ, prompt=prompt, dry_run=dry_run)
+    for step in result["steps"]:
+        typer.echo(step)
+    if result["status"] == "planned":
+        for name, value in result["settings"].items():
+            typer.echo(f"{name} = {value}")
+
+
+@knowledge.command("doctor")
+def knowledge_doctor_command(
+    root: Annotated[Path, typer.Option("--root")] = Path("."),
+    home: Annotated[Path | None, typer.Option("--home")] = None,
+    json_output: Annotated[bool, typer.Option("--json")] = False,
+):
+    """One line per knowledge check (pass, fail or skip); exit 1 when any fails."""
+    _knowledge_doctor(root, home, json_output)
 
 
 @knowledge.command("find")

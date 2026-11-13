@@ -859,6 +859,19 @@ requirements = ["openspec/specs/backend-capability-pack/spec.md"]
 verification_paths = ["tests/test_backend_capability.py"]
 
 [[documents]]
+id = "repo-workflows-knowledge-install"
+path = "docs/workflows/knowledge-install.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+code_paths = [
+    "src/ai_dlc/setup/knowledge_install.py",
+    "src/ai_dlc/setup/knowledge_doctor.py",
+    "scripts/bootstrap.sh",
+]
+verification_paths = ["tests/test_knowledge_install.py"]
+
+[[documents]]
 id = "repo-workflows-work-computer-setup"
 path = "docs/workflows/work-computer-setup.md"
 kind = "reference"

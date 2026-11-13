@@ -129,6 +129,8 @@ tests as the application grows.
 - <span id="connect-tools-and-configure-the-project"></span><span id="carry-preferences-and-team-guidance-across-machines"></span>[Configure a project](configure.md):
   providers, settings and preferences across machines.
 - <span id="workflow-plugin"></span>[Workflow plugin](workflow-plugin.md).
+- [Install the team knowledge setup](knowledge-install.md): the harness, the
+  knowledge repository and `bootstrap.sh --knowledge`.
 - <span id="example-workflows"></span><span id="take-a-ticket-through-delivery"></span><span id="keep-project-documents-useful"></span><span id="start-an-fde-engagement"></span>[Example workflows](examples.md):
   a ticket, document upkeep and an FDE engagement.
 - <span id="how-the-tools-fit-together"></span><span id="feature-details"></span>[How the tools fit together](how-it-fits.md).
