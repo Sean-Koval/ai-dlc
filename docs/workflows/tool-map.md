@@ -110,6 +110,7 @@ plus project-document and workspace tools. CLI names use spaces: `ai-dlc work pu
 | Local work drafting | `ai-dlc work new WORK_ID [--from-issue REF]`, `ai-dlc work review WORK_ID` | Creates an unreviewed record from fields or a tracker read, then validates it and records the reviewer |
 | Work lifecycle | `ai-dlc work publish`, `ai-dlc work start`, `ai-dlc work pr`, `ai-dlc work finish` | Reconciles tracker state, binds work to a branch and enforces completion gates; `work finish <id> --at-merge` finishes from the exact merge commit |
 | Local work inspection | `ai-dlc work status`, MCP `work_status` | Reads the local record, bindings and active/archived specification state without querying tracker status |
+| Session lookup | `ai-dlc work show` | Resolves a [session join key](../design/session-join-key.md), session ID or ticket to its record and sessions |
 | Specification finalization | `ai-dlc work archive` | Archives this work's OpenSpec change, promotes specifications, repoints the record and commits only affected files before merge |
 | Traceability | `ai-dlc work link` | Links PR, specification, branch, deployment, or tracker evidence and commits only the work record by default |
 | Provider inspection and connection | `ai-dlc provider list`, `ai-dlc provider test`, `ai-dlc provider connect` | Discovers adapters, runs isolated contract or authorized live checks, and previews/applies an explicitly reviewed provider connection |

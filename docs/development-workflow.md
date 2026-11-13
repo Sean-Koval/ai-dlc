@@ -122,6 +122,8 @@ roles and generated provider assets.
   the tracker has no fallback. Omitting SCM also omits the generated GitHub
   workflow, so merged-revision CI completion is unavailable.
 - `work status` inspects the local record without querying the tracker.
+- `work show` resolves a [session join key](design/session-join-key.md), session
+  ID or ticket back to its work record and lists the record's sessions.
 - Work that does not require a specification records `requires_spec = false`
   with a reviewed reason; work that does require one configures the role.
 - Knowledge, deployment evidence, and agent clients are optional; deployment
