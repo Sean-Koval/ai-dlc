@@ -6,7 +6,7 @@ TBD - created by archiving change session-learnings. Update Purpose after archiv
 ## Requirements
 
 ### Requirement: SL-01 Learning storage is idempotent and optional
-`work finish` SHALL accept an optional learning note and store it at `learnings/<YYYY-MM-DD>-<work-id>.md` through the knowledge provider's `note` operation under a journaled operation identity, so a retried finish stores the note exactly once. The stored note SHALL carry knowledge-note frontmatter that validates against `contracts/knowledge-note.schema.json`: a body without frontmatter gets generated frontmatter, and a body with frontmatter keeps every supplied field while only missing fields are added. Generated `sources` SHALL include the merged pull request URL and merge commit that the finish gate verified. `author` SHALL come from `AI_DLC_AUTHOR` when set, otherwise the CLI user's GitHub login, and SHALL NOT be inferred from another session. The journal SHALL keep the final note so a retry writes byte-identical content, and reusing the operation with a different body SHALL report a conflict. Finishing without a learning SHALL still complete and SHALL report a one-line reminder. A knowledge provider failure or invalid frontmatter SHALL leave the tracker completion intact and report the note as pending.
+`work finish` SHALL accept an optional learning note and store it at `learnings/<YYYY-MM-DD>-<work-id>.md` through the knowledge provider's `note` operation under a journaled operation identity, so a retried finish stores the note exactly once. The stored note SHALL be a `type: lesson` knowledge record that validates against `contracts/knowledge-record.schema.json`: a body without frontmatter gets generated frontmatter, a body with record frontmatter keeps every supplied field while only missing fields are added, and a body with knowledge-note frontmatter (`kind: learning`) is migrated to a record first (ADR 0005). Generated `sources` SHALL include the merged pull request URL and merge commit that the finish gate verified. `author` SHALL come from `AI_DLC_AUTHOR` when set, otherwise the CLI user's GitHub login, and SHALL NOT be inferred from another session. The journal SHALL keep the final note so a retry writes byte-identical content, and reusing the operation with a different body SHALL report a conflict. Finishing without a learning SHALL still complete and SHALL report a one-line reminder. A knowledge provider failure or invalid frontmatter SHALL leave the tracker completion intact and report the note as pending.
 
 #### Scenario: A finish with a learning is retried
 - **WHEN** `work finish` runs twice with the same learning body after the first run stored the note
@@ -14,7 +14,7 @@ TBD - created by archiving change session-learnings. Update Purpose after archiv
 
 #### Scenario: A learning has no frontmatter
 - **WHEN** `work finish` stores a learning body without frontmatter
-- **THEN** the note's generated frontmatter validates against the schema and contains the merged PR URL and merge commit
+- **THEN** the note's generated frontmatter validates against the record contract and its `sources` contain the merged PR URL and merge commit
 
 #### Scenario: A learning supplies some fields
 - **WHEN** the learning's frontmatter sets `confidence: high` and `scope: project`
@@ -33,14 +33,14 @@ TBD - created by archiving change session-learnings. Update Purpose after archiv
 - **THEN** the tracker is closed once, the result reports the learning as pending with the reason, and a later finish can store it
 
 ### Requirement: SL-02 Recall is read-only and bounded
-`work start` and the `session-start` hook SHALL recall at most five stored learning notes whose path or body matches the work record's title words or the final segment of its specification artifact, reporting each note's vault path and first content line. For notes with knowledge-note frontmatter, recall SHALL skip notes whose `valid_to` has passed and SHALL also report `kind`, `author`, `review_by` and `stale` (true when `review_by` has passed); the session hook SHALL prefix stale notes with `(stale)`. Notes without frontmatter SHALL recall as before. Recall SHALL read only notes under `learnings/`, SHALL write nothing, and SHALL produce nothing without failing when no vault is configured, the vault is absent, or nothing matches.
+`work start` and the `session-start` hook SHALL recall at most five stored learning notes whose path or body matches the work record's title words or the final segment of its specification artifact, reporting each note's vault path and first content line. For notes with record frontmatter, recall SHALL skip notes whose `valid_to` has passed and SHALL also report `type`, `author`, `stale_after` and `stale` (true when `stale_after` has passed). Until the release after 1.0, notes with knowledge-note frontmatter SHALL recall the same way, reporting `kind` and `review_by` in place of `type` and `stale_after`; the session hook SHALL prefix stale notes with `(stale)`. Notes without frontmatter SHALL recall as before. Recall SHALL read only notes under `learnings/`, SHALL write nothing, and SHALL produce nothing without failing when no vault is configured, the vault is absent, or nothing matches.
 
 #### Scenario: A stored learning matches the record title
 - **WHEN** `work start` runs for a record whose title contains a word found in a stored learning note
 - **THEN** the result lists that note's path and first content line and the vault is unchanged
 
 #### Scenario: A learning has expired or is due for review
-- **WHEN** one matching note's `valid_to` has passed and another's `review_by` has passed
+- **WHEN** one matching note's `valid_to` has passed and another's `stale_after` has passed
 - **THEN** the first is not listed and the second is listed with `stale: true`
 
 #### Scenario: No vault is configured
@@ -67,7 +67,7 @@ The hook SHALL count, per session, its own denials, repeated identical commands 
 - **THEN** the only write is the session file under `.ai-dlc/local/session/` and no network call is made
 
 ### Requirement: SL-04 Learning frontmatter can be checked
-`ai-dlc knowledge check --vault PATH` SHALL read the notes under `learnings/` without writing, report each note whose knowledge-note frontmatter fails the schema, list notes without frontmatter or with pre-schema frontmatter as legacy, and exit 1 when any note is invalid and 0 otherwise.
+`ai-dlc knowledge check --vault PATH` SHALL read the notes under `learnings/` without writing, report each note whose record frontmatter fails the record contract, or whose knowledge-note frontmatter fails the knowledge-note schema, list knowledge notes as `deprecated` until the release after 1.0, list notes without frontmatter or with pre-schema frontmatter as legacy, and exit 1 when any note is invalid and 0 otherwise.
 
 #### Scenario: A vault has an invalid learning
 - **WHEN** a learning's frontmatter fails the schema

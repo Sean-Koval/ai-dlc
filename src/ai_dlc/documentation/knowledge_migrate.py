@@ -26,11 +26,11 @@ from ai_dlc.documentation import knowledge_records
 from ai_dlc.documentation.knowledge_notes import CAPTURE_KINDS, split
 from ai_dlc.files import atomic_write
 
-LEGACY_DROPPED_IN = "1.1"
-"""The ai-dlc release that stops reading knowledge-note frontmatter (KAN-453)."""
+LEGACY_DROPPED_IN = "the release after 1.0"
+"""When ai-dlc stops reading knowledge-note frontmatter (KAN-453; the owner picks the version)."""
 DEPRECATION = (
-    "knowledge-note frontmatter (kind:) is deprecated and is read until ai-dlc "
-    f"{LEGACY_DROPPED_IN}; run `ai-dlc knowledge migrate --write`"
+    "knowledge-note frontmatter (kind:) is deprecated and is read until "
+    f"{LEGACY_DROPPED_IN} of ai-dlc; run `ai-dlc knowledge migrate --write`"
 )
 JOURNAL_DIR = ".ai-dlc/local/knowledge-migrate"
 TYPES = {"learning": "lesson", "decision": "decision", **{kind: "source" for kind in CAPTURE_KINDS}}

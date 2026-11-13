@@ -202,7 +202,7 @@ def test_legacy_decision_still_validates_with_a_deprecation_warning(tmp_path):
     repository(tmp_path, LEGACY)
     findings = decision_findings(tmp_path)
     assert [(f["code"], f["severity"]) for f in findings] == [("decision-deprecated", "warning")]
-    assert f"ai-dlc {knowledge_migrate.LEGACY_DROPPED_IN}" in findings[0]["message"]
+    assert f"until {knowledge_migrate.LEGACY_DROPPED_IN} of ai-dlc" in findings[0]["message"]
     assert docs_check(tmp_path).exit_code == 0
 
 

@@ -114,8 +114,8 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 ### Deprecated
 
 - Knowledge-note frontmatter (`kind:`). The docs gate, recall, `knowledge check
-  --vault` and capture dedupe still read it, with a deprecation line, until ai-dlc
-  1.1 (KAN-453). Run `ai-dlc knowledge migrate --write`.
+  --vault` and capture dedupe still read it, with a deprecation line, until the
+  release after 1.0 (KAN-453). Run `ai-dlc knowledge migrate --write`.
 - The Plane tracker adapter: shipped but unsupported and unqualified.
   `project init` and `project adopt` refuse `--tracker plane` without
   `--allow-unsupported` (#200; PR #211).

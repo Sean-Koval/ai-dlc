@@ -60,7 +60,7 @@ The mappings, settled in KAN-452 and its comments 10458 and 10482:
 - A field with no mapping, such as `repository` or `publish`, is dropped and
   listed in the report.
 
-Readers accept both shapes until ai-dlc 1.1. They are the docs gate's decision
+Readers accept both shapes until the release after 1.0. They are the docs gate's decision
 check, recall, `knowledge check --vault` and capture dedupe. An old shape gets a
 deprecation line naming that release. `work finish --learning` writes only lesson
 records.

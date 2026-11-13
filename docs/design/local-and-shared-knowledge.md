@@ -155,7 +155,7 @@ A concise observation, including its limits.
 
 ```
 
-Older `kind:` frontmatter is read until ai-dlc 1.1;
+`kind:` frontmatter is read until the release after 1.0;
 `ai-dlc knowledge migrate --write` rewrites it ([ADR 0005](../decisions/0005-migrate-knowledge-notes-to-records.md)).
 
 After the normal completion gates pass, `ai-dlc work finish <id> --learning FILE`
@@ -169,7 +169,7 @@ values, including a wider `scope`, are never changed, and ai-dlc never widens
 `scope` itself.
 
 Generated fields are those in the example. Supplied `kind:` frontmatter is
-migrated first. `sources` holds the merged PR URL, the merge commit the finish
+migrated. `sources` holds the merged PR URL, the merge commit the finish
 gate verified, and the CI run URL.
 
 `author` is `AI_DLC_AUTHOR` when set; the workflow plugin's guide skill tells
