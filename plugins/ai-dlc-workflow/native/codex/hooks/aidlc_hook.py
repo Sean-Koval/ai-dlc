@@ -76,6 +76,9 @@ HANGAR_LINE = (
 SEPARATORS = ";&|()`\n"
 # When segments disagree, the strictest category wins.
 SEVERITY = ("ordinary", "unsupported", "bound-operation", "destructive")
+# PowerShell's own ways to delete: Remove-Item and its built-in aliases. A POSIX shell has
+# only rm; in PowerShell rm is one more alias of Remove-Item. Like rm, any call is denied.
+POWERSHELL_DELETES = frozenset({"remove-item", "ri", "rm", "del", "erase", "rd", "rmdir"})
 
 
 def command_segments(command: str) -> list[list[str]] | None:
@@ -107,27 +110,44 @@ def shell_text(tool: object, command: str) -> str:
         return command
     text = re.sub(r"`\r?\n", " ", command.lower())
     text = re.sub("`[\"']", "", text)  # an escaped quote neither opens nor closes a string
-    return re.sub(r"`(.)", r"\1", text, flags=re.DOTALL)
+    text = re.sub(r"`(.)", r"\1", text, flags=re.DOTALL)
+    # A backslash is a path separator in PowerShell, never an escape, so the POSIX
+    # tokenizer must not swallow it: C:\Git\cmd\git.exe is read as C:/Git/cmd/git.exe.
+    return text.replace("\\", "/")
 
 
-def classify_command(command: str) -> str:
+def classify_shell(tool: object, command: str) -> str:
+    """Classify the command of one shell tool call, in that shell's own terms."""
+    return classify_command(shell_text(tool, command), powershell=tool == "PowerShell")
+
+
+def classify_command(command: str, *, powershell: bool = False) -> str:
     """Classify a shell line; shared by ``ai_dlc.harness.hooks`` and the plugin.
 
     A compound line (``a && b``, ``a; b``, a pipe, a newline or a substitution) is
     classified by its strictest simple command, so chaining cannot hide a destructive
-    or bound operation. Commands reached through wrappers such as ``sh -c`` or
-    ``env`` are not inspected.
+    or bound operation. A program is known by its name alone, so ``/usr/bin/git`` and
+    ``git.exe`` are ``git``. With ``powershell``, the line is one ``shell_text`` prepared
+    and PowerShell's own deletes count as ``rm``. Commands reached through wrappers such
+    as ``sh -c``, ``env``, ``cmd /c`` or ``Invoke-Expression`` are not inspected.
     """
     segments = command_segments(command)
     if segments is None:
         return "unsupported"
-    categories = [_classify_words(words) for words in segments] or ["ordinary"]
+    categories = [_classify_words(words, powershell) for words in segments] or ["ordinary"]
     return max(categories, key=SEVERITY.index)
 
 
-def _classify_words(words: list[str]) -> str:
+def program_name(word: str) -> str:
+    """A program as its name alone: no directory and, as Windows resolves it, no .exe."""
+    name = word.rsplit("/", 1)[-1]
+    return name[: -len(".exe")] if name.lower().endswith(".exe") else name
+
+
+def _classify_words(words: list[str], powershell: bool = False) -> str:
     """Classify the words of one simple command."""
-    if words[:1] == ["rm"]:
+    words = [program_name(words[0]), *words[1:]]
+    if words[0] == "rm" or (powershell and words[0] in POWERSHELL_DELETES):
         return "destructive"
     if words[:2] == ["git", "reset"] and "--hard" in words[2:]:
         return "destructive"
@@ -246,7 +266,7 @@ def local_pre_tool(payload: Mapping[str, Any], stderr: IO[str]) -> int:
     if not isinstance(command, str):
         stderr.write(UNJUDGED_REASON + "\n")
         return 2
-    if classify_command(shell_text(tool, command)) == "destructive":
+    if classify_shell(tool, command) == "destructive":
         stderr.write(DESTRUCTIVE_REASON + "\n")
         return 2
     # The bound-push policy belongs to adopted local repositories; hangar's verify

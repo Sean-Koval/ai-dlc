@@ -14,7 +14,7 @@ import pytest
 from test_hooks import initialize_hook_project
 
 from ai_dlc.harness import hook_shim
-from ai_dlc.harness.hooks import classify_command
+from ai_dlc.harness.hook_shim import classify_command
 
 ROOT = Path(__file__).resolve().parents[1]
 GENERATED = ROOT / "plugins/ai-dlc-workflow/hooks/aidlc_hook.py"
@@ -253,6 +253,20 @@ POWERSHELL_DESTRUCTIVE = [
     "git clean `-fdx",
     "git push `--force origin main",
     'rm -rf y; Write-Host "a`"b"',
+    # KAN-493: PowerShell's own deletes, and git named as git.exe or by its full path.
+    "Remove-Item -Recurse -Force src",
+    "ri -r -fo src",
+    "rd -r src",
+    "rmdir src",
+    "del /s /q src",
+    "erase notes.txt",
+    "Remove-Item notes.txt",
+    "Get-ChildItem *.log | Remove-Item",
+    "Microsoft.PowerShell.Management\\Remove-Item src -Recurse",
+    "git.exe reset --hard",
+    "GIT.EXE push -f origin main",
+    '& "C:\\Program Files\\Git\\cmd\\git.exe" push --force origin main',
+    "C:\\Git\\cmd\\git.exe clean -fdx",
 ]
 
 
@@ -269,12 +283,40 @@ def test_powershell_destructive_command_is_denied(tmp_path, mode, command):
 
 @pytest.mark.parametrize(
     "command",
-    ["Get-ChildItem", "git status", "git push origin feature/x", 'Write-Host "a`tb"'],
+    [
+        "Get-ChildItem",
+        "git status",
+        "git push origin feature/x",
+        'Write-Host "a`tb"',
+        "Get-Content C:\\work\\notes.txt",
+        "git.exe status",
+        '& "C:\\Program Files\\Git\\cmd\\git.exe" log -1',
+        "Get-Item src | Select-Object FullName",
+    ],
 )
 def test_ordinary_powershell_command_is_allowed(tmp_path, command):
     root, env, _ = project(tmp_path, "no-cli")
     payload = {"cwd": str(root), "tool_name": "PowerShell", "tool_input": {"command": command}}
     assert invoke("pre-tool", payload, env) == (0, "", "")
+
+
+@pytest.mark.parametrize(
+    "command, category",
+    [
+        # KAN-493: a program is known by its name, wherever it lives.
+        ("/usr/bin/git reset --hard", "destructive"),
+        ("/bin/rm -rf build", "destructive"),
+        ("git.exe push --force origin main", "destructive"),
+        ("./tools/git.exe clean -fd", "destructive"),
+        # PowerShell's delete aliases are other programs, or none, in a POSIX shell.
+        ("del notes.txt", "ordinary"),
+        ("rd build", "ordinary"),
+        ("Remove-Item build", "ordinary"),
+        ("/usr/bin/git status", "ordinary"),
+    ],
+)
+def test_bash_names_programs_by_their_name(command, category):
+    assert hook_shim.classify_shell("Bash", command) == category
 
 
 @pytest.mark.parametrize("mode", MODES)
@@ -327,6 +369,8 @@ def test_classifier_parity_with_the_generated_shim(command):
     finally:
         sys.dont_write_bytecode = previous
     assert module.classify_command(command) == classify_command(command)
+    for tool in hook_shim.SHELL_TOOLS:
+        assert module.classify_shell(tool, command) == hook_shim.classify_shell(tool, command)
 
 
 def test_generated_shim_is_the_source_copy():

@@ -301,7 +301,7 @@ def test_detached_head_denies_before_lightweight_allowance(tmp_path):
 
 
 def test_destructive_denial_precedes_tracked_branches_policy(tmp_path):
-    from ai_dlc.harness.hooks import classify_command
+    from ai_dlc.harness.hook_shim import classify_command
 
     root = tmp_path / "project"
     initialize_hook_project(root, "tracked-branches")
@@ -379,7 +379,7 @@ def test_stop_reminder_reaches_the_agent_through_exit_two(tmp_path):
 )
 def test_chained_destructive_commands_are_denied(tmp_path, command):
     """KAN-318: chaining used to classify the whole line as unsupported, then allow it."""
-    from ai_dlc.harness.hooks import classify_command
+    from ai_dlc.harness.hook_shim import classify_command
 
     root = tmp_path / "project"
     initialize_hook_project(root, "tracked-branches")
@@ -394,7 +394,7 @@ def test_chained_destructive_commands_are_denied(tmp_path, command):
     ["git add -A && git push origin topic", "git status; gh pr create --title change"],
 )
 def test_chained_bound_operations_get_the_push_policy(tmp_path, command):
-    from ai_dlc.harness.hooks import classify_command
+    from ai_dlc.harness.hook_shim import classify_command
 
     root = tmp_path / "project"
     initialize_hook_project(root, "all-branches")
@@ -415,13 +415,13 @@ def test_chained_bound_operations_get_the_push_policy(tmp_path, command):
     ],
 )
 def test_quoted_separators_do_not_split_commands(command, category):
-    from ai_dlc.harness.hooks import classify_command
+    from ai_dlc.harness.hook_shim import classify_command
 
     assert classify_command(command) == category
 
 
 def test_required_unsupported_path_is_reported():
-    from ai_dlc.harness.hooks import classify_command
+    from ai_dlc.harness.hook_shim import classify_command
 
     assert classify_command("git -C elsewhere push") == "unsupported"
     assert classify_command("gh pr create --title 'hi'") == "bound-operation"
@@ -441,7 +441,19 @@ def test_specification_edit_warning(tmp_path):
 
 
 @pytest.mark.parametrize(
-    "command", ["rm -rf build", "git reset --hard HEAD~1", "git reset `--hard", "RM -r build"]
+    "command",
+    [
+        "rm -rf build",
+        "git reset --hard HEAD~1",
+        "git reset `--hard",
+        "RM -r build",
+        # KAN-493: PowerShell's own deletes and git.exe.
+        "Remove-Item -Recurse -Force src",
+        "ri -r src",
+        "del /s /q src",
+        "git.exe reset --hard",
+        '& "C:\\Program Files\\Git\\cmd\\git.exe" push --force origin main',
+    ],
 )
 def test_powershell_destructive_commands_are_denied(tmp_path, command):
     """KAN-487: the PowerShell tool used to be an "unsupported tool payload" and allowed."""
@@ -453,6 +465,27 @@ def test_powershell_destructive_commands_are_denied(tmp_path, command):
     response = handle_hook(root, "pre-tool", payload)
     assert response["decision"] == "deny"
     assert "Destructive operation denied" in response["reason"]
+
+
+@pytest.mark.parametrize(
+    "command", ["Get-ChildItem", "git.exe status", "Get-Content C:\\work\\a.txt"]
+)
+def test_ordinary_powershell_commands_are_allowed(tmp_path, command):
+    from ai_dlc.harness.hooks import handle_hook
+
+    root = tmp_path / "project"
+    initialize_hook_project(root, None)
+    payload = {"tool_name": "PowerShell", "tool_input": {"command": command}}
+    assert handle_hook(root, "pre-tool", payload)["decision"] == "allow"
+
+
+def test_bash_git_by_its_full_path_is_judged_as_git(tmp_path):
+    from ai_dlc.harness.hooks import handle_hook
+
+    root = tmp_path / "project"
+    initialize_hook_project(root, None)
+    payload = {"tool_name": "Bash", "tool_input": {"command": "/usr/bin/git reset --hard"}}
+    assert handle_hook(root, "pre-tool", payload)["decision"] == "deny"
 
 
 @pytest.mark.parametrize("tool_input", [None, [], {}, {"command": ["rm", "-rf", "x"]}])
