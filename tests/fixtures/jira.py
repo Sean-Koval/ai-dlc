@@ -27,6 +27,10 @@ PAYLOAD = {
 }
 
 
+def labels_field():
+    return {**field("labels", "array"), "schema": {"type": "array", "items": "string"}}
+
+
 def field(key, type="string", required=False, **extra):
     return {
         "fieldId": key,
@@ -137,6 +141,25 @@ class Jira:
                 self.links.append({"id": len(self.links) + 1, **body})
                 return httpx.Response(201, json={"id": len(self.links)})
             data = copy.deepcopy(self.links)
+        elif path.endswith("/comment"):
+            issue = next(i for i in self.issues if i["id"] == path.split("/")[1])
+            comments = issue.setdefault("comments", [])
+            if request.method == "POST":
+                comments.append(
+                    {
+                        "id": str(9000 + len(comments)),
+                        "author": {"accountId": self.account},
+                        "body": body["body"],
+                    }
+                )
+                return httpx.Response(201, json={"id": comments[-1]["id"]})
+            data = self.page(comments, "comments")
+        elif path.endswith("/editmeta"):
+            data = {"fields": {row["key"]: copy.deepcopy(row) for row in self.fields}}
+        elif path.startswith("issue/") and request.method == "PUT":
+            row = next(i for i in self.issues if i["id"] == path.split("/")[1])
+            row["fields"].update(copy.deepcopy(body["fields"]))
+            return httpx.Response(204)
         elif path.startswith("issue/"):
             ref = path.split("/")[1]
             data = next((copy.deepcopy(i) for i in self.issues if ref in [i["id"], i["key"]]), None)

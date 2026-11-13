@@ -25,6 +25,16 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
   finish` copies the keys into the record once, and `work show` resolves a key,
   session ID or ticket back to its record. `work hooks install` adds an opt-in
   `commit-msg` hook for the trailer.
+- The MCP surface an agent with only `ai-dlc mcp serve` needs (KAN-441): `work_new`,
+  `work_pr`, `work_archive`; `knowledge_search` and `knowledge_get` (with `project`, so
+  customer records stay in their project), `knowledge_propose` and `knowledge_template`;
+  and `tracker_get`, `tracker_search`, `tracker_create`, `tracker_update` and
+  `tracker_comment` through the tracker role. They refuse `exec:agent` (and
+  `lane:agent`) in any letter case, after NFKC normalisation with zero-width and other
+  format characters removed; a comment that names one is refused too. Results carry
+  the item's `exec:` labels. There is still no transition tool. The tracker contract
+  gains optional `labels` on `create` and optional `update`, `query` and `comment`
+  operations, implemented by `jira-cloud` and not yet live-qualified.
 - `ai-dlc knowledge migrate` (KAN-452, [ADR 0005](docs/decisions/0005-migrate-knowledge-notes-to-records.md))
   rewrites knowledge-note frontmatter as knowledge records. It is a dry run unless
   `--write`, idempotent, and reversible with `--revert JOURNAL`. This repository's

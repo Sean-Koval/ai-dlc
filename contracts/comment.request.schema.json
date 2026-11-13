@@ -1,0 +1,28 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "body": {
+      "description": "Plain text; each non-blank line is one paragraph.",
+      "minLength": 1,
+      "title": "Body",
+      "type": "string"
+    },
+    "operation_id": {
+      "minLength": 1,
+      "title": "Operation Id",
+      "type": "string"
+    },
+    "reference": {
+      "minLength": 1,
+      "title": "Reference",
+      "type": "string"
+    }
+  },
+  "required": [
+    "reference",
+    "body",
+    "operation_id"
+  ],
+  "title": "Comment",
+  "type": "object"
+}

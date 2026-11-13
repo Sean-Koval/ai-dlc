@@ -18,6 +18,9 @@ class Request(BaseModel):
         "read",
         "link",
         "transition",
+        "update",
+        "query",
+        "comment",
         "current",
         "merged",
         "ci",
@@ -40,11 +43,18 @@ class Payload(BaseModel):
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
 
 
+LABELS = (
+    "Native tracker labels to set. A provider that cannot write labels does not list "
+    "update among its optional operations, and callers refuse labels before writing."
+)
+
+
 class Create(Payload):
     title: str = Field(min_length=1)
     correlation: str = Field(min_length=1)
     operation_id: str = Field(min_length=1)
     body: str = ""
+    labels: list[str] = Field(default_factory=list, description=LABELS)
 
 
 class Find(Payload):
@@ -80,6 +90,35 @@ class Transition(Read):
     operation_id: str = Field(min_length=1)
 
 
+class Update(Read):
+    """Replace the given fields of an open item; omitted fields stay as they are."""
+
+    operation_id: str = Field(min_length=1)
+    title: str | None = Field(default=None, min_length=1)
+    body: str | None = None
+    labels: list[str] | None = Field(default=None, description=LABELS)
+
+
+class Query(Payload):
+    """Read-only item search; every filter given must match."""
+
+    text: str | None = Field(default=None, min_length=1)
+    labels: list[str] = Field(default_factory=list)
+    state: str | None = Field(default=None, description=ITEM_STATE)
+    limit: int = Field(default=20, ge=1, le=50)
+
+
+class Comment(Read):
+    body: str = Field(min_length=1, description="Plain text; each non-blank line is one paragraph.")
+    operation_id: str = Field(min_length=1)
+
+
+class CommentResult(BaseModel):
+    model_config = ConfigDict(extra="allow")
+    id: str = Field(min_length=1)
+    url: str = Field(min_length=1)
+
+
 class Capabilities(Payload):
     pass
 
@@ -113,6 +152,9 @@ PAYLOADS = {
     "read": Read,
     "link": Link,
     "transition": Transition,
+    "update": Update,
+    "query": Query,
+    "comment": Comment,
 }
 
 
@@ -350,6 +392,9 @@ RESPONSES = {
     "read": Item,
     "link": Item,
     "transition": Item,
+    "update": Item,
+    "query": Found,
+    "comment": CommentResult,
     "current": CurrentResult,
     "merged": MergedResult,
     "ci": CIResult,
@@ -432,7 +477,15 @@ def manifest():
         "roles": {
             "tracker": {
                 "mandatory": ["create", "find", "read", "transition"],
-                "optional": ["capabilities", "link", "prepare", "reconcile_closed"],
+                "optional": [
+                    "capabilities",
+                    "comment",
+                    "link",
+                    "prepare",
+                    "query",
+                    "reconcile_closed",
+                    "update",
+                ],
             },
             "specs": {"mandatory": ["current"], "optional": []},
             "scm": {"mandatory": ["merged", "ci"], "optional": ["pull_request_create"]},
