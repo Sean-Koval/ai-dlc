@@ -68,6 +68,7 @@ repository = "<owner>/<repo>"  # where draft pull requests open, through scm
 ```
 
 ```sh
+ai-dlc knowledge records template decision                      # --list names the types
 ai-dlc knowledge records get DEC-0001
 ai-dlc knowledge records search --type decision --label harness   # --text reads bodies
 ai-dlc knowledge records changed <revision>

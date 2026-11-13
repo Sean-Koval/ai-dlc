@@ -31,6 +31,8 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
   it never writes the base branch. The knowledge role now requires `get` and `search`
   (the Obsidian provider answers both) and `append` is optional. The SCM
   `pull_request_create` payload gains `draft`.
+  `ai-dlc knowledge records template TYPE` prints a packaged record template;
+  `--list` names the types.
 - The knowledge-record contract: `KnowledgeRecord` in
   `ai_dlc.documentation.knowledge_records`, its generated
   `contracts/knowledge-record.schema.json`, format version 1 for knowledge repositories
