@@ -90,14 +90,15 @@ ai-dlc knowledge render --changed-since <sha> --dry-run   # every planned upsert
 ai-dlc knowledge render --changed-since <sha>
 ```
 
-Render upserts one page per changed record, keyed and titled by its id. It also
-regenerates one index page per scope. Frontmatter becomes page properties and
-labels. Every page opens with a do-not-edit banner that links its source file.
+Render upserts one page per changed record, keyed by its id, and one index page
+per scope. Frontmatter becomes page properties and
+labels; a status change drops the old status label. Every page opens with a
+do-not-edit banner that links its source file. A deleted record's page is marked
+removed.
 
-Each page carries a content hash. A page whose hash and version match the last
-render is skipped, so a second run writes nothing. A page edited by hand is
-restored. An upsert names the version it read, and a page that changed in
-between is refused, not overwritten.
+A page whose content hash and version match the last render is skipped, so a
+rerun writes nothing. A page edited by hand is
+restored. An upsert names the version it read; a concurrent change is refused.
 
 A record with `boundary: customer` renders only where `[wiki] boundary` is
 `customer`. The Confluence provider follows the `jira-cloud` credential rules:
