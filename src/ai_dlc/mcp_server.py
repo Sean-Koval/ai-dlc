@@ -219,6 +219,16 @@ def _register_knowledge_tools(server: FastMCP, root: Path, config: dict) -> None
 
         return check_records(root / records, base=base)
 
+    @server.tool()
+    def knowledge_render(changed_since: str, dry_run: bool = True) -> dict:
+        """Render records changed since a revision to the wiki role; the wiki's only writer.
+
+        Dry run by default: it lists every planned upsert and writes nothing.
+        """
+        from ai_dlc.documentation.knowledge_render import KnowledgeRender
+
+        return KnowledgeRender(root, config).render(changed_since, dry_run=dry_run)
+
 
 def _register_knowledge_record_tools(server: FastMCP, root: Path) -> None:
     @server.tool()

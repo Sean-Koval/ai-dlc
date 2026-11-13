@@ -27,8 +27,8 @@ amends the freeze for this module. Tracks
 
 ### New Capabilities
 
-- `knowledge-capture`: KC-01 to KC-04 cover capture frontmatter, source dedupe,
-  the origin/site wall and the version-guarded publish binding.
+- `knowledge-capture`: KC-01 and KC-02 cover capture frontmatter and source dedupe.
+  KC-03 and KC-04, the publish wall and binding, are retired by KAN-430.
 
 ### Modified Capabilities
 

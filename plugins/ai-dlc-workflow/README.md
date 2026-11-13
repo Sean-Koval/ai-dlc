@@ -16,7 +16,7 @@ with `--check`.
 | Path | Content |
 | --- | --- |
 | `skills/ai-dlc-workflow/` | Provider-neutral workflow guidance as a skill; plugin `CLAUDE.md` files are not loaded |
-| `skills/<team-skill>/` | discovery, prd-draft, spec-from-prd, handoff, document-review, document-organize, design-brief, design-evaluate, and the second-brain daily-note, capture and kb-publish |
+| `skills/<team-skill>/` | discovery, prd-draft, spec-from-prd, handoff, document-review, document-organize, design-brief, design-evaluate, and the second-brain daily-note and capture |
 | `hooks/hooks.json` | SessionStart, PreToolUse (`Bash\|exec_command\|Edit\|Write`) and Stop hooks, exec form, 10 s timeout |
 | `hooks/aidlc_hook.py` | Standard-library hook shim |
 | `plugin.lock.json` | One digest per component, a `content_digest` over them, the digest of every published file, and the Codex form's digests |

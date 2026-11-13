@@ -1,0 +1,74 @@
+# Reusable workflow for knowledge repositories, run on push to the default branch:
+#   on:
+#     push:
+#       branches: [main]
+#   jobs:
+#     render:
+#       uses: Sean-Koval/ai-dlc/.github/workflows/knowledge-render.yml@main
+#       secrets:
+#         token: ${{ secrets.CONFLUENCE_TOKEN }}
+#
+# It renders the records changed by the push, and one index page per scope, to the
+# wiki through `ai-dlc knowledge render` (KAN-430), the wiki's only writer. The
+# repository carries an `ai-dlc.toml` that selects the `knowledge` role (kind `git`,
+# location ".") and the `wiki` role (kind `confluence-cloud`, with `token_env`), and
+# its `knowledge.toml` declares `[wiki] site`. Rendering is idempotent: a rerun
+# writes nothing. Live Confluence rendering is not yet qualified.
+name: Knowledge render
+on:
+  workflow_call:
+    inputs:
+      token-env:
+        description: Environment variable the wiki provider's token_env names.
+        type: string
+        default: CONFLUENCE_TOKEN
+      dry-run:
+        description: Print every planned upsert and write nothing.
+        type: boolean
+        default: false
+      ai-dlc-ref:
+        description: ai-dlc git ref to install; pin a tag or commit for repeatable runs.
+        type: string
+        default: main
+    secrets:
+      token:
+        description: Scoped Confluence token for the declared site.
+        required: true
+permissions:
+  contents: read
+jobs:
+  render:
+    name: Render the wiki
+    runs-on: ubuntu-24.04
+    concurrency:
+      group: knowledge-render-${{ github.repository }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install ai-dlc
+        env:
+          AI_DLC_REF: ${{ inputs.ai-dlc-ref }}
+        run: python -m pip install "ai-dlc @ git+https://github.com/Sean-Koval/ai-dlc@${AI_DLC_REF}"
+      - name: Render
+        env:
+          BEFORE: ${{ github.event.before }}
+          TOKEN_ENV: ${{ inputs.token-env }}
+          TOKEN: ${{ secrets.token }}
+          DRY_RUN: ${{ inputs.dry-run }}
+        run: |
+          case "$TOKEN_ENV" in *[!A-Za-z0-9_]* | "") echo "invalid token-env" >&2; exit 2 ;; esac
+          export "$TOKEN_ENV=$TOKEN"
+          since="$BEFORE"
+          if [ -z "$since" ] || ! git cat-file -e "${since}^{commit}" 2>/dev/null; then
+            since="$(git rev-list --max-parents=0 HEAD | tail -n 1)"
+          fi
+          if [ "$DRY_RUN" = "true" ]; then
+            ai-dlc knowledge render --root . --changed-since "$since" --dry-run
+          else
+            ai-dlc knowledge render --root . --changed-since "$since"
+          fi
