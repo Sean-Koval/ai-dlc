@@ -1782,13 +1782,19 @@ def knowledge_stats(
         typer.Option("--agent-repository", help="owner/repo agents open PRs in; repeatable"),
     ] = None,
     project: Annotated[str | None, typer.Option("--project")] = None,
+    log: Annotated[
+        Path | None,
+        typer.Option("--log", help="capture batch's run log (.jsonl, .json or folder)"),
+    ] = None,
     report: Annotated[Path | None, typer.Option("--report", help="write the Markdown here")] = None,
     json_output: Annotated[bool, typer.Option("--json")] = False,
 ):
     """Measure the 1.0 outcomes: capture, review, agent loop and health; read-only.
 
-    Reads git, the capture run log, and the scm and tracker roles. A role that is not
-    selected leaves its numbers unmeasured. ``--report`` writes the weekly Markdown.
+    Reads git, the scm and tracker roles, and the capture run log given with ``--log``
+    (kept where the batch runs, not in git). Without it, or without a role, those
+    numbers read unmeasured; a missing or wrong-shaped log is an error.
+    ``--report`` writes the weekly Markdown.
     """
     from datetime import datetime
 
@@ -1800,7 +1806,7 @@ def knowledge_stats(
         # one is an error to fix, not a reason to report nothing.
         config = config_for(root) if (root / "ai-dlc.toml").is_file() else None
         wired = measure.from_roles(config, root, agent_repositories=agent_repositories or ())
-        result = measure.stats(records, moment, project=project, **wired)
+        result = measure.stats(records, moment, project=project, log=log, **wired)
         text = "\n".join(measure.report(result)) + "\n"
         if report is not None:
             report.parent.mkdir(parents=True, exist_ok=True)

@@ -184,9 +184,10 @@ def fixture(tmp_path):
     base = repo.commit("base", when="2026-10-01T09:00:00+00:00")
     repo.write("evals/agent-run/KAN-1.md", "# KAN-1 run\n")
     repo.commit("scorecard for KAN-1", when="2026-11-03T09:00:00+00:00")
-    # Capture: two runs since, one before, and one unreadable file.
-    repo.write(
-        "runs/capture/2026-10-20.json",
+    # Capture: the batch's run log, kept where it runs (not in the knowledge repo):
+    # two runs since and one before.
+    log = []
+    log.append(
         capture_run(
             "r0",
             "2026-10-20T02:00:00+00:00",
@@ -195,8 +196,7 @@ def fixture(tmp_path):
             ],
         ),
     )
-    repo.write(
-        "runs/capture/2026-11-02.json",
+    log.append(
         capture_run(
             "r1",
             "2026-11-02T02:00:00+00:00",
@@ -234,8 +234,7 @@ def fixture(tmp_path):
             ceiling=True,
         ),
     )
-    repo.write(
-        "runs/capture/2026-11-03.json",
+    log.append(
         capture_run(
             "r2",
             "2026-11-03T02:00:00+00:00",
@@ -253,13 +252,19 @@ def fixture(tmp_path):
                     "kind": "note",
                     "outcome": "failed",
                     "input_tokens": 100,
+                    "output_tokens": 0,
                     "cost_usd": 0.01,
                 },
+                # Another provider's Source failed before it reported usage: unknown.
+                {"id": "o1", "kind": "other", "outcome": "failed", "cost_usd": None},
             ],
         ),
     )
-    repo.write("runs/capture/bad.json", "{}")
-    main = repo.commit("run logs", when="2026-11-03T10:00:00+00:00")
+    batch = tmp_path / "batch"
+    batch.mkdir()
+    (batch / "runs.jsonl").write_text("\n".join(log) + "\n\n", encoding="utf-8")
+    repo.write("README.md", "# Team knowledge\n")
+    main = repo.commit("readme", when="2026-11-03T10:00:00+00:00")
 
     # PR 1: merge commit. Extracts two records; the reviewer edits one.
     repo.git("checkout", "-q", "-b", "pr1")
@@ -492,6 +497,7 @@ def fixture(tmp_path):
     return {
         "repo": repo,
         "records": repo.top / r,
+        "log": batch / "runs.jsonl",
         "prs": prs,
         "agent_prs": agent_prs,
         "tickets": tickets,
@@ -513,6 +519,7 @@ def measure(fixture, **overrides):
         "pull_requests": listing(fixture["prs"]),
         "agent_pull_requests": listing(fixture["agent_prs"]),
         "agent_tickets": lambda: fixture["tickets"],
+        "log": fixture["log"],
         **overrides,
     }
     result = stats(fixture["records"], SINCE, **options)
@@ -522,24 +529,56 @@ def measure(fixture, **overrides):
 
 def test_capture_counts_each_source_once_by_its_last_outcome(fixture):
     capture = measure(fixture)["capture"]
-    assert capture | {"invalid_run_logs": None} == {
+    assert capture == {
+        "available": True,
         "runs": 2,
         "ceiling_reached": 1,
-        "sources_pulled": 6,  # t1 t2 c1 c2 c3 n1; c3 deferred then extracted
+        "sources_pulled": 7,  # t1 t2 c1 c2 c3 n1 o1; c3 deferred then extracted
         "sources_filtered": 2,
         "sources_extracted": 3,
         "sources_deferred": 0,
-        "sources_failed": 1,
+        "sources_failed": 2,
         "tokens": 22600,
         "cost_usd": 0.51,
+        "usage_unknown": 1,  # o1, left out of the totals
         "tokens_per_source": 7533,
         "cost_per_source_usd": 0.17,
         "transcript_hours": 1.5,
         "cost_per_transcript_hour_usd": 0.3,
-        "invalid_run_logs": None,
     }
-    (bad,) = capture["invalid_run_logs"]
-    assert bad["path"] == "runs/capture/bad.json"
+
+
+def test_capture_reads_a_folder_of_json_runs_like_the_jsonl_log(fixture, tmp_path):
+    lines = [line for line in fixture["log"].read_text().splitlines() if line]
+    folder = tmp_path / "runs"
+    folder.mkdir()
+    (folder / "a.jsonl").write_text(lines[0] + "\n")
+    for number, line in enumerate(lines[1:]):
+        (folder / f"{number}.json").write_text(line)
+    assert measure(fixture, log=folder)["capture"] == measure(fixture)["capture"]
+
+
+def test_no_log_leaves_capture_unmeasured_and_says_where_the_log_is(fixture):
+    result = measure(fixture, log=None)
+    assert result["capture"] == {
+        "available": False,
+        "reason": "no capture run log: run stats where the capture batch runs, with --log",
+    }
+    assert "- Not measured: no capture run log" in "\n".join(report(result))
+
+
+def test_a_missing_or_wrong_shaped_log_fails_naming_the_file_and_line(fixture, tmp_path):
+    with pytest.raises(ValueError, match="capture run log not found"):
+        measure(fixture, log=tmp_path / "nowhere.jsonl")
+    bad = tmp_path / "runs.jsonl"
+    good = fixture["log"].read_text().split("\n")[0]
+    # The capture batch's old shape: one line per Source, no run.
+    bad.write_text(good + "\n" + json.dumps({"id": "t1", "outcome": "extracted"}) + "\n")
+    with pytest.raises(ValueError, match=r"runs.jsonl:2 is not a capture run .*capture-run"):
+        measure(fixture, log=bad)
+    (tmp_path / "one.json").write_text("{}")
+    with pytest.raises(ValueError, match=r"one.json:1 is not a capture run"):
+        measure(fixture, log=tmp_path / "one.json")
 
 
 def test_review_times_and_reviewer_edits_match_the_git_history(fixture):
@@ -575,11 +614,45 @@ def test_customer_pull_requests_are_counted_only_hidden_in_a_team_view(fixture):
     result = measure(fixture)
     text = json.dumps(result) + "\n".join(report(result))
     assert "Alpha Corp" not in text and "les-g" not in text
-    assert result["capture"]["sources_pulled"] == 6  # SRC-0009 is a customer Source
+    assert result["capture"]["sources_pulled"] == 7  # SRC-0009 is a customer Source
     alpha = measure(fixture, project="alpha")
     assert alpha["review"]["hidden_customer"] == 1  # #9 sits outside projects/alpha/
     assert {row["number"] for row in alpha["review"]["by_pull_request"]} >= {8}
-    assert alpha["capture"]["sources_pulled"] == 7
+    assert alpha["capture"]["sources_pulled"] == 8
+
+
+def test_a_pull_request_whose_records_cannot_be_read_is_listed_without_its_title(fixture):
+    rows = {row["number"]: row for row in measure(fixture)["review"]["by_pull_request"]}
+    assert rows[6]["title"] is None  # its commits aren't fetched, so it may be a customer's
+    assert rows[1]["title"]
+
+
+def test_a_boundary_the_reviewer_adds_before_merge_hides_the_pull_request(tmp_path):
+    repo = Repo(tmp_path / "knowledge")
+    repo.write("records/knowledge.toml", "[format]\nversion = 1\n")
+    repo.commit("base", when="2026-10-01T09:00:00+00:00")
+    repo.git("checkout", "-q", "-b", "pr1")
+    path = "records/lessons/les-x.md"
+    repo.write(path, record("les-x", "lesson", "open", "2026-11-04", "sean"))
+    first = repo.commit("extract")
+    customer = "boundary: customer\nproject: alpha\n"
+    repo.write(path, record("les-x", "lesson", "open", "2026-11-04", "sean", extra=customer))
+    repo.commit("review: this is Alpha Corp's")
+    repo.git("checkout", "-q", "main")
+    repo.git("merge", "-q", "--no-ff", "pr1", "-m", "Merge pull request #1")
+    pr = {
+        "number": 1,
+        "title": "Alpha Corp call",
+        "state": "merged",
+        "created_at": "2026-11-04T00:00:00Z",
+        "merged_at": "2026-11-04T05:00:00Z",
+        "files": [path],
+        "first_commit": first,
+        "merge_commit": repo.git("rev-parse", "HEAD"),
+    }
+    result = stats(repo.top / "records", SINCE, now=NOW, pull_requests=lambda since: [pr])
+    assert result["review"]["hidden_customer"] == 1
+    assert "Alpha Corp" not in json.dumps(result)
 
 
 def test_agent_loop_counts_tickets_their_prs_first_push_and_scorecards(fixture):
@@ -609,7 +682,7 @@ def test_health_counts_stale_records_expiring_sources_and_authors(fixture):
 
 
 def test_missing_roles_leave_their_numbers_unmeasured_and_the_rest_computed(fixture):
-    result = stats(fixture["records"], SINCE, now=NOW)
+    result = stats(fixture["records"], SINCE, now=NOW, log=fixture["log"])
     assert result["review"] == {
         "available": False,
         "reason": "no scm provider: select one for the scm role",
@@ -626,7 +699,8 @@ def test_report_is_markdown_with_every_section(fixture):
     text = "\n".join(report(measure(fixture)))
     for heading in ("## Capture", "## Review", "## Agent loop", "## Health"):
         assert heading in text
-    assert "Sources pulled: 6; filtered 2; extracted 3" in text
+    assert "Sources pulled: 7; filtered 2; extracted 3" in text
+    assert "cost $0.51 (not counting 1 with unknown usage)" in text
     assert "within 48 h: 71.4%" in text
     assert "dropped 2 (28.6%)" in text
     assert "Not measured (commits not fetched, or no parent commit): #6, #10" in text
@@ -647,6 +721,8 @@ def test_cli_prints_json_and_writes_the_report_without_providers(fixture, tmp_pa
             "2026-11-01",
             "--root",
             str(tmp_path),
+            "--log",
+            str(fixture["log"]),
             "--report",
             str(out),
             "--json",
@@ -657,6 +733,15 @@ def test_cli_prints_json_and_writes_the_report_without_providers(fixture, tmp_pa
     assert data["capture"]["sources_extracted"] == 3
     assert data["review"]["available"] is False
     assert out.read_text().startswith("# Knowledge system outcomes, 2026-11-01 to ")
+
+
+def test_cli_fails_clearly_on_a_wrong_shaped_log(fixture, tmp_path):
+    bad = tmp_path / "runs.jsonl"
+    bad.write_text("{}\n")
+    args = ["knowledge", "stats", str(fixture["records"]), "--since", "2026-11-01"]
+    result = CliRunner().invoke(app, [*args, "--root", str(tmp_path), "--log", str(bad)])
+    assert result.exit_code != 0
+    assert "runs.jsonl:1 is not a capture run" in result.output
 
 
 def test_roles_wire_only_scm_and_tracker(monkeypatch, tmp_path):
@@ -731,12 +816,18 @@ def test_github_scm_lists_pull_requests_with_first_push_checks(monkeypatch, tmp_
                 "closed_at": "2026-10-02T00:00:00Z",
             },
         ],
-        "repos/o/k/pulls/3/files?per_page=100": [{"filename": "records/a.md"}],
+        "repos/o/k/pulls/3/files?per_page=100&page=1": [{"filename": "records/a.md"}],
         "repos/o/k/pulls/3/commits?per_page=100": [{"sha": "c3"}],
         "repos/o/k/commits/c3/check-runs?filter=all&per_page=100": {
             "check_runs": [{"id": 1, "name": "test", "status": "in_progress", "conclusion": None}]
         },
-        "repos/o/k/pulls/2/files?per_page=100": [{"filename": "records/b.md"}],
+        # A capture pull request with 150 files: the second page holds the customer path.
+        "repos/o/k/pulls/2/files?per_page=100&page=1": [
+            {"filename": f"records/lessons/l{n}.md"} for n in range(100)
+        ],
+        "repos/o/k/pulls/2/files?per_page=100&page=2": [
+            {"filename": f"records/projects/alpha/l{n}.md"} for n in range(50)
+        ],
         "repos/o/k/pulls/2/commits?per_page=100": [{"sha": "a"}, {"sha": "b"}],
         "repos/o/k/commits/a/check-runs?filter=all&per_page=100": {"check_runs": []},
         "repos/o/k/commits/b/check-runs?filter=all&per_page=100": {
@@ -756,3 +847,16 @@ def test_github_scm_lists_pull_requests_with_first_push_checks(monkeypatch, tmp_
         (2, "merged", "failure"),
     ]
     assert listed[1]["first_commit"] == "a" and listed[1]["merge_commit"] == "m2"
+    assert len(listed[1]["files"]) == 150 and listed[1]["files"][-1].startswith("records/projects/")
+
+
+def test_weekly_workflow_keeps_the_write_token_to_its_last_step_and_off_the_default_branch():
+    import yaml
+
+    path = Path(__file__).parents[1] / ".github/workflows/knowledge-stats.yml"
+    steps = yaml.safe_load(path.read_text())["jobs"]["stats"]["steps"]
+    holding = [step.get("name") for step in steps if "secrets.token" in json.dumps(step)]
+    assert holding == [steps[-1]["name"]]
+    guard = steps[0]["run"]
+    assert '"$default"' in guard and "repos/$GITHUB_REPOSITORY" in guard
+    assert "knowledge-stats[bot]" in steps[-1]["run"]

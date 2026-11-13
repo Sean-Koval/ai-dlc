@@ -59,6 +59,7 @@ ai-dlc knowledge records captured transcript.vtt                  # exit 1 when 
 ai-dlc knowledge records propose draft.md --path decisions/x.md --branch k/x --title T
 ai-dlc knowledge why DEC-0002 --root . --json   # local only: chain, links, quoted evidence
 ai-dlc knowledge stats . --since 2026-11-06T00:00:00Z --report reports/2026-W46.md  # weekly 1.0 outcomes
+ai-dlc knowledge stats . --since 2026-11-06T00:00:00Z --log capture/runs.jsonl  # capture too, on the batch machine
 ```
 
 ## Rendering the wiki

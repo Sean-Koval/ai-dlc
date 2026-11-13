@@ -5,10 +5,18 @@
       "description": "One Source in one capture run.",
       "properties": {
         "cost_usd": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
           "default": 0,
-          "minimum": 0,
-          "title": "Cost Usd",
-          "type": "number"
+          "description": "null: unknown; a failed Source that leaves it out is unknown too, others spent 0",
+          "title": "Cost Usd"
         },
         "duration_seconds": {
           "anyOf": [
@@ -31,16 +39,26 @@
           "type": "string"
         },
         "input_tokens": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
           "default": 0,
-          "minimum": 0,
-          "title": "Input Tokens",
-          "type": "integer"
+          "description": "null: unknown; a failed Source that leaves it out is unknown too, others spent 0",
+          "title": "Input Tokens"
         },
         "kind": {
+          "description": "other: a provider that is none of the three",
           "enum": [
             "transcript",
             "chat",
-            "note"
+            "note",
+            "other"
           ],
           "title": "Kind",
           "type": "string"
@@ -57,10 +75,18 @@
           "type": "string"
         },
         "output_tokens": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
           "default": 0,
-          "minimum": 0,
-          "title": "Output Tokens",
-          "type": "integer"
+          "description": "null: unknown; a failed Source that leaves it out is unknown too, others spent 0",
+          "title": "Output Tokens"
         },
         "pull_request": {
           "anyOf": [
@@ -86,7 +112,7 @@
     }
   },
   "additionalProperties": false,
-  "description": "One file under ``runs/capture/``: what one capture batch pulled, kept and spent.",
+  "description": "One line of the capture run log: what one capture batch run pulled, kept and spent.",
   "properties": {
     "ceiling_reached": {
       "default": false,

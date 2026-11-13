@@ -3,8 +3,8 @@
 1.0 is judged on outcomes, not tickets closed (KAN-467). Every number comes from data
 the system already writes, so there is no new store:
 
-- **Capture**, from the capture run log (``runs/capture/*.json``, :class:`CaptureRun`),
-  which the nightly batch (KAN-458) writes into the knowledge repository.
+- **Capture**, from the run log the nightly batch (KAN-458) writes where it runs, one
+  :class:`CaptureRun` per line, given with ``log``; v0.1 does not commit it.
 - **Review**, from the records pull requests the ``scm`` role lists and from git: hours
   from open to merge or close, and how many extracted records the reviewer edited or
   dropped (each record as the pull request's first commit had it, against the merge).
@@ -25,9 +25,16 @@ from collections.abc import Callable, Iterable
 from datetime import UTC, date, datetime, time, timedelta
 from pathlib import Path
 from statistics import median
-from typing import Any, Literal
+from typing import Any, Literal, Self
 
-from pydantic import AwareDatetime, BaseModel, ConfigDict, Field
+from pydantic import (
+    AwareDatetime,
+    BaseModel,
+    ConfigDict,
+    Field,
+    ValidationError,
+    model_validator,
+)
 
 from ai_dlc.documentation import knowledge_bundle
 from ai_dlc.documentation.knowledge_check import project_of, visible_in
@@ -40,7 +47,6 @@ from ai_dlc.documentation.knowledge_records import (
 )
 from ai_dlc.files import run_git
 
-RUN_LOG = "runs/capture"
 """Where the capture batch writes one JSON file per run, relative to the repository."""
 SCORECARDS = "evals/agent-run"
 """Where KAN-449 commits one scorecard per agent run; ``scorecard.md`` is the template."""
@@ -56,26 +62,44 @@ PullRequests = Callable[[datetime], list[dict[str, Any]]]
 Tickets = Callable[[], list[dict[str, Any]] | dict[str, Any]]
 
 
+USAGE = ("input_tokens", "output_tokens", "cost_usd")
+UNKNOWN = "null: unknown; a failed Source that leaves it out is unknown too, others spent 0"
+
+
 class CaptureEntry(BaseModel):
     """One Source in one capture run."""
 
     model_config = ConfigDict(extra="forbid")
     id: str = Field(min_length=1, description="the Source record's id or slug")
-    kind: Literal["transcript", "chat", "note"]
+    kind: Literal["transcript", "chat", "note", "other"] = Field(
+        description="other: a provider that is none of the three"
+    )
     outcome: Literal["extracted", "filtered", "deferred", "failed"] = Field(
         description="deferred: left in the inbox because the token ceiling was reached"
     )
-    input_tokens: int = Field(default=0, ge=0)
-    output_tokens: int = Field(default=0, ge=0)
-    cost_usd: float = Field(default=0, ge=0)
+    input_tokens: int | None = Field(default=0, ge=0, description=UNKNOWN)
+    output_tokens: int | None = Field(default=0, ge=0, description=UNKNOWN)
+    cost_usd: float | None = Field(default=0, ge=0, description=UNKNOWN)
     duration_seconds: float | None = Field(
         default=None, ge=0, description="the recording's length, for transcripts"
     )
     pull_request: int | None = Field(default=None, ge=1)
 
+    @model_validator(mode="after")
+    def _failed_usage_is_unknown(self) -> Self:
+        """A failed Source that reports no usage spent an unknown amount, not nothing."""
+        if self.outcome == "failed":
+            for name in USAGE:
+                if name not in self.model_fields_set:
+                    setattr(self, name, None)
+        return self
+
+    def usage_known(self) -> bool:
+        return all(getattr(self, name) is not None for name in USAGE)
+
 
 class CaptureRun(BaseModel):
-    """One file under ``runs/capture/``: what one capture batch pulled, kept and spent."""
+    """One line of the capture run log: what one capture batch run pulled, kept and spent."""
 
     model_config = ConfigDict(extra="forbid")
     schema_version: Literal[1] = 1
@@ -100,8 +124,14 @@ def stats(
     agent_pull_requests: PullRequests | None = None,
     agent_tickets: Tickets | None = None,
     project: str | None = None,
+    log: Path | str | None = None,
 ) -> dict[str, Any]:
     """Measure the knowledge repository holding the records directory ``root``; read-only.
+
+    ``log`` is the capture batch's run log where the batch runs (v0.1 does not commit
+    it): a ``.jsonl`` file of capture runs, one ``.json`` run, or a folder of either.
+    Without it, capture is reported as not measured. A missing or wrong-shaped log is
+    an error, so a bad log never reads as a quiet week.
 
     ``pull_requests`` lists the knowledge repository's pull requests opened since a
     moment; ``agent_pull_requests`` lists those of the repositories agents work in
@@ -128,7 +158,7 @@ def stats(
         "status": "ok",
         "since": start.isoformat(),
         "until": end.isoformat(),
-        "capture": _capture(repo or folder, start, end, hidden),
+        "capture": _capture(log, start, end, hidden),
         "review": _review(repo, prefix, knowledge_prs, end, scm_reason, project),
         "agent_loop": _agent_loop(repo, start, agent_prs, tickets, agent_reason, tracker_reason),
         "health": _health(records, start, end),
@@ -172,46 +202,79 @@ def _money(value: float) -> float:
 # Capture -----------------------------------------------------------------------------
 
 
-def runs(repo: Path, start: datetime, end: datetime) -> tuple[list[CaptureRun], list[dict]]:
-    """Capture runs that started in ``[start, end)``, oldest first, and unreadable files."""
+def runs(log: Path | str, start: datetime, end: datetime) -> list[CaptureRun]:
+    """Capture runs in ``log`` that started in ``[start, end)``, oldest first.
+
+    Every line must be a capture run (``contracts/capture-run.schema.json``); the first
+    that is not stops the measurement with its file and line.
+    """
+    where = Path(log).expanduser()
+    if where.is_dir():
+        files = sorted([*where.glob("*.jsonl"), *where.glob("*.json")])
+    elif where.is_file():
+        files = [where]
+    else:
+        raise ValueError(f"capture run log not found: {log}")
     found: list[CaptureRun] = []
-    invalid: list[dict] = []
-    for path in sorted((repo / RUN_LOG).glob("*.json")):
-        try:
-            run = CaptureRun.model_validate_json(path.read_text(encoding="utf-8"))
-        except ValueError as exc:
-            reason = str(exc).splitlines()[0]
-            invalid.append({"path": path.relative_to(repo).as_posix(), "reason": reason})
-            continue
-        if start <= run.started_at < end:
-            found.append(run)
+    for path in files:
+        text = path.read_text(encoding="utf-8")
+        chunks = (
+            [(number, line) for number, line in enumerate(text.splitlines(), 1) if line.strip()]
+            if path.suffix == ".jsonl"
+            else [(1, text)]
+        )
+        for number, chunk in chunks:
+            try:
+                run = CaptureRun.model_validate_json(chunk)
+            except ValidationError as exc:
+                error = exc.errors()[0]
+                field = ".".join(str(part) for part in error["loc"])
+                detail = f"{field}: {error['msg']}" if field else error["msg"]
+                raise ValueError(
+                    f"{path}:{number} is not a capture run ({detail}); "
+                    "expected contracts/capture-run.schema.json"
+                ) from None
+            if start <= run.started_at < end:
+                found.append(run)
     found.sort(key=lambda run: run.started_at)
-    return found, invalid
+    return found
 
 
 def _capture(
-    repo: Path, start: datetime, end: datetime, hidden: frozenset[str] | set[str] = frozenset()
+    log: Path | str | None,
+    start: datetime,
+    end: datetime,
+    hidden: frozenset[str] | set[str] = frozenset(),
 ) -> dict[str, Any]:
     """``hidden`` Sources (customer records another view may not show) are left out."""
-    found, invalid = runs(repo, start, end)
+    if log is None:
+        return {
+            "available": False,
+            "reason": "no capture run log: run stats where the capture batch runs, with --log",
+        }
+    found = runs(log, start, end)
     last: dict[str, CaptureEntry] = {}
     tokens = cost = 0.0
     hours = transcript_cost = 0.0
+    unknown = 0  # Source entries whose usage is unknown; the totals leave them out
     for run in found:
         for entry in run.sources:
             if entry.id in hidden:
                 continue
             last[entry.id] = entry
-            tokens += entry.input_tokens + entry.output_tokens
-            cost += entry.cost_usd
+            if not entry.usage_known():
+                unknown += 1
+            tokens += (entry.input_tokens or 0) + (entry.output_tokens or 0)
+            cost += entry.cost_usd or 0
             if entry.kind == "transcript":
-                transcript_cost += entry.cost_usd
+                transcript_cost += entry.cost_usd or 0
     for entry in last.values():
         if entry.kind == "transcript" and entry.outcome == "extracted":
             hours += (entry.duration_seconds or 0) / 3600
     outcomes = Counter(entry.outcome for entry in last.values())
     extracted = outcomes["extracted"]
     return {
+        "available": True,
         "runs": len(found),
         "ceiling_reached": sum(run.ceiling_reached for run in found),
         "sources_pulled": len(last),
@@ -221,11 +284,11 @@ def _capture(
         "sources_failed": outcomes["failed"],
         "tokens": int(tokens),
         "cost_usd": _money(cost),
+        "usage_unknown": unknown,
         "tokens_per_source": round(tokens / extracted) if extracted else None,
         "cost_per_source_usd": _money(cost / extracted) if extracted else None,
         "transcript_hours": round(hours, 2),
         "cost_per_transcript_hour_usd": _money(transcript_cost / hours) if hours else None,
-        "invalid_run_logs": invalid,
     }
 
 
@@ -268,21 +331,31 @@ def _record_id(text: str) -> str | None:
     return value if isinstance(value, str) else None
 
 
-def _hidden(repo: Path | None, pr: dict[str, Any], prefix: str, project: str | None) -> bool:
+def _hidden(repo: Path | None, pr: dict[str, Any], prefix: str, project: str | None) -> bool | None:
     """Whether a records pull request touches a record a view of ``project`` may not show.
 
-    A path under another project's ``projects/<name>/`` hides it before any read; the
-    first commit's records are then checked for ``boundary: customer`` (KAN-465).
+    A path under another project's ``projects/<name>/`` hides it before any read. The
+    records are then checked for ``boundary: customer`` (KAN-465) as the first commit
+    had them and, once merged, as the merge has them, so a reviewer's later boundary
+    counts. ``None`` when those commits are not fetched: the boundary is unknown.
     """
     paths = [path for path in pr.get("files", []) if _is_record_path(path, prefix)]
     if any(project_of(path[len(prefix) :]) not in (None, project) for path in paths):
         return True
-    first = pr.get("first_commit")
-    if not _has(repo, first):
-        return False
+    first, merge = pr.get("first_commit"), pr.get("merge_commit")
+    if not _has(repo, first) or (pr.get("state") == "merged" and not _has(repo, merge)):
+        return None
     assert repo is not None and first is not None
-    for path in paths:
-        text = _record_text(repo, first, path)
+    seen = [(first, path) for path in paths]
+    if pr.get("state") == "merged":
+        changed = _git(repo, "diff", "--name-only", "--no-renames", f"{first}^", str(merge))
+        names = changed.stdout.splitlines() if changed.returncode == 0 else []
+        moved = [name for name in names if _is_record_path(name, prefix)]
+        if any(project_of(name[len(prefix) :]) not in (None, project) for name in moved):
+            return True
+        seen += [(merge, name) for name in moved]
+    for sha, path in seen:
+        text = _record_text(repo, sha, path)
         header = split(text)[0] if text is not None else None
         if isinstance(header, dict) and not visible_in(header, path[len(prefix) :], project):
             return True
@@ -332,7 +405,8 @@ def _review(
     for pr in sorted(prs, key=lambda pr: pr["number"]):
         if not any(_is_record_path(path, prefix) for path in pr.get("files", [])):
             continue
-        if _hidden(repo, pr, prefix, project):
+        boundary = _hidden(repo, pr, prefix, project)
+        if boundary:
             hidden += 1  # counted, never listed: its title may name a customer
             continue
         created = _parse(pr["created_at"])
@@ -341,7 +415,8 @@ def _review(
         hours = round((ended - created).total_seconds() / 3600, 1) if ended else None
         row: dict[str, Any] = {
             "number": pr["number"],
-            "title": pr.get("title", ""),
+            # A pull request whose records can't be read may be a customer's: no title.
+            "title": pr.get("title", "") if boundary is False else None,
             "state": pr["state"],
             "hours_to_decision": hours,
             "open_hours": None if ended else round((now - created).total_seconds() / 3600, 1),
@@ -559,25 +634,32 @@ def report(result: dict[str, Any]) -> list[str]:
     agent, health = result["agent_loop"], result["health"]
     since, until = result["since"][:10], result["until"][:10]
     out = [f"# Knowledge system outcomes, {since} to {until}", "", "## Capture", ""]
-    out += [
-        f"- Runs: {capture['runs']} ({capture['ceiling_reached']} hit the token ceiling)",
-        (
-            f"- Sources pulled: {capture['sources_pulled']}; filtered "
-            f"{capture['sources_filtered']}; extracted {capture['sources_extracted']}; "
-            f"deferred {capture['sources_deferred']}; failed {capture['sources_failed']}"
-        ),
-        f"- Tokens: {capture['tokens']}; cost ${capture['cost_usd']}",
-        (
-            f"- Per extracted Source: {_show(capture['tokens_per_source'])} tokens, "
-            f"${_show(capture['cost_per_source_usd'])}"
-        ),
-        (
-            f"- Per transcript hour: ${_show(capture['cost_per_transcript_hour_usd'])} "
-            f"over {capture['transcript_hours']} h"
-        ),
-    ]
-    for entry in capture["invalid_run_logs"]:
-        out.append(f"- Unreadable run log {entry['path']}: {entry['reason']}")
+    out += (
+        [f"- Not measured: {capture['reason']}"]
+        if not capture["available"]
+        else [
+            f"- Runs: {capture['runs']} ({capture['ceiling_reached']} hit the token ceiling)",
+            (
+                f"- Sources pulled: {capture['sources_pulled']}; filtered "
+                f"{capture['sources_filtered']}; extracted {capture['sources_extracted']}; "
+                f"deferred {capture['sources_deferred']}; failed {capture['sources_failed']}"
+            ),
+            f"- Tokens: {capture['tokens']}; cost ${capture['cost_usd']}"
+            + (
+                f" (not counting {capture['usage_unknown']} with unknown usage)"
+                if capture["usage_unknown"]
+                else ""
+            ),
+            (
+                f"- Per extracted Source: {_show(capture['tokens_per_source'])} tokens, "
+                f"${_show(capture['cost_per_source_usd'])}"
+            ),
+            (
+                f"- Per transcript hour: ${_show(capture['cost_per_transcript_hour_usd'])} "
+                f"over {capture['transcript_hours']} h"
+            ),
+        ]
+    )
     out += ["", "## Review", ""]
     if not review["available"]:
         out.append(f"- Not measured: {review['reason']}")

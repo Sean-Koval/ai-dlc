@@ -211,9 +211,20 @@ class GitHubSCM:
             page += 1
         return found
 
+    def _every(self, path, pages=30):
+        """Every item of a paged list (GitHub lists at most 3000 pull request files)."""
+        found = []
+        for page in range(1, pages + 1):
+            batch = self.api(f"{path}?per_page=100&page={page}")
+            found += batch or []
+            if not batch or len(batch) < 100:
+                break
+        return found
+
     def _summary(self, pr):
         number = pr["number"]
-        files = self.api(f"repos/{self.repo}/pulls/{number}/files?per_page=100")
+        files = self._every(f"repos/{self.repo}/pulls/{number}/files")
+        # Only the first commits matter: the first commit and the first push's checks.
         commits = self.api(f"repos/{self.repo}/pulls/{number}/commits?per_page=100")
         state = "merged" if pr.get("merged_at") else pr.get("state", "open")
         return {
