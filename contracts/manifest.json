@@ -408,7 +408,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -877,6 +879,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -1939,6 +1944,9 @@
               "read",
               "link",
               "transition",
+              "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -2657,7 +2665,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
@@ -3387,7 +3397,9 @@
               "propose",
               "upsert_page",
               "get_page_by_key",
-              "list_children"
+              "list_children",
+              "list_since",
+              "fetch"
             ],
             "title": "Operation",
             "type": "string"
