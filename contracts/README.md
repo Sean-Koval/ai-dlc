@@ -31,6 +31,30 @@ changed since a revision. Optional `propose {records: [{path, text}], branch, ti
 body}` checks the records, pushes a new branch and opens a draft pull request through
 the `scm` role; it never writes the base branch. The `git` and `obsidian` providers
 answer `get` and `search`; only `git` lists changes and proposes.
+
+A draft record's `id` is a slug. After a merge, `ai-dlc knowledge number` gives it the
+next number for its type, keeps the slug in `aliases` and rewrites links to it.
+`ai-dlc knowledge index` then writes OKF `index.md` files and derives `superseded_by`.
+Knowledge repositories run both through `.github/workflows/knowledge-merge.yml` on
+push to main. Main stays protected: the workflow opens or updates one pull request
+from `knowledge-number`, and a person merges it. Each run recomputes from the tip of
+main, so numbers never collide. The knowledge repository needs these settings:
+
+- A GitHub App installed on the repository with Contents and Pull requests write.
+  Pass its installation token as the `token` secret. A pull request opened with
+  `GITHUB_TOKEN` starts no checks.
+- A ruleset on main that requires a pull request, an approving review and the
+  `knowledge check` status check, with the App as the only bypass actor. Personal
+  tokens and zero-approval rules are not supported.
+- "Require branches to be up to date before merging" on. Otherwise two record pull
+  requests that add the same slug can both merge, and numbering then stops.
+- "Allow squash merging" on, since main requires linear history.
+
+Automatic merging is off: spec section 10 allows no automatic merges for 1.0. The
+`auto-merge: true` input turns on squash auto-merge for the numbering pull request
+only; it also needs "Allow auto-merge". Use it only as an explicit exception that
+the repository owner decides.
+
 The `wiki` role is a read view of the records, and `ai-dlc knowledge render` is its only
 writer. It must answer `upsert_page {key, title, body, properties, labels, parent,
 expected_version}`, `get_page_by_key {key}` and `list_children {parent}`. Pages are found

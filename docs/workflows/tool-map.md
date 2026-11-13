@@ -92,8 +92,9 @@ unsupported Plane adapter.
 
 MCP includes `work_context`, `work_review`, `work_publish`, `work_start`, `work_status`,
 `work_link`, `work_finish`, `doctor`, `knowledge_find`, `knowledge_append`,
-`knowledge_note`, `knowledge_check` and `knowledge_render`, alongside project-document and workspace
-tools. These identifiers differ from CLI commands, such as `ai-dlc work publish`.
+`knowledge_note`, `knowledge_check`, `knowledge_index`, `knowledge_number_plan` and
+`knowledge_render`,
+plus project-document and workspace tools. CLI names use spaces: `ai-dlc work publish`.
 
 ## Command and service map
 
