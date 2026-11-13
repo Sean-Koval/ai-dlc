@@ -73,20 +73,30 @@ def test_the_reversal_carries_its_reason_status_dates_and_derived_successor():
     assert result["tickets"] == []
 
 
-def test_each_end_of_the_reversal_says_who_owns_it_and_who_wrote_it():
+def test_each_end_of_the_reversal_says_who_owns_wrote_and_verified_it():
     """Six months on, the reader needs who decided, not only what and why."""
     march = why(FIXTURE, "DEC-0001")
-    assert (march["record"]["owner"], march["record"]["author"]) == ("sean", None)
+    assert (march["record"]["owner"], march["record"]["author"]) == ("sean", "human:sean")
+    assert march["record"]["verified"] == [{"by": "human:dana", "at": "2026-03-05T15:00:00+00:00"}]
     (successor,) = march["superseded_by"]
     assert (successor["owner"], successor["author"]) == ("priya", "agent:capture")
+    assert successor["verified"] == []
     text = "\n".join(lines(march))
-    assert "superseded, date 2026-03-04, owner sean," in text
+    # sean wrote his own record, so he is named once.
+    assert "owner sean, verified by human:dana on 2026-03-05" in lines(march)[1]
+    assert "written by human:sean" not in text
     assert "date 2026-09-15, owner priya, written by agent:capture" in text
 
     september = why(FIXTURE, "DEC-0002")
     (predecessor,) = september["supersedes"]
     assert predecessor["owner"] == "sean"
     assert "owner priya, written by agent:capture" in lines(september)[1]
+    shown = "\n".join(lines(september))
+    supersedes = shown.split("Supersedes:", 1)[1].splitlines()[1]
+    assert "owner sean, verified by human:dana" in supersedes and "written by" not in supersedes
+    (convention,) = [link for link in september["linked"] if link["id"] == "CONV-0001"]
+    assert convention["owner"] == "sean"
+    assert any(line.startswith("  CONV-0001") and "owner sean" in line for line in lines(september))
 
 
 def test_linked_conventions_lessons_tickets_and_source_metadata():

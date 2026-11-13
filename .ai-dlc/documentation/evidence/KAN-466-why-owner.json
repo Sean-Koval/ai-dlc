@@ -2,10 +2,10 @@
   "decisions": [
     {
       "bound": {
-        "changes/KAN-466.changed.md": "7cd21f6be037f2495f95d192690c58ed5b5ebd29895919007c03f951116a1585"
+        "changes/KAN-466.changed.md": "411d57c99d3d7118551648a8803ff6e7c461d02c30284644b6e814873f560fe4"
       },
       "outcome": "updated",
-      "reason": "Changelog fragment: knowledge why names each record's owner and author.",
+      "reason": "Changelog fragment: knowledge why names who owns, wrote and verified each record.",
       "reviewer": "Claude (agent)",
       "target": "changes/KAN-466.changed.md"
     },
@@ -85,7 +85,7 @@
         "src/ai_dlc/documentation/knowledge_render.py": "b02c1de41522bfb0bd0ed1dd663fcc2f662b28c11796bd956d3572cedccd91d3",
         "src/ai_dlc/documentation/knowledge_service.py": "786336917e717b12353ec4143339ce3141a9c1d8110192e24288294eb17371a9",
         "src/ai_dlc/documentation/knowledge_transcripts.py": "37f2a62e16e943e100176d0e8a27087c0e0ad9d95f639b053c6b3a84df5af3ec",
-        "src/ai_dlc/documentation/knowledge_why.py": "e71d45832e6dc5b7a36ce811d024cd8f166b5f807cfd1704743d2f884d93c172",
+        "src/ai_dlc/documentation/knowledge_why.py": "a90994a3b52ae4db700644df408081dcb2c2b8f90f04dbac8955e6d84adbe158",
         "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
         "src/ai_dlc/documentation/learnings.py": "5a11c64592e1c7b93bfa3543339ea0766f42050a7843bb8354cd56166b0f3ae6",
         "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
@@ -122,7 +122,7 @@
         "src/ai_dlc/harness/windows_render.py": "8aa76c8aacc44d28a2117b3339ad7b632b91fdbe0a5557af50228dcd2aa0eeb0",
         "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
         "src/ai_dlc/locking.py": "d39ea1ba783e72aae903f9d69c114745ee0b83d02197bbc9572568836e4e7fa3",
-        "src/ai_dlc/mcp_server.py": "864b37c326947a3720c0e9ac0dabf8f4df45e1933651f6aa8f091c61c42381f1",
+        "src/ai_dlc/mcp_server.py": "5f4f1be6d3d0153cb18836480efce53efd1c0003a23463cf8f57ff690715baf1",
         "src/ai_dlc/provider_definitions.py": "467bec9146a1379a2f17ac07faaf1e6807729d362609d711545ff632ff3f9da7",
         "src/ai_dlc/providers/__init__.py": "f035b92e361bbb4464a081c55fbd9faf98087db97e6d0c148386778019906f9a",
         "src/ai_dlc/providers/confluence_cloud.py": "d7f7c890569142753e8f97f7dec7dea08ac61c5fd897d691c7ccfbf44a6b13ef",
@@ -181,9 +181,88 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "The package map is unchanged; why only gains two summary fields.",
+      "reason": "The package map is unchanged; why gains owner, author and verified fields.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/how-it-fits.md": "0032744a2746dd1b4e47f09fc1cc9c4d6f8c8cfe90990b464f56a0abc1d1ac10",
+        "docs/workflows/how-it-fits.md": "b865dfd0d040309db43d27b58cb93a69d0e94a72bcf9b6ff760bcb0ed39ea473",
+        "src/ai_dlc/mcp_server.py": "5f4f1be6d3d0153cb18836480efce53efd1c0003a23463cf8f57ff690715baf1",
+        "src/ai_dlc/providers/__init__.py": "f035b92e361bbb4464a081c55fbd9faf98087db97e6d0c148386778019906f9a",
+        "src/ai_dlc/providers/confluence_cloud.py": "d7f7c890569142753e8f97f7dec7dea08ac61c5fd897d691c7ccfbf44a6b13ef",
+        "src/ai_dlc/providers/git_knowledge.py": "c07d548015aa3e8a3c7ca567ee4511a79ec5af33f1d84d3c7f155d08c683f591",
+        "src/ai_dlc/providers/github_issues.py": "8945d5b0049d7f7940c8c478e13bf576a897295e463a69b3510d6e2982ed1f08",
+        "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
+        "src/ai_dlc/providers/google_meet.py": "5139524a2272fe768eabb40cf8e5a063db6e843e12640a02aa14b0d743ee4579",
+        "src/ai_dlc/providers/jira_cloud.py": "2bdd63d076937893a0212ecda219b226e2f6b6c943f3c8b72aeed33ae26bc8d0",
+        "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
+        "src/ai_dlc/providers/plane.py": "eebff96a72615706f56234a3fdbdbec6e5ac49785259bc8e068ff50e89381572",
+        "src/ai_dlc/providers/plane_attempts.py": "da576a7f52dd7860c2340b72c91b39f2c9d84bbb7c983cd8bc2cc1871c56333b",
+        "src/ai_dlc/providers/python_exec.py": "3aaafe9bf74a4a949b59d71ed2079b9c48114462a9c823b3641a1772af5a6ff1",
+        "src/ai_dlc/providers/scm.py": "88ddffdb0ddc34a7ae6988517c3e7f341286752177293ef379d312088af1d0c5",
+        "src/ai_dlc/providers/teamai.py": "ff7a781abcaeeca1c978f9472502156e31a1fc6d192ac50e1e489d333b77a5e6",
+        "src/ai_dlc/providers/transcripts_common.py": "9903072a350e27535ebae16f2ca7592c7399beddc6087538ba251aefd04c8de3",
+        "src/ai_dlc/providers/zoom.py": "21cd47dc3650e5156d07c6cd9a7b010c53a1aa9dc5e61d9d808b324d9da1efee"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "The MCP surface keeps the same tools; only knowledge_why's description names the new fields.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/how-it-fits.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/tool-map.md": "d11334cb57c288aab7b01226790b7cc268a28991b3de5f97a98b9818d80be19e",
+        "docs/workflows/tool-map.md": "cf11c7f2be778e48062e013ded65c52a5d8e4350ea5c5cccfb16cb53e40212ed",
+        "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
+        "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
+        "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
+        "openspec/specs/spec-delivery-traceability/spec.md": "66641acf9c151792cde1914062630ed50cc4199cdc3bdb4b81382e03716f2ea3",
+        "src/ai_dlc/cli.py": "3c1bb6940c3c51ff7d8aedbee69f82ead7397a5e6656957f9b9a36dbdd6379f9",
+        "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
+        "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
+        "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
+        "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
+        "src/ai_dlc/environment/report_schema.py": "8c3ee8650aaa486966509b1e10bdf3f5e0be556ca9f860a0c436fe88a2c3f5e4",
+        "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
+        "src/ai_dlc/harness/agents.py": "72f38f1f69147e4216fe6752636f26e6218c5c6ef85845ffb89828d431effa53",
+        "src/ai_dlc/harness/hooks.py": "39ddc55bf902b3374d5d272ec301fa03b7a43e09868f686fea1d101068ffd77f",
+        "src/ai_dlc/mcp_server.py": "5f4f1be6d3d0153cb18836480efce53efd1c0003a23463cf8f57ff690715baf1",
+        "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
+        "src/ai_dlc/setup/onboarding.py": "a955988850f1dbe1bd50b2e06da61913701b504ed1a11eabe08bed387d0cc552",
+        "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
+        "src/ai_dlc/work/workflow.py": "0ac7ccd8cc15ee6e6d497e3315b94f9a53bb38d045d2a8c1cbc1e501aae0e4b0",
+        "tests/test_agents_phases.py": "e5325bdc3c072a10e27bbf019ce51f586b0b7b9d76aa95ff8652dd09bc3c8570",
+        "tests/test_cli.py": "f61c1ce03b1b3d1a6134365277c18655450ba08c06cb1f51ba44010b3e1b7e36",
+        "tests/test_config.py": "788bf2715bfc3fbc3da495b68fa250985f4430d424fa9802340dec16b7a35cdf",
+        "tests/test_consumer_onboarding.py": "3b412d49dce7f0ddf1011f44637ffee4e9de101e4f15b72c7198439884cdf727",
+        "tests/test_consumer_onboarding_cli.py": "b6917be5ac5a0fc2b116edf235f3f1fc1127df95f8fd311ba013f249f2deb076",
+        "tests/test_environment_report.py": "7c97f89ec86eeed69f2ce23dad8e74712697f1f2aa6b49e452c517f3860393ab",
+        "tests/test_environment_report_cli.py": "c326fb3fc86fad0e6521edc1f1acf3215efff5e4a1b4b34526682ec3a158c61b",
+        "tests/test_environment_report_collection.py": "fa8c834f2e80dcba2b7788eb818fd1392977eb75cadd48ceb4ea38eacde2ef81",
+        "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
+        "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
+        "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
+        "tests/test_hooks.py": "e62d1268716dcacf7c04f1b4505e06ea6ac30f7dc6800017e22c83bb5fa7b51e",
+        "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
+        "tests/test_rendering.py": "46e3927140876b6ccbecd7230fedf68d2806da7828fee7293bf61df76c36ce69",
+        "tests/test_team_sources.py": "3ab4eaa043c888b35eae7f92c8e8b20d20986d42d0ec8cdc936be472e48040e3",
+        "tests/test_workflow.py": "cbe32ce28d12401765be728d730865ed8c79e8a10a4f7cf807a9003753096de0"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "knowledge_why is already listed; its output gained fields, not a new tool.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/tool-map.md"
+    },
+    {
+      "bound": {
+        "tests/fixtures/knowledge_why/decisions/DEC-0001.md": "d6d7b02522e3d3c2d968144daa29bed90de64308d6e090e28de6091bdd6d8435"
+      },
+      "outcome": "updated",
+      "reason": "The March decision is written by its owner and verified by dana, to test both.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/fixtures/knowledge_why/decisions/DEC-0001.md"
     },
     {
       "bound": {
@@ -196,10 +275,10 @@
     },
     {
       "bound": {
-        "tests/test_knowledge_why.py": "92620f08d7cb84c75fae029d969ee70b43b17d593dbf8e9f94753249e9490c38"
+        "tests/test_knowledge_why.py": "ecd09794b0fb2f6e96618f54952adbb4f3b6f95f2b9b2a4e3844a80cc043c989"
       },
       "outcome": "updated",
-      "reason": "Covers owner and author on both ends of the reversal, in JSON and text.",
+      "reason": "Covers owner, author and verification on the record, chain and linked conventions, in JSON and text.",
       "reviewer": "Claude (agent)",
       "target": "tests/test_knowledge_why.py"
     }

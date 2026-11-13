@@ -1,7 +1,8 @@
 """``knowledge why``: reconstruct a decision from local records, with its evidence.
 
-One call answers what was decided and when, what it replaced and what replaced it,
-which conventions and lessons carry it, and what evidence it rests on. Source
+One call answers what was decided and when, who owns it, wrote it and verified it,
+what it replaced and what replaced it, which conventions and lessons carry it, and
+what evidence it rests on. Source
 payloads expire (KAN-458), so the evidence is the quote, speaker and place kept in
 the record's ``sources`` entries; the Source record's metadata stands beside each
 quote, and the payload is reported ``present`` or ``expired``, never a failure. A
@@ -127,12 +128,22 @@ def _summary(store: _Store, item: Any) -> dict[str, Any]:
         "title": record.title,
         "status": effective_status(record, store.retractions),
         "date": record.date.isoformat(),
-        "owner": record.owner,
-        "author": record.author,
+        **_who(record),
         "valid_from": record.valid_from.isoformat() if record.valid_from else None,
         "valid_to": record.valid_to.isoformat() if record.valid_to else None,
         "description": record.description,
         "path": item.relative,
+    }
+
+
+def _who(record: KnowledgeRecord) -> dict[str, Any]:
+    """Who owns the record, who wrote it, and who verified it and when."""
+    return {
+        "owner": record.owner,
+        "author": record.author,
+        "verified": [
+            {"by": event.by, "at": event.at.isoformat()} for event in record.verified or []
+        ],
     }
 
 
@@ -213,6 +224,7 @@ def _link(store: _Store, item: Any, kind: str, direction: str) -> dict[str, Any]
         "type": record.type,
         "title": record.title,
         "status": effective_status(record, store.retractions),
+        **_who(record),
         "link": kind,
         "direction": direction,
         "path": item.relative,
@@ -236,6 +248,7 @@ def _evidence(store: _Store, entry: SourceRef) -> dict[str, Any]:
         "title": entry.title,
         "quote": entry.quote,
         "speaker": entry.speaker,
+        "author": entry.author,
         "at": entry.at,
         "permalink": entry.permalink,
         "fetch": None,
@@ -322,7 +335,8 @@ def lines(result: dict[str, Any]) -> list[str]:
         out.append("  (none)")
     for link in result["linked"]:
         arrow = f"{link['link']} -> {record['id']}" if link["direction"] == "in" else link["link"]
-        out.append(f"  {link['id']}  {link['type']}  ({arrow})  {link['title'] or ''}".rstrip())
+        title = f"  {link['title']}" if link["title"] else ""
+        out.append(f"  {link['id']}  {link['type']}  ({arrow}){title}  [{', '.join(_by(link))}]")
     if result["tickets"]:
         out += ["", "Tickets: " + ", ".join(result["tickets"])]
     out += ["", "Evidence:"]
@@ -333,12 +347,24 @@ def lines(result: dict[str, Any]) -> list[str]:
 
 
 def _facts(entry: dict[str, Any]) -> str:
-    facts = [entry["status"], f"date {entry['date']}", f"owner {entry['owner']}"]
-    if entry["author"] and entry["author"] != entry["owner"]:
-        facts.append(f"written by {entry['author']}")
+    facts = [entry["status"], f"date {entry['date']}", *_by(entry)]
     if entry["valid_from"] or entry["valid_to"]:
         facts.append(f"valid {entry['valid_from'] or '?'} to {entry['valid_to'] or 'now'}")
     return ", ".join(facts)
+
+
+def _by(entry: dict[str, Any]) -> list[str]:
+    """``owner``, then ``written by`` when someone else wrote it, then each verification.
+
+    ``author`` is an actor (``human:sean``); ``owner`` is the bare name, so a person
+    writing their own record is shown once.
+    """
+    facts = [f"owner {entry['owner']}"]
+    author = entry["author"]
+    if author and author.removeprefix("human:") != entry["owner"]:
+        facts.append(f"written by {author}")
+    facts += [f"verified by {event['by']} on {event['at'][:10]}" for event in entry["verified"]]
+    return facts
 
 
 def _source(evidence: dict[str, Any]) -> list[str]:
@@ -354,10 +380,12 @@ def _source(evidence: dict[str, Any]) -> list[str]:
 
 
 def _quote(evidence: dict[str, Any]) -> list[str]:
+    recorded = [f"  recorded by {evidence['author']}"] if evidence["author"] else []
     if not evidence["quote"]:
-        return [f"fetch from {evidence['fetch']}"] if evidence["fetch"] else []
+        return ([f"fetch from {evidence['fetch']}"] if evidence["fetch"] else []) + recorded
     where = [part for part in (evidence["speaker"], evidence["at"]) if part]
     out = [f'"{evidence["quote"]}"', "  - " + ", ".join(where or ["unattributed"])]
+    out += recorded
     if evidence["permalink"]:
         out.append(f"  {evidence['permalink']}")
     return out
