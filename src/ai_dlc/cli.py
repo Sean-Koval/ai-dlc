@@ -1687,6 +1687,41 @@ def knowledge_check(
         raise typer.Exit(1)
 
 
+@knowledge.command("number")
+def knowledge_number(
+    records: Annotated[Path, typer.Argument(help="records directory")] = Path("."),
+    check: Annotated[
+        bool, typer.Option("--check", help="report only; exit 1 if any slug id")
+    ] = False,
+):
+    """Give slug-id records their DEC-/CONV-/LES-/ACT-/Q-/SRC- number and rewrite links.
+
+    Meant for CI on the default branch after a merge. ``--check`` writes nothing.
+    """
+    from ai_dlc.documentation.knowledge_bundle import number_records
+
+    with service_call():
+        result = number_records(records, write=not check)
+    emit(result)
+    if result["status"] in ("invalid", "pending"):
+        raise typer.Exit(1)
+
+
+@knowledge.command("index")
+def knowledge_index(
+    records: Annotated[Path, typer.Argument(help="records directory")] = Path("."),
+    check: Annotated[bool, typer.Option("--check", help="report only; exit 1 if stale")] = False,
+):
+    """Write one OKF v0.2 index.md per records directory, with superseded_by derived."""
+    from ai_dlc.documentation.knowledge_bundle import index_records
+
+    with service_call():
+        result = index_records(records, write=not check)
+    emit(result)
+    if result["status"] in ("invalid", "stale"):
+        raise typer.Exit(1)
+
+
 @knowledge.command("migrate")
 def knowledge_migrate_command(
     paths: Annotated[list[Path] | None, typer.Argument(help="files or directories")] = None,
