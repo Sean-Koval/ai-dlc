@@ -1837,6 +1837,26 @@ def knowledge_records_propose(
     conclude(result)
 
 
+@knowledge_records.command("template")
+def knowledge_records_template(
+    kind: Annotated[str | None, typer.Argument(metavar="TYPE")] = None,
+    list_types: Annotated[bool, typer.Option("--list", help="list the template types")] = False,
+):
+    """Print the packaged record template for one type; --list names the types."""
+    from ai_dlc.documentation.knowledge_service import template, templates
+
+    if list_types == (kind is not None):
+        raise typer.BadParameter("give a record type or --list, not both or neither")
+    if list_types:
+        typer.echo("\n".join(templates()["types"]))
+        return
+    result = template(str(kind))
+    if result["status"] != "ok":
+        typer.echo(f"Error: {result['reason']}", err=True)
+        raise typer.Exit(1)
+    typer.echo(result["text"], nl=False)
+
+
 @knowledge_records.command("captured")
 def knowledge_records_captured(
     source: Path, root: RecordsRoot = Path("."), provider_id: RecordsProvider = None

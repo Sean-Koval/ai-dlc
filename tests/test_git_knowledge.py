@@ -474,3 +474,28 @@ def test_cli_reads_and_proposes_through_the_shared_service(store, tmp_path, monk
         app, ["knowledge", "records", "captured", str(transcript), "--root", str(root)]
     )
     assert new.exit_code == 0, new.output
+
+
+# Templates
+
+
+def test_template_prints_each_packaged_record_template_and_lists_the_types():
+    from ai_dlc.files import assets
+
+    runner = CliRunner()
+    listed = runner.invoke(app, ["knowledge", "records", "template", "--list"])
+    assert listed.exit_code == 0, listed.output
+    assert listed.output.split() == list(knowledge_records.TYPES)
+    for kind in knowledge_records.TYPES:
+        shown = runner.invoke(app, ["knowledge", "records", "template", kind])
+        assert shown.exit_code == 0, shown.output
+        packaged = assets("agents") / "templates/knowledge" / f"{kind}.md"
+        assert shown.output == packaged.read_text()
+        assert f"type: {kind}" in shown.output
+
+
+@pytest.mark.parametrize("arguments", [["runbook"], [], ["decision", "--list"]])
+def test_template_refuses_an_unknown_type_or_ambiguous_arguments(arguments):
+    result = CliRunner().invoke(app, ["knowledge", "records", "template", *arguments])
+    assert result.exit_code != 0
+    assert result.stdout == ""
