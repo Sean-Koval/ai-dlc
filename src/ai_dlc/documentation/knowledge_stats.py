@@ -337,7 +337,7 @@ def _hidden(repo: Path | None, pr: dict[str, Any], prefix: str, project: str | N
     A path under another project's ``projects/<name>/`` hides it before any read. The
     records are then checked for ``boundary: customer`` (KAN-465) as the first commit
     had them and, once merged, as the merge has them, so a reviewer's later boundary
-    counts. ``None`` when those commits are not fetched: the boundary is unknown.
+    counts. Only the pull request's own files are read, however it was merged. ``None`` when those commits are not fetched: the boundary is unknown.
     """
     paths = [path for path in pr.get("files", []) if _is_record_path(path, prefix)]
     if any(project_of(path[len(prefix) :]) not in (None, project) for path in paths):
@@ -348,12 +348,10 @@ def _hidden(repo: Path | None, pr: dict[str, Any], prefix: str, project: str | N
     assert repo is not None and first is not None
     seen = [(first, path) for path in paths]
     if pr.get("state") == "merged":
-        changed = _git(repo, "diff", "--name-only", "--no-renames", f"{first}^", str(merge))
-        names = changed.stdout.splitlines() if changed.returncode == 0 else []
-        moved = [name for name in names if _is_record_path(name, prefix)]
-        if any(project_of(name[len(prefix) :]) not in (None, project) for name in moved):
-            return True
-        seen += [(merge, name) for name in moved]
+        # The pull request's own files, which end where the reviewer left them: a diff
+        # from the first commit would also take in records other pull requests landed
+        # on main in between, as a squash merge sits on top of them.
+        seen += [(merge, path) for path in paths]
     for sha, path in seen:
         text = _record_text(repo, sha, path)
         header = split(text)[0] if text is not None else None

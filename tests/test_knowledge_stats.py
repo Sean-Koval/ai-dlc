@@ -627,6 +627,40 @@ def test_a_pull_request_whose_records_cannot_be_read_is_listed_without_its_title
     assert rows[1]["title"]
 
 
+def test_a_squash_merge_is_judged_by_its_own_records_not_others_landed_meanwhile(tmp_path):
+    repo = Repo(tmp_path / "knowledge")
+    repo.write("records/knowledge.toml", "[format]\nversion = 1\n")
+    repo.commit("base", when="2026-10-01T09:00:00+00:00")
+    repo.git("checkout", "-q", "-b", "pr1")
+    path = "records/lessons/les-t.md"
+    text = record("les-t", "lesson", "open", "2026-11-04", "sean")
+    repo.write(path, text)
+    first = repo.commit("extract")
+    repo.git("checkout", "-q", "main")
+    # A customer pull request lands on main while #1 is in review.
+    customer = "boundary: customer\nproject: alpha\n"
+    repo.write(
+        "records/lessons/les-c.md",
+        record("les-c", "lesson", "open", "2026-11-04", "zed", extra=customer),
+    )
+    repo.commit("Alpha Corp records (#2)")
+    repo.write(path, text)
+    squash = repo.commit("Team records (#1)")  # the squash: one parent, main's tip
+    pr = {
+        "number": 1,
+        "title": "Team records",
+        "state": "merged",
+        "created_at": "2026-11-04T00:00:00Z",
+        "merged_at": "2026-11-04T05:00:00Z",
+        "files": [path],
+        "first_commit": first,
+        "merge_commit": squash,
+    }
+    review = stats(repo.top / "records", SINCE, now=NOW, pull_requests=lambda since: [pr])["review"]
+    assert review["hidden_customer"] == 0
+    assert [row["title"] for row in review["by_pull_request"]] == ["Team records"]
+
+
 def test_a_boundary_the_reviewer_adds_before_merge_hides_the_pull_request(tmp_path):
     repo = Repo(tmp_path / "knowledge")
     repo.write("records/knowledge.toml", "[format]\nversion = 1\n")
