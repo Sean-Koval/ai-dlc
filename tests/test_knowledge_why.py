@@ -73,6 +73,22 @@ def test_the_reversal_carries_its_reason_status_dates_and_derived_successor():
     assert result["tickets"] == []
 
 
+def test_each_end_of_the_reversal_says_who_owns_it_and_who_wrote_it():
+    """Six months on, the reader needs who decided, not only what and why."""
+    march = why(FIXTURE, "DEC-0001")
+    assert (march["record"]["owner"], march["record"]["author"]) == ("sean", None)
+    (successor,) = march["superseded_by"]
+    assert (successor["owner"], successor["author"]) == ("priya", "agent:capture")
+    text = "\n".join(lines(march))
+    assert "superseded, date 2026-03-04, owner sean," in text
+    assert "date 2026-09-15, owner priya, written by agent:capture" in text
+
+    september = why(FIXTURE, "DEC-0002")
+    (predecessor,) = september["supersedes"]
+    assert predecessor["owner"] == "sean"
+    assert "owner priya, written by agent:capture" in lines(september)[1]
+
+
 def test_linked_conventions_lessons_tickets_and_source_metadata():
     result = why(FIXTURE, "DEC-0002")
     assert {(link["id"], link["link"]) for link in result["linked"]} == {

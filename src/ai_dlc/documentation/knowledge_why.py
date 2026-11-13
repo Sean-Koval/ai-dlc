@@ -127,6 +127,8 @@ def _summary(store: _Store, item: Any) -> dict[str, Any]:
         "title": record.title,
         "status": effective_status(record, store.retractions),
         "date": record.date.isoformat(),
+        "owner": record.owner,
+        "author": record.author,
         "valid_from": record.valid_from.isoformat() if record.valid_from else None,
         "valid_to": record.valid_to.isoformat() if record.valid_to else None,
         "description": record.description,
@@ -331,7 +333,9 @@ def lines(result: dict[str, Any]) -> list[str]:
 
 
 def _facts(entry: dict[str, Any]) -> str:
-    facts = [entry["status"], f"date {entry['date']}"]
+    facts = [entry["status"], f"date {entry['date']}", f"owner {entry['owner']}"]
+    if entry["author"] and entry["author"] != entry["owner"]:
+        facts.append(f"written by {entry['author']}")
     if entry["valid_from"] or entry["valid_to"]:
         facts.append(f"valid {entry['valid_from'] or '?'} to {entry['valid_to'] or 'now'}")
     return ", ".join(facts)
