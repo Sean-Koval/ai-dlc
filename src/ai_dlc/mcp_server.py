@@ -257,6 +257,22 @@ def _register_knowledge_why_tool(server: FastMCP, root: Path) -> None:
         return why(root / records, id, project=project)
 
 
+def _register_transcripts_tool(server: FastMCP, root: Path, config: dict) -> None:
+    @server.tool()
+    def knowledge_pull_transcripts(
+        since: str, into: str | None = None, dry_run: bool = True
+    ) -> dict:
+        """Land new meeting transcripts in the knowledge inbox through the transcripts role.
+
+        One Source record and raw payload per transcript, idempotent by transcript id.
+        Dry run by default: it lists what it would write. ``into`` is a local checkout.
+        """
+        from ai_dlc.documentation.knowledge_transcripts import TranscriptPull
+
+        target = Path(into) if into else None
+        return TranscriptPull(root, config, into=target).pull(since, dry_run=dry_run)
+
+
 def make_server(root: Path, machine: Path | None = None) -> FastMCP:
     config = config_for(root, machine)
     server = FastMCP("ai-dlc")
@@ -266,6 +282,7 @@ def make_server(root: Path, machine: Path | None = None) -> FastMCP:
     _register_knowledge_tools(server, root, config)
     _register_knowledge_record_tools(server, root)
     _register_knowledge_why_tool(server, root)
+    _register_transcripts_tool(server, root, config)
     return server
 
 

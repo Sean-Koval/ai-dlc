@@ -4,7 +4,7 @@
 `service-result.schema.json` is the envelope application services return to the CLI and
 MCP; it is generated from `ai_dlc.contracts.ServiceResult` and explained in
 `docs/architecture.md`.
-They describe tracker, specs, SCM, deploy, knowledge and wiki role capabilities.
+They describe tracker, specs, SCM, deploy, knowledge, wiki and transcripts role capabilities.
 `knowledge-note.schema.json` is the frontmatter of learnings and decision records,
 generated from `ai_dlc.documentation.knowledge_notes.KnowledgeNote`; it is explained
 in `docs/design/local-and-shared-knowledge.md`. Decision `checks:` entries use
@@ -67,6 +67,11 @@ by `key`; `parent` is another page's key, or null for the configured root. No op
 returns a page body. A page reports `version` and `rendered_version`, the version the last
 upsert wrote; they differ after a hand edit. An upsert whose `expected_version` is not the
 page's current version is refused. The `confluence-cloud` provider implements it.
+The `transcripts` role must answer `list_since {since}` (an aware time; items with `id`,
+`title`, `start`, `participants` and routing-only `emails`) and `fetch {id}` (the same plus
+`segments: [{speaker, at, text}]`, `at` as `HH:MM:SS`). A transcript the caller cannot
+read is unavailable, not an error. The `zoom` and `google-meet` providers implement it;
+`ai-dlc knowledge pull-transcripts` is its caller.
 Completion is a service operation: callers must use `WorkService.finish`.
 The public `Registry.invoke` refuses terminal tracker transitions and the optional
 terminal planning reconciliation operation `reconcile_closed`.

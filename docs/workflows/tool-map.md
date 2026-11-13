@@ -93,7 +93,7 @@ unsupported Plane adapter.
 MCP includes `work_context`, `work_review`, `work_publish`, `work_start`, `work_status`,
 `work_link`, `work_finish`, `doctor`, `knowledge_find`, `knowledge_append`,
 `knowledge_note`, `knowledge_check`, `knowledge_index`, `knowledge_number_plan`,
-`knowledge_render` and `knowledge_why`, plus document and workspace tools. CLI uses spaces: `ai-dlc work publish`.
+`knowledge_render`, `knowledge_why`, `knowledge_pull_transcripts`, plus document and workspace tools. CLI uses spaces: `ai-dlc work publish`.
 
 ## Command and service map
 

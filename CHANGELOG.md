@@ -18,6 +18,12 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 
 ### Added
 
+- A `transcripts` role (`list_since`, `fetch`) with `zoom` and `google-meet`
+  providers, and `ai-dlc knowledge pull-transcripts --since TIME [--into DIR]
+  [--dry-run]` (MCP `knowledge_pull_transcripts`) (KAN-457). Each new transcript lands
+  in the knowledge inbox as a raw payload and a Source record, once per transcript id.
+  Customer projects' transcripts land in `projects/<name>/inbox/`. Unreadable
+  transcripts are skipped and logged. Fixture-tested; live OAuth qualification pending.
 - A `wiki` role (`upsert_page`, `get_page_by_key`, `list_children`) with a
   `confluence-cloud` provider, and `ai-dlc knowledge render --changed-since SHA
   [--dry-run]` (MCP `knowledge_render`), the wiki's only writer (KAN-430). It renders
