@@ -10,8 +10,8 @@ It works in any repository; lifecycle commands apply only to adopted repositorie
 - Use the team skills in this plugin for judgment: discovery, prd-draft,
   spec-from-prd, handoff, document-review, document-organize and the optional
   design-brief and design-evaluate.
-- Use daily-note, capture and kb-publish for the personal second brain: daily
-  notes and captures stay in the vault, and only a reviewed note is published.
+- Use daily-note and capture for the personal second brain: daily notes and
+  captures stay in the vault. Never write the wiki; `knowledge render` does.
 - When the repository renders its own copies of these skills (unprefixed, under
   `.claude/skills`), prefer the repository copies and its AGENTS.md guidance.
 - Raise a question only a person can answer as a decision work item in the tracker that blocks the work, with options, a recommendation, the default if unanswered, scope and a due date; do not ask it in chat.

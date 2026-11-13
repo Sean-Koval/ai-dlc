@@ -243,6 +243,10 @@ class Registry:
                 environ=self.environ,
                 scm=lambda root, repository, base: self.scm_for(root, repository, base),
             )
+        elif kind == "confluence-cloud":
+            from .confluence_cloud import ConfluenceCloud
+
+            provider = ConfluenceCloud(cfg, environ=self.environ)
         elif kind == "plane":
             context = {
                 "root": str(self.root.resolve()),
@@ -394,6 +398,9 @@ class Registry:
             "search",
             "list_changed",
             "propose",
+            "upsert_page",
+            "get_page_by_key",
+            "list_children",
         }:
             result = getattr(provider, operation)(**request.payload)
         else:
@@ -425,6 +432,7 @@ class Registry:
                 "github-deployment",
                 "obsidian",
                 "git",
+                "confluence-cloud",
             ],
             "release": "ai-dlc/0.4.0",
         }

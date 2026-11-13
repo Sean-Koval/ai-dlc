@@ -30,7 +30,8 @@ Add `## Carry over` for anything still open from `## Lanes`.
 
 For each lane, gather the week's `## Lanes`, `## Moved` and meeting notes with that
 `lane`. Write `Weekly/YYYY-Www-<lane>.md` as `kind: note` with the same `origin` and
-`lane`. A rollup may be published with kb-publish; a daily note never is.
+`lane`. Neither a rollup nor a daily note is written to the wiki; only
+`ai-dlc knowledge render` writes it, from merged records.
 
 When `ai-dlc` is on PATH, write with `ai-dlc knowledge note` or `append`
 (`--operation-id`, `--vault`) so a retry does not duplicate text. Work-origin
