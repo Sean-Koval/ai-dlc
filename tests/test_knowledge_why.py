@@ -161,3 +161,22 @@ def test_check_fails_a_derived_record_without_evidence(bundle):
     path.write_text(path.read_text().replace("    speaker: dana\n", ""))
     (failure,) = check_records(bundle)["failures"]
     assert failure["path"] == "decisions/DEC-0002.md" and "needs evidence" in failure["message"]
+
+
+def test_a_refetchable_source_needs_no_quote_and_why_says_where_to_fetch(bundle):
+    source = bundle / "sources/SRC-0002.md"
+    source.write_text(
+        source.read_text()
+        .replace(
+            "provider: zoom", "provider: jira\nurl: https://jira.example.invalid/browse/OPS-12"
+        )
+        .replace("transcripts/2026-09-15-retro.vtt", "https://jira.example.invalid/browse/OPS-12")
+    )
+    decision = bundle / "decisions/DEC-0002.md"
+    text = decision.read_text()
+    start = text.index("    quote:")
+    decision.write_text(text[:start] + text[text.index("links:") :])
+    assert check_records(bundle)["failures"] == []
+    result = why(bundle, "DEC-0002")
+    assert result["evidence"][0]["fetch"] == "https://jira.example.invalid/browse/OPS-12"
+    assert "fetch from https://jira.example.invalid/browse/OPS-12" in "\n".join(lines(result))

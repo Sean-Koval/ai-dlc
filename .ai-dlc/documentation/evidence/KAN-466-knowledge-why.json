@@ -2,19 +2,19 @@
   "decisions": [
     {
       "bound": {
-        "CHANGELOG.md": "8bc05b56765b88f0875ee4a71309f3fb27b9f8189c0a6df28a318b134d71f316"
+        "CHANGELOG.md": "4ddc2ee21e120e92d09dc257f1d9febd3d9b04297417eda81ef265c03d6a8e5e"
       },
       "outcome": "updated",
-      "reason": "Adds the knowledge why command, its MCP tool and the evidence fields.",
+      "reason": "Evidence is required only for Sources whose payload expires.",
       "reviewer": "Claude (agent)",
       "target": "CHANGELOG.md"
     },
     {
       "bound": {
-        "contracts/README.md": "1b861dcd7a01d34571624e060d154a394d92f1f0be19c2ff83cdb92fe5a3c882"
+        "contracts/README.md": "9e38e861839d552691bbba4727312708da57f8a7090d76cd3a9b7eb9f2dd7257"
       },
       "outcome": "updated",
-      "reason": "Documents the evidence fields on sources entries and Source participants.",
+      "reason": "Documents when quoted evidence is required and that re-fetchable sources need none.",
       "reviewer": "Claude (agent)",
       "target": "contracts/README.md"
     },
@@ -86,13 +86,13 @@
         "src/ai_dlc/documentation/fde.py": "3664430ebca9f3ef7ba7c7c431f7e4790176066510904ebe4d43d0a88ecf26e1",
         "src/ai_dlc/documentation/knowledge.py": "64379be5f820df72056e992d50d91a099b6029b913804586208b80c73490887a",
         "src/ai_dlc/documentation/knowledge_bundle.py": "9bd34913ba68b77a9c77799ffaefe9e6aebbb4eac36ed684fc6cf5bade14fd74",
-        "src/ai_dlc/documentation/knowledge_check.py": "7548a850275b601f0a26f08f401f6e9a6d8a549c15159eeb3ed3ba7ad4bce73b",
+        "src/ai_dlc/documentation/knowledge_check.py": "ad3713202fec222ce64c0fafcb6000bb9f23fd05f5f6cb89814640781f73fb4b",
         "src/ai_dlc/documentation/knowledge_notes.py": "df022b2e330c5140f6948ec25a33c7888704e8686ea5411c770764a449b3b1b6",
         "src/ai_dlc/documentation/knowledge_publish.py": "cd4773e07de3b49bd828441a26dd15292ae2b55b25738e2339f91c7a3ad08438",
-        "src/ai_dlc/documentation/knowledge_records.py": "93caaf4ebb487e023c18adf64365d251744f20d68b4d8de0fb08627fdb3772f7",
+        "src/ai_dlc/documentation/knowledge_records.py": "1177a8162a812fb7ad162ef1d5edf191ae86f3b9fcb9ee1b8a851dbece027c08",
         "src/ai_dlc/documentation/knowledge_render.py": "3e5ba59684b979e7a7439673251badf0208ac8a5cd68fbaecc60c0d4162016e5",
         "src/ai_dlc/documentation/knowledge_service.py": "39cd54f46809329daf7c65304236b9a23bc5c0e31074ecaeaaef2a90d9761b0a",
-        "src/ai_dlc/documentation/knowledge_why.py": "9af6039395a2774e820f8678fb4d27d1a8d3c93ad986a4dba5150978816389a5",
+        "src/ai_dlc/documentation/knowledge_why.py": "0b960fa11c61c1b1d097a2fb528336edfeff8af376f7ba822751ce7b867dfda5",
         "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
         "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
         "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
@@ -182,9 +182,27 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Reviewed: the new knowledge why command and evidence fields change no package map, workflow, release gate or setup step described here.",
+      "reason": "Reviewed: the evidence rule change adds no package or entry point.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.cast": "dc040b3a4521f79d7a5116dc726a456d6485a90459194c3a3566cff388fe20ca"
+      },
+      "outcome": "updated",
+      "reason": "Regenerated with docs/assets/front/build.py.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.cast"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.svg": "21242fef371dc94df08455e5c104b57ce7ad21d10252d2911cf6dde1e9b8d040"
+      },
+      "outcome": "updated",
+      "reason": "Regenerated with docs/assets/front/build.py.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.svg"
     },
     {
       "bound": {
@@ -197,9 +215,9 @@
         "openspec/specs/session-learnings/spec.md": "dcd490cd54f2f6cb3fadaa90afade85d5e1d64b19fbe2accb70bfb06897e97b4",
         "src/ai_dlc/documentation/knowledge.py": "64379be5f820df72056e992d50d91a099b6029b913804586208b80c73490887a",
         "src/ai_dlc/documentation/knowledge_bundle.py": "9bd34913ba68b77a9c77799ffaefe9e6aebbb4eac36ed684fc6cf5bade14fd74",
-        "src/ai_dlc/documentation/knowledge_check.py": "7548a850275b601f0a26f08f401f6e9a6d8a549c15159eeb3ed3ba7ad4bce73b",
+        "src/ai_dlc/documentation/knowledge_check.py": "ad3713202fec222ce64c0fafcb6000bb9f23fd05f5f6cb89814640781f73fb4b",
         "src/ai_dlc/documentation/knowledge_notes.py": "df022b2e330c5140f6948ec25a33c7888704e8686ea5411c770764a449b3b1b6",
-        "src/ai_dlc/documentation/knowledge_records.py": "93caaf4ebb487e023c18adf64365d251744f20d68b4d8de0fb08627fdb3772f7",
+        "src/ai_dlc/documentation/knowledge_records.py": "1177a8162a812fb7ad162ef1d5edf191ae86f3b9fcb9ee1b8a851dbece027c08",
         "src/ai_dlc/documentation/knowledge_render.py": "3e5ba59684b979e7a7439673251badf0208ac8a5cd68fbaecc60c0d4162016e5",
         "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
         "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
@@ -218,8 +236,8 @@
         "tests/test_vault_mount.py": "f6a5dc947af0d68e4688c37d05294c6b4868aa98ead91d26aa0c8ffec8018424",
         "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
       },
-      "outcome": "updated",
-      "reason": "Adds the knowledge why command to the knowledge repository commands.",
+      "outcome": "reviewed-no-change",
+      "reason": "Reviewed: the knowledge why line still describes the command.",
       "reviewer": "Claude (agent)",
       "target": "docs/design/local-and-shared-knowledge.md"
     },
@@ -529,10 +547,10 @@
     },
     {
       "bound": {
-        "tests/test_knowledge_why.py": "61b774636ef0ce39e148cd788dd4982e7be540792a3384d9d2a47af44b8be0ed"
+        "tests/test_knowledge_why.py": "186ab8cfbf88910bf071690e975c363f2e6e41763c3bb79f51a8b6ab260dd94e"
       },
       "outcome": "updated",
-      "reason": "New tests for knowledge why, its MCP tool and the evidence check.",
+      "reason": "Adds a test that a re-fetchable source needs no quote and why says where to fetch it.",
       "reviewer": "Claude (agent)",
       "target": "tests/test_knowledge_why.py"
     }

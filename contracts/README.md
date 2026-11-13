@@ -20,9 +20,11 @@ YAML dates and enable a format checker. `ai-dlc knowledge check` is the authorit
 each header against the model, Open Knowledge Format v0.2 section 11, the format pin,
 typed links that name records, duplicate sources and supersession (one accepted
 successor, no cycles). It reads only `[check] roots` from `knowledge.toml` and never
-`README.md`. `derived_from` must name a source record, since raw payloads expire. The record
-keeps the evidence: a `sources` entry for that source carries a verbatim `quote` (at
-most 500 characters), its `speaker`, and `at` (`HH:MM:SS` or a time) or a `permalink`.
+`README.md`. `derived_from` must name a source record, since raw payloads expire. When that
+Source's payload expires (a resource under `inbox/` or `processed/`, or a transcript,
+chat or meeting), the citing `sources` entry carries a verbatim `quote` (at most 500
+characters), its `speaker`, and `at` (`HH:MM:SS` or a time) or a `permalink`. Jira,
+Confluence and ADR sources stay re-fetchable, so a quote there is optional.
 A Source record may list its `participants`.
 `--base REF` also refuses in-place edits to decisions accepted at the merge base and
 deletion of source records. Knowledge repositories run it through `.pre-commit-hooks.yaml` and

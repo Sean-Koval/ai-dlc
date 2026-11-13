@@ -9,8 +9,8 @@ OKF tolerates broken markdown links, so only our typed ``links`` must resolve.
 
 Only the directories in ``[check] roots`` of ``knowledge.toml`` are read (all of
 ``root`` when unset), and ``README.md`` is never a record. Source records are
-permanent and raw payloads expire, so ``derived_from`` must name a source record and
-the citing record must quote its evidence in ``sources``.
+permanent and raw payloads expire, so ``derived_from`` must name a source record, and
+a record citing an expiring Source must quote its evidence in ``sources``.
 
 With ``base`` (CI mode) it also refuses in-place edits of decisions that were accepted
 at the merge base. The CLI and the MCP tool both call :func:`check_records`.
@@ -83,7 +83,7 @@ def check_records(
             _check_record(bundle, relative, text)
     index = _index(bundle)
     _check_links(bundle, index)
-    _check_evidence(bundle)
+    _check_evidence(bundle, index)
     _check_supersession(bundle, index)
     _check_duplicate_sources(bundle)
     if base:
@@ -310,15 +310,17 @@ def _check_links(bundle: _Bundle, index: dict[str, str]) -> None:
                 )
 
 
-def _check_evidence(bundle: _Bundle) -> None:
-    """A ``derived_from`` link needs quoted evidence in ``sources`` (KAN-466).
+def _check_evidence(bundle: _Bundle, index: dict[str, str]) -> None:
+    """A ``derived_from`` link to an expiring Source needs quoted evidence (KAN-466).
 
-    The source's payload expires, so the quote, its speaker and where it was said
-    (``at`` or ``permalink``) must live in the record that cites it.
+    When the Source's payload expires (:func:`records.payload_expires`), the quote,
+    its speaker and where it was said (``at`` or ``permalink``) must live in the
+    record that cites it. A re-fetchable source (Jira, Confluence, an ADR) needs none.
     """
     for path, record in bundle.records.items():
         for number, link in enumerate(record.links):
-            if link.type != "derived_from":
+            source = bundle.records.get(index.get(link.target, ""))
+            if link.type != "derived_from" or not source or not records.payload_expires(source):
                 continue
             cited = [e for e in record.sources if link.target in (e.id, e.resource)]
             if not any(e.quote and e.speaker and (e.at or e.permalink) for e in cited):

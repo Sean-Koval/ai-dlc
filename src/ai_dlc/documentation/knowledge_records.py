@@ -426,6 +426,28 @@ def envelope(record: KnowledgeRecord, body: str) -> SourceEnvelope:
     )
 
 
+# Sources whose raw payload expires (KAN-458): captured into the inbox, or a
+# transcript, chat or meeting. Jira, Confluence and ADR sources stay re-fetchable.
+EXPIRING_DIRECTORIES = ("inbox/", "processed/")
+EXPIRING_KINDS = frozenset(
+    {"transcript", "chat", "meeting", "thread", "zoom", "google-meet", "meet", "symphony"}
+)
+
+
+def payload_expires(record: KnowledgeRecord) -> bool:
+    """Whether a Source record's payload expires, so citing records must quote it.
+
+    It does when a ``sources`` resource lies under ``inbox/`` or ``processed/``, or
+    when its provider or a tag names a transcript, chat or meeting kind.
+    """
+    if record.type != "source":
+        return False
+    if any(entry.resource.startswith(EXPIRING_DIRECTORIES) for entry in record.sources):
+        return True
+    kinds = {*(record.tags or ()), *([record.provider] if record.provider else [])}
+    return bool({kind.casefold() for kind in kinds} & EXPIRING_KINDS)
+
+
 def okf_status(record: KnowledgeRecord) -> str:
     """The OKF v0.2 lifecycle status (draft | stable | deprecated) for a record."""
     return OKF_STATUS[record.type].get(record.status, "stable")

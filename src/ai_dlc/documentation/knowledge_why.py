@@ -4,7 +4,8 @@ One call answers what was decided and when, what it replaced and what replaced i
 which conventions and lessons carry it, and what evidence it rests on. Source
 payloads expire (KAN-458), so the evidence is the quote, speaker and place kept in
 the record's ``sources`` entries; the Source record's metadata stands beside each
-quote, and the payload is reported ``present`` or ``expired``, never a failure.
+quote, and the payload is reported ``present`` or ``expired``, never a failure. A
+re-fetchable source (Jira, Confluence, an ADR) without a quote says where to fetch it.
 
 It reads a records directory on disk and nothing else: no provider, no network
 (outcome O1). ``superseded_by`` is derived the way ``knowledge index`` derives it
@@ -18,7 +19,7 @@ from pathlib import Path
 from typing import Any
 
 from ai_dlc.documentation import knowledge_bundle, record_index
-from ai_dlc.documentation.knowledge_records import KnowledgeRecord, SourceRef
+from ai_dlc.documentation.knowledge_records import KnowledgeRecord, SourceRef, payload_expires
 
 BODY_LIMIT = 1200
 """Most characters of the asked record's body; a longer body points at its file."""
@@ -205,6 +206,7 @@ def _evidence(store: _Store, entry: SourceRef) -> dict[str, Any]:
         "speaker": entry.speaker,
         "at": entry.at,
         "permalink": entry.permalink,
+        "fetch": None,
     }
     source = store.find(entry.id or entry.resource) or store.find(entry.resource)
     if source is not None and source.record.type == "source":
@@ -221,6 +223,9 @@ def _evidence(store: _Store, entry: SourceRef) -> dict[str, Any]:
         }
         found["title"] = found["title"] or record.title
         found["payload"] = _payload(store.root, source)
+        if not payload_expires(record):
+            # Jira, Confluence and ADR sources stay re-fetchable; a quote is optional.
+            found["fetch"] = record.url or record.sources[0].resource
     else:
         found["source"] = None
         found["payload"] = _resource(store.root, entry.resource)
@@ -309,7 +314,7 @@ def _source(evidence: dict[str, Any]) -> list[str]:
 
 def _quote(evidence: dict[str, Any]) -> list[str]:
     if not evidence["quote"]:
-        return []
+        return [f"fetch from {evidence['fetch']}"] if evidence["fetch"] else []
     where = [part for part in (evidence["speaker"], evidence["at"]) if part]
     out = [f'"{evidence["quote"]}"', "  - " + ", ".join(where or ["unattributed"])]
     if evidence["permalink"]:

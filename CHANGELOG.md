@@ -48,7 +48,8 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
   conventions and lessons, ticket keys and quoted evidence. Each quote sits beside its
   Source record's metadata, and the payload shows `present` or `expired`. `sources`
   entries gain `quote`, `speaker`, `at` and `permalink`, and Source records gain
-  `participants`. `knowledge check` fails a `derived_from` link with no quote (KAN-466).
+  `participants`. `knowledge check` fails a `derived_from` link with no quote when the
+  Source's payload expires; re-fetchable sources show where to fetch them (KAN-466).
 - The knowledge-record contract: `KnowledgeRecord` in
   `ai_dlc.documentation.knowledge_records`, its generated
   `contracts/knowledge-record.schema.json`, format version 1 for knowledge repositories
