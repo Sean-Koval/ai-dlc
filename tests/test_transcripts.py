@@ -5,6 +5,7 @@ Fakes behind ``httpx.MockTransport`` replay recorded API responses from
 tests prove nothing about live OAuth scopes or recording access.
 """
 
+import hashlib
 import json
 import socket
 from datetime import UTC, datetime
@@ -118,21 +119,23 @@ class FakeDrive:
         return httpx.Client(transport=httpx.MockTransport(self.handle))
 
 
-def knowledge_repo(tmp_path: Path, routes: str | None = None) -> Path:
-    root = tmp_path / "knowledge"
+ALPHA = '[[transcripts.customers]]\nproject = "alpha"\nparticipants = ["@alpha.example"]\n'
+
+
+def knowledge_repo(tmp_path: Path, routes: str = ALPHA, name: str = "knowledge") -> Path:
+    root = tmp_path / name
     for folder in ("team", "projects", "inbox"):
         (root / folder).mkdir(parents=True)
-    routes = (
-        routes
-        if routes is not None
-        else '[[transcripts.projects]]\nname = "alpha"\nboundary = "customer"\n'
-        'participants = ["@alpha.example"]\n'
-    )
     (root / "knowledge.toml").write_text(
         '[format]\nversion = 1\n[check]\nroots = ["team", "projects"]\n'
         f'[transcripts]\nowner = "ana"\nscope = "team"\n{routes}'
     )
     return root
+
+
+def customer_env(tmp_path: Path) -> tuple[Path, dict]:
+    alpha = knowledge_repo(tmp_path, "", name="knowledge-alpha")
+    return alpha, {**ENV, "KNOWLEDGE_REPO_ALPHA": str(alpha)}
 
 
 def registry(zoom: FakeZoom, drive: FakeDrive) -> Registry:
@@ -277,11 +280,21 @@ def test_a_refused_list_names_scopes_not_the_token():
 # pull-transcripts
 
 
+def md_files(root: Path) -> list[str]:
+    return sorted(p.relative_to(root).as_posix() for p in root.rglob("*.md"))
+
+
 def test_pull_writes_source_records_once_and_skips_unreadable(tmp_path):
     root = knowledge_repo(tmp_path)
-    zoom, drive = FakeZoom(), FakeDrive()
-    pull = TranscriptPull(tmp_path, CONFIG, into=root, registry=registry(zoom, drive))
-    first = pull.pull("2026-11-01")
+    alpha, environ = customer_env(tmp_path)
+
+    def run():
+        reg = registry(FakeZoom(), FakeDrive())
+        return TranscriptPull(tmp_path, CONFIG, into=root, registry=reg, environ=environ).pull(
+            "2026-11-01"
+        )
+
+    first = run()
     assert first["status"] == "ok", first
     written = {entry["id"]: entry for entry in first["written"]}
     assert set(written) == {"/aB+c//dE==", "Qx9YzZalpha==", "1DesignReviewDocId0001"}
@@ -291,71 +304,111 @@ def test_pull_writes_source_records_once_and_skips_unreadable(tmp_path):
     }
 
     team = written["/aB+c//dE=="]
+    assert team["repository"] == str(root) and team["project"] is None
     assert team["record"].startswith("inbox/transcripts/zoom-20261110-")
     record, _body = records.parse((root / team["record"]).read_text())
     assert record.type == "source" and record.status == "raw" and record.scope == "team"
+    assert record.boundary is None and record.project is None
     assert record.participants == ["Ana", "Priya"]
     assert record.sources[0].id == "zoom:/aB+c//dE=="
     assert record.sources[0].resource == team["payload"]
     assert records.payload_expires(record)
     payload = (root / team["payload"]).read_text()
     assert "[00:00:05] Priya: Agreed. I'll update the lock and open the PR today." in payload
-    assert (
-        record.sources[0].hash
-        == "sha256:" + __import__("hashlib").sha256(payload.encode()).hexdigest()
-    )
+    assert record.sources[0].hash == "sha256:" + hashlib.sha256(payload.encode()).hexdigest()
     assert "ana@example.com" not in (root / team["record"]).read_text()
 
+    # The customer transcript lands in the customer's own repository, top-level inbox.
     customer = written["Qx9YzZalpha=="]
-    assert customer["record"].startswith("projects/alpha/inbox/transcripts/")
-    assert customer["payload"].startswith("projects/alpha/inbox/")
-    customer_record, _ = records.parse((root / customer["record"]).read_text())
-    assert customer_record.boundary == "customer" and customer_record.scope == "project"
+    assert customer["repository"] == str(alpha) and customer["project"] == "alpha"
+    assert customer["record"].startswith("inbox/transcripts/")
+    customer_record, _ = records.parse((alpha / customer["record"]).read_text())
+    assert customer_record.boundary == "customer" and customer_record.project == "alpha"
+    assert customer_record.scope == "project"
+    assert "bob@alpha.example" not in (alpha / customer["record"]).read_text()
+    assert not list((root / "projects").rglob("*"))  # nothing enters projects/*
+    team_files = [p.as_posix() for p in root.rglob("*") if p.is_file()]
+    assert not any("Qx9YzZalpha" in (Path(f).read_text()) for f in team_files)
 
-    second = TranscriptPull(tmp_path, CONFIG, into=root, registry=registry(FakeZoom(), FakeDrive()))
-    again = second.pull("2026-11-01")
+    again = run()
     assert again["written"] == [] and len(again["existing"]) == 3
-    files = sorted(p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file())
-    assert len([f for f in files if f.endswith(".md")]) == 3
+    assert len(md_files(root)) == 2 and len(md_files(alpha)) == 1
 
-    # Every output record passes knowledge check, in place and under the repo's roots.
+    # Every output record passes knowledge check: the repositories' own (inbox is not a
+    # root) and, for the team repository, with the inbox read as records.
+    assert check_records(root)["status"] == "valid"
+    assert check_records(alpha)["status"] == "valid"
     everything = root / "check-all.toml"
     everything.write_text("[format]\nversion = 1\n")
     checked = check_records(root, config=everything)
-    assert checked["status"] == "valid" and checked["records"] == 3, checked["failures"]
-    assert check_records(root)["status"] == "valid"
+    assert checked["status"] == "valid" and checked["records"] == 2, checked["failures"]
+
+
+def test_unconfigured_customer_repository_skips_and_never_falls_back(tmp_path):
+    root = knowledge_repo(tmp_path)
+    reg = registry(FakeZoom(), FakeDrive())
+    result = TranscriptPull(tmp_path, CONFIG, into=root, registry=reg, environ=ENV).pull(
+        "2026-11-01"
+    )
+    skipped = {entry["id"]: entry["reason"] for entry in result["skipped"]}
+    assert "KNOWLEDGE_REPO_ALPHA" in skipped["Qx9YzZalpha=="]
+    assert all(entry["id"] != "Qx9YzZalpha==" for entry in result["written"])
+    assert not any("Qx9YzZalpha" in p.read_text() for p in root.rglob("*") if p.is_file())
+
+    not_a_repo = tmp_path / "empty"
+    not_a_repo.mkdir()
+    environ = {**ENV, "KNOWLEDGE_REPO_ALPHA": str(not_a_repo)}
+    reg = registry(FakeZoom(), FakeDrive())
+    again = TranscriptPull(tmp_path, CONFIG, into=root, registry=reg, environ=environ).pull(
+        "2026-11-01"
+    )
+    assert any("not name a knowledge repository" in e["reason"] for e in again["skipped"])
+
+
+def test_retired_project_routes_are_refused(tmp_path):
+    routes = '[[transcripts.projects]]\nname = "alpha"\ntitles = ["x"]\n'
+    root = knowledge_repo(tmp_path, routes)
+    reg = registry(FakeZoom(), FakeDrive())
+    result = TranscriptPull(tmp_path, CONFIG, into=root, registry=reg, environ=ENV).pull(
+        "2026-11-01"
+    )
+    assert result["status"] == "refused" and "retired" in result["reason"]
 
 
 def test_dry_run_writes_nothing(tmp_path):
     root = knowledge_repo(tmp_path)
-    pull = TranscriptPull(tmp_path, CONFIG, into=root, registry=registry(FakeZoom(), FakeDrive()))
+    alpha, environ = customer_env(tmp_path)
+    reg = registry(FakeZoom(), FakeDrive())
+    pull = TranscriptPull(tmp_path, CONFIG, into=root, registry=reg, environ=environ)
     result = pull.pull("2026-11-01T00:00:00+00:00", dry_run=True)
     assert result["written"] == [] and len(result["planned"]) == 5
-    assert not list(root.rglob("*.md"))
+    assert [e["project"] for e in result["planned"]].count("alpha") == 1
+    assert not md_files(root) and not md_files(alpha)
 
 
-def test_two_customer_projects_matching_one_transcript_skip_it(tmp_path):
+def test_two_customers_matching_one_transcript_skip_it(tmp_path):
     routes = (
-        '[[transcripts.projects]]\nname = "alpha"\nboundary = "customer"\ntitles = ["review"]\n'
-        '[[transcripts.projects]]\nname = "beta"\nboundary = "customer"\ntitles = ["design"]\n'
+        '[[transcripts.customers]]\nproject = "alpha"\ntitles = ["review"]\n'
+        '[[transcripts.customers]]\nproject = "beta"\ntitles = ["design"]\n'
     )
     root = knowledge_repo(tmp_path, routes)
-    pull = TranscriptPull(
-        tmp_path, CONFIG, providers=["meet"], into=root, registry=registry(FakeZoom(), FakeDrive())
-    )
-    result = pull.pull("2026-11-01")
+    reg = registry(FakeZoom(), FakeDrive())
+    result = TranscriptPull(
+        tmp_path, CONFIG, providers=["meet"], into=root, registry=reg, environ=ENV
+    ).pull("2026-11-01")
     assert result["written"] == []
-    assert any("several projects" in entry["reason"] for entry in result["skipped"])
+    assert any("several customers" in entry["reason"] for entry in result["skipped"])
 
 
-def test_route_prefers_the_customer_project():
-    projects = [
-        {"name": "internal", "boundary": None, "titles": ["sync"], "participants": []},
-        {"name": "alpha", "boundary": "customer", "titles": [], "participants": ["@alpha.example"]},
+def test_route_matches_title_or_participant_email():
+    customers = [
+        {"project": "alpha", "titles": [], "participants": ["@alpha.example"]},
+        {"project": "beta", "titles": ["beta sync"], "participants": []},
     ]
     item = {"title": "Sync", "participants": ["Bob"], "emails": ["bob@alpha.example"]}
-    assert route(item, projects)["name"] == "alpha"
-    assert route({"title": "other"}, projects) is None
+    assert route(item, customers)["project"] == "alpha"
+    assert route({"title": "Beta sync"}, customers)["project"] == "beta"
+    assert route({"title": "other"}, customers) is None
 
 
 def test_since_needs_an_offset_and_config_needs_an_owner(tmp_path):
@@ -411,3 +464,19 @@ def test_cli_pulls_through_the_project_configuration(tmp_path, monkeypatch):
     assert len(json.loads(first.stdout)["written"]) == 1
     second = runner.invoke(app, arguments)
     assert second.exit_code == 0 and json.loads(second.stdout)["written"] == []
+
+
+def test_record_project_needs_the_customer_boundary():
+    base = {
+        "id": "x",
+        "type": "lesson",
+        "scope": "project",
+        "status": "open",
+        "date": "2026-11-13",
+        "owner": "ana",
+        "sources": [{"resource": "inbox/x.txt"}],
+        "links": [],
+    }
+    assert records.errors({**base, "boundary": "customer", "project": "alpha"}) == []
+    assert any("project" in e for e in records.errors({**base, "project": "alpha"}))
+    assert records.errors({**base, "boundary": "customer", "project": "Not A Slug"})

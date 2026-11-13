@@ -72,6 +72,11 @@ The `transcripts` role must answer `list_since {since}` (an aware time; items wi
 `segments: [{speaker, at, text}]`, `at` as `HH:MM:SS`). A transcript the caller cannot
 read is unavailable, not an error. The `zoom` and `google-meet` providers implement it;
 `ai-dlc knowledge pull-transcripts` is its caller.
+The keys a knowledge repository's `knowledge.toml` may carry are `[format] version`
+(required), `[check] roots`, `[wiki] site, source, project`, and `[transcripts] owner`
+(required to pull transcripts), `scope` and `[[transcripts.customers]] project, titles,
+participants, repo_env`. A customer transcript lands in the customer's own repository,
+whose Source records carry `boundary: customer` and the optional record field `project`.
 Completion is a service operation: callers must use `WorkService.finish`.
 The public `Registry.invoke` refuses terminal tracker transitions and the optional
 terminal planning reconciliation operation `reconcile_closed`.

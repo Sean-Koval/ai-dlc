@@ -72,6 +72,7 @@ OPTIONAL_FIELDS = (
     "tags",
     "label",
     "boundary",
+    "project",
     "phase",
     "domain",
     "valid_from",
@@ -175,6 +176,7 @@ def _conditions() -> list[dict[str, Any]]:
     team = {"properties": {"scope": {"const": "team"}}, "required": ["scope"]}
     rules.append({"if": _present("boundary"), "then": project})
     rules.append({"if": _present("phase"), "then": customer})
+    rules.append({"if": _present("project"), "then": customer})
     rules.append({"if": _present("domain"), "then": team})
     return rules
 
@@ -271,6 +273,9 @@ class KnowledgeRecord(BaseModel):
     tags: list[str] | None = None
     label: str | None = Field(default=None, min_length=1, description="internal | confidential")
     boundary: Literal["customer"] | None = None
+    project: str | None = Field(
+        default=None, pattern=rf"^{SLUG}$", description="customer project (boundary: customer)"
+    )
     phase: Literal["discovery", "scoping", "design", "build", "handoff"] | None = None
     domain: Literal["sdlc", "tooling", "integration", "harness"] | None = None
     valid_from: Day | None = None
@@ -330,6 +335,8 @@ def record_rule_errors(record: KnowledgeRecord) -> list[str]:
             )
     if record.boundary is not None and record.scope != "project":
         found.append("boundary: only a project-scoped record has a boundary")
+    if record.project is not None and record.boundary != "customer":
+        found.append("project: allowed only with boundary: customer")
     if record.phase is not None and record.boundary != "customer":
         found.append("phase: allowed only with boundary: customer")
     if record.domain is not None and record.scope != "team":

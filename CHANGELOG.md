@@ -22,8 +22,9 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
   providers, and `ai-dlc knowledge pull-transcripts --since TIME [--into DIR]
   [--dry-run]` (MCP `knowledge_pull_transcripts`) (KAN-457). Each new transcript lands
   in the knowledge inbox as a raw payload and a Source record, once per transcript id.
-  Customer projects' transcripts land in `projects/<name>/inbox/`. Unreadable
-  transcripts are skipped and logged. Fixture-tested; live OAuth qualification pending.
+  A customer's transcripts land in that customer's own knowledge repository, with
+  `boundary: customer` and the new optional record field `project`; an unconfigured
+  customer repository skips the transcript. Unreadable transcripts are skipped and logged. Fixture-tested; live OAuth qualification pending.
 - A `wiki` role (`upsert_page`, `get_page_by_key`, `list_children`) with a
   `confluence-cloud` provider, and `ai-dlc knowledge render --changed-since SHA
   [--dry-run]` (MCP `knowledge_render`), the wiki's only writer (KAN-430). It renders

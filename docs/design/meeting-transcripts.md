@@ -31,7 +31,8 @@ ai-dlc knowledge pull-transcripts --since 2026-11-01T09:00:00-05:00 --dry-run
 MCP `knowledge_pull_transcripts` does the same, as a dry run by default. Without
 `--into`, the pull writes into the knowledge role's local git clone.
 
-For each new transcript the pull writes two files into a local checkout:
+For each new transcript the pull writes two files into the top-level `inbox/` of
+a local knowledge checkout:
 
 - `inbox/transcripts/<slug>.txt`, the raw payload: one `[HH:MM:SS] Name: text`
   line per utterance.
@@ -42,31 +43,35 @@ The payload expires after 30 days. The Source record becomes permanent only when
 extraction promotes it into a record directory. Participant emails are used for
 routing and are never written.
 
-The pull is idempotent by transcript id. A record anywhere in the checkout whose
+The pull is idempotent by transcript id. A record in the target checkout whose
 `sources` cites `<provider>:<id>` means the transcript is already captured. Two
 runs over one window therefore write each transcript once.
 
-## Customer projects
+## Customer transcripts
 
-A transcript routed to a project lands in `projects/<name>/inbox/transcripts/`.
-A customer route adds `boundary: customer`, so the record never leaves its
-project. A transcript that matches two projects is skipped, never guessed.
+Each customer has its own knowledge repository (KAN-475). A transcript that
+matches a customer rule lands in that repository's top-level `inbox/`, with
+`boundary: customer` and `project: <name>`. It never enters the team repository,
+so the team repository's retention, numbering and index never see it.
+
+The rules live in the team repository's `knowledge.toml`. A customer
+repository's local path is a machine path, so an environment variable holds it.
+If the variable is unset or names no knowledge checkout, the transcript is
+skipped and logged, with no fallback to the team repository. A transcript that
+matches two customers is skipped too.
 
 ```toml
-# knowledge.toml
+# knowledge.toml of the team repository
 [transcripts]
-owner = "<record owner>"   # required
-scope = "personal"         # unrouted transcripts: personal (default) or team
+owner = "<record owner>"   # required: owner of the Source records
+scope = "personal"         # team-repository transcripts: personal (default) or team
 
-[[transcripts.projects]]
-name = "alpha"
-boundary = "customer"
+[[transcripts.customers]]
+project = "alpha"
 titles = ["Alpha"]                 # substrings of the meeting title
 participants = ["@alpha.example"]  # substrings of a name or email
+repo_env = "KNOWLEDGE_REPO_ALPHA"  # the default: KNOWLEDGE_REPO_<PROJECT>
 ```
-
-The knowledge repository's retention job must also expire
-`projects/*/inbox/`; today it reads only the top-level `inbox/` and `processed/`.
 
 ## Credentials
 
