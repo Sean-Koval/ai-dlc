@@ -1913,6 +1913,8 @@ def knowledge_pull_transcripts(
     with service_call():
         pull = TranscriptPull(root, config_for(root), providers=provider_ids, into=into)
         result = pull.pull(since, dry_run=dry_run)
+    for warning in result.get("warnings", []):
+        typer.echo(f"warning: {warning}", err=True)
     for entry in result.get("skipped", []):
         typer.echo(f"skipped {entry['provider']} {entry['id']}: {entry['reason']}", err=True)
     conclude(result)
