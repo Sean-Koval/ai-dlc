@@ -16,7 +16,7 @@ at the merge base. The CLI and the MCP tool both call :func:`check_records`.
 
 Records with ``boundary: customer`` never leave their project (KAN-465). They must sit
 under ``projects/<name>/``, only customer records of that project may link to them,
-and no other record may quote their body. Index, render and search keep them out of
+and no other record may quote their body or cite them or their paths in ``sources``. Index, render and search keep them out of
 team-scope views with :func:`visible_in` and :func:`team_inputs`.
 """
 
@@ -48,6 +48,7 @@ SUPERSEDE_KEYS = ("status", "valid_to")
 PROJECTS = "projects"
 QUOTE_WORDS = 8
 _WORD = re.compile(r"[^\W_]+")
+_PROJECT_PATH = re.compile(r"(?:^|/)projects/([a-z0-9][a-z0-9-]*)(?:/|$)")
 
 
 class _Bundle:
@@ -521,7 +522,39 @@ def _check_boundary(bundle: _Bundle, index: dict[str, str]) -> None:
                     f"{link.target} is a customer record of project {theirs or '(none)'}, "
                     f"not {mine or '(none)'}; links never cross customer projects",
                 )
+    _check_sources(bundle, index, owners)
     _check_quotes(bundle, owners)
+
+
+def _check_sources(bundle: _Bundle, index: dict[str, str], owners: dict[str, str | None]) -> None:
+    """A record outside the boundary cites no customer record and no customer path.
+
+    Promotion writes a team Source holding a summary a person sanitised; its
+    ``sources`` name no customer path, and the team record derives from it.
+    """
+    projects = {owner for owner in owners.values() if owner}
+    for path, record in bundle.records.items():
+        if is_customer(record):
+            continue
+        for number, entry in enumerate(record.sources):
+            for value in (entry.id, entry.resource):
+                if not value:
+                    continue
+                target = index.get(value)
+                match = _PROJECT_PATH.search(re.sub(r"[\\/]+", "/", value))
+                if target in owners:
+                    project = owners[target] or "(none)"
+                elif match and match.group(1) in projects:
+                    project = match.group(1)
+                else:
+                    continue
+                bundle.fail(
+                    path,
+                    f"/sources/{number}",
+                    f"cites customer project {project}; promote through a team source "
+                    "whose sources name no customer path",
+                )
+                break
 
 
 def _check_quotes(bundle: _Bundle, owners: dict[str, str | None]) -> None:

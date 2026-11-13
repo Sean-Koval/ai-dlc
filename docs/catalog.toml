@@ -37,6 +37,13 @@ owner = "repository-maintainers"
 status = "active"
 
 [[documents]]
+id = "decision-0005-customer-boundary"
+path = "docs/decisions/0005-customer-boundary-and-promotion.md"
+kind = "decision"
+owner = "repository-maintainers"
+status = "active"
+
+[[documents]]
 id = "architecture"
 path = "docs/architecture.md"
 kind = "architecture"

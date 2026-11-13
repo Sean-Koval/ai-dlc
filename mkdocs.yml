@@ -104,6 +104,7 @@ nav:
       - "ADR 0002: Jira tracker, trace correlation": decisions/0002-jira-work-tracker-and-trace-correlation.md
       - "ADR 0003: Second brain capture and publish": decisions/0003-second-brain-capture-and-publish.md
       - "ADR 0004: Knowledge system in scope": decisions/0004-knowledge-system-scope.md
+      - "ADR 0005: Customer boundary and promotion": decisions/0005-customer-boundary-and-promotion.md
       - Product direction: product-direction.md
       - Framework delivery: design/framework-delivery.md
       - Project documentation: design/project-documentation.md

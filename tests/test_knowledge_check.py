@@ -53,6 +53,7 @@ EXPECTED = {
         "links never cross customer projects",
     ),
     "customer-quoted": ("a.md", "", "from customer record b-slug (project alpha)"),
+    "customer-source-path": ("a.md", "/sources/0", "cites customer project alpha"),
 }
 
 
@@ -358,7 +359,7 @@ def test_pre_commit_hook_and_reusable_workflow_run_the_check():
 def test_mixed_boundary_bundle_passes():
     result = check_records(BOUNDARY)
     assert result["failures"] == [], result["failures"]
-    assert result["records"] == 6
+    assert result["records"] == 8
 
 
 def test_customer_failures_do_not_echo_customer_text():
@@ -427,3 +428,26 @@ def test_visibility_for_index_render_and_search():
         "projects/alpha/b.md",
         "projects/alpha/d.md",
     ]
+
+
+@pytest.mark.parametrize(
+    "entry",
+    [
+        "{id: b-slug, resource: b-slug}",
+        "{resource: 'https://github.com/o/knowledge/blob/main/projects/alpha/x.vtt'}",
+        "{resource: 'projects\\\\alpha\\\\x.vtt'}",
+    ],
+)
+def test_a_team_record_cites_no_customer_record_or_path(tmp_path, entry):
+    shutil.copytree(INVALID / "customer-source-path", tmp_path / "kb")
+    lesson = record(kind="lesson", status="open", sources="\n  - " + entry)
+    (tmp_path / "kb/a.md").write_text(lesson)
+    failures = check_records(tmp_path / "kb")["failures"]
+    assert [(item["path"], item["pointer"]) for item in failures] == [("a.md", "/sources/0")]
+
+
+def test_a_path_under_a_project_without_customer_records_may_be_cited(tmp_path):
+    (tmp_path / "knowledge.toml").write_text(PIN)
+    lesson = record(kind="lesson", status="open", sources="\n  - {resource: projects/ours/x.md}")
+    (tmp_path / "a.md").write_text(lesson)
+    assert check_records(tmp_path)["failures"] == []

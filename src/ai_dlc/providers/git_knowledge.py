@@ -13,8 +13,8 @@ The store is a git repository of knowledge records that pins its format in
 variable names one. A URL is cloned once into the user cache and refreshed on read.
 ``propose`` writes the records on a new branch in a temporary worktree, checks them,
 pushes that branch and opens a draft pull request through the ``scm`` role. It never
-commits to, pushes to or merges into the base branch. ``search`` returns
-``boundary: customer`` records only to a caller that passes their ``project``.
+commits to, pushes to or merges into the base branch. ``get`` and ``search``
+return ``boundary: customer`` records only to a caller that passes their ``project``.
 """
 
 import hashlib
@@ -28,6 +28,7 @@ from typing import Any
 
 from ai_dlc.documentation import knowledge_records, record_index
 from ai_dlc.documentation.knowledge_check import check_records, project_of, team_inputs
+from ai_dlc.documentation.knowledge_notes import split
 from ai_dlc.errors import RefusedError
 from ai_dlc.files import inside, run_git
 
@@ -94,8 +95,32 @@ class GitKnowledge:
             self._git(root, "reset", "--quiet", "--hard", f"origin/{self.base}")
         return root
 
-    def get(self, id: str) -> dict:
-        return record_index.get(self.repository_root(), id)
+    def get(self, id: str, project: str | None = None) -> dict:
+        """The record named ``id``; a customer record only for its own ``project``.
+
+        Customer records of other projects are left out before matching, so the
+        answer is not-found and an error never names their paths (KAN-465).
+        """
+        root = self.repository_root()
+        entries, _invalid = record_index.scan(root)
+        matches = [
+            entry
+            for entry in team_inputs(entries, project)
+            if id in (entry["record"].id, *(entry["record"].aliases or ()))
+        ]
+        if not matches:
+            raise LookupError(f"no knowledge record has id or alias {id}")
+        if len(matches) > 1:
+            paths = ", ".join(entry["path"] for entry in matches)
+            raise ValueError(f"id or alias {id} is ambiguous: {paths}")
+        _data, _raw, body = split((root / matches[0]["path"]).read_text(errors="replace"))
+        record = matches[0]["record"]
+        return {
+            "id": record.id,
+            "path": matches[0]["path"],
+            "header": record.model_dump(mode="json"),
+            "body": body,
+        }
 
     def search(
         self,
