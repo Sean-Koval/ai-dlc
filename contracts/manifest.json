@@ -51,6 +51,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -141,6 +142,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -273,6 +275,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -402,6 +405,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -532,6 +536,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -656,6 +661,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -771,6 +777,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -888,6 +895,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -1067,6 +1075,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -1211,6 +1220,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -1327,6 +1337,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -1512,6 +1523,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -1625,6 +1637,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -1782,6 +1795,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -1953,6 +1967,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -2112,6 +2127,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -2222,6 +2238,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -2380,6 +2397,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -2521,6 +2539,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -2585,6 +2604,227 @@
           "number"
         ],
         "title": "PullRequestResult",
+        "type": "object"
+      }
+    },
+    "pull_requests": {
+      "payload": {
+        "additionalProperties": false,
+        "description": "Pull requests opened at or after ``since``, newest first (``knowledge stats``).",
+        "properties": {
+          "limit": {
+            "default": 200,
+            "maximum": 1000,
+            "minimum": 1,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "since": {
+            "format": "date-time",
+            "title": "Since",
+            "type": "string"
+          }
+        },
+        "required": [
+          "since"
+        ],
+        "title": "PullRequestsSince",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "capabilities",
+              "prepare",
+              "reconcile_closed",
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "update",
+              "query",
+              "comment",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append",
+              "pull_request_create",
+              "pull_requests",
+              "get",
+              "search",
+              "list_changed",
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children",
+              "list_since",
+              "fetch"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "$defs": {
+          "PullRequestSummary": {
+            "additionalProperties": true,
+            "description": "One pull request as ``knowledge stats`` measures it; read-only, no bodies.",
+            "properties": {
+              "closed_at": {
+                "anyOf": [
+                  {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Closed At"
+              },
+              "created_at": {
+                "format": "date-time",
+                "title": "Created At",
+                "type": "string"
+              },
+              "files": {
+                "description": "repository-relative paths",
+                "items": {
+                  "type": "string"
+                },
+                "title": "Files",
+                "type": "array"
+              },
+              "first_commit": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "the pull request's first commit",
+                "title": "First Commit"
+              },
+              "first_push_checks": {
+                "default": "none",
+                "description": "combined checks on the earliest pull request commit that has any",
+                "enum": [
+                  "success",
+                  "failure",
+                  "pending",
+                  "none"
+                ],
+                "title": "First Push Checks",
+                "type": "string"
+              },
+              "merge_commit": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "the commit it merged as",
+                "title": "Merge Commit"
+              },
+              "merged_at": {
+                "anyOf": [
+                  {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Merged At"
+              },
+              "number": {
+                "minimum": 1,
+                "title": "Number",
+                "type": "integer"
+              },
+              "state": {
+                "description": "closed means closed without merging",
+                "enum": [
+                  "open",
+                  "merged",
+                  "closed"
+                ],
+                "title": "State",
+                "type": "string"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              }
+            },
+            "required": [
+              "number",
+              "title",
+              "state",
+              "created_at"
+            ],
+            "title": "PullRequestSummary",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "pull_requests": {
+            "items": {
+              "$ref": "#/$defs/PullRequestSummary"
+            },
+            "title": "Pull Requests",
+            "type": "array"
+          }
+        },
+        "required": [
+          "pull_requests"
+        ],
+        "title": "PullRequestList",
         "type": "object"
       }
     },
@@ -2659,6 +2899,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -2789,6 +3030,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -2907,6 +3149,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -3080,6 +3323,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -3231,6 +3475,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -3391,6 +3636,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -3564,6 +3810,7 @@
               "deployment",
               "append",
               "pull_request_create",
+              "pull_requests",
               "get",
               "search",
               "list_changed",
@@ -3702,7 +3949,8 @@
         "ci"
       ],
       "optional": [
-        "pull_request_create"
+        "pull_request_create",
+        "pull_requests"
       ]
     },
     "specs": {

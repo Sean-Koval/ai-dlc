@@ -1772,6 +1772,45 @@ def knowledge_why(
         raise typer.Exit(1)
 
 
+@knowledge.command("stats")
+def knowledge_stats(
+    since: Annotated[str, typer.Option("--since", help="ISO date, or time with offset")],
+    records: Annotated[Path, typer.Argument(help="records directory")] = Path("."),
+    root: Annotated[Path, typer.Option("--root", help="project with ai-dlc.toml")] = Path("."),
+    agent_repositories: Annotated[
+        list[str] | None,
+        typer.Option("--agent-repository", help="owner/repo agents open PRs in; repeatable"),
+    ] = None,
+    project: Annotated[str | None, typer.Option("--project")] = None,
+    report: Annotated[Path | None, typer.Option("--report", help="write the Markdown here")] = None,
+    json_output: Annotated[bool, typer.Option("--json")] = False,
+):
+    """Measure the 1.0 outcomes: capture, review, agent loop and health; read-only.
+
+    Reads git, the capture run log, and the scm and tracker roles. A role that is not
+    selected leaves its numbers unmeasured. ``--report`` writes the weekly Markdown.
+    """
+    from datetime import datetime
+
+    from ai_dlc.documentation import knowledge_stats as measure
+
+    with service_call():
+        moment = datetime.fromisoformat(since)
+        # No ai-dlc.toml means no roles, so those numbers read "not measured"; a broken
+        # one is an error to fix, not a reason to report nothing.
+        config = config_for(root) if (root / "ai-dlc.toml").is_file() else None
+        wired = measure.from_roles(config, root, agent_repositories=agent_repositories or ())
+        result = measure.stats(records, moment, project=project, **wired)
+        text = "\n".join(measure.report(result)) + "\n"
+        if report is not None:
+            report.parent.mkdir(parents=True, exist_ok=True)
+            report.write_text(text, encoding="utf-8")
+    if json_output:
+        emit(result)
+    else:
+        typer.echo(text, nl=False)
+
+
 @knowledge.command("migrate")
 def knowledge_migrate_command(
     paths: Annotated[list[Path] | None, typer.Argument(help="files or directories")] = None,

@@ -16,6 +16,11 @@ knowledge-note format ([ADR 0004](../docs/decisions/0004-knowledge-system-scope.
 Records are Open Knowledge Format v0.2 documents, and their field names follow OKF's.
 The schema does not assert `format`. Consumers that use only the schema must stringify
 YAML dates and enable a format checker. `ai-dlc knowledge check` is the authority.
+`capture-run.schema.json` is one file under a knowledge repository's `runs/capture/`: what one
+capture batch (KAN-458) pulled, filtered, extracted and spent. It is generated from
+`ai_dlc.documentation.knowledge_stats.CaptureRun`, and `ai-dlc knowledge stats` reads it.
+The scm role's optional `pull_requests` operation lists pull requests opened since a time,
+with their first commit and first-push checks, for the same command.
 `ai-dlc knowledge check DIR` (MCP `knowledge_check`) validates a records directory:
 each header against the model, Open Knowledge Format v0.2 section 11, the format pin,
 typed links that name records, duplicate sources and supersession (one accepted
