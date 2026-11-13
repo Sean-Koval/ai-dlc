@@ -456,6 +456,9 @@ def test_specification_edit_warning(tmp_path):
         ".\\git.exe reset --hard",
         "Microsoft.PowerShell.Management\\Remove-Item src -Recurse",
         "Get-ChildItem build | ForEach-Object { Remove-Item $_ -Recurse -Force }",
+        # KAN-493 review: cmd /c's line and git's global options.
+        "cmd /c del /s /q src",
+        "git -C repo reset --hard",
     ],
 )
 def test_powershell_destructive_commands_are_denied(tmp_path, command):

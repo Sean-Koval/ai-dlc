@@ -19,6 +19,13 @@ for `/usr/bin/git` in Bash too. Tracks
   Bash. A backslash is read as a path separator there, never as an escape, and a
   backtick-escaped space stays inside its word. The commands inside a script block
   (`ForEach-Object { ... }`, `try { ... }`) and a dot-sourced program are judged too.
+- git's global options (`-C <path>`, `-c <name>=<value>`, `--git-dir`,
+  `--work-tree` and the like) are passed over to find the subcommand, so
+  `git -C repo reset --hard` is destructive. A plain push in another repository
+  stays unsupported, since that repository's push policy isn't readable here.
+- The line `cmd /c` (or `/k`, `/r`) runs is judged as cmd.exe reads it:
+  case-insensitively, with `^` escapes dropped, and with `del`, `erase`, `rd` and
+  `rmdir` counted as `rm`.
 - `ai-dlc hook pre-tool` and the shim share one entry point, `classify_shell`.
 
 ## Capabilities
@@ -30,6 +37,7 @@ for `/usr/bin/git` in Bash too. Tracks
 ## Impact
 
 `Remove-Item one-file.txt` is now denied in PowerShell, as `rm one-file.txt` is in
-Bash. Wrappers (`cmd /c`, `Invoke-Expression`, `Start-Process`), `git -C dir`, a
-Windows path with backslashes outside PowerShell, and Bash's own `{ ...; }` and
-`if ...; then` bodies are still not inspected.
+Bash, and `cmd /c del x` is denied wherever it runs. Other wrappers (`sh -c`,
+`powershell -command`, `Invoke-Expression`, `Start-Process`), a Windows path with
+backslashes outside PowerShell, and Bash's own `{ ...; }` and `if ...; then`
+bodies are still not inspected.

@@ -18,7 +18,10 @@ SHALL apply the shim's destructive check before delegating, so the CLI's version
 or failure cannot allow a destructive command, and SHALL judge a `PowerShell` line
 case-insensitively with its backtick escapes and continuations resolved and a
 backslash read as a path separator. The classifier SHALL know a program by its name
-alone, without a directory or an `.exe`, `.cmd`, `.bat` or `.com` suffix. In a
+alone, without a directory or an `.exe`, `.cmd`, `.bat` or `.com` suffix, and
+SHALL pass over git's global options to find its subcommand. It SHALL judge the
+line after `cmd /c`, `/k` or `/r` as cmd.exe reads it, with `del`, `erase`, `rd`
+and `rmdir` judged as `rm`. In a
 `PowerShell` line it SHALL also judge the commands inside a script block and a
 dot-sourced program, and SHALL judge `Remove-Item` and its aliases `ri`, `rm`,
 `del`, `erase`, `rd` and `rmdir` as it judges `rm`. A
@@ -46,6 +49,10 @@ create `.ai-dlc/` in a repository.
 #### Scenario: PowerShell delete or git by its path
 - **WHEN** a `PowerShell` call runs `Remove-Item -Recurse src`, `del /s /q src`, `gci build | % { ri $_ -r }` or `& "C:\Program Files\Git\cmd\git.exe" push --force`, or a `Bash` call runs `/usr/bin/git reset --hard`
 - **THEN** the hook exits 2 with a reason, while `Get-ChildItem` and `git.exe status` are allowed
+
+#### Scenario: cmd /c line or git global options
+- **WHEN** a `Bash` or `PowerShell` call runs `cmd /c del /q src`, `cmd.exe /c rd /s /q build` or `git -C repo reset --hard`
+- **THEN** the hook exits 2 with a reason, while `cmd /c dir` and `git -C repo status` are allowed
 
 #### Scenario: Unreadable pre-tool payload
 - **WHEN** a PreToolUse payload is not a JSON object, or a shell call has no command string

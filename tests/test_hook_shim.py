@@ -36,6 +36,10 @@ COMMANDS = [
     "git push --mirror",
     "gh pr create --title 'hi'",
     "git -C elsewhere push",
+    "git -C elsewhere reset --hard",
+    "git --git-dir=.git clean -fdx",
+    "cmd /c del /q build",
+    "cmd.exe /c dir",
     "echo 'git push'",
     "ls -la && rm -rf /",
     "cat file | grep x",
@@ -274,6 +278,12 @@ POWERSHELL_DESTRUCTIVE = [
     "Get-ChildItem build | ForEach-Object { Remove-Item $_ -Recurse -Force }",
     "gci build | % {ri $_ -r -fo}",
     "try { Remove-Item src -Recurse } catch {}",
+    # KAN-493 review: cmd.exe's line is judged with its own deletes, and git's global
+    # options don't hide the subcommand.
+    "cmd /c del /s /q src",
+    "& cmd.exe /C RD /S /Q build",
+    "C:\\Windows\\System32\\cmd.exe /c erase notes.txt",
+    "git -C repo reset --hard",
 ]
 
 
@@ -302,6 +312,9 @@ def test_powershell_destructive_command_is_denied(tmp_path, mode, command):
         "Get-ChildItem | Where-Object { $_.Length -gt 1kb }",
         "$h = @{a = 1}; Write-Host ${env:PATH}",
         "Write-Host 'Remove-Item { x }'",
+        "cmd /c dir",
+        'cmd /c echo "don\'t"',
+        "git -C repo status",
     ],
 )
 def test_ordinary_powershell_command_is_allowed(tmp_path, command):
@@ -327,6 +340,54 @@ def test_ordinary_powershell_command_is_allowed(tmp_path, command):
 )
 def test_bash_names_programs_by_their_name(command, category):
     assert hook_shim.classify_shell("Bash", command) == category
+
+
+@pytest.mark.parametrize("tool", ["Bash", "PowerShell"])
+@pytest.mark.parametrize(
+    "command, category",
+    [
+        # KAN-493 review: the line cmd /c runs is judged as cmd.exe reads it.
+        ("cmd /c del foo", "destructive"),
+        ("cmd.exe /c rd /s /q build", "destructive"),
+        ("cmd /c erase notes.txt", "destructive"),
+        ("cmd /c rmdir build", "destructive"),
+        ("cmd /c rm -rf build", "destructive"),
+        ("CMD /C DEL foo", "destructive"),
+        ('cmd /c "del /q foo"', "destructive"),
+        ('cmd /c"del foo"', "destructive"),
+        ("cmd /s /q /c del foo", "destructive"),
+        ("cmd /k del foo", "destructive"),
+        ("cmd //c del foo", "destructive"),
+        ("cmd /c d^el foo", "destructive"),
+        ('cmd /c "dir && del foo"', "destructive"),
+        ('cmd /c "echo a & git reset --hard"', "destructive"),
+        ("cmd /c cmd /c del foo", "destructive"),
+        ("cmd /c git push --force", "destructive"),
+        ("cmd /c git push origin main", "bound-operation"),
+        ("cmd /c dir", "ordinary"),
+        ('cmd /c echo "don\'t"', "ordinary"),
+        ("cmd /c type notes.txt", "ordinary"),
+        ("cmd", "ordinary"),
+        ("cmd del foo", "ordinary"),
+        # git's global options come before its subcommand; skipping them finds it.
+        ("git -C repo reset --hard", "destructive"),
+        ("git -c core.pager=less reset --hard", "destructive"),
+        ("git --git-dir=.git reset --hard", "destructive"),
+        ("git --git-dir .git --work-tree . clean -fd", "destructive"),
+        ("git --no-pager -P -C repo push --force origin main", "destructive"),
+        ("git -C repo push --delete origin x", "destructive"),
+        ("git --no-pager push origin main", "bound-operation"),
+        ("git -c push.default=current push", "bound-operation"),
+        # A push in another repository keeps the unsupported verdict it had.
+        ("git -C repo push origin main", "unsupported"),
+        ("git --git-dir=other/.git push", "unsupported"),
+        ("git -C repo status", "ordinary"),
+        ("git -c color.ui=never log -1", "ordinary"),
+        ("git -C repo", "ordinary"),
+    ],
+)
+def test_cmd_lines_and_git_global_options_are_judged(tool, command, category):
+    assert hook_shim.classify_shell(tool, command) == category
 
 
 @pytest.mark.parametrize("mode", MODES)

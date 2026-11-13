@@ -13,7 +13,7 @@
   ],
   "license": "MIT",
   "metadata": {
-    "content_digest": "sha256:d14b8fc7789a269e1a592083da54bdd01ca631e6ac659e8a4d4e4d1e757d9770",
+    "content_digest": "sha256:ba61d5019beffec355f10c3a6e81e3f66215d68c0bf174e9ba23e0d0aafb9ffd",
     "source": "Sean-Koval/ai-dlc/plugins/ai-dlc-workflow"
   },
   "name": "ai-dlc-workflow",
