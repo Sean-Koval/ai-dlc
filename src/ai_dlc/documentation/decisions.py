@@ -1,14 +1,16 @@
 """Shape checks for decision records in ``docs/decisions/``.
 
-A decision with knowledge-note frontmatter is validated against the shared schema;
-its ``checks:`` entries are validated for shape only (flightdeck evaluates them).
+A decision with knowledge-record frontmatter (``type: decision``) is validated against
+the record contract. Knowledge-note frontmatter (``kind: decision``) is still read,
+with a deprecation warning, until KAN-453 removes it (ADR 0005). ``checks:`` entries
+are validated for shape only (flightdeck evaluates them).
 An accepted decision's body is never edited: it is superseded by a new record.
 """
 
 import re
 from pathlib import Path
 
-from ai_dlc.documentation import knowledge_notes
+from ai_dlc.documentation import knowledge_migrate, knowledge_notes, knowledge_records
 from ai_dlc.files import run_git
 
 FILENAME = re.compile(r"^\d{4}-[a-z0-9][a-z0-9-]*\.md$")
@@ -29,6 +31,20 @@ def _committed(root: Path, relative: str) -> str | None:
 
 def _normalized(body: str) -> str:
     return "\n".join(line.rstrip() for line in body.strip().splitlines())
+
+
+def _problems(data: dict, stem: str) -> tuple[list[str], str]:
+    """Schema problems and the expected id, for either frontmatter shape."""
+    if knowledge_migrate.is_note(data):
+        problems = knowledge_notes.errors(data)
+        if not problems and data.get("kind") != "decision":
+            problems = ["kind: a decision record needs kind: decision"]
+        return problems, f"decision/{stem}"
+    problems = knowledge_records.errors(data)
+    if not problems and data.get("type") != "decision":
+        problems = ["type: a decision record needs type: decision"]
+    number = stem.split("-", 1)[0]
+    return problems, f"DEC-{number}" if number.isdigit() else data.get("id", "")
 
 
 def decision_findings(root: Path | str) -> list[dict]:
@@ -55,19 +71,21 @@ def decision_findings(root: Path | str) -> list[dict]:
                 _finding(
                     "decision-frontmatter-missing",
                     relative,
-                    "Decision has no knowledge-note frontmatter; it is not validated.",
+                    "Decision has no knowledge-record frontmatter; it is not validated.",
                     "info",
                 )
             )
             continue
-        problems = knowledge_notes.errors(data)
-        if not problems and data.get("kind") != "decision":
-            problems = ["kind: a decision record needs kind: decision"]
+        problems, expected = _problems(data, path.stem)
+        if knowledge_migrate.is_note(data):
+            findings.append(
+                _finding("decision-deprecated", relative, knowledge_migrate.DEPRECATION, "warning")
+            )
         for problem in problems:
             findings.append(_finding("decision-schema", relative, problem, "error"))
-        if not problems and data["id"] != f"decision/{path.stem}":
+        if not problems and data["id"] != expected:
             findings.append(
-                _finding("decision-id", relative, f"id should be decision/{path.stem}.", "warning")
+                _finding("decision-id", relative, f"id should be {expected}.", "warning")
             )
         committed = _committed(root, relative)
         if committed is None:

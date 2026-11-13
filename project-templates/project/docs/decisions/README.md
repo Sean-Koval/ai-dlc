@@ -13,26 +13,30 @@ Options considered, Decision, Consequences and Links.
 
 ## Frontmatter
 
-Each record starts with knowledge-note frontmatter, the same schema learnings use
-(`knowledge-note.schema.json` in the ai-dlc contracts):
+Each record starts with knowledge-record frontmatter
+(`knowledge-record.schema.json` in the ai-dlc contracts):
 
 | Field | Meaning |
 | --- | --- |
-| `id` | `decision/<file name without .md>` |
-| `kind` | `decision` |
+| `id` | `DEC-NNNN`, the file's number |
+| `type` | `decision` |
 | `scope`, `label` | who it applies to (`personal`, `project`, `team`) and its sensitivity (`internal`, `confidential`) |
-| `status` | `proposed`, `accepted`, `superseded` or `rejected` |
-| `sources` | evidence as `{uri, hash}` pairs, such as the pull request and its merge commit |
+| `status` | `proposed`, `accepted`, `rejected` or `superseded` |
+| `date`, `owner` | when it was recorded and who owns it |
+| `sources` | evidence as `{resource, hash}` entries, such as the pull request and its merge commit |
+| `links` | typed links; `{type: supersedes, target: DEC-NNNN}` names a replaced record |
 | `author` | `human:<github-login>`, or `agent:<model>@<digest>` for an agent-drafted record |
 | `confidence` | `low`, `medium` or `high` |
-| `valid_from`, `valid_to`, `review_by` | when it took effect, when it stopped (null while current) and when to look at it again |
-| `supersedes` | ids of the records this one replaces |
+| `valid_from`, `valid_to`, `stale_after` | when it took effect, when it stopped and when to look at it again |
 | `checks` | optional trace checks, described below |
+
+Older records with `kind: decision` frontmatter are still read, with a deprecation
+warning; `ai-dlc knowledge migrate --write` rewrites them.
 
 ## Accepted records are superseded, not edited
 
 Once a record is `accepted`, its body does not change. To change a decision, add a
-new record with `supersedes: [decision/NNNN-old-slug]`, and in the same pull
+new record with a `supersedes` link to `DEC-NNNN`, and in the same pull
 request set the old record to `status: superseded` with a `valid_to` date.
 `ai-dlc docs check` validates the frontmatter of every record that has it and fails
 when the body of an accepted record differs from the committed version unless its

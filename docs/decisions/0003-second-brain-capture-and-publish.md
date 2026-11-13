@@ -1,18 +1,22 @@
 ---
-id: decision/0003-second-brain-capture-and-publish
-kind: decision
+id: DEC-0003
+type: decision
 scope: team
-label: internal
 status: accepted
+date: 2026-11-08
+owner: agent:claude-code
 sources:
-  - uri: https://seanmkoval.atlassian.net/browse/KAN-323
-    hash: jira-issue:10366
-author: agent:claude-code
-confidence: high
+- resource: https://seanmkoval.atlassian.net/browse/KAN-323
+  hash: jira-issue:10366
+links: []
+title: '0003 The second brain: capture note kinds and one Confluence publish op'
+label: internal
 valid_from: 2026-11-08
-valid_to: null
-review_by: 2027-05-08
-supersedes: []
+stale_after: '2027-05-08T00:00:00Z'
+confidence: high
+author: agent:claude-code
+aliases:
+- decision/0003-second-brain-capture-and-publish
 ---
 # 0003 The second brain: capture note kinds and one Confluence publish op
 

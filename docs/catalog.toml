@@ -37,6 +37,13 @@ owner = "repository-maintainers"
 status = "active"
 
 [[documents]]
+id = "decision-0005-knowledge-migration"
+path = "docs/decisions/0005-migrate-knowledge-notes-to-records.md"
+kind = "decision"
+owner = "repository-maintainers"
+status = "active"
+
+[[documents]]
 id = "decision-0006-customer-boundary"
 path = "docs/decisions/0006-customer-boundary-and-promotion.md"
 kind = "decision"
