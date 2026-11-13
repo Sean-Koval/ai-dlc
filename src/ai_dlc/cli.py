@@ -1755,7 +1755,7 @@ def knowledge_why(
     project: Annotated[str | None, typer.Option("--project")] = None,
     json_output: Annotated[bool, typer.Option("--json")] = False,
 ):
-    """Reconstruct a decision: status, supersession both ways, links and quoted evidence.
+    """Reconstruct a decision: status, supersession and retraction, links and quoted evidence.
 
     Reads local records only. Exit 1, with suggestions, when no record has the id.
     """

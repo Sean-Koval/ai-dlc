@@ -14,6 +14,7 @@ from ai_dlc.documentation.knowledge_check import check_records
 from ai_dlc.documentation.knowledge_why import lines, why
 
 FIXTURE = Path(__file__).parent / "fixtures/knowledge_why"
+RETRACTS = Path(__file__).parent / "fixtures/knowledge_retracts"
 QUOTE_MARCH = "CI minutes cost too much; let's build nightly only until the budget resets."
 QUOTE_SEPTEMBER = (
     "Three broken mains this quarter were found a day late. We build every merge again."
@@ -180,3 +181,48 @@ def test_a_refetchable_source_needs_no_quote_and_why_says_where_to_fetch(bundle)
     result = why(bundle, "DEC-0002")
     assert result["evidence"][0]["fetch"] == "https://jira.example.invalid/browse/OPS-12"
     assert "fetch from https://jira.example.invalid/browse/OPS-12" in "\n".join(lines(result))
+
+
+def test_a_retracted_decision_shows_retracted_and_the_decision_retracting_it():
+    """KAN-479: ``retracted_by`` is derived, as the index derives it; the record is unchanged."""
+    original = (RETRACTS / "decisions/DEC-0001.md").read_text()
+
+    result = why(RETRACTS, "git-is-the-system-of-record")
+
+    assert result["record"]["id"] == "DEC-0001"
+    assert result["record"]["status"] == "retracted"
+    assert [entry["id"] for entry in result["retracted_by"]] == ["DEC-0002"]
+    assert "never\ndecided" in result["retracted_by"][0]["reason"]
+    assert result["retracts"] == [] and result["linked"] == []
+    text = "\n".join(lines(result))
+    assert "retracted, date 2026-11-10" in text
+    assert "Retracted by:\n  DEC-0002  Retract DEC-0001, accepted by mistake" in text
+    assert (RETRACTS / "decisions/DEC-0001.md").read_text() == original
+
+
+def test_the_retracting_decision_names_what_it_retracts():
+    result = why(RETRACTS, "DEC-0002")
+
+    assert result["record"]["status"] == "accepted" and result["retracted_by"] == []
+    assert [(entry["id"], entry["status"]) for entry in result["retracts"]] == [
+        ("DEC-0001", "retracted")
+    ]
+    assert "Retracts:\n  DEC-0001" in "\n".join(lines(result))
+
+
+def test_answers_without_a_retraction_do_not_mention_one():
+    result = why(FIXTURE, "DEC-0002")
+
+    assert result["retracts"] == [] and result["retracted_by"] == []
+    assert "Retract" not in "\n".join(lines(result))
+
+
+def test_a_proposed_retraction_changes_nothing(tmp_path):
+    folder = tmp_path / "records"
+    shutil.copytree(RETRACTS, folder)
+    path = folder / "decisions/DEC-0002.md"
+    path.write_text(path.read_text().replace("status: accepted", "status: proposed"))
+
+    result = why(folder, "DEC-0001")
+
+    assert result["record"]["status"] == "accepted" and result["retracted_by"] == []
