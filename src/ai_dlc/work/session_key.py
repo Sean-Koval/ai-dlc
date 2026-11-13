@@ -222,21 +222,47 @@ def collect_into_record(root: Path, work_id: str) -> list[str]:
     return added
 
 
-def start_session(root: Path, branch: str, payload: Mapping, env: Mapping[str, str]) -> str:
-    """Session-start step: derive, export and record the key; return the context line.
+ENV_NAMES = (ENV_KEY, ENV_TRACKER, ENV_WORK, ENV_SESSION)
 
-    A key already in the environment (set by hangar or a parent session) is kept.
+
+def start_session(root: Path, branch: str, payload: Mapping, env: Mapping[str, str]) -> str:
+    """Session-start step: derive, export and log the key; return the context text.
+
+    When the key or any component variable is already set (by hangar, a parent
+    session or anything else), nothing is exported and every value is kept, in
+    whatever format it has. The text carries the key on its own
+    ``Work-Session:`` line so :func:`read_session_keys` finds it in transcripts.
     """
-    key = current_session_key(env)
-    if key is None:
-        session_id = payload.get("session_id")
-        key = derive(root, branch, session_id if isinstance(session_id, str) else None)
-        export_to_client(key, env)
+    if any(name in env for name in ENV_NAMES):
+        existing = env.get(ENV_KEY, "")
+        key = SessionKey.parse(existing)
+        if key is not None:
+            _log_quietly(root, key)
+            return _context(str(key))
+        kept = ", ".join(name for name in ENV_NAMES if name in env)
+        text = f"Session join variables already set ({kept}); kept as they are."
+        if existing.strip() and existing.isprintable() and not any(c.isspace() for c in existing):
+            text += f"\n{TRAILER}: {existing}"
+        return text
+    session_id = payload.get("session_id")
+    key = derive(root, branch, session_id if isinstance(session_id, str) else None)
+    export_to_client(key, env)
+    _log_quietly(root, key)
+    return _context(str(key))
+
+
+def _context(key: str) -> str:
+    return (
+        f"Session join key: {key}. End every commit message with this trailer line:\n"
+        f"{TRAILER}: {key}"
+    )
+
+
+def _log_quietly(root: Path, key: SessionKey) -> None:
     try:
         log_session(root, key)
     except OSError:
         pass  # an unwritable log keeps the key in the environment only
-    return f"Session join key: {key}. End every commit message with the trailer `{key.trailer()}`."
 
 
 def pull_request_session_keys(

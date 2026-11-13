@@ -171,9 +171,10 @@ def test_session_start_hook_includes_the_first_ten_lines(tmp_path, monkeypatch):
     lines = context.splitlines()
     assert lines[0] == "Read AGENTS.md and .ai-dlc/work; run ai-dlc next for the full summary."
     assert lines[1] == "Active work (16 of 17 records; tracker not consulted)"
-    assert len(lines) == 12
+    assert len(lines) == 13
     assert all("in progress" in line for line in lines[2:11])
     assert lines[11].startswith("Session join key: aidlc1:::s1.")
+    assert lines[12] == "Work-Session: aidlc1:::s1"
 
     fallback = handle_hook(tmp_path / "absent", "session-start", {})["context"]
     assert fallback == "Read AGENTS.md and .ai-dlc/work; run ai-dlc next for the full summary."

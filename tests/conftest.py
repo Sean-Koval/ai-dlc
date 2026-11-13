@@ -71,7 +71,13 @@ def pytest_configure(config):
 def isolated_state(tmp_path, monkeypatch):
     monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "state"))
     # A test session-start hook must never append to the running client's env file.
-    for name in ("CLAUDE_ENV_FILE", "AI_DLC_SESSION_KEY"):
+    for name in (
+        "CLAUDE_ENV_FILE",
+        "AI_DLC_SESSION_KEY",
+        "AI_DLC_TRACKER_KEY",
+        "AI_DLC_WORK_ID",
+        "AI_DLC_SESSION_ID",
+    ):
         monkeypatch.delenv(name, raising=False)
 
 

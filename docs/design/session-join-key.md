@@ -22,6 +22,16 @@ Each non-empty part matches `[A-Za-z0-9._-]{1,100}`, so a key never needs
 quoting. An empty part is an empty string between colons, never an error. For
 example, `aidlc1::fix-typo:4f1c` is a session without a ticket.
 
+A whole key matches this regular expression:
+
+```text
+^aidlc1:([A-Za-z0-9._-]{0,100}):([A-Za-z0-9._-]{0,100}):([A-Za-z0-9._-]{0,100})$
+```
+
+In commits, PR bodies and the session-start text, the key sits on its own line as
+`Work-Session: <key>`. The trailer name is case-sensitive: `work-session:` is not
+read. A reader skips a line whose value does not match the expression.
+
 ## Where it comes from
 
 Nobody types it. When an adopted repository starts a session, the workflow
@@ -36,9 +46,13 @@ key in this order:
 4. The hook payload's `session_id` gives the session. A missing or unsafe one is
    replaced with a random hex ID.
 
-A key already in the environment is kept, so a key that hangar or a parent
-session set is not replaced. Inside a hangar sandbox the plugin does not run
-the CLI at all; hangar owns those fields
+If `AI_DLC_SESSION_KEY` or any component variable is already set, the hook
+exports nothing and keeps every value as it is. That holds for any format: an
+unknown prefix such as `aidlc2:`, a malformed value, or components without a key.
+Hangar or a parent session can therefore set its own fields.
+
+Inside a hangar sandbox the plugin does not run the CLI at all; hangar owns
+those fields
 ([KAN-320](https://seanmkoval.atlassian.net/browse/KAN-320)).
 
 ## Where it is written

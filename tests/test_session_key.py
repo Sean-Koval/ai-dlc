@@ -95,6 +95,7 @@ def test_session_start_exports_records_and_joins_commit_and_pr(tmp_path, monkeyp
 
     expected = "aidlc1:KAN-7:kan-7-join:sess-1"
     assert f"Session join key: {expected}." in context
+    assert read_session_keys(context) == [SessionKey.parse(expected)]
     exported = env_file.read_text()
     assert f"export AI_DLC_SESSION_KEY={expected}\n" in exported
     assert "export AI_DLC_TRACKER_KEY=KAN-7\n" in exported
@@ -183,6 +184,7 @@ def test_session_without_ticket_gets_empty_tracker_part(tmp_path, monkeypatch):
     context = handle_hook(root, "session-start", {"session_id": "s2"})["context"]
 
     assert "Session join key: aidlc1::untracked:s2." in context
+    assert "\nWork-Session: aidlc1::untracked:s2" in context
     assert "export AI_DLC_TRACKER_KEY=''\n" in env_file.read_text()
 
 
@@ -198,7 +200,39 @@ def test_existing_key_is_kept_and_not_reexported(tmp_path, monkeypatch):
     context = handle_hook(root, "session-start", {"session_id": "s3"})["context"]
 
     assert "Session join key: aidlc1:KAN-9:elsewhere:hangar-job." in context
+    assert read_session_keys(context) == [SessionKey("KAN-9", "elsewhere", "hangar-job")]
     assert not env_file.exists()
+
+
+@pytest.mark.parametrize(
+    "values",
+    [
+        {ENV_KEY: "aidlc2:KAN-9:w:s:extra"},
+        {ENV_KEY: "aidlc1:KAN 9:broken"},
+        {"AI_DLC_TRACKER_KEY": "KAN-9", "AI_DLC_WORK_ID": "w"},
+        {"AI_DLC_SESSION_ID": ""},
+    ],
+    ids=["unknown-prefix", "malformed", "components-only", "empty-component"],
+)
+def test_any_preset_variable_blocks_export_and_is_preserved(tmp_path, monkeypatch, values):
+    from ai_dlc.harness.hooks import handle_hook
+
+    root = tmp_path / "project"
+    initialize_hook_project(root, None)
+    write_work_record(root, "kan-9", artifacts={"branch": "topic", "tracker": "KAN-9"})
+    env_file = tmp_path / "claude.env"
+    monkeypatch.setenv("CLAUDE_ENV_FILE", str(env_file))
+    for name, value in values.items():
+        monkeypatch.setenv(name, value)
+
+    context = handle_hook(root, "session-start", {"session_id": "s4"})["context"]
+
+    assert not env_file.exists()
+    assert not (root / ".ai-dlc/local/sessions").exists()
+    assert "kept as they are" in context
+    assert read_session_keys(context) == []
+    if values.get(ENV_KEY, "").startswith("aidlc2:"):
+        assert "\nWork-Session: aidlc2:KAN-9:w:s:extra" in context
 
 
 def test_work_record_rejects_malformed_session_and_omits_empty_list():
