@@ -95,7 +95,7 @@
         "src/ai_dlc/documentation/knowledge_records.py": "8b1d3c83c2ace754e5ef2de8aa53f06edd76fdbbacfa1d47a28df1ba788449e1",
         "src/ai_dlc/documentation/knowledge_render.py": "222aaf70d097b8403588788e0f7ce6c4ac92288a8a407d2d4baaa998a9fa76e2",
         "src/ai_dlc/documentation/knowledge_service.py": "786336917e717b12353ec4143339ce3141a9c1d8110192e24288294eb17371a9",
-        "src/ai_dlc/documentation/knowledge_transcripts.py": "f81fa4d2795b2391a65f176c0a1353ae34a641e653c763d3206bbeb04ca05f6e",
+        "src/ai_dlc/documentation/knowledge_transcripts.py": "9a4d31db5c10f2ae4af139d7b0ae91ddf3c49aa41bf75599a5eba30c03cdeb92",
         "src/ai_dlc/documentation/knowledge_why.py": "0b54e31d7727eda9e20b2f08115bc221712673a7b541791afbaacfe4cd592ea0",
         "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
         "src/ai_dlc/documentation/learnings.py": "5a11c64592e1c7b93bfa3543339ea0766f42050a7843bb8354cd56166b0f3ae6",
@@ -256,14 +256,14 @@
       "bound": {
         "catalog:docs/design/meeting-transcripts.md": "eff04c1c5871ccddf3577bc8c21ca296fcb00ab96b35aab90e54af5ecbbe1665",
         "docs/design/meeting-transcripts.md": "604f9a99096ffa5be0105c1a9209ce2dbe76b79285bcd8bf5da0ab3e237696ff",
-        "src/ai_dlc/documentation/knowledge_transcripts.py": "f81fa4d2795b2391a65f176c0a1353ae34a641e653c763d3206bbeb04ca05f6e",
+        "src/ai_dlc/documentation/knowledge_transcripts.py": "9a4d31db5c10f2ae4af139d7b0ae91ddf3c49aa41bf75599a5eba30c03cdeb92",
         "src/ai_dlc/providers/google_meet.py": "5139524a2272fe768eabb40cf8e5a063db6e843e12640a02aa14b0d743ee4579",
         "src/ai_dlc/providers/transcripts_common.py": "9903072a350e27535ebae16f2ca7592c7399beddc6087538ba251aefd04c8de3",
         "src/ai_dlc/providers/zoom.py": "21cd47dc3650e5156d07c6cd9a7b010c53a1aa9dc5e61d9d808b324d9da1efee",
-        "tests/test_transcripts.py": "29bd158bc2af5e82cf34742c5ec36e82365cd1ba732eb086d972fd7590349381"
+        "tests/test_transcripts.py": "3ef139a5b4219df135caac01f65969ac7181379065ead6f123fa323147485a53"
       },
-      "outcome": "updated",
-      "reason": "States how internal entries match (exact address, domain and subdomains, exact names) and that pull output names a customer meeting by provider and id only (KAN-475 review).",
+      "outcome": "reviewed-no-change",
+      "reason": "It already says pull output names a customer meeting by provider and id only; provider error text for a customer meeting is now withheld too, which that sentence covers.",
       "reviewer": "Claude (agent)",
       "target": "docs/design/meeting-transcripts.md"
     },

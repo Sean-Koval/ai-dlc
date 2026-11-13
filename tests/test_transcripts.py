@@ -20,6 +20,7 @@ from ai_dlc.contracts import manifest, validate_response
 from ai_dlc.documentation import knowledge_records as records
 from ai_dlc.documentation.knowledge_check import check_records
 from ai_dlc.documentation.knowledge_transcripts import TranscriptPull, parse_since, route
+from ai_dlc.errors import UncertainError
 from ai_dlc.providers import Registry, transcripts_common
 from ai_dlc.providers.google_meet import GoogleMeet, parse
 from ai_dlc.providers.transcripts_common import (
@@ -485,6 +486,26 @@ def test_a_customer_transcript_reaches_only_its_own_repository(tmp_path):
     assert (alpha / written["Qx9YzZalpha=="]["record"]).is_file()
     for repo in (root, beta):
         assert not any("Qx9YzZalpha" in p.read_text() for p in repo.rglob("*") if p.is_file())
+
+
+@pytest.mark.parametrize("error", [TranscriptUnavailable, UncertainError])
+def test_a_provider_message_about_a_customer_meeting_is_not_repeated(tmp_path, error):
+    root = knowledge_repo(tmp_path, ALPHA)
+    _alpha, environ = customer_env(tmp_path)
+    reg = registry(FakeZoom(), FakeDrive())
+    invoke = reg.invoke
+
+    def failing(provider, operation, arguments):
+        if operation == "fetch" and "alpha" in arguments["id"]:
+            raise error("Alpha cutover sync: transcript gone")
+        return invoke(provider, operation, arguments)
+
+    reg.invoke = failing
+    result = TranscriptPull(
+        tmp_path, CONFIG, providers=["zoom"], into=root, registry=reg, environ=environ
+    ).pull("2026-11-01")
+    assert "cutover" not in json.dumps(result)
+    assert any(e["id"] == "Qx9YzZalpha==" for e in result["skipped"] + result["errors"])
 
 
 def test_unmapped_customer_meeting_goes_to_no_repository(tmp_path):

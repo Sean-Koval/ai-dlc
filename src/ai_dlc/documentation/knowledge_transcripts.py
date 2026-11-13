@@ -424,11 +424,16 @@ class TranscriptPull:
                     continue
                 try:
                     transcript = self.registry.invoke(provider, "fetch", {"id": item["id"]})
+                # A provider's message may quote the meeting; a customer's never leaves.
                 except TranscriptUnavailable as exc:
-                    result["skipped"].append({**entry, "reason": str(exc)})
+                    reason = "the provider has no transcript for it" if customer else str(exc)
+                    result["skipped"].append({**entry, "reason": reason})
                     continue
                 except UncertainError as exc:
-                    result["errors"].append({**entry, "reason": str(exc)})
+                    reason = (
+                        "the provider fetch failed; run the pull again" if customer else str(exc)
+                    )
+                    result["errors"].append({**entry, "reason": reason})
                     continue
                 # The fetched participants may add speakers; the route must not change.
                 if target({**item, **transcript}) != routed:
