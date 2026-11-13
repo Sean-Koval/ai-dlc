@@ -416,8 +416,20 @@ class ConfluenceCloud:
         missing = [{"prefix": "global", "name": name} for name in wanted if name not in have]
         if missing:
             self._request("POST", f"rest/api/content/{page_id}/label", body=missing)
-        value = {"key": key, "rendered_version": version, "properties": dict(properties or {})}
         prop = self._property(page_id)
+        # Drop labels an earlier render wrote and this one does not, such as an old
+        # status; a label someone else added is left alone. A page rendered before
+        # the property recorded its labels treats every label as rendered.
+        recorded = ((prop or {}).get("value") or {}).get("labels")
+        earlier = recorded if isinstance(recorded, list) else (have if prop else [])
+        for name in sorted(set(earlier) & have - set(wanted)):
+            self._request("DELETE", f"rest/api/content/{page_id}/label", params={"name": name})
+        value = {
+            "key": key,
+            "rendered_version": version,
+            "properties": dict(properties or {}),
+            "labels": wanted,
+        }
         if prop is None:
             self._request(
                 "POST", f"api/v2/pages/{page_id}/properties", body={"key": PROPERTY, "value": value}
