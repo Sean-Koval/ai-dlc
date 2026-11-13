@@ -8,13 +8,14 @@
 #       with:
 #         records: records
 #       secrets:
-#         token: ${{ secrets.KNOWLEDGE_BOT_TOKEN }}
+#         token: ${{ secrets.KNOWLEDGE_APP_TOKEN }}
 #
 # It numbers slug-id records (DEC-0001 and so on), rewrites every link to them and
 # regenerates the OKF index.md files, as one commit on the branch `knowledge-number`.
-# It opens one pull request from that branch, or updates the open one, and turns on
-# auto-merge (squash), so the commit lands once the required checks, including
-# `knowledge check`, pass. Main stays protected: no workflow pushes to it.
+# It opens one pull request from that branch, or updates the open one. No workflow
+# pushes to main. By default the pull request waits for a person to merge it, since
+# spec section 10 allows no automatic merges for 1.0. `auto-merge: true` turns on
+# squash auto-merge; that is an explicit exception the repository owner decides.
 #
 # Collision safety: only this workflow writes numbered ids, its runs share one
 # concurrency group, and each run recomputes from the tip of main and force-pushes
@@ -23,10 +24,9 @@
 # pull request waits keeps its slug until the next run, which starts when the
 # numbering pull request merges.
 #
-# The token must be a GitHub App installation token or a fine-grained token with
-# contents and pull-requests write. A pull request opened with GITHUB_TOKEN starts
-# no checks, so its auto-merge would wait forever. The repository must allow
-# auto-merge and squash merging (see contracts/README.md).
+# The token must be a GitHub App installation token; the App is the bypass actor
+# for the numbering branch. A pull request opened with GITHUB_TOKEN starts no
+# checks. See contracts/README.md for the repository settings.
 name: Knowledge merge
 on:
   workflow_call:
@@ -47,9 +47,13 @@ on:
         description: ai-dlc git ref to install; pin a tag or commit for repeatable runs.
         type: string
         default: main
+      auto-merge:
+        description: Turn on squash auto-merge for the numbering pull request (an owner's exception).
+        type: boolean
+        default: false
     secrets:
       token:
-        description: App or fine-grained token with contents and pull-requests write.
+        description: GitHub App installation token with contents and pull-requests write.
         required: true
 permissions:
   contents: read
@@ -92,6 +96,7 @@ jobs:
       - name: Open or update the numbering pull request
         env:
           RECORDS: ${{ inputs.records }}
+          AUTO_MERGE: ${{ inputs.auto-merge }}
         run: |
           open=$(gh pr list --head "$NUMBERING" --base "$BRANCH" --state open \
             --json number --jq '.[0].number // empty')
@@ -115,4 +120,8 @@ jobs:
             open=$(gh pr list --head "$NUMBERING" --base "$BRANCH" --state open \
               --json number --jq '.[0].number')
           fi
-          gh pr merge "$open" --auto --squash
+          if [ "$AUTO_MERGE" = "true" ]; then
+            gh pr merge "$open" --auto --squash
+          else
+            echo "Numbering pull request #$open waits for a person to merge it."
+          fi

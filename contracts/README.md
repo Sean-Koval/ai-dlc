@@ -29,18 +29,23 @@ next number for its type, keeps the slug in `aliases` and rewrites links to it.
 `ai-dlc knowledge index` then writes OKF `index.md` files and derives `superseded_by`.
 Knowledge repositories run both through `.github/workflows/knowledge-merge.yml` on
 push to main. Main stays protected: the workflow opens or updates one pull request
-from `knowledge-number` and turns on squash auto-merge, so it lands once the required
-checks pass. Each run recomputes from the tip of main, so numbers never collide.
-The knowledge repository needs these settings:
+from `knowledge-number`, and a person merges it. Each run recomputes from the tip of
+main, so numbers never collide. The knowledge repository needs these settings:
 
-- Settings > General > Pull Requests: "Allow auto-merge" on, and "Allow squash
-  merging" on (linear history needs squash or rebase).
-- Branch protection or ruleset on main: require a pull request and the
-  `knowledge check` status check. Required approvals must be 0, or the token's app
-  must be a bypass actor; otherwise auto-merge waits for a review.
-- A secret passed as `token`: a GitHub App installation token or fine-grained token
-  with Contents and Pull requests write. A pull request opened with `GITHUB_TOKEN`
-  starts no checks, so it would never auto-merge.
+- A GitHub App installed on the repository with Contents and Pull requests write.
+  Pass its installation token as the `token` secret. A pull request opened with
+  `GITHUB_TOKEN` starts no checks.
+- A ruleset on main that requires a pull request, an approving review and the
+  `knowledge check` status check, with the App as the only bypass actor. Personal
+  tokens and zero-approval rules are not supported.
+- "Require branches to be up to date before merging" on. Otherwise two record pull
+  requests that add the same slug can both merge, and numbering then stops.
+- "Allow squash merging" on, since main requires linear history.
+
+Automatic merging is off: spec section 10 allows no automatic merges for 1.0. The
+`auto-merge: true` input turns on squash auto-merge for the numbering pull request
+only; it also needs "Allow auto-merge". Use it only as an explicit exception that
+the repository owner decides.
 Completion is a service operation: callers must use `WorkService.finish`.
 The public `Registry.invoke` refuses terminal tracker transitions and the optional
 terminal planning reconciliation operation `reconcile_closed`.

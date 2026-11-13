@@ -322,7 +322,14 @@ def test_reusable_workflow_serializes_numbering():
     path = Path(__file__).resolve().parents[1] / ".github/workflows/knowledge-merge.yml"
     workflow = yaml.safe_load(path.read_text())
     called = workflow[True]["workflow_call"]
-    assert set(called["inputs"]) == {"records", "branch", "numbering-branch", "ai-dlc-ref"}
+    assert set(called["inputs"]) == {
+        "records",
+        "branch",
+        "numbering-branch",
+        "ai-dlc-ref",
+        "auto-merge",
+    }
+    assert called["inputs"]["auto-merge"]["default"] is False
     assert called["secrets"]["token"]["required"] is True
     assert workflow["permissions"] == {"contents": "read"}
     job = workflow["jobs"]["number"]
@@ -331,5 +338,56 @@ def test_reusable_workflow_serializes_numbering():
     assert script.index("knowledge number") < script.index("knowledge index")
     assert "--check" in script
     assert 'push --force origin "HEAD:refs/heads/$NUMBERING"' in script
-    assert "gh pr merge" in script and "--auto --squash" in script
+    gate = script.index('if [ "$AUTO_MERGE" = "true" ]; then')
+    assert gate < script.index('gh pr merge "$open" --auto --squash') < script.index("else", gate)
     assert "HEAD:$BRANCH" not in script
+
+
+def test_numbering_pr_passes_check_for_an_accepted_supersedes_link(tmp_path):
+    """Review repro on #260: accepted release-on-merge supersedes weekly-train, both slugs."""
+    folder = tmp_path / "kb"
+    folder.mkdir()
+    git(folder, "init", "-q", "-b", "main")
+    (folder / "knowledge.toml").write_text("[format]\nversion = 1\n")
+    old = write(folder, "decisions/weekly-train.md", "decision", "weekly-train")
+    old.write_text(
+        old.read_text()
+        .replace("status: accepted", "status: superseded")
+        .replace("links: []", "links: []\nvalid_to: 2026-11-12")
+    )
+    write(
+        folder,
+        "decisions/release-on-merge.md",
+        "decision",
+        "release-on-merge",
+        extra="links:\n  - {type: supersedes, target: weekly-train}",
+    )
+    git(folder, "add", "-A")
+    git(folder, "commit", "-qm", "base")
+    git(folder, "checkout", "-q", "-b", "knowledge-number")
+    merge_step(folder)
+    numbered = bundle(folder)
+    successor = next(r for r in numbered.values() if r.aliases == ["release-on-merge"])
+    assert successor.links[0].target in {r.id for r in numbered.values()}
+    assert check_records(folder, base="main")["failures"] == []
+
+
+def test_check_still_refuses_other_link_edits_to_an_accepted_decision(tmp_path):
+    folder = tmp_path / "kb"
+    folder.mkdir()
+    git(folder, "init", "-q", "-b", "main")
+    (folder / "knowledge.toml").write_text("[format]\nversion = 1\n")
+    write(folder, "decisions/DEC-0001.md", "decision", "DEC-0001")
+    write(
+        folder, "decisions/DEC-0002.md", "decision", "DEC-0002", extra="links: []\naliases: [two]"
+    )
+    path = write(folder, "lessons/LES-0001.md", "lesson", "LES-0001")
+    git(folder, "add", "-A")
+    git(folder, "commit", "-qm", "base")
+    accepted = folder / "decisions/DEC-0001.md"
+    accepted.write_text(
+        accepted.read_text().replace("links: []", "links:\n  - {type: implements, target: two}")
+    )
+    assert path.exists()
+    failures = check_records(folder, base="HEAD")["failures"]
+    assert [f["pointer"] for f in failures] == ["/links"]
