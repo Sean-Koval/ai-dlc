@@ -714,6 +714,36 @@ def test_a_customer_record_renamed_without_its_boundary_still_hides_the_pull_req
     assert "Alpha Corp" not in json.dumps(result)
 
 
+def test_a_first_commit_without_a_readable_parent_lists_no_title(tmp_path):
+    # As in a shallow clone: the first commit's own files can't be listed, so a customer
+    # record deleted in review can't be ruled out, and the title stays unlisted.
+    repo = Repo(tmp_path / "knowledge")
+    repo.git("checkout", "-q", "-b", "pr1")
+    repo.write("records/knowledge.toml", "[format]\nversion = 1\n")
+    path = "records/lessons/les-c.md"
+    customer = "boundary: customer\nproject: alpha\n"
+    repo.write(path, record("les-c", "lesson", "open", "2026-11-04", "sean", extra=customer))
+    first = repo.commit("extract")  # a root commit: it has no parent
+    (repo.top / path).unlink()
+    kept = "records/lessons/les-t.md"
+    repo.write(kept, record("les-t", "lesson", "open", "2026-11-04", "sean"))
+    merge = repo.commit("review")
+    pr = {
+        "number": 1,
+        "title": "Alpha Corp call",
+        "state": "merged",
+        "created_at": "2026-11-04T00:00:00Z",
+        "merged_at": "2026-11-04T05:00:00Z",
+        "files": [kept],
+        "first_commit": first,
+        "merge_commit": merge,
+    }
+    result = stats(repo.top / "records", SINCE, now=NOW, pull_requests=lambda since: [pr])
+    assert [row["title"] for row in result["review"]["by_pull_request"]] == [None]
+    assert result["review"]["unmeasured"] == [1]
+    assert "Alpha Corp" not in json.dumps(result)
+
+
 def test_a_boundary_the_reviewer_adds_before_merge_hides_the_pull_request(tmp_path):
     repo = Repo(tmp_path / "knowledge")
     repo.write("records/knowledge.toml", "[format]\nversion = 1\n")

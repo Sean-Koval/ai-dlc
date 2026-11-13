@@ -138,7 +138,7 @@
         "src/ai_dlc/documentation/knowledge_records.py": "8b1d3c83c2ace754e5ef2de8aa53f06edd76fdbbacfa1d47a28df1ba788449e1",
         "src/ai_dlc/documentation/knowledge_render.py": "b02c1de41522bfb0bd0ed1dd663fcc2f662b28c11796bd956d3572cedccd91d3",
         "src/ai_dlc/documentation/knowledge_service.py": "786336917e717b12353ec4143339ce3141a9c1d8110192e24288294eb17371a9",
-        "src/ai_dlc/documentation/knowledge_stats.py": "676af75a4dbf49881a9ec4629e391af5653f3b4b50b2bd7ca3318c76c4f41369",
+        "src/ai_dlc/documentation/knowledge_stats.py": "60d16fe6a9bc77804d9cf4ec2c99aae3bf06c35b29e53558aca94eb139cb9112",
         "src/ai_dlc/documentation/knowledge_transcripts.py": "37f2a62e16e943e100176d0e8a27087c0e0ad9d95f639b053c6b3a84df5af3ec",
         "src/ai_dlc/documentation/knowledge_why.py": "0b54e31d7727eda9e20b2f08115bc221712673a7b541791afbaacfe4cd592ea0",
         "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
@@ -451,7 +451,7 @@
     },
     {
       "bound": {
-        "tests/test_knowledge_stats.py": "19425d2b0b3c6f4aea672ad1477e471ad5847b95d380c7a62346d4b02b566f75"
+        "tests/test_knowledge_stats.py": "226e44382d31b0f009fd86b7da3f6bca8a0e1eda02001dc84ca6b2f15b7cb632"
       },
       "outcome": "updated",
       "reason": "Hand-counted fixture repo, fake scm and tracker, a JSONL run log outside the repo; covers every metric, unknown usage, bad logs, unchecked and reviewer-marked customer PRs, file paging, the workflow's tokens, the CLI and the GitHub adapter, and a squash merge judged by its own records.",

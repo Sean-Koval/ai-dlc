@@ -339,14 +339,19 @@ def _hidden(repo: Path | None, pr: dict[str, Any], prefix: str, project: str | N
     had them and, once merged, as the merge has them, so a reviewer's later boundary
     counts, and one the reviewer deleted or renamed away still does. Only the pull
     request's own commits and files are read, however it was merged. ``None`` when
-    those commits are not fetched: the boundary is unknown.
+    those commits, or the first commit's parent, are not fetched: the boundary is
+    unknown.
     """
     paths = [path for path in pr.get("files", []) if _is_record_path(path, prefix)]
     if any(project_of(path[len(prefix) :]) not in (None, project) for path in paths):
         return True
     first, merge = pr.get("first_commit"), pr.get("merge_commit")
-    if not _has(repo, first) or (pr.get("state") == "merged" and not _has(repo, merge)):
-        return None
+    if (
+        not _has(repo, first)
+        or not _has(repo, f"{first}^")
+        or (pr.get("state") == "merged" and not _has(repo, merge))
+    ):
+        return None  # the first commit's own files can't be read, as in a shallow clone
     assert repo is not None and first is not None
     # The first commit as it was: the final file list misses a record the reviewer
     # deleted or renamed. ``first^..first`` is the pull request's own commit, so a
