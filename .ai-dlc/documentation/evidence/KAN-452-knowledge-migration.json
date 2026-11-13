@@ -2,10 +2,10 @@
   "decisions": [
     {
       "bound": {
-        "CHANGELOG.md": "56e389d0f9b10127c0098c7eedaf88654de792149d47ce3b412e062c46c8ddf9"
+        "CHANGELOG.md": "4364e420429450cd5eec5ab9ecfb497eb3169e1ead4c1ef9c794f8b2ca52234d"
       },
       "outcome": "updated",
-      "reason": "Added knowledge migrate and the deprecation of knowledge-note frontmatter (KAN-452). Re-reviewed after merging main (KAN-456).",
+      "reason": "Added knowledge migrate and the deprecation of knowledge-note frontmatter (KAN-452). Re-reviewed: specs now describe records; removal is the release after 1.0.",
       "reviewer": "Claude (agent)",
       "target": "CHANGELOG.md"
     },
@@ -80,7 +80,7 @@
         "src/ai_dlc/documentation/knowledge.py": "856dd1db28c0de4dfe8c95dc054a12a2b570fe388ddda5253a484635fe3eddae",
         "src/ai_dlc/documentation/knowledge_bundle.py": "9bd34913ba68b77a9c77799ffaefe9e6aebbb4eac36ed684fc6cf5bade14fd74",
         "src/ai_dlc/documentation/knowledge_check.py": "5d909c480c94108c0257f53ac96311d586b908c557238c2a021dfc30c5b0e6e0",
-        "src/ai_dlc/documentation/knowledge_migrate.py": "b36fb256ba36499773a5b1c8deab08e10d1ae9f49c7cdb2b9cee72a9368b4853",
+        "src/ai_dlc/documentation/knowledge_migrate.py": "d175c93f3bb4ec677cbf5c9c87af6a0fff1c125b52fa6c2c7f9ebb5d7ed44c38",
         "src/ai_dlc/documentation/knowledge_notes.py": "543b6fb0fa395321c55cb616c29d2f4a2bb218aca5576a3b8993353fb16e840d",
         "src/ai_dlc/documentation/knowledge_publish.py": "82cd0551bee5bf4206b17d437c48798175e27f40e3ea4b22bddc6f19ac69c643",
         "src/ai_dlc/documentation/knowledge_records.py": "7375dc057809c2ca3fbc75239ca53fb3484d2459ec59d194c7ad2d6090918bf6",
@@ -173,9 +173,27 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Module table names documentation/ at package level; the new migration module needs no new row. Re-reviewed after merging main (KAN-456).",
+      "reason": "Module table names documentation/ at package level; the new migration module needs no new row. Re-reviewed: specs now describe records; removal is the release after 1.0.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.cast": "3e806107a1019a5c4cf08823c75c3eb9809f39cd47bb54a029b0373e9e1e5b69"
+      },
+      "outcome": "updated",
+      "reason": "Rebuilt with docs/assets/front/build.py; only commit hashes changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.cast"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.svg": "df4e339fa415364e92e180982fcfa5463893d2ff7429be606cab7ec9e1395779"
+      },
+      "outcome": "updated",
+      "reason": "Rebuilt with docs/assets/front/build.py alongside work.cast.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.svg"
     },
     {
       "bound": {
@@ -229,10 +247,10 @@
     {
       "bound": {
         "catalog:docs/decisions/0005-migrate-knowledge-notes-to-records.md": "2883cf1b84137022d3a9b23824268bd3f1cd697d90cf13e430ddaca710398a39",
-        "docs/decisions/0005-migrate-knowledge-notes-to-records.md": "4039388fc46051514c24be12c6f40573ad96eff11ff41b8de3282c4054a4e998"
+        "docs/decisions/0005-migrate-knowledge-notes-to-records.md": "c4b47ae5d878430f6c19f09e269c29906742b3fd07b70a14f74ff05036a96a6a"
       },
       "outcome": "updated",
-      "reason": "New ADR recording the note-to-record mapping, dual readers and reversibility (KAN-452).",
+      "reason": "New ADR recording the note-to-record mapping, dual readers and reversibility (KAN-452). Re-reviewed: specs now describe records; removal is the release after 1.0.",
       "reviewer": "Claude (agent)",
       "target": "docs/decisions/0005-migrate-knowledge-notes-to-records.md"
     },
@@ -242,9 +260,9 @@
         "catalog:docs/design/local-and-shared-knowledge.md": "3792ce6463f181e5d2345e4ae2c724561e1750d6e76a62324dc801da767260a5",
         "contracts/knowledge-note.schema.json": "f3cbc791e2caae2223bf223e8b27b5b7ce553405b76f32cf5689fa7fe68bb1a5",
         "contracts/knowledge-record.schema.json": "0a7633d88024a668140a6d658f09f5d11bf7e26b8ff09368abd82d17ddcd9bd7",
-        "docs/design/local-and-shared-knowledge.md": "364caec11f5d7831150b19318c28ae79c35bef10b5976aa0b2acc28cd06b73c8",
+        "docs/design/local-and-shared-knowledge.md": "28bd1c0c431ba5e60c3898f5610cad99ed555e32ae820a4a0a85942790ccb3f4",
         "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
-        "openspec/specs/session-learnings/spec.md": "dcd490cd54f2f6cb3fadaa90afade85d5e1d64b19fbe2accb70bfb06897e97b4",
+        "openspec/specs/session-learnings/spec.md": "6320178e67f7957b25c11850773a631258bc13e5812cbcdb88c126434ba3aaf4",
         "src/ai_dlc/documentation/knowledge.py": "856dd1db28c0de4dfe8c95dc054a12a2b570fe388ddda5253a484635fe3eddae",
         "src/ai_dlc/documentation/knowledge_bundle.py": "9bd34913ba68b77a9c77799ffaefe9e6aebbb4eac36ed684fc6cf5bade14fd74",
         "src/ai_dlc/documentation/knowledge_check.py": "5d909c480c94108c0257f53ac96311d586b908c557238c2a021dfc30c5b0e6e0",
@@ -266,7 +284,7 @@
         "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
       },
       "outcome": "updated",
-      "reason": "Learning example, generated fields, check --vault and recall output now describe lesson records. Re-reviewed after merging main (KAN-456).",
+      "reason": "Learning example, generated fields, check --vault and recall output now describe lesson records. Re-reviewed: specs now describe records; removal is the release after 1.0.",
       "reviewer": "Claude (agent)",
       "target": "docs/design/local-and-shared-knowledge.md"
     },
@@ -275,23 +293,23 @@
         "agents/templates/adr.md": "89fba3089d5bf0e452cfe16d0315495dbdac8310eaedc2f202260b9910854c53",
         "catalog:docs/design/project-documentation.md": "673bbd060693b1f73bda80eaa35578edbf2bf393bc0c610a61796e05a1755356",
         "docs/design/project-documentation.md": "63911e2e3404532309698cae1cbb033469cbc2ebc44a8de900fce9e0247c4475",
-        "openspec/specs/decision-records/spec.md": "035d91c4d079fe3b26fc66f0c6ef6085205c7afc7cb13d25d5d67758728d034c",
+        "openspec/specs/decision-records/spec.md": "ae948a29a5a3dcdd3011b6a4ab174181a5f236eff659af944209dd1b23576260",
         "project-templates/project/docs/decisions/README.md": "c19b4be797e9c7ac9cfffeaa6f30efa8e3547f5b0d467ff8019e02a533344c07",
         "src/ai_dlc/documentation/decisions.py": "ab81ad8426665668da3fb18dce2eba3020fbed9476d964ea277352a2092a286c",
-        "tests/test_decisions.py": "69428c1440c60f9b9a9363cde6647447d21186d1a2255c888e84f27682a22901"
+        "tests/test_decisions.py": "1c222097bd94d3a899974116eb816b0e8fa1c1f2d696227b9b35174eac6b819e"
       },
       "outcome": "updated",
-      "reason": "Decision records carry knowledge-record frontmatter.",
+      "reason": "Decision records carry knowledge-record frontmatter. Re-reviewed: specs now describe records; removal is the release after 1.0.",
       "reviewer": "Claude (agent)",
       "target": "docs/design/project-documentation.md"
     },
     {
       "bound": {
         "catalog:docs/design/terms.md": "c73d330992c018a1155e4402335d152088f754bacfb4f0ae20dcf8caddbf2c67",
-        "docs/design/terms.md": "96daa0a87632276ee6e536c1e7b451da3c5b54dbacf8440e9c6ce4ebefa470dd"
+        "docs/design/terms.md": "2b8f4ff2159a0a62b29260d06a8db1af1ef12c67fd4926b8710e01b3a19f4787"
       },
       "outcome": "updated",
-      "reason": "Knowledge note is now the deprecated format, read until 1.1.",
+      "reason": "Knowledge note is now the deprecated format, read until 1.1. Re-reviewed: specs now describe records; removal is the release after 1.0.",
       "reviewer": "Claude (agent)",
       "target": "docs/design/terms.md"
     },
