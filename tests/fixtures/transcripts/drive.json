@@ -1,0 +1,26 @@
+{
+  "files": [
+    {
+      "id": "1DesignReviewDocId0001",
+      "name": "Design review - 2026/11/10 10:00 EST - Transcript",
+      "mimeType": "application/vnd.google-apps.document",
+      "createdTime": "2026-11-10T15:31:02.000Z",
+      "webViewLink": "https://docs.google.com/document/d/1DesignReviewDocId0001/edit"
+    },
+    {
+      "id": "1GeminiNotesDocId00002",
+      "name": "Design review - Notes by Gemini",
+      "mimeType": "application/vnd.google-apps.document",
+      "createdTime": "2026-11-10T15:31:05.000Z"
+    },
+    {
+      "id": "1SharedButLockedDoc003",
+      "name": "Exec staff - Transcript",
+      "mimeType": "application/vnd.google-apps.document",
+      "createdTime": "2026-11-11T18:00:00.000Z"
+    }
+  ],
+  "exports": {
+    "1DesignReviewDocId0001": "meet-design-review.txt"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "description": "the provider's transcript id",
+      "minLength": 1,
+      "title": "Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id"
+  ],
+  "title": "TranscriptRef",
+  "type": "object"
+}

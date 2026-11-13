@@ -91,6 +91,20 @@ verification_paths = ["tests/test_decisions.py"]
 requirements = ["openspec/specs/decision-records/spec.md"]
 
 [[documents]]
+id = "meeting-transcripts"
+path = "docs/design/meeting-transcripts.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+code_paths = [
+    "src/ai_dlc/documentation/knowledge_transcripts.py",
+    "src/ai_dlc/providers/transcripts_common.py",
+    "src/ai_dlc/providers/zoom.py",
+    "src/ai_dlc/providers/google_meet.py",
+]
+verification_paths = ["tests/test_transcripts.py"]
+
+[[documents]]
 id = "local-shared-knowledge"
 path = "docs/design/local-and-shared-knowledge.md"
 kind = "reference"

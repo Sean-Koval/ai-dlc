@@ -385,6 +385,22 @@ def _register_tracker_tools(server: FastMCP, root: Path, config: dict, registry)
         return tracker().update(reference, title, body, labels)
 
 
+def _register_transcripts_tool(server: FastMCP, root: Path, config: dict) -> None:
+    @server.tool()
+    def knowledge_pull_transcripts(
+        since: str, into: str | None = None, dry_run: bool = True
+    ) -> dict:
+        """Land new meeting transcripts in the knowledge inbox through the transcripts role.
+
+        One Source record and raw payload per transcript, idempotent by transcript id.
+        Dry run by default: it lists what it would write. ``into`` is a local checkout.
+        """
+        from ai_dlc.documentation.knowledge_transcripts import TranscriptPull
+
+        target = Path(into) if into else None
+        return TranscriptPull(root, config, into=target).pull(since, dry_run=dry_run)
+
+
 def make_server(root: Path, machine: Path | None = None, *, registry: Any = None) -> FastMCP:
     """``registry`` replaces the providers of the project, for tests."""
     config = config_for(root, machine)
@@ -397,6 +413,7 @@ def make_server(root: Path, machine: Path | None = None, *, registry: Any = None
     _register_knowledge_why_tool(server, root)
     _register_knowledge_records_tools(server, root, config, registry)
     _register_tracker_tools(server, root, config, registry)
+    _register_transcripts_tool(server, root, config)
     return server
 
 

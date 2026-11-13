@@ -3,7 +3,7 @@
 from collections.abc import Mapping
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, field_validator
 
 
 class Request(BaseModel):
@@ -34,6 +34,8 @@ class Request(BaseModel):
         "upsert_page",
         "get_page_by_key",
         "list_children",
+        "list_since",
+        "fetch",
     ]
     payload: dict
     operation_id: str | None = None
@@ -366,6 +368,42 @@ class PageList(BaseModel):
     pages: list[Page]
 
 
+class TranscriptsSince(Payload):
+    """Transcripts of meetings that started at or after ``since`` (the transcripts role)."""
+
+    since: AwareDatetime
+
+
+class TranscriptRef(Payload):
+    id: str = Field(min_length=1, description="the provider's transcript id")
+
+
+class TranscriptSummary(BaseModel):
+    model_config = ConfigDict(extra="allow")
+    id: str = Field(min_length=1, description="stable per provider; capture is idempotent by it")
+    title: str = Field(min_length=1)
+    start: AwareDatetime
+    participants: list[str] = Field(default_factory=list, description="display names")
+    emails: list[str] = Field(default_factory=list, description="routing only; never stored")
+    url: str | None = None
+
+
+class TranscriptList(BaseModel):
+    model_config = ConfigDict(extra="allow")
+    items: list[TranscriptSummary]
+
+
+class Utterance(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    speaker: str = Field(min_length=1)
+    at: str = Field(pattern=r"^[0-9]{1,3}:[0-5][0-9]:[0-5][0-9]$", description="HH:MM:SS offset")
+    text: str = Field(min_length=1)
+
+
+class Transcript(TranscriptSummary):
+    segments: list[Utterance] = Field(min_length=1)
+
+
 PAYLOADS.update(
     {
         "current": Current,
@@ -409,6 +447,9 @@ RESPONSES = {
     "get_page_by_key": PageFound,
     "list_children": PageList,
 }
+
+PAYLOADS.update({"list_since": TranscriptsSince, "fetch": TranscriptRef})
+RESPONSES.update({"list_since": TranscriptList, "fetch": Transcript})
 
 
 OPERATIONS = set(PAYLOADS)
@@ -498,6 +539,7 @@ def manifest():
                 "mandatory": ["upsert_page", "get_page_by_key", "list_children"],
                 "optional": [],
             },
+            "transcripts": {"mandatory": ["list_since", "fetch"], "optional": []},
         },
         "operations": {
             op: {

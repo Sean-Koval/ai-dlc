@@ -35,6 +35,13 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
   the item's `exec:` labels. There is still no transition tool. The tracker contract
   gains optional `labels` on `create` and optional `update`, `query` and `comment`
   operations, implemented by `jira-cloud` and not yet live-qualified.
+- A `transcripts` role (`list_since`, `fetch`) with `zoom` and `google-meet`
+  providers, and `ai-dlc knowledge pull-transcripts --since TIME [--into DIR]
+  [--dry-run]` (MCP `knowledge_pull_transcripts`) (KAN-457). Each new transcript lands
+  in the knowledge inbox as a raw payload and a Source record, once per transcript id.
+  A customer's transcripts land in that customer's own knowledge repository, with
+  `boundary: customer` and the new optional record field `project`; an unconfigured
+  customer repository skips the transcript. Unreadable transcripts are skipped and logged. Fixture-tested; live OAuth qualification pending.
 - `ai-dlc knowledge migrate` (KAN-452, [ADR 0005](docs/decisions/0005-migrate-knowledge-notes-to-records.md))
   rewrites knowledge-note frontmatter as knowledge records. It is a dry run unless
   `--write`, idempotent, and reversible with `--revert JOURNAL`. This repository's

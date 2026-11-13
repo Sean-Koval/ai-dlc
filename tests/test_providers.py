@@ -170,6 +170,7 @@ def test_contract_includes_role_capabilities():
         "deploy",
         "knowledge",
         "wiki",
+        "transcripts",
     }
 
 

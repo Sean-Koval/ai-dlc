@@ -1821,6 +1821,30 @@ def knowledge_render(
     conclude(result)
 
 
+@knowledge.command("pull-transcripts")
+def knowledge_pull_transcripts(
+    since: Annotated[str, typer.Option("--since", help="ISO date, or time with offset")],
+    into: Annotated[Path | None, typer.Option("--into", help="local knowledge checkout")] = None,
+    provider_ids: Annotated[
+        list[str] | None, typer.Option("--provider", help="default: the transcripts role")
+    ] = None,
+    dry_run: Annotated[bool, typer.Option("--dry-run")] = False,
+    root: Annotated[Path, typer.Option("--root")] = Path("."),
+):
+    """Write one Source record and raw payload per new transcript into the knowledge inbox.
+
+    Idempotent by transcript id. A transcript the token cannot read is skipped and logged.
+    """
+    from ai_dlc.documentation.knowledge_transcripts import TranscriptPull
+
+    with service_call():
+        pull = TranscriptPull(root, config_for(root), providers=provider_ids, into=into)
+        result = pull.pull(since, dry_run=dry_run)
+    for entry in result.get("skipped", []):
+        typer.echo(f"skipped {entry['provider']} {entry['id']}: {entry['reason']}", err=True)
+    conclude(result)
+
+
 RecordsRoot = Annotated[Path, typer.Option("--root")]
 RecordsProvider = Annotated[str | None, typer.Option("--provider")]
 
