@@ -1054,3 +1054,20 @@ def test_mcp_stats_reports_a_wrong_shaped_log_as_an_error(fixture, tmp_path):
     arguments = {"since": "2026-11-01", "records": str(fixture["records"]), "log": "runs.jsonl"}
     [error] = call(make_server(tmp_path), ("knowledge_stats", arguments))
     assert "runs.jsonl:1 is not a capture run" in error
+
+
+def test_mcp_stats_reads_records_from_the_project_and_no_roles_without_its_toml(fixture):
+    from test_mcp_surface import call
+
+    from ai_dlc.mcp_server import make_server
+
+    root = fixture["records"].parent  # the knowledge repository, with no ai-dlc.toml
+    assert not (root / "ai-dlc.toml").exists()
+    roles = _Roles(fixture)
+    [result] = call(
+        make_server(root, registry=roles),
+        ("knowledge_stats", {"since": "2026-11-01", "records": "records"}),
+    )
+    assert result["review"]["available"] is False  # the packaged default roles aren't used
+    assert result["agent_loop"]["tickets"] is None
+    assert result["health"]["records_by_author"] == {"sean": 3, "priya": 2, "dana": 1}

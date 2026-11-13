@@ -326,17 +326,20 @@ def _register_knowledge_stats_tool(server: FastMCP, root: Path, config: dict, re
     ) -> dict:
         """Measure the 1.0 outcomes: capture, review, agent loop and health; read-only.
 
-        ``since`` is an ISO date or time. Reads git, the scm and tracker roles and, with
-        ``log``, the capture batch's run log (.jsonl, .json or a folder). Without a role
-        or the log, those numbers read not measured; a wrong-shaped log is an error.
-        Customer numbers count only in a view of their own ``project``.
+        ``since`` is an ISO date or time; ``records`` and ``log`` are relative to the
+        project. Reads git, the scm and tracker roles and, with ``log``, the capture
+        batch's run log (.jsonl, .json or a folder). Without the project's ai-dlc.toml,
+        a role or the log, those numbers read not measured; a wrong-shaped log is an
+        error. Customer numbers count only in a view of their own ``project``.
         """
         from datetime import datetime
 
         from ai_dlc.documentation import knowledge_stats as measure
 
+        # As the command: no ai-dlc.toml means no roles, not the packaged defaults'.
+        roles = config if (root / "ai-dlc.toml").is_file() else None
         wired = measure.from_roles(
-            config, root, agent_repositories=agent_repositories or (), registry=registry
+            roles, root, agent_repositories=agent_repositories or (), registry=registry
         )
         moment = datetime.fromisoformat(since)
         run_log = root / log if log else None
