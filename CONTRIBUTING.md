@@ -70,6 +70,24 @@ doesn't publish into GitHub URLs. The theme files in `docs/stylesheets/airframe*
 the brand files in `docs/assets/brand/` are vendored from agent-factory; refresh them
 with `sh scripts/sync-airframe.sh theme-vN` and `sh scripts/sync-brand.sh theme-vN`.
 
+## Parallel pull requests
+
+Many PRs are open at once, so a PR changes nothing that every other PR also changes
+(KAN-481):
+
+- **Changelog:** add `changes/<KEY>.md` (see [changes/README.md](changes/README.md));
+  never edit `CHANGELOG.md`. `python scripts/collect_changes.py` checks the fragments;
+  at release, `--write` folds them into `CHANGELOG.md`.
+- **Editorial baseline** (`tests/editorial_baseline.json`): a PR needn't lower it when a
+  page improves. CI caps each page at its debt on the PR's base, so the slack can't be
+  spent. The `generated` workflow lists pages to lower after each merge; any PR may run
+  `python tests/test_editorial.py --update`. A PR may still not raise a page's debt.
+- **Front-page assets** (`docs/assets/front/`): unchanged. A PR that changes what they
+  show rebuilds them, and `assets.yml` checks that they are current.
+
+The catalog and the site `nav` are still edited by hand: add your entry at the place
+its section keeps it, not at the end, so two PRs rarely touch the same lines.
+
 ## Documentation placement
 
 Current explanations belong in `docs/design/`, procedures in `docs/runbooks/` or
