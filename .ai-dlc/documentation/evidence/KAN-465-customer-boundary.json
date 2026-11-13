@@ -54,7 +54,7 @@
         "src/ai_dlc/_windows_storage/__init__.py": "5715def899453f15265e13d52e5b518844cc9d057421cfa5279172d799d5f506",
         "src/ai_dlc/_windows_storage/_api.py": "d5fc4f971db8e706871c06e8119884848e505af6c45f4fbb5c2f7db513faf41b",
         "src/ai_dlc/_windows_storage/_security.py": "62785d4e088cd485816a33f35a7a559d3d1acf166093c413a3f4f79969056314",
-        "src/ai_dlc/cli.py": "2cb39751cd6e59b3267bf9f7eb46542074fc3d254555643a71c6e629493f9aac",
+        "src/ai_dlc/cli.py": "04b575c292a9faf4c2a6cf1dc8f37fcf3cb06a56bc94b2d6acf0578c6eff928d",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
         "src/ai_dlc/conformance.py": "0ff247c065e89d4c5b43d844601dc809558c65a779c1600371953c0e2c44737b",
         "src/ai_dlc/contracts.py": "46003a7439c7f6354dcdf3edd4ca7bd005b945ed409d47b63eb264d59202f11c",
@@ -69,7 +69,8 @@
         "src/ai_dlc/documentation/documents.py": "763c9c2ff76c62e99eb6de4706f85edcaf57287f8c9bc8335c433d0163ba1812",
         "src/ai_dlc/documentation/fde.py": "3664430ebca9f3ef7ba7c7c431f7e4790176066510904ebe4d43d0a88ecf26e1",
         "src/ai_dlc/documentation/knowledge.py": "64379be5f820df72056e992d50d91a099b6029b913804586208b80c73490887a",
-        "src/ai_dlc/documentation/knowledge_check.py": "4312e202a978a53a5a45e20d9ccc0d02b0fd2070c20decd216f04923c17f08d9",
+        "src/ai_dlc/documentation/knowledge_bundle.py": "9bd34913ba68b77a9c77799ffaefe9e6aebbb4eac36ed684fc6cf5bade14fd74",
+        "src/ai_dlc/documentation/knowledge_check.py": "549130383354ae5b2eaee4b4825dcbf1ff6d0f8a770ef108063ed8938484aed0",
         "src/ai_dlc/documentation/knowledge_notes.py": "df022b2e330c5140f6948ec25a33c7888704e8686ea5411c770764a449b3b1b6",
         "src/ai_dlc/documentation/knowledge_publish.py": "a796d6d760789edb3f1723fd79f3d02125901c699fa51fe9f8d7cfbb666920a8",
         "src/ai_dlc/documentation/knowledge_records.py": "eeb502fd218412c3f2e8085b2c8bab1b74683daa8701bc8416155a29f9437c60",
@@ -110,7 +111,7 @@
         "src/ai_dlc/harness/windows_render.py": "8aa76c8aacc44d28a2117b3339ad7b632b91fdbe0a5557af50228dcd2aa0eeb0",
         "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
         "src/ai_dlc/locking.py": "d39ea1ba783e72aae903f9d69c114745ee0b83d02197bbc9572568836e4e7fa3",
-        "src/ai_dlc/mcp_server.py": "d634b56892f9ff4668cb3a30b619b315ec991924e61ead73e0b5a350ac69e2ce",
+        "src/ai_dlc/mcp_server.py": "bb54ba8084a785d29901462d3c5b65fdb60b67be8e64b3604ac415d91273dd98",
         "src/ai_dlc/provider_definitions.py": "467bec9146a1379a2f17ac07faaf1e6807729d362609d711545ff632ff3f9da7",
         "src/ai_dlc/providers/__init__.py": "42f2ca16c36251859ce589c7cd79dc2ced000e2cbf8aae2f33640b02ccdafe05",
         "src/ai_dlc/providers/git_knowledge.py": "394d48c89a897fb02be64f1f8ac1b465468c25a7cca9b6af57188ac80769cde8",
@@ -162,20 +163,22 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Package map is unchanged: the boundary rules live in the existing knowledge_check module and the git provider's search (KAN-465).",
+      "reason": "Package map is unchanged: the boundary rules live in the existing knowledge_check module and the git provider's search; rechecked after merging main with KAN-456 (KAN-465).",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
     {
       "bound": {
-        "catalog:docs/design/local-and-shared-knowledge.md": "92c841e843895124bf802cc6da8be57e525d7af9371c452c112f97873d7e525a",
+        ".github/workflows/knowledge-merge.yml": "7f67aa54775bb4e0e71c6793b9c6c62ac2fe03343678117a432513a465efeaca",
+        "catalog:docs/design/local-and-shared-knowledge.md": "3792ce6463f181e5d2345e4ae2c724561e1750d6e76a62324dc801da767260a5",
         "contracts/knowledge-note.schema.json": "f3cbc791e2caae2223bf223e8b27b5b7ce553405b76f32cf5689fa7fe68bb1a5",
         "contracts/knowledge-record.schema.json": "0a7633d88024a668140a6d658f09f5d11bf7e26b8ff09368abd82d17ddcd9bd7",
         "docs/design/local-and-shared-knowledge.md": "46f191713f8569ea0a6666e8e1ab5206ccb918ffe07f24face4d210cb858c414",
         "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
         "openspec/specs/session-learnings/spec.md": "dcd490cd54f2f6cb3fadaa90afade85d5e1d64b19fbe2accb70bfb06897e97b4",
         "src/ai_dlc/documentation/knowledge.py": "64379be5f820df72056e992d50d91a099b6029b913804586208b80c73490887a",
-        "src/ai_dlc/documentation/knowledge_check.py": "4312e202a978a53a5a45e20d9ccc0d02b0fd2070c20decd216f04923c17f08d9",
+        "src/ai_dlc/documentation/knowledge_bundle.py": "9bd34913ba68b77a9c77799ffaefe9e6aebbb4eac36ed684fc6cf5bade14fd74",
+        "src/ai_dlc/documentation/knowledge_check.py": "549130383354ae5b2eaee4b4825dcbf1ff6d0f8a770ef108063ed8938484aed0",
         "src/ai_dlc/documentation/knowledge_notes.py": "df022b2e330c5140f6948ec25a33c7888704e8686ea5411c770764a449b3b1b6",
         "src/ai_dlc/documentation/knowledge_records.py": "eeb502fd218412c3f2e8085b2c8bab1b74683daa8701bc8416155a29f9437c60",
         "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
@@ -184,6 +187,7 @@
         "src/ai_dlc/documentation/workspace_diagnostics.py": "8c8dc695fa95e5f9e8fc4017e5fd66efcab4c0cec4d3ae9272d3c5f368f93aef",
         "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
         "tests/test_knowledge.py": "38e5cda9c9dc1fe97d12618a0bd9a86b2725cff059d412232152582af1547af1",
+        "tests/test_knowledge_bundle.py": "d504eeb10283df1d16a387bfa6f0ebda3955422d3a0c9772778cf498cbe41289",
         "tests/test_knowledge_check.py": "c6340242500c57a4e18fdc3a25e631cde39a7f977cebefe10c02990ecfa4a2a1",
         "tests/test_knowledge_notes.py": "0af8b4f84c5b8d974833eef49d5efd662a9d6d5b22eac6ff6f4a604fd492f6f7",
         "tests/test_knowledge_records.py": "dda1cc3543fc0f9cbcf999a4f72041d9143696328785827e9a4362b6fd083cfa",
@@ -193,7 +197,7 @@
         "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Page is at its editorial word ceiling; the boundary rules are summarised in how-it-fits.md and described in the knowledge_check module docstring (KAN-465).",
+      "reason": "Page is at its editorial word ceiling; the boundary rules are summarised in how-it-fits.md and described in the knowledge_check module docstring; rechecked after merging main with KAN-456 (KAN-465).",
       "reviewer": "Claude (agent)",
       "target": "docs/design/local-and-shared-knowledge.md"
     },
@@ -201,7 +205,7 @@
       "bound": {
         "catalog:docs/workflows/how-it-fits.md": "0032744a2746dd1b4e47f09fc1cc9c4d6f8c8cfe90990b464f56a0abc1d1ac10",
         "docs/workflows/how-it-fits.md": "b865dfd0d040309db43d27b58cb93a69d0e94a72bcf9b6ff760bcb0ed39ea473",
-        "src/ai_dlc/mcp_server.py": "d634b56892f9ff4668cb3a30b619b315ec991924e61ead73e0b5a350ac69e2ce",
+        "src/ai_dlc/mcp_server.py": "bb54ba8084a785d29901462d3c5b65fdb60b67be8e64b3604ac415d91273dd98",
         "src/ai_dlc/providers/__init__.py": "42f2ca16c36251859ce589c7cd79dc2ced000e2cbf8aae2f33640b02ccdafe05",
         "src/ai_dlc/providers/git_knowledge.py": "394d48c89a897fb02be64f1f8ac1b465468c25a7cca9b6af57188ac80769cde8",
         "src/ai_dlc/providers/github_issues.py": "8945d5b0049d7f7940c8c478e13bf576a897295e463a69b3510d6e2982ed1f08",
@@ -215,7 +219,7 @@
         "src/ai_dlc/providers/teamai.py": "ff7a781abcaeeca1c978f9472502156e31a1fc6d192ac50e1e489d333b77a5e6"
       },
       "outcome": "updated",
-      "reason": "Adds one sentence: customer records stay in their project, enforced by knowledge check and search (KAN-465).",
+      "reason": "Adds one sentence: customer records stay in their project, enforced by knowledge check and search; rechecked after merging main with KAN-456 (KAN-465).",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/how-it-fits.md"
     },
