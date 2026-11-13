@@ -661,6 +661,59 @@ def test_a_squash_merge_is_judged_by_its_own_records_not_others_landed_meanwhile
     assert [row["title"] for row in review["by_pull_request"]] == ["Team records"]
 
 
+def _reviewed_away(tmp_path, review) -> dict:
+    """A customer record extracted, then deleted or renamed in review, squash-merged."""
+    repo = Repo(tmp_path / "knowledge")
+    repo.write("records/knowledge.toml", "[format]\nversion = 1\n")
+    repo.commit("base", when="2026-10-01T09:00:00+00:00")
+    repo.git("checkout", "-q", "-b", "pr1")
+    path = "records/lessons/les-c.md"
+    customer = "boundary: customer\nproject: alpha\n"
+    repo.write(path, record("les-c", "lesson", "open", "2026-11-04", "sean", extra=customer))
+    first = repo.commit("extract")
+    files = review(repo, path)
+    repo.commit("review")
+    tree = repo.git("rev-parse", "HEAD^{tree}")
+    repo.git("checkout", "-q", "main")
+    repo.git("read-tree", "-u", "--reset", tree)
+    squash = repo.commit("Alpha Corp call (#1)")
+    pr = {
+        "number": 1,
+        "title": "Alpha Corp call",
+        "state": "merged",
+        "created_at": "2026-11-04T00:00:00Z",
+        "merged_at": "2026-11-04T05:00:00Z",
+        "files": files,
+        "first_commit": first,
+        "merge_commit": squash,
+    }
+    return stats(repo.top / "records", SINCE, now=NOW, pull_requests=lambda since: [pr])
+
+
+def test_a_customer_record_the_reviewer_deleted_still_hides_the_pull_request(tmp_path):
+    def delete(repo, path):
+        (repo.top / path).unlink()
+        kept = "records/lessons/les-t.md"  # the pull request's other, team record stays
+        repo.write(kept, record("les-t", "lesson", "open", "2026-11-04", "sean"))
+        return [kept]
+
+    result = _reviewed_away(tmp_path, delete)
+    assert result["review"]["hidden_customer"] == 1
+    assert "Alpha Corp" not in json.dumps(result)
+
+
+def test_a_customer_record_renamed_without_its_boundary_still_hides_the_pull_request(tmp_path):
+    def rename(repo, path):
+        (repo.top / path).unlink()
+        moved = "records/lessons/les-t.md"
+        repo.write(moved, record("les-c", "lesson", "open", "2026-11-04", "sean"))
+        return [moved]
+
+    result = _reviewed_away(tmp_path, rename)
+    assert result["review"]["hidden_customer"] == 1
+    assert "Alpha Corp" not in json.dumps(result)
+
+
 def test_a_boundary_the_reviewer_adds_before_merge_hides_the_pull_request(tmp_path):
     repo = Repo(tmp_path / "knowledge")
     repo.write("records/knowledge.toml", "[format]\nversion = 1\n")

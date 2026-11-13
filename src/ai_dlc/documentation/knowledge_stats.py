@@ -337,7 +337,9 @@ def _hidden(repo: Path | None, pr: dict[str, Any], prefix: str, project: str | N
     A path under another project's ``projects/<name>/`` hides it before any read. The
     records are then checked for ``boundary: customer`` (KAN-465) as the first commit
     had them and, once merged, as the merge has them, so a reviewer's later boundary
-    counts. Only the pull request's own files are read, however it was merged. ``None`` when those commits are not fetched: the boundary is unknown.
+    counts, and one the reviewer deleted or renamed away still does. Only the pull
+    request's own commits and files are read, however it was merged. ``None`` when
+    those commits are not fetched: the boundary is unknown.
     """
     paths = [path for path in pr.get("files", []) if _is_record_path(path, prefix)]
     if any(project_of(path[len(prefix) :]) not in (None, project) for path in paths):
@@ -346,7 +348,18 @@ def _hidden(repo: Path | None, pr: dict[str, Any], prefix: str, project: str | N
     if not _has(repo, first) or (pr.get("state") == "merged" and not _has(repo, merge)):
         return None
     assert repo is not None and first is not None
-    seen = [(first, path) for path in paths]
+    # The first commit as it was: the final file list misses a record the reviewer
+    # deleted or renamed. ``first^..first`` is the pull request's own commit, so a
+    # squash merge does not pull in other records.
+    own = _git(repo, "diff", "--name-only", "--no-renames", f"{first}^", first)
+    firsts = (
+        [n for n in own.stdout.splitlines() if _is_record_path(n, prefix)]
+        if own.returncode == 0
+        else []
+    )
+    if any(project_of(name[len(prefix) :]) not in (None, project) for name in firsts):
+        return True
+    seen = [(first, path) for path in dict.fromkeys([*paths, *firsts])]
     if pr.get("state") == "merged":
         # The pull request's own files, which end where the reviewer left them: a diff
         # from the first commit would also take in records other pull requests landed
@@ -373,10 +386,14 @@ def _extracted(repo: Path, first: str, prefix: str) -> dict[str, str]:
     return found
 
 
-def _merged(repo: Path, first: str, merge: str, prefix: str, wanted: set[str]) -> dict[str, str]:
-    """The ``wanted`` records at ``merge``, by id, wherever the reviewer moved them."""
-    changed = _git(repo, "diff", "--name-only", "--no-renames", f"{first}^", merge)
-    names = changed.stdout.splitlines() if changed.returncode == 0 else []
+def _merged(
+    repo: Path, merge: str, names: list[str], prefix: str, wanted: set[str]
+) -> dict[str, str]:
+    """The ``wanted`` records at ``merge``, by id, wherever the reviewer moved them.
+
+    ``names`` is the pull request's own file list, which ends where the reviewer left
+    them; a diff from the first commit would take in other pull requests' records.
+    """
     found = {}
     for name in names:
         if _is_record_path(name, prefix):
@@ -436,7 +453,7 @@ def _review(
         assert repo is not None and first is not None
         before = _extracted(repo, first, prefix)
         after = (
-            _merged(repo, first, merge, prefix, set(before))
+            _merged(repo, merge, pr.get("files", []), prefix, set(before))
             if pr["state"] == "merged" and merge
             else {}
         )
