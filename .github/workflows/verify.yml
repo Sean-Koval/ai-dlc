@@ -42,7 +42,7 @@ jobs:
     name: Knowledge install against team-harness
     runs-on: ubuntu-24.04
     env:
-      TEAM_HARNESS_REF: d67a46ae5f8c473befbf085073909d27078b5cd6  # team-harness #45 head; bump to its merge commit once it merges
+      TEAM_HARNESS_REF: f42f7a3aef37c4fd59a15f66a5535016731dd01e  # team-harness main at the #45 merge
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4

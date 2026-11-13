@@ -261,7 +261,7 @@
     {
       "bound": {
         ".github/workflows/release.yml": "f960af13f3657dca437561a8acd2555ec2b2d648c04202964ef349b0952bf590",
-        ".github/workflows/verify.yml": "18f5ee588f0343de6fd317ee2d2caaf7b3161be9b83dcf4ddc32291964ef02c4",
+        ".github/workflows/verify.yml": "87fb5f83cc381eea6081b215fa3d6e9aaba171652e5f87b79ffb080102e727dc",
         "catalog:docs/release-verification.md": "972bf86b6da5f20b3d01762982880533ba0c99b22933aa95273590923721dad0",
         "docs/release-verification.md": "a18e7b0bef6dc55ebc544ac304a01c8ca7d59c9dde46127f2acc44802e8b9751",
         "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
@@ -286,7 +286,7 @@
         "tests/test_release_workflow.py": "a50523b5d6dec682188d489780d29a74f2a01c60c310071ce6758898f3d12dc0"
       },
       "outcome": "reviewed-no-change",
-      "reason": "The new Verify job checks the knowledge install against a pinned team-harness commit; it is a PR check, not a release gate.",
+      "reason": "Only the pinned team-harness commit of the knowledge install PR check moved, to the team-harness #45 merge; no release gate changed.",
       "reviewer": "Claude (agent)",
       "target": "docs/release-verification.md"
     },
