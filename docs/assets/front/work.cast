@@ -395,7 +395,7 @@
 [14.48, "o", "            \"status\": \"passed\"\r\n"]
 [14.52, "o", "          },\r\n"]
 [14.56, "o", "          {\r\n"]
-[14.6, "o", "            \"duration_seconds\": 0,\r\n"]
+[14.6, "o", "            \"duration_seconds\": 1,\r\n"]
 [14.64, "o", "            \"exit_code\": 0,\r\n"]
 [14.68, "o", "            \"id\": \"work-records\",\r\n"]
 [14.72, "o", "            \"status\": \"passed\"\r\n"]
