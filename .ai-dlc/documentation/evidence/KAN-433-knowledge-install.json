@@ -189,6 +189,24 @@
     },
     {
       "bound": {
+        "docs/assets/front/work.cast": "e62d40214d4179962e75246d6b628f261ae7e8a31dcc43cccb089943a285f9eb"
+      },
+      "outcome": "updated",
+      "reason": "Rebuilt with build.py: the packaged bootstrap template changed, so the demo's deterministic commit hashes changed. Nothing else differs.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.cast"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.svg": "c937adee672f9f1678dbeb98c4c19bc9652f029b4f179832f8551d13b5e64f18"
+      },
+      "outcome": "updated",
+      "reason": "Rebuilt with build.py alongside work.cast; only the demo commit hashes differ.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.svg"
+    },
+    {
+      "bound": {
         "docs/catalog.toml": "4a306acc441d1bee44fac561a89aea79b98d24a9cf2ba56d5702f647bfb19cf9"
       },
       "outcome": "updated",
