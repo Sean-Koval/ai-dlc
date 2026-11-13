@@ -2,7 +2,8 @@
 
 The git knowledge repository is canonical (ADR 0004). For each record changed since a
 revision, render upserts one page, keyed by the record id, through the ``wiki`` role.
-It also regenerates one index page per scope. Every page opens with a do-not-edit banner
+It also regenerates one index page per scope. A page whose record was deleted, or no
+longer renders, is marked removed, never left live. Every page opens with a do-not-edit banner
 that links to its source file. Render never reads a page body: a page whose content hash
 and version are what the last render wrote is skipped, and any other page is rewritten,
 so a hand edit is restored.
@@ -173,6 +174,33 @@ def index_page(scope: str, records: list[dict], target: Mapping[str, str]) -> di
     )
 
 
+def removed_page(listed: Mapping[str, Any], parent: str | None, target: Mapping[str, str]) -> dict:
+    """The page left for a record that is gone: marked removed, never shown as live.
+
+    Its body names no source file, since the file is gone, and links still resolve.
+    """
+    properties = {k: v for k, v in listed.get("properties", {}).items() if k != HASH_PROPERTY}
+    properties["removed"] = "true"
+    title = listed["title"]
+    if not title.startswith("Removed: "):
+        title = "Removed: " + title
+    body = (
+        banner(target["source"], None)
+        + "\n\n**Removed.** This record is no longer in the knowledge repository. "
+        "The page is no longer maintained and is kept only so links to it resolve.\n"
+    )
+    return _finish(
+        {
+            "key": listed["key"],
+            "title": title,
+            "body": body,
+            "properties": properties,
+            "labels": ["ai-dlc-removed"],
+            "parent": parent,
+        }
+    )
+
+
 def _action(existing: Mapping[str, Any] | None, page: Mapping[str, Any]) -> str:
     if existing is None:
         return "create"
@@ -272,11 +300,30 @@ class KnowledgeRender:
                 continue
             record = self._call(self.knowledge, "get", {"id": entry["id"], "project": project})
             pages.append(record_page(record, target))
+        live = visible | {f"index-{scope}" for scope in by_scope}
+        rendered = self._rendered()
+        queued = {page["key"] for page in pages}
+        # A record back after removal is rendered again even when its file is unchanged.
+        for listed, _parent in rendered:
+            back = listed.get("properties", {}).get("removed") == "true"
+            if back and listed["key"] in visible and listed["key"] not in queued:
+                record = self._call(self.knowledge, "get", {"id": listed["key"]})
+                pages.append(record_page(record, target))
+                queued.add(listed["key"])
+        retired = [
+            removed_page(listed, parent, target)
+            for listed, parent in rendered
+            if listed["key"] not in live
+        ]
+        removing = {page["key"] for page in retired}
+        pages.extend(retired)
         stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
         planned = []
         for page in pages:
             found_page = self._call(self.wiki, "get_page_by_key", {"key": page["key"]})["page"]
             action = _action(found_page, page)
+            if page["key"] in removing and action != "unchanged":
+                action = "remove"
             entry = {
                 "key": page["key"],
                 "title": page["title"],
@@ -308,4 +355,16 @@ class KnowledgeRender:
             "writes": 0 if dry_run else writes,
             "skipped": skipped,
             "orphaned": orphaned,
+            "removed": sorted(removing),
         }
+
+    def _rendered(self) -> list[tuple[dict, str | None]]:
+        """Every page an earlier render wrote, with its parent key: the index pages under
+        the root and the record pages under each index."""
+        found = []
+        for root in self._call(self.wiki, "list_children", {"parent": None})["pages"]:
+            found.append((root, None))
+            if root["key"].startswith("index-"):
+                children = self._call(self.wiki, "list_children", {"parent": root["key"]})
+                found.extend((child, root["key"]) for child in children["pages"])
+        return found

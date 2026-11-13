@@ -35,6 +35,8 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
   [--dry-run]` (MCP `knowledge_render`), the wiki's only writer (KAN-430). It renders
   each changed record and one index page per scope, with a do-not-edit banner, and
   skips pages whose content hash and version are unchanged. A hand edit is restored.
+- `knowledge render` drops a page's old status label when its record changes status,
+  and marks the page of a deleted record removed instead of leaving it live (KAN-430).
 - `ai-dlc knowledge check DIR` (and MCP `knowledge_check`) validates a records
   directory against `KnowledgeRecord`, Open Knowledge Format v0.2 section 11, the
   `knowledge.toml` pin, typed-link integrity, duplicate sources and supersession;
