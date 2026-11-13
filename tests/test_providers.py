@@ -394,7 +394,13 @@ def test_pull_request_create_is_an_optional_scm_operation():
         "pull_request_create",
         {"title": "Title", "body": "", "base": "main", "head": "work/one"},
     )
-    assert request.payload == {"title": "Title", "body": "", "base": "main", "head": "work/one"}
+    assert request.payload == {
+        "title": "Title",
+        "body": "",
+        "base": "main",
+        "head": "work/one",
+        "draft": False,
+    }
     assert validate_response(
         "pull_request_create", {"url": "https://github.com/a/b/pull/7", "number": 7}
     ) == {"url": "https://github.com/a/b/pull/7", "number": 7}

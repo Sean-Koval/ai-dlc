@@ -1,0 +1,16 @@
+{
+  "additionalProperties": false,
+  "description": "Record files changed since a revision of the knowledge store.",
+  "properties": {
+    "since": {
+      "minLength": 1,
+      "title": "Since",
+      "type": "string"
+    }
+  },
+  "required": [
+    "since"
+  ],
+  "title": "RecordsChanged",
+  "type": "object"
+}

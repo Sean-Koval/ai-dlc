@@ -1,0 +1,32 @@
+{
+  "additionalProperties": true,
+  "properties": {
+    "body": {
+      "title": "Body",
+      "type": "string"
+    },
+    "header": {
+      "additionalProperties": true,
+      "title": "Header",
+      "type": "object"
+    },
+    "id": {
+      "minLength": 1,
+      "title": "Id",
+      "type": "string"
+    },
+    "path": {
+      "minLength": 1,
+      "title": "Path",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "path",
+    "header",
+    "body"
+  ],
+  "title": "RecordResult",
+  "type": "object"
+}

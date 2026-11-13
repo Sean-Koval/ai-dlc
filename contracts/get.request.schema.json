@@ -1,0 +1,16 @@
+{
+  "additionalProperties": false,
+  "description": "One knowledge record by id or alias.",
+  "properties": {
+    "id": {
+      "minLength": 1,
+      "title": "Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id"
+  ],
+  "title": "RecordGet",
+  "type": "object"
+}

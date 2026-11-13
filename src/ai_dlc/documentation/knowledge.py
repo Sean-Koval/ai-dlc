@@ -52,6 +52,25 @@ class Knowledge:
         if not self.root.is_dir():
             raise ValueError("knowledge unavailable: existing vault path is required")
 
+    def get(self, id: str) -> dict:
+        """The knowledge record in this vault whose id or alias is ``id``."""
+        from ai_dlc.documentation import record_index
+
+        return record_index.get(self.root, id)
+
+    def search(
+        self,
+        type: str | None = None,
+        scope: str | None = None,
+        labels: list[str] | None = None,
+        status: str | None = None,
+        text: str | None = None,
+    ) -> dict:
+        """Knowledge records in this vault matching every given filter."""
+        from ai_dlc.documentation import record_index
+
+        return record_index.search(self.root, type, scope, labels or (), status, text)
+
     def find(self, query: str, limit: int = 20) -> list[dict]:
         results = []
         for path in sorted(self.root.rglob("*.md")):

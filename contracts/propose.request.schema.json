@@ -1,0 +1,61 @@
+{
+  "$defs": {
+    "ProposedRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "description": "repository-relative .md path",
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "text": {
+          "description": "the whole record file",
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "text"
+      ],
+      "title": "ProposedRecord",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Write records on a new branch and open a draft pull request; never main.",
+  "properties": {
+    "body": {
+      "default": "",
+      "title": "Body",
+      "type": "string"
+    },
+    "branch": {
+      "minLength": 1,
+      "title": "Branch",
+      "type": "string"
+    },
+    "records": {
+      "items": {
+        "$ref": "#/$defs/ProposedRecord"
+      },
+      "minItems": 1,
+      "title": "Records",
+      "type": "array"
+    },
+    "title": {
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    }
+  },
+  "required": [
+    "records",
+    "branch",
+    "title"
+  ],
+  "title": "Propose",
+  "type": "object"
+}

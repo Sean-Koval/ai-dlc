@@ -1,0 +1,54 @@
+{
+  "$defs": {
+    "RecordItem": {
+      "additionalProperties": true,
+      "properties": {
+        "header": {
+          "additionalProperties": true,
+          "title": "Header",
+          "type": "object"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "path": {
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "path",
+        "header"
+      ],
+      "title": "RecordItem",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "invalid": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Invalid",
+      "type": "array"
+    },
+    "items": {
+      "items": {
+        "$ref": "#/$defs/RecordItem"
+      },
+      "title": "Items",
+      "type": "array"
+    }
+  },
+  "required": [
+    "items"
+  ],
+  "title": "RecordsFound",
+  "type": "object"
+}
