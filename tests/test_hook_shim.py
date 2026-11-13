@@ -138,20 +138,42 @@ def test_destructive_command_denied_without_delegation(tmp_path, mode):
     assert not log.exists()
 
 
-def test_delegated_destructive_denial_is_passed_through(tmp_path):
+def test_delegated_denial_is_passed_through(tmp_path):
     root, env, _ = project(tmp_path, "delegate")
-    fake_cli(tmp_path / "bin", exit_code=2, stderr="Destructive operation denied: native\n")
-    code, _, err = invoke("pre-tool", payload_for("pre-tool", root, "rm -rf build"), env)
-    assert code == 2 and err == "Destructive operation denied: native\n"
+    fake_cli(tmp_path / "bin", exit_code=2, stderr="Push denied: native\n")
+    code, _, err = invoke("pre-tool", payload_for("pre-tool", root), env)
+    assert code == 2 and err == "Push denied: native\n"
+
+
+@pytest.mark.parametrize("tool", ["Bash", "PowerShell"])
+def test_destructive_check_runs_before_delegating(tmp_path, tool):
+    """KAN-487: a CLI older than the plugin exits 0 for a tool it doesn't know."""
+    root, env, log = project(tmp_path, "delegate")
+    payload = {"cwd": str(root), "tool_name": tool, "tool_input": {"command": "rm -rf build"}}
+    assert invoke("pre-tool", payload, env) == (2, "", hook_shim.DESTRUCTIVE_REASON + "\n")
+    assert not log.exists()
 
 
 @pytest.mark.parametrize("exit_code", [1, 127, 3])
-def test_failed_delegate_maps_to_allow_with_a_note(tmp_path, exit_code):
+def test_failed_delegate_falls_back_to_the_plugin_check(tmp_path, exit_code):
     root, env, _ = project(tmp_path, "delegate")
     fake_cli(tmp_path / "bin", exit_code=exit_code, stdout="ignored", stderr="boom")
+    note = f"ai-dlc workflow plugin: ai-dlc hook pre-tool exited {exit_code}; "
+    note += "allowed after the plugin's own check.\n"
     code, out, err = invoke("pre-tool", payload_for("pre-tool", root), env)
-    assert code == 0 and out == ""
-    assert err == f"ai-dlc workflow plugin: ai-dlc hook pre-tool exited {exit_code}; allowed.\n"
+    assert code == 0 and out == "" and err == note
+    # KAN-487: a broken CLI no longer turns the destructive check off.
+    code, out, err = invoke("pre-tool", payload_for("pre-tool", root, "rm -rf build"), env)
+    assert (code, out, err) == (2, "", hook_shim.DESTRUCTIVE_REASON + "\n")
+
+
+@pytest.mark.parametrize("event", ["session-start", "stop"])
+def test_failed_delegate_allows_other_events(tmp_path, event):
+    root, env, _ = project(tmp_path, "delegate")
+    fake_cli(tmp_path / "bin", exit_code=1, stdout="ignored")
+    code, out, err = invoke(event, payload_for(event, root), env)
+    assert (code, out) == (0, "")
+    assert err == f"ai-dlc workflow plugin: ai-dlc hook {event} exited 1; allowed.\n"
 
 
 def test_delegate_timeout_maps_to_allow(tmp_path, monkeypatch):
@@ -180,15 +202,106 @@ def test_quiet_mode_drops_only_the_session_line(tmp_path):
     assert invoke("pre-tool", payload_for("pre-tool", root, "rm -rf build"), env)[0] == 2
 
 
-@pytest.mark.parametrize("event", EVENTS)
-@pytest.mark.parametrize("raw", ["{not json", "[1, 2]", '"text"', "\x00"])
-def test_malformed_payload_allows(tmp_path, monkeypatch, event, raw):
-    root, env, log = project(tmp_path, "delegate")
+MALFORMED = ["{not json", "[1, 2]", '"text"', "\x00", "null", ""]
+
+
+@pytest.mark.parametrize("event", ["session-start", "stop"])
+@pytest.mark.parametrize("raw", MALFORMED)
+def test_malformed_payload_never_blocks_session_start_or_stop(tmp_path, monkeypatch, event, raw):
+    root, env, _ = project(tmp_path, "delegate")
     monkeypatch.chdir(root)
     code, _, err = invoke(event, raw, env)
     assert code == 0 and err == ""
-    if event == "pre-tool":
-        assert not log.exists()
+
+
+@pytest.mark.parametrize("mode", MODES)
+@pytest.mark.parametrize("raw", MALFORMED)
+def test_malformed_pre_tool_payload_fails_closed(tmp_path, monkeypatch, mode, raw):
+    """KAN-487: a payload the shim cannot read may still be a shell call, so it blocks."""
+    root, env, log = project(tmp_path, mode)
+    monkeypatch.chdir(root)
+    code, out, err = invoke("pre-tool", raw, env)
+    assert (code, out, err) == (2, "", hook_shim.UNJUDGED_REASON + "\n")
+    assert not log.exists()
+
+
+@pytest.mark.parametrize("mode", MODES)
+@pytest.mark.parametrize(
+    "tool_input",
+    [None, "rm -rf build", {}, {"command": None}, {"command": ["rm", "-rf", "build"]}],
+)
+@pytest.mark.parametrize("tool", ["Bash", "PowerShell", "exec_command"])
+def test_shell_call_without_a_command_string_fails_closed(tmp_path, mode, tool, tool_input):
+    root, env, _ = project(tmp_path, mode)
+    payload = {"cwd": str(root), "tool_name": tool, "tool_input": tool_input}
+    code, _, err = invoke("pre-tool", payload, env)
+    assert (code, err) == (2, hook_shim.UNJUDGED_REASON + "\n")
+
+
+POWERSHELL_DESTRUCTIVE = [
+    "rm -rf build",
+    "rm -r -fo build",
+    "git reset --hard HEAD~1",
+    "git clean -fdx",
+    "git push --force origin main",
+    "Set-Location src; rm notes.txt",
+    # PowerShell is case-insensitive, and its backtick escapes and continues lines.
+    "RM -r build",
+    "Git Reset --hard",
+    "git reset `--hard",
+    "git reset `\n  --hard HEAD",
+    "git clean `-fdx",
+    "git push `--force origin main",
+    'rm -rf y; Write-Host "a`"b"',
+]
+
+
+@pytest.mark.parametrize("mode", MODES)
+@pytest.mark.parametrize("command", POWERSHELL_DESTRUCTIVE)
+def test_powershell_destructive_command_is_denied(tmp_path, mode, command):
+    """KAN-487: Claude Code on native Windows runs shell commands as the PowerShell tool."""
+    root, env, log = project(tmp_path, mode)
+    payload = {"cwd": str(root), "tool_name": "PowerShell", "tool_input": {"command": command}}
+    code, out, err = invoke("pre-tool", payload, env)
+    assert (code, out, err) == (2, "", hook_shim.DESTRUCTIVE_REASON + "\n")
+    assert not log.exists()
+
+
+@pytest.mark.parametrize(
+    "command",
+    ["Get-ChildItem", "git status", "git push origin feature/x", 'Write-Host "a`tb"'],
+)
+def test_ordinary_powershell_command_is_allowed(tmp_path, command):
+    root, env, _ = project(tmp_path, "no-cli")
+    payload = {"cwd": str(root), "tool_name": "PowerShell", "tool_input": {"command": command}}
+    assert invoke("pre-tool", payload, env) == (0, "", "")
+
+
+@pytest.mark.parametrize("mode", MODES)
+def test_other_tools_are_allowed_but_an_unnamed_call_needs_a_command(tmp_path, mode):
+    root, env, log = project(tmp_path, mode)
+    other = {"cwd": str(root), "tool_name": "MultiEdit", "tool_input": {"file_path": "a"}}
+    assert invoke("pre-tool", other, env) == (0, "", "")
+    unnamed = {"cwd": str(root), "tool_input": {"file_path": "a"}}
+    assert invoke("pre-tool", unnamed, env)[0] == 2
+    assert not log.exists()
+
+
+@pytest.mark.parametrize("event, code", [("pre-tool", 2), ("stop", 0), ("session-start", 0)])
+def test_an_error_inside_the_shim_blocks_only_pre_tool(monkeypatch, capsys, event, code):
+    """A closed stdin (sys.stdin is None) raises inside run(); only pre-tool may block."""
+    monkeypatch.setattr(sys, "argv", ["aidlc_hook.py", event])
+    monkeypatch.setattr(sys, "stdin", None)
+    monkeypatch.delenv("AI_DLC_HOOKS", raising=False)
+    assert hook_shim.main() == code
+    assert ("blocked" if code else "allowed") in capsys.readouterr().err
+
+
+def test_an_error_inside_the_shim_allows_when_hooks_are_off(monkeypatch):
+    monkeypatch.setattr(sys, "argv", ["aidlc_hook.py", "pre-tool"])
+    monkeypatch.setattr(sys, "stdin", None)
+    monkeypatch.setenv("AI_DLC_HOOKS", "off")
+    assert hook_shim.main() == 0
 
 
 def test_codex_cmd_payload_is_classified(tmp_path):
@@ -249,6 +362,15 @@ def test_generated_shim_runs_isolated_without_third_party_imports(tmp_path, even
     assert not (tmp_path / "isolated/.ai-dlc").exists()
 
 
+@pytest.mark.parametrize("tool", ["Bash", "PowerShell"])
+def test_generated_shim_fails_closed_on_empty_stdin(tmp_path, tool):
+    result = run_generated(tmp_path, "pre-tool", "", {}, "/usr/bin:/bin")
+    assert result.returncode == 2 and "could not read a command" in result.stderr
+    payload = {"cwd": str(tmp_path / "isolated"), "tool_name": tool}
+    payload["tool_input"] = {"command": "git reset --hard"}
+    assert run_generated(tmp_path, "pre-tool", payload, {}, "/usr/bin:/bin").returncode == 2
+
+
 def real_cli(directory: Path) -> str:
     directory.mkdir(parents=True, exist_ok=True)
     script = directory / "ai-dlc"
@@ -271,6 +393,17 @@ def test_hangar_allows_push_in_adopted_repo_without_work_record(tmp_path, hangar
     )
     assert result.returncode == 0, result.stderr
     assert result.stderr == ""
+
+
+@pytest.mark.parametrize("command", ["rm -rf build", "git reset --hard HEAD~1"])
+def test_delegated_cli_denies_a_powershell_destructive_command(tmp_path, command):
+    root = tmp_path / "adopted"
+    initialize_hook_project(root, None)
+    path = real_cli(tmp_path / "bin")
+    payload = {"cwd": str(root), "tool_name": "PowerShell", "tool_input": {"command": command}}
+    result = run_generated(tmp_path, "pre-tool", payload, {"PYTHONPATH": str(ROOT / "src")}, path)
+    assert result.returncode == 2 and "Destructive operation denied" in result.stderr
+    assert "using the plugin's own check" not in result.stderr
 
 
 @pytest.mark.parametrize(

@@ -438,3 +438,34 @@ def test_specification_edit_warning(tmp_path):
     )
     assert response["decision"] == "allow"
     assert "warning" in response
+
+
+@pytest.mark.parametrize(
+    "command", ["rm -rf build", "git reset --hard HEAD~1", "git reset `--hard", "RM -r build"]
+)
+def test_powershell_destructive_commands_are_denied(tmp_path, command):
+    """KAN-487: the PowerShell tool used to be an "unsupported tool payload" and allowed."""
+    from ai_dlc.harness.hooks import handle_hook
+
+    root = tmp_path / "project"
+    initialize_hook_project(root, None)
+    payload = {"tool_name": "PowerShell", "tool_input": {"command": command}}
+    response = handle_hook(root, "pre-tool", payload)
+    assert response["decision"] == "deny"
+    assert "Destructive operation denied" in response["reason"]
+
+
+@pytest.mark.parametrize("tool_input", [None, [], {}, {"command": ["rm", "-rf", "x"]}])
+@pytest.mark.parametrize("tool", ["Bash", "PowerShell", "exec_command"])
+def test_shell_call_without_a_command_string_is_denied(tmp_path, tool, tool_input):
+    from ai_dlc.harness.hooks import handle_hook
+
+    root = tmp_path / "project"
+    initialize_hook_project(root, None)
+    payload = {"tool_name": tool, "tool_input": tool_input}
+    response = handle_hook(root, "pre-tool", payload)
+    assert response["decision"] == "deny"
+    assert tool in response["reason"]
+    # With a session id the friction counter runs too; it must not crash on the payload.
+    response = handle_hook(root, "pre-tool", {**payload, "session_id": "s1"})
+    assert response["decision"] == "deny"

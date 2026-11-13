@@ -6,21 +6,27 @@ standard-library only (Python 3.10+) and must not import ``ai_dlc``.
 
 Usage: ``python3 aidlc_hook.py {session-start|pre-tool|stop}`` with the client's
 JSON hook payload on stdin. A pre-tool Edit or Write payload is delegated only when
-it targets ``docs/specs``; every other edit is allowed at once.
+it targets ``docs/specs``; every other edit is allowed at once. Shell calls arrive as
+``Bash``, ``PowerShell`` (Claude Code on native Windows) or ``exec_command`` (Codex).
 
 The shim delegates to ``ai-dlc hook <event>`` only when ``ai-dlc`` is on PATH,
 ``ai-dlc.toml`` exists at the repository root and the session is not inside a
 hangar sandbox (``HANGAR_WORKSPACE`` or ``HANGAR_JOB_ID`` set). Otherwise it
 denies only destructive shell commands, never applies the bound-push policy,
 and writes nothing to disk. ``AI_DLC_HOOKS=off`` disables every event and
-``AI_DLC_HOOKS=quiet`` suppresses the session-start line. Only exit 2 blocks;
-every other outcome exits 0 so a hook can never wedge a session.
+``AI_DLC_HOOKS=quiet`` suppresses the session-start line. Only exit 2 blocks.
+
+A pre-tool call fails closed: a payload the shim cannot read, a shell call without a
+command string, or an error inside the shim exits 2, and a delegate that gives no
+verdict (any exit but 0 or 2, or a timeout) falls back to the shim's own destructive
+check. session-start and stop never block on a failure, so they cannot wedge a session.
 """
 
 from __future__ import annotations
 
 import json
 import os
+import re
 import shlex
 import shutil
 import subprocess
@@ -34,13 +40,23 @@ EVENTS = ("session-start", "pre-tool", "stop")
 # docs/specs has guidance (ai-dlc hook warns to reconcile the reviewed work record);
 # every other edit is allowed without starting the CLI.
 EDIT_TOOLS = ("Edit", "Write")
+# Shell tools whose command the hook judges: Claude Code's Bash and, on native Windows,
+# PowerShell; Codex's exec_command (its command is under "cmd").
+SHELL_TOOLS = ("Bash", "PowerShell", "exec_command")
 SPECIFICATION_DIRECTORY = ("docs", "specs")
 HANGAR_VARIABLES = ("HANGAR_WORKSPACE", "HANGAR_JOB_ID")
-DELEGATE_TIMEOUT_SECONDS = 8
+# Root lookup (3 s) plus the delegate (4 s) stays inside the client's 10 s hook timeout,
+# so the shim answers before the client kills it.
+ROOT_TIMEOUT_SECONDS = 3
+DELEGATE_TIMEOUT_SECONDS = 4
 DESTRUCTIVE_REASON = (
     "Destructive operation denied by the ai-dlc workflow plugin: this hook cannot request "
     "native approval. Review and authorize it through the client's native controls, or set "
     "AI_DLC_HOOKS=off to disable the plugin hooks."
+)
+UNJUDGED_REASON = (
+    "Blocked by the ai-dlc workflow plugin: it could not read a command to check in this "
+    "tool call. Set AI_DLC_HOOKS=off to disable the plugin hooks."
 )
 NOT_ADOPTED_LINE = (
     "ai-dlc workflow plugin active; this repo is not adopted, so lifecycle commands are "
@@ -77,6 +93,21 @@ def command_segments(command: str) -> list[list[str]] | None:
     except ValueError:
         return None
     return [segment for segment in segments if segment]
+
+
+def shell_text(tool: object, command: str) -> str:
+    """The command text to classify for one shell tool.
+
+    PowerShell is case-insensitive and uses the backtick as its escape and line
+    continuation, where a POSIX shell uses it for substitution. So a PowerShell line is
+    lowercased, its continuations joined and its escapes resolved before classifying:
+    ``git reset `--hard`` is judged as ``git reset --hard``.
+    """
+    if tool != "PowerShell":
+        return command
+    text = re.sub(r"`\r?\n", " ", command.lower())
+    text = re.sub("`[\"']", "", text)  # an escaped quote neither opens nor closes a string
+    return re.sub(r"`(.)", r"\1", text, flags=re.DOTALL)
 
 
 def classify_command(command: str) -> str:
@@ -132,7 +163,7 @@ def repository_root(payload: Mapping[str, Any], env: Mapping[str, str]) -> Path:
             cwd=start,
             capture_output=True,
             text=True,
-            timeout=5,
+            timeout=ROOT_TIMEOUT_SECONDS,
             check=False,
         )
     except (OSError, subprocess.SubprocessError):
@@ -175,7 +206,9 @@ def _delegate(
     payload: Mapping[str, Any],
     stdout: IO[str],
     stderr: IO[str],
-) -> int:
+) -> int | None:
+    """Run ``ai-dlc hook``; return its exit code, or None when it gave no verdict."""
+    fallback = "allowed after the plugin's own check" if event == "pre-tool" else "allowed"
     try:
         result = subprocess.run(
             [executable, "hook", event, "--root", str(root)],
@@ -186,17 +219,38 @@ def _delegate(
             check=False,
         )
     except (OSError, subprocess.SubprocessError) as exc:
-        stderr.write(f"ai-dlc workflow plugin: ai-dlc hook {event} did not run ({exc}); allowed.\n")
-        return 0
+        stderr.write(
+            f"ai-dlc workflow plugin: ai-dlc hook {event} did not run ({exc}); {fallback}.\n"
+        )
+        return None
     if result.returncode == 2:
         stderr.write(result.stderr)
         return 2
     if result.returncode != 0:
         stderr.write(
-            f"ai-dlc workflow plugin: ai-dlc hook {event} exited {result.returncode}; allowed.\n"
+            f"ai-dlc workflow plugin: ai-dlc hook {event} exited {result.returncode}; {fallback}.\n"
         )
-        return 0
+        return None
     stdout.write(result.stdout)
+    return 0
+
+
+def local_pre_tool(payload: Mapping[str, Any], stderr: IO[str]) -> int:
+    """The shim's own pre-tool verdict: deny destructive commands, fail closed otherwise."""
+    tool = payload.get("tool_name")
+    if isinstance(tool, str) and tool not in SHELL_TOOLS:
+        return 0  # Edit, Write and any other named tool carry no shell command
+    tool_input = payload.get("tool_input")
+    data = tool_input if isinstance(tool_input, dict) else {}
+    command = data.get("command", data.get("cmd"))
+    if not isinstance(command, str):
+        stderr.write(UNJUDGED_REASON + "\n")
+        return 2
+    if classify_command(shell_text(tool, command)) == "destructive":
+        stderr.write(DESTRUCTIVE_REASON + "\n")
+        return 2
+    # The bound-push policy belongs to adopted local repositories; hangar's verify
+    # gate and landing own publication inside sandboxes.
     return 0
 
 
@@ -217,42 +271,48 @@ def run(
         stderr.write(f"ai-dlc workflow plugin: unknown hook event {event!r}; allowed.\n")
         return 0
     try:
-        payload = json.loads(stdin.read() or "{}")
+        raw = stdin.read()
+        # A client always sends a pre-tool payload, so an empty one is unreadable there.
+        payload = json.loads(raw if raw.strip() or event == "pre-tool" else "{}")
     except (ValueError, UnicodeDecodeError):
         payload = None
     if not isinstance(payload, dict):
-        # A malformed payload carries no command to judge; never block on it.
+        # A malformed pre-tool payload may still be a shell call: fail closed. The other
+        # events have nothing to judge, so they carry on with an empty payload.
         if event == "pre-tool":
-            return 0
+            stderr.write(UNJUDGED_REASON + "\n")
+            return 2
         payload = {}
     root = repository_root(payload, env)
     tool = payload.get("tool_name")
-    if event == "pre-tool" and tool in EDIT_TOOLS and not specification_edit(payload, root):
-        return 0
+    if event == "pre-tool":
+        if tool in EDIT_TOOLS and not specification_edit(payload, root):
+            return 0
+        # The shim's own check runs first, so neither a broken CLI nor one older than
+        # this plugin (which may not know a shell tool such as PowerShell) can let a
+        # destructive command through. The CLI then adds the bound-push policy.
+        verdict = local_pre_tool(payload, stderr)
+        if verdict or not (tool in SHELL_TOOLS or tool in EDIT_TOOLS):
+            return verdict
     executable, line = delegate_mode(root, env, which)
     if executable:
-        return _delegate(executable, event, root, payload, stdout, stderr)
-    if event == "session-start":
-        if mode != "quiet":
-            stdout.write(line + "\n")
-        return 0
-    if event == "stop":
-        return 0
-    tool_input = payload.get("tool_input")
-    data = tool_input if isinstance(tool_input, dict) else {}
-    command = data.get("command", data.get("cmd", ""))
-    if isinstance(command, str) and classify_command(command) == "destructive":
-        stderr.write(DESTRUCTIVE_REASON + "\n")
-        return 2
-    # The bound-push policy belongs to adopted local repositories; hangar's verify
-    # gate and landing own publication inside sandboxes.
+        code = _delegate(executable, event, root, payload, stdout, stderr)
+        return 0 if code is None else code
+    if event == "session-start" and mode != "quiet":
+        stdout.write(line + "\n")
     return 0
 
 
 def main() -> int:
     try:
         return run(sys.argv, sys.stdin, sys.stdout, sys.stderr, os.environ)
-    except Exception as exc:  # noqa: BLE001 -- a hook must never wedge a session
+    except Exception as exc:  # noqa: BLE001 -- only a pre-tool failure may block
+        if (
+            sys.argv[1:2] == ["pre-tool"]
+            and os.environ.get("AI_DLC_HOOKS", "").strip().lower() != "off"
+        ):
+            sys.stderr.write(f"ai-dlc workflow plugin: hook failed ({exc}); blocked.\n")
+            return 2
         sys.stderr.write(f"ai-dlc workflow plugin: hook failed ({exc}); allowed.\n")
         return 0
 

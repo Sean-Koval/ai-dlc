@@ -51,10 +51,11 @@ AUTHORED = frozenset({"README.md"})
 NATIVE = "native/codex"
 CODEX_HOOK_ROOT = "${PLUGIN_ROOT:-${CODEX_HOME:-$HOME/.codex}/" + PLUGIN + "}"
 HOOK_EVENTS = (("SessionStart", "session-start"), ("PreToolUse", "pre-tool"), ("Stop", "stop"))
-# Claude Code's file-edit tools reach the shim too, so the docs/specs warning in
-# `ai-dlc hook pre-tool` can fire. Codex has no Edit or Write tool (it edits
-# through apply_patch), so its matcher stays shell-only.
-CLAUDE_PRE_TOOL_MATCHER = "Bash|exec_command|Edit|Write"
+# Claude Code runs shell commands as Bash, or as PowerShell on native Windows, so
+# both reach the shim's destructive check. Its file-edit tools reach the shim too,
+# so the docs/specs warning in `ai-dlc hook pre-tool` can fire. Codex has no Edit or
+# Write tool (it edits through apply_patch), so its matcher stays shell-only.
+CLAUDE_PRE_TOOL_MATCHER = "Bash|PowerShell|exec_command|Edit|Write"
 CODEX_PRE_TOOL_MATCHER = "Bash|exec_command"
 # A fully featured adopted configuration exposes every conditional guidance line;
 # the filter below then keeps only what holds without a concrete project.

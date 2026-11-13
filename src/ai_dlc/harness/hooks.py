@@ -6,7 +6,11 @@ import stat
 import tomllib
 from pathlib import Path
 
-from ai_dlc.harness.hook_shim import classify_command  # one classifier for CLI and plugin
+from ai_dlc.harness.hook_shim import (  # one classifier for CLI and plugin
+    SHELL_TOOLS,
+    classify_command,
+    shell_text,
+)
 
 SESSION_INSTRUCTION = "Read AGENTS.md and .ai-dlc/work; run ai-dlc next for the full summary."
 SESSION_SUMMARY_LINES = 10
@@ -292,10 +296,16 @@ def _handle_hook(root: Path, event: str, payload: dict) -> dict:
                 "decision": "allow",
                 "warning": "Specification edit: reconcile implementation and reviewed work record before review.",
             }
-    if tool not in {"Bash", "exec_command"}:
+    if tool not in SHELL_TOOLS:
         return {"decision": "allow", "coverage": "unsupported tool payload"}
-    data = payload.get("tool_input", {})
-    category = classify_command(data.get("command", data.get("cmd", "")))
+    data = payload.get("tool_input")
+    command = data.get("command", data.get("cmd")) if isinstance(data, dict) else None
+    if not isinstance(command, str):
+        return {
+            "decision": "deny",
+            "reason": f"No command to check in this {tool} call; denied.",
+        }
+    category = classify_command(shell_text(tool, command))
     if category == "destructive":
         return {
             "decision": "deny",
