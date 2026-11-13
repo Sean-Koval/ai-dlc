@@ -43,7 +43,7 @@ that speaks the provider contract. The gates check a real local merge and the re
 
 The workflow plugin's skills, as Claude Code lists them, and the checks a project requires:
 
-![Claude Code lists the ai-dlc-workflow plugin: eleven skills and three hooks](assets/front/plugin-skills.svg)
+![Claude Code lists the ai-dlc-workflow plugin: ten skills and three hooks](assets/front/plugin-skills.svg)
 
 <picture>
 <source media="(max-width: 600px)" srcset="assets/front/project-check-phone.svg" width="379" height="435">
@@ -101,7 +101,7 @@ ai-dlc project check --required
 | --- | --- | --- |
 | Machine enrollment | Versioned profiles pin runtimes, tools, agent clients and named credentials; each machine keeps its own paths and accounts | [Machine enrollment](runbooks/machine-enrollment.md) |
 | Project scaffolding | `project init` / `project adopt` for generic, Python, Node or Rust repositories, with setup steps and required checks | [Get started](workflows/get-started.md) |
-| Workflow plugin | Guidance, eleven skills and CLI-optional safety hooks for Claude Code, with a Codex form; off by default | [Workflow plugin](workflows/workflow-plugin.md) |
+| Workflow plugin | Guidance, ten skills and CLI-optional safety hooks for Claude Code, with a Codex form; off by default | [Workflow plugin](workflows/workflow-plugin.md) |
 | Work lifecycle | Reviewed work records bind an issue, branch, specification and PR; `work finish` gates on the merge and its CI receipt | [Development workflow](development-workflow.md) |
 | Receipts | `project check --required` runs the team's checks and writes a receipt bound to the commit | [Release verification](release-verification.md) |
 | Documentation upkeep | Catalog, impact review, dispositions and a docs gate; decision records with knowledge-note frontmatter | [Project documentation](design/project-documentation.md) |

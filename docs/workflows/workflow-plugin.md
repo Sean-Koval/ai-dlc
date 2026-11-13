@@ -1,7 +1,7 @@
 # Workflow plugin
 
 `plugins/ai-dlc-workflow/` is one optional Claude Code plugin: the workflow
-guidance as a skill, eleven more skills and hooks that work without the `ai-dlc` CLI.
+guidance as a skill, ten more skills and hooks that work without the `ai-dlc` CLI.
 A team harness can pin it as a single component and run with or without it. It is
 off by default (`defaultEnabled: false`). Try it locally:
 
