@@ -69,7 +69,7 @@ matches two customers is skipped too.
 
 A customer's `titles` match whole words, ignoring case, accents and Unicode
 compatibility forms such as full-width letters. "Alpha" matches "alpha: weekly" and
-"Alpha社定例". Japanese, Chinese and Thai have no spaces, so their characters
+"Alpha社定例", and a rule "Beta Corp" matches "beta-corp". Japanese, Chinese and Thai have no spaces, so their characters
 count as word edges.
 
 A title may hold the term only inside a longer word, as in "AlphaCorp renewal

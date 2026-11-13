@@ -570,6 +570,9 @@ def test_accents_and_a_joined_multi_word_term_never_send_a_meeting_to_the_team()
     ):
         found = routed(title)
         assert isinstance(found, dict) and found["project"] == project, title
+    for title in ("beta-corp review", "Beta_Corp sync", "Beta.Corp QBR", "Beta/Corp prep"):
+        found = routed(title)
+        assert isinstance(found, dict) and found["project"] == "beta", title
     joined = routed("BetaCorp renewal")
     assert isinstance(joined, str) and "inside a longer word" in joined and "beta" in joined
     # Thai vowels and Japanese voicing marks stay part of the word.

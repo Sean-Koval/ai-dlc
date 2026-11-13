@@ -329,7 +329,8 @@ def _title_match(title: str, pattern: str) -> str | None:
     A neighbour or pattern edge in a script written without spaces (Chinese, Japanese,
     Thai and the like) is a boundary, as such scripts have none to find.
     """
-    words = r"\s+".join(re.escape(word) for word in pattern.split())
+    # Words of a rule may be joined by spaces or by - _ . / ("beta-corp", "Beta_Corp").
+    words = r"[\s\-_./]+".join(re.escape(word) for word in pattern.split())
     if not words:
         return None
     found = None
