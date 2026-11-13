@@ -25,19 +25,25 @@ def _note_lock(root: Path):
 
 
 def _note_metadata(body: str) -> dict | None:
-    """Knowledge-note frontmatter (marker lines skipped), or ``None`` for older notes."""
+    """Record or knowledge-note frontmatter (marker lines skipped); ``None`` for older notes."""
     from ai_dlc.documentation.knowledge_notes import split, strip_markers
 
     try:
         data, _raw, _rest = split(strip_markers(body))
     except ValueError:
         return None
-    return data if data and "kind" in data else None
+    return data if data and ("kind" in data or "type" in data) else None
 
 
 def _as_date(value) -> date | None:
+    """A date, or a datetime's UTC date (``stale_after`` carries a timezone)."""
+    if isinstance(value, str) and "T" in value:
+        try:
+            value = datetime.fromisoformat(value)
+        except ValueError:
+            return None
     if isinstance(value, datetime):
-        return value.date()
+        return value.astimezone(UTC).date() if value.tzinfo else value.date()
     if isinstance(value, date):
         return value
     try:
@@ -86,8 +92,9 @@ class Knowledge:
     def recall(self, terms: list[str], limit: int = 5, today: date | None = None) -> list[dict]:
         """Return learning paths, a first content line and provenance, without writing.
 
-        Notes with knowledge-note frontmatter whose ``valid_to`` has passed are skipped;
-        ``stale`` marks a passed ``review_by``. Notes without frontmatter recall as before.
+        Notes with record or knowledge-note frontmatter whose ``valid_to`` has passed are
+        skipped; ``stale`` marks a passed ``stale_after`` (a record) or ``review_by`` (a
+        note, read until KAN-453). Notes without frontmatter recall as before.
         """
         today = today or datetime.now(UTC).date()
         limit = min(5, max(0, limit))
@@ -119,13 +126,21 @@ class Knowledge:
                 "path": str(path.relative_to(self.root)),
                 "first_line": lines[0] if lines else "",
             }
-            if meta:
+            if meta and "kind" in meta:
                 review_by = _as_date(meta.get("review_by"))
                 found.update(
                     kind=meta.get("kind"),
                     author=meta.get("author"),
                     review_by=review_by.isoformat() if review_by else None,
                     stale=bool(review_by and review_by < today),
+                )
+            elif meta:
+                stale_after = _as_date(meta.get("stale_after"))
+                found.update(
+                    type=meta.get("type"),
+                    author=meta.get("author"),
+                    stale_after=stale_after.isoformat() if stale_after else None,
+                    stale=bool(stale_after and stale_after < today),
                 )
             results.append(found)
             if len(results) >= limit:

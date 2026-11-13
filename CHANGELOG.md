@@ -18,6 +18,11 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 
 ### Added
 
+- `ai-dlc knowledge migrate` (KAN-452, [ADR 0005](docs/decisions/0005-migrate-knowledge-notes-to-records.md))
+  rewrites knowledge-note frontmatter as knowledge records. It is a dry run unless
+  `--write`, idempotent, and reversible with `--revert JOURNAL`. This repository's
+  decisions and the ADR templates are records now, and `work finish --learning`
+  writes `lesson` records.
 - `ai-dlc knowledge check DIR` (and MCP `knowledge_check`) validates a records
   directory against `KnowledgeRecord`, Open Knowledge Format v0.2 section 11, the
   `knowledge.toml` pin, typed-link integrity, duplicate sources and supersession;
@@ -101,6 +106,9 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 
 ### Deprecated
 
+- Knowledge-note frontmatter (`kind:`). The docs gate, recall, `knowledge check
+  --vault` and capture dedupe still read it, with a deprecation line, until ai-dlc
+  1.1 (KAN-453). Run `ai-dlc knowledge migrate --write`.
 - The Plane tracker adapter: shipped but unsupported and unqualified.
   `project init` and `project adopt` refuse `--tracker plane` without
   `--allow-unsupported` (#200; PR #211).

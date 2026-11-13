@@ -1,20 +1,26 @@
 ---
-id: decision/0004-knowledge-system-scope
-kind: decision
+id: DEC-0004
+type: decision
 scope: team
-label: internal
 status: accepted
+date: 2026-11-12
+owner: Sean-Koval
 sources:
-  - uri: https://seanmkoval.atlassian.net/browse/KAN-454
-    hash: jira-issue:KAN-454
-  - uri: https://seanmkoval.atlassian.net/browse/KAN-471
-    hash: jira-comment:10477
-author: human:Sean-Koval
-confidence: high
+- resource: https://seanmkoval.atlassian.net/browse/KAN-454
+  hash: jira-issue:KAN-454
+- resource: https://seanmkoval.atlassian.net/browse/KAN-471
+  hash: jira-comment:10477
+links:
+- type: supersedes
+  target: DEC-0003
+title: 0004 The knowledge system is in scope, on Open Knowledge Format
+label: internal
 valid_from: 2026-11-12
-valid_to: null
-review_by: 2027-05-12
-supersedes: []
+stale_after: '2027-05-12T00:00:00Z'
+confidence: high
+author: human:Sean-Koval
+aliases:
+- decision/0004-knowledge-system-scope
 ---
 # 0004 The knowledge system is in scope, on Open Knowledge Format
 

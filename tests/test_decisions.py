@@ -7,7 +7,7 @@ from pathlib import Path
 from typer.testing import CliRunner
 
 from ai_dlc.cli import app
-from ai_dlc.documentation import knowledge_notes
+from ai_dlc.documentation import knowledge_migrate, knowledge_notes, knowledge_records
 from ai_dlc.documentation.decisions import EDITED, decision_findings
 from ai_dlc.files import assets
 from ai_dlc.setup.templates import adopt
@@ -15,6 +15,34 @@ from ai_dlc.setup.templates import adopt
 ROOT = Path(__file__).resolve().parents[1]
 
 ACCEPTED = """---
+id: DEC-0007
+type: decision
+scope: team
+status: accepted
+date: 2026-10-20
+owner: sean-koval
+sources: [{resource: "https://github.com/o/r/pull/45", hash: "git:abc123"}]
+links: []
+label: internal
+author: human:sean-koval
+confidence: high
+valid_from: 2026-10-20
+stale_after: 2027-04-20T00:00:00Z
+checks:
+  - id: landing-stays-in-hangar
+    scope: job
+    assert: {never: {event: pr.merge, where: {hangar.pr.merged_by: {not: "hangar-landing[bot]"}}}}
+    severity: warn
+---
+# 0007 Landing stays in hangar
+
+## Decision
+
+Hangar lands every pull request.
+"""
+
+# The same decision in the knowledge-note shape, read until KAN-453 removes it.
+LEGACY = """---
 id: decision/0007-landing-stays-in-hangar
 kind: decision
 scope: team
@@ -75,8 +103,9 @@ def test_project_init_ships_the_convention(tmp_path):
     assert template == (assets("agents") / "templates/adr.md").read_bytes()
     data, _raw, body = knowledge_notes.split(template.decode())
     assert data is not None
-    assert {"id", "kind", "status", "sources", "author", "review_by", "supersedes"} <= set(data)
-    assert data["kind"] == "decision" and data["status"] == "proposed"
+    assert {"id", "type", "status", "date", "owner", "sources", "links", "author"} <= set(data)
+    assert data["type"] == "decision" and data["status"] == "proposed"
+    assert "kind" not in data and "review_by" not in data
     for heading in ["Context", "Options considered", "Decision", "Consequences", "Links"]:
         assert f"## {heading}" in body
 
@@ -135,13 +164,13 @@ def test_editing_an_accepted_body_fails_until_superseded(tmp_path):
     )
     path.write_text(superseded)
     assert any("valid_to" in f["message"] for f in errors(tmp_path))
-    path.write_text(superseded.replace("valid_to: null", "valid_to: 2026-12-01"))
+    path.write_text(superseded.replace("valid_from:", "valid_to: 2026-12-01\nvalid_from:"))
     assert errors(tmp_path) == []
 
 
 def test_frontmatter_edits_to_an_accepted_record_are_allowed(tmp_path):
     path = repository(tmp_path)
-    path.write_text(ACCEPTED.replace("review_by: 2027-04-20", "review_by: 2027-06-01"))
+    path.write_text(ACCEPTED.replace("stale_after: 2027-04-20", "stale_after: 2027-06-01"))
     assert errors(tmp_path) == []
 
 
@@ -156,19 +185,45 @@ def test_records_without_frontmatter_are_information_only(tmp_path):
 
 
 def test_this_repositorys_decisions_validate():
-    assert errors(ROOT) == []
-    data, _raw, _body = knowledge_notes.split(
-        (ROOT / "docs/decisions/0001-refocus-ai-dlc.md").read_text()
-    )
-    assert data is not None
-    assert data["id"] == "decision/0001-refocus-ai-dlc" and data["status"] == "accepted"
-    assert knowledge_notes.errors(data) == []
+    assert [f for f in decision_findings(ROOT) if f["severity"] != "info"] == []
+    for path in sorted((ROOT / "docs/decisions").glob("0*.md")):
+        data, _raw, _body = knowledge_notes.split(path.read_text())
+        assert data is not None and knowledge_records.errors(data) == [], path
+        assert data["type"] == "decision" and data["id"] == f"DEC-{path.name[:4]}"
+    data = knowledge_notes.split((ROOT / "docs/decisions/0001-refocus-ai-dlc.md").read_text())[0]
+    assert data is not None and data["aliases"] == ["decision/0001-refocus-ai-dlc"]
+    adr4 = knowledge_notes.split(
+        (ROOT / "docs/decisions/0004-knowledge-system-scope.md").read_text()
+    )[0]
+    assert adr4 is not None and adr4["links"] == [{"type": "supersedes", "target": "DEC-0003"}]
+
+
+def test_legacy_decision_still_validates_with_a_deprecation_warning(tmp_path):
+    repository(tmp_path, LEGACY)
+    findings = decision_findings(tmp_path)
+    assert [(f["code"], f["severity"]) for f in findings] == [("decision-deprecated", "warning")]
+    assert f"ai-dlc {knowledge_migrate.LEGACY_DROPPED_IN}" in findings[0]["message"]
+    assert docs_check(tmp_path).exit_code == 0
+
+
+def test_legacy_decision_schema_errors_still_fail(tmp_path):
+    repository(tmp_path, LEGACY.replace("status: accepted\n", ""))
+    assert any("status" in f["message"] for f in errors(tmp_path))
+
+
+def test_record_id_must_match_the_file_number(tmp_path):
+    repository(tmp_path, ACCEPTED.replace("id: DEC-0007", "id: DEC-0008"))
+    assert [(f["code"], f["message"]) for f in decision_findings(tmp_path)] == [
+        ("decision-id", "id should be DEC-0007.")
+    ]
 
 
 def test_schema_accepts_flightdeck_fixture_shape():
-    """flightdeck's ADR fixture (frontmatter form) validates once the schema's fields exist."""
+    """flightdeck's ADR fixture (frontmatter form) validates in both shapes."""
     data = knowledge_notes.split(ACCEPTED)[0]
     assert data is not None
-    schema = json.loads((ROOT / "contracts/knowledge-note.schema.json").read_text())
+    schema = json.loads((ROOT / "contracts/knowledge-record.schema.json").read_text())
     assert "checks" in schema["properties"] and "status" in schema["properties"]
-    assert knowledge_notes.errors(data) == []
+    assert knowledge_records.errors(data) == []
+    legacy = knowledge_notes.split(LEGACY)[0]
+    assert legacy is not None and knowledge_notes.errors(legacy) == []

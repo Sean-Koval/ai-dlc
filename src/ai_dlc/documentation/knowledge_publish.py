@@ -47,7 +47,7 @@ def source_sha256(data: bytes) -> str:
 
 
 def captured(vault: Path | str, sha256: str) -> list[str]:
-    """Vault notes whose ``source.sha256`` is ``sha256``; read-only."""
+    """Vault notes whose ``source.sha256``, or records whose sources hash, is ``sha256``."""
     root = _vault(vault)
     found = []
     for path in sorted(root.rglob("*.md")):
@@ -60,7 +60,12 @@ def captured(vault: Path | str, sha256: str) -> list[str]:
         except ValueError:
             continue
         source = (data or {}).get("source")
-        if isinstance(source, dict) and source.get("sha256") == sha256:
+        entries = (data or {}).get("sources") if "type" in (data or {}) else None
+        # A migrated capture is a Source record with a sha256:<digest> sources hash.
+        hashes = [e.get("hash") for e in entries or [] if isinstance(e, dict)]
+        if (isinstance(source, dict) and source.get("sha256") == sha256) or (
+            f"sha256:{sha256}" in hashes
+        ):
             found.append(str(path.relative_to(root)))
     return found
 

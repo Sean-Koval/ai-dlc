@@ -1,20 +1,24 @@
 ---
-id: decision/0002-jira-work-tracker-and-trace-correlation
-kind: decision
+id: DEC-0002
+type: decision
 scope: team
-label: internal
 status: accepted
+date: 2026-11-04
+owner: Sean-Koval
 sources:
-  - uri: https://seanmkoval.atlassian.net/browse/KAN-267
-    hash: jira-comment:10241
-  - uri: https://seanmkoval.atlassian.net/browse/KAN-268
-    hash: jira-comment:10242
-author: human:Sean-Koval
-confidence: high
+- resource: https://seanmkoval.atlassian.net/browse/KAN-267
+  hash: jira-comment:10241
+- resource: https://seanmkoval.atlassian.net/browse/KAN-268
+  hash: jira-comment:10242
+links: []
+title: 0002 Jira Cloud is the work tracker, and ai-dlc correlates traces
+label: internal
 valid_from: 2026-11-04
-valid_to: null
-review_by: 2027-05-04
-supersedes: []
+stale_after: '2027-05-04T00:00:00Z'
+confidence: high
+author: human:Sean-Koval
+aliases:
+- decision/0002-jira-work-tracker-and-trace-correlation
 ---
 # 0002 Jira Cloud is the work tracker, and ai-dlc correlates traces
 

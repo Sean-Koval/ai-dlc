@@ -17,7 +17,7 @@ What the recurring words in these docs mean, for a reader new to ai-dlc. The
 | Finish gates | `specification-current`, `pr-merged` and `ci-green`; `work finish` closes the ticket only when all pass. |
 | Tracker writes | `[work] tracker_writes`: `lifecycle` (default) or `finish-only`, where hangar intake owns starting work. |
 | Documentation gate | `ai-dlc docs gate`: every changed catalogued document has a current reviewed disposition and no new objective defect. |
-| Knowledge note | Markdown with the frontmatter in `contracts/knowledge-note.schema.json`; used by learnings and decision records. |
+| Knowledge note | The older `kind:` frontmatter in `contracts/knowledge-note.schema.json`; read until ai-dlc 1.1, migrated to knowledge records (ADR 0005). |
 | Frozen | Kept working and open to bug fixes, but closed to new features (ADR 0001's frozen list). |
 | Tower | The suite's governance plane: policy decisions, approvals and receipts. ADR 0001 calls it by its earlier name, the governed workspace. |
 
