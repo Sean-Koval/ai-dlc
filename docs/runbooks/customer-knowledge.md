@@ -17,7 +17,7 @@ CODEOWNERS, a README, the check workflow, `projects/acme/` and `inbox/`. It sets
 `[wiki]`, so nothing renders to Confluence.
 
 Its CI pins ai-dlc's workflows to the installed release tag. Pass `--ai-dlc-ref`
-with a later tag or a commit to change it; never a branch.
+with a later tag or a commit to change it; never a branch. Without it, init warns.
 
 Host it where the contract says: a private repository on the company's GitHub, or
 the customer's own systems. Add every customer name, host and identifier you know

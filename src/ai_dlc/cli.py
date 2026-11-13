@@ -1852,6 +1852,8 @@ def knowledge_init(
             deny=deny or [],
             ai_dlc_ref=ai_dlc_ref,
         )
+    for warning in result["warnings"]:
+        typer.echo(f"Warning: {warning}", err=True)
     emit(result)
 
 

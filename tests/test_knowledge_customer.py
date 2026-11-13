@@ -143,10 +143,21 @@ def test_init_customer_makes_its_own_git_repository(tmp_path):
     assert (tmp_path / "acme-knowledge" / ".git").is_dir()
 
 
+def test_init_customer_warns_when_ci_falls_back_to_the_installed_release(tmp_path):
+    planned = init_customer(tmp_path / "a", "acme", dry_run=True, codeowners=["@org/fde"])
+    assert len(planned["warnings"]) == 1 and release_ref() in planned["warnings"][0]
+    assert "--ai-dlc-ref" in planned["warnings"][0]
+    pinned = init_customer(
+        tmp_path / "b", "acme", dry_run=True, codeowners=["@org/fde"], ai_dlc_ref="v9.9.9"
+    )
+    assert pinned["warnings"] == []
+
+
 def test_cli_init_dry_run_writes_nothing(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     result = CliRunner().invoke(app, ["knowledge", "init", "--customer", "acme", "--dry-run"])
     assert result.exit_code == 0, result.output
+    assert f"Warning: CI is pinned to {release_ref()}" in result.stderr
     assert not (tmp_path / "acme-knowledge").exists()
 
 

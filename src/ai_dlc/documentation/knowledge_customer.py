@@ -224,6 +224,12 @@ def init_customer(
         if any(o.strip() for o in codeowners)
         else ["CODEOWNERS names no owner; pass --codeowner @org/team or edit it"],
     }
+    if ai_dlc_ref is None:
+        result["warnings"].append(
+            f"CI is pinned to {release_ref()}, the installed release. A release that "
+            "predates the knowledge workflows cannot run them, so CI would not check "
+            "this repository; pass --ai-dlc-ref with a tag or commit that has them"
+        )
     if dry_run:
         return result
     for relative, text in files.items():
