@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Any
 
 from ai_dlc.documentation import knowledge_bundle, record_index
+from ai_dlc.documentation.knowledge_check import team_inputs, visible_in
 from ai_dlc.documentation.knowledge_records import KnowledgeRecord, SourceRef, payload_expires
 
 BODY_LIMIT = 1200
@@ -52,15 +53,8 @@ class _Store:
 
 
 def _visible(item: Any, project: str | None) -> bool:
-    """Whether a record may be shown to a caller working in ``project``.
-
-    TODO(#261): replace with ``knowledge_check.visible_in(record, path, project)``
-    once KAN-465 merges. Until then a ``boundary: customer`` record is shown only
-    to a caller naming the project it sits under (``projects/<name>/``).
-    """
-    if item.record.boundary != "customer":
-        return True
-    return bool(project) and item.relative.startswith(f"projects/{project}/")
+    """The customer boundary (KAN-465): ``knowledge_check.visible_in``."""
+    return visible_in(item.record, item.relative, project)
 
 
 def why(root: Path | str, id: str, project: str | None = None) -> dict[str, Any]:
@@ -73,12 +67,7 @@ def why(root: Path | str, id: str, project: str | None = None) -> dict[str, Any]
     if not folder.is_dir():
         raise ValueError(f"records directory not found: {root}")
     store = _Store(folder, project)
-    try:
-        # TODO(#261): pass project= once get takes it (KAN-465); _visible guards until then.
-        found = record_index.get(folder, id)
-    except LookupError:
-        found = None
-    item = store.find(found["id"]) if found else None
+    item = _get(store, folder, id, project)
     if item is None:
         return {
             "status": "not_found",
@@ -97,6 +86,24 @@ def why(root: Path | str, id: str, project: str | None = None) -> dict[str, Any]
         "tickets": _tickets(store, item),
         "evidence": [_evidence(store, entry) for entry in record.sources],
     }
+
+
+def _get(store: _Store, folder: Path, id: str, project: str | None) -> Any:
+    """The record named ``id`` as the git provider's ``get(id, project)`` finds it.
+
+    Customer records of other projects are left out before matching (``team_inputs``),
+    so they are not found and no error names their paths.
+    """
+    entries, _invalid = record_index.scan(folder)
+    matches = [
+        entry
+        for entry in team_inputs(entries, project)
+        if id in (entry["record"].id, *(entry["record"].aliases or ()))
+    ]
+    if len(matches) > 1:
+        paths = ", ".join(entry["path"] for entry in matches)
+        raise ValueError(f"id or alias {id} is ambiguous: {paths}")
+    return store.find(matches[0]["record"].id) if matches else None
 
 
 def _summary(item: Any) -> dict[str, Any]:
