@@ -90,11 +90,9 @@ Obsidian vaults support portal linking and explicit local project mounts; vault
 creation is not provided. Guided setup exists for GitHub, Jira Cloud and the
 unsupported Plane adapter.
 
-MCP includes `work_context`, `work_review`, `work_publish`, `work_start`, `work_status`,
-`work_link`, `work_finish`, `doctor`, `knowledge_find`, `knowledge_append`,
-`knowledge_note`, `knowledge_check`, `knowledge_index`, `knowledge_number_plan` and
-`knowledge_render`,
-plus project-document and workspace tools. CLI names use spaces: `ai-dlc work publish`.
+MCP serves the work, knowledge, tracker, doctor, project-document and workspace tools.
+Their names join CLI words with underscores: `work_pr` is `ai-dlc work pr`.
+`tracker_create` and `tracker_update` refuse `exec:agent`.
 
 ## Command and service map
 

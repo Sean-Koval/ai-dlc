@@ -1,0 +1,63 @@
+{
+  "additionalProperties": false,
+  "description": "Replace the given fields of an open item; omitted fields stay as they are.",
+  "properties": {
+    "body": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Body"
+    },
+    "labels": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Native tracker labels to set. A provider that cannot write labels does not list update among its optional operations, and callers refuse labels before writing.",
+      "title": "Labels"
+    },
+    "operation_id": {
+      "minLength": 1,
+      "title": "Operation Id",
+      "type": "string"
+    },
+    "reference": {
+      "minLength": 1,
+      "title": "Reference",
+      "type": "string"
+    },
+    "title": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Title"
+    }
+  },
+  "required": [
+    "reference",
+    "operation_id"
+  ],
+  "title": "Update",
+  "type": "object"
+}

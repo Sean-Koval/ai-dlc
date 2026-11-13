@@ -7,9 +7,16 @@ and results are validated against the provider contract. Results carry ``status`
 
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Any
+from typing import Any, TypedDict
 
 from ai_dlc.errors import RefusedError
+
+
+class ProposedRecord(TypedDict):
+    """One record file to propose: its repository path and its full text."""
+
+    path: str
+    text: str
 
 
 def _template_dir() -> Path:

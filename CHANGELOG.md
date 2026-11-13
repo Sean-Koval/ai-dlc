@@ -18,6 +18,14 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 
 ### Added
 
+- The MCP surface an agent with only `ai-dlc mcp serve` needs (KAN-441): `work_new`,
+  `work_pr`, `work_archive`; `knowledge_search` and `knowledge_get` (with `project`, so
+  customer records stay in their project), `knowledge_propose` and `knowledge_template`;
+  and `tracker_get`, `tracker_create` and `tracker_update` through the tracker role.
+  The tracker tools refuse `exec:agent` (and `lane:agent`) in any letter case and
+  return the item's `exec:` labels. There is still no transition tool. The tracker
+  contract gains optional `labels` on `create` and an optional `update` operation,
+  implemented by `jira-cloud` and not yet live-qualified.
 - A `wiki` role (`upsert_page`, `get_page_by_key`, `list_children`) with a
   `confluence-cloud` provider, and `ai-dlc knowledge render --changed-since SHA
   [--dry-run]` (MCP `knowledge_render`), the wiki's only writer (KAN-430). It renders

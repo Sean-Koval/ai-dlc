@@ -1,6 +1,7 @@
 """Local stdio MCP; no raw provider mutations or alternate completion path."""
 
 from pathlib import Path
+from typing import Any
 
 from mcp.server.fastmcp import FastMCP
 
@@ -8,9 +9,11 @@ from ai_dlc.cli import config_for
 from ai_dlc.work.workflow import WorkService
 
 
-def _register_work_tools(server: FastMCP, root: Path, machine: Path | None) -> None:
+def _register_work_tools(
+    server: FastMCP, root: Path, machine: Path | None, registry: Any = None
+) -> None:
     def work():
-        return WorkService.from_project(root, machine=machine)
+        return WorkService.from_project(root, machine=machine, registry=registry)
 
     @server.tool()
     def work_context(brief: bool = False) -> dict:
@@ -18,6 +21,38 @@ def _register_work_tools(server: FastMCP, root: Path, machine: Path | None) -> N
         from ai_dlc.work.workflow import build_context
 
         return build_context(root, brief=brief)
+
+    @server.tool()
+    def work_new(
+        work_id: str,
+        from_issue: str | None = None,
+        title: str | None = None,
+        scope: str | None = None,
+        requires_spec: bool | None = None,
+        spec_reason: str | None = None,
+        acceptance: list[str] | None = None,
+    ) -> dict:
+        """Create an unreviewed local work record from explicit fields or a tracker issue."""
+        record = work().new(
+            work_id,
+            tracker_reference=from_issue,
+            title=title,
+            scope=scope,
+            requires_spec=requires_spec,
+            spec_reason=spec_reason,
+            acceptance=acceptance,
+        )
+        return {"status": "created", "work": record}
+
+    @server.tool()
+    def work_pr(work_id: str) -> dict:
+        """Open the pull request for the bound branch once, link it and commit the record."""
+        return work().pr(work_id)
+
+    @server.tool()
+    def work_archive(work_id: str) -> dict:
+        """Archive this work's active OpenSpec change and commit its affected files."""
+        return work().archive(work_id)
 
     @server.tool()
     def work_review(work_id: str, reviewer: str | None = None) -> dict:
@@ -246,14 +281,95 @@ def _register_knowledge_record_tools(server: FastMCP, root: Path) -> None:
         return index_records(root / records, write=write)
 
 
-def make_server(root: Path, machine: Path | None = None) -> FastMCP:
+def _register_knowledge_records_tools(server: FastMCP, root: Path, config: dict, registry) -> None:
+    from ai_dlc.documentation.knowledge_service import ProposedRecord
+
+    def store():
+        from ai_dlc.documentation.knowledge_service import KnowledgeRecords
+
+        return KnowledgeRecords(root, config, registry=registry)
+
+    @server.tool()
+    def knowledge_search(
+        type: str | None = None,
+        scope: str | None = None,
+        labels: list[str] | None = None,
+        status: str | None = None,
+        text: str | None = None,
+        project: str | None = None,
+    ) -> dict:
+        """Find records through the knowledge role; ``text`` also reads bodies.
+
+        Customer records come back only when ``project`` names their own project.
+        """
+        return store().search(type, scope, labels, status, text, project)
+
+    @server.tool()
+    def knowledge_get(id: str, project: str | None = None) -> dict:
+        """One record by id or alias, with its body; a customer record only for its project."""
+        return store().get(id, project)
+
+    @server.tool()
+    def knowledge_propose(
+        records: list[ProposedRecord], branch: str, title: str, body: str = ""
+    ) -> dict:
+        """Check records, push them on a new branch of the knowledge store and open a draft PR."""
+        return store().propose([dict(item) for item in records], branch, title, body)
+
+    @server.tool()
+    def knowledge_template(type: str | None = None) -> dict:
+        """The packaged template for one record type; without ``type``, the types."""
+        from ai_dlc.documentation.knowledge_service import template, templates
+
+        return templates() if type is None else template(type)
+
+
+def _register_tracker_tools(server: FastMCP, root: Path, config: dict, registry) -> None:
+    def tracker():
+        from ai_dlc.work.tracker_items import TrackerItems
+
+        return TrackerItems(root, config, registry=registry)
+
+    @server.tool()
+    def tracker_get(reference: str) -> dict:
+        """Read one tracker item through the tracker role, with its exec: labels."""
+        return tracker().get(reference)
+
+    @server.tool()
+    def tracker_create(
+        title: str, body: str = "", labels: list[str] | None = None, correlation: str | None = None
+    ) -> dict:
+        """File a tracker item once through the tracker role; refuses exec:agent in any case.
+
+        A repeat with the same correlation (default: title and body) returns the first item.
+        """
+        return tracker().create(title, body, labels, correlation)
+
+    @server.tool()
+    def tracker_update(
+        reference: str,
+        title: str | None = None,
+        body: str | None = None,
+        labels: list[str] | None = None,
+    ) -> dict:
+        """Set the title, body or whole label set of an open item; never its status.
+
+        Refuses exec:agent in any case, and keeps one a person already set.
+        """
+        return tracker().update(reference, title, body, labels)
+
+
+def make_server(root: Path, machine: Path | None = None, *, registry: Any = None) -> FastMCP:
+    """``registry`` replaces the providers of the project, for tests."""
     config = config_for(root, machine)
     server = FastMCP("ai-dlc")
-    _register_work_tools(server, root, machine)
+    _register_work_tools(server, root, machine, registry)
     _register_docs_tools(server, root)
     _register_workspace_tools(server, root, config)
     _register_knowledge_tools(server, root, config)
     _register_knowledge_record_tools(server, root)
+    _register_knowledge_records_tools(server, root, config, registry)
+    _register_tracker_tools(server, root, config, registry)
     return server
 
 

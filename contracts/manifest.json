@@ -42,6 +42,7 @@
               "read",
               "link",
               "transition",
+              "update",
               "current",
               "merged",
               "ci",
@@ -127,6 +128,7 @@
               "read",
               "link",
               "transition",
+              "update",
               "current",
               "merged",
               "ci",
@@ -254,6 +256,7 @@
               "read",
               "link",
               "transition",
+              "update",
               "current",
               "merged",
               "ci",
@@ -350,6 +353,14 @@
             "title": "Correlation",
             "type": "string"
           },
+          "labels": {
+            "description": "Native tracker labels to set. A provider that cannot write labels does not list update among its optional operations, and callers refuse labels before writing.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
           "operation_id": {
             "minLength": 1,
             "title": "Operation Id",
@@ -382,6 +393,7 @@
               "read",
               "link",
               "transition",
+              "update",
               "current",
               "merged",
               "ci",
@@ -501,6 +513,7 @@
               "read",
               "link",
               "transition",
+              "update",
               "current",
               "merged",
               "ci",
@@ -611,6 +624,7 @@
               "read",
               "link",
               "transition",
+              "update",
               "current",
               "merged",
               "ci",
@@ -722,6 +736,7 @@
               "read",
               "link",
               "transition",
+              "update",
               "current",
               "merged",
               "ci",
@@ -861,6 +876,7 @@
               "read",
               "link",
               "transition",
+              "update",
               "current",
               "merged",
               "ci",
@@ -972,6 +988,7 @@
               "read",
               "link",
               "transition",
+              "update",
               "current",
               "merged",
               "ci",
@@ -1152,6 +1169,7 @@
               "read",
               "link",
               "transition",
+              "update",
               "current",
               "merged",
               "ci",
@@ -1260,6 +1278,7 @@
               "read",
               "link",
               "transition",
+              "update",
               "current",
               "merged",
               "ci",
@@ -1412,6 +1431,7 @@
               "read",
               "link",
               "transition",
+              "update",
               "current",
               "merged",
               "ci",
@@ -1577,6 +1597,7 @@
               "read",
               "link",
               "transition",
+              "update",
               "current",
               "merged",
               "ci",
@@ -1682,6 +1703,7 @@
               "read",
               "link",
               "transition",
+              "update",
               "current",
               "merged",
               "ci",
@@ -1835,6 +1857,7 @@
               "read",
               "link",
               "transition",
+              "update",
               "current",
               "merged",
               "ci",
@@ -1971,6 +1994,7 @@
               "read",
               "link",
               "transition",
+              "update",
               "current",
               "merged",
               "ci",
@@ -2071,6 +2095,7 @@
               "read",
               "link",
               "transition",
+              "update",
               "current",
               "merged",
               "ci",
@@ -2184,6 +2209,7 @@
               "read",
               "link",
               "transition",
+              "update",
               "current",
               "merged",
               "ci",
@@ -2352,6 +2378,7 @@
               "read",
               "link",
               "transition",
+              "update",
               "current",
               "merged",
               "ci",
@@ -2498,6 +2525,7 @@
               "read",
               "link",
               "transition",
+              "update",
               "current",
               "merged",
               "ci",
@@ -2547,6 +2575,162 @@
         "type": "object"
       },
       "required": true,
+      "response": {
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "state": {
+            "description": "Normalized state: open, in_progress, in_review, needs_decision, closed, cancelled or unknown.",
+            "minLength": 1,
+            "title": "State",
+            "type": "string"
+          },
+          "url": {
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "state"
+        ],
+        "title": "Item",
+        "type": "object"
+      }
+    },
+    "update": {
+      "payload": {
+        "additionalProperties": false,
+        "description": "Replace the given fields of an open item; omitted fields stay as they are.",
+        "properties": {
+          "body": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Body"
+          },
+          "labels": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Native tracker labels to set. A provider that cannot write labels does not list update among its optional operations, and callers refuse labels before writing.",
+            "title": "Labels"
+          },
+          "operation_id": {
+            "minLength": 1,
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "reference": {
+            "minLength": 1,
+            "title": "Reference",
+            "type": "string"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Title"
+          }
+        },
+        "required": [
+          "reference",
+          "operation_id"
+        ],
+        "title": "Update",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "capabilities",
+              "prepare",
+              "reconcile_closed",
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "update",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append",
+              "pull_request_create",
+              "get",
+              "search",
+              "list_changed",
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
       "response": {
         "additionalProperties": true,
         "properties": {
@@ -2666,6 +2850,7 @@
               "read",
               "link",
               "transition",
+              "update",
               "current",
               "merged",
               "ci",
@@ -2828,7 +3013,8 @@
         "capabilities",
         "link",
         "prepare",
-        "reconcile_closed"
+        "reconcile_closed",
+        "update"
       ]
     },
     "wiki": {

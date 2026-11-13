@@ -11,6 +11,14 @@
       "title": "Correlation",
       "type": "string"
     },
+    "labels": {
+      "description": "Native tracker labels to set. A provider that cannot write labels does not list update among its optional operations, and callers refuse labels before writing.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Labels",
+      "type": "array"
+    },
     "operation_id": {
       "minLength": 1,
       "title": "Operation Id",
