@@ -16,10 +16,12 @@ at the merge base. The CLI and the MCP tool both call :func:`check_records`.
 
 Records with ``boundary: customer`` never leave their project (KAN-465). They must sit
 under ``projects/<name>/``, only customer records of that project may link to them,
-and no other record may quote their body or cite them or their paths in ``sources``. Index, render and search keep them out of
+and no other record may quote their body, cite them or their paths in ``sources`` or
+link into their project from its body. Index, render and search keep them out of
 team-scope views with :func:`visible_in` and :func:`team_inputs`.
 """
 
+import posixpath
 import re
 import tomllib
 from collections import defaultdict
@@ -48,6 +50,10 @@ SUPERSEDE_KEYS = ("status", "valid_to")
 PROJECTS = "projects"
 QUOTE_WORDS = 8
 _WORD = re.compile(r"[^\W_]+")
+# Markdown link targets: inline [text](target) and reference [label]: target.
+_MARKDOWN_LINK = re.compile(
+    r"\]\(\s*<?([^)\s>]+)|^\s*\[[^\]]+\]:\s*<?(\S+?)>?(?:\s|$)", re.MULTILINE
+)
 _PROJECT_PATH = re.compile(r"(?:^|/)projects/([a-z0-9][a-z0-9-]*)(?:/|$)")
 
 
@@ -523,7 +529,34 @@ def _check_boundary(bundle: _Bundle, index: dict[str, str]) -> None:
                     f"not {mine or '(none)'}; links never cross customer projects",
                 )
     _check_sources(bundle, index, owners)
+    _check_markdown_links(bundle, owners)
     _check_quotes(bundle, owners)
+
+
+def _check_markdown_links(bundle: _Bundle, owners: dict[str, str | None]) -> None:
+    """No record outside a customer project links into it from its body.
+
+    The link path alone names the customer, so even a broken link fails.
+    """
+    projects = {owner for owner in owners.values() if owner}
+    if not projects:
+        return
+    for path in bundle.records:
+        located = _join(bundle.prefix, path)
+        mine = project_of(located)
+        for match in _MARKDOWN_LINK.finditer(bundle.bodies.get(path, "")):
+            target = re.sub(r"[\\/]+", "/", match.group(1) or match.group(2))
+            if "://" not in target and not target.startswith("/"):
+                target = posixpath.normpath(posixpath.join(posixpath.dirname(located), target))
+            found = _PROJECT_PATH.search(target)
+            if found and found.group(1) in projects and found.group(1) != mine:
+                bundle.fail(
+                    path,
+                    "",
+                    f"links into customer project {found.group(1)} from its body; the "
+                    "path names the customer",
+                )
+                break
 
 
 def _check_sources(bundle: _Bundle, index: dict[str, str], owners: dict[str, str | None]) -> None:

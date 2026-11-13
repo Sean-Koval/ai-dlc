@@ -54,6 +54,7 @@ EXPECTED = {
     ),
     "customer-quoted": ("a.md", "", "from customer record b-slug (project alpha)"),
     "customer-source-path": ("a.md", "/sources/0", "cites customer project alpha"),
+    "customer-body-link": ("a.md", "", "links into customer project acme from its body"),
 }
 
 
@@ -451,3 +452,25 @@ def test_a_path_under_a_project_without_customer_records_may_be_cited(tmp_path):
     lesson = record(kind="lesson", status="open", sources="\n  - {resource: projects/ours/x.md}")
     (tmp_path / "a.md").write_text(lesson)
     assert check_records(tmp_path)["failures"] == []
+
+
+@pytest.mark.parametrize(
+    ("located", "body", "fails"),
+    [
+        ("team/a.md", "[x](../projects/acme/missing.md)", True),
+        ("team/a.md", "[x]: <projects/acme/b.md>", True),
+        ("team/a.md", "[x](https://github.com/o/k/blob/main/projects/acme/b.md)", True),
+        ("team/a.md", "[x](projects/acme/b.md)", True),  # names the customer anyway
+        ("team/a.md", "[x](../projects/ours/b.md)", False),
+        ("projects/acme/a.md", "[x](b.md)", False),
+        ("projects/other/a.md", "[x](../acme/b.md)", True),
+    ],
+)
+def test_a_body_link_into_a_customer_project_fails(tmp_path, located, body, fails):
+    shutil.copytree(INVALID / "customer-body-link", tmp_path / "kb")
+    (tmp_path / "kb/a.md").unlink()
+    target = tmp_path / "kb" / located
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(record(kind="convention", status="active", body=body))
+    failures = check_records(tmp_path / "kb")["failures"]
+    assert bool(failures) is fails, failures
