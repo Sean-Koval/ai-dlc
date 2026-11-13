@@ -224,6 +224,9 @@ def _classify_words(words: list[str], shell: str = "posix") -> str:
     """Classify the words of one simple command in one shell."""
     if shell == "powershell" and words[0] == "." and len(words) > 1:
         words = words[1:]  # dot-sourcing runs the program like a call
+    head, slash, switches = words[0].partition("/")
+    if shell == "cmd" and slash and (head in CMD_DELETES or head == "cmd"):
+        words = [head, slash + switches, *words[1:]]  # cmd.exe reads rd/s/q as rd /s/q
     words = [program_name(words[0]), *words[1:]]
     if words[0].lower() == "cmd":
         line = cmd_line(words[1:])
