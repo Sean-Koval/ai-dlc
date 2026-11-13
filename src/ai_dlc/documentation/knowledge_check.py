@@ -433,6 +433,13 @@ def _check_retractions(bundle: _Bundle, index: dict[str, str]) -> None:
                 bundle.fail(path, pointer, f"a {record.type} cannot retract; only a decision can")
             elif index[link.target] == path:
                 bundle.fail(path, pointer, "a decision cannot retract itself")
+            elif any(item.type == "retracts" for item in target.links):
+                bundle.fail(
+                    path,
+                    pointer,
+                    f"retracts {target.id}, which is itself a retraction; supersede it with "
+                    "a new decision instead",
+                )
             elif target.type != "decision" or target.status != "accepted":
                 bundle.fail(
                     path,

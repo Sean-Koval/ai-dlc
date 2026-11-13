@@ -687,3 +687,16 @@ def test_ci_mode_still_refuses_editing_the_retracted_record(repo):
     found = check_records(repo, base="main")["failures"]
     assert [(item["path"], item["pointer"]) for item in found] == [("keep.md", "")]
     assert "has its body edited" in found[0]["message"]
+
+
+def test_a_retraction_cannot_itself_be_retracted(tmp_path):
+    """A wrong correction is superseded by a new decision, never retracted."""
+    (tmp_path / "knowledge.toml").write_text(PIN)
+    (tmp_path / "keep.md").write_text(record("keep-it"))
+    retract = "\n  - {type: retracts, target: keep-it}"
+    (tmp_path / "b.md").write_text(record("b-slug", links=retract))
+    assert check_records(tmp_path)["failures"] == []
+    (tmp_path / "c.md").write_text(record("c-slug", links="\n  - {type: retracts, target: b-slug}"))
+    found = check_records(tmp_path)["failures"]
+    assert [(item["path"], item["pointer"]) for item in found] == [("c.md", "/links/0")]
+    assert "is itself a retraction; supersede it" in found[0]["message"]
