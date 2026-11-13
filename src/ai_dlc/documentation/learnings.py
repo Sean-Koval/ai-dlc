@@ -6,7 +6,7 @@ import subprocess
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
-from ai_dlc.documentation import knowledge_notes
+from ai_dlc.documentation import knowledge_migrate, knowledge_notes, knowledge_records
 from ai_dlc.documentation.knowledge import Knowledge
 
 REVIEW_AFTER = timedelta(days=90)
@@ -70,40 +70,53 @@ def _sources(work, config, evidence) -> list[dict]:
     sha = merged.get("sha")
     if not url or not sha:
         raise ValueError("learning provenance needs the merged PR URL and merge commit")
-    sources = [{"uri": url, "hash": f"git:{sha}"}]
+    sources = [{"resource": url, "hash": f"git:{sha}"}]
     run_id = (evidence.get("ci-green") or {}).get("run_id")
     if run_id and repository:
         sources.append(
-            {"uri": f"https://github.com/{repository}/actions/runs/{run_id}", "hash": f"git:{sha}"}
+            {
+                "resource": f"https://github.com/{repository}/actions/runs/{run_id}",
+                "hash": f"git:{sha}",
+            }
         )
     return sources
 
 
 def learning_note(body, work, config, evidence, day, author) -> str:
-    """Return the note with knowledge-note frontmatter; supplied fields are never overwritten."""
+    """Return the note as a lesson record; supplied fields are never overwritten.
+
+    Supplied knowledge-note frontmatter (``kind: learning``) is migrated first
+    (ADR 0005); record frontmatter only gains the fields it lacks.
+    """
     start = date.fromisoformat(day)
+    if knowledge_migrate.is_note(knowledge_notes.split(body)[0]):
+        migrated = knowledge_migrate.migrate_text(body)
+        if migrated["status"] != "migrated":
+            problems = migrated.get("errors") or [f"kind {migrated.get('kind')} is not a lesson"]
+            raise ValueError("learning frontmatter is invalid: " + "; ".join(problems))
+        body = migrated["text"]
     supplied, _raw, _body = knowledge_notes.split(body)
     supplied = supplied or {}
-    repository = config.get("scm", {}).get("repository")
+    stale = start + REVIEW_AFTER
     defaults = {
-        "id": f"learning/{day}-{work['id']}",
-        "kind": "learning",
+        "id": knowledge_migrate.record_id(f"learning/{day}-{work['id']}"),
+        "type": "lesson",
         "scope": "personal",
-        "label": "internal",
+        "status": "open",
+        "date": start,
+        "owner": author.removeprefix("human:"),
         # Only computed when needed, so a learning citing its own sources needs no PR URL.
         "sources": supplied.get("sources") or _sources(work, config, evidence),
-        "author": author,
-        "confidence": "medium",
+        "links": [{"type": "belongs_to", "target": work["id"]}],
+        "label": "internal",
         "valid_from": start,
-        "valid_to": None,
-        "review_by": start + REVIEW_AFTER,
-        "supersedes": [],
-        "work": work["id"],
-        **({"repository": repository} if repository else {}),
+        "stale_after": f"{stale.isoformat()}T00:00:00Z",
+        "confidence": "medium",
+        "author": author,
     }
     note = knowledge_notes.with_missing(body, defaults)
     data, _raw, _body = knowledge_notes.split(note)
-    problems = knowledge_notes.errors(data or {})
+    problems = knowledge_records.errors(data or {})
     if problems:
         raise ValueError("learning frontmatter is invalid: " + "; ".join(problems))
     return note

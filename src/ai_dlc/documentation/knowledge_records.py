@@ -3,8 +3,8 @@
 A record is one markdown file: YAML frontmatter (the header validated here) and a
 markdown body. Types are decision, convention, lesson, action, question and source;
 ``contracts/knowledge-record.schema.json`` is generated from :class:`KnowledgeRecord`.
-This is the expand step: :mod:`ai_dlc.documentation.knowledge_notes` is unchanged and
-still validates existing notes until the migration (KAN-452) and removal (KAN-453).
+Notes in the older :mod:`ai_dlc.documentation.knowledge_notes` format are migrated by
+:mod:`ai_dlc.documentation.knowledge_migrate` (KAN-452) and removed in KAN-453.
 
 A knowledge repository pins :data:`FORMAT_VERSION` in its ``knowledge.toml``::
 

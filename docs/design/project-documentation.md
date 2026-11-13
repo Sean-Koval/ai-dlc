@@ -23,9 +23,9 @@ content duplicates. It does not certify accuracy or automatically consolidate
 content. Review dates represent an actual review, not filesystem timestamps.
 OpenSpec remains responsible for its own artifact lifecycle.
 
-Decision records in `docs/decisions/` carry the knowledge-note frontmatter of
-[`contracts/knowledge-note.schema.json`](https://github.com/Sean-Koval/ai-dlc/blob/main/contracts/knowledge-note.schema.json)
-(`kind: decision`, `status`, optional `checks:`). `docs check` validates that
+Decision records in `docs/decisions/` carry the knowledge-record frontmatter of
+[`contracts/knowledge-record.schema.json`](https://github.com/Sean-Koval/ai-dlc/blob/main/contracts/knowledge-record.schema.json)
+(`type: decision`, `status`, optional `checks:`). `docs check` validates that
 frontmatter when present and reports records without it as information. It
 fails when an accepted record's body differs from the committed version unless
 the record moves to `superseded`.
