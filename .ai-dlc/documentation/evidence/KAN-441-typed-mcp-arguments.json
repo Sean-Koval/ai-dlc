@@ -2,6 +2,15 @@
   "decisions": [
     {
       "bound": {
+        "changes/KAN-441.added.md": "c71b72d051fa727025b8aa06ac4d22729fe20212bace82c4b83148ad343df5e5"
+      },
+      "outcome": "updated",
+      "reason": "Changelog fragment for this change, per the KAN-481 convention.",
+      "reviewer": "Claude (agent)",
+      "target": "changes/KAN-441.added.md"
+    },
+    {
+      "bound": {
         "catalog:docs/architecture.md": "788b593066fcd5d1c9eb9ebbc3869971131d3ddb3ea3396bc8b9a6ea48ca8b55",
         "docs/architecture.md": "099e45e56378bb4ea78edb3eec9e6a8ce7e7d60edd08d0b17aeeca9810351b82",
         "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
