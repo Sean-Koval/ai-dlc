@@ -20,6 +20,7 @@ from ai_dlc.contracts import manifest, validate_response
 from ai_dlc.documentation import knowledge_records as records
 from ai_dlc.documentation.knowledge_check import check_records
 from ai_dlc.documentation.knowledge_transcripts import TranscriptPull, parse_since, route
+from ai_dlc.errors import UncertainError
 from ai_dlc.providers import Registry, transcripts_common
 from ai_dlc.providers.google_meet import GoogleMeet, parse
 from ai_dlc.providers.transcripts_common import (
@@ -128,13 +129,25 @@ def knowledge_repo(tmp_path: Path, routes: str = ALPHA, name: str = "knowledge")
         (root / folder).mkdir(parents=True)
     (root / "knowledge.toml").write_text(
         '[format]\nversion = 1\n[check]\nroots = ["team", "projects"]\n'
-        f'[transcripts]\nowner = "ana"\nscope = "team"\n{routes}'
+        f'[transcripts]\nowner = "ana"\nscope = "team"\ninternal = ["@example.com", "Ana Ruiz", "Priya Rao", "Dana Lee"]\n{routes}'
+    )
+    return root
+
+
+def customer_repo_dir(tmp_path: Path, project: str = "alpha") -> Path:
+    """A customer repository as ``knowledge init --customer`` writes it (KAN-475)."""
+    root = tmp_path / f"knowledge-{project}"
+    for folder in (f"projects/{project}", "inbox"):
+        (root / folder).mkdir(parents=True)
+    (root / "knowledge.toml").write_text(
+        f'[format]\nversion = 1\n[repo]\nboundary = "customer"\nproject = "{project}"\n'
+        f'[check]\nroots = ["projects/{project}"]\n'
     )
     return root
 
 
 def customer_env(tmp_path: Path) -> tuple[Path, dict]:
-    alpha = knowledge_repo(tmp_path, "", name="knowledge-alpha")
+    alpha = customer_repo_dir(tmp_path)
     return alpha, {**ENV, "KNOWLEDGE_REPO_ALPHA": str(alpha)}
 
 
@@ -320,7 +333,10 @@ def test_pull_writes_source_records_once_and_skips_unreadable(tmp_path):
 
     # The customer transcript lands in the customer's own repository, top-level inbox.
     customer = written["Qx9YzZalpha=="]
-    assert customer["repository"] == str(alpha) and customer["project"] == "alpha"
+    assert customer["project"] == "alpha"
+    # Nothing in the result names the customer: no title, no local path (KAN-475).
+    assert set(customer) == {"provider", "id", "project", "record"}
+    assert str(alpha) not in json.dumps(first) and "Sync" not in json.dumps(first["written"])
     assert customer["record"].startswith("inbox/transcripts/")
     customer_record, _ = records.parse((alpha / customer["record"]).read_text())
     assert customer_record.boundary == "customer" and customer_record.project == "alpha"
@@ -365,6 +381,24 @@ def test_unconfigured_customer_repository_skips_and_never_falls_back(tmp_path):
     assert any("not name a knowledge repository" in e["reason"] for e in again["skipped"])
 
 
+def test_customer_variable_must_name_that_customers_declared_repository(tmp_path):
+    # KAN-475: a variable pointing at the team repository, or at another customer's,
+    # skips the transcript; it never lands there.
+    root = knowledge_repo(tmp_path)
+    beta = customer_repo_dir(tmp_path, project="beta")
+    for wrong in (root, beta):
+        environ = {**ENV, "KNOWLEDGE_REPO_ALPHA": str(wrong)}
+        reg = registry(FakeZoom(), FakeDrive())
+        result = TranscriptPull(tmp_path, CONFIG, into=root, registry=reg, environ=environ).pull(
+            "2026-11-01"
+        )
+        skipped = {entry["id"]: entry["reason"] for entry in result["skipped"]}
+        reason = skipped["Qx9YzZalpha=="]
+        assert 'project = "alpha"' in reason or "team checkout" in reason
+        for repo in (root, beta):
+            assert not any("Qx9YzZalpha" in p.read_text() for p in repo.rglob("*") if p.is_file())
+
+
 def test_retired_project_routes_are_refused(tmp_path):
     routes = '[[transcripts.projects]]\nname = "alpha"\ntitles = ["x"]\n'
     root = knowledge_repo(tmp_path, routes)
@@ -381,7 +415,8 @@ def test_dry_run_writes_nothing(tmp_path):
     reg = registry(FakeZoom(), FakeDrive())
     pull = TranscriptPull(tmp_path, CONFIG, into=root, registry=reg, environ=environ)
     result = pull.pull("2026-11-01T00:00:00+00:00", dry_run=True)
-    assert result["written"] == [] and len(result["planned"]) == 5
+    # The two meetings with no readable participants cannot be proven internal (KAN-475).
+    assert result["written"] == [] and len(result["planned"]) == 3
     assert [e["project"] for e in result["planned"]].count("alpha") == 1
     assert not md_files(root) and not md_files(alpha)
 
@@ -408,7 +443,83 @@ def test_route_matches_title_or_participant_email():
     item = {"title": "Sync", "participants": ["Bob"], "emails": ["bob@alpha.example"]}
     assert route(item, customers)["project"] == "alpha"
     assert route({"title": "Beta sync"}, customers)["project"] == "beta"
-    assert route({"title": "other"}, customers) is None
+    internal = ["@example.com", "Dana Lee"]
+    team = {"title": "other", "participants": ["Ana"], "emails": ["ana@example.com"]}
+    assert route(team, customers, internal) is None
+    assert route({"title": "other", "participants": ["Dana Lee"]}, customers, internal) is None
+    # KAN-475: an unmapped meeting goes to the team only when everyone is internal.
+    unmapped = (
+        {"title": "Weekly sync", "participants": ["Ana", "Zed"], "emails": ["ana@example.com"]},
+        {"title": "Weekly sync", "emails": ["ana@example.com", "zed@client.example"]},
+        {"title": "Weekly sync", "participants": ["Zed Client"]},
+        {"title": "Weekly sync"},
+    )
+    for item in unmapped:
+        assert "not every participant is internal" in route(item, customers, internal)
+    assert "not every participant" in route(team, customers)  # no internal list: deny
+    # Look-alikes are not internal: exact domain or a subdomain, exact names.
+    for domain in (["@corp.com"], ["corp.com"]):
+        for email in ("bob@corp.com.attacker.io", "bob@notcorp.com", "bob@corp.co"):
+            item = {"title": "x", "participants": ["Bob"], "emails": [email]}
+            assert isinstance(route(item, customers, domain), str), (domain, email)
+        ok = {"title": "x", "participants": ["Bob"], "emails": ["bob@eu.corp.com"]}
+        assert route(ok, customers, domain) is None
+    named = {"title": "x", "participants": ["Seana Smith"]}
+    assert isinstance(route(named, customers, ["sean"]), str)
+    assert route({"title": "x", "participants": ["Sean"]}, customers, ["Sean"]) is None
+    exact = {"title": "x", "participants": ["A"], "emails": ["a@partner.io"]}
+    assert route(exact, customers, ["a@partner.io"]) is None
+    assert route({"title": "other"}, []) is None  # no customer rules: team only
+
+
+def test_a_customer_transcript_reaches_only_its_own_repository(tmp_path):
+    beta_rule = '[[transcripts.customers]]\nproject = "beta"\nparticipants = ["@beta.example"]\n'
+    root = knowledge_repo(tmp_path, ALPHA + beta_rule)
+    alpha, environ = customer_env(tmp_path)
+    beta = customer_repo_dir(tmp_path, project="beta")
+    environ = {**environ, "KNOWLEDGE_REPO_BETA": str(beta)}
+    reg = registry(FakeZoom(), FakeDrive())
+    result = TranscriptPull(
+        tmp_path, CONFIG, providers=["zoom"], into=root, registry=reg, environ=environ
+    ).pull("2026-11-01")
+    written = {entry["id"]: entry for entry in result["written"]}
+    assert (alpha / written["Qx9YzZalpha=="]["record"]).is_file()
+    for repo in (root, beta):
+        assert not any("Qx9YzZalpha" in p.read_text() for p in repo.rglob("*") if p.is_file())
+
+
+@pytest.mark.parametrize("error", [TranscriptUnavailable, UncertainError])
+def test_a_provider_message_about_a_customer_meeting_is_not_repeated(tmp_path, error):
+    root = knowledge_repo(tmp_path, ALPHA)
+    _alpha, environ = customer_env(tmp_path)
+    reg = registry(FakeZoom(), FakeDrive())
+    invoke = reg.invoke
+
+    def failing(provider, operation, arguments):
+        if operation == "fetch" and "alpha" in arguments["id"]:
+            raise error("Alpha cutover sync: transcript gone")
+        return invoke(provider, operation, arguments)
+
+    reg.invoke = failing
+    result = TranscriptPull(
+        tmp_path, CONFIG, providers=["zoom"], into=root, registry=reg, environ=environ
+    ).pull("2026-11-01")
+    assert "cutover" not in json.dumps(result)
+    assert any(e["id"] == "Qx9YzZalpha==" for e in result["skipped"] + result["errors"])
+
+
+def test_unmapped_customer_meeting_goes_to_no_repository(tmp_path):
+    routes = ALPHA.replace('"@alpha.example"', '"@nobody.example"')
+    root = knowledge_repo(tmp_path, routes)
+    alpha, environ = customer_env(tmp_path)
+    reg = registry(FakeZoom(), FakeDrive())
+    result = TranscriptPull(
+        tmp_path, CONFIG, providers=["zoom"], into=root, registry=reg, environ=environ
+    ).pull("2026-11-01")
+    skipped = {entry["id"]: entry["reason"] for entry in result["skipped"]}
+    assert "not every participant is internal" in skipped["Qx9YzZalpha=="]
+    for repo in (root, alpha):
+        assert not any("Qx9YzZalpha" in p.read_text() for p in repo.rglob("*") if p.is_file())
 
 
 def test_since_needs_an_offset_and_config_needs_an_owner(tmp_path):

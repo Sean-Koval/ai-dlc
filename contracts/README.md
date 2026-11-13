@@ -19,7 +19,7 @@ YAML dates and enable a format checker. `ai-dlc knowledge check` is the authorit
 `ai-dlc knowledge check DIR` (MCP `knowledge_check`) validates a records directory:
 each header against the model, Open Knowledge Format v0.2 section 11, the format pin,
 typed links that name records, duplicate sources and supersession (one accepted
-successor, no cycles). It reads only `[check] roots` from `knowledge.toml` and never
+successor, no cycles). It reads only `[check] roots` and `[repo]` from `knowledge.toml` and never
 `README.md`. `derived_from` must name a source record, since raw payloads expire. When that
 Source's payload expires (a resource under `inbox/` or `processed/`, or a transcript,
 chat or meeting), the citing `sources` entry carries a verbatim `quote` (at most 500
@@ -73,10 +73,12 @@ The `transcripts` role must answer `list_since {since}` (an aware time; items wi
 read is unavailable, not an error. The `zoom` and `google-meet` providers implement it;
 `ai-dlc knowledge pull-transcripts` is its caller.
 The keys a knowledge repository's `knowledge.toml` may carry are `[format] version`
-(required), `[check] roots`, `[wiki] site, source, project`, and `[transcripts] owner`
-(required to pull transcripts), `scope` and `[[transcripts.customers]] project, titles,
+(required), `[repo] boundary, project, deny_list` (a customer repository),
+`[check] roots`, `[wiki] site, source, project`, and `[transcripts] owner`
+(required to pull transcripts), `scope`, `internal` and `[[transcripts.customers]] project, titles,
 participants, repo_env`. A customer transcript lands in the customer's own repository,
 whose Source records carry `boundary: customer` and the optional record field `project`.
+That repository must declare `[repo] boundary = "customer"` and the same `project`.
 Completion is a service operation: callers must use `WorkService.finish`.
 The public `Registry.invoke` refuses terminal tracker transitions and the optional
 terminal planning reconciliation operation `reconcile_closed`.
