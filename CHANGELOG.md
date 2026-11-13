@@ -31,6 +31,13 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
   it never writes the base branch. The knowledge role now requires `get` and `search`
   (the Obsidian provider answers both) and `append` is optional. The SCM
   `pull_request_create` payload gains `draft`.
+- `ai-dlc knowledge number` and `ai-dlc knowledge index`, with MCP `knowledge_number_plan`
+  and `knowledge_index`. After a merge, CI gives slug-id records the next number for
+  their type, keeps the slug in `aliases` and rewrites links to it. It then writes one
+  OKF v0.2 `index.md` per directory, deriving `superseded_by`. Knowledge repositories
+  call `.github/workflows/knowledge-merge.yml` on push to main. It opens a numbering
+  pull request that a person merges; `auto-merge` is off by default. `knowledge check
+  --base` accepts the slug-to-number changes it makes to links and sources (KAN-456).
 - The knowledge-record contract: `KnowledgeRecord` in
   `ai_dlc.documentation.knowledge_records`, its generated
   `contracts/knowledge-record.schema.json`, format version 1 for knowledge repositories
