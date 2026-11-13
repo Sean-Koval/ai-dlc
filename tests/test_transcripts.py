@@ -19,8 +19,8 @@ from ai_dlc.cli import app
 from ai_dlc.contracts import manifest, validate_response
 from ai_dlc.documentation import knowledge_records as records
 from ai_dlc.documentation.knowledge_check import check_records
-from ai_dlc.documentation.knowledge_transcripts import TranscriptPull, parse_since, route
-from ai_dlc.errors import UncertainError
+from ai_dlc.documentation.knowledge_transcripts import TranscriptPull, parse_since, route, routing
+from ai_dlc.errors import RefusedError, UncertainError
 from ai_dlc.providers import Registry, transcripts_common
 from ai_dlc.providers.google_meet import GoogleMeet, parse
 from ai_dlc.providers.transcripts_common import (
@@ -470,6 +470,70 @@ def test_route_matches_title_or_participant_email():
     exact = {"title": "x", "participants": ["A"], "emails": ["a@partner.io"]}
     assert route(exact, customers, ["a@partner.io"]) is None
     assert route({"title": "other"}, []) is None  # no customer rules: team only
+
+
+def test_customer_rules_match_whole_title_words_and_exact_participants():
+    # KAN-490: a substring match sent "Alphabet" to the Alpha customer's repository.
+    customers = [
+        {"project": "alpha", "titles": ["alpha"], "participants": ["@alpha.example"]},
+        {"project": "beta", "titles": ["beta corp"], "participants": ["dana lee", "x@b.io"]},
+    ]
+
+    def project(item):
+        found = route(item, customers, ["@example.com"])
+        return found["project"] if isinstance(found, dict) else None
+
+    matching = ("Alpha sync", "alpha: weekly", "Weekly (ALPHA)", "Ａｌｐｈａ review", "Alpha_sync")
+    for title in (*matching, "Al\u00adpha sync", "Alpha\u200b sync"):
+        assert project({"title": title, "emails": ["ana@example.com"]}) == "alpha", title
+    for title in ("Alphabet", "alphanumeric planning", "Alpha2 sync", "Betacorp"):
+        assert project({"title": title, "emails": ["ana@example.com"]}) is None, title
+    assert project({"title": "Beta  Corp kickoff", "emails": ["ana@example.com"]}) == "beta"
+
+    def by_email(email):
+        return project({"title": "Sync", "participants": ["Bob"], "emails": [email]})
+
+    assert by_email("bob@eu.alpha.example") == "alpha"
+    assert by_email("Bob@Alpha.Example") == "alpha"
+    for email in ("bob@alpha.example.evil.io", "bob@notalpha.example", "alpha.example@x.io"):
+        assert by_email(email) is None, email
+    assert by_email("x@b.io") == "beta" and by_email("xx@b.io") is None
+    assert project({"title": "Sync", "participants": ["Dana  Lee"]}) == "beta"
+    assert project({"title": "Sync", "participants": ["Dana Leeds"]}) is None
+    # A provider that gives the address as the participant name.
+    assert project({"title": "Sync", "participants": ["bob@alpha.example"]}) == "alpha"
+    # With emails given, a display name a guest chose cannot claim a customer.
+    spoof = {"title": "Sync", "participants": ["Dana Lee"], "emails": ["dana@else.io"]}
+    assert project(spoof) is None
+
+
+def test_a_title_rule_in_a_script_without_spaces_matches_inside_words():
+    # KAN-490 review: Japanese and Chinese titles have no spaces between words.
+    customers = [{"project": "alpha", "titles": ["アルファ", "阿尔法"], "participants": []}]
+    for title in ("アルファ定例", "週次アルファ会議", "阿尔法周会"):
+        found = route({"title": title, "emails": ["ana@example.com"]}, customers, [])
+        assert isinstance(found, dict) and found["project"] == "alpha", title
+
+
+def test_a_rule_naming_a_whole_top_level_domain_is_refused(tmp_path):
+    bare = '[[transcripts.customers]]\nproject = "alpha"\nparticipants = ["@io"]\n'
+    with pytest.raises(RefusedError, match="participants '@io'"):
+        routing(knowledge_repo(tmp_path, bare))
+    root = tmp_path / "bare-internal"
+    root.mkdir()
+    (root / "knowledge.toml").write_text(
+        '[format]\nversion = 1\n[transcripts]\nowner = "ana"\ninternal = ["@example"]\n'
+    )
+    with pytest.raises(RefusedError, match="internal '@example'"):
+        routing(root)
+
+
+def test_title_rules_from_knowledge_toml_route_any_case_and_width(tmp_path):
+    rule = '[[transcripts.customers]]\nproject = "alpha"\ntitles = ["ＡＬＰＨＡ Weekly"]\n'
+    rules = routing(knowledge_repo(tmp_path, rule))
+    for title, expected in (("alpha  weekly: notes", "alpha"), ("Alphaweekly", None)):
+        found = route({"title": title, "emails": ["ana@example.com"]}, rules["customers"], [])
+        assert (found["project"] if isinstance(found, dict) else None) == expected, title
 
 
 def test_a_customer_transcript_reaches_only_its_own_repository(tmp_path):

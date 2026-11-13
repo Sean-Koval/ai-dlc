@@ -27,8 +27,8 @@ caller cannot read is skipped and its id logged. Routing lives in the team check
 
     [[transcripts.customers]]
     project = "alpha"
-    titles = ["Alpha"]                 # case-insensitive substrings of the meeting title
-    participants = ["@alpha.example"]  # substrings of a participant name or email
+    titles = ["Alpha"]                 # whole words of the meeting title, any case
+    participants = ["@alpha.example"]  # a domain or subdomain, an exact address or name
     repo_env = "KNOWLEDGE_REPO_ALPHA"  # default; names the variable holding the local path
 
 Once customer rules exist, a transcript that matches none goes to the team repository
@@ -41,6 +41,7 @@ import hashlib
 import os
 import re
 import tomllib
+import unicodedata
 from collections.abc import Mapping
 from datetime import UTC, date, datetime
 from pathlib import Path
@@ -123,6 +124,9 @@ def routing(root: Path) -> dict:
             ):
                 raise RefusedError(f"{where}: {key} must be a list of non-empty strings")
             patterns[key] = [v.strip().casefold() for v in values]
+        patterns["titles"] = [_folded(v) for v in patterns["titles"]]
+        if bare := _bare_domains(patterns["participants"]):
+            raise RefusedError(f"{where}: participants {bare[0]!r} {_BARE}")
         if not patterns["titles"] and not patterns["participants"]:
             raise RefusedError(f"{where}: give titles or participants to match")
         variable = entry.get("repo_env", repo_env(entry["project"]))
@@ -134,6 +138,8 @@ def routing(root: Path) -> dict:
         isinstance(v, str) and v.strip() for v in internal
     ):
         raise RefusedError("knowledge.toml [transcripts] internal must be a list of strings")
+    if bare := _bare_domains(internal):
+        raise RefusedError(f"knowledge.toml [transcripts] internal {bare[0]!r} {_BARE}")
     return {
         "owner": owner.strip(),
         "scope": scope,
@@ -152,15 +158,14 @@ def route(
     every participant is internal (KAN-475); otherwise it may be an unmapped customer
     meeting, so it goes nowhere and is reported.
     """
-    title = str(item.get("title", "")).casefold()
+    title = _folded(str(item.get("title", "")))
     names = [str(p).strip().casefold() for p in item.get("participants") or [] if str(p).strip()]
     emails = [str(e).strip().casefold() for e in item.get("emails") or [] if str(e).strip()]
-    people = [*names, *emails]
     matched = {
         customer["project"]: customer
         for customer in customers
-        if any(pattern in title for pattern in customer["titles"])
-        or any(pattern in person for pattern in customer["participants"] for person in people)
+        if any(_has_words(title, _folded(pattern)) for pattern in customer["titles"])
+        or _any_matches(names, emails, customer["participants"])
     }
     if len(matched) > 1:
         return "matches several customers: " + ", ".join(sorted(matched))
@@ -187,30 +192,101 @@ def all_internal(names: list[str], emails: list[str], internal: list[str]) -> bo
         return False
     if emails and len(emails) < len(names):
         return False
-    domains, addresses, people = set(), set(), set()
-    for entry in internal:
-        value = " ".join(entry.casefold().split())
-        if value.startswith("@"):
-            domains.add(value[1:].strip("."))
-        elif "@" in value:
-            addresses.add(value)
-        elif "." in value and " " not in value:
-            domains.add(value.strip("."))
-        else:
-            people.add(value)
+    known = _People(internal)
+    if emails:
+        return all(known.has_email(email) for email in emails)
+    return all(known.has_name(name) for name in names)
 
-    def internal_email(email: str) -> bool:
-        if email in addresses:
+
+def _any_matches(names: list[str], emails: list[str], patterns: list[str]) -> bool:
+    """Whether any participant matches a customer's ``participants`` rule (KAN-490).
+
+    The rule reads as ``internal`` does: a domain matches itself and its subdomains, an
+    address or a name matches exactly. When the provider gives emails, only they count,
+    since a guest chooses their own display name; without emails, a name shaped like an
+    address is read as one.
+    """
+    if not patterns:
+        return False
+    known = _People(patterns)
+    if emails:
+        return any(known.has_email(email) for email in emails)
+    return any(known.has_email(name) if "@" in name else known.has_name(name) for name in names)
+
+
+class _People:
+    """Domains (``@corp.com`` or ``corp.com``), exact addresses and exact names."""
+
+    def __init__(self, entries: list[str]):
+        self.domains: set[str] = set()
+        self.addresses: set[str] = set()
+        self.names: set[str] = set()
+        for entry in entries:
+            value = " ".join(entry.casefold().split())
+            if value.startswith("@"):
+                self.domains.add(value[1:].strip("."))
+            elif "@" in value:
+                self.addresses.add(value)
+            elif "." in value and " " not in value:
+                self.domains.add(value.strip("."))
+            else:
+                self.names.add(value)
+        self.domains.discard("")
+
+    def has_email(self, email: str) -> bool:
+        """An exact address, or an address at a domain or one of its subdomains.
+
+        Never a look-alike such as ``corp.com.example`` or ``notcorp.com``.
+        """
+        email = email.strip().casefold()
+        if email in self.addresses:
             return True
         _local, at, domain = email.rpartition("@")
         domain = domain.strip(".")
         return bool(at) and any(
-            domain == known or domain.endswith("." + known) for known in domains if known
+            domain == known or domain.endswith("." + known) for known in self.domains
         )
 
-    if emails:
-        return all(internal_email(email) for email in emails)
-    return all(" ".join(name.split()) in people for name in names)
+    def has_name(self, name: str) -> bool:
+        return " ".join(name.casefold().split()) in self.names
+
+
+_BARE = "is a whole top-level domain; give a domain such as @alpha.example"
+# Scripts written without spaces between words: no word boundary can be found there.
+_UNSPACED = ("CJK ", "HIRAGANA", "KATAKANA", "THAI", "LAO", "KHMER", "MYANMAR", "TIBETAN")
+
+
+def _bare_domains(entries: list[str]) -> list[str]:
+    """``@io`` and the like: a domain entry with one label would match a whole TLD."""
+    return [e for e in entries if e.startswith("@") and "." not in e.strip().strip("@.")]
+
+
+def _folded(text: str) -> str:
+    """Text compared case-blind after NFKC, without invisible format characters
+    (soft hyphens, zero-width spaces), with whitespace collapsed."""
+    text = unicodedata.normalize("NFKC", text)
+    text = "".join(ch for ch in text if unicodedata.category(ch) != "Cf")
+    return " ".join(text.casefold().split())
+
+
+def _has_words(title: str, pattern: str) -> bool:
+    """Whether ``pattern`` appears in ``title`` as whole words (both already folded).
+
+    A letter or digit next to the pattern makes it part of a longer word, so "alpha"
+    is not in "alphabet"; an underscore separates. At an edge in a script written
+    without spaces (Chinese, Japanese, Thai and the like) there is no boundary to
+    find, so that edge matches as it is.
+    """
+    words = r"\s+".join(re.escape(word) for word in pattern.split())
+    if not words:
+        return False
+    before = "" if _unspaced(pattern[0]) else r"(?<![^\W_])"
+    after = "" if _unspaced(pattern[-1]) else r"(?![^\W_])"
+    return re.search(before + words + after, title) is not None
+
+
+def _unspaced(char: str) -> bool:
+    return unicodedata.name(char, "").startswith(_UNSPACED)
 
 
 def customer_repo(

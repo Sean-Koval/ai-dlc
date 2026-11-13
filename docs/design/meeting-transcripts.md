@@ -67,10 +67,19 @@ repository only when every participant matches `internal`. Otherwise it may be a
 unmapped customer meeting, so it is skipped and logged. A transcript that
 matches two customers is skipped too.
 
-An `internal` email matches an exact address, or a domain and its subdomains.
-A name matches exactly. A team meeting with an outside guest is skipped until a
-customer rule covers it. The pull output names a customer meeting by provider
-and id only, never by its title or path.
+A customer's `titles` match whole words, ignoring case and Unicode compatibility
+forms such as full-width letters. "Alpha" matches "alpha: weekly" but not
+"Alphabet". In Japanese, Chinese or Thai, which have no spaces, a title rule
+matches inside words.
+
+A customer's `participants`, like `internal`, match an exact address, or a
+domain and its subdomains. A bare word is a name and matches exactly, so write
+a domain as `@alpha.example`. A one-label domain such as `@io` is refused.
+Names count only when the provider gives no emails.
+
+A team meeting with an outside guest is skipped until a customer rule covers
+it. The pull output names a customer meeting by provider and id only, never by
+its title or path.
 
 ```toml
 # knowledge.toml of the team repository
@@ -81,8 +90,8 @@ internal = ["@example.com"]  # domains, addresses, or exact names when a provide
 
 [[transcripts.customers]]
 project = "alpha"
-titles = ["Alpha"]                 # substrings of the meeting title
-participants = ["@alpha.example"]  # substrings of a name or email
+titles = ["Alpha"]                 # whole words of the title, any case: not "Alphabet"
+participants = ["@alpha.example"]  # a domain and its subdomains, an exact address or name
 repo_env = "KNOWLEDGE_REPO_ALPHA"  # the default: KNOWLEDGE_REPO_<PROJECT>
 ```
 
