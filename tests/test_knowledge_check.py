@@ -43,7 +43,10 @@ EXPECTED = {
 
 
 HASH = "sha256:" + "0" * 64
-CITED = f"\n  - {{id: SRC-0001, resource: SRC-0001, hash: '{HASH}'}}"
+CITED = (
+    f"\n  - {{id: SRC-0001, resource: SRC-0001, hash: '{HASH}', "
+    "quote: Build on every merge., speaker: Speaker 1, at: '00:04:10'}"
+)
 
 
 def record(

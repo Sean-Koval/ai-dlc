@@ -1722,6 +1722,30 @@ def knowledge_index(
         raise typer.Exit(1)
 
 
+@knowledge.command("why")
+def knowledge_why(
+    id: Annotated[str, typer.Argument(help="record id or alias")],
+    root: Annotated[Path, typer.Option("--root", help="records directory")] = Path("."),
+    project: Annotated[str | None, typer.Option("--project")] = None,
+    json_output: Annotated[bool, typer.Option("--json")] = False,
+):
+    """Reconstruct a decision: status, supersession both ways, links and quoted evidence.
+
+    Reads local records only. Exit 1, with suggestions, when no record has the id.
+    """
+    from ai_dlc.documentation.knowledge_why import lines, why
+
+    with service_call():
+        result = why(root, id, project=project)
+    if json_output:
+        emit(result)
+    else:
+        for line in lines(result):
+            typer.echo(line, err=result["status"] != "ok")
+    if result["status"] != "ok":
+        raise typer.Exit(1)
+
+
 @knowledge.command("captured")
 def knowledge_captured(source: Path, vault: Annotated[Path, typer.Option("--vault")]):
     """Report the source's sha256 and any note already captured from it; exit 1 if one is."""

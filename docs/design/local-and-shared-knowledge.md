@@ -56,6 +56,7 @@ ai-dlc knowledge records search --type decision --label harness   # --text reads
 ai-dlc knowledge records changed <revision>
 ai-dlc knowledge records captured transcript.vtt                  # exit 1 when seen
 ai-dlc knowledge records propose draft.md --path decisions/x.md --branch k/x --title T
+ai-dlc knowledge why DEC-0002 --root . --json   # local only: chain, links, quoted evidence
 ```
 
 ## Rendering the wiki

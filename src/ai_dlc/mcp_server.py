@@ -246,6 +246,17 @@ def _register_knowledge_record_tools(server: FastMCP, root: Path) -> None:
         return index_records(root / records, write=write)
 
 
+def _register_knowledge_why_tool(server: FastMCP, root: Path) -> None:
+    @server.tool()
+    def knowledge_why(id: str, records: str = ".", project: str | None = None) -> dict:
+        """Reconstruct a decision from local records: status, dates, supersession both
+        ways, linked conventions and lessons, and quoted evidence with payload state.
+        """
+        from ai_dlc.documentation.knowledge_why import why
+
+        return why(root / records, id, project=project)
+
+
 def make_server(root: Path, machine: Path | None = None) -> FastMCP:
     config = config_for(root, machine)
     server = FastMCP("ai-dlc")
@@ -254,6 +265,7 @@ def make_server(root: Path, machine: Path | None = None) -> FastMCP:
     _register_workspace_tools(server, root, config)
     _register_knowledge_tools(server, root, config)
     _register_knowledge_record_tools(server, root)
+    _register_knowledge_why_tool(server, root)
     return server
 
 
