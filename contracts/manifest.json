@@ -43,6 +43,8 @@
               "link",
               "transition",
               "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -129,6 +131,8 @@
               "link",
               "transition",
               "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -257,6 +261,8 @@
               "link",
               "transition",
               "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -339,6 +345,122 @@
         "type": "object"
       }
     },
+    "comment": {
+      "payload": {
+        "additionalProperties": false,
+        "properties": {
+          "body": {
+            "description": "Plain text; each non-blank line is one paragraph.",
+            "minLength": 1,
+            "title": "Body",
+            "type": "string"
+          },
+          "operation_id": {
+            "minLength": 1,
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "reference": {
+            "minLength": 1,
+            "title": "Reference",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reference",
+          "body",
+          "operation_id"
+        ],
+        "title": "Comment",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "capabilities",
+              "prepare",
+              "reconcile_closed",
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "update",
+              "query",
+              "comment",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append",
+              "pull_request_create",
+              "get",
+              "search",
+              "list_changed",
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "url": {
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "url"
+        ],
+        "title": "CommentResult",
+        "type": "object"
+      }
+    },
     "create": {
       "payload": {
         "additionalProperties": false,
@@ -394,6 +516,8 @@
               "link",
               "transition",
               "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -514,6 +638,8 @@
               "link",
               "transition",
               "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -625,6 +751,8 @@
               "link",
               "transition",
               "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -737,6 +865,8 @@
               "link",
               "transition",
               "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -877,6 +1007,8 @@
               "link",
               "transition",
               "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -989,6 +1121,8 @@
               "link",
               "transition",
               "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -1170,6 +1304,8 @@
               "link",
               "transition",
               "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -1279,6 +1415,8 @@
               "link",
               "transition",
               "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -1432,6 +1570,8 @@
               "link",
               "transition",
               "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -1598,6 +1738,8 @@
               "link",
               "transition",
               "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -1704,6 +1846,8 @@
               "link",
               "transition",
               "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -1858,6 +2002,8 @@
               "link",
               "transition",
               "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -1995,6 +2141,8 @@
               "link",
               "transition",
               "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -2066,6 +2214,167 @@
         "type": "object"
       }
     },
+    "query": {
+      "payload": {
+        "additionalProperties": false,
+        "description": "Read-only item search; every filter given must match.",
+        "properties": {
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "limit": {
+            "default": 20,
+            "maximum": 50,
+            "minimum": 1,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "state": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Normalized state: open, in_progress, in_review, needs_decision, closed, cancelled or unknown.",
+            "title": "State"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Text"
+          }
+        },
+        "title": "Query",
+        "type": "object"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "enum": [
+              "capabilities",
+              "prepare",
+              "reconcile_closed",
+              "create",
+              "find",
+              "read",
+              "link",
+              "transition",
+              "update",
+              "query",
+              "comment",
+              "current",
+              "merged",
+              "ci",
+              "deployment",
+              "append",
+              "pull_request_create",
+              "get",
+              "search",
+              "list_changed",
+              "propose",
+              "upsert_page",
+              "get_page_by_key",
+              "list_children"
+            ],
+            "title": "Operation",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Operation Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "Request",
+        "type": "object"
+      },
+      "required": false,
+      "response": {
+        "$defs": {
+          "Item": {
+            "additionalProperties": true,
+            "properties": {
+              "id": {
+                "minLength": 1,
+                "title": "Id",
+                "type": "string"
+              },
+              "state": {
+                "description": "Normalized state: open, in_progress, in_review, needs_decision, closed, cancelled or unknown.",
+                "minLength": 1,
+                "title": "State",
+                "type": "string"
+              },
+              "url": {
+                "minLength": 1,
+                "title": "Url",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "url",
+              "state"
+            ],
+            "title": "Item",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/$defs/Item"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "Found",
+        "type": "object"
+      }
+    },
     "read": {
       "payload": {
         "additionalProperties": false,
@@ -2096,6 +2405,8 @@
               "link",
               "transition",
               "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -2210,6 +2521,8 @@
               "link",
               "transition",
               "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -2379,6 +2692,8 @@
               "link",
               "transition",
               "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -2526,6 +2841,8 @@
               "link",
               "transition",
               "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -2682,6 +2999,8 @@
               "link",
               "transition",
               "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -2851,6 +3170,8 @@
               "link",
               "transition",
               "update",
+              "query",
+              "comment",
               "current",
               "merged",
               "ci",
@@ -3011,8 +3332,10 @@
       ],
       "optional": [
         "capabilities",
+        "comment",
         "link",
         "prepare",
+        "query",
         "reconcile_closed",
         "update"
       ]

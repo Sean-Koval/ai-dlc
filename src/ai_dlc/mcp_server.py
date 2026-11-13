@@ -336,6 +336,21 @@ def _register_tracker_tools(server: FastMCP, root: Path, config: dict, registry)
         return tracker().get(reference)
 
     @server.tool()
+    def tracker_search(
+        text: str | None = None,
+        labels: list[str] | None = None,
+        state: str | None = None,
+        limit: int = 20,
+    ) -> dict:
+        """Find tracker items by text, labels and state through the tracker role; read-only."""
+        return tracker().search(text, labels, state, limit)
+
+    @server.tool()
+    def tracker_comment(reference: str, body: str) -> dict:
+        """Add one plain-text comment to an item; refuses one that names exec:agent."""
+        return tracker().comment(reference, body)
+
+    @server.tool()
     def tracker_create(
         title: str, body: str = "", labels: list[str] | None = None, correlation: str | None = None
     ) -> dict:

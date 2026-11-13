@@ -118,7 +118,9 @@ Optional `update` accepts `{reference, operation_id, title, body, labels}` and r
 an Item. Omitted fields stay as they are, and `labels` replaces the whole set. It never
 changes status. `create` accepts optional `labels`. A provider that writes labels lists
 `update` in `optional_operations`; the tracker service refuses labels otherwise.
-`jira-cloud` implements both.
+Optional `query` accepts `{text, labels, state, limit}` and returns `{items}`; it is
+read-only. Optional `comment` accepts `{reference, body, operation_id}` and returns
+`{id, url}`; the body is plain text. `jira-cloud` implements all four.
 
 Optional `prepare` and `reconcile_closed` accept `{reference, operation_id}` and
 return an Item. Providers declare them in capability `optional_operations`;

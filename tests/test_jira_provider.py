@@ -328,7 +328,7 @@ def test_declared_builtin_capabilities_cross_executable_boundary_without_network
     assert registry.invoke("tickets", "capabilities", {}) == {
         "schema": 1,
         "lifecycle": {"in_progress": True, "closed": True},
-        "optional_operations": ["link", "update"],
+        "optional_operations": ["comment", "link", "query", "update"],
     }
 
 
@@ -693,3 +693,41 @@ def test_update_refuses_or_reports_uncertain(jira, damage):
     with pytest.raises((ValueError, RuntimeError)):
         jira.provider().invoke("update", payload)
     assert "labels" not in jira.issues[0]["fields"]
+
+
+def test_query_builds_quoted_jql_and_filters_state_without_writing(jira):
+    jira.fields.append(labels_field())
+    jira.provider().invoke("create", {**PAYLOAD, "labels": ["exec:pair"]})
+    writes = len(jira.writes())
+
+    found = jira.provider().invoke(
+        "query", {"text": 'say "hi"', "labels": ["exec:pair"], "state": "open", "limit": 5}
+    )
+
+    assert [(i["id"], i["title"], i["labels"]) for i in found["items"]] == [
+        ("101", "New work", ["exec:pair"])
+    ]
+    jql = json.loads(jira.requests[-1].content)["jql"]
+    assert jql == (
+        'project = 100 AND text ~ "say \\"hi\\"" AND labels = "exec:pair" ORDER BY updated DESC'
+    )
+    assert len(jira.writes()) == writes
+    closed = jira.provider().invoke("query", {"state": "closed", "limit": 5})
+    assert closed["items"] == []
+    with pytest.raises(ValueError):
+        jira.provider().invoke("query", {"text": "a\nb", "limit": 5})
+
+
+def test_comment_posts_plain_paragraphs_once(jira):
+    jira.provider().invoke("create", PAYLOAD)
+    payload = {"reference": "WORK-1", "body": "First line\n\nSecond", "operation_id": "c"}
+
+    first = jira.provider().invoke("comment", payload)
+    again = jira.provider().invoke("comment", payload)
+
+    assert first == again
+    assert first["url"].endswith("/browse/WORK-1?focusedCommentId=9000")
+    comments = jira.issues[0]["comments"]
+    assert len(comments) == 1
+    texts = [part["content"][0]["text"] for part in comments[0]["body"]["content"]]
+    assert texts == ["First line", "Second"]

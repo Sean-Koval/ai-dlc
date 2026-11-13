@@ -72,8 +72,8 @@ Machine enrollment mutations are CLI-only in this cycle. MCP exposes
 `knowledge_check` (validates a knowledge-records directory), `knowledge_index`,
 `knowledge_number_plan`, `knowledge_render` (the wiki's only writer),
 `knowledge_search`, `knowledge_get`, `knowledge_propose`, `knowledge_template`,
-`tracker_get`, `tracker_create` and `tracker_update` (role-level; they refuse
-`exec:agent` and never change status),
+`tracker_get`, `tracker_search`, `tracker_create`, `tracker_update` and
+`tracker_comment` (role-level; they refuse `exec:agent` and never change status),
 plus the documentation and workspace tools below; it does
 not expose machine enrollment mutation. These MCP identifiers differ from the
 space-separated CLI commands, such as `ai-dlc work publish` and `ai-dlc

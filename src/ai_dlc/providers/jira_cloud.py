@@ -303,6 +303,7 @@ class JiraCloudProvider:
         self.client = client or httpx.Client(timeout=30, follow_redirects=False)
         self.owned_client = client is None
         self.requests_used = 0
+        self.account = None
         self.base = "https://api.atlassian.com/ex/jira/" + self.config["cloud_id"] + "/rest/api/3/"
 
     def close(self):
@@ -691,6 +692,68 @@ class JiraCloudProvider:
             raise JiraUncertain("Jira update read-back does not match; inspect the issue")
         return self.item(after)
 
+    def query(self, payload):
+        """One bounded page of this project's issues matching text and labels; read-only."""
+
+        def quoted(value):
+            if any(ord(char) < 32 for char in value):
+                raise JiraRefusal("Jira search values cannot hold control characters")
+            return '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
+
+        jql = "project = " + self.config["project_id"]
+        if payload.get("text"):
+            jql += " AND text ~ " + quoted(payload["text"])
+        for label in payload.get("labels", []):
+            jql += " AND labels = " + quoted(label)
+        page = self.request(
+            "POST",
+            "search/jql",
+            body={
+                "jql": jql + " ORDER BY updated DESC",
+                "maxResults": payload["limit"],
+                "fields": ["project", "issuetype", "status", "resolution", "summary", "labels"],
+            },
+        )
+        if (
+            not isinstance(page, dict)
+            or not isinstance(page.get("issues"), list)
+            or len(page["issues"]) > payload["limit"]
+            or page.get("warnings")
+            or page.get("warningMessages")
+        ):
+            raise JiraUncertain("Jira search is incomplete")
+        items = []
+        for row in page["issues"]:
+            item = self.item(row)
+            if isinstance(row["fields"].get("summary"), str):
+                item["title"] = row["fields"]["summary"]
+            if payload.get("state") in (None, item["state"]):
+                items.append(item)
+        return {"items": items, "complete": page.get("isLast") is True}
+
+    def comment(self, payload):
+        """Add one plain-text comment once; a repeat by this account returns the first."""
+        current = self.read(payload["reference"])
+        texts = [line.strip() for line in payload["body"].splitlines() if line.strip()]
+        path = "issue/" + current["id"] + "/comment"
+
+        def url(comment_id):
+            return current["url"] + "?focusedCommentId=" + comment_id
+
+        for row in self.pages(path, "comments"):
+            author = row.get("author")
+            if (
+                isinstance(author, dict)
+                and author.get("accountId") == self.account
+                and adf_text(row.get("body")) == texts
+            ):
+                return {"id": str(row["id"]), "url": url(str(row["id"]))}
+        created = self.request("POST", path, body={"body": adf(texts)})
+        comment_id = identity(
+            created.get("id") if isinstance(created, dict) else None, "comment ID", numeric=True
+        )
+        return {"id": comment_id, "url": url(comment_id)}
+
     def transition(self, payload):
         state = payload["state"]
         if state not in TRANSITION_STATES or state not in self.config["statuses"]:
@@ -807,12 +870,21 @@ class JiraCloudProvider:
             result = {
                 "schema": 1,
                 "lifecycle": {"in_progress": True, "closed": True},
-                "optional_operations": ["link", "update"],
+                "optional_operations": ["comment", "link", "query", "update"],
             }
         else:
-            if operation not in {"create", "find", "read", "transition", "link", "update"}:
+            if operation not in {
+                "create",
+                "find",
+                "read",
+                "transition",
+                "link",
+                "update",
+                "query",
+                "comment",
+            }:
                 raise JiraRefusal("Unsupported Jira operation")
-            self.identity()
+            self.account = self.identity()
             if operation == "find":
                 result = self.find(payload["correlation"])
             elif operation == "read":

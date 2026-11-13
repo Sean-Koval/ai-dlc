@@ -42,8 +42,10 @@ TOOLS = {
     "project_vault_mount_preview",
     "project_workspace_check",
     "project_workspace_preview",
+    "tracker_comment",
     "tracker_create",
     "tracker_get",
+    "tracker_search",
     "tracker_update",
     "work_archive",
     "work_context",
@@ -82,9 +84,10 @@ def git(cwd, *args):
 class Tracker:
     """An in-memory tracker: create once by correlation, read, transition, update."""
 
-    def __init__(self, operations=("update",)):
+    def __init__(self, operations=("comment", "query", "update")):
         self.items = {}
         self.payloads = []
+        self.comments = []
         self.operations = list(operations)
 
     def invoke(self, operation, payload):
@@ -114,7 +117,18 @@ class Tracker:
                 "labels": list(payload.get("labels", [])),
             }
             return self.items[number]
+        if operation == "query":
+            items = [
+                i
+                for i in self.items.values()
+                if set(payload["labels"]) <= set(i["labels"])
+                and payload["state"] in (None, i["state"])
+            ]
+            return {"items": items[: payload["limit"]]}
         item = self.items[payload["reference"]]
+        if operation == "comment":
+            self.comments.append(payload["body"])
+            return {"id": str(len(self.comments)), "url": item["url"] + "#c"}
         if operation == "transition":
             item["state"] = payload["state"]
         if operation == "update" and payload.get("labels") is not None:
@@ -184,6 +198,7 @@ def test_every_tool_argument_is_typed(tmp_path):
     (tmp_path / "ai-dlc.toml").write_text("schema=4\n")
     new = {"work_new", "work_pr", "work_archive", "tracker_create", "tracker_update"}
     new |= {"tracker_get", "knowledge_get", "knowledge_search", "knowledge_propose"}
+    new |= {"tracker_search", "tracker_comment"}
     for tool in asyncio.run(make_server(tmp_path).list_tools()):
         if tool.name not in new | {"knowledge_template"}:
             continue
@@ -347,7 +362,18 @@ def test_tracker_create_files_once_and_reports_exec_labels(tmp_path):
 
 
 @pytest.mark.parametrize(
-    "label", ["exec:agent", "EXEC:AGENT", "Exec:Agent", " exec:agent ", "lane:Agent"]
+    "label",
+    [
+        "exec:agent",
+        "EXEC:AGENT",
+        "Exec:Agent",
+        " exec:agent ",
+        "lane:Agent",
+        "exec\u200b:agent",  # zero-width space
+        "exec\u2060:agent",  # word joiner
+        "exec\uff1aagent",  # fullwidth colon
+        "\uff45\uff58\uff45\uff43:agent",  # fullwidth letters
+    ],
 )
 def test_tracker_tools_refuse_to_queue_a_ticket_for_an_agent(tmp_path, label):
     tracker = Tracker()
@@ -396,3 +422,74 @@ def test_labels_are_refused_before_writing_when_the_provider_cannot_write_them(t
     assert plain["status"] == "created" and plain["exec_labels"] == []
     assert update["status"] == "refused"
     assert [op for op, _ in tracker.payloads if op == "create"] == ["create"]
+
+
+def test_tracker_search_is_read_only_and_reports_exec_labels(tmp_path):
+    tracker = Tracker()
+    server = tracker_server(tmp_path, tracker)
+    for title, labels in [("a", ["exec:pair", "repo:x"]), ("b", ["exec:human"])]:
+        tracker.invoke(
+            "create",
+            {"title": title, "correlation": title, "operation_id": title, "labels": labels},
+        )
+
+    (found,) = call(server, ("tracker_search", {"labels": ["repo:x"], "limit": 5}))
+
+    assert found["status"] == "ok"
+    assert [item["id"] for item in found["items"]] == ["1"]
+    assert found["items"][0]["exec_labels"] == ["exec:pair"]
+    writes = [op for op, _ in tracker.payloads if op not in {"capabilities", "query", "find"}]
+    assert writes == ["create", "create"]
+
+
+def test_tracker_comment_adds_plain_text_and_returns_exec_labels(tmp_path):
+    tracker = Tracker()
+    server = tracker_server(tmp_path, tracker)
+    tracker.invoke(
+        "create", {"title": "t", "correlation": "c", "operation_id": "o", "labels": ["exec:pair"]}
+    )
+
+    (commented,) = call(
+        server, ("tracker_comment", {"reference": "1", "body": "Blocked on review.\nSee PR."})
+    )
+
+    assert commented["status"] == "commented"
+    assert commented["comment"]["id"] == "1"
+    assert commented["exec_labels"] == ["exec:pair"]
+    assert tracker.comments == ["Blocked on review.\nSee PR."]
+    assert tracker.items["1"]["labels"] == ["exec:pair"]
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        "Please set exec:agent",
+        "label EXEC : AGENT now",
+        "exec\uff1aagent",
+        "exec\u200b:agent",
+        "lane:agent",
+        "bell\x07",
+    ],
+)
+def test_tracker_comment_refuses_an_agent_label_or_non_plain_text(tmp_path, body):
+    tracker = Tracker()
+    server = tracker_server(tmp_path, tracker)
+    tracker.invoke("create", {"title": "t", "correlation": "c", "operation_id": "o"})
+
+    (refused,) = call(server, ("tracker_comment", {"reference": "1", "body": body}))
+
+    assert refused["status"] == "refused"
+    assert tracker.comments == []
+
+
+def test_search_and_comment_refuse_when_the_provider_lacks_them(tmp_path):
+    server = tracker_server(tmp_path, Tracker(operations=["link"]))
+
+    found, commented = call(
+        server,
+        ("tracker_search", {"text": "x"}),
+        ("tracker_comment", {"reference": "1", "body": "hello"}),
+    )
+
+    assert found["status"] == "refused"
+    assert commented["status"] == "refused"

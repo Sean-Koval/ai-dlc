@@ -19,6 +19,8 @@ class Request(BaseModel):
         "link",
         "transition",
         "update",
+        "query",
+        "comment",
         "current",
         "merged",
         "ci",
@@ -97,6 +99,26 @@ class Update(Read):
     labels: list[str] | None = Field(default=None, description=LABELS)
 
 
+class Query(Payload):
+    """Read-only item search; every filter given must match."""
+
+    text: str | None = Field(default=None, min_length=1)
+    labels: list[str] = Field(default_factory=list)
+    state: str | None = Field(default=None, description=ITEM_STATE)
+    limit: int = Field(default=20, ge=1, le=50)
+
+
+class Comment(Read):
+    body: str = Field(min_length=1, description="Plain text; each non-blank line is one paragraph.")
+    operation_id: str = Field(min_length=1)
+
+
+class CommentResult(BaseModel):
+    model_config = ConfigDict(extra="allow")
+    id: str = Field(min_length=1)
+    url: str = Field(min_length=1)
+
+
 class Capabilities(Payload):
     pass
 
@@ -131,6 +153,8 @@ PAYLOADS = {
     "link": Link,
     "transition": Transition,
     "update": Update,
+    "query": Query,
+    "comment": Comment,
 }
 
 
@@ -369,6 +393,8 @@ RESPONSES = {
     "link": Item,
     "transition": Item,
     "update": Item,
+    "query": Found,
+    "comment": CommentResult,
     "current": CurrentResult,
     "merged": MergedResult,
     "ci": CIResult,
@@ -451,7 +477,15 @@ def manifest():
         "roles": {
             "tracker": {
                 "mandatory": ["create", "find", "read", "transition"],
-                "optional": ["capabilities", "link", "prepare", "reconcile_closed", "update"],
+                "optional": [
+                    "capabilities",
+                    "comment",
+                    "link",
+                    "prepare",
+                    "query",
+                    "reconcile_closed",
+                    "update",
+                ],
             },
             "specs": {"mandatory": ["current"], "optional": []},
             "scm": {"mandatory": ["merged", "ci"], "optional": ["pull_request_create"]},
