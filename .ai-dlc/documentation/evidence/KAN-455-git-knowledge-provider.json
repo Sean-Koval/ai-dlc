@@ -2,10 +2,10 @@
   "decisions": [
     {
       "bound": {
-        "CHANGELOG.md": "f32021c6035ee3b750621f43f90274b44894ac50b2cbaa023d64987acf9135bb"
+        "CHANGELOG.md": "265a6ff5dbabd3007287e572799cabeb8dfb277f5bc85d3750c72bf4352bb7ef"
       },
       "outcome": "updated",
-      "reason": "Unreleased entry for the git knowledge provider beside KAN-423's knowledge check entry (KAN-455).",
+      "reason": "Unreleased entry for the git knowledge provider and the knowledge records template command, beside KAN-423's knowledge check entry (KAN-455).",
       "reviewer": "Claude (agent)",
       "target": "CHANGELOG.md"
     },
@@ -162,7 +162,7 @@
         "src/ai_dlc/_windows_storage/__init__.py": "5715def899453f15265e13d52e5b518844cc9d057421cfa5279172d799d5f506",
         "src/ai_dlc/_windows_storage/_api.py": "d5fc4f971db8e706871c06e8119884848e505af6c45f4fbb5c2f7db513faf41b",
         "src/ai_dlc/_windows_storage/_security.py": "62785d4e088cd485816a33f35a7a559d3d1acf166093c413a3f4f79969056314",
-        "src/ai_dlc/cli.py": "2cb39751cd6e59b3267bf9f7eb46542074fc3d254555643a71c6e629493f9aac",
+        "src/ai_dlc/cli.py": "2d99b018935b8bf0d3871860f8095b0d7d907f6fd92d33dd54471721dab5f7a7",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
         "src/ai_dlc/conformance.py": "0ff247c065e89d4c5b43d844601dc809558c65a779c1600371953c0e2c44737b",
         "src/ai_dlc/contracts.py": "46003a7439c7f6354dcdf3edd4ca7bd005b945ed409d47b63eb264d59202f11c",
@@ -181,7 +181,7 @@
         "src/ai_dlc/documentation/knowledge_notes.py": "df022b2e330c5140f6948ec25a33c7888704e8686ea5411c770764a449b3b1b6",
         "src/ai_dlc/documentation/knowledge_publish.py": "a796d6d760789edb3f1723fd79f3d02125901c699fa51fe9f8d7cfbb666920a8",
         "src/ai_dlc/documentation/knowledge_records.py": "eeb502fd218412c3f2e8085b2c8bab1b74683daa8701bc8416155a29f9437c60",
-        "src/ai_dlc/documentation/knowledge_service.py": "39cd54f46809329daf7c65304236b9a23bc5c0e31074ecaeaaef2a90d9761b0a",
+        "src/ai_dlc/documentation/knowledge_service.py": "24587b5fca6346c7cdd519278470e01b76d6e86635435af1fb690fe559b16a8b",
         "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
         "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
         "src/ai_dlc/documentation/moc.py": "fe8db38517c11f6fc55430eb327b9482fc9d9a1a233f4dbd4d948cf4b03dc8b4",
@@ -279,7 +279,7 @@
         "catalog:docs/design/local-and-shared-knowledge.md": "92c841e843895124bf802cc6da8be57e525d7af9371c452c112f97873d7e525a",
         "contracts/knowledge-note.schema.json": "f3cbc791e2caae2223bf223e8b27b5b7ce553405b76f32cf5689fa7fe68bb1a5",
         "contracts/knowledge-record.schema.json": "0a7633d88024a668140a6d658f09f5d11bf7e26b8ff09368abd82d17ddcd9bd7",
-        "docs/design/local-and-shared-knowledge.md": "46f191713f8569ea0a6666e8e1ab5206ccb918ffe07f24face4d210cb858c414",
+        "docs/design/local-and-shared-knowledge.md": "3f4e0066bda6554c412dbde88149d7775827a1da7b60a2b15a1046c0f9fb5ded",
         "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
         "openspec/specs/session-learnings/spec.md": "dcd490cd54f2f6cb3fadaa90afade85d5e1d64b19fbe2accb70bfb06897e97b4",
         "src/ai_dlc/documentation/knowledge.py": "64379be5f820df72056e992d50d91a099b6029b913804586208b80c73490887a",
@@ -301,7 +301,7 @@
         "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
       },
       "outcome": "updated",
-      "reason": "New Knowledge repository section: git provider configuration and the knowledge records commands; trimmed elsewhere to stay within the editorial baseline.",
+      "reason": "Knowledge repository section: git provider configuration and the knowledge records commands, including template; trimmed elsewhere to stay within the editorial baseline.",
       "reviewer": "Claude (agent)",
       "target": "docs/design/local-and-shared-knowledge.md"
     },
@@ -322,7 +322,7 @@
         "project-templates/project/docs/templates/delivery-slice.md": "44d1e55bdd17e5fe0cf4c1d35d99ffad8f6060575ecb97496515b48a0e304429",
         "project-templates/project/scripts/check_tests.py": "a3dd2021b7911d2ff688142776b7a43af60f76e052d7164086db2434db60102d",
         "project-templates/project/tests/test_main.py": "4e6ac9def60ea5a6aef9e004c465cc439acac4b33e4f70df332939f0cdfae63d",
-        "src/ai_dlc/cli.py": "2cb39751cd6e59b3267bf9f7eb46542074fc3d254555643a71c6e629493f9aac",
+        "src/ai_dlc/cli.py": "2d99b018935b8bf0d3871860f8095b0d7d907f6fd92d33dd54471721dab5f7a7",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
         "src/ai_dlc/harness/agents.py": "72f38f1f69147e4216fe6752636f26e6218c5c6ef85845ffb89828d431effa53",
         "src/ai_dlc/harness/hooks.py": "d8903d3c59ce52c3b3b26cdd9f322370eb2344404e235b2cecca61f5749b943f",
@@ -359,7 +359,7 @@
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
         "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
-        "src/ai_dlc/cli.py": "2cb39751cd6e59b3267bf9f7eb46542074fc3d254555643a71c6e629493f9aac",
+        "src/ai_dlc/cli.py": "2d99b018935b8bf0d3871860f8095b0d7d907f6fd92d33dd54471721dab5f7a7",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
         "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
@@ -411,7 +411,7 @@
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
         "openspec/specs/spec-delivery-traceability/spec.md": "66641acf9c151792cde1914062630ed50cc4199cdc3bdb4b81382e03716f2ea3",
-        "src/ai_dlc/cli.py": "2cb39751cd6e59b3267bf9f7eb46542074fc3d254555643a71c6e629493f9aac",
+        "src/ai_dlc/cli.py": "2d99b018935b8bf0d3871860f8095b0d7d907f6fd92d33dd54471721dab5f7a7",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
@@ -453,7 +453,7 @@
         "docs/workflows/work-computer-setup.md": "6a6b849511affc491b227896981914c1b8f021c6e3541250c1dad554d75a5444",
         "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
-        "src/ai_dlc/cli.py": "2cb39751cd6e59b3267bf9f7eb46542074fc3d254555643a71c6e629493f9aac",
+        "src/ai_dlc/cli.py": "2d99b018935b8bf0d3871860f8095b0d7d907f6fd92d33dd54471721dab5f7a7",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
         "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
@@ -475,10 +475,10 @@
     },
     {
       "bound": {
-        "tests/test_git_knowledge.py": "86da17f22b175c7b94ddd2a4472e9512a118d23ef8493543db2023beeb6de3b2"
+        "tests/test_git_knowledge.py": "725d65cae8917112f27d77287f3a2e6e8f070747f79e8748b278e8504c404c4c"
       },
       "outcome": "updated",
-      "reason": "Git knowledge provider tests against a local bare remote and a gh stand-in, including propose refusals from knowledge check (broken link, bad supersession, edited accepted decision).",
+      "reason": "Git knowledge provider tests against a local bare remote and a gh stand-in, knowledge check refusals before push, and the template command.",
       "reviewer": "Claude (agent)",
       "target": "tests/test_git_knowledge.py"
     },
