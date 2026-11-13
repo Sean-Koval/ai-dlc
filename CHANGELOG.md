@@ -28,6 +28,11 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
   the item's `exec:` labels. There is still no transition tool. The tracker contract
   gains optional `labels` on `create` and optional `update`, `query` and `comment`
   operations, implemented by `jira-cloud` and not yet live-qualified.
+- `ai-dlc knowledge migrate` (KAN-452, [ADR 0005](docs/decisions/0005-migrate-knowledge-notes-to-records.md))
+  rewrites knowledge-note frontmatter as knowledge records. It is a dry run unless
+  `--write`, idempotent, and reversible with `--revert JOURNAL`. This repository's
+  decisions and the ADR templates are records now, and `work finish --learning`
+  writes `lesson` records.
 - A `wiki` role (`upsert_page`, `get_page_by_key`, `list_children`) with a
   `confluence-cloud` provider, and `ai-dlc knowledge render --changed-since SHA
   [--dry-run]` (MCP `knowledge_render`), the wiki's only writer (KAN-430). It renders
@@ -125,6 +130,9 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 
 ### Deprecated
 
+- Knowledge-note frontmatter (`kind:`). The docs gate, recall, `knowledge check
+  --vault` and capture dedupe still read it, with a deprecation line, until the
+  release after 1.0 (KAN-453). Run `ai-dlc knowledge migrate --write`.
 - The Plane tracker adapter: shipped but unsupported and unqualified.
   `project init` and `project adopt` refuse `--tracker plane` without
   `--allow-unsupported` (#200; PR #211).

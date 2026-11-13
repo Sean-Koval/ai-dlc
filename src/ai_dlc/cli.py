@@ -1722,6 +1722,27 @@ def knowledge_index(
         raise typer.Exit(1)
 
 
+@knowledge.command("migrate")
+def knowledge_migrate_command(
+    paths: Annotated[list[Path] | None, typer.Argument(help="files or directories")] = None,
+    root: Annotated[Path, typer.Option("--root", help="repository or vault")] = Path(),
+    write: Annotated[bool, typer.Option("--write/--dry-run")] = False,
+    owner: Annotated[str | None, typer.Option("--owner", help="default: author")] = None,
+    revert: Annotated[Path | None, typer.Option("--revert", help="journal to undo")] = None,
+):
+    """Rewrite knowledge-note frontmatter as knowledge records; a dry run unless --write."""
+    from ai_dlc.documentation import knowledge_migrate as migration
+
+    with service_call():
+        if revert is not None:
+            result = migration.revert(root, revert, write=write)
+        else:
+            result = migration.migrate(root, paths, write=write, owner=owner)
+    emit(result)
+    if result["status"] != "ok":
+        raise typer.Exit(1)
+
+
 @knowledge.command("captured")
 def knowledge_captured(source: Path, vault: Annotated[Path, typer.Option("--vault")]):
     """Report the source's sha256 and any note already captured from it; exit 1 if one is."""
