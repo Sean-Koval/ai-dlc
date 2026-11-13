@@ -18,6 +18,7 @@ SITE = runpy.run_path(str(ROOT / "scripts/site_config.py"))
 
 MKDOCS = """site_name: example
 exclude_docs: |
+  verification/
   catalog.toml
   catalog.d/
 
@@ -149,9 +150,10 @@ def test_a_path_that_leaves_docs_cannot_join_the_nav(site):
     assert "docs/ Markdown page" in SITE["compose"](site)[1][0]
 
 
-def test_the_site_list_of_excluded_pages_matches_the_link_checker():
-    links = runpy.run_path(str(ROOT / "scripts/docs_site_links.py"))
-    assert SITE["EXCLUDED"] == links["EXCLUDED"]
+def test_a_page_in_a_nested_excluded_directory_cannot_join_the_nav(site):
+    """exclude_docs is gitignore-style: ``catalog.d/`` leaves out design/catalog.d/x.md too."""
+    _add(site, "nested", "design/catalog.d/x.md", nav="Reference")
+    assert "excluded from the site" in SITE["compose"](site)[1][0]
 
 
 def test_hidden_editor_files_in_catalog_d_are_ignored(site):

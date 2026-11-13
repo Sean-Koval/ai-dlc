@@ -90,11 +90,11 @@
         "scripts/check_generated.py": "ddc1176237c0ee0336b2e1bf2a378b6eb60b87977b628fe047a1dcea8a730ca4",
         "scripts/check_layout.py": "942ed109d998ed8d8004b8dbe6608b33df98876cdd8db6d004677dbcce1933a6",
         "scripts/collect_changes.py": "f60694b4494bfa638a0559ef13d6398f4064a766731479aa8d65fc2e176bca7c",
-        "scripts/docs_site_links.py": "14ffb0b925d9efd4fb3703b99d3913fe8a6dead49f016bd6c0c8d161650ae52c",
+        "scripts/docs_site_links.py": "a98c201a63544db8bb79cf15367ab17fd7f0141d2fb7515fc5dd52b50a4608e4",
         "scripts/publish_workflow_plugin.py": "96d95c413671a55a0e42d690f1c6d64528c11203e0a44359e3422d082ca34b9d",
         "scripts/qualify_framework.py": "8068bb2709bbf6b3a020e9c22d62b993cc0e8a3e3c9ee5c00dc4b8963c31054e",
         "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
-        "scripts/site_config.py": "b24b3bfe7dadadc91d0cf0fcd51ace9ad38e6456203caf39724b64fab3a07325",
+        "scripts/site_config.py": "6ab91d6737a07cc3669e41812b1b363d4c26df1c60b4ad183755248cb5881122",
         "src/ai_dlc/__init__.py": "d4a8c60aaf240dc65659fa74a219f2d0bcfd10aae757d4031a6b3c039e231120",
         "src/ai_dlc/__main__.py": "aff4dacb51b993d7acdfe1f7ab7a54c1c159dd23a3a848b961a0a2e545809f07",
         "src/ai_dlc/_windows_storage/__init__.py": "5715def899453f15265e13d52e5b518844cc9d057421cfa5279172d799d5f506",
@@ -221,7 +221,7 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "The documentation package row already covers catalog checks; catalog.py and site_config.py's stricter checks are part of it.",
+      "reason": "The scripts now read exclude_docs from mkdocs.yml as gitignore-style patterns; the architecture map is unaffected.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
@@ -241,13 +241,13 @@
         "docs/design/project-documentation.md": "5d6d936bda24db37a2fbeb8d3f4b73284316283b26f91885402442e79fc5b8f3",
         "openspec/specs/decision-records/spec.md": "ae948a29a5a3dcdd3011b6a4ab174181a5f236eff659af944209dd1b23576260",
         "project-templates/project/docs/decisions/README.md": "c19b4be797e9c7ac9cfffeaa6f30efa8e3547f5b0d467ff8019e02a533344c07",
-        "scripts/site_config.py": "b24b3bfe7dadadc91d0cf0fcd51ace9ad38e6456203caf39724b64fab3a07325",
+        "scripts/site_config.py": "6ab91d6737a07cc3669e41812b1b363d4c26df1c60b4ad183755248cb5881122",
         "src/ai_dlc/documentation/catalog.py": "7760064e27e0c2293210c21f2e3017ae9833d7f51f14513a845f38b94ceadb27",
         "src/ai_dlc/documentation/decisions.py": "ab81ad8426665668da3fb18dce2eba3020fbed9476d964ea277352a2092a286c",
         "tests/test_decisions.py": "1c222097bd94d3a899974116eb816b0e8fa1c1f2d696227b9b35174eac6b819e"
       },
-      "outcome": "updated",
-      "reason": "Explains catalog.d fragments and their nav and title fields.",
+      "outcome": "reviewed-no-change",
+      "reason": "Its paragraph on catalog fragments still holds; only how excluded pages are matched changed.",
       "reviewer": "Claude (agent)",
       "target": "docs/design/project-documentation.md"
     },
@@ -293,17 +293,17 @@
         "docs/workflows/get-started.md": "7052c4b9b7e1bd297f54a9f0ec133e9393f765099a358c4eef2f5f382677ab11",
         "mkdocs.yml": "89486c7244366739074c651fdebe3e9ef16df216c50dec04a708417aa7a7a8b3",
         "scripts/bootstrap.sh": "dff64e5be94a72bcfbb5dec30a34a808fb2e0a1e0b9612146086af183de8acee",
-        "scripts/docs_site_links.py": "14ffb0b925d9efd4fb3703b99d3913fe8a6dead49f016bd6c0c8d161650ae52c",
-        "tests/test_front_page.py": "34ace4863f7dd4bed3e96144ffb5268671fa9899e8cc46d01ab6a265f940029e"
+        "scripts/docs_site_links.py": "a98c201a63544db8bb79cf15367ab17fd7f0141d2fb7515fc5dd52b50a4608e4",
+        "tests/test_front_page.py": "6c26ccce0247e29d19aa2b5ce54dc003ac1d507ccbb2a512fa0a71206fce5d6f"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Installing and onboarding are unaffected by catalog fragments.",
+      "reason": "Getting started is unaffected by how the site's excluded pages are matched.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/get-started.md"
     },
     {
       "bound": {
-        "tests/test_catalog_fragments.py": "60aee3c9aad2f80e6d4171f5c1af3b5b5fe48efe1debd7bc58204da9a170e75c"
+        "tests/test_catalog_fragments.py": "86878291a8bef4bd3dbc2cd68493f7ff71696c5d1b320e70dada84fd3b1f5da3"
       },
       "outcome": "no-impact",
       "reason": "Tests only.",

@@ -17,7 +17,8 @@ Two pull requests that each add a page used to conflict on the ``nav`` in ``mkdo
 
 This script copies ``mkdocs.yml`` to ``site.yml`` and appends each such page to the end
 of its section, unless the nav already lists it. The site is built from ``site.yml``.
-It reads only TOML and YAML, so the docs workflow needs nothing but Zensical. It mirrors
+It reads TOML and YAML and matches ``exclude_docs`` with pathspec, all of which Zensical
+installs, so the docs workflow needs nothing else. It mirrors
 the catalog checks the site needs; ``ai-dlc docs gate`` remains the authority on entries.
 
     python scripts/site_config.py           # write site.yml
@@ -28,12 +29,12 @@ the catalog checks the site needs; ``ai-dlc docs gate`` remains the authority on
 from __future__ import annotations
 
 import argparse
-import fnmatch
 import re
 import sys
 import tomllib
 from pathlib import Path
 
+import pathspec
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,8 +42,6 @@ CATALOG = "docs/catalog.toml"
 FRAGMENTS = "docs/catalog.d"
 OUTPUT = "site.yml"
 NAV = re.compile(r"^nav:[ \t]*(#.*)?$", re.MULTILINE)
-# The pages exclude_docs leaves out of the site; scripts/docs_site_links.py keeps the same list.
-EXCLUDED = ("archive/*", "verification/*", "reviews/*", "catalog.toml", "catalog.d/*")
 
 
 def catalog_entries(root: Path) -> list[tuple[str, dict]]:
@@ -85,7 +84,10 @@ def _listed(nav: object) -> set[str]:
 def compose(root: Path) -> tuple[str, list[str]]:
     """``site.yml``'s text and the problems found; the text is unusable if there are any."""
     text = (root / "mkdocs.yml").read_text(encoding="utf-8")
-    nav = (yaml.load(text, Loader=yaml.BaseLoader) or {}).get("nav")
+    config = yaml.load(text, Loader=yaml.BaseLoader) or {}
+    nav = config.get("nav")
+    # exclude_docs is gitignore-style, as Zensical reads it: ``reviews/`` matches at any depth.
+    exclusions = pathspec.GitIgnoreSpec.from_lines(config.get("exclude_docs", "").splitlines())
     start = NAV.search(text)
     if not isinstance(nav, list) or not start:
         return text, ["mkdocs.yml has no nav list"]
@@ -123,7 +125,7 @@ def compose(root: Path) -> tuple[str, list[str]]:
             problems.append(f"{where}: only a docs/ Markdown page can be in the nav")
             continue
         page = path.removeprefix("docs/")
-        if any(fnmatch.fnmatch(page, pattern) for pattern in EXCLUDED):
+        if exclusions.match_file(page):
             problems.append(
                 f"{where}: the page is excluded from the site, so it can't be in the nav"
             )

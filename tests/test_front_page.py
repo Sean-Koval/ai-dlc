@@ -80,6 +80,10 @@ def test_link_rewriter_excludes_what_the_site_excludes():
     assert LINKS["excluded"]("catalog.toml")
     assert LINKS["excluded"]("catalog.d/decision-0008.toml")
     assert not LINKS["excluded"]("runbooks/record.md")
+    # gitignore-style, as Zensical reads exclude_docs: a directory pattern matches at any depth
+    assert LINKS["excluded"]("design/reviews/x.md")
+    assert LINKS["excluded"]("workflows/archive/old.md")
+    assert not LINKS["excluded"]("design/reviewsx.md")
 
 
 def test_repository_docs_have_no_link_leaving_the_site():
