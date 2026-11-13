@@ -6,14 +6,17 @@ ticket keeps an empty tracker part; one on a branch no work record is bound to
 keeps an empty work part. ``docs/design/session-join-key.md`` is the contract
 flightdeck and hangar read.
 
-Nothing here asks for input: the session-start hook derives the key from the
-branch and the work record bound to it, writes it to the client's environment
-file and the record, and ``work pr`` puts it in the PR body. Commits and PR bodies
-carry it as a ``Work-Session:`` line, which :func:`read_session_keys` parses back.
+Nothing here asks for input. The session-start hook derives the key from the
+branch and the work record bound to it. It writes the key to the client's
+environment file and the ignored log ``.ai-dlc/local/sessions/<work>.jsonl``, never
+to the tracked record. ``work pr`` puts the logged keys in the PR body and ``work
+finish`` copies them into the record once. Commits and PR bodies carry the key as a
+``Work-Session:`` line, which :func:`read_session_keys` parses back.
 """
 
 from __future__ import annotations
 
+import json
 import os
 import re
 import shlex
@@ -21,6 +24,7 @@ import tomllib
 import uuid
 from collections.abc import Mapping
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -149,26 +153,73 @@ def export_to_client(key: SessionKey, env: Mapping[str, str]) -> bool:
     return True
 
 
-def record_session(root: Path, key: SessionKey) -> bool:
-    """Add the key to its work record's ``sessions`` list once; False when there is none."""
+def local_sessions_path(root: Path, work_id: str) -> Path:
+    """The ignored per-work session log the session-start hook appends to."""
+    return root / ".ai-dlc/local/sessions" / f"{work_id}.jsonl"
+
+
+def local_session_keys(root: Path, work_id: str) -> list[str]:
+    """Keys logged locally for ``work_id``, oldest first; unreadable lines are skipped."""
+    path = local_sessions_path(root, work_id)
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return []
+    keys: list[str] = []
+    for line in lines:
+        try:
+            value = json.loads(line).get("key", "")
+        except (ValueError, AttributeError):
+            continue
+        key = SessionKey.parse(value) if isinstance(value, str) else None
+        if key and key.work_id == work_id and str(key) not in keys:
+            keys.append(str(key))
+    return keys
+
+
+def log_session(root: Path, key: SessionKey) -> bool:
+    """Append the key to the ignored local log once; the tracked record is never touched."""
+    if not key.work_id or str(key) in local_session_keys(root, key.work_id):
+        return False
+    path = local_sessions_path(root, key.work_id)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    entry = {
+        "key": str(key),
+        "tracker": key.tracker,
+        "work_id": key.work_id,
+        "session_id": key.session_id,
+        "started_at": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
+    }
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(entry, sort_keys=True) + "\n")
+    return True
+
+
+def collect_into_record(root: Path, work_id: str) -> list[str]:
+    """Copy locally logged keys into the record's ``sessions`` list; return those added.
+
+    ``work finish`` calls this once the work completes. Running it again adds nothing.
+    """
     from ai_dlc.files import inside
     from ai_dlc.locking import project_write_lock
     from ai_dlc.work.workflow import Work
 
-    if not key.work_id:
-        return False
+    logged = local_session_keys(root, work_id)
+    if not logged:
+        return []
     with project_write_lock(root):
-        path = inside(root, f".ai-dlc/work/{key.work_id}.toml")
+        path = inside(root, f".ai-dlc/work/{work_id}.toml")
         raw = tomllib.loads(path.read_text())
         sessions = list(raw.get("sessions", []))
-        if str(key) in sessions:
-            return False
-        raw["sessions"] = [*sessions, str(key)]
+        added = [key for key in logged if key not in sessions]
+        if not added:
+            return []
+        raw["sessions"] = [*sessions, *added]
         Work.model_validate(raw)
         tmp = path.with_suffix(".toml.tmp")
         tmp.write_text(tomli_w.dumps(raw))
         tmp.replace(path)
-    return True
+    return added
 
 
 def start_session(root: Path, branch: str, payload: Mapping, env: Mapping[str, str]) -> str:
@@ -182,18 +233,22 @@ def start_session(root: Path, branch: str, payload: Mapping, env: Mapping[str, s
         key = derive(root, branch, session_id if isinstance(session_id, str) else None)
         export_to_client(key, env)
     try:
-        record_session(root, key)
-    except (OSError, ValueError, tomllib.TOMLDecodeError):
-        pass  # an unreadable or invalid record keeps the key in the environment only
+        log_session(root, key)
+    except OSError:
+        pass  # an unwritable log keeps the key in the environment only
     return f"Session join key: {key}. End every commit message with the trailer `{key.trailer()}`."
 
 
-def pull_request_session_keys(work: Mapping, env: Mapping[str, str] | None = None) -> list[str]:
-    """The keys a work record's PR body carries: its sessions and the current one.
+def pull_request_session_keys(
+    work: Mapping, env: Mapping[str, str] | None = None, root: Path | None = None
+) -> list[str]:
+    """The keys a PR body carries: recorded, locally logged under ``root``, and current.
 
     A PR opened outside any session still gets one key, with an empty session part.
     """
     keys = [str(k) for k in map(SessionKey.parse, work.get("sessions", [])) if k]
+    if root is not None:
+        keys += [key for key in local_session_keys(root, work["id"]) if key not in keys]
     current = current_session_key(env)
     if current and current.work_id == work["id"] and str(current) not in keys:
         keys.append(str(current))
@@ -208,7 +263,7 @@ def pull_request_session_keys(work: Mapping, env: Mapping[str, str] | None = Non
 
 
 def find_sessions(root: Path, query: str) -> list[dict]:
-    """Work records whose ID, ticket or recorded sessions match ``query``.
+    """Work records whose ID, ticket or sessions (recorded or logged) match ``query``.
 
     ``query`` is a whole key, a session ID, a ticket key or a work ID. Each result
     lists the record's sessions as parsed keys, so a session ID resolves back to
@@ -222,7 +277,9 @@ def find_sessions(root: Path, query: str) -> list[dict]:
             raw = tomllib.loads(path.read_text())
         except (OSError, tomllib.TOMLDecodeError):
             continue
-        keys = [k for k in map(SessionKey.parse, raw.get("sessions", [])) if k]
+        recorded = [str(k) for k in map(SessionKey.parse, raw.get("sessions", [])) if k]
+        logged = [key for key in local_session_keys(root, path.stem) if key not in recorded]
+        keys = [k for k in map(SessionKey.parse, [*recorded, *logged]) if k]
         ticket = tracker_key(str(raw.get("artifacts", {}).get("tracker", "")))
         if wanted is not None:
             hit = wanted in keys
@@ -235,7 +292,12 @@ def find_sessions(root: Path, query: str) -> list[dict]:
                     "tracker": ticket,
                     "pr": raw.get("artifacts", {}).get("pr", ""),
                     "sessions": [
-                        {"key": str(k), "session_id": k.session_id, "tracker": k.tracker}
+                        {
+                            "key": str(k),
+                            "session_id": k.session_id,
+                            "tracker": k.tracker,
+                            "recorded": str(k) in recorded,
+                        }
                         for k in keys
                     ],
                 }

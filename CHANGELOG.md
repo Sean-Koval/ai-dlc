@@ -20,9 +20,11 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 
 - A session join key, `aidlc1:<tracker>:<work>:<session>` (KAN-463,
   [format](docs/design/session-join-key.md)). The session-start hook derives it from
-  the branch and its work record, exports `AI_DLC_SESSION_KEY` and records it in the
-  record's `sessions`. `work pr` writes `Work-Session:` lines, and `work show` resolves
-  a key, session ID or ticket back to its record.
+  the branch and its work record, exports `AI_DLC_SESSION_KEY` and logs it in the
+  ignored `.ai-dlc/local/sessions/`. `work pr` writes `Work-Session:` lines, `work
+  finish` copies the keys into the record once, and `work show` resolves a key,
+  session ID or ticket back to its record. `work hooks install` adds an opt-in
+  `commit-msg` hook for the trailer.
 - `ai-dlc knowledge migrate` (KAN-452, [ADR 0005](docs/decisions/0005-migrate-knowledge-notes-to-records.md))
   rewrites knowledge-note frontmatter as knowledge records. It is a dry run unless
   `--write`, idempotent, and reversible with `--revert JOURNAL`. This repository's

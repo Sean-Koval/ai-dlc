@@ -40,6 +40,9 @@ knowledge = typer.Typer(no_args_is_help=True)
 knowledge_records = typer.Typer(
     no_args_is_help=True, help="Knowledge records through the knowledge role's provider."
 )
+work_hooks = typer.Typer(
+    no_args_is_help=True, help="Opt-in Git hooks for work: the Work-Session commit trailer."
+)
 provider = typer.Typer(no_args_is_help=True)
 mcp = typer.Typer(no_args_is_help=True)
 design = typer.Typer(no_args_is_help=True)
@@ -60,6 +63,7 @@ for name, group in [
     app.add_typer(group, name=name)
 agents.add_typer(agent_bundle, name="bundle")
 knowledge.add_typer(knowledge_records, name="records")
+work.add_typer(work_hooks, name="hooks")
 
 
 def emit(value):
@@ -1590,6 +1594,15 @@ def work_show(key: str, root: Path = Path(".")):
     from ai_dlc.work.session_key import find_sessions
 
     emit({"query": key, "work": find_sessions(root, key)})
+
+
+@work_hooks.command("install")
+def work_hooks_install(root: Path = Path(".")):
+    """Install a commit-msg hook that appends `Work-Session: $AI_DLC_SESSION_KEY`."""
+    from ai_dlc.work.commit_hook import install_commit_msg_hook
+
+    with service_call():
+        emit(install_commit_msg_hook(root))
 
 
 @work.command("finish")

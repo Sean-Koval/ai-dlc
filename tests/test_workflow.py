@@ -2273,6 +2273,23 @@ def test_pr_opens_once_links_the_url_and_commits_the_record(tmp_path):
     assert git("rev-parse", "HEAD") == head
 
 
+def test_pr_body_collects_locally_logged_session_keys_without_tracked_writes(tmp_path):
+    from ai_dlc.work.session_key import SessionKey, log_session
+
+    service, scm, git = started_service(tmp_path)
+    log_session(tmp_path, SessionKey("1", "one", "s1"))
+    log_session(tmp_path, SessionKey("1", "one", "s2"))
+    # Only local state appears (adopted projects ignore it); no tracked file changed.
+    assert git("status", "--porcelain") == "?? .ai-dlc/local/"
+
+    service.pr("one")
+
+    assert scm.pull_requests[0]["body"].endswith(
+        "- Tests pass\n\nWork-Session: aidlc1:1:one:s1\nWork-Session: aidlc1:1:one:s2\n"
+    )
+    assert "sessions" not in service.load("one")
+
+
 def test_pr_closes_the_issue_only_for_a_bare_github_issue_number(tmp_path):
     config = {
         "providers": {"fake": {"kind": "github-issues"}},

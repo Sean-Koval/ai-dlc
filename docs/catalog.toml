@@ -388,7 +388,7 @@ path = "docs/design/session-join-key.md"
 kind = "reference"
 owner = "repository-maintainers"
 status = "active"
-code_paths = ["src/ai_dlc/work/session_key.py"]
+code_paths = ["src/ai_dlc/work/session_key.py", "src/ai_dlc/work/commit_hook.py"]
 
 [[documents]]
 id = "repo-design-native-tool-composition"

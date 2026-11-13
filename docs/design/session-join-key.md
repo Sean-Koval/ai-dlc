@@ -46,21 +46,29 @@ the CLI at all; hangar owns those fields
 | Place | Form |
 | --- | --- |
 | Session environment | `AI_DLC_SESSION_KEY`, plus `AI_DLC_TRACKER_KEY`, `AI_DLC_WORK_ID` and `AI_DLC_SESSION_ID` |
-| Work record | One entry per session in the record's `sessions` list |
+| Local session log | One JSON line per session in the ignored `.ai-dlc/local/sessions/<work>.jsonl` |
 | Commits | A `Work-Session: <key>` trailer |
-| Pull request body | One `Work-Session: <key>` line per session, written by `ai-dlc work pr` |
+| Pull request body | One `Work-Session: <key>` line per logged session, written by `ai-dlc work pr` |
+| Work record | The record's `sessions` list, filled once by `ai-dlc work finish` |
+
+Session start never edits the tracked work record, so agent commits carry no
+record noise. `work finish` copies the logged keys into the record when the work
+completes; running it again adds nothing.
 
 Claude Code gets the variables through the file named by `CLAUDE_ENV_FILE`, so
 every later shell command sees them. Codex has no such file yet; it gets the
-key in the session-start context only. The context also tells the agent to add
-the trailer to each commit. ai-dlc installs no Git hook, so the trailer is an
-instruction, not a guarantee.
+key in the session-start context only.
+
+The context also asks the agent to add the trailer to each commit. To make that
+automatic, run `ai-dlc work hooks install`. It adds a `commit-msg` hook that appends
+the trailer when `AI_DLC_SESSION_KEY` is set. ai-dlc never installs it on its own,
+and it refuses to replace a hook another tool wrote.
 
 ## Reading it back
 
 `ai-dlc work show <query>` takes a whole key, a session ID, a ticket key or a
-work ID. It lists the matching work records with their sessions, so a session
-ID resolves back to its ticket.
+work ID. It lists the matching work records with their sessions from the record and
+the local log. A session ID thus resolves back to its ticket.
 
 In Python, `ai_dlc.work.session_key.read_session_keys(text)` returns every key in
 a commit message, PR body or trace note. `current_session_key()` reads the key
