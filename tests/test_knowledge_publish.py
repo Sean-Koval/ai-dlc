@@ -284,7 +284,8 @@ def test_publish_cli_exit_codes(tmp_path):
 
 def test_publish_is_an_optional_knowledge_operation():
     roles = manifest()["roles"]
-    assert roles["knowledge"] == {"mandatory": ["append"], "optional": ["publish"]}
+    assert "publish" in roles["knowledge"]["optional"]
+    assert "append" in roles["knowledge"]["optional"]
     assert not manifest()["operations"]["publish"]["required"]
     published = json.loads((ROOT / "contracts/manifest.json").read_text())
     assert published == manifest()

@@ -25,6 +25,10 @@ class Request(BaseModel):
         "append",
         "pull_request_create",
         "publish",
+        "get",
+        "search",
+        "list_changed",
+        "propose",
     ]
     payload: dict
     operation_id: str | None = None
@@ -169,6 +173,7 @@ class PullRequestCreate(Payload):
     body: str = ""
     base: str = Field(min_length=1)
     head: str = Field(min_length=1)
+    draft: bool = False
 
 
 class Publish(Payload):
@@ -201,6 +206,81 @@ class PublishResult(BaseModel):
     url: str = Field(min_length=1)
 
 
+class RecordGet(Payload):
+    """One knowledge record by id or alias."""
+
+    id: str = Field(min_length=1)
+
+
+class RecordSearch(Payload):
+    """Filter records; every given filter must match. ``text`` also reads bodies."""
+
+    type: str | None = None
+    scope: str | None = None
+    labels: list[str] = Field(default_factory=list)
+    status: str | None = None
+    text: str | None = None
+
+
+class RecordsChanged(Payload):
+    """Record files changed since a revision of the knowledge store."""
+
+    since: str = Field(min_length=1)
+
+
+class ProposedRecord(Payload):
+    path: str = Field(min_length=1, description="repository-relative .md path")
+    text: str = Field(min_length=1, description="the whole record file")
+
+
+class Propose(Payload):
+    """Write records on a new branch and open a draft pull request; never main."""
+
+    records: list[ProposedRecord] = Field(min_length=1)
+    branch: str = Field(min_length=1)
+    title: str = Field(min_length=1)
+    body: str = ""
+
+
+class RecordItem(BaseModel):
+    model_config = ConfigDict(extra="allow")
+    id: str = Field(min_length=1)
+    path: str = Field(min_length=1)
+    header: dict
+
+
+class RecordResult(RecordItem):
+    body: str
+
+
+class RecordsFound(BaseModel):
+    model_config = ConfigDict(extra="allow")
+    items: list[RecordItem]
+    invalid: list[dict] = Field(default_factory=list)
+
+
+class ChangedFile(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    path: str = Field(min_length=1)
+    change: Literal["added", "modified", "deleted"]
+    id: str | None = None
+
+
+class RecordsChangedResult(BaseModel):
+    model_config = ConfigDict(extra="allow")
+    since: str = Field(min_length=1)
+    head: str = Field(min_length=1)
+    changed: list[ChangedFile]
+
+
+class ProposeResult(BaseModel):
+    model_config = ConfigDict(extra="allow")
+    branch: str = Field(min_length=1)
+    commit: str = Field(min_length=1)
+    files: list[str]
+    pull_request: dict
+
+
 class PullRequestResult(BaseModel):
     model_config = ConfigDict(extra="allow")
     url: str = Field(min_length=1)
@@ -216,6 +296,10 @@ PAYLOADS.update(
         "append": Append,
         "pull_request_create": PullRequestCreate,
         "publish": Publish,
+        "get": RecordGet,
+        "search": RecordSearch,
+        "list_changed": RecordsChanged,
+        "propose": Propose,
     }
 )
 RESPONSES = {
@@ -234,6 +318,10 @@ RESPONSES = {
     "append": AppendResult,
     "pull_request_create": PullRequestResult,
     "publish": PublishResult,
+    "get": RecordResult,
+    "search": RecordsFound,
+    "list_changed": RecordsChangedResult,
+    "propose": ProposeResult,
 }
 
 
@@ -308,7 +396,10 @@ def manifest():
             "specs": {"mandatory": ["current"], "optional": []},
             "scm": {"mandatory": ["merged", "ci"], "optional": ["pull_request_create"]},
             "deploy": {"mandatory": ["deployment"], "optional": []},
-            "knowledge": {"mandatory": ["append"], "optional": ["publish"]},
+            "knowledge": {
+                "mandatory": ["get", "search"],
+                "optional": ["append", "list_changed", "propose", "publish"],
+            },
         },
         "operations": {
             op: {

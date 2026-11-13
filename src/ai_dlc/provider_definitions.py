@@ -94,6 +94,8 @@ DEFINITIONS = {
     "obsidian": ProviderDefinition(
         "obsidian", ("knowledge",), local_directory="paths.vault", optional_viewer="obsidian"
     ),
+    # A git knowledge repository; KNOWLEDGE_REPO or the provider's location names it.
+    "git": ProviderDefinition("git", ("knowledge",)),
     "plane": ProviderDefinition(
         "plane",
         ("tracker",),

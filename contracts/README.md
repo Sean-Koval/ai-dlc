@@ -24,6 +24,14 @@ successor, no cycles). It reads only `[check] roots` from `knowledge.toml` and n
 `--base REF` also refuses in-place edits to decisions accepted at the merge base and
 deletion of source records. Knowledge repositories run it through `.pre-commit-hooks.yaml` and
 the reusable `.github/workflows/knowledge-check.yml`.
+The knowledge role must answer `get {id}` (a record by id or alias, with its body)
+and `search {type, scope, labels, status, text}` (headers only unless `text` is set;
+`labels` match `tags` or `label`). Optional `list_changed {since}` names record files
+changed since a revision. Optional `propose {records: [{path, text}], branch, title,
+body}` checks the records, pushes a new branch and opens a draft pull request through
+the `scm` role; it never writes the base branch. The `git` and `obsidian` providers
+answer `get` and `search`; only `git` lists changes and proposes.
+
 A draft record's `id` is a slug. After a merge, `ai-dlc knowledge number` gives it the
 next number for its type, keeps the slug in `aliases` and rewrites links to it.
 `ai-dlc knowledge index` then writes OKF `index.md` files and derives `superseded_by`.
@@ -54,8 +62,8 @@ Executable providers consume one JSON object on stdin and return one JSON object
 stdout. The request envelope contains `schema_version: 1`, `operation`, `payload`, and
 `operation_id` (null for reads). Diagnostics belong on stderr; nonzero exit is failure.
 Tracker and knowledge mutation payloads include their stable operation ID.
-The optional SCM `pull_request_create` payload is `{title, body, base, head}` and
-returns `{url, number}`. WorkService journals its creation identity locally; a
+The optional SCM `pull_request_create` payload is `{title, body, base, head, draft}`
+(`draft` defaults to false) and returns `{url, number}`. WorkService journals its creation identity locally; a
 pending or uncertain creation requires reconciliation instead of a second create.
 A durably succeeded result is reused if linking the work record was interrupted. Executables have a configured
 `timeout` (30 seconds by default). Invalid output fails response validation.
