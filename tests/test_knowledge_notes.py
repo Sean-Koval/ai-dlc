@@ -1,7 +1,7 @@
 """Knowledge-note frontmatter for learnings: generation, validation, recall and checks."""
 
 import json
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 
 import pytest
@@ -9,7 +9,7 @@ import yaml
 from typer.testing import CliRunner
 
 from ai_dlc.cli import app
-from ai_dlc.documentation import knowledge_notes
+from ai_dlc.documentation import knowledge_notes, knowledge_records
 from ai_dlc.documentation.knowledge import Knowledge
 from ai_dlc.harness.hooks import handle_hook
 
@@ -158,17 +158,19 @@ def test_finish_generates_valid_frontmatter_with_gate_provenance(finished):
     text = stored(vault).read_text()
     data, _raw, body = knowledge_notes.split(text)
     assert data is not None
-    assert knowledge_notes.errors(data) == []
+    assert knowledge_records.errors(data) == []
     assert data["sources"] == [
-        {"uri": "https://github.com/o/r/pull/45", "hash": f"git:{MERGE_SHA}"},
-        {"uri": "https://github.com/o/r/actions/runs/99", "hash": f"git:{MERGE_SHA}"},
+        {"resource": "https://github.com/o/r/pull/45", "hash": f"git:{MERGE_SHA}"},
+        {"resource": "https://github.com/o/r/actions/runs/99", "hash": f"git:{MERGE_SHA}"},
     ]
     start = data["valid_from"]
-    assert data["id"] == f"learning/{start.isoformat()}-fix-receipts"
-    assert (data["review_by"] - start).days == 90
+    assert data["id"] == f"learning-{start.isoformat()}-fix-receipts"
+    assert data["type"] == "lesson" and data["status"] == "open" and data["date"] == start
+    assert "kind" not in data and "review_by" not in data
+    assert data["stale_after"] == f"{(start + timedelta(days=90)).isoformat()}T00:00:00Z"
     assert data["scope"] == "personal" and data["confidence"] == "medium"
-    assert data["author"] == "agent:unknown"
-    assert data["work"] == "fix-receipts" and data["repository"] == "o/r"
+    assert data["author"] == "agent:unknown" and data["owner"] == "agent:unknown"
+    assert data["links"] == [{"type": "belongs_to", "target": "fix-receipts"}]
     assert body.startswith("## What happened\nRetry the receipt.")
 
 
@@ -182,7 +184,18 @@ def test_finish_keeps_every_supplied_field(finished, monkeypatch):
     data, _raw, _body = knowledge_notes.split(text)
     assert data["confidence"] == "high" and data["scope"] == "project"
     assert data["author"] == "agent:claude-code@sha256:abc"
-    assert knowledge_notes.errors(data) == []
+    assert knowledge_records.errors(data) == []
+
+
+def test_finish_migrates_supplied_knowledge_note_frontmatter(finished):
+    service, vault = finished
+    body = front(valid_learning(confidence="high"), "Lesson\n")
+    assert service.finish("fix-receipts", learning=body)["status"] == "completed"
+    data, _raw, rest = knowledge_notes.split(stored(vault).read_text())
+    assert data is not None and knowledge_records.errors(data) == []
+    assert data["type"] == "lesson" and data["confidence"] == "high"
+    assert data["aliases"] == ["learning/2026-10-20-fix-receipts"]
+    assert rest.startswith("Lesson\n<!-- ai-dlc:")
 
 
 def test_finish_with_invalid_supplied_frontmatter_leaves_learning_pending(finished):
@@ -224,7 +237,7 @@ def test_finish_retry_after_unavailable_vault_writes_the_journaled_note(finished
     )
     service.config["paths"] = {"vault": str(vault)}
     assert service.finish("fix-receipts", learning="Lesson\n")["status"] == "completed"
-    assert knowledge_notes.split(stored(vault).read_text())[0]["kind"] == "learning"
+    assert knowledge_notes.split(stored(vault).read_text())[0]["type"] == "lesson"
 
 
 def test_author_resolution_is_explicit(monkeypatch):

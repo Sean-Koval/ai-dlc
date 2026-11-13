@@ -25,11 +25,18 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
   A customer's transcripts land in that customer's own knowledge repository, with
   `boundary: customer` and the new optional record field `project`; an unconfigured
   customer repository skips the transcript. Unreadable transcripts are skipped and logged. Fixture-tested; live OAuth qualification pending.
+- `ai-dlc knowledge migrate` (KAN-452, [ADR 0005](docs/decisions/0005-migrate-knowledge-notes-to-records.md))
+  rewrites knowledge-note frontmatter as knowledge records. It is a dry run unless
+  `--write`, idempotent, and reversible with `--revert JOURNAL`. This repository's
+  decisions and the ADR templates are records now, and `work finish --learning`
+  writes `lesson` records.
 - A `wiki` role (`upsert_page`, `get_page_by_key`, `list_children`) with a
   `confluence-cloud` provider, and `ai-dlc knowledge render --changed-since SHA
   [--dry-run]` (MCP `knowledge_render`), the wiki's only writer (KAN-430). It renders
   each changed record and one index page per scope, with a do-not-edit banner, and
   skips pages whose content hash and version are unchanged. A hand edit is restored.
+- `knowledge render` drops a page's old status label when its record changes status,
+  and marks the page of a deleted record removed instead of leaving it live (KAN-430).
 - `ai-dlc knowledge check DIR` (and MCP `knowledge_check`) validates a records
   directory against `KnowledgeRecord`, Open Knowledge Format v0.2 section 11, the
   `knowledge.toml` pin, typed-link integrity, duplicate sources and supersession;
@@ -127,6 +134,9 @@ Everything else is frozen to bug fixes, moved to hangar or flightdeck, or cut.
 
 ### Deprecated
 
+- Knowledge-note frontmatter (`kind:`). The docs gate, recall, `knowledge check
+  --vault` and capture dedupe still read it, with a deprecation line, until the
+  release after 1.0 (KAN-453). Run `ai-dlc knowledge migrate --write`.
 - The Plane tracker adapter: shipped but unsupported and unqualified.
   `project init` and `project adopt` refuse `--tracker plane` without
   `--allow-unsupported` (#200; PR #211).

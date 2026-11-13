@@ -1,18 +1,22 @@
 ---
-id: decision/0001-refocus-ai-dlc
-kind: decision
+id: DEC-0001
+type: decision
 scope: team
-label: internal
 status: accepted
+date: 2026-10-17
+owner: Sean-Koval
 sources:
-  - uri: https://github.com/Sean-Koval/ai-dlc/pull/209
-    hash: git:1620484ddf96ec74aee48fdea23222005ae19a0b
-author: human:Sean-Koval
-confidence: high
+- resource: https://github.com/Sean-Koval/ai-dlc/pull/209
+  hash: git:1620484ddf96ec74aee48fdea23222005ae19a0b
+links: []
+title: 0001 Refocus AI-DLC on workflow, machines and work lifecycle
+label: internal
 valid_from: 2026-10-17
-valid_to: null
-review_by: 2027-04-17
-supersedes: []
+stale_after: '2027-04-17T00:00:00Z'
+confidence: high
+author: human:Sean-Koval
+aliases:
+- decision/0001-refocus-ai-dlc
 ---
 # 0001 Refocus AI-DLC on workflow, machines and work lifecycle
 

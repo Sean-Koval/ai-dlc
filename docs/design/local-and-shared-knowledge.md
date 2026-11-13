@@ -91,14 +91,15 @@ ai-dlc knowledge render --changed-since <sha> --dry-run   # every planned upsert
 ai-dlc knowledge render --changed-since <sha>
 ```
 
-Render upserts one page per changed record, keyed and titled by its id. It also
-regenerates one index page per scope. Frontmatter becomes page properties and
-labels. Every page opens with a do-not-edit banner that links its source file.
+Render upserts one page per changed record, keyed by its id, and one index page
+per scope. Frontmatter becomes page properties and
+labels; a status change drops the old status label. Every page opens with a
+do-not-edit banner that links its source file. A deleted record's page is marked
+removed.
 
-Each page carries a content hash. A page whose hash and version match the last
-render is skipped, so a second run writes nothing. A page edited by hand is
-restored. An upsert names the version it read, and a page that changed in
-between is refused, not overwritten.
+A page whose content hash and version match the last render is skipped, so a
+rerun writes nothing. A page edited by hand is
+restored. An upsert names the version it read; a concurrent change is refused.
 
 Customer records render only to their project's wiki (`[wiki] project`).
 The Confluence provider follows the `jira-cloud` credential rules:
@@ -153,43 +154,37 @@ An agent may select one short lesson for the knowledge provider at
 `learnings/<YYYY-MM-DD>-<work-id>.md`. The tool stores the supplied text with
 provenance frontmatter; it does not summarize logs or publish notes.
 
-Every note carries the knowledge-note frontmatter that learnings and decision
+Every learning is a `lesson` record in the knowledge-record format that decision
 records share. The JSON Schema is
-[`contracts/knowledge-note.schema.json`](https://github.com/Sean-Koval/ai-dlc/blob/main/contracts/knowledge-note.schema.json),
-generated from `ai_dlc.documentation.knowledge_notes`:
+[`contracts/knowledge-record.schema.json`](https://github.com/Sean-Koval/ai-dlc/blob/main/contracts/knowledge-record.schema.json),
+generated from `ai_dlc.documentation.knowledge_records`:
 
 ```markdown
 ---
-id: learning/2026-10-20-fix-receipts       # kind/<date>-<work-id>
-kind: learning                              # learning | decision | runbook | note
+id: learning-2026-10-20-fix-receipts        # slug; LES-NNNN is assigned at merge
+type: lesson
 scope: personal                             # personal | project | team
-label: internal                             # internal | confidential (free text is recorded)
-sources:                                    # at least one for a learning
-  - uri: https://github.com/owner/project/pull/123
+status: open                                # open | codified
+date: 2026-10-20
+owner: github-login
+sources:                                    # at least one
+  - resource: https://github.com/owner/project/pull/123
     hash: git:<merge commit SHA>
-author: human:github-login                  # or agent:<client>@<plugin digest>
-confidence: medium                          # low | medium | high
+links:
+  - {type: belongs_to, target: fix-receipts}
+label: internal                             # internal | confidential
 valid_from: 2026-10-20
-valid_to: null
-review_by: 2027-01-18                       # valid_from + 90 days by default
-supersedes: []
-work: fix-receipts                          # kept for older learnings
-repository: owner/project
+stale_after: '2027-01-18T00:00:00Z'         # valid_from + 90 days by default
+confidence: medium                          # low | medium | high
+author: human:github-login                  # or agent:<client>@<plugin digest>
 ---
 ## What happened
 A concise observation, including its limits.
 
-## What to do differently
-A concrete practice to try next time.
-
-## Links
-- Link the authoritative work, specification, or evidence.
 ```
 
-Decision records add `status` and an optional `checks:` block (see
-[project documentation](project-documentation.md)); `status` and `checks` are
-refused on other kinds. Keys outside the schema are kept, so neighbouring tools
-can extend notes additively.
+`kind:` frontmatter is read until the release after 1.0;
+`ai-dlc knowledge migrate --write` rewrites it ([ADR 0005](../decisions/0005-migrate-knowledge-notes-to-records.md)).
 
 After the normal completion gates pass, `ai-dlc work finish <id> --learning FILE`
 stores the file through the existing knowledge provider's idempotent `note`
@@ -201,10 +196,8 @@ body with frontmatter is validated and only missing fields are added. Supplied
 values, including a wider `scope`, are never changed, and ai-dlc never widens
 `scope` itself.
 
-Generated fields are `id`, `kind`, `scope: personal`, `label: internal`,
-`sources`, `author`, `confidence: medium`, `valid_from` (UTC date),
-`valid_to: null`, `review_by` (+90 days), `supersedes`, `work` and
-`repository`. `sources` holds the merged PR URL, the merge commit the finish
+Generated fields are those in the example. Supplied `kind:` frontmatter is
+migrated. `sources` holds the merged PR URL, the merge commit the finish
 gate verified, and the CI run URL.
 
 `author` is `AI_DLC_AUTHOR` when set; the workflow plugin's guide skill tells
@@ -224,9 +217,9 @@ An agent may instead call
 `ai-dlc knowledge note learnings/<date>-<work-id>.md --body FILE --operation-id ID --vault PATH`
 using the configured vault and a stable operation ID.
 `ai-dlc knowledge check --vault PATH` reads the notes under `learnings/` and
-exits 1 when any frontmatter fails the schema. Notes without frontmatter, or
-with the older `work/repository/pr/tags` frontmatter, are listed as legacy and
-do not fail.
+exits 1 when any frontmatter fails its schema. Knowledge notes are listed as
+`deprecated`. Notes without frontmatter, or with the older
+`work/repository/pr/tags` frontmatter, are listed as legacy and do not fail.
 
 `work start` and the session-start hook recall at most five matching learning
 paths and first content lines. Recall uses title words and the specification
@@ -235,9 +228,9 @@ It reads only `learnings/`, never writes, and stays quiet when the vault is
 missing or has no matches.
 
 For notes with frontmatter, recall skips those whose `valid_to` has passed. It
-also returns `kind`, `author`, `review_by` and `stale` (`review_by` has
-passed); the session hook prefixes stale notes with `(stale)`. Notes without
-frontmatter recall as before. Read relevant recalled notes as personal context
+also returns `type`, `author`, `stale_after` and `stale` (`stale_after` has
+passed), or `kind` and `review_by` for a knowledge note. The session hook
+prefixes stale notes with `(stale)`. Notes without frontmatter recall as before. Read relevant recalled notes as personal context
 and reconcile them against current repository authority.
 
 The stop hook skips payloads without a usable session ID. It recognizes direct

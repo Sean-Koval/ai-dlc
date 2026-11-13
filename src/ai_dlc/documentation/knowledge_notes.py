@@ -249,15 +249,20 @@ def strip_markers(text: str) -> str:
 def check_vault(vault) -> dict:
     """Read-only schema check of the notes under ``<vault>/learnings``.
 
-    Notes without frontmatter, or with frontmatter lacking ``kind`` (the pre-schema
-    ``work/repository/pr/tags`` form), are reported as ``legacy`` and do not fail.
+    Record frontmatter (``type``) is checked against the knowledge-record contract.
+    Knowledge-note frontmatter (``kind``) is still checked against this schema and
+    listed under ``deprecated`` until KAN-453 removes it (ADR 0005). Notes without
+    frontmatter, or with neither key (the pre-schema ``work/repository/pr/tags``
+    form), are reported as ``legacy`` and do not fail.
     """
     from pathlib import Path
+
+    from ai_dlc.documentation import knowledge_migrate, knowledge_records
 
     root = Path(vault).expanduser().resolve()
     if not root.is_dir():
         raise ValueError("knowledge unavailable: existing vault path is required")
-    invalid, legacy, valid = [], [], 0
+    invalid, legacy, deprecated, valid = [], [], [], 0
     folder = root / "learnings"
     for path in sorted(folder.rglob("*.md")) if folder.is_dir() else []:
         if path.is_symlink() or not path.resolve().is_relative_to(root):
@@ -268,17 +273,25 @@ def check_vault(vault) -> dict:
         except ValueError as exc:
             invalid.append({"path": relative, "errors": [str(exc)]})
             continue
-        if data is None or "kind" not in data:
+        if data is None or ("kind" not in data and "type" not in data):
             legacy.append(relative)
             continue
-        problems = errors(data)
+        if knowledge_migrate.is_note(data):
+            deprecated.append(relative)
+            problems = errors(data)
+        else:
+            problems = knowledge_records.errors(data)
         if problems:
             invalid.append({"path": relative, "errors": problems})
         else:
             valid += 1
-    return {
+    result = {
         "status": "invalid" if invalid else "valid",
         "valid": valid,
         "invalid": invalid,
         "legacy": legacy,
+        "deprecated": deprecated,
     }
+    if deprecated:
+        result["deprecation"] = knowledge_migrate.DEPRECATION
+    return result

@@ -6,18 +6,22 @@ TBD - created by archiving change knowledge-notes. Update Purpose after archive.
 ## Requirements
 
 ### Requirement: DR-01 Projects start with the decision convention
-`ai-dlc project init` SHALL produce `docs/decisions/README.md` describing `NNNN-slug.md` numbering, knowledge-note frontmatter, the supersede-not-edit rule, `checks:` in flightdeck's `flightdeck.spec/v1` grammar and CODEOWNERS guidance for the two-person rule, and `docs/templates/adr.md` with knowledge-note frontmatter (`kind: decision`, `status: proposed`) and the sections Context, Options considered, Decision, Consequences and Links.
+`ai-dlc project init` SHALL produce `docs/decisions/README.md` describing `NNNN-slug.md` numbering, knowledge-record frontmatter, the supersede-not-edit rule, `checks:` in flightdeck's `flightdeck.spec/v1` grammar and CODEOWNERS guidance for the two-person rule, and `docs/templates/adr.md` with knowledge-record frontmatter (`id: DEC-NNNN`, `type: decision`, `status: proposed`) and the sections Context, Options considered, Decision, Consequences and Links.
 
 #### Scenario: A new project is initialized
 - **WHEN** `ai-dlc project init` creates a project
 - **THEN** the decisions README and the ADR template exist with that content
 
 ### Requirement: DR-02 Decision frontmatter is validated
-`ai-dlc docs check` SHALL validate the frontmatter of every `docs/decisions/*.md` record that has frontmatter against the knowledge-note schema, requiring `kind: decision` and `status`, and SHALL exit with status 2 on a schema error. Records without frontmatter SHALL be reported as information, not errors.
+`ai-dlc docs check` SHALL validate the frontmatter of every `docs/decisions/*.md` record that has frontmatter against the knowledge-record contract (`contracts/knowledge-record.schema.json`), requiring `type: decision` and `status`, and SHALL exit with status 2 on a schema error. Until the release after 1.0, a record with knowledge-note frontmatter (`kind: decision`) SHALL still be validated against the knowledge-note schema and SHALL get a deprecation warning that names that release and `ai-dlc knowledge migrate --write` (ADR 0005). Records without frontmatter SHALL be reported as information, not errors.
 
 #### Scenario: A record lacks status
 - **WHEN** a decision record's frontmatter has no `status`
 - **THEN** `docs check` reports a schema error and exits 2
+
+#### Scenario: A record still has knowledge-note frontmatter
+- **WHEN** a valid record has `kind: decision` frontmatter
+- **THEN** `docs check` reports a deprecation warning and does not fail on it
 
 #### Scenario: An older record has no frontmatter
 - **WHEN** a record has no frontmatter
