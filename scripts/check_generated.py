@@ -8,13 +8,15 @@ from ai_dlc.contracts import PAYLOADS, RESPONSES, ServiceResult, manifest
 root = Path(__file__).resolve().parents[1]
 actual = json.loads((root / "contracts/manifest.json").read_text())
 if actual != manifest():
-    raise SystemExit("Generated contract manifest is stale")
+    raise SystemExit("Generated contract manifest is stale; run scripts/build_contracts.py")
 
 for operation in PAYLOADS:
     for suffix, model in [("request", PAYLOADS[operation]), ("response", RESPONSES[operation])]:
         path = root / "contracts" / f"{operation}.{suffix}.schema.json"
         if json.loads(path.read_text()) != model.model_json_schema():
-            raise SystemExit(f"Generated schema is stale: {path.name}")
+            raise SystemExit(
+                f"Generated schema is stale: {path.name}; run scripts/build_contracts.py"
+            )
 if json.loads((root / "contracts/service-result.schema.json").read_text()) != (
     ServiceResult.model_json_schema()
 ):

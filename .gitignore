@@ -13,3 +13,4 @@ build/
 .worktrees/
 *.egg-info/
 site/
+/site.yml

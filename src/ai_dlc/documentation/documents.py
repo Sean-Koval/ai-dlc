@@ -2,11 +2,11 @@
 
 import hashlib
 import os
-import tomllib
 from datetime import UTC, date, datetime
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
+from ai_dlc.documentation.catalog import load_catalog
 from ai_dlc.documentation.document_files import read_document
 from ai_dlc.files import inside
 
@@ -29,17 +29,8 @@ def _finding(code: str, path: str, message: str, severity: str = "warning") -> d
 
 
 def _read_catalog_entries(root: Path) -> list[dict]:
-    """Load ``docs/catalog.toml``; raise the underlying error for the caller to classify."""
-    catalog = inside(root, "docs/catalog.toml")
-    raw = tomllib.loads(read_document(catalog).decode())
-    entries = raw.get("documents", [])
-    if (
-        raw.get("schema") != 1
-        or not isinstance(entries, list)
-        or not all(isinstance(e, dict) for e in entries)
-    ):
-        raise ValueError("Expected schema = 1 and a documents array")
-    return entries
+    """Load the catalog and its fragments; raise the underlying error for the caller."""
+    return load_catalog(root)
 
 
 def _identity_findings(entry: dict, ids: set[str]) -> list[dict]:

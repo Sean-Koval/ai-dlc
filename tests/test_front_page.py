@@ -72,12 +72,13 @@ def test_link_rewriter_excludes_what_the_site_excludes():
     patterns = {
         line.strip().rstrip("/") for line in config["exclude_docs"].splitlines() if line.strip()
     }
-    assert patterns == {"archive", "verification", "reviews", "catalog.toml"}
+    assert patterns == {"archive", "verification", "reviews", "catalog.toml", "catalog.d"}
     assert LINKS["excluded"]("archive/plan.md")
     assert LINKS["excluded"]("verification/run-1/receipt.json")
     assert LINKS["excluded"]("verification/record.md")
     assert LINKS["excluded"]("reviews/2026-09-03-review.md")
     assert LINKS["excluded"]("catalog.toml")
+    assert LINKS["excluded"]("catalog.d/decision-0008.toml")
     assert not LINKS["excluded"]("runbooks/record.md")
 
 
