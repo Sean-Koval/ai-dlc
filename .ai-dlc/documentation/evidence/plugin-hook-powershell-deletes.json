@@ -2,10 +2,10 @@
   "decisions": [
     {
       "bound": {
-        "changes/KAN-493.fixed.md": "ca25a5f3f8b94374fa5745f3f25686ff6bb224b9f3603e94ca3e3d4367fbd48d"
+        "changes/KAN-493.fixed.md": "9b147d71370b879518ea0fc36693750f78959e4b6e0277a7a36851ab74c740eb"
       },
       "outcome": "updated",
-      "reason": "KAN-493: new changelog fragment for PowerShell's own deletes and git by its name.",
+      "reason": "KAN-493: new changelog fragment for PowerShell's own deletes and git by its name; after review, also script blocks, dot-sourcing, escaped spaces and .cmd/.bat/.com.",
       "reviewer": "Claude (agent)",
       "target": "changes/KAN-493.fixed.md"
     },
@@ -16,14 +16,14 @@
         "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/tracker-adapter-boundary/spec.md": "f47d11b47618751d7bbf2950dc74442f766a94f36f2379d1f4f343942ff112eb",
-        "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "411659189c10c6ddbd2098571ff43b211b160a5431c0129c52ea3c8900f4ed53",
-        "plugins/ai-dlc-workflow/README.md": "42fdbfb013a1d4128e6722ec33740afd5baed6a3e4859072ca0e602ec7ed019c",
-        "plugins/ai-dlc-workflow/hooks/aidlc_hook.py": "63bf5211a2af856184ce701daf439e4a9cba57496ca3123165f0982b19b215cc",
+        "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "b93318ed9d2df7ecfe5acff35c1b5f118c82d2306371e191bd3f04876695a59b",
+        "plugins/ai-dlc-workflow/README.md": "b29f7bec31b32936c46f0e384cc1ad6b82585a6abd7bfaece5e94c5818f02c4f",
+        "plugins/ai-dlc-workflow/hooks/aidlc_hook.py": "23790bfe828e4f12e5e0b3510ceebe65b199cba376604cab577bf2e79a1c6cb6",
         "plugins/ai-dlc-workflow/hooks/hooks.json": "6832b0f038d5b95069922ce99a3eb8ec473d61cf92aa5d09ec35925332ad80b4",
         "plugins/ai-dlc-workflow/native/codex/.codex-plugin/plugin.json": "121b299e98f93557c7f14adf494a03ead3f3803806e0ceb96a96d6759db7e209",
         "plugins/ai-dlc-workflow/native/codex/AGENTS.fragment.md": "af43937c1adbe2ded3247675791fe94ecc0cce19a8fdbade2469319769b66ec6",
         "plugins/ai-dlc-workflow/native/codex/hooks.json": "4d2c2097f9c3004dca11d040acf3353eb6af9d0b96a63910f508a36a8d284f63",
-        "plugins/ai-dlc-workflow/native/codex/hooks/aidlc_hook.py": "63bf5211a2af856184ce701daf439e4a9cba57496ca3123165f0982b19b215cc",
+        "plugins/ai-dlc-workflow/native/codex/hooks/aidlc_hook.py": "23790bfe828e4f12e5e0b3510ceebe65b199cba376604cab577bf2e79a1c6cb6",
         "plugins/ai-dlc-workflow/native/codex/skills/ai-dlc-workflow/SKILL.md": "199a64bdf62a1de0027a6c87f53070cf89c56de33f10e125aeb35bf432c2a3aa",
         "plugins/ai-dlc-workflow/native/codex/skills/capture/SKILL.md": "c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
         "plugins/ai-dlc-workflow/native/codex/skills/daily-note/SKILL.md": "7e6d34c7bbb6ffe054b347e4fc19857b91b6d3791273fdc708f5ce6f92cc6209",
@@ -35,7 +35,7 @@
         "plugins/ai-dlc-workflow/native/codex/skills/handoff/SKILL.md": "47813221a030ff1d19642b9e6ebf234ded18fd128fef857badd4b77612529ecd",
         "plugins/ai-dlc-workflow/native/codex/skills/prd-draft/SKILL.md": "046b82e994b36b2202f7772aafc93557b903d2b541e69a62414d9b5a0b5d75fc",
         "plugins/ai-dlc-workflow/native/codex/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
-        "plugins/ai-dlc-workflow/plugin.lock.json": "fbf454fc980531ebaf919b401b8486cec914c18ff85c2f988a44706feebe0d41",
+        "plugins/ai-dlc-workflow/plugin.lock.json": "3993f889f2c67b1448366395ead094788957ef65fca0229f2563c4fccf445738",
         "plugins/ai-dlc-workflow/skills/ai-dlc-workflow/SKILL.md": "199a64bdf62a1de0027a6c87f53070cf89c56de33f10e125aeb35bf432c2a3aa",
         "plugins/ai-dlc-workflow/skills/capture/SKILL.md": "c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
         "plugins/ai-dlc-workflow/skills/daily-note/SKILL.md": "7e6d34c7bbb6ffe054b347e4fc19857b91b6d3791273fdc708f5ce6f92cc6209",
@@ -115,7 +115,7 @@
         "src/ai_dlc/harness/components.py": "b64cd2ae837f83a37ddd1c74dad25fcd16fe8733715c224c7d64673784ebba11",
         "src/ai_dlc/harness/design_capture.py": "8b872492b88f4a7728bedf0ae8a1edaad2312a918248bf8f5d051c8bd8b42a58",
         "src/ai_dlc/harness/friction.py": "468519837ba227a4bcb573dabc86841acad1c39055026ec3230a55ba13575920",
-        "src/ai_dlc/harness/hook_shim.py": "63bf5211a2af856184ce701daf439e4a9cba57496ca3123165f0982b19b215cc",
+        "src/ai_dlc/harness/hook_shim.py": "23790bfe828e4f12e5e0b3510ceebe65b199cba376604cab577bf2e79a1c6cb6",
         "src/ai_dlc/harness/hooks.py": "da2db093ba3fc4d6c8d98ccac9a97a1e2dd268d7e23ee85f8bd0c797a8cff763",
         "src/ai_dlc/harness/native_composition.py": "1e4c5729ff31cb91820bd8df3d15b60c1067b4a5f2b89381888211470dc79bc8",
         "src/ai_dlc/harness/team_source_render.py": "a118e7ef67dca2e332bfb94b4e7579c9885e50f20501cdb6900c107e5c0f3b1e",
@@ -226,7 +226,7 @@
         "tests/test_cli.py": "f61c1ce03b1b3d1a6134365277c18655450ba08c06cb1f51ba44010b3e1b7e36",
         "tests/test_config.py": "788bf2715bfc3fbc3da495b68fa250985f4430d424fa9802340dec16b7a35cdf",
         "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
-        "tests/test_hooks.py": "84749e2132d419412b6523ed3186b47ba3e9d1225856afee44313017366b4daf",
+        "tests/test_hooks.py": "b511eb9891ed304e1b51064e4e9beb4904861be71ea39070d614b7c007afc3e5",
         "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
         "tests/test_project.py": "2ebeb723433cfb53bf8e20b337d5016058e75a181b9ed0035203a14759a162ba",
         "tests/test_rendering.py": "46e3927140876b6ccbecd7230fedf68d2806da7828fee7293bf61df76c36ce69",
@@ -277,7 +277,7 @@
         "tests/test_environment_report_collection.py": "fa8c834f2e80dcba2b7788eb818fd1392977eb75cadd48ceb4ea38eacde2ef81",
         "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
         "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
-        "tests/test_hooks.py": "84749e2132d419412b6523ed3186b47ba3e9d1225856afee44313017366b4daf",
+        "tests/test_hooks.py": "b511eb9891ed304e1b51064e4e9beb4904861be71ea39070d614b7c007afc3e5",
         "tests/test_native_harnesses.py": "132a8efa7755741a0121509a88451f3b71bf9ad117ec55a4335100585245a8d0",
         "tests/test_rendering.py": "46e3927140876b6ccbecd7230fedf68d2806da7828fee7293bf61df76c36ce69",
         "tests/test_team_sources.py": "3ab4eaa043c888b35eae7f92c8e8b20d20986d42d0ec8cdc936be472e48040e3"
@@ -320,7 +320,7 @@
         "tests/test_environment_report_files.py": "6a2485eef5886b38b43f68abef6243043e8c88c987bebe47477fc0cf5be8a721",
         "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be",
         "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
-        "tests/test_hooks.py": "84749e2132d419412b6523ed3186b47ba3e9d1225856afee44313017366b4daf",
+        "tests/test_hooks.py": "b511eb9891ed304e1b51064e4e9beb4904861be71ea39070d614b7c007afc3e5",
         "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
         "tests/test_rendering.py": "46e3927140876b6ccbecd7230fedf68d2806da7828fee7293bf61df76c36ce69",
         "tests/test_team_sources.py": "3ab4eaa043c888b35eae7f92c8e8b20d20986d42d0ec8cdc936be472e48040e3",
@@ -335,7 +335,7 @@
       "bound": {
         "catalog:docs/workflows/workflow-plugin-harness.md": "4384ef72e8938151681c2e34243f41a606aca921220d8bbaed30019c61e27a90",
         "docs/workflows/workflow-plugin-harness.md": "b1ac284f80ac05a935ef2223610609a186e219a6c8bf509de24fabd906dd4258",
-        "plugins/ai-dlc-workflow/README.md": "42fdbfb013a1d4128e6722ec33740afd5baed6a3e4859072ca0e602ec7ed019c",
+        "plugins/ai-dlc-workflow/README.md": "b29f7bec31b32936c46f0e384cc1ad6b82585a6abd7bfaece5e94c5818f02c4f",
         "scripts/publish_workflow_plugin.py": "96d95c413671a55a0e42d690f1c6d64528c11203e0a44359e3422d082ca34b9d"
       },
       "outcome": "reviewed-no-change",
@@ -347,14 +347,14 @@
       "bound": {
         "catalog:docs/workflows/workflow-plugin.md": "9e03b3ce099c0f527c8f02590717bb6021621b582d36ef7c3591815025088794",
         "docs/workflows/workflow-plugin.md": "817faef1c788d019d09396aabf82022505c54cc37f4d9686b95d6d753da26d76",
-        "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "411659189c10c6ddbd2098571ff43b211b160a5431c0129c52ea3c8900f4ed53",
-        "plugins/ai-dlc-workflow/README.md": "42fdbfb013a1d4128e6722ec33740afd5baed6a3e4859072ca0e602ec7ed019c",
-        "plugins/ai-dlc-workflow/hooks/aidlc_hook.py": "63bf5211a2af856184ce701daf439e4a9cba57496ca3123165f0982b19b215cc",
+        "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "b93318ed9d2df7ecfe5acff35c1b5f118c82d2306371e191bd3f04876695a59b",
+        "plugins/ai-dlc-workflow/README.md": "b29f7bec31b32936c46f0e384cc1ad6b82585a6abd7bfaece5e94c5818f02c4f",
+        "plugins/ai-dlc-workflow/hooks/aidlc_hook.py": "23790bfe828e4f12e5e0b3510ceebe65b199cba376604cab577bf2e79a1c6cb6",
         "plugins/ai-dlc-workflow/hooks/hooks.json": "6832b0f038d5b95069922ce99a3eb8ec473d61cf92aa5d09ec35925332ad80b4",
         "plugins/ai-dlc-workflow/native/codex/.codex-plugin/plugin.json": "121b299e98f93557c7f14adf494a03ead3f3803806e0ceb96a96d6759db7e209",
         "plugins/ai-dlc-workflow/native/codex/AGENTS.fragment.md": "af43937c1adbe2ded3247675791fe94ecc0cce19a8fdbade2469319769b66ec6",
         "plugins/ai-dlc-workflow/native/codex/hooks.json": "4d2c2097f9c3004dca11d040acf3353eb6af9d0b96a63910f508a36a8d284f63",
-        "plugins/ai-dlc-workflow/native/codex/hooks/aidlc_hook.py": "63bf5211a2af856184ce701daf439e4a9cba57496ca3123165f0982b19b215cc",
+        "plugins/ai-dlc-workflow/native/codex/hooks/aidlc_hook.py": "23790bfe828e4f12e5e0b3510ceebe65b199cba376604cab577bf2e79a1c6cb6",
         "plugins/ai-dlc-workflow/native/codex/skills/ai-dlc-workflow/SKILL.md": "199a64bdf62a1de0027a6c87f53070cf89c56de33f10e125aeb35bf432c2a3aa",
         "plugins/ai-dlc-workflow/native/codex/skills/capture/SKILL.md": "c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
         "plugins/ai-dlc-workflow/native/codex/skills/daily-note/SKILL.md": "7e6d34c7bbb6ffe054b347e4fc19857b91b6d3791273fdc708f5ce6f92cc6209",
@@ -366,7 +366,7 @@
         "plugins/ai-dlc-workflow/native/codex/skills/handoff/SKILL.md": "47813221a030ff1d19642b9e6ebf234ded18fd128fef857badd4b77612529ecd",
         "plugins/ai-dlc-workflow/native/codex/skills/prd-draft/SKILL.md": "046b82e994b36b2202f7772aafc93557b903d2b541e69a62414d9b5a0b5d75fc",
         "plugins/ai-dlc-workflow/native/codex/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
-        "plugins/ai-dlc-workflow/plugin.lock.json": "fbf454fc980531ebaf919b401b8486cec914c18ff85c2f988a44706feebe0d41",
+        "plugins/ai-dlc-workflow/plugin.lock.json": "3993f889f2c67b1448366395ead094788957ef65fca0229f2563c4fccf445738",
         "plugins/ai-dlc-workflow/skills/ai-dlc-workflow/SKILL.md": "199a64bdf62a1de0027a6c87f53070cf89c56de33f10e125aeb35bf432c2a3aa",
         "plugins/ai-dlc-workflow/skills/capture/SKILL.md": "c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
         "plugins/ai-dlc-workflow/skills/daily-note/SKILL.md": "7e6d34c7bbb6ffe054b347e4fc19857b91b6d3791273fdc708f5ce6f92cc6209",
@@ -388,19 +388,19 @@
     },
     {
       "bound": {
-        "openspec/changes/plugin-hook-powershell-deletes/proposal.md": "5b7b766ce6fa98638794dd445fc3ecaf67ad6f8a5300077c53a8252d711709f8"
+        "openspec/changes/plugin-hook-powershell-deletes/proposal.md": "86bcb94043d3decd9b63b67615aa904754a85250408f8aad771a1c186886421d"
       },
       "outcome": "updated",
-      "reason": "KAN-493: new OpenSpec change proposing PowerShell delete and program-name coverage in the plugin hook.",
+      "reason": "KAN-493: new OpenSpec change proposing PowerShell delete and program-name coverage in the plugin hook; after review, also script blocks, dot-sourcing, escaped spaces and .cmd/.bat/.com.",
       "reviewer": "Claude (agent)",
       "target": "openspec/changes/plugin-hook-powershell-deletes/proposal.md"
     },
     {
       "bound": {
-        "openspec/changes/plugin-hook-powershell-deletes/specs/workflow-plugin/spec.md": "b10c939d5dd3b031dd2223aeedf737504d158e596e9f180b98d91bae487d80ba"
+        "openspec/changes/plugin-hook-powershell-deletes/specs/workflow-plugin/spec.md": "0b643977f907b442636e6aedc17bc4e5c574d7edc41092f3625adc0fddd3db39"
       },
       "outcome": "updated",
-      "reason": "KAN-493: WP-05 adds PowerShell's own deletes, a backslash as a path separator and programs known by name, with a scenario.",
+      "reason": "KAN-493: WP-05 adds PowerShell's own deletes, a backslash as a path separator and programs known by name, with a scenario; after review, also script blocks, dot-sourcing, escaped spaces and .cmd/.bat/.com.",
       "reviewer": "Claude (agent)",
       "target": "openspec/changes/plugin-hook-powershell-deletes/specs/workflow-plugin/spec.md"
     },
@@ -415,10 +415,10 @@
     },
     {
       "bound": {
-        "tests/test_hook_shim.py": "6c0b66589bab2eb74dbd6d906023644b343a301add6cac6fd4376eeef8d0e4a3"
+        "tests/test_hook_shim.py": "ee136fb278b2f1bdbef6cb7f9b2e4817ca35440990cd1fbf3e4681cfff841423"
       },
       "outcome": "updated",
-      "reason": "KAN-493: tests for PowerShell's own deletes, git.exe, full paths to git, ordinary PowerShell reads and classify_shell parity with the generated shim.",
+      "reason": "KAN-493: tests for PowerShell's own deletes, git.exe, full paths to git, ordinary PowerShell reads and classify_shell parity with the generated shim; after review, also script blocks, dot-sourcing, escaped spaces and .cmd/.bat/.com.",
       "reviewer": "Claude (agent)",
       "target": "tests/test_hook_shim.py"
     }
