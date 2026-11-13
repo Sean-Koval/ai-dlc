@@ -2,6 +2,15 @@
   "decisions": [
     {
       "bound": {
+        "changes/KAN-433.added.md": "2f9e63b4f59f2dde7374f0d6d4e2cc8f2439ea5588776b10cf9336d111859545"
+      },
+      "outcome": "updated",
+      "reason": "Changelog fragment for KAN-433, per the KAN-481 convention.",
+      "reviewer": "Claude (agent)",
+      "target": "changes/KAN-433.added.md"
+    },
+    {
+      "bound": {
         "catalog:docs/architecture.md": "788b593066fcd5d1c9eb9ebbc3869971131d3ddb3ea3396bc8b9a6ea48ca8b55",
         "docs/architecture.md": "099e45e56378bb4ea78edb3eec9e6a8ce7e7d60edd08d0b17aeeca9810351b82",
         "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
@@ -136,8 +145,8 @@
         "src/ai_dlc/setup/github_onboarding.py": "0bf5cb1fe5202a693d0022659ffcec252a6318f371641a2dbe6ce1db8689de9f",
         "src/ai_dlc/setup/github_project_setup.py": "55984de17559ba2d56b3b1c7483dabb8a6f05f1e773e8bd9d40437a2d30ee85e",
         "src/ai_dlc/setup/jira_onboarding.py": "fa9badf9be945bbc4c99c971300ab2836222068b0b4fd6df7dcfdf16831ae1bf",
-        "src/ai_dlc/setup/knowledge_doctor.py": "aec8b7d6afc4af3996c483f9a28283abe74f8c3ca196b2d0d6af96dc788db704",
-        "src/ai_dlc/setup/knowledge_install.py": "aeffafe82944524b1102a120baea02ccddcc619b8438f5e03f0007738802f656",
+        "src/ai_dlc/setup/knowledge_doctor.py": "8d06631c7d0e38da4b6f641a1dc826bce0fe83a9836fdb80f3e1d28def9e1c8f",
+        "src/ai_dlc/setup/knowledge_install.py": "d94e757fc6b024e8c58205604dadfef1268c6b591a7d6f103496a01b1fb7edcb",
         "src/ai_dlc/setup/onboarding.py": "a955988850f1dbe1bd50b2e06da61913701b504ed1a11eabe08bed387d0cc552",
         "src/ai_dlc/setup/plane_onboarding.py": "b5f053787789c723522db019eccb7f474dd388f6da15bea50ded361bb911801d",
         "src/ai_dlc/setup/project.py": "1636ad031d877790d380ce72d99b8753fffc94305ce03150dda6fd05ec51c43d",
@@ -268,7 +277,7 @@
         ".github/workflows/release.yml": "f960af13f3657dca437561a8acd2555ec2b2d648c04202964ef349b0952bf590",
         "catalog:docs/runbooks/release-publication.md": "3580fe6b0df68db7dd7dd55e520bb50b4dcb9ee9132e4e345396d68a4e7d72f8",
         "docs/runbooks/release-publication.md": "2020db563c9399cfc2e26d587e2b51eb2d3ec29d34e6fa5e4b5e47b142e08a6d",
-        "project-templates/project/scripts/bootstrap.sh": "dff64e5be94a72bcfbb5dec30a34a808fb2e0a1e0b9612146086af183de8acee",
+        "project-templates/project/scripts/bootstrap.sh": "0d60d4c408639b1a3f3ba684d9bbc7716999eac5ee8fb196c9819a473152f749",
         "scripts/bootstrap.sh": "0d60d4c408639b1a3f3ba684d9bbc7716999eac5ee8fb196c9819a473152f749",
         "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
         "src/ai_dlc/setup/templates.py": "47d50ea64b08b07dbb8fec7e19c7bc2555ce2b30d99aab3e27d4d152b7f6689e",
@@ -300,11 +309,11 @@
     {
       "bound": {
         "catalog:docs/workflows/knowledge-install.md": "f3a8f3e29501f8a105044751be6374d0667609d57b2e65bff0df3a6a2334094d",
-        "docs/workflows/knowledge-install.md": "690f557935d64ddf2d644b07bff700b1902ed319d6fc9d380f0f4bcb69a4d797",
+        "docs/workflows/knowledge-install.md": "72f3293fc4bf18b50b5fb9c350a6b02afce0100382b8e53750a1db77619d860a",
         "scripts/bootstrap.sh": "0d60d4c408639b1a3f3ba684d9bbc7716999eac5ee8fb196c9819a473152f749",
-        "src/ai_dlc/setup/knowledge_doctor.py": "aec8b7d6afc4af3996c483f9a28283abe74f8c3ca196b2d0d6af96dc788db704",
-        "src/ai_dlc/setup/knowledge_install.py": "aeffafe82944524b1102a120baea02ccddcc619b8438f5e03f0007738802f656",
-        "tests/test_knowledge_install.py": "9bdd8e3829cc3b2bb371dfc02ea78f0cc1811f6b5f45b0a8a244fd41088c26f9"
+        "src/ai_dlc/setup/knowledge_doctor.py": "8d06631c7d0e38da4b6f641a1dc826bce0fe83a9836fdb80f3e1d28def9e1c8f",
+        "src/ai_dlc/setup/knowledge_install.py": "d94e757fc6b024e8c58205604dadfef1268c6b591a7d6f103496a01b1fb7edcb",
+        "tests/test_knowledge_install.py": "bc57bb379ba162baf1a38e2bd870c273dc97cedcefd1f16a699221970553528a"
       },
       "outcome": "updated",
       "reason": "New page: the one-step knowledge install, its settings, uninstall and the doctor checks.",
