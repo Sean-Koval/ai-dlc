@@ -2,19 +2,19 @@
   "decisions": [
     {
       "bound": {
-        "CHANGELOG.md": "cba67b75fcd26817eac611b447f428fc4fa6fc4d537f7935281a8da2e54be160"
+        "CHANGELOG.md": "5151ae24a67e551da68fa6d66900dfb60dedbb47ca62f9b1b26e6c3df5d77a24"
       },
       "outcome": "updated",
-      "reason": "Adds the transcripts role, providers and pull-transcripts entry.",
+      "reason": "Customer transcripts now go to the customer's own repository; the record gains an optional project field.",
       "reviewer": "Claude (agent)",
       "target": "CHANGELOG.md"
     },
     {
       "bound": {
-        "contracts/README.md": "5360a177a8354b6bd09d6384ef5efa79690a05c6f5d00b3db186cfe00360c552"
+        "contracts/README.md": "208de6f92f19d8cd471d57b3f0cf77bf53ffb9aa47f19dc505ce4a1576dc4d32"
       },
       "outcome": "updated",
-      "reason": "Documents the transcripts role operations and its providers.",
+      "reason": "Lists the knowledge.toml keys, including [transcripts] owner and customer rules, and the project field.",
       "reviewer": "Claude (agent)",
       "target": "contracts/README.md"
     },
@@ -134,10 +134,10 @@
         "src/ai_dlc/documentation/knowledge_check.py": "b3ff3205627cc42b730851f18d1474ab80411299345c34e39480a1a02770b215",
         "src/ai_dlc/documentation/knowledge_notes.py": "df022b2e330c5140f6948ec25a33c7888704e8686ea5411c770764a449b3b1b6",
         "src/ai_dlc/documentation/knowledge_publish.py": "cd4773e07de3b49bd828441a26dd15292ae2b55b25738e2339f91c7a3ad08438",
-        "src/ai_dlc/documentation/knowledge_records.py": "1177a8162a812fb7ad162ef1d5edf191ae86f3b9fcb9ee1b8a851dbece027c08",
+        "src/ai_dlc/documentation/knowledge_records.py": "747e9011d64a8fdc1299306b21d0f51924bea6d1f80b61360d2a7cc05791bb06",
         "src/ai_dlc/documentation/knowledge_render.py": "0517924a31ee89fb6d918c56683269734aa18f8b5597e02ab73bb7e6252ffa96",
         "src/ai_dlc/documentation/knowledge_service.py": "94a90956363bc8d5e8b11cd3d39e6f86d0c7f551e14766f25c242ca0246f3ddd",
-        "src/ai_dlc/documentation/knowledge_transcripts.py": "96cedc954e6024444aa7bdaa50c660aaf8c679f6dab7e47411f7b5b0bb5044f6",
+        "src/ai_dlc/documentation/knowledge_transcripts.py": "37f2a62e16e943e100176d0e8a27087c0e0ad9d95f639b053c6b3a84df5af3ec",
         "src/ai_dlc/documentation/knowledge_why.py": "981fa83f1ad4ca71984a6f49ca24a887b0ce1828331fa9374a70d4a03820d75a",
         "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
         "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
@@ -231,7 +231,7 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "The package table already covers new documentation services and provider adapters generically.",
+      "reason": "The package table covers the record contract and documentation services generically.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
@@ -246,16 +246,53 @@
     },
     {
       "bound": {
+        ".github/workflows/knowledge-merge.yml": "7f67aa54775bb4e0e71c6793b9c6c62ac2fe03343678117a432513a465efeaca",
+        "catalog:docs/design/local-and-shared-knowledge.md": "07f5768759a08b2a425954beae4109ab59f515e126fa644a99c91fcaebb6fff9",
+        "contracts/knowledge-note.schema.json": "f3cbc791e2caae2223bf223e8b27b5b7ce553405b76f32cf5689fa7fe68bb1a5",
+        "contracts/knowledge-record.schema.json": "87c985b28668e11637c02049b30adbecc5bdb88d029b94063ea3e1f088488540",
+        "docs/design/local-and-shared-knowledge.md": "f7129f142b8ce503c6b74f3a8ccedb38c1dd64e35991e638d561cd18413258a4",
+        "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
+        "openspec/specs/session-learnings/spec.md": "dcd490cd54f2f6cb3fadaa90afade85d5e1d64b19fbe2accb70bfb06897e97b4",
+        "src/ai_dlc/documentation/knowledge.py": "8d60dfa7213b3121f106fabbf13c2ab5a52b7f5b43555a9ac91be04a9d6d9be0",
+        "src/ai_dlc/documentation/knowledge_bundle.py": "a614f08dfcdb5b3700b05d86be482f239d8b34096a1117ceee336b4de2be14b1",
+        "src/ai_dlc/documentation/knowledge_check.py": "b3ff3205627cc42b730851f18d1474ab80411299345c34e39480a1a02770b215",
+        "src/ai_dlc/documentation/knowledge_notes.py": "df022b2e330c5140f6948ec25a33c7888704e8686ea5411c770764a449b3b1b6",
+        "src/ai_dlc/documentation/knowledge_records.py": "747e9011d64a8fdc1299306b21d0f51924bea6d1f80b61360d2a7cc05791bb06",
+        "src/ai_dlc/documentation/knowledge_render.py": "0517924a31ee89fb6d918c56683269734aa18f8b5597e02ab73bb7e6252ffa96",
+        "src/ai_dlc/documentation/learnings.py": "b828819edafd4045af4d43c4d5739b1a063c010c97dbb4dbd490312b491db5b8",
+        "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
+        "src/ai_dlc/documentation/vault_mount.py": "8072f225f57349b122eb7cce58482b2bc0d607f7556a5bcb78098eae92584091",
+        "src/ai_dlc/documentation/workspace_diagnostics.py": "8c8dc695fa95e5f9e8fc4017e5fd66efcab4c0cec4d3ae9272d3c5f368f93aef",
+        "src/ai_dlc/harness/friction.py": "497d5c93856006d5dbb30658ada6c646ff0808a247ace9c68f5fe5020f407941",
+        "src/ai_dlc/providers/confluence_cloud.py": "83daca8f5b83121697b79671b0a9279834104d64de7978cd731a1e83f20f4eae",
+        "tests/test_knowledge.py": "38e5cda9c9dc1fe97d12618a0bd9a86b2725cff059d412232152582af1547af1",
+        "tests/test_knowledge_bundle.py": "e91bcd38241872ad616d9b468fb95ca15ceffadabb1f5fb4c7504ee35d777e13",
+        "tests/test_knowledge_check.py": "3a2c332677d1b4e6fcd431bde3b12065082f4cc93ce2e54a527a5b9ae21371b3",
+        "tests/test_knowledge_notes.py": "0af8b4f84c5b8d974833eef49d5efd662a9d6d5b22eac6ff6f4a604fd492f6f7",
+        "tests/test_knowledge_records.py": "4853dcdea3536b885f6713001d11c69026e7a279cc4086f820a3a986592f0d89",
+        "tests/test_knowledge_render.py": "8b8d47e406dbdf68f9d98bfef24f295e690717f3bd212392c63a37626ace6ba8",
+        "tests/test_session_learnings.py": "32bb7c3143db24ff96fb43ac5081285e77a93bd8d8d825076f3422cbfe194796",
+        "tests/test_vault_link.py": "fd146d4d15041021ac343257c9d91a8c1950878d275420eda85d13747065e110",
+        "tests/test_vault_mount.py": "f6a5dc947af0d68e4688c37d05294c6b4868aa98ead91d26aa0c8ffec8018424",
+        "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "The optional project field is documented with transcripts and the contracts README; this page's word ceiling allows no growth.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/local-and-shared-knowledge.md"
+    },
+    {
+      "bound": {
         "catalog:docs/design/meeting-transcripts.md": "eff04c1c5871ccddf3577bc8c21ca296fcb00ab96b35aab90e54af5ecbbe1665",
-        "docs/design/meeting-transcripts.md": "3c9724583d5e7b2881175b8132124b0e7667359cae5e2e82b039204fde955f71",
-        "src/ai_dlc/documentation/knowledge_transcripts.py": "96cedc954e6024444aa7bdaa50c660aaf8c679f6dab7e47411f7b5b0bb5044f6",
+        "docs/design/meeting-transcripts.md": "346587d1cef70570ed8c878adc063cc997aa2bcf10f01e3def8793f727ec40b1",
+        "src/ai_dlc/documentation/knowledge_transcripts.py": "37f2a62e16e943e100176d0e8a27087c0e0ad9d95f639b053c6b3a84df5af3ec",
         "src/ai_dlc/providers/google_meet.py": "5139524a2272fe768eabb40cf8e5a063db6e843e12640a02aa14b0d743ee4579",
         "src/ai_dlc/providers/transcripts_common.py": "9903072a350e27535ebae16f2ca7592c7399beddc6087538ba251aefd04c8de3",
         "src/ai_dlc/providers/zoom.py": "21cd47dc3650e5156d07c6cd9a7b010c53a1aa9dc5e61d9d808b324d9da1efee",
-        "tests/test_transcripts.py": "c4bac30cfb0ffdad57d8dd0ebb90fb1e647645cf4c9380ef0bb2b8b37f7a5175"
+        "tests/test_transcripts.py": "d6c80b9a1481f84d78039aafab79029358f9d997a21b3cc758eb5b040cd7fd14"
       },
       "outcome": "updated",
-      "reason": "New canonical page for the transcripts role, inbox layout, routing, credentials and live qualification.",
+      "reason": "Describes customer routing to per-customer repositories, repo_env and the no-fallback rule.",
       "reviewer": "Claude (agent)",
       "target": "docs/design/meeting-transcripts.md"
     },
