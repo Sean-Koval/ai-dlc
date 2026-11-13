@@ -1,0 +1,74 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        ".ai-dlc/agent-ownership.json": "2c193eced262ce82ed624d508de5ca29dec09da87d2eb78551143622803c4a51",
+        "agents/skills.lock.json": "fce6587c26e072bd4d5623cd545558fc41f36e73c5787251373f7c7618692d48",
+        "agents/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
+        "agents/templates/delivery-slice.md": "44d1e55bdd17e5fe0cf4c1d35d99ffad8f6060575ecb97496515b48a0e304429",
+        "catalog:docs/development-workflow.md": "0fba88526a61571ce49e91b2159325061a7c54ba5466e651565eabb2f910e7c6",
+        "docs/development-workflow.md": "e1351af42ccf1cf28e744345171ad9c71b2321936d1edfe73f7e4b4cf508f04c",
+        "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
+        "openspec/specs/portable-development/spec.md": "7710dba93e53f973d947723117687d263b6296ad31e1ed8232da7b2f0e7ff89e",
+        "openspec/specs/spec-delivery-traceability/spec.md": "66641acf9c151792cde1914062630ed50cc4199cdc3bdb4b81382e03716f2ea3",
+        "project-templates/project/AI-DLC.md": "91e7df09e8c8fd8f5bea1d087d11aa7bcc3d7316238c61045e98dc5cfb039c44",
+        "project-templates/project/ai-dlc.toml.jinja": "d965a516a3b62011283b560a732edaacdf9c2a8bf84ff660fd8c65b03f626f54",
+        "project-templates/project/docs/development-workflow.md.jinja": "8cc85f0e3949013f31ffc540edfb53aff445a97061048d537a9a7c5d7785cebd",
+        "project-templates/project/docs/templates/delivery-slice.md": "44d1e55bdd17e5fe0cf4c1d35d99ffad8f6060575ecb97496515b48a0e304429",
+        "project-templates/project/scripts/check_tests.py": "a3dd2021b7911d2ff688142776b7a43af60f76e052d7164086db2434db60102d",
+        "project-templates/project/tests/test_main.py": "4e6ac9def60ea5a6aef9e004c465cc439acac4b33e4f70df332939f0cdfae63d",
+        "src/ai_dlc/cli.py": "7abc11322c238b55103d857c6663084ed8e1a72cd8e94c296bc54ad4dca4bdea",
+        "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
+        "src/ai_dlc/harness/agents.py": "72f38f1f69147e4216fe6752636f26e6218c5c6ef85845ffb89828d431effa53",
+        "src/ai_dlc/harness/hooks.py": "d8903d3c59ce52c3b3b26cdd9f322370eb2344404e235b2cecca61f5749b943f",
+        "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
+        "src/ai_dlc/setup/commands.py": "a2fd722857a2de2eae3afd2e3bd6c605e982055c6bdf79db496d2f20eeb9e054",
+        "src/ai_dlc/setup/project.py": "1636ad031d877790d380ce72d99b8753fffc94305ce03150dda6fd05ec51c43d",
+        "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
+        "src/ai_dlc/work/workflow.py": "d05f5cfe6414176a9baa5b304a570371ca436cadd12648fe8147769ff1f9588b",
+        "tests/test_agents_phases.py": "e5325bdc3c072a10e27bbf019ce51f586b0b7b9d76aa95ff8652dd09bc3c8570",
+        "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
+        "tests/test_cli.py": "f61c1ce03b1b3d1a6134365277c18655450ba08c06cb1f51ba44010b3e1b7e36",
+        "tests/test_config.py": "788bf2715bfc3fbc3da495b68fa250985f4430d424fa9802340dec16b7a35cdf",
+        "tests/test_finish_merged_checkout.py": "2e6eb73a2bf9f29610acaec77e43071025ac37f730ed557f62bd7ee08f221700",
+        "tests/test_hooks.py": "e62d1268716dcacf7c04f1b4505e06ea6ac30f7dc6800017e22c83bb5fa7b51e",
+        "tests/test_merge_checkout.py": "51d256fcbf1cebf531e452f9913d970e55ff0fae98538052f82bb73171eaa4ff",
+        "tests/test_project.py": "2ebeb723433cfb53bf8e20b337d5016058e75a181b9ed0035203a14759a162ba",
+        "tests/test_rendering.py": "46e3927140876b6ccbecd7230fedf68d2806da7828fee7293bf61df76c36ce69",
+        "tests/test_team_sources.py": "3ab4eaa043c888b35eae7f92c8e8b20d20986d42d0ec8cdc936be472e48040e3",
+        "tests/test_templates.py": "d50958472da6eac84069d3063db72aa0de558c33e77b9d477abf800ef6c3cd32",
+        "tests/test_workflow.py": "c60af46adb6cceb3160b1c34945d3b579e4ce42be7e24cad65fa24bd215d80a1"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-440 only adds a uv-unavailable skip to two Python template tests, matching their sibling test; template behaviour and the documented workflow are unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/development-workflow.md"
+    },
+    {
+      "bound": {
+        "agents/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
+        "agents/templates/delivery-slice.md": "44d1e55bdd17e5fe0cf4c1d35d99ffad8f6060575ecb97496515b48a0e304429",
+        "catalog:docs/workflows/brownfield.md": "dedbc6f762c6970ac999eb74598adc31dd6dbfe16a6b3ae8842345b9e37838b4",
+        "docs/workflows/brownfield.md": "f44e9557225fdd2650fcba7f3eb6bf6ad837aaab4b2ad7610787776ecddcec35",
+        "openspec/specs/portable-development/spec.md": "7710dba93e53f973d947723117687d263b6296ad31e1ed8232da7b2f0e7ff89e",
+        "project-templates/project/docs/workflows/brownfield.md": "3a582e31ada1400b26d298d3f70ca72a4cb45100db4fd97de6f241845d0c2a8f",
+        "tests/test_checks.py": "33689d411fe66e56c2b68b5a6c3fe6210079b574fafd65ed747fee67c71f8e35",
+        "tests/test_templates.py": "d50958472da6eac84069d3063db72aa0de558c33e77b9d477abf800ef6c3cd32"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-440 only adds a uv-unavailable skip to two Python template tests, matching their sibling test; adoption behaviour is unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/brownfield.md"
+    },
+    {
+      "bound": {
+        "tests/conftest.py": "6a48fc0b98bed44ff343cf4f92591c85e8f923b5ca19098a7d163b1a4b144c0b"
+      },
+      "outcome": "no-impact",
+      "reason": "Test-session preflight: puts the interpreter's scripts first on PATH and stops with a stated reason when child processes would not import this checkout (KAN-440). Tests are not documentation.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/conftest.py"
+    }
+  ],
+  "schema": 2
+}
