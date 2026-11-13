@@ -1,5 +1,5 @@
 ---
-id: decision/0005-customer-boundary-and-promotion
+id: decision/0006-customer-boundary-and-promotion
 kind: decision
 scope: team
 label: internal
@@ -14,7 +14,7 @@ valid_to: null
 review_by: 2027-05-13
 supersedes: []
 ---
-# 0005 Customer records stay in their project; promotion goes through a team source
+# 0006 Customer records stay in their project; promotion goes through a team source
 
 ## Context
 

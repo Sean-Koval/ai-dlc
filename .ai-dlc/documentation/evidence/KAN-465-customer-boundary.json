@@ -178,16 +178,6 @@
     },
     {
       "bound": {
-        "catalog:docs/decisions/0005-customer-boundary-and-promotion.md": "27b530e9c55e66ce5dfc939d13118cbfc743c008ba50932896a1b97af30c4d4c",
-        "docs/decisions/0005-customer-boundary-and-promotion.md": "f98e92e97ee7e663ec788d997107831e258e550b3af3be635e6bf753391d38d5"
-      },
-      "outcome": "updated",
-      "reason": "New ADR: customer records stay in their project; promotion goes through a sanitised team Source (KAN-465).",
-      "reviewer": "Claude (agent)",
-      "target": "docs/decisions/0005-customer-boundary-and-promotion.md"
-    },
-    {
-      "bound": {
         ".github/workflows/knowledge-merge.yml": "7f67aa54775bb4e0e71c6793b9c6c62ac2fe03343678117a432513a465efeaca",
         "catalog:docs/design/local-and-shared-knowledge.md": "3792ce6463f181e5d2345e4ae2c724561e1750d6e76a62324dc801da767260a5",
         "contracts/knowledge-note.schema.json": "f3cbc791e2caae2223bf223e8b27b5b7ce553405b76f32cf5689fa7fe68bb1a5",
