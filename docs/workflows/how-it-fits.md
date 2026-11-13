@@ -54,6 +54,7 @@ MCP tools and skills.
 - **Repository docs and private knowledge.** Search project documents, review
   documentation impact, and check ownership and links. Connect canonical project
   docs to an existing Obsidian vault while keeping personal notes separate.
+  Customer records stay in their project: `knowledge check` and search refuse leaks.
 - **Engagement and design workflows.** Scaffold seven-stage forward-deployed
   engineering (FDE) engagement docs with local stage checks. Optional frontend
   tooling captures Playwright evidence for design review.
