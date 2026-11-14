@@ -297,6 +297,8 @@ def find_sessions(root: Path, query: str) -> list[dict]:
     """
     wanted = SessionKey.parse(query)
     query = query.strip()
+    if not query:
+        return []  # a blank query would match every record without a ticket
     results = []
     for path in sorted((root / ".ai-dlc/work").glob("*.toml")):
         try:

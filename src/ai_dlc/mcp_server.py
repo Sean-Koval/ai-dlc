@@ -78,6 +78,16 @@ def _register_work_tools(
         return work().status(work_id)
 
     @server.tool()
+    def work_show(key: str) -> dict:
+        """Work records and sessions a session key, session ID, ticket key or work ID names.
+
+        Local and read-only: it resolves a trace's ``Work-Session`` key back to its ticket.
+        """
+        from ai_dlc.work.session_key import find_sessions
+
+        return {"status": "ok", "query": key, "work": find_sessions(root, key)}
+
+    @server.tool()
     def work_link(work_id: str, kind: str, reference: str) -> dict:
         """Link an artifact to reviewed work."""
         return work().link(work_id, kind, reference)
@@ -99,6 +109,8 @@ def _register_work_tools(
 
 
 def _register_docs_tools(server: FastMCP, root: Path) -> None:
+    from ai_dlc.documentation.document_inputs import Disposition, Review, ReviewPacket
+
     @server.tool()
     def project_docs_check() -> dict:
         """Inspect local document ownership and review gaps; never fetch or publish content."""
@@ -114,21 +126,27 @@ def _register_docs_tools(server: FastMCP, root: Path) -> None:
         return inspect_impact(root, base=base)
 
     @server.tool()
-    def project_docs_disposition(base: str, decisions: list[dict], reviewer: str) -> dict:
+    def project_docs_disposition(base: str, decisions: list[Disposition], reviewer: str) -> dict:
         """Prepare evidence from explicit reviewed dispositions without writing files."""
         from ai_dlc.documentation.document_impact import prepare_disposition
 
-        return prepare_disposition(root, base=base, decisions=decisions, reviewer=reviewer)
+        return prepare_disposition(
+            root, base=base, decisions=[dict(d) for d in decisions], reviewer=reviewer
+        )
 
     @server.tool()
     def project_docs_record(
-        base: str, decisions: list[dict], reviewer: str, evidence_id: str
+        base: str, decisions: list[Disposition], reviewer: str, evidence_id: str
     ) -> dict:
         """Merge reviewed dispositions into one work item's content-bound evidence file."""
         from ai_dlc.documentation.document_impact import record_disposition
 
         return record_disposition(
-            root, base=base, decisions=decisions, reviewer=reviewer, evidence_id=evidence_id
+            root,
+            base=base,
+            decisions=[dict(d) for d in decisions],
+            reviewer=reviewer,
+            evidence_id=evidence_id,
         )
 
     @server.tool()
@@ -179,11 +197,15 @@ def _register_docs_tools(server: FastMCP, root: Path) -> None:
         return prepare_review(root, paths=paths, base=base, max_bytes=max_bytes, source=source)
 
     @server.tool()
-    def project_docs_review_check(packet: dict, review: dict) -> dict:
-        """Validate a harness review's citations and scope against current local sources."""
+    def project_docs_review_check(packet: ReviewPacket, review: Review) -> dict:
+        """Validate a harness review's citations and scope against current local sources.
+
+        ``packet`` is ``project_docs_review``'s result, passed back unchanged. A review that
+        does not match the typed schema is refused as a tool error before any check runs.
+        """
         from ai_dlc.documentation.document_review import validate_review
 
-        return validate_review(root, packet=packet, review=review)
+        return validate_review(root, packet=dict(packet), review=dict(review))
 
 
 def _register_workspace_tools(server: FastMCP, root: Path, config: dict) -> None:

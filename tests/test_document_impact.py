@@ -141,6 +141,34 @@ def test_cli_and_mcp_expose_same_impact_and_gate(project):
     assert result.exit_code == 2
 
 
+def test_mcp_disposition_takes_typed_decisions(project):
+    import asyncio
+
+    from mcp.shared.memory import create_connected_server_and_client_session
+
+    from ai_dlc.mcp_server import make_server
+
+    (project / "ai-dlc.toml").write_text("schema=4\n")
+    git(project, "add", "ai-dlc.toml")
+    git(project, "commit", "-qm", "config")
+    base = git(project, "rev-parse", "HEAD")
+    (project / "src/api.py").write_text("VERSION = 2\n")
+    decision = {"target": "docs/api.md", "outcome": "no-impact", "reason": "Internal constant."}
+
+    async def run(decisions):
+        server = make_server(project)._mcp_server
+        async with create_connected_server_and_client_session(server) as client:
+            arguments = {"base": base, "decisions": decisions, "reviewer": "r"}
+            return await client.call_tool("project_docs_disposition", arguments)
+
+    prepared = asyncio.run(run([{**decision, "note": "dropped"}]))
+    refused = asyncio.run(run([{**decision, "outcome": "fine"}]))
+
+    assert not prepared.isError, prepared.content
+    assert json.loads(prepared.content[0].text)["decisions"] == [decision]
+    assert refused.isError and "validation error" in refused.content[0].text
+
+
 def test_broad_mapping_never_hashes_its_own_evidence(project):
     catalog = project / "docs/catalog.toml"
     catalog.write_text(catalog.read_text().replace("src/*.py", "**"))
