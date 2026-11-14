@@ -8,6 +8,7 @@ from contextlib import contextmanager
 from pathlib import Path
 
 from ai_dlc.files import atomic_write, inside
+from ai_dlc.harness.hook_shim import SHELL_TOOLS
 from ai_dlc.locking import project_write_lock
 
 
@@ -83,10 +84,12 @@ def track_friction(root: Path, event: str, payload: dict, result: dict) -> dict:
                         f"This session hit {state['count']} refusals; consider a learning note (`ai-dlc knowledge note learnings/...`)"
                     )
                 return result
-            data = payload.get("tool_input", {})
+            data = payload.get("tool_input")
+            data = data if isinstance(data, dict) else {}
             command = data.get("command", data.get("cmd", ""))
+            command = command if isinstance(command, str) else ""
             count = int(result.get("decision") == "deny") if event == "pre-tool" else 0
-            if command and payload.get("tool_name") in {"Bash", "exec_command"}:
+            if command and payload.get("tool_name") in SHELL_TOOLS:
                 digest = hashlib.sha256(command.encode()).hexdigest()
                 if event == "pre-tool":
                     count += int(state.get("last_command") == digest)

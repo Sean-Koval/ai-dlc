@@ -284,8 +284,9 @@ def _register_knowledge_record_tools(server: FastMCP, root: Path) -> None:
 def _register_knowledge_why_tool(server: FastMCP, root: Path) -> None:
     @server.tool()
     def knowledge_why(id: str, records: str = ".", project: str | None = None) -> dict:
-        """Reconstruct a decision from local records: status, dates, supersession both
-        ways, linked conventions and lessons, and quoted evidence with payload state.
+        """Reconstruct a decision from local records: status, dates, owner, author and
+        verifications, supersession both ways, linked conventions and lessons, and
+        quoted evidence with payload state.
         """
         from ai_dlc.documentation.knowledge_why import why
 
@@ -309,7 +310,9 @@ def _register_knowledge_records_tools(server: FastMCP, root: Path, config: dict,
         text: str | None = None,
         project: str | None = None,
     ) -> dict:
-        """Find records through the knowledge role; ``text`` also reads bodies.
+        """Find records through the knowledge role, ranked; ``text`` also reads bodies.
+
+        Source records come back only when ``type`` is ``source``.
 
         Customer records come back only when ``project`` names their own project.
         """

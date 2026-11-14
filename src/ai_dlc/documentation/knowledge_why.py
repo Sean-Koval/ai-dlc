@@ -1,7 +1,8 @@
 """``knowledge why``: reconstruct a decision from local records, with its evidence.
 
-One call answers what was decided and when, what it replaced and what replaced it,
-which conventions and lessons carry it, and what evidence it rests on. Source
+One call answers what was decided and when, who owns it, wrote it and verified it,
+what it replaced and what replaced it, which conventions and lessons carry it, and
+what evidence it rests on. Source
 payloads expire (KAN-458), so the evidence is the quote, speaker and place kept in
 the record's ``sources`` entries; the Source record's metadata stands beside each
 quote, and the payload is reported ``present`` or ``expired``, never a failure. A
@@ -12,6 +13,10 @@ It reads a records directory on disk and nothing else: no provider, no network
 (KAN-456), and ``retracted_by`` the way it derives retractions (KAN-479): a retracted
 record shows status ``retracted`` and the decisions that retract it. The CLI and the
 MCP tool both call :func:`why`.
+
+Names match in any case. A name that resolves to a Source record, such as a ticket
+key (``KAN-241``) or an ADR (``adr-0001``), answers with the decision derived from
+that Source, not the Source itself (KAN-494); ``resolved_from`` says so.
 """
 
 import difflib
@@ -29,6 +34,7 @@ from ai_dlc.documentation.knowledge_records import (
     payload_expires,
     retracted_by,
 )
+from ai_dlc.documentation.record_index import status_rank
 
 BODY_LIMIT = 1200
 """Most characters of the asked record's body; a longer body points at its file."""
@@ -77,7 +83,7 @@ def why(root: Path | str, id: str, project: str | None = None) -> dict[str, Any]
     if not folder.is_dir():
         raise ValueError(f"records directory not found: {root}")
     store = _Store(folder, project)
-    item = _get(store, folder, id, project)
+    item = _get(store, folder, id, project) or _ticket_source(store, id)
     if item is None:
         return {
             "status": "not_found",
@@ -85,10 +91,20 @@ def why(root: Path | str, id: str, project: str | None = None) -> dict[str, Any]
             "reason": f"no knowledge record has id or alias {id}",
             "suggestions": difflib.get_close_matches(id, sorted(store.names), n=3, cutoff=0.5),
         }
+    resolved_from = None
+    also_derived: list[dict[str, Any]] = []
+    if item.record.type == "source":
+        derived = _derived(store, item)
+        if derived:
+            resolved_from = {"name": id, **_link(store, item, "derived_from", "out")}
+            item = derived[0]
+            also_derived = [_link(store, other, "derived_from", "in") for other in derived[1:]]
     record: KnowledgeRecord = item.record
     body, truncated = _clip(item.body, BODY_LIMIT)
     return {
         "status": "ok",
+        "resolved_from": resolved_from,
+        "also_derived": also_derived,
         "record": {**_summary(store, item), "body": body, "truncated": truncated},
         "supersedes": _chain(store, item, older=True),
         "superseded_by": _chain(store, item, older=False),
@@ -101,21 +117,57 @@ def why(root: Path | str, id: str, project: str | None = None) -> dict[str, Any]
 
 
 def _get(store: _Store, folder: Path, id: str, project: str | None) -> Any:
-    """The record named ``id`` as the git provider's ``get(id, project)`` finds it.
+    """The record named ``id`` (any case) as the git provider's ``get(id, project)`` finds it.
 
     Customer records of other projects are left out before matching (``team_inputs``),
     so they are not found and no error names their paths.
     """
     entries, _invalid = record_index.scan(folder)
-    matches = [
-        entry
-        for entry in team_inputs(entries, project)
-        if id in (entry["record"].id, *(entry["record"].aliases or ()))
-    ]
+    matches = record_index.named(team_inputs(entries, project), id)
     if len(matches) > 1:
         paths = ", ".join(entry["path"] for entry in matches)
         raise ValueError(f"id or alias {id} is ambiguous: {paths}")
     return store.find(matches[0]["record"].id) if matches else None
+
+
+def _ticket_source(store: _Store, name: str) -> Any:
+    """The one Source whose URL or resource ends in the ticket key ``name``, any case."""
+    if not TICKET.match(name.upper()):
+        return None
+    tail = "/" + name.casefold()
+    found = [
+        item
+        for item in store.items
+        if item.record.type == "source"
+        and any(
+            place.rstrip("/").casefold().endswith(tail)
+            for place in (item.record.url or "", *(s.resource for s in item.record.sources))
+        )
+    ]
+    return found[0] if len(found) == 1 else None
+
+
+def _derived(store: _Store, source: Any) -> list[Any]:
+    """Records derived from ``source``: decisions first, then current, then newest."""
+    names = _names(source.record) | {source.relative}
+    found = [
+        item
+        for item in store.items
+        if item.record.type != "source"
+        and (
+            any(link.type == "derived_from" and link.target in names for link in item.record.links)
+            or any(ref.id in names or ref.resource in names for ref in item.record.sources)
+        )
+    ]
+    return sorted(
+        found,
+        key=lambda item: (
+            item.record.type != "decision",
+            status_rank(effective_status(item.record, store.retractions)),
+            -item.record.date.toordinal(),
+            item.record.id,
+        ),
+    )
 
 
 def _summary(store: _Store, item: Any) -> dict[str, Any]:
@@ -127,10 +179,22 @@ def _summary(store: _Store, item: Any) -> dict[str, Any]:
         "title": record.title,
         "status": effective_status(record, store.retractions),
         "date": record.date.isoformat(),
+        **_who(record),
         "valid_from": record.valid_from.isoformat() if record.valid_from else None,
         "valid_to": record.valid_to.isoformat() if record.valid_to else None,
         "description": record.description,
         "path": item.relative,
+    }
+
+
+def _who(record: KnowledgeRecord) -> dict[str, Any]:
+    """Who owns the record, who wrote it, and who verified it and when."""
+    return {
+        "owner": record.owner,
+        "author": record.author,
+        "verified": [
+            {"by": event.by, "at": event.at.isoformat()} for event in record.verified or []
+        ],
     }
 
 
@@ -211,6 +275,7 @@ def _link(store: _Store, item: Any, kind: str, direction: str) -> dict[str, Any]
         "type": record.type,
         "title": record.title,
         "status": effective_status(record, store.retractions),
+        **_who(record),
         "link": kind,
         "direction": direction,
         "path": item.relative,
@@ -234,6 +299,7 @@ def _evidence(store: _Store, entry: SourceRef) -> dict[str, Any]:
         "title": entry.title,
         "quote": entry.quote,
         "speaker": entry.speaker,
+        "author": entry.author,
         "at": entry.at,
         "permalink": entry.permalink,
         "fetch": None,
@@ -289,7 +355,11 @@ def lines(result: dict[str, Any]) -> list[str]:
         more = f"; did you mean {', '.join(hint)}?" if hint else ""
         return [f"knowledge why: {result['reason']}{more}"]
     record = result["record"]
-    out = [f"{record['id']}  {record['title'] or ''}".rstrip(), _facts(record)]
+    out = []
+    source = result.get("resolved_from")
+    if source:
+        out.append(f"({source['name']} is the source {source['id']}; the record derived from it:)")
+    out += [f"{record['id']}  {record['title'] or ''}".rstrip(), _facts(record)]
     out.append(f"file: {record['path']}")
     if record["description"]:
         out.append(record["description"])
@@ -320,7 +390,13 @@ def lines(result: dict[str, Any]) -> list[str]:
         out.append("  (none)")
     for link in result["linked"]:
         arrow = f"{link['link']} -> {record['id']}" if link["direction"] == "in" else link["link"]
-        out.append(f"  {link['id']}  {link['type']}  ({arrow})  {link['title'] or ''}".rstrip())
+        title = f"  {link['title']}" if link["title"] else ""
+        out.append(f"  {link['id']}  {link['type']}  ({arrow}){title}  [{', '.join(_by(link))}]")
+    if result.get("also_derived"):
+        out += ["", "Also derived from the same source:"]
+        for link in result["also_derived"]:
+            title = f"  {link['title']}" if link["title"] else ""
+            out.append(f"  {link['id']}  {link['type']}  {link['status']}{title}")
     if result["tickets"]:
         out += ["", "Tickets: " + ", ".join(result["tickets"])]
     out += ["", "Evidence:"]
@@ -331,10 +407,32 @@ def lines(result: dict[str, Any]) -> list[str]:
 
 
 def _facts(entry: dict[str, Any]) -> str:
-    facts = [entry["status"], f"date {entry['date']}"]
+    facts = [entry["status"], f"date {entry['date']}", *_by(entry)]
     if entry["valid_from"] or entry["valid_to"]:
         facts.append(f"valid {entry['valid_from'] or '?'} to {entry['valid_to'] or 'now'}")
     return ", ".join(facts)
+
+
+def _by(entry: dict[str, Any]) -> list[str]:
+    """``owner``, then ``written by`` when someone else wrote it, then each verification.
+
+    ``author`` and verifiers are actors (``human:sean``); a person is shown by bare name,
+    as ``owner`` is, and someone writing their own record is shown once. Agents keep
+    their ``agent:`` prefix.
+    """
+    owner = _person(entry["owner"])
+    facts = [f"owner {owner}"]
+    author = entry["author"]
+    if author and _person(author) != owner:
+        facts.append(f"written by {_person(author)}")
+    facts += [
+        f"verified by {_person(event['by'])} on {event['at'][:10]}" for event in entry["verified"]
+    ]
+    return facts
+
+
+def _person(actor: str) -> str:
+    return actor.removeprefix("human:")
 
 
 def _source(evidence: dict[str, Any]) -> list[str]:
@@ -350,10 +448,12 @@ def _source(evidence: dict[str, Any]) -> list[str]:
 
 
 def _quote(evidence: dict[str, Any]) -> list[str]:
+    recorded = [f"  recorded by {evidence['author']}"] if evidence["author"] else []
     if not evidence["quote"]:
-        return [f"fetch from {evidence['fetch']}"] if evidence["fetch"] else []
+        return ([f"fetch from {evidence['fetch']}"] if evidence["fetch"] else []) + recorded
     where = [part for part in (evidence["speaker"], evidence["at"]) if part]
     out = [f'"{evidence["quote"]}"', "  - " + ", ".join(where or ["unattributed"])]
+    out += recorded
     if evidence["permalink"]:
         out.append(f"  {evidence['permalink']}")
     return out
