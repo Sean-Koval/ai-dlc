@@ -270,7 +270,7 @@ def test_a_schema_change_without_a_version_bump_fails(monkeypatch):
     registry = tomllib.loads(VERSIONS.read_text())
     changed = {**records.schema(), "description": "a new field"}
     monkeypatch.setattr(records, "schema", lambda: changed)
-    assert "bump it" in records.version_errors(registry)[0]
+    assert "bump FORMAT_VERSION" in records.version_errors(registry)[0]
     bumped = records.FORMAT_VERSION + 1
     registry["versions"][str(bumped)] = {"sha256": records.schema_sha256(changed)}
     monkeypatch.setattr(records, "FORMAT_VERSION", bumped)
@@ -289,6 +289,27 @@ def test_a_superseded_schema_cannot_be_republished(monkeypatch):
     assert records.version_errors(registry) == []
     registry["versions"]["1"]["superseded"].append(records.schema_sha256())
     assert "matches published version 1" in records.version_errors(registry)[0]
+
+
+def test_a_published_hash_cannot_be_edited_in_place():
+    base = tomllib.loads(VERSIONS.read_text())
+    head = tomllib.loads(VERSIONS.read_text())
+    assert records.append_errors(base, head) == []
+    head["versions"]["1"]["sha256"] = "0" * 64
+    assert "cannot change" in records.append_errors(base, head)[0]
+    head = tomllib.loads(VERSIONS.read_text())
+    head["versions"]["1"]["superseded"] = head["versions"]["1"]["superseded"][1:]
+    assert "never removed" in records.append_errors(base, head)[0]
+    del head["versions"]["1"]
+    assert "cannot be removed" in records.append_errors(base, head)[0]
+
+
+def test_a_new_version_and_a_longer_superseded_list_append():
+    base = tomllib.loads(VERSIONS.read_text())
+    head = tomllib.loads(VERSIONS.read_text())
+    head["versions"]["1"]["superseded"].append("1" * 64)
+    head["versions"]["2"] = {"sha256": "2" * 64}
+    assert records.append_errors(base, head) == []
 
 
 def test_format_pin():

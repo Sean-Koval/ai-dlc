@@ -2,19 +2,19 @@
   "decisions": [
     {
       "bound": {
-        "changes/KAN-504.fixed.md": "1f1e4fb8147630aad756a3149ab423451754f1ea4d20d9d7ce12c23bdfe89082"
+        "changes/KAN-504.fixed.md": "f62ff59cca663f5fa7a482a6b5fcc99ead348ae9af5d6154abc0caef626d6c36"
       },
       "outcome": "updated",
-      "reason": "KAN-504: the changelog fragment for the format-version drift check.",
+      "reason": "KAN-504: the changelog fragment for the format-version drift check. Notes the append-only check.",
       "reviewer": "Claude (agent)",
       "target": "changes/KAN-504.fixed.md"
     },
     {
       "bound": {
-        "contracts/README.md": "db9a63267e61319f55ca648a9cff2a6bb15c0c5c7d05e31d28e63ddf39908272"
+        "contracts/README.md": "59ff26a198f5ce7267b5f9f6ada9a1f0dc36c5e73958a4c3d234166b38013770"
       },
       "outcome": "updated",
-      "reason": "KAN-504: explains knowledge-record.versions.toml, the hash-per-version rule and how a vendored copy is checked against the version it claims.",
+      "reason": "KAN-504: explains knowledge-record.versions.toml, the hash-per-version rule and how a vendored copy is checked against the version it claims. It now also says the file is append-only against the base branch.",
       "reviewer": "Claude (agent)",
       "target": "contracts/README.md"
     },
@@ -60,7 +60,7 @@
         "scripts/build_contracts.py": "255b48d26aa8775f07e10feee0d69ac3ef1e2fcb61ebb9fa2a740e8e27ddaa48",
         "scripts/build_workflow_plugin.py": "d32e5ae658bc9a6d462b3f415a5566269842c7b214ea33df3d7fd44e6a75500b",
         "scripts/check_client_pins.py": "c0b4030b6767aee44975556f11a2c0dcf2b5aa67e232ec6182c1247630f53c8c",
-        "scripts/check_generated.py": "2f4aac0d66e9a99a2f42cd75f5ac803b0d92a7c6b0ad60d9cf099833399d80ed",
+        "scripts/check_generated.py": "489d8f4e2546216937cc4c51d874851cd35554c68aaee36fb9e3e267b234d4ea",
         "scripts/check_layout.py": "942ed109d998ed8d8004b8dbe6608b33df98876cdd8db6d004677dbcce1933a6",
         "scripts/collect_changes.py": "f60694b4494bfa638a0559ef13d6398f4064a766731479aa8d65fc2e176bca7c",
         "scripts/docs_site_links.py": "a98c201a63544db8bb79cf15367ab17fd7f0141d2fb7515fc5dd52b50a4608e4",
@@ -96,7 +96,7 @@
         "src/ai_dlc/documentation/knowledge_migrate.py": "d175c93f3bb4ec677cbf5c9c87af6a0fff1c125b52fa6c2c7f9ebb5d7ed44c38",
         "src/ai_dlc/documentation/knowledge_notes.py": "543b6fb0fa395321c55cb616c29d2f4a2bb218aca5576a3b8993353fb16e840d",
         "src/ai_dlc/documentation/knowledge_publish.py": "f0c5a34ac2793c4abea951e8404f4cf4e4e64886afc2492c46d36632dfc52619",
-        "src/ai_dlc/documentation/knowledge_records.py": "6f47f245dae1cd72026aa0d6318a14e32fa7788f83f86a9efbda7a83d2cc5f14",
+        "src/ai_dlc/documentation/knowledge_records.py": "e698928dbb1543f158394a81fab4fa452db5d33f8544851f4bb430ecde8e8183",
         "src/ai_dlc/documentation/knowledge_render.py": "222aaf70d097b8403588788e0f7ce6c4ac92288a8a407d2d4baaa998a9fa76e2",
         "src/ai_dlc/documentation/knowledge_service.py": "6ba666644132c1bcce2c99524cf49c02e424699c0625c5cd5b4b39e3979da928",
         "src/ai_dlc/documentation/knowledge_stats.py": "60d16fe6a9bc77804d9cf4ec2c99aae3bf06c35b29e53558aca94eb139cb9112",
@@ -197,7 +197,7 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "KAN-504 adds two functions to an existing module and one check to check_generated.py; no package, entry point or boundary changes.",
+      "reason": "KAN-504 adds three functions to an existing module and a base-branch comparison to check_generated.py; no package, entry point or boundary changes.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
@@ -216,7 +216,7 @@
         "catalog:docs/design/local-and-shared-knowledge.md": "dda625604166b9fffe1120b9d4b69a9d919e36a1c66352d8de79c3d718083bab",
         "contracts/knowledge-note.schema.json": "f3cbc791e2caae2223bf223e8b27b5b7ce553405b76f32cf5689fa7fe68bb1a5",
         "contracts/knowledge-record.schema.json": "eda789937b670f3bc527ebffc366464af650bf3464defab33e084b0409444f59",
-        "contracts/knowledge-record.versions.toml": "617009d7eba726ee031c49d0dbbfb66b31ac2938203e16c2c8145662d27aead6",
+        "contracts/knowledge-record.versions.toml": "623ae4a81f9208e335440783872e529ac8a3bcc465017cefe4a1868baac367df",
         "docs/design/local-and-shared-knowledge.md": "e8dd0f2bf6317cfbd70f47861582982313eba6db6c85d28179926860b640ab9b",
         "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
         "openspec/specs/session-learnings/spec.md": "6320178e67f7957b25c11850773a631258bc13e5812cbcdb88c126434ba3aaf4",
@@ -224,7 +224,7 @@
         "src/ai_dlc/documentation/knowledge_bundle.py": "349cdc879cca3e56a0fb78c52809fee661041aeb620001b0922a4eeda6809cde",
         "src/ai_dlc/documentation/knowledge_check.py": "0baa200d25c9b68bee908745aae25c806824e44a3a9759a5b96b58f73a8180a4",
         "src/ai_dlc/documentation/knowledge_notes.py": "543b6fb0fa395321c55cb616c29d2f4a2bb218aca5576a3b8993353fb16e840d",
-        "src/ai_dlc/documentation/knowledge_records.py": "6f47f245dae1cd72026aa0d6318a14e32fa7788f83f86a9efbda7a83d2cc5f14",
+        "src/ai_dlc/documentation/knowledge_records.py": "e698928dbb1543f158394a81fab4fa452db5d33f8544851f4bb430ecde8e8183",
         "src/ai_dlc/documentation/knowledge_render.py": "222aaf70d097b8403588788e0f7ce6c4ac92288a8a407d2d4baaa998a9fa76e2",
         "src/ai_dlc/documentation/learnings.py": "5a11c64592e1c7b93bfa3543339ea0766f42050a7843bb8354cd56166b0f3ae6",
         "src/ai_dlc/documentation/vault_link.py": "4004de611de558c26d58f65931141f23310327a9141a8b1015106b9e6c63b1b4",
@@ -236,7 +236,7 @@
         "tests/test_knowledge_bundle.py": "e91bcd38241872ad616d9b468fb95ca15ceffadabb1f5fb4c7504ee35d777e13",
         "tests/test_knowledge_check.py": "1417d92a373d989484da457483b3413b85e5d465616a21b53679876c53b06d49",
         "tests/test_knowledge_notes.py": "9d0aee8e40b2d5886c747c0f48d3017421348c8f86dd45684fc6f833064d32c6",
-        "tests/test_knowledge_records.py": "cd83015756b76c8df43768821c90b23346602bc54a25046c5e6fe2f33d126ba6",
+        "tests/test_knowledge_records.py": "b8771ef17a60635ea36e7fab43d69cf814038c833738087af19088e6ab0b9c74",
         "tests/test_knowledge_render.py": "da9e5dc3642854611a032e604222462117bff89b976963c0864f8458082bf082",
         "tests/test_session_learnings.py": "32bb7c3143db24ff96fb43ac5081285e77a93bd8d8d825076f3422cbfe194796",
         "tests/test_vault_link.py": "fd146d4d15041021ac343257c9d91a8c1950878d275420eda85d13747065e110",

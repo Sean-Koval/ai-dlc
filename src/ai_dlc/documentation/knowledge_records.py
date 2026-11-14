@@ -438,11 +438,36 @@ def version_errors(registry: dict) -> list[str]:
     entry = published.get(FORMAT_VERSION, {})
     if entry.get("sha256") != current:
         found.append(
-            f"the record schema changed (sha256 {current}) but FORMAT_VERSION is still "
-            f"{FORMAT_VERSION}: bump it and add [versions.{FORMAT_VERSION + 1}] with that hash"
+            f"the record schema changed but FORMAT_VERSION is still {FORMAT_VERSION}: "
+            f"bump FORMAT_VERSION and add a new [versions.N] table; a published table never "
+            "changes"
             if entry
             else f"versions.{FORMAT_VERSION}: publish sha256 = {current!r}"
         )
+    return found
+
+
+def append_errors(base: dict, head: dict) -> list[str]:
+    """Check ``head``'s published versions only append to ``base``'s.
+
+    A table on the base branch keeps its ``sha256`` and may only grow ``superseded``;
+    new tables are allowed. Editing a published hash would let one version name two
+    contracts, so it fails and the change must bump :data:`FORMAT_VERSION` instead.
+    """
+    found = []
+    old, new = base.get("versions", {}), head.get("versions", {})
+    for version, table in sorted(old.items()):
+        if version not in new:
+            found.append(f"versions.{version}: a published version cannot be removed")
+            continue
+        if new[version].get("sha256") != table.get("sha256"):
+            found.append(
+                f"versions.{version}: its sha256 is published and cannot change; bump "
+                "FORMAT_VERSION and add a new table instead"
+            )
+        dropped = set(table.get("superseded", ())) - set(new[version].get("superseded", ()))
+        if dropped:
+            found.append(f"versions.{version}: superseded hashes may be added, never removed")
     return found
 
 

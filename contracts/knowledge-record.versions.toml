@@ -6,11 +6,12 @@
 #
 # Any change to the schema bumps FORMAT_VERSION and appends a new table here.
 # Records forbid unknown keys, so even an added field fails an older reader.
-# A published table never changes; scripts/check_generated.py enforces the rest.
+# Append only: a published table never changes, except that `superseded` may grow.
+# scripts/check_generated.py compares this file with the base branch copy.
 
 [versions.1]
 sha256 = "b22e01c83df3e0750fe445b26cb944cd643302be7a44f71cc450a0257a1afb91"
-# Version 1 changed five times before this file existed. These earlier schemas
+# Version 1 changed several times before this file existed. These earlier schemas
 # also claimed version 1; a copy that matches one of them is stale.
 superseded = [
   "06be9d57f20719ec591027788e7c538f79c488e9202e904c31e1f8b56a780dc2", # 04715dec4 KAN-421
@@ -18,4 +19,5 @@ superseded = [
   "67f33eab0fe7fc28b2a7028469116e8a272d82e3047141b0ac0f5243af02ff3e", # 257a9546e KAN-466
   "6ea27e5b6761c1f77d692a95663252598e13fb6746c1cfb94cd7ff9784cc10f3", # 8a89ff08e KAN-457
   "5535be574ba754ea6f1c276635c46b4c22304ae6396b87201bf7ef9781b4e06f", # 0a94d3404 KAN-479
+  "2bf3c8fdbc4ab67d2f24b3a517ee68d64a7009c339549904054d055ddd9cb19d", # b46a293d8 #271 merge
 ]

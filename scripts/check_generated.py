@@ -33,13 +33,27 @@ if json.loads((root / "contracts/knowledge-record.schema.json").read_text()) != 
     knowledge_record_schema()
 ):
     raise SystemExit("Generated schema is stale: knowledge-record.schema.json")
+import os
+import subprocess
 import tomllib
 
-from ai_dlc.documentation.knowledge_records import version_errors
+from ai_dlc.documentation.knowledge_records import append_errors, version_errors
 
-drift = version_errors(
-    tomllib.loads((root / "contracts/knowledge-record.versions.toml").read_text())
+VERSIONS = "contracts/knowledge-record.versions.toml"
+head_versions = tomllib.loads((root / VERSIONS).read_text())
+drift = version_errors(head_versions)
+# Published versions are append-only against the base branch (verify.yml fetches history).
+base_ref = f"origin/{os.environ.get('GITHUB_BASE_REF') or 'main'}"
+base_copy = subprocess.run(
+    ["git", "-C", str(root), "show", f"{base_ref}:{VERSIONS}"],
+    capture_output=True,
+    text=True,
+    check=False,
 )
+if base_copy.returncode == 0:
+    drift += append_errors(tomllib.loads(base_copy.stdout), head_versions)
+else:
+    print(f"note: {base_ref}:{VERSIONS} is unavailable; append-only check skipped")
 if drift:
     raise SystemExit("Record format version drift: " + "; ".join(drift))
 from ai_dlc.documentation.knowledge_stats import run_log_schema
