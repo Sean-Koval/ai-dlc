@@ -17,7 +17,7 @@ with `--check`.
 | --- | --- |
 | `skills/ai-dlc-workflow/` | Provider-neutral workflow guidance as a skill; plugin `CLAUDE.md` files are not loaded |
 | `skills/<team-skill>/` | discovery, prd-draft, spec-from-prd, handoff, document-review, document-organize, design-brief, design-evaluate, and the second-brain daily-note and capture |
-| `hooks/hooks.json` | SessionStart, PreToolUse (`Bash\|exec_command\|Edit\|Write`) and Stop hooks, exec form, 10 s timeout |
+| `hooks/hooks.json` | SessionStart, PreToolUse (`Bash\|PowerShell\|exec_command\|Edit\|Write`) and Stop hooks, exec form, 10 s timeout |
 | `hooks/aidlc_hook.py` | Standard-library hook shim |
 | `plugin.lock.json` | One digest per component, a `content_digest` over them, the digest of every published file, and the Codex form's digests |
 | `native/codex/` | The Codex form (below); not part of the Claude plugin a harness publishes |
@@ -102,6 +102,15 @@ sandbox (`HANGAR_WORKSPACE` or `HANGAR_JOB_ID` set). Otherwise:
   nothing with `AI_DLC_HOOKS=quiet`.
 - PreToolUse denies destructive shell commands (such as `rm`, `git reset --hard`,
   `git clean -f`, force or delete pushes) with exit 2 and allows everything else.
+  It judges Bash, PowerShell (Claude Code's shell tool on native Windows) and
+  Codex `exec_command` calls alike. In PowerShell, `Remove-Item` and its aliases
+  (`ri`, `rm`, `del`, `erase`, `rd`, `rmdir`) count as `rm`, and a script block's
+  commands are judged too. A program is known by its name, so `git.exe`,
+  `/usr/bin/git` and, in PowerShell, `C:\Git\cmd\git.exe` are `git`. git's global
+  options are passed over, so `git -C repo reset --hard` is denied. The line after
+  `cmd /c` is judged as cmd.exe reads it, where `del`, `erase`, `rd` and `rmdir`
+  count as `rm`. Other wrappers, such as `sh -c` or `Invoke-Expression`, are not
+  inspected.
   A chained line (`&&`, `;`, a pipe, a newline or a substitution) is judged by its
   strictest command. It never applies the bound-push policy, so `git push` and
   `gh pr create` are not blocked.
@@ -114,14 +123,20 @@ it delegates, Stop reminds the agent once per session, through exit 2, to record
 outcomes for the work bound to the current branch.
 
 The shim reads only the command text, never runs it, and writes nothing to disk.
-A failing or slow delegate is treated as allow with a one-line note, so a hook
-never wedges a session.
+Once it runs, PreToolUse fails closed. A payload it cannot read, a shell call with
+no command string, or an error inside the shim exits 2. The shim's destructive check runs
+before it delegates, so an older or broken CLI cannot turn it off. A failing or
+slow delegate is then allowed with a one-line note. SessionStart and Stop never
+block on a failure.
 
 ## Requirements and limits
 
 - `python3` (3.10 or later) must be on PATH. There is no shell fallback. Native
   Windows plugin hooks are unsupported because exec form cannot substitute another
-  interpreter name.
+  interpreter name. A hook that cannot start is a non-blocking error in Claude
+  Code: the call goes ahead. So on native Windows without a working `python3`,
+  PowerShell calls run unguarded. The hooks do not set `onFailure: "block"`,
+  which would stop every call there. Disable the plugin on such a machine instead.
 - Hangar's hardened `ask` and `deny-risky` turns drop `enabledPlugins` and
   `extraKnownMarketplaces`, so the plugin does not load in those turns. Compare
   arms in turn modes where plugins load, or have hangar mount the plugin through

@@ -1,0 +1,166 @@
+"""Write ``site.yml``: ``mkdocs.yml`` with each catalog entry's page added to its nav section.
+
+Two pull requests that each add a page used to conflict on the ``nav`` in ``mkdocs.yml``
+(KAN-486). A new page now names its place in its own catalog fragment,
+``docs/catalog.d/<id>.toml``::
+
+    schema = 1
+
+    [[documents]]
+    id = "decision-0008-example"
+    path = "docs/decisions/0008-example.md"
+    kind = "decision"
+    owner = "repository-maintainers"
+    status = "active"
+    nav = "Decisions"            # a top-level section of the nav in mkdocs.yml
+    title = "ADR 0008: Example"  # optional; the page's first heading otherwise
+
+This script copies ``mkdocs.yml`` to ``site.yml`` and appends each such page to the end
+of its section, unless the nav already lists it. The site is built from ``site.yml``.
+It reads TOML and YAML and matches ``exclude_docs`` with pathspec, all of which Zensical
+installs, so the docs workflow needs nothing else. It mirrors
+the catalog checks the site needs; ``ai-dlc docs gate`` remains the authority on entries.
+
+    python scripts/site_config.py           # write site.yml
+    python scripts/site_config.py --check   # report problems, write nothing
+    zensical build --strict -f site.yml
+"""
+
+from __future__ import annotations
+
+import argparse
+import re
+import sys
+import tomllib
+from pathlib import Path
+
+import pathspec
+import yaml
+
+ROOT = Path(__file__).resolve().parents[1]
+CATALOG = "docs/catalog.toml"
+FRAGMENTS = "docs/catalog.d"
+OUTPUT = "site.yml"
+NAV = re.compile(r"^nav:[ \t]*(#.*)?$", re.MULTILINE)
+
+
+def catalog_entries(root: Path) -> list[tuple[str, dict]]:
+    """``(file, entry)`` for every catalog entry: the catalog, then fragments by name."""
+    files = [root / CATALOG]
+    fragments = root / FRAGMENTS
+    if fragments.is_symlink():
+        raise ValueError(f"{FRAGMENTS} cannot be a symlink")
+    if fragments.is_dir():
+        files += sorted(p for p in fragments.glob("*.toml") if not p.name.startswith("."))
+    found = []
+    for path in files:
+        if path.is_symlink() or not path.is_file():
+            raise ValueError(f"{path.relative_to(root).as_posix()}: not a regular file")
+        raw = tomllib.loads(path.read_text(encoding="utf-8"))
+        documents = raw.get("documents", [])
+        if (
+            raw.get("schema") != 1
+            or not isinstance(documents, list)
+            or not all(isinstance(d, dict) for d in documents)
+        ):
+            raise ValueError(
+                f"{path.relative_to(root).as_posix()}: expected schema = 1 and a documents array"
+            )
+        found += [(path.relative_to(root).as_posix(), d) for d in documents]
+    return found
+
+
+def _listed(nav: object) -> set[str]:
+    """Every page path the nav names, at any depth."""
+    if isinstance(nav, str):
+        return {nav.strip()}
+    if isinstance(nav, list):
+        return set().union(*(_listed(item) for item in nav)) if nav else set()
+    if isinstance(nav, dict):
+        return set().union(*(_listed(value) for value in nav.values())) if nav else set()
+    return set()
+
+
+def compose(root: Path) -> tuple[str, list[str]]:
+    """``site.yml``'s text and the problems found; the text is unusable if there are any."""
+    text = (root / "mkdocs.yml").read_text(encoding="utf-8")
+    config = yaml.load(text, Loader=yaml.BaseLoader) or {}
+    nav = config.get("nav")
+    # exclude_docs is gitignore-style, as Zensical reads it: ``reviews/`` matches at any depth.
+    exclusions = pathspec.GitIgnoreSpec.from_lines(config.get("exclude_docs", "").splitlines())
+    start = NAV.search(text)
+    if not isinstance(nav, list) or not start:
+        return text, ["mkdocs.yml has no nav list"]
+    tail = text[start.end() :].splitlines(keepends=True)
+    if any(line[:1] not in {"", " ", "\t", "-", "#", "\n", "\r"} for line in tail):
+        return text, ["mkdocs.yml: nav must be the last top-level key"]
+    sections = {
+        key: value
+        for item in nav
+        if isinstance(item, dict)
+        for key, value in item.items()
+        if isinstance(value, list)
+    }
+    listed, problems = _listed(nav), []
+    for source, entry in catalog_entries(root):
+        section = entry.get("nav")
+        if section is None:
+            continue
+        path, title = entry.get("path", ""), entry.get("title")
+        where = f"{source}: {path or entry.get('id')}"
+        if not isinstance(section, str) or section not in sections:
+            problems.append(
+                f"{where}: nav must name a section of mkdocs.yml ({', '.join(sections)})"
+            )
+            continue
+        if title is not None and (not isinstance(title, str) or not title.strip()):
+            problems.append(f"{where}: title must be nonempty text")
+            continue
+        if (
+            not isinstance(path, str)
+            or not path.startswith("docs/")
+            or not path.endswith(".md")
+            or ".." in path.split("/")
+        ):
+            problems.append(f"{where}: only a docs/ Markdown page can be in the nav")
+            continue
+        page = path.removeprefix("docs/")
+        if exclusions.match_file(page):
+            problems.append(
+                f"{where}: the page is excluded from the site, so it can't be in the nav"
+            )
+            continue
+        if not (root / path).is_file():
+            problems.append(f"{where}: the page does not exist")
+            continue
+        if page in listed:
+            continue
+        sections[section].append({title.strip(): page} if title else page)
+        listed.add(page)
+    dumped = yaml.safe_dump({"nav": nav}, sort_keys=False, allow_unicode=True, width=10**6)
+    header = (
+        "# Generated by scripts/site_config.py from mkdocs.yml and docs/catalog*; do not edit.\n"
+    )
+    return header + text[: start.start()] + dumped, problems
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    parser.add_argument("--root", type=Path, default=ROOT)
+    parser.add_argument("--check", action="store_true", help="report problems, write nothing")
+    args = parser.parse_args(argv)
+    try:
+        text, problems = compose(args.root)
+    except (OSError, ValueError, tomllib.TOMLDecodeError, yaml.YAMLError) as exc:
+        problems, text = [str(exc)], ""
+    for problem in problems:
+        print(problem, file=sys.stderr)
+    if problems:
+        return 1
+    if not args.check:
+        (args.root / OUTPUT).write_text(text, encoding="utf-8")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

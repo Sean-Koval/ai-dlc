@@ -32,6 +32,7 @@ dev = [
     "pyright>=1.1.400,<2",
     "build>=1.2,<2",
     "jsonschema>=4.26,<5",
+    "pathspec>=0.12,<2",
 ]
 
 [tool.hatch.build.targets.wheel]

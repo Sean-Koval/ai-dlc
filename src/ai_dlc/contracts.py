@@ -27,6 +27,7 @@ class Request(BaseModel):
         "deployment",
         "append",
         "pull_request_create",
+        "pull_requests",
         "get",
         "search",
         "list_changed",
@@ -313,6 +314,38 @@ class PullRequestResult(BaseModel):
     number: int = Field(ge=1)
 
 
+class PullRequestsSince(Payload):
+    """Pull requests opened at or after ``since``, newest first (``knowledge stats``)."""
+
+    since: AwareDatetime
+    limit: int = Field(default=200, ge=1, le=1000)
+
+
+class PullRequestSummary(BaseModel):
+    """One pull request as ``knowledge stats`` measures it; read-only, no bodies."""
+
+    model_config = ConfigDict(extra="allow")
+    number: int = Field(ge=1)
+    title: str
+    state: Literal["open", "merged", "closed"] = Field(
+        description="closed means closed without merging"
+    )
+    created_at: AwareDatetime
+    merged_at: AwareDatetime | None = None
+    closed_at: AwareDatetime | None = None
+    files: list[str] = Field(default_factory=list, description="repository-relative paths")
+    first_commit: str | None = Field(default=None, description="the pull request's first commit")
+    merge_commit: str | None = Field(default=None, description="the commit it merged as")
+    first_push_checks: Literal["success", "failure", "pending", "none"] = Field(
+        default="none",
+        description="combined checks on the earliest pull request commit that has any",
+    )
+
+
+class PullRequestList(BaseModel):
+    pull_requests: list[PullRequestSummary]
+
+
 WIKI_KEY = r"^[A-Za-z0-9][A-Za-z0-9._:-]*$"
 
 
@@ -412,6 +445,7 @@ PAYLOADS.update(
         "deployment": Revision,
         "append": Append,
         "pull_request_create": PullRequestCreate,
+        "pull_requests": PullRequestsSince,
         "get": RecordGet,
         "search": RecordSearch,
         "list_changed": RecordsChanged,
@@ -439,6 +473,7 @@ RESPONSES = {
     "deployment": DeploymentResult,
     "append": AppendResult,
     "pull_request_create": PullRequestResult,
+    "pull_requests": PullRequestList,
     "get": RecordResult,
     "search": RecordsFound,
     "list_changed": RecordsChangedResult,
@@ -529,7 +564,10 @@ def manifest():
                 ],
             },
             "specs": {"mandatory": ["current"], "optional": []},
-            "scm": {"mandatory": ["merged", "ci"], "optional": ["pull_request_create"]},
+            "scm": {
+                "mandatory": ["merged", "ci"],
+                "optional": ["pull_request_create", "pull_requests"],
+            },
             "deploy": {"mandatory": ["deployment"], "optional": []},
             "knowledge": {
                 "mandatory": ["get", "search"],

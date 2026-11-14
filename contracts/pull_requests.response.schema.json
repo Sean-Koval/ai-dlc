@@ -1,0 +1,128 @@
+{
+  "$defs": {
+    "PullRequestSummary": {
+      "additionalProperties": true,
+      "description": "One pull request as ``knowledge stats`` measures it; read-only, no bodies.",
+      "properties": {
+        "closed_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Closed At"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "files": {
+          "description": "repository-relative paths",
+          "items": {
+            "type": "string"
+          },
+          "title": "Files",
+          "type": "array"
+        },
+        "first_commit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the pull request's first commit",
+          "title": "First Commit"
+        },
+        "first_push_checks": {
+          "default": "none",
+          "description": "combined checks on the earliest pull request commit that has any",
+          "enum": [
+            "success",
+            "failure",
+            "pending",
+            "none"
+          ],
+          "title": "First Push Checks",
+          "type": "string"
+        },
+        "merge_commit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the commit it merged as",
+          "title": "Merge Commit"
+        },
+        "merged_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Merged At"
+        },
+        "number": {
+          "minimum": 1,
+          "title": "Number",
+          "type": "integer"
+        },
+        "state": {
+          "description": "closed means closed without merging",
+          "enum": [
+            "open",
+            "merged",
+            "closed"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "number",
+        "title",
+        "state",
+        "created_at"
+      ],
+      "title": "PullRequestSummary",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "pull_requests": {
+      "items": {
+        "$ref": "#/$defs/PullRequestSummary"
+      },
+      "title": "Pull Requests",
+      "type": "array"
+    }
+  },
+  "required": [
+    "pull_requests"
+  ],
+  "title": "PullRequestList",
+  "type": "object"
+}

@@ -63,7 +63,7 @@ list before starting work, and do not grow moved or cut areas.
   `docs/archive/`; older material lives in git history.
 - Keep disposable execution logs in ignored `.ai-dlc/local/`; do not create root
   planning files, `.superpowers/`, or tool-specific planning hierarchies.
-- Enroll durable documents in `docs/catalog.toml`; update code mappings and links
+- Enroll a new durable document in its own `docs/catalog.d/<id>.toml` (see CONTRIBUTING.md); update code mappings and links
   when moving sources. Record a documentation-impact disposition for changes.
 - Put new Python modules in the responsible subpackage; keep CLI/MCP thin and
   provider-specific logic inside adapters. Do not infer dead code from filenames.
