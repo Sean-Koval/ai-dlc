@@ -821,6 +821,15 @@ def test_ci_mode_names_a_missing_quote_or_link(backfilled):
     found = fill(backfilled, BACKFILLED.replace("Not stated in the source.", unlinked, 1))
     assert "has no link to the source" in found[0]["message"]
     assert "quote" not in found[0]["message"].split("has no", 1)[1]
+    for markup in (
+        'See [src](https://x.example/a "title").',
+        '<a href="https://x.example/a">src</a>',
+        'See "https://x.example/a".',
+        "> https://x.example/a",
+    ):
+        found = fill(backfilled, BACKFILLED.replace("Not stated in the source.", markup, 1))
+        assert [(item["path"], item["pointer"]) for item in found] == [("gateway.md", "")], markup
+        assert "under Context has no source quote" in found[0]["message"], markup
     bare = "Policy is checked once."
     found = fill(backfilled, BACKFILLED.replace("Not stated in the source.", bare, 1))
     assert "has no source quote (a > blockquote" in found[0]["message"]
@@ -891,3 +900,18 @@ def test_ci_mode_keeps_the_lines_beside_the_placeholder(backfilled):
     assert "has its body edited" in found[0]["message"]
     longer = mixed.replace("See below.\nNot stated in the source.", f"See below, too. {SOURCED}", 1)
     assert "has its body edited" in fill(backfilled, longer)[0]["message"]
+
+
+def test_ci_mode_fills_an_options_heading_with_more_words(backfilled):
+    longer = BACKFILLED.replace("Options considered", "Options considered and rejected")
+    rebase(backfilled, longer)
+    assert fill(backfilled, longer.replace("Not stated in the source.", SOURCED)) == []
+
+
+def test_ci_mode_ignores_a_placeholder_inside_a_code_fence(backfilled):
+    fenced = BACKFILLED.replace(
+        "\nNot stated in the source.", "\n```\nNot stated in the source.\n```", 1
+    )
+    rebase(backfilled, fenced)
+    found = fill(backfilled, fenced.replace("Not stated in the source.", SOURCED, 1))
+    assert "has its body edited" in found[0]["message"]

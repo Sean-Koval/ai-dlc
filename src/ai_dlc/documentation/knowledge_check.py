@@ -72,8 +72,15 @@ SUPERSEDE_KEYS = ("status", "valid_to")
 # under Context or Options gives way to text that quotes the source and links to it.
 PLACEHOLDER = "Not stated in the source."
 FILLABLE = ("context", "options")
-# A source quote: a Markdown blockquote, or a passage in straight or curly double quotes.
-_SOURCE_QUOTE = re.compile(r'^[ \t]*>[ \t]*\S|"[^"\n]*\w[^"\n]*"|“[^”\n]*\w[^”\n]*”', re.MULTILINE)
+# A source quote: a Markdown blockquote, or a passage in straight or curly double quotes,
+# holding words once link markup is gone (a link title, an href or a URL is not a quote).
+_SOURCE_QUOTE = re.compile(
+    r'^[ \t]*>[^\n]*?[^\W_]|"[^"\n]*?[^\W_][^"\n]*"|“[^”\n]*?[^\W_][^”\n]*”', re.MULTILINE
+)
+_LINK_MARKUP = re.compile(
+    r"!?\[[^\]\n]*\]\([^)\n]*\)|^[ \t]*\[[^\]\n]+\]:[^\n]*|<[^>\n]*>|\bhttps?://\S+",
+    re.MULTILINE,
+)
 _BARE_URL = re.compile(r"\bhttps?://\S")
 # Customer records live in projects/<name>/; a quote is this many words in a row.
 PROJECTS = "projects"
@@ -1347,8 +1354,11 @@ def _fillable(heading: str | None) -> bool:
 def _replacement(old: str, new: str) -> str | None:
     """The text that took a placeholder line's place in ``old``, if that is the only change."""
     lines = old.splitlines()
+    fenced = False
     for number, line in enumerate(lines):
-        if not _is_placeholder(line):
+        if line.lstrip().startswith(("```", "~~~")):
+            fenced = not fenced
+        if fenced or not _is_placeholder(line):
             continue
         before = "\n".join(lines[:number]).strip()
         after = "\n".join(lines[number + 1 :]).strip()
@@ -1390,7 +1400,7 @@ def filled_placeholders(old_body: str, new_body: str) -> list[tuple[str, str]] |
 
 
 def _quotes(text: str) -> bool:
-    return bool(_SOURCE_QUOTE.search(text))
+    return bool(_SOURCE_QUOTE.search(_LINK_MARKUP.sub(" ", text)))
 
 
 def _links(text: str) -> bool:
