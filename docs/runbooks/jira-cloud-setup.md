@@ -79,6 +79,9 @@ map review and decision-wait statuses, which otherwise read as unknown.
 only the selected type. Issues filed outside ai-dlc lack the `ai-dlc` property;
 reads accept them and `find` ignores them.
 
+`providers.work.decision` enables `tracker_create_decision`: `issue_type_id`,
+`link_type` (default `Blocks`) and `fields`, the Decision's five custom field IDs.
+
 Add any supported required create values under `providers.work.create_fields`;
 configure a needed transition ID and field values under
 `providers.work.transitions.in_progress`, `.in_review`, `.needs_decision` or
