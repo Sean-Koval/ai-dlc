@@ -1965,6 +1965,11 @@ def knowledge_pull_transcripts(
     conclude(result)
 
 
+def _stdout_is_terminal() -> bool:
+    """Whether a person reads the output; captured or piped output stays JSON."""
+    return sys.stdout.isatty()
+
+
 RecordsRoot = Annotated[Path, typer.Option("--root")]
 RecordsProvider = Annotated[str | None, typer.Option("--provider")]
 
@@ -1994,17 +1999,31 @@ def knowledge_records_search(
     text: Annotated[str | None, typer.Option("--text")] = None,
     root: RecordsRoot = Path("."),
     provider_id: RecordsProvider = None,
-    json_output: Annotated[bool, typer.Option("--json", help="Full headers as JSON.")] = False,
+    output: Annotated[
+        str | None,
+        typer.Option(
+            "--format",
+            help="text (ranked rows) or json (full headers); default text on a terminal, "
+            "json otherwise.",
+        ),
+    ] = None,
+    json_output: Annotated[bool, typer.Option("--json", help="Same as --format json.")] = False,
 ):
     """Find records by header, ranked; --text also reads bodies.
 
-    Prints one compact row per record; Source records only with --type source.
+    On a terminal it prints one compact row per record; piped or captured, it prints
+    JSON, as scripts and skills parse it. Source records only with --type source.
     """
     from ai_dlc.documentation.knowledge_service import search_lines
 
+    if output not in (None, "text", "json"):
+        typer.echo("Error: --format is text or json", err=True)
+        raise typer.Exit(2)
+    if json_output:
+        output = "json"
     with service_call():
         result = _records(root, provider_id).search(type, scope, label, status, text)
-    if json_output:
+    if (output or ("text" if _stdout_is_terminal() else "json")) == "json":
         conclude(result)
         return
     for line in search_lines(result):

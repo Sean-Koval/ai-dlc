@@ -1,7 +1,8 @@
 """``knowledge records search`` (KAN-494): usable cold against a knowledge clone.
 
-``--root <clone>`` needs no ``KNOWLEDGE_REPO`` or ``--provider``; the default output
-is a ranked, compact list; full JSON is behind ``--json``; Sources only on request.
+``--root <clone>`` needs no ``KNOWLEDGE_REPO`` or ``--provider``. On a terminal it
+prints a ranked, compact list; piped or captured (skills parse it) it prints JSON;
+``--format`` forces either. Sources only on request.
 """
 
 import json
@@ -32,17 +33,21 @@ def search(*args: str):
     return CliRunner().invoke(app, ["knowledge", "records", "search", *args])
 
 
+def rows(*args: str):
+    return search(*args, "--format", "text")
+
+
 def test_knowledge_search_root_needs_no_knowledge_repo_or_provider(clone):
-    result = search("--root", str(clone))
+    result = rows("--root", str(clone))
     assert result.exit_code == 0, result.output
-    rows = [line for line in result.output.splitlines() if not line.startswith("    ")]
-    assert rows[0].split()[:3] == ["DEC-0002", "decision", "accepted"]
-    assert rows[-1] == "4 records; 2 source records hidden (--type source)"
-    assert "SRC-0001" not in "\n".join(rows)
+    found = [line for line in result.output.splitlines() if not line.startswith("    ")]
+    assert found[0].split()[:3] == ["DEC-0002", "decision", "accepted"]
+    assert found[-1] == "4 records; 2 source records hidden (--type source)"
+    assert "SRC-0001" not in "\n".join(found)
 
 
 def test_knowledge_search_compact_rows_carry_the_line_owner_and_evidence(clone):
-    output = search("--root", str(clone), "--type", "decision").output
+    output = rows("--root", str(clone), "--type", "decision").output
     assert "DEC-0001  decision  superseded  Nightly builds only\n" in output
     line = "    CI builds main once a night instead of on every merge.  [owner sean; evidence SRC-0001]"
     assert line in output
@@ -50,7 +55,7 @@ def test_knowledge_search_compact_rows_carry_the_line_owner_and_evidence(clone):
 
 
 def test_knowledge_search_sources_only_with_type_source(clone):
-    output = search("--root", str(clone), "--type", "source").output
+    output = rows("--root", str(clone), "--type", "source").output
     assert "SRC-0001  source" in output and "SRC-0002  source" in output
     assert "DEC-0001" not in output and "hidden" not in output
 
@@ -65,7 +70,7 @@ def test_knowledge_search_json_keeps_full_headers_ranked(clone):
 
 
 def test_knowledge_search_text_ranks_header_matches_first(clone):
-    output = search("--root", str(clone), "--text", "nightly").output
+    output = rows("--root", str(clone), "--text", "nightly").output
     assert output.splitlines()[0].startswith("DEC-0001  decision  superseded")
 
 
@@ -88,3 +93,26 @@ def test_knowledge_search_rank_orders_status_then_newest():
         {"id": "d", "header": {"status": "accepted", "date": "2026-12-01"}, "retracted_by": ["x"]},
     ]
     assert [item["id"] for item in rank(items)] == ["c", "b", "a", "d"]
+
+
+def test_knowledge_search_captured_output_defaults_to_json_for_skills(clone):
+    """Skills run it through a shell and parse ``items``, ``path`` and ``header``."""
+    result = search("--root", str(clone), "--type", "decision")
+    assert result.exit_code == 0, result.output
+    found = json.loads(result.output)
+    assert [item["id"] for item in found["items"]] == ["DEC-0002", "DEC-0001"]
+    assert {"id", "path", "header"} <= set(found["items"][0])
+
+
+def test_knowledge_search_a_terminal_gets_ranked_rows(clone, monkeypatch):
+    monkeypatch.setattr("ai_dlc.cli._stdout_is_terminal", lambda: True)
+    output = search("--root", str(clone), "--type", "decision").output
+    assert output.startswith("DEC-0002  decision  accepted")
+    forced = search("--root", str(clone), "--type", "decision", "--format", "json").output
+    assert json.loads(forced)["items"][0]["id"] == "DEC-0002"
+    assert json.loads(search("--root", str(clone), "--json").output)["status"] == "ok"
+
+
+def test_knowledge_search_refuses_an_unknown_format(clone):
+    result = search("--root", str(clone), "--format", "yaml")
+    assert result.exit_code == 2

@@ -491,7 +491,18 @@ def test_cli_reads_and_proposes_through_the_shared_service(store, tmp_path, monk
     )
     assert [i["id"] for i in json.loads(found.output)["items"]] == ["share-release-notes"]
     rows = runner.invoke(
-        app, ["knowledge", "records", "search", "--type", "action", "--root", str(root)]
+        app,
+        [
+            "knowledge",
+            "records",
+            "search",
+            "--type",
+            "action",
+            "--root",
+            str(root),
+            "--format",
+            "text",
+        ],
     )
     assert rows.output.startswith("share-release-notes  action  ")
 
