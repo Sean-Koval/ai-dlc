@@ -462,8 +462,8 @@ def test_promote_only_from_a_numbered_customer_record_into_a_team_repository(acm
     init_customer(other, "beta")
     with pytest.raises(RefusedError, match="team repository"):
         run_promote(acme, other)
-    with pytest.raises(RefusedError, match="not a customer record"):
-        promote(team, "LES-0001", summary=SUMMARY, title=TITLE, owner="sean")
+    with pytest.raises(RefusedError, match="not a customer repository"):
+        promote(team, "LES-0001", summary=SUMMARY, title=TITLE, owner="sean", to=team)
 
 
 def test_promote_refuses_a_taken_slug_or_branch(acme, team):
@@ -482,18 +482,38 @@ def test_promote_dry_run_plans_and_writes_nothing(acme, team):
     assert branches(team) == ["main"]
 
 
-def test_promote_inside_a_team_repository_projects_folder(tmp_path):
+def test_promote_is_refused_in_a_team_repository(tmp_path, team):
+    """The team-repository promote path is gone (KAN-503): no customer records there."""
     repo = tmp_path / "kb"
     shutil.copytree(BOUNDARY, repo)
-    write(repo, "projects/alpha/deny-terms.txt", "Initech\n")
     commit_all(repo)
-    with pytest.raises(RefusedError, match="deny-list"):
-        promote(repo, "LES-0001", summary=SUMMARY + "Initech again.\n", title=TITLE, owner="sean")
-    result = promote(repo, "LES-0001", summary=SUMMARY, title=TITLE, owner="sean", today=DAY)
-    tree = tmp_path / "checked"
-    git(repo, "worktree", "add", "-q", str(tree), result["branch"])
-    assert result["paths"][1].startswith("team/lessons/")
-    assert check_records(tree)["status"] == "valid", check_records(tree)["failures"]
+    before = git(repo, "rev-parse", "HEAD"), branches(repo)
+    for to in (None, team):
+        with pytest.raises(RefusedError, match="not a customer repository"):
+            promote(repo, "LES-0001", summary=SUMMARY, title=TITLE, owner="sean", to=to)
+    assert (git(repo, "rev-parse", "HEAD"), branches(repo)) == before
+    assert branches(team) == ["main"]
+
+    (tmp_path / "summary.md").write_text(SUMMARY)
+    result = CliRunner().invoke(
+        app,
+        [
+            "knowledge",
+            "promote",
+            "LES-0001",
+            "--root",
+            str(repo),
+            "--summary",
+            str(tmp_path / "summary.md"),
+            "--title",
+            TITLE,
+            "--owner",
+            "sean",
+        ],
+    )
+    assert result.exit_code != 0
+    assert "not a customer repository" in result.output
+    assert (git(repo, "rev-parse", "HEAD"), branches(repo)) == before
 
 
 def test_promote_into_a_team_repository_inside_a_larger_checkout(acme, team, tmp_path):
