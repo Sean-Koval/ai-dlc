@@ -1,0 +1,165 @@
+{
+  "$defs": {
+    "CaptureEntry": {
+      "additionalProperties": false,
+      "description": "One Source in one capture run.",
+      "properties": {
+        "cost_usd": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 0,
+          "description": "null: unknown; a failed Source that leaves it out is unknown too, others spent 0",
+          "title": "Cost Usd"
+        },
+        "duration_seconds": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the recording's length, for transcripts",
+          "title": "Duration Seconds"
+        },
+        "id": {
+          "description": "the Source record's id or slug",
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "input_tokens": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 0,
+          "description": "null: unknown; a failed Source that leaves it out is unknown too, others spent 0",
+          "title": "Input Tokens"
+        },
+        "kind": {
+          "description": "other: a provider that is none of the three",
+          "enum": [
+            "transcript",
+            "chat",
+            "note",
+            "other"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "outcome": {
+          "description": "deferred: left in the inbox because the token ceiling was reached",
+          "enum": [
+            "extracted",
+            "filtered",
+            "deferred",
+            "failed"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "output_tokens": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 0,
+          "description": "null: unknown; a failed Source that leaves it out is unknown too, others spent 0",
+          "title": "Output Tokens"
+        },
+        "pull_request": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pull Request"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "outcome"
+      ],
+      "title": "CaptureEntry",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "One line of the capture run log: what one capture batch run pulled, kept and spent.",
+  "properties": {
+    "ceiling_reached": {
+      "default": false,
+      "title": "Ceiling Reached",
+      "type": "boolean"
+    },
+    "finished_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Finished At"
+    },
+    "run_id": {
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "sources": {
+      "items": {
+        "$ref": "#/$defs/CaptureEntry"
+      },
+      "title": "Sources",
+      "type": "array"
+    },
+    "started_at": {
+      "format": "date-time",
+      "title": "Started At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_id",
+    "started_at"
+  ],
+  "title": "CaptureRun",
+  "type": "object"
+}

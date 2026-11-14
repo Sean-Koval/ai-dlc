@@ -56,20 +56,47 @@ so the team repository's retention, numbering and index never see it.
 
 The rules live in the team repository's `knowledge.toml`. A customer
 repository's local path is a machine path, so an environment variable holds it.
-If the variable is unset or names no knowledge checkout, the transcript is
-skipped and logged, with no fallback to the team repository. A transcript that
+The checkout must declare `[repo] boundary = "customer"` and this `project`
+([ADR 0007](../decisions/0007-customer-knowledge-repositories.md)).
+
+If the variable is unset or the checkout does not declare it, the transcript is
+skipped and logged, with no fallback to the team repository.
+
+Once customer rules exist, a transcript that matches none goes to the team
+repository only when every participant matches `internal`. Otherwise it may be an
+unmapped customer meeting, so it is skipped and logged. A transcript that
 matches two customers is skipped too.
+
+A customer's `titles` match whole words, ignoring case, accents and Unicode
+compatibility forms such as full-width letters. "Alpha" matches "alpha: weekly" and
+"Alpha社定例", and a rule "Beta Corp" matches "beta-corp". Japanese, Chinese and Thai have no spaces, so their characters
+count as word edges.
+
+A title may hold the term only inside a longer word, as in "AlphaCorp renewal
+prep", or a two-word term written as one. Such a meeting may still be about that
+customer, so it is skipped and logged until a rule covers it. It never goes to
+the team repository.
+
+A customer's `participants`, like `internal`, match an exact address, or a
+domain and its subdomains. Names count only when the provider gives no emails.
+A one-word entry is a name, and the pull warns about it: write a domain as
+`@alpha.example`. A domain such as `@io` or `@co.uk` is refused.
+
+A team meeting with an outside guest is skipped until a customer rule covers
+it. The pull output names a customer meeting by provider and id only, never by
+its title or path.
 
 ```toml
 # knowledge.toml of the team repository
 [transcripts]
 owner = "<record owner>"   # required: owner of the Source records
 scope = "personal"         # team-repository transcripts: personal (default) or team
+internal = ["@example.com"]  # domains, addresses, or exact names when a provider gives none
 
 [[transcripts.customers]]
 project = "alpha"
-titles = ["Alpha"]                 # substrings of the meeting title
-participants = ["@alpha.example"]  # substrings of a name or email
+titles = ["Alpha"]                 # whole words of the title, any case: not "Alphabet"
+participants = ["@alpha.example"]  # a domain and its subdomains, an exact address or name
 repo_env = "KNOWLEDGE_REPO_ALPHA"  # the default: KNOWLEDGE_REPO_<PROJECT>
 ```
 

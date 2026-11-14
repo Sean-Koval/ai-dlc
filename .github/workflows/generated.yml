@@ -1,0 +1,53 @@
+name: Generated files
+# After each merge to main, reports what a PR left for later (KAN-481). It holds no write access
+# and changes nothing.
+# - The front-page assets must be current: assets.yml checks them on every PR that touches what
+#   they show, so a failure here means one slipped through; rebuild them in a PR.
+# - tests/editorial_baseline.json may lag when a page improves: PRs aren't required to lower it,
+#   so two PRs don't conflict on it, and the check caps each page at its debt on the PR's base,
+#   so the slack can't be spent. Pages it would lower are listed as a notice; any PR may run
+#   `python tests/test_editorial.py --update` to lower them.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+env:
+  CLAUDE_CODE_VERSION: "2.1.302"   # keep equal to assets.yml and docs/assets/front/build.py
+jobs:
+  assets:
+    name: Front-page assets are current on main
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Prepare checked-out implementation
+        run: sh scripts/bootstrap.sh --source --target github-actions
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install the Claude Code CLI (plugin screen only; no login needed)
+        run: npm install -g "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}"
+      - name: Check the generated assets
+        run: |
+          uv sync --locked
+          uv run --locked --no-sync python docs/assets/front/build.py --check
+  baseline:
+    name: Editorial baseline pages to lower
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: List pages that improved below their baseline
+        run: |
+          stale="$(python tests/test_editorial.py --stale)"
+          echo "$stale"
+          if [ "$stale" != "baseline is current" ]; then
+            echo "::notice title=Editorial baseline can be lowered::run python tests/test_editorial.py --update in a PR"
+          fi

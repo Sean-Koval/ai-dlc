@@ -1,0 +1,23 @@
+{
+  "additionalProperties": false,
+  "description": "Pull requests opened at or after ``since``, newest first (``knowledge stats``).",
+  "properties": {
+    "limit": {
+      "default": 200,
+      "maximum": 1000,
+      "minimum": 1,
+      "title": "Limit",
+      "type": "integer"
+    },
+    "since": {
+      "format": "date-time",
+      "title": "Since",
+      "type": "string"
+    }
+  },
+  "required": [
+    "since"
+  ],
+  "title": "PullRequestsSince",
+  "type": "object"
+}

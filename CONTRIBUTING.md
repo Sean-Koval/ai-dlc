@@ -61,14 +61,40 @@ change locally:
 ```sh
 pip install zensical==0.0.71
 python scripts/docs_site_links.py --check   # links that would leave the site
-zensical serve                              # or: zensical build --strict
+python scripts/site_config.py               # mkdocs.yml plus catalog pages, as site.yml
+zensical serve -f site.yml                  # or: zensical build --strict -f site.yml
 ```
 
-CI runs the link check and `zensical build --strict`; a broken link or anchor fails
+CI runs the link check and `zensical build --strict -f site.yml`; a broken link or anchor fails
 the build. `python scripts/docs_site_links.py --write` turns links to files the site
 doesn't publish into GitHub URLs. The theme files in `docs/stylesheets/airframe*` and
 the brand files in `docs/assets/brand/` are vendored from agent-factory; refresh them
 with `sh scripts/sync-airframe.sh theme-vN` and `sh scripts/sync-brand.sh theme-vN`.
+
+## Parallel pull requests
+
+Many PRs are open at once, so a PR changes nothing that every other PR also changes
+(KAN-481):
+
+- **Changelog:** add `changes/<KEY>.md` (see [changes/README.md](changes/README.md));
+  never edit `CHANGELOG.md`. `python scripts/collect_changes.py` checks the fragments;
+  at release, `--write` folds them into `CHANGELOG.md`.
+- **Editorial baseline** (`tests/editorial_baseline.json`): a PR needn't lower it when a
+  page improves. CI caps each page at its debt on the PR's base, so the slack can't be
+  spent. The `generated` workflow lists pages to lower after each merge; any PR may run
+  `python tests/test_editorial.py --update`. A PR may still not raise a page's debt.
+- **Front-page assets** (`docs/assets/front/`): unchanged. A PR that changes what they
+  show rebuilds them, and `assets.yml` checks that they are current.
+- **A new page** (KAN-486): add `docs/catalog.d/<id>.toml` with `schema = 1` and the
+  page's `[[documents]]` entry; never edit `docs/catalog.toml` or the `nav` in
+  `mkdocs.yml`. Give the entry `nav = "<section>"` (a top-level `nav` section, such as
+  `Decisions`) and, optionally, `title`. `scripts/site_config.py` adds the page to the
+  end of that section in `site.yml`, which the site is built from. A page without
+  `nav` is catalogued but not in the nav. Rerun `scripts/site_config.py` after changing
+  a fragment or `mkdocs.yml`; `zensical serve -f site.yml` doesn't see those changes.
+- **Contract manifest** (`contracts/manifest.json`): it is generated. On a conflict,
+  keep either side and run `uv run --locked --no-sync python scripts/build_contracts.py`.
+  `scripts/check_generated.py` checks it.
 
 ## Documentation placement
 
@@ -77,8 +103,8 @@ Current explanations belong in `docs/design/`, procedures in `docs/runbooks/` or
 and requirements stay together in OpenSpec. Do not create a document solely to
 report that a change completed; use git history for removed scratch reports.
 
-[`docs/catalog.toml`](docs/catalog.toml) records the canonical documents with
-their lifecycle and owner. It is an incremental inventory, not a claim that every
+[`docs/catalog.toml`](docs/catalog.toml) and the fragments in `docs/catalog.d/`
+record the canonical documents with their lifecycle and owner. It is an incremental inventory, not a claim that every
 historical plan or verification record has been reviewed; run `ai-dlc docs check`
 to inspect gaps, and review findings rather than deleting documents automatically.
 [`docs/archive/`](docs/archive/README.md) is historical context whose old

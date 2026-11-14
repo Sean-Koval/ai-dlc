@@ -67,8 +67,11 @@ exclude_docs: |
   verification/
   reviews/
   catalog.toml
+  catalog.d/
 
-# One question per tab. Documents stay where docs/catalog.toml records them.
+# One question per tab. Documents stay where docs/catalog.toml records them. A new page
+# names its section in its own docs/catalog.d/<id>.toml instead of editing this list, and
+# scripts/site_config.py adds it to site.yml, which the site is built from (KAN-486).
 nav:
   - Home: index.md
   - Start:
@@ -92,6 +95,7 @@ nav:
       - FDE documents: runbooks/fde-documents.md
       - Document workspace qualification: runbooks/document-workspace-qualification.md
       - Jira Cloud setup: runbooks/jira-cloud-setup.md
+      - Customer knowledge: runbooks/customer-knowledge.md
   - Reference:
       - Architecture: architecture.md
       - Terms: design/terms.md
@@ -106,6 +110,7 @@ nav:
       - "ADR 0004: Knowledge system in scope": decisions/0004-knowledge-system-scope.md
       - "ADR 0005: Migrate notes to records": decisions/0005-migrate-knowledge-notes-to-records.md
       - "ADR 0006: Customer boundary and promotion": decisions/0006-customer-boundary-and-promotion.md
+      - "ADR 0007: Customer knowledge repositories": decisions/0007-customer-knowledge-repositories.md
       - Product direction: product-direction.md
       - Framework delivery: design/framework-delivery.md
       - Project documentation: design/project-documentation.md

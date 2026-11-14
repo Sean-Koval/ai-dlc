@@ -1,7 +1,8 @@
 """Keep docs-site links resolvable: links that leave the built site become GitHub URLs.
 
 The documentation site builds ``docs/`` without ``mkdocs.yml``'s ``exclude_docs``
-(``archive/``, ``verification/``, ``reviews/``, ``catalog.toml``). A relative Markdown link from
+(``archive/``, ``verification/``, ``reviews/``, ``catalog.toml``, ``catalog.d/``), which
+are gitignore-style patterns: ``reviews/`` matches at any depth. A relative Markdown link from
 a built page to a file outside that set (``../src/...``, ``../../AGENTS.md``, an
 archived note, a directory without an index) renders as a 404 on the site while it
 works on GitHub. This script rewrites such links to
@@ -16,17 +17,18 @@ left alone; fenced and inline code is skipped.
 from __future__ import annotations
 
 import argparse
-import fnmatch
+import functools
 import re
 import sys
 from pathlib import Path
+
+import pathspec
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = "docs"
 GITHUB = "https://github.com/Sean-Koval/ai-dlc"
 BRANCH = "main"
-# Mirrors mkdocs.yml exclude_docs; tests keep the two in step.
-EXCLUDED = ("archive/*", "verification/*", "reviews/*", "catalog.toml")
 LINK = re.compile(
     r"(?<!!)\[(?P<text>[^\]\n]*)\]\((?P<target><[^>\n]+>|[^)\s]+)(?P<title>\s+\"[^\"\n]*\")?\)"
 )
@@ -34,9 +36,17 @@ FENCE = re.compile(r"^\s*(```|~~~)")
 INLINE_CODE = re.compile(r"`[^`\n]*`")
 
 
-def excluded(relative: str) -> bool:
+@functools.cache
+def _exclusions(root: Path) -> pathspec.GitIgnoreSpec:
+    """``mkdocs.yml``'s ``exclude_docs``, matched as Zensical does (gitignore-style)."""
+    source = root / "mkdocs.yml" if (root / "mkdocs.yml").is_file() else ROOT / "mkdocs.yml"
+    config = yaml.load(source.read_text(encoding="utf-8"), Loader=yaml.BaseLoader)
+    return pathspec.GitIgnoreSpec.from_lines((config or {}).get("exclude_docs", "").splitlines())
+
+
+def excluded(relative: str, root: Path = ROOT) -> bool:
     """Whether a docs-relative path is left out of the site."""
-    return any(fnmatch.fnmatch(relative, pattern) for pattern in EXCLUDED)
+    return _exclusions(root).match_file(relative)
 
 
 def built_pages(root: Path) -> list[Path]:
@@ -44,7 +54,7 @@ def built_pages(root: Path) -> list[Path]:
     return [
         path
         for path in sorted(docs.rglob("*.md"))
-        if not excluded(path.relative_to(docs).as_posix())
+        if not excluded(path.relative_to(docs).as_posix(), root)
     ]
 
 
@@ -54,7 +64,7 @@ def _on_site(root: Path, target: Path) -> bool:
         relative = target.relative_to(docs).as_posix()
     except ValueError:
         return False
-    if excluded(relative) or not target.exists():
+    if excluded(relative, root) or not target.exists():
         return False
     if target.is_dir():
         return (target / "index.md").is_file() or (target / "README.md").is_file()
