@@ -38,6 +38,10 @@ ai-dlc knowledge promote LES-0004 --to ../team-knowledge \
   --summary summary.md --title "Ask for maintenance windows" --owner sean --dry-run
 ```
 
+Promote refuses to run without `--to` or from a team repository. Customer records
+live only in their customer's repository: `knowledge check` fails a
+`boundary: customer` record anywhere else.
+
 Without `--dry-run`, it commits a team Source and a derived team record on a new
 branch, `promote/<slug>`, of the team repository. Your checkout and its current
 branch do not change, and nothing is pushed. Review the branch, push it and open
