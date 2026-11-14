@@ -42,10 +42,9 @@ jobs:
     name: Knowledge install against team-harness
     runs-on: ubuntu-24.04
     env:
-      # team-harness#65 (KAN-508) head: stable promoted to suite-default r15 and work-default r17, whose guards fail
-      # closed (exit 2) on a call they can't read, as the KAN-460 probe needs. Re-pin to team-harness main once #65
-      # merges; the r2/r3 stables before it fail the probe.
-      TEAM_HARNESS_REF: 696a46ce9b43ae3af5cfb3f7cad52c0fc1638ebe
+      # team-harness main after #65 (KAN-508) and #57: stable is suite-default r15 and work-default r17, whose guards
+      # fail closed (exit 2) on a call they can't read, as the KAN-460 probe needs. The r2/r3 stables before it fail.
+      TEAM_HARNESS_REF: 28a274473b57fc9fc68f5b3fe49dfce6f38036ed
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
