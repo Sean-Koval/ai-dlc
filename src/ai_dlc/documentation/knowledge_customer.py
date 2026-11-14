@@ -13,8 +13,9 @@ deny-list term, a web address, a customer path or eight words in a row of the cu
 record, its Sources or their payloads. Otherwise it writes, on a new local branch of the
 team repository, a team Source holding the summary, citing the customer record by id
 only (``customer-record:<ID>``), and a team record derived from that Source. Nothing is
-pushed; a person reviews the pull request. The same command promotes from
-``projects/<name>/`` of a team repository when ``--to`` is left out.
+pushed; a person reviews the pull request. Promote runs only from a customer
+repository and always needs ``--to``: customer knowledge never lives in a team
+repository, so there is no promotion inside one (KAN-503).
 """
 
 import os
@@ -451,6 +452,14 @@ def promote(
     declared, problems = repo_boundary(source_settings)
     if problems:
         raise RefusedError(f"{source_root / CONFIG}: {problems[0]}")
+    if declared is None:
+        raise RefusedError(
+            f"{source_root} is not a customer repository: promote runs from a customer "
+            'repository whose knowledge.toml declares [repo] boundary = "customer"; '
+            "customer knowledge never lives in a team repository"
+        )
+    if to is None:
+        raise RefusedError("pass --to: promotion leaves a customer repository for a team one")
     every = _walk(source_root)
     path = next(
         (key for key, (item, _b) in every.items() if record_id in (item.id, *(item.aliases or ()))),
@@ -464,13 +473,11 @@ def promote(
     if not NUMBERED.match(record.id):
         raise RefusedError(f"{record.id} has a draft slug id; promote it once it is numbered")
     project = project_of(path)
-    if project is None or (declared is not None and project != declared):
+    if project is None or project != declared:
         raise RefusedError(f"{record.id} sits outside {PROJECTS}/<name>/; fix it first")
 
-    area = source_root if declared is not None else source_root / PROJECTS / project
-    if to is None and declared is not None:
-        raise RefusedError("pass --to: promotion leaves a customer repository for a team one")
-    target = Path(to).expanduser().resolve() if to is not None else source_root
+    area = source_root
+    target = Path(to).expanduser().resolve()
     target_settings = _settings(target)
     if target_settings.get("repo") is not None:
         raise RefusedError(

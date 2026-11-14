@@ -62,8 +62,11 @@ The checkout must declare `[repo] boundary = "customer"` and this `project`
 If the variable is unset or the checkout does not declare it, the transcript is
 skipped and logged, with no fallback to the team repository.
 
-Once customer rules exist, a transcript that matches none goes to the team
-repository only when every participant matches `internal`. Otherwise it may be an
+Without a customer rule, every transcript is skipped and nothing is written,
+unless `[transcripts] no_customers = true` says no meeting is a customer's.
+
+With rules, a transcript that matches none goes to the team repository only when
+every participant matches `internal`. Otherwise it may be an
 unmapped customer meeting, so it is skipped and logged. A transcript that
 matches two customers is skipped too.
 
