@@ -215,8 +215,8 @@
       "bound": {
         "docs/catalog.toml": "fb3de2c365abb96ae37b3c100a5e9828b8fc827870be13b014dc5d9bbf30e1ff"
       },
-      "outcome": "updated",
-      "reason": "Enrolls the knowledge install page with its code and test paths; re-recorded after merging main.",
+      "outcome": "reviewed-no-change",
+      "reason": "Re-reviewed after merging main: the knowledge install entry and its code and test paths are unchanged; main's new entries are its own.",
       "reviewer": "Claude (agent)",
       "target": "docs/catalog.toml"
     },
@@ -260,7 +260,7 @@
         "tests/test_workflow.py": "cbe32ce28d12401765be728d730865ed8c79e8a10a4f7cf807a9003753096de0"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Contributor workflow is unchanged by the new knowledge commands.",
+      "reason": "Re-reviewed after merging main: the contributor workflow is unchanged by the knowledge install commands.",
       "reviewer": "Claude (agent)",
       "target": "docs/development-workflow.md"
     },
@@ -326,21 +326,21 @@
         "tests/test_front_page.py": "6c26ccce0247e29d19aa2b5ce54dc003ac1d507ccbb2a512fa0a71206fce5d6f"
       },
       "outcome": "reviewed-no-change",
-      "reason": "The knowledge install link and bootstrap flag are unchanged by the merge from main and by TEAM_HARNESS becoming required.",
+      "reason": "Re-reviewed after merging main (mkdocs.yml nav and catalog fragments): the knowledge install link and bootstrap flag are unchanged.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/get-started.md"
     },
     {
       "bound": {
         "catalog:docs/workflows/knowledge-install.md": "f3a8f3e29501f8a105044751be6374d0667609d57b2e65bff0df3a6a2334094d",
-        "docs/workflows/knowledge-install.md": "2d6bee3149d15d8123e9b064776503ff76c11984a2c15d3124cc03c67829b3e7",
+        "docs/workflows/knowledge-install.md": "aa4035bd841f9c88127e7f3e8d4fea10218b2c47534754efcfd28c644ba95c52",
         "scripts/bootstrap.sh": "9fb9842121914ab0311bcd1be72eec2e496225bcf6c049ae34fa6ac79dd9df6a",
         "src/ai_dlc/setup/knowledge_doctor.py": "a29fc77881b684b228c6df5ef8d8f028be39f800adb8188c88cb599297a5d431",
         "src/ai_dlc/setup/knowledge_install.py": "a917a551e1956c492be8748440dbce614cd17c00bef509dbb80351a85e9384c7",
-        "tests/test_knowledge_install.py": "d14340e5242decbb470720bad99625229477f5ba31aa62eb2c60933a07550e80"
+        "tests/test_knowledge_install.py": "418226d25bf86ddde78e9934baebf57229f357de6f99b0613663300420b33ca8"
       },
       "outcome": "updated",
-      "reason": "The settings table says TEAM_HARNESS is required, so a teammate is asked for the harness instead of getting suite-default silently.",
+      "reason": "The settings table says TEAM_HARNESS is required, so a teammate is asked for the harness instead of getting suite-default silently; it says a failed guard check stops the install, and that Windows is not supported yet.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/knowledge-install.md"
     },
@@ -384,7 +384,7 @@
         "tests/test_workflow.py": "cbe32ce28d12401765be728d730865ed8c79e8a10a4f7cf807a9003753096de0"
       },
       "outcome": "reviewed-no-change",
-      "reason": "The new knowledge install and doctor commands are documented on their own page; the tool map is at its word ceiling.",
+      "reason": "Re-reviewed after merging main: the knowledge install and doctor commands are on their own page; the tool map is at its word ceiling.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/tool-map.md"
     },
@@ -410,7 +410,7 @@
         "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Engine and repository setup are unchanged; the team knowledge install has its own page.",
+      "reason": "Re-reviewed after merging main: engine and repository setup are unchanged; the team knowledge install has its own page.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/work-computer-setup.md"
     }

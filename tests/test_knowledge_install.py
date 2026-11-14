@@ -165,14 +165,14 @@ def test_prompts_only_for_absent_variables(world):
     assert asked == ["KNOWLEDGE_REPO"]
 
 
-def test_harness_has_no_default(world):
-    """A work teammate who leaves TEAM_HARNESS unset is asked, never given the suite's."""
+def test_an_unset_harness_is_asked_for_not_defaulted(world):
+    """KAN-433 review: a teammate who omits TEAM_HARNESS must not silently get the suite's own harness."""
     home, environ = world
     del environ["TEAM_HARNESS"]
-    with pytest.raises(RefusedError) as raised:
+    before = snapshot(home)
+    with pytest.raises(RefusedError, match="TEAM_HARNESS"):
         knowledge_install.install(home, environ)
-    assert "TEAM_HARNESS" in str(raised.value)
-    assert not (home / ".claude" / "team-harness.json").exists()
+    assert snapshot(home) == before
     asked = []
 
     def prompt(name, about):

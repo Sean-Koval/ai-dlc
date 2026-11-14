@@ -40,6 +40,11 @@ other than ssh's `git`, is refused; git's credential helper signs in instead.
 A team-harness URL is cloned in full into the ai-dlc cache. The installer finds a
 channel's pinned harness in git history, so a shallow clone would not work.
 
+After it installs a harness, the harness installer checks that each guard hook
+blocks, and fails if one may not. The install stops there. Remove the partial install
+with `--uninstall`, and install again once team-harness promotes a release whose
+guards block.
+
 ## Your own setup stays yours
 
 Your `settings.json`, skills and hooks are kept byte for byte. The harness
@@ -76,8 +81,10 @@ channel print the same line, so teammates can compare them.
 
 ## Windows
 
-The install and the doctor run under native Windows Python, and CI runs their
-tests on Windows. They start the harness installer with the same Python that runs
-ai-dlc, and Git for Windows runs the hook. The bootstrap script is for macOS and
-Linux; installing ai-dlc itself on Windows is open in
+The install and the doctor start the harness installer with the same Python that
+runs ai-dlc, and Git for Windows runs the hook. CI runs their tests on Windows with a
+stand-in installer only; the round trip with the real installer runs on Linux.
+
+Windows is not supported yet. The bootstrap script is for macOS and Linux;
+installing ai-dlc itself on Windows is open in
 [#172](https://github.com/Sean-Koval/ai-dlc/issues/172).
