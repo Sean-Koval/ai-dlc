@@ -1,9 +1,16 @@
 name: Front-page assets
 # The README and docs home page show recordings and screens that docs/assets/front/build.py
-# generates by running the real CLI. This job re-runs it and fails when a committed asset is
-# stale; regenerate with `uv run --locked --no-sync python docs/assets/front/build.py`.
+# generates by running the real CLI. PRs don't commit them (KAN-535): after each merge,
+# generated.yml rebuilds them on main and opens a bot/front-assets PR, so two PRs that change CLI
+# output never conflict on work.cast and work.svg.
+# - On a PR, this builds the assets, so a change that breaks the build fails here, and names the
+#   assets main will rebuild in a notice. It fails a PR that edits them by hand, unless the PR
+#   carries the generated-files label or is bot/front-assets.
+# - Started by hand or by generated.yml (workflow_dispatch), it fails when a committed asset
+#   differs from the build, as `build.py --check` does.
 on:
   pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
     paths:
       - "docs/assets/front/**"
       - "plugins/ai-dlc-workflow/**"
@@ -12,19 +19,40 @@ on:
       - "project-templates/**"
       - "docs/stylesheets/airframe.css"
       - ".github/workflows/assets.yml"
-  push:
-    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
 env:
   CLAUDE_CODE_VERSION: "2.1.302"   # keep equal to CLAUDE_CODE_VERSION in docs/assets/front/build.py
 jobs:
-  assets:
-    name: Front-page assets are current
+  committed:
+    name: Front-page assets are not edited in PRs
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2   # the PR's merge commit and the base it was made on
+          persist-credentials: false
+      - name: Refuse hand-edited recordings and screens
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+          LABELED: ${{ contains(github.event.pull_request.labels.*.name, 'generated-files') }}
+        run: |
+          edited="$(git diff --name-only HEAD^1 HEAD -- 'docs/assets/front/*.cast' 'docs/assets/front/*.svg')"
+          if [ -z "$edited" ] || [ "$HEAD_REF" = "bot/front-assets" ] || [ "$LABELED" = "true" ]; then exit 0; fi
+          echo "This PR commits front-page assets that main rebuilds after merge (KAN-535):"
+          echo "$edited"
+          echo "Restore them from the target branch (git checkout origin/main -- docs/assets/front),"
+          echo "or add the generated-files label when the commit is deliberate."
+          exit 1
+  assets:
+    name: Front-page assets build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Prepare checked-out implementation
         run: sh scripts/bootstrap.sh --source --target github-actions
       - uses: actions/setup-node@v4
@@ -32,7 +60,20 @@ jobs:
           node-version: "22"
       - name: Install the Claude Code CLI (plugin screen only; no login needed)
         run: npm install -g "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}"
-      - name: Check the generated assets
+      - name: Build the assets
         run: |
           uv sync --locked
-          uv run --locked --no-sync python docs/assets/front/build.py --check
+          uv run --locked --no-sync python docs/assets/front/build.py
+      - name: Compare them with the committed ones
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          stale="$(git status --porcelain -- docs/assets/front | cut -c4-)"
+          [ -n "$stale" ] || { echo "The committed front-page assets match the build."; exit 0; }
+          echo "$stale"
+          if [ "$EVENT" = "pull_request" ]; then
+            echo "::notice title=Front-page assets::main rebuilds these after merge: $(echo $stale)"
+            exit 0
+          fi
+          echo "These committed assets differ from the build."
+          exit 1

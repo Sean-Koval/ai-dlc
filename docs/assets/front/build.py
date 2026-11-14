@@ -26,8 +26,9 @@ an image cannot load the site's stylesheet. Output is shown as the CLI prints it
 in a window of ROWS lines that scrolls like a terminal.
 
 Everything is byte-reproducible for a given checkout: the demo runs in a fixed directory with
-fixed Git identities and dates, and machine paths are shown as ``~``. CI re-runs this and fails on
-a diff (.github/workflows/assets.yml).
+fixed Git identities and dates, and machine paths are shown as ``~``. PRs don't commit the output:
+.github/workflows/assets.yml builds it on a PR, and generated.yml rebuilds it on main after merge
+and opens a bot/front-assets PR (KAN-535).
 
     uv run --locked --no-sync python docs/assets/front/build.py [--check]
     uv run --locked --no-sync --with playwright==1.56.0 python docs/assets/front/build.py --clip

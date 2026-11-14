@@ -214,21 +214,22 @@ def _resolve(root: Path, revision: str) -> str:
 
 
 def inspect_targets(root: Path | str, *, base: str) -> dict:
-    """Required targets since the merge base, each with the content a decision must bind."""
+    """Required targets since the merge base, each with the content a decision must bind.
+
+    A decision binds its target page, its catalog entry and the mapped files this branch
+    changed (KAN-534). Mapped files the branch left alone are not bound, so a target-branch
+    merge that changes only them leaves the decision valid.
+    """
     root = Path(root).absolute()
     start = _git(root, "merge-base", _resolve(root, base), "HEAD").decode().strip()
     impact = inspect_impact(root, base=start)
-    tracked = set(_git(root, "ls-files", "--cached", "--others", "--exclude-standard", "-z")
-                  .decode().split("\0")) - {""}  # fmt: skip
-    tracked = {p for p in tracked if not p.startswith((EVIDENCE_PREFIX, WORK_PREFIX))}
     bound: dict[str, dict[str, str]] = {}
     for entry in read_catalog(root):
         if entry["path"] not in impact["documents"]:
             continue
-        patterns = [p for field in MAPPINGS for p in entry.get(field, [])]
-        paths = {entry["path"]} | {p for p in patterns if not any(c in p for c in "*?[")}
-        paths |= {p for p in tracked if any(fnmatch.fnmatchcase(p, pat) for pat in patterns)}
-        paths |= {p for p in impact["sources"] if any(fnmatch.fnmatchcase(p, x) for x in patterns)}
+        patterns = [entry["path"]] + [p for field in MAPPINGS for p in entry.get(field, [])]
+        paths = {entry["path"]}
+        paths |= {p for p in impact["changed"] if any(fnmatch.fnmatchcase(p, x) for x in patterns)}
         bound[entry["path"]] = {p: content_digest(root, p) for p in sorted(paths)}
         # The entry, not the catalog file: unrelated enrollments must not stale this decision.
         bound[entry["path"]]["catalog:" + entry["path"]] = digest(entry)
@@ -269,8 +270,17 @@ def _has_evidence(root: Path) -> bool:
     return folder.is_dir() and any(folder.glob("*.json"))
 
 
+def _covers(old: dict[str, str], current: dict[str, str]) -> bool:
+    """Whether a stored decision reviewed every path the target binds now, at its content now.
+
+    A decision recorded before part of the branch's change reached the target branch binds
+    more paths than the target does now; those extra paths do not make it stale.
+    """
+    return all(old.get(path) == value for path, value in current.items())
+
+
 def check_evidence(root: Path | str, *, base: str) -> dict:
-    """A target passes when any stored decision bound exactly the content present now."""
+    """A target passes when a stored decision bound the content each of its paths has now."""
     root = Path(root).absolute()
     try:
         required = inspect_targets(root, base=base)["bound"]
@@ -280,15 +290,12 @@ def check_evidence(root: Path | str, *, base: str) -> dict:
     missing, stale = [], []
     for target, current in sorted(required.items()):
         candidates = [d["bound"] for d in decisions if d["target"] == target]
-        if current in candidates:
+        if any(_covers(old, current) for old in candidates):
             continue
         if not candidates:
             missing.append(target)
             continue
-        differing = [
-            sorted(p for p in current.keys() | old.keys() if current.get(p) != old.get(p))
-            for old in candidates
-        ]
+        differing = [sorted(p for p in current if current[p] != old.get(p)) for old in candidates]
         stale.append({"target": target, "paths": min(differing, key=lambda d: (len(d), d))})
     return {
         "valid": not (missing or stale or errors),
@@ -324,13 +331,17 @@ def record_disposition(
     elsewhere = {
         d["target"]
         for d in stored
-        if d["file"] != relative and required.get(d["target"]) == d["bound"]
+        if d["file"] != relative
+        and d["target"] in required
+        and _covers(d["bound"], required[d["target"]])
     }
     supplied = {d["target"]: d for d in decisions}  # type: ignore[union-attr]
     kept = {
         d["target"]: d
         for d in previous
-        if d["target"] not in supplied and required.get(d["target"]) == d["bound"]
+        if d["target"] not in supplied
+        and d["target"] in required
+        and _covers(d["bound"], required[d["target"]])
     }
     outstanding = sorted(required.keys() - supplied.keys() - kept.keys() - elsewhere)
     if outstanding:
@@ -364,7 +375,11 @@ def prune_evidence(root: Path | str, *, base: str, apply: bool = False) -> dict:
     root = Path(root).absolute()
     required = inspect_targets(root, base=base)["bound"]
     decisions, _ = _stored_decisions(root)
-    live = {d["file"] for d in decisions if required.get(d["target"]) == d["bound"]}
+    live = {
+        d["file"]
+        for d in decisions
+        if d["target"] in required and _covers(d["bound"], required[d["target"]])
+    }
     inert = sorted({d["file"] for d in decisions} - live)
     if apply:
         for relative in inert:

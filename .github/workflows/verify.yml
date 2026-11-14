@@ -3,6 +3,7 @@ on:
   pull_request:
   push:
     branches: [main]
+  workflow_dispatch:   # generated.yml starts it on bot/front-assets, whose pushes start no workflows
 permissions:
   contents: read
 jobs:

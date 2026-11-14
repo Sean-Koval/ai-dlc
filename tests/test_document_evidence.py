@@ -91,21 +91,82 @@ def test_disjoint_branches_merge_in_either_order_without_recording_again(main, o
     assert gate(main, base=before)["valid"]
 
 
-def test_target_branch_changing_bound_content_is_stale_and_named(main):
+def test_target_branch_changing_mapped_content_the_branch_left_alone_keeps_it_valid(main):
     git(main, "switch", "-qc", "extra", "main")
     (main / "src/extra.py").write_text("EXTRA = True\n")
+    record(main, "extra", [API_DECISION])
+    commit(main, "extra")
+    git(main, "switch", "-q", "main")
+    (main / "src/api.py").write_text("VERSION = 2\n")
+    commit(main, "another pull request changes a mapped source")
+    git(main, "switch", "-q", "extra")
+    git(main, "merge", "-q", "--no-edit", "main")
+    assert gate(main) == {"valid": True, "missing": [], "stale": [], "errors": []}
+    bound = json.loads((main / ".ai-dlc/documentation/evidence/extra.json").read_text())
+    assert set(bound["decisions"][0]["bound"]) == {
+        "catalog:docs/api.md",
+        "docs/api.md",
+        "src/extra.py",
+    }
+
+
+def test_target_branch_changing_bound_content_is_stale_and_named(main):
+    (main / "src/api.py").write_text("VERSION = 1\n\n\n\nNAME = 'api'\n")
+    commit(main, "room for two changes")
+    git(main, "switch", "-qc", "extra", "main")
+    (main / "src/api.py").write_text("VERSION = 2\n\n\n\nNAME = 'api'\n")
     (main / "note.txt").write_text("note\n")
     record(main, "extra", [API_DECISION, no_impact("note.txt")])
     commit(main, "extra")
     git(main, "switch", "-q", "main")
-    (main / "src/api.py").write_text("VERSION = 2\n")
-    commit(main, "target changes a bound source")
+    (main / "src/api.py").write_text("VERSION = 1\n\n\n\nNAME = 'service'\n")
+    commit(main, "target changes a file the branch changed")
     git(main, "switch", "-q", "extra")
     git(main, "merge", "-q", "--no-edit", "main")
     report = gate(main)
     assert not report["valid"]
     assert report["missing"] == []
     assert report["stale"] == [{"target": "docs/api.md", "paths": ["src/api.py"]}]
+
+
+def test_target_branch_changing_the_target_page_is_stale(main):
+    git(main, "switch", "-qc", "extra", "main")
+    (main / "src/extra.py").write_text("EXTRA = True\n")
+    record(main, "extra", [API_DECISION])
+    commit(main, "extra")
+    git(main, "switch", "-q", "main")
+    (main / "docs/api.md").write_text("# API\n\nRewritten.\n")
+    commit(main, "another pull request rewrites the guide")
+    git(main, "switch", "-q", "extra")
+    git(main, "merge", "-q", "--no-edit", "main")
+    assert gate(main)["stale"] == [{"target": "docs/api.md", "paths": ["docs/api.md"]}]
+
+
+def test_new_mapped_change_after_recording_is_stale_and_named(main):
+    git(main, "switch", "-qc", "extra", "main")
+    (main / "src/extra.py").write_text("EXTRA = True\n")
+    record(main, "extra", [API_DECISION])
+    assert gate(main)["valid"]
+    (main / "src/more.py").write_text("MORE = True\n")
+    assert gate(main)["stale"] == [{"target": "docs/api.md", "paths": ["src/more.py"]}]
+
+
+def test_decision_covering_a_change_that_reached_the_target_first_stays_valid(main):
+    git(main, "switch", "-qc", "extra", "main")
+    (main / "src/api.py").write_text("VERSION = 2\n")
+    (main / "src/extra.py").write_text("EXTRA = True\n")
+    record(main, "extra", [API_DECISION])
+    commit(main, "extra")
+    git(main, "switch", "-q", "main")
+    (main / "src/api.py").write_text("VERSION = 2\n")
+    commit(main, "the same change lands through another pull request")
+    git(main, "switch", "-q", "extra")
+    git(main, "merge", "-q", "--no-edit", "main")
+    assert api().inspect_targets(main, base="main")["changed"] == ["src/extra.py"]
+    assert gate(main)["valid"]
+    kept = record(main, "extra", [])
+    assert kept["kept"] == ["docs/api.md"]
+    assert api().prune_evidence(main, base="main")["inert"] == []
 
 
 def test_changed_catalog_entry_stales_only_its_document(main):
