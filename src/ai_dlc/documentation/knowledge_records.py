@@ -21,6 +21,8 @@ A Source record carries work-copilot's source envelope in its frontmatter, with 
 markdown body as the envelope ``body``; :func:`envelope` returns that envelope.
 """
 
+import hashlib
+import json
 import re
 from collections.abc import Iterable
 from datetime import date as Day
@@ -41,7 +43,11 @@ from pydantic import (
 from ai_dlc.documentation.knowledge_notes import AUTHOR_PATTERN, Check, split
 
 FORMAT_VERSION = 1
-"""Version of the record format; knowledge repos pin it as ``[format] version``."""
+"""Version of the record format; knowledge repos pin it as ``[format] version``.
+
+Any schema change moves it: ``contracts/knowledge-record.versions.toml`` publishes the
+schema hash per version, and ``scripts/check_generated.py`` fails on drift (KAN-504).
+"""
 ENVELOPE_VERSION = 1
 """``schema_version`` of the work-copilot source envelope carried by Source records."""
 
@@ -391,6 +397,53 @@ def schema() -> dict:
     # OKF 5.2 also allows one bare verification mapping; Python wraps it in a list.
     published["properties"]["verified"]["anyOf"].insert(1, {"$ref": "#/$defs/Verification"})
     return published
+
+
+def schema_sha256(published: dict | None = None) -> str:
+    """SHA-256 of a record schema (default: this one) in canonical JSON.
+
+    ``contracts/knowledge-record.versions.toml`` publishes it per :data:`FORMAT_VERSION`,
+    so a vendored copy can be checked against the version it claims (KAN-504).
+    """
+    canonical = json.dumps(
+        schema() if published is None else published, sort_keys=True, separators=(",", ":")
+    )
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def version_errors(registry: dict) -> list[str]:
+    """Check the published versions name this schema under :data:`FORMAT_VERSION`.
+
+    Fails when the schema changed but the version did not move, so every pin names
+    the contract its data follows.
+    """
+    tables = registry.get("versions")
+    if not isinstance(tables, dict) or not tables:
+        return ["versions: publish at least one [versions.N] table"]
+    try:
+        published = {int(key): value for key, value in tables.items()}
+    except ValueError:
+        return ["versions: table names must be integers"]
+    found, current = [], schema_sha256()
+    if FORMAT_VERSION != max(published):
+        found.append(
+            f"FORMAT_VERSION {FORMAT_VERSION} is not the newest published {max(published)}"
+        )
+    for version, table in sorted(published.items()):
+        if version != FORMAT_VERSION and current in (
+            table.get("sha256"),
+            *table.get("superseded", ()),
+        ):
+            found.append(f"the schema matches published version {version}, not {FORMAT_VERSION}")
+    entry = published.get(FORMAT_VERSION, {})
+    if entry.get("sha256") != current:
+        found.append(
+            f"the record schema changed (sha256 {current}) but FORMAT_VERSION is still "
+            f"{FORMAT_VERSION}: bump it and add [versions.{FORMAT_VERSION + 1}] with that hash"
+            if entry
+            else f"versions.{FORMAT_VERSION}: publish sha256 = {current!r}"
+        )
+    return found
 
 
 def errors(data: dict) -> list[str]:

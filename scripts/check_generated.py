@@ -33,6 +33,15 @@ if json.loads((root / "contracts/knowledge-record.schema.json").read_text()) != 
     knowledge_record_schema()
 ):
     raise SystemExit("Generated schema is stale: knowledge-record.schema.json")
+import tomllib
+
+from ai_dlc.documentation.knowledge_records import version_errors
+
+drift = version_errors(
+    tomllib.loads((root / "contracts/knowledge-record.versions.toml").read_text())
+)
+if drift:
+    raise SystemExit("Record format version drift: " + "; ".join(drift))
 from ai_dlc.documentation.knowledge_stats import run_log_schema
 
 if json.loads((root / "contracts/capture-run.schema.json").read_text()) != run_log_schema():
