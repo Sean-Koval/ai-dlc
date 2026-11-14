@@ -310,7 +310,9 @@ def _register_knowledge_records_tools(server: FastMCP, root: Path, config: dict,
         text: str | None = None,
         project: str | None = None,
     ) -> dict:
-        """Find records through the knowledge role; ``text`` also reads bodies.
+        """Find records through the knowledge role, ranked; ``text`` also reads bodies.
+
+        Source records come back only when ``type`` is ``source``.
 
         Customer records come back only when ``project`` names their own project.
         """

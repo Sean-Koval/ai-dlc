@@ -1972,7 +1972,7 @@ RecordsProvider = Annotated[str | None, typer.Option("--provider")]
 def _records(root: Path, provider_id: str | None):
     from ai_dlc.documentation.knowledge_service import KnowledgeRecords
 
-    return KnowledgeRecords(root, config_for(root), provider=provider_id)
+    return KnowledgeRecords.at(root, config_for(root), provider=provider_id)
 
 
 @knowledge_records.command("get")
@@ -1994,11 +1994,23 @@ def knowledge_records_search(
     text: Annotated[str | None, typer.Option("--text")] = None,
     root: RecordsRoot = Path("."),
     provider_id: RecordsProvider = None,
+    json_output: Annotated[bool, typer.Option("--json", help="Full headers as JSON.")] = False,
 ):
-    """Find records by header; --text also reads bodies."""
+    """Find records by header, ranked; --text also reads bodies.
+
+    Prints one compact row per record; Source records only with --type source.
+    """
+    from ai_dlc.documentation.knowledge_service import search_lines
+
     with service_call():
         result = _records(root, provider_id).search(type, scope, label, status, text)
-    conclude(result)
+    if json_output:
+        conclude(result)
+        return
+    for line in search_lines(result):
+        typer.echo(line, err=not succeeded(result))
+    if not succeeded(result):
+        raise typer.Exit(1)
 
 
 @knowledge_records.command("changed")

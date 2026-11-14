@@ -13,6 +13,10 @@ It reads a records directory on disk and nothing else: no provider, no network
 (KAN-456), and ``retracted_by`` the way it derives retractions (KAN-479): a retracted
 record shows status ``retracted`` and the decisions that retract it. The CLI and the
 MCP tool both call :func:`why`.
+
+Names match in any case. A name that resolves to a Source record, such as a ticket
+key (``KAN-241``) or an ADR (``adr-0001``), answers with the decision derived from
+that Source, not the Source itself (KAN-494); ``resolved_from`` says so.
 """
 
 import difflib
@@ -30,6 +34,7 @@ from ai_dlc.documentation.knowledge_records import (
     payload_expires,
     retracted_by,
 )
+from ai_dlc.documentation.record_index import status_rank
 
 BODY_LIMIT = 1200
 """Most characters of the asked record's body; a longer body points at its file."""
@@ -78,7 +83,7 @@ def why(root: Path | str, id: str, project: str | None = None) -> dict[str, Any]
     if not folder.is_dir():
         raise ValueError(f"records directory not found: {root}")
     store = _Store(folder, project)
-    item = _get(store, folder, id, project)
+    item = _get(store, folder, id, project) or _ticket_source(store, id)
     if item is None:
         return {
             "status": "not_found",
@@ -86,10 +91,20 @@ def why(root: Path | str, id: str, project: str | None = None) -> dict[str, Any]
             "reason": f"no knowledge record has id or alias {id}",
             "suggestions": difflib.get_close_matches(id, sorted(store.names), n=3, cutoff=0.5),
         }
+    resolved_from = None
+    also_derived: list[dict[str, Any]] = []
+    if item.record.type == "source":
+        derived = _derived(store, item)
+        if derived:
+            resolved_from = {"name": id, **_link(store, item, "derived_from", "out")}
+            item = derived[0]
+            also_derived = [_link(store, other, "derived_from", "in") for other in derived[1:]]
     record: KnowledgeRecord = item.record
     body, truncated = _clip(item.body, BODY_LIMIT)
     return {
         "status": "ok",
+        "resolved_from": resolved_from,
+        "also_derived": also_derived,
         "record": {**_summary(store, item), "body": body, "truncated": truncated},
         "supersedes": _chain(store, item, older=True),
         "superseded_by": _chain(store, item, older=False),
@@ -102,21 +117,57 @@ def why(root: Path | str, id: str, project: str | None = None) -> dict[str, Any]
 
 
 def _get(store: _Store, folder: Path, id: str, project: str | None) -> Any:
-    """The record named ``id`` as the git provider's ``get(id, project)`` finds it.
+    """The record named ``id`` (any case) as the git provider's ``get(id, project)`` finds it.
 
     Customer records of other projects are left out before matching (``team_inputs``),
     so they are not found and no error names their paths.
     """
     entries, _invalid = record_index.scan(folder)
-    matches = [
-        entry
-        for entry in team_inputs(entries, project)
-        if id in (entry["record"].id, *(entry["record"].aliases or ()))
-    ]
+    matches = record_index.named(team_inputs(entries, project), id)
     if len(matches) > 1:
         paths = ", ".join(entry["path"] for entry in matches)
         raise ValueError(f"id or alias {id} is ambiguous: {paths}")
     return store.find(matches[0]["record"].id) if matches else None
+
+
+def _ticket_source(store: _Store, name: str) -> Any:
+    """The one Source whose URL or resource ends in the ticket key ``name``, any case."""
+    if not TICKET.match(name.upper()):
+        return None
+    tail = "/" + name.casefold()
+    found = [
+        item
+        for item in store.items
+        if item.record.type == "source"
+        and any(
+            place.rstrip("/").casefold().endswith(tail)
+            for place in (item.record.url or "", *(s.resource for s in item.record.sources))
+        )
+    ]
+    return found[0] if len(found) == 1 else None
+
+
+def _derived(store: _Store, source: Any) -> list[Any]:
+    """Records derived from ``source``: decisions first, then current, then newest."""
+    names = _names(source.record) | {source.relative}
+    found = [
+        item
+        for item in store.items
+        if item.record.type != "source"
+        and (
+            any(link.type == "derived_from" and link.target in names for link in item.record.links)
+            or any(ref.id in names or ref.resource in names for ref in item.record.sources)
+        )
+    ]
+    return sorted(
+        found,
+        key=lambda item: (
+            item.record.type != "decision",
+            status_rank(effective_status(item.record, store.retractions)),
+            -item.record.date.toordinal(),
+            item.record.id,
+        ),
+    )
 
 
 def _summary(store: _Store, item: Any) -> dict[str, Any]:
@@ -304,7 +355,11 @@ def lines(result: dict[str, Any]) -> list[str]:
         more = f"; did you mean {', '.join(hint)}?" if hint else ""
         return [f"knowledge why: {result['reason']}{more}"]
     record = result["record"]
-    out = [f"{record['id']}  {record['title'] or ''}".rstrip(), _facts(record)]
+    out = []
+    source = result.get("resolved_from")
+    if source:
+        out.append(f"({source['name']} is the source {source['id']}; the record derived from it:)")
+    out += [f"{record['id']}  {record['title'] or ''}".rstrip(), _facts(record)]
     out.append(f"file: {record['path']}")
     if record["description"]:
         out.append(record["description"])
@@ -337,6 +392,11 @@ def lines(result: dict[str, Any]) -> list[str]:
         arrow = f"{link['link']} -> {record['id']}" if link["direction"] == "in" else link["link"]
         title = f"  {link['title']}" if link["title"] else ""
         out.append(f"  {link['id']}  {link['type']}  ({arrow}){title}  [{', '.join(_by(link))}]")
+    if result.get("also_derived"):
+        out += ["", "Also derived from the same source:"]
+        for link in result["also_derived"]:
+            title = f"  {link['title']}" if link["title"] else ""
+            out.append(f"  {link['id']}  {link['type']}  {link['status']}{title}")
     if result["tickets"]:
         out += ["", "Tickets: " + ", ".join(result["tickets"])]
     out += ["", "Evidence:"]

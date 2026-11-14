@@ -96,18 +96,14 @@ class GitKnowledge:
         return root
 
     def get(self, id: str, project: str | None = None) -> dict:
-        """The record named ``id``; a customer record only for its own ``project``.
+        """The record named ``id``, in any case; a customer record only for its own ``project``.
 
         Customer records of other projects are left out before matching, so the
         answer is not-found and an error never names their paths (KAN-465).
         """
         root = self.repository_root()
         entries, _invalid = record_index.scan(root)
-        matches = [
-            entry
-            for entry in team_inputs(entries, project)
-            if id in (entry["record"].id, *(entry["record"].aliases or ()))
-        ]
+        matches = record_index.named(team_inputs(entries, project), id)
         if not matches:
             raise LookupError(f"no knowledge record has id or alias {id}")
         if len(matches) > 1:

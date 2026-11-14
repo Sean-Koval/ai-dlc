@@ -487,9 +487,13 @@ def test_cli_reads_and_proposes_through_the_shared_service(store, tmp_path, monk
     missing = runner.invoke(app, ["knowledge", "records", "get", "nope", "--root", str(root)])
     assert missing.exit_code == 1
     found = runner.invoke(
-        app, ["knowledge", "records", "search", "--type", "action", "--root", str(root)]
+        app, ["knowledge", "records", "search", "--type", "action", "--root", str(root), "--json"]
     )
     assert [i["id"] for i in json.loads(found.output)["items"]] == ["share-release-notes"]
+    rows = runner.invoke(
+        app, ["knowledge", "records", "search", "--type", "action", "--root", str(root)]
+    )
+    assert rows.output.startswith("share-release-notes  action  ")
 
     draft = tmp_path / "ship.md"
     draft.write_text(record())
