@@ -82,8 +82,8 @@
         "src/ai_dlc/documentation/fde.py": "3664430ebca9f3ef7ba7c7c431f7e4790176066510904ebe4d43d0a88ecf26e1",
         "src/ai_dlc/documentation/knowledge.py": "ec96182b6eb15a396dbcb62235de1ea9c218844132153bd9e0297717839c52b4",
         "src/ai_dlc/documentation/knowledge_bundle.py": "09877adb2eef5eaa8955828afd5161ee83ef2f07fde99e73f17a71cbacf38428",
-        "src/ai_dlc/documentation/knowledge_check.py": "fc3f6896bf6127a4d6d5848225bbb85fc1b28f99c7089cb4d6e69aeff33203ab",
-        "src/ai_dlc/documentation/knowledge_customer.py": "f95a66033a2679aa9ad380bcc39c5e655b699e5066ba31b14114873c0b71773d",
+        "src/ai_dlc/documentation/knowledge_check.py": "0602f496328c3a6020c16a66abc1d3d49b858246b980d5c1cfa5a5f38f39e5cd",
+        "src/ai_dlc/documentation/knowledge_customer.py": "71695eef2c35e3d57c40b5e7adcee8660718641f4074f92c6d6d5cd0b37fe160",
         "src/ai_dlc/documentation/knowledge_migrate.py": "d175c93f3bb4ec677cbf5c9c87af6a0fff1c125b52fa6c2c7f9ebb5d7ed44c38",
         "src/ai_dlc/documentation/knowledge_notes.py": "543b6fb0fa395321c55cb616c29d2f4a2bb218aca5576a3b8993353fb16e840d",
         "src/ai_dlc/documentation/knowledge_publish.py": "f0c5a34ac2793c4abea951e8404f4cf4e4e64886afc2492c46d36632dfc52619",
@@ -91,7 +91,7 @@
         "src/ai_dlc/documentation/knowledge_render.py": "222aaf70d097b8403588788e0f7ce6c4ac92288a8a407d2d4baaa998a9fa76e2",
         "src/ai_dlc/documentation/knowledge_service.py": "6ba666644132c1bcce2c99524cf49c02e424699c0625c5cd5b4b39e3979da928",
         "src/ai_dlc/documentation/knowledge_stats.py": "60d16fe6a9bc77804d9cf4ec2c99aae3bf06c35b29e53558aca94eb139cb9112",
-        "src/ai_dlc/documentation/knowledge_transcripts.py": "ae72fe48fce8ef3c89bd99fd39641655ce8360727c97b83b92d9ee7bf3f665a3",
+        "src/ai_dlc/documentation/knowledge_transcripts.py": "cf099883c1dd0aa41dee2969a3542602ac311d3603a0442b3f7826a60cfeb9c5",
         "src/ai_dlc/documentation/knowledge_why.py": "c56d48203046bea0448da60348f1f574381317656a53f7e5eb3b95507022fc76",
         "src/ai_dlc/documentation/knowledge_workspace.py": "aa72f04fb8ce0a939ca06e9a650ce666fd23b459094c6253584d51775a73243a",
         "src/ai_dlc/documentation/learnings.py": "5a11c64592e1c7b93bfa3543339ea0766f42050a7843bb8354cd56166b0f3ae6",
@@ -188,7 +188,7 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Bug fix inside knowledge numbering and the accepted-decision check; package map and entry points are unchanged.",
+      "reason": "Re-reviewed after merging main (KAN-503 knowledge-check, customer and transcript fail-closed fixes, which recorded no change here): KAN-520 is still a bug fix inside knowledge numbering; package map and entry points are unchanged.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
@@ -203,7 +203,7 @@
         "openspec/specs/session-learnings/spec.md": "6320178e67f7957b25c11850773a631258bc13e5812cbcdb88c126434ba3aaf4",
         "src/ai_dlc/documentation/knowledge.py": "ec96182b6eb15a396dbcb62235de1ea9c218844132153bd9e0297717839c52b4",
         "src/ai_dlc/documentation/knowledge_bundle.py": "09877adb2eef5eaa8955828afd5161ee83ef2f07fde99e73f17a71cbacf38428",
-        "src/ai_dlc/documentation/knowledge_check.py": "fc3f6896bf6127a4d6d5848225bbb85fc1b28f99c7089cb4d6e69aeff33203ab",
+        "src/ai_dlc/documentation/knowledge_check.py": "0602f496328c3a6020c16a66abc1d3d49b858246b980d5c1cfa5a5f38f39e5cd",
         "src/ai_dlc/documentation/knowledge_notes.py": "543b6fb0fa395321c55cb616c29d2f4a2bb218aca5576a3b8993353fb16e840d",
         "src/ai_dlc/documentation/knowledge_records.py": "8b1d3c83c2ace754e5ef2de8aa53f06edd76fdbbacfa1d47a28df1ba788449e1",
         "src/ai_dlc/documentation/knowledge_render.py": "222aaf70d097b8403588788e0f7ce6c4ac92288a8a407d2d4baaa998a9fa76e2",
@@ -215,7 +215,7 @@
         "src/ai_dlc/providers/confluence_cloud.py": "d7f7c890569142753e8f97f7dec7dea08ac61c5fd897d691c7ccfbf44a6b13ef",
         "tests/test_knowledge.py": "38e5cda9c9dc1fe97d12618a0bd9a86b2725cff059d412232152582af1547af1",
         "tests/test_knowledge_bundle.py": "d2e6378003848106ffd9581f6028f8011f4cc204c60f81a0d01827941ac4ac27",
-        "tests/test_knowledge_check.py": "1417d92a373d989484da457483b3413b85e5d465616a21b53679876c53b06d49",
+        "tests/test_knowledge_check.py": "edc4f01b2f86ebd4671344a052d8c9253559d3792faa84479df68c6306c55cf1",
         "tests/test_knowledge_notes.py": "9d0aee8e40b2d5886c747c0f48d3017421348c8f86dd45684fc6f833064d32c6",
         "tests/test_knowledge_records.py": "4853dcdea3536b885f6713001d11c69026e7a279cc4086f820a3a986592f0d89",
         "tests/test_knowledge_render.py": "da9e5dc3642854611a032e604222462117bff89b976963c0864f8458082bf082",
@@ -225,7 +225,7 @@
         "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
       },
       "outcome": "reviewed-no-change",
-      "reason": "The design does not describe numbering's rewrite rules; the fix makes numbering keep the documented check passing. Changelog fragment changes/KAN-520.fixed.md records it.",
+      "reason": "Re-reviewed after merging main (KAN-503 knowledge-check, customer and transcript fail-closed fixes, which recorded no change here): the design still does not describe numbering's rewrite rules, and the documented check still passes.",
       "reviewer": "Claude (agent)",
       "target": "docs/design/local-and-shared-knowledge.md"
     }
