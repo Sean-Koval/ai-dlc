@@ -1,0 +1,28 @@
+{
+  "additionalProperties": true,
+  "properties": {
+    "id": {
+      "minLength": 1,
+      "title": "Id",
+      "type": "string"
+    },
+    "state": {
+      "description": "Normalized state: open, in_progress, in_review, needs_decision, closed, cancelled or unknown.",
+      "minLength": 1,
+      "title": "State",
+      "type": "string"
+    },
+    "url": {
+      "minLength": 1,
+      "title": "Url",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "url",
+    "state"
+  ],
+  "title": "Item",
+  "type": "object"
+}

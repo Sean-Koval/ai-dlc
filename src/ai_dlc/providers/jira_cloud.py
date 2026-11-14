@@ -31,6 +31,10 @@ TRANSITION_STATES = ("in_progress", "in_review", "needs_decision", "closed")
 # Normalized states a transition may start from; terminal and unknown states never move.
 MOVABLE_STATES = ("open", "in_progress", "in_review", "needs_decision")
 RESERVED = {"project", "issuetype", "summary", "description", "properties", "ai-dlc"}
+# The fields a Decision carries (KAN-518): each names the custom field ID that holds it.
+DECISION_FIELDS = ("options", "recommendation", "default", "scope", "due")
+# The keys of a decide payload that are a create payload's too.
+CREATE_KEYS = ("title", "body", "labels", "correlation", "operation_id", "parent")
 
 
 class JiraRefusal(RefusedError):
@@ -94,6 +98,34 @@ def cloud_settings(config, *, selected=True):
         for value in extra_types:
             identity(value, "issue type ID", numeric=True)
         config["issue_type_ids"] = list(dict.fromkeys([config["issue_type_id"], *extra_types]))
+        decision = config.get("decision")
+        if decision is not None:
+            # Optional: the work type, fields and link a Decision is filed with (decide).
+            if not isinstance(decision, dict) or set(decision) - {
+                "issue_type_id",
+                "link_type",
+                "fields",
+            }:
+                raise JiraRefusal("Jira decision settings support issue_type_id, link_type, fields")
+            identity(decision.get("issue_type_id"), "decision issue type ID", numeric=True)
+            decision.setdefault("link_type", "Blocks")
+            identity(decision["link_type"], "decision link type")
+            names = decision.get("fields")
+            if (
+                not isinstance(names, dict)
+                or set(names) != set(DECISION_FIELDS)
+                or not all(
+                    isinstance(value, str) and re.fullmatch(r"customfield_[0-9]+", value)
+                    for value in names.values()
+                )
+                or len(set(names.values())) != len(names)
+            ):
+                raise JiraRefusal(
+                    "Jira decision fields map options, recommendation, default, scope and due "
+                    "to distinct custom field IDs"
+                )
+            config["issue_type_ids"].append(decision["issue_type_id"])
+            config["issue_type_ids"] = list(dict.fromkeys(config["issue_type_ids"]))
         if not re.fullmatch(r"[A-Z][A-Z0-9_]*", str(config.get("project_key", ""))):
             raise JiraRefusal("Jira requires the reviewed project key")
         statuses = config.get("statuses", {})
@@ -239,6 +271,10 @@ def validate_fields(metadata, values):
                 return type(item) is int
             if kind == "boolean":
                 return type(item) is bool
+            if kind == "date":
+                return isinstance(item, str) and bool(
+                    re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", item)
+                )
             if kind in {
                 "project",
                 "issuetype",
@@ -310,7 +346,7 @@ class JiraCloudProvider:
         if self.owned_client:
             self.client.close()
 
-    def request(self, method, path, *, params=None, body=None, missing_property=False):
+    def request(self, method, path, *, params=None, body=None, missing_property=False, empty=False):
         self.requests_used += 1
         if self.requests_used > MAX_REQUESTS:
             raise JiraUncertain("Jira complete operation request budget exhausted")
@@ -334,7 +370,7 @@ class JiraCloudProvider:
             raise JiraUncertain(
                 f"Jira request refused (HTTP {response.status_code}); verify permissions and reviewed fields"
             )
-        if response.status_code == 204:
+        if response.status_code == 204 or empty and not response.content:
             return None
         if len(response.content) > MAX_BYTES:
             raise JiraUncertain("Jira response exceeds complete-response budget")
@@ -405,7 +441,7 @@ class JiraCloudProvider:
                 raise JiraUncertain("Jira discovery pagination is incomplete")
         raise JiraUncertain("Jira discovery pagination budget exhausted; results incomplete")
 
-    def metadata(self):
+    def metadata(self, issue_type_id=None):
         project = self.request("GET", "project/" + self.config["project_id"])
         if (
             not isinstance(project, dict)
@@ -414,15 +450,12 @@ class JiraCloudProvider:
         ):
             raise JiraRefusal("Jira project identity mismatch")
         path = "issue/createmeta/" + self.config["project_id"] + "/issuetypes"
+        selected = issue_type_id or self.config["issue_type_id"]
         types = self.pages(path, "issueTypes")
-        matches = [
-            row
-            for row in types
-            if row["id"] == self.config["issue_type_id"] and row.get("subtask") is False
-        ]
+        matches = [row for row in types if row["id"] == selected and row.get("subtask") is False]
         if len(matches) != 1:
             raise JiraRefusal("Jira selected standard issue type is unavailable")
-        rows = self.pages(path + "/" + self.config["issue_type_id"], "fields", id_key="fieldId")
+        rows = self.pages(path + "/" + selected, "fields", id_key="fieldId")
         return {row["fieldId"]: row for row in rows}
 
     def reference(self, reference):
@@ -614,20 +647,67 @@ class JiraCloudProvider:
             tokens.add(token)
         raise JiraUncertain("Jira correlation search page budget exhausted; incomplete")
 
+    def plain_fields(self, metadata, values):
+        """Jira values for plain custom field values: ADF text, option IDs, dates."""
+        result = {}
+        for key, value in values.items():
+            if not re.fullmatch(r"customfield_[0-9]+", key) or key not in metadata:
+                raise JiraRefusal(f"Jira field is not a custom field of this work type: {key}")
+            meta = metadata[key]
+            if str(meta.get("schema", {}).get("custom", "")).endswith(":textarea"):
+                lines = value if isinstance(value, list) else [str(value)]
+                result[key] = adf([str(line) for line in lines])
+            elif "allowedValues" in meta and isinstance(value, str):
+                allowed = meta["allowedValues"] if isinstance(meta["allowedValues"], list) else []
+                chosen = [
+                    row
+                    for row in allowed
+                    if isinstance(row, dict)
+                    and str(row.get("value", "")).casefold() == value.casefold()
+                ]
+                if len(chosen) != 1:
+                    raise JiraRefusal(f"Jira field value is not one of its allowed values: {key}")
+                result[key] = {"id": identity(chosen[0].get("id"), "option ID")}
+            else:
+                result[key] = value
+        return result
+
     def create(self, payload):
+        issue_type_id = payload.get("issue_type") or self.config["issue_type_id"]
+        if issue_type_id not in self.config["issue_type_ids"]:
+            raise JiraRefusal("Jira work type is not one of the configured issue_type_ids")
+        links = [(link["type"], self.read(link["target"])) for link in payload.get("links") or []]
+        parent = self.read(payload["parent"]) if payload.get("parent") else None
         existing = self.find(payload["correlation"])["items"]
         if existing:
-            return existing[0]
+            item = existing[0]
+        else:
+            item = self.file(payload, issue_type_id, parent)
+        for link_type, target in links:
+            self.issue_link(item["id"], target["id"], link_type)
+        return item
+
+    def file(self, payload, issue_type_id, parent):
+        # create_fields are reviewed for the configured type only.
+        typed = issue_type_id != self.config["issue_type_id"]
+        defaults = {} if typed else self.config.get("create_fields", {})
         fields = {
-            **self.config.get("create_fields", {}),
+            **defaults,
             "project": {"id": self.config["project_id"]},
-            "issuetype": {"id": self.config["issue_type_id"]},
+            "issuetype": {"id": issue_type_id},
             "summary": payload["title"],
             "description": adf([payload.get("body", ""), payload["correlation"]]),
         }
         if payload.get("labels"):
             fields["labels"] = list(dict.fromkeys([*fields.get("labels", []), *payload["labels"]]))
-        validate_fields(self.metadata(), fields)
+        metadata = self.metadata(issue_type_id)
+        fields.update(self.plain_fields(metadata, payload.get("fields") or {}))
+        validate_fields(metadata, fields)
+        if parent is not None:
+            # The parent field's schema is not a plain value; it is checked for presence only.
+            if "parent" not in metadata:
+                raise JiraRefusal("Jira work type has no parent field")
+            fields["parent"] = {"id": parent["id"]}
         prop = {
             "schema": 1,
             **self.scope(),
@@ -647,6 +727,69 @@ class JiraCloudProvider:
         if row["properties"]["ai-dlc"] != prop or row.get("id") != issue_id:
             raise JiraRefusal("Jira create read-back identity mismatch; outcome uncertain")
         return self.item(row)
+
+    def decide(self, payload):
+        """File a Decision with its fields and a link blocking the work item (``create``)."""
+        settings = self.config.get("decision")
+        if not settings:
+            raise JiraRefusal("Jira decision settings are not configured; decide is unavailable")
+        work = self.read(payload["blocks"])
+        if work["state"] not in MOVABLE_STATES:
+            raise JiraRefusal("A Decision blocks open work only")
+        names = settings["fields"]
+        options = [f"{number}. {option}" for number, option in enumerate(payload["options"], 1)]
+        typed = {
+            **{key: payload[key] for key in CREATE_KEYS if key in payload},
+            "issue_type": settings["issue_type_id"],
+            "fields": {
+                names["options"]: options,
+                names["recommendation"]: payload["recommendation"],
+                names["default"]: payload["default"],
+                names["scope"]: payload["scope"],
+                names["due"]: payload["due"],
+            },
+            "links": [{"type": settings["link_type"], "target": payload["blocks"]}],
+        }
+        return {**self.create(typed), "blocks": work["url"]}
+
+    def issue_link(self, source_id, target_id, link_type):
+        def linked():
+            row = self.request("GET", "issue/" + source_id, params={"fields": "issuelinks"})
+            rows = row.get("fields", {}).get("issuelinks") if isinstance(row, dict) else None
+            if not isinstance(rows, list) or len(rows) > MAX_ROWS:
+                raise JiraUncertain("Jira issue link read-back is incomplete")
+            return any(
+                isinstance(link, dict)
+                and isinstance(link.get("type"), dict)
+                and link["type"].get("name") == link_type
+                and isinstance(link.get("outwardIssue"), dict)
+                and link["outwardIssue"].get("id") == target_id
+                for link in rows
+            )
+
+        if linked():
+            return
+        try:
+            # On create, outwardIssue is the link's source (the one that blocks) and inwardIssue
+            # its target; read from the source, the target shows as outwardIssue.
+            self.request(
+                "POST",
+                "issueLink",
+                body={
+                    "type": {"name": link_type},
+                    "outwardIssue": {"id": source_id},
+                    "inwardIssue": {"id": target_id},
+                },
+                empty=True,  # Jira answers 201 with no body
+            )
+        except RuntimeError:
+            if linked():
+                return
+            raise
+        if not linked():
+            raise JiraUncertain(
+                "Jira did not confirm the issue link; inspect the work item's links"
+            )
 
     def update(self, payload):
         """Set the summary, description or labels of an open issue, then read it back."""
@@ -870,11 +1013,13 @@ class JiraCloudProvider:
             result = {
                 "schema": 1,
                 "lifecycle": {"in_progress": True, "closed": True},
-                "optional_operations": ["comment", "link", "query", "update"],
+                "optional_operations": ["comment", "create_typed", "link", "query", "update"]
+                + (["decide"] if self.config.get("decision") else []),
             }
         else:
             if operation not in {
                 "create",
+                "decide",
                 "find",
                 "read",
                 "transition",

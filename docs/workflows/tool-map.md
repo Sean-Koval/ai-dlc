@@ -92,7 +92,7 @@ unsupported Plane adapter.
 
 MCP serves the work, knowledge, tracker, doctor, project-document and workspace tools.
 Their names join CLI words with underscores: `work_pr` is `ai-dlc work pr`.
-`tracker_create` and `tracker_update` refuse `exec:agent`.
+Every `tracker_*` write refuses `exec:agent`.
 
 ## Command and service map
 

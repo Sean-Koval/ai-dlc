@@ -361,6 +361,8 @@ def _register_knowledge_records_tools(server: FastMCP, root: Path, config: dict,
 
 
 def _register_tracker_tools(server: FastMCP, root: Path, config: dict, registry) -> None:
+    from ai_dlc.work.tracker_items import CustomField, ItemLink
+
     def tracker():
         from ai_dlc.work.tracker_items import TrackerItems
 
@@ -388,13 +390,65 @@ def _register_tracker_tools(server: FastMCP, root: Path, config: dict, registry)
 
     @server.tool()
     def tracker_create(
-        title: str, body: str = "", labels: list[str] | None = None, correlation: str | None = None
+        title: str,
+        body: str = "",
+        labels: list[str] | None = None,
+        correlation: str | None = None,
+        issue_type: str | None = None,
+        fields: list[CustomField] | None = None,
+        parent: str | None = None,
+        links: list[ItemLink] | None = None,
     ) -> dict:
         """File a tracker item once through the tracker role; refuses exec:agent in any case.
 
         A repeat with the same correlation (default: title and body) returns the first item.
+        Where the tracker offers it: ``issue_type`` (native type ID), ``fields`` (each a
+        custom field ID and text, a number, YYYY-MM-DD or an option's name), ``parent`` and
+        ``links`` (``{"type": "Blocks", "target": "KAN-1"}``: the new item blocks KAN-1).
         """
-        return tracker().create(title, body, labels, correlation)
+        values = {item["field"]: item["value"] for item in fields or []}
+        return tracker().create(
+            title,
+            body,
+            labels,
+            correlation,
+            issue_type,
+            values,
+            parent,
+            [dict(link) for link in links or []],
+        )
+
+    @server.tool()
+    def tracker_create_decision(
+        question: str,
+        blocks: str,
+        options: list[str],
+        recommendation: str,
+        default: str,
+        scope: str,
+        due: str,
+        body: str = "",
+        labels: list[str] | None = None,
+        parent: str | None = None,
+    ) -> dict:
+        """File a decision for a person that blocks one open work item; refuses exec:agent.
+
+        ``question`` ends in ?; two to five ``options``; ``default`` applies if nobody
+        answers by ``due`` (YYYY-MM-DD); ``scope`` is one of the tracker's scope values.
+        A repeat for the same question and work item returns the first decision.
+        """
+        return tracker().create_decision(
+            question,
+            blocks,
+            options,
+            recommendation,
+            default,
+            scope,
+            due,
+            body,
+            labels,
+            parent=parent,
+        )
 
     @server.tool()
     def tracker_update(

@@ -27,6 +27,53 @@ PAYLOAD = {
 }
 
 
+DECISION_SETTINGS = {
+    "issue_type_id": "45",
+    "fields": {
+        "options": "customfield_10100",
+        "recommendation": "customfield_10101",
+        "default": "customfield_10102",
+        "scope": "customfield_10104",
+        "due": "customfield_10106",
+    },
+}
+
+
+def textarea(key, required=True):
+    return {
+        **field(key, "string", required),
+        "schema": {
+            "type": "string",
+            "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+        },
+    }
+
+
+def decision_fields():
+    """The create fields of a Decision work type, as KAN has them."""
+    return [
+        field("project", "project", True),
+        field("issuetype", "issuetype", True),
+        field("summary", required=True),
+        field("description"),
+        labels_field(),
+        textarea("customfield_10100"),
+        textarea("customfield_10101"),
+        textarea("customfield_10102"),
+        field(
+            "customfield_10104",
+            "option",
+            True,
+            allowedValues=[
+                {"id": "10200", "value": "Ticket"},
+                {"id": "10201", "value": "Project"},
+                {"id": "10202", "value": "Suite"},
+            ],
+        ),
+        field("customfield_10106", "date", True),
+    ]
+
+
 def labels_field():
     return {**field("labels", "array"), "schema": {"type": "array", "items": "string"}}
 
@@ -55,6 +102,8 @@ class Jira:
         self.lost_create = False
         self.hidden = False
         self.search_override = None
+        self.decision_fields = None  # set to decision_fields() to offer the Decision type
+        self.reverse_links = False  # a site that stores a link the other way round
         self.fields = [
             field("project", "project", True),
             field("issuetype", "issuetype", True),
@@ -99,7 +148,23 @@ class Jira:
         elif path == "resolution":
             data = [{"id": "1000", "name": "Done"}, {"id": "2000", "name": "Won't do"}]
         elif path == "issue/createmeta/100/issuetypes":
-            data = self.page([{"id": "10", "name": "Task", "subtask": False}], "issueTypes")
+            types = [{"id": "10", "name": "Task", "subtask": False}]
+            if self.decision_fields is not None:
+                types.append({"id": "45", "name": "Decision", "subtask": False})
+            data = self.page(types, "issueTypes")
+        elif path == "issue/createmeta/100/issuetypes/45" and self.decision_fields is not None:
+            data = self.page(self.decision_fields, "fields")
+        elif path == "issueLink" and request.method == "POST":
+            # Jira's create semantics: outwardIssue blocks inwardIssue. Read from the blocker,
+            # the link shows the blocked issue as its outwardIssue.
+            blocker, blocked = body["outwardIssue"]["id"], body["inwardIssue"]["id"]
+            if self.reverse_links:
+                blocker, blocked = blocked, blocker
+            row = next(i for i in self.issues if i["id"] == blocker)
+            row["fields"].setdefault("issuelinks", []).append(
+                {"type": body["type"], "outwardIssue": {"id": blocked}}
+            )
+            return httpx.Response(201)
         elif path == "issue/createmeta/100/issuetypes/10":
             data = self.page(self.fields, "fields")
         elif path == "search/jql":
@@ -116,7 +181,11 @@ class Jira:
                 "properties": {p["key"]: p["value"] for p in body["properties"]},
             }
             row["fields"].update(
-                {"status": {"id": "1", "statusCategory": {"key": "new"}}, "resolution": None}
+                {
+                    "status": {"id": "1", "statusCategory": {"key": "new"}},
+                    "resolution": None,
+                    "issuelinks": [],
+                }
             )
             self.issues.append(row)
             if self.lost_create:

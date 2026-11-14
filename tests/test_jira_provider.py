@@ -328,7 +328,7 @@ def test_declared_builtin_capabilities_cross_executable_boundary_without_network
     assert registry.invoke("tickets", "capabilities", {}) == {
         "schema": 1,
         "lifecycle": {"in_progress": True, "closed": True},
-        "optional_operations": ["comment", "link", "query", "update"],
+        "optional_operations": ["comment", "create_typed", "link", "query", "update"],
     }
 
 
@@ -731,3 +731,140 @@ def test_comment_posts_plain_paragraphs_once(jira):
     assert len(comments) == 1
     texts = [part["content"][0]["text"] for part in comments[0]["body"]["content"]]
     assert texts == ["First line", "Second"]
+
+
+# Decisions (KAN-518): file one with its fields and link it as blocking the work.
+
+
+def decision_site(jira):
+    from fixtures.jira import DECISION_SETTINGS, decision_fields
+
+    jira.fields.append(labels_field())
+    jira.decision_fields = decision_fields()
+    jira.config["decision"] = copy.deepcopy(DECISION_SETTINGS)
+    jira.provider().invoke("create", PAYLOAD)  # the work item, WORK-1 (id 101)
+    return jira
+
+
+DECIDE = {
+    "title": "Which store holds the index?",
+    "body": "Context",
+    "correlation": "<!-- ai-dlc:decision:x -->",
+    "operation_id": "decide-1",
+    "labels": ["decision", "exec:human"],
+    "blocks": "WORK-1",
+    "options": ["Git", "SQLite"],
+    "recommendation": "Git, reviewed with the records.",
+    "default": "Git.",
+    "scope": "project",
+    "due": "2026-11-20",
+}
+
+
+def test_decide_files_a_decision_with_its_fields_and_one_blocking_link(jira):
+    decision_site(jira)
+
+    first = jira.provider().invoke("decide", DECIDE)
+    second = jira.provider().invoke("decide", DECIDE)
+
+    assert first["id"] == second["id"] == "102"
+    assert first["blocks"] == "https://work.atlassian.net/browse/WORK-1"
+    fields = jira.issues[1]["fields"]
+    assert fields["issuetype"] == {"id": "45"}
+    assert fields["customfield_10104"] == {"id": "10201"}
+    assert fields["customfield_10106"] == "2026-11-20"
+    options = fields["customfield_10100"]["content"]
+    assert [p["content"][0]["text"] for p in options] == ["1. Git", "2. SQLite"]
+    assert fields["issuelinks"] == [{"type": {"name": "Blocks"}, "outwardIssue": {"id": "101"}}]
+    assert len(jira.writes("/issueLink")) == 1
+    assert "decide" in jira.provider().invoke("capabilities", {})["optional_operations"]
+
+
+def test_decide_is_unavailable_without_decision_settings(jira):
+    jira.provider().invoke("create", PAYLOAD)
+
+    assert "decide" not in jira.provider().invoke("capabilities", {})["optional_operations"]
+    with pytest.raises(ValueError, match="decision settings"):
+        jira.provider().invoke("decide", DECIDE)
+    assert len(jira.writes()) == 1
+
+
+def test_decide_refuses_a_scope_the_field_does_not_allow(jira):
+    decision_site(jira)
+
+    with pytest.raises(ValueError, match="allowed values"):
+        jira.provider().invoke("decide", {**DECIDE, "scope": "Galaxy"})
+    assert len(jira.issues) == 1
+
+
+def test_decide_refuses_work_that_is_already_closed(jira):
+    decision_site(jira)
+    jira.issues[0]["fields"].update(
+        status={"id": "3", "statusCategory": {"key": "done"}}, resolution={"id": "1000"}
+    )
+
+    with pytest.raises(ValueError, match="open work"):
+        jira.provider().invoke("decide", DECIDE)
+    assert len(jira.issues) == 1
+
+
+def test_decide_reports_uncertain_when_the_link_does_not_read_back(jira):
+    decision_site(jira)
+    jira.reverse_links = True
+
+    with pytest.raises(RuntimeError, match="issue link"):
+        jira.provider().invoke("decide", DECIDE)
+
+
+@pytest.mark.parametrize(
+    "settings",
+    [
+        {"issue_type_id": "45", "fields": {"options": "customfield_1"}},
+        {"issue_type_id": "Decision", "fields": {}},
+        {"issue_type_id": "45", "fields": {}, "extra": 1},
+    ],
+)
+def test_decision_settings_are_checked(jira, settings):
+    jira.config["decision"] = settings
+
+    with pytest.raises(ValueError):
+        jira.provider()
+
+
+def test_create_with_a_type_fields_parent_and_a_link(jira):
+    decision_site(jira)
+    jira.decision_fields.append(field("parent", "issuelink"))
+    payload = {
+        **PAYLOAD,
+        "correlation": "<!-- typed -->",
+        "issue_type": "45",
+        "fields": {
+            "customfield_10100": ["A", "B"],
+            "customfield_10101": "A",
+            "customfield_10102": "A",
+            "customfield_10104": "Suite",
+            "customfield_10106": "2026-12-01",
+        },
+        "parent": "WORK-1",
+        "links": [{"type": "Blocks", "target": "WORK-1"}],
+    }
+
+    result = jira.provider().invoke("create", payload)
+
+    fields = jira.issues[1]["fields"]
+    assert result["id"] == "102" and fields["parent"] == {"id": "101"}
+    assert fields["customfield_10104"] == {"id": "10202"}
+    assert fields["issuelinks"] == [{"type": {"name": "Blocks"}, "outwardIssue": {"id": "101"}}]
+    assert "create_typed" in jira.provider().invoke("capabilities", {})["optional_operations"]
+
+
+def test_create_refuses_an_unconfigured_type_or_a_system_field(jira):
+    decision_site(jira)
+
+    with pytest.raises(ValueError, match="issue_type_ids"):
+        jira.provider().invoke("create", {**PAYLOAD, "issue_type": "99"})
+    with pytest.raises(ValueError, match="custom field"):
+        jira.provider().invoke(
+            "create", {**PAYLOAD, "correlation": "c2", "fields": {"summary": "x"}}
+        )
+    assert len(jira.issues) == 1

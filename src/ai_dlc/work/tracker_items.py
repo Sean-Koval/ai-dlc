@@ -3,7 +3,8 @@
 Each call resolves the provider selected for ``roles.tracker`` and goes through
 :meth:`ai_dlc.providers.Registry.invoke`, so requests and results are validated
 against the provider contract. There is no transition here: lifecycle moves stay
-with the work service and its gates.
+with the work service and its gates. A decision is filed with its blocking link in one
+call (``create_decision``); the tracker's own automation moves the blocked work.
 
 A session may file, edit, search and comment on tickets, but never queue one for an
 agent: a label that starts a hangar job (``exec:agent``, or the older ``lane:agent``)
@@ -18,7 +19,9 @@ import re
 import unicodedata
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Any
+from typing import Any, TypedDict
+
+from pydantic import ValidationError
 
 from ai_dlc.errors import RefusedError
 
@@ -66,6 +69,20 @@ def _comment(body: str) -> str:
             "A comment may not name exec:agent; only a person queues a ticket for an agent"
         )
     return body
+
+
+class CustomField(TypedDict):
+    """One custom field of a new item: its ID and a plain value."""
+
+    field: str
+    value: str | float | list[str]
+
+
+class ItemLink(TypedDict):
+    """A link made from the new item: ``{"type": "Blocks", "target": "KAN-1"}``."""
+
+    type: str
+    target: str
 
 
 class TrackerItems:
@@ -182,10 +199,16 @@ class TrackerItems:
         body: str = "",
         labels: list[str] | None = None,
         correlation: str | None = None,
+        issue_type: str | None = None,
+        fields: dict | None = None,
+        parent: str | None = None,
+        links: list[dict] | None = None,
     ) -> dict:
         """File an item once: a repeat with the same correlation returns the first one.
 
-        Without ``correlation`` the title and body are the correlation.
+        Without ``correlation`` the title and body are the correlation. ``issue_type``,
+        ``fields`` (custom field ID to a plain value), ``parent`` and ``links`` (``type``
+        and ``target``, made from the new item) need a provider offering ``create_typed``.
         """
         try:
             wanted = _labels(labels) or []
@@ -196,6 +219,27 @@ class TrackerItems:
                 "status": "refused",
                 "reason": f"tracker provider {self.provider} cannot write labels",
             }
+        typed = {
+            key: value
+            for key, value in (
+                ("issue_type", issue_type),
+                ("fields", fields),
+                ("parent", parent),
+                ("links", links),
+            )
+            if value
+        }
+        if typed and not self._offers("create_typed"):
+            return {
+                "status": "refused",
+                "reason": f"tracker provider {self.provider} cannot set a type, fields, "
+                "parent or links",
+            }
+        if any(AGENT_MENTION.search(canonical(str(value)).casefold()) for value in typed.values()):
+            return {
+                "status": "refused",
+                "reason": "exec:agent starts an agent job; only a person queues a ticket for an agent",
+            }
         digest = hashlib.sha256(f"{title}\0{body}".encode()).hexdigest()[:16]
         marker = correlation or f"<!-- ai-dlc:ticket:{digest} -->"
         operation_id = "tracker-create-" + hashlib.sha256(marker.encode()).hexdigest()[:16]
@@ -205,8 +249,71 @@ class TrackerItems:
             "labels": wanted,
             "correlation": marker,
             "operation_id": operation_id,
+            **typed,
         }
-        return self._call("created", "create", payload, wanted)
+        return self._contract_call("created", "create", payload, wanted)
+
+    def create_decision(
+        self,
+        question: str,
+        blocks: str,
+        options: list[str],
+        recommendation: str,
+        default: str,
+        scope: str,
+        due: str,
+        body: str = "",
+        labels: list[str] | None = None,
+        correlation: str | None = None,
+        parent: str | None = None,
+    ) -> dict:
+        """File a decision for a person, once, that blocks ``blocks``; it never moves either.
+
+        The ``decision`` label is always set. A repeat with the same correlation (default:
+        the question and the blocked item) returns the first decision.
+        """
+        try:
+            wanted = _labels(["decision", *(labels or [])]) or []
+        except RefusedError as exc:
+            return {"status": "refused", "reason": str(exc)}
+        if not question.strip().endswith("?"):
+            return {
+                "status": "refused",
+                "reason": "A decision's title is its question, ending in ?",
+            }
+        if not self._offers("decide"):
+            return {
+                "status": "refused",
+                "reason": f"tracker provider {self.provider} cannot file a decision",
+            }
+        digest = hashlib.sha256(f"{question}\0{blocks}".encode()).hexdigest()[:16]
+        marker = correlation or f"<!-- ai-dlc:decision:{digest} -->"
+        payload = {
+            "title": question.strip(),
+            "body": body,
+            "labels": wanted,
+            "correlation": marker,
+            "operation_id": "tracker-decide-" + hashlib.sha256(marker.encode()).hexdigest()[:16],
+            "blocks": blocks,
+            "options": options,
+            "recommendation": recommendation,
+            "default": default,
+            "scope": scope,
+            "due": due,
+        }
+        if parent:
+            payload["parent"] = parent
+        return self._contract_call("created", "decide", payload, wanted)
+
+    def _contract_call(self, status: str, operation: str, payload: dict, requested) -> dict:
+        """``_call``, reporting a payload the provider contract refuses field by field."""
+        try:
+            return self._call(status, operation, payload, requested)
+        except ValidationError as exc:
+            problems = [
+                f"{'.'.join(map(str, error['loc']))}: {error['msg']}" for error in exc.errors()
+            ]
+            return {"status": "refused", "reason": "; ".join(problems)}
 
     def update(
         self,
