@@ -73,6 +73,41 @@ def test_the_reversal_carries_its_reason_status_dates_and_derived_successor():
     assert result["tickets"] == []
 
 
+def test_each_end_of_the_reversal_says_who_owns_wrote_and_verified_it():
+    """Six months on, the reader needs who decided, not only what and why."""
+    march = why(FIXTURE, "DEC-0001")
+    assert (march["record"]["owner"], march["record"]["author"]) == ("sean", "human:sean")
+    assert march["record"]["verified"] == [{"by": "human:dana", "at": "2026-03-05T15:00:00+00:00"}]
+    (successor,) = march["superseded_by"]
+    assert (successor["owner"], successor["author"]) == ("priya", "agent:capture")
+    assert successor["verified"] == []
+    text = "\n".join(lines(march))
+    # sean wrote his own record, so he is named once.
+    assert "owner sean, verified by dana on 2026-03-05" in lines(march)[1]
+    assert "written by human:sean" not in text
+    assert "date 2026-09-15, owner priya, written by agent:capture" in text
+
+    september = why(FIXTURE, "DEC-0002")
+    (predecessor,) = september["supersedes"]
+    assert predecessor["owner"] == "sean"
+    assert "owner priya, written by agent:capture" in lines(september)[1]
+    shown = "\n".join(lines(september))
+    supersedes = shown.split("Supersedes:", 1)[1].splitlines()[1]
+    assert "owner sean, verified by dana" in supersedes and "written by" not in supersedes
+    (convention,) = [link for link in september["linked"] if link["id"] == "CONV-0001"]
+    assert convention["owner"] == "sean"
+    assert any(line.startswith("  CONV-0001") and "owner sean" in line for line in lines(september))
+
+
+def test_a_person_is_named_once_by_bare_name_whichever_side_carries_the_prefix():
+    from ai_dlc.documentation.knowledge_why import _by
+
+    entry = {"owner": "human:sean", "author": "human:sean", "verified": []}
+    assert _by(entry) == ["owner sean"]
+    entry = {"owner": "sean", "author": "agent:capture", "verified": []}
+    assert _by(entry) == ["owner sean", "written by agent:capture"]
+
+
 def test_linked_conventions_lessons_tickets_and_source_metadata():
     result = why(FIXTURE, "DEC-0002")
     assert {(link["id"], link["link"]) for link in result["linked"]} == {
@@ -226,3 +261,112 @@ def test_a_proposed_retraction_changes_nothing(tmp_path):
     result = why(folder, "DEC-0001")
 
     assert result["record"]["status"] == "accepted" and result["retracted_by"] == []
+
+
+# KAN-494: ticket keys and ids in any case; a Source answers with its decision.
+
+TICKET_SOURCE = """---
+id: {id}
+type: source
+scope: team
+status: processed
+date: 2026-10-29
+owner: sean
+sources:
+  - {{resource: 'https://tracker.example.invalid/browse/{key}'}}
+links: []
+schema_version: 1
+revision: "1"
+provider: jira
+title: Decide the freeze
+observed_at: 2026-10-29T18:00:00+00:00
+url: https://tracker.example.invalid/browse/{key}
+---
+Ruling: adopted.
+"""
+
+DERIVED = """---
+id: {id}
+type: decision
+scope: team
+status: {status}
+date: {date}
+owner: sean
+author: agent:capture
+sources:
+  - {{id: {source}, resource: sources/{source}.md, hash: 'sha256:{hash}'}}
+links:
+  - {{type: derived_from, target: {source}}}
+title: {title}
+{extra}---
+# {title}
+"""
+
+
+def _ticket_bundle(bundle: Path, source: str = "kan-241", key: str = "KAN-241") -> Path:
+    (bundle / "sources" / f"{source}.md").write_text(TICKET_SOURCE.format(id=source, key=key))
+    (bundle / "decisions/freeze.md").write_text(
+        DERIVED.format(
+            id="feature-freeze",
+            status="accepted",
+            date="2026-10-29",
+            source=source,
+            title="Freeze features until adoption",
+            extra="",
+            hash="2" * 64,
+        )
+    )
+    (bundle / "decisions/old-freeze.md").write_text(
+        DERIVED.format(
+            id="old-freeze",
+            status="superseded",
+            date="2026-10-01",
+            source=source,
+            title="An earlier freeze",
+            extra="valid_to: 2026-10-29\n",
+            hash="3" * 64,
+        )
+    )
+    return bundle
+
+
+@pytest.mark.parametrize("name", ["KAN-241", "kan-241", "Kan-241"])
+def test_knowledge_why_a_ticket_key_in_any_case_answers_with_the_decision_derived_from_it(
+    bundle, name
+):
+    result = why(_ticket_bundle(bundle), name)
+    assert result["status"] == "ok"
+    assert result["record"]["id"] == "feature-freeze"
+    assert (result["record"]["owner"], result["record"]["author"]) == ("sean", "agent:capture")
+    assert result["resolved_from"]["id"] == "kan-241" and result["resolved_from"]["name"] == name
+    assert [entry["id"] for entry in result["also_derived"]] == ["old-freeze"]
+    text = "\n".join(lines(result))
+    assert f"({name} is the source kan-241; the record derived from it:)" in text
+    assert "owner sean, written by agent:capture" in text
+    assert "Also derived from the same source:" in text and "old-freeze" in text
+
+
+def test_knowledge_why_a_ticket_key_finds_its_source_by_url_when_the_id_differs(bundle):
+    result = why(_ticket_bundle(bundle, source="jira-freeze", key="KAN-77"), "kan-77")
+    assert result["record"]["id"] == "feature-freeze"
+    assert result["resolved_from"]["id"] == "jira-freeze"
+
+
+def test_knowledge_why_record_ids_match_in_any_case_and_need_no_redirect():
+    result = why(FIXTURE, "dec-0002")
+    assert result["record"]["id"] == "DEC-0002" and result["resolved_from"] is None
+    assert why(FIXTURE, "NIGHTLY-BUILDS-ONLY")["record"]["id"] == "DEC-0001"
+
+
+def test_knowledge_why_a_source_nothing_derives_from_is_still_shown(bundle):
+    (bundle / "sources/kan-9.md").write_text(TICKET_SOURCE.format(id="kan-9", key="KAN-9"))
+    result = why(bundle, "KAN-9")
+    assert result["record"]["id"] == "kan-9" and result["resolved_from"] is None
+
+
+def test_knowledge_why_cli_resolves_an_upper_case_ticket_key(bundle):
+    found = CliRunner().invoke(
+        app, ["knowledge", "why", "KAN-241", "--root", str(_ticket_bundle(bundle))]
+    )
+    assert found.exit_code == 0, found.output
+    assert "feature-freeze  Freeze features until adoption" in found.output

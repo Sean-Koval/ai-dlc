@@ -9,14 +9,20 @@ its paragraph; a list item and a table cell are paragraphs of their own.
 Older pages break the rule, so the check is a ratchet. editorial_baseline.json records each page's
 debt; a page may not get longer than its recorded length (or 700 words), and may not gain a long
 paragraph or sentence. A page not in the baseline, a new one included, meets the rule in full.
-When a page improves, the baseline must follow: run `python tests/test_editorial.py --update`.
+When a page improves, a PR needn't lower the baseline, so PRs don't conflict on it (KAN-481).
+Instead the base of the change is the cap: where AI_DLC_DOCS_BASE names a commit (CI sets it), a
+page may not exceed its debt there either, so an improvement already merged can't be spent by a
+later PR. `python tests/test_editorial.py --stale` lists pages whose baseline could be lowered
+(the `generated` workflow reports them on main); `--update` lowers them.
 `python tests/test_editorial.py` prints the report.
 """
 
 from __future__ import annotations
 
 import json
+import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -116,7 +122,11 @@ def words(s: str) -> int:
 
 
 def measure(page: Path) -> dict[str, int]:
-    paras = prose(page.read_text(encoding="utf-8"))
+    return measure_text(page.read_text(encoding="utf-8"))
+
+
+def measure_text(text: str) -> dict[str, int]:
+    paras = prose(text)
     return {
         "words": sum(words(p) for p in paras),
         "long_paragraphs": sum(1 for p in paras if words(p) > PARAGRAPH),
@@ -152,13 +162,33 @@ def current_debt() -> dict[str, dict[str, int]]:
     return out
 
 
+def base_debt(name: str, base: str | None) -> dict[str, int] | None:
+    """A page's debt at `base`; None when there is no base or the page is new there."""
+    if not base:
+        return None
+    shown = subprocess.run(
+        ["git", "show", f"{base}:{name}"], cwd=ROOT, capture_output=True, text=True, check=False
+    )
+    return debt(name, measure_text(shown.stdout)) if shown.returncode == 0 else None
+
+
+def allowance(
+    name: str, baseline: dict[str, int], at_base: dict[str, int] | None
+) -> dict[str, int]:
+    """The baseline, lowered to the page's debt at the base where that is smaller."""
+    if at_base is None:
+        return dict(baseline)
+    return {k: min(v, at_base.get(k, 0)) for k, v in baseline.items()}
+
+
 def test_no_page_breaks_the_rule_beyond_its_baseline():
     baseline = load_baseline()
+    base = os.environ.get("AI_DLC_DOCS_BASE") or None
     failures = []
     for page in pages():
         name = rel(page)
         m = measure(page)
-        allowed = baseline.get(name, {})
+        allowed = allowance(name, baseline.get(name, {}), base_debt(name, base))
         cap = max(PAGE, allowed.get("words", 0))
         if long_page_reason(name) is None and m["words"] > cap:
             grew = "got longer" if name in baseline else "is over 700 words"
@@ -172,16 +202,28 @@ def test_no_page_breaks_the_rule_beyond_its_baseline():
     assert not failures, "\n" + "\n".join(failures)
 
 
-def test_the_baseline_follows_every_improvement():
+def stale_baseline() -> list[str]:
+    """Pages that improved below their baseline; the `generated` workflow lowers them on main."""
     baseline, now = load_baseline(), current_debt()
-    stale = sorted(
+    return sorted(
         name
         for name in set(baseline) | set(now)
         if any(now.get(name, {}).get(k, 0) < v for k, v in baseline.get(name, {}).items())
     )
-    assert not stale, f"pages improved; lower their baseline: python {__file__} --update\n" + (
-        "\n".join(stale)
-    )
+
+
+def test_the_base_caps_the_baseline():
+    """An improvement merged before the baseline is lowered can't be spent by a later change."""
+    assert allowance("p", {"words": 900, "long_sentences": 4}, None) == {
+        "words": 900,
+        "long_sentences": 4,
+    }
+    assert allowance("p", {"words": 900, "long_sentences": 4}, {"long_sentences": 2}) == {
+        "words": 0,
+        "long_sentences": 2,
+    }
+    assert base_debt("docs/no-such-page.md", "HEAD") is None
+    assert base_debt("README.md", None) is None
 
 
 def test_every_long_page_has_a_reason():
@@ -207,7 +249,9 @@ def report() -> None:
 
 
 if __name__ == "__main__":
-    if "--update" in sys.argv[1:]:
+    if "--stale" in sys.argv[1:]:
+        print("\n".join(stale_baseline()) or "baseline is current")
+    elif "--update" in sys.argv[1:]:
         BASELINE.write_text(json.dumps(current_debt(), indent=2, sort_keys=True) + "\n")
         print(f"wrote {BASELINE}")
     else:

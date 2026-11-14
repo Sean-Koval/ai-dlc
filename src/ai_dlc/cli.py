@@ -1772,6 +1772,51 @@ def knowledge_why(
         raise typer.Exit(1)
 
 
+@knowledge.command("stats")
+def knowledge_stats(
+    since: Annotated[str, typer.Option("--since", help="ISO date, or time with offset")],
+    records: Annotated[Path, typer.Argument(help="records directory")] = Path("."),
+    root: Annotated[Path, typer.Option("--root", help="project with ai-dlc.toml")] = Path("."),
+    agent_repositories: Annotated[
+        list[str] | None,
+        typer.Option("--agent-repository", help="owner/repo agents open PRs in; repeatable"),
+    ] = None,
+    project: Annotated[str | None, typer.Option("--project")] = None,
+    log: Annotated[
+        Path | None,
+        typer.Option("--log", help="capture batch's run log (.jsonl, .json or folder)"),
+    ] = None,
+    report: Annotated[Path | None, typer.Option("--report", help="write the Markdown here")] = None,
+    json_output: Annotated[bool, typer.Option("--json")] = False,
+):
+    """Measure the 1.0 outcomes: capture, review, agent loop and health; read-only.
+
+    Reads git, the scm and tracker roles, and the capture run log given with ``--log``
+    (kept where the batch runs, not in git). Without it, or without a role, those
+    numbers read unmeasured; a missing or wrong-shaped log is an error.
+    ``--report`` writes the weekly Markdown.
+    """
+    from datetime import datetime
+
+    from ai_dlc.documentation import knowledge_stats as measure
+
+    with service_call():
+        moment = datetime.fromisoformat(since)
+        # No ai-dlc.toml means no roles, so those numbers read "not measured"; a broken
+        # one is an error to fix, not a reason to report nothing.
+        config = config_for(root) if (root / "ai-dlc.toml").is_file() else None
+        wired = measure.from_roles(config, root, agent_repositories=agent_repositories or ())
+        result = measure.stats(records, moment, project=project, log=log, **wired)
+        text = "\n".join(measure.report(result)) + "\n"
+        if report is not None:
+            report.parent.mkdir(parents=True, exist_ok=True)
+            report.write_text(text, encoding="utf-8")
+    if json_output:
+        emit(result)
+    else:
+        typer.echo(text, nl=False)
+
+
 @knowledge.command("migrate")
 def knowledge_migrate_command(
     paths: Annotated[list[Path] | None, typer.Argument(help="files or directories")] = None,
@@ -1821,6 +1866,79 @@ def knowledge_render(
     conclude(result)
 
 
+@knowledge.command("init")
+def knowledge_init(
+    customer: Annotated[str, typer.Option("--customer", help="customer project name (slug)")],
+    path: Annotated[Path | None, typer.Option("--path", help="new or empty directory")] = None,
+    codeowner: Annotated[
+        list[str] | None, typer.Option("--codeowner", help="@user or @org/team reviewer")
+    ] = None,
+    deny: Annotated[list[str] | None, typer.Option("--deny", help="extra deny-list term")] = None,
+    ai_dlc_ref: Annotated[
+        str | None,
+        typer.Option(
+            "--ai-dlc-ref", help="release tag or commit CI pins (default: installed release)"
+        ),
+    ] = None,
+    dry_run: Annotated[bool, typer.Option("--dry-run")] = False,
+):
+    """Write a separate customer knowledge repository: boundary customer, no wiki target.
+
+    Default directory: ``<customer>-knowledge``. ``--dry-run`` lists the files and writes nothing.
+    """
+    from ai_dlc.documentation.knowledge_customer import init_customer
+
+    with service_call():
+        result = init_customer(
+            path or Path(f"{customer}-knowledge"),
+            customer,
+            dry_run=dry_run,
+            codeowners=codeowner or [],
+            deny=deny or [],
+            ai_dlc_ref=ai_dlc_ref,
+        )
+    for warning in result["warnings"]:
+        typer.echo(f"Warning: {warning}", err=True)
+    emit(result)
+
+
+@knowledge.command("promote")
+def knowledge_promote(
+    id: Annotated[str, typer.Argument(help="customer record id")],
+    summary: Annotated[Path, typer.Option("--summary", help="sanitised summary a person wrote")],
+    title: Annotated[str, typer.Option("--title")],
+    owner: Annotated[str, typer.Option("--owner")],
+    to: Annotated[Path | None, typer.Option("--to", help="team knowledge repository")] = None,
+    root: Annotated[Path, typer.Option("--root", help="repository holding the record")] = Path("."),
+    kind: Annotated[str | None, typer.Option("--type", help="lesson, convention, ...")] = None,
+    slug: Annotated[str | None, typer.Option("--slug")] = None,
+    branch: Annotated[str | None, typer.Option("--branch", help="default promote/<slug>")] = None,
+    dry_run: Annotated[bool, typer.Option("--dry-run")] = False,
+):
+    """Promote a customer record to the team repository through a sanitised summary.
+
+    Refuses deny-list terms, web addresses, customer paths and quotes, and writes
+    nothing then. Otherwise commits a team Source and record on a new local branch of
+    the team repository for a person to review; nothing is pushed.
+    """
+    from ai_dlc.documentation.knowledge_customer import promote
+
+    with service_call():
+        result = promote(
+            root,
+            id,
+            summary=summary.read_text(encoding="utf-8"),
+            title=title,
+            owner=owner,
+            to=to,
+            kind=kind,
+            slug=slug,
+            branch=branch,
+            dry_run=dry_run,
+        )
+    emit(result)
+
+
 @knowledge.command("pull-transcripts")
 def knowledge_pull_transcripts(
     since: Annotated[str, typer.Option("--since", help="ISO date, or time with offset")],
@@ -1840,9 +1958,16 @@ def knowledge_pull_transcripts(
     with service_call():
         pull = TranscriptPull(root, config_for(root), providers=provider_ids, into=into)
         result = pull.pull(since, dry_run=dry_run)
+    for warning in result.get("warnings", []):
+        typer.echo(f"warning: {warning}", err=True)
     for entry in result.get("skipped", []):
         typer.echo(f"skipped {entry['provider']} {entry['id']}: {entry['reason']}", err=True)
     conclude(result)
+
+
+def _stdout_is_terminal() -> bool:
+    """Whether a person reads the output; captured or piped output stays JSON."""
+    return sys.stdout.isatty()
 
 
 RecordsRoot = Annotated[Path, typer.Option("--root")]
@@ -1852,7 +1977,7 @@ RecordsProvider = Annotated[str | None, typer.Option("--provider")]
 def _records(root: Path, provider_id: str | None):
     from ai_dlc.documentation.knowledge_service import KnowledgeRecords
 
-    return KnowledgeRecords(root, config_for(root), provider=provider_id)
+    return KnowledgeRecords.at(root, config_for(root), provider=provider_id)
 
 
 @knowledge_records.command("get")
@@ -1874,11 +1999,37 @@ def knowledge_records_search(
     text: Annotated[str | None, typer.Option("--text")] = None,
     root: RecordsRoot = Path("."),
     provider_id: RecordsProvider = None,
+    output: Annotated[
+        str | None,
+        typer.Option(
+            "--format",
+            help="text (ranked rows) or json (full headers); default text on a terminal, "
+            "json otherwise.",
+        ),
+    ] = None,
+    json_output: Annotated[bool, typer.Option("--json", help="Same as --format json.")] = False,
 ):
-    """Find records by header; --text also reads bodies."""
+    """Find records by header, ranked; --text also reads bodies.
+
+    On a terminal it prints one compact row per record; piped or captured, it prints
+    JSON, as scripts and skills parse it. Source records only with --type source.
+    """
+    from ai_dlc.documentation.knowledge_service import search_lines
+
+    if output not in (None, "text", "json"):
+        typer.echo("Error: --format is text or json", err=True)
+        raise typer.Exit(2)
+    if json_output:
+        output = "json"
     with service_call():
         result = _records(root, provider_id).search(type, scope, label, status, text)
-    conclude(result)
+    if (output or ("text" if _stdout_is_terminal() else "json")) == "json":
+        conclude(result)
+        return
+    for line in search_lines(result):
+        typer.echo(line, err=not succeeded(result))
+    if not succeeded(result):
+        raise typer.Exit(1)
 
 
 @knowledge_records.command("changed")
