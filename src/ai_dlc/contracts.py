@@ -14,6 +14,7 @@ class Request(BaseModel):
         "prepare",
         "reconcile_closed",
         "create",
+        "decide",
         "find",
         "read",
         "link",
@@ -52,12 +53,50 @@ LABELS = (
 )
 
 
+class IssueLink(Payload):
+    type: str = Field(min_length=1, description="Link type name, e.g. Blocks.")
+    target: str = Field(min_length=1, description="The item this one links to, outward.")
+
+
 class Create(Payload):
+    """File an item once by correlation.
+
+    ``issue_type``, ``fields``, ``parent`` and ``links`` need a provider that lists
+    ``create_typed`` among its optional operations; callers refuse them otherwise.
+    """
+
     title: str = Field(min_length=1)
     correlation: str = Field(min_length=1)
     operation_id: str = Field(min_length=1)
     body: str = ""
     labels: list[str] = Field(default_factory=list, description=LABELS)
+    issue_type: str | None = Field(
+        default=None, min_length=1, description="Native type ID; default: the configured type."
+    )
+    fields: dict[str, str | float | list[str]] = Field(
+        default_factory=dict,
+        description="Custom field ID to a plain value: text, a number, a date "
+        "(YYYY-MM-DD) or the name of an allowed option.",
+    )
+    parent: str | None = Field(default=None, min_length=1, description="Parent item (an epic).")
+    links: list[IssueLink] = Field(
+        default_factory=list, description="Issue links made from the new item, read back."
+    )
+
+
+class Decide(Create):
+    """File a decision for a person that blocks one open work item (``blocks``).
+
+    A provider that offers it lists ``decide`` among its optional operations. A repeat
+    with the same correlation returns the first decision and keeps one blocking link.
+    """
+
+    blocks: str = Field(min_length=1, description="The work item this decision blocks.")
+    options: list[str] = Field(min_length=2, max_length=5)
+    recommendation: str = Field(min_length=1)
+    default: str = Field(min_length=1, description="What happens if nobody answers by due.")
+    scope: str = Field(min_length=1)
+    due: str = Field(pattern=r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$", description="ISO date.")
 
 
 class Find(Payload):
@@ -151,6 +190,7 @@ PAYLOADS = {
     "prepare": Prepare,
     "reconcile_closed": Prepare,
     "create": Create,
+    "decide": Decide,
     "find": Find,
     "read": Read,
     "link": Link,
@@ -460,6 +500,7 @@ RESPONSES = {
     "prepare": Item,
     "reconcile_closed": Item,
     "create": Item,
+    "decide": Item,
     "find": Found,
     "read": Item,
     "link": Item,
@@ -556,6 +597,8 @@ def manifest():
                 "optional": [
                     "capabilities",
                     "comment",
+                    "create_typed",
+                    "decide",
                     "link",
                     "prepare",
                     "query",

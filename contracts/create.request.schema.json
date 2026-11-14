@@ -1,5 +1,31 @@
 {
+  "$defs": {
+    "IssueLink": {
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "description": "The item this one links to, outward.",
+          "minLength": 1,
+          "title": "Target",
+          "type": "string"
+        },
+        "type": {
+          "description": "Link type name, e.g. Blocks.",
+          "minLength": 1,
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "target"
+      ],
+      "title": "IssueLink",
+      "type": "object"
+    }
+  },
   "additionalProperties": false,
+  "description": "File an item once by correlation.\n\n``issue_type``, ``fields``, ``parent`` and ``links`` need a provider that lists\n``create_typed`` among its optional operations; callers refuse them otherwise.",
   "properties": {
     "body": {
       "default": "",
@@ -11,6 +37,41 @@
       "title": "Correlation",
       "type": "string"
     },
+    "fields": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        ]
+      },
+      "description": "Custom field ID to a plain value: text, a number, a date (YYYY-MM-DD) or the name of an allowed option.",
+      "title": "Fields",
+      "type": "object"
+    },
+    "issue_type": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Native type ID; default: the configured type.",
+      "title": "Issue Type"
+    },
     "labels": {
       "description": "Native tracker labels to set. A provider that cannot write labels does not list update among its optional operations, and callers refuse labels before writing.",
       "items": {
@@ -19,10 +80,32 @@
       "title": "Labels",
       "type": "array"
     },
+    "links": {
+      "description": "Issue links made from the new item, read back.",
+      "items": {
+        "$ref": "#/$defs/IssueLink"
+      },
+      "title": "Links",
+      "type": "array"
+    },
     "operation_id": {
       "minLength": 1,
       "title": "Operation Id",
       "type": "string"
+    },
+    "parent": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Parent item (an epic).",
+      "title": "Parent"
     },
     "title": {
       "minLength": 1,
