@@ -1965,6 +1965,11 @@ def knowledge_pull_transcripts(
     conclude(result)
 
 
+def _stdout_is_terminal() -> bool:
+    """Whether a person reads the output; captured or piped output stays JSON."""
+    return sys.stdout.isatty()
+
+
 RecordsRoot = Annotated[Path, typer.Option("--root")]
 RecordsProvider = Annotated[str | None, typer.Option("--provider")]
 
@@ -1972,7 +1977,7 @@ RecordsProvider = Annotated[str | None, typer.Option("--provider")]
 def _records(root: Path, provider_id: str | None):
     from ai_dlc.documentation.knowledge_service import KnowledgeRecords
 
-    return KnowledgeRecords(root, config_for(root), provider=provider_id)
+    return KnowledgeRecords.at(root, config_for(root), provider=provider_id)
 
 
 @knowledge_records.command("get")
@@ -1994,11 +1999,37 @@ def knowledge_records_search(
     text: Annotated[str | None, typer.Option("--text")] = None,
     root: RecordsRoot = Path("."),
     provider_id: RecordsProvider = None,
+    output: Annotated[
+        str | None,
+        typer.Option(
+            "--format",
+            help="text (ranked rows) or json (full headers); default text on a terminal, "
+            "json otherwise.",
+        ),
+    ] = None,
+    json_output: Annotated[bool, typer.Option("--json", help="Same as --format json.")] = False,
 ):
-    """Find records by header; --text also reads bodies."""
+    """Find records by header, ranked; --text also reads bodies.
+
+    On a terminal it prints one compact row per record; piped or captured, it prints
+    JSON, as scripts and skills parse it. Source records only with --type source.
+    """
+    from ai_dlc.documentation.knowledge_service import search_lines
+
+    if output not in (None, "text", "json"):
+        typer.echo("Error: --format is text or json", err=True)
+        raise typer.Exit(2)
+    if json_output:
+        output = "json"
     with service_call():
         result = _records(root, provider_id).search(type, scope, label, status, text)
-    conclude(result)
+    if (output or ("text" if _stdout_is_terminal() else "json")) == "json":
+        conclude(result)
+        return
+    for line in search_lines(result):
+        typer.echo(line, err=not succeeded(result))
+    if not succeeded(result):
+        raise typer.Exit(1)
 
 
 @knowledge_records.command("changed")

@@ -80,14 +80,43 @@ def _item(entry: dict) -> dict:
     return {"id": record.id, "path": entry["path"], "header": record.model_dump(mode="json")}
 
 
+CURRENT = ("accepted", "active", "answered", "codified", "open", "proposed", "draft", "processed")
+"""Statuses of a record that still holds or is still in play, best first; others rank after."""
+ENDED = ("raw", "rejected", "retired", "superseded", "expired", knowledge_records.RETRACTED)
+"""Statuses of a record that no longer holds, ranked last."""
+
+
+def status_rank(status: str) -> int:
+    """Lower is better: a current record before an ended one (KAN-494)."""
+    if status in CURRENT:
+        return CURRENT.index(status)
+    if status in ENDED:
+        return len(CURRENT) + 1 + ENDED.index(status)
+    return len(CURRENT)  # an action's free-form status
+
+
+def named(entries: Iterable[dict], name: str) -> list[dict]:
+    """Entries whose id or alias is ``name``; any case when no entry has it exactly.
+
+    Ticket keys and slug ids differ only in case (``KAN-241``, ``kan-241``), so a
+    reader may type either (KAN-494).
+    """
+    entries = list(entries)
+
+    def names(entry: dict) -> tuple[str, ...]:
+        return (entry["record"].id, *(entry["record"].aliases or ()))
+
+    exact = [entry for entry in entries if name in names(entry)]
+    if exact:
+        return exact
+    folded = name.casefold()
+    return [entry for entry in entries if folded in {n.casefold() for n in names(entry)}]
+
+
 def get(root: Path, record_id: str) -> dict:
-    """The record whose id or alias is ``record_id``, with its body; raises when absent."""
+    """The record whose id or alias is ``record_id`` (any case), with its body; raises when absent."""
     records, _invalid = scan(root)
-    matches = [
-        entry
-        for entry in records
-        if record_id in (entry["record"].id, *(entry["record"].aliases or ()))
-    ]
+    matches = named(records, record_id)
     if not matches:
         raise LookupError(f"no knowledge record has id or alias {record_id}")
     if len(matches) > 1:
