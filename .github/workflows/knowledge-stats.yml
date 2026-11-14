@@ -1,0 +1,169 @@
+# Reusable workflow for knowledge repositories: the weekly 1.0 outcome report (KAN-467).
+#   on:
+#     schedule:
+#       - cron: "0 13 * * 1"   # Mondays, 13:00 UTC
+#     workflow_dispatch:
+#   jobs:
+#     stats:
+#       uses: Sean-Koval/ai-dlc/.github/workflows/knowledge-stats.yml@main
+#       with:
+#         records: records
+#         ai-dlc-ref: <a tag or commit of ai-dlc>
+#       secrets:
+#         token: ${{ secrets.KNOWLEDGE_APP_TOKEN }}
+#
+# It runs `ai-dlc knowledge stats` over the last `days` days and writes
+# reports/<iso-week>.md, named for the week the window starts in, as one commit on the
+# branch `knowledge-stats`, then opens one pull request from that branch or adds to the
+# open one, so an unmerged report is kept. It refuses a report branch that is the
+# repository's default branch, the target branch, main or master, or that already holds
+# a commit it did not write. Only that last step holds the write token `token`.
+#
+# Measuring runs with `read-token`, or else the job's read-only GITHUB_TOKEN, which can
+# read only this repository: without `read-token`, agent repositories are left out and
+# their pull requests read as not measured. The caller grants contents, pull-requests
+# and checks read.
+#
+# The numbers use only the scm and tracker roles the repository's ai-dlc.toml selects,
+# so no other credential is needed. A role that is not selected is reported as not
+# measured. Capture is always "not measured" here: in v0.1 the capture batch keeps its
+# run log (contracts/capture-run.schema.json) where it runs, not in git, so capture
+# numbers come from running `ai-dlc knowledge stats --log <run log>` on that machine. Pull request heads are fetched so squash-merged pull requests keep their
+# first commit, which the reviewer-edit numbers compare against the merge.
+name: Knowledge stats
+on:
+  workflow_call:
+    inputs:
+      records:
+        description: Records directory, relative to the repository root.
+        type: string
+        default: "."
+      days:
+        description: How many days back the report covers.
+        type: number
+        default: 7
+      agent-repositories:
+        description: Space-separated owner/repo list agents open pull requests in.
+        type: string
+        default: ""
+      branch:
+        description: Branch the report goes to; defaults to the repository's default branch.
+        type: string
+        default: ""
+      report-branch:
+        description: Branch the report pull request comes from.
+        type: string
+        default: knowledge-stats
+      ai-dlc-ref:
+        description: ai-dlc git ref to install; pin a tag or commit for repeatable runs.
+        type: string
+        required: true
+    secrets:
+      token:
+        description: GitHub App installation token with contents and pull-requests write; only the last step sees it.
+        required: true
+      read-token:
+        description: Optional read-only token for measuring, needed for agent repositories; never defaults to token.
+        required: false
+permissions:
+  contents: read
+  pull-requests: read
+  checks: read
+jobs:
+  stats:
+    name: Write the weekly outcome report
+    runs-on: ubuntu-24.04
+    concurrency:
+      group: knowledge-stats-${{ github.repository }}
+      cancel-in-progress: false
+    env:
+      REPORT_BRANCH: ${{ inputs.report-branch }}
+    steps:
+      - name: Refuse a report branch that is the default or target branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET: ${{ inputs.branch }}
+        run: |
+          # Asked of the API: github.event.repository may be empty on a schedule.
+          default=$(gh api "repos/$GITHUB_REPOSITORY" --jq .default_branch)
+          if [ -z "$default" ]; then
+            echo "could not read the default branch of $GITHUB_REPOSITORY" >&2
+            exit 1
+          fi
+          branch=${TARGET:-$default}
+          case "$REPORT_BRANCH" in
+            "" | "$default" | "$branch" | main | master)
+              echo "report-branch must be its own branch, not '$REPORT_BRANCH'" >&2
+              exit 1 ;;
+          esac
+          echo "BRANCH=$branch" >> "$GITHUB_ENV"
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BRANCH }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install ai-dlc
+        env:
+          AI_DLC_REF: ${{ inputs.ai-dlc-ref }}
+        run: python -m pip install "ai-dlc @ git+https://github.com/Sean-Koval/ai-dlc@${AI_DLC_REF}"
+      - name: Measure the week
+        env:
+          RECORDS: ${{ inputs.records }}
+          DAYS: ${{ inputs.days }}
+          AGENT_REPOSITORIES: ${{ inputs.agent-repositories }}
+          # Never the write token: the selected providers run in this step.
+          GH_TOKEN: ${{ secrets.read-token || github.token }}
+          HAS_READ_TOKEN: ${{ secrets.read-token != '' }}
+        run: |
+          set -f  # repository names are words, never globs
+          remote="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch -q "$remote" '+refs/pull/*/head:refs/remotes/origin/pull/*'
+          since=$(date -u -d "$DAYS days ago" +%Y-%m-%dT%H:%M:%S+00:00)
+          report="reports/$(date -u -d "$since" +%G-W%V).md"
+          echo "REPORT=$report" >> "$GITHUB_ENV"
+          set -- --since "$since" --report "$RUNNER_TEMP/report.md"
+          if [ "$HAS_READ_TOKEN" = true ]; then
+            for repository in $AGENT_REPOSITORIES; do
+              set -- "$@" --agent-repository "$repository"
+            done
+          elif [ -n "$AGENT_REPOSITORIES" ]; then
+            echo "::notice::No read-token, so agent repositories are not measured."
+          fi
+          ai-dlc knowledge stats "$RECORDS" "$@"
+      - name: Open or update the report pull request
+        env:
+          GH_TOKEN: ${{ secrets.token }}
+        run: |
+          git config user.name "knowledge-stats[bot]"
+          git config user.email "knowledge-stats@users.noreply.github.com"
+          remote="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          # Build on the open report branch, so an unmerged week's report is kept.
+          if git fetch -q "$remote" "refs/heads/$REPORT_BRANCH" 2>/dev/null; then
+            # Only a branch this workflow wrote: never commit on top of someone's work.
+            if [ "$(git log -1 --format=%cn FETCH_HEAD)" != "knowledge-stats[bot]" ]; then
+              echo "$REPORT_BRANCH has commits this workflow did not write" >&2
+              exit 1
+            fi
+            git checkout -q -B "$REPORT_BRANCH" FETCH_HEAD
+          else
+            git checkout -q -B "$REPORT_BRANCH"
+          fi
+          mkdir -p "$(dirname "$REPORT")"
+          cp "$RUNNER_TEMP/report.md" "$REPORT"
+          git add -- "$REPORT"
+          if git diff --cached --quiet; then
+            echo "The report is unchanged."
+            exit 0
+          fi
+          git commit -q -m "chore(knowledge): weekly outcome report $REPORT"
+          git push -q "$remote" "HEAD:refs/heads/$REPORT_BRANCH"
+          open=$(gh pr list --head "$REPORT_BRANCH" --base "$BRANCH" --state open \
+            --json number --jq '.[0].number // empty')
+          if [ -z "$open" ]; then
+            gh pr create --base "$BRANCH" --head "$REPORT_BRANCH" \
+              --title "chore(knowledge): weekly outcome report" \
+              --body "Generated by ai-dlc knowledge stats. Each run adds that week's report."
+          fi

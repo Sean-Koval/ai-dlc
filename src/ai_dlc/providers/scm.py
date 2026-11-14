@@ -9,6 +9,7 @@ import subprocess
 import tempfile
 import tomllib
 from collections.abc import Mapping
+from datetime import datetime
 from pathlib import Path
 
 from ai_dlc.config import digest
@@ -182,6 +183,82 @@ class GitHubSCM:
         if match.group(1) != self.repo:
             raise ValueError("Created pull request does not belong to the configured repository")
         return {"url": urls[-1], "number": int(match.group(2))}
+
+    def pull_requests(self, since, limit=200):
+        """Pull requests opened at or after ``since``, for ``knowledge stats``; read-only.
+
+        ``first_push_checks`` is the combined check state of the earliest pull request
+        commit that has check runs: checks run on each pushed head, so that commit is
+        the head of the first push.
+        """
+        moment = datetime.fromisoformat(str(since))
+        found = []
+        page = 1
+        while len(found) < limit:
+            batch = self.api(
+                f"repos/{self.repo}/pulls?state=all&sort=created&direction=desc"
+                f"&per_page=100&page={page}"
+            )
+            if not batch:
+                break
+            for pr in batch:
+                created = datetime.fromisoformat(pr["created_at"])
+                if created < moment:
+                    return found
+                found.append(self._summary(pr))
+                if len(found) >= limit:
+                    break
+            page += 1
+        return found
+
+    def _every(self, path, pages=30):
+        """Every item of a paged list (GitHub lists at most 3000 pull request files)."""
+        found = []
+        for page in range(1, pages + 1):
+            batch = self.api(f"{path}?per_page=100&page={page}")
+            found += batch or []
+            if not batch or len(batch) < 100:
+                break
+        return found
+
+    def _summary(self, pr):
+        number = pr["number"]
+        files = self._every(f"repos/{self.repo}/pulls/{number}/files")
+        # Only the first commits matter: the first commit and the first push's checks.
+        commits = self.api(f"repos/{self.repo}/pulls/{number}/commits?per_page=100")
+        state = "merged" if pr.get("merged_at") else pr.get("state", "open")
+        return {
+            "number": number,
+            "title": pr.get("title") or "",
+            "state": state if state in ("open", "merged") else "closed",
+            "created_at": pr["created_at"],
+            "merged_at": pr.get("merged_at"),
+            "closed_at": pr.get("closed_at"),
+            "files": [entry["filename"] for entry in files],
+            "first_commit": commits[0]["sha"] if commits else None,
+            "merge_commit": pr.get("merge_commit_sha") if pr.get("merged_at") else None,
+            "first_push_checks": self._first_push(commits),
+        }
+
+    def _first_push(self, commits):
+        for commit in commits[:10]:
+            runs = self.api(
+                f"repos/{self.repo}/commits/{commit['sha']}/check-runs?filter=all&per_page=100"
+            )
+            # filter=all keeps re-runs; the earliest run of each check is the first push's.
+            earliest = {}
+            for run in runs.get("check_runs", []):
+                name = run.get("name")
+                if name not in earliest or run.get("id", 0) < earliest[name].get("id", 0):
+                    earliest[name] = run
+            runs = list(earliest.values())
+            if not runs:
+                continue
+            if any(run.get("status") != "completed" for run in runs):
+                return "pending"
+            good = {"success", "neutral", "skipped"}
+            return "success" if all(run.get("conclusion") in good for run in runs) else "failure"
+        return "none"
 
     def file_at(self, path, sha):
         value = self.api(f"repos/{self.repo}/contents/{path}?ref={sha}")

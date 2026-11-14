@@ -126,8 +126,9 @@ def test_hooks_use_exec_form_and_the_shim():
             "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/aidlc_hook.py", actions[event]],
             "timeout": 10,
         }
-        # Edit and Write reach the shim so the docs/specs warning can fire (KAN-318).
-        expected = "Bash|exec_command|Edit|Write" if event == "PreToolUse" else None
+        # Edit and Write reach the shim so the docs/specs warning can fire (KAN-318), and
+        # PowerShell, Claude Code's shell tool on native Windows, is guarded (KAN-487).
+        expected = "Bash|PowerShell|exec_command|Edit|Write" if event == "PreToolUse" else None
         assert entry.get("matcher") == expected
 
 
