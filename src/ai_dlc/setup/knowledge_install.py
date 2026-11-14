@@ -38,7 +38,9 @@ PREREQUISITES = ("claude", "uv", "gh", "git")
 SETTINGS = (
     ("KNOWLEDGE_REPO", None, "the knowledge repository: a git URL or a local clone"),
     ("TEAM_HARNESS_REPO", None, "the team-harness repository: a git URL or a local checkout"),
-    ("TEAM_HARNESS", "suite-default", "the harness to install, under harnesses/"),
+    # No default: a work harness and a personal one differ, and the wrong one installed
+    # silently would carry the other's rules (KAN-433 review).
+    ("TEAM_HARNESS", None, "the harness to install: a directory under team-harness harnesses/"),
     ("TEAM_HARNESS_CHANNEL", "stable", "the channels.yaml channel to install"),
     ("KNOWLEDGE_CHECKOUT", "", "where to clone the knowledge repository"),
 )

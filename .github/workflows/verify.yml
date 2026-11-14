@@ -42,7 +42,10 @@ jobs:
     name: Knowledge install against team-harness
     runs-on: ubuntu-24.04
     env:
-      TEAM_HARNESS_REF: f42f7a3aef37c4fd59a15f66a5535016731dd01e  # team-harness main at the #45 merge
+      # team-harness main on 2026-11-13 (#59 merge). Both stable channels at this commit fail its own KAN-460 guard
+      # probe (their guards exit 0 on a call they can't read), so this job is red until team-harness promotes a
+      # release whose guards fail closed; that is a team-harness bug, not this repository's.
+      TEAM_HARNESS_REF: 63af926f973f4c4f4b96826349894d8514cc7974
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4

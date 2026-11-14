@@ -29,7 +29,7 @@ that is unset; with `--no-input`, or without a terminal, it stops and names it.
 | --- | --- | --- |
 | `KNOWLEDGE_REPO` | required | Git URL or local clone of the knowledge repository |
 | `TEAM_HARNESS_REPO` | required | Git URL or local checkout of team-harness |
-| `TEAM_HARNESS` | `suite-default` | Harness directory under `harnesses/` |
+| `TEAM_HARNESS` | required | Harness directory under `harnesses/`, such as `work-default` |
 | `TEAM_HARNESS_CHANNEL` | `stable` | Channel from `channels.yaml` |
 | `KNOWLEDGE_CHECKOUT` | `~/knowledge/<name>` | Where the clone goes |
 
