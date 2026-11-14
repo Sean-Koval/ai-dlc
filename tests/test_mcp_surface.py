@@ -46,6 +46,7 @@ TOOLS = {
     "project_workspace_preview",
     "tracker_comment",
     "tracker_create",
+    "tracker_create_decision",
     "tracker_get",
     "tracker_search",
     "tracker_update",
@@ -107,7 +108,7 @@ class Tracker:
                     i for i in self.items.values() if i["correlation"] == payload["correlation"]
                 ]
             }
-        if operation == "create":
+        if operation in {"create", "decide"}:
             found = self.invoke("find", {"correlation": payload["correlation"]})["items"]
             if found:
                 return found[0]
@@ -118,6 +119,7 @@ class Tracker:
                 "state": "open",
                 "correlation": payload["correlation"],
                 "labels": list(payload.get("labels", [])),
+                **({"blocks": payload["blocks"]} if operation == "decide" else {}),
             }
             return self.items[number]
         if operation == "query":
@@ -432,6 +434,97 @@ def test_tracker_tools_refuse_to_queue_a_ticket_for_an_agent(tmp_path, label):
     assert updated["status"] == "refused"
     assert "agent" in created["reason"]
     assert [op for op, _ in tracker.payloads if op in {"create", "update"}] == ["create"]
+
+
+DECISION = {
+    "question": "Which store holds the index?",
+    "blocks": "7",
+    "options": ["Git: one more file per change", "SQLite: a binary to review"],
+    "recommendation": "Git, so the index is reviewed with the records.",
+    "default": "Git.",
+    "scope": "Project",
+    "due": "2026-11-20",
+    "labels": ["exec:human", "repo:ai-dlc"],
+}
+
+
+def test_tracker_create_decision_files_once_with_its_fields_and_link(tmp_path):
+    tracker = Tracker(operations=("comment", "query", "update", "decide"))
+    server = tracker_server(tmp_path, tracker)
+
+    first, second = call(
+        server,
+        ("tracker_create_decision", DECISION),
+        ("tracker_create_decision", DECISION),
+    )
+
+    assert first["status"] == "created"
+    assert first["labels"] == ["decision", "exec:human", "repo:ai-dlc"]
+    assert first["item"]["blocks"] == "7"
+    assert second["item"]["id"] == first["item"]["id"]
+    (payload,) = [p for op, p in tracker.payloads if op == "decide"][:1]
+    assert payload["options"] == DECISION["options"]
+    assert payload["due"] == "2026-11-20" and payload["scope"] == "Project"
+    assert len(tracker.items) == 1
+
+
+@pytest.mark.parametrize(
+    "change, reason",
+    [
+        ({"labels": ["exec:agent"]}, "agent"),
+        ({"question": "Pick a store."}, "?"),
+        ({"options": ["only one"]}, "options"),
+        ({"due": "next week"}, "due"),
+    ],
+)
+def test_tracker_create_decision_refuses_before_writing(tmp_path, change, reason):
+    tracker = Tracker(operations=("comment", "query", "update", "decide"))
+    server = tracker_server(tmp_path, tracker)
+
+    (result,) = call(server, ("tracker_create_decision", {**DECISION, **change}))
+
+    assert result["status"] == "refused"
+    assert reason in result["reason"]
+    assert not [op for op, _ in tracker.payloads if op == "decide"] or tracker.items == {}
+
+
+def test_tracker_create_decision_refuses_a_provider_without_decisions(tmp_path):
+    tracker = Tracker()
+    server = tracker_server(tmp_path, tracker)
+
+    (result,) = call(server, ("tracker_create_decision", DECISION))
+
+    assert result["status"] == "refused" and "cannot file a decision" in result["reason"]
+    assert tracker.items == {}
+
+
+def test_tracker_create_passes_a_type_fields_parent_and_links_where_offered(tmp_path):
+    tracker = Tracker(operations=("comment", "query", "update", "create_typed"))
+    server = tracker_server(tmp_path, tracker)
+    typed = {
+        "title": "t",
+        "issue_type": "10045",
+        "fields": [{"field": "customfield_10100", "value": ["A", "B"]}],
+        "parent": "KAN-1",
+        "links": [{"type": "Blocks", "target": "KAN-2"}],
+    }
+
+    (created,) = call(server, ("tracker_create", typed))
+
+    assert created["status"] == "created"
+    (payload,) = [p for op, p in tracker.payloads if op == "create"]
+    assert payload["parent"] == "KAN-1" and payload["links"][0]["target"] == "KAN-2"
+    assert payload["fields"] == {"customfield_10100": ["A", "B"]}
+
+
+def test_tracker_create_refuses_a_type_or_links_the_provider_cannot_set(tmp_path):
+    tracker = Tracker()
+    server = tracker_server(tmp_path, tracker)
+
+    (created,) = call(server, ("tracker_create", {"title": "t", "parent": "KAN-1"}))
+
+    assert created["status"] == "refused" and "parent" in created["reason"]
+    assert tracker.items == {}
 
 
 def test_tracker_update_replaces_labels_but_keeps_one_a_person_set(tmp_path):

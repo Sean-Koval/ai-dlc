@@ -27,6 +27,53 @@ PAYLOAD = {
 }
 
 
+DECISION_SETTINGS = {
+    "issue_type_id": "45",
+    "fields": {
+        "options": "customfield_10100",
+        "recommendation": "customfield_10101",
+        "default": "customfield_10102",
+        "scope": "customfield_10104",
+        "due": "customfield_10106",
+    },
+}
+
+
+def textarea(key, required=True):
+    return {
+        **field(key, "string", required),
+        "schema": {
+            "type": "string",
+            "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+        },
+    }
+
+
+def decision_fields():
+    """The create fields of a Decision work type, as KAN has them."""
+    return [
+        field("project", "project", True),
+        field("issuetype", "issuetype", True),
+        field("summary", required=True),
+        field("description"),
+        labels_field(),
+        textarea("customfield_10100"),
+        textarea("customfield_10101"),
+        textarea("customfield_10102"),
+        field(
+            "customfield_10104",
+            "option",
+            True,
+            allowedValues=[
+                {"id": "10200", "value": "Ticket"},
+                {"id": "10201", "value": "Project"},
+                {"id": "10202", "value": "Suite"},
+            ],
+        ),
+        field("customfield_10106", "date", True),
+    ]
+
+
 def labels_field():
     return {**field("labels", "array"), "schema": {"type": "array", "items": "string"}}
 
@@ -55,6 +102,9 @@ class Jira:
         self.lost_create = False
         self.hidden = False
         self.search_override = None
+        self.decision_fields = None  # set to decision_fields() to offer the Decision type
+        self.drop_links = False  # a site that answers 201 but keeps no link
+        self.extra_types = {}  # further work types: their ID to their create fields
         self.fields = [
             field("project", "project", True),
             field("issuetype", "issuetype", True),
@@ -99,7 +149,30 @@ class Jira:
         elif path == "resolution":
             data = [{"id": "1000", "name": "Done"}, {"id": "2000", "name": "Won't do"}]
         elif path == "issue/createmeta/100/issuetypes":
-            data = self.page([{"id": "10", "name": "Task", "subtask": False}], "issueTypes")
+            types = [{"id": "10", "name": "Task", "subtask": False}]
+            if self.decision_fields is not None:
+                types.append({"id": "45", "name": "Decision", "subtask": False})
+            types += [{"id": key, "name": key, "subtask": False} for key in self.extra_types]
+            data = self.page(types, "issueTypes")
+        elif path.removeprefix("issue/createmeta/100/issuetypes/") in self.extra_types:
+            data = self.page(self.extra_types[path.rsplit("/", 1)[1]], "fields")
+        elif path == "issue/createmeta/100/issuetypes/45" and self.decision_fields is not None:
+            data = self.page(self.decision_fields, "fields")
+        elif path == "issueLink" and request.method == "POST":
+            # Jira's POST semantics (atlassian-mcp-server#112): the inwardIssue takes the type's
+            # outward description, so inwardIssue "blocks" outwardIssue. Each side then reads
+            # the other: the blocker as {outwardIssue: blocked}, the blocked as {inwardIssue: ...}.
+            source, target = body["inwardIssue"]["id"], body["outwardIssue"]["id"]
+            if not self.drop_links:
+                for own, key, other in (
+                    (source, "outwardIssue", target),
+                    (target, "inwardIssue", source),
+                ):
+                    row = next(i for i in self.issues if i["id"] == own)
+                    row["fields"].setdefault("issuelinks", []).append(
+                        {"type": body["type"], key: {"id": other}}
+                    )
+            return httpx.Response(201)
         elif path == "issue/createmeta/100/issuetypes/10":
             data = self.page(self.fields, "fields")
         elif path == "search/jql":
@@ -116,7 +189,11 @@ class Jira:
                 "properties": {p["key"]: p["value"] for p in body["properties"]},
             }
             row["fields"].update(
-                {"status": {"id": "1", "statusCategory": {"key": "new"}}, "resolution": None}
+                {
+                    "status": {"id": "1", "statusCategory": {"key": "new"}},
+                    "resolution": None,
+                    "issuelinks": [],
+                }
             )
             self.issues.append(row)
             if self.lost_create:
