@@ -21,6 +21,8 @@ A Source record carries work-copilot's source envelope in its frontmatter, with 
 markdown body as the envelope ``body``; :func:`envelope` returns that envelope.
 """
 
+import hashlib
+import json
 import re
 from collections.abc import Iterable
 from datetime import date as Day
@@ -41,7 +43,11 @@ from pydantic import (
 from ai_dlc.documentation.knowledge_notes import AUTHOR_PATTERN, Check, split
 
 FORMAT_VERSION = 1
-"""Version of the record format; knowledge repos pin it as ``[format] version``."""
+"""Version of the record format; knowledge repos pin it as ``[format] version``.
+
+Any schema change moves it: ``contracts/knowledge-record.versions.toml`` publishes the
+schema hash per version, and ``scripts/check_generated.py`` fails on drift (KAN-504).
+"""
 ENVELOPE_VERSION = 1
 """``schema_version`` of the work-copilot source envelope carried by Source records."""
 
@@ -391,6 +397,78 @@ def schema() -> dict:
     # OKF 5.2 also allows one bare verification mapping; Python wraps it in a list.
     published["properties"]["verified"]["anyOf"].insert(1, {"$ref": "#/$defs/Verification"})
     return published
+
+
+def schema_sha256(published: dict | None = None) -> str:
+    """SHA-256 of a record schema (default: this one) in canonical JSON.
+
+    ``contracts/knowledge-record.versions.toml`` publishes it per :data:`FORMAT_VERSION`,
+    so a vendored copy can be checked against the version it claims (KAN-504).
+    """
+    canonical = json.dumps(
+        schema() if published is None else published, sort_keys=True, separators=(",", ":")
+    )
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def version_errors(registry: dict) -> list[str]:
+    """Check the published versions name this schema under :data:`FORMAT_VERSION`.
+
+    Fails when the schema changed but the version did not move, so every pin names
+    the contract its data follows.
+    """
+    tables = registry.get("versions")
+    if not isinstance(tables, dict) or not tables:
+        return ["versions: publish at least one [versions.N] table"]
+    try:
+        published = {int(key): value for key, value in tables.items()}
+    except ValueError:
+        return ["versions: table names must be integers"]
+    found, current = [], schema_sha256()
+    if FORMAT_VERSION != max(published):
+        found.append(
+            f"FORMAT_VERSION {FORMAT_VERSION} is not the newest published {max(published)}"
+        )
+    for version, table in sorted(published.items()):
+        if version != FORMAT_VERSION and current in (
+            table.get("sha256"),
+            *table.get("superseded", ()),
+        ):
+            found.append(f"the schema matches published version {version}, not {FORMAT_VERSION}")
+    entry = published.get(FORMAT_VERSION, {})
+    if entry.get("sha256") != current:
+        found.append(
+            f"the record schema changed but FORMAT_VERSION is still {FORMAT_VERSION}: "
+            f"bump FORMAT_VERSION and add a new [versions.N] table; a published table never "
+            "changes"
+            if entry
+            else f"versions.{FORMAT_VERSION}: publish sha256 = {current!r}"
+        )
+    return found
+
+
+def append_errors(base: dict, head: dict) -> list[str]:
+    """Check ``head``'s published versions only append to ``base``'s.
+
+    A table on the base branch keeps its ``sha256`` and may only grow ``superseded``;
+    new tables are allowed. Editing a published hash would let one version name two
+    contracts, so it fails and the change must bump :data:`FORMAT_VERSION` instead.
+    """
+    found = []
+    old, new = base.get("versions", {}), head.get("versions", {})
+    for version, table in sorted(old.items()):
+        if version not in new:
+            found.append(f"versions.{version}: a published version cannot be removed")
+            continue
+        if new[version].get("sha256") != table.get("sha256"):
+            found.append(
+                f"versions.{version}: its sha256 is published and cannot change; bump "
+                "FORMAT_VERSION and add a new table instead"
+            )
+        dropped = set(table.get("superseded", ())) - set(new[version].get("superseded", ()))
+        if dropped:
+            found.append(f"versions.{version}: superseded hashes may be added, never removed")
+    return found
 
 
 def errors(data: dict) -> list[str]:

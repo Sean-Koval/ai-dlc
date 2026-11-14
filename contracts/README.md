@@ -16,6 +16,10 @@ knowledge-note format ([ADR 0004](../docs/decisions/0004-knowledge-system-scope.
 Records are Open Knowledge Format v0.2 documents, and their field names follow OKF's.
 The schema does not assert `format`. Consumers that use only the schema must stringify
 YAML dates and enable a format checker. `ai-dlc knowledge check` is the authority.
+`knowledge-record.versions.toml` publishes the schema's SHA-256 per format version and is
+edited by hand and append-only against the base branch. Any schema change bumps `FORMAT_VERSION` and adds a version there;
+`scripts/check_generated.py` fails otherwise. A vendored copy is current only when its
+canonical hash equals the `sha256` of the version it claims (KAN-504).
 `capture-run.schema.json` is one capture batch run (KAN-458): what it pulled, filtered,
 extracted and spent. The batch writes one per line of its run log, kept where it runs.
 It is generated from `ai_dlc.documentation.knowledge_stats.CaptureRun`;
