@@ -74,7 +74,7 @@ Machine enrollment mutations are CLI-only in this cycle. MCP exposes
 `knowledge_stats` (read-only outcome numbers),
 `knowledge_pull_transcripts` (the transcripts role's caller),
 `knowledge_search`, `knowledge_get`, `knowledge_propose`, `knowledge_template`,
-`tracker_get`, `tracker_search`, `tracker_create`, `tracker_update` and
+`tracker_get`, `tracker_search`, `tracker_create`, `tracker_create_decision`, `tracker_update` and
 `tracker_comment` (role-level; they refuse `exec:agent` and never change status),
 plus the documentation and workspace tools below; it does
 not expose machine enrollment mutation. These MCP identifiers differ from the
