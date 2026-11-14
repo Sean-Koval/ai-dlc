@@ -31,7 +31,9 @@ and no other record may quote their body, cite them or their paths in ``sources`
 link into their project from its body. Index, render and search keep them out of
 team-scope views with :func:`visible_in` and :func:`team_inputs`.
 
-A customer knowledge repository (KAN-475) declares ``[repo] boundary = "customer"`` and
+Customer knowledge lives only in a customer knowledge repository (KAN-503): a
+``boundary: customer`` record in any other repository fails. A customer knowledge
+repository (KAN-475) declares ``[repo] boundary = "customer"`` and
 ``project = "<name>"`` in ``knowledge.toml``. There every record is a customer record of
 that project under ``projects/<name>/``, every typed link resolves to a record of the
 repository, no path in ``sources`` or the body leaves it, and a ``[wiki]`` names the
@@ -858,6 +860,10 @@ def passages(text: str) -> set[tuple[str, ...]]:
 # --- Customer repository: the whole repository is one customer project (KAN-475) -----
 
 REPO = "repo"
+TEAM_REPO_CUSTOMER = (
+    "a boundary: customer record belongs in its customer's own repository, whose "
+    'knowledge.toml declares [repo] boundary = "customer"; move it there'
+)
 _SCHEME = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
 _DRIVE = re.compile(r"^[A-Za-z]:")  # a one-letter scheme is a drive
 _AUTOLINK = re.compile(r"<([A-Za-z][A-Za-z0-9+.-]*:[^>\s]*)>")
@@ -900,8 +906,15 @@ def _escapes(relative: str) -> bool:
 def _check_customer_repo(
     bundle: _Bundle, index: dict[str, str], settings: tuple[Path, str, dict] | None
 ) -> None:
-    """In a declared customer repository nothing points outside it (KAN-475)."""
-    if settings is None:
+    """In a declared customer repository nothing points outside it (KAN-475).
+
+    Anywhere else a ``boundary: customer`` record fails: customer knowledge lives only
+    in its customer's own repository, never in a team one (KAN-503).
+    """
+    if settings is None or settings[2].get(REPO) is None:
+        for path, record in bundle.records.items():
+            if is_customer(record):
+                bundle.fail(path, "/boundary", TEAM_REPO_CUSTOMER)
         return
     config_path, shown, parsed = settings
     root = config_path.parent.resolve()

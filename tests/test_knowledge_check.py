@@ -12,6 +12,7 @@ from typer.testing import CliRunner
 
 from ai_dlc.cli import app
 from ai_dlc.documentation.knowledge_check import (
+    TEAM_REPO_CUSTOMER,
     check_records,
     project_of,
     team_inputs,
@@ -377,13 +378,62 @@ def test_pre_commit_hook_and_reusable_workflow_run_the_check():
     assert '--base "origin/$BASE_REF"' in steps[-1]["run"]
 
 
-# Customer boundary (KAN-465)
+# Customer boundary (KAN-465). These bundles are team repositories holding customer
+# records, which KAN-503 refuses outright; the KAN-465 rules still hold beneath that
+# refusal, so the tests below set it aside with ``rules`` to look at them.
 
 
-def test_mixed_boundary_bundle_passes():
+def rules(result):
+    """The failures other than KAN-503's refusal of customer records in a team repository."""
+    return [item for item in result["failures"] if item["message"] != TEAM_REPO_CUSTOMER]
+
+
+def test_mixed_boundary_bundle_passes_but_for_its_customer_records():
     result = check_records(BOUNDARY)
-    assert result["failures"] == [], result["failures"]
+    assert rules(result) == [], result["failures"]
     assert result["records"] == 8
+    refused = [item for item in result["failures"] if item not in rules(result)]
+    assert refused and all(item["pointer"] == "/boundary" for item in refused)
+
+
+def test_a_team_repository_refuses_a_customer_record(tmp_path):
+    (tmp_path / "knowledge.toml").write_text(PIN)
+    (tmp_path / "projects/alpha").mkdir(parents=True)
+    extra = "boundary: customer\nproject: alpha\n"
+    (tmp_path / "projects/alpha/a.md").write_text(
+        record(kind="lesson", status="open", scope="project", extra=extra)
+    )
+    result = check_records(tmp_path)
+    assert result["status"] == "invalid"
+    assert result["failures"] == [
+        {"path": "projects/alpha/a.md", "pointer": "/boundary", "message": TEAM_REPO_CUSTOMER}
+    ]
+
+
+def test_a_customer_record_without_any_knowledge_toml_fails(tmp_path):
+    (tmp_path / "projects/alpha").mkdir(parents=True)
+    extra = "boundary: customer\nproject: alpha\n"
+    (tmp_path / "projects/alpha/a.md").write_text(
+        record(kind="lesson", status="open", scope="project", extra=extra)
+    )
+    failures = check_records(tmp_path)["failures"]
+    assert {
+        "path": "projects/alpha/a.md",
+        "pointer": "/boundary",
+        "message": TEAM_REPO_CUSTOMER,
+    } in failures
+
+
+def test_a_customer_repository_keeps_its_customer_records(tmp_path):
+    (tmp_path / "knowledge.toml").write_text(
+        PIN + '[repo]\nboundary = "customer"\nproject = "alpha"\n'
+    )
+    (tmp_path / "projects/alpha").mkdir(parents=True)
+    extra = "boundary: customer\nproject: alpha\n"
+    (tmp_path / "projects/alpha/a.md").write_text(
+        record(kind="lesson", status="open", scope="project", extra=extra)
+    )
+    assert check_records(tmp_path)["failures"] == []
 
 
 def test_customer_failures_do_not_echo_customer_text():
@@ -401,7 +451,7 @@ def test_a_customer_record_links_out_but_nothing_links_in(tmp_path):
             "links: []", "links:\n  - {type: implements, target: LES-0002}"
         )
     )
-    failures = check_records(tmp_path / "kb")["failures"]
+    failures = rules(check_records(tmp_path / "kb"))
     assert [(item["path"], item["pointer"]) for item in failures] == [
         ("projects/internal/decisions/DEC-0001.md", "/links/0/target")
     ]
@@ -410,10 +460,10 @@ def test_a_customer_record_links_out_but_nothing_links_in(tmp_path):
 
 def test_a_project_subfolder_is_placed_by_the_knowledge_toml_root(tmp_path):
     shutil.copytree(BOUNDARY, tmp_path / "kb")
-    assert check_records(tmp_path / "kb/projects/beta")["failures"] == []
+    assert rules(check_records(tmp_path / "kb/projects/beta")) == []
     moved = tmp_path / "kb/team/LES-0002.md"
     (tmp_path / "kb/projects/beta/lessons/LES-0002.md").rename(moved)
-    failures = check_records(tmp_path / "kb/team")["failures"]
+    failures = rules(check_records(tmp_path / "kb/team"))
     assert [(item["path"], item["pointer"]) for item in failures] == [
         ("LES-0002.md", "/boundary"),
         ("LES-0002.md", "/scope"),
@@ -470,7 +520,7 @@ def test_a_team_record_cites_no_customer_record_or_path(tmp_path, entry):
     lesson = record(kind="lesson", status="open", sources="\n  - " + entry)
     (tmp_path / "kb/a.md").write_text(lesson)
     (tmp_path / "kb/projects/alpha/x.vtt").write_text("cited, so it exists\n")
-    failures = check_records(tmp_path / "kb")["failures"]
+    failures = rules(check_records(tmp_path / "kb"))
     assert [(item["path"], item["pointer"]) for item in failures] == [("a.md", "/sources/0")]
 
 
@@ -500,7 +550,7 @@ def test_a_body_link_into_a_customer_project_fails(tmp_path, located, body, fail
     target.parent.mkdir(parents=True, exist_ok=True)
     scope = "project" if located.startswith("projects/") else "team"
     target.write_text(record(kind="convention", status="active", body=body, scope=scope))
-    failures = check_records(tmp_path / "kb")["failures"]
+    failures = rules(check_records(tmp_path / "kb"))
     assert bool(failures) is fails, failures
 
 
