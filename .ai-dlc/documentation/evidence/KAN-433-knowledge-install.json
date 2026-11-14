@@ -67,7 +67,7 @@
         "src/ai_dlc/cli.py": "d3be6b7f0e09c0d24988dcffc03bd77cb738bf03da83dce6209df6d7f721e8c1",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
         "src/ai_dlc/conformance.py": "0ff247c065e89d4c5b43d844601dc809558c65a779c1600371953c0e2c44737b",
-        "src/ai_dlc/contracts.py": "84fbc955bbcbf93bebb3602e82804e87e9a1afd21d25fa003fae0187f81a35fc",
+        "src/ai_dlc/contracts.py": "a4d4b2eea44af5dc5cc24146a6e5ca5e6e219ece612a5c53d692836e54bc137e",
         "src/ai_dlc/documentation/__init__.py": "5141eae0b642888ca6b89cda9054e4509fbd46efdc6a68a07276d5b2ef6a89ba",
         "src/ai_dlc/documentation/catalog.py": "7760064e27e0c2293210c21f2e3017ae9833d7f51f14513a845f38b94ceadb27",
         "src/ai_dlc/documentation/decisions.py": "ab81ad8426665668da3fb18dce2eba3020fbed9476d964ea277352a2092a286c",
@@ -129,7 +129,7 @@
         "src/ai_dlc/harness/windows_render.py": "8aa76c8aacc44d28a2117b3339ad7b632b91fdbe0a5557af50228dcd2aa0eeb0",
         "src/ai_dlc/harness/workflow_bundles.py": "f212293a5500cd65b95e7f4e21a27839d85d3b6f4a73170d892f8977884da288",
         "src/ai_dlc/locking.py": "d39ea1ba783e72aae903f9d69c114745ee0b83d02197bbc9572568836e4e7fa3",
-        "src/ai_dlc/mcp_server.py": "ee2b303897ed82e3191539cf1826d0dec244c00dbfd9adeaf4a2202f5087b59c",
+        "src/ai_dlc/mcp_server.py": "3cc4e5c274a3ecf7aec32d839610145c95eece20b769fd3039630e6331cd9647",
         "src/ai_dlc/provider_definitions.py": "467bec9146a1379a2f17ac07faaf1e6807729d362609d711545ff632ff3f9da7",
         "src/ai_dlc/providers/__init__.py": "d930764e2cc89cd86eeb88b817b9f79c1a9bf991fea68764cf279c0f9e028390",
         "src/ai_dlc/providers/confluence_cloud.py": "d7f7c890569142753e8f97f7dec7dea08ac61c5fd897d691c7ccfbf44a6b13ef",
@@ -137,7 +137,7 @@
         "src/ai_dlc/providers/github_issues.py": "8945d5b0049d7f7940c8c478e13bf576a897295e463a69b3510d6e2982ed1f08",
         "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
         "src/ai_dlc/providers/google_meet.py": "5139524a2272fe768eabb40cf8e5a063db6e843e12640a02aa14b0d743ee4579",
-        "src/ai_dlc/providers/jira_cloud.py": "2bdd63d076937893a0212ecda219b226e2f6b6c943f3c8b72aeed33ae26bc8d0",
+        "src/ai_dlc/providers/jira_cloud.py": "bbef03025118754eb551fdcb1461a8b7fd658e011a94cf2b435f6a3f7954aaa6",
         "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
         "src/ai_dlc/providers/plane.py": "eebff96a72615706f56234a3fdbdbec6e5ac49785259bc8e068ff50e89381572",
         "src/ai_dlc/providers/plane_attempts.py": "da576a7f52dd7860c2340b72c91b39f2c9d84bbb7c983cd8bc2cc1871c56333b",
@@ -176,7 +176,7 @@
         "src/ai_dlc/work/session_key.py": "84160d9cdf41c9283eceda580d1ee6b292f78b505f8c8113dcf1db6c01a14c42",
         "src/ai_dlc/work/summary.py": "af386fc470b222d5c7b600ea3169ee7f26be7bdfafdcac8b4098b1fff2f0bd8e",
         "src/ai_dlc/work/traceability.py": "d41ded35df018053d8be4ef9115b4d2104de657e367d14b08c383f774d00dc39",
-        "src/ai_dlc/work/tracker_items.py": "b8c7f1d85eb7f228253a97113bbeb0c771ef17e4ad0f265007d7c8b24f2737a3",
+        "src/ai_dlc/work/tracker_items.py": "772529d790154ba5103e8b045f07d0c80c5f72791678a863a732fc174c20de09",
         "src/ai_dlc/work/tracker_migration.py": "61c867844d0c23d7bff5640e2313479be4ee4e6b8bc89d9463279d7d431c09cc",
         "src/ai_dlc/work/workflow.py": "0ac7ccd8cc15ee6e6d497e3315b94f9a53bb38d045d2a8c1cbc1e501aae0e4b0",
         "tests/test_cli_entrypoint.py": "f8fd60f45e1976016237d8cc2ba47e77d67e8f8d5bfc180a619d9219e05a8cad",
@@ -190,25 +190,25 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Re-reviewed after merging main (KAN-503's knowledge-check fixes): the knowledge install and doctor work stays inside the existing setup modules and CLI, and the package map still holds.",
+      "reason": "Re-recorded after merging main at c217bd0; the decision is unchanged. Re-reviewed after merging main (KAN-503's knowledge-check fixes): the knowledge install and doctor work stays inside the existing setup modules and CLI, and the package map still holds.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
     {
       "bound": {
-        "docs/assets/front/work.cast": "ae26ecccf0deb4c87f185aff044fd4b49581b3a8ef0dc785202b1d79f5690c42"
+        "docs/assets/front/work.cast": "ffe9f174f41918c0a2b2eb12aa70fbd5d0e514a8742acad6693774f90ecfc04b"
       },
       "outcome": "updated",
-      "reason": "Rebuilt with build.py after merging main (KAN-441) instead of picking a side; only the demo commit hashes differ, and build.py --check passes.",
+      "reason": "Re-recorded after merging main at c217bd0; the decision is unchanged. Rebuilt with build.py after merging main (KAN-441) instead of picking a side; only the demo commit hashes differ, and build.py --check passes.",
       "reviewer": "Claude (agent)",
       "target": "docs/assets/front/work.cast"
     },
     {
       "bound": {
-        "docs/assets/front/work.svg": "f39a9090006b41434ca994fd8363c9bd1223b54a7f46d4177240c4dba86b069b"
+        "docs/assets/front/work.svg": "7af363683be266aa75485c552aeb8119447f281fa8fcb54e180d9c0393e64bc3"
       },
       "outcome": "updated",
-      "reason": "Rebuilt with build.py alongside work.cast after merging main; only the demo commit hashes differ.",
+      "reason": "Re-recorded after merging main at c217bd0; the decision is unchanged. Rebuilt with build.py alongside work.cast after merging main; only the demo commit hashes differ.",
       "reviewer": "Claude (agent)",
       "target": "docs/assets/front/work.svg"
     },
@@ -348,7 +348,7 @@
     {
       "bound": {
         "catalog:docs/workflows/tool-map.md": "d11334cb57c288aab7b01226790b7cc268a28991b3de5f97a98b9818d80be19e",
-        "docs/workflows/tool-map.md": "2e0a83d1f97f49e377ca82e0637f74bc4682969ad7c56851b8de3012708e5196",
+        "docs/workflows/tool-map.md": "7919f8e6c5f6a0e8cc3f372da81498bcbefcdebbe4cb7b58f4f19d83fd47a181",
         "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
@@ -362,7 +362,7 @@
         "src/ai_dlc/environment/version_probes.py": "277808b021e1358742d167601910169a8ef180c5554e6cf592da5fb9c36682d2",
         "src/ai_dlc/harness/agents.py": "72f38f1f69147e4216fe6752636f26e6218c5c6ef85845ffb89828d431effa53",
         "src/ai_dlc/harness/hooks.py": "da2db093ba3fc4d6c8d98ccac9a97a1e2dd268d7e23ee85f8bd0c797a8cff763",
-        "src/ai_dlc/mcp_server.py": "ee2b303897ed82e3191539cf1826d0dec244c00dbfd9adeaf4a2202f5087b59c",
+        "src/ai_dlc/mcp_server.py": "3cc4e5c274a3ecf7aec32d839610145c95eece20b769fd3039630e6331cd9647",
         "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
         "src/ai_dlc/setup/onboarding.py": "a955988850f1dbe1bd50b2e06da61913701b504ed1a11eabe08bed387d0cc552",
         "src/ai_dlc/work/merge_checkout.py": "5d0e168dd4fd2d119c59a77fed0350d4d61b7e837194906bb991b8b35a039e57",
@@ -385,7 +385,7 @@
         "tests/test_workflow.py": "cbe32ce28d12401765be728d730865ed8c79e8a10a4f7cf807a9003753096de0"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Only the knowledge doctor command's help text changed in cli.py; no tool mapping changed.",
+      "reason": "Re-recorded after merging main at c217bd0; the decision is unchanged. Only the knowledge doctor command's help text changed in cli.py; no tool mapping changed.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/tool-map.md"
     },
