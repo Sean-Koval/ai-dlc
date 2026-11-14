@@ -229,3 +229,66 @@ def test_review_cli_and_mcp_boundaries(project, tmp_path):
         ],
     )
     assert invalid.exit_code == 2
+
+
+def mcp_calls(root, *calls):
+    """Run tool calls through a real MCP client session; errors come back as text."""
+    import asyncio
+    import json
+
+    from mcp.shared.memory import create_connected_server_and_client_session
+
+    from ai_dlc.mcp_server import make_server
+
+    async def run():
+        results = []
+        server = make_server(root)._mcp_server
+        async with create_connected_server_and_client_session(server) as client:
+            for name, arguments in calls:
+                result = await client.call_tool(name, arguments)
+                text = result.content[0].text if result.content else ""
+                results.append(text if result.isError else json.loads(text))
+        return results
+
+    return asyncio.run(run())
+
+
+@pytest.mark.parametrize("source", ["catalog", "inventory"])
+def test_typed_packet_and_review_round_trip_through_the_mcp_client(project, source):
+    (project / "ai-dlc.toml").write_text("schema=4\n")
+    (p,) = mcp_calls(
+        project,
+        ("project_docs_review", {"base": "HEAD", "paths": ["docs/a.md"], "source": source}),
+    )
+    assert ("inventory" in p) is (source == "inventory")
+
+    (checked,) = mcp_calls(
+        project, ("project_docs_review_check", {"packet": p, "review": review(p)})
+    )
+
+    assert checked["valid"], checked
+
+
+def test_typed_review_inputs_refuse_coerced_or_unknown_values(project):
+    (project / "ai-dlc.toml").write_text("schema=4\n")
+    (p,) = mcp_calls(project, ("project_docs_review", {"base": "HEAD", "paths": ["docs/a.md"]}))
+    coerced = review(p)
+    coerced["findings"][0]["target"]["start_line"] = "1"
+    unknown_category = review(p)
+    unknown_category["findings"][0]["category"] = "typo"
+    padded = {**p, "note": "not the server's"}
+    extra_finding_field = review(p)
+    extra_finding_field["findings"][0]["severity"] = "high"
+
+    refused = mcp_calls(
+        project,
+        ("project_docs_review_check", {"packet": p, "review": coerced}),
+        ("project_docs_review_check", {"packet": p, "review": unknown_category}),
+        ("project_docs_review_check", {"packet": padded, "review": review(p)}),
+    )
+    (kept,) = mcp_calls(
+        project, ("project_docs_review_check", {"packet": p, "review": extra_finding_field})
+    )
+
+    assert all(isinstance(item, str) and "validation error" in item for item in refused), refused
+    assert kept["valid"], kept

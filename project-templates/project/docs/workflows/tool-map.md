@@ -67,7 +67,7 @@ execution is a later qualification target. Obsidian project portals are the defa
 
 Machine enrollment mutations are CLI-only in this cycle. MCP exposes
 `work_context`, `work_new`, `work_review`, `work_publish`, `work_start`, `work_status`,
-`work_link`, `work_pr`, `work_archive`, `work_finish`,
+`work_show` (resolves a session join key), `work_link`, `work_pr`, `work_archive`, `work_finish`,
 `doctor`, `project_docs_check`, `knowledge_find`, `knowledge_append`, `knowledge_note`,
 `knowledge_check` (validates a knowledge-records directory), `knowledge_index`,
 `knowledge_number_plan`, `knowledge_render` (the wiki's only writer), `knowledge_why`,

@@ -82,7 +82,8 @@ and it refuses to replace a hook another tool wrote.
 
 `ai-dlc work show <query>` takes a whole key, a session ID, a ticket key or a
 work ID. It lists the matching work records with their sessions from the record and
-the local log. A session ID thus resolves back to its ticket.
+the local log. A session ID thus resolves back to its ticket. The MCP tool
+`work_show` does the same for an agent.
 
 In Python, `ai_dlc.work.session_key.read_session_keys(text)` returns every key in
 a commit message, PR body or trace note. `current_session_key()` reads the key
