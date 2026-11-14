@@ -8,6 +8,8 @@ AI_DLC_PLAN=false
 # Source mode prepares one environment per checkout. The shared aliases are a
 # machine-wide selection, so a second checkout must not claim them implicitly.
 AI_DLC_PUBLISH_ALIASES=auto
+# --knowledge also installs the team harness and the knowledge repository (KAN-433).
+AI_DLC_KNOWLEDGE=false
 while [ "$#" -gt 0 ]; do
     case "$1" in
         --source) AI_DLC_MODE=source; shift ;;
@@ -15,6 +17,7 @@ while [ "$#" -gt 0 ]; do
         --target) AI_DLC_TARGET=$2; shift 2 ;;
         --root) AI_DLC_ROOT=$2; shift 2 ;;
         --plan) AI_DLC_PLAN=true; shift ;;
+        --knowledge) AI_DLC_KNOWLEDGE=true; shift ;;
         *) echo "Unknown bootstrap argument: $1" >&2; exit 2 ;;
     esac
 done
@@ -27,7 +30,7 @@ fi
 . "$AI_DLC_ROOT/bootstrap/download.sh"
 AI_DLC_BOOTSTRAP_HOME=${AI_DLC_BOOTSTRAP_HOME:-${XDG_DATA_HOME:-$HOME/.local/share}/ai-dlc/bootstrap}
 if [ "$AI_DLC_PLAN" = true ]; then
-    printf 'platform=%s\nmode=%s\nuv=%s\npython=%s\nmise=%s\ntarget=%s\npublish_aliases=%s\n' "$AI_DLC_PLATFORM" "$AI_DLC_MODE" "$AI_DLC_UV_URL" "$AI_DLC_PYTHON_VERSION" "$AI_DLC_MISE_URL" "$AI_DLC_TARGET" "$AI_DLC_PUBLISH_ALIASES"
+    printf 'platform=%s\nmode=%s\nuv=%s\npython=%s\nmise=%s\ntarget=%s\npublish_aliases=%s\nknowledge=%s\n' "$AI_DLC_PLATFORM" "$AI_DLC_MODE" "$AI_DLC_UV_URL" "$AI_DLC_PYTHON_VERSION" "$AI_DLC_MISE_URL" "$AI_DLC_TARGET" "$AI_DLC_PUBLISH_ALIASES" "$AI_DLC_KNOWLEDGE"
     exit 0
 fi
 if [ "$AI_DLC_MODE" = release ]; then
@@ -90,6 +93,11 @@ else
 fi
 export PATH="$(dirname "$AI_DLC_CLI"):$PATH"
 "$AI_DLC_CLI" project setup --root "$AI_DLC_ROOT" --target "$AI_DLC_TARGET"
+if [ "$AI_DLC_KNOWLEDGE" = true ]; then
+    "$AI_DLC_CLI" knowledge install
+    "$AI_DLC_CLI" knowledge doctor --root "$AI_DLC_ROOT" ||
+        printf 'Knowledge install done; the doctor lines marked fail above name what to fix.\n' >&2
+fi
 if [ -n "${GITHUB_PATH:-}" ]; then
     printf '%s\n%s\n' "$(dirname "$AI_DLC_CLI")" "$AI_DLC_BOOTSTRAP_HOME/bin" >> "$GITHUB_PATH"
 fi

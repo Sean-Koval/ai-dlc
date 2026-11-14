@@ -35,6 +35,38 @@ jobs:
           path: ${{ runner.temp }}/ai-dlc-receipt.json
           if-no-files-found: error
 
+  team-harness-contract:
+    # KAN-433: `ai-dlc knowledge install` runs team-harness's real scripts/install_local.py, so a contract break
+    # between the two repositories shows up here instead of on a teammate's machine. team-harness is public, so no
+    # token is needed. TEAM_HARNESS_REF is a commit, not a branch, so this job only changes when the pin is bumped.
+    name: Knowledge install against team-harness
+    runs-on: ubuntu-24.04
+    env:
+      # team-harness main at the #73 merge: stable is suite-default r15 and work-default r17, whose guards fail closed
+      # (exit 2) on a call they can't read, as the KAN-460 probe needs (the r2/r3 stables before #65 fail it), and the
+      # printed stdio `claude mcp add` names the server before --env, so Claude Code accepts it.
+      TEAM_HARNESS_REF: 0f6ed23b6956ec2e14c6517cb2625936f01e0757
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: Sean-Koval/team-harness
+          ref: ${{ env.TEAM_HARNESS_REF }}
+          path: team-harness
+          fetch-depth: 0  # the installer finds a channel's pinned harness in git history
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Prepare test runtime
+        run: |
+          python -m pip install uv==0.9.11
+          uv sync --locked
+      - name: Install and uninstall with the real harness installer
+        env:
+          AI_DLC_TEAM_HARNESS: ${{ github.workspace }}/team-harness
+        run: uv run --locked --no-sync python -m pytest -q tests/test_knowledge_install.py -k real_team_harness -rs
+
   windows-core:
     name: Native Windows core (windows-2025)
     runs-on: windows-2025
@@ -58,7 +90,7 @@ jobs:
           Write-Output 'Native core integration on hosted Windows Server; this is not Windows 11 desktop, installer or client qualification.'
       - name: Exercise core without a POSIX shell
         run: |
-          uv run --locked --no-sync python -m pytest -q tests/test_portable_imports.py tests/test_portable_commands.py tests/test_windows_storage.py tests/test_windows_document_dispatch.py tests/test_windows_core.py tests/test_windows_render.py tests/test_template_recovery.py tests/test_windows_bundle_refusal.py tests/test_environment_report.py tests/test_environment_report_collection.py tests/test_environment_report_probes.py tests/test_environment_report_files.py tests/test_environment_report_cli.py tests/test_merge_checkout.py tests/test_finish_merged_checkout.py --junitxml=windows-core-results.xml
+          uv run --locked --no-sync python -m pytest -q tests/test_portable_imports.py tests/test_portable_commands.py tests/test_windows_storage.py tests/test_windows_document_dispatch.py tests/test_windows_core.py tests/test_windows_render.py tests/test_template_recovery.py tests/test_windows_bundle_refusal.py tests/test_environment_report.py tests/test_environment_report_collection.py tests/test_environment_report_probes.py tests/test_environment_report_files.py tests/test_environment_report_cli.py tests/test_merge_checkout.py tests/test_finish_merged_checkout.py tests/test_knowledge_install.py --junitxml=windows-core-results.xml
       - uses: actions/upload-artifact@v4
         if: always()
         with:

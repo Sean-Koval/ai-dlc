@@ -85,6 +85,7 @@ nav:
       - Brownfield workflow: workflows/brownfield.md
       - Behavior-check rehearsal: workflows/behavior-check.md
       - Work-computer setup: workflows/work-computer-setup.md
+      - Team knowledge install: workflows/knowledge-install.md
   - Guides:
       - Development workflow: development-workflow.md
       - Workflow tool map: workflows/tool-map.md
