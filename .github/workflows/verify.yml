@@ -42,10 +42,10 @@ jobs:
     name: Knowledge install against team-harness
     runs-on: ubuntu-24.04
     env:
-      # team-harness main on 2026-11-13 (#59 merge). Both stable channels at this commit fail its own KAN-460 guard
-      # probe (their guards exit 0 on a call they can't read), so this job is red until team-harness promotes a
-      # release whose guards fail closed; that is a team-harness bug, not this repository's.
-      TEAM_HARNESS_REF: 63af926f973f4c4f4b96826349894d8514cc7974
+      # team-harness#65 (KAN-508) head: stable promoted to suite-default r15 and work-default r17, whose guards fail
+      # closed (exit 2) on a call they can't read, as the KAN-460 probe needs. Re-pin to team-harness main once #65
+      # merges; the r2/r3 stables before it fail the probe.
+      TEAM_HARNESS_REF: 696a46ce9b43ae3af5cfb3f7cad52c0fc1638ebe
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
