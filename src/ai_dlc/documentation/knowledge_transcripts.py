@@ -35,6 +35,11 @@ Once customer rules exist, a transcript that matches none goes to the team repos
 only when every participant matches ``[transcripts] internal`` (internal email domains or
 addresses, or exact names when the provider gives no emails); otherwise it is skipped and
 logged. A customer transcript is reported by id and project only.
+
+Routing fails closed (KAN-503): until ``knowledge.toml`` holds a customer rule or says
+``[transcripts] no_customers = true``, every transcript is skipped and nothing is
+written, since any of them may be a customer meeting. ``no_customers`` and customer
+rules together are refused.
 """
 
 import hashlib
@@ -111,6 +116,14 @@ def routing(root: Path) -> dict:
             "knowledge.toml [[transcripts.projects]] is retired: customer transcripts go to "
             "the customer's own repository through [[transcripts.customers]]"
         )
+    no_customers = table.get("no_customers", False)
+    if not isinstance(no_customers, bool):
+        raise RefusedError("knowledge.toml [transcripts] no_customers is true or false")
+    if no_customers and table.get("customers"):
+        raise RefusedError(
+            "knowledge.toml [transcripts] no_customers = true contradicts its "
+            "[[transcripts.customers]] rules; keep one"
+        )
     customers, warnings = [], []
     for number, entry in enumerate(table.get("customers") or []):
         where = f"knowledge.toml [[transcripts.customers]] entry {number + 1}"
@@ -149,12 +162,17 @@ def routing(root: Path) -> dict:
         "scope": scope,
         "customers": customers,
         "internal": [v.strip().casefold() for v in internal],
+        "no_customers": no_customers,
         "warnings": warnings,
     }
 
 
 def route(
-    item: Mapping[str, Any], customers: list[dict], internal: list[str] | None = None
+    item: Mapping[str, Any],
+    customers: list[dict],
+    internal: list[str] | None = None,
+    *,
+    no_customers: bool = False,
 ) -> dict | None | str:
     """The customer a transcript belongs to, None for the team repository, or a skip reason.
 
@@ -162,8 +180,11 @@ def route(
     whose title holds a customer's title term only inside a longer word. Once customer
     rules exist, a transcript that matches none goes to the team repository only when
     every participant is internal (KAN-475); otherwise it may be an unmapped customer
-    meeting, so it goes nowhere and is reported.
+    meeting, so it goes nowhere and is reported. With no customer rules at all, only an
+    explicit ``no_customers`` lets a transcript into the team repository (KAN-503).
     """
+    if not customers and not no_customers:
+        return NO_RULES
     title = _folded(str(item.get("title", "")))
     names = [str(p).strip().casefold() for p in item.get("participants") or [] if str(p).strip()]
     emails = [str(e).strip().casefold() for e in item.get("emails") or [] if str(e).strip()]
@@ -262,6 +283,10 @@ class _People:
         return " ".join(name.casefold().split()) in self.names
 
 
+NO_RULES = (
+    "no customer rules: add [[transcripts.customers]] to knowledge.toml, or set "
+    "[transcripts] no_customers = true if no meeting is ever a customer's"
+)
 _BARE = "is a whole top-level or public domain; give a domain such as @alpha.example"
 _BARE_WORD = (
     "is one word, so it matches only a participant with that exact name; write a "
@@ -528,7 +553,12 @@ class TranscriptPull:
         }
 
         def target(item: Mapping[str, Any]) -> tuple[Path, dict | None] | str:
-            customer = route(item, settings["customers"], settings["internal"])
+            customer = route(
+                item,
+                settings["customers"],
+                settings["internal"],
+                no_customers=settings["no_customers"],
+            )
             if customer is None:
                 return root, None
             if isinstance(customer, str):

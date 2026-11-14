@@ -19,7 +19,13 @@ from ai_dlc.cli import app
 from ai_dlc.contracts import manifest, validate_response
 from ai_dlc.documentation import knowledge_records as records
 from ai_dlc.documentation.knowledge_check import check_records
-from ai_dlc.documentation.knowledge_transcripts import TranscriptPull, parse_since, route, routing
+from ai_dlc.documentation.knowledge_transcripts import (
+    NO_RULES,
+    TranscriptPull,
+    parse_since,
+    route,
+    routing,
+)
 from ai_dlc.errors import RefusedError, UncertainError
 from ai_dlc.providers import Registry, transcripts_common
 from ai_dlc.providers.google_meet import GoogleMeet, parse
@@ -469,7 +475,10 @@ def test_route_matches_title_or_participant_email():
     assert route({"title": "x", "participants": ["Sean"]}, customers, ["Sean"]) is None
     exact = {"title": "x", "participants": ["A"], "emails": ["a@partner.io"]}
     assert route(exact, customers, ["a@partner.io"]) is None
-    assert route({"title": "other"}, []) is None  # no customer rules: team only
+    # No customer rules: nothing routes until no_customers says so (KAN-503).
+    assert route({"title": "other"}, []) == NO_RULES
+    assert route({"title": "other"}, [], internal) == NO_RULES
+    assert route({"title": "other"}, [], no_customers=True) is None
 
 
 def test_customer_rules_match_whole_title_words_and_exact_participants():
@@ -667,6 +676,54 @@ def test_unmapped_customer_meeting_goes_to_no_repository(tmp_path):
     assert "not every participant is internal" in skipped["Qx9YzZalpha=="]
     for repo in (root, alpha):
         assert not any("Qx9YzZalpha" in p.read_text() for p in repo.rglob("*") if p.is_file())
+
+
+def test_a_pull_without_customer_rules_writes_nothing_and_skips_every_transcript(tmp_path):
+    """Fail closed (KAN-503): with no rules, any meeting may be a customer's."""
+    root = knowledge_repo(tmp_path, routes="")
+    before = md_files(root)
+    reg = registry(FakeZoom(), FakeDrive())
+    result = TranscriptPull(tmp_path, CONFIG, into=root, registry=reg, environ=ENV).pull(
+        "2026-11-01"
+    )
+    assert result["status"] == "ok" and result["written"] == [] and result["planned"] == []
+    skipped = {entry["id"]: entry["reason"] for entry in result["skipped"]}
+    assert skipped["Qx9YzZalpha=="] == NO_RULES  # a non-internal participant: skipped
+    assert skipped["/aB+c//dE=="] == NO_RULES  # even an all-internal meeting
+    assert all(
+        "title" not in entry for entry in result["skipped"] if entry["id"] == "Qx9YzZalpha=="
+    )
+    assert md_files(root) == before
+    assert not (root / "inbox/transcripts").exists()
+
+
+def test_no_customers_true_lets_transcripts_into_the_team_repository(tmp_path):
+    root = knowledge_repo(tmp_path, routes="no_customers = true\n")
+    reg = registry(FakeZoom(), FakeDrive())
+    result = TranscriptPull(
+        tmp_path, CONFIG, providers=["zoom"], into=root, registry=reg, environ=ENV
+    ).pull("2026-11-01")
+    written = {entry["id"]: entry for entry in result["written"]}
+    assert written["/aB+c//dE=="]["repository"] == str(root)
+
+
+@pytest.mark.parametrize(
+    ("routes", "message"),
+    [
+        ('no_customers = "yes"\n', "no_customers is true or false"),
+        ("no_customers = true\n" + ALPHA, "contradicts"),
+    ],
+)
+def test_no_customers_must_be_a_boolean_and_exclusive_with_rules(tmp_path, routes, message):
+    root = knowledge_repo(tmp_path, routes)
+    with pytest.raises(RefusedError, match=message):
+        routing(root)
+    reg = registry(FakeZoom(), FakeDrive())
+    result = TranscriptPull(tmp_path, CONFIG, into=root, registry=reg, environ=ENV).pull(
+        "2026-11-01"
+    )
+    assert result["status"] == "refused" and message in result["reason"]
+    assert not (root / "inbox/transcripts").exists()
 
 
 def test_since_needs_an_offset_and_config_needs_an_owner(tmp_path):
