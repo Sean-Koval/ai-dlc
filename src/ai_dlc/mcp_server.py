@@ -315,6 +315,37 @@ def _register_knowledge_why_tool(server: FastMCP, root: Path) -> None:
         return why(root / records, id, project=project)
 
 
+def _register_knowledge_stats_tool(server: FastMCP, root: Path, config: dict, registry) -> None:
+    @server.tool()
+    def knowledge_stats(
+        since: str,
+        records: str = ".",
+        project: str | None = None,
+        log: str | None = None,
+        agent_repositories: list[str] | None = None,
+    ) -> dict:
+        """Measure the 1.0 outcomes: capture, review, agent loop and health; read-only.
+
+        ``since`` is an ISO date or time; ``records`` and ``log`` are relative to the
+        project. Reads git, the scm and tracker roles and, with ``log``, the capture
+        batch's run log (.jsonl, .json or a folder). Without the project's ai-dlc.toml,
+        a role or the log, those numbers read not measured; a wrong-shaped log is an
+        error. Customer numbers count only in a view of their own ``project``.
+        """
+        from datetime import datetime
+
+        from ai_dlc.documentation import knowledge_stats as measure
+
+        # As the command: no ai-dlc.toml means no roles, not the packaged defaults'.
+        roles = config if (root / "ai-dlc.toml").is_file() else None
+        wired = measure.from_roles(
+            roles, root, agent_repositories=agent_repositories or (), registry=registry
+        )
+        moment = datetime.fromisoformat(since)
+        run_log = root / log if log else None
+        return measure.stats(root / records, moment, project=project, log=run_log, **wired)
+
+
 def _register_knowledge_records_tools(server: FastMCP, root: Path, config: dict, registry) -> None:
     from ai_dlc.documentation.knowledge_service import ProposedRecord
 
@@ -490,6 +521,7 @@ def make_server(root: Path, machine: Path | None = None, *, registry: Any = None
     _register_knowledge_tools(server, root, config)
     _register_knowledge_record_tools(server, root)
     _register_knowledge_why_tool(server, root)
+    _register_knowledge_stats_tool(server, root, config, registry)
     _register_knowledge_records_tools(server, root, config, registry)
     _register_tracker_tools(server, root, config, registry)
     _register_transcripts_tool(server, root, config)
