@@ -101,8 +101,9 @@ def world(tmp_path):
         "XDG_CACHE_HOME": str(home / ".cache"),
         "KNOWLEDGE_REPO": knowledge.as_uri(),
         "TEAM_HARNESS_REPO": str(harness),
+        "TEAM_HARNESS": "suite-default",
     }
-    for name in ("TEAM_HARNESS", "TEAM_HARNESS_CHANNEL", "KNOWLEDGE_CHECKOUT"):
+    for name in ("TEAM_HARNESS_CHANNEL", "KNOWLEDGE_CHECKOUT"):
         environ.pop(name, None)
     return home, environ
 
@@ -162,6 +163,16 @@ def test_prompts_only_for_absent_variables(world):
 
     knowledge_install.install(home, environ, prompt=prompt)
     assert asked == ["KNOWLEDGE_REPO"]
+
+
+def test_an_unset_harness_is_asked_for_not_defaulted(world):
+    """KAN-433 review: a teammate who omits TEAM_HARNESS must not silently get the suite's own harness."""
+    home, environ = world
+    del environ["TEAM_HARNESS"]
+    before = snapshot(home)
+    with pytest.raises(RefusedError, match="TEAM_HARNESS"):
+        knowledge_install.install(home, environ)
+    assert snapshot(home) == before
 
 
 def test_missing_tools_are_named_before_anything_is_written(world, tmp_path):
@@ -316,14 +327,16 @@ def test_doctor_cli_exits_non_zero_on_a_failing_line(world, monkeypatch):
 @pytest.mark.skipif(
     not os.environ.get("AI_DLC_TEAM_HARNESS"), reason="set AI_DLC_TEAM_HARNESS to a checkout"
 )
-def test_round_trip_with_the_real_team_harness(world):
+@pytest.mark.parametrize("harness", ["suite-default", "work-default"])
+def test_round_trip_with_the_real_team_harness(world, harness):
     home, environ = world
     environ["TEAM_HARNESS_REPO"] = os.environ["AI_DLC_TEAM_HARNESS"]
+    environ["TEAM_HARNESS"] = harness
     environ["TEAM_HARNESS_CHANNEL"] = os.environ.get("AI_DLC_TEAM_HARNESS_CHANNEL", "stable")
     before = snapshot(home)
     knowledge_install.install(home, environ)
     manifest = json.loads((home / ".claude" / "team-harness.json").read_text())
-    assert manifest["harness"] == "suite-default"
+    assert manifest["harness"] == harness
     assert snapshot(home)["skills/mine/SKILL.md"] == before["skills/mine/SKILL.md"]
     knowledge_install.uninstall(home, environ)
     assert snapshot(home) == before
