@@ -2,10 +2,10 @@
   "decisions": [
     {
       "bound": {
-        "changes/KAN-494.fixed.md": "bf079537cbedf7a4753e93e1b328c03b99dde3725bd0c2d71167947ac1516b64"
+        "changes/KAN-494.fixed.md": "6d9148a5260436342125d252e00194d7a7c95869753cbe9f65ba07421c5e5ebe"
       },
       "outcome": "updated",
-      "reason": "KAN-494: the changelog fragment for this change.",
+      "reason": "KAN-494: the changelog fragment for this change. Search prints JSON unless stdout is a terminal, and --format text|json forces either, so skills that parse it keep working.",
       "reviewer": "Claude (agent)",
       "target": "changes/KAN-494.fixed.md"
     },
@@ -64,7 +64,7 @@
         "src/ai_dlc/_windows_storage/__init__.py": "5715def899453f15265e13d52e5b518844cc9d057421cfa5279172d799d5f506",
         "src/ai_dlc/_windows_storage/_api.py": "d5fc4f971db8e706871c06e8119884848e505af6c45f4fbb5c2f7db513faf41b",
         "src/ai_dlc/_windows_storage/_security.py": "62785d4e088cd485816a33f35a7a559d3d1acf166093c413a3f4f79969056314",
-        "src/ai_dlc/cli.py": "157950bdc61adf7ef8c2a5bc7483e14940bf899b52fffc00702b05dcaaf23a41",
+        "src/ai_dlc/cli.py": "825e2cb72442fd6b19767b157fe1f2d0211617d868ec23d6a1414898a26274bc",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
         "src/ai_dlc/conformance.py": "0ff247c065e89d4c5b43d844601dc809558c65a779c1600371953c0e2c44737b",
         "src/ai_dlc/contracts.py": "84fbc955bbcbf93bebb3602e82804e87e9a1afd21d25fa003fae0187f81a35fc",
@@ -187,7 +187,7 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "KAN-494: the package map is unchanged; search ranking lives in the existing knowledge service and why gains ticket-key resolution.",
+      "reason": "KAN-494: the package map is unchanged; search ranking lives in the existing knowledge service and why gains ticket-key resolution. Search prints JSON unless stdout is a terminal, and --format text|json forces either, so skills that parse it keep working.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
@@ -197,7 +197,7 @@
         "catalog:docs/design/local-and-shared-knowledge.md": "07f5768759a08b2a425954beae4109ab59f515e126fa644a99c91fcaebb6fff9",
         "contracts/knowledge-note.schema.json": "f3cbc791e2caae2223bf223e8b27b5b7ce553405b76f32cf5689fa7fe68bb1a5",
         "contracts/knowledge-record.schema.json": "eda789937b670f3bc527ebffc366464af650bf3464defab33e084b0409444f59",
-        "docs/design/local-and-shared-knowledge.md": "18a47789ef4a53d3ba066b37b2fe148df0f6e9893238c30c354ae21cf2c6d040",
+        "docs/design/local-and-shared-knowledge.md": "e8dd0f2bf6317cfbd70f47861582982313eba6db6c85d28179926860b640ab9b",
         "openspec/specs/obsidian-vault-linking/spec.md": "d84ce7a57b2da5a621898c93e4b0a118312656dcd3995c39ebac33fb5ab5ed93",
         "openspec/specs/session-learnings/spec.md": "6320178e67f7957b25c11850773a631258bc13e5812cbcdb88c126434ba3aaf4",
         "src/ai_dlc/documentation/knowledge.py": "ec96182b6eb15a396dbcb62235de1ea9c218844132153bd9e0297717839c52b4",
@@ -224,7 +224,7 @@
         "tests/test_workspace_diagnostics.py": "b871a375fe4a4063c5ccfbaaf5eb1c7b000b0e26ec5697930837cc733d4a52a9"
       },
       "outcome": "updated",
-      "reason": "KAN-494: the command examples show search --root on a clone and why with a ticket key; the page's prose word count is unchanged.",
+      "reason": "KAN-494: the command examples show search --root on a clone and why with a ticket key; the page's prose word count is unchanged. Search prints JSON unless stdout is a terminal, and --format text|json forces either, so skills that parse it keep working.",
       "reviewer": "Claude (agent)",
       "target": "docs/design/local-and-shared-knowledge.md"
     },
@@ -245,7 +245,7 @@
         "project-templates/project/docs/templates/delivery-slice.md": "44d1e55bdd17e5fe0cf4c1d35d99ffad8f6060575ecb97496515b48a0e304429",
         "project-templates/project/scripts/check_tests.py": "a3dd2021b7911d2ff688142776b7a43af60f76e052d7164086db2434db60102d",
         "project-templates/project/tests/test_main.py": "4e6ac9def60ea5a6aef9e004c465cc439acac4b33e4f70df332939f0cdfae63d",
-        "src/ai_dlc/cli.py": "157950bdc61adf7ef8c2a5bc7483e14940bf899b52fffc00702b05dcaaf23a41",
+        "src/ai_dlc/cli.py": "825e2cb72442fd6b19767b157fe1f2d0211617d868ec23d6a1414898a26274bc",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
         "src/ai_dlc/harness/agents.py": "72f38f1f69147e4216fe6752636f26e6218c5c6ef85845ffb89828d431effa53",
         "src/ai_dlc/harness/hooks.py": "da2db093ba3fc4d6c8d98ccac9a97a1e2dd268d7e23ee85f8bd0c797a8cff763",
@@ -268,7 +268,7 @@
         "tests/test_workflow.py": "cbe32ce28d12401765be728d730865ed8c79e8a10a4f7cf807a9003753096de0"
       },
       "outcome": "reviewed-no-change",
-      "reason": "KAN-494: the development loop is unchanged; cli.py only gains search --json and compact rows.",
+      "reason": "KAN-494: the development loop is unchanged; cli.py only gains search --json and compact rows. Search prints JSON unless stdout is a terminal, and --format text|json forces either, so skills that parse it keep working.",
       "reviewer": "Claude (agent)",
       "target": "docs/development-workflow.md"
     },
@@ -282,7 +282,7 @@
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/release-publication/spec.md": "947c0c18d616ba27fd3667cb071adb08e7a83bbef2f3a98b8541b8a2f2b2bd3d",
         "scripts/release_manifest.py": "8c8da59a2c19f78309d3a697c2170eb53ac54022b67bbf0365f2bece35e68c48",
-        "src/ai_dlc/cli.py": "157950bdc61adf7ef8c2a5bc7483e14940bf899b52fffc00702b05dcaaf23a41",
+        "src/ai_dlc/cli.py": "825e2cb72442fd6b19767b157fe1f2d0211617d868ec23d6a1414898a26274bc",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
         "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
@@ -300,7 +300,7 @@
         "tests/test_release_workflow.py": "a50523b5d6dec682188d489780d29a74f2a01c60c310071ce6758898f3d12dc0"
       },
       "outcome": "reviewed-no-change",
-      "reason": "KAN-494: release gates are unchanged; the change is covered by unit tests on fixtures and a rerun of the O1 drill questions.",
+      "reason": "KAN-494: release gates are unchanged; the change is covered by unit tests on fixtures and a rerun of the O1 drill questions. Search prints JSON unless stdout is a terminal, and --format text|json forces either, so skills that parse it keep working.",
       "reviewer": "Claude (agent)",
       "target": "docs/release-verification.md"
     },
@@ -338,7 +338,7 @@
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/native-work-harnesses/spec.md": "ac5b9e0e3c52cc34bcaa6137cf9097c4fdf811f382e919769aed34bd82b6efe2",
         "openspec/specs/spec-delivery-traceability/spec.md": "66641acf9c151792cde1914062630ed50cc4199cdc3bdb4b81382e03716f2ea3",
-        "src/ai_dlc/cli.py": "157950bdc61adf7ef8c2a5bc7483e14940bf899b52fffc00702b05dcaaf23a41",
+        "src/ai_dlc/cli.py": "825e2cb72442fd6b19767b157fe1f2d0211617d868ec23d6a1414898a26274bc",
         "src/ai_dlc/config.py": "3aca28b9320f656689676636ca456ca88dc07a8b6b3a605fa5e33809ca592692",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
@@ -370,7 +370,7 @@
         "tests/test_workflow.py": "cbe32ce28d12401765be728d730865ed8c79e8a10a4f7cf807a9003753096de0"
       },
       "outcome": "reviewed-no-change",
-      "reason": "KAN-494: no new tool or command; records search and why keep their names.",
+      "reason": "KAN-494: no new tool or command; records search and why keep their names. Search prints JSON unless stdout is a terminal, and --format text|json forces either, so skills that parse it keep working.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/tool-map.md"
     },
@@ -380,7 +380,7 @@
         "docs/workflows/work-computer-setup.md": "6a6b849511affc491b227896981914c1b8f021c6e3541250c1dad554d75a5444",
         "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
-        "src/ai_dlc/cli.py": "157950bdc61adf7ef8c2a5bc7483e14940bf899b52fffc00702b05dcaaf23a41",
+        "src/ai_dlc/cli.py": "825e2cb72442fd6b19767b157fe1f2d0211617d868ec23d6a1414898a26274bc",
         "src/ai_dlc/environment/report.py": "8f4ba9207841a68976f3e5a67b4b7b6d52406843f4d9e02acfe1083ac7f58ab1",
         "src/ai_dlc/environment/report_compare.py": "00ef4b59db4db1d06fae8c8d11740b7e9010f8be5eb68e9eb7037ae1ff85a4fe",
         "src/ai_dlc/environment/report_io.py": "89774406d15dfd74af3084cd2a71f80054ca132c7ee288fe95a739516193acf7",
@@ -396,25 +396,25 @@
         "tests/test_environment_report_probes.py": "4b29011c54a11d5d2e6b470784e28f0beed30c40369485f7638d789dcfccb7be"
       },
       "outcome": "reviewed-no-change",
-      "reason": "KAN-494: setup is unchanged; search --root needs no KNOWLEDGE_REPO now, which removes a step rather than adding one.",
+      "reason": "KAN-494: setup is unchanged; search --root needs no KNOWLEDGE_REPO now, which removes a step rather than adding one. Search prints JSON unless stdout is a terminal, and --format text|json forces either, so skills that parse it keep working.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/work-computer-setup.md"
     },
     {
       "bound": {
-        "tests/test_git_knowledge.py": "12aab8dfe89dc19d37d1fe087c16df7363c411ea3283b31e2dd68a3ce373e31e"
+        "tests/test_git_knowledge.py": "5fe7f7512e2ca0ee1eafed40f9a9e24b39c64333b1da5d53f503636bb718c2aa"
       },
       "outcome": "updated",
-      "reason": "KAN-494: the CLI test reads search JSON with --json and checks the compact default row.",
+      "reason": "KAN-494: the CLI test reads search JSON with --json and checks the compact default row. Search prints JSON unless stdout is a terminal, and --format text|json forces either, so skills that parse it keep working.",
       "reviewer": "Claude (agent)",
       "target": "tests/test_git_knowledge.py"
     },
     {
       "bound": {
-        "tests/test_knowledge_search.py": "587867ead1ae5b33e589d67659441be81089ae17e326c1e7e302fc1c977bafa2"
+        "tests/test_knowledge_search.py": "f42ff8aa52046480aceaef7a195a9164e0090840127f7b8517e74c788e0d6def"
       },
       "outcome": "updated",
-      "reason": "KAN-494: new tests for records search --root, ranked compact output, --json and hidden Source records.",
+      "reason": "KAN-494: new tests for records search --root, ranked compact output, --json and hidden Source records. Search prints JSON unless stdout is a terminal, and --format text|json forces either, so skills that parse it keep working.",
       "reviewer": "Claude (agent)",
       "target": "tests/test_knowledge_search.py"
     },
