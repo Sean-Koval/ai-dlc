@@ -7,8 +7,12 @@ and results are validated against the provider contract. Results carry ``status`
 A root that holds ``knowledge.toml`` is itself a knowledge repository: without an
 explicit provider, :meth:`KnowledgeRecords.at` reads it in place with the ``git``
 provider, so ``records search --root <clone>`` needs no ``KNOWLEDGE_REPO`` (KAN-494).
+
+Otherwise records come from a git provider's own ``location``, then ``KNOWLEDGE_REPO``,
+and never from the current checkout (KAN-523); see :func:`_records_store`.
 """
 
+import os
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any, TypedDict
@@ -112,6 +116,38 @@ def _type(item: dict) -> str | None:
     return (item.get("header") or {}).get("type")
 
 
+REPO_PROVIDER = "knowledge-repo"
+
+
+def _records_store(
+    config: dict, selected: str | None, environ: Mapping[str, str] | None
+) -> tuple[dict, str | None]:
+    """The config and provider that serve records, without reading the current checkout.
+
+    A git provider bound to ``roles.knowledge`` keeps its own ``location``, which
+    ``KNOWLEDGE_REPO`` never overrides: a customer checkout bound to its customer
+    repository never falls back to the team repository. Without one, ``KNOWLEDGE_REPO``
+    names the repository. A vault (``obsidian``) or no role serves no records, so then
+    ``KNOWLEDGE_REPO`` is required; an executable records provider is left as selected.
+    """
+    from ai_dlc.providers import provider_kind
+    from ai_dlc.providers.git_knowledge import LOCATION_ENV
+
+    kind = provider_kind(config, selected)
+    if kind == "git" or (selected and kind != "obsidian"):
+        return config, selected
+    location = (os.environ if environ is None else environ).get(LOCATION_ENV)
+    if not location:
+        raise ValueError(
+            f"knowledge unavailable: set {LOCATION_ENV} to the knowledge repository, or bind "
+            "roles.knowledge to a git provider with a location; records are never read "
+            "from the current checkout"
+        )
+    providers = dict(config.get("providers") or {})
+    providers[REPO_PROVIDER] = {"kind": "git", "location": location}
+    return {**config, "providers": providers}, REPO_PROVIDER
+
+
 class KnowledgeRecords:
     @classmethod
     def at(
@@ -152,6 +188,8 @@ class KnowledgeRecords:
 
         self.config = dict(config)
         self.provider = provider or self.config.get("roles", {}).get("knowledge")
+        if provider is None and registry is None:
+            self.config, self.provider = _records_store(self.config, self.provider, environ)
         if not self.provider:
             raise ValueError("knowledge unavailable: select a provider for the knowledge role")
         self.registry = registry or Registry(self.config, root=root, environ=environ)
