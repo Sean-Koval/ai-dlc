@@ -35,7 +35,10 @@ characters), its `speaker`, and `at` (`HH:MM:SS` or a time) or a `permalink`. Ji
 Confluence and ADR sources stay re-fetchable, so a quote there is optional.
 A Source record may list its `participants`.
 `--base REF` also refuses in-place edits to decisions accepted at the merge base and
-deletion of source records. Knowledge repositories run it through `.pre-commit-hooks.yaml` and
+deletion of source records. The one exception (KAN-526): a "Not stated in the source."
+placeholder under Context or Options may be replaced with text that carries a source quote
+(a `>` blockquote or a passage in double quotes) and a link. Every other change to the body,
+the decision, its decider or its status is still refused. Knowledge repositories run it through `.pre-commit-hooks.yaml` and
 the reusable `.github/workflows/knowledge-check.yml`.
 The knowledge role must answer `get {id}` (a record by id or alias, with its body)
 and `search {type, scope, labels, status, text}` (headers only unless `text` is set;

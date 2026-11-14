@@ -23,7 +23,9 @@ A decision accepted by mistake is never edited: a later decision ``retracts`` it
 says why (KAN-479). The link must come from a decision and name an accepted decision.
 
 With ``base`` (CI mode) it also refuses in-place edits of decisions that were accepted
-at the merge base. The CLI and the MCP tool both call :func:`check_records`.
+at the merge base. One body edit is allowed (KAN-526): a "Not stated in the source."
+placeholder under Context or Options may be replaced with text that quotes its source
+and links to it. The CLI and the MCP tool both call :func:`check_records`.
 
 Records with ``boundary: customer`` never leave their project (KAN-465). They must sit
 under ``projects/<name>/``, only customer records of that project may link to them,
@@ -66,6 +68,13 @@ HEADING = re.compile(r"^##[ \t]+(.+?)[ \t]*#*[ \t]*$")
 # and numbering at merge (slug id becomes PREFIX-NNNN and the slug moves to aliases;
 # links and sources that named the slug name the number).
 SUPERSEDE_KEYS = ("status", "valid_to")
+# The one body edit of an accepted decision (KAN-526): a placeholder that backfill wrote
+# under Context or Options gives way to text that quotes the source and links to it.
+PLACEHOLDER = "Not stated in the source."
+FILLABLE = ("context", "options")
+# A source quote: a Markdown blockquote, or a passage in straight or curly double quotes.
+_SOURCE_QUOTE = re.compile(r'^[ \t]*>[ \t]*\S|"[^"\n]*\w[^"\n]*"|“[^”\n]*\w[^”\n]*”', re.MULTILINE)
+_BARE_URL = re.compile(r"\bhttps?://\S")
 # Customer records live in projects/<name>/; a quote is this many words in a row.
 PROJECTS = "projects"
 QUOTE_WORDS = 8
@@ -1216,13 +1225,34 @@ def _compare_accepted(
                 f"accepted decision {name} is edited in place; record the change as a new "
                 "decision that supersedes it",
             )
-    if old_body.strip() != new_body.strip():
+    if old_body.strip() == new_body.strip():
+        return
+    fills = filled_placeholders(old_body, new_body)
+    if fills is None:
         bundle.fail(
             shown,
             "",
             f"accepted decision {name} has its body edited; record the change as a new "
-            "decision that supersedes it",
+            f'decision that supersedes it (only a "{PLACEHOLDER}" placeholder under Context '
+            "or Options may be replaced, with a source quote and a link)",
         )
+        return
+    for heading, text in fills:
+        missing = [
+            what
+            for what, present in (
+                ("source quote (a > blockquote or a passage in double quotes)", _quotes(text)),
+                ("link to the source (a Markdown link or URL)", _links(text)),
+            )
+            if not present
+        ]
+        if missing:
+            bundle.fail(
+                shown,
+                "",
+                f'accepted decision {name}: the text replacing "{PLACEHOLDER}" under '
+                f"{heading} has no {' and no '.join(missing)}",
+            )
 
 
 def _aliases(bundle: _Bundle) -> dict[str, set[str]]:
@@ -1284,3 +1314,84 @@ def _allowed_change(
             and old in (after.get("aliases") or [])
         )
     return False
+
+
+# --- The placeholder fill (KAN-526) --------------------------------------------------
+
+
+def _is_placeholder(line: str) -> bool:
+    text = line.strip().strip("*_").strip().rstrip(".").casefold()
+    return text == PLACEHOLDER.rstrip(".").casefold()
+
+
+def _sections(body: str) -> list[tuple[str | None, str]]:
+    """``(heading, content)`` per level-two section; the text before the first is ``None``."""
+    found: list[tuple[str | None, list[str]]] = [(None, [])]
+    fenced = False
+    for line in body.splitlines():
+        if line.lstrip().startswith(("```", "~~~")):
+            fenced = not fenced
+        match = None if fenced else HEADING.match(line)
+        if match:
+            found.append((match.group(1), []))
+        else:
+            found[-1][1].append(line)
+    return [(heading, "\n".join(lines).strip()) for heading, lines in found]
+
+
+def _fillable(heading: str | None) -> bool:
+    name = (heading or "").strip().casefold()
+    return any(name == item or name.startswith(f"{item} ") for item in FILLABLE)
+
+
+def _replacement(old: str, new: str) -> str | None:
+    """The text that took a placeholder line's place in ``old``, if that is the only change."""
+    lines = old.splitlines()
+    for number, line in enumerate(lines):
+        if not _is_placeholder(line):
+            continue
+        before = "\n".join(lines[:number]).strip()
+        after = "\n".join(lines[number + 1 :]).strip()
+        if not new.startswith(before) or not new.endswith(after):
+            continue
+        end = len(new) - len(after)
+        if end < len(before):
+            continue
+        # The text around the placeholder keeps its lines whole: no edit hides in them.
+        if (before and not new[len(before) : end].startswith("\n")) or (
+            after and not new[len(before) : end].endswith("\n")
+        ):
+            continue
+        middle = new[len(before) : end].strip()
+        if middle and not all(_is_placeholder(item) for item in middle.splitlines() if item):
+            return middle
+    return None
+
+
+def filled_placeholders(old_body: str, new_body: str) -> list[tuple[str, str]] | None:
+    """The ``(heading, text)`` that replaced placeholders, or ``None`` for any other edit.
+
+    The two bodies must have the same sections in the same order. Every section is
+    unchanged except Context or Options sections whose only change is a placeholder line
+    (:data:`PLACEHOLDER`) replaced by new text.
+    """
+    before, after = _sections(old_body), _sections(new_body)
+    if [heading for heading, _text in before] != [heading for heading, _text in after]:
+        return None
+    fills = []
+    for (heading, old), (_same, new) in zip(before, after, strict=True):
+        if old == new:
+            continue
+        text = _replacement(old, new) if _fillable(heading) else None
+        if heading is None or text is None:
+            return None
+        fills.append((heading, text))
+    return fills or None
+
+
+def _quotes(text: str) -> bool:
+    return bool(_SOURCE_QUOTE.search(text))
+
+
+def _links(text: str) -> bool:
+    return bool(_body_links(text)) or bool(_BARE_URL.search(text))
