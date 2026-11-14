@@ -11,6 +11,11 @@ for only when a prompt is given (a terminal); otherwise the install stops and na
 it. What is stored, in ``<config root>/knowledge-install.toml``, is names, paths and
 URLs without credentials. A URL that carries a user name or password is refused.
 
+The harness installer never configures MCP servers or plugins: it prints the
+``claude mcp add`` and ``claude plugin`` commands for the person to run once their
+secrets are set. ``install`` passes those commands on, and records the MCP servers
+so ``ai-dlc knowledge doctor`` can fail, with the command, until each is configured.
+
 ``uninstall`` asks install_local to remove what it installed, removes the hook only
 while it is unchanged, and removes the stored settings. It never deletes the clone,
 which may hold the person's own work.
@@ -19,6 +24,7 @@ which may hold the person's own work.
 import hashlib
 import os
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -198,22 +204,75 @@ def known_harness_checkout(install: Install, source: str) -> Path | None:
     return path if (path / "scripts" / "install_local.py").is_file() else None
 
 
+def hooks_path_set(checkout: Path, environ: Mapping[str, str]) -> bool:
+    configured = run_git(
+        checkout, "config", "--get", "core.hooksPath", environ=environ, check=False
+    )
+    return configured.returncode == 0 and bool(configured.stdout.strip())
+
+
 def hook_path(checkout: Path, environ: Mapping[str, str]) -> Path | None:
     """The clone's own pre-commit hook, or None when git would run one from elsewhere.
 
     With ``core.hooksPath`` set (often a global directory of shared hooks), a hook
-    written there would run in every repository, so none is installed.
+    written there would run in every repository, so none is installed. A linked
+    worktree's hooks live in its repository's common git directory, which is still
+    the knowledge repository's own.
     """
-    configured = run_git(
-        checkout, "config", "--get", "core.hooksPath", environ=environ, check=False
-    )
-    if configured.returncode == 0 and configured.stdout.strip():
+    if hooks_path_set(checkout, environ):
         return None
     found = run_git(checkout, "rev-parse", "--git-path", "hooks/pre-commit", environ=environ)
     path = Path(found.stdout.strip())
-    path = path if path.is_absolute() else checkout / path
-    git_dir = run_git(checkout, "rev-parse", "--absolute-git-dir", environ=environ).stdout.strip()
-    return path if path.resolve().is_relative_to(Path(git_dir).resolve()) else None
+    path = (path if path.is_absolute() else checkout / path).resolve()
+    owned = []
+    for flag in ("--absolute-git-dir", "--git-common-dir"):
+        found = Path(run_git(checkout, "rev-parse", flag, environ=environ).stdout.strip())
+        owned.append((found if found.is_absolute() else checkout / found).resolve())
+    return path if any(path.is_relative_to(directory) for directory in owned) else None
+
+
+_OPTIONS_WITH_VALUE = {"--scope", "-s", "--transport", "-t", "--header", "-H", "--env", "-e"}
+
+
+def mcp_server_name(command: str) -> str | None:
+    """The server a printed ``claude mcp add`` command adds, or None if it is not one."""
+    try:
+        words = shlex.split(command)
+    except ValueError:
+        return None
+    if words[:3] != ["claude", "mcp", "add"]:
+        return None
+    rest = iter(words[3:])
+    for word in rest:
+        if word in _OPTIONS_WITH_VALUE:
+            next(rest, None)
+        elif not word.startswith("-"):
+            return word
+    return None
+
+
+def printed_commands(output: str) -> tuple[dict[str, str], list[str]]:
+    """The MCP server and plugin commands the harness installer printed for the person.
+
+    Returns the MCP servers by name, with their ``claude mcp add`` commands, and the
+    plugin commands. The commands carry ``$VARIABLE`` placeholders, never a value.
+    """
+    servers: dict[str, str] = {}
+    plugins: list[str] = []
+    block = None
+    for line in output.splitlines():
+        if not line.startswith(" "):
+            block = "mcp" if line.startswith("MCP servers:") else None
+            block = "plugins" if line.startswith("Plugins:") else block
+            continue
+        command = line.strip()
+        if not command.startswith("claude "):
+            continue
+        if block == "mcp" and (name := mcp_server_name(command)):
+            servers[name] = command
+        elif block == "plugins":
+            plugins.append(command)
+    return servers, plugins
 
 
 def harness_command(checkout: Path, harness: str, channel: str, home: Path, mode: str) -> list[str]:
@@ -240,7 +299,11 @@ def _run(runner: Runner, command: list[str], cwd: Path, environ: Mapping[str, st
 
 
 def _write_settings(
-    install: Install, values: Mapping[str, str], hook: str | None, preinstalled: bool
+    install: Install,
+    values: Mapping[str, str],
+    hook: str | None,
+    preinstalled: bool,
+    servers: Mapping[str, str] | None = None,
 ) -> None:
     lines = ["# Written by `ai-dlc knowledge install`. Names, paths and URLs only.\n"]
     for name, _default, _about in SETTINGS:
@@ -249,6 +312,10 @@ def _write_settings(
         lines.append(f"hook_sha256 = {_toml(hook)}\n")
     # A harness the person installed before this is theirs: uninstall leaves it.
     lines.append(f"harness_preinstalled = {'true' if preinstalled else 'false'}\n")
+    if servers:
+        # The harness's MCP servers and the commands that add them, for the doctor.
+        lines.append("\n[mcp_servers]\n")
+        lines += [f"{_toml(name)} = {_toml(command)}\n" for name, command in servers.items()]
     atomic_write(install.settings_path, "".join(lines), mode=0o600)
 
 
@@ -298,17 +365,23 @@ def install(
     command = harness_command(
         harness, values["TEAM_HARNESS"], values["TEAM_HARNESS_CHANNEL"], home, "--apply"
     )
-    _run(runner, command, harness, environ, "the team harness install")
+    printed = _run(runner, command, harness, environ, "the team harness install")
     steps.append(f"harness {values['TEAM_HARNESS']}@{values['TEAM_HARNESS_CHANNEL']} installed")
+    servers, plugins = printed_commands(printed.stdout or "")
     checkout = ensure_clone(values["KNOWLEDGE_REPO"], Path(values["KNOWLEDGE_CHECKOUT"]), environ)
     values = {**values, "KNOWLEDGE_CHECKOUT": str(checkout)}
     steps.append(f"knowledge repository at {checkout}")
     hook = hook_path(checkout, environ)
     written: str | None = kept_hook
-    if hook is None:
+    if hook is None and hooks_path_set(checkout, environ):
         steps.append(
             "pre-commit hook not installed: core.hooksPath is set; add "
             "`ai-dlc knowledge check .` to your hooks there"
+        )
+    elif hook is None:
+        steps.append(
+            "pre-commit hook not installed: git runs this clone's hooks from outside it; "
+            "add `ai-dlc knowledge check .` to your pre-commit hook"
         )
     elif hook.exists():
         current = hook.read_text(encoding="utf-8", errors="replace")
@@ -321,9 +394,24 @@ def install(
         atomic_write(hook, HOOK, mode=0o755)
         written = digest(HOOK)
         steps.append(f"pre-commit hook installed at {hook}")
-    _write_settings(target, values, written, preinstalled)
+    _write_settings(target, values, written, preinstalled, servers)
     steps.append(f"settings written to {target.settings_path}")
-    return {"status": "installed", "settings": values, "steps": steps}
+    if servers:
+        steps.append(
+            "MCP servers are not configured yet. Set each $VARIABLE from your secret "
+            "manager, then run (`ai-dlc knowledge doctor` fails until you do):"
+        )
+        steps += [f"  {command}" for command in servers.values()]
+    if plugins:
+        steps.append("Plugins: run these yourself:")
+        steps += [f"  {command}" for command in plugins]
+    return {
+        "status": "installed",
+        "settings": values,
+        "steps": steps,
+        "mcp_servers": servers,
+        "plugins": plugins,
+    }
 
 
 def uninstall(home: Path, environ: Mapping[str, str], *, runner: Runner = subprocess.run) -> dict:

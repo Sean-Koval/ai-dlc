@@ -17,6 +17,10 @@ knowledge repository in one step, without losing their own setup?
    the clone has no pre-commit hook of its own and `core.hooksPath` is unset.
    Where `ai-dlc` is not on git's `PATH`, the hook warns and lets the commit through.
 
+The harness installer never configures MCP servers or plugins, which need your
+secrets. The install ends by printing their commands, each credential a
+`$VARIABLE`. Set those, then run them; the doctor fails until you do.
+
 From a fresh machine, `sh scripts/bootstrap.sh --knowledge` runs the install and
 the doctor after project setup.
 
@@ -56,14 +60,15 @@ harness you installed before running the install is left in place.
 ## Check the result
 
 `ai-dlc knowledge doctor`, or `ai-dlc doctor --knowledge`, prints one line per
-check: `pass`, `fail` or `skip`. It exits non-zero when any line fails. A failing
-line names the variable or step to fix, never a value.
+check: `pass`, `fail`, `skip` or `unverified`. It exits non-zero when any line
+fails. A failing line names the variable or step to fix, never a value.
 
 | Check | Passes when |
 | --- | --- |
 | `prerequisites` | The four tools are on `PATH` |
 | `settings` | An install is recorded |
 | `harness` | The manifest exists and `install_local.py --check` finds no drift; without the team-harness checkout, the line says drift was not checked |
+| `mcp <name>` | Each MCP server the harness declares is configured in `~/.claude.json`; a failing line prints the command to run |
 | `tracker` | The `tracker` role fetches one item |
 | `wiki` | The `wiki` role finds one page |
 | `knowledge check` | The clone passes `ai-dlc knowledge check` |
@@ -71,8 +76,8 @@ line names the variable or step to fix, never a value.
 | `versions` | The clone's `[format] version` matches ai-dlc's |
 
 The tracker and wiki checks read `ai-dlc.toml` at `--root`, so run the doctor in
-the work repository. Without that file, or without a provider for the role, the
-line is `skip`. When a provider names `token_env` or `email_env`, an unset
+the work repository. Without that file, both lines are `unverified` and the
+result is not `ok`. A project that selects no provider for a role gets `skip`. When a provider names `token_env` or `email_env`, an unset
 variable fails the line by name.
 
 The `versions` line prints the format version, the harness, channel, revision and

@@ -1,12 +1,14 @@
 """Knowledge checks for ``ai-dlc doctor --knowledge`` and ``ai-dlc knowledge doctor``.
 
-Each check is one line: ``pass``, ``fail`` or ``skip``, a name and a detail. A failing
-line names the environment variable or the step to fix, never a value: provider
-messages are not repeated, as one could carry a token or a page body. Any ``fail``
-makes the command exit non-zero.
+Each check is one line: ``pass``, ``fail``, ``skip`` or ``unverified``, a name and a
+detail. A failing line names the environment variable or the step to fix, never a
+value: provider messages are not repeated, as one could carry a token or a page body.
+Any ``fail`` makes the command exit non-zero. An ``unverified`` line was not checked
+here, so the result is ``unverified`` rather than ``ok``.
 
 The checks follow the install (:mod:`ai_dlc.setup.knowledge_install`): the tools on
-PATH, the recorded settings, the harness manifest and its drift, the tracker role
+PATH, the recorded settings, the harness manifest and its drift, each MCP server the
+harness declares being configured for Claude Code, the tracker role
 fetching one item, the wiki role finding one page, ``knowledge check`` on the clone,
 one inbox item, and the pinned versions. Two installs of the same channel print the
 same ``versions`` line.
@@ -22,7 +24,10 @@ from ai_dlc.documentation import knowledge_records
 from ai_dlc.setup import knowledge_install as setup
 
 Line = dict[str, str]
-NO_PROJECT = "no ai-dlc.toml at --root; run it in the project that selects the role"
+NO_PROJECT = (
+    "not verified: no ai-dlc.toml at --root; rerun with --root set to a project "
+    "that selects roles.{role}"
+)
 
 
 def _line(name: str, status: str, detail: str) -> Line:
@@ -70,9 +75,37 @@ def check_harness(target: setup.Install, stored: Mapping[str, Any] | None, envir
     return _line("harness", "pass", name + " installed" + unchecked), manifest
 
 
+def _claude_json(home: Path, environ: Mapping[str, str]) -> Path:
+    configured = environ.get("CLAUDE_CONFIG_DIR")
+    return (Path(configured) if configured else home) / ".claude.json"
+
+
+def check_mcp_servers(
+    home: Path, stored: Mapping[str, Any] | None, environ: Mapping[str, str]
+) -> list[Line]:
+    """One line per MCP server the installed harness declares: configured in user scope."""
+    declared = (stored or {}).get("mcp_servers") or {}
+    if stored is None:
+        return []
+    if not isinstance(declared, Mapping) or not declared:
+        return [_line("mcp servers", "pass", "the harness declares none")]
+    try:
+        parsed = json.loads(_claude_json(home, environ).read_text(encoding="utf-8"))
+        configured = (parsed.get("mcpServers") or {}) if isinstance(parsed, dict) else {}
+    except (OSError, ValueError):
+        configured = {}
+    lines = []
+    for name, command in declared.items():
+        if name in configured:
+            lines.append(_line(f"mcp {name}", "pass", "configured for Claude Code (user scope)"))
+        else:
+            lines.append(_line(f"mcp {name}", "fail", f"not configured; run: {command}"))
+    return lines
+
+
 def check_tracker(root: Path, config: Mapping[str, Any] | None, environ: Mapping[str, str]) -> Line:
     if config is None:
-        return _line("tracker", "skip", NO_PROJECT)
+        return _line("tracker", "unverified", NO_PROJECT.format(role="tracker"))
     provider = (config.get("roles") or {}).get("tracker")
     if not provider:
         return _line("tracker", "skip", "no provider selected for roles.tracker")
@@ -94,7 +127,7 @@ def check_tracker(root: Path, config: Mapping[str, Any] | None, environ: Mapping
 
 def check_wiki(root: Path, config: Mapping[str, Any] | None, environ: Mapping[str, str]) -> Line:
     if config is None:
-        return _line("wiki", "skip", NO_PROJECT)
+        return _line("wiki", "unverified", NO_PROJECT.format(role="wiki"))
     provider = (config.get("roles") or {}).get("wiki")
     if not provider:
         return _line("wiki", "skip", "no provider selected for roles.wiki")
@@ -196,6 +229,7 @@ def doctor(
     harness, manifest = check_harness(target, stored, environ, runner)
     lines += [
         harness,
+        *check_mcp_servers(home, stored, environ),
         check_tracker(root, config, environ),
         check_wiki(root, config, environ),
         check_records(checkout),
@@ -203,10 +237,15 @@ def doctor(
         check_versions(checkout, manifest),
     ]
     failed = [line["check"] for line in lines if line["status"] == "fail"]
-    return {"status": "failed" if failed else "ok", "failed": failed, "lines": lines}
+    unverified = [line["check"] for line in lines if line["status"] == "unverified"]
+    status = "failed" if failed else "unverified" if unverified else "ok"
+    return {"status": status, "failed": failed, "unverified": unverified, "lines": lines}
 
 
 def text(result: Mapping[str, Any]) -> str:
-    return "".join(
+    rendered = "".join(
         f"{line['status']:<4}  {line['check']}: {line['detail']}\n" for line in result["lines"]
     )
+    if result.get("unverified") and not result.get("failed"):
+        rendered += "not everything was verified: " + ", ".join(result["unverified"]) + "\n"
+    return rendered

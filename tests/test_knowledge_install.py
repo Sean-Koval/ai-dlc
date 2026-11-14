@@ -40,6 +40,11 @@ if "--apply" in args:
         "model": "pinned-model", "runtime_version": "9.9.9",
         "files": ["skills/team-recall/SKILL.md"],
     }))
+    print("MCP servers: run these yourself, after setting each $VARIABLE from your secret manager:")
+    print('  claude mcp add --scope user --transport http atlassian https://mcp.example.test/v1/mcp'
+          ' --header "Authorization: $ATLASSIAN_MCP_AUTHORIZATION"')
+    print("Plugins: run these yourself:")
+    print("  claude plugin install team@team-harness --scope user")
 elif "--uninstall" in args:
     for name in json.loads(manifest.read_text())["files"]:
         path = claude / name
@@ -106,6 +111,11 @@ def world(tmp_path):
     for name in ("TEAM_HARNESS_CHANNEL", "KNOWLEDGE_CHECKOUT"):
         environ.pop(name, None)
     return home, environ
+
+
+def configure_mcp(home: Path) -> None:
+    """What running the printed `claude mcp add` command leaves in ~/.claude.json."""
+    (home / ".claude.json").write_text(json.dumps({"mcpServers": {"atlassian": {}}}))
 
 
 def snapshot(home: Path) -> dict[str, bytes]:
@@ -240,6 +250,7 @@ def test_two_fresh_installs_print_identical_versions(world, tmp_path):
     lines = []
     for where, env in ((home, environ), (second, other)):
         knowledge_install.install(where, env)
+        configure_mcp(where)
         result = knowledge_doctor.doctor(where, {}, where, env)
         assert result["failed"] == [], knowledge_doctor.text(result)
         lines.append(next(line for line in result["lines"] if line["check"] == "versions"))
@@ -250,18 +261,21 @@ def test_two_fresh_installs_print_identical_versions(world, tmp_path):
 def test_doctor_lines_and_skips(world):
     home, environ = world
     knowledge_install.install(home, environ)
+    configure_mcp(home)
     result = knowledge_doctor.doctor(home, {}, home, environ)
     statuses = {line["check"]: line["status"] for line in result["lines"]}
     assert statuses == {
         "prerequisites": "pass",
         "settings": "pass",
         "harness": "pass",
+        "mcp atlassian": "pass",
         "tracker": "skip",
         "wiki": "skip",
         "knowledge check": "pass",
         "inbox": "pass",
         "versions": "pass",
     }
+    assert result["status"] == "ok"
     inbox = next(line for line in result["lines"] if line["check"] == "inbox")
     assert "inbox/transcripts/call.md" in inbox["detail"]
 
@@ -288,6 +302,7 @@ TRACKER = {
 def test_doctor_fails_naming_the_variable_never_the_value(world, monkeypatch):
     home, environ = world
     knowledge_install.install(home, environ)
+    configure_mcp(home)
     result = knowledge_doctor.doctor(home, TRACKER, home, environ)
     tracker = next(line for line in result["lines"] if line["check"] == "tracker")
     assert tracker == {"check": "tracker", "status": "fail", "detail": "set JIRA_TOKEN, JIRA_EMAIL"}
@@ -322,7 +337,15 @@ def test_doctor_cli_exits_non_zero_on_a_failing_line(world, monkeypatch):
     result = CliRunner().invoke(
         app, ["knowledge", "doctor", "--home", str(home), "--root", str(home)]
     )
+    assert result.exit_code == 1, result.output
+    assert "fail  mcp atlassian: not configured; run: claude mcp add" in result.output
+    configure_mcp(home)
+    result = CliRunner().invoke(
+        app, ["knowledge", "doctor", "--home", str(home), "--root", str(home)]
+    )
     assert result.exit_code == 0, result.output
+    assert "unverified  tracker: not verified: no ai-dlc.toml" in result.output
+    assert "not everything was verified: tracker, wiki" in result.output
     edited = home / "knowledge" / "knowledge-origin" / "knowledge.toml"
     edited.write_text("[format]\nversion = 2\n")
     result = CliRunner().invoke(
@@ -343,9 +366,14 @@ def test_round_trip_with_the_real_team_harness(world, harness):
     environ["TEAM_HARNESS"] = harness
     environ["TEAM_HARNESS_CHANNEL"] = os.environ.get("AI_DLC_TEAM_HARNESS_CHANNEL", "stable")
     before = snapshot(home)
-    knowledge_install.install(home, environ)
+    result = knowledge_install.install(home, environ)
     manifest = json.loads((home / ".claude" / "team-harness.json").read_text())
     assert manifest["harness"] == harness
+    # The installer prints, never runs, the MCP commands; the install passes them on.
+    if harness == "work-default":
+        assert {"atlassian", "github"} <= set(result["mcp_servers"]), result["steps"]
+    for command in result["mcp_servers"].values():
+        assert command.startswith("claude mcp add ") and f"  {command}" in result["steps"]
     assert snapshot(home)["skills/mine/SKILL.md"] == before["skills/mine/SKILL.md"]
     knowledge_install.uninstall(home, environ)
     assert snapshot(home) == before
@@ -416,3 +444,82 @@ def test_a_reinstall_that_fails_keeps_the_hook_record(world, tmp_path):
 )
 def test_which_urls_carry_credentials(url, refused):
     assert knowledge_install.carries_credentials(url) is refused
+
+
+def test_install_passes_on_the_mcp_commands_and_doctor_names_them(world):
+    """The harness installer prints `claude mcp add` lines; they must reach the person."""
+    home, environ = world
+    result = knowledge_install.install(home, environ)
+    command = result["mcp_servers"]["atlassian"]
+    assert command.startswith("claude mcp add --scope user --transport http atlassian ")
+    assert "$ATLASSIAN_MCP_AUTHORIZATION" in command and f"  {command}" in result["steps"]
+    assert result["plugins"] == ["claude plugin install team@team-harness --scope user"]
+    stored = knowledge_install.read_settings(knowledge_install.Install.for_home(home, environ))
+    assert stored is not None and stored["mcp_servers"] == {"atlassian": command}
+    doctor = knowledge_doctor.doctor(home, {}, home, environ)
+    line = next(line for line in doctor["lines"] if line["check"] == "mcp atlassian")
+    assert line == {
+        "check": "mcp atlassian",
+        "status": "fail",
+        "detail": f"not configured; run: {command}",
+    }
+    assert doctor["failed"] == ["mcp atlassian"]
+    configure_mcp(home)
+    assert knowledge_doctor.doctor(home, {}, home, environ)["failed"] == []
+
+
+def test_doctor_reads_claude_config_dir(world, tmp_path):
+    home, environ = world
+    knowledge_install.install(home, environ)
+    elsewhere = tmp_path / "claude-config"
+    elsewhere.mkdir()
+    (elsewhere / ".claude.json").write_text(json.dumps({"mcpServers": {"atlassian": {}}}))
+    environ["CLAUDE_CONFIG_DIR"] = str(elsewhere)
+    assert knowledge_doctor.doctor(home, {}, home, environ)["failed"] == []
+
+
+def test_without_a_project_tracker_and_wiki_are_unverified_not_ok(world):
+    home, environ = world
+    knowledge_install.install(home, environ)
+    configure_mcp(home)
+    result = knowledge_doctor.doctor(home, None, home, environ)
+    statuses = {line["check"]: line["status"] for line in result["lines"]}
+    assert statuses["tracker"] == statuses["wiki"] == "unverified"
+    assert result["status"] == "unverified" and result["failed"] == []
+    assert result["unverified"] == ["tracker", "wiki"]
+    assert "roles.tracker" in next(x for x in result["lines"] if x["check"] == "tracker")["detail"]
+
+
+@pytest.mark.parametrize(
+    ("command", "name"),
+    [
+        ("claude mcp add --scope user --transport http github https://x.test/mcp/", "github"),
+        (
+            (
+                'claude mcp add --scope user --transport stdio --env "KNOWLEDGE_REPO=$KNOWLEDGE_REPO" '
+                "ai-dlc -- ai-dlc mcp serve"
+            ),
+            "ai-dlc",
+        ),
+        ("claude plugin install x@y --scope user", None),
+        ('claude mcp add "unterminated', None),
+    ],
+)
+def test_mcp_server_name(command, name):
+    assert knowledge_install.mcp_server_name(command) == name
+
+
+def test_a_worktree_checkout_gets_the_repository_hook(world, tmp_path):
+    """A linked worktree runs its repository's hooks; that is still the clone's own."""
+    home, environ = world
+    main = tmp_path / "knowledge-main"
+    git(tmp_path, "clone", "--quiet", environ["KNOWLEDGE_REPO"], str(main))
+    linked = tmp_path / "knowledge-linked"
+    git(main, "worktree", "add", "--quiet", "-b", "linked", str(linked))
+    environ["KNOWLEDGE_REPO"] = str(linked)
+    result = knowledge_install.install(home, environ)
+    hook = main / ".git" / "hooks" / "pre-commit"
+    assert hook.read_text() == knowledge_install.HOOK, result["steps"]
+    assert not any("core.hooksPath" in step for step in result["steps"])
+    knowledge_install.uninstall(home, environ)
+    assert not hook.exists()

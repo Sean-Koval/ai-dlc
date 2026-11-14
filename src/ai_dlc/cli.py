@@ -1704,7 +1704,7 @@ def knowledge_doctor_command(
     home: Annotated[Path | None, typer.Option("--home")] = None,
     json_output: Annotated[bool, typer.Option("--json")] = False,
 ):
-    """One line per knowledge check (pass, fail or skip); exit 1 when any fails."""
+    """One line per knowledge check (pass, fail, skip or unverified); exit 1 when any fails."""
     _knowledge_doctor(root, home, json_output)
 
 
