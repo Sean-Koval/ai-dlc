@@ -194,6 +194,24 @@
     },
     {
       "bound": {
+        "docs/assets/front/work.cast": "257bdbb7eb305a53fc993ed20decf5604b30d5689ee000bb84149bc17d870a85"
+      },
+      "outcome": "updated",
+      "reason": "Rebuilt with build.py after merging main: the packaged tool map lists work_show, so the demo repository's commit hashes changed. Nothing else differs.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.cast"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.svg": "08742026dfec884c8cd05f8fa38dfb4e4fdfb95ff181953ca39e7b414da05618"
+      },
+      "outcome": "updated",
+      "reason": "Rebuilt with build.py alongside work.cast; only the demo commit hashes differ.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.svg"
+    },
+    {
+      "bound": {
         "catalog:docs/design/session-join-key.md": "06116fb1e6d8f52e6807228dbefcb3b30128a2e489ea70eecf257625c07d7cba",
         "docs/design/session-join-key.md": "0dfa54d184e6ce004d3ebb1f82d7249386cbebda17c797767c865338c55d7678",
         "src/ai_dlc/work/commit_hook.py": "efec408521b23517e1d78377191a77c7c4234a7a03ce8d24ea83b523063c046c",
