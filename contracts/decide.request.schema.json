@@ -1,0 +1,166 @@
+{
+  "$defs": {
+    "IssueLink": {
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "description": "The item this one links to, outward.",
+          "minLength": 1,
+          "title": "Target",
+          "type": "string"
+        },
+        "type": {
+          "description": "Link type name, e.g. Blocks.",
+          "minLength": 1,
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "target"
+      ],
+      "title": "IssueLink",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "File a decision for a person that blocks one open work item (``blocks``).\n\nA provider that offers it lists ``decide`` among its optional operations. A repeat\nwith the same correlation returns the first decision and keeps one blocking link.",
+  "properties": {
+    "blocks": {
+      "description": "The work item this decision blocks.",
+      "minLength": 1,
+      "title": "Blocks",
+      "type": "string"
+    },
+    "body": {
+      "default": "",
+      "title": "Body",
+      "type": "string"
+    },
+    "correlation": {
+      "minLength": 1,
+      "title": "Correlation",
+      "type": "string"
+    },
+    "default": {
+      "description": "What happens if nobody answers by due.",
+      "minLength": 1,
+      "title": "Default",
+      "type": "string"
+    },
+    "due": {
+      "description": "ISO date.",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "title": "Due",
+      "type": "string"
+    },
+    "fields": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        ]
+      },
+      "description": "Custom field ID to a plain value: text, a number, a date (YYYY-MM-DD) or the name of an allowed option.",
+      "title": "Fields",
+      "type": "object"
+    },
+    "issue_type": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Native type ID; default: the configured type.",
+      "title": "Issue Type"
+    },
+    "labels": {
+      "description": "Native tracker labels to set. A provider that cannot write labels does not list update among its optional operations, and callers refuse labels before writing.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Labels",
+      "type": "array"
+    },
+    "links": {
+      "description": "Issue links made from the new item, read back.",
+      "items": {
+        "$ref": "#/$defs/IssueLink"
+      },
+      "title": "Links",
+      "type": "array"
+    },
+    "operation_id": {
+      "minLength": 1,
+      "title": "Operation Id",
+      "type": "string"
+    },
+    "options": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 5,
+      "minItems": 2,
+      "title": "Options",
+      "type": "array"
+    },
+    "parent": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Parent item (an epic).",
+      "title": "Parent"
+    },
+    "recommendation": {
+      "minLength": 1,
+      "title": "Recommendation",
+      "type": "string"
+    },
+    "scope": {
+      "minLength": 1,
+      "title": "Scope",
+      "type": "string"
+    },
+    "title": {
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "correlation",
+    "operation_id",
+    "blocks",
+    "options",
+    "recommendation",
+    "default",
+    "scope",
+    "due"
+  ],
+  "title": "Decide",
+  "type": "object"
+}
