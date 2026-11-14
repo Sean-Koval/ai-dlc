@@ -2,10 +2,10 @@
   "decisions": [
     {
       "bound": {
-        "changes/KAN-518.added.md": "795b0c903bf7c630e2a6624c408136b3e17ca84d63bc4ba0d83b8fba41d11eb9"
+        "changes/KAN-518.added.md": "9a7c3112388646d27ec660299b9ea94cbb4b75a4cda3e8aa23381ba39d21baa6"
       },
       "outcome": "updated",
-      "reason": "KAN-518: changelog fragment for typed tracker_create and tracker_create_decision.",
+      "reason": "KAN-518: changelog fragment for typed tracker_create and tracker_create_decision, including the Decision-type refusal.",
       "reviewer": "Claude (agent)",
       "target": "changes/KAN-518.added.md"
     },
@@ -173,7 +173,7 @@
         "src/ai_dlc/providers/github_issues.py": "8945d5b0049d7f7940c8c478e13bf576a897295e463a69b3510d6e2982ed1f08",
         "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
         "src/ai_dlc/providers/google_meet.py": "5139524a2272fe768eabb40cf8e5a063db6e843e12640a02aa14b0d743ee4579",
-        "src/ai_dlc/providers/jira_cloud.py": "8974dcb1d8308374b063e4f038302e88e75da3417d899ea6cb510fa4560ff28e",
+        "src/ai_dlc/providers/jira_cloud.py": "bbef03025118754eb551fdcb1461a8b7fd658e011a94cf2b435f6a3f7954aaa6",
         "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
         "src/ai_dlc/providers/plane.py": "eebff96a72615706f56234a3fdbdbec6e5ac49785259bc8e068ff50e89381572",
         "src/ai_dlc/providers/plane_attempts.py": "da576a7f52dd7860c2340b72c91b39f2c9d84bbb7c983cd8bc2cc1871c56333b",
@@ -224,9 +224,27 @@
         "tests/test_tracker_boundary.py": "048b8de554fd8ad26169984c4efc0b5abad3f4cc604eba20234f8d774e1fc22b"
       },
       "outcome": "reviewed-no-change",
-      "reason": "KAN-518: architecture describes roles and services, not individual tracker tools or operations; the tracker boundary is unchanged.",
+      "reason": "KAN-518 review fix: link direction and Decision-type refusal are provider details; architecture describes roles and services only.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.cast": "8a8d717890f9fc766cffd9792bf9d3b56f3a2464539ed151bf2a0c0ebd595a5d"
+      },
+      "outcome": "updated",
+      "reason": "KAN-518: rebuilt by docs/assets/front/build.py; only commit hashes changed, because the packaged tool map changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.cast"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.svg": "f37df08a934a1ef315db0b4a95f70b76acaa0f1bed8a65cd85be0daffa7ba065"
+      },
+      "outcome": "updated",
+      "reason": "KAN-518: rebuilt by docs/assets/front/build.py with work.cast.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/assets/front/work.svg"
     },
     {
       "bound": {
@@ -270,7 +288,7 @@
         "src/ai_dlc/providers/github_issues.py": "8945d5b0049d7f7940c8c478e13bf576a897295e463a69b3510d6e2982ed1f08",
         "src/ai_dlc/providers/github_projects.py": "ca8967a90935edcfc190ce676a5ed4e9e8a4475207321ed9fa0031a58b2b00c3",
         "src/ai_dlc/providers/google_meet.py": "5139524a2272fe768eabb40cf8e5a063db6e843e12640a02aa14b0d743ee4579",
-        "src/ai_dlc/providers/jira_cloud.py": "8974dcb1d8308374b063e4f038302e88e75da3417d899ea6cb510fa4560ff28e",
+        "src/ai_dlc/providers/jira_cloud.py": "bbef03025118754eb551fdcb1461a8b7fd658e011a94cf2b435f6a3f7954aaa6",
         "src/ai_dlc/providers/openspec.py": "329a39dd258f86b77b405d32ac954241c855990e3ff7225983a85d8cb2ee96c5",
         "src/ai_dlc/providers/plane.py": "eebff96a72615706f56234a3fdbdbec6e5ac49785259bc8e068ff50e89381572",
         "src/ai_dlc/providers/plane_attempts.py": "da576a7f52dd7860c2340b72c91b39f2c9d84bbb7c983cd8bc2cc1871c56333b",
@@ -281,7 +299,7 @@
         "src/ai_dlc/providers/zoom.py": "21cd47dc3650e5156d07c6cd9a7b010c53a1aa9dc5e61d9d808b324d9da1efee"
       },
       "outcome": "reviewed-no-change",
-      "reason": "KAN-518: the page explains how pieces fit; no tracker tool or Jira operation is described there.",
+      "reason": "KAN-518 review fix: no tracker tool or Jira operation is described there.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/how-it-fits.md"
     },
@@ -340,19 +358,19 @@
     },
     {
       "bound": {
-        "tests/fixtures/jira.py": "095fed0ce6672721a866bdcff98583e580606f0432a755a6b3b5882031fffc97"
+        "tests/fixtures/jira.py": "ce7d88581c483b024e0f8958e47e160bcc477c905a7571afa1fb5cca8177dc35"
       },
       "outcome": "updated",
-      "reason": "KAN-518: the fake offers a Decision type and issue links.",
+      "reason": "KAN-518 review fix: the fake follows Jira's POST issueLink semantics (inwardIssue blocks outwardIssue) and offers further work types.",
       "reviewer": "Claude (agent)",
       "target": "tests/fixtures/jira.py"
     },
     {
       "bound": {
-        "tests/test_jira_provider.py": "764cd9294b739fc9f1dcee0ae5b1f03445f42e23b57316a2bfc82e26f72e5f9f"
+        "tests/test_jira_provider.py": "a6ac03e470550528bb98f40c627bf379596f31b1f3cf193f6484a6b1273b98ed"
       },
       "outcome": "updated",
-      "reason": "KAN-518: tests for typed create and decide.",
+      "reason": "KAN-518 review fix: tests for link direction, a reversed payload and the Decision-type refusal.",
       "reviewer": "Claude (agent)",
       "target": "tests/test_jira_provider.py"
     },

@@ -776,7 +776,10 @@ def test_decide_files_a_decision_with_its_fields_and_one_blocking_link(jira):
     options = fields["customfield_10100"]["content"]
     assert [p["content"][0]["text"] for p in options] == ["1. Git", "2. SQLite"]
     assert fields["issuelinks"] == [{"type": {"name": "Blocks"}, "outwardIssue": {"id": "101"}}]
-    assert len(jira.writes("/issueLink")) == 1
+    work = jira.issues[0]["fields"]["issuelinks"]
+    assert work == [{"type": {"name": "Blocks"}, "inwardIssue": {"id": "102"}}]  # "is blocked by"
+    (link,) = jira.writes("/issueLink")
+    assert json.loads(link.content)["inwardIssue"] == {"id": "102"}  # the blocker
     assert "decide" in jira.provider().invoke("capabilities", {})["optional_operations"]
 
 
@@ -810,7 +813,7 @@ def test_decide_refuses_work_that_is_already_closed(jira):
 
 def test_decide_reports_uncertain_when_the_link_does_not_read_back(jira):
     decision_site(jira)
-    jira.reverse_links = True
+    jira.drop_links = True
 
     with pytest.raises(RuntimeError, match="issue link"):
         jira.provider().invoke("decide", DECIDE)
@@ -833,11 +836,13 @@ def test_decision_settings_are_checked(jira, settings):
 
 def test_create_with_a_type_fields_parent_and_a_link(jira):
     decision_site(jira)
+    jira.config["issue_type_ids"] = ["46"]
     jira.decision_fields.append(field("parent", "issuelink"))
+    jira.extra_types = {"46": jira.decision_fields}
     payload = {
         **PAYLOAD,
         "correlation": "<!-- typed -->",
-        "issue_type": "45",
+        "issue_type": "46",
         "fields": {
             "customfield_10100": ["A", "B"],
             "customfield_10101": "A",
@@ -866,5 +871,39 @@ def test_create_refuses_an_unconfigured_type_or_a_system_field(jira):
     with pytest.raises(ValueError, match="custom field"):
         jira.provider().invoke(
             "create", {**PAYLOAD, "correlation": "c2", "fields": {"summary": "x"}}
+        )
+    assert len(jira.issues) == 1
+
+
+def test_a_reversed_link_payload_reads_back_as_the_decision_being_blocked(jira):
+    """The fake keeps Jira's POST semantics, so the payload's sides cannot silently swap."""
+    decision_site(jira)
+    jira.provider().invoke("create", {**PAYLOAD, "correlation": "second"})  # WORK-2, id 102
+    jira.client.post(
+        f"https://api.atlassian.com/ex/jira/{CLOUD}/rest/api/3/issueLink",
+        json={
+            "type": {"name": "Blocks"},
+            "outwardIssue": {"id": "102"},
+            "inwardIssue": {"id": "101"},
+        },
+    )
+
+    assert jira.issues[1]["fields"]["issuelinks"] == [
+        {"type": {"name": "Blocks"}, "inwardIssue": {"id": "101"}}
+    ]
+
+
+def test_create_refuses_the_decision_type(jira):
+    decision_site(jira)
+
+    with pytest.raises(ValueError, match="tracker_create_decision"):
+        jira.provider().invoke(
+            "create",
+            {
+                **PAYLOAD,
+                "correlation": "d",
+                "issue_type": "45",
+                "fields": {"customfield_10105": "1"},
+            },
         )
     assert len(jira.issues) == 1

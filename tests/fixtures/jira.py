@@ -103,7 +103,8 @@ class Jira:
         self.hidden = False
         self.search_override = None
         self.decision_fields = None  # set to decision_fields() to offer the Decision type
-        self.reverse_links = False  # a site that stores a link the other way round
+        self.drop_links = False  # a site that answers 201 but keeps no link
+        self.extra_types = {}  # further work types: their ID to their create fields
         self.fields = [
             field("project", "project", True),
             field("issuetype", "issuetype", True),
@@ -151,19 +152,26 @@ class Jira:
             types = [{"id": "10", "name": "Task", "subtask": False}]
             if self.decision_fields is not None:
                 types.append({"id": "45", "name": "Decision", "subtask": False})
+            types += [{"id": key, "name": key, "subtask": False} for key in self.extra_types]
             data = self.page(types, "issueTypes")
+        elif path.removeprefix("issue/createmeta/100/issuetypes/") in self.extra_types:
+            data = self.page(self.extra_types[path.rsplit("/", 1)[1]], "fields")
         elif path == "issue/createmeta/100/issuetypes/45" and self.decision_fields is not None:
             data = self.page(self.decision_fields, "fields")
         elif path == "issueLink" and request.method == "POST":
-            # Jira's create semantics: outwardIssue blocks inwardIssue. Read from the blocker,
-            # the link shows the blocked issue as its outwardIssue.
-            blocker, blocked = body["outwardIssue"]["id"], body["inwardIssue"]["id"]
-            if self.reverse_links:
-                blocker, blocked = blocked, blocker
-            row = next(i for i in self.issues if i["id"] == blocker)
-            row["fields"].setdefault("issuelinks", []).append(
-                {"type": body["type"], "outwardIssue": {"id": blocked}}
-            )
+            # Jira's POST semantics (atlassian-mcp-server#112): the inwardIssue takes the type's
+            # outward description, so inwardIssue "blocks" outwardIssue. Each side then reads
+            # the other: the blocker as {outwardIssue: blocked}, the blocked as {inwardIssue: ...}.
+            source, target = body["inwardIssue"]["id"], body["outwardIssue"]["id"]
+            if not self.drop_links:
+                for own, key, other in (
+                    (source, "outwardIssue", target),
+                    (target, "inwardIssue", source),
+                ):
+                    row = next(i for i in self.issues if i["id"] == own)
+                    row["fields"].setdefault("issuelinks", []).append(
+                        {"type": body["type"], key: {"id": other}}
+                    )
             return httpx.Response(201)
         elif path == "issue/createmeta/100/issuetypes/10":
             data = self.page(self.fields, "fields")

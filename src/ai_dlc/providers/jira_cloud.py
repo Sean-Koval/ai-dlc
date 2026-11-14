@@ -672,10 +672,14 @@ class JiraCloudProvider:
                 result[key] = value
         return result
 
-    def create(self, payload):
+    def create(self, payload, *, decision=False):
         issue_type_id = payload.get("issue_type") or self.config["issue_type_id"]
         if issue_type_id not in self.config["issue_type_ids"]:
             raise JiraRefusal("Jira work type is not one of the configured issue_type_ids")
+        settings = self.config.get("decision") or {}
+        if issue_type_id == settings.get("issue_type_id") and not decision:
+            # A Decision is filed only by decide, which sets just its question fields.
+            raise JiraRefusal("File a Decision with decide (tracker_create_decision), not create")
         links = [(link["type"], self.read(link["target"])) for link in payload.get("links") or []]
         parent = self.read(payload["parent"]) if payload.get("parent") else None
         existing = self.find(payload["correlation"])["items"]
@@ -750,7 +754,7 @@ class JiraCloudProvider:
             },
             "links": [{"type": settings["link_type"], "target": payload["blocks"]}],
         }
-        return {**self.create(typed), "blocks": work["url"]}
+        return {**self.create(typed, decision=True), "blocks": work["url"]}
 
     def issue_link(self, source_id, target_id, link_type):
         def linked():
@@ -770,15 +774,15 @@ class JiraCloudProvider:
         if linked():
             return
         try:
-            # On create, outwardIssue is the link's source (the one that blocks) and inwardIssue
-            # its target; read from the source, the target shows as outwardIssue.
+            # On POST, inwardIssue takes the type's outward description: inwardIssue
+            # "blocks" outwardIssue. Read from the source, the target shows as outwardIssue.
             self.request(
                 "POST",
                 "issueLink",
                 body={
                     "type": {"name": link_type},
-                    "outwardIssue": {"id": source_id},
-                    "inwardIssue": {"id": target_id},
+                    "inwardIssue": {"id": source_id},
+                    "outwardIssue": {"id": target_id},
                 },
                 empty=True,  # Jira answers 201 with no body
             )
