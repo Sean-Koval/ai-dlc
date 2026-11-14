@@ -16,6 +16,7 @@ from ai_dlc.documentation import knowledge_records as records
 from ai_dlc.documentation.knowledge_bundle import index_records, number_records
 from ai_dlc.documentation.knowledge_check import check_records
 from ai_dlc.documentation.knowledge_notes import split
+from ai_dlc.documentation.knowledge_publish import source_sha256
 
 HASH = "sha256:" + "0" * 64
 STATUS = {"decision": "accepted", "lesson": "open", "source": "processed", "convention": "active"}
@@ -412,3 +413,39 @@ def test_indexes_list_customer_records_only_inside_their_project(tmp_path):
     assert "[lessons/](lessons/)" in pages["projects/alpha/index.md"]
     assert "[internal/](internal/) - 1 record" in pages["projects/index.md"]
     assert "[projects/](projects/) - 1 record" in pages["index.md"]
+
+
+@pytest.mark.parametrize("subfolder", [False, True])
+def test_numbering_rewrites_path_resources_to_renamed_files(tmp_path, subfolder):
+    folder = tmp_path / "kb"
+    folder.mkdir()
+    git(folder, "init", "-q", "-b", "main")
+    (folder / "knowledge.toml").write_text("[format]\nversion = 1\n")
+    source = write(folder, "team/sources/kan-242.md", "source", "kan-242")
+    _data, _raw, body = split(source.read_text())
+    digest = "sha256:" + source_sha256(body.encode("utf-8"))
+    cited = f"  - {{id: kan-242, resource: team/sources/kan-242.md, hash: '{digest}'}}"
+    citing = (
+        ("team/decisions/accepted-one.md", "decision", "accepted-one"),
+        ("team/l.md", "lesson", "a"),
+    )
+    for name, kind, rid in citing:
+        # A body long enough for git to see the numbering rename as a rename.
+        path = write(folder, name, kind, rid, body="Decided after a long discussion.\n" * 12)
+        text = path.read_text().replace("  - {resource: https://example.invalid/1}", cited)
+        path.write_text(text)
+    assert check_records(folder)["failures"] == []
+    git(folder, "add", "-A")
+    git(folder, "commit", "-qm", "base")
+
+    assert number_records(folder / "team" if subfolder else folder)["status"] == "numbered"
+
+    assert not (folder / "team/sources/kan-242.md").exists()
+    for path in ("team/decisions/DEC-0001.md", "team/l.md"):
+        data, _raw, _body = split((folder / path).read_text())
+        assert data is not None
+        assert data["sources"][0]["resource"] == "team/sources/SRC-0001.md", path
+        assert data["sources"][0]["id"] == "SRC-0001"
+    git(folder, "add", "-A")
+    git(folder, "commit", "-qm", "number")
+    assert check_records(folder, base="HEAD~1")["failures"] == []

@@ -1256,10 +1256,26 @@ def _only_renumbered(
             return False
         for name in old:
             if old[name] != new[name] and not (
-                name in fields and _renumbered(old[name], new[name], aliases)
+                name in fields
+                and (
+                    _renumbered(old[name], new[name], aliases)
+                    or (name == "resource" and _renamed_file(old[name], new[name], aliases))
+                )
             ):
                 return False
     return True
+
+
+def _renamed_file(old: object, new: object, aliases: dict[str, set[str]]) -> bool:
+    """``old`` is a path to a slug-named record file that numbering renamed to ``new``."""
+    if not isinstance(old, str) or not isinstance(new, str) or "://" in old:
+        return False
+    before, after = PurePosixPath(old.replace("\\", "/")), PurePosixPath(new)
+    return (
+        before.parent == after.parent
+        and before.suffix == after.suffix == ".md"
+        and _renumbered(before.stem, after.stem, aliases)
+    )
 
 
 def _allowed_change(
