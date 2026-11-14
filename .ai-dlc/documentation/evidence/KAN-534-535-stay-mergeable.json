@@ -1,0 +1,114 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        ".github/workflows/assets.yml": "16132fcf69aeb3622b6788acb954c3e094e91782f8231f5fa4f97d8b5b5ce7db"
+      },
+      "outcome": "no-impact",
+      "reason": "CI only: the PR check builds the front-page assets and names the stale ones in a notice instead of failing; CONTRIBUTING's Parallel pull requests section documents it.",
+      "reviewer": "Claude (agent)",
+      "target": ".github/workflows/assets.yml"
+    },
+    {
+      "bound": {
+        ".github/workflows/generated.yml": "c83cd193c490a80cb75a60e0185d62dc9973e7e73f1cd8824462288c5590884a"
+      },
+      "outcome": "no-impact",
+      "reason": "CI only: rebuilds the front-page assets on main and opens a bot/front-assets PR; documented in CONTRIBUTING and in the workflow's own header.",
+      "reviewer": "Claude (agent)",
+      "target": ".github/workflows/generated.yml"
+    },
+    {
+      "bound": {
+        "CONTRIBUTING.md": "3f3f1dcc1162cd47739cdfd734b8b46b1ebdb570bb6f4048f1296214bb97f4de"
+      },
+      "outcome": "updated",
+      "reason": "Parallel pull requests now says PRs don't commit the front-page assets and what a disposition binds.",
+      "reviewer": "Claude (agent)",
+      "target": "CONTRIBUTING.md"
+    },
+    {
+      "bound": {
+        "changes/KAN-534.changed.md": "f423665124ad737c19cc54441d9129e025acf3cf110bf515bd4f0e5dba6928e9"
+      },
+      "outcome": "no-impact",
+      "reason": "Changelog fragment for KAN-534.",
+      "reviewer": "Claude (agent)",
+      "target": "changes/KAN-534.changed.md"
+    },
+    {
+      "bound": {
+        "changes/KAN-535.changed.md": "7b5bd688a742bd040753e6253ba606bea3bfd96cceea9806a906173e17251fd3"
+      },
+      "outcome": "no-impact",
+      "reason": "Changelog fragment for KAN-535.",
+      "reviewer": "Claude (agent)",
+      "target": "changes/KAN-535.changed.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/architecture.md": "788b593066fcd5d1c9eb9ebbc3869971131d3ddb3ea3396bc8b9a6ea48ca8b55",
+        "docs/architecture.md": "099e45e56378bb4ea78edb3eec9e6a8ce7e7d60edd08d0b17aeeca9810351b82",
+        "src/ai_dlc/documentation/document_impact.py": "8c469ce5c1c1f7333d0458d529ad200da18290e757ea4ea29c841f27fec912a9"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-534 narrows what a documentation disposition binds inside document_impact.py; the architecture page names the documentation service and its packages, not what a decision binds, so it stays accurate.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/development-workflow.md": "0fba88526a61571ce49e91b2159325061a7c54ba5466e651565eabb2f910e7c6",
+        "docs/development-workflow.md": "fd724d20f13622d81235c1d718d336bff3e6364a92edf48a33051df19c5acb97"
+      },
+      "outcome": "updated",
+      "reason": "Merge against the current target branch now says a decision binds its target page, its catalog entry and the mapped files its branch changed, and that a target change stales it only when it touched one of those.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/development-workflow.md"
+    },
+    {
+      "bound": {
+        ".github/workflows/verify.yml": "50d3193b12c916cd20b208d06a7b60b4f9c627f693822d25e621e756d1daec17",
+        "catalog:docs/release-verification.md": "972bf86b6da5f20b3d01762982880533ba0c99b22933aa95273590923721dad0",
+        "docs/release-verification.md": "a18e7b0bef6dc55ebc544ac304a01c8ca7d59c9dde46127f2acc44802e8b9751"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "verify.yml only gains a workflow_dispatch trigger so generated.yml can start it on bot/front-assets; the release gates and the Verify jobs this page describes are unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/release-verification.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/verification/documentation-workflow.md": "6e620e11c354a39b24ec8e47a66bcde387ef4e32ca055e7ac526f50363b0ddfe",
+        "docs/verification/documentation-workflow.md": "990da988fbc5152dcd5265c82057c36cb55f457ce5da31fdf03c78dd28580d36",
+        "src/ai_dlc/documentation/document_impact.py": "8c469ce5c1c1f7333d0458d529ad200da18290e757ea4ea29c841f27fec912a9",
+        "tests/test_document_evidence.py": "6afc85e32478bae9a00aefe73f91ae8c6f67f939d2b51f6c63990cc00bf1d230"
+      },
+      "outcome": "updated",
+      "reason": "Adds the November 14 changed-file binding section: the five pull requests one merge staled, the new rule, and the five cases tests/test_document_evidence.py adds.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/verification/documentation-workflow.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/get-started.md": "b3cdcadc535e0e825dfe2837433f1b4ef45551430ab207c485ef7dd601bf992e",
+        "docs/assets/front/build.py": "13c64560a399cb397ac999b3c7d5909a3f0cb08cfc6b16a6f4bbff8ec3b46024",
+        "docs/workflows/get-started.md": "7052c4b9b7e1bd297f54a9f0ec133e9393f765099a358c4eef2f5f382677ab11"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Only build.py's docstring changed, to say PRs don't commit its output; the commands and assets get-started shows are unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/get-started.md"
+    },
+    {
+      "bound": {
+        "tests/test_workflows_generated.py": "ad3a85628c39f95328eb2058f686ae3155bd3b34cf619b0aca1be353275417d7"
+      },
+      "outcome": "no-impact",
+      "reason": "Tests for assets.yml, generated.yml and verify.yml; no user-facing behaviour.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/test_workflows_generated.py"
+    }
+  ],
+  "schema": 2
+}

@@ -271,13 +271,13 @@ tool payloads only and replaces none of the review, check or finish gates; the
 
 Documentation-impact decisions are stored per work item under
 `.ai-dlc/documentation/evidence/<id>.json`. Each decision binds the content of
-its own target and of the sources mapped to it; it does not name a target-branch
-commit.
+its target page, its catalog entry and the mapped files its branch changed; it
+names no target-branch commit.
 
 The gate computes changed files from the merge base of the CI comparison and
-`HEAD`. A moved target branch therefore invalidates a decision only when it
-changed content that the decision bound. Branches with disjoint changes merge
-in either order with no evidence rewrite. Immediately before merging, do this.
+`HEAD`. A moved target branch invalidates a decision only when it changed that
+page, that entry or a file the branch also changed. Branches with disjoint
+changes merge in either order with no evidence rewrite. Before merging:
 
 1. Fetch and update the branch from the target branch.
 2. Run `ai-dlc project check --required`. When `docs gate` reports a *stale*
@@ -286,13 +286,10 @@ in either order with no evidence rewrite. Immediately before merging, do this.
    keeps the decisions that remain valid. *Missing* targets need a first decision.
 3. Push the update and wait for fresh required checks.
 
-Pull request checks do not rerun when the target branch moves. A green check
-can therefore predate a target change that touched bound content; the
-target-branch run after merge then fails and names it.
-
-To catch that before merge, enable the
-branch protection option that requires branches to be up to date, with the
-Verify jobs as required checks. ai-dlc does not change that setting.
+Pull request checks do not rerun when the target branch moves, so a green check
+can predate a change to bound content; the run after merge then fails and names
+it. Requiring branches to be up to date, with the Verify jobs as required
+checks, catches that before merge. ai-dlc does not change that setting.
 
 Evidence files whose decisions no longer match any current target are inert;
 `ai-dlc docs review --base <target> --prune` lists them and `--apply` removes
