@@ -2,10 +2,10 @@
   "decisions": [
     {
       "bound": {
-        "agents/skills/daily-note/SKILL.md": "885c9c9a66828f093742780f5415a4e91db5d85dcb6ed6d44240b9a0f541ea37"
+        "agents/skills/daily-note/SKILL.md": "571c9d8be76a84406e5fe7d238660ee640bfb1b34c1ec73942abcbecec1f2a54"
       },
       "outcome": "updated",
-      "reason": "KAN-396: start of day gains a read-only Waiting section from Work Copilot's get_attention when bound in a work vault; unchanged without it.",
+      "reason": "KAN-396: start of day gains a read-only Waiting section from Work Copilot's get_attention (open and waiting items, paged, source text as data) when bound in a work vault; unchanged without it.",
       "reviewer": "Claude (agent)",
       "target": "agents/skills/daily-note/SKILL.md"
     },
@@ -25,7 +25,7 @@
         "openspec/specs/consumer-onboarding/spec.md": "76c98a693df3611ac976300b0d8ac3980b62e4416cc941ee9ad260287503ebca",
         "openspec/specs/effective-environment-report/spec.md": "1548da938b54b9f3083213651812a6f0fc6d3959fb2572649a862e351a2a18e0",
         "openspec/specs/tracker-adapter-boundary/spec.md": "f47d11b47618751d7bbf2950dc74442f766a94f36f2379d1f4f343942ff112eb",
-        "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "e811184e7287a9165f7f83397c0a45f8e541afbc0f9746f3c562fa46e6f75955",
+        "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "5189570697d170ffade31e673648427c5ed1e09a169af3a64b4854ac17306d75",
         "plugins/ai-dlc-workflow/README.md": "65cf268b2c5e81a874eefe50a0d7fdad6793f7eba14699b516b52ad73108c745",
         "plugins/ai-dlc-workflow/hooks/aidlc_hook.py": "b9d90818bfacc91d8e9d9705e4e83130dd2ae072d00a440187e7bc74f6f5192d",
         "plugins/ai-dlc-workflow/hooks/hooks.json": "6832b0f038d5b95069922ce99a3eb8ec473d61cf92aa5d09ec35925332ad80b4",
@@ -35,7 +35,7 @@
         "plugins/ai-dlc-workflow/native/codex/hooks/aidlc_hook.py": "b9d90818bfacc91d8e9d9705e4e83130dd2ae072d00a440187e7bc74f6f5192d",
         "plugins/ai-dlc-workflow/native/codex/skills/ai-dlc-workflow/SKILL.md": "199a64bdf62a1de0027a6c87f53070cf89c56de33f10e125aeb35bf432c2a3aa",
         "plugins/ai-dlc-workflow/native/codex/skills/capture/SKILL.md": "c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
-        "plugins/ai-dlc-workflow/native/codex/skills/daily-note/SKILL.md": "885c9c9a66828f093742780f5415a4e91db5d85dcb6ed6d44240b9a0f541ea37",
+        "plugins/ai-dlc-workflow/native/codex/skills/daily-note/SKILL.md": "571c9d8be76a84406e5fe7d238660ee640bfb1b34c1ec73942abcbecec1f2a54",
         "plugins/ai-dlc-workflow/native/codex/skills/design-brief/SKILL.md": "e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5",
         "plugins/ai-dlc-workflow/native/codex/skills/design-evaluate/SKILL.md": "d6892ed5e426f8bbf0df4bba1bff09bbc602e2136d21a9369957eb47dbdaa26a",
         "plugins/ai-dlc-workflow/native/codex/skills/discovery/SKILL.md": "7460a3fa47474f28f2224eaea675438ba7cef08463d53bcf55d1a911e59ee2a2",
@@ -44,10 +44,10 @@
         "plugins/ai-dlc-workflow/native/codex/skills/handoff/SKILL.md": "47813221a030ff1d19642b9e6ebf234ded18fd128fef857badd4b77612529ecd",
         "plugins/ai-dlc-workflow/native/codex/skills/prd-draft/SKILL.md": "046b82e994b36b2202f7772aafc93557b903d2b541e69a62414d9b5a0b5d75fc",
         "plugins/ai-dlc-workflow/native/codex/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
-        "plugins/ai-dlc-workflow/plugin.lock.json": "0cc3835fd61e4864f917e636fa1c5dbc9dec9ee139f6f47720ff2808ea053a4f",
+        "plugins/ai-dlc-workflow/plugin.lock.json": "c5698ad3717d8d15d1633a395bf815b58f45d46489c1f030e81e086f76eced70",
         "plugins/ai-dlc-workflow/skills/ai-dlc-workflow/SKILL.md": "199a64bdf62a1de0027a6c87f53070cf89c56de33f10e125aeb35bf432c2a3aa",
         "plugins/ai-dlc-workflow/skills/capture/SKILL.md": "c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
-        "plugins/ai-dlc-workflow/skills/daily-note/SKILL.md": "885c9c9a66828f093742780f5415a4e91db5d85dcb6ed6d44240b9a0f541ea37",
+        "plugins/ai-dlc-workflow/skills/daily-note/SKILL.md": "571c9d8be76a84406e5fe7d238660ee640bfb1b34c1ec73942abcbecec1f2a54",
         "plugins/ai-dlc-workflow/skills/design-brief/SKILL.md": "e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5",
         "plugins/ai-dlc-workflow/skills/design-evaluate/SKILL.md": "d6892ed5e426f8bbf0df4bba1bff09bbc602e2136d21a9369957eb47dbdaa26a",
         "plugins/ai-dlc-workflow/skills/discovery/SKILL.md": "7460a3fa47474f28f2224eaea675438ba7cef08463d53bcf55d1a911e59ee2a2",
@@ -204,7 +204,7 @@
     {
       "bound": {
         ".ai-dlc/agent-ownership.json": "2c193eced262ce82ed624d508de5ca29dec09da87d2eb78551143622803c4a51",
-        "agents/skills.lock.json": "7da88872929f349783f527a85193bb282b36f7ce0bb14dab37cfa640afa2960a",
+        "agents/skills.lock.json": "e1120b0d36b9eaaefad5aeb57815cc18780458b9aa08485245561d78663c90f2",
         "agents/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
         "agents/templates/delivery-slice.md": "44d1e55bdd17e5fe0cf4c1d35d99ffad8f6060575ecb97496515b48a0e304429",
         "catalog:docs/development-workflow.md": "0fba88526a61571ce49e91b2159325061a7c54ba5466e651565eabb2f910e7c6",
@@ -249,7 +249,7 @@
       "bound": {
         "catalog:docs/workflows/workflow-plugin.md": "9e03b3ce099c0f527c8f02590717bb6021621b582d36ef7c3591815025088794",
         "docs/workflows/workflow-plugin.md": "817faef1c788d019d09396aabf82022505c54cc37f4d9686b95d6d753da26d76",
-        "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "e811184e7287a9165f7f83397c0a45f8e541afbc0f9746f3c562fa46e6f75955",
+        "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "5189570697d170ffade31e673648427c5ed1e09a169af3a64b4854ac17306d75",
         "plugins/ai-dlc-workflow/README.md": "65cf268b2c5e81a874eefe50a0d7fdad6793f7eba14699b516b52ad73108c745",
         "plugins/ai-dlc-workflow/hooks/aidlc_hook.py": "b9d90818bfacc91d8e9d9705e4e83130dd2ae072d00a440187e7bc74f6f5192d",
         "plugins/ai-dlc-workflow/hooks/hooks.json": "6832b0f038d5b95069922ce99a3eb8ec473d61cf92aa5d09ec35925332ad80b4",
@@ -259,7 +259,7 @@
         "plugins/ai-dlc-workflow/native/codex/hooks/aidlc_hook.py": "b9d90818bfacc91d8e9d9705e4e83130dd2ae072d00a440187e7bc74f6f5192d",
         "plugins/ai-dlc-workflow/native/codex/skills/ai-dlc-workflow/SKILL.md": "199a64bdf62a1de0027a6c87f53070cf89c56de33f10e125aeb35bf432c2a3aa",
         "plugins/ai-dlc-workflow/native/codex/skills/capture/SKILL.md": "c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
-        "plugins/ai-dlc-workflow/native/codex/skills/daily-note/SKILL.md": "885c9c9a66828f093742780f5415a4e91db5d85dcb6ed6d44240b9a0f541ea37",
+        "plugins/ai-dlc-workflow/native/codex/skills/daily-note/SKILL.md": "571c9d8be76a84406e5fe7d238660ee640bfb1b34c1ec73942abcbecec1f2a54",
         "plugins/ai-dlc-workflow/native/codex/skills/design-brief/SKILL.md": "e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5",
         "plugins/ai-dlc-workflow/native/codex/skills/design-evaluate/SKILL.md": "d6892ed5e426f8bbf0df4bba1bff09bbc602e2136d21a9369957eb47dbdaa26a",
         "plugins/ai-dlc-workflow/native/codex/skills/discovery/SKILL.md": "7460a3fa47474f28f2224eaea675438ba7cef08463d53bcf55d1a911e59ee2a2",
@@ -268,10 +268,10 @@
         "plugins/ai-dlc-workflow/native/codex/skills/handoff/SKILL.md": "47813221a030ff1d19642b9e6ebf234ded18fd128fef857badd4b77612529ecd",
         "plugins/ai-dlc-workflow/native/codex/skills/prd-draft/SKILL.md": "046b82e994b36b2202f7772aafc93557b903d2b541e69a62414d9b5a0b5d75fc",
         "plugins/ai-dlc-workflow/native/codex/skills/spec-from-prd/SKILL.md": "8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64",
-        "plugins/ai-dlc-workflow/plugin.lock.json": "0cc3835fd61e4864f917e636fa1c5dbc9dec9ee139f6f47720ff2808ea053a4f",
+        "plugins/ai-dlc-workflow/plugin.lock.json": "c5698ad3717d8d15d1633a395bf815b58f45d46489c1f030e81e086f76eced70",
         "plugins/ai-dlc-workflow/skills/ai-dlc-workflow/SKILL.md": "199a64bdf62a1de0027a6c87f53070cf89c56de33f10e125aeb35bf432c2a3aa",
         "plugins/ai-dlc-workflow/skills/capture/SKILL.md": "c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
-        "plugins/ai-dlc-workflow/skills/daily-note/SKILL.md": "885c9c9a66828f093742780f5415a4e91db5d85dcb6ed6d44240b9a0f541ea37",
+        "plugins/ai-dlc-workflow/skills/daily-note/SKILL.md": "571c9d8be76a84406e5fe7d238660ee640bfb1b34c1ec73942abcbecec1f2a54",
         "plugins/ai-dlc-workflow/skills/design-brief/SKILL.md": "e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5",
         "plugins/ai-dlc-workflow/skills/design-evaluate/SKILL.md": "d6892ed5e426f8bbf0df4bba1bff09bbc602e2136d21a9369957eb47dbdaa26a",
         "plugins/ai-dlc-workflow/skills/discovery/SKILL.md": "7460a3fa47474f28f2224eaea675438ba7cef08463d53bcf55d1a911e59ee2a2",
@@ -290,19 +290,19 @@
     },
     {
       "bound": {
-        "tests/test_daily_note_attention.py": "fee5b34c4f07f251bcc9fd373a0f968a4a21eced28ee36a571d0a07dd5f1eb82"
+        "tests/test_daily_note_attention.py": "9e1fd384c52cfaedd253b23416e666b153112b60cb47b805c4de9fc4426f2817"
       },
       "outcome": "updated",
-      "reason": "KAN-396: new test that the skill keeps the bound-only, work-vault-only, read-only rules and that the plugin copies carry them.",
+      "reason": "KAN-396: new test that the skill keeps the bound-only, work-vault-only and read-only rules, filters by status and reports gaps.",
       "reviewer": "Claude (agent)",
       "target": "tests/test_daily_note_attention.py"
     },
     {
       "bound": {
-        "tests/test_session_key_contract.py": "505869a700a3f5f708ce0170c2308a2ee0933c8002d444bda86a7de58478a4eb"
+        "tests/test_session_key_contract.py": "abd4149ddd4283e2dc175a5f3832c3a58e939becbf51b96385c4a0ba7dc7f883"
       },
       "outcome": "updated",
-      "reason": "KAN-495: new contract test comparing docs/design/session-join-key.md with ai_dlc.work.session_key; no source or page change.",
+      "reason": "KAN-495: new contract test comparing docs/design/session-join-key.md (format block, part pattern, key expression, trailer, environment row) with ai_dlc.work.session_key; no source or page change.",
       "reviewer": "Claude (agent)",
       "target": "tests/test_session_key_contract.py"
     }
