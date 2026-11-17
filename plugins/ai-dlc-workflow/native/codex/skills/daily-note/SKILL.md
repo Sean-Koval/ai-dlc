@@ -19,8 +19,10 @@ default it, and never read or write the other vault.
    origin: open, blocked, and decisions waiting on someone. Use the epic's saved
    filter if one exists. Write a `## Lanes` section with one linked line per item.
 3. Read only. Never create, comment on, label or transition a ticket from here.
-4. When this vault's origin is `work` and the `get_attention` tool of the MCP
-   server named Work Copilot is available in this session, read it (read only).
+4. When this vault's origin is `work` and the `get_attention` tool of the Work
+   Copilot MCP server, registered as `work-copilot` (so the tool is
+   `mcp__work-copilot__get_attention`), is available in this session, read it
+   (read only).
    Call it twice, with `status: "open"` and `status: "waiting"`, and follow
    `page.next_cursor` up to three pages each. Write a `## Waiting` section:
    - **On you:** open items with `owner: me`, review requests included.
