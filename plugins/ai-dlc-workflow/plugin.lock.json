@@ -3,7 +3,7 @@
     "guide:ai-dlc-workflow": "sha256:199a64bdf62a1de0027a6c87f53070cf89c56de33f10e125aeb35bf432c2a3aa",
     "hooks:ai-dlc": "sha256:611015aa768892e2a37f1a4cfb57fd527891125934245d8f86418c78cc2cafd2",
     "skill:capture": "sha256:c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
-    "skill:daily-note": "sha256:7e6d34c7bbb6ffe054b347e4fc19857b91b6d3791273fdc708f5ce6f92cc6209",
+    "skill:daily-note": "sha256:885c9c9a66828f093742780f5415a4e91db5d85dcb6ed6d44240b9a0f541ea37",
     "skill:design-brief": "sha256:e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5",
     "skill:design-evaluate": "sha256:d6892ed5e426f8bbf0df4bba1bff09bbc602e2136d21a9369957eb47dbdaa26a",
     "skill:discovery": "sha256:7460a3fa47474f28f2224eaea675438ba7cef08463d53bcf55d1a911e59ee2a2",
@@ -13,15 +13,15 @@
     "skill:prd-draft": "sha256:046b82e994b36b2202f7772aafc93557b903d2b541e69a62414d9b5a0b5d75fc",
     "skill:spec-from-prd": "sha256:8a8c7ab539c5bc2971d414244addf9079bef765637a0877e589bc494afa8cf64"
   },
-  "content_digest": "sha256:f859ded659218801e33649a03bb26e7b1b031a71a45d54a65eefef045639c2cf",
+  "content_digest": "sha256:374e84c43cd5349c1844d53ee6d169c3e83b87946ca41df56c76d596cae154af",
   "files": {
-    ".claude-plugin/plugin.json": "sha256:68e804462b013b082582ca53df0bffd2be451977c64802418751649d5e2b0231",
+    ".claude-plugin/plugin.json": "sha256:e811184e7287a9165f7f83397c0a45f8e541afbc0f9746f3c562fa46e6f75955",
     "README.md": "sha256:65cf268b2c5e81a874eefe50a0d7fdad6793f7eba14699b516b52ad73108c745",
     "hooks/aidlc_hook.py": "sha256:b9d90818bfacc91d8e9d9705e4e83130dd2ae072d00a440187e7bc74f6f5192d",
     "hooks/hooks.json": "sha256:6832b0f038d5b95069922ce99a3eb8ec473d61cf92aa5d09ec35925332ad80b4",
     "skills/ai-dlc-workflow/SKILL.md": "sha256:199a64bdf62a1de0027a6c87f53070cf89c56de33f10e125aeb35bf432c2a3aa",
     "skills/capture/SKILL.md": "sha256:c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
-    "skills/daily-note/SKILL.md": "sha256:7e6d34c7bbb6ffe054b347e4fc19857b91b6d3791273fdc708f5ce6f92cc6209",
+    "skills/daily-note/SKILL.md": "sha256:885c9c9a66828f093742780f5415a4e91db5d85dcb6ed6d44240b9a0f541ea37",
     "skills/design-brief/SKILL.md": "sha256:e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5",
     "skills/design-evaluate/SKILL.md": "sha256:d6892ed5e426f8bbf0df4bba1bff09bbc602e2136d21a9369957eb47dbdaa26a",
     "skills/discovery/SKILL.md": "sha256:7460a3fa47474f28f2224eaea675438ba7cef08463d53bcf55d1a911e59ee2a2",
@@ -33,15 +33,15 @@
   },
   "native": {
     "codex": {
-      "content_digest": "sha256:18654bd6717b8bbd8d167695797383b30e1eb8f238b3c78ab546c76d3874f0bc",
+      "content_digest": "sha256:0e37dbcca8e29ab3172093a996e530aacaa6461ddd57a678eceb5abcced99012",
       "files": {
-        ".codex-plugin/plugin.json": "sha256:121b299e98f93557c7f14adf494a03ead3f3803806e0ceb96a96d6759db7e209",
+        ".codex-plugin/plugin.json": "sha256:06db0008d9e73da4961e52ee92aed2330ba56ec90dc468b460ee43e084037c31",
         "AGENTS.fragment.md": "sha256:af43937c1adbe2ded3247675791fe94ecc0cce19a8fdbade2469319769b66ec6",
         "hooks.json": "sha256:4d2c2097f9c3004dca11d040acf3353eb6af9d0b96a63910f508a36a8d284f63",
         "hooks/aidlc_hook.py": "sha256:b9d90818bfacc91d8e9d9705e4e83130dd2ae072d00a440187e7bc74f6f5192d",
         "skills/ai-dlc-workflow/SKILL.md": "sha256:199a64bdf62a1de0027a6c87f53070cf89c56de33f10e125aeb35bf432c2a3aa",
         "skills/capture/SKILL.md": "sha256:c2a9fd9a0384908fe8c366ed8a5afb551b07144e25669950028ebfab77cc18ac",
-        "skills/daily-note/SKILL.md": "sha256:7e6d34c7bbb6ffe054b347e4fc19857b91b6d3791273fdc708f5ce6f92cc6209",
+        "skills/daily-note/SKILL.md": "sha256:885c9c9a66828f093742780f5415a4e91db5d85dcb6ed6d44240b9a0f541ea37",
         "skills/design-brief/SKILL.md": "sha256:e9b39f424c5519b034a243c269e94bfd13a9a66834a1cbe0ba20e2066b8a18e5",
         "skills/design-evaluate/SKILL.md": "sha256:d6892ed5e426f8bbf0df4bba1bff09bbc602e2136d21a9369957eb47dbdaa26a",
         "skills/discovery/SKILL.md": "sha256:7460a3fa47474f28f2224eaea675438ba7cef08463d53bcf55d1a911e59ee2a2",
@@ -54,6 +54,6 @@
     }
   },
   "plugin": "ai-dlc-workflow",
-  "revision": 10,
+  "revision": 11,
   "schema": 1
 }

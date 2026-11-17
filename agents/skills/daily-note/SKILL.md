@@ -19,12 +19,24 @@ default it, and never read or write the other vault.
    origin: open, blocked, and decisions waiting on someone. Use the epic's saved
    filter if one exists. Write a `## Lanes` section with one linked line per item.
 3. Read only. Never create, comment on, label or transition a ticket from here.
+4. When this vault's origin is `work` and Work Copilot's `get_attention` tool is
+   available in this session, call it with `limit: 30` (read only). Write a
+   `## Waiting` section with one line per obligation, each with its title, its `id`
+   and its `url` when it has one:
+   - **On you:** `owner: me` with status `open`, and every `kind: review` item.
+   - **On others:** status `waiting`, naming `waiting_on` and `follow_up_at`.
+
+   Skip `candidate`, `resolved` and `dismissed` items. So that a gap is not read as
+   nothing waiting, name any connector whose status is not `healthy`, say how many
+   items `page.next_cursor` leaves unread, and say so when `refresh_needed` is set.
+   Never call Work Copilot's write tools from here. Without the tool, or in the
+   `home` vault, leave the section out and change nothing else.
 
 ## End of day
 
 Append `## Moved` under a stable operation ID (`daily-YYYY-MM-DD-end`): tickets
 that changed status, merged pull requests and notes captured today, each linked.
-Add `## Carry over` for anything still open from `## Lanes`.
+Add `## Carry over` for anything still open from `## Lanes` or `## Waiting`.
 
 ## Weekly rollup (on request only)
 
