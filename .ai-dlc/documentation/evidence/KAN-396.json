@@ -317,7 +317,7 @@
     },
     {
       "bound": {
-        "tests/test_daily_note_attention.py": "e79365d0d520ed8b1c3e4b0442030e1b17c5570963ba2161430814b98c874c64"
+        "tests/test_daily_note_attention.py": "4a8d7a11c9c250733404ce2ed245f8526b8ed68cfbcbbdd4433344e582efe243"
       },
       "outcome": "updated",
       "reason": "KAN-396: new test that the skill keeps the bound-only, work-vault-only and read-only rules, filters by status and reports gaps.",

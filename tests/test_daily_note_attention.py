@@ -16,7 +16,10 @@ def _start_of_day() -> str:
 
 def test_start_of_day_reads_get_attention_only_when_bound_in_the_work_vault():
     section = _start_of_day()
-    assert "the `get_attention` tool of the Work Copilot MCP server, registered as `work-copilot`" in section
+    assert (
+        "the `get_attention` tool of the Work Copilot MCP server, registered as `work-copilot`"
+        in section
+    )
     assert "origin is `work`" in section
     assert "available in this session" in section
     assert "Without the tool, or in the `home` vault, leave the section out" in section
