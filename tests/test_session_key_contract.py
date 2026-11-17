@@ -78,11 +78,26 @@ def test_trailer_is_shown_with_its_exact_name():
     )
 
 
-def test_format_block_starts_with_the_version():
+def test_format_block_shows_the_version_and_three_parts():
     block = FENCE.search(_section("Format"))
     assert block, f"{PAGE.name}: the '## Format' section has no ```text block"
     shown = block.group(1).strip()
-    assert shown.startswith(session_key.VERSION + ":"), (
+    expected = f"{session_key.VERSION}:<tracker>:<work>:<session>"
+    assert shown == expected, (
         f"Update the first block under '## Format' in {PAGE.name}: it shows "
-        f"{shown!r}, session_key.py writes the version {session_key.VERSION!r}"
+        f"{shown!r}, session_key.py writes {expected!r}"
+    )
+
+
+def test_part_pattern_matches_the_parser():
+    match = re.search(r"Each non-empty part matches `([^`]+)`", _section("Format"))
+    assert match, f"{PAGE.name}: no 'Each non-empty part matches' line under '## Format'"
+    shown = match.group(1)
+    assert shown == session_key._SAFE.pattern, (
+        f"Update the 'Each non-empty part matches' line under '## Format' in {PAGE.name}: "
+        f"it shows {shown!r}, session_key.py checks {session_key._SAFE.pattern!r}"
+    )
+    upper = re.search(r",(\d+)\}$", session_key._PART)
+    assert upper and shown.endswith(f",{upper.group(1)}}}"), (
+        f"session_key.py: _SAFE and _PART disagree on a part's length ({shown!r}, {session_key._PART!r})"
     )
