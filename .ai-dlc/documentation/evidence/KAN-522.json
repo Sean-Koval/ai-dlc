@@ -44,7 +44,7 @@
     {
       "bound": {
         "catalog:docs/runbooks/customer-knowledge.md": "d22c04b0b05bd35557a43b8dbeb426712090028b5182522da2bfc463ee5e88ac",
-        "docs/runbooks/customer-knowledge.md": "7dc9861b2f84be45de6f95a2b7476fd79f650c4f62b824b97322141fa7d5babc",
+        "docs/runbooks/customer-knowledge.md": "bb068157eb1280b0dacce5a48058237db2b973f01cf371714c9fbb561310abf9",
         "src/ai_dlc/documentation/knowledge_customer.py": "da7e66096a5ccee00f9e6c995285eb9df88b74497493d2bab20391f28053efff",
         "tests/test_knowledge_customer.py": "4d4b9949b0813a6a4ef7f8169b5db2349fb95b8f63f28e8e1e702c5ec095a1d2"
       },
