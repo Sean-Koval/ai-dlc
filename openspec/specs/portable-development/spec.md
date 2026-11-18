@@ -191,11 +191,15 @@ Onboarding SHALL present explicit proposed setup prerequisites, check IDs, comma
 
 ### Requirement: BCO-03 Normal check runtime is a visible prerequisite
 
-Behavioral onboarding SHALL identify and verify the normal runner's mise prerequisite even for generic projects with an empty tools table, using existing runtime resolution and actionable unavailable-runtime behavior. It SHALL NOT replace a failed normal-runner invocation with direct shell execution as equivalent evidence.
+Behavioral onboarding SHALL identify and verify the normal runner's mise prerequisite even for generic projects with an empty tools table, using existing runtime resolution and actionable unavailable-runtime behavior. It SHALL NOT replace a failed normal-runner invocation with direct shell execution as equivalent evidence. On the local target, an absent or unprepared mise SHALL be skipped visibly: checks and setup steps run with the tools on PATH, say that mise was skipped, and the receipt records `runtime = "path"` (KAN-354).
 
-#### Scenario: Generic project lacks mise
-- **WHEN** the selected runtime is absent from PATH and the bootstrap runtime location
+#### Scenario: CI lacks mise
+- **WHEN** the selected runtime is absent from PATH and the bootstrap runtime location on the `github-actions` target
 - **THEN** no check runs, the existing structured runtime-unavailable result names the remedy, and no passing receipt or successful onboarding claim is produced
+
+#### Scenario: Work laptop without mise
+- **WHEN** mise is absent on the local target and the checks' tools are on PATH
+- **THEN** the checks run with those tools, the output says mise was skipped, and the receipt records `runtime = "path"`
 
 ### Requirement: BCO-04 Demonstrate a behavioral regression only in isolated evidence
 
