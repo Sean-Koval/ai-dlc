@@ -11,7 +11,7 @@
     },
     {
       "bound": {
-        "contracts/README.md": "26ee0e8e750807112bc9b49f5e0d2140c4f6b58d4f105c610ef50460611c2bce"
+        "contracts/README.md": "4b06fe77c50ac1e1aad66721a44efebcddb03af7d42056560f4bf6705db7011e"
       },
       "outcome": "updated",
       "reason": "KAN-522: the knowledge repository passes app-id and private-key; each run mints the installation token.",
