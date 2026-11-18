@@ -753,3 +753,165 @@ def test_a_retraction_cannot_itself_be_retracted(tmp_path):
     found = check_records(tmp_path)["failures"]
     assert [(item["path"], item["pointer"]) for item in found] == [("c.md", "/links/0")]
     assert "is itself a retraction; supersede it" in found[0]["message"]
+
+
+# --- CI mode: filling a "Not stated in the source." placeholder (KAN-526) ------------
+
+BACKFILLED = """# Use the gateway
+
+## Context
+
+Not stated in the source.
+
+## Options considered
+
+Not stated in the source.
+
+## Decision
+
+Agents call tools through the gateway.
+
+## Consequences
+
+None recorded."""
+SOURCED = (
+    '> "Every tool call goes through one gateway so policy is checked once."\n\n'
+    "From [KAN-267](https://example.atlassian.net/browse/KAN-267?focusedCommentId=1)."
+)
+
+
+@pytest.fixture
+def backfilled(tmp_path):
+    git(tmp_path, "init", "-q", "-b", "main")
+    git(tmp_path, "config", "user.email", "test@example.invalid")
+    git(tmp_path, "config", "user.name", "test")
+    records = tmp_path / "records"
+    records.mkdir()
+    (records / "knowledge.toml").write_text(PIN)
+    (records / "gateway.md").write_text(record("DEC-0003", body=BACKFILLED))
+    git(tmp_path, "add", ".")
+    git(tmp_path, "commit", "-q", "-m", "base")
+    git(tmp_path, "checkout", "-q", "-b", "change")
+    return records
+
+
+def fill(records, body, **fields):
+    (records / "gateway.md").write_text(record(fields.pop("name", "DEC-0003"), body=body, **fields))
+    return check_records(records, base="main")["failures"]
+
+
+def test_ci_mode_allows_filling_the_placeholder_with_a_quote_and_a_link(backfilled):
+    context = BACKFILLED.replace("Not stated in the source.", SOURCED, 1)
+    assert fill(backfilled, context) == []
+    both = BACKFILLED.replace("Not stated in the source.", SOURCED)
+    assert fill(backfilled, both) == []
+    curly = "Sean wrote “keep one gateway” in https://example.atlassian.net/browse/KAN-267."
+    assert fill(backfilled, BACKFILLED.replace("Not stated in the source.", curly, 1)) == []
+
+
+def test_ci_mode_names_a_missing_quote_or_link(backfilled):
+    unquoted = (
+        "Policy is checked once, per [KAN-267](https://example.atlassian.net/browse/KAN-267)."
+    )
+    found = fill(backfilled, BACKFILLED.replace("Not stated in the source.", unquoted, 1))
+    assert [(item["path"], item["pointer"]) for item in found] == [("gateway.md", "")]
+    assert "under Context has no source quote" in found[0]["message"]
+    assert "link" not in found[0]["message"].split("has no", 1)[1]
+    unlinked = '> "Every tool call goes through one gateway."'
+    found = fill(backfilled, BACKFILLED.replace("Not stated in the source.", unlinked, 1))
+    assert "has no link to the source" in found[0]["message"]
+    assert "quote" not in found[0]["message"].split("has no", 1)[1]
+    for markup in (
+        'See [src](https://x.example/a "title").',
+        '<a href="https://x.example/a">src</a>',
+        'See "https://x.example/a".',
+        "> https://x.example/a",
+    ):
+        found = fill(backfilled, BACKFILLED.replace("Not stated in the source.", markup, 1))
+        assert [(item["path"], item["pointer"]) for item in found] == [("gateway.md", "")], markup
+        assert "under Context has no source quote" in found[0]["message"], markup
+    bare = "Policy is checked once."
+    found = fill(backfilled, BACKFILLED.replace("Not stated in the source.", bare, 1))
+    assert "has no source quote (a > blockquote" in found[0]["message"]
+    assert "and no link to the source" in found[0]["message"]
+
+
+@pytest.mark.parametrize(
+    "edit",
+    [
+        # The decision itself, with a filled placeholder alongside it.
+        lambda body: body.replace("Not stated in the source.", SOURCED, 1).replace(
+            "through the gateway", "directly"
+        ),
+        # Another section.
+        lambda body: body.replace("None recorded.", f"None recorded.\n\n{SOURCED}"),
+        # A new section.
+        lambda body: f"{body}\n\n## Notes\n\n{SOURCED}",
+        # The title before the first section.
+        lambda body: body.replace("Use the gateway", "Use one gateway"),
+        # The placeholder removed, not replaced.
+        lambda body: body.replace("Not stated in the source.", "", 1),
+        # A heading renamed while filling it.
+        lambda body: body.replace(
+            "## Context\n\nNot stated in the source.", f"## Why\n\n{SOURCED}"
+        ),
+    ],
+)
+def test_ci_mode_still_refuses_any_other_body_edit(backfilled, edit):
+    found = fill(backfilled, edit(BACKFILLED))
+    assert [(item["path"], item["pointer"]) for item in found] == [("gateway.md", "")]
+    assert "has its body edited" in found[0]["message"]
+
+
+def test_ci_mode_refuses_header_edits_while_filling(backfilled):
+    body = BACKFILLED.replace("Not stated in the source.", SOURCED, 1)
+    assert ("gateway.md", "/status") in [
+        (item["path"], item["pointer"]) for item in fill(backfilled, body, status="rejected")
+    ]
+    assert ("gateway.md", "/owner2") in [
+        (item["path"], item["pointer"]) for item in fill(backfilled, body, extra="owner2: x\n")
+    ]
+
+
+def rebase(records, body):
+    """Commit ``body`` as the decision on main and start the change from there."""
+    git(records.parent, "checkout", "-q", "main")
+    (records / "gateway.md").write_text(record("DEC-0003", body=body))
+    git(records.parent, "commit", "-q", "-am", "base")
+    git(records.parent, "checkout", "-q", "-B", "change")
+
+
+def test_ci_mode_refuses_replacing_text_that_is_not_the_placeholder(backfilled):
+    recovered = BACKFILLED.replace("Not stated in the source.", "Recovered later.", 1)
+    rebase(backfilled, recovered)
+    found = fill(backfilled, recovered.replace("Recovered later.", SOURCED))
+    assert [(item["path"], item["pointer"]) for item in found] == [("gateway.md", "")]
+    assert "has its body edited" in found[0]["message"]
+
+
+def test_ci_mode_keeps_the_lines_beside_the_placeholder(backfilled):
+    mixed = BACKFILLED.replace(
+        "\nNot stated in the source.", "\nSee below.\nNot stated in the source.", 1
+    )
+    rebase(backfilled, mixed)
+    assert fill(backfilled, mixed.replace("Not stated in the source.", SOURCED, 1)) == []
+    edited = mixed.replace("See below.\nNot stated in the source.", f"See above.\n{SOURCED}", 1)
+    found = fill(backfilled, edited)
+    assert "has its body edited" in found[0]["message"]
+    longer = mixed.replace("See below.\nNot stated in the source.", f"See below, too. {SOURCED}", 1)
+    assert "has its body edited" in fill(backfilled, longer)[0]["message"]
+
+
+def test_ci_mode_fills_an_options_heading_with_more_words(backfilled):
+    longer = BACKFILLED.replace("Options considered", "Options considered and rejected")
+    rebase(backfilled, longer)
+    assert fill(backfilled, longer.replace("Not stated in the source.", SOURCED)) == []
+
+
+def test_ci_mode_ignores_a_placeholder_inside_a_code_fence(backfilled):
+    fenced = BACKFILLED.replace(
+        "\nNot stated in the source.", "\n```\nNot stated in the source.\n```", 1
+    )
+    rebase(backfilled, fenced)
+    found = fill(backfilled, fenced.replace("Not stated in the source.", SOURCED, 1))
+    assert "has its body edited" in found[0]["message"]
