@@ -294,6 +294,18 @@ class GitHubIssuesProvider:
             }
         elif operation == "read":
             result = self.read(payload["reference"])
+            # GitHub Issues has no decision or epic type here, and no blocking links it reads.
+            done = result["state"] in {"closed", "cancelled"} or result["issue_state"] == "closed"
+            result = {
+                **result,
+                "kind": "work",
+                "category": "done"
+                if done
+                else "in_progress"
+                if result["state"] == "in_progress"
+                else "todo",
+                "blocked_by": [],
+            }
         elif operation == "create":
             found = self.invoke("find", {"correlation": payload["correlation"]})["items"]
             if len(found) > 1:

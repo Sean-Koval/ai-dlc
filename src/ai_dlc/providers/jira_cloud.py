@@ -37,6 +37,17 @@ DECISION_FIELDS = ("options", "recommendation", "default", "scope", "due")
 CREATE_KEYS = ("title", "body", "labels", "correlation", "operation_id", "parent")
 
 
+# Jira's status categories, as the tracker role's read reports them (KAN-537).
+CATEGORIES = {"new": "todo", "indeterminate": "in_progress", "done": "done"}
+
+
+def category(fields):
+    """todo, in_progress or done; only Jira's own done category finishes an issue."""
+    status = fields.get("status")
+    key = status.get("statusCategory", {}).get("key") if isinstance(status, dict) else None
+    return CATEGORIES.get(str(key), "in_progress")
+
+
 class JiraRefusal(RefusedError):
     """Sanitized provider refusal safe for executable diagnostics."""
 
@@ -475,13 +486,14 @@ class JiraCloudProvider:
             raise JiraRefusal("Jira reference belongs to another project or is unsupported")
         return reference
 
-    def raw_read(self, reference):
+    def raw_read(self, reference, *, links=False):
         selected = self.reference(reference)
+        fields = "project,issuetype,status,resolution,description,summary,labels"
         row = self.request(
             "GET",
             "issue/" + selected,
             params={
-                "fields": "project,issuetype,status,resolution,description,summary,labels",
+                "fields": fields + (",issuelinks" if links else ""),
                 "properties": "ai-dlc",
             },
         )
@@ -600,6 +612,89 @@ class JiraCloudProvider:
         row = self.raw_read(reference)
         self.evidence(row)
         return self.item(row)
+
+    def kind(self, fields):
+        """work, epic or decision, from the issue type (KAN-537)."""
+        issue_type = fields.get("issuetype")
+        if not isinstance(issue_type, dict):
+            raise JiraUncertain("Jira issue type evidence is incomplete")
+        name = str(issue_type.get("name") or "").casefold()
+        decision = (self.config.get("decision") or {}).get("issue_type_id")
+        if name == "decision" or (decision and issue_type.get("id") == decision):
+            return "decision"
+        level = issue_type.get("hierarchyLevel")
+        if name == "epic" or (type(level) is int and level >= 1):
+            return "epic"
+        return "work"
+
+    def blockers(self, fields):
+        """The issues that block this one: the inward issue of each Blocks link.
+
+        A link summary carries no labels, so each blocker is read on its own. Missing
+        link evidence, or a blocker that can't be read, returns ``None``: the provider
+        can't tell what blocks the issue, which is never the same as "unblocked".
+        """
+        links = fields.get("issuelinks")
+        if not isinstance(links, list) or len(links) > MAX_ROWS:
+            return None
+        link_type = (self.config.get("decision") or {}).get("link_type", "Blocks")
+        found = []
+        for link in links:
+            if not isinstance(link, dict) or not isinstance(link.get("type"), dict):
+                return None
+            inward = link.get("inwardIssue")
+            if link["type"].get("name") != link_type or inward is None:
+                continue
+            ref = inward.get("id") if isinstance(inward, dict) else None
+            if not isinstance(ref, str) or not re.fullmatch(r"[0-9]+", ref):
+                return None
+            try:
+                row = self.request(
+                    "GET", "issue/" + ref, params={"fields": "issuetype,status,labels"}
+                )
+            except (JiraUncertain, JiraRefusal):
+                return None
+            if (
+                not isinstance(row, dict)
+                or row.get("id") != ref
+                or not isinstance(row.get("key"), str)
+                or not isinstance(row.get("fields"), dict)
+            ):
+                return None
+            labels = row["fields"].get("labels") or []
+            if not isinstance(labels, list) or not all(isinstance(x, str) for x in labels):
+                return None
+            found.append(
+                {
+                    "key": row["key"],
+                    "url": self.config["site_url"] + "/browse/" + row["key"],
+                    "category": category(row["fields"]),
+                    "kind": self.kind(row["fields"]),
+                    "labels": labels,
+                }
+            )
+        return found
+
+    def described(self, reference):
+        """``read``'s answer: the item with its key, kind, category and blockers.
+
+        ``blocked_by`` is left out when the blockers can't be read, so a caller that
+        needs them fails closed while every other read still gets the item.
+        """
+        row = self.raw_read(reference, links=True)
+        self.evidence(row)
+        result = self.item(row)
+        fields = row["fields"]
+        answer = {
+            **result,
+            "key": result["url"].rsplit("/", 1)[1],
+            "kind": self.kind(fields),
+            "category": category(fields),
+        }
+        blocked_by = self.blockers(fields)
+        if blocked_by is not None:
+            answer["blocked_by"] = blocked_by
+        return answer
 
     def find(self, correlation):
         rows, tokens, ids = [], set(), set()
@@ -1037,7 +1132,7 @@ class JiraCloudProvider:
             if operation == "find":
                 result = self.find(payload["correlation"])
             elif operation == "read":
-                result = self.read(payload["reference"])
+                result = self.described(payload["reference"])
             else:
                 result = getattr(self, operation)(payload)
         return validate_response(operation, result)
