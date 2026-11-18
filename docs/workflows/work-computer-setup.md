@@ -22,9 +22,9 @@ package version, so install from source:
 1. Clone and check out the team's reviewed ai-dlc commit or ref.
 2. Run `sh scripts/bootstrap.sh --source` from that checkout and follow its
    printed PATH instructions. If the global alias names another checkout, use
-   the exact checkout-specific executable that bootstrap printed.
-3. Confirm that executable with `/printed/path/ai-dlc project onboard --help`;
-   a version string alone cannot establish the feature.
+   the checkout-specific executable bootstrap printed.
+3. Run `/printed/path/ai-dlc doctor` outside a repository to check the machine,
+   and `project onboard --help` to confirm onboarding exists.
 
 Current release evidence remains in
 [release verification](../release-verification.md).

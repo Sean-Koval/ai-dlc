@@ -464,6 +464,7 @@ def filed_by_person(jira, *, status="1", category="new", issue_type="10", key="W
                 "description": None,
                 "status": {"id": status, "statusCategory": {"key": category}},
                 "resolution": None,
+                "issuelinks": [],
             },
             "properties": {},
         }
@@ -907,3 +908,116 @@ def test_create_refuses_the_decision_type(jira):
             },
         )
     assert len(jira.issues) == 1
+
+
+# KAN-537: read reports the issue's kind and the issues that block it.
+
+
+def test_read_reports_kind_category_and_no_blockers(jira):
+    jira.provider().invoke("create", PAYLOAD)
+
+    item = jira.provider().invoke("read", {"reference": "WORK-1"})
+
+    assert item["key"] == "WORK-1"
+    assert (item["kind"], item["category"], item["blocked_by"]) == ("work", "todo", [])
+    fields = next(r for r in jira.requests if r.url.path.endswith("/issue/WORK-1"))
+    assert "issuelinks" in fields.url.params["fields"]
+
+
+def test_read_lists_a_decision_that_blocks_the_work(jira):
+    decision_site(jira)
+    jira.provider().invoke("decide", DECIDE)
+
+    work = jira.provider().invoke("read", {"reference": "WORK-1"})
+    decision = jira.provider().invoke("read", {"reference": "WORK-2"})
+
+    assert work["kind"] == "work"
+    assert work["blocked_by"] == [
+        {
+            "key": "WORK-2",
+            "url": "https://work.atlassian.net/browse/WORK-2",
+            "category": "todo",
+            "kind": "decision",
+            "labels": ["decision", "exec:human"],
+        }
+    ]
+    # The decision blocks WORK-1 (an outward link); nothing blocks the decision.
+    assert (decision["kind"], decision["blocked_by"]) == ("decision", [])
+
+
+def test_read_ignores_other_link_types_and_reads_each_blockers_own_state(jira):
+    jira.provider().invoke("create", PAYLOAD)  # WORK-1, id 101
+    filed_by_person(jira, status="3", category="done", key="WORK-7")  # id 501
+    jira.issues[1]["fields"]["labels"] = ["type:decision"]
+    jira.issues[0]["fields"]["issuelinks"] = [
+        {"type": {"name": "Relates"}, "inwardIssue": {"id": "501"}},
+        {"type": {"name": "Blocks"}, "outwardIssue": {"id": "501"}},
+        {"type": {"name": "Blocks"}, "inwardIssue": {"id": "501", "key": "WORK-7"}},
+    ]
+
+    (blocker,) = jira.provider().invoke("read", {"reference": "WORK-1"})["blocked_by"]
+
+    assert blocker["key"] == "WORK-7"
+    assert (blocker["category"], blocker["kind"], blocker["labels"]) == (
+        "done",
+        "work",
+        ["type:decision"],
+    )
+
+
+@pytest.mark.parametrize(
+    "issue_type, kind",
+    [
+        ({"id": "11", "name": "Epic", "hierarchyLevel": 1}, "epic"),
+        ({"id": "11", "name": "Initiative", "hierarchyLevel": 2}, "epic"),
+        ({"id": "11", "name": "Decision", "hierarchyLevel": 0}, "decision"),
+        ({"id": "11", "name": "Story", "hierarchyLevel": 0}, "work"),
+    ],
+)
+def test_read_kind_follows_the_issue_type(jira, issue_type, kind):
+    jira.config["issue_type_ids"] = ["11"]
+    filed_by_person(jira, issue_type="11")
+    jira.issues[0]["fields"]["issuetype"] = issue_type
+
+    assert jira.provider().invoke("read", {"reference": "WORK-7"})["kind"] == kind
+
+
+def test_read_without_link_evidence_leaves_blockers_out(jira):
+    """R1 on KAN-537: unknown blockers are left out, never reported as "unblocked"."""
+    filed_by_person(jira)
+    del jira.issues[0]["fields"]["issuelinks"]
+
+    item = jira.provider().invoke("read", {"reference": "WORK-7"})
+
+    assert item["key"] == "WORK-7"
+    assert "blocked_by" not in item
+
+
+@pytest.mark.parametrize(
+    "links",
+    [
+        [{"type": {"name": "Blocks"}, "inwardIssue": {"id": "999"}}],
+        [{"type": {"name": "Blocks"}, "inwardIssue": {"id": "not-a-number"}}],
+        ["not a link"],
+    ],
+    ids=["unreadable-blocker", "bad-blocker-id", "bad-link"],
+)
+def test_read_with_an_unreadable_blocker_returns_the_ticket_without_blockers(jira, links):
+    """R1 on KAN-537: one blocker that can't be read must not fail the whole read."""
+    filed_by_person(jira)
+    jira.issues[0]["fields"]["issuelinks"] = links
+
+    item = jira.provider().invoke("read", {"reference": "WORK-7"})
+
+    assert item["key"] == "WORK-7"
+    assert item["category"] == "todo"
+    assert "blocked_by" not in item
+
+
+def test_read_category_falls_back_to_in_progress_for_an_unknown_status_category(jira):
+    filed_by_person(jira)
+    jira.issues[0]["fields"]["status"]["statusCategory"] = {"key": "undefined"}
+
+    item = jira.provider().invoke("read", {"reference": "WORK-7"})
+
+    assert item["category"] == "in_progress"

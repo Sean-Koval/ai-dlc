@@ -280,6 +280,34 @@ def _agent_clients(config: Mapping[str, Any]) -> list[str]:
     return clients
 
 
+def _client_command_checks(
+    clients: list[str], probe: Callable[[list[str]], dict]
+) -> list[dict[str, str]]:
+    """Delivered guidance is not a client: its CLI must be on PATH too (KAN-363)."""
+    from ai_dlc.environment.preflight import CLIENT_COMMANDS, CLIENT_INSTALL
+
+    checks = []
+    for client in clients:
+        command = CLIENT_COMMANDS.get(client)
+        if command is None:
+            continue
+        available = _probe_module([command], probe)
+        checks.append(
+            _check(
+                client,
+                "tool",
+                _READY if available else "missing" if available is False else "unknown",
+                f"{command} is on PATH"
+                if available
+                else f"{command} is not on PATH"
+                if available is False
+                else f"{command} could not be looked up",
+                "No action required." if available else CLIENT_INSTALL[client],
+            )
+        )
+    return checks
+
+
 def _client_guidance_checks(root: Path, resolved: dict, clients: list[str]) -> list[dict[str, str]]:
     checks: list[dict[str, str]] = []
     if not clients:
@@ -480,6 +508,7 @@ def inspect_readiness(
     credentials = credential_status(config, environ)
     clients = _agent_clients(config)
     checks.extend(_client_guidance_checks(root, resolved, clients))
+    checks.extend(_client_command_checks(clients, probe))
     checks.extend(_bundle_checks(root, config, clients))
     for component in resolved["components"]:
         checks.extend(_tool_checks(component, modules, headless=headless, probe=probe))
