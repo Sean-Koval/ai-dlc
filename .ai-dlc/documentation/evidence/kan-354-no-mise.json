@@ -1,0 +1,71 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "changes/KAN-354.fixed.md": "c4ee66498528fd3e05c5d27aa50493397feaa08fe1cf8d3a7a64b377a87b5a0b"
+      },
+      "outcome": "updated",
+      "reason": "KAN-354: the changelog fragment for this change.",
+      "reviewer": "Claude (agent)",
+      "target": "changes/KAN-354.fixed.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/architecture.md": "788b593066fcd5d1c9eb9ebbc3869971131d3ddb3ea3396bc8b9a6ea48ca8b55",
+        "docs/architecture.md": "099e45e56378bb4ea78edb3eec9e6a8ce7e7d60edd08d0b17aeeca9810351b82",
+        "src/ai_dlc/setup/project.py": "b8646eff89cb1fb2432a4c5c61543853ee46d75c73fad8fbf8cacf8215b2c3c2"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Re-reviewed after merging main: setup/project.py keeps its place and responsibility; the package map does not describe mise resolution.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/development-workflow.md": "0fba88526a61571ce49e91b2159325061a7c54ba5466e651565eabb2f910e7c6",
+        "docs/development-workflow.md": "fd724d20f13622d81235c1d718d336bff3e6364a92edf48a33051df19c5acb97",
+        "openspec/specs/portable-development/spec.md": "579ddee4fc5594b678aed22531e15d796f551edddd185d19a87b0f24fd1d73b7",
+        "src/ai_dlc/setup/project.py": "b8646eff89cb1fb2432a4c5c61543853ee46d75c73fad8fbf8cacf8215b2c3c2",
+        "tests/test_checks.py": "eb9b592f511edd12014c4bc56652325106c9aaaddbda43189e31cb1fff0ecab4"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Re-reviewed after merging main: the handbook names project check and setup but not how mise is resolved; the stages are unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/development-workflow.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/behavior-check.md": "a9fdd322629b5f68b4fc42285f07bce046e245036378e13c30d6cb54a04a4b54",
+        "docs/workflows/behavior-check.md": "3451853e30e37f8dda70d2efde5495ed07bd6c038a4f0cb19a34d2da89c03f7e",
+        "tests/test_checks.py": "eb9b592f511edd12014c4bc56652325106c9aaaddbda43189e31cb1fff0ecab4"
+      },
+      "outcome": "updated",
+      "reason": "Step 3 now says CI requires mise while local checks without it run on PATH and record runtime = path.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/behavior-check.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/brownfield.md": "dedbc6f762c6970ac999eb74598adc31dd6dbfe16a6b3ae8842345b9e37838b4",
+        "docs/workflows/brownfield.md": "f44e9557225fdd2650fcba7f3eb6bf6ad837aaab4b2ad7610787776ecddcec35",
+        "openspec/specs/portable-development/spec.md": "579ddee4fc5594b678aed22531e15d796f551edddd185d19a87b0f24fd1d73b7",
+        "tests/test_checks.py": "eb9b592f511edd12014c4bc56652325106c9aaaddbda43189e31cb1fff0ecab4"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Adoption steps are unchanged; the no-mise route lives in Get started.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/brownfield.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/get-started.md": "b3cdcadc535e0e825dfe2837433f1b4ef45551430ab207c485ef7dd601bf992e",
+        "docs/workflows/get-started.md": "21887eae0c75de358f5e2322d0af6b93b2f7790e75757ae4eca07494dee0b52e"
+      },
+      "outcome": "updated",
+      "reason": "Documents the no-mise route (uv sync --locked, uv run ai-dlc) and the proxy settings mise and uv read; re-recorded after merging main added the knowledge install link.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/get-started.md"
+    }
+  ],
+  "schema": 2
+}
