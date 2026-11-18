@@ -59,10 +59,10 @@
     {
       "bound": {
         "catalog:docs/workflows/get-started.md": "b3cdcadc535e0e825dfe2837433f1b4ef45551430ab207c485ef7dd601bf992e",
-        "docs/workflows/get-started.md": "e7c2814d8edbb807ba9ef6461ddde86d2daa02f4c8fc3df2affbefbca1194aca"
+        "docs/workflows/get-started.md": "6b5254fd0ef8f182d29b071f94833858ba36e918f04e040b41b2eed2da5696c8"
       },
       "outcome": "updated",
-      "reason": "Says to run ai-dlc doctor outside a repository right after bootstrap; main's knowledge install link is kept, with no growth in this PR's words.",
+      "reason": "Says to run ai-dlc doctor outside a repository right after bootstrap; main's knowledge install link and its new no-mise paragraph are kept, with no growth in this PR's words.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/get-started.md"
     },
