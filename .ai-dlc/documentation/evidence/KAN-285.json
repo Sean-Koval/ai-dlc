@@ -1,0 +1,14 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "tests/test_session_key_clients.py": "b8f5ea48b460b10b31daf818777e3e863b746a2e3a82da94569d322160e1f98d"
+      },
+      "outcome": "no-impact",
+      "reason": "KAN-285: tests only; they pin the session join key behaviour docs/design/session-join-key.md already describes for Claude Code, Codex and hangar.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/test_session_key_clients.py"
+    }
+  ],
+  "schema": 2
+}
