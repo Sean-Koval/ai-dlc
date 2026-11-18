@@ -51,50 +51,102 @@ class RuntimeUnavailable(UncertainError):
         super().__init__(f"{executable} is not on PATH; no check can run reproducibly")
 
 
-def runtime_env(root: Path, use_mise: bool, *, notify: bool = True) -> dict[str, str]:
-    env = dict(os.environ)
+def _mise_skipped_note(reason: str) -> str:
+    return (
+        f"note: {reason}; mise skipped, running with the tools on PATH. "
+        "Results may differ from the versions pinned in .mise.toml."
+    )
+
+
+def _find_mise(root: Path, env: dict[str, str]) -> tuple[str | None, Path | None]:
+    """The mise executable on PATH, else in the bootstrap bin (returned as the second item)."""
+    executable = find_executable("mise", root, env)
+    if executable is not None:
+        return executable, None
+    directory = bootstrap_bin(env, Path(env.get("HOME") or Path.home()))
+    candidate = directory / ("mise.exe" if os.name == "nt" else "mise")
+    if candidate.is_file() and os.access(candidate, os.X_OK):
+        return str(candidate), directory
+    return None, None
+
+
+class RuntimeEnv(dict[str, str]):
+    """A check environment; ``mise`` is the mise executable, or None when checks run on PATH."""
+
+    mise: str | None = None
+
+
+def runtime_env(
+    root: Path, use_mise: bool, *, notify: bool = True, target: str = "local"
+) -> dict[str, str]:
+    """The check environment, carrying the mise executable when mise runs the checks.
+
+    Locally, an absent or unprepared mise is skipped visibly and the tools on PATH run the
+    checks (KAN-354). CI receipts are completion evidence, so the github-actions target
+    still refuses to run without the pinned runtime.
+    """
+    env = RuntimeEnv(os.environ)
     env["UV_PYTHON_DOWNLOADS"] = "never"
-    if use_mise:
-        executable = find_executable("mise", root, env)
-        if executable is None:
-            directory = bootstrap_bin(env, Path(env.get("HOME") or Path.home()))
-            candidate = directory / ("mise.exe" if os.name == "nt" else "mise")
-            if not candidate.is_file() or not os.access(candidate, os.X_OK):
-                raise RuntimeUnavailable("mise")
-            executable = str(candidate)
-            env["PATH"] = str(directory) + os.pathsep + env.get("PATH", "")
+    if not use_mise:
+        return env
+    executable, directory = _find_mise(root, env)
+    if executable is None:
+        if target != "local":
+            raise RuntimeUnavailable("mise")
+        if notify:
+            print(_mise_skipped_note("mise is not installed"), file=sys.stderr)
+        return env
+    mise_env = RuntimeEnv(env)
+    if directory is not None:
+        mise_env["PATH"] = str(directory) + os.pathsep + env.get("PATH", "")
+    # Explicitly forbid mise from installing tools as a side effect of checks.
+    mise_env["MISE_AUTO_INSTALL"] = "0"
+    tools = read_toml(root / ".mise.toml").get("tools", {})
+    if "python" in tools:
+        result = subprocess.run(
+            [executable, "which", "python"],
+            cwd=root,
+            env=mise_env,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        if result.returncode != 0 or not result.stdout.strip():
+            if target != "local":
+                raise RuntimeUnavailable("python from .mise.toml")
             if notify:
                 print(
-                    f"note: using bootstrap runtime at {directory}; add it to PATH permanently with `ai-dlc project workspace-init --shell --apply`",
+                    _mise_skipped_note(
+                        "mise has not installed the python in .mise.toml "
+                        "(run `ai-dlc project setup` to install it)"
+                    ),
                     file=sys.stderr,
                 )
-        # Explicitly forbid mise from installing tools as a side effect of checks.
-        env["MISE_AUTO_INSTALL"] = "0"
-        tools = read_toml(root / ".mise.toml").get("tools", {})
-        if "python" in tools:
-            result = subprocess.run(
-                [executable, "which", "python"],
-                cwd=root,
-                env=env,
-                text=True,
-                capture_output=True,
-                check=True,
-            )
-            env["UV_PYTHON"] = result.stdout.strip()
-    return env
+            return env
+        mise_env["UV_PYTHON"] = result.stdout.strip()
+    if directory is not None and notify:
+        print(
+            f"note: using bootstrap runtime at {directory}; add it to PATH permanently with `ai-dlc project workspace-init --shell --apply`",
+            file=sys.stderr,
+        )
+    mise_env.mise = executable
+    return mise_env
 
 
 def run_command(
-    root: Path, command: Any, *, use_mise: bool, timeout: int = 3600
+    root: Path,
+    command: Any,
+    *,
+    use_mise: bool,
+    timeout: int = 3600,
+    target: str = "local",
 ) -> subprocess.CompletedProcess:
     parsed = parse_command(command)
-    env = runtime_env(root, use_mise, notify=False)
-    if use_mise and parsed.shell is None and Path(parsed.argv[0]).name == parsed.argv[0]:
+    env = runtime_env(root, use_mise, notify=False, target=target)
+    mise = getattr(env, "mise", None)
+    if mise is not None and parsed.shell is None and Path(parsed.argv[0]).name == parsed.argv[0]:
         # Resolve native tools under mise before pinning the launch path, so managed
         # runtimes win over a different system executable and batch targets are checked.
-        mise = find_executable("mise", root, env)
-        if mise is None:
-            raise RuntimeUnavailable("mise")
         resolved = subprocess.run(
             [mise, "which", parsed.argv[0]],
             cwd=root,
@@ -108,10 +160,7 @@ def run_command(
             parsed = Command((resolved.stdout.strip(), *parsed.argv[1:]))
     executable = require_executable(parsed, root, env)
     argv = [executable, *parsed.argv[1:]]
-    if use_mise:
-        mise = find_executable("mise", root, env)
-        if mise is None:
-            raise RuntimeUnavailable("mise")
+    if mise is not None:
         argv = [mise, "exec", "--", *argv]
     try:
         return subprocess.run(
@@ -211,7 +260,7 @@ def check_project(
         selected_checks=selected_checks,
     )
     # Resolve the runtime before any check so a missing one cannot be reported as a check failure.
-    runtime_env(root, use_mise)
+    mise = getattr(runtime_env(root, use_mise, target=target), "mise", None)
     commit = run_git(root, "rev-parse", "HEAD").stdout.strip()
     status = run_git(root, "status", "--porcelain").stdout
     receipt: dict[str, Any] = {
@@ -223,13 +272,15 @@ def check_project(
         "target": target,
         "required": required,
         "dirty": bool(status),
+        # "path" records that mise was skipped and the checks ran with the tools on PATH.
+        "runtime": "mise" if mise is not None else "path",
         "outcomes": [],
     }
     for name in check_ids:
         start = time.monotonic()
         reason = None
         try:
-            result = run_command(root, commands[name], use_mise=use_mise)
+            result = run_command(root, commands[name], use_mise=use_mise, target=target)
             code, outcome = result.returncode, "passed" if result.returncode == 0 else "failed"
         except CommandUnavailable as exc:
             code, outcome = 127, "failed"
@@ -435,17 +486,38 @@ def _setup_project(
         raise ValueError(f"required target hooks unavailable: {hook_policy['unavailable']}")
     # A bare install directory (only ai-dlc.toml, as the release runbook creates) declares
     # no tools; activating mise there would fail on the absent file, not on a real problem.
-    if use_mise and (root / ".mise.toml").is_file():
-        subprocess.run(["mise", "trust", str(root / ".mise.toml")], cwd=root, check=True)
+    mise = _find_mise(root, dict(os.environ))[0] if use_mise else None
+    skipped: list[str] = []
+    declared = root / ".mise.toml"
+    tools = sorted(read_toml(declared).get("tools", {})) if declared.is_file() else []
+    if use_mise and mise is None and tools:
+        missing = (
+            f"mise is not installed, so the tools in .mise.toml ({', '.join(tools)}) "
+            "were not installed"
+        )
+        if target != "local":
+            raise RuntimeError(
+                f"{missing}; install mise (`sh scripts/bootstrap.sh` provides it), "
+                "then rerun `ai-dlc project setup`"
+            )
+        print(
+            f"note: {missing}. Setup steps run with the tools on PATH; install those tools "
+            "yourself, or install mise and rerun `ai-dlc project setup`.",
+            file=sys.stderr,
+        )
+        skipped = tools
+    if mise is not None and (root / ".mise.toml").is_file():
+        subprocess.run([mise, "trust", str(root / ".mise.toml")], cwd=root, check=True)
         try:
-            subprocess.run(["mise", "install"], cwd=root, check=True)
+            subprocess.run([mise, "install"], cwd=root, check=True)
         except subprocess.CalledProcessError as exc:
             # Name the failure as setup steps do; mise has already printed which tool
             # and download failed, and nothing was journaled, so a rerun resumes.
             raise RuntimeError(
                 f"mise could not install the tools in .mise.toml (exit {exc.returncode}); "
-                "check access to the tool downloads mise printed above, then rerun "
-                "`ai-dlc project setup` to resume"
+                "check access to the tool downloads mise printed above (behind a shared "
+                "or proxied network, set GITHUB_TOKEN for mise's GitHub downloads), then "
+                "rerun `ai-dlc project setup` to resume"
             ) from exc
     db_path = state_path or state_file()
     db_path.parent.mkdir(parents=True, exist_ok=True)
@@ -465,11 +537,12 @@ def _setup_project(
             # verify command cannot hide changed inputs or a removed environment.
             if done and (
                 not step.get("verify")
-                or run_command(root, step["verify"], use_mise=use_mise).returncode == 0
+                or run_command(root, step["verify"], use_mise=use_mise, target=target).returncode
+                == 0
             ):
                 completed.append({"id": step["id"], "status": "unchanged"})
                 continue
-            result = run_command(root, step["command"], use_mise=use_mise)
+            result = run_command(root, step["command"], use_mise=use_mise, target=target)
             if result.returncode:
                 raise RuntimeError(
                     f"setup step {step['id']} failed ({result.returncode}); retry to resume"
@@ -489,4 +562,5 @@ def _setup_project(
         "ready": True,
         "agent_configuration": generated,
         "hook_policy": hook_policy,
+        **({"mise_skipped": skipped} if skipped else {}),
     }

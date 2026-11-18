@@ -185,3 +185,12 @@ def test_already_closed_issue_only_finish_rechecks_viewer_even_after_success(pro
     remote["identity"] = "foreign"
     with pytest.raises(ValueError, match="viewer identity mismatch"):
         app.finish("one")
+
+
+def test_read_reports_work_kind_category_and_no_blockers(destination):
+    # KAN-537: GitHub Issues has no decision type or blocking links ai-dlc reads.
+    _, adapter, remote = destination
+    item = adapter.invoke("read", {"reference": "42"})
+    assert (item["kind"], item["category"], item["blocked_by"]) == ("work", "todo", [])
+    remote["closed"] = True
+    assert adapter.invoke("read", {"reference": "42"})["category"] == "done"

@@ -236,10 +236,15 @@ def test_machine_help_exposes_the_lifecycle_commands():
         assert name in result.stdout
 
 
-def test_machine_commands_forward_their_documented_defaults(monkeypatch):
+def test_machine_commands_forward_their_documented_defaults(monkeypatch, tmp_path):
     """Would fail if a lifecycle route changed its manager call or preview default."""
     from ai_dlc import cli
 
+    # Doctor forwards to the manager inside an adopted repository (outside one it runs
+    # the machine preflight, KAN-363).
+    project = tmp_path / "project"
+    project.mkdir()
+    (project / "ai-dlc.toml").write_text("schema = 4\n")
     calls = []
 
     class Manager:
@@ -313,7 +318,7 @@ def test_machine_commands_forward_their_documented_defaults(monkeypatch):
         ["machine", "sync"],
         ["machine", "sync", "--apply"],
         ["machine", "status"],
-        ["machine", "doctor", "--root", "/tmp/project"],
+        ["machine", "doctor", "--root", str(project)],
     ]
 
     for invocation in invocations:
@@ -348,7 +353,7 @@ def test_machine_commands_forward_their_documented_defaults(monkeypatch):
         ("sync", {"apply": False, "headless": False}),
         ("sync", {"apply": True, "headless": False}),
         ("status",),
-        ("doctor", Path("/tmp/project"), "local"),
+        ("doctor", project, "local"),
     ]
 
 
@@ -658,6 +663,7 @@ def test_root_and_machine_doctor_share_enrolled_readiness(monkeypatch, tmp_path)
             return {"ready": False, "machine_checks": {"available": False}}
 
     monkeypatch.setattr(cli, "MachineManager", Manager)
+    (tmp_path / "ai-dlc.toml").write_text("schema = 4\n")
     runner = CliRunner()
 
     root_result = runner.invoke(cli.app, ["doctor", "--root", str(tmp_path)])

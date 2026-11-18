@@ -1361,8 +1361,11 @@ def machine_doctor(
     target: Annotated[str, typer.Option("--target")] = "local",
     effective_environment: Annotated[bool, typer.Option("--effective-environment")] = False,
     probe_versions: Annotated[bool, typer.Option("--probe-versions")] = False,
+    agent_client: Annotated[list[str] | None, typer.Option("--agent-client")] = None,
 ):
     _reject_doctor_extras(context, safe=effective_environment)
+    if _machine_preflight(root, effective_environment, None, probe_versions, agent_client):
+        return
     if probe_versions and not effective_environment:
         raise typer.BadParameter("--probe-versions requires --effective-environment.")
     if effective_environment:
@@ -1377,6 +1380,26 @@ def machine_doctor(
     conclude(result)
 
 
+def _machine_preflight(
+    root: Path,
+    effective_environment: bool,
+    machine: Path | None,
+    probe_versions: bool,
+    agent_client: list[str] | None,
+) -> bool:
+    """Outside an adopted repository, doctor checks the machine itself (KAN-363)."""
+    if effective_environment or machine is not None or (root / "ai-dlc.toml").is_file():
+        if agent_client:
+            raise typer.BadParameter(
+                "--agent-client applies to the machine preflight, outside an ai-dlc project."
+            )
+        return False
+    from ai_dlc.environment.preflight import machine_preflight
+
+    conclude(machine_preflight(root, clients=agent_client, probe_versions=probe_versions))
+    return True
+
+
 @app.command(context_settings={"allow_extra_args": True})
 def doctor(
     context: typer.Context,
@@ -1386,6 +1409,7 @@ def doctor(
     machine: Annotated[Path | None, typer.Option("--machine")] = None,
     effective_environment: Annotated[bool, typer.Option("--effective-environment")] = False,
     probe_versions: Annotated[bool, typer.Option("--probe-versions")] = False,
+    agent_client: Annotated[list[str] | None, typer.Option("--agent-client")] = None,
     knowledge_checks: Annotated[
         bool, typer.Option("--knowledge", help="run the knowledge install checks instead")
     ] = False,
@@ -1394,6 +1418,10 @@ def doctor(
     selected_root = root or root_option
     if knowledge_checks:
         _knowledge_doctor(selected_root, None, False)
+        return
+    if _machine_preflight(
+        selected_root, effective_environment, machine, probe_versions, agent_client
+    ):
         return
     if probe_versions and not effective_environment:
         raise typer.BadParameter("--probe-versions requires --effective-environment.")
@@ -1852,10 +1880,14 @@ def knowledge_stats(
         Path | None,
         typer.Option("--log", help="capture batch's run log (.jsonl, .json or folder)"),
     ] = None,
+    usage_log: Annotated[
+        Path | None,
+        typer.Option("--usage-log", help="session usage log (.jsonl), for cost per PR"),
+    ] = None,
     report: Annotated[Path | None, typer.Option("--report", help="write the Markdown here")] = None,
     json_output: Annotated[bool, typer.Option("--json")] = False,
 ):
-    """Measure the 1.0 outcomes: capture, review, agent loop and health; read-only.
+    """Measure the 1.0 outcomes: capture, review, agent loop, health and delivery; read-only.
 
     Reads git, the scm and tracker roles, and the capture run log given with ``--log``
     (kept where the batch runs, not in git). Without it, or without a role, those
@@ -1872,7 +1904,9 @@ def knowledge_stats(
         # one is an error to fix, not a reason to report nothing.
         config = config_for(root) if (root / "ai-dlc.toml").is_file() else None
         wired = measure.from_roles(config, root, agent_repositories=agent_repositories or ())
-        result = measure.stats(records, moment, project=project, log=log, **wired)
+        result = measure.stats(
+            records, moment, project=project, log=log, usage_log=usage_log, **wired
+        )
         text = "\n".join(measure.report(result)) + "\n"
         if report is not None:
             report.parent.mkdir(parents=True, exist_ok=True)

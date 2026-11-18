@@ -3086,6 +3086,20 @@
                 "default": null,
                 "title": "Closed At"
               },
+              "commits_after_first_review": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "commits pushed after the first review; null: unknown",
+                "title": "Commits After First Review"
+              },
               "created_at": {
                 "format": "date-time",
                 "title": "Created At",
@@ -3098,6 +3112,19 @@
                 },
                 "title": "Files",
                 "type": "array"
+              },
+              "first_approval_at": {
+                "anyOf": [
+                  {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "First Approval At"
               },
               "first_commit": {
                 "anyOf": [
@@ -3123,6 +3150,26 @@
                 ],
                 "title": "First Push Checks",
                 "type": "string"
+              },
+              "first_review_at": {
+                "anyOf": [
+                  {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "First Review At"
+              },
+              "labels": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Labels",
+                "type": "array"
               },
               "merge_commit": {
                 "anyOf": [
@@ -3154,6 +3201,20 @@
                 "minimum": 1,
                 "title": "Number",
                 "type": "integer"
+              },
+              "ready_at": {
+                "anyOf": [
+                  {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "when it was marked ready for review; null: never a draft",
+                "title": "Ready At"
               },
               "state": {
                 "description": "closed means closed without merging",
@@ -3447,12 +3508,149 @@
       },
       "required": true,
       "response": {
+        "$defs": {
+          "Blocker": {
+            "additionalProperties": true,
+            "description": "An item that blocks the one read (Jira: the inward issue of a Blocks link).",
+            "properties": {
+              "category": {
+                "enum": [
+                  "todo",
+                  "in_progress",
+                  "done"
+                ],
+                "title": "Category",
+                "type": "string"
+              },
+              "key": {
+                "minLength": 1,
+                "title": "Key",
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "work",
+                  "epic",
+                  "decision"
+                ],
+                "title": "Kind",
+                "type": "string"
+              },
+              "labels": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Labels",
+                "type": "array"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              }
+            },
+            "required": [
+              "key",
+              "category",
+              "kind",
+              "labels"
+            ],
+            "title": "Blocker",
+            "type": "object"
+          }
+        },
         "additionalProperties": true,
+        "description": "``read``'s item. A provider that knows them adds its kind and its blockers.\n\n``blocked_by`` absent means the provider cannot tell; an empty list means nothing\nblocks the item.",
         "properties": {
+          "blocked_by": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/$defs/Blocker"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Blocked By"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "enum": [
+                  "todo",
+                  "in_progress",
+                  "done"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "todo, in_progress or done, as the tracker groups its statuses.",
+            "title": "Category"
+          },
           "id": {
             "minLength": 1,
             "title": "Id",
             "type": "string"
+          },
+          "key": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "The tracker's own key.",
+            "title": "Key"
+          },
+          "kind": {
+            "anyOf": [
+              {
+                "enum": [
+                  "work",
+                  "epic",
+                  "decision"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Kind"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "when the item first moved to a started state",
+            "title": "Started At"
           },
           "state": {
             "description": "Normalized state: open, in_progress, in_review, needs_decision, closed, cancelled or unknown.",
@@ -3471,7 +3669,7 @@
           "url",
           "state"
         ],
-        "title": "Item",
+        "title": "ReadItem",
         "type": "object"
       }
     },
