@@ -238,6 +238,9 @@ class ReadItem(Item):
         default=None, description="todo, in_progress or done, as the tracker groups its statuses."
     )
     blocked_by: list[Blocker] | None = None
+    started_at: AwareDatetime | None = Field(
+        default=None, description="when the item first moved to a started state"
+    )
 
 
 class Found(BaseModel):
@@ -411,6 +414,15 @@ class PullRequestSummary(BaseModel):
     first_push_checks: Literal["success", "failure", "pending", "none"] = Field(
         default="none",
         description="combined checks on the earliest pull request commit that has any",
+    )
+    labels: list[str] = Field(default_factory=list)
+    ready_at: AwareDatetime | None = Field(
+        default=None, description="when it was marked ready for review; null: never a draft"
+    )
+    first_review_at: AwareDatetime | None = None
+    first_approval_at: AwareDatetime | None = None
+    commits_after_first_review: int | None = Field(
+        default=None, ge=0, description="commits pushed after the first review; null: unknown"
     )
 
 
