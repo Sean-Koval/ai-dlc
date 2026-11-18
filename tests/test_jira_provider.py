@@ -982,6 +982,37 @@ def test_read_kind_follows_the_issue_type(jira, issue_type, kind):
     assert jira.provider().invoke("read", {"reference": "WORK-7"})["kind"] == kind
 
 
+def blocked_by_work_7(jira):
+    """WORK-1 is blocked by WORK-7 (id 501), which a test then damages."""
+    jira.provider().invoke("create", PAYLOAD)  # WORK-1, id 101
+    filed_by_person(jira, key="WORK-7")  # id 501
+    jira.issues[0]["fields"]["issuelinks"] = [
+        {"type": {"name": "Blocks"}, "inwardIssue": {"id": "501"}}
+    ]
+
+
+def test_read_with_a_blocker_missing_its_issue_type_leaves_blockers_out(jira):
+    """KAN-549: a blocker row without an issue type no longer fails the whole read."""
+    blocked_by_work_7(jira)
+    del jira.issues[1]["fields"]["issuetype"]
+
+    item = jira.provider().invoke("read", {"reference": "WORK-1"})
+
+    assert (item["key"], item["kind"]) == ("WORK-1", "work")
+    assert "blocked_by" not in item
+
+
+@pytest.mark.parametrize("status", [{"statusCategory": "done"}, "done", None])
+def test_read_with_a_blocker_of_unreadable_status_counts_it_in_progress(jira, status):
+    """KAN-549: a malformed status category reads as in progress, never a crash."""
+    blocked_by_work_7(jira)
+    jira.issues[1]["fields"]["status"] = status
+
+    (blocker,) = jira.provider().invoke("read", {"reference": "WORK-1"})["blocked_by"]
+
+    assert (blocker["key"], blocker["category"]) == ("WORK-7", "in_progress")
+
+
 def test_read_without_link_evidence_leaves_blockers_out(jira):
     """R1 on KAN-537: unknown blockers are left out, never reported as "unblocked"."""
     filed_by_person(jira)
