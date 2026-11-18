@@ -1,5 +1,7 @@
 # Example workflows
 
+Three short routes: deliver a ticket, keep documents current, and start an FDE engagement.
+
 ## Take a ticket through delivery
 
 With tracker and SCM connections configured:
@@ -53,3 +55,8 @@ Expand landing pages under `docs/fde_engagements/`. Stage checks require earlier
 exit criteria and recorded evidence before downstream activation. See the
 [FDE guide](../runbooks/fde-documents.md) for configuration and stage metadata.
 Confluence publication and synchronization remain unimplemented.
+
+## Next
+
+- [Development workflow](../development-workflow.md): every stage and its exit condition.
+- [Greenfield](greenfield.md) and [brownfield](brownfield.md): a new application or an existing repository.

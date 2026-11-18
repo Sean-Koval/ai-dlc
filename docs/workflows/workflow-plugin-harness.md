@@ -1,11 +1,14 @@
 # Pin the workflow plugin in a team harness
 
+Publish the [workflow plugin](workflow-plugin.md) into a team harness, pin it in the
+lock, and point the `candidate` channel at it.
+
 A team harness repository holds the native files a team's agents run with and a
-hangar `harness.lock` that pins them; the
+hangar `harness.lock` that pins them. The
 [example team harness](https://github.com/Sean-Koval/team-harness) is a copyable
 one, and its
 [ai-dlc workflow plugin section](https://github.com/Sean-Koval/team-harness#the-ai-dlc-workflow-plugin)
-shows the result. ai-dlc publishes the [workflow plugin](workflow-plugin.md) into
+shows the result. ai-dlc publishes the plugin into
 it; the harness repository decides where the plugin is on. These steps use the
 example's names (`harnesses/team-default`, marketplace `team-harness`).
 
