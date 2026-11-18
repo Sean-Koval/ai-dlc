@@ -9,6 +9,7 @@ import os
 import re
 import sys
 import uuid
+from datetime import datetime
 from urllib.parse import urlsplit
 
 import httpx
@@ -495,6 +496,8 @@ class JiraCloudProvider:
             params={
                 "fields": fields + (",issuelinks" if links else ""),
                 "properties": "ai-dlc",
+                # The newest status changes come in the same answer; see ``started``.
+                **({"expand": "changelog"} if links else {}),
             },
         )
         if not isinstance(row, dict) or row.get("id" if selected.isdigit() else "key") != selected:
@@ -694,7 +697,40 @@ class JiraCloudProvider:
         blocked_by = self.blockers(fields)
         if blocked_by is not None:
             answer["blocked_by"] = blocked_by
+        started = self.started(row)
+        if started is not None:
+            answer["started_at"] = started
         return answer
+
+    def started(self, row):
+        """When the issue first moved to a started status (KAN-515), or ``None``.
+
+        Read from the changelog Jira sends with the issue, so it costs no request. When
+        that changelog is truncated, the first move may be missing, so it is unknown.
+        """
+        changelog = row.get("changelog")
+        if not isinstance(changelog, dict):
+            return None
+        histories, total = changelog.get("histories"), changelog.get("total")
+        if not isinstance(histories, list) or type(total) is not int or total > len(histories):
+            return None
+        states = self.config["statuses"]
+        started = {status for name in MOVABLE_STATES[1:] for status in states.get(name, [])}
+        moments = []
+        for history in histories:
+            if not isinstance(history, dict) or not isinstance(history.get("items"), list):
+                return None
+            if any(
+                isinstance(item, dict)
+                and item.get("field") == "status"
+                and item.get("to") in started
+                for item in history["items"]
+            ):
+                try:
+                    moments.append(datetime.fromisoformat(str(history.get("created"))))
+                except ValueError:
+                    return None
+        return min(moments).isoformat() if moments else None
 
     def find(self, correlation):
         rows, tokens, ids = [], set(), set()

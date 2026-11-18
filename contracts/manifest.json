@@ -3638,6 +3638,20 @@
             "default": null,
             "title": "Kind"
           },
+          "started_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "when the item first moved to a started state",
+            "title": "Started At"
+          },
           "state": {
             "description": "Normalized state: open, in_progress, in_review, needs_decision, closed, cancelled or unknown.",
             "minLength": 1,

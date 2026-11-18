@@ -238,6 +238,9 @@ class ReadItem(Item):
         default=None, description="todo, in_progress or done, as the tracker groups its statuses."
     )
     blocked_by: list[Blocker] | None = None
+    started_at: AwareDatetime | None = Field(
+        default=None, description="when the item first moved to a started state"
+    )
 
 
 class Found(BaseModel):
