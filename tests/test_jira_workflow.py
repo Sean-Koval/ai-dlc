@@ -143,6 +143,7 @@ def test_ticket_filed_in_jira_starts_and_finishes_from_a_review_status(lifecycle
                 "description": None,
                 "status": {"id": "7", "statusCategory": {"key": "indeterminate"}},
                 "resolution": None,
+                "issuelinks": [],
             },
             "properties": {},
         }

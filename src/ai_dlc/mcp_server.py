@@ -370,7 +370,12 @@ def _register_tracker_tools(server: FastMCP, root: Path, config: dict, registry)
 
     @server.tool()
     def tracker_get(reference: str) -> dict:
-        """Read one tracker item through the tracker role, with its exec: labels."""
+        """Read one tracker item through the tracker role, with its exec: labels.
+
+        Where the tracker knows them, the item also has its ``kind`` (work, epic or
+        decision), ``category`` (todo, in_progress or done) and ``blocked_by``: each item
+        that blocks it, with its key, category, kind and labels.
+        """
         return tracker().get(reference)
 
     @server.tool()
