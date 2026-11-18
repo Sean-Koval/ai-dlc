@@ -18,6 +18,8 @@ from ai_dlc.harness.components import (
 
 _READY = "ready"
 _BLOCKING_DIMENSIONS = {"tool", "configuration", "credential", "guidance", "lifecycle-adapter"}
+# Rows in these dimensions block readiness unless ready; summaries read the same set.
+BLOCKING_DIMENSIONS = frozenset(_BLOCKING_DIMENSIONS)
 
 
 def _check(

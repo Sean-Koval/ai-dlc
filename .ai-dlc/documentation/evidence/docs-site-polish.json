@@ -1,0 +1,115 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "catalog:docs/architecture.md": "788b593066fcd5d1c9eb9ebbc3869971131d3ddb3ea3396bc8b9a6ea48ca8b55",
+        "docs/architecture.md": "7d5fed191dd2d9e0948da42f00ebf024d2fa47bbe2c3a2e89e6b32bb1a1cdc02"
+      },
+      "outcome": "updated",
+      "reason": "Editorial restructure only: an entry-point diagram, the five ownership layers as a table and subsection headings; no behavior statement changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/development-workflow.md": "0fba88526a61571ce49e91b2159325061a7c54ba5466e651565eabb2f910e7c6",
+        "docs/development-workflow.md": "5f8f13404f21c595df085547e6b27bdb63a64b2a319339f9c6cd9552e195a27d"
+      },
+      "outcome": "updated",
+      "reason": "The twelve-stage list is shown as four phase cards and a Next section was added; stages and contracts are unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/development-workflow.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/index.md": "65c0b0508964e9cb9cc7d68cef118ffcaf83bd6b4524054d54306e09f8a57810",
+        "docs/index.md": "200871e88165ad3c9e023790588ee07b24bd4da205249ca9265b08dce3c6d88c"
+      },
+      "outcome": "updated",
+      "reason": "Home page restructured: use cases as linked cards, captioned recordings, a two-column features table and read-next cards; same facts.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/index.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/roadmap.md": "3bf3afbf1117b7747e4c261c4a0ac1781559085c96abed00632a9804166918b8",
+        "docs/roadmap.md": "16c425fb692d0041c49f93aa7829adb24df32149a51a442210a822064b4f3a10"
+      },
+      "outcome": "updated",
+      "reason": "Rewrapped one line so '#50 is delivered.' no longer renders as a heading; wording unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/roadmap.md"
+    },
+    {
+      "bound": {
+        "docs/stylesheets/product.css": "436d7463c952ed9ecb1d6b7b4311f65c6e276d416dd2251e9ca8c09a5343c491"
+      },
+      "outcome": "no-impact",
+      "reason": "Site styling only (card row, phase strip, footer links); tokens only, no document content.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/stylesheets/product.css"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/configure.md": "f4078ad05ba312983a82bd24daf5b24297631310c3bcb2d90d8f6028b492677d",
+        "docs/workflows/configure.md": "f50fa79918bc341410b0f7657e508f0f9a9e0d12656823a087949860a223367d"
+      },
+      "outcome": "updated",
+      "reason": "Added a one-sentence lede, a subsection heading over the settings table and a Next section.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/configure.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/examples.md": "9af15ebde2b5fc68eae3663065ea72da09e828a000fb6c43a25f80ca5aa3ab38",
+        "docs/workflows/examples.md": "0c94fa97c9be3cbcb13ec3cdcd291812a3b66b390d452b320f50437ab4f75675"
+      },
+      "outcome": "updated",
+      "reason": "Added a one-sentence lede and a Next section.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/examples.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/get-started.md": "b3cdcadc535e0e825dfe2837433f1b4ef45551430ab207c485ef7dd601bf992e",
+        "docs/workflows/get-started.md": "cd50546f4a4de2f078333893ef72fb11a001797bfe6e2a9e9a0f6c74bb74aaa0",
+        "mkdocs.yml": "7abd3647822c19d28dea4f48150d22a4ec0cf2d177464ef75995568f948db020"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Its routes and commands are unchanged by this work; main's own edits to it merge cleanly, and its anchors into configure.md still resolve in the strict build.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/get-started.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/how-it-fits.md": "0032744a2746dd1b4e47f09fc1cc9c4d6f8c8cfe90990b464f56a0abc1d1ac10",
+        "docs/workflows/how-it-fits.md": "0ae1cb0d06df24e17a5c2f8d07449df1c9d93edaa7b26ef4dc40ff4f924731a7"
+      },
+      "outcome": "updated",
+      "reason": "Added a lede and a Next section; the four-phase diagram is now a phase strip that stays readable on a phone.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/how-it-fits.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/workflow-plugin-harness.md": "4384ef72e8938151681c2e34243f41a606aca921220d8bbaed30019c61e27a90",
+        "docs/workflows/workflow-plugin-harness.md": "f3705f1cda472e9beb8f7f31e361131520b01b62ece47ec6b427050a892f23ac"
+      },
+      "outcome": "updated",
+      "reason": "Added a one-sentence lede and split the opening sentence; the steps are unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/workflow-plugin-harness.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/workflow-plugin.md": "9e03b3ce099c0f527c8f02590717bb6021621b582d36ef7c3591815025088794",
+        "docs/workflows/workflow-plugin.md": "151ec8fa7903a629451d85a0fe7c96f58468acbd65a9e5d5d3633ed17e7fd3d8"
+      },
+      "outcome": "updated",
+      "reason": "Added two section headings; commands and text unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/workflow-plugin.md"
+    }
+  ],
+  "schema": 2
+}

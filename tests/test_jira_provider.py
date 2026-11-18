@@ -1021,3 +1021,29 @@ def test_read_category_falls_back_to_in_progress_for_an_unknown_status_category(
     item = jira.provider().invoke("read", {"reference": "WORK-7"})
 
     assert item["category"] == "in_progress"
+
+
+# KAN-515: read gives when the ticket was started, from the changelog Jira sends with it.
+
+
+def test_read_gives_the_first_move_to_a_started_status(jira):
+    from datetime import UTC, datetime
+
+    filed_by_person(jira)
+    history = [
+        {"created": "2026-11-04T09:00:00.000-0500", "items": [{"field": "status", "to": "2"}]},
+        {"created": "2026-11-03T09:00:00.000-0500", "items": [{"field": "labels", "to": None}]},
+        {"created": "2026-11-02T09:00:00.000-0500", "items": [{"field": "status", "to": "2"}]},
+    ]
+    jira.issues[0]["changelog"] = {"total": 3, "histories": history}
+
+    item = jira.provider().invoke("read", {"reference": "WORK-7"})
+
+    assert item["started_at"] == datetime(2026, 11, 2, 14, tzinfo=UTC)
+    (request,) = [r for r in jira.requests if r.url.path.endswith("/issue/WORK-7")]
+    assert request.url.params["expand"] == "changelog"
+    # A truncated changelog may miss the first move: unknown, so left out.
+    jira.issues[0]["changelog"]["total"] = 150
+    assert "started_at" not in jira.provider().invoke("read", {"reference": "WORK-7"})
+    del jira.issues[0]["changelog"]
+    assert "started_at" not in jira.provider().invoke("read", {"reference": "WORK-7"})

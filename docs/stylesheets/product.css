@@ -11,3 +11,31 @@
 @media (forced-colors: active) {
   .af-hero__visual > picture > img { box-shadow: none; outline: 1px solid CanvasText; }
 }
+
+/* Card rows with a fixed count (`.af-tools.dlc-cols-3`): three across where the column allows, so a row of three
+   or six cards fills the measure instead of leaving an empty track; one column on phones. */
+@media (min-width: 760px) {
+  .af-tools.dlc-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* A numbered sequence grouped into phases (the workflow at a glance): one raised card per phase, its steps a
+   continuing ordered list. Four across on a wide column, two on a narrow one, stacked on phones. */
+.md-typeset .dlc-phases { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 2px; margin: 1.5em 0; }
+.md-typeset .dlc-phase { background: var(--af-raised); padding: var(--af-space-16); border-top: 2px solid var(--af-line-strong); min-width: 0; }
+.md-typeset .dlc-phase > b { display: block; font-family: var(--af-font-display); font-stretch: var(--af-display-stretch); font-weight: 700; font-size: .8rem; color: var(--af-fg); }
+.md-typeset .dlc-phase > small { display: block; font-size: .6rem; color: var(--af-fg-subtle); margin-bottom: var(--af-space-8); }
+.md-typeset .dlc-phase > ol { margin: 0; padding-left: 1.4em; font-size: .68rem; line-height: 1.45; color: var(--af-fg-muted); }
+.md-typeset .dlc-phase > ol > li { margin: 0 0 .35em; }
+.md-typeset .dlc-phase > ol > li::marker { font-family: var(--af-font-mono); color: var(--af-fg-subtle); }
+@media (forced-colors: active) {
+  .md-typeset .dlc-phase { border-top-color: CanvasText; outline: 1px solid CanvasText; }
+}
+
+/* Previous / next links at the foot of a page (navigation.footer): each takes half the row so a title such as
+   "Get started" is not cut to "Get …"; next sits at the trailing edge. */
+.md-footer__link { flex: 1 1 50%; min-width: 0; }
+.md-footer__link--next { justify-content: flex-end; }
+.md-footer__title { flex-grow: 0; max-width: 100%; }
+@media (max-width: 44.98em) {
+  .md-footer__link--next { flex-basis: 100%; }
+}

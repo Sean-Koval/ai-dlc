@@ -66,8 +66,8 @@ Optional capabilities include `backend` contract checks and `frontend` browser
 smoke tests. Checks bind receipts to the repository's `HEAD`.
 
 `ai-dlc project onboard --root PATH --preset generic --agent-client codex` prints
-the same route as a read-only JSON plan. Review each action's `argv`, effects and
-`requires_review` before running it. A configured repository can run
+the same route as a read-only plan: its findings, then the commands in order. Read
+the preview of each one marked `[review]` before running it; `--json` prints the plan. A configured repository can run
 `project onboard --root PATH` alone. Its `ai-dlc.toml` stays authoritative, and a
 conflicting client or preset returns a blocked plan.
 
