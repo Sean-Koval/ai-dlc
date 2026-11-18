@@ -1056,7 +1056,8 @@ def customer_repository(root: Path | str) -> str | None:
 
 CUSTOMER_READ = (
     "boundary: customer records are read only from their customer's own repository, whose "
-    'knowledge.toml declares [repo] boundary = "customer"; this repository does not'
+    'knowledge.toml declares [repo] boundary = "customer" for that project; this repository '
+    "does not"
 )
 
 
@@ -1065,19 +1066,25 @@ def readable_in[Entry: Mapping[str, Any]](
 ) -> tuple[list[Entry], int]:
     """``(entries a read of project may return, customer records refused)`` (KAN-524).
 
-    In a declared customer repository this is :func:`team_inputs`. Anywhere else no
-    customer record is returned; the count is of those the caller's ``project`` would
-    otherwise see, so a view of another project learns nothing about them.
+    A customer record is returned only from a customer repository declared for its own
+    project: in a repository of ``alpha`` a record under ``projects/beta/`` is refused
+    like one in a team repository. The count is of those the caller's ``project``
+    would otherwise see, so a view of another project learns nothing about them.
     """
     visible = team_inputs(entries, project)
-    kept = [
-        entry
-        for entry in visible
-        if not is_customer(entry.get("record", entry.get("header")) or {})
+    customers = [
+        entry for entry in visible if is_customer(entry.get("record", entry.get("header")) or {})
     ]
-    if len(kept) == len(visible) or customer_repository(root) is not None:
+    if not customers:
         return visible, 0
-    return kept, len(visible) - len(kept)
+    declared = customer_repository(root)
+    refused = [
+        entry for entry in customers if declared is None or project_of(entry["path"]) != declared
+    ]
+    if not refused:
+        return visible, 0
+    kept = [entry for entry in visible if not any(entry is gone for gone in refused)]
+    return kept, len(refused)
 
 
 def _names_a_record(value: str) -> bool:
