@@ -72,11 +72,11 @@
     {
       "bound": {
         "catalog:docs/workflows/get-started.md": "b3cdcadc535e0e825dfe2837433f1b4ef45551430ab207c485ef7dd601bf992e",
-        "docs/workflows/get-started.md": "1d43e6d423dbcada948d661495262998832e712eebe45fedeaad0645f5d75185",
+        "docs/workflows/get-started.md": "6b5254fd0ef8f182d29b071f94833858ba36e918f04e040b41b2eed2da5696c8",
         "mkdocs.yml": "7abd3647822c19d28dea4f48150d22a4ec0cf2d177464ef75995568f948db020"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Its routes and commands are unchanged; only pages it links to gained ledes and Next links, and its anchors into configure.md still resolve in the strict build.",
+      "reason": "Its routes and commands are unchanged by this work; main's own edits to it merge cleanly, and its anchors into configure.md still resolve in the strict build.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/get-started.md"
     },
