@@ -1361,8 +1361,11 @@ def machine_doctor(
     target: Annotated[str, typer.Option("--target")] = "local",
     effective_environment: Annotated[bool, typer.Option("--effective-environment")] = False,
     probe_versions: Annotated[bool, typer.Option("--probe-versions")] = False,
+    agent_client: Annotated[list[str] | None, typer.Option("--agent-client")] = None,
 ):
     _reject_doctor_extras(context, safe=effective_environment)
+    if _machine_preflight(root, effective_environment, None, probe_versions, agent_client):
+        return
     if probe_versions and not effective_environment:
         raise typer.BadParameter("--probe-versions requires --effective-environment.")
     if effective_environment:
@@ -1377,6 +1380,26 @@ def machine_doctor(
     conclude(result)
 
 
+def _machine_preflight(
+    root: Path,
+    effective_environment: bool,
+    machine: Path | None,
+    probe_versions: bool,
+    agent_client: list[str] | None,
+) -> bool:
+    """Outside an adopted repository, doctor checks the machine itself (KAN-363)."""
+    if effective_environment or machine is not None or (root / "ai-dlc.toml").is_file():
+        if agent_client:
+            raise typer.BadParameter(
+                "--agent-client applies to the machine preflight, outside an ai-dlc project."
+            )
+        return False
+    from ai_dlc.environment.preflight import machine_preflight
+
+    conclude(machine_preflight(root, clients=agent_client, probe_versions=probe_versions))
+    return True
+
+
 @app.command(context_settings={"allow_extra_args": True})
 def doctor(
     context: typer.Context,
@@ -1386,9 +1409,14 @@ def doctor(
     machine: Annotated[Path | None, typer.Option("--machine")] = None,
     effective_environment: Annotated[bool, typer.Option("--effective-environment")] = False,
     probe_versions: Annotated[bool, typer.Option("--probe-versions")] = False,
+    agent_client: Annotated[list[str] | None, typer.Option("--agent-client")] = None,
 ):
     _reject_doctor_extras(context, safe=effective_environment)
     selected_root = root or root_option
+    if _machine_preflight(
+        selected_root, effective_environment, machine, probe_versions, agent_client
+    ):
+        return
     if probe_versions and not effective_environment:
         raise typer.BadParameter("--probe-versions requires --effective-environment.")
     if effective_environment:

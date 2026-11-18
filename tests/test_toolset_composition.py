@@ -255,7 +255,12 @@ def test_guidance_cannot_mask_explicitly_unavailable_lifecycle_adapter(tmp_path,
         tmp_path,
         load_project(tmp_path),
         environ={},
-        probe=lambda _: pytest.fail("Plane has no required installed executable"),
+        # The selected client's CLI is the only executable probed (KAN-363).
+        probe=lambda commands: (
+            {"available": True}
+            if commands == ["claude"]
+            else pytest.fail("Plane has no required installed executable")
+        ),
     )
     assert not result["ready"]
     assert any(
