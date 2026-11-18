@@ -83,8 +83,14 @@ Many PRs are open at once, so a PR changes nothing that every other PR also chan
   page improves. CI caps each page at its debt on the PR's base, so the slack can't be
   spent. The `generated` workflow lists pages to lower after each merge; any PR may run
   `python tests/test_editorial.py --update`. A PR may still not raise a page's debt.
-- **Front-page assets** (`docs/assets/front/`): unchanged. A PR that changes what they
-  show rebuilds them, and `assets.yml` checks that they are current.
+- **Front-page assets** (`docs/assets/front/*.cast`, `*.svg`): a PR doesn't commit them
+  (KAN-535). `assets.yml` builds them on the PR and names the ones main will rebuild.
+  After merge, `generated.yml` rebuilds them and opens a `bot/front-assets` PR for a
+  person to merge. A PR that commits them fails unless labelled `generated-files`; to
+  drop them, run `git checkout origin/main -- docs/assets/front`.
+- **Docs dispositions** (KAN-534): a decision binds its target page, its catalog entry
+  and the mapped files its PR changed. A merge elsewhere stales it only when it touched
+  one of those, so most updates from main need no re-record.
 - **A new page** (KAN-486): add `docs/catalog.d/<id>.toml` with `schema = 1` and the
   page's `[[documents]]` entry; never edit `docs/catalog.toml` or the `nav` in
   `mkdocs.yml`. Give the entry `nav = "<section>"` (a top-level `nav` section, such as
