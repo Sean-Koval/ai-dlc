@@ -14,7 +14,7 @@
         "catalog:docs/architecture.md": "788b593066fcd5d1c9eb9ebbc3869971131d3ddb3ea3396bc8b9a6ea48ca8b55",
         "docs/architecture.md": "099e45e56378bb4ea78edb3eec9e6a8ce7e7d60edd08d0b17aeeca9810351b82",
         "src/ai_dlc/documentation/knowledge.py": "2d50da6198ea36b905131aee8bacb57d0283ba23811e25cd777f671b51a6d2f2",
-        "src/ai_dlc/documentation/knowledge_check.py": "5cf37c29d443590f9aacfac6c1a96cf4e8eadf5de606a17c953c33e50104fd69",
+        "src/ai_dlc/documentation/knowledge_check.py": "e752fb833d1dd68824e28549977c1507ccd6e2646c8fba015e2346090cd8f137",
         "src/ai_dlc/documentation/knowledge_service.py": "6ea6a740765adfd74ee911e2dd6566ff84807bdae8f186bff2b3168d4e288e7c",
         "src/ai_dlc/providers/__init__.py": "a6c07c2e411cbc5901bad35ef376f6280949584d6ba6508b5ffe3e513eb64c02",
         "src/ai_dlc/providers/git_knowledge.py": "f1bdeede86a27343913605484d173a9d3cfefa65f6fffa1dfde7f9dd7141b72c"
@@ -29,8 +29,8 @@
         "catalog:docs/design/local-and-shared-knowledge.md": "dda625604166b9fffe1120b9d4b69a9d919e36a1c66352d8de79c3d718083bab",
         "docs/design/local-and-shared-knowledge.md": "e8dd0f2bf6317cfbd70f47861582982313eba6db6c85d28179926860b640ab9b",
         "src/ai_dlc/documentation/knowledge.py": "2d50da6198ea36b905131aee8bacb57d0283ba23811e25cd777f671b51a6d2f2",
-        "src/ai_dlc/documentation/knowledge_check.py": "5cf37c29d443590f9aacfac6c1a96cf4e8eadf5de606a17c953c33e50104fd69",
-        "tests/test_knowledge_check.py": "0f1c1727c73524ab3f3345d3162dc829af5a4a8b59f17aa18e775a7209211aa4",
+        "src/ai_dlc/documentation/knowledge_check.py": "e752fb833d1dd68824e28549977c1507ccd6e2646c8fba015e2346090cd8f137",
+        "tests/test_knowledge_check.py": "b187523bd21e566e6e1f2dc82afae69c6bf5f16805b7d1f3392c8712377a9cc1",
         "tests/test_knowledge_render.py": "c4eff1f7226629aad3f6c7632455f6390b8400d3a80f66e6d4a8ec2812e2f0bd"
       },
       "outcome": "reviewed-no-change",
