@@ -1,24 +1,36 @@
 name: Generated files
-# After each merge to main, reports what a PR left for later (KAN-481). It holds no write access
-# and changes nothing.
-# - The front-page assets must be current: assets.yml checks them on every PR that touches what
-#   they show, so a failure here means one slipped through; rebuild them in a PR.
-# - tests/editorial_baseline.json may lag when a page improves: PRs aren't required to lower it,
-#   so two PRs don't conflict on it, and the check caps each page at its debt on the PR's base,
-#   so the slack can't be spent. Pages it would lower are listed as a notice; any PR may run
-#   `python tests/test_editorial.py --update` to lower them.
+# After each merge to main, builds or reports what a PR left for later (KAN-481, KAN-535).
+# - front-assets: PRs don't commit the front-page assets (assets.yml), so `build` runs
+#   docs/assets/front/build.py on main with read-only access. When an asset changed, it records
+#   their documentation disposition (evidence id front-assets) and hands over a patch. `publish`
+#   holds the write token, installs nothing and runs no repository code: it refuses a patch
+#   outside the recordings, the screens and that evidence file, commits it to bot/front-assets and
+#   opens or updates a PR (main's ruleset requires checks, so it can't push to main). A branch
+#   pushed with GITHUB_TOKEN starts no workflows, so it starts verify.yml and assets.yml there by
+#   workflow_dispatch. A person merges that PR.
+# - baseline: tests/editorial_baseline.json may lag when a page improves: PRs aren't required to
+#   lower it, so two PRs don't conflict on it, and the check caps each page at its debt on the
+#   PR's base, so the slack can't be spent. Pages it would lower are listed as a notice; any PR may
+#   run `python tests/test_editorial.py --update` to lower them.
 on:
   push:
     branches: [main]
   workflow_dispatch:
-permissions:
-  contents: read
+permissions: {}
+concurrency:
+  group: generated-main   # one build at a time, in merge order
+  cancel-in-progress: false
 env:
   CLAUDE_CODE_VERSION: "2.1.302"   # keep equal to assets.yml and docs/assets/front/build.py
 jobs:
-  assets:
-    name: Front-page assets are current on main
+  build:
+    name: Front-page assets built on main
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    outputs:
+      changed: ${{ steps.diff.outputs.changed }}
+      base: ${{ steps.diff.outputs.base }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,13 +42,92 @@ jobs:
           node-version: "22"
       - name: Install the Claude Code CLI (plugin screen only; no login needed)
         run: npm install -g "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}"
-      - name: Check the generated assets
+      - name: Build the assets
         run: |
           uv sync --locked
-          uv run --locked --no-sync python docs/assets/front/build.py --check
+          uv run --locked --no-sync python docs/assets/front/build.py
+      - name: Record their documentation disposition
+        run: |
+          stale="$(git status --porcelain -- docs/assets/front | cut -c4-)"
+          [ -n "$stale" ] || { echo "The front-page assets on main are current."; exit 0; }
+          short="$(git rev-parse --short HEAD)"
+          printf '%s\n' "$stale" | jq -R --arg at "$short" \
+            '{target: ., outcome: "updated", reason: ("Rebuilt by docs/assets/front/build.py on main at " + $at + "; it records the CLI output the merged pull requests reviewed.")}' \
+            | jq -s . > "$RUNNER_TEMP/decisions.json"
+          ai-dlc docs review --base HEAD --disposition "$RUNNER_TEMP/decisions.json" \
+            --reviewer "generated.yml (front-page build)" --evidence-id front-assets
+      - name: Patch of the rebuilt assets
+        id: diff
+        run: |
+          git add -A -- docs/assets/front .ai-dlc/documentation/evidence/front-assets.json
+          git diff --cached --binary --no-ext-diff > "$RUNNER_TEMP/front-assets.patch"
+          echo "base=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          if [ -s "$RUNNER_TEMP/front-assets.patch" ]; then echo "changed=true" >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/upload-artifact@v4
+        if: steps.diff.outputs.changed == 'true'
+        with:
+          name: front-assets-patch
+          path: ${{ runner.temp }}/front-assets.patch
+          retention-days: 1
+
+  publish:
+    name: Open the front-page assets PR
+    needs: build
+    if: needs.build.outputs.changed == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write   # to start verify.yml and assets.yml on bot/front-assets
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.build.outputs.base }}   # the commit the patch was built on
+          persist-credentials: false             # the token reaches only the push below
+      - uses: actions/download-artifact@v4
+        with:
+          name: front-assets-patch
+          path: ${{ runner.temp }}
+      # The build job ran repository code, so its patch isn't trusted. Refuse any path but a
+      # recording or screen directly in docs/assets/front/ and the front-assets evidence file, any
+      # binary hunk, symlink, mode change, rename, copy or delete; then require that evidence to
+      # decide only those recordings and screens. Shell, git and jq only.
+      - name: Apply the patch, refusing anything but the rebuilt assets
+        run: |
+          P="$RUNNER_TEMP/front-assets.patch"
+          ok='^(docs/assets/front/[A-Za-z0-9_-]+\.(cast|svg)|\.ai-dlc/documentation/evidence/front-assets\.json)$'
+          bad=$( { git apply --numstat "$P" | cut -f3- | grep -vE "$ok"; \
+                   git apply --numstat "$P" | grep -P '^-\t-\t' | cut -f3-; \
+                   git apply --summary "$P" | grep -E 'mode 120000|mode change|rename|copy|delete mode'; } || true )
+          [ -z "$bad" ] || { echo "the patch reaches outside the rebuilt assets:"; echo "$bad"; exit 1; }
+          git apply --index "$P"
+          jq -e '.schema == 2 and (.decisions | length > 0) and all(.decisions[];
+                   (.target | test("^docs/assets/front/[A-Za-z0-9_-]+\\.(cast|svg)$"))
+                   and ((.bound | keys) == [.target]))' \
+            .ai-dlc/documentation/evidence/front-assets.json > /dev/null \
+            || { echo "the front-assets evidence decides more than the rebuilt assets"; exit 1; }
+      - name: Commit, push to bot/front-assets and open the PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -q -m "build: rebuild the front-page assets after $(git rev-parse --short HEAD) (KAN-535)"
+          remote="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push -f "$remote" HEAD:refs/heads/bot/front-assets   # the bot's own branch, rebuilt from main each run
+          if [ "$(gh pr list --head bot/front-assets --state open --json number --jq length)" = "0" ]; then
+            gh pr create --head bot/front-assets --base main \
+              --title "KAN-535: rebuild the front-page assets" \
+              --body "$(printf 'Built by generated.yml from main with docs/assets/front/build.py. Merge it as is; a later merge to main rebuilds this branch.\n\nJira: KAN-535')"
+          fi
+          gh workflow run verify.yml --ref bot/front-assets   # their checks, on the PR's head commit
+          gh workflow run assets.yml --ref bot/front-assets
+
   baseline:
     name: Editorial baseline pages to lower
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
         with:
