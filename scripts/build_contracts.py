@@ -15,7 +15,7 @@ from pathlib import Path
 from ai_dlc.contracts import PAYLOADS, RESPONSES, ServiceResult, manifest
 from ai_dlc.documentation.knowledge_notes import schema as knowledge_note_schema
 from ai_dlc.documentation.knowledge_records import schema as knowledge_record_schema
-from ai_dlc.documentation.knowledge_stats import run_log_schema
+from ai_dlc.documentation.knowledge_stats import run_log_schema, usage_log_schema
 
 CONTRACTS = Path(__file__).resolve().parents[1] / "contracts"
 
@@ -30,6 +30,7 @@ def generated() -> dict[str, object]:
     files["knowledge-note.schema.json"] = knowledge_note_schema()
     files["knowledge-record.schema.json"] = knowledge_record_schema()
     files["capture-run.schema.json"] = run_log_schema()
+    files["usage-line.schema.json"] = usage_log_schema()
     return files
 
 

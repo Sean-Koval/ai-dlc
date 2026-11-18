@@ -14,18 +14,44 @@ handoff from an approved design to code.
 
 ## Workflow at a glance
 
-1. Intake and priority
-2. Discovery
-3. Product requirements
-4. Product and technical design
-5. Formal specification, when the design decides one is needed
-6. Reviewed work record
-7. Branch and implementation
-8. Tests and required checks
-9. Review and merge
-10. Merged-revision CI evidence
-11. Evidence-gated finish
-12. Tracker completion and handoff
+<div class="dlc-phases">
+<div class="dlc-phase">
+<b>Shape</b>
+<small>Scope, specs, ticket</small>
+<ol>
+<li>Intake and priority</li>
+<li>Discovery</li>
+<li>Product requirements</li>
+<li>Product and technical design</li>
+<li>Formal specification, when the design decides one is needed</li>
+<li>Reviewed work record</li>
+</ol>
+</div>
+<div class="dlc-phase">
+<b>Build</b>
+<small>Agent, branch, PR</small>
+<ol start="7">
+<li>Branch and implementation</li>
+</ol>
+</div>
+<div class="dlc-phase">
+<b>Verify</b>
+<small>Checks, review, merge</small>
+<ol start="8">
+<li>Tests and required checks</li>
+<li>Review and merge</li>
+</ol>
+</div>
+<div class="dlc-phase">
+<b>Finish</b>
+<small>Merged CI, close ticket</small>
+<ol start="10">
+<li>Merged-revision CI evidence</li>
+<li>Evidence-gated finish</li>
+<li>Tracker completion and handoff</li>
+</ol>
+</div>
+</div>
 
 ai-dlc does not host an autonomous orchestrator. The human and agent decide
 what work is useful; skills provide judgment, and the CLI validates, links and
@@ -299,3 +325,8 @@ target branch moves; the first per-work recording supersedes it.
 
 Rules for editing this handbook are in
 [CONTRIBUTING](https://github.com/Sean-Koval/ai-dlc/blob/main/CONTRIBUTING.md#maintaining-the-workflow-handbook).
+
+## Next
+
+- [Workflow tool map](workflows/tool-map.md): the command or skill for each stage.
+- [Example workflows](workflows/examples.md): one ticket, start to finish.

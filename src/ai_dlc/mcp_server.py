@@ -323,11 +323,12 @@ def _register_knowledge_stats_tool(server: FastMCP, root: Path, config: dict, re
         project: str | None = None,
         log: str | None = None,
         agent_repositories: list[str] | None = None,
+        usage_log: str | None = None,
     ) -> dict:
-        """Measure the 1.0 outcomes: capture, review, agent loop and health; read-only.
+        """Measure the 1.0 outcomes: capture, review, agent loop, health and delivery; read-only.
 
-        ``since`` is an ISO date or time; ``records`` and ``log`` are relative to the
-        project. Reads git, the scm and tracker roles and, with ``log``, the capture
+        ``since`` is an ISO date or time; ``records``, ``log`` and ``usage_log`` (session
+        usage, for delivery cost per merged pull request) are relative to the project. Reads git, the scm and tracker roles and, with ``log``, the capture
         batch's run log (.jsonl, .json or a folder). Without the project's ai-dlc.toml,
         a role or the log, those numbers read not measured; a wrong-shaped log is an
         error. Customer numbers count only in a view of their own ``project``.
@@ -343,7 +344,10 @@ def _register_knowledge_stats_tool(server: FastMCP, root: Path, config: dict, re
         )
         moment = datetime.fromisoformat(since)
         run_log = root / log if log else None
-        return measure.stats(root / records, moment, project=project, log=run_log, **wired)
+        usage = root / usage_log if usage_log else None
+        return measure.stats(
+            root / records, moment, project=project, log=run_log, usage_log=usage, **wired
+        )
 
 
 def _register_knowledge_records_tools(server: FastMCP, root: Path, config: dict, registry) -> None:
@@ -401,7 +405,12 @@ def _register_tracker_tools(server: FastMCP, root: Path, config: dict, registry)
 
     @server.tool()
     def tracker_get(reference: str) -> dict:
-        """Read one tracker item through the tracker role, with its exec: labels."""
+        """Read one tracker item through the tracker role, with its exec: labels.
+
+        Where the tracker knows them, the item also has its ``kind`` (work, epic or
+        decision), ``category`` (todo, in_progress or done) and ``blocked_by``: each item
+        that blocks it, with its key, category, kind and labels.
+        """
         return tracker().get(reference)
 
     @server.tool()

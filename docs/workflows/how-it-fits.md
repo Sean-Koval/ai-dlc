@@ -1,11 +1,13 @@
 # How the tools fit together
 
-```mermaid
-flowchart LR
-    Scope["Shape<br/>Scope, specs, ticket"] --> Build["Build<br/>Agent, branch, PR"]
-    Build --> Verify["Verify<br/>Checks, review, merge"]
-    Verify --> Finish["Finish<br/>Merged CI, close ticket"]
-```
+ai-dlc links existing tools into four phases; each tool keeps one responsibility.
+
+<div class="dlc-phases">
+<div class="dlc-phase"><b>1 Shape</b><small>Scope, specs, ticket</small></div>
+<div class="dlc-phase"><b>2 Build</b><small>Agent, branch, PR</small></div>
+<div class="dlc-phase"><b>3 Verify</b><small>Checks, review, merge</small></div>
+<div class="dlc-phase"><b>4 Finish</b><small>Merged CI, close ticket</small></div>
+</div>
 
 | Tool | Responsibility |
 | --- | --- |
@@ -58,3 +60,8 @@ MCP tools and skills.
 - **Engagement and design workflows.** Scaffold seven-stage forward-deployed
   engineering (FDE) engagement docs with local stage checks. Optional frontend
   tooling captures Playwright evidence for design review.
+
+## Next
+
+- [Workflow tool map](tool-map.md): the command, MCP tool or skill for each stage.
+- [Architecture](../architecture.md): layers, services and provider boundaries.

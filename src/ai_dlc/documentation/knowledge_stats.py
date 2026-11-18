@@ -13,6 +13,10 @@ the system already writes, so there is no new store:
   under ``evals/agent-run/`` (KAN-449).
 - **Health**, from the records on disk: records past ``stale_after``, Sources whose
   payload expires before anyone processed them, and records per author.
+- **Delivery** (KAN-515), over every pull request whose title starts with a ticket key in
+  the repositories agents work in: cycle time from the ticket's start (the tracker's
+  ``started_at``) to merge, first-push green, rework, approval wait and, with a usage
+  log (one :class:`UsageLine` per session), cost per merged pull request.
 
 Only the ``scm`` and ``tracker`` roles are called; a missing role leaves its numbers
 ``None`` with a reason, and every other number is still computed. The service takes
@@ -60,6 +64,9 @@ TICKET_LIMIT = 50  # the tracker query contract's page size; it has no cursor
 
 PullRequests = Callable[[datetime], list[dict[str, Any]]]
 Tickets = Callable[[], list[dict[str, Any]] | dict[str, Any]]
+Ticket = Callable[[str], dict[str, Any]]
+REWORK_DAYS = 14
+"""A pull request on the same ticket opened this soon after a merge is rework of it."""
 
 
 USAGE = ("input_tokens", "output_tokens", "cost_usd")
@@ -115,6 +122,26 @@ def run_log_schema() -> dict[str, Any]:
     return CaptureRun.model_json_schema()
 
 
+class UsageLine(BaseModel):
+    """One line of a session usage log: what one agent session spent on one ticket.
+
+    The usage fields match a capture run's; ``cost_usd`` is null when the model's price
+    is unknown. Other fields a hook writes (session id, models, cache tokens) are kept.
+    """
+
+    model_config = ConfigDict(extra="allow")
+    ticket: str | None = Field(default=None, description="the ticket key, e.g. KAN-123")
+    input_tokens: int | None = Field(default=0, ge=0, description=UNKNOWN)
+    output_tokens: int | None = Field(default=0, ge=0, description=UNKNOWN)
+    cost_usd: float | None = Field(default=None, ge=0, description="null: price unknown")
+    started_at: AwareDatetime | None = None
+
+
+def usage_log_schema() -> dict[str, Any]:
+    """The generated ``contracts/usage-line.schema.json``."""
+    return UsageLine.model_json_schema()
+
+
 def stats(
     root: Path | str,
     since: date | datetime,
@@ -125,6 +152,8 @@ def stats(
     agent_tickets: Tickets | None = None,
     project: str | None = None,
     log: Path | str | None = None,
+    ticket: Ticket | None = None,
+    usage_log: Path | str | None = None,
 ) -> dict[str, Any]:
     """Measure the knowledge repository holding the records directory ``root``; read-only.
 
@@ -137,6 +166,9 @@ def stats(
     moment; ``agent_pull_requests`` lists those of the repositories agents work in
     (default: the same); ``agent_tickets`` lists ``exec:agent`` tickets. Health counts
     only records a view of ``project`` may show (KAN-465): by default, no customer record.
+
+    ``ticket`` reads one ticket by key through the tracker role, for delivery cycle time;
+    ``usage_log`` is a ``.jsonl`` of session usage lines, for cost per merged pull request.
     """
     folder = Path(root).expanduser().resolve()
     if not folder.is_dir():
@@ -162,6 +194,7 @@ def stats(
         "review": _review(repo, prefix, knowledge_prs, end, scm_reason, project),
         "agent_loop": _agent_loop(repo, start, agent_prs, tickets, agent_reason, tracker_reason),
         "health": _health(records, start, end),
+        "delivery": _delivery(agent_prs, agent_reason, ticket, usage_log),
     }
 
 
@@ -597,6 +630,177 @@ def _ticket_key(title: str) -> str | None:
     return None
 
 
+# Delivery ----------------------------------------------------------------------------
+
+
+def _p80(values: list[float]) -> float | None:
+    """The nearest-rank 80th percentile."""
+    if not values:
+        return None
+    ordered = sorted(values)
+    return round(ordered[-(-len(ordered) * 4 // 5) - 1], 1)
+
+
+def _spread(values: list[float]) -> dict[str, Any]:
+    return {
+        "count": len(values),
+        "median_hours": round(median(values), 1) if values else None,
+        "p80_hours": _p80(values),
+    }
+
+
+def _hours(start: datetime | None, end: datetime | None) -> float | None:
+    if start is None or end is None or end < start:
+        return None
+    return round((end - start).total_seconds() / 3600, 1)
+
+
+def _follows(merged: datetime | None, opened: datetime | None) -> bool:
+    """Whether a pull request opened at ``opened`` is a follow-up to one merged at ``merged``."""
+    hours = _hours(merged, opened)
+    return hours is not None and hours <= REWORK_DAYS * 24
+
+
+def usage(log: Path | str) -> list[UsageLine]:
+    """Every line of a session usage log; the first that is not one stops with its line."""
+    path = Path(log).expanduser()
+    if not path.is_file():
+        raise ValueError(f"usage log not found: {log}")
+    found = []
+    for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        if not line.strip():
+            continue
+        try:
+            found.append(UsageLine.model_validate_json(line))
+        except ValidationError as exc:
+            error = exc.errors()[0]
+            field = ".".join(str(part) for part in error["loc"])
+            raise ValueError(
+                f"{path}:{number} is not a usage line ({field}: {error['msg']}); "
+                "expected contracts/usage-line.schema.json"
+            ) from None
+    return found
+
+
+def _delivery(
+    prs: list[dict[str, Any]] | None,
+    scm_reason: str | None,
+    ticket: Ticket | None,
+    usage_log: Path | str | None,
+) -> dict[str, Any]:
+    """Delivery numbers over the pull requests whose title starts with a ticket key."""
+    if prs is None:
+        return {"available": False, "reason": scm_reason}
+    keyed = [(key, pr) for pr in prs if (key := _ticket_key(pr.get("title", "")))]
+    merged = [(key, pr) for key, pr in keyed if pr["state"] == "merged"]
+    reasons: list[str] = []
+    tickets: dict[str, dict[str, Any] | None] = {}
+    if ticket is None:
+        reasons.append("cycle time: no tracker provider: select one for the tracker role")
+    else:
+        failed = 0
+        for key in dict.fromkeys(key for key, _pr in merged):
+            try:
+                tickets[key] = ticket(key)
+            except Exception:  # noqa: BLE001 - one unreadable ticket leaves only it unmeasured
+                tickets[key] = None
+                failed += 1
+        if failed:
+            reasons.append(f"cycle time: {failed} tickets could not be read")
+    cycles: dict[str, list[float]] = {}
+    rows, everything, waits = [], [], []
+    reworked = review_unknown = 0
+    for key, pr in merged:
+        item = tickets.get(key) or {}
+        labels = item.get("labels") or pr.get("labels") or []
+        lane = next((label for label in labels if label.casefold().startswith("exec:")), "none")
+        merged_at = _parse(pr.get("merged_at"))
+        cycle = _hours(_parse(item.get("started_at")), merged_at)
+        if cycle is not None:
+            everything.append(cycle)
+            cycles.setdefault(lane, []).append(cycle)
+        wait = _hours(
+            _parse(pr.get("ready_at") or pr["created_at"]), _parse(pr.get("first_approval_at"))
+        )
+        if wait is not None:
+            waits.append(wait)
+        after = pr.get("commits_after_first_review")
+        follow = [
+            other["number"]
+            for other_key, other in keyed
+            if other_key == key
+            and other["number"] != pr["number"]
+            and _follows(merged_at, _parse(other["created_at"]))
+        ]
+        rework = bool(after) or bool(follow)
+        if after is None and not follow:
+            review_unknown += 1
+        reworked += rework
+        rows.append(
+            {
+                "number": pr["number"],
+                "ticket": key,
+                "exec": lane,
+                "cycle_hours": cycle,
+                "approval_wait_hours": wait,
+                "commits_after_first_review": after,
+                "follow_ups": follow,
+                "rework": rework,
+                "cost_usd": None,
+            }
+        )
+    checked = [pr for _key, pr in keyed if pr.get("first_push_checks") in ("success", "failure")]
+    green = sum(pr["first_push_checks"] == "success" for pr in checked)
+    return {
+        "available": True,
+        "pull_requests": len(keyed),
+        "merged": len(merged),
+        "cycle_time": {
+            **_spread(everything),
+            "by_exec": {k: _spread(v) for k, v in sorted(cycles.items())},
+        },
+        "first_push_green": green,
+        "first_push_green_pct": _ratio(green, len(checked)),
+        "reworked": reworked,
+        "rework_pct": _ratio(reworked, len(merged)),
+        "rework_unknown": review_unknown,
+        "approval_wait": _spread(waits),
+        "cost": _cost(usage_log, rows),
+        "reasons": reasons,
+        "by_pull_request": rows,
+    }
+
+
+def _cost(usage_log: Path | str | None, rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """Cost per merged pull request: the usage lines carrying its ticket key."""
+    if usage_log is None:
+        return {
+            "per_merged_pr_usd": None,
+            "reason": "no usage log: give the session usage log with --usage-log",
+        }
+    spent: dict[str, float] = {}
+    unknown: Counter[str] = Counter()
+    for line in usage(usage_log):
+        if not line.ticket:
+            continue
+        if line.cost_usd is None:
+            unknown[line.ticket] += 1
+        spent[line.ticket] = spent.get(line.ticket, 0.0) + (line.cost_usd or 0)
+    keys = list(dict.fromkeys(row["ticket"] for row in rows))
+    for row in rows:
+        row["cost_usd"] = _money(spent[row["ticket"]]) if row["ticket"] in spent else None
+    costed = [key for key in keys if key in spent]
+    total = sum(spent[key] for key in costed)
+    merged = sum(row["ticket"] in spent for row in rows)
+    return {
+        "per_merged_pr_usd": _money(total / merged) if merged else None,
+        "total_usd": _money(total),
+        "merged_with_usage": merged,
+        "merged_without_usage": len(rows) - merged,
+        "sessions_unknown_cost": sum(unknown[key] for key in costed),
+    }
+
+
 # Health ------------------------------------------------------------------------------
 
 
@@ -732,6 +936,54 @@ def report(result: dict[str, Any]) -> list[str]:
             or "none"
         ),
     ]
+    out += ["", *_delivery_report(result.get("delivery"))]
+    return out
+
+
+def _delivery_report(delivery: dict[str, Any] | None) -> list[str]:
+    """The Delivery table: one row per measure over every ticket-keyed pull request."""
+    out = ["## Delivery", ""]
+    if not delivery or not delivery["available"]:
+        reason = delivery["reason"] if delivery else "not measured"
+        return [*out, f"- Not measured: {reason}"]
+    cycle, wait, cost = delivery["cycle_time"], delivery["approval_wait"], delivery["cost"]
+    out += [
+        (
+            f"Pull requests with a ticket key: {delivery['pull_requests']} "
+            f"({delivery['merged']} merged)"
+        ),
+        "",
+        "| Measure | Value |",
+        "| --- | --- |",
+        (
+            f"| Cycle time, ticket start to merge | median {_show(cycle['median_hours'], ' h')}, "
+            f"p80 {_show(cycle['p80_hours'], ' h')} over {cycle['count']} |"
+        ),
+    ]
+    out += [
+        f"| Cycle time, {lane} | median {_show(part['median_hours'], ' h')}, "
+        f"p80 {_show(part['p80_hours'], ' h')} over {part['count']} |"
+        for lane, part in cycle["by_exec"].items()
+    ]
+    out += [
+        (
+            f"| Checks green on first push | {delivery['first_push_green']} "
+            f"({_show(delivery['first_push_green_pct'], '%')}) |"
+        ),
+        (
+            f"| Rework (commits after first review, or a follow-up within {REWORK_DAYS} days) "
+            f"| {delivery['reworked']} ({_show(delivery['rework_pct'], '%')}) |"
+        ),
+        (
+            f"| Approval wait, ready to first approval | median "
+            f"{_show(wait['median_hours'], ' h')}, p80 {_show(wait['p80_hours'], ' h')} "
+            f"over {wait['count']} |"
+        ),
+        f"| Cost per merged pull request | {_show(cost['per_merged_pr_usd'], ' USD')} |",
+    ]
+    if cost["per_merged_pr_usd"] is None and cost.get("reason"):
+        out.append(f"\n- Cost not measured: {cost['reason']}")
+    out += [f"- Not measured: {reason}" for reason in delivery["reasons"]]
     return out
 
 
@@ -793,6 +1045,8 @@ def from_roles(
             return {"items": list(items.values()), "complete": complete}
 
         wired["agent_tickets"] = tickets
+        # Delivery cycle time reads each merged pull request's ticket, once.
+        wired["ticket"] = lambda key: registry.invoke(tracker_id, "read", {"reference": key})
     return wired
 
 
