@@ -436,6 +436,49 @@ def test_a_customer_repository_keeps_its_customer_records(tmp_path):
     assert check_records(tmp_path)["failures"] == []
 
 
+def customer_lesson(path, project="alpha"):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    extra = f"boundary: customer\nproject: {project}\n"
+    path.write_text(record(kind="lesson", status="open", scope="project", extra=extra))
+
+
+def test_a_team_repository_refuses_a_customer_record_outside_its_check_roots(tmp_path):
+    # KAN-524: roots that leave out projects/ no longer hide a customer record.
+    (tmp_path / "knowledge.toml").write_text(PIN + '[check]\nroots = ["records"]\n')
+    (tmp_path / "records").mkdir()
+    customer_lesson(tmp_path / "projects/alpha/a.md")
+    customer_lesson(tmp_path / "inbox/b.md")
+    (tmp_path / "inbox/raw.md").write_text("no frontmatter, not a record\n")
+    result = check_records(tmp_path)
+    assert result["status"] == "invalid"
+    assert result["failures"] == [
+        {"path": path, "pointer": "/boundary", "message": TEAM_REPO_CUSTOMER}
+        for path in ("inbox/b.md", "projects/alpha/a.md")
+    ]
+
+
+def test_a_check_of_a_folder_sees_customer_records_elsewhere_in_the_repository(tmp_path):
+    (tmp_path / "knowledge.toml").write_text(PIN)
+    (tmp_path / "records").mkdir()
+    customer_lesson(tmp_path / "projects/alpha/a.md")
+    failures = check_records(tmp_path / "records")["failures"]
+    assert failures == [
+        {"path": "../projects/alpha/a.md", "pointer": "/boundary", "message": TEAM_REPO_CUSTOMER}
+    ]
+
+
+def test_a_customer_repository_refuses_another_projects_record_outside_its_roots(tmp_path):
+    (tmp_path / "knowledge.toml").write_text(
+        PIN + '[repo]\nboundary = "customer"\nproject = "alpha"\n[check]\nroots = ["projects"]\n'
+    )
+    customer_lesson(tmp_path / "projects/alpha/a.md")
+    customer_lesson(tmp_path / "inbox/transcripts/own.md")  # its own raw capture: fine
+    assert check_records(tmp_path)["failures"] == []
+    customer_lesson(tmp_path / "inbox/transcripts/other.md", project="beta")
+    (failure,) = check_records(tmp_path)["failures"]
+    assert (failure["path"], failure["pointer"]) == ("inbox/transcripts/other.md", "/project")
+
+
 def test_customer_failures_do_not_echo_customer_text():
     result = check_records(INVALID / "customer-quoted")
     assert all("jump host" not in item["message"] for item in result["failures"])

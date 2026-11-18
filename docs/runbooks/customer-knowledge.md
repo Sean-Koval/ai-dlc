@@ -43,8 +43,9 @@ ai-dlc knowledge promote LES-0004 --to ../team-knowledge \
 ```
 
 Promote refuses to run without `--to` or from a team repository. Customer records
-live only in their customer's repository: `knowledge check` fails a
-`boundary: customer` record anywhere else.
+live only in their customer's repository. `knowledge check` fails a
+`boundary: customer` record anywhere else, even outside `[check] roots`. Knowledge
+reads (`get`, `search`, `records`) refuse to return one there.
 
 Without `--dry-run`, it commits a team Source and a derived team record on a new
 branch, `promote/<slug>`, of the team repository. Your checkout and its current
