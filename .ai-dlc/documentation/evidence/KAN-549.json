@@ -1,0 +1,45 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "changes/KAN-549.fixed.md": "da5d8cad425af457c640f95db66ef5024eada7cf42e5504fcc406c0e3c601efa"
+      },
+      "outcome": "updated",
+      "reason": "KAN-549: changelog fragment for a blocker without an issue type leaving blocked_by out.",
+      "reviewer": "Claude (agent)",
+      "target": "changes/KAN-549.fixed.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/architecture.md": "788b593066fcd5d1c9eb9ebbc3869971131d3ddb3ea3396bc8b9a6ea48ca8b55",
+        "docs/architecture.md": "099e45e56378bb4ea78edb3eec9e6a8ce7e7d60edd08d0b17aeeca9810351b82",
+        "src/ai_dlc/providers/jira_cloud.py": "54ecf43650f0eeefdf85bfe06fcd8ba5cb13db341f9b5d11ff0250bfb0856a47"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-549: no package or entry point moves; one more unreadable-blocker case returns the item without blocked_by.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/how-it-fits.md": "0032744a2746dd1b4e47f09fc1cc9c4d6f8c8cfe90990b464f56a0abc1d1ac10",
+        "docs/workflows/how-it-fits.md": "b865dfd0d040309db43d27b58cb93a69d0e94a72bcf9b6ff760bcb0ed39ea473",
+        "src/ai_dlc/providers/jira_cloud.py": "54ecf43650f0eeefdf85bfe06fcd8ba5cb13db341f9b5d11ff0250bfb0856a47"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-549: the tracker role's place in the flow is unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/how-it-fits.md"
+    },
+    {
+      "bound": {
+        "tests/test_jira_provider.py": "2806fb34d00b401c032c05297cb97f2e55f7f01d6a831e8347c490729a4f8985"
+      },
+      "outcome": "updated",
+      "reason": "KAN-549: tests for a blocker without an issue type and with a malformed status category.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/test_jira_provider.py"
+    }
+  ],
+  "schema": 2
+}
