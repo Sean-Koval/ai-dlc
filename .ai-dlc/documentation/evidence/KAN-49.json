@@ -44,10 +44,10 @@
     },
     {
       "bound": {
-        "tests/test_changes.py": "03a75c5a98de46049da81eaccb97a0bad5bb8f0833dda225e6a3461d7a8cf125"
+        "tests/test_changes.py": "59e28dce578a9e2e77de9fa0e450559bcb7d36d147ae83b1d7c3d2d7373bb4a9"
       },
       "outcome": "updated",
-      "reason": "KAN-49: tests for release notes from the changelog and the workflow wiring.",
+      "reason": "KAN-49: tests for release notes from the changelog and the workflow wiring, with the notes step before the build.",
       "reviewer": "Claude (agent)",
       "target": "tests/test_changes.py"
     }
