@@ -2,10 +2,10 @@
   "decisions": [
     {
       "bound": {
-        "changes/KAN-537.added.md": "300db3ed27c36962d8ff0de4e41062271b0bb98a78f6936ff94abd5b4f3a0e91"
+        "changes/KAN-537.added.md": "e502a1340a612d7abb1edde3b6b08745366ac75d4c56053bb583f66018b7fa9e"
       },
       "outcome": "updated",
-      "reason": "KAN-537: changelog fragment for the tracker read's kind, category and blocked_by.",
+      "reason": "KAN-537: changelog fragment for the tracker read's kind, category and blocked_by; an unreadable blocker leaves blocked_by out.",
       "reviewer": "Claude (agent)",
       "target": "changes/KAN-537.added.md"
     },
@@ -34,10 +34,10 @@
         "src/ai_dlc/contracts.py": "229437df9b4e9d867b4c7571cc706a16f7f99cdd90bcbd4ed2d58c1366a1beda",
         "src/ai_dlc/mcp_server.py": "8460283fcd98c9140261af1554f29c1bf58d560669ebefc30b3f4e512ef658a5",
         "src/ai_dlc/providers/github_issues.py": "b774272a472aecfa9fdbd8eeea2de50a85ca41e27363f8428b4692f8067adf6b",
-        "src/ai_dlc/providers/jira_cloud.py": "868f077f70b351a7c15fbf3e59673d679ba01cee008c4093479667e16c032803"
+        "src/ai_dlc/providers/jira_cloud.py": "d7c84c3514fc5a157b3ef1b1814a5d14f936b6bbd59641b752599892a8c1d529"
       },
       "outcome": "reviewed-no-change",
-      "reason": "KAN-537: no package or entry point moves; the read contract gains optional fields.",
+      "reason": "KAN-537: no package or entry point moves; an unreadable blocker now leaves blocked_by out instead of failing the read.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
@@ -58,7 +58,7 @@
         "docs/workflows/how-it-fits.md": "b865dfd0d040309db43d27b58cb93a69d0e94a72bcf9b6ff760bcb0ed39ea473",
         "src/ai_dlc/mcp_server.py": "8460283fcd98c9140261af1554f29c1bf58d560669ebefc30b3f4e512ef658a5",
         "src/ai_dlc/providers/github_issues.py": "b774272a472aecfa9fdbd8eeea2de50a85ca41e27363f8428b4692f8067adf6b",
-        "src/ai_dlc/providers/jira_cloud.py": "868f077f70b351a7c15fbf3e59673d679ba01cee008c4093479667e16c032803"
+        "src/ai_dlc/providers/jira_cloud.py": "d7c84c3514fc5a157b3ef1b1814a5d14f936b6bbd59641b752599892a8c1d529"
       },
       "outcome": "reviewed-no-change",
       "reason": "KAN-537: the tracker role's place in the flow is unchanged; only read's answer is richer.",
@@ -78,19 +78,19 @@
     },
     {
       "bound": {
-        "tests/test_jira_provider.py": "a3764e400e52425c291be7d80bf4f62046f44b2c6b0a4a382800b7be1488bda6"
+        "tests/test_jira_provider.py": "a8651a5826bc980995e9929ba5f87394197d5cebe4d0e66e0f9a7398ef0928d2"
       },
       "outcome": "updated",
-      "reason": "KAN-537: tests for kind, blockers, ignored links and uncertain link evidence.",
+      "reason": "KAN-537: tests for kind, blockers, ignored links, and blockers left out when they can't be read.",
       "reviewer": "Claude (agent)",
       "target": "tests/test_jira_provider.py"
     },
     {
       "bound": {
-        "tests/test_jira_workflow.py": "e58bebd4de87b8306744401ca253ba4016d3a80f66fbcb013c0a2af5f11ff1f5"
+        "tests/test_jira_workflow.py": "d05a8addff1b8893a18c5097ebc67e56932c42b4646e49bc7e7616400f688e61"
       },
       "outcome": "updated",
-      "reason": "KAN-537: the person-filed fixture issue carries its (empty) issuelinks, as Jira returns them.",
+      "reason": "KAN-537: issue fixtures carry link evidence; work starts and finishes when a blocker can't be read.",
       "reviewer": "Claude (agent)",
       "target": "tests/test_jira_workflow.py"
     },
