@@ -162,3 +162,82 @@ def test_the_changelog_check_tells_an_edit_from_a_fold(repo: Path) -> None:
     git(repo, "add", "-A")
     git(repo, "commit", "-qm", "release fold")
     assert changelog_edit_problems(repo, "with-fragment") == []
+
+
+# KAN-49: a tag's release notes are its CHANGELOG.md section, never a fixed line.
+
+RELEASED = """# Changelog
+
+## Unreleased
+
+### Added
+
+- Something new.
+
+## [0.5.0] - 2026-12-01
+
+### Added
+
+- The [session join key](docs/design/session-join-key.md) and [anchors](#unreleased).
+- A [site](https://example.invalid/page) link stays as it is.
+
+## [0.4.0] - 2026-09-14
+
+First published release.
+"""
+
+
+def test_release_notes_are_the_versions_section_with_absolute_links() -> None:
+    notes = changes["release_notes"](RELEASED, "0.5.0", "Sean-Koval/ai-dlc", "v0.5.0")
+    assert notes.startswith("### Added\n\n- The [session join key]")
+    assert (
+        "(https://github.com/Sean-Koval/ai-dlc/blob/v0.5.0/docs/design/session-join-key.md)"
+        in notes
+    )
+    assert "[anchors](#unreleased)" in notes
+    assert "(https://example.invalid/page)" in notes
+    assert "Something new" not in notes and "First published release" not in notes
+    assert notes.endswith(changes["INSTALL_NOTE"] + "\n")
+
+
+def test_release_notes_keep_relative_links_without_a_repository() -> None:
+    notes = changes["release_notes"](RELEASED, "0.5.0")
+    assert "](docs/design/session-join-key.md)" in notes
+
+
+@pytest.mark.parametrize("version", ["0.6.0", "0.5", "Unreleased"])
+def test_release_notes_refuse_a_version_the_changelog_lacks(version: str) -> None:
+    with pytest.raises(ValueError, match="no '## \\["):
+        changes["release_notes"](RELEASED, version)
+
+
+def test_release_notes_refuse_an_empty_section() -> None:
+    with pytest.raises(ValueError, match="is empty"):
+        changes["release_notes"]("## [0.5.0] - 2026-12-01\n\n## [0.4.0]\n\nx\n", "0.5.0")
+
+
+def test_release_notes_cli_fails_closed(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    write(tmp_path, "CHANGELOG.md", RELEASED)
+    assert changes["main"](["--root", str(tmp_path), "--release-notes", "0.5.0"]) == 0
+    assert capsys.readouterr().out.startswith("### Added")
+    assert changes["main"](["--root", str(tmp_path), "--release-notes", "0.6.0"]) == 1
+    assert "error: CHANGELOG.md has no '## [0.6.0]'" in capsys.readouterr().err
+
+
+def test_this_changelogs_published_release_has_notes() -> None:
+    notes = changes["release_notes"](
+        (ROOT / "CHANGELOG.md").read_text(encoding="utf-8"), "0.4.0", "Sean-Koval/ai-dlc", "v0.4.0"
+    )
+    assert "hash-bound bootstrap assets" in notes
+
+
+def test_a_tag_publishes_the_changelog_section_as_its_notes() -> None:
+    import yaml
+
+    jobs = yaml.safe_load((ROOT / ".github/workflows/release.yml").read_text())["jobs"]
+    step = next(s for s in jobs["package"]["steps"] if "CHANGELOG.md section" in s.get("name", ""))
+    assert step["if"] == "github.event_name == 'push' && github.ref_type == 'tag'"
+    assert "--release-notes" in step["run"] and "> dist/release-notes.md" in step["run"]
+    publish = "\n".join(s.get("run", "") for s in jobs["publish"]["steps"])
+    assert "--notes-file dist/release-notes.md" in publish
+    assert "--notes " not in publish
