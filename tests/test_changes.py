@@ -235,7 +235,10 @@ def test_a_tag_publishes_the_changelog_section_as_its_notes() -> None:
     import yaml
 
     jobs = yaml.safe_load((ROOT / ".github/workflows/release.yml").read_text())["jobs"]
-    step = next(s for s in jobs["package"]["steps"] if "CHANGELOG.md section" in s.get("name", ""))
+    steps = jobs["package"]["steps"]
+    step = next(s for s in steps if "CHANGELOG.md section" in s.get("name", ""))
+    build = next(i for i, s in enumerate(steps) if "uv build" in s.get("run", ""))
+    assert steps.index(step) < build, "a tag with no changelog section fails before the build"
     assert step["if"] == "github.event_name == 'push' && github.ref_type == 'tag'"
     assert "--release-notes" in step["run"] and "> dist/release-notes.md" in step["run"]
     publish = "\n".join(s.get("run", "") for s in jobs["publish"]["steps"])
