@@ -71,6 +71,24 @@ def test_a_customer_repository_returns_its_records_to_its_project(tmp_path, read
         store.get("alpha-gotcha", project="beta")
 
 
+@pytest.mark.parametrize("reader", ["git", "vault"])
+def test_a_customer_repository_refuses_another_projects_record(tmp_path, reader):
+    repo = knowledge_repo(tmp_path / "alpha", CUSTOMER)
+    (repo / "projects/beta").mkdir()
+    beta = {"scope": "project", "boundary": "customer", "tags": ["splunk"]}
+    (repo / "projects/beta/secret.md").write_text(record("beta-secret", "lesson", **beta))
+    store = git_provider(tmp_path, str(repo)) if reader == "git" else Knowledge(repo)
+
+    with pytest.raises(ValueError, match="their customer's own repository"):
+        store.get("beta-secret", project="beta")
+    found = store.search(labels=["splunk"], project="beta")
+    assert [item["id"] for item in found["items"]] == ["team-lesson"]
+    assert found["refused"] == {"count": 1, "reason": CUSTOMER_READ}
+    # The repository's own project still reads its records.
+    assert store.get("alpha-gotcha", project="alpha")["path"] == "projects/alpha/gotcha.md"
+    assert "refused" not in store.search(labels=["splunk"], project="alpha")
+
+
 def test_a_malformed_repo_declaration_returns_no_customer_record(tmp_path):
     repo = knowledge_repo(tmp_path / "x", PIN + '[repo]\nboundary = "customer"\n')
     with pytest.raises(ValueError, match="their customer's own repository"):
