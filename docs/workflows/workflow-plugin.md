@@ -2,8 +2,11 @@
 
 `plugins/ai-dlc-workflow/` is one optional Claude Code plugin: the workflow
 guidance as a skill, ten more skills and hooks that work without the `ai-dlc` CLI.
-A team harness can pin it as a single component and run with or without it. It is
-off by default (`defaultEnabled: false`). Try it locally:
+A team harness can pin it as a single component and run with or without it.
+
+## Try it locally
+
+It is off by default (`defaultEnabled: false`), so enable it for the session:
 
 ```sh
 claude --plugin-dir plugins/ai-dlc-workflow \
@@ -24,6 +27,8 @@ claude --plugin-dir plugins/ai-dlc-workflow \
 ```
 
 Without `--settings` the same list shows `Status: × disabled`, and the skills don't load.
+
+## How it is built and published
 
 `scripts/build_workflow_plugin.py` generates the directory from `agents/skills/`
 and the shared guidance, and records component digests in `plugin.lock.json`. The

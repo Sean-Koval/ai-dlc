@@ -1,5 +1,7 @@
 # Configure a project
 
+Select providers in `ai-dlc.toml`, connect the tracker, and carry preferences across machines.
+
 ## Connect tools and configure the project
 
 The generated `ai-dlc.toml` owns shared policy. These sections select providers
@@ -37,6 +39,8 @@ Readiness checks local requirements; `doctor` also inspects configured provider
 health. See [GitHub setup](../github-ticket-setup.md) for existing Projects,
 custom statuses, and issues-only mode.
 
+### Where each setting belongs
+
 | Configuration | Where it belongs |
 | --- | --- |
 | Shared providers, setup, checks, gates, agent guidance | Project `ai-dlc.toml`, `.mise.toml`, and repository files |
@@ -73,3 +77,9 @@ updated guidance into a project with `ai-dlc agents render --apply --root PATH`.
 ai-dlc preserves unrelated client settings and refuses collisions or edits to
 owned outputs. [Machine enrollment](../runbooks/machine-enrollment.md) covers
 profile setup, role/tag selection, personal MCP servers and source restrictions.
+
+## Next
+
+- [Example workflows](examples.md): a ticket, document upkeep and an FDE engagement.
+- [Workflow plugin](workflow-plugin.md): the optional skills and hooks.
+- [Development workflow](../development-workflow.md): the stages from ticket to finish.

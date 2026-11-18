@@ -11,21 +11,30 @@ documentation services. Project adoption uses Copier, provider adapters isolate
 vendor-specific operations, and agent skills provide judgment. There is no
 hosted orchestration service; hangar runs cloud sandboxes.
 
+```mermaid
+flowchart TB
+    Person["Person"] --> CLI["ai-dlc CLI<br/>every command, machine enrollment"]
+    Agent["Claude Code or Codex"] --> CLI
+    Agent --> MCP["Local MCP server<br/>work, doctor, knowledge, documentation"]
+    CLI --> Services["Application services<br/>shared validation, contracts"]
+    MCP --> Services
+    Services --> Adapters["Provider adapters<br/>versioned contracts"]
+    Adapters --> Roles["scm, tracker, specs, knowledge, deploy"]
+```
+
 ## Boundaries
 
 Configuration resolves five ownership layers with provenance:
 
-1. A private Git profile owns portable modules, MCP preferences, workflow
-   choices, logical credential requirements and pinned team-source
-   subscriptions. Pin an exact revision before enrolling it on every machine.
-2. The project repository owns shared project configuration, policy, durable
-   architecture, decisions, and runbooks.
-3. Each machine binding owns local paths, account selections, and mappings from
-   logical credentials to environment-variable names, plus the person's team roles.
-4. A password manager, keychain, or process environment owns credential values.
-   ai-dlc never records, prints, or synchronizes those values.
-5. Codex and Claude user/project configuration owns generated client files;
-   ai-dlc re-renders only entries it owns.
+| Layer | Owns |
+| --- | --- |
+| Private Git profile | Portable modules, MCP preferences, workflow choices, logical credential requirements and pinned team-source subscriptions. Pin an exact revision before enrolling it on every machine. |
+| Project repository | Shared project configuration, policy, durable architecture, decisions, and runbooks. |
+| Machine binding | Local paths, account selections, and mappings from logical credentials to environment-variable names, plus the person's team roles. |
+| Password manager, keychain, or process environment | Credential values. ai-dlc never records, prints, or synchronizes those values. |
+| Codex and Claude user/project configuration | Generated client files; ai-dlc re-renders only entries it owns. |
+
+### Team sources and local state
 
 Team-source content is selected from verified local caches and rendered through
 project ownership checks. Source commits advance only through explicit machine
@@ -41,6 +50,8 @@ Portable project data selects role providers and checks and may name required
 credential environment variables; it never contains their values. Machine data
 supplies account choices and local paths, while the process environment or
 native sign-in supplies secrets.
+
+### Services
 
 Workflow services manage reviewed work, immutable provider bindings, operation
 reconciliation and evidence-gated completion. Check services produce receipts.
@@ -58,6 +69,8 @@ remote reconciliation and fresh evidence remain necessary across machines.
 
 ## Deployment and interfaces
 
+### One application, two local interfaces
+
 Prefer one application with explicit module responsibilities over speculative
 service decomposition. CLI, MCP, and agent clients share validation where an MCP
 service is exposed; the CLI alone owns machine enrollment mutation. The local
@@ -69,6 +82,8 @@ sandboxes at claim time. Hook support is a per-client minimum version
 (`agents/capabilities.toml`), not qualification. External provider failures and
 uncertain mutations remain visible. Credentials are environment references,
 never template values.
+
+### Consumer onboarding plans and never applies
 
 Consumer onboarding is a read-only composition boundary in `setup/onboarding.py`.
 It resolves one explicit existing target, target-owned configuration, optional
@@ -84,6 +99,8 @@ its separate review, and the existing enrollment, adoption, setup, rendering,
 readiness and check services retain their own review and evidence boundaries.
 Project configuration wins over conflicting CLI choices, while omitted
 enrollment stays unselected for a self-contained project.
+
+### Environment reporting is opt-in
 
 Effective-environment reporting is an opt-in boundary under `environment/`.
 The local collector projects selected configuration and observations into a
@@ -105,6 +122,8 @@ reports remain ineligible for native evidence reuse even when their digests
 match. Neither identity authenticates a machine or substitutes for behavioral
 checks and native qualification.
 
+### Service results and errors
+
 Application services signal outcomes in one of two ways. A failure the service
 detected raises an exception derived from `ai_dlc.errors.AiDlcError`:
 `RefusedError` for an operation refused before any change, `UncertainError` for
@@ -122,6 +141,8 @@ through that key until they migrate to `status`.
 `ai_dlc.contracts.succeeded` is the one reader of that envelope; commands that
 map a returned result to exit status 1 use it. Bare `ValueError` remains for
 argument validation and is caught by the same CLI handler.
+
+### Knowledge and tracker support
 
 Knowledge ownership stays provider-neutral: private knowledge links durable
 repository material but does not mirror it. Linked Obsidian portals, additive
