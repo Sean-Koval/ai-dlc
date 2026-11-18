@@ -145,6 +145,19 @@ def conclude(result) -> None:
         raise typer.Exit(1)
 
 
+def conclude_summary(result, render, as_json: bool) -> None:
+    """Like :func:`conclude`, but a person at a terminal reads a short summary (KAN-364).
+
+    ``--json``, and any output that is piped or captured, keeps the JSON unchanged.
+    """
+    if as_json or not _stdout_is_terminal():
+        conclude(result)
+        return
+    typer.echo(render(result), nl=False)
+    if not succeeded(result):
+        raise typer.Exit(1)
+
+
 def _explicit_option(context: typer.Context, name: str) -> bool:
     source = context.get_parameter_source(name)
     return source is not None and source.name == "COMMANDLINE"
@@ -325,15 +338,21 @@ def project_setup(root: Path = Path("."), target: str = "local"):
 
 
 @project.command("readiness")
-def project_readiness(root: Path = Path(".")):
+def project_readiness(
+    root: Path = Path("."),
+    json_output: Annotated[
+        bool, typer.Option("--json", help="Print the full result as JSON.")
+    ] = False,
+):
     """Inspect selected project requirements offline without applying changes."""
     import os
 
     from ai_dlc.setup.provision import project_readiness as inspect
     from ai_dlc.setup.provision import readiness_config
+    from ai_dlc.setup.summaries import render_readiness
 
     result = inspect(root, readiness_config(root), os.environ)
-    conclude(result)
+    conclude_summary(result, lambda value: render_readiness(value, str(root)), json_output)
 
 
 @project.command("onboard")
@@ -345,9 +364,13 @@ def project_onboard(
     machine_id: Annotated[str | None, typer.Option("--machine-id")] = None,
     agent_client: Annotated[list[str] | None, typer.Option("--agent-client")] = None,
     preset: Annotated[str | None, typer.Option("--preset")] = None,
+    json_output: Annotated[
+        bool, typer.Option("--json", help="Print the full result as JSON.")
+    ] = False,
 ):
     """Plan explicit consumer onboarding without applying changes."""
     from ai_dlc.setup.onboarding import plan_onboarding
+    from ai_dlc.setup.summaries import render_onboarding
 
     try:
         result = plan_onboarding(
@@ -362,7 +385,10 @@ def project_onboard(
     except ValueError:
         typer.echo("Error: onboarding input or target configuration is invalid", err=True)
         raise typer.Exit(2) from None
-    emit(result)
+    if json_output or not _stdout_is_terminal():
+        emit(result)
+    else:
+        typer.echo(render_onboarding(result), nl=False)
     if result["state"] != "actionable":
         raise typer.Exit(1)
 
@@ -1362,9 +1388,14 @@ def machine_doctor(
     effective_environment: Annotated[bool, typer.Option("--effective-environment")] = False,
     probe_versions: Annotated[bool, typer.Option("--probe-versions")] = False,
     agent_client: Annotated[list[str] | None, typer.Option("--agent-client")] = None,
+    json_output: Annotated[
+        bool, typer.Option("--json", help="Print the full result as JSON.")
+    ] = False,
 ):
     _reject_doctor_extras(context, safe=effective_environment)
-    if _machine_preflight(root, effective_environment, None, probe_versions, agent_client):
+    if _machine_preflight(
+        root, effective_environment, None, probe_versions, agent_client, json_output
+    ):
         return
     if probe_versions and not effective_environment:
         raise typer.BadParameter("--probe-versions requires --effective-environment.")
@@ -1377,7 +1408,13 @@ def machine_doctor(
             _emit_effective_report(root, probe_versions=probe_versions)
         return
     result = MachineManager().doctor(root, target=target)
-    conclude(result)
+    _conclude_doctor(result, root, json_output)
+
+
+def _conclude_doctor(result, root: Path, as_json: bool) -> None:
+    from ai_dlc.setup.summaries import render_doctor
+
+    conclude_summary(result, lambda value: render_doctor(value, str(root)), as_json)
 
 
 def _machine_preflight(
@@ -1386,6 +1423,7 @@ def _machine_preflight(
     machine: Path | None,
     probe_versions: bool,
     agent_client: list[str] | None,
+    as_json: bool = False,
 ) -> bool:
     """Outside an adopted repository, doctor checks the machine itself (KAN-363)."""
     if effective_environment or machine is not None or (root / "ai-dlc.toml").is_file():
@@ -1396,7 +1434,8 @@ def _machine_preflight(
         return False
     from ai_dlc.environment.preflight import machine_preflight
 
-    conclude(machine_preflight(root, clients=agent_client, probe_versions=probe_versions))
+    result = machine_preflight(root, clients=agent_client, probe_versions=probe_versions)
+    _conclude_doctor(result, root, as_json)
     return True
 
 
@@ -1413,6 +1452,9 @@ def doctor(
     knowledge_checks: Annotated[
         bool, typer.Option("--knowledge", help="run the knowledge install checks instead")
     ] = False,
+    json_output: Annotated[
+        bool, typer.Option("--json", help="Print the full result as JSON.")
+    ] = False,
 ):
     _reject_doctor_extras(context, safe=effective_environment)
     selected_root = root or root_option
@@ -1420,7 +1462,7 @@ def doctor(
         _knowledge_doctor(selected_root, None, False)
         return
     if _machine_preflight(
-        selected_root, effective_environment, machine, probe_versions, agent_client
+        selected_root, effective_environment, machine, probe_versions, agent_client, json_output
     ):
         return
     if probe_versions and not effective_environment:
@@ -1434,7 +1476,7 @@ def doctor(
             _emit_effective_report(selected_root, probe_versions=probe_versions)
         return
     result = MachineManager().doctor(selected_root, target=target, machine=machine)
-    conclude(result)
+    _conclude_doctor(result, selected_root, json_output)
 
 
 @app.command()

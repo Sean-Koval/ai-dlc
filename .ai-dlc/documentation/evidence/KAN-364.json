@@ -1,0 +1,90 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "changes/KAN-364.added.md": "943cc5acfe92c835f94ceb5633b4d27faf03427b963f7828ed44d87035fa3c99"
+      },
+      "outcome": "updated",
+      "reason": "KAN-364: changelog fragment for the terminal summaries of readiness, doctor and onboard.",
+      "reviewer": "Claude (agent)",
+      "target": "changes/KAN-364.added.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/architecture.md": "788b593066fcd5d1c9eb9ebbc3869971131d3ddb3ea3396bc8b9a6ea48ca8b55",
+        "docs/architecture.md": "099e45e56378bb4ea78edb3eec9e6a8ce7e7d60edd08d0b17aeeca9810351b82",
+        "src/ai_dlc/cli.py": "b1db02e9f6addd92e4c7a30985d722c40176bf05d807618f558560a396c95e59",
+        "src/ai_dlc/setup/readiness.py": "3bfdded7ca75a78ec13a812b3633257ed3e6f9b879ea27b064d561fff38dc1ff",
+        "src/ai_dlc/setup/summaries.py": "81e4c4cd883dbd59af1bd5db11ef66d7f434a532d8346d7b595e02d83b395d86"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-364: the summaries live in setup/, whose row already covers readiness and onboarding; no package or entry point moves.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/development-workflow.md": "0fba88526a61571ce49e91b2159325061a7c54ba5466e651565eabb2f910e7c6",
+        "docs/development-workflow.md": "fd724d20f13622d81235c1d718d336bff3e6364a92edf48a33051df19c5acb97",
+        "src/ai_dlc/cli.py": "b1db02e9f6addd92e4c7a30985d722c40176bf05d807618f558560a396c95e59"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-364: the workflow is unchanged; agents and scripts still read JSON, which piped output keeps.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/development-workflow.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/release-verification.md": "972bf86b6da5f20b3d01762982880533ba0c99b22933aa95273590923721dad0",
+        "docs/release-verification.md": "a18e7b0bef6dc55ebc544ac304a01c8ca7d59c9dde46127f2acc44802e8b9751",
+        "src/ai_dlc/cli.py": "b1db02e9f6addd92e4c7a30985d722c40176bf05d807618f558560a396c95e59"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-364: no release gate changes.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/release-verification.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/get-started.md": "b3cdcadc535e0e825dfe2837433f1b4ef45551430ab207c485ef7dd601bf992e",
+        "docs/workflows/get-started.md": "cd50546f4a4de2f078333893ef72fb11a001797bfe6e2a9e9a0f6c74bb74aaa0"
+      },
+      "outcome": "updated",
+      "reason": "KAN-364: project onboard now prints its findings and ordered commands at a terminal, marking review steps; --json prints the plan.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/get-started.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/tool-map.md": "d11334cb57c288aab7b01226790b7cc268a28991b3de5f97a98b9818d80be19e",
+        "docs/workflows/tool-map.md": "7919f8e6c5f6a0e8cc3f372da81498bcbefcdebbe4cb7b58f4f19d83fd47a181",
+        "src/ai_dlc/cli.py": "b1db02e9f6addd92e4c7a30985d722c40176bf05d807618f558560a396c95e59"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-364: no command is added; the page is at its editorial length limit, and the commands' --help and the changelog name the text output.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/tool-map.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/work-computer-setup.md": "62d0a76f141100f0e8d2219cf5e7b398c0530796f3a7fa2ae95348450d0bdbb5",
+        "docs/workflows/work-computer-setup.md": "2eaa057e6ca816fb09b0773e1f9fd4b56a20f5adb791770c6cd467ccc76a1a43",
+        "src/ai_dlc/cli.py": "b1db02e9f6addd92e4c7a30985d722c40176bf05d807618f558560a396c95e59"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-364: the setup steps are unchanged; the commands it names now print a short summary at a terminal.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/work-computer-setup.md"
+    },
+    {
+      "bound": {
+        "tests/test_setup_summaries.py": "dc2b00e3416f193de9fa8d20e6dc2e3533b282b7b0ddab85f21df75d56b115ec"
+      },
+      "outcome": "updated",
+      "reason": "KAN-364: snapshot tests of the text summaries for an unconfigured jira-cloud repository and a ready one, doctor, the preflight and onboard, and the --json and non-terminal JSON paths.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/test_setup_summaries.py"
+    }
+  ],
+  "schema": 2
+}
