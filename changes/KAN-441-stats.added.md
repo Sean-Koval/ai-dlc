@@ -1,0 +1,1 @@
+- MCP: `knowledge_stats` serves `ai-dlc knowledge stats` to agents: the same capture, review, agent-loop and health numbers, read-only, through the project's scm and tracker roles and an optional capture run log (KAN-441, KAN-467).
