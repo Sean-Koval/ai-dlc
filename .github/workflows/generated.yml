@@ -59,7 +59,10 @@ jobs:
       - name: Patch of the rebuilt assets
         id: diff
         run: |
-          git add -A -- docs/assets/front .ai-dlc/documentation/evidence/front-assets.json
+          git add -A -- docs/assets/front
+          # the evidence file exists only once a build has recorded one; git add fails on a missing path
+          evidence=.ai-dlc/documentation/evidence/front-assets.json
+          if [ -e "$evidence" ]; then git add -A -- "$evidence"; fi
           git diff --cached --binary --no-ext-diff > "$RUNNER_TEMP/front-assets.patch"
           echo "base=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           if [ -s "$RUNNER_TEMP/front-assets.patch" ]; then echo "changed=true" >> "$GITHUB_OUTPUT"; fi
