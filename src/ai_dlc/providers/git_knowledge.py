@@ -14,7 +14,10 @@ variable names one. A URL is cloned once into the user cache and refreshed on re
 ``propose`` writes the records on a new branch in a temporary worktree, checks them,
 pushes that branch and opens a draft pull request through the ``scm`` role. It never
 commits to, pushes to or merges into the base branch. ``get`` and ``search``
-return ``boundary: customer`` records only to a caller that passes their ``project``.
+return ``boundary: customer`` records only to a caller that passes their ``project``,
+and only from a repository whose ``knowledge.toml`` declares ``[repo] boundary =
+"customer"`` (KAN-524). A relative ``location`` is relative to the directory of the
+configuration that names it (the project root), never to the working directory.
 """
 
 import hashlib
@@ -27,7 +30,13 @@ from pathlib import Path
 from typing import Any
 
 from ai_dlc.documentation import knowledge_records, record_index
-from ai_dlc.documentation.knowledge_check import check_records, project_of, team_inputs
+from ai_dlc.documentation.knowledge_check import (
+    CUSTOMER_READ,
+    check_records,
+    project_of,
+    readable_in,
+    team_inputs,
+)
 from ai_dlc.documentation.knowledge_notes import split
 from ai_dlc.errors import RefusedError
 from ai_dlc.files import inside, run_git
@@ -53,6 +62,7 @@ class GitKnowledge:
         *,
         scm: ScmFactory,
         environ: Mapping[str, str] | None = None,
+        base: Path | None = None,
     ):
         self.config = dict(config)
         self.environ = dict(os.environ if environ is None else environ)
@@ -65,6 +75,12 @@ class GitKnowledge:
             )
         self.location = str(location)
         self.remote = bool(_URL.match(self.location))
+        configured = self.config.get("location")
+        if configured and not self.remote and base is not None:
+            # A relative location is relative to the configuration's directory, never to
+            # the working directory, so a read never lands on whatever checkout it is in.
+            path = Path(self.location).expanduser()
+            self.location = str(path if path.is_absolute() else Path(base) / path)
 
     # Reading
 
@@ -103,8 +119,11 @@ class GitKnowledge:
         """
         root = self.repository_root()
         entries, _invalid = record_index.scan(root)
-        matches = record_index.named(team_inputs(entries, project), id)
+        readable, refused = readable_in(root, entries, project)
+        matches = record_index.named(readable, id)
         if not matches:
+            if refused and record_index.named(team_inputs(entries, project), id):
+                raise RefusedError(f"{id} is a customer record; {CUSTOMER_READ}")
             raise LookupError(f"no knowledge record has id or alias {id}")
         if len(matches) > 1:
             paths = ", ".join(entry["path"] for entry in matches)
@@ -133,10 +152,14 @@ class GitKnowledge:
         project it sits under (KAN-465). Refused files under another project's
         directory are left out too, since their errors may repeat header values.
         """
-        found = record_index.search(self.repository_root(), type, scope, labels or (), status, text)
+        root = self.repository_root()
+        found = record_index.search(root, type, scope, labels or (), status, text)
+        items, refused = readable_in(root, found["items"], project)
+        withheld = {"refused": {"count": refused, "reason": CUSTOMER_READ}} if refused else {}
         return {
             **found,
-            "items": team_inputs(found["items"], project),
+            **withheld,
+            "items": items,
             "invalid": [
                 entry for entry in found["invalid"] if project_of(entry["path"]) in (None, project)
             ],

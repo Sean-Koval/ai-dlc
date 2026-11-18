@@ -143,6 +143,7 @@ def test_ticket_filed_in_jira_starts_and_finishes_from_a_review_status(lifecycle
                 "description": None,
                 "status": {"id": "7", "statusCategory": {"key": "indeterminate"}},
                 "resolution": None,
+                "issuelinks": [],
             },
             "properties": {},
         }
@@ -156,3 +157,30 @@ def test_ticket_filed_in_jira_starts_and_finishes_from_a_review_status(lifecycle
     assert service.finish("one")["tracker"]["state"] == "closed"
     assert jira.issues[0]["fields"]["status"]["id"] == "3"
     assert len(jira.writes("/transitions")) == 1
+
+
+def test_work_starts_and_finishes_when_a_blocker_cannot_be_read(lifecycle):
+    """R1 on KAN-537: a blocker that can't be read leaves start and finish working."""
+    service, jira, scm = lifecycle
+    jira.issues.append(
+        {
+            "id": "501",
+            "key": "WORK-7",
+            "fields": {
+                "project": {"id": "100"},
+                "issuetype": {"id": "10"},
+                "summary": "Blocked by an issue this account can't see",
+                "description": None,
+                "status": {"id": "1", "statusCategory": {"key": "new"}},
+                "resolution": None,
+                "issuelinks": [{"type": {"name": "Blocks"}, "inwardIssue": {"id": "999"}}],
+            },
+            "properties": {},
+        }
+    )
+    record = service.root / ".ai-dlc/work/one.toml"
+    record.write_text(record.read_text() + '\n[artifacts]\ntracker = "WORK-7"\n')
+    assert service.start("one")["tracker"]["state"] == "in_progress"
+    service.link("one", "pr", "https://github.com/fixture/repo/pull/7")
+    scm.allowed = True
+    assert service.finish("one")["tracker"]["state"] == "closed"
