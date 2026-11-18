@@ -62,6 +62,7 @@ ai-dlc knowledge why DEC-0002 --root . --json   # local only: chain, links, quot
 ai-dlc knowledge why KAN-241 --root .           # a ticket key or ADR, any case: its decision
 ai-dlc knowledge stats . --since 2026-11-06T00:00:00Z --report reports/2026-W46.md  # weekly 1.0 outcomes
 ai-dlc knowledge stats . --since 2026-11-06T00:00:00Z --log capture/runs.jsonl  # capture too, on the batch machine
+ai-dlc knowledge stats . --since 2026-11-06T00:00:00Z --usage-log usage.jsonl  # delivery: cost per merged PR
 ```
 
 ## Rendering the wiki
