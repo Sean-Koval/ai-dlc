@@ -1,0 +1,46 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "changes/KAN-526.added.md": "61a79ac9040dfd8da6fb6a500580b083144f0b2944d77a562e24397782508e1f"
+      },
+      "outcome": "updated",
+      "reason": "KAN-526: the changelog fragment for this change.",
+      "reviewer": "Claude (agent)",
+      "target": "changes/KAN-526.added.md"
+    },
+    {
+      "bound": {
+        "contracts/README.md": "0629153979c0a533487698671a2c9ca39ac6018c09fbe64d1ebe96a82ce2a980"
+      },
+      "outcome": "updated",
+      "reason": "Re-recorded after merging main at bed8f6e (KAN-504 added the versions.toml paragraph above). KAN-526's --base paragraph still names the one allowed edit of an accepted decision, a sourced replacement of the Not stated in the source placeholder under Context or Options; the two paragraphs do not overlap.",
+      "reviewer": "Claude (agent)",
+      "target": "contracts/README.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/architecture.md": "788b593066fcd5d1c9eb9ebbc3869971131d3ddb3ea3396bc8b9a6ea48ca8b55",
+        "docs/architecture.md": "099e45e56378bb4ea78edb3eec9e6a8ce7e7d60edd08d0b17aeeca9810351b82",
+        "src/ai_dlc/documentation/knowledge_check.py": "247e73ac5f4bbfb2376c914bb58569b167f234465900175a7db2976c72a8e66a"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Re-recorded after merging main at bed8f6e, which also changed knowledge_check.py (KAN-520 renamed-file rule). KAN-526 still changes a rule inside the existing knowledge_check module; no package, entry point or module placement changes.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/design/local-and-shared-knowledge.md": "dda625604166b9fffe1120b9d4b69a9d919e36a1c66352d8de79c3d718083bab",
+        "docs/design/local-and-shared-knowledge.md": "e8dd0f2bf6317cfbd70f47861582982313eba6db6c85d28179926860b640ab9b",
+        "src/ai_dlc/documentation/knowledge_check.py": "247e73ac5f4bbfb2376c914bb58569b167f234465900175a7db2976c72a8e66a",
+        "tests/test_knowledge_check.py": "82dbed2fac6b6f0bfbf5ca923d56b23c152c8ee52a874efce86efbc56366f484"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Re-recorded after merging main at bed8f6e (KAN-504 enrolled versions.toml in this entry, KAN-520 changed knowledge_check.py). The page lists record commands and does not state the accepted-decision rule, which contracts/README.md documents.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/local-and-shared-knowledge.md"
+    }
+  ],
+  "schema": 2
+}
