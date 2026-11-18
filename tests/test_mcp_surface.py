@@ -29,6 +29,7 @@ TOOLS = {
     "knowledge_pull_transcripts",
     "knowledge_render",
     "knowledge_search",
+    "knowledge_stats",
     "knowledge_template",
     "knowledge_why",
     "project_docs_check",
