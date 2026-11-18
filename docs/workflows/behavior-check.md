@@ -14,11 +14,11 @@ concrete regression; it does not score the suite or pick a universal framework.
    review source. Use existing authorization; do not add a second approval ritual.
    Change shared configuration only after this review, preserving authored
    tests, required IDs and unrelated commands.
-3. **Prepare the normal runner.** Run the reviewed setup action separately through
-   `ai-dlc project setup`; a check never installs its own tools or silently changes
-   shell. `mise` is required for `ai-dlc project check` even when the tools table is
-   empty. If runtime resolution reports it unavailable, no check ran and no passing
-   receipt exists. Direct shell execution is diagnostic only.
+3. **Prepare the normal runner.** Run the reviewed setup action through
+   `ai-dlc project setup`; a check never installs its own tools. CI requires `mise`
+   for `ai-dlc project check`; without it, no check runs and no passing receipt
+   exists. Locally, a check without mise says so, uses the tools on `PATH` and
+   records `runtime = "path"`.
 4. **Preflight an external disposable fixture.** Copy the reviewed fixture to an
    explicit temporary location outside the active checkout. Record the source
    revision and fixture identity, and keep the exact original bytes. Stop if the
