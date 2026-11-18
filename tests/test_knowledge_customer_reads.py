@@ -117,3 +117,20 @@ def test_knowledge_repo_variable_keeps_naming_a_path_from_the_shell(tmp_path, mo
     monkeypatch.chdir(tmp_path)
     records = KnowledgeRecords(root, {"roles": {}}, environ={"KNOWLEDGE_REPO": "team"})
     assert records.get("team-lesson")["path"] == "records/team.md"
+
+
+@pytest.mark.parametrize("reader", ["git", "vault"])
+def test_a_customer_repository_refuses_another_customers_record(tmp_path, reader):
+    # alpha's repository wrongly holding a beta record: reads refuse it without a check run.
+    repo = knowledge_repo(tmp_path / "alpha", CUSTOMER)
+    (repo / "projects/beta").mkdir()
+    beta = {"scope": "project", "boundary": "customer", "tags": ["splunk"]}
+    (repo / "projects/beta/secret.md").write_text(record("beta-secret", "lesson", **beta))
+    store = git_provider(tmp_path, str(repo)) if reader == "git" else Knowledge(repo)
+
+    with pytest.raises(ValueError, match="their customer's own repository"):
+        store.get("beta-secret", project="beta")
+    found = store.search(labels=["splunk"], project="beta")
+    assert [item["id"] for item in found["items"]] == ["team-lesson"]
+    assert found["refused"]["count"] == 1
+    assert store.get("alpha-gotcha", project="alpha")["path"] == "projects/alpha/gotcha.md"
