@@ -62,11 +62,12 @@ main, so numbers never collide. The knowledge repository needs these settings:
 
 - A GitHub App installed on the repository with Contents and Pull requests write.
   Pass its ID as the `app-id` input and its private key as the `private-key` secret;
-  each run mints an installation token, which expires within the hour. A pull request
+  each run mints an installation token, which expires within the hour. Without an App,
+  a fine-grained personal token in the `token` secret is the fallback. A pull request
   opened with `GITHUB_TOKEN` starts no checks.
 - A ruleset on main that requires a pull request, an approving review and the
-  `knowledge check` status check, with the App as the only bypass actor. Personal
-  tokens and zero-approval rules are not supported.
+  `knowledge check` status check, with the App as the only bypass actor. A personal
+  token can't be that bypass actor, and zero-approval rules are not supported.
 - "Require branches to be up to date before merging" on. Otherwise two record pull
   requests that add the same slug can both merge, and numbering then stops.
 - "Allow squash merging" on, since main requires linear history.

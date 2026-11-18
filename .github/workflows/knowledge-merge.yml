@@ -108,6 +108,9 @@ jobs:
           private-key: ${{ secrets.private-key }}
           owner: ${{ github.repository_owner }}
           repositories: ${{ github.event.repository.name }}
+          # Only what numbering needs, whatever else the App's installation may grant.
+          permission-contents: write
+          permission-pull-requests: write
       - uses: actions/checkout@v4
         if: steps.credentials.outputs.use != 'none'
         with:

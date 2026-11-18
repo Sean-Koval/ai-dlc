@@ -401,6 +401,8 @@ def test_merge_workflow_mints_the_app_token_and_never_logs_one():
     assert mint["uses"].startswith("actions/create-github-app-token@")
     assert mint["if"] == "steps.credentials.outputs.use == 'app'"
     assert mint["with"]["repositories"] == "${{ github.event.repository.name }}"
+    granted = {k: v for k, v in mint["with"].items() if k.startswith("permission-")}
+    assert granted == {"permission-contents": "write", "permission-pull-requests": "write"}
     after = steps[steps.index(mint) + 1 :]
     assert all(s["if"] == "steps.credentials.outputs.use != 'none'" for s in after)
     token = "${{ steps.app.outputs.token || secrets.token }}"
