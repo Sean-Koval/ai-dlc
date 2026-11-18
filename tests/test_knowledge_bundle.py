@@ -2,6 +2,7 @@
 
 import asyncio
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -330,9 +331,13 @@ def test_reusable_workflow_serializes_numbering():
         "numbering-branch",
         "ai-dlc-ref",
         "auto-merge",
+        "app-id",
     }
     assert called["inputs"]["auto-merge"]["default"] is False
-    assert called["secrets"]["token"]["required"] is True
+    assert {name: secret["required"] for name, secret in called["secrets"].items()} == {
+        "private-key": False,
+        "token": False,
+    }
     assert workflow["permissions"] == {"contents": "read"}
     job = workflow["jobs"]["number"]
     assert job["concurrency"]["cancel-in-progress"] is False
@@ -343,6 +348,67 @@ def test_reusable_workflow_serializes_numbering():
     gate = script.index('if [ "$AUTO_MERGE" = "true" ]; then')
     assert gate < script.index('gh pr merge "$open" --auto --squash') < script.index("else", gate)
     assert "HEAD:$BRANCH" not in script
+
+
+def merge_job():
+    import yaml
+
+    path = Path(__file__).resolve().parents[1] / ".github/workflows/knowledge-merge.yml"
+    return yaml.safe_load(path.read_text())["jobs"]["number"]
+
+
+@pytest.mark.parametrize(
+    "app_id, has_key, has_token, use",
+    [
+        ("123", "true", "false", "app"),
+        ("123", "true", "true", "app"),  # the App wins over a stored token
+        ("", "false", "true", "token"),
+        ("", "false", "false", "none"),
+        ("123", "false", "true", None),  # only one of app-id and private-key: fail
+        ("", "true", "false", None),
+    ],
+)
+def test_merge_workflow_chooses_app_token_fallback_skip_or_failure(
+    tmp_path, app_id, has_key, has_token, use
+):
+    """KAN-522: the credentials step, run as the workflow runs it (bash -e)."""
+    (step,) = [s for s in merge_job()["steps"] if s.get("id") == "credentials"]
+    output = tmp_path / "output"
+    output.touch()
+    env = {
+        "PATH": os.environ["PATH"],
+        "APP_ID": app_id,
+        "HAS_KEY": has_key,
+        "HAS_TOKEN": has_token,
+        "GITHUB_OUTPUT": str(output),
+    }
+    run = subprocess.run(
+        ["bash", "-e", "-c", step["run"]], env=env, capture_output=True, text=True, check=False
+    )
+    if use is None:
+        assert run.returncode == 1
+        assert "::error title=Numbering credentials::" in run.stdout
+        assert output.read_text() == ""
+        return
+    assert run.returncode == 0, run.stdout + run.stderr
+    assert output.read_text() == f"use={use}\n"
+    assert ("::notice title=Numbering skipped::" in run.stdout) is (use == "none")
+
+
+def test_merge_workflow_mints_the_app_token_and_never_logs_one():
+    steps = merge_job()["steps"]
+    (mint,) = [s for s in steps if s.get("id") == "app"]
+    assert mint["uses"].startswith("actions/create-github-app-token@")
+    assert mint["if"] == "steps.credentials.outputs.use == 'app'"
+    assert mint["with"]["repositories"] == "${{ github.event.repository.name }}"
+    after = steps[steps.index(mint) + 1 :]
+    assert all(s["if"] == "steps.credentials.outputs.use != 'none'" for s in after)
+    token = "${{ steps.app.outputs.token || secrets.token }}"
+    assert after[0]["with"]["token"] == token  # checkout: git fetch and push
+    (pr,) = [s for s in after if "gh pr" in s.get("run", "")]
+    assert pr["env"]["GH_TOKEN"] == token
+    # Secrets reach steps through env and with only; no run script names one.
+    assert not any(re.search(r"secrets\.|\$\{?GH_TOKEN", s.get("run", "")) for s in steps)
 
 
 def test_numbering_pr_passes_check_for_an_accepted_supersedes_link(tmp_path):

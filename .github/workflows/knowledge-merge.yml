@@ -7,8 +7,9 @@
 #       uses: Sean-Koval/ai-dlc/.github/workflows/knowledge-merge.yml@main
 #       with:
 #         records: records
+#         app-id: ${{ vars.KNOWLEDGE_APP_ID }}
 #       secrets:
-#         token: ${{ secrets.KNOWLEDGE_APP_TOKEN }}
+#         private-key: ${{ secrets.KNOWLEDGE_APP_PRIVATE_KEY }}
 #
 # It numbers slug-id records (DEC-0001 and so on), rewrites every link to them and
 # regenerates the OKF index.md files, as one commit on the branch `knowledge-number`.
@@ -24,9 +25,14 @@
 # pull request waits keeps its slug until the next run, which starts when the
 # numbering pull request merges.
 #
-# The token must be a GitHub App installation token; the App is the bypass actor
-# for the numbering branch. A pull request opened with GITHUB_TOKEN starts no
-# checks. See contracts/README.md for the repository settings.
+# Credentials (KAN-522): give the GitHub App's `app-id` and `private-key`, and each
+# run mints an installation token for this repository with
+# actions/create-github-app-token. Installation tokens expire within an hour, so a
+# stored one stops working; a caller can't mint one and pass it in either. A
+# fine-grained personal token in `token` is the fallback. With no credential the job
+# skips with a notice; with only one of app-id and private-key it fails. The App is
+# the bypass actor for the numbering branch. A pull request opened with
+# GITHUB_TOKEN starts no checks. See contracts/README.md for the repository settings.
 name: Knowledge merge
 on:
   workflow_call:
@@ -51,10 +57,17 @@ on:
         description: Turn on squash auto-merge for the numbering pull request (an owner's exception).
         type: boolean
         default: false
+      app-id:
+        description: GitHub App ID; with the private-key secret, each run mints an installation token.
+        type: string
+        default: ""
     secrets:
+      private-key:
+        description: The GitHub App's private key (PEM), used with app-id.
+        required: false
       token:
-        description: GitHub App installation token with contents and pull-requests write.
-        required: true
+        description: Fallback without an App, such as a fine-grained personal token with contents and pull-requests write.
+        required: false
 permissions:
   contents: read
 jobs:
@@ -67,21 +80,51 @@ jobs:
     env:
       BRANCH: ${{ inputs.branch || github.event.repository.default_branch }}
       NUMBERING: ${{ inputs.numbering-branch }}
-      GH_TOKEN: ${{ secrets.token }}
     steps:
+      - name: Choose credentials
+        id: credentials
+        env:
+          APP_ID: ${{ inputs.app-id }}
+          HAS_KEY: ${{ secrets.private-key != '' }}
+          HAS_TOKEN: ${{ secrets.token != '' }}
+        run: |
+          if [ -n "$APP_ID" ] && [ "$HAS_KEY" = "true" ]; then
+            echo "use=app" >> "$GITHUB_OUTPUT"
+          elif [ -n "$APP_ID" ] || [ "$HAS_KEY" = "true" ]; then
+            echo "::error title=Numbering credentials::Give both app-id and the private-key secret to mint a GitHub App token; only one is set."
+            exit 1
+          elif [ "$HAS_TOKEN" = "true" ]; then
+            echo "use=token" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice title=Numbering skipped::No app-id and private-key (or token) given, so records are not numbered."
+            echo "use=none" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Mint a GitHub App installation token
+        id: app
+        if: steps.credentials.outputs.use == 'app'
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ inputs.app-id }}
+          private-key: ${{ secrets.private-key }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
       - uses: actions/checkout@v4
+        if: steps.credentials.outputs.use != 'none'
         with:
           ref: ${{ env.BRANCH }}
           fetch-depth: 0
-          token: ${{ secrets.token }}
+          token: ${{ steps.app.outputs.token || secrets.token }}
       - uses: actions/setup-python@v5
+        if: steps.credentials.outputs.use != 'none'
         with:
           python-version: '3.12'
       - name: Install ai-dlc
+        if: steps.credentials.outputs.use != 'none'
         env:
           AI_DLC_REF: ${{ inputs.ai-dlc-ref }}
         run: python -m pip install "ai-dlc @ git+https://github.com/Sean-Koval/ai-dlc@${AI_DLC_REF}"
       - name: Number and index the tip of main
+        if: steps.credentials.outputs.use != 'none'
         env:
           RECORDS: ${{ inputs.records }}
         run: |
@@ -94,7 +137,9 @@ jobs:
           ai-dlc knowledge number "$RECORDS" --check > /dev/null
           ai-dlc knowledge index "$RECORDS" --check > /dev/null
       - name: Open or update the numbering pull request
+        if: steps.credentials.outputs.use != 'none'
         env:
+          GH_TOKEN: ${{ steps.app.outputs.token || secrets.token }}
           RECORDS: ${{ inputs.records }}
           AUTO_MERGE: ${{ inputs.auto-merge }}
         run: |

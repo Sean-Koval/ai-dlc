@@ -168,7 +168,8 @@ def customer_files(
             f"      ai-dlc-ref: {ai_dlc_ref}\n"
             "  number:\n"
             "    # Numbers records and writes indexes through a reviewed pull request.\n"
-            "    # Needs a GitHub App token in KNOWLEDGE_APP_TOKEN (contracts/README.md).\n"
+            "    # Mints a GitHub App token each run from the KNOWLEDGE_APP_ID variable and\n"
+            "    # the KNOWLEDGE_APP_PRIVATE_KEY secret (contracts/README.md).\n"
             "    # The App token does the writing; GITHUB_TOKEN stays read-only.\n"
             "    if: github.event_name == 'push'\n"
             "    permissions:\n"
@@ -177,8 +178,9 @@ def customer_files(
             "    with:\n"
             '      records: "."\n'
             f"      ai-dlc-ref: {ai_dlc_ref}\n"
+            "      app-id: ${{ vars.KNOWLEDGE_APP_ID }}\n"
             "    secrets:\n"
-            "      token: ${{ secrets.KNOWLEDGE_APP_TOKEN }}\n"
+            "      private-key: ${{ secrets.KNOWLEDGE_APP_PRIVATE_KEY }}\n"
         ),
         f"{PROJECTS}/{name}/.gitkeep": "",
         "inbox/.gitkeep": "",
