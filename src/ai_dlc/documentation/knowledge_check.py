@@ -40,6 +40,7 @@ repository, no path in ``sources`` or the body leaves it, and a ``[wiki]`` names
 same project. :func:`repo_boundary` reads the declaration.
 """
 
+import os
 import posixpath
 import re
 import tomllib
@@ -146,6 +147,7 @@ def check_records(
     _check_folders(bundle, index)
     _check_boundary(bundle, index)
     _check_customer_repo(bundle, index, settings)
+    _check_unread_boundary(bundle, folder, scopes, settings)
     if base:
         _check_against_base(bundle, folder, settings, scopes, base)
     for found in (bundle.failures, bundle.warnings):
@@ -983,6 +985,83 @@ def _check_customer_repo(
             if _leaves_repo(root, located, target):
                 bundle.fail(path, "", f"links to {target}, outside this customer repository")
                 break
+
+
+def _check_unread_boundary(
+    bundle: _Bundle, folder: Path, scopes: list[Path], settings: tuple[Path, str, dict] | None
+) -> None:
+    """The customer boundary holds for every file of the repository, not only the roots.
+
+    ``[check] roots`` limits which records are checked in full; a ``boundary: customer``
+    header outside them still fails in a repository that is not a customer repository,
+    and in one of another project (KAN-524). A customer repository's raw captures (its
+    top-level ``inbox/``) stay outside ``projects/<name>/``.
+    """
+    if settings is None:
+        return
+    project, _problems = repo_boundary(settings[2])
+    declared = settings[2].get(REPO) is not None
+    # The repository holding knowledge.toml, or the folder when the file is elsewhere.
+    for path in _markdown(bundle.repo.resolve()):
+        if path.name in SKIPPED or path.name in RESERVED:
+            continue
+        if any(path.is_relative_to(scope) for scope in scopes):
+            continue  # read as a record above
+        try:
+            data, _raw, _body = split(path.read_text(encoding="utf-8", errors="replace"))
+        except ValueError:
+            continue
+        if not isinstance(data, Mapping) or not is_customer(data):
+            continue
+        shown = Path(os.path.relpath(path, folder)).as_posix()
+        if not declared:
+            bundle.fail(shown, "/boundary", TEAM_REPO_CUSTOMER)
+        elif project is not None and data.get("project") != project:
+            bundle.fail(
+                shown,
+                "/project",
+                f"every record of this customer repository carries project: {project}",
+            )
+
+
+def customer_repository(root: Path | str) -> str | None:
+    """The project a knowledge repository at ``root`` declares itself a customer repository of.
+
+    ``None`` when ``root/knowledge.toml`` is missing, unreadable or declares no valid
+    ``[repo] boundary = "customer"``: reads then return no customer record (KAN-524).
+    """
+    path = Path(root) / CONFIG
+    try:
+        parsed = tomllib.loads(path.read_text(encoding="utf-8"))
+    except (OSError, tomllib.TOMLDecodeError, UnicodeDecodeError):
+        return None
+    return repo_boundary(parsed)[0]
+
+
+CUSTOMER_READ = (
+    "boundary: customer records are read only from their customer's own repository, whose "
+    'knowledge.toml declares [repo] boundary = "customer"; this repository does not'
+)
+
+
+def readable_in[Entry: Mapping[str, Any]](
+    root: Path | str, entries: Iterable[Entry], project: str | None = None
+) -> tuple[list[Entry], int]:
+    """``(entries a read of project may return, customer records refused)`` (KAN-524).
+
+    In a declared customer repository this is :func:`team_inputs`. Anywhere else no
+    customer record is returned; the count is of those the caller's ``project`` would
+    otherwise see, so a view of another project learns nothing about them.
+    """
+    visible = team_inputs(entries, project)
+    kept = [
+        entry
+        for entry in visible
+        if not is_customer(entry.get("record", entry.get("header")) or {})
+    ]
+    if len(kept) == len(visible) or customer_repository(root) is not None:
+        return visible, 0
+    return kept, len(visible) - len(kept)
 
 
 def _names_a_record(value: str) -> bool:
