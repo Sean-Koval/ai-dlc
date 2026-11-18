@@ -367,7 +367,7 @@ def fake_mise(directory):
     return script
 
 
-def test_missing_runtime_fails_before_any_check_runs(tmp_path, monkeypatch):
+def test_missing_runtime_fails_ci_checks_before_any_check_runs(tmp_path, monkeypatch):
     import pytest
 
     from ai_dlc.setup.project import RuntimeUnavailable, check_project
@@ -375,9 +375,78 @@ def test_missing_runtime_fails_before_any_check_runs(tmp_path, monkeypatch):
     root = repository(tmp_path)
     no_runtime_anywhere(tmp_path, monkeypatch)
     with pytest.raises(RuntimeUnavailable) as failure:
-        check_project(root, use_mise=True)
+        check_project(root, target="github-actions", use_mise=True)
     assert failure.value.executable == "mise"
     assert failure.value.remedy
+
+
+def test_local_checks_run_with_the_tools_on_path_when_mise_is_absent(tmp_path, monkeypatch, capfd):
+    from ai_dlc.setup.project import check_project
+
+    root = repository(tmp_path)
+    no_runtime_anywhere(tmp_path, monkeypatch)
+    monkeypatch.setenv("PATH", "/usr/bin:/bin")
+    receipt = check_project(root, use_mise=True)
+    assert [(x["id"], x["status"]) for x in receipt["outcomes"]] == [
+        ("ok", "passed"),
+        ("bad", "failed"),
+    ]
+    assert receipt["runtime"] == "path"
+    note = capfd.readouterr().err
+    assert note.count("mise skipped") == 1
+    assert "mise is not installed" in note
+
+
+def test_local_checks_skip_a_mise_that_has_not_installed_its_python(tmp_path, monkeypatch, capfd):
+    from ai_dlc.setup.project import check_project
+
+    root = repository(tmp_path)
+    (root / ".mise.toml").write_text('[tools]\npython = "3.12"\n')
+    no_runtime_anywhere(tmp_path, monkeypatch)
+    unprepared = tmp_path / "path-bin"
+    unprepared.mkdir()
+    script = unprepared / "mise"
+    script.write_text('#!/bin/sh\necho "mise ERROR python is not installed" >&2\nexit 1\n')
+    script.chmod(0o755)
+    monkeypatch.setenv("PATH", f"{unprepared}:/usr/bin:/bin")
+    receipt = check_project(root, use_mise=True)
+    assert [x["status"] for x in receipt["outcomes"]] == ["passed", "failed"]
+    assert receipt["runtime"] == "path"
+    note = capfd.readouterr().err
+    assert "has not installed the python in .mise.toml" in note
+    assert "ai-dlc project setup" in note
+
+
+def test_checks_through_mise_record_the_mise_runtime(tmp_path, monkeypatch):
+    from ai_dlc.setup.project import check_project
+
+    root = repository(tmp_path)
+    no_runtime_anywhere(tmp_path, monkeypatch)
+    on_path = tmp_path / "path-bin"
+    fake_mise(on_path)
+    monkeypatch.setenv("PATH", f"{on_path}:/usr/bin:/bin")
+    assert check_project(root, use_mise=True)["runtime"] == "mise"
+
+
+def test_cli_check_passes_with_mise_off_path(tmp_path, monkeypatch):
+    import sys
+
+    root = repository(tmp_path)
+    (root / "ai-dlc.toml").write_text(
+        'schema=4\n[checks]\nrequired=["ok"]\n[checks.commands]\nok="exit 0"\n'
+    )
+    no_runtime_anywhere(tmp_path, monkeypatch)
+    monkeypatch.setenv("PATH", "/usr/bin:/bin")
+    result = subprocess.run(
+        [sys.executable, "-m", "ai_dlc", "project", "check", "--root", str(root), "--required"],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    assert json.loads(result.stdout)["runtime"] == "path"
+    assert "mise skipped" in result.stderr
+    assert "Traceback" not in result.stderr
 
 
 def test_missing_runtime_reports_structured_failure_without_receipt(tmp_path, monkeypatch):
@@ -390,7 +459,17 @@ def test_missing_runtime_reports_structured_failure_without_receipt(tmp_path, mo
     no_runtime_anywhere(tmp_path, monkeypatch)
     result = CliRunner().invoke(
         app,
-        ["project", "check", "--root", str(root), "--json", "--receipt", str(receipt)],
+        [
+            "project",
+            "check",
+            "--root",
+            str(root),
+            "--target",
+            "github-actions",
+            "--json",
+            "--receipt",
+            str(receipt),
+        ],
     )
     assert result.exit_code == 1
     assert result.exception is None or isinstance(result.exception, SystemExit)
@@ -411,7 +490,9 @@ def test_missing_runtime_human_output_names_the_remedy(tmp_path, monkeypatch):
 
     root = repository(tmp_path)
     no_runtime_anywhere(tmp_path, monkeypatch)
-    result = CliRunner().invoke(app, ["project", "check", "--root", str(root)])
+    result = CliRunner().invoke(
+        app, ["project", "check", "--root", str(root), "--target", "github-actions"]
+    )
     assert result.exit_code == 1
     assert "mise is not on PATH" in result.stderr
     assert "workspace-check" in result.stderr
@@ -533,3 +614,38 @@ def test_setup_activates_mise_only_when_the_project_declares_tools(
         assert recorded == [f"trust {root / '.mise.toml'}", "install"]
     else:
         assert recorded == []
+
+
+def test_setup_without_mise_names_the_skipped_tools_and_runs_steps(tmp_path, monkeypatch, capfd):
+    from ai_dlc.setup.project import setup_project
+
+    root = tmp_path / "project"
+    root.mkdir()
+    (root / "ai-dlc.toml").write_text(
+        'schema = 4\n[[setup.steps]]\nid = "prepare"\ncommand = "touch prepared"\n'
+    )
+    (root / ".mise.toml").write_text('[tools]\npython = "3.12"\nnode = "22"\n')
+    no_runtime_anywhere(tmp_path, monkeypatch)
+    monkeypatch.setenv("PATH", "/usr/bin:/bin")
+
+    result = setup_project(root, state_path=tmp_path / "state.db", use_mise=True)
+
+    assert (root / "prepared").exists()
+    assert result["mise_skipped"] == ["node", "python"]
+    note = capfd.readouterr().err
+    assert "mise is not installed, so the tools in .mise.toml (node, python)" in note
+    assert "rerun `ai-dlc project setup`" in note
+
+
+def test_ci_setup_without_mise_refuses_with_the_next_step(tmp_path, monkeypatch):
+    from ai_dlc.setup.project import setup_project
+
+    root = tmp_path / "project"
+    root.mkdir()
+    (root / "ai-dlc.toml").write_text("schema = 4\n")
+    (root / ".mise.toml").write_text('[tools]\npython = "3.12"\n')
+    no_runtime_anywhere(tmp_path, monkeypatch)
+    monkeypatch.setenv("PATH", "/usr/bin:/bin")
+
+    with pytest.raises(RuntimeError, match="mise is not installed.*install mise"):
+        setup_project(root, "github-actions", state_path=tmp_path / "state.db", use_mise=True)

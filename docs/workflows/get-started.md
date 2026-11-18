@@ -26,6 +26,12 @@ to `PATH`. Then `ai-dlc doctor`, run outside a repository, checks the machine an
 names each fix. If another checkout owns the global alias, use the executable
 bootstrap prints.
 
+If a work laptop or proxy blocks mise, run `uv sync --locked` in the checkout and
+use `uv run ai-dlc` instead. Without mise, `project setup` and `project check`
+say mise was skipped and use the tools on `PATH`. Behind a proxy, set
+`HTTPS_PROXY`, a custom CA with `SSL_CERT_FILE` or `UV_NATIVE_TLS=1`, and
+`GITHUB_TOKEN` (or `gh auth login`) for mise's GitHub downloads.
+
 `project init` copies the template only (`--preset generic|python|node|rust`,
 `--agent-client claude-code|codex`). `project setup` runs the setup steps and
 renders the agent configuration. The `generated` check fails until setup has
