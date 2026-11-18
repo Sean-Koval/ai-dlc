@@ -1,0 +1,82 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "agents/skills/daily-note/SKILL.md": "16a758451bcafa4c883d2e3a6dc67e0411bb4363ca7d1554c796da9295dfc188"
+      },
+      "outcome": "updated",
+      "reason": "KAN-396: start of day gains a read-only Waiting section from Work Copilot's get_attention (open and waiting items, paged, source text as data) when bound in a work vault; unchanged without it.",
+      "reviewer": "Claude (agent)",
+      "target": "agents/skills/daily-note/SKILL.md"
+    },
+    {
+      "bound": {
+        "changes/KAN-396.added.md": "3abfd45e406079cb98fb902b2b8e267618eccf457525a062cbab9a3ed32fb1be"
+      },
+      "outcome": "updated",
+      "reason": "KAN-396: changelog fragment for this change.",
+      "reviewer": "Claude (agent)",
+      "target": "changes/KAN-396.added.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/architecture.md": "788b593066fcd5d1c9eb9ebbc3869971131d3ddb3ea3396bc8b9a6ea48ca8b55",
+        "docs/architecture.md": "099e45e56378bb4ea78edb3eec9e6a8ce7e7d60edd08d0b17aeeca9810351b82",
+        "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "ffab029c2fddcf3192357faaeac50ded25ccc5fa4843861314a4e822003e5d05",
+        "plugins/ai-dlc-workflow/native/codex/.codex-plugin/plugin.json": "06db0008d9e73da4961e52ee92aed2330ba56ec90dc468b460ee43e084037c31",
+        "plugins/ai-dlc-workflow/native/codex/skills/daily-note/SKILL.md": "16a758451bcafa4c883d2e3a6dc67e0411bb4363ca7d1554c796da9295dfc188",
+        "plugins/ai-dlc-workflow/plugin.lock.json": "f54fd4d4541a38346c79c24451d7fc61f152eed89290140185beb9939de0ebbf",
+        "plugins/ai-dlc-workflow/skills/daily-note/SKILL.md": "16a758451bcafa4c883d2e3a6dc67e0411bb4363ca7d1554c796da9295dfc188"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-396: the plugin section describes how the plugin is built and digested, not skill contents; a rebuilt daily-note changes none of it.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        "agents/skills.lock.json": "02427921d117ee0672a3da8a7486f5e733b7cbbbe22e0735c4dfced89907dbda",
+        "catalog:docs/development-workflow.md": "0fba88526a61571ce49e91b2159325061a7c54ba5466e651565eabb2f910e7c6",
+        "docs/development-workflow.md": "fd724d20f13622d81235c1d718d336bff3e6364a92edf48a33051df19c5acb97"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Re-recorded after merging main at bed8f6e, where KAN-534 rewrote what a disposition binds on this page. KAN-396 still only adds the new daily-note digest to skills.lock.json by the documented edit-then-render flow; no procedure on the page changes.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/development-workflow.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/workflow-plugin.md": "9e03b3ce099c0f527c8f02590717bb6021621b582d36ef7c3591815025088794",
+        "docs/workflows/workflow-plugin.md": "817faef1c788d019d09396aabf82022505c54cc37f4d9686b95d6d753da26d76",
+        "plugins/ai-dlc-workflow/.claude-plugin/plugin.json": "ffab029c2fddcf3192357faaeac50ded25ccc5fa4843861314a4e822003e5d05",
+        "plugins/ai-dlc-workflow/native/codex/.codex-plugin/plugin.json": "06db0008d9e73da4961e52ee92aed2330ba56ec90dc468b460ee43e084037c31",
+        "plugins/ai-dlc-workflow/native/codex/skills/daily-note/SKILL.md": "16a758451bcafa4c883d2e3a6dc67e0411bb4363ca7d1554c796da9295dfc188",
+        "plugins/ai-dlc-workflow/plugin.lock.json": "f54fd4d4541a38346c79c24451d7fc61f152eed89290140185beb9939de0ebbf",
+        "plugins/ai-dlc-workflow/skills/daily-note/SKILL.md": "16a758451bcafa4c883d2e3a6dc67e0411bb4363ca7d1554c796da9295dfc188"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-396: the page covers installing and building the plugin and counts its skills; the skill count and build are unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/workflow-plugin.md"
+    },
+    {
+      "bound": {
+        "tests/test_daily_note_attention.py": "4a8d7a11c9c250733404ce2ed245f8526b8ed68cfbcbbdd4433344e582efe243"
+      },
+      "outcome": "updated",
+      "reason": "KAN-396: new test that the skill keeps the bound-only, work-vault-only and read-only rules, filters by status and reports gaps.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/test_daily_note_attention.py"
+    },
+    {
+      "bound": {
+        "tests/test_session_key_contract.py": "abd4149ddd4283e2dc175a5f3832c3a58e939becbf51b96385c4a0ba7dc7f883"
+      },
+      "outcome": "updated",
+      "reason": "KAN-495: new contract test comparing docs/design/session-join-key.md (format block, part pattern, key expression, trailer, environment row) with ai_dlc.work.session_key; no source or page change.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/test_session_key_contract.py"
+    }
+  ],
+  "schema": 2
+}
