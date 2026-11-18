@@ -13,12 +13,12 @@
       "bound": {
         "catalog:docs/architecture.md": "788b593066fcd5d1c9eb9ebbc3869971131d3ddb3ea3396bc8b9a6ea48ca8b55",
         "docs/architecture.md": "099e45e56378bb4ea78edb3eec9e6a8ce7e7d60edd08d0b17aeeca9810351b82",
-        "src/ai_dlc/cli.py": "d334a231ae2dd669ead79d534cf807ce008e0b7ff4a0fec83a23c09f02335824",
+        "src/ai_dlc/cli.py": "5eb7a0d6dc4cb64582af0b9389440de2e1c637a9f0a526210b84b52b16e9a676",
         "src/ai_dlc/environment/preflight.py": "26e9c72d37773bfa2e1cc50b6f327e43aece2b91f6c504b7fe67d5db88966aa3",
         "src/ai_dlc/setup/readiness.py": "92785dea6334f5e248547b2729f3893190d475b35ca011c2466971b1b7eb298a"
       },
       "outcome": "reviewed-no-change",
-      "reason": "environment/ already owns machine readiness and bootstrap location; the package map needs no new entry for preflight.py.",
+      "reason": "environment/ already owns machine readiness and bootstrap location; the package map needs no new entry for preflight.py. Re-recorded after merging main.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
@@ -26,11 +26,11 @@
       "bound": {
         "catalog:docs/development-workflow.md": "0fba88526a61571ce49e91b2159325061a7c54ba5466e651565eabb2f910e7c6",
         "docs/development-workflow.md": "fd724d20f13622d81235c1d718d336bff3e6364a92edf48a33051df19c5acb97",
-        "src/ai_dlc/cli.py": "d334a231ae2dd669ead79d534cf807ce008e0b7ff4a0fec83a23c09f02335824",
+        "src/ai_dlc/cli.py": "5eb7a0d6dc4cb64582af0b9389440de2e1c637a9f0a526210b84b52b16e9a676",
         "tests/test_cli.py": "731e1222befa32f4eb908272a18084dc94a4dfd3c9904b7b1f4343846e808869"
       },
       "outcome": "reviewed-no-change",
-      "reason": "The handbook's stages are unchanged; doctor's machine preflight is documented in Get started and Work-computer setup.",
+      "reason": "The handbook's stages are unchanged; doctor's machine preflight is documented in Get started and Work-computer setup. Re-recorded after merging main.",
       "reviewer": "Claude (agent)",
       "target": "docs/development-workflow.md"
     },
@@ -38,10 +38,10 @@
       "bound": {
         "catalog:docs/release-verification.md": "972bf86b6da5f20b3d01762982880533ba0c99b22933aa95273590923721dad0",
         "docs/release-verification.md": "a18e7b0bef6dc55ebc544ac304a01c8ca7d59c9dde46127f2acc44802e8b9751",
-        "src/ai_dlc/cli.py": "d334a231ae2dd669ead79d534cf807ce008e0b7ff4a0fec83a23c09f02335824"
+        "src/ai_dlc/cli.py": "5eb7a0d6dc4cb64582af0b9389440de2e1c637a9f0a526210b84b52b16e9a676"
       },
       "outcome": "reviewed-no-change",
-      "reason": "Release gates and the effective-environment report are unchanged; the preflight is not live-qualified evidence.",
+      "reason": "Release gates and the effective-environment report are unchanged; the preflight is not live-qualified evidence. Re-recorded after merging main.",
       "reviewer": "Claude (agent)",
       "target": "docs/release-verification.md"
     },
@@ -59,10 +59,10 @@
     {
       "bound": {
         "catalog:docs/workflows/get-started.md": "b3cdcadc535e0e825dfe2837433f1b4ef45551430ab207c485ef7dd601bf992e",
-        "docs/workflows/get-started.md": "ee4227bfc3b71b6eb5ba1f2836da237fab68fa10e9a4a07f2fa649202150397c"
+        "docs/workflows/get-started.md": "6b5254fd0ef8f182d29b071f94833858ba36e918f04e040b41b2eed2da5696c8"
       },
       "outcome": "updated",
-      "reason": "Says to run ai-dlc doctor outside a repository right after bootstrap, with no growth in words.",
+      "reason": "Says to run ai-dlc doctor outside a repository right after bootstrap, with no growth in words. Re-recorded after merging main.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/get-started.md"
     },
@@ -70,11 +70,11 @@
       "bound": {
         "catalog:docs/workflows/tool-map.md": "d11334cb57c288aab7b01226790b7cc268a28991b3de5f97a98b9818d80be19e",
         "docs/workflows/tool-map.md": "7919f8e6c5f6a0e8cc3f372da81498bcbefcdebbe4cb7b58f4f19d83fd47a181",
-        "src/ai_dlc/cli.py": "d334a231ae2dd669ead79d534cf807ce008e0b7ff4a0fec83a23c09f02335824",
+        "src/ai_dlc/cli.py": "5eb7a0d6dc4cb64582af0b9389440de2e1c637a9f0a526210b84b52b16e9a676",
         "tests/test_cli.py": "731e1222befa32f4eb908272a18084dc94a4dfd3c9904b7b1f4343846e808869"
       },
       "outcome": "reviewed-no-change",
-      "reason": "The doctor row already says it checks the selected environment; the command surface is unchanged apart from --agent-client.",
+      "reason": "The doctor row already says it checks the selected environment; the command surface is unchanged apart from --agent-client. Re-recorded after merging main.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/tool-map.md"
     },
@@ -82,10 +82,10 @@
       "bound": {
         "catalog:docs/workflows/work-computer-setup.md": "62d0a76f141100f0e8d2219cf5e7b398c0530796f3a7fa2ae95348450d0bdbb5",
         "docs/workflows/work-computer-setup.md": "2eaa057e6ca816fb09b0773e1f9fd4b56a20f5adb791770c6cd467ccc76a1a43",
-        "src/ai_dlc/cli.py": "d334a231ae2dd669ead79d534cf807ce008e0b7ff4a0fec83a23c09f02335824"
+        "src/ai_dlc/cli.py": "5eb7a0d6dc4cb64582af0b9389440de2e1c637a9f0a526210b84b52b16e9a676"
       },
       "outcome": "updated",
-      "reason": "Step 3 runs ai-dlc doctor outside a repository after bootstrap, with no growth in words.",
+      "reason": "Step 3 runs ai-dlc doctor outside a repository after bootstrap, with no growth in words. Re-recorded after merging main.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/work-computer-setup.md"
     },
