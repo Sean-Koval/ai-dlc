@@ -72,7 +72,7 @@
     {
       "bound": {
         "catalog:docs/workflows/get-started.md": "b3cdcadc535e0e825dfe2837433f1b4ef45551430ab207c485ef7dd601bf992e",
-        "docs/workflows/get-started.md": "6b5254fd0ef8f182d29b071f94833858ba36e918f04e040b41b2eed2da5696c8",
+        "docs/workflows/get-started.md": "cd50546f4a4de2f078333893ef72fb11a001797bfe6e2a9e9a0f6c74bb74aaa0",
         "mkdocs.yml": "7abd3647822c19d28dea4f48150d22a4ec0cf2d177464ef75995568f948db020"
       },
       "outcome": "reviewed-no-change",
