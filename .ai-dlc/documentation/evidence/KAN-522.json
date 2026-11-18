@@ -11,7 +11,7 @@
     },
     {
       "bound": {
-        "contracts/README.md": "4b06fe77c50ac1e1aad66721a44efebcddb03af7d42056560f4bf6705db7011e"
+        "contracts/README.md": "74971426666fd2c0680b2dd666a0a62bf05e02f4458796bf0add4cdf0e99f0f0"
       },
       "outcome": "updated",
       "reason": "KAN-522: the knowledge repository passes app-id and private-key; each run mints the installation token.",
@@ -31,10 +31,10 @@
     },
     {
       "bound": {
-        ".github/workflows/knowledge-merge.yml": "e63655f99a63d29a96f643491c8303b19a88660c755c2ead530a2face6ef1017",
+        ".github/workflows/knowledge-merge.yml": "5baffb5d022d680950ba27d4dff716abc07f6ac1d0fdf5e38a8446d6a95b9a64",
         "catalog:docs/design/local-and-shared-knowledge.md": "dda625604166b9fffe1120b9d4b69a9d919e36a1c66352d8de79c3d718083bab",
         "docs/design/local-and-shared-knowledge.md": "e8dd0f2bf6317cfbd70f47861582982313eba6db6c85d28179926860b640ab9b",
-        "tests/test_knowledge_bundle.py": "0b19347d70bf85d1ab79780cbdbab0e657b2f02ffef44938ded7cc8872726f8b"
+        "tests/test_knowledge_bundle.py": "461d9c82371edf1b1d7d4dbe5cff34fe4c51064adc6c2dc07d574f0260c4d5e8"
       },
       "outcome": "reviewed-no-change",
       "reason": "KAN-522: the page covers render and record shape, not the numbering workflow's credentials, which contracts/README.md owns.",
