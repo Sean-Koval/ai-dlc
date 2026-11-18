@@ -16,7 +16,7 @@
         "src/ai_dlc/setup/project.py": "b8646eff89cb1fb2432a4c5c61543853ee46d75c73fad8fbf8cacf8215b2c3c2"
       },
       "outcome": "reviewed-no-change",
-      "reason": "setup/project.py keeps its place and responsibility; the package map does not describe mise resolution.",
+      "reason": "Re-reviewed after merging main: setup/project.py keeps its place and responsibility; the package map does not describe mise resolution.",
       "reviewer": "Claude (agent)",
       "target": "docs/architecture.md"
     },
