@@ -982,19 +982,42 @@ def test_read_kind_follows_the_issue_type(jira, issue_type, kind):
     assert jira.provider().invoke("read", {"reference": "WORK-7"})["kind"] == kind
 
 
-def test_read_is_uncertain_without_link_evidence(jira):
+def test_read_without_link_evidence_leaves_blockers_out(jira):
+    """R1 on KAN-537: unknown blockers are left out, never reported as "unblocked"."""
     filed_by_person(jira)
     del jira.issues[0]["fields"]["issuelinks"]
 
-    with pytest.raises(RuntimeError, match="link evidence is incomplete"):
-        jira.provider().invoke("read", {"reference": "WORK-7"})
+    item = jira.provider().invoke("read", {"reference": "WORK-7"})
+
+    assert item["key"] == "WORK-7"
+    assert "blocked_by" not in item
 
 
-def test_read_is_uncertain_when_a_blocker_cannot_be_read(jira):
+@pytest.mark.parametrize(
+    "links",
+    [
+        [{"type": {"name": "Blocks"}, "inwardIssue": {"id": "999"}}],
+        [{"type": {"name": "Blocks"}, "inwardIssue": {"id": "not-a-number"}}],
+        ["not a link"],
+    ],
+    ids=["unreadable-blocker", "bad-blocker-id", "bad-link"],
+)
+def test_read_with_an_unreadable_blocker_returns_the_ticket_without_blockers(jira, links):
+    """R1 on KAN-537: one blocker that can't be read must not fail the whole read."""
     filed_by_person(jira)
-    jira.issues[0]["fields"]["issuelinks"] = [
-        {"type": {"name": "Blocks"}, "inwardIssue": {"id": "999"}}
-    ]
+    jira.issues[0]["fields"]["issuelinks"] = links
 
-    with pytest.raises(RuntimeError, match="999 blocks it and could not be read"):
-        jira.provider().invoke("read", {"reference": "WORK-7"})
+    item = jira.provider().invoke("read", {"reference": "WORK-7"})
+
+    assert item["key"] == "WORK-7"
+    assert item["category"] == "todo"
+    assert "blocked_by" not in item
+
+
+def test_read_category_falls_back_to_in_progress_for_an_unknown_status_category(jira):
+    filed_by_person(jira)
+    jira.issues[0]["fields"]["status"]["statusCategory"] = {"key": "undefined"}
+
+    item = jira.provider().invoke("read", {"reference": "WORK-7"})
+
+    assert item["category"] == "in_progress"

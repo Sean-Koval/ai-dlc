@@ -631,38 +631,39 @@ class JiraCloudProvider:
         """The issues that block this one: the inward issue of each Blocks link.
 
         A link summary carries no labels, so each blocker is read on its own. Missing
-        link evidence, or a blocker that can't be read, is uncertain, never "unblocked".
+        link evidence, or a blocker that can't be read, returns ``None``: the provider
+        can't tell what blocks the issue, which is never the same as "unblocked".
         """
         links = fields.get("issuelinks")
         if not isinstance(links, list) or len(links) > MAX_ROWS:
-            raise JiraUncertain("Jira issue link evidence is incomplete")
+            return None
         link_type = (self.config.get("decision") or {}).get("link_type", "Blocks")
         found = []
         for link in links:
             if not isinstance(link, dict) or not isinstance(link.get("type"), dict):
-                raise JiraUncertain("Jira issue link evidence is incomplete")
+                return None
             inward = link.get("inwardIssue")
             if link["type"].get("name") != link_type or inward is None:
                 continue
             ref = inward.get("id") if isinstance(inward, dict) else None
             if not isinstance(ref, str) or not re.fullmatch(r"[0-9]+", ref):
-                raise JiraUncertain("Jira blocking link evidence is incomplete")
+                return None
             try:
                 row = self.request(
                     "GET", "issue/" + ref, params={"fields": "issuetype,status,labels"}
                 )
-            except JiraUncertain:
-                raise JiraUncertain(f"Jira issue {ref} blocks it and could not be read") from None
+            except (JiraUncertain, JiraRefusal):
+                return None
             if (
                 not isinstance(row, dict)
                 or row.get("id") != ref
                 or not isinstance(row.get("key"), str)
                 or not isinstance(row.get("fields"), dict)
             ):
-                raise JiraUncertain(f"Jira issue {ref} blocks it and could not be read")
+                return None
             labels = row["fields"].get("labels") or []
             if not isinstance(labels, list) or not all(isinstance(x, str) for x in labels):
-                raise JiraUncertain("Jira blocking issue labels are incomplete")
+                return None
             found.append(
                 {
                     "key": row["key"],
@@ -675,18 +676,25 @@ class JiraCloudProvider:
         return found
 
     def described(self, reference):
-        """``read``'s answer: the item with its key, kind, category and blockers."""
+        """``read``'s answer: the item with its key, kind, category and blockers.
+
+        ``blocked_by`` is left out when the blockers can't be read, so a caller that
+        needs them fails closed while every other read still gets the item.
+        """
         row = self.raw_read(reference, links=True)
         self.evidence(row)
         result = self.item(row)
         fields = row["fields"]
-        return {
+        answer = {
             **result,
             "key": result["url"].rsplit("/", 1)[1],
             "kind": self.kind(fields),
             "category": category(fields),
-            "blocked_by": self.blockers(fields),
         }
+        blocked_by = self.blockers(fields)
+        if blocked_by is not None:
+            answer["blocked_by"] = blocked_by
+        return answer
 
     def find(self, correlation):
         rows, tokens, ids = [], set(), set()
