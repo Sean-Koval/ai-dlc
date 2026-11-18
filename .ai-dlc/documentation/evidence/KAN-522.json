@@ -1,0 +1,58 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "changes/KAN-522.fixed.md": "a3533e9345937eedc0062fcce188f4c1745ec5ea92e78ba29bbe60a124c94590"
+      },
+      "outcome": "updated",
+      "reason": "KAN-522: changelog fragment for the App token minted per run.",
+      "reviewer": "Claude (agent)",
+      "target": "changes/KAN-522.fixed.md"
+    },
+    {
+      "bound": {
+        "contracts/README.md": "26ee0e8e750807112bc9b49f5e0d2140c4f6b58d4f105c610ef50460611c2bce"
+      },
+      "outcome": "updated",
+      "reason": "KAN-522: the knowledge repository passes app-id and private-key; each run mints the installation token.",
+      "reviewer": "Claude (agent)",
+      "target": "contracts/README.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/architecture.md": "788b593066fcd5d1c9eb9ebbc3869971131d3ddb3ea3396bc8b9a6ea48ca8b55",
+        "docs/architecture.md": "099e45e56378bb4ea78edb3eec9e6a8ce7e7d60edd08d0b17aeeca9810351b82",
+        "src/ai_dlc/documentation/knowledge_customer.py": "da7e66096a5ccee00f9e6c995285eb9df88b74497493d2bab20391f28053efff"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-522: no package or entry point moves; only the customer caller template's credentials change.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        ".github/workflows/knowledge-merge.yml": "e63655f99a63d29a96f643491c8303b19a88660c755c2ead530a2face6ef1017",
+        "catalog:docs/design/local-and-shared-knowledge.md": "dda625604166b9fffe1120b9d4b69a9d919e36a1c66352d8de79c3d718083bab",
+        "docs/design/local-and-shared-knowledge.md": "e8dd0f2bf6317cfbd70f47861582982313eba6db6c85d28179926860b640ab9b",
+        "tests/test_knowledge_bundle.py": "0b19347d70bf85d1ab79780cbdbab0e657b2f02ffef44938ded7cc8872726f8b"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-522: the page covers render and record shape, not the numbering workflow's credentials, which contracts/README.md owns.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/local-and-shared-knowledge.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/runbooks/customer-knowledge.md": "d22c04b0b05bd35557a43b8dbeb426712090028b5182522da2bfc463ee5e88ac",
+        "docs/runbooks/customer-knowledge.md": "7dc9861b2f84be45de6f95a2b7476fd79f650c4f62b824b97322141fa7d5babc",
+        "src/ai_dlc/documentation/knowledge_customer.py": "da7e66096a5ccee00f9e6c995285eb9df88b74497493d2bab20391f28053efff",
+        "tests/test_knowledge_customer.py": "4d4b9949b0813a6a4ef7f8169b5db2349fb95b8f63f28e8e1e702c5ec095a1d2"
+      },
+      "outcome": "updated",
+      "reason": "KAN-522: a customer repository sets KNOWLEDGE_APP_ID and KNOWLEDGE_APP_PRIVATE_KEY for numbering.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/runbooks/customer-knowledge.md"
+    }
+  ],
+  "schema": 2
+}
