@@ -3,8 +3,8 @@
 ``number_records`` gives each record that still has a draft slug id the next
 ``DEC-``/``CONV-``/``LES-``/``ACT-``/``Q-``/``SRC-`` number for its type. The slug
 moves to ``aliases``, a file named after the slug is renamed, and every typed link,
-``sources`` entry and relative markdown link that pointed at the slug or its file is
-rewritten. ``index_records`` writes one Open Knowledge Format v0.2 section 8
+``sources`` entry (by id, or by path from the knowledge repository root) and relative
+markdown link that pointed at the slug or its file is rewritten. ``index_records`` writes one Open Knowledge Format v0.2 section 8
 ``index.md`` per directory; the root one carries ``okf_version: "0.2"``. Each index
 also derives ``superseded_by`` and ``retracted_by`` (KAN-479), so records are never
 edited to carry them; a retracted record is listed as retracted, not accepted. A
@@ -19,6 +19,7 @@ meant for CI on the default branch after a merge (the reusable workflow
 """
 
 import os
+import posixpath
 import re
 import tomllib
 from collections import defaultdict
@@ -238,10 +239,11 @@ def _new_path(item: _Record, number: str) -> Path:
 def _edits(scan: _Scan, plan: dict[_Record, str], renames: dict[Path, Path]) -> dict[Path, str]:
     """New text per file (keyed by its current path); files that do not change are absent."""
     numbers = {item.record.id: number for item, number in plan.items()}
+    paths = _moved_paths(scan.folder, renames)
     edits: dict[Path, str] = {}
     for item in scan.records:
         number = plan.get(item)
-        expected = _renumbered(item.data, numbers, number)
+        expected = _renumbered(item.data, numbers, number, paths)
         front = item.raw if expected == item.data else _front(item, expected, numbers, number)
         destination = renames.get(item.path, item.path)
         body = _relink(item.body, item.path, destination, renames)
@@ -256,7 +258,39 @@ def _edits(scan: _Scan, plan: dict[_Record, str], renames: dict[Path, Path]) -> 
     return edits
 
 
-def _renumbered(data: dict, numbers: dict[str, str], number: str | None) -> dict:
+def _repository(folder: Path) -> Path:
+    """The knowledge repository: the directory holding ``knowledge.toml``, up to the git root."""
+    for directory in (folder, *folder.parents):
+        if (directory / CONFIG).is_file():
+            return directory
+        if (directory / ".git").exists():
+            break
+    return folder
+
+
+def _moved_paths(folder: Path, renames: dict[Path, Path]) -> dict[str, str]:
+    """Renamed files as paths relative to the knowledge repository, as ``sources`` cite them."""
+    repo = _repository(folder)
+    return {
+        old.relative_to(repo).as_posix(): new.relative_to(repo).as_posix()
+        for old, new in renames.items()
+        if old != new
+    }
+
+
+def _resource(value: object, numbers: dict[str, str], paths: dict[str, str]) -> object:
+    if not isinstance(value, str):
+        return value
+    if value in numbers:
+        return numbers[value]
+    if "://" in value:
+        return value
+    return paths.get(posixpath.normpath(value.replace("\\", "/")), value)
+
+
+def _renumbered(
+    data: dict, numbers: dict[str, str], number: str | None, paths: dict[str, str]
+) -> dict:
     """The frontmatter mapping after numbering, built from parsed data."""
     result = dict(data)
     if number is not None:
@@ -273,9 +307,10 @@ def _renumbered(data: dict, numbers: dict[str, str], number: str | None) -> dict
     sources = []
     for entry in data.get("sources") or []:
         moved = dict(entry)
-        for key in ("id", "resource"):
-            if moved.get(key) in numbers:
-                moved[key] = numbers[moved[key]]
+        if moved.get("id") in numbers:
+            moved["id"] = numbers[moved["id"]]
+        if "resource" in moved:
+            moved["resource"] = _resource(moved["resource"], numbers, paths)
         sources.append(moved)
     result["sources"] = sources
     return result
@@ -288,6 +323,18 @@ def _front(item: _Record, expected: dict, numbers: dict[str, str], number: str |
         token = re.escape(slug)
         nested = rf"((?:target|resource|id):[ \t]*)(['\"]?){token}\2(?=[ \t]*(?:[,}}\]#]|$))"
         raw = re.sub(nested, rf"\g<1>\g<2>{new}\g<2>", raw, flags=re.MULTILINE)
+    old_sources = item.data.get("sources") or []
+    for before, after in zip(old_sources, expected.get("sources") or [], strict=False):
+        old, new = before.get("resource"), after.get("resource")
+        if isinstance(old, str) and isinstance(new, str) and old != new:
+            token = re.escape(old)
+            nested = rf"(resource:[ \t]*)(['\"]?){token}\2(?=[ \t]*(?:[,}}\]#]|$))"
+            raw = re.sub(
+                nested,
+                lambda m, new=new: f"{m.group(1)}{m.group(2)}{new}{m.group(2)}",
+                raw,
+                flags=re.MULTILINE,
+            )
     if number is not None:
         raw = _alias(raw, item.record.id)
     try:
