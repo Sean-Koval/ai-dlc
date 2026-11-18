@@ -59,10 +59,10 @@
     {
       "bound": {
         "catalog:docs/workflows/get-started.md": "b3cdcadc535e0e825dfe2837433f1b4ef45551430ab207c485ef7dd601bf992e",
-        "docs/workflows/get-started.md": "d4fd9cf95205f9aa172df40fd5cf61aac9b1ba491b394774c6051cf6d06f8b08"
+        "docs/workflows/get-started.md": "21887eae0c75de358f5e2322d0af6b93b2f7790e75757ae4eca07494dee0b52e"
       },
       "outcome": "updated",
-      "reason": "Documents the no-mise route (uv sync --locked, uv run ai-dlc) and the proxy settings mise and uv read.",
+      "reason": "Documents the no-mise route (uv sync --locked, uv run ai-dlc) and the proxy settings mise and uv read; re-recorded after merging main added the knowledge install link.",
       "reviewer": "Claude (agent)",
       "target": "docs/workflows/get-started.md"
     }
