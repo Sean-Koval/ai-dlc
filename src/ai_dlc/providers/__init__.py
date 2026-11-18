@@ -250,6 +250,7 @@ class Registry:
             provider = GitKnowledge(
                 cfg,
                 environ=self.environ,
+                base=self.root,
                 scm=lambda root, repository, base: self.scm_for(root, repository, base),
             )
         elif kind == "confluence-cloud":

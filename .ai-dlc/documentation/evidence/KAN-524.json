@@ -1,0 +1,83 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "changes/KAN-524.security.md": "ebc9d925e854cc443b8040a052c2fd192f31f3a63e4f5d8028a9a9475b44da25"
+      },
+      "outcome": "updated",
+      "reason": "KAN-524: changelog fragment for customer-record reads, the whole-repository boundary check and relative location.",
+      "reviewer": "Claude (agent)",
+      "target": "changes/KAN-524.security.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/architecture.md": "788b593066fcd5d1c9eb9ebbc3869971131d3ddb3ea3396bc8b9a6ea48ca8b55",
+        "docs/architecture.md": "099e45e56378bb4ea78edb3eec9e6a8ce7e7d60edd08d0b17aeeca9810351b82",
+        "src/ai_dlc/documentation/knowledge.py": "2d50da6198ea36b905131aee8bacb57d0283ba23811e25cd777f671b51a6d2f2",
+        "src/ai_dlc/documentation/knowledge_check.py": "e752fb833d1dd68824e28549977c1507ccd6e2646c8fba015e2346090cd8f137",
+        "src/ai_dlc/documentation/knowledge_service.py": "6ea6a740765adfd74ee911e2dd6566ff84807bdae8f186bff2b3168d4e288e7c",
+        "src/ai_dlc/providers/__init__.py": "a6c07c2e411cbc5901bad35ef376f6280949584d6ba6508b5ffe3e513eb64c02",
+        "src/ai_dlc/providers/git_knowledge.py": "f1bdeede86a27343913605484d173a9d3cfefa65f6fffa1dfde7f9dd7141b72c"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-524: no package or entry point moves; the providers keep their places.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/design/local-and-shared-knowledge.md": "dda625604166b9fffe1120b9d4b69a9d919e36a1c66352d8de79c3d718083bab",
+        "docs/design/local-and-shared-knowledge.md": "e8dd0f2bf6317cfbd70f47861582982313eba6db6c85d28179926860b640ab9b",
+        "src/ai_dlc/documentation/knowledge.py": "2d50da6198ea36b905131aee8bacb57d0283ba23811e25cd777f671b51a6d2f2",
+        "src/ai_dlc/documentation/knowledge_check.py": "e752fb833d1dd68824e28549977c1507ccd6e2646c8fba015e2346090cd8f137",
+        "tests/test_knowledge_check.py": "b187523bd21e566e6e1f2dc82afae69c6bf5f16805b7d1f3392c8712377a9cc1",
+        "tests/test_knowledge_render.py": "c4eff1f7226629aad3f6c7632455f6390b8400d3a80f66e6d4a8ec2812e2f0bd"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-524: the page shows an absolute URL location and does not describe the customer boundary, which the customer runbook and ADR 0007 own.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/design/local-and-shared-knowledge.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/runbooks/customer-knowledge.md": "d22c04b0b05bd35557a43b8dbeb426712090028b5182522da2bfc463ee5e88ac",
+        "docs/runbooks/customer-knowledge.md": "05e110f8a6f425e361e1253b5d853210e7cbaff7a68ea680c6a5179f73758ff3"
+      },
+      "outcome": "updated",
+      "reason": "KAN-524: check fails a customer record outside [check] roots, and reads refuse one outside a customer repository.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/runbooks/customer-knowledge.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/how-it-fits.md": "0032744a2746dd1b4e47f09fc1cc9c4d6f8c8cfe90990b464f56a0abc1d1ac10",
+        "docs/workflows/how-it-fits.md": "b865dfd0d040309db43d27b58cb93a69d0e94a72bcf9b6ff760bcb0ed39ea473",
+        "src/ai_dlc/providers/__init__.py": "a6c07c2e411cbc5901bad35ef376f6280949584d6ba6508b5ffe3e513eb64c02",
+        "src/ai_dlc/providers/git_knowledge.py": "f1bdeede86a27343913605484d173a9d3cfefa65f6fffa1dfde7f9dd7141b72c"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-524: the knowledge role's place in the flow is unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/how-it-fits.md"
+    },
+    {
+      "bound": {
+        "tests/test_git_knowledge.py": "1498e7a5e7badb950a42fb958d9ab52c8f012d621dea5743289a41443cc13661"
+      },
+      "outcome": "updated",
+      "reason": "KAN-524: team repositories refuse customer records; a declared customer repository returns them.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/test_git_knowledge.py"
+    },
+    {
+      "bound": {
+        "tests/test_knowledge_customer_reads.py": "9f3fb473ba69f5820d615bf365c5d30250823b542a1cae34fd1bf971a59cf733"
+      },
+      "outcome": "updated",
+      "reason": "KAN-524: negative tests for get, search, MCP, a malformed declaration and relative locations.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/test_knowledge_customer_reads.py"
+    }
+  ],
+  "schema": 2
+}

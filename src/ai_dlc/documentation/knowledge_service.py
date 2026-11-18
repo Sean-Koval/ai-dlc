@@ -131,7 +131,7 @@ def _records_store(
     ``KNOWLEDGE_REPO`` is required; an executable records provider is left as selected.
     """
     from ai_dlc.providers import provider_kind
-    from ai_dlc.providers.git_knowledge import LOCATION_ENV
+    from ai_dlc.providers.git_knowledge import _URL, LOCATION_ENV
 
     kind = provider_kind(config, selected)
     if kind == "git" or (selected and kind != "obsidian"):
@@ -143,6 +143,10 @@ def _records_store(
             "roles.knowledge to a git provider with a location; records are never read "
             "from the current checkout"
         )
+    if not _URL.match(location):
+        # The variable names a path as the shell sees it; only a configured location is
+        # relative to the configuration (KAN-524).
+        location = str(Path(location).expanduser().resolve())
     providers = dict(config.get("providers") or {})
     providers[REPO_PROVIDER] = {"kind": "git", "location": location}
     return {**config, "providers": providers}, REPO_PROVIDER
