@@ -430,6 +430,16 @@ def test_a_customer_record_stays_out_of_a_wiki_not_declared_for_it(store):
     toml = repo / "knowledge.toml"
     commit(repo, "knowledge.toml", toml.read_text() + 'project = "acme"\n')
     acme = FakeConfluence()
+    renderer(store, acme).render(store["base"])
+    # A team repository's wiki of acme still shows no customer record (KAN-524) ...
+    assert acme.by_key("acme-stray") and "acme-gotcha" not in bodies(acme)
+    # ... acme's own customer repository's wiki does.
+    commit(
+        repo,
+        "knowledge.toml",
+        toml.read_text() + '[repo]\nboundary = "customer"\nproject = "acme"\n',
+    )
+    acme = FakeConfluence()
     result = renderer(store, acme).render(store["base"])
     assert acme.by_key("acme-gotcha") and acme.by_key("acme-stray")
     assert "beta-gotcha" not in bodies(acme)

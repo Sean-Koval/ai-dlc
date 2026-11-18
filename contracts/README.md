@@ -16,6 +16,10 @@ knowledge-note format ([ADR 0004](../docs/decisions/0004-knowledge-system-scope.
 Records are Open Knowledge Format v0.2 documents, and their field names follow OKF's.
 The schema does not assert `format`. Consumers that use only the schema must stringify
 YAML dates and enable a format checker. `ai-dlc knowledge check` is the authority.
+`knowledge-record.versions.toml` publishes the schema's SHA-256 per format version and is
+edited by hand and append-only against the base branch. Any schema change bumps `FORMAT_VERSION` and adds a version there;
+`scripts/check_generated.py` fails otherwise. A vendored copy is current only when its
+canonical hash equals the `sha256` of the version it claims (KAN-504).
 `capture-run.schema.json` is one capture batch run (KAN-458): what it pulled, filtered,
 extracted and spent. The batch writes one per line of its run log, kept where it runs.
 It is generated from `ai_dlc.documentation.knowledge_stats.CaptureRun`;
@@ -35,7 +39,10 @@ characters), its `speaker`, and `at` (`HH:MM:SS` or a time) or a `permalink`. Ji
 Confluence and ADR sources stay re-fetchable, so a quote there is optional.
 A Source record may list its `participants`.
 `--base REF` also refuses in-place edits to decisions accepted at the merge base and
-deletion of source records. Knowledge repositories run it through `.pre-commit-hooks.yaml` and
+deletion of source records. The one exception (KAN-526): a "Not stated in the source."
+placeholder under Context or Options may be replaced with text that carries a source quote
+(a `>` blockquote or a passage in double quotes) and a link. Every other change to the body,
+the decision, its decider or its status is still refused. Knowledge repositories run it through `.pre-commit-hooks.yaml` and
 the reusable `.github/workflows/knowledge-check.yml`.
 The knowledge role must answer `get {id}` (a record by id or alias, with its body)
 and `search {type, scope, labels, status, text}` (headers only unless `text` is set;

@@ -23,7 +23,9 @@ A decision accepted by mistake is never edited: a later decision ``retracts`` it
 says why (KAN-479). The link must come from a decision and name an accepted decision.
 
 With ``base`` (CI mode) it also refuses in-place edits of decisions that were accepted
-at the merge base. The CLI and the MCP tool both call :func:`check_records`.
+at the merge base. One body edit is allowed (KAN-526): a "Not stated in the source."
+placeholder under Context or Options may be replaced with text that quotes its source
+and links to it. The CLI and the MCP tool both call :func:`check_records`.
 
 Records with ``boundary: customer`` never leave their project (KAN-465). They must sit
 under ``projects/<name>/``, only customer records of that project may link to them,
@@ -40,6 +42,7 @@ repository, no path in ``sources`` or the body leaves it, and a ``[wiki]`` names
 same project. :func:`repo_boundary` reads the declaration.
 """
 
+import os
 import posixpath
 import re
 import tomllib
@@ -66,6 +69,20 @@ HEADING = re.compile(r"^##[ \t]+(.+?)[ \t]*#*[ \t]*$")
 # and numbering at merge (slug id becomes PREFIX-NNNN and the slug moves to aliases;
 # links and sources that named the slug name the number).
 SUPERSEDE_KEYS = ("status", "valid_to")
+# The one body edit of an accepted decision (KAN-526): a placeholder that backfill wrote
+# under Context or Options gives way to text that quotes the source and links to it.
+PLACEHOLDER = "Not stated in the source."
+FILLABLE = ("context", "options")
+# A source quote: a Markdown blockquote, or a passage in straight or curly double quotes,
+# holding words once link markup is gone (a link title, an href or a URL is not a quote).
+_SOURCE_QUOTE = re.compile(
+    r'^[ \t]*>[^\n]*?[^\W_]|"[^"\n]*?[^\W_][^"\n]*"|“[^”\n]*?[^\W_][^”\n]*”', re.MULTILINE
+)
+_LINK_MARKUP = re.compile(
+    r"!?\[[^\]\n]*\]\([^)\n]*\)|^[ \t]*\[[^\]\n]+\]:[^\n]*|<[^>\n]*>|\bhttps?://\S+",
+    re.MULTILINE,
+)
+_BARE_URL = re.compile(r"\bhttps?://\S")
 # Customer records live in projects/<name>/; a quote is this many words in a row.
 PROJECTS = "projects"
 QUOTE_WORDS = 8
@@ -146,6 +163,7 @@ def check_records(
     _check_folders(bundle, index)
     _check_boundary(bundle, index)
     _check_customer_repo(bundle, index, settings)
+    _check_unread_boundary(bundle, folder, scopes, settings)
     if base:
         _check_against_base(bundle, folder, settings, scopes, base)
     for found in (bundle.failures, bundle.warnings):
@@ -985,6 +1003,83 @@ def _check_customer_repo(
                 break
 
 
+def _check_unread_boundary(
+    bundle: _Bundle, folder: Path, scopes: list[Path], settings: tuple[Path, str, dict] | None
+) -> None:
+    """The customer boundary holds for every file of the repository, not only the roots.
+
+    ``[check] roots`` limits which records are checked in full; a ``boundary: customer``
+    header outside them still fails in a repository that is not a customer repository,
+    and in one of another project (KAN-524). A customer repository's raw captures (its
+    top-level ``inbox/``) stay outside ``projects/<name>/``.
+    """
+    if settings is None:
+        return
+    project, _problems = repo_boundary(settings[2])
+    declared = settings[2].get(REPO) is not None
+    # The repository holding knowledge.toml, or the folder when the file is elsewhere.
+    for path in _markdown(bundle.repo.resolve()):
+        if path.name in SKIPPED or path.name in RESERVED:
+            continue
+        if any(path.is_relative_to(scope) for scope in scopes):
+            continue  # read as a record above
+        try:
+            data, _raw, _body = split(path.read_text(encoding="utf-8", errors="replace"))
+        except ValueError:
+            continue
+        if not isinstance(data, Mapping) or not is_customer(data):
+            continue
+        shown = Path(os.path.relpath(path, folder)).as_posix()
+        if not declared:
+            bundle.fail(shown, "/boundary", TEAM_REPO_CUSTOMER)
+        elif project is not None and data.get("project") != project:
+            bundle.fail(
+                shown,
+                "/project",
+                f"every record of this customer repository carries project: {project}",
+            )
+
+
+def customer_repository(root: Path | str) -> str | None:
+    """The project a knowledge repository at ``root`` declares itself a customer repository of.
+
+    ``None`` when ``root/knowledge.toml`` is missing, unreadable or declares no valid
+    ``[repo] boundary = "customer"``: reads then return no customer record (KAN-524).
+    """
+    path = Path(root) / CONFIG
+    try:
+        parsed = tomllib.loads(path.read_text(encoding="utf-8"))
+    except (OSError, tomllib.TOMLDecodeError, UnicodeDecodeError):
+        return None
+    return repo_boundary(parsed)[0]
+
+
+CUSTOMER_READ = (
+    "boundary: customer records are read only from their customer's own repository, whose "
+    'knowledge.toml declares [repo] boundary = "customer"; this repository does not'
+)
+
+
+def readable_in[Entry: Mapping[str, Any]](
+    root: Path | str, entries: Iterable[Entry], project: str | None = None
+) -> tuple[list[Entry], int]:
+    """``(entries a read of project may return, customer records refused)`` (KAN-524).
+
+    In a declared customer repository this is :func:`team_inputs`. Anywhere else no
+    customer record is returned; the count is of those the caller's ``project`` would
+    otherwise see, so a view of another project learns nothing about them.
+    """
+    visible = team_inputs(entries, project)
+    kept = [
+        entry
+        for entry in visible
+        if not is_customer(entry.get("record", entry.get("header")) or {})
+    ]
+    if len(kept) == len(visible) or customer_repository(root) is not None:
+        return visible, 0
+    return kept, len(visible) - len(kept)
+
+
 def _names_a_record(value: str) -> bool:
     """A ``sources`` id shaped like a record id or a draft slug, not a work item or key."""
     return bool(NUMBERED.match(value)) or (
@@ -1216,13 +1311,34 @@ def _compare_accepted(
                 f"accepted decision {name} is edited in place; record the change as a new "
                 "decision that supersedes it",
             )
-    if old_body.strip() != new_body.strip():
+    if old_body.strip() == new_body.strip():
+        return
+    fills = filled_placeholders(old_body, new_body)
+    if fills is None:
         bundle.fail(
             shown,
             "",
             f"accepted decision {name} has its body edited; record the change as a new "
-            "decision that supersedes it",
+            f'decision that supersedes it (only a "{PLACEHOLDER}" placeholder under Context '
+            "or Options may be replaced, with a source quote and a link)",
         )
+        return
+    for heading, text in fills:
+        missing = [
+            what
+            for what, present in (
+                ("source quote (a > blockquote or a passage in double quotes)", _quotes(text)),
+                ("link to the source (a Markdown link or URL)", _links(text)),
+            )
+            if not present
+        ]
+        if missing:
+            bundle.fail(
+                shown,
+                "",
+                f'accepted decision {name}: the text replacing "{PLACEHOLDER}" under '
+                f"{heading} has no {' and no '.join(missing)}",
+            )
 
 
 def _aliases(bundle: _Bundle) -> dict[str, set[str]]:
@@ -1300,3 +1416,87 @@ def _allowed_change(
             and old in (after.get("aliases") or [])
         )
     return False
+
+
+# --- The placeholder fill (KAN-526) --------------------------------------------------
+
+
+def _is_placeholder(line: str) -> bool:
+    text = line.strip().strip("*_").strip().rstrip(".").casefold()
+    return text == PLACEHOLDER.rstrip(".").casefold()
+
+
+def _sections(body: str) -> list[tuple[str | None, str]]:
+    """``(heading, content)`` per level-two section; the text before the first is ``None``."""
+    found: list[tuple[str | None, list[str]]] = [(None, [])]
+    fenced = False
+    for line in body.splitlines():
+        if line.lstrip().startswith(("```", "~~~")):
+            fenced = not fenced
+        match = None if fenced else HEADING.match(line)
+        if match:
+            found.append((match.group(1), []))
+        else:
+            found[-1][1].append(line)
+    return [(heading, "\n".join(lines).strip()) for heading, lines in found]
+
+
+def _fillable(heading: str | None) -> bool:
+    name = (heading or "").strip().casefold()
+    return any(name == item or name.startswith(f"{item} ") for item in FILLABLE)
+
+
+def _replacement(old: str, new: str) -> str | None:
+    """The text that took a placeholder line's place in ``old``, if that is the only change."""
+    lines = old.splitlines()
+    fenced = False
+    for number, line in enumerate(lines):
+        if line.lstrip().startswith(("```", "~~~")):
+            fenced = not fenced
+        if fenced or not _is_placeholder(line):
+            continue
+        before = "\n".join(lines[:number]).strip()
+        after = "\n".join(lines[number + 1 :]).strip()
+        if not new.startswith(before) or not new.endswith(after):
+            continue
+        end = len(new) - len(after)
+        if end < len(before):
+            continue
+        # The text around the placeholder keeps its lines whole: no edit hides in them.
+        if (before and not new[len(before) : end].startswith("\n")) or (
+            after and not new[len(before) : end].endswith("\n")
+        ):
+            continue
+        middle = new[len(before) : end].strip()
+        if middle and not all(_is_placeholder(item) for item in middle.splitlines() if item):
+            return middle
+    return None
+
+
+def filled_placeholders(old_body: str, new_body: str) -> list[tuple[str, str]] | None:
+    """The ``(heading, text)`` that replaced placeholders, or ``None`` for any other edit.
+
+    The two bodies must have the same sections in the same order. Every section is
+    unchanged except Context or Options sections whose only change is a placeholder line
+    (:data:`PLACEHOLDER`) replaced by new text.
+    """
+    before, after = _sections(old_body), _sections(new_body)
+    if [heading for heading, _text in before] != [heading for heading, _text in after]:
+        return None
+    fills = []
+    for (heading, old), (_same, new) in zip(before, after, strict=True):
+        if old == new:
+            continue
+        text = _replacement(old, new) if _fillable(heading) else None
+        if heading is None or text is None:
+            return None
+        fills.append((heading, text))
+    return fills or None
+
+
+def _quotes(text: str) -> bool:
+    return bool(_SOURCE_QUOTE.search(_LINK_MARKUP.sub(" ", text)))
+
+
+def _links(text: str) -> bool:
+    return bool(_body_links(text)) or bool(_BARE_URL.search(text))
