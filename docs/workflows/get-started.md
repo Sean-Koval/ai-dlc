@@ -21,10 +21,10 @@ git commit -qm "chore: initialize with ai-dlc"
 ai-dlc project check --required
 ```
 
-Bootstrap installs pinned uv, Python and mise, prepares the checkout and prints
-the directories to add to `PATH`; no preinstalled Python or Node is needed. When
-the global `ai-dlc` alias belongs to another checkout, use the checkout-specific
-executable it prints.
+Bootstrap installs pinned uv, Python and mise and prints the directories to add
+to `PATH`. Then `ai-dlc doctor`, run outside a repository, checks the machine and
+names each fix. If another checkout owns the global alias, use the executable
+bootstrap prints.
 
 If a work laptop or proxy blocks mise, run `uv sync --locked` in the checkout and
 use `uv run ai-dlc` instead. Without mise, `project setup` and `project check`

@@ -208,6 +208,38 @@ class Item(BaseModel):
     state: str = Field(min_length=1, description=ITEM_STATE)
 
 
+# Where an item sits in its tracker's lifecycle, as the tracker groups its own statuses.
+CATEGORY = Literal["todo", "in_progress", "done"]
+# What an item is: ordinary work, an epic that groups work, or a decision for a person.
+KIND = Literal["work", "epic", "decision"]
+
+
+class Blocker(BaseModel):
+    """An item that blocks the one read (Jira: the inward issue of a Blocks link)."""
+
+    model_config = ConfigDict(extra="allow")
+    key: str = Field(min_length=1)
+    url: str | None = None
+    category: CATEGORY
+    kind: KIND
+    labels: list[str]
+
+
+class ReadItem(Item):
+    """``read``'s item. A provider that knows them adds its kind and its blockers.
+
+    ``blocked_by`` absent means the provider cannot tell; an empty list means nothing
+    blocks the item.
+    """
+
+    key: str | None = Field(default=None, min_length=1, description="The tracker's own key.")
+    kind: KIND | None = None
+    category: CATEGORY | None = Field(
+        default=None, description="todo, in_progress or done, as the tracker groups its statuses."
+    )
+    blocked_by: list[Blocker] | None = None
+
+
 class Found(BaseModel):
     items: list[Item]
 
@@ -502,7 +534,7 @@ RESPONSES = {
     "create": Item,
     "decide": Item,
     "find": Found,
-    "read": Item,
+    "read": ReadItem,
     "link": Item,
     "transition": Item,
     "update": Item,
@@ -584,7 +616,9 @@ def validate_request(operation, payload):
 
 
 def validate_response(operation, result):
-    return RESPONSES[operation].model_validate(result).model_dump(by_alias=True)
+    model = RESPONSES[operation].model_validate(result)
+    # A read item's optional fields stay absent when the provider did not give them.
+    return model.model_dump(by_alias=True, exclude_unset=operation == "read")
 
 
 def manifest():
