@@ -19,6 +19,10 @@ CODEOWNERS, a README, the check workflow, `projects/acme/` and `inbox/`. It sets
 Its CI pins ai-dlc's workflows to the installed release tag. Pass `--ai-dlc-ref`
 with a later tag or a commit to change it; never a branch. Without it, init warns.
 
+Numbering at merge needs a GitHub App on the repository. Set its ID as the
+`KNOWLEDGE_APP_ID` variable and its private key as the `KNOWLEDGE_APP_PRIVATE_KEY`
+secret. Each run mints a short-lived token from them; without them, numbering skips.
+
 Host it where the contract says: a private repository on the company's GitHub, or
 the customer's own systems. Add every customer name, host and identifier you know
 to `deny-terms.txt`, one per line.
