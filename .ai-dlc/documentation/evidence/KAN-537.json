@@ -32,7 +32,7 @@
         "catalog:docs/architecture.md": "788b593066fcd5d1c9eb9ebbc3869971131d3ddb3ea3396bc8b9a6ea48ca8b55",
         "docs/architecture.md": "099e45e56378bb4ea78edb3eec9e6a8ce7e7d60edd08d0b17aeeca9810351b82",
         "src/ai_dlc/contracts.py": "229437df9b4e9d867b4c7571cc706a16f7f99cdd90bcbd4ed2d58c1366a1beda",
-        "src/ai_dlc/mcp_server.py": "45f259eea75875715cd3ecfdb3a4951b381a65c3b454c85fa2507f20eadc191b",
+        "src/ai_dlc/mcp_server.py": "8460283fcd98c9140261af1554f29c1bf58d560669ebefc30b3f4e512ef658a5",
         "src/ai_dlc/providers/github_issues.py": "b774272a472aecfa9fdbd8eeea2de50a85ca41e27363f8428b4692f8067adf6b",
         "src/ai_dlc/providers/jira_cloud.py": "d7c84c3514fc5a157b3ef1b1814a5d14f936b6bbd59641b752599892a8c1d529"
       },
@@ -56,7 +56,7 @@
       "bound": {
         "catalog:docs/workflows/how-it-fits.md": "0032744a2746dd1b4e47f09fc1cc9c4d6f8c8cfe90990b464f56a0abc1d1ac10",
         "docs/workflows/how-it-fits.md": "b865dfd0d040309db43d27b58cb93a69d0e94a72bcf9b6ff760bcb0ed39ea473",
-        "src/ai_dlc/mcp_server.py": "45f259eea75875715cd3ecfdb3a4951b381a65c3b454c85fa2507f20eadc191b",
+        "src/ai_dlc/mcp_server.py": "8460283fcd98c9140261af1554f29c1bf58d560669ebefc30b3f4e512ef658a5",
         "src/ai_dlc/providers/github_issues.py": "b774272a472aecfa9fdbd8eeea2de50a85ca41e27363f8428b4692f8067adf6b",
         "src/ai_dlc/providers/jira_cloud.py": "d7c84c3514fc5a157b3ef1b1814a5d14f936b6bbd59641b752599892a8c1d529"
       },
@@ -69,7 +69,7 @@
       "bound": {
         "catalog:docs/workflows/tool-map.md": "d11334cb57c288aab7b01226790b7cc268a28991b3de5f97a98b9818d80be19e",
         "docs/workflows/tool-map.md": "7919f8e6c5f6a0e8cc3f372da81498bcbefcdebbe4cb7b58f4f19d83fd47a181",
-        "src/ai_dlc/mcp_server.py": "45f259eea75875715cd3ecfdb3a4951b381a65c3b454c85fa2507f20eadc191b"
+        "src/ai_dlc/mcp_server.py": "8460283fcd98c9140261af1554f29c1bf58d560669ebefc30b3f4e512ef658a5"
       },
       "outcome": "reviewed-no-change",
       "reason": "KAN-537: no tool is added or renamed; tracker_get's docstring describes the new fields.",
