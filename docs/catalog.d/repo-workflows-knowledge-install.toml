@@ -1,0 +1,16 @@
+schema = 1
+
+[[documents]]
+id = "repo-workflows-knowledge-install"
+path = "docs/workflows/knowledge-install.md"
+kind = "reference"
+owner = "repository-maintainers"
+status = "draft"
+nav = "Start"
+title = "Team knowledge install"
+code_paths = [
+    "src/ai_dlc/setup/knowledge_install.py",
+    "src/ai_dlc/setup/knowledge_doctor.py",
+    "scripts/bootstrap.sh",
+]
+verification_paths = ["tests/test_knowledge_install.py"]
