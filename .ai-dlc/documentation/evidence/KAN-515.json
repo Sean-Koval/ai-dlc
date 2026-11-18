@@ -50,11 +50,10 @@
         "catalog:docs/architecture.md": "788b593066fcd5d1c9eb9ebbc3869971131d3ddb3ea3396bc8b9a6ea48ca8b55",
         "docs/architecture.md": "099e45e56378bb4ea78edb3eec9e6a8ce7e7d60edd08d0b17aeeca9810351b82",
         "scripts/build_contracts.py": "0d4c38f696626068f5d3c685442b4e6844151929d69021431cd056f243473f6c",
-        "src/ai_dlc/cli.py": "3132318cf0148589161699dcfa0408b5034108ad90fc54186d32727b80e5337b",
+        "src/ai_dlc/cli.py": "431654cc3367a29a7ba4d2213b313c642b74142983efe24ccd6da359fa1d5666",
         "src/ai_dlc/contracts.py": "a6d5dcb2651e4af8a931323626e8de3680e47e1e21cb8396a4abcb8ee5fb1454",
         "src/ai_dlc/documentation/knowledge_stats.py": "1d74e31f01d781b47d56a8e5abcf7eec269c97fe8cfec3ba9318f6f8f25de79a",
         "src/ai_dlc/mcp_server.py": "546b0e8310a635ab075fe7c6376c4585915d94e7fbd508a0ccd0e1181c13844c",
-        "src/ai_dlc/providers/github_issues.py": "b774272a472aecfa9fdbd8eeea2de50a85ca41e27363f8428b4692f8067adf6b",
         "src/ai_dlc/providers/jira_cloud.py": "beb4c1e1f88765543136fd09cb652bac90acd549b71eb265fe2be6bd44a1483b",
         "src/ai_dlc/providers/scm.py": "0097929effccfc08a7e5b2c4841b85eaac52feccb64ecda9a99915a707b63b9b"
       },
@@ -77,7 +76,7 @@
       "bound": {
         "catalog:docs/development-workflow.md": "0fba88526a61571ce49e91b2159325061a7c54ba5466e651565eabb2f910e7c6",
         "docs/development-workflow.md": "fd724d20f13622d81235c1d718d336bff3e6364a92edf48a33051df19c5acb97",
-        "src/ai_dlc/cli.py": "3132318cf0148589161699dcfa0408b5034108ad90fc54186d32727b80e5337b"
+        "src/ai_dlc/cli.py": "431654cc3367a29a7ba4d2213b313c642b74142983efe24ccd6da359fa1d5666"
       },
       "outcome": "reviewed-no-change",
       "reason": "KAN-515: the workflow is unchanged; only knowledge stats gains an option.",
@@ -88,7 +87,7 @@
       "bound": {
         "catalog:docs/release-verification.md": "972bf86b6da5f20b3d01762982880533ba0c99b22933aa95273590923721dad0",
         "docs/release-verification.md": "a18e7b0bef6dc55ebc544ac304a01c8ca7d59c9dde46127f2acc44802e8b9751",
-        "src/ai_dlc/cli.py": "3132318cf0148589161699dcfa0408b5034108ad90fc54186d32727b80e5337b"
+        "src/ai_dlc/cli.py": "431654cc3367a29a7ba4d2213b313c642b74142983efe24ccd6da359fa1d5666"
       },
       "outcome": "reviewed-no-change",
       "reason": "KAN-515: no release gate changes.",
@@ -100,7 +99,6 @@
         "catalog:docs/workflows/how-it-fits.md": "0032744a2746dd1b4e47f09fc1cc9c4d6f8c8cfe90990b464f56a0abc1d1ac10",
         "docs/workflows/how-it-fits.md": "b865dfd0d040309db43d27b58cb93a69d0e94a72bcf9b6ff760bcb0ed39ea473",
         "src/ai_dlc/mcp_server.py": "546b0e8310a635ab075fe7c6376c4585915d94e7fbd508a0ccd0e1181c13844c",
-        "src/ai_dlc/providers/github_issues.py": "b774272a472aecfa9fdbd8eeea2de50a85ca41e27363f8428b4692f8067adf6b",
         "src/ai_dlc/providers/jira_cloud.py": "beb4c1e1f88765543136fd09cb652bac90acd549b71eb265fe2be6bd44a1483b",
         "src/ai_dlc/providers/scm.py": "0097929effccfc08a7e5b2c4841b85eaac52feccb64ecda9a99915a707b63b9b"
       },
@@ -113,7 +111,7 @@
       "bound": {
         "catalog:docs/workflows/tool-map.md": "d11334cb57c288aab7b01226790b7cc268a28991b3de5f97a98b9818d80be19e",
         "docs/workflows/tool-map.md": "7919f8e6c5f6a0e8cc3f372da81498bcbefcdebbe4cb7b58f4f19d83fd47a181",
-        "src/ai_dlc/cli.py": "3132318cf0148589161699dcfa0408b5034108ad90fc54186d32727b80e5337b",
+        "src/ai_dlc/cli.py": "431654cc3367a29a7ba4d2213b313c642b74142983efe24ccd6da359fa1d5666",
         "src/ai_dlc/mcp_server.py": "546b0e8310a635ab075fe7c6376c4585915d94e7fbd508a0ccd0e1181c13844c"
       },
       "outcome": "reviewed-no-change",
@@ -124,8 +122,8 @@
     {
       "bound": {
         "catalog:docs/workflows/work-computer-setup.md": "62d0a76f141100f0e8d2219cf5e7b398c0530796f3a7fa2ae95348450d0bdbb5",
-        "docs/workflows/work-computer-setup.md": "6a6b849511affc491b227896981914c1b8f021c6e3541250c1dad554d75a5444",
-        "src/ai_dlc/cli.py": "3132318cf0148589161699dcfa0408b5034108ad90fc54186d32727b80e5337b"
+        "docs/workflows/work-computer-setup.md": "2eaa057e6ca816fb09b0773e1f9fd4b56a20f5adb791770c6cd467ccc76a1a43",
+        "src/ai_dlc/cli.py": "431654cc3367a29a7ba4d2213b313c642b74142983efe24ccd6da359fa1d5666"
       },
       "outcome": "reviewed-no-change",
       "reason": "KAN-515: setup is unchanged.",
