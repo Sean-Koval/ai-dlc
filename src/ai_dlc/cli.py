@@ -1786,10 +1786,14 @@ def knowledge_stats(
         Path | None,
         typer.Option("--log", help="capture batch's run log (.jsonl, .json or folder)"),
     ] = None,
+    usage_log: Annotated[
+        Path | None,
+        typer.Option("--usage-log", help="session usage log (.jsonl), for cost per PR"),
+    ] = None,
     report: Annotated[Path | None, typer.Option("--report", help="write the Markdown here")] = None,
     json_output: Annotated[bool, typer.Option("--json")] = False,
 ):
-    """Measure the 1.0 outcomes: capture, review, agent loop and health; read-only.
+    """Measure the 1.0 outcomes: capture, review, agent loop, health and delivery; read-only.
 
     Reads git, the scm and tracker roles, and the capture run log given with ``--log``
     (kept where the batch runs, not in git). Without it, or without a role, those
@@ -1806,7 +1810,9 @@ def knowledge_stats(
         # one is an error to fix, not a reason to report nothing.
         config = config_for(root) if (root / "ai-dlc.toml").is_file() else None
         wired = measure.from_roles(config, root, agent_repositories=agent_repositories or ())
-        result = measure.stats(records, moment, project=project, log=log, **wired)
+        result = measure.stats(
+            records, moment, project=project, log=log, usage_log=usage_log, **wired
+        )
         text = "\n".join(measure.report(result)) + "\n"
         if report is not None:
             report.parent.mkdir(parents=True, exist_ok=True)

@@ -380,6 +380,15 @@ class PullRequestSummary(BaseModel):
         default="none",
         description="combined checks on the earliest pull request commit that has any",
     )
+    labels: list[str] = Field(default_factory=list)
+    ready_at: AwareDatetime | None = Field(
+        default=None, description="when it was marked ready for review; null: never a draft"
+    )
+    first_review_at: AwareDatetime | None = None
+    first_approval_at: AwareDatetime | None = None
+    commits_after_first_review: int | None = Field(
+        default=None, ge=0, description="commits pushed after the first review; null: unknown"
+    )
 
 
 class PullRequestList(BaseModel):

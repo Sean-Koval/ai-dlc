@@ -3086,6 +3086,20 @@
                 "default": null,
                 "title": "Closed At"
               },
+              "commits_after_first_review": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "commits pushed after the first review; null: unknown",
+                "title": "Commits After First Review"
+              },
               "created_at": {
                 "format": "date-time",
                 "title": "Created At",
@@ -3098,6 +3112,19 @@
                 },
                 "title": "Files",
                 "type": "array"
+              },
+              "first_approval_at": {
+                "anyOf": [
+                  {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "First Approval At"
               },
               "first_commit": {
                 "anyOf": [
@@ -3123,6 +3150,26 @@
                 ],
                 "title": "First Push Checks",
                 "type": "string"
+              },
+              "first_review_at": {
+                "anyOf": [
+                  {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "First Review At"
+              },
+              "labels": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Labels",
+                "type": "array"
               },
               "merge_commit": {
                 "anyOf": [
@@ -3154,6 +3201,20 @@
                 "minimum": 1,
                 "title": "Number",
                 "type": "integer"
+              },
+              "ready_at": {
+                "anyOf": [
+                  {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "when it was marked ready for review; null: never a draft",
+                "title": "Ready At"
               },
               "state": {
                 "description": "closed means closed without merging",
