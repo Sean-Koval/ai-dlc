@@ -1,0 +1,118 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "changes/KAN-433.added.md": "30f43811e9ae82a17049062deb3524eaa51c814ed0850ca4caf45713ba38679c"
+      },
+      "outcome": "updated",
+      "reason": "Changelog fragment now says the install prints the MCP and plugin commands and the doctor fails until each MCP server is configured, with unverified lines.",
+      "reviewer": "Claude (agent)",
+      "target": "changes/KAN-433.added.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/architecture.md": "788b593066fcd5d1c9eb9ebbc3869971131d3ddb3ea3396bc8b9a6ea48ca8b55",
+        "docs/architecture.md": "099e45e56378bb4ea78edb3eec9e6a8ce7e7d60edd08d0b17aeeca9810351b82",
+        "src/ai_dlc/cli.py": "d3be6b7f0e09c0d24988dcffc03bd77cb738bf03da83dce6209df6d7f721e8c1",
+        "src/ai_dlc/setup/knowledge_doctor.py": "66aa65c2c3482f624400243e05bcc61efe74fb2c542ab778ddbb96f97226fb4d",
+        "src/ai_dlc/setup/knowledge_install.py": "3cf9b6765da04f5db7521f3b1ef2d0fa25625e2eef100d43818388e3f547c42f"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Re-recorded after merging main at c217bd0; the decision is unchanged. Re-reviewed after merging main (KAN-503's knowledge-check fixes): the knowledge install and doctor work stays inside the existing setup modules and CLI, and the package map still holds.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        "docs/catalog.d/repo-workflows-knowledge-install.toml": "21959f324f0495dd22c06301741000f03781afb0d3c26a09b4123798d5853eac"
+      },
+      "outcome": "updated",
+      "reason": "KAN-433: enrolls docs/workflows/knowledge-install.md (reference, draft, owner repository-maintainers) with its install and doctor code paths and test, in its own fragment per KAN-486 instead of editing docs/catalog.toml and the mkdocs.yml nav.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/catalog.d/repo-workflows-knowledge-install.toml"
+    },
+    {
+      "bound": {
+        "catalog:docs/development-workflow.md": "0fba88526a61571ce49e91b2159325061a7c54ba5466e651565eabb2f910e7c6",
+        "docs/development-workflow.md": "fd724d20f13622d81235c1d718d336bff3e6364a92edf48a33051df19c5acb97",
+        "src/ai_dlc/cli.py": "d3be6b7f0e09c0d24988dcffc03bd77cb738bf03da83dce6209df6d7f721e8c1"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Re-recorded after merging main at bed8f6e, where KAN-534 rewrote what a disposition binds on this page. KAN-433 changes only the knowledge doctor command's help text in cli.py; the contributor workflow is unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/development-workflow.md"
+    },
+    {
+      "bound": {
+        ".github/workflows/verify.yml": "c72c1d365af2bbc9aa46cb5dcf170f21ba8df626104bcae0d55c7fec34cf1553",
+        "catalog:docs/release-verification.md": "972bf86b6da5f20b3d01762982880533ba0c99b22933aa95273590923721dad0",
+        "docs/release-verification.md": "a18e7b0bef6dc55ebc544ac304a01c8ca7d59c9dde46127f2acc44802e8b9751",
+        "src/ai_dlc/cli.py": "d3be6b7f0e09c0d24988dcffc03bd77cb738bf03da83dce6209df6d7f721e8c1"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Re-recorded after merging main at bed8f6e, where KAN-535 added workflow_dispatch to verify.yml beside this PR's team-harness-contract job. The page names no pin or harness commit, and no release gate changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/release-verification.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/runbooks/release-publication.md": "3580fe6b0df68db7dd7dd55e520bb50b4dcb9ee9132e4e345396d68a4e7d72f8",
+        "docs/runbooks/release-publication.md": "2020db563c9399cfc2e26d587e2b51eb2d3ec29d34e6fa5e4b5e47b142e08a6d",
+        "project-templates/project/scripts/bootstrap.sh": "9fb9842121914ab0311bcd1be72eec2e496225bcf6c049ae34fa6ac79dd9df6a",
+        "scripts/bootstrap.sh": "9fb9842121914ab0311bcd1be72eec2e496225bcf6c049ae34fa6ac79dd9df6a"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "bootstrap --knowledge now reports a doctor failure without failing the bootstrap; publication steps are unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/runbooks/release-publication.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/get-started.md": "b3cdcadc535e0e825dfe2837433f1b4ef45551430ab207c485ef7dd601bf992e",
+        "docs/workflows/get-started.md": "1d43e6d423dbcada948d661495262998832e712eebe45fedeaad0645f5d75185",
+        "scripts/bootstrap.sh": "9fb9842121914ab0311bcd1be72eec2e496225bcf6c049ae34fa6ac79dd9df6a"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Re-reviewed after merging main (mkdocs.yml nav and catalog fragments): the knowledge install link and bootstrap flag are unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/get-started.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/knowledge-install.md": "63f5100b4ef80c2f10aca89d56a8d4a3ad5fd522274e39e6f8ffebdd7dc721d8",
+        "docs/workflows/knowledge-install.md": "f0f8be7ab21b6ac76cc6f90f1a18d916da4bd0b807065bb4d99ab0eb98ffd3c7",
+        "scripts/bootstrap.sh": "9fb9842121914ab0311bcd1be72eec2e496225bcf6c049ae34fa6ac79dd9df6a",
+        "src/ai_dlc/setup/knowledge_doctor.py": "66aa65c2c3482f624400243e05bcc61efe74fb2c542ab778ddbb96f97226fb4d",
+        "src/ai_dlc/setup/knowledge_install.py": "3cf9b6765da04f5db7521f3b1ef2d0fa25625e2eef100d43818388e3f547c42f",
+        "tests/test_knowledge_install.py": "ef9c6aed246e52ef9186588e1258e17ff0dfd3954aa59560a13d155411bcb33a"
+      },
+      "outcome": "updated",
+      "reason": "KAN-433: new page for ai-dlc knowledge install and doctor. Re-recorded after moving its enrollment from docs/catalog.toml and the mkdocs.yml nav to docs/catalog.d/repo-workflows-knowledge-install.toml (KAN-486), with nav = Start so it keeps its place at the end of that section.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/knowledge-install.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/tool-map.md": "d11334cb57c288aab7b01226790b7cc268a28991b3de5f97a98b9818d80be19e",
+        "docs/workflows/tool-map.md": "7919f8e6c5f6a0e8cc3f372da81498bcbefcdebbe4cb7b58f4f19d83fd47a181",
+        "src/ai_dlc/cli.py": "d3be6b7f0e09c0d24988dcffc03bd77cb738bf03da83dce6209df6d7f721e8c1"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Re-recorded after merging main at c217bd0; the decision is unchanged. Only the knowledge doctor command's help text changed in cli.py; no tool mapping changed.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/tool-map.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/workflows/work-computer-setup.md": "62d0a76f141100f0e8d2219cf5e7b398c0530796f3a7fa2ae95348450d0bdbb5",
+        "docs/workflows/work-computer-setup.md": "6a6b849511affc491b227896981914c1b8f021c6e3541250c1dad554d75a5444",
+        "src/ai_dlc/cli.py": "d3be6b7f0e09c0d24988dcffc03bd77cb738bf03da83dce6209df6d7f721e8c1"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "Only the knowledge doctor command's help text changed in cli.py; the work computer setup steps are unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/workflows/work-computer-setup.md"
+    }
+  ],
+  "schema": 2
+}
