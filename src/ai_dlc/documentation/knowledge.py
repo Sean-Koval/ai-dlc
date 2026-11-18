@@ -61,14 +61,18 @@ class Knowledge:
     def get(self, id: str, project: str | None = None) -> dict:
         """The knowledge record in this vault whose id or alias is ``id``.
 
-        A ``boundary: customer`` record is found only for its own ``project``.
+        A ``boundary: customer`` record is found only for its own ``project``, and only
+        in a vault whose ``knowledge.toml`` declares it a customer repository (KAN-524).
         """
         from ai_dlc.documentation import record_index
-        from ai_dlc.documentation.knowledge_check import visible_in
+        from ai_dlc.documentation.knowledge_check import CUSTOMER_READ, readable_in, visible_in
+        from ai_dlc.errors import RefusedError
 
         found = record_index.get(self.root, id)
         if not visible_in(found["header"], found["path"], project):
             raise LookupError(f"no knowledge record has id or alias {id}")
+        if not readable_in(self.root, [found], project)[0]:
+            raise RefusedError(f"{id} is a customer record; {CUSTOMER_READ}")
         return found
 
     def search(
@@ -82,13 +86,16 @@ class Knowledge:
     ) -> dict:
         """Knowledge records in this vault matching every given filter.
 
-        A ``boundary: customer`` record is returned only for its own ``project``.
+        A ``boundary: customer`` record is returned only for its own ``project``, and
+        only from a declared customer repository (KAN-524).
         """
         from ai_dlc.documentation import record_index
-        from ai_dlc.documentation.knowledge_check import team_inputs
+        from ai_dlc.documentation.knowledge_check import CUSTOMER_READ, readable_in
 
         found = record_index.search(self.root, type, scope, labels or (), status, text)
-        return {**found, "items": team_inputs(found["items"], project)}
+        items, refused = readable_in(self.root, found["items"], project)
+        withheld = {"refused": {"count": refused, "reason": CUSTOMER_READ}} if refused else {}
+        return {**found, **withheld, "items": items}
 
     def find(self, query: str, limit: int = 20) -> list[dict]:
         results = []
