@@ -294,3 +294,23 @@ per-work evidence file. That is one delivery on one repository. The PR #44
 sequence was not replayed under the new rules, no second concurrent pull request
 has yet been merged with them, and generated projects have not exercised the
 template workflow's new full-depth checkout and `AI_DLC_DOCS_BASE`.
+
+## Changed-file binding — November 14, 2026
+
+KAN-533, KAN-534. On this date one merge (KAN-503) staled the dispositions of five
+open pull requests that changed none of its files. Each had to merge main in and
+record again. A decision for `docs/architecture.md` bound most of `src/ai_dlc`, so
+nearly any merge staled it.
+
+A decision now binds its target page, its catalog entry and the mapped files its
+branch changed. A stored decision passes when it bound the current content of each
+of those. So one recorded before part of the change reached the target still passes.
+
+`tests/test_document_evidence.py` adds five cases. A target change to a mapped file
+the branch left alone stays valid. A target change to a file the branch changed is
+stale, with the path named. So is a target change to the page itself, and a new
+mapped change after recording. A decision whose change reached the target first
+stays valid.
+
+Not yet exercised: a second pull request merged under the new rule on this
+repository, and generated projects.
