@@ -24,6 +24,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests/fixtures/knowledge_records"
 REPOSITORY = "example/knowledge"
 PR_URL = f"https://github.com/{REPOSITORY}/pull/3"
+CUSTOMER_TOML = '[format]\nversion = 1\n[repo]\nboundary = "customer"\nproject = "alpha"\n'
 
 
 def git(cwd, *args):
@@ -208,7 +209,15 @@ def test_search_returns_customer_records_only_to_their_project(store):
     assert found() == (["team-lesson"], [])
     assert found(text="alpha-gotcha") == ([], [])
     assert found(project="beta") == (["team-lesson"], ["projects/beta/broken.md"])
+    # A team repository returns no customer record, even to its project (KAN-524).
+    assert found(project="alpha") == (["team-lesson"], [])
+    refused = provider.search(labels=["splunk"], project="alpha")["refused"]
+    assert refused["count"] == 1 and "customer's own repository" in refused["reason"]
+    assert "alpha" not in refused["reason"] and "gotcha" not in refused["reason"]
+    assert "refused" not in provider.search(labels=["splunk"], project="beta")
+    (clone / "knowledge.toml").write_text(CUSTOMER_TOML)
     assert found(project="alpha") == (["alpha-gotcha", "team-lesson"], [])
+    assert found() == (["team-lesson"], [])
 
 
 def test_get_returns_a_customer_record_only_to_its_project(store):
@@ -221,6 +230,13 @@ def test_get_returns_a_customer_record_only_to_its_project(store):
         for project in (None, "beta"):
             with pytest.raises(LookupError, match="no knowledge record"):
                 provider.get(name, project=project)
+    # In a team repository the record's own project is refused, with the reason (KAN-524).
+    with pytest.raises(ValueError, match="read only from their customer's own repository"):
+        provider.get("the-gotcha", project="alpha")
+    (store["clone"] / "knowledge.toml").write_text(CUSTOMER_TOML)
+    for project in (None, "beta"):
+        with pytest.raises(LookupError, match="no knowledge record"):
+            provider.get("alpha-gotcha", project=project)
     found = provider.get("the-gotcha", project="alpha")
     assert (found["id"], found["path"]) == ("alpha-gotcha", "projects/alpha/gotcha.md")
     assert found["body"].startswith("# alpha-gotcha")

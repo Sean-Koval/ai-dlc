@@ -750,17 +750,19 @@ def from_roles(
     *,
     agent_repositories: Iterable[str] = (),
     base: str = "main",
+    registry: Any = None,
 ) -> dict[str, Any]:
     """The ``pull_requests``, ``agent_pull_requests`` and ``agent_tickets`` callables.
 
     Built from the project's ``scm`` and ``tracker`` roles only, so ``stats`` needs no
     other credential. A role that is not selected gives ``None``, and that section says so.
+    ``registry`` replaces the project's providers, as the MCP server's does in tests.
     """
     from ai_dlc.providers import Registry
 
     if not config:
         return {}
-    registry = Registry(config, root=root)
+    registry = registry if registry is not None else Registry(config, root=root)
     roles = config.get("roles", {})
     wired: dict[str, Any] = {}
     scm_id = roles.get("scm")
