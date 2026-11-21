@@ -79,8 +79,8 @@ cross-platform qualification. The Confluence publication half of
 [#50](https://github.com/Sean-Koval/ai-dlc/issues/50) is cut under
 [ADR 0001](decisions/0001-refocus-ai-dlc.md); its `team-document-publication` change
 (no tasks started) is archived as cancelled, as is `native-harness-verification`
-([#175](https://github.com/Sean-Koval/ai-dlc/issues/175)). The FDE scaffold half of
-#50 is delivered.
+([#175](https://github.com/Sean-Koval/ai-dlc/issues/175)). The FDE scaffold
+half of #50 is delivered.
 
 ## How status is tracked
 

@@ -238,6 +238,36 @@ class GitHubSCM:
             "first_commit": commits[0]["sha"] if commits else None,
             "merge_commit": pr.get("merge_commit_sha") if pr.get("merged_at") else None,
             "first_push_checks": self._first_push(commits),
+            "labels": [label["name"] for label in pr.get("labels") or [] if label.get("name")],
+            **self._review_times(number, commits),
+        }
+
+    def _review_times(self, number, commits):
+        """When it was marked ready, first reviewed and first approved (KAN-515).
+
+        ``commits_after_first_review`` counts commits whose committer date is after the
+        first review; it is null when there are 100 commits or more (one page only).
+        """
+        reviews = [
+            review
+            for review in self._every(f"repos/{self.repo}/pulls/{number}/reviews")
+            if review.get("submitted_at") and review.get("state") != "PENDING"
+        ]
+        reviews.sort(key=lambda review: review["submitted_at"])
+        approvals = [review for review in reviews if review.get("state") == "APPROVED"]
+        events = self._every(f"repos/{self.repo}/issues/{number}/events")
+        ready = [e["created_at"] for e in events if e.get("event") == "ready_for_review"]
+        first = reviews[0]["submitted_at"] if reviews else None
+        after = None
+        dates = [((c.get("commit") or {}).get("committer") or {}).get("date") for c in commits]
+        if first is not None and len(commits) < 100 and all(dates):
+            moment = datetime.fromisoformat(first)
+            after = sum(datetime.fromisoformat(str(date)) > moment for date in dates)
+        return {
+            "ready_at": min(ready) if ready else None,
+            "first_review_at": first,
+            "first_approval_at": approvals[0]["submitted_at"] if approvals else None,
+            "commits_after_first_review": after if first is not None else 0,
         }
 
     def _first_push(self, commits):
