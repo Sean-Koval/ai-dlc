@@ -385,6 +385,20 @@ def test_promote_refuses_a_word_that_mixes_alphabets(acme, team):
     assert not mixed_script("Ask the \u0391\u03b8\u03ae\u03bd\u03b1 office and the Initech team.")
 
 
+def test_customer_workflow_numbers_with_an_app_token_minted_each_run():
+    """KAN-522: the caller passes what the reusable workflow declares, never a stored token."""
+    import yaml
+
+    caller = yaml.safe_load(customer_files("acme")[".github/workflows/knowledge.yml"])
+    number = caller["jobs"]["number"]
+    reusable = Path(__file__).resolve().parents[1] / ".github/workflows/knowledge-merge.yml"
+    called = yaml.safe_load(reusable.read_text())[True]["workflow_call"]
+    assert number["with"]["app-id"] == "${{ vars.KNOWLEDGE_APP_ID }}"
+    assert number["secrets"] == {"private-key": "${{ secrets.KNOWLEDGE_APP_PRIVATE_KEY }}"}
+    assert set(number["with"]) <= set(called["inputs"])
+    assert set(number["secrets"]) <= set(called["secrets"])
+
+
 def test_customer_workflow_is_pinned_and_read_only(tmp_path):
     files = customer_files("acme")
     workflow = files[".github/workflows/knowledge.yml"]

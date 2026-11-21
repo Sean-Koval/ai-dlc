@@ -23,6 +23,14 @@ hide:
 </figure>
 </div>
 
+## What it does
+
+<div class="af-tools dlc-cols-3">
+  <a class="af-tool" href="runbooks/machine-enrollment/"><small>Set up</small><b>A new engineer is productive on day one</b><span>They enroll their laptop from the team's profile at a reviewed tag. They get everyone's runtimes, Claude Code and Codex settings and named credentials, with their own paths and accounts. <code>machine status</code> shows what drifted later.</span></a>
+  <a class="af-tool" href="development-workflow/"><small>Finish</small><b>An agent cannot declare victory early</b><span>A developer and their agent take an issue through <code>work start</code> and <code>work pr</code>. <code>work finish</code> refuses until the PR is merged and that merge commit has a passing CI receipt, then closes the issue.</span></a>
+  <a class="af-tool" href="workflows/workflow-plugin/"><small>Measure</small><b>A team measures whether its workflow helps</b><span>The maintainer publishes the workflow plugin into the team harness, off in <code>stable</code> and on in <code>candidate</code>. flightdeck compares agent runs with and without it.</span></a>
+</div>
+
 ## See it work
 
 <figure class="af-figure dlc-native" style="--dlc-native: 691px">
@@ -30,7 +38,7 @@ hide:
 <source media="(max-width: 600px)" srcset="assets/front/enroll-phone.svg" width="379" height="265">
 <img src="assets/front/enroll.svg" alt="machine enroll previews and applies a profile; machine status reports the pinned commit and one unbound credential. It opens on the finished session and then replays the typing." width="691" height="435">
 </picture>
-<figcaption>machine enroll applied the pinned profile; machine status shows one credential not yet bound</figcaption>
+<figcaption>Set up: machine enroll applied the pinned profile; machine status shows one credential not yet bound</figcaption>
 </figure>
 
 The work recording in the hero takes one reviewed record from `work start` to a closed ticket.
@@ -39,16 +47,18 @@ GitHub and its CI are a
 that speaks the provider contract. The gates check a real local merge and the receipt
 `project check` wrote.
 
-## What it looks like
+<figure class="af-figure dlc-native" style="--dlc-native: 691px">
+<img src="assets/front/plugin-skills.svg" alt="Claude Code lists the ai-dlc-workflow plugin: ten skills and three hooks" width="691">
+<figcaption>One workflow: the plugin's ten skills and three hooks, as Claude Code lists them</figcaption>
+</figure>
 
-The workflow plugin's skills, as Claude Code lists them, and the checks a project requires:
-
-![Claude Code lists the ai-dlc-workflow plugin: ten skills and three hooks](assets/front/plugin-skills.svg)
-
+<figure class="af-figure dlc-native" style="--dlc-native: 691px">
 <picture>
 <source media="(max-width: 600px)" srcset="assets/front/project-check-phone.svg" width="379" height="435">
 <img src="assets/front/project-check.svg" alt="ai-dlc project check --required in the demo project: a clean tree and every required check passing" width="691" height="418">
 </picture>
+<figcaption>Evidence: project check --required on a clean tree, every required check passing</figcaption>
+</figure>
 
 ## Where it sits
 
@@ -59,19 +69,6 @@ sandboxes, flightdeck evaluates, and ai-dlc authors the one optional plugin they
 Read more in the [hangar docs](https://sean-koval.github.io/hangar/), the
 [flightdeck docs](https://sean-koval.github.io/flightdeck/) and the
 [example team harness](https://github.com/Sean-Koval/team-harness), which pins this plugin ([how to pin it](workflows/workflow-plugin-harness.md)).
-
-## Use cases
-
-- **A new engineer is productive on day one.** They enroll their laptop from the team's
-  profile at a reviewed tag. They get everyone's runtimes, Claude Code and Codex settings and
-  named credentials, with their own paths and accounts. `machine status` shows
-  what drifted later.
-- **An agent cannot declare victory early.** A developer and their agent take an issue
-  through `work start` and `work pr`; `work finish` refuses until the PR is merged into the
-  target branch and that merge commit has a passing CI receipt, then closes the issue.
-- **A team measures whether its workflow helps.** The maintainer publishes the workflow
-  plugin into the team harness, off in `stable` and on in `candidate`. flightdeck compares
-  agent runs with and without it.
 
 ## Quickstart
 
@@ -97,24 +94,24 @@ ai-dlc project check --required
 
 ## Features
 
-| Feature | What you get | Read more |
-| --- | --- | --- |
-| Machine enrollment | Versioned profiles pin runtimes, tools, agent clients and named credentials; each machine keeps its own paths and accounts | [Machine enrollment](runbooks/machine-enrollment.md) |
-| Project scaffolding | `project init` / `project adopt` for generic, Python, Node or Rust repositories, with setup steps and required checks | [Get started](workflows/get-started.md) |
-| Workflow plugin | Guidance, ten skills and CLI-optional safety hooks for Claude Code, with a Codex form; off by default | [Workflow plugin](workflows/workflow-plugin.md) |
-| Work lifecycle | Reviewed work records bind an issue, branch, specification and PR; `work finish` gates on the merge and its CI receipt | [Development workflow](development-workflow.md) |
-| Receipts | `project check --required` runs the team's checks and writes a receipt bound to the commit | [Release verification](release-verification.md) |
-| Documentation upkeep | Catalog, impact review, dispositions and a docs gate; decision records with knowledge-record frontmatter | [Project documentation](design/project-documentation.md) |
-| Agent access | `ai-dlc mcp serve` exposes reviewed work, documentation and knowledge tools to agents | [Workflow tool map](workflows/tool-map.md) |
-| Providers | GitHub Issues + Projects (default), Jira Cloud, OpenSpec, Obsidian | [Architecture](architecture.md) |
+| Feature | What you get |
+| --- | --- |
+| [Machine enrollment](runbooks/machine-enrollment.md) | Versioned profiles pin runtimes, tools, agent clients and named credentials; each machine keeps its own paths and accounts |
+| [Project scaffolding](workflows/get-started.md) | `project init` / `project adopt` for generic, Python, Node or Rust repositories, with setup steps and required checks |
+| [Workflow plugin](workflows/workflow-plugin.md) | Guidance, ten skills and CLI-optional safety hooks for Claude Code, with a Codex form; off by default |
+| [Work lifecycle](development-workflow.md) | Reviewed work records bind an issue, branch, specification and PR; `work finish` gates on the merge and its CI receipt |
+| [Receipts](release-verification.md) | `project check --required` runs the team's checks and writes a receipt bound to the commit |
+| [Documentation upkeep](design/project-documentation.md) | Catalog, impact review, dispositions and a docs gate; decision records with knowledge-record frontmatter |
+| [Agent access](workflows/tool-map.md) | `ai-dlc mcp serve` exposes reviewed work, documentation and knowledge tools to agents |
+| [Providers](architecture.md) | GitHub Issues + Projects (default), Jira Cloud, OpenSpec, Obsidian |
 
 ## Read next
 
-| Question | Page |
-| --- | --- |
-| How do I set up a new or existing repository? | [Get started](workflows/get-started.md) |
-| How does a piece of work go from ticket to finish? | [Development workflow](development-workflow.md) |
-| Which command or skill does each stage use? | [Workflow tool map](workflows/tool-map.md) |
-| How is the system built, and what are its parts? | [Architecture](architecture.md) |
-| What is in scope, and what is frozen? | [ADR 0001](decisions/0001-refocus-ai-dlc.md), [ADR 0002](decisions/0002-jira-work-tracker-and-trace-correlation.md), [ADR 0003](decisions/0003-second-brain-capture-and-publish.md), [ADR 0004](decisions/0004-knowledge-system-scope.md) and [Roadmap](roadmap.md) |
-| What was verified in the current release? | [Release verification](release-verification.md) |
+<div class="af-tools dlc-cols-3">
+  <a class="af-tool" href="workflows/get-started/"><small>Set up a repository</small><b>Get started</b><span>A new project, an existing repository, or the engine itself.</span></a>
+  <a class="af-tool" href="development-workflow/"><small>Ticket to finish</small><b>Development workflow</b><span>The stages, what each one leaves behind, and the finish gate.</span></a>
+  <a class="af-tool" href="workflows/tool-map/"><small>Commands and skills</small><b>Workflow tool map</b><span>Which command, MCP tool or skill each stage uses.</span></a>
+  <a class="af-tool" href="architecture/"><small>How it is built</small><b>Architecture</b><span>Layers, services, provider boundaries and source packages.</span></a>
+  <a class="af-tool" href="decisions/0001-refocus-ai-dlc/"><small>Scope and freeze</small><b>ADR 0001</b><span>What is in scope, and what is frozen.</span></a>
+  <a class="af-tool" href="release-verification/"><small>Evidence</small><b>Release verification</b><span>What was verified in the current release.</span></a>
+</div>

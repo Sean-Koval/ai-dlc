@@ -1,0 +1,76 @@
+{
+  "additionalProperties": true,
+  "description": "One line of a session usage log: what one agent session spent on one ticket.\n\nThe usage fields match a capture run's; ``cost_usd`` is null when the model's price\nis unknown. Other fields a hook writes (session id, models, cache tokens) are kept.",
+  "properties": {
+    "cost_usd": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "null: price unknown",
+      "title": "Cost Usd"
+    },
+    "input_tokens": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": 0,
+      "description": "null: unknown; a failed Source that leaves it out is unknown too, others spent 0",
+      "title": "Input Tokens"
+    },
+    "output_tokens": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": 0,
+      "description": "null: unknown; a failed Source that leaves it out is unknown too, others spent 0",
+      "title": "Output Tokens"
+    },
+    "started_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Started At"
+    },
+    "ticket": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "the ticket key, e.g. KAN-123",
+      "title": "Ticket"
+    }
+  },
+  "title": "UsageLine",
+  "type": "object"
+}

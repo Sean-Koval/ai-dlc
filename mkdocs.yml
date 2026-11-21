@@ -16,6 +16,7 @@ theme:
     - navigation.sections
     - navigation.top
     - navigation.indexes
+    - navigation.footer
     - search.suggest
     - content.code.copy
     - toc.follow
@@ -69,40 +70,49 @@ exclude_docs: |
   catalog.toml
   catalog.d/
 
-# One question per tab. Documents stay where docs/catalog.toml records them. A new page
-# names its section in its own docs/catalog.d/<id>.toml instead of editing this list, and
-# scripts/site_config.py adds it to site.yml, which the site is built from (KAN-486).
+# One question per tab, and within a tab one group per task. Documents stay where
+# docs/catalog.toml records them. A new page names its section in its own
+# docs/catalog.d/<id>.toml instead of editing this list, and scripts/site_config.py adds
+# it to the end of that tab in site.yml, which the site is built from (KAN-486). List a
+# page here only to place it in a group.
 nav:
   - Home: index.md
   - Start:
       - Get started: workflows/get-started.md
       - Configure a project: workflows/configure.md
-      - Workflow plugin: workflows/workflow-plugin.md
-      - Pin the plugin in a team harness: workflows/workflow-plugin-harness.md
-      - Example workflows: workflows/examples.md
       - How the tools fit together: workflows/how-it-fits.md
-      - Greenfield workflow: workflows/greenfield.md
-      - Brownfield workflow: workflows/brownfield.md
-      - Behavior-check rehearsal: workflows/behavior-check.md
-      - Work-computer setup: workflows/work-computer-setup.md
+      - Example workflows: workflows/examples.md
+      - New and existing repositories:
+          - Greenfield workflow: workflows/greenfield.md
+          - Brownfield workflow: workflows/brownfield.md
+          - Behavior-check rehearsal: workflows/behavior-check.md
+      - Workflow plugin:
+          - Workflow plugin: workflows/workflow-plugin.md
+          - Pin the plugin in a team harness: workflows/workflow-plugin-harness.md
+      - Team machines:
+          - Work-computer setup: workflows/work-computer-setup.md
+          - Team knowledge install: workflows/knowledge-install.md
   - Guides:
       - Development workflow: development-workflow.md
       - Workflow tool map: workflows/tool-map.md
       - Design to implementation: workflows/design-to-implementation.md
-      - GitHub ticket setup: github-ticket-setup.md
-      - Machine enrollment: runbooks/machine-enrollment.md
-      - Release publication: runbooks/release-publication.md
-      - FDE documents: runbooks/fde-documents.md
-      - Document workspace qualification: runbooks/document-workspace-qualification.md
-      - Jira Cloud setup: runbooks/jira-cloud-setup.md
-      - Customer knowledge: runbooks/customer-knowledge.md
+      - Trackers:
+          - GitHub ticket setup: github-ticket-setup.md
+          - Jira Cloud setup: runbooks/jira-cloud-setup.md
+      - Machines and releases:
+          - Machine enrollment: runbooks/machine-enrollment.md
+          - Release publication: runbooks/release-publication.md
+      - Documents and knowledge:
+          - FDE documents: runbooks/fde-documents.md
+          - Document workspace qualification: runbooks/document-workspace-qualification.md
+          - Customer knowledge: runbooks/customer-knowledge.md
   - Reference:
       - Architecture: architecture.md
       - Terms: design/terms.md
       - Release verification: release-verification.md
       - Migration: migration.md
-      - Changelog: https://github.com/Sean-Koval/ai-dlc/blob/main/CHANGELOG.md
       - Roadmap: roadmap.md
+      - Changelog: https://github.com/Sean-Koval/ai-dlc/blob/main/CHANGELOG.md
   - Decisions:
       - "ADR 0001: Refocus ai-dlc": decisions/0001-refocus-ai-dlc.md
       - "ADR 0002: Jira tracker, trace correlation": decisions/0002-jira-work-tracker-and-trace-correlation.md
@@ -111,14 +121,15 @@ nav:
       - "ADR 0005: Migrate notes to records": decisions/0005-migrate-knowledge-notes-to-records.md
       - "ADR 0006: Customer boundary and promotion": decisions/0006-customer-boundary-and-promotion.md
       - "ADR 0007: Customer knowledge repositories": decisions/0007-customer-knowledge-repositories.md
-      - Product direction: product-direction.md
-      - Framework delivery: design/framework-delivery.md
-      - Project documentation: design/project-documentation.md
-      - Local and shared knowledge: design/local-and-shared-knowledge.md
-      - Meeting transcripts: design/meeting-transcripts.md
-      - Native tool composition: design/native-tool-composition.md
-      - Provider connections: design/provider-connections.md
-      - Provider toolsets PRD: design/provider-toolsets-prd.md
-      - Design PM: design/design-pm.md
-      - Jira Cloud: design/jira-cloud.md
-      - Session join key: design/session-join-key.md
+      - Direction and designs:
+          - Product direction: product-direction.md
+          - Framework delivery: design/framework-delivery.md
+          - Project documentation: design/project-documentation.md
+          - Local and shared knowledge: design/local-and-shared-knowledge.md
+          - Meeting transcripts: design/meeting-transcripts.md
+          - Native tool composition: design/native-tool-composition.md
+          - Provider connections: design/provider-connections.md
+          - Provider toolsets PRD: design/provider-toolsets-prd.md
+          - Design PM: design/design-pm.md
+          - Jira Cloud: design/jira-cloud.md
+          - Session join key: design/session-join-key.md

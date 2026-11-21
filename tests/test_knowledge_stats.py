@@ -889,7 +889,7 @@ def test_roles_wire_only_scm_and_tracker(monkeypatch, tmp_path):
     monkeypatch.setattr("ai_dlc.providers.Registry", Fake)
     config = {"roles": {"scm": "github", "tracker": "jira-cloud", "wiki": "confluence"}}
     wired = knowledge_stats.from_roles(config, tmp_path, agent_repositories=["o/agents"])
-    assert set(wired) == {"pull_requests", "agent_pull_requests", "agent_tickets"}
+    assert set(wired) == {"pull_requests", "agent_pull_requests", "agent_tickets", "ticket"}
     assert wired["pull_requests"](SINCE) == []
     assert wired["agent_pull_requests"](SINCE) == []
     tickets = wired["agent_tickets"]()
@@ -923,6 +923,7 @@ def test_github_scm_lists_pull_requests_with_first_push_checks(monkeypatch, tmp_
                 "merged_at": "2026-11-06T00:00:00Z",
                 "closed_at": "2026-11-06T00:00:00Z",
                 "merge_commit_sha": "m2",
+                "labels": [{"name": "exec:agent"}],
             },
             {
                 "number": 1,
@@ -945,7 +946,22 @@ def test_github_scm_lists_pull_requests_with_first_push_checks(monkeypatch, tmp_
         "repos/o/k/pulls/2/files?per_page=100&page=2": [
             {"filename": f"records/projects/alpha/l{n}.md"} for n in range(50)
         ],
-        "repos/o/k/pulls/2/commits?per_page=100": [{"sha": "a"}, {"sha": "b"}],
+        "repos/o/k/pulls/3/reviews?per_page=100&page=1": [],
+        "repos/o/k/issues/3/events?per_page=100&page=1": [],
+        "repos/o/k/pulls/2/commits?per_page=100": [
+            {"sha": "a", "commit": {"committer": {"date": "2026-11-05T01:00:00Z"}}},
+            {"sha": "b", "commit": {"committer": {"date": "2026-11-05T09:00:00Z"}}},
+        ],
+        # KAN-515: drafted, marked ready, reviewed with changes asked, then approved.
+        "repos/o/k/pulls/2/reviews?per_page=100&page=1": [
+            {"state": "APPROVED", "submitted_at": "2026-11-05T12:00:00Z"},
+            {"state": "PENDING", "submitted_at": None},
+            {"state": "CHANGES_REQUESTED", "submitted_at": "2026-11-05T06:00:00Z"},
+        ],
+        "repos/o/k/issues/2/events?per_page=100&page=1": [
+            {"event": "labeled", "created_at": "2026-11-05T00:10:00Z"},
+            {"event": "ready_for_review", "created_at": "2026-11-05T02:00:00Z"},
+        ],
         "repos/o/k/commits/a/check-runs?filter=all&per_page=100": {"check_runs": []},
         "repos/o/k/commits/b/check-runs?filter=all&per_page=100": {
             "check_runs": [  # a re-run went green later; the first push still failed
@@ -965,6 +981,18 @@ def test_github_scm_lists_pull_requests_with_first_push_checks(monkeypatch, tmp_
     ]
     assert listed[1]["first_commit"] == "a" and listed[1]["merge_commit"] == "m2"
     assert len(listed[1]["files"]) == 150 and listed[1]["files"][-1].startswith("records/projects/")
+    assert (
+        listed[1]["ready_at"],
+        listed[1]["first_review_at"],
+        listed[1]["first_approval_at"],
+    ) == (
+        datetime(2026, 11, 5, 2, tzinfo=UTC),
+        datetime(2026, 11, 5, 6, tzinfo=UTC),
+        datetime(2026, 11, 5, 12, tzinfo=UTC),
+    )
+    assert listed[1]["commits_after_first_review"] == 1  # b, pushed after the first review
+    assert listed[1]["labels"] == ["exec:agent"] and listed[0]["labels"] == []
+    assert listed[0]["commits_after_first_review"] == 0 and listed[0]["ready_at"] is None
 
 
 def test_weekly_workflow_keeps_the_write_token_to_its_last_step_and_off_the_default_branch():
@@ -977,6 +1005,219 @@ def test_weekly_workflow_keeps_the_write_token_to_its_last_step_and_off_the_defa
     guard = steps[0]["run"]
     assert '"$default"' in guard and "repos/$GITHUB_REPOSITORY" in guard
     assert "knowledge-stats[bot]" in steps[-1]["run"]
+
+
+# Delivery (KAN-515): every ticket-keyed pull request, hand-counted.
+
+
+def delivery_prs():
+    def pr(number, title, state, created, **fields):
+        return {
+            "number": number,
+            "title": title,
+            "state": state,
+            "created_at": f"2026-11-{created}Z",
+            "files": [],
+            **fields,
+        }
+
+    return [
+        pr(
+            11,
+            "KAN-11: a",
+            "merged",
+            "02T00:00:00",
+            ready_at="2026-11-02T02:00:00Z",
+            first_approval_at="2026-11-02T06:00:00Z",
+            merged_at="2026-11-03T00:00:00Z",
+            commits_after_first_review=0,
+            first_push_checks="success",
+        ),
+        pr(
+            12,
+            "KAN-12: b",
+            "merged",
+            "04T00:00:00",
+            first_approval_at="2026-11-04T10:00:00Z",
+            merged_at="2026-11-05T00:00:00Z",
+            commits_after_first_review=2,
+            first_push_checks="failure",
+        ),
+        pr(13, "KAN-11: follow-up", "open", "06T00:00:00", first_push_checks="success"),
+        pr(
+            14,
+            "KAN-14: c",
+            "merged",
+            "07T00:00:00",
+            merged_at="2026-11-08T00:00:00Z",
+            first_push_checks="pending",
+        ),
+        pr(
+            15,
+            "chore: tidy",
+            "merged",
+            "07T00:00:00",
+            merged_at="2026-11-07T01:00:00Z",
+            first_push_checks="failure",
+        ),
+        pr(
+            16,
+            "KAN-16: d",
+            "merged",
+            "08T00:00:00",
+            first_approval_at="2026-11-08T20:00:00Z",
+            merged_at="2026-11-09T00:00:00Z",
+            commits_after_first_review=0,
+            first_push_checks="success",
+            labels=["exec:agent"],
+        ),
+    ]
+
+
+TICKETS = {
+    "KAN-11": {"labels": ["exec:agent"], "started_at": "2026-11-01T00:00:00Z"},
+    "KAN-12": {"labels": ["exec:pair"], "started_at": "2026-11-04T12:00:00+00:00"},
+    "KAN-14": {"labels": []},  # never started: no cycle time
+}
+
+
+def read_ticket(key):
+    if key not in TICKETS:
+        raise LookupError(f"no ticket {key}")
+    return TICKETS[key]
+
+
+def usage_log(tmp_path):
+    lines = [
+        {"ticket": "KAN-11", "input_tokens": 10, "output_tokens": 5, "cost_usd": 1.5},
+        {"ticket": "KAN-11", "cost_usd": 0.5, "session_id": "s2", "models": ["m"]},
+        {"ticket": "KAN-12", "cost_usd": None},  # a model with no price
+        {"ticket": "KAN-12", "cost_usd": 2.0},
+        {"ticket": "KAN-99", "cost_usd": 3.0},  # no merged pull request
+        {"ticket": None, "cost_usd": 9.0},  # a session on no ticket
+    ]
+    path = tmp_path / "usage.jsonl"
+    path.write_text("".join(json.dumps(line) + "\n" for line in lines))
+    return path
+
+
+def delivery(tmp_path, **options):
+    records = tmp_path / "records"
+    records.mkdir(exist_ok=True)
+    listed = validate_response("pull_requests", {"pull_requests": delivery_prs()})
+    found = stats(
+        records,
+        SINCE,
+        now=NOW,
+        agent_pull_requests=lambda since: listed["pull_requests"],
+        **{"ticket": read_ticket, "usage_log": usage_log(tmp_path), **options},
+    )
+    return found["delivery"]
+
+
+def test_delivery_numbers_match_hand_counts(tmp_path):
+    found = delivery(tmp_path)
+    assert (found["pull_requests"], found["merged"]) == (5, 4)  # not the chore
+    # KAN-11 started Nov 1, merged Nov 3: 48 h; KAN-12 12 h; KAN-14 never started;
+    # KAN-16's ticket can't be read.
+    assert found["cycle_time"] == {
+        "count": 2,
+        "median_hours": 30.0,
+        "p80_hours": 48.0,
+        "by_exec": {
+            "exec:agent": {"count": 1, "median_hours": 48.0, "p80_hours": 48.0},
+            "exec:pair": {"count": 1, "median_hours": 12.0, "p80_hours": 12.0},
+        },
+    }
+    assert (found["first_push_green"], found["first_push_green_pct"]) == (3, 75.0)
+    # #11 has a follow-up on KAN-11 within 14 days; #12 has commits after review.
+    assert (found["reworked"], found["rework_pct"], found["rework_unknown"]) == (2, 50.0, 1)
+    # Ready (or opened) to first approval: 4, 10 and 20 hours; #14 was never approved.
+    assert found["approval_wait"] == {"count": 3, "median_hours": 10.0, "p80_hours": 20.0}
+    assert found["cost"] == {
+        "per_merged_pr_usd": 2.0,
+        "total_usd": 4.0,
+        "merged_with_usage": 2,
+        "merged_without_usage": 2,
+        "sessions_unknown_cost": 1,
+    }
+    assert found["reasons"] == ["cycle time: 1 tickets could not be read"]
+    rows = {row["number"]: row for row in found["by_pull_request"]}
+    assert rows[11]["follow_ups"] == [13] and rows[16]["exec"] == "exec:agent"
+    assert (rows[11]["cost_usd"], rows[14]["cost_usd"]) == (2.0, None)
+
+
+def test_without_a_usage_log_only_cost_is_unmeasured(tmp_path):
+    with_log = delivery(tmp_path)
+    found = delivery(tmp_path, usage_log=None)
+    assert found["cost"] == {
+        "per_merged_pr_usd": None,
+        "reason": "no usage log: give the session usage log with --usage-log",
+    }
+    assert {k: v for k, v in found.items() if k not in ("cost", "by_pull_request")} == {
+        k: v for k, v in with_log.items() if k not in ("cost", "by_pull_request")
+    }
+
+
+def test_delivery_without_roles_or_with_a_bad_usage_log(tmp_path):
+    records = tmp_path / "records"
+    records.mkdir()
+    assert stats(records, SINCE, now=NOW)["delivery"] == {
+        "available": False,
+        "reason": "no scm provider: select one for the scm role",
+    }
+    found = delivery(tmp_path, ticket=None)
+    assert found["cycle_time"]["count"] == 0 and found["reasons"] == [
+        "cycle time: no tracker provider: select one for the tracker role"
+    ]
+    bad = tmp_path / "bad.jsonl"
+    bad.write_text('{"ticket": "KAN-1", "cost_usd": -1}\n')
+    with pytest.raises(ValueError, match="bad.jsonl:1 is not a usage line"):
+        delivery(tmp_path, usage_log=bad)
+
+
+def test_report_has_a_delivery_table(tmp_path):
+    records = tmp_path / "records"
+    records.mkdir()
+    listed = delivery_prs()
+    result = stats(
+        records,
+        SINCE,
+        now=NOW,
+        agent_pull_requests=lambda since: listed,
+        ticket=read_ticket,
+        usage_log=usage_log(tmp_path),
+    )
+    text = "\n".join(report(result))
+    assert "## Delivery" in text and "| Measure | Value |" in text
+    assert "| Cycle time, ticket start to merge | median 30.0 h, p80 48.0 h over 2 |" in text
+    assert "| Cycle time, exec:pair | median 12.0 h, p80 12.0 h over 1 |" in text
+    assert "| Checks green on first push | 3 (75.0%) |" in text
+    assert "| Cost per merged pull request | 2.0 USD |" in text
+    without = "\n".join(
+        report(stats(records, SINCE, now=NOW, agent_pull_requests=lambda s: listed))
+    )
+    assert "Cost not measured: no usage log" in without
+
+
+def test_cli_passes_the_usage_log(fixture, tmp_path):
+    result = CliRunner().invoke(
+        app,
+        [
+            "knowledge",
+            "stats",
+            str(fixture["records"]),
+            "--since",
+            "2026-11-01",
+            "--root",
+            str(tmp_path),
+            "--usage-log",
+            str(usage_log(tmp_path)),
+            "--json",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert json.loads(result.output)["delivery"]["reason"].startswith("no scm provider")
 
 
 class _Roles:
