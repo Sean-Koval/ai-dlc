@@ -12,7 +12,7 @@
     {
       "bound": {
         "catalog:docs/architecture.md": "788b593066fcd5d1c9eb9ebbc3869971131d3ddb3ea3396bc8b9a6ea48ca8b55",
-        "docs/architecture.md": "099e45e56378bb4ea78edb3eec9e6a8ce7e7d60edd08d0b17aeeca9810351b82",
+        "docs/architecture.md": "7d5fed191dd2d9e0948da42f00ebf024d2fa47bbe2c3a2e89e6b32bb1a1cdc02",
         "src/ai_dlc/documentation/knowledge_check.py": "ac7fe7e962c99949be59bd02b60e42b0461865887ff77f55bf352a7deabaae91"
       },
       "outcome": "reviewed-no-change",
@@ -23,7 +23,7 @@
     {
       "bound": {
         "catalog:docs/design/local-and-shared-knowledge.md": "dda625604166b9fffe1120b9d4b69a9d919e36a1c66352d8de79c3d718083bab",
-        "docs/design/local-and-shared-knowledge.md": "e8dd0f2bf6317cfbd70f47861582982313eba6db6c85d28179926860b640ab9b",
+        "docs/design/local-and-shared-knowledge.md": "268ea6dedbbc5c759743c066dbf64024265acac3b800eef2ac6d5c365948767e",
         "src/ai_dlc/documentation/knowledge_check.py": "ac7fe7e962c99949be59bd02b60e42b0461865887ff77f55bf352a7deabaae91"
       },
       "outcome": "reviewed-no-change",
