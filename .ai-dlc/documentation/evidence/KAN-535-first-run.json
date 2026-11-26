@@ -1,0 +1,23 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        ".github/workflows/generated.yml": "16a2c8e55033a9b38429353d5390fbcc605dd4dc18bc3e7fd7c7f2caccd4b301"
+      },
+      "outcome": "no-impact",
+      "reason": "CI only: the build job no longer fails when main has no front-assets evidence yet; behaviour already documented in CONTRIBUTING is unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": ".github/workflows/generated.yml"
+    },
+    {
+      "bound": {
+        "tests/test_workflows_generated.py": "ebadbb5f79e1f8ff2b626bdf6ae5f6f49d435a11bc1ddcebcee7928df56f0ee5"
+      },
+      "outcome": "no-impact",
+      "reason": "Tests for the build job's patch step, with and without rebuilt assets.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/test_workflows_generated.py"
+    }
+  ],
+  "schema": 2
+}
