@@ -168,3 +168,45 @@ def test_publish_refuses_evidence_that_decides_anything_else(repo):
     result = apply(repo)
     assert result.returncode == 1
     assert "decides more than the rebuilt assets" in result.stdout
+
+
+PATCH = "Patch of the rebuilt assets"
+
+
+def patch_step(root):
+    script = step(workflow("generated.yml")["jobs"]["build"], PATCH)["run"]
+    (root / "runner").mkdir(exist_ok=True)
+    output = root / "runner/output"
+    output.touch()
+    result = subprocess.run(
+        ["bash", "--noprofile", "--norc", "-eo", "pipefail", "-c", script],  # as Actions runs it
+        cwd=root,
+        env={
+            "PATH": "/usr/bin:/bin",
+            "RUNNER_TEMP": str(root / "runner"),
+            "GITHUB_OUTPUT": str(output),
+        },
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    return result, output.read_text()
+
+
+def test_build_hands_over_nothing_when_the_assets_on_main_are_current(repo):
+    # main had no front-assets evidence yet, so the step must not name a missing file (the first run after #293)
+    result, output = patch_step(repo)
+    assert result.returncode == 0, result.stderr
+    assert "changed=true" not in output
+
+
+def test_build_hands_over_the_rebuilt_assets_and_their_evidence(repo):
+    (repo / "docs/assets/front/work.cast").write_text('{"version": 2}\n[0.1, "o", "two"]\n')
+    evidence = repo / ".ai-dlc/documentation/evidence/front-assets.json"
+    evidence.parent.mkdir(parents=True)
+    evidence.write_text("{}\n")
+    result, output = patch_step(repo)
+    assert result.returncode == 0, result.stderr
+    assert "changed=true" in output
+    patch = (repo / "runner/front-assets.patch").read_text()
+    assert "docs/assets/front/work.cast" in patch and "front-assets.json" in patch
