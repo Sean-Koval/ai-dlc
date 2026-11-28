@@ -45,7 +45,8 @@ CATEGORIES = {"new": "todo", "indeterminate": "in_progress", "done": "done"}
 def category(fields):
     """todo, in_progress or done; only Jira's own done category finishes an issue."""
     status = fields.get("status")
-    key = status.get("statusCategory", {}).get("key") if isinstance(status, dict) else None
+    group = status.get("statusCategory") if isinstance(status, dict) else None
+    key = group.get("key") if isinstance(group, dict) else None
     return CATEGORIES.get(str(key), "in_progress")
 
 
@@ -667,12 +668,16 @@ class JiraCloudProvider:
             labels = row["fields"].get("labels") or []
             if not isinstance(labels, list) or not all(isinstance(x, str) for x in labels):
                 return None
+            try:
+                blocker_kind = self.kind(row["fields"])
+            except JiraUncertain:
+                return None
             found.append(
                 {
                     "key": row["key"],
                     "url": self.config["site_url"] + "/browse/" + row["key"],
                     "category": category(row["fields"]),
-                    "kind": self.kind(row["fields"]),
+                    "kind": blocker_kind,
                     "labels": labels,
                 }
             )
