@@ -24,12 +24,14 @@ bootstrap and CI therefore install the exact assets that generated it.
 
 ## Publish
 
-1. On `main`, confirm the version in `pyproject.toml` is the version to publish
-   and that `ai-dlc project check --required` passes at that commit.
+1. On `main`, run `python scripts/collect_changes.py --write`, then rename
+   `## Unreleased` in `CHANGELOG.md` to `## [<version>] - <date>`. That section
+   becomes the release notes. Confirm `pyproject.toml` has that version and
+   `ai-dlc project check --required` passes.
 2. Optional rehearsal: run the `Release` workflow manually with any HTTPS
    directory as `artifact_base_url`, leaving `verify_published_tag` empty. It
-   uploads a `release-candidate` artifact to the run and publishes nothing, even
-   when the workflow is dispatched at a tag.
+   uploads a `release-candidate` artifact and publishes nothing, even when
+   dispatched at a tag.
 3. Tag the commit and push the tag:
 
    ```sh
@@ -41,7 +43,8 @@ bootstrap and CI therefore install the exact assets that generated it.
    from `pyproject.toml`. It runs the required checks, builds, verifies the
    wheel against the constraints and initializes a project with it, then writes
    `release.sh` against `https://github.com/<owner>/<repo>/releases/download/<tag>`.
-   `publish` creates the GitHub Release with exactly those files.
+   It refuses a tag with no changelog section.
+   `publish` creates the GitHub Release with exactly those files and notes.
    `verify-published` then installs from the published assets on Linux x64,
    Linux ARM64 and macOS. It generates a python project with the released
    engine, confirms the generated `bootstrap/release.sh` is byte-identical,
