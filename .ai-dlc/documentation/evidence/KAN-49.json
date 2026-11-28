@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "changes/KAN-49.changed.md": "10144dc659a9d7b1270c4893e6dc0fffb25699f0abd645d288526255a73a9e91"
+      },
+      "outcome": "updated",
+      "reason": "KAN-49 changelog fragment.",
+      "reviewer": "Claude (agent)",
+      "target": "changes/KAN-49.changed.md"
+    },
+    {
+      "bound": {
+        "catalog:docs/architecture.md": "788b593066fcd5d1c9eb9ebbc3869971131d3ddb3ea3396bc8b9a6ea48ca8b55",
+        "docs/architecture.md": "7d5fed191dd2d9e0948da42f00ebf024d2fa47bbe2c3a2e89e6b32bb1a1cdc02",
+        "scripts/collect_changes.py": "1e0f9d12eab0b4c407eba066a09f1a7f9dcd7967afc676d2abb12ace12619881"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-49: architecture does not describe release notes; the release workflow's shape is unchanged.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/architecture.md"
+    },
+    {
+      "bound": {
+        ".github/workflows/release.yml": "28d699be5427fe7882629897c45ab063a7c67ff3cd8331354177c4e5c65782e6",
+        "catalog:docs/release-verification.md": "972bf86b6da5f20b3d01762982880533ba0c99b22933aa95273590923721dad0",
+        "docs/release-verification.md": "a18e7b0bef6dc55ebc544ac304a01c8ca7d59c9dde46127f2acc44802e8b9751"
+      },
+      "outcome": "reviewed-no-change",
+      "reason": "KAN-49: records what releases proved; notes content is not a verified obligation.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/release-verification.md"
+    },
+    {
+      "bound": {
+        ".github/workflows/release.yml": "28d699be5427fe7882629897c45ab063a7c67ff3cd8331354177c4e5c65782e6",
+        "catalog:docs/runbooks/release-publication.md": "3580fe6b0df68db7dd7dd55e520bb50b4dcb9ee9132e4e345396d68a4e7d72f8",
+        "docs/runbooks/release-publication.md": "5b9abca2e140e3f15804586e5f826d072948a9c3f723fd0e6b515f811c0449ba"
+      },
+      "outcome": "updated",
+      "reason": "KAN-49: step 1 folds the fragments and names the changelog section; package refuses a tag without one; publish uses it as notes.",
+      "reviewer": "Claude (agent)",
+      "target": "docs/runbooks/release-publication.md"
+    },
+    {
+      "bound": {
+        "tests/test_changes.py": "59e28dce578a9e2e77de9fa0e450559bcb7d36d147ae83b1d7c3d2d7373bb4a9"
+      },
+      "outcome": "updated",
+      "reason": "KAN-49: tests for release notes from the changelog and the workflow wiring, with the notes step before the build.",
+      "reviewer": "Claude (agent)",
+      "target": "tests/test_changes.py"
+    }
+  ],
+  "schema": 2
+}

@@ -8,6 +8,8 @@ removed, fixed or security (Keep a Changelog's). `changes/README.md` is not a fr
 
     python scripts/collect_changes.py           # check the fragments and print the entries they make
     python scripts/collect_changes.py --write   # at release: fold them into CHANGELOG.md's Unreleased section, delete them
+    python scripts/collect_changes.py --release-notes 0.5.0 --repo OWNER/NAME --ref v0.5.0
+                                                # the release's notes: CHANGELOG.md's `## [0.5.0]` section (KAN-49)
 """
 
 from __future__ import annotations
@@ -109,13 +111,58 @@ def fold(changelog: str, new: dict[str, list[str]]) -> str:
     return "\n".join(lines) + "\n"
 
 
+INSTALL_NOTE = (
+    "Hash-bound bootstrap release. Install with the runbook in docs/runbooks/release-publication.md; "
+    "verify assets against SHA256SUMS."
+)
+_LINK = re.compile(r"\]\((?![a-z][a-z0-9+.-]*:|#|/)([^)\s]+)\)", re.IGNORECASE)
+
+
+def release_notes(changelog: str, version: str, repo: str = "", ref: str = "") -> str:
+    """The body of CHANGELOG.md's `## [<version>]` section, then the install note (KAN-49).
+
+    A release page is not the repository, so relative links are made absolute against
+    `repo` at `ref` when both are given. Raises ValueError when the section is missing
+    or empty: a release never goes out with notes the changelog doesn't have.
+    """
+    lines = changelog.splitlines()
+    head = re.compile(rf"^## \[{re.escape(version)}\](?:\s|$)")
+    start = next((i for i, line in enumerate(lines) if head.match(line)), None)
+    if start is None:
+        raise ValueError(
+            f"CHANGELOG.md has no '## [{version}]' section; rename Unreleased to it before tagging"
+        )
+    end = next((i for i in range(start + 1, len(lines)) if lines[i].startswith("## ")), len(lines))
+    body = "\n".join(lines[start + 1 : end]).strip()
+    if not body:
+        raise ValueError(f"CHANGELOG.md's '## [{version}]' section is empty")
+    if repo and ref:
+        body = _LINK.sub(lambda m: f"](https://github.com/{repo}/blob/{ref}/{m.group(1)})", body)
+    return f"{body}\n\n{INSTALL_NOTE}\n"
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument(
         "--write", action="store_true", help="fold the fragments into CHANGELOG.md and delete them"
     )
+    ap.add_argument(
+        "--release-notes",
+        metavar="VERSION",
+        help="print CHANGELOG.md's section for VERSION as release notes, then exit",
+    )
+    ap.add_argument("--repo", default="", help="OWNER/NAME, to make --release-notes links absolute")
+    ap.add_argument("--ref", default="", help="the tag the --release-notes links point at")
     ap.add_argument("--root", type=Path, default=ROOT)
     a = ap.parse_args(argv)
+    if a.release_notes:
+        try:
+            text = (a.root / "CHANGELOG.md").read_text(encoding="utf-8")
+            print(release_notes(text, a.release_notes, a.repo, a.ref), end="")
+        except (OSError, ValueError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 1
+        return 0
     bad = problems(a.root)
     for p in bad:
         print(f"error: {p}", file=sys.stderr)
