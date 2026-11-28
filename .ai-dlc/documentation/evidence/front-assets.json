@@ -1,0 +1,32 @@
+{
+  "decisions": [
+    {
+      "bound": {
+        "docs/assets/front/plugin-skills.svg": "75d28f5ad3e2312cdb9def0e8690c521fea11a8eca54706974809f9afd3670ad"
+      },
+      "outcome": "updated",
+      "reason": "Rebuilt by docs/assets/front/build.py on main at cd0c04d; it records the CLI output the merged pull requests reviewed.",
+      "reviewer": "generated.yml (front-page build)",
+      "target": "docs/assets/front/plugin-skills.svg"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.cast": "511ba0f937b174267d8617aa892a54c5e0582212e83bbf615119b107cfc801dd"
+      },
+      "outcome": "updated",
+      "reason": "Rebuilt by docs/assets/front/build.py on main at cd0c04d; it records the CLI output the merged pull requests reviewed.",
+      "reviewer": "generated.yml (front-page build)",
+      "target": "docs/assets/front/work.cast"
+    },
+    {
+      "bound": {
+        "docs/assets/front/work.svg": "45fd68067de59d9022a0266e20883730a2629f897caecd0fc42c4952991b31f6"
+      },
+      "outcome": "updated",
+      "reason": "Rebuilt by docs/assets/front/build.py on main at cd0c04d; it records the CLI output the merged pull requests reviewed.",
+      "reviewer": "generated.yml (front-page build)",
+      "target": "docs/assets/front/work.svg"
+    }
+  ],
+  "schema": 2
+}
